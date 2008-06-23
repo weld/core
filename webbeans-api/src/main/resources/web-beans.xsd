@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+   elementFormDefault="qualified"
+   targetNamespace="http://seamframework.org/WebBeans"
+   xmlns:web-beans="http://seamframework.org/WebBeans">
+
+   <xs:element name="web-beans">
+      <xs:complexType>
+         <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="web-beans:component" />
+            <xs:element ref="web-beans:deploy"/>
+            <xs:element ref="web-beans:interceptor" />
+            <xs:element ref="web-beans:interceptors" />
+            <xs:element ref="web-beans:decorators" />
+            <xs:element ref="web-beans:ejb-lookup" />
+         </xs:choice>
+      </xs:complexType>
+   </xs:element>
+
+   <xs:element name="component">
+      <xs:complexType>
+         <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="web-beans:class" />
+            <xs:element ref="web-beans:deployment" />
+            <xs:element ref="web-beans:binding" />
+            <xs:element ref="web-beans:scope" />
+            <xs:element ref="web-beans:named" />
+            <xs:element ref="web-beans:stereotype" />
+            <xs:element ref="web-beans:producer-method" />
+            <xs:element ref="web-beans:producer-type" />
+            <xs:element ref="web-beans:remote" />
+            <xs:element ref="web-beans:bound-to" />
+            <xs:element ref="web-beans:topic" />
+            <xs:element ref="web-beans:interceptor-binding" />
+         </xs:choice>
+      </xs:complexType>
+   </xs:element>
+
+   <xs:element name="deploy">
+      <xs:complexType>
+         <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="web-beans:deployment-type" />
+         </xs:choice>
+      </xs:complexType>
+   </xs:element>
+   
+   <xs:element name="interceptor">
+      <xs:complexType>
+         <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="web-beans:class" />
+            <xs:element ref="web-beans:binding" />
+         </xs:choice>
+      </xs:complexType>
+   </xs:element>
+   
+   <xs:element name="interceptors">
+      <xs:complexType>
+         <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="interceptor" type="xs:string" />
+         </xs:choice>
+      </xs:complexType>
+   </xs:element>
+   
+   <xs:element name="decorators">
+      <xs:complexType>
+         <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="decorator"/>
+         </xs:choice>
+      </xs:complexType>
+   </xs:element>
+
+   <xs:element name="class" type="xs:string" />
+   
+   <xs:element name="deployment" type="xs:string" />
+   
+   <xs:element name="binding" type="xs:string" />
+   
+   <xs:element name="scope" type="xs:string" />
+   
+   <xs:element name="named" type="xs:string" />
+   
+   <xs:element name="stereotype" type="xs:string" />
+   
+   <xs:element name="producer-method" type="xs:string" />
+   
+   <xs:element name="producer-type" type="xs:string" />
+   
+   <xs:element name="deployment-type" type="xs:string" />
+   
+   <xs:element name="remote" type="xs:string" />
+   
+   <xs:element name="bound-to" type="xs:string" />
+   
+   <xs:element name="topic" type="xs:string" />
+   
+   <xs:element name="interceptor-binding" type="xs:string" />
+   
+   <xs:element name="decorator" type="xs:string" />
+   
+   <xs:element name="ejb-lookup" type="xs:string" />
+
+</xs:schema>
