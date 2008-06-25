@@ -1,6 +1,43 @@
 package javax.webbeans;
 
-public class DynamicBinding<T>
+import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
+public abstract class DynamicBinding<T extends Annotation> implements Annotation
 {
 
+   private Class<T> annotationType;
+   
+   @SuppressWarnings("unchecked")
+   public DynamicBinding()
+   {
+      Type type = getClass().getGenericSuperclass();
+      if (type instanceof ParameterizedType)
+      {
+         ParameterizedType parameterizedType = (ParameterizedType) type;
+         if (parameterizedType.getActualTypeArguments().length == 1)
+         {
+            annotationType = (Class<T>) parameterizedType.getActualTypeArguments()[0];
+         }
+      }
+      if (annotationType == null)
+      {
+         throw new RuntimeException("Unable to determine type of dynamic binding");
+      }
+   }
+   
+   public Class<? extends Annotation> annotationType()
+   {
+      return annotationType;
+   }
+   
+   @Override
+   public String toString()
+   {
+      // TODO Make this closer to the spec for Annotation
+      String annotationName = "@" + annotationType.getName();
+      return annotationName;
+   }
+   
 }
