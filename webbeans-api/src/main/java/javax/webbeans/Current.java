@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target( { TYPE, METHOD })
 @Retention(RUNTIME)
 @Documented
-@ScopeType
+@BindingType
 public @interface Current
 {
 
