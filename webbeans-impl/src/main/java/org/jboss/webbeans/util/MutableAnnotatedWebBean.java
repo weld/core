@@ -9,31 +9,25 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-/**
- * Helper class which allows us to store the annotations present on an object
- * 
- * Also allows you to discover meta annotations
- * 
- * @author pmuir
- *
- */
-public class MutableEnhancedAnnotatedElement implements EnhancedAnnotatedElement
+public class MutableAnnotatedWebBean implements AnnotatedWebBean
 {
 
    private Map<Class<? extends Annotation>, Annotation> annotations;
    
    private Map<Class<? extends Annotation>, Set<Annotation>> metaAnnotations;
    private Set<Annotation> annotationSet;
+   private Class<?> annotatedClass;
    
-   public MutableEnhancedAnnotatedElement()
+   private MutableAnnotatedWebBean()
    {
       this.annotations = new HashMap<Class<? extends Annotation>, Annotation>();
    }
    
-   public MutableEnhancedAnnotatedElement(AnnotatedElement annotatedElement)
+   public MutableAnnotatedWebBean(Class<?> clazz)
    {
       this();
-      for (Annotation annotation : annotatedElement.getAnnotations())
+      this.annotatedClass = clazz;
+      for (Annotation annotation : clazz.getAnnotations())
       {
          add(annotation);
       }
@@ -110,4 +104,9 @@ public class MutableEnhancedAnnotatedElement implements EnhancedAnnotatedElement
       setDirty();
    }
 
+   public Class<?> getAnnotatedClass()
+   {
+      return annotatedClass;
+   }
+   
 }

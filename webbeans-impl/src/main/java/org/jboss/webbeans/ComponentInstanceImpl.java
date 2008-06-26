@@ -1,20 +1,21 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.webbeans.BindingType;
 import javax.webbeans.ComponentInstance;
 import javax.webbeans.Container;
-import javax.webbeans.Current;
 import javax.webbeans.DeploymentType;
 import javax.webbeans.Named;
 import javax.webbeans.ScopeType;
 import javax.webbeans.Stereotype;
 
-import org.jboss.webbeans.util.EnhancedAnnotatedElement;
+import org.jboss.webbeans.util.AnnotatedWebBean;
 
 /**
  * Web Beans Component meta model
@@ -29,23 +30,76 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
    private Annotation componentType;
    private String name;
    private Annotation scopeType;
-   private Set<Annotation> stereotypes;
+   private Set<Annotation> possibleDeploymentTypes;
+   private Set<Annotation> possibleScopeTypes;
+   private boolean componentNameDefaulted;
+   private Set<Class<?>> requiredTypes;
+   private Set<Class<? extends Annotation>> supportedScopes;
    
-   public ComponentInstanceImpl(EnhancedAnnotatedElement annotatedElement)
+   public ComponentInstanceImpl(AnnotatedWebBean annotatedElement, ContainerImpl container)
    {
-      initSterotypes(annotatedElement);
+      initStereotypes(annotatedElement, container);
       initBindingTypes(annotatedElement);
-      initComponentType(annotatedElement);
+      initComponentType(annotatedElement, container);
       initScopeType(annotatedElement);
       initName(annotatedElement);
+      checkRequiredTypesImplemented(annotatedElement);
+      checkScopeAllowed(annotatedElement);
+      // TODO Interceptors
    }
    
-   private void initSterotypes(EnhancedAnnotatedElement annotatedElement)
+   private void initStereotypes(AnnotatedWebBean annotatedElement, ContainerImpl container)
    {
-      this.stereotypes = annotatedElement.getAnnotations(Stereotype.class);
+      possibleDeploymentTypes = new HashSet<Annotation>();
+      possibleScopeTypes = new HashSet<Annotation>();
+      requiredTypes = new HashSet<Class<?>>();
+      supportedScopes = new HashSet<Class<? extends Annotation>>();
+      for (Annotation stereotypeAnnotation : annotatedElement.getAnnotations(Stereotype.class))
+      {
+         StereotypeMetaModel stereotype = container.getStereotypeManager().getStereotype(stereotypeAnnotation.annotationType());
+         if (stereotype.getDefaultDeploymentType() != null)
+         {
+            possibleDeploymentTypes.add(stereotype.getDefaultDeploymentType());
+         }
+         if (stereotype.getDefaultScopeType() != null)
+         {
+            possibleScopeTypes.add(stereotype.getDefaultScopeType());
+         }
+         requiredTypes.addAll(stereotype.getRequiredTypes());
+         supportedScopes.addAll(stereotype.getSupportedScopes());
+         if (stereotype.isComponentNameDefaulted()) 
+         {
+            componentNameDefaulted = true;
+         }
+      }
+   }
+   
+   private void checkScopeAllowed(AnnotatedWebBean annotatedClass)
+   {
+      if (supportedScopes.size() > 0)
+      {
+         if (!supportedScopes.contains(scopeType))
+         {
+            throw new RuntimeException("Scope " + scopeType + " is not an allowed by the component's stereotype");
+         }
+      }
+   }
+   
+   private void checkRequiredTypesImplemented(AnnotatedWebBean annotatedClass)
+   {
+      if (requiredTypes.size() > 0)
+      {
+         // TODO This needs to check a lot more. Or we do through checking assignability
+         List<Class> classes = Arrays.asList(annotatedClass.getAnnotatedClass().getInterfaces());
+         if (!classes.containsAll(requiredTypes))
+         {
+            // TODO Ugh, improve this exception
+            throw new RuntimeException("Not all required types are implemented");
+         }
+      }
    }
 
-   private void initScopeType(EnhancedAnnotatedElement annotatedElement)
+   private void initScopeType(AnnotatedWebBean annotatedElement)
    {
       Set<Annotation> scopes = annotatedElement.getAnnotations(ScopeType.class);
       if (scopes.size() > 1)
@@ -56,13 +110,21 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
       {
          this.scopeType = scopes.iterator().next();
       }
+      else if (possibleScopeTypes.size() == 1)
+      {
+         this.scopeType = possibleScopeTypes.iterator().next();
+      }
+      else if (possibleScopeTypes.size() > 0)
+      {
+         //TODO DO something
+      }
       else
       {
-         // TODO Look at sterotypes
+         this.scopeType = new DependentBinding();
       }
    }
 
-   private void initComponentType(EnhancedAnnotatedElement annotatedElement)
+   private void initComponentType(AnnotatedWebBean annotatedElement, ContainerImpl container)
    {
       Set<Annotation> deploymentTypes = annotatedElement.getAnnotations(DeploymentType.class);
       if (deploymentTypes.size() > 1)
@@ -75,11 +137,11 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
       }
       else
       {
-         // TODO Look at sterotypes
+         this.componentType = getDeploymentType(container.getEnabledDeploymentTypes(), possibleDeploymentTypes);
       }
    }
 
-   private void initBindingTypes(EnhancedAnnotatedElement annotatedElement)
+   private void initBindingTypes(AnnotatedWebBean annotatedElement)
    {
       bindingTypes = annotatedElement.getAnnotations(BindingType.class);
       
@@ -90,17 +152,38 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
       }
    }
 
-   private void initName(EnhancedAnnotatedElement annotatedElement)
+   private void initName(AnnotatedWebBean annotatedElement)
    {
       if (annotatedElement.isAnnotationPresent(Named.class))
       {
          String name = annotatedElement.getAnnotation(Named.class).value();
          if ("".equals(name))
          {
-            // TODO write default name algorithm
-            
+            componentNameDefaulted = true;
          }
-         this.name = name;
+         else
+         {
+            componentNameDefaulted = false;
+            this.name = name;
+         }
+      }
+      if (componentNameDefaulted)
+      {
+         // TODO Write default name alogorithm
+      }
+   }
+   
+   public static Annotation getDeploymentType(List<Annotation> enabledDeploymentTypes, Set<Annotation> possibleDeploymentTypes)
+   {
+      List<Annotation> l = new ArrayList<Annotation>(enabledDeploymentTypes);
+      l.retainAll(possibleDeploymentTypes);
+      if (l.size() > 0)
+      {
+         return l.get(0);
+      }
+      else
+      {
+         return new ProductionBinding();
       }
    }
 
@@ -148,5 +231,7 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
    {
       return scopeType;
    }
+   
+   
 
 }
