@@ -4,13 +4,13 @@ import java.lang.annotation.Annotation;
 import java.util.Set;
 
 /**
- * AnnotatedWebBean provides a uniform access to the annotations on a Web Bean, 
- * defined either in Java or XML 
+ * AnnotatedItem provides a uniform access to the annotations on an annotated
+ * item defined either in Java or XML 
  * 
  * @author Pete Muir
  *
  */
-public interface AnnotatedWebBean
+public interface AnnotatedItem
 {
    
    /**
@@ -43,7 +43,8 @@ public interface AnnotatedWebBean
    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType);
    
    /**
-    * Return the class of the annotated item
+    * Return the class of the annotated item. If this annotatedItem isn't in use
+    * then this method should return null
     */
    public Class<?> getAnnotatedClass();
    

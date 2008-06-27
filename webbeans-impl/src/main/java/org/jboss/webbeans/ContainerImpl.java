@@ -11,6 +11,9 @@ import javax.webbeans.Context;
 import javax.webbeans.Observer;
 import javax.webbeans.TypeLiteral;
 
+import org.jboss.webbeans.bindings.ProductionBinding;
+import org.jboss.webbeans.bindings.StandardBinding;
+
 public class ContainerImpl implements Container
 {
    

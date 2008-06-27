@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.webbeans.BindingType;
 import javax.webbeans.ComponentInstance;
@@ -15,7 +16,10 @@ import javax.webbeans.Named;
 import javax.webbeans.ScopeType;
 import javax.webbeans.Stereotype;
 
-import org.jboss.webbeans.util.AnnotatedWebBean;
+import org.jboss.webbeans.bindings.CurrentBinding;
+import org.jboss.webbeans.bindings.DependentBinding;
+import org.jboss.webbeans.util.AnnotatedItem;
+import org.jboss.webbeans.util.LoggerUtil;
 
 /**
  * Web Beans Component meta model
@@ -26,72 +30,82 @@ import org.jboss.webbeans.util.AnnotatedWebBean;
 public class ComponentInstanceImpl<T> extends ComponentInstance<T>
 {
    
+   
+   
+   public static final String LOGGER_NAME = "componentInstance";
+   
+   private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
+   
+   private Class<?> type;
    private Set<Annotation> bindingTypes;
    private Annotation componentType;
    private String name;
    private Annotation scopeType;
-   private Set<Annotation> possibleDeploymentTypes;
-   private Set<Annotation> possibleScopeTypes;
-   private boolean componentNameDefaulted;
-   private Set<Class<?>> requiredTypes;
-   private Set<Class<? extends Annotation>> supportedScopes;
    
-   public ComponentInstanceImpl(AnnotatedWebBean annotatedElement, ContainerImpl container)
+   /**
+    * 
+    * @param annotatedItem Annotations read from java classes
+    * @param xmlAnnotatedItem Annotations read from XML
+    * @param container
+    */
+   public ComponentInstanceImpl(AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
    {
-      initStereotypes(annotatedElement, container);
-      initBindingTypes(annotatedElement);
-      initComponentType(annotatedElement, container);
-      initScopeType(annotatedElement);
-      initName(annotatedElement);
-      checkRequiredTypesImplemented(annotatedElement);
-      checkScopeAllowed(annotatedElement);
+      if (annotatedItem == null)
+      {
+         throw new NullPointerException("annotatedItem must not be null. If the component is declared just in XML, pass in an empty annotatedItem");
+      }
+      
+      if (xmlAnnotatedItem == null)
+      {
+         throw new NullPointerException("xmlAnnotatedItem must not be null. If the component is declared just in Java, pass in an empty xmlAnnotatedItem");
+      }
+      
+      this.type = getType(annotatedItem, xmlAnnotatedItem);
+      log.fine("Building Web Bean component metadata for " +  type);
+      MergedComponentStereotypes stereotypes = new MergedComponentStereotypes(annotatedItem, xmlAnnotatedItem, container);
+      this.bindingTypes = initBindingTypes(annotatedItem, xmlAnnotatedItem);
+      this.componentType = initComponentType(stereotypes, annotatedItem, xmlAnnotatedItem, container);
+      this.scopeType = initScopeType(stereotypes, annotatedItem, xmlAnnotatedItem);
+      this.name = initName(stereotypes, annotatedItem, xmlAnnotatedItem);
+      checkRequiredTypesImplemented(stereotypes, type);
+      checkScopeAllowed(stereotypes, scopeType);
       // TODO Interceptors
    }
    
-   private void initStereotypes(AnnotatedWebBean annotatedElement, ContainerImpl container)
+   /*
+    * A series of static methods which implement the algorithms defined in the Web Beans spec for component meta data
+    */
+   
+   protected static Class<?> getType(AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem)
    {
-      possibleDeploymentTypes = new HashSet<Annotation>();
-      possibleScopeTypes = new HashSet<Annotation>();
-      requiredTypes = new HashSet<Class<?>>();
-      supportedScopes = new HashSet<Class<? extends Annotation>>();
-      for (Annotation stereotypeAnnotation : annotatedElement.getAnnotations(Stereotype.class))
-      {
-         StereotypeMetaModel stereotype = container.getStereotypeManager().getStereotype(stereotypeAnnotation.annotationType());
-         if (stereotype.getDefaultDeploymentType() != null)
-         {
-            possibleDeploymentTypes.add(stereotype.getDefaultDeploymentType());
-         }
-         if (stereotype.getDefaultScopeType() != null)
-         {
-            possibleScopeTypes.add(stereotype.getDefaultScopeType());
-         }
-         requiredTypes.addAll(stereotype.getRequiredTypes());
-         supportedScopes.addAll(stereotype.getSupportedScopes());
-         if (stereotype.isComponentNameDefaulted()) 
-         {
-            componentNameDefaulted = true;
-         }
-      }
+      // TODO Consider XML type
+      return annotatedItem.getAnnotatedClass();
    }
    
-   private void checkScopeAllowed(AnnotatedWebBean annotatedClass)
+   /**
+    * Check that the scope type is allowed by the stereotypes on the component
+    */
+   protected static void checkScopeAllowed(MergedComponentStereotypes stereotypes, Annotation scopeType)
    {
-      if (supportedScopes.size() > 0)
+      if (stereotypes.getSupportedScopes().size() > 0)
       {
-         if (!supportedScopes.contains(scopeType))
+         if (!stereotypes.getSupportedScopes().contains(scopeType))
          {
             throw new RuntimeException("Scope " + scopeType + " is not an allowed by the component's stereotype");
          }
       }
    }
    
-   private void checkRequiredTypesImplemented(AnnotatedWebBean annotatedClass)
+   /**
+    * Check that the types required by the stereotypes on the component are implemented
+    */
+   protected static void checkRequiredTypesImplemented(MergedComponentStereotypes stereotypes, Class<?> type)
    {
-      if (requiredTypes.size() > 0)
+      if (stereotypes.getRequiredTypes().size() > 0)
       {
          // TODO This needs to check a lot more. Or we do through checking assignability
-         List<Class> classes = Arrays.asList(annotatedClass.getAnnotatedClass().getInterfaces());
-         if (!classes.containsAll(requiredTypes))
+         List<Class> classes = Arrays.asList(type.getInterfaces());
+         if (!classes.containsAll(stereotypes.getRequiredTypes()))
          {
             // TODO Ugh, improve this exception
             throw new RuntimeException("Not all required types are implemented");
@@ -99,78 +113,128 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
       }
    }
 
-   private void initScopeType(AnnotatedWebBean annotatedElement)
+   /**
+    * Return the scope of the component
+    */
+   protected static Annotation initScopeType(MergedComponentStereotypes stereotypes, AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem)
    {
-      Set<Annotation> scopes = annotatedElement.getAnnotations(ScopeType.class);
+      Set<Annotation> xmlScopes = xmlAnnotatedItem.getAnnotations(ScopeType.class);
+      if (xmlScopes.size() > 1)
+      {
+         throw new RuntimeException("At most one scope may be specified in XML");
+      }
+      
+      if (xmlScopes.size() == 1)
+      {
+         log.info("Scope specified in XML");
+         return xmlScopes.iterator().next();
+      }
+      
+      Set<Annotation> scopes = annotatedItem.getAnnotations(ScopeType.class);
       if (scopes.size() > 1)
       {
          throw new RuntimeException("At most one scope may be specified");
       }
-      else if (scopes.size() == 1)
+      
+      if (scopes.size() == 1)
       {
-         this.scopeType = scopes.iterator().next();
+         log.info("Scope specified by annotation");
+         return scopes.iterator().next();
       }
-      else if (possibleScopeTypes.size() == 1)
+      
+      if (stereotypes.getPossibleScopeTypes().size() > 0)
       {
-         this.scopeType = possibleScopeTypes.iterator().next();
+         return stereotypes.getPossibleScopeTypes().iterator().next();
       }
-      else if (possibleScopeTypes.size() > 0)
-      {
-         //TODO DO something
-      }
-      else
-      {
-         this.scopeType = new DependentBinding();
-      }
+      
+      return new DependentBinding();
    }
 
-   private void initComponentType(AnnotatedWebBean annotatedElement, ContainerImpl container)
+   protected static Annotation initComponentType(MergedComponentStereotypes stereotypes, AnnotatedItem annotatedElement, AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
    {
+      /*
+       *  TODO deployment types actually identify components to deploy - and so 
+       *  if declared in XML and java then there are two components to deploy - 
+       *  this needs to be handled at a higher level
+       *  
+       *  TODO Ignore deployment type annotations on class if declared in XML
+       */
+      Set<Annotation> xmlDeploymentTypes = annotatedElement.getAnnotations(DeploymentType.class);
+      
+      if (xmlDeploymentTypes.size() > 1)
+      {
+         throw new RuntimeException("At most one deployment type may be specified in XML");
+      }
+      
+      if (xmlDeploymentTypes.size() == 1)
+      {
+         return xmlDeploymentTypes.iterator().next();
+      }
+      
       Set<Annotation> deploymentTypes = annotatedElement.getAnnotations(DeploymentType.class);
+      
       if (deploymentTypes.size() > 1)
       {
+         // TODO Improve the exception
          throw new RuntimeException("At most one deployment type may be specified");
       }
-      else if (deploymentTypes.size() == 1)
+      if (deploymentTypes.size() == 1)
       {
-         this.componentType = deploymentTypes.iterator().next();
+         return deploymentTypes.iterator().next();
       }
-      else
+      
+      if (stereotypes.getPossibleDeploymentTypes().size() > 0)
       {
-         this.componentType = getDeploymentType(container.getEnabledDeploymentTypes(), possibleDeploymentTypes);
+         return getDeploymentType(container.getEnabledDeploymentTypes(), stereotypes.getPossibleDeploymentTypes());
       }
+      
+      // TODO If declared in XML then we can return Production here
+      // TODO We shouldn't get here, but what to do if we have?
+      return null;
    }
 
-   private void initBindingTypes(AnnotatedWebBean annotatedElement)
+   protected static Set<Annotation> initBindingTypes(AnnotatedItem annotatedElement, AnnotatedItem xmlAnnotatedItem)
    {
-      bindingTypes = annotatedElement.getAnnotations(BindingType.class);
+      Set<Annotation> xmlBindingTypes = xmlAnnotatedItem.getAnnotations(BindingType.class);
+      if (xmlBindingTypes.size() > 0)
+      {
+         // TODO support producer expression default binding type
+         return xmlBindingTypes;
+      }
       
-      // Add the default binding if needed
+      Set<Annotation> bindingTypes = annotatedElement.getAnnotations(BindingType.class);
       if (bindingTypes.size() == 0)
       {
          bindingTypes.add(new CurrentBinding());
       }
+      return bindingTypes;
    }
 
-   private void initName(AnnotatedWebBean annotatedElement)
+   protected static String initName(MergedComponentStereotypes stereotypes, AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem)
    {
-      if (annotatedElement.isAnnotationPresent(Named.class))
+      boolean componentNameDefaulted = false;
+      String name = null;
+      if (xmlAnnotatedItem.isAnnotationPresent(Named.class))
       {
-         String name = annotatedElement.getAnnotation(Named.class).value();
+         name = xmlAnnotatedItem.getAnnotation(Named.class).value();
          if ("".equals(name))
          {
             componentNameDefaulted = true;
          }
-         else
+      }
+      else if (annotatedItem.isAnnotationPresent(Named.class))
+      {
+         name = annotatedItem.getAnnotation(Named.class).value();
+         if ("".equals(name))
          {
-            componentNameDefaulted = false;
-            this.name = name;
+            componentNameDefaulted = true;
          }
       }
-      if (componentNameDefaulted)
+      if ("".equals(name) && (componentNameDefaulted || stereotypes.isComponentNameDefaulted()))
       {
          // TODO Write default name alogorithm
       }
+      return name;
    }
    
    public static Annotation getDeploymentType(List<Annotation> enabledDeploymentTypes, Set<Annotation> possibleDeploymentTypes)
@@ -183,7 +247,7 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
       }
       else
       {
-         return new ProductionBinding();
+         return null;
       }
    }
 

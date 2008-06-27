@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.components;
+package org.jboss.webbeans.test.annotations;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -6,13 +6,14 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.webbeans.RequestScoped;
 import javax.webbeans.Stereotype;
 
-@Stereotype(requiredTypes=Animal.class, supportedScopes=RequestScoped.class)
+import org.jboss.webbeans.test.components.Animal;
+
+@Stereotype(requiredTypes=Animal.class)
 @Target( { TYPE })
 @Retention(RUNTIME)
-public @interface RequestScopedAnimalStereotype
+public @interface AnimalStereotype
 {
 
 }

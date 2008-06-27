@@ -8,12 +8,12 @@ import javax.webbeans.Production;
 import javax.webbeans.RequestScoped;
 
 import org.jboss.webbeans.StereotypeMetaModel;
+import org.jboss.webbeans.test.annotations.AnimalOrderStereotype;
+import org.jboss.webbeans.test.annotations.AnimalStereotype;
+import org.jboss.webbeans.test.annotations.RequestScopedAnimalStereotype;
 import org.jboss.webbeans.test.components.Animal;
-import org.jboss.webbeans.test.components.AnimalOrderStereotype;
-import org.jboss.webbeans.test.components.AnimalStereotype;
 import org.jboss.webbeans.test.components.Order;
-import org.jboss.webbeans.test.components.RequestScopedAnimalStereotype;
-import org.jboss.webbeans.util.MutableAnnotatedWebBean;
+import org.jboss.webbeans.util.ClassAnnotatedItem;
 import org.junit.Test;
 
 public class StereotypeMetaModelTest
@@ -22,7 +22,7 @@ public class StereotypeMetaModelTest
    @Test
    public void testComponentStereotype()
    {
-      StereotypeMetaModel componentStereotype = new StereotypeMetaModel(new MutableAnnotatedWebBean(Component.class));
+      StereotypeMetaModel componentStereotype = new StereotypeMetaModel(new ClassAnnotatedItem(Component.class));
       
       assert Production.class.equals(componentStereotype.getDefaultDeploymentType().annotationType());
       assert componentStereotype.getDefaultScopeType() == null;
@@ -35,7 +35,7 @@ public class StereotypeMetaModelTest
    @Test
    public void testModelStereotype()
    {
-      StereotypeMetaModel modelStereotype = new StereotypeMetaModel(new MutableAnnotatedWebBean(Model.class));
+      StereotypeMetaModel modelStereotype = new StereotypeMetaModel(new ClassAnnotatedItem(Model.class));
       assert Production.class.equals(modelStereotype.getDefaultDeploymentType().annotationType());
       assert RequestScoped.class.equals(modelStereotype.getDefaultScopeType().annotationType());
       assert modelStereotype.isComponentNameDefaulted();
@@ -47,7 +47,7 @@ public class StereotypeMetaModelTest
    @Test
    public void testAnimalStereotype()
    {
-      StereotypeMetaModel animalStereotype = new StereotypeMetaModel(new MutableAnnotatedWebBean(AnimalStereotype.class));
+      StereotypeMetaModel animalStereotype = new StereotypeMetaModel(new ClassAnnotatedItem(AnimalStereotype.class));
       assert animalStereotype.getDefaultScopeType() == null;
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert animalStereotype.getRequiredTypes().size() == 1;
@@ -60,7 +60,7 @@ public class StereotypeMetaModelTest
    @Test
    public void testAnimalOrderStereotype()
    {
-      StereotypeMetaModel animalStereotype = new StereotypeMetaModel(new MutableAnnotatedWebBean(AnimalOrderStereotype.class));
+      StereotypeMetaModel animalStereotype = new StereotypeMetaModel(new ClassAnnotatedItem(AnimalOrderStereotype.class));
       assert animalStereotype.getDefaultScopeType() == null;
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert animalStereotype.getRequiredTypes().size() == 2;
@@ -74,7 +74,7 @@ public class StereotypeMetaModelTest
    @Test
    public void testRequestScopedAnimalStereotype()
    {
-      StereotypeMetaModel animalStereotype = new StereotypeMetaModel(new MutableAnnotatedWebBean(RequestScopedAnimalStereotype.class));
+      StereotypeMetaModel animalStereotype = new StereotypeMetaModel(new ClassAnnotatedItem(RequestScopedAnimalStereotype.class));
       assert animalStereotype.getDefaultScopeType() == null;
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert animalStereotype.getRequiredTypes().size() == 1;

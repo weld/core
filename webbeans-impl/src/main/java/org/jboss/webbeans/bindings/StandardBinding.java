@@ -1,4 +1,4 @@
-package org.jboss.webbeans;
+package org.jboss.webbeans.bindings;
 
 import javax.webbeans.DynamicBinding;
 import javax.webbeans.Standard;
