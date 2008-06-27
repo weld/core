@@ -25,7 +25,7 @@
             <xs:element ref="web-beans:binding" />
             <xs:element ref="web-beans:scope" />
             <xs:element ref="web-beans:named" />
-            <xs:element ref="web-beans:stereotype" />
+            <xs:element ref="web-beans:stereotype" maxOccurs="unbounded"/>
             <xs:element ref="web-beans:producer-method" />
             <xs:element ref="web-beans:producer-type" />
             <xs:element ref="web-beans:remote" />
