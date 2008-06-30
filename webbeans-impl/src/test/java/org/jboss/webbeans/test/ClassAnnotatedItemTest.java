@@ -5,11 +5,10 @@ import java.util.Iterator;
 import java.util.Set;
 
 import javax.webbeans.DeploymentType;
-import javax.webbeans.Named;
 import javax.webbeans.Production;
 import javax.webbeans.Stereotype;
 
-import org.jboss.webbeans.test.components.ClassWithNoAnnotations;
+import org.jboss.webbeans.test.components.Antelope;
 import org.jboss.webbeans.test.components.Order;
 import org.jboss.webbeans.util.AnnotatedItem;
 import org.jboss.webbeans.util.ClassAnnotatedItem;
@@ -22,10 +21,8 @@ public class ClassAnnotatedItemTest
    public void testDeclaredAnnotations()
    {
       AnnotatedItem annotatedElement = new ClassAnnotatedItem(Order.class);
-      assert annotatedElement.getAnnotations().size() == 2;
+      assert annotatedElement.getAnnotations().size() == 1;
       assert annotatedElement.getAnnotation(Production.class) != null;
-      assert annotatedElement.getAnnotation(Named.class) != null;
-      System.out.println(annotatedElement.getAnnotatedClass());
       assert annotatedElement.getAnnotatedClass().equals(Order.class);
    }
    
@@ -46,7 +43,7 @@ public class ClassAnnotatedItemTest
       AnnotatedItem annotatedElement = new ClassAnnotatedItem(Order.class);
       assert annotatedElement.getAnnotation(Stereotype.class) == null;
       assert annotatedElement.getAnnotations(Stereotype.class).size() == 0;
-      AnnotatedItem classWithNoAnnotations = new ClassAnnotatedItem(ClassWithNoAnnotations.class);
+      AnnotatedItem classWithNoAnnotations = new ClassAnnotatedItem(Antelope.class);
       assert classWithNoAnnotations.getAnnotations().size() == 0;
    }
    

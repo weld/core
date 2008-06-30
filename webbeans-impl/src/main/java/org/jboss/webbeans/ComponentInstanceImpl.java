@@ -1,10 +1,8 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -14,10 +12,10 @@ import javax.webbeans.Container;
 import javax.webbeans.DeploymentType;
 import javax.webbeans.Named;
 import javax.webbeans.ScopeType;
-import javax.webbeans.Stereotype;
 
 import org.jboss.webbeans.bindings.CurrentBinding;
 import org.jboss.webbeans.bindings.DependentBinding;
+import org.jboss.webbeans.bindings.ProductionBinding;
 import org.jboss.webbeans.util.AnnotatedItem;
 import org.jboss.webbeans.util.LoggerUtil;
 
@@ -78,8 +76,24 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
    
    protected static Class<?> getType(AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem)
    {
-      // TODO Consider XML type
-      return annotatedItem.getAnnotatedClass();
+      if (annotatedItem.getAnnotatedClass() != null && xmlAnnotatedItem.getAnnotatedClass() != null && !annotatedItem.getAnnotatedClass().equals(xmlAnnotatedItem.getAnnotatedClass()))
+      {
+         throw new IllegalArgumentException("Cannot build a component which specifies different classes in XML and Java");
+      }
+      else if (xmlAnnotatedItem.getAnnotatedClass() != null)
+      {
+         log.finest("Component type specified in XML");
+         return xmlAnnotatedItem.getAnnotatedClass();
+      }
+      else if (annotatedItem.getAnnotatedClass() != null)
+      {
+         log.finest("Component type specified in Java");
+         return annotatedItem.getAnnotatedClass();
+      }
+      else
+      {
+         throw new IllegalArgumentException("Cannot build a component which doesn't specify a type");
+      }
    }
    
    /**
@@ -89,7 +103,8 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
    {
       if (stereotypes.getSupportedScopes().size() > 0)
       {
-         if (!stereotypes.getSupportedScopes().contains(scopeType))
+         log.finest("Checking if " + scopeType + " is allowed");
+         if (!stereotypes.getSupportedScopes().contains(scopeType.annotationType()))
          {
             throw new RuntimeException("Scope " + scopeType + " is not an allowed by the component's stereotype");
          }
@@ -101,14 +116,12 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
     */
    protected static void checkRequiredTypesImplemented(MergedComponentStereotypes stereotypes, Class<?> type)
    {
-      if (stereotypes.getRequiredTypes().size() > 0)
+      for (Class<?> requiredType : stereotypes.getRequiredTypes())
       {
-         // TODO This needs to check a lot more. Or we do through checking assignability
-         List<Class> classes = Arrays.asList(type.getInterfaces());
-         if (!classes.containsAll(stereotypes.getRequiredTypes()))
+         log.finest("Checking if required type " + requiredType + " is implemented");
+         if (!requiredType.isAssignableFrom(type))
          {
-            // TODO Ugh, improve this exception
-            throw new RuntimeException("Not all required types are implemented");
+            throw new RuntimeException("Required type " + requiredType + " isn't implement on " + type);
          }
       }
    }
@@ -126,8 +139,9 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
       
       if (xmlScopes.size() == 1)
       {
-         log.info("Scope specified in XML");
-         return xmlScopes.iterator().next();
+         Annotation scope = xmlScopes.iterator().next();
+         log.finest("Scope " + scope + " specified in XML");
+         return scope;
       }
       
       Set<Annotation> scopes = annotatedItem.getAnnotations(ScopeType.class);
@@ -138,74 +152,94 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
       
       if (scopes.size() == 1)
       {
-         log.info("Scope specified by annotation");
-         return scopes.iterator().next();
+         Annotation scope = scopes.iterator().next();
+         log.finest("Scope " + scope + " specified b annotation");
+         return scope;
       }
       
-      if (stereotypes.getPossibleScopeTypes().size() > 0)
+      if (stereotypes.getPossibleScopeTypes().size() == 1)
       {
-         return stereotypes.getPossibleScopeTypes().iterator().next();
+         Annotation scope = stereotypes.getPossibleScopeTypes().iterator().next();
+         log.finest("Scope " + scope + " specified by stereotype");
+         return scope;
+      }
+      else if (stereotypes.getPossibleScopeTypes().size() > 1)
+      {
+         throw new RuntimeException("All stereotypes must specify the same scope OR a scope must be specified on the component");
       }
       
+      log.finest("Using default @Dependent scope");
       return new DependentBinding();
    }
 
-   protected static Annotation initComponentType(MergedComponentStereotypes stereotypes, AnnotatedItem annotatedElement, AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
+   protected static Annotation initComponentType(MergedComponentStereotypes stereotypes, AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
    {
-      /*
-       *  TODO deployment types actually identify components to deploy - and so 
-       *  if declared in XML and java then there are two components to deploy - 
-       *  this needs to be handled at a higher level
-       *  
-       *  TODO Ignore deployment type annotations on class if declared in XML
-       */
-      Set<Annotation> xmlDeploymentTypes = annotatedElement.getAnnotations(DeploymentType.class);
+      Set<Annotation> xmlDeploymentTypes = xmlAnnotatedItem.getAnnotations(DeploymentType.class);
       
       if (xmlDeploymentTypes.size() > 1)
       {
-         throw new RuntimeException("At most one deployment type may be specified in XML");
+         throw new RuntimeException("At most one deployment type may be specified (" + xmlDeploymentTypes + " are specified)");
       }
       
       if (xmlDeploymentTypes.size() == 1)
       {
-         return xmlDeploymentTypes.iterator().next();
+         Annotation deploymentType = xmlDeploymentTypes.iterator().next(); 
+         log.finest("Deployment type " + deploymentType + " specified in XML");
+         return deploymentType;
       }
       
-      Set<Annotation> deploymentTypes = annotatedElement.getAnnotations(DeploymentType.class);
+      if (xmlAnnotatedItem.getAnnotatedClass() == null)
+      {
       
-      if (deploymentTypes.size() > 1)
-      {
-         // TODO Improve the exception
-         throw new RuntimeException("At most one deployment type may be specified");
-      }
-      if (deploymentTypes.size() == 1)
-      {
-         return deploymentTypes.iterator().next();
+         Set<Annotation> deploymentTypes = annotatedItem.getAnnotations(DeploymentType.class);
+         
+         if (deploymentTypes.size() > 1)
+         {
+            throw new RuntimeException("At most one deployment type may be specified (" + deploymentTypes + " are specified)");
+         }
+         if (deploymentTypes.size() == 1)
+         {
+            Annotation deploymentType = deploymentTypes.iterator().next();
+            log.finest("Deployment type " + deploymentType + " specified by annotation");
+            return deploymentType;
+         }
       }
       
       if (stereotypes.getPossibleDeploymentTypes().size() > 0)
       {
-         return getDeploymentType(container.getEnabledDeploymentTypes(), stereotypes.getPossibleDeploymentTypes());
+         Annotation deploymentType = getDeploymentType(container.getEnabledDeploymentTypes(), stereotypes.getPossibleDeploymentTypes());
+         log.finest("Deployment type " + deploymentType + " specified by stereotype");
+         return deploymentType;
       }
       
-      // TODO If declared in XML then we can return Production here
-      // TODO We shouldn't get here, but what to do if we have?
-      return null;
+      if (xmlAnnotatedItem.getAnnotatedClass() != null)
+      {
+         log.finest("Using default @Production deployment type");
+         return new ProductionBinding();
+      }
+      throw new RuntimeException("All Java annotated classes have a deployment type");
    }
 
-   protected static Set<Annotation> initBindingTypes(AnnotatedItem annotatedElement, AnnotatedItem xmlAnnotatedItem)
+   protected static Set<Annotation> initBindingTypes(AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem)
    {
       Set<Annotation> xmlBindingTypes = xmlAnnotatedItem.getAnnotations(BindingType.class);
       if (xmlBindingTypes.size() > 0)
       {
          // TODO support producer expression default binding type
+         log.finest("Using binding types " + xmlBindingTypes + " specified in XML");
          return xmlBindingTypes;
       }
       
-      Set<Annotation> bindingTypes = annotatedElement.getAnnotations(BindingType.class);
+      Set<Annotation> bindingTypes = annotatedItem.getAnnotations(BindingType.class);
+      
       if (bindingTypes.size() == 0)
       {
+         log.finest("Adding default @Current binding type");
          bindingTypes.add(new CurrentBinding());
+      }
+      else
+      {
+         log.finest("Using binding types " + bindingTypes + " specified by annotations");
       }
       return bindingTypes;
    }
@@ -219,7 +253,12 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
          name = xmlAnnotatedItem.getAnnotation(Named.class).value();
          if ("".equals(name))
          {
+            log.finest("Using default name (specified in XML)");
             componentNameDefaulted = true;
+         }
+         else
+         {
+            log.finest("Using name " + name + " specified in XML");
          }
       }
       else if (annotatedItem.isAnnotationPresent(Named.class))
@@ -227,28 +266,32 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
          name = annotatedItem.getAnnotation(Named.class).value();
          if ("".equals(name))
          {
+            log.finest("Using default name (specified by annotations)");
             componentNameDefaulted = true;
+         }
+         else
+         {
+            log.finest("Using name " + name + " specified in XML");
          }
       }
       if ("".equals(name) && (componentNameDefaulted || stereotypes.isComponentNameDefaulted()))
       {
          // TODO Write default name alogorithm
+         log.finest("Default name is TODO" );
       }
       return name;
    }
    
-   public static Annotation getDeploymentType(List<Annotation> enabledDeploymentTypes, Set<Annotation> possibleDeploymentTypes)
+   public static Annotation getDeploymentType(List<Annotation> enabledDeploymentTypes, Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes)
    {
-      List<Annotation> l = new ArrayList<Annotation>(enabledDeploymentTypes);
-      l.retainAll(possibleDeploymentTypes);
-      if (l.size() > 0)
+      for (int i = (enabledDeploymentTypes.size() - 1); i > 0; i--)
       {
-         return l.get(0);
+         if (possibleDeploymentTypes.containsKey((enabledDeploymentTypes.get(i).annotationType())))
+         {
+            return enabledDeploymentTypes.get(i); 
+         }
       }
-      else
-      {
-         return null;
-      }
+      return null;
    }
 
    @Override

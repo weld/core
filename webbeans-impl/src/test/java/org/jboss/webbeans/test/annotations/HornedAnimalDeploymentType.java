@@ -1,21 +1,20 @@
 package org.jboss.webbeans.test.annotations;
 
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.webbeans.RequestScoped;
-import javax.webbeans.Stereotype;
+import javax.webbeans.DeploymentType;
 
-import org.jboss.webbeans.test.components.Animal;
-
-@Stereotype(requiredTypes=Animal.class)
-@Target( { TYPE })
+@Target( { TYPE, METHOD })
 @Retention(RUNTIME)
-@RequestScoped
-public @interface AnimalStereotype
+@Documented
+@DeploymentType
+public @interface HornedAnimalDeploymentType
 {
 
 }

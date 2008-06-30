@@ -1,7 +1,9 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.webbeans.Stereotype;
@@ -16,7 +18,7 @@ import org.jboss.webbeans.util.AnnotatedItem;
 public class MergedComponentStereotypes
 {
 
-   private Set<Annotation> possibleDeploymentTypes;
+   private Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes;
    private Set<Annotation> possibleScopeTypes;
    private boolean componentNameDefaulted;
    private Set<Class<?>> requiredTypes;
@@ -24,7 +26,7 @@ public class MergedComponentStereotypes
    
    public MergedComponentStereotypes(AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
    {
-      possibleDeploymentTypes = new HashSet<Annotation>();
+      possibleDeploymentTypes = new HashMap<Class<? extends Annotation>, Annotation>();
       possibleScopeTypes = new HashSet<Annotation>();
       requiredTypes = new HashSet<Class<?>>();
       supportedScopes = new HashSet<Class<? extends Annotation>>();
@@ -38,9 +40,13 @@ public class MergedComponentStereotypes
       {
          // Retrieve and merge all metadata from stereotypes
          StereotypeMetaModel stereotype = container.getStereotypeManager().getStereotype(stereotypeAnnotation.annotationType());
+         if (stereotype == null)
+         {
+            throw new NullPointerException("Stereotype " + stereotypeAnnotation + " not registered with container");
+         }
          if (stereotype.getDefaultDeploymentType() != null)
          {
-            possibleDeploymentTypes.add(stereotype.getDefaultDeploymentType());
+            possibleDeploymentTypes.put(stereotype.getDefaultDeploymentType().annotationType(), stereotype.getDefaultDeploymentType());
          }
          if (stereotype.getDefaultScopeType() != null)
          {
@@ -53,14 +59,9 @@ public class MergedComponentStereotypes
             componentNameDefaulted = true;
          }
       }
-      
-      if (this.possibleScopeTypes.size() > 1)
-      {
-         throw new RuntimeException("All stereotypes must specify the same scope OR a scope must be specified on the component");
-      }
    }
    
-   public Set<Annotation> getPossibleDeploymentTypes()
+   public Map<Class<? extends Annotation>, Annotation> getPossibleDeploymentTypes()
    {
       return possibleDeploymentTypes;
    }

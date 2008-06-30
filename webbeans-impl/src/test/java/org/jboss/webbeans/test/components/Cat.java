@@ -2,8 +2,11 @@ package org.jboss.webbeans.test.components;
 
 import javax.webbeans.Production;
 
+import org.jboss.webbeans.test.annotations.Synchronous;
+
 @Production
-public class Order
+@Synchronous
+public class Cat
 {
 
 }

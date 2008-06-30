@@ -9,6 +9,7 @@ import javax.webbeans.ComponentInstance;
 import javax.webbeans.Container;
 import javax.webbeans.Context;
 import javax.webbeans.Observer;
+import javax.webbeans.Standard;
 import javax.webbeans.TypeLiteral;
 
 import org.jboss.webbeans.bindings.ProductionBinding;
@@ -20,20 +21,27 @@ public class ContainerImpl implements Container
    private List<Annotation> enabledDeploymentTypes;
    private StereotypeManager stereotypeManager;
    
-   public ContainerImpl()
+   public ContainerImpl(List<Annotation> enabledDeploymentTypes)
    {
-      initEnabledDeploymentTypes();
+      initEnabledDeploymentTypes(enabledDeploymentTypes);
       this.stereotypeManager = new StereotypeManager();
    }
    
-   private void initEnabledDeploymentTypes()
+   private void initEnabledDeploymentTypes(List<Annotation> enabledDeploymentTypes)
    {
       this.enabledDeploymentTypes = new ArrayList<Annotation>();
-      // TODO Support enabling custom deployment types
-      if (this.enabledDeploymentTypes.size() == 0)
+      if (enabledDeploymentTypes == null)
       {
          this.enabledDeploymentTypes.add(0, new StandardBinding());
          this.enabledDeploymentTypes.add(1, new ProductionBinding());
+      }
+      else
+      {
+         this.enabledDeploymentTypes.addAll(enabledDeploymentTypes);
+         if (!this.enabledDeploymentTypes.get(0).annotationType().equals(Standard.class))
+         {
+            throw new RuntimeException("@Standard must be the lowest precedence deployment type");
+         }
       }
    }
 

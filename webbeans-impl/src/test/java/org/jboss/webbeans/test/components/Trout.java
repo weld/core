@@ -1,9 +1,11 @@
 package org.jboss.webbeans.test.components;
 
 import javax.webbeans.Production;
+import javax.webbeans.RequestScoped;
 
 @Production
-public class Order
+@RequestScoped
+public class Trout implements Animal
 {
 
 }

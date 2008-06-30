@@ -11,6 +11,10 @@ import org.jboss.webbeans.StereotypeMetaModel;
 import org.jboss.webbeans.test.annotations.AnimalOrderStereotype;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
 import org.jboss.webbeans.test.annotations.RequestScopedAnimalStereotype;
+import org.jboss.webbeans.test.annotations.StereotypeWithBindingTypes;
+import org.jboss.webbeans.test.annotations.StereotypeWithNonEmptyNamed;
+import org.jboss.webbeans.test.annotations.StereotypeWithTooManyDeploymentTypes;
+import org.jboss.webbeans.test.annotations.StereotypeWithTooManyScopeTypes;
 import org.jboss.webbeans.test.components.Animal;
 import org.jboss.webbeans.test.components.Order;
 import org.jboss.webbeans.util.ClassAnnotatedItem;
@@ -48,10 +52,10 @@ public class StereotypeMetaModelTest
    public void testAnimalStereotype()
    {
       StereotypeMetaModel animalStereotype = new StereotypeMetaModel(new ClassAnnotatedItem(AnimalStereotype.class));
-      assert animalStereotype.getDefaultScopeType() == null;
+      assert animalStereotype.getDefaultScopeType().annotationType().equals(RequestScoped.class);
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert animalStereotype.getRequiredTypes().size() == 1;
-      assert Animal.class.equals(animalStereotype.getRequiredTypes().iterator().next());
+      assert animalStereotype.getRequiredTypes().contains(Animal.class);
       assert animalStereotype.getSupportedScopes().size() == 0;
       assert !animalStereotype.isComponentNameDefaulted();
       assert animalStereotype.getDefaultDeploymentType() == null;
@@ -80,9 +84,69 @@ public class StereotypeMetaModelTest
       assert animalStereotype.getRequiredTypes().size() == 1;
       assert Animal.class.equals(animalStereotype.getRequiredTypes().iterator().next());
       assert animalStereotype.getSupportedScopes().size() == 1;
-      assert RequestScoped.class.equals(animalStereotype.getSupportedScopes().iterator().next());
+      assert animalStereotype.getSupportedScopes().contains(RequestScoped.class);
       assert !animalStereotype.isComponentNameDefaulted();
       assert animalStereotype.getDefaultDeploymentType() == null;
+   }
+   
+   @Test
+   public void testStereotypeWithTooManyScopeTypes()
+   {
+      boolean exception = false;
+      try
+      {
+         new StereotypeMetaModel(new ClassAnnotatedItem(StereotypeWithTooManyScopeTypes.class));
+      }
+      catch (Exception e) 
+      {
+         exception = true;
+      }
+      assert exception;
+   }
+   
+   @Test
+   public void testStereotypeWithTooManyDeploymentTypes()
+   {
+      boolean exception = false;
+      try
+      {
+         new StereotypeMetaModel(new ClassAnnotatedItem(StereotypeWithTooManyDeploymentTypes.class));
+      }
+      catch (Exception e) 
+      {
+         exception = true;
+      }
+      assert exception;
+   }
+   
+   @Test
+   public void testStereotypeWithNonEmptyNamed()
+   {
+      boolean exception = false;
+      try
+      {
+         new StereotypeMetaModel(new ClassAnnotatedItem(StereotypeWithNonEmptyNamed.class));
+      }
+      catch (Exception e) 
+      {
+         exception = true;
+      }
+      assert exception;
+   }
+   
+   @Test
+   public void testStereotypeWithBindingTypes()
+   {
+      boolean exception = false;
+      try
+      {
+         new StereotypeMetaModel(new ClassAnnotatedItem(StereotypeWithBindingTypes.class));
+      }
+      catch (Exception e) 
+      {
+         exception = true;
+      }
+      assert exception;
    }
    
 }

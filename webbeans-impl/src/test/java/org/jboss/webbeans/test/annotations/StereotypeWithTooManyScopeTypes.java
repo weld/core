@@ -5,17 +5,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-
-import javax.webbeans.RequestScoped;
 import javax.webbeans.Stereotype;
 
-import org.jboss.webbeans.test.components.Animal;
-
-@Stereotype(requiredTypes=Animal.class)
+@Stereotype
 @Target( { TYPE })
 @Retention(RUNTIME)
-@RequestScoped
-public @interface AnimalStereotype
+@Asynchronous
+public @interface StereotypeWithTooManyScopeTypes
 {
 
 }
