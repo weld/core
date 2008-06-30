@@ -10,6 +10,13 @@
    <name>Web Beans</name>
    <url>http://www.seamframework.org/WebBeans</url>
 
+   <pluginRepositories>
+      <pluginRepository>
+         <id>snapshots.repository.codehaus.org</id>
+         <url>http://snapshots.repository.codehaus.org</url>
+      </pluginRepository>
+   </pluginRepositories>
+
    <modules>
       <module>webbeans-api</module>
       <module>webbeans-impl</module>
