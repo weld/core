@@ -9,18 +9,9 @@ public abstract class DynamicBinding<T extends Annotation> implements Annotation
 
    private Class<T> annotationType;
    
-   @SuppressWarnings("unchecked")
-   public DynamicBinding()
-   {
-      annotationType = getAnnotationType(getClass());
-      if (annotationType == null)
-      {
-         throw new RuntimeException("Unable to determine type of dynamic binding for " + getClass());
-      }
-   }
-   
    private static <T> Class<T> getAnnotationType(Class<?> clazz)
    {
+      
       Type type = clazz.getGenericSuperclass();
       Class<T> annotationType = null;
       if (type instanceof ParameterizedType)
@@ -43,6 +34,11 @@ public abstract class DynamicBinding<T extends Annotation> implements Annotation
    
    public Class<? extends Annotation> annotationType()
    {
+      annotationType = getAnnotationType(getClass());
+      if (annotationType == null)
+      {
+         throw new RuntimeException("Unable to determine type of dynamic binding for " + getClass());
+      }
       return annotationType;
    }
    
@@ -50,7 +46,7 @@ public abstract class DynamicBinding<T extends Annotation> implements Annotation
    public String toString()
    {
       // TODO Make this closer to the spec for Annotation
-      String annotationName = "@" + annotationType.getName();
+      String annotationName = "@" + annotationType().getName();
       return annotationName;
    }
    
