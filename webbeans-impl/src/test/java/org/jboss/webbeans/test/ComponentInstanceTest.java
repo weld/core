@@ -22,6 +22,7 @@ import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.StereotypeMetaModel;
 import org.jboss.webbeans.bindings.ConversationScopedBinding;
 import org.jboss.webbeans.bindings.CurrentBinding;
+import org.jboss.webbeans.bindings.DependentBinding;
 import org.jboss.webbeans.bindings.NamedBinding;
 import org.jboss.webbeans.bindings.RequestScopedBinding;
 import org.jboss.webbeans.bindings.StandardBinding;
@@ -49,11 +50,14 @@ import org.jboss.webbeans.test.components.Cat;
 import org.jboss.webbeans.test.components.Chair;
 import org.jboss.webbeans.test.components.ComponentWithTooManyDeploymentTypes;
 import org.jboss.webbeans.test.components.ComponentWithTooManyScopeTypes;
+import org.jboss.webbeans.test.components.Cow;
 import org.jboss.webbeans.test.components.Goldfish;
 import org.jboss.webbeans.test.components.Gorilla;
 import org.jboss.webbeans.test.components.Haddock;
+import org.jboss.webbeans.test.components.Horse;
 import org.jboss.webbeans.test.components.Moose;
 import org.jboss.webbeans.test.components.Order;
+import org.jboss.webbeans.test.components.Pig;
 import org.jboss.webbeans.test.components.Trout;
 import org.jboss.webbeans.test.components.Tuna;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
@@ -488,4 +492,74 @@ public class ComponentInstanceTest
       assert exception;
       
    }
+   
+   @Test
+   public void testAbstractClassIsNotAllowed()
+   {
+      boolean exception = false;
+      try
+      {
+         new ComponentInstanceImpl<Cow>(new ClassAnnotatedItem(Cow.class), emptyAnnotatedItem, container);
+      }
+      catch (Exception e) 
+      {
+         exception = true;
+      }
+      assert exception;
+   }
+   
+   @Test
+   public void testFinalClassMustBeDependentScoped()
+   {
+      boolean exception = false;
+      try
+      {
+         new ComponentInstanceImpl<Horse>(new ClassAnnotatedItem(Horse.class), emptyAnnotatedItem, container);
+      }
+      catch (Exception e) 
+      {
+         exception = true;
+      }
+      assert exception;
+      
+      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      annotations.put(Dependent.class, new DependentBinding());
+      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Horse.class, annotations);
+      try
+      {
+         new ComponentInstanceImpl<Horse>(new ClassAnnotatedItem(Horse.class), annotatedItem, container);
+      }
+      catch (Exception e) 
+      {
+         assert false;
+      }
+   }
+   
+   @Test
+   public void testClassWithFinalMethodMustBeDependentScoped()
+   {
+      boolean exception = false;
+      try
+      {
+         new ComponentInstanceImpl<Pig>(new ClassAnnotatedItem(Pig.class), emptyAnnotatedItem, container);
+      }
+      catch (Exception e) 
+      {
+         exception = true;
+      }
+      assert exception;
+      
+      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      annotations.put(Dependent.class, new DependentBinding());
+      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Pig.class, annotations);
+      try
+      {
+         new ComponentInstanceImpl<Pig>(new ClassAnnotatedItem(Pig.class), annotatedItem, container);
+      }
+      catch (Exception e) 
+      {
+         assert false;
+      }
+   }
+   
 }
