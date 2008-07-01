@@ -66,7 +66,7 @@ public class Reflections
    public static <T> List<Constructor<T>> getConstructors(Class<? extends T> clazz, Class<? extends Annotation> annotationType) 
    {
       List<Constructor<T>> constructors = new ArrayList<Constructor<T>>();
-      for (Constructor<T> constructor : constructors)
+      for (Constructor<T> constructor : clazz.getConstructors())
       {
          if (constructor.isAnnotationPresent(annotationType))
          {
@@ -79,7 +79,7 @@ public class Reflections
    public static <T> List<Constructor<T>> getConstructorsForAnnotatedParameter(Class<? extends T> clazz, Class<? extends Annotation> parameterAnnotationType) 
    {
       List<Constructor<T>> constructors = new ArrayList<Constructor<T>>();
-      for (Constructor<T> constructor : constructors)
+      for (Constructor<T> constructor : clazz.getConstructors())
       {
          for (Annotation[] annotations : constructor.getParameterAnnotations())
          {
@@ -98,7 +98,7 @@ public class Reflections
    public static <T> List<Constructor<T>> getConstructorsForMetaAnnotatedParameter(Class<? extends T> clazz, Class<? extends Annotation> metaAnnotationType) 
    {
       List<Constructor<T>> constructors = new ArrayList<Constructor<T>>();
-      for (Constructor<T> constructor : constructors)
+      for (Constructor<T> constructor : clazz.getConstructors())
       {
          for (Annotation[] annotations : constructor.getParameterAnnotations())
          {

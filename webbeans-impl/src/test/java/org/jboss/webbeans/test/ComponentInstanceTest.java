@@ -20,6 +20,7 @@ import javax.webbeans.RequestScoped;
 import org.jboss.webbeans.ComponentInstanceImpl;
 import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.StereotypeMetaModel;
+import org.jboss.webbeans.ComponentInstanceImpl.ComponentType;
 import org.jboss.webbeans.bindings.ConversationScopedBinding;
 import org.jboss.webbeans.bindings.CurrentBinding;
 import org.jboss.webbeans.bindings.DependentBinding;
@@ -58,7 +59,7 @@ import org.jboss.webbeans.test.components.Horse;
 import org.jboss.webbeans.test.components.Moose;
 import org.jboss.webbeans.test.components.Order;
 import org.jboss.webbeans.test.components.Pig;
-import org.jboss.webbeans.test.components.Trout;
+import org.jboss.webbeans.test.components.SeaBass;
 import org.jboss.webbeans.test.components.Tuna;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
 import org.jboss.webbeans.util.AnnotatedItem;
@@ -204,7 +205,7 @@ public class ComponentInstanceTest
    @Test
    public void testScopeDeclaredInJava()
    {
-      ComponentInstance<Trout> trout = new ComponentInstanceImpl<Trout>(new ClassAnnotatedItem(Trout.class), emptyAnnotatedItem, container);
+      ComponentInstance<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), emptyAnnotatedItem, container);
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);
    }
    
@@ -224,8 +225,8 @@ public class ComponentInstanceTest
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(ConversationScoped.class, new ConversationScopedBinding());
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Trout.class, annotations);
-      ComponentInstance<Trout> trout = new ComponentInstanceImpl<Trout>(new ClassAnnotatedItem(Trout.class), annotatedItem, container);
+      AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
+      ComponentInstance<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
       assert trout.getScopeType().annotationType().equals(ConversationScoped.class);
    }
    
@@ -233,9 +234,9 @@ public class ComponentInstanceTest
    public void testScopeMissingInXml()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Trout.class, annotations);
+      AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
       
-      ComponentInstance<Trout> trout = new ComponentInstanceImpl<Trout>(new ClassAnnotatedItem(Trout.class), annotatedItem, container);
+      ComponentInstance<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);
    }
    
@@ -285,8 +286,8 @@ public class ComponentInstanceTest
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeBinding());
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Trout.class, annotations);
-      ComponentInstance<Trout> trout = new ComponentInstanceImpl<Trout>(new ClassAnnotatedItem(Trout.class), annotatedItem, container);
+      AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
+      ComponentInstance<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);
    }
    
@@ -316,9 +317,9 @@ public class ComponentInstanceTest
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeBinding());
       annotations.put(AnimalStereotype.class, new AnimalStereotypeBinding());
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Trout.class, annotations);
+      AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
       
-      ComponentInstance<Trout> trout = new ComponentInstanceImpl<Trout>(new ClassAnnotatedItem(Trout.class), annotatedItem, container);
+      ComponentInstance<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);     
    }
    
@@ -339,9 +340,10 @@ public class ComponentInstanceTest
    @Test
    public void testNamed()
    {
-      ComponentInstance<Haddock> haddock = new ComponentInstanceImpl<Haddock>(new ClassAnnotatedItem(Haddock.class), emptyAnnotatedItem, container);
+      ComponentInstanceImpl<Haddock> haddock = new ComponentInstanceImpl<Haddock>(new ClassAnnotatedItem(Haddock.class), emptyAnnotatedItem, container);
       assert haddock.getName() != null;
-      // TODO Test naming algorithms
+      haddock.getComponentType().equals(ComponentType.SIMPLE);
+      assert haddock.getName().equals("haddock");
    }
    
    @Test
@@ -356,11 +358,12 @@ public class ComponentInstanceTest
             return "";
          }
       });
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Trout.class, annotations);
-      ComponentInstance<Trout> trout = new ComponentInstanceImpl<Trout>(new ClassAnnotatedItem(Trout.class), annotatedItem, container);
+      AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
+      ComponentInstanceImpl<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
       
       assert trout.getName() != null;
-      // TODO Test naming algorithms
+      trout.getComponentType().equals(ComponentType.SIMPLE);
+      assert trout.getName().equals("seaBass");
    }
    
    @Test
@@ -375,8 +378,8 @@ public class ComponentInstanceTest
             return "aTrout";
          }
       });
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Trout.class, annotations);
-      ComponentInstance<Trout> trout = new ComponentInstanceImpl<Trout>(new ClassAnnotatedItem(Trout.class), annotatedItem, container);
+      AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
+      ComponentInstance<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
       
       assert trout.getName().equals("aTrout");
    }
@@ -384,7 +387,7 @@ public class ComponentInstanceTest
    @Test
    public void testNotNamed()
    {
-      ComponentInstance<Trout> trout = new ComponentInstanceImpl<Trout>(new ClassAnnotatedItem(Trout.class), emptyAnnotatedItem, container);
+      ComponentInstance<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), emptyAnnotatedItem, container);
       assert trout.getName() == null;
    }
    
@@ -492,6 +495,8 @@ public class ComponentInstanceTest
       assert exception;
       
    }
+   
+   //*** COMPONENT CLASS CHECKS ****//
    
    @Test
    public void testAbstractClassIsNotAllowed()
