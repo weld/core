@@ -2,8 +2,12 @@ package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
 
+import org.jboss.webbeans.bindings.CurrentBinding;
+
 public class InjectedParameterMetaModel extends AbstractInjectedThingMetaModel
 {
+   
+   private static Annotation[] currentBinding = {new CurrentBinding()};
    
    private Class<?> type;
    
@@ -15,7 +19,7 @@ public class InjectedParameterMetaModel extends AbstractInjectedThingMetaModel
 
    public InjectedParameterMetaModel(Class<?> type)
    {
-      super();
+      super(currentBinding);
       this.type = type;
    }
 

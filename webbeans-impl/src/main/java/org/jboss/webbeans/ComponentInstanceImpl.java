@@ -1,6 +1,7 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -345,9 +346,9 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
       {
          if (ComponentType.SIMPLE.equals(componentType))
          {
-            name = Strings.decapitalize(type.getName());
+            name = Strings.decapitalize(type.getSimpleName());
          }
-         log.finest("Default name is TODO" );
+         log.finest("Default name of " + type + " is " + name );
       }
       return name;
    }
@@ -408,6 +409,14 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
       return scopeType;
    }
    
+   public ConstructorMetaModel<T> getConstructor()
+   {
+      return constructor;
+   }
    
+   public ComponentType getComponentType()
+   {
+      return componentType;
+   }
 
 }

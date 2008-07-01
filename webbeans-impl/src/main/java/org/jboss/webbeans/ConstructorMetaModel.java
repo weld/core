@@ -3,6 +3,7 @@ package org.jboss.webbeans;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.webbeans.BindingType;
@@ -17,6 +18,8 @@ public class ConstructorMetaModel<T>
    
 public static final String LOGGER_NAME = "componentConstructor";
    
+   
+
    private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
 
    private Constructor<T> constructor;
@@ -34,9 +37,10 @@ public static final String LOGGER_NAME = "componentConstructor";
       }
       else if (type.getConstructors().length > 1)
       {
-         
          List<Constructor<T>> initializerAnnotatedConstructors = Reflections.getConstructors(type, Initializer.class);
          List<Constructor<T>> bindingTypeAnnotatedConstructors = Reflections.getConstructorsForMetaAnnotatedParameter(type, BindingType.class);
+         log.finest("Found " + initializerAnnotatedConstructors + " constructors annotated with @Initializer for " + type);
+         log.finest("Found " + bindingTypeAnnotatedConstructors + " with parameters annotated with binding types for " + type);
          if ((initializerAnnotatedConstructors.size() + bindingTypeAnnotatedConstructors.size()) > 1)
          {
             if (initializerAnnotatedConstructors.size() > 1)
@@ -68,7 +72,12 @@ public static final String LOGGER_NAME = "componentConstructor";
       else if (type.getConstructors().length == 0)
       {      
          this.constructor = (Constructor<T>) Reflections.getConstructor(type);
-         log.finest("No constructor defined, using implicit no arguement constructor");
+         log.finest("No constructor defined, using implicit no arguement constructor for " + type);
+      }
+      
+      if (this.constructor == null)
+      {
+         throw new RuntimeException("Cannot determine constructor to use for " + type);
       }
       
       for (int i = 0; i < constructor.getParameterTypes().length; i++)
@@ -85,10 +94,7 @@ public static final String LOGGER_NAME = "componentConstructor";
          }
       }
       log.finest("Initialized metadata for " + constructor + " with injectable parameters " + injectedParameters);
-      if (this.constructor == null)
-      {
-         throw new RuntimeException("Cannot determine constructor to use");
-      }
+      
    }
    
    public Constructor<T> getConstructor()
