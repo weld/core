@@ -119,7 +119,7 @@ public class ComponentInstanceTest
       AnnotatedItem xmlDefinedDeploymentTypeAnnotatedItem = new MutableAnnotatedItem(ComponentWithTooManyDeploymentTypes.class, xmlDefinedDeploymentTypeAnnotations);
       
       ComponentInstance<ComponentWithTooManyDeploymentTypes> component = new ComponentInstanceImpl<ComponentWithTooManyDeploymentTypes>(new ClassAnnotatedItem(ComponentWithTooManyDeploymentTypes.class), xmlDefinedDeploymentTypeAnnotatedItem, container);
-      assert component.getComponentType().annotationType().equals(AnotherDeploymentType.class);
+      assert component.getDeploymentType().annotationType().equals(AnotherDeploymentType.class);
    }
    
    @Test
@@ -127,7 +127,7 @@ public class ComponentInstanceTest
    {
       AnnotatedItem antelopeAnnotatedItem = new MutableAnnotatedItem(Antelope.class, new HashMap<Class<? extends Annotation>, Annotation>());
       ComponentInstance<Antelope> antelope = new ComponentInstanceImpl<Antelope>(emptyAnnotatedItem, antelopeAnnotatedItem, container);
-      assert antelope.getComponentType().annotationType().equals(Production.class);
+      assert antelope.getDeploymentType().annotationType().equals(Production.class);
    }
    
    @Test
@@ -135,7 +135,7 @@ public class ComponentInstanceTest
    {
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(Tuna.class, new HashMap<Class<? extends Annotation>, Annotation>());
       ComponentInstance<Tuna> tuna = new ComponentInstanceImpl<Tuna>(new ClassAnnotatedItem(Tuna.class), annotatedItem, container);
-      assert tuna.getComponentType().annotationType().equals(Production.class);
+      assert tuna.getDeploymentType().annotationType().equals(Production.class);
    }
    
    @Test
@@ -146,7 +146,7 @@ public class ComponentInstanceTest
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(Moose.class, annotations);
       
       ComponentInstance<Moose> moose = new ComponentInstanceImpl<Moose>(new ClassAnnotatedItem(Moose.class), annotatedItem, container);
-      assert moose.getComponentType().annotationType().equals(HornedAnimalDeploymentType.class);
+      assert moose.getDeploymentType().annotationType().equals(HornedAnimalDeploymentType.class);
       
    }
    
@@ -411,7 +411,7 @@ public class ComponentInstanceTest
       AnnotatedItem currentSynchronousOrderAnnotatedItem = new MutableAnnotatedItem(Order.class, orderXmlAnnotations);
       
       ComponentInstance<Order> order = new ComponentInstanceImpl<Order>(new ClassAnnotatedItem(Order.class), currentSynchronousOrderAnnotatedItem, container);
-      assert Production.class.equals(order.getComponentType().annotationType());
+      assert Production.class.equals(order.getDeploymentType().annotationType());
       assert "currentSynchronousOrder".equals(order.getName());
       assert order.getBindingTypes().size() == 2;
       assert annotationSetMatches(order.getBindingTypes(), Current.class, Synchronous.class);
@@ -423,7 +423,7 @@ public class ComponentInstanceTest
    {
       ComponentInstance<Gorilla> gorilla = new ComponentInstanceImpl<Gorilla>(new ClassAnnotatedItem(Gorilla.class), emptyAnnotatedItem, container);
       assert gorilla.getName() == null;
-      assert gorilla.getComponentType().annotationType().equals(Production.class);
+      assert gorilla.getDeploymentType().annotationType().equals(Production.class);
       assert gorilla.getBindingTypes().iterator().next().annotationType().equals(Current.class);
       assert gorilla.getScopeType().annotationType().equals(RequestScoped.class);
    }

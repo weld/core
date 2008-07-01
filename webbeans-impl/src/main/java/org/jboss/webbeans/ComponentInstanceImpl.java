@@ -1,6 +1,7 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,6 +10,7 @@ import java.util.logging.Logger;
 import javax.webbeans.BindingType;
 import javax.webbeans.ComponentInstance;
 import javax.webbeans.Container;
+import javax.webbeans.Dependent;
 import javax.webbeans.DeploymentType;
 import javax.webbeans.Named;
 import javax.webbeans.ScopeType;
@@ -16,8 +18,11 @@ import javax.webbeans.ScopeType;
 import org.jboss.webbeans.bindings.CurrentBinding;
 import org.jboss.webbeans.bindings.DependentBinding;
 import org.jboss.webbeans.bindings.ProductionBinding;
+import org.jboss.webbeans.ejb.EJB;
 import org.jboss.webbeans.util.AnnotatedItem;
 import org.jboss.webbeans.util.LoggerUtil;
+import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.Strings;
 
 /**
  * Web Beans Component meta model
@@ -28,24 +33,31 @@ import org.jboss.webbeans.util.LoggerUtil;
 public class ComponentInstanceImpl<T> extends ComponentInstance<T>
 {
    
-   
+   public enum ComponentType
+   {
+      SIMPLE,
+      EJB_SESSION
+      ;
+   }
    
    public static final String LOGGER_NAME = "componentInstance";
    
    private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
    
-   private Class<?> type;
+   private Class<? extends T> type;
    private Set<Annotation> bindingTypes;
-   private Annotation componentType;
+   private Annotation deploymentType;
    private String name;
    private Annotation scopeType;
-   
+   private ComponentType componentType;
+   private ConstructorMetaModel<T> constructor;
    /**
     * 
     * @param annotatedItem Annotations read from java classes
     * @param xmlAnnotatedItem Annotations read from XML
     * @param container
     */
+   @SuppressWarnings("unchecked")
    public ComponentInstanceImpl(AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
    {
       if (annotatedItem == null)
@@ -58,15 +70,18 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
          throw new NullPointerException("xmlAnnotatedItem must not be null. If the component is declared just in Java, pass in an empty xmlAnnotatedItem");
       }
       
-      this.type = getType(annotatedItem, xmlAnnotatedItem);
+      this.type = (Class<? extends T>) initType(annotatedItem, xmlAnnotatedItem);
       log.fine("Building Web Bean component metadata for " +  type);
+      this.componentType = initComponentType(type);
+      checkComponentImplementation(componentType, type);
+      this.constructor = new ConstructorMetaModel<T>(type);
       MergedComponentStereotypes stereotypes = new MergedComponentStereotypes(annotatedItem, xmlAnnotatedItem, container);
       this.bindingTypes = initBindingTypes(annotatedItem, xmlAnnotatedItem);
-      this.componentType = initComponentType(stereotypes, annotatedItem, xmlAnnotatedItem, container);
+      this.deploymentType = initDeploymentType(stereotypes, annotatedItem, xmlAnnotatedItem, container);
       this.scopeType = initScopeType(stereotypes, annotatedItem, xmlAnnotatedItem);
-      this.name = initName(stereotypes, annotatedItem, xmlAnnotatedItem);
+      this.name = initName(stereotypes, annotatedItem, xmlAnnotatedItem, componentType, type);
       checkRequiredTypesImplemented(stereotypes, type);
-      checkScopeAllowed(stereotypes, scopeType);
+      checkScopeAllowed(stereotypes, scopeType, type);
       // TODO Interceptors
    }
    
@@ -74,7 +89,54 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
     * A series of static methods which implement the algorithms defined in the Web Beans spec for component meta data
     */
    
-   protected static Class<?> getType(AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem)
+   protected static ComponentType initComponentType(Class<?> type)
+   {
+      if (EJB.isStatefulEjbComponent(type) || EJB.isStatelessEjbComponent(type))
+      {
+         return ComponentType.EJB_SESSION;
+      }
+      else
+      {
+         return ComponentType.SIMPLE;
+      }
+   }
+   
+   protected static void checkComponentImplementation(ComponentType componentType, Class<?> type)
+   {
+      switch (componentType)
+      {
+      case SIMPLE:
+         checkSimpleComponentImplementation(type);
+         break;
+      }
+   }
+   
+   protected static void checkSimpleComponentImplementation(Class<?> type)
+   {
+      if (Reflections.isAbstract(type))
+      {
+         throw new RuntimeException("Web Bean implementation class " + type + " cannot be declared abstract");
+      }
+   }
+   
+   protected static boolean isDeclaredFinal(Class<?> type)
+   {
+      if (Reflections.isFinal(type))
+      {
+         return true;
+      }
+      for (Method method : type.getDeclaredMethods())
+      {
+         if (Reflections.isFinal(method))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   @SuppressWarnings("unchecked")
+   protected static Class<?> initType(AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem)
    {
       if (annotatedItem.getAnnotatedClass() != null && xmlAnnotatedItem.getAnnotatedClass() != null && !annotatedItem.getAnnotatedClass().equals(xmlAnnotatedItem.getAnnotatedClass()))
       {
@@ -97,17 +159,22 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
    }
    
    /**
-    * Check that the scope type is allowed by the stereotypes on the component
+    * Check that the scope type is allowed by the stereotypes on the component and the component type
+    * @param type 
     */
-   protected static void checkScopeAllowed(MergedComponentStereotypes stereotypes, Annotation scopeType)
+   protected static void checkScopeAllowed(MergedComponentStereotypes stereotypes, Annotation scopeType, Class<?> type)
    {
+      log.finest("Checking if " + scopeType + " is allowed");
       if (stereotypes.getSupportedScopes().size() > 0)
       {
-         log.finest("Checking if " + scopeType + " is allowed");
          if (!stereotypes.getSupportedScopes().contains(scopeType.annotationType()))
          {
             throw new RuntimeException("Scope " + scopeType + " is not an allowed by the component's stereotype");
          }
+      }
+      if (isDeclaredFinal(type) && !scopeType.annotationType().equals(Dependent.class))
+      {
+         throw new RuntimeException("Scope " + scopeType + " is not allowed as the component is declared final or has methods declared final");
       }
    }
    
@@ -172,7 +239,7 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
       return new DependentBinding();
    }
 
-   protected static Annotation initComponentType(MergedComponentStereotypes stereotypes, AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
+   protected static Annotation initDeploymentType(MergedComponentStereotypes stereotypes, AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
    {
       Set<Annotation> xmlDeploymentTypes = xmlAnnotatedItem.getAnnotations(DeploymentType.class);
       
@@ -244,7 +311,7 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
       return bindingTypes;
    }
 
-   protected static String initName(MergedComponentStereotypes stereotypes, AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem)
+   protected static String initName(MergedComponentStereotypes stereotypes, AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem, ComponentType componentType, Class<?> type)
    {
       boolean componentNameDefaulted = false;
       String name = null;
@@ -276,7 +343,10 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
       }
       if ("".equals(name) && (componentNameDefaulted || stereotypes.isComponentNameDefaulted()))
       {
-         // TODO Write default name alogorithm
+         if (ComponentType.SIMPLE.equals(componentType))
+         {
+            name = Strings.decapitalize(type.getName());
+         }
          log.finest("Default name is TODO" );
       }
       return name;
@@ -297,7 +367,6 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
    @Override
    public T create(Container container)
    {
-      // TODO Auto-generated method stub
       return null;
    }
 
@@ -315,9 +384,9 @@ public class ComponentInstanceImpl<T> extends ComponentInstance<T>
    }
 
    @Override
-   public Annotation getComponentType()
+   public Annotation getDeploymentType()
    {
-      return componentType;
+      return deploymentType;
    }
 
    @Override
