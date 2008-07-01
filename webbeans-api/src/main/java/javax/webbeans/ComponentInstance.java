@@ -13,7 +13,7 @@ public abstract class ComponentInstance<T>
    public abstract Set<Class> getTypes();
    public abstract Set<Annotation> getBindingTypes();
    public abstract Annotation getScopeType();
-   public abstract Annotation getComponentType();
+   public abstract Annotation getDeploymentType();
    public abstract String getName();
    
    public abstract T create(Container container);
