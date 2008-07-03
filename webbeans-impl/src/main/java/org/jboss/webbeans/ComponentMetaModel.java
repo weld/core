@@ -467,7 +467,7 @@ public class ComponentMetaModel<T>
       }
       if ("".equals(name) && (componentNameDefaulted || stereotypes.isComponentNameDefaulted()))
       {
-         if (ComponentType.SIMPLE.equals(componentType))
+         if (ComponentType.SIMPLE.equals(componentType) || ComponentType.ENTERPRISE.equals(componentType))
          {
             name = Strings.decapitalize(type.getSimpleName());
          }

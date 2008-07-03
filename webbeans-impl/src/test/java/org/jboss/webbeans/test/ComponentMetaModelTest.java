@@ -45,20 +45,30 @@ import org.jboss.webbeans.test.bindings.HornedMamalStereotypeBinding;
 import org.jboss.webbeans.test.bindings.RiverFishStereotypeBinding;
 import org.jboss.webbeans.test.bindings.SynchronousBinding;
 import org.jboss.webbeans.test.components.Antelope;
+import org.jboss.webbeans.test.components.Bear;
 import org.jboss.webbeans.test.components.Carp;
 import org.jboss.webbeans.test.components.Cat;
 import org.jboss.webbeans.test.components.Chair;
+import org.jboss.webbeans.test.components.Cheetah;
 import org.jboss.webbeans.test.components.ComponentWithTooManyDeploymentTypes;
 import org.jboss.webbeans.test.components.ComponentWithTooManyScopeTypes;
+import org.jboss.webbeans.test.components.Cougar;
 import org.jboss.webbeans.test.components.Cow;
+import org.jboss.webbeans.test.components.Elephant;
+import org.jboss.webbeans.test.components.Giraffe;
 import org.jboss.webbeans.test.components.Goldfish;
 import org.jboss.webbeans.test.components.Gorilla;
 import org.jboss.webbeans.test.components.Haddock;
 import org.jboss.webbeans.test.components.Horse;
+import org.jboss.webbeans.test.components.Leopard;
+import org.jboss.webbeans.test.components.Lion;
 import org.jboss.webbeans.test.components.Moose;
 import org.jboss.webbeans.test.components.Order;
+import org.jboss.webbeans.test.components.Panther;
 import org.jboss.webbeans.test.components.Pig;
+import org.jboss.webbeans.test.components.Puma;
 import org.jboss.webbeans.test.components.SeaBass;
+import org.jboss.webbeans.test.components.Tiger;
 import org.jboss.webbeans.test.components.Tuna;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
 import org.jboss.webbeans.util.AnnotatedItem;
@@ -565,5 +575,153 @@ public class ComponentMetaModelTest
          assert false;
       }
    }
+   
+   @SuppressWarnings("unchecked")
+   @Test
+   public void testStateless()
+   {
+      ComponentMetaModel<Lion> lion = new ComponentMetaModel<Lion>(new ClassAnnotatedItem(Lion.class), emptyAnnotatedItem, container);
+      assert lion.getComponentType().equals(ComponentType.ENTERPRISE);
+      assert lion.getScopeType().annotationType().equals(Dependent.class);
+      annotationSetMatches(lion.getBindingTypes(), Current.class);
+      assert lion.getName().equals("lion");
+   }
+   
+   @SuppressWarnings("unchecked")
+   @Test
+   public void testStatelessDefinedInXml()
+   {
+      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Giraffe.class, annotations);
+      
+      ComponentMetaModel<Giraffe> giraffe = new ComponentMetaModel<Giraffe>(new ClassAnnotatedItem(Giraffe.class), annotatedItem, container);
+      assert giraffe.getComponentType().equals(ComponentType.ENTERPRISE);
+      assert giraffe.getScopeType().annotationType().equals(Dependent.class);
+      annotationSetMatches(giraffe.getBindingTypes(), Current.class);
+   }
+   
+   @Test
+   public void testStatelessWithRequestScope()
+   {
+      boolean exception = false;
+      try
+      {
+         new ComponentMetaModel<Bear>(new ClassAnnotatedItem(Bear.class), emptyAnnotatedItem, container);
+      }
+      catch (Exception e) 
+      {
+         exception = true;
+      }
+      assert exception;
+   }
+   
+   // TODO Need EJB3.1 @Test
+   public void testSingleton()
+   {
+      //ComponentMetaModel<Lion> lion = new ComponentMetaModel<Lion>(new ClassAnnotatedItem(Lion.class), emptyAnnotatedItem, container);
+      //assert lion.getComponentType().equals(ComponentType.ENTERPRISE);
+      //assert lion.getScopeType().annotationType().equals(ApplicationScoped.class);
+   }
+   
+   // TODO Need EJB3.1 @Test
+   public void testSingletonWithRequestScope()
+   {
+      //ComponentMetaModel<Lion> lion = new ComponentMetaModel<Lion>(new ClassAnnotatedItem(Lion.class), emptyAnnotatedItem, container);
+      //assert lion.getComponentType().equals(ComponentType.ENTERPRISE);
+      //assert lion.getScopeType().annotationType().equals(ApplicationScoped.class);
+   }
+   
+   @SuppressWarnings("unchecked")
+   @Test
+   public void testStateful()
+   {
+
+      ComponentMetaModel<Tiger> tiger = new ComponentMetaModel<Tiger>(new ClassAnnotatedItem(Tiger.class), emptyAnnotatedItem, container);
+      assert tiger.getComponentType().equals(ComponentType.ENTERPRISE);
+      annotationSetMatches(tiger.getBindingTypes(), Synchronous.class);
+      assert tiger.getRemoveMethod().getMethod().getName().equals("remove");
+      assert tiger.getName() == null;
+   }
+   
+   @SuppressWarnings("unchecked")
+   @Test
+   public void testMultipleRemoveMethodsWithDestroys()
+   {
+
+      ComponentMetaModel<Elephant> elephant = new ComponentMetaModel<Elephant>(new ClassAnnotatedItem(Elephant.class), emptyAnnotatedItem, container);
+      assert elephant.getComponentType().equals(ComponentType.ENTERPRISE);
+      assert elephant.getRemoveMethod().getMethod().getName().equals("remove2");
+   }
+   
+   @SuppressWarnings("unchecked")
+   @Test
+   public void testMultipleRemoveMethodsWithoutDestroys()
+   {
+      boolean exception = false;
+      try
+      {
+         new ComponentMetaModel<Puma>(new ClassAnnotatedItem(Puma.class), emptyAnnotatedItem, container);
+      }
+      catch (Exception e) 
+      {
+         exception = true;
+      }
+      assert exception;
+   }
+   
+   @SuppressWarnings("unchecked")
+   @Test
+   public void testMultipleRemoveMethodsWithMultipleDestroys()
+   {
+      boolean exception = false;
+      try
+      {
+         new ComponentMetaModel<Cougar>(new ClassAnnotatedItem(Cougar.class), emptyAnnotatedItem, container);
+      }
+      catch (Exception e) 
+      {
+         exception = true;
+      }
+      assert exception;
+   }
+   
+   @SuppressWarnings("unchecked")
+   @Test
+   public void testNonStatefulEnterpriseComponentWithDestroys()
+   {
+      boolean exception = false;
+      try
+      {
+         new ComponentMetaModel<Cheetah>(new ClassAnnotatedItem(Cheetah.class), emptyAnnotatedItem, container);
+      }
+      catch (Exception e) 
+      {
+         exception = true;
+      }
+      assert exception;
+   }
+   
+   @Test
+   public void testRemoveMethodWithDefaultBinding()
+   {
+
+      ComponentMetaModel<Panther> panther = new ComponentMetaModel<Panther>(new ClassAnnotatedItem(Panther.class), emptyAnnotatedItem, container);
+      assert panther.getComponentType().equals(ComponentType.ENTERPRISE);
+      assert panther.getRemoveMethod().getMethod().getName().equals("remove");
+      assert panther.getRemoveMethod().getParameters().size() == 1;
+      assert panther.getRemoveMethod().getParameters().get(0).getType().equals(String.class);
+      assert panther.getRemoveMethod().getParameters().get(0).getBindingTypes().length == 1;
+      assert panther.getRemoveMethod().getParameters().get(0).getBindingTypes()[0].annotationType().equals(Current.class);
+   }
+   
+   @SuppressWarnings("unchecked")
+   @Test
+   public void testMessageDriven()
+   {
+      ComponentMetaModel<Leopard> leopard = new ComponentMetaModel<Leopard>(new ClassAnnotatedItem(Leopard.class), emptyAnnotatedItem, container);
+      assert leopard.getComponentType().equals(ComponentType.ENTERPRISE);
+      annotationSetMatches(leopard.getBindingTypes(), Current.class);
+   }
+   
    
 }

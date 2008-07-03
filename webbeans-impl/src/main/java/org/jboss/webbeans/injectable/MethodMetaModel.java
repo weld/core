@@ -28,4 +28,10 @@ public class MethodMetaModel<T> extends UnitMetaModel<T>
       }
    }
    
+   public Method getMethod()
+   {
+      return method;
+   }
+   
+   
 }

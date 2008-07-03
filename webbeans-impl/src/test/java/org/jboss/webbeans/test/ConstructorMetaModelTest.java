@@ -1,19 +1,14 @@
 package org.jboss.webbeans.test;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.webbeans.Current;
 
 import org.jboss.webbeans.ComponentMetaModel;
 import org.jboss.webbeans.ContainerImpl;
-import org.jboss.webbeans.bindings.StandardBinding;
 import org.jboss.webbeans.injectable.ConstructorMetaModel;
 import org.jboss.webbeans.test.annotations.Synchronous;
-import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeBinding;
-import org.jboss.webbeans.test.bindings.HornedAnimalDeploymentTypeBinding;
 import org.jboss.webbeans.test.components.Chicken;
 import org.jboss.webbeans.test.components.Donkey;
 import org.jboss.webbeans.test.components.Duck;
