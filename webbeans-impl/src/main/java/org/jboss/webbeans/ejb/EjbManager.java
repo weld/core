@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.webbeans.EnterpriseBeanLookup;
 
+import org.jboss.webbeans.util.JNDI;
+
 
 public class EjbManager
 {
@@ -24,12 +26,12 @@ public class EjbManager
    {
       if (ejb.getEjbLinkJndiName() != null)
       {
-         return (T) lookupInJndi(ejb.getEjbLinkJndiName());
+         return (T) JNDI.lookup(ejb.getEjbLinkJndiName());
       }
       try
       {
          // TODO How is a JNDI lookup failure shown to us?
-         return (T) lookupInJndi(ejb.getDefaultJndiName());
+         return (T) JNDI.lookup(ejb.getDefaultJndiName());
       }
       catch (Exception e) 
       {
@@ -53,12 +55,6 @@ public class EjbManager
          return (EjbMetaData<T>) ejbMetaDataMap.get(clazz);
       }
       
-   }
-   
-   protected Object lookupInJndi(String name)
-   {
-      // TODO Write JNDI lookup
-      return null;
    }
 
 }

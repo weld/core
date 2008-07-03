@@ -1,6 +1,5 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.test.util.Util.annotationSetMatches;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -63,6 +62,7 @@ import org.jboss.webbeans.test.mock.MockContainerImpl;
 import org.jboss.webbeans.util.AnnotatedItem;
 import org.jboss.webbeans.util.ClassAnnotatedItem;
 import org.jboss.webbeans.util.MutableAnnotatedItem;
+import org.jboss.webbeans.util.Reflections;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -165,7 +165,7 @@ public class ComponentMetaModelTest
       
       SimpleComponentModel<Cat> cat = new SimpleComponentModel<Cat>(new ClassAnnotatedItem(Cat.class), annotatedItem, container);
       assert cat.getBindingTypes().size() == 1;
-      assert annotationSetMatches(cat.getBindingTypes(), Asynchronous.class);
+      assert Reflections.annotationSetMatches(cat.getBindingTypes(), Asynchronous.class);
    }
    
    @SuppressWarnings("unchecked")
@@ -174,7 +174,7 @@ public class ComponentMetaModelTest
    {
       SimpleComponentModel<Cat> cat = new SimpleComponentModel<Cat>(new ClassAnnotatedItem(Cat.class), emptyAnnotatedItem, container);
       assert cat.getBindingTypes().size() == 1;
-      assert annotationSetMatches(cat.getBindingTypes(), Synchronous.class);
+      assert Reflections.annotationSetMatches(cat.getBindingTypes(), Synchronous.class);
    }
    
    @SuppressWarnings("unchecked")
@@ -186,7 +186,7 @@ public class ComponentMetaModelTest
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(Antelope.class, annotations);
       
       SimpleComponentModel<Antelope> antelope = new SimpleComponentModel<Antelope>(emptyAnnotatedItem, annotatedItem, container);
-      assert annotationSetMatches(antelope.getBindingTypes(), Asynchronous.class);
+      assert Reflections.annotationSetMatches(antelope.getBindingTypes(), Asynchronous.class);
    }
    
    @SuppressWarnings("unchecked")
@@ -417,7 +417,7 @@ public class ComponentMetaModelTest
       assert Production.class.equals(order.getDeploymentType().annotationType());
       assert "currentSynchronousOrder".equals(order.getName());
       assert order.getBindingTypes().size() == 2;
-      assert annotationSetMatches(order.getBindingTypes(), Current.class, Synchronous.class);
+      assert Reflections.annotationSetMatches(order.getBindingTypes(), Current.class, Synchronous.class);
       assert order.getScopeType().annotationType().equals(Dependent.class);
    }
    

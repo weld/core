@@ -1,7 +1,5 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.test.util.Util.annotationSetMatches;
-
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +24,8 @@ import org.jboss.webbeans.test.mock.MockContainerImpl;
 import org.jboss.webbeans.util.AnnotatedItem;
 import org.jboss.webbeans.util.ClassAnnotatedItem;
 import org.jboss.webbeans.util.MutableAnnotatedItem;
+import org.jboss.webbeans.util.Reflections;
+import static org.jboss.webbeans.util.Reflections.annotationSetMatches;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,7 +49,7 @@ private ContainerImpl container;
    {
       EnterpriseComponentModel<Lion> lion = new EnterpriseComponentModel<Lion>(new ClassAnnotatedItem(Lion.class), emptyAnnotatedItem, container);
       assert lion.getScopeType().annotationType().equals(Dependent.class);
-      annotationSetMatches(lion.getBindingTypes(), Current.class);
+      Reflections.annotationSetMatches(lion.getBindingTypes(), Current.class);
       assert lion.getName().equals("lion");
    }
    
@@ -62,7 +62,7 @@ private ContainerImpl container;
       
       EnterpriseComponentModel<Giraffe> giraffe = new EnterpriseComponentModel<Giraffe>(new ClassAnnotatedItem(Giraffe.class), annotatedItem, container);
       assert giraffe.getScopeType().annotationType().equals(Dependent.class);
-      annotationSetMatches(giraffe.getBindingTypes(), Current.class);
+      Reflections.annotationSetMatches(giraffe.getBindingTypes(), Current.class);
    }
    
    @Test
@@ -102,7 +102,7 @@ private ContainerImpl container;
    {
 
       EnterpriseComponentModel<Tiger> tiger = new EnterpriseComponentModel<Tiger>(new ClassAnnotatedItem(Tiger.class), emptyAnnotatedItem, container);
-      annotationSetMatches(tiger.getBindingTypes(), Synchronous.class);
+      Reflections.annotationSetMatches(tiger.getBindingTypes(), Synchronous.class);
       assert tiger.getRemoveMethod().getMethod().getName().equals("remove");
       assert tiger.getName() == null;
    }
@@ -182,7 +182,7 @@ private ContainerImpl container;
    public void testMessageDriven()
    {
       EnterpriseComponentModel<Leopard> leopard = new EnterpriseComponentModel<Leopard>(new ClassAnnotatedItem(Leopard.class), emptyAnnotatedItem, container);
-      annotationSetMatches(leopard.getBindingTypes(), Current.class);
+      Reflections.annotationSetMatches(leopard.getBindingTypes(), Current.class);
    }
 
 }

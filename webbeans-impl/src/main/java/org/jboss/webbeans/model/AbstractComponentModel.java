@@ -1,7 +1,6 @@
 package org.jboss.webbeans.model;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +12,6 @@ import javax.webbeans.BindingType;
 import javax.webbeans.Dependent;
 import javax.webbeans.DeploymentType;
 import javax.webbeans.Destroys;
-import javax.webbeans.Initializer;
 import javax.webbeans.Named;
 import javax.webbeans.ScopeType;
 
@@ -23,7 +21,6 @@ import org.jboss.webbeans.bindings.DependentBinding;
 import org.jboss.webbeans.bindings.ProductionBinding;
 import org.jboss.webbeans.ejb.EjbMetaData;
 import org.jboss.webbeans.injectable.ComponentConstructor;
-import org.jboss.webbeans.injectable.SimpleConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.util.AnnotatedItem;
 import org.jboss.webbeans.util.LoggerUtil;
@@ -83,6 +80,11 @@ public abstract class AbstractComponentModel<T>
       checkScopeAllowed(getMergedStereotypes(), getScopeType(), type);
       checkComponentImplementation(type);
       // TODO Interceptors
+   }
+   
+   public AbstractComponentModel()
+   {
+      // TODO Auto-generated constructor stub
    }
    
    @SuppressWarnings("unchecked")
