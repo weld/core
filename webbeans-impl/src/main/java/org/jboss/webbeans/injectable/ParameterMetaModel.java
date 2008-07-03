@@ -1,31 +1,33 @@
-package org.jboss.webbeans;
+package org.jboss.webbeans.injectable;
 
 import java.lang.annotation.Annotation;
 
 import org.jboss.webbeans.bindings.CurrentBinding;
 
-public class InjectedParameterMetaModel extends AbstractInjectedThingMetaModel
+public class ParameterMetaModel<T> extends ElementMetaModel<T>
 {
    
    private static Annotation[] currentBinding = {new CurrentBinding()};
    
-   private Class<?> type;
+   private Class<? extends T> type;
    
-   public InjectedParameterMetaModel(Annotation[] bindingTypes, Class<?> type)
+   public ParameterMetaModel(Annotation[] bindingTypes, Class<? extends T> type)
    {
       super(bindingTypes);
       this.type = type;
    }
 
-   public InjectedParameterMetaModel(Class<?> type)
+   public ParameterMetaModel(Class<? extends T> type)
    {
       super(currentBinding);
       this.type = type;
    }
 
-   public Class<?> getType()
+   public Class<? extends T> getType()
    {
       return type;
    }
+   
+   
    
 }

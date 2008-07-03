@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.webbeans.ApplicationScoped;
-import javax.webbeans.ComponentInstance;
 import javax.webbeans.ConversationScoped;
 import javax.webbeans.Current;
 import javax.webbeans.Dependent;
@@ -17,10 +16,10 @@ import javax.webbeans.Named;
 import javax.webbeans.Production;
 import javax.webbeans.RequestScoped;
 
-import org.jboss.webbeans.ComponentInstanceImpl;
+import org.jboss.webbeans.ComponentMetaModel;
 import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.StereotypeMetaModel;
-import org.jboss.webbeans.ComponentInstanceImpl.ComponentType;
+import org.jboss.webbeans.ComponentMetaModel.ComponentType;
 import org.jboss.webbeans.bindings.ConversationScopedBinding;
 import org.jboss.webbeans.bindings.CurrentBinding;
 import org.jboss.webbeans.bindings.DependentBinding;
@@ -68,7 +67,7 @@ import org.jboss.webbeans.util.MutableAnnotatedItem;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ComponentInstanceTest
+public class ComponentMetaModelTest
 {
    
    private ContainerImpl container;
@@ -105,7 +104,7 @@ public class ComponentInstanceTest
       boolean exception = false;
       try
       {
-         new ComponentInstanceImpl<ComponentWithTooManyDeploymentTypes>(new ClassAnnotatedItem(ComponentWithTooManyDeploymentTypes.class), emptyAnnotatedItem, container);
+         new ComponentMetaModel<ComponentWithTooManyDeploymentTypes>(new ClassAnnotatedItem(ComponentWithTooManyDeploymentTypes.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -123,7 +122,7 @@ public class ComponentInstanceTest
       xmlDefinedDeploymentTypeAnnotations.put(AnotherDeploymentType.class, new AnotherDeploymentTypeBinding());
       AnnotatedItem xmlDefinedDeploymentTypeAnnotatedItem = new MutableAnnotatedItem(ComponentWithTooManyDeploymentTypes.class, xmlDefinedDeploymentTypeAnnotations);
       
-      ComponentInstance<ComponentWithTooManyDeploymentTypes> component = new ComponentInstanceImpl<ComponentWithTooManyDeploymentTypes>(new ClassAnnotatedItem(ComponentWithTooManyDeploymentTypes.class), xmlDefinedDeploymentTypeAnnotatedItem, container);
+      ComponentMetaModel<ComponentWithTooManyDeploymentTypes> component = new ComponentMetaModel<ComponentWithTooManyDeploymentTypes>(new ClassAnnotatedItem(ComponentWithTooManyDeploymentTypes.class), xmlDefinedDeploymentTypeAnnotatedItem, container);
       assert component.getDeploymentType().annotationType().equals(AnotherDeploymentType.class);
    }
    
@@ -131,7 +130,7 @@ public class ComponentInstanceTest
    public void testXmlDefaultDeploymentType()
    {
       AnnotatedItem antelopeAnnotatedItem = new MutableAnnotatedItem(Antelope.class, new HashMap<Class<? extends Annotation>, Annotation>());
-      ComponentInstance<Antelope> antelope = new ComponentInstanceImpl<Antelope>(emptyAnnotatedItem, antelopeAnnotatedItem, container);
+      ComponentMetaModel<Antelope> antelope = new ComponentMetaModel<Antelope>(emptyAnnotatedItem, antelopeAnnotatedItem, container);
       assert antelope.getDeploymentType().annotationType().equals(Production.class);
    }
    
@@ -139,7 +138,7 @@ public class ComponentInstanceTest
    public void testXmlIgnoresJavaDeploymentType()
    {
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(Tuna.class, new HashMap<Class<? extends Annotation>, Annotation>());
-      ComponentInstance<Tuna> tuna = new ComponentInstanceImpl<Tuna>(new ClassAnnotatedItem(Tuna.class), annotatedItem, container);
+      ComponentMetaModel<Tuna> tuna = new ComponentMetaModel<Tuna>(new ClassAnnotatedItem(Tuna.class), annotatedItem, container);
       assert tuna.getDeploymentType().annotationType().equals(Production.class);
    }
    
@@ -150,7 +149,7 @@ public class ComponentInstanceTest
       annotations.put(HornedMammalStereotype.class, new HornedMamalStereotypeBinding());
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(Moose.class, annotations);
       
-      ComponentInstance<Moose> moose = new ComponentInstanceImpl<Moose>(new ClassAnnotatedItem(Moose.class), annotatedItem, container);
+      ComponentMetaModel<Moose> moose = new ComponentMetaModel<Moose>(new ClassAnnotatedItem(Moose.class), annotatedItem, container);
       assert moose.getDeploymentType().annotationType().equals(HornedAnimalDeploymentType.class);
       
    }
@@ -165,7 +164,7 @@ public class ComponentInstanceTest
       annotations.put(Asynchronous.class, new AsynchronousBinding());
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(Cat.class, annotations);
       
-      ComponentInstance<Cat> cat = new ComponentInstanceImpl<Cat>(new ClassAnnotatedItem(Cat.class), annotatedItem, container);
+      ComponentMetaModel<Cat> cat = new ComponentMetaModel<Cat>(new ClassAnnotatedItem(Cat.class), annotatedItem, container);
       assert cat.getBindingTypes().size() == 1;
       assert annotationSetMatches(cat.getBindingTypes(), Asynchronous.class);
    }
@@ -174,7 +173,7 @@ public class ComponentInstanceTest
    @Test
    public void testBindingTypesDeclaredInJava()
    {
-      ComponentInstance<Cat> cat = new ComponentInstanceImpl<Cat>(new ClassAnnotatedItem(Cat.class), emptyAnnotatedItem, container);
+      ComponentMetaModel<Cat> cat = new ComponentMetaModel<Cat>(new ClassAnnotatedItem(Cat.class), emptyAnnotatedItem, container);
       assert cat.getBindingTypes().size() == 1;
       assert annotationSetMatches(cat.getBindingTypes(), Synchronous.class);
    }
@@ -187,7 +186,7 @@ public class ComponentInstanceTest
       annotations.put(Asynchronous.class, new AsynchronousBinding());
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(Antelope.class, annotations);
       
-      ComponentInstance<Antelope> antelope = new ComponentInstanceImpl<Antelope>(emptyAnnotatedItem, annotatedItem, container);
+      ComponentMetaModel<Antelope> antelope = new ComponentMetaModel<Antelope>(emptyAnnotatedItem, annotatedItem, container);
       assert annotationSetMatches(antelope.getBindingTypes(), Asynchronous.class);
    }
    
@@ -195,7 +194,7 @@ public class ComponentInstanceTest
    @Test
    public void testDefaultBindingType()
    {
-      ComponentInstance<Order> order = new ComponentInstanceImpl<Order>(new ClassAnnotatedItem(Order.class), emptyAnnotatedItem, container);
+      ComponentMetaModel<Order> order = new ComponentMetaModel<Order>(new ClassAnnotatedItem(Order.class), emptyAnnotatedItem, container);
       assert order.getBindingTypes().size() == 1;
       order.getBindingTypes().iterator().next().annotationType().equals(Current.class);
    }
@@ -205,7 +204,7 @@ public class ComponentInstanceTest
    @Test
    public void testScopeDeclaredInJava()
    {
-      ComponentInstance<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), emptyAnnotatedItem, container);
+      ComponentMetaModel<SeaBass> trout = new ComponentMetaModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), emptyAnnotatedItem, container);
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);
    }
    
@@ -216,7 +215,7 @@ public class ComponentInstanceTest
       annotations.put(RequestScoped.class, new RequestScopedBinding());
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(Order.class, annotations);
       
-      ComponentInstance<Order> order = new ComponentInstanceImpl<Order>(new ClassAnnotatedItem(Order.class), annotatedItem, container);
+      ComponentMetaModel<Order> order = new ComponentMetaModel<Order>(new ClassAnnotatedItem(Order.class), annotatedItem, container);
       assert order.getScopeType().annotationType().equals(RequestScoped.class);
    }
    
@@ -226,7 +225,7 @@ public class ComponentInstanceTest
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(ConversationScoped.class, new ConversationScopedBinding());
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
-      ComponentInstance<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
+      ComponentMetaModel<SeaBass> trout = new ComponentMetaModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
       assert trout.getScopeType().annotationType().equals(ConversationScoped.class);
    }
    
@@ -236,14 +235,14 @@ public class ComponentInstanceTest
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
       
-      ComponentInstance<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
+      ComponentMetaModel<SeaBass> trout = new ComponentMetaModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);
    }
    
    @Test
    public void testNoScopeSpecified()
    {
-      ComponentInstance<Order> order = new ComponentInstanceImpl<Order>(new ClassAnnotatedItem(Order.class), emptyAnnotatedItem, container);
+      ComponentMetaModel<Order> order = new ComponentMetaModel<Order>(new ClassAnnotatedItem(Order.class), emptyAnnotatedItem, container);
       assert order.getScopeType().annotationType().equals(Dependent.class);
    }
    
@@ -253,7 +252,7 @@ public class ComponentInstanceTest
       boolean exception = false;
       try
       {
-         new ComponentInstanceImpl<ComponentWithTooManyScopeTypes>(new ClassAnnotatedItem(ComponentWithTooManyScopeTypes.class), emptyAnnotatedItem, container);
+         new ComponentMetaModel<ComponentWithTooManyScopeTypes>(new ClassAnnotatedItem(ComponentWithTooManyScopeTypes.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -272,7 +271,7 @@ public class ComponentInstanceTest
          annotations.put(RequestScoped.class, new RequestScopedBinding());
          annotations.put(ConversationScoped.class, new ConversationScopedBinding());
          AnnotatedItem antelopeAnnotatedItem = new MutableAnnotatedItem(Antelope.class, annotations);
-         new ComponentInstanceImpl<Antelope>(emptyAnnotatedItem, antelopeAnnotatedItem, container);
+         new ComponentMetaModel<Antelope>(emptyAnnotatedItem, antelopeAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -287,7 +286,7 @@ public class ComponentInstanceTest
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeBinding());
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
-      ComponentInstance<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
+      ComponentMetaModel<SeaBass> trout = new ComponentMetaModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);
    }
    
@@ -302,7 +301,7 @@ public class ComponentInstanceTest
       boolean exception = false;
       try
       {
-         new ComponentInstanceImpl<Haddock>(new ClassAnnotatedItem(Haddock.class), annotatedItem, container);
+         new ComponentMetaModel<Haddock>(new ClassAnnotatedItem(Haddock.class), annotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -319,7 +318,7 @@ public class ComponentInstanceTest
       annotations.put(AnimalStereotype.class, new AnimalStereotypeBinding());
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
       
-      ComponentInstance<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
+      ComponentMetaModel<SeaBass> trout = new ComponentMetaModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);     
    }
    
@@ -331,7 +330,7 @@ public class ComponentInstanceTest
       annotations.put(RiverFishStereotype.class, new RiverFishStereotypeBinding());
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(Haddock.class, annotations);
       
-      ComponentInstance<Haddock> haddock = new ComponentInstanceImpl<Haddock>(new ClassAnnotatedItem(Haddock.class), annotatedItem, container);
+      ComponentMetaModel<Haddock> haddock = new ComponentMetaModel<Haddock>(new ClassAnnotatedItem(Haddock.class), annotatedItem, container);
       assert haddock.getScopeType().annotationType().equals(ApplicationScoped.class);
    }
    
@@ -340,7 +339,7 @@ public class ComponentInstanceTest
    @Test
    public void testNamed()
    {
-      ComponentInstanceImpl<Haddock> haddock = new ComponentInstanceImpl<Haddock>(new ClassAnnotatedItem(Haddock.class), emptyAnnotatedItem, container);
+      ComponentMetaModel<Haddock> haddock = new ComponentMetaModel<Haddock>(new ClassAnnotatedItem(Haddock.class), emptyAnnotatedItem, container);
       assert haddock.getName() != null;
       haddock.getComponentType().equals(ComponentType.SIMPLE);
       assert haddock.getName().equals("haddock");
@@ -359,7 +358,7 @@ public class ComponentInstanceTest
          }
       });
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
-      ComponentInstanceImpl<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
+      ComponentMetaModel<SeaBass> trout = new ComponentMetaModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
       
       assert trout.getName() != null;
       trout.getComponentType().equals(ComponentType.SIMPLE);
@@ -379,7 +378,7 @@ public class ComponentInstanceTest
          }
       });
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
-      ComponentInstance<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
+      ComponentMetaModel<SeaBass> trout = new ComponentMetaModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
       
       assert trout.getName().equals("aTrout");
    }
@@ -387,14 +386,14 @@ public class ComponentInstanceTest
    @Test
    public void testNotNamed()
    {
-      ComponentInstance<SeaBass> trout = new ComponentInstanceImpl<SeaBass>(new ClassAnnotatedItem(SeaBass.class), emptyAnnotatedItem, container);
+      ComponentMetaModel<SeaBass> trout = new ComponentMetaModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), emptyAnnotatedItem, container);
       assert trout.getName() == null;
    }
    
    @Test
    public void testNonDefaultNamed()
    {
-      ComponentInstance<Moose> moose = new ComponentInstanceImpl<Moose>(new ClassAnnotatedItem(Moose.class), emptyAnnotatedItem, container);
+      ComponentMetaModel<Moose> moose = new ComponentMetaModel<Moose>(new ClassAnnotatedItem(Moose.class), emptyAnnotatedItem, container);
       assert moose.getName().equals("aMoose");
    }
    
@@ -417,7 +416,7 @@ public class ComponentInstanceTest
       });
       AnnotatedItem currentSynchronousOrderAnnotatedItem = new MutableAnnotatedItem(Order.class, orderXmlAnnotations);
       
-      ComponentInstance<Order> order = new ComponentInstanceImpl<Order>(new ClassAnnotatedItem(Order.class), currentSynchronousOrderAnnotatedItem, container);
+      ComponentMetaModel<Order> order = new ComponentMetaModel<Order>(new ClassAnnotatedItem(Order.class), currentSynchronousOrderAnnotatedItem, container);
       assert Production.class.equals(order.getDeploymentType().annotationType());
       assert "currentSynchronousOrder".equals(order.getName());
       assert order.getBindingTypes().size() == 2;
@@ -428,7 +427,7 @@ public class ComponentInstanceTest
    @Test
    public void testSingleStereotype()
    {
-      ComponentInstance<Gorilla> gorilla = new ComponentInstanceImpl<Gorilla>(new ClassAnnotatedItem(Gorilla.class), emptyAnnotatedItem, container);
+      ComponentMetaModel<Gorilla> gorilla = new ComponentMetaModel<Gorilla>(new ClassAnnotatedItem(Gorilla.class), emptyAnnotatedItem, container);
       assert gorilla.getName() == null;
       assert gorilla.getDeploymentType().annotationType().equals(Production.class);
       assert gorilla.getBindingTypes().iterator().next().annotationType().equals(Current.class);
@@ -440,7 +439,7 @@ public class ComponentInstanceTest
    {
       try
       {
-         new ComponentInstanceImpl<Gorilla>(new ClassAnnotatedItem(Gorilla.class), emptyAnnotatedItem, container);
+         new ComponentMetaModel<Gorilla>(new ClassAnnotatedItem(Gorilla.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -455,7 +454,7 @@ public class ComponentInstanceTest
       boolean exception = false;
       try
       {
-         new ComponentInstanceImpl<Chair>(new ClassAnnotatedItem(Chair.class), emptyAnnotatedItem, container);
+         new ComponentMetaModel<Chair>(new ClassAnnotatedItem(Chair.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -470,7 +469,7 @@ public class ComponentInstanceTest
    {
       try
       {
-         new ComponentInstanceImpl<Goldfish>(new ClassAnnotatedItem(Goldfish.class), emptyAnnotatedItem, container);
+         new ComponentMetaModel<Goldfish>(new ClassAnnotatedItem(Goldfish.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -486,7 +485,7 @@ public class ComponentInstanceTest
       boolean exception = false;
       try
       {
-         new ComponentInstanceImpl<Carp>(new ClassAnnotatedItem(Carp.class), emptyAnnotatedItem, container);
+         new ComponentMetaModel<Carp>(new ClassAnnotatedItem(Carp.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -504,7 +503,7 @@ public class ComponentInstanceTest
       boolean exception = false;
       try
       {
-         new ComponentInstanceImpl<Cow>(new ClassAnnotatedItem(Cow.class), emptyAnnotatedItem, container);
+         new ComponentMetaModel<Cow>(new ClassAnnotatedItem(Cow.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -519,7 +518,7 @@ public class ComponentInstanceTest
       boolean exception = false;
       try
       {
-         new ComponentInstanceImpl<Horse>(new ClassAnnotatedItem(Horse.class), emptyAnnotatedItem, container);
+         new ComponentMetaModel<Horse>(new ClassAnnotatedItem(Horse.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -532,7 +531,7 @@ public class ComponentInstanceTest
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(Horse.class, annotations);
       try
       {
-         new ComponentInstanceImpl<Horse>(new ClassAnnotatedItem(Horse.class), annotatedItem, container);
+         new ComponentMetaModel<Horse>(new ClassAnnotatedItem(Horse.class), annotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -546,7 +545,7 @@ public class ComponentInstanceTest
       boolean exception = false;
       try
       {
-         new ComponentInstanceImpl<Pig>(new ClassAnnotatedItem(Pig.class), emptyAnnotatedItem, container);
+         new ComponentMetaModel<Pig>(new ClassAnnotatedItem(Pig.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -559,7 +558,7 @@ public class ComponentInstanceTest
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(Pig.class, annotations);
       try
       {
-         new ComponentInstanceImpl<Pig>(new ClassAnnotatedItem(Pig.class), annotatedItem, container);
+         new ComponentMetaModel<Pig>(new ClassAnnotatedItem(Pig.class), annotatedItem, container);
       }
       catch (Exception e) 
       {

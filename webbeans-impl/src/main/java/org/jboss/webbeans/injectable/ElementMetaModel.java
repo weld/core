@@ -1,18 +1,20 @@
-package org.jboss.webbeans;
+package org.jboss.webbeans.injectable;
 
 import java.lang.annotation.Annotation;
 
-public abstract class AbstractInjectedThingMetaModel
+import javax.webbeans.Container;
+
+public abstract class ElementMetaModel<T>
 {
    
    private Annotation[] bindingTypes;
    
-   public AbstractInjectedThingMetaModel(Annotation[] bindingTypes)
+   public ElementMetaModel(Annotation[] bindingTypes)
    {
       this.bindingTypes = bindingTypes;
    }
    
-   public AbstractInjectedThingMetaModel()
+   public ElementMetaModel()
    {
       this.bindingTypes = new Annotation[0];
    }
@@ -22,12 +24,17 @@ public abstract class AbstractInjectedThingMetaModel
       return bindingTypes;
    }
    
-   public abstract Class<?> getType();
-   
    @Override
    public String toString()
    {
       return getType() + " with binding types " + getBindingTypes();
    }
 
+   public T getValue(Container container)
+   {
+      return container.getInstanceByType(getType(), getBindingTypes());
+   }
+   
+   public abstract Class<? extends T> getType();
+   
 }

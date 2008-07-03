@@ -3,7 +3,6 @@ package org.jboss.webbeans.test.components;
 import javax.webbeans.Initializer;
 import javax.webbeans.Production;
 
-import org.jboss.webbeans.test.annotations.Asynchronous;
 import org.jboss.webbeans.test.annotations.Synchronous;
 
 @Production

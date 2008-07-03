@@ -1,9 +1,19 @@
 package org.jboss.webbeans.test;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import javax.webbeans.Current;
 
-import org.jboss.webbeans.ConstructorMetaModel;
+import org.jboss.webbeans.ComponentMetaModel;
+import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.bindings.StandardBinding;
+import org.jboss.webbeans.injectable.ConstructorMetaModel;
 import org.jboss.webbeans.test.annotations.Synchronous;
+import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeBinding;
+import org.jboss.webbeans.test.bindings.HornedAnimalDeploymentTypeBinding;
 import org.jboss.webbeans.test.components.Chicken;
 import org.jboss.webbeans.test.components.Donkey;
 import org.jboss.webbeans.test.components.Duck;
@@ -12,65 +22,82 @@ import org.jboss.webbeans.test.components.Goose;
 import org.jboss.webbeans.test.components.Order;
 import org.jboss.webbeans.test.components.Sheep;
 import org.jboss.webbeans.test.components.Turkey;
+import org.jboss.webbeans.test.mock.MockContainerImpl;
+import org.jboss.webbeans.util.AnnotatedItem;
+import org.jboss.webbeans.util.ClassAnnotatedItem;
+import org.jboss.webbeans.util.MutableAnnotatedItem;
+import org.junit.Before;
 import org.junit.Test;
 
 public class ConstructorMetaModelTest
 {
 
+   private ContainerImpl container;
+   
+   private AnnotatedItem emptyAnnotatedItem;
+   
+   @Before
+   public void before()
+   {
+      emptyAnnotatedItem = new MutableAnnotatedItem(null, new HashMap<Class<? extends Annotation>, Annotation>());
+      container = new MockContainerImpl(null);
+      
+   }
+   
    @Test
    public void testImplicitConstructor()
    {
-      ConstructorMetaModel<Order> constructor = new ConstructorMetaModel<Order>(Order.class);
+      ConstructorMetaModel<Order> constructor = new ComponentMetaModel<Order>(new ClassAnnotatedItem(Order.class), emptyAnnotatedItem, container).getConstructor();
       assert constructor.getConstructor().getDeclaringClass().equals(Order.class);
       assert constructor.getConstructor().getParameterTypes().length == 0;
-      assert constructor.getInjectedAttributes().size() == 0;
+      assert constructor.getParameters().size() == 0;
    }
    
    @Test
    public void testSingleConstructor()
    {
-      ConstructorMetaModel<Donkey> constructor = new ConstructorMetaModel<Donkey>(Donkey.class);
+      ConstructorMetaModel<Donkey> constructor = new ComponentMetaModel<Donkey>(new ClassAnnotatedItem(Donkey.class), emptyAnnotatedItem, container).getConstructor();
       assert constructor.getConstructor().getDeclaringClass().equals(Donkey.class);
       assert constructor.getConstructor().getParameterTypes().length == 1;
       assert constructor.getConstructor().getParameterTypes()[0].equals(String.class);
-      assert constructor.getInjectedAttributes().size() == 1;
-      assert constructor.getInjectedAttributes().get(0).getType().equals(String.class);
-      assert constructor.getInjectedAttributes().get(0).getBindingTypes().length == 1;
-      assert constructor.getInjectedAttributes().get(0).getBindingTypes()[0].annotationType().equals(Current.class);
+      assert constructor.getParameters().size() == 1;
+      assert constructor.getParameters().get(0).getType().equals(String.class);
+      assert constructor.getParameters().get(0).getBindingTypes().length == 1;
+      assert constructor.getParameters().get(0).getBindingTypes()[0].annotationType().equals(Current.class);
    }
    
    @Test
    public void testInitializerAnnotatedConstructor()
    {
-      ConstructorMetaModel<Sheep> constructor = new ConstructorMetaModel<Sheep>(Sheep.class);
+      ConstructorMetaModel<Sheep> constructor = new ComponentMetaModel<Sheep>(new ClassAnnotatedItem(Sheep.class), emptyAnnotatedItem, container).getConstructor();
       assert constructor.getConstructor().getDeclaringClass().equals(Sheep.class);
       assert constructor.getConstructor().getParameterTypes().length == 2;
       assert constructor.getConstructor().getParameterTypes()[0].equals(String.class);
       assert constructor.getConstructor().getParameterTypes()[1].equals(Double.class);
-      assert constructor.getInjectedAttributes().size() == 2;
-      assert constructor.getInjectedAttributes().get(0).getType().equals(String.class);
-      assert constructor.getInjectedAttributes().get(1).getType().equals(Double.class);
-      assert constructor.getInjectedAttributes().get(0).getBindingTypes().length == 1;
-      assert constructor.getInjectedAttributes().get(0).getBindingTypes()[0].annotationType().equals(Current.class);
-      assert constructor.getInjectedAttributes().get(1).getBindingTypes().length == 1;
-      assert constructor.getInjectedAttributes().get(1).getBindingTypes()[0].annotationType().equals(Current.class);
+      assert constructor.getParameters().size() == 2;
+      assert constructor.getParameters().get(0).getType().equals(String.class);
+      assert constructor.getParameters().get(1).getType().equals(Double.class);
+      assert constructor.getParameters().get(0).getBindingTypes().length == 1;
+      assert constructor.getParameters().get(0).getBindingTypes()[0].annotationType().equals(Current.class);
+      assert constructor.getParameters().get(1).getBindingTypes().length == 1;
+      assert constructor.getParameters().get(1).getBindingTypes()[0].annotationType().equals(Current.class);
    }
    
    @Test
    public void testBindingTypeAnnotatedConstructor()
    {
-      ConstructorMetaModel<Duck> constructor = new ConstructorMetaModel<Duck>(Duck.class);
+      ConstructorMetaModel<Duck> constructor = new ComponentMetaModel<Duck>(new ClassAnnotatedItem(Duck.class), emptyAnnotatedItem, container).getConstructor();
       assert constructor.getConstructor().getDeclaringClass().equals(Duck.class);
       assert constructor.getConstructor().getParameterTypes().length == 2;
       assert constructor.getConstructor().getParameterTypes()[0].equals(String.class);
       assert constructor.getConstructor().getParameterTypes()[1].equals(Integer.class);
-      assert constructor.getInjectedAttributes().size() == 2;
-      assert constructor.getInjectedAttributes().get(0).getType().equals(String.class);
-      assert constructor.getInjectedAttributes().get(1).getType().equals(Integer.class);
-      assert constructor.getInjectedAttributes().get(0).getBindingTypes().length == 1;
-      assert constructor.getInjectedAttributes().get(0).getBindingTypes()[0].annotationType().equals(Current.class);
-      assert constructor.getInjectedAttributes().get(1).getBindingTypes().length == 1;
-      assert constructor.getInjectedAttributes().get(1).getBindingTypes()[0].annotationType().equals(Synchronous.class);
+      assert constructor.getParameters().size() == 2;
+      assert constructor.getParameters().get(0).getType().equals(String.class);
+      assert constructor.getParameters().get(1).getType().equals(Integer.class);
+      assert constructor.getParameters().get(0).getBindingTypes().length == 1;
+      assert constructor.getParameters().get(0).getBindingTypes()[0].annotationType().equals(Current.class);
+      assert constructor.getParameters().get(1).getBindingTypes().length == 1;
+      assert constructor.getParameters().get(1).getBindingTypes()[0].annotationType().equals(Synchronous.class);
    }
    
    @Test
@@ -79,7 +106,7 @@ public class ConstructorMetaModelTest
       boolean exception = false;
       try
       {
-         new ConstructorMetaModel<Chicken>(Chicken.class);
+         new ComponentMetaModel<Chicken>(new ClassAnnotatedItem(Chicken.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -95,7 +122,7 @@ public class ConstructorMetaModelTest
       boolean exception = false;
       try
       {
-         new ConstructorMetaModel<Turkey>(Turkey.class);
+         new ComponentMetaModel<Turkey>(new ClassAnnotatedItem(Turkey.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -111,7 +138,7 @@ public class ConstructorMetaModelTest
       boolean exception = false;
       try
       {
-         new ConstructorMetaModel<Goat>(Goat.class);
+         new ComponentMetaModel<Goat>(new ClassAnnotatedItem(Goat.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -127,7 +154,7 @@ public class ConstructorMetaModelTest
       boolean exception = false;
       try
       {
-         new ConstructorMetaModel<Goose>(Goose.class);
+         new ComponentMetaModel<Goose>(new ClassAnnotatedItem(Goose.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
