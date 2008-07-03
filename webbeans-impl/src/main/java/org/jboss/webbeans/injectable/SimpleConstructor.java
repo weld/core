@@ -7,7 +7,7 @@ import javax.webbeans.Container;
 
 import org.jboss.webbeans.util.LoggerUtil;
 
-public class ConstructorMetaModel<T> extends UnitMetaModel<T>
+public class SimpleConstructor<T> extends Unit<T> implements ComponentConstructor<T>
 {
    
    public static final String LOGGER_NAME = "componentConstructor";
@@ -17,7 +17,7 @@ public class ConstructorMetaModel<T> extends UnitMetaModel<T>
    private Constructor<T> constructor;
    
    @SuppressWarnings("unchecked")
-   public ConstructorMetaModel(Constructor<T> constructor)
+   public SimpleConstructor(Constructor<T> constructor)
    {
       super(constructor.getParameterTypes(), constructor.getParameterAnnotations());
       this.constructor = constructor;

@@ -1,15 +1,14 @@
 package org.jboss.webbeans.injectable;
 
-import java.lang.reflect.Method;
-
 import javax.webbeans.Container;
 
-public class MethodMetaModel<T> extends UnitMetaModel<T>
+// TODO Name this class better
+public class InjectableMethod<T> extends Unit<T>
 {
 
-   private Method method;
+   private java.lang.reflect.Method method;
    
-   public MethodMetaModel(Method method)
+   public InjectableMethod(java.lang.reflect.Method method)
    {
       super(method.getParameterTypes(), method.getParameterAnnotations());
       this.method = method;
@@ -28,7 +27,7 @@ public class MethodMetaModel<T> extends UnitMetaModel<T>
       }
    }
    
-   public Method getMethod()
+   public java.lang.reflect.Method getMethod()
    {
       return method;
    }

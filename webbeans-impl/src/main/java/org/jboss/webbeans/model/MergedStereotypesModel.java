@@ -1,4 +1,4 @@
-package org.jboss.webbeans;
+package org.jboss.webbeans.model;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.webbeans.Stereotype;
 
+import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.util.AnnotatedItem;
 
 /**
@@ -15,7 +16,7 @@ import org.jboss.webbeans.util.AnnotatedItem;
  * @author pmuir
  *
  */
-public class MergedComponentStereotypes
+public class MergedStereotypesModel
 {
 
    private Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes;
@@ -24,7 +25,7 @@ public class MergedComponentStereotypes
    private Set<Class<?>> requiredTypes;
    private Set<Class<? extends Annotation>> supportedScopes;
    
-   public MergedComponentStereotypes(AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
+   public MergedStereotypesModel(AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
    {
       possibleDeploymentTypes = new HashMap<Class<? extends Annotation>, Annotation>();
       possibleScopeTypes = new HashSet<Annotation>();
@@ -39,7 +40,7 @@ public class MergedComponentStereotypes
       for (Annotation stereotypeAnnotation : stereotypeAnnotations)
       {
          // Retrieve and merge all metadata from stereotypes
-         StereotypeMetaModel stereotype = container.getStereotypeManager().getStereotype(stereotypeAnnotation.annotationType());
+         StereotypeModel stereotype = container.getStereotypeManager().getStereotype(stereotypeAnnotation.annotationType());
          if (stereotype == null)
          {
             throw new NullPointerException("Stereotype " + stereotypeAnnotation + " not registered with container");

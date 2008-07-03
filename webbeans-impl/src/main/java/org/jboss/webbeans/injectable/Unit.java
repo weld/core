@@ -6,35 +6,35 @@ import java.util.List;
 
 import javax.webbeans.Container;
 
-public abstract class UnitMetaModel<T>
+public abstract class Unit<T>
 {
 
-   private List<ElementMetaModel<Object>> parameters;
+   private List<Element<Object>> parameters;
    
-   public UnitMetaModel(Class<?>[] parameterTypes, Annotation[][] parameterAnnotations)
+   public Unit(Class<?>[] parameterTypes, Annotation[][] parameterAnnotations)
    {
       parameters = initParameters(parameterTypes, parameterAnnotations);
    }
    
-   public List<ElementMetaModel<Object>> getParameters()
+   public List<Element<Object>> getParameters()
    {
       return parameters;
    }
 
    @SuppressWarnings("unchecked")
-   protected static List<ElementMetaModel<Object>> initParameters(Class<?>[] parameterTypes, Annotation[][] parameterAnnotations)
+   protected static List<Element<Object>> initParameters(Class<?>[] parameterTypes, Annotation[][] parameterAnnotations)
    {
-      List<ElementMetaModel<Object>> injectedParameters = new ArrayList<ElementMetaModel<Object>>();
+      List<Element<Object>> injectedParameters = new ArrayList<Element<Object>>();
       for (int i = 0; i < parameterTypes.length; i++)
       {
          if (parameterAnnotations[i].length > 0)
          {
-            ParameterMetaModel<Object> parameter = new ParameterMetaModel(parameterAnnotations[i], parameterTypes[i]);
+            Parameter<Object> parameter = new Parameter(parameterAnnotations[i], parameterTypes[i]);
             injectedParameters.add(i, parameter);
          }
          else
          {
-            ParameterMetaModel<Object> parameter = new ParameterMetaModel(parameterTypes[i]);
+            Parameter<Object> parameter = new Parameter(parameterTypes[i]);
             injectedParameters.add(i, parameter);
          }
       }

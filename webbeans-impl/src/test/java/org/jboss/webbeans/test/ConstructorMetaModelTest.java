@@ -5,9 +5,9 @@ import java.util.HashMap;
 
 import javax.webbeans.Current;
 
-import org.jboss.webbeans.ComponentMetaModel;
 import org.jboss.webbeans.ContainerImpl;
-import org.jboss.webbeans.injectable.ConstructorMetaModel;
+import org.jboss.webbeans.injectable.SimpleConstructor;
+import org.jboss.webbeans.model.SimpleComponentModel;
 import org.jboss.webbeans.test.annotations.Synchronous;
 import org.jboss.webbeans.test.components.Chicken;
 import org.jboss.webbeans.test.components.Donkey;
@@ -42,7 +42,7 @@ public class ConstructorMetaModelTest
    @Test
    public void testImplicitConstructor()
    {
-      ConstructorMetaModel<Order> constructor = new ComponentMetaModel<Order>(new ClassAnnotatedItem(Order.class), emptyAnnotatedItem, container).getConstructor();
+      SimpleConstructor<Order> constructor = new SimpleComponentModel<Order>(new ClassAnnotatedItem(Order.class), emptyAnnotatedItem, container).getConstructor();
       assert constructor.getConstructor().getDeclaringClass().equals(Order.class);
       assert constructor.getConstructor().getParameterTypes().length == 0;
       assert constructor.getParameters().size() == 0;
@@ -51,7 +51,7 @@ public class ConstructorMetaModelTest
    @Test
    public void testSingleConstructor()
    {
-      ConstructorMetaModel<Donkey> constructor = new ComponentMetaModel<Donkey>(new ClassAnnotatedItem(Donkey.class), emptyAnnotatedItem, container).getConstructor();
+      SimpleConstructor<Donkey> constructor = new SimpleComponentModel<Donkey>(new ClassAnnotatedItem(Donkey.class), emptyAnnotatedItem, container).getConstructor();
       assert constructor.getConstructor().getDeclaringClass().equals(Donkey.class);
       assert constructor.getConstructor().getParameterTypes().length == 1;
       assert constructor.getConstructor().getParameterTypes()[0].equals(String.class);
@@ -64,7 +64,7 @@ public class ConstructorMetaModelTest
    @Test
    public void testInitializerAnnotatedConstructor()
    {
-      ConstructorMetaModel<Sheep> constructor = new ComponentMetaModel<Sheep>(new ClassAnnotatedItem(Sheep.class), emptyAnnotatedItem, container).getConstructor();
+      SimpleConstructor<Sheep> constructor = new SimpleComponentModel<Sheep>(new ClassAnnotatedItem(Sheep.class), emptyAnnotatedItem, container).getConstructor();
       assert constructor.getConstructor().getDeclaringClass().equals(Sheep.class);
       assert constructor.getConstructor().getParameterTypes().length == 2;
       assert constructor.getConstructor().getParameterTypes()[0].equals(String.class);
@@ -81,7 +81,7 @@ public class ConstructorMetaModelTest
    @Test
    public void testBindingTypeAnnotatedConstructor()
    {
-      ConstructorMetaModel<Duck> constructor = new ComponentMetaModel<Duck>(new ClassAnnotatedItem(Duck.class), emptyAnnotatedItem, container).getConstructor();
+      SimpleConstructor<Duck> constructor = new SimpleComponentModel<Duck>(new ClassAnnotatedItem(Duck.class), emptyAnnotatedItem, container).getConstructor();
       assert constructor.getConstructor().getDeclaringClass().equals(Duck.class);
       assert constructor.getConstructor().getParameterTypes().length == 2;
       assert constructor.getConstructor().getParameterTypes()[0].equals(String.class);
@@ -101,7 +101,7 @@ public class ConstructorMetaModelTest
       boolean exception = false;
       try
       {
-         new ComponentMetaModel<Chicken>(new ClassAnnotatedItem(Chicken.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Chicken>(new ClassAnnotatedItem(Chicken.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -117,7 +117,7 @@ public class ConstructorMetaModelTest
       boolean exception = false;
       try
       {
-         new ComponentMetaModel<Turkey>(new ClassAnnotatedItem(Turkey.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Turkey>(new ClassAnnotatedItem(Turkey.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -133,7 +133,7 @@ public class ConstructorMetaModelTest
       boolean exception = false;
       try
       {
-         new ComponentMetaModel<Goat>(new ClassAnnotatedItem(Goat.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Goat>(new ClassAnnotatedItem(Goat.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -149,7 +149,7 @@ public class ConstructorMetaModelTest
       boolean exception = false;
       try
       {
-         new ComponentMetaModel<Goose>(new ClassAnnotatedItem(Goose.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Goose>(new ClassAnnotatedItem(Goose.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {

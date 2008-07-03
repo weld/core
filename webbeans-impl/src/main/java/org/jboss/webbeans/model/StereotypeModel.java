@@ -1,4 +1,4 @@
-package org.jboss.webbeans;
+package org.jboss.webbeans.model;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -20,7 +20,7 @@ import org.jboss.webbeans.util.AnnotatedItem;
  * @author pmuir
  *
  */
-public class StereotypeMetaModel
+public class StereotypeModel
 {
    
    private Class<? extends Annotation> stereotypeClass;
@@ -32,7 +32,7 @@ public class StereotypeMetaModel
    private Set<Annotation> interceptorBindings;
    
    @SuppressWarnings("unchecked")
-   public StereotypeMetaModel(AnnotatedItem annotatedClass)
+   public StereotypeModel(AnnotatedItem annotatedClass)
    {
       initStereotypeClass(annotatedClass);
       Stereotype stereotype = annotatedClass.getAnnotation(Stereotype.class);

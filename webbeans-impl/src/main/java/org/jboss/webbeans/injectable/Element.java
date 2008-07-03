@@ -4,17 +4,17 @@ import java.lang.annotation.Annotation;
 
 import javax.webbeans.Container;
 
-public abstract class ElementMetaModel<T>
+public abstract class Element<T>
 {
    
    private Annotation[] bindingTypes;
    
-   public ElementMetaModel(Annotation[] bindingTypes)
+   public Element(Annotation[] bindingTypes)
    {
       this.bindingTypes = bindingTypes;
    }
    
-   public ElementMetaModel()
+   public Element()
    {
       this.bindingTypes = new Annotation[0];
    }
