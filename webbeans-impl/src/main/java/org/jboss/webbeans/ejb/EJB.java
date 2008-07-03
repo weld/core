@@ -1,8 +1,7 @@
 package org.jboss.webbeans.ejb;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
+
 
 import org.jboss.webbeans.util.Reflections;
 
@@ -10,8 +9,6 @@ import org.jboss.webbeans.util.Reflections;
 @SuppressWarnings("unchecked")
 public class EJB
 {
-   
-   private static Map<Class<?>, EjbMetaData> ejbMetaDataMap = new HashMap<Class<?>, EjbMetaData>();
    
    public @interface Dummy {}
    
@@ -40,22 +37,6 @@ public class EJB
       {
          return Dummy.class;
       }
-   }
-   
-   public static <T> EjbMetaData<T> getEjbMetaData(Class<? extends T> clazz)
-   {
-      // TODO replace with an application lookup
-      if (!ejbMetaDataMap.containsKey(clazz))
-      {
-         EjbMetaData<T> ejbMetaData = new EjbMetaData(clazz); 
-         ejbMetaDataMap.put(clazz, ejbMetaData);
-         return ejbMetaData;
-      }
-      else
-      {
-         return ejbMetaDataMap.get(clazz);
-      }
-      
    }
    
 }

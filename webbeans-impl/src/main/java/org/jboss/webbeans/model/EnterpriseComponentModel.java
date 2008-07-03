@@ -6,28 +6,33 @@ import javax.webbeans.ApplicationScoped;
 import javax.webbeans.Dependent;
 
 import org.jboss.webbeans.ContainerImpl;
-import org.jboss.webbeans.ejb.EJB;
 import org.jboss.webbeans.ejb.EjbMetaData;
-import org.jboss.webbeans.injectable.SimpleConstructor;
+import org.jboss.webbeans.injectable.ComponentConstructor;
+import org.jboss.webbeans.injectable.EnterpriseConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.util.AnnotatedItem;
 
 public class EnterpriseComponentModel<T> extends AbstractComponentModel<T>
 {
 
-   private SimpleConstructor<T> constructor;
+   private EnterpriseConstructor<T> constructor;
    private InjectableMethod<?> removeMethod;  
    
    public EnterpriseComponentModel(AnnotatedItem annotatedItem,
          AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
    {
       super(annotatedItem, xmlAnnotatedItem, container);
-      this.constructor = initConstructor(getType());
-      EjbMetaData<T> ejbMetaData = EJB.getEjbMetaData(getType());
+      EjbMetaData<T> ejbMetaData = container.getEjbManager().getEjbMetaData(getType());
+      this.constructor = initConstructor(ejbMetaData, container);
       EnterpriseComponentModel.checkScopeAllowed(getMergedStereotypes(), getScopeType(), getType(), ejbMetaData);
       this.removeMethod = initRemoveMethod(ejbMetaData, getType());
    }
    
+   protected static <T> EnterpriseConstructor<T> initConstructor(EjbMetaData<T> ejbMetaData, ContainerImpl container)
+   {
+      return new EnterpriseConstructor<T>(ejbMetaData);
+   }
+
    /**
     * Check that the scope type is allowed by the stereotypes on the component and the component type
     * @param type 
@@ -44,7 +49,7 @@ public class EnterpriseComponentModel<T> extends AbstractComponentModel<T>
       }
    }
    
-   public SimpleConstructor<T> getConstructor()
+   public ComponentConstructor<T> getConstructor()
    {
       return constructor;
    }

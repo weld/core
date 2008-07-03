@@ -14,17 +14,20 @@ import javax.webbeans.TypeLiteral;
 
 import org.jboss.webbeans.bindings.ProductionBinding;
 import org.jboss.webbeans.bindings.StandardBinding;
+import org.jboss.webbeans.ejb.EjbManager;
 
 public class ContainerImpl implements Container
 {
    
    private List<Annotation> enabledDeploymentTypes;
    private StereotypeManager stereotypeManager;
+   private EjbManager ejbLookupManager;
    
    public ContainerImpl(List<Annotation> enabledDeploymentTypes)
    {
       initEnabledDeploymentTypes(enabledDeploymentTypes);
       this.stereotypeManager = new StereotypeManager();
+      this.ejbLookupManager = new EjbManager();
    }
    
    private void initEnabledDeploymentTypes(List<Annotation> enabledDeploymentTypes)
@@ -133,6 +136,11 @@ public class ContainerImpl implements Container
    public StereotypeManager getStereotypeManager()
    {
       return this.stereotypeManager;
+   }
+   
+   public EjbManager getEjbManager()
+   {
+      return ejbLookupManager;
    }
    
 }

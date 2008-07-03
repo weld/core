@@ -1,26 +1,83 @@
 package org.jboss.webbeans.model;
 
+import java.lang.annotation.Annotation;
+
+import javax.webbeans.ApplicationScoped;
+import javax.webbeans.BoundTo;
+import javax.webbeans.Dependent;
+
 import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.ejb.EjbMetaData;
 import org.jboss.webbeans.injectable.ComponentConstructor;
+import org.jboss.webbeans.injectable.EnterpriseConstructor;
+import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.util.AnnotatedItem;
 
 public class RemoteComponentModel<T> extends AbstractComponentModel<T>
 {
    
+   private EnterpriseConstructor<T> constructor;
+   private InjectableMethod<?> removeMethod;
+   private String boundTo;
+   
    public RemoteComponentModel(AnnotatedItem annotatedItem,
          AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
    {
       super(annotatedItem, xmlAnnotatedItem, container);
-      // TODO Auto-generated constructor stub
+      EjbMetaData<T> ejbMetaData = container.getEjbManager().getEjbMetaData(getType());
+      this.constructor = initConstructor(ejbMetaData, container);
+      EnterpriseComponentModel.checkScopeAllowed(getMergedStereotypes(), getScopeType(), getType(), ejbMetaData);
+      this.removeMethod = initRemoveMethod(ejbMetaData, getType());
+      this.boundTo = initBoundTo(annotatedItem, xmlAnnotatedItem, getType());
+   }
+   
+   protected static <T> EnterpriseConstructor<T> initConstructor(EjbMetaData<T> ejbMetaData, ContainerImpl container)
+   {
+      return new EnterpriseConstructor<T>(ejbMetaData);
    }
 
-   @Override
+   /**
+    * Check that the scope type is allowed by the stereotypes on the component and the component type
+    * @param type 
+    */
+   protected static <T> void checkScopeAllowed(MergedStereotypesModel stereotypes, Annotation scopeType, Class<?> type, EjbMetaData<T> ejbMetaData)
+   {
+      if (ejbMetaData.isStateless() && !scopeType.annotationType().equals(Dependent.class))
+      {
+         throw new RuntimeException("Scope " + scopeType + " is not allowed on stateless enterpise bean components for " + type + ". Only @Dependent is allowed on stateless enterprise bean components");
+      }
+      if (ejbMetaData.isSingleton() && (!scopeType.annotationType().equals(Dependent.class) || !scopeType.annotationType().equals(ApplicationScoped.class)))
+      {
+         throw new RuntimeException("Scope " + scopeType + " is not allowed on singleton enterpise bean components for " + type + ". Only @Dependent or @ApplicationScoped is allowed on singleton enterprise bean components");
+      }
+   }
+   
+   protected static String initBoundTo(AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem, Class<?> type)
+   {
+      if (xmlAnnotatedItem.isAnnotationPresent(BoundTo.class))
+      {
+         return xmlAnnotatedItem.getAnnotation(BoundTo.class).value(); 
+      }
+      if (annotatedItem.isAnnotationPresent(BoundTo.class))
+      {
+         return annotatedItem.getAnnotation(BoundTo.class).value();
+      }
+      throw new RuntimeException("Remote component doesn't specify @BoundTo or <bound-to /> for " + type);
+   }
+   
    public ComponentConstructor<T> getConstructor()
    {
-      // TODO Auto-generated method stub
-      return null;
+      return constructor;
+   }
+   
+   public InjectableMethod<?> getRemoveMethod()
+   {
+      return removeMethod;
    }
 
-   
+   public String getBoundTo()
+   {
+      return boundTo;
+   }
 
 }

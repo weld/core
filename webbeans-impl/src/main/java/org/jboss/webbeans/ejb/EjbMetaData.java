@@ -29,8 +29,18 @@ public class EjbMetaData<T>
    
    private EjbType ejbType;
    private List<Method> removeMethods;
+   
+   // TODO Populate this from web.xml
+   private String ejbLinkJndiName;
+   
+   // TODO Initialize this based on the EJB 3.1 spec
+   private String defaultJndiName;
+   
+   // TODO Initialize the ejb name
+   private String ejbName;
+   
 
-   public EjbMetaData(Class<T> type)
+   public EjbMetaData(Class<? extends T> type)
    {
       // TODO Merge in ejb-jar.xml
       if (type.isAnnotationPresent(STATELESS_ANNOTATION))
@@ -80,5 +90,20 @@ public class EjbMetaData<T>
    {
       return removeMethods;
    }
+   
+   public String getEjbLinkJndiName()
+   {
+      return ejbLinkJndiName;
+   }
 
+   public String getDefaultJndiName()
+   {
+      return defaultJndiName;
+   }
+   
+   public String getEjbName()
+   {
+      return ejbName;
+   }
+   
 }
