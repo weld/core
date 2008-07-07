@@ -27,10 +27,11 @@ public class JmsComponentModel<T> extends AbstractComponentModel<T>
    private String jndiName;
    private ComponentConstructor<T> constructor;
    
+   @SuppressWarnings("unchecked")
    public JmsComponentModel(AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
    {
       AnnotatedItem annotatedItem = new MutableAnnotatedItem(null, new HashMap<Class<? extends Annotation>, Annotation>());
-      type = initType(xmlAnnotatedItem);
+      type = (Class<? extends T>)initType(xmlAnnotatedItem);
       bindingTypes = initBindingTypes(annotatedItem, xmlAnnotatedItem);
       scopeType = new DependentBinding();
       checkBindingTypesAllowed(bindingTypes, type);
