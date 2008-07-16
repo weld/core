@@ -1,6 +1,8 @@
 package org.jboss.webbeans.servlet;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+
 
 /**
  * 
@@ -14,6 +16,11 @@ public class ServletLifecycle
    public static void beginApplication(ServletContext context)
    {
       servletContext = context;  
+   }
+   
+   public static void beginSession(HttpSession session)
+   {
+      // TODO
    }
    
    public static ServletContext getServletContext() 
