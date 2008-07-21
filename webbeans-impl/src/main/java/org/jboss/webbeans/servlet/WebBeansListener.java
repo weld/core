@@ -5,6 +5,8 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import org.jboss.webbeans.init.Initialization;
+
 /**
  * 
  * @author Shane Bryzak
@@ -13,10 +15,10 @@ import javax.servlet.http.HttpSessionListener;
 public class WebBeansListener implements ServletContextListener, HttpSessionListener
 {
 
-
    public void contextInitialized(ServletContextEvent event) 
    {
-      ServletLifecycle.beginApplication( event.getServletContext() );
+      ServletLifecycle.beginApplication( event.getServletContext() );      
+      new Initialization( event.getServletContext() ).create().init();      
    }
 
    public void sessionCreated(HttpSessionEvent event) 
