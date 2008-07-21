@@ -34,6 +34,6 @@ public class Initialization
    
    public void init()
    {
-      
+      deploymentStrategy.scan();
    }
 }

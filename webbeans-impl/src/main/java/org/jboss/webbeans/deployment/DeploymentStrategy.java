@@ -44,7 +44,6 @@ public class DeploymentStrategy
    }
    
    public void scan()
-       throws ClassNotFoundException
    {
       URL[] urls = ClasspathUrlFinder.findResourceBases("META-INF/web-beans.xml");
            
@@ -63,12 +62,19 @@ public class DeploymentStrategy
       
       Set<String> classNames = index.get(DeploymentType.class.getName());
       
-      for (String className : classNames)
+      try
       {
-         SimpleComponentModel componentModel = new SimpleComponentModel(
-               new ClassAnnotatedItem(Reflections.classForName(className)), 
-               new MutableAnnotatedItem(null, new HashMap()), container);         
-         container.addComponent(new ComponentInstanceImpl(componentModel));
+         for (String className : classNames)
+         {
+            SimpleComponentModel componentModel = new SimpleComponentModel(
+                  new ClassAnnotatedItem(Reflections.classForName(className)), 
+                  new MutableAnnotatedItem(null, new HashMap()), container);         
+            container.addComponent(new ComponentInstanceImpl(componentModel));
+         }
+      }
+      catch (ClassNotFoundException ex)
+      {
+         throw new RuntimeException(ex);
       }
    }
 
