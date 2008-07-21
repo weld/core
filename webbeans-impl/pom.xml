@@ -35,6 +35,12 @@
          <artifactId>ejb-api</artifactId>
          <scope>test</scope>
       </dependency>
+      
+      <dependency>
+         <groupId>org.scannotation</groupId>
+         <artifactId>scannotation</artifactId>
+      </dependency>
+      
 
    </dependencies>
    
