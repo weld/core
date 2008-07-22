@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
 @Target( { METHOD, FIELD, PARAMETER, TYPE })
 @Retention(RUNTIME)
 @Documented
-@BindingType
+@ScopeType
 public @interface SessionScoped
 {
 
