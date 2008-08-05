@@ -2,6 +2,7 @@ package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,11 +24,14 @@ public class ContainerImpl implements Container
    private StereotypeManager stereotypeManager;
    private EjbManager ejbLookupManager;
    
+   private Set<ComponentInstance> components;
+   
    public ContainerImpl(List<Annotation> enabledDeploymentTypes)
    {
       initEnabledDeploymentTypes(enabledDeploymentTypes);
       this.stereotypeManager = new StereotypeManager();
       this.ejbLookupManager = new EjbManager();
+      this.components = new HashSet<ComponentInstance>();
    }
    
    private void initEnabledDeploymentTypes(List<Annotation> enabledDeploymentTypes)
@@ -50,8 +54,8 @@ public class ContainerImpl implements Container
 
    public Container addComponent(ComponentInstance component)
    {
-      // TODO Auto-generated method stub
-      return null;
+      components.add(component);
+      return this;
    }
 
    public void addContext(Context context)
