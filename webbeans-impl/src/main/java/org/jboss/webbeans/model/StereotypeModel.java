@@ -188,4 +188,11 @@ public class StereotypeModel
    {
       return stereotypeClass;
    }
+   
+   @Override
+   public String toString()
+   {
+      return "[" + stereotypeClass + "]";
+   }
+   
 }
