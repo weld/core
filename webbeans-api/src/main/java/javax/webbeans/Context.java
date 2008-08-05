@@ -27,7 +27,7 @@ import java.lang.annotation.Annotation;
 public interface Context
 {
 
-   public Class<Annotation> getScopeType();
+   public Class<? extends Annotation> getScopeType();
    
    public <T> T get(Container container, ComponentInstance<T> component, boolean create);
    
