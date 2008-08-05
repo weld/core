@@ -17,9 +17,9 @@ import javax.webbeans.Context;
 public class BasicContext implements Context
 {
    private Map<ComponentInstance<?>, Object> values;
-   private Class<Annotation> scopeType;
+   private Class<? extends Annotation> scopeType;
    
-   public BasicContext(Class<Annotation> scopeType)
+   public BasicContext(Class<? extends Annotation> scopeType)
    {
       this.scopeType = scopeType;
       values = new HashMap<ComponentInstance<?>,Object>();
@@ -47,7 +47,7 @@ public class BasicContext implements Context
       return instance;
    }
 
-   public Class<Annotation> getScopeType() 
+   public Class<? extends Annotation> getScopeType() 
    {
       return scopeType;
    }
