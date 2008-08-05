@@ -25,7 +25,6 @@ import org.jboss.webbeans.util.AnnotatedItem;
 import org.jboss.webbeans.util.ClassAnnotatedItem;
 import org.jboss.webbeans.util.MutableAnnotatedItem;
 import org.jboss.webbeans.util.Reflections;
-import static org.jboss.webbeans.util.Reflections.annotationSetMatches;
 import org.junit.Before;
 import org.junit.Test;
 
