@@ -14,12 +14,12 @@ import org.jboss.webbeans.deployment.DeploymentStrategy;
  */
 public class Initialization
 {
+   public static final String WEBBEANS_CONTAINER_KEY = "javax.webbeans.Container";
+   
    private ServletContext servletContext;
    
    DeploymentStrategy deploymentStrategy;
-   
-   private static Container container;
-   
+      
    public Initialization(ServletContext servletContext)
    {
       this.servletContext = servletContext;
@@ -27,7 +27,10 @@ public class Initialization
    
    public Initialization create()
    {
-      container = new ContainerImpl(null);           
+      Container container = new ContainerImpl(null);  
+      
+      servletContext.setAttribute(WEBBEANS_CONTAINER_KEY, container);
+      
       deploymentStrategy = new DeploymentStrategy(Thread.currentThread().getContextClassLoader(), container);
       return this;
    }   

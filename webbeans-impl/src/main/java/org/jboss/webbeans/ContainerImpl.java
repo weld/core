@@ -4,11 +4,13 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.webbeans.ComponentInstance;
 import javax.webbeans.Container;
 import javax.webbeans.Context;
+import javax.webbeans.ContextNotActive;
 import javax.webbeans.Observer;
 import javax.webbeans.Standard;
 import javax.webbeans.TypeLiteral;
@@ -24,6 +26,9 @@ public class ContainerImpl implements Container
    private StereotypeManager stereotypeManager;
    private EjbManager ejbLookupManager;
    
+   private ThreadLocal<Map<Class<Annotation>, Context>> contexts = 
+      new ThreadLocal<Map<Class<Annotation>, Context>>();
+
    private Set<ComponentInstance> components;
    
    public ContainerImpl(List<Annotation> enabledDeploymentTypes)
@@ -78,10 +83,17 @@ public class ContainerImpl implements Container
 
    public Context getContext(Class<Annotation> scopeType)
    {
-      // TODO Auto-generated method stub
-      return null;
+      Context context = contexts.get().get(scopeType);
       
-      
+      if (context == null)
+      {
+         // If context can't be found throw an exception (section 9.4 of spec)
+         throw new ContextNotActive();         
+      }
+      else
+      {
+         return context;
+      }
    }
 
    public Object getInstanceByName(String name)

@@ -17,8 +17,8 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
 
    public void contextInitialized(ServletContextEvent event) 
    {
-      ServletLifecycle.beginApplication( event.getServletContext() );      
-      new Initialization( event.getServletContext() ).create().init();      
+      ServletLifecycle.beginApplication( event.getServletContext() );
+      new Initialization( event.getServletContext() ).create().init();
    }
 
    public void sessionCreated(HttpSessionEvent event) 
