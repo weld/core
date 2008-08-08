@@ -1,0 +1,13 @@
+<projectDescription>
+  <name>webbeans-pizzashack</name>
+  <comment>Examples for the reference implementation of JSR 299: Web Beans</comment>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
