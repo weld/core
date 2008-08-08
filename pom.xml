@@ -57,7 +57,8 @@
 
    <modules>
       <module>webbeans-api</module>
-      <module>webbeans-impl</module>
+      <module>webbeans-ri</module>
+      <module>examples</module>
    </modules>
 
    <dependencyManagement>
