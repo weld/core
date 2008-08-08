@@ -9,7 +9,7 @@
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.webbeans</groupId>
-   <artifactId>webbeans-impl</artifactId>
+   <artifactId>webbeans-ri</artifactId>
    <name>Web Beans RI</name>
    <dependencies>
 
