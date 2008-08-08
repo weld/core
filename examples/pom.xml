@@ -20,6 +20,32 @@
    <modules>
       <module>webbeans-pizzashack</module>
    </modules>
+   
+   <profiles>
+      <profile>
+         <activation>
+            <property>
+               <name>explode</name>
+            </property>
+         </activation>
+         <build>
+            <finalName>webbeans-pizzashack</finalName>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-war-plugin</artifactId>
+                  <version>2.0</version>
+                  <configuration>
+                     <webappDirectory>
+                        ${jboss.home}/server/default/deploy/${project.build.finalName}.war
+                     </webappDirectory>
+                  </configuration>
+               </plugin>
+            </plugins>
+            <defaultGoal>war:exploded</defaultGoal>
+         </build>
+      </profile>
+   </profiles>
 
 </project>
 

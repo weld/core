@@ -23,9 +23,5 @@
       </dependency>
    </dependencies>
    
-   <build>
-      <finalName>webbeans-pizzashack</finalName>
-   </build>
-   
 </project>
 

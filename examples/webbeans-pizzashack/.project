@@ -1,6 +1,6 @@
 <projectDescription>
   <name>webbeans-pizzashack</name>
-  <comment>Examples for the reference implementation of JSR 299: Web Beans</comment>
+  <comment>Web Beans Examples: Pizzashack</comment>
   <projects/>
   <buildSpec>
     <buildCommand>
