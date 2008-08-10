@@ -288,7 +288,7 @@ public abstract class AbstractComponentModel<T>
          log.finest("Checking if required type " + requiredType + " is implemented");
          if (!requiredType.isAssignableFrom(type))
          {
-            throw new RuntimeException("Required type " + requiredType + " isn't implement on " + type);
+            throw new RuntimeException("Required type " + requiredType + " isn't implemented on " + type);
          }
       }
    }
