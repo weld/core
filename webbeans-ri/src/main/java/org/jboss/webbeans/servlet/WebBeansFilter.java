@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.webbeans.Container;
-import javax.webbeans.Context;
 import javax.webbeans.RequestScoped;
 
 import org.jboss.webbeans.BasicContext;

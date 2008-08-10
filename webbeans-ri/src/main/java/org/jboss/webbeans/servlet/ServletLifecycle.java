@@ -26,5 +26,6 @@ public class ServletLifecycle
    public static ServletContext getServletContext() 
    {
       return servletContext;
-   }   
+   }
+   
 }
