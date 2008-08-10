@@ -1,7 +1,6 @@
 package org.jboss.webbeans.init;
 
 import javax.servlet.ServletContext;
-import javax.webbeans.Container;
 
 import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.deployment.DeploymentStrategy;
