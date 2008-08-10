@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.annotations;
+package org.jboss.webbeans.test.annotations.broken;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

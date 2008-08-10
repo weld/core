@@ -50,7 +50,7 @@ public class StereotypeModel
       Set<Annotation> bindingTypes = annotatedClass.getAnnotations(BindingType.class);
       if (bindingTypes.size() > 0)
       {
-         throw new RuntimeException("Cannot declare binding types on a stereotpe");
+         throw new RuntimeException("Cannot declare binding types on a stereotype " + annotatedClass);
       }
    }
    
@@ -63,7 +63,7 @@ public class StereotypeModel
       }
       else
       {
-         throw new RuntimeException("@Stereotype can only be applied to an annotation");
+         throw new RuntimeException("@Stereotype can only be applied to an annotation, it was applied to " + annotatedClass);
       }
    }
 
@@ -98,7 +98,7 @@ public class StereotypeModel
       {
          if (!"".equals(annotatedElement.getAnnotation(Named.class).value()))
          {
-            throw new RuntimeException("Cannot specify a value for a @Named stereotype");
+            throw new RuntimeException("Cannot specify a value for a @Named stereotype " + annotatedElement);
          }
          componentNameDefaulted = true;
       }
@@ -109,7 +109,7 @@ public class StereotypeModel
       Set<Annotation> scopeTypes = annotatedElement.getAnnotations(ScopeType.class);
       if (scopeTypes.size() > 1)
       {
-         throw new RuntimeException("At most one scope type may be specified");
+         throw new RuntimeException("At most one scope type may be specified for " + annotatedElement);
       }
       else if (scopeTypes.size() == 1)
       {
@@ -122,7 +122,7 @@ public class StereotypeModel
       Set<Annotation> deploymentTypes = annotatedElement.getAnnotations(DeploymentType.class);
       if (deploymentTypes.size() > 1)
       {
-         throw new RuntimeException("At most one deployment type may be specified");
+         throw new RuntimeException("At most one deployment type may be specified on " + annotatedElement);
       }
       else if (deploymentTypes.size() == 1)
       {
@@ -192,7 +192,7 @@ public class StereotypeModel
    @Override
    public String toString()
    {
-      return "[" + stereotypeClass + "]";
+      return "StereotypeModel[" + stereotypeClass.getName() + "]";
    }
    
 }

@@ -157,7 +157,7 @@ public abstract class AbstractComponentModel<T>
          
          if (deploymentTypes.size() > 1)
          {
-            throw new RuntimeException("At most one deployment type may be specified (" + deploymentTypes + " are specified)");
+            throw new RuntimeException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + annotatedItem.getAnnotatedClass());
          }
          if (deploymentTypes.size() == 1)
          {
@@ -415,5 +415,11 @@ public abstract class AbstractComponentModel<T>
    }
    
    public abstract ComponentConstructor<T> getConstructor();
+   
+   @Override
+   public String toString()
+   {
+      return "SimpleComponentModel[" + type.getName() + "]";
+   }
 
 }

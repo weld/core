@@ -1,13 +1,12 @@
 package org.jboss.webbeans.deployment;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import javassist.bytecode.ClassFile;
 
 import javax.webbeans.Container;
 import javax.webbeans.DeploymentType;
@@ -17,12 +16,12 @@ import org.jboss.webbeans.ComponentInstanceImpl;
 import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.model.SimpleComponentModel;
 import org.jboss.webbeans.model.StereotypeModel;
+import org.jboss.webbeans.scannotation.AnnotationDB;
+import org.jboss.webbeans.scannotation.ClasspathUrlFinder;
 import org.jboss.webbeans.util.ClassAnnotatedItem;
 import org.jboss.webbeans.util.LoggerUtil;
 import org.jboss.webbeans.util.MutableAnnotatedItem;
 import org.jboss.webbeans.util.Reflections;
-import org.scannotation.AnnotationDB;
-import org.scannotation.ClasspathUrlFinder;
 
 /**
  * @author Pete Muir
@@ -36,6 +35,8 @@ public class DeploymentStrategy
    private ClassLoader classLoader;
    private ContainerImpl container;
    
+   public static String[] DEFAULT_IGNORED_PACKAGES = {"java", "com.sun", "sun", "javasssit"};
+   
    public DeploymentStrategy(ClassLoader classLoader, Container container)
    {
       this.classLoader = classLoader;
@@ -47,11 +48,41 @@ public class DeploymentStrategy
       
       this.container = (ContainerImpl) container;
    }
+ 
    
-   public void scan(URL[] urls)
+   public void scan(URL[] urls, final String ... ignoredPackages)
    {
            
-      AnnotationDB db = new AnnotationDB();
+      AnnotationDB db = new AnnotationDB()
+      {
+         @Override
+         protected boolean ignoreScan(ClassFile classFile)
+         {
+            for (String ignoredPackage : DEFAULT_IGNORED_PACKAGES)
+            {
+               if (classFile.getName().startsWith(ignoredPackage))
+               {
+                  return true;
+               }
+            }
+            for (String ignoredPackage : ignoredPackages)
+            {
+               if (classFile.getName().startsWith(ignoredPackage))
+               {
+                  return true;
+               }
+            }
+            if (classFile.getName().startsWith("javax.webbeans"))
+            {
+               return false;
+            }
+            else if (classFile.getName().startsWith("javax"))
+            {
+               return true;
+            }
+            return false;
+         }
+      };
       try
       {
          db.scanArchives(urls);
@@ -70,45 +101,63 @@ public class DeploymentStrategy
    private void addStereotypes(Map<String, Set<String>> index)
    {
       Set<String> stereotypeClassNames = index.get(Stereotype.class.getName());
-      try
+      if (stereotypeClassNames != null)
       {
-         for (String className : stereotypeClassNames)
+         try
          {
-            log.info("Creating stereotype " + className);
-            StereotypeModel stereotypeModel = new StereotypeModel(new ClassAnnotatedItem(Reflections.classForName(className)));
-            container.getStereotypeManager().addStereotype(stereotypeModel);
-            log.info("Stereotype: " + stereotypeModel);
+            for (String className : stereotypeClassNames)
+            {
+               log.info("Creating stereotype " + className);
+               Class<?> stereotypeClass = Reflections.classForName(className);
+               if (stereotypeClass.isAnnotation())
+               {
+                  StereotypeModel stereotypeModel = new StereotypeModel(new ClassAnnotatedItem(stereotypeClass));
+                  container.getStereotypeManager().addStereotype(stereotypeModel);
+                  log.info("Stereotype: " + stereotypeModel);
+               }
+               
+            }
          }
-      }
-      catch (Exception e) 
-      {
-         throw new RuntimeException(e);
+         catch (Exception e) 
+         {
+            throw new RuntimeException(e);
+         }
       }
    }
    
    private void addComponents(Map<String, Set<String>> index)
    {
       Set<String> annotationNames = index.get(DeploymentType.class.getName());
-      
-      try
+      if (annotationNames != null)
       {
-         for (String annotationType : annotationNames)
+         try
          {
-            Set<String> classNames = index.get(annotationType);
-            for (String className : classNames)
+            for (String annotationType : annotationNames)
             {
-               log.finest("Creating componnt" + className);
-               SimpleComponentModel componentModel = new SimpleComponentModel(
-                     new ClassAnnotatedItem(Reflections.classForName(className)), 
-                     new MutableAnnotatedItem(null, new HashMap()), container);  
-               container.addComponent(new ComponentInstanceImpl(componentModel));
-               log.info("Web Bean: " + componentModel);
+               Set<String> classNames = index.get(annotationType);
+               if (classNames != null)
+               {
+               
+                  for (String className : classNames)
+                  {
+                     log.finest("Creating componnt" + className);
+                     Class<?> componentClass = Reflections.classForName(className);
+                     if (!componentClass.isAnnotation())
+                     {
+                        SimpleComponentModel componentModel = new SimpleComponentModel(
+                              new ClassAnnotatedItem(componentClass), 
+                              new MutableAnnotatedItem(null, new HashMap()), container);  
+                        container.addComponent(new ComponentInstanceImpl(componentModel));
+                        log.info("Web Bean: " + componentModel);
+                     }
+                  }
+               }
             }
          }
-      }
-      catch (ClassNotFoundException ex)
-      {
-         throw new RuntimeException(ex);
+         catch (ClassNotFoundException ex)
+         {
+            throw new RuntimeException(ex);
+         }
       }
    }
    
