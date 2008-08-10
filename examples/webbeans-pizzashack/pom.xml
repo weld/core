@@ -13,7 +13,7 @@
    <groupId>org.jboss.webbeans.examples.pizzashack</groupId>
    <artifactId>webbeans-pizzashack</artifactId>
    <packaging>war</packaging>
-   <description>Web Beans Examples: Pizzashack</description>
+   <name>Web Beans Examples: Pizzashack</name>
    
    <dependencies>
       <dependency>
