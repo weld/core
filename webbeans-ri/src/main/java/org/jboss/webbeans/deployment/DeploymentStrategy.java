@@ -37,16 +37,10 @@ public class DeploymentStrategy
    
    public static String[] DEFAULT_IGNORED_PACKAGES = {"java", "com.sun", "sun", "javasssit"};
    
-   public DeploymentStrategy(ClassLoader classLoader, Container container)
+   public DeploymentStrategy(ClassLoader classLoader, ContainerImpl container)
    {
       this.classLoader = classLoader;
-      
-      if (!(container instanceof ContainerImpl))
-      {
-         throw new IllegalArgumentException("Container must be an instance of ContainerImpl");
-      }
-      
-      this.container = (ContainerImpl) container;
+      this.container = container;
    }
  
    

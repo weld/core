@@ -27,7 +27,7 @@ public class Initialization
    
    public Initialization create()
    {
-      Container container = new ContainerImpl(null);  
+      ContainerImpl container = new ContainerImpl(null);  
       
       servletContext.setAttribute(WEBBEANS_CONTAINER_KEY, container);
       
