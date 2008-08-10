@@ -38,6 +38,14 @@ public class SimpleComponentModel<T> extends AbstractComponentModel<T>
       // TODO Interceptors
    }
    
+   public static void checkType(Class<?> type)
+   {
+      if (type.isMemberClass())
+      {
+         throw new RuntimeException("Simple Web Bean " + type + " cannot be an inner class");
+      }
+   }
+   
    @SuppressWarnings("unchecked")
    protected static <T> SimpleConstructor<T> initConstructor(Class<? extends T> type)
    {

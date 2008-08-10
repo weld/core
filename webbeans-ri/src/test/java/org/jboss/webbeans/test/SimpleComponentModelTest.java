@@ -58,6 +58,7 @@ import org.jboss.webbeans.test.components.Pig;
 import org.jboss.webbeans.test.components.SeaBass;
 import org.jboss.webbeans.test.components.Tuna;
 import org.jboss.webbeans.test.components.broken.ComponentWithTooManyDeploymentTypes;
+import org.jboss.webbeans.test.components.broken.OuterComponent.InnerComponent;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
 import org.jboss.webbeans.util.AnnotatedItem;
 import org.jboss.webbeans.util.ClassAnnotatedItem;
@@ -66,7 +67,7 @@ import org.jboss.webbeans.util.Reflections;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ComponentMetaModelTest
+public class SimpleComponentModelTest
 {
    
    private ContainerImpl container;
@@ -97,6 +98,8 @@ public class ComponentMetaModelTest
       container.getStereotypeManager().addStereotype(new StereotypeModel(new ClassAnnotatedItem(RequestScopedAnimalStereotype.class)));
    }
    
+   // **** TESTS FOR DEPLOYMENT TYPE **** //
+   
    @Test
    public void testTooManyDeploymentTypes()
    {
@@ -111,8 +114,6 @@ public class ComponentMetaModelTest
       }
       assert exception;
    }
-   
-   // **** TESTS FOR DEPLOYMENT TYPE **** //
    
    @Test
    public void testXmlDeploymentTypeOverridesJava()
@@ -501,6 +502,21 @@ public class ComponentMetaModelTest
       try
       {
          new SimpleComponentModel<Cow>(new ClassAnnotatedItem(Cow.class), emptyAnnotatedItem, container);
+      }
+      catch (Exception e) 
+      {
+         exception = true;
+      }
+      assert exception;
+   }
+   
+   @Test
+   public void testInnerClassIsNotAllowed()
+   {
+      boolean exception = false;
+      try
+      {
+         new SimpleComponentModel<Cow>(new ClassAnnotatedItem(InnerComponent.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
