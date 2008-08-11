@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import javax.webbeans.ComponentInstance;
 import javax.webbeans.Container;
 
+import org.jboss.webbeans.model.AbstractClassComponentModel;
 import org.jboss.webbeans.model.AbstractComponentModel;
 import org.jboss.webbeans.util.LoggerUtil;
 

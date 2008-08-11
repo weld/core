@@ -8,6 +8,8 @@ import javax.webbeans.Current;
 import javax.webbeans.Dependent;
 
 import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.introspector.AnnotatedType;
+import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.EnterpriseComponentModel;
 import org.jboss.webbeans.test.annotations.Synchronous;
 import org.jboss.webbeans.test.components.Bear;
@@ -21,9 +23,6 @@ import org.jboss.webbeans.test.components.Panther;
 import org.jboss.webbeans.test.components.Puma;
 import org.jboss.webbeans.test.components.Tiger;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
-import org.jboss.webbeans.util.AnnotatedItem;
-import org.jboss.webbeans.util.ClassAnnotatedItem;
-import org.jboss.webbeans.util.MutableAnnotatedItem;
 import org.jboss.webbeans.util.Reflections;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,12 +32,12 @@ public class EnterpriseComponentModelTest
    
 private ContainerImpl container;
    
-   private AnnotatedItem emptyAnnotatedItem;
+   private AnnotatedType emptyAnnotatedItem;
    
    @Before
    public void before()
    {
-      emptyAnnotatedItem = new MutableAnnotatedItem(null, new HashMap<Class<? extends Annotation>, Annotation>());
+      emptyAnnotatedItem = new SimpleAnnotatedType(null, new HashMap<Class<? extends Annotation>, Annotation>());
       container = new MockContainerImpl(null);
    }
    
@@ -46,7 +45,7 @@ private ContainerImpl container;
    @Test
    public void testStateless()
    {
-      EnterpriseComponentModel<Lion> lion = new EnterpriseComponentModel<Lion>(new ClassAnnotatedItem(Lion.class), emptyAnnotatedItem, container);
+      EnterpriseComponentModel<Lion> lion = new EnterpriseComponentModel<Lion>(new SimpleAnnotatedType(Lion.class), emptyAnnotatedItem, container);
       assert lion.getScopeType().annotationType().equals(Dependent.class);
       Reflections.annotationSetMatches(lion.getBindingTypes(), Current.class);
       assert lion.getName().equals("lion");
@@ -57,9 +56,9 @@ private ContainerImpl container;
    public void testStatelessDefinedInXml()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Giraffe.class, annotations);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(Giraffe.class, annotations);
       
-      EnterpriseComponentModel<Giraffe> giraffe = new EnterpriseComponentModel<Giraffe>(new ClassAnnotatedItem(Giraffe.class), annotatedItem, container);
+      EnterpriseComponentModel<Giraffe> giraffe = new EnterpriseComponentModel<Giraffe>(new SimpleAnnotatedType(Giraffe.class), annotatedItem, container);
       assert giraffe.getScopeType().annotationType().equals(Dependent.class);
       Reflections.annotationSetMatches(giraffe.getBindingTypes(), Current.class);
    }
@@ -70,7 +69,7 @@ private ContainerImpl container;
       boolean exception = false;
       try
       {
-         new EnterpriseComponentModel<Bear>(new ClassAnnotatedItem(Bear.class), emptyAnnotatedItem, container);
+         new EnterpriseComponentModel<Bear>(new SimpleAnnotatedType(Bear.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -100,7 +99,7 @@ private ContainerImpl container;
    public void testStateful()
    {
 
-      EnterpriseComponentModel<Tiger> tiger = new EnterpriseComponentModel<Tiger>(new ClassAnnotatedItem(Tiger.class), emptyAnnotatedItem, container);
+      EnterpriseComponentModel<Tiger> tiger = new EnterpriseComponentModel<Tiger>(new SimpleAnnotatedType(Tiger.class), emptyAnnotatedItem, container);
       Reflections.annotationSetMatches(tiger.getBindingTypes(), Synchronous.class);
       assert tiger.getRemoveMethod().getMethod().getName().equals("remove");
       assert tiger.getName() == null;
@@ -111,7 +110,7 @@ private ContainerImpl container;
    public void testMultipleRemoveMethodsWithDestroys()
    {
 
-      EnterpriseComponentModel<Elephant> elephant = new EnterpriseComponentModel<Elephant>(new ClassAnnotatedItem(Elephant.class), emptyAnnotatedItem, container);
+      EnterpriseComponentModel<Elephant> elephant = new EnterpriseComponentModel<Elephant>(new SimpleAnnotatedType(Elephant.class), emptyAnnotatedItem, container);
       assert elephant.getRemoveMethod().getMethod().getName().equals("remove2");
    }
    
@@ -122,7 +121,7 @@ private ContainerImpl container;
       boolean exception = false;
       try
       {
-         new EnterpriseComponentModel<Puma>(new ClassAnnotatedItem(Puma.class), emptyAnnotatedItem, container);
+         new EnterpriseComponentModel<Puma>(new SimpleAnnotatedType(Puma.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -138,7 +137,7 @@ private ContainerImpl container;
       boolean exception = false;
       try
       {
-         new EnterpriseComponentModel<Cougar>(new ClassAnnotatedItem(Cougar.class), emptyAnnotatedItem, container);
+         new EnterpriseComponentModel<Cougar>(new SimpleAnnotatedType(Cougar.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -154,7 +153,7 @@ private ContainerImpl container;
       boolean exception = false;
       try
       {
-         new EnterpriseComponentModel<Cheetah>(new ClassAnnotatedItem(Cheetah.class), emptyAnnotatedItem, container);
+         new EnterpriseComponentModel<Cheetah>(new SimpleAnnotatedType(Cheetah.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -167,7 +166,7 @@ private ContainerImpl container;
    public void testRemoveMethodWithDefaultBinding()
    {
 
-      EnterpriseComponentModel<Panther> panther = new EnterpriseComponentModel<Panther>(new ClassAnnotatedItem(Panther.class), emptyAnnotatedItem, container);
+      EnterpriseComponentModel<Panther> panther = new EnterpriseComponentModel<Panther>(new SimpleAnnotatedType(Panther.class), emptyAnnotatedItem, container);
       
       assert panther.getRemoveMethod().getMethod().getName().equals("remove");
       assert panther.getRemoveMethod().getParameters().size() == 1;
@@ -180,7 +179,7 @@ private ContainerImpl container;
    @Test
    public void testMessageDriven()
    {
-      EnterpriseComponentModel<Leopard> leopard = new EnterpriseComponentModel<Leopard>(new ClassAnnotatedItem(Leopard.class), emptyAnnotatedItem, container);
+      EnterpriseComponentModel<Leopard> leopard = new EnterpriseComponentModel<Leopard>(new SimpleAnnotatedType(Leopard.class), emptyAnnotatedItem, container);
       Reflections.annotationSetMatches(leopard.getBindingTypes(), Current.class);
    }
 

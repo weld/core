@@ -9,42 +9,39 @@ import javax.webbeans.Dependent;
 import javax.webbeans.ScopeType;
 
 import org.jboss.webbeans.ContainerImpl;
-import org.jboss.webbeans.bindings.DependentBinding;
 import org.jboss.webbeans.injectable.ComponentConstructor;
 import org.jboss.webbeans.injectable.JMSConstructor;
-import org.jboss.webbeans.util.AnnotatedItem;
-import org.jboss.webbeans.util.MutableAnnotatedItem;
+import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
 import org.jboss.webbeans.util.Reflections;
+
+// TODO Work out what to return on methods we don't support
 
 public class JmsComponentModel<T> extends AbstractComponentModel<T>
 {
 
    // TODO Work out how to handle xml elements which don't correspond to annotations
    
-   private Set<Annotation> bindingTypes;
-   private Class<? extends T> type;
-   private Annotation scopeType;
    private String jndiName;
    private ComponentConstructor<T> constructor;
+   private Set<Annotation> bindingTypes;
+   private Annotation scopeType;
    
    @SuppressWarnings("unchecked")
    public JmsComponentModel(AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
    {
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(null, new HashMap<Class<? extends Annotation>, Annotation>());
-      type = (Class<? extends T>)initType(xmlAnnotatedItem);
+      AnnotatedItem annotatedItem = new SimpleAnnotatedItem(new HashMap<Class<? extends Annotation>, Annotation>());
       bindingTypes = initBindingTypes(annotatedItem, xmlAnnotatedItem);
-      scopeType = new DependentBinding();
-      checkBindingTypesAllowed(bindingTypes, type);
-      checkScopeAllowed(xmlAnnotatedItem, type);
+      //scopeType = new DependentBiding();
+      checkBindingTypesAllowed(bindingTypes, null);
+      checkScopeAllowed(xmlAnnotatedItem, null);
       // TODO Initialize queue. topic
       this.constructor = new JMSConstructor<T>(jndiName);
    }
-   
-   
 
    @SuppressWarnings("unchecked")
    protected static void checkBindingTypesAllowed(Set<Annotation> bindingTypes,
-         Class<?> type)
+         String type)
    {
       if (bindingTypes.size() == 0)
       {
@@ -87,7 +84,7 @@ public class JmsComponentModel<T> extends AbstractComponentModel<T>
    @Override
    protected Class<? extends T> getType()
    {
-      return type;
+      return null;
    }
    
    public String getJndiName()
@@ -99,6 +96,18 @@ public class JmsComponentModel<T> extends AbstractComponentModel<T>
    public Annotation getScopeType()
    {
       return scopeType;
+   }
+
+   @Override
+   public Annotation getDeploymentType()
+   {
+      return null;
+   }
+
+   @Override
+   public String getName()
+   {
+      return null;
    }
    
 }

@@ -1,7 +1,8 @@
-package org.jboss.webbeans.util;
+package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
+
 
 /**
  * AnnotatedItem provides a uniform access to the annotations on an annotated
@@ -12,14 +13,14 @@ import java.util.Set;
  */
 public interface AnnotatedItem
 {
-   
+
    /**
     * Get all annotations on the item
     * 
     * An empty set is returned if no annotations are present
     */
    public abstract <T extends Annotation> Set<T> getAnnotations();
-   
+
    /**
     * Get all annotations which are annotated with the given meta annotation 
     * type
@@ -29,23 +30,19 @@ public interface AnnotatedItem
     */
    public abstract <T extends Annotation> Set<Annotation> getAnnotations(
          Class<T> metaAnnotationType);
-   
+
    /**
     * Get an annotation for the annotation type specified.
     * 
     * If the annotation isn't present, null is returned
     */
-   public <T extends Annotation> T getAnnotation(Class<T> annotationType);
-   
+   public abstract <T extends Annotation> T getAnnotation(
+         Class<T> annotationType);
+
    /**
     * Return true if the annotation type specified is present
     */
-   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType);
-   
-   /**
-    * Return the class of the annotated item. If this annotatedItem isn't in use
-    * then this method should return null
-    */
-   public Class<?> getAnnotatedClass();
-   
+   public abstract boolean isAnnotationPresent(
+         Class<? extends Annotation> annotationType);
+
 }

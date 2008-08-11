@@ -10,16 +10,16 @@ import org.jboss.webbeans.ejb.EjbMetaData;
 import org.jboss.webbeans.injectable.ComponentConstructor;
 import org.jboss.webbeans.injectable.EnterpriseConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
-import org.jboss.webbeans.util.AnnotatedItem;
+import org.jboss.webbeans.introspector.AnnotatedType;
 
-public class EnterpriseComponentModel<T> extends AbstractComponentModel<T>
+public class EnterpriseComponentModel<T> extends AbstractClassComponentModel<T>
 {
 
    private EnterpriseConstructor<T> constructor;
    private InjectableMethod<?> removeMethod;  
    
-   public EnterpriseComponentModel(AnnotatedItem annotatedItem,
-         AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
+   public EnterpriseComponentModel(AnnotatedType annotatedItem,
+         AnnotatedType xmlAnnotatedItem, ContainerImpl container)
    {
       super(annotatedItem, xmlAnnotatedItem, container);
       EjbMetaData<T> ejbMetaData = container.getEjbManager().getEjbMetaData(getType());

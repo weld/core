@@ -7,6 +7,7 @@ import javax.webbeans.Model;
 import javax.webbeans.Production;
 import javax.webbeans.RequestScoped;
 
+import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.test.annotations.AnimalOrderStereotype;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
@@ -17,7 +18,6 @@ import org.jboss.webbeans.test.annotations.broken.StereotypeWithTooManyDeploymen
 import org.jboss.webbeans.test.annotations.broken.StereotypeWithTooManyScopeTypes;
 import org.jboss.webbeans.test.components.Animal;
 import org.jboss.webbeans.test.components.Order;
-import org.jboss.webbeans.util.ClassAnnotatedItem;
 import org.junit.Test;
 
 public class StereotypeMetaModelTest
@@ -26,7 +26,7 @@ public class StereotypeMetaModelTest
    @Test
    public void testComponentStereotype()
    {
-      StereotypeModel componentStereotype = new StereotypeModel(new ClassAnnotatedItem(Component.class));
+      StereotypeModel componentStereotype = new StereotypeModel(new SimpleAnnotatedType(Component.class));
       
       assert Production.class.equals(componentStereotype.getDefaultDeploymentType().annotationType());
       assert componentStereotype.getDefaultScopeType() == null;
@@ -39,7 +39,7 @@ public class StereotypeMetaModelTest
    @Test
    public void testModelStereotype()
    {
-      StereotypeModel modelStereotype = new StereotypeModel(new ClassAnnotatedItem(Model.class));
+      StereotypeModel modelStereotype = new StereotypeModel(new SimpleAnnotatedType(Model.class));
       assert Production.class.equals(modelStereotype.getDefaultDeploymentType().annotationType());
       assert RequestScoped.class.equals(modelStereotype.getDefaultScopeType().annotationType());
       assert modelStereotype.isComponentNameDefaulted();
@@ -51,7 +51,7 @@ public class StereotypeMetaModelTest
    @Test
    public void testAnimalStereotype()
    {
-      StereotypeModel animalStereotype = new StereotypeModel(new ClassAnnotatedItem(AnimalStereotype.class));
+      StereotypeModel animalStereotype = new StereotypeModel(new SimpleAnnotatedType(AnimalStereotype.class));
       assert animalStereotype.getDefaultScopeType().annotationType().equals(RequestScoped.class);
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert animalStereotype.getRequiredTypes().size() == 1;
@@ -64,7 +64,7 @@ public class StereotypeMetaModelTest
    @Test
    public void testAnimalOrderStereotype()
    {
-      StereotypeModel animalStereotype = new StereotypeModel(new ClassAnnotatedItem(AnimalOrderStereotype.class));
+      StereotypeModel animalStereotype = new StereotypeModel(new SimpleAnnotatedType(AnimalOrderStereotype.class));
       assert animalStereotype.getDefaultScopeType() == null;
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert animalStereotype.getRequiredTypes().size() == 2;
@@ -78,7 +78,7 @@ public class StereotypeMetaModelTest
    @Test
    public void testRequestScopedAnimalStereotype()
    {
-      StereotypeModel animalStereotype = new StereotypeModel(new ClassAnnotatedItem(RequestScopedAnimalStereotype.class));
+      StereotypeModel animalStereotype = new StereotypeModel(new SimpleAnnotatedType(RequestScopedAnimalStereotype.class));
       assert animalStereotype.getDefaultScopeType() == null;
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert animalStereotype.getRequiredTypes().size() == 1;
@@ -95,7 +95,7 @@ public class StereotypeMetaModelTest
       boolean exception = false;
       try
       {
-         new StereotypeModel(new ClassAnnotatedItem(StereotypeWithTooManyScopeTypes.class));
+         new StereotypeModel(new SimpleAnnotatedType(StereotypeWithTooManyScopeTypes.class));
       }
       catch (Exception e) 
       {
@@ -110,7 +110,7 @@ public class StereotypeMetaModelTest
       boolean exception = false;
       try
       {
-         new StereotypeModel(new ClassAnnotatedItem(StereotypeWithTooManyDeploymentTypes.class));
+         new StereotypeModel(new SimpleAnnotatedType(StereotypeWithTooManyDeploymentTypes.class));
       }
       catch (Exception e) 
       {
@@ -125,7 +125,7 @@ public class StereotypeMetaModelTest
       boolean exception = false;
       try
       {
-         new StereotypeModel(new ClassAnnotatedItem(StereotypeWithNonEmptyNamed.class));
+         new StereotypeModel(new SimpleAnnotatedType(StereotypeWithNonEmptyNamed.class));
       }
       catch (Exception e) 
       {
@@ -140,7 +140,7 @@ public class StereotypeMetaModelTest
       boolean exception = false;
       try
       {
-         new StereotypeModel(new ClassAnnotatedItem(StereotypeWithBindingTypes.class));
+         new StereotypeModel(new SimpleAnnotatedType(StereotypeWithBindingTypes.class));
       }
       catch (Exception e) 
       {

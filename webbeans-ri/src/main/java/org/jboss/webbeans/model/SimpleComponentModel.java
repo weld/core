@@ -10,11 +10,11 @@ import javax.webbeans.Initializer;
 import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.injectable.SimpleConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
-import org.jboss.webbeans.util.AnnotatedItem;
+import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.LoggerUtil;
 import org.jboss.webbeans.util.Reflections;
 
-public class SimpleComponentModel<T> extends AbstractComponentModel<T>
+public class SimpleComponentModel<T> extends AbstractClassComponentModel<T>
 {
    
    public static final String LOGGER_NAME = "componentMetaModel";
@@ -31,10 +31,11 @@ public class SimpleComponentModel<T> extends AbstractComponentModel<T>
     * @param container
     */
    @SuppressWarnings("unchecked")
-   public SimpleComponentModel(AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
+   public SimpleComponentModel(AnnotatedType annotatedItem, AnnotatedType xmlAnnotatedItem, ContainerImpl container)
    {
       super(annotatedItem, xmlAnnotatedItem, container);
       this.constructor = initConstructor(getType());
+      checkType(getType());
       // TODO Interceptors
    }
    
@@ -110,6 +111,13 @@ public class SimpleComponentModel<T> extends AbstractComponentModel<T>
    public InjectableMethod<?> getRemoveMethod()
    {
       return removeMethod;
+   }
+   
+
+   @Override
+   public String toString()
+   {
+      return "SimpleComponentModel[" + getType().getName() + "]";
    }
 
    

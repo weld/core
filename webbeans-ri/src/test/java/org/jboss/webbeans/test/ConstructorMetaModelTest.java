@@ -7,6 +7,8 @@ import javax.webbeans.Current;
 
 import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.injectable.SimpleConstructor;
+import org.jboss.webbeans.introspector.AnnotatedType;
+import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.SimpleComponentModel;
 import org.jboss.webbeans.test.annotations.Synchronous;
 import org.jboss.webbeans.test.components.Chicken;
@@ -18,9 +20,6 @@ import org.jboss.webbeans.test.components.Order;
 import org.jboss.webbeans.test.components.Sheep;
 import org.jboss.webbeans.test.components.Turkey;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
-import org.jboss.webbeans.util.AnnotatedItem;
-import org.jboss.webbeans.util.ClassAnnotatedItem;
-import org.jboss.webbeans.util.MutableAnnotatedItem;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,12 +28,12 @@ public class ConstructorMetaModelTest
 
    private ContainerImpl container;
    
-   private AnnotatedItem emptyAnnotatedItem;
+   private AnnotatedType emptyAnnotatedItem;
    
    @Before
    public void before()
    {
-      emptyAnnotatedItem = new MutableAnnotatedItem(null, new HashMap<Class<? extends Annotation>, Annotation>());
+      emptyAnnotatedItem = new SimpleAnnotatedType(null, new HashMap<Class<? extends Annotation>, Annotation>());
       container = new MockContainerImpl(null);
       
    }
@@ -42,7 +41,7 @@ public class ConstructorMetaModelTest
    @Test
    public void testImplicitConstructor()
    {
-      SimpleConstructor<Order> constructor = new SimpleComponentModel<Order>(new ClassAnnotatedItem(Order.class), emptyAnnotatedItem, container).getConstructor();
+      SimpleConstructor<Order> constructor = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), emptyAnnotatedItem, container).getConstructor();
       assert constructor.getConstructor().getDeclaringClass().equals(Order.class);
       assert constructor.getConstructor().getParameterTypes().length == 0;
       assert constructor.getParameters().size() == 0;
@@ -51,7 +50,7 @@ public class ConstructorMetaModelTest
    @Test
    public void testSingleConstructor()
    {
-      SimpleConstructor<Donkey> constructor = new SimpleComponentModel<Donkey>(new ClassAnnotatedItem(Donkey.class), emptyAnnotatedItem, container).getConstructor();
+      SimpleConstructor<Donkey> constructor = new SimpleComponentModel<Donkey>(new SimpleAnnotatedType(Donkey.class), emptyAnnotatedItem, container).getConstructor();
       assert constructor.getConstructor().getDeclaringClass().equals(Donkey.class);
       assert constructor.getConstructor().getParameterTypes().length == 1;
       assert constructor.getConstructor().getParameterTypes()[0].equals(String.class);
@@ -64,7 +63,7 @@ public class ConstructorMetaModelTest
    @Test
    public void testInitializerAnnotatedConstructor()
    {
-      SimpleConstructor<Sheep> constructor = new SimpleComponentModel<Sheep>(new ClassAnnotatedItem(Sheep.class), emptyAnnotatedItem, container).getConstructor();
+      SimpleConstructor<Sheep> constructor = new SimpleComponentModel<Sheep>(new SimpleAnnotatedType(Sheep.class), emptyAnnotatedItem, container).getConstructor();
       assert constructor.getConstructor().getDeclaringClass().equals(Sheep.class);
       assert constructor.getConstructor().getParameterTypes().length == 2;
       assert constructor.getConstructor().getParameterTypes()[0].equals(String.class);
@@ -81,7 +80,7 @@ public class ConstructorMetaModelTest
    @Test
    public void testBindingTypeAnnotatedConstructor()
    {
-      SimpleConstructor<Duck> constructor = new SimpleComponentModel<Duck>(new ClassAnnotatedItem(Duck.class), emptyAnnotatedItem, container).getConstructor();
+      SimpleConstructor<Duck> constructor = new SimpleComponentModel<Duck>(new SimpleAnnotatedType(Duck.class), emptyAnnotatedItem, container).getConstructor();
       assert constructor.getConstructor().getDeclaringClass().equals(Duck.class);
       assert constructor.getConstructor().getParameterTypes().length == 2;
       assert constructor.getConstructor().getParameterTypes()[0].equals(String.class);
@@ -101,7 +100,7 @@ public class ConstructorMetaModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Chicken>(new ClassAnnotatedItem(Chicken.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Chicken>(new SimpleAnnotatedType(Chicken.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -117,7 +116,7 @@ public class ConstructorMetaModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Turkey>(new ClassAnnotatedItem(Turkey.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Turkey>(new SimpleAnnotatedType(Turkey.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -133,7 +132,7 @@ public class ConstructorMetaModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Goat>(new ClassAnnotatedItem(Goat.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Goat>(new SimpleAnnotatedType(Goat.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -149,7 +148,7 @@ public class ConstructorMetaModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Goose>(new ClassAnnotatedItem(Goose.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Goose>(new SimpleAnnotatedType(Goose.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {

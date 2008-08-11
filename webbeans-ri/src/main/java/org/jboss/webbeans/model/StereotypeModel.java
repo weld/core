@@ -12,7 +12,8 @@ import javax.webbeans.Named;
 import javax.webbeans.ScopeType;
 import javax.webbeans.Stereotype;
 
-import org.jboss.webbeans.util.AnnotatedItem;
+import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.AnnotatedType;
 
 /**
  * A meta model for a stereotype, allows us to cache a stereotype and to validate it
@@ -32,7 +33,7 @@ public class StereotypeModel
    private Set<Annotation> interceptorBindings;
    
    @SuppressWarnings("unchecked")
-   public StereotypeModel(AnnotatedItem annotatedClass)
+   public StereotypeModel(AnnotatedType annotatedClass)
    {
       initStereotypeClass(annotatedClass);
       Stereotype stereotype = annotatedClass.getAnnotation(Stereotype.class);
@@ -55,7 +56,7 @@ public class StereotypeModel
    }
    
    @SuppressWarnings("unchecked")
-   private void initStereotypeClass(AnnotatedItem annotatedClass)
+   private void initStereotypeClass(AnnotatedType annotatedClass)
    {
       if (Annotation.class.isAssignableFrom(annotatedClass.getAnnotatedClass()))
       {

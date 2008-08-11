@@ -22,6 +22,8 @@ import org.jboss.webbeans.bindings.DependentBinding;
 import org.jboss.webbeans.bindings.NamedBinding;
 import org.jboss.webbeans.bindings.RequestScopedBinding;
 import org.jboss.webbeans.bindings.StandardBinding;
+import org.jboss.webbeans.introspector.AnnotatedType;
+import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.SimpleComponentModel;
 import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
@@ -60,9 +62,6 @@ import org.jboss.webbeans.test.components.Tuna;
 import org.jboss.webbeans.test.components.broken.ComponentWithTooManyDeploymentTypes;
 import org.jboss.webbeans.test.components.broken.OuterComponent.InnerComponent;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
-import org.jboss.webbeans.util.AnnotatedItem;
-import org.jboss.webbeans.util.ClassAnnotatedItem;
-import org.jboss.webbeans.util.MutableAnnotatedItem;
 import org.jboss.webbeans.util.Reflections;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,12 +71,12 @@ public class SimpleComponentModelTest
    
    private ContainerImpl container;
    
-   private AnnotatedItem emptyAnnotatedItem;
+   private AnnotatedType emptyAnnotatedItem;
    
    @Before
    public void before()
    {
-      emptyAnnotatedItem = new MutableAnnotatedItem(null, new HashMap<Class<? extends Annotation>, Annotation>());
+      emptyAnnotatedItem = new SimpleAnnotatedType(null, new HashMap<Class<? extends Annotation>, Annotation>());
       
       List<Annotation> enabledDeploymentTypes = new ArrayList<Annotation>();
       enabledDeploymentTypes.add(new StandardBinding());
@@ -90,12 +89,12 @@ public class SimpleComponentModelTest
    
    private void initStereotypes(ContainerImpl container)
    {
-      container.getStereotypeManager().addStereotype(new StereotypeModel(new ClassAnnotatedItem(AnimalStereotype.class)));
-      container.getStereotypeManager().addStereotype(new StereotypeModel(new ClassAnnotatedItem(HornedMammalStereotype.class)));
-      container.getStereotypeManager().addStereotype(new StereotypeModel(new ClassAnnotatedItem(MammalStereotype.class)));
-      container.getStereotypeManager().addStereotype(new StereotypeModel(new ClassAnnotatedItem(FishStereotype.class)));
-      container.getStereotypeManager().addStereotype(new StereotypeModel(new ClassAnnotatedItem(RiverFishStereotype.class)));
-      container.getStereotypeManager().addStereotype(new StereotypeModel(new ClassAnnotatedItem(RequestScopedAnimalStereotype.class)));
+      container.getStereotypeManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(AnimalStereotype.class)));
+      container.getStereotypeManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(HornedMammalStereotype.class)));
+      container.getStereotypeManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(MammalStereotype.class)));
+      container.getStereotypeManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(FishStereotype.class)));
+      container.getStereotypeManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(RiverFishStereotype.class)));
+      container.getStereotypeManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(RequestScopedAnimalStereotype.class)));
    }
    
    // **** TESTS FOR DEPLOYMENT TYPE **** //
@@ -106,7 +105,7 @@ public class SimpleComponentModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<ComponentWithTooManyDeploymentTypes>(new ClassAnnotatedItem(ComponentWithTooManyDeploymentTypes.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<ComponentWithTooManyDeploymentTypes>(new SimpleAnnotatedType(ComponentWithTooManyDeploymentTypes.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -120,16 +119,16 @@ public class SimpleComponentModelTest
    {
       Map<Class<? extends Annotation>, Annotation> xmlDefinedDeploymentTypeAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
       xmlDefinedDeploymentTypeAnnotations.put(AnotherDeploymentType.class, new AnotherDeploymentTypeBinding());
-      AnnotatedItem xmlDefinedDeploymentTypeAnnotatedItem = new MutableAnnotatedItem(ComponentWithTooManyDeploymentTypes.class, xmlDefinedDeploymentTypeAnnotations);
+      AnnotatedType xmlDefinedDeploymentTypeAnnotatedItem = new SimpleAnnotatedType(ComponentWithTooManyDeploymentTypes.class, xmlDefinedDeploymentTypeAnnotations);
       
-      SimpleComponentModel<ComponentWithTooManyDeploymentTypes> component = new SimpleComponentModel<ComponentWithTooManyDeploymentTypes>(new ClassAnnotatedItem(ComponentWithTooManyDeploymentTypes.class), xmlDefinedDeploymentTypeAnnotatedItem, container);
+      SimpleComponentModel<ComponentWithTooManyDeploymentTypes> component = new SimpleComponentModel<ComponentWithTooManyDeploymentTypes>(new SimpleAnnotatedType(ComponentWithTooManyDeploymentTypes.class), xmlDefinedDeploymentTypeAnnotatedItem, container);
       assert component.getDeploymentType().annotationType().equals(AnotherDeploymentType.class);
    }
    
    @Test
    public void testXmlDefaultDeploymentType()
    {
-      AnnotatedItem antelopeAnnotatedItem = new MutableAnnotatedItem(Antelope.class, new HashMap<Class<? extends Annotation>, Annotation>());
+      AnnotatedType antelopeAnnotatedItem = new SimpleAnnotatedType(Antelope.class, new HashMap<Class<? extends Annotation>, Annotation>());
       SimpleComponentModel<Antelope> antelope = new SimpleComponentModel<Antelope>(emptyAnnotatedItem, antelopeAnnotatedItem, container);
       assert antelope.getDeploymentType().annotationType().equals(Production.class);
    }
@@ -137,8 +136,8 @@ public class SimpleComponentModelTest
    @Test
    public void testXmlIgnoresJavaDeploymentType()
    {
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Tuna.class, new HashMap<Class<? extends Annotation>, Annotation>());
-      SimpleComponentModel<Tuna> tuna = new SimpleComponentModel<Tuna>(new ClassAnnotatedItem(Tuna.class), annotatedItem, container);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(Tuna.class, new HashMap<Class<? extends Annotation>, Annotation>());
+      SimpleComponentModel<Tuna> tuna = new SimpleComponentModel<Tuna>(new SimpleAnnotatedType(Tuna.class), annotatedItem, container);
       assert tuna.getDeploymentType().annotationType().equals(Production.class);
    }
    
@@ -147,9 +146,9 @@ public class SimpleComponentModelTest
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(HornedMammalStereotype.class, new HornedMamalStereotypeBinding());
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Moose.class, annotations);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(Moose.class, annotations);
       
-      SimpleComponentModel<Moose> moose = new SimpleComponentModel<Moose>(new ClassAnnotatedItem(Moose.class), annotatedItem, container);
+      SimpleComponentModel<Moose> moose = new SimpleComponentModel<Moose>(new SimpleAnnotatedType(Moose.class), annotatedItem, container);
       assert moose.getDeploymentType().annotationType().equals(HornedAnimalDeploymentType.class);
       
    }
@@ -162,9 +161,9 @@ public class SimpleComponentModelTest
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Asynchronous.class, new AsynchronousBinding());
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Cat.class, annotations);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(Cat.class, annotations);
       
-      SimpleComponentModel<Cat> cat = new SimpleComponentModel<Cat>(new ClassAnnotatedItem(Cat.class), annotatedItem, container);
+      SimpleComponentModel<Cat> cat = new SimpleComponentModel<Cat>(new SimpleAnnotatedType(Cat.class), annotatedItem, container);
       assert cat.getBindingTypes().size() == 1;
       assert Reflections.annotationSetMatches(cat.getBindingTypes(), Asynchronous.class);
    }
@@ -173,7 +172,7 @@ public class SimpleComponentModelTest
    @Test
    public void testBindingTypesDeclaredInJava()
    {
-      SimpleComponentModel<Cat> cat = new SimpleComponentModel<Cat>(new ClassAnnotatedItem(Cat.class), emptyAnnotatedItem, container);
+      SimpleComponentModel<Cat> cat = new SimpleComponentModel<Cat>(new SimpleAnnotatedType(Cat.class), emptyAnnotatedItem, container);
       assert cat.getBindingTypes().size() == 1;
       assert Reflections.annotationSetMatches(cat.getBindingTypes(), Synchronous.class);
    }
@@ -184,7 +183,7 @@ public class SimpleComponentModelTest
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Asynchronous.class, new AsynchronousBinding());
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Antelope.class, annotations);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(Antelope.class, annotations);
       
       SimpleComponentModel<Antelope> antelope = new SimpleComponentModel<Antelope>(emptyAnnotatedItem, annotatedItem, container);
       assert Reflections.annotationSetMatches(antelope.getBindingTypes(), Asynchronous.class);
@@ -194,7 +193,7 @@ public class SimpleComponentModelTest
    @Test
    public void testDefaultBindingType()
    {
-      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new ClassAnnotatedItem(Order.class), emptyAnnotatedItem, container);
+      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), emptyAnnotatedItem, container);
       assert order.getBindingTypes().size() == 1;
       order.getBindingTypes().iterator().next().annotationType().equals(Current.class);
    }
@@ -204,7 +203,7 @@ public class SimpleComponentModelTest
    @Test
    public void testScopeDeclaredInJava()
    {
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), emptyAnnotatedItem, container);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), emptyAnnotatedItem, container);
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);
    }
    
@@ -213,9 +212,9 @@ public class SimpleComponentModelTest
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(RequestScoped.class, new RequestScopedBinding());
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Order.class, annotations);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(Order.class, annotations);
       
-      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new ClassAnnotatedItem(Order.class), annotatedItem, container);
+      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), annotatedItem, container);
       assert order.getScopeType().annotationType().equals(RequestScoped.class);
    }
    
@@ -224,8 +223,8 @@ public class SimpleComponentModelTest
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(ConversationScoped.class, new ConversationScopedBinding());
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
       assert trout.getScopeType().annotationType().equals(ConversationScoped.class);
    }
    
@@ -233,16 +232,16 @@ public class SimpleComponentModelTest
    public void testScopeMissingInXml()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
       
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);
    }
    
    @Test
    public void testNoScopeSpecified()
    {
-      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new ClassAnnotatedItem(Order.class), emptyAnnotatedItem, container);
+      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), emptyAnnotatedItem, container);
       assert order.getScopeType().annotationType().equals(Dependent.class);
    }
    
@@ -252,7 +251,7 @@ public class SimpleComponentModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<ComponentWithTooManyScopeTypes>(new ClassAnnotatedItem(ComponentWithTooManyScopeTypes.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<ComponentWithTooManyScopeTypes>(new SimpleAnnotatedType(ComponentWithTooManyScopeTypes.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -270,7 +269,7 @@ public class SimpleComponentModelTest
          Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
          annotations.put(RequestScoped.class, new RequestScopedBinding());
          annotations.put(ConversationScoped.class, new ConversationScopedBinding());
-         AnnotatedItem antelopeAnnotatedItem = new MutableAnnotatedItem(Antelope.class, annotations);
+         AnnotatedType antelopeAnnotatedItem = new SimpleAnnotatedType(Antelope.class, annotations);
          new SimpleComponentModel<Antelope>(emptyAnnotatedItem, antelopeAnnotatedItem, container);
       }
       catch (Exception e) 
@@ -285,8 +284,8 @@ public class SimpleComponentModelTest
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeBinding());
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);
    }
    
@@ -296,12 +295,12 @@ public class SimpleComponentModelTest
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeBinding());
       annotations.put(AnimalStereotype.class, new AnimalStereotypeBinding());
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Haddock.class, annotations);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(Haddock.class, annotations);
       
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Haddock>(new ClassAnnotatedItem(Haddock.class), annotatedItem, container);
+         new SimpleComponentModel<Haddock>(new SimpleAnnotatedType(Haddock.class), annotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -316,9 +315,9 @@ public class SimpleComponentModelTest
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeBinding());
       annotations.put(AnimalStereotype.class, new AnimalStereotypeBinding());
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
       
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);     
    }
    
@@ -328,9 +327,9 @@ public class SimpleComponentModelTest
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeBinding());
       annotations.put(RiverFishStereotype.class, new RiverFishStereotypeBinding());
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Haddock.class, annotations);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(Haddock.class, annotations);
       
-      SimpleComponentModel<Haddock> haddock = new SimpleComponentModel<Haddock>(new ClassAnnotatedItem(Haddock.class), annotatedItem, container);
+      SimpleComponentModel<Haddock> haddock = new SimpleComponentModel<Haddock>(new SimpleAnnotatedType(Haddock.class), annotatedItem, container);
       assert haddock.getScopeType().annotationType().equals(ApplicationScoped.class);
    }
    
@@ -339,7 +338,7 @@ public class SimpleComponentModelTest
    @Test
    public void testNamed()
    {
-      SimpleComponentModel<Haddock> haddock = new SimpleComponentModel<Haddock>(new ClassAnnotatedItem(Haddock.class), emptyAnnotatedItem, container);
+      SimpleComponentModel<Haddock> haddock = new SimpleComponentModel<Haddock>(new SimpleAnnotatedType(Haddock.class), emptyAnnotatedItem, container);
       assert haddock.getName() != null;
       assert haddock.getName().equals("haddock");
    }
@@ -356,8 +355,8 @@ public class SimpleComponentModelTest
             return "";
          }
       });
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
       
       assert trout.getName() != null;
       assert trout.getName().equals("seaBass");
@@ -375,8 +374,8 @@ public class SimpleComponentModelTest
             return "aTrout";
          }
       });
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(SeaBass.class, annotations);
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), annotatedItem, container);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
       
       assert trout.getName().equals("aTrout");
    }
@@ -384,14 +383,14 @@ public class SimpleComponentModelTest
    @Test
    public void testNotNamed()
    {
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new ClassAnnotatedItem(SeaBass.class), emptyAnnotatedItem, container);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), emptyAnnotatedItem, container);
       assert trout.getName() == null;
    }
    
    @Test
    public void testNonDefaultNamed()
    {
-      SimpleComponentModel<Moose> moose = new SimpleComponentModel<Moose>(new ClassAnnotatedItem(Moose.class), emptyAnnotatedItem, container);
+      SimpleComponentModel<Moose> moose = new SimpleComponentModel<Moose>(new SimpleAnnotatedType(Moose.class), emptyAnnotatedItem, container);
       assert moose.getName().equals("aMoose");
    }
    
@@ -412,9 +411,9 @@ public class SimpleComponentModelTest
             return "currentSynchronousOrder";
          }
       });
-      AnnotatedItem currentSynchronousOrderAnnotatedItem = new MutableAnnotatedItem(Order.class, orderXmlAnnotations);
+      AnnotatedType currentSynchronousOrderAnnotatedItem = new SimpleAnnotatedType(Order.class, orderXmlAnnotations);
       
-      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new ClassAnnotatedItem(Order.class), currentSynchronousOrderAnnotatedItem, container);
+      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), currentSynchronousOrderAnnotatedItem, container);
       assert Production.class.equals(order.getDeploymentType().annotationType());
       assert "currentSynchronousOrder".equals(order.getName());
       assert order.getBindingTypes().size() == 2;
@@ -425,7 +424,7 @@ public class SimpleComponentModelTest
    @Test
    public void testSingleStereotype()
    {
-      SimpleComponentModel<Gorilla> gorilla = new SimpleComponentModel<Gorilla>(new ClassAnnotatedItem(Gorilla.class), emptyAnnotatedItem, container);
+      SimpleComponentModel<Gorilla> gorilla = new SimpleComponentModel<Gorilla>(new SimpleAnnotatedType(Gorilla.class), emptyAnnotatedItem, container);
       assert gorilla.getName() == null;
       assert gorilla.getDeploymentType().annotationType().equals(Production.class);
       assert gorilla.getBindingTypes().iterator().next().annotationType().equals(Current.class);
@@ -437,7 +436,7 @@ public class SimpleComponentModelTest
    {
       try
       {
-         new SimpleComponentModel<Gorilla>(new ClassAnnotatedItem(Gorilla.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Gorilla>(new SimpleAnnotatedType(Gorilla.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -452,7 +451,7 @@ public class SimpleComponentModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Chair>(new ClassAnnotatedItem(Chair.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Chair>(new SimpleAnnotatedType(Chair.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -467,7 +466,7 @@ public class SimpleComponentModelTest
    {
       try
       {
-         new SimpleComponentModel<Goldfish>(new ClassAnnotatedItem(Goldfish.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Goldfish>(new SimpleAnnotatedType(Goldfish.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -483,7 +482,7 @@ public class SimpleComponentModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Carp>(new ClassAnnotatedItem(Carp.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Carp>(new SimpleAnnotatedType(Carp.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -501,7 +500,7 @@ public class SimpleComponentModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Cow>(new ClassAnnotatedItem(Cow.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Cow>(new SimpleAnnotatedType(Cow.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -516,7 +515,7 @@ public class SimpleComponentModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Cow>(new ClassAnnotatedItem(InnerComponent.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<InnerComponent>(new SimpleAnnotatedType(InnerComponent.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -531,7 +530,7 @@ public class SimpleComponentModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Horse>(new ClassAnnotatedItem(Horse.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Horse>(new SimpleAnnotatedType(Horse.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -541,10 +540,10 @@ public class SimpleComponentModelTest
       
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Dependent.class, new DependentBinding());
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Horse.class, annotations);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(Horse.class, annotations);
       try
       {
-         new SimpleComponentModel<Horse>(new ClassAnnotatedItem(Horse.class), annotatedItem, container);
+         new SimpleComponentModel<Horse>(new SimpleAnnotatedType(Horse.class), annotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -558,7 +557,7 @@ public class SimpleComponentModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Pig>(new ClassAnnotatedItem(Pig.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Pig>(new SimpleAnnotatedType(Pig.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -568,10 +567,10 @@ public class SimpleComponentModelTest
       
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Dependent.class, new DependentBinding());
-      AnnotatedItem annotatedItem = new MutableAnnotatedItem(Pig.class, annotations);
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(Pig.class, annotations);
       try
       {
-         new SimpleComponentModel<Pig>(new ClassAnnotatedItem(Pig.class), annotatedItem, container);
+         new SimpleComponentModel<Pig>(new SimpleAnnotatedType(Pig.class), annotatedItem, container);
       }
       catch (Exception e) 
       {

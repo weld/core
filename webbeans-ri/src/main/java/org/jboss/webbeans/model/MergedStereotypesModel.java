@@ -9,7 +9,7 @@ import java.util.Set;
 import javax.webbeans.Stereotype;
 
 import org.jboss.webbeans.ContainerImpl;
-import org.jboss.webbeans.util.AnnotatedItem;
+import org.jboss.webbeans.introspector.AnnotatedItem;
 
 /**
  * Meta model for the merged stereotype for a component

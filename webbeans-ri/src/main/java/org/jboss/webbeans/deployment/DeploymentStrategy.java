@@ -14,13 +14,13 @@ import javax.webbeans.Stereotype;
 
 import org.jboss.webbeans.ComponentInstanceImpl;
 import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.introspector.SimpleAnnotatedType;
+import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.SimpleComponentModel;
 import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.scannotation.AnnotationDB;
 import org.jboss.webbeans.scannotation.ClasspathUrlFinder;
-import org.jboss.webbeans.util.ClassAnnotatedItem;
 import org.jboss.webbeans.util.LoggerUtil;
-import org.jboss.webbeans.util.MutableAnnotatedItem;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -105,7 +105,7 @@ public class DeploymentStrategy
                Class<?> stereotypeClass = Reflections.classForName(className);
                if (stereotypeClass.isAnnotation())
                {
-                  StereotypeModel stereotypeModel = new StereotypeModel(new ClassAnnotatedItem(stereotypeClass));
+                  StereotypeModel stereotypeModel = new StereotypeModel(new SimpleAnnotatedType(stereotypeClass));
                   container.getStereotypeManager().addStereotype(stereotypeModel);
                   log.info("Stereotype: " + stereotypeModel);
                }
@@ -139,8 +139,8 @@ public class DeploymentStrategy
                      if (!componentClass.isAnnotation())
                      {
                         SimpleComponentModel componentModel = new SimpleComponentModel(
-                              new ClassAnnotatedItem(componentClass), 
-                              new MutableAnnotatedItem(null, new HashMap()), container);  
+                              new SimpleAnnotatedType(componentClass), 
+                              new SimpleAnnotatedType(null, new HashMap()), container);  
                         container.addComponent(new ComponentInstanceImpl(componentModel));
                         log.info("Web Bean: " + componentModel);
                      }
