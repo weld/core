@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
  * @author Pete Muir
  *
  */
-public interface AnnotatedMethod extends AnnotatedItem
+public interface AnnotatedMethod extends AnnotatedItem<Method>
 {
    
    public Method getAnnotatedMethod();

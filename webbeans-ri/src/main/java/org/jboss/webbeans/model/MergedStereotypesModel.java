@@ -16,7 +16,7 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
  * @author pmuir
  *
  */
-public class MergedStereotypesModel
+public class MergedStereotypesModel<T, E>
 {
 
    private Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes;
@@ -25,7 +25,7 @@ public class MergedStereotypesModel
    private Set<Class<?>> requiredTypes;
    private Set<Class<? extends Annotation>> supportedScopes;
    
-   public MergedStereotypesModel(AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem, ContainerImpl container)
+   public MergedStereotypesModel(AnnotatedItem<E> annotatedItem, AnnotatedItem<E> xmlAnnotatedItem, ContainerImpl container)
    {
       possibleDeploymentTypes = new HashMap<Class<? extends Annotation>, Annotation>();
       possibleScopeTypes = new HashSet<Annotation>();
@@ -40,7 +40,7 @@ public class MergedStereotypesModel
       for (Annotation stereotypeAnnotation : stereotypeAnnotations)
       {
          // Retrieve and merge all metadata from stereotypes
-         StereotypeModel stereotype = container.getStereotypeManager().getStereotype(stereotypeAnnotation.annotationType());
+         StereotypeModel<?> stereotype = container.getStereotypeManager().getStereotype(stereotypeAnnotation.annotationType());
          if (stereotype == null)
          {
             throw new NullPointerException("Stereotype " + stereotypeAnnotation + " not registered with container");

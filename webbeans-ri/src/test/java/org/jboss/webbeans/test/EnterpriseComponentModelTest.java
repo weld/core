@@ -10,6 +10,7 @@ import javax.webbeans.Dependent;
 import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
+import org.jboss.webbeans.model.AbstractEnterpriseComponentModel;
 import org.jboss.webbeans.model.EnterpriseComponentModel;
 import org.jboss.webbeans.test.annotations.Synchronous;
 import org.jboss.webbeans.test.components.Bear;
@@ -69,7 +70,7 @@ private ContainerImpl container;
       boolean exception = false;
       try
       {
-         new EnterpriseComponentModel<Bear>(new SimpleAnnotatedType(Bear.class), emptyAnnotatedItem, container);
+         new EnterpriseComponentModel<Bear>(new SimpleAnnotatedType<Bear>(Bear.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -99,7 +100,7 @@ private ContainerImpl container;
    public void testStateful()
    {
 
-      EnterpriseComponentModel<Tiger> tiger = new EnterpriseComponentModel<Tiger>(new SimpleAnnotatedType(Tiger.class), emptyAnnotatedItem, container);
+      AbstractEnterpriseComponentModel<Tiger> tiger = new EnterpriseComponentModel<Tiger>(new SimpleAnnotatedType(Tiger.class), emptyAnnotatedItem, container);
       Reflections.annotationSetMatches(tiger.getBindingTypes(), Synchronous.class);
       assert tiger.getRemoveMethod().getMethod().getName().equals("remove");
       assert tiger.getName() == null;
@@ -110,7 +111,7 @@ private ContainerImpl container;
    public void testMultipleRemoveMethodsWithDestroys()
    {
 
-      EnterpriseComponentModel<Elephant> elephant = new EnterpriseComponentModel<Elephant>(new SimpleAnnotatedType(Elephant.class), emptyAnnotatedItem, container);
+      AbstractEnterpriseComponentModel<Elephant> elephant = new EnterpriseComponentModel<Elephant>(new SimpleAnnotatedType(Elephant.class), emptyAnnotatedItem, container);
       assert elephant.getRemoveMethod().getMethod().getName().equals("remove2");
    }
    
@@ -166,7 +167,7 @@ private ContainerImpl container;
    public void testRemoveMethodWithDefaultBinding()
    {
 
-      EnterpriseComponentModel<Panther> panther = new EnterpriseComponentModel<Panther>(new SimpleAnnotatedType(Panther.class), emptyAnnotatedItem, container);
+      AbstractEnterpriseComponentModel<Panther> panther = new EnterpriseComponentModel<Panther>(new SimpleAnnotatedType(Panther.class), emptyAnnotatedItem, container);
       
       assert panther.getRemoveMethod().getMethod().getName().equals("remove");
       assert panther.getRemoveMethod().getParameters().size() == 1;
@@ -179,7 +180,7 @@ private ContainerImpl container;
    @Test
    public void testMessageDriven()
    {
-      EnterpriseComponentModel<Leopard> leopard = new EnterpriseComponentModel<Leopard>(new SimpleAnnotatedType(Leopard.class), emptyAnnotatedItem, container);
+      AbstractEnterpriseComponentModel<Leopard> leopard = new EnterpriseComponentModel<Leopard>(new SimpleAnnotatedType(Leopard.class), emptyAnnotatedItem, container);
       Reflections.annotationSetMatches(leopard.getBindingTypes(), Current.class);
    }
 

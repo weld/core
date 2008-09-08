@@ -12,7 +12,6 @@ import javax.webbeans.Named;
 import javax.webbeans.ScopeType;
 import javax.webbeans.Stereotype;
 
-import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedType;
 
 /**
@@ -21,7 +20,7 @@ import org.jboss.webbeans.introspector.AnnotatedType;
  * @author pmuir
  *
  */
-public class StereotypeModel
+public class StereotypeModel<T>
 {
    
    private Class<? extends Annotation> stereotypeClass;
@@ -33,7 +32,7 @@ public class StereotypeModel
    private Set<Annotation> interceptorBindings;
    
    @SuppressWarnings("unchecked")
-   public StereotypeModel(AnnotatedType annotatedClass)
+   public StereotypeModel(AnnotatedType<T> annotatedClass)
    {
       initStereotypeClass(annotatedClass);
       Stereotype stereotype = annotatedClass.getAnnotation(Stereotype.class);
@@ -46,7 +45,7 @@ public class StereotypeModel
       checkBindingTypes(annotatedClass);
    }
    
-   private void checkBindingTypes(AnnotatedItem annotatedClass)
+   private void checkBindingTypes(AnnotatedType<T> annotatedClass)
    {
       Set<Annotation> bindingTypes = annotatedClass.getAnnotations(BindingType.class);
       if (bindingTypes.size() > 0)
@@ -56,7 +55,7 @@ public class StereotypeModel
    }
    
    @SuppressWarnings("unchecked")
-   private void initStereotypeClass(AnnotatedType annotatedClass)
+   private void initStereotypeClass(AnnotatedType<T> annotatedClass)
    {
       if (Annotation.class.isAssignableFrom(annotatedClass.getAnnotatedClass()))
       {
@@ -68,12 +67,12 @@ public class StereotypeModel
       }
    }
 
-   private void initInterceptorBindings(AnnotatedItem annotatedClass)
+   private void initInterceptorBindings(AnnotatedType<T> annotatedClass)
    {
       interceptorBindings = annotatedClass.getAnnotations(InterceptorBindingType.class);
    }
 
-   private void initSupportedScopes(AnnotatedItem annotatedElement, Stereotype stereotype)
+   private void initSupportedScopes(AnnotatedType<T> annotatedElement, Stereotype stereotype)
    {
       this.supportedScopes = new HashSet<Class<? extends Annotation>>();
       Class<? extends Annotation>[] supportedScopes = stereotype.supportedScopes();
@@ -83,7 +82,7 @@ public class StereotypeModel
       }
    }
    
-   private void initRequiredTypes(AnnotatedItem annotatedElement, Stereotype stereotype)
+   private void initRequiredTypes(AnnotatedType<T> annotatedElement, Stereotype stereotype)
    {
       this.requiredTypes = new HashSet<Class<?>>();
       Class<?>[] requiredTypes = stereotype.requiredTypes();
@@ -93,7 +92,7 @@ public class StereotypeModel
       }
    }
 
-   private void initComponentNameDefaulted(AnnotatedItem annotatedElement)
+   private void initComponentNameDefaulted(AnnotatedType<T> annotatedElement)
    {
       if (annotatedElement.isAnnotationPresent(Named.class))
       {
@@ -105,7 +104,7 @@ public class StereotypeModel
       }
    }
 
-   private void initDefaultScopeType(AnnotatedItem annotatedElement)
+   private void initDefaultScopeType(AnnotatedType<T> annotatedElement)
    {
       Set<Annotation> scopeTypes = annotatedElement.getAnnotations(ScopeType.class);
       if (scopeTypes.size() > 1)
@@ -118,7 +117,7 @@ public class StereotypeModel
       }
    }
 
-   private void initDefaultDeploymentType(AnnotatedItem annotatedElement)
+   private void initDefaultDeploymentType(AnnotatedType<T> annotatedElement)
    {
       Set<Annotation> deploymentTypes = annotatedElement.getAnnotations(DeploymentType.class);
       if (deploymentTypes.size() > 1)

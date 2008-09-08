@@ -8,13 +8,13 @@ package org.jboss.webbeans.introspector;
  * @author Pete Muir
  *
  */
-public interface AnnotatedType extends AnnotatedItem
+public interface AnnotatedType<T> extends AnnotatedItem<Class<? extends T>>
 {
    
    /**
     * Return the class of the annotated item. If this annotatedItem isn't in use
     * then this method should return null
     */
-   public Class<?> getAnnotatedClass();
+   public Class<? extends T> getAnnotatedClass();
    
 }

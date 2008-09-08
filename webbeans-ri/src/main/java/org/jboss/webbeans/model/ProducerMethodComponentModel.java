@@ -1,72 +1,97 @@
 package org.jboss.webbeans.model;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Set;
+import java.util.HashMap;
+
+import javax.webbeans.Dependent;
 
 import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.injectable.ComponentConstructor;
+import org.jboss.webbeans.injectable.MethodConstructor;
+import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
 
-public class ProducerMethodComponentModel<T> extends AbstractComponentModel<T>
+public class ProducerMethodComponentModel<T> extends AbstractProducerComponentModel<T>
 {
    
+   private Method type;
+   private ComponentConstructor<T> constructor;
+   
+   private AnnotatedItem<Method> xmlAnnotatedItem = new SimpleAnnotatedItem<Method>(new HashMap<Class<? extends Annotation>, Annotation>());
+   private AnnotatedMethod annotatedMethod;
+   
    @SuppressWarnings("unchecked")
-   public ProducerMethodComponentModel(AnnotatedMethod annotatedItem, ContainerImpl container)
+   public ProducerMethodComponentModel(AnnotatedMethod annotatedMethod, ContainerImpl container)
    {
-      checkProducerMethod(annotatedItem, container);
-   }
-
-   @Override
-   public ComponentConstructor getConstructor()
-   {
-      // TODO Auto-generated method stub
-      return null;
+      this.annotatedMethod = annotatedMethod;
+      init(container);
    }
    
-   public static void checkProducerMethod(AnnotatedMethod annotatedItem, ContainerImpl container)
+   @Override
+   protected void init(ContainerImpl container)
    {
-      if (Modifier.isStatic(annotatedItem.getAnnotatedMethod().getModifiers()))
+      super.init(container);
+      checkProducerMethod();
+      this.constructor = new MethodConstructor<T>(type);
+   }
+
+   @Override
+   public ComponentConstructor<T> getConstructor()
+   {
+      return constructor;
+   }
+   
+   protected void checkProducerMethod()
+   {
+      if (Modifier.isStatic(getAnnotatedItem().getDelegate().getModifiers()))
       {
-         throw new RuntimeException("Producer method cannot be static " + annotatedItem);
+         throw new RuntimeException("Producer method cannot be static " + annotatedMethod);
       }
       // TODO Check if declaring class is a WB component
-      
+      if (Modifier.isFinal(getAnnotatedItem().getDelegate().getModifiers()) || getScopeType().annotationType().equals(Dependent.class))
+      {
+         throw new RuntimeException("Final producer method must have @Dependent scope " + annotatedMethod);
+      }
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "ProducerMethodComponentModel[" + getType().getName() + "]";
    }
 
    @Override
-   public Set<Annotation> getBindingTypes()
+   protected AnnotatedItem<Method> getAnnotatedItem()
+   {
+      return annotatedMethod;
+   }
+
+   @Override
+   protected String getDefaultName()
    {
       // TODO Auto-generated method stub
       return null;
    }
 
    @Override
-   public Annotation getDeploymentType()
+   protected Method getType()
    {
-      // TODO Auto-generated method stub
-      return null;
+      return type;
    }
 
    @Override
-   public String getName()
+   protected AnnotatedItem<Method> getXmlAnnotatedItem()
    {
-      // TODO Auto-generated method stub
-      return null;
+      return xmlAnnotatedItem;
    }
 
    @Override
-   public Annotation getScopeType()
+   protected void initType()
    {
-      // TODO Auto-generated method stub
-      return null;
-   }
-
-   @Override
-   protected Class<? extends T> getType()
-   {
-      // TODO Auto-generated method stub
-      return null;
+      this.type = annotatedMethod.getAnnotatedMethod();
    }
 
 }

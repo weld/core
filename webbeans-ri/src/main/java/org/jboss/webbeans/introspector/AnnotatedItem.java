@@ -11,7 +11,7 @@ import java.util.Set;
  * @author Pete Muir
  *
  */
-public interface AnnotatedItem
+public interface AnnotatedItem<E>
 {
 
    /**
@@ -19,7 +19,7 @@ public interface AnnotatedItem
     * 
     * An empty set is returned if no annotations are present
     */
-   public abstract <T extends Annotation> Set<T> getAnnotations();
+   public <A extends Annotation> Set<A> getAnnotations();
 
    /**
     * Get all annotations which are annotated with the given meta annotation 
@@ -28,21 +28,23 @@ public interface AnnotatedItem
     * If no annotations are present which are annotated with the given meta
     * annotation an empty set is returned
     */
-   public abstract <T extends Annotation> Set<Annotation> getAnnotations(
-         Class<T> metaAnnotationType);
+   public Set<Annotation> getAnnotations(
+         Class<? extends Annotation> metaAnnotationType);
 
    /**
     * Get an annotation for the annotation type specified.
     * 
     * If the annotation isn't present, null is returned
     */
-   public abstract <T extends Annotation> T getAnnotation(
-         Class<T> annotationType);
+   public <A extends Annotation> A getAnnotation(
+         Class<? extends A> annotationType);
 
    /**
     * Return true if the annotation type specified is present
     */
-   public abstract boolean isAnnotationPresent(
+   public boolean isAnnotationPresent(
          Class<? extends Annotation> annotationType);
+   
+   public E getDelegate();
 
 }

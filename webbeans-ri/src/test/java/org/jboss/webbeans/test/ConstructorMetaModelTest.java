@@ -41,7 +41,7 @@ public class ConstructorMetaModelTest
    @Test
    public void testImplicitConstructor()
    {
-      SimpleConstructor<Order> constructor = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), emptyAnnotatedItem, container).getConstructor();
+      SimpleConstructor<Order> constructor = new SimpleComponentModel<Order>(new SimpleAnnotatedType<Order>(Order.class), emptyAnnotatedItem, container).getConstructor();
       assert constructor.getConstructor().getDeclaringClass().equals(Order.class);
       assert constructor.getConstructor().getParameterTypes().length == 0;
       assert constructor.getParameters().size() == 0;

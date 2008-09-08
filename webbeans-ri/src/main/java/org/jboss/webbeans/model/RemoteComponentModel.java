@@ -1,69 +1,47 @@
 package org.jboss.webbeans.model;
 
-import java.lang.annotation.Annotation;
-
-import javax.webbeans.ApplicationScoped;
 import javax.webbeans.BoundTo;
-import javax.webbeans.Dependent;
 
 import org.jboss.webbeans.ContainerImpl;
-import org.jboss.webbeans.ejb.EjbMetaData;
 import org.jboss.webbeans.injectable.ComponentConstructor;
 import org.jboss.webbeans.injectable.EnterpriseConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
-import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedType;
 
-public class RemoteComponentModel<T> extends AbstractClassComponentModel<T>
+public class RemoteComponentModel<T> extends AbstractEnterpriseComponentModel<T>
 {
    
    private EnterpriseConstructor<T> constructor;
    private InjectableMethod<?> removeMethod;
    private String boundTo;
    
-   public RemoteComponentModel(AnnotatedType annotatedItem,
-         AnnotatedType xmlAnnotatedItem, ContainerImpl container)
+   public RemoteComponentModel(AnnotatedType<T> annotatedItem,
+         AnnotatedType<T> xmlAnnotatedItem)
    {
-      super(annotatedItem, xmlAnnotatedItem, container);
-      EjbMetaData<T> ejbMetaData = container.getEjbManager().getEjbMetaData(getType());
-      this.constructor = initConstructor(ejbMetaData, container);
-      EnterpriseComponentModel.checkScopeAllowed(getMergedStereotypes(), getScopeType(), getType(), ejbMetaData);
-      this.removeMethod = initRemoveMethod(ejbMetaData, getType());
-      this.boundTo = initBoundTo(annotatedItem, xmlAnnotatedItem, getType());
+      super(annotatedItem, xmlAnnotatedItem);
    }
    
-   protected static <T> EnterpriseConstructor<T> initConstructor(EjbMetaData<T> ejbMetaData, ContainerImpl container)
+   @Override
+   protected void init(ContainerImpl container)
    {
-      return new EnterpriseConstructor<T>(ejbMetaData);
-   }
-
-   /**
-    * Check that the scope type is allowed by the stereotypes on the component and the component type
-    * @param type 
-    */
-   protected static <T> void checkScopeAllowed(MergedStereotypesModel stereotypes, Annotation scopeType, Class<?> type, EjbMetaData<T> ejbMetaData)
-   {
-      if (ejbMetaData.isStateless() && !scopeType.annotationType().equals(Dependent.class))
-      {
-         throw new RuntimeException("Scope " + scopeType + " is not allowed on stateless enterpise bean components for " + type + ". Only @Dependent is allowed on stateless enterprise bean components");
-      }
-      if (ejbMetaData.isSingleton() && (!scopeType.annotationType().equals(Dependent.class) || !scopeType.annotationType().equals(ApplicationScoped.class)))
-      {
-         throw new RuntimeException("Scope " + scopeType + " is not allowed on singleton enterpise bean components for " + type + ". Only @Dependent or @ApplicationScoped is allowed on singleton enterprise bean components");
-      }
+      super.init(container);
+      // TODO initialize constructor
+      initBoundTo();
    }
    
-   protected static String initBoundTo(AnnotatedItem annotatedItem, AnnotatedItem xmlAnnotatedItem, Class<?> type)
+   protected void initBoundTo()
    {
-      if (xmlAnnotatedItem.isAnnotationPresent(BoundTo.class))
+      if (getXmlAnnotatedItem().isAnnotationPresent(BoundTo.class))
       {
-         return xmlAnnotatedItem.getAnnotation(BoundTo.class).value(); 
+         this.boundTo = getXmlAnnotatedItem().getAnnotation(BoundTo.class).value();
+         return;
       }
-      if (annotatedItem.isAnnotationPresent(BoundTo.class))
+      if (getAnnotatedItem().isAnnotationPresent(BoundTo.class))
       {
-         return annotatedItem.getAnnotation(BoundTo.class).value();
+         this.boundTo = getAnnotatedItem().getAnnotation(BoundTo.class).value();
+         return;
       }
-      throw new RuntimeException("Remote component doesn't specify @BoundTo or <bound-to /> for " + type);
+      throw new RuntimeException("Remote component doesn't specify @BoundTo or <bound-to /> for " + getType());
    }
    
    public ComponentConstructor<T> getConstructor()
@@ -79,6 +57,12 @@ public class RemoteComponentModel<T> extends AbstractClassComponentModel<T>
    public String getBoundTo()
    {
       return boundTo;
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "RemoteComponentModel[" + getType().getName() + "]";
    }
 
 }
