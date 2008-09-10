@@ -1,5 +1,6 @@
 package org.jboss.webbeans.util;
 
+import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -23,6 +24,24 @@ public class Reflections
       {
          return Class.forName(name);
       }
+   }
+   
+   public static String getPropertyName(Method method)
+   {
+      String methodName = method.getName();
+      if ( methodName.matches("^(get).*") && method.getParameterTypes().length==0 )
+      {
+         return Introspector.decapitalize( methodName.substring(3) );
+      }
+      else if (methodName.matches("^(is).*") && method.getParameterTypes().length==0 )
+      {
+         return Introspector.decapitalize( methodName.substring(2) );
+      }
+      else
+      {
+         return null;
+      }
+         
    }
 
    public static boolean isFinal(Class<?> clazz)

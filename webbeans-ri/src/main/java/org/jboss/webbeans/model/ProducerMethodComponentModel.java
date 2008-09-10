@@ -3,25 +3,35 @@ package org.jboss.webbeans.model;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.webbeans.Dependent;
 
 import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.injectable.ComponentConstructor;
+import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.MethodConstructor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
+import org.jboss.webbeans.util.Reflections;
 
 public class ProducerMethodComponentModel<T> extends AbstractProducerComponentModel<T>
 {
    
-   private Method type;
    private ComponentConstructor<T> constructor;
    
    private AnnotatedItem<Method> xmlAnnotatedItem = new SimpleAnnotatedItem<Method>(new HashMap<Class<? extends Annotation>, Annotation>());
    private AnnotatedMethod annotatedMethod;
+   
+   private AbstractComponentModel<?, Class<?>> declaringComponent;
+   
+   // Cached values
+   private String location;
+   private Type declaredComponentType;
    
    @SuppressWarnings("unchecked")
    public ProducerMethodComponentModel(AnnotatedMethod annotatedMethod, ContainerImpl container)
@@ -35,9 +45,29 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
    {
       super.init(container);
       checkProducerMethod();
-      this.constructor = new MethodConstructor<T>(type);
+      this.constructor = new MethodConstructor<T>(getAnnotatedItem().getDelegate());
+      initRemoveMethod(container);
+   }
+   
+   @Override
+   protected void initDeploymentType(ContainerImpl container)
+   {
+      super.initDeploymentType(container);
+      if (getDeploymentType() == null)
+      {
+         if (getDeclaringComponent() == null)
+         {
+            initDeclaringComponent(container);
+         }
+         deploymentType = declaringComponent.getDeploymentType();
+      }
    }
 
+   protected void initDeclaringComponent(ContainerImpl container)
+   {
+      declaringComponent = (AbstractComponentModel<?, Class<?>>) container.getModelManager().getComponentModel(getAnnotatedItem().getDelegate().getDeclaringClass());
+   }
+   
    @Override
    public ComponentConstructor<T> getConstructor()
    {
@@ -51,9 +81,24 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
          throw new RuntimeException("Producer method cannot be static " + annotatedMethod);
       }
       // TODO Check if declaring class is a WB component
-      if (Modifier.isFinal(getAnnotatedItem().getDelegate().getModifiers()) || getScopeType().annotationType().equals(Dependent.class))
+      if (!getScopeType().annotationType().equals(Dependent.class) && Modifier.isFinal(getAnnotatedItem().getDelegate().getModifiers()))
       {
          throw new RuntimeException("Final producer method must have @Dependent scope " + annotatedMethod);
+      }
+   }
+   
+   @SuppressWarnings("unchecked")
+   protected void initRemoveMethod(ContainerImpl container)
+   {
+      Set<Method> disposalMethods = container.resolveDisposalMethods(getType(), getBindingTypes().toArray(new Annotation[0]));
+      if (disposalMethods.size() == 1)
+      {
+         removeMethod = new InjectableMethod(disposalMethods.iterator().next());
+      }
+      else if (disposalMethods.size() > 1)
+      {
+         // TODO List out found disposal methods
+         throw new RuntimeException(getLocation() + "Cannot declare multiple disposal methods for this producer method");
       }
    }
    
@@ -72,14 +117,15 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
    @Override
    protected String getDefaultName()
    {
-      // TODO Auto-generated method stub
-      return null;
-   }
-
-   @Override
-   protected Method getType()
-   {
-      return type;
+      String propertyName = Reflections.getPropertyName(getAnnotatedItem().getDelegate());
+      if (propertyName != null)
+      {
+         return propertyName;
+      }
+      else
+      {
+         return getAnnotatedItem().getDelegate().getName();
+      }
    }
 
    @Override
@@ -88,10 +134,55 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
       return xmlAnnotatedItem;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    protected void initType()
    {
-      this.type = annotatedMethod.getAnnotatedMethod();
+      try
+      {
+         this.type = (Class<T>) annotatedMethod.getAnnotatedMethod().getReturnType();
+      }
+      catch (ClassCastException e) 
+      {
+         throw new RuntimeException(getLocation() + " Cannot cast producer method return type " + annotatedMethod.getAnnotatedMethod().getReturnType() + " to component type " + (getDeclaredComponentType() == null ? " unknown " : getDeclaredComponentType()), e);
+      }
+   }
+   
+   private Type getDeclaredComponentType()
+   {
+      if (declaredComponentType == null)
+      {
+         Type type = getClass();
+         if (type instanceof ParameterizedType)
+         {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            if (parameterizedType.getActualTypeArguments().length == 1)
+            {
+               declaredComponentType = parameterizedType.getActualTypeArguments()[0];
+            }
+         }
+      }
+      return declaredComponentType;
+   }
+   
+   @Override
+   public String getLocation()
+   {
+      if (location == null)
+      {
+         location = "type: Producer Method; declaring class: " + annotatedMethod.getAnnotatedMethod().getDeclaringClass() +"; producer method: " + annotatedMethod.getAnnotatedMethod().toString() + ";";
+      }
+      return location;
+   }
+   
+   public InjectableMethod<?> getDisposalMethod()
+   {
+      return removeMethod;
+   }
+   
+   public AbstractComponentModel<?, Class<?>> getDeclaringComponent()
+   {
+      return declaringComponent;
    }
 
 }

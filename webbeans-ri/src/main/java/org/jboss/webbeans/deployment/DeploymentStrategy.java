@@ -106,7 +106,7 @@ public class DeploymentStrategy
                if (stereotypeClass.isAnnotation())
                {
                   StereotypeModel stereotypeModel = new StereotypeModel(new SimpleAnnotatedType(stereotypeClass));
-                  container.getStereotypeManager().addStereotype(stereotypeModel);
+                  container.getModelManager().addStereotype(stereotypeModel);
                   log.info("Stereotype: " + stereotypeModel);
                }
                

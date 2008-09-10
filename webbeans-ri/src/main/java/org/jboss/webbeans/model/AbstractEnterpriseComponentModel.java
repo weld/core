@@ -18,7 +18,6 @@ public abstract class AbstractEnterpriseComponentModel<T> extends
       AbstractClassComponentModel<T>
 {
 
-   private InjectableMethod<?> removeMethod;
    private EjbMetaData<T> ejbMetaData;
 
    public AbstractEnterpriseComponentModel(AnnotatedType<T> annotatedItem,
@@ -33,13 +32,8 @@ public abstract class AbstractEnterpriseComponentModel<T> extends
    {
       super.init(container);
       ejbMetaData = container.getEjbManager().getEjbMetaData(getType());
-      initRemoveMethod();
+      initRemoveMethod(container);
       checkEnterpriseScopeAllowed();
-   }
-   
-   public InjectableMethod<?> getRemoveMethod()
-   {
-      return removeMethod;
    }
    
    protected EjbMetaData<T> getEjbMetaData()
@@ -64,13 +58,13 @@ public abstract class AbstractEnterpriseComponentModel<T> extends
    }
    
    // TODO loggigng
-   protected void initRemoveMethod()
+   protected void initRemoveMethod(ContainerImpl container)
    {
       if (getEjbMetaData().isStateful())
       {
          if (getEjbMetaData().getRemoveMethods().size() == 1)
          {
-            this.removeMethod = new InjectableMethod<Object>(getEjbMetaData().getRemoveMethods().get(0));
+            super.removeMethod = new InjectableMethod<Object>(getEjbMetaData().getRemoveMethods().get(0));
          }
          else if (getEjbMetaData().getRemoveMethods().size() > 1)
          {
@@ -84,7 +78,7 @@ public abstract class AbstractEnterpriseComponentModel<T> extends
             }
             if (possibleRemoveMethods.size() == 1)
             {
-               this.removeMethod = new InjectableMethod<Object>(possibleRemoveMethods.get(0)); 
+               super.removeMethod = new InjectableMethod<Object>(possibleRemoveMethods.get(0)); 
             }
             else if (possibleRemoveMethods.size() > 1)
             {

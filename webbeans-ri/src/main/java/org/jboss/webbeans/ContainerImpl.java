@@ -1,6 +1,7 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,7 +24,7 @@ public class ContainerImpl implements Container
 {
    
    private List<Annotation> enabledDeploymentTypes;
-   private StereotypeManager stereotypeManager;
+   private ModelManager modelManager;
    private EjbManager ejbLookupManager;
    
    private ThreadLocal<Map<Class<Annotation>, Context>> contexts = 
@@ -34,7 +35,7 @@ public class ContainerImpl implements Container
    public ContainerImpl(List<Annotation> enabledDeploymentTypes)
    {
       initEnabledDeploymentTypes(enabledDeploymentTypes);
-      this.stereotypeManager = new StereotypeManager();
+      this.modelManager = new ModelManager();
       this.ejbLookupManager = new EjbManager();
       this.components = new HashSet<ComponentInstance>();
    }
@@ -139,6 +140,11 @@ public class ContainerImpl implements Container
       // TODO Auto-generated method stub
       return null;
    }
+   
+   public <T> Set<Method> resolveDisposalMethods(Class<T> apiType, Annotation... bindingTypes)
+   {
+      return new HashSet<Method>();
+   }
 
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
    {
@@ -151,9 +157,9 @@ public class ContainerImpl implements Container
       return enabledDeploymentTypes;
    }
    
-   public StereotypeManager getStereotypeManager()
+   public ModelManager getModelManager()
    {
-      return this.stereotypeManager;
+      return this.modelManager;
    }
    
    public EjbManager getEjbManager()

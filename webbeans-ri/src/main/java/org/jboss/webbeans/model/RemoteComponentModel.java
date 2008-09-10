@@ -5,20 +5,20 @@ import javax.webbeans.BoundTo;
 import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.injectable.ComponentConstructor;
 import org.jboss.webbeans.injectable.EnterpriseConstructor;
-import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.introspector.AnnotatedType;
 
 public class RemoteComponentModel<T> extends AbstractEnterpriseComponentModel<T>
 {
    
    private EnterpriseConstructor<T> constructor;
-   private InjectableMethod<?> removeMethod;
    private String boundTo;
+   private String location;
    
-   public RemoteComponentModel(AnnotatedType<T> annotatedItem,
-         AnnotatedType<T> xmlAnnotatedItem)
+   public RemoteComponentModel(AnnotatedType annotatedItem,
+         AnnotatedType xmlAnnotatedItem, ContainerImpl container)
    {
       super(annotatedItem, xmlAnnotatedItem);
+      init(container);
    }
    
    @Override
@@ -49,10 +49,6 @@ public class RemoteComponentModel<T> extends AbstractEnterpriseComponentModel<T>
       return constructor;
    }
    
-   public InjectableMethod<?> getRemoveMethod()
-   {
-      return removeMethod;
-   }
 
    public String getBoundTo()
    {
@@ -63,6 +59,16 @@ public class RemoteComponentModel<T> extends AbstractEnterpriseComponentModel<T>
    public String toString()
    {
       return "RemoteComponentModel[" + getType().getName() + "]";
+   }
+
+   @Override
+   public String getLocation()
+   {
+      if (location == null)
+      {
+         location = "type: Remote Enterprise Component; declaring class: " + getType() +";";
+      }
+      return location;
    }
 
 }

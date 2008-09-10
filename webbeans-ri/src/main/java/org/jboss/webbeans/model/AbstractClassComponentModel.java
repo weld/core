@@ -1,6 +1,9 @@
 package org.jboss.webbeans.model;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.logging.Logger;
 
 import javax.webbeans.Dependent;
@@ -19,12 +22,11 @@ import org.jboss.webbeans.util.Strings;
  * @author Pete Muir
  * 
  */
-public abstract class AbstractClassComponentModel<T> extends AbstractComponentModel<T, Class<? extends T>>
+public abstract class AbstractClassComponentModel<T> extends AbstractComponentModel<T, Class<T>>
 {
 
    private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
    
-   private Class<? extends T> type;
    private AnnotatedType<T> annotatedItem;
    private AnnotatedType<T> xmlAnnotatedItem;
    
@@ -165,11 +167,6 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
       {
          throw new RuntimeException("Web Bean implementation class " + type + " cannot be declared abstract");
       }
-   }
-   
-   protected Class<? extends T> getType()
-   {
-      return type;
    }
 
 }

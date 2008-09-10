@@ -9,7 +9,6 @@ import javax.webbeans.Initializer;
 
 import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.injectable.SimpleConstructor;
-import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.LoggerUtil;
 import org.jboss.webbeans.util.Reflections;
@@ -20,7 +19,8 @@ public class SimpleComponentModel<T> extends AbstractClassComponentModel<T>
    private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
    
    private SimpleConstructor<T> constructor;
-   private InjectableMethod<?> removeMethod;
+
+   private String location;
    
    /**
     * 
@@ -117,16 +117,21 @@ public class SimpleComponentModel<T> extends AbstractClassComponentModel<T>
       return constructor;
    }
    
-   public InjectableMethod<?> getRemoveMethod()
-   {
-      return removeMethod;
-   }
-   
 
    @Override
    public String toString()
    {
       return "SimpleComponentModel[" + getType().getName() + "]";
+   }
+   
+   @Override
+   public String getLocation()
+   {
+      if (location == null)
+      {
+         location = "type: Simple Component; declaring class: " + getType() +";";
+      }
+      return location;
    }
    
 }

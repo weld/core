@@ -89,12 +89,12 @@ public class SimpleComponentModelTest
    
    private void initStereotypes(ContainerImpl container)
    {
-      container.getStereotypeManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(AnimalStereotype.class)));
-      container.getStereotypeManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(HornedMammalStereotype.class)));
-      container.getStereotypeManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(MammalStereotype.class)));
-      container.getStereotypeManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(FishStereotype.class)));
-      container.getStereotypeManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(RiverFishStereotype.class)));
-      container.getStereotypeManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(RequestScopedAnimalStereotype.class)));
+      container.getModelManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(AnimalStereotype.class)));
+      container.getModelManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(HornedMammalStereotype.class)));
+      container.getModelManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(MammalStereotype.class)));
+      container.getModelManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(FishStereotype.class)));
+      container.getModelManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(RiverFishStereotype.class)));
+      container.getModelManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(RequestScopedAnimalStereotype.class)));
    }
    
    // **** TESTS FOR DEPLOYMENT TYPE **** //

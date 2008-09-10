@@ -8,7 +8,7 @@ package org.jboss.webbeans.introspector;
  * @author Pete Muir
  *
  */
-public interface AnnotatedType<T> extends AnnotatedItem<Class<? extends T>>
+public interface AnnotatedType<T> extends AnnotatedItem<Class<T>>
 {
    
    /**

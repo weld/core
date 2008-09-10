@@ -10,18 +10,18 @@ import java.util.Map;
  * @author pmuir
  *
  */
-public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<Class<? extends T>> implements AnnotatedType<T>
+public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<Class<T>> implements AnnotatedType<T>
 {
    
-   private Class<? extends T> annotatedClass;
+   private Class<T> annotatedClass;
    
-   public SimpleAnnotatedType(Class<? extends T> annotatedClass, Map<Class<? extends Annotation>, Annotation> annotationMap)
+   public SimpleAnnotatedType(Class<T> annotatedClass, Map<Class<? extends Annotation>, Annotation> annotationMap)
    {
       super(annotationMap);
       this.annotatedClass = annotatedClass;
    }
    
-   public SimpleAnnotatedType(Class<? extends T> annotatedClass)
+   public SimpleAnnotatedType(Class<T> annotatedClass)
    {
       this(annotatedClass, buildAnnotationMap(annotatedClass));
    }
@@ -37,7 +37,7 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<Class<? extend
       return annotatedClass + " " + super.getAnnotationMap().toString();
    }
    
-   public Class<? extends T> getDelegate()
+   public Class<T> getDelegate()
    {
       return annotatedClass;
    }

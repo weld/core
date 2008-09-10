@@ -9,6 +9,9 @@ public class EnterpriseComponentModel<T> extends AbstractEnterpriseComponentMode
 {
 
    private EnterpriseConstructor<T> constructor;
+   
+   private String location;
+   
    public EnterpriseComponentModel(AnnotatedType<T> annotatedItem,
          AnnotatedType<T> xmlAnnotatedItem, ContainerImpl container)
    {
@@ -32,6 +35,16 @@ public class EnterpriseComponentModel<T> extends AbstractEnterpriseComponentMode
    public String toString()
    {
       return "EnterpriseComponentModel[" + getType().getName() + "]";
+   }
+
+   @Override
+   public String getLocation()
+   {
+      if (location == null)
+      {
+         location = "type: Enterprise Component; declaring class: " + getType() +";";
+      }
+      return location;
    }
 
 }

@@ -1,6 +1,8 @@
 package org.jboss.webbeans.model;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,6 +18,7 @@ import org.jboss.webbeans.bindings.CurrentBinding;
 import org.jboss.webbeans.bindings.DependentBinding;
 import org.jboss.webbeans.bindings.ProductionBinding;
 import org.jboss.webbeans.injectable.ComponentConstructor;
+import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.util.LoggerUtil;
 
@@ -30,7 +33,10 @@ public abstract class AbstractComponentModel<T, E>
    private String name;
    private Annotation scopeType;
    private MergedStereotypesModel<T, E> mergedStereotypes;
-   private Annotation deploymentType;
+   protected Annotation deploymentType;
+   protected Class<T> type;
+   protected InjectableMethod<?> removeMethod;
+   private Set<Class> apiTypes;
    
    protected void init(ContainerImpl container)
    {
@@ -40,10 +46,32 @@ public abstract class AbstractComponentModel<T, E>
       initBindingTypes();
       initName();
       initDeploymentType(container);
+      checkDeploymentType();
       initScopeType();
+      initApiTypes();
    }
    
    protected abstract void initType();
+   
+   protected void initApiTypes()
+   {
+      apiTypes = getTypeHierachy(getType());
+   }
+   
+   protected Set<Class> getTypeHierachy(Class clazz)
+   {
+      Set<Class> classes = new HashSet<Class>();
+      if (!(clazz == null || clazz == Object.class))
+      {
+         classes.add(clazz);
+         classes.addAll(getTypeHierachy(clazz.getSuperclass()));
+         for (Class<?> c : clazz.getInterfaces())
+         {
+            classes.addAll(getTypeHierachy(c));
+         }
+      }
+      return classes;
+   }
 
    protected abstract AnnotatedItem<E> getAnnotatedItem();
    
@@ -208,7 +236,14 @@ public abstract class AbstractComponentModel<T, E>
          log.finest("Using default @Production deployment type");
          return;
       }
-      throw new RuntimeException("type: " + getType() + " must specify a deployment type");
+   }
+   
+   protected void checkDeploymentType()
+   {
+      if (deploymentType == null)
+      {
+         throw new RuntimeException("type: " + getType() + " must specify a deployment type");
+      }
    }
    
    public static Annotation getDeploymentType(List<Annotation> enabledDeploymentTypes, Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes)
@@ -239,11 +274,24 @@ public abstract class AbstractComponentModel<T, E>
    {
       return scopeType;
    }
-   
 
-   protected abstract E getType();
+   public Class<T> getType()
+   {
+      return type;
+   }
+   
+   public Set<Class> getApiTypes()
+   {
+      return apiTypes;
+   }
 
    public abstract ComponentConstructor<T> getConstructor();
+   
+   /**
+    * Convenience method that return's the component's "location" for logging
+    * and exception throwing
+    */
+   public abstract String getLocation();
 
    public Annotation getDeploymentType()
    {
@@ -253,6 +301,11 @@ public abstract class AbstractComponentModel<T, E>
    public String getName()
    {
       return name;
+   }
+   
+   public InjectableMethod<?> getRemoveMethod()
+   {
+      return removeMethod;
    }
 
 }
