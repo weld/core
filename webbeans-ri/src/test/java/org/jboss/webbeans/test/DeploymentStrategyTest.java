@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 public class DeploymentStrategyTest
 {
 
-   @Test
+   @Test(groups="deployment")
    public void testDeploymentStrategy()
    {
       URL[] urls = {ClasspathUrlFinder.findClassBase(DeploymentStrategyTest.class)};

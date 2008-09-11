@@ -156,4 +156,64 @@ public class ProducerMethodComponentModelTest
       assert ladybirdSpiderModel.getName().equals("ladybirdSpider");
    }
    
+   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.4")
+   public void testDisposalMethodNonStatic()
+   {
+      // TODO Placeholder
+      assert false;
+   }
+   
+   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.4")
+   public void testDisposalMethodMethodDeclaredOnWebBeanImplementationClass()
+   {
+      // TODO Placeholder
+      assert false;
+   }
+   
+   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.4")
+   public void testDisposalMethodBindingAnnotations()
+   {
+      // TODO Placeholder
+      assert false;
+   }
+   
+   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.4")
+   public void testDisposalMethodDefaultBindingAnnotations()
+   {
+      // TODO Placeholder
+      assert false;
+   }
+   
+   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.4")
+   public void testDisposalMethodDoesNotResolveToProducerMethod()
+   {
+      // TODO Placeholder
+      assert false;
+   }
+   
+   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.5")
+   public void testDisposalMethodDeclaredOnEnabledComponent()
+   {
+      // TODO Placeholder
+      // TODO Move this
+      
+      assert false;
+   }
+   
+   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.4")
+   public void testComponentCanDeclareMultipleDisposalMethods()
+   {
+      // TODO move this 
+      // TODO Placeholder
+      assert false;
+   }
+   
+   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.5")
+   public void testProducerMethodHasNoMoreThanOneDisposalMethod()
+   {
+      // TODO move this 
+      // TODO Placeholder
+      assert false;
+   }
+   
 }

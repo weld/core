@@ -61,4 +61,10 @@ public class RemoteComponentModelTest
       assert tameApeModel.getBindingTypes().iterator().next().annotationType().equals(Tame.class);
    }
    
+   @Test(groups="remoteComponentInXml") @SpecAssertion(section="3.5.2")
+   public void testRemoteComponentDeclaredInXml()
+   {
+      assert false;
+   }
+   
 }

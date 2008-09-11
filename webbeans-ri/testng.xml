@@ -14,6 +14,7 @@
          <run>
             <exclude name="specialization" />
             <exclude name="componentLifecycle" />
+            <exclude name="deployment" />
          </run>
       </groups>
       <classes>
@@ -23,6 +24,13 @@
    </test>
    
    <test name="Component Model">
+      <groups>
+         <run>
+            <exclude name="disposalMethod" />
+            <exclude name="producerExpression" />
+            <exclude name="remoteComponentInXml" />
+         </run>
+      </groups>
       <classes>
          <class name="org.jboss.webbeans.test.SimpleComponentModelTest" />
          <class name="org.jboss.webbeans.test.EnterpriseComponentModelTest" />
@@ -37,10 +45,15 @@
       <groups>
          <run>
             <exclude name="componentLifecycle" />
+            <exclude name="specialization" />
+            <exclude name="disposalMethod" />
          </run>
       </groups>
       <classes>
          <class name="org.jboss.webbeans.test.SimpleComponentLifecycleTest" />
+         <class name="org.jboss.webbeans.test.EnterpriseComponentLifecycleTest" />
+         <class name="org.jboss.webbeans.test.ProducerMethodComponentLifecycleTest" />
+         <class name="org.jboss.webbeans.test.ProducerExpressionComponentLifecycleTest" />
       </classes>
    </test>
    

@@ -23,10 +23,29 @@ public class ProducerExpressionComponentModelTest
       container = new MockContainerImpl(null);
    }
    
-   @Test
+   @Test(groups="producerExpression") @SpecAssertion(section="3.4")
    public void testApiTypes()
    {
-      
+      assert false;
    }
+   
+   @Test(groups="producerExpression") @SpecAssertion(section="3.4")
+   public void testFinalProducerExpression()
+   {
+      assert false;
+   }
+   
+   @Test(groups="producerExpression") @SpecAssertion(section="3.4")
+   public void testFinalDependentProducerExpression()
+   {
+      assert false;
+   }
+   
+   @Test(groups="producerExpression") @SpecAssertion(section="3.4.2")
+   public void testProducerExpressionCannotHaveDefaultName()
+   {
+      assert false;
+   }
+   
    
 }
