@@ -9,10 +9,10 @@ import org.jboss.webbeans.test.annotations.Tame;
 
 @Remote
 @Production
-@BoundTo("/beans/ape")
+@BoundTo("/beans/tame/orangutan")
 @Tame
 @Named
-public interface TameApe extends Animal
+public interface TameOrangutan extends Orangutan
 {
 
 }

@@ -12,7 +12,10 @@ import org.jboss.webbeans.model.RemoteComponentModel;
 import org.jboss.webbeans.test.annotations.Tame;
 import org.jboss.webbeans.test.components.Animal;
 import org.jboss.webbeans.test.components.Baboon;
-import org.jboss.webbeans.test.components.TameApe;
+import org.jboss.webbeans.test.components.Orangutan;
+import org.jboss.webbeans.test.components.TameOrangutan;
+import org.jboss.webbeans.test.components.broken.Chimpanzee;
+import org.jboss.webbeans.test.components.broken.Gibbon;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -41,8 +44,8 @@ public class RemoteComponentModelTest
    @Test @SpecAssertion(section="3.5.4")
    public void testDefaultName() throws SecurityException, NoSuchMethodException
    {
-      RemoteComponentModel<TameApe> tameApeModel = new RemoteComponentModel<TameApe>(new SimpleAnnotatedType<TameApe>(TameApe.class), emptyAnnotatedItem, container);
-      assert tameApeModel.getName().equals("tameApe");
+      RemoteComponentModel<TameOrangutan> tameApeModel = new RemoteComponentModel<TameOrangutan>(new SimpleAnnotatedType<TameOrangutan>(TameOrangutan.class), emptyAnnotatedItem, container);
+      assert tameApeModel.getName().equals("tameOrangutan");
    }
    
    @Test @SpecAssertion(section="3.5.1")
@@ -56,15 +59,42 @@ public class RemoteComponentModelTest
    @Test
    public void testBindingType() throws SecurityException, NoSuchMethodException
    {
-      RemoteComponentModel<TameApe> tameApeModel = new RemoteComponentModel<TameApe>(new SimpleAnnotatedType<TameApe>(TameApe.class), emptyAnnotatedItem, container);
-      assert tameApeModel.getBindingTypes().size() == 1;
-      assert tameApeModel.getBindingTypes().iterator().next().annotationType().equals(Tame.class);
+      RemoteComponentModel<TameOrangutan> tameOrangutanModel = new RemoteComponentModel<TameOrangutan>(new SimpleAnnotatedType<TameOrangutan>(TameOrangutan.class), emptyAnnotatedItem, container);
+      assert tameOrangutanModel.getBindingTypes().size() == 1;
+      assert tameOrangutanModel.getBindingTypes().iterator().next().annotationType().equals(Tame.class);
    }
    
    @Test(groups="remoteComponentInXml") @SpecAssertion(section="3.5.2")
    public void testRemoteComponentDeclaredInXml()
    {
       assert false;
+   }
+   
+   @Test @SpecAssertion(section="3.5.3")
+   public void testSFSBMustHaveRemoveMethod()
+   {
+      // TODO How do we check this?
+   }
+   
+   @Test(expectedExceptions=RuntimeException.class) @SpecAssertion(section="3.5.3")
+   public void testRemoveMethodCannotHaveParameters()
+   {
+      RemoteComponentModel<Chimpanzee> chimpanzeeModel = new RemoteComponentModel<Chimpanzee>(new SimpleAnnotatedType<Chimpanzee>(Chimpanzee.class), emptyAnnotatedItem, container);
+   }
+   
+   @Test(expectedExceptions=RuntimeException.class) @SpecAssertion(section="3.5.3")
+   public void testCannotHaveMultipleRemoveMethods()
+   {
+      RemoteComponentModel<Gibbon> gibbonModel = new RemoteComponentModel<Gibbon>(new SimpleAnnotatedType<Gibbon>(Gibbon.class), emptyAnnotatedItem, container);
+   }
+   
+   @Test @SpecAssertion(section="3.5.3")
+   public void testRemoveMethod()
+   {
+      RemoteComponentModel<TameOrangutan> tameOrangutanModel = new RemoteComponentModel<TameOrangutan>(new SimpleAnnotatedType<TameOrangutan>(TameOrangutan.class), emptyAnnotatedItem, container);
+      assert tameOrangutanModel.getRemoveMethod().getMethod().getName().equals("removeOrangutan");
+      RemoteComponentModel<Orangutan> orangutanModel = new RemoteComponentModel<Orangutan>(new SimpleAnnotatedType<Orangutan>(Orangutan.class), emptyAnnotatedItem, container);
+      assert orangutanModel.getRemoveMethod().getMethod().getName().equals("removeOrangutan");
    }
    
 }

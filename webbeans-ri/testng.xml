@@ -54,6 +54,7 @@
          <class name="org.jboss.webbeans.test.EnterpriseComponentLifecycleTest" />
          <class name="org.jboss.webbeans.test.ProducerMethodComponentLifecycleTest" />
          <class name="org.jboss.webbeans.test.ProducerExpressionComponentLifecycleTest" />
+         <class name="org.jboss.webbeans.test.RemoteComponentLifecycleTest" />
       </classes>
    </test>
    

@@ -1,10 +1,16 @@
 package org.jboss.webbeans.model;
 
+import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.webbeans.BoundTo;
+import javax.webbeans.Destroys;
 
 import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.injectable.ComponentConstructor;
 import org.jboss.webbeans.injectable.EnterpriseConstructor;
+import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.introspector.AnnotatedType;
 
 public class RemoteComponentModel<T> extends AbstractEnterpriseComponentModel<T>
@@ -27,6 +33,37 @@ public class RemoteComponentModel<T> extends AbstractEnterpriseComponentModel<T>
       super.init(container);
       // TODO initialize constructor
       initBoundTo();
+      initRemoveMethod();
+   }
+   
+   protected void initRemoveMethod()
+   {
+      Set<Method> destroyMethods = new HashSet<Method>();
+      for (Method method : getAnnotatedItem().getDelegate().getMethods())
+      {
+         if (method.isAnnotationPresent(Destroys.class))
+         {
+            destroyMethods.add(method);
+         }
+      }
+      if (destroyMethods.size() == 1)
+      {
+         Method destroyMethod = destroyMethods.iterator().next();
+         if (destroyMethod.getParameterTypes().length > 0)
+         {
+            throw new RuntimeException(getLocation() + " The method annotated @Destroys cannot take any parameters");
+         }
+         else
+         {
+            removeMethod = new InjectableMethod(destroyMethod);
+         }
+      }
+      else if (destroyMethods.size() > 1)
+      {
+         // TODO Enumerate the destroy methods
+         throw new RuntimeException(getLocation() + " There can only be a maximum of one method declared @Destorys");
+      }
+         
    }
    
    @Override
