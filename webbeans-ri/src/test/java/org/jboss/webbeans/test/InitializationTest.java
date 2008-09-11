@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class InitializationTest
 {

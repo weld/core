@@ -18,9 +18,9 @@ import org.jboss.webbeans.test.annotations.broken.StereotypeWithTooManyDeploymen
 import org.jboss.webbeans.test.annotations.broken.StereotypeWithTooManyScopeTypes;
 import org.jboss.webbeans.test.components.Animal;
 import org.jboss.webbeans.test.components.Order;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
-public class StereotypeMetaModelTest
+public class StereotypeModelTest
 {
    
    @Test

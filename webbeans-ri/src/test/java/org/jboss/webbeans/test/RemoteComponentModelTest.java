@@ -14,16 +14,16 @@ import org.jboss.webbeans.test.components.Animal;
 import org.jboss.webbeans.test.components.Baboon;
 import org.jboss.webbeans.test.components.TameApe;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-public class RemoteComponentTest
+public class RemoteComponentModelTest
 {
    
    private ContainerImpl container;
    private AnnotatedType<?> emptyAnnotatedItem;
    
-   @Before
+   @BeforeMethod
    public void before()
    {
       emptyAnnotatedItem = new SimpleAnnotatedType(null, new HashMap<Class<? extends Annotation>, Annotation>());

@@ -14,7 +14,7 @@ import org.jboss.webbeans.test.annotations.HornedAnimalDeploymentType;
 import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeBinding;
 import org.jboss.webbeans.test.bindings.HornedAnimalDeploymentTypeBinding;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class ContainerTest
 {

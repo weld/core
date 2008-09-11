@@ -5,7 +5,7 @@ import java.net.URL;
 import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.deployment.DeploymentStrategy;
 import org.jboss.webbeans.scannotation.ClasspathUrlFinder;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class DeploymentStrategyTest
 {

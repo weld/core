@@ -17,10 +17,11 @@
    
    <dependencies>
       <dependency>
-         <groupId>junit</groupId>
-         <artifactId>junit</artifactId>
-         <scope>test</scope>
-      </dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+            <classifier>jdk15</classifier>
+         </dependency>
    </dependencies>
    
 </project>

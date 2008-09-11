@@ -25,8 +25,8 @@ import org.jboss.webbeans.test.components.Puma;
 import org.jboss.webbeans.test.components.Tiger;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
 import org.jboss.webbeans.util.Reflections;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class EnterpriseComponentModelTest
 {
@@ -35,7 +35,7 @@ private ContainerImpl container;
    
    private AnnotatedType emptyAnnotatedItem;
    
-   @Before
+   @BeforeMethod
    public void before()
    {
       emptyAnnotatedItem = new SimpleAnnotatedType(null, new HashMap<Class<? extends Annotation>, Annotation>());

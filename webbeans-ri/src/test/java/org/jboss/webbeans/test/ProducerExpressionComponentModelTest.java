@@ -7,16 +7,16 @@ import org.jboss.webbeans.ContainerImpl;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-public class ProducerExpressionComponentTest
+public class ProducerExpressionComponentModelTest
 {
    
    private ContainerImpl container;
    private AnnotatedType<?> emptyAnnotatedItem;
    
-   @Before
+   @BeforeMethod
    public void before()
    {
       emptyAnnotatedItem = new SimpleAnnotatedType(null, new HashMap<Class<? extends Annotation>, Annotation>());

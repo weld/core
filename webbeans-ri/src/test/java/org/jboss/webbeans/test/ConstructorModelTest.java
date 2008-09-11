@@ -20,17 +20,17 @@ import org.jboss.webbeans.test.components.Order;
 import org.jboss.webbeans.test.components.Sheep;
 import org.jboss.webbeans.test.components.Turkey;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-public class ConstructorMetaModelTest
+public class ConstructorModelTest
 {
 
    private ContainerImpl container;
    
    private AnnotatedType emptyAnnotatedItem;
    
-   @Before
+   @BeforeMethod
    public void before()
    {
       emptyAnnotatedItem = new SimpleAnnotatedType(null, new HashMap<Class<? extends Annotation>, Annotation>());

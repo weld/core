@@ -19,6 +19,7 @@ import javax.webbeans.TypeLiteral;
 import org.jboss.webbeans.bindings.ProductionBinding;
 import org.jboss.webbeans.bindings.StandardBinding;
 import org.jboss.webbeans.ejb.EjbManager;
+import org.jboss.webbeans.event.EventBus;
 
 public class ContainerImpl implements Container
 {
@@ -26,6 +27,8 @@ public class ContainerImpl implements Container
    private List<Annotation> enabledDeploymentTypes;
    private ModelManager modelManager;
    private EjbManager ejbLookupManager;
+   private EventBus eventBus;
+
    
    private ThreadLocal<Map<Class<Annotation>, Context>> contexts = 
       new ThreadLocal<Map<Class<Annotation>, Context>>();
@@ -38,6 +41,7 @@ public class ContainerImpl implements Container
       this.modelManager = new ModelManager();
       this.ejbLookupManager = new EjbManager();
       this.components = new HashSet<ComponentInstance>();
+      this.eventBus = new EventBus();
    }
    
    private void initEnabledDeploymentTypes(List<Annotation> enabledDeploymentTypes)
@@ -72,8 +76,7 @@ public class ContainerImpl implements Container
 
    public void addObserver(Observer observer)
    {
-      // TODO Auto-generated method stub
-      
+      eventBus.addObserver(observer);      
    }
 
    public void fireEvent(Object event, Annotation... bindings)
@@ -118,8 +121,7 @@ public class ContainerImpl implements Container
 
    public void removeObserver(Observer observer)
    {
-      // TODO Auto-generated method stub
-      
+      eventBus.removeObserver(observer);
    }
 
    public Set<ComponentInstance> resolveByName(String name)
@@ -148,8 +150,7 @@ public class ContainerImpl implements Container
 
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
    {
-      // TODO Auto-generated method stub
-      return null;
+      return (Set<Observer<T>>) eventBus.getObservers(event, bindings);
    }
    
    public List<Annotation> getEnabledDeploymentTypes()

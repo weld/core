@@ -13,7 +13,7 @@ import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.test.components.Antelope;
 import org.jboss.webbeans.test.components.Order;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class ClassAnnotatedItemTest
 {

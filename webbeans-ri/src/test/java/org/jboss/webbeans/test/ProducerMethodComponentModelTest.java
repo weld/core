@@ -27,16 +27,16 @@ import org.jboss.webbeans.test.components.TrapdoorSpider;
 import org.jboss.webbeans.test.components.broken.ComponentWithFinalProducerMethod;
 import org.jboss.webbeans.test.components.broken.ComponentWithStaticProducerMethod;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-public class ProducerMethodComponentTest
+public class ProducerMethodComponentModelTest
 {
 
    private ContainerImpl container;
    private AnnotatedType<?> emptyAnnotatedItem;
    
-   @Before
+   @BeforeMethod
    public void before()
    {
       emptyAnnotatedItem = new SimpleAnnotatedType(null, new HashMap<Class<? extends Annotation>, Annotation>());

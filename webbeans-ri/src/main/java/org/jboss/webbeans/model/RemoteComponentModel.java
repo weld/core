@@ -29,6 +29,13 @@ public class RemoteComponentModel<T> extends AbstractEnterpriseComponentModel<T>
       initBoundTo();
    }
    
+   @Override
+   protected void checkComponentImplementation()
+   {
+      // No - op for remote components
+      // TODO THis is wrong probably
+   }
+   
    protected void initBoundTo()
    {
       if (getXmlAnnotatedItem().isAnnotationPresent(BoundTo.class))

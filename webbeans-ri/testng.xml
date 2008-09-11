@@ -1,0 +1,71 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="WebBeans RI" verbose="1">
+
+   <test name="Reflection Support">
+      <classes>
+         <class name="org.jboss.webbeans.test.ClassAnnotatedItemTest" />
+         <class name="org.jboss.webbeans.test.ConstructorModelTest" />
+      </classes>
+   </test>
+
+   <test name="Deployment">
+      <groups>
+         <run>
+            <exclude name="specialization" />
+            <exclude name="componentLifecycle" />
+         </run>
+      </groups>
+      <classes>
+         <class name="org.jboss.webbeans.test.ComponentDeploymentTest" />
+         <class name="org.jboss.webbeans.test.DeploymentStrategyTest" />
+      </classes>
+   </test>
+   
+   <test name="Component Model">
+      <classes>
+         <class name="org.jboss.webbeans.test.SimpleComponentModelTest" />
+         <class name="org.jboss.webbeans.test.EnterpriseComponentModelTest" />
+         <class name="org.jboss.webbeans.test.ProducerExpressionComponentModelTest" />
+         <class name="org.jboss.webbeans.test.ProducerMethodComponentModelTest" />
+         <class name="org.jboss.webbeans.test.RemoteComponentModelTest" />
+         <class name="org.jboss.webbeans.test.StereotypeModelTest" />
+      </classes>
+   </test>
+   
+   <test name="Component Lifecycle">
+      <groups>
+         <run>
+            <exclude name="componentLifecycle" />
+         </run>
+      </groups>
+      <classes>
+         <class name="org.jboss.webbeans.test.SimpleComponentLifecycleTest" />
+      </classes>
+   </test>
+   
+   <test name="Container">
+      <classes>
+         <class name="org.jboss.webbeans.test.ContainerTest" />
+      </classes>
+   </test>
+   
+   <test name="EJB">
+      <classes>
+         <class name="org.jboss.webbeans.test.EjbMetaDataTest" />
+      </classes>
+   </test>
+   
+   <test name="Event Bus">
+      <groups>
+         <run>
+            <exclude name="eventbus" />
+         </run>
+      </groups>
+      <classes>
+         <class name="org.jboss.webbeans.test.DeferredEventNotificationTest" />
+         <class name="org.jboss.webbeans.test.ObserverTest" />
+      </classes>
+   </test>
+   
+</suite>

@@ -59,7 +59,7 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
       checkRequiredTypesImplemented();
       checkScopeAllowed();
       // TODO This is too high
-      checkComponentImplementation(getType());
+      checkComponentImplementation();
       // TODO Interceptors
    }
    
@@ -161,9 +161,9 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
    
    
    
-   protected static void checkComponentImplementation(Class<?> type)
+   protected void checkComponentImplementation()
    {
-      if (Reflections.isAbstract(type))
+      if (Reflections.isAbstract(getType()))
       {
          throw new RuntimeException("Web Bean implementation class " + type + " cannot be declared abstract");
       }

@@ -63,8 +63,8 @@ import org.jboss.webbeans.test.components.broken.ComponentWithTooManyDeploymentT
 import org.jboss.webbeans.test.components.broken.OuterComponent.InnerComponent;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
 import org.jboss.webbeans.util.Reflections;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class SimpleComponentModelTest
 {
@@ -73,7 +73,7 @@ public class SimpleComponentModelTest
    
    private AnnotatedType emptyAnnotatedItem;
    
-   @Before
+   @BeforeMethod
    public void before()
    {
       emptyAnnotatedItem = new SimpleAnnotatedType(null, new HashMap<Class<? extends Annotation>, Annotation>());
@@ -577,5 +577,6 @@ public class SimpleComponentModelTest
          assert false;
       }
    }
+   
    
 }
