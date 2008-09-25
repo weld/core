@@ -4,13 +4,10 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
 @Documented
-public @interface SpecAssertion
-{
-   
-   public String[] section();
-   
-   public String note() default "";
+@Target(ElementType.TYPE)
+public @interface SpecVersion {
+	
+	String value();
 
 }

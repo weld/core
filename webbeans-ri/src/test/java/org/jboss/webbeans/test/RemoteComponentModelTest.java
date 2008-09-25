@@ -33,6 +33,12 @@ public class RemoteComponentModelTest
       container = new MockContainerImpl(null);
    }
    
+   @Test @SpecAssertion(section="2.7.2")
+   public void testSingleStereotype()
+   {
+	   assert false;
+   }
+   
    @Test @SpecAssertion(section="3.5")
    public void testApiTypes() throws SecurityException, NoSuchMethodException
    {
@@ -95,6 +101,12 @@ public class RemoteComponentModelTest
       assert tameOrangutanModel.getRemoveMethod().getMethod().getName().equals("removeOrangutan");
       RemoteComponentModel<Orangutan> orangutanModel = new RemoteComponentModel<Orangutan>(new SimpleAnnotatedType<Orangutan>(Orangutan.class), emptyAnnotatedItem, container);
       assert orangutanModel.getRemoveMethod().getMethod().getName().equals("removeOrangutan");
+   }
+   
+   @Test @SpecAssertion(section="2.7.2")
+   public void testStereotypeOnOtherInterface()
+   {
+	   assert false;
    }
    
 }

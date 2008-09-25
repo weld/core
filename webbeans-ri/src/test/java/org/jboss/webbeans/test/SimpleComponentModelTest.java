@@ -66,6 +66,7 @@ import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+@SpecVersion("20080925")
 public class SimpleComponentModelTest
 {
    
@@ -99,7 +100,7 @@ public class SimpleComponentModelTest
    
    // **** TESTS FOR DEPLOYMENT TYPE **** //
    
-   @Test
+   @Test @SpecAssertion(section="2.5.3")
    public void testTooManyDeploymentTypes()
    {
       boolean exception = false;
@@ -114,7 +115,7 @@ public class SimpleComponentModelTest
       assert exception;
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.5.4")
    public void testXmlDeploymentTypeOverridesJava()
    {
       Map<Class<? extends Annotation>, Annotation> xmlDefinedDeploymentTypeAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -125,7 +126,7 @@ public class SimpleComponentModelTest
       assert component.getDeploymentType().annotationType().equals(AnotherDeploymentType.class);
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.5.5")
    public void testXmlDefaultDeploymentType()
    {
       AnnotatedType antelopeAnnotatedItem = new SimpleAnnotatedType(Antelope.class, new HashMap<Class<? extends Annotation>, Annotation>());
@@ -133,15 +134,15 @@ public class SimpleComponentModelTest
       assert antelope.getDeploymentType().annotationType().equals(Production.class);
    }
    
-   @Test
-   public void testXmlIgnoresJavaDeploymentType()
+   @Test @SpecAssertion(section="2.5.4")
+   public void testXmlRespectsJavaDeploymentType()
    {
       AnnotatedType annotatedItem = new SimpleAnnotatedType(Tuna.class, new HashMap<Class<? extends Annotation>, Annotation>());
       SimpleComponentModel<Tuna> tuna = new SimpleComponentModel<Tuna>(new SimpleAnnotatedType(Tuna.class), annotatedItem, container);
-      assert tuna.getDeploymentType().annotationType().equals(Production.class);
+      assert tuna.getDeploymentType().annotationType().equals(AnotherDeploymentType.class);
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.5.7")
    public void testDeploymentTypePrecedenceSelection()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -153,11 +154,21 @@ public class SimpleComponentModelTest
       
    }
    
+   @Test @SpecAssertion(section="2.7.2")
+   public void testDeploymentTypeSpecifiedAndStereotyped()
+   {
+      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      annotations.put(FishStereotype.class, new FishStereotypeBinding());
+      AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
+      assert trout.getScopeType().annotationType().equals(RequestScoped.class);
+   }
+   
    // **** TESTS FOR BINDING TYPE **** //
    
    @SuppressWarnings("unchecked")
-   @Test
-   public void testXmlBindingTypeOverridesJava()
+   @Test @SpecAssertion(section="2.3.5")
+   public void testXmlBindingTypeOverridesAndIgnoresJava()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Asynchronous.class, new AsynchronousBinding());
@@ -169,7 +180,7 @@ public class SimpleComponentModelTest
    }
    
    @SuppressWarnings("unchecked")
-   @Test
+   @Test @SpecAssertion(section="2.3.3")
    public void testBindingTypesDeclaredInJava()
    {
       SimpleComponentModel<Cat> cat = new SimpleComponentModel<Cat>(new SimpleAnnotatedType(Cat.class), emptyAnnotatedItem, container);
@@ -178,7 +189,7 @@ public class SimpleComponentModelTest
    }
    
    @SuppressWarnings("unchecked")
-   @Test
+   @Test @SpecAssertion(section="2.3.3")
    public void testBindingTypesDeclaredInXml()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -190,8 +201,8 @@ public class SimpleComponentModelTest
    }
    
    @SuppressWarnings("unchecked")
-   @Test
-   public void testDefaultBindingType()
+   @Test @SpecAssertion(section={"2.3.3", "2.3.1"}) 
+   public void testDefaultBindingTypeDeclaredInJava()
    {
       SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), emptyAnnotatedItem, container);
       assert order.getBindingTypes().size() == 1;
@@ -218,7 +229,7 @@ public class SimpleComponentModelTest
       assert order.getScopeType().annotationType().equals(RequestScoped.class);
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.4.4")
    public void testScopeDeclaredInXmlOverridesJava()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -228,7 +239,7 @@ public class SimpleComponentModelTest
       assert trout.getScopeType().annotationType().equals(ConversationScoped.class);
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.4.4")
    public void testScopeMissingInXml()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -238,15 +249,15 @@ public class SimpleComponentModelTest
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);
    }
    
-   @Test
-   public void testNoScopeSpecified()
+   @Test @SpecAssertion(section="2.4.5")
+   public void testDefaultScope()
    {
       SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), emptyAnnotatedItem, container);
       assert order.getScopeType().annotationType().equals(Dependent.class);
    }
    
-   @Test
-   public void testTooManyScopesSpecified()
+   @Test @SpecAssertion(section="2.4.3")
+   public void testTooManyScopesSpecifiedInJava()
    {
       boolean exception = false;
       try
@@ -260,7 +271,7 @@ public class SimpleComponentModelTest
       assert exception;  
    }
    
-   @Test
+   @Test @SpecAssertion(section={"2.4.4", "2.4.3"})
    public void testTooManyScopesSpecifiedInXml()
    {
       boolean exception = false;
@@ -279,7 +290,7 @@ public class SimpleComponentModelTest
       assert exception;  
    }
    
-   @Test
+   @Test @SpecAssertion(section={"2.4.5", "2.7.2"})
    public void testScopeSpecifiedAndStereotyped()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -289,7 +300,7 @@ public class SimpleComponentModelTest
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.4.5")
    public void testMutipleIncompatibleScopeStereotypes()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -309,7 +320,7 @@ public class SimpleComponentModelTest
       assert exception;
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.4.5")
    public void testMutipleIncompatibleScopeStereotypesWithScopeSpecified()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -321,7 +332,7 @@ public class SimpleComponentModelTest
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);     
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.4.5")
    public void testMutipleCompatibleScopeStereotypes()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -335,16 +346,16 @@ public class SimpleComponentModelTest
    
    // **** TESTS FOR COMPONENT NAME **** /
    
-   @Test
-   public void testNamed()
+   @Test @SpecAssertion(section="2.6.1")
+   public void testDefaultNamed()
    {
       SimpleComponentModel<Haddock> haddock = new SimpleComponentModel<Haddock>(new SimpleAnnotatedType(Haddock.class), emptyAnnotatedItem, container);
       assert haddock.getName() != null;
       assert haddock.getName().equals("haddock");
    }
    
-   @Test
-   public void testXmlNamed()
+   @Test @SpecAssertion(section="2.6.2")
+   public void testDefaultXmlNamed()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Named.class, new NamedBinding()
@@ -362,7 +373,7 @@ public class SimpleComponentModelTest
       assert trout.getName().equals("seaBass");
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.6.2")
    public void testNonDefaultXmlNamed()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -380,14 +391,14 @@ public class SimpleComponentModelTest
       assert trout.getName().equals("aTrout");
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.6.4")
    public void testNotNamed()
    {
       SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), emptyAnnotatedItem, container);
       assert trout.getName() == null;
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.6.1")
    public void testNonDefaultNamed()
    {
       SimpleComponentModel<Moose> moose = new SimpleComponentModel<Moose>(new SimpleAnnotatedType(Moose.class), emptyAnnotatedItem, container);
@@ -398,7 +409,7 @@ public class SimpleComponentModelTest
    // **** TESTS FOR STEREOTYPES **** //
    
    @SuppressWarnings("unchecked")
-   @Test
+   @Test @SpecAssertion(section="2.7.3")
    public void testStereotypeDeclaredInXmlAndJava()
    {
       Map<Class<? extends Annotation>, Annotation> orderXmlAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -421,7 +432,7 @@ public class SimpleComponentModelTest
       assert order.getScopeType().annotationType().equals(Dependent.class);
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.7.2")
    public void testSingleStereotype()
    {
       SimpleComponentModel<Gorilla> gorilla = new SimpleComponentModel<Gorilla>(new SimpleAnnotatedType(Gorilla.class), emptyAnnotatedItem, container);
@@ -431,7 +442,7 @@ public class SimpleComponentModelTest
       assert gorilla.getScopeType().annotationType().equals(RequestScoped.class);
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.7.4")
    public void testRequiredTypeIsImplemented()
    {
       try
@@ -445,23 +456,13 @@ public class SimpleComponentModelTest
       
    }
    
-   @Test
+   @Test(expectedExceptions=Exception.class) @SpecAssertion(section="2.7.4")
    public void testRequiredTypeIsNotImplemented()
    {
-      boolean exception = false;
-      try
-      {
-         new SimpleComponentModel<Chair>(new SimpleAnnotatedType(Chair.class), emptyAnnotatedItem, container);
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
-      
+      new SimpleComponentModel<Chair>(new SimpleAnnotatedType(Chair.class), emptyAnnotatedItem, container);      
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.7.4")
    public void testScopeIsSupported()
    {
       try
@@ -470,26 +471,21 @@ public class SimpleComponentModelTest
       }
       catch (Exception e) 
       {
-         e.printStackTrace();
          assert false;
       }
       
    }
    
-   @Test
+   @Test(expectedExceptions=Exception.class) @SpecAssertion(section="2.7.4")
    public void testScopeIsNotSupported()
    {
-      boolean exception = false;
-      try
-      {
-         new SimpleComponentModel<Carp>(new SimpleAnnotatedType(Carp.class), emptyAnnotatedItem, container);
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
-      
+      new SimpleComponentModel<Carp>(new SimpleAnnotatedType(Carp.class), emptyAnnotatedItem, container);    
+   }
+   
+   @Test @SpecAssertion(section="2.7.2")
+   public void testMultipleStereotypes()
+   {
+	   assert false;
    }
    
    //*** COMPONENT CLASS CHECKS ****//

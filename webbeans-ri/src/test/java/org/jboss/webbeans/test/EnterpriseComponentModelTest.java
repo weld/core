@@ -42,6 +42,12 @@ private ContainerImpl container;
       container = new MockContainerImpl(null);
    }
    
+   @Test @SpecAssertion(section="2.7.2")
+   public void testSingleStereotype()
+   {
+	   assert false;
+   }
+   
    @SuppressWarnings("unchecked")
    @Test
    public void testStateless()

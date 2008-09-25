@@ -2,6 +2,7 @@ package org.jboss.webbeans.test;
 
 import org.testng.annotations.Test;
 
+@SpecVersion("20080605")
 public class ComponentDeploymentTest
 {
 

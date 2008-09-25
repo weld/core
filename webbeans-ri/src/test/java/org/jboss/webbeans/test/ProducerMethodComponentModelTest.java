@@ -216,4 +216,15 @@ public class ProducerMethodComponentModelTest
       assert false;
    }
    
+   @Test @SpecAssertion(section="2.7.2")
+   public void testSingleStereotype()
+   {
+	   assert false;
+   }
+   
+   @Test @SpecAssertion(section="2.7.2")
+   public void testStereotypeOnNonProducerMethod()
+   {
+	   assert false;
+   }
 }

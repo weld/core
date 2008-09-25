@@ -2,7 +2,6 @@ package org.jboss.webbeans.test;
 
 import java.util.Arrays;
 
-import javax.webbeans.Component;
 import javax.webbeans.Model;
 import javax.webbeans.Production;
 import javax.webbeans.RequestScoped;
@@ -11,6 +10,7 @@ import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.test.annotations.AnimalOrderStereotype;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
+import org.jboss.webbeans.test.annotations.HornedMammalStereotype;
 import org.jboss.webbeans.test.annotations.RequestScopedAnimalStereotype;
 import org.jboss.webbeans.test.annotations.broken.StereotypeWithBindingTypes;
 import org.jboss.webbeans.test.annotations.broken.StereotypeWithNonEmptyNamed;
@@ -20,26 +20,32 @@ import org.jboss.webbeans.test.components.Animal;
 import org.jboss.webbeans.test.components.Order;
 import org.testng.annotations.Test;
 
+@SpecVersion("20080925")
 public class StereotypeModelTest
 {
-   
-   @Test
-   public void testComponentStereotype()
+	
+   @Test @SpecAssertion(section="2.7.1")
+   public void testHasCorrectTarget()
    {
-      StereotypeModel componentStereotype = new StereotypeModel(new SimpleAnnotatedType(Component.class));
-      
-      assert Production.class.equals(componentStereotype.getDefaultDeploymentType().annotationType());
-      assert componentStereotype.getDefaultScopeType() == null;
-      assert componentStereotype.getInterceptorBindings().size() == 0;
-      assert componentStereotype.getRequiredTypes().size() == 0;
-      assert componentStereotype.getSupportedScopes().size() == 0;
-      assert !componentStereotype.isComponentNameDefaulted();
+	   assert false;
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.7.1")
+   public void testHasCorrectRetention()
+   {
+	   assert false;
+   }
+   
+   @Test @SpecAssertion(section="2.7.1")
+   public void testHasStereotypeAnnotation()
+   {
+	   assert false;
+   }
+   
+   @Test @SpecAssertion(section="2.7.5")
    public void testModelStereotype()
    {
-      StereotypeModel modelStereotype = new StereotypeModel(new SimpleAnnotatedType(Model.class));
+      StereotypeModel<Model> modelStereotype = new StereotypeModel<Model>(new SimpleAnnotatedType<Model>(Model.class));
       assert Production.class.equals(modelStereotype.getDefaultDeploymentType().annotationType());
       assert RequestScoped.class.equals(modelStereotype.getDefaultScopeType().annotationType());
       assert modelStereotype.isComponentNameDefaulted();
@@ -51,7 +57,7 @@ public class StereotypeModelTest
    @Test
    public void testAnimalStereotype()
    {
-      StereotypeModel animalStereotype = new StereotypeModel(new SimpleAnnotatedType(AnimalStereotype.class));
+      StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(new SimpleAnnotatedType<AnimalStereotype>(AnimalStereotype.class));
       assert animalStereotype.getDefaultScopeType().annotationType().equals(RequestScoped.class);
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert animalStereotype.getRequiredTypes().size() == 1;
@@ -64,7 +70,7 @@ public class StereotypeModelTest
    @Test
    public void testAnimalOrderStereotype()
    {
-      StereotypeModel animalStereotype = new StereotypeModel(new SimpleAnnotatedType(AnimalOrderStereotype.class));
+      StereotypeModel<AnimalOrderStereotype> animalStereotype = new StereotypeModel<AnimalOrderStereotype>(new SimpleAnnotatedType<AnimalOrderStereotype>(AnimalOrderStereotype.class));
       assert animalStereotype.getDefaultScopeType() == null;
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert animalStereotype.getRequiredTypes().size() == 2;
@@ -78,7 +84,7 @@ public class StereotypeModelTest
    @Test
    public void testRequestScopedAnimalStereotype()
    {
-      StereotypeModel animalStereotype = new StereotypeModel(new SimpleAnnotatedType(RequestScopedAnimalStereotype.class));
+      StereotypeModel<RequestScopedAnimalStereotype> animalStereotype = new StereotypeModel<RequestScopedAnimalStereotype>(new SimpleAnnotatedType<RequestScopedAnimalStereotype>(RequestScopedAnimalStereotype.class));
       assert animalStereotype.getDefaultScopeType() == null;
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert animalStereotype.getRequiredTypes().size() == 1;
@@ -89,64 +95,55 @@ public class StereotypeModelTest
       assert animalStereotype.getDefaultDeploymentType() == null;
    }
    
-   @Test
+   @Test @SpecAssertion(section="2.7.1")
+   public void testStereotypeWithScopeType()
+   {
+	   StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(new SimpleAnnotatedType<AnimalStereotype>(AnimalStereotype.class));
+	   assert animalStereotype.getDefaultScopeType().annotationType().equals(RequestScoped.class);
+   }
+   
+   @Test @SpecAssertion(section="2.7.1")
+   public void testStereotypeWithoutScopeType()
+   {
+	   StereotypeModel<HornedMammalStereotype> animalStereotype = new StereotypeModel<HornedMammalStereotype>(new SimpleAnnotatedType<HornedMammalStereotype>(HornedMammalStereotype.class));
+	   assert animalStereotype.getDefaultScopeType().annotationType() == null;
+   }
+   
+   @Test @SpecAssertion(section="2.7.1")
+   public void testStereotypeWithoutInterceptors()
+   {
+      StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(new SimpleAnnotatedType<AnimalStereotype>(AnimalStereotype.class));
+      assert animalStereotype.getInterceptorBindings().size() == 0;
+   }
+   
+   @Test @SpecAssertion(section="2.7.1")
+   public void testStereotypeWithInterceptors()
+   {
+      assert false;
+   }
+   
+   @Test(expectedExceptions=RuntimeException.class) @SpecAssertion(section="2.7.1")
    public void testStereotypeWithTooManyScopeTypes()
    {
-      boolean exception = false;
-      try
-      {
-         new StereotypeModel(new SimpleAnnotatedType(StereotypeWithTooManyScopeTypes.class));
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
+      new StereotypeModel<StereotypeWithTooManyScopeTypes>(new SimpleAnnotatedType<StereotypeWithTooManyScopeTypes>(StereotypeWithTooManyScopeTypes.class));
    }
    
-   @Test
+   @Test(expectedExceptions=RuntimeException.class) @SpecAssertion(section="2.7.1")
    public void testStereotypeWithTooManyDeploymentTypes()
    {
-      boolean exception = false;
-      try
-      {
-         new StereotypeModel(new SimpleAnnotatedType(StereotypeWithTooManyDeploymentTypes.class));
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
+      new StereotypeModel<StereotypeWithTooManyDeploymentTypes>(new SimpleAnnotatedType<StereotypeWithTooManyDeploymentTypes>(StereotypeWithTooManyDeploymentTypes.class));
    }
    
-   @Test
+   @Test(expectedExceptions=RuntimeException.class) @SpecAssertion(section="2.7.1")
    public void testStereotypeWithNonEmptyNamed()
    {
-      boolean exception = false;
-      try
-      {
-         new StereotypeModel(new SimpleAnnotatedType(StereotypeWithNonEmptyNamed.class));
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
+      new StereotypeModel<StereotypeWithNonEmptyNamed>(new SimpleAnnotatedType<StereotypeWithNonEmptyNamed>(StereotypeWithNonEmptyNamed.class));
    }
    
-   @Test
+   @Test(expectedExceptions=RuntimeException.class) @SpecAssertion(section="2.7.1")
    public void testStereotypeWithBindingTypes()
    {
-      boolean exception = false;
-      try
-      {
-         new StereotypeModel(new SimpleAnnotatedType(StereotypeWithBindingTypes.class));
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
+      new StereotypeModel<StereotypeWithBindingTypes>(new SimpleAnnotatedType<StereotypeWithBindingTypes>(StereotypeWithBindingTypes.class));
    }
    
 }

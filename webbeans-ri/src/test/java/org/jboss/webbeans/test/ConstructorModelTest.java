@@ -23,6 +23,7 @@ import org.jboss.webbeans.test.mock.MockContainerImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+@SpecVersion("20080925")
 public class ConstructorModelTest
 {
 
@@ -156,6 +157,12 @@ public class ConstructorModelTest
       }
       assert exception;
       
+   }
+   
+   @Test @SpecAssertion(section="2.7.2")
+   public void testStereotypeOnConstructor()
+   {
+	   assert false;
    }
    
 }
