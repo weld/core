@@ -2,84 +2,22 @@
 
 <suite name="WebBeans RI" verbose="1">
 
-   <test name="Reflection Support">
-      <classes>
-         <class name="org.jboss.webbeans.test.ClassAnnotatedItemTest" />
-         <class name="org.jboss.webbeans.test.ConstructorModelTest" />
-      </classes>
-   </test>
-
-   <test name="Deployment">
+   <test name="Web Beans RI">
       <groups>
          <run>
             <exclude name="specialization" />
             <exclude name="componentLifecycle" />
             <exclude name="deployment" />
-         </run>
-      </groups>
-      <classes>
-         <class name="org.jboss.webbeans.test.ComponentDeploymentTest" />
-         <class name="org.jboss.webbeans.test.DeploymentStrategyTest" />
-      </classes>
-   </test>
-   
-   <test name="Component Model">
-      <groups>
-         <run>
             <exclude name="disposalMethod" />
             <exclude name="producerExpression" />
             <exclude name="remoteComponentInXml" />
-         </run>
-      </groups>
-      <classes>
-         <class name="org.jboss.webbeans.test.SimpleComponentModelTest" />
-         <class name="org.jboss.webbeans.test.EnterpriseComponentModelTest" />
-         <class name="org.jboss.webbeans.test.ProducerExpressionComponentModelTest" />
-         <class name="org.jboss.webbeans.test.ProducerMethodComponentModelTest" />
-         <class name="org.jboss.webbeans.test.RemoteComponentModelTest" />
-         <class name="org.jboss.webbeans.test.StereotypeModelTest" />
-      </classes>
-   </test>
-   
-   <test name="Component Lifecycle">
-      <groups>
-         <run>
-            <exclude name="componentLifecycle" />
-            <exclude name="specialization" />
-            <exclude name="disposalMethod" />
-         </run>
-      </groups>
-      <classes>
-         <class name="org.jboss.webbeans.test.SimpleComponentLifecycleTest" />
-         <class name="org.jboss.webbeans.test.EnterpriseComponentLifecycleTest" />
-         <class name="org.jboss.webbeans.test.ProducerMethodComponentLifecycleTest" />
-         <class name="org.jboss.webbeans.test.ProducerExpressionComponentLifecycleTest" />
-         <class name="org.jboss.webbeans.test.RemoteComponentLifecycleTest" />
-      </classes>
-   </test>
-   
-   <test name="Container">
-      <classes>
-         <class name="org.jboss.webbeans.test.ContainerTest" />
-      </classes>
-   </test>
-   
-   <test name="EJB">
-      <classes>
-         <class name="org.jboss.webbeans.test.EjbMetaDataTest" />
-      </classes>
-   </test>
-   
-   <test name="Event Bus">
-      <groups>
-         <run>
             <exclude name="eventbus" />
+            <exclude name="injection" />
          </run>
       </groups>
-      <classes>
-         <class name="org.jboss.webbeans.test.DeferredEventNotificationTest" />
-         <class name="org.jboss.webbeans.test.ObserverTest" />
-      </classes>
+      <packages>
+         <package name="org.jboss.webbeans.test"></package>
+      </packages>
    </test>
    
 </suite>
