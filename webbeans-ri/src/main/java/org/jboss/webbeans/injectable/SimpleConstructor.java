@@ -3,7 +3,7 @@ package org.jboss.webbeans.injectable;
 import java.lang.reflect.Constructor;
 import java.util.logging.Logger;
 
-import javax.webbeans.Container;
+import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.util.LoggerUtil;
 
@@ -29,7 +29,7 @@ public class SimpleConstructor<T> extends Unit<T> implements ComponentConstructo
       return constructor;
    }
 
-   public T invoke(Container container)
+   public T invoke(Manager container)
    {
       try
       {

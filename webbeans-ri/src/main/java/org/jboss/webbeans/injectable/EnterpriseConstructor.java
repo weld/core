@@ -1,8 +1,8 @@
 package org.jboss.webbeans.injectable;
 
-import javax.webbeans.Container;
+import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.ejb.EjbMetaData;
 
 
@@ -16,12 +16,12 @@ public class EnterpriseConstructor<T> implements ComponentConstructor<T>
       this.ejbMetaData = ejbMetaData;
    }
    
-   public T invoke(Container container)
+   public T invoke(Manager container)
    {
       // TODO Hmm, this isn't right
-      if (container instanceof ContainerImpl)
+      if (container instanceof ManagerImpl)
       {
-         ContainerImpl containerImpl = (ContainerImpl) container;
+         ManagerImpl containerImpl = (ManagerImpl) container;
          return containerImpl.getEjbManager().lookup(ejbMetaData);
       }
       else

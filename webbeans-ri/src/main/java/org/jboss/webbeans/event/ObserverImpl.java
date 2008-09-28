@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.webbeans.Container;
-import javax.webbeans.Observer;
+import javax.webbeans.manager.Manager;
+import javax.webbeans.manager.Observer;
 
 import org.jboss.webbeans.injectable.Parameter;
 import org.jboss.webbeans.model.AbstractComponentModel;
@@ -97,7 +97,7 @@ public class ObserverImpl<T> implements Observer<T>
     * @see javax.webbeans.Observer#notify(javax.webbeans.Container,
     *      java.lang.Object)
     */
-   public void notify(Container container, T event)
+   public void notify(Manager container, T event)
    {
       // Get the most specialized instance of the component
       Object instance = container.getInstanceByType(compModel.getType(),

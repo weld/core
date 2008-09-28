@@ -2,11 +2,11 @@ package org.jboss.webbeans.model;
 
 import java.lang.annotation.Annotation;
 
-import javax.webbeans.Container;
+import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.ContainerImpl;
-import org.jboss.webbeans.bindings.DependentBinding;
-import org.jboss.webbeans.bindings.StandardBinding;
+import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bindings.DependentAnnotationLiteral;
+import org.jboss.webbeans.bindings.StandardAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedType;
 
 /**
@@ -19,9 +19,9 @@ import org.jboss.webbeans.introspector.AnnotatedType;
 public class EventComponentModel<T> extends SimpleComponentModel<T>
 {
 
-   private StandardBinding  deploymentType = new StandardBinding();
-   private DependentBinding scopeType      = new DependentBinding();
-   private ContainerImpl    container;
+   private StandardAnnotationLiteral  deploymentType = new StandardAnnotationLiteral();
+   private DependentAnnotationLiteral scopeType      = new DependentAnnotationLiteral();
+   private ManagerImpl    container;
 
    /**
     * Creates a new component model for an injectable, observable event object.
@@ -31,7 +31,7 @@ public class EventComponentModel<T> extends SimpleComponentModel<T>
     * @param xmlAnnotatedItem The injectable variable defined in XML
     * @param container The Web Beans container
     */
-   public EventComponentModel(AnnotatedType annotatedItem, AnnotatedType xmlAnnotatedItem, ContainerImpl container)
+   public EventComponentModel(AnnotatedType annotatedItem, AnnotatedType xmlAnnotatedItem, ManagerImpl container)
    {
       super(annotatedItem, xmlAnnotatedItem, container);
       // This is needed later for the impl of Event to fire events with the container
@@ -42,7 +42,7 @@ public class EventComponentModel<T> extends SimpleComponentModel<T>
     * The implementation of the container used to create this model.
     * @return the container
     */
-   public Container getContainer()
+   public Manager getContainer()
    {
       return container;
    }

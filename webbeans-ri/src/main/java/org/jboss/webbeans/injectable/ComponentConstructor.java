@@ -1,10 +1,10 @@
 package org.jboss.webbeans.injectable;
 
-import javax.webbeans.Container;
+import javax.webbeans.manager.Manager;
 
 public interface ComponentConstructor<T>
 {
 
-   public T invoke(Container container);
+   public T invoke(Manager container);
    
 }

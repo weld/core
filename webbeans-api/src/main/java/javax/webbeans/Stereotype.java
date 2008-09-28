@@ -17,7 +17,7 @@
 
 package javax.webbeans;
 
-import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Annotation;
@@ -26,12 +26,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Specifies that an annotation type is a Web Beans stereotype.
  * 
  * @author Pete Muir
+ * @author Gavin King
  */
 
-@Target(TYPE)
 @Retention(RUNTIME)
+@Target(ANNOTATION_TYPE)
 @Documented
 public @interface Stereotype
 {

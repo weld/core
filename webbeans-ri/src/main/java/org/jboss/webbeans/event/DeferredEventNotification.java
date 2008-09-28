@@ -1,8 +1,8 @@
 package org.jboss.webbeans.event;
 
 import javax.transaction.Synchronization;
-import javax.webbeans.Container;
-import javax.webbeans.Observer;
+import javax.webbeans.manager.Manager;
+import javax.webbeans.manager.Observer;
 
 /**
  * A synchronization object which will deliver the event to the observer
@@ -13,7 +13,7 @@ import javax.webbeans.Observer;
  */
 public class DeferredEventNotification implements Synchronization
 {
-   private Container         container;
+   private Manager         container;
    private Observer<Object>  observer;
    private Object            event;
    
@@ -25,7 +25,7 @@ public class DeferredEventNotification implements Synchronization
     * @param event The event being fired
     */
    @SuppressWarnings("unchecked")
-   public DeferredEventNotification(Container container, Object event, Observer observer)
+   public DeferredEventNotification(Manager container, Object event, Observer observer)
    {
       this.container = container;
       this.observer = observer;

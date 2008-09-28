@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.webbeans.Observer;
 import javax.webbeans.Observes;
 import javax.webbeans.Production;
+import javax.webbeans.manager.Observer;
 
-import org.jboss.webbeans.ContainerImpl;
-import org.jboss.webbeans.bindings.StandardBinding;
+import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bindings.StandardAnnotationLiteral;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.event.ObserverMethod;
 import org.jboss.webbeans.introspector.AnnotatedType;
@@ -26,8 +26,8 @@ import org.jboss.webbeans.test.annotations.Asynchronous;
 import org.jboss.webbeans.test.annotations.FishStereotype;
 import org.jboss.webbeans.test.annotations.RequestScopedAnimalStereotype;
 import org.jboss.webbeans.test.annotations.RiverFishStereotype;
-import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeBinding;
-import org.jboss.webbeans.test.bindings.AsynchronousBinding;
+import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
+import org.jboss.webbeans.test.bindings.AsynchronousAnnotationLiteral;
 import org.jboss.webbeans.test.components.Tuna;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
 import org.jboss.webbeans.util.Reflections;
@@ -42,7 +42,7 @@ import org.testng.annotations.Test;
  */
 public class ObserverTest
 {
-   private ContainerImpl container;
+   private ManagerImpl container;
    
    public class Event
    {
@@ -61,14 +61,14 @@ public class ObserverTest
    public void before()
    {
       List<Annotation> enabledDeploymentTypes = new ArrayList<Annotation>();
-      enabledDeploymentTypes.add(new StandardBinding());
-      enabledDeploymentTypes.add(new AnotherDeploymentTypeBinding());
+      enabledDeploymentTypes.add(new StandardAnnotationLiteral());
+      enabledDeploymentTypes.add(new AnotherDeploymentTypeAnnotationLiteral());
       container = new MockContainerImpl(enabledDeploymentTypes);
       
       initStereotypes(container);
    }
    
-   private void initStereotypes(ContainerImpl container)
+   private void initStereotypes(ManagerImpl container)
    {
       container.getModelManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(AnimalStereotype.class)));
       container.getModelManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(FishStereotype.class)));
@@ -86,7 +86,7 @@ public class ObserverTest
    {
       // Create an observer with known binding types
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(Asynchronous.class, new AsynchronousBinding());
+      annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
       AnnotatedType annotatedItem = new SimpleAnnotatedType(Tuna.class, annotations);
       SimpleComponentModel<Tuna> tuna = new SimpleComponentModel<Tuna>(new SimpleAnnotatedType(Tuna.class), annotatedItem, container);
       assert tuna.getDeploymentType().annotationType().equals(Production.class);

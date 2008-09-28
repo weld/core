@@ -4,13 +4,13 @@ import java.lang.annotation.Annotation;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.webbeans.ComponentInstance;
-import javax.webbeans.Container;
+import javax.webbeans.manager.Bean;
+import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.model.AbstractComponentModel;
 import org.jboss.webbeans.util.LoggerUtil;
 
-public class ComponentInstanceImpl<T> extends ComponentInstance<T>
+public class BeanImpl<T> extends Bean<T>
 {
    
 public static final String LOGGER_NAME = "componentMetaModel";
@@ -19,19 +19,19 @@ public static final String LOGGER_NAME = "componentMetaModel";
    
    private AbstractComponentModel<T, ?> componentMetaModel;
 
-   public ComponentInstanceImpl(AbstractComponentModel<T, ?> componentMetaModel)
+   public BeanImpl(AbstractComponentModel<T, ?> componentMetaModel)
    {
       this.componentMetaModel = componentMetaModel;
    }
 
    @Override
-   public T create(Container container)
+   public T create(Manager container)
    {
       return componentMetaModel.getConstructor().invoke(container);
    }
 
    @Override
-   public void destroy(Container container, T instance)
+   public void destroy(Manager container, T instance)
    {
       // TODO Auto-generated method stub
       

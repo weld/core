@@ -12,8 +12,8 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-import javax.webbeans.Container;
-import javax.webbeans.Observer;
+import javax.webbeans.manager.Manager;
+import javax.webbeans.manager.Observer;
 
 import org.jboss.webbeans.util.JNDI;
 
@@ -67,7 +67,7 @@ public class EventBus
     * @throws IllegalStateException
     * @throws RollbackException
     */
-   public void deferEvent(Container container, Object event, Observer o) throws SystemException, IllegalStateException, RollbackException
+   public void deferEvent(Manager container, Object event, Observer o) throws SystemException, IllegalStateException, RollbackException
    {
       if (tm != null) {
          // Get the current transaction associated with the thread

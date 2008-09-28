@@ -10,7 +10,7 @@ import java.util.Set;
 
 import javax.webbeans.Dependent;
 
-import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.ComponentConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.MethodConstructor;
@@ -34,14 +34,14 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
    private Type declaredComponentType;
    
    @SuppressWarnings("unchecked")
-   public ProducerMethodComponentModel(AnnotatedMethod annotatedMethod, ContainerImpl container)
+   public ProducerMethodComponentModel(AnnotatedMethod annotatedMethod, ManagerImpl container)
    {
       this.annotatedMethod = annotatedMethod;
       init(container);
    }
    
    @Override
-   protected void init(ContainerImpl container)
+   protected void init(ManagerImpl container)
    {
       super.init(container);
       checkProducerMethod();
@@ -50,7 +50,7 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
    }
    
    @Override
-   protected void initDeploymentType(ContainerImpl container)
+   protected void initDeploymentType(ManagerImpl container)
    {
       super.initDeploymentType(container);
       if (getDeploymentType() == null)
@@ -63,7 +63,7 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
       }
    }
 
-   protected void initDeclaringComponent(ContainerImpl container)
+   protected void initDeclaringComponent(ManagerImpl container)
    {
       declaringComponent = (AbstractComponentModel<?, Class<?>>) container.getModelManager().getComponentModel(getAnnotatedItem().getDelegate().getDeclaringClass());
    }
@@ -88,7 +88,7 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
    }
    
    @SuppressWarnings("unchecked")
-   protected void initRemoveMethod(ContainerImpl container)
+   protected void initRemoveMethod(ManagerImpl container)
    {
       Set<Method> disposalMethods = container.resolveDisposalMethods(getType(), getBindingTypes().toArray(new Annotation[0]));
       if (disposalMethods.size() == 1)

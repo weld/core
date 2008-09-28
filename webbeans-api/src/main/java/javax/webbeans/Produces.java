@@ -26,6 +26,10 @@ import java.lang.annotation.Target;
 
 /**
  * 
+ * Specifies that a method of a Web Bean component
+ * implementation class is a Web Beans producer method.
+ * 
+ * @author Gavin King
  * @author Pete Muir
  */
 

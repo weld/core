@@ -15,22 +15,27 @@
 * limitations under the License.
 */
 
-package javax.webbeans;
+package javax.webbeans.manager;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
+
 
 /**
  * 
  * @author Pete Muir
  */
 
-public interface Observer<T>
+public abstract class Bean<T>
 {
 
-   public Class<T> getEventType();
-   public Set<Annotation> getEventBindingTypes();
+   public abstract Set<Class> getTypes();
+   public abstract Set<Annotation> getBindingTypes();
+   public abstract Annotation getScopeType();
+   public abstract Annotation getDeploymentType();
+   public abstract String getName();
    
-   public void notify(Container container, T event);
-   
+   public abstract T create(Manager container);
+   public abstract void destroy(Manager container, T instance);
+
 }

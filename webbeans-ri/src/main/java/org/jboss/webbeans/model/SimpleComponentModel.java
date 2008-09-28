@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import javax.webbeans.BindingType;
 import javax.webbeans.Initializer;
 
-import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.SimpleConstructor;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.LoggerUtil;
@@ -29,14 +29,14 @@ public class SimpleComponentModel<T> extends AbstractClassComponentModel<T>
     * @param container
     */
    @SuppressWarnings("unchecked")
-   public SimpleComponentModel(AnnotatedType annotatedItem, AnnotatedType xmlAnnotatedItem, ContainerImpl container)
+   public SimpleComponentModel(AnnotatedType annotatedItem, AnnotatedType xmlAnnotatedItem, ManagerImpl container)
    {
       super(annotatedItem, xmlAnnotatedItem);
       init(container);
    }
    
    @Override
-   protected void init(ContainerImpl container)
+   protected void init(ManagerImpl container)
    {
       super.init(container);
       initConstructor();

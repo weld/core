@@ -15,17 +15,19 @@
 * limitations under the License.
 */
 
-package javax.webbeans;
+package javax.webbeans.manager;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
+
+import javax.webbeans.TypeLiteral;
 
 /**
  * 
  * @author Pete Muir
  */
 
-public interface Container
+public interface Manager
 {
 
    public <T> T getInstanceByType(Class<T> type, Annotation... bindingTypes);
@@ -40,7 +42,7 @@ public interface Container
 
    public Object getInstanceByName(String name);
 
-   public Set<ComponentInstance> resolveByName(String name);
+   public Set<Bean> resolveByName(String name);
 
    public void fireEvent(Object event, Annotation... bindings);
    
@@ -54,6 +56,6 @@ public interface Container
    
    public Context getContext(Class<Annotation> scopeType);
    
-   public Container addComponent(ComponentInstance component);
+   public Manager addComponent(Bean component);
 
 }

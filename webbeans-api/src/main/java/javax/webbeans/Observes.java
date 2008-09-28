@@ -25,7 +25,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Specifies that a parameter of a method of a Web Bean 
+ * component implementation class is the event parameter 
+ * of an observer method.
  * 
+ * @author Gavin King
  * @author Pete Muir
  */
 

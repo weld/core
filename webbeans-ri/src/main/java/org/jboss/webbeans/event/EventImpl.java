@@ -7,7 +7,7 @@ import java.util.HashSet;
 
 import javax.webbeans.Event;
 
-import org.jboss.webbeans.ComponentInstanceImpl;
+import org.jboss.webbeans.BeanImpl;
 import org.jboss.webbeans.model.EventComponentModel;
 
 /**
@@ -16,7 +16,7 @@ import org.jboss.webbeans.model.EventComponentModel;
  * @author David Allen
  *
  */
-public class EventImpl<T> extends ComponentInstanceImpl<T> implements Event<T>
+public class EventImpl<T> extends BeanImpl<T> implements Event<T>
 {
    private EventComponentModel<T> componentModel;
 

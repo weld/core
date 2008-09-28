@@ -17,12 +17,47 @@
 
 package javax.webbeans;
 
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 /**
  * 
  * @author Pete Muir
+ * @author Gavin King
  */
 
 public class TypeLiteral<T>
 {
+	
+	protected TypeLiteral() {
+	      if (!(getClass().getSuperclass() == TypeLiteral.class)) {
+	         throw new RuntimeException("Not a direct subclass of TypeLiteral");
+	      }
+	      if (!(getClass().getGenericSuperclass() instanceof ParameterizedType)) {
+	         throw new RuntimeException("Missing type parameter in TypeLiteral");
+	      }
+	   }
+
+	   public final Type getType() {
+	      ParameterizedType parameterized = (ParameterizedType) getClass()
+	            .getGenericSuperclass();
+	      return parameterized.getActualTypeArguments()[0];
+	   }
+
+	   @SuppressWarnings("unchecked")
+	   public final Class<T> getRawType() {
+	      Type type = getType();
+	      if (type instanceof Class) {
+	         return (Class<T>) type;
+	      } else if (type instanceof ParameterizedType) {
+	         return (Class<T>) ((ParameterizedType) type).getRawType();
+	      } else if (type instanceof GenericArrayType) {
+	         return (Class<T>) Object[].class;
+	      } else {
+	         throw new RuntimeException("Illegal type");
+	      }
+	   }
+	   // TODO: equals(), hashCode()
 
 }

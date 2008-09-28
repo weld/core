@@ -17,25 +17,19 @@
 
 package javax.webbeans;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Specifies that an observer method is a transactional observer.
  * 
- * @author Pete Muir
+ * @author Gavin King
+ * 
  */
-
-@Production
-@Stereotype
-@Target( { TYPE, METHOD })
 @Retention(RUNTIME)
-@Documented
-public @interface Component
-{
-
+@Target(PARAMETER)
+public @interface AfterTransactionSuccess {
 }

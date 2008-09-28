@@ -2,7 +2,7 @@ package org.jboss.webbeans.injectable;
 
 import java.lang.annotation.Annotation;
 
-import javax.webbeans.Container;
+import javax.webbeans.manager.Manager;
 
 public abstract class Element<T>
 {
@@ -30,7 +30,7 @@ public abstract class Element<T>
       return getType() + " with binding types " + getBindingTypes();
    }
 
-   public T getValue(Container container)
+   public T getValue(Manager container)
    {
       return container.getInstanceByType(getType(), getBindingTypes());
    }

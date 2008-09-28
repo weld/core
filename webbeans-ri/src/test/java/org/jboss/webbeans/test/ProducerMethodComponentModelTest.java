@@ -7,7 +7,7 @@ import java.util.HashMap;
 import javax.webbeans.Current;
 import javax.webbeans.Dependent;
 
-import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedMethod;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
@@ -33,7 +33,7 @@ import org.testng.annotations.Test;
 public class ProducerMethodComponentModelTest
 {
 
-   private ContainerImpl container;
+   private ManagerImpl container;
    private AnnotatedType<?> emptyAnnotatedItem;
    
    @BeforeMethod

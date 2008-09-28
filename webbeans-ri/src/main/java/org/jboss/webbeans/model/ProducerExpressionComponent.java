@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 import javax.webbeans.Dependent;
 
-import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.ComponentConstructor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
@@ -19,7 +19,7 @@ public class ProducerExpressionComponent<T> extends AbstractProducerComponentMod
    private AnnotatedItem<Method> annotatedItem = new SimpleAnnotatedItem<Method>(new HashMap<Class<? extends Annotation>, Annotation>());
    private String location;
 
-   public ProducerExpressionComponent(AnnotatedItem<Method> xmlAnnotatedMethod, ContainerImpl container)
+   public ProducerExpressionComponent(AnnotatedItem<Method> xmlAnnotatedMethod, ManagerImpl container)
    {
       this.xmlAnnotatedItem = xmlAnnotatedMethod;
       init(container);
@@ -38,7 +38,7 @@ public class ProducerExpressionComponent<T> extends AbstractProducerComponentMod
    }
    
    @Override
-   protected void init(ContainerImpl container)
+   protected void init(ManagerImpl container)
    {
       super.init(container);
    }

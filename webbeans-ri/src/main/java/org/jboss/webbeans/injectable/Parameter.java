@@ -2,12 +2,12 @@ package org.jboss.webbeans.injectable;
 
 import java.lang.annotation.Annotation;
 
-import org.jboss.webbeans.bindings.CurrentBinding;
+import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 
 public class Parameter<T> extends Element<T>
 {
    
-   private static Annotation[] currentBinding = {new CurrentBinding()};
+   private static Annotation[] currentBinding = {new CurrentAnnotationLiteral()};
    
    private Class<? extends T> type;
    

@@ -26,7 +26,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Specifies that a method of a Web Bean component
+ * implementation class is a Web Beans initializer method, 
+ * or that a constructor is the Web Bean component constructor.
  * 
+ * @author Gavin King
  * @author Pete Muir
  */
 

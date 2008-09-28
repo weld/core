@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 import javax.webbeans.Dependent;
 
-import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.LoggerUtil;
 import org.jboss.webbeans.util.Reflections;
@@ -53,7 +53,7 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
    }
    
    @Override
-   protected void init(ContainerImpl container)
+   protected void init(ManagerImpl container)
    {
       super.init(container);
       checkRequiredTypesImplemented();

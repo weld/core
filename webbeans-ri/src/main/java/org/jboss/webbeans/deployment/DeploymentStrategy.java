@@ -8,12 +8,12 @@ import java.util.logging.Logger;
 
 import javassist.bytecode.ClassFile;
 
-import javax.webbeans.Container;
 import javax.webbeans.DeploymentType;
 import javax.webbeans.Stereotype;
+import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.ComponentInstanceImpl;
-import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.BeanImpl;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.SimpleComponentModel;
@@ -33,11 +33,11 @@ public class DeploymentStrategy
    private static final Logger log = LoggerUtil.getLogger("deploymentStrategy");     
    
    private ClassLoader classLoader;
-   private ContainerImpl container;
+   private ManagerImpl container;
    
    public static String[] DEFAULT_IGNORED_PACKAGES = {"java", "com.sun", "sun", "javasssit"};
    
-   public DeploymentStrategy(ClassLoader classLoader, ContainerImpl container)
+   public DeploymentStrategy(ClassLoader classLoader, ManagerImpl container)
    {
       this.classLoader = classLoader;
       this.container = container;
@@ -141,7 +141,7 @@ public class DeploymentStrategy
                         SimpleComponentModel componentModel = new SimpleComponentModel(
                               new SimpleAnnotatedType(componentClass), 
                               new SimpleAnnotatedType(null, new HashMap()), container);  
-                        container.addComponent(new ComponentInstanceImpl(componentModel));
+                        container.addComponent(new BeanImpl(componentModel));
                         log.info("Web Bean: " + componentModel);
                      }
                   }

@@ -15,26 +15,16 @@
 * limitations under the License.
 */
 
-package javax.webbeans;
-
-import java.lang.annotation.Annotation;
-import java.util.Set;
+package javax.webbeans.manager;
 
 /**
  * 
  * @author Pete Muir
  */
 
-public abstract class ComponentInstance<T>
+public interface Conversation
 {
 
-   public abstract Set<Class> getTypes();
-   public abstract Set<Annotation> getBindingTypes();
-   public abstract Annotation getScopeType();
-   public abstract Annotation getDeploymentType();
-   public abstract String getName();
-   
-   public abstract T create(Container container);
-   public abstract void destroy(Container container, T instance);
-
+   public void begin();
+   public void end();
 }

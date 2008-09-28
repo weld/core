@@ -1,6 +1,6 @@
 package org.jboss.webbeans.injectable;
 
-import javax.webbeans.Container;
+import javax.webbeans.manager.Manager;
 
 // TODO Name this class better
 public class InjectableMethod<T> extends Unit<T>
@@ -15,7 +15,7 @@ public class InjectableMethod<T> extends Unit<T>
    }
 
    @SuppressWarnings("unchecked")
-   public T invoke(Container container, Object instance)
+   public T invoke(Manager container, Object instance)
    {
       try
       {

@@ -2,7 +2,7 @@ package org.jboss.webbeans.test.components;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.webbeans.Destroys;
+import javax.webbeans.Destructor;
 import javax.webbeans.Production;
 
 @Production
@@ -16,13 +16,13 @@ public class Cougar
       
    }
    
-   @Remove @Destroys
+   @Remove @Destructor
    public void remove1()
    {
       
    }
 
-   @Remove @Destroys
+   @Remove @Destructor
    public void remove2()
    {
       

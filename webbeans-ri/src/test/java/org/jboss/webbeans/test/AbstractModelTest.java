@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.jboss.webbeans.ContainerImpl;
-import org.jboss.webbeans.bindings.StandardBinding;
+import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bindings.StandardAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.StereotypeModel;
@@ -16,15 +16,15 @@ import org.jboss.webbeans.test.annotations.HornedMammalStereotype;
 import org.jboss.webbeans.test.annotations.MammalStereotype;
 import org.jboss.webbeans.test.annotations.RequestScopedAnimalStereotype;
 import org.jboss.webbeans.test.annotations.RiverFishStereotype;
-import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeBinding;
-import org.jboss.webbeans.test.bindings.HornedAnimalDeploymentTypeBinding;
+import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
+import org.jboss.webbeans.test.bindings.HornedAnimalDeploymentTypeAnnotationLiteral;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
 import org.testng.annotations.BeforeMethod;
 
 public class AbstractModelTest
 {
    
-   protected ContainerImpl container;
+   protected ManagerImpl container;
    
    protected AnnotatedType<?> emptyAnnotatedItem;
    
@@ -34,15 +34,15 @@ public class AbstractModelTest
       emptyAnnotatedItem = new SimpleAnnotatedType<Object>(null, new HashMap<Class<? extends Annotation>, Annotation>());
       
       List<Annotation> enabledDeploymentTypes = new ArrayList<Annotation>();
-      enabledDeploymentTypes.add(new StandardBinding());
-      enabledDeploymentTypes.add(new AnotherDeploymentTypeBinding());
-      enabledDeploymentTypes.add(new HornedAnimalDeploymentTypeBinding());
+      enabledDeploymentTypes.add(new StandardAnnotationLiteral());
+      enabledDeploymentTypes.add(new AnotherDeploymentTypeAnnotationLiteral());
+      enabledDeploymentTypes.add(new HornedAnimalDeploymentTypeAnnotationLiteral());
       container = new MockContainerImpl(enabledDeploymentTypes);
       
       initStereotypes(container);
    }
    
-   private void initStereotypes(ContainerImpl container)
+   private void initStereotypes(ManagerImpl container)
    {
       container.getModelManager().addStereotype(new StereotypeModel<AnimalStereotype>(new SimpleAnnotatedType<AnimalStereotype>(AnimalStereotype.class)));
       container.getModelManager().addStereotype(new StereotypeModel<HornedMammalStereotype>(new SimpleAnnotatedType<HornedMammalStereotype>(HornedMammalStereotype.class)));

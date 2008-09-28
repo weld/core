@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.webbeans.Container;
+import javax.webbeans.manager.Manager;
 
 public abstract class Unit<T>
 {
@@ -41,7 +41,7 @@ public abstract class Unit<T>
       return injectedParameters;
    }
    
-   public Object[] getParameterValues(Container container)
+   public Object[] getParameterValues(Manager container)
    {
       Object[] parameterValues = new Object[parameters.size()];
       for (int i = 0; i < parameterValues.length; i++)

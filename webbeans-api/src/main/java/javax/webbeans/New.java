@@ -28,7 +28,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * The special binding type.
  * 
+ * @author Gavin King
  * @author Pete Muir
  */
 

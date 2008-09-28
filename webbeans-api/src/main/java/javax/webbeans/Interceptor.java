@@ -15,24 +15,22 @@
 * limitations under the License.
 */
 
+
 package javax.webbeans;
 
-import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Specifies that a class is an interceptor.
  * 
- * @author Pete Muir
+ * @author Gavin King
+ * 
  */
-
-@Target(METHOD)
 @Retention(RUNTIME)
-@Documented
-public @interface Destroys
-{
-
+@Target(TYPE)
+public @interface Interceptor {
 }

@@ -17,23 +17,44 @@
 
 package javax.webbeans;
 
+/**
+ * @author Pete Muir
+ * @author Gavin King 
+ */
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
-/**
- * 
- * @author Pete Muir
- */
-
-public abstract class DynamicBinding<T extends Annotation> implements Annotation
+public abstract class AnnotationLiteral<T extends Annotation> implements
+      Annotation
 {
 
-   private Class<T> annotationType;
-   
+   protected AnnotationLiteral()
+   {
+      if (!(getClass().getSuperclass() == AnnotationLiteral.class))
+      {
+         throw new RuntimeException(
+               "Not a direct subclass of AnnotationLiteral");
+      }
+      if (!(getClass().getGenericSuperclass() instanceof ParameterizedType))
+      {
+         throw new RuntimeException(
+               "Missing type parameter in AnnotationLiteral");
+      }
+   }
+
+   @SuppressWarnings("unchecked")
    private static <T> Class<T> getAnnotationType(Class<?> clazz)
    {
-      
+      ParameterizedType parameterized = (ParameterizedType) clazz
+            .getGenericSuperclass();
+      return (Class<T>) parameterized.getActualTypeArguments()[0];
+   }
+   
+   /*
+    // Alternative impl of getAnnotationType
+    private static <T> Class<T> getAnnotationType(Class<?> clazz)
+   {
+
       Type type = clazz.getGenericSuperclass();
       Class<T> annotationType = null;
       if (type instanceof ParameterizedType)
@@ -41,29 +62,38 @@ public abstract class DynamicBinding<T extends Annotation> implements Annotation
          ParameterizedType parameterizedType = (ParameterizedType) type;
          if (parameterizedType.getActualTypeArguments().length == 1)
          {
-            annotationType = (Class<T>) parameterizedType.getActualTypeArguments()[0];
+            annotationType = (Class<T>) parameterizedType
+                  .getActualTypeArguments()[0];
          }
       }
       if (annotationType == null && clazz != Object.class)
       {
          return getAnnotationType(clazz.getSuperclass());
-      }
-      else
+      } else
       {
          return annotationType;
       }
    }
+    * 
+    */
+
+   // TODO: equals(), hashCode()
+
+   private Class<T> annotationType;
+
    
+
    public Class<? extends Annotation> annotationType()
    {
       annotationType = getAnnotationType(getClass());
       if (annotationType == null)
       {
-         throw new RuntimeException("Unable to determine type of dynamic binding for " + getClass());
+         throw new RuntimeException(
+               "Unable to determine type of annotation literal for " + getClass());
       }
       return annotationType;
    }
-   
+
    @Override
    public String toString()
    {
@@ -71,5 +101,4 @@ public abstract class DynamicBinding<T extends Annotation> implements Annotation
       String annotationName = "@" + annotationType().getName();
       return annotationName;
    }
-   
 }

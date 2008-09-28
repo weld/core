@@ -3,7 +3,7 @@ package org.jboss.webbeans.model;
 import javax.webbeans.ApplicationScoped;
 import javax.webbeans.Dependent;
 
-import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.ejb.EjbMetaData;
 import org.jboss.webbeans.introspector.AnnotatedType;
 
@@ -21,7 +21,7 @@ public abstract class AbstractEnterpriseComponentModel<T> extends
    }
 
    @Override
-   protected void init(ContainerImpl container)
+   protected void init(ManagerImpl container)
    {
       super.init(container);
       ejbMetaData = container.getEjbManager().getEjbMetaData(getType());

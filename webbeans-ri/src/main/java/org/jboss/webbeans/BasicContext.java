@@ -4,9 +4,9 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.webbeans.ComponentInstance;
-import javax.webbeans.Container;
-import javax.webbeans.Context;
+import javax.webbeans.manager.Bean;
+import javax.webbeans.manager.Context;
+import javax.webbeans.manager.Manager;
 
 /**
  * Basic implementation of javax.webbeans.Context, backed by a HashMap
@@ -16,17 +16,17 @@ import javax.webbeans.Context;
  */
 public class BasicContext implements Context
 {
-   private Map<ComponentInstance<?>, Object> values;
+   private Map<Bean<?>, Object> values;
    private Class<? extends Annotation> scopeType;
    
    public BasicContext(Class<? extends Annotation> scopeType)
    {
       this.scopeType = scopeType;
-      values = new HashMap<ComponentInstance<?>,Object>();
+      values = new HashMap<Bean<?>,Object>();
    }
    
    @SuppressWarnings("unchecked")
-   public <T> T get(Container container, ComponentInstance<T> component, boolean create) 
+   public <T> T get(Manager container, Bean<T> component, boolean create) 
    {
       T instance = (T) values.get(component);
       if (instance != null)
@@ -53,7 +53,7 @@ public class BasicContext implements Context
    }
 
    @SuppressWarnings("unchecked")
-   public <T> void remove(Container container, ComponentInstance<T> component) 
+   public <T> void remove(Manager container, Bean<T> component) 
    {
       T instance = (T) values.get(component);
       
@@ -71,11 +71,11 @@ public class BasicContext implements Context
    }
    
    @SuppressWarnings("unchecked")
-   public void destroy(Container container)
+   public void destroy(Manager container)
    {
       // TODO this method isn't declared by the interface, but is implied by section 9.1.2 of the spec
       
-      for (ComponentInstance c : values.keySet())
+      for (Bean c : values.keySet())
       {
          c.destroy(container, values.get(c));
       }

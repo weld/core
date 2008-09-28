@@ -4,10 +4,7 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.webbeans.BoundTo;
-import javax.webbeans.Destroys;
-
-import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.ComponentConstructor;
 import org.jboss.webbeans.injectable.EnterpriseConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
@@ -15,20 +12,41 @@ import org.jboss.webbeans.introspector.AnnotatedType;
 
 public class RemoteComponentModel<T> extends AbstractEnterpriseComponentModel<T>
 {
+
+   public RemoteComponentModel(AnnotatedType<T> annotatedItem,
+         AnnotatedType<T> xmlAnnotatedItem)
+   {
+      super(annotatedItem, xmlAnnotatedItem);
+      // TODO Auto-generated constructor stub
+   }
+
+   @Override
+   public ComponentConstructor<T> getConstructor()
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   @Override
+   public String getLocation()
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
    
-   private EnterpriseConstructor<T> constructor;
+   /*private EnterpriseConstructor<T> constructor;
    private String boundTo;
    private String location;
    
    public RemoteComponentModel(AnnotatedType annotatedItem,
-         AnnotatedType xmlAnnotatedItem, ContainerImpl container)
+         AnnotatedType xmlAnnotatedItem, ManagerImpl container)
    {
       super(annotatedItem, xmlAnnotatedItem);
       init(container);
    }
    
    @Override
-   protected void init(ContainerImpl container)
+   protected void init(ManagerImpl container)
    {
       super.init(container);
       // TODO initialize constructor
@@ -113,6 +131,6 @@ public class RemoteComponentModel<T> extends AbstractEnterpriseComponentModel<T>
          location = "type: Remote Enterprise Component; declaring class: " + getType() +";";
       }
       return location;
-   }
+   }*/
 
 }

@@ -1,20 +1,19 @@
 package org.jboss.webbeans.test.components.broken;
 
 import javax.ejb.Remote;
-import javax.webbeans.BoundTo;
-import javax.webbeans.Destroys;
+import javax.webbeans.Destructor;
 import javax.webbeans.Production;
 
 @Remote
-@BoundTo("/beans/Chimpanzee")
+// TODO @BoundTo("/beans/Chimpanzee")
 @Production
 public interface Gibbon
 {
 
-   @Destroys
+   @Destructor
    public void remove();
    
-   @Destroys
+   @Destructor
    public void removeAgain();
    
 }

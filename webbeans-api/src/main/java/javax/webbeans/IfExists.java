@@ -25,7 +25,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Specifies that an observer method is only called if the current instance of
+ * the Web Bean declaring the observer method already exists.
  * 
+ * @author Gavin King
  * @author Pete Muir
  */
 

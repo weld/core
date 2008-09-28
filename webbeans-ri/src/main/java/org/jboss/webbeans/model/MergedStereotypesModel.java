@@ -8,7 +8,7 @@ import java.util.Set;
 
 import javax.webbeans.Stereotype;
 
-import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 
 /**
@@ -25,7 +25,7 @@ public class MergedStereotypesModel<T, E>
    private Set<Class<?>> requiredTypes;
    private Set<Class<? extends Annotation>> supportedScopes;
    
-   public MergedStereotypesModel(AnnotatedItem<E> annotatedItem, AnnotatedItem<E> xmlAnnotatedItem, ContainerImpl container)
+   public MergedStereotypesModel(AnnotatedItem<E> annotatedItem, AnnotatedItem<E> xmlAnnotatedItem, ManagerImpl container)
    {
       possibleDeploymentTypes = new HashMap<Class<? extends Annotation>, Annotation>();
       possibleScopeTypes = new HashSet<Annotation>();

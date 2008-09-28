@@ -8,20 +8,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.webbeans.ComponentInstance;
-import javax.webbeans.Container;
-import javax.webbeans.Context;
-import javax.webbeans.ContextNotActive;
-import javax.webbeans.Observer;
+import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.Standard;
 import javax.webbeans.TypeLiteral;
+import javax.webbeans.manager.Bean;
+import javax.webbeans.manager.Context;
+import javax.webbeans.manager.Manager;
+import javax.webbeans.manager.Observer;
 
-import org.jboss.webbeans.bindings.ProductionBinding;
-import org.jboss.webbeans.bindings.StandardBinding;
+import org.jboss.webbeans.bindings.ProductionAnnotationLiteral;
+import org.jboss.webbeans.bindings.StandardAnnotationLiteral;
 import org.jboss.webbeans.ejb.EjbManager;
 import org.jboss.webbeans.event.EventBus;
 
-public class ContainerImpl implements Container
+public class ManagerImpl implements Manager
 {
    
    private List<Annotation> enabledDeploymentTypes;
@@ -33,14 +33,14 @@ public class ContainerImpl implements Container
    private ThreadLocal<Map<Class<Annotation>, Context>> contexts = 
       new ThreadLocal<Map<Class<Annotation>, Context>>();
 
-   private Set<ComponentInstance> components;
+   private Set<Bean> components;
    
-   public ContainerImpl(List<Annotation> enabledDeploymentTypes)
+   public ManagerImpl(List<Annotation> enabledDeploymentTypes)
    {
       initEnabledDeploymentTypes(enabledDeploymentTypes);
       this.modelManager = new ModelManager();
       this.ejbLookupManager = new EjbManager();
-      this.components = new HashSet<ComponentInstance>();
+      this.components = new HashSet<Bean>();
       this.eventBus = new EventBus();
    }
    
@@ -49,8 +49,8 @@ public class ContainerImpl implements Container
       this.enabledDeploymentTypes = new ArrayList<Annotation>();
       if (enabledDeploymentTypes == null)
       {
-         this.enabledDeploymentTypes.add(0, new StandardBinding());
-         this.enabledDeploymentTypes.add(1, new ProductionBinding());
+         this.enabledDeploymentTypes.add(0, new StandardAnnotationLiteral());
+         this.enabledDeploymentTypes.add(1, new ProductionAnnotationLiteral());
       }
       else
       {
@@ -62,7 +62,7 @@ public class ContainerImpl implements Container
       }
    }
 
-   public Container addComponent(ComponentInstance component)
+   public Manager addComponent(Bean component)
    {
       components.add(component);
       return this;
@@ -92,7 +92,7 @@ public class ContainerImpl implements Container
       if (context == null)
       {
          // If context can't be found throw an exception (section 9.4 of spec)
-         throw new ContextNotActive();         
+         throw new ContextNotActiveException();         
       }
       else
       {
@@ -124,7 +124,7 @@ public class ContainerImpl implements Container
       eventBus.removeObserver(observer);
    }
 
-   public Set<ComponentInstance> resolveByName(String name)
+   public Set<Bean> resolveByName(String name)
    {
       // TODO Auto-generated method stub
       return null;

@@ -4,9 +4,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.webbeans.Destroys;
+import javax.webbeans.Destructor;
 
-import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.ComponentConstructor;
 import org.jboss.webbeans.injectable.EnterpriseConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
@@ -21,14 +21,14 @@ public class EnterpriseComponentModel<T> extends AbstractEnterpriseComponentMode
    private String location;
    
    public EnterpriseComponentModel(AnnotatedType<T> annotatedItem,
-         AnnotatedType<T> xmlAnnotatedItem, ContainerImpl container)
+         AnnotatedType<T> xmlAnnotatedItem, ManagerImpl container)
    {
       super(annotatedItem, xmlAnnotatedItem);
       init(container);
    }
    
    @Override
-   protected void init(ContainerImpl container)
+   protected void init(ManagerImpl container)
    {
       super.init(container);
       this.constructor = new EnterpriseConstructor<T>(getEjbMetaData());
@@ -57,7 +57,7 @@ public class EnterpriseComponentModel<T> extends AbstractEnterpriseComponentMode
    }
    
 // TODO loggigng
-   protected void initRemoveMethod(ContainerImpl container)
+   protected void initRemoveMethod(ManagerImpl container)
    {
       if (getEjbMetaData().isStateful())
       {
@@ -70,7 +70,7 @@ public class EnterpriseComponentModel<T> extends AbstractEnterpriseComponentMode
             List<Method> possibleRemoveMethods = new ArrayList<Method>();
             for (Method removeMethod : getEjbMetaData().getRemoveMethods())
             {
-               if (removeMethod.isAnnotationPresent(Destroys.class))
+               if (removeMethod.isAnnotationPresent(Destructor.class))
                {
                   possibleRemoveMethods.add(removeMethod);
                }
@@ -95,7 +95,7 @@ public class EnterpriseComponentModel<T> extends AbstractEnterpriseComponentMode
       }
       else
       {
-         List<Method> destroysMethods = Reflections.getMethods(getType(), Destroys.class);
+         List<Method> destroysMethods = Reflections.getMethods(getType(), Destructor.class);
          if (destroysMethods.size() > 0)
          {
             throw new RuntimeException("Only stateful enterprise bean components can have methods annotated @Destroys; " + getType() + " is not a stateful enterprise bean component");

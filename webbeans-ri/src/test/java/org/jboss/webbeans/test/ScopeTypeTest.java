@@ -9,17 +9,17 @@ import javax.webbeans.ConversationScoped;
 import javax.webbeans.Dependent;
 import javax.webbeans.RequestScoped;
 
-import org.jboss.webbeans.bindings.ConversationScopedBinding;
-import org.jboss.webbeans.bindings.RequestScopedBinding;
+import org.jboss.webbeans.bindings.ConversationScopedAnnotationLiteral;
+import org.jboss.webbeans.bindings.RequestScopedAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.SimpleComponentModel;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
 import org.jboss.webbeans.test.annotations.FishStereotype;
 import org.jboss.webbeans.test.annotations.RiverFishStereotype;
-import org.jboss.webbeans.test.bindings.AnimalStereotypeBinding;
-import org.jboss.webbeans.test.bindings.FishStereotypeBinding;
-import org.jboss.webbeans.test.bindings.RiverFishStereotypeBinding;
+import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
+import org.jboss.webbeans.test.bindings.FishStereotypeAnnotationLiteral;
+import org.jboss.webbeans.test.bindings.RiverFishStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.components.Antelope;
 import org.jboss.webbeans.test.components.ComponentWithTooManyScopeTypes;
 import org.jboss.webbeans.test.components.Haddock;
@@ -83,8 +83,8 @@ public class ScopeTypeTest extends AbstractModelTest
       try
       {
          Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-         annotations.put(RequestScoped.class, new RequestScopedBinding());
-         annotations.put(ConversationScoped.class, new ConversationScopedBinding());
+         annotations.put(RequestScoped.class, new RequestScopedAnnotationLiteral());
+         annotations.put(ConversationScoped.class, new ConversationScopedAnnotationLiteral());
          AnnotatedType antelopeAnnotatedItem = new SimpleAnnotatedType(Antelope.class, annotations);
          new SimpleComponentModel<Antelope>(emptyAnnotatedItem, antelopeAnnotatedItem, container);
       }
@@ -99,7 +99,7 @@ public class ScopeTypeTest extends AbstractModelTest
    public void testScopeDeclaredInXml()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(RequestScoped.class, new RequestScopedBinding());
+      annotations.put(RequestScoped.class, new RequestScopedAnnotationLiteral());
       AnnotatedType annotatedItem = new SimpleAnnotatedType(Order.class, annotations);
       
       SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), annotatedItem, container);
@@ -120,7 +120,7 @@ public class ScopeTypeTest extends AbstractModelTest
    public void testScopeDeclaredInXmlOverridesJava()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(ConversationScoped.class, new ConversationScopedBinding());
+      annotations.put(ConversationScoped.class, new ConversationScopedAnnotationLiteral());
       AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
       SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
       assert trout.getScopeType().annotationType().equals(ConversationScoped.class);
@@ -137,7 +137,7 @@ public class ScopeTypeTest extends AbstractModelTest
    public void testScopeSpecifiedAndStereotyped()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(FishStereotype.class, new FishStereotypeBinding());
+      annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
       AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
       SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
       assert trout.getScopeType().annotationType().equals(RequestScoped.class);
@@ -147,8 +147,8 @@ public class ScopeTypeTest extends AbstractModelTest
    public void testMutipleIncompatibleScopeStereotypes()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(FishStereotype.class, new FishStereotypeBinding());
-      annotations.put(AnimalStereotype.class, new AnimalStereotypeBinding());
+      annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
+      annotations.put(AnimalStereotype.class, new AnimalStereotypeAnnotationLiteral());
       AnnotatedType annotatedItem = new SimpleAnnotatedType(Haddock.class, annotations);
       
       boolean exception = false;
@@ -167,8 +167,8 @@ public class ScopeTypeTest extends AbstractModelTest
    public void testMutipleIncompatibleScopeStereotypesWithScopeSpecified()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(FishStereotype.class, new FishStereotypeBinding());
-      annotations.put(AnimalStereotype.class, new AnimalStereotypeBinding());
+      annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
+      annotations.put(AnimalStereotype.class, new AnimalStereotypeAnnotationLiteral());
       AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
       
       SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
@@ -179,8 +179,8 @@ public class ScopeTypeTest extends AbstractModelTest
    public void testMutipleCompatibleScopeStereotypes()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(FishStereotype.class, new FishStereotypeBinding());
-      annotations.put(RiverFishStereotype.class, new RiverFishStereotypeBinding());
+      annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
+      annotations.put(RiverFishStereotype.class, new RiverFishStereotypeAnnotationLiteral());
       AnnotatedType annotatedItem = new SimpleAnnotatedType(Haddock.class, annotations);
       
       SimpleComponentModel<Haddock> haddock = new SimpleComponentModel<Haddock>(new SimpleAnnotatedType(Haddock.class), annotatedItem, container);

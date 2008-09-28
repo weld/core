@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.webbeans.Current;
 import javax.webbeans.Dependent;
 
-import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.AbstractEnterpriseComponentModel;
@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
 public class EnterpriseComponentModelTest
 {
    
-private ContainerImpl container;
+private ManagerImpl container;
    
    private AnnotatedType emptyAnnotatedItem;
    

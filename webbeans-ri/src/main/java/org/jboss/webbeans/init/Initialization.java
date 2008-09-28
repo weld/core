@@ -2,7 +2,7 @@ package org.jboss.webbeans.init;
 
 import javax.servlet.ServletContext;
 
-import org.jboss.webbeans.ContainerImpl;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.deployment.DeploymentStrategy;
 
 /**
@@ -26,7 +26,7 @@ public class Initialization
    
    public Initialization create()
    {
-      ContainerImpl container = new ContainerImpl(null);  
+      ManagerImpl container = new ManagerImpl(null);  
       
       servletContext.setAttribute(WEBBEANS_CONTAINER_KEY, container);
       

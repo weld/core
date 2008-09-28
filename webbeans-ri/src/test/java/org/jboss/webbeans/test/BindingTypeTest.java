@@ -11,7 +11,7 @@ import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.SimpleComponentModel;
 import org.jboss.webbeans.test.annotations.Asynchronous;
 import org.jboss.webbeans.test.annotations.Synchronous;
-import org.jboss.webbeans.test.bindings.AsynchronousBinding;
+import org.jboss.webbeans.test.bindings.AsynchronousAnnotationLiteral;
 import org.jboss.webbeans.test.components.Antelope;
 import org.jboss.webbeans.test.components.Cat;
 import org.jboss.webbeans.test.components.Order;
@@ -74,7 +74,7 @@ public class BindingTypeTest extends AbstractModelTest
    public void testBindingTypesDeclaredInXml()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(Asynchronous.class, new AsynchronousBinding());
+      annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
       AnnotatedType annotatedItem = new SimpleAnnotatedType(Antelope.class, annotations);
       
       SimpleComponentModel<Antelope> antelope = new SimpleComponentModel<Antelope>(emptyAnnotatedItem, annotatedItem, container);
@@ -86,7 +86,7 @@ public class BindingTypeTest extends AbstractModelTest
    public void testXmlBindingTypeOverridesAndIgnoresJava()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(Asynchronous.class, new AsynchronousBinding());
+      annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
       AnnotatedType annotatedItem = new SimpleAnnotatedType(Cat.class, annotations);
       
       SimpleComponentModel<Cat> cat = new SimpleComponentModel<Cat>(new SimpleAnnotatedType(Cat.class), annotatedItem, container);

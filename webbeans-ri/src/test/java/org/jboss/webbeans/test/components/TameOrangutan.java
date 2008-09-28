@@ -1,7 +1,6 @@
 package org.jboss.webbeans.test.components;
 
 import javax.ejb.Remote;
-import javax.webbeans.BoundTo;
 import javax.webbeans.Named;
 import javax.webbeans.Production;
 
@@ -9,7 +8,7 @@ import org.jboss.webbeans.test.annotations.Tame;
 
 @Remote
 @Production
-@BoundTo("/beans/tame/orangutan")
+// TODO @BoundTo("/beans/tame/orangutan")
 @Tame
 @Named
 public interface TameOrangutan extends Orangutan

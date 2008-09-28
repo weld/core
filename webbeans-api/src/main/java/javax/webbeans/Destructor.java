@@ -15,21 +15,23 @@
 * limitations under the License.
 */
 
+
 package javax.webbeans;
 
-import java.lang.annotation.Annotation;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
+ * Specifies that a method of a Web Bean component implementation class is a Web
+ * Beans remove method.
  * 
- * @author Pete Muir
+ * @author Gavin King
+ * 
  */
-
-public interface Context
-{
-
-   public Class<? extends Annotation> getScopeType();
-   
-   public <T> T get(Container container, ComponentInstance<T> component, boolean create);
-   
-   public <T> void remove(Container container, ComponentInstance<T> component);
+@Retention(RUNTIME)
+@Target(METHOD)
+public @interface Destructor {
 }

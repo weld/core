@@ -26,7 +26,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Specifies the Web Beans component name.
  * 
+ * @author Gavin King
  * @author Pete Muir
  */
 

@@ -15,26 +15,23 @@
 * limitations under the License.
 */
 
-package javax.webbeans;
+package javax.webbeans.manager;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.Annotation;
+import java.util.Set;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
 
 /**
  * 
  * @author Pete Muir
  */
 
-@Target(TYPE)
-@Retention(RUNTIME)
-@Documented
-public @interface BoundTo
+public interface Observer<T>
 {
 
-   public String value();
-
+   public Class<T> getEventType();
+   public Set<Annotation> getEventBindingTypes();
+   
+   public void notify(Manager container, T event);
+   
 }

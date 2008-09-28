@@ -25,7 +25,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Specifies that a class is a decorator.
  * 
+ * @author Gavin King
  * @author Pete Muir
  */
 

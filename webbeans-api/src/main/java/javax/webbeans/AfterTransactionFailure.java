@@ -17,33 +17,19 @@
 
 package javax.webbeans;
 
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
 /**
- * This exception is thrown if an invocation is performed on an inactive scope.
+ * Specifies that an observer method is a transactional observer.
  * 
- * @author Pete Muir
- * @author Shane Bryzak
+ * @author Gavin King
+ * 
  */
-
-public class ContextNotActive extends RuntimeException
-{
-
-   public ContextNotActive()
-   {
-   }
-
-   public ContextNotActive(String message)
-   {
-      super(message);
-   }
-
-   public ContextNotActive(Throwable cause)
-   {
-      super(cause);
-   }
-
-   public ContextNotActive(String message, Throwable cause)
-   {
-      super(message, cause);
-   }
-
+@Retention(RUNTIME)
+@Target(PARAMETER)
+public @interface AfterTransactionFailure {
 }

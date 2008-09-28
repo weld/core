@@ -3,7 +3,7 @@ package org.jboss.webbeans.event;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import javax.webbeans.Container;
+import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.Parameter;
@@ -31,7 +31,7 @@ public class ObserverMethod extends InjectableMethod
     * @param instance The component instance to invoke the observer method on
     * @param event The event object being fired
     */
-   public void invoke(Container container, Object instance, Object event)
+   public void invoke(Manager container, Object instance, Object event)
    {
       try
       {
@@ -52,7 +52,7 @@ public class ObserverMethod extends InjectableMethod
     * @return an array of objects that serve as arguments for the invocation of the method
     */
    @SuppressWarnings("unchecked")
-   public Object[] getParameterValues(Container container, Object event)
+   public Object[] getParameterValues(Manager container, Object event)
    {
       // Let the super class get the parameter values, but substitute the event
       // object so that we know for certain it is the correct one.

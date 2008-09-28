@@ -26,7 +26,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Component type for standard components.
  * 
+ * @author Gavin King
  * @author Pete Muir
  */
 

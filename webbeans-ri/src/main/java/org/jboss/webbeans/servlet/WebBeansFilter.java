@@ -8,8 +8,8 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.webbeans.Container;
 import javax.webbeans.RequestScoped;
+import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.BasicContext;
 import org.jboss.webbeans.init.Initialization;
@@ -21,11 +21,11 @@ import org.jboss.webbeans.init.Initialization;
  */
 public class WebBeansFilter implements Filter
 {
-   private Container container;
+   private Manager container;
 
    public void init(FilterConfig filterConfig) throws ServletException 
    {
-      container = (Container) filterConfig.getServletContext().getAttribute(
+      container = (Manager) filterConfig.getServletContext().getAttribute(
             Initialization.WEBBEANS_CONTAINER_KEY);      
    }
 

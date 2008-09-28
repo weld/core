@@ -17,7 +17,6 @@
 
 package javax.webbeans;
 
-import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -26,11 +25,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Specifies that an implementation class directly specializes its superclass.
  * 
+ * @author Gavin King
  * @author Pete Muir
  */
 
-@Target( { TYPE, METHOD })
+@Target(TYPE)
 @Retention(RUNTIME)
 @Documented
 public @interface Specializes

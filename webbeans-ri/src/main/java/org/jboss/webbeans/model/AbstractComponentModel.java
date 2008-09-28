@@ -13,10 +13,10 @@ import javax.webbeans.DeploymentType;
 import javax.webbeans.Named;
 import javax.webbeans.ScopeType;
 
-import org.jboss.webbeans.ContainerImpl;
-import org.jboss.webbeans.bindings.CurrentBinding;
-import org.jboss.webbeans.bindings.DependentBinding;
-import org.jboss.webbeans.bindings.ProductionBinding;
+import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
+import org.jboss.webbeans.bindings.DependentAnnotationLiteral;
+import org.jboss.webbeans.bindings.ProductionAnnotationLiteral;
 import org.jboss.webbeans.injectable.ComponentConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -38,7 +38,7 @@ public abstract class AbstractComponentModel<T, E>
    protected InjectableMethod<?> removeMethod;
    private Set<Class> apiTypes;
    
-   protected void init(ContainerImpl container)
+   protected void init(ManagerImpl container)
    {
       mergedStereotypes = new MergedStereotypesModel<T, E>(getAnnotatedItem(), getXmlAnnotatedItem(), container);
       initType();
@@ -94,7 +94,7 @@ public abstract class AbstractComponentModel<T, E>
          if (bindingTypes.size() == 0)
          {
             log.finest("Adding default @Current binding type");
-            bindingTypes.add(new CurrentBinding());
+            bindingTypes.add(new CurrentAnnotationLiteral());
          }
          else
          {
@@ -146,7 +146,7 @@ public abstract class AbstractComponentModel<T, E>
       {
          throw new RuntimeException("All stereotypes must specify the same scope OR a scope must be specified on the component");
       }
-      this.scopeType = new DependentBinding();
+      this.scopeType = new DependentAnnotationLiteral();
       log.finest("Using default @Dependent scope");
    }
    
@@ -190,7 +190,7 @@ public abstract class AbstractComponentModel<T, E>
       }
    }
    
-   protected void initDeploymentType(ContainerImpl container)
+   protected void initDeploymentType(ManagerImpl container)
    {
       Set<Annotation> xmlDeploymentTypes = getXmlAnnotatedItem().getAnnotations(DeploymentType.class);
       
@@ -232,7 +232,7 @@ public abstract class AbstractComponentModel<T, E>
       
       if (getXmlAnnotatedItem().getDelegate() != null)
       {
-         this.deploymentType = new ProductionBinding();
+         this.deploymentType = new ProductionAnnotationLiteral();
          log.finest("Using default @Production deployment type");
          return;
       }
