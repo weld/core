@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.webbeans.manager.Manager;
 import javax.webbeans.manager.Observer;
+import javax.webbeans.Observes;
 
 import org.jboss.webbeans.injectable.Parameter;
 import org.jboss.webbeans.model.AbstractComponentModel;
@@ -33,26 +34,23 @@ import org.jboss.webbeans.model.AbstractComponentModel;
 public class ObserverImpl<T> implements Observer<T>
 {
 
-   private final AbstractComponentModel<?, ?> compModel;
-   private final ObserverMethod            observerMethod;
-   private final Set<Annotation>           eventBindings;
-   private final Class<T>                  eventType;
+   private final AbstractComponentModel<?, ?> componentModel;
+   private final ObserverMethod observerMethod;
+   private final Set<Annotation> eventBindings;
+   private final Class<T> eventType;
 
    /**
-    * Creates an Observer which describes an observer method (7.3).
+    * Creates an Observer which describes and encapsulates an observer method (7.3).
     * 
-    * @param componentModel
-    *           The model for the component which defines the observer method
-    * @param observer
-    *           The observer method to notify
-    * @param eventType
-    *           The type of event being observed
+    * @param componentModel The model for the component which defines the
+    *           observer method
+    * @param observer The observer method to notify
+    * @param eventType The type of event being observed
     */
    @SuppressWarnings("unchecked")
-   public ObserverImpl(AbstractComponentModel<?, ?> componentModel,
-         ObserverMethod observer, Class<T> eventType)
+   public ObserverImpl(AbstractComponentModel<?, ?> componentModel, ObserverMethod observer, Class<T> eventType)
    {
-      this.compModel = componentModel;
+      this.componentModel = componentModel;
       this.observerMethod = observer;
       this.eventType = eventType;
       List<Parameter> parms = observer.getParameters();
@@ -61,10 +59,16 @@ public class ObserverImpl<T> implements Observer<T>
       {
          if (p.getType().equals(eventType))
          {
-            if ((p.getBindingTypes() != null)
-                  && (p.getBindingTypes().length > 0))
+            if ((p.getBindingTypes() != null) && (p.getBindingTypes().length > 0))
             {
                eventBindings.addAll(Arrays.asList(p.getBindingTypes()));
+               // Remove the @Observes annotation since it is not an event
+               // binding type
+               for (Annotation annotation : eventBindings)
+               {
+                  if (Observes.class.isAssignableFrom(annotation.getClass()))
+                     eventBindings.remove(annotation);
+               }
                break;
             }
          }
@@ -95,14 +99,26 @@ public class ObserverImpl<T> implements Observer<T>
     * (non-Javadoc)
     * 
     * @see javax.webbeans.Observer#notify(javax.webbeans.Container,
-    *      java.lang.Object)
+    * java.lang.Object)
     */
-   public void notify(Manager container, T event)
+   public void notify(Manager manager, T event)
    {
       // Get the most specialized instance of the component
-      Object instance = container.getInstanceByType(compModel.getType(),
-            compModel.getBindingTypes().toArray(new Annotation[0]));
+      Object instance = getInstance(manager);
       if (instance != null)
-         this.observerMethod.invoke(container, instance, event);
+         this.observerMethod.invoke(manager, instance, event);
+   }
+
+   /**
+    * Uses the container to retrieve the most specialized instance of this
+    * observer.
+    * 
+    * @param container The WebBeans manager
+    * @return the most specialized instance
+    */
+   protected Object getInstance(Manager manager)
+   {
+      // Return the most specialized instance of the component
+      return manager.getInstanceByType(componentModel.getType(), componentModel.getBindingTypes().toArray(new Annotation[0]));
    }
 }
