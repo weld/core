@@ -47,4 +47,9 @@ public class EventImpl<T> extends BeanImpl<T> implements Event<T>
       webBeansManager.fireEvent(event, eventBindings.toArray(new Annotation[0]));
    }
 
+   // TODO Remove the setter for the manager once WB injection is working
+   public void setManager(Manager manager)
+   {
+      this.webBeansManager = manager;
+   }
 }

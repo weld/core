@@ -50,12 +50,13 @@ public class EventTest
    public void testFireEvent()
    {
       DangerCall anEvent = new DangerCall();
-      EventComponentModel<Event<DangerCall>> eventComponentModel = 
-         new EventComponentModel<Event<DangerCall>>(
+      EventComponentModel<DangerCall> eventComponentModel = 
+         new EventComponentModel<DangerCall>(
                new SimpleAnnotatedItem<Object>(new HashMap<Class<? extends Annotation>, Annotation>()),
                new SimpleAnnotatedItem<Object>(new HashMap<Class<? extends Annotation>, Annotation>()),
                manager);
-      Event<DangerCall> eventComponent = new EventImpl<DangerCall>(eventComponentModel);
+      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>(eventComponentModel);
+      eventComponent.setManager(manager);
       eventComponent.fire(anEvent, new FishStereotypeAnnotationLiteral(), new RiverFishStereotypeAnnotationLiteral());
       assert anEvent.equals(manager.getEvent());
       assert Reflections.annotationSetMatches(manager.getEventBindings(), Current.class, FishStereotype.class, RiverFishStereotype.class);
