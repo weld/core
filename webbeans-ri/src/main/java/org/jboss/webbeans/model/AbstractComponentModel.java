@@ -30,8 +30,8 @@ public abstract class AbstractComponentModel<T, E>
    private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
    
    private Set<Annotation> bindingTypes;
-   private String name;
-   private Annotation scopeType;
+   protected String name;
+   protected Annotation scopeType;
    private MergedStereotypesModel<T, E> mergedStereotypes;
    protected Annotation deploymentType;
    protected Class<T> type;

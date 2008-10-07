@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.HashSet;
 
+import javax.webbeans.Current;
 import javax.webbeans.Event;
+import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.BeanImpl;
 import org.jboss.webbeans.model.EventComponentModel;
@@ -18,7 +20,9 @@ import org.jboss.webbeans.model.EventComponentModel;
  */
 public class EventImpl<T> extends BeanImpl<T> implements Event<T>
 {
-   private EventComponentModel<T> componentModel;
+   // The current WB manager
+   @Current
+   protected Manager webBeansManager;
 
    /**
     * Creates a simple implementation of {@link Event} with no default
@@ -26,7 +30,6 @@ public class EventImpl<T> extends BeanImpl<T> implements Event<T>
     */
    public EventImpl(EventComponentModel<T> componentMetaModel) {
       super(componentMetaModel);
-      this.componentModel = componentMetaModel;
    }
  
    /* (non-Javadoc)
@@ -41,7 +44,7 @@ public class EventImpl<T> extends BeanImpl<T> implements Event<T>
       eventBindings.addAll(Arrays.asList(bindings));
       
       // Invoke the container method to fire the event per 7.2
-      componentModel.getContainer().fireEvent(event, eventBindings.toArray(new Annotation[0]));
+      webBeansManager.fireEvent(event, eventBindings.toArray(new Annotation[0]));
    }
 
 }

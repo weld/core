@@ -25,7 +25,7 @@ import org.jboss.webbeans.util.JNDI;
  */
 public class EventBus
 {
-   private final Map<Integer, Set<Observer>> registeredObservers;
+   private final Map<Integer, Set<Observer<?>>>  registeredObservers;
    private final TransactionManager           tm;
    private String                             tmName = "java:/TransactionManager";
    
@@ -38,7 +38,7 @@ public class EventBus
     */
    public EventBus()
    {
-      registeredObservers = new HashMap<Integer, Set<Observer>>();
+      registeredObservers = new HashMap<Integer, Set<Observer<?>>>();
       tm = JNDI.lookup(tmName, TransactionManager.class);
    }
 
@@ -47,12 +47,12 @@ public class EventBus
     * event information is already encapsulated as part of the observer.
     * @param o The observer that should receive events
     */
-   public void addObserver(Observer o)
+   public void addObserver(Observer<?> o)
    {
       int key = generateKey(o.getEventType(), o.getEventBindingTypes());
-      Set<Observer> l = registeredObservers.get(key);
+      Set<Observer<?>> l = registeredObservers.get(key);
       if (l == null)
-         l = new HashSet<Observer>();
+         l = new HashSet<Observer<?>>();
       l.add(o);
       registeredObservers.put(key, l);
    }
@@ -67,7 +67,7 @@ public class EventBus
     * @throws IllegalStateException
     * @throws RollbackException
     */
-   public void deferEvent(Manager container, Object event, Observer o) throws SystemException, IllegalStateException, RollbackException
+   public void deferEvent(Manager container, Object event, Observer<?> o) throws SystemException, IllegalStateException, RollbackException
    {
       if (tm != null) {
          // Get the current transaction associated with the thread
@@ -84,18 +84,24 @@ public class EventBus
     * @param bindings Optional event bindings
     * @return A set of Observers
     */
-   public Set getObservers(Object event, Annotation... bindings)
+   @SuppressWarnings("unchecked")
+   public <T> Set<Observer<T>> getObservers(T event, Annotation... bindings)
    {
-      return registeredObservers.get(generateKey(event.getClass(), Arrays.asList(bindings)));
+      Set<Observer<T>> results = new HashSet<Observer<T>>();
+      for (Observer<?> observer : registeredObservers.get(generateKey(event.getClass(), Arrays.asList(bindings))))
+      {
+         results.add((Observer<T>) observer);
+      }
+      return results;
    }
 
    /**
     * Removes an observer from the event bus.
     * @param o The observer to remove
     */
-   public void removeObserver(Observer o)
+   public void removeObserver(Observer<?> o)
    {
-      Set<Observer> l = registeredObservers.get(generateKey(o.getEventType(), o.getEventBindingTypes()));
+      Set<Observer<?>> l = registeredObservers.get(generateKey(o.getEventType(), o.getEventBindingTypes()));
       if (l != null) {
          l.remove(o);
       }
@@ -108,7 +114,7 @@ public class EventBus
     * @param eventBindings An optional set of event bindings
     * @return
     */
-   public int generateKey(Class<?> eventType, Collection eventBindings)
+   public int generateKey(Class<?> eventType, Collection<Annotation> eventBindings)
    {
       // Produce the sum of the hash codes for the event type and the set of
       // event bindings.

@@ -27,15 +27,15 @@ public class ObserverMethod extends InjectableMethod
     * Invokes the method on the given component instance and uses the specified
     * event object for parameter injection.
     * 
-    * @param container The WebBeans container
+    * @param manager The WebBeans manager
     * @param instance The component instance to invoke the observer method on
     * @param event The event object being fired
     */
-   public void invoke(Manager container, Object instance, Object event)
+   public void invoke(Manager manager, Object instance, Object event)
    {
       try
       {
-         getMethod().invoke(instance, getParameterValues(container, event));
+         getMethod().invoke(instance, getParameterValues(manager, event));
       }
       catch (Exception e) 
       {
@@ -47,16 +47,16 @@ public class ObserverMethod extends InjectableMethod
     * Creates a list of parameter values to inject and uses the specified event object
     * to inject the observed event.
     * 
-    * @param container The WebBeans container
+    * @param manager The WebBeans manager
     * @param event The event being fired
     * @return an array of objects that serve as arguments for the invocation of the method
     */
    @SuppressWarnings("unchecked")
-   public Object[] getParameterValues(Manager container, Object event)
+   public Object[] getParameterValues(Manager manager, Object event)
    {
       // Let the super class get the parameter values, but substitute the event
       // object so that we know for certain it is the correct one.
-      Object[] parameterValues = super.getParameterValues(container);
+      Object[] parameterValues = super.getParameterValues(manager);
       List<Parameter> parms = this.getParameters();
       int i = 0;
       for (Parameter p : parms)

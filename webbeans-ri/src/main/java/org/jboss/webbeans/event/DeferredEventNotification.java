@@ -13,21 +13,21 @@ import javax.webbeans.manager.Observer;
  */
 public class DeferredEventNotification implements Synchronization
 {
-   private Manager         container;
+   private Manager           manager;
    private Observer<Object>  observer;
    private Object            event;
    
    /**
     * Creates a new deferred event notifier.
     * 
-    * @param container The Web Beans container
+    * @param manager The Web Beans manager
     * @param observer The observer to be notified
     * @param event The event being fired
     */
    @SuppressWarnings("unchecked")
-   public DeferredEventNotification(Manager container, Object event, Observer observer)
+   public DeferredEventNotification(Manager manager, Object event, Observer observer)
    {
-      this.container = container;
+      this.manager = manager;
       this.observer = observer;
       this.event = event;
    }
@@ -40,7 +40,7 @@ public class DeferredEventNotification implements Synchronization
    public void beforeCompletion()
    {
       // Execute the observer method on the event
-      observer.notify(container, event);      
+      observer.notify(manager, event);      
    }
 
 }

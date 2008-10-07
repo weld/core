@@ -1,13 +1,11 @@
 package org.jboss.webbeans.model;
 
-import java.lang.annotation.Annotation;
-
-import javax.webbeans.manager.Manager;
-
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bindings.DependentAnnotationLiteral;
 import org.jboss.webbeans.bindings.StandardAnnotationLiteral;
-import org.jboss.webbeans.introspector.AnnotatedType;
+import org.jboss.webbeans.injectable.ComponentConstructor;
+import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
 
 /**
  * Web Beans component meta model for the container instantiated, injectable, 
@@ -16,56 +14,108 @@ import org.jboss.webbeans.introspector.AnnotatedType;
  * @author David Allen
  *
  */
-public class EventComponentModel<T> extends SimpleComponentModel<T>
+public class EventComponentModel<T> extends AbstractComponentModel<T, Object>
 {
+   private String location;
+   private AnnotatedItem<Object> annotatedItem;
+   private AnnotatedItem<Object> xmlAnnotatedItem;
 
-   private StandardAnnotationLiteral  deploymentType = new StandardAnnotationLiteral();
-   private DependentAnnotationLiteral scopeType      = new DependentAnnotationLiteral();
-   private ManagerImpl    container;
-
-   /**
-    * Creates a new component model for an injectable, observable event object.
-    * @see org.jboss.webbeans.event.EventImpl
-    * 
-    * @param annotatedItem The injectable variable declared in Java
-    * @param xmlAnnotatedItem The injectable variable defined in XML
-    * @param container The Web Beans container
-    */
-   public EventComponentModel(AnnotatedType annotatedItem, AnnotatedType xmlAnnotatedItem, ManagerImpl container)
+   public EventComponentModel(SimpleAnnotatedItem<Object> annotatedItem, SimpleAnnotatedItem<Object> xmlAnnotatedItem, ManagerImpl manager)
    {
-      super(annotatedItem, xmlAnnotatedItem, container);
-      // This is needed later for the impl of Event to fire events with the container
-      this.container = container;
-   }
-
-   /**
-    * The implementation of the container used to create this model.
-    * @return the container
-    */
-   public Manager getContainer()
-   {
-      return container;
+      this.annotatedItem = annotatedItem;
+      this.xmlAnnotatedItem = xmlAnnotatedItem;
+      this.init(manager);
    }
 
    @Override
-   public Annotation getDeploymentType()
+   public ComponentConstructor<T> getConstructor()
+   {
+      // TODO No constructor is needed, but make sure this does not brake instantiation
+      return null;
+   }
+
+   @Override
+   public String getLocation()
+   {
+      if (location == null)
+      {
+         location = "type: Event Component;";
+      }
+      return location;
+   }
+
+   @Override
+   public String toString()
+   {
+      return "EventComponentModel[" + getType().getName() + "]";
+   }
+
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.AbstractClassComponentModel#initType()
+    */
+   @Override
+   protected void initType()
+   {
+      // TODO Type is null but maybe should be EventImpl
+      this.type = null;
+   }
+
+   @Override
+   protected AnnotatedItem<Object> getAnnotatedItem()
+   {
+      return this.annotatedItem;
+   }
+
+   @Override
+   protected String getDefaultName()
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   @Override
+   protected AnnotatedItem<Object> getXmlAnnotatedItem()
+   {
+      return this.xmlAnnotatedItem;
+   }
+
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.AbstractComponentModel#checkDeploymentType()
+    */
+   @Override
+   protected void checkDeploymentType()
+   {
+      // TODO Let super class check deployment type once initType() is fixed.
+   }
+
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.AbstractComponentModel#initDeploymentType(org.jboss.webbeans.ManagerImpl)
+    */
+   @Override
+   protected void initDeploymentType(ManagerImpl container)
    {
       // This is always @Standard per 7.2
-      return deploymentType;
+      this.deploymentType = new StandardAnnotationLiteral();
    }
 
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.AbstractComponentModel#initName()
+    */
    @Override
-   public String getName()
+   protected void initName()
    {
       // No name per 7.2
-      return "";
+      this.name = null;
    }
 
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.AbstractComponentModel#initScopeType()
+    */
    @Override
-   public Annotation getScopeType()
+   protected void initScopeType()
    {
       // This is always @Dependent per 7.2
-      return scopeType;
+      this.scopeType = new DependentAnnotationLiteral();
    }
-
+   
 }
