@@ -2,20 +2,20 @@ package org.jboss.webbeans.test;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import javax.webbeans.Current;
+import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Event;
 import org.jboss.webbeans.bindings.StandardAnnotationLiteral;
 import org.jboss.webbeans.event.EventImpl;
-import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
-import org.jboss.webbeans.model.EventComponentModel;
-import org.jboss.webbeans.test.annotations.FishStereotype;
-import org.jboss.webbeans.test.annotations.RiverFishStereotype;
+import org.jboss.webbeans.test.annotations.AnimalStereotype;
+import org.jboss.webbeans.test.annotations.Tame;
+import org.jboss.webbeans.test.annotations.Synchronous;
+import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.FishStereotypeAnnotationLiteral;
-import org.jboss.webbeans.test.bindings.RiverFishStereotypeAnnotationLiteral;
+import org.jboss.webbeans.test.bindings.TameAnnotationLiteral;
+import org.jboss.webbeans.test.bindings.SynchronousAnnotationLiteral;
 import org.jboss.webbeans.test.components.DangerCall;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
 import org.jboss.webbeans.util.Reflections;
@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  * Tests for the implementation of an Event component.
  * 
  * @author David Allen
- *
+ * 
  */
 public class EventTest
 {
@@ -42,23 +42,49 @@ public class EventTest
    }
 
    /**
-    * Tests the {@link Event#fire(Object, Annotation...)} method with a sample event
-    * component.
+    * Tests the {@link Event#fire(Object, Annotation...)} method with a sample
+    * event component.
     */
    @SuppressWarnings("unchecked")
    @Test(groups = "eventbus")
    public void testFireEvent()
    {
       DangerCall anEvent = new DangerCall();
-      EventComponentModel<DangerCall> eventComponentModel = 
-         new EventComponentModel<DangerCall>(
-               new SimpleAnnotatedItem<Object>(new HashMap<Class<? extends Annotation>, Annotation>()),
-               new SimpleAnnotatedItem<Object>(new HashMap<Class<? extends Annotation>, Annotation>()),
-               manager);
-      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>(eventComponentModel);
+      // Create a test annotation for the event and use it to construct the
+      // event object
+      Annotation[] annotations = new Annotation[] { new AnimalStereotypeAnnotationLiteral() };
+      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>(
+            annotations);
       eventComponent.setManager(manager);
-      eventComponent.fire(anEvent, new FishStereotypeAnnotationLiteral(), new RiverFishStereotypeAnnotationLiteral());
+      eventComponent.fire(anEvent, new TameAnnotationLiteral(),
+            new SynchronousAnnotationLiteral());
       assert anEvent.equals(manager.getEvent());
-      assert Reflections.annotationSetMatches(manager.getEventBindings(), Current.class, FishStereotype.class, RiverFishStereotype.class);
+      assert Reflections.annotationSetMatches(manager.getEventBindings(),
+            AnimalStereotype.class, Tame.class,
+            Synchronous.class);
+
+      // Test duplicate annotations on the fire method call
+      boolean duplicateDetected = false;
+      try
+      {
+         eventComponent.fire(anEvent, new TameAnnotationLiteral(),
+               new TameAnnotationLiteral());
+      } catch (DuplicateBindingTypeException e)
+      {
+         duplicateDetected = true;
+      }
+      assert duplicateDetected;
+      
+      // Test annotations that are not binding types
+      boolean nonBindingTypeDetected = false;
+      try
+      {
+         eventComponent.fire(anEvent, new FishStereotypeAnnotationLiteral());
+      }
+      catch (IllegalArgumentException e)
+      {
+         nonBindingTypeDetected = true;
+      }
+      assert nonBindingTypeDetected;
    }
 }

@@ -9,7 +9,7 @@ import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
 
 /**
  * Web Beans component meta model for the container instantiated, injectable, 
- * observable events (Section 7.2).
+ * observable events (Section 7.4).
  * 
  * @author David Allen
  *
@@ -56,7 +56,7 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Object>
    @Override
    protected void initType()
    {
-      // TODO Type is null but maybe should be EventImpl
+      // TODO Get the class for Event and use it for the type
       this.type = null;
    }
 
@@ -69,7 +69,7 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Object>
    @Override
    protected String getDefaultName()
    {
-      // TODO Auto-generated method stub
+      // No name per 7.4
       return null;
    }
 
@@ -80,21 +80,12 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Object>
    }
 
    /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.AbstractComponentModel#checkDeploymentType()
-    */
-   @Override
-   protected void checkDeploymentType()
-   {
-      // TODO Let super class check deployment type once initType() is fixed.
-   }
-
-   /* (non-Javadoc)
     * @see org.jboss.webbeans.model.AbstractComponentModel#initDeploymentType(org.jboss.webbeans.ManagerImpl)
     */
    @Override
    protected void initDeploymentType(ManagerImpl container)
    {
-      // This is always @Standard per 7.2
+      // This is always @Standard per 7.4
       this.deploymentType = new StandardAnnotationLiteral();
    }
 
@@ -104,7 +95,7 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Object>
    @Override
    protected void initName()
    {
-      // No name per 7.2
+      // No name per 7.4
       this.name = null;
    }
 
@@ -114,7 +105,7 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Object>
    @Override
    protected void initScopeType()
    {
-      // This is always @Dependent per 7.2
+      // This is always @Dependent per 7.4
       this.scopeType = new DependentAnnotationLiteral();
    }
    

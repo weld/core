@@ -2,9 +2,9 @@ package org.jboss.webbeans.test.bindings;
 
 import javax.webbeans.AnnotationLiteral;
 
-import org.jboss.webbeans.test.annotations.FishStereotype;
+import org.jboss.webbeans.test.annotations.RiverFishStereotype;
 
-public class RiverFishStereotypeAnnotationLiteral extends AnnotationLiteral<FishStereotype> implements FishStereotype
+public class RiverFishStereotypeAnnotationLiteral extends AnnotationLiteral<RiverFishStereotype> implements RiverFishStereotype
 {
 
 }

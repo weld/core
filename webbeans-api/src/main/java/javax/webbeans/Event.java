@@ -19,6 +19,8 @@ package javax.webbeans;
 
 import java.lang.annotation.Annotation;
 
+import javax.webbeans.manager.Observer;
+
 /**
  * 
  * @author Pete Muir
@@ -28,5 +30,7 @@ public interface Event<T>
 {
 
    public void fire(T event, Annotation... bindings);
+   
+   public void observes(Observer<T> observe, Annotation... bindings);
    
 }
