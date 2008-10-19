@@ -30,9 +30,9 @@ public class ModelManager
       componentModels.put(componentModel.getType(), componentModel);
    }
    
-   public <T> AbstractComponentModel<T, ?> getComponentModel(Class<T> clazz)
+   public AbstractComponentModel<?, ?> getComponentModel(Class<?> clazz)
    {
-      return (AbstractComponentModel<T, ?>) componentModels.get(clazz);
+      return componentModels.get(clazz);
    }
 
 }

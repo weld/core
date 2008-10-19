@@ -6,35 +6,37 @@ import java.util.List;
 
 import javax.webbeans.manager.Manager;
 
-public abstract class Unit<T>
+import org.jboss.webbeans.introspector.AnnotatedItem;
+
+public abstract class Unit<T, S>
 {
 
-   private List<Element<Object>> parameters;
+   private List<InjectableParameter<?>> parameters;
    
    public Unit(Class<?>[] parameterTypes, Annotation[][] parameterAnnotations)
    {
       parameters = initParameters(parameterTypes, parameterAnnotations);
    }
    
-   public List<Element<Object>> getParameters()
+   public List<InjectableParameter<?>> getParameters()
    {
       return parameters;
    }
 
    @SuppressWarnings("unchecked")
-   protected static List<Element<Object>> initParameters(Class<?>[] parameterTypes, Annotation[][] parameterAnnotations)
+   protected static <T> List<InjectableParameter<?>> initParameters(Class<?>[] parameterTypes, Annotation[][] parameterAnnotations)
    {
-      List<Element<Object>> injectedParameters = new ArrayList<Element<Object>>();
+      List<InjectableParameter<?>> injectedParameters = new ArrayList<InjectableParameter<?>>();
       for (int i = 0; i < parameterTypes.length; i++)
       {
          if (parameterAnnotations[i].length > 0)
          {
-            Parameter<Object> parameter = new Parameter(parameterAnnotations[i], parameterTypes[i]);
+            InjectableParameter<Object> parameter = new InjectableParameter(parameterAnnotations[i], parameterTypes[i]);
             injectedParameters.add(i, parameter);
          }
          else
          {
-            Parameter<Object> parameter = new Parameter(parameterTypes[i]);
+            InjectableParameter<Object> parameter = new InjectableParameter(parameterTypes[i]);
             injectedParameters.add(i, parameter);
          }
       }
@@ -51,4 +53,6 @@ public abstract class Unit<T>
       return parameterValues;
    }
 
+   public abstract AnnotatedItem<T, S> getAnnotatedItem();
+   
 }

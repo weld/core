@@ -8,6 +8,7 @@ import javax.webbeans.BindingType;
 import javax.webbeans.Initializer;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.injectable.SimpleConstructor;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.LoggerUtil;
@@ -41,7 +42,18 @@ public class SimpleComponentModel<T> extends AbstractClassComponentModel<T>
       super.init(container);
       initConstructor();
       checkType(getType());
+      initInjectionPoints();
       // TODO Interceptors
+   }
+   
+   @Override
+   protected void initInjectionPoints()
+   {
+      super.initInjectionPoints();
+      for (InjectableParameter<?> injectable : constructor.getParameters())
+      {
+         injectionPoints.add(injectable);
+      }
    }
    
    public static void checkType(Class<?> type)

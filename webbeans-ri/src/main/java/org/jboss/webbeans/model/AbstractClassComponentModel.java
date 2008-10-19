@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
+import javax.webbeans.BindingType;
 import javax.webbeans.Dependent;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -98,6 +99,13 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
       {
          throw new IllegalArgumentException("Cannot build a component which doesn't specify a type");
       }
+   }
+   
+   @Override
+   protected void initInjectionPoints()
+   {
+      super.initInjectionPoints();
+      annotatedItem.getMetaAnnotatedFields(BindingType.class);
    }
    
    @Override

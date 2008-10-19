@@ -10,6 +10,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.ComponentConstructor;
 import org.jboss.webbeans.injectable.EnterpriseConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
+import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Reflections;
 
@@ -33,6 +34,20 @@ public class EnterpriseComponentModel<T> extends AbstractEnterpriseComponentMode
       super.init(container);
       this.constructor = new EnterpriseConstructor<T>(getEjbMetaData());
       initRemoveMethod(container);
+      initInjectionPoints();
+   }
+   
+   @Override
+   protected void initInjectionPoints()
+   {
+      super.initInjectionPoints();
+      if (removeMethod != null)
+      {
+         for (InjectableParameter<?> injectable : removeMethod.getParameters())
+         {
+            injectionPoints.add(injectable);
+         }
+      }
    }
    
    public ComponentConstructor<T> getConstructor()

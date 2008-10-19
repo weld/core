@@ -19,7 +19,7 @@ public static final String LOGGER_NAME = "componentMetaModel";
    
    private AbstractComponentModel<T, ?> componentMetaModel;
 
-   public BeanImpl(AbstractComponentModel<T, ?> componentMetaModel, Manager manager)
+   public BeanImpl(AbstractComponentModel<T, ?> componentMetaModel, ManagerImpl manager)
    {
       super(manager);
       this.componentMetaModel = componentMetaModel;

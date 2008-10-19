@@ -11,7 +11,7 @@ import java.util.Set;
  * @author Pete Muir
  *
  */
-public interface AnnotatedItem<E>
+public interface AnnotatedItem<T, S>
 {
 
    /**
@@ -45,6 +45,8 @@ public interface AnnotatedItem<E>
    public boolean isAnnotationPresent(
          Class<? extends Annotation> annotationType);
    
-   public E getDelegate();
+   public S getDelegate();
+   
+   public Class<? extends T> getType();
 
 }

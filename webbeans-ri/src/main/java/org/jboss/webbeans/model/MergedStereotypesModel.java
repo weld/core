@@ -25,7 +25,7 @@ public class MergedStereotypesModel<T, E>
    private Set<Class<?>> requiredTypes;
    private Set<Class<? extends Annotation>> supportedScopes;
    
-   public MergedStereotypesModel(AnnotatedItem<E> annotatedItem, AnnotatedItem<E> xmlAnnotatedItem, ManagerImpl container)
+   public MergedStereotypesModel(AnnotatedItem<T, E> annotatedItem, AnnotatedItem<T, E> xmlAnnotatedItem, ManagerImpl container)
    {
       possibleDeploymentTypes = new HashMap<Class<? extends Annotation>, Annotation>();
       possibleScopeTypes = new HashSet<Annotation>();

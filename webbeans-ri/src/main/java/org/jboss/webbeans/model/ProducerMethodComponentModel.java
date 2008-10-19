@@ -13,6 +13,7 @@ import javax.webbeans.Dependent;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.ComponentConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
+import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.injectable.MethodConstructor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -22,12 +23,12 @@ import org.jboss.webbeans.util.Reflections;
 public class ProducerMethodComponentModel<T> extends AbstractProducerComponentModel<T>
 {
    
-   private ComponentConstructor<T> constructor;
+   private MethodConstructor<T> constructor;
    
-   private AnnotatedItem<Method> xmlAnnotatedItem = new SimpleAnnotatedItem<Method>(new HashMap<Class<? extends Annotation>, Annotation>());
-   private AnnotatedMethod annotatedMethod;
+   private AnnotatedItem<T, Method> xmlAnnotatedItem = new SimpleAnnotatedItem<T, Method>(new HashMap<Class<? extends Annotation>, Annotation>());
+   private AnnotatedMethod<T> annotatedMethod;
    
-   private AbstractComponentModel<?, Class<?>> declaringComponent;
+   private AbstractComponentModel<?, ?> declaringComponent;
    
    // Cached values
    private String location;
@@ -41,12 +42,30 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
    }
    
    @Override
-   protected void init(ManagerImpl container)
+   protected void init(ManagerImpl manager)
    {
-      super.init(container);
+      super.init(manager);
       checkProducerMethod();
       this.constructor = new MethodConstructor<T>(getAnnotatedItem().getDelegate());
-      initRemoveMethod(container);
+      initRemoveMethod(manager);
+      initInjectionPoints();
+   }
+   
+   @Override
+   protected void initInjectionPoints()
+   {
+      super.initInjectionPoints();
+      for (InjectableParameter<?> injectable : constructor.getParameters())
+      {
+         injectionPoints.add(injectable);
+      }
+      if (removeMethod != null)
+      {
+         for (InjectableParameter<?> injectable : removeMethod.getParameters())
+         {
+            injectionPoints.add(injectable);
+         }
+      }
    }
    
    @Override
@@ -65,7 +84,7 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
 
    protected void initDeclaringComponent(ManagerImpl container)
    {
-      declaringComponent = (AbstractComponentModel<?, Class<?>>) container.getModelManager().getComponentModel(getAnnotatedItem().getDelegate().getDeclaringClass());
+      declaringComponent = container.getModelManager().getComponentModel(getAnnotatedItem().getDelegate().getDeclaringClass());
    }
    
    @Override
@@ -109,7 +128,7 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
    }
 
    @Override
-   protected AnnotatedItem<Method> getAnnotatedItem()
+   protected AnnotatedMethod<T> getAnnotatedItem()
    {
       return annotatedMethod;
    }
@@ -129,7 +148,7 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
    }
 
    @Override
-   protected AnnotatedItem<Method> getXmlAnnotatedItem()
+   protected AnnotatedItem<T, Method> getXmlAnnotatedItem()
    {
       return xmlAnnotatedItem;
    }
@@ -180,7 +199,7 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
       return removeMethod;
    }
    
-   public AbstractComponentModel<?, Class<?>> getDeclaringComponent()
+   public AbstractComponentModel<?, ?> getDeclaringComponent()
    {
       return declaringComponent;
    }

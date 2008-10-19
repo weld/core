@@ -35,9 +35,9 @@ public interface Manager
    public <T> T getInstanceByType(TypeLiteral<T> type,
          Annotation... bindingTypes);
 
-   public <T> T resolveByType(Class<T> apiType, Annotation... bindingTypes);
+   public <T> Set<Bean<T>> resolveByType(Class<T> apiType, Annotation... bindingTypes);
 
-   public <T> T resolveByType(TypeLiteral<T> apiType,
+   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,
          Annotation... bindingTypes);
 
    public Object getInstanceByName(String name);

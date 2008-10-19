@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-public abstract class AbstractAnnotatedItem<E> implements AnnotatedItem<E>
+import org.jboss.webbeans.injectable.Injectable;
+
+public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
 {
 
    private Map<Class<? extends Annotation>, Annotation> annotationMap;
@@ -26,8 +28,13 @@ public abstract class AbstractAnnotatedItem<E> implements AnnotatedItem<E>
    
    protected static Map<Class<? extends Annotation>, Annotation> buildAnnotationMap(AnnotatedElement element)
    {
+      return buildAnnotationMap(element.getAnnotations());
+   }
+   
+   protected static Map<Class<? extends Annotation>, Annotation> buildAnnotationMap(Annotation[] annotations)
+   {
       Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
-      for (Annotation annotation : element.getAnnotations())
+      for (Annotation annotation : annotations)
       {
          annotationMap.put(annotation.annotationType(), annotation);
       }
@@ -44,9 +51,9 @@ public abstract class AbstractAnnotatedItem<E> implements AnnotatedItem<E>
    }
 
    @SuppressWarnings("unchecked")
-   public <T extends Annotation> T getAnnotation(Class<? extends T> annotationType)
+   public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)
    {
-      return (T) annotationMap.get(annotationType);
+      return (A) annotationMap.get(annotationType);
    }
 
    public Set<Annotation> getAnnotations(Class<? extends Annotation> metaAnnotationType)
@@ -73,8 +80,10 @@ public abstract class AbstractAnnotatedItem<E> implements AnnotatedItem<E>
       return annotationMap.containsKey(annotatedType);
    }
 
-   protected static <T extends Annotation> Map<Class<? extends Annotation>, Set<Annotation>> populateMetaAnnotationMap(
-         Class<T> metaAnnotationType, Map<Class<? extends Annotation>, Set<Annotation>> metaAnnotations, Map<Class<? extends Annotation>, Annotation> annotationMap)
+   protected static <A extends Annotation> Map<Class<? extends Annotation>, Set<Annotation>> populateMetaAnnotationMap(
+         Class<A> metaAnnotationType, Map<Class<? extends Annotation>, 
+         Set<Annotation>> metaAnnotations, 
+         Map<Class<? extends Annotation>, Annotation> annotationMap)
    {
       if (!metaAnnotations.containsKey(metaAnnotationType))
       {
@@ -94,6 +103,17 @@ public abstract class AbstractAnnotatedItem<E> implements AnnotatedItem<E>
    protected Map<Class<? extends Annotation>, Annotation> getAnnotationMap()
    {
       return annotationMap;
+   }
+   
+   @Override
+   public boolean equals(Object other)
+   {
+      if (other instanceof AnnotatedItem)
+      {
+         AnnotatedItem<?, ?> that = (AnnotatedItem<?, ?>) other;
+         return this.getAnnotations().equals(that.getAnnotations()) && this.getDelegate().equals(that.getDelegate());
+      }
+      return false;
    }
 
 }

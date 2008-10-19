@@ -49,7 +49,7 @@ public class EventBus
     */
    public void addObserver(Observer<?> o)
    {
-      int key = generateKey(o.getEventType(), o.getEventBindingTypes());
+      int key = 1 /*TODO generateKey(o.getEventType(), o.get)*/;
       Set<Observer<?>> l = registeredObservers.get(key);
       if (l == null)
          l = new HashSet<Observer<?>>();
@@ -101,10 +101,11 @@ public class EventBus
     */
    public void removeObserver(Observer<?> o)
    {
-      Set<Observer<?>> l = registeredObservers.get(generateKey(o.getEventType(), o.getEventBindingTypes()));
-      if (l != null) {
-         l.remove(o);
-      }
+      // TODO fix
+    //  Set<Observer<?>> l = registeredObservers.get(generateKey(o.getEventType(), o.getEventBindingTypes()));
+      //if (l != null) {
+        // l.remove(o);
+      //}
    }
    
    /**

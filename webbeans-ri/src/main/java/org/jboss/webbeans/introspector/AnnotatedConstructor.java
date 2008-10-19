@@ -1,6 +1,6 @@
 package org.jboss.webbeans.introspector;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
 
 /**
  * AnnotatedType provides a uniform access to the annotations on an annotated
@@ -9,9 +9,9 @@ import java.lang.reflect.Method;
  * @author Pete Muir
  *
  */
-public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
+public interface AnnotatedConstructor<T> extends AnnotatedItem<T, Constructor<T>>
 {
    
-   public Method getAnnotatedMethod();
+   public Constructor<T> getAnnotatedConstructor();
 
 }

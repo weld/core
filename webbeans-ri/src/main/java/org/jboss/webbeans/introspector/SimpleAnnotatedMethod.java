@@ -2,31 +2,37 @@ package org.jboss.webbeans.introspector;
 
 import java.lang.reflect.Method;
 
-public class SimpleAnnotatedMethod extends AbstractAnnotatedItem<Method> implements AnnotatedMethod
+public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedItem<T, Method> implements AnnotatedMethod<T>
 {
    
-   private Method annotatedMethod;
+   private Method method;
    
    public SimpleAnnotatedMethod(Method method)
    {
       super(buildAnnotationMap(method));
-      this.annotatedMethod = method;
+      this.method = method;
    }
 
    public Method getAnnotatedMethod()
    {
-      return annotatedMethod;
+      return method;
    }
    
    @Override
    public String toString()
    {
-      return annotatedMethod + " " + getAnnotatedMethod().toString();
+      return method + " " + getAnnotatedMethod().toString();
    }
 
    public Method getDelegate()
    {
-      return annotatedMethod;
+      return method;
+   }
+   
+   @SuppressWarnings("unchecked")
+   public Class<? extends T> getType()
+   {
+      return (Class<? extends T>) method.getReturnType();
    }
 
 }

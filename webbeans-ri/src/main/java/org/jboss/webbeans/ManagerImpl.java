@@ -20,6 +20,8 @@ import org.jboss.webbeans.bindings.ProductionAnnotationLiteral;
 import org.jboss.webbeans.bindings.StandardAnnotationLiteral;
 import org.jboss.webbeans.ejb.EjbManager;
 import org.jboss.webbeans.event.EventBus;
+import org.jboss.webbeans.injectable.Injectable;
+import org.jboss.webbeans.injectable.SimpleInjectable;
 
 public class ManagerImpl implements Manager
 {
@@ -28,20 +30,24 @@ public class ManagerImpl implements Manager
    private ModelManager modelManager;
    private EjbManager ejbLookupManager;
    private EventBus eventBus;
+   private ResolutionManager resolutionManager;
+   
+   private boolean containerInitialized = false;
 
    
    private ThreadLocal<Map<Class<Annotation>, Context>> contexts = 
       new ThreadLocal<Map<Class<Annotation>, Context>>();
 
-   private Set<Bean<?>> components;
+   private Set<Bean<?>> beans;
    
    public ManagerImpl(List<Annotation> enabledDeploymentTypes)
    {
       initEnabledDeploymentTypes(enabledDeploymentTypes);
       this.modelManager = new ModelManager();
       this.ejbLookupManager = new EjbManager();
-      this.components = new HashSet<Bean<?>>();
+      this.beans = new HashSet<Bean<?>>();
       this.eventBus = new EventBus();
+      resolutionManager = new ResolutionManager(this);
    }
    
    private void initEnabledDeploymentTypes(List<Annotation> enabledDeploymentTypes)
@@ -62,9 +68,13 @@ public class ManagerImpl implements Manager
       }
    }
 
-   public Manager addBean(Bean<?> component)
+   public Manager addBean(Bean<?> bean)
    {
-      components.add(component);
+      beans.add(bean);
+      if (containerInitialized)
+      {
+         // TODO Somehow deal with dynamically reigstered components
+      }
       return this;
    }
 
@@ -130,18 +140,7 @@ public class ManagerImpl implements Manager
       return null;
    }
 
-   public <T> T resolveByType(Class<T> apiType, Annotation... bindingTypes)
-   {
-      // TODO Auto-generated method stub
-      return null;
-   }
-
-   public <T> T resolveByType(TypeLiteral<T> apiType,
-         Annotation... bindingTypes)
-   {
-      // TODO Auto-generated method stub
-      return null;
-   }
+  
    
    public <T> Set<Method> resolveDisposalMethods(Class<T> apiType, Annotation... bindingTypes)
    {
@@ -172,6 +171,28 @@ public class ManagerImpl implements Manager
    {
       // TODO Auto-generated method stub
       return null;
+   }
+
+   public <T> Set<Bean<T>> resolveByType(Class<T> apiType,
+         Annotation... bindingTypes)
+   {
+      return getResolutionManager().get(new SimpleInjectable<T>(apiType, bindingTypes));
+   }
+
+   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,
+         Annotation... bindingTypes)
+   {
+      return resolveByType(apiType.getRawType(), bindingTypes);
+   }
+   
+   public ResolutionManager getResolutionManager()
+   {
+      return resolutionManager;
+   }
+   
+   public Set<Bean<?>> getBeans()
+   {
+      return beans;
    }
    
 }

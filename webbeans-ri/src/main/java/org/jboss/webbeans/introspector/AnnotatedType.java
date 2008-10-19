@@ -1,5 +1,8 @@
 package org.jboss.webbeans.introspector;
 
+import java.lang.annotation.Annotation;
+import java.util.Set;
+
 
 /**
  * AnnotatedType provides a uniform access to the annotations on an annotated
@@ -8,7 +11,7 @@ package org.jboss.webbeans.introspector;
  * @author Pete Muir
  *
  */
-public interface AnnotatedType<T> extends AnnotatedItem<Class<T>>
+public interface AnnotatedType<T> extends AnnotatedItem<T, Class<T>>
 {
    
    /**
@@ -16,5 +19,30 @@ public interface AnnotatedType<T> extends AnnotatedItem<Class<T>>
     * then this method should return null
     */
    public Class<? extends T> getAnnotatedClass();
+   
+   /**
+    * Get all fields on the type
+    * @return
+    */
+   public Set<AnnotatedField<?>> getFields();
+   
+   /**
+    * Get all annotations which are annotated with the given annotation 
+    * type
+    * 
+    * If no annotations are present which are annotated with the given
+    * annotation an empty set is returned
+    */
+   public Set<AnnotatedField<?>> getAnnotatedField(Class<? extends Annotation> annotationType);
+   
+   /**
+    * Get all fields which are annotated with the given meta annotation 
+    * type
+    * 
+    * If no annotations are present which are annotated with the given meta
+    * annotation an empty set is returned
+    */
+   public Set<AnnotatedField<?>> getMetaAnnotatedFields(
+         Class<? extends Annotation> metaAnnotationType);
    
 }

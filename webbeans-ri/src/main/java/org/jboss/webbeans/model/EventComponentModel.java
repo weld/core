@@ -17,10 +17,10 @@ import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
 public class EventComponentModel<T> extends AbstractComponentModel<T, Object>
 {
    private String location;
-   private AnnotatedItem<Object> annotatedItem;
-   private AnnotatedItem<Object> xmlAnnotatedItem;
+   private AnnotatedItem<T, Object> annotatedItem;
+   private AnnotatedItem<T, Object> xmlAnnotatedItem;
 
-   public EventComponentModel(SimpleAnnotatedItem<Object> annotatedItem, SimpleAnnotatedItem<Object> xmlAnnotatedItem, ManagerImpl manager)
+   public EventComponentModel(SimpleAnnotatedItem<T, Object> annotatedItem, SimpleAnnotatedItem<T, Object> xmlAnnotatedItem, ManagerImpl manager)
    {
       this.annotatedItem = annotatedItem;
       this.xmlAnnotatedItem = xmlAnnotatedItem;
@@ -61,7 +61,7 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Object>
    }
 
    @Override
-   protected AnnotatedItem<Object> getAnnotatedItem()
+   protected AnnotatedItem<T, Object> getAnnotatedItem()
    {
       return this.annotatedItem;
    }
@@ -74,7 +74,7 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Object>
    }
 
    @Override
-   protected AnnotatedItem<Object> getXmlAnnotatedItem()
+   protected AnnotatedItem<T, Object> getXmlAnnotatedItem()
    {
       return this.xmlAnnotatedItem;
    }

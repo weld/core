@@ -1,17 +1,13 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import javax.webbeans.manager.Manager;
 import javax.webbeans.manager.Observer;
-import javax.webbeans.Observes;
 
-import org.jboss.webbeans.injectable.Parameter;
+import org.jboss.webbeans.injectable.InjectableMethod;
+import org.jboss.webbeans.injectable.InjectableParameter;
+import org.jboss.webbeans.injectable.InjectableParameterWrapper;
 import org.jboss.webbeans.model.AbstractComponentModel;
 
 /**
@@ -35,8 +31,7 @@ public class ObserverImpl<T> implements Observer<T>
 {
 
    private final AbstractComponentModel<?, ?> componentModel;
-   private final ObserverMethod observerMethod;
-   private final Set<Annotation> eventBindings;
+   private final InjectableMethod<?> observerMethod;
    private final Class<T> eventType;
 
    /**
@@ -48,41 +43,11 @@ public class ObserverImpl<T> implements Observer<T>
     * @param eventType The type of event being observed
     */
    @SuppressWarnings("unchecked")
-   public ObserverImpl(AbstractComponentModel<?, ?> componentModel, ObserverMethod observer, Class<T> eventType)
+   public ObserverImpl(AbstractComponentModel<?, ?> componentModel, InjectableMethod<?> observer, Class<T> eventType)
    {
       this.componentModel = componentModel;
       this.observerMethod = observer;
       this.eventType = eventType;
-      List<Parameter> parms = observer.getParameters();
-      eventBindings = new HashSet<Annotation>();
-      for (Parameter p : parms)
-      {
-         if (p.getType().equals(eventType))
-         {
-            if ((p.getBindingTypes() != null) && (p.getBindingTypes().length > 0))
-            {
-               eventBindings.addAll(Arrays.asList(p.getBindingTypes()));
-               // Remove the @Observes annotation since it is not an event
-               // binding type
-               for (Annotation annotation : eventBindings)
-               {
-                  if (Observes.class.isAssignableFrom(annotation.getClass()))
-                     eventBindings.remove(annotation);
-               }
-               break;
-            }
-         }
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see javax.webbeans.Observer#getEventBindingTypes()
-    */
-   public Set<Annotation> getEventBindingTypes()
-   {
-      return Collections.unmodifiableSet(this.eventBindings);
    }
 
    /*
@@ -101,12 +66,34 @@ public class ObserverImpl<T> implements Observer<T>
     * @see javax.webbeans.Observer#notify(javax.webbeans.Container,
     * java.lang.Object)
     */
-   public void notify(Manager manager, T event)
+   @SuppressWarnings("unchecked")
+   public void notify(Manager manager, final T event)
    {
       // Get the most specialized instance of the component
       Object instance = getInstance(manager);
       if (instance != null)
-         this.observerMethod.invoke(manager, instance, event);
+      {
+         // Let the super class get the parameter values, but substitute the event
+         // object so that we know for certain it is the correct one.
+         for (int i = 0; i < observerMethod.getParameters().size(); i++)
+         {
+            InjectableParameter<?> parameter = observerMethod.getParameters().get(i);
+            if (parameter.getType().isAssignableFrom(event.getClass()))
+            {
+               InjectableParameter<?> newParameter = new InjectableParameterWrapper(parameter)
+               {
+                  @Override
+                  public Object getValue(Manager manager)
+                  {
+                     return event;
+                  }
+               };
+               observerMethod.getParameters().set(i, newParameter);
+            }
+         }
+         this.observerMethod.invoke(manager, instance);
+      }
+         
    }
 
    /**

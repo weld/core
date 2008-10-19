@@ -1,7 +1,6 @@
 package org.jboss.webbeans.model;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,9 @@ import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.bindings.DependentAnnotationLiteral;
 import org.jboss.webbeans.bindings.ProductionAnnotationLiteral;
 import org.jboss.webbeans.injectable.ComponentConstructor;
+import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.InjectableMethod;
+import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.util.LoggerUtil;
 
@@ -37,6 +38,7 @@ public abstract class AbstractComponentModel<T, E>
    protected Class<T> type;
    protected InjectableMethod<?> removeMethod;
    private Set<Class> apiTypes;
+   protected Set<Injectable<?, ?>> injectionPoints;
    
    protected void init(ManagerImpl container)
    {
@@ -49,6 +51,17 @@ public abstract class AbstractComponentModel<T, E>
       checkDeploymentType();
       initScopeType();
       initApiTypes();
+   }
+   
+   protected void initInjectionPoints()
+   {
+      if (removeMethod != null)
+      {
+         for (InjectableParameter<?> injectable : removeMethod.getParameters())
+         {
+            injectionPoints.add(injectable);
+         }
+      }
    }
    
    protected abstract void initType();
@@ -73,9 +86,9 @@ public abstract class AbstractComponentModel<T, E>
       return classes;
    }
 
-   protected abstract AnnotatedItem<E> getAnnotatedItem();
+   protected abstract AnnotatedItem<T, E> getAnnotatedItem();
    
-   protected abstract AnnotatedItem<E> getXmlAnnotatedItem();
+   protected abstract AnnotatedItem<T, E> getXmlAnnotatedItem();
 
    protected void initBindingTypes()
    {
@@ -306,6 +319,11 @@ public abstract class AbstractComponentModel<T, E>
    public InjectableMethod<?> getRemoveMethod()
    {
       return removeMethod;
+   }
+   
+   public Set<Injectable<?, ?>> getInjectionPoints()
+   {
+      return injectionPoints;
    }
 
 }

@@ -15,11 +15,11 @@ import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
 public class ProducerExpressionComponent<T> extends AbstractProducerComponentModel<T>
 {
    
-   private AnnotatedItem<Method> xmlAnnotatedItem;
-   private AnnotatedItem<Method> annotatedItem = new SimpleAnnotatedItem<Method>(new HashMap<Class<? extends Annotation>, Annotation>());
+   private AnnotatedItem<T, Method> xmlAnnotatedItem;
+   private AnnotatedItem<T, Method> annotatedItem = new SimpleAnnotatedItem<T, Method>(new HashMap<Class<? extends Annotation>, Annotation>());
    private String location;
 
-   public ProducerExpressionComponent(AnnotatedItem<Method> xmlAnnotatedMethod, ManagerImpl container)
+   public ProducerExpressionComponent(AnnotatedItem<T, Method> xmlAnnotatedMethod, ManagerImpl container)
    {
       this.xmlAnnotatedItem = xmlAnnotatedMethod;
       init(container);
@@ -41,11 +41,12 @@ public class ProducerExpressionComponent<T> extends AbstractProducerComponentMod
    protected void init(ManagerImpl container)
    {
       super.init(container);
+      initInjectionPoints();
    }
    
 
    @Override
-   protected AnnotatedItem<Method> getAnnotatedItem()
+   protected AnnotatedItem<T, Method> getAnnotatedItem()
    {
       return annotatedItem;
    }
@@ -74,7 +75,7 @@ public class ProducerExpressionComponent<T> extends AbstractProducerComponentMod
    }
 
    @Override
-   protected AnnotatedItem<Method> getXmlAnnotatedItem()
+   protected AnnotatedItem<T, Method> getXmlAnnotatedItem()
    {
       return xmlAnnotatedItem;
    }
