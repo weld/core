@@ -28,12 +28,27 @@ import java.util.Set;
 
 public abstract class Bean<T>
 {
+   
+   private final Manager manager;
+   
+   protected Bean(Manager manager)
+   {
+      this.manager = manager;
+   }
+   
+   protected Manager getManager()
+   {
+      return manager;
+   }
 
    public abstract Set<Class> getTypes();
    public abstract Set<Annotation> getBindingTypes();
    public abstract Annotation getScopeType();
    public abstract Annotation getDeploymentType();
    public abstract String getName();
+   
+   public abstract boolean isSerializable();
+   public abstract boolean isNullable();
    
    public abstract T create(Manager container);
    public abstract void destroy(Manager container, T instance);

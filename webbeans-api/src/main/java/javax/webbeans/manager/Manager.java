@@ -41,14 +41,16 @@ public interface Manager
          Annotation... bindingTypes);
 
    public Object getInstanceByName(String name);
+   
+   public <T> T getInstance(Bean<T> bean);
 
-   public Set<Bean> resolveByName(String name);
+   public Set<Bean<?>> resolveByName(String name);
 
    public void fireEvent(Object event, Annotation... bindings);
    
-   public void addObserver(Observer observer);
+   public <T> void addObserver(Observer<T> observer);
    
-   public void removeObserver(Observer observer);
+   public <T> void removeObserver(Observer<T> observer);
    
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings);
    
@@ -56,6 +58,6 @@ public interface Manager
    
    public Context getContext(Class<Annotation> scopeType);
    
-   public Manager addComponent(Bean component);
+   public Manager addBean(Bean<?> component);
 
 }

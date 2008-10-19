@@ -33,14 +33,14 @@ public class ManagerImpl implements Manager
    private ThreadLocal<Map<Class<Annotation>, Context>> contexts = 
       new ThreadLocal<Map<Class<Annotation>, Context>>();
 
-   private Set<Bean> components;
+   private Set<Bean<?>> components;
    
    public ManagerImpl(List<Annotation> enabledDeploymentTypes)
    {
       initEnabledDeploymentTypes(enabledDeploymentTypes);
       this.modelManager = new ModelManager();
       this.ejbLookupManager = new EjbManager();
-      this.components = new HashSet<Bean>();
+      this.components = new HashSet<Bean<?>>();
       this.eventBus = new EventBus();
    }
    
@@ -62,7 +62,7 @@ public class ManagerImpl implements Manager
       }
    }
 
-   public Manager addComponent(Bean component)
+   public Manager addBean(Bean<?> component)
    {
       components.add(component);
       return this;
@@ -74,7 +74,7 @@ public class ManagerImpl implements Manager
       
    }
 
-   public void addObserver(Observer observer)
+   public <T> void addObserver(Observer<T> observer)
    {
       eventBus.addObserver(observer);      
    }
@@ -119,12 +119,12 @@ public class ManagerImpl implements Manager
       return null;
    }
 
-   public void removeObserver(Observer observer)
+   public<T> void removeObserver(Observer<T> observer)
    {
       eventBus.removeObserver(observer);
    }
 
-   public Set<Bean> resolveByName(String name)
+   public Set<Bean<?>> resolveByName(String name)
    {
       // TODO Auto-generated method stub
       return null;
@@ -166,6 +166,12 @@ public class ManagerImpl implements Manager
    public EjbManager getEjbManager()
    {
       return ejbLookupManager;
+   }
+
+   public <T> T getInstance(Bean<T> bean)
+   {
+      // TODO Auto-generated method stub
+      return null;
    }
    
 }

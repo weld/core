@@ -19,8 +19,9 @@ public static final String LOGGER_NAME = "componentMetaModel";
    
    private AbstractComponentModel<T, ?> componentMetaModel;
 
-   public BeanImpl(AbstractComponentModel<T, ?> componentMetaModel)
+   public BeanImpl(AbstractComponentModel<T, ?> componentMetaModel, Manager manager)
    {
+      super(manager);
       this.componentMetaModel = componentMetaModel;
    }
 
@@ -66,6 +67,20 @@ public static final String LOGGER_NAME = "componentMetaModel";
    {
       // TODO Auto-generated method stub
       return null;
+   }
+
+   @Override
+   public boolean isNullable()
+   {
+      // TODO Auto-generated method stub
+      return false;
+   }
+
+   @Override
+   public boolean isSerializable()
+   {
+      // TODO Auto-generated method stub
+      return false;
    }
 
 }

@@ -141,7 +141,7 @@ public class DeploymentStrategy
                         SimpleComponentModel componentModel = new SimpleComponentModel(
                               new SimpleAnnotatedType(componentClass), 
                               new SimpleAnnotatedType(null, new HashMap()), container);  
-                        container.addComponent(new BeanImpl(componentModel));
+                        container.addBean(new BeanImpl(componentModel, null));
                         log.info("Web Bean: " + componentModel);
                      }
                   }
