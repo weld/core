@@ -8,7 +8,6 @@ import javax.webbeans.DeploymentType;
 import javax.webbeans.Production;
 import javax.webbeans.Stereotype;
 
-import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.test.components.Antelope;
@@ -21,7 +20,7 @@ public class ClassAnnotatedItemTest
    @Test
    public void testDeclaredAnnotations()
    {
-      AnnotatedType annotatedElement = new SimpleAnnotatedType(Order.class);
+      AnnotatedType<Order> annotatedElement = new SimpleAnnotatedType<Order>(Order.class);
       assert annotatedElement.getAnnotations().size() == 1;
       assert annotatedElement.getAnnotation(Production.class) != null;
       assert annotatedElement.getAnnotatedClass().equals(Order.class);
@@ -30,7 +29,7 @@ public class ClassAnnotatedItemTest
    @Test
    public void testMetaAnnotations()
    {
-      AnnotatedItem annotatedElement = new SimpleAnnotatedType(Order.class);
+      AnnotatedType<Order> annotatedElement = new SimpleAnnotatedType<Order>(Order.class);
       Set<Annotation> annotations = annotatedElement.getAnnotations(DeploymentType.class);
       assert annotations.size() == 1;
       Iterator<Annotation> it = annotations.iterator();
@@ -41,10 +40,10 @@ public class ClassAnnotatedItemTest
    @Test
    public void testEmpty()
    {
-      AnnotatedItem annotatedElement = new SimpleAnnotatedType(Order.class);
+      AnnotatedType<Order> annotatedElement = new SimpleAnnotatedType<Order>(Order.class);
       assert annotatedElement.getAnnotation(Stereotype.class) == null;
       assert annotatedElement.getAnnotations(Stereotype.class).size() == 0;
-      AnnotatedItem classWithNoAnnotations = new SimpleAnnotatedType(Antelope.class);
+      AnnotatedType<Antelope> classWithNoAnnotations = new SimpleAnnotatedType<Antelope>(Antelope.class);
       assert classWithNoAnnotations.getAnnotations().size() == 0;
    }
    

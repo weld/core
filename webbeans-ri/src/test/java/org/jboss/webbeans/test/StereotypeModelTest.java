@@ -2,8 +2,6 @@ package org.jboss.webbeans.test;
 
 import java.util.Arrays;
 
-import javax.webbeans.Model;
-import javax.webbeans.Production;
 import javax.webbeans.RequestScoped;
 
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
@@ -40,18 +38,6 @@ public class StereotypeModelTest
    public void testHasStereotypeAnnotation()
    {
 	   assert false;
-   }
-   
-   @Test @SpecAssertion(section="2.7.5")
-   public void testModelStereotype()
-   {
-      StereotypeModel<Model> modelStereotype = new StereotypeModel<Model>(new SimpleAnnotatedType<Model>(Model.class));
-      assert Production.class.equals(modelStereotype.getDefaultDeploymentType().annotationType());
-      assert RequestScoped.class.equals(modelStereotype.getDefaultScopeType().annotationType());
-      assert modelStereotype.isComponentNameDefaulted();
-      assert modelStereotype.getInterceptorBindings().size() == 0;
-      assert modelStereotype.getRequiredTypes().size() == 0;
-      assert modelStereotype.getSupportedScopes().size() == 0;
    }
    
    @Test

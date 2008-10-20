@@ -3,7 +3,7 @@ package org.jboss.webbeans.ejb;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.webbeans.EnterpriseBeanLookup;
+import javax.webbeans.manager.EnterpriseBeanLookup;
 
 import org.jboss.webbeans.util.JNDI;
 

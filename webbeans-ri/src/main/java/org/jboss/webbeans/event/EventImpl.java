@@ -11,7 +11,7 @@ import javax.webbeans.Current;
 import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Event;
 import javax.webbeans.manager.Manager;
-import javax.webbeans.manager.Observer;
+import javax.webbeans.Observer;
 
 /**
  * Implementation of the {@link Event} interface used for the container provided
@@ -55,7 +55,7 @@ public class EventImpl<T> implements Event<T>
             .fireEvent(event, eventBindings.toArray(new Annotation[0]));
    }
 
-   public void observes(Observer<T> observe, Annotation... bindings)
+   public void observe(Observer<T> observe, Annotation... bindings)
    {
       // TODO Auto-generated method stub
 

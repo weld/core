@@ -26,13 +26,13 @@ public static final String LOGGER_NAME = "componentMetaModel";
    }
 
    @Override
-   public T create(Manager container)
+   public T create()
    {
-      return componentMetaModel.getConstructor().invoke(container);
+      return componentMetaModel.getConstructor().invoke(getManager());
    }
 
    @Override
-   public void destroy(Manager container, T instance)
+   public void destroy(T instance)
    {
       // TODO Auto-generated method stub
       
@@ -45,9 +45,9 @@ public static final String LOGGER_NAME = "componentMetaModel";
    }
 
    @Override
-   public Annotation getDeploymentType()
+   public Class<Annotation> getDeploymentType()
    {
-      return componentMetaModel.getDeploymentType();
+      return null; // componentMetaModel.getDeploymentType();
    }
 
    @Override
@@ -57,13 +57,13 @@ public static final String LOGGER_NAME = "componentMetaModel";
    }
 
    @Override
-   public Annotation getScopeType()
+   public Class<Annotation> getScopeType()
    {
-      return componentMetaModel.getScopeType();
+      return null; //componentMetaModel.getScopeType();
    }
 
    @Override
-   public Set<Class> getTypes()
+   public Set<Class<?>> getTypes()
    {
       // TODO Auto-generated method stub
       return null;

@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.webbeans.manager.Observer;
+import javax.webbeans.Observer;
 import javax.webbeans.Observes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bindings.StandardAnnotationLiteral;
 import org.jboss.webbeans.event.DeferredEventNotification;
-import org.jboss.webbeans.event.ObserverMethod;
+import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.SimpleComponentModel;
@@ -63,7 +63,7 @@ public class DeferredEventNotificationTest
       // is used to keep track of the event being fired.
       ManagerImpl manager;
       SimpleComponentModel<Tuna> tuna;
-      ObserverMethod om;
+      InjectableMethod<Object> om;
       List<Annotation> enabledDeploymentTypes = new ArrayList<Annotation>();
       enabledDeploymentTypes.add(new StandardAnnotationLiteral());
       enabledDeploymentTypes.add(new AnotherDeploymentTypeAnnotationLiteral());
@@ -74,13 +74,13 @@ public class DeferredEventNotificationTest
       annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
       AnnotatedType<Tuna> annotatedItem = new SimpleAnnotatedType<Tuna>(Tuna.class, annotations);
       tuna = new SimpleComponentModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), annotatedItem, manager);
-      om = new ObserverMethod(AnObserver.class.getMethod("observe", new Class[] { Event.class }));
+      om = new InjectableMethod<Object>(AnObserver.class.getMethod("observe", new Class[] { Event.class }));
 
       AnObserver observerInstance = new AnObserver();
       Observer<Event> observer = new MockObserverImpl<Event>(tuna, om, Event.class);
       ((MockObserverImpl<Event>) observer).setInstance(observerInstance);
       Event event = new Event();
-      DeferredEventNotification deferredNotification = new DeferredEventNotification(manager, event, observer);
+      DeferredEventNotification deferredNotification = new DeferredEventNotification(event, observer);
       deferredNotification.beforeCompletion();
       assert observerInstance.notified;
    }

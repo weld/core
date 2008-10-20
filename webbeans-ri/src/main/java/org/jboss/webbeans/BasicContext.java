@@ -26,7 +26,7 @@ public class BasicContext implements Context
    }
    
    @SuppressWarnings("unchecked")
-   public <T> T get(Manager container, Bean<T> component, boolean create) 
+   public <T> T get(Bean<T> component, boolean create) 
    {
       T instance = (T) values.get(component);
       if (instance != null)
@@ -41,7 +41,7 @@ public class BasicContext implements Context
       
       // TODO should component creation be synchronized?
       
-      instance = component.create(container);
+      instance = component.create();
       
       values.put(component, instance);
       return instance;
@@ -60,7 +60,7 @@ public class BasicContext implements Context
       if (instance != null)
       {
          values.remove(component);
-         component.destroy(container, instance);
+         component.destroy(instance);
       }
       else
       {
@@ -77,10 +77,15 @@ public class BasicContext implements Context
       
       for (Bean c : values.keySet())
       {
-         c.destroy(container, values.get(c));
+         c.destroy(values.get(c));
       }
       
       values.clear();
+   }
+   
+   public boolean isActive() {
+   	// TODO Auto-generated method stub
+   	return false;
    }
 
 }

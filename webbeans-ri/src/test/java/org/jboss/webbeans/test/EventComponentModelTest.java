@@ -39,9 +39,9 @@ public class EventComponentModelTest
       enabledDeploymentTypes.add(new AnotherDeploymentTypeAnnotationLiteral());
       manager = new MockContainerImpl(enabledDeploymentTypes);
       eventComponentModel = new EventComponentModel<Event<? extends Object>>(
-            new SimpleAnnotatedItem<Object>(
+            new SimpleAnnotatedItem<Event<? extends Object>,  Object>(
                   new HashMap<Class<? extends Annotation>, Annotation>()),
-            new SimpleAnnotatedItem<Object>(
+            new SimpleAnnotatedItem<Event<? extends Object>, Object>(
                   new HashMap<Class<? extends Annotation>, Annotation>()),
             manager);
 

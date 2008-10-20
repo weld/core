@@ -3,7 +3,7 @@ package org.jboss.webbeans.event;
 import java.lang.annotation.Annotation;
 
 import javax.webbeans.manager.Manager;
-import javax.webbeans.manager.Observer;
+import javax.webbeans.Observer;
 
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
@@ -67,10 +67,10 @@ public class ObserverImpl<T> implements Observer<T>
     * java.lang.Object)
     */
    @SuppressWarnings("unchecked")
-   public void notify(Manager manager, final T event)
+   public void notify(final T event)
    {
       // Get the most specialized instance of the component
-      Object instance = getInstance(manager);
+      Object instance = null /*getInstance(manager)*/;
       if (instance != null)
       {
          // Let the super class get the parameter values, but substitute the event
@@ -91,7 +91,7 @@ public class ObserverImpl<T> implements Observer<T>
                observerMethod.getParameters().set(i, newParameter);
             }
          }
-         this.observerMethod.invoke(manager, instance);
+         // this.observerMethod.invoke(manager, instance);
       }
          
    }

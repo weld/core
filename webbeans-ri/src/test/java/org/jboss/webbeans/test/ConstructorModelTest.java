@@ -29,12 +29,12 @@ public class ConstructorModelTest
 
    private ManagerImpl container;
    
-   private AnnotatedType emptyAnnotatedItem;
+   private AnnotatedType<Object> emptyAnnotatedItem;
    
    @BeforeMethod
    public void before()
    {
-      emptyAnnotatedItem = new SimpleAnnotatedType(null, new HashMap<Class<? extends Annotation>, Annotation>());
+      emptyAnnotatedItem = new SimpleAnnotatedType<Object>(null, new HashMap<Class<? extends Annotation>, Annotation>());
       container = new MockContainerImpl(null);
       
    }
@@ -43,18 +43,18 @@ public class ConstructorModelTest
    public void testImplicitConstructor()
    {
       SimpleConstructor<Order> constructor = new SimpleComponentModel<Order>(new SimpleAnnotatedType<Order>(Order.class), emptyAnnotatedItem, container).getConstructor();
-      assert constructor.getConstructor().getDeclaringClass().equals(Order.class);
-      assert constructor.getConstructor().getParameterTypes().length == 0;
+      assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Order.class);
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes().length == 0;
       assert constructor.getParameters().size() == 0;
    }
    
    @Test
    public void testSingleConstructor()
    {
-      SimpleConstructor<Donkey> constructor = new SimpleComponentModel<Donkey>(new SimpleAnnotatedType(Donkey.class), emptyAnnotatedItem, container).getConstructor();
-      assert constructor.getConstructor().getDeclaringClass().equals(Donkey.class);
-      assert constructor.getConstructor().getParameterTypes().length == 1;
-      assert constructor.getConstructor().getParameterTypes()[0].equals(String.class);
+      SimpleConstructor<Donkey> constructor = new SimpleComponentModel<Donkey>(new SimpleAnnotatedType<Donkey>(Donkey.class), emptyAnnotatedItem, container).getConstructor();
+      assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Donkey.class);
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes().length == 1;
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes()[0].equals(String.class);
       assert constructor.getParameters().size() == 1;
       assert constructor.getParameters().get(0).getType().equals(String.class);
       assert constructor.getParameters().get(0).getBindingTypes().length == 1;
@@ -64,11 +64,11 @@ public class ConstructorModelTest
    @Test
    public void testInitializerAnnotatedConstructor()
    {
-      SimpleConstructor<Sheep> constructor = new SimpleComponentModel<Sheep>(new SimpleAnnotatedType(Sheep.class), emptyAnnotatedItem, container).getConstructor();
-      assert constructor.getConstructor().getDeclaringClass().equals(Sheep.class);
-      assert constructor.getConstructor().getParameterTypes().length == 2;
-      assert constructor.getConstructor().getParameterTypes()[0].equals(String.class);
-      assert constructor.getConstructor().getParameterTypes()[1].equals(Double.class);
+      SimpleConstructor<Sheep> constructor = new SimpleComponentModel<Sheep>(new SimpleAnnotatedType<Sheep>(Sheep.class), emptyAnnotatedItem, container).getConstructor();
+      assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Sheep.class);
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes().length == 2;
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes()[0].equals(String.class);
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes()[1].equals(Double.class);
       assert constructor.getParameters().size() == 2;
       assert constructor.getParameters().get(0).getType().equals(String.class);
       assert constructor.getParameters().get(1).getType().equals(Double.class);
@@ -81,11 +81,11 @@ public class ConstructorModelTest
    @Test
    public void testBindingTypeAnnotatedConstructor()
    {
-      SimpleConstructor<Duck> constructor = new SimpleComponentModel<Duck>(new SimpleAnnotatedType(Duck.class), emptyAnnotatedItem, container).getConstructor();
-      assert constructor.getConstructor().getDeclaringClass().equals(Duck.class);
-      assert constructor.getConstructor().getParameterTypes().length == 2;
-      assert constructor.getConstructor().getParameterTypes()[0].equals(String.class);
-      assert constructor.getConstructor().getParameterTypes()[1].equals(Integer.class);
+      SimpleConstructor<Duck> constructor = new SimpleComponentModel<Duck>(new SimpleAnnotatedType<Duck>(Duck.class), emptyAnnotatedItem, container).getConstructor();
+      assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Duck.class);
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes().length == 2;
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes()[0].equals(String.class);
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes()[1].equals(Integer.class);
       assert constructor.getParameters().size() == 2;
       assert constructor.getParameters().get(0).getType().equals(String.class);
       assert constructor.getParameters().get(1).getType().equals(Integer.class);
@@ -101,7 +101,7 @@ public class ConstructorModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Chicken>(new SimpleAnnotatedType(Chicken.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Chicken>(new SimpleAnnotatedType<Chicken>(Chicken.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -117,7 +117,7 @@ public class ConstructorModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Turkey>(new SimpleAnnotatedType(Turkey.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Turkey>(new SimpleAnnotatedType<Turkey>(Turkey.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -133,7 +133,7 @@ public class ConstructorModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Goat>(new SimpleAnnotatedType(Goat.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Goat>(new SimpleAnnotatedType<Goat>(Goat.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {
@@ -149,7 +149,7 @@ public class ConstructorModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Goose>(new SimpleAnnotatedType(Goose.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Goose>(new SimpleAnnotatedType<Goose>(Goose.class), emptyAnnotatedItem, container);
       }
       catch (Exception e) 
       {

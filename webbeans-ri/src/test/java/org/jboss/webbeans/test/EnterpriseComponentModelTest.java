@@ -31,14 +31,14 @@ import org.testng.annotations.Test;
 public class EnterpriseComponentModelTest
 {
    
-private ManagerImpl container;
+   private ManagerImpl container;
    
    private AnnotatedType emptyAnnotatedItem;
    
    @BeforeMethod
    public void before()
    {
-      emptyAnnotatedItem = new SimpleAnnotatedType(null, new HashMap<Class<? extends Annotation>, Annotation>());
+      emptyAnnotatedItem = new SimpleAnnotatedType<Object>(null, new HashMap<Class<? extends Annotation>, Annotation>());
       container = new MockContainerImpl(null);
    }
    
@@ -52,7 +52,7 @@ private ManagerImpl container;
    @Test
    public void testStateless()
    {
-      EnterpriseComponentModel<Lion> lion = new EnterpriseComponentModel<Lion>(new SimpleAnnotatedType(Lion.class), emptyAnnotatedItem, container);
+      EnterpriseComponentModel<Lion> lion = new EnterpriseComponentModel<Lion>(new SimpleAnnotatedType<Lion>(Lion.class), emptyAnnotatedItem, container);
       assert lion.getScopeType().annotationType().equals(Dependent.class);
       Reflections.annotationSetMatches(lion.getBindingTypes(), Current.class);
       assert lion.getName().equals("lion");
@@ -108,7 +108,7 @@ private ManagerImpl container;
 
       AbstractEnterpriseComponentModel<Tiger> tiger = new EnterpriseComponentModel<Tiger>(new SimpleAnnotatedType(Tiger.class), emptyAnnotatedItem, container);
       Reflections.annotationSetMatches(tiger.getBindingTypes(), Synchronous.class);
-      assert tiger.getRemoveMethod().getMethod().getName().equals("remove");
+      assert tiger.getRemoveMethod().getAnnotatedItem().getDelegate().getName().equals("remove");
       assert tiger.getName() == null;
    }
    
@@ -118,7 +118,7 @@ private ManagerImpl container;
    {
 
       AbstractEnterpriseComponentModel<Elephant> elephant = new EnterpriseComponentModel<Elephant>(new SimpleAnnotatedType(Elephant.class), emptyAnnotatedItem, container);
-      assert elephant.getRemoveMethod().getMethod().getName().equals("remove2");
+      assert elephant.getRemoveMethod().getAnnotatedItem().getDelegate().getName().equals("remove2");
    }
    
    @SuppressWarnings("unchecked")
@@ -175,7 +175,7 @@ private ManagerImpl container;
 
       AbstractEnterpriseComponentModel<Panther> panther = new EnterpriseComponentModel<Panther>(new SimpleAnnotatedType(Panther.class), emptyAnnotatedItem, container);
       
-      assert panther.getRemoveMethod().getMethod().getName().equals("remove");
+      assert panther.getRemoveMethod().getAnnotatedItem().getDelegate().getName().equals("remove");
       assert panther.getRemoveMethod().getParameters().size() == 1;
       assert panther.getRemoveMethod().getParameters().get(0).getType().equals(String.class);
       assert panther.getRemoveMethod().getParameters().get(0).getBindingTypes().length == 1;
