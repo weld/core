@@ -69,7 +69,7 @@ public class SimpleComponentModel<T> extends AbstractClassComponentModel<T>
    {
       if (getType().getConstructors().length == 1)
       {
-         Constructor<T> constructor = getType().getConstructors()[0];
+         Constructor<T> constructor = (Constructor<T>) getType().getConstructors()[0];
          log.finest("Exactly one constructor (" + constructor +") defined, using it as the component constructor for " + getType());
          this.constructor = new SimpleConstructor<T>(constructor);
          return;

@@ -84,23 +84,25 @@ public class Reflections
       return methods;
    }
    
+   @SuppressWarnings("unchecked")
    public static <T> List<Constructor<T>> getConstructors(Class<? extends T> clazz, Class<? extends Annotation> annotationType) 
    {
       List<Constructor<T>> constructors = new ArrayList<Constructor<T>>();
-      for (Constructor<T> constructor : clazz.getConstructors())
+      for (Constructor<?> constructor : clazz.getConstructors())
       {
          if (constructor.isAnnotationPresent(annotationType))
          {
-            constructors.add(constructor);
+            constructors.add((Constructor<T>) constructor);
          }
       }
       return constructors;
    }
    
+   @SuppressWarnings("unchecked")
    public static <T> List<Constructor<T>> getConstructorsForAnnotatedParameter(Class<? extends T> clazz, Class<? extends Annotation> parameterAnnotationType) 
    {
       List<Constructor<T>> constructors = new ArrayList<Constructor<T>>();
-      for (Constructor<T> constructor : clazz.getConstructors())
+      for (Constructor<?> constructor : clazz.getConstructors())
       {
          for (Annotation[] annotations : constructor.getParameterAnnotations())
          {
@@ -108,7 +110,7 @@ public class Reflections
             {
                if (annotation.annotationType().equals(parameterAnnotationType))
                {
-                  constructors.add(constructor);
+                  constructors.add((Constructor<T>) constructor);
                }
             }
          }
@@ -116,10 +118,11 @@ public class Reflections
       return constructors;
    }
    
+   @SuppressWarnings("unchecked")
    public static <T> List<Constructor<T>> getConstructorsForMetaAnnotatedParameter(Class<? extends T> clazz, Class<? extends Annotation> metaAnnotationType) 
    {
       List<Constructor<T>> constructors = new ArrayList<Constructor<T>>();
-      for (Constructor<T> constructor : clazz.getConstructors())
+      for (Constructor<?> constructor : clazz.getConstructors())
       {
          for (Annotation[] annotations : constructor.getParameterAnnotations())
          {
@@ -127,7 +130,7 @@ public class Reflections
             {
                if (annotation.annotationType().isAnnotationPresent(metaAnnotationType))
                {
-                  constructors.add(constructor);
+                  constructors.add((Constructor<T>) constructor);
                }
             }
          }

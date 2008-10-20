@@ -10,11 +10,9 @@ import javassist.bytecode.ClassFile;
 
 import javax.webbeans.DeploymentType;
 import javax.webbeans.Stereotype;
-import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.BeanImpl;
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.SimpleComponentModel;
 import org.jboss.webbeans.model.StereotypeModel;
