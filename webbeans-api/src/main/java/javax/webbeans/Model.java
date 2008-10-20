@@ -7,15 +7,17 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-@Named
-@RequestScoped
-@Stereotype
-@Target( { TYPE, METHOD })
-@Retention(RUNTIME)
 /**
  * A stereotype for MVC model objects
  * 
  * @author Gavin King
  */
-public @interface Model {
+
+@Named
+@RequestScoped
+@Stereotype
+@Target( { TYPE, METHOD })
+@Retention(RUNTIME)
+public @interface Model
+{
 }
