@@ -25,7 +25,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that an implementation class directly specializes its superclass.
+ * Specifies that an implementation class directly specializes its superclass,
+ * of that a producer method directly specializes the method it overrides.
  * 
  * @author Gavin King
  * @author Pete Muir
@@ -36,5 +37,4 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Specializes
 {
-
 }

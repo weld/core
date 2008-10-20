@@ -25,7 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that a field of a decorator class is the delegate.
+ * Specifies that a field of a decorator class is the delegate attribute.
  * 
  * @author Gavin King
  * @author Pete Muir
@@ -36,5 +36,4 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Decorates
 {
-
 }

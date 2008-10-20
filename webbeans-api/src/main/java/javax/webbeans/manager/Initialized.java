@@ -15,22 +15,24 @@
  * limitations under the License.
  */
 
-package javax.webbeans;
+package javax.webbeans.manager;
 
+import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import javax.webbeans.BindingType;
+
 /**
- * Specifies that an observer method is a transactional observer.
- * 
- * @author Gavin King
- * 
+ * Event binding type for the event that is raised by the Web Bean manager when
+ * it has completed initialization and discovery.
  */
+@BindingType
 @Retention(RUNTIME)
-@Target(PARAMETER)
-public @interface AfterTransactionSuccess
+@Target( { FIELD, PARAMETER })
+public @interface Initialized
 {
 }

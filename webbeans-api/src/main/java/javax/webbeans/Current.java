@@ -28,6 +28,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * The default binding type.
  * 
  * @author Pete Muir
  */
@@ -38,5 +39,4 @@ import java.lang.annotation.Target;
 @BindingType
 public @interface Current
 {
-
 }

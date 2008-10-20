@@ -19,11 +19,15 @@ package javax.webbeans;
 
 import java.lang.annotation.Annotation;
 
-import javax.webbeans.manager.Observer;
-
 /**
+ * An interface for firing events of a particular type, and registering
+ * observers for events of that type.
  * 
+ * @author Gavin King
  * @author Pete Muir
+ * 
+ * @param <T>
+*            the type of the event object
  */
 
 public interface Event<T>
@@ -31,6 +35,6 @@ public interface Event<T>
 
    public void fire(T event, Annotation... bindings);
    
-   public void observes(Observer<T> observe, Annotation... bindings);
+   public void observe(Observer<T> observer, Annotation... bindings);
    
 }

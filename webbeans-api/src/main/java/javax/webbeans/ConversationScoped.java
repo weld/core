@@ -26,15 +26,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Specifies that a Web Bean is conversation scoped.
  * 
+ * @author Gavin King
  * @author Pete Muir
  */
 
 @Target( { TYPE, METHOD })
 @Retention(RUNTIME)
 @Documented
-@ScopeType
+@ScopeType(passivating = true)
 public @interface ConversationScoped
 {
-
 }

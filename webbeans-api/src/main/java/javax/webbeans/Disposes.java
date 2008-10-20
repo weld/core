@@ -25,9 +25,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that a parameter of a method of a Web Bean 
- * component implementation class is the parameter of
- * a disposal method.
+ * Specifies that a parameter of a method of a Web Bean implementation class
+ * class is the disposed parameter of a disposal method.
  * 
  * @author Gavin King
  * @author Pete Muir

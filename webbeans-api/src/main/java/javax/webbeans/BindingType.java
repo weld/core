@@ -26,8 +26,7 @@ import java.lang.annotation.Target;
 
 /**
  * 
- * Specifies that an annotation type is a Web Beans
- * binding type.
+ * Specifies that an annotation type is a Web Beans binding type.
  * 
  * @author Pete Muir
  * @author Gavin King
@@ -38,5 +37,4 @@ import java.lang.annotation.Target;
 @Documented
 public @interface BindingType
 {
-
 }

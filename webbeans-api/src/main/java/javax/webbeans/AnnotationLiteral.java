@@ -18,8 +18,13 @@
 package javax.webbeans;
 
 /**
+ * Supports inline instantiation of annotation types.
+ * 
  * @author Pete Muir
- * @author Gavin King 
+ * @author Gavin King
+ * 
+ *  @param <T>
+ *            the annotation type
  */
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;

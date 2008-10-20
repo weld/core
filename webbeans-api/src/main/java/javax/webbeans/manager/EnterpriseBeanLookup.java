@@ -15,22 +15,9 @@
  * limitations under the License.
  */
 
-package javax.webbeans;
+package javax.webbeans.manager;
 
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-/**
- * Specifies that an observer method is a transactional observer.
- * 
- * @author Gavin King
- * 
- */
-@Retention(RUNTIME)
-@Target(PARAMETER)
-public @interface AfterTransactionSuccess
+public interface EnterpriseBeanLookup
 {
+   public Object lookup(String ejbName);
 }

@@ -26,7 +26,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Component type for standard components.
+ * Deployment type for standard components defined by the Web Beans
+ * specification.
  * 
  * @author Gavin King
  * @author Pete Muir
@@ -38,5 +39,4 @@ import java.lang.annotation.Target;
 @DeploymentType
 public @interface Standard
 {
-
 }

@@ -15,22 +15,23 @@
  * limitations under the License.
  */
 
-package javax.webbeans;
+package javax.webbeans.manager;
 
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.Annotation;
+import java.util.Set;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-/**
- * Specifies that an observer method is a transactional observer.
- * 
- * @author Gavin King
- * 
- */
-@Retention(RUNTIME)
-@Target(PARAMETER)
-public @interface AfterTransactionSuccess
+public abstract class Decorator extends Bean<Object>
 {
+
+   protected Decorator(Manager manager)
+   {
+      super(manager);
+   }
+
+   public abstract Class<?> getDelegateType();
+
+   public abstract Set<Annotation> getDelegateBindingTypes();
+
+   public abstract void setDelegate(Object instance, Object delegate);
+
 }

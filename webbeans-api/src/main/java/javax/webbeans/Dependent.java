@@ -26,15 +26,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Specifies that a Web Bean is dependent scoped.
  * 
+ * @author Gavin King
  * @author Pete Muir
  */
 
 @Target( { METHOD, TYPE })
 @Retention(RUNTIME)
 @Documented
-@ScopeType
+@ScopeType(normal = false)
 public @interface Dependent
 {
-
 }

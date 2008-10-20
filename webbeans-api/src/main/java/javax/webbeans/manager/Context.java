@@ -21,7 +21,10 @@ import java.lang.annotation.Annotation;
 
 
 /**
+ * The contract between the Web Bean manager and a Web Beans context object.
+ * This interface should not be called directly by the application.
  * 
+ * @author Gavin King
  * @author Pete Muir
  */
 
@@ -30,7 +33,8 @@ public interface Context
 
    public Class<? extends Annotation> getScopeType();
    
-   public <T> T get(Manager container, Bean<T> component, boolean create);
+   public <T> T get(Bean<T> component, boolean create);
    
-   public <T> void remove(Manager container, Bean<T> component);
+   boolean isActive();
+   
 }

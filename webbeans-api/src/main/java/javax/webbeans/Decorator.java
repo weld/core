@@ -25,7 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that a class is a decorator.
+ * Specifies that a class is a Web Beans decorator.
  * 
  * @author Gavin King
  * @author Pete Muir
@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
 @Target(TYPE)
 @Retention(RUNTIME)
 @Documented
+@Stereotype
 public @interface Decorator
 {
-
 }

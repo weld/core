@@ -26,7 +26,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Specifies that a Web Bean is request scoped.
  * 
+ * @author Gavin King
  * @author Pete Muir
  */
 
@@ -36,5 +38,4 @@ import java.lang.annotation.Target;
 @ScopeType
 public @interface RequestScoped
 {
-
 }

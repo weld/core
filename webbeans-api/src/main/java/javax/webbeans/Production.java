@@ -26,7 +26,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Component type for application components.
+ * The default deployment type.
  * 
  * @author Gavin King
  * @author Pete Muir
@@ -38,5 +38,4 @@ import java.lang.annotation.Target;
 @DeploymentType
 public @interface Production
 {
-
 }
