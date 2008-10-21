@@ -28,6 +28,7 @@ import org.testng.annotations.Test;
  * @author David Allen
  * 
  */
+@SpecVersion("20081012")
 public class EventTest
 {
    private MockContainerImpl manager = null;
@@ -42,19 +43,19 @@ public class EventTest
    }
 
    /**
-    * Tests the {@link Event#fire(Object, Annotation...)} method with a sample
-    * event component.
+    * Tests the {@link Event#fire(Object, Annotation...)} method with a locally
+    * instantiated implementation.
     */
    @SuppressWarnings("unchecked")
-   @Test(groups = "eventbus")
+   @Test(groups = "eventbus") @SpecAssertion(section="7.4")
    public void testFireEvent()
    {
       DangerCall anEvent = new DangerCall();
       // Create a test annotation for the event and use it to construct the
       // event object
       Annotation[] annotations = new Annotation[] { new AnimalStereotypeAnnotationLiteral() };
-      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>(
-            annotations);
+      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>();
+      eventComponent.setEventBindings(annotations);
       eventComponent.setManager(manager);
       eventComponent.fire(anEvent, new TameAnnotationLiteral(),
             new SynchronousAnnotationLiteral());

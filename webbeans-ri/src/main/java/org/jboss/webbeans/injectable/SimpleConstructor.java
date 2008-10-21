@@ -19,7 +19,6 @@ public class SimpleConstructor<T> extends Unit<T, Constructor<T>> implements Com
 
    private AnnotatedConstructor<T> constructor;
    
-   @SuppressWarnings("unchecked")
    public SimpleConstructor(Constructor<T> constructor)
    {
       super(constructor.getParameterTypes(), constructor.getParameterAnnotations());

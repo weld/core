@@ -32,6 +32,7 @@ import org.testng.annotations.Test;
  * @author David Allen
  * 
  */
+@SpecVersion("20081012")
 public class ObserverTest
 {
    private ManagerImpl manager;
@@ -75,7 +76,7 @@ public class ObserverTest
     * {@link org.jboss.webbeans.event.ObserverImpl#getEventBindingTypes()}.
     */
    @SuppressWarnings("unchecked")
-   @Test(groups = "eventbus")
+   @Test(groups = "eventbus") @SpecAssertion(section="7.3")
    public final void testGetEventBindingTypes() throws Exception
    {
       Observer<Event> o = new ObserverImpl<Event>(tuna, om, Event.class);
@@ -91,7 +92,7 @@ public class ObserverTest
     * @throws
     * @throws Exception
     */
-   @Test(groups = "eventbus")
+   @Test(groups = "eventbus") @SpecAssertion(section="7.3")
    public final void testGetEventType() throws Exception
    {
       Observer<Event> o = new ObserverImpl<Event>(tuna, om, Event.class);
@@ -103,7 +104,7 @@ public class ObserverTest
     * {@link org.jboss.webbeans.event.ObserverImpl#notify(javax.webbeans.Container, java.lang.Object)}
     * .
     */
-   @Test(groups = "eventbus")
+   @Test(groups = "eventbus") @SpecAssertion(section={"7.2","7.3"})
    public final void testNotify() throws Exception
    {
       AnObserver observerInstance = new AnObserver();

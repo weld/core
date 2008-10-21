@@ -30,7 +30,7 @@ public abstract class Injectable<T, S>
 
    public Annotation[] getBindingTypes()
    {
-      return (Annotation[]) annotatedItem.getAnnotations().toArray();
+      return annotatedItem.getAnnotations().toArray(new Annotation[0]);
    }
    
    protected Injectable() {}

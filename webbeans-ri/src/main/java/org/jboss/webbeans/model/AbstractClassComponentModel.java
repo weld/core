@@ -87,13 +87,11 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
       {
          log.finest("Component type specified in XML");
          this.type = getXmlAnnotatedItem().getDelegate();
-         return;
       }
       else if (getAnnotatedItem().getDelegate() != null)
       {
          log.finest("Component type specified in Java");
          this.type = getAnnotatedItem().getDelegate();
-         return;
       }
       else
       {

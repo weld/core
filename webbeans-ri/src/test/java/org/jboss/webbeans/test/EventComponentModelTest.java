@@ -1,8 +1,8 @@
 package org.jboss.webbeans.test;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -11,10 +11,12 @@ import javax.webbeans.Event;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.bindings.StandardAnnotationLiteral;
+import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.injectable.ComponentConstructor;
-import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
+import org.jboss.webbeans.introspector.SimpleAnnotatedField;
 import org.jboss.webbeans.model.EventComponentModel;
 import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
+import org.jboss.webbeans.test.components.DangerCall;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -29,7 +31,8 @@ import org.testng.annotations.Test;
 public class EventComponentModelTest
 {
    private MockContainerImpl manager = null;
-   private EventComponentModel<Event<? extends Object>> eventComponentModel = null;
+   private EventComponentModel<EventImpl<DangerCall>> eventComponentModel = null;
+   EventImpl<DangerCall> eventModelField = null;
 
    @BeforeMethod
    public void before() throws Exception
@@ -38,11 +41,10 @@ public class EventComponentModelTest
       enabledDeploymentTypes.add(new StandardAnnotationLiteral());
       enabledDeploymentTypes.add(new AnotherDeploymentTypeAnnotationLiteral());
       manager = new MockContainerImpl(enabledDeploymentTypes);
-      eventComponentModel = new EventComponentModel<Event<? extends Object>>(
-            new SimpleAnnotatedItem<Event<? extends Object>,  Object>(
-                  new HashMap<Class<? extends Annotation>, Annotation>()),
-            new SimpleAnnotatedItem<Event<? extends Object>, Object>(
-                  new HashMap<Class<? extends Annotation>, Annotation>()),
+      Field eventModelField = this.getClass().getDeclaredField("eventModelField");
+      eventComponentModel = new EventComponentModel<EventImpl<DangerCall>>(
+            new SimpleAnnotatedField<EventImpl<DangerCall>>(eventModelField),
+            new SimpleAnnotatedField<EventImpl<DangerCall>>(eventModelField),
             manager);
 
    }
@@ -88,9 +90,9 @@ public class EventComponentModelTest
    @Test(groups = "eventbus")
    public void testConstructor()
    {
-      ComponentConstructor<Event<? extends Object>> constructor = eventComponentModel.getConstructor();
+      ComponentConstructor<EventImpl<DangerCall>> constructor = eventComponentModel.getConstructor();
       assert constructor != null;
-      Event<? extends Object> event = constructor.invoke(manager);
+      Event<DangerCall> event = constructor.invoke(manager);
       assert event != null;
    }
 }

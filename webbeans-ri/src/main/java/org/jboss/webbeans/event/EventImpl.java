@@ -29,11 +29,16 @@ public class EventImpl<T> implements Event<T>
    @Current
    protected Manager webBeansManager;
 
-   public EventImpl(Annotation... eventBindings)
+   /**
+    * Used to set the event bindings for this type of event after it is constructed
+    * with the default constructor.
+    * @param eventBindings Annotations that are bindings for the event
+    */
+   public void setEventBindings(Annotation... eventBindings)
    {
       this.eventBindings = Arrays.asList(eventBindings);
    }
-
+   
    /*
     * (non-Javadoc)
     * 

@@ -21,7 +21,7 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedItem<T, Cons
    @Override
    public String toString()
    {
-      return constructor + " " + getAnnotatedConstructor().toString();
+      return constructor.toGenericString();
    }
 
    public Constructor<T> getDelegate()
@@ -29,7 +29,6 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedItem<T, Cons
       return constructor;
    }
    
-   @SuppressWarnings("unchecked")
    public Class<? extends T> getType()
    {
       return constructor.getDeclaringClass();

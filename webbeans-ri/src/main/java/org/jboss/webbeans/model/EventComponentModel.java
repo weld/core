@@ -1,11 +1,17 @@
 package org.jboss.webbeans.model;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.logging.Logger;
+
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bindings.DependentAnnotationLiteral;
 import org.jboss.webbeans.bindings.StandardAnnotationLiteral;
 import org.jboss.webbeans.injectable.ComponentConstructor;
+import org.jboss.webbeans.injectable.SimpleConstructor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
+import org.jboss.webbeans.introspector.SimpleAnnotatedField;
+import org.jboss.webbeans.util.LoggerUtil;
 
 /**
  * Web Beans component meta model for the container instantiated, injectable, 
@@ -14,13 +20,16 @@ import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
  * @author David Allen
  *
  */
-public class EventComponentModel<T> extends AbstractComponentModel<T, Object>
+public class EventComponentModel<T> extends AbstractComponentModel<T, Field>
 {
+   private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
+   
    private String location;
-   private AnnotatedItem<T, Object> annotatedItem;
-   private AnnotatedItem<T, Object> xmlAnnotatedItem;
+   private SimpleAnnotatedField<T> annotatedItem;
+   private SimpleAnnotatedField<T> xmlAnnotatedItem;
+   private ComponentConstructor<T> constructor;
 
-   public EventComponentModel(SimpleAnnotatedItem<T, Object> annotatedItem, SimpleAnnotatedItem<T, Object> xmlAnnotatedItem, ManagerImpl manager)
+   public EventComponentModel(SimpleAnnotatedField<T> annotatedItem, SimpleAnnotatedField<T> xmlAnnotatedItem, ManagerImpl manager)
    {
       this.annotatedItem = annotatedItem;
       this.xmlAnnotatedItem = xmlAnnotatedItem;
@@ -28,10 +37,28 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Object>
    }
 
    @Override
+   protected void init(ManagerImpl container)
+   {
+      super.init(container);
+      this.initConstructor();
+   }
+
+   /**
+    * Initializes the constructor field of this class.
+    */
+   @SuppressWarnings("unchecked")
+   protected void initConstructor()
+   {
+      // There should only be one constructor for the event implementation used here
+      Constructor[] constructors = this.annotatedItem.getType().getConstructors();
+      Constructor<T> classConstructor = (Constructor<T>)constructors[0];
+      constructor = new SimpleConstructor<T>(classConstructor);
+   }
+
+   @Override
    public ComponentConstructor<T> getConstructor()
    {
-      // TODO No constructor is needed, but make sure this does not brake instantiation
-      return null;
+      return constructor;
    }
 
    @Override
@@ -53,15 +80,23 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Object>
    /* (non-Javadoc)
     * @see org.jboss.webbeans.model.AbstractClassComponentModel#initType()
     */
+   @SuppressWarnings("unchecked")
    @Override
    protected void initType()
    {
-      // TODO Get the class for Event and use it for the type
-      this.type = null;
+      if (getXmlAnnotatedItem().getDelegate() != null)
+      {
+         log.finest("Component type specified in XML");
+         this.type = (Class<T>) xmlAnnotatedItem.getType();
+      } else if (getAnnotatedItem().getDelegate() != null)
+      {
+         log.finest("Component type specified in Java");
+         this.type = (Class<T>) annotatedItem.getType();
+      }
    }
 
    @Override
-   protected AnnotatedItem<T, Object> getAnnotatedItem()
+   protected AnnotatedItem<T, Field> getAnnotatedItem()
    {
       return this.annotatedItem;
    }
@@ -74,7 +109,7 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Object>
    }
 
    @Override
-   protected AnnotatedItem<T, Object> getXmlAnnotatedItem()
+   protected AnnotatedItem<T, Field> getXmlAnnotatedItem()
    {
       return this.xmlAnnotatedItem;
    }
