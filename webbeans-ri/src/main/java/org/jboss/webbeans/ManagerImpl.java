@@ -125,10 +125,10 @@ public class ManagerImpl implements Manager
       return beans;
    }
 
-   public void addContext(Context context)
+   public Manager addContext(Context context)
    {
       // TODO Auto-generated method stub
-
+      return this;
    }
 
    public Manager addDecorator(Decorator decorator)
@@ -143,18 +143,18 @@ public class ManagerImpl implements Manager
       return null;
    }
 
-   public <T> void addObserver(Observer<T> observer, Class<T> eventType,
+   public <T> Manager addObserver(Observer<T> observer, Class<T> eventType,
          Annotation... bindings)
    {
       // TODO Auto-generated method stub
-
+      return this;
    }
 
-   public <T> void addObserver(Observer<T> observer, TypeLiteral<T> eventType,
+   public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType,
          Annotation... bindings)
    {
       // TODO Auto-generated method stub
-
+      return this;
    }
 
    public void fireEvent(Object event, Annotation... bindings)
@@ -163,7 +163,7 @@ public class ManagerImpl implements Manager
 
    }
 
-   public Context getContext(Class<Annotation> scopeType)
+   public Context getContext(Class<? extends Annotation> scopeType)
    {
       // TODO Auto-generated method stub
       return null;
@@ -200,18 +200,18 @@ public class ManagerImpl implements Manager
       return null;
    }
 
-   public <T> void removeObserver(Observer<T> observer, Class<T> eventType,
+   public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType,
          Annotation... bindings)
    {
       // TODO Auto-generated method stub
-
+      return this;
    }
 
-   public <T> void removeObserver(Observer<T> observer,
+   public <T> Manager removeObserver(Observer<T> observer,
          TypeLiteral<T> eventType, Annotation... bindings)
    {
       // TODO Auto-generated method stub
-
+      return this;
    }
 
    public Set<Bean<?>> resolveByName(String name)
