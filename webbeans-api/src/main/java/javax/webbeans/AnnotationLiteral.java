@@ -124,6 +124,6 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
    @Override
    public int hashCode()
    {
-      return annotationType().hashCode();
+      return 0;
    }
 }
