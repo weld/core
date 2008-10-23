@@ -24,185 +24,216 @@ import org.jboss.webbeans.ejb.EjbManager;
 import org.jboss.webbeans.event.EventBus;
 import org.jboss.webbeans.injectable.SimpleInjectable;
 
-public class ManagerImpl implements Manager {
+public class ManagerImpl implements Manager
+{
 
-	private List<Annotation> enabledDeploymentTypes;
-	private ModelManager modelManager;
-	private EjbManager ejbLookupManager;
-	private EventBus eventBus;
-	private ResolutionManager resolutionManager;
+   private List<Annotation> enabledDeploymentTypes;
+   private ModelManager modelManager;
+   private EjbManager ejbLookupManager;
+   private EventBus eventBus;
+   private ResolutionManager resolutionManager;
 
-	private boolean containerInitialized = false;
+   private ThreadLocal<Map<Class<Annotation>, Context>> contexts = new ThreadLocal<Map<Class<Annotation>, Context>>();
 
-	private ThreadLocal<Map<Class<Annotation>, Context>> contexts = new ThreadLocal<Map<Class<Annotation>, Context>>();
+   private Set<Bean<?>> beans;
 
-	private Set<Bean<?>> beans;
+   public ManagerImpl(List<Annotation> enabledDeploymentTypes)
+   {
+      initEnabledDeploymentTypes(enabledDeploymentTypes);
+      this.modelManager = new ModelManager();
+      this.ejbLookupManager = new EjbManager();
+      this.beans = new HashSet<Bean<?>>();
+      this.eventBus = new EventBus();
+      resolutionManager = new ResolutionManager(this);
+   }
 
-	public ManagerImpl(List<Annotation> enabledDeploymentTypes) {
-		initEnabledDeploymentTypes(enabledDeploymentTypes);
-		this.modelManager = new ModelManager();
-		this.ejbLookupManager = new EjbManager();
-		this.beans = new HashSet<Bean<?>>();
-		this.eventBus = new EventBus();
-		resolutionManager = new ResolutionManager(this);
-	}
+   private void initEnabledDeploymentTypes(
+         List<Annotation> enabledDeploymentTypes)
+   {
+      this.enabledDeploymentTypes = new ArrayList<Annotation>();
+      if (enabledDeploymentTypes == null)
+      {
+         this.enabledDeploymentTypes.add(0, new StandardAnnotationLiteral());
+         this.enabledDeploymentTypes.add(1, new ProductionAnnotationLiteral());
+      } else
+      {
+         this.enabledDeploymentTypes.addAll(enabledDeploymentTypes);
+         if (!this.enabledDeploymentTypes.get(0).annotationType().equals(
+               Standard.class))
+         {
+            throw new RuntimeException(
+                  "@Standard must be the lowest precedence deployment type");
+         }
+      }
+   }
 
-	private void initEnabledDeploymentTypes(
-			List<Annotation> enabledDeploymentTypes) {
-		this.enabledDeploymentTypes = new ArrayList<Annotation>();
-		if (enabledDeploymentTypes == null) {
-			this.enabledDeploymentTypes.add(0, new StandardAnnotationLiteral());
-			this.enabledDeploymentTypes.add(1,
-					new ProductionAnnotationLiteral());
-		} else {
-			this.enabledDeploymentTypes.addAll(enabledDeploymentTypes);
-			if (!this.enabledDeploymentTypes.get(0).annotationType().equals(
-					Standard.class)) {
-				throw new RuntimeException(
-						"@Standard must be the lowest precedence deployment type");
-			}
-		}
-	}
+   public Manager addBean(Bean<?> bean)
+   {
+      beans.add(bean);
+      return this;
+   }
 
-	public Manager addBean(Bean<?> bean) {
-		beans.add(bean);
-		if (containerInitialized) {
-			// TODO Somehow deal with dynamically reigstered components
-		}
-		return this;
-	}
+   public <T> void removeObserver(Observer<T> observer)
+   {
 
-	public <T> void removeObserver(Observer<T> observer) {
+   }
 
-	}
+   public <T> Set<Method> resolveDisposalMethods(Class<T> apiType,
+         Annotation... bindingTypes)
+   {
+      return new HashSet<Method>();
+   }
 
-	public <T> Set<Method> resolveDisposalMethods(Class<T> apiType,
-			Annotation... bindingTypes) {
-		return new HashSet<Method>();
-	}
+   public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
+   {
+      return (Set<Observer<T>>) eventBus.getObservers(event, bindings);
+   }
 
-	public <T> Set<Observer<T>> resolveObservers(T event,
-			Annotation... bindings) {
-		return (Set<Observer<T>>) eventBus.getObservers(event, bindings);
-	}
+   public List<Annotation> getEnabledDeploymentTypes()
+   {
+      return enabledDeploymentTypes;
+   }
 
-	public List<Annotation> getEnabledDeploymentTypes() {
-		return enabledDeploymentTypes;
-	}
+   public ModelManager getModelManager()
+   {
+      return this.modelManager;
+   }
 
-	public ModelManager getModelManager() {
-		return this.modelManager;
-	}
+   public EjbManager getEjbManager()
+   {
+      return ejbLookupManager;
+   }
 
-	public EjbManager getEjbManager() {
-		return ejbLookupManager;
-	}
+   public <T> Set<Bean<T>> resolveByType(Class<T> apiType,
+         Annotation... bindingTypes)
+   {
+      return getResolutionManager().get(
+            new SimpleInjectable<T>(apiType, bindingTypes));
+   }
 
-	public <T> Set<Bean<T>> resolveByType(Class<T> apiType,
-			Annotation... bindingTypes) {
-		return getResolutionManager().get(
-				new SimpleInjectable<T>(apiType, bindingTypes));
-	}
+   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,
+         Annotation... bindingTypes)
+   {
+      return resolveByType(apiType.getRawType(), bindingTypes);
+   }
 
-	public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,
-			Annotation... bindingTypes) {
-		return resolveByType(apiType.getRawType(), bindingTypes);
-	}
+   public ResolutionManager getResolutionManager()
+   {
+      return resolutionManager;
+   }
 
-	public ResolutionManager getResolutionManager() {
-		return resolutionManager;
-	}
+   public Set<Bean<?>> getBeans()
+   {
+      return beans;
+   }
 
-	public Set<Bean<?>> getBeans() {
-		return beans;
-	}
+   public void addContext(Context context)
+   {
+      // TODO Auto-generated method stub
 
-	public void addContext(Context context) {
-		// TODO Auto-generated method stub
-		
-	}
+   }
 
-	public Manager addDecorator(Decorator decorator) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+   public Manager addDecorator(Decorator decorator)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
 
-	public Manager addInterceptor(Interceptor interceptor) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+   public Manager addInterceptor(Interceptor interceptor)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
 
-	public <T> void addObserver(Observer<T> observer, Class<T> eventType,
-			Annotation... bindings) {
-		// TODO Auto-generated method stub
-		
-	}
+   public <T> void addObserver(Observer<T> observer, Class<T> eventType,
+         Annotation... bindings)
+   {
+      // TODO Auto-generated method stub
 
-	public <T> void addObserver(Observer<T> observer, TypeLiteral<T> eventType,
-			Annotation... bindings) {
-		// TODO Auto-generated method stub
-		
-	}
+   }
 
-	public void fireEvent(Object event, Annotation... bindings) {
-		// TODO Auto-generated method stub
-		
-	}
+   public <T> void addObserver(Observer<T> observer, TypeLiteral<T> eventType,
+         Annotation... bindings)
+   {
+      // TODO Auto-generated method stub
 
-	public Context getContext(Class<Annotation> scopeType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+   }
 
-	public <T> T getInstance(Bean<T> bean) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+   public void fireEvent(Object event, Annotation... bindings)
+   {
+      // TODO Auto-generated method stub
 
-	public Object getInstanceByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+   }
 
-	public <T> T getInstanceByType(Class<T> type, Annotation... bindingTypes) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+   public Context getContext(Class<Annotation> scopeType)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
 
-	public <T> T getInstanceByType(TypeLiteral<T> type,
-			Annotation... bindingTypes) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+   public <T> T getInstance(Bean<T> bean)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
 
-	public <T> void removeObserver(Observer<T> observer, Class<T> eventType,
-			Annotation... bindings) {
-		// TODO Auto-generated method stub
-		
-	}
+   public Object getInstanceByName(String name)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
 
-	public <T> void removeObserver(Observer<T> observer,
-			TypeLiteral<T> eventType, Annotation... bindings) {
-		// TODO Auto-generated method stub
-		
-	}
+   public <T> T getInstanceByType(Class<T> type, Annotation... bindingTypes)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+   
+   public <T> T getInstanceByType(Class<T> type, Set<Annotation> bindingTypes)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
 
-	public Set<Bean<?>> resolveByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+   public <T> T getInstanceByType(TypeLiteral<T> type,
+         Annotation... bindingTypes)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
 
-	public List<Decorator> resolveDecorators(Set<Class<?>> types,
-			Annotation... bindingTypes) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+   public <T> void removeObserver(Observer<T> observer, Class<T> eventType,
+         Annotation... bindings)
+   {
+      // TODO Auto-generated method stub
 
-	public List<Interceptor> resolveInterceptors(InterceptionType type,
-			Annotation... interceptorBindings) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+   }
 
+   public <T> void removeObserver(Observer<T> observer,
+         TypeLiteral<T> eventType, Annotation... bindings)
+   {
+      // TODO Auto-generated method stub
+
+   }
+
+   public Set<Bean<?>> resolveByName(String name)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   public List<Decorator> resolveDecorators(Set<Class<?>> types,
+         Annotation... bindingTypes)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   public List<Interceptor> resolveInterceptors(InterceptionType type,
+         Annotation... interceptorBindings)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
 
 }

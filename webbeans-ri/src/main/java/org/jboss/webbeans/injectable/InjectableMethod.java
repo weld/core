@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import javax.webbeans.manager.Manager;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.SimpleAnnotatedMethod;
@@ -20,9 +21,9 @@ public class InjectableMethod<T> extends Unit<T, Method>
    }
 
    @SuppressWarnings("unchecked")
-   public T invoke(Manager container, Object instance)
+   public T invoke(ManagerImpl manager, Object instance)
    {
-      return invoke(container, instance, getParameterValues(container));
+      return invoke(manager, instance, getParameterValues(manager));
    }
    
    @SuppressWarnings("unchecked")

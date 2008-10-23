@@ -3,8 +3,7 @@ package org.jboss.webbeans.injectable;
 import java.lang.reflect.Constructor;
 import java.util.logging.Logger;
 
-import javax.webbeans.manager.Manager;
-
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.SimpleAnnotatedConstructor;
@@ -26,12 +25,12 @@ public class SimpleConstructor<T> extends Unit<T, Constructor<T>> implements Com
       log.finest("Initialized metadata for " + constructor + " with injectable parameters " + getParameters());
    }
 
-   public T invoke(Manager container)
+   public T invoke(ManagerImpl manager)
    {
       try
       {
          log.finest("Creating new instance of " + constructor.getType() + " with injected parameters " + getParameters());
-         return constructor.getAnnotatedConstructor().newInstance(getParameterValues(container));
+         return constructor.getAnnotatedConstructor().newInstance(getParameterValues(manager));
       }
       catch (Exception e) 
       {

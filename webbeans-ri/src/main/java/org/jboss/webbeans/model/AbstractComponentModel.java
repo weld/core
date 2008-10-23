@@ -55,6 +55,7 @@ public abstract class AbstractComponentModel<T, E>
    
    protected void initInjectionPoints()
    {
+      injectionPoints = new HashSet<Injectable<?,?>>();
       if (removeMethod != null)
       {
          for (InjectableParameter<?> injectable : removeMethod.getParameters())
@@ -219,21 +220,18 @@ public abstract class AbstractComponentModel<T, E>
          return;
       }
       
-      if (getXmlAnnotatedItem().getDelegate() == null)
-      {
       
-         Set<Annotation> deploymentTypes = getAnnotatedItem().getAnnotations(DeploymentType.class);
-         
-         if (deploymentTypes.size() > 1)
-         {
-            throw new RuntimeException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().getDelegate());
-         }
-         if (deploymentTypes.size() == 1)
-         {
-            this.deploymentType = deploymentTypes.iterator().next();
-            log.finest("Deployment type " + deploymentType + " specified by annotation");
-            return;
-         }
+      Set<Annotation> deploymentTypes = getAnnotatedItem().getAnnotations(DeploymentType.class);
+      
+      if (deploymentTypes.size() > 1)
+      {
+         throw new RuntimeException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().getDelegate());
+      }
+      if (deploymentTypes.size() == 1)
+      {
+         this.deploymentType = deploymentTypes.iterator().next();
+         log.finest("Deployment type " + deploymentType + " specified by annotation");
+         return;
       }
       
       if (getMergedStereotypes().getPossibleDeploymentTypes().size() > 0)

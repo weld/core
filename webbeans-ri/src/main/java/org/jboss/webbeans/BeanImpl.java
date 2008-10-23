@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.webbeans.manager.Bean;
-import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.model.AbstractComponentModel;
 import org.jboss.webbeans.util.LoggerUtil;
@@ -18,6 +17,8 @@ public static final String LOGGER_NAME = "componentMetaModel";
    private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
    
    private AbstractComponentModel<T, ?> componentMetaModel;
+   
+   private ManagerImpl manager;
 
    public BeanImpl(AbstractComponentModel<T, ?> componentMetaModel, ManagerImpl manager)
    {
@@ -28,7 +29,7 @@ public static final String LOGGER_NAME = "componentMetaModel";
    @Override
    public T create()
    {
-      return componentMetaModel.getConstructor().invoke(getManager());
+      return componentMetaModel.getConstructor().invoke(manager);
    }
 
    @Override

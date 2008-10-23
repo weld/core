@@ -13,9 +13,10 @@ public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
       this(annotationMap, null);
    }
    
-   public SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap, Class<? extends Object> type)
+   public SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap, Class<? extends T> type)
    {
       super(annotationMap);
+      this.type = type;
    }
    
    public SimpleAnnotatedItem(Annotation[] annotations)
@@ -23,7 +24,7 @@ public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
       this(annotations, null);
    }
    
-   public SimpleAnnotatedItem(Annotation[] annotations, Class<? extends Object> type)
+   public SimpleAnnotatedItem(Annotation[] annotations, Class<? extends T> type)
    {
       this(buildAnnotationMap(annotations), type);
    }

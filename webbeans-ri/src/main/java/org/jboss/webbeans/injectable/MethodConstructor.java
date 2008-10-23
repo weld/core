@@ -2,7 +2,7 @@ package org.jboss.webbeans.injectable;
 
 import java.lang.reflect.Method;
 
-import javax.webbeans.manager.Manager;
+import org.jboss.webbeans.ManagerImpl;
 
 public class MethodConstructor<T> extends InjectableMethod<T> implements
       ComponentConstructor<T>
@@ -13,7 +13,7 @@ public class MethodConstructor<T> extends InjectableMethod<T> implements
       super(method);
    }
 
-   public T invoke(Manager container)
+   public T invoke(ManagerImpl manager)
    {
       // TODO Auto-generated method stub
       return null;

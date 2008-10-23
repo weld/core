@@ -19,6 +19,7 @@ import org.jboss.webbeans.test.annotations.RiverFishStereotype;
 import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.HornedAnimalDeploymentTypeAnnotationLiteral;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
+import org.jboss.webbeans.test.util.EmptyAnnotatedType;
 import org.testng.annotations.BeforeMethod;
 
 public class AbstractModelTest
@@ -31,7 +32,7 @@ public class AbstractModelTest
    @BeforeMethod
    public void before()
    {
-      emptyAnnotatedItem = new SimpleAnnotatedType<Object>(null, new HashMap<Class<? extends Annotation>, Annotation>());
+      emptyAnnotatedItem = new EmptyAnnotatedType<Object>(new HashMap<Class<? extends Annotation>, Annotation>());
       
       List<Annotation> enabledDeploymentTypes = new ArrayList<Annotation>();
       enabledDeploymentTypes.add(new StandardAnnotationLiteral());

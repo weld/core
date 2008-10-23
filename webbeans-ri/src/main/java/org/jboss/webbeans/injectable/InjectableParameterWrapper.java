@@ -4,7 +4,8 @@ import java.lang.annotation.Annotation;
 import java.util.Set;
 
 import javax.webbeans.manager.Bean;
-import javax.webbeans.manager.Manager;
+
+import org.jboss.webbeans.ManagerImpl;
 
 public class InjectableParameterWrapper<T> extends InjectableParameter<T>
 {
@@ -17,7 +18,7 @@ public class InjectableParameterWrapper<T> extends InjectableParameter<T>
    }
    
    @Override
-   public Annotation[] getBindingTypes()
+   public Set<Annotation> getBindingTypes()
    {
       return delegate.getBindingTypes();
    }
@@ -35,7 +36,7 @@ public class InjectableParameterWrapper<T> extends InjectableParameter<T>
    }
 
    @Override
-   public T getValue(Manager manager)
+   public T getValue(ManagerImpl manager)
    {
       return delegate.getValue(manager);
    }

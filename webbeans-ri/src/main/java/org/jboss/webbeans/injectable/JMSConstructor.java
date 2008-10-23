@@ -1,7 +1,6 @@
 package org.jboss.webbeans.injectable;
 
-import javax.webbeans.manager.Manager;
-
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.util.JNDI;
 
 public class JMSConstructor<T> implements ComponentConstructor<T>
@@ -16,7 +15,7 @@ public class JMSConstructor<T> implements ComponentConstructor<T>
       this.jndiName = jndiName;
    }
    
-   public T invoke(Manager container)
+   public T invoke(ManagerImpl manager)
    {
       return JNDI.lookup(jndiName, type);
    }

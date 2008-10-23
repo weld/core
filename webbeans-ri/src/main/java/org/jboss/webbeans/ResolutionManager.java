@@ -12,6 +12,7 @@ public class ResolutionManager
 {
    
    private Map<Injectable<?, ?>, Set<?>> resolvedInjectionPoints;
+   private Set<Injectable<?, ?>> injectionPoints;
    private ManagerImpl manager;
    
    public ResolutionManager(ManagerImpl manager)
@@ -20,17 +21,23 @@ public class ResolutionManager
       this.manager = manager;
    }
    
-   public void registerInjectionPoint(Injectable<?, ?> injectable)
+   public void addInjectionPoint(Injectable<?, ?> injectable)
    {
-      resolvedInjectionPoints.put(injectable, injectable.getPossibleTargets(manager.getBeans()));
+      injectionPoints.add(injectable);
    }
    
-   public void registerInjectionPoints(Set<Injectable<?, ?>> injectables)
+   public void registerInjectionPoint(Injectable<?, ?> injectable)
    {
-      for (Injectable<?, ?> injectable : injectables)
+	  resolvedInjectionPoints.put(injectable, injectable.getPossibleTargets(manager.getBeans())); 
+   }
+   
+   public void registerInjectionPoints()
+   {
+      for (Injectable<?, ?> injectable : injectionPoints)
       {
          registerInjectionPoint(injectable);
       }
+      injectionPoints.clear();
    }
    
    @SuppressWarnings("unchecked")

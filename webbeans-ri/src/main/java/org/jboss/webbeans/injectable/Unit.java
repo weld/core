@@ -4,8 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.webbeans.manager.Manager;
-
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 
 public abstract class Unit<T, S>
@@ -43,12 +42,12 @@ public abstract class Unit<T, S>
       return injectedParameters;
    }
    
-   public Object[] getParameterValues(Manager container)
+   public Object[] getParameterValues(ManagerImpl manager)
    {
       Object[] parameterValues = new Object[parameters.size()];
       for (int i = 0; i < parameterValues.length; i++)
       {
-         parameterValues[i] = parameters.get(i).getValue(container);
+         parameterValues[i] = parameters.get(i).getValue(manager);
       }
       return parameterValues;
    }

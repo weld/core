@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.webbeans.manager.Bean;
-import javax.webbeans.manager.Manager;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 
 /**
@@ -28,9 +28,9 @@ public abstract class Injectable<T, S>
       this.annotatedItem = annotatedItem;
    }
 
-   public Annotation[] getBindingTypes()
+   public Set<Annotation> getBindingTypes()
    {
-      return annotatedItem.getAnnotations().toArray(new Annotation[0]);
+      return annotatedItem.getAnnotations();
    }
    
    protected Injectable() {}
@@ -41,7 +41,7 @@ public abstract class Injectable<T, S>
       return getType() + " with binding types " + getBindingTypes();
    }
 
-   public T getValue(Manager manager)
+   public T getValue(ManagerImpl manager)
    {
       return manager.getInstanceByType(getType(), getBindingTypes());
    }

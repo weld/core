@@ -5,6 +5,7 @@ import java.lang.annotation.Annotation;
 import javax.webbeans.manager.Manager;
 import javax.webbeans.Observer;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.injectable.InjectableParameterWrapper;
@@ -83,7 +84,7 @@ public class ObserverImpl<T> implements Observer<T>
                InjectableParameter<?> newParameter = new InjectableParameterWrapper(parameter)
                {
                   @Override
-                  public Object getValue(Manager manager)
+                  public Object getValue(ManagerImpl manager)
                   {
                      return event;
                   }

@@ -20,6 +20,7 @@ import org.jboss.webbeans.test.components.Order;
 import org.jboss.webbeans.test.components.Sheep;
 import org.jboss.webbeans.test.components.Turkey;
 import org.jboss.webbeans.test.mock.MockContainerImpl;
+import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -48,6 +49,7 @@ public class ConstructorModelTest
       assert constructor.getParameters().size() == 0;
    }
    
+   @SuppressWarnings("unchecked")
    @Test
    public void testSingleConstructor()
    {
@@ -57,10 +59,11 @@ public class ConstructorModelTest
       assert constructor.getAnnotatedItem().getDelegate().getParameterTypes()[0].equals(String.class);
       assert constructor.getParameters().size() == 1;
       assert constructor.getParameters().get(0).getType().equals(String.class);
-      assert constructor.getParameters().get(0).getBindingTypes().length == 1;
-      assert constructor.getParameters().get(0).getBindingTypes()[0].annotationType().equals(Current.class);
+      assert constructor.getParameters().get(0).getBindingTypes().size() == 1;
+      assert Reflections.annotationSetMatches(constructor.getParameters().get(0).getBindingTypes(), Current.class);
    }
    
+   @SuppressWarnings("unchecked")
    @Test
    public void testInitializerAnnotatedConstructor()
    {
@@ -72,12 +75,13 @@ public class ConstructorModelTest
       assert constructor.getParameters().size() == 2;
       assert constructor.getParameters().get(0).getType().equals(String.class);
       assert constructor.getParameters().get(1).getType().equals(Double.class);
-      assert constructor.getParameters().get(0).getBindingTypes().length == 1;
-      assert constructor.getParameters().get(0).getBindingTypes()[0].annotationType().equals(Current.class);
-      assert constructor.getParameters().get(1).getBindingTypes().length == 1;
-      assert constructor.getParameters().get(1).getBindingTypes()[0].annotationType().equals(Current.class);
+      assert constructor.getParameters().get(0).getBindingTypes().size() == 1;
+      assert Reflections.annotationSetMatches(constructor.getParameters().get(0).getBindingTypes(), Current.class);
+      assert constructor.getParameters().get(1).getBindingTypes().size() == 1;
+      assert Reflections.annotationSetMatches(constructor.getParameters().get(1).getBindingTypes(), Current.class);
    }
    
+   @SuppressWarnings("unchecked")
    @Test
    public void testBindingTypeAnnotatedConstructor()
    {
@@ -89,10 +93,10 @@ public class ConstructorModelTest
       assert constructor.getParameters().size() == 2;
       assert constructor.getParameters().get(0).getType().equals(String.class);
       assert constructor.getParameters().get(1).getType().equals(Integer.class);
-      assert constructor.getParameters().get(0).getBindingTypes().length == 1;
-      assert constructor.getParameters().get(0).getBindingTypes()[0].annotationType().equals(Current.class);
-      assert constructor.getParameters().get(1).getBindingTypes().length == 1;
-      assert constructor.getParameters().get(1).getBindingTypes()[0].annotationType().equals(Synchronous.class);
+      assert constructor.getParameters().get(0).getBindingTypes().size() == 1;
+      assert Reflections.annotationSetMatches(constructor.getParameters().get(0).getBindingTypes(), Current.class);
+      assert constructor.getParameters().get(1).getBindingTypes().size() == 1;
+      assert Reflections.annotationSetMatches(constructor.getParameters().get(1).getBindingTypes(), Synchronous.class);
    }
    
    @Test

@@ -76,7 +76,7 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
       }
       if (annotatedFields == null)
       {
-         initAnnoatedFields();
+         initAnnotatedFields();
       }
       populateMetaAnnotatedFieldMap(metaAnnotationType, annotatedFields, metaAnnotatedFields);
       return metaAnnotatedFields.get(metaAnnotationType);
@@ -84,22 +84,22 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
    
    protected static <T extends Annotation> Map<Class<? extends Annotation>, Set<AnnotatedField<?>>> populateMetaAnnotatedFieldMap(
          Class<T> metaAnnotationType, 
-         Map<Class<? extends Annotation>, Set<AnnotatedField<?>>> metaAnnotations, 
-         Map<Class<? extends Annotation>, Set<AnnotatedField<?>>> annotationMap)
+         Map<Class<? extends Annotation>, Set<AnnotatedField<?>>> annotatedFields, 
+         Map<Class<? extends Annotation>, Set<AnnotatedField<?>>> metaAnnotatedFields)
    {
-      if (!metaAnnotations.containsKey(metaAnnotationType))
+      if (!metaAnnotatedFields.containsKey(metaAnnotationType))
       {
          Set<AnnotatedField<?>> s = new HashSet<AnnotatedField<?>>();
-         for (Class<? extends Annotation> annotationType: annotationMap.keySet())
+         for (Class<? extends Annotation> annotationType: annotatedFields.keySet())
          {
             if (annotationType.isAnnotationPresent(metaAnnotationType))
             {
-               s.addAll(annotationMap.get(annotationType));
+               s.addAll(annotatedFields.get(annotationType));
             }
          }
-         metaAnnotations.put(metaAnnotationType, s);
+         metaAnnotatedFields.put(metaAnnotationType, s);
       }
-      return metaAnnotations;
+      return metaAnnotatedFields;
    }
 
    public Set<AnnotatedField<?>> getAnnotatedField(
@@ -107,17 +107,18 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
    {
       if (annotatedFields == null)
       {
-         initAnnoatedFields();
+         initAnnotatedFields();
       }
       return annotatedFields.get(annotationType);
    }
 
-   private void initAnnoatedFields()
+   private void initAnnotatedFields()
    {
       if (fields == null)
       {
          initFields();
       }
+      annotatedFields = new HashMap<Class<? extends Annotation>, Set<AnnotatedField<?>>>();
       for (AnnotatedField<?> field : fields)
       {
          for (Annotation annotation : field.getAnnotations())

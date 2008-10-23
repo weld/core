@@ -33,6 +33,7 @@ public class EnterpriseComponentModelTest
    
    private ManagerImpl container;
    
+   @SuppressWarnings("unchecked")
    private AnnotatedType emptyAnnotatedItem;
    
    @BeforeMethod
@@ -169,17 +170,18 @@ public class EnterpriseComponentModelTest
       assert exception;
    }
    
+   @SuppressWarnings("unchecked")
    @Test
    public void testRemoveMethodWithDefaultBinding()
    {
 
-      AbstractEnterpriseComponentModel<Panther> panther = new EnterpriseComponentModel<Panther>(new SimpleAnnotatedType(Panther.class), emptyAnnotatedItem, container);
+      AbstractEnterpriseComponentModel<Panther> panther = new EnterpriseComponentModel<Panther>(new SimpleAnnotatedType<Panther>(Panther.class), emptyAnnotatedItem, container);
       
       assert panther.getRemoveMethod().getAnnotatedItem().getDelegate().getName().equals("remove");
       assert panther.getRemoveMethod().getParameters().size() == 1;
       assert panther.getRemoveMethod().getParameters().get(0).getType().equals(String.class);
-      assert panther.getRemoveMethod().getParameters().get(0).getBindingTypes().length == 1;
-      assert panther.getRemoveMethod().getParameters().get(0).getBindingTypes()[0].annotationType().equals(Current.class);
+      assert panther.getRemoveMethod().getParameters().get(0).getBindingTypes().size() == 1;
+      assert Reflections.annotationSetMatches(panther.getRemoveMethod().getParameters().get(0).getBindingTypes(), Current.class);
    }
    
    @SuppressWarnings("unchecked")

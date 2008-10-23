@@ -2,53 +2,33 @@ package org.jboss.webbeans.test;
 
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.webbeans.ApplicationScoped;
-import javax.webbeans.ConversationScoped;
+import javax.webbeans.AnnotationLiteral;
 import javax.webbeans.Current;
 import javax.webbeans.Dependent;
 import javax.webbeans.Named;
 import javax.webbeans.Production;
 import javax.webbeans.RequestScoped;
 
-import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bindings.ConversationScopedAnnotationLiteral;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.bindings.DependentAnnotationLiteral;
-import org.jboss.webbeans.bindings.NamedAnnotationLiteral;
-import org.jboss.webbeans.bindings.RequestScopedAnnotationLiteral;
-import org.jboss.webbeans.bindings.StandardAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.SimpleComponentModel;
-import org.jboss.webbeans.model.StereotypeModel;
-import org.jboss.webbeans.test.annotations.AnimalStereotype;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
-import org.jboss.webbeans.test.annotations.Asynchronous;
 import org.jboss.webbeans.test.annotations.FishStereotype;
 import org.jboss.webbeans.test.annotations.HornedAnimalDeploymentType;
 import org.jboss.webbeans.test.annotations.HornedMammalStereotype;
-import org.jboss.webbeans.test.annotations.MammalStereotype;
-import org.jboss.webbeans.test.annotations.RequestScopedAnimalStereotype;
-import org.jboss.webbeans.test.annotations.RiverFishStereotype;
 import org.jboss.webbeans.test.annotations.Synchronous;
-import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
-import org.jboss.webbeans.test.bindings.AsynchronousAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.FishStereotypeAnnotationLiteral;
-import org.jboss.webbeans.test.bindings.HornedAnimalDeploymentTypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.HornedMamalStereotypeAnnotationLiteral;
-import org.jboss.webbeans.test.bindings.RiverFishStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.SynchronousAnnotationLiteral;
 import org.jboss.webbeans.test.components.Antelope;
 import org.jboss.webbeans.test.components.Carp;
-import org.jboss.webbeans.test.components.Cat;
 import org.jboss.webbeans.test.components.Chair;
-import org.jboss.webbeans.test.components.ComponentWithTooManyScopeTypes;
 import org.jboss.webbeans.test.components.Cow;
 import org.jboss.webbeans.test.components.Goldfish;
 import org.jboss.webbeans.test.components.Gorilla;
@@ -61,44 +41,29 @@ import org.jboss.webbeans.test.components.SeaBass;
 import org.jboss.webbeans.test.components.Tuna;
 import org.jboss.webbeans.test.components.broken.ComponentWithTooManyDeploymentTypes;
 import org.jboss.webbeans.test.components.broken.OuterComponent.InnerComponent;
-import org.jboss.webbeans.test.mock.MockContainerImpl;
 import org.jboss.webbeans.util.Reflections;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 @SpecVersion("20080925")
-public class SimpleComponentModelTest
+public class SimpleComponentModelTest extends AbstractModelTest
 {
    
-   private ManagerImpl container;
-   
-   private AnnotatedType emptyAnnotatedItem;
-   
-   @BeforeMethod
-   public void before()
+   private class NamedAnnotationLiteral extends AnnotationLiteral<Named> implements Named
    {
-      emptyAnnotatedItem = new SimpleAnnotatedType(null, new HashMap<Class<? extends Annotation>, Annotation>());
       
-      List<Annotation> enabledDeploymentTypes = new ArrayList<Annotation>();
-      enabledDeploymentTypes.add(new StandardAnnotationLiteral());
-      enabledDeploymentTypes.add(new AnotherDeploymentTypeAnnotationLiteral());
-      enabledDeploymentTypes.add(new HornedAnimalDeploymentTypeAnnotationLiteral());
-      container = new MockContainerImpl(enabledDeploymentTypes);
+      private String value;
+
+      public NamedAnnotationLiteral(String value)
+      {
+         this.value = value;
+      }
+
+      public String value()
+      {
+         return value;
+      }
       
-      initStereotypes(container);
    }
-   
-   private void initStereotypes(ManagerImpl container)
-   {
-      container.getModelManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(AnimalStereotype.class)));
-      container.getModelManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(HornedMammalStereotype.class)));
-      container.getModelManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(MammalStereotype.class)));
-      container.getModelManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(FishStereotype.class)));
-      container.getModelManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(RiverFishStereotype.class)));
-      container.getModelManager().addStereotype(new StereotypeModel(new SimpleAnnotatedType(RequestScopedAnimalStereotype.class)));
-   }
-   
-   
    
    // **** TESTS FOR DEPLOYMENT TYPE **** //
    
@@ -184,14 +149,7 @@ public class SimpleComponentModelTest
    public void testDefaultXmlNamed()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(Named.class, new NamedAnnotationLiteral()
-      {
-
-         public String value()
-         {
-            return "";
-         }
-      });
+      annotations.put(Named.class, new NamedAnnotationLiteral(""));
       AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
       SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
       
@@ -203,14 +161,7 @@ public class SimpleComponentModelTest
    public void testNonDefaultXmlNamed()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(Named.class, new NamedAnnotationLiteral()
-      {
-
-         public String value()
-         {
-            return "aTrout";
-         }
-      });
+      annotations.put(Named.class, new NamedAnnotationLiteral("aTrout"));
       AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
       SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
       
@@ -241,13 +192,7 @@ public class SimpleComponentModelTest
       Map<Class<? extends Annotation>, Annotation> orderXmlAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
       orderXmlAnnotations.put(Current.class, new CurrentAnnotationLiteral());
       orderXmlAnnotations.put(Synchronous.class, new SynchronousAnnotationLiteral());
-      orderXmlAnnotations.put(Named.class, new NamedAnnotationLiteral()
-      {
-         public String value()
-         {
-            return "currentSynchronousOrder";
-         }
-      });
+      orderXmlAnnotations.put(Named.class, new NamedAnnotationLiteral ("currentSynchronousOrder"));
       AnnotatedType currentSynchronousOrderAnnotatedItem = new SimpleAnnotatedType(Order.class, orderXmlAnnotations);
       
       SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), currentSynchronousOrderAnnotatedItem, container);

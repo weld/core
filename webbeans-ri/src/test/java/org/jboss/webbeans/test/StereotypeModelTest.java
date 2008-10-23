@@ -92,7 +92,7 @@ public class StereotypeModelTest
    public void testStereotypeWithoutScopeType()
    {
 	   StereotypeModel<HornedMammalStereotype> animalStereotype = new StereotypeModel<HornedMammalStereotype>(new SimpleAnnotatedType<HornedMammalStereotype>(HornedMammalStereotype.class));
-	   assert animalStereotype.getDefaultScopeType().annotationType() == null;
+	   assert animalStereotype.getDefaultScopeType() == null;
    }
    
    @Test @SpecAssertion(section="2.7.1")
