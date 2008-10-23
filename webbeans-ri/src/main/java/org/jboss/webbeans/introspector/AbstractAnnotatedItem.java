@@ -108,9 +108,15 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       if (other instanceof AnnotatedItem)
       {
          AnnotatedItem<?, ?> that = (AnnotatedItem<?, ?>) other;
-         return this.getAnnotations().equals(that.getAnnotations()) && this.getDelegate().equals(that.getDelegate());
+         return this.getAnnotations().equals(that.getAnnotations()) && this.getType().equals(that.getType());
       }
       return false;
+   }
+   
+   @Override
+   public int hashCode()
+   {
+      return getType().hashCode();
    }
 
 }

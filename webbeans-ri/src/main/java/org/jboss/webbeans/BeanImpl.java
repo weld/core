@@ -78,5 +78,11 @@ public static final String LOGGER_NAME = "componentMetaModel";
       // TODO Auto-generated method stub
       return false;
    }
+   
+   @Override
+   public String toString()
+   {
+      return model.toString();
+   }
 
 }

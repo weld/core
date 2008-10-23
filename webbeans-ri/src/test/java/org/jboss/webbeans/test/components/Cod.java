@@ -1,13 +1,14 @@
 package org.jboss.webbeans.test.components;
 
-import javax.webbeans.Named;
 import javax.webbeans.Production;
 
+import org.jboss.webbeans.test.annotations.Chunky;
 import org.jboss.webbeans.test.annotations.Whitefish;
 
 @Production
-@Named
-public class Haddock implements Animal
+@Whitefish
+@Chunky
+public class Cod implements ScottishFish
 {
 
 }

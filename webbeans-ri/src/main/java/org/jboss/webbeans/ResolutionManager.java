@@ -1,6 +1,7 @@
 package org.jboss.webbeans;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,7 +18,8 @@ public class ResolutionManager
    
    public ResolutionManager(ManagerImpl manager)
    {
-      resolvedInjectionPoints = new HashMap<Injectable<?, ?>, Set<?>>();
+      this.resolvedInjectionPoints = new HashMap<Injectable<?, ?>, Set<?>>();
+      this.injectionPoints = new HashSet<Injectable<?,?>>();
       this.manager = manager;
    }
    

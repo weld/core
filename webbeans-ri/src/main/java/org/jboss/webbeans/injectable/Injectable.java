@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.webbeans.BindingType;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -64,14 +65,11 @@ public abstract class Injectable<T, S>
          if (bean.getTypes().contains(getType()))
          {
             List<Annotation> beanBindingTypes = new ArrayList<Annotation>(bean.getBindingTypes());
-            for (Annotation annotation : annotatedItem.getAnnotations())
+            if (beanBindingTypes.containsAll(annotatedItem.getAnnotations()))
             {
-               if (beanBindingTypes.contains(annotation))
-               {
-                  // TODO inspect annotation parameters
-                  // TODO inspect deployment types
-                  resolvedBeans.add(bean);
-               }
+               // TODO inspect annotation parameters
+               // TODO inspect deployment types
+               resolvedBeans.add(bean);
             }
          }
       }
@@ -81,15 +79,23 @@ public abstract class Injectable<T, S>
    @Override
    public boolean equals(Object other)
    {
+      // TODO Currently you must have any annotation literals on other for this to work, probably need to iterate over the set and check both directions
       if (other instanceof Injectable)
       {
          Injectable<?, ?> that = (Injectable<?, ?>) other;
-         return this.getAnnotatedItem().equals(that.getAnnotatedItem());
+         return this.getAnnotatedItem().getType().isAssignableFrom(that.getAnnotatedItem().getType()) &&
+            that.getAnnotatedItem().getAnnotations(BindingType.class).equals(this.getAnnotatedItem().getAnnotations(BindingType.class));
       }
       else
       {
          return false;
       }
+   }
+   
+   @Override
+   public int hashCode()
+   {
+      return 0;
    }
    
 }

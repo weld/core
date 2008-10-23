@@ -104,8 +104,16 @@ public class ManagerImpl implements Manager
    public <T> Set<Bean<T>> resolveByType(Class<T> apiType,
          Annotation... bindingTypes)
    {
-      return getResolutionManager().get(
+      Set<Bean<T>> beans = getResolutionManager().get(
             new SimpleInjectable<T>(apiType, bindingTypes));
+      if (beans == null)
+      {
+         return new HashSet<Bean<T>>();
+      }
+      else
+      {
+         return beans;
+      }
    }
 
    public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,
