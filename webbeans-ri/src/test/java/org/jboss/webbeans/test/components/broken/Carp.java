@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.components;
+package org.jboss.webbeans.test.components.broken;
 
 import org.jboss.webbeans.test.annotations.RequestScopedAnimalStereotype;
 import org.jboss.webbeans.test.components.Animal;

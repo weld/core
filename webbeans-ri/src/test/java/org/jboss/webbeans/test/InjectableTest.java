@@ -13,8 +13,8 @@ import org.jboss.webbeans.model.SimpleComponentModel;
 import org.jboss.webbeans.test.components.Animal;
 import org.jboss.webbeans.test.components.FishFarm;
 import org.jboss.webbeans.test.components.Haddock;
+import org.jboss.webbeans.test.components.SeaBass;
 import org.jboss.webbeans.test.components.Tuna;
-import org.jboss.webbeans.test.components.broken.Carp;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.Test;
 
@@ -48,14 +48,15 @@ public class InjectableTest extends AbstractTest
    public void testMultipleApiTypeWithCurrent() throws Exception
    {
       InjectableField<Animal> animalField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("animal"));
-      Bean<Carp> carpBean = new BeanImpl<Carp>(new SimpleComponentModel<Carp>(new SimpleAnnotatedType<Carp>(Carp.class), getEmptyAnnotatedItem(Carp.class), super.manager), manager);
+      Bean<SeaBass> seaBassBean = new BeanImpl<SeaBass>(new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedItem(SeaBass.class), super.manager), manager);
       Bean<Haddock> haddockBean = new BeanImpl<Haddock>(new SimpleComponentModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), getEmptyAnnotatedItem(Haddock.class), super.manager), manager);
       Set<Bean<?>> beans = new HashSet<Bean<?>>();
-      beans.add(carpBean);
+      beans.add(seaBassBean);
       beans.add(haddockBean);
       Set<Bean<?>> possibleTargets = animalField.getPossibleBeans(beans);
-      assert possibleTargets.size() == 1;
-      assert possibleTargets.contains(carpBean);
+      assert possibleTargets.size() == 2;
+      assert possibleTargets.contains(seaBassBean);
+      assert possibleTargets.contains(haddockBean);
    }
    
 }
