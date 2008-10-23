@@ -40,7 +40,6 @@ public class ResolutionManager
       injectionPoints.clear();
    }
    
-   @SuppressWarnings("unchecked")
    public <T> Set<Bean<T>> get(Injectable<T, ?> key)
    {
       return (Set<Bean<T>>) resolvedInjectionPoints.get(key);

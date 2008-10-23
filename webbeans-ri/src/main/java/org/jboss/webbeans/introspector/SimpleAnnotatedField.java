@@ -29,10 +29,9 @@ public class SimpleAnnotatedField<T> extends AbstractAnnotatedItem<T, Field> imp
       return field;
    }
    
-   @SuppressWarnings("unchecked")
-   public Class<? extends T> getType()
+   public Class<T> getType()
    {
-      return (Class<? extends T>) field.getType();
+      return (Class<T>) field.getType();
    }
 
 }

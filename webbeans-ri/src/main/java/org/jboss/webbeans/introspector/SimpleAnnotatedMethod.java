@@ -29,10 +29,9 @@ public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedItem<T, Method> i
       return method;
    }
    
-   @SuppressWarnings("unchecked")
-   public Class<? extends T> getType()
+   public Class<T> getType()
    {
-      return (Class<? extends T>) method.getReturnType();
+      return (Class<T>) method.getReturnType();
    }
 
 }

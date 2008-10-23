@@ -5,6 +5,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+
 import javax.webbeans.Stereotype;
 
 import org.jboss.webbeans.test.components.Animal;

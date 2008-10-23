@@ -2,19 +2,15 @@ package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.model.AbstractComponentModel;
-import org.jboss.webbeans.util.LoggerUtil;
 
 public class BeanImpl<T> extends Bean<T>
 {
    
 public static final String LOGGER_NAME = "componentMetaModel";
-   
-   private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
    
    private AbstractComponentModel<T, ?> model;
    

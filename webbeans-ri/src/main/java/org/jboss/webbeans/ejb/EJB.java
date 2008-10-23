@@ -2,21 +2,19 @@ package org.jboss.webbeans.ejb;
 
 import java.lang.annotation.Annotation;
 
-
 import org.jboss.webbeans.util.Reflections;
 
 
-@SuppressWarnings("unchecked")
 public class EJB
 {
    
    public @interface Dummy {}
    
-   public static final Class<Annotation> STATELESS_ANNOTATION;
-   public static final Class<Annotation> STATEFUL_ANNOTATION;
-   public static final Class<Annotation> MESSAGE_DRIVEN_ANNOTATION;
-   public static final Class<Annotation> SINGLETON_ANNOTATION;
-   public static final Class<Annotation> REMOVE_ANNOTATION;
+   public static final Class<? extends Annotation> STATELESS_ANNOTATION;
+   public static final Class<? extends Annotation> STATEFUL_ANNOTATION;
+   public static final Class<? extends Annotation> MESSAGE_DRIVEN_ANNOTATION;
+   public static final Class<? extends Annotation> SINGLETON_ANNOTATION;
+   public static final Class<? extends Annotation> REMOVE_ANNOTATION;
    
    static 
    {
@@ -27,11 +25,12 @@ public class EJB
       REMOVE_ANNOTATION = classForName("javax.ejb.Remove");
    }
    
-   private static Class classForName(String name)
+   @SuppressWarnings("unchecked")
+   private static Class<? extends Annotation> classForName(String name)
    {
       try
       {
-         return Reflections.classForName(name);
+         return (Class<? extends Annotation>) Reflections.classForName(name);
       }
       catch (ClassNotFoundException cnfe)
       {

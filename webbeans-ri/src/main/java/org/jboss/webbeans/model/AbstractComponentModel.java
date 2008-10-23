@@ -35,7 +35,7 @@ public abstract class AbstractComponentModel<T, E>
    protected Class<? extends Annotation> scopeType;
    private MergedStereotypesModel<T, E> mergedStereotypes;
    protected Class<? extends Annotation> deploymentType;
-   protected Class<T> type;
+   protected Class<? extends T> type;
    protected InjectableMethod<?> removeMethod;
    private Set<Class<?>> apiTypes;
    protected Set<Injectable<?, ?>> injectionPoints;
@@ -286,7 +286,7 @@ public abstract class AbstractComponentModel<T, E>
       return scopeType;
    }
 
-   public Class<T> getType()
+   public Class<? extends T> getType()
    {
       return type;
    }

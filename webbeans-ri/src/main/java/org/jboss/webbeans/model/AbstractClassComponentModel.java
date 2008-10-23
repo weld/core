@@ -34,8 +34,7 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
     * @param xmlAnnotatedItem Annotations read from XML
     * @param manager
     */
-   @SuppressWarnings("unchecked")
-   public AbstractClassComponentModel(AnnotatedType<T> annotatedItem, AnnotatedType xmlAnnotatedItem)
+   public AbstractClassComponentModel(AnnotatedType<T> annotatedItem, AnnotatedType<T> xmlAnnotatedItem)
    {
       if (annotatedItem == null)
       {
@@ -73,7 +72,6 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
       return xmlAnnotatedItem;
    }
    
-   @SuppressWarnings("unchecked")
    protected void initType()
    {
       if (getAnnotatedItem().getDelegate() != null && getXmlAnnotatedItem().getDelegate() != null && !getAnnotatedItem().getDelegate().equals(getXmlAnnotatedItem().getDelegate()))

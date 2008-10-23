@@ -47,12 +47,11 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Field>
    /**
     * Initializes the constructor field of this class.
     */
-   @SuppressWarnings("unchecked")
    protected void initConstructor()
    {
       // There should only be one constructor for the event implementation used here
-      Constructor[] constructors = this.annotatedItem.getType().getConstructors();
-      Constructor<T> classConstructor = (Constructor<T>)constructors[0];
+      // TODO Probably don't need to use reflection as this is a container supplied class
+      Constructor<T> classConstructor = this.annotatedItem.getType().getConstructors()[0];
       constructor = new SimpleConstructor<T>(classConstructor);
    }
 
@@ -81,18 +80,17 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Field>
    /* (non-Javadoc)
     * @see org.jboss.webbeans.model.AbstractClassComponentModel#initType()
     */
-   @SuppressWarnings("unchecked")
    @Override
    protected void initType()
    {
       if (getXmlAnnotatedItem().getDelegate() != null)
       {
          log.finest("Component type specified in XML");
-         this.type = (Class<T>) xmlAnnotatedItem.getType();
+         this.type = xmlAnnotatedItem.getType();
       } else if (getAnnotatedItem().getDelegate() != null)
       {
          log.finest("Component type specified in Java");
-         this.type = (Class<T>) annotatedItem.getType();
+         this.type = annotatedItem.getType();
       }
    }
 

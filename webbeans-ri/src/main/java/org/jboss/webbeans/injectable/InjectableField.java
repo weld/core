@@ -13,10 +13,9 @@ import org.jboss.webbeans.introspector.SimpleAnnotatedField;
 public class InjectableField<T> extends Injectable<T, Field>
 {
    
-   @SuppressWarnings("unchecked")
    public InjectableField(Field field)
    {
-      super(new SimpleAnnotatedField(field));
+      super(new SimpleAnnotatedField<T>(field));
    }
 
 }

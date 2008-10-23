@@ -7,7 +7,12 @@ import javax.webbeans.Production;
 public class FishFarm
 {
 
+   @SuppressWarnings("unused")
    @Current
    private Tuna tuna;
+   
+   @SuppressWarnings("unused")
+   @Current
+   private Animal animal;
    
 }

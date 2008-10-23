@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.jboss.webbeans.injectable.Injectable;
-
 public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
 {
 
@@ -50,7 +48,6 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return annotationSet;
    }
 
-   @SuppressWarnings("unchecked")
    public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)
    {
       return (A) annotationMap.get(annotationType);

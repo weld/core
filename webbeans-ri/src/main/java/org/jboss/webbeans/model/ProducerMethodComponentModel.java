@@ -34,8 +34,7 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
    private String location;
    private Type declaredComponentType;
    
-   @SuppressWarnings("unchecked")
-   public ProducerMethodComponentModel(AnnotatedMethod annotatedMethod, ManagerImpl container)
+   public ProducerMethodComponentModel(AnnotatedMethod<T> annotatedMethod, ManagerImpl container)
    {
       this.annotatedMethod = annotatedMethod;
       init(container);
@@ -106,13 +105,12 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
       }
    }
    
-   @SuppressWarnings("unchecked")
    protected void initRemoveMethod(ManagerImpl container)
    {
       Set<Method> disposalMethods = container.resolveDisposalMethods(getType(), getBindingTypes().toArray(new Annotation[0]));
       if (disposalMethods.size() == 1)
       {
-         removeMethod = new InjectableMethod(disposalMethods.iterator().next());
+         removeMethod = new InjectableMethod<Object>(disposalMethods.iterator().next());
       }
       else if (disposalMethods.size() > 1)
       {
@@ -153,13 +151,12 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
       return xmlAnnotatedItem;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    protected void initType()
    {
       try
       {
-         this.type = (Class<T>) annotatedMethod.getAnnotatedMethod().getReturnType();
+         this.type = annotatedMethod.getType();
       }
       catch (ClassCastException e) 
       {

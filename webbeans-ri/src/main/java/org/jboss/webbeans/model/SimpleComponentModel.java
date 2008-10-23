@@ -29,8 +29,7 @@ public class SimpleComponentModel<T> extends AbstractClassComponentModel<T>
     * @param xmlAnnotatedItem Annotations read from XML
     * @param container
     */
-   @SuppressWarnings("unchecked")
-   public SimpleComponentModel(AnnotatedType annotatedItem, AnnotatedType xmlAnnotatedItem, ManagerImpl container)
+   public SimpleComponentModel(AnnotatedType<T> annotatedItem, AnnotatedType<T> xmlAnnotatedItem, ManagerImpl container)
    {
       super(annotatedItem, xmlAnnotatedItem);
       init(container);
@@ -64,7 +63,6 @@ public class SimpleComponentModel<T> extends AbstractClassComponentModel<T>
       }
    }
    
-   @SuppressWarnings("unchecked")
    protected void initConstructor()
    {
       if (getType().getConstructors().length == 1)

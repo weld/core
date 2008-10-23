@@ -1,9 +1,9 @@
 package org.jboss.webbeans.ejb;
 
 import static org.jboss.webbeans.ejb.EJB.MESSAGE_DRIVEN_ANNOTATION;
+import static org.jboss.webbeans.ejb.EJB.REMOVE_ANNOTATION;
 import static org.jboss.webbeans.ejb.EJB.SINGLETON_ANNOTATION;
 import static org.jboss.webbeans.ejb.EJB.STATEFUL_ANNOTATION;
-import static org.jboss.webbeans.ejb.EJB.REMOVE_ANNOTATION;
 import static org.jboss.webbeans.ejb.EJB.STATELESS_ANNOTATION;
 import static org.jboss.webbeans.ejb.EjbMetaData.EjbType.MESSAGE_DRIVEN;
 import static org.jboss.webbeans.ejb.EjbMetaData.EjbType.SINGLETON;
@@ -39,10 +39,13 @@ public class EjbMetaData<T>
    // TODO Initialize the ejb name
    private String ejbName;
    
+   private Class<? extends T> type;
+   
 
    public EjbMetaData(Class<? extends T> type)
    {
       // TODO Merge in ejb-jar.xml
+      this.type = type;
       if (type.isAnnotationPresent(STATELESS_ANNOTATION))
       {
          this.ejbType = STATELESS;
@@ -104,6 +107,11 @@ public class EjbMetaData<T>
    public String getEjbName()
    {
       return ejbName;
+   }
+   
+   public Class<? extends T> getType()
+   {
+      return type;
    }
    
 }

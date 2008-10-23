@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.webbeans.DeploymentException;
+import javax.webbeans.Observer;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
 import javax.webbeans.TypeLiteral;
@@ -18,7 +19,6 @@ import javax.webbeans.manager.Decorator;
 import javax.webbeans.manager.InterceptionType;
 import javax.webbeans.manager.Interceptor;
 import javax.webbeans.manager.Manager;
-import javax.webbeans.Observer;
 
 import org.jboss.webbeans.ejb.EjbManager;
 import org.jboss.webbeans.event.EventBus;
@@ -32,8 +32,6 @@ public class ManagerImpl implements Manager
    private EjbManager ejbLookupManager;
    private EventBus eventBus;
    private ResolutionManager resolutionManager;
-
-   private ThreadLocal<Map<Class<Annotation>, Context>> contexts = new ThreadLocal<Map<Class<Annotation>, Context>>();
 
    private Set<Bean<?>> beans;
 

@@ -12,7 +12,6 @@ import javax.webbeans.RequestScoped;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.BasicContext;
-import org.jboss.webbeans.init.Initialization;
 
 /**
  * 
@@ -25,8 +24,7 @@ public class WebBeansFilter implements Filter
 
    public void init(FilterConfig filterConfig) throws ServletException 
    {
-      container = (Manager) filterConfig.getServletContext().getAttribute(
-            Initialization.WEBBEANS_CONTAINER_KEY);      
+      
    }
 
    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) 

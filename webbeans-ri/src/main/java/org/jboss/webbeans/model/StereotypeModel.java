@@ -20,7 +20,7 @@ import org.jboss.webbeans.introspector.AnnotatedType;
  * @author pmuir
  *
  */
-public class StereotypeModel<T>
+public class StereotypeModel<T extends Annotation>
 {
    
    private Class<? extends Annotation> stereotypeClass;
@@ -31,7 +31,6 @@ public class StereotypeModel<T>
    private Set<Class<?>> requiredTypes;
    private Set<Annotation> interceptorBindings;
    
-   @SuppressWarnings("unchecked")
    public StereotypeModel(AnnotatedType<T> annotatedClass)
    {
       initStereotypeClass(annotatedClass);
@@ -54,12 +53,11 @@ public class StereotypeModel<T>
       }
    }
    
-   @SuppressWarnings("unchecked")
    private void initStereotypeClass(AnnotatedType<T> annotatedClass)
    {
       if (Annotation.class.isAssignableFrom(annotatedClass.getAnnotatedClass()))
       {
-         this.stereotypeClass = (Class<? extends Annotation>) annotatedClass.getAnnotatedClass();
+         this.stereotypeClass = annotatedClass.getAnnotatedClass();
       }
       else
       {

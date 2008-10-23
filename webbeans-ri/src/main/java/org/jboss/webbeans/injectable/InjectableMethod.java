@@ -20,13 +20,12 @@ public class InjectableMethod<T> extends Unit<T, Method>
       this.method = new SimpleAnnotatedMethod<T>(method);
    }
 
-   @SuppressWarnings("unchecked")
+   
    public T invoke(ManagerImpl manager, Object instance)
    {
       return invoke(manager, instance, getParameterValues(manager));
    }
    
-   @SuppressWarnings("unchecked")
    public T invoke(Manager container, Object instance, Object[] parameters)
    {
       try

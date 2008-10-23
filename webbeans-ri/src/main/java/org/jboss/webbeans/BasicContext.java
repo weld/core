@@ -16,7 +16,7 @@ import javax.webbeans.manager.Manager;
  */
 public class BasicContext implements Context
 {
-   private Map<Bean<?>, Object> values;
+   private Map<Bean<? extends Object>, Object> values;
    private Class<? extends Annotation> scopeType;
    
    public BasicContext(Class<? extends Annotation> scopeType)
@@ -25,7 +25,6 @@ public class BasicContext implements Context
       values = new HashMap<Bean<?>,Object>();
    }
    
-   @SuppressWarnings("unchecked")
    public <T> T get(Bean<T> component, boolean create) 
    {
       T instance = (T) values.get(component);
@@ -52,34 +51,29 @@ public class BasicContext implements Context
       return scopeType;
    }
 
-   @SuppressWarnings("unchecked")
-   public <T> void remove(Manager container, Bean<T> component) 
+   public <T> void remove(Manager container, Bean<T> bean) 
    {
-      T instance = (T) values.get(component);
+      T instance = (T) values.get(bean);
       
       if (instance != null)
       {
-         values.remove(component);
-         component.destroy(instance);
+         values.remove(bean);
+         bean.destroy(instance);
       }
       else
       {
          // TODO is this the correct exception to throw? See section 9.1 of spec
-         throw new RuntimeException("Component " + component.getName() + " cannot be removed as it " + 
+         throw new RuntimeException("Component " + bean.getName() + " cannot be removed as it " + 
                "does not exist in [" + scopeType + "] context.");
       }
    }
    
-   @SuppressWarnings("unchecked")
    public void destroy(Manager container)
    {
-      // TODO this method isn't declared by the interface, but is implied by section 9.1.2 of the spec
-      
       for (Bean c : values.keySet())
       {
          c.destroy(values.get(c));
       }
-      
       values.clear();
    }
    

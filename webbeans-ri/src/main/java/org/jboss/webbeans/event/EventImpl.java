@@ -3,15 +3,15 @@ package org.jboss.webbeans.event;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.webbeans.BindingType;
 import javax.webbeans.Current;
 import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Event;
-import javax.webbeans.manager.Manager;
 import javax.webbeans.Observer;
+import javax.webbeans.manager.Manager;
 
 /**
  * Implementation of the {@link Event} interface used for the container provided

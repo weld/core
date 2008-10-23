@@ -10,9 +10,9 @@ import org.jboss.webbeans.ManagerImpl;
 public class InjectableParameterWrapper<T> extends InjectableParameter<T>
 {
    
-   private InjectableParameter<T> delegate;
+   private InjectableParameter<? extends T> delegate;
 
-   public InjectableParameterWrapper(InjectableParameter<T> delegate)
+   public InjectableParameterWrapper(InjectableParameter<? extends T> delegate)
    {
       this.delegate = delegate;
    }

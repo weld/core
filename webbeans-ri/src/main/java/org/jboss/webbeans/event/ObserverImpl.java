@@ -2,8 +2,8 @@ package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
 
-import javax.webbeans.manager.Manager;
 import javax.webbeans.Observer;
+import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.InjectableMethod;
@@ -32,7 +32,7 @@ public class ObserverImpl<T> implements Observer<T>
 {
 
    private final AbstractComponentModel<?, ?> componentModel;
-   private final InjectableMethod<?> observerMethod;
+   private final InjectableMethod<? extends Object> observerMethod;
    private final Class<T> eventType;
 
    /**
@@ -43,7 +43,6 @@ public class ObserverImpl<T> implements Observer<T>
     * @param observer The observer method to notify
     * @param eventType The type of event being observed
     */
-   @SuppressWarnings("unchecked")
    public ObserverImpl(AbstractComponentModel<?, ?> componentModel, InjectableMethod<?> observer, Class<T> eventType)
    {
       this.componentModel = componentModel;
@@ -67,7 +66,6 @@ public class ObserverImpl<T> implements Observer<T>
     * @see javax.webbeans.Observer#notify(javax.webbeans.Container,
     * java.lang.Object)
     */
-   @SuppressWarnings("unchecked")
    public void notify(final T event)
    {
       // Get the most specialized instance of the component
@@ -78,10 +76,10 @@ public class ObserverImpl<T> implements Observer<T>
          // object so that we know for certain it is the correct one.
          for (int i = 0; i < observerMethod.getParameters().size(); i++)
          {
-            InjectableParameter<?> parameter = observerMethod.getParameters().get(i);
+            InjectableParameter<? extends Object> parameter = observerMethod.getParameters().get(i);
             if (parameter.getType().isAssignableFrom(event.getClass()))
             {
-               InjectableParameter<?> newParameter = new InjectableParameterWrapper(parameter)
+               InjectableParameter<?> newParameter = new InjectableParameterWrapper<Object>(parameter)
                {
                   @Override
                   public Object getValue(ManagerImpl manager)

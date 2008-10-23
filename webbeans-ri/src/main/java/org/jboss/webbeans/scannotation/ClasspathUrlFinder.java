@@ -105,7 +105,7 @@ public class ClasspathUrlFinder
     * @param clazz
     * @return
     */
-   public static URL findClassBase(Class clazz)
+   public static URL findClassBase(Class<?> clazz)
    {
       String resource = clazz.getName().replace('.', '/') + ".class";
       return findResourceBase(resource, clazz.getClassLoader());

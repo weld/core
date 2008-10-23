@@ -10,8 +10,11 @@ import org.jboss.webbeans.BeanImpl;
 import org.jboss.webbeans.injectable.InjectableField;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.SimpleComponentModel;
+import org.jboss.webbeans.test.components.Animal;
 import org.jboss.webbeans.test.components.FishFarm;
+import org.jboss.webbeans.test.components.Haddock;
 import org.jboss.webbeans.test.components.Tuna;
+import org.jboss.webbeans.test.components.broken.Carp;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.Test;
 
@@ -30,7 +33,7 @@ public class InjectableTest extends AbstractTest
    }
    
    @Test
-   public void testPossibleTargets() throws Exception
+   public void testSingleApiTypeWithCurrent() throws Exception
    {
       InjectableField<Tuna> tunaField = new InjectableField<Tuna>(FishFarm.class.getDeclaredField("tuna"));
       Bean<Tuna> tunaBean = new BeanImpl<Tuna>(new SimpleComponentModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), getEmptyAnnotatedItem(Tuna.class), super.manager), manager);
@@ -39,6 +42,20 @@ public class InjectableTest extends AbstractTest
       Set<Bean<?>> possibleTargets = tunaField.getPossibleBeans(beans);
       assert possibleTargets.size() == 1;
       assert possibleTargets.contains(tunaBean);
+   }
+   
+   @Test
+   public void testMultipleApiTypeWithCurrent() throws Exception
+   {
+      InjectableField<Animal> animalField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("animal"));
+      Bean<Carp> carpBean = new BeanImpl<Carp>(new SimpleComponentModel<Carp>(new SimpleAnnotatedType<Carp>(Carp.class), getEmptyAnnotatedItem(Carp.class), super.manager), manager);
+      Bean<Haddock> haddockBean = new BeanImpl<Haddock>(new SimpleComponentModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), getEmptyAnnotatedItem(Haddock.class), super.manager), manager);
+      Set<Bean<?>> beans = new HashSet<Bean<?>>();
+      beans.add(carpBean);
+      beans.add(haddockBean);
+      Set<Bean<?>> possibleTargets = animalField.getPossibleBeans(beans);
+      assert possibleTargets.size() == 1;
+      assert possibleTargets.contains(carpBean);
    }
    
 }

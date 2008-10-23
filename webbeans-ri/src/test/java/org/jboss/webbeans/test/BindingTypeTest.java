@@ -25,7 +25,7 @@ public class BindingTypeTest extends AbstractTest
    @Test @SpecAssertion(section={"2.3.3", "2.3.1"}) 
    public void testDefaultBindingTypeDeclaredInJava()
    {
-      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), emptyAnnotatedItem, manager);
+      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), getEmptyAnnotatedItem(Order.class), manager);
       assert order.getBindingTypes().size() == 1;
       order.getBindingTypes().iterator().next().annotationType().equals(Current.class);
    }
@@ -58,7 +58,7 @@ public class BindingTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.3.3")
    public void testBindingTypesDeclaredInJava()
    {
-      SimpleComponentModel<Cat> cat = new SimpleComponentModel<Cat>(new SimpleAnnotatedType(Cat.class), emptyAnnotatedItem, manager);
+      SimpleComponentModel<Cat> cat = new SimpleComponentModel<Cat>(new SimpleAnnotatedType(Cat.class), getEmptyAnnotatedItem(Cat.class), manager);
       assert cat.getBindingTypes().size() == 1;
       assert Reflections.annotationSetMatches(cat.getBindingTypes(), Synchronous.class);
    }
@@ -77,7 +77,7 @@ public class BindingTypeTest extends AbstractTest
       annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
       AnnotatedType annotatedItem = new SimpleAnnotatedType(Antelope.class, annotations);
       
-      SimpleComponentModel<Antelope> antelope = new SimpleComponentModel<Antelope>(emptyAnnotatedItem, annotatedItem, manager);
+      SimpleComponentModel<Antelope> antelope = new SimpleComponentModel<Antelope>(getEmptyAnnotatedItem(Antelope.class), annotatedItem, manager);
       assert Reflections.annotationSetMatches(antelope.getBindingTypes(), Asynchronous.class);
    }
 

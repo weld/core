@@ -17,25 +17,25 @@ public abstract class Unit<T, S>
       parameters = initParameters(parameterTypes, parameterAnnotations);
    }
    
-   public List<InjectableParameter<?>> getParameters()
+   public List<InjectableParameter<? extends Object>> getParameters()
    {
       return parameters;
    }
 
-   @SuppressWarnings("unchecked")
-   protected static <T> List<InjectableParameter<?>> initParameters(Class<?>[] parameterTypes, Annotation[][] parameterAnnotations)
+   protected static <T> List<InjectableParameter<?>> initParameters(Class<? extends Object>[] parameterTypes, Annotation[][] parameterAnnotations)
    {
       List<InjectableParameter<?>> injectedParameters = new ArrayList<InjectableParameter<?>>();
       for (int i = 0; i < parameterTypes.length; i++)
       {
          if (parameterAnnotations[i].length > 0)
          {
-            InjectableParameter<Object> parameter = new InjectableParameter(parameterAnnotations[i], parameterTypes[i]);
+            Class<? extends Object> clazz = parameterTypes[i];
+            InjectableParameter<? extends Object> parameter = new InjectableParameter<Object>(parameterAnnotations[i], clazz);
             injectedParameters.add(i, parameter);
          }
          else
          {
-            InjectableParameter<Object> parameter = new InjectableParameter(parameterTypes[i]);
+            InjectableParameter<?> parameter = new InjectableParameter<Object>(parameterTypes[i]);
             injectedParameters.add(i, parameter);
          }
       }

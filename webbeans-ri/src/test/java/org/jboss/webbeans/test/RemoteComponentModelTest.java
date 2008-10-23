@@ -1,24 +1,5 @@
 package org.jboss.webbeans.test;
 
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-
-import javax.webbeans.Current;
-
-import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.introspector.AnnotatedType;
-import org.jboss.webbeans.introspector.SimpleAnnotatedType;
-import org.jboss.webbeans.model.RemoteComponentModel;
-import org.jboss.webbeans.test.annotations.Tame;
-import org.jboss.webbeans.test.components.Animal;
-import org.jboss.webbeans.test.components.Baboon;
-import org.jboss.webbeans.test.components.Orangutan;
-import org.jboss.webbeans.test.components.TameOrangutan;
-import org.jboss.webbeans.test.components.broken.Chimpanzee;
-import org.jboss.webbeans.test.components.broken.Gibbon;
-import org.jboss.webbeans.test.mock.MockManagerImpl;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 public class RemoteComponentModelTest
 {

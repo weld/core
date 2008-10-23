@@ -7,7 +7,7 @@ import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
 public class SimpleInjectable<T> extends Injectable<T, Object>
 {
    
-   public SimpleInjectable(Class<? extends T> type, Annotation[] bindingTypes)
+   public SimpleInjectable(Class<T> type, Annotation[] bindingTypes)
    {
       super(new SimpleAnnotatedItem<T, Object>(bindingTypes, type));
    }

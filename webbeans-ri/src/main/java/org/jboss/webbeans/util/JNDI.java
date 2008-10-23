@@ -1,5 +1,6 @@
 package org.jboss.webbeans.util;
 
+
 public class JNDI
 {
 

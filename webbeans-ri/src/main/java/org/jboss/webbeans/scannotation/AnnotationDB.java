@@ -1,13 +1,6 @@
 package org.jboss.webbeans.scannotation;
 
 
-import javassist.bytecode.AnnotationsAttribute;
-import javassist.bytecode.ClassFile;
-import javassist.bytecode.FieldInfo;
-import javassist.bytecode.MethodInfo;
-import javassist.bytecode.ParameterAnnotationsAttribute;
-import javassist.bytecode.annotation.Annotation;
-
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -21,6 +14,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.FieldInfo;
+import javassist.bytecode.MethodInfo;
+import javassist.bytecode.ParameterAnnotationsAttribute;
+import javassist.bytecode.annotation.Annotation;
 
 /**
  * The class allows you to scan an arbitrary set of "archives" for .class files.  These class files
@@ -300,6 +300,7 @@ public abstract class AnnotationDB implements Serializable
     *
     * @param cf
     */
+   @SuppressWarnings("unchecked")
    protected void scanMethods(ClassFile cf)
    {
       List methods = cf.getMethods();
@@ -338,6 +339,7 @@ public abstract class AnnotationDB implements Serializable
       }
    }
 
+   @SuppressWarnings("unchecked")
    protected void scanFields(ClassFile cf)
    {
       List fields = cf.getFields();

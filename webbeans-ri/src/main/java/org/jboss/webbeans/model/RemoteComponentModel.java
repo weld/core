@@ -1,13 +1,6 @@
 package org.jboss.webbeans.model;
 
-import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.ComponentConstructor;
-import org.jboss.webbeans.injectable.EnterpriseConstructor;
-import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.introspector.AnnotatedType;
 
 public class RemoteComponentModel<T> extends AbstractEnterpriseComponentModel<T>

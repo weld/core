@@ -132,7 +132,7 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
       }
    }
 
-   public Class<? extends T> getType()
+   public Class<T> getType()
    {
       return clazz;
    }

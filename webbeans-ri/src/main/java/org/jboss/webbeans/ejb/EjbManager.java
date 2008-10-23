@@ -21,17 +21,16 @@ public class EjbManager
    }
    
    // TODO Should this be static?
-   @SuppressWarnings("unchecked")
    public <T> T lookup(EjbMetaData<T> ejb)
    {
       if (ejb.getEjbLinkJndiName() != null)
       {
-         return (T) JNDI.lookup(ejb.getEjbLinkJndiName());
+         return (T) JNDI.lookup(ejb.getEjbLinkJndiName(), ejb.getType());
       }
       try
       {
          // TODO How is a JNDI lookup failure shown to us?
-         return (T) JNDI.lookup(ejb.getDefaultJndiName());
+         return (T) JNDI.lookup(ejb.getDefaultJndiName(), ejb.getType());
       }
       catch (Exception e) 
       {

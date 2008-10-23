@@ -29,7 +29,7 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedItem<T, Cons
       return constructor;
    }
    
-   public Class<? extends T> getType()
+   public Class<T> getType()
    {
       return constructor.getDeclaringClass();
    }

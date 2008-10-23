@@ -66,13 +66,13 @@ public class EventBus
     * @throws IllegalStateException
     * @throws RollbackException
     */
-   public void deferEvent(Object event, Observer<?> o) throws SystemException, IllegalStateException, RollbackException
+   public void deferEvent(Object event, Observer<Object> o) throws SystemException, IllegalStateException, RollbackException
    {
       if (tm != null) {
          // Get the current transaction associated with the thread
          Transaction t = tm.getTransaction();
          if (t != null)
-            t.registerSynchronization(new DeferredEventNotification(event, o));
+            t.registerSynchronization(new DeferredEventNotification<Object>(event, o));
       }
    }
 
@@ -83,7 +83,6 @@ public class EventBus
     * @param bindings Optional event bindings
     * @return A set of Observers
     */
-   @SuppressWarnings("unchecked")
    public <T> Set<Observer<T>> getObservers(T event, Annotation... bindings)
    {
       Set<Observer<T>> results = new HashSet<Observer<T>>();

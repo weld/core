@@ -1,7 +1,7 @@
 package org.jboss.webbeans.scannotation;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Delegate to everything but close().  This object will not close the stream
