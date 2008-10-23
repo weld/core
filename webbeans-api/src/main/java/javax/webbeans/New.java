@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
  * @author Pete Muir
  */
 
-@Target( { FIELD, PARAMETER, })
+@Target( { FIELD, PARAMETER })
 @Retention(RUNTIME)
 @Documented
 @BindingType
