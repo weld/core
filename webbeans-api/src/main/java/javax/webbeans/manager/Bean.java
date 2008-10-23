@@ -52,9 +52,9 @@ public abstract class Bean<T>
 
    public abstract Set<Annotation> getBindingTypes();
 
-   public abstract Class<Annotation> getScopeType();
+   public abstract Class<? extends Annotation> getScopeType();
 
-   public abstract Class<Annotation> getDeploymentType();
+   public abstract Class<? extends Annotation> getDeploymentType();
 
    public abstract String getName();
 
