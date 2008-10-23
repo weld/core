@@ -29,6 +29,7 @@ package javax.webbeans;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 
+// TODO Check members for equals, hashCode and toString()
 public abstract class AnnotationLiteral<T extends Annotation> implements
       Annotation
 {
@@ -102,8 +103,27 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
    @Override
    public String toString()
    {
-      // TODO Make this closer to the spec for Annotation
-      String annotationName = "@" + annotationType().getName();
+      String annotationName = "@" + annotationType().getName() + "()";
       return annotationName;
+   }
+   
+   @Override
+   public boolean equals(Object other)
+   {
+      if (other instanceof Annotation)
+      {
+         Annotation that = (Annotation) other;
+         return this.annotationType().equals(that.annotationType());
+      }
+      else
+      {
+         return false;
+      }
+   }
+   
+   @Override
+   public int hashCode()
+   {
+      return annotationType().hashCode();
    }
 }
