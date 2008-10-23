@@ -52,9 +52,9 @@ public interface Manager
 
    public void fireEvent(Object event, Annotation... bindings);
 
-   public Context getContext(Class<Annotation> scopeType);
+   public Context getContext(Class<? extends Annotation> scopeType);
 
-   public void addContext(Context context);
+   public Manager addContext(Context context);
 
    public Manager addBean(Bean<?> bean);
 
@@ -62,16 +62,16 @@ public interface Manager
 
    public Manager addDecorator(Decorator decorator);
 
-   public <T> void addObserver(Observer<T> observer, Class<T> eventType,
+   public <T> Manager addObserver(Observer<T> observer, Class<T> eventType,
          Annotation... bindings);
 
-   public <T> void addObserver(Observer<T> observer, TypeLiteral<T> eventType,
+   public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType,
          Annotation... bindings);
 
-   public <T> void removeObserver(Observer<T> observer, Class<T> eventType,
+   public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType,
          Annotation... bindings);
 
-   public <T> void removeObserver(Observer<T> observer,
+   public <T> Manager removeObserver(Observer<T> observer,
          TypeLiteral<T> eventType, Annotation... bindings);
 
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings);
