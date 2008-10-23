@@ -28,7 +28,7 @@ public class ResolutionManager
    
    public void registerInjectionPoint(Injectable<?, ?> injectable)
    {
-	  resolvedInjectionPoints.put(injectable, injectable.getPossibleTargets(manager.getBeans())); 
+	  resolvedInjectionPoints.put(injectable, injectable.getPossibleBeans(manager.getBeans())); 
    }
    
    public void registerInjectionPoints()

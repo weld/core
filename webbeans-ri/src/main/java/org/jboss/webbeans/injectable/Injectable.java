@@ -56,10 +56,10 @@ public abstract class Injectable<T, S>
       return annotatedItem;
    }
    
-   public Set<Bean<?>> getPossibleTargets(Set<Bean<?>> possibleBeans)
+   public Set<Bean<?>> getPossibleBeans(Set<Bean<?>> beans)
    {
       Set<Bean<?>> resolvedBeans = new HashSet<Bean<?>>();
-      for (Bean<?> bean : possibleBeans)
+      for (Bean<?> bean : beans)
       {
          if (bean.getTypes().contains(getType()))
          {

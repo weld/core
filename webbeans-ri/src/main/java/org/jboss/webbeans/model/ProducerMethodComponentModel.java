@@ -100,7 +100,7 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
          throw new RuntimeException("Producer method cannot be static " + annotatedMethod);
       }
       // TODO Check if declaring class is a WB component
-      if (!getScopeType().annotationType().equals(Dependent.class) && Modifier.isFinal(getAnnotatedItem().getDelegate().getModifiers()))
+      if (!getScopeType().equals(Dependent.class) && Modifier.isFinal(getAnnotatedItem().getDelegate().getModifiers()))
       {
          throw new RuntimeException("Final producer method must have @Dependent scope " + annotatedMethod);
       }

@@ -8,12 +8,12 @@ import java.util.Set;
 
 import org.jboss.webbeans.ManagerImpl;
 
-public class MockContainerImpl extends ManagerImpl
+public class MockManagerImpl extends ManagerImpl
 {
    private Object       event = null;
    private Annotation[] eventBindings = null;
 
-   public MockContainerImpl(List<Annotation> enabledDeploymentTypes)
+   public MockManagerImpl(List<Class<? extends Annotation>> enabledDeploymentTypes)
    {
       super(enabledDeploymentTypes);
    }

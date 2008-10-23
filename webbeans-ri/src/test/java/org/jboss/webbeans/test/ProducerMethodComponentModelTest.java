@@ -1,14 +1,10 @@
 package org.jboss.webbeans.test;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 
 import javax.webbeans.Current;
 import javax.webbeans.Dependent;
 
-import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedMethod;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.ProducerMethodComponentModel;
@@ -26,33 +22,21 @@ import org.jboss.webbeans.test.components.Tarantula;
 import org.jboss.webbeans.test.components.TrapdoorSpider;
 import org.jboss.webbeans.test.components.broken.ComponentWithFinalProducerMethod;
 import org.jboss.webbeans.test.components.broken.ComponentWithStaticProducerMethod;
-import org.jboss.webbeans.test.mock.MockContainerImpl;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class ProducerMethodComponentModelTest
+public class ProducerMethodComponentModelTest extends AbstractTest
 {
-
-   private ManagerImpl container;
-   private AnnotatedType<?> emptyAnnotatedItem;
-   
-   @BeforeMethod
-   public void before()
-   {
-      emptyAnnotatedItem = new SimpleAnnotatedType(null, new HashMap<Class<? extends Annotation>, Annotation>());
-      container = new MockContainerImpl(null);
-   }
    
    @Test @SpecAssertion(section="3.3")
    public void testStaticMethod() throws SecurityException, NoSuchMethodException
    {
-      SimpleComponentModel<ComponentWithStaticProducerMethod> componentModel = new SimpleComponentModel<ComponentWithStaticProducerMethod>(new SimpleAnnotatedType<ComponentWithStaticProducerMethod>(ComponentWithStaticProducerMethod.class), emptyAnnotatedItem, container);
-      container.getModelManager().addComponentModel(componentModel);
+      SimpleComponentModel<ComponentWithStaticProducerMethod> componentModel = new SimpleComponentModel<ComponentWithStaticProducerMethod>(new SimpleAnnotatedType<ComponentWithStaticProducerMethod>(ComponentWithStaticProducerMethod.class), getEmptyAnnotatedItem(ComponentWithStaticProducerMethod.class), manager);
+      manager.getModelManager().addComponentModel(componentModel);
       Method method = ComponentWithStaticProducerMethod.class.getMethod("getString");
       boolean exception = false;
       try
       {
-         new ProducerMethodComponentModel<String>(new SimpleAnnotatedMethod(method), container);
+         new ProducerMethodComponentModel<String>(new SimpleAnnotatedMethod<String>(method), manager);
       }
       catch (Exception e) 
       {
@@ -64,10 +48,10 @@ public class ProducerMethodComponentModelTest
    @Test @SpecAssertion(section="3.3")
    public void testApiTypes() throws SecurityException, NoSuchMethodException
    {
-      SimpleComponentModel<SpiderProducer> componentModel = new SimpleComponentModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), emptyAnnotatedItem, container);
-      container.getModelManager().addComponentModel(componentModel);
+      SimpleComponentModel<SpiderProducer> componentModel = new SimpleComponentModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedItem(SpiderProducer.class), manager);
+      manager.getModelManager().addComponentModel(componentModel);
       Method method = SpiderProducer.class.getMethod("produceTarantula");
-      ProducerMethodComponentModel<Tarantula> tarantulaModel = new ProducerMethodComponentModel<Tarantula>(new SimpleAnnotatedMethod(method), container);
+      ProducerMethodComponentModel<Tarantula> tarantulaModel = new ProducerMethodComponentModel<Tarantula>(new SimpleAnnotatedMethod<Tarantula>(method), manager);
       assert tarantulaModel.getApiTypes().contains(Tarantula.class);
       assert tarantulaModel.getApiTypes().contains(DeadlySpider.class);
       assert tarantulaModel.getApiTypes().contains(Spider.class);
@@ -79,10 +63,10 @@ public class ProducerMethodComponentModelTest
    @Test @SpecAssertion(section="3.3.1")
    public void testDefaultBindingType() throws SecurityException, NoSuchMethodException
    {
-      SimpleComponentModel<SpiderProducer> componentModel = new SimpleComponentModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), emptyAnnotatedItem, container);
-      container.getModelManager().addComponentModel(componentModel);
+      SimpleComponentModel<SpiderProducer> componentModel = new SimpleComponentModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedItem(SpiderProducer.class), manager);
+      manager.getModelManager().addComponentModel(componentModel);
       Method method = SpiderProducer.class.getMethod("produceTarantula");
-      ProducerMethodComponentModel<Tarantula> tarantulaModel = new ProducerMethodComponentModel<Tarantula>(new SimpleAnnotatedMethod(method), container);
+      ProducerMethodComponentModel<Tarantula> tarantulaModel = new ProducerMethodComponentModel<Tarantula>(new SimpleAnnotatedMethod<Tarantula>(method), manager);
       assert tarantulaModel.getBindingTypes().size() == 1;
       assert tarantulaModel.getBindingTypes().iterator().next().annotationType().equals(Current.class);
    }
@@ -90,10 +74,10 @@ public class ProducerMethodComponentModelTest
    @Test
    public void testBindingType() throws SecurityException, NoSuchMethodException
    {
-      SimpleComponentModel<SpiderProducer> componentModel = new SimpleComponentModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), emptyAnnotatedItem, container);
-      container.getModelManager().addComponentModel(componentModel);
+      SimpleComponentModel<SpiderProducer> componentModel = new SimpleComponentModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedItem(SpiderProducer.class), manager);
+      manager.getModelManager().addComponentModel(componentModel);
       Method method = SpiderProducer.class.getMethod("produceTameTarantula");
-      ProducerMethodComponentModel<Tarantula> tarantulaModel = new ProducerMethodComponentModel<Tarantula>(new SimpleAnnotatedMethod(method), container);
+      ProducerMethodComponentModel<Tarantula> tarantulaModel = new ProducerMethodComponentModel<Tarantula>(new SimpleAnnotatedMethod<Tarantula>(method), manager);
       assert tarantulaModel.getBindingTypes().size() == 1;
       assert tarantulaModel.getBindingTypes().iterator().next().annotationType().equals(Tame.class);
    }
@@ -101,13 +85,13 @@ public class ProducerMethodComponentModelTest
    @Test @SpecAssertion(section="3.3")
    public void testFinalMethod() throws SecurityException, NoSuchMethodException
    {
-      SimpleComponentModel<ComponentWithFinalProducerMethod> componentModel = new SimpleComponentModel<ComponentWithFinalProducerMethod>(new SimpleAnnotatedType<ComponentWithFinalProducerMethod>(ComponentWithFinalProducerMethod.class), emptyAnnotatedItem, container);
-      container.getModelManager().addComponentModel(componentModel);
+      SimpleComponentModel<ComponentWithFinalProducerMethod> componentModel = new SimpleComponentModel<ComponentWithFinalProducerMethod>(new SimpleAnnotatedType<ComponentWithFinalProducerMethod>(ComponentWithFinalProducerMethod.class), getEmptyAnnotatedItem(ComponentWithFinalProducerMethod.class), manager);
+      manager.getModelManager().addComponentModel(componentModel);
       Method method = ComponentWithFinalProducerMethod.class.getMethod("getString");
       boolean exception = false;
       try
       {
-         new ProducerMethodComponentModel<String>(new SimpleAnnotatedMethod(method), container);     
+         new ProducerMethodComponentModel<String>(new SimpleAnnotatedMethod<String>(method), manager);     
       }
       catch (Exception e) 
       {
@@ -119,40 +103,40 @@ public class ProducerMethodComponentModelTest
    @Test @SpecAssertion(section="3.3")
    public void testFinalMethodWithDependentScope() throws SecurityException, NoSuchMethodException
    {
-      SimpleComponentModel<SpiderProducer> componentModel = new SimpleComponentModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), emptyAnnotatedItem, container);
-      container.getModelManager().addComponentModel(componentModel);
+      SimpleComponentModel<SpiderProducer> componentModel = new SimpleComponentModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedItem(SpiderProducer.class), manager);
+      manager.getModelManager().addComponentModel(componentModel);
       Method method = SpiderProducer.class.getMethod("produceTrapdoorSpider");
-      ProducerMethodComponentModel<TrapdoorSpider> trapdoorSpiderModel = new ProducerMethodComponentModel<TrapdoorSpider>(new SimpleAnnotatedMethod(method), container);
-      assert trapdoorSpiderModel.getScopeType().annotationType().equals(Dependent.class);
+      ProducerMethodComponentModel<TrapdoorSpider> trapdoorSpiderModel = new ProducerMethodComponentModel<TrapdoorSpider>(new SimpleAnnotatedMethod<TrapdoorSpider>(method), manager);
+      assert trapdoorSpiderModel.getScopeType().equals(Dependent.class);
    }
    
    @Test @SpecAssertion(section="3.3.6")
    public void testNamedMethod() throws SecurityException, NoSuchMethodException
    {
-      SimpleComponentModel<SpiderProducer> componentModel = new SimpleComponentModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), emptyAnnotatedItem, container);
-      container.getModelManager().addComponentModel(componentModel);
+      SimpleComponentModel<SpiderProducer> componentModel = new SimpleComponentModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedItem(SpiderProducer.class), manager);
+      manager.getModelManager().addComponentModel(componentModel);
       Method method = SpiderProducer.class.getMethod("produceBlackWidow");
-      ProducerMethodComponentModel<BlackWidow> blackWidowSpiderModel = new ProducerMethodComponentModel<BlackWidow>(new SimpleAnnotatedMethod(method), container);
+      ProducerMethodComponentModel<BlackWidow> blackWidowSpiderModel = new ProducerMethodComponentModel<BlackWidow>(new SimpleAnnotatedMethod<BlackWidow>(method), manager);
       assert blackWidowSpiderModel.getName().equals("blackWidow");
    }
    
    @Test @SpecAssertion(section="3.3.6")
    public void testDefaultNamedMethod() throws SecurityException, NoSuchMethodException
    {
-      SimpleComponentModel<SpiderProducer> componentModel = new SimpleComponentModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), emptyAnnotatedItem, container);
-      container.getModelManager().addComponentModel(componentModel);
+      SimpleComponentModel<SpiderProducer> componentModel = new SimpleComponentModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedItem(SpiderProducer.class), manager);
+      manager.getModelManager().addComponentModel(componentModel);
       Method method = SpiderProducer.class.getMethod("produceDaddyLongLegs");
-      ProducerMethodComponentModel<DaddyLongLegs> daddyLongLegsSpiderModel = new ProducerMethodComponentModel<DaddyLongLegs>(new SimpleAnnotatedMethod(method), container);
+      ProducerMethodComponentModel<DaddyLongLegs> daddyLongLegsSpiderModel = new ProducerMethodComponentModel<DaddyLongLegs>(new SimpleAnnotatedMethod<DaddyLongLegs>(method), manager);
       assert daddyLongLegsSpiderModel.getName().equals("produceDaddyLongLegs");
    }
    
    @Test @SpecAssertion(section="3.3.6")
    public void testDefaultNamedJavaBeanMethod() throws SecurityException, NoSuchMethodException
    {
-      SimpleComponentModel<SpiderProducer> componentModel = new SimpleComponentModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), emptyAnnotatedItem, container);
-      container.getModelManager().addComponentModel(componentModel);
+      SimpleComponentModel<SpiderProducer> componentModel = new SimpleComponentModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedItem(SpiderProducer.class), manager);
+      manager.getModelManager().addComponentModel(componentModel);
       Method method = SpiderProducer.class.getMethod("getLadybirdSpider");
-      ProducerMethodComponentModel<LadybirdSpider> ladybirdSpiderModel = new ProducerMethodComponentModel<LadybirdSpider>(new SimpleAnnotatedMethod(method), container);
+      ProducerMethodComponentModel<LadybirdSpider> ladybirdSpiderModel = new ProducerMethodComponentModel<LadybirdSpider>(new SimpleAnnotatedMethod<LadybirdSpider>(method), manager);
       assert ladybirdSpiderModel.getName().equals("ladybirdSpider");
    }
    

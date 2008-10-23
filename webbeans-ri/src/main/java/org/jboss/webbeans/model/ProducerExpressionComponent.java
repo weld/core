@@ -27,7 +27,7 @@ public class ProducerExpressionComponent<T> extends AbstractProducerComponentMod
    
    protected void checkApiType()
    {
-      if (!getScopeType().annotationType().equals(Dependent.class))
+      if (!getScopeType().equals(Dependent.class))
       {
          if (Modifier.isFinal(getType().getModifiers()))
          {

@@ -4,10 +4,10 @@ import javax.webbeans.Current;
 import javax.webbeans.Production;
 
 @Production
-public class Farm
+public class FishFarm
 {
 
    @Current
-   private Pig pig;
+   private Tuna tuna;
    
 }

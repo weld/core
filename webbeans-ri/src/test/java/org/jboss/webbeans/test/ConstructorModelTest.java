@@ -19,7 +19,7 @@ import org.jboss.webbeans.test.components.Goose;
 import org.jboss.webbeans.test.components.Order;
 import org.jboss.webbeans.test.components.Sheep;
 import org.jboss.webbeans.test.components.Turkey;
-import org.jboss.webbeans.test.mock.MockContainerImpl;
+import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -36,7 +36,7 @@ public class ConstructorModelTest
    public void before()
    {
       emptyAnnotatedItem = new SimpleAnnotatedType<Object>(null, new HashMap<Class<? extends Annotation>, Annotation>());
-      container = new MockContainerImpl(null);
+      container = new MockManagerImpl(null);
       
    }
    

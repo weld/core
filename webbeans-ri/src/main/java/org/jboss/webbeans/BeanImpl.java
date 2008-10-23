@@ -16,20 +16,20 @@ public static final String LOGGER_NAME = "componentMetaModel";
    
    private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
    
-   private AbstractComponentModel<T, ?> componentMetaModel;
+   private AbstractComponentModel<T, ?> model;
    
    private ManagerImpl manager;
 
-   public BeanImpl(AbstractComponentModel<T, ?> componentMetaModel, ManagerImpl manager)
+   public BeanImpl(AbstractComponentModel<T, ?> model, ManagerImpl manager)
    {
       super(manager);
-      this.componentMetaModel = componentMetaModel;
+      this.model = model;
    }
 
    @Override
    public T create()
    {
-      return componentMetaModel.getConstructor().invoke(manager);
+      return model.getConstructor().invoke(manager);
    }
 
    @Override
@@ -42,32 +42,31 @@ public static final String LOGGER_NAME = "componentMetaModel";
    @Override
    public Set<Annotation> getBindingTypes()
    {
-      return componentMetaModel.getBindingTypes();
+      return model.getBindingTypes();
    }
 
    @Override
-   public Class<Annotation> getDeploymentType()
+   public Class<? extends Annotation> getDeploymentType()
    {
-      return null; // componentMetaModel.getDeploymentType();
+     return model.getDeploymentType();
    }
 
    @Override
    public String getName()
    {
-      return componentMetaModel.getName();
+      return model.getName();
    }
 
    @Override
-   public Class<Annotation> getScopeType()
+   public Class<? extends Annotation> getScopeType()
    {
-      return null; //componentMetaModel.getScopeType();
+      return model.getScopeType();
    }
 
    @Override
    public Set<Class<?>> getTypes()
    {
-      // TODO Auto-generated method stub
-      return null;
+      return model.getApiTypes();
    }
 
    @Override

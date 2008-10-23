@@ -23,12 +23,12 @@ import org.jboss.webbeans.test.components.Lion;
 import org.jboss.webbeans.test.components.Panther;
 import org.jboss.webbeans.test.components.Puma;
 import org.jboss.webbeans.test.components.Tiger;
-import org.jboss.webbeans.test.mock.MockContainerImpl;
+import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class EnterpriseComponentModelTest
+public class EnterpriseComponentModelTest extends AbstractTest
 {
    
    private ManagerImpl container;
@@ -40,7 +40,7 @@ public class EnterpriseComponentModelTest
    public void before()
    {
       emptyAnnotatedItem = new SimpleAnnotatedType<Object>(null, new HashMap<Class<? extends Annotation>, Annotation>());
-      container = new MockContainerImpl(null);
+      container = new MockManagerImpl(null);
    }
    
    @Test @SpecAssertion(section="2.7.2")
@@ -54,7 +54,7 @@ public class EnterpriseComponentModelTest
    public void testStateless()
    {
       EnterpriseComponentModel<Lion> lion = new EnterpriseComponentModel<Lion>(new SimpleAnnotatedType<Lion>(Lion.class), emptyAnnotatedItem, container);
-      assert lion.getScopeType().annotationType().equals(Dependent.class);
+      assert lion.getScopeType().equals(Dependent.class);
       Reflections.annotationSetMatches(lion.getBindingTypes(), Current.class);
       assert lion.getName().equals("lion");
    }
@@ -67,7 +67,7 @@ public class EnterpriseComponentModelTest
       AnnotatedType annotatedItem = new SimpleAnnotatedType(Giraffe.class, annotations);
       
       EnterpriseComponentModel<Giraffe> giraffe = new EnterpriseComponentModel<Giraffe>(new SimpleAnnotatedType(Giraffe.class), annotatedItem, container);
-      assert giraffe.getScopeType().annotationType().equals(Dependent.class);
+      assert giraffe.getScopeType().equals(Dependent.class);
       Reflections.annotationSetMatches(giraffe.getBindingTypes(), Current.class);
    }
    
@@ -77,7 +77,7 @@ public class EnterpriseComponentModelTest
       boolean exception = false;
       try
       {
-         new EnterpriseComponentModel<Bear>(new SimpleAnnotatedType<Bear>(Bear.class), emptyAnnotatedItem, container);
+         new EnterpriseComponentModel<Bear>(new SimpleAnnotatedType<Bear>(Bear.class), getEmptyAnnotatedItem(Bear.class), container);
       }
       catch (Exception e) 
       {

@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.components;
+package org.jboss.webbeans.test.components.broken;
 
 import javax.webbeans.Production;
 import javax.webbeans.RequestScoped;

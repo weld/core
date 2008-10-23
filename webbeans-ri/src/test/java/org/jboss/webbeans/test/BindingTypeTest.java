@@ -18,14 +18,14 @@ import org.jboss.webbeans.test.components.Order;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.Test;
 
-public class BindingTypeTest extends AbstractModelTest 
+public class BindingTypeTest extends AbstractTest 
 {
 	
    @SuppressWarnings("unchecked")
    @Test @SpecAssertion(section={"2.3.3", "2.3.1"}) 
    public void testDefaultBindingTypeDeclaredInJava()
    {
-      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), emptyAnnotatedItem, container);
+      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), emptyAnnotatedItem, manager);
       assert order.getBindingTypes().size() == 1;
       order.getBindingTypes().iterator().next().annotationType().equals(Current.class);
    }
@@ -58,7 +58,7 @@ public class BindingTypeTest extends AbstractModelTest
    @Test @SpecAssertion(section="2.3.3")
    public void testBindingTypesDeclaredInJava()
    {
-      SimpleComponentModel<Cat> cat = new SimpleComponentModel<Cat>(new SimpleAnnotatedType(Cat.class), emptyAnnotatedItem, container);
+      SimpleComponentModel<Cat> cat = new SimpleComponentModel<Cat>(new SimpleAnnotatedType(Cat.class), emptyAnnotatedItem, manager);
       assert cat.getBindingTypes().size() == 1;
       assert Reflections.annotationSetMatches(cat.getBindingTypes(), Synchronous.class);
    }
@@ -77,7 +77,7 @@ public class BindingTypeTest extends AbstractModelTest
       annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
       AnnotatedType annotatedItem = new SimpleAnnotatedType(Antelope.class, annotations);
       
-      SimpleComponentModel<Antelope> antelope = new SimpleComponentModel<Antelope>(emptyAnnotatedItem, annotatedItem, container);
+      SimpleComponentModel<Antelope> antelope = new SimpleComponentModel<Antelope>(emptyAnnotatedItem, annotatedItem, manager);
       assert Reflections.annotationSetMatches(antelope.getBindingTypes(), Asynchronous.class);
    }
 
@@ -89,7 +89,7 @@ public class BindingTypeTest extends AbstractModelTest
       annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
       AnnotatedType annotatedItem = new SimpleAnnotatedType(Cat.class, annotations);
       
-      SimpleComponentModel<Cat> cat = new SimpleComponentModel<Cat>(new SimpleAnnotatedType(Cat.class), annotatedItem, container);
+      SimpleComponentModel<Cat> cat = new SimpleComponentModel<Cat>(new SimpleAnnotatedType(Cat.class), annotatedItem, manager);
       assert cat.getBindingTypes().size() == 1;
       assert Reflections.annotationSetMatches(cat.getBindingTypes(), Asynchronous.class);
    }

@@ -27,7 +27,7 @@ import org.jboss.webbeans.test.components.Order;
 import org.jboss.webbeans.test.components.SeaBass;
 import org.testng.annotations.Test;
 
-public class ScopeTypeTest extends AbstractModelTest
+public class ScopeTypeTest extends AbstractTest
 {
    
    @Test @SpecAssertion(section="2.4")
@@ -57,8 +57,8 @@ public class ScopeTypeTest extends AbstractModelTest
    @Test @SpecAssertion(section="2.4.3")
    public void testScopeDeclaredInJava()
    {
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), emptyAnnotatedItem, container);
-      assert trout.getScopeType().annotationType().equals(RequestScoped.class);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedItem(SeaBass.class), manager);
+      assert trout.getScopeType().equals(RequestScoped.class);
    }
    
    @Test @SpecAssertion(section="2.4.3")
@@ -67,7 +67,7 @@ public class ScopeTypeTest extends AbstractModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<ComponentWithTooManyScopeTypes>(new SimpleAnnotatedType(ComponentWithTooManyScopeTypes.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<ComponentWithTooManyScopeTypes>(new SimpleAnnotatedType<ComponentWithTooManyScopeTypes>(ComponentWithTooManyScopeTypes.class), getEmptyAnnotatedItem(ComponentWithTooManyScopeTypes.class), manager);
       }
       catch (Exception e) 
       {
@@ -85,8 +85,8 @@ public class ScopeTypeTest extends AbstractModelTest
          Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
          annotations.put(RequestScoped.class, new RequestScopedAnnotationLiteral());
          annotations.put(ConversationScoped.class, new ConversationScopedAnnotationLiteral());
-         AnnotatedType antelopeAnnotatedItem = new SimpleAnnotatedType(Antelope.class, annotations);
-         new SimpleComponentModel<Antelope>(emptyAnnotatedItem, antelopeAnnotatedItem, container);
+         AnnotatedType<Antelope> antelopeAnnotatedItem = new SimpleAnnotatedType<Antelope>(Antelope.class, annotations);
+         new SimpleComponentModel<Antelope>(getEmptyAnnotatedItem(Antelope.class), antelopeAnnotatedItem, manager);
       }
       catch (Exception e) 
       {
@@ -100,20 +100,20 @@ public class ScopeTypeTest extends AbstractModelTest
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(RequestScoped.class, new RequestScopedAnnotationLiteral());
-      AnnotatedType annotatedItem = new SimpleAnnotatedType(Order.class, annotations);
+      AnnotatedType<Order> annotatedItem = new SimpleAnnotatedType<Order>(Order.class, annotations);
       
-      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), annotatedItem, container);
-      assert order.getScopeType().annotationType().equals(RequestScoped.class);
+      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType<Order>(Order.class), annotatedItem, manager);
+      assert order.getScopeType().equals(RequestScoped.class);
    }
    
    @Test @SpecAssertion(section="2.4.4")
    public void testScopeMissingInXml()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
+      AnnotatedType<SeaBass> annotatedItem = new SimpleAnnotatedType<SeaBass>(SeaBass.class, annotations);
       
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
-      assert trout.getScopeType().annotationType().equals(RequestScoped.class);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), annotatedItem, manager);
+      assert trout.getScopeType().equals(RequestScoped.class);
    }
 
    @Test @SpecAssertion(section="2.4.4")
@@ -121,16 +121,16 @@ public class ScopeTypeTest extends AbstractModelTest
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(ConversationScoped.class, new ConversationScopedAnnotationLiteral());
-      AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
-      assert trout.getScopeType().annotationType().equals(ConversationScoped.class);
+      AnnotatedType<SeaBass> annotatedItem = new SimpleAnnotatedType<SeaBass>(SeaBass.class, annotations);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), annotatedItem, manager);
+      assert trout.getScopeType().equals(ConversationScoped.class);
    }
    
    @Test @SpecAssertion(section="2.4.5")
    public void testDefaultScope()
    {
-      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), emptyAnnotatedItem, container);
-      assert order.getScopeType().annotationType().equals(Dependent.class);
+      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType<Order>(Order.class), getEmptyAnnotatedItem(Order.class), manager);
+      assert order.getScopeType().equals(Dependent.class);
    }
    
    @Test @SpecAssertion(section={"2.4.5", "2.7.2"})
@@ -138,9 +138,9 @@ public class ScopeTypeTest extends AbstractModelTest
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
-      AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
-      assert trout.getScopeType().annotationType().equals(RequestScoped.class);
+      AnnotatedType<SeaBass> annotatedItem = new SimpleAnnotatedType<SeaBass>(SeaBass.class, annotations);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), annotatedItem, manager);
+      assert trout.getScopeType().equals(RequestScoped.class);
    }
    
    @Test @SpecAssertion(section="2.4.5")
@@ -149,12 +149,12 @@ public class ScopeTypeTest extends AbstractModelTest
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
       annotations.put(AnimalStereotype.class, new AnimalStereotypeAnnotationLiteral());
-      AnnotatedType annotatedItem = new SimpleAnnotatedType(Haddock.class, annotations);
+      AnnotatedType<Haddock> annotatedItem = new SimpleAnnotatedType<Haddock>(Haddock.class, annotations);
       
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Haddock>(new SimpleAnnotatedType(Haddock.class), annotatedItem, container);
+         new SimpleComponentModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), annotatedItem, manager);
       }
       catch (Exception e) 
       {
@@ -169,10 +169,10 @@ public class ScopeTypeTest extends AbstractModelTest
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
       annotations.put(AnimalStereotype.class, new AnimalStereotypeAnnotationLiteral());
-      AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
+      AnnotatedType<SeaBass> annotatedItem = new SimpleAnnotatedType<SeaBass>(SeaBass.class, annotations);
       
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
-      assert trout.getScopeType().annotationType().equals(RequestScoped.class);     
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), annotatedItem, manager);
+      assert trout.getScopeType().equals(RequestScoped.class);     
    }
    
    @Test @SpecAssertion(section="2.4.5")
@@ -181,10 +181,10 @@ public class ScopeTypeTest extends AbstractModelTest
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
       annotations.put(RiverFishStereotype.class, new RiverFishStereotypeAnnotationLiteral());
-      AnnotatedType annotatedItem = new SimpleAnnotatedType(Haddock.class, annotations);
+      AnnotatedType<Haddock> annotatedItem = new SimpleAnnotatedType<Haddock>(Haddock.class, annotations);
       
-      SimpleComponentModel<Haddock> haddock = new SimpleComponentModel<Haddock>(new SimpleAnnotatedType(Haddock.class), annotatedItem, container);
-      assert haddock.getScopeType().annotationType().equals(ApplicationScoped.class);
+      SimpleComponentModel<Haddock> haddock = new SimpleComponentModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), annotatedItem, manager);
+      assert haddock.getScopeType().equals(ApplicationScoped.class);
    }
    
 }

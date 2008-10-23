@@ -10,14 +10,13 @@ import javax.webbeans.Dependent;
 import javax.webbeans.Event;
 import javax.webbeans.Standard;
 
-import org.jboss.webbeans.bindings.StandardAnnotationLiteral;
 import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.injectable.ComponentConstructor;
 import org.jboss.webbeans.introspector.SimpleAnnotatedField;
 import org.jboss.webbeans.model.EventComponentModel;
-import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
+import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.components.DangerCall;
-import org.jboss.webbeans.test.mock.MockContainerImpl;
+import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -30,17 +29,17 @@ import org.testng.annotations.Test;
  */
 public class EventComponentModelTest
 {
-   private MockContainerImpl manager = null;
+   private MockManagerImpl manager = null;
    private EventComponentModel<EventImpl<DangerCall>> eventComponentModel = null;
    EventImpl<DangerCall> eventModelField = null;
 
    @BeforeMethod
    public void before() throws Exception
    {
-      List<Annotation> enabledDeploymentTypes = new ArrayList<Annotation>();
-      enabledDeploymentTypes.add(new StandardAnnotationLiteral());
-      enabledDeploymentTypes.add(new AnotherDeploymentTypeAnnotationLiteral());
-      manager = new MockContainerImpl(enabledDeploymentTypes);
+      List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
+      enabledDeploymentTypes.add(Standard.class);
+      enabledDeploymentTypes.add(AnotherDeploymentType.class);
+      manager = new MockManagerImpl(enabledDeploymentTypes);
       Field eventModelField = this.getClass().getDeclaredField("eventModelField");
       eventComponentModel = new EventComponentModel<EventImpl<DangerCall>>(
             new SimpleAnnotatedField<EventImpl<DangerCall>>(eventModelField),
@@ -64,7 +63,7 @@ public class EventComponentModelTest
    @Test(groups = "eventbus")
    public void testScopeType()
    {
-      assert eventComponentModel.getScopeType().annotationType().equals(Dependent.class);
+      assert eventComponentModel.getScopeType().equals(Dependent.class);
    }
    
    /**
@@ -73,15 +72,15 @@ public class EventComponentModelTest
    @Test(groups = "eventbus")
    public void testDeploymentType()
    {
-      assert eventComponentModel.getDeploymentType().annotationType().equals(Standard.class);
+      assert eventComponentModel.getDeploymentType().equals(Standard.class);
    }
    
    @Test(groups = "eventbus")
    public void testApiTypes()
    {
-      Set<Class> apis = eventComponentModel.getApiTypes();
+      Set<Class<?>> apis = eventComponentModel.getApiTypes();
       assert apis.size() >= 1;
-      for (Class api : apis)
+      for (Class<?> api : apis)
       {
          api.equals(Event.class);
       }

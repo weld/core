@@ -24,9 +24,9 @@ public class InjectableParameterWrapper<T> extends InjectableParameter<T>
    }
 
    @Override
-   public Set<Bean<?>> getPossibleTargets(Set<Bean<?>> possibleBeans)
+   public Set<Bean<?>> getPossibleBeans(Set<Bean<?>> possibleBeans)
    {
-      return delegate.getPossibleTargets(possibleBeans);
+      return delegate.getPossibleBeans(possibleBeans);
    }
 
    @Override

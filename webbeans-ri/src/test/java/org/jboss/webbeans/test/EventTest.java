@@ -6,18 +6,19 @@ import java.util.List;
 
 import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Event;
-import org.jboss.webbeans.bindings.StandardAnnotationLiteral;
+import javax.webbeans.Standard;
+
 import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
-import org.jboss.webbeans.test.annotations.Tame;
+import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.Synchronous;
+import org.jboss.webbeans.test.annotations.Tame;
 import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
-import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.FishStereotypeAnnotationLiteral;
-import org.jboss.webbeans.test.bindings.TameAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.SynchronousAnnotationLiteral;
+import org.jboss.webbeans.test.bindings.TameAnnotationLiteral;
 import org.jboss.webbeans.test.components.DangerCall;
-import org.jboss.webbeans.test.mock.MockContainerImpl;
+import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -31,15 +32,15 @@ import org.testng.annotations.Test;
 @SpecVersion("20081012")
 public class EventTest
 {
-   private MockContainerImpl manager = null;
+   private MockManagerImpl manager = null;
 
    @BeforeMethod
    public void before() throws Exception
    {
-      List<Annotation> enabledDeploymentTypes = new ArrayList<Annotation>();
-      enabledDeploymentTypes.add(new StandardAnnotationLiteral());
-      enabledDeploymentTypes.add(new AnotherDeploymentTypeAnnotationLiteral());
-      manager = new MockContainerImpl(enabledDeploymentTypes);
+      List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
+      enabledDeploymentTypes.add(Standard.class);
+      enabledDeploymentTypes.add(AnotherDeploymentType.class);
+      manager = new MockManagerImpl(enabledDeploymentTypes);
    }
 
    /**

@@ -16,7 +16,7 @@ import org.jboss.webbeans.test.components.Orangutan;
 import org.jboss.webbeans.test.components.TameOrangutan;
 import org.jboss.webbeans.test.components.broken.Chimpanzee;
 import org.jboss.webbeans.test.components.broken.Gibbon;
-import org.jboss.webbeans.test.mock.MockContainerImpl;
+import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

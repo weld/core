@@ -8,14 +8,14 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.webbeans.BindingType;
+import javax.webbeans.Dependent;
 import javax.webbeans.DeploymentType;
 import javax.webbeans.Named;
+import javax.webbeans.Production;
 import javax.webbeans.ScopeType;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
-import org.jboss.webbeans.bindings.DependentAnnotationLiteral;
-import org.jboss.webbeans.bindings.ProductionAnnotationLiteral;
 import org.jboss.webbeans.injectable.ComponentConstructor;
 import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.InjectableMethod;
@@ -32,12 +32,12 @@ public abstract class AbstractComponentModel<T, E>
    
    private Set<Annotation> bindingTypes;
    protected String name;
-   protected Annotation scopeType;
+   protected Class<? extends Annotation> scopeType;
    private MergedStereotypesModel<T, E> mergedStereotypes;
-   protected Annotation deploymentType;
+   protected Class<? extends Annotation> deploymentType;
    protected Class<T> type;
    protected InjectableMethod<?> removeMethod;
-   private Set<Class> apiTypes;
+   private Set<Class<?>> apiTypes;
    protected Set<Injectable<?, ?>> injectionPoints;
    
    protected void init(ManagerImpl container)
@@ -72,9 +72,9 @@ public abstract class AbstractComponentModel<T, E>
       apiTypes = getTypeHierachy(getType());
    }
    
-   protected Set<Class> getTypeHierachy(Class clazz)
+   protected Set<Class<?>> getTypeHierachy(Class<?> clazz)
    {
-      Set<Class> classes = new HashSet<Class>();
+      Set<Class<?>> classes = new HashSet<Class<?>>();
       if (!(clazz == null || clazz == Object.class))
       {
          classes.add(clazz);
@@ -132,7 +132,7 @@ public abstract class AbstractComponentModel<T, E>
       
       if (xmlScopes.size() == 1)
       {
-         this.scopeType = xmlScopes.iterator().next();
+         this.scopeType = xmlScopes.iterator().next().annotationType();
          log.finest("Scope " + scopeType + " specified in XML");
          return;
       }
@@ -145,14 +145,14 @@ public abstract class AbstractComponentModel<T, E>
       
       if (scopes.size() == 1)
       {
-         this.scopeType = scopes.iterator().next();
+         this.scopeType = scopes.iterator().next().annotationType();
          log.finest("Scope " + scopeType + " specified b annotation");
          return;
       }
       
       if (getMergedStereotypes().getPossibleScopeTypes().size() == 1)
       {
-         this.scopeType = getMergedStereotypes().getPossibleScopeTypes().iterator().next();
+         this.scopeType = getMergedStereotypes().getPossibleScopeTypes().iterator().next().annotationType();
          log.finest("Scope " + scopeType + " specified by stereotype");
          return;
       }
@@ -160,7 +160,7 @@ public abstract class AbstractComponentModel<T, E>
       {
          throw new RuntimeException("All stereotypes must specify the same scope OR a scope must be specified on the component");
       }
-      this.scopeType = new DependentAnnotationLiteral();
+      this.scopeType = Dependent.class;
       log.finest("Using default @Dependent scope");
    }
    
@@ -215,7 +215,7 @@ public abstract class AbstractComponentModel<T, E>
       
       if (xmlDeploymentTypes.size() == 1)
       {
-         this.deploymentType = xmlDeploymentTypes.iterator().next(); 
+         this.deploymentType = xmlDeploymentTypes.iterator().next().annotationType(); 
          log.finest("Deployment type " + deploymentType + " specified in XML");
          return;
       }
@@ -229,7 +229,7 @@ public abstract class AbstractComponentModel<T, E>
       }
       if (deploymentTypes.size() == 1)
       {
-         this.deploymentType = deploymentTypes.iterator().next();
+         this.deploymentType = deploymentTypes.iterator().next().annotationType();
          log.finest("Deployment type " + deploymentType + " specified by annotation");
          return;
       }
@@ -243,7 +243,7 @@ public abstract class AbstractComponentModel<T, E>
       
       if (getXmlAnnotatedItem().getDelegate() != null)
       {
-         this.deploymentType = new ProductionAnnotationLiteral();
+         this.deploymentType = Production.class;
          log.finest("Using default @Production deployment type");
          return;
       }
@@ -257,11 +257,11 @@ public abstract class AbstractComponentModel<T, E>
       }
    }
    
-   public static Annotation getDeploymentType(List<Annotation> enabledDeploymentTypes, Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes)
+   public static Class<? extends Annotation> getDeploymentType(List<Class<? extends Annotation>> enabledDeploymentTypes, Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes)
    {
       for (int i = (enabledDeploymentTypes.size() - 1); i > 0; i--)
       {
-         if (possibleDeploymentTypes.containsKey((enabledDeploymentTypes.get(i).annotationType())))
+         if (possibleDeploymentTypes.containsKey((enabledDeploymentTypes.get(i))))
          {
             return enabledDeploymentTypes.get(i); 
          }
@@ -281,7 +281,7 @@ public abstract class AbstractComponentModel<T, E>
       return bindingTypes;
    }
 
-   public Annotation getScopeType()
+   public Class<? extends Annotation> getScopeType()
    {
       return scopeType;
    }
@@ -291,7 +291,7 @@ public abstract class AbstractComponentModel<T, E>
       return type;
    }
    
-   public Set<Class> getApiTypes()
+   public Set<Class<?>> getApiTypes()
    {
       return apiTypes;
    }
@@ -304,7 +304,7 @@ public abstract class AbstractComponentModel<T, E>
     */
    public abstract String getLocation();
 
-   public Annotation getDeploymentType()
+   public Class<? extends Annotation> getDeploymentType()
    {
       return deploymentType;
    }

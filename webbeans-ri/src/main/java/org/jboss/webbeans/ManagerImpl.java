@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.webbeans.DeploymentException;
+import javax.webbeans.Production;
 import javax.webbeans.Standard;
 import javax.webbeans.TypeLiteral;
 import javax.webbeans.manager.Bean;
@@ -18,8 +20,6 @@ import javax.webbeans.manager.Interceptor;
 import javax.webbeans.manager.Manager;
 import javax.webbeans.Observer;
 
-import org.jboss.webbeans.bindings.ProductionAnnotationLiteral;
-import org.jboss.webbeans.bindings.StandardAnnotationLiteral;
 import org.jboss.webbeans.ejb.EjbManager;
 import org.jboss.webbeans.event.EventBus;
 import org.jboss.webbeans.injectable.SimpleInjectable;
@@ -27,7 +27,7 @@ import org.jboss.webbeans.injectable.SimpleInjectable;
 public class ManagerImpl implements Manager
 {
 
-   private List<Annotation> enabledDeploymentTypes;
+   private List<Class<? extends Annotation>> enabledDeploymentTypes;
    private ModelManager modelManager;
    private EjbManager ejbLookupManager;
    private EventBus eventBus;
@@ -37,7 +37,7 @@ public class ManagerImpl implements Manager
 
    private Set<Bean<?>> beans;
 
-   public ManagerImpl(List<Annotation> enabledDeploymentTypes)
+   public ManagerImpl(List<Class<? extends Annotation>> enabledDeploymentTypes)
    {
       initEnabledDeploymentTypes(enabledDeploymentTypes);
       this.modelManager = new ModelManager();
@@ -48,20 +48,20 @@ public class ManagerImpl implements Manager
    }
 
    private void initEnabledDeploymentTypes(
-         List<Annotation> enabledDeploymentTypes)
+         List<Class<? extends Annotation>> enabledDeploymentTypes)
    {
-      this.enabledDeploymentTypes = new ArrayList<Annotation>();
+      this.enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       if (enabledDeploymentTypes == null)
       {
-         this.enabledDeploymentTypes.add(0, new StandardAnnotationLiteral());
-         this.enabledDeploymentTypes.add(1, new ProductionAnnotationLiteral());
+         this.enabledDeploymentTypes.add(0, Standard.class);
+         this.enabledDeploymentTypes.add(1, Production.class);
       } else
       {
          this.enabledDeploymentTypes.addAll(enabledDeploymentTypes);
-         if (!this.enabledDeploymentTypes.get(0).annotationType().equals(
+         if (!this.enabledDeploymentTypes.get(0).equals(
                Standard.class))
          {
-            throw new RuntimeException(
+            throw new DeploymentException(
                   "@Standard must be the lowest precedence deployment type");
          }
       }
@@ -89,7 +89,7 @@ public class ManagerImpl implements Manager
       return (Set<Observer<T>>) eventBus.getObservers(event, bindings);
    }
 
-   public List<Annotation> getEnabledDeploymentTypes()
+   public List<Class<? extends Annotation>> getEnabledDeploymentTypes()
    {
       return enabledDeploymentTypes;
    }

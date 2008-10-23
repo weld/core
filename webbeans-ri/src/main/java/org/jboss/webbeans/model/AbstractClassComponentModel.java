@@ -32,7 +32,7 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
     * 
     * @param annotatedItem Annotations read from java classes
     * @param xmlAnnotatedItem Annotations read from XML
-    * @param container
+    * @param manager
     */
    @SuppressWarnings("unchecked")
    public AbstractClassComponentModel(AnnotatedType<T> annotatedItem, AnnotatedType xmlAnnotatedItem)
@@ -135,12 +135,12 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
       log.finest("Checking if " + getScopeType() + " is allowed for " + type);
       if (getMergedStereotypes().getSupportedScopes().size() > 0)
       {
-         if (!getMergedStereotypes().getSupportedScopes().contains(getScopeType().annotationType()))
+         if (!getMergedStereotypes().getSupportedScopes().contains(getScopeType()))
          {
             throw new RuntimeException("Scope " + getScopeType() + " is not an allowed by the stereotype for " + type);
          }
       }
-      if (isDeclaredFinal(type) && !getScopeType().annotationType().equals(Dependent.class))
+      if (isDeclaredFinal(type) && !getScopeType().equals(Dependent.class))
       {
          throw new RuntimeException("Scope " + getScopeType() + " is not allowed as the class is declared final or has methods declared final for " + type + ". Only @Dependent is allowed for final components");
       }

@@ -36,16 +36,16 @@ import org.jboss.webbeans.test.components.Haddock;
 import org.jboss.webbeans.test.components.Horse;
 import org.jboss.webbeans.test.components.Moose;
 import org.jboss.webbeans.test.components.Order;
-import org.jboss.webbeans.test.components.Pig;
 import org.jboss.webbeans.test.components.SeaBass;
 import org.jboss.webbeans.test.components.Tuna;
 import org.jboss.webbeans.test.components.broken.ComponentWithTooManyDeploymentTypes;
+import org.jboss.webbeans.test.components.broken.Pig;
 import org.jboss.webbeans.test.components.broken.OuterComponent.InnerComponent;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.Test;
 
 @SpecVersion("20080925")
-public class SimpleComponentModelTest extends AbstractModelTest
+public class SimpleComponentModelTest extends AbstractTest
 {
    
    private class NamedAnnotationLiteral extends AnnotationLiteral<Named> implements Named
@@ -73,7 +73,7 @@ public class SimpleComponentModelTest extends AbstractModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<ComponentWithTooManyDeploymentTypes>(new SimpleAnnotatedType(ComponentWithTooManyDeploymentTypes.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<ComponentWithTooManyDeploymentTypes>(new SimpleAnnotatedType<ComponentWithTooManyDeploymentTypes>(ComponentWithTooManyDeploymentTypes.class), getEmptyAnnotatedItem(ComponentWithTooManyDeploymentTypes.class), manager);
       }
       catch (Exception e) 
       {
@@ -89,24 +89,24 @@ public class SimpleComponentModelTest extends AbstractModelTest
       xmlDefinedDeploymentTypeAnnotations.put(AnotherDeploymentType.class, new AnotherDeploymentTypeAnnotationLiteral());
       AnnotatedType xmlDefinedDeploymentTypeAnnotatedItem = new SimpleAnnotatedType(ComponentWithTooManyDeploymentTypes.class, xmlDefinedDeploymentTypeAnnotations);
       
-      SimpleComponentModel<ComponentWithTooManyDeploymentTypes> component = new SimpleComponentModel<ComponentWithTooManyDeploymentTypes>(new SimpleAnnotatedType(ComponentWithTooManyDeploymentTypes.class), xmlDefinedDeploymentTypeAnnotatedItem, container);
-      assert component.getDeploymentType().annotationType().equals(AnotherDeploymentType.class);
+      SimpleComponentModel<ComponentWithTooManyDeploymentTypes> component = new SimpleComponentModel<ComponentWithTooManyDeploymentTypes>(new SimpleAnnotatedType(ComponentWithTooManyDeploymentTypes.class), xmlDefinedDeploymentTypeAnnotatedItem, manager);
+      assert component.getDeploymentType().equals(AnotherDeploymentType.class);
    }
    
    @Test @SpecAssertion(section="2.5.5")
    public void testXmlDefaultDeploymentType()
    {
       AnnotatedType antelopeAnnotatedItem = new SimpleAnnotatedType(Antelope.class, new HashMap<Class<? extends Annotation>, Annotation>());
-      SimpleComponentModel<Antelope> antelope = new SimpleComponentModel<Antelope>(emptyAnnotatedItem, antelopeAnnotatedItem, container);
-      assert antelope.getDeploymentType().annotationType().equals(Production.class);
+      SimpleComponentModel<Antelope> antelope = new SimpleComponentModel<Antelope>(emptyAnnotatedItem, antelopeAnnotatedItem, manager);
+      assert antelope.getDeploymentType().equals(Production.class);
    }
    
    @Test @SpecAssertion(section="2.5.4")
    public void testXmlRespectsJavaDeploymentType()
    {
       AnnotatedType annotatedItem = new SimpleAnnotatedType(Tuna.class, new HashMap<Class<? extends Annotation>, Annotation>());
-      SimpleComponentModel<Tuna> tuna = new SimpleComponentModel<Tuna>(new SimpleAnnotatedType(Tuna.class), annotatedItem, container);
-      assert tuna.getDeploymentType().annotationType().equals(AnotherDeploymentType.class);
+      SimpleComponentModel<Tuna> tuna = new SimpleComponentModel<Tuna>(new SimpleAnnotatedType(Tuna.class), annotatedItem, manager);
+      assert tuna.getDeploymentType().equals(AnotherDeploymentType.class);
    }
    
    @Test @SpecAssertion(section="2.5.7")
@@ -116,8 +116,8 @@ public class SimpleComponentModelTest extends AbstractModelTest
       annotations.put(HornedMammalStereotype.class, new HornedMamalStereotypeAnnotationLiteral());
       AnnotatedType annotatedItem = new SimpleAnnotatedType(Moose.class, annotations);
       
-      SimpleComponentModel<Moose> moose = new SimpleComponentModel<Moose>(new SimpleAnnotatedType(Moose.class), annotatedItem, container);
-      assert moose.getDeploymentType().annotationType().equals(HornedAnimalDeploymentType.class);
+      SimpleComponentModel<Moose> moose = new SimpleComponentModel<Moose>(new SimpleAnnotatedType(Moose.class), annotatedItem, manager);
+      assert moose.getDeploymentType().equals(HornedAnimalDeploymentType.class);
       
    }
    
@@ -127,8 +127,8 @@ public class SimpleComponentModelTest extends AbstractModelTest
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
       AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
-      assert trout.getScopeType().annotationType().equals(RequestScoped.class);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, manager);
+      assert trout.getScopeType().equals(RequestScoped.class);
    } 
    
    // **** TESTS FOR SCOPES **** //
@@ -140,7 +140,7 @@ public class SimpleComponentModelTest extends AbstractModelTest
    @Test @SpecAssertion(section="2.6.1")
    public void testDefaultNamed()
    {
-      SimpleComponentModel<Haddock> haddock = new SimpleComponentModel<Haddock>(new SimpleAnnotatedType(Haddock.class), emptyAnnotatedItem, container);
+      SimpleComponentModel<Haddock> haddock = new SimpleComponentModel<Haddock>(new SimpleAnnotatedType(Haddock.class), emptyAnnotatedItem, manager);
       assert haddock.getName() != null;
       assert haddock.getName().equals("haddock");
    }
@@ -151,7 +151,7 @@ public class SimpleComponentModelTest extends AbstractModelTest
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Named.class, new NamedAnnotationLiteral(""));
       AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, manager);
       
       assert trout.getName() != null;
       assert trout.getName().equals("seaBass");
@@ -163,7 +163,7 @@ public class SimpleComponentModelTest extends AbstractModelTest
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Named.class, new NamedAnnotationLiteral("aTrout"));
       AnnotatedType annotatedItem = new SimpleAnnotatedType(SeaBass.class, annotations);
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, container);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), annotatedItem, manager);
       
       assert trout.getName().equals("aTrout");
    }
@@ -171,14 +171,14 @@ public class SimpleComponentModelTest extends AbstractModelTest
    @Test @SpecAssertion(section="2.6.4")
    public void testNotNamed()
    {
-      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), emptyAnnotatedItem, container);
+      SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType(SeaBass.class), emptyAnnotatedItem, manager);
       assert trout.getName() == null;
    }
    
    @Test @SpecAssertion(section="2.6.1")
    public void testNonDefaultNamed()
    {
-      SimpleComponentModel<Moose> moose = new SimpleComponentModel<Moose>(new SimpleAnnotatedType(Moose.class), emptyAnnotatedItem, container);
+      SimpleComponentModel<Moose> moose = new SimpleComponentModel<Moose>(new SimpleAnnotatedType(Moose.class), emptyAnnotatedItem, manager);
       assert moose.getName().equals("aMoose");
    }
    
@@ -195,22 +195,22 @@ public class SimpleComponentModelTest extends AbstractModelTest
       orderXmlAnnotations.put(Named.class, new NamedAnnotationLiteral ("currentSynchronousOrder"));
       AnnotatedType currentSynchronousOrderAnnotatedItem = new SimpleAnnotatedType(Order.class, orderXmlAnnotations);
       
-      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), currentSynchronousOrderAnnotatedItem, container);
-      assert Production.class.equals(order.getDeploymentType().annotationType());
+      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), currentSynchronousOrderAnnotatedItem, manager);
+      assert Production.class.equals(order.getDeploymentType());
       assert "currentSynchronousOrder".equals(order.getName());
       assert order.getBindingTypes().size() == 2;
       assert Reflections.annotationSetMatches(order.getBindingTypes(), Current.class, Synchronous.class);
-      assert order.getScopeType().annotationType().equals(Dependent.class);
+      assert order.getScopeType().equals(Dependent.class);
    }
    
    @Test @SpecAssertion(section="2.7.2")
    public void testSingleStereotype()
    {
-      SimpleComponentModel<Gorilla> gorilla = new SimpleComponentModel<Gorilla>(new SimpleAnnotatedType(Gorilla.class), emptyAnnotatedItem, container);
+      SimpleComponentModel<Gorilla> gorilla = new SimpleComponentModel<Gorilla>(new SimpleAnnotatedType(Gorilla.class), emptyAnnotatedItem, manager);
       assert gorilla.getName() == null;
-      assert gorilla.getDeploymentType().annotationType().equals(Production.class);
+      assert gorilla.getDeploymentType().equals(Production.class);
       assert gorilla.getBindingTypes().iterator().next().annotationType().equals(Current.class);
-      assert gorilla.getScopeType().annotationType().equals(RequestScoped.class);
+      assert gorilla.getScopeType().equals(RequestScoped.class);
    }
    
    @Test @SpecAssertion(section="2.7.4")
@@ -218,7 +218,7 @@ public class SimpleComponentModelTest extends AbstractModelTest
    {
       try
       {
-         new SimpleComponentModel<Gorilla>(new SimpleAnnotatedType(Gorilla.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Gorilla>(new SimpleAnnotatedType(Gorilla.class), emptyAnnotatedItem, manager);
       }
       catch (Exception e) 
       {
@@ -230,7 +230,7 @@ public class SimpleComponentModelTest extends AbstractModelTest
    @Test(expectedExceptions=Exception.class) @SpecAssertion(section="2.7.4")
    public void testRequiredTypeIsNotImplemented()
    {
-      new SimpleComponentModel<Chair>(new SimpleAnnotatedType(Chair.class), emptyAnnotatedItem, container);      
+      new SimpleComponentModel<Chair>(new SimpleAnnotatedType(Chair.class), emptyAnnotatedItem, manager);      
    }
    
    @Test @SpecAssertion(section="2.7.4")
@@ -238,7 +238,7 @@ public class SimpleComponentModelTest extends AbstractModelTest
    {
       try
       {
-         new SimpleComponentModel<Goldfish>(new SimpleAnnotatedType(Goldfish.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Goldfish>(new SimpleAnnotatedType(Goldfish.class), emptyAnnotatedItem, manager);
       }
       catch (Exception e) 
       {
@@ -250,7 +250,7 @@ public class SimpleComponentModelTest extends AbstractModelTest
    @Test(expectedExceptions=Exception.class) @SpecAssertion(section="2.7.4")
    public void testScopeIsNotSupported()
    {
-      new SimpleComponentModel<Carp>(new SimpleAnnotatedType(Carp.class), emptyAnnotatedItem, container);    
+      new SimpleComponentModel<Carp>(new SimpleAnnotatedType(Carp.class), emptyAnnotatedItem, manager);    
    }
    
    @Test @SpecAssertion(section="2.7.2")
@@ -267,7 +267,7 @@ public class SimpleComponentModelTest extends AbstractModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Cow>(new SimpleAnnotatedType(Cow.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Cow>(new SimpleAnnotatedType(Cow.class), emptyAnnotatedItem, manager);
       }
       catch (Exception e) 
       {
@@ -282,7 +282,7 @@ public class SimpleComponentModelTest extends AbstractModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<InnerComponent>(new SimpleAnnotatedType(InnerComponent.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<InnerComponent>(new SimpleAnnotatedType(InnerComponent.class), emptyAnnotatedItem, manager);
       }
       catch (Exception e) 
       {
@@ -297,7 +297,7 @@ public class SimpleComponentModelTest extends AbstractModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Horse>(new SimpleAnnotatedType(Horse.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Horse>(new SimpleAnnotatedType(Horse.class), emptyAnnotatedItem, manager);
       }
       catch (Exception e) 
       {
@@ -310,7 +310,7 @@ public class SimpleComponentModelTest extends AbstractModelTest
       AnnotatedType annotatedItem = new SimpleAnnotatedType(Horse.class, annotations);
       try
       {
-         new SimpleComponentModel<Horse>(new SimpleAnnotatedType(Horse.class), annotatedItem, container);
+         new SimpleComponentModel<Horse>(new SimpleAnnotatedType(Horse.class), annotatedItem, manager);
       }
       catch (Exception e) 
       {
@@ -324,7 +324,7 @@ public class SimpleComponentModelTest extends AbstractModelTest
       boolean exception = false;
       try
       {
-         new SimpleComponentModel<Pig>(new SimpleAnnotatedType(Pig.class), emptyAnnotatedItem, container);
+         new SimpleComponentModel<Pig>(new SimpleAnnotatedType(Pig.class), emptyAnnotatedItem, manager);
       }
       catch (Exception e) 
       {
@@ -337,7 +337,7 @@ public class SimpleComponentModelTest extends AbstractModelTest
       AnnotatedType annotatedItem = new SimpleAnnotatedType(Pig.class, annotations);
       try
       {
-         new SimpleComponentModel<Pig>(new SimpleAnnotatedType(Pig.class), annotatedItem, container);
+         new SimpleComponentModel<Pig>(new SimpleAnnotatedType(Pig.class), annotatedItem, manager);
       }
       catch (Exception e) 
       {

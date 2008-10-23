@@ -4,9 +4,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
+import javax.webbeans.Dependent;
+import javax.webbeans.Standard;
+
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bindings.DependentAnnotationLiteral;
-import org.jboss.webbeans.bindings.StandardAnnotationLiteral;
 import org.jboss.webbeans.injectable.ComponentConstructor;
 import org.jboss.webbeans.injectable.SimpleConstructor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -121,7 +122,7 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Field>
    protected void initDeploymentType(ManagerImpl container)
    {
       // This is always @Standard per 7.4
-      this.deploymentType = new StandardAnnotationLiteral();
+      this.deploymentType = Standard.class;
    }
 
    /* (non-Javadoc)
@@ -141,7 +142,7 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Field>
    protected void initScopeType()
    {
       // This is always @Dependent per 7.4
-      this.scopeType = new DependentAnnotationLiteral();
+      this.scopeType = Dependent.class;
    }
    
 }
