@@ -48,22 +48,7 @@ import org.testng.annotations.Test;
 public class SimpleComponentModelTest extends AbstractTest
 {
    
-   private class NamedAnnotationLiteral extends AnnotationLiteral<Named> implements Named
-   {
-      
-      private String value;
-
-      public NamedAnnotationLiteral(String value)
-      {
-         this.value = value;
-      }
-
-      public String value()
-      {
-         return value;
-      }
-      
-   }
+   private abstract class NamedAnnotationLiteral extends AnnotationLiteral<Named> implements Named {}
    
    // **** TESTS FOR DEPLOYMENT TYPE **** //
    
@@ -149,7 +134,14 @@ public class SimpleComponentModelTest extends AbstractTest
    public void testDefaultXmlNamed()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(Named.class, new NamedAnnotationLiteral(""));
+      annotations.put(Named.class, new NamedAnnotationLiteral() {
+         
+         public String value()
+         {
+            return "";
+         }
+         
+      });
       AnnotatedType<SeaBass> annotatedItem = new SimpleAnnotatedType<SeaBass>(SeaBass.class, annotations);
       SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), annotatedItem, manager);
       
@@ -161,7 +153,14 @@ public class SimpleComponentModelTest extends AbstractTest
    public void testNonDefaultXmlNamed()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(Named.class, new NamedAnnotationLiteral("aTrout"));
+      annotations.put(Named.class, new NamedAnnotationLiteral(){
+         
+         public String value()
+         {
+            return "aTrout";
+         }
+         
+      });
       AnnotatedType<SeaBass> annotatedItem = new SimpleAnnotatedType<SeaBass>(SeaBass.class, annotations);
       SimpleComponentModel<SeaBass> trout = new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), annotatedItem, manager);
       
@@ -192,7 +191,14 @@ public class SimpleComponentModelTest extends AbstractTest
       Map<Class<? extends Annotation>, Annotation> orderXmlAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
       orderXmlAnnotations.put(Current.class, new CurrentAnnotationLiteral());
       orderXmlAnnotations.put(Synchronous.class, new SynchronousAnnotationLiteral());
-      orderXmlAnnotations.put(Named.class, new NamedAnnotationLiteral ("currentSynchronousOrder"));
+      orderXmlAnnotations.put(Named.class, new NamedAnnotationLiteral (){
+         
+         public String value()
+         {
+            return "currentSynchronousOrder";
+         }
+         
+      });
       AnnotatedType currentSynchronousOrderAnnotatedItem = new SimpleAnnotatedType(Order.class, orderXmlAnnotations);
       
       SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), currentSynchronousOrderAnnotatedItem, manager);

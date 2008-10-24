@@ -28,83 +28,72 @@ package javax.webbeans;
  */
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
-// TODO Check members for equals, hashCode and toString()
 public abstract class AnnotationLiteral<T extends Annotation> implements
       Annotation
 {
+   
+   private Class<T> annotationType;
 
    protected AnnotationLiteral()
    {
-      if (!(getClass().getSuperclass() == AnnotationLiteral.class))
+      Class<?> annotationLiteralSubclass = getAnnotationLiteralSubclass(this.getClass());
+      if (annotationLiteralSubclass == null)
       {
-         throw new RuntimeException(
-               "Not a direct subclass of AnnotationLiteral");
+         throw new RuntimeException(getClass() + "is not a subclass of AnnotationLiteral ");
       }
-      if (!(getClass().getGenericSuperclass() instanceof ParameterizedType))
+      annotationType = getTypeParameter(annotationLiteralSubclass);
+      if (annotationType == null)
       {
-         throw new RuntimeException(
-               "Missing type parameter in AnnotationLiteral");
-      }
-   }
+         throw new RuntimeException(getClass() + " is missing type parameter in AnnotationLiteral");
 
-   @SuppressWarnings("unchecked")
-   private static <T> Class<T> getAnnotationType(Class<?> clazz)
-   {
-      ParameterizedType parameterized = (ParameterizedType) clazz
-            .getGenericSuperclass();
-      return (Class<T>) parameterized.getActualTypeArguments()[0];
+      }
    }
    
-   /*
-    // Alternative impl of getAnnotationType
-    private static <T> Class<T> getAnnotationType(Class<?> clazz)
+   @SuppressWarnings("unchecked")
+   private static Class<?> getAnnotationLiteralSubclass(Class<?> clazz)
    {
-
-      Type type = clazz.getGenericSuperclass();
-      Class<T> annotationType = null;
+      Class<?> superclass = clazz.getSuperclass();
+      if (superclass.equals(AnnotationLiteral.class))
+      {
+         return clazz;
+      }
+      else if (superclass.equals(Object.class))
+      {
+         return null;
+      }
+      else
+      {
+         return (getAnnotationLiteralSubclass(superclass));
+      }
+   }
+   
+   @SuppressWarnings("unchecked")
+   private static <T> Class<T> getTypeParameter(Class<?> annotationLiteralSuperclass)
+   {
+      Type type = annotationLiteralSuperclass.getGenericSuperclass();
       if (type instanceof ParameterizedType)
       {
          ParameterizedType parameterizedType = (ParameterizedType) type;
          if (parameterizedType.getActualTypeArguments().length == 1)
          {
-            annotationType = (Class<T>) parameterizedType
+            return (Class<T>) parameterizedType
                   .getActualTypeArguments()[0];
          }
       }
-      if (annotationType == null && clazz != Object.class)
-      {
-         return getAnnotationType(clazz.getSuperclass());
-      } else
-      {
-         return annotationType;
-      }
+      return null;
    }
-    * 
-    */
-
-   // TODO: equals(), hashCode()
-
-   private Class<T> annotationType;
-
-   
 
    public Class<? extends Annotation> annotationType()
    {
-      annotationType = getAnnotationType(getClass());
-      if (annotationType == null)
-      {
-         throw new RuntimeException(
-               "Unable to determine type of annotation literal for " + getClass());
-      }
       return annotationType;
    }
 
    @Override
    public String toString()
    {
-      String annotationName = "@" + annotationType().getName() + "()";
-      return annotationName;
+      return "@" + annotationType().getName() + "()";
    }
    
    @Override

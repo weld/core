@@ -26,39 +26,88 @@ import java.lang.reflect.Type;
  * with actual type parameters.
  * 
  * @author Gavin King
+ * @author Pete Muir
  * 
  * @param <T>
  *            the type, including all actual type parameters
  */
-public abstract class TypeLiteral<T> {
+public abstract class TypeLiteral<T> 
+{
 
-   protected TypeLiteral() {
-      if (!(getClass().getSuperclass() == TypeLiteral.class)) {
-         throw new RuntimeException("Not a direct subclass of TypeLiteral");
+   private Type actualType;
+   
+   protected TypeLiteral() 
+   {
+      Class<?> typeLiteralSubclass = getTypeLiteralSubclass(this.getClass());
+      if (typeLiteralSubclass == null) 
+      {
+         throw new RuntimeException(getClass() + " is not a subclass of TypeLiteral");
       }
-      if (!(getClass().getGenericSuperclass() instanceof ParameterizedType)) {
-         throw new RuntimeException("Missing type parameter in TypeLiteral");
+      actualType = getTypeParameter(typeLiteralSubclass);
+      if (actualType == null)
+      {
+         throw new RuntimeException(getClass() + " is missing type parameter in TypeLiteral");
       }
    }
 
-   public final Type getType() {
-      ParameterizedType parameterized = (ParameterizedType) getClass()
-            .getGenericSuperclass();
-      return parameterized.getActualTypeArguments()[0];
+   public final Type getType() 
+   {
+      return actualType;
    }
 
    @SuppressWarnings("unchecked")
    public final Class<T> getRawType() {
       Type type = getType();
-      if (type instanceof Class) {
+      if (type instanceof Class) 
+      {
          return (Class<T>) type;
-      } else if (type instanceof ParameterizedType) {
+      }
+      else if (type instanceof ParameterizedType) 
+      {
          return (Class<T>) ((ParameterizedType) type).getRawType();
-      } else if (type instanceof GenericArrayType) {
+      }
+      else if (type instanceof GenericArrayType) 
+      {
          return (Class<T>) Object[].class;
-      } else {
+      }
+      else 
+      {
          throw new RuntimeException("Illegal type");
       }
    }
+   
+   @SuppressWarnings("unchecked")
+   private static Class<?> getTypeLiteralSubclass(Class<?> clazz)
+   {
+      Class<?> superclass = clazz.getSuperclass();
+      if (superclass.equals(TypeLiteral.class))
+      {
+         return clazz;
+      }
+      else if (superclass.equals(Object.class))
+      {
+         return null;
+      }
+      else
+      {
+         return (getTypeLiteralSubclass(superclass));
+      }
+   }
+   
+   @SuppressWarnings("unchecked")
+   private static Type getTypeParameter(Class<?> superclass)
+   {
+      Type type = superclass.getGenericSuperclass();
+      if (type instanceof ParameterizedType)
+      {
+         ParameterizedType parameterizedType = (ParameterizedType) type;
+         if (parameterizedType.getActualTypeArguments().length == 1)
+         {
+            return parameterizedType.getActualTypeArguments()[0];
+         }
+      }
+      return null;
+   }
+   
    // TODO: equals(), hashCode()
 }
