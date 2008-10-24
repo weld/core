@@ -1,13 +1,13 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 import javax.webbeans.manager.Manager;
+
+import org.jboss.webbeans.util.BeanMap;
 
 /**
  * Basic implementation of javax.webbeans.Context, backed by a HashMap
@@ -17,29 +17,24 @@ import javax.webbeans.manager.Manager;
  */
 public class BasicContext implements Context
 {
-   private Map<Bean<? extends Object>, Object> beans;
+   private BeanMap<Object> beans;
    private Class<? extends Annotation> scopeType;
    private boolean active;
 
    public BasicContext(Class<? extends Annotation> scopeType)
    {
       this.scopeType = scopeType;
-      beans = new HashMap<Bean<?>, Object>();
+      beans = new BeanMap<Object>();
       active = true;
    }
 
-   public void add(Bean<?> component, Object instance)
-   {
-      beans.put(component, instance);
-   }
-
-   public <T> T get(Bean<T> component, boolean create)
+   public <T> T get(Bean<T> bean, boolean create)
    {
       if (!active)
       {
          throw new ContextNotActiveException();
       }
-      T instance = (T) beans.get(component);
+      T instance = beans.get(bean);
       if (instance != null)
       {
          return instance;
@@ -52,9 +47,9 @@ public class BasicContext implements Context
 
       // TODO should component creation be synchronized?
 
-      instance = component.create();
+      instance = bean.create();
 
-      beans.put(component, instance);
+      beans.put(bean, instance);
       return instance;
    }
 
@@ -65,7 +60,7 @@ public class BasicContext implements Context
 
    public <T> void remove(Manager container, Bean<T> bean)
    {
-      T instance = (T) beans.get(bean);
+      T instance = beans.get(bean);
 
       if (instance != null)
       {
@@ -81,12 +76,10 @@ public class BasicContext implements Context
 
    public void destroy(Manager container)
    {
-      for (Bean c : beans.keySet())
+      for (Bean<? extends Object> bean : beans.keySet())
       {
-         c.destroy(beans.get(c));
+         remove(container, bean);
       }
-      beans.clear();
-      active = false;
    }
 
    public boolean isActive()
