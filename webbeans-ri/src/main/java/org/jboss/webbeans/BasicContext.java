@@ -58,7 +58,7 @@ public class BasicContext implements Context
       return scopeType;
    }
 
-   public <T> void remove(Manager container, Bean<T> bean)
+   public <T> void remove(Manager manager, Bean<T> bean)
    {
       T instance = beans.get(bean);
 
@@ -74,11 +74,11 @@ public class BasicContext implements Context
       }
    }
 
-   public void destroy(Manager container)
+   public void destroy(Manager manager)
    {
       for (Bean<? extends Object> bean : beans.keySet())
       {
-         remove(container, bean);
+         remove(manager, bean);
       }
    }
 
