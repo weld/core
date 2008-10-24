@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 import javax.webbeans.manager.Manager;
@@ -18,15 +19,21 @@ public class BasicContext implements Context
 {
    private Map<Bean<? extends Object>, Object> values;
    private Class<? extends Annotation> scopeType;
+   private boolean active;
    
    public BasicContext(Class<? extends Annotation> scopeType)
    {
       this.scopeType = scopeType;
       values = new HashMap<Bean<?>,Object>();
+      active = true;
    }
    
    public <T> T get(Bean<T> component, boolean create) 
    {
+      if (!active)
+      {
+         throw new ContextNotActiveException();
+      }
       T instance = (T) values.get(component);
       if (instance != null)
       {
@@ -78,8 +85,11 @@ public class BasicContext implements Context
    }
    
    public boolean isActive() {
-   	// TODO Auto-generated method stub
-   	return false;
+      return active;
+   }
+   
+   public void setActive(boolean active) {
+      this.active = active;
    }
 
 }

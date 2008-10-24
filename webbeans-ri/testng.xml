@@ -13,6 +13,7 @@
             <exclude name="remoteComponentInXml" />
             <exclude name="eventbus" />
             <exclude name="injection" />
+            <exclude name="contexts" />
          </run>
       </groups>
       <packages>
