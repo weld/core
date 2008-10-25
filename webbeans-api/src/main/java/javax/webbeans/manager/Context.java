@@ -33,7 +33,7 @@ public interface Context
 
    public Class<? extends Annotation> getScopeType();
    
-   public <T> T get(Bean<T> component, boolean create);
+   public <T> T get(Bean<T> bean, boolean create);
    
    boolean isActive();
    
