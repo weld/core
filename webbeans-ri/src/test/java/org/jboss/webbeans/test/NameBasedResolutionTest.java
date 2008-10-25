@@ -6,7 +6,7 @@ import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.BeanImpl;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
-import org.jboss.webbeans.model.SimpleComponentModel;
+import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.components.Cod;
 import org.jboss.webbeans.test.components.Haddock;
 import org.jboss.webbeans.test.components.Plaice;
@@ -21,13 +21,13 @@ public class NameBasedResolutionTest extends AbstractTest
    @Test
    public void testNamedBasedResolution()
    {
-      Bean<Tuna> tunaBean = new BeanImpl<Tuna>(new SimpleComponentModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), getEmptyAnnotatedItem(Tuna.class), super.manager), manager);
-      Bean<Cod> codBean = new BeanImpl<Cod>(new SimpleComponentModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedItem(Cod.class), super.manager), manager);
-      Bean<Salmon> salmonBean = new BeanImpl<Salmon>(new SimpleComponentModel<Salmon>(new SimpleAnnotatedType<Salmon>(Salmon.class), getEmptyAnnotatedItem(Salmon.class), super.manager), manager);
-      Bean<Sole> soleBean = new BeanImpl<Sole>(new SimpleComponentModel<Sole>(new SimpleAnnotatedType<Sole>(Sole.class), getEmptyAnnotatedItem(Sole.class), super.manager), manager);
-      Bean<SeaBass> seaBassBean = new BeanImpl<SeaBass>(new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedItem(SeaBass.class), super.manager), manager);
-      Bean<Haddock> haddockBean = new BeanImpl<Haddock>(new SimpleComponentModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), getEmptyAnnotatedItem(Haddock.class), super.manager), manager);
-      Bean<Plaice> plaiceBean = new BeanImpl<Plaice>(new SimpleComponentModel<Plaice>(new SimpleAnnotatedType<Plaice>(Plaice.class), getEmptyAnnotatedItem(Plaice.class), super.manager), manager);
+      Bean<Tuna> tunaBean = new BeanImpl<Tuna>(new SimpleBeanModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), getEmptyAnnotatedItem(Tuna.class), super.manager), manager);
+      Bean<Cod> codBean = new BeanImpl<Cod>(new SimpleBeanModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedItem(Cod.class), super.manager), manager);
+      Bean<Salmon> salmonBean = new BeanImpl<Salmon>(new SimpleBeanModel<Salmon>(new SimpleAnnotatedType<Salmon>(Salmon.class), getEmptyAnnotatedItem(Salmon.class), super.manager), manager);
+      Bean<Sole> soleBean = new BeanImpl<Sole>(new SimpleBeanModel<Sole>(new SimpleAnnotatedType<Sole>(Sole.class), getEmptyAnnotatedItem(Sole.class), super.manager), manager);
+      Bean<SeaBass> seaBassBean = new BeanImpl<SeaBass>(new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedItem(SeaBass.class), super.manager), manager);
+      Bean<Haddock> haddockBean = new BeanImpl<Haddock>(new SimpleBeanModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), getEmptyAnnotatedItem(Haddock.class), super.manager), manager);
+      Bean<Plaice> plaiceBean = new BeanImpl<Plaice>(new SimpleBeanModel<Plaice>(new SimpleAnnotatedType<Plaice>(Plaice.class), getEmptyAnnotatedItem(Plaice.class), super.manager), manager);
       
       manager.addBean(tunaBean);
       manager.addBean(codBean);

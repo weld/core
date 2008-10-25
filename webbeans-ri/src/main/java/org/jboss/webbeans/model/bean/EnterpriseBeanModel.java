@@ -1,4 +1,4 @@
-package org.jboss.webbeans.model;
+package org.jboss.webbeans.model.bean;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -7,21 +7,21 @@ import java.util.List;
 import javax.webbeans.Destructor;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.injectable.ComponentConstructor;
+import org.jboss.webbeans.injectable.BeanConstructor;
 import org.jboss.webbeans.injectable.EnterpriseConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Reflections;
 
-public class EnterpriseComponentModel<T> extends AbstractEnterpriseComponentModel<T>
+public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
 {
 
    private EnterpriseConstructor<T> constructor;
    
    private String location;
    
-   public EnterpriseComponentModel(AnnotatedType<T> annotatedItem,
+   public EnterpriseBeanModel(AnnotatedType<T> annotatedItem,
          AnnotatedType<T> xmlAnnotatedItem, ManagerImpl container)
    {
       super(annotatedItem, xmlAnnotatedItem);
@@ -50,7 +50,7 @@ public class EnterpriseComponentModel<T> extends AbstractEnterpriseComponentMode
       }
    }
    
-   public ComponentConstructor<T> getConstructor()
+   public BeanConstructor<T> getConstructor()
    {
       return constructor;
    }
@@ -58,7 +58,7 @@ public class EnterpriseComponentModel<T> extends AbstractEnterpriseComponentMode
    @Override
    public String toString()
    {
-      return "EnterpriseComponentModel[" + getType().getName() + "]";
+      return "EnterpriseBean[" + getType().getName() + "]";
    }
 
    @Override
@@ -66,7 +66,7 @@ public class EnterpriseComponentModel<T> extends AbstractEnterpriseComponentMode
    {
       if (location == null)
       {
-         location = "type: Enterprise Component; declaring class: " + getType() +";";
+         location = "type: Enterprise Bean; declaring class: " + getType() +";";
       }
       return location;
    }
@@ -105,7 +105,7 @@ public class EnterpriseComponentModel<T> extends AbstractEnterpriseComponentMode
          }
          else if (getEjbMetaData().getRemoveMethods().size() == 0)
          {
-            throw new RuntimeException("Stateful enterprise bean component has no remove methods declared for " + getType());
+            throw new RuntimeException("Stateful enterprise bean bean has no remove methods declared for " + getType());
          }
       }
       else
@@ -113,7 +113,7 @@ public class EnterpriseComponentModel<T> extends AbstractEnterpriseComponentMode
          List<Method> destroysMethods = Reflections.getMethods(getType(), Destructor.class);
          if (destroysMethods.size() > 0)
          {
-            throw new RuntimeException("Only stateful enterprise bean components can have methods annotated @Destroys; " + getType() + " is not a stateful enterprise bean component");
+            throw new RuntimeException("Only stateful enterprise beans can have methods annotated @Destroys; " + getType() + " is not a stateful enterprise bean");
          }
       }
    }

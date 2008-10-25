@@ -11,9 +11,9 @@ import javax.webbeans.Event;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.event.EventImpl;
-import org.jboss.webbeans.injectable.ComponentConstructor;
+import org.jboss.webbeans.injectable.BeanConstructor;
 import org.jboss.webbeans.introspector.SimpleAnnotatedField;
-import org.jboss.webbeans.model.EventComponentModel;
+import org.jboss.webbeans.model.bean.EventBeanModel;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.components.DangerCall;
 import org.jboss.webbeans.test.mock.MockManagerImpl;
@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
 public class EventComponentModelTest
 {
    private MockManagerImpl manager = null;
-   private EventComponentModel<EventImpl<DangerCall>> eventComponentModel = null;
+   private EventBeanModel<EventImpl<DangerCall>> eventBeanModel = null;
    EventImpl<DangerCall> eventModelField = null;
 
    @BeforeMethod
@@ -41,7 +41,7 @@ public class EventComponentModelTest
       enabledDeploymentTypes.add(AnotherDeploymentType.class);
       manager = new MockManagerImpl(enabledDeploymentTypes);
       Field eventModelField = this.getClass().getDeclaredField("eventModelField");
-      eventComponentModel = new EventComponentModel<EventImpl<DangerCall>>(
+      eventBeanModel = new EventBeanModel<EventImpl<DangerCall>>(
             new SimpleAnnotatedField<EventImpl<DangerCall>>(eventModelField),
             new SimpleAnnotatedField<EventImpl<DangerCall>>(eventModelField),
             manager);
@@ -54,7 +54,7 @@ public class EventComponentModelTest
    @Test(groups = "eventbus")
    public void testName()
    {
-      assert eventComponentModel.getName() == null;
+      assert eventBeanModel.getName() == null;
    }
    
    /**
@@ -63,7 +63,7 @@ public class EventComponentModelTest
    @Test(groups = "eventbus")
    public void testScopeType()
    {
-      assert eventComponentModel.getScopeType().equals(Dependent.class);
+      assert eventBeanModel.getScopeType().equals(Dependent.class);
    }
    
    /**
@@ -72,13 +72,13 @@ public class EventComponentModelTest
    @Test(groups = "eventbus")
    public void testDeploymentType()
    {
-      assert eventComponentModel.getDeploymentType().equals(Standard.class);
+      assert eventBeanModel.getDeploymentType().equals(Standard.class);
    }
    
    @Test(groups = "eventbus")
    public void testApiTypes()
    {
-      Set<Class<?>> apis = eventComponentModel.getApiTypes();
+      Set<Class<?>> apis = eventBeanModel.getApiTypes();
       assert apis.size() >= 1;
       for (Class<?> api : apis)
       {
@@ -89,7 +89,7 @@ public class EventComponentModelTest
    @Test(groups = "eventbus")
    public void testConstructor()
    {
-      ComponentConstructor<EventImpl<DangerCall>> constructor = eventComponentModel.getConstructor();
+      BeanConstructor<EventImpl<DangerCall>> constructor = eventBeanModel.getConstructor();
       assert constructor != null;
       Event<DangerCall> event = constructor.invoke(manager);
       assert event != null;

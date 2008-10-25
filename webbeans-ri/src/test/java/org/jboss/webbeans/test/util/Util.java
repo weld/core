@@ -7,7 +7,7 @@ import org.jboss.webbeans.BeanImpl;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
-import org.jboss.webbeans.model.SimpleComponentModel;
+import org.jboss.webbeans.model.bean.SimpleBeanModel;
 
 
 public class Util
@@ -17,9 +17,9 @@ public class Util
       return new BeanImpl<T>(createSimpleModel(clazz, manager), manager);
    }
    
-   public static <T> SimpleComponentModel<T> createSimpleModel(Class<T> clazz, ManagerImpl manager)
+   public static <T> SimpleBeanModel<T> createSimpleModel(Class<T> clazz, ManagerImpl manager)
    {
-      return new SimpleComponentModel<T>(new SimpleAnnotatedType<T>(clazz), getEmptyAnnotatedItem(clazz), manager);
+      return new SimpleBeanModel<T>(new SimpleAnnotatedType<T>(clazz), getEmptyAnnotatedItem(clazz), manager);
    }
    
    public static <T> AnnotatedType<T> getEmptyAnnotatedItem(Class<T> type)

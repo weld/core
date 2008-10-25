@@ -4,7 +4,7 @@ import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injectable.InjectableMethod;
-import org.jboss.webbeans.model.AbstractComponentModel;
+import org.jboss.webbeans.model.bean.BeanModel;
 
 /**
  * An implementation used for unit testing only.
@@ -17,7 +17,7 @@ public class MockObserverImpl<T> extends ObserverImpl<T> {
 	
 	
 
-	public MockObserverImpl(AbstractComponentModel<?, ?> componentModel,
+	public MockObserverImpl(BeanModel<?, ?> componentModel,
          InjectableMethod<?> observer, Class<T> eventType)
    {
       super(componentModel, observer, eventType);

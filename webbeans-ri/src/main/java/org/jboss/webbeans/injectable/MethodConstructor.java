@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import org.jboss.webbeans.ManagerImpl;
 
 public class MethodConstructor<T> extends InjectableMethod<T> implements
-      ComponentConstructor<T>
+      BeanConstructor<T>
 {
 
    public MethodConstructor(Method method)

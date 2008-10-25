@@ -12,7 +12,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 
 /**
- * Meta model for the merged stereotype for a component
+ * Meta model for the merged stereotype for a bean
  * @author pmuir
  *
  */
@@ -21,7 +21,7 @@ public class MergedStereotypesModel<T, E>
 
    private Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes;
    private Set<Annotation> possibleScopeTypes;
-   private boolean componentNameDefaulted;
+   private boolean beanNameDefaulted;
    private Set<Class<?>> requiredTypes;
    private Set<Class<? extends Annotation>> supportedScopes;
    
@@ -55,9 +55,9 @@ public class MergedStereotypesModel<T, E>
          }
          requiredTypes.addAll(stereotype.getRequiredTypes());
          supportedScopes.addAll(stereotype.getSupportedScopes());
-         if (stereotype.isComponentNameDefaulted()) 
+         if (stereotype.isBeanNameDefaulted()) 
          {
-            componentNameDefaulted = true;
+            beanNameDefaulted = true;
          }
       }
    }
@@ -72,9 +72,9 @@ public class MergedStereotypesModel<T, E>
       return possibleScopeTypes;
    }
    
-   public boolean isComponentNameDefaulted()
+   public boolean isBeanNameDefaulted()
    {
-      return componentNameDefaulted;
+      return beanNameDefaulted;
    }
    
    public Set<Class<?>> getRequiredTypes()

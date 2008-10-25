@@ -9,10 +9,10 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.SimpleAnnotatedConstructor;
 import org.jboss.webbeans.util.LoggerUtil;
 
-public class SimpleConstructor<T> extends Unit<T, Constructor<T>> implements ComponentConstructor<T>
+public class SimpleConstructor<T> extends Unit<T, Constructor<T>> implements BeanConstructor<T>
 {
    
-   public static final String LOGGER_NAME = "componentConstructor";
+   public static final String LOGGER_NAME = "beanConstructor";
    
    private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
 

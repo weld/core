@@ -1,4 +1,4 @@
-package org.jboss.webbeans.model;
+package org.jboss.webbeans.model.bean;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -11,7 +11,7 @@ import java.util.Set;
 import javax.webbeans.Dependent;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.injectable.ComponentConstructor;
+import org.jboss.webbeans.injectable.BeanConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.injectable.MethodConstructor;
@@ -20,7 +20,7 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
 import org.jboss.webbeans.util.Reflections;
 
-public class ProducerMethodComponentModel<T> extends AbstractProducerComponentModel<T>
+public class ProducerMethodBeanModel<T> extends AbstractProducerBeanModel<T>
 {
    
    private MethodConstructor<T> constructor;
@@ -28,13 +28,13 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
    private AnnotatedItem<T, Method> xmlAnnotatedItem = new SimpleAnnotatedItem<T, Method>(new HashMap<Class<? extends Annotation>, Annotation>());
    private AnnotatedMethod<T> annotatedMethod;
    
-   private AbstractComponentModel<?, ?> declaringComponent;
+   private BeanModel<?, ?> declaringBean;
    
    // Cached values
    private String location;
-   private Type declaredComponentType;
+   private Type declaredBeanType;
    
-   public ProducerMethodComponentModel(AnnotatedMethod<T> annotatedMethod, ManagerImpl container)
+   public ProducerMethodBeanModel(AnnotatedMethod<T> annotatedMethod, ManagerImpl container)
    {
       this.annotatedMethod = annotatedMethod;
       init(container);
@@ -73,21 +73,21 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
       super.initDeploymentType(container);
       if (getDeploymentType() == null)
       {
-         if (getDeclaringComponent() == null)
+         if (getDeclaringBean() == null)
          {
-            initDeclaringComponent(container);
+            initDeclaringBean(container);
          }
-         deploymentType = declaringComponent.getDeploymentType();
+         deploymentType = declaringBean.getDeploymentType();
       }
    }
 
-   protected void initDeclaringComponent(ManagerImpl container)
+   protected void initDeclaringBean(ManagerImpl container)
    {
-      declaringComponent = container.getModelManager().getComponentModel(getAnnotatedItem().getDelegate().getDeclaringClass());
+      declaringBean = container.getModelManager().getBeanModel(getAnnotatedItem().getDelegate().getDeclaringClass());
    }
    
    @Override
-   public ComponentConstructor<T> getConstructor()
+   public BeanConstructor<T> getConstructor()
    {
       return constructor;
    }
@@ -98,7 +98,7 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
       {
          throw new RuntimeException("Producer method cannot be static " + annotatedMethod);
       }
-      // TODO Check if declaring class is a WB component
+      // TODO Check if declaring class is a WB bean
       if (!getScopeType().equals(Dependent.class) && Modifier.isFinal(getAnnotatedItem().getDelegate().getModifiers()))
       {
          throw new RuntimeException("Final producer method must have @Dependent scope " + annotatedMethod);
@@ -122,7 +122,7 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
    @Override
    public String toString()
    {
-      return "ProducerMethodComponentModel[" + getType().getName() + "]";
+      return "ProducerMethodBean[" + getType().getName() + "]";
    }
 
    @Override
@@ -160,13 +160,13 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
       }
       catch (ClassCastException e) 
       {
-         throw new RuntimeException(getLocation() + " Cannot cast producer method return type " + annotatedMethod.getAnnotatedMethod().getReturnType() + " to component type " + (getDeclaredComponentType() == null ? " unknown " : getDeclaredComponentType()), e);
+         throw new RuntimeException(getLocation() + " Cannot cast producer method return type " + annotatedMethod.getAnnotatedMethod().getReturnType() + " to bean type " + (getDeclaredBeanType() == null ? " unknown " : getDeclaredBeanType()), e);
       }
    }
    
-   private Type getDeclaredComponentType()
+   private Type getDeclaredBeanType()
    {
-      if (declaredComponentType == null)
+      if (declaredBeanType == null)
       {
          Type type = getClass();
          if (type instanceof ParameterizedType)
@@ -174,11 +174,11 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
             ParameterizedType parameterizedType = (ParameterizedType) type;
             if (parameterizedType.getActualTypeArguments().length == 1)
             {
-               declaredComponentType = parameterizedType.getActualTypeArguments()[0];
+               declaredBeanType = parameterizedType.getActualTypeArguments()[0];
             }
          }
       }
-      return declaredComponentType;
+      return declaredBeanType;
    }
    
    @Override
@@ -196,9 +196,9 @@ public class ProducerMethodComponentModel<T> extends AbstractProducerComponentMo
       return removeMethod;
    }
    
-   public AbstractComponentModel<?, ?> getDeclaringComponent()
+   public BeanModel<?, ?> getDeclaringBean()
    {
-      return declaringComponent;
+      return declaringBean;
    }
 
 }

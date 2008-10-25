@@ -1,4 +1,4 @@
-package org.jboss.webbeans.model;
+package org.jboss.webbeans.model.bean;
 
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
@@ -16,17 +16,18 @@ import javax.webbeans.ScopeType;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
-import org.jboss.webbeans.injectable.ComponentConstructor;
+import org.jboss.webbeans.injectable.BeanConstructor;
 import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.model.MergedStereotypesModel;
 import org.jboss.webbeans.util.LoggerUtil;
 
-public abstract class AbstractComponentModel<T, E>
+public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
 {
    
-   public static final String LOGGER_NAME = "componentModel";
+   public static final String LOGGER_NAME = "beanModel";
    
    private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
    
@@ -44,7 +45,7 @@ public abstract class AbstractComponentModel<T, E>
    {
       mergedStereotypes = new MergedStereotypesModel<T, E>(getAnnotatedItem(), getXmlAnnotatedItem(), container);
       initType();
-      log.fine("Building Web Bean component metadata for " +  getType());
+      log.fine("Building Web Bean bean metadata for " +  getType());
       initBindingTypes();
       initName();
       initDeploymentType(container);
@@ -120,7 +121,7 @@ public abstract class AbstractComponentModel<T, E>
    }
    
    /**
-    * Return the scope of the component
+    * Return the scope of the bean
     */
    protected void initScopeType()
    {
@@ -158,7 +159,7 @@ public abstract class AbstractComponentModel<T, E>
       }
       else if (getMergedStereotypes().getPossibleScopeTypes().size() > 1)
       {
-         throw new RuntimeException("All stereotypes must specify the same scope OR a scope must be specified on the component");
+         throw new RuntimeException("All stereotypes must specify the same scope OR a scope must be specified on the bean");
       }
       this.scopeType = Dependent.class;
       log.finest("Using default @Dependent scope");
@@ -166,14 +167,14 @@ public abstract class AbstractComponentModel<T, E>
    
    protected void initName()
    {
-      boolean componentNameDefaulted = false;
+      boolean beanNameDefaulted = false;
       if (getXmlAnnotatedItem().isAnnotationPresent(Named.class))
       {
          String xmlName = getXmlAnnotatedItem().getAnnotation(Named.class).value();
          if ("".equals(xmlName))
          {
             log.finest("Using default name (specified in XML)");
-            componentNameDefaulted = true;
+            beanNameDefaulted = true;
          }
          else
          {
@@ -188,7 +189,7 @@ public abstract class AbstractComponentModel<T, E>
          if ("".equals(javaName))
          {
             log.finest("Using default name (specified by annotations)");
-            componentNameDefaulted = true;
+            beanNameDefaulted = true;
          }
          else
          {
@@ -197,7 +198,7 @@ public abstract class AbstractComponentModel<T, E>
             return;
          }
       }
-      if (componentNameDefaulted || getMergedStereotypes().isComponentNameDefaulted())
+      if (beanNameDefaulted || getMergedStereotypes().isBeanNameDefaulted())
       {
          this.name = getDefaultName();
          return;
@@ -276,54 +277,83 @@ public abstract class AbstractComponentModel<T, E>
    
    protected abstract String getDefaultName();
 
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.Model#getBindingTypes()
+    */
    public Set<Annotation> getBindingTypes()
    {
       return bindingTypes;
    }
 
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.Model#getScopeType()
+    */
    public Class<? extends Annotation> getScopeType()
    {
       return scopeType;
    }
 
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.Model#getType()
+    */
    public Class<? extends T> getType()
    {
       return type;
    }
    
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.Model#getApiTypes()
+    */
    public Set<Class<?>> getApiTypes()
    {
       return apiTypes;
    }
 
-   public abstract ComponentConstructor<T> getConstructor();
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.Model#getConstructor()
+    */
+   public abstract BeanConstructor<T> getConstructor();
    
-   /**
-    * Convenience method that return's the component's "location" for logging
-    * and exception throwing
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.Model#getLocation()
     */
    public abstract String getLocation();
 
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.Model#getDeploymentType()
+    */
    public Class<? extends Annotation> getDeploymentType()
    {
       return deploymentType;
    }
 
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.Model#getName()
+    */
    public String getName()
    {
       return name;
    }
    
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.Model#getRemoveMethod()
+    */
    public InjectableMethod<?> getRemoveMethod()
    {
       return removeMethod;
    }
    
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.Model#getInjectionPoints()
+    */
    public Set<Injectable<?, ?>> getInjectionPoints()
    {
       return injectionPoints;
    }
 
+   /* (non-Javadoc)
+    * @see org.jboss.webbeans.model.Model#isAssignableFrom(org.jboss.webbeans.introspector.AnnotatedItem)
+    */
    public boolean isAssignableFrom(AnnotatedItem<?, ?> annotatedItem)
    {
       return this.getAnnotatedItem().isAssignableFrom(annotatedItem);

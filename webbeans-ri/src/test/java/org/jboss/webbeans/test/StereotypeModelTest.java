@@ -49,7 +49,7 @@ public class StereotypeModelTest
       assert animalStereotype.getRequiredTypes().size() == 1;
       assert animalStereotype.getRequiredTypes().contains(Animal.class);
       assert animalStereotype.getSupportedScopes().size() == 0;
-      assert !animalStereotype.isComponentNameDefaulted();
+      assert !animalStereotype.isBeanNameDefaulted();
       assert animalStereotype.getDefaultDeploymentType() == null;
    }
    
@@ -63,7 +63,7 @@ public class StereotypeModelTest
       Class<?> [] requiredTypes = {Animal.class, Order.class};
       assert animalStereotype.getRequiredTypes().containsAll(Arrays.asList(requiredTypes));
       assert animalStereotype.getSupportedScopes().size() == 0;
-      assert !animalStereotype.isComponentNameDefaulted();
+      assert !animalStereotype.isBeanNameDefaulted();
       assert animalStereotype.getDefaultDeploymentType() == null;
    }
    
@@ -77,7 +77,7 @@ public class StereotypeModelTest
       assert Animal.class.equals(animalStereotype.getRequiredTypes().iterator().next());
       assert animalStereotype.getSupportedScopes().size() == 1;
       assert animalStereotype.getSupportedScopes().contains(RequestScoped.class);
-      assert !animalStereotype.isComponentNameDefaulted();
+      assert !animalStereotype.isBeanNameDefaulted();
       assert animalStereotype.getDefaultDeploymentType() == null;
    }
    

@@ -1,4 +1,4 @@
-package org.jboss.webbeans.model;
+package org.jboss.webbeans.model.bean;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -8,29 +8,29 @@ import javax.webbeans.Dependent;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.injectable.ComponentConstructor;
+import org.jboss.webbeans.injectable.BeanConstructor;
 import org.jboss.webbeans.injectable.SimpleConstructor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.SimpleAnnotatedField;
 import org.jboss.webbeans.util.LoggerUtil;
 
 /**
- * Web Beans component meta model for the container instantiated, injectable, 
+ * Web Beans bean meta model for the container instantiated, injectable, 
  * observable events (Section 7.4).
  * 
  * @author David Allen
  *
  */
-public class EventComponentModel<T> extends AbstractComponentModel<T, Field>
+public class EventBeanModel<T> extends AbstractBeanModel<T, Field>
 {
    private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
    
    private String location;
    private SimpleAnnotatedField<T> annotatedItem;
    private SimpleAnnotatedField<T> xmlAnnotatedItem;
-   private ComponentConstructor<T> constructor;
+   private BeanConstructor<T> constructor;
 
-   public EventComponentModel(SimpleAnnotatedField<T> annotatedItem, SimpleAnnotatedField<T> xmlAnnotatedItem, ManagerImpl manager)
+   public EventBeanModel(SimpleAnnotatedField<T> annotatedItem, SimpleAnnotatedField<T> xmlAnnotatedItem, ManagerImpl manager)
    {
       this.annotatedItem = annotatedItem;
       this.xmlAnnotatedItem = xmlAnnotatedItem;
@@ -56,7 +56,7 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Field>
    }
 
    @Override
-   public ComponentConstructor<T> getConstructor()
+   public BeanConstructor<T> getConstructor()
    {
       return constructor;
    }
@@ -66,7 +66,7 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Field>
    {
       if (location == null)
       {
-         location = "type: Event Component;";
+         location = "type: Event Bean;";
       }
       return location;
    }
@@ -74,22 +74,19 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Field>
    @Override
    public String toString()
    {
-      return "EventComponentModel[" + getType().getName() + "]";
+      return "EventBean[" + getType().getName() + "]";
    }
 
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.AbstractClassComponentModel#initType()
-    */
    @Override
    protected void initType()
    {
       if (getXmlAnnotatedItem().getDelegate() != null)
       {
-         log.finest("Component type specified in XML");
+         log.finest("Bean type specified in XML");
          this.type = xmlAnnotatedItem.getType();
       } else if (getAnnotatedItem().getDelegate() != null)
       {
-         log.finest("Component type specified in Java");
+         log.finest("Bean type specified in Java");
          this.type = annotatedItem.getType();
       }
    }
@@ -113,9 +110,6 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Field>
       return this.xmlAnnotatedItem;
    }
 
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.AbstractComponentModel#initDeploymentType(org.jboss.webbeans.ManagerImpl)
-    */
    @Override
    protected void initDeploymentType(ManagerImpl container)
    {
@@ -123,9 +117,6 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Field>
       this.deploymentType = Standard.class;
    }
 
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.AbstractComponentModel#initName()
-    */
    @Override
    protected void initName()
    {
@@ -133,9 +124,6 @@ public class EventComponentModel<T> extends AbstractComponentModel<T, Field>
       this.name = null;
    }
 
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.AbstractComponentModel#initScopeType()
-    */
    @Override
    protected void initScopeType()
    {

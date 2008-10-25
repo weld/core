@@ -15,7 +15,7 @@ import org.jboss.webbeans.ResolutionManager;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.injectable.InjectableField;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
-import org.jboss.webbeans.model.SimpleComponentModel;
+import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.Whitefish;
 import org.jboss.webbeans.test.bindings.ChunkyAnnotationLiteral;
 import org.jboss.webbeans.test.components.Animal;
@@ -51,7 +51,7 @@ public class TypeSafeResolutionTest extends AbstractTest
    public void testSingleApiTypeWithCurrent() throws Exception
    {
       InjectableField<Tuna> tunaField = new InjectableField<Tuna>(FishFarm.class.getDeclaredField("tuna"));
-      Bean<Tuna> tunaBean = new BeanImpl<Tuna>(new SimpleComponentModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), getEmptyAnnotatedItem(Tuna.class), super.manager), manager);
+      Bean<Tuna> tunaBean = new BeanImpl<Tuna>(new SimpleBeanModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), getEmptyAnnotatedItem(Tuna.class), super.manager), manager);
       Set<Bean<?>> beans = new HashSet<Bean<?>>();
       beans.add(tunaBean);
       Set<Bean<?>> possibleTargets = tunaField.getMatchingBeans(beans);
@@ -63,9 +63,9 @@ public class TypeSafeResolutionTest extends AbstractTest
    public void testOneBindingType() throws Exception
    {
       InjectableField<ScottishFish> whiteScottishFishField = new InjectableField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"));
-      Bean<Cod> codBean = new BeanImpl<Cod>(new SimpleComponentModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedItem(Cod.class), super.manager), manager);
-      Bean<Salmon> salmonBean = new BeanImpl<Salmon>(new SimpleComponentModel<Salmon>(new SimpleAnnotatedType<Salmon>(Salmon.class), getEmptyAnnotatedItem(Salmon.class), super.manager), manager);
-      Bean<Sole> soleBean = new BeanImpl<Sole>(new SimpleComponentModel<Sole>(new SimpleAnnotatedType<Sole>(Sole.class), getEmptyAnnotatedItem(Sole.class), super.manager), manager);
+      Bean<Cod> codBean = new BeanImpl<Cod>(new SimpleBeanModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedItem(Cod.class), super.manager), manager);
+      Bean<Salmon> salmonBean = new BeanImpl<Salmon>(new SimpleBeanModel<Salmon>(new SimpleAnnotatedType<Salmon>(Salmon.class), getEmptyAnnotatedItem(Salmon.class), super.manager), manager);
+      Bean<Sole> soleBean = new BeanImpl<Sole>(new SimpleBeanModel<Sole>(new SimpleAnnotatedType<Sole>(Sole.class), getEmptyAnnotatedItem(Sole.class), super.manager), manager);
       Set<Bean<?>> beans = new HashSet<Bean<?>>();
       beans.add(codBean);
       beans.add(salmonBean);
@@ -80,9 +80,9 @@ public class TypeSafeResolutionTest extends AbstractTest
    public void testABindingType() throws Exception
    {
       InjectableField<Animal> whiteChunkyFishField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("realChunkyWhiteFish"));
-      Bean<Cod> codBean = new BeanImpl<Cod>(new SimpleComponentModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedItem(Cod.class), super.manager), manager);
-      Bean<Salmon> salmonBean = new BeanImpl<Salmon>(new SimpleComponentModel<Salmon>(new SimpleAnnotatedType<Salmon>(Salmon.class), getEmptyAnnotatedItem(Salmon.class), super.manager), manager);
-      Bean<Sole> soleBean = new BeanImpl<Sole>(new SimpleComponentModel<Sole>(new SimpleAnnotatedType<Sole>(Sole.class), getEmptyAnnotatedItem(Sole.class), super.manager), manager);
+      Bean<Cod> codBean = new BeanImpl<Cod>(new SimpleBeanModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedItem(Cod.class), super.manager), manager);
+      Bean<Salmon> salmonBean = new BeanImpl<Salmon>(new SimpleBeanModel<Salmon>(new SimpleAnnotatedType<Salmon>(Salmon.class), getEmptyAnnotatedItem(Salmon.class), super.manager), manager);
+      Bean<Sole> soleBean = new BeanImpl<Sole>(new SimpleBeanModel<Sole>(new SimpleAnnotatedType<Sole>(Sole.class), getEmptyAnnotatedItem(Sole.class), super.manager), manager);
       Set<Bean<?>> beans = new HashSet<Bean<?>>();
       beans.add(codBean);
       beans.add(salmonBean);
@@ -96,8 +96,8 @@ public class TypeSafeResolutionTest extends AbstractTest
    public void testMultipleApiTypeWithCurrent() throws Exception
    {
       InjectableField<Animal> animalField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("animal"));
-      Bean<SeaBass> seaBassBean = new BeanImpl<SeaBass>(new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedItem(SeaBass.class), super.manager), manager);
-      Bean<Haddock> haddockBean = new BeanImpl<Haddock>(new SimpleComponentModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), getEmptyAnnotatedItem(Haddock.class), super.manager), manager);
+      Bean<SeaBass> seaBassBean = new BeanImpl<SeaBass>(new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedItem(SeaBass.class), super.manager), manager);
+      Bean<Haddock> haddockBean = new BeanImpl<Haddock>(new SimpleBeanModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), getEmptyAnnotatedItem(Haddock.class), super.manager), manager);
       Set<Bean<?>> beans = new HashSet<Bean<?>>();
       beans.add(seaBassBean);
       beans.add(haddockBean);
@@ -115,12 +115,12 @@ public class TypeSafeResolutionTest extends AbstractTest
       InjectableField<ScottishFish> scottishFishField = new InjectableField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"));
       InjectableField<Tuna> tunaField = new InjectableField<Tuna>(FishFarm.class.getDeclaredField("tuna"));
       
-      Bean<Tuna> tunaBean = new BeanImpl<Tuna>(new SimpleComponentModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), getEmptyAnnotatedItem(Tuna.class), super.manager), manager);
-      Bean<Cod> codBean = new BeanImpl<Cod>(new SimpleComponentModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedItem(Cod.class), super.manager), manager);
-      Bean<Salmon> salmonBean = new BeanImpl<Salmon>(new SimpleComponentModel<Salmon>(new SimpleAnnotatedType<Salmon>(Salmon.class), getEmptyAnnotatedItem(Salmon.class), super.manager), manager);
-      Bean<Sole> soleBean = new BeanImpl<Sole>(new SimpleComponentModel<Sole>(new SimpleAnnotatedType<Sole>(Sole.class), getEmptyAnnotatedItem(Sole.class), super.manager), manager);
-      Bean<SeaBass> seaBassBean = new BeanImpl<SeaBass>(new SimpleComponentModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedItem(SeaBass.class), super.manager), manager);
-      Bean<Haddock> haddockBean = new BeanImpl<Haddock>(new SimpleComponentModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), getEmptyAnnotatedItem(Haddock.class), super.manager), manager);
+      Bean<Tuna> tunaBean = new BeanImpl<Tuna>(new SimpleBeanModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), getEmptyAnnotatedItem(Tuna.class), super.manager), manager);
+      Bean<Cod> codBean = new BeanImpl<Cod>(new SimpleBeanModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedItem(Cod.class), super.manager), manager);
+      Bean<Salmon> salmonBean = new BeanImpl<Salmon>(new SimpleBeanModel<Salmon>(new SimpleAnnotatedType<Salmon>(Salmon.class), getEmptyAnnotatedItem(Salmon.class), super.manager), manager);
+      Bean<Sole> soleBean = new BeanImpl<Sole>(new SimpleBeanModel<Sole>(new SimpleAnnotatedType<Sole>(Sole.class), getEmptyAnnotatedItem(Sole.class), super.manager), manager);
+      Bean<SeaBass> seaBassBean = new BeanImpl<SeaBass>(new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedItem(SeaBass.class), super.manager), manager);
+      Bean<Haddock> haddockBean = new BeanImpl<Haddock>(new SimpleBeanModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), getEmptyAnnotatedItem(Haddock.class), super.manager), manager);
       
       manager.addBean(tunaBean);
       manager.addBean(codBean);
@@ -174,8 +174,8 @@ public class TypeSafeResolutionTest extends AbstractTest
    {
       InjectableField<Farmer<ScottishFish>> scottishFishFarmerField = new InjectableField<Farmer<ScottishFish>>(FishFarm.class.getDeclaredField("scottishFishFarmer"));
       
-      Bean<ScottishFishFarmer> scottishFishFarmerBean = new BeanImpl<ScottishFishFarmer>(new SimpleComponentModel<ScottishFishFarmer>(new SimpleAnnotatedType<ScottishFishFarmer>(ScottishFishFarmer.class), getEmptyAnnotatedItem(ScottishFishFarmer.class), super.manager), manager);
-      Bean<Farmer> farmerBean = new BeanImpl<Farmer>(new SimpleComponentModel<Farmer>(new SimpleAnnotatedType<Farmer>(Farmer.class), getEmptyAnnotatedItem(Farmer.class), super.manager), manager);
+      Bean<ScottishFishFarmer> scottishFishFarmerBean = new BeanImpl<ScottishFishFarmer>(new SimpleBeanModel<ScottishFishFarmer>(new SimpleAnnotatedType<ScottishFishFarmer>(ScottishFishFarmer.class), getEmptyAnnotatedItem(ScottishFishFarmer.class), super.manager), manager);
+      Bean<Farmer> farmerBean = new BeanImpl<Farmer>(new SimpleBeanModel<Farmer>(new SimpleAnnotatedType<Farmer>(Farmer.class), getEmptyAnnotatedItem(Farmer.class), super.manager), manager);
       
       manager.addBean(scottishFishFarmerBean);
       manager.addBean(farmerBean);
@@ -192,9 +192,9 @@ public class TypeSafeResolutionTest extends AbstractTest
    {
       InjectableField<Animal> whiteFishField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("whiteFish"));
       
-      Bean<Cod> codBean = new BeanImpl<Cod>(new SimpleComponentModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedItem(Cod.class), super.manager), manager);
-      Bean<Sole> soleBean = new BeanImpl<Sole>(new SimpleComponentModel<Sole>(new SimpleAnnotatedType<Sole>(Sole.class), getEmptyAnnotatedItem(Sole.class), super.manager), manager);
-      Bean<Plaice> plaiceBean = new BeanImpl<Plaice>(new SimpleComponentModel<Plaice>(new SimpleAnnotatedType<Plaice>(Plaice.class), getEmptyAnnotatedItem(Plaice.class), super.manager), manager);
+      Bean<Cod> codBean = new BeanImpl<Cod>(new SimpleBeanModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedItem(Cod.class), super.manager), manager);
+      Bean<Sole> soleBean = new BeanImpl<Sole>(new SimpleBeanModel<Sole>(new SimpleAnnotatedType<Sole>(Sole.class), getEmptyAnnotatedItem(Sole.class), super.manager), manager);
+      Bean<Plaice> plaiceBean = new BeanImpl<Plaice>(new SimpleBeanModel<Plaice>(new SimpleAnnotatedType<Plaice>(Plaice.class), getEmptyAnnotatedItem(Plaice.class), super.manager), manager);
       
       
       manager.addBean(plaiceBean);

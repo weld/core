@@ -26,7 +26,7 @@ public class StereotypeModel<T extends Annotation>
    private Class<? extends Annotation> stereotypeClass;
    private Annotation defaultDeploymentType;
    private Annotation defaultScopeType;
-   private boolean componentNameDefaulted;
+   private boolean beanNameDefaulted;
    private Set<Class<? extends Annotation>> supportedScopes;
    private Set<Class<?>> requiredTypes;
    private Set<Annotation> interceptorBindings;
@@ -37,7 +37,7 @@ public class StereotypeModel<T extends Annotation>
       Stereotype stereotype = annotatedClass.getAnnotation(Stereotype.class);
       initDefaultDeploymentType(annotatedClass);
       initDefaultScopeType(annotatedClass);
-      initComponentNameDefaulted(annotatedClass);
+      initBeanNameDefaulted(annotatedClass);
       initSupportedScopes(annotatedClass, stereotype);
       initRequiredTypes(annotatedClass, stereotype);
       initInterceptorBindings(annotatedClass);
@@ -90,7 +90,7 @@ public class StereotypeModel<T extends Annotation>
       }
    }
 
-   private void initComponentNameDefaulted(AnnotatedType<T> annotatedElement)
+   private void initBeanNameDefaulted(AnnotatedType<T> annotatedElement)
    {
       if (annotatedElement.isAnnotationPresent(Named.class))
       {
@@ -98,7 +98,7 @@ public class StereotypeModel<T extends Annotation>
          {
             throw new RuntimeException("Cannot specify a value for a @Named stereotype " + annotatedElement);
          }
-         componentNameDefaulted = true;
+         beanNameDefaulted = true;
       }
    }
 
@@ -156,12 +156,12 @@ public class StereotypeModel<T extends Annotation>
    }
    
    /**
-    * Returns true if the stereotype specifies the component name should be 
+    * Returns true if the stereotype specifies the bean name should be 
     * defaulted
     */
-   public boolean isComponentNameDefaulted()
+   public boolean isBeanNameDefaulted()
    {
-      return componentNameDefaulted;
+      return beanNameDefaulted;
    }
    
    /**

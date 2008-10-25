@@ -5,27 +5,27 @@ import java.util.Set;
 
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.model.AbstractComponentModel;
+import org.jboss.webbeans.model.bean.BeanModel;
 
 public class BeanImpl<T> extends Bean<T>
 {
    
-public static final String LOGGER_NAME = "componentMetaModel";
+   public static final String LOGGER_NAME = "bean";
    
-   private AbstractComponentModel<T, ?> model;
+   private BeanModel<T, ?> beanModel;
    
    private ManagerImpl manager;
 
-   public BeanImpl(AbstractComponentModel<T, ?> model, ManagerImpl manager)
+   public BeanImpl(BeanModel<T, ?> model, ManagerImpl manager)
    {
       super(manager);
-      this.model = model;
+      this.beanModel = model;
    }
 
    @Override
    public T create()
    {
-      return model.getConstructor().invoke(manager);
+      return beanModel.getConstructor().invoke(manager);
    }
 
    @Override
@@ -38,31 +38,31 @@ public static final String LOGGER_NAME = "componentMetaModel";
    @Override
    public Set<Annotation> getBindingTypes()
    {
-      return model.getBindingTypes();
+      return beanModel.getBindingTypes();
    }
 
    @Override
    public Class<? extends Annotation> getDeploymentType()
    {
-     return model.getDeploymentType();
+     return beanModel.getDeploymentType();
    }
 
    @Override
    public String getName()
    {
-      return model.getName();
+      return beanModel.getName();
    }
 
    @Override
    public Class<? extends Annotation> getScopeType()
    {
-      return model.getScopeType();
+      return beanModel.getScopeType();
    }
 
    @Override
    public Set<Class<?>> getTypes()
    {
-      return model.getApiTypes();
+      return beanModel.getApiTypes();
    }
 
    @Override
@@ -82,12 +82,12 @@ public static final String LOGGER_NAME = "componentMetaModel";
    @Override
    public String toString()
    {
-      return model.toString();
+      return beanModel.toString();
    }
    
-   public AbstractComponentModel<T, ?> getModel()
+   public BeanModel<T, ?> getModel()
    {
-      return model;
+      return beanModel;
    }
 
 }

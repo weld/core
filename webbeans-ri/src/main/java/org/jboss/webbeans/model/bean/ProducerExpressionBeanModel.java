@@ -1,4 +1,4 @@
-package org.jboss.webbeans.model;
+package org.jboss.webbeans.model.bean;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -8,18 +8,18 @@ import java.util.HashMap;
 import javax.webbeans.Dependent;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.injectable.ComponentConstructor;
+import org.jboss.webbeans.injectable.BeanConstructor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
 
-public class ProducerExpressionComponent<T> extends AbstractProducerComponentModel<T>
+public class ProducerExpressionBeanModel<T> extends AbstractProducerBeanModel<T>
 {
    
    private AnnotatedItem<T, Method> xmlAnnotatedItem;
    private AnnotatedItem<T, Method> annotatedItem = new SimpleAnnotatedItem<T, Method>(new HashMap<Class<? extends Annotation>, Annotation>());
    private String location;
 
-   public ProducerExpressionComponent(AnnotatedItem<T, Method> xmlAnnotatedMethod, ManagerImpl container)
+   public ProducerExpressionBeanModel(AnnotatedItem<T, Method> xmlAnnotatedMethod, ManagerImpl container)
    {
       this.xmlAnnotatedItem = xmlAnnotatedMethod;
       init(container);
@@ -52,7 +52,7 @@ public class ProducerExpressionComponent<T> extends AbstractProducerComponentMod
    }
 
    @Override
-   public ComponentConstructor<T> getConstructor()
+   public BeanConstructor<T> getConstructor()
    {
       // TODO Auto-generated method stub
       return null;

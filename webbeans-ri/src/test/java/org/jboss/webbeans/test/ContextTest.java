@@ -10,7 +10,7 @@ import javax.webbeans.manager.Context;
 import org.jboss.webbeans.BasicContext;
 import org.jboss.webbeans.BeanImpl;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
-import org.jboss.webbeans.model.SimpleComponentModel;
+import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.components.Tuna;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -34,13 +34,13 @@ public class ContextTest extends AbstractTest
    
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testGetWithCreateFalseReturnsNull() {
-      Bean<Tuna> tunaBean = new BeanImpl<Tuna>(new SimpleComponentModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), getEmptyAnnotatedItem(Tuna.class), super.manager), manager);      
+      Bean<Tuna> tunaBean = new BeanImpl<Tuna>(new SimpleBeanModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), getEmptyAnnotatedItem(Tuna.class), super.manager), manager);      
       assert context.get(tunaBean, false) == null;
    }
 
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testGetWithCreateTrueReturnsBean() {
-      Bean<Tuna> tunaBean = new BeanImpl<Tuna>(new SimpleComponentModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), getEmptyAnnotatedItem(Tuna.class), super.manager), manager);
+      Bean<Tuna> tunaBean = new BeanImpl<Tuna>(new SimpleBeanModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), getEmptyAnnotatedItem(Tuna.class), super.manager), manager);
       assert context.get(tunaBean, true) != null;
    }
    

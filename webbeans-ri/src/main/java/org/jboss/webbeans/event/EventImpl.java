@@ -116,7 +116,7 @@ public class EventImpl<T> implements Event<T>
 
    private Collection<? extends Annotation> getBindingTypes()
    {
-      // Get the binding types directly from the model for the component
+      // Get the binding types directly from the model for the bean
       return this.eventBindings;
    }
 

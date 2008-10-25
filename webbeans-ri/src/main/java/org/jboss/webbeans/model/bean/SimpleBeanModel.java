@@ -1,4 +1,4 @@
-package org.jboss.webbeans.model;
+package org.jboss.webbeans.model.bean;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -14,7 +14,7 @@ import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.LoggerUtil;
 import org.jboss.webbeans.util.Reflections;
 
-public class SimpleComponentModel<T> extends AbstractClassComponentModel<T>
+public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
 {
    
    private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
@@ -29,7 +29,7 @@ public class SimpleComponentModel<T> extends AbstractClassComponentModel<T>
     * @param xmlAnnotatedItem Annotations read from XML
     * @param container
     */
-   public SimpleComponentModel(AnnotatedType<T> annotatedItem, AnnotatedType<T> xmlAnnotatedItem, ManagerImpl container)
+   public SimpleBeanModel(AnnotatedType<T> annotatedItem, AnnotatedType<T> xmlAnnotatedItem, ManagerImpl container)
    {
       super(annotatedItem, xmlAnnotatedItem);
       init(container);
@@ -68,7 +68,7 @@ public class SimpleComponentModel<T> extends AbstractClassComponentModel<T>
       if (getType().getConstructors().length == 1)
       {
          Constructor<T> constructor = (Constructor<T>) getType().getConstructors()[0];
-         log.finest("Exactly one constructor (" + constructor +") defined, using it as the component constructor for " + getType());
+         log.finest("Exactly one constructor (" + constructor +") defined, using it as the bean constructor for " + getType());
          this.constructor = new SimpleConstructor<T>(constructor);
          return;
       }
@@ -98,14 +98,14 @@ public class SimpleComponentModel<T> extends AbstractClassComponentModel<T>
          else if (initializerAnnotatedConstructors.size() == 1)
          {
             Constructor<T> constructor = initializerAnnotatedConstructors.get(0);
-            log.finest("Exactly one constructor (" + constructor +") annotated with @Initializer defined, using it as the component constructor for " + getType());
+            log.finest("Exactly one constructor (" + constructor +") annotated with @Initializer defined, using it as the bean constructor for " + getType());
             this.constructor = new SimpleConstructor<T>(constructor);
             return;
          }
          else if (bindingTypeAnnotatedConstructors.size() == 1)
          {
             Constructor<T> constructor = bindingTypeAnnotatedConstructors.get(0);
-            log.finest("Exactly one constructor (" + constructor +") with parameters annotated with binding types defined, using it as the component constructor for " + getType());
+            log.finest("Exactly one constructor (" + constructor +") with parameters annotated with binding types defined, using it as the bean constructor for " + getType());
             this.constructor = new SimpleConstructor<T>(constructor);
             return;
          }
@@ -139,7 +139,7 @@ public class SimpleComponentModel<T> extends AbstractClassComponentModel<T>
    {
       if (location == null)
       {
-         location = "type: Simple Component; declaring class: " + getType() +";";
+         location = "type: Simple Bean; declaring class: " + getType() +";";
       }
       return location;
    }

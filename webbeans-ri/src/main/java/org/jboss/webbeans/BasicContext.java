@@ -7,6 +7,7 @@ import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 import javax.webbeans.manager.Manager;
+
 import org.jboss.webbeans.util.MapWrapper;
 
 /**
@@ -64,7 +65,7 @@ public class BasicContext implements Context
          return null;
       }
 
-      // TODO should component creation be synchronized?
+      // TODO should bean creation be synchronized?
 
       instance = bean.create();
 
@@ -89,7 +90,7 @@ public class BasicContext implements Context
       else
       {
          // TODO is this the correct exception to throw? See section 9.1 of spec
-         throw new RuntimeException("Component " + bean.getName() + " cannot be removed as it " + "does not exist in [" + scopeType + "] context.");
+         throw new RuntimeException("Bean " + bean.getName() + " cannot be removed as it " + "does not exist in [" + scopeType + "] context.");
       }
    }
 

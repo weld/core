@@ -4,9 +4,9 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.webbeans.model.AbstractComponentModel;
 import org.jboss.webbeans.model.ScopeModel;
 import org.jboss.webbeans.model.StereotypeModel;
+import org.jboss.webbeans.model.bean.BeanModel;
 import org.jboss.webbeans.util.MapWrapper;
 
 public class ModelManager
@@ -29,7 +29,7 @@ public class ModelManager
    
    private Map<Class<? extends Annotation>, StereotypeModel<?>> stereotypes = new HashMap<Class<? extends Annotation>, StereotypeModel<?>>();
    
-   private Map<Class<?>, AbstractComponentModel<?, ?>> componentModels = new HashMap<Class<?>, AbstractComponentModel<?,?>>();
+   private Map<Class<?>, BeanModel<?, ?>> beanModels = new HashMap<Class<?>, BeanModel<?,?>>();
    
    private ScopeModelMap scopes = new ScopeModelMap(); 
    
@@ -44,14 +44,14 @@ public class ModelManager
       return stereotypes.get(annotationType);
    }
    
-   public void addComponentModel(AbstractComponentModel<?, ?> componentModel)
+   public void addBeanModel(BeanModel<?, ?> beanModel)
    {
-      componentModels.put(componentModel.getType(), componentModel);
+      beanModels.put(beanModel.getType(), beanModel);
    }
    
-   public AbstractComponentModel<?, ?> getComponentModel(Class<?> clazz)
+   public BeanModel<?, ?> getBeanModel(Class<?> clazz)
    {
-      return componentModels.get(clazz);
+      return beanModels.get(clazz);
    }
    
    public <T extends Annotation> ScopeModel<T> getScopeModel(Class<T> scopeType)

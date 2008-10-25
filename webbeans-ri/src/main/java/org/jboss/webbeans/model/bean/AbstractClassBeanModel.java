@@ -1,4 +1,4 @@
-package org.jboss.webbeans.model;
+package org.jboss.webbeans.model.bean;
 
 import java.util.logging.Logger;
 
@@ -13,12 +13,12 @@ import org.jboss.webbeans.util.Strings;
 
 
 /**
- * Web Beans Component meta model
+ * Web Beans Bean meta model
  * 
  * @author Pete Muir
  * 
  */
-public abstract class AbstractClassComponentModel<T> extends AbstractComponentModel<T, Class<T>>
+public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Class<T>>
 {
 
    private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
@@ -32,16 +32,16 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
     * @param xmlAnnotatedItem Annotations read from XML
     * @param manager
     */
-   public AbstractClassComponentModel(AnnotatedType<T> annotatedItem, AnnotatedType<T> xmlAnnotatedItem)
+   public AbstractClassBeanModel(AnnotatedType<T> annotatedItem, AnnotatedType<T> xmlAnnotatedItem)
    {
       if (annotatedItem == null)
       {
-         throw new NullPointerException("annotatedItem must not be null. If the component is declared just in XML, pass in an empty annotatedItem");
+         throw new NullPointerException("annotatedItem must not be null. If the bean is declared just in XML, pass in an empty annotatedItem");
       }
       
       if (xmlAnnotatedItem == null)
       {
-         throw new NullPointerException("xmlAnnotatedItem must not be null. If the component is declared just in Java, pass in an empty xmlAnnotatedItem");
+         throw new NullPointerException("xmlAnnotatedItem must not be null. If the bean is declared just in Java, pass in an empty xmlAnnotatedItem");
       }
       this.annotatedItem = annotatedItem;
       this.xmlAnnotatedItem = xmlAnnotatedItem;
@@ -54,7 +54,7 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
       checkRequiredTypesImplemented();
       checkScopeAllowed();
       // TODO This is too high
-      checkComponentImplementation();
+      checkBeanImplementation();
       // TODO Interceptors
    }
    
@@ -74,21 +74,21 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
    {
       if (getAnnotatedItem().getDelegate() != null && getXmlAnnotatedItem().getDelegate() != null && !getAnnotatedItem().getDelegate().equals(getXmlAnnotatedItem().getDelegate()))
       {
-         throw new IllegalArgumentException("Cannot build a component which specifies different classes in XML and Java");
+         throw new IllegalArgumentException("Cannot build a bean which specifies different classes in XML and Java");
       }
       else if (getXmlAnnotatedItem().getDelegate() != null)
       {
-         log.finest("Component type specified in XML");
+         log.finest("Bean type specified in XML");
          this.type = getXmlAnnotatedItem().getDelegate();
       }
       else if (getAnnotatedItem().getDelegate() != null)
       {
-         log.finest("Component type specified in Java");
+         log.finest("Bean type specified in Java");
          this.type = getAnnotatedItem().getDelegate();
       }
       else
       {
-         throw new IllegalArgumentException("Cannot build a component which doesn't specify a type");
+         throw new IllegalArgumentException("Cannot build a bean which doesn't specify a type");
       }
    }
    
@@ -108,7 +108,7 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
    }
    
    /**
-    * Check that the types required by the stereotypes on the component are implemented
+    * Check that the types required by the stereotypes on the bean are implemented
     */
    protected void checkRequiredTypesImplemented()
    {
@@ -123,7 +123,7 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
    }
    
    /**
-    * Check that the scope type is allowed by the stereotypes on the component and the component type
+    * Check that the scope type is allowed by the stereotypes on the bean and the bean type
     * @param type 
     */
    protected void checkScopeAllowed()
@@ -138,7 +138,7 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
       }
    }
    
-   protected void checkComponentImplementation()
+   protected void checkBeanImplementation()
    {
       if (Reflections.isAbstract(getType()))
       {

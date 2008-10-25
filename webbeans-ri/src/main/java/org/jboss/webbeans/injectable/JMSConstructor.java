@@ -3,7 +3,7 @@ package org.jboss.webbeans.injectable;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.util.JNDI;
 
-public class JMSConstructor<T> implements ComponentConstructor<T>
+public class JMSConstructor<T> implements BeanConstructor<T>
 {
 
    Class<? extends T> type;

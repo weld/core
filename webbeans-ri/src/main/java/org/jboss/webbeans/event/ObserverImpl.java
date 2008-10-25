@@ -9,7 +9,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.injectable.InjectableParameterWrapper;
-import org.jboss.webbeans.model.AbstractComponentModel;
+import org.jboss.webbeans.model.bean.BeanModel;
 
 /**
  * <p>
@@ -31,21 +31,21 @@ import org.jboss.webbeans.model.AbstractComponentModel;
 public class ObserverImpl<T> implements Observer<T>
 {
 
-   private final AbstractComponentModel<?, ?> componentModel;
+   private final BeanModel<?, ?> beanModel;
    private final InjectableMethod<? extends Object> observerMethod;
    private final Class<T> eventType;
 
    /**
     * Creates an Observer which describes and encapsulates an observer method (7.3).
     * 
-    * @param componentModel The model for the component which defines the
+    * @param beanModel The model for the bean which defines the
     *           observer method
     * @param observer The observer method to notify
     * @param eventType The type of event being observed
     */
-   public ObserverImpl(AbstractComponentModel<?, ?> componentModel, InjectableMethod<?> observer, Class<T> eventType)
+   public ObserverImpl(BeanModel<?, ?> beanModel, InjectableMethod<?> observer, Class<T> eventType)
    {
-      this.componentModel = componentModel;
+      this.beanModel = beanModel;
       this.observerMethod = observer;
       this.eventType = eventType;
    }
@@ -68,7 +68,7 @@ public class ObserverImpl<T> implements Observer<T>
     */
    public void notify(final T event)
    {
-      // Get the most specialized instance of the component
+      // Get the most specialized instance of the bean
       Object instance = null /*getInstance(manager)*/;
       if (instance != null)
       {
@@ -104,7 +104,7 @@ public class ObserverImpl<T> implements Observer<T>
     */
    protected Object getInstance(Manager manager)
    {
-      // Return the most specialized instance of the component
-      return manager.getInstanceByType(componentModel.getType(), componentModel.getBindingTypes().toArray(new Annotation[0]));
+      // Return the most specialized instance of the bean
+      return manager.getInstanceByType(beanModel.getType(), beanModel.getBindingTypes().toArray(new Annotation[0]));
    }
 }

@@ -15,7 +15,7 @@ import org.jboss.webbeans.event.DeferredEventNotification;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
-import org.jboss.webbeans.model.SimpleComponentModel;
+import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.Asynchronous;
 import org.jboss.webbeans.test.bindings.AsynchronousAnnotationLiteral;
@@ -62,7 +62,7 @@ public class DeferredEventNotificationTest extends AbstractTest
       // invoked which in turn invokes the observer. Here the mock observer
       // is used to keep track of the event being fired.
       ManagerImpl manager;
-      SimpleComponentModel<Tuna> tuna;
+      SimpleBeanModel<Tuna> tuna;
       InjectableMethod<Object> om;
       List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       enabledDeploymentTypes.add(Standard.class);
@@ -73,7 +73,7 @@ public class DeferredEventNotificationTest extends AbstractTest
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
       AnnotatedType<Tuna> annotatedItem = new SimpleAnnotatedType<Tuna>(Tuna.class, annotations);
-      tuna = new SimpleComponentModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), annotatedItem, manager);
+      tuna = new SimpleBeanModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), annotatedItem, manager);
       om = new InjectableMethod<Object>(AnObserver.class.getMethod("observe", new Class[] { Event.class }));
 
       AnObserver observerInstance = new AnObserver();
