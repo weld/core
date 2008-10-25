@@ -44,7 +44,7 @@ public class NameBasedResolutionTest extends AbstractTest
       
       manager.addBean(plaiceBean);
       
-      assert manager.resolveByName("whitefish").size() == 1; 
+      assert manager.resolveByName("whitefish").size() == 1;
       assert manager.resolveByName("whitefish").contains(plaiceBean);
    }
    

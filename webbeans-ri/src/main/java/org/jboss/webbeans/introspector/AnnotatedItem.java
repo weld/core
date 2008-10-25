@@ -31,6 +31,9 @@ public interface AnnotatedItem<T, S>
     */
    public Set<Annotation> getAnnotations(
          Class<? extends Annotation> metaAnnotationType);
+   
+   public Annotation[] getAnnotationsAsArray(
+         Class<? extends Annotation> metaAnnotationType);
 
    /**
     * Get an annotation for the annotation type specified.

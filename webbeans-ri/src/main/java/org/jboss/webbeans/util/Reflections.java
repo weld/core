@@ -56,6 +56,27 @@ public class Reflections
       return Modifier.isFinal(method.getModifiers());
    }
    
+   public static boolean isTypeOrAnyMethodFinal(Class<?> type)
+   {
+      if (isFinal(type))
+      {
+         return true;
+      }
+      for (Method method : type.getDeclaredMethods())
+      {
+         if (isFinal(method))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+   
+   public static boolean isPrimitive(Class<?> type)
+   {
+      return type.isPrimitive();
+   }
+   
    public static boolean isAbstract(Class<?> clazz)
    {
       return Modifier.isAbstract(clazz.getModifiers());
@@ -66,6 +87,10 @@ public class Reflections
       try
       {
          return clazz.getConstructor(parameterTypes);
+      }
+      catch (NoSuchMethodException e) 
+      {
+         return null;
       }
       catch (Exception e)
       {
@@ -186,5 +211,10 @@ public class Reflections
       {
          return new Type[0];
       }
+   }
+
+   public static boolean isArrayType(Class<?> rawType)
+   {
+      return rawType.isArray();
    }
 }

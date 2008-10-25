@@ -45,15 +45,9 @@ public class ResolutionManager
    
    private ManagerImpl manager;
    
-   private boolean rebuildRequired = true;
-   
    public ResolutionManager(ManagerImpl manager)
    {
-      this.resolvedInjectionPoints = new InjectableMap();
       this.injectionPoints = new HashSet<Injectable<?,?>>();
-      
-      this.resolvedNames = new HashMap<String, Set<Bean<?>>>();
-      
       this.manager = manager;
    }
    
@@ -69,20 +63,19 @@ public class ResolutionManager
    
    public void clear()
    {
-      rebuildRequired = true;
-      resolvedInjectionPoints.clear();
-      resolvedNames.clear();
+      resolvedInjectionPoints = null;
+      resolvedNames = new HashMap<String, Set<Bean<?>>>();
    }
    
-   private void resolveBeans()
+   public void resolveBeans()
    {
-      if (rebuildRequired)
+      if (resolvedInjectionPoints == null)
       {
+         resolvedInjectionPoints = new InjectableMap();
          for (Injectable<?, ?> injectable : injectionPoints)
          {
             registerInjectionPoint(injectable);
          }
-         rebuildRequired = false;
       }
    }
    
@@ -108,29 +101,37 @@ public class ResolutionManager
                beans.add(bean);
             }
          }
-         resolvedNames.put(name, retainHighestPrecedenceBeans(beans, manager.getEnabledDeploymentTypes()));
+         beans = retainHighestPrecedenceBeans(beans, manager.getEnabledDeploymentTypes());
+         resolvedNames.put(name, beans);
          return beans;
       }
    }
    
    private static Set<Bean<?>> retainHighestPrecedenceBeans(Set<Bean<?>> beans, List<Class<? extends Annotation>> enabledDeploymentTypes)
    {
-      SortedSet<Class<? extends Annotation>> possibleDeploymentTypes = new TreeSet<Class<? extends Annotation>>(new ListComparator<Class<? extends Annotation>>(enabledDeploymentTypes));
-      for (Bean<?> bean : beans)
+      if (beans.size() > 0)
       {
-         possibleDeploymentTypes.add(bean.getDeploymentType());
-      }
-      possibleDeploymentTypes.retainAll(enabledDeploymentTypes);
-      Class<? extends Annotation> highestPrecedencePossibleDeploymentType = possibleDeploymentTypes.last();
-      Set<Bean<?>> trimmed = new HashSet<Bean<?>>();
-      for (Bean<?> bean : beans)
-      {
-         if (bean.getDeploymentType().equals(highestPrecedencePossibleDeploymentType))
+         SortedSet<Class<? extends Annotation>> possibleDeploymentTypes = new TreeSet<Class<? extends Annotation>>(new ListComparator<Class<? extends Annotation>>(enabledDeploymentTypes));
+         for (Bean<?> bean : beans)
          {
-            trimmed.add(bean);
+            possibleDeploymentTypes.add(bean.getDeploymentType());
          }
+         possibleDeploymentTypes.retainAll(enabledDeploymentTypes);
+         Class<? extends Annotation> highestPrecedencePossibleDeploymentType = possibleDeploymentTypes.last();
+         Set<Bean<?>> trimmed = new HashSet<Bean<?>>();
+         for (Bean<?> bean : beans)
+         {
+            if (bean.getDeploymentType().equals(highestPrecedencePossibleDeploymentType))
+            {
+               trimmed.add(bean);
+            }
+         }
+         return trimmed;
       }
-      return trimmed;
+      else
+      {
+         return beans;
+      }
    }
 
 }

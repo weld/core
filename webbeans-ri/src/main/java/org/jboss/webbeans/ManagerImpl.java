@@ -2,18 +2,19 @@ package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.webbeans.AmbiguousDependencyException;
 import javax.webbeans.DeploymentException;
 import javax.webbeans.Observer;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
 import javax.webbeans.TypeLiteral;
+import javax.webbeans.UnproxyableDependencyException;
+import javax.webbeans.UnsatisfiedDependencyException;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 import javax.webbeans.manager.Decorator;
@@ -21,16 +22,16 @@ import javax.webbeans.manager.InterceptionType;
 import javax.webbeans.manager.Interceptor;
 import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.ejb.EjbManager;
 import org.jboss.webbeans.event.EventBus;
+import org.jboss.webbeans.exceptions.NameResolutionLocation;
+import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
 import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.SimpleInjectable;
+import org.jboss.webbeans.util.ClientProxy;
 
 public class ManagerImpl implements Manager
 {
-
-   private static final Annotation[] DEFAULT_BINDING = {new CurrentAnnotationLiteral()};
    
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
    private ModelManager modelManager;
@@ -47,7 +48,7 @@ public class ManagerImpl implements Manager
       this.ejbLookupManager = new EjbManager();
       this.beans = new HashSet<Bean<?>>();
       this.eventBus = new EventBus();
-      resolutionManager = new ResolutionManager(this);
+      this.resolutionManager = new ResolutionManager(this);
    }
 
    private void initEnabledDeploymentTypes(
@@ -108,41 +109,20 @@ public class ManagerImpl implements Manager
       return ejbLookupManager;
    }
 
-   public <T> Set<Bean<T>> resolveByType(Class<T> apiType,
+   public <T> Set<Bean<T>> resolveByType(Class<T> type,
          Annotation... bindingTypes)
    {
-      return resolveByType(apiType, bindingTypes, new Type[0]);
+      return resolveByType(new SimpleInjectable<T>(type, bindingTypes));
    }
 
    public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,
          Annotation... bindingTypes)
    {
-      if (apiType.getType() instanceof ParameterizedType)
-      {
-         return resolveByType(apiType.getRawType(), bindingTypes, ((ParameterizedType) apiType.getType()).getActualTypeArguments());
-      }
-      else
-      {
-         return resolveByType(apiType.getRawType(), bindingTypes, new Type[0]);
-      }
-      
+      return resolveByType(new SimpleInjectable<T>(apiType, bindingTypes));
    }
    
-   private <T> Set<Bean<T>> resolveByType(Class<T> apiType, Annotation[] bindingTypes, Type[] actualTypeArguements)
+   private <T> Set<Bean<T>> resolveByType(Injectable<T, ?> injectable)
    {
-      if (bindingTypes.length == 0)
-      {
-         bindingTypes = DEFAULT_BINDING;
-      }
-      Injectable<T, ?> injectable = null;
-      if (actualTypeArguements.length > 0)
-      {
-         injectable = new SimpleInjectable<T>(apiType, bindingTypes, actualTypeArguements);
-      }
-      else
-      {
-         injectable = new SimpleInjectable<T>(apiType, bindingTypes);
-      }
       Set<Bean<T>> beans = getResolutionManager().get(injectable);
       if (beans == null)
       {
@@ -211,44 +191,78 @@ public class ManagerImpl implements Manager
 
    public <T> T getInstance(Bean<T> bean)
    {
-      // TODO Auto-generated method stub
-      return null;
+      if (getModelManager().getScopeModel(bean.getScopeType()).isNormal())
+      {
+         // TODO return a client proxy
+         return null;
+      }
+      else
+      {
+         return getContext(bean.getScopeType()).get(bean, true);
+      }
    }
 
    public Object getInstanceByName(String name)
    {
-      // TODO Auto-generated method stub
-      return null;
+      Set<Bean<?>> beans = resolveByName(name);
+      if (beans.size() == 0)
+      {
+         throw new UnsatisfiedDependencyException(new NameResolutionLocation(name) + "Unable to resolve any Web Beans");
+      }
+      else if (beans.size() > 1)
+      {
+         throw new AmbiguousDependencyException(new NameResolutionLocation(name) + "Resolved multiple Web Beans");
+      }
+      else
+      {
+         return beans.iterator().next();
+      }
    }
 
    public <T> T getInstanceByType(Class<T> type, Annotation... bindingTypes)
    {
-      // TODO Auto-generated method stub
-      return null;
+      return getInstanceByType(new SimpleInjectable<T>(type, bindingTypes));
+   }
+
+   public <T> T getInstanceByType(TypeLiteral<T> type, Annotation... bindingTypes)
+   {
+      return getInstanceByType(new SimpleInjectable<T>(type, bindingTypes));
    }
    
-   public <T> T getInstanceByType(Class<T> type, Set<Annotation> bindingTypes)
+   private <T> T getInstanceByType(Injectable<T, ?> injectable)
    {
-      // TODO Auto-generated method stub
-      return null;
+      Set<Bean<T>> beans = resolveByType(injectable);
+      if (beans.size() == 0)
+      {
+         throw new UnsatisfiedDependencyException(new TypesafeResolutionLocation(injectable) + "Unable to resolve any Web Beans");
+      }
+      else if (beans.size() > 1)
+      {
+         throw new AmbiguousDependencyException(new TypesafeResolutionLocation(injectable) + "Resolved multiple Web Beans");
+      }
+      else
+      {
+         Bean<T> bean = beans.iterator().next();
+         if (getModelManager().getScopeModel(bean.getScopeType()).isNormal() && !ClientProxy.isProxyable(injectable.getType()))
+         {
+            throw new UnproxyableDependencyException(new TypesafeResolutionLocation(injectable) + "Unable to proxy");
+         }
+         else
+         {
+            return getInstance(bean);
+         }
+      }
    }
+   
+   
 
-   public <T> T getInstanceByType(TypeLiteral<T> type,
-         Annotation... bindingTypes)
-   {
-      // TODO Auto-generated method stub
-      return null;
-   }
-
-   public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType,
-         Annotation... bindings)
+   public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
       // TODO Auto-generated method stub
       return this;
    }
 
-   public <T> Manager removeObserver(Observer<T> observer,
-         TypeLiteral<T> eventType, Annotation... bindings)
+   public <T> Manager removeObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
       // TODO Auto-generated method stub
       return this;

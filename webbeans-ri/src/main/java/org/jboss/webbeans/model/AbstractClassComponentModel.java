@@ -1,10 +1,8 @@
 package org.jboss.webbeans.model;
 
-import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 import javax.webbeans.BindingType;
-import javax.webbeans.Dependent;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedType;
@@ -138,29 +136,7 @@ public abstract class AbstractClassComponentModel<T> extends AbstractComponentMo
             throw new RuntimeException("Scope " + getScopeType() + " is not an allowed by the stereotype for " + type);
          }
       }
-      if (isDeclaredFinal(type) && !getScopeType().equals(Dependent.class))
-      {
-         throw new RuntimeException("Scope " + getScopeType() + " is not allowed as the class is declared final or has methods declared final for " + type + ". Only @Dependent is allowed for final components");
-      }
    }
-   
-   protected static boolean isDeclaredFinal(Class<?> type)
-   {
-      if (Reflections.isFinal(type))
-      {
-         return true;
-      }
-      for (Method method : type.getDeclaredMethods())
-      {
-         if (Reflections.isFinal(method))
-         {
-            return true;
-         }
-      }
-      return false;
-   }
-   
-   
    
    protected void checkComponentImplementation()
    {

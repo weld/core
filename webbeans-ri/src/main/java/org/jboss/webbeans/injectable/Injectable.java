@@ -1,6 +1,7 @@
 package org.jboss.webbeans.injectable;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,6 +9,7 @@ import javax.webbeans.BindingType;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 
 /**
@@ -20,6 +22,9 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
 public abstract class Injectable<T, S>
 {
    
+   private static final Annotation[] DEFAULT_BINDING_ARRAY = {new CurrentAnnotationLiteral()};
+   private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
+   
    private AnnotatedItem<T, S> annotatedItem;
    
    public Injectable(AnnotatedItem<T, S> annotatedItem)
@@ -27,9 +32,31 @@ public abstract class Injectable<T, S>
       this.annotatedItem = annotatedItem;
    }
 
+   public Annotation[] getBindingTypesAsArray()
+   {
+      Annotation[] annotations = annotatedItem.getAnnotationsAsArray(BindingType.class);
+      // TODO This is in the wrong place, where to put it... Probably best to wrap annotated item...
+      if (annotations.length ==0)
+      {
+         return DEFAULT_BINDING_ARRAY; 
+      }
+      else
+      {
+         return annotations;
+      }
+   }
+   
    public Set<Annotation> getBindingTypes()
    {
-      return annotatedItem.getAnnotations(BindingType.class);
+      Set<Annotation> annotations = annotatedItem.getAnnotations(BindingType.class);
+      if (annotations.size() == 0)
+      {
+         return DEFAULT_BINDING;
+      }
+      else
+      {
+         return annotations;
+      }
    }
    
    protected Injectable() {}
@@ -42,7 +69,7 @@ public abstract class Injectable<T, S>
 
    public T getValue(ManagerImpl manager)
    {
-      return manager.getInstanceByType(getType(), getBindingTypes());
+      return manager.getInstanceByType(getType(), getBindingTypesAsArray());
    }
    
    public Class<? extends T> getType()
@@ -76,7 +103,7 @@ public abstract class Injectable<T, S>
       {
          Injectable<?, ?> that = (Injectable<?, ?>) other;
          return this.getAnnotatedItem().isAssignableFrom(that.getAnnotatedItem()) &&
-            that.getAnnotatedItem().getAnnotations(BindingType.class).equals(this.getAnnotatedItem().getAnnotations(BindingType.class));
+            that.getBindingTypes().equals(this.getBindingTypes());
       }
       else
       {

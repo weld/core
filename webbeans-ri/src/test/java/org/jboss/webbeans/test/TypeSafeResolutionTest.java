@@ -31,7 +31,7 @@ import org.jboss.webbeans.test.components.Tuna;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.Test;
 
-public class InjectableTest extends AbstractTest
+public class TypeSafeResolutionTest extends AbstractTest
 {
 
    @SuppressWarnings("unchecked")

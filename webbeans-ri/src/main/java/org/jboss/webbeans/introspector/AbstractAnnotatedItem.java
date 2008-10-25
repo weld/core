@@ -10,14 +10,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
 import org.jboss.webbeans.util.Reflections;
 
 public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
 {
 
    private Map<Class<? extends Annotation>, Annotation> annotationMap;
-   private Map<Class<? extends Annotation>, Set<Annotation>> metaAnnotations;
+   private Map<Class<? extends Annotation>, Set<Annotation>> metaAnnotationMap;
    private Set<Annotation> annotationSet;
+   private Annotation[] annotationArray;
    
    public AbstractAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap)
    {
@@ -59,12 +61,21 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
 
    public Set<Annotation> getAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
-      if (metaAnnotations == null)
+      if (metaAnnotationMap == null)
       {
-         metaAnnotations = new HashMap<Class<? extends Annotation>, Set<Annotation>>();
+         metaAnnotationMap = new HashMap<Class<? extends Annotation>, Set<Annotation>>();
       }
-      populateMetaAnnotationMap(metaAnnotationType, metaAnnotations, annotationMap);
-      return metaAnnotations.get(metaAnnotationType);
+      populateMetaAnnotationMap(metaAnnotationType, metaAnnotationMap, annotationMap);
+      return metaAnnotationMap.get(metaAnnotationType);
+   }
+   
+   public Annotation[] getAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
+   {
+      if (annotationArray == null)
+      {
+         annotationArray = getAnnotations(metaAnnotationType).toArray(annotationArray);
+      }
+      return annotationArray;
    }
 
    public Set<Annotation> getAnnotations()
@@ -148,22 +159,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    @Override
    public String toString()
    {
-      String string = getType().toString();
-      if (getActualTypeArguements().length > 0)
-      {
-         string += "<";
-         for (int i = 0; i < getActualTypeArguements().length; i++)
-         {
-            string += getActualTypeArguements()[i].toString();
-            if (i < getActualTypeArguements().length - 1)
-            {
-               string += ",";
-            }
-         }
-         string += ">";
-      }
-      string += getAnnotations();
-      return string;
+      return TypesafeResolutionLocation.createMessage(getType(), getActualTypeArguements(), getAnnotations());
    }
 
 }
