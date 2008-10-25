@@ -1,9 +1,9 @@
 package org.jboss.webbeans.test;
 
 import org.jboss.webbeans.ejb.EjbMetaData;
-import org.jboss.webbeans.test.components.Leopard;
-import org.jboss.webbeans.test.components.Lion;
-import org.jboss.webbeans.test.components.Tiger;
+import org.jboss.webbeans.test.beans.Leopard;
+import org.jboss.webbeans.test.beans.Lion;
+import org.jboss.webbeans.test.beans.Tiger;
 import org.testng.annotations.Test;
 
 public class EjbMetaDataTest

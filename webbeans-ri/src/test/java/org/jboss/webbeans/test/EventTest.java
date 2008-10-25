@@ -13,18 +13,18 @@ import org.jboss.webbeans.test.annotations.AnimalStereotype;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.Synchronous;
 import org.jboss.webbeans.test.annotations.Tame;
+import org.jboss.webbeans.test.beans.DangerCall;
 import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.FishStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.SynchronousAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.TameAnnotationLiteral;
-import org.jboss.webbeans.test.components.DangerCall;
 import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Tests for the implementation of an Event component.
+ * Tests for the implementation of an Event bean
  * 
  * @author David Allen
  * 
@@ -55,10 +55,10 @@ public class EventTest
       // Create a test annotation for the event and use it to construct the
       // event object
       Annotation[] annotations = new Annotation[] { new AnimalStereotypeAnnotationLiteral() };
-      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>();
-      eventComponent.setEventBindings(annotations);
-      eventComponent.setManager(manager);
-      eventComponent.fire(anEvent, new TameAnnotationLiteral(),
+      EventImpl<DangerCall> eventBean = new EventImpl<DangerCall>();
+      eventBean.setEventBindings(annotations);
+      eventBean.setManager(manager);
+      eventBean.fire(anEvent, new TameAnnotationLiteral(),
             new SynchronousAnnotationLiteral());
       assert anEvent.equals(manager.getEvent());
       assert Reflections.annotationSetMatches(manager.getEventBindings(),
@@ -69,7 +69,7 @@ public class EventTest
       boolean duplicateDetected = false;
       try
       {
-         eventComponent.fire(anEvent, new TameAnnotationLiteral(),
+         eventBean.fire(anEvent, new TameAnnotationLiteral(),
                new TameAnnotationLiteral());
       } catch (DuplicateBindingTypeException e)
       {
@@ -81,7 +81,7 @@ public class EventTest
       boolean nonBindingTypeDetected = false;
       try
       {
-         eventComponent.fire(anEvent, new FishStereotypeAnnotationLiteral());
+         eventBean.fire(anEvent, new FishStereotypeAnnotationLiteral());
       }
       catch (IllegalArgumentException e)
       {

@@ -9,7 +9,7 @@ import org.jboss.webbeans.BasicContext;
 import org.jboss.webbeans.BeanImpl;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
-import org.jboss.webbeans.test.components.Tuna;
+import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.util.Util;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

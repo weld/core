@@ -14,8 +14,8 @@ import org.jboss.webbeans.test.annotations.broken.StereotypeWithBindingTypes;
 import org.jboss.webbeans.test.annotations.broken.StereotypeWithNonEmptyNamed;
 import org.jboss.webbeans.test.annotations.broken.StereotypeWithTooManyDeploymentTypes;
 import org.jboss.webbeans.test.annotations.broken.StereotypeWithTooManyScopeTypes;
-import org.jboss.webbeans.test.components.Animal;
-import org.jboss.webbeans.test.components.Order;
+import org.jboss.webbeans.test.beans.Animal;
+import org.jboss.webbeans.test.beans.Order;
 import org.testng.annotations.Test;
 
 @SpecVersion("20080925")

@@ -7,13 +7,13 @@ import javax.webbeans.manager.Bean;
 import org.jboss.webbeans.BeanImpl;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
-import org.jboss.webbeans.test.components.Cod;
-import org.jboss.webbeans.test.components.Haddock;
-import org.jboss.webbeans.test.components.Plaice;
-import org.jboss.webbeans.test.components.Salmon;
-import org.jboss.webbeans.test.components.SeaBass;
-import org.jboss.webbeans.test.components.Sole;
-import org.jboss.webbeans.test.components.Tuna;
+import org.jboss.webbeans.test.beans.Cod;
+import org.jboss.webbeans.test.beans.Haddock;
+import org.jboss.webbeans.test.beans.Plaice;
+import org.jboss.webbeans.test.beans.Salmon;
+import org.jboss.webbeans.test.beans.SeaBass;
+import org.jboss.webbeans.test.beans.Sole;
+import org.jboss.webbeans.test.beans.Tuna;
 import org.testng.annotations.Test;
 public class NameBasedResolutionTest extends AbstractTest
 {

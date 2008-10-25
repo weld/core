@@ -11,11 +11,11 @@ import org.jboss.webbeans.ResolutionManager;
 import org.jboss.webbeans.injectable.InjectableField;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
-import org.jboss.webbeans.test.components.Cod;
-import org.jboss.webbeans.test.components.FishFarm;
-import org.jboss.webbeans.test.components.Salmon;
-import org.jboss.webbeans.test.components.ScottishFish;
-import org.jboss.webbeans.test.components.Sole;
+import org.jboss.webbeans.test.beans.Cod;
+import org.jboss.webbeans.test.beans.FishFarm;
+import org.jboss.webbeans.test.beans.Salmon;
+import org.jboss.webbeans.test.beans.ScottishFish;
+import org.jboss.webbeans.test.beans.Sole;
 import org.testng.annotations.Test;
 
 public class InstantiationByNameTest extends AbstractTest

@@ -1,0 +1,10 @@
+package org.jboss.webbeans.test.beans.broken;
+
+import org.jboss.webbeans.test.annotations.RequestScopedAnimalStereotype;
+import org.jboss.webbeans.test.beans.Animal;
+
+@RequestScopedAnimalStereotype
+public class Carp implements Animal
+{
+
+}

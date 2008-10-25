@@ -14,10 +14,10 @@ import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.Asynchronous;
 import org.jboss.webbeans.test.annotations.Synchronous;
+import org.jboss.webbeans.test.beans.Antelope;
+import org.jboss.webbeans.test.beans.Cat;
+import org.jboss.webbeans.test.beans.Order;
 import org.jboss.webbeans.test.bindings.AsynchronousAnnotationLiteral;
-import org.jboss.webbeans.test.components.Antelope;
-import org.jboss.webbeans.test.components.Cat;
-import org.jboss.webbeans.test.components.Order;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.Test;
 

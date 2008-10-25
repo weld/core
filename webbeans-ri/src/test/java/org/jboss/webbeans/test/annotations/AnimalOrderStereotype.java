@@ -8,8 +8,8 @@ import java.lang.annotation.Target;
 
 import javax.webbeans.Stereotype;
 
-import org.jboss.webbeans.test.components.Animal;
-import org.jboss.webbeans.test.components.Order;
+import org.jboss.webbeans.test.beans.Animal;
+import org.jboss.webbeans.test.beans.Order;
 
 @Stereotype(requiredTypes={Animal.class, Order.class})
 @Target( { TYPE })

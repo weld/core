@@ -17,10 +17,10 @@ public class MockObserverImpl<T> extends ObserverImpl<T> {
 	
 	
 
-	public MockObserverImpl(BeanModel<?, ?> componentModel,
+	public MockObserverImpl(BeanModel<?, ?> beanModel,
          InjectableMethod<?> observer, Class<T> eventType)
    {
-      super(componentModel, observer, eventType);
+      super(beanModel, observer, eventType);
    }
 
    @Override

@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 import javax.webbeans.Stereotype;
 
-import org.jboss.webbeans.test.components.Animal;
+import org.jboss.webbeans.test.beans.Animal;
 
 @Stereotype(requiredTypes=Animal.class)
 @Target( { TYPE })

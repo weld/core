@@ -19,14 +19,14 @@ import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
 import org.jboss.webbeans.test.annotations.FishStereotype;
 import org.jboss.webbeans.test.annotations.RiverFishStereotype;
+import org.jboss.webbeans.test.beans.Antelope;
+import org.jboss.webbeans.test.beans.BeanWithTooManyScopeTypes;
+import org.jboss.webbeans.test.beans.Haddock;
+import org.jboss.webbeans.test.beans.Order;
+import org.jboss.webbeans.test.beans.SeaBass;
 import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.FishStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.RiverFishStereotypeAnnotationLiteral;
-import org.jboss.webbeans.test.components.Antelope;
-import org.jboss.webbeans.test.components.ComponentWithTooManyScopeTypes;
-import org.jboss.webbeans.test.components.Haddock;
-import org.jboss.webbeans.test.components.Order;
-import org.jboss.webbeans.test.components.SeaBass;
 import org.testng.annotations.Test;
 
 public class ScopeTypeTest extends AbstractTest
@@ -69,7 +69,7 @@ public class ScopeTypeTest extends AbstractTest
       boolean exception = false;
       try
       {
-         new SimpleBeanModel<ComponentWithTooManyScopeTypes>(new SimpleAnnotatedType<ComponentWithTooManyScopeTypes>(ComponentWithTooManyScopeTypes.class), getEmptyAnnotatedItem(ComponentWithTooManyScopeTypes.class), manager);
+         new SimpleBeanModel<BeanWithTooManyScopeTypes>(new SimpleAnnotatedType<BeanWithTooManyScopeTypes>(BeanWithTooManyScopeTypes.class), getEmptyAnnotatedItem(BeanWithTooManyScopeTypes.class), manager);
       }
       catch (Exception e) 
       {
