@@ -27,6 +27,8 @@ package javax.webbeans;
  *            the annotation type
  */
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -35,6 +37,7 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
 {
    
    private Class<T> annotationType;
+   private Method[] members;
 
    protected AnnotationLiteral()
    {
@@ -43,12 +46,15 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
       {
          throw new RuntimeException(getClass() + "is not a subclass of AnnotationLiteral ");
       }
+      
       annotationType = getTypeParameter(annotationLiteralSubclass);
+      
       if (annotationType == null)
       {
          throw new RuntimeException(getClass() + " is missing type parameter in AnnotationLiteral");
-
       }
+      
+      this.members = annotationType.getDeclaredMethods();
    }
    
    @SuppressWarnings("unchecked")
@@ -93,7 +99,17 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
    @Override
    public String toString()
    {
-      return "@" + annotationType().getName() + "()";
+     String string = "@" + annotationType().getName() + "(";
+     for (int i = 0; i < members.length; i++)
+     {
+        string += members[i].getName() + "=";
+        string += invoke(members[i], this);
+        if (i < members.length - 1)
+        {
+           string += ",";
+        }
+     }
+     return string + ")";
    }
    
    @Override
@@ -102,17 +118,58 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
       if (other instanceof Annotation)
       {
          Annotation that = (Annotation) other;
-         return this.annotationType().equals(that.annotationType());
+         if (this.annotationType().equals(that.annotationType()))
+         {
+            for (Method member : members)
+            {
+               Object thisValue = invoke(member, this);
+               Object thatValue = invoke(member, that);
+               if (!thisValue.equals(thatValue))
+               {
+                  return false;
+               }
+            }
+            return true;
+         }
       }
-      else
-      {
-         return false;
-      }
+      return false;
    }
    
    @Override
+   /*
+    * The hash code of a primitive value v is equal to WrapperType.valueOf(v).hashCode(), where WrapperType is the wrapper type corresponding to the primitive type of v (Byte, Character, Double, Float, Integer, Long, Short, or Boolean).
+    * The hash code of a string, enum, class, or annotation member-value I v is computed as by calling v.hashCode(). (In the case of annotation member values, this is a recursive definition.)
+    * The hash code of an array member-value is computed by calling the appropriate overloading of Arrays.hashCode on the value. (There is one overloading for each primitive type, and one for object reference types.)
+    */
    public int hashCode()
    {
-      return 0;
+      int hashCode = 0;
+      for (Method member : members)
+      {
+         int memberNameHashCode = 127 * member.getName().hashCode();
+         int memberValueHashCode = invoke(member, this).hashCode();
+         hashCode += memberNameHashCode ^ memberValueHashCode;
+      }       
+      return hashCode;
+   }
+   
+   private static Object invoke(Method method, Object instance)
+   {
+      try
+      {
+         return method.invoke(instance);
+      }
+      catch (IllegalArgumentException e)
+      {
+         throw new ExecutionException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new ExecutionException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
+      }
+      catch (InvocationTargetException e)
+      {
+         throw new ExecutionException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
+      }
    }
 }

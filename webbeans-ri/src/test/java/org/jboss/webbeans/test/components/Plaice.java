@@ -1,16 +1,14 @@
 package org.jboss.webbeans.test.components;
 
 import javax.webbeans.Named;
-import javax.webbeans.Production;
 
-import org.jboss.webbeans.test.annotations.Chunky;
+import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.Whitefish;
 
-@Production
+@AnotherDeploymentType
 @Whitefish
-@Chunky(realChunky=true)
 @Named("whitefish")
-public class Cod implements ScottishFish
+public class Plaice implements Animal
 {
 
 }

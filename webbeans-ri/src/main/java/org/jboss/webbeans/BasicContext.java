@@ -1,30 +1,49 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 import javax.webbeans.manager.Manager;
-
-import org.jboss.webbeans.util.BeanMap;
+import org.jboss.webbeans.util.MapWrapper;
 
 /**
  * Basic implementation of javax.webbeans.Context, backed by a HashMap
  * 
  * @author Shane Bryzak
  * @author Nicklas Karlsson (nickarls@gmail.com)
+ * @author Pete\ Muir
+ * @
  */
 public class BasicContext implements Context
 {
-   private BeanMap<Object> beans;
+   
+   private class BeanMap extends MapWrapper<Bean<? extends Object>, Object>
+   {
+
+      public BeanMap()
+      {
+         super(new HashMap<Bean<? extends Object>, Object>());
+      }
+      
+      @SuppressWarnings("unchecked")
+      public <T extends Object> T get(Bean<? extends T> key)
+      {
+         return (T) super.get(key);
+      }
+
+   }
+   
+   private BeanMap beans;
    private Class<? extends Annotation> scopeType;
    private boolean active;
 
    public BasicContext(Class<? extends Annotation> scopeType)
    {
       this.scopeType = scopeType;
-      beans = new BeanMap<Object>();
+      beans = new BeanMap();
       active = true;
    }
 

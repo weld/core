@@ -2,11 +2,15 @@ package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+
+import org.jboss.webbeans.util.Reflections;
 
 public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
 {
@@ -113,10 +117,53 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return false;
    }
    
+   public boolean isAssignableFrom(AnnotatedItem<?, ?> that)
+   {
+      return isAssignableFrom(that.getType(), that.getActualTypeArguements());
+   }
+   
+   public boolean isAssignableFrom(Set<Class<?>> types)
+   {
+      for (Class<?> type : types)
+      {
+         if (isAssignableFrom(type, Reflections.getActualTypeArguements(type)))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+   
+   private boolean isAssignableFrom(Class<?> type, Type[] actualTypeArguements)
+   {
+      return getType().isAssignableFrom(type) && Arrays.equals(getActualTypeArguements(), actualTypeArguements);
+   }
+   
    @Override
    public int hashCode()
    {
       return getType().hashCode();
+   }
+   
+   @Override
+   public String toString()
+   {
+      String string = getType().toString();
+      if (getActualTypeArguements().length > 0)
+      {
+         string += "<";
+         for (int i = 0; i < getActualTypeArguements().length; i++)
+         {
+            string += getActualTypeArguements()[i].toString();
+            if (i < getActualTypeArguements().length - 1)
+            {
+               string += ",";
+            }
+         }
+         string += ">";
+      }
+      string += getAnnotations();
+      return string;
    }
 
 }

@@ -1,9 +1,7 @@
 package org.jboss.webbeans.injectable;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.webbeans.BindingType;
@@ -31,7 +29,7 @@ public abstract class Injectable<T, S>
 
    public Set<Annotation> getBindingTypes()
    {
-      return annotatedItem.getAnnotations();
+      return annotatedItem.getAnnotations(BindingType.class);
    }
    
    protected Injectable() {}
@@ -39,7 +37,7 @@ public abstract class Injectable<T, S>
    @Override
    public String toString()
    {
-      return getType() + " with binding types " + getBindingTypes();
+      return getClass().getSimpleName() + "[" + getAnnotatedItem().toString() + "]";
    }
 
    public T getValue(ManagerImpl manager)
@@ -57,33 +55,27 @@ public abstract class Injectable<T, S>
       return annotatedItem;
    }
    
-   public Set<Bean<?>> getPossibleBeans(Set<Bean<?>> beans)
+   public Set<Bean<?>> getMatchingBeans(Set<Bean<?>> beans)
    {
       Set<Bean<?>> resolvedBeans = new HashSet<Bean<?>>();
       for (Bean<?> bean : beans)
       {
-         if (bean.getTypes().contains(getType()))
+         if (getAnnotatedItem().isAssignableFrom(bean.getTypes()) && bean.getBindingTypes().containsAll(getBindingTypes()))
          {
-            List<Annotation> beanBindingTypes = new ArrayList<Annotation>(bean.getBindingTypes());
-            if (beanBindingTypes.containsAll(annotatedItem.getAnnotations()))
-            {
-               // TODO inspect annotation parameters
-               // TODO inspect deployment types
-               resolvedBeans.add(bean);
-            }
+            resolvedBeans.add(bean);
          }
       }
-     return resolvedBeans;
+      return resolvedBeans;
    }
    
    @Override
    public boolean equals(Object other)
    {
-      // TODO Currently you must have any annotation literals on other for this to work, probably need to iterate over the set and check both directions
+      // TODO Do we need to check the other direction too?
       if (other instanceof Injectable)
       {
          Injectable<?, ?> that = (Injectable<?, ?>) other;
-         return this.getAnnotatedItem().getType().isAssignableFrom(that.getAnnotatedItem().getType()) &&
+         return this.getAnnotatedItem().isAssignableFrom(that.getAnnotatedItem()) &&
             that.getAnnotatedItem().getAnnotations(BindingType.class).equals(this.getAnnotatedItem().getAnnotations(BindingType.class));
       }
       else
@@ -95,7 +87,10 @@ public abstract class Injectable<T, S>
    @Override
    public int hashCode()
    {
+      // TODO Implement this!
       return 0;
    }
+   
+   
    
 }

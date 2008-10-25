@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.webbeans.Production;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -20,24 +21,21 @@ import org.jboss.webbeans.test.annotations.MammalStereotype;
 import org.jboss.webbeans.test.annotations.RequestScopedAnimalStereotype;
 import org.jboss.webbeans.test.annotations.RiverFishStereotype;
 import org.jboss.webbeans.test.mock.MockManagerImpl;
-import org.jboss.webbeans.test.util.EmptyAnnotatedType;
 import org.testng.annotations.BeforeMethod;
 
 public class AbstractTest
 {
    
    protected ManagerImpl manager;
-   
-   @Deprecated
-   protected AnnotatedType<?> emptyAnnotatedItem;
+
    
    @BeforeMethod
    public void before()
    {
-      emptyAnnotatedItem = new EmptyAnnotatedType<Object>(new HashMap<Class<? extends Annotation>, Annotation>());
       
       List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       enabledDeploymentTypes.add(Standard.class);
+      enabledDeploymentTypes.add(Production.class);
       enabledDeploymentTypes.add(AnotherDeploymentType.class);
       enabledDeploymentTypes.add(HornedAnimalDeploymentType.class);
       manager = new MockManagerImpl(enabledDeploymentTypes);

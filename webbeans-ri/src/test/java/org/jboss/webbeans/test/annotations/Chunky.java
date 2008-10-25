@@ -18,5 +18,7 @@ import javax.webbeans.BindingType;
 @BindingType
 public @interface Chunky
 {
+   
+   boolean realChunky();
 
 }

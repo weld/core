@@ -1,6 +1,7 @@
 package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Set;
 
 
@@ -48,5 +49,11 @@ public interface AnnotatedItem<T, S>
    public S getDelegate();
    
    public Class<? extends T> getType();
+   
+   public boolean isAssignableFrom(AnnotatedItem<?, ?> that);
+   
+   public boolean isAssignableFrom(Set<Class<?>> types);
+   
+   public Type[] getActualTypeArguements();
 
 }

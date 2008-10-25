@@ -1,9 +1,12 @@
 package org.jboss.webbeans.introspector;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Type;
 
 public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedItem<T, Constructor<T>> implements AnnotatedConstructor<T>
 {
+
+   private static final Type[] actualTypeArguements = new Type[0];
    
    private Constructor<T> constructor;
    
@@ -17,12 +20,6 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedItem<T, Cons
    {
       return constructor;
    }
-   
-   @Override
-   public String toString()
-   {
-      return constructor.toGenericString();
-   }
 
    public Constructor<T> getDelegate()
    {
@@ -32,6 +29,11 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedItem<T, Cons
    public Class<T> getType()
    {
       return constructor.getDeclaringClass();
+   }
+   
+   public Type[] getActualTypeArguements()
+   {
+      return actualTypeArguements;
    }
 
 }

@@ -2,6 +2,8 @@ package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -18,6 +20,7 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
 {
    
    private Class<T> clazz;
+   private Type[] actualTypeArguements;
    private Set<AnnotatedField<?>> fields;
    private Map<Class<? extends Annotation>, Set<AnnotatedField<?>>> annotatedFields;
    private Map<Class<? extends Annotation>, Set<AnnotatedField<?>>> metaAnnotatedFields;
@@ -26,6 +29,15 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
    {
       super(annotationMap);
       this.clazz = annotatedClass;
+      if (this.clazz.getGenericSuperclass() instanceof ParameterizedType)
+      {
+         ParameterizedType type = (ParameterizedType) this.clazz.getGenericSuperclass();
+         actualTypeArguements = type.getActualTypeArguments();
+      }
+      else
+      {
+         actualTypeArguements = new Type[0];
+      }
    }
    
    public SimpleAnnotatedType(Class<T> annotatedClass)
@@ -36,12 +48,6 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
    public Class<? extends T> getAnnotatedClass()
    {
       return clazz;
-   }
-   
-   @Override
-   public String toString()
-   {
-      return clazz + " " + super.getAnnotationMap().toString();
    }
    
    public Class<T> getDelegate()
@@ -135,6 +141,11 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
    public Class<T> getType()
    {
       return clazz;
+   }
+
+   public Type[] getActualTypeArguements()
+   {
+      return actualTypeArguements;
    }
 
 }

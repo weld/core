@@ -131,7 +131,7 @@ public class SimpleComponentModel<T> extends AbstractClassComponentModel<T>
    @Override
    public String toString()
    {
-      return "SimpleComponentModel[" + getType().getName() + "]";
+      return "SimpleWebBean[" + getAnnotatedItem().toString() + "]";
    }
    
    @Override

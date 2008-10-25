@@ -20,11 +20,18 @@ public class FishFarm
    
    @SuppressWarnings("unused")
    @Whitefish
-   private ScottishFish scottishFish;
+   private ScottishFish whiteScottishFish;
    
-   @Whitefish @Chunky
-   private Animal whiteChunkyFish;
+   @SuppressWarnings("unused")
+   @Whitefish
+   private Animal whiteFish;
    
+   @SuppressWarnings("unused")
+   @Whitefish @Chunky(realChunky=true)
+   private Animal realChunkyWhiteFish;
+   
+   @SuppressWarnings("unused")
+   @Current
    private Farmer<ScottishFish> scottishFishFarmer;
    
 }

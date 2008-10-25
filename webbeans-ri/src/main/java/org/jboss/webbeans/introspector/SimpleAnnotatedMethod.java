@@ -1,9 +1,12 @@
 package org.jboss.webbeans.introspector;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedItem<T, Method> implements AnnotatedMethod<T>
 {
+   
+   private static final Type[] actualTypeArguements = new Type[0];
    
    private Method method;
    
@@ -17,12 +20,6 @@ public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedItem<T, Method> i
    {
       return method;
    }
-   
-   @Override
-   public String toString()
-   {
-      return method + " " + getAnnotatedMethod().toString();
-   }
 
    public Method getDelegate()
    {
@@ -32,6 +29,11 @@ public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedItem<T, Method> i
    public Class<T> getType()
    {
       return (Class<T>) method.getReturnType();
+   }
+   
+   public Type[] getActualTypeArguements()
+   {
+      return actualTypeArguements;
    }
 
 }

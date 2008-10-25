@@ -84,5 +84,10 @@ public static final String LOGGER_NAME = "componentMetaModel";
    {
       return model.toString();
    }
+   
+   public AbstractComponentModel<T, ?> getModel()
+   {
+      return model;
+   }
 
 }

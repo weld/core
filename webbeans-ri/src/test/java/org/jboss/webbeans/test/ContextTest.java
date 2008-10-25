@@ -11,7 +11,6 @@ import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.SimpleComponentModel;
 import org.jboss.webbeans.test.components.Tuna;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.ExpectedExceptions;
 import org.testng.annotations.Test;
 
 /**

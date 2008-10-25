@@ -2,6 +2,8 @@ package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,13 +21,17 @@ import javax.webbeans.manager.InterceptionType;
 import javax.webbeans.manager.Interceptor;
 import javax.webbeans.manager.Manager;
 
+import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.ejb.EjbManager;
 import org.jboss.webbeans.event.EventBus;
+import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.SimpleInjectable;
 
 public class ManagerImpl implements Manager
 {
 
+   private static final Annotation[] DEFAULT_BINDING = {new CurrentAnnotationLiteral()};
+   
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
    private ModelManager modelManager;
    private EjbManager ejbLookupManager;
@@ -66,6 +72,7 @@ public class ManagerImpl implements Manager
 
    public Manager addBean(Bean<?> bean)
    {
+      getResolutionManager().clear();
       beans.add(bean);
       return this;
    }
@@ -104,8 +111,39 @@ public class ManagerImpl implements Manager
    public <T> Set<Bean<T>> resolveByType(Class<T> apiType,
          Annotation... bindingTypes)
    {
-      Set<Bean<T>> beans = getResolutionManager().get(
-            new SimpleInjectable<T>(apiType, bindingTypes));
+      return resolveByType(apiType, bindingTypes, new Type[0]);
+   }
+
+   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,
+         Annotation... bindingTypes)
+   {
+      if (apiType.getType() instanceof ParameterizedType)
+      {
+         return resolveByType(apiType.getRawType(), bindingTypes, ((ParameterizedType) apiType.getType()).getActualTypeArguments());
+      }
+      else
+      {
+         return resolveByType(apiType.getRawType(), bindingTypes, new Type[0]);
+      }
+      
+   }
+   
+   private <T> Set<Bean<T>> resolveByType(Class<T> apiType, Annotation[] bindingTypes, Type[] actualTypeArguements)
+   {
+      if (bindingTypes.length == 0)
+      {
+         bindingTypes = DEFAULT_BINDING;
+      }
+      Injectable<T, ?> injectable = null;
+      if (actualTypeArguements.length > 0)
+      {
+         injectable = new SimpleInjectable<T>(apiType, bindingTypes, actualTypeArguements);
+      }
+      else
+      {
+         injectable = new SimpleInjectable<T>(apiType, bindingTypes);
+      }
+      Set<Bean<T>> beans = getResolutionManager().get(injectable);
       if (beans == null)
       {
          return new HashSet<Bean<T>>();
@@ -114,12 +152,7 @@ public class ManagerImpl implements Manager
       {
          return beans;
       }
-   }
-
-   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,
-         Annotation... bindingTypes)
-   {
-      return resolveByType(apiType.getRawType(), bindingTypes);
+      
    }
 
    public ResolutionManager getResolutionManager()
@@ -223,8 +256,7 @@ public class ManagerImpl implements Manager
 
    public Set<Bean<?>> resolveByName(String name)
    {
-      // TODO Auto-generated method stub
-      return null;
+      return getResolutionManager().get(name);
    }
 
    public List<Decorator> resolveDecorators(Set<Class<?>> types,

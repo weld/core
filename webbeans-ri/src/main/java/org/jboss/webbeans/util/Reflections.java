@@ -5,6 +5,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -172,5 +174,17 @@ public class Reflections
          }
       }
       return annotationTypeList.size() == 0;
+   }
+   
+   public static Type[] getActualTypeArguements(Class<?> clazz)
+   {
+      if (clazz.getGenericSuperclass() instanceof ParameterizedType)
+      {
+         return ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments(); 
+      }
+      else
+      {
+         return new Type[0];
+      }
    }
 }

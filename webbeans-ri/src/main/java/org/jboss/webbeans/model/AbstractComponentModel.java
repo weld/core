@@ -324,4 +324,9 @@ public abstract class AbstractComponentModel<T, E>
       return injectionPoints;
    }
 
+   public boolean isAssignableFrom(AnnotatedItem<?, ?> annotatedItem)
+   {
+      return this.getAnnotatedItem().isAssignableFrom(annotatedItem);
+   }
+   
 }
