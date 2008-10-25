@@ -8,11 +8,13 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.webbeans.BindingType;
+import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.DeploymentType;
 import javax.webbeans.Named;
 import javax.webbeans.Production;
 import javax.webbeans.ScopeType;
+import javax.webbeans.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
@@ -76,7 +78,7 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
    protected Set<Class<?>> getTypeHierachy(Class<?> clazz)
    {
       Set<Class<?>> classes = new HashSet<Class<?>>();
-      if (!(clazz == null || clazz == Object.class))
+      if (clazz != null)
       {
          classes.add(clazz);
          classes.addAll(getTypeHierachy(clazz.getSuperclass()));
@@ -128,7 +130,7 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
       Set<Annotation> xmlScopes = getXmlAnnotatedItem().getAnnotations(ScopeType.class);
       if (xmlScopes.size() > 1)
       {
-         throw new RuntimeException("At most one scope may be specified in XML");
+         throw new DefinitionException("At most one scope may be specified in XML");
       }
       
       if (xmlScopes.size() == 1)
@@ -141,7 +143,7 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
       Set<Annotation> scopes = getAnnotatedItem().getAnnotations(ScopeType.class);
       if (scopes.size() > 1)
       {
-         throw new RuntimeException("At most one scope may be specified");
+         throw new DefinitionException("At most one scope may be specified");
       }
       
       if (scopes.size() == 1)
@@ -226,7 +228,7 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
       
       if (deploymentTypes.size() > 1)
       {
-         throw new RuntimeException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().getDelegate());
+         throw new DefinitionException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().getDelegate());
       }
       if (deploymentTypes.size() == 1)
       {
@@ -255,6 +257,11 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
       if (deploymentType == null)
       {
          throw new RuntimeException("type: " + getType() + " must specify a deployment type");
+      }
+      
+      if (deploymentType.equals(Standard.class))
+      {
+         throw new DefinitionException();
       }
    }
    

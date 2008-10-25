@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedItem;
+import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
    @Test
    public void testStateless()
    {
-      EnterpriseBeanModel<Lion> lion = new EnterpriseBeanModel<Lion>(new SimpleAnnotatedType<Lion>(Lion.class), getEmptyAnnotatedItem(Lion.class), manager);
+      EnterpriseBeanModel<Lion> lion = new EnterpriseBeanModel<Lion>(new SimpleAnnotatedType<Lion>(Lion.class), getEmptyAnnotatedType(Lion.class), manager);
       assert lion.getScopeType().equals(Dependent.class);
       Reflections.annotationSetMatches(lion.getBindingTypes(), Current.class);
       assert lion.getName().equals("lion");
@@ -64,7 +64,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
       boolean exception = false;
       try
       {
-         new EnterpriseBeanModel<Bear>(new SimpleAnnotatedType<Bear>(Bear.class), getEmptyAnnotatedItem(Bear.class), manager);
+         new EnterpriseBeanModel<Bear>(new SimpleAnnotatedType<Bear>(Bear.class), getEmptyAnnotatedType(Bear.class), manager);
       }
       catch (Exception e) 
       {
@@ -90,7 +90,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
    public void testStateful()
    {
 
-      AbstractEnterpriseBeanModel<Tiger> tiger = new EnterpriseBeanModel<Tiger>(new SimpleAnnotatedType(Tiger.class), getEmptyAnnotatedItem(Tiger.class), manager);
+      AbstractEnterpriseBeanModel<Tiger> tiger = new EnterpriseBeanModel<Tiger>(new SimpleAnnotatedType(Tiger.class), getEmptyAnnotatedType(Tiger.class), manager);
       Reflections.annotationSetMatches(tiger.getBindingTypes(), Synchronous.class);
       assert tiger.getRemoveMethod().getAnnotatedItem().getDelegate().getName().equals("remove");
       assert tiger.getName() == null;
@@ -101,7 +101,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
    public void testMultipleRemoveMethodsWithDestroys()
    {
 
-      AbstractEnterpriseBeanModel<Elephant> elephant = new EnterpriseBeanModel<Elephant>(new SimpleAnnotatedType(Elephant.class), getEmptyAnnotatedItem(Elephant.class), manager);
+      AbstractEnterpriseBeanModel<Elephant> elephant = new EnterpriseBeanModel<Elephant>(new SimpleAnnotatedType(Elephant.class), getEmptyAnnotatedType(Elephant.class), manager);
       assert elephant.getRemoveMethod().getAnnotatedItem().getDelegate().getName().equals("remove2");
    }
    
@@ -112,7 +112,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
       boolean exception = false;
       try
       {
-         new EnterpriseBeanModel<Puma>(new SimpleAnnotatedType(Puma.class), getEmptyAnnotatedItem(Puma.class), manager);
+         new EnterpriseBeanModel<Puma>(new SimpleAnnotatedType(Puma.class), getEmptyAnnotatedType(Puma.class), manager);
       }
       catch (Exception e) 
       {
@@ -128,7 +128,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
       boolean exception = false;
       try
       {
-         new EnterpriseBeanModel<Cougar>(new SimpleAnnotatedType(Cougar.class), getEmptyAnnotatedItem(Cougar.class), manager);
+         new EnterpriseBeanModel<Cougar>(new SimpleAnnotatedType(Cougar.class), getEmptyAnnotatedType(Cougar.class), manager);
       }
       catch (Exception e) 
       {
@@ -144,7 +144,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
       boolean exception = false;
       try
       {
-         new EnterpriseBeanModel<Cheetah>(new SimpleAnnotatedType(Cheetah.class), getEmptyAnnotatedItem(Cheetah.class), manager);
+         new EnterpriseBeanModel<Cheetah>(new SimpleAnnotatedType(Cheetah.class), getEmptyAnnotatedType(Cheetah.class), manager);
       }
       catch (Exception e) 
       {
@@ -158,7 +158,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
    public void testRemoveMethodWithDefaultBinding()
    {
 
-      AbstractEnterpriseBeanModel<Panther> panther = new EnterpriseBeanModel<Panther>(new SimpleAnnotatedType<Panther>(Panther.class), getEmptyAnnotatedItem(Panther.class), manager);
+      AbstractEnterpriseBeanModel<Panther> panther = new EnterpriseBeanModel<Panther>(new SimpleAnnotatedType<Panther>(Panther.class), getEmptyAnnotatedType(Panther.class), manager);
       
       assert panther.getRemoveMethod().getAnnotatedItem().getDelegate().getName().equals("remove");
       assert panther.getRemoveMethod().getParameters().size() == 1;
@@ -171,7 +171,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
    @Test
    public void testMessageDriven()
    {
-      AbstractEnterpriseBeanModel<Leopard> leopard = new EnterpriseBeanModel<Leopard>(new SimpleAnnotatedType(Leopard.class), getEmptyAnnotatedItem(Leopard.class), manager);
+      AbstractEnterpriseBeanModel<Leopard> leopard = new EnterpriseBeanModel<Leopard>(new SimpleAnnotatedType(Leopard.class), getEmptyAnnotatedType(Leopard.class), manager);
       Reflections.annotationSetMatches(leopard.getBindingTypes(), Current.class);
    }
 

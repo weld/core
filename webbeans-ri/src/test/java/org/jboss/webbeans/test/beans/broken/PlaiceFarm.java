@@ -4,6 +4,7 @@ import javax.webbeans.Production;
 
 import org.jboss.webbeans.test.annotations.Whitefish;
 import org.jboss.webbeans.test.beans.Plaice;
+import org.jboss.webbeans.test.beans.Tuna;
 
 @Production
 public class PlaiceFarm
@@ -12,5 +13,7 @@ public class PlaiceFarm
    @SuppressWarnings("unused")
    @Whitefish
    private Plaice plaice;
+   
+   private Tuna tuna;
    
 }

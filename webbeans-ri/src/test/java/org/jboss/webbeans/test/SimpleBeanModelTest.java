@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedItem;
+import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -18,12 +18,7 @@ import org.jboss.webbeans.bindings.DependentAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
-import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
-import org.jboss.webbeans.test.annotations.FishStereotype;
-import org.jboss.webbeans.test.annotations.HornedAnimalDeploymentType;
-import org.jboss.webbeans.test.annotations.HornedMammalStereotype;
 import org.jboss.webbeans.test.annotations.Synchronous;
-import org.jboss.webbeans.test.beans.Antelope;
 import org.jboss.webbeans.test.beans.Chair;
 import org.jboss.webbeans.test.beans.Cow;
 import org.jboss.webbeans.test.beans.Goldfish;
@@ -33,14 +28,9 @@ import org.jboss.webbeans.test.beans.Horse;
 import org.jboss.webbeans.test.beans.Moose;
 import org.jboss.webbeans.test.beans.Order;
 import org.jboss.webbeans.test.beans.SeaBass;
-import org.jboss.webbeans.test.beans.Tuna;
-import org.jboss.webbeans.test.beans.broken.BeanWithTooManyDeploymentTypes;
 import org.jboss.webbeans.test.beans.broken.Carp;
 import org.jboss.webbeans.test.beans.broken.Pig;
 import org.jboss.webbeans.test.beans.broken.OuterBean.InnerBean;
-import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
-import org.jboss.webbeans.test.bindings.FishStereotypeAnnotationLiteral;
-import org.jboss.webbeans.test.bindings.HornedMamalStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.SynchronousAnnotationLiteral;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.Test;
@@ -51,71 +41,6 @@ public class SimpleBeanModelTest extends AbstractTest
    
    private abstract class NamedAnnotationLiteral extends AnnotationLiteral<Named> implements Named {}
    
-   // **** TESTS FOR DEPLOYMENT TYPE **** //
-   
-   @Test @SpecAssertion(section="2.5.3")
-   public void testTooManyDeploymentTypes()
-   {
-      boolean exception = false;
-      try
-      {
-         new SimpleBeanModel<BeanWithTooManyDeploymentTypes>(new SimpleAnnotatedType<BeanWithTooManyDeploymentTypes>(BeanWithTooManyDeploymentTypes.class), getEmptyAnnotatedItem(BeanWithTooManyDeploymentTypes.class), manager);
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
-   }
-   
-   @Test @SpecAssertion(section="2.5.4")
-   public void testXmlDeploymentTypeOverridesJava()
-   {
-      Map<Class<? extends Annotation>, Annotation> xmlDefinedDeploymentTypeAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      xmlDefinedDeploymentTypeAnnotations.put(AnotherDeploymentType.class, new AnotherDeploymentTypeAnnotationLiteral());
-      AnnotatedType<BeanWithTooManyDeploymentTypes> xmlDefinedDeploymentTypeAnnotatedItem = new SimpleAnnotatedType<BeanWithTooManyDeploymentTypes>(BeanWithTooManyDeploymentTypes.class, xmlDefinedDeploymentTypeAnnotations);
-      
-      SimpleBeanModel<BeanWithTooManyDeploymentTypes> model = new SimpleBeanModel<BeanWithTooManyDeploymentTypes>(new SimpleAnnotatedType<BeanWithTooManyDeploymentTypes>(BeanWithTooManyDeploymentTypes.class), xmlDefinedDeploymentTypeAnnotatedItem, manager);
-      assert model.getDeploymentType().equals(AnotherDeploymentType.class);
-   }
-   
-   @Test @SpecAssertion(section="2.5.5")
-   public void testXmlDefaultDeploymentType()
-   {
-      AnnotatedType<Antelope> antelopeAnnotatedItem = new SimpleAnnotatedType<Antelope>(Antelope.class, new HashMap<Class<? extends Annotation>, Annotation>());
-      SimpleBeanModel<Antelope> antelope = new SimpleBeanModel<Antelope>(getEmptyAnnotatedItem(Antelope.class), antelopeAnnotatedItem, manager);
-      assert antelope.getDeploymentType().equals(Production.class);
-   }
-   
-   @Test @SpecAssertion(section="2.5.4")
-   public void testXmlRespectsJavaDeploymentType()
-   {
-      AnnotatedType<Tuna> annotatedItem = new SimpleAnnotatedType<Tuna>(Tuna.class, new HashMap<Class<? extends Annotation>, Annotation>());
-      SimpleBeanModel<Tuna> tuna = new SimpleBeanModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), annotatedItem, manager);
-      assert tuna.getDeploymentType().equals(AnotherDeploymentType.class);
-   }
-   
-   @Test @SpecAssertion(section="2.5.7")
-   public void testDeploymentTypePrecedenceSelection()
-   {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(HornedMammalStereotype.class, new HornedMamalStereotypeAnnotationLiteral());
-      AnnotatedType<Moose> annotatedItem = new SimpleAnnotatedType<Moose>(Moose.class, annotations);
-      
-      SimpleBeanModel<Moose> moose = new SimpleBeanModel<Moose>(new SimpleAnnotatedType<Moose>(Moose.class), annotatedItem, manager);
-      assert moose.getDeploymentType().equals(HornedAnimalDeploymentType.class);
-      
-   }
-   
-   @Test @SpecAssertion(section="2.7.2")
-   public void testDeploymentTypeSpecifiedAndStereotyped()
-   {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
-      AnnotatedType<SeaBass> annotatedItem = new SimpleAnnotatedType<SeaBass>(SeaBass.class, annotations);
-      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), annotatedItem, manager);
-      assert trout.getScopeType().equals(RequestScoped.class);
-   } 
    
    // **** TESTS FOR SCOPES **** //
    
@@ -126,7 +51,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test @SpecAssertion(section="2.6.1")
    public void testDefaultNamed()
    {
-      SimpleBeanModel<Haddock> haddock = new SimpleBeanModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), getEmptyAnnotatedItem(Haddock.class), manager);
+      SimpleBeanModel<Haddock> haddock = new SimpleBeanModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), getEmptyAnnotatedType(Haddock.class), manager);
       assert haddock.getName() != null;
       assert haddock.getName().equals("haddock");
    }
@@ -171,14 +96,14 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test @SpecAssertion(section="2.6.4")
    public void testNotNamed()
    {
-      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedItem(SeaBass.class), manager);
+      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedType(SeaBass.class), manager);
       assert trout.getName() == null;
    }
    
    @Test @SpecAssertion(section="2.6.1")
    public void testNonDefaultNamed()
    {
-      SimpleBeanModel<Moose> moose = new SimpleBeanModel<Moose>(new SimpleAnnotatedType<Moose>(Moose.class), getEmptyAnnotatedItem(Moose.class), manager);
+      SimpleBeanModel<Moose> moose = new SimpleBeanModel<Moose>(new SimpleAnnotatedType<Moose>(Moose.class), getEmptyAnnotatedType(Moose.class), manager);
       assert moose.getName().equals("aMoose");
    }
    
@@ -213,7 +138,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test @SpecAssertion(section="2.7.2")
    public void testSingleStereotype()
    {
-      SimpleBeanModel<Gorilla> gorilla = new SimpleBeanModel<Gorilla>(new SimpleAnnotatedType<Gorilla>(Gorilla.class), getEmptyAnnotatedItem(Gorilla.class), manager);
+      SimpleBeanModel<Gorilla> gorilla = new SimpleBeanModel<Gorilla>(new SimpleAnnotatedType<Gorilla>(Gorilla.class), getEmptyAnnotatedType(Gorilla.class), manager);
       assert gorilla.getName() == null;
       assert gorilla.getDeploymentType().equals(Production.class);
       assert gorilla.getBindingTypes().iterator().next().annotationType().equals(Current.class);
@@ -225,7 +150,7 @@ public class SimpleBeanModelTest extends AbstractTest
    {
       try
       {
-         new SimpleBeanModel<Gorilla>(new SimpleAnnotatedType<Gorilla>(Gorilla.class), getEmptyAnnotatedItem(Gorilla.class), manager);
+         new SimpleBeanModel<Gorilla>(new SimpleAnnotatedType<Gorilla>(Gorilla.class), getEmptyAnnotatedType(Gorilla.class), manager);
       }
       catch (Exception e) 
       {
@@ -237,7 +162,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test(expectedExceptions=Exception.class) @SpecAssertion(section="2.7.4")
    public void testRequiredTypeIsNotImplemented()
    {
-      new SimpleBeanModel<Chair>(new SimpleAnnotatedType<Chair>(Chair.class), getEmptyAnnotatedItem(Chair.class), manager);      
+      new SimpleBeanModel<Chair>(new SimpleAnnotatedType<Chair>(Chair.class), getEmptyAnnotatedType(Chair.class), manager);      
    }
    
    @Test @SpecAssertion(section="2.7.4")
@@ -245,7 +170,7 @@ public class SimpleBeanModelTest extends AbstractTest
    {
       try
       {
-         new SimpleBeanModel<Goldfish>(new SimpleAnnotatedType<Goldfish>(Goldfish.class), getEmptyAnnotatedItem(Goldfish.class), manager);
+         new SimpleBeanModel<Goldfish>(new SimpleAnnotatedType<Goldfish>(Goldfish.class), getEmptyAnnotatedType(Goldfish.class), manager);
       }
       catch (Exception e) 
       {
@@ -257,7 +182,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test(expectedExceptions=Exception.class) @SpecAssertion(section="2.7.4")
    public void testScopeIsNotSupported()
    {
-      new SimpleBeanModel<Carp>(new SimpleAnnotatedType<Carp>(Carp.class), getEmptyAnnotatedItem(Carp.class), manager);    
+      new SimpleBeanModel<Carp>(new SimpleAnnotatedType<Carp>(Carp.class), getEmptyAnnotatedType(Carp.class), manager);    
    }
    
    @Test @SpecAssertion(section="2.7.2")
@@ -274,7 +199,7 @@ public class SimpleBeanModelTest extends AbstractTest
       boolean exception = false;
       try
       {
-         new SimpleBeanModel<Cow>(new SimpleAnnotatedType<Cow>(Cow.class), getEmptyAnnotatedItem(Cow.class), manager);
+         new SimpleBeanModel<Cow>(new SimpleAnnotatedType<Cow>(Cow.class), getEmptyAnnotatedType(Cow.class), manager);
       }
       catch (Exception e) 
       {
@@ -289,7 +214,7 @@ public class SimpleBeanModelTest extends AbstractTest
       boolean exception = false;
       try
       {
-         new SimpleBeanModel<InnerBean>(new SimpleAnnotatedType<InnerBean>(InnerBean.class), getEmptyAnnotatedItem(InnerBean.class), manager);
+         new SimpleBeanModel<InnerBean>(new SimpleAnnotatedType<InnerBean>(InnerBean.class), getEmptyAnnotatedType(InnerBean.class), manager);
       }
       catch (Exception e) 
       {
@@ -304,7 +229,7 @@ public class SimpleBeanModelTest extends AbstractTest
       boolean exception = false;
       try
       {
-         new SimpleBeanModel<Horse>(new SimpleAnnotatedType<Horse>(Horse.class), getEmptyAnnotatedItem(Horse.class), manager);
+         new SimpleBeanModel<Horse>(new SimpleAnnotatedType<Horse>(Horse.class), getEmptyAnnotatedType(Horse.class), manager);
       }
       catch (Exception e) 
       {
@@ -331,7 +256,7 @@ public class SimpleBeanModelTest extends AbstractTest
       boolean exception = false;
       try
       {
-         new SimpleBeanModel<Pig>(new SimpleAnnotatedType<Pig>(Pig.class), getEmptyAnnotatedItem(Pig.class), manager);
+         new SimpleBeanModel<Pig>(new SimpleAnnotatedType<Pig>(Pig.class), getEmptyAnnotatedType(Pig.class), manager);
       }
       catch (Exception e) 
       {

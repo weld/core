@@ -1,6 +1,7 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedItem;
+import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
+import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -8,8 +9,10 @@ import java.util.Map;
 
 import javax.webbeans.ApplicationScoped;
 import javax.webbeans.ConversationScoped;
+import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.RequestScoped;
+import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.bindings.ConversationScopedAnnotationLiteral;
 import org.jboss.webbeans.bindings.RequestScopedAnnotationLiteral;
@@ -17,11 +20,13 @@ import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
+import org.jboss.webbeans.test.annotations.AnotherScopeType;
 import org.jboss.webbeans.test.annotations.FishStereotype;
 import org.jboss.webbeans.test.annotations.RiverFishStereotype;
 import org.jboss.webbeans.test.beans.Antelope;
 import org.jboss.webbeans.test.beans.BeanWithTooManyScopeTypes;
 import org.jboss.webbeans.test.beans.Haddock;
+import org.jboss.webbeans.test.beans.Mullet;
 import org.jboss.webbeans.test.beans.Order;
 import org.jboss.webbeans.test.beans.SeaBass;
 import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
@@ -29,29 +34,31 @@ import org.jboss.webbeans.test.bindings.FishStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.RiverFishStereotypeAnnotationLiteral;
 import org.testng.annotations.Test;
 
+@SpecVersion("PDR")
 public class ScopeTypeTest extends AbstractTest
 {
    
    @Test @SpecAssertion(section="2.4")
    public void testScopeTypesAreExtensible()
    {
-      assert false;
+      Bean<Mullet> mullet = createSimpleWebBean(Mullet.class, manager);
+      assert mullet.getScopeType().equals(AnotherScopeType.class);
    }
    
-   @Test @SpecAssertion(section="2.4.2")
+   @Test(groups="annotationDefinition") @SpecAssertion(section="2.4.2")
    public void testScopeTypeHasCorrectTarget()
    {
       assert false;
    }
 
-   @Test @SpecAssertion(section="2.4.2")
+   @Test(groups="annotationDefinition") @SpecAssertion(section="2.4.2")
    public void testScopeTypeHasCorrectRetention()
    {
       assert false;
    }
 
-   @Test @SpecAssertion(section="2.4.2")
-   public void testScopeTypeDeclaresBindingTypeAnnotation()
+   @Test(groups="annotationDefinition") @SpecAssertion(section="2.4.2")
+   public void testScopeTypeDeclaresScopeTypeAnnotation()
    {
       assert false;
    }
@@ -59,42 +66,24 @@ public class ScopeTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.4.3")
    public void testScopeDeclaredInJava()
    {
-      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedItem(SeaBass.class), manager);
+      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedType(SeaBass.class), manager);
       assert trout.getScopeType().equals(RequestScoped.class);
    }
    
-   @Test @SpecAssertion(section="2.4.3")
+   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.4.3")
    public void testTooManyScopesSpecifiedInJava()
    {
-      boolean exception = false;
-      try
-      {
-         new SimpleBeanModel<BeanWithTooManyScopeTypes>(new SimpleAnnotatedType<BeanWithTooManyScopeTypes>(BeanWithTooManyScopeTypes.class), getEmptyAnnotatedItem(BeanWithTooManyScopeTypes.class), manager);
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;  
+      new SimpleBeanModel<BeanWithTooManyScopeTypes>(new SimpleAnnotatedType<BeanWithTooManyScopeTypes>(BeanWithTooManyScopeTypes.class), getEmptyAnnotatedType(BeanWithTooManyScopeTypes.class), manager);
    }
    
-   @Test @SpecAssertion(section="2.4.3")
+   @Test(expectedExceptions=DefinitionException.class)
    public void testTooManyScopesSpecifiedInXml()
    {
-      boolean exception = false;
-      try
-      {
-         Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-         annotations.put(RequestScoped.class, new RequestScopedAnnotationLiteral());
-         annotations.put(ConversationScoped.class, new ConversationScopedAnnotationLiteral());
-         AnnotatedType<Antelope> antelopeAnnotatedItem = new SimpleAnnotatedType<Antelope>(Antelope.class, annotations);
-         new SimpleBeanModel<Antelope>(getEmptyAnnotatedItem(Antelope.class), antelopeAnnotatedItem, manager);
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;  
+      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      annotations.put(RequestScoped.class, new RequestScopedAnnotationLiteral());
+      annotations.put(ConversationScoped.class, new ConversationScopedAnnotationLiteral());
+      AnnotatedType<Antelope> antelopeAnnotatedItem = new SimpleAnnotatedType<Antelope>(Antelope.class, annotations);
+      new SimpleBeanModel<Antelope>(getEmptyAnnotatedType(Antelope.class), antelopeAnnotatedItem, manager);
    }
    
    @Test @SpecAssertion(section="2.4.4")
@@ -131,7 +120,7 @@ public class ScopeTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.4.5")
    public void testDefaultScope()
    {
-      SimpleBeanModel<Order> order = new SimpleBeanModel<Order>(new SimpleAnnotatedType<Order>(Order.class), getEmptyAnnotatedItem(Order.class), manager);
+      SimpleBeanModel<Order> order = new SimpleBeanModel<Order>(new SimpleAnnotatedType<Order>(Order.class), getEmptyAnnotatedType(Order.class), manager);
       assert order.getScopeType().equals(Dependent.class);
    }
    

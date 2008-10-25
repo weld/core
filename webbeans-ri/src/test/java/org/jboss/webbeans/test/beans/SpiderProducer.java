@@ -3,11 +3,11 @@ package org.jboss.webbeans.test.beans;
 import javax.webbeans.Dependent;
 import javax.webbeans.Named;
 import javax.webbeans.Produces;
-import javax.webbeans.Production;
 
+import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.Tame;
 
-@Production
+@AnotherDeploymentType
 public class SpiderProducer
 {
    
