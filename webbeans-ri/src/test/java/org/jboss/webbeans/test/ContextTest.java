@@ -1,7 +1,5 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedItem;
-
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.RequestScoped;
 import javax.webbeans.manager.Bean;
@@ -12,6 +10,7 @@ import org.jboss.webbeans.BeanImpl;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.components.Tuna;
+import org.jboss.webbeans.test.util.Util;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -34,13 +33,13 @@ public class ContextTest extends AbstractTest
    
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testGetWithCreateFalseReturnsNull() {
-      Bean<Tuna> tunaBean = new BeanImpl<Tuna>(new SimpleBeanModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), getEmptyAnnotatedItem(Tuna.class), super.manager), manager);      
+      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);      
       assert context.get(tunaBean, false) == null;
    }
 
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testGetWithCreateTrueReturnsBean() {
-      Bean<Tuna> tunaBean = new BeanImpl<Tuna>(new SimpleBeanModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), getEmptyAnnotatedItem(Tuna.class), super.manager), manager);
+      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);      
       assert context.get(tunaBean, true) != null;
    }
    
@@ -50,5 +49,26 @@ public class ContextTest extends AbstractTest
       context.get(null, false);
       assert true;
    }
+   
+   @Test(groups="contexts") @SpecAssertion(section="8.1")
+   public void testReturnsCorrectExistingBean() {
+      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);      
+      Tuna firstTuna = context.get(tunaBean, true);
+      Tuna secondTuna = context.get(tunaBean, false);
+      assert firstTuna == secondTuna;
+   }
 
+   @Test(groups="contexts") @SpecAssertion(section="8.1")
+   public void testProducerMethodReturningNullOK() {
+      // TODO
+      assert false;
+   }
+
+   @Test(groups="contexts")
+   public void testRemoveBean() {
+      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);      
+      Tuna firstTuna = context.get(tunaBean, true);
+      ((BasicContext)context).remove(manager, tunaBean);
+      assert context.get(tunaBean, false) == null;
+   }
 }
