@@ -76,4 +76,22 @@ public class MapWrapper<K, V> implements Map<K, V>
       return delegate.values();
    }
    
+   @Override
+   public boolean equals(Object o)
+   {
+      return delegate.equals(o);
+   }
+   
+   @Override
+   public int hashCode()
+   {
+      return delegate.hashCode();
+   }
+   
+   @Override
+   public String toString()
+   {
+      return delegate.toString();
+   }
+   
 }
