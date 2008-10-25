@@ -1,5 +1,7 @@
 package org.jboss.webbeans.test;
 
+import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedItem;
+
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;

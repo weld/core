@@ -1,5 +1,8 @@
 package org.jboss.webbeans.test;
 
+import static org.jboss.webbeans.test.util.Util.createSimpleModel;
+import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedItem;
+
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +28,7 @@ public class BindingTypeTest extends AbstractTest
    @Test @SpecAssertion(section={"2.3.3", "2.3.1"}) 
    public void testDefaultBindingTypeDeclaredInJava()
    {
-      SimpleComponentModel<Order> order = new SimpleComponentModel<Order>(new SimpleAnnotatedType(Order.class), getEmptyAnnotatedItem(Order.class), manager);
+      SimpleComponentModel<Order> order = createSimpleModel(Order.class, manager);
       assert order.getBindingTypes().size() == 1;
       order.getBindingTypes().iterator().next().annotationType().equals(Current.class);
    }
@@ -58,7 +61,7 @@ public class BindingTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.3.3")
    public void testBindingTypesDeclaredInJava()
    {
-      SimpleComponentModel<Cat> cat = new SimpleComponentModel<Cat>(new SimpleAnnotatedType(Cat.class), getEmptyAnnotatedItem(Cat.class), manager);
+      SimpleComponentModel<Cat> cat = createSimpleModel(Cat.class, manager);
       assert cat.getBindingTypes().size() == 1;
       assert Reflections.annotationSetMatches(cat.getBindingTypes(), Synchronous.class);
    }

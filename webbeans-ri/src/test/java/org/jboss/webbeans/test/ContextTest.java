@@ -1,5 +1,7 @@
 package org.jboss.webbeans.test;
 
+import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedItem;
+
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.RequestScoped;
 import javax.webbeans.manager.Bean;

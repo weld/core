@@ -1,5 +1,7 @@
 package org.jboss.webbeans.test;
 
+import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedItem;
+
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.BeanImpl;
@@ -13,7 +15,6 @@ import org.jboss.webbeans.test.components.SeaBass;
 import org.jboss.webbeans.test.components.Sole;
 import org.jboss.webbeans.test.components.Tuna;
 import org.testng.annotations.Test;
-
 public class NameBasedResolutionTest extends AbstractTest
 {
 
