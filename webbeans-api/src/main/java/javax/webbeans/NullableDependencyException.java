@@ -22,27 +22,29 @@ package javax.webbeans;
  * 
  * @author Pete Muir
  */
-public class ExecutionException extends RuntimeException
+public class NullableDependencyException extends DeploymentException
 {
 
-   public ExecutionException()
+   public NullableDependencyException()
    {
       super();
    }
 
-   public ExecutionException(String message, Throwable throwable)
+   public NullableDependencyException(String message, Throwable throwable)
    {
       super(message, throwable);
    }
 
-   public ExecutionException(String message)
+   public NullableDependencyException(String message)
    {
       super(message);
    }
 
-   public ExecutionException(Throwable throwable)
+   public NullableDependencyException(Throwable throwable)
    {
       super(throwable);
    }
+
    
+
 }

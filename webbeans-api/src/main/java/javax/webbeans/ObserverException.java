@@ -22,7 +22,7 @@ package javax.webbeans;
  * @author Pete Muir
  */
 
-public class ObserverException extends RuntimeException
+public class ObserverException extends ExecutionException
 {
 
    public ObserverException()

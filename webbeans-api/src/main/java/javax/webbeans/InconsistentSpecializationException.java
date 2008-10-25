@@ -22,27 +22,29 @@ package javax.webbeans;
  * 
  * @author Pete Muir
  */
-public class ExecutionException extends RuntimeException
+public class InconsistentSpecializationException extends DeploymentException
 {
 
-   public ExecutionException()
+   public InconsistentSpecializationException()
    {
       super();
    }
 
-   public ExecutionException(String message, Throwable throwable)
+   public InconsistentSpecializationException(String message, Throwable throwable)
    {
       super(message, throwable);
    }
 
-   public ExecutionException(String message)
+   public InconsistentSpecializationException(String message)
    {
       super(message);
    }
 
-   public ExecutionException(Throwable throwable)
+   public InconsistentSpecializationException(Throwable throwable)
    {
       super(throwable);
    }
+
    
+
 }

@@ -22,27 +22,29 @@ package javax.webbeans;
  * 
  * @author Pete Muir
  */
-public class ExecutionException extends RuntimeException
+public class UnserializableDependencyException extends DeploymentException
 {
 
-   public ExecutionException()
+   public UnserializableDependencyException()
    {
       super();
    }
 
-   public ExecutionException(String message, Throwable throwable)
+   public UnserializableDependencyException(String message, Throwable throwable)
    {
       super(message, throwable);
    }
 
-   public ExecutionException(String message)
+   public UnserializableDependencyException(String message)
    {
       super(message);
    }
 
-   public ExecutionException(Throwable throwable)
+   public UnserializableDependencyException(Throwable throwable)
    {
       super(throwable);
    }
+
    
+
 }

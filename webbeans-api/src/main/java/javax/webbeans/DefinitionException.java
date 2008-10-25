@@ -15,34 +15,35 @@
  * limitations under the License.
  */
 
-
 package javax.webbeans;
 
 /**
  * 
  * @author Pete Muir
  */
-public class ExecutionException extends RuntimeException
+public class DefinitionException extends RuntimeException
 {
 
-   public ExecutionException()
+   public DefinitionException()
    {
       super();
    }
 
-   public ExecutionException(String message, Throwable throwable)
+   public DefinitionException(String message, Throwable throwable)
    {
       super(message, throwable);
    }
 
-   public ExecutionException(String message)
+   public DefinitionException(String message)
    {
       super(message);
    }
 
-   public ExecutionException(Throwable throwable)
+   public DefinitionException(Throwable throwable)
    {
       super(throwable);
    }
    
+   
+
 }

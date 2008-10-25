@@ -18,31 +18,29 @@
 package javax.webbeans;
 
 /**
- * This exception is thrown if an invocation is performed on an inactive scope.
  * 
  * @author Pete Muir
- * @author Shane Bryzak
  */
 
-public class ContextNotActiveException extends ExecutionException
+public class NonexistentFieldException extends DefinitionException
 {
 
-   public ContextNotActiveException()
+   public NonexistentFieldException()
    {
-      super();
+      
    }
 
-   public ContextNotActiveException(String message)
+   public NonexistentFieldException(String message)
    {
       super(message);
    }
 
-   public ContextNotActiveException(Throwable cause)
+   public NonexistentFieldException(Throwable cause)
    {
       super(cause);
    }
 
-   public ContextNotActiveException(String message, Throwable cause)
+   public NonexistentFieldException(String message, Throwable cause)
    {
       super(message, cause);
    }

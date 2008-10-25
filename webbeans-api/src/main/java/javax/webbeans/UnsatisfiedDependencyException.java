@@ -22,27 +22,29 @@ package javax.webbeans;
  * 
  * @author Pete Muir
  */
-public class ExecutionException extends RuntimeException
+public class UnsatisfiedDependencyException extends DeploymentException
 {
 
-   public ExecutionException()
+   public UnsatisfiedDependencyException()
    {
       super();
    }
 
-   public ExecutionException(String message, Throwable throwable)
+   public UnsatisfiedDependencyException(String message, Throwable throwable)
    {
       super(message, throwable);
    }
 
-   public ExecutionException(String message)
+   public UnsatisfiedDependencyException(String message)
    {
       super(message);
    }
 
-   public ExecutionException(Throwable throwable)
+   public UnsatisfiedDependencyException(Throwable throwable)
    {
       super(throwable);
    }
+
    
+
 }

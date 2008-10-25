@@ -22,27 +22,26 @@ package javax.webbeans;
  * 
  * @author Pete Muir
  */
-public class ExecutionException extends RuntimeException
+public class AmbiguousDependencyException extends DeploymentException
 {
 
-   public ExecutionException()
+   public AmbiguousDependencyException()
    {
-      super();
    }
 
-   public ExecutionException(String message, Throwable throwable)
+   public AmbiguousDependencyException(String message, Throwable throwable)
    {
       super(message, throwable);
    }
 
-   public ExecutionException(String message)
+   public AmbiguousDependencyException(String message)
    {
       super(message);
    }
 
-   public ExecutionException(Throwable throwable)
+   public AmbiguousDependencyException(Throwable throwable)
    {
       super(throwable);
    }
-   
+
 }

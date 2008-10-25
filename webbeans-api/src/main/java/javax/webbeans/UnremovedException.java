@@ -18,31 +18,29 @@
 package javax.webbeans;
 
 /**
- * This exception is thrown if an invocation is performed on an inactive scope.
  * 
  * @author Pete Muir
- * @author Shane Bryzak
  */
 
-public class ContextNotActiveException extends ExecutionException
+public class UnremovedException extends ExecutionException
 {
 
-   public ContextNotActiveException()
+   public UnremovedException()
    {
-      super();
+      
    }
 
-   public ContextNotActiveException(String message)
+   public UnremovedException(String message)
    {
       super(message);
    }
 
-   public ContextNotActiveException(Throwable cause)
+   public UnremovedException(Throwable cause)
    {
       super(cause);
    }
 
-   public ContextNotActiveException(String message, Throwable cause)
+   public UnremovedException(String message, Throwable cause)
    {
       super(message, cause);
    }

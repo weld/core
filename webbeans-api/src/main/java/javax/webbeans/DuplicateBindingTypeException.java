@@ -22,7 +22,7 @@ package javax.webbeans;
  * 
  * @author David Allen
  */
-public class DuplicateBindingTypeException extends RuntimeException
+public class DuplicateBindingTypeException extends ExecutionException
 {
 
    private static final long serialVersionUID = 4194175477451120383L;
