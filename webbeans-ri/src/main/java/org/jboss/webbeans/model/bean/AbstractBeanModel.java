@@ -18,7 +18,6 @@ import javax.webbeans.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
-import org.jboss.webbeans.injectable.BeanConstructor;
 import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
@@ -277,90 +276,53 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
       return null;
    }
    
-   protected MergedStereotypesModel<T, E> getMergedStereotypes()
+   public MergedStereotypesModel<T, E> getMergedStereotypes()
    {
       return mergedStereotypes;
    }
    
    protected abstract String getDefaultName();
 
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.Model#getBindingTypes()
-    */
    public Set<Annotation> getBindingTypes()
    {
       return bindingTypes;
    }
 
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.Model#getScopeType()
-    */
    public Class<? extends Annotation> getScopeType()
    {
       return scopeType;
    }
 
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.Model#getType()
-    */
    public Class<? extends T> getType()
    {
       return type;
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.Model#getApiTypes()
-    */
    public Set<Class<?>> getApiTypes()
    {
       return apiTypes;
    }
 
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.Model#getConstructor()
-    */
-   public abstract BeanConstructor<T> getConstructor();
-   
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.Model#getLocation()
-    */
-   public abstract String getLocation();
-
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.Model#getDeploymentType()
-    */
    public Class<? extends Annotation> getDeploymentType()
    {
       return deploymentType;
    }
 
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.Model#getName()
-    */
    public String getName()
    {
       return name;
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.Model#getRemoveMethod()
-    */
    public InjectableMethod<?> getRemoveMethod()
    {
       return removeMethod;
    }
-   
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.Model#getInjectionPoints()
-    */
+
    public Set<Injectable<?, ?>> getInjectionPoints()
    {
       return injectionPoints;
    }
 
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.model.Model#isAssignableFrom(org.jboss.webbeans.introspector.AnnotatedItem)
-    */
    public boolean isAssignableFrom(AnnotatedItem<?, ?> annotatedItem)
    {
       return this.getAnnotatedItem().isAssignableFrom(annotatedItem);

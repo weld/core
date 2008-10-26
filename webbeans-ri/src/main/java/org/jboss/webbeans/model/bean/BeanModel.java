@@ -7,6 +7,7 @@ import org.jboss.webbeans.injectable.BeanConstructor;
 import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.model.MergedStereotypesModel;
 
 public interface BeanModel<T, E>
 {
@@ -36,5 +37,7 @@ public interface BeanModel<T, E>
    public Set<Injectable<?, ?>> getInjectionPoints();
    
    public boolean isAssignableFrom(AnnotatedItem<?, ?> annotatedItem);
+   
+   public MergedStereotypesModel<T, E> getMergedStereotypes();
    
 }

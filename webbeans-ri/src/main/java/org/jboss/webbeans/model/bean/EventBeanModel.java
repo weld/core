@@ -55,13 +55,11 @@ public class EventBeanModel<T> extends AbstractBeanModel<T, Field>
       constructor = new SimpleConstructor<T>(classConstructor);
    }
 
-   @Override
    public BeanConstructor<T> getConstructor()
    {
       return constructor;
    }
 
-   @Override
    public String getLocation()
    {
       if (location == null)

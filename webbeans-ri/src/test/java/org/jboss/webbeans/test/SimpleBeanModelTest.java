@@ -6,7 +6,6 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.webbeans.AnnotationLiteral;
 import javax.webbeans.Current;
 import javax.webbeans.Dependent;
 import javax.webbeans.Named;
@@ -15,6 +14,7 @@ import javax.webbeans.RequestScoped;
 
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.bindings.DependentAnnotationLiteral;
+import org.jboss.webbeans.bindings.NamedAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
@@ -23,11 +23,8 @@ import org.jboss.webbeans.test.beans.Chair;
 import org.jboss.webbeans.test.beans.Cow;
 import org.jboss.webbeans.test.beans.Goldfish;
 import org.jboss.webbeans.test.beans.Gorilla;
-import org.jboss.webbeans.test.beans.Haddock;
 import org.jboss.webbeans.test.beans.Horse;
-import org.jboss.webbeans.test.beans.Moose;
 import org.jboss.webbeans.test.beans.Order;
-import org.jboss.webbeans.test.beans.SeaBass;
 import org.jboss.webbeans.test.beans.broken.Carp;
 import org.jboss.webbeans.test.beans.broken.Pig;
 import org.jboss.webbeans.test.beans.broken.OuterBean.InnerBean;
@@ -37,76 +34,7 @@ import org.testng.annotations.Test;
 
 @SpecVersion("20080925")
 public class SimpleBeanModelTest extends AbstractTest
-{
-   
-   private abstract class NamedAnnotationLiteral extends AnnotationLiteral<Named> implements Named {}
-   
-   
-   // **** TESTS FOR SCOPES **** //
-   
-
-   
-   // **** TESTS FOR BEAN NAME **** /
-   
-   @Test @SpecAssertion(section="2.6.1")
-   public void testDefaultNamed()
-   {
-      SimpleBeanModel<Haddock> haddock = new SimpleBeanModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), getEmptyAnnotatedType(Haddock.class), manager);
-      assert haddock.getName() != null;
-      assert haddock.getName().equals("haddock");
-   }
-   
-   @Test @SpecAssertion(section="2.6.2")
-   public void testDefaultXmlNamed()
-   {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(Named.class, new NamedAnnotationLiteral() {
-         
-         public String value()
-         {
-            return "";
-         }
-         
-      });
-      AnnotatedType<SeaBass> annotatedItem = new SimpleAnnotatedType<SeaBass>(SeaBass.class, annotations);
-      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), annotatedItem, manager);
-      
-      assert trout.getName() != null;
-      assert trout.getName().equals("seaBass");
-   }
-   
-   @Test @SpecAssertion(section="2.6.2")
-   public void testNonDefaultXmlNamed()
-   {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(Named.class, new NamedAnnotationLiteral(){
-         
-         public String value()
-         {
-            return "aTrout";
-         }
-         
-      });
-      AnnotatedType<SeaBass> annotatedItem = new SimpleAnnotatedType<SeaBass>(SeaBass.class, annotations);
-      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), annotatedItem, manager);
-      
-      assert trout.getName().equals("aTrout");
-   }
-   
-   @Test @SpecAssertion(section="2.6.4")
-   public void testNotNamed()
-   {
-      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedType(SeaBass.class), manager);
-      assert trout.getName() == null;
-   }
-   
-   @Test @SpecAssertion(section="2.6.1")
-   public void testNonDefaultNamed()
-   {
-      SimpleBeanModel<Moose> moose = new SimpleBeanModel<Moose>(new SimpleAnnotatedType<Moose>(Moose.class), getEmptyAnnotatedType(Moose.class), manager);
-      assert moose.getName().equals("aMoose");
-   }
-   
+{   
    
    // **** TESTS FOR STEREOTYPES **** //
    

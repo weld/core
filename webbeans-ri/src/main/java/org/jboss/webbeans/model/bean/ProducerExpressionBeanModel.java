@@ -51,7 +51,6 @@ public class ProducerExpressionBeanModel<T> extends AbstractProducerBeanModel<T>
       return annotatedItem;
    }
 
-   @Override
    public BeanConstructor<T> getConstructor()
    {
       // TODO Auto-generated method stub
@@ -64,7 +63,6 @@ public class ProducerExpressionBeanModel<T> extends AbstractProducerBeanModel<T>
       throw new RuntimeException(getLocation() + " Cannot set a default name on producer expressions");
    }
 
-   @Override
    public String getLocation()
    {
       if (location == null)

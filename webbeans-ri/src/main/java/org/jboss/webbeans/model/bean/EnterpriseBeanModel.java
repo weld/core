@@ -61,7 +61,6 @@ public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
       return "EnterpriseBean[" + getType().getName() + "]";
    }
 
-   @Override
    public String getLocation()
    {
       if (location == null)

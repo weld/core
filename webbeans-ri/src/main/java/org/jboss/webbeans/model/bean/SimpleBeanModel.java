@@ -134,7 +134,6 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
       return "SimpleWebBean[" + getAnnotatedItem().toString() + "]";
    }
    
-   @Override
    public String getLocation()
    {
       if (location == null)

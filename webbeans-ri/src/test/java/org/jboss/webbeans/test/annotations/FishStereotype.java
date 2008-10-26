@@ -7,6 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import javax.webbeans.ApplicationScoped;
+import javax.webbeans.Named;
 import javax.webbeans.Stereotype;
 
 import org.jboss.webbeans.test.beans.Animal;
@@ -15,6 +16,7 @@ import org.jboss.webbeans.test.beans.Animal;
 @Target( { TYPE })
 @Retention(RUNTIME)
 @ApplicationScoped
+@Named
 public @interface FishStereotype
 {
 

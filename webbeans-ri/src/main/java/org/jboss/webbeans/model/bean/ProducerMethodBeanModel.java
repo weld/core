@@ -86,7 +86,6 @@ public class ProducerMethodBeanModel<T> extends AbstractProducerBeanModel<T>
       declaringBean = container.getModelManager().getBeanModel(getAnnotatedItem().getDelegate().getDeclaringClass());
    }
    
-   @Override
    public BeanConstructor<T> getConstructor()
    {
       return constructor;
@@ -181,7 +180,6 @@ public class ProducerMethodBeanModel<T> extends AbstractProducerBeanModel<T>
       return declaredBeanType;
    }
    
-   @Override
    public String getLocation()
    {
       if (location == null)

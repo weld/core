@@ -16,6 +16,8 @@
             <exclude name="ejb3" />
             <exclude name="annotationDefinition" />
             <exclude name="webbeansxml" />
+            <exclude name="el" />
+            <exclude name="jms" />
          </run>
       </groups>
       <packages>
