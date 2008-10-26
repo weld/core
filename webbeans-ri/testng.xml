@@ -12,7 +12,6 @@
             <exclude name="producerMethod" />
             <exclude name="eventbus" />
             <exclude name="injection" />
-            <exclude name="contexts" />
             <exclude name="ejb3" />
             <exclude name="annotationDefinition" />
             <exclude name="webbeansxml" />

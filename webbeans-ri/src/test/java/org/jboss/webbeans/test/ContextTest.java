@@ -6,9 +6,6 @@ import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 
 import org.jboss.webbeans.BasicContext;
-import org.jboss.webbeans.BeanImpl;
-import org.jboss.webbeans.introspector.SimpleAnnotatedType;
-import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.util.Util;
 import org.testng.annotations.BeforeMethod;
@@ -17,6 +14,7 @@ import org.testng.annotations.Test;
 /**
  * 
  * @author Nicklas Karlsson (nickarls@gmail.com)
+ * @author Pete Muir
  * 
  * This class tests a basic context against section 8 of the specification
  *
@@ -58,7 +56,7 @@ public class ContextTest extends AbstractTest
       assert firstTuna == secondTuna;
    }
 
-   @Test(groups="contexts") @SpecAssertion(section="8.1")
+   @Test(groups={"contexts", "producerMethod"}) @SpecAssertion(section="8.1")
    public void testProducerMethodReturningNullOK() {
       // TODO
       assert false;
