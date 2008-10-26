@@ -82,6 +82,16 @@ public class Reflections
       return Modifier.isAbstract(clazz.getModifiers());
    }
    
+   public static boolean isStaticInnerClass(Class<?> clazz)
+   {
+      return clazz.isMemberClass() && Modifier.isStatic(clazz.getModifiers());
+   }
+   
+   public static boolean isNonStaticInnerClass(Class<?> clazz)
+   {
+      return clazz.isMemberClass() && !Modifier.isStatic(clazz.getModifiers());
+   }
+   
    public static <T> Constructor<T> getConstructor(Class<T> clazz, Class<?>... parameterTypes)
    {
       try
@@ -112,7 +122,7 @@ public class Reflections
    }
    
    @SuppressWarnings("unchecked")
-   public static <T> List<Constructor<T>> getConstructors(Class<? extends T> clazz, Class<? extends Annotation> annotationType) 
+   public static <T> List<Constructor<T>> getAnnotatedConstructors(Class<? extends T> clazz, Class<? extends Annotation> annotationType) 
    {
       List<Constructor<T>> constructors = new ArrayList<Constructor<T>>();
       for (Constructor<?> constructor : clazz.getConstructors())
@@ -216,5 +226,10 @@ public class Reflections
    public static boolean isArrayType(Class<?> rawType)
    {
       return rawType.isArray();
+   }
+
+   public static boolean isParameterizedType(Class<?> type)
+   {
+      return type.getTypeParameters().length > 0;
    }
 }

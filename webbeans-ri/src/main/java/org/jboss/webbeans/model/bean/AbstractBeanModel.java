@@ -37,7 +37,7 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
    protected Class<? extends Annotation> scopeType;
    private MergedStereotypesModel<T, E> mergedStereotypes;
    protected Class<? extends Annotation> deploymentType;
-   protected Class<? extends T> type;
+   protected Class<T> type;
    protected InjectableMethod<?> removeMethod;
    private Set<Class<?>> apiTypes;
    protected Set<Injectable<?, ?>> injectionPoints;
@@ -293,7 +293,7 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
       return scopeType;
    }
 
-   public Class<? extends T> getType()
+   public Class<T> getType()
    {
       return type;
    }

@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.webbeans.BindingType;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Initializer;
 
@@ -58,69 +57,45 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
    
    public static void checkType(Class<?> type)
    {
-      if (type.isMemberClass())
+      if (Reflections.isStaticInnerClass(type))
       {
-         throw new DefinitionException("Simple Web Bean " + type + " cannot be an inner class");
+         throw new DefinitionException("Simple Web Bean " + type + " cannot be a static inner class");
+      }
+      if (Reflections.isParameterizedType(type))
+      {
+         throw new DefinitionException("Simple Web Bean " + type + " cannot be a parameterized type");
       }
    }
    
    protected void initConstructor()
    {
-      if (getType().getConstructors().length == 1)
+      
+      List<Constructor<T>> initializerAnnotatedConstructors = Reflections.getAnnotatedConstructors(getType(), Initializer.class);
+      log.finest("Found " + initializerAnnotatedConstructors + " constructors annotated with @Initializer for " + getType());
+      if (initializerAnnotatedConstructors.size() > 1)
       {
-         Constructor<T> constructor = (Constructor<T>) getType().getConstructors()[0];
+         if (initializerAnnotatedConstructors.size() > 1)
+         {
+            throw new DefinitionException("Cannot have more than one constructor annotated with @Initializer for " + getType());
+         }
+      }
+      else if (initializerAnnotatedConstructors.size() == 1)
+      {
+         Constructor<T> constructor = initializerAnnotatedConstructors.get(0);
+         log.finest("Exactly one constructor (" + constructor +") annotated with @Initializer defined, using it as the bean constructor for " + getType());
+         this.constructor = new SimpleConstructor<T>(constructor);
+         return;
+      }
+         
+      Constructor<T> emptyConstructor = Reflections.getConstructor(getType());
+      if (emptyConstructor != null)
+      {
          log.finest("Exactly one constructor (" + constructor +") defined, using it as the bean constructor for " + getType());
-         this.constructor = new SimpleConstructor<T>(constructor);
+         this.constructor = new SimpleConstructor<T>(emptyConstructor);
          return;
       }
       
-      if (getType().getConstructors().length > 1)
-      {
-         List<Constructor<T>> initializerAnnotatedConstructors = Reflections.getConstructors(getType(), Initializer.class);
-         List<Constructor<T>> bindingTypeAnnotatedConstructors = Reflections.getConstructorsForMetaAnnotatedParameter(getType(), BindingType.class);
-         log.finest("Found " + initializerAnnotatedConstructors + " constructors annotated with @Initializer for " + getType());
-         log.finest("Found " + bindingTypeAnnotatedConstructors + " with parameters annotated with binding types for " + getType());
-         if ((initializerAnnotatedConstructors.size() + bindingTypeAnnotatedConstructors.size()) > 1)
-         {
-            if (initializerAnnotatedConstructors.size() > 1)
-            {
-               throw new RuntimeException("Cannot have more than one constructor annotated with @Initializer for " + getType());
-            }
-            
-            else if (bindingTypeAnnotatedConstructors.size() > 1)
-            {
-               throw new RuntimeException("Cannot have more than one constructor with binding types specified on constructor parameters for " + getType());
-            }
-            else
-            {
-               throw new RuntimeException("Specify a constructor either annotated with @Initializer or with parameters annotated with binding types for " + getType());
-            }
-         }
-         else if (initializerAnnotatedConstructors.size() == 1)
-         {
-            Constructor<T> constructor = initializerAnnotatedConstructors.get(0);
-            log.finest("Exactly one constructor (" + constructor +") annotated with @Initializer defined, using it as the bean constructor for " + getType());
-            this.constructor = new SimpleConstructor<T>(constructor);
-            return;
-         }
-         else if (bindingTypeAnnotatedConstructors.size() == 1)
-         {
-            Constructor<T> constructor = bindingTypeAnnotatedConstructors.get(0);
-            log.finest("Exactly one constructor (" + constructor +") with parameters annotated with binding types defined, using it as the bean constructor for " + getType());
-            this.constructor = new SimpleConstructor<T>(constructor);
-            return;
-         }
-      }
-      
-      if (getType().getConstructors().length == 0)
-      {      
-         Constructor<T> constructor = (Constructor<T>) Reflections.getConstructor(getType());
-         log.finest("No constructor defined, using implicit no arguement constructor for " + getType());
-         this.constructor = new SimpleConstructor<T>(constructor);
-         return;
-      }
-      
-      throw new RuntimeException("Cannot determine constructor to use for " + getType());
+      throw new DefinitionException("Cannot determine constructor to use for " + getType());
    }
 
    public SimpleConstructor<T> getConstructor()

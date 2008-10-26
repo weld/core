@@ -19,6 +19,7 @@
             <exclude name="el" />
             <exclude name="jms" />
             <exclude name="interceptors" />
+            <exclude name="innerClass" />
          </run>
       </groups>
       <packages>

@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
 public class ProducerMethodBeanModelTest extends AbstractTest
 {
    
-   @Test @SpecAssertion(section="2.5.3")
+   @Test(groups="producerMethod") @SpecAssertion(section="2.5.3")
    public void testProducerMethodInheritsDeploymentTypeOfDeclaringWebBean() throws Exception
    {
       SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
@@ -40,7 +40,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       tarantulaModel.getDeploymentType().equals(AnotherDeploymentType.class);
    }
    
-   @Test @SpecAssertion(section="3.3")
+   @Test(groups="producerMethod") @SpecAssertion(section="3.3")
    public void testStaticMethod() throws SecurityException, NoSuchMethodException
    {
       SimpleBeanModel<BeanWithStaticProducerMethod> model = new SimpleBeanModel<BeanWithStaticProducerMethod>(new SimpleAnnotatedType<BeanWithStaticProducerMethod>(BeanWithStaticProducerMethod.class), getEmptyAnnotatedType(BeanWithStaticProducerMethod.class), manager);
@@ -58,7 +58,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert exception;
    }
    
-   @Test @SpecAssertion(section="3.3")
+   @Test(groups="producerMethod") @SpecAssertion(section="3.3")
    public void testApiTypes() throws SecurityException, NoSuchMethodException
    {
       SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
@@ -73,7 +73,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert !tarantulaModel.getApiTypes().contains(Object.class);
    }
    
-   @Test @SpecAssertion(section="3.3.1")
+   @Test(groups="producerMethod") @SpecAssertion(section="3.3.1")
    public void testDefaultBindingType() throws SecurityException, NoSuchMethodException
    {
       SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
@@ -84,7 +84,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert tarantulaModel.getBindingTypes().iterator().next().annotationType().equals(Current.class);
    }
    
-   @Test
+   @Test(groups="producerMethod")
    public void testBindingType() throws SecurityException, NoSuchMethodException
    {
       SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
@@ -95,7 +95,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert tarantulaModel.getBindingTypes().iterator().next().annotationType().equals(Tame.class);
    }
    
-   @Test @SpecAssertion(section="3.3")
+   @Test(groups="producerMethod") @SpecAssertion(section="3.3")
    public void testFinalMethod() throws SecurityException, NoSuchMethodException
    {
       SimpleBeanModel<BeanWithFinalProducerMethod> model = new SimpleBeanModel<BeanWithFinalProducerMethod>(new SimpleAnnotatedType<BeanWithFinalProducerMethod>(BeanWithFinalProducerMethod.class), getEmptyAnnotatedType(BeanWithFinalProducerMethod.class), manager);
@@ -113,7 +113,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert exception;
    }
    
-   @Test @SpecAssertion(section="3.3")
+   @Test(groups="producerMethod") @SpecAssertion(section="3.3")
    public void testFinalMethodWithDependentScope() throws SecurityException, NoSuchMethodException
    {
       SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
@@ -123,7 +123,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert trapdoorSpiderModel.getScopeType().equals(Dependent.class);
    }
    
-   @Test @SpecAssertion(section="3.3.6")
+   @Test(groups="producerMethod") @SpecAssertion(section="3.3.6")
    public void testNamedMethod() throws SecurityException, NoSuchMethodException
    {
       SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
@@ -133,7 +133,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert blackWidowSpiderModel.getName().equals("blackWidow");
    }
    
-   @Test @SpecAssertion(section="3.3.6")
+   @Test(groups="producerMethod") @SpecAssertion(section="3.3.6")
    public void testDefaultNamedMethod() throws SecurityException, NoSuchMethodException
    {
       SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
@@ -143,7 +143,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert daddyLongLegsSpiderModel.getName().equals("produceDaddyLongLegs");
    }
    
-   @Test @SpecAssertion(section="3.3.6")
+   @Test(groups="producerMethod") @SpecAssertion(section="3.3.6")
    public void testDefaultNamedJavaBeanMethod() throws SecurityException, NoSuchMethodException
    {
       SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
@@ -213,13 +213,13 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert false;
    }
    
-   @Test @SpecAssertion(section="2.7.2")
+   @Test(groups="producerMethod") @SpecAssertion(section="2.7.2")
    public void testSingleStereotype()
    {
 	   assert false;
    }
    
-   @Test @SpecAssertion(section="2.7.2")
+   @Test(groups="producerMethod") @SpecAssertion(section="2.7.2")
    public void testStereotypeOnNonProducerMethod()
    {
 	   assert false;

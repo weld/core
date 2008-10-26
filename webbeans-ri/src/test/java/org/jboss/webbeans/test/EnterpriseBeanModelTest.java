@@ -30,12 +30,6 @@ import org.testng.annotations.Test;
 public class EnterpriseBeanModelTest extends AbstractTest
 {  
    
-   @Test @SpecAssertion(section="2.7.2")
-   public void testSingleStereotype()
-   {
-	   assert false;
-   }
-   
    @SuppressWarnings("unchecked")
    @Test
    public void testStateless()

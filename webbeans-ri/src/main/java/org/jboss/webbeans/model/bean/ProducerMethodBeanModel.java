@@ -155,7 +155,7 @@ public class ProducerMethodBeanModel<T> extends AbstractProducerBeanModel<T>
    {
       try
       {
-         this.type = annotatedMethod.getType();
+         // TODO Fix this this.type = annotatedMethod.getType();
       }
       catch (ClassCastException e) 
       {

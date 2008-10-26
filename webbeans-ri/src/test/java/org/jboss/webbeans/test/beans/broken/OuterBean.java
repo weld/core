@@ -9,6 +9,16 @@ public class OuterBean
    public class InnerBean
    {
       
+      public InnerBean()
+      {
+         
+      }
+      
+   }
+   
+   public static class StaticInnerBean
+   {
+      
    }
 
 }

@@ -18,6 +18,7 @@ import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.Whitefish;
 import org.jboss.webbeans.test.beans.Animal;
+import org.jboss.webbeans.test.beans.AnimalFarmer;
 import org.jboss.webbeans.test.beans.Cod;
 import org.jboss.webbeans.test.beans.Farmer;
 import org.jboss.webbeans.test.beans.FishFarm;
@@ -175,7 +176,7 @@ public class TypeSafeResolutionTest extends AbstractTest
       InjectableField<Farmer<ScottishFish>> scottishFishFarmerField = new InjectableField<Farmer<ScottishFish>>(FishFarm.class.getDeclaredField("scottishFishFarmer"));
       
       Bean<ScottishFishFarmer> scottishFishFarmerBean = new BeanImpl<ScottishFishFarmer>(new SimpleBeanModel<ScottishFishFarmer>(new SimpleAnnotatedType<ScottishFishFarmer>(ScottishFishFarmer.class), getEmptyAnnotatedType(ScottishFishFarmer.class), super.manager), manager);
-      Bean<Farmer> farmerBean = new BeanImpl<Farmer>(new SimpleBeanModel<Farmer>(new SimpleAnnotatedType<Farmer>(Farmer.class), getEmptyAnnotatedType(Farmer.class), super.manager), manager);
+      Bean<AnimalFarmer> farmerBean = new BeanImpl<AnimalFarmer>(new SimpleBeanModel<AnimalFarmer>(new SimpleAnnotatedType<AnimalFarmer>(AnimalFarmer.class), getEmptyAnnotatedType(AnimalFarmer.class), super.manager), manager);
       
       manager.addBean(scottishFishFarmerBean);
       manager.addBean(farmerBean);
