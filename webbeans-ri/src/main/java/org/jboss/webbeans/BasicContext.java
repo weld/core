@@ -15,8 +15,8 @@ import org.jboss.webbeans.util.MapWrapper;
  * 
  * @author Shane Bryzak
  * @author Nicklas Karlsson (nickarls@gmail.com)
- * @author Pete\ Muir
- * @
+ * @author Pete Muir
+ * 
  */
 public class BasicContext implements Context
 {
@@ -54,7 +54,15 @@ public class BasicContext implements Context
       {
          throw new ContextNotActiveException();
       }
+      
+      if (beans == null)
+      {
+         // Context has been destroyed
+         return null;
+      }
+      
       T instance = beans.get(bean);
+      
       if (instance != null)
       {
          return instance;
@@ -78,28 +86,18 @@ public class BasicContext implements Context
       return scopeType;
    }
 
-   public <T> void remove(Manager manager, Bean<T> bean)
+   private <T> void destroy(Manager manager, Bean<T> bean)
    {
-      T instance = beans.get(bean);
-
-      if (instance != null)
-      {
-         beans.remove(bean);
-         bean.destroy(instance);
-      }
-      else
-      {
-         // TODO is this the correct exception to throw? See section 9.1 of spec
-         throw new RuntimeException("Bean " + bean.getName() + " cannot be removed as it " + "does not exist in [" + scopeType + "] context.");
-      }
+      bean.destroy(beans.get(bean));
    }
 
    public void destroy(Manager manager)
    {
       for (Bean<? extends Object> bean : beans.keySet())
       {
-         remove(manager, bean);
+         destroy(manager, bean);
       }
+      beans = null;
    }
 
    public boolean isActive()

@@ -63,10 +63,10 @@ public class ContextTest extends AbstractTest
    }
 
    @Test(groups="contexts")
-   public void testRemoveBean() {
+   public void testDestroy() {
       Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);      
-      Tuna firstTuna = context.get(tunaBean, true);
-      ((BasicContext)context).remove(manager, tunaBean);
+      assert context.get(tunaBean, true) instanceof Tuna;
+      ((BasicContext)context).destroy(manager);
       assert context.get(tunaBean, false) == null;
    }
 }
