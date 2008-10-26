@@ -19,6 +19,7 @@
             <exclude name="jms" />
             <exclude name="interceptors" />
             <exclude name="innerClass" />
+            <exclude name="servlet" />
          </run>
       </groups>
       <packages>

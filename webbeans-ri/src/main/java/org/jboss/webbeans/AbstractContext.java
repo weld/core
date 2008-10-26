@@ -18,7 +18,7 @@ import org.jboss.webbeans.util.MapWrapper;
  * @author Pete Muir
  * 
  */
-public class BasicContext implements Context
+public abstract class AbstractContext implements Context
 {
    
    private class BeanMap extends MapWrapper<Bean<? extends Object>, Object>
@@ -41,7 +41,7 @@ public class BasicContext implements Context
    private Class<? extends Annotation> scopeType;
    private boolean active;
 
-   public BasicContext(Class<? extends Annotation> scopeType)
+   public AbstractContext(Class<? extends Annotation> scopeType)
    {
       this.scopeType = scopeType;
       beans = new BeanMap();

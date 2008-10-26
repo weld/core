@@ -11,7 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.webbeans.RequestScoped;
 import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.BasicContext;
+import org.jboss.webbeans.AbstractContext;
 
 /**
  * 
@@ -30,7 +30,7 @@ public class WebBeansFilter implements Filter
    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) 
        throws IOException, ServletException 
    {
-      BasicContext requestContext = new BasicContext(RequestScoped.class);
+      AbstractContext requestContext = new AbstractContext(RequestScoped.class) {};
 
       try
       {

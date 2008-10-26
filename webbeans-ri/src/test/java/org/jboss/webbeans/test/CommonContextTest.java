@@ -5,7 +5,7 @@ import javax.webbeans.RequestScoped;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 
-import org.jboss.webbeans.BasicContext;
+import org.jboss.webbeans.AbstractContext;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.util.Util;
 import org.testng.annotations.BeforeMethod;
@@ -20,13 +20,13 @@ import org.testng.annotations.Test;
  *
  */
 @SpecVersion("20081020")
-public class ContextTest extends AbstractTest
+public class CommonContextTest extends AbstractTest
 {
    Context context;
    
    @BeforeMethod
    public void initContext() {
-      context = new BasicContext(RequestScoped.class);
+      context = new AbstractContext(RequestScoped.class) {};
    }
    
    @Test(groups="contexts") @SpecAssertion(section="8.1")
@@ -43,7 +43,7 @@ public class ContextTest extends AbstractTest
    
    @Test(groups="contexts", expectedExceptions=ContextNotActiveException.class) @SpecAssertion(section="8.1")
    public void testInactiveContextThrowsContextNotActiveException() {
-      ((BasicContext)context).setActive(false);
+      ((AbstractContext)context).setActive(false);
       context.get(null, false);
       assert true;
    }
@@ -66,7 +66,7 @@ public class ContextTest extends AbstractTest
    public void testDestroy() {
       Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);      
       assert context.get(tunaBean, true) instanceof Tuna;
-      ((BasicContext)context).destroy(manager);
+      ((AbstractContext)context).destroy(manager);
       assert context.get(tunaBean, false) == null;
    }
 }
