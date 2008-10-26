@@ -29,6 +29,10 @@
          <name>Shane Bryzak</name>
          <organization>JBoss, a division of Red Hat</organization>
       </developer>
+      
+      <developer>
+         <name>David Allen</name>
+      </developer>
    </developers>
 
    <repositories>
@@ -104,6 +108,12 @@
             <groupId>javax.transaction</groupId>
             <artifactId>jta</artifactId>
             <version>1.0.1B</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
          </dependency>
          
       </dependencies>
