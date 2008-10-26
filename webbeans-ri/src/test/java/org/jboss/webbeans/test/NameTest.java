@@ -87,7 +87,7 @@ public class NameTest extends AbstractTest
       assert cod.getName().equals("whitefish");
    }
    
-   @Test @SpecAssertion(section="2.6.3")
+   @Test @SpecAssertion(section={"2.6.3", "3.2.7"})
    public void testDefaultNamed()
    {
       SimpleBeanModel<Haddock> haddock = new SimpleBeanModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), getEmptyAnnotatedType(Haddock.class), manager);

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.webbeans.BindingType;
+import javax.webbeans.DefinitionException;
 import javax.webbeans.Initializer;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -59,7 +60,7 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
    {
       if (type.isMemberClass())
       {
-         throw new RuntimeException("Simple Web Bean " + type + " cannot be an inner class");
+         throw new DefinitionException("Simple Web Bean " + type + " cannot be an inner class");
       }
    }
    

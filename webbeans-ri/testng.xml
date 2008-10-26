@@ -9,7 +9,7 @@
             <exclude name="beanLifecycle" />
             <exclude name="deployment" />
             <exclude name="disposalMethod" />
-            <exclude name="producerExpression" />
+            <exclude name="producerMethod" />
             <exclude name="eventbus" />
             <exclude name="injection" />
             <exclude name="contexts" />

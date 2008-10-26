@@ -1,116 +1,295 @@
 package org.jboss.webbeans.test;
 
+import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
 import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Iterator;
 
-import javax.webbeans.Dependent;
+import javax.webbeans.DefinitionException;
+import javax.webbeans.NonexistentConstructorException;
+import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.bindings.DependentAnnotationLiteral;
-import org.jboss.webbeans.introspector.AnnotatedType;
+import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
+import org.jboss.webbeans.injectable.InjectableParameter;
+import org.jboss.webbeans.injectable.SimpleConstructor;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
+import org.jboss.webbeans.test.beans.Animal;
+import org.jboss.webbeans.test.beans.Chicken;
 import org.jboss.webbeans.test.beans.Cow;
-import org.jboss.webbeans.test.beans.Horse;
-import org.jboss.webbeans.test.beans.broken.Pig;
+import org.jboss.webbeans.test.beans.DeadlyAnimal;
+import org.jboss.webbeans.test.beans.DeadlySpider;
+import org.jboss.webbeans.test.beans.Donkey;
+import org.jboss.webbeans.test.beans.Duck;
+import org.jboss.webbeans.test.beans.Order;
+import org.jboss.webbeans.test.beans.Sheep;
+import org.jboss.webbeans.test.beans.Spider;
+import org.jboss.webbeans.test.beans.Tarantula;
+import org.jboss.webbeans.test.beans.Turkey;
 import org.jboss.webbeans.test.beans.broken.OuterBean.InnerBean;
+import org.jboss.webbeans.test.bindings.SynchronousAnnotationLiteral;
 import org.testng.annotations.Test;
 
-@SpecVersion("20080925")
+@SpecVersion("PDR")
 public class SimpleBeanModelTest extends AbstractTest
 {   
    
-   // **** TESTS FOR STEREOTYPES **** //
-   
-   
-   
    //*** BEAN CLASS CHECKS ****//
    
-   @Test
-   public void testAbstractClassIsNotAllowed()
+   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2")
+   public void testAbstractClassDeclaredInJavaIsNotAllowed()
    {
-      boolean exception = false;
-      try
-      {
-         new SimpleBeanModel<Cow>(new SimpleAnnotatedType<Cow>(Cow.class), getEmptyAnnotatedType(Cow.class), manager);
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
+      new SimpleBeanModel<Cow>(new SimpleAnnotatedType<Cow>(Cow.class), getEmptyAnnotatedType(Cow.class), manager);
    }
    
-   @Test
-   public void testInnerClassIsNotAllowed()
+   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2")
+   public void testNonStaticInnerClassDeclaredInJavaIsNotAllowed()
    {
-      boolean exception = false;
-      try
-      {
-         new SimpleBeanModel<InnerBean>(new SimpleAnnotatedType<InnerBean>(InnerBean.class), getEmptyAnnotatedType(InnerBean.class), manager);
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
+      new SimpleBeanModel<InnerBean>(new SimpleAnnotatedType<InnerBean>(InnerBean.class), getEmptyAnnotatedType(InnerBean.class), manager);
    }
    
-   @Test
-   public void testFinalClassMustBeDependentScoped()
+   @Test @SpecAssertion(section="3.2")
+   public void testStaticInnerClassDeclaredInJavaAllowed()
    {
-      boolean exception = false;
-      try
-      {
-         new SimpleBeanModel<Horse>(new SimpleAnnotatedType<Horse>(Horse.class), getEmptyAnnotatedType(Horse.class), manager);
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
+      assert false;
+   }
+   
+   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2")
+   public void testParameterizedClassDeclaredInJavaIsNotAllowed()
+   {
       
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(Dependent.class, new DependentAnnotationLiteral());
-      AnnotatedType<Horse> annotatedItem = new SimpleAnnotatedType<Horse>(Horse.class, annotations);
-      try
-      {
-         new SimpleBeanModel<Horse>(new SimpleAnnotatedType<Horse>(Horse.class), annotatedItem, manager);
-      }
-      catch (Exception e) 
-      {
-         assert false;
-      }
    }
    
-   @Test
-   public void testClassWithFinalMethodMustBeDependentScoped()
+   @Test(expectedExceptions=DefinitionException.class, groups={"interceptors", "decorators"}) @SpecAssertion(section="3.2")
+   public void testClassCannotBeInterceptorAndDecorator()
    {
-      boolean exception = false;
-      try
-      {
-         new SimpleBeanModel<Pig>(new SimpleAnnotatedType<Pig>(Pig.class), getEmptyAnnotatedType(Pig.class), manager);
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
       
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(Dependent.class, new DependentAnnotationLiteral());
-      AnnotatedType<Pig> annotatedItem = new SimpleAnnotatedType<Pig>(Pig.class, annotations);
-      try
-      {
-         new SimpleBeanModel<Pig>(new SimpleAnnotatedType<Pig>(Pig.class), annotatedItem, manager);
-      }
-      catch (Exception e) 
-      {
-         assert false;
-      }
    }
    
+   @Test(groups="deployment") @SpecAssertion(section="3.2")
+   public void testOnlyOneWebBeanPerAnnotatedClass()
+   {
+      
+   }
+   
+   @Test @SpecAssertion(section="3.2.2")
+   public void testApiTypes()
+   {
+      Bean<Tarantula> bean = createSimpleWebBean(Tarantula.class, manager);
+      assert bean.getTypes().size() == 6;
+      assert bean.getTypes().contains(Tarantula.class);
+      assert bean.getTypes().contains(Spider.class);
+      assert bean.getTypes().contains(Animal.class);
+      assert bean.getTypes().contains(Object.class);
+      assert bean.getTypes().contains(DeadlySpider.class);
+      assert bean.getTypes().contains(DeadlyAnimal.class);
+   }
+   
+   @Test(groups="producerMethod") @SpecAssertion(section="3.2.4")
+   public void testBeanDeclaredInXmlIgnoresProducerMethodDeclaredInJava()
+   {
+      assert false;
+   }
+   
+   @Test(groups="disposalMethod") @SpecAssertion(section="3.2.4")
+   public void testBeanDeclaredInXmlIgnoresDisposalMethodDeclaredInJava()
+   {
+      assert false;
+   }
+   
+   @Test(groups="eventbus") @SpecAssertion(section="3.2.4")
+   public void testBeanDeclaredInXmlIgnoresObserverMethodDeclaredInJava()
+   {
+      assert false;
+   }
+   
+   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2.4")
+   public void testAbstractClassDeclaredInXmlIsNotAllowed()
+   {
+      assert false;
+   }
+   
+   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2.4")
+   public void testNonStaticInnerClassDeclaredInXmlIsNotAllowed()
+   {
+      assert false;
+   }
+   
+   @Test @SpecAssertion(section="3.2.4")
+   public void testStaticInnerClassDeclaredInXmlAllowed()
+   {
+      assert false;
+   }
+   
+   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2.4")
+   public void testParameterizedClassDeclaredInXmlIsNotAllowed()
+   {
+      assert false;
+   }
+   
+   @Test(expectedExceptions=DefinitionException.class, groups={"interceptors"}) @SpecAssertion(section="3.2.4")
+   public void testClassHasInterceptorInJavaMustHaveInterceptorInXml()
+   {
+      assert false;
+   }
+   
+   @Test(expectedExceptions=DefinitionException.class, groups={"interceptors"}) @SpecAssertion(section="3.2.4")
+   public void testClassHasDecoratorInJavaMustHaveDecoratorInXml()
+   {
+      assert false;
+   }
+   
+   @Test @SpecAssertion(section="3.2.5.1")
+   public void testInitializerAnnotatedConstructor()
+   {
+      SimpleConstructor<Sheep> constructor = new SimpleBeanModel<Sheep>(new SimpleAnnotatedType<Sheep>(Sheep.class), getEmptyAnnotatedType(Sheep.class), manager).getConstructor();
+      assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Sheep.class);
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes().length == 2;
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes()[0].equals(String.class);
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes()[1].equals(Double.class);
+      assert constructor.getParameters().size() == 2;
+      assert constructor.getParameters().get(0).getType().equals(String.class);
+      assert constructor.getParameters().get(1).getType().equals(Double.class);
+      assert constructor.getParameters().get(0).getBindingTypes().size() == 1;
+      assert constructor.getParameters().get(0).getBindingTypes().contains(new CurrentAnnotationLiteral());
+      assert constructor.getParameters().get(1).getBindingTypes().size() == 1;
+      assert constructor.getParameters().get(1).getBindingTypes().contains(new CurrentAnnotationLiteral());
+   }
+   
+   @Test @SpecAssertion(section="3.2.5.1")
+   public void testImplicitConstructorUsed()
+   {
+      SimpleConstructor<Order> constructor = new SimpleBeanModel<Order>(new SimpleAnnotatedType<Order>(Order.class), getEmptyAnnotatedType(Order.class), manager).getConstructor();
+      assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Order.class);
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes().length == 0;
+      assert constructor.getParameters().size() == 0;
+   }
+   
+   @Test @SpecAssertion(section="3.2.5.1")
+   public void testEmptyConstructorUsed()
+   {
+      SimpleConstructor<Donkey> constructor = new SimpleBeanModel<Donkey>(new SimpleAnnotatedType<Donkey>(Donkey.class), getEmptyAnnotatedType(Donkey.class), manager).getConstructor();      assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Order.class);
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes().length == 0;
+      assert constructor.getParameters().size() == 0;
+   }
+   
+   @Test @SpecAssertion(section="3.2.5.1")
+   public void testInitializerAnnotatedConstructorUsedOverEmptyConstuctor()
+   {
+      SimpleConstructor<Turkey> constructor = new SimpleBeanModel<Turkey>(new SimpleAnnotatedType<Turkey>(Turkey.class), getEmptyAnnotatedType(Turkey.class), manager).getConstructor();
+      assert constructor.getParameters().size() == 2;
+      Iterator<InjectableParameter<?>> it = constructor.getParameters().iterator();
+      assert it.next().getType().equals(String.class);
+      assert it.next().getType().equals(Integer.class);
+   }
+   
+   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2.5.1")
+   public void testTooManyInitializerAnnotatedConstructor()
+   {
+      new SimpleBeanModel<Chicken>(new SimpleAnnotatedType<Chicken>(Chicken.class), getEmptyAnnotatedType(Chicken.class), manager);
+   }
+   
+   @Test(expectedExceptions=DefinitionException.class, groups="disposalMethod") @SpecAssertion(section="3.2.5.1")
+   public void testConstructorHasDisposesParameter()
+   {
+      new SimpleBeanModel<Chicken>(new SimpleAnnotatedType<Chicken>(Chicken.class), getEmptyAnnotatedType(Chicken.class), manager);
+   }
+   
+   @Test(expectedExceptions=DefinitionException.class, groups="eventBus") @SpecAssertion(section="3.2.5.1")
+   public void testConstructorHasObservesParameter()
+   {
+      new SimpleBeanModel<Chicken>(new SimpleAnnotatedType<Chicken>(Chicken.class), getEmptyAnnotatedType(Chicken.class), manager);
+   }
+   
+   @Test @SpecAssertion(section="3.2.5.2")
+   public void testImplicitConstructorDeclaredInXmlUsed()
+   {
+      SimpleConstructor<Order> constructor = new SimpleBeanModel<Order>(new SimpleAnnotatedType<Order>(Order.class), getEmptyAnnotatedType(Order.class), manager).getConstructor();
+      assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Order.class);
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes().length == 0;
+      assert constructor.getParameters().size() == 0;
+      assert false;
+   }
+   
+   @Test @SpecAssertion(section="3.2.5.2")
+   public void testEmptyConstructorDeclaredInXmlUsed()
+   {
+      SimpleConstructor<Donkey> constructor = new SimpleBeanModel<Donkey>(new SimpleAnnotatedType<Donkey>(Donkey.class), getEmptyAnnotatedType(Donkey.class), manager).getConstructor();      assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Order.class);
+      assert constructor.getAnnotatedItem().getDelegate().getParameterTypes().length == 0;
+      assert constructor.getParameters().size() == 0;
+      assert false;
+   }
+   
+   @Test(expectedExceptions=NonexistentConstructorException.class) @SpecAssertion(section="3.2.5.2")
+   public void testConstructorDeclaredInXmlDoesNotExist()
+   {
+      
+   }
+   
+   @Test @SpecAssertion(section="3.2.5.2")
+   public void testConstructorDeclaredInXmlIgnoresBindingTypesDeclaredInJava()
+   {
+      
+   }
+   
+   @Test @SpecAssertion(section="3.2.5.3")
+   public void testBindingTypeAnnotatedConstructor()
+   {
+      SimpleConstructor<Duck> constructor = new SimpleBeanModel<Duck>(new SimpleAnnotatedType<Duck>(Duck.class), getEmptyAnnotatedType(Duck.class), manager).getConstructor();
+      assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Duck.class);
+      assert constructor.getParameters().size() == 2;
+      Iterator<InjectableParameter<?>> it = constructor.getParameters().iterator();
+      assert it.next().getType().equals(String.class);
+      assert it.next().getType().equals(Integer.class);
+      assert constructor.getParameters().size() == 2;
+      assert constructor.getParameters().get(0).getType().equals(String.class);
+      assert constructor.getParameters().get(1).getType().equals(Integer.class);
+      assert constructor.getParameters().get(0).getBindingTypes().size() == 1;
+      assert constructor.getParameters().get(0).getBindingTypes().contains(new CurrentAnnotationLiteral());
+      assert constructor.getParameters().get(1).getBindingTypes().size() == 1;
+      assert constructor.getParameters().get(1).getBindingTypes().contains(new SynchronousAnnotationLiteral());
+   }
+   
+   @Test(groups="specialization") @SpecAssertion(section="3.2.6")
+   public void testSpecializedClassInheritsBindingTypes()
+   {
+      assert false;
+   }
+   
+   @Test(groups="specialization") @SpecAssertion(section="3.2.6")
+   public void testSpecializedClassInheritsName()
+   {
+      assert false;
+   }
+   
+   @Test(groups="specialization") @SpecAssertion(section="3.2.6")
+   public void testLessSpecializedClassNotInstantiated()
+   {
+      assert false;
+   }
+   
+   @Test(groups="specialization",expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2.6")
+   public void testSpecializedClassMustExtendAnotherWebBean()
+   {
+      assert false;
+   }
+   
+   @Test(groups="specialization") @SpecAssertion(section="3.2.6")
+   public void testSpecializedClassDeclaredInXmlInheritsBindingTypes()
+   {
+      assert false;
+   }
+   
+   @Test(groups="specialization") @SpecAssertion(section="3.2.6")
+   public void testSpecializedClassDeclaredInXmlInheritsName()
+   {
+      assert false;
+   }
+   
+   @Test(groups="specialization") @SpecAssertion(section="3.2.6")
+   public void testLessSpecializedClassDeclaredInXmlNotInstantiated()
+   {
+      assert false;
+   }
    
 }

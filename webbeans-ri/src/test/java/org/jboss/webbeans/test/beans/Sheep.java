@@ -6,12 +6,6 @@ import javax.webbeans.Production;
 @Production
 public class Sheep
 {
-
-   
-   public Sheep(String foo)
-   {
-      
-   }
    
    @Initializer
    public Sheep(String foo, Double bar)

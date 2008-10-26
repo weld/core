@@ -6,6 +6,11 @@ import javax.webbeans.Production;
 public class Donkey
 {
    
+   public Donkey()
+   {
+      
+   }
+   
    public Donkey(String foo)
    {
       

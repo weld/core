@@ -143,7 +143,7 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
    {
       if (Reflections.isAbstract(getType()))
       {
-         throw new RuntimeException("Web Bean implementation class " + type + " cannot be declared abstract");
+         throw new DefinitionException("Web Bean implementation class " + type + " cannot be declared abstract");
       }
    }
 
