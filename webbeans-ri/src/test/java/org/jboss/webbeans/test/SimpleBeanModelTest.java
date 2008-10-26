@@ -56,6 +56,7 @@ public class SimpleBeanModelTest extends AbstractTest
       new SimpleBeanModel<InnerBean>(new SimpleAnnotatedType<InnerBean>(InnerBean.class), getEmptyAnnotatedType(InnerBean.class), manager);
    }
    
+   @SuppressWarnings("unchecked")
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2")
    public void testParameterizedClassDeclaredInJavaIsNotAllowed()
    {
@@ -123,7 +124,7 @@ public class SimpleBeanModelTest extends AbstractTest
       new SimpleBeanModel<InnerBean>(new SimpleAnnotatedType<InnerBean>(InnerBean.class), getEmptyAnnotatedType(InnerBean.class), manager);
    }
    
-   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2.4")
+   @Test(expectedExceptions=DefinitionException.class, groups="webbeansxml") @SpecAssertion(section="3.2.4")
    public void testParameterizedClassDeclaredInXmlIsNotAllowed()
    {
       assert false;
@@ -204,7 +205,7 @@ public class SimpleBeanModelTest extends AbstractTest
       new SimpleBeanModel<Chicken>(new SimpleAnnotatedType<Chicken>(Chicken.class), getEmptyAnnotatedType(Chicken.class), manager);
    }
    
-   @Test @SpecAssertion(section="3.2.5.2")
+   @Test(groups="webbeansxml") @SpecAssertion(section="3.2.5.2")
    public void testImplicitConstructorDeclaredInXmlUsed()
    {
       SimpleConstructor<Order> constructor = new SimpleBeanModel<Order>(new SimpleAnnotatedType<Order>(Order.class), getEmptyAnnotatedType(Order.class), manager).getConstructor();
@@ -214,7 +215,7 @@ public class SimpleBeanModelTest extends AbstractTest
       assert false;
    }
    
-   @Test @SpecAssertion(section="3.2.5.2")
+   @Test(groups="webbeansxml") @SpecAssertion(section="3.2.5.2")
    public void testEmptyConstructorDeclaredInXmlUsed()
    {
       SimpleConstructor<Donkey> constructor = new SimpleBeanModel<Donkey>(new SimpleAnnotatedType<Donkey>(Donkey.class), getEmptyAnnotatedType(Donkey.class), manager).getConstructor();      assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Order.class);
@@ -223,13 +224,13 @@ public class SimpleBeanModelTest extends AbstractTest
       assert false;
    }
    
-   @Test(expectedExceptions=NonexistentConstructorException.class) @SpecAssertion(section="3.2.5.2")
+   @Test(expectedExceptions=NonexistentConstructorException.class, groups="webbeansxml") @SpecAssertion(section="3.2.5.2")
    public void testConstructorDeclaredInXmlDoesNotExist()
    {
       assert false;
    }
    
-   @Test @SpecAssertion(section="3.2.5.2")
+   @Test(groups="webbeansxml") @SpecAssertion(section="3.2.5.2")
    public void testConstructorDeclaredInXmlIgnoresBindingTypesDeclaredInJava()
    {
       assert false;
