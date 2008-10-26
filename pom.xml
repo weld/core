@@ -141,7 +141,7 @@
             <plugin>
                <groupId>org.codehaus.mojo</groupId>
                <artifactId>cobertura-maven-plugin</artifactId>
-               <version>2.0</version>
+               <version>2.2</version>
             </plugin>
          </plugins>
       </pluginManagement>
@@ -199,6 +199,11 @@
                   <format>html</format>
                   <format>xml</format>
                </formats>
+               <instrumentation>
+                  <ignores>
+                     <ignore>javax.webbeans.*</ignore>
+                  </ignores>
+               </instrumentation>
             </configuration>
          </plugin>
       </plugins>
