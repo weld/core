@@ -3,6 +3,7 @@ package org.jboss.webbeans.model.bean;
 import java.util.logging.Logger;
 
 import javax.webbeans.BindingType;
+import javax.webbeans.DefinitionException;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedType;
@@ -117,7 +118,7 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
          log.finest("Checking if required type " + requiredType + " is implemented");
          if (!requiredType.isAssignableFrom(type))
          {
-            throw new RuntimeException("Required type " + requiredType + " isn't implemented on " + type);
+            throw new DefinitionException("Required type " + requiredType + " isn't implemented on " + type);
          }
       }
    }
@@ -133,7 +134,7 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
       {
          if (!getMergedStereotypes().getSupportedScopes().contains(getScopeType()))
          {
-            throw new RuntimeException("Scope " + getScopeType() + " is not an allowed by the stereotype for " + type);
+            throw new DefinitionException("Scope " + getScopeType() + " is not an allowed by the stereotype for " + type);
          }
       }
    }

@@ -14,6 +14,7 @@ import javax.webbeans.DeploymentException;
 import javax.webbeans.Production;
 import javax.webbeans.RequestScoped;
 import javax.webbeans.Standard;
+import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedType;
@@ -23,6 +24,7 @@ import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.FishStereotype;
 import org.jboss.webbeans.test.annotations.HornedAnimalDeploymentType;
 import org.jboss.webbeans.test.beans.Antelope;
+import org.jboss.webbeans.test.beans.Reindeer;
 import org.jboss.webbeans.test.beans.SeaBass;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.broken.BeanWithTooManyDeploymentTypes;
@@ -153,5 +155,12 @@ public class DeploymentTypeTest extends AbstractTest
    public void testMultipleDeployElementsCannotBeDefined()
    {
       
+   }
+   
+   @Test @SpecAssertion(section="2.7.2")
+   public void testWebBeanDeploymentTypeOverridesStereotype()
+   {
+      Bean<Reindeer> bean = createSimpleWebBean(Reindeer.class, manager);
+      assert bean.getDeploymentType().equals(Production.class);
    }
 }

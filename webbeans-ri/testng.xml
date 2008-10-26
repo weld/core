@@ -18,6 +18,7 @@
             <exclude name="webbeansxml" />
             <exclude name="el" />
             <exclude name="jms" />
+            <exclude name="interceptors" />
          </run>
       </groups>
       <packages>

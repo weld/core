@@ -96,7 +96,7 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
    protected void initBindingTypes()
    {
       Set<Annotation> xmlBindingTypes = getXmlAnnotatedItem().getAnnotations(BindingType.class);
-      if (xmlBindingTypes.size() > 0)
+      if (xmlBindingTypes.size() > 0 || mergedStereotypes.isDeclaredInXml())
       {
          // TODO support producer expression default binding type
          log.finest("Using binding types " + xmlBindingTypes + " specified in XML");

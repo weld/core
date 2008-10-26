@@ -28,6 +28,7 @@ import org.jboss.webbeans.test.beans.BeanWithTooManyScopeTypes;
 import org.jboss.webbeans.test.beans.Haddock;
 import org.jboss.webbeans.test.beans.Mullet;
 import org.jboss.webbeans.test.beans.Order;
+import org.jboss.webbeans.test.beans.RedSnapper;
 import org.jboss.webbeans.test.beans.SeaBass;
 import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.FishStereotypeAnnotationLiteral;
@@ -176,6 +177,13 @@ public class ScopeTypeTest extends AbstractTest
       
       SimpleBeanModel<Haddock> haddock = new SimpleBeanModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), annotatedItem, manager);
       assert haddock.getScopeType().equals(ApplicationScoped.class);
+   }
+   
+   @Test @SpecAssertion(section="2.7.2")
+   public void testWebBeanScopeTypeOverridesStereotype()
+   {
+      Bean<RedSnapper> bean = createSimpleWebBean(RedSnapper.class, manager);
+      assert bean.getScopeType().equals(RequestScoped.class);
    }
    
 }

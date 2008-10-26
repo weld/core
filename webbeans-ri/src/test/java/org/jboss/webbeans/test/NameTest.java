@@ -114,7 +114,7 @@ public class NameTest extends AbstractTest
       assert trout.getName().equals("seaBass");
    }
    
-   @Test @SpecAssertion(section="2.6.3")
+   @Test @SpecAssertion(section={"2.6.3", "2.7"})
    public void testSterotypeDefaultsName()
    {
       BeanModel<?, ?> model = createSimpleModel(RedSnapper.class, manager);

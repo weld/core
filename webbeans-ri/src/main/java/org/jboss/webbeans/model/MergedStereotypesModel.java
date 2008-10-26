@@ -24,23 +24,33 @@ public class MergedStereotypesModel<T, E>
    private boolean beanNameDefaulted;
    private Set<Class<?>> requiredTypes;
    private Set<Class<? extends Annotation>> supportedScopes;
+   private boolean isDeclaredInXml;
    
-   public MergedStereotypesModel(AnnotatedItem<T, E> annotatedItem, AnnotatedItem<T, E> xmlAnnotatedItem, ManagerImpl container)
+   public MergedStereotypesModel(AnnotatedItem<T, E> annotatedItem, AnnotatedItem<T, E> xmlAnnotatedItem, ManagerImpl manager)
    {
       possibleDeploymentTypes = new HashMap<Class<? extends Annotation>, Annotation>();
       possibleScopeTypes = new HashSet<Annotation>();
       requiredTypes = new HashSet<Class<?>>();
       supportedScopes = new HashSet<Class<? extends Annotation>>();
       
-      // All stereotypes declared in java and xml are merged
-      Set<Annotation> stereotypeAnnotations = new HashSet<Annotation>();
-      stereotypeAnnotations.addAll(annotatedItem.getAnnotations(Stereotype.class));
-      stereotypeAnnotations.addAll(xmlAnnotatedItem.getAnnotations(Stereotype.class));
+      if (xmlAnnotatedItem.getAnnotations(Stereotype.class).size() > 0)
+      {
+         merge(xmlAnnotatedItem.getAnnotations(Stereotype.class), manager);
+         isDeclaredInXml = true;
+      }
+      else
+      {
+         merge(annotatedItem.getAnnotations(Stereotype.class), manager);
+      }
       
+   }
+   
+   private void merge(Set<Annotation> stereotypeAnnotations, ManagerImpl manager)
+   {
       for (Annotation stereotypeAnnotation : stereotypeAnnotations)
       {
          // Retrieve and merge all metadata from stereotypes
-         StereotypeModel<?> stereotype = container.getModelManager().getStereotype(stereotypeAnnotation.annotationType());
+         StereotypeModel<?> stereotype = manager.getModelManager().getStereotype(stereotypeAnnotation.annotationType());
          if (stereotype == null)
          {
             throw new NullPointerException("Stereotype " + stereotypeAnnotation + " not registered with container");
@@ -85,6 +95,11 @@ public class MergedStereotypesModel<T, E>
    public Set<Class<? extends Annotation>> getSupportedScopes()
    {
       return supportedScopes;
+   }
+   
+   public boolean isDeclaredInXml()
+   {
+      return isDeclaredInXml;
    }
    
 }

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.webbeans.BindingType;
+import javax.webbeans.DefinitionException;
 import javax.webbeans.DeploymentType;
 import javax.webbeans.InterceptorBindingType;
 import javax.webbeans.Named;
@@ -49,7 +50,7 @@ public class StereotypeModel<T extends Annotation>
       Set<Annotation> bindingTypes = annotatedClass.getAnnotations(BindingType.class);
       if (bindingTypes.size() > 0)
       {
-         throw new RuntimeException("Cannot declare binding types on a stereotype " + annotatedClass);
+         throw new DefinitionException("Cannot declare binding types on a stereotype " + annotatedClass);
       }
    }
    
@@ -96,7 +97,7 @@ public class StereotypeModel<T extends Annotation>
       {
          if (!"".equals(annotatedElement.getAnnotation(Named.class).value()))
          {
-            throw new RuntimeException("Cannot specify a value for a @Named stereotype " + annotatedElement);
+            throw new DefinitionException("Cannot specify a value for a @Named stereotype " + annotatedElement);
          }
          beanNameDefaulted = true;
       }
@@ -107,7 +108,7 @@ public class StereotypeModel<T extends Annotation>
       Set<Annotation> scopeTypes = annotatedElement.getAnnotations(ScopeType.class);
       if (scopeTypes.size() > 1)
       {
-         throw new RuntimeException("At most one scope type may be specified for " + annotatedElement);
+         throw new DefinitionException("At most one scope type may be specified for " + annotatedElement);
       }
       else if (scopeTypes.size() == 1)
       {
@@ -120,7 +121,7 @@ public class StereotypeModel<T extends Annotation>
       Set<Annotation> deploymentTypes = annotatedElement.getAnnotations(DeploymentType.class);
       if (deploymentTypes.size() > 1)
       {
-         throw new RuntimeException("At most one deployment type may be specified on " + annotatedElement);
+         throw new DefinitionException("At most one deployment type may be specified on " + annotatedElement);
       }
       else if (deploymentTypes.size() == 1)
       {
