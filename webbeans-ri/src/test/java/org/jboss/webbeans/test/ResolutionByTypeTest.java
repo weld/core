@@ -236,9 +236,20 @@ public class ResolutionByTypeTest extends AbstractTest
    }
    
    @Test(groups="resolution") @SpecAssertion(section="4.9.2")
-   public void testNoWebBeansFound()
+   public void testNoWebBeansFound() throws Exception
    {
-      assert false;
+      InjectableField<ScottishFish> whiteScottishFishField = new InjectableField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"));
+      Bean<Cod> plaiceBean = new BeanImpl<Cod>(new SimpleBeanModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedType(Cod.class), super.manager), manager);
+      Bean<Salmon> salmonBean = new BeanImpl<Salmon>(new SimpleBeanModel<Salmon>(new SimpleAnnotatedType<Salmon>(Salmon.class), getEmptyAnnotatedType(Salmon.class), super.manager), manager);
+      Bean<Sole> soleBean = new BeanImpl<Sole>(new SimpleBeanModel<Sole>(new SimpleAnnotatedType<Sole>(Sole.class), getEmptyAnnotatedType(Sole.class), super.manager), manager);
+      manager.addBean(plaiceBean);
+      manager.addBean(salmonBean);
+      manager.addBean(soleBean);
+      
+      ResolutionManager resolutionManager = manager.getResolutionManager();
+      resolutionManager.addInjectionPoint(whiteScottishFishField);
+      
+      assert manager.resolveByType(Tuna.class, new CurrentAnnotationLiteral()).size() == 0;
    }
    
    @Test(groups="resolution") @SpecAssertion(section="4.9.2")

@@ -5,12 +5,16 @@ import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.BeanImpl;
+import org.jboss.webbeans.ResolutionManager;
+import org.jboss.webbeans.injectable.InjectableField;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.beans.Cod;
+import org.jboss.webbeans.test.beans.FishFarm;
 import org.jboss.webbeans.test.beans.Haddock;
 import org.jboss.webbeans.test.beans.Plaice;
 import org.jboss.webbeans.test.beans.Salmon;
+import org.jboss.webbeans.test.beans.ScottishFish;
 import org.jboss.webbeans.test.beans.SeaBass;
 import org.jboss.webbeans.test.beans.Sole;
 import org.jboss.webbeans.test.beans.Tuna;
@@ -70,9 +74,18 @@ public class ResolutionByNameTest extends AbstractTest
    }
    
    @Test(groups="resolution") @SpecAssertion(section="4.10.1")
-   public void testNoWebBeansFound()
+   public void testNoWebBeansFound() throws Exception
    {
-      assert false;
+      InjectableField<ScottishFish> whiteScottishFishField = new InjectableField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"));
+      Bean<Cod> codBean = new BeanImpl<Cod>(new SimpleBeanModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedType(Cod.class), super.manager), manager);
+      Bean<Salmon> salmonBean = new BeanImpl<Salmon>(new SimpleBeanModel<Salmon>(new SimpleAnnotatedType<Salmon>(Salmon.class), getEmptyAnnotatedType(Salmon.class), super.manager), manager);
+      manager.addBean(codBean);
+      manager.addBean(salmonBean);
+      
+      ResolutionManager resolutionManager = manager.getResolutionManager();
+      resolutionManager.addInjectionPoint(whiteScottishFishField);
+      
+      assert manager.resolveByName("foo").size() == 0;
    }
    
    /*

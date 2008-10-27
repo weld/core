@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
 public class InstantiationByTypeTest extends AbstractTest
 {
    
-   @Test(groups="resolution") @SpecAssertion(section="4.9")
+   @Test(groups={"resolution", "beanLifecycle"}) @SpecAssertion(section="4.9")
    public void testCurrentBindingTypeAssumed()
    {
       assert false;
