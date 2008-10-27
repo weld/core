@@ -2,12 +2,20 @@ package org.jboss.webbeans.contexts;
 
 import java.lang.annotation.Annotation;
 
-public class DependentContext extends AbstractContext
+import javax.webbeans.Dependent;
+
+public class DependentContext extends PseudoContext
 {
 
    public DependentContext(Class<? extends Annotation> scopeType)
    {
-      super(scopeType);
+      super(Dependent.class);
+   }
+
+   @Override
+   public String toString()
+   {
+      return "Dependent context";
    }
 
 }
