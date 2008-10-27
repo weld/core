@@ -13,18 +13,14 @@ import javax.webbeans.Named;
 import javax.webbeans.ScopeType;
 import javax.webbeans.Stereotype;
 
-import org.jboss.webbeans.introspector.AnnotatedType;
-
 /**
  * A meta model for a stereotype, allows us to cache a stereotype and to validate it
  * 
  * @author pmuir
  *
  */
-public class StereotypeModel<T extends Annotation>
+public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
 {
-   
-   private Class<? extends Annotation> stereotypeClass;
    private Annotation defaultDeploymentType;
    private Annotation defaultScopeType;
    private boolean beanNameDefaulted;
@@ -32,83 +28,70 @@ public class StereotypeModel<T extends Annotation>
    private Set<Class<?>> requiredTypes;
    private Set<Annotation> interceptorBindings;
    
-   public StereotypeModel(AnnotatedType<T> annotatedClass)
+   public StereotypeModel(Class<T> sterotype)
    {
-      initStereotypeClass(annotatedClass);
-      Stereotype stereotype = annotatedClass.getAnnotation(Stereotype.class);
-      initDefaultDeploymentType(annotatedClass);
-      initDefaultScopeType(annotatedClass);
-      initBeanNameDefaulted(annotatedClass);
-      initSupportedScopes(annotatedClass, stereotype);
-      initRequiredTypes(annotatedClass, stereotype);
-      initInterceptorBindings(annotatedClass);
-      checkBindingTypes(annotatedClass);
+      super(sterotype);
+      initDefaultDeploymentType();
+      initDefaultScopeType();
+      initBeanNameDefaulted();
+      initSupportedScopes();
+      initRequiredTypes();
+      initInterceptorBindings();
+      checkBindingTypes();
    }
    
-   private void checkBindingTypes(AnnotatedType<T> annotatedClass)
+   private void checkBindingTypes()
    {
-      Set<Annotation> bindingTypes = annotatedClass.getAnnotations(BindingType.class);
+      Set<Annotation> bindingTypes = getAnnotatedAnnotation().getAnnotations(BindingType.class);
       if (bindingTypes.size() > 0)
       {
-         throw new DefinitionException("Cannot declare binding types on a stereotype " + annotatedClass);
-      }
-   }
-   
-   private void initStereotypeClass(AnnotatedType<T> annotatedClass)
-   {
-      if (Annotation.class.isAssignableFrom(annotatedClass.getAnnotatedClass()))
-      {
-         this.stereotypeClass = annotatedClass.getAnnotatedClass();
-      }
-      else
-      {
-         throw new RuntimeException("@Stereotype can only be applied to an annotation, it was applied to " + annotatedClass);
+         throw new DefinitionException("Cannot declare binding types on a stereotype " + getAnnotatedAnnotation());
       }
    }
 
-   private void initInterceptorBindings(AnnotatedType<T> annotatedClass)
+   private void initInterceptorBindings()
    {
-      interceptorBindings = annotatedClass.getAnnotations(InterceptorBindingType.class);
+      interceptorBindings = getAnnotatedAnnotation().getAnnotations(InterceptorBindingType.class);
    }
 
-   private void initSupportedScopes(AnnotatedType<T> annotatedElement, Stereotype stereotype)
+   private void initSupportedScopes()
    {
       this.supportedScopes = new HashSet<Class<? extends Annotation>>();
-      Class<? extends Annotation>[] supportedScopes = stereotype.supportedScopes();
+      Class<? extends Annotation>[] supportedScopes = getAnnotatedAnnotation().getAnnotation(Stereotype.class).supportedScopes();
       if (supportedScopes.length > 0)
       {
          this.supportedScopes.addAll(Arrays.asList(supportedScopes));
       }
    }
    
-   private void initRequiredTypes(AnnotatedType<T> annotatedElement, Stereotype stereotype)
+   private void initRequiredTypes()
    {
       this.requiredTypes = new HashSet<Class<?>>();
-      Class<?>[] requiredTypes = stereotype.requiredTypes();
+      Class<?>[] requiredTypes = getAnnotatedAnnotation().getAnnotation(Stereotype.class).requiredTypes();
       if (requiredTypes.length > 0)
       {
          this.requiredTypes.addAll(Arrays.asList(requiredTypes));
       }
    }
 
-   private void initBeanNameDefaulted(AnnotatedType<T> annotatedElement)
+   private void initBeanNameDefaulted()
    {
-      if (annotatedElement.isAnnotationPresent(Named.class))
+      if (getAnnotatedAnnotation().isAnnotationPresent(Named.class))
       {
-         if (!"".equals(annotatedElement.getAnnotation(Named.class).value()))
+         if (!"".equals(getAnnotatedAnnotation().getAnnotation(Named.class).value()))
          {
-            throw new DefinitionException("Cannot specify a value for a @Named stereotype " + annotatedElement);
+            throw new DefinitionException("Cannot specify a value for a @Named stereotype " + getAnnotatedAnnotation());
          }
          beanNameDefaulted = true;
       }
    }
 
-   private void initDefaultScopeType(AnnotatedType<T> annotatedElement)
+   private void initDefaultScopeType()
    {
-      Set<Annotation> scopeTypes = annotatedElement.getAnnotations(ScopeType.class);
+      Set<Annotation> scopeTypes = getAnnotatedAnnotation().getAnnotations(ScopeType.class);
       if (scopeTypes.size() > 1)
       {
-         throw new DefinitionException("At most one scope type may be specified for " + annotatedElement);
+         throw new DefinitionException("At most one scope type may be specified for " + getAnnotatedAnnotation());
       }
       else if (scopeTypes.size() == 1)
       {
@@ -116,12 +99,12 @@ public class StereotypeModel<T extends Annotation>
       }
    }
 
-   private void initDefaultDeploymentType(AnnotatedType<T> annotatedElement)
+   private void initDefaultDeploymentType()
    {
-      Set<Annotation> deploymentTypes = annotatedElement.getAnnotations(DeploymentType.class);
+      Set<Annotation> deploymentTypes = getAnnotatedAnnotation().getAnnotations(DeploymentType.class);
       if (deploymentTypes.size() > 1)
       {
-         throw new DefinitionException("At most one deployment type may be specified on " + annotatedElement);
+         throw new DefinitionException("At most one deployment type may be specified on " + getAnnotatedAnnotation());
       }
       else if (deploymentTypes.size() == 1)
       {
@@ -183,15 +166,22 @@ public class StereotypeModel<T extends Annotation>
       return requiredTypes;
    }
    
+   @Deprecated
    public Class<? extends Annotation> getStereotypeClass()
    {
-      return stereotypeClass;
+      return getType();
    }
    
    @Override
    public String toString()
    {
-      return "StereotypeModel[" + stereotypeClass.getName() + "]";
+      return "StereotypeModel[" + getType() + "]";
+   }
+
+   @Override
+   protected Class<? extends Annotation> getMetaAnnotation()
+   {
+      return Stereotype.class;
    }
    
 }

@@ -8,7 +8,6 @@ import javax.webbeans.Production;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
@@ -43,12 +42,12 @@ public class AbstractTest
    
    private void initStereotypes(ManagerImpl container)
    {
-      container.getModelManager().addStereotype(new StereotypeModel<AnimalStereotype>(new SimpleAnnotatedType<AnimalStereotype>(AnimalStereotype.class)));
-      container.getModelManager().addStereotype(new StereotypeModel<HornedMammalStereotype>(new SimpleAnnotatedType<HornedMammalStereotype>(HornedMammalStereotype.class)));
-      container.getModelManager().addStereotype(new StereotypeModel<MammalStereotype>(new SimpleAnnotatedType<MammalStereotype>(MammalStereotype.class)));
-      container.getModelManager().addStereotype(new StereotypeModel<FishStereotype>(new SimpleAnnotatedType<FishStereotype>(FishStereotype.class)));
-      container.getModelManager().addStereotype(new StereotypeModel<RiverFishStereotype>(new SimpleAnnotatedType<RiverFishStereotype>(RiverFishStereotype.class)));
-      container.getModelManager().addStereotype(new StereotypeModel<RequestScopedAnimalStereotype>(new SimpleAnnotatedType<RequestScopedAnimalStereotype>(RequestScopedAnimalStereotype.class)));
+      container.getModelManager().addStereotype(new StereotypeModel<AnimalStereotype>(AnimalStereotype.class));
+      container.getModelManager().addStereotype(new StereotypeModel<HornedMammalStereotype>(HornedMammalStereotype.class));
+      container.getModelManager().addStereotype(new StereotypeModel<MammalStereotype>(MammalStereotype.class));
+      container.getModelManager().addStereotype(new StereotypeModel<FishStereotype>(FishStereotype.class));
+      container.getModelManager().addStereotype(new StereotypeModel<RiverFishStereotype>(RiverFishStereotype.class));
+      container.getModelManager().addStereotype(new StereotypeModel<RequestScopedAnimalStereotype>(RequestScopedAnimalStereotype.class));
    }
 
 }

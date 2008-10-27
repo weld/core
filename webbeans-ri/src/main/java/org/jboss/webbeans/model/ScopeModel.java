@@ -18,9 +18,9 @@
 
 package org.jboss.webbeans.model;
 
-import javax.webbeans.ScopeType;
+import java.lang.annotation.Annotation;
 
-import org.jboss.webbeans.exceptions.NotAScopeException;
+import javax.webbeans.ScopeType;
 
 /**
  * 
@@ -29,41 +29,28 @@ import org.jboss.webbeans.exceptions.NotAScopeException;
  * @author Pete Muir
  *
  */
-public class ScopeModel<T>
+public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
 {
-   
-   private Class<T> scopeClass;
-   private boolean normal;
-   private boolean passivating;
    
    public ScopeModel(Class<T> scope)
    {
-      if (scope.isAnnotationPresent(ScopeType.class))
-      {
-         ScopeType scopeType = scope.getAnnotation(ScopeType.class);
-         this.scopeClass = scope;
-         this.normal = scopeType.normal();
-         this.passivating = scopeType.passivating();
-      }
-      else
-      {
-         throw new NotAScopeException("Scope " + scope.getName() + " is not annotated with @ScopeType");
-      }
-   }
-   
-   public Class<T> getScopeClass()
-   {
-      return scopeClass;
+      super(scope);
    }
    
    public boolean isNormal()
    {
-      return normal;
+      return getAnnotatedAnnotation().getAnnotation(ScopeType.class).normal();
    }
    
    public boolean isPassivating()
    {
-      return passivating;
+      return getAnnotatedAnnotation().getAnnotation(ScopeType.class).passivating();
+   }
+   
+   @Override
+   protected Class<? extends Annotation> getMetaAnnotation()
+   {
+      return ScopeType.class;
    }
    
 }

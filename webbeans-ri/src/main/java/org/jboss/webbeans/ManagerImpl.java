@@ -207,7 +207,7 @@ public class ManagerImpl implements Manager
       Set<Bean<?>> beans = resolveByName(name);
       if (beans.size() == 0)
       {
-         throw new UnsatisfiedDependencyException(new NameResolutionLocation(name) + "Unable to resolve any Web Beans");
+         return null;
       }
       else if (beans.size() > 1)
       {
@@ -215,7 +215,7 @@ public class ManagerImpl implements Manager
       }
       else
       {
-         return beans.iterator().next();
+         return getInstance(beans.iterator().next());
       }
    }
 

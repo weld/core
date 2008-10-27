@@ -61,7 +61,7 @@ public class StereotypesTest extends AbstractTest
    @Test
    public void testAnimalStereotype()
    {
-      StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(new SimpleAnnotatedType<AnimalStereotype>(AnimalStereotype.class));
+      StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(AnimalStereotype.class);
       assert animalStereotype.getDefaultScopeType().annotationType().equals(RequestScoped.class);
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert animalStereotype.getRequiredTypes().size() == 1;
@@ -74,7 +74,7 @@ public class StereotypesTest extends AbstractTest
    @Test
    public void testAnimalOrderStereotype()
    {
-      StereotypeModel<AnimalOrderStereotype> animalStereotype = new StereotypeModel<AnimalOrderStereotype>(new SimpleAnnotatedType<AnimalOrderStereotype>(AnimalOrderStereotype.class));
+      StereotypeModel<AnimalOrderStereotype> animalStereotype = new StereotypeModel<AnimalOrderStereotype>(AnimalOrderStereotype.class);
       assert animalStereotype.getDefaultScopeType() == null;
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert animalStereotype.getRequiredTypes().size() == 2;
@@ -88,7 +88,7 @@ public class StereotypesTest extends AbstractTest
    @Test
    public void testRequestScopedAnimalStereotype()
    {
-      StereotypeModel<RequestScopedAnimalStereotype> animalStereotype = new StereotypeModel<RequestScopedAnimalStereotype>(new SimpleAnnotatedType<RequestScopedAnimalStereotype>(RequestScopedAnimalStereotype.class));
+      StereotypeModel<RequestScopedAnimalStereotype> animalStereotype = new StereotypeModel<RequestScopedAnimalStereotype>(RequestScopedAnimalStereotype.class);
       assert animalStereotype.getDefaultScopeType() == null;
       assert animalStereotype.getInterceptorBindings().size() == 0;
       assert animalStereotype.getRequiredTypes().size() == 1;
@@ -102,21 +102,21 @@ public class StereotypesTest extends AbstractTest
    @Test @SpecAssertion(section="2.7.1")
    public void testStereotypeWithScopeType()
    {
-	   StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(new SimpleAnnotatedType<AnimalStereotype>(AnimalStereotype.class));
+	   StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(AnimalStereotype.class);
 	   assert animalStereotype.getDefaultScopeType().annotationType().equals(RequestScoped.class);
    }
    
    @Test @SpecAssertion(section="2.7.1")
    public void testStereotypeWithoutScopeType()
    {
-	   StereotypeModel<HornedMammalStereotype> animalStereotype = new StereotypeModel<HornedMammalStereotype>(new SimpleAnnotatedType<HornedMammalStereotype>(HornedMammalStereotype.class));
+	   StereotypeModel<HornedMammalStereotype> animalStereotype = new StereotypeModel<HornedMammalStereotype>(HornedMammalStereotype.class);
 	   assert animalStereotype.getDefaultScopeType() == null;
    }
    
    @Test @SpecAssertion(section="2.7.1")
    public void testStereotypeWithoutInterceptors()
    {
-      StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(new SimpleAnnotatedType<AnimalStereotype>(AnimalStereotype.class));
+      StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(AnimalStereotype.class);
       assert animalStereotype.getInterceptorBindings().size() == 0;
    }
    
@@ -129,25 +129,25 @@ public class StereotypesTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1")
    public void testStereotypeWithTooManyScopeTypes()
    {
-      new StereotypeModel<StereotypeWithTooManyScopeTypes>(new SimpleAnnotatedType<StereotypeWithTooManyScopeTypes>(StereotypeWithTooManyScopeTypes.class));
+      new StereotypeModel<StereotypeWithTooManyScopeTypes>(StereotypeWithTooManyScopeTypes.class);
    }
    
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1")
    public void testStereotypeWithTooManyDeploymentTypes()
    {
-      new StereotypeModel<StereotypeWithTooManyDeploymentTypes>(new SimpleAnnotatedType<StereotypeWithTooManyDeploymentTypes>(StereotypeWithTooManyDeploymentTypes.class));
+      new StereotypeModel<StereotypeWithTooManyDeploymentTypes>(StereotypeWithTooManyDeploymentTypes.class);
    }
    
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1")
    public void testStereotypeWithNonEmptyNamed()
    {
-      new StereotypeModel<StereotypeWithNonEmptyNamed>(new SimpleAnnotatedType<StereotypeWithNonEmptyNamed>(StereotypeWithNonEmptyNamed.class));
+      new StereotypeModel<StereotypeWithNonEmptyNamed>(StereotypeWithNonEmptyNamed.class);
    }
    
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1")
    public void testStereotypeWithBindingTypes()
    {
-      new StereotypeModel<StereotypeWithBindingTypes>(new SimpleAnnotatedType<StereotypeWithBindingTypes>(StereotypeWithBindingTypes.class));
+      new StereotypeModel<StereotypeWithBindingTypes>(StereotypeWithBindingTypes.class);
    }
    
    @Test @SpecAssertion(section={"2.7.2", "2.7.4"})
