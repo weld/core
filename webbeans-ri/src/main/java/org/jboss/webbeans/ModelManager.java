@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.webbeans.model.AnnotationModel;
+import org.jboss.webbeans.model.BindingTypeModel;
 import org.jboss.webbeans.model.ScopeModel;
 import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.model.bean.BeanModel;
@@ -22,10 +23,18 @@ public class ModelManager
          super(new HashMap<Class<? extends Annotation>, T>());
       }
       
-      public <S extends Annotation> T get(Class<S> key)
+      public <S extends Annotation> T putIfAbsent(Class<S> key)
       {
+         if (!containsKey(key))
+         {
+            T model = createAnnotationModel(key);
+            super.put(key, model);
+            return model;
+         }
          return (T) super.get(key);
       }
+      
+      protected  abstract <S extends Annotation> T createAnnotationModel(Class<S> type);
    }
    
    @SuppressWarnings("unchecked")
@@ -33,9 +42,33 @@ public class ModelManager
    {
       
       @Override
-      public <S extends Annotation> ScopeModel<S> get(Class<S> key)
+      public <S extends Annotation> ScopeModel<S> putIfAbsent(Class<S> key)
       {
-         return (ScopeModel<S>) super.get(key);
+         return (ScopeModel<S>) super.putIfAbsent(key);
+      }
+      
+      @Override
+      protected <S extends Annotation> ScopeModel<?> createAnnotationModel(Class<S> type)
+      {
+         return new ScopeModel<S>(type);
+      }
+      
+   }
+   
+   @SuppressWarnings("unchecked")
+   private class BindingTypeModelMap extends AnnotationModelMap<BindingTypeModel<?>>
+   {
+      
+      @Override
+      public <S extends Annotation> BindingTypeModel<S> putIfAbsent(Class<S> key)
+      {
+         return (BindingTypeModel<S>) super.putIfAbsent(key);
+      }
+      
+      @Override
+      protected <S extends Annotation> BindingTypeModel<?> createAnnotationModel(Class<S> type)
+      {
+         return new BindingTypeModel<S>(type);
       }
       
    }
@@ -45,6 +78,8 @@ public class ModelManager
    private Map<Class<?>, BeanModel<?, ?>> beanModels = new HashMap<Class<?>, BeanModel<?,?>>();
    
    private ScopeModelMap scopes = new ScopeModelMap();
+   
+   private BindingTypeModelMap bindingTypes = new BindingTypeModelMap();
    
 
    public void addStereotype(StereotypeModel<?> stereotype)
@@ -69,16 +104,14 @@ public class ModelManager
    
    public <T extends Annotation> ScopeModel<T> getScopeModel(Class<T> scopeType)
    {
-      if (scopes.containsKey(scopeType))
-      {
-         return scopes.get(scopeType);
-      }
-      else
-      {
-         ScopeModel<T> scopeModel = new ScopeModel<T>(scopeType);
-         scopes.put(scopeType, scopeModel);
-         return scopeModel;
-      }
+      return scopes.putIfAbsent(scopeType);
    }
+   
+   public <T extends Annotation> BindingTypeModel<T> getBindingTypeModel(Class<T> bindingType)
+   {
+      return bindingTypes.putIfAbsent(bindingType);
+   }
+   
+  
 
 }

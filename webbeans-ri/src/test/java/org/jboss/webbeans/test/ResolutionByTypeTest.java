@@ -31,6 +31,7 @@ import org.jboss.webbeans.test.beans.ScottishFishFarmer;
 import org.jboss.webbeans.test.beans.SeaBass;
 import org.jboss.webbeans.test.beans.Sole;
 import org.jboss.webbeans.test.beans.Tuna;
+import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.ChunkyAnnotationLiteral;
 import org.testng.annotations.Test;
 
@@ -63,13 +64,13 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test(groups="resolution", expectedExceptions=DuplicateBindingTypeException.class) @SpecAssertion(section="4.9.2")
    public void testDuplicateBindingTypesUsed()
    {
-      assert false;
+      manager.resolveByType(Tuna.class, new CurrentAnnotationLiteral(), new CurrentAnnotationLiteral());
    }
    
    @Test(groups="resolution", expectedExceptions=IllegalArgumentException.class) @SpecAssertion(section="4.9.2")
    public void testNonBindingTypeUsed()
    {
-      assert false;
+      manager.resolveByType(Tuna.class, new AnotherDeploymentTypeAnnotationLiteral());
    }
    
    @Test

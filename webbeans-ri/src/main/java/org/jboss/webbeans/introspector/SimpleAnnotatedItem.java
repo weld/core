@@ -12,19 +12,20 @@ public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
 
    private Type[] actualTypeArguements = new Type[0];
    private Class<? extends T> type;
+   private Annotation[] actualAnnotations;
    
-   public SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap)
+   private SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap)
    {
       super(annotationMap);
    }
    
-   public SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap, Class<? extends T> type)
+   private SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap, Class<? extends T> type)
    {
       super(annotationMap);
       this.type = type;
    }
    
-   public SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap, TypeLiteral<? extends T> apiType)
+   private SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap, TypeLiteral<? extends T> apiType)
    {
       super(annotationMap);
       this.type = apiType.getRawType();
@@ -34,7 +35,7 @@ public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
       }
    }
    
-   public SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap, Class<? extends T> type, Type[] actualTypeArguements)
+   private SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap, Class<? extends T> type, Type[] actualTypeArguements)
    {
       this(annotationMap, type);
       this.actualTypeArguements = actualTypeArguements;
@@ -43,21 +44,25 @@ public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
    public SimpleAnnotatedItem(Annotation[] annotations)
    {
       this(buildAnnotationMap(annotations));
+      this.actualAnnotations = annotations;
    }
    
    public SimpleAnnotatedItem(Annotation[] annotations, Class<? extends T> type)
    {
       this(buildAnnotationMap(annotations), type);
+      this.actualAnnotations = annotations;
    }
    
    public SimpleAnnotatedItem(Annotation[] annotations, TypeLiteral<? extends T> apiType)
    {
       this(buildAnnotationMap(annotations), apiType);
+      this.actualAnnotations = annotations;
    }
    
    public SimpleAnnotatedItem(Annotation[] annotations, Class<? extends T> type, Type[] actualTypeArguements)
    {
       this(buildAnnotationMap(annotations), type, actualTypeArguements);
+      this.actualAnnotations = annotations;
    }
 
    public S getDelegate()
@@ -73,6 +78,11 @@ public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
    public Type[] getActualTypeArguements()
    {
       return actualTypeArguements;
+   }
+   
+   public Annotation[] getActualAnnotations()
+   {
+      return actualAnnotations;
    }
    
 }

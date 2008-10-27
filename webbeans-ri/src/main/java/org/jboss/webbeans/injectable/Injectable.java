@@ -1,7 +1,6 @@
 package org.jboss.webbeans.injectable;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +8,6 @@ import javax.webbeans.BindingType;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 
 /**
@@ -22,9 +20,6 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
 public abstract class Injectable<T, S>
 {
    
-   private static final Annotation[] DEFAULT_BINDING_ARRAY = {new CurrentAnnotationLiteral()};
-   private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
-   
    private AnnotatedItem<T, S> annotatedItem;
    
    public Injectable(AnnotatedItem<T, S> annotatedItem)
@@ -34,29 +29,12 @@ public abstract class Injectable<T, S>
 
    public Annotation[] getBindingTypesAsArray()
    {
-      Annotation[] annotations = annotatedItem.getAnnotationsAsArray(BindingType.class);
-      // TODO This is in the wrong place, where to put it... Probably best to wrap annotated item...
-      if (annotations.length ==0)
-      {
-         return DEFAULT_BINDING_ARRAY; 
-      }
-      else
-      {
-         return annotations;
-      }
+      return annotatedItem.getAnnotationsAsArray(BindingType.class);
    }
    
    public Set<Annotation> getBindingTypes()
    {
-      Set<Annotation> annotations = annotatedItem.getAnnotations(BindingType.class);
-      if (annotations.size() == 0)
-      {
-         return DEFAULT_BINDING;
-      }
-      else
-      {
-         return annotations;
-      }
+      return annotatedItem.getAnnotations(BindingType.class);
    }
    
    protected Injectable() {}

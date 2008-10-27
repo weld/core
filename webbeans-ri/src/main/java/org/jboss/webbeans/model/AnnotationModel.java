@@ -35,7 +35,7 @@ public abstract class AnnotationModel<T extends Annotation>
    
    protected void initValid()
    {
-      this.valid = !annotatedAnnotation.isAnnotationPresent(getMetaAnnotation());
+      this.valid = annotatedAnnotation.isAnnotationPresent(getMetaAnnotation());
    }
 
    public Class<T> getType()

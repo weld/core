@@ -27,7 +27,7 @@ import org.jboss.webbeans.event.EventBus;
 import org.jboss.webbeans.exceptions.NameResolutionLocation;
 import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
 import org.jboss.webbeans.injectable.Injectable;
-import org.jboss.webbeans.injectable.SimpleInjectable;
+import org.jboss.webbeans.injectable.ResolverInjectable;
 import org.jboss.webbeans.util.ClientProxy;
 
 public class ManagerImpl implements Manager
@@ -112,13 +112,13 @@ public class ManagerImpl implements Manager
    public <T> Set<Bean<T>> resolveByType(Class<T> type,
          Annotation... bindingTypes)
    {
-      return resolveByType(new SimpleInjectable<T>(type, bindingTypes));
+      return resolveByType(new ResolverInjectable<T>(type, bindingTypes, getModelManager()));
    }
 
    public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,
          Annotation... bindingTypes)
    {
-      return resolveByType(new SimpleInjectable<T>(apiType, bindingTypes));
+      return resolveByType(new ResolverInjectable<T>(apiType, bindingTypes, getModelManager()));
    }
    
    private <T> Set<Bean<T>> resolveByType(Injectable<T, ?> injectable)
@@ -221,12 +221,12 @@ public class ManagerImpl implements Manager
 
    public <T> T getInstanceByType(Class<T> type, Annotation... bindingTypes)
    {
-      return getInstanceByType(new SimpleInjectable<T>(type, bindingTypes));
+      return getInstanceByType(new ResolverInjectable<T>(type, bindingTypes, getModelManager()));
    }
 
    public <T> T getInstanceByType(TypeLiteral<T> type, Annotation... bindingTypes)
    {
-      return getInstanceByType(new SimpleInjectable<T>(type, bindingTypes));
+      return getInstanceByType(new ResolverInjectable<T>(type, bindingTypes, getModelManager()));
    }
    
    private <T> T getInstanceByType(Injectable<T, ?> injectable)

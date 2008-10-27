@@ -24,6 +24,7 @@ import org.jboss.webbeans.test.beans.ScottishFish;
 import org.jboss.webbeans.test.beans.Sole;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.broken.PlaiceFarm;
+import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
 import org.testng.annotations.Test;
 
 @SpecVersion("PDR")
@@ -39,13 +40,13 @@ public class InstantiationByTypeTest extends AbstractTest
    @Test(groups="resolution", expectedExceptions=DuplicateBindingTypeException.class) @SpecAssertion(section="4.9")
    public void testDuplicateBindingTypesUsed()
    {
-      assert false;
+      manager.getInstanceByType(Tuna.class, new CurrentAnnotationLiteral(), new CurrentAnnotationLiteral());
    }
    
    @Test(groups="resolution", expectedExceptions=IllegalArgumentException.class) @SpecAssertion(section="4.9")
    public void testNonBindingTypeUsed()
    {
-      assert false;
+      manager.getInstanceByType(Tuna.class, new AnotherDeploymentTypeAnnotationLiteral());
    }
    
    @Test(expectedExceptions=AmbiguousDependencyException.class) @SpecAssertion(section="4.9")

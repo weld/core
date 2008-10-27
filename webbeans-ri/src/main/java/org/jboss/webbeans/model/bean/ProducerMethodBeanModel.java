@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.Set;
 
 import javax.webbeans.Dependent;
@@ -17,7 +16,6 @@ import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.injectable.MethodConstructor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
 import org.jboss.webbeans.util.Reflections;
 
 public class ProducerMethodBeanModel<T> extends AbstractProducerBeanModel<T>
@@ -25,7 +23,7 @@ public class ProducerMethodBeanModel<T> extends AbstractProducerBeanModel<T>
    
    private MethodConstructor<T> constructor;
    
-   private AnnotatedItem<T, Method> xmlAnnotatedItem = new SimpleAnnotatedItem<T, Method>(new HashMap<Class<? extends Annotation>, Annotation>());
+   private AnnotatedItem<T, Method> xmlAnnotatedItem = null /*new SimpleAnnotatedItem<T, Method>(new HashMap<Class<? extends Annotation>, Annotation>())*/;
    private AnnotatedMethod<T> annotatedMethod;
    
    private BeanModel<?, ?> declaringBean;

@@ -65,7 +65,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       {
          metaAnnotationMap = new HashMap<Class<? extends Annotation>, Set<Annotation>>();
       }
-      populateMetaAnnotationMap(metaAnnotationType, metaAnnotationMap, annotationMap);
+      metaAnnotationMap = populateMetaAnnotationMap(metaAnnotationType, metaAnnotationMap, annotationMap);
       return metaAnnotationMap.get(metaAnnotationType);
    }
    
@@ -73,6 +73,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    {
       if (annotationArray == null)
       {
+         annotationArray = new Annotation[0];
          annotationArray = getAnnotations(metaAnnotationType).toArray(annotationArray);
       }
       return annotationArray;
@@ -94,10 +95,10 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
 
    protected static <A extends Annotation> Map<Class<? extends Annotation>, Set<Annotation>> populateMetaAnnotationMap(
          Class<A> metaAnnotationType, Map<Class<? extends Annotation>, 
-         Set<Annotation>> metaAnnotations, 
+         Set<Annotation>> metaAnnotationMap, 
          Map<Class<? extends Annotation>, Annotation> annotationMap)
    {
-      if (!metaAnnotations.containsKey(metaAnnotationType))
+      if (!metaAnnotationMap.containsKey(metaAnnotationType))
       {
          Set<Annotation> s = new HashSet<Annotation>();
          for (Entry<Class<? extends Annotation>, Annotation> entry : annotationMap.entrySet())
@@ -107,9 +108,9 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
                s.add(entry.getValue());
             }
          }
-         metaAnnotations.put(metaAnnotationType, s);
+         metaAnnotationMap.put(metaAnnotationType, s);
       }
-      return metaAnnotations;
+      return metaAnnotationMap;
    }
 
    protected Map<Class<? extends Annotation>, Annotation> getAnnotationMap()

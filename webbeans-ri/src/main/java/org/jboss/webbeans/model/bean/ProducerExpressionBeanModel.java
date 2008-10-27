@@ -1,22 +1,19 @@
 package org.jboss.webbeans.model.bean;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
 
 import javax.webbeans.Dependent;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.BeanConstructor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
 
 public class ProducerExpressionBeanModel<T> extends AbstractProducerBeanModel<T>
 {
    
    private AnnotatedItem<T, Method> xmlAnnotatedItem;
-   private AnnotatedItem<T, Method> annotatedItem = new SimpleAnnotatedItem<T, Method>(new HashMap<Class<? extends Annotation>, Annotation>());
+   private AnnotatedItem<T, Method> annotatedItem = null /*new SimpleAnnotatedItem<T, Method>(new HashMap<Class<? extends Annotation>, Annotation>())*/;
    private String location;
 
    public ProducerExpressionBeanModel(AnnotatedItem<T, Method> xmlAnnotatedMethod, ManagerImpl container)
