@@ -24,6 +24,7 @@ import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.model.MergedStereotypesModel;
 import org.jboss.webbeans.util.LoggerUtil;
+import org.jboss.webbeans.util.Reflections;
 
 public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
 {
@@ -41,11 +42,13 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
    protected InjectableMethod<?> removeMethod;
    private Set<Class<?>> apiTypes;
    protected Set<Injectable<?, ?>> injectionPoints;
+   private boolean primitive;
    
    protected void init(ManagerImpl container)
    {
       mergedStereotypes = new MergedStereotypesModel<T, E>(getAnnotatedItem(), getXmlAnnotatedItem(), container);
       initType();
+      initPrimitive();
       log.fine("Building Web Bean bean metadata for " +  getType());
       initBindingTypes();
       initName();
@@ -72,6 +75,11 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
    protected void initApiTypes()
    {
       apiTypes = getTypeHierachy(getType());
+   }
+   
+   protected void initPrimitive()
+   {
+      this.primitive = Reflections.isPrimitive(getType());
    }
    
    protected Set<Class<?>> getTypeHierachy(Class<?> clazz)
@@ -326,6 +334,11 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
    public boolean isAssignableFrom(AnnotatedItem<?, ?> annotatedItem)
    {
       return this.getAnnotatedItem().isAssignableFrom(annotatedItem);
+   }
+   
+   public boolean isPrimitive()
+   {
+      return primitive;
    }
    
 }

@@ -38,6 +38,8 @@ public interface BeanModel<T, E>
    
    public boolean isAssignableFrom(AnnotatedItem<?, ?> annotatedItem);
    
+   public boolean isPrimitive();
+   
    public MergedStereotypesModel<T, E> getMergedStereotypes();
    
 }

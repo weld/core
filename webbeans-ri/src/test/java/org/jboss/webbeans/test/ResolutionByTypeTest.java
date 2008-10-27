@@ -6,7 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.webbeans.AnnotationLiteral;
-import javax.webbeans.Current;
+import javax.webbeans.DefinitionException;
+import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.TypeLiteral;
 import javax.webbeans.manager.Bean;
 
@@ -31,24 +32,23 @@ import org.jboss.webbeans.test.beans.SeaBass;
 import org.jboss.webbeans.test.beans.Sole;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.bindings.ChunkyAnnotationLiteral;
-import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.Test;
 
-public class TypeSafeResolutionTest extends AbstractTest
+@SpecVersion("PDR")
+public class ResolutionByTypeTest extends AbstractTest
 {
 
-   @SuppressWarnings("unchecked")
-   @Test
+   @Test(groups="resolution")
    public void testInjectableField() throws Exception
    {
       InjectableField<Tuna> tuna = new InjectableField<Tuna>(FishFarm.class.getDeclaredField("tuna"));
       assert tuna.getAnnotatedItem().getType().isAssignableFrom(Tuna.class);
       assert tuna.getBindingTypes().size() == 1;
-      assert Reflections.annotationSetMatches(tuna.getBindingTypes(), Current.class);
+      assert tuna.getBindingTypes().contains(new CurrentAnnotationLiteral());
       assert tuna.getType().isAssignableFrom(Tuna.class);
    }
    
-   @Test
+   @Test(groups="resolution") @SpecAssertion(section="4.9.2")
    public void testSingleApiTypeWithCurrent() throws Exception
    {
       InjectableField<Tuna> tunaField = new InjectableField<Tuna>(FishFarm.class.getDeclaredField("tuna"));
@@ -58,6 +58,18 @@ public class TypeSafeResolutionTest extends AbstractTest
       Set<Bean<?>> possibleTargets = tunaField.getMatchingBeans(beans);
       assert possibleTargets.size() == 1;
       assert possibleTargets.contains(tunaBean);
+   }
+   
+   @Test(groups="resolution", expectedExceptions=DuplicateBindingTypeException.class) @SpecAssertion(section="4.9.2")
+   public void testDuplicateBindingTypesUsed()
+   {
+      assert false;
+   }
+   
+   @Test(groups="resolution", expectedExceptions=IllegalArgumentException.class) @SpecAssertion(section="4.9.2")
+   public void testNonBindingTypeUsed()
+   {
+      assert false;
    }
    
    @Test
@@ -108,7 +120,7 @@ public class TypeSafeResolutionTest extends AbstractTest
       assert possibleTargets.contains(haddockBean);
    }
    
-   @Test
+   @Test(groups="resolution") @SpecAssertion(section={"4.9.2", "4.9.4"})
    public void testResolveByType() throws Exception
    {
       InjectableField<Animal> realChunkyWhiteFishField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("realChunkyWhiteFish"));
@@ -170,7 +182,7 @@ public class TypeSafeResolutionTest extends AbstractTest
       
    }
    
-   @Test
+   @Test(groups="resolution") @SpecAssertion(section="4.9.2")
    public void testResolveByTypeWithTypeParameter() throws Exception
    {
       InjectableField<Farmer<ScottishFish>> scottishFishFarmerField = new InjectableField<Farmer<ScottishFish>>(FishFarm.class.getDeclaredField("scottishFishFarmer"));
@@ -188,7 +200,13 @@ public class TypeSafeResolutionTest extends AbstractTest
       assert manager.resolveByType(new TypeLiteral<Farmer<ScottishFish>>(){}).contains(scottishFishFarmerBean);
    }
    
-   @Test
+   @Test(groups="resolution") @SpecAssertion(section="4.9.2")
+   public void testResolveByTypeWithArray()
+   {
+      assert false;
+   }
+   
+   @Test @SpecAssertion(section="4.9.2")
    public void testOnlyHighestEnabledPreecedenceWebBeansResolved() throws Exception
    {
       InjectableField<Animal> whiteFishField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("whiteFish"));
@@ -208,6 +226,36 @@ public class TypeSafeResolutionTest extends AbstractTest
       assert manager.resolveByType(Animal.class, new AnnotationLiteral<Whitefish>() {}).size() == 1;
       assert manager.resolveByType(Animal.class, new AnnotationLiteral<Whitefish>() {}).contains(plaiceBean);
       
+   }
+   
+   @Test(groups="resolution") @SpecAssertion(section="4.9.2")
+   public void testResolveByTypeNonBindingParameters()
+   {
+      assert false;
+   }
+   
+   @Test(groups="resolution") @SpecAssertion(section="4.9.2")
+   public void testNoWebBeansFound()
+   {
+      assert false;
+   }
+   
+   @Test(groups="resolution") @SpecAssertion(section="4.9.2")
+   public void testResolveObject()
+   {
+      assert false;
+   }
+   
+   @Test(groups="resolution", expectedExceptions=DefinitionException.class) @SpecAssertion(section="4.9.2.1")
+   public void testArrayValuedAnnotationMemberWithoutNonBinding()
+   {
+      assert false;
+   }
+   
+   @Test(groups="resolution", expectedExceptions=DefinitionException.class) @SpecAssertion(section="4.9.2.1")
+   public void testAnnotationValuedAnnotationMemberWithoutNonBinding()
+   {
+      assert false;
    }
       
 }

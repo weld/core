@@ -68,8 +68,7 @@ public class BeanImpl<T> extends Bean<T>
    @Override
    public boolean isNullable()
    {
-      // TODO Auto-generated method stub
-      return false;
+      return !beanModel.isPrimitive();
    }
 
    @Override

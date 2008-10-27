@@ -48,4 +48,10 @@ public class CommonWebBeanTest extends AbstractTest
 		assert model.getDeploymentType().equals(Production.class);
 	}
 	
+	@Test(groups="producerMethod") @SpecAssertion(section="4.2")
+   public void testIsNullable()
+   {
+      assert false;
+   }
+	
 }

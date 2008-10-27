@@ -3,7 +3,6 @@ package org.jboss.webbeans.test;
 import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 
 import javax.webbeans.AmbiguousDependencyException;
-import javax.webbeans.UnsatisfiedDependencyException;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.BeanImpl;
@@ -21,7 +20,13 @@ import org.testng.annotations.Test;
 public class InstantiationByNameTest extends AbstractTest
 {
    
-   @Test(expectedExceptions=AmbiguousDependencyException.class)
+   @Test(groups="resolution") @SpecAssertion(section="4.10")
+   public void testNoWebBeansFound()
+   {
+      assert false;
+   }
+   
+   @Test(expectedExceptions=AmbiguousDependencyException.class) @SpecAssertion(section="4.10.1")
    public void testAmbiguousDependencies() throws Exception
    {
       InjectableField<ScottishFish> whiteScottishFishField = new InjectableField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"));
@@ -38,19 +43,26 @@ public class InstantiationByNameTest extends AbstractTest
       manager.getInstanceByName("whitefish");
    }
    
-   @Test(expectedExceptions=UnsatisfiedDependencyException.class)
-   public void testUnsatisfiedDependencies() throws Exception
+   @Test(groups="resolution") @SpecAssertion(section="4.10.1")
+   public void testGetInstanceByName()
    {
-      InjectableField<ScottishFish> whiteScottishFishField = new InjectableField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"));
-      Bean<Cod> codBean = new BeanImpl<Cod>(new SimpleBeanModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedType(Cod.class), super.manager), manager);
-      Bean<Salmon> salmonBean = new BeanImpl<Salmon>(new SimpleBeanModel<Salmon>(new SimpleAnnotatedType<Salmon>(Salmon.class), getEmptyAnnotatedType(Salmon.class), super.manager), manager);
-      manager.addBean(codBean);
-      manager.addBean(salmonBean);
-      
-      ResolutionManager resolutionManager = manager.getResolutionManager();
-      resolutionManager.addInjectionPoint(whiteScottishFishField);
-      
-      manager.getInstanceByName("foo");
+      assert false;
    }
+   
+   @Test(groups="resolution") @SpecAssertion(section="4.10")
+   public void testGetInstanceByNameCalledOncePerDistinctNameInElExpression()
+   {
+      assert false;
+   }
+   
+   /*
+
+   @Test(groups="el") @SpecAssertion(section="4.10")
+   public void test
+   {
+      assert false;
+   }
+
+    */
    
 }

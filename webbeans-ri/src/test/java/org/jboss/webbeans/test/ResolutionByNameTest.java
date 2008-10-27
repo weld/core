@@ -15,10 +15,30 @@ import org.jboss.webbeans.test.beans.SeaBass;
 import org.jboss.webbeans.test.beans.Sole;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.testng.annotations.Test;
-public class NameBasedResolutionTest extends AbstractTest
+
+@SpecVersion("PDR")
+public class ResolutionByNameTest extends AbstractTest
 {
 
-   @Test
+   @Test(groups="el") @SpecAssertion(section="4.10")
+   public void testELResolver()
+   {
+      assert false;
+   }
+   
+   @Test(groups="el") @SpecAssertion(section="4.10.2")
+   public void testELResolverRegisteredWithJsf()
+   {
+      assert false;
+   }
+   
+   @Test(groups="el") @SpecAssertion(section="4.10.2")
+   public void testELResolverRegisteredWithServlet()
+   {
+      assert false;
+   }
+   
+   @Test @SpecAssertion(section="4.10.1")
    public void testNamedBasedResolution()
    {
       Bean<Tuna> tunaBean = new BeanImpl<Tuna>(new SimpleBeanModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), getEmptyAnnotatedType(Tuna.class), super.manager), manager);
@@ -48,5 +68,21 @@ public class NameBasedResolutionTest extends AbstractTest
       assert manager.resolveByName("whitefish").size() == 1;
       assert manager.resolveByName("whitefish").contains(plaiceBean);
    }
+   
+   @Test(groups="resolution") @SpecAssertion(section="4.10.1")
+   public void testNoWebBeansFound()
+   {
+      assert false;
+   }
+   
+   /*
+
+   @Test(groups="el") @SpecAssertion(section="4.10")
+   public void test
+   {
+      assert false;
+   }
+
+    */
    
 }

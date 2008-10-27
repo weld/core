@@ -4,6 +4,7 @@ import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 
 import javax.webbeans.AmbiguousDependencyException;
 import javax.webbeans.AnnotationLiteral;
+import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.UnsatisfiedDependencyException;
 import javax.webbeans.manager.Bean;
@@ -25,10 +26,29 @@ import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.broken.PlaiceFarm;
 import org.testng.annotations.Test;
 
+@SpecVersion("PDR")
 public class InstantiationByTypeTest extends AbstractTest
 {
    
-   @Test(expectedExceptions=AmbiguousDependencyException.class)
+   @Test(groups="resolution") @SpecAssertion(section="4.9")
+   public void testCurrentBindingTypeAssumed()
+   {
+      assert false;
+   }
+   
+   @Test(groups="resolution", expectedExceptions=DuplicateBindingTypeException.class) @SpecAssertion(section="4.9")
+   public void testDuplicateBindingTypesUsed()
+   {
+      assert false;
+   }
+   
+   @Test(groups="resolution", expectedExceptions=IllegalArgumentException.class) @SpecAssertion(section="4.9")
+   public void testNonBindingTypeUsed()
+   {
+      assert false;
+   }
+   
+   @Test(expectedExceptions=AmbiguousDependencyException.class) @SpecAssertion(section="4.9")
    public void testAmbiguousDependencies() throws Exception
    {
       InjectableField<ScottishFish> whiteScottishFishField = new InjectableField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"));
@@ -45,7 +65,7 @@ public class InstantiationByTypeTest extends AbstractTest
       manager.getInstanceByType(ScottishFish.class, new AnnotationLiteral<Whitefish>(){});
    }
    
-   @Test(expectedExceptions=UnsatisfiedDependencyException.class)
+   @Test(expectedExceptions=UnsatisfiedDependencyException.class) @SpecAssertion(section="4.9")
    public void testUnsatisfiedDependencies() throws Exception
    {
       InjectableField<ScottishFish> whiteScottishFishField = new InjectableField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"));
@@ -62,7 +82,7 @@ public class InstantiationByTypeTest extends AbstractTest
       manager.getInstanceByType(Tuna.class, new CurrentAnnotationLiteral());
    }
    
-   @Test(expectedExceptions=UnproxyableDependencyException.class)
+   @Test(expectedExceptions=UnproxyableDependencyException.class) @SpecAssertion(section="4.9")
    public void testUnproxyableDependencies() throws Exception
    {
       InjectableField<Plaice> plaiceField = new InjectableField<Plaice>(PlaiceFarm.class.getDeclaredField("plaice"));
@@ -74,5 +94,15 @@ public class InstantiationByTypeTest extends AbstractTest
       
       manager.getInstanceByType(Plaice.class, new AnnotationLiteral<Whitefish>(){});
    }
+   
+   /*
+
+   @Test(groups="resolution") @SpecAssertion(section="4.9")
+   public void test
+   {
+      assert false;
+   }
+
+   */  
    
 }
