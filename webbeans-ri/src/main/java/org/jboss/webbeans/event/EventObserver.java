@@ -1,7 +1,6 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
@@ -81,7 +80,7 @@ public class EventObserver<T>
       // TODO This logic needs to be in injectable
       boolean result = true;
       // Check each binding specified by this observer against those provided
-      if (this.eventBindings != null)
+      if (this.eventBindings.length > 0)
       {
          if ((bindings != null) && (bindings.length > 0))
          {
@@ -91,52 +90,62 @@ public class EventObserver<T>
                int eventBindingIndex = bindingsArray.indexOf(annotation);
                if (eventBindingIndex >= 0)
                {
-                  // TODO Use annotation equality
-                  result = annotationsMatch(annotation, bindingsArray.get(eventBindingIndex));
+                  //result = annotationsMatch(annotation, bindingsArray.get(eventBindingIndex));
+                  result = annotation.equals(bindingsArray.get(eventBindingIndex));
                } else
                {
                   result = false;
                   break;
                }
             }
-         }
-      }
-      return result;
-   }
-
-   /**
-    * Compares two annotation bindings for equivalence.  This means that all member values, if any,
-    * must match.
-    * @param annotation The first annotation to compare
-    * @param annotation2 The second annotation to compare
-    * @return
-    * 
-    */
-   private boolean annotationsMatch(Annotation annotation,
-         Annotation annotation2)
-   {
-      boolean result = true;
-      if (annotation.getClass().getDeclaredMethods().length > 0)
-      {
-         for (Method annotationValue : annotation.getClass().getDeclaredMethods())
+         } else
          {
-            try
-            {
-               if (!annotationValue.invoke(annotation).equals(annotationValue.invoke(annotation2)))
-               {
-                  result = false;
-                  break;
-               }
-            } catch (Exception e)
-            {
-               result = false;
-               break;
-            }
+            result = false;
          }
       }
       return result;
    }
 
-   // TODO Implement equals and hashCode
-   
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result
+            + ((eventType == null) ? 0 : eventType.hashCode());
+      result = prime * result + ((observer == null) ? 0 : observer.hashCode());
+      return result;
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+         return true;
+      if (obj == null)
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
+      EventObserver<?> other = (EventObserver<?>) obj;
+      if (eventType == null)
+      {
+         if (other.eventType != null)
+            return false;
+      } else if (!eventType.equals(other.eventType))
+         return false;
+      if (observer == null)
+      {
+         if (other.observer != null)
+            return false;
+      } else if (!observer.equals(other.observer))
+         return false;
+      return true;
+   }
+
 }

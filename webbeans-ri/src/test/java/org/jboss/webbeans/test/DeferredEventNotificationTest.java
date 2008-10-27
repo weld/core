@@ -80,7 +80,7 @@ public class DeferredEventNotificationTest extends AbstractTest
       Observer<Event> observer = new MockObserverImpl<Event>(tuna, om, Event.class);
       ((MockObserverImpl<Event>) observer).setInstance(observerInstance);
       Event event = new Event();
-      DeferredEventNotification<Event> deferredNotification = new DeferredEventNotification<Event>(event, observer);
+      DeferredEventNotification deferredNotification = new DeferredEventNotification(event, observer);
       deferredNotification.beforeCompletion();
       assert observerInstance.notified;
    }

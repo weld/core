@@ -41,6 +41,7 @@ public class EventObserverTest
       assert wrappedObserver.getEventBindings().length == 1;
       assert wrappedObserver.isObserverInterested(new TameAnnotationLiteral());
       assert !wrappedObserver.isObserverInterested(new AnimalStereotypeAnnotationLiteral());
+      assert !wrappedObserver.isObserverInterested();
       assert wrappedObserver.isObserverInterested(new TameAnnotationLiteral(), new RoleBinding("Admin"));
       
       // Perform some tests with binding values (7.7.1)

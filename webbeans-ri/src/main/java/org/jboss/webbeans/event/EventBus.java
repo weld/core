@@ -11,9 +11,8 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
+import javax.webbeans.Current;
 import javax.webbeans.Observer;
-
-import org.jboss.webbeans.util.JNDI;
 
 /**
  * The event bus is where observers are registered and events are fired.
@@ -24,31 +23,27 @@ import org.jboss.webbeans.util.JNDI;
 public class EventBus
 {
    private final Map<Class<?>, ArrayList<EventObserver<?>>> registeredObservers;
-   private final TransactionManager tm;
-   private String tmName = "java:/TransactionManager";
+   
+   @Current
+   private TransactionManager transactionManager;
 
    /**
     * Initializes a new instance of the EventBus. This includes looking up the
     * transaction manager which is needed to defer events till the end of a
-    * transaction. TODO Should be able to configure JNDI name of transaction
-    * manager
-    * 
+    * transaction. 
     */
    public EventBus()
    {
       registeredObservers = new HashMap<Class<?>, ArrayList<EventObserver<?>>>();
-      tm = JNDI.lookup(tmName, TransactionManager.class);
    }
 
    /**
     * Adds an observer to the event bus so that it receives event notifications.
-    * The event information is already encapsulated as part of the observer.
     * 
     * @param o
     *           The observer that should receive events
     */
-   public <T> void addObserver(Observer<T> o, Class<T> eventType,
-         Annotation... bindings)
+   public <T> void addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
       ArrayList<EventObserver<?>> l = registeredObservers.get(eventType);
       if (l == null)
@@ -56,7 +51,7 @@ public class EventBus
          l = new ArrayList<EventObserver<?>>();
          registeredObservers.put(eventType, l);
       }
-      EventObserver<T> eventObserver = new EventObserver<T>(o, eventType, bindings);
+      EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, bindings);
       if (!l.contains(eventObserver))
          l.add(eventObserver);
    }
@@ -75,15 +70,15 @@ public class EventBus
     * @throws IllegalStateException
     * @throws RollbackException
     */
-   public void deferEvent(Object event, Observer<Object> o)
+   public void deferEvent(Object event, Observer<?> o)
          throws SystemException, IllegalStateException, RollbackException
    {
-      if (tm != null)
+      if (transactionManager != null)
       {
          // Get the current transaction associated with the thread
-         Transaction t = tm.getTransaction();
+         Transaction t = transactionManager.getTransaction();
          if (t != null)
-            t.registerSynchronization(new DeferredEventNotification<Object>(
+            t.registerSynchronization(new DeferredEventNotification(
                   event, o));
       }
    }
@@ -104,8 +99,8 @@ public class EventBus
       Set<Observer<T>> results = new HashSet<Observer<T>>();
       for (EventObserver<?> observer : registeredObservers.get(event.getClass()))
       {
-         // TODO Verify bindings match before adding
-         results.add((Observer<T>) observer.getObserver());
+         if (observer.isObserverInterested(bindings))
+            results.add((Observer<T>) observer.getObserver());
       }
       return results;
    }
@@ -128,5 +123,14 @@ public class EventBus
             break;
          }
       }
+   }
+
+   /**
+    * TODO Remove this once injection of the transaction manager works.
+    * @param transactionManager the TransactionManager to set
+    */
+   public final void setTransactionManager(TransactionManager transactionManager)
+   {
+      this.transactionManager = transactionManager;
    }
 }
