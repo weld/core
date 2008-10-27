@@ -5,7 +5,7 @@ import javax.webbeans.RequestScoped;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 
-import org.jboss.webbeans.AbstractContext;
+import org.jboss.webbeans.contexts.AbstractContext;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.util.Util;
 import org.testng.annotations.BeforeMethod;
