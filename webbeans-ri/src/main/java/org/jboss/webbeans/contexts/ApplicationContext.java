@@ -8,5 +8,11 @@ public class ApplicationContext extends NormalContext {
    {
       super(ApplicationScoped.class);
    }
+   
+   @Override
+   public String toString()
+   {
+      return "Application context";
+   }   
 
 }

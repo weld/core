@@ -9,4 +9,9 @@ public class SessionContext extends NormalContext {
       super(SessionScoped.class);
    }
 
+   @Override
+   public String toString()
+   {
+      return "Session context";
+   }
 }

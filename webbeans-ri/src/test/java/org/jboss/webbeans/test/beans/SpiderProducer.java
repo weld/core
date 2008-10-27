@@ -41,4 +41,8 @@ public class SpiderProducer
       return new LadybirdSpider();
    }
 
+   @Produces @Named("Shelob") public Tarantula produceShelob() {
+      return null;
+   }
+
 }

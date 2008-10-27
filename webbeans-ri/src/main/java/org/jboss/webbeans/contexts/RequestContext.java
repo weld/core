@@ -9,4 +9,9 @@ public class RequestContext extends NormalContext {
       super(RequestScoped.class);
    }
 
+   @Override
+   public String toString()
+   {
+      return "Request context";
+   }
 }

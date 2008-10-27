@@ -9,5 +9,11 @@ public class ConversationContext extends NormalContext {
    {
       super(ConversationScoped.class);
    }
+   
+   @Override
+   public String toString()
+   {
+      return "Conversation context";
+   }   
 
 }
