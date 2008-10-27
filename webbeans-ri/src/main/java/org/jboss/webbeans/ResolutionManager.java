@@ -81,8 +81,15 @@ public class ResolutionManager
    
    public <T> Set<Bean<T>> get(Injectable<T, ?> key)
    {
-      resolveBeans();
-      return resolvedInjectionPoints.get(key);
+      if (key.getType().equals(Object.class))
+      {
+         return (Set<Bean<T>>) (Set) manager.getBeans();
+      }
+      else
+      {
+         resolveBeans();
+         return resolvedInjectionPoints.get(key);
+      }
    }
    
    public Set<Bean<?>> get(String name)

@@ -253,9 +253,20 @@ public class ResolutionByTypeTest extends AbstractTest
    }
    
    @Test(groups="resolution") @SpecAssertion(section="4.9.2")
-   public void testResolveObject()
+   public void testResolveObject() throws Exception
    {
-      assert false;
+      Bean<Cod> plaiceBean = new BeanImpl<Cod>(new SimpleBeanModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedType(Cod.class), super.manager), manager);
+      Bean<Salmon> salmonBean = new BeanImpl<Salmon>(new SimpleBeanModel<Salmon>(new SimpleAnnotatedType<Salmon>(Salmon.class), getEmptyAnnotatedType(Salmon.class), super.manager), manager);
+      Bean<Sole> soleBean = new BeanImpl<Sole>(new SimpleBeanModel<Sole>(new SimpleAnnotatedType<Sole>(Sole.class), getEmptyAnnotatedType(Sole.class), super.manager), manager);
+      manager.addBean(plaiceBean);
+      manager.addBean(salmonBean);
+      manager.addBean(soleBean);
+      
+      assert manager.resolveByType(Object.class).size() == 3;
+      assert manager.resolveByType(Object.class).contains(plaiceBean);
+      assert manager.resolveByType(Object.class).contains(salmonBean);
+      assert manager.resolveByType(Object.class).contains(soleBean);
+      
    }
    
    @Test(groups="resolution", expectedExceptions=DefinitionException.class) @SpecAssertion(section="4.9.2.1")

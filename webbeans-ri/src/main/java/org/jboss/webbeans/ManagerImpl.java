@@ -140,7 +140,7 @@ public class ManagerImpl implements Manager
       return resolutionManager;
    }
 
-   public Set<Bean<?>> getBeans()
+   public Set<Bean<? extends Object>> getBeans()
    {
       return beans;
    }
