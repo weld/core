@@ -14,7 +14,6 @@ import javax.webbeans.Current;
 import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Event;
 import javax.webbeans.Observer;
-import javax.webbeans.TypeLiteral;
 import javax.webbeans.manager.Manager;
 
 /**
@@ -43,6 +42,7 @@ public class EventImpl<T> implements Event<T>
     */
    public void setEventBindings(Annotation... eventBindings)
    {
+      // TODO Use constructor injection
       Set<Annotation> newEventBindings = new HashSet<Annotation>();
       addAnnotationBindings(newEventBindings, eventBindings);
       this.eventBindings = newEventBindings;

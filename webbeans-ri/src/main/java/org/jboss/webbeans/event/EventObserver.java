@@ -20,6 +20,9 @@ import javax.webbeans.Observer;
  */
 public class EventObserver<T>
 {
+   
+   // TODO This probably should be an injectable or annotated item
+   
    private final Class<T> eventType;
    private final Annotation[] eventBindings;
    private final Observer<T> observer;
@@ -75,6 +78,7 @@ public class EventObserver<T>
     */
    public boolean isObserverInterested(Annotation... bindings)
    {
+      // TODO This logic needs to be in injectable
       boolean result = true;
       // Check each binding specified by this observer against those provided
       if (this.eventBindings != null)
@@ -87,6 +91,7 @@ public class EventObserver<T>
                int eventBindingIndex = bindingsArray.indexOf(annotation);
                if (eventBindingIndex >= 0)
                {
+                  // TODO Use annotation equality
                   result = annotationsMatch(annotation, bindingsArray.get(eventBindingIndex));
                } else
                {
@@ -105,6 +110,7 @@ public class EventObserver<T>
     * @param annotation The first annotation to compare
     * @param annotation2 The second annotation to compare
     * @return
+    * 
     */
    private boolean annotationsMatch(Annotation annotation,
          Annotation annotation2)
@@ -131,4 +137,6 @@ public class EventObserver<T>
       return result;
    }
 
+   // TODO Implement equals and hashCode
+   
 }
