@@ -2,9 +2,8 @@ package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
 
+import javax.webbeans.Current;
 import javax.webbeans.Observer;
-import javax.webbeans.manager.Manager;
-
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
@@ -14,15 +13,9 @@ import org.jboss.webbeans.model.bean.BeanModel;
 /**
  * <p>
  * Reference implementation for the Observer interface, which represents an
- * observer method. Each observer method has an event type, the class of the
- * event object being observed, and event binding types, annotations applied to
+ * observer method. Each observer method has an event type which is the class of the
+ * event object being observed, and event binding types that are annotations applied to
  * the event parameter to narrow the event notifications delivered.
- * </p>
- * 
- * <p>
- * The hash code for each observer method includes all the information
- * contained. The data structure used to lookup observers must account for an
- * arbitrary number of observers of the same event.
  * </p>
  * 
  * @author David Allen
@@ -36,14 +29,30 @@ public class ObserverImpl<T> implements Observer<T>
    private final Class<T> eventType;
 
    /**
-    * Creates an Observer which describes and encapsulates an observer method (7.3).
+    * Injected before notify is called. This can only work with the RI since
+    * InjectableMethod requires this specific implementation. 
+    * TODO Determine if the impl can be injected here.
+    */
+   @Current
+   protected ManagerImpl manager;
+
+   /**
+    * Creates an Observer which describes and encapsulates an observer method
+    * (7.5).
     * 
+    * @param componentModel
+    *           The model for the component which defines the observer method
+    * @param observer
+    *           The observer method to notify
+    * @param eventType
+    *           The type of event being observed
     * @param beanModel The model for the bean which defines the
     *           observer method
     * @param observer The observer method to notify
     * @param eventType The type of event being observed
     */
-   public ObserverImpl(BeanModel<?, ?> beanModel, InjectableMethod<?> observer, Class<T> eventType)
+   public ObserverImpl(final BeanModel<?, ?> beanModel,
+         final InjectableMethod<?> observer, final Class<T> eventType)
    {
       this.beanModel = beanModel;
       this.observerMethod = observer;
@@ -68,18 +77,20 @@ public class ObserverImpl<T> implements Observer<T>
     */
    public void notify(final T event)
    {
-      // Get the most specialized instance of the bean
-      Object instance = null /*getInstance(manager)*/;
+      // Get the most specialized instance of the component
+      Object instance = getInstance();
       if (instance != null)
       {
          // Let the super class get the parameter values, but substitute the event
          // object so that we know for certain it is the correct one.
          for (int i = 0; i < observerMethod.getParameters().size(); i++)
          {
-            InjectableParameter<? extends Object> parameter = observerMethod.getParameters().get(i);
+            InjectableParameter<? extends Object> parameter = observerMethod
+                  .getParameters().get(i);
             if (parameter.getType().isAssignableFrom(event.getClass()))
             {
-               InjectableParameter<?> newParameter = new InjectableParameterWrapper<Object>(parameter)
+               InjectableParameter<?> newParameter = new InjectableParameterWrapper<Object>(
+                     parameter)
                {
                   @Override
                   public Object getValue(ManagerImpl manager)
@@ -90,21 +101,21 @@ public class ObserverImpl<T> implements Observer<T>
                observerMethod.getParameters().set(i, newParameter);
             }
          }
-         // this.observerMethod.invoke(manager, instance);
+         this.observerMethod.invoke(manager, instance);
       }
-         
+
    }
 
    /**
     * Uses the container to retrieve the most specialized instance of this
     * observer.
     * 
-    * @param container The WebBeans manager
     * @return the most specialized instance
     */
-   protected Object getInstance(Manager manager)
+   protected Object getInstance()
    {
-      // Return the most specialized instance of the bean
-      return manager.getInstanceByType(beanModel.getType(), beanModel.getBindingTypes().toArray(new Annotation[0]));
+      // Return the most specialized instance of the component
+      return manager.getInstanceByType(beanModel.getType(), beanModel
+            .getBindingTypes().toArray(new Annotation[0]));
    }
 }

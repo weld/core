@@ -1,7 +1,5 @@
 package org.jboss.webbeans.test.mock;
 
-import javax.webbeans.manager.Manager;
-
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.model.bean.BeanModel;
@@ -24,7 +22,7 @@ public class MockObserverImpl<T> extends ObserverImpl<T> {
    }
 
    @Override
-	protected final Object getInstance(Manager manager) {
+	protected final Object getInstance() {
 		return specializedInstance;
 	}
 

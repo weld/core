@@ -11,7 +11,6 @@ import javax.webbeans.Observes;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
@@ -31,14 +30,14 @@ import org.testng.annotations.Test;
  * @author David Allen
  * 
  */
-@SpecVersion("20081012")
+@SpecVersion("20081024-PDR")
 public class ObserverTest
 {
    private ManagerImpl manager;
    private SimpleBeanModel<Tuna> tuna;
    private InjectableMethod<?> om;
 
-   public class Event
+   public class SampleEvent
    {
       // Simple class used for testing
    }
@@ -47,7 +46,7 @@ public class ObserverTest
    {
       protected boolean notified = false;
 
-      public void observe(@Observes @Asynchronous Event e)
+      public void observe(@Observes @Asynchronous SampleEvent e)
       {
          // An observer method
          this.notified = true;
@@ -67,35 +66,7 @@ public class ObserverTest
       annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
       AnnotatedType<Tuna> annotatedItem = new SimpleAnnotatedType<Tuna>(Tuna.class, annotations);
       tuna = new SimpleBeanModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), annotatedItem, manager);
-      om = new InjectableMethod<Object>(AnObserver.class.getMethod("observe", new Class[] { Event.class }));
-   }
-
-   /**
-    * Test method for
-    * {@link org.jboss.webbeans.event.ObserverImpl#getEventBindingTypes()}.
-    */
-   @SuppressWarnings("unchecked")
-   @Test(groups = "eventbus") @SpecAssertion(section="7.3")
-   public final void testGetEventBindingTypes() throws Exception
-   {
-      Observer<Event> o = new ObserverImpl<Event>(tuna, om, Event.class);
-      //assert o.getEventBindingTypes().size() == 1;
-      //assert Reflections.annotationSetMatches(o.getEventBindingTypes(), Asynchronous.class);
-      //assert o.getEventType().equals(Event.class);
-   }
-
-   /**
-    * Test method for
-    * {@link org.jboss.webbeans.event.ObserverImpl#getEventType()}.
-    * 
-    * @throws
-    * @throws Exception
-    */
-   @Test(groups = "eventbus") @SpecAssertion(section="7.3")
-   public final void testGetEventType() throws Exception
-   {
-      Observer<Event> o = new ObserverImpl<Event>(tuna, om, Event.class);
-      //assert o.getEventType().equals(Event.class);
+      om = new InjectableMethod<Object>(AnObserver.class.getMethod("observe", new Class[] { SampleEvent.class }));
    }
 
    /**
@@ -103,13 +74,13 @@ public class ObserverTest
     * {@link org.jboss.webbeans.event.ObserverImpl#notify(javax.webbeans.Container, java.lang.Object)}
     * .
     */
-   @Test(groups = "eventbus") @SpecAssertion(section={"7.2","7.3"})
+   @Test(groups = "eventbus") @SpecAssertion(section={"7.5.7"})
    public final void testNotify() throws Exception
    {
       AnObserver observerInstance = new AnObserver();
-      Observer<Event> observer = new MockObserverImpl<Event>(tuna, om, Event.class);
-      ((MockObserverImpl<Event>) observer).setInstance(observerInstance);
-      Event event = new Event();
+      Observer<SampleEvent> observer = new MockObserverImpl<SampleEvent>(tuna, om, SampleEvent.class);
+      ((MockObserverImpl<SampleEvent>) observer).setInstance(observerInstance);
+      SampleEvent event = new SampleEvent();
       observer.notify(event);
       assert observerInstance.notified;
    }

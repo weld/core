@@ -1,6 +1,9 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,6 +14,7 @@ import javax.webbeans.Current;
 import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Event;
 import javax.webbeans.Observer;
+import javax.webbeans.TypeLiteral;
 import javax.webbeans.manager.Manager;
 
 /**
@@ -24,21 +28,26 @@ import javax.webbeans.manager.Manager;
 public class EventImpl<T> implements Event<T>
 {
    private Collection<? extends Annotation> eventBindings;
+   private Class<T> eventType;
 
    // The current WB manager
    @Current
    protected Manager webBeansManager;
 
    /**
-    * Used to set the event bindings for this type of event after it is constructed
-    * with the default constructor.
-    * @param eventBindings Annotations that are bindings for the event
+    * Used to set the event bindings for this type of event after it is
+    * constructed with the default constructor.
+    * 
+    * @param eventBindings
+    *           Annotations that are bindings for the event
     */
    public void setEventBindings(Annotation... eventBindings)
    {
-      this.eventBindings = Arrays.asList(eventBindings);
+      Set<Annotation> newEventBindings = new HashSet<Annotation>();
+      addAnnotationBindings(newEventBindings, eventBindings);
+      this.eventBindings = newEventBindings;
    }
-   
+
    /*
     * (non-Javadoc)
     * 
@@ -60,10 +69,31 @@ public class EventImpl<T> implements Event<T>
             .fireEvent(event, eventBindings.toArray(new Annotation[0]));
    }
 
-   public void observe(Observer<T> observe, Annotation... bindings)
+   public void observe(Observer<T> observer, Annotation... bindings)
    {
-      // TODO Auto-generated method stub
-
+      // Register the observer with the web beans manager
+      Class<T> eventArgumentClazz = null;
+      try
+      {
+         // TODO Fix me:  Reflection can only get type variables, not the arguments used elsewhere
+         Field eventTypeField = this.getClass().getDeclaredField("eventType");
+         ParameterizedType genericType = (ParameterizedType) eventTypeField.getGenericType();
+         Type[] eventTypeArguments = genericType.getActualTypeArguments();
+         eventArgumentClazz = (Class<T>) eventTypeArguments[0];
+      } catch (SecurityException e)
+      {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } catch (NoSuchFieldException e)
+      {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      
+      Set<Annotation> eventBindings = new HashSet<Annotation>();
+      eventBindings.addAll(this.getBindingTypes());
+      addAnnotationBindings(eventBindings, bindings);
+      webBeansManager.addObserver(observer, eventArgumentClazz, bindings);
    }
 
    /**
@@ -72,9 +102,13 @@ public class EventImpl<T> implements Event<T>
     * thrown.
     * 
     * @param bindingsSet
+    *           The set of annotation binding objects
     * @param bindings
+    *           An array of annotation bindings to add to the set
     * @throws DuplicateBindingTypeException
     *            if any of bindings are duplicates
+    * @throws IllegalArgumentException
+    *            if any annotation is not a binding type
     */
    private void addAnnotationBindings(Set<Annotation> bindingsSet,
          Annotation[] bindings)
@@ -82,6 +116,15 @@ public class EventImpl<T> implements Event<T>
       if (bindings != null)
       {
          Set<Class<? extends Annotation>> bindingTypes = new HashSet<Class<? extends Annotation>>();
+         // Add the bindings types that are already in the set being added to.  This will
+         // provide detection of duplicates across construction and later invocations.
+         for (Annotation annotation : bindingsSet)
+         {
+            bindingTypes.add(annotation.annotationType());
+         }
+         
+         // Now go through the new annotations being added to make sure these are binding
+         // types and are not duplicates
          for (Annotation annotation : bindings)
          {
             // Check that the binding type is indeed a binding type
