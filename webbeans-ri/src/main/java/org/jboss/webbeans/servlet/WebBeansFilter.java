@@ -8,10 +8,11 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.webbeans.RequestScoped;
 import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.AbstractContext;
+import org.jboss.webbeans.contexts.AbstractContext;
+import org.jboss.webbeans.contexts.RequestContext;
+
 
 /**
  * 
@@ -30,7 +31,7 @@ public class WebBeansFilter implements Filter
    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) 
        throws IOException, ServletException 
    {
-      AbstractContext requestContext = new AbstractContext(RequestScoped.class) {};
+      AbstractContext requestContext = new RequestContext();
 
       try
       {

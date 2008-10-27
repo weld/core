@@ -1,4 +1,4 @@
-package org.jboss.webbeans;
+package org.jboss.webbeans.contexts;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
