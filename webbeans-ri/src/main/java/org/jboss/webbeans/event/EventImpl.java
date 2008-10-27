@@ -16,6 +16,8 @@ import javax.webbeans.Event;
 import javax.webbeans.Observer;
 import javax.webbeans.manager.Manager;
 
+import org.jboss.webbeans.util.Reflections;
+
 /**
  * Implementation of the {@link Event} interface used for the container provided
  * Web Bean to be injected for an observable event. See section 7.4 of the JSR
@@ -72,28 +74,12 @@ public class EventImpl<T> implements Event<T>
    public void observe(Observer<T> observer, Annotation... bindings)
    {
       // Register the observer with the web beans manager
-      Class<T> eventArgumentClazz = null;
-      try
-      {
-         // TODO Fix me:  Reflection can only get type variables, not the arguments used elsewhere
-         Field eventTypeField = this.getClass().getDeclaredField("eventType");
-         ParameterizedType genericType = (ParameterizedType) eventTypeField.getGenericType();
-         Type[] eventTypeArguments = genericType.getActualTypeArguments();
-         eventArgumentClazz = (Class<T>) eventTypeArguments[0];
-      } catch (SecurityException e)
-      {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      } catch (NoSuchFieldException e)
-      {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
       
       Set<Annotation> eventBindings = new HashSet<Annotation>();
       eventBindings.addAll(this.getBindingTypes());
       addAnnotationBindings(eventBindings, bindings);
-      webBeansManager.addObserver(observer, eventArgumentClazz, bindings);
+      Type[] observerTypeArguments = Reflections.getActualTypeArguements(observer.getClass());
+      webBeansManager.addObserver(observer, (Class<T>)observerTypeArguments[0], bindings);
    }
 
    /**

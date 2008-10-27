@@ -40,7 +40,7 @@ public class EventBus
    /**
     * Adds an observer to the event bus so that it receives event notifications.
     * 
-    * @param o
+    * @param observer
     *           The observer that should receive events
     */
    public <T> void addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
@@ -64,13 +64,13 @@ public class EventBus
     *           The WebBeans container
     * @param event
     *           The event object to deliver
-    * @param o
+    * @param observer
     *           The observer to receive the event
     * @throws SystemException
     * @throws IllegalStateException
     * @throws RollbackException
     */
-   public void deferEvent(Object event, Observer<?> o)
+   public <T> void deferEvent(T event, Observer<T> observer)
          throws SystemException, IllegalStateException, RollbackException
    {
       if (transactionManager != null)
@@ -78,8 +78,8 @@ public class EventBus
          // Get the current transaction associated with the thread
          Transaction t = transactionManager.getTransaction();
          if (t != null)
-            t.registerSynchronization(new DeferredEventNotification(
-                  event, o));
+            t.registerSynchronization(new DeferredEventNotification<T>(
+                  event, observer));
       }
    }
 

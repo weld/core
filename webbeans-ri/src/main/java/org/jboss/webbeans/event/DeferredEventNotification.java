@@ -10,10 +10,10 @@ import javax.webbeans.Observer;
  * @author David Allen
  *
  */
-public class DeferredEventNotification implements Synchronization
+public class DeferredEventNotification<T> implements Synchronization
 {
-   private Observer<?> observer;
-   private Object event;
+   private Observer<T> observer;
+   private T event;
    
    /**
     * Creates a new deferred event notifier.
@@ -22,7 +22,7 @@ public class DeferredEventNotification implements Synchronization
     * @param observer The observer to be notified
     * @param event The event being fired
     */
-   public DeferredEventNotification(Object event, Observer<?> observer)
+   public DeferredEventNotification(T event, Observer<T> observer)
    {
       this.observer = observer;
       this.event = event;
@@ -31,7 +31,7 @@ public class DeferredEventNotification implements Synchronization
    /**
     * @return the observer
     */
-   public final Observer<?> getObserver()
+   public final Observer<T> getObserver()
    {
       return observer;
    }
@@ -44,8 +44,7 @@ public class DeferredEventNotification implements Synchronization
    public void beforeCompletion()
    {
       // Execute the observer method on the event
-      // TODO It is impossible to use a template variable for this observer, so notify cannot be called
-      //observer.notify(event);      
+      observer.notify(event);      
    }
 
 }

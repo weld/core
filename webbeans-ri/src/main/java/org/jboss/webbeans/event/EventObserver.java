@@ -12,7 +12,9 @@ import javax.webbeans.Observer;
  * code or by the Web Beans Manager for annotated observer methods. In all
  * cases, this wrapper provides consistent object identification and hashing
  * based on the type of event being observed and any event binding types
- * specified.
+ * specified.  It also provides a query method to quickly determine if a
+ * set of event bindings are exactly what the observer is interested in receiving.
+ * </p>
  * 
  * @author David Allen
  * 
@@ -20,11 +22,9 @@ import javax.webbeans.Observer;
 public class EventObserver<T>
 {
    
-   // TODO This probably should be an injectable or annotated item
-   
-   private final Class<T> eventType;
-   private final Annotation[] eventBindings;
-   private final Observer<T> observer;
+   private final Class<T>         eventType;
+   private final List<Annotation> eventBindings;
+   private final Observer<T>      observer;
 
    /**
     * Constructs a new wrapper for an observer.
@@ -41,7 +41,7 @@ public class EventObserver<T>
    {
       this.observer = observer;
       this.eventType = eventType;
-      this.eventBindings = eventBindings;
+      this.eventBindings = Arrays.asList(eventBindings);
    }
 
    /**
@@ -55,7 +55,7 @@ public class EventObserver<T>
    /**
     * @return the eventBindings
     */
-   public final Annotation[] getEventBindings()
+   public final List<Annotation> getEventBindings()
    {
       return eventBindings;
    }
@@ -77,32 +77,12 @@ public class EventObserver<T>
     */
    public boolean isObserverInterested(Annotation... bindings)
    {
-      // TODO This logic needs to be in injectable
+      // Simply check that all event bindings specified by the observer are
+      // in the list provided.
+      List<Annotation> bindingsArray = Arrays.asList(bindings);
       boolean result = true;
-      // Check each binding specified by this observer against those provided
-      if (this.eventBindings.length > 0)
-      {
-         if ((bindings != null) && (bindings.length > 0))
-         {
-            List<Annotation> bindingsArray = Arrays.asList(bindings);
-            for (Annotation annotation : this.eventBindings)
-            {
-               int eventBindingIndex = bindingsArray.indexOf(annotation);
-               if (eventBindingIndex >= 0)
-               {
-                  //result = annotationsMatch(annotation, bindingsArray.get(eventBindingIndex));
-                  result = annotation.equals(bindingsArray.get(eventBindingIndex));
-               } else
-               {
-                  result = false;
-                  break;
-               }
-            }
-         } else
-         {
-            result = false;
-         }
-      }
+      if (!this.eventBindings.isEmpty())
+         result = bindingsArray.containsAll(this.eventBindings);
       return result;
    }
 
