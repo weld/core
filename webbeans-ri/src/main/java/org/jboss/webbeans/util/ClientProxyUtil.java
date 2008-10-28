@@ -1,7 +1,7 @@
 package org.jboss.webbeans.util;
 
 
-public class ClientProxy
+public class ClientProxyUtil
 {
    
    public static boolean isProxyable(Class<?> rawType)

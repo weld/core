@@ -34,7 +34,7 @@ import org.jboss.webbeans.exceptions.NameResolutionLocation;
 import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
 import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.ResolverInjectable;
-import org.jboss.webbeans.util.ClientProxy;
+import org.jboss.webbeans.util.ClientProxyUtil;
 import org.jboss.webbeans.util.MapWrapper;
 import org.jboss.webbeans.util.Reflections;
 
@@ -55,6 +55,22 @@ public class ManagerImpl implements Manager
 
    }
 
+   private class ProxyPool extends MapWrapper<Bean<?>, ClientProxy<?>>
+   {
+
+      public ProxyPool()
+      {
+         super(new HashMap<Bean<?>, ClientProxy<?>>());
+      }
+
+      public ClientProxy<?> get(Bean<?> key)
+      {
+         return (ClientProxy<?>) super.get(key);
+      }
+
+   }
+   
+   
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
    private ModelManager modelManager;
    private EjbManager ejbLookupManager;
@@ -62,6 +78,7 @@ public class ManagerImpl implements Manager
    private ResolutionManager resolutionManager;
    private ContextMap contextMap;
    private DependentContext dependentContext;
+   private ProxyPool proxyPool;
 
    private Set<Bean<?>> beans;
 
@@ -74,6 +91,7 @@ public class ManagerImpl implements Manager
       this.beans = new HashSet<Bean<?>>();
       this.eventBus = new EventBus();
       this.resolutionManager = new ResolutionManager(this);
+      this.proxyPool = new ProxyPool();
    }
 
    protected void initEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
@@ -272,8 +290,7 @@ public class ManagerImpl implements Manager
          dependentContext.setActive(true);
          if (getModelManager().getScopeModel(bean.getScopeType()).isNormal())
          {
-            // TODO return a client proxy
-            return getContext(bean.getScopeType()).get(bean, true);
+            return (T) getClientProxy(bean).getInstance();
          }
          else
          {
@@ -327,7 +344,7 @@ public class ManagerImpl implements Manager
       else
       {
          Bean<T> bean = beans.iterator().next();
-         if (getModelManager().getScopeModel(bean.getScopeType()).isNormal() && !ClientProxy.isProxyable(injectable.getType()))
+         if (getModelManager().getScopeModel(bean.getScopeType()).isNormal() && !ClientProxyUtil.isProxyable(injectable.getType()))
          {
             throw new UnproxyableDependencyException(new TypesafeResolutionLocation(injectable) + "Unable to proxy");
          }
@@ -367,5 +384,17 @@ public class ManagerImpl implements Manager
       // TODO Auto-generated method stub
       return null;
    }
+   
+   private ClientProxy<?> getClientProxy(Bean<?> bean) 
+   {
+      ClientProxy<?> clientProxy = proxyPool.get(bean);
+      if (clientProxy == null)
+      {
+         clientProxy = new ClientProxy(bean, this);
+         proxyPool.put(bean, clientProxy);
+      }
+      return clientProxy;
+   }
+   
 
 }
