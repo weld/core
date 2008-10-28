@@ -36,14 +36,13 @@ public abstract class AbstractContext implements Context
 
    }
    
-   protected BeanMap beans;
    private Class<? extends Annotation> scopeType;
    protected boolean active;
 
    public AbstractContext(Class<? extends Annotation> scopeType)
    {
       this.scopeType = scopeType;
-      beans = new BeanMap();
+      
    }
 
    public abstract <T> T get(Bean<T> bean, boolean create);
@@ -53,19 +52,7 @@ public abstract class AbstractContext implements Context
       return scopeType;
    }
 
-   private <T> void destroy(Manager manager, Bean<T> bean)
-   {
-      bean.destroy(beans.get(bean));
-   }
-
-   public void destroy(Manager manager)
-   {
-      for (Bean<? extends Object> bean : beans.keySet())
-      {
-         destroy(manager, bean);
-      }
-      beans = null;
-   }
+   public abstract void destroy(Manager manager);
 
    public boolean isActive()
    {

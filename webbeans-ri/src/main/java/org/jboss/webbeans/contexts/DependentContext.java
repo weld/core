@@ -1,15 +1,14 @@
 package org.jboss.webbeans.contexts;
 
-import java.lang.annotation.Annotation;
-
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.Dependent;
 import javax.webbeans.manager.Bean;
+import javax.webbeans.manager.Manager;
 
 public class DependentContext extends AbstractContext
 {
 
-   public DependentContext(Class<? extends Annotation> scopeType)
+   public DependentContext()
    {
       super(Dependent.class);
       active = false;
@@ -31,4 +30,11 @@ public class DependentContext extends AbstractContext
    {
       return "Dependent context";
    }
+   
+   @Override
+   public void destroy(Manager manager)
+   {
+      
+   }
+   
 }
