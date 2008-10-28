@@ -23,7 +23,7 @@ public class DependentContextTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups={"contexts", "eventbus"}) @SpecAssertion(section="8.3")
+   @Test(groups={"contexts", "observerMethod"}) @SpecAssertion(section="8.3")
    public void testInstanceUsedForObserverMethodNotShared()
    {
       assert false;
@@ -53,7 +53,7 @@ public class DependentContextTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups={"contexts", "eventbus"}) @SpecAssertion(section="8.3")
+   @Test(groups={"contexts", "observerMethod"}) @SpecAssertion(section="8.3")
    public void testContextIsActiveWhenInvokingObserverMethod()
    {
       assert false;
@@ -138,7 +138,7 @@ public class DependentContextTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups={"contexts", "eventbus"}) @SpecAssertion(section="8.3")
+   @Test(groups={"contexts", "observerMethod"}) @SpecAssertion(section="8.3")
    public void testDependentsDestroyedWhenObserverMethodEvaluationCompletes()
    {
       assert false;

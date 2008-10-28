@@ -74,7 +74,7 @@ public class ObserverTest
     * {@link org.jboss.webbeans.event.ObserverImpl#notify(javax.webbeans.Container, java.lang.Object)}
     * .
     */
-   @Test(groups = "eventbus") @SpecAssertion(section={"7.5.7"})
+   @Test(groups = "observerMethod") @SpecAssertion(section={"7.5.7"})
    public final void testNotify() throws Exception
    {
       AnObserver observerInstance = new AnObserver();

@@ -3,10 +3,10 @@ package org.jboss.webbeans.test;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.event.EventObserver;
+import org.jboss.webbeans.test.beans.DangerCall;
 import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.RoleBinding;
 import org.jboss.webbeans.test.bindings.TameAnnotationLiteral;
-import org.jboss.webbeans.test.beans.DangerCall;
 import org.testng.annotations.Test;
 
 /**
@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
  * @author David Allen
  *
  */
-@SpecVersion("20081024-PDR")
+@SpecVersion("PDR")
 public class EventObserverTest
 {
    public class AnObserver<T> implements Observer<T>
@@ -32,7 +32,7 @@ public class EventObserverTest
     * Tests different annotation literals as event bindings to make sure the wrapper
     * properly detects when an observer matches the given event bindings.
     */
-   @Test(groups = "eventbus")
+   @Test(groups = "event")
    @SpecAssertion(section = "7.7.1")
    public void testIsObserverInterested()
    {

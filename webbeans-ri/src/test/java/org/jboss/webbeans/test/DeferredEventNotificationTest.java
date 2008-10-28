@@ -55,7 +55,7 @@ public class DeferredEventNotificationTest extends AbstractTest
     * {@link org.jboss.webbeans.event.DeferredEventNotification#beforeCompletion()}
     * .
     */
-   @Test(groups="eventbus")
+   @Test(groups="deferredEvent")
    public final void testBeforeCompletion() throws Exception
    {
       // When the transaction is committed, the beforeCompletion() method is

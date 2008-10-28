@@ -116,6 +116,12 @@ public class EventBeanModel<T> extends AbstractBeanModel<T, Field>
    }
 
    @Override
+   protected void checkDeploymentType()
+   {
+      // No - op
+   }
+   
+   @Override
    protected void initName()
    {
       // No name per 7.4

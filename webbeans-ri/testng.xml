@@ -10,7 +10,8 @@
             <exclude name="deployment" />
             <exclude name="disposalMethod" />
             <exclude name="producerMethod" />
-            <exclude name="eventbus" />
+            <exclude name="observerMethod" />
+            <exclude name="deferredEvent" />
             <exclude name="injection" />
             <exclude name="ejb3" />
             <exclude name="annotationDefinition" />

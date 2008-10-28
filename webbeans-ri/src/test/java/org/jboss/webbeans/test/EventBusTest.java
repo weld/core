@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  * @author David Allen
  *
  */
-@SpecVersion("20081024-PDR")
+@SpecVersion("PDR")
 public class EventBusTest extends AbstractTest
 {
    public class AnObserver<T> implements Observer<T>
@@ -42,7 +42,7 @@ public class EventBusTest extends AbstractTest
     * Tests adding an observer to the event bus and verified that it can still
     * be retrieved for a corresponding event.
     */
-   @Test(groups = "eventbus")
+   @Test(groups = "observerMethod")
    public void testAddObserver()
    {
       EventBus eventBus = new EventBus();
@@ -67,7 +67,7 @@ public class EventBusTest extends AbstractTest
     * Tests the remove operation and verifies that the observer is no longer
     * registered for events.
     */
-   @Test(groups = "eventbus")
+   @Test(groups = "observerMethod")
    public void testRemoveObserver()
    {
       EventBus eventBus = new EventBus();
@@ -80,7 +80,7 @@ public class EventBusTest extends AbstractTest
    /**
     * Tests the deferred event feature associated with transactions.
     */
-   @Test(groups = "eventbus")
+   @Test(groups = "deferredEvent")
    public void testDeferEvent()
    {
       // Setup a transaction manager for this test and inject into the event bus

@@ -13,11 +13,11 @@ import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.Synchronous;
 import org.jboss.webbeans.test.annotations.Tame;
+import org.jboss.webbeans.test.beans.DangerCall;
 import org.jboss.webbeans.test.bindings.FishStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.RiverFishStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.SynchronousAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.TameAnnotationLiteral;
-import org.jboss.webbeans.test.beans.DangerCall;
 import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.BeforeMethod;
@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
  * @author David Allen
  * 
  */
-@SpecVersion("20081024-PDR")
+@SpecVersion("PDR")
 public class EventTest
 {
    private MockManagerImpl manager = null;
@@ -62,7 +62,7 @@ public class EventTest
     * instantiated implementation.
     */
    @SuppressWarnings("unchecked")
-   @Test(groups = "eventbus")
+   @Test(groups = "event")
    @SpecAssertion(section = "7.6")
    public void testFireEvent()
    {
@@ -106,7 +106,7 @@ public class EventTest
     * Tests the {@link Event#observe(javax.webbeans.Observer, Annotation...)}
     * method with a locally instantiated implementation.
     */
-   @Test(groups = "eventbus")
+   @Test(groups = "event")
    @SpecAssertion(section = "7.6")
    public void testObserve()
    {

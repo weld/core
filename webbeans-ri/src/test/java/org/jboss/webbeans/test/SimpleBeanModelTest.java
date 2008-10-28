@@ -100,7 +100,7 @@ public class SimpleBeanModelTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups="eventbus") @SpecAssertion(section="3.2.4")
+   @Test(groups="observerMethod") @SpecAssertion(section="3.2.4")
    public void testBeanDeclaredInXmlIgnoresObserverMethodDeclaredInJava()
    {
       assert false;
@@ -199,7 +199,7 @@ public class SimpleBeanModelTest extends AbstractTest
       new SimpleBeanModel<Chicken>(new SimpleAnnotatedType<Chicken>(Chicken.class), getEmptyAnnotatedType(Chicken.class), manager);
    }
    
-   @Test(expectedExceptions=DefinitionException.class, groups="eventbus") @SpecAssertion(section="3.2.5.1")
+   @Test(expectedExceptions=DefinitionException.class, groups="observerMethod") @SpecAssertion(section="3.2.5.1")
    public void testConstructorHasObservesParameter()
    {
       new SimpleBeanModel<Chicken>(new SimpleAnnotatedType<Chicken>(Chicken.class), getEmptyAnnotatedType(Chicken.class), manager);

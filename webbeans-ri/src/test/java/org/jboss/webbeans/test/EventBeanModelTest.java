@@ -51,7 +51,7 @@ public class EventBeanModelTest
    /**
     * The name should always be null since this type of bean is not allowed to have a name.
     */
-   @Test(groups = "eventbus")
+   @Test(groups = "event")
    public void testName()
    {
       assert eventBeanModel.getName() == null;
@@ -60,7 +60,7 @@ public class EventBeanModelTest
    /**
     * The scope type should always be @Dependent
     */
-   @Test(groups = "eventbus")
+   @Test(groups = "event")
    public void testScopeType()
    {
       assert eventBeanModel.getScopeType().equals(Dependent.class);
@@ -69,13 +69,13 @@ public class EventBeanModelTest
    /**
     * The deployment type should always be @Standard
     */
-   @Test(groups = "eventbus")
+   @Test(groups = "event")
    public void testDeploymentType()
    {
       assert eventBeanModel.getDeploymentType().equals(Standard.class);
    }
    
-   @Test(groups = "eventbus")
+   @Test(groups = "event")
    public void testApiTypes()
    {
       Set<Class<?>> apis = eventBeanModel.getApiTypes();
@@ -86,7 +86,7 @@ public class EventBeanModelTest
       }
    }
    
-   @Test(groups = "eventbus")
+   @Test(groups = "event")
    public void testConstructor()
    {
       BeanConstructor<EventImpl<DangerCall>> constructor = eventBeanModel.getConstructor();
