@@ -4,6 +4,7 @@ import javax.webbeans.Current;
 import javax.webbeans.Production;
 
 import org.jboss.webbeans.test.annotations.Chunky;
+import org.jboss.webbeans.test.annotations.Expensive;
 import org.jboss.webbeans.test.annotations.Whitefish;
 
 @Production
@@ -33,5 +34,8 @@ public class FishFarm
    @SuppressWarnings("unused")
    @Current
    private Farmer<ScottishFish> scottishFishFarmer;
+   
+   @Expensive(cost=60, veryExpensive=true) @Whitefish
+   private Animal veryExpensiveWhitefish;
    
 }

@@ -3,6 +3,7 @@ package org.jboss.webbeans.util;
 import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+
+import javax.webbeans.ExecutionException;
 
 
 public class Reflections
@@ -232,4 +235,25 @@ public class Reflections
    {
       return type.getTypeParameters().length > 0;
    }
+   
+   public static Object invokeAndWrap(Method method, Object instance)
+   {
+      try
+      {
+         return method.invoke(instance);
+      }
+      catch (IllegalArgumentException e)
+      {
+         throw new ExecutionException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new ExecutionException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
+      }
+      catch (InvocationTargetException e)
+      {
+         throw new ExecutionException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
+      }
+   }
+   
 }

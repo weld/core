@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.ModelManager;
 
 public class InjectableParameterWrapper<T> extends InjectableParameter<T>
 {
@@ -24,9 +25,9 @@ public class InjectableParameterWrapper<T> extends InjectableParameter<T>
    }
 
    @Override
-   public Set<Bean<?>> getMatchingBeans(Set<Bean<?>> possibleBeans)
+   public Set<Bean<?>> getMatchingBeans(Set<Bean<?>> possibleBeans, ModelManager modelManager)
    {
-      return delegate.getMatchingBeans(possibleBeans);
+      return delegate.getMatchingBeans(possibleBeans, modelManager);
    }
 
    @Override

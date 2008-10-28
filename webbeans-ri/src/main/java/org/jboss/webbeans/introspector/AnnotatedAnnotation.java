@@ -12,4 +12,10 @@ public interface AnnotatedAnnotation<T extends Annotation> extends AnnotatedItem
     */
    public Set<AnnotatedMethod<?>> getMembers();
    
+   /**
+    * Get all annotation members
+    * @return
+    */
+   public Set<AnnotatedMethod<?>> getAnnotatedMembers(Class<? extends Annotation> annotationType);
+   
 }

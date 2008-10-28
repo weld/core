@@ -55,4 +55,10 @@ public abstract class AnnotationModel<T extends Annotation>
       return annotatedAnnotation;
    }
    
+   @Override
+   public String toString()
+   {
+      return getClass().getSimpleName() + "[" + getAnnotatedAnnotation().toString() + "]";
+   }
+   
 }

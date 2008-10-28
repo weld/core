@@ -8,7 +8,9 @@ import javax.webbeans.BindingType;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.ModelManager;
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.model.BindingTypeModel;
 
 /**
  * Abstraction of java reflection for Web Beans, represent's something that can
@@ -60,12 +62,12 @@ public abstract class Injectable<T, S>
       return annotatedItem;
    }
    
-   public Set<Bean<?>> getMatchingBeans(Set<Bean<?>> beans)
+   public Set<Bean<?>> getMatchingBeans(Set<Bean<?>> beans, ModelManager modelManager)
    {
       Set<Bean<?>> resolvedBeans = new HashSet<Bean<?>>();
       for (Bean<?> bean : beans)
       {
-         if (getAnnotatedItem().isAssignableFrom(bean.getTypes()) && bean.getBindingTypes().containsAll(getBindingTypes()))
+         if (getAnnotatedItem().isAssignableFrom(bean.getTypes()) && containsAllBindingBindingTypes(bean.getBindingTypes(), modelManager))
          {
             resolvedBeans.add(bean);
          }
@@ -96,6 +98,32 @@ public abstract class Injectable<T, S>
       return 0;
    }
    
-   
+   private boolean containsAllBindingBindingTypes(Set<Annotation> bindingTypes, ModelManager modelManager)
+   {
+      for (Annotation bindingType : getBindingTypes())
+      {
+         BindingTypeModel<?> bindingTypeModel = modelManager.getBindingTypeModel(bindingType.annotationType());
+         if (bindingTypeModel.getNonBindingTypes().size() > 0)
+         {
+            boolean matchFound = false;
+            for (Annotation otherBindingType : bindingTypes)
+            {
+               if (bindingTypeModel.isEqual(bindingType, otherBindingType))
+               {
+                  matchFound = true;
+               }
+            }
+            if (!matchFound)
+            {
+               return false;
+            }
+         }
+         else if (!bindingTypes.contains(bindingType))
+         {
+            return false;
+         }
+      }
+      return true;
+   }
    
 }

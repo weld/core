@@ -58,7 +58,7 @@ public class ResolutionManager
    
    private void registerInjectionPoint(Injectable<?, ?> injectable)
    {
-	   resolvedInjectionPoints.put(injectable, retainHighestPrecedenceBeans(injectable.getMatchingBeans(manager.getBeans()), manager.getEnabledDeploymentTypes())); 
+	   resolvedInjectionPoints.put(injectable, retainHighestPrecedenceBeans(injectable.getMatchingBeans(manager.getBeans(), manager.getModelManager()), manager.getEnabledDeploymentTypes())); 
    }
    
    public void clear()

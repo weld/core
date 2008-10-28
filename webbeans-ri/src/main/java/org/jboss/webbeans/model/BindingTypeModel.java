@@ -19,8 +19,14 @@
 package org.jboss.webbeans.model;
 
 import java.lang.annotation.Annotation;
+import java.util.Set;
 
 import javax.webbeans.BindingType;
+import javax.webbeans.DefinitionException;
+import javax.webbeans.NonBinding;
+
+import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.util.Reflections;
 
 /**
  * 
@@ -32,15 +38,74 @@ import javax.webbeans.BindingType;
 public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
 {
    
-   public BindingTypeModel(Class<T> scope)
+   private Set<AnnotatedMethod<?>> nonBindingTypes;
+   private Integer hashCode;
+   
+   public BindingTypeModel(Class<T> type)
    {
-      super(scope);
+      super(type);
    }
    
+   @Override
+   protected void init()
+   {
+      super.init();
+      initNonBindingTypes();
+      checkArrayAndAnnotationValuedMembers();
+   }
+   
+   private void checkArrayAndAnnotationValuedMembers()
+   {
+      for (AnnotatedMethod<?> annotatedMethod : getAnnotatedAnnotation().getMembers())
+      {
+         if ((Reflections.isArrayType(annotatedMethod.getType()) || Annotation.class.isAssignableFrom(annotatedMethod.getType())) && !nonBindingTypes.contains(annotatedMethod))
+         {
+            throw new DefinitionException("Member of array type or annotation type must be annotated @NonBinding " + annotatedMethod);
+         }
+      }
+      
+   }
+
    @Override
    protected Class<? extends Annotation> getMetaAnnotation()
    {
       return BindingType.class;
+   }
+   
+   public boolean hasNonBindingTypes()
+   {
+      return nonBindingTypes.size() > 0;
+   }
+   
+   public Set<AnnotatedMethod<?>> getNonBindingTypes()
+   {
+      return nonBindingTypes;
+   }
+   
+   protected void initNonBindingTypes()
+   {
+      nonBindingTypes = getAnnotatedAnnotation().getAnnotatedMembers(NonBinding.class);
+   }
+   
+   public boolean isEqual(Annotation instance, Annotation other)
+   {
+      if (instance.annotationType().equals(getType()) && other.annotationType().equals(getType()))
+      {
+         for (AnnotatedMethod<?> annotatedMethod : getAnnotatedAnnotation().getMembers())
+         {
+            if (!nonBindingTypes.contains(annotatedMethod))
+            {
+               Object thisValue = Reflections.invokeAndWrap(annotatedMethod.getDelegate(), instance);
+               Object thatValue = Reflections.invokeAndWrap(annotatedMethod.getDelegate(), other);
+               if (!thisValue.equals(thatValue))
+               {
+                  return false;
+               }
+            }
+         }
+         return true;
+      }
+      return false;
    }
    
 }
