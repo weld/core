@@ -3,11 +3,13 @@ package org.jboss.webbeans;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.webbeans.AmbiguousDependencyException;
+import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.DeploymentException;
 import javax.webbeans.Observer;
 import javax.webbeans.Production;
@@ -29,20 +31,38 @@ import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
 import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.ResolverInjectable;
 import org.jboss.webbeans.util.ClientProxy;
+import org.jboss.webbeans.util.MapWrapper;
 
 public class ManagerImpl implements Manager
 {
-   
+   private class ContextMap extends MapWrapper<Class<? extends Annotation>, List<Context>>
+   {
+
+      public ContextMap()
+      {
+         super(new HashMap<Class<? extends Annotation>, List<Context>>());
+      }
+
+      public List<Context> get(Class<? extends Annotation> key)
+      {
+         return (List<Context>) super.get(key);
+      }
+
+   }
+
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
    private ModelManager modelManager;
    private EjbManager ejbLookupManager;
    private EventBus eventBus;
    private ResolutionManager resolutionManager;
+   private ContextMap contextMap;
 
    private Set<Bean<?>> beans;
 
    public ManagerImpl(List<Class<? extends Annotation>> enabledDeploymentTypes)
    {
+      contextMap = new ContextMap();
+      // TODO Are there any contexts that should be initialized here?
       initEnabledDeploymentTypes(enabledDeploymentTypes);
       this.modelManager = new ModelManager();
       this.ejbLookupManager = new EjbManager();
@@ -51,22 +71,20 @@ public class ManagerImpl implements Manager
       this.resolutionManager = new ResolutionManager(this);
    }
 
-   private void initEnabledDeploymentTypes(
-         List<Class<? extends Annotation>> enabledDeploymentTypes)
+   private void initEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
    {
       this.enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       if (enabledDeploymentTypes == null)
       {
          this.enabledDeploymentTypes.add(0, Standard.class);
          this.enabledDeploymentTypes.add(1, Production.class);
-      } else
+      }
+      else
       {
          this.enabledDeploymentTypes.addAll(enabledDeploymentTypes);
-         if (!this.enabledDeploymentTypes.get(0).equals(
-               Standard.class))
+         if (!this.enabledDeploymentTypes.get(0).equals(Standard.class))
          {
-            throw new DeploymentException(
-                  "@Standard must be the lowest precedence deployment type");
+            throw new DeploymentException("@Standard must be the lowest precedence deployment type");
          }
       }
    }
@@ -83,8 +101,7 @@ public class ManagerImpl implements Manager
 
    }
 
-   public <T> Set<Method> resolveDisposalMethods(Class<T> apiType,
-         Annotation... bindingTypes)
+   public <T> Set<Method> resolveDisposalMethods(Class<T> apiType, Annotation... bindingTypes)
    {
       return new HashSet<Method>();
    }
@@ -109,18 +126,16 @@ public class ManagerImpl implements Manager
       return ejbLookupManager;
    }
 
-   public <T> Set<Bean<T>> resolveByType(Class<T> type,
-         Annotation... bindingTypes)
+   public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindingTypes)
    {
       return resolveByType(new ResolverInjectable<T>(type, bindingTypes, getModelManager()));
    }
 
-   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,
-         Annotation... bindingTypes)
+   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType, Annotation... bindingTypes)
    {
       return resolveByType(new ResolverInjectable<T>(apiType, bindingTypes, getModelManager()));
    }
-   
+
    private <T> Set<Bean<T>> resolveByType(Injectable<T, ?> injectable)
    {
       Set<Bean<T>> beans = getResolutionManager().get(injectable);
@@ -132,7 +147,7 @@ public class ManagerImpl implements Manager
       {
          return beans;
       }
-      
+
    }
 
    public ResolutionManager getResolutionManager()
@@ -147,7 +162,14 @@ public class ManagerImpl implements Manager
 
    public Manager addContext(Context context)
    {
-      // TODO Auto-generated method stub
+      List<Context> sameScopeTypeContexts = contextMap.get(context.getScopeType());
+      if (sameScopeTypeContexts == null)
+      {
+         sameScopeTypeContexts = new ArrayList<Context>();
+         contextMap.put(context.getScopeType(), sameScopeTypeContexts);
+      }
+      sameScopeTypeContexts.add(context);
+      // TODO: why manager? fluent interfaces?
       return this;
    }
 
@@ -163,15 +185,13 @@ public class ManagerImpl implements Manager
       return null;
    }
 
-   public <T> Manager addObserver(Observer<T> observer, Class<T> eventType,
-         Annotation... bindings)
+   public <T> Manager addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
       // TODO Auto-generated method stub
       return this;
    }
 
-   public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType,
-         Annotation... bindings)
+   public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
       // TODO Auto-generated method stub
       return this;
@@ -185,8 +205,30 @@ public class ManagerImpl implements Manager
 
    public Context getContext(Class<? extends Annotation> scopeType)
    {
-      // TODO Auto-generated method stub
-      return null;
+      List<Context> contexts = contextMap.get(scopeType);
+      if (contexts == null)
+      {
+         throw new ContextNotActiveException("No contexts for " + scopeType.getName());
+      }
+      // TODO performance? Just flag found=true and continue loop, failing when
+      // found=already true etc?
+      List<Context> activeContexts = new ArrayList<Context>();
+      for (Context context : contexts)
+      {
+         if (context.isActive())
+         {
+            activeContexts.add(context);
+         }
+      }
+      if (activeContexts.isEmpty())
+      {
+         throw new ContextNotActiveException("No active contexts for scope type " + scopeType.getName());
+      }
+      if (activeContexts.size() > 1)
+      {
+         throw new IllegalArgumentException("More than one context active for scope type " + scopeType.getName());
+      }
+      return activeContexts.get(0);
    }
 
    public <T> T getInstance(Bean<T> bean)
@@ -228,7 +270,7 @@ public class ManagerImpl implements Manager
    {
       return getInstanceByType(new ResolverInjectable<T>(type, bindingTypes, getModelManager()));
    }
-   
+
    private <T> T getInstanceByType(Injectable<T, ?> injectable)
    {
       Set<Bean<T>> beans = resolveByType(injectable);
@@ -253,8 +295,6 @@ public class ManagerImpl implements Manager
          }
       }
    }
-   
-   
 
    public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
@@ -273,15 +313,13 @@ public class ManagerImpl implements Manager
       return getResolutionManager().get(name);
    }
 
-   public List<Decorator> resolveDecorators(Set<Class<?>> types,
-         Annotation... bindingTypes)
+   public List<Decorator> resolveDecorators(Set<Class<?>> types, Annotation... bindingTypes)
    {
       // TODO Auto-generated method stub
       return null;
    }
 
-   public List<Interceptor> resolveInterceptors(InterceptionType type,
-         Annotation... interceptorBindings)
+   public List<Interceptor> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings)
    {
       // TODO Auto-generated method stub
       return null;
