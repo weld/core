@@ -2,6 +2,7 @@ package org.jboss.webbeans.test;
 
 import org.testng.annotations.Test;
 
+@SpecVersion("PDR")
 public class RequestContextTest extends AbstractTest
 {
    
@@ -24,7 +25,7 @@ public class RequestContextTest extends AbstractTest
    }
    
    @Test(groups={"contexts", "ejb3"}) @SpecAssertion(section="8.5.1")
-   public void testScopeActiveDuringEjbTimeoust()
+   public void testScopeActiveDuringEjbTimeoutsInEE6()
    {
       assert false;
    }

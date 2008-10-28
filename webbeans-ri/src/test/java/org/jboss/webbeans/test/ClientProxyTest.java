@@ -28,7 +28,7 @@ public class ClientProxyTest
    }
    
    @Test(groups="clientProxy", expectedExceptions=UnproxyableDependencyException.class) @SpecAssertion(section="4.4.1")
-   public void testInjectionPointWithUnproxyableTypeResolvesToNormalScopedWebBean()
+   public void testInjectionPointWithUnproxyableTypeWhichResolvesToNormalScopedWebBean()
    {
       assert false;
    }

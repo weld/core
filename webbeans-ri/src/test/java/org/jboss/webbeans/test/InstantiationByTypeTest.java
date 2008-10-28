@@ -62,6 +62,7 @@ public class InstantiationByTypeTest extends AbstractTest
       
       ResolutionManager resolutionManager = manager.getResolutionManager();
       resolutionManager.addInjectionPoint(whiteScottishFishField);
+      resolutionManager.resolveInjectionPoints();
       
       manager.getInstanceByType(ScottishFish.class, new AnnotationLiteral<Whitefish>(){});
    }
@@ -79,6 +80,7 @@ public class InstantiationByTypeTest extends AbstractTest
       
       ResolutionManager resolutionManager = manager.getResolutionManager();
       resolutionManager.addInjectionPoint(whiteScottishFishField);
+      resolutionManager.resolveInjectionPoints();
       
       manager.getInstanceByType(Tuna.class, new CurrentAnnotationLiteral());
    }
@@ -92,6 +94,7 @@ public class InstantiationByTypeTest extends AbstractTest
       
       ResolutionManager resolutionManager = manager.getResolutionManager();
       resolutionManager.addInjectionPoint(plaiceField);
+      resolutionManager.resolveInjectionPoints();
       
       manager.getInstanceByType(Plaice.class, new AnnotationLiteral<Whitefish>(){});
    }

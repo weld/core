@@ -48,6 +48,7 @@ public class ResolutionManager
    public ResolutionManager(ManagerImpl manager)
    {
       this.injectionPoints = new HashSet<Injectable<?,?>>();
+      this.resolvedInjectionPoints = new InjectableMap();
       this.manager = manager;
    }
    
@@ -63,19 +64,15 @@ public class ResolutionManager
    
    public void clear()
    {
-      resolvedInjectionPoints = null;
+      resolvedInjectionPoints = new InjectableMap();
       resolvedNames = new HashMap<String, Set<Bean<?>>>();
    }
    
-   public void resolveBeans()
+   public void resolveInjectionPoints()
    {
-      if (resolvedInjectionPoints == null)
+      for (Injectable<?, ?> injectable : injectionPoints)
       {
-         resolvedInjectionPoints = new InjectableMap();
-         for (Injectable<?, ?> injectable : injectionPoints)
-         {
-            registerInjectionPoint(injectable);
-         }
+         registerInjectionPoint(injectable);
       }
    }
    
@@ -83,13 +80,14 @@ public class ResolutionManager
    {
       if (key.getType().equals(Object.class))
       {
+         // TODO Fix this cast
          return (Set<Bean<T>>) (Set) manager.getBeans();
       }
-      else
+      if (!resolvedInjectionPoints.containsKey(key))
       {
-         resolveBeans();
-         return resolvedInjectionPoints.get(key);
+         registerInjectionPoint(key);
       }
+      return resolvedInjectionPoints.get(key);
    }
    
    public Set<Bean<?>> get(String name)
