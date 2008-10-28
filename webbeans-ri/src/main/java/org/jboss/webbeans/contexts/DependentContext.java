@@ -6,7 +6,7 @@ import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.Dependent;
 import javax.webbeans.manager.Bean;
 
-public class DependentContext extends PseudoContext
+public class DependentContext extends AbstractContext
 {
 
    public DependentContext(Class<? extends Annotation> scopeType)
