@@ -3,7 +3,6 @@ package org.jboss.webbeans.contexts;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 
-import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 import javax.webbeans.manager.Manager;
@@ -21,7 +20,7 @@ import org.jboss.webbeans.util.MapWrapper;
 public abstract class AbstractContext implements Context
 {
    
-   private class BeanMap extends MapWrapper<Bean<? extends Object>, Object>
+   protected class BeanMap extends MapWrapper<Bean<? extends Object>, Object>
    {
 
       public BeanMap()
@@ -37,49 +36,17 @@ public abstract class AbstractContext implements Context
 
    }
    
-   private BeanMap beans;
+   protected BeanMap beans;
    private Class<? extends Annotation> scopeType;
-   private boolean active;
+   protected boolean active;
 
    public AbstractContext(Class<? extends Annotation> scopeType)
    {
       this.scopeType = scopeType;
       beans = new BeanMap();
-      active = true;
    }
 
-   public <T> T get(Bean<T> bean, boolean create)
-   {
-      if (!active)
-      {
-         throw new ContextNotActiveException();
-      }
-      
-      if (beans == null)
-      {
-         // Context has been destroyed
-         return null;
-      }
-      
-      T instance = beans.get(bean);
-      
-      if (instance != null)
-      {
-         return instance;
-      }
-
-      if (!create)
-      {
-         return null;
-      }
-
-      // TODO should bean creation be synchronized?
-
-      instance = bean.create();
-
-      beans.put(bean, instance);
-      return instance;
-   }
+   public abstract <T> T get(Bean<T> bean, boolean create);
 
    public Class<? extends Annotation> getScopeType()
    {
