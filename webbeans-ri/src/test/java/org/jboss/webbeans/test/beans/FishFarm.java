@@ -13,29 +13,29 @@ public class FishFarm
 
    @SuppressWarnings("unused")
    @Current
-   private Tuna tuna;
+   public Tuna tuna;
    
    @SuppressWarnings("unused")
    @Current
-   private Animal animal;
+   public Animal animal;
    
    @SuppressWarnings("unused")
    @Whitefish
-   private ScottishFish whiteScottishFish;
+   public ScottishFish whiteScottishFish;
    
    @SuppressWarnings("unused")
    @Whitefish
-   private Animal whiteFish;
+   public Animal whiteFish;
    
    @SuppressWarnings("unused")
    @Whitefish @Chunky(realChunky=true)
-   private Animal realChunkyWhiteFish;
+   public Animal realChunkyWhiteFish;
    
    @SuppressWarnings("unused")
    @Current
-   private Farmer<ScottishFish> scottishFishFarmer;
+   public Farmer<ScottishFish> scottishFishFarmer;
    
    @Expensive(cost=60, veryExpensive=true) @Whitefish
-   private Animal veryExpensiveWhitefish;
+   public Animal veryExpensiveWhitefish;
    
 }

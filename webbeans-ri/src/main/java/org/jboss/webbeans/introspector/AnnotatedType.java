@@ -24,7 +24,7 @@ public interface AnnotatedType<T> extends AnnotatedItem<T, Class<T>>
     * Get all fields on the type
     * @return
     */
-   public Set<AnnotatedField<?>> getFields();
+   public Set<AnnotatedField<Object>> getFields();
    
    /**
     * Get all annotations which are annotated with the given annotation 
@@ -33,7 +33,7 @@ public interface AnnotatedType<T> extends AnnotatedItem<T, Class<T>>
     * If no annotations are present which are annotated with the given
     * annotation an empty set is returned
     */
-   public Set<AnnotatedField<?>> getAnnotatedField(Class<? extends Annotation> annotationType);
+   public Set<AnnotatedField<Object>> getAnnotatedField(Class<? extends Annotation> annotationType);
    
    /**
     * Get all fields which are annotated with the given meta annotation 
@@ -42,7 +42,7 @@ public interface AnnotatedType<T> extends AnnotatedItem<T, Class<T>>
     * If no annotations are present which are annotated with the given meta
     * annotation an empty set is returned
     */
-   public Set<AnnotatedField<?>> getMetaAnnotatedFields(
+   public Set<AnnotatedField<Object>> getMetaAnnotatedFields(
          Class<? extends Annotation> metaAnnotationType);
    
 }

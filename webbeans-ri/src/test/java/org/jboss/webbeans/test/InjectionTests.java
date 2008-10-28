@@ -1,5 +1,6 @@
 package org.jboss.webbeans.test;
 
+
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.NonexistentFieldException;
 import javax.webbeans.NullableDependencyException;
@@ -42,12 +43,6 @@ public class InjectionTests extends AbstractTest
    
    @Test(groups="injection") @SpecAssertion(section="4.3")
    public void testInovkeDependentScopeWhenContextNotActive()
-   {
-      assert false;
-   }
-   
-   @Test(groups="injection") @SpecAssertion(section="3.6.1")
-   public void testInjectFields()
    {
       assert false;
    }

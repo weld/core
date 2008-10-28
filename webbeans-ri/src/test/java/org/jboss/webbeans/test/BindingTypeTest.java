@@ -11,7 +11,6 @@ import javax.webbeans.AnnotationLiteral;
 import javax.webbeans.Current;
 
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
-import org.jboss.webbeans.injectable.InjectableField;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.bean.BeanModel;
@@ -23,7 +22,6 @@ import org.jboss.webbeans.test.beans.Cat;
 import org.jboss.webbeans.test.beans.Cod;
 import org.jboss.webbeans.test.beans.Order;
 import org.jboss.webbeans.test.beans.Tuna;
-import org.jboss.webbeans.test.beans.broken.PlaiceFarm;
 import org.jboss.webbeans.test.bindings.AsynchronousAnnotationLiteral;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.Test;
@@ -44,10 +42,7 @@ public class BindingTypeTest extends AbstractTest
    @Test(groups="injection") @SpecAssertion(section="2.3.1")
    public void testDefaultBindingTypeAssumedAtInjectionPoint() throws Exception
    {
-      // This is like defining a field in XML
-      InjectableField<Tuna> tunaField = new InjectableField<Tuna>(PlaiceFarm.class.getDeclaredField("tuna"));
-      assert tunaField.getBindingTypes().size() == 1;
-      assert tunaField.getBindingTypes().contains(new CurrentAnnotationLiteral());
+      assert false;
    }
 
    @Test(groups="annotationDefinition") @SpecAssertion(section="2.3.2")
@@ -127,37 +122,21 @@ public class BindingTypeTest extends AbstractTest
       assert model.getBindingTypes().contains(new CurrentAnnotationLiteral());
    }
 	
-	@Test(groups="injection") 
-   public void testFieldsWithBindingAnnotationsAreInjected()
-   {
-      assert false;
-   }
+
 	
-	@Test(groups="injection") @SpecAssertion(section="2.3.5") 
-   public void testAllBindTypesMustMatch()
-   {
-      assert false;
-   }
-	
-	@Test(groups="injection") 
-   public void testFieldMissingBindingAnnotationsAreNotInjected()
-   {
-      assert false;
-   }
-	
-	@Test(groups="injection") @SpecAssertion(section="2.3.5") 
+	@Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="2.3.5") 
    public void testFieldInjectedFromProducerMethod()
    {
       assert false;
    }
 	
-	@Test(groups="injection") @SpecAssertion(section="2.3.5") 
+	@Test(groups={"injection", "webbeansxml"}) @SpecAssertion(section="2.3.5") 
    public void testFieldWithBindingTypeInXml()
    {
       assert false;
    }
 	
-	@Test(groups="injection") @SpecAssertion(section="2.3.5") 
+	@Test(groups={"injection", "webbeansxml"}) @SpecAssertion(section="2.3.5") 
    public void testFieldWithBindingTypeInXmlIgnoresAnnotations()
    {
       assert false;
@@ -169,13 +148,13 @@ public class BindingTypeTest extends AbstractTest
       assert false;
    }
 	
-	@Test(groups="injection") @SpecAssertion(section="2.3.6") 
+	@Test(groups={"injection", "webbeansxml"}) @SpecAssertion(section="2.3.6") 
    public void testMethodWithBindingAnnotationsOnParametersDeclaredInXml()
    {
       assert false;
    }
 	
-	@Test(groups="injection") @SpecAssertion(section="2.3.6") 
+	@Test(groups={"injection", "webbeansxml"}) @SpecAssertion(section="2.3.6") 
    public void testMethodWithBindingAnnotationsOnParametersDeclaredInXmlIgnoresAnnotations()
    {
       assert false;

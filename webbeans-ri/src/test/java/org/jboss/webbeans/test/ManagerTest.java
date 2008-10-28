@@ -12,12 +12,6 @@ import org.testng.annotations.Test;
 public class ManagerTest extends AbstractTest
 {
    
-   @Override
-   protected void addBuiltInContexts()
-   {
-      // No -op, done manually here
-   }
-   
    @Test(groups={"manager", "injection"}) @SpecAssertion(section="4.8")
    public void testInjectingManager()
    {
@@ -29,7 +23,7 @@ public class ManagerTest extends AbstractTest
    {
       Context requestContext = new RequestContext();
       ((NormalContext)requestContext).setActive(false);
-      manager.addContext(requestContext);
+      manager.setContexts(requestContext);
       manager.getContext(RequestScoped.class);
    }
 
@@ -38,8 +32,7 @@ public class ManagerTest extends AbstractTest
    {
       Context firstContext = new RequestContext();
       Context secondContext = new RequestContext();
-      manager.addContext(firstContext);
-      manager.addContext(secondContext);
+      manager.setContexts(firstContext, secondContext);
       manager.getContext(RequestScoped.class);
       assert true;
    }
@@ -47,6 +40,7 @@ public class ManagerTest extends AbstractTest
    @Test(expectedExceptions={ContextNotActiveException.class}, groups={"manager"}) @SpecAssertion(section="8.6")
    public void testGetContextWithNoRegisteredContextsFails()
    {
+      manager.setContexts();
       manager.getContext(RequestScoped.class);
       assert false;
    }
@@ -55,7 +49,7 @@ public class ManagerTest extends AbstractTest
    public void testGetContextReturnsActiveContext()
    {
       Context requestContext = new RequestContext();
-      manager.addContext(requestContext);
+      manager.setContexts(requestContext);
       Context testContext = manager.getContext(RequestScoped.class);
       assert testContext == requestContext;
       

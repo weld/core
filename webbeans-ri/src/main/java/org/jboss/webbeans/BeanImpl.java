@@ -7,25 +7,32 @@ import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.model.bean.BeanModel;
 
-public class BeanImpl<T> extends Bean<T>
+public abstract class BeanImpl<T> extends Bean<T>
 {
    
    public static final String LOGGER_NAME = "bean";
    
-   private BeanModel<T, ?> beanModel;
-   
-   private ManagerImpl manager;
+   protected ManagerImpl manager;
 
-   public BeanImpl(BeanModel<T, ?> model, ManagerImpl manager)
+   public BeanImpl(ManagerImpl manager)
    {
       super(manager);
-      this.beanModel = model;
+      this.manager = manager;
    }
-
-   @Override
-   public T create()
+   
+   protected T getInstance()
    {
-      return beanModel.getConstructor().invoke(manager);
+      return getModel().getConstructor().invoke(manager);
+   }
+   
+   protected void bindInterceptors()
+   {
+      // TODO
+   }
+   
+   protected void bindDecorators()
+   {
+      // TODO
    }
 
    @Override
@@ -38,37 +45,37 @@ public class BeanImpl<T> extends Bean<T>
    @Override
    public Set<Annotation> getBindingTypes()
    {
-      return beanModel.getBindingTypes();
+      return getModel().getBindingTypes();
    }
 
    @Override
    public Class<? extends Annotation> getDeploymentType()
    {
-     return beanModel.getDeploymentType();
+     return getModel().getDeploymentType();
    }
 
    @Override
    public String getName()
    {
-      return beanModel.getName();
+      return getModel().getName();
    }
 
    @Override
    public Class<? extends Annotation> getScopeType()
    {
-      return beanModel.getScopeType();
+      return getModel().getScopeType();
    }
 
    @Override
    public Set<Class<?>> getTypes()
    {
-      return beanModel.getApiTypes();
+      return getModel().getApiTypes();
    }
 
    @Override
    public boolean isNullable()
    {
-      return !beanModel.isPrimitive();
+      return !getModel().isPrimitive();
    }
 
    @Override
@@ -81,12 +88,9 @@ public class BeanImpl<T> extends Bean<T>
    @Override
    public String toString()
    {
-      return beanModel.toString();
+      return getModel().toString();
    }
    
-   public BeanModel<T, ?> getModel()
-   {
-      return beanModel;
-   }
+   public abstract BeanModel<T, ?> getModel();
 
 }

@@ -1,11 +1,15 @@
 package org.jboss.webbeans.model.bean;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.webbeans.BindingType;
 import javax.webbeans.DefinitionException;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.injectable.InjectableField;
+import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.LoggerUtil;
 import org.jboss.webbeans.util.Reflections;
@@ -26,6 +30,7 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
    
    private AnnotatedType<T> annotatedItem;
    private AnnotatedType<T> xmlAnnotatedItem;
+   private Set<InjectableField<?>> injectableFields;
    
    /**
     * 
@@ -97,7 +102,13 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
    protected void initInjectionPoints()
    {
       super.initInjectionPoints();
-      annotatedItem.getMetaAnnotatedFields(BindingType.class);
+      injectableFields = new HashSet<InjectableField<?>>();
+      for (AnnotatedField<Object> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
+      {
+         InjectableField<?> injectableField = new InjectableField<Object>(annotatedField);
+         injectableFields.add(injectableField);
+         super.injectionPoints.add(injectableField);
+      }
    }
    
    @Override
@@ -145,6 +156,11 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
       {
          throw new DefinitionException("Web Bean implementation class " + type + " cannot be declared abstract");
       }
+   }
+   
+   public Set<InjectableField<?>> getInjectableFields()
+   {
+      return injectableFields;
    }
 
 }

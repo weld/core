@@ -24,6 +24,10 @@ import javax.webbeans.manager.InterceptionType;
 import javax.webbeans.manager.Interceptor;
 import javax.webbeans.manager.Manager;
 
+import org.jboss.webbeans.contexts.ApplicationContext;
+import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.contexts.RequestContext;
+import org.jboss.webbeans.contexts.SessionContext;
 import org.jboss.webbeans.ejb.EjbManager;
 import org.jboss.webbeans.event.EventBus;
 import org.jboss.webbeans.exceptions.NameResolutionLocation;
@@ -57,14 +61,14 @@ public class ManagerImpl implements Manager
    private EventBus eventBus;
    private ResolutionManager resolutionManager;
    private ContextMap contextMap;
+   private DependentContext dependentContext;
 
    private Set<Bean<?>> beans;
 
    public ManagerImpl()
    {
-      contextMap = new ContextMap();
-      // TODO Are there any contexts that should be initialized here?
       initEnabledDeploymentTypes(null);
+      initContexts(null);
       this.modelManager = new ModelManager();
       this.ejbLookupManager = new EjbManager();
       this.beans = new HashSet<Bean<?>>();
@@ -86,6 +90,27 @@ public class ManagerImpl implements Manager
          if (!this.enabledDeploymentTypes.get(0).equals(Standard.class))
          {
             throw new DeploymentException("@Standard must be the lowest precedence deployment type");
+         }
+      }
+   }
+   
+   protected void initContexts(Context ... contexts)
+   {
+      this.contextMap = new ContextMap();
+      if (contexts == null)
+      {
+         
+         this.dependentContext = new DependentContext(); 
+         addContext(dependentContext);
+         addContext(new RequestContext());
+         addContext(new SessionContext());
+         addContext(new ApplicationContext());
+      }
+      else
+      {
+         for (Context context : contexts)
+         {
+            addContext(context);
          }
       }
    }
@@ -242,14 +267,22 @@ public class ManagerImpl implements Manager
 
    public <T> T getInstance(Bean<T> bean)
    {
-      if (getModelManager().getScopeModel(bean.getScopeType()).isNormal())
+      try
       {
-         // TODO return a client proxy
-         return null;
+         dependentContext.setActive(true);
+         if (getModelManager().getScopeModel(bean.getScopeType()).isNormal())
+         {
+            // TODO return a client proxy
+            return getContext(bean.getScopeType()).get(bean, true);
+         }
+         else
+         {
+            return getContext(bean.getScopeType()).get(bean, true);
+         }
       }
-      else
+      finally
       {
-         return getContext(bean.getScopeType()).get(bean, true);
+         dependentContext.setActive(false);
       }
    }
 

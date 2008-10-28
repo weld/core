@@ -1,15 +1,12 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
+import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
 
 import javax.webbeans.AmbiguousDependencyException;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.BeanImpl;
 import org.jboss.webbeans.ResolutionManager;
 import org.jboss.webbeans.injectable.InjectableField;
-import org.jboss.webbeans.introspector.SimpleAnnotatedType;
-import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.beans.Cod;
 import org.jboss.webbeans.test.beans.FishFarm;
 import org.jboss.webbeans.test.beans.Haddock;
@@ -28,8 +25,8 @@ public class InstantiationByNameTest extends AbstractTest
    public void testNoWebBeansFound() throws Exception
    {
       InjectableField<ScottishFish> whiteScottishFishField = new InjectableField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"));
-      Bean<Cod> codBean = new BeanImpl<Cod>(new SimpleBeanModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedType(Cod.class), super.manager), manager);
-      Bean<Salmon> salmonBean = new BeanImpl<Salmon>(new SimpleBeanModel<Salmon>(new SimpleAnnotatedType<Salmon>(Salmon.class), getEmptyAnnotatedType(Salmon.class), super.manager), manager);
+      Bean<Cod> codBean = createSimpleWebBean(Cod.class, manager);
+      Bean<Salmon> salmonBean = createSimpleWebBean(Salmon.class, manager);
       manager.addBean(codBean);
       manager.addBean(salmonBean);
       
@@ -43,10 +40,10 @@ public class InstantiationByNameTest extends AbstractTest
    public void testAmbiguousDependencies() throws Exception
    {
       InjectableField<ScottishFish> whiteScottishFishField = new InjectableField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"));
-      Bean<Cod> plaiceBean = new BeanImpl<Cod>(new SimpleBeanModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedType(Cod.class), super.manager), manager);
-      Bean<Salmon> salmonBean = new BeanImpl<Salmon>(new SimpleBeanModel<Salmon>(new SimpleAnnotatedType<Salmon>(Salmon.class), getEmptyAnnotatedType(Salmon.class), super.manager), manager);
-      Bean<Sole> soleBean = new BeanImpl<Sole>(new SimpleBeanModel<Sole>(new SimpleAnnotatedType<Sole>(Sole.class), getEmptyAnnotatedType(Sole.class), super.manager), manager);
-      manager.addBean(plaiceBean);
+      Bean<Cod> codBean = createSimpleWebBean(Cod.class, manager);
+      Bean<Salmon> salmonBean = createSimpleWebBean(Salmon.class, manager);
+      Bean<Sole> soleBean = createSimpleWebBean(Sole.class, manager);
+      manager.addBean(codBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
       
@@ -59,13 +56,13 @@ public class InstantiationByNameTest extends AbstractTest
    @Test(groups={"resolution", "beanLifecycle"}) @SpecAssertion(section="4.10.1")
    public void testGetInstanceByName()
    {
-      Bean<Tuna> tunaBean = new BeanImpl<Tuna>(new SimpleBeanModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), getEmptyAnnotatedType(Tuna.class), super.manager), manager);
-      Bean<Cod> codBean = new BeanImpl<Cod>(new SimpleBeanModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), getEmptyAnnotatedType(Cod.class), super.manager), manager);
-      Bean<Salmon> salmonBean = new BeanImpl<Salmon>(new SimpleBeanModel<Salmon>(new SimpleAnnotatedType<Salmon>(Salmon.class), getEmptyAnnotatedType(Salmon.class), super.manager), manager);
-      Bean<Sole> soleBean = new BeanImpl<Sole>(new SimpleBeanModel<Sole>(new SimpleAnnotatedType<Sole>(Sole.class), getEmptyAnnotatedType(Sole.class), super.manager), manager);
-      Bean<SeaBass> seaBassBean = new BeanImpl<SeaBass>(new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedType(SeaBass.class), super.manager), manager);
-      Bean<Haddock> haddockBean = new BeanImpl<Haddock>(new SimpleBeanModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), getEmptyAnnotatedType(Haddock.class), super.manager), manager);
-      Bean<Plaice> plaiceBean = new BeanImpl<Plaice>(new SimpleBeanModel<Plaice>(new SimpleAnnotatedType<Plaice>(Plaice.class), getEmptyAnnotatedType(Plaice.class), super.manager), manager);
+      Bean<Tuna> tunaBean = createSimpleWebBean(Tuna.class, manager);
+      Bean<Cod> codBean = createSimpleWebBean(Cod.class, manager);
+      Bean<Salmon> salmonBean = createSimpleWebBean(Salmon.class, manager);
+      Bean<Sole> soleBean = createSimpleWebBean(Sole.class, manager);
+      Bean<SeaBass> seaBassBean = createSimpleWebBean(SeaBass.class, manager);
+      Bean<Haddock> haddockBean = createSimpleWebBean(Haddock.class, manager);
+      Bean<Plaice> plaiceBean = createSimpleWebBean(Plaice.class, manager);
       
       manager.addBean(tunaBean);
       manager.addBean(codBean);

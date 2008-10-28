@@ -7,10 +7,6 @@ import java.util.List;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
 
-import org.jboss.webbeans.contexts.ApplicationContext;
-import org.jboss.webbeans.contexts.DependentContext;
-import org.jboss.webbeans.contexts.RequestContext;
-import org.jboss.webbeans.contexts.SessionContext;
 import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
@@ -39,7 +35,6 @@ public class AbstractTest
    protected void init()
    {
       addStereotypes();
-      addBuiltInContexts();
       addEnabledDeploymentTypes();
    }
    
@@ -61,14 +56,6 @@ public class AbstractTest
       manager.getModelManager().addStereotype(new StereotypeModel<FishStereotype>(FishStereotype.class));
       manager.getModelManager().addStereotype(new StereotypeModel<RiverFishStereotype>(RiverFishStereotype.class));
       manager.getModelManager().addStereotype(new StereotypeModel<RequestScopedAnimalStereotype>(RequestScopedAnimalStereotype.class));
-   }
-   
-   protected void addBuiltInContexts()
-   {
-      manager.addContext(new DependentContext());
-      manager.addContext(new RequestContext());
-      manager.addContext(new SessionContext());
-      manager.addContext(new ApplicationContext());
    }
 
 }

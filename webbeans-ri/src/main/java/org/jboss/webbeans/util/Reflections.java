@@ -3,6 +3,7 @@ package org.jboss.webbeans.util;
 import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -244,15 +245,31 @@ public class Reflections
       }
       catch (IllegalArgumentException e)
       {
-         throw new ExecutionException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
+         throw new ExecutionException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
       catch (IllegalAccessException e)
       {
-         throw new ExecutionException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
+         throw new ExecutionException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
       catch (InvocationTargetException e)
       {
-         throw new ExecutionException("Error checking value of member method " + method.getName() + " on " + method.getDeclaringClass(), e);
+         throw new ExecutionException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
+      }
+   }
+   
+   public static void setAndWrap(Field field, Object target, Object value)
+   {
+      try
+      {
+         field.set(target, value);
+      }
+      catch (IllegalArgumentException e)
+      {
+         throw new ExecutionException("Error setting field " + field.getName() + " on " + field.getDeclaringClass(), e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new ExecutionException("Error setting field " + field.getName() + " on " + field.getDeclaringClass(), e);
       }
    }
    

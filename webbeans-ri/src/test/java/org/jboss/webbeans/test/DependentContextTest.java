@@ -8,6 +8,7 @@ import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.test.beans.Fox;
+import org.jboss.webbeans.test.beans.FoxRun;
 import org.testng.annotations.Test;
 
 @SpecVersion("PDR")
@@ -17,7 +18,11 @@ public class DependentContextTest extends AbstractTest
    @Test(groups={"contexts", "injection"}) @SpecAssertion(section="8.3")
    public void testInstanceNotSharedBetweenInjectionPoints()
    {
-      assert false;
+      Bean<FoxRun> foxRunBean = createSimpleWebBean(FoxRun.class, manager);
+      Bean<Fox> foxBean = createSimpleWebBean(Fox.class, manager);
+      manager.addBean(foxBean);
+      FoxRun foxRun = foxRunBean.create();
+      assert !foxRun.fox.equals(foxRun.anotherFox);
    }
    
    @Test(groups={"contexts", "el"}) @SpecAssertion(section="8.3")
@@ -99,7 +104,11 @@ public class DependentContextTest extends AbstractTest
    @Test(groups={"contexts", "injection"}) @SpecAssertion(section="8.3")
    public void testContextIsActiveDuringInjection()
    {
-      assert false;
+      Bean<FoxRun> foxRunBean = createSimpleWebBean(FoxRun.class, manager);
+      Bean<Fox> foxBean = createSimpleWebBean(Fox.class, manager);
+      manager.addBean(foxBean);
+      FoxRun foxRun = foxRunBean.create();
+      assert foxRun.fox != null;
    }
    
    @Test(groups={"contexts", "ejb3"}) @SpecAssertion(section="8.3")

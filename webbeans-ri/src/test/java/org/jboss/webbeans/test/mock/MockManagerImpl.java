@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.webbeans.Observer;
 import javax.webbeans.TypeLiteral;
+import javax.webbeans.manager.Context;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -96,6 +97,11 @@ public class MockManagerImpl extends ManagerImpl
    public void setEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
    {
       initEnabledDeploymentTypes(enabledDeploymentTypes);
+   }
+   
+   public void setContexts(Context ... contexts)
+   {
+      initContexts(contexts);
    }
 
 }
