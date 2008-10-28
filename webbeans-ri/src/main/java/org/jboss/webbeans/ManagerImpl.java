@@ -32,6 +32,7 @@ import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.ResolverInjectable;
 import org.jboss.webbeans.util.ClientProxy;
 import org.jboss.webbeans.util.MapWrapper;
+import org.jboss.webbeans.util.Reflections;
 
 public class ManagerImpl implements Manager
 {
@@ -187,20 +188,29 @@ public class ManagerImpl implements Manager
 
    public <T> Manager addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
-      // TODO Auto-generated method stub
+      this.eventBus.addObserver(observer, eventType, bindings);
       return this;
    }
 
    public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
-      // TODO Auto-generated method stub
+      // TODO Using the eventType TypeLiteral<T>, the Class<T> object must be retrieved
+      this.eventBus.addObserver(observer, (Class<T>)Reflections.getActualTypeArguements(eventType.getClass())[0], bindings);
       return this;
    }
 
    public void fireEvent(Object event, Annotation... bindings)
    {
-      // TODO Auto-generated method stub
-
+      // Check the event object for template parameters which are not allowed by the spec.
+      if (Reflections.isParameterizedType(event.getClass()))
+      {
+         throw new IllegalArgumentException("Event type " + event.getClass().getName() +
+               " is not allowed because it is a generic");
+      }
+      // Get the observers for this event.  Although resolveObservers is parameterized, this
+      // method is not, so we have to use Observer<Object> for observers.
+      Set<Observer<Object>> observers = this.resolveObservers(event, bindings);
+      this.eventBus.notifyObservers(observers, event);
    }
 
    public Context getContext(Class<? extends Annotation> scopeType)
@@ -298,13 +308,14 @@ public class ManagerImpl implements Manager
 
    public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
-      // TODO Auto-generated method stub
+      this.eventBus.removeObserver(observer, eventType, bindings);
       return this;
    }
 
    public <T> Manager removeObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
-      // TODO Auto-generated method stub
+      // TODO The Class<T> for the event type must be retrieved from the TypeLiteral<T> instance
+      this.eventBus.removeObserver(observer, (Class<T>)Reflections.getActualTypeArguements(eventType.getClass())[0], bindings);
       return this;
    }
 

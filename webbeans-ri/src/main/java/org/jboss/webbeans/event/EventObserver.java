@@ -95,6 +95,8 @@ public class EventObserver<T>
       final int prime = 31;
       int result = 1;
       result = prime * result
+            + ((eventBindings == null) ? 0 : eventBindings.hashCode());
+      result = prime * result
             + ((eventType == null) ? 0 : eventType.hashCode());
       result = prime * result + ((observer == null) ? 0 : observer.hashCode());
       return result;
@@ -113,6 +115,12 @@ public class EventObserver<T>
       if (getClass() != obj.getClass())
          return false;
       EventObserver<?> other = (EventObserver<?>) obj;
+      if (eventBindings == null)
+      {
+         if (other.eventBindings != null)
+            return false;
+      } else if (!eventBindings.equals(other.eventBindings))
+         return false;
       if (eventType == null)
       {
          if (other.eventType != null)

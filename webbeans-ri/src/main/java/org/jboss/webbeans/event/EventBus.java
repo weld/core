@@ -106,12 +106,52 @@ public class EventBus
    }
 
    /**
+    * Notifies each observer immediately of the event unless a transaction is currently in
+    * progress, in which case a deferred event is created and registered.
+    * @param <T>
+    * @param observers
+    * @param event
+    */
+   public <T> void notifyObservers(Set<Observer<T>> observers, T event)
+   {
+      for (Observer<T> observer : observers)
+      {
+         // TODO Replace this with the correct transaction code
+         Transaction transaction = null;
+         try
+         {
+            transaction = transactionManager.getTransaction();
+         } catch (SystemException e)
+         {
+         }
+         if (transaction != null)
+         {
+            try
+            {
+               deferEvent(event, observer);
+            } catch (IllegalStateException e)
+            {
+            } catch (SystemException e)
+            {
+            } catch (RollbackException e)
+            {
+               // TODO If transaction is being rolled back, perhaps notification should terminate now
+            }
+         } else
+         {
+            // Notify observer immediately in the same context as this method
+            observer.notify(event);
+         }
+      }
+   }
+
+   /**
     * Removes an observer from the event bus.
     * 
     * @param observer
     *           The observer to remove
     */
-   public <T> void removeObserver(Observer<T> observer, Class<T> eventType)
+   public <T> void removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
       ArrayList<EventObserver<?>> observers = registeredObservers.get(eventType);
       for (int i = 0; i < observers.size(); i++)
