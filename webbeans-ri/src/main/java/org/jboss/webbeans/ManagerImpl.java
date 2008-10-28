@@ -60,11 +60,11 @@ public class ManagerImpl implements Manager
 
    private Set<Bean<?>> beans;
 
-   public ManagerImpl(List<Class<? extends Annotation>> enabledDeploymentTypes)
+   public ManagerImpl()
    {
       contextMap = new ContextMap();
       // TODO Are there any contexts that should be initialized here?
-      initEnabledDeploymentTypes(enabledDeploymentTypes);
+      initEnabledDeploymentTypes(null);
       this.modelManager = new ModelManager();
       this.ejbLookupManager = new EjbManager();
       this.beans = new HashSet<Bean<?>>();
@@ -72,7 +72,7 @@ public class ManagerImpl implements Manager
       this.resolutionManager = new ResolutionManager(this);
    }
 
-   private void initEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
+   protected void initEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
    {
       this.enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       if (enabledDeploymentTypes == null)
@@ -170,7 +170,6 @@ public class ManagerImpl implements Manager
          contextMap.put(context.getScopeType(), sameScopeTypeContexts);
       }
       sameScopeTypeContexts.add(context);
-      // TODO: why manager? fluent interfaces?
       return this;
    }
 
@@ -218,7 +217,7 @@ public class ManagerImpl implements Manager
       List<Context> contexts = contextMap.get(scopeType);
       if (contexts == null)
       {
-         throw new ContextNotActiveException("No contexts for " + scopeType.getName());
+         throw new ContextNotActiveException("No active contexts for " + scopeType.getName());
       }
       // TODO performance? Just flag found=true and continue loop, failing when
       // found=already true etc?

@@ -19,11 +19,6 @@ public class MockManagerImpl extends ManagerImpl
    private Annotation[] eventBindings = null;
    private Observer<?>  observer = null;
 
-   public MockManagerImpl(List<Class<? extends Annotation>> enabledDeploymentTypes)
-   {
-      super(enabledDeploymentTypes);
-   }
-
    /* (non-Javadoc)
     * @see org.jboss.webbeans.ManagerImpl#fireEvent(java.lang.Object, java.lang.annotation.Annotation[])
     */
@@ -96,6 +91,11 @@ public class MockManagerImpl extends ManagerImpl
    public final Observer<?> getObserver()
    {
       return observer;
+   }
+   
+   public void setEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
+   {
+      initEnabledDeploymentTypes(enabledDeploymentTypes);
    }
 
 }

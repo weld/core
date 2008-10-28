@@ -22,7 +22,6 @@
             <exclude name="innerClass" />
             <exclude name="servlet" />
             <exclude name="clientProxy" />
-            <exclude name="contexts" />
          </run>
       </groups>
       <packages>

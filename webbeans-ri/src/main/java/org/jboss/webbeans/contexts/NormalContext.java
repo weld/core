@@ -62,7 +62,7 @@ public abstract class NormalContext extends AbstractContext
       {
          destroy(manager, bean);
       }
-      beans = null;
+      beans = new BeanMap();
    }
 
 }

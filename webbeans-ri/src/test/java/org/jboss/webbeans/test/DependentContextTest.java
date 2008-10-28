@@ -1,11 +1,19 @@
 package org.jboss.webbeans.test;
 
+import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
+
+import javax.webbeans.ContextNotActiveException;
+import javax.webbeans.Dependent;
+import javax.webbeans.manager.Bean;
+
+import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.test.beans.Fox;
 import org.testng.annotations.Test;
 
 public class DependentContextTest extends AbstractTest
 {
    
-   @Test(groups="contexts") @SpecAssertion(section="8.3")
+   @Test(groups={"contexts", "injection"}) @SpecAssertion(section="8.3")
    public void testInstanceNotSharedBetweenInjectionPoints()
    {
       assert false;
@@ -32,19 +40,28 @@ public class DependentContextTest extends AbstractTest
    @Test(groups="contexts") @SpecAssertion(section="8.3")
    public void testContextGetWithCreateTrueReturnsNewInstance()
    {
-      assert false;
+      Bean<Fox> foxBean = createSimpleWebBean(Fox.class, manager);
+      manager.addBean(foxBean);
+      DependentContext context = new DependentContext();
+      context.setActive(true);
+      assert context.get(foxBean, true) != null;
+      assert context.get(foxBean, true) instanceof Fox;
    }
    
    @Test(groups="contexts") @SpecAssertion(section="8.3")
    public void testContextGetWithCreateFalseReturnsNull()
    {
-      assert false;
+      Bean<Fox> foxBean = createSimpleWebBean(Fox.class, manager);
+      manager.addBean(foxBean);
+      DependentContext context = new DependentContext();
+      context.setActive(true);
+      assert context.get(foxBean, false) == null;
    }
    
-   @Test(groups="contexts") @SpecAssertion(section="8.3")
+   @Test(groups="contexts", expectedExceptions=ContextNotActiveException.class) @SpecAssertion(section="8.3")
    public void testContextIsInactive()
    {
-      assert false;
+      manager.getContext(Dependent.class).isActive();
    }
    
    @Test(groups={"contexts", "producerMethod"}) @SpecAssertion(section="8.3")
@@ -108,7 +125,7 @@ public class DependentContextTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups={"contexts"}) @SpecAssertion(section="8.3")
+   @Test(groups={"contexts", "beanLifecycle"}) @SpecAssertion(section="8.3")
    public void testDestroyingParentDestroysDependents()
    {
       assert false;
@@ -126,7 +143,7 @@ public class DependentContextTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups={"contexts"}) @SpecAssertion(section="8.3")
+   @Test(groups={"contexts", "el"}) @SpecAssertion(section="8.3")
    public void testDependentsDestroyedWhenElEvaluationCompletes()
    {
       assert false;

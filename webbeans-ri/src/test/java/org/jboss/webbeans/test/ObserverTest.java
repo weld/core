@@ -10,7 +10,6 @@ import javax.webbeans.Observer;
 import javax.webbeans.Observes;
 import javax.webbeans.Standard;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
@@ -33,7 +32,7 @@ import org.testng.annotations.Test;
 @SpecVersion("20081024-PDR")
 public class ObserverTest
 {
-   private ManagerImpl manager;
+   private MockManagerImpl manager;
    private SimpleBeanModel<Tuna> tuna;
    private InjectableMethod<?> om;
 
@@ -59,7 +58,8 @@ public class ObserverTest
       List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       enabledDeploymentTypes.add(Standard.class);
       enabledDeploymentTypes.add(AnotherDeploymentType.class);
-      manager = new MockManagerImpl(enabledDeploymentTypes);
+      manager = new MockManagerImpl();
+      manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
 
       // Create an observer with known binding types
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();

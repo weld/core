@@ -39,7 +39,8 @@ public class EventBeanModelTest
       List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       enabledDeploymentTypes.add(Standard.class);
       enabledDeploymentTypes.add(AnotherDeploymentType.class);
-      manager = new MockManagerImpl(enabledDeploymentTypes);
+      manager = new MockManagerImpl();
+      manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
       Field eventModelField = this.getClass().getDeclaredField("eventModelField");
       eventBeanModel = new EventBeanModel<EventImpl<DangerCall>>(
             new SimpleAnnotatedField<EventImpl<DangerCall>>(eventModelField),

@@ -10,7 +10,6 @@ import javax.webbeans.Observer;
 import javax.webbeans.Observes;
 import javax.webbeans.Standard;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.event.DeferredEventNotification;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.introspector.AnnotatedType;
@@ -20,7 +19,6 @@ import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.Asynchronous;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.bindings.AsynchronousAnnotationLiteral;
-import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.jboss.webbeans.test.mock.MockObserverImpl;
 import org.testng.annotations.Test;
 
@@ -37,6 +35,15 @@ public class DeferredEventNotificationTest extends AbstractTest
    public class Event
    {
       // Simple class used for testing
+   }
+   
+   @Override
+   protected void addEnabledDeploymentTypes()
+   {
+      List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
+      enabledDeploymentTypes.add(Standard.class);
+      enabledDeploymentTypes.add(AnotherDeploymentType.class);
+      manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
    }
 
    public class AnObserver
@@ -61,13 +68,9 @@ public class DeferredEventNotificationTest extends AbstractTest
       // When the transaction is committed, the beforeCompletion() method is
       // invoked which in turn invokes the observer. Here the mock observer
       // is used to keep track of the event being fired.
-      ManagerImpl manager;
       SimpleBeanModel<Tuna> tuna;
       InjectableMethod<Object> om;
-      List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
-      enabledDeploymentTypes.add(Standard.class);
-      enabledDeploymentTypes.add(AnotherDeploymentType.class);
-      manager = new MockManagerImpl(enabledDeploymentTypes);
+      
 
       // Create an observer with known binding types
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();

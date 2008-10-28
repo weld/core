@@ -54,7 +54,8 @@ public class EventTest
       List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       enabledDeploymentTypes.add(Standard.class);
       enabledDeploymentTypes.add(AnotherDeploymentType.class);
-      manager = new MockManagerImpl(enabledDeploymentTypes);
+      manager = new MockManagerImpl();
+      manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
    }
 
    /**

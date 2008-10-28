@@ -16,7 +16,6 @@ import javax.webbeans.RequestScoped;
 import javax.webbeans.Standard;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
@@ -32,7 +31,6 @@ import org.jboss.webbeans.test.beans.broken.BeanWithTooManyDeploymentTypes;
 import org.jboss.webbeans.test.beans.broken.Gazelle;
 import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.FishStereotypeAnnotationLiteral;
-import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.testng.annotations.Test;
 
 @SpecVersion("PDR")
@@ -124,10 +122,10 @@ public class DeploymentTypeTest extends AbstractTest
    @Test @SpecAssertion(section={"2.5.6", "2.5.7"})
    public void testDefaultEnabledDeploymentTypes()
    {
-      ManagerImpl container = new MockManagerImpl(null);
-      assert container.getEnabledDeploymentTypes().size() == 2;
-      assert container.getEnabledDeploymentTypes().get(0).equals(Standard.class);
-      assert container.getEnabledDeploymentTypes().get(1).equals(Production.class);
+      manager.setEnabledDeploymentTypes(null);
+      assert manager.getEnabledDeploymentTypes().size() == 2;
+      assert manager.getEnabledDeploymentTypes().get(0).equals(Standard.class);
+      assert manager.getEnabledDeploymentTypes().get(1).equals(Production.class);
    }
 
    @Test @SpecAssertion(section={"2.5.6", "2.5.7"})
@@ -137,11 +135,11 @@ public class DeploymentTypeTest extends AbstractTest
       enabledDeploymentTypes.add(Standard.class);
       enabledDeploymentTypes.add(AnotherDeploymentType.class);
       enabledDeploymentTypes.add(HornedAnimalDeploymentType.class);
-      ManagerImpl container = new MockManagerImpl(enabledDeploymentTypes);
-      assert container.getEnabledDeploymentTypes().size() == 3;
-      assert container.getEnabledDeploymentTypes().get(0).equals(Standard.class);
-      assert container.getEnabledDeploymentTypes().get(1).equals(AnotherDeploymentType.class);
-      assert container.getEnabledDeploymentTypes().get(2).equals(HornedAnimalDeploymentType.class);
+      manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
+      assert manager.getEnabledDeploymentTypes().size() == 3;
+      assert manager.getEnabledDeploymentTypes().get(0).equals(Standard.class);
+      assert manager.getEnabledDeploymentTypes().get(1).equals(AnotherDeploymentType.class);
+      assert manager.getEnabledDeploymentTypes().get(2).equals(HornedAnimalDeploymentType.class);
    }
    
    @Test(expectedExceptions=DeploymentException.class) @SpecAssertion(section="2.5.6")
@@ -150,7 +148,7 @@ public class DeploymentTypeTest extends AbstractTest
       List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       enabledDeploymentTypes.add(AnotherDeploymentType.class);
       enabledDeploymentTypes.add(HornedAnimalDeploymentType.class);
-      new MockManagerImpl(enabledDeploymentTypes);
+      manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
    }
    
    @Test(groups="webbeansxml", expectedExceptions=DeploymentException.class) @SpecAssertion(section="2.5.6")

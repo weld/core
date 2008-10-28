@@ -12,6 +12,12 @@ import org.testng.annotations.Test;
 public class ManagerTest extends AbstractTest
 {
    
+   @Override
+   protected void addBuiltInContexts()
+   {
+      // No -op, done manually here
+   }
+   
    @Test(groups={"manager", "injection"}) @SpecAssertion(section="4.8")
    public void testInjectingManager()
    {
