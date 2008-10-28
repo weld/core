@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 public class ManagerTest extends AbstractTest
 {
    
-   @Test(groups={"manager", "injection"}) @SpecAssertion(section="4.8")
+   @Test(groups={"manager", "injection", "deployment"}) @SpecAssertion(section="4.8")
    public void testInjectingManager()
    {
       assert false;

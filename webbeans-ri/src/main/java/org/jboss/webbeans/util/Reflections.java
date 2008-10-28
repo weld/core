@@ -60,6 +60,11 @@ public class Reflections
       return Modifier.isFinal(method.getModifiers());
    }
    
+   public static boolean isFinal(Field field)
+   {
+      return Modifier.isFinal(field.getModifiers());
+   }
+   
    public static boolean isTypeOrAnyMethodFinal(Class<?> type)
    {
       if (isFinal(type))
@@ -81,6 +86,16 @@ public class Reflections
       return type.isPrimitive();
    }
    
+   public static boolean isStatic(Class<?> type)
+   {
+      return Modifier.isStatic(type.getModifiers());
+   }
+   
+   public static boolean isStatic(Field field)
+   {
+      return Modifier.isStatic(field.getModifiers());
+   }
+   
    public static boolean isAbstract(Class<?> clazz)
    {
       return Modifier.isAbstract(clazz.getModifiers());
@@ -88,12 +103,12 @@ public class Reflections
    
    public static boolean isStaticInnerClass(Class<?> clazz)
    {
-      return clazz.isMemberClass() && Modifier.isStatic(clazz.getModifiers());
+      return clazz.isMemberClass() && isStatic(clazz);
    }
    
    public static boolean isNonStaticInnerClass(Class<?> clazz)
    {
-      return clazz.isMemberClass() && !Modifier.isStatic(clazz.getModifiers());
+      return clazz.isMemberClass() && !isStatic(clazz);
    }
    
    public static <T> Constructor<T> getConstructor(Class<T> clazz, Class<?>... parameterTypes)

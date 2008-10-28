@@ -1,62 +1,82 @@
 package org.jboss.webbeans.test;
 
 
+import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
+
 import javax.webbeans.ContextNotActiveException;
+import javax.webbeans.DefinitionException;
 import javax.webbeans.NonexistentFieldException;
 import javax.webbeans.NullableDependencyException;
+import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.SimpleBeanImpl;
+import org.jboss.webbeans.test.beans.Fox;
+import org.jboss.webbeans.test.beans.FoxRun;
+import org.jboss.webbeans.test.beans.Tuna;
+import org.jboss.webbeans.test.beans.broken.BeanWithFinalBoundField;
+import org.jboss.webbeans.test.beans.broken.BeanWithStaticBoundField;
 import org.testng.annotations.Test;
 
 @SpecVersion("PDR")
 public class InjectionTests extends AbstractTest
 {
    
-   @Test(groups="injection") @SpecAssertion(section="4.2")
+   @Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="4.2")
    public void testPrimitiveTypesEquivalentToBoxedTypes()
    {
       assert false;
    }
    
-   @Test(groups="injection") @SpecAssertion(section="4.2")
+   @Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="4.2")
    public void testInjectionPerformsBoxingIfNecessary()
    {
       assert false;
    }
    
-   @Test(groups="injection") @SpecAssertion(section="4.2")
+   @Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="4.2")
    public void testInjectionPerformsUnboxingIfNecessary()
    {
       assert false;
    }
    
-   @Test(groups="injection", expectedExceptions=NullableDependencyException.class) @SpecAssertion(section="4.2")
+   @Test(groups={"injection", "producerMethod"}, expectedExceptions=NullableDependencyException.class) @SpecAssertion(section="4.2")
    public void testPrimitiveInjectionPointResolvesToNullableWebBean()
    {
       assert false;
    }
    
-   @Test(groups="injection", expectedExceptions=ContextNotActiveException.class) @SpecAssertion(section="4.3")
+   @Test(groups={"injection", "clientProxy"}, expectedExceptions=ContextNotActiveException.class) @SpecAssertion(section="4.3")
    public void testInvokeNormalInjectedWebBeanWhenContextNotActive()
    {
-      assert false;
+    
    }
    
    @Test(groups="injection") @SpecAssertion(section="4.3")
-   public void testInovkeDependentScopeWhenContextNotActive()
+   public void testInvokeDependentScopeWhenContextNotActive()
    {
-      assert false;
+      Bean<FoxRun> foxRunBean = createSimpleWebBean(FoxRun.class, manager);
+      Bean<Fox> foxBean = createSimpleWebBean(Fox.class, manager);
+      manager.addBean(foxBean);
+      FoxRun foxRun = foxRunBean.create();
+      assert foxRun.fox.getName().equals("gavin");
    }
    
-   @Test(groups="injection") @SpecAssertion(section="3.6")
+   @Test(groups="injection", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.6")
    public void testInjectingStaticField()
    {
-      assert false;
+      SimpleBeanImpl<BeanWithStaticBoundField> bean = createSimpleWebBean(BeanWithStaticBoundField.class, manager);
+      Bean<Tuna> tunaBean = createSimpleWebBean(Tuna.class, manager);
+      manager.addBean(tunaBean);
+      BeanWithStaticBoundField instance = bean.create();
    }
    
-   @Test(groups="injection") @SpecAssertion(section="3.6")
+   @Test(groups="injection",expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.6")
    public void testInjectingFinalField()
    {
-      assert false;
+      SimpleBeanImpl<BeanWithFinalBoundField> bean = createSimpleWebBean(BeanWithFinalBoundField.class, manager);
+      Bean<Tuna> tunaBean = createSimpleWebBean(Tuna.class, manager);
+      manager.addBean(tunaBean);
+      BeanWithFinalBoundField instance = bean.create();
    }
    
    @Test(groups={"injection", "webbeansxml"}) @SpecAssertion(section="3.6.2")

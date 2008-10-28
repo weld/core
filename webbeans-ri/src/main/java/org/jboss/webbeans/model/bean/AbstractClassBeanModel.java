@@ -105,6 +105,14 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
       injectableFields = new HashSet<InjectableField<?>>();
       for (AnnotatedField<Object> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
       {
+         if (Reflections.isStatic(annotatedField.getDelegate()))
+         {
+            throw new DefinitionException("Don't place binding annotations on static fields " + annotatedField);
+         }
+         if (Reflections.isFinal(annotatedField.getDelegate()))
+         {
+            throw new DefinitionException("Don't place binding annotations on final fields " + annotatedField);
+         }
          InjectableField<?> injectableField = new InjectableField<Object>(annotatedField);
          injectableFields.add(injectableField);
          super.injectionPoints.add(injectableField);

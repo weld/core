@@ -6,4 +6,9 @@ import javax.webbeans.Dependent;
 public class Fox
 {
    
+   public String getName()
+   {
+      return "gavin";
+   }
+   
 }

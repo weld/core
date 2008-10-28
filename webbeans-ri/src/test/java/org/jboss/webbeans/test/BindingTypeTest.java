@@ -39,7 +39,7 @@ public class BindingTypeTest extends AbstractTest
       order.getBindingTypes().iterator().next().annotationType().equals(Current.class);
    }
 
-   @Test(groups="injection") @SpecAssertion(section="2.3.1")
+   @Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="2.3.1")
    public void testDefaultBindingTypeAssumedAtInjectionPoint() throws Exception
    {
       assert false;
@@ -142,7 +142,7 @@ public class BindingTypeTest extends AbstractTest
       assert false;
    }
 	
-	@Test(groups="injection")
+	@Test(groups={"injection", "producerMethod"})
    public void testMethodWithBindingAnnotationsOnParametersAreInjected()
    {
       assert false;
