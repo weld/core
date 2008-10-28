@@ -14,6 +14,7 @@
             <exclude name="deferredEvent" />
             <exclude name="injection" />
             <exclude name="ejb3" />
+            <exclude name="webservice" />
             <exclude name="annotationDefinition" />
             <exclude name="webbeansxml" />
             <exclude name="el" />

@@ -5,7 +5,6 @@ import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 import java.lang.reflect.Method;
 
 import javax.webbeans.ContextNotActiveException;
-import javax.webbeans.RequestScoped;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 
@@ -16,7 +15,6 @@ import org.jboss.webbeans.introspector.SimpleAnnotatedMethod;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.bean.ProducerMethodBeanModel;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
-import org.jboss.webbeans.test.beans.BlackWidow;
 import org.jboss.webbeans.test.beans.SpiderProducer;
 import org.jboss.webbeans.test.beans.Tarantula;
 import org.jboss.webbeans.test.beans.Tuna;
@@ -32,7 +30,7 @@ import org.testng.annotations.Test;
  * This class tests a basic context against section 8 of the specification
  *
  */
-@SpecVersion("20081020")
+@SpecVersion("PDR")
 public class CommonContextTest extends AbstractTest
 {
    Context context;

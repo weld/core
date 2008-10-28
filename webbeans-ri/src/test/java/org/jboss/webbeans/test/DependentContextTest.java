@@ -10,6 +10,7 @@ import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.test.beans.Fox;
 import org.testng.annotations.Test;
 
+@SpecVersion("PDR")
 public class DependentContextTest extends AbstractTest
 {
    
