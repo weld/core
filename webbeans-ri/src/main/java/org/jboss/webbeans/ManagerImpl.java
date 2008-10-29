@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.webbeans.AmbiguousDependencyException;
 import javax.webbeans.ContextNotActiveException;
+import javax.webbeans.Dependent;
 import javax.webbeans.DeploymentException;
 import javax.webbeans.Observer;
 import javax.webbeans.Production;
@@ -52,6 +53,11 @@ public class ManagerImpl implements Manager
       {
          return (List<Context>) super.get(key);
       }
+      
+      public DependentContext getDependentContext() 
+      {
+         return (DependentContext) get(Dependent.class).get(0);
+      }
    }
 
    private class ProxyPool extends MapWrapper<Bean<?>, Bean<?>>
@@ -73,8 +79,8 @@ public class ManagerImpl implements Manager
    private EventBus eventBus;
    private ResolutionManager resolutionManager;
    private ContextMap contextMap;
-   private DependentContext dependentContext;
    private ProxyPool proxyPool;
+   // TODO This could be a static method?
    private ClientProxyFactory clientProxyFactory;
 
    private Set<Bean<?>> beans;
@@ -115,9 +121,7 @@ public class ManagerImpl implements Manager
       this.contextMap = new ContextMap();
       if (contexts == null)
       {
-
-         this.dependentContext = new DependentContext();
-         addContext(dependentContext);
+         addContext(new DependentContext());
          addContext(new RequestContext());
          addContext(new SessionContext());
          addContext(new ApplicationContext());
@@ -287,7 +291,7 @@ public class ManagerImpl implements Manager
    {
       try
       {
-         dependentContext.setActive(true);
+         contextMap.getDependentContext().setActive(true);
          if (getModelManager().getScopeModel(bean.getScopeType()).isNormal())
          {
             return (T) getClientProxy(bean);
@@ -299,7 +303,7 @@ public class ManagerImpl implements Manager
       }
       finally
       {
-         dependentContext.setActive(false);
+         contextMap.getDependentContext().setActive(false);
       }
    }
 

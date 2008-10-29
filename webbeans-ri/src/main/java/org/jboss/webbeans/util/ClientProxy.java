@@ -1,8 +1,5 @@
 package org.jboss.webbeans.util;
 
-import java.lang.reflect.Method;
-
-import javassist.util.proxy.MethodHandler;
 
 
 public class ClientProxy

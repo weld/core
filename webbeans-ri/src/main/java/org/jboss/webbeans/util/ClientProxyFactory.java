@@ -35,6 +35,8 @@ public class ClientProxyFactory
          Context context = manager.getContext(beanScope);
          Object instance = context.get(bean, true);
          return proceed.invoke(instance, args);
+//       Oneliner ;-)        
+//       return proceed.invoke(manager.getContext(((Bean<?>)self).getScopeType()).get(bean, true), args);
       }
       
    }
