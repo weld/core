@@ -14,7 +14,7 @@ import javax.webbeans.manager.Manager;
 import org.jboss.webbeans.ProxyData;
 
 
-public class ClientProxyUtil
+public class ClientProxy
 {
    
    public static boolean isProxyable(Class<?> rawType)
@@ -56,10 +56,10 @@ public class ClientProxyUtil
       }
    };
 
-   public static Bean<?> createProxy(ProxyData clientProxy) throws InstantiationException, IllegalAccessException
+   public static Bean<?> createProxy(ProxyData proxyData) throws InstantiationException, IllegalAccessException
    {
       ProxyFactory proxyFactory = new ProxyFactory();
-      proxyFactory.setSuperclass(clientProxy.getClass());
+      proxyFactory.setSuperclass(proxyData.getClass());
       Class<?> proxyClass = proxyFactory.createClass();
       Bean<?> proxy = (Bean<?>) proxyClass.newInstance();
       ((ProxyObject)proxy).setHandler(methodHandler);      

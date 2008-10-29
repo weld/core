@@ -34,7 +34,7 @@ import org.jboss.webbeans.exceptions.NameResolutionLocation;
 import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
 import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.ResolverInjectable;
-import org.jboss.webbeans.util.ClientProxyUtil;
+import org.jboss.webbeans.util.ClientProxy;
 import org.jboss.webbeans.util.MapWrapper;
 import org.jboss.webbeans.util.Reflections;
 
@@ -341,7 +341,7 @@ public class ManagerImpl implements Manager
       else
       {
          Bean<T> bean = beans.iterator().next();
-         if (getModelManager().getScopeModel(bean.getScopeType()).isNormal() && !ClientProxyUtil.isProxyable(injectable.getType()))
+         if (getModelManager().getScopeModel(bean.getScopeType()).isNormal() && !ClientProxy.isProxyable(injectable.getType()))
          {
             throw new UnproxyableDependencyException(new TypesafeResolutionLocation(injectable) + "Unable to proxy");
          }
@@ -390,7 +390,7 @@ public class ManagerImpl implements Manager
       {
          try 
          {
-            clientProxy = ClientProxyUtil.createProxy(new ProxyData(bean, this));
+            clientProxy = ClientProxy.createProxy(new ProxyData(bean, this));
          } catch (Exception e) {
             throw new UnproxyableDependencyException("Could not create proxy", e);
          }
