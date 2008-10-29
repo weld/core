@@ -8,13 +8,13 @@ import javax.webbeans.manager.Manager;
 
 public abstract class NormalContext extends AbstractContext
 {
-
    private BeanMap beans;
 
    public NormalContext(Class<? extends Annotation> scopeType)
    {
       super(scopeType);
       beans = new BeanMap();
+      //TODO Are they active at creation?
       active = true;
    }
    
@@ -25,6 +25,7 @@ public abstract class NormalContext extends AbstractContext
          throw new ContextNotActiveException();
       }
       
+      //TODO violation of specs. Why not just set active to false in destroy()?
       if (beans == null)
       {
          // Context has been destroyed

@@ -11,6 +11,9 @@ import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.test.beans.Tuna;
+import org.jboss.webbeans.test.mock.MockManagerImpl;
+import org.jboss.webbeans.test.util.Util;
 
 public class ClientProxyFactory
 {

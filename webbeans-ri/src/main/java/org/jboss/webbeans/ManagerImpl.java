@@ -294,7 +294,8 @@ public class ManagerImpl implements Manager
          contextMap.getDependentContext().setActive(true);
          if (getModelManager().getScopeModel(bean.getScopeType()).isNormal())
          {
-            return (T) getClientProxy(bean);
+            // TODO What *really* to proxy? The bean? The instance?
+            return (T) getClientProxy(bean).create();
          }
          else
          {
