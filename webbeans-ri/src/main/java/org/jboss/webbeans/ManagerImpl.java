@@ -35,6 +35,7 @@ import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
 import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.ResolverInjectable;
 import org.jboss.webbeans.util.ClientProxy;
+import org.jboss.webbeans.util.ClientProxyFactory;
 import org.jboss.webbeans.util.MapWrapper;
 import org.jboss.webbeans.util.Reflections;
 
@@ -74,6 +75,7 @@ public class ManagerImpl implements Manager
    private ContextMap contextMap;
    private DependentContext dependentContext;
    private ProxyPool proxyPool;
+   private ClientProxyFactory clientProxyFactory;
 
    private Set<Bean<?>> beans;
 
@@ -87,6 +89,7 @@ public class ManagerImpl implements Manager
       this.eventBus = new EventBus();
       this.resolutionManager = new ResolutionManager(this);
       this.proxyPool = new ProxyPool();
+      clientProxyFactory = new ClientProxyFactory(this);
    }
 
    protected void initEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
@@ -390,8 +393,9 @@ public class ManagerImpl implements Manager
       {
          try 
          {
-            clientProxy = ClientProxy.createProxy(new ProxyData(bean, this));
+            clientProxy = clientProxyFactory.createProxyClient(bean);
          } catch (Exception e) {
+            // TODO: What to *really* do here?
             throw new UnproxyableDependencyException("Could not create proxy", e);
          }
          proxyPool.put(bean, clientProxy);
