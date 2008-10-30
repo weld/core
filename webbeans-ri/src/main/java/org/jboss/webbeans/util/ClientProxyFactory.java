@@ -1,6 +1,10 @@
 package org.jboss.webbeans.util;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import javassist.util.proxy.MethodHandler;
@@ -22,7 +26,9 @@ public class ClientProxyFactory
       this.manager = manager;
    }
    
-   public class ProxyMethodHandler implements MethodHandler {
+   public class ProxyMethodHandler implements MethodHandler, Serializable {
+      private static final long serialVersionUID = -5391564935097267888L;
+
       private ManagerImpl manager;
       private Bean<?> bean;
       
@@ -41,26 +47,44 @@ public class ClientProxyFactory
       }
             
    }
+  
+   private Class<?>[] addSerializableInterface(Class<?> clazz) {
+      Class<?>[] interfaces = Arrays.copyOf(clazz.getInterfaces(), clazz.getInterfaces().length + 1);
+      interfaces[interfaces.length] = Serializable.class;
+      return interfaces;
+   }
+   
+   private class TypeInfo {
+      Class<?>[] interfaces;
+      Class<?> superclass;
+   }
+   
+   private TypeInfo getTypeInfo(Set<Class<?>> types) {
+      TypeInfo typeInfo = new TypeInfo();
+      List<Class<?>> interfaces = new ArrayList<Class<?>>();
+      Class<?> superclass = null;
+      for (Class<?> type : types) {
+         if (type.isInterface()) {
+            interfaces.add(type);
+         } else if (superclass == null || (type != Object.class && superclass.isAssignableFrom(type))) {
+            superclass = type;
+         }
+      }
+      interfaces.add(Serializable.class);
+      typeInfo.interfaces = interfaces.toArray(new Class<?>[0]);
+      typeInfo.superclass = superclass;
+      return typeInfo;
+   }
    
    public <T> T createClientProxy(Bean<T> bean) throws InstantiationException, IllegalAccessException {
       ProxyFactory proxyFactory = new ProxyFactory();
-      // TODO How to get the type T from a bean?
-      Class<?>[] beanTypes = bean.getTypes().toArray(new Class<?>[0]);
-      proxyFactory.setSuperclass(beanTypes[0]);
+      TypeInfo typeInfo = getTypeInfo(bean.getTypes());
+      proxyFactory.setInterfaces(typeInfo.interfaces);
+      proxyFactory.setSuperclass(typeInfo.superclass);
       T clientProxy = (T) proxyFactory.createClass().newInstance();
       ProxyMethodHandler proxyMethodHandler = new ProxyMethodHandler(bean, manager);
       ((ProxyObject)clientProxy).setHandler(proxyMethodHandler);
       return clientProxy;
    }
-   
-   private void run() throws InstantiationException, IllegalAccessException {
-      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);
-      Tuna proxy = createClientProxy(tunaBean);
-   }
-   
-   public static void main(String[] params) throws InstantiationException, IllegalAccessException {
-      ClientProxyFactory f = new ClientProxyFactory(new ManagerImpl());
-      f.run();
-   }   
-      
+        
 }
