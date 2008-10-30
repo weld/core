@@ -1,7 +1,7 @@
 package org.jboss.webbeans.util;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
@@ -45,11 +45,22 @@ public class ClientProxyFactory
    public <T> T createClientProxy(Bean<T> bean) throws InstantiationException, IllegalAccessException {
       ProxyFactory proxyFactory = new ProxyFactory();
       // TODO How to get the type T from a bean?
-      proxyFactory.setSuperclass(bean.getTypes().toArray()[0].getClass());
+      Class<?>[] beanTypes = bean.getTypes().toArray(new Class<?>[0]);
+      proxyFactory.setSuperclass(beanTypes[0]);
       T clientProxy = (T) proxyFactory.createClass().newInstance();
       ProxyMethodHandler proxyMethodHandler = new ProxyMethodHandler(bean, manager);
       ((ProxyObject)clientProxy).setHandler(proxyMethodHandler);
       return clientProxy;
    }
+   
+   private void run() throws InstantiationException, IllegalAccessException {
+      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);
+      Tuna proxy = createClientProxy(tunaBean);
+   }
+   
+   public static void main(String[] params) throws InstantiationException, IllegalAccessException {
+      ClientProxyFactory f = new ClientProxyFactory(new ManagerImpl());
+      f.run();
+   }   
       
 }
