@@ -23,6 +23,7 @@
             <exclude name="innerClass" />
             <exclude name="servlet" />
             <exclude name="clientProxy" />
+            <exclude name="passivation" />
          </run>
       </groups>
       <packages>
