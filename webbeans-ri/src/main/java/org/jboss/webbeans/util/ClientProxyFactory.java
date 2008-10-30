@@ -12,7 +12,6 @@ import javax.webbeans.manager.Context;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.test.beans.Tuna;
-import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.jboss.webbeans.test.util.Util;
 
 public class ClientProxyFactory
@@ -25,33 +24,32 @@ public class ClientProxyFactory
    
    public class ProxyMethodHandler implements MethodHandler {
       private ManagerImpl manager;
+      private Bean<?> bean;
       
-      public ProxyMethodHandler(ManagerImpl manager) {
+      public ProxyMethodHandler(Bean<?> bean, ManagerImpl manager) {
+         this.bean = bean;
          this.manager = manager;
       }
       
       @Override
       public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
       {
-         Bean<?> bean = (Bean<?>)self;
-         Class<? extends Annotation> beanScope = bean.getScopeType();
-         Context context = manager.getContext(beanScope);
-         Object instance = context.get(bean, true);
-         return proceed.invoke(instance, args);
-//       Oneliner ;-)        
-//       return proceed.invoke(manager.getContext(((Bean<?>)self).getScopeType()).get(bean, true), args);
+         Context context = manager.getContext(bean.getScopeType());
+         Object proxiedInstance = context.get(bean, true);
+         Method proxiedMethod = proxiedInstance.getClass().getMethod(method.getName(), method.getParameterTypes());
+         return proxiedMethod.invoke(proxiedInstance, args);
       }
+            
+   }
+   
+   public <T> T createClientProxy(Bean<T> bean) throws InstantiationException, IllegalAccessException {
+      ProxyFactory proxyFactory = new ProxyFactory();
+      // TODO How to get the type T from a bean?
+      proxyFactory.setSuperclass(bean.getTypes().toArray()[0].getClass());
+      T clientProxy = (T) proxyFactory.createClass().newInstance();
+      ProxyMethodHandler proxyMethodHandler = new ProxyMethodHandler(bean, manager);
+      ((ProxyObject)clientProxy).setHandler(proxyMethodHandler);
+      return clientProxy;
+   }
       
-   }
-   
-   public Bean<?> createProxyClient(Bean<?> bean) throws InstantiationException, IllegalAccessException {
-      ProxyFactory factory = new ProxyFactory();
-      factory.setSuperclass(bean.getClass());
-      Class<?> proxyClass = factory.createClass();
-      Object proxy = proxyClass.newInstance();
-      ProxyMethodHandler proxyMethodHandler = new ProxyMethodHandler(manager);
-      ((ProxyObject)proxy).setHandler(proxyMethodHandler);
-      return (Bean<?>) proxy;
-   }
-   
 }

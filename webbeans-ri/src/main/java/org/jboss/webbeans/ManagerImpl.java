@@ -60,16 +60,16 @@ public class ManagerImpl implements Manager
       }
    }
 
-   private class ProxyPool extends MapWrapper<Bean<?>, Bean<?>>
+   private class ClientProxyCache extends MapWrapper<Bean<?>, Object>
    {
-      public ProxyPool()
+      public ClientProxyCache()
       {
-         super(new HashMap<Bean<?>, Bean<?>>());
+         super(new HashMap<Bean<?>, Object>());
       }
 
-      public Bean<?> get(Bean<?> key)
+      public <T> T get(Bean<T> key)
       {
-         return (Bean<?>) super.get(key);
+         return (T) super.get(key);
       }
    }
 
@@ -79,7 +79,7 @@ public class ManagerImpl implements Manager
    private EventBus eventBus;
    private ResolutionManager resolutionManager;
    private ContextMap contextMap;
-   private ProxyPool proxyPool;
+   private ClientProxyCache clientProxyCache;
    // TODO This could be a static method?
    private ClientProxyFactory clientProxyFactory;
 
@@ -94,7 +94,7 @@ public class ManagerImpl implements Manager
       this.beans = new HashSet<Bean<?>>();
       this.eventBus = new EventBus();
       this.resolutionManager = new ResolutionManager(this);
-      this.proxyPool = new ProxyPool();
+      this.clientProxyCache = new ClientProxyCache();
       clientProxyFactory = new ClientProxyFactory(this);
    }
 
@@ -295,7 +295,7 @@ public class ManagerImpl implements Manager
          if (getModelManager().getScopeModel(bean.getScopeType()).isNormal())
          {
             // TODO What *really* to proxy? The bean? The instance?
-            return (T) getClientProxy(bean).create();
+            return (T) getClientProxy(bean);
          }
          else
          {
@@ -391,19 +391,19 @@ public class ManagerImpl implements Manager
       return null;
    }
 
-   private Bean<?> getClientProxy(Bean<?> bean)
+   private Object getClientProxy(Bean<?> bean)
    {
-      Bean<?> clientProxy = proxyPool.get(bean);
+      Object clientProxy = clientProxyCache.get(bean);
       if (clientProxy == null)
       {
          try 
          {
-            clientProxy = clientProxyFactory.createProxyClient(bean);
+            clientProxy = clientProxyFactory.createClientProxy(bean);
          } catch (Exception e) {
             // TODO: What to *really* do here?
-            throw new UnproxyableDependencyException("Could not create proxy", e);
+            throw new UnproxyableDependencyException("Could not create client proxy for " + bean.getName(), e);
          }
-         proxyPool.put(bean, clientProxy);
+         clientProxyCache.put(bean, clientProxy);
       }
       return clientProxy;
    }
