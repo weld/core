@@ -2,6 +2,7 @@ package org.jboss.webbeans.model.bean;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.webbeans.Dependent;
@@ -13,6 +14,8 @@ import org.jboss.webbeans.injectable.SimpleConstructor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.SimpleAnnotatedField;
 import org.jboss.webbeans.util.LoggerUtil;
+
+import com.sun.org.apache.xerces.internal.dom.events.EventImpl;
 
 /**
  * Web Beans bean meta model for the container instantiated, injectable, 
@@ -28,32 +31,31 @@ public class EventBeanModel<T> extends AbstractBeanModel<T, Field>
    private String location;
    private SimpleAnnotatedField<T> annotatedItem;
    private SimpleAnnotatedField<T> xmlAnnotatedItem;
-   private BeanConstructor<T> constructor;
+   private BeanConstructor<T>      constructor;
 
    public EventBeanModel(SimpleAnnotatedField<T> annotatedItem, SimpleAnnotatedField<T> xmlAnnotatedItem, ManagerImpl manager)
    {
       this.annotatedItem = annotatedItem;
       this.xmlAnnotatedItem = xmlAnnotatedItem;
+      initConstructor();
       this.init(manager);
    }
 
-   @Override
-   protected void init(ManagerImpl container)
+   /**
+    * Caches the constructor for this type of bean to avoid future reflections during use.
+    */
+   @SuppressWarnings("unchecked")
+   private void initConstructor()
    {
-      super.init(container);
-      this.initConstructor();
+      try
+      {
+         constructor = new SimpleConstructor<T>((Constructor<T>) EventImpl.class.getConstructor((Class[])null));
+      } catch (Exception e)
+      {
+         log.log(Level.SEVERE, "Unable to get constructor for build-in Event implementation", e);
+      }
    }
 
-   /**
-    * Initializes the constructor field of this class.
-    */
-   protected void initConstructor()
-   {
-      // There should only be one constructor for the event implementation used here
-      // TODO Probably don't need to use reflection as this is a container supplied class
-      Constructor<T> classConstructor = this.annotatedItem.getType().getConstructors()[0];
-      constructor = new SimpleConstructor<T>(classConstructor);
-   }
 
    public BeanConstructor<T> getConstructor()
    {
