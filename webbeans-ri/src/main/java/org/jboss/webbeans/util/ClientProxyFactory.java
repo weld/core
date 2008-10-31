@@ -3,7 +3,6 @@ package org.jboss.webbeans.util;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -15,8 +14,6 @@ import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.test.beans.Tuna;
-import org.jboss.webbeans.test.util.Util;
 
 public class ClientProxyFactory
 {
@@ -37,7 +34,6 @@ public class ClientProxyFactory
          this.manager = manager;
       }
       
-      @Override
       public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
       {
          Context context = manager.getContext(bean.getScopeType());
@@ -49,9 +45,10 @@ public class ClientProxyFactory
    }
   
    private Class<?>[] addSerializableInterface(Class<?> clazz) {
-      Class<?>[] interfaces = Arrays.copyOf(clazz.getInterfaces(), clazz.getInterfaces().length + 1);
+      // TODO Doesn't compile Class<?>[] interfaces = Arrays.copyOf(clazz.getInterfaces(), clazz.getInterfaces().length + 1);
+      Class[] interfaces = new Class[0];
       interfaces[interfaces.length] = Serializable.class;
-      return interfaces;
+     return interfaces;
    }
    
    private class TypeInfo {
