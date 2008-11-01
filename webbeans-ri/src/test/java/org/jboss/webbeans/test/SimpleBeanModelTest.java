@@ -5,6 +5,7 @@ import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 
 import java.util.Iterator;
 
+import javax.webbeans.AnnotationLiteral;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.NonexistentConstructorException;
 import javax.webbeans.manager.Bean;
@@ -14,6 +15,8 @@ import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.injectable.SimpleConstructor;
 import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
+import org.jboss.webbeans.test.annotations.HeavyDuty;
+import org.jboss.webbeans.test.annotations.Motorized;
 import org.jboss.webbeans.test.beans.Animal;
 import org.jboss.webbeans.test.beans.Chicken;
 import org.jboss.webbeans.test.beans.Cow;
@@ -25,6 +28,7 @@ import org.jboss.webbeans.test.beans.Order;
 import org.jboss.webbeans.test.beans.Sheep;
 import org.jboss.webbeans.test.beans.Spider;
 import org.jboss.webbeans.test.beans.Tarantula;
+import org.jboss.webbeans.test.beans.Tractor;
 import org.jboss.webbeans.test.beans.Turkey;
 import org.jboss.webbeans.test.beans.broken.ParameterizedBean;
 import org.jboss.webbeans.test.beans.broken.OuterBean.InnerBean;
@@ -257,13 +261,18 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test(groups="specialization") @SpecAssertion(section="3.2.6")
    public void testSpecializedClassInheritsBindingTypes()
    {
-      assert false;
+      SimpleBeanModel<Tractor> bean = new SimpleBeanModel<Tractor>(new SimpleAnnotatedType<Tractor>(Tractor.class), getEmptyAnnotatedType(Tractor.class), manager);
+      assert bean.getBindingTypes().size()==2;
+      assert bean.getBindingTypes().contains( new AnnotationLiteral<Motorized>() {} );
+      assert bean.getBindingTypes().contains( new AnnotationLiteral<HeavyDuty>() {} );
    }
    
    @Test(groups="specialization") @SpecAssertion(section="3.2.6")
    public void testSpecializedClassInheritsName()
    {
-      assert false;
+      SimpleBeanModel<Tractor> bean = new SimpleBeanModel<Tractor>(new SimpleAnnotatedType<Tractor>(Tractor.class), getEmptyAnnotatedType(Tractor.class), manager);
+      assert bean.getName()!=null;
+      assert bean.getName().equals("plough");
    }
    
    @Test(groups="specialization") @SpecAssertion(section="3.2.6")

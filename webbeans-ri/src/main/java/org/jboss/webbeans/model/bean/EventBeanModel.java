@@ -111,7 +111,7 @@ public class EventBeanModel<T> extends AbstractBeanModel<T, Field>
    }
 
    @Override
-   protected void initDeploymentType(ManagerImpl container)
+   protected void initDeploymentType()
    {
       // This is always @Standard per 7.4
       this.deploymentType = Standard.class;

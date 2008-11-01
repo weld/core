@@ -14,6 +14,7 @@ import javax.webbeans.DeploymentType;
 import javax.webbeans.Named;
 import javax.webbeans.Production;
 import javax.webbeans.ScopeType;
+import javax.webbeans.Specializes;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -43,19 +44,25 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
    private Set<Class<?>> apiTypes;
    protected Set<Injectable<?, ?>> injectionPoints;
    private boolean primitive;
+   protected ManagerImpl container;
    
    protected void init(ManagerImpl container)
    {
+      this.container = container;
       mergedStereotypes = new MergedStereotypesModel<T, E>(getAnnotatedItem(), getXmlAnnotatedItem(), container);
       initType();
       initPrimitive();
       log.fine("Building Web Bean bean metadata for " +  getType());
       initBindingTypes();
       initName();
-      initDeploymentType(container);
+      initDeploymentType();
       checkDeploymentType();
       initScopeType();
       initApiTypes();
+   }
+   
+   protected AbstractClassBeanModel<? extends T> getSpecializedType() {
+      throw new UnsupportedOperationException();
    }
    
    protected void initInjectionPoints()
@@ -103,19 +110,33 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
 
    protected void initBindingTypes()
    {
+      Set<Annotation> bindingTypes = getAnnotatedItem().getAnnotations(BindingType.class);
       Set<Annotation> xmlBindingTypes = getXmlAnnotatedItem().getAnnotations(BindingType.class);
+      boolean xmlSpecialization = getXmlAnnotatedItem().isAnnotationPresent(Specializes.class);
+      boolean specialization = getAnnotatedItem().isAnnotationPresent(Specializes.class);
+      
       if (xmlBindingTypes.size() > 0 || mergedStereotypes.isDeclaredInXml())
       {
          // TODO support producer expression default binding type
-         log.finest("Using binding types " + xmlBindingTypes + " specified in XML");
+         if (xmlSpecialization)
+         {
+            xmlBindingTypes.addAll(bindingTypes);
+            log.finest("Using binding types " + xmlBindingTypes + " specified in XML and specialized type");
+         }
+         else {
+            log.finest("Using binding types " + xmlBindingTypes + " specified in XML");
+         }
          this.bindingTypes= xmlBindingTypes;
          return;
       }
       else
       {
-         Set<Annotation> bindingTypes = getAnnotatedItem().getAnnotations(BindingType.class);
-         
-         if (bindingTypes.size() == 0)
+         if (specialization)
+         {
+            bindingTypes.addAll(getSpecializedType().getBindingTypes());
+            log.finest("Using binding types " + bindingTypes + " specified by annotations and specialized supertype");
+         }
+         else if (bindingTypes.size() == 0)
          {
             log.finest("Adding default @Current binding type");
             bindingTypes.add(new CurrentAnnotationLiteral());
@@ -176,9 +197,15 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
    
    protected void initName()
    {
+      boolean xmlSpecialization = getXmlAnnotatedItem().isAnnotationPresent(Specializes.class);
+      boolean specialization = getAnnotatedItem().isAnnotationPresent(Specializes.class);
       boolean beanNameDefaulted = false;
       if (getXmlAnnotatedItem().isAnnotationPresent(Named.class))
       {
+         if (xmlSpecialization) 
+         {
+            throw new DefinitionException("Name specified for specialized bean (declared in XML)");
+         }
          String xmlName = getXmlAnnotatedItem().getAnnotation(Named.class).value();
          if ("".equals(xmlName))
          {
@@ -194,6 +221,10 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
       }
       else if (getAnnotatedItem().isAnnotationPresent(Named.class))
       {
+         if (specialization)
+         {
+            throw new DefinitionException("Name specified for specialized bean");
+         }
          String javaName = getAnnotatedItem().getAnnotation(Named.class).value();
          if ("".equals(javaName))
          {
@@ -202,10 +233,16 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
          }
          else
          {
-            log.finest("Using name " + javaName + " specified in XML");
+            log.finest("Using name " + javaName + " specified by annotations");
             this.name = javaName;
             return;
          }
+      }
+      else if (specialization)
+      {
+         this.name = getSpecializedType().getName();
+         log.finest("Using supertype name");
+         return;
       }
       if (beanNameDefaulted || getMergedStereotypes().isBeanNameDefaulted())
       {
@@ -214,7 +251,7 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
       }
    }
    
-   protected void initDeploymentType(ManagerImpl container)
+   protected void initDeploymentType()
    {
       Set<Annotation> xmlDeploymentTypes = getXmlAnnotatedItem().getAnnotations(DeploymentType.class);
       

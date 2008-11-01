@@ -66,9 +66,9 @@ public class ProducerMethodBeanModel<T> extends AbstractProducerBeanModel<T>
    }
    
    @Override
-   protected void initDeploymentType(ManagerImpl container)
+   protected void initDeploymentType()
    {
-      super.initDeploymentType(container);
+      super.initDeploymentType();
       if (getDeploymentType() == null)
       {
          if (getDeclaringBean() == null)

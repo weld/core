@@ -12,6 +12,8 @@ import org.jboss.webbeans.injectable.EnterpriseConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
+import org.jboss.webbeans.introspector.SimpleAnnotatedType;
+import org.jboss.webbeans.test.util.Util;
 import org.jboss.webbeans.util.Reflections;
 
 public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
@@ -115,6 +117,21 @@ public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
             throw new RuntimeException("Only stateful enterprise beans can have methods annotated @Destroys; " + getType() + " is not a stateful enterprise bean");
          }
       }
+   }
+   
+   @Override
+   protected AbstractClassBeanModel<? extends T> getSpecializedType()
+   {
+      //TODO: lots of validation!
+      Class<?> superclass = getAnnotatedItem().getType().getSuperclass();
+      if ( superclass!=null )
+      {
+         return new EnterpriseBeanModel( new SimpleAnnotatedType( superclass ), Util.getEmptyAnnotatedType( getAnnotatedItem().getType().getSuperclass() ), container );
+      }
+      else {
+         throw new RuntimeException();
+      }
+      
    }
 
 }
