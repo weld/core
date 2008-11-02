@@ -36,12 +36,13 @@ import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
 import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.ResolverInjectable;
 import org.jboss.webbeans.util.ClientProxy;
-import org.jboss.webbeans.util.ClientProxyFactory;
 import org.jboss.webbeans.util.MapWrapper;
+import org.jboss.webbeans.util.ProxyPool;
 import org.jboss.webbeans.util.Reflections;
 
 public class ManagerImpl implements Manager
 {
+      
    private class ContextMap extends MapWrapper<Class<? extends Annotation>, List<Context>>
    {
       public ContextMap()
@@ -60,28 +61,16 @@ public class ManagerImpl implements Manager
       }
    }
 
-   private class ClientProxyCache extends MapWrapper<Bean<?>, Object>
-   {
-      public ClientProxyCache()
-      {
-         super(new HashMap<Bean<?>, Object>());
-      }
-
-      public <T> T get(Bean<T> key)
-      {
-         return (T) super.get(key);
-      }
-   }
-
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
    private ModelManager modelManager;
    private EjbManager ejbLookupManager;
    private EventBus eventBus;
    private ResolutionManager resolutionManager;
    private ContextMap contextMap;
-   private ClientProxyCache clientProxyCache;
-   private ClientProxyFactory clientProxyFactory;
+   private ProxyPool proxyPool;
    private List<Bean<?>> beans;
+   private Set<Decorator> decorators;
+   private Set<Interceptor> interceptors;
 
    public ManagerImpl()
    {
@@ -92,8 +81,9 @@ public class ManagerImpl implements Manager
       this.beans = new ArrayList<Bean<?>>();
       this.eventBus = new EventBus();
       this.resolutionManager = new ResolutionManager(this);
-      this.clientProxyCache = new ClientProxyCache();
-      clientProxyFactory = new ClientProxyFactory(this);
+      this.proxyPool = new ProxyPool(this);
+      this.decorators = new HashSet<Decorator>();
+      this.interceptors = new HashSet<Interceptor>();
    }
 
    protected void initEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
@@ -187,6 +177,7 @@ public class ManagerImpl implements Manager
    private <T> Set<Bean<T>> resolveByType(Injectable<T, ?> injectable)
    {
       Set<Bean<T>> beans = getResolutionManager().get(injectable);
+      
       if (beans == null)
       {
          return new HashSet<Bean<T>>();
@@ -218,26 +209,26 @@ public class ManagerImpl implements Manager
 
    public Manager addContext(Context context)
    {
-      List<Context> sameScopeTypeContexts = contextMap.get(context.getScopeType());
-      if (sameScopeTypeContexts == null)
+      List<Context> contexts = contextMap.get(context.getScopeType());
+      if (contexts == null)
       {
-         sameScopeTypeContexts = new ArrayList<Context>();
-         contextMap.put(context.getScopeType(), sameScopeTypeContexts);
+         contexts = new ArrayList<Context>();
+         contextMap.put(context.getScopeType(), contexts);
       }
-      sameScopeTypeContexts.add(context);
+      contexts.add(context);
       return this;
    }
 
    public Manager addDecorator(Decorator decorator)
    {
-      // TODO Auto-generated method stub
-      return null;
+      decorators.add(decorator);
+      return this;
    }
 
    public Manager addInterceptor(Interceptor interceptor)
    {
-      // TODO Auto-generated method stub
-      return null;
+      interceptors.add(interceptor);
+      return this;
    }
 
    public <T> Manager addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
@@ -302,7 +293,7 @@ public class ManagerImpl implements Manager
          contextMap.getDependentContext().setActive(true);
          if (getModelManager().getScopeModel(bean.getScopeType()).isNormal())
          {
-            return (T) getClientProxy(bean);
+            return (T) proxyPool.getClientProxy(bean, beans.indexOf(bean));
          }
          else
          {
@@ -398,23 +389,5 @@ public class ManagerImpl implements Manager
       return null;
    }
 
-   private Object getClientProxy(Bean<?> bean)
-   {
-      Object clientProxy = clientProxyCache.get(bean);
-      if (clientProxy == null)
-      {
-         try
-         {
-            clientProxy = clientProxyFactory.createClientProxy(bean, beans.indexOf(bean));
-         }
-         catch (Exception e)
-         {
-            // TODO: What to *really* do here?
-            throw new UnproxyableDependencyException("Could not create client proxy for " + bean.getName(), e);
-         }
-         clientProxyCache.put(bean, clientProxy);
-      }
-      return clientProxy;
-   }
 
 }

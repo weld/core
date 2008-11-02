@@ -38,7 +38,7 @@ public class ClientProxyTest extends AbstractTest
 
    @Test(groups = "clientProxy")
    @SpecAssertion(section = "4.4")
-   public void testClientProxyIsSerializable()
+   public void testSimpleWebBeanClientProxyIsSerializable()
    {
       Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);
       manager.addBean(tunaBean);
@@ -90,6 +90,8 @@ public class ClientProxyTest extends AbstractTest
    @SpecAssertion(section = "4.4.1")
    public void testInjectionPointWithUnproxyableTypeWhichResolvesToNormalScopedWebBean()
    {
+      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);
+      manager.addBean(tunaBean);
       assert false;
    }
 

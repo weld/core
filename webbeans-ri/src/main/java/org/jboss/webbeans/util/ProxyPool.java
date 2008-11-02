@@ -2,22 +2,39 @@ package org.jboss.webbeans.util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
+import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 
-public class ClientProxyFactory
+public class ProxyPool
 {
-   private ManagerImpl manager;
+   private class Pool extends MapWrapper<Bean<?>, Object>
+   {
+      public Pool()
+      {
+         super(new HashMap<Bean<?>, Object>());
+      }
+
+      public <T> T get(Bean<T> key)
+      {
+         return (T) super.get(key);
+      }
+   }
    
-   public ClientProxyFactory(ManagerImpl manager) {
+   private ManagerImpl manager;
+   private Pool pool;
+   
+   public ProxyPool(ManagerImpl manager) {
       this.manager = manager;
+      this.pool = new Pool();
    }
         
    private class TypeInfo {
@@ -42,7 +59,7 @@ public class ClientProxyFactory
       return typeInfo;
    }
    
-   public <T> T createClientProxy(Bean<T> bean, int beanIndex) throws InstantiationException, IllegalAccessException {
+   private <T> T createClientProxy(Bean<T> bean, int beanIndex) throws InstantiationException, IllegalAccessException {
       ProxyFactory proxyFactory = new ProxyFactory();
       TypeInfo typeInfo = getTypeInfo(bean.getTypes());
       proxyFactory.setInterfaces(typeInfo.interfaces);
@@ -52,5 +69,25 @@ public class ClientProxyFactory
       ((ProxyObject)clientProxy).setHandler(proxyMethodHandler);
       return clientProxy;
    }
-        
+
+   public Object getClientProxy(Bean<?> bean, int beanIndex)
+   {
+      Object clientProxy = pool.get(bean);
+      if (clientProxy == null)
+      {
+         try
+         {
+            clientProxy = createClientProxy(bean, beanIndex);
+         }
+         catch (Exception e)
+         {
+            // TODO: What to *really* do here?
+            throw new UnproxyableDependencyException("Could not create client proxy for " + bean.getName(), e);
+         }
+         pool.put(bean, clientProxy);
+      }
+      return clientProxy;
+   }
+   
+   
 }
