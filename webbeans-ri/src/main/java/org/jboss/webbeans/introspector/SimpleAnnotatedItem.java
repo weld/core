@@ -10,7 +10,7 @@ import javax.webbeans.TypeLiteral;
 public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
 {
 
-   private Type[] actualTypeArguements = new Type[0];
+   private Type[] actualTypeArguments = new Type[0];
    private Class<? extends T> type;
    private Annotation[] actualAnnotations;
    
@@ -31,14 +31,14 @@ public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
       this.type = apiType.getRawType();
       if (apiType.getType() instanceof ParameterizedType)
       {
-         actualTypeArguements = ((ParameterizedType) apiType.getType()).getActualTypeArguments();
+         actualTypeArguments = ((ParameterizedType) apiType.getType()).getActualTypeArguments();
       }
    }
    
    private SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap, Class<? extends T> type, Type[] actualTypeArguements)
    {
       this(annotationMap, type);
-      this.actualTypeArguements = actualTypeArguements;
+      this.actualTypeArguments = actualTypeArguements;
    }
    
    public SimpleAnnotatedItem(Annotation[] annotations)
@@ -77,7 +77,7 @@ public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
 
    public Type[] getActualTypeArguements()
    {
-      return actualTypeArguements;
+      return actualTypeArguments;
    }
    
    public Annotation[] getActualAnnotations()

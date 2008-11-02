@@ -1,53 +1,107 @@
 package org.jboss.webbeans.test;
 
-import javax.webbeans.UnproxyableDependencyException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
+import javax.webbeans.UnproxyableDependencyException;
+import javax.webbeans.manager.Bean;
+
+import org.jboss.webbeans.test.beans.Fox;
+import org.jboss.webbeans.test.beans.Tuna;
+import org.jboss.webbeans.test.util.Util;
 import org.testng.annotations.Test;
 
 @SpecVersion("PDR")
-public class ClientProxyTest
+public class ClientProxyTest extends AbstractTest
 {
-   
 
-   @Test(groups="clientProxy") @SpecAssertion(section={"4.4", "4.8"})
+   @Test(groups = "clientProxy")
+   @SpecAssertion(section = { "4.4", "4.8" })
    public void testClientProxyUsedForNormalScope()
    {
-      assert false;
+      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);
+      Tuna tuna = manager.getInstance(tunaBean);
+      assert tuna.getClass().getName().indexOf("$$_javassist_") > 0;
    }
-   
-   @Test(groups="clientProxy") @SpecAssertion(section={"4.4", "4.8"})
+
+   @Test(groups = "clientProxy")
+   @SpecAssertion(section = { "4.4", "4.8" })
    public void testClientProxyNotUsedForPseudoScope()
    {
-      assert false;
+      Bean<Fox> foxBean = Util.createSimpleWebBean(Fox.class, manager);
+      Fox fox = manager.getInstance(foxBean);
+      assert fox.getClass() == Fox.class;
    }
-   
-   @Test(groups="clientProxy") @SpecAssertion(section="4.4")
+
+   @Test(groups = "clientProxy")
+   @SpecAssertion(section = "4.4")
    public void testClientProxyIsSerializable()
    {
-      assert false;
+      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);
+      manager.addBean(tunaBean);
+      Tuna tuna = manager.getInstance(tunaBean);
+      ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+      ObjectOutputStream out = null;
+      ObjectInputStream in = null;
+      try
+      {
+         out = new ObjectOutputStream(bytes);
+         out.writeObject(tuna);
+         out.flush();
+         byte[] data = bytes.toByteArray();
+         in = new ObjectInputStream(new ByteArrayInputStream(data));
+         tuna = (Tuna) in.readObject();
+         assert tuna.getState().equals("tuned");
+      }
+      catch (Exception e)
+      {
+         e.printStackTrace();
+         assert false;
+      }
+      finally
+      {
+         try
+         {
+            if (bytes != null)
+            {
+               bytes.close();
+            }
+            if (out != null)
+            {
+               out.close();
+            }
+            if (in != null)
+            {
+               in.close();
+            }
+         }
+         catch (IOException e)
+         {
+            e.printStackTrace();
+         }
+      }
+      assert true;
    }
-   
-   @Test(groups="clientProxy", expectedExceptions=UnproxyableDependencyException.class) @SpecAssertion(section="4.4.1")
+
+   @Test(groups = "clientProxy", expectedExceptions = UnproxyableDependencyException.class)
+   @SpecAssertion(section = "4.4.1")
    public void testInjectionPointWithUnproxyableTypeWhichResolvesToNormalScopedWebBean()
    {
       assert false;
    }
-   
-   @Test(groups="clientProxy") @SpecAssertion(section="4.4.2")
+
+   @Test(groups = "clientProxy")
+   @SpecAssertion(section = "4.4.2")
    public void testClientProxyInvocation()
    {
-      assert false;
-   }
-   
-   /*
-
-   @Test(groups="clientProxy") @SpecAssertion(section="4.4")
-   public void test
-   {
-      assert false;
+      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);
+      manager.addBean(tunaBean);
+      Tuna tuna = manager.getInstance(tunaBean);
+      assert tuna.getClass().getName().indexOf("$$_javassist_") > 0;
+      assert tuna.getState().equals("tuned");
    }
 
-   */    
-
-   
 }

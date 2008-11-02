@@ -53,8 +53,8 @@ public class ManagerImpl implements Manager
       {
          return (List<Context>) super.get(key);
       }
-      
-      public DependentContext getDependentContext() 
+
+      public DependentContext getDependentContext()
       {
          return (DependentContext) get(Dependent.class).get(0);
       }
@@ -80,10 +80,8 @@ public class ManagerImpl implements Manager
    private ResolutionManager resolutionManager;
    private ContextMap contextMap;
    private ClientProxyCache clientProxyCache;
-   // TODO This could be a static method?
    private ClientProxyFactory clientProxyFactory;
-
-   private Set<Bean<?>> beans;
+   private List<Bean<?>> beans;
 
    public ManagerImpl()
    {
@@ -91,7 +89,7 @@ public class ManagerImpl implements Manager
       initContexts(null);
       this.modelManager = new ModelManager();
       this.ejbLookupManager = new EjbManager();
-      this.beans = new HashSet<Bean<?>>();
+      this.beans = new ArrayList<Bean<?>>();
       this.eventBus = new EventBus();
       this.resolutionManager = new ResolutionManager(this);
       this.clientProxyCache = new ClientProxyCache();
@@ -137,6 +135,10 @@ public class ManagerImpl implements Manager
 
    public Manager addBean(Bean<?> bean)
    {
+      if (beans.contains(bean))
+      {
+         return this;
+      }
       getResolutionManager().clear();
       beans.add(bean);
       return this;
@@ -201,9 +203,17 @@ public class ManagerImpl implements Manager
       return resolutionManager;
    }
 
+   public Bean<?> getBean(int beanIndex)
+   {
+      return beans.get(beanIndex);
+   }
+
    public Set<Bean<? extends Object>> getBeans()
    {
-      return beans;
+      // TODO List to Set?
+      Set<Bean<?>> beanSet = new HashSet<Bean<?>>();
+      beanSet.addAll(beans);
+      return beanSet;
    }
 
    public Manager addContext(Context context)
@@ -266,8 +276,6 @@ public class ManagerImpl implements Manager
       {
          throw new ContextNotActiveException("No active contexts for " + scopeType.getName());
       }
-      // TODO performance? Just flag found=true and continue loop, failing when
-      // found=already true etc?
       List<Context> activeContexts = new ArrayList<Context>();
       for (Context context : contexts)
       {
@@ -294,7 +302,6 @@ public class ManagerImpl implements Manager
          contextMap.getDependentContext().setActive(true);
          if (getModelManager().getScopeModel(bean.getScopeType()).isNormal())
          {
-            // TODO What *really* to proxy? The bean? The instance?
             return (T) getClientProxy(bean);
          }
          else
@@ -396,10 +403,12 @@ public class ManagerImpl implements Manager
       Object clientProxy = clientProxyCache.get(bean);
       if (clientProxy == null)
       {
-         try 
+         try
          {
-            clientProxy = clientProxyFactory.createClientProxy(bean);
-         } catch (Exception e) {
+            clientProxy = clientProxyFactory.createClientProxy(bean, beans.indexOf(bean));
+         }
+         catch (Exception e)
+         {
             // TODO: What to *really* do here?
             throw new UnproxyableDependencyException("Could not create client proxy for " + bean.getName(), e);
          }
