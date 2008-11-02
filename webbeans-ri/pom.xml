@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
       <artifactId>parent</artifactId>
       <groupId>org.jboss.webbeans</groupId>
@@ -23,38 +23,38 @@
          <artifactId>testng</artifactId>
          <scope>test</scope>
          <classifier>jdk15</classifier>
-      </dependency>   
-         
+      </dependency>
+
       <dependency>
          <groupId>javax.servlet</groupId>
          <artifactId>servlet-api</artifactId>
-      </dependency>      
-      
+      </dependency>
+
       <dependency>
          <groupId>javax.transaction</groupId>
          <artifactId>jta</artifactId>
-      </dependency>    
+      </dependency>
 
       <dependency>
          <groupId>javax.ejb</groupId>
          <artifactId>ejb-api</artifactId>
          <scope>test</scope>
       </dependency>
-      
+
       <dependency>
          <groupId>javassist</groupId>
          <artifactId>javassist</artifactId>
       </dependency>
-      
+
       <dependency>
-          <groupId>log4j</groupId>
-          <artifactId>log4j</artifactId>
+         <groupId>log4j</groupId>
+         <artifactId>log4j</artifactId>
       </dependency>
-      
+
       <dependency>
-          <groupId>javax.el</groupId>
-          <artifactId>el-api</artifactId>
-      </dependency>         
+         <groupId>javax.el</groupId>
+         <artifactId>el-api</artifactId>
+      </dependency>
 
    </dependencies>
 

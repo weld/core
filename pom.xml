@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.webbeans</groupId>
    <artifactId>parent</artifactId>
@@ -29,7 +29,7 @@
          <name>Shane Bryzak</name>
          <organization>JBoss, a division of Red Hat</organization>
       </developer>
-      
+
       <developer>
          <name>David Allen</name>
       </developer>
@@ -44,6 +44,11 @@
       <repository>
          <id>scannotation.sf.net</id>
          <url>http://scannotation.sourceforge.net/maven2/</url>
+      </repository>
+      <repository>
+         <id>google-maven-repository</id>
+         <name>Google Maven Repository</name>
+         <url>http://google-maven-repository.googlecode.com/svn/repository/</url>
       </repository>
    </repositories>
 
@@ -85,7 +90,7 @@
             <artifactId>ejb-api</artifactId>
             <version>3.0</version>
          </dependency>
-     
+
          <dependency>
             <groupId>org.scannotation</groupId>
             <artifactId>scannotation</artifactId>
@@ -109,19 +114,25 @@
             <artifactId>jta</artifactId>
             <version>1.0.1B</version>
          </dependency>
-         
+
          <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.14</version>
          </dependency>
-         
+
          <dependency>
             <groupId>javax.el</groupId>
             <artifactId>el-api</artifactId>
             <version>1.0</version>
-         </dependency>         
-         
+         </dependency>
+
+         <dependency>
+            <groupId>com.google.collections</groupId>
+            <artifactId>google-collections</artifactId>
+            <version>0.8</version>
+         </dependency>
+
       </dependencies>
    </dependencyManagement>
 
