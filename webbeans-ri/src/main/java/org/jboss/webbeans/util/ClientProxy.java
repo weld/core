@@ -31,4 +31,8 @@ public class ClientProxy
       }
    }
    
+   public static boolean isProxy(Object instance) {
+      return instance.getClass().getName().indexOf("_$$_javassist_") > 0;
+   }   
+   
 }

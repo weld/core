@@ -14,6 +14,7 @@ import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.TunedTuna;
 import org.jboss.webbeans.test.util.Util;
+import org.jboss.webbeans.util.ClientProxy;
 import org.testng.annotations.Test;
 
 @SpecVersion("PDR")
@@ -26,7 +27,7 @@ public class ClientProxyTest extends AbstractTest
    {
       Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);
       Tuna tuna = manager.getInstance(tunaBean);
-      assert tuna.getClass().getName().indexOf("$$_javassist_") > 0;
+      assert ClientProxy.isProxy(tuna);
    }
 
    @Test(groups = "clientProxy")
@@ -35,57 +36,32 @@ public class ClientProxyTest extends AbstractTest
    {
       Bean<Fox> foxBean = Util.createSimpleWebBean(Fox.class, manager);
       Fox fox = manager.getInstance(foxBean);
-      assert fox.getClass() == Fox.class;
+      assert !ClientProxy.isProxy(fox);
    }
 
+   private byte[] serializeBean(Object instance) throws IOException {
+      ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+      ObjectOutputStream out = new ObjectOutputStream(bytes);
+      out.writeObject(instance);
+      return bytes.toByteArray();
+   }
+   
+   private Object deserializeBean(byte[] bytes) throws IOException, ClassNotFoundException {
+      ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
+      return in.readObject();
+   }
+   
    @Test(groups = "clientProxy")
    @SpecAssertion(section = "4.4")
-   public void testSimpleWebBeanClientProxyIsSerializable()
+   public void testSimpleWebBeanClientProxyIsSerializable() throws IOException, ClassNotFoundException
    {
       Bean<TunedTuna> tunaBean = Util.createSimpleWebBean(TunedTuna.class, manager);
-      manager.addBean(tunaBean);
       TunedTuna tuna = manager.getInstance(tunaBean);
-      ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-      ObjectOutputStream out = null;
-      ObjectInputStream in = null;
-      try
-      {
-         out = new ObjectOutputStream(bytes);
-         out.writeObject(tuna);
-         out.flush();
-         byte[] data = bytes.toByteArray();
-         in = new ObjectInputStream(new ByteArrayInputStream(data));
-         tuna = (TunedTuna) in.readObject();
-         assert tuna.getState().equals("tuned");
-      }
-      catch (Exception e)
-      {
-         e.printStackTrace();
-         assert false;
-      }
-      finally
-      {
-         try
-         {
-            if (bytes != null)
-            {
-               bytes.close();
-            }
-            if (out != null)
-            {
-               out.close();
-            }
-            if (in != null)
-            {
-               in.close();
-            }
-         }
-         catch (IOException e)
-         {
-            e.printStackTrace();
-         }
-      }
-      assert true;
+      assert ClientProxy.isProxy(tuna);
+      byte[] bytes = serializeBean(tuna);
+      tuna = (TunedTuna) deserializeBean(bytes);
+      assert ClientProxy.isProxy(tuna);
+      assert tuna.getState().equals("tuned");
    }
 
    @Test(groups = "clientProxy", expectedExceptions = UnproxyableDependencyException.class)
@@ -105,7 +81,7 @@ public class ClientProxyTest extends AbstractTest
       Bean<TunedTuna> tunaBean = Util.createSimpleWebBean(TunedTuna.class, manager);
       manager.addBean(tunaBean);
       TunedTuna tuna = manager.getInstance(tunaBean);
-      assert tuna.getClass().getName().indexOf("$$_javassist_") > 0;
+      assert ClientProxy.isProxy(tuna);
       assert tuna.getState().equals("tuned");
    }
    
