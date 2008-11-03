@@ -70,13 +70,19 @@ public class ProxyPool
       return clientProxy;
    }
 
-   public Object getClientProxy(Bean<?> bean, int beanIndex)
+   public Object getClientProxy(Bean<?> bean)
    {
       Object clientProxy = pool.get(bean);
       if (clientProxy == null)
       {
          try
          {
+            int beanIndex = manager.getBeans().indexOf(bean);
+            // Implicit add required since it is looked up on activation with then index
+            if (beanIndex < 0) {
+               manager.addBean(bean);
+               beanIndex = manager.getBeans().size() - 1;
+            }
             clientProxy = createClientProxy(bean, beanIndex);
          }
          catch (Exception e)

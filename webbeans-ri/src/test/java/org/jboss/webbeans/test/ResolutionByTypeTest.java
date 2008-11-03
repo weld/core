@@ -2,7 +2,9 @@ package org.jboss.webbeans.test;
 
 import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.webbeans.AnnotationLiteral;
@@ -57,7 +59,7 @@ public class ResolutionByTypeTest extends AbstractTest
    {
       InjectableField<Tuna> tunaField = new InjectableField<Tuna>(FishFarm.class.getDeclaredField("tuna"));
       Bean<Tuna> tunaBean = createSimpleWebBean(Tuna.class, manager);
-      Set<Bean<?>> beans = new HashSet<Bean<?>>();
+      List<Bean<?>> beans = new ArrayList<Bean<?>>();
       beans.add(tunaBean);
       Set<Bean<?>> possibleTargets = tunaField.getMatchingBeans(beans, manager.getModelManager());
       assert possibleTargets.size() == 1;
@@ -84,7 +86,7 @@ public class ResolutionByTypeTest extends AbstractTest
       Bean<Salmon> salmonBean = createSimpleWebBean(Salmon.class, manager);
       Bean<Sole> soleBean = createSimpleWebBean(Sole.class, manager);
       
-      Set<Bean<?>> beans = new HashSet<Bean<?>>();
+      List<Bean<?>> beans = new ArrayList<Bean<?>>();
       beans.add(codBean);
       beans.add(salmonBean);
       beans.add(soleBean);
@@ -103,7 +105,7 @@ public class ResolutionByTypeTest extends AbstractTest
       Bean<Salmon> salmonBean = createSimpleWebBean(Salmon.class, manager);
       Bean<Sole> soleBean = createSimpleWebBean(Sole.class, manager);
       
-      Set<Bean<?>> beans = new HashSet<Bean<?>>();
+      List<Bean<?>> beans = new ArrayList<Bean<?>>();
       beans.add(codBean);
       beans.add(salmonBean);
       beans.add(soleBean);
@@ -118,7 +120,7 @@ public class ResolutionByTypeTest extends AbstractTest
       InjectableField<Animal> animalField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("animal"));
       Bean<SeaBass> seaBassBean = createSimpleWebBean(SeaBass.class, manager);
       Bean<Haddock> haddockBean = createSimpleWebBean(Haddock.class, manager);
-      Set<Bean<?>> beans = new HashSet<Bean<?>>();
+      List<Bean<?>> beans = new ArrayList<Bean<?>>();
       beans.add(seaBassBean);
       beans.add(haddockBean);
       Set<Bean<?>> possibleTargets = animalField.getMatchingBeans(beans, manager.getModelManager());

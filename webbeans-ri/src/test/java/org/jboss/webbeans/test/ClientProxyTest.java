@@ -105,5 +105,12 @@ public class ClientProxyTest extends AbstractTest
       assert tuna.getClass().getName().indexOf("$$_javassist_") > 0;
       assert tuna.getState().equals("tuned");
    }
+   
+   @Test(groups = "clientProxy")
+   public void testProxyCreationDoesImplicitAddBean() {
+      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);
+      Tuna tuna = manager.getInstance(tunaBean);
+      assert manager.getBeans().size() == 1;
+   }
 
 }
