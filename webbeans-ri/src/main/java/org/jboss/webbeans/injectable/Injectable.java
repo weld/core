@@ -2,6 +2,7 @@ package org.jboss.webbeans.injectable;
 
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.webbeans.BindingType;
@@ -62,7 +63,7 @@ public abstract class Injectable<T, S>
       return annotatedItem;
    }
    
-   public Set<Bean<?>> getMatchingBeans(Set<Bean<?>> beans, ModelManager modelManager)
+   public Set<Bean<?>> getMatchingBeans(List<Bean<?>> beans, ModelManager modelManager)
    {
       Set<Bean<?>> resolvedBeans = new HashSet<Bean<?>>();
       for (Bean<?> bean : beans)

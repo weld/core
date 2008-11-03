@@ -2,6 +2,7 @@ package org.jboss.webbeans.util;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import javassist.util.proxy.MethodHandler;
 
@@ -30,7 +31,7 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
    {
       if (bean == null)
       {
-         bean = manager.getBean(beanIndex);
+         bean = manager.getBeans().get(beanIndex);
       }
       Context context = manager.getContext(bean.getScopeType());
       Object proxiedInstance = context.get(bean, true);

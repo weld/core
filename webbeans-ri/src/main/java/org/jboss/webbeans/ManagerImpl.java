@@ -3,6 +3,7 @@ package org.jboss.webbeans;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +43,7 @@ import org.jboss.webbeans.util.Reflections;
 
 public class ManagerImpl implements Manager
 {
-      
+
    private class ContextMap extends MapWrapper<Class<? extends Annotation>, List<Context>>
    {
       public ContextMap()
@@ -177,7 +178,7 @@ public class ManagerImpl implements Manager
    private <T> Set<Bean<T>> resolveByType(Injectable<T, ?> injectable)
    {
       Set<Bean<T>> beans = getResolutionManager().get(injectable);
-      
+
       if (beans == null)
       {
          return new HashSet<Bean<T>>();
@@ -194,17 +195,9 @@ public class ManagerImpl implements Manager
       return resolutionManager;
    }
 
-   public Bean<?> getBean(int beanIndex)
+   public List<Bean<?>> getBeans()
    {
-      return beans.get(beanIndex);
-   }
-
-   public Set<Bean<? extends Object>> getBeans()
-   {
-      // TODO List to Set?
-      Set<Bean<?>> beanSet = new HashSet<Bean<?>>();
-      beanSet.addAll(beans);
-      return beanSet;
+      return beans;
    }
 
    public Manager addContext(Context context)
@@ -388,6 +381,5 @@ public class ManagerImpl implements Manager
       // TODO Auto-generated method stub
       return null;
    }
-
 
 }

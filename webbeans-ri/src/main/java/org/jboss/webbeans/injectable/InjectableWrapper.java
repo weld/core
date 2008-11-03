@@ -1,6 +1,7 @@
 package org.jboss.webbeans.injectable;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Set;
 
 import javax.webbeans.manager.Bean;
@@ -25,7 +26,7 @@ public class InjectableWrapper<T, S> extends Injectable<T, S>
    }
 
    @Override
-   public Set<Bean<?>> getMatchingBeans(Set<Bean<?>> possibleBeans, ModelManager modelManager)
+   public Set<Bean<?>> getMatchingBeans(List<Bean<?>> possibleBeans, ModelManager modelManager)
    {
       return delegate.getMatchingBeans(possibleBeans, modelManager);
    }
