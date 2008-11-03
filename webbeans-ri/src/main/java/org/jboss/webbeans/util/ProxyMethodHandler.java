@@ -26,7 +26,7 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
       ProxyMethodHandler.manager = manager;
    }
 
-   @Override
+   //@Override Let's stay compatible with JDK5 :-)
    public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
       if (bean == null)
