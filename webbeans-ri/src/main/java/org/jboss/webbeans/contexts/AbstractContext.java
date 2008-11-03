@@ -1,7 +1,7 @@
 package org.jboss.webbeans.contexts;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
@@ -22,10 +22,10 @@ public abstract class AbstractContext implements Context
    
    protected class BeanMap extends MapWrapper<Bean<? extends Object>, Object>
    {
-
+      
       public BeanMap()
       {
-         super(new HashMap<Bean<? extends Object>, Object>());
+         super(new ConcurrentHashMap<Bean<? extends Object>, Object>());
       }
       
       @SuppressWarnings("unchecked")

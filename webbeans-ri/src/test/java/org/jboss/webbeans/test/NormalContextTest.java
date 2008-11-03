@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
  *
  */
 @SpecVersion("PDR")
-public class CommonContextTest extends AbstractTest
+public class NormalContextTest extends AbstractTest
 {
    Context context;
    
@@ -83,4 +83,11 @@ public class CommonContextTest extends AbstractTest
       ((AbstractContext)context).destroy(manager);
       assert context.get(tunaBean, false) == null;
    }
+
+   @Test(groups="contexts")
+   public void testThreadSafety() {
+      //TODO stub
+      assert false;
+   }
+   
 }

@@ -3,6 +3,7 @@ package org.jboss.webbeans;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -195,6 +196,18 @@ public class ManagerImpl implements Manager
       return resolutionManager;
    }
 
+   /**
+    * Wraps a collection of beans into a thread safe list.
+    * Since this overwrites any existing list of beans in the manager,
+    * this should only be done on startup and other controlled situations.
+    * 
+    * @param beans The collection of beans to wrap.
+    */
+   public Manager setBeans(Collection<Bean<?>> beans) {
+      this.beans = new CopyOnWriteArrayList<Bean<?>>(beans);
+      return this;
+   }
+   
    public List<Bean<?>> getBeans()
    {
       return beans;

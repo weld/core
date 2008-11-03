@@ -2,7 +2,6 @@ package org.jboss.webbeans.util;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.List;
 
 import javassist.util.proxy.MethodHandler;
 
@@ -26,7 +25,6 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
       ProxyMethodHandler.manager = manager;
    }
 
-   //@Override Let's stay compatible with JDK5 :-)
    public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
       if (bean == null)

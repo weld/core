@@ -3,7 +3,6 @@ package org.jboss.webbeans.test;
 import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
