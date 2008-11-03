@@ -6,7 +6,7 @@ import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 
 @AnotherDeploymentType
 @RequestScoped
-public class Tuna
+public final class FinalTuna
 {
 
 }

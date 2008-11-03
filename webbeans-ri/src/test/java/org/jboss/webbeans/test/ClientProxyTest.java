@@ -9,8 +9,10 @@ import java.io.ObjectOutputStream;
 import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.test.beans.FinalTuna;
 import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.Tuna;
+import org.jboss.webbeans.test.beans.TunedTuna;
 import org.jboss.webbeans.test.util.Util;
 import org.testng.annotations.Test;
 
@@ -40,9 +42,9 @@ public class ClientProxyTest extends AbstractTest
    @SpecAssertion(section = "4.4")
    public void testSimpleWebBeanClientProxyIsSerializable()
    {
-      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);
+      Bean<TunedTuna> tunaBean = Util.createSimpleWebBean(TunedTuna.class, manager);
       manager.addBean(tunaBean);
-      Tuna tuna = manager.getInstance(tunaBean);
+      TunedTuna tuna = manager.getInstance(tunaBean);
       ByteArrayOutputStream bytes = new ByteArrayOutputStream();
       ObjectOutputStream out = null;
       ObjectInputStream in = null;
@@ -53,7 +55,7 @@ public class ClientProxyTest extends AbstractTest
          out.flush();
          byte[] data = bytes.toByteArray();
          in = new ObjectInputStream(new ByteArrayInputStream(data));
-         tuna = (Tuna) in.readObject();
+         tuna = (TunedTuna) in.readObject();
          assert tuna.getState().equals("tuned");
       }
       catch (Exception e)
@@ -90,8 +92,9 @@ public class ClientProxyTest extends AbstractTest
    @SpecAssertion(section = "4.4.1")
    public void testInjectionPointWithUnproxyableTypeWhichResolvesToNormalScopedWebBean()
    {
-      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);
+      Bean<FinalTuna> tunaBean = Util.createSimpleWebBean(FinalTuna.class, manager);
       manager.addBean(tunaBean);
+      FinalTuna tuna = manager.getInstanceByType(FinalTuna.class);      
       assert false;
    }
 
@@ -99,9 +102,9 @@ public class ClientProxyTest extends AbstractTest
    @SpecAssertion(section = "4.4.2")
    public void testClientProxyInvocation()
    {
-      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);
+      Bean<TunedTuna> tunaBean = Util.createSimpleWebBean(TunedTuna.class, manager);
       manager.addBean(tunaBean);
-      Tuna tuna = manager.getInstance(tunaBean);
+      TunedTuna tuna = manager.getInstance(tunaBean);
       assert tuna.getClass().getName().indexOf("$$_javassist_") > 0;
       assert tuna.getState().equals("tuned");
    }

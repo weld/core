@@ -14,7 +14,7 @@ public abstract class NormalContext extends AbstractContext
    {
       super(scopeType);
       beans = new BeanMap();
-      //TODO Are they active at creation?
+      // TODO active on create?
       active = true;
    }
    
@@ -24,30 +24,18 @@ public abstract class NormalContext extends AbstractContext
       {
          throw new ContextNotActiveException();
       }
-      
-      //TODO violation of specs. Why not just set active to false in destroy()?
-      if (beans == null)
-      {
-         // Context has been destroyed
-         return null;
-      }
-      
       T instance = beans.get(bean);
-      
       if (instance != null)
       {
          return instance;
       }
-
       if (!create)
       {
          return null;
       }
 
       // TODO should bean creation be synchronized?
-
       instance = bean.create();
-
       beans.put(bean, instance);
       return instance;
    }
@@ -64,6 +52,7 @@ public abstract class NormalContext extends AbstractContext
          destroy(manager, bean);
       }
       beans = new BeanMap();
+      active = false;
    }
 
 }

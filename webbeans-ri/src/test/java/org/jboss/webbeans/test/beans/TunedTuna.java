@@ -6,7 +6,10 @@ import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 
 @AnotherDeploymentType
 @RequestScoped
-public class Tuna
+public class TunedTuna
 {
-
+   public String getState()
+   {
+      return "tuned";
+   }
 }
