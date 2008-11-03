@@ -1,6 +1,7 @@
 package org.jboss.webbeans.model.bean;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.SimpleAnnotatedType;
 import org.jboss.webbeans.model.MergedStereotypesModel;
 import org.jboss.webbeans.util.LoggerUtil;
 import org.jboss.webbeans.util.Reflections;
@@ -63,6 +65,10 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
    
    protected AbstractClassBeanModel<? extends T> getSpecializedType() {
       throw new UnsupportedOperationException();
+   }
+   
+   protected static <T> SimpleAnnotatedType getEmptyAnnotatedType(Class<T> type) {
+      return new SimpleAnnotatedType<T>(type, new HashMap<Class<? extends Annotation>, Annotation>());
    }
    
    protected void initInjectionPoints()
