@@ -24,13 +24,14 @@ import org.jboss.webbeans.test.beans.Lion;
 import org.jboss.webbeans.test.beans.Panther;
 import org.jboss.webbeans.test.beans.Puma;
 import org.jboss.webbeans.test.beans.Tiger;
+import org.jboss.webbeans.test.util.Util;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.Test;
 
+@SuppressWarnings( { "unchecked", "unused" })
 public class EnterpriseBeanModelTest extends AbstractTest
-{  
-   
-   @SuppressWarnings("unchecked")
+{
+
    @Test
    public void testStateless()
    {
@@ -39,134 +40,83 @@ public class EnterpriseBeanModelTest extends AbstractTest
       Reflections.annotationSetMatches(lion.getBindingTypes(), Current.class);
       assert lion.getName().equals("lion");
    }
-   
-   @SuppressWarnings("unchecked")
+
    @Test
    public void testStatelessDefinedInXml()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      AnnotatedType annotatedItem = new SimpleAnnotatedType(Giraffe.class, annotations);
-      
-      EnterpriseBeanModel<Giraffe> giraffe = new EnterpriseBeanModel<Giraffe>(new SimpleAnnotatedType(Giraffe.class), annotatedItem, manager);
+      EnterpriseBeanModel<Giraffe> giraffe = Util.createEnterpriseBeanModel(Giraffe.class, manager);
       assert giraffe.getScopeType().equals(Dependent.class);
-      Reflections.annotationSetMatches(giraffe.getBindingTypes(), Current.class);
+      assert Reflections.annotationSetMatches(giraffe.getBindingTypes(), Current.class);
    }
-   
-   @Test
+
+   @Test(expectedExceptions = RuntimeException.class)
    public void testStatelessWithRequestScope()
    {
-      boolean exception = false;
-      try
-      {
-         new EnterpriseBeanModel<Bear>(new SimpleAnnotatedType<Bear>(Bear.class), getEmptyAnnotatedType(Bear.class), manager);
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
+      EnterpriseBeanModel<Bear> bear = Util.createEnterpriseBeanModel(Bear.class, manager);
    }
-   
-   @Test(groups="ejb3")
+
+   @Test(groups = "ejb3")
    public void testSingleton()
    {
       assert false;
    }
-   
-   @Test(groups="ejb3")
+
+   @Test(groups = "ejb3")
    public void testSingletonWithRequestScope()
    {
       assert false;
    }
-   
-   @SuppressWarnings("unchecked")
+
    @Test
    public void testStateful()
    {
-
-      AbstractEnterpriseBeanModel<Tiger> tiger = new EnterpriseBeanModel<Tiger>(new SimpleAnnotatedType(Tiger.class), getEmptyAnnotatedType(Tiger.class), manager);
-      Reflections.annotationSetMatches(tiger.getBindingTypes(), Synchronous.class);
+      EnterpriseBeanModel<Tiger> tiger = Util.createEnterpriseBeanModel(Tiger.class, manager);
+      assert Reflections.annotationSetMatches(tiger.getBindingTypes(), Synchronous.class);
       assert tiger.getRemoveMethod().getAnnotatedItem().getDelegate().getName().equals("remove");
       assert tiger.getName() == null;
    }
-   
-   @SuppressWarnings("unchecked")
+
    @Test
    public void testMultipleRemoveMethodsWithDestroys()
    {
-
-      AbstractEnterpriseBeanModel<Elephant> elephant = new EnterpriseBeanModel<Elephant>(new SimpleAnnotatedType(Elephant.class), getEmptyAnnotatedType(Elephant.class), manager);
+      EnterpriseBeanModel<Elephant> elephant = Util.createEnterpriseBeanModel(Elephant.class, manager);
       assert elephant.getRemoveMethod().getAnnotatedItem().getDelegate().getName().equals("remove2");
    }
-   
-   @SuppressWarnings("unchecked")
-   @Test
+
+   @Test(expectedExceptions=RuntimeException.class)
    public void testMultipleRemoveMethodsWithoutDestroys()
    {
-      boolean exception = false;
-      try
-      {
-         new EnterpriseBeanModel<Puma>(new SimpleAnnotatedType(Puma.class), getEmptyAnnotatedType(Puma.class), manager);
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
+      EnterpriseBeanModel<Puma> puma = Util.createEnterpriseBeanModel(Puma.class, manager);
    }
-   
-   @SuppressWarnings("unchecked")
-   @Test
+
+   @Test(expectedExceptions=RuntimeException.class)
    public void testMultipleRemoveMethodsWithMultipleDestroys()
    {
-      boolean exception = false;
-      try
-      {
-         new EnterpriseBeanModel<Cougar>(new SimpleAnnotatedType(Cougar.class), getEmptyAnnotatedType(Cougar.class), manager);
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
+      EnterpriseBeanModel<Cougar> cougar = Util.createEnterpriseBeanModel(Cougar.class, manager);
    }
-   
-   @SuppressWarnings("unchecked")
-   @Test
+
+   @Test(expectedExceptions=RuntimeException.class)
    public void testNonStatefulEnterpriseBeanWithDestroys()
    {
-      boolean exception = false;
-      try
-      {
-         new EnterpriseBeanModel<Cheetah>(new SimpleAnnotatedType(Cheetah.class), getEmptyAnnotatedType(Cheetah.class), manager);
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
+      EnterpriseBeanModel<Cheetah> cheetah = Util.createEnterpriseBeanModel(Cheetah.class, manager);
    }
-   
-   @SuppressWarnings("unchecked")
+
    @Test
    public void testRemoveMethodWithDefaultBinding()
    {
-
-      AbstractEnterpriseBeanModel<Panther> panther = new EnterpriseBeanModel<Panther>(new SimpleAnnotatedType<Panther>(Panther.class), getEmptyAnnotatedType(Panther.class), manager);
-      
+      EnterpriseBeanModel<Panther> panther = Util.createEnterpriseBeanModel(Panther.class, manager);
       assert panther.getRemoveMethod().getAnnotatedItem().getDelegate().getName().equals("remove");
       assert panther.getRemoveMethod().getParameters().size() == 1;
       assert panther.getRemoveMethod().getParameters().get(0).getType().equals(String.class);
       assert panther.getRemoveMethod().getParameters().get(0).getBindingTypes().size() == 1;
       assert Reflections.annotationSetMatches(panther.getRemoveMethod().getParameters().get(0).getBindingTypes(), Current.class);
    }
-   
-   @SuppressWarnings("unchecked")
+
    @Test
    public void testMessageDriven()
    {
-      AbstractEnterpriseBeanModel<Leopard> leopard = new EnterpriseBeanModel<Leopard>(new SimpleAnnotatedType(Leopard.class), getEmptyAnnotatedType(Leopard.class), manager);
-      Reflections.annotationSetMatches(leopard.getBindingTypes(), Current.class);
+      EnterpriseBeanModel<Leopard> leopard = Util.createEnterpriseBeanModel(Leopard.class, manager);
+      assert Reflections.annotationSetMatches(leopard.getBindingTypes(), Current.class);
    }
 
 }
