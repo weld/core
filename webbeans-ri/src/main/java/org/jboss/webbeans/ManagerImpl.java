@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.webbeans.AmbiguousDependencyException;
 import javax.webbeans.ContextNotActiveException;
@@ -78,7 +79,7 @@ public class ManagerImpl implements Manager
       initContexts(null);
       this.modelManager = new ModelManager();
       this.ejbLookupManager = new EjbManager();
-      this.beans = new ArrayList<Bean<?>>();
+      this.beans = new CopyOnWriteArrayList<Bean<?>>();
       this.eventBus = new EventBus();
       this.resolutionManager = new ResolutionManager(this);
       this.proxyPool = new ProxyPool(this);
