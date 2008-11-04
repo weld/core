@@ -5,6 +5,8 @@ import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.SimpleBeanImpl;
+import org.jboss.webbeans.test.beans.FishPond;
+import org.jboss.webbeans.test.beans.Goldfish;
 import org.jboss.webbeans.test.beans.RedSnapper;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.TunaFarm;
@@ -17,8 +19,12 @@ public class SimpleBeanLifecycleTest extends AbstractTest
 	@Test(groups="beanConstruction") @SpecAssertion(section="3.1.3")
 	public void testInjectionOfParametersIntoBeanConstructor()
 	{
-		// TODO Placeholder
-		assert false;
+	   Bean<FishPond> goldfishPondBean = createSimpleWebBean(FishPond.class, manager);
+	   Bean<Goldfish> goldfishBean = createSimpleWebBean(Goldfish.class, manager);
+	   manager.addBean(goldfishBean);
+	   manager.addBean(goldfishPondBean);
+	   FishPond fishPond = goldfishPondBean.create();
+	   assert fishPond.goldfish != null;
 	}
 	
 	@Test(groups="specialization") @SpecAssertion(section="3.1.4")
@@ -73,6 +79,18 @@ public class SimpleBeanLifecycleTest extends AbstractTest
       manager.addBean(tunaBean);
       TunaFarm tunaFarm = tunaFarmBean.create();
       assert tunaFarm.tuna != null;
+   }
+   
+   @Test(groups="beanConstruction") @SpecAssertion(section="5.3")
+   public void testInitializerMethodsCalled()
+   {
+      assert false;
+   }
+   
+   @Test(groups={"beanConstruction", "commonAnnotations"}) @SpecAssertion(section="5.3")
+   public void testPostConstructMethodCalled()
+   {
+      assert false;
    }
    
    @Test(groups="injection") 

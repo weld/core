@@ -28,7 +28,6 @@
             <exclude name="singletons" />
             <exclude name="ejbjarxml" />
             <exclude name="beanDestruction" />
-            <exclude name="beanConstruction" />
             <exclude name="commonAnnotations" />
          </run>
       </groups>
