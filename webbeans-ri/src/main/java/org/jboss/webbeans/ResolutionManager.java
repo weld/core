@@ -83,7 +83,7 @@ public class ResolutionManager
       if (key.getType().equals(Object.class))
       {
          // TODO Fix this cast
-         beans = new HashSet<Bean<T>>((List<? extends Bean<T>>) manager.getBeans());
+         beans = new HashSet<Bean<T>>((List) manager.getBeans());
       }
       else
       {
