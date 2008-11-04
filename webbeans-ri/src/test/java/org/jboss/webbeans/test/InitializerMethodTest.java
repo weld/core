@@ -1,17 +1,29 @@
 package org.jboss.webbeans.test;
 
+import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
+
 import javax.webbeans.DefinitionException;
 import javax.webbeans.NonexistentMethodException;
+import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.test.beans.Chicken;
+import org.jboss.webbeans.test.beans.ChickenHutch;
+import org.jboss.webbeans.test.beans.Fox;
+import org.jboss.webbeans.test.beans.broken.Capercaillie;
+import org.jboss.webbeans.test.beans.broken.Dottrel;
+import org.jboss.webbeans.test.beans.broken.Grouse;
+import org.jboss.webbeans.test.beans.broken.Pheasant;
+import org.jboss.webbeans.test.beans.broken.Shrike;
 import org.testng.annotations.Test;
 
-public class InitializerMethodTest
+@SpecVersion("PDR")
+public class InitializerMethodTest extends AbstractTest
 {
    
    @Test(expectedExceptions=DefinitionException.class, groups="initializerMethod") @SpecAssertion(section="3.7")
    public void testStaticInitializerMethodNotAllowed()
    {
-      assert false;
+      createSimpleWebBean(Dottrel.class, manager);
    }
    
    @Test(groups={"initializerMethod", "servlet"}) @SpecAssertion(section="3.7")
@@ -50,34 +62,40 @@ public class InitializerMethodTest
       assert false;
    }
    
-   @Test(groups={"initializerMethod"}) @SpecAssertion(section="3.7")
+   @Test(groups={"initializerMethod"}) @SpecAssertion(section={"3.7", "5.3", "3.7.2", "3.7.3"})
    public void testMultipleInitializerMethodsAreCalled()
    {
-      assert false;
+      manager.addBean(createSimpleWebBean(Fox.class, manager));
+      manager.addBean(createSimpleWebBean(Chicken.class, manager));
+      
+      Bean<ChickenHutch> chickenHutchBean = createSimpleWebBean(ChickenHutch.class, manager);
+      ChickenHutch chickenHutch = chickenHutchBean.create();
+      assert chickenHutch.chicken != null;
+      assert chickenHutch.fox != null;
    }
    
    @Test(groups="initializerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.7.1")
    public void testInitializerMethodAnnotatedProduces()
    {
-      assert false;
+      createSimpleWebBean(Pheasant.class, manager);
    }
    
    @Test(groups="initializerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.7.1")
    public void testInitializerMethodAnnotatedDestructor()
    {
-      assert false;
+      createSimpleWebBean(Shrike.class, manager);
    }
    
    @Test(groups="initializerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.7.1")
    public void testInitializerMethodHasParameterAnnotatedDisposes()
    {
-      assert false;
+      createSimpleWebBean(Capercaillie.class, manager);
    }
    
    @Test(groups="initializerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.7.1")
    public void testInitializerMethodHasParameterAnnotatedObserves()
    {
-      assert false;
+      createSimpleWebBean(Grouse.class, manager);
    }
    
    @Test(groups={"initializerMethod", "webbeansxml"}) @SpecAssertion(section="3.7.2")
@@ -98,20 +116,8 @@ public class InitializerMethodTest
       assert false;
    }
    
-   @Test(groups={"initializerMethod"}) @SpecAssertion(section="3.7.2")
-   public void testBeanHasAllInitializerMethodsDeclaredInJava()
-   {
-      assert false;
-   }
-   
    @Test(groups={"initializerMethod", "webbeansxml"}) @SpecAssertion(section="3.7.2")
    public void testBeanHasAllInitializerMethodsDeclaredInJavaAndXml()
-   {
-      assert false;
-   }
-   
-   @Test(groups={"initializerMethod"}) @SpecAssertion(section="3.7.3")
-   public void testInitializerMethodParametersAreInjected()
    {
       assert false;
    }
