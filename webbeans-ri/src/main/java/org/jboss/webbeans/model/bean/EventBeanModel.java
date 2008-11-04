@@ -9,13 +9,12 @@ import javax.webbeans.Dependent;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.injectable.BeanConstructor;
 import org.jboss.webbeans.injectable.SimpleConstructor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.SimpleAnnotatedField;
 import org.jboss.webbeans.util.LoggerUtil;
-
-import com.sun.org.apache.xerces.internal.dom.events.EventImpl;
 
 /**
  * Web Beans bean meta model for the container instantiated, injectable, 
