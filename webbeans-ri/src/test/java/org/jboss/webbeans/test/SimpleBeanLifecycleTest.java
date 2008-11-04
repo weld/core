@@ -81,7 +81,7 @@ public class SimpleBeanLifecycleTest extends AbstractTest
       assert tunaFarm.tuna != null;
    }
    
-   @Test(groups="beanConstruction") @SpecAssertion(section="5.3")
+   @Test(groups="initializerMethod") @SpecAssertion(section="5.3")
    public void testInitializerMethodsCalled()
    {
       assert false;
