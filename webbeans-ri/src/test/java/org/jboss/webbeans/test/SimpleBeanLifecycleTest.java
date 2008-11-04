@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 public class SimpleBeanLifecycleTest extends AbstractTest
 {
 	
-	@Test(groups="beanLifecycle") @SpecAssertion(section="3.1.3")
+	@Test(groups="beanConstruction") @SpecAssertion(section="3.1.3")
 	public void testInjectionOfParametersIntoBeanConstructor()
 	{
 		// TODO Placeholder

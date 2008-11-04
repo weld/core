@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 public class EnterpriseBeanLifecycleTest
 {
 
-   @Test(groups="beanLifecycle") @SpecAssertion(section="3.2.3")
+   @Test(groups="removeMethod") @SpecAssertion(section="3.2.3")
    public void testInjectonOfParametersIntoRemoveMethod()
    {
       // TODO Placeholder

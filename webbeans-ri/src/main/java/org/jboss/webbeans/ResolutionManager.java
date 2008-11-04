@@ -130,13 +130,17 @@ public class ResolutionManager
             possibleDeploymentTypes.add(bean.getDeploymentType());
          }
          possibleDeploymentTypes.retainAll(enabledDeploymentTypes);
-         Class<? extends Annotation> highestPrecedencePossibleDeploymentType = possibleDeploymentTypes.last();
          Set<Bean<?>> trimmed = new HashSet<Bean<?>>();
-         for (Bean<?> bean : beans)
+         if (possibleDeploymentTypes.size() > 0)
          {
-            if (bean.getDeploymentType().equals(highestPrecedencePossibleDeploymentType))
+            Class<? extends Annotation> highestPrecedencePossibleDeploymentType = possibleDeploymentTypes.last();
+            
+            for (Bean<?> bean : beans)
             {
-               trimmed.add(bean);
+               if (bean.getDeploymentType().equals(highestPrecedencePossibleDeploymentType))
+               {
+                  trimmed.add(bean);
+               }
             }
          }
          return trimmed;

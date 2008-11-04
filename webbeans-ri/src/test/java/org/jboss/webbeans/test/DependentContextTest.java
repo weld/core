@@ -92,10 +92,15 @@ public class DependentContextTest extends AbstractTest
    @Test(groups={"contexts", "beanLifecycle"}) @SpecAssertion(section="8.3")
    public void testContextIsActiveDuringBeanCreation()
    {
-      assert false;
+      // Slightly roundabout, but I can't see a better way to test atm
+      Bean<FoxRun> foxRunBean = createSimpleWebBean(FoxRun.class, manager);
+      Bean<Fox> foxBean = createSimpleWebBean(Fox.class, manager);
+      manager.addBean(foxBean);
+      FoxRun foxRun = foxRunBean.create();
+      assert foxRun.fox != null;
    }
    
-   @Test(groups={"contexts", "beanLifecycle"}) @SpecAssertion(section="8.3")
+   @Test(groups={"contexts", "beanDestruction"}) @SpecAssertion(section="8.3")
    public void testContextIsActiveDuringBeanDestruction()
    {
       assert false;
@@ -135,7 +140,7 @@ public class DependentContextTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups={"contexts", "beanLifecycle"}) @SpecAssertion(section="8.3")
+   @Test(groups={"contexts", "beanDestruction"}) @SpecAssertion(section="8.3")
    public void testDestroyingParentDestroysDependents()
    {
       assert false;

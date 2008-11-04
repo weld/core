@@ -76,7 +76,7 @@ public class NormalContextTest extends AbstractTest
       //assert context.get(shelobBean, true) == null;
    }
 
-   @Test(groups="contexts")
+   @Test(groups={"contexts", "beanDestruction"})
    public void testDestroy() {
       Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);      
       assert context.get(tunaBean, true) instanceof Tuna;

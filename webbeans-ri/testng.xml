@@ -6,7 +6,6 @@
       <groups>
          <run>
             <exclude name="specialization" />
-            <exclude name="beanLifecycle" />
             <exclude name="deployment" />
             <exclude name="disposalMethod" />
             <exclude name="producerMethod" />
@@ -28,6 +27,9 @@
             <exclude name="removeMethod" />
             <exclude name="singletons" />
             <exclude name="ejbjarxml" />
+            <exclude name="beanDestruction" />
+            <exclude name="beanConstruction" />
+            <exclude name="commonAnnotations" />
          </run>
       </groups>
       <packages>

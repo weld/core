@@ -14,6 +14,7 @@ import javax.webbeans.DeploymentException;
 import javax.webbeans.Production;
 import javax.webbeans.RequestScoped;
 import javax.webbeans.Standard;
+import javax.webbeans.UnsatisfiedDependencyException;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.introspector.AnnotatedType;
@@ -23,6 +24,7 @@ import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.FishStereotype;
 import org.jboss.webbeans.test.annotations.HornedAnimalDeploymentType;
 import org.jboss.webbeans.test.beans.Antelope;
+import org.jboss.webbeans.test.beans.RedSnapper;
 import org.jboss.webbeans.test.beans.Reindeer;
 import org.jboss.webbeans.test.beans.Rhinoceros;
 import org.jboss.webbeans.test.beans.SeaBass;
@@ -113,10 +115,18 @@ public class DeploymentTypeTest extends AbstractTest
       assert trout.getScopeType().equals(RequestScoped.class);
    }
    
-   @Test(groups="beanLifecycle") @SpecAssertion(section="2.5.6")
+   @Test(groups="beanLifecycle", expectedExceptions=UnsatisfiedDependencyException.class) @SpecAssertion(section="2.5.6")
    public void testBeanWithDisabledDeploymentTypeNotInstantiated()
    {
-      assert false;
+      List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
+      enabledDeploymentTypes.add(Standard.class);
+      enabledDeploymentTypes.add(AnotherDeploymentType.class);
+      enabledDeploymentTypes.add(HornedAnimalDeploymentType.class);
+      manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
+      
+      Bean<RedSnapper> bean = createSimpleWebBean(RedSnapper.class, manager);
+      manager.addBean(bean);
+      manager.getInstanceByType(RedSnapper.class);
    }
    
    @Test @SpecAssertion(section={"2.5.6", "2.5.7"})

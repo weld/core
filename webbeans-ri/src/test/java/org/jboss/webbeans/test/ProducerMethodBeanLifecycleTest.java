@@ -5,14 +5,14 @@ import org.testng.annotations.Test;
 public class ProducerMethodBeanLifecycleTest
 {
 
-   @Test(groups="beanLifecycle") @SpecAssertion(section="3.3")
+   @Test(groups="producerMethod") @SpecAssertion(section="3.3")
    public void testNonDependentProducerMethodThatReturnsNull()
    {
       // TODO Placeholder
       assert false;
    }
    
-   @Test(groups="beanLifecycle") @SpecAssertion(section="3.3")
+   @Test(groups="producerMethod") @SpecAssertion(section="3.3")
    public void testDependentProducerMethodThatReturnsNull()
    {
       // TODO Placeholder

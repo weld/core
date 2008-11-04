@@ -31,7 +31,9 @@ public class InstantiationByTypeTest extends AbstractTest
    @Test(groups={"resolution", "beanLifecycle"}) @SpecAssertion(section="4.9")
    public void testCurrentBindingTypeAssumed()
    {
-      assert false;
+      Bean<Tuna> tunaBean = createSimpleWebBean(Tuna.class, manager);
+      manager.addBean(tunaBean);
+      assert manager.getInstanceByType(Tuna.class) != null;
    }
    
    @Test(groups="resolution", expectedExceptions=DuplicateBindingTypeException.class) @SpecAssertion(section="4.9")
