@@ -4,7 +4,6 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.DeploymentException;
 import javax.webbeans.UnremovedException;
 
-import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.model.bean.EnterpriseBeanModel;
 import org.jboss.webbeans.test.beans.Giraffe;
 import org.jboss.webbeans.test.beans.GreatDane;
@@ -18,7 +17,12 @@ import org.jboss.webbeans.test.beans.broken.Greyhound;
 import org.jboss.webbeans.test.beans.broken.Husky;
 import org.jboss.webbeans.test.beans.broken.IrishTerrier;
 import org.jboss.webbeans.test.beans.broken.Pekingese;
+import org.jboss.webbeans.test.beans.broken.Poodle;
 import org.jboss.webbeans.test.beans.broken.Pug;
+import org.jboss.webbeans.test.beans.broken.Rottweiler;
+import org.jboss.webbeans.test.beans.broken.Saluki;
+import org.jboss.webbeans.test.beans.broken.Spitz;
+import org.jboss.webbeans.test.beans.broken.Whippet;
 import org.jboss.webbeans.test.util.Util;
 import org.testng.annotations.Test;
 
@@ -204,7 +208,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.4")
-   public void testMessageDrivenBeansNotOK()
+   public void testMessageDrivenBeansDefinedWithXMLNotOK()
    {
       assert false;
    }
@@ -227,28 +231,28 @@ public class EnterpriseBeanModelTest extends AbstractTest
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEJBWithoutRemoveMethodInApplicationScopeFails()
    {
-      assert false;
+      EnterpriseBeanModel<Poodle> poodle = Util.createEnterpriseBeanModel(Poodle.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEJBWithoutRemoveMethodInSessionScopeFails()
    {
-      assert false;
+      EnterpriseBeanModel<Rottweiler> rottweiler = Util.createEnterpriseBeanModel(Rottweiler.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEJBWithoutRemoveMethodInConversationScopeFails()
    {
-      assert false;
+      EnterpriseBeanModel<Spitz> spitz = Util.createEnterpriseBeanModel(Spitz.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEJBWithoutRemoveMethodInRequestScopeFails()
    {
-      assert false;
+      EnterpriseBeanModel<Saluki> saluki = Util.createEnterpriseBeanModel(Saluki.class, manager);
    }
 
    @Test(expectedExceptions = UnremovedException.class)
@@ -290,7 +294,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
    @SpecAssertion(section = "3.3.5.1")
    public void testEJBWithMultipleDestructorAnnotationsFail()
    {
-      assert false;
+      EnterpriseBeanModel<Whippet> whippet = Util.createEnterpriseBeanModel(Whippet.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
@@ -376,7 +380,8 @@ public class EnterpriseBeanModelTest extends AbstractTest
    @SpecAssertion(section = "3.3.7")
    public void testDefaultName()
    {
-      assert false;
+      EnterpriseBeanModel<Pitbull> pitbull = Util.createEnterpriseBeanModel(Pitbull.class, manager);
+      assert pitbull.getName().equals("pitbull");
    }
 
 

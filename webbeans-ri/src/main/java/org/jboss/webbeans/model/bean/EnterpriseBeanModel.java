@@ -98,11 +98,11 @@ public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
             }
             else if (possibleRemoveMethods.size() > 1)
             {
-               throw new RuntimeException("Multiple remove methods are annotated @Destroys for " + getType());
+               throw new DefinitionException("Multiple remove methods are annotated @Destructor for " + getType());
             }
             else if (possibleRemoveMethods.size() == 0)
             {
-               throw new RuntimeException("Multiple remove methods are declared, and none are annotated @Destroys for " + getType());
+               throw new RuntimeException("Multiple remove methods are declared, and none are annotated @Destructor for " + getType());
             }
          }
          else if (getEjbMetaData().getRemoveMethods().isEmpty() && !getScopeType().equals(Dependent.class))
@@ -115,7 +115,7 @@ public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
          List<Method> destroysMethods = Reflections.getMethods(getType(), Destructor.class);
          if (destroysMethods.size() > 0)
          {
-            throw new RuntimeException("Only stateful enterprise beans can have methods annotated @Destroys; " + getType() + " is not a stateful enterprise bean");
+            throw new RuntimeException("Only stateful enterprise beans can have methods annotated @Destructor; " + getType() + " is not a stateful enterprise bean");
          }
       }
    }

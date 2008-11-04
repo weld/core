@@ -20,7 +20,6 @@ public abstract class AbstractEnterpriseBeanModel<T> extends
          AnnotatedType<T> xmlAnnotatedItem)
    {
       super(annotatedItem, xmlAnnotatedItem);
-      
    }
 
    @Override

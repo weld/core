@@ -14,6 +14,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.webbeans.Destructor;
+
 import org.jboss.webbeans.util.Reflections;
 
 public class EjbMetaData<T>
@@ -57,6 +59,10 @@ public class EjbMetaData<T>
          for (Method removeMethod : Reflections.getMethods(type, REMOVE_ANNOTATION))
          {
             removeMethods.add(removeMethod);
+         }
+         for (Method destructorMethod : Reflections.getMethods(type, Destructor.class))
+         {
+            removeMethods.add(destructorMethod);
          }
       }
       else if (type.isAnnotationPresent(MESSAGE_DRIVEN_ANNOTATION))
