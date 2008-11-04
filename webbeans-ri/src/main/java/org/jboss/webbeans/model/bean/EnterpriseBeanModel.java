@@ -1,12 +1,19 @@
 package org.jboss.webbeans.model.bean;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.Destructor;
+import javax.webbeans.Disposes;
+import javax.webbeans.Initializer;
+import javax.webbeans.Observes;
+import javax.webbeans.Produces;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.BeanConstructor;
@@ -73,6 +80,7 @@ public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
       return location;
    }
    
+   
 // TODO loggigng
    protected void initRemoveMethod(ManagerImpl container)
    {
@@ -80,7 +88,8 @@ public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
       {
          if (getEjbMetaData().getRemoveMethods().size() == 1)
          {
-            super.removeMethod = new InjectableMethod<Object>(getEjbMetaData().getRemoveMethods().get(0));
+//            super.removeMethod = new InjectableMethod<Object>(getEjbMetaData().getRemoveMethods().get(0));
+            super.removeMethod = checkRemoveMethod(getEjbMetaData().getRemoveMethods().get(0));
          }
          else if (getEjbMetaData().getRemoveMethods().size() > 1)
          {
@@ -94,7 +103,7 @@ public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
             }
             if (possibleRemoveMethods.size() == 1)
             {
-               super.removeMethod = new InjectableMethod<Object>(possibleRemoveMethods.get(0)); 
+               super.removeMethod = checkRemoveMethod(possibleRemoveMethods.get(0));
             }
             else if (possibleRemoveMethods.size() > 1)
             {
@@ -115,11 +124,43 @@ public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
          List<Method> destroysMethods = Reflections.getMethods(getType(), Destructor.class);
          if (destroysMethods.size() > 0)
          {
-            throw new RuntimeException("Only stateful enterprise beans can have methods annotated @Destructor; " + getType() + " is not a stateful enterprise bean");
+            throw new DefinitionException("Only stateful enterprise beans can have methods annotated @Destructor; " + getType() + " is not a stateful enterprise bean");
          }
       }
    }
    
+
+   private InjectableMethod<?> checkRemoveMethod(Method method)
+   {
+      if (method.isAnnotationPresent(Initializer.class)) {
+         throw new DefinitionException("Remove methods cannot be initializers on " + method.getName());
+      }
+      if (method.isAnnotationPresent(Produces.class)) {
+         throw new DefinitionException("Remove methods cannot be producers on " + method.getName());
+      }
+      if (hasParameterAnnotation(method.getParameterAnnotations(), Disposes.class)) {
+         throw new DefinitionException("Remove method can't have @Disposes annotated parameters on " + method.getName());
+      }
+      if (hasParameterAnnotation(method.getParameterAnnotations(), Observes.class)) {
+         throw new DefinitionException("Remove method can't have @Observes annotated parameters on " + method.getName());
+      }
+      return new InjectableMethod<Object>(method);
+   }
+
+   
+   //FIXME move up?
+   private boolean hasParameterAnnotation(Annotation[][] parameterAnnotations, Class<? extends Annotation> clazz)
+   {
+      for (Annotation[] parameter : parameterAnnotations) {
+         for (Annotation annotation : parameter) {
+            if (annotation.annotationType() == clazz) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
    @Override
    protected AbstractClassBeanModel<? extends T> getSpecializedType()
    {

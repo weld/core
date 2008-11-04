@@ -16,12 +16,17 @@ import org.jboss.webbeans.test.beans.broken.Dachshund;
 import org.jboss.webbeans.test.beans.broken.Greyhound;
 import org.jboss.webbeans.test.beans.broken.Husky;
 import org.jboss.webbeans.test.beans.broken.IrishTerrier;
+import org.jboss.webbeans.test.beans.broken.JackRussellTerrier;
 import org.jboss.webbeans.test.beans.broken.Pekingese;
 import org.jboss.webbeans.test.beans.broken.Poodle;
 import org.jboss.webbeans.test.beans.broken.Pug;
+import org.jboss.webbeans.test.beans.broken.Pumi;
 import org.jboss.webbeans.test.beans.broken.Rottweiler;
+import org.jboss.webbeans.test.beans.broken.RussellTerrier;
 import org.jboss.webbeans.test.beans.broken.Saluki;
 import org.jboss.webbeans.test.beans.broken.Spitz;
+import org.jboss.webbeans.test.beans.broken.Toller;
+import org.jboss.webbeans.test.beans.broken.WelshCorgie;
 import org.jboss.webbeans.test.beans.broken.Whippet;
 import org.jboss.webbeans.test.util.Util;
 import org.testng.annotations.Test;
@@ -182,7 +187,8 @@ public class EnterpriseBeanModelTest extends AbstractTest
    @SpecAssertion(section = "3.3.2")
    public void testObjectIsInAPITypes()
    {
-      assert false;
+      EnterpriseBeanModel<Laika> laika = Util.createEnterpriseBeanModel(Laika.class, manager);
+      assert laika.getApiTypes().contains(Object.class);
    }
 
    @Test
@@ -306,23 +312,30 @@ public class EnterpriseBeanModelTest extends AbstractTest
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5.1")
+   public void testAnnotationDefinedEJBWithDestructorWithDisposesParameterFails()
+   {
+      EnterpriseBeanModel<Pumi> pumi = Util.createEnterpriseBeanModel(Pumi.class, manager);
+   }
+
+   @Test(expectedExceptions = DefinitionException.class)
+   @SpecAssertion(section = "3.3.5.1")
    public void testEJBWithInitializerAnnotationOnRemoveMethodFails()
    {
-      assert false;
+      EnterpriseBeanModel<JackRussellTerrier> jackRussellTerrier = Util.createEnterpriseBeanModel(JackRussellTerrier.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5.1")
    public void testEJBWithProducerAnnotationOnRemoveMethodFails()
    {
-      assert false;
+      EnterpriseBeanModel<RussellTerrier> russellTerrier = Util.createEnterpriseBeanModel(RussellTerrier.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5.1")
    public void testEJBWithRemoveMethodTakingObserverAnnotatedParameterFails()
    {
-      assert false;
+      EnterpriseBeanModel<Toller> toller = Util.createEnterpriseBeanModel(Toller.class, manager);
    }
 
    // TODO Separate section for XML defined beans?
@@ -384,6 +397,11 @@ public class EnterpriseBeanModelTest extends AbstractTest
       assert pitbull.getName().equals("pitbull");
    }
 
+   @Test(expectedExceptions=DefinitionException.class)
+   public void testStatelessEJBsWithDestructorAnnotationFails() 
+   {
+      EnterpriseBeanModel<WelshCorgie> welshCorgie = Util.createEnterpriseBeanModel(WelshCorgie.class, manager);
+   }
 
 /*   
    @Test
