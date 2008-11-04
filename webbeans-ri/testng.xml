@@ -24,6 +24,10 @@
             <exclude name="servlet" />
             <exclude name="clientProxy" />
             <exclude name="passivation" />
+            <exclude name="enterpriseBeans" />
+            <exclude name="removeMethod" />
+            <exclude name="singletons" />
+            <exclude name="ejbjarxml" />
          </run>
       </groups>
       <packages>

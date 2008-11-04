@@ -1,6 +1,8 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -78,27 +80,33 @@ public class ResolutionManager
    
    public <T> Set<Bean<T>> get(Injectable<T, ?> key)
    {
+      Set<Bean<T>> beans;
       if (key.getType().equals(Object.class))
       {
          // TODO Fix this cast
-         return (Set<Bean<T>>) (Set) manager.getBeans();
+         beans = new HashSet<Bean<T>>((Collection<? extends Bean<T>>) manager.getBeans());
       }
-      if (!resolvedInjectionPoints.containsKey(key))
+      else
       {
-         registerInjectionPoint(key);
+         if (!resolvedInjectionPoints.containsKey(key))
+         {
+            registerInjectionPoint(key);
+         }
+         beans = resolvedInjectionPoints.get(key);
       }
-      return resolvedInjectionPoints.get(key);
+      return Collections.unmodifiableSet(beans);
    }
    
    public Set<Bean<?>> get(String name)
    {
+      Set<Bean<?>> beans;
       if (resolvedNames.containsKey(name))
       {
-         return resolvedNames.get(name);
+         beans = resolvedNames.get(name);
       }
       else
       {
-         Set<Bean<?>> beans = new HashSet<Bean<?>>();
+         beans = new HashSet<Bean<?>>();
          for (Bean<?> bean : manager.getBeans())
          {
             if ( (bean.getName() == null && name == null) || (bean.getName() != null && bean.getName().equals(name)))
@@ -108,8 +116,9 @@ public class ResolutionManager
          }
          beans = retainHighestPrecedenceBeans(beans, manager.getEnabledDeploymentTypes());
          resolvedNames.put(name, beans);
-         return beans;
+         
       }
+      return Collections.unmodifiableSet(beans);
    }
    
    private static Set<Bean<?>> retainHighestPrecedenceBeans(Set<Bean<?>> beans, List<Class<? extends Annotation>> enabledDeploymentTypes)

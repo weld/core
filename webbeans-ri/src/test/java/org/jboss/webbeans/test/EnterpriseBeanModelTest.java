@@ -111,77 +111,77 @@ public class EnterpriseBeanModelTest extends AbstractTest
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
-   public void testEJBInterceptorFails()
+   public void testEnterpriseBeanInterceptorFails()
    {
       EnterpriseBeanModel<Pug> pug = Util.createEnterpriseBeanModel(Pug.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
-   public void testEJBDecoratorFails()
+   public void testEnterpriseBeanDecoratorFails()
    {
       EnterpriseBeanModel<Pekingese> pekingese = Util.createEnterpriseBeanModel(Pekingese.class, manager);
    }
 
-   @Test(expectedExceptions = DefinitionException.class)
+   @Test(expectedExceptions = DefinitionException.class, groups="enterpriseBeans")
    @SpecAssertion(section = "3.3")
-   public void testMultipleAnnotationDefinedEJBsWithSameImplementationClassFails()
+   public void testMultipleAnnotationDefinedEnterpriseBeansWithSameImplementationClassFails()
    {
       assert false;
    }
 
-   @Test
+   @Test(groups={"webbeansxml", "enterpriseBeans"})
    @SpecAssertion(section = "3.3")
-   public void testMultipleXMLDefinedEJBsWithSameImplementationClassOK()
+   public void testMultipleXMLDefinedEnterpriseBeansWithSameImplementationClassOK()
    {
       assert false;
    }
 
-   @Test(expectedExceptions = DeploymentException.class)
+   @Test(expectedExceptions = DeploymentException.class, groups={"enterpriseBeans", "specialization"})
    @SpecAssertion(section = "3.3")
-   public void testMultipleEnabledSpecializedEJBFails()
+   public void testMultipleEnabledSpecializedEnterpriseBeanFails()
    {
       assert false;
    }
 
-   @Test
+   @Test(groups="enterpriseBeans")
    @SpecAssertion(section = "3.3.1")
-   public void testAnnotatedEJB()
+   public void testAnnotatedEnterpriseBean()
    {
       assert false;
    }
 
-   @Test
+   @Test(groups="enterpriseBeans")
    @SpecAssertion(section = "3.3.1")
-   public void testAnnotatedEJBComplementedWithXML()
+   public void testAnnotatedEnterpriseBeanComplementedWithXML()
    {
       assert false;
    }
 
-   @Test
+   @Test(groups={"enterpriseBeans", "ejbjarxml"})
    @SpecAssertion(section = "3.3.1")
-   public void testEJBJARDefinedEJB()
+   public void testEJBJARDefinedEnterpriseBean()
    {
       assert false;
    }
 
-   @Test
+   @Test(groups={"enterpriseBeans", "ejbjarxml"})
    @SpecAssertion(section = "3.3.1")
-   public void testEJBJARDefinedEJBComplementedWithXML()
+   public void testEJBJARDefinedEnterpriseBeanComplementedWithXML()
    {
       assert false;
    }
 
-   @Test
+   @Test(groups="enterpriseBeans")
    @SpecAssertion(section = "3.3.2")
    public void testAPITypesAreLocalInterfacesWithoutWildcardTypesOrTypeVariablesWithSuperInterfaces()
    {
       assert false;
    }
 
-   @Test
+   @Test(groups="enterpriseBeans")
    @SpecAssertion(section = "3.3.2")
-   public void testEJBWithLocalViewAndParameterizedTypeIncludesBeanClassAndSuperclassesInAPITypes()
+   public void testEnterpriseBeanWithLocalViewAndParameterizedTypeIncludesBeanClassAndSuperclassesInAPITypes()
    {
       assert false;
    }
@@ -194,21 +194,21 @@ public class EnterpriseBeanModelTest extends AbstractTest
       assert laika.getApiTypes().contains(Object.class);
    }
 
-   @Test
+   @Test(groups="enterpriseBeans")
    @SpecAssertion(section = "3.3.2")
    public void testRemoteInterfacesAreNotInAPITypes()
    {
       assert false;
    }
 
-   @Test
+   @Test(groups={"enterpriseBeans", "producerMethod", "observerMethod", "renoveMethod", "webbeansxml"})
    @SpecAssertion(section = "3.3.4")
-   public void testXMLDefinedEJBIgnoresProducerAndDisposalAndObserverAnnotations()
+   public void testXMLDefinedEnterpriseBeanIgnoresProducerAndDisposalAndObserverAnnotations()
    {
       assert false;
    }
 
-   @Test(expectedExceptions = DefinitionException.class)
+   @Test(expectedExceptions = DefinitionException.class, groups={"enterpriseBeans", "ejbjarxml", "singletons"})
    @SpecAssertion(section = "3.3.4")
    public void testXMLDefinedSingletonsFail()
    {
@@ -222,63 +222,63 @@ public class EnterpriseBeanModelTest extends AbstractTest
       EnterpriseBeanModel<Leopard> Leopard = Util.createEnterpriseBeanModel(Leopard.class, manager);
    }
 
-   @Test
+   @Test(groups={"enterpriseBeans", "removeMethod"})
    @SpecAssertion(section = "3.3.5")
-   public void testStatefulEJBRemoveMethodCalledOnDestroy()
+   public void testStatefulEnterpriseBeanRemoveMethodCalledOnDestroy()
    {
       assert false;
    }
 
    @Test
    @SpecAssertion(section = "3.3.5")
-   public void testStatefulEJBWithoutRemoveMethodInDependentScopeOK()
+   public void testStatefulEnterpriseBeanWithoutRemoveMethodInDependentScopeOK()
    {
       EnterpriseBeanModel<Pitbull> pitbull = Util.createEnterpriseBeanModel(Pitbull.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5")
-   public void testStatefulEJBWithoutRemoveMethodInApplicationScopeFails()
+   public void testStatefulEnterpriseBeanWithoutRemoveMethodInApplicationScopeFails()
    {
       EnterpriseBeanModel<Poodle> poodle = Util.createEnterpriseBeanModel(Poodle.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5")
-   public void testStatefulEJBWithoutRemoveMethodInSessionScopeFails()
+   public void testStatefulEnterpriseBeanWithoutRemoveMethodInSessionScopeFails()
    {
       EnterpriseBeanModel<Rottweiler> rottweiler = Util.createEnterpriseBeanModel(Rottweiler.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5")
-   public void testStatefulEJBWithoutRemoveMethodInConversationScopeFails()
+   public void testStatefulEnterpriseBeanWithoutRemoveMethodInConversationScopeFails()
    {
       EnterpriseBeanModel<Spitz> spitz = Util.createEnterpriseBeanModel(Spitz.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5")
-   public void testStatefulEJBWithoutRemoveMethodInRequestScopeFails()
+   public void testStatefulEnterpriseBeanWithoutRemoveMethodInRequestScopeFails()
    {
       EnterpriseBeanModel<Saluki> saluki = Util.createEnterpriseBeanModel(Saluki.class, manager);
    }
 
-   @Test(expectedExceptions = UnremovedException.class)
+   @Test(expectedExceptions = UnremovedException.class, groups={"enterpriseMethods", "removeMethod"})
    @SpecAssertion(section = "3.3.5")
-   public void testStatefulEJBWithoutRemoveMethodNotExplicitlyDestroyedBeforeManagerAttemptFails()
+   public void testStatefulEnterpriseBeanWithoutRemoveMethodNotExplicitlyDestroyedBeforeManagerAttemptFails()
    {
       assert false;
    }
 
-   @Test
+   @Test(groups={"enterpriseBeans", "removeMethod"})
    @SpecAssertion(section = "3.3.5")
-   public void testNoParametersPassedWhenEJBRemoveMethodCalledFromApplication()
+   public void testNoParametersPassedWhenEnterpriseBeanRemoveMethodCalledFromApplication()
    {
       assert false;
    }
 
-   @Test
+   @Test(groups={"enterpriseBeans", "removeMethod"})
    @SpecAssertion(section = "3.3.5")
    public void testWebBeanRemoveMethodCallRemovesInstanceFromContext()
    {
@@ -287,7 +287,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
 
    @Test
    @SpecAssertion(section = "3.3.5.1")
-   public void testAnnotationDefinedEJBWithoutDestructorUsesRemoveMethodWithoutParamsAsWebBeansRemoveMethod()
+   public void testAnnotationDefinedEnterpriseBeanWithoutDestructorUsesRemoveMethodWithoutParamsAsWebBeansRemoveMethod()
    {
       EnterpriseBeanModel<Armant> whippet = Util.createEnterpriseBeanModel(Armant.class, manager);
       assert whippet.getRemoveMethod().getAnnotatedItem().getDelegate().getName().equals("destroy");
@@ -295,7 +295,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
 
    @Test
    @SpecAssertion(section = "3.3.5.1")
-   public void testAnnotationDefinedEJBWithoutDestructorAndRemoveMethodWithoutParamsHasNoWebBeansRemoveMethod()
+   public void testAnnotationDefinedEnterpriseBeanWithoutDestructorAndRemoveMethodWithoutParamsHasNoWebBeansRemoveMethod()
    {
       EnterpriseBeanModel<Laika> laika = Util.createEnterpriseBeanModel(Laika.class, manager);
       assert laika.getRemoveMethod() == null;
@@ -303,91 +303,91 @@ public class EnterpriseBeanModelTest extends AbstractTest
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5.1")
-   public void testEJBWithMultipleDestructorAnnotationsFail()
+   public void testEnterpriseBeanWithMultipleDestructorAnnotationsFail()
    {
       EnterpriseBeanModel<Whippet> whippet = Util.createEnterpriseBeanModel(Whippet.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5.1")
-   public void testAnnotationDefinedEJBWithDestructorAnnotationOnMethodNotAnEJBRemoveMethodFails()
+   public void testAnnotationDefinedEnterpriseBeanWithDestructorAnnotationOnMethodNotAnEJBRemoveMethodFails()
    {
       EnterpriseBeanModel<GoldenRetriever> goldenRetriever = Util.createEnterpriseBeanModel(GoldenRetriever.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5.1")
-   public void testAnnotationDefinedEJBWithDestructorWithDisposesParameterFails()
+   public void testAnnotationDefinedEnterpriseBeanWithDestructorWithDisposesParameterFails()
    {
       EnterpriseBeanModel<Pumi> pumi = Util.createEnterpriseBeanModel(Pumi.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5.1")
-   public void testEJBWithInitializerAnnotationOnRemoveMethodFails()
+   public void testEnterpriseBeanWithInitializerAnnotationOnRemoveMethodFails()
    {
       EnterpriseBeanModel<JackRussellTerrier> jackRussellTerrier = Util.createEnterpriseBeanModel(JackRussellTerrier.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5.1")
-   public void testEJBWithProducerAnnotationOnRemoveMethodFails()
+   public void testEnterpriseBeanWithProducerAnnotationOnRemoveMethodFails()
    {
       EnterpriseBeanModel<RussellTerrier> russellTerrier = Util.createEnterpriseBeanModel(RussellTerrier.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5.1")
-   public void testEJBWithRemoveMethodTakingObserverAnnotatedParameterFails()
+   public void testEnterpriseBeanWithRemoveMethodTakingObserverAnnotatedParameterFails()
    {
       EnterpriseBeanModel<Toller> toller = Util.createEnterpriseBeanModel(Toller.class, manager);
    }
 
    // TODO Separate section for XML defined beans?
    
-   @Test
+   @Test(groups={"removeMethod", "enterpriseBeans"})
    @SpecAssertion(section = "3.3.5.3")
    public void testRemoveMethodParameters()
    {
       assert false;
    }
    
-   @Test(expectedExceptions=DefinitionException.class)
+   @Test(expectedExceptions=DefinitionException.class, groups={"specialization", "enterpriseBeans"})
    @SpecAssertion(section = "3.3.6")
    public void testSpecializingNotExtendingSpecializedBeanDirectlyFailes()
    {
       assert false;
    }
 
-   @Test
+   @Test(groups={"specialization", "enterpriseBeans"})
    @SpecAssertion(section = "3.3.6")
    public void testSpecializingBeanInheritsBindingTypes()
    {
       assert false;
    }
 
-   @Test
+   @Test(groups={"specialization", "enterpriseBeans"})
    @SpecAssertion(section = "3.3.6")
    public void testSpecializingBeanInheritsNameIfAny()
    {
       assert false;
    }
 
-   @Test(expectedExceptions=DefinitionException.class)
+   @Test(expectedExceptions=DefinitionException.class, groups={"specialization", "enterpriseBeans"})
    @SpecAssertion(section = "3.3.6")
    public void testSpecializingNotSupportingLocalInterfacesOfSpecializedFails()
    {
       assert false;
    }
 
-   @Test(expectedExceptions=DefinitionException.class)
+   @Test(expectedExceptions=DefinitionException.class, groups={"specialization", "enterpriseBeans"})
    @SpecAssertion(section = "3.3.6")
    public void testSpecializingNotSupportingLocalViewOfSpecializedFails()
    {
       assert false;
    }
 
-   @Test
+   @Test(groups={"specialization", "enterpriseBeans"})
    @SpecAssertion(section = "3.3.6")
    public void testXMLDefinedSpecializationOnAnnotationDefinedBean()
    {
@@ -403,7 +403,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
    }
 
    @Test(expectedExceptions=DefinitionException.class)
-   public void testStatelessEJBsWithDestructorAnnotationFails() 
+   public void testStatelessEnterpriseBeansWithDestructorAnnotationFails() 
    {
       EnterpriseBeanModel<WelshCorgie> welshCorgie = Util.createEnterpriseBeanModel(WelshCorgie.class, manager);
    }
