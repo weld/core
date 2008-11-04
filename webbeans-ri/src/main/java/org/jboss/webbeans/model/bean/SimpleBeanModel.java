@@ -58,9 +58,9 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
    
    public static void checkType(Class<?> type)
    {
-      if (Reflections.isStaticInnerClass(type))
+      if (Reflections.isNonStaticInnerClass(type))
       {
-         throw new DefinitionException("Simple Web Bean " + type + " cannot be a static inner class");
+         throw new DefinitionException("Simple Web Bean " + type + " cannot be a non-static inner class");
       }
       if (Reflections.isParameterizedType(type))
       {

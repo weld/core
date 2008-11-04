@@ -19,7 +19,6 @@
             <exclude name="jms" />
             <exclude name="interceptors" />
             <exclude name="decorators" />
-            <exclude name="innerClass" />
             <exclude name="servlet" />
             <exclude name="clientProxy" />
             <exclude name="passivation" />

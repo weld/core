@@ -48,14 +48,14 @@ public class SimpleBeanModelTest extends AbstractTest
       new SimpleBeanModel<Cow>(new SimpleAnnotatedType<Cow>(Cow.class), getEmptyAnnotatedType(Cow.class), manager);
    }
    
-   @Test(expectedExceptions=DefinitionException.class, groups="innerClass") @SpecAssertion(section="3.2")
-   public void testStaticInnerClassDeclaredInJavaIsNotAllowed()
+   @Test(groups="innerClass") @SpecAssertion(section="3.2")
+   public void testStaticInnerClassDeclaredInJavaAllowed()
    {
       new SimpleBeanModel<StaticInnerBean>(new SimpleAnnotatedType<StaticInnerBean>(StaticInnerBean.class), getEmptyAnnotatedType(StaticInnerBean.class), manager);
    }
    
-   @Test(groups="innerClass") @SpecAssertion(section="3.2")
-   public void testNonStaticInnerClassDeclaredInJavaAllowed()
+   @Test(expectedExceptions=DefinitionException.class, groups="innerClass") @SpecAssertion(section="3.2")
+   public void testNonStaticInnerClassDeclaredInJavaNotAllowed()
    {
       new SimpleBeanModel<InnerBean>(new SimpleAnnotatedType<InnerBean>(InnerBean.class), getEmptyAnnotatedType(InnerBean.class), manager);
    }
@@ -116,14 +116,14 @@ public class SimpleBeanModelTest extends AbstractTest
       new SimpleBeanModel<Cow>(new SimpleAnnotatedType<Cow>(Cow.class), getEmptyAnnotatedType(Cow.class), manager);
    }
    
-   @Test(expectedExceptions=DefinitionException.class, groups="innerClass") @SpecAssertion(section="3.2.4")
-   public void testStaticInnerClassDeclaredInXmlIsNotAllowed()
+   @Test(groups="innerClass") @SpecAssertion(section="3.2.4")
+   public void testStaticInnerClassDeclaredInXmlAllowed()
    {
       new SimpleBeanModel<StaticInnerBean>(new SimpleAnnotatedType<StaticInnerBean>(StaticInnerBean.class), getEmptyAnnotatedType(StaticInnerBean.class), manager);
    }
    
-   @Test(groups="innerClass") @SpecAssertion(section="3.2.4")
-   public void testNonStaticInnerClassDeclaredInXmlAllowed()
+   @Test(expectedExceptions=DefinitionException.class, groups="innerClass") @SpecAssertion(section="3.2.4")
+   public void testNonStaticInnerClassDeclaredInXmlNotAllowed()
    {
       new SimpleBeanModel<InnerBean>(new SimpleAnnotatedType<InnerBean>(InnerBean.class), getEmptyAnnotatedType(InnerBean.class), manager);
    }
