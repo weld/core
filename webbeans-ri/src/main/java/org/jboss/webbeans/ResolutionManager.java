@@ -1,7 +1,6 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -84,7 +83,7 @@ public class ResolutionManager
       if (key.getType().equals(Object.class))
       {
          // TODO Fix this cast
-         beans = new HashSet<Bean<T>>((Collection<? extends Bean<T>>) manager.getBeans());
+         beans = new HashSet<Bean<T>>((List<? extends Bean<T>>) manager.getBeans());
       }
       else
       {
