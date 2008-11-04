@@ -1,7 +1,10 @@
 package org.jboss.webbeans.model.bean;
 
 import javax.webbeans.ApplicationScoped;
+import javax.webbeans.Decorator;
+import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
+import javax.webbeans.Interceptor;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.ejb.EjbMetaData;
@@ -26,11 +29,21 @@ public abstract class AbstractEnterpriseBeanModel<T> extends
       super.init(container);
       ejbMetaData = container.getEjbManager().getEjbMetaData(getType());
       checkEnterpriseScopeAllowed();
+      checkConflictingRoles();
    }
    
    protected EjbMetaData<T> getEjbMetaData()
    {
       return ejbMetaData;
+   }
+   
+   protected void checkConflictingRoles() {
+      if (getType().isAnnotationPresent(Interceptor.class)) {
+         throw new DefinitionException("Enterprise beans can't be interceptors");
+      }
+      if (getType().isAnnotationPresent(Decorator.class)) {
+         throw new DefinitionException("Enterprise beans can't be decorators");
+      }
    }
    
    /**
@@ -41,11 +54,11 @@ public abstract class AbstractEnterpriseBeanModel<T> extends
    {
       if (getEjbMetaData().isStateless() && !getScopeType().equals(Dependent.class))
       {
-         throw new RuntimeException("Scope " + getScopeType() + " is not allowed on stateless enterpise beans for " + getType() + ". Only @Dependent is allowed on stateless enterprise beans");
+         throw new DefinitionException("Scope " + getScopeType() + " is not allowed on stateless enterpise beans for " + getType() + ". Only @Dependent is allowed on stateless enterprise beans");
       }
-      if (getEjbMetaData().isSingleton() && (!getScopeType().equals(Dependent.class) || !getScopeType().equals(ApplicationScoped.class)))
+      if (getEjbMetaData().isSingleton() && (!(getScopeType().equals(Dependent.class) || getScopeType().equals(ApplicationScoped.class))))
       {
-         throw new RuntimeException("Scope " + getScopeType() + " is not allowed on singleton enterpise beans for " + getType() + ". Only @Dependent or @ApplicationScoped is allowed on singleton enterprise beans");
+         throw new DefinitionException("Scope " + getScopeType() + " is not allowed on singleton enterpise beans for " + getType() + ". Only @Dependent or @ApplicationScoped is allowed on singleton enterprise beans");
       }
    }
 

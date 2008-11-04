@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.webbeans.DefinitionException;
+import javax.webbeans.Dependent;
 import javax.webbeans.Destructor;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -103,9 +105,9 @@ public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
                throw new RuntimeException("Multiple remove methods are declared, and none are annotated @Destroys for " + getType());
             }
          }
-         else if (getEjbMetaData().getRemoveMethods().size() == 0)
+         else if (getEjbMetaData().getRemoveMethods().isEmpty() && !getScopeType().equals(Dependent.class))
          {
-            throw new RuntimeException("Stateful enterprise bean bean has no remove methods declared for " + getType());
+            throw new DefinitionException("No remove methods declared for non-dependent scoped bean " + getType());
          }
       }
       else

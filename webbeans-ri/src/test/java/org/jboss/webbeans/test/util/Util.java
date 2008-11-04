@@ -22,9 +22,9 @@ public class Util
       return new SimpleBeanModel<T>(new SimpleAnnotatedType<T>(clazz), getEmptyAnnotatedType(clazz), manager);
    }
 
-   public static <T> SimpleBeanModel<T> createSimpleModel(Class<T> clazz, AnnotatedType<T> annotatedType, ManagerImpl manager)
+   public static <T> SimpleBeanModel<T> createSimpleModel(Class<T> clazz, AnnotatedType<T> xmlAnnotatedType, ManagerImpl manager)
    {
-      return new SimpleBeanModel<T>(new SimpleAnnotatedType<T>(clazz), annotatedType, manager);
+      return new SimpleBeanModel<T>(new SimpleAnnotatedType<T>(clazz), xmlAnnotatedType, manager);
    }
 
    public static <T> EnterpriseBeanModel<T> createEnterpriseBeanModel(Class<T> clazz, ManagerImpl manager)
@@ -32,9 +32,9 @@ public class Util
       return new EnterpriseBeanModel<T>(new SimpleAnnotatedType<T>(clazz), getEmptyAnnotatedType(clazz), manager);
    }
 
-   public static <T> EnterpriseBeanModel<T> createEnterpriseBeanModel(Class<T> clazz, AnnotatedType<T> annotatedType, ManagerImpl manager)
+   public static <T> EnterpriseBeanModel<T> createEnterpriseBeanModel(Class<T> clazz, AnnotatedType<T> xmlAnnotatedType, ManagerImpl manager)
    {
-      return new EnterpriseBeanModel<T>(new SimpleAnnotatedType<T>(clazz), annotatedType, manager);
+      return new EnterpriseBeanModel<T>(new SimpleAnnotatedType<T>(clazz), xmlAnnotatedType, manager);
    }
       
    public static <T> AnnotatedType<T> getEmptyAnnotatedType(Class<T> type)

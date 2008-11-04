@@ -4,6 +4,8 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.webbeans.Decorator;
+import javax.webbeans.Interceptor;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
 
@@ -50,6 +52,8 @@ public class AbstractTest
    
    protected void addStereotypes()
    {
+      manager.getModelManager().addStereotype(new StereotypeModel<Decorator>(Decorator.class));
+      manager.getModelManager().addStereotype(new StereotypeModel<Interceptor>(Interceptor.class));
       manager.getModelManager().addStereotype(new StereotypeModel<AnimalStereotype>(AnimalStereotype.class));
       manager.getModelManager().addStereotype(new StereotypeModel<HornedMammalStereotype>(HornedMammalStereotype.class));
       manager.getModelManager().addStereotype(new StereotypeModel<MammalStereotype>(MammalStereotype.class));

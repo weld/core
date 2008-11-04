@@ -4,6 +4,22 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.DeploymentException;
 import javax.webbeans.UnremovedException;
 
+import org.jboss.webbeans.model.StereotypeModel;
+import org.jboss.webbeans.model.bean.EnterpriseBeanModel;
+import org.jboss.webbeans.test.beans.Giraffe;
+import org.jboss.webbeans.test.beans.GreatDane;
+import org.jboss.webbeans.test.beans.Laika;
+import org.jboss.webbeans.test.beans.Pitbull;
+import org.jboss.webbeans.test.beans.broken.Beagle;
+import org.jboss.webbeans.test.beans.broken.Boxer;
+import org.jboss.webbeans.test.beans.broken.Bullmastiff;
+import org.jboss.webbeans.test.beans.broken.Dachshund;
+import org.jboss.webbeans.test.beans.broken.Greyhound;
+import org.jboss.webbeans.test.beans.broken.Husky;
+import org.jboss.webbeans.test.beans.broken.IrishTerrier;
+import org.jboss.webbeans.test.beans.broken.Pekingese;
+import org.jboss.webbeans.test.beans.broken.Pug;
+import org.jboss.webbeans.test.util.Util;
 import org.testng.annotations.Test;
 
 @SuppressWarnings( { "unchecked", "unused" })
@@ -15,84 +31,84 @@ public class EnterpriseBeanModelTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testStatelessWithDependentScopeOK()
    {
-      assert false;
+      EnterpriseBeanModel<Giraffe> giraffe = Util.createEnterpriseBeanModel(Giraffe.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testStatelessWithRequestScopeFails()
    {
-      assert false;
+      EnterpriseBeanModel<Beagle> beagle = Util.createEnterpriseBeanModel(Beagle.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testStatelessWithConversationScopeFails()
    {
-      assert false;
+      EnterpriseBeanModel<Boxer> boxer = Util.createEnterpriseBeanModel(Boxer.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testStatelessWithSessionScopeFails()
    {
-      assert false;
+      EnterpriseBeanModel<Bullmastiff> boxer = Util.createEnterpriseBeanModel(Bullmastiff.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testStatelessWithApplicationScopeFails()
    {
-      assert false;
+      EnterpriseBeanModel<Dachshund> dachshund = Util.createEnterpriseBeanModel(Dachshund.class, manager);
    }
 
    @Test
    @SpecAssertion(section = "3.3")
    public void testSingletonWithDependentScopeOK()
    {
-      assert false;
+      EnterpriseBeanModel<GreatDane> greatDane = Util.createEnterpriseBeanModel(GreatDane.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testSingletonWithRequestScopeFails()
    {
-      assert false;
+      EnterpriseBeanModel<Greyhound> greyhound = Util.createEnterpriseBeanModel(Greyhound.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testSingletonWithConversationScopeFails()
    {
-      assert false;
+      EnterpriseBeanModel<Husky> husky = Util.createEnterpriseBeanModel(Husky.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testSingletonWithSessionScopeFails()
    {
-      assert false;
+      EnterpriseBeanModel<IrishTerrier> irishTerrier = Util.createEnterpriseBeanModel(IrishTerrier.class, manager);
    }
 
    @Test
    @SpecAssertion(section = "3.3")
    public void testSingletonWithApplicationScopeOK()
    {
-      assert false;
+      EnterpriseBeanModel<Laika> laika = Util.createEnterpriseBeanModel(Laika.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testEJBInterceptorFails()
    {
-      assert false;
+      EnterpriseBeanModel<Pug> pug = Util.createEnterpriseBeanModel(Pug.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testEJBDecoratorFails()
    {
-      assert false;
+      EnterpriseBeanModel<Pekingese> pekingese = Util.createEnterpriseBeanModel(Pekingese.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
@@ -176,7 +192,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
    @SpecAssertion(section = "3.3.4")
    public void testXMLDefinedEJBIgnoresProducerAndDisposalAndObserverAnnotations()
    {
-
+      assert false;
    }
 
    @Test(expectedExceptions = DefinitionException.class)
@@ -204,7 +220,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEJBWithoutRemoveMethodInDependentScopeOK()
    {
-      assert false;
+      EnterpriseBeanModel<Pitbull> pitbull = Util.createEnterpriseBeanModel(Pitbull.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
@@ -314,7 +330,56 @@ public class EnterpriseBeanModelTest extends AbstractTest
       assert false;
    }
    
+   @Test(expectedExceptions=DefinitionException.class)
+   @SpecAssertion(section = "3.3.6")
+   public void testSpecializingNotExtendingSpecializedBeanDirectlyFailes()
+   {
+      assert false;
+   }
+
+   @Test
+   @SpecAssertion(section = "3.3.6")
+   public void testSpecializingBeanInheritsBindingTypes()
+   {
+      assert false;
+   }
+
+   @Test
+   @SpecAssertion(section = "3.3.6")
+   public void testSpecializingBeanInheritsNameIfAny()
+   {
+      assert false;
+   }
+
+   @Test(expectedExceptions=DefinitionException.class)
+   @SpecAssertion(section = "3.3.6")
+   public void testSpecializingNotSupportingLocalInterfacesOfSpecializedFails()
+   {
+      assert false;
+   }
+
+   @Test(expectedExceptions=DefinitionException.class)
+   @SpecAssertion(section = "3.3.6")
+   public void testSpecializingNotSupportingLocalViewOfSpecializedFails()
+   {
+      assert false;
+   }
+
+   @Test
+   @SpecAssertion(section = "3.3.6")
+   public void testXMLDefinedSpecializationOnAnnotationDefinedBean()
+   {
+      assert false;
+   }
    
+   @Test
+   @SpecAssertion(section = "3.3.7")
+   public void testDefaultName()
+   {
+      assert false;
+   }
+
+
 /*   
    @Test
    @SpecAssertion(section = "3.3.5.1")
