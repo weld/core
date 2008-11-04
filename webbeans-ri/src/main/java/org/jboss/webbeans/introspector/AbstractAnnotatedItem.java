@@ -131,14 +131,14 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    
    public boolean isAssignableFrom(AnnotatedItem<?, ?> that)
    {
-      return isAssignableFrom(that.getType(), that.getActualTypeArguements());
+      return isAssignableFrom(that.getType(), that.getActualTypeArguments());
    }
    
    public boolean isAssignableFrom(Set<Class<?>> types)
    {
       for (Class<?> type : types)
       {
-         if (isAssignableFrom(type, Reflections.getActualTypeArguements(type)))
+         if (isAssignableFrom(type, Reflections.getActualTypeArguments(type)))
          {
             return true;
          }
@@ -146,9 +146,9 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return false;
    }
    
-   private boolean isAssignableFrom(Class<?> type, Type[] actualTypeArguements)
+   private boolean isAssignableFrom(Class<?> type, Type[] actualTypeArguments)
    {
-      return getType().isAssignableFrom(type) && Arrays.equals(getActualTypeArguements(), actualTypeArguements);
+      return getType().isAssignableFrom(type) && Arrays.equals(getActualTypeArguments(), actualTypeArguments);
    }
    
    @Override
@@ -160,7 +160,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    @Override
    public String toString()
    {
-      return TypesafeResolutionLocation.createMessage(getType(), getActualTypeArguements(), getAnnotations());
+      return TypesafeResolutionLocation.createMessage(getType(), getActualTypeArguments(), getAnnotations());
    }
 
 }

@@ -35,10 +35,10 @@ public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
       }
    }
    
-   private SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap, Class<? extends T> type, Type[] actualTypeArguements)
+   private SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap, Class<? extends T> type, Type[] actualTypeArguments)
    {
       this(annotationMap, type);
-      this.actualTypeArguments = actualTypeArguements;
+      this.actualTypeArguments = actualTypeArguments;
    }
    
    public SimpleAnnotatedItem(Annotation[] annotations)
@@ -59,9 +59,9 @@ public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
       this.actualAnnotations = annotations;
    }
    
-   public SimpleAnnotatedItem(Annotation[] annotations, Class<? extends T> type, Type[] actualTypeArguements)
+   public SimpleAnnotatedItem(Annotation[] annotations, Class<? extends T> type, Type[] actualTypeArguments)
    {
-      this(buildAnnotationMap(annotations), type, actualTypeArguements);
+      this(buildAnnotationMap(annotations), type, actualTypeArguments);
       this.actualAnnotations = annotations;
    }
 
@@ -75,7 +75,7 @@ public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
       return type;
    }
 
-   public Type[] getActualTypeArguements()
+   public Type[] getActualTypeArguments()
    {
       return actualTypeArguments;
    }

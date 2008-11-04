@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedItem<T, Constructor<T>> implements AnnotatedConstructor<T>
 {
 
-   private static final Type[] actualTypeArguements = new Type[0];
+   private static final Type[] actualTypeArguments = new Type[0];
    
    private Constructor<T> constructor;
    
@@ -31,9 +31,9 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedItem<T, Cons
       return constructor.getDeclaringClass();
    }
    
-   public Type[] getActualTypeArguements()
+   public Type[] getActualTypeArguments()
    {
-      return actualTypeArguements;
+      return actualTypeArguments;
    }
 
 }

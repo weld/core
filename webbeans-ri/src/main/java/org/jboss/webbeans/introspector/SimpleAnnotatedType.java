@@ -20,7 +20,7 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
 {
    
    private Class<T> clazz;
-   private Type[] actualTypeArguements;
+   private Type[] actualTypeArguments;
    private Set<AnnotatedField<Object>> fields;
    private Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> annotatedFields;
    private Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> metaAnnotatedFields;
@@ -32,11 +32,11 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
       if (this.clazz.getGenericSuperclass() instanceof ParameterizedType)
       {
          ParameterizedType type = (ParameterizedType) this.clazz.getGenericSuperclass();
-         actualTypeArguements = type.getActualTypeArguments();
+         actualTypeArguments = type.getActualTypeArguments();
       }
       else
       {
-         actualTypeArguements = new Type[0];
+         actualTypeArguments = new Type[0];
       }
    }
    
@@ -143,9 +143,9 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
       return clazz;
    }
 
-   public Type[] getActualTypeArguements()
+   public Type[] getActualTypeArguments()
    {
-      return actualTypeArguements;
+      return actualTypeArguments;
    }
 
 }

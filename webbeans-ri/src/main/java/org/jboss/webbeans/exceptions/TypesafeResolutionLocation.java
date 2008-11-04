@@ -43,16 +43,16 @@ public class TypesafeResolutionLocation extends Location
       return location;
    }
    
-   public static String createMessage(Class<?> type, Type[] actualTypeArguements, Set<Annotation> annotations)
+   public static String createMessage(Class<?> type, Type[] actualTypeArguments, Set<Annotation> annotations)
    {
       String string = type.toString();
-      if (actualTypeArguements.length > 0)
+      if (actualTypeArguments.length > 0)
       {
          string += "<";
-         for (int i = 0; i < actualTypeArguements.length; i++)
+         for (int i = 0; i < actualTypeArguments.length; i++)
          {
-            string += actualTypeArguements[i].toString();
-            if (i < actualTypeArguements.length - 1)
+            string += actualTypeArguments[i].toString();
+            if (i < actualTypeArguments.length - 1)
             {
                string += ",";
             }

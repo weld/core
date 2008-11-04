@@ -8,11 +8,14 @@ import org.jboss.webbeans.model.bean.EnterpriseBeanModel;
 import org.jboss.webbeans.test.beans.Giraffe;
 import org.jboss.webbeans.test.beans.GreatDane;
 import org.jboss.webbeans.test.beans.Laika;
+import org.jboss.webbeans.test.beans.Leopard;
 import org.jboss.webbeans.test.beans.Pitbull;
+import org.jboss.webbeans.test.beans.broken.Armant;
 import org.jboss.webbeans.test.beans.broken.Beagle;
 import org.jboss.webbeans.test.beans.broken.Boxer;
 import org.jboss.webbeans.test.beans.broken.Bullmastiff;
 import org.jboss.webbeans.test.beans.broken.Dachshund;
+import org.jboss.webbeans.test.beans.broken.GoldenRetriever;
 import org.jboss.webbeans.test.beans.broken.Greyhound;
 import org.jboss.webbeans.test.beans.broken.Husky;
 import org.jboss.webbeans.test.beans.broken.IrishTerrier;
@@ -213,10 +216,10 @@ public class EnterpriseBeanModelTest extends AbstractTest
    }
 
    @Test(expectedExceptions = DefinitionException.class)
-   @SpecAssertion(section = "3.3.4")
-   public void testMessageDrivenBeansDefinedWithXMLNotOK()
+   @SpecAssertion(section = "3.3")
+   public void testMessageDrivenBeansNotOK()
    {
-      assert false;
+      EnterpriseBeanModel<Leopard> Leopard = Util.createEnterpriseBeanModel(Leopard.class, manager);
    }
 
    @Test
@@ -286,14 +289,16 @@ public class EnterpriseBeanModelTest extends AbstractTest
    @SpecAssertion(section = "3.3.5.1")
    public void testAnnotationDefinedEJBWithoutDestructorUsesRemoveMethodWithoutParamsAsWebBeansRemoveMethod()
    {
-      assert false;
+      EnterpriseBeanModel<Armant> whippet = Util.createEnterpriseBeanModel(Armant.class, manager);
+      assert whippet.getRemoveMethod().getAnnotatedItem().getDelegate().getName().equals("destroy");
    }
 
    @Test
    @SpecAssertion(section = "3.3.5.1")
    public void testAnnotationDefinedEJBWithoutDestructorAndRemoveMethodWithoutParamsHasNoWebBeansRemoveMethod()
    {
-      assert false;
+      EnterpriseBeanModel<Laika> laika = Util.createEnterpriseBeanModel(Laika.class, manager);
+      assert laika.getRemoveMethod() == null;
    }
 
    @Test(expectedExceptions = DefinitionException.class)
@@ -307,7 +312,7 @@ public class EnterpriseBeanModelTest extends AbstractTest
    @SpecAssertion(section = "3.3.5.1")
    public void testAnnotationDefinedEJBWithDestructorAnnotationOnMethodNotAnEJBRemoveMethodFails()
    {
-      assert false;
+      EnterpriseBeanModel<GoldenRetriever> goldenRetriever = Util.createEnterpriseBeanModel(GoldenRetriever.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)

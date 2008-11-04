@@ -79,9 +79,9 @@ public class ResolverInjectable<T> extends Injectable<T, Object>
       this(new SimpleAnnotatedItem<T, Object>(bindingTypes, type), modelManager);
    }
    
-   public ResolverInjectable(Class<T> type, Annotation[] bindingTypes, ModelManager modelManager, Type ... actualTypeArguements)
+   public ResolverInjectable(Class<T> type, Annotation[] bindingTypes, ModelManager modelManager, Type ... actualTypeArguments)
    {
-      this(new SimpleAnnotatedItem<T, Object>(bindingTypes, type, actualTypeArguements), modelManager);
+      this(new SimpleAnnotatedItem<T, Object>(bindingTypes, type, actualTypeArguments), modelManager);
    }
    
    public ResolverInjectable(TypeLiteral<T> apiType, Annotation[] bindingTypes, ModelManager modelManager)

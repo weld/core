@@ -27,10 +27,18 @@ public abstract class AbstractEnterpriseBeanModel<T> extends
    {
       super.init(container);
       ejbMetaData = container.getEjbManager().getEjbMetaData(getType());
+      checkEnterpriseBeanTypeAllowed();
       checkEnterpriseScopeAllowed();
       checkConflictingRoles();
    }
    
+   private void checkEnterpriseBeanTypeAllowed()
+   {
+      if (getEjbMetaData().isMessageDriven()) {
+         throw new DefinitionException("Message Driven Beans can't be Web Beans");
+      }
+   }
+
    protected EjbMetaData<T> getEjbMetaData()
    {
       return ejbMetaData;

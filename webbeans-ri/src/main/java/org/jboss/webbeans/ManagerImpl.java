@@ -247,7 +247,7 @@ public class ManagerImpl implements Manager
    {
       // TODO Using the eventType TypeLiteral<T>, the Class<T> object must be
       // retrieved
-      this.eventBus.addObserver(observer, (Class<T>) Reflections.getActualTypeArguements(eventType.getClass())[0], bindings);
+      this.eventBus.addObserver(observer, (Class<T>) Reflections.getActualTypeArguments(eventType.getClass())[0], bindings);
       return this;
    }
 
@@ -374,7 +374,7 @@ public class ManagerImpl implements Manager
    {
       // TODO The Class<T> for the event type must be retrieved from the
       // TypeLiteral<T> instance
-      this.eventBus.removeObserver(observer, (Class<T>) Reflections.getActualTypeArguements(eventType.getClass())[0], bindings);
+      this.eventBus.removeObserver(observer, (Class<T>) Reflections.getActualTypeArguments(eventType.getClass())[0], bindings);
       return this;
    }
 

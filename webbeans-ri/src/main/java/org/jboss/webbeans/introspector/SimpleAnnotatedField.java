@@ -7,7 +7,7 @@ import java.lang.reflect.Type;
 public class SimpleAnnotatedField<T> extends AbstractAnnotatedItem<T, Field> implements AnnotatedField<T>
 {
    
-   private Type[] actualTypeArguements = new Type[0];
+   private Type[] actualTypeArguments = new Type[0];
    
    private Field field;
    
@@ -18,7 +18,7 @@ public class SimpleAnnotatedField<T> extends AbstractAnnotatedItem<T, Field> imp
       if (field.getGenericType() instanceof ParameterizedType)
       {
          ParameterizedType type = (ParameterizedType) field.getGenericType();
-         actualTypeArguements = type.getActualTypeArguments();
+         actualTypeArguments = type.getActualTypeArguments();
       }
    }
 
@@ -37,9 +37,9 @@ public class SimpleAnnotatedField<T> extends AbstractAnnotatedItem<T, Field> imp
       return (Class<T>) field.getType();
    }
    
-   public Type[] getActualTypeArguements()
+   public Type[] getActualTypeArguments()
    {
-      return actualTypeArguements;
+      return actualTypeArguments;
    }
 
 }

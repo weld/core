@@ -76,7 +76,7 @@ public class EventImpl<T> implements Event<T>
       Set<Annotation> eventBindings = new HashSet<Annotation>();
       eventBindings.addAll(this.getBindingTypes());
       addAnnotationBindings(eventBindings, bindings);
-      Type[] observerTypeArguments = Reflections.getActualTypeArguements(observer.getClass());
+      Type[] observerTypeArguments = Reflections.getActualTypeArguments(observer.getClass());
       webBeansManager.addObserver(observer, (Class<T>) observerTypeArguments[0], bindings);
    }
 

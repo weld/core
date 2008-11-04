@@ -230,7 +230,7 @@ public class Reflections
       return annotationTypeList.size() == 0;
    }
    
-   public static Type[] getActualTypeArguements(Class<?> clazz)
+   public static Type[] getActualTypeArguments(Class<?> clazz)
    {
       if (clazz.getGenericSuperclass() instanceof ParameterizedType)
       {

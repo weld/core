@@ -16,6 +16,7 @@ import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.ejb.EJB;
 import org.jboss.webbeans.injectable.BeanConstructor;
 import org.jboss.webbeans.injectable.EnterpriseConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
@@ -132,6 +133,9 @@ public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
 
    private InjectableMethod<?> checkRemoveMethod(Method method)
    {
+      if (method.isAnnotationPresent(Destructor.class) && !method.isAnnotationPresent(EJB.REMOVE_ANNOTATION)) {
+         throw new DefinitionException("Methods marked @Destructor must also be marked @Remove on " + method.getName());
+      }
       if (method.isAnnotationPresent(Initializer.class)) {
          throw new DefinitionException("Remove methods cannot be initializers on " + method.getName());
       }

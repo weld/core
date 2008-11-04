@@ -23,7 +23,7 @@ public class SimpleAnnotatedAnnotation<T extends Annotation> extends AbstractAnn
       this.clazz = annotationType;
    }
    
-   public Type[] getActualTypeArguements()
+   public Type[] getActualTypeArguments()
    {
       return new Type[0];
    }
