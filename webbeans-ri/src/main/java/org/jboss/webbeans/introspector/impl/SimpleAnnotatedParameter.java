@@ -8,12 +8,12 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
 public class SimpleAnnotatedParameter<T> extends AbstractAnnotatedItem<T, Object> implements AnnotatedParameter<T>
 {
 
-   private Class<? extends T> type;
+   private Class<T> type;
    private Type[] actualTypeArguments = new Type[0];
    private boolean _final;
    private boolean _static;
 
-   public SimpleAnnotatedParameter(Annotation[] annotations, Class<? extends T> type)
+   public SimpleAnnotatedParameter(Annotation[] annotations, Class<T> type)
    {
       super(buildAnnotationMap(annotations));
       this.type = type;
@@ -29,7 +29,7 @@ public class SimpleAnnotatedParameter<T> extends AbstractAnnotatedItem<T, Object
       return null;
    }
 
-   public Class<? extends T> getType()
+   public Class<T> getType()
    {
       return type;
    }

@@ -51,7 +51,7 @@ public interface AnnotatedItem<T, S>
    
    public S getDelegate();
    
-   public Class<? extends T> getType();
+   public Class<T> getType();
    
    public boolean isAssignableFrom(AnnotatedItem<?, ?> that);
    

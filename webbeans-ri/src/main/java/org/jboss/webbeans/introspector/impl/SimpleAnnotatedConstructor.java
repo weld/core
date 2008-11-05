@@ -64,13 +64,13 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Co
          if (constructor.getParameterAnnotations()[i].length > 0)
          {
             Class<? extends Object> clazz = constructor.getParameterTypes()[i];
-            AnnotatedParameter<Object> parameter = new SimpleAnnotatedParameter<Object>(constructor.getParameterAnnotations()[i], clazz);
+            AnnotatedParameter<Object> parameter = new SimpleAnnotatedParameter<Object>(constructor.getParameterAnnotations()[i], (Class<Object>) clazz);
             parameters.add(parameter);
          }
          else
          {
             Class<? extends Object> clazz = constructor.getParameterTypes()[i];
-            AnnotatedParameter<Object> parameter = new SimpleAnnotatedParameter<Object>(new Annotation[0], clazz);
+            AnnotatedParameter<Object> parameter = new SimpleAnnotatedParameter<Object>(new Annotation[0], (Class<Object>) clazz);
             parameters.add(parameter);
          }
       }

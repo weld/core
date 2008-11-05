@@ -13,7 +13,7 @@ public class InjectableParameter<T> extends Injectable<T, Object>
    
    protected InjectableParameter() {}
    
-   public InjectableParameter(Annotation[] bindingTypes, Class<? extends T> type)
+   public InjectableParameter(Annotation[] bindingTypes, Class<T> type)
    {
       super(new SimpleAnnotatedParameter<T>(bindingTypes, type));
    }
@@ -23,7 +23,7 @@ public class InjectableParameter<T> extends Injectable<T, Object>
       super(annotatedParameter);
    }
 
-   public InjectableParameter(Class<? extends T> type)
+   public InjectableParameter(Class<T> type)
    {
       this(currentBinding, type);
    }

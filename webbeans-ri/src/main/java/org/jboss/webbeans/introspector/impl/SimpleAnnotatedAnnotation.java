@@ -45,7 +45,7 @@ public class SimpleAnnotatedAnnotation<T extends Annotation> extends AbstractAnn
       return clazz;
    }
 
-   public Class<? extends T> getType()
+   public Class<T> getType()
    {
       return clazz;
    }
