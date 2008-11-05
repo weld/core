@@ -33,12 +33,12 @@ public class MergedStereotypesModel<T, E>
       requiredTypes = new HashSet<Class<?>>();
       supportedScopes = new HashSet<Class<? extends Annotation>>();
       
-      if (xmlAnnotatedItem.getAnnotations(Stereotype.class).size() > 0)
+      if (xmlAnnotatedItem != null && xmlAnnotatedItem.getAnnotations(Stereotype.class).size() > 0)
       {
          merge(xmlAnnotatedItem.getAnnotations(Stereotype.class), manager);
          isDeclaredInXml = true;
       }
-      else
+      else if (annotatedItem != null)
       {
          merge(annotatedItem.getAnnotations(Stereotype.class), manager);
       }

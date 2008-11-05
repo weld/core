@@ -79,16 +79,16 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
    protected void initType()
    {
       // TODO This is not the right way to check XML definition
-      if (getAnnotatedItem().getDelegate() != null && getXmlAnnotatedItem().getDelegate() != null && !getAnnotatedItem().getDelegate().equals(getXmlAnnotatedItem().getDelegate()))
+      if (getAnnotatedItem() != null && getXmlAnnotatedItem() != null && !getAnnotatedItem().getDelegate().equals(getXmlAnnotatedItem().getDelegate()))
       {
          throw new IllegalArgumentException("Cannot build a bean which specifies different classes in XML and Java");
       }
-      else if (getXmlAnnotatedItem().getDelegate() != null)
+      else if (getXmlAnnotatedItem() != null)
       {
          log.finest("Bean type specified in XML");
          this.type = getXmlAnnotatedItem().getDelegate();
       }
-      else if (getAnnotatedItem().getDelegate() != null)
+      else if (getAnnotatedItem() != null)
       {
          log.finest("Bean type specified in Java");
          this.type = getAnnotatedItem().getDelegate();

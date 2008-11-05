@@ -129,7 +129,7 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
       Class<?> superclass = getAnnotatedItem().getType().getSuperclass();
       if ( superclass!=null )
       {
-         return new SimpleBeanModel(new SimpleAnnotatedClass(superclass), getEmptyAnnotatedType(superclass), container);
+         return new SimpleBeanModel(new SimpleAnnotatedClass(superclass), null, container);
       }
       else {
          throw new RuntimeException();

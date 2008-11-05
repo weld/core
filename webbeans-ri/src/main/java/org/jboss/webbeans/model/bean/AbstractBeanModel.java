@@ -1,7 +1,6 @@
 package org.jboss.webbeans.model.bean;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,6 @@ import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
 import org.jboss.webbeans.model.MergedStereotypesModel;
 import org.jboss.webbeans.util.LoggerUtil;
 import org.jboss.webbeans.util.Reflections;
@@ -65,10 +63,6 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
    
    protected AbstractClassBeanModel<? extends T> getSpecializedType() {
       throw new UnsupportedOperationException();
-   }
-   
-   protected static <T> SimpleAnnotatedClass getEmptyAnnotatedType(Class<T> type) {
-      return new SimpleAnnotatedClass<T>(type, new HashMap<Class<? extends Annotation>, Annotation>());
    }
    
    protected void initInjectionPoints()
@@ -116,42 +110,43 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
 
    protected void initBindingTypes()
    {
-      Set<Annotation> bindingTypes = getAnnotatedItem().getAnnotations(BindingType.class);
-      Set<Annotation> xmlBindingTypes = getXmlAnnotatedItem().getAnnotations(BindingType.class);
-      boolean xmlSpecialization = getXmlAnnotatedItem().isAnnotationPresent(Specializes.class);
-      boolean specialization = getAnnotatedItem().isAnnotationPresent(Specializes.class);
+      boolean xmlSpecialization = getXmlAnnotatedItem() == null ? false : getXmlAnnotatedItem().isAnnotationPresent(Specializes.class);
+      boolean specialization = getAnnotatedItem() == null ? false : getAnnotatedItem().isAnnotationPresent(Specializes.class);
       
-      if (xmlBindingTypes.size() > 0 || mergedStereotypes.isDeclaredInXml())
+      this.bindingTypes = new HashSet<Annotation>();
+      
+      if (getXmlAnnotatedItem() != null && getXmlAnnotatedItem().getAnnotations(BindingType.class).size() > 0)
       {
          // TODO support producer expression default binding type
+         this.bindingTypes.addAll(getXmlAnnotatedItem().getAnnotations(BindingType.class));
          if (xmlSpecialization)
          {
-            xmlBindingTypes.addAll(bindingTypes);
-            log.finest("Using binding types " + xmlBindingTypes + " specified in XML and specialized type");
+            this.bindingTypes.addAll(bindingTypes);
+            log.finest("Using binding types " + this.bindingTypes + " specified in XML and specialized type");
          }
-         else {
-            log.finest("Using binding types " + xmlBindingTypes + " specified in XML");
+         else 
+         {
+            log.finest("Using binding types " + this.bindingTypes + " specified in XML");
          }
-         this.bindingTypes= xmlBindingTypes;
          return;
       }
-      else
+      else if (!mergedStereotypes.isDeclaredInXml() && getAnnotatedItem() != null)
       {
+         this.bindingTypes.addAll(getAnnotatedItem().getAnnotations(BindingType.class));
          if (specialization)
          {
-            bindingTypes.addAll(getSpecializedType().getBindingTypes());
+            this.bindingTypes.addAll(getSpecializedType().getBindingTypes());
             log.finest("Using binding types " + bindingTypes + " specified by annotations and specialized supertype");
          }
          else if (bindingTypes.size() == 0)
          {
             log.finest("Adding default @Current binding type");
-            bindingTypes.add(new CurrentAnnotationLiteral());
+            this.bindingTypes.add(new CurrentAnnotationLiteral());
          }
          else
          {
             log.finest("Using binding types " + bindingTypes + " specified by annotations");
          }
-         this.bindingTypes = bindingTypes;
          return;
       }
    }
@@ -161,30 +156,35 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
     */
    protected void initScopeType()
    {
-      Set<Annotation> xmlScopes = getXmlAnnotatedItem().getAnnotations(ScopeType.class);
-      if (xmlScopes.size() > 1)
+      
+      if (getXmlAnnotatedItem() != null)
       {
-         throw new DefinitionException("At most one scope may be specified in XML");
+         if (getXmlAnnotatedItem().getAnnotations(ScopeType.class).size() > 1)
+         {
+            throw new DefinitionException("At most one scope may be specified in XML");
+         }
+         
+         if (getXmlAnnotatedItem().getAnnotations(ScopeType.class).size() == 1)
+         {
+            this.scopeType = getXmlAnnotatedItem().getAnnotations(ScopeType.class).iterator().next().annotationType();
+            log.finest("Scope " + scopeType + " specified in XML");
+            return;
+         }
       }
       
-      if (xmlScopes.size() == 1)
+      if (getAnnotatedItem() != null)
       {
-         this.scopeType = xmlScopes.iterator().next().annotationType();
-         log.finest("Scope " + scopeType + " specified in XML");
-         return;
-      }
-      
-      Set<Annotation> scopes = getAnnotatedItem().getAnnotations(ScopeType.class);
-      if (scopes.size() > 1)
-      {
-         throw new DefinitionException("At most one scope may be specified");
-      }
-      
-      if (scopes.size() == 1)
-      {
-         this.scopeType = scopes.iterator().next().annotationType();
-         log.finest("Scope " + scopeType + " specified b annotation");
-         return;
+         if (getAnnotatedItem().getAnnotations(ScopeType.class).size() > 1)
+         {
+            throw new DefinitionException("At most one scope may be specified");
+         }
+         
+         if (getAnnotatedItem().getAnnotations(ScopeType.class).size() == 1)
+         {
+            this.scopeType = getAnnotatedItem().getAnnotations(ScopeType.class).iterator().next().annotationType();
+            log.finest("Scope " + scopeType + " specified b annotation");
+            return;
+         }
       }
       
       if (getMergedStereotypes().getPossibleScopeTypes().size() == 1)
@@ -203,10 +203,10 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
    
    protected void initName()
    {
-      boolean xmlSpecialization = getXmlAnnotatedItem().isAnnotationPresent(Specializes.class);
-      boolean specialization = getAnnotatedItem().isAnnotationPresent(Specializes.class);
+      boolean xmlSpecialization = getXmlAnnotatedItem() == null ? false : getXmlAnnotatedItem().isAnnotationPresent(Specializes.class);
+      boolean specialization = getAnnotatedItem() == null ? false : getAnnotatedItem().isAnnotationPresent(Specializes.class);
       boolean beanNameDefaulted = false;
-      if (getXmlAnnotatedItem().isAnnotationPresent(Named.class))
+      if (getXmlAnnotatedItem() != null && getXmlAnnotatedItem().isAnnotationPresent(Named.class))
       {
          if (xmlSpecialization) 
          {
@@ -225,7 +225,7 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
             return;
          }
       }
-      else if (getAnnotatedItem().isAnnotationPresent(Named.class))
+      else if (getAnnotatedItem() != null && getAnnotatedItem().isAnnotationPresent(Named.class))
       {
          if (specialization)
          {
@@ -259,48 +259,48 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
    
    protected void initDeploymentType()
    {
-      Set<Annotation> xmlDeploymentTypes = getXmlAnnotatedItem().getAnnotations(DeploymentType.class);
-      
-      if (xmlDeploymentTypes.size() > 1)
+      if (getXmlAnnotatedItem() != null)
       {
-         throw new RuntimeException("At most one deployment type may be specified (" + xmlDeploymentTypes + " are specified)");
+         Set<Annotation> xmlDeploymentTypes = getXmlAnnotatedItem().getAnnotations(DeploymentType.class);
+         if (xmlDeploymentTypes.size() > 1)
+         {
+            throw new RuntimeException("At most one deployment type may be specified (" + xmlDeploymentTypes + " are specified)");
+         }
+         
+         if (xmlDeploymentTypes.size() == 1)
+         {
+            this.deploymentType = xmlDeploymentTypes.iterator().next().annotationType(); 
+            log.finest("Deployment type " + deploymentType + " specified in XML");
+            return;
+         }
       }
       
-      if (xmlDeploymentTypes.size() == 1)
+      if (getAnnotatedItem() != null)
       {
-         this.deploymentType = xmlDeploymentTypes.iterator().next().annotationType(); 
-         log.finest("Deployment type " + deploymentType + " specified in XML");
-         return;
+         Set<Annotation> deploymentTypes = getAnnotatedItem().getAnnotations(DeploymentType.class);
+         
+         if (deploymentTypes.size() > 1)
+         {
+            throw new DefinitionException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().toString());
+         }
+         if (deploymentTypes.size() == 1)
+         {
+            this.deploymentType = deploymentTypes.iterator().next().annotationType();
+            log.finest("Deployment type " + deploymentType + " specified by annotation");
+            return;
+         }
+         
+         if (getMergedStereotypes().getPossibleDeploymentTypes().size() > 0)
+         {
+            this.deploymentType = getDeploymentType(container.getEnabledDeploymentTypes(), getMergedStereotypes().getPossibleDeploymentTypes());
+            log.finest("Deployment type " + deploymentType + " specified by stereotype");
+            return;
+         }
       }
       
-      
-      Set<Annotation> deploymentTypes = getAnnotatedItem().getAnnotations(DeploymentType.class);
-      
-      if (deploymentTypes.size() > 1)
-      {
-         throw new DefinitionException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().toString());
-      }
-      if (deploymentTypes.size() == 1)
-      {
-         this.deploymentType = deploymentTypes.iterator().next().annotationType();
-         log.finest("Deployment type " + deploymentType + " specified by annotation");
-         return;
-      }
-      
-      if (getMergedStereotypes().getPossibleDeploymentTypes().size() > 0)
-      {
-         this.deploymentType = getDeploymentType(container.getEnabledDeploymentTypes(), getMergedStereotypes().getPossibleDeploymentTypes());
-         log.finest("Deployment type " + deploymentType + " specified by stereotype");
-         return;
-      }
-      
-      // TODO This isn't the right way to check if XML isn't in use
-      if (getXmlAnnotatedItem().getDelegate() != null)
-      {
-         this.deploymentType = Production.class;
-         log.finest("Using default @Production deployment type");
-         return;
-      }
+      this.deploymentType = Production.class;
+      log.finest("Using default @Production deployment type");
+      return;
    }
    
    protected void checkDeploymentType()
@@ -309,8 +309,7 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
       {
          throw new RuntimeException("type: " + getType() + " must specify a deployment type");
       }
-      
-      if (deploymentType.equals(Standard.class))
+      else if (deploymentType.equals(Standard.class))
       {
          throw new DefinitionException();
       }

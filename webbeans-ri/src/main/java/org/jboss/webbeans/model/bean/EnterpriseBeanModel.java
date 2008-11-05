@@ -169,7 +169,7 @@ public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
       Class<?> superclass = getAnnotatedItem().getType().getSuperclass();
       if ( superclass!=null )
       {
-         return new EnterpriseBeanModel(new SimpleAnnotatedClass(superclass), getEmptyAnnotatedType(superclass), container);
+         return new EnterpriseBeanModel(new SimpleAnnotatedClass(superclass), null, container);
       }
       else {
          throw new RuntimeException();

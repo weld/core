@@ -19,7 +19,7 @@ public class Util
 
    public static <T> SimpleBeanModel<T> createSimpleModel(Class<T> clazz, ManagerImpl manager)
    {
-      return new SimpleBeanModel<T>(new SimpleAnnotatedClass<T>(clazz), getEmptyAnnotatedType(clazz), manager);
+      return new SimpleBeanModel<T>(new SimpleAnnotatedClass<T>(clazz), null, manager);
    }
 
    public static <T> SimpleBeanModel<T> createSimpleModel(Class<T> clazz, AnnotatedClass<T> xmlAnnotatedType, ManagerImpl manager)
@@ -37,6 +37,7 @@ public class Util
       return new EnterpriseBeanModel<T>(new SimpleAnnotatedClass<T>(clazz), xmlAnnotatedType, manager);
    }
       
+   @Deprecated
    public static <T> AnnotatedClass<T> getEmptyAnnotatedType(Class<T> type)
    {
       return new SimpleAnnotatedClass<T>(type, new HashMap<Class<? extends Annotation>, Annotation>());
