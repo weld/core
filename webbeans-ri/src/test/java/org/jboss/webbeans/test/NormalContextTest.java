@@ -83,11 +83,5 @@ public class NormalContextTest extends AbstractTest
       ((AbstractContext)context).destroy(manager);
       assert context.get(tunaBean, false) == null;
    }
-
-   @Test(groups="contexts")
-   public void testThreadSafety() {
-      //TODO stub
-      assert false;
-   }
    
 }

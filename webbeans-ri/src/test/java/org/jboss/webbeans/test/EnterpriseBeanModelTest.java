@@ -7,6 +7,7 @@ import javax.webbeans.UnremovedException;
 import org.jboss.webbeans.model.bean.EnterpriseBeanModel;
 import org.jboss.webbeans.test.beans.Giraffe;
 import org.jboss.webbeans.test.beans.GreatDane;
+import org.jboss.webbeans.test.beans.GreaterDane;
 import org.jboss.webbeans.test.beans.Laika;
 import org.jboss.webbeans.test.beans.Leopard;
 import org.jboss.webbeans.test.beans.Pitbull;
@@ -34,7 +35,7 @@ import org.jboss.webbeans.test.beans.broken.Whippet;
 import org.jboss.webbeans.test.util.Util;
 import org.testng.annotations.Test;
 
-@SuppressWarnings( { "unchecked", "unused" })
+@SuppressWarnings("unused")
 @SpecVersion("PDR")
 public class EnterpriseBeanModelTest extends AbstractTest
 {
@@ -354,9 +355,16 @@ public class EnterpriseBeanModelTest extends AbstractTest
    
    @Test(expectedExceptions=DefinitionException.class, groups={"specialization", "enterpriseBeans"})
    @SpecAssertion(section = "3.3.6")
-   public void testSpecializingNotExtendingSpecializedBeanDirectlyFailes()
+   public void testAnnotationDefinedSpecializingEnterpriseBeanNotDirectlyExtendingAnnotationDefinedEnterpriseBeanFails()
    {
-      assert false;
+      EnterpriseBeanModel<GreaterDane> greaterDane = Util.createEnterpriseBeanModel(GreaterDane.class, manager);
+   }
+
+   @Test(expectedExceptions=DefinitionException.class, groups={"specialization", "enterpriseBeans"})
+   @SpecAssertion(section = "3.3.6")
+   public void testXMLDefinedSpecializingEnterpriseBeanNotImplementingAnnotationDefinedEnterpriseBeanFails()
+   {
+     assert false;
    }
 
    @Test(groups={"specialization", "enterpriseBeans"})
@@ -415,100 +423,6 @@ public class EnterpriseBeanModelTest extends AbstractTest
    {
       assert false;
    }
-/*   
+*/   
    
-   /*
-    * @Test public void testStateless() { EnterpriseBeanModel<Lion> lion = new
-    * EnterpriseBeanModel<Lion>(new SimpleAnnotatedType<Lion>(Lion.class),
-    * getEmptyAnnotatedType(Lion.class), manager); assert
-    * lion.getScopeType().equals(Dependent.class);
-    * Reflections.annotationSetMatches(lion.getBindingTypes(), Current.class);
-    * assert lion.getName().equals("lion"); }
-    * 
-    * @Test @SpecAssertion(section="3.3") public void
-    * testStatelessWithDependentScopeOK() { EnterpriseBeanModel<Giraffe> giraffe
-    * = Util.createEnterpriseBeanModel(Giraffe.class, manager); assert
-    * giraffe.getScopeType().equals(Dependent.class); assert
-    * Reflections.annotationSetMatches(giraffe.getBindingTypes(),
-    * Current.class); }
-    * 
-    * @Test(expectedExceptions = RuntimeException.class)
-    * @SpecAssertion(section="3.3") public void
-    * testStatelessWithRequestScopeFails() { EnterpriseBeanModel<Bear> bear =
-    * Util.createEnterpriseBeanModel(Bear.class, manager); }
-    * 
-    * @Test(expectedExceptions = RuntimeException.class)
-    * @SpecAssertion(section="3.3") public void
-    * testStatelessWithApplicationScopeFails() { assert false; }
-    * 
-    * @Test(expectedExceptions = RuntimeException.class)
-    * @SpecAssertion(section="3.3") public void
-    * testStatelessWithSessionScopeFails() { assert false; }
-    * 
-    * @Test(expectedExceptions = RuntimeException.class)
-    * @SpecAssertion(section="3.3") public void
-    * testStatelessWithConversationScopeFails() { assert false; }
-    * 
-    * public void testSingletonWithDependentScopeOK() { assert false; }
-    * 
-    * @Test(expectedExceptions = RuntimeException.class)
-    * @SpecAssertion(section="3.3") public void
-    * testSingletonWithRequestScopeFails() { assert false; }
-    * 
-    * @Test(expectedExceptions = RuntimeException.class)
-    * @SpecAssertion(section="3.3") public void
-    * testSingletonWithApplicationScopeOK() { assert false; }
-    * 
-    * @Test(expectedExceptions = RuntimeException.class)
-    * @SpecAssertion(section="3.3") public void
-    * testSingletonWithSessionScopeFails() { assert false; }
-    * 
-    * @Test(expectedExceptions = RuntimeException.class)
-    * @SpecAssertion(section="3.3") public void
-    * testSingletonWithConversationScopeFails() { assert false; }
-    * 
-    * @Test public void testStateful() { EnterpriseBeanModel<Tiger> tiger =
-    * Util.createEnterpriseBeanModel(Tiger.class, manager); assert
-    * Reflections.annotationSetMatches(tiger.getBindingTypes(),
-    * Synchronous.class); assert
-    * tiger.getRemoveMethod().getAnnotatedItem().getDelegate
-    * ().getName().equals("remove"); assert tiger.getName() == null; }
-    * 
-    * @Test public void testMultipleRemoveMethodsWithDestroys() {
-    * EnterpriseBeanModel<Elephant> elephant =
-    * Util.createEnterpriseBeanModel(Elephant.class, manager); assert
-    * elephant.getRemoveMethod
-    * ().getAnnotatedItem().getDelegate().getName().equals("remove2"); }
-    * 
-    * @Test(expectedExceptions=RuntimeException.class) public void
-    * testMultipleRemoveMethodsWithoutDestroys() { EnterpriseBeanModel<Puma>
-    * puma = Util.createEnterpriseBeanModel(Puma.class, manager); }
-    * 
-    * @Test(expectedExceptions=RuntimeException.class) public void
-    * testMultipleRemoveMethodsWithMultipleDestroys() {
-    * EnterpriseBeanModel<Cougar> cougar =
-    * Util.createEnterpriseBeanModel(Cougar.class, manager); }
-    * 
-    * @Test(expectedExceptions=RuntimeException.class) public void
-    * testNonStatefulEnterpriseBeanWithDestroys() { EnterpriseBeanModel<Cheetah>
-    * cheetah = Util.createEnterpriseBeanModel(Cheetah.class, manager); }
-    * 
-    * @Test public void testRemoveMethodWithDefaultBinding() {
-    * EnterpriseBeanModel<Panther> panther =
-    * Util.createEnterpriseBeanModel(Panther.class, manager); assert
-    * panther.getRemoveMethod
-    * ().getAnnotatedItem().getDelegate().getName().equals("remove"); assert
-    * panther.getRemoveMethod().getParameters().size() == 1; assert
-    * panther.getRemoveMethod
-    * ().getParameters().get(0).getType().equals(String.class); assert
-    * panther.getRemoveMethod().getParameters().get(0).getBindingTypes().size()
-    * == 1; assert
-    * Reflections.annotationSetMatches(panther.getRemoveMethod().getParameters
-    * ().get(0).getBindingTypes(), Current.class); }
-    * 
-    * @Test public void testMessageDriven() { EnterpriseBeanModel<Leopard>
-    * leopard = Util.createEnterpriseBeanModel(Leopard.class, manager); assert
-    * Reflections.annotationSetMatches(leopard.getBindingTypes(),
-    * Current.class); }
-    */
 }

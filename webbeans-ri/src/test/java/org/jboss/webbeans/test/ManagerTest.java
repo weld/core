@@ -61,12 +61,6 @@ public class ManagerTest extends AbstractTest
       assert false;
    }
 
-   @Test(groups="manager")
-   public void testWrappingOfBeanCollection() 
-   {
-      // TODO stub
-      assert false;
-   }
 
    /*
    

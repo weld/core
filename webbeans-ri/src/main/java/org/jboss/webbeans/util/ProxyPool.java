@@ -2,9 +2,9 @@ package org.jboss.webbeans.util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
@@ -20,7 +20,7 @@ public class ProxyPool
    {
       public Pool()
       {
-         super(new HashMap<Bean<?>, Object>());
+         super(new ConcurrentHashMap<Bean<?>, Object>());
       }
 
       public <T> T get(Bean<T> key)
