@@ -11,7 +11,7 @@ import javax.webbeans.manager.Context;
 import org.jboss.webbeans.contexts.AbstractContext;
 import org.jboss.webbeans.contexts.RequestContext;
 import org.jboss.webbeans.introspector.SimpleAnnotatedMethod;
-import org.jboss.webbeans.introspector.SimpleAnnotatedType;
+import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
 import org.jboss.webbeans.model.bean.ProducerMethodBeanModel;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.beans.SpiderProducer;
@@ -68,7 +68,7 @@ public class NormalContextTest extends AbstractTest
 
    @Test(groups={"contexts", "producerMethod"}) @SpecAssertion(section="8.1")
    public void testProducerMethodReturningNullOK() throws SecurityException, NoSuchMethodException {
-      SimpleBeanModel<SpiderProducer> producer = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedType<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
+      SimpleBeanModel<SpiderProducer> producer = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedClass<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
       manager.getModelManager().addBeanModel(producer);
       Method nullProducer = SpiderProducer.class.getMethod("produceShelob");  
       ProducerMethodBeanModel<Tarantula> producerModel = new ProducerMethodBeanModel<Tarantula>(new SimpleAnnotatedMethod<Tarantula>(nullProducer), manager);

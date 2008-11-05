@@ -13,9 +13,9 @@ import javax.webbeans.Produces;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.InjectableField;
 import org.jboss.webbeans.injectable.InjectableMethod;
+import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.LoggerUtil;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
@@ -33,8 +33,8 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
 
    private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
    
-   private AnnotatedType<T> annotatedItem;
-   private AnnotatedType<T> xmlAnnotatedItem;
+   private AnnotatedClass<T> annotatedItem;
+   private AnnotatedClass<T> xmlAnnotatedItem;
    private Set<InjectableField<?>> injectableFields;
    private Set<InjectableMethod<Object>> initializerMethods;
    
@@ -44,7 +44,7 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
     * @param xmlAnnotatedItem Annotations read from XML
     * @param manager
     */
-   public AbstractClassBeanModel(AnnotatedType<T> annotatedItem, AnnotatedType<T> xmlAnnotatedItem)
+   public AbstractClassBeanModel(AnnotatedClass<T> annotatedItem, AnnotatedClass<T> xmlAnnotatedItem)
    {
       if (annotatedItem == null)
       {
@@ -72,19 +72,20 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
    }
    
    @Override
-   protected AnnotatedType<T> getAnnotatedItem()
+   protected AnnotatedClass<T> getAnnotatedItem()
    {
       return annotatedItem;
    }
    
    @Override
-   protected AnnotatedType<T> getXmlAnnotatedItem()
+   protected AnnotatedClass<T> getXmlAnnotatedItem()
    {
       return xmlAnnotatedItem;
    }
    
    protected void initType()
    {
+      // TODO This is not the right way to check XML definition
       if (getAnnotatedItem().getDelegate() != null && getXmlAnnotatedItem().getDelegate() != null && !getAnnotatedItem().getDelegate().equals(getXmlAnnotatedItem().getDelegate()))
       {
          throw new IllegalArgumentException("Cannot build a bean which specifies different classes in XML and Java");
@@ -112,11 +113,11 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
       injectableFields = new HashSet<InjectableField<?>>();
       for (AnnotatedField<Object> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
       {
-         if (Reflections.isStatic(annotatedField.getDelegate()))
+         if (annotatedField.isStatic())
          {
             throw new DefinitionException("Don't place binding annotations on static fields " + annotatedField);
          }
-         if (Reflections.isFinal(annotatedField.getDelegate()))
+         if (annotatedField.isFinal())
          {
             throw new DefinitionException("Don't place binding annotations on final fields " + annotatedField);
          }
@@ -132,7 +133,7 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
       initializerMethods = new HashSet<InjectableMethod<Object>>();
       for (AnnotatedMethod<Object> annotatedMethod : annotatedItem.getAnnotatedMethods(Initializer.class))
       {
-         if (Reflections.isStatic(annotatedMethod.getDelegate()))
+         if (annotatedMethod.isStatic())
          {
             throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be static");
          }

@@ -10,8 +10,8 @@ import javax.webbeans.Initializer;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.injectable.SimpleConstructor;
-import org.jboss.webbeans.introspector.AnnotatedType;
-import org.jboss.webbeans.introspector.SimpleAnnotatedType;
+import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
 import org.jboss.webbeans.util.LoggerUtil;
 import org.jboss.webbeans.util.Reflections;
 
@@ -30,7 +30,7 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
     * @param xmlAnnotatedItem Annotations read from XML
     * @param container
     */
-   public SimpleBeanModel(AnnotatedType<T> annotatedItem, AnnotatedType<T> xmlAnnotatedItem, ManagerImpl container)
+   public SimpleBeanModel(AnnotatedClass<T> annotatedItem, AnnotatedClass<T> xmlAnnotatedItem, ManagerImpl container)
    {
       super(annotatedItem, xmlAnnotatedItem);
       init(container);
@@ -127,7 +127,7 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
       Class<?> superclass = getAnnotatedItem().getType().getSuperclass();
       if ( superclass!=null )
       {
-         return new SimpleBeanModel(new SimpleAnnotatedType(superclass), getEmptyAnnotatedType(superclass), container);
+         return new SimpleBeanModel(new SimpleAnnotatedClass(superclass), getEmptyAnnotatedType(superclass), container);
       }
       else {
          throw new RuntimeException();

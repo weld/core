@@ -11,8 +11,8 @@ import java.util.Map;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.RequestScoped;
 
-import org.jboss.webbeans.introspector.AnnotatedType;
-import org.jboss.webbeans.introspector.SimpleAnnotatedType;
+import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
 import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.AnimalOrderStereotype;
@@ -153,7 +153,7 @@ public class StereotypesTest extends AbstractTest
    @Test @SpecAssertion(section={"2.7.2", "2.7.4"})
    public void testMultipleStereotypes()
    {
-      SimpleBeanModel<HighlandCow> highlandCow = new SimpleBeanModel<HighlandCow>(new SimpleAnnotatedType<HighlandCow>(HighlandCow.class), getEmptyAnnotatedType(HighlandCow.class), manager);
+      SimpleBeanModel<HighlandCow> highlandCow = new SimpleBeanModel<HighlandCow>(new SimpleAnnotatedClass<HighlandCow>(HighlandCow.class), getEmptyAnnotatedType(HighlandCow.class), manager);
       assert highlandCow.getName() == null;
       assert highlandCow.getBindingTypes().iterator().next().annotationType().equals(Tame.class);
       assert highlandCow.getScopeType().equals(RequestScoped.class);
@@ -169,7 +169,7 @@ public class StereotypesTest extends AbstractTest
    {
       Map<Class<? extends Annotation>, Annotation> cooXmlAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
       cooXmlAnnotations.put(HornedMammalStereotype.class, new HornedMamalStereotypeAnnotationLiteral());
-      AnnotatedType<HighlandCow> cooXmlAnnotatedItem = new SimpleAnnotatedType<HighlandCow>(HighlandCow.class, cooXmlAnnotations);
+      AnnotatedClass<HighlandCow> cooXmlAnnotatedItem = new SimpleAnnotatedClass<HighlandCow>(HighlandCow.class, cooXmlAnnotations);
       
       SimpleBeanModel<HighlandCow> coo = createSimpleModel(HighlandCow.class, cooXmlAnnotatedItem, manager);
       assert coo.getDeploymentType().equals(HornedAnimalDeploymentType.class);
@@ -185,7 +185,7 @@ public class StereotypesTest extends AbstractTest
       Map<Class<? extends Annotation>, Annotation> cooXmlAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
       cooXmlAnnotations.put(HornedMammalStereotype.class, new HornedMamalStereotypeAnnotationLiteral());
       cooXmlAnnotations.put(Synchronous.class, new SynchronousAnnotationLiteral());
-      AnnotatedType<HighlandCow> cooXmlAnnotatedItem = new SimpleAnnotatedType<HighlandCow>(HighlandCow.class, cooXmlAnnotations);
+      AnnotatedClass<HighlandCow> cooXmlAnnotatedItem = new SimpleAnnotatedClass<HighlandCow>(HighlandCow.class, cooXmlAnnotations);
       
       SimpleBeanModel<HighlandCow> coo = createSimpleModel(HighlandCow.class, cooXmlAnnotatedItem, manager);
       assert coo.getBindingTypes().size() == 1;
@@ -196,25 +196,25 @@ public class StereotypesTest extends AbstractTest
    @Test@SpecAssertion(section="2.7.4")
    public void testRequiredTypeIsImplemented()
    {
-         new SimpleBeanModel<HighlandCow>(new SimpleAnnotatedType<HighlandCow>(HighlandCow.class), getEmptyAnnotatedType(HighlandCow.class), manager);
+         new SimpleBeanModel<HighlandCow>(new SimpleAnnotatedClass<HighlandCow>(HighlandCow.class), getEmptyAnnotatedType(HighlandCow.class), manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.4")
    public void testRequiredTypeIsNotImplemented()
    {
-      new SimpleBeanModel<Chair>(new SimpleAnnotatedType<Chair>(Chair.class), getEmptyAnnotatedType(Chair.class), manager);      
+      new SimpleBeanModel<Chair>(new SimpleAnnotatedClass<Chair>(Chair.class), getEmptyAnnotatedType(Chair.class), manager);      
    }
    
    @Test @SpecAssertion(section="2.7.4")
    public void testScopeIsSupported()
    {
-      new SimpleBeanModel<Goldfish>(new SimpleAnnotatedType<Goldfish>(Goldfish.class), getEmptyAnnotatedType(Goldfish.class), manager);
+      new SimpleBeanModel<Goldfish>(new SimpleAnnotatedClass<Goldfish>(Goldfish.class), getEmptyAnnotatedType(Goldfish.class), manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.4")
    public void testScopeIsNotSupported()
    {
-      new SimpleBeanModel<Carp>(new SimpleAnnotatedType<Carp>(Carp.class), getEmptyAnnotatedType(Carp.class), manager);    
+      new SimpleBeanModel<Carp>(new SimpleAnnotatedClass<Carp>(Carp.class), getEmptyAnnotatedType(Carp.class), manager);    
    }
    
 }

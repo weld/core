@@ -79,11 +79,13 @@ public class EventBeanModel<T> extends AbstractBeanModel<T, Field>
    @Override
    protected void initType()
    {
+      // TODO This is not the right way to check XML definition
       if (getXmlAnnotatedItem().getDelegate() != null)
       {
          log.finest("Bean type specified in XML");
          this.type = xmlAnnotatedItem.getType();
-      } else if (getAnnotatedItem().getDelegate() != null)
+      }
+      else if (getAnnotatedItem().getDelegate() != null)
       {
          log.finest("Bean type specified in Java");
          this.type = annotatedItem.getType();

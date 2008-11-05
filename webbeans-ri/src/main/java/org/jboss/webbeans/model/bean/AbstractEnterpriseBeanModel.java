@@ -8,7 +8,7 @@ import javax.webbeans.Interceptor;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.ejb.EjbMetaData;
-import org.jboss.webbeans.introspector.AnnotatedType;
+import org.jboss.webbeans.introspector.AnnotatedClass;
 
 public abstract class AbstractEnterpriseBeanModel<T> extends
       AbstractClassBeanModel<T>
@@ -16,8 +16,8 @@ public abstract class AbstractEnterpriseBeanModel<T> extends
 
    private EjbMetaData<T> ejbMetaData;
 
-   public AbstractEnterpriseBeanModel(AnnotatedType<T> annotatedItem,
-         AnnotatedType<T> xmlAnnotatedItem)
+   public AbstractEnterpriseBeanModel(AnnotatedClass<T> annotatedItem,
+         AnnotatedClass<T> xmlAnnotatedItem)
    {
       super(annotatedItem, xmlAnnotatedItem);
    }

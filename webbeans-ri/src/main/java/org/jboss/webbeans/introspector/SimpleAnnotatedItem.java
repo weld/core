@@ -85,4 +85,14 @@ public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
       return actualAnnotations;
    }
    
+   public boolean isStatic()
+   {
+      return false;
+   }
+   
+   public boolean isFinal()
+   {
+      return false;
+   }
+   
 }

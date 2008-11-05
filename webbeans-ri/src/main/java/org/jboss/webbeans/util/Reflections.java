@@ -5,6 +5,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -55,14 +56,9 @@ public class Reflections
       return Modifier.isFinal(clazz.getModifiers());
    }
    
-   public static boolean isFinal(Method method)
+   public static boolean isFinal(Member member)
    {
-      return Modifier.isFinal(method.getModifiers());
-   }
-   
-   public static boolean isFinal(Field field)
-   {
-      return Modifier.isFinal(field.getModifiers());
+      return Modifier.isFinal(member.getModifiers());
    }
    
    public static boolean isTypeOrAnyMethodFinal(Class<?> type)
@@ -91,14 +87,9 @@ public class Reflections
       return Modifier.isStatic(type.getModifiers());
    }
    
-   public static boolean isStatic(Field field)
+   public static boolean isStatic(Member member)
    {
-      return Modifier.isStatic(field.getModifiers());
-   }
-   
-   public static boolean isStatic(Method method)
-   {
-      return Modifier.isStatic(method.getModifiers());
+      return Modifier.isStatic(member.getModifiers());
    }
    
    public static boolean isAbstract(Class<?> clazz)

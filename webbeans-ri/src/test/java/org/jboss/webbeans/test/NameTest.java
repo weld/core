@@ -11,8 +11,8 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.Named;
 
 import org.jboss.webbeans.bindings.NamedAnnotationLiteral;
-import org.jboss.webbeans.introspector.AnnotatedType;
-import org.jboss.webbeans.introspector.SimpleAnnotatedType;
+import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
 import org.jboss.webbeans.model.bean.BeanModel;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.RiverFishStereotype;
@@ -37,7 +37,7 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section="2.6.1")
    public void testNonDefaultNamed()
    {
-      SimpleBeanModel<Moose> moose = new SimpleBeanModel<Moose>(new SimpleAnnotatedType<Moose>(Moose.class), getEmptyAnnotatedType(Moose.class), manager);
+      SimpleBeanModel<Moose> moose = new SimpleBeanModel<Moose>(new SimpleAnnotatedClass<Moose>(Moose.class), getEmptyAnnotatedType(Moose.class), manager);
       assert moose.getName().equals("aMoose");
    }
    
@@ -53,8 +53,8 @@ public class NameTest extends AbstractTest
          }
          
       });
-      AnnotatedType<SeaBass> annotatedItem = new SimpleAnnotatedType<SeaBass>(SeaBass.class, annotations);
-      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), annotatedItem, manager);
+      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
+      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedClass<SeaBass>(SeaBass.class), annotatedItem, manager);
       
       assert trout.getName().equals("aTrout");
    }
@@ -71,8 +71,8 @@ public class NameTest extends AbstractTest
          }
          
       });
-      AnnotatedType<Cod> annotatedItem = new SimpleAnnotatedType<Cod>(Cod.class, annotations);
-      SimpleBeanModel<Cod> cod = new SimpleBeanModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), annotatedItem, manager);
+      AnnotatedClass<Cod> annotatedItem = new SimpleAnnotatedClass<Cod>(Cod.class, annotations);
+      SimpleBeanModel<Cod> cod = new SimpleBeanModel<Cod>(new SimpleAnnotatedClass<Cod>(Cod.class), annotatedItem, manager);
       
       assert cod.getName().equals("aTrout");
    }
@@ -81,8 +81,8 @@ public class NameTest extends AbstractTest
    public void testJavaNamedUsedWhenNoXmlSpecified()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      AnnotatedType<Cod> annotatedItem = new SimpleAnnotatedType<Cod>(Cod.class, annotations);
-      SimpleBeanModel<Cod> cod = new SimpleBeanModel<Cod>(new SimpleAnnotatedType<Cod>(Cod.class), annotatedItem, manager);
+      AnnotatedClass<Cod> annotatedItem = new SimpleAnnotatedClass<Cod>(Cod.class, annotations);
+      SimpleBeanModel<Cod> cod = new SimpleBeanModel<Cod>(new SimpleAnnotatedClass<Cod>(Cod.class), annotatedItem, manager);
       
       assert cod.getName().equals("whitefish");
    }
@@ -90,7 +90,7 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section={"2.6.3", "3.2.7"})
    public void testDefaultNamed()
    {
-      SimpleBeanModel<Haddock> haddock = new SimpleBeanModel<Haddock>(new SimpleAnnotatedType<Haddock>(Haddock.class), getEmptyAnnotatedType(Haddock.class), manager);
+      SimpleBeanModel<Haddock> haddock = new SimpleBeanModel<Haddock>(new SimpleAnnotatedClass<Haddock>(Haddock.class), getEmptyAnnotatedType(Haddock.class), manager);
       assert haddock.getName() != null;
       assert haddock.getName().equals("haddock");
    }
@@ -107,8 +107,8 @@ public class NameTest extends AbstractTest
          }
          
       });
-      AnnotatedType<SeaBass> annotatedItem = new SimpleAnnotatedType<SeaBass>(SeaBass.class, annotations);
-      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), annotatedItem, manager);
+      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
+      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedClass<SeaBass>(SeaBass.class), annotatedItem, manager);
       
       assert trout.getName() != null;
       assert trout.getName().equals("seaBass");
@@ -125,14 +125,14 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section="2.6.4")
    public void testNotNamedInJava()
    {
-      SimpleBeanModel<SeaBass> model = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedType(SeaBass.class), manager);
+      SimpleBeanModel<SeaBass> model = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedClass<SeaBass>(SeaBass.class), getEmptyAnnotatedType(SeaBass.class), manager);
       assert model.getName() == null;
    }
    
    @Test @SpecAssertion(section="2.6.4")
    public void testNotNamedInXml()
    {
-      SimpleBeanModel<SeaBass> model = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), getEmptyAnnotatedType(SeaBass.class), manager);
+      SimpleBeanModel<SeaBass> model = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedClass<SeaBass>(SeaBass.class), getEmptyAnnotatedType(SeaBass.class), manager);
       assert model.getName() == null;
    }
    
@@ -141,8 +141,8 @@ public class NameTest extends AbstractTest
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(RiverFishStereotype.class, new RiverFishStereotypeAnnotationLiteral());
-      AnnotatedType<SeaBass> annotatedItem = new SimpleAnnotatedType<SeaBass>(SeaBass.class, annotations);
-      SimpleBeanModel<SeaBass> model = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), annotatedItem, manager);
+      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
+      SimpleBeanModel<SeaBass> model = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedClass<SeaBass>(SeaBass.class), annotatedItem, manager);
       assert model.getName() == null;
    }
    

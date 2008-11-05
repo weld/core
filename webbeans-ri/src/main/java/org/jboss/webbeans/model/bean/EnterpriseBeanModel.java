@@ -21,8 +21,8 @@ import org.jboss.webbeans.injectable.BeanConstructor;
 import org.jboss.webbeans.injectable.EnterpriseConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
-import org.jboss.webbeans.introspector.AnnotatedType;
-import org.jboss.webbeans.introspector.SimpleAnnotatedType;
+import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
 import org.jboss.webbeans.util.Reflections;
 
 public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
@@ -32,8 +32,8 @@ public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
    
    private String location;
    
-   public EnterpriseBeanModel(AnnotatedType<T> annotatedItem,
-         AnnotatedType<T> xmlAnnotatedItem, ManagerImpl container)
+   public EnterpriseBeanModel(AnnotatedClass<T> annotatedItem,
+         AnnotatedClass<T> xmlAnnotatedItem, ManagerImpl container)
    {
       super(annotatedItem, xmlAnnotatedItem);
       init(container);
@@ -172,7 +172,7 @@ public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
       Class<?> superclass = getAnnotatedItem().getType().getSuperclass();
       if ( superclass!=null )
       {
-         return new EnterpriseBeanModel(new SimpleAnnotatedType(superclass), getEmptyAnnotatedType(superclass), container);
+         return new EnterpriseBeanModel(new SimpleAnnotatedClass(superclass), getEmptyAnnotatedType(superclass), container);
       }
       else {
          throw new RuntimeException();

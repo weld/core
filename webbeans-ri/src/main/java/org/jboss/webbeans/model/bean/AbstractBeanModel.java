@@ -24,7 +24,7 @@ import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.SimpleAnnotatedType;
+import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
 import org.jboss.webbeans.model.MergedStereotypesModel;
 import org.jboss.webbeans.util.LoggerUtil;
 import org.jboss.webbeans.util.Reflections;
@@ -67,8 +67,8 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
       throw new UnsupportedOperationException();
    }
    
-   protected static <T> SimpleAnnotatedType getEmptyAnnotatedType(Class<T> type) {
-      return new SimpleAnnotatedType<T>(type, new HashMap<Class<? extends Annotation>, Annotation>());
+   protected static <T> SimpleAnnotatedClass getEmptyAnnotatedType(Class<T> type) {
+      return new SimpleAnnotatedClass<T>(type, new HashMap<Class<? extends Annotation>, Annotation>());
    }
    
    protected void initInjectionPoints()
@@ -294,6 +294,7 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
          return;
       }
       
+      // TODO This isn't the right way to check if XML isn't in use
       if (getXmlAnnotatedItem().getDelegate() != null)
       {
          this.deploymentType = Production.class;

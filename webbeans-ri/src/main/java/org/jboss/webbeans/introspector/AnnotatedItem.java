@@ -58,5 +58,9 @@ public interface AnnotatedItem<T, S>
    public boolean isAssignableFrom(Set<Class<?>> types);
    
    public Type[] getActualTypeArguments();
+   
+   public boolean isStatic();
+   
+   public boolean isFinal();
 
 }

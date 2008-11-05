@@ -3,7 +3,7 @@ package org.jboss.webbeans.introspector;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 
-public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedItem<T, Constructor<T>> implements AnnotatedConstructor<T>
+public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Constructor<T>> implements AnnotatedConstructor<T>
 {
 
    private static final Type[] actualTypeArguments = new Type[0];

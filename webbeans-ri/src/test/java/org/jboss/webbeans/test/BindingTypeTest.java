@@ -11,8 +11,8 @@ import javax.webbeans.AnnotationLiteral;
 import javax.webbeans.Current;
 
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
-import org.jboss.webbeans.introspector.AnnotatedType;
-import org.jboss.webbeans.introspector.SimpleAnnotatedType;
+import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
 import org.jboss.webbeans.model.bean.BeanModel;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.Asynchronous;
@@ -85,7 +85,7 @@ public class BindingTypeTest extends AbstractTest
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
-      AnnotatedType annotatedItem = new SimpleAnnotatedType(Antelope.class, annotations);
+      AnnotatedClass annotatedItem = new SimpleAnnotatedClass(Antelope.class, annotations);
       
       SimpleBeanModel<Antelope> antelope = new SimpleBeanModel<Antelope>(getEmptyAnnotatedType(Antelope.class), annotatedItem, manager);
       assert Reflections.annotationSetMatches(antelope.getBindingTypes(), Asynchronous.class);
@@ -96,7 +96,7 @@ public class BindingTypeTest extends AbstractTest
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
-      AnnotatedType<Cat> annotatedItem = new SimpleAnnotatedType<Cat>(Cat.class, annotations);
+      AnnotatedClass<Cat> annotatedItem = new SimpleAnnotatedClass<Cat>(Cat.class, annotations);
       
       SimpleBeanModel<Cat> cat = createSimpleModel(Cat.class, annotatedItem, manager);
       assert cat.getBindingTypes().size() == 1;
@@ -107,7 +107,7 @@ public class BindingTypeTest extends AbstractTest
    public void testNoBindingTypesDeclaredInXml()
    {
 	   Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      AnnotatedType<Cat> annotatedItem = new SimpleAnnotatedType<Cat>(Cat.class, annotations);
+      AnnotatedClass<Cat> annotatedItem = new SimpleAnnotatedClass<Cat>(Cat.class, annotations);
       
       SimpleBeanModel<Cat> cat = createSimpleModel(Cat.class, annotatedItem, manager);
       assert cat.getBindingTypes().size() == 1;

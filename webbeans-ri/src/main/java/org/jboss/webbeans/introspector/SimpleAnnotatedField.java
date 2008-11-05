@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public class SimpleAnnotatedField<T> extends AbstractAnnotatedItem<T, Field> implements AnnotatedField<T>
+public class SimpleAnnotatedField<T> extends AbstractAnnotatedMember<T, Field> implements AnnotatedField<T>
 {
    
    private Type[] actualTypeArguments = new Type[0];

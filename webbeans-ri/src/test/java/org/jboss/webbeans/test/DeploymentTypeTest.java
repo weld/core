@@ -17,8 +17,8 @@ import javax.webbeans.Standard;
 import javax.webbeans.UnsatisfiedDependencyException;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.introspector.AnnotatedType;
-import org.jboss.webbeans.introspector.SimpleAnnotatedType;
+import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.FishStereotype;
@@ -66,7 +66,7 @@ public class DeploymentTypeTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.5.3")
    public void testTooManyDeploymentTypes()
    {
-      new SimpleBeanModel<BeanWithTooManyDeploymentTypes>(new SimpleAnnotatedType<BeanWithTooManyDeploymentTypes>(BeanWithTooManyDeploymentTypes.class), getEmptyAnnotatedType(BeanWithTooManyDeploymentTypes.class), manager);
+      new SimpleBeanModel<BeanWithTooManyDeploymentTypes>(new SimpleAnnotatedClass<BeanWithTooManyDeploymentTypes>(BeanWithTooManyDeploymentTypes.class), getEmptyAnnotatedType(BeanWithTooManyDeploymentTypes.class), manager);
    }
    
    @Test @SpecAssertion(section="2.5.4")
@@ -74,9 +74,9 @@ public class DeploymentTypeTest extends AbstractTest
    {
       Map<Class<? extends Annotation>, Annotation> xmlDefinedDeploymentTypeAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
       xmlDefinedDeploymentTypeAnnotations.put(AnotherDeploymentType.class, new AnotherDeploymentTypeAnnotationLiteral());
-      AnnotatedType<BeanWithTooManyDeploymentTypes> xmlDefinedDeploymentTypeAnnotatedItem = new SimpleAnnotatedType<BeanWithTooManyDeploymentTypes>(BeanWithTooManyDeploymentTypes.class, xmlDefinedDeploymentTypeAnnotations);
+      AnnotatedClass<BeanWithTooManyDeploymentTypes> xmlDefinedDeploymentTypeAnnotatedItem = new SimpleAnnotatedClass<BeanWithTooManyDeploymentTypes>(BeanWithTooManyDeploymentTypes.class, xmlDefinedDeploymentTypeAnnotations);
       
-      SimpleBeanModel<BeanWithTooManyDeploymentTypes> model = new SimpleBeanModel<BeanWithTooManyDeploymentTypes>(new SimpleAnnotatedType<BeanWithTooManyDeploymentTypes>(BeanWithTooManyDeploymentTypes.class), xmlDefinedDeploymentTypeAnnotatedItem, manager);
+      SimpleBeanModel<BeanWithTooManyDeploymentTypes> model = new SimpleBeanModel<BeanWithTooManyDeploymentTypes>(new SimpleAnnotatedClass<BeanWithTooManyDeploymentTypes>(BeanWithTooManyDeploymentTypes.class), xmlDefinedDeploymentTypeAnnotatedItem, manager);
       assert model.getDeploymentType().equals(AnotherDeploymentType.class);
    }
    
@@ -85,15 +85,15 @@ public class DeploymentTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.5.4")
    public void testXmlRespectsJavaDeploymentType()
    {
-      AnnotatedType<Tuna> annotatedItem = new SimpleAnnotatedType<Tuna>(Tuna.class, new HashMap<Class<? extends Annotation>, Annotation>());
-      SimpleBeanModel<Tuna> tuna = new SimpleBeanModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), annotatedItem, manager);
+      AnnotatedClass<Tuna> annotatedItem = new SimpleAnnotatedClass<Tuna>(Tuna.class, new HashMap<Class<? extends Annotation>, Annotation>());
+      SimpleBeanModel<Tuna> tuna = new SimpleBeanModel<Tuna>(new SimpleAnnotatedClass<Tuna>(Tuna.class), annotatedItem, manager);
       assert tuna.getDeploymentType().equals(AnotherDeploymentType.class);
    }
    
    @Test @SpecAssertion(section="2.5.5")
    public void testXmlDefaultDeploymentType()
    {
-      AnnotatedType<Antelope> antelopeAnnotatedItem = new SimpleAnnotatedType<Antelope>(Antelope.class, new HashMap<Class<? extends Annotation>, Annotation>());
+      AnnotatedClass<Antelope> antelopeAnnotatedItem = new SimpleAnnotatedClass<Antelope>(Antelope.class, new HashMap<Class<? extends Annotation>, Annotation>());
       SimpleBeanModel<Antelope> antelope = new SimpleBeanModel<Antelope>(getEmptyAnnotatedType(Antelope.class), antelopeAnnotatedItem, manager);
       assert antelope.getDeploymentType().equals(Production.class);
    }
@@ -110,8 +110,8 @@ public class DeploymentTypeTest extends AbstractTest
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
-      AnnotatedType<SeaBass> annotatedItem = new SimpleAnnotatedType<SeaBass>(SeaBass.class, annotations);
-      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedType<SeaBass>(SeaBass.class), annotatedItem, manager);
+      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
+      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedClass<SeaBass>(SeaBass.class), annotatedItem, manager);
       assert trout.getScopeType().equals(RequestScoped.class);
    }
    

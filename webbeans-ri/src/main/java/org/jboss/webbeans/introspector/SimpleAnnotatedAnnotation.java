@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class SimpleAnnotatedAnnotation<T extends Annotation> extends AbstractAnnotatedItem<T, Class<T>> implements AnnotatedAnnotation<T>
+public class SimpleAnnotatedAnnotation<T extends Annotation> extends AbstractAnnotatedType<T> implements AnnotatedAnnotation<T>
 {
    
    private Map<Class<? extends Annotation>, Set<AnnotatedMethod<?>>> annotatedMembers;

@@ -13,7 +13,7 @@ import javax.webbeans.manager.Bean;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.injectable.SimpleConstructor;
-import org.jboss.webbeans.introspector.SimpleAnnotatedType;
+import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.HeavyDuty;
 import org.jboss.webbeans.test.annotations.Motorized;
@@ -45,26 +45,26 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2")
    public void testAbstractClassDeclaredInJavaIsNotAllowed()
    {
-      new SimpleBeanModel<Cow>(new SimpleAnnotatedType<Cow>(Cow.class), getEmptyAnnotatedType(Cow.class), manager);
+      new SimpleBeanModel<Cow>(new SimpleAnnotatedClass<Cow>(Cow.class), getEmptyAnnotatedType(Cow.class), manager);
    }
    
    @Test(groups="innerClass") @SpecAssertion(section="3.2")
    public void testStaticInnerClassDeclaredInJavaAllowed()
    {
-      new SimpleBeanModel<StaticInnerBean>(new SimpleAnnotatedType<StaticInnerBean>(StaticInnerBean.class), getEmptyAnnotatedType(StaticInnerBean.class), manager);
+      new SimpleBeanModel<StaticInnerBean>(new SimpleAnnotatedClass<StaticInnerBean>(StaticInnerBean.class), getEmptyAnnotatedType(StaticInnerBean.class), manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class, groups="innerClass") @SpecAssertion(section="3.2")
    public void testNonStaticInnerClassDeclaredInJavaNotAllowed()
    {
-      new SimpleBeanModel<InnerBean>(new SimpleAnnotatedType<InnerBean>(InnerBean.class), getEmptyAnnotatedType(InnerBean.class), manager);
+      new SimpleBeanModel<InnerBean>(new SimpleAnnotatedClass<InnerBean>(InnerBean.class), getEmptyAnnotatedType(InnerBean.class), manager);
    }
    
    @SuppressWarnings("unchecked")
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2")
    public void testParameterizedClassDeclaredInJavaIsNotAllowed()
    {
-      new SimpleBeanModel<ParameterizedBean>(new SimpleAnnotatedType<ParameterizedBean>(ParameterizedBean.class), getEmptyAnnotatedType(ParameterizedBean.class), manager);
+      new SimpleBeanModel<ParameterizedBean>(new SimpleAnnotatedClass<ParameterizedBean>(ParameterizedBean.class), getEmptyAnnotatedType(ParameterizedBean.class), manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class, groups={"interceptors", "decorators"}) @SpecAssertion(section="3.2")
@@ -113,19 +113,19 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2.4")
    public void testAbstractClassDeclaredInXmlIsNotAllowed()
    {
-      new SimpleBeanModel<Cow>(new SimpleAnnotatedType<Cow>(Cow.class), getEmptyAnnotatedType(Cow.class), manager);
+      new SimpleBeanModel<Cow>(new SimpleAnnotatedClass<Cow>(Cow.class), getEmptyAnnotatedType(Cow.class), manager);
    }
    
    @Test(groups="innerClass") @SpecAssertion(section="3.2.4")
    public void testStaticInnerClassDeclaredInXmlAllowed()
    {
-      new SimpleBeanModel<StaticInnerBean>(new SimpleAnnotatedType<StaticInnerBean>(StaticInnerBean.class), getEmptyAnnotatedType(StaticInnerBean.class), manager);
+      new SimpleBeanModel<StaticInnerBean>(new SimpleAnnotatedClass<StaticInnerBean>(StaticInnerBean.class), getEmptyAnnotatedType(StaticInnerBean.class), manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class, groups="innerClass") @SpecAssertion(section="3.2.4")
    public void testNonStaticInnerClassDeclaredInXmlNotAllowed()
    {
-      new SimpleBeanModel<InnerBean>(new SimpleAnnotatedType<InnerBean>(InnerBean.class), getEmptyAnnotatedType(InnerBean.class), manager);
+      new SimpleBeanModel<InnerBean>(new SimpleAnnotatedClass<InnerBean>(InnerBean.class), getEmptyAnnotatedType(InnerBean.class), manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class, groups="webbeansxml") @SpecAssertion(section="3.2.4")
@@ -149,7 +149,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test @SpecAssertion(section="3.2.5.1")
    public void testInitializerAnnotatedConstructor()
    {
-      SimpleConstructor<Sheep> constructor = new SimpleBeanModel<Sheep>(new SimpleAnnotatedType<Sheep>(Sheep.class), getEmptyAnnotatedType(Sheep.class), manager).getConstructor();
+      SimpleConstructor<Sheep> constructor = new SimpleBeanModel<Sheep>(new SimpleAnnotatedClass<Sheep>(Sheep.class), getEmptyAnnotatedType(Sheep.class), manager).getConstructor();
       assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Sheep.class);
       assert constructor.getAnnotatedItem().getDelegate().getParameterTypes().length == 2;
       assert constructor.getAnnotatedItem().getDelegate().getParameterTypes()[0].equals(String.class);
@@ -166,7 +166,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test @SpecAssertion(section="3.2.5.1")
    public void testImplicitConstructorUsed()
    {
-      SimpleConstructor<Order> constructor = new SimpleBeanModel<Order>(new SimpleAnnotatedType<Order>(Order.class), getEmptyAnnotatedType(Order.class), manager).getConstructor();
+      SimpleConstructor<Order> constructor = new SimpleBeanModel<Order>(new SimpleAnnotatedClass<Order>(Order.class), getEmptyAnnotatedType(Order.class), manager).getConstructor();
       assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Order.class);
       assert constructor.getAnnotatedItem().getDelegate().getParameterTypes().length == 0;
       assert constructor.getParameters().size() == 0;
@@ -175,7 +175,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test @SpecAssertion(section="3.2.5.1")
    public void testEmptyConstructorUsed()
    {
-      SimpleConstructor<Donkey> constructor = new SimpleBeanModel<Donkey>(new SimpleAnnotatedType<Donkey>(Donkey.class), getEmptyAnnotatedType(Donkey.class), manager).getConstructor();
+      SimpleConstructor<Donkey> constructor = new SimpleBeanModel<Donkey>(new SimpleAnnotatedClass<Donkey>(Donkey.class), getEmptyAnnotatedType(Donkey.class), manager).getConstructor();
       assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Donkey.class);
       assert constructor.getAnnotatedItem().getDelegate().getParameterTypes().length == 0;
       assert constructor.getParameters().size() == 0;
@@ -184,7 +184,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test @SpecAssertion(section="3.2.5.1")
    public void testInitializerAnnotatedConstructorUsedOverEmptyConstuctor()
    {
-      SimpleConstructor<Turkey> constructor = new SimpleBeanModel<Turkey>(new SimpleAnnotatedType<Turkey>(Turkey.class), getEmptyAnnotatedType(Turkey.class), manager).getConstructor();
+      SimpleConstructor<Turkey> constructor = new SimpleBeanModel<Turkey>(new SimpleAnnotatedClass<Turkey>(Turkey.class), getEmptyAnnotatedType(Turkey.class), manager).getConstructor();
       assert constructor.getParameters().size() == 2;
       Iterator<InjectableParameter<?>> it = constructor.getParameters().iterator();
       assert it.next().getType().equals(String.class);
@@ -194,25 +194,25 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2.5.1")
    public void testTooManyInitializerAnnotatedConstructor()
    {
-      new SimpleBeanModel<Chicken>(new SimpleAnnotatedType<Chicken>(Chicken.class), getEmptyAnnotatedType(Chicken.class), manager);
+      new SimpleBeanModel<Chicken>(new SimpleAnnotatedClass<Chicken>(Chicken.class), getEmptyAnnotatedType(Chicken.class), manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class, groups="disposalMethod") @SpecAssertion(section="3.2.5.1")
    public void testConstructorHasDisposesParameter()
    {
-      new SimpleBeanModel<Chicken>(new SimpleAnnotatedType<Chicken>(Chicken.class), getEmptyAnnotatedType(Chicken.class), manager);
+      new SimpleBeanModel<Chicken>(new SimpleAnnotatedClass<Chicken>(Chicken.class), getEmptyAnnotatedType(Chicken.class), manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class, groups="observerMethod") @SpecAssertion(section="3.2.5.1")
    public void testConstructorHasObservesParameter()
    {
-      new SimpleBeanModel<Chicken>(new SimpleAnnotatedType<Chicken>(Chicken.class), getEmptyAnnotatedType(Chicken.class), manager);
+      new SimpleBeanModel<Chicken>(new SimpleAnnotatedClass<Chicken>(Chicken.class), getEmptyAnnotatedType(Chicken.class), manager);
    }
    
    @Test(groups="webbeansxml") @SpecAssertion(section="3.2.5.2")
    public void testImplicitConstructorDeclaredInXmlUsed()
    {
-      SimpleConstructor<Order> constructor = new SimpleBeanModel<Order>(new SimpleAnnotatedType<Order>(Order.class), getEmptyAnnotatedType(Order.class), manager).getConstructor();
+      SimpleConstructor<Order> constructor = new SimpleBeanModel<Order>(new SimpleAnnotatedClass<Order>(Order.class), getEmptyAnnotatedType(Order.class), manager).getConstructor();
       assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Order.class);
       assert constructor.getAnnotatedItem().getDelegate().getParameterTypes().length == 0;
       assert constructor.getParameters().size() == 0;
@@ -222,7 +222,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test(groups="webbeansxml") @SpecAssertion(section="3.2.5.2")
    public void testEmptyConstructorDeclaredInXmlUsed()
    {
-      SimpleConstructor<Donkey> constructor = new SimpleBeanModel<Donkey>(new SimpleAnnotatedType<Donkey>(Donkey.class), getEmptyAnnotatedType(Donkey.class), manager).getConstructor();      assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Order.class);
+      SimpleConstructor<Donkey> constructor = new SimpleBeanModel<Donkey>(new SimpleAnnotatedClass<Donkey>(Donkey.class), getEmptyAnnotatedType(Donkey.class), manager).getConstructor();      assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Order.class);
       assert constructor.getAnnotatedItem().getDelegate().getParameterTypes().length == 0;
       assert constructor.getParameters().size() == 0;
       assert false;
@@ -243,7 +243,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test @SpecAssertion(section="3.2.5.3")
    public void testBindingTypeAnnotatedConstructor()
    {
-      SimpleConstructor<Duck> constructor = new SimpleBeanModel<Duck>(new SimpleAnnotatedType<Duck>(Duck.class), getEmptyAnnotatedType(Duck.class), manager).getConstructor();
+      SimpleConstructor<Duck> constructor = new SimpleBeanModel<Duck>(new SimpleAnnotatedClass<Duck>(Duck.class), getEmptyAnnotatedType(Duck.class), manager).getConstructor();
       assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Duck.class);
       assert constructor.getParameters().size() == 2;
       Iterator<InjectableParameter<?>> it = constructor.getParameters().iterator();
@@ -261,7 +261,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test(groups="specialization") @SpecAssertion(section="3.2.6")
    public void testSpecializedClassInheritsBindingTypes()
    {
-      SimpleBeanModel<Tractor> bean = new SimpleBeanModel<Tractor>(new SimpleAnnotatedType<Tractor>(Tractor.class), getEmptyAnnotatedType(Tractor.class), manager);
+      SimpleBeanModel<Tractor> bean = new SimpleBeanModel<Tractor>(new SimpleAnnotatedClass<Tractor>(Tractor.class), getEmptyAnnotatedType(Tractor.class), manager);
       assert bean.getBindingTypes().size()==2;
       assert bean.getBindingTypes().contains( new AnnotationLiteral<Motorized>() {} );
       assert bean.getBindingTypes().contains( new AnnotationLiteral<HeavyDuty>() {} );
@@ -270,7 +270,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test(groups="specialization") @SpecAssertion(section="3.2.6")
    public void testSpecializedClassInheritsName()
    {
-      SimpleBeanModel<Tractor> bean = new SimpleBeanModel<Tractor>(new SimpleAnnotatedType<Tractor>(Tractor.class), getEmptyAnnotatedType(Tractor.class), manager);
+      SimpleBeanModel<Tractor> bean = new SimpleBeanModel<Tractor>(new SimpleAnnotatedClass<Tractor>(Tractor.class), getEmptyAnnotatedType(Tractor.class), manager);
       assert bean.getName()!=null;
       assert bean.getName().equals("plough");
    }

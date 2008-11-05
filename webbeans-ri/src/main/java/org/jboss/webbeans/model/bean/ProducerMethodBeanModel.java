@@ -2,7 +2,6 @@ package org.jboss.webbeans.model.bean;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Set;
@@ -81,6 +80,7 @@ public class ProducerMethodBeanModel<T> extends AbstractProducerBeanModel<T>
 
    protected void initDeclaringBean(ManagerImpl container)
    {
+      // TODO replace
       declaringBean = container.getModelManager().getBeanModel(getAnnotatedItem().getDelegate().getDeclaringClass());
    }
    
@@ -91,12 +91,12 @@ public class ProducerMethodBeanModel<T> extends AbstractProducerBeanModel<T>
    
    protected void checkProducerMethod()
    {
-      if (Modifier.isStatic(getAnnotatedItem().getDelegate().getModifiers()))
+      if (getAnnotatedItem().isStatic())
       {
          throw new RuntimeException("Producer method cannot be static " + annotatedMethod);
       }
       // TODO Check if declaring class is a WB bean
-      if (!getScopeType().equals(Dependent.class) && Modifier.isFinal(getAnnotatedItem().getDelegate().getModifiers()))
+      if (!getScopeType().equals(Dependent.class) && getAnnotatedItem().isFinal())
       {
          throw new RuntimeException("Final producer method must have @Dependent scope " + annotatedMethod);
       }
@@ -131,6 +131,7 @@ public class ProducerMethodBeanModel<T> extends AbstractProducerBeanModel<T>
    @Override
    protected String getDefaultName()
    {
+      // TODO Don't use delegate here
       String propertyName = Reflections.getPropertyName(getAnnotatedItem().getDelegate());
       if (propertyName != null)
       {

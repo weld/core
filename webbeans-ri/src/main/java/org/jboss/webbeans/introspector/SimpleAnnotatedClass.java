@@ -17,7 +17,7 @@ import java.util.Set;
  * @author pmuir
  *
  */
-public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> implements AnnotatedType<T>
+public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements AnnotatedClass<T>
 {
    
    private Class<T> clazz;
@@ -29,7 +29,7 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
    private Set<AnnotatedMethod<Object>> methods;
    private Map<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>> annotatedMethods;
    
-   public SimpleAnnotatedType(Class<T> annotatedClass, Map<Class<? extends Annotation>, Annotation> annotationMap)
+   public SimpleAnnotatedClass(Class<T> annotatedClass, Map<Class<? extends Annotation>, Annotation> annotationMap)
    {
       super(annotationMap);
       this.clazz = annotatedClass;
@@ -44,7 +44,7 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
       }
    }
    
-   public SimpleAnnotatedType(Class<T> annotatedClass)
+   public SimpleAnnotatedClass(Class<T> annotatedClass)
    {
       this(annotatedClass, buildAnnotationMap(annotatedClass));
    }

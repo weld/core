@@ -3,7 +3,7 @@ package org.jboss.webbeans.introspector;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedItem<T, Method> implements AnnotatedMethod<T>
+public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>
 {
    
    private static final Type[] actualTypeArgements = new Type[0];

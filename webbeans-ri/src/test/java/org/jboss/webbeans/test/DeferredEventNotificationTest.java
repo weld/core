@@ -12,8 +12,8 @@ import javax.webbeans.Standard;
 
 import org.jboss.webbeans.event.DeferredEventNotification;
 import org.jboss.webbeans.injectable.InjectableMethod;
-import org.jboss.webbeans.introspector.AnnotatedType;
-import org.jboss.webbeans.introspector.SimpleAnnotatedType;
+import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.Asynchronous;
@@ -75,8 +75,8 @@ public class DeferredEventNotificationTest extends AbstractTest
       // Create an observer with known binding types
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
-      AnnotatedType<Tuna> annotatedItem = new SimpleAnnotatedType<Tuna>(Tuna.class, annotations);
-      tuna = new SimpleBeanModel<Tuna>(new SimpleAnnotatedType<Tuna>(Tuna.class), annotatedItem, manager);
+      AnnotatedClass<Tuna> annotatedItem = new SimpleAnnotatedClass<Tuna>(Tuna.class, annotations);
+      tuna = new SimpleBeanModel<Tuna>(new SimpleAnnotatedClass<Tuna>(Tuna.class), annotatedItem, manager);
       om = new InjectableMethod<Object>(AnObserver.class.getMethod("observe", new Class[] { Event.class }));
 
       AnObserver observerInstance = new AnObserver();
