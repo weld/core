@@ -3,7 +3,10 @@ package org.jboss.webbeans.test;
 import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
 import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 
-import java.util.Iterator;
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import javax.webbeans.AnnotationLiteral;
 import javax.webbeans.DefinitionException;
@@ -18,7 +21,6 @@ import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.HeavyDuty;
 import org.jboss.webbeans.test.annotations.Motorized;
 import org.jboss.webbeans.test.beans.Animal;
-import org.jboss.webbeans.test.beans.Chicken;
 import org.jboss.webbeans.test.beans.Cow;
 import org.jboss.webbeans.test.beans.DeadlyAnimal;
 import org.jboss.webbeans.test.beans.DeadlySpider;
@@ -30,6 +32,7 @@ import org.jboss.webbeans.test.beans.Spider;
 import org.jboss.webbeans.test.beans.Tarantula;
 import org.jboss.webbeans.test.beans.Tractor;
 import org.jboss.webbeans.test.beans.Turkey;
+import org.jboss.webbeans.test.beans.broken.Goose;
 import org.jboss.webbeans.test.beans.broken.ParameterizedBean;
 import org.jboss.webbeans.test.beans.broken.OuterBean.InnerBean;
 import org.jboss.webbeans.test.beans.broken.OuterBean.StaticInnerBean;
@@ -155,12 +158,18 @@ public class SimpleBeanModelTest extends AbstractTest
       assert constructor.getAnnotatedItem().getDelegate().getParameterTypes()[0].equals(String.class);
       assert constructor.getAnnotatedItem().getDelegate().getParameterTypes()[1].equals(Double.class);
       assert constructor.getParameters().size() == 2;
-      assert constructor.getParameters().get(0).getType().equals(String.class);
-      assert constructor.getParameters().get(1).getType().equals(Double.class);
-      assert constructor.getParameters().get(0).getBindingTypes().size() == 1;
-      assert constructor.getParameters().get(0).getBindingTypes().contains(new CurrentAnnotationLiteral());
-      assert constructor.getParameters().get(1).getBindingTypes().size() == 1;
-      assert constructor.getParameters().get(1).getBindingTypes().contains(new CurrentAnnotationLiteral());
+      
+      Map<Class<?>, Set<? extends Annotation>> map = new HashMap<Class<?>, Set<? extends Annotation>>();
+      for (InjectableParameter<Object> parameter : constructor.getParameters())
+      {
+         map.put(parameter.getType(), parameter.getBindingTypes());
+      }
+      assert map.containsKey(String.class);
+      assert map.containsKey(Double.class);
+      assert map.get(String.class).size() == 1;
+      assert map.get(String.class).contains(new CurrentAnnotationLiteral());
+      assert map.get(Double.class).size() == 1;
+      assert map.get(Double.class).contains(new CurrentAnnotationLiteral());
    }
    
    @Test @SpecAssertion(section="3.2.5.1")
@@ -186,27 +195,31 @@ public class SimpleBeanModelTest extends AbstractTest
    {
       SimpleConstructor<Turkey> constructor = new SimpleBeanModel<Turkey>(new SimpleAnnotatedClass<Turkey>(Turkey.class), getEmptyAnnotatedType(Turkey.class), manager).getConstructor();
       assert constructor.getParameters().size() == 2;
-      Iterator<InjectableParameter<?>> it = constructor.getParameters().iterator();
-      assert it.next().getType().equals(String.class);
-      assert it.next().getType().equals(Integer.class);
+      Map<Class<?>, Set<? extends Annotation>> map = new HashMap<Class<?>, Set<? extends Annotation>>();
+      for (InjectableParameter<Object> parameter : constructor.getParameters())
+      {
+         map.put(parameter.getType(), parameter.getBindingTypes());
+      }
+      assert map.containsKey(String.class);
+      assert map.containsKey(Integer.class);
    }
    
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2.5.1")
    public void testTooManyInitializerAnnotatedConstructor()
    {
-      new SimpleBeanModel<Chicken>(new SimpleAnnotatedClass<Chicken>(Chicken.class), getEmptyAnnotatedType(Chicken.class), manager);
+      createSimpleWebBean(Goose.class, manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class, groups="disposalMethod") @SpecAssertion(section="3.2.5.1")
    public void testConstructorHasDisposesParameter()
    {
-      new SimpleBeanModel<Chicken>(new SimpleAnnotatedClass<Chicken>(Chicken.class), getEmptyAnnotatedType(Chicken.class), manager);
+      assert false;
    }
    
    @Test(expectedExceptions=DefinitionException.class, groups="observerMethod") @SpecAssertion(section="3.2.5.1")
    public void testConstructorHasObservesParameter()
    {
-      new SimpleBeanModel<Chicken>(new SimpleAnnotatedClass<Chicken>(Chicken.class), getEmptyAnnotatedType(Chicken.class), manager);
+      assert false;
    }
    
    @Test(groups="webbeansxml") @SpecAssertion(section="3.2.5.2")
@@ -246,16 +259,17 @@ public class SimpleBeanModelTest extends AbstractTest
       SimpleConstructor<Duck> constructor = new SimpleBeanModel<Duck>(new SimpleAnnotatedClass<Duck>(Duck.class), getEmptyAnnotatedType(Duck.class), manager).getConstructor();
       assert constructor.getAnnotatedItem().getDelegate().getDeclaringClass().equals(Duck.class);
       assert constructor.getParameters().size() == 2;
-      Iterator<InjectableParameter<?>> it = constructor.getParameters().iterator();
-      assert it.next().getType().equals(String.class);
-      assert it.next().getType().equals(Integer.class);
-      assert constructor.getParameters().size() == 2;
-      assert constructor.getParameters().get(0).getType().equals(String.class);
-      assert constructor.getParameters().get(1).getType().equals(Integer.class);
-      assert constructor.getParameters().get(0).getBindingTypes().size() == 1;
-      assert constructor.getParameters().get(0).getBindingTypes().contains(new CurrentAnnotationLiteral());
-      assert constructor.getParameters().get(1).getBindingTypes().size() == 1;
-      assert constructor.getParameters().get(1).getBindingTypes().contains(new SynchronousAnnotationLiteral());
+      Map<Class<?>, Set<? extends Annotation>> map = new HashMap<Class<?>, Set<? extends Annotation>>();
+      for (InjectableParameter<Object> parameter : constructor.getParameters())
+      {
+         map.put(parameter.getType(), parameter.getBindingTypes());
+      }
+      assert map.containsKey(String.class);
+      assert map.containsKey(Integer.class);
+      assert map.get(String.class).size() == 1;
+      assert map.get(String.class).contains(new CurrentAnnotationLiteral());
+      assert map.get(Integer.class).size() == 1;
+      assert map.get(Integer.class).contains(new SynchronousAnnotationLiteral());
    }
    
    @Test(groups="specialization") @SpecAssertion(section="3.2.6")

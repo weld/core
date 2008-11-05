@@ -27,7 +27,6 @@
             <exclude name="singletons" />
             <exclude name="ejbjarxml" />
             <exclude name="beanDestruction" />
-            <exclude name="initializerMethod" />
             <exclude name="commonAnnotations" />
          </run>
       </groups>

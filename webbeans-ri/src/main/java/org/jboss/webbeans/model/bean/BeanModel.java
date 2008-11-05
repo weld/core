@@ -20,7 +20,7 @@ public interface BeanModel<T, E>
    
    public Set<Class<?>> getApiTypes();
    
-   public BeanConstructor<T> getConstructor();
+   public BeanConstructor<T, ?> getConstructor();
    
    /**
     * Convenience method that return's the bean's "location" for logging

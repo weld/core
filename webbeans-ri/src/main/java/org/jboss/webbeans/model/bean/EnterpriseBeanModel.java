@@ -3,8 +3,6 @@ package org.jboss.webbeans.model.bean;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.webbeans.DefinitionException;
@@ -17,7 +15,6 @@ import javax.webbeans.Produces;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.ejb.EJB;
-import org.jboss.webbeans.injectable.BeanConstructor;
 import org.jboss.webbeans.injectable.EnterpriseConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
@@ -61,7 +58,7 @@ public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
       }
    }
    
-   public BeanConstructor<T> getConstructor()
+   public EnterpriseConstructor<T> getConstructor()
    {
       return constructor;
    }

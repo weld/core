@@ -9,38 +9,33 @@ import javax.webbeans.manager.Bean;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.ModelManager;
 
-public class InjectableParameterWrapper<T> extends InjectableParameter<T>
+public abstract class ForwardingInjectableParameter<T> extends InjectableParameter<T>
 {
    
-   private InjectableParameter<? extends T> delegate;
-
-   public InjectableParameterWrapper(InjectableParameter<? extends T> delegate)
-   {
-      this.delegate = delegate;
-   }
+   protected abstract InjectableParameter<? extends T> delegate();
    
    @Override
    public Set<Annotation> getBindingTypes()
    {
-      return delegate.getBindingTypes();
+      return delegate().getBindingTypes();
    }
 
    @Override
    public Set<Bean<?>> getMatchingBeans(List<Bean<?>> possibleBeans, ModelManager modelManager)
    {
-      return delegate.getMatchingBeans(possibleBeans, modelManager);
+      return delegate().getMatchingBeans(possibleBeans, modelManager);
    }
 
    @Override
    public Class<? extends T> getType()
    {
-      return delegate.getType();
+      return delegate().getType();
    }
 
    @Override
    public T getValue(ManagerImpl manager)
    {
-      return delegate.getValue(manager);
+      return delegate().getValue(manager);
    }
 
 }

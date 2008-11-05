@@ -3,6 +3,7 @@ package org.jboss.webbeans.util;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,19 +15,31 @@ import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 
+import com.google.common.collect.ForwardingMap;
+
 public class ProxyPool
 {
-   private class Pool extends MapWrapper<Bean<?>, Object>
+   private class Pool extends ForwardingMap<Bean<?>, Object>
    {
+      
+      Map<Bean<?>, Object> delegate;
+      
       public Pool()
       {
-         super(new ConcurrentHashMap<Bean<?>, Object>());
+         delegate = new ConcurrentHashMap<Bean<?>, Object>();
       }
 
       public <T> T get(Bean<T> key)
       {
          return (T) super.get(key);
       }
+      
+      @Override
+      protected Map<Bean<?>, Object> delegate()
+      {
+         return delegate;
+      }
+      
    }
    
    private ManagerImpl manager;

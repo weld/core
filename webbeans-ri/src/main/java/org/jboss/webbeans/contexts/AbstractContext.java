@@ -1,13 +1,14 @@
 package org.jboss.webbeans.contexts;
 
 import java.lang.annotation.Annotation;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.util.MapWrapper;
+import com.google.common.collect.ForwardingMap;
 
 /**
  * Basic implementation of javax.webbeans.Context, backed by a HashMap
@@ -20,18 +21,26 @@ import org.jboss.webbeans.util.MapWrapper;
 public abstract class AbstractContext implements Context
 {
    
-   protected class BeanMap extends MapWrapper<Bean<? extends Object>, Object>
+   protected class BeanMap extends ForwardingMap<Bean<? extends Object>, Object>
    {
+      
+      Map<Bean<? extends Object>, Object> delegate;
       
       public BeanMap()
       {
-         super(new ConcurrentHashMap<Bean<? extends Object>, Object>());
+         delegate = new ConcurrentHashMap<Bean<? extends Object>, Object>();
       }
       
       @SuppressWarnings("unchecked")
       public <T extends Object> T get(Bean<? extends T> key)
       {
          return (T) super.get(key);
+      }
+      
+      @Override
+      protected Map<Bean<? extends Object>, Object> delegate()
+      {
+         return delegate;
       }
 
    }

@@ -1,23 +1,27 @@
 package org.jboss.webbeans.injectable;
 
-import java.lang.reflect.Method;
-
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.impl.SimpleAnnotatedMethod;
 
-public class InjectableMethod<T> extends Unit<T, Method>
+public class InjectableMethod<T> extends Invokable<T, AnnotatedMethod<T>>
 {
 
    private AnnotatedMethod<T> method;
+
+   protected InjectableMethod(){}
    
    public InjectableMethod(java.lang.reflect.Method method)
    {
-      super(method.getParameterTypes(), method.getParameterAnnotations());
-      this.method = new SimpleAnnotatedMethod<T>(method);
+      this(new SimpleAnnotatedMethod<T>(method));
+   }
+   
+   public InjectableMethod(AnnotatedMethod<T> annotatedMethod)
+   {
+      super(annotatedMethod.getParameters());
+      this.method = annotatedMethod;
    }
 
    
@@ -38,8 +42,7 @@ public class InjectableMethod<T> extends Unit<T, Method>
       }
    }
    
-   @Override
-   public AnnotatedItem<T, Method> getAnnotatedItem()
+   public AnnotatedMethod<T> getAnnotatedItem()
    {
       return method;
    }

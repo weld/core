@@ -1,6 +1,5 @@
 package org.jboss.webbeans.model.bean;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,9 +8,7 @@ import javax.webbeans.Dependent;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.injectable.BeanConstructor;
-import org.jboss.webbeans.injectable.SimpleConstructor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.impl.SimpleAnnotatedField;
 import org.jboss.webbeans.util.LoggerUtil;
@@ -30,7 +27,7 @@ public class EventBeanModel<T> extends AbstractBeanModel<T, Field>
    private String location;
    private SimpleAnnotatedField<T> annotatedItem;
    private SimpleAnnotatedField<T> xmlAnnotatedItem;
-   private BeanConstructor<T>      constructor;
+   //private BeanConstructor<T>      constructor;
 
    public EventBeanModel(SimpleAnnotatedField<T> annotatedItem, SimpleAnnotatedField<T> xmlAnnotatedItem, ManagerImpl manager)
    {
@@ -48,7 +45,7 @@ public class EventBeanModel<T> extends AbstractBeanModel<T, Field>
    {
       try
       {
-         constructor = new SimpleConstructor<T>((Constructor<T>) EventImpl.class.getConstructor((Class[])null));
+         //constructor = new SimpleConstructor<T>((Constructor<T>) EventImpl.class.getConstructor((Class[])null));
       } catch (Exception e)
       {
          log.log(Level.SEVERE, "Unable to get constructor for build-in Event implementation", e);
@@ -56,10 +53,10 @@ public class EventBeanModel<T> extends AbstractBeanModel<T, Field>
    }
 
 
-   public BeanConstructor<T> getConstructor()
+   /*public BeanConstructor<T> getConstructor()
    {
       return constructor;
-   }
+   }*/
 
    public String getLocation()
    {
@@ -136,6 +133,12 @@ public class EventBeanModel<T> extends AbstractBeanModel<T, Field>
    {
       // This is always @Dependent per 7.4
       this.scopeType = Dependent.class;
+   }
+
+   public BeanConstructor<T, ?> getConstructor()
+   {
+      // TODO Auto-generated method stub
+      return null;
    }
    
 }

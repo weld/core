@@ -1,6 +1,7 @@
 package org.jboss.webbeans.injectable;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,6 +11,7 @@ import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.ModelManager;
+import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.model.BindingTypeModel;
 
@@ -23,21 +25,44 @@ import org.jboss.webbeans.model.BindingTypeModel;
 public abstract class Injectable<T, S>
 {
    
+   private static final Annotation[] DEFAULT_BINDING_ARRAY = {new CurrentAnnotationLiteral()};
+   private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
+   
    private AnnotatedItem<T, S> annotatedItem;
+   
+   private boolean useDefaultBinding;
    
    public Injectable(AnnotatedItem<T, S> annotatedItem)
    {
       this.annotatedItem = annotatedItem;
-   }
-
-   public Annotation[] getBindingTypesAsArray()
-   {
-      return annotatedItem.getAnnotationsAsArray(BindingType.class);
+      if (annotatedItem.getAnnotations(BindingType.class).size() == 0)
+      {
+         useDefaultBinding = true;
+      }
    }
    
    public Set<Annotation> getBindingTypes()
    {
-      return annotatedItem.getAnnotations(BindingType.class);
+      if (useDefaultBinding)
+      {
+         return DEFAULT_BINDING;
+      }
+      else
+      {
+         return annotatedItem.getAnnotations(BindingType.class);
+      }
+   }
+   
+   public Annotation[] getBindingTypesAsArray()
+   {
+      if (useDefaultBinding)
+      {
+         return DEFAULT_BINDING_ARRAY;
+      }
+      else
+      {
+         return annotatedItem.getAnnotationsAsArray(BindingType.class);
+      }
    }
    
    protected Injectable() {}

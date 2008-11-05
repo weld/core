@@ -9,7 +9,6 @@ import java.util.Set;
 import javax.webbeans.Dependent;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.injectable.BeanConstructor;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.injectable.MethodConstructor;
@@ -84,7 +83,7 @@ public class ProducerMethodBeanModel<T> extends AbstractProducerBeanModel<T>
       declaringBean = container.getModelManager().getBeanModel(getAnnotatedItem().getDelegate().getDeclaringClass());
    }
    
-   public BeanConstructor<T> getConstructor()
+   public MethodConstructor<T> getConstructor()
    {
       return constructor;
    }

@@ -70,8 +70,8 @@ public class InitializerMethodTest extends AbstractTest
       
       Bean<ChickenHutch> chickenHutchBean = createSimpleWebBean(ChickenHutch.class, manager);
       ChickenHutch chickenHutch = chickenHutchBean.create();
-      assert chickenHutch.chicken != null;
       assert chickenHutch.fox != null;
+      assert chickenHutch.chicken != null;
    }
    
    @Test(groups="initializerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.7.1")

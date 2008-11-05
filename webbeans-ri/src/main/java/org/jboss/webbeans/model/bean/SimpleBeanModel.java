@@ -1,7 +1,7 @@
 package org.jboss.webbeans.model.bean;
 
-import java.lang.reflect.Constructor;
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.webbeans.DefinitionException;
@@ -11,6 +11,8 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.injectable.SimpleConstructor;
 import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.AnnotatedConstructor;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
 import org.jboss.webbeans.util.LoggerUtil;
 import org.jboss.webbeans.util.Reflections;
@@ -19,6 +21,8 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
 {
    
    private static Logger log = LoggerUtil.getLogger(LOGGER_NAME);
+   
+   private static Set<Class<?>> NO_ARGUMENTS = Collections.emptySet();
    
    private SimpleConstructor<T> constructor;
 
@@ -50,9 +54,9 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
    protected void initInjectionPoints()
    {
       super.initInjectionPoints();
-      for (InjectableParameter<?> injectable : constructor.getParameters())
+      for (AnnotatedParameter<Object> parameter : constructor.getAnnotatedItem().getParameters())
       {
-         injectionPoints.add(injectable);
+         injectionPoints.add(new InjectableParameter<Object>(parameter));
       }
    }
    
@@ -70,8 +74,7 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
    
    protected void initConstructor()
    {
-      
-      List<Constructor<T>> initializerAnnotatedConstructors = Reflections.getAnnotatedConstructors(getType(), Initializer.class);
+      Set<AnnotatedConstructor<T>> initializerAnnotatedConstructors = getAnnotatedItem().getAnnotatedConstructors(Initializer.class);
       log.finest("Found " + initializerAnnotatedConstructors + " constructors annotated with @Initializer for " + getType());
       if (initializerAnnotatedConstructors.size() > 1)
       {
@@ -82,17 +85,16 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
       }
       else if (initializerAnnotatedConstructors.size() == 1)
       {
-         Constructor<T> constructor = initializerAnnotatedConstructors.get(0);
+         this.constructor = new SimpleConstructor<T>(initializerAnnotatedConstructors.iterator().next());
          log.finest("Exactly one constructor (" + constructor +") annotated with @Initializer defined, using it as the bean constructor for " + getType());
-         this.constructor = new SimpleConstructor<T>(constructor);
          return;
       }
          
-      Constructor<T> emptyConstructor = Reflections.getConstructor(getType());
-      if (emptyConstructor != null)
+      if (getAnnotatedItem().getConstructor(NO_ARGUMENTS) != null)
       {
+         
+         this.constructor = new SimpleConstructor<T>(getAnnotatedItem().getConstructor(NO_ARGUMENTS));
          log.finest("Exactly one constructor (" + constructor +") defined, using it as the bean constructor for " + getType());
-         this.constructor = new SimpleConstructor<T>(emptyConstructor);
          return;
       }
       

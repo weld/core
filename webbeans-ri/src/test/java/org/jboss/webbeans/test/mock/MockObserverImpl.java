@@ -16,7 +16,7 @@ public class MockObserverImpl<T> extends ObserverImpl<T> {
 	
 
 	public MockObserverImpl(BeanModel<?, ?> beanModel,
-         InjectableMethod<?> observer, Class<T> eventType)
+         InjectableMethod<Object> observer, Class<T> eventType)
    {
       super(beanModel, observer, eventType);
    }

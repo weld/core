@@ -14,7 +14,8 @@ import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.util.ListComparator;
-import org.jboss.webbeans.util.MapWrapper;
+
+import com.google.common.collect.ForwardingMap;
 
 public class ResolutionManager
 {
@@ -22,18 +23,26 @@ public class ResolutionManager
    // TODO Why can't we generify Set?
    
    @SuppressWarnings("unchecked")
-   private class InjectableMap extends MapWrapper<Injectable<?, ?>, Set>
+   private class InjectableMap extends ForwardingMap<Injectable<?, ?>, Set>
    {
 
+      private Map<Injectable<?, ?>, Set> delegate;
+      
       public InjectableMap()
       {
-         super(new HashMap<Injectable<?, ?>, Set>());
+         delegate = new HashMap<Injectable<?, ?>, Set>();
       }
       
       @SuppressWarnings("unchecked")
       public <T> Set<Bean<T>> get(Injectable<T, ?> key)
       {
          return (Set<Bean<T>>) super.get(key);
+      }
+      
+      @Override
+      protected Map<Injectable<?, ?>, Set> delegate()
+      {
+         return delegate;
       }
 
    }

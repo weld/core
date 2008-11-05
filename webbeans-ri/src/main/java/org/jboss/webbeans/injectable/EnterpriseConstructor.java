@@ -4,7 +4,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.ejb.EjbMetaData;
 
 
-public class EnterpriseConstructor<T> implements BeanConstructor<T>
+public class EnterpriseConstructor<T> implements BeanConstructor<T, Object>
 {
 
    private EjbMetaData<T> ejbMetaData;

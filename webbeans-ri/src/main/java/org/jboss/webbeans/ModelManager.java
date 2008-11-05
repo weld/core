@@ -9,18 +9,21 @@ import org.jboss.webbeans.model.BindingTypeModel;
 import org.jboss.webbeans.model.ScopeModel;
 import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.model.bean.BeanModel;
-import org.jboss.webbeans.util.MapWrapper;
+
+import com.google.common.collect.ForwardingMap;
 
 public class ModelManager
 {
    
    @SuppressWarnings("unchecked")
-   private abstract class AnnotationModelMap<T extends AnnotationModel<?>> extends MapWrapper<Class<? extends Annotation>, T>
+   private abstract class AnnotationModelMap<T extends AnnotationModel<?>> extends ForwardingMap<Class<? extends Annotation>, T>
    {
 
+      Map<Class<? extends Annotation>, T> delegate;
+      
       public AnnotationModelMap()
       {
-         super(new HashMap<Class<? extends Annotation>, T>());
+         delegate = new HashMap<Class<? extends Annotation>, T>();
       }
       
       public <S extends Annotation> T putIfAbsent(Class<S> key)
@@ -35,6 +38,13 @@ public class ModelManager
       }
       
       protected  abstract <S extends Annotation> T createAnnotationModel(Class<S> type);
+      
+      @Override
+      protected Map<Class<? extends Annotation>, T> delegate()
+      {
+         return delegate;
+      }
+      
    }
    
    @SuppressWarnings("unchecked")

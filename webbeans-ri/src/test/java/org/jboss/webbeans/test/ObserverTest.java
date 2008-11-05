@@ -34,7 +34,7 @@ public class ObserverTest
 {
    private MockManagerImpl manager;
    private SimpleBeanModel<Tuna> tuna;
-   private InjectableMethod<?> om;
+   private InjectableMethod<Object> om;
 
    public class SampleEvent
    {

@@ -7,7 +7,9 @@ import java.util.logging.Logger;
 import javax.webbeans.BindingType;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Destructor;
+import javax.webbeans.Disposes;
 import javax.webbeans.Initializer;
+import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -137,13 +139,25 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
          {
             throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be static");
          }
-         if (annotatedMethod.getAnnotation(Produces.class) != null)
+         else if (annotatedMethod.getAnnotation(Produces.class) != null)
          {
             throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be annotated @Produces");
          }
-         if (annotatedMethod.getAnnotation(Destructor.class) != null)
+         else if (annotatedMethod.getAnnotation(Destructor.class) != null)
          {
             throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be annotated @Destructor");
+         }
+         else if (annotatedMethod.getAnnotatedParameters(Disposes.class).size() > 0)
+         {
+            throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot have parameters annotated @Disposes");
+         }
+         else if (annotatedMethod.getAnnotatedParameters(Observes.class).size() > 0)
+         {
+            throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be annotated @Observes");
+         }
+         else
+         {
+            initializerMethods.add(new InjectableMethod<Object>(annotatedMethod));
          }
       }
    }

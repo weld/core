@@ -55,6 +55,11 @@
          <groupId>javax.el</groupId>
          <artifactId>el-api</artifactId>
       </dependency>
+      
+      <dependency>
+         <groupId>com.google.collections</groupId>
+         <artifactId>google-collections</artifactId>
+      </dependency>
 
    </dependencies>
 

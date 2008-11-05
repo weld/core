@@ -55,4 +55,10 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
    public Set<AnnotatedMethod<Object>> getAnnotatedMethods(
          Class<? extends Annotation> annotationType);
    
+   public Set<AnnotatedConstructor<T>> getAnnotatedConstructors(Class<? extends Annotation> annotationType);
+   
+   public Set<AnnotatedConstructor<T>> getConstructors();
+   
+   public AnnotatedConstructor<T> getConstructor(Set<Class<?>> arguments);
+   
 }

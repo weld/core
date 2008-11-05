@@ -1,14 +1,21 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.webbeans.Current;
 import javax.webbeans.Observer;
+
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.injectable.ForwardingInjectableMethod;
+import org.jboss.webbeans.injectable.ForwardingInjectableParameter;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
-import org.jboss.webbeans.injectable.InjectableParameterWrapper;
 import org.jboss.webbeans.model.bean.BeanModel;
+
+import com.google.common.collect.ForwardingIterator;
+import com.google.common.collect.ForwardingSet;
 
 /**
  * <p>
@@ -25,7 +32,7 @@ public class ObserverImpl<T> implements Observer<T>
 {
 
    private final BeanModel<?, ?> beanModel;
-   private final InjectableMethod<? extends Object> observerMethod;
+   private final InjectableMethod<Object> observerMethod;
    private final Class<T> eventType;
 
    /**
@@ -52,7 +59,7 @@ public class ObserverImpl<T> implements Observer<T>
     * @param eventType The type of event being observed
     */
    public ObserverImpl(final BeanModel<?, ?> beanModel,
-         final InjectableMethod<?> observer, final Class<T> eventType)
+         final InjectableMethod<Object> observer, final Class<T> eventType)
    {
       this.beanModel = beanModel;
       this.observerMethod = observer;
@@ -81,27 +88,77 @@ public class ObserverImpl<T> implements Observer<T>
       Object instance = getInstance();
       if (instance != null)
       {
-         // Let the super class get the parameter values, but substitute the event
-         // object so that we know for certain it is the correct one.
-         for (int i = 0; i < observerMethod.getParameters().size(); i++)
+         new ForwardingInjectableMethod<Object>()
          {
-            InjectableParameter<? extends Object> parameter = observerMethod
-                  .getParameters().get(i);
-            if (parameter.getType().isAssignableFrom(event.getClass()))
+
+            @Override
+            public Set<InjectableParameter<Object>> getParameters()
             {
-               InjectableParameter<?> newParameter = new InjectableParameterWrapper<Object>(
-                     parameter)
+               final Set<InjectableParameter<Object>>parameters = super.getParameters();
+               
+               return new ForwardingSet<InjectableParameter<Object>>()
                {
+
                   @Override
-                  public Object getValue(ManagerImpl manager)
+                  public Iterator<InjectableParameter<Object>> iterator()
                   {
-                     return event;
+                     final Iterator<InjectableParameter<Object>> iterator = super.iterator();
+                     return new ForwardingIterator<InjectableParameter<Object>>()
+                     {
+                        
+                        @Override
+                        public InjectableParameter<Object> next()
+                        {
+                           final InjectableParameter<Object> parameter = super.next();
+                           if (parameter.getType().isAssignableFrom(event.getClass()))
+                           {
+                              return new ForwardingInjectableParameter<Object>()
+                              {
+                                 @Override
+                                 public Object getValue(ManagerImpl manager)
+                                 {
+                                    return event;
+                                 }
+
+                                 @Override
+                                 protected InjectableParameter<? extends Object> delegate()
+                                 {
+                                    return parameter;
+                                 }
+                              };
+                           }
+                           else
+                           {
+                              return parameter;
+                           }
+                        }
+
+                        @Override
+                        protected Iterator<InjectableParameter<Object>> delegate()
+                        {
+                           return iterator;
+                        }
+                        
+                     };
                   }
+                  
+                  @Override
+                  protected Set<InjectableParameter<Object>> delegate()
+                  {
+                     return parameters;
+                  }
+                  
                };
-               observerMethod.getParameters().set(i, newParameter);
             }
-         }
-         this.observerMethod.invoke(manager, instance);
+            
+            
+            @Override
+            protected InjectableMethod<Object> delegate()
+            {
+               return observerMethod;
+            }
+            
+         }.invoke(manager, instance);
       }
 
    }

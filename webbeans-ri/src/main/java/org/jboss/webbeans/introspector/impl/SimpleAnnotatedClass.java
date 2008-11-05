@@ -1,16 +1,19 @@
 package org.jboss.webbeans.introspector.impl;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 
@@ -26,12 +29,17 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
    
    private Class<T> clazz;
    private Type[] actualTypeArguments;
+   
    private Set<AnnotatedField<Object>> fields;
    private Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> annotatedFields;
    private Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> metaAnnotatedFields;
    
    private Set<AnnotatedMethod<Object>> methods;
    private Map<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>> annotatedMethods;
+   
+   private Set<AnnotatedConstructor<T>> constructors;
+   private Map<Class<? extends Annotation>, Set<AnnotatedConstructor<T>>> annotatedConstructors;
+   private Map<Set<Class<?>>, AnnotatedConstructor<T>> constructorsByArgumentMap;
    
    public SimpleAnnotatedClass(Class<T> annotatedClass, Map<Class<? extends Annotation>, Annotation> annotationMap)
    {
@@ -70,6 +78,15 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
          initFields();
       }
       return fields;
+   }
+   
+   public Set<AnnotatedConstructor<T>> getConstructors()
+   {
+      if (constructors == null)
+      {
+         initConstructors();
+      }
+      return constructors;
    }
    
    private void initFields()
@@ -193,13 +210,67 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
       {
          for (Annotation annotation : member.getAnnotations())
          {
-            if (!annotatedMethods.containsKey(annotation))
+            if (!annotatedMethods.containsKey(annotation.annotationType()))
             {
                annotatedMethods.put(annotation.annotationType(), new HashSet<AnnotatedMethod<Object>>());
             }
             annotatedMethods.get(annotation.annotationType()).add(member);
          }
       }
+   }
+   
+   private void initConstructors()
+   {
+      this.constructors = new HashSet<AnnotatedConstructor<T>>();
+      this.constructorsByArgumentMap = new HashMap<Set<Class<?>>, AnnotatedConstructor<T>>();
+      for (Constructor<T> constructor : clazz.getDeclaredConstructors())
+      {
+         AnnotatedConstructor<T> annotatedConstructor = new SimpleAnnotatedConstructor<T>(constructor);
+         constructors.add(annotatedConstructor);
+         constructorsByArgumentMap.put(new HashSet<Class<?>>(Arrays.asList(constructor.getParameterTypes())), annotatedConstructor);
+      }
+   }
+   
+   public Set<AnnotatedConstructor<T>> getAnnotatedConstructors(Class<? extends Annotation> annotationType)
+   {
+      if (annotatedConstructors == null)
+      {
+         initAnnotatedConstructors();
+      }
+       
+      if (!annotatedConstructors.containsKey(annotationType))
+      {
+         return new HashSet<AnnotatedConstructor<T>>();
+      }
+      else
+      {
+         return annotatedConstructors.get(annotationType);
+      }
+   }
+
+   private void initAnnotatedConstructors()
+   {
+      if (constructors == null)
+      {
+         initConstructors();
+      }
+      annotatedConstructors = new HashMap<Class<? extends Annotation>, Set<AnnotatedConstructor<T>>>();
+      for (AnnotatedConstructor<T> constructor : constructors)
+      {
+         for (Annotation annotation : constructor.getAnnotations())
+         {
+            if (!annotatedConstructors.containsKey(annotation.annotationType()))
+            {
+               annotatedConstructors.put(annotation.annotationType(), new HashSet<AnnotatedConstructor<T>>());
+            }
+            annotatedConstructors.get(annotation.annotationType()).add(constructor);
+         }
+      }
+   }
+   
+   public AnnotatedConstructor<T> getConstructor(Set<Class<?>> arguments)
+   {
+      return constructorsByArgumentMap.get(arguments);
    }
 
 }

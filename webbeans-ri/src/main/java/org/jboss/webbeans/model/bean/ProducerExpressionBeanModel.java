@@ -6,7 +6,7 @@ import java.lang.reflect.Modifier;
 import javax.webbeans.Dependent;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.injectable.BeanConstructor;
+import org.jboss.webbeans.injectable.MethodConstructor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 
 public class ProducerExpressionBeanModel<T> extends AbstractProducerBeanModel<T>
@@ -48,7 +48,7 @@ public class ProducerExpressionBeanModel<T> extends AbstractProducerBeanModel<T>
       return annotatedItem;
    }
 
-   public BeanConstructor<T> getConstructor()
+   public MethodConstructor<T> getConstructor()
    {
       // TODO Auto-generated method stub
       return null;

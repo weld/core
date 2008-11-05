@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -38,18 +39,22 @@ import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
 import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.ResolverInjectable;
 import org.jboss.webbeans.util.ClientProxy;
-import org.jboss.webbeans.util.MapWrapper;
 import org.jboss.webbeans.util.ProxyPool;
 import org.jboss.webbeans.util.Reflections;
+
+import com.google.common.collect.ForwardingMap;
 
 public class ManagerImpl implements Manager
 {
 
-   private class ContextMap extends MapWrapper<Class<? extends Annotation>, List<Context>>
+   private class ContextMap extends ForwardingMap<Class<? extends Annotation>, List<Context>>
    {
+      
+      private Map<Class<? extends Annotation>, List<Context>> delegate;
+      
       public ContextMap()
       {
-         super(new HashMap<Class<? extends Annotation>, List<Context>>());
+         delegate = new HashMap<Class<? extends Annotation>, List<Context>>();
       }
 
       public List<Context> get(Class<? extends Annotation> key)
@@ -60,6 +65,12 @@ public class ManagerImpl implements Manager
       public DependentContext getDependentContext()
       {
          return (DependentContext) get(Dependent.class).get(0);
+      }
+
+      @Override
+      protected Map<Class<? extends Annotation>, List<Context>> delegate()
+      {
+         return delegate;
       }
    }
 
