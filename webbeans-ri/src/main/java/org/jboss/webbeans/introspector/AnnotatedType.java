@@ -33,7 +33,7 @@ public interface AnnotatedType<T> extends AnnotatedItem<T, Class<T>>
     * If no annotations are present which are annotated with the given
     * annotation an empty set is returned
     */
-   public Set<AnnotatedField<Object>> getAnnotatedField(Class<? extends Annotation> annotationType);
+   public Set<AnnotatedField<Object>> getAnnotatedFields(Class<? extends Annotation> annotationType);
    
    /**
     * Get all fields which are annotated with the given meta annotation 
@@ -44,5 +44,15 @@ public interface AnnotatedType<T> extends AnnotatedItem<T, Class<T>>
     */
    public Set<AnnotatedField<Object>> getMetaAnnotatedFields(
          Class<? extends Annotation> metaAnnotationType);
+   
+   /**
+    * Get all fields which are annotated with the given meta annotation 
+    * type
+    * 
+    * If no annotations are present which are annotated with the given meta
+    * annotation an empty set is returned
+    */
+   public Set<AnnotatedMethod<Object>> getAnnotatedMethods(
+         Class<? extends Annotation> annotationType);
    
 }

@@ -2,6 +2,7 @@ package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -24,6 +25,9 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
    private Set<AnnotatedField<Object>> fields;
    private Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> annotatedFields;
    private Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> metaAnnotatedFields;
+   
+   private Set<AnnotatedMethod<Object>> methods;
+   private Map<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>> annotatedMethods;
    
    public SimpleAnnotatedType(Class<T> annotatedClass, Map<Class<? extends Annotation>, Annotation> annotationMap)
    {
@@ -108,7 +112,7 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
       return metaAnnotatedFields;
    }
 
-   public Set<AnnotatedField<Object>> getAnnotatedField(
+   public Set<AnnotatedField<Object>> getAnnotatedFields(
          Class<? extends Annotation> annotationType)
    {
       if (annotatedFields == null)
@@ -146,6 +150,52 @@ public class SimpleAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> i
    public Type[] getActualTypeArguments()
    {
       return actualTypeArguments;
+   }
+   
+   private void initMethods()
+   {
+      this.methods = new HashSet<AnnotatedMethod<Object>>();
+      for (Method member : clazz.getDeclaredMethods())
+      {
+         methods.add(new SimpleAnnotatedMethod<Object>(member));
+      }
+   }
+   
+   public Set<AnnotatedMethod<Object>> getAnnotatedMethods(Class<? extends Annotation> annotationType)
+   {
+      if (annotatedMethods == null)
+      {
+         initAnnotatedMethods();
+      }
+       
+      if (!annotatedMethods.containsKey(annotationType))
+      {
+         return new HashSet<AnnotatedMethod<Object>>();
+      }
+      else
+      {
+         return annotatedMethods.get(annotationType);
+      }
+   }
+
+   private void initAnnotatedMethods()
+   {
+      if (methods == null)
+      {
+         initMethods();
+      }
+      annotatedMethods = new HashMap<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>>();
+      for (AnnotatedMethod<Object> member : methods)
+      {
+         for (Annotation annotation : member.getAnnotations())
+         {
+            if (!annotatedMethods.containsKey(annotation))
+            {
+               annotatedMethods.put(annotation.annotationType(), new HashSet<AnnotatedMethod<Object>>());
+            }
+            annotatedMethods.get(annotation.annotationType()).add(member);
+         }
+      }
    }
 
 }

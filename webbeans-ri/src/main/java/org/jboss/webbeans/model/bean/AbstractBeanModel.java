@@ -278,7 +278,7 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
       
       if (deploymentTypes.size() > 1)
       {
-         throw new DefinitionException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().getDelegate());
+         throw new DefinitionException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().toString());
       }
       if (deploymentTypes.size() == 1)
       {

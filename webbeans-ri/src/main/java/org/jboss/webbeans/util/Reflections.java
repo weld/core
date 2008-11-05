@@ -96,6 +96,11 @@ public class Reflections
       return Modifier.isStatic(field.getModifiers());
    }
    
+   public static boolean isStatic(Method method)
+   {
+      return Modifier.isStatic(method.getModifiers());
+   }
+   
    public static boolean isAbstract(Class<?> clazz)
    {
       return Modifier.isAbstract(clazz.getModifiers());

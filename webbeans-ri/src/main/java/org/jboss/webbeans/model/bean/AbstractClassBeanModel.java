@@ -6,10 +6,15 @@ import java.util.logging.Logger;
 
 import javax.webbeans.BindingType;
 import javax.webbeans.DefinitionException;
+import javax.webbeans.Destructor;
+import javax.webbeans.Initializer;
+import javax.webbeans.Produces;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.InjectableField;
+import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.LoggerUtil;
 import org.jboss.webbeans.util.Reflections;
@@ -31,6 +36,7 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
    private AnnotatedType<T> annotatedItem;
    private AnnotatedType<T> xmlAnnotatedItem;
    private Set<InjectableField<?>> injectableFields;
+   private Set<InjectableMethod<Object>> initializerMethods;
    
    /**
     * 
@@ -62,6 +68,7 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
       // TODO This is too high
       checkBeanImplementation();
       // TODO Interceptors
+      initInitializerMethods();
    }
    
    @Override
@@ -119,6 +126,27 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
       }
    }
    
+   protected void initInitializerMethods()
+   {
+      // TODO Support XML
+      initializerMethods = new HashSet<InjectableMethod<Object>>();
+      for (AnnotatedMethod<Object> annotatedMethod : annotatedItem.getAnnotatedMethods(Initializer.class))
+      {
+         if (Reflections.isStatic(annotatedMethod.getDelegate()))
+         {
+            throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be static");
+         }
+         if (annotatedMethod.getAnnotation(Produces.class) != null)
+         {
+            throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be annotated @Produces");
+         }
+         if (annotatedMethod.getAnnotation(Destructor.class) != null)
+         {
+            throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be annotated @Destructor");
+         }
+      }
+   }
+   
    @Override
    protected String getDefaultName()
    {
@@ -169,6 +197,11 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
    public Set<InjectableField<?>> getInjectableFields()
    {
       return injectableFields;
+   }
+   
+   public Set<InjectableMethod<Object>> getInitializerMethods()
+   {
+      return initializerMethods;
    }
 
 }
