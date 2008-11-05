@@ -71,7 +71,7 @@ public class ProducerMethodBeanModel<T> extends AbstractProducerBeanModel<T>
       {
          if (getDeclaringBean() == null)
          {
-            initDeclaringBean(container);
+            initDeclaringBean(manager);
          }
          deploymentType = declaringBean.getDeploymentType();
       }

@@ -44,12 +44,12 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
    private Set<Class<?>> apiTypes;
    protected Set<Injectable<?, ?>> injectionPoints;
    private boolean primitive;
-   protected ManagerImpl container;
+   protected ManagerImpl manager;
    
-   protected void init(ManagerImpl container)
+   protected void init(ManagerImpl manager)
    {
-      this.container = container;
-      mergedStereotypes = new MergedStereotypesModel<T, E>(getAnnotatedItem(), getXmlAnnotatedItem(), container);
+      this.manager = manager;
+      mergedStereotypes = new MergedStereotypesModel<T, E>(getAnnotatedItem(), getXmlAnnotatedItem(), manager);
       initType();
       initPrimitive();
       log.fine("Building Web Bean bean metadata for " +  getType());
@@ -292,7 +292,7 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
          
          if (getMergedStereotypes().getPossibleDeploymentTypes().size() > 0)
          {
-            this.deploymentType = getDeploymentType(container.getEnabledDeploymentTypes(), getMergedStereotypes().getPossibleDeploymentTypes());
+            this.deploymentType = getDeploymentType(manager.getEnabledDeploymentTypes(), getMergedStereotypes().getPossibleDeploymentTypes());
             log.finest("Deployment type " + deploymentType + " specified by stereotype");
             return;
          }
