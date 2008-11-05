@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test;
 
+import static org.jboss.webbeans.test.util.Util.createSimpleModel;
 import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
-import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -67,24 +67,24 @@ public class ScopeTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.4.3")
    public void testScopeDeclaredInJava()
    {
-      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedClass<SeaBass>(SeaBass.class), getEmptyAnnotatedType(SeaBass.class), manager);
+      SimpleBeanModel<SeaBass> trout = createSimpleModel(SeaBass.class, manager);
       assert trout.getScopeType().equals(RequestScoped.class);
    }
    
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.4.3")
    public void testTooManyScopesSpecifiedInJava()
    {
-      new SimpleBeanModel<BeanWithTooManyScopeTypes>(new SimpleAnnotatedClass<BeanWithTooManyScopeTypes>(BeanWithTooManyScopeTypes.class), getEmptyAnnotatedType(BeanWithTooManyScopeTypes.class), manager);
+      createSimpleModel(BeanWithTooManyScopeTypes.class, manager);
    }
    
-   @Test(expectedExceptions=DefinitionException.class)
+   @Test(expectedExceptions=DefinitionException.class, groups="webbeansxml")
    public void testTooManyScopesSpecifiedInXml()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(RequestScoped.class, new RequestScopedAnnotationLiteral());
       annotations.put(ConversationScoped.class, new ConversationScopedAnnotationLiteral());
       AnnotatedClass<Antelope> antelopeAnnotatedItem = new SimpleAnnotatedClass<Antelope>(Antelope.class, annotations);
-      new SimpleBeanModel<Antelope>(getEmptyAnnotatedType(Antelope.class), antelopeAnnotatedItem, manager);
+      new SimpleBeanModel<Antelope>(null, antelopeAnnotatedItem, manager);
    }
    
    @Test @SpecAssertion(section="2.4.4")
@@ -121,7 +121,7 @@ public class ScopeTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.4.5")
    public void testDefaultScope()
    {
-      SimpleBeanModel<Order> order = new SimpleBeanModel<Order>(new SimpleAnnotatedClass<Order>(Order.class), getEmptyAnnotatedType(Order.class), manager);
+      SimpleBeanModel<Order> order = createSimpleModel(Order.class, manager);
       assert order.getScopeType().equals(Dependent.class);
    }
    

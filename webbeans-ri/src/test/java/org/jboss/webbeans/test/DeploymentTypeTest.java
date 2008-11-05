@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test;
 
+import static org.jboss.webbeans.test.util.Util.createSimpleModel;
 import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
-import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ public class DeploymentTypeTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.5.3")
    public void testTooManyDeploymentTypes()
    {
-      new SimpleBeanModel<BeanWithTooManyDeploymentTypes>(new SimpleAnnotatedClass<BeanWithTooManyDeploymentTypes>(BeanWithTooManyDeploymentTypes.class), getEmptyAnnotatedType(BeanWithTooManyDeploymentTypes.class), manager);
+      createSimpleModel(BeanWithTooManyDeploymentTypes.class, manager);
    }
    
    @Test @SpecAssertion(section="2.5.4")
@@ -90,11 +90,11 @@ public class DeploymentTypeTest extends AbstractTest
       assert tuna.getDeploymentType().equals(AnotherDeploymentType.class);
    }
    
-   @Test @SpecAssertion(section="2.5.5")
+   @Test(groups="webbeansxml") @SpecAssertion(section="2.5.5")
    public void testXmlDefaultDeploymentType()
    {
       AnnotatedClass<Antelope> antelopeAnnotatedItem = new SimpleAnnotatedClass<Antelope>(Antelope.class, new HashMap<Class<? extends Annotation>, Annotation>());
-      SimpleBeanModel<Antelope> antelope = new SimpleBeanModel<Antelope>(getEmptyAnnotatedType(Antelope.class), antelopeAnnotatedItem, manager);
+      SimpleBeanModel<Antelope> antelope = new SimpleBeanModel<Antelope>(null, antelopeAnnotatedItem, manager);
       assert antelope.getDeploymentType().equals(Production.class);
    }
    

@@ -1,7 +1,6 @@
 package org.jboss.webbeans.test;
 
 import static org.jboss.webbeans.test.util.Util.createSimpleModel;
-import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -37,7 +36,7 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section="2.6.1")
    public void testNonDefaultNamed()
    {
-      SimpleBeanModel<Moose> moose = new SimpleBeanModel<Moose>(new SimpleAnnotatedClass<Moose>(Moose.class), getEmptyAnnotatedType(Moose.class), manager);
+      SimpleBeanModel<Moose> moose = createSimpleModel(Moose.class, manager);
       assert moose.getName().equals("aMoose");
    }
    
@@ -90,7 +89,7 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section={"2.6.3", "3.2.7"})
    public void testDefaultNamed()
    {
-      SimpleBeanModel<Haddock> haddock = new SimpleBeanModel<Haddock>(new SimpleAnnotatedClass<Haddock>(Haddock.class), getEmptyAnnotatedType(Haddock.class), manager);
+      SimpleBeanModel<Haddock> haddock = createSimpleModel(Haddock.class, manager);
       assert haddock.getName() != null;
       assert haddock.getName().equals("haddock");
    }
@@ -125,14 +124,14 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section="2.6.4")
    public void testNotNamedInJava()
    {
-      SimpleBeanModel<SeaBass> model = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedClass<SeaBass>(SeaBass.class), getEmptyAnnotatedType(SeaBass.class), manager);
+      SimpleBeanModel<SeaBass> model = createSimpleModel(SeaBass.class, manager);
       assert model.getName() == null;
    }
    
    @Test @SpecAssertion(section="2.6.4")
    public void testNotNamedInXml()
    {
-      SimpleBeanModel<SeaBass> model = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedClass<SeaBass>(SeaBass.class), getEmptyAnnotatedType(SeaBass.class), manager);
+      SimpleBeanModel<SeaBass> model = createSimpleModel(SeaBass.class, manager);
       assert model.getName() == null;
    }
    

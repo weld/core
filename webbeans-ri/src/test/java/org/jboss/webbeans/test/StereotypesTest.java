@@ -1,7 +1,6 @@
 package org.jboss.webbeans.test;
 
 import static org.jboss.webbeans.test.util.Util.createSimpleModel;
-import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -153,7 +152,7 @@ public class StereotypesTest extends AbstractTest
    @Test @SpecAssertion(section={"2.7.2", "2.7.4"})
    public void testMultipleStereotypes()
    {
-      SimpleBeanModel<HighlandCow> highlandCow = new SimpleBeanModel<HighlandCow>(new SimpleAnnotatedClass<HighlandCow>(HighlandCow.class), getEmptyAnnotatedType(HighlandCow.class), manager);
+      SimpleBeanModel<HighlandCow> highlandCow = createSimpleModel(HighlandCow.class, manager);
       assert highlandCow.getName() == null;
       assert highlandCow.getBindingTypes().iterator().next().annotationType().equals(Tame.class);
       assert highlandCow.getScopeType().equals(RequestScoped.class);
@@ -196,25 +195,25 @@ public class StereotypesTest extends AbstractTest
    @Test@SpecAssertion(section="2.7.4")
    public void testRequiredTypeIsImplemented()
    {
-         new SimpleBeanModel<HighlandCow>(new SimpleAnnotatedClass<HighlandCow>(HighlandCow.class), getEmptyAnnotatedType(HighlandCow.class), manager);
+         createSimpleModel(HighlandCow.class, manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.4")
    public void testRequiredTypeIsNotImplemented()
    {
-      new SimpleBeanModel<Chair>(new SimpleAnnotatedClass<Chair>(Chair.class), getEmptyAnnotatedType(Chair.class), manager);      
+      createSimpleModel(Chair.class, manager);      
    }
    
    @Test @SpecAssertion(section="2.7.4")
    public void testScopeIsSupported()
    {
-      new SimpleBeanModel<Goldfish>(new SimpleAnnotatedClass<Goldfish>(Goldfish.class), getEmptyAnnotatedType(Goldfish.class), manager);
+      createSimpleModel(Goldfish.class, manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.4")
    public void testScopeIsNotSupported()
    {
-      new SimpleBeanModel<Carp>(new SimpleAnnotatedClass<Carp>(Carp.class), getEmptyAnnotatedType(Carp.class), manager);    
+      createSimpleModel(Carp.class, manager);    
    }
    
 }

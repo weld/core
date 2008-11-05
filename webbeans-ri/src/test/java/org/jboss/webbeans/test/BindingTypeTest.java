@@ -1,7 +1,6 @@
 package org.jboss.webbeans.test;
 
 import static org.jboss.webbeans.test.util.Util.createSimpleModel;
-import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -80,14 +79,14 @@ public class BindingTypeTest extends AbstractTest
    }
    
    @SuppressWarnings("unchecked")
-   @Test @SpecAssertion(section="2.3.4")
+   @Test(groups="webbeansxml") @SpecAssertion(section="2.3.4")
    public void testBindingTypesDeclaredInXml()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
       AnnotatedClass annotatedItem = new SimpleAnnotatedClass(Antelope.class, annotations);
       
-      SimpleBeanModel<Antelope> antelope = new SimpleBeanModel<Antelope>(getEmptyAnnotatedType(Antelope.class), annotatedItem, manager);
+      SimpleBeanModel<Antelope> antelope = new SimpleBeanModel<Antelope>(null, annotatedItem, manager);
       assert Reflections.annotationSetMatches(antelope.getBindingTypes(), Asynchronous.class);
    }
 

@@ -48,15 +48,6 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
     */
    public AbstractClassBeanModel(AnnotatedClass<T> annotatedItem, AnnotatedClass<T> xmlAnnotatedItem)
    {
-      if (annotatedItem == null)
-      {
-         throw new NullPointerException("annotatedItem must not be null. If the bean is declared just in XML, pass in an empty annotatedItem");
-      }
-      
-      if (xmlAnnotatedItem == null)
-      {
-         throw new NullPointerException("xmlAnnotatedItem must not be null. If the bean is declared just in Java, pass in an empty xmlAnnotatedItem");
-      }
       this.annotatedItem = annotatedItem;
       this.xmlAnnotatedItem = xmlAnnotatedItem;
    }
