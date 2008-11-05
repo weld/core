@@ -6,7 +6,7 @@ import java.util.HashMap;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.SimpleBeanImpl;
 import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
 import org.jboss.webbeans.model.bean.EnterpriseBeanModel;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 

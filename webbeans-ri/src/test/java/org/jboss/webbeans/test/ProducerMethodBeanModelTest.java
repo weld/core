@@ -7,8 +7,8 @@ import java.lang.reflect.Method;
 import javax.webbeans.Current;
 import javax.webbeans.Dependent;
 
-import org.jboss.webbeans.introspector.SimpleAnnotatedMethod;
-import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedMethod;
 import org.jboss.webbeans.model.bean.ProducerMethodBeanModel;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;

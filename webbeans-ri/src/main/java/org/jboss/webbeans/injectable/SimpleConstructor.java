@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.SimpleAnnotatedConstructor;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedConstructor;
 import org.jboss.webbeans.util.LoggerUtil;
 
 public class SimpleConstructor<T> extends Unit<T, Constructor<T>> implements BeanConstructor<T>

@@ -10,8 +10,8 @@ import javax.webbeans.manager.Context;
 
 import org.jboss.webbeans.contexts.AbstractContext;
 import org.jboss.webbeans.contexts.RequestContext;
-import org.jboss.webbeans.introspector.SimpleAnnotatedMethod;
-import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedMethod;
 import org.jboss.webbeans.model.bean.ProducerMethodBeanModel;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.beans.SpiderProducer;

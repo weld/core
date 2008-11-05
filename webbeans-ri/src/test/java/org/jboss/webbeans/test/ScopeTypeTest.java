@@ -17,7 +17,7 @@ import javax.webbeans.manager.Bean;
 import org.jboss.webbeans.bindings.ConversationScopedAnnotationLiteral;
 import org.jboss.webbeans.bindings.RequestScopedAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
 import org.jboss.webbeans.test.annotations.AnotherScopeType;

@@ -1,7 +1,9 @@
-package org.jboss.webbeans.introspector;
+package org.jboss.webbeans.introspector.impl;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
+
+import org.jboss.webbeans.introspector.AnnotatedConstructor;
 
 public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Constructor<T>> implements AnnotatedConstructor<T>
 {

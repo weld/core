@@ -9,7 +9,7 @@ import javax.webbeans.Production;
 import javax.webbeans.Stereotype;
 
 import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
 import org.jboss.webbeans.test.beans.Antelope;
 import org.jboss.webbeans.test.beans.Order;
 import org.testng.annotations.Test;

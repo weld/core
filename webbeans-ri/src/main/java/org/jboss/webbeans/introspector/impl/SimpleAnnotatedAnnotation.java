@@ -1,4 +1,4 @@
-package org.jboss.webbeans.introspector;
+package org.jboss.webbeans.introspector.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.jboss.webbeans.introspector.AnnotatedAnnotation;
+import org.jboss.webbeans.introspector.AnnotatedMethod;
 
 public class SimpleAnnotatedAnnotation<T extends Annotation> extends AbstractAnnotatedType<T> implements AnnotatedAnnotation<T>
 {

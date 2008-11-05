@@ -12,7 +12,7 @@ import javax.webbeans.Named;
 
 import org.jboss.webbeans.bindings.NamedAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
 import org.jboss.webbeans.model.bean.BeanModel;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.RiverFishStereotype;

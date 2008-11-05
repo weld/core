@@ -1,4 +1,4 @@
-package org.jboss.webbeans.introspector;
+package org.jboss.webbeans.introspector.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -9,6 +9,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.introspector.AnnotatedMethod;
 
 /**
  * Base class for implementing AnnotatedItem. This implementation assumes 

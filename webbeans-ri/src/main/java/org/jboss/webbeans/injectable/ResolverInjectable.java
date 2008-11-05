@@ -12,7 +12,7 @@ import javax.webbeans.TypeLiteral;
 
 import org.jboss.webbeans.ModelManager;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
-import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedItem;
 
 /**
  * TODO Rename this to something which implies it only ever used for resolution

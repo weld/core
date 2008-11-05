@@ -1,4 +1,4 @@
-package org.jboss.webbeans.introspector;
+package org.jboss.webbeans.introspector.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
+import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.util.Reflections;
 
 public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>

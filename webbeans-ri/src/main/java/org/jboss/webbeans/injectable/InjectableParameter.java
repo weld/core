@@ -3,7 +3,7 @@ package org.jboss.webbeans.injectable;
 import java.lang.annotation.Annotation;
 
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
-import org.jboss.webbeans.introspector.SimpleAnnotatedItem;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedItem;
 
 public class InjectableParameter<T> extends Injectable<T, Object>
 {

@@ -1,8 +1,10 @@
-package org.jboss.webbeans.introspector;
+package org.jboss.webbeans.introspector.impl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+
+import org.jboss.webbeans.introspector.AnnotatedField;
 
 public class SimpleAnnotatedField<T> extends AbstractAnnotatedMember<T, Field> implements AnnotatedField<T>
 {

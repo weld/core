@@ -1,7 +1,9 @@
-package org.jboss.webbeans.introspector;
+package org.jboss.webbeans.introspector.impl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+
+import org.jboss.webbeans.introspector.AnnotatedMethod;
 
 public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>
 {

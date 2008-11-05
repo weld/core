@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
-import org.jboss.webbeans.introspector.SimpleAnnotatedField;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedField;
 import org.jboss.webbeans.util.Reflections;
 
 /**

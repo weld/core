@@ -7,7 +7,7 @@ import javax.webbeans.manager.Manager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.SimpleAnnotatedMethod;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedMethod;
 
 public class InjectableMethod<T> extends Unit<T, Method>
 {

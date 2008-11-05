@@ -12,7 +12,7 @@ import javax.webbeans.Standard;
 
 import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.injectable.BeanConstructor;
-import org.jboss.webbeans.introspector.SimpleAnnotatedField;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedField;
 import org.jboss.webbeans.model.bean.EventBeanModel;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.beans.DangerCall;

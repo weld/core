@@ -2,7 +2,7 @@ package org.jboss.webbeans.test;
 
 import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 
-import org.jboss.webbeans.introspector.SimpleAnnotatedClass;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.beans.Haddock;
 import org.testng.annotations.Test;
