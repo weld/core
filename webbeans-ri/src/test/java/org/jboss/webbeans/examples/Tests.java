@@ -12,14 +12,8 @@ public class Tests extends AbstractTest
 {
    @Test
    public void testGameGenerator() throws Exception {
-     SimpleBean<Game> gameBean = Util.createSimpleWebBean(Game.class, manager);
-     SimpleBean<Generator> generatorBean = Util.createSimpleWebBean(Generator.class, manager);
-     Method method = Generator.class.getDeclaredMethod("next");
-     method.setAccessible(true);
-     ProducerMethodBean<Integer> nextBean = Util.createProducerMethodBean(int.class, method, manager, generatorBean);
-     manager.addBean(gameBean);
-     manager.addBean(generatorBean);
-     manager.addBean(nextBean);
+     setupGameGenerator();
+     
      Game game1 = manager.getInstanceByType(Game.class);
      Game game2 = manager.getInstanceByType(Game.class);
      assert game1!=game2;
@@ -29,4 +23,57 @@ public class Tests extends AbstractTest
      assert gen1.getRandom()!=null;
      assert gen1.getRandom()==gen2.getRandom();
    }
+
+   private void setupGameGenerator() throws NoSuchMethodException
+   {
+      SimpleBean<Game> gameBean = Util.createSimpleWebBean(Game.class, manager);
+        SimpleBean<Generator> generatorBean = Util.createSimpleWebBean(Generator.class, manager);
+        Method method = Generator.class.getDeclaredMethod("next");
+        method.setAccessible(true);
+        ProducerMethodBean<Integer> nextBean = Util.createProducerMethodBean(int.class, method, manager, generatorBean);
+        
+        manager.addBean(gameBean);
+        manager.addBean(generatorBean);
+        manager.addBean(nextBean);
+   }
+   
+   @Test
+   public void testMockSentenceTranslator() throws Exception {
+      setupTextTranslator();
+      
+      manager.getEnabledDeploymentTypes().add(Mock.class);
+      
+      TextTranslator tt2 = manager.getInstanceByType(TextTranslator.class);
+      assert "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.".equals( tt2.translate("Hello world. How's tricks?") );
+   }
+
+   @Test
+   public void testSentenceTranslator() throws Exception {
+      setupTextTranslator();
+      
+      TextTranslator tt1 = manager.getInstanceByType(TextTranslator.class);
+      try {
+         tt1.translate("hello world");
+         assert false;
+      }
+      catch (UnsupportedOperationException uoe)
+      {
+         //expected
+      }
+      
+   }
+   
+   private void setupTextTranslator()
+   {
+      SimpleBean<SentenceParser> spBean = Util.createSimpleWebBean(SentenceParser.class, manager);
+      SimpleBean<SentenceTranslator> stBean = Util.createSimpleWebBean(SentenceTranslator.class, manager);
+      SimpleBean<MockSentenceTranslator> mstBean = Util.createSimpleWebBean(MockSentenceTranslator.class, manager);
+      SimpleBean<TextTranslator> ttBean = Util.createSimpleWebBean(TextTranslator.class, manager);
+      
+      manager.addBean(spBean);
+      manager.addBean(stBean);
+      manager.addBean(mstBean);
+      manager.addBean(ttBean);
+   }
+   
 }
