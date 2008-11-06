@@ -4,10 +4,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.webbeans.DefinitionException;
-import javax.webbeans.Dependent;
+import javax.webbeans.Destructor;
+import javax.webbeans.Disposes;
+import javax.webbeans.Observes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.InjectableMethod;
@@ -22,7 +25,7 @@ public class ProducerMethodBeanModel<T> extends AbstractBeanModel<T, Method>
    
    private MethodConstructor<T> constructor;
    
-   private AnnotatedItem<T, Method> xmlAnnotatedItem = null /*new SimpleAnnotatedItem<T, Method>(new HashMap<Class<? extends Annotation>, Annotation>())*/;
+   private AnnotatedItem<T, Method> xmlAnnotatedItem;
    private AnnotatedMethod<T> annotatedMethod;
    
    private BeanModel<?, ?> declaringBean;
@@ -31,10 +34,11 @@ public class ProducerMethodBeanModel<T> extends AbstractBeanModel<T, Method>
    private String location;
    private Type declaredBeanType;
    
-   public ProducerMethodBeanModel(AnnotatedMethod<T> annotatedMethod, ManagerImpl container)
+   public ProducerMethodBeanModel(AnnotatedMethod<T> annotatedMethod, AnnotatedMethod<T> xmlAnnotatedMethod, ManagerImpl manager)
    {
       this.annotatedMethod = annotatedMethod;
-      init(container);
+      this.xmlAnnotatedItem = xmlAnnotatedMethod;
+      init(manager);
    }
    
    @Override
@@ -80,7 +84,6 @@ public class ProducerMethodBeanModel<T> extends AbstractBeanModel<T, Method>
 
    protected void initDeclaringBean(ManagerImpl container)
    {
-      // TODO replace
       declaringBean = container.getModelManager().getBeanModel(getAnnotatedItem().getDelegate().getDeclaringClass());
    }
    
@@ -95,10 +98,17 @@ public class ProducerMethodBeanModel<T> extends AbstractBeanModel<T, Method>
       {
          throw new DefinitionException("Producer method cannot be static " + annotatedMethod);
       }
-      // TODO Check if declaring class is a WB bean
-      if (!getScopeType().equals(Dependent.class) && getAnnotatedItem().isFinal())
+      else if (getAnnotatedItem().isAnnotationPresent(Destructor.class))
       {
-         throw new RuntimeException("Final producer method must have @Dependent scope " + annotatedMethod);
+         throw new DefinitionException("Producer method cannot be annotated @Destructor");
+      }
+      else if (getAnnotatedItem().getAnnotatedParameters(Observes.class).size() > 0)
+      {
+         throw new DefinitionException("Producer method cannot have parameter annotated @Observes");
+      }
+      else if (getAnnotatedItem().getAnnotatedParameters(Disposes.class).size() > 0)
+      {
+         throw new DefinitionException("Producer method cannot have parameter annotated @Disposes");
       }
    }
    
@@ -162,6 +172,26 @@ public class ProducerMethodBeanModel<T> extends AbstractBeanModel<T, Method>
       catch (ClassCastException e) 
       {
          throw new RuntimeException(getLocation() + " Cannot cast producer method return type " + annotatedMethod.getAnnotatedMethod().getReturnType() + " to bean type " + (getDeclaredBeanType() == null ? " unknown " : getDeclaredBeanType()), e);
+      }
+   }
+   
+   @Override
+   protected void initApiTypes()
+   {
+      if (getType().isArray() || getType().isPrimitive())
+      {
+         super.apiTypes = new HashSet<Class<?>>();
+         super.apiTypes.add(getType());
+         super.apiTypes.add(Object.class);
+      }
+      else if (getType().isInterface())
+      {
+         super.initApiTypes();
+         super.apiTypes.add(Object.class);
+      }
+      else
+      {
+         super.initApiTypes();
       }
    }
    

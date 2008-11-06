@@ -41,7 +41,7 @@ public abstract class AbstractBeanModel<T, E> implements BeanModel<T, E>
    protected Class<? extends Annotation> deploymentType;
    protected Class<T> type;
    protected InjectableMethod<?> removeMethod;
-   private Set<Class<?>> apiTypes;
+   protected Set<Class<?>> apiTypes;
    protected Set<Injectable<?, ?>> injectionPoints;
    private boolean primitive;
    protected ManagerImpl manager;

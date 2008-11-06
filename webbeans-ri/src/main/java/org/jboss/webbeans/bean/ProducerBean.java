@@ -1,22 +1,23 @@
 package org.jboss.webbeans.bean;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.model.bean.BeanModel;
+import org.jboss.webbeans.model.bean.ProducerMethodBeanModel;
 
 public class ProducerBean<T> extends AbstractBean<T>
 {
+   
+   private ProducerMethodBeanModel<T> model;
 
-   public ProducerBean(ManagerImpl manager)
+   public ProducerBean(ProducerMethodBeanModel<T> model, ManagerImpl manager)
    {
       super(manager);
-      // TODO Auto-generated constructor stub
+      this.model = model;
    }
 
    @Override
-   public BeanModel<T, ?> getModel()
+   public ProducerMethodBeanModel<T> getModel()
    {
-      // TODO Auto-generated method stub
-      return null;
+      return model;
    }
 
    @Override

@@ -1,5 +1,6 @@
 package org.jboss.webbeans.test.annotations;
 
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -12,7 +13,7 @@ import javax.webbeans.Stereotype;
 import org.jboss.webbeans.test.beans.Animal;
 
 @Stereotype(requiredTypes=Animal.class)
-@Target( { TYPE })
+@Target( { TYPE, METHOD })
 @Retention(RUNTIME)
 @RequestScoped
 public @interface AnimalStereotype
