@@ -63,6 +63,7 @@ public class Util
       return new ProducerMethodBeanModel<T>(new SimpleAnnotatedMethod<T>(method), xmlAnnotatedMethod, manager, declaringBean);
    }
    
+   @Deprecated
    public static <T> ProducerMethodBeanModel<T> createProducerModel(Class<T> type, Method method, AnnotatedMethod<T> xmlAnnotatedMethod, ManagerImpl manager)
    {
       return createProducerModel(type, method, xmlAnnotatedMethod, manager, null);
