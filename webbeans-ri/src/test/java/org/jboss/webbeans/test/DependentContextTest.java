@@ -1,14 +1,21 @@
 package org.jboss.webbeans.test;
 
+import static org.jboss.webbeans.test.util.Util.createProducerMethodBean;
 import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
+
+import java.lang.reflect.Method;
 
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.Dependent;
 import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.bean.ProducerMethodBean;
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.FoxRun;
+import org.jboss.webbeans.test.beans.SpiderProducer;
+import org.jboss.webbeans.test.beans.Tarantula;
 import org.testng.annotations.Test;
 
 @SpecVersion("PDR")
@@ -32,9 +39,17 @@ public class DependentContextTest extends AbstractTest
    }
    
    @Test(groups={"contexts", "producerMethod"}) @SpecAssertion(section="8.3")
-   public void testInstanceUsedForProducerMethodNotShared()
+   public void testInstanceUsedForProducerMethodNotShared() throws Exception
    {
-      assert false;
+      SimpleBean<SpiderProducer> spiderProducer = createSimpleWebBean(SpiderProducer.class, manager); 
+      manager.addBean(spiderProducer);
+      Method method = SpiderProducer.class.getMethod("produceTarantula");
+      ProducerMethodBean<Tarantula> tarantulaBean = createProducerMethodBean(Tarantula.class, method, manager, spiderProducer);
+      Tarantula tarantula = tarantulaBean.create();
+      Tarantula tarantula2 = tarantulaBean.create();
+      assert tarantula != null;
+      assert tarantula2 != null;
+      assert tarantula != tarantula2;
    }
    
    @Test(groups={"contexts", "observerMethod"}) @SpecAssertion(section="8.3")
@@ -68,12 +83,6 @@ public class DependentContextTest extends AbstractTest
    public void testContextIsInactive()
    {
       manager.getContext(Dependent.class).isActive();
-   }
-   
-   @Test(groups={"contexts", "producerMethod"}) @SpecAssertion(section="8.3")
-   public void testContextIsActiveWhenInvokingProducerMethod()
-   {
-      assert false;
    }
    
    @Test(groups={"contexts", "observerMethod"}) @SpecAssertion(section="8.3")
@@ -160,12 +169,6 @@ public class DependentContextTest extends AbstractTest
    
    @Test(groups={"contexts", "el"}) @SpecAssertion(section="8.3")
    public void testDependentsDestroyedWhenElEvaluationCompletes()
-   {
-      assert false;
-   }
-   
-   @Test(groups={"contexts", "producerMethod"}) @SpecAssertion(section="8.3")
-   public void testDependentsDestroyedWhenProducerMethodEvaluationCompletes()
    {
       assert false;
    }

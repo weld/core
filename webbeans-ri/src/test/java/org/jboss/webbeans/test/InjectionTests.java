@@ -13,6 +13,8 @@ import javax.webbeans.manager.Bean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.FoxRun;
+import org.jboss.webbeans.test.beans.SpiderNest;
+import org.jboss.webbeans.test.beans.SpiderProducer;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.broken.BeanWithFinalBoundField;
 import org.jboss.webbeans.test.beans.broken.BeanWithStaticBoundField;
@@ -25,21 +27,15 @@ public class InjectionTests extends AbstractTest
 {
    
    @Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="4.2")
-   public void testPrimitiveTypesEquivalentToBoxedTypes()
+   public void testInjectionPerformsBoxingIfNecessary() throws Exception
    {
-      assert false;
-   }
-   
-   @Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="4.2")
-   public void testInjectionPerformsBoxingIfNecessary()
-   {
-      assert false;
-   }
-   
-   @Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="4.2")
-   public void testInjectionPerformsUnboxingIfNecessary()
-   {
-      assert false;
+      SimpleBean<SpiderProducer> spiderProducer = createSimpleWebBean(SpiderProducer.class, manager);
+      manager.addBean(spiderProducer);
+      Bean<SpiderNest> spiderNestBean = createSimpleWebBean(SpiderNest.class, manager);
+      manager.addBean(createProducerMethodBean(Integer.class, SpiderProducer.class.getMethod("getWolfSpiderSize"), manager, spiderProducer));
+      SpiderNest spiderNest = spiderNestBean.create();
+      assert spiderNest.numberOfSpiders != null;
+      assert spiderNest.numberOfSpiders.equals(4);
    }
    
    @Test(groups={"injection", "producerMethod"}, expectedExceptions=NullableDependencyException.class) @SpecAssertion(section="4.2")
@@ -47,7 +43,7 @@ public class InjectionTests extends AbstractTest
    {
       Bean<FarmHouse> farmHouseBean = createSimpleWebBean(FarmHouse.class, manager);
       manager.addBean(createProducerMethodBean(Integer.class, FarmHouseProducer.class.getMethod("getNumberOfBedrooms"), manager));
-      FarmHouse farmHouse = farmHouseBean.create();
+      farmHouseBean.create();
    }
    
    @Test(groups={"injection", "clientProxy"}, expectedExceptions=ContextNotActiveException.class) @SpecAssertion(section="4.3")

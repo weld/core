@@ -8,7 +8,7 @@
             <exclude name="specialization" />
             <exclude name="deployment" />
             <exclude name="disposalMethod" />
-            <exclude name="producerMethod" />
+            
             <exclude name="observerMethod" />
             <exclude name="deferredEvent" />
             <exclude name="ejb3" />
