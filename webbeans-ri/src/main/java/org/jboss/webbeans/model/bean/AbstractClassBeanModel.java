@@ -39,6 +39,7 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
    private AnnotatedClass<T> xmlAnnotatedItem;
    private Set<InjectableField<?>> injectableFields;
    private Set<InjectableMethod<Object>> initializerMethods;
+   protected boolean annotationDefined;
    
    /**
     * 
@@ -50,6 +51,7 @@ public abstract class AbstractClassBeanModel<T> extends AbstractBeanModel<T, Cla
    {
       this.annotatedItem = annotatedItem;
       this.xmlAnnotatedItem = xmlAnnotatedItem;
+      annotationDefined = annotatedItem != null ? true : false;
    }
    
    @Override

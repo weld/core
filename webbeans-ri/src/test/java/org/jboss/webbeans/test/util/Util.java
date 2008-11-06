@@ -29,7 +29,7 @@ public class Util
 
    public static <T> EnterpriseBeanModel<T> createEnterpriseBeanModel(Class<T> clazz, ManagerImpl manager)
    {
-      return new EnterpriseBeanModel<T>(new SimpleAnnotatedClass<T>(clazz), getEmptyAnnotatedType(clazz), manager);
+      return new EnterpriseBeanModel<T>(new SimpleAnnotatedClass<T>(clazz), null, manager);
    }
 
    public static <T> EnterpriseBeanModel<T> createEnterpriseBeanModel(Class<T> clazz, AnnotatedClass<T> xmlAnnotatedType, ManagerImpl manager)
