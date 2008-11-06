@@ -32,6 +32,7 @@
       </groups>
       <packages>
          <package name="org.jboss.webbeans.test"></package>
+         <package name="org.jboss.webbeans.examples"></package>
          <package name="org.jboss.webbeans.test.ejb.lifecycle"></package>
          <package name="org.jboss.webbeans.test.ejb.model"></package>
       </packages>
