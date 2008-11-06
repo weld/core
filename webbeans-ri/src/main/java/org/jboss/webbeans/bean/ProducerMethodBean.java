@@ -1,5 +1,8 @@
 package org.jboss.webbeans.bean;
 
+import javax.webbeans.Dependent;
+import javax.webbeans.IllegalProductException;
+
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.model.bean.ProducerMethodBeanModel;
 
@@ -23,7 +26,12 @@ public class ProducerMethodBean<T> extends AbstractBean<T>
    @Override
    public T create()
    {
-      return model.getConstructor().invoke(manager, manager.getInstance(model.getDeclaringBean()));
+      T instance = model.getConstructor().invoke(manager, manager.getInstance(model.getDeclaringBean()));
+      if (instance == null && !model.getScopeType().equals(Dependent.class))
+      {
+         throw new IllegalProductException("Cannot return null from a non-dependent method");
+      }
+      return instance;
    }
    
 

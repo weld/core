@@ -85,6 +85,9 @@ public class SpiderProducer
       return new FunnelWeaver<Spider>();
    }
    
-   
+   @Produces public Spider getNullSpider()
+   {
+      return null;
+   }
 
 }

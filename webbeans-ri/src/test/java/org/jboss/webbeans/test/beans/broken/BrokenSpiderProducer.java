@@ -5,6 +5,9 @@ import javax.webbeans.Disposes;
 import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 import javax.webbeans.Production;
+import javax.webbeans.RequestScoped;
+
+import org.jboss.webbeans.test.beans.Spider;
 
 @Production
 public class BrokenSpiderProducer
@@ -26,6 +29,11 @@ public class BrokenSpiderProducer
    public String destroy()
    {
       return "foo";
+   }
+   
+   @Produces @RequestScoped public Spider getRequestScopedSpider()
+   {
+      return null;
    }
    
 }
