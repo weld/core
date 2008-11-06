@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.SimpleBeanImpl;
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
 import org.jboss.webbeans.model.bean.EnterpriseBeanModel;
@@ -12,9 +12,9 @@ import org.jboss.webbeans.model.bean.SimpleBeanModel;
 
 public class Util
 {
-   public static <T> SimpleBeanImpl<T> createSimpleWebBean(Class<T> clazz, ManagerImpl manager)
+   public static <T> SimpleBean<T> createSimpleWebBean(Class<T> clazz, ManagerImpl manager)
    {
-      return new SimpleBeanImpl<T>(createSimpleModel(clazz, manager), manager);
+      return new SimpleBean<T>(createSimpleModel(clazz, manager), manager);
    }
 
    public static <T> SimpleBeanModel<T> createSimpleModel(Class<T> clazz, ManagerImpl manager)
@@ -36,6 +36,8 @@ public class Util
    {
       return new EnterpriseBeanModel<T>(new SimpleAnnotatedClass<T>(clazz), xmlAnnotatedType, manager);
    }
+   
+   
       
    @Deprecated
    public static <T> AnnotatedClass<T> getEmptyAnnotatedType(Class<T> type)

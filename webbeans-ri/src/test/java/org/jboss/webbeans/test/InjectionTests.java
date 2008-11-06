@@ -9,7 +9,7 @@ import javax.webbeans.NonexistentFieldException;
 import javax.webbeans.NullableDependencyException;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.SimpleBeanImpl;
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.FoxRun;
 import org.jboss.webbeans.test.beans.Tuna;
@@ -64,7 +64,7 @@ public class InjectionTests extends AbstractTest
    @Test(groups="injection", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.6")
    public void testInjectingStaticField()
    {
-      SimpleBeanImpl<BeanWithStaticBoundField> bean = createSimpleWebBean(BeanWithStaticBoundField.class, manager);
+      SimpleBean<BeanWithStaticBoundField> bean = createSimpleWebBean(BeanWithStaticBoundField.class, manager);
       Bean<Tuna> tunaBean = createSimpleWebBean(Tuna.class, manager);
       manager.addBean(tunaBean);
       BeanWithStaticBoundField instance = bean.create();
@@ -73,7 +73,7 @@ public class InjectionTests extends AbstractTest
    @Test(groups="injection",expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.6")
    public void testInjectingFinalField()
    {
-      SimpleBeanImpl<BeanWithFinalBoundField> bean = createSimpleWebBean(BeanWithFinalBoundField.class, manager);
+      SimpleBean<BeanWithFinalBoundField> bean = createSimpleWebBean(BeanWithFinalBoundField.class, manager);
       Bean<Tuna> tunaBean = createSimpleWebBean(Tuna.class, manager);
       manager.addBean(tunaBean);
       BeanWithFinalBoundField instance = bean.create();

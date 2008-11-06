@@ -4,7 +4,7 @@ import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
 
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.SimpleBeanImpl;
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.beans.FishPond;
 import org.jboss.webbeans.test.beans.Goldfish;
 import org.jboss.webbeans.test.beans.RedSnapper;
@@ -74,7 +74,7 @@ public class SimpleBeanLifecycleTest extends AbstractTest
    @Test(groups="injection") @SpecAssertion(section="5.3")
    public void testCreateInjectsFieldsDeclaredInJava()
    {
-      SimpleBeanImpl<TunaFarm> tunaFarmBean = createSimpleWebBean(TunaFarm.class, manager);
+      SimpleBean<TunaFarm> tunaFarmBean = createSimpleWebBean(TunaFarm.class, manager);
       Bean<Tuna> tunaBean = createSimpleWebBean(Tuna.class, manager);
       manager.addBean(tunaBean);
       TunaFarm tunaFarm = tunaFarmBean.create();
@@ -90,7 +90,7 @@ public class SimpleBeanLifecycleTest extends AbstractTest
    @Test(groups="injection") 
    public void testFieldMissingBindingAnnotationsAreNotInjected()
    {
-      SimpleBeanImpl<TunaFarm> tunaFarmBean = createSimpleWebBean(TunaFarm.class, manager);
+      SimpleBean<TunaFarm> tunaFarmBean = createSimpleWebBean(TunaFarm.class, manager);
       Bean<Tuna> tunaBean = createSimpleWebBean(Tuna.class, manager);
       manager.addBean(tunaBean);
       TunaFarm tunaFarm = tunaFarmBean.create();

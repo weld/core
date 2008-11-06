@@ -1,4 +1,4 @@
-package org.jboss.webbeans;
+package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;

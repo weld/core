@@ -1,20 +1,21 @@
-package org.jboss.webbeans;
+package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
 import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.model.bean.BeanModel;
 
-public abstract class BeanImpl<T> extends Bean<T>
+public abstract class AbstractBean<T> extends Bean<T>
 {
    
    public static final String LOGGER_NAME = "bean";
    
    protected ManagerImpl manager;
 
-   public BeanImpl(ManagerImpl manager)
+   public AbstractBean(ManagerImpl manager)
    {
       super(manager);
       this.manager = manager;

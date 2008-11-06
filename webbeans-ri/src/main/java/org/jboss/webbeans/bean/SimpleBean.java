@@ -1,15 +1,16 @@
-package org.jboss.webbeans;
+package org.jboss.webbeans.bean;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.InjectableField;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 
-public class SimpleBeanImpl<T> extends BeanImpl<T>
+public class SimpleBean<T> extends AbstractBean<T>
 {
    
    private SimpleBeanModel<T> model;
    
-   public SimpleBeanImpl(SimpleBeanModel<T> model, ManagerImpl manager)
+   public SimpleBean(SimpleBeanModel<T> model, ManagerImpl manager)
    {
       super(manager);
       this.model = model;
