@@ -149,6 +149,8 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    
    private boolean isAssignableFrom(Class<?> type, Type[] actualTypeArguments)
    {
+      //TODO: primitive types and wrapper types should be considered equal
+      //TODO: array types should be considered equal only if the element type matches
       return getType().isAssignableFrom(type) && Arrays.equals(getActualTypeArguments(), actualTypeArguments);
    }
    

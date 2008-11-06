@@ -92,9 +92,13 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
    private void initFields()
    {
       this.fields = new HashSet<AnnotatedField<Object>>();
-      for(Field field : clazz.getFields())
+      for(Class c=clazz;c!=Object.class;c=c.getSuperclass())
       {
-         fields.add(new SimpleAnnotatedField<Object>(field));
+         for(Field field : clazz.getDeclaredFields())
+         {
+            if ( !field.isAccessible() ) field.setAccessible(true);
+            fields.add(new SimpleAnnotatedField<Object>(field));
+         }
       }
    }
 
@@ -176,9 +180,13 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
    private void initMethods()
    {
       this.methods = new HashSet<AnnotatedMethod<Object>>();
-      for (Method member : clazz.getDeclaredMethods())
+      for(Class c=clazz;c!=Object.class;c=c.getSuperclass())
       {
-         methods.add(new SimpleAnnotatedMethod<Object>(member));
+         for (Method method : clazz.getDeclaredMethods())
+         {
+            if (!method.isAccessible()) method.setAccessible(true);
+            methods.add(new SimpleAnnotatedMethod<Object>(method));
+         }
       }
    }
    
@@ -226,6 +234,7 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
       for (Constructor<T> constructor : clazz.getDeclaredConstructors())
       {
          AnnotatedConstructor<T> annotatedConstructor = new SimpleAnnotatedConstructor<T>(constructor);
+         if (!constructor.isAccessible()) constructor.setAccessible(true);
          constructors.add(annotatedConstructor);
          constructorsByArgumentMap.put(new HashSet<Class<?>>(Arrays.asList(constructor.getParameterTypes())), annotatedConstructor);
       }
