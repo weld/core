@@ -8,14 +8,17 @@ import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.NonexistentFieldException;
 import javax.webbeans.NullableDependencyException;
+import javax.webbeans.RequestScoped;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.contexts.RequestContext;
 import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.FoxRun;
 import org.jboss.webbeans.test.beans.SpiderNest;
 import org.jboss.webbeans.test.beans.SpiderProducer;
 import org.jboss.webbeans.test.beans.Tuna;
+import org.jboss.webbeans.test.beans.TunaFarm;
 import org.jboss.webbeans.test.beans.broken.BeanWithFinalBoundField;
 import org.jboss.webbeans.test.beans.broken.BeanWithStaticBoundField;
 import org.jboss.webbeans.test.beans.broken.FarmHouse;
@@ -49,7 +52,14 @@ public class InjectionTests extends AbstractTest
    @Test(groups={"injection", "clientProxy"}, expectedExceptions=ContextNotActiveException.class) @SpecAssertion(section="4.3")
    public void testInvokeNormalInjectedWebBeanWhenContextNotActive()
    {
-      
+      SimpleBean<TunaFarm> tunaFarmBean = createSimpleWebBean(TunaFarm.class, manager);
+      Bean<Tuna> tunaBean = createSimpleWebBean(Tuna.class, manager);
+      manager.addBean(tunaBean);
+      TunaFarm tunaFarm = tunaFarmBean.create();
+      assert tunaFarm.tuna != null;
+      RequestContext requestContext = (RequestContext) manager.getContext(RequestScoped.class);
+      requestContext.setActive(false);
+      tunaFarm.tuna.getName();
    }
    
    @Test(groups="injection") @SpecAssertion(section="4.3")

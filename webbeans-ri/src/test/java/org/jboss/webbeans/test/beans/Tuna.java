@@ -8,5 +8,10 @@ import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 @RequestScoped
 public class Tuna
 {
+   
+   public String getName()
+   {
+      return "Ophir";
+   }
 
 }

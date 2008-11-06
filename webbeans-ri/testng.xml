@@ -20,7 +20,7 @@
             <exclude name="interceptors" />
             <exclude name="decorators" />
             <exclude name="servlet" />
-            <exclude name="clientProxy" />
+            
             <exclude name="passivation" />
             <exclude name="enterpriseBeans" />
             <exclude name="removeMethod" />
