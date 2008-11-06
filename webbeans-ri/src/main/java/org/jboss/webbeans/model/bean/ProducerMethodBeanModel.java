@@ -6,6 +6,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Set;
 
+import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -16,7 +17,7 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.util.Reflections;
 
-public class ProducerMethodBeanModel<T> extends AbstractProducerBeanModel<T>
+public class ProducerMethodBeanModel<T> extends AbstractBeanModel<T, Method>
 {
    
    private MethodConstructor<T> constructor;
@@ -92,7 +93,7 @@ public class ProducerMethodBeanModel<T> extends AbstractProducerBeanModel<T>
    {
       if (getAnnotatedItem().isStatic())
       {
-         throw new RuntimeException("Producer method cannot be static " + annotatedMethod);
+         throw new DefinitionException("Producer method cannot be static " + annotatedMethod);
       }
       // TODO Check if declaring class is a WB bean
       if (!getScopeType().equals(Dependent.class) && getAnnotatedItem().isFinal())
@@ -153,7 +154,10 @@ public class ProducerMethodBeanModel<T> extends AbstractProducerBeanModel<T>
    {
       try
       {
-         // TODO Fix this this.type = annotatedMethod.getType();
+         if (getAnnotatedItem() != null)
+         {
+            this.type = getAnnotatedItem().getType();
+         }
       }
       catch (ClassCastException e) 
       {

@@ -86,7 +86,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
    @Test(groups="producerMethod") @SpecAssertion(section="3.4")
    public void testBeanDeclaresMultipleProducerMethods()
    {
-      
+      assert false;
    }
    
    @Test(groups="producerMethod") @SpecAssertion(section="3.4")
