@@ -5,7 +5,7 @@ import static org.jboss.webbeans.test.util.Util.getEmptyAnnotatedType;
 import java.lang.reflect.Method;
 
 import javax.webbeans.Current;
-import javax.webbeans.Dependent;
+import javax.webbeans.DefinitionException;
 
 import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
 import org.jboss.webbeans.introspector.impl.SimpleAnnotatedMethod;
@@ -18,12 +18,9 @@ import org.jboss.webbeans.test.beans.BlackWidow;
 import org.jboss.webbeans.test.beans.DaddyLongLegs;
 import org.jboss.webbeans.test.beans.DeadlyAnimal;
 import org.jboss.webbeans.test.beans.DeadlySpider;
-import org.jboss.webbeans.test.beans.LadybirdSpider;
 import org.jboss.webbeans.test.beans.Spider;
 import org.jboss.webbeans.test.beans.SpiderProducer;
 import org.jboss.webbeans.test.beans.Tarantula;
-import org.jboss.webbeans.test.beans.TrapdoorSpider;
-import org.jboss.webbeans.test.beans.broken.BeanWithFinalProducerMethod;
 import org.jboss.webbeans.test.beans.broken.BeanWithStaticProducerMethod;
 import org.testng.annotations.Test;
 
@@ -40,26 +37,71 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       tarantulaModel.getDeploymentType().equals(AnotherDeploymentType.class);
    }
    
-   @Test(groups="producerMethod") @SpecAssertion(section="3.3")
-   public void testStaticMethod() throws SecurityException, NoSuchMethodException
+   @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
+   public void testStaticMethod() throws Exception
    {
       SimpleBeanModel<BeanWithStaticProducerMethod> model = new SimpleBeanModel<BeanWithStaticProducerMethod>(new SimpleAnnotatedClass<BeanWithStaticProducerMethod>(BeanWithStaticProducerMethod.class), getEmptyAnnotatedType(BeanWithStaticProducerMethod.class), manager);
       manager.getModelManager().addBeanModel(model);
       Method method = BeanWithStaticProducerMethod.class.getMethod("getString");
-      boolean exception = false;
-      try
-      {
-         new ProducerMethodBeanModel<String>(new SimpleAnnotatedMethod<String>(method), manager);
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
+      new ProducerMethodBeanModel<String>(new SimpleAnnotatedMethod<String>(method), manager);
    }
    
-   @Test(groups="producerMethod") @SpecAssertion(section="3.3")
-   public void testApiTypes() throws SecurityException, NoSuchMethodException
+   @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
+   public void testProducerMethodIsNotBusinessMethod() throws Exception
+   {
+      assert false;
+   }
+   
+   
+   @Test(groups="producerMethod") @SpecAssertion(section="3.4")
+   public void testProducerMethodReturnsNullIsDependent()
+   {
+      assert false;
+   }
+   
+   @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
+   public void testProducerMethodReturnsNullIsNotDependent()
+   {
+      
+   }
+   
+   @Test(groups="producerMethod") @SpecAssertion(section="3.4")
+   public void testParameterizedReturnType()
+   {
+      assert false;
+   }
+   
+   @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
+   public void testParameterizedReturnTypeWithWildcard()
+   {
+      assert false;
+   }
+   
+   @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
+   public void testParameterizedReturnTypeWithTypeParameter()
+   {
+      assert false;
+   }
+   
+   @Test(groups="producerMethod") @SpecAssertion(section="3.4")
+   public void testBeanDeclaresMultipleProducerMethods()
+   {
+      
+   }
+   
+   @Test(groups="producerMethod") @SpecAssertion(section="3.4")
+   public void testDefaultBindingType() throws Exception
+   {
+      SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedClass<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
+      manager.getModelManager().addBeanModel(model);
+      Method method = SpiderProducer.class.getMethod("produceTarantula");
+      ProducerMethodBeanModel<Tarantula> tarantulaModel = new ProducerMethodBeanModel<Tarantula>(new SimpleAnnotatedMethod<Tarantula>(method), manager);
+      assert tarantulaModel.getBindingTypes().size() == 1;
+      assert tarantulaModel.getBindingTypes().iterator().next().annotationType().equals(Current.class);
+   }
+   
+   @Test(groups="producerMethod") @SpecAssertion(section="3.4.1")
+   public void testApiTypeForClassReturn() throws Exception
    {
       SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedClass<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
       manager.getModelManager().addBeanModel(model);
@@ -73,19 +115,20 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert !tarantulaModel.getApiTypes().contains(Object.class);
    }
    
-   @Test(groups="producerMethod") @SpecAssertion(section="3.3.1")
-   public void testDefaultBindingType() throws SecurityException, NoSuchMethodException
+   @Test(groups="producerMethod") @SpecAssertion(section="3.4.1")
+   public void testApiTypeForPrimitiveReturn() throws Exception
    {
-      SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedClass<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
-      manager.getModelManager().addBeanModel(model);
-      Method method = SpiderProducer.class.getMethod("produceTarantula");
-      ProducerMethodBeanModel<Tarantula> tarantulaModel = new ProducerMethodBeanModel<Tarantula>(new SimpleAnnotatedMethod<Tarantula>(method), manager);
-      assert tarantulaModel.getBindingTypes().size() == 1;
-      assert tarantulaModel.getBindingTypes().iterator().next().annotationType().equals(Current.class);
+      assert false;
    }
    
-   @Test(groups="producerMethod")
-   public void testBindingType() throws SecurityException, NoSuchMethodException
+   @Test(groups="producerMethod") @SpecAssertion(section="3.4.1")
+   public void testApiTypeForArrayTypeReturn() throws Exception
+   {
+      assert false;
+   }
+   
+   @Test(groups="producerMethod") @SpecAssertion(section="3.4.2")
+   public void testBindingType() throws Exception
    {
       SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedClass<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
       manager.getModelManager().addBeanModel(model);
@@ -95,36 +138,20 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert tarantulaModel.getBindingTypes().iterator().next().annotationType().equals(Tame.class);
    }
    
-   @Test(groups="producerMethod") @SpecAssertion(section="3.3")
-   public void testFinalMethod() throws SecurityException, NoSuchMethodException
+   @Test(groups="producerMethod") @SpecAssertion(section="3.4.2")
+   public void testScopeType() throws Exception
    {
-      SimpleBeanModel<BeanWithFinalProducerMethod> model = new SimpleBeanModel<BeanWithFinalProducerMethod>(new SimpleAnnotatedClass<BeanWithFinalProducerMethod>(BeanWithFinalProducerMethod.class), getEmptyAnnotatedType(BeanWithFinalProducerMethod.class), manager);
-      manager.getModelManager().addBeanModel(model);
-      Method method = BeanWithFinalProducerMethod.class.getMethod("getString");
-      boolean exception = false;
-      try
-      {
-         new ProducerMethodBeanModel<String>(new SimpleAnnotatedMethod<String>(method), manager);     
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
+      assert false;
    }
    
-   @Test(groups="producerMethod") @SpecAssertion(section="3.3")
-   public void testFinalMethodWithDependentScope() throws SecurityException, NoSuchMethodException
+   @Test(groups="producerMethod") @SpecAssertion(section="3.4.2")
+   public void testDeploymentType() throws Exception
    {
-      SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedClass<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
-      manager.getModelManager().addBeanModel(model);
-      Method method = SpiderProducer.class.getMethod("produceTrapdoorSpider");
-      ProducerMethodBeanModel<TrapdoorSpider> trapdoorSpiderModel = new ProducerMethodBeanModel<TrapdoorSpider>(new SimpleAnnotatedMethod<TrapdoorSpider>(method), manager);
-      assert trapdoorSpiderModel.getScopeType().equals(Dependent.class);
+      assert false;
    }
    
-   @Test(groups="producerMethod") @SpecAssertion(section="3.3.6")
-   public void testNamedMethod() throws SecurityException, NoSuchMethodException
+   @Test(groups="producerMethod") @SpecAssertion(section="3.4.2")
+   public void testNamedMethod() throws Exception
    {
       SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedClass<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
       manager.getModelManager().addBeanModel(model);
@@ -133,8 +160,8 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert blackWidowSpiderModel.getName().equals("blackWidow");
    }
    
-   @Test(groups="producerMethod") @SpecAssertion(section="3.3.6")
-   public void testDefaultNamedMethod() throws SecurityException, NoSuchMethodException
+   @Test(groups="producerMethod") @SpecAssertion(section="3.4.2")
+   public void testDefaultNamedMethod() throws Exception
    {
       SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedClass<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
       manager.getModelManager().addBeanModel(model);
@@ -143,14 +170,22 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert daddyLongLegsSpiderModel.getName().equals("produceDaddyLongLegs");
    }
    
-   @Test(groups="producerMethod") @SpecAssertion(section="3.3.6")
-   public void testDefaultNamedJavaBeanMethod() throws SecurityException, NoSuchMethodException
+   @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
+   public void testProducerMethodAnnotatedObserver()
    {
-      SimpleBeanModel<SpiderProducer> model = new SimpleBeanModel<SpiderProducer>(new SimpleAnnotatedClass<SpiderProducer>(SpiderProducer.class), getEmptyAnnotatedType(SpiderProducer.class), manager);
-      manager.getModelManager().addBeanModel(model);
-      Method method = SpiderProducer.class.getMethod("getLadybirdSpider");
-      ProducerMethodBeanModel<LadybirdSpider> ladybirdSpiderModel = new ProducerMethodBeanModel<LadybirdSpider>(new SimpleAnnotatedMethod<LadybirdSpider>(method), manager);
-      assert ladybirdSpiderModel.getName().equals("ladybirdSpider");
+      assert false;
+   }
+   
+   @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
+   public void testProducerMethodWithParameterAnnotatedDisposes()
+   {
+      assert false;
+   }
+   
+   @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
+   public void testProducerMethodWithParameterAnnotatedObserves()
+   {
+      assert false;
    }
    
    @Test(groups="disposalMethod") @SpecAssertion(section="3.3.4")
@@ -213,14 +248,8 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups="producerMethod") @SpecAssertion(section="2.7.2")
+   @Test(groups="producerMethod") @SpecAssertion(section={"2.7.2", "3.4.2"})
    public void testSingleStereotype()
-   {
-	   assert false;
-   }
-   
-   @Test(groups="producerMethod") @SpecAssertion(section="2.7.2")
-   public void testStereotypeOnNonProducerMethod()
    {
 	   assert false;
    }

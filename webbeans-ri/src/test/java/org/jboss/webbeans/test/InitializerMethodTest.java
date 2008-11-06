@@ -74,7 +74,7 @@ public class InitializerMethodTest extends AbstractTest
       assert chickenHutch.chicken != null;
    }
    
-   @Test(groups="initializerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.7.1")
+   @Test(groups="initializerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section={"3.7.1", "3.4.2"})
    public void testInitializerMethodAnnotatedProduces()
    {
       createSimpleWebBean(Pheasant.class, manager);

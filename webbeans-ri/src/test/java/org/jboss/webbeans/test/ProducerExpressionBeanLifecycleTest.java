@@ -5,21 +5,21 @@ import org.testng.annotations.Test;
 public class ProducerExpressionBeanLifecycleTest
 {
 
-   @Test(groups={"beanLifecycle", "producerMethod"}) @SpecAssertion(section="3.4")
+   @Test(groups={"beanLifecycle", "producerMethod", "webbeansxml"}) @SpecAssertion(section="3.4")
    public void testNonDependentProducerExpressionThatReturnsNull()
    {
       // TODO Placeholder
       assert false;
    }
    
-   @Test(groups={"beanLifecycle", "producerMethod"}) @SpecAssertion(section="3.4")
+   @Test(groups={"beanLifecycle", "producerMethod", "webbeansxml"}) @SpecAssertion(section="3.4")
    public void testDependentProducerExpressionThatReturnsNull()
    {
       // TODO Placeholder
       assert false;
    }
    
-   @Test(groups={"beanLifecycle", "producerMethod"}) @SpecAssertion(section="3.4")
+   @Test(groups={"beanLifecycle", "producerMethod", "webbeansxml"}) @SpecAssertion(section="3.4")
    public void testProducerExpressionHasValidRuntimeApiType()
    {
       // TODO Placeholder

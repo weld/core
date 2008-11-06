@@ -94,19 +94,19 @@ public class SimpleBeanModelTest extends AbstractTest
       assert bean.getTypes().contains(DeadlyAnimal.class);
    }
    
-   @Test(groups="producerMethod") @SpecAssertion(section="3.2.4")
+   @Test(groups={"producerMethod", "webbeansxml"}) @SpecAssertion(section="3.2.4")
    public void testBeanDeclaredInXmlIgnoresProducerMethodDeclaredInJava()
    {
       assert false;
    }
    
-   @Test(groups="disposalMethod") @SpecAssertion(section="3.2.4")
+   @Test(groups={"disposalMethod", "webbeansxml"}) @SpecAssertion(section="3.2.4")
    public void testBeanDeclaredInXmlIgnoresDisposalMethodDeclaredInJava()
    {
       assert false;
    }
    
-   @Test(groups="observerMethod") @SpecAssertion(section="3.2.4")
+   @Test(groups={"observerMethod", "webbeansxml"}) @SpecAssertion(section="3.2.4")
    public void testBeanDeclaredInXmlIgnoresObserverMethodDeclaredInJava()
    {
       assert false;
