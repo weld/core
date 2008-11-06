@@ -2,6 +2,7 @@ package org.jboss.webbeans.introspector.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,7 +15,7 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
 public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>
 {
    
-   private static final Type[] actualTypeArgements = new Type[0];
+   private Type[] actualTypeArgements = new Type[0];
    
    private Method method;
    
@@ -25,6 +26,10 @@ public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedMember<T, Method>
    {
       super(buildAnnotationMap(method));
       this.method = method;
+      if (method.getGenericReturnType() instanceof ParameterizedType)
+      {
+         actualTypeArgements = ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments();
+      }
    }
 
    public Method getAnnotatedMethod()

@@ -18,6 +18,7 @@ import org.jboss.webbeans.test.beans.BlackWidow;
 import org.jboss.webbeans.test.beans.DaddyLongLegs;
 import org.jboss.webbeans.test.beans.DeadlyAnimal;
 import org.jboss.webbeans.test.beans.DeadlySpider;
+import org.jboss.webbeans.test.beans.FunnelWeaver;
 import org.jboss.webbeans.test.beans.LadybirdSpider;
 import org.jboss.webbeans.test.beans.Spider;
 import org.jboss.webbeans.test.beans.SpiderProducer;
@@ -49,41 +50,37 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       createProducerModel(String.class, method, manager);
    }
    
-   @Test(groups={"producerMethod", "enterpiseBeans"}, expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
+   @Test(groups={"producerMethod", "enterpriseBeans"}, expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
    public void testProducerMethodIsNotBusinessMethod() throws Exception
    {
       assert false;
    }
    
-   
    @Test(groups="producerMethod") @SpecAssertion(section="3.4")
-   public void testProducerMethodReturnsNullIsDependent()
+   public void testParameterizedReturnType() throws Exception
    {
-      assert false;
+      SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
+      manager.getModelManager().addBeanModel(model);
+      Method method = SpiderProducer.class.getMethod("getFunnelWeaverSpider");
+      createProducerModel(FunnelWeaver.class, method, manager);
    }
    
    @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
-   public void testProducerMethodReturnsNullIsNotDependent()
+   public void testParameterizedReturnTypeWithWildcard() throws Exception
    {
-      
-   }
-   
-   @Test(groups="producerMethod") @SpecAssertion(section="3.4")
-   public void testParameterizedReturnType()
-   {
-      assert false;
+      SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
+      manager.getModelManager().addBeanModel(model);
+      Method method = SpiderProducer.class.getMethod("getAnotherFunnelWeaver");
+      createProducerModel(FunnelWeaver.class, method, manager);
    }
    
    @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
-   public void testParameterizedReturnTypeWithWildcard()
+   public void testParameterizedReturnTypeWithTypeParameter() throws Exception
    {
-      assert false;
-   }
-   
-   @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
-   public void testParameterizedReturnTypeWithTypeParameter()
-   {
-      assert false;
+      SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
+      manager.getModelManager().addBeanModel(model);
+      Method method = SpiderProducer.class.getMethod("getFunnelWeaver");
+      createProducerModel(FunnelWeaver.class, method, manager);
    }
    
    @Test(groups={"producerMethod", "deployment"}) @SpecAssertion(section="3.4")

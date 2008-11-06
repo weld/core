@@ -1,5 +1,7 @@
 package org.jboss.webbeans.test;
 
+import javax.webbeans.DefinitionException;
+
 import org.testng.annotations.Test;
 
 public class ProducerMethodBeanLifecycleTest
@@ -38,6 +40,19 @@ public class ProducerMethodBeanLifecycleTest
    {
       // TODO Placeholder
       assert false;
+   }
+   
+   
+   @Test(groups="producerMethod") @SpecAssertion(section="3.4")
+   public void testProducerMethodReturnsNullIsDependent()
+   {
+      assert false;
+   }
+   
+   @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
+   public void testProducerMethodReturnsNullIsNotDependent()
+   {
+      
    }
    
 }

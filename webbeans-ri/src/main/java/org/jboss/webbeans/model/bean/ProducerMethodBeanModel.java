@@ -110,6 +110,16 @@ public class ProducerMethodBeanModel<T> extends AbstractBeanModel<T, Method>
       {
          throw new DefinitionException("Producer method cannot have parameter annotated @Disposes");
       }
+      else if (getAnnotatedItem().getActualTypeArguments().length > 0)
+      {
+         for (Type type : getAnnotatedItem().getActualTypeArguments())
+         {
+            if (!(type instanceof Class))
+            {
+               throw new DefinitionException("Producer method cannot return type parameterized with type parameter or wildcard");
+            }
+         }
+      }
    }
    
    protected void initRemoveMethod(ManagerImpl container)

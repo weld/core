@@ -69,5 +69,22 @@ public class SpiderProducer
    {
       return ALL_SPIDERS;
    }
+   
+   @Produces public <T> FunnelWeaver<T> getFunnelWeaver()
+   {
+      return new FunnelWeaver<T>();
+   }
+   
+   @Produces public FunnelWeaver<?> getAnotherFunnelWeaver()
+   {
+      return new FunnelWeaver<Object>();
+   }
+   
+   @Produces public FunnelWeaver<Spider> getFunnelWeaverSpider()
+   {
+      return new FunnelWeaver<Spider>();
+   }
+   
+   
 
 }
