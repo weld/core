@@ -8,8 +8,13 @@ public class Generator {
    
    private java.util.Random random = new java.util.Random( System.currentTimeMillis() ); 
    
-   @Produces @Random int next() { 
-      return random.nextInt(100); 
+   java.util.Random getRandom()
+   {
+      return random;
    }
    
+   @Produces @Random int next() { 
+      return getRandom().nextInt(100); 
+   }
+
 } 

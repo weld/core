@@ -22,6 +22,11 @@ public class Tests extends AbstractTest
      manager.addBean(nextBean);
      Game game1 = manager.getInstanceByType(Game.class);
      Game game2 = manager.getInstanceByType(Game.class);
+     assert game1!=game2;
      assert game1.getNumber()!=game2.getNumber();
+     Generator gen1 = manager.getInstanceByType(Generator.class);
+     Generator gen2 = manager.getInstanceByType(Generator.class);
+     assert gen1.getRandom()!=null;
+     assert gen1.getRandom()==gen2.getRandom();
    }
 }
