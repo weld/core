@@ -70,6 +70,11 @@ public class SpiderProducer
       return ALL_SPIDERS;
    }
    
+   @Produces public String[] getStrings()
+   {
+      return new String[0];
+   }
+   
    @Produces public <T> FunnelWeaver<T> getFunnelWeaver()
    {
       return new FunnelWeaver<T>();
@@ -88,6 +93,11 @@ public class SpiderProducer
    @Produces public Spider getNullSpider()
    {
       return null;
+   }
+   
+   @Produces public Spider produceSpiderFromInjection(@Tame Tarantula tarantula) 
+   {
+      return tarantula;
    }
 
 }

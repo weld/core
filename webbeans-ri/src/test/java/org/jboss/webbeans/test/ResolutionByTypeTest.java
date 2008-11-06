@@ -1,7 +1,9 @@
 package org.jboss.webbeans.test;
 
+import static org.jboss.webbeans.test.util.Util.createProducerMethodBean;
 import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -13,6 +15,7 @@ import javax.webbeans.TypeLiteral;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ResolutionManager;
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.injectable.InjectableField;
 import org.jboss.webbeans.test.annotations.Expensive;
@@ -31,6 +34,8 @@ import org.jboss.webbeans.test.beans.ScottishFish;
 import org.jboss.webbeans.test.beans.ScottishFishFarmer;
 import org.jboss.webbeans.test.beans.SeaBass;
 import org.jboss.webbeans.test.beans.Sole;
+import org.jboss.webbeans.test.beans.Spider;
+import org.jboss.webbeans.test.beans.SpiderProducer;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.BindingTypeWithBindingAnnotationMemberAnnotationLiteral;
@@ -206,9 +211,18 @@ public class ResolutionByTypeTest extends AbstractTest
    }
    
    @Test(groups={"resolution", "producerMethod"}) @SpecAssertion(section="4.9.2")
-   public void testResolveByTypeWithArray()
+   public void testResolveByTypeWithArray() throws Exception
    {
-      assert false;
+      SimpleBean<SpiderProducer> spiderProducerBean = createSimpleWebBean(SpiderProducer.class, manager);
+      manager.addBean(spiderProducerBean);
+      Method method = SpiderProducer.class.getMethod("getSpiders");
+      Bean<Spider[]> spidersModel = createProducerMethodBean(Spider[].class, method, manager);
+      manager.addBean(spidersModel);
+      method = SpiderProducer.class.getMethod("getStrings");
+      Bean<String[]> stringModel = createProducerMethodBean(String[].class, method, manager);
+      manager.addBean(stringModel);
+      
+      assert manager.resolveByType(Spider[].class).size() == 1;
    }
    
    @Test @SpecAssertion(section="4.9.2")

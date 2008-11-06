@@ -1,14 +1,19 @@
 package org.jboss.webbeans.test;
 
+import static org.jboss.webbeans.test.util.Util.createProducerMethodBean;
 import static org.jboss.webbeans.test.util.Util.createSimpleModel;
+import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.webbeans.AnnotationLiteral;
 import javax.webbeans.Current;
 
+import org.jboss.webbeans.bean.ProducerMethodBean;
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
@@ -17,9 +22,14 @@ import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.Asynchronous;
 import org.jboss.webbeans.test.annotations.Synchronous;
 import org.jboss.webbeans.test.beans.Antelope;
+import org.jboss.webbeans.test.beans.Barn;
 import org.jboss.webbeans.test.beans.Cat;
 import org.jboss.webbeans.test.beans.Cod;
+import org.jboss.webbeans.test.beans.DefangedTarantula;
 import org.jboss.webbeans.test.beans.Order;
+import org.jboss.webbeans.test.beans.Spider;
+import org.jboss.webbeans.test.beans.SpiderProducer;
+import org.jboss.webbeans.test.beans.Tarantula;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.bindings.AsynchronousAnnotationLiteral;
 import org.jboss.webbeans.util.Reflections;
@@ -36,12 +46,6 @@ public class BindingTypeTest extends AbstractTest
       SimpleBeanModel<Order> order = createSimpleModel(Order.class, manager);
       assert order.getBindingTypes().size() == 1;
       order.getBindingTypes().iterator().next().annotationType().equals(Current.class);
-   }
-
-   @Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="2.3.1")
-   public void testDefaultBindingTypeAssumedAtInjectionPoint() throws Exception
-   {
-      assert false;
    }
 
    @Test(groups="annotationDefinition") @SpecAssertion(section="2.3.2")
@@ -124,9 +128,15 @@ public class BindingTypeTest extends AbstractTest
 
 	
 	@Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="2.3.5") 
-   public void testFieldInjectedFromProducerMethod()
+   public void testFieldInjectedFromProducerMethod() throws Exception
    {
-      assert false;
+	   SimpleBean<SpiderProducer> spiderProducer = createSimpleWebBean(SpiderProducer.class, manager);
+      manager.addBean(spiderProducer);
+      Method method = SpiderProducer.class.getMethod("produceTameTarantula");
+	   manager.addBean(createProducerMethodBean(Tarantula.class, method, manager, spiderProducer));
+      Barn barn = createSimpleWebBean(Barn.class, manager).create();
+      assert barn.petSpider != null;
+      assert barn.petSpider instanceof DefangedTarantula;
    }
 	
 	@Test(groups={"injection", "webbeansxml"}) @SpecAssertion(section="2.3.5") 
@@ -142,9 +152,17 @@ public class BindingTypeTest extends AbstractTest
    }
 	
 	@Test(groups={"injection", "producerMethod"})
-   public void testMethodWithBindingAnnotationsOnParametersAreInjected()
+   public void testMethodWithBindingAnnotationsOnParametersAreInjected() throws Exception
    {
-      assert false;
+	   SimpleBean<SpiderProducer> spiderProducer = createSimpleWebBean(SpiderProducer.class, manager);
+      manager.addBean(spiderProducer);
+      Method method = SpiderProducer.class.getMethod("produceTameTarantula");
+      manager.addBean(createProducerMethodBean(Tarantula.class, method, manager, spiderProducer));
+      method = SpiderProducer.class.getMethod("produceSpiderFromInjection", Tarantula.class);
+      ProducerMethodBean<Spider> spiderBean = createProducerMethodBean(Spider.class, method, manager, spiderProducer);
+      Spider spider = spiderBean.create();
+      assert spider != null;
+      assert spider instanceof DefangedTarantula;
    }
 	
 	@Test(groups={"injection", "webbeansxml"}) @SpecAssertion(section="2.3.6") 

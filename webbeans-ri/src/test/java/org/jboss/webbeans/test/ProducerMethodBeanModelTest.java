@@ -89,7 +89,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups="producerMethod") @SpecAssertion(section="3.4")
+   @Test(groups="producerMethod") @SpecAssertion(section={"3.4", "2.3.1"})
    public void testDefaultBindingType() throws Exception
    {
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);

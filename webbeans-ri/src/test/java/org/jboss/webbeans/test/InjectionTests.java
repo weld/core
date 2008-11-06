@@ -1,6 +1,7 @@
 package org.jboss.webbeans.test;
 
 
+import static org.jboss.webbeans.test.util.Util.createProducerMethodBean;
 import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
 
 import javax.webbeans.ContextNotActiveException;
@@ -15,6 +16,8 @@ import org.jboss.webbeans.test.beans.FoxRun;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.broken.BeanWithFinalBoundField;
 import org.jboss.webbeans.test.beans.broken.BeanWithStaticBoundField;
+import org.jboss.webbeans.test.beans.broken.FarmHouse;
+import org.jboss.webbeans.test.beans.broken.FarmHouseProducer;
 import org.testng.annotations.Test;
 
 @SpecVersion("PDR")
@@ -40,15 +43,17 @@ public class InjectionTests extends AbstractTest
    }
    
    @Test(groups={"injection", "producerMethod"}, expectedExceptions=NullableDependencyException.class) @SpecAssertion(section="4.2")
-   public void testPrimitiveInjectionPointResolvesToNullableWebBean()
+   public void testPrimitiveInjectionPointResolvesToNullableWebBean() throws Exception
    {
-      assert false;
+      Bean<FarmHouse> farmHouseBean = createSimpleWebBean(FarmHouse.class, manager);
+      manager.addBean(createProducerMethodBean(Integer.class, FarmHouseProducer.class.getMethod("getNumberOfBedrooms"), manager));
+      FarmHouse farmHouse = farmHouseBean.create();
    }
    
    @Test(groups={"injection", "clientProxy"}, expectedExceptions=ContextNotActiveException.class) @SpecAssertion(section="4.3")
    public void testInvokeNormalInjectedWebBeanWhenContextNotActive()
    {
-    
+      
    }
    
    @Test(groups="injection") @SpecAssertion(section="4.3")

@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.webbeans.NullableDependencyException;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.injectable.Injectable;
@@ -69,7 +70,18 @@ public class ResolutionManager
    
    private void registerInjectionPoint(Injectable<?, ?> injectable)
    {
-	   resolvedInjectionPoints.put(injectable, retainHighestPrecedenceBeans(injectable.getMatchingBeans(manager.getBeans(), manager.getModelManager()), manager.getEnabledDeploymentTypes())); 
+      Set<Bean<?>> beans = retainHighestPrecedenceBeans(injectable.getMatchingBeans(manager.getBeans(), manager.getModelManager()), manager.getEnabledDeploymentTypes());
+      if (injectable.getType().isPrimitive())
+      {
+         for (Bean<?> bean : beans)
+         {
+            if (bean.isNullable())
+            {
+               throw new NullableDependencyException("Primitive injection points resolves to nullable web bean");
+            }
+         }
+      }
+	   resolvedInjectionPoints.put(injectable, beans); 
    }
    
    public void clear()

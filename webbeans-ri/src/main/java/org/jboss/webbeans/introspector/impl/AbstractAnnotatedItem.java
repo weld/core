@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.Types;
 
 public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
 {
@@ -149,9 +150,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    
    private boolean isAssignableFrom(Class<?> type, Type[] actualTypeArguments)
    {
-      //TODO: primitive types and wrapper types should be considered equal
-      //TODO: array types should be considered equal only if the element type matches
-      return getType().isAssignableFrom(type) && Arrays.equals(getActualTypeArguments(), actualTypeArguments);
+      return Types.boxedType(getType()).isAssignableFrom(Types.boxedType(type)) && Arrays.equals(getActualTypeArguments(), actualTypeArguments);
    }
    
    @Override
