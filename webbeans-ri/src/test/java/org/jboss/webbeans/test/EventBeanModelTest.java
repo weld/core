@@ -92,7 +92,7 @@ public class EventBeanModelTest
    {
       BeanConstructor<EventImpl<DangerCall>, ?> constructor = eventBeanModel.getConstructor();
       assert constructor != null;
-      Event<DangerCall> event = constructor.invoke(manager);
+      Event<DangerCall> event = constructor.invoke(manager, null);
       assert event != null;
    }
 }

@@ -3,12 +3,12 @@ package org.jboss.webbeans.bean;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.model.bean.ProducerMethodBeanModel;
 
-public class ProducerBean<T> extends AbstractBean<T>
+public class ProducerMethodBean<T> extends AbstractBean<T>
 {
    
    private ProducerMethodBeanModel<T> model;
 
-   public ProducerBean(ProducerMethodBeanModel<T> model, ManagerImpl manager)
+   public ProducerMethodBean(ProducerMethodBeanModel<T> model, ManagerImpl manager)
    {
       super(manager);
       this.model = model;
@@ -23,8 +23,7 @@ public class ProducerBean<T> extends AbstractBean<T>
    @Override
    public T create()
    {
-      // TODO Auto-generated method stub
-      return null;
+      return model.getConstructor().invoke(manager, manager.getInstance(model.getDeclaringBean()));
    }
    
 

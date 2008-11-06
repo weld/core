@@ -13,6 +13,7 @@ import javax.webbeans.Disposes;
 import javax.webbeans.Observes;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.injectable.InjectableMethod;
 import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.injectable.MethodConstructor;
@@ -28,16 +29,17 @@ public class ProducerMethodBeanModel<T> extends AbstractBeanModel<T, Method>
    private AnnotatedItem<T, Method> xmlAnnotatedItem;
    private AnnotatedMethod<T> annotatedMethod;
    
-   private BeanModel<?, ?> declaringBean;
+   private AbstractBean<?> declaringBean;
    
    // Cached values
    private String location;
    private Type declaredBeanType;
    
-   public ProducerMethodBeanModel(AnnotatedMethod<T> annotatedMethod, AnnotatedMethod<T> xmlAnnotatedMethod, ManagerImpl manager)
+   public ProducerMethodBeanModel(AnnotatedMethod<T> annotatedMethod, AnnotatedMethod<T> xmlAnnotatedMethod, ManagerImpl manager, AbstractBean<?> declaringBean)
    {
       this.annotatedMethod = annotatedMethod;
       this.xmlAnnotatedItem = xmlAnnotatedMethod;
+      this.declaringBean = declaringBean;
       init(manager);
    }
    
@@ -74,17 +76,8 @@ public class ProducerMethodBeanModel<T> extends AbstractBeanModel<T, Method>
       super.initDeploymentType();
       if (getDeploymentType() == null)
       {
-         if (getDeclaringBean() == null)
-         {
-            initDeclaringBean(manager);
-         }
          deploymentType = declaringBean.getDeploymentType();
       }
-   }
-
-   protected void initDeclaringBean(ManagerImpl container)
-   {
-      declaringBean = container.getModelManager().getBeanModel(getAnnotatedItem().getDelegate().getDeclaringClass());
    }
    
    public MethodConstructor<T> getConstructor()
@@ -236,7 +229,7 @@ public class ProducerMethodBeanModel<T> extends AbstractBeanModel<T, Method>
       return removeMethod;
    }
    
-   public BeanModel<?, ?> getDeclaringBean()
+   public AbstractBean<?> getDeclaringBean()
    {
       return declaringBean;
    }

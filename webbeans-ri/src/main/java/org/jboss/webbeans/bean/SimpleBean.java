@@ -19,7 +19,7 @@ public class SimpleBean<T> extends AbstractBean<T>
    @Override
    public T create()
    {
-      T instance = getInstance();
+      T instance = model.getConstructor().invoke(manager);
       bindDecorators();
       bindInterceptors();
       injectEjbAndCommonFields();

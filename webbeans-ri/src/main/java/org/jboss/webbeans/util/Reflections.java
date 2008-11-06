@@ -248,11 +248,11 @@ public class Reflections
       return type.getTypeParameters().length > 0;
    }
    
-   public static Object invokeAndWrap(Method method, Object instance)
+   public static Object invokeAndWrap(Method method, Object instance, Object... parameters)
    {
       try
       {
-         return method.invoke(instance);
+         return method.invoke(instance, parameters);
       }
       catch (IllegalArgumentException e)
       {

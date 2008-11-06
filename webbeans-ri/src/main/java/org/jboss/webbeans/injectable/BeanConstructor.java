@@ -5,6 +5,6 @@ import org.jboss.webbeans.ManagerImpl;
 public interface BeanConstructor<T, S>
 {
 
-   public T invoke(ManagerImpl manager);
+   public T invoke(ManagerImpl manager, Object instance);
    
 }

@@ -5,7 +5,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bean.ProducerBean;
+import org.jboss.webbeans.bean.AbstractBean;
+import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -42,9 +43,14 @@ public class Util
       return new EnterpriseBeanModel<T>(new SimpleAnnotatedClass<T>(clazz), xmlAnnotatedType, manager);
    }
    
-   public static <T> ProducerBean<T> createProducerMethodBean(Class<T> type, Method method, ManagerImpl manager)
+   public static <T> ProducerMethodBean<T> createProducerMethodBean(Class<T> type, Method method, ManagerImpl manager, AbstractBean<?> declaringBean)
    {
-      return new ProducerBean<T>(createProducerModel(type, method, null, manager), manager);
+      return new ProducerMethodBean<T>(createProducerModel(type, method, null, manager, declaringBean), manager);
+   }
+   
+   public static <T> ProducerMethodBean<T> createProducerMethodBean(Class<T> type, Method method, ManagerImpl manager)
+   {
+      return createProducerMethodBean(type, method, manager, null);
    }
    
    public static <T> ProducerMethodBeanModel<T> createProducerModel(Class<T> type, Method method, ManagerImpl manager)
@@ -52,9 +58,14 @@ public class Util
       return createProducerModel(type, method, null, manager);
    }
    
+   public static <T> ProducerMethodBeanModel<T> createProducerModel(Class<T> type, Method method, AnnotatedMethod<T> xmlAnnotatedMethod, ManagerImpl manager, AbstractBean<?> declaringBean)
+   {
+      return new ProducerMethodBeanModel<T>(new SimpleAnnotatedMethod<T>(method), xmlAnnotatedMethod, manager, declaringBean);
+   }
+   
    public static <T> ProducerMethodBeanModel<T> createProducerModel(Class<T> type, Method method, AnnotatedMethod<T> xmlAnnotatedMethod, ManagerImpl manager)
    {
-      return new ProducerMethodBeanModel<T>(new SimpleAnnotatedMethod<T>(method), xmlAnnotatedMethod, manager);
+      return createProducerModel(type, method, xmlAnnotatedMethod, manager, null);
    }
       
    @Deprecated

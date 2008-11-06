@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.util.Reflections;
 
 public class MethodConstructor<T> extends InjectableMethod<T> implements
       BeanConstructor<T, AnnotatedMethod<T>>
@@ -13,17 +14,10 @@ public class MethodConstructor<T> extends InjectableMethod<T> implements
    {
       super(method);
    }
-
-   @Override
-   public AnnotatedMethod<T> getAnnotatedItem()
-   {
-      return null;
-   }
    
-   public T invoke(ManagerImpl manager)
+   public T invoke(ManagerImpl manager, Object instance)
    {
-      // TODO Auto-generated method stub
-      return null;
+      return (T) Reflections.invokeAndWrap(getAnnotatedItem().getDelegate(), instance, getParameterValues(manager));
    }
 
 }

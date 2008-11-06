@@ -28,4 +28,9 @@ public class EnterpriseConstructor<T> implements BeanConstructor<T, Object>
       }
    }
 
+   public T invoke(ManagerImpl manager, Object instance)
+   {
+      return invoke(manager);
+   }
+
 }

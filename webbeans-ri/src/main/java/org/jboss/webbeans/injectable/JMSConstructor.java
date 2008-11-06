@@ -25,5 +25,10 @@ public class JMSConstructor<T> implements BeanConstructor<T, Object>
       // TODO Auto-generated method stub
       return null;
    }
+   
+   public T invoke(ManagerImpl manager, Object instance)
+   {
+      return invoke(manager);
+   }
 
 }

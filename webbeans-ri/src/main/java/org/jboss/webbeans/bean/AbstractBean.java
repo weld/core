@@ -21,11 +21,6 @@ public abstract class AbstractBean<T> extends Bean<T>
       this.manager = manager;
    }
    
-   protected T getInstance()
-   {
-      return getModel().getConstructor().invoke(manager);
-   }
-   
    protected void bindInterceptors()
    {
       // TODO
