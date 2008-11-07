@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.model.MergedStereotypesModel;
 import org.jboss.webbeans.model.bean.BeanModel;
 
 public abstract class AbstractBean<T> extends Bean<T>
@@ -88,5 +89,10 @@ public abstract class AbstractBean<T> extends Bean<T>
    }
    
    public abstract BeanModel<T, ?> getModel();
+   
+   public MergedStereotypesModel<T, ?> getMergedStereotypes()
+   {
+      return getModel().getMergedStereotypes();
+   }
 
 }

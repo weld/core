@@ -51,7 +51,7 @@ public class Util
    
    public static <T> ProducerMethodBean<T> createProducerMethodBean(Class<T> type, Method method, ManagerImpl manager, AbstractBean<?> declaringBean)
    {
-      return new ProducerMethodBean<T>(createProducerModel(type, method, null, manager, declaringBean), manager);
+      return new ProducerMethodBean<T>(createProducerMethodBeanModel(type, method, null, manager, declaringBean), manager);
    }
    
    public static <T> ProducerMethodBean<T> createProducerMethodBean(Class<T> type, Method method, ManagerImpl manager)
@@ -59,20 +59,20 @@ public class Util
       return createProducerMethodBean(type, method, manager, null);
    }
    
-   public static <T> ProducerMethodBeanModel<T> createProducerModel(Class<T> type, Method method, ManagerImpl manager)
+   private static <T> ProducerMethodBeanModel<T> createProducerMethodBeanModel(Class<T> type, Method method, ManagerImpl manager)
    {
-      return createProducerModel(type, method, null, manager);
+      return createProducerMethodBeanModel(type, method, null, manager);
    }
    
-   public static <T> ProducerMethodBeanModel<T> createProducerModel(Class<T> type, Method method, AnnotatedMethod<T> xmlAnnotatedMethod, ManagerImpl manager, AbstractBean<?> declaringBean)
+   private static <T> ProducerMethodBeanModel<T> createProducerMethodBeanModel(Class<T> type, Method method, AnnotatedMethod<T> xmlAnnotatedMethod, ManagerImpl manager, AbstractBean<?> declaringBean)
    {
       return new ProducerMethodBeanModel<T>(new SimpleAnnotatedMethod<T>(method), xmlAnnotatedMethod, manager, declaringBean);
    }
    
    @Deprecated
-   public static <T> ProducerMethodBeanModel<T> createProducerModel(Class<T> type, Method method, AnnotatedMethod<T> xmlAnnotatedMethod, ManagerImpl manager)
+   public static <T> ProducerMethodBeanModel<T> createProducerMethodBeanModel(Class<T> type, Method method, AnnotatedMethod<T> xmlAnnotatedMethod, ManagerImpl manager)
    {
-      return createProducerModel(type, method, xmlAnnotatedMethod, manager, null);
+      return createProducerMethodBeanModel(type, method, xmlAnnotatedMethod, manager, null);
    }
       
    @Deprecated

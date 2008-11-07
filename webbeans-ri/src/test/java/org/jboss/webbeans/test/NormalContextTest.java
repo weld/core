@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.test.util.Util.createProducerModel;
+import static org.jboss.webbeans.test.util.Util.createProducerMethodBean;
 import static org.jboss.webbeans.test.util.Util.createSimpleModel;
 
 import java.lang.reflect.Method;
@@ -9,9 +9,9 @@ import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 
+import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.contexts.AbstractContext;
 import org.jboss.webbeans.contexts.RequestContext;
-import org.jboss.webbeans.model.bean.ProducerMethodBeanModel;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.beans.SpiderProducer;
 import org.jboss.webbeans.test.beans.Tarantula;
@@ -70,7 +70,8 @@ public class NormalContextTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> producer = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(producer);
       Method nullProducer = SpiderProducer.class.getMethod("produceShelob");  
-      ProducerMethodBeanModel<Tarantula> producerModel = createProducerModel(Tarantula.class, nullProducer, manager);
+      ProducerMethodBean<Tarantula> producerModel = createProducerMethodBean(Tarantula.class, nullProducer, manager);
+      // TODO Fix this
       //Bean<Tarantula> shelobBean = new ProducerBeanImpl<Tarantula>(producerModel, manager);
       //assert context.get(shelobBean, true) == null;
    }

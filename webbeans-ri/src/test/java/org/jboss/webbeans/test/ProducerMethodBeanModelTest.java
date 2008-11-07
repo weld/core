@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.test.util.Util.createProducerModel;
+import static org.jboss.webbeans.test.util.Util.createProducerMethodBean;
 import static org.jboss.webbeans.test.util.Util.createSimpleModel;
 
 import java.lang.reflect.Method;
@@ -9,7 +9,7 @@ import javax.webbeans.Current;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.RequestScoped;
 
-import org.jboss.webbeans.model.bean.ProducerMethodBeanModel;
+import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.Tame;
@@ -37,7 +37,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = SpiderProducer.class.getMethod("produceTameTarantula");
-      ProducerMethodBeanModel<Tarantula> tarantulaModel = createProducerModel(Tarantula.class, method, manager);
+      ProducerMethodBean<Tarantula> tarantulaModel = createProducerMethodBean(Tarantula.class, method, manager);
       tarantulaModel.getDeploymentType().equals(AnotherDeploymentType.class);
    }
    
@@ -47,7 +47,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<BeanWithStaticProducerMethod> model = createSimpleModel(BeanWithStaticProducerMethod.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = BeanWithStaticProducerMethod.class.getMethod("getString");
-      createProducerModel(String.class, method, manager);
+      createProducerMethodBean(String.class, method, manager);
    }
    
    @Test(groups={"producerMethod", "enterpriseBeans"}, expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
@@ -62,7 +62,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = SpiderProducer.class.getMethod("getFunnelWeaverSpider");
-      createProducerModel(FunnelWeaver.class, method, manager);
+      createProducerMethodBean(FunnelWeaver.class, method, manager);
    }
    
    @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
@@ -71,7 +71,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = SpiderProducer.class.getMethod("getAnotherFunnelWeaver");
-      createProducerModel(FunnelWeaver.class, method, manager);
+      createProducerMethodBean(FunnelWeaver.class, method, manager);
    }
    
    @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
@@ -80,7 +80,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = SpiderProducer.class.getMethod("getFunnelWeaver");
-      createProducerModel(FunnelWeaver.class, method, manager);
+      createProducerMethodBean(FunnelWeaver.class, method, manager);
    }
    
    @Test(groups={"producerMethod", "deployment"}) @SpecAssertion(section="3.4")
@@ -95,7 +95,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = SpiderProducer.class.getMethod("produceTarantula");
-      ProducerMethodBeanModel<Tarantula> tarantulaModel = createProducerModel(Tarantula.class, method, manager);
+      ProducerMethodBean<Tarantula> tarantulaModel = createProducerMethodBean(Tarantula.class, method, manager);
       assert tarantulaModel.getBindingTypes().size() == 1;
       assert tarantulaModel.getBindingTypes().iterator().next().annotationType().equals(Current.class);
    }
@@ -106,14 +106,14 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = SpiderProducer.class.getMethod("produceTarantula");
-      ProducerMethodBeanModel<Tarantula> tarantulaModel = createProducerModel(Tarantula.class, method, manager);
-      assert tarantulaModel.getApiTypes().size() == 6;
-      assert tarantulaModel.getApiTypes().contains(Tarantula.class);
-      assert tarantulaModel.getApiTypes().contains(DeadlySpider.class);
-      assert tarantulaModel.getApiTypes().contains(Spider.class);
-      assert tarantulaModel.getApiTypes().contains(Animal.class);
-      assert tarantulaModel.getApiTypes().contains(DeadlyAnimal.class);
-      assert tarantulaModel.getApiTypes().contains(Object.class);
+      ProducerMethodBean<Tarantula> tarantulaModel = createProducerMethodBean(Tarantula.class, method, manager);
+      assert tarantulaModel.getTypes().size() == 6;
+      assert tarantulaModel.getTypes().contains(Tarantula.class);
+      assert tarantulaModel.getTypes().contains(DeadlySpider.class);
+      assert tarantulaModel.getTypes().contains(Spider.class);
+      assert tarantulaModel.getTypes().contains(Animal.class);
+      assert tarantulaModel.getTypes().contains(DeadlyAnimal.class);
+      assert tarantulaModel.getTypes().contains(Object.class);
    }
    
    @Test(groups="producerMethod") @SpecAssertion(section="3.4.1")
@@ -122,10 +122,10 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = SpiderProducer.class.getMethod("makeASpider");
-      ProducerMethodBeanModel<Animal> animalModel = createProducerModel(Animal.class, method, manager);
-      assert animalModel.getApiTypes().size() == 2;
-      assert animalModel.getApiTypes().contains(Animal.class);
-      assert animalModel.getApiTypes().contains(Object.class);
+      ProducerMethodBean<Animal> animalModel = createProducerMethodBean(Animal.class, method, manager);
+      assert animalModel.getTypes().size() == 2;
+      assert animalModel.getTypes().contains(Animal.class);
+      assert animalModel.getTypes().contains(Object.class);
    }
    
    @Test(groups="producerMethod") @SpecAssertion(section="3.4.1")
@@ -134,10 +134,10 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = SpiderProducer.class.getMethod("getWolfSpiderSize");
-      ProducerMethodBeanModel<Integer> intModel = createProducerModel(int.class, method, manager);
-      assert intModel.getApiTypes().size() == 2;
-      assert intModel.getApiTypes().contains(int.class);
-      assert intModel.getApiTypes().contains(Object.class);
+      ProducerMethodBean<Integer> intModel = createProducerMethodBean(int.class, method, manager);
+      assert intModel.getTypes().size() == 2;
+      assert intModel.getTypes().contains(int.class);
+      assert intModel.getTypes().contains(Object.class);
    }
    
    @Test(groups="producerMethod") @SpecAssertion(section="3.4.1")
@@ -146,10 +146,10 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = SpiderProducer.class.getMethod("getSpiders");
-      ProducerMethodBeanModel<Spider[]> spidersModel = createProducerModel(Spider[].class, method, manager);
-      assert spidersModel.getApiTypes().size() == 2;
-      assert spidersModel.getApiTypes().contains(Spider[].class);
-      assert spidersModel.getApiTypes().contains(Object.class);
+      ProducerMethodBean<Spider[]> spidersModel = createProducerMethodBean(Spider[].class, method, manager);
+      assert spidersModel.getTypes().size() == 2;
+      assert spidersModel.getTypes().contains(Spider[].class);
+      assert spidersModel.getTypes().contains(Object.class);
    }
    
    @Test(groups="producerMethod") @SpecAssertion(section="3.4.2")
@@ -158,7 +158,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = SpiderProducer.class.getMethod("produceTameTarantula");
-      ProducerMethodBeanModel<Tarantula> tarantulaModel = createProducerModel(Tarantula.class, method, manager);
+      ProducerMethodBean<Tarantula> tarantulaModel = createProducerMethodBean(Tarantula.class, method, manager);
       assert tarantulaModel.getBindingTypes().size() == 1;
       assert tarantulaModel.getBindingTypes().iterator().next().annotationType().equals(Tame.class);
    }
@@ -169,7 +169,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = SpiderProducer.class.getMethod("produceDaddyLongLegs");
-      ProducerMethodBeanModel<DaddyLongLegs> daddyLongLegsModel = createProducerModel(DaddyLongLegs.class, method, manager);
+      ProducerMethodBean<DaddyLongLegs> daddyLongLegsModel = createProducerMethodBean(DaddyLongLegs.class, method, manager);
       assert daddyLongLegsModel.getScopeType().equals(RequestScoped.class);
       
       // TODO Inherit scope from returned web bean?
@@ -181,7 +181,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = SpiderProducer.class.getMethod("getLadybirdSpider");
-      ProducerMethodBeanModel<LadybirdSpider> ladybirdSpiderModel = createProducerModel(LadybirdSpider.class, method, manager);
+      ProducerMethodBean<LadybirdSpider> ladybirdSpiderModel = createProducerMethodBean(LadybirdSpider.class, method, manager);
       assert ladybirdSpiderModel.getDeploymentType().equals(AnotherDeploymentType.class);
    }
    
@@ -191,7 +191,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = SpiderProducer.class.getMethod("produceBlackWidow");
-      ProducerMethodBeanModel<BlackWidow> blackWidowSpiderModel = createProducerModel(BlackWidow.class, method, manager);
+      ProducerMethodBean<BlackWidow> blackWidowSpiderModel = createProducerMethodBean(BlackWidow.class, method, manager);
       assert blackWidowSpiderModel.getName().equals("blackWidow");
    }
    
@@ -201,7 +201,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = SpiderProducer.class.getMethod("produceDaddyLongLegs");
-      ProducerMethodBeanModel<DaddyLongLegs> daddyLongLegsSpiderModel = createProducerModel(DaddyLongLegs.class, method, manager);
+      ProducerMethodBean<DaddyLongLegs> daddyLongLegsSpiderModel = createProducerMethodBean(DaddyLongLegs.class, method, manager);
       assert daddyLongLegsSpiderModel.getName().equals("produceDaddyLongLegs");
    }
    
@@ -211,7 +211,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<BrokenSpiderProducer> model = createSimpleModel(BrokenSpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = BrokenSpiderProducer.class.getMethod("destroy");
-      createProducerModel(String.class, method, manager);
+      createProducerMethodBean(String.class, method, manager);
    }
    
    @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
@@ -220,7 +220,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<BrokenSpiderProducer> model = createSimpleModel(BrokenSpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = BrokenSpiderProducer.class.getMethod("dispose", String.class);
-      createProducerModel(String.class, method, manager);
+      createProducerMethodBean(String.class, method, manager);
    }
    
    @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
@@ -229,7 +229,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<BrokenSpiderProducer> model = createSimpleModel(BrokenSpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = BrokenSpiderProducer.class.getMethod("observe", String.class);
-      createProducerModel(String.class, method, manager);
+      createProducerMethodBean(String.class, method, manager);
    }
    
    @Test(groups="disposalMethod") @SpecAssertion(section="3.3.4")
@@ -298,7 +298,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       SimpleBeanModel<SpiderProducer> model = createSimpleModel(SpiderProducer.class, manager);
       manager.getModelManager().addBeanModel(model);
       Method method = SpiderProducer.class.getMethod("produceWolfSpider");
-      ProducerMethodBeanModel<WolfSpider> wolfSpiderModel = createProducerModel(WolfSpider.class, method, manager);
+      ProducerMethodBean<WolfSpider> wolfSpiderModel = createProducerMethodBean(WolfSpider.class, method, manager);
       assert wolfSpiderModel.getMergedStereotypes().getRequiredTypes().size() == 1;
       assert wolfSpiderModel.getMergedStereotypes().getRequiredTypes().contains(Animal.class);
       assert wolfSpiderModel.getScopeType().equals(RequestScoped.class);
