@@ -13,6 +13,8 @@ import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.contexts.RequestContext;
+import org.jboss.webbeans.test.beans.Farm;
+import org.jboss.webbeans.test.beans.FarmOffice;
 import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.FoxRun;
 import org.jboss.webbeans.test.beans.SpiderNest;
@@ -47,6 +49,18 @@ public class InjectionTests extends AbstractTest
       Bean<FarmHouse> farmHouseBean = createSimpleWebBean(FarmHouse.class, manager);
       manager.addBean(createProducerMethodBean(Integer.class, FarmHouseProducer.class.getMethod("getNumberOfBedrooms"), manager));
       farmHouseBean.create();
+   }
+   
+   @Test(groups={"injection", "postConstruct"}) @SpecAssertion(section="4.2")
+   public void testPostConstruct() throws Exception
+   {
+      Bean<FarmOffice> farmOfficeBean = createSimpleWebBean(FarmOffice.class, manager);
+      Bean<Farm> farmBean = createSimpleWebBean(Farm.class, manager);
+      manager.addBean(farmOfficeBean);
+      manager.addBean(farmBean);
+      Farm farm = farmBean.create();
+      assert farm.founded!=null;
+      assert farm.initialStaff==20;
    }
    
    @Test(groups={"injection", "clientProxy"}, expectedExceptions=ContextNotActiveException.class) @SpecAssertion(section="4.3")
