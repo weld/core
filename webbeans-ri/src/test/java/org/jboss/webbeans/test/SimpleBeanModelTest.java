@@ -267,7 +267,7 @@ public class SimpleBeanModelTest extends AbstractTest
       assert map.get(Integer.class).contains(new SynchronousAnnotationLiteral());
    }
    
-   @Test(groups="specialization") @SpecAssertion(section="3.2.6")
+   @Test(groups="specializationInherit") @SpecAssertion(section="3.2.6")
    public void testSpecializedClassInheritsBindingTypes()
    {
       SimpleBeanModel<Tractor> bean = createSimpleModel(Tractor.class, manager);
@@ -276,7 +276,7 @@ public class SimpleBeanModelTest extends AbstractTest
       assert bean.getBindingTypes().contains( new AnnotationLiteral<HeavyDuty>() {} );
    }
    
-   @Test(groups="specialization") @SpecAssertion(section="3.2.6")
+   @Test(groups="specializationInherit") @SpecAssertion(section="3.2.6")
    public void testSpecializedClassInheritsName()
    {
       SimpleBeanModel<Tractor> bean = createSimpleModel(Tractor.class, manager);

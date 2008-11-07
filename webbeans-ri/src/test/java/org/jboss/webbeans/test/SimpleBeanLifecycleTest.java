@@ -5,6 +5,8 @@ import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.test.beans.Farm;
+import org.jboss.webbeans.test.beans.FarmOffice;
 import org.jboss.webbeans.test.beans.FishPond;
 import org.jboss.webbeans.test.beans.Goldfish;
 import org.jboss.webbeans.test.beans.RedSnapper;
@@ -53,13 +55,13 @@ public class SimpleBeanLifecycleTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups={"beanLifecycle", "ejb3"}) @SpecAssertion(section="5.3")
+   @Test(groups={"beanLifecycle", "commonAnnotations"}) @SpecAssertion(section="5.3")
    public void testCreateInjectsEjb()
    {
       assert false;
    }
    
-   @Test(groups={"beanLifecycle", "ejb3"}) @SpecAssertion(section="5.3")
+   @Test(groups={"beanLifecycle", "commonAnnotations"}) @SpecAssertion(section="5.3")
    public void testCreateInjectsPersistenceContext()
    {
       assert false;
@@ -71,6 +73,21 @@ public class SimpleBeanLifecycleTest extends AbstractTest
       assert false;
    }
    
+   @Test(groups={"beanLifecycle", "lifecycleCallbacks"}) @SpecAssertion(section="5.3")
+   public void testPostConstructPreDestroy() throws Exception
+   {
+      Bean<FarmOffice> farmOfficeBean = createSimpleWebBean(FarmOffice.class, manager);
+      Bean<Farm> farmBean = createSimpleWebBean(Farm.class, manager);
+      manager.addBean(farmOfficeBean);
+      manager.addBean(farmBean);
+      Farm farm = farmBean.create();
+      assert farm.founded!=null;
+      assert farm.initialStaff==20;
+      assert farm.closed==null;
+      farmBean.destroy(farm);
+      assert farm.closed!=null;
+   }
+   
    @Test(groups="injection") @SpecAssertion(section="5.3")
    public void testCreateInjectsFieldsDeclaredInJava()
    {
@@ -79,12 +96,6 @@ public class SimpleBeanLifecycleTest extends AbstractTest
       manager.addBean(tunaBean);
       TunaFarm tunaFarm = tunaFarmBean.create();
       assert tunaFarm.tuna != null;
-   }
-   
-   @Test(groups={"beanConstruction", "commonAnnotations"}) @SpecAssertion(section="5.3")
-   public void testPostConstructMethodCalled()
-   {
-      assert false;
    }
    
    @Test(groups="injection") 
