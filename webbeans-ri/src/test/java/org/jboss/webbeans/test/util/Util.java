@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractBean;
+import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.introspector.AnnotatedClass;
@@ -23,6 +24,11 @@ public class Util
       return new SimpleBean<T>(createSimpleModel(clazz, manager), manager);
    }
 
+   public static <T> EnterpriseBean<T> createSimpleEnterpriseBean(Class<T> clazz, ManagerImpl manager)
+   {
+      return new EnterpriseBean<T>(createEnterpriseBeanModel(clazz, manager), manager);
+   }
+   
    public static <T> SimpleBeanModel<T> createSimpleModel(Class<T> clazz, ManagerImpl manager)
    {
       return new SimpleBeanModel<T>(new SimpleAnnotatedClass<T>(clazz), null, manager);
