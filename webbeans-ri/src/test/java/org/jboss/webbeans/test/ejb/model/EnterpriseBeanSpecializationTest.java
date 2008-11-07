@@ -3,7 +3,7 @@ package org.jboss.webbeans.test.ejb.model;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.DeploymentException;
 
-import org.jboss.webbeans.model.bean.EnterpriseBeanModel;
+import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
 import org.jboss.webbeans.test.SpecVersion;
@@ -21,13 +21,13 @@ public class EnterpriseBeanSpecializationTest extends AbstractTest
    @SpecAssertion(section = "3.3.6")
    public void testSpecializingBeanInheritsBindingTypes()
    {
-      EnterpriseBeanModel<Hound> hound = Util.createEnterpriseBeanModel(Hound.class, manager);
-      EnterpriseBeanModel<HoundOfBaskerville> houndOfBaskerville = Util.createEnterpriseBeanModel(HoundOfBaskerville.class, manager);
+      EnterpriseBean<Hound> hound = Util.createEnterpriseBean(Hound.class, manager);
+      EnterpriseBean<HoundOfBaskerville> houndOfBaskerville = Util.createEnterpriseBean(HoundOfBaskerville.class, manager);
       assert compareBindingTypesOK(hound, houndOfBaskerville);
    }
 
-   private boolean compareBindingTypesOK(EnterpriseBeanModel<Hound> hound,
-         EnterpriseBeanModel<HoundOfBaskerville> houndOfBaskerville)
+   private boolean compareBindingTypesOK(EnterpriseBean<Hound> hound,
+         EnterpriseBean<HoundOfBaskerville> houndOfBaskerville)
    {
       if (hound.getBindingTypes().size() != houndOfBaskerville.getBindingTypes().size()) {
          return false;
@@ -45,7 +45,7 @@ public class EnterpriseBeanSpecializationTest extends AbstractTest
    @SpecAssertion(section = "3.3.6")
    public void testSpecializingBeanInheritsNameIfAny()
    {
-      EnterpriseBeanModel<HoundOfBaskerville> houndOfBaskerville = Util.createEnterpriseBeanModel(HoundOfBaskerville.class, manager);
+      EnterpriseBean<HoundOfBaskerville> houndOfBaskerville = Util.createEnterpriseBean(HoundOfBaskerville.class, manager);
       assert houndOfBaskerville.getName().equals("Pongo");
    }
 
@@ -82,7 +82,7 @@ public class EnterpriseBeanSpecializationTest extends AbstractTest
    @SpecAssertion(section = "3.3.6")
    public void testAnnotationDefinedSpecializingEnterpriseBeanNotDirectlyExtendingAnnotationDefinedEnterpriseBeanFails()
    {
-      EnterpriseBeanModel<GreaterDane> greaterDane = Util.createEnterpriseBeanModel(GreaterDane.class, manager);
+      EnterpriseBean<GreaterDane> greaterDane = Util.createEnterpriseBean(GreaterDane.class, manager);
    }
 
    @Test(expectedExceptions=DefinitionException.class, groups={"specialization", "enterpriseBeans"})

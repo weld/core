@@ -24,7 +24,7 @@ public class Util
       return new SimpleBean<T>(createSimpleModel(clazz, manager), manager);
    }
 
-   public static <T> EnterpriseBean<T> createSimpleEnterpriseBean(Class<T> clazz, ManagerImpl manager)
+   public static <T> EnterpriseBean<T> createEnterpriseBean(Class<T> clazz, ManagerImpl manager)
    {
       return new EnterpriseBean<T>(createEnterpriseBeanModel(clazz, manager), manager);
    }
@@ -39,12 +39,12 @@ public class Util
       return new SimpleBeanModel<T>(new SimpleAnnotatedClass<T>(clazz), xmlAnnotatedType, manager);
    }
 
-   public static <T> EnterpriseBeanModel<T> createEnterpriseBeanModel(Class<T> clazz, ManagerImpl manager)
+   private static <T> EnterpriseBeanModel<T> createEnterpriseBeanModel(Class<T> clazz, ManagerImpl manager)
    {
       return new EnterpriseBeanModel<T>(new SimpleAnnotatedClass<T>(clazz), null, manager);
    }
 
-   public static <T> EnterpriseBeanModel<T> createEnterpriseBeanModel(Class<T> clazz, AnnotatedClass<T> xmlAnnotatedType, ManagerImpl manager)
+   private static <T> EnterpriseBeanModel<T> createEnterpriseBeanModel(Class<T> clazz, AnnotatedClass<T> xmlAnnotatedType, ManagerImpl manager)
    {
       return new EnterpriseBeanModel<T>(new SimpleAnnotatedClass<T>(clazz), xmlAnnotatedType, manager);
    }

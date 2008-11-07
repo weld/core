@@ -2,7 +2,7 @@ package org.jboss.webbeans.test.ejb.model;
 
 import javax.webbeans.DefinitionException;
 
-import org.jboss.webbeans.model.bean.EnterpriseBeanModel;
+import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
 import org.jboss.webbeans.test.SpecVersion;
@@ -32,84 +32,84 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testStatelessWithDependentScopeOK()
    {
-      EnterpriseBeanModel<Giraffe> giraffe = Util.createEnterpriseBeanModel(Giraffe.class, manager);
+      EnterpriseBean<Giraffe> giraffe = Util.createEnterpriseBean(Giraffe.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testStatelessWithRequestScopeFails()
    {
-      EnterpriseBeanModel<Beagle> beagle = Util.createEnterpriseBeanModel(Beagle.class, manager);
+      EnterpriseBean<Beagle> beagle = Util.createEnterpriseBean(Beagle.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testStatelessWithConversationScopeFails()
    {
-      EnterpriseBeanModel<Boxer> boxer = Util.createEnterpriseBeanModel(Boxer.class, manager);
+      EnterpriseBean<Boxer> boxer = Util.createEnterpriseBean(Boxer.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testStatelessWithSessionScopeFails()
    {
-      EnterpriseBeanModel<Bullmastiff> boxer = Util.createEnterpriseBeanModel(Bullmastiff.class, manager);
+      EnterpriseBean<Bullmastiff> boxer = Util.createEnterpriseBean(Bullmastiff.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testStatelessWithApplicationScopeFails()
    {
-      EnterpriseBeanModel<Dachshund> dachshund = Util.createEnterpriseBeanModel(Dachshund.class, manager);
+      EnterpriseBean<Dachshund> dachshund = Util.createEnterpriseBean(Dachshund.class, manager);
    }
 
    @Test
    @SpecAssertion(section = "3.3")
    public void testSingletonWithDependentScopeOK()
    {
-      EnterpriseBeanModel<GreatDane> greatDane = Util.createEnterpriseBeanModel(GreatDane.class, manager);
+      EnterpriseBean<GreatDane> greatDane = Util.createEnterpriseBean(GreatDane.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testSingletonWithRequestScopeFails()
    {
-      EnterpriseBeanModel<Greyhound> greyhound = Util.createEnterpriseBeanModel(Greyhound.class, manager);
+      EnterpriseBean<Greyhound> greyhound = Util.createEnterpriseBean(Greyhound.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testSingletonWithConversationScopeFails()
    {
-      EnterpriseBeanModel<Husky> husky = Util.createEnterpriseBeanModel(Husky.class, manager);
+      EnterpriseBean<Husky> husky = Util.createEnterpriseBean(Husky.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testSingletonWithSessionScopeFails()
    {
-      EnterpriseBeanModel<IrishTerrier> irishTerrier = Util.createEnterpriseBeanModel(IrishTerrier.class, manager);
+      EnterpriseBean<IrishTerrier> irishTerrier = Util.createEnterpriseBean(IrishTerrier.class, manager);
    }
 
    @Test
    @SpecAssertion(section = "3.3")
    public void testSingletonWithApplicationScopeOK()
    {
-      EnterpriseBeanModel<Laika> laika = Util.createEnterpriseBeanModel(Laika.class, manager);
+      EnterpriseBean<Laika> laika = Util.createEnterpriseBean(Laika.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testEnterpriseBeanInterceptorFails()
    {
-      EnterpriseBeanModel<Pug> pug = Util.createEnterpriseBeanModel(Pug.class, manager);
+      EnterpriseBean<Pug> pug = Util.createEnterpriseBean(Pug.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3")
    public void testEnterpriseBeanDecoratorFails()
    {
-      EnterpriseBeanModel<Pekingese> pekingese = Util.createEnterpriseBeanModel(Pekingese.class, manager);
+      EnterpriseBean<Pekingese> pekingese = Util.createEnterpriseBean(Pekingese.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class, groups = "enterpriseBeans")
@@ -175,8 +175,8 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3.2")
    public void testObjectIsInAPITypes()
    {
-      EnterpriseBeanModel<Laika> laika = Util.createEnterpriseBeanModel(Laika.class, manager);
-      assert laika.getApiTypes().contains(Object.class);
+      EnterpriseBean<Laika> laika = Util.createEnterpriseBean(Laika.class, manager);
+      assert laika.getTypes().contains(Object.class);
    }
 
    @Test(groups="enterpriseBeans")
@@ -204,7 +204,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testMessageDrivenBeansNotOK()
    {
-      EnterpriseBeanModel<Leopard> Leopard = Util.createEnterpriseBeanModel(Leopard.class, manager);
+      EnterpriseBean<Leopard> Leopard = Util.createEnterpriseBean(Leopard.class, manager);
    }
 
    
@@ -212,7 +212,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3.7")
    public void testDefaultName()
    {
-      EnterpriseBeanModel<Pitbull> pitbull = Util.createEnterpriseBeanModel(Pitbull.class, manager);
+      EnterpriseBean<Pitbull> pitbull = Util.createEnterpriseBean(Pitbull.class, manager);
       assert pitbull.getName().equals("pitbull");
    }
    

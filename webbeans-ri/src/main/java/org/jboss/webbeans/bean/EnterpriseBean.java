@@ -58,6 +58,12 @@ public class EnterpriseBean<T> extends AbstractBean<T>
       {
          injectableField.inject(instance, manager);
       }
-   }   
+   }
+   
+   public InjectableMethod<?> getRemoveMethod()
+   {
+      return model.getRemoveMethod();
+      
+   }
 
 }

@@ -1,9 +1,8 @@
 package org.jboss.webbeans.test.ejb.model;
 
 import javax.webbeans.DefinitionException;
-import javax.webbeans.UnremovedException;
 
-import org.jboss.webbeans.model.bean.EnterpriseBeanModel;
+import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
 import org.jboss.webbeans.test.SpecVersion;
@@ -33,42 +32,42 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanWithoutRemoveMethodInDependentScopeOK()
    {
-      EnterpriseBeanModel<Pitbull> pitbull = Util.createEnterpriseBeanModel(Pitbull.class, manager);
+      EnterpriseBean<Pitbull> pitbull = Util.createEnterpriseBean(Pitbull.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanWithoutRemoveMethodInApplicationScopeFails()
    {
-      EnterpriseBeanModel<Poodle> poodle = Util.createEnterpriseBeanModel(Poodle.class, manager);
+      EnterpriseBean<Poodle> poodle = Util.createEnterpriseBean(Poodle.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanWithoutRemoveMethodInSessionScopeFails()
    {
-      EnterpriseBeanModel<Rottweiler> rottweiler = Util.createEnterpriseBeanModel(Rottweiler.class, manager);
+      EnterpriseBean<Rottweiler> rottweiler = Util.createEnterpriseBean(Rottweiler.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanWithoutRemoveMethodInConversationScopeFails()
    {
-      EnterpriseBeanModel<Spitz> spitz = Util.createEnterpriseBeanModel(Spitz.class, manager);
+      EnterpriseBean<Spitz> spitz = Util.createEnterpriseBean(Spitz.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanWithoutRemoveMethodInRequestScopeFails()
    {
-      EnterpriseBeanModel<Saluki> saluki = Util.createEnterpriseBeanModel(Saluki.class, manager);
+      EnterpriseBean<Saluki> saluki = Util.createEnterpriseBean(Saluki.class, manager);
    }
 
    @Test
    @SpecAssertion(section = "3.3.5.1")
    public void testAnnotationDefinedEnterpriseBeanWithoutDestructorUsesRemoveMethodWithoutParamsAsWebBeansRemoveMethod()
    {
-      EnterpriseBeanModel<Armant> whippet = Util.createEnterpriseBeanModel(Armant.class, manager);
+      EnterpriseBean<Armant> whippet = Util.createEnterpriseBean(Armant.class, manager);
       assert whippet.getRemoveMethod().getAnnotatedItem().getDelegate().getName().equals("destroy");
    }
 
@@ -76,7 +75,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = "3.3.5.1")
    public void testAnnotationDefinedEnterpriseBeanWithoutDestructorAndRemoveMethodWithoutParamsHasNoWebBeansRemoveMethod()
    {
-      EnterpriseBeanModel<Laika> laika = Util.createEnterpriseBeanModel(Laika.class, manager);
+      EnterpriseBean<Laika> laika = Util.createEnterpriseBean(Laika.class, manager);
       assert laika.getRemoveMethod() == null;
    }
 
@@ -84,48 +83,48 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = "3.3.5.1")
    public void testEnterpriseBeanWithMultipleDestructorAnnotationsFail()
    {
-      EnterpriseBeanModel<Whippet> whippet = Util.createEnterpriseBeanModel(Whippet.class, manager);
+      EnterpriseBean<Whippet> whippet = Util.createEnterpriseBean(Whippet.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5.1")
    public void testAnnotationDefinedEnterpriseBeanWithDestructorAnnotationOnMethodNotAnEJBRemoveMethodFails()
    {
-      EnterpriseBeanModel<GoldenRetriever> goldenRetriever = Util.createEnterpriseBeanModel(GoldenRetriever.class, manager);
+      EnterpriseBean<GoldenRetriever> goldenRetriever = Util.createEnterpriseBean(GoldenRetriever.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5.1")
    public void testAnnotationDefinedEnterpriseBeanWithDestructorWithDisposesParameterFails()
    {
-      EnterpriseBeanModel<Pumi> pumi = Util.createEnterpriseBeanModel(Pumi.class, manager);
+      EnterpriseBean<Pumi> pumi = Util.createEnterpriseBean(Pumi.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5.1")
    public void testEnterpriseBeanWithInitializerAnnotationOnRemoveMethodFails()
    {
-      EnterpriseBeanModel<JackRussellTerrier> jackRussellTerrier = Util.createEnterpriseBeanModel(JackRussellTerrier.class, manager);
+      EnterpriseBean<JackRussellTerrier> jackRussellTerrier = Util.createEnterpriseBean(JackRussellTerrier.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5.1")
    public void testEnterpriseBeanWithProducerAnnotationOnRemoveMethodFails()
    {
-      EnterpriseBeanModel<RussellTerrier> russellTerrier = Util.createEnterpriseBeanModel(RussellTerrier.class, manager);
+      EnterpriseBean<RussellTerrier> russellTerrier = Util.createEnterpriseBean(RussellTerrier.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5.1")
    public void testEnterpriseBeanWithRemoveMethodTakingObserverAnnotatedParameterFails()
    {
-      EnterpriseBeanModel<Toller> toller = Util.createEnterpriseBeanModel(Toller.class, manager);
+      EnterpriseBean<Toller> toller = Util.createEnterpriseBean(Toller.class, manager);
    }
 
    @Test(expectedExceptions=DefinitionException.class)
    public void testStatelessEnterpriseBeansWithDestructorAnnotationFails() 
    {
-      EnterpriseBeanModel<WelshCorgie> welshCorgie = Util.createEnterpriseBeanModel(WelshCorgie.class, manager);
+      EnterpriseBean<WelshCorgie> welshCorgie = Util.createEnterpriseBean(WelshCorgie.class, manager);
    }
    
    
