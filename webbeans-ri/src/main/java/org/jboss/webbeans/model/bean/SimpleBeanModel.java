@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Initializer;
 
@@ -12,6 +14,7 @@ import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.injectable.SimpleConstructor;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
+import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
 import org.jboss.webbeans.util.LoggerUtil;
@@ -25,6 +28,8 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
    private static Set<Class<?>> NO_ARGUMENTS = Collections.emptySet();
    
    private SimpleConstructor<T> constructor;
+   private AnnotatedMethod<Object> postConstruct;
+   private AnnotatedMethod<Object> preDestroy;
 
    private String location;
    
@@ -47,6 +52,8 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
       initConstructor();
       checkType(getType());
       initInjectionPoints();
+      initPostConstruct();
+      initPreDestroy();
       // TODO Interceptors
    }
    
@@ -78,10 +85,7 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
       log.finest("Found " + initializerAnnotatedConstructors + " constructors annotated with @Initializer for " + getType());
       if (initializerAnnotatedConstructors.size() > 1)
       {
-         if (initializerAnnotatedConstructors.size() > 1)
-         {
-            throw new DefinitionException("Cannot have more than one constructor annotated with @Initializer for " + getType());
-         }
+         throw new DefinitionException("Cannot have more than one constructor annotated with @Initializer for " + getType());
       }
       else if (initializerAnnotatedConstructors.size() == 1)
       {
@@ -89,16 +93,52 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
          log.finest("Exactly one constructor (" + constructor +") annotated with @Initializer defined, using it as the bean constructor for " + getType());
          return;
       }
-         
-      if (getAnnotatedItem().getConstructor(NO_ARGUMENTS) != null)
+      else if (getAnnotatedItem().getConstructor(NO_ARGUMENTS) != null)
       {
          
          this.constructor = new SimpleConstructor<T>(getAnnotatedItem().getConstructor(NO_ARGUMENTS));
          log.finest("Exactly one constructor (" + constructor +") defined, using it as the bean constructor for " + getType());
          return;
       }
-      
-      throw new DefinitionException("Cannot determine constructor to use for " + getType());
+      else {
+         throw new DefinitionException("Cannot determine constructor to use for " + getType());
+      }
+   }
+   
+   protected void initPostConstruct()
+   {
+      Set<AnnotatedMethod<Object>> postConstructMethods = getAnnotatedItem().getAnnotatedMethods(PostConstruct.class);
+      log.finest("Found " + postConstructMethods + " constructors annotated with @Initializer for " + getType());
+      if (postConstructMethods.size() > 1)
+      {
+         //TODO: actually this is wrong, in EJB you can have @PostConstruct methods on the superclass,
+         //      though the Web Beans spec is silent on the issue
+         throw new DefinitionException("Cannot have more than one post construct method annotated with @Initializer for " + getType());
+      }
+      else if (postConstructMethods.size() == 1)
+      {
+         this.postConstruct = postConstructMethods.iterator().next();
+         log.finest("Exactly one post construct method (" + postConstruct +") for " + getType());
+        return;
+      }
+   }
+
+   protected void initPreDestroy()
+   {
+      Set<AnnotatedMethod<Object>> preDestroyMethods = getAnnotatedItem().getAnnotatedMethods(PreDestroy.class);
+      log.finest("Found " + preDestroyMethods + " constructors annotated with @Initializer for " + getType());
+      if (preDestroyMethods.size() > 1)
+      {
+         //TODO: actually this is wrong, in EJB you can have @PreDestroy methods on the superclass,
+         //      though the Web Beans spec is silent on the issue
+         throw new DefinitionException("Cannot have more than one pre destroy method annotated with @Initializer for " + getType());
+      }
+      else if (preDestroyMethods.size() == 1)
+      {
+         this.preDestroy = preDestroyMethods.iterator().next();
+         log.finest("Exactly one post construct method (" + preDestroy +") for " + getType());
+        return;
+      }
    }
 
    public SimpleConstructor<T> getConstructor()
@@ -106,7 +146,17 @@ public class SimpleBeanModel<T> extends AbstractClassBeanModel<T>
       return constructor;
    }
    
+   public AnnotatedMethod<Object> getPostConstruct() 
+   {
+      return postConstruct;
+   }
+   
 
+   public AnnotatedMethod<Object> getPreDestroy() 
+   {
+      return preDestroy;
+   }
+   
    @Override
    public String toString()
    {

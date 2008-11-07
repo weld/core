@@ -3,6 +3,7 @@ package org.jboss.webbeans.bean;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injectable.InjectableField;
 import org.jboss.webbeans.injectable.InjectableMethod;
+import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.model.bean.SimpleBeanModel;
 
 public class SimpleBean<T> extends AbstractBean<T>
@@ -25,9 +26,48 @@ public class SimpleBean<T> extends AbstractBean<T>
       injectEjbAndCommonFields();
       injectBoundFields(instance);
       callInitializers(instance);
+      callPostConstruct(instance);
       return instance;
    }
    
+   @Override
+   public void destroy(T instance)
+   {
+      callPreDestroy(instance);
+   }
+   
+   protected void callPreDestroy(T instance)
+   {
+      AnnotatedMethod<Object> preDestroy = getModel().getPreDestroy();
+      if (preDestroy!=null)
+      {
+         try
+         {
+            preDestroy.getAnnotatedMethod().invoke(instance);
+         }
+         catch (Exception e) 
+         {
+            throw new RuntimeException("Unable to invoke " + preDestroy + " on " + instance, e);
+         }
+     }
+   }
+
+   protected void callPostConstruct(T instance)
+   {
+      AnnotatedMethod<Object> postConstruct = getModel().getPostConstruct();
+      if (postConstruct!=null)
+      {
+         try
+         {
+            postConstruct.getAnnotatedMethod().invoke(instance);
+         }
+         catch (Exception e) 
+         {
+            throw new RuntimeException("Unable to invoke " + postConstruct + " on " + instance, e);
+         }
+      }
+   }
+
    protected void callInitializers(T instance)
    {
       for (InjectableMethod<Object> initializer : model.getInitializerMethods())
