@@ -1,8 +1,8 @@
 package org.jboss.webbeans.injectable;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 import javax.webbeans.manager.Manager;
 
@@ -12,13 +12,13 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
 public abstract class Invokable<T, S>
 {
    
-   private Set<InjectableParameter<Object>> parameters;
+   private List<InjectableParameter<Object>> parameters;
    
    protected Invokable() {}
    
-   public Invokable(Set<AnnotatedParameter<Object>> parameters)
+   public Invokable(List<AnnotatedParameter<Object>> parameters)
    {
-      this.parameters = new HashSet<InjectableParameter<Object>>();
+      this.parameters = new ArrayList<InjectableParameter<Object>>();
       for (AnnotatedParameter<Object> parameter : parameters)
       {
          this.parameters.add(new InjectableParameter<Object>(parameter));
@@ -38,7 +38,7 @@ public abstract class Invokable<T, S>
       return parameterValues;
    }
    
-   public Set<InjectableParameter<Object>> getParameters()
+   public List<InjectableParameter<Object>> getParameters()
    {
       return parameters;
    }

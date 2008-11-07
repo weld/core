@@ -1,6 +1,6 @@
 package org.jboss.webbeans.injectable;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.webbeans.manager.Manager;
 
@@ -23,7 +23,7 @@ public abstract class ForwardingInjectableMethod<T> extends InjectableMethod<T>
    }
    
    @Override
-   public Set<InjectableParameter<Object>> getParameters()
+   public List<InjectableParameter<Object>> getParameters()
    {
       return delegate().getParameters();
    }

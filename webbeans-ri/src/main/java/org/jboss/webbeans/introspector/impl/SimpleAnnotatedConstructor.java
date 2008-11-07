@@ -3,10 +3,10 @@ package org.jboss.webbeans.introspector.impl;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
@@ -18,8 +18,8 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Co
    
    private Constructor<T> constructor;
    
-   private Set<AnnotatedParameter<Object>> parameters;
-   private Map<Class<? extends Annotation>, Set<AnnotatedParameter<Object>>> annotatedParameters;
+   private List<AnnotatedParameter<Object>> parameters;
+   private Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> annotatedParameters;
    
    public SimpleAnnotatedConstructor(Constructor<T> constructor)
    {
@@ -47,7 +47,7 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Co
       return actualTypeArguments;
    }
    
-   public Set<AnnotatedParameter<Object>> getParameters()
+   public List<AnnotatedParameter<Object>> getParameters()
    {
       if (parameters == null)
       {
@@ -58,7 +58,7 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Co
    
    private void initParameters()
    {
-      this.parameters = new HashSet<AnnotatedParameter<Object>>();
+      this.parameters = new ArrayList<AnnotatedParameter<Object>>();
       for (int i = 0; i < constructor.getParameterTypes().length; i++)
       {
          if (constructor.getParameterAnnotations()[i].length > 0)
@@ -76,7 +76,7 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Co
       }
    }
    
-   public Set<AnnotatedParameter<Object>> getAnnotatedMethods(Class<? extends Annotation> annotationType)
+   public List<AnnotatedParameter<Object>> getAnnotatedMethods(Class<? extends Annotation> annotationType)
    {
       if (annotatedParameters == null)
       {
@@ -85,7 +85,7 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Co
        
       if (!annotatedParameters.containsKey(annotationType))
       {
-         return new HashSet<AnnotatedParameter<Object>>();
+         return new ArrayList<AnnotatedParameter<Object>>();
       }
       else
       {
@@ -99,21 +99,21 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Co
       {
          initParameters();
       }
-      annotatedParameters = new HashMap<Class<? extends Annotation>, Set<AnnotatedParameter<Object>>>();
+      annotatedParameters = new HashMap<Class<? extends Annotation>, List<AnnotatedParameter<Object>>>();
       for (AnnotatedParameter<Object> parameter : parameters)
       {
          for (Annotation annotation : parameter.getAnnotations())
          {
             if (!annotatedParameters.containsKey(annotation))
             {
-               annotatedParameters.put(annotation.annotationType(), new HashSet<AnnotatedParameter<Object>>());
+               annotatedParameters.put(annotation.annotationType(), new ArrayList<AnnotatedParameter<Object>>());
             }
             annotatedParameters.get(annotation.annotationType()).add(parameter);
          }
       }
    }
 
-   public Set<AnnotatedParameter<Object>> getAnnotatedParameters(Class<? extends Annotation> annotationType)
+   public List<AnnotatedParameter<Object>> getAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
       if (annotatedParameters == null)
       {
@@ -121,7 +121,7 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Co
       }
       if (!annotatedParameters.containsKey(annotationType))
       {
-         return new HashSet<AnnotatedParameter<Object>>();
+         return new ArrayList<AnnotatedParameter<Object>>();
       }
       return annotatedParameters.get(annotationType);
    }

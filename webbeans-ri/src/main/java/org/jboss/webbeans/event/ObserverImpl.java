@@ -2,7 +2,7 @@ package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 import javax.webbeans.Current;
 import javax.webbeans.Observer;
@@ -15,7 +15,7 @@ import org.jboss.webbeans.injectable.InjectableParameter;
 import org.jboss.webbeans.model.bean.BeanModel;
 
 import com.google.common.collect.ForwardingIterator;
-import com.google.common.collect.ForwardingSet;
+import com.google.common.collect.ForwardingList;
 
 /**
  * <p>
@@ -92,11 +92,11 @@ public class ObserverImpl<T> implements Observer<T>
          {
 
             @Override
-            public Set<InjectableParameter<Object>> getParameters()
+            public List<InjectableParameter<Object>> getParameters()
             {
-               final Set<InjectableParameter<Object>>parameters = super.getParameters();
+               final List<InjectableParameter<Object>>parameters = super.getParameters();
                
-               return new ForwardingSet<InjectableParameter<Object>>()
+               return new ForwardingList<InjectableParameter<Object>>()
                {
 
                   @Override
@@ -143,7 +143,7 @@ public class ObserverImpl<T> implements Observer<T>
                   }
                   
                   @Override
-                  protected Set<InjectableParameter<Object>> delegate()
+                  protected List<InjectableParameter<Object>> delegate()
                   {
                      return parameters;
                   }
