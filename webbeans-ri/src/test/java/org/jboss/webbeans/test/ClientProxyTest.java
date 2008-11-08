@@ -89,7 +89,7 @@ public class ClientProxyTest extends AbstractTest
    public void testProxyCreationDoesImplicitAddBean() {
       Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);
       Tuna tuna = manager.getInstance(tunaBean);
-      assert manager.getBeans().size() == 1;
+      assert manager.getBeans().size() == 2;
    }
 
 }

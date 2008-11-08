@@ -309,7 +309,7 @@ public class ResolutionByTypeTest extends AbstractTest
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
       
-      assert manager.resolveByType(Object.class).size() == 3;
+      assert manager.resolveByType(Object.class).size() == 4;
       assert manager.resolveByType(Object.class).contains(plaiceBean);
       assert manager.resolveByType(Object.class).contains(salmonBean);
       assert manager.resolveByType(Object.class).contains(soleBean);
