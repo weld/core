@@ -3,50 +3,47 @@ package org.jboss.webbeans.ejb;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.webbeans.CreationException;
+import javax.webbeans.Standard;
 import javax.webbeans.manager.EnterpriseBeanLookup;
 
 import org.jboss.webbeans.util.JNDI;
 
-
-public class EjbManager
+@Standard
+public class DefaultEnterpriseBeanLookup implements EnterpriseBeanLookup
 {
-   
-   private Map<Class<?>, EjbMetaData<?>> ejbMetaDataMap = new HashMap<Class<?>, EjbMetaData<?>>();
-   
-   private EnterpriseBeanLookup enterpriseBeanLookup;
-   
-   public EjbManager()
+   public Object lookup(String ejbName)
    {
-      // TODO Write enterpriseBeanLookup instantiation
+      // TODO Auto-generated method stub
+      return null;
    }
-   
+   private Map<String, EjbMetaData<?>> ejbMetaDataMap = new HashMap<String, EjbMetaData<?>>();
+     
    // TODO Should this be static?
    public <T> T lookup(EjbMetaData<T> ejb)
    {
       if (ejb.getEjbLinkJndiName() != null)
       {
-         return (T) JNDI.lookup(ejb.getEjbLinkJndiName(), ejb.getType());
+         return JNDI.lookup(ejb.getEjbLinkJndiName(), ejb.getType());
       }
       try
       {
-         // TODO How is a JNDI lookup failure shown to us?
-         return (T) JNDI.lookup(ejb.getDefaultJndiName(), ejb.getType());
+         return JNDI.lookup(ejb.getDefaultJndiName(), ejb.getType());
       }
       catch (Exception e) 
       {
-         
+         throw new CreationException("could not find the EJB in JNDI", e);
       }
-      return (T) enterpriseBeanLookup.lookup(ejb.getEjbName());
    }
    
    @SuppressWarnings("unchecked")
-   public <T> EjbMetaData<T> getEjbMetaData(Class<? extends T> clazz)
+   public <T> EjbMetaData<T> registerEjbMetaData(Class<? extends T> clazz)
    {
       // TODO replace with an application lookup
       if (!ejbMetaDataMap.containsKey(clazz))
       {
          EjbMetaData<T> ejbMetaData = new EjbMetaData<T>(clazz); 
-         ejbMetaDataMap.put(clazz, ejbMetaData);
+         ejbMetaDataMap.put(ejbMetaData.getEjbName(), ejbMetaData);
          return ejbMetaData;
       }
       else
@@ -55,5 +52,4 @@ public class EjbManager
       }
       
    }
-
 }

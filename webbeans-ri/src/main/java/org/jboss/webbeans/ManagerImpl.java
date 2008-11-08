@@ -28,16 +28,20 @@ import javax.webbeans.manager.InterceptionType;
 import javax.webbeans.manager.Interceptor;
 import javax.webbeans.manager.Manager;
 
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.contexts.ApplicationContext;
 import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.contexts.RequestContext;
 import org.jboss.webbeans.contexts.SessionContext;
-import org.jboss.webbeans.ejb.EjbManager;
+import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
 import org.jboss.webbeans.event.EventBus;
 import org.jboss.webbeans.exceptions.NameResolutionLocation;
 import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
 import org.jboss.webbeans.injectable.Injectable;
 import org.jboss.webbeans.injectable.ResolverInjectable;
+import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
+import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.util.ClientProxy;
 import org.jboss.webbeans.util.ProxyPool;
 import org.jboss.webbeans.util.Reflections;
@@ -76,7 +80,6 @@ public class ManagerImpl implements Manager
 
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
    private ModelManager modelManager;
-   private EjbManager ejbLookupManager;
    private EventBus eventBus;
    private ResolutionManager resolutionManager;
    private ContextMap contextMap;
@@ -90,13 +93,14 @@ public class ManagerImpl implements Manager
       initEnabledDeploymentTypes(null);
       initContexts(null);
       this.modelManager = new ModelManager();
-      this.ejbLookupManager = new EjbManager();
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
       this.eventBus = new EventBus();
       this.resolutionManager = new ResolutionManager(this);
       this.proxyPool = new ProxyPool(this);
       this.decorators = new HashSet<Decorator>();
       this.interceptors = new HashSet<Interceptor>();
+      SimpleAnnotatedClass<DefaultEnterpriseBeanLookup> sc = new SimpleAnnotatedClass<DefaultEnterpriseBeanLookup>(DefaultEnterpriseBeanLookup.class, new HashMap<Class<? extends Annotation>, Annotation>());
+      addBean( new SimpleBean<DefaultEnterpriseBeanLookup>( new SimpleBeanModel<DefaultEnterpriseBeanLookup>(sc, null, this), this ) );
    }
 
    protected void initEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
@@ -170,11 +174,6 @@ public class ManagerImpl implements Manager
    public ModelManager getModelManager()
    {
       return this.modelManager;
-   }
-
-   public EjbManager getEjbManager()
-   {
-      return ejbLookupManager;
    }
 
    public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindingTypes)

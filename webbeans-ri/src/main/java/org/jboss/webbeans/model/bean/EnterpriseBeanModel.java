@@ -79,7 +79,7 @@ public class EnterpriseBeanModel<T> extends AbstractEnterpriseBeanModel<T>
    }
    
    
-// TODO loggigng
+// TODO logging
    protected void initRemoveMethod(ManagerImpl container)
    {
       if (getEjbMetaData().isStateful())

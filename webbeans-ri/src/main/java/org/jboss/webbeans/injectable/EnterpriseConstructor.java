@@ -1,5 +1,7 @@
 package org.jboss.webbeans.injectable;
 
+import javax.webbeans.manager.EnterpriseBeanLookup;
+
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.ejb.EjbMetaData;
 
@@ -20,7 +22,7 @@ public class EnterpriseConstructor<T> implements BeanConstructor<T, Object>
       if (manager instanceof ManagerImpl)
       {
          ManagerImpl containerImpl = (ManagerImpl) manager;
-         return containerImpl.getEjbManager().lookup(ejbMetaData);
+         return (T) containerImpl.getInstanceByType(EnterpriseBeanLookup.class).lookup(ejbMetaData.getEjbName());
       }
       else
       {

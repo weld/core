@@ -28,7 +28,7 @@ public abstract class AbstractEnterpriseBeanModel<T> extends
    protected void init(ManagerImpl container)
    {
       super.init(container);
-      ejbMetaData = container.getEjbManager().getEjbMetaData(getType());
+      ejbMetaData = new EjbMetaData<T>(getType());
       checkEnterpriseBeanTypeAllowed();
       checkEnterpriseScopeAllowed();
       checkConflictingRoles();
