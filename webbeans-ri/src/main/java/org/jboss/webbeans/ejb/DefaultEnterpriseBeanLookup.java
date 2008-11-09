@@ -12,15 +12,14 @@ import org.jboss.webbeans.util.JNDI;
 @Standard
 public class DefaultEnterpriseBeanLookup implements EnterpriseBeanLookup
 {
+   private Map<String, EjbMetaData<?>> ejbMetaDataMap = new HashMap<String, EjbMetaData<?>>();
+   
    public Object lookup(String ejbName)
    {
-      // TODO Auto-generated method stub
-      return null;
+      return lookup( ejbMetaDataMap.get(ejbName) );
    }
-   private Map<String, EjbMetaData<?>> ejbMetaDataMap = new HashMap<String, EjbMetaData<?>>();
-     
-   // TODO Should this be static?
-   public <T> T lookup(EjbMetaData<T> ejb)
+   
+   public static <T> T lookup(EjbMetaData<T> ejb)
    {
       if (ejb.getEjbLinkJndiName() != null)
       {
@@ -36,20 +35,11 @@ public class DefaultEnterpriseBeanLookup implements EnterpriseBeanLookup
       }
    }
    
-   @SuppressWarnings("unchecked")
+   //TODO: this method needs to get called at startup
    public <T> EjbMetaData<T> registerEjbMetaData(Class<? extends T> clazz)
    {
-      // TODO replace with an application lookup
-      if (!ejbMetaDataMap.containsKey(clazz))
-      {
-         EjbMetaData<T> ejbMetaData = new EjbMetaData<T>(clazz); 
-         ejbMetaDataMap.put(ejbMetaData.getEjbName(), ejbMetaData);
-         return ejbMetaData;
-      }
-      else
-      {
-         return (EjbMetaData<T>) ejbMetaDataMap.get(clazz);
-      }
-      
+      EjbMetaData<T> ejbMetaData = new EjbMetaData<T>(clazz); 
+      ejbMetaDataMap.put(ejbMetaData.getEjbName(), ejbMetaData);
+      return ejbMetaData;
    }
 }
