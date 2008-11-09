@@ -26,8 +26,8 @@ public class Tests extends AbstractTest
 
    private void setupGameGenerator() throws NoSuchMethodException
    {
-      SimpleBean<Game> gameBean = Util.createSimpleWebBean(Game.class, manager);
-        SimpleBean<Generator> generatorBean = Util.createSimpleWebBean(Generator.class, manager);
+      SimpleBean<Game> gameBean = Util.createSimpleBean(Game.class, manager);
+        SimpleBean<Generator> generatorBean = Util.createSimpleBean(Generator.class, manager);
         Method method = Generator.class.getDeclaredMethod("next");
         method.setAccessible(true);
         ProducerMethodBean<Integer> nextBean = Util.createProducerMethodBean(int.class, method, manager, generatorBean);
@@ -65,10 +65,10 @@ public class Tests extends AbstractTest
    
    private void setupTextTranslator()
    {
-      SimpleBean<SentenceParser> spBean = Util.createSimpleWebBean(SentenceParser.class, manager);
-      SimpleBean<SentenceTranslator> stBean = Util.createSimpleWebBean(SentenceTranslator.class, manager);
-      SimpleBean<MockSentenceTranslator> mstBean = Util.createSimpleWebBean(MockSentenceTranslator.class, manager);
-      SimpleBean<TextTranslator> ttBean = Util.createSimpleWebBean(TextTranslator.class, manager);
+      SimpleBean<SentenceParser> spBean = Util.createSimpleBean(SentenceParser.class, manager);
+      SimpleBean<SentenceTranslator> stBean = Util.createSimpleBean(SentenceTranslator.class, manager);
+      SimpleBean<MockSentenceTranslator> mstBean = Util.createSimpleBean(MockSentenceTranslator.class, manager);
+      SimpleBean<TextTranslator> ttBean = Util.createSimpleBean(TextTranslator.class, manager);
       
       manager.addBean(spBean);
       manager.addBean(stBean);

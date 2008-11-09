@@ -1,86 +1,28 @@
 package org.jboss.webbeans.test.util;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bean.AbstractBean;
+import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedMethod;
-import org.jboss.webbeans.model.bean.EnterpriseBeanModel;
-import org.jboss.webbeans.model.bean.ProducerMethodBeanModel;
-import org.jboss.webbeans.model.bean.SimpleBeanModel;
 
 public class Util
 {
-   public static <T> SimpleBean<T> createSimpleWebBean(Class<T> clazz, ManagerImpl manager)
+   public static <T> SimpleBean<T> createSimpleBean(Class<T> clazz, ManagerImpl manager)
    {
-      return new SimpleBean<T>(createSimpleModel(clazz, manager), manager);
+      return new SimpleBean<T>(clazz, manager);
    }
 
    public static <T> EnterpriseBean<T> createEnterpriseBean(Class<T> clazz, ManagerImpl manager)
    {
-      return new EnterpriseBean<T>(createEnterpriseBeanModel(clazz, manager), manager);
+      return new EnterpriseBean<T>(clazz, manager);
    }
    
-   public static <T> SimpleBeanModel<T> createSimpleModel(Class<T> clazz, ManagerImpl manager)
+   public static <T> ProducerMethodBean<T> createProducerMethodBean(Class<T> type, Method method, ManagerImpl manager, AbstractClassBean<?> declaringBean)
    {
-      return new SimpleBeanModel<T>(new SimpleAnnotatedClass<T>(clazz), null, manager);
+      return new ProducerMethodBean<T>(method, declaringBean, manager);
    }
 
-   public static <T> SimpleBeanModel<T> createSimpleModel(Class<T> clazz, AnnotatedClass<T> xmlAnnotatedType, ManagerImpl manager)
-   {
-      return new SimpleBeanModel<T>(new SimpleAnnotatedClass<T>(clazz), xmlAnnotatedType, manager);
-   }
-
-   private static <T> EnterpriseBeanModel<T> createEnterpriseBeanModel(Class<T> clazz, ManagerImpl manager)
-   {
-      return new EnterpriseBeanModel<T>(new SimpleAnnotatedClass<T>(clazz), null, manager);
-   }
-
-   private static <T> EnterpriseBeanModel<T> createEnterpriseBeanModel(Class<T> clazz, AnnotatedClass<T> xmlAnnotatedType, ManagerImpl manager)
-   {
-      return new EnterpriseBeanModel<T>(new SimpleAnnotatedClass<T>(clazz), xmlAnnotatedType, manager);
-   }
-   
-   public static <T> ProducerMethodBean<T> createProducerMethodBean(Class<T> type, Method method, ManagerImpl manager, AbstractBean<?> declaringBean)
-   {
-      return new ProducerMethodBean<T>(createProducerMethodBeanModel(type, method, null, manager, declaringBean), manager);
-   }
-   
-   public static <T> ProducerMethodBean<T> createProducerMethodBean(Class<T> type, Method method, ManagerImpl manager)
-   {
-      return createProducerMethodBean(type, method, manager, null);
-   }
-   
-   private static <T> ProducerMethodBeanModel<T> createProducerMethodBeanModel(Class<T> type, Method method, ManagerImpl manager)
-   {
-      return createProducerMethodBeanModel(type, method, null, manager);
-   }
-   
-   private static <T> ProducerMethodBeanModel<T> createProducerMethodBeanModel(Class<T> type, Method method, AnnotatedMethod<T> xmlAnnotatedMethod, ManagerImpl manager, AbstractBean<?> declaringBean)
-   {
-      return new ProducerMethodBeanModel<T>(new SimpleAnnotatedMethod<T>(method), xmlAnnotatedMethod, manager, declaringBean);
-   }
-   
-   @Deprecated
-   public static <T> ProducerMethodBeanModel<T> createProducerMethodBeanModel(Class<T> type, Method method, AnnotatedMethod<T> xmlAnnotatedMethod, ManagerImpl manager)
-   {
-      return createProducerMethodBeanModel(type, method, xmlAnnotatedMethod, manager, null);
-   }
-      
-   @Deprecated
-   public static <T> AnnotatedClass<T> getEmptyAnnotatedType(Class<T> type)
-   {
-      return new SimpleAnnotatedClass<T>(type, new HashMap<Class<? extends Annotation>, Annotation>());
-   }
-
-   
-   
 }

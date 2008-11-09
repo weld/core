@@ -68,7 +68,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    public void testAnnotationDefinedEnterpriseBeanWithoutDestructorUsesRemoveMethodWithoutParamsAsWebBeansRemoveMethod()
    {
       EnterpriseBean<Armant> whippet = Util.createEnterpriseBean(Armant.class, manager);
-      assert whippet.getRemoveMethod().getAnnotatedItem().getDelegate().getName().equals("destroy");
+      assert whippet.getRemoveMethod().getAnnotatedItem().getName().equals("destroy");
    }
 
    @Test
