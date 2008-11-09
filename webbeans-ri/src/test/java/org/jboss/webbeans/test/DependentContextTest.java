@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test;
 
 import static org.jboss.webbeans.test.util.Util.createProducerMethodBean;
-import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
+import static org.jboss.webbeans.test.util.Util.createSimpleBean;
 
 import java.lang.reflect.Method;
 
@@ -25,8 +25,8 @@ public class DependentContextTest extends AbstractTest
    @Test(groups={"contexts", "injection"}) @SpecAssertion(section="8.3")
    public void testInstanceNotSharedBetweenInjectionPoints()
    {
-      Bean<FoxRun> foxRunBean = createSimpleWebBean(FoxRun.class, manager);
-      Bean<Fox> foxBean = createSimpleWebBean(Fox.class, manager);
+      Bean<FoxRun> foxRunBean = createSimpleBean(FoxRun.class, manager);
+      Bean<Fox> foxBean = createSimpleBean(Fox.class, manager);
       manager.addBean(foxBean);
       FoxRun foxRun = foxRunBean.create();
       assert !foxRun.fox.equals(foxRun.anotherFox);
@@ -41,7 +41,7 @@ public class DependentContextTest extends AbstractTest
    @Test(groups={"contexts", "producerMethod"}) @SpecAssertion(section="8.3")
    public void testInstanceUsedForProducerMethodNotShared() throws Exception
    {
-      SimpleBean<SpiderProducer> spiderProducer = createSimpleWebBean(SpiderProducer.class, manager); 
+      SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class, manager); 
       manager.addBean(spiderProducer);
       Method method = SpiderProducer.class.getMethod("produceTarantula");
       ProducerMethodBean<Tarantula> tarantulaBean = createProducerMethodBean(Tarantula.class, method, manager, spiderProducer);
@@ -61,7 +61,7 @@ public class DependentContextTest extends AbstractTest
    @Test(groups="contexts") @SpecAssertion(section="8.3")
    public void testContextGetWithCreateTrueReturnsNewInstance()
    {
-      Bean<Fox> foxBean = createSimpleWebBean(Fox.class, manager);
+      Bean<Fox> foxBean = createSimpleBean(Fox.class, manager);
       manager.addBean(foxBean);
       DependentContext context = new DependentContext();
       context.setActive(true);
@@ -72,7 +72,7 @@ public class DependentContextTest extends AbstractTest
    @Test(groups="contexts") @SpecAssertion(section="8.3")
    public void testContextGetWithCreateFalseReturnsNull()
    {
-      Bean<Fox> foxBean = createSimpleWebBean(Fox.class, manager);
+      Bean<Fox> foxBean = createSimpleBean(Fox.class, manager);
       manager.addBean(foxBean);
       DependentContext context = new DependentContext();
       context.setActive(true);
@@ -102,8 +102,8 @@ public class DependentContextTest extends AbstractTest
    public void testContextIsActiveDuringBeanCreation()
    {
       // Slightly roundabout, but I can't see a better way to test atm
-      Bean<FoxRun> foxRunBean = createSimpleWebBean(FoxRun.class, manager);
-      Bean<Fox> foxBean = createSimpleWebBean(Fox.class, manager);
+      Bean<FoxRun> foxRunBean = createSimpleBean(FoxRun.class, manager);
+      Bean<Fox> foxBean = createSimpleBean(Fox.class, manager);
       manager.addBean(foxBean);
       FoxRun foxRun = foxRunBean.create();
       assert foxRun.fox != null;
@@ -118,8 +118,8 @@ public class DependentContextTest extends AbstractTest
    @Test(groups={"contexts", "injection"}) @SpecAssertion(section="8.3")
    public void testContextIsActiveDuringInjection()
    {
-      Bean<FoxRun> foxRunBean = createSimpleWebBean(FoxRun.class, manager);
-      Bean<Fox> foxBean = createSimpleWebBean(Fox.class, manager);
+      Bean<FoxRun> foxRunBean = createSimpleBean(FoxRun.class, manager);
+      Bean<Fox> foxBean = createSimpleBean(Fox.class, manager);
       manager.addBean(foxBean);
       FoxRun foxRun = foxRunBean.create();
       assert foxRun.fox != null;

@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test;
 
 import static org.jboss.webbeans.test.util.Util.createProducerMethodBean;
-import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
+import static org.jboss.webbeans.test.util.Util.createSimpleBean;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import javax.webbeans.manager.Bean;
 import org.jboss.webbeans.ResolutionManager;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
-import org.jboss.webbeans.injectable.InjectableField;
+import org.jboss.webbeans.introspector.impl.InjectableField;
 import org.jboss.webbeans.test.annotations.Expensive;
 import org.jboss.webbeans.test.annotations.Whitefish;
 import org.jboss.webbeans.test.beans.Animal;
@@ -62,7 +62,7 @@ public class ResolutionByTypeTest extends AbstractTest
    public void testSingleApiTypeWithCurrent() throws Exception
    {
       InjectableField<Tuna> tunaField = new InjectableField<Tuna>(FishFarm.class.getDeclaredField("tuna"));
-      Bean<Tuna> tunaBean = createSimpleWebBean(Tuna.class, manager);
+      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
       List<Bean<?>> beans = new ArrayList<Bean<?>>();
       beans.add(tunaBean);
       Set<Bean<?>> possibleTargets = tunaField.getMatchingBeans(beans, manager.getModelManager());
@@ -86,9 +86,9 @@ public class ResolutionByTypeTest extends AbstractTest
    public void testOneBindingType() throws Exception
    {
       InjectableField<ScottishFish> whiteScottishFishField = new InjectableField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"));
-      Bean<Cod> codBean = createSimpleWebBean(Cod.class, manager);
-      Bean<Salmon> salmonBean = createSimpleWebBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleWebBean(Sole.class, manager);
+      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
+      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
       
       List<Bean<?>> beans = new ArrayList<Bean<?>>();
       beans.add(codBean);
@@ -105,9 +105,9 @@ public class ResolutionByTypeTest extends AbstractTest
    {
       InjectableField<Animal> whiteChunkyFishField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("realChunkyWhiteFish"));
       
-      Bean<Cod> codBean = createSimpleWebBean(Cod.class, manager);
-      Bean<Salmon> salmonBean = createSimpleWebBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleWebBean(Sole.class, manager);
+      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
+      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
       
       List<Bean<?>> beans = new ArrayList<Bean<?>>();
       beans.add(codBean);
@@ -122,8 +122,8 @@ public class ResolutionByTypeTest extends AbstractTest
    public void testMultipleApiTypeWithCurrent() throws Exception
    {
       InjectableField<Animal> animalField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("animal"));
-      Bean<SeaBass> seaBassBean = createSimpleWebBean(SeaBass.class, manager);
-      Bean<Haddock> haddockBean = createSimpleWebBean(Haddock.class, manager);
+      Bean<SeaBass> seaBassBean = createSimpleBean(SeaBass.class, manager);
+      Bean<Haddock> haddockBean = createSimpleBean(Haddock.class, manager);
       List<Bean<?>> beans = new ArrayList<Bean<?>>();
       beans.add(seaBassBean);
       beans.add(haddockBean);
@@ -136,10 +136,10 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test(groups="resolution") @SpecAssertion(section={"4.9.2", "4.9.4"})
    public void testResolveByType() throws Exception
    {
-      Bean<Tuna> tunaBean = createSimpleWebBean(Tuna.class, manager);
-      Bean<Salmon> salmonBean = createSimpleWebBean(Salmon.class, manager);
-      Bean<SeaBass> seaBassBean = createSimpleWebBean(SeaBass.class, manager);
-      Bean<Haddock> haddockBean = createSimpleWebBean(Haddock.class, manager);
+      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
+      Bean<SeaBass> seaBassBean = createSimpleBean(SeaBass.class, manager);
+      Bean<Haddock> haddockBean = createSimpleBean(Haddock.class, manager);
       
       manager.addBean(tunaBean);
       manager.addBean(salmonBean);
@@ -161,9 +161,9 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test(groups="injection") @SpecAssertion(section="2.3.5") 
    public void testAllBindingTypesSpecifiedForResolutionMustAppearOnWebBean()
    {
-      Bean<Cod> codBean = createSimpleWebBean(Cod.class, manager);
-      Bean<Salmon> salmonBean = createSimpleWebBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleWebBean(Sole.class, manager);
+      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
+      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
       
       manager.addBean(codBean);
       manager.addBean(salmonBean);
@@ -196,8 +196,8 @@ public class ResolutionByTypeTest extends AbstractTest
    {
       InjectableField<Farmer<ScottishFish>> scottishFishFarmerField = new InjectableField<Farmer<ScottishFish>>(FishFarm.class.getDeclaredField("scottishFishFarmer"));
       
-      Bean<ScottishFishFarmer> scottishFishFarmerBean = createSimpleWebBean(ScottishFishFarmer.class, manager);
-      Bean<AnimalFarmer> farmerBean = createSimpleWebBean(AnimalFarmer.class, manager);
+      Bean<ScottishFishFarmer> scottishFishFarmerBean = createSimpleBean(ScottishFishFarmer.class, manager);
+      Bean<AnimalFarmer> farmerBean = createSimpleBean(AnimalFarmer.class, manager);
       
       manager.addBean(scottishFishFarmerBean);
       manager.addBean(farmerBean);
@@ -213,13 +213,13 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test(groups={"resolution", "producerMethod"}) @SpecAssertion(section="4.9.2")
    public void testResolveByTypeWithArray() throws Exception
    {
-      SimpleBean<SpiderProducer> spiderProducerBean = createSimpleWebBean(SpiderProducer.class, manager);
+      SimpleBean<SpiderProducer> spiderProducerBean = createSimpleBean(SpiderProducer.class, manager);
       manager.addBean(spiderProducerBean);
       Method method = SpiderProducer.class.getMethod("getSpiders");
-      Bean<Spider[]> spidersModel = createProducerMethodBean(Spider[].class, method, manager);
+      Bean<Spider[]> spidersModel = createProducerMethodBean(Spider[].class, method, manager, spiderProducerBean);
       manager.addBean(spidersModel);
       method = SpiderProducer.class.getMethod("getStrings");
-      Bean<String[]> stringModel = createProducerMethodBean(String[].class, method, manager);
+      Bean<String[]> stringModel = createProducerMethodBean(String[].class, method, manager, spiderProducerBean);
       manager.addBean(stringModel);
       
       assert manager.resolveByType(Spider[].class).size() == 1;
@@ -229,9 +229,9 @@ public class ResolutionByTypeTest extends AbstractTest
    public void testOnlyHighestEnabledPreecedenceWebBeansResolved() throws Exception
    {
       InjectableField<Animal> whiteFishField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("whiteFish"));
-      Bean<Cod> codBean = createSimpleWebBean(Cod.class, manager);
-      Bean<Sole> soleBean = createSimpleWebBean(Sole.class, manager);
-      Bean<Plaice> plaiceBean = createSimpleWebBean(Plaice.class, manager);
+      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
+      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
+      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class, manager);
       
       
       manager.addBean(plaiceBean);
@@ -251,9 +251,9 @@ public class ResolutionByTypeTest extends AbstractTest
    public void testResolveByTypeWithNonBindingMembers() throws Exception
    {
       InjectableField<Animal> veryExpensiveWhitefishField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("veryExpensiveWhitefish"));
-      Bean<Halibut> halibutBean = createSimpleWebBean(Halibut.class, manager);
-      Bean<RoundWhitefish> roundWhiteFishBean = createSimpleWebBean(RoundWhitefish.class, manager);
-      Bean<Sole> soleBean = createSimpleWebBean(Sole.class, manager);
+      Bean<Halibut> halibutBean = createSimpleBean(Halibut.class, manager);
+      Bean<RoundWhitefish> roundWhiteFishBean = createSimpleBean(RoundWhitefish.class, manager);
+      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
       manager.addBean(halibutBean);
       manager.addBean(roundWhiteFishBean);
       manager.addBean(soleBean);
@@ -285,9 +285,9 @@ public class ResolutionByTypeTest extends AbstractTest
    public void testNoWebBeansFound() throws Exception
    {
       InjectableField<ScottishFish> whiteScottishFishField = new InjectableField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"));
-      Bean<Salmon> salmonBean = createSimpleWebBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleWebBean(Sole.class, manager);
-      Bean<Plaice> plaiceBean = createSimpleWebBean(Plaice.class, manager);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
+      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
+      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class, manager);
       manager.addBean(plaiceBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
@@ -302,9 +302,9 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test(groups="resolution") @SpecAssertion(section="4.9.2")
    public void testResolveObject() throws Exception
    {
-      Bean<Salmon> salmonBean = createSimpleWebBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleWebBean(Sole.class, manager);
-      Bean<Plaice> plaiceBean = createSimpleWebBean(Plaice.class, manager);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
+      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
+      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class, manager);
       manager.addBean(plaiceBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);

@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
+import static org.jboss.webbeans.test.util.Util.createSimpleBean;
 
 import javax.webbeans.manager.Bean;
 
@@ -39,13 +39,13 @@ public class ResolutionByNameTest extends AbstractTest
    public void testNamedBasedResolution()
    {
       
-      Bean<Tuna> tunaBean = createSimpleWebBean(Tuna.class, manager);
-      Bean<Cod> codBean = createSimpleWebBean(Cod.class, manager);
-      Bean<Salmon> salmonBean = createSimpleWebBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleWebBean(Sole.class, manager);
-      Bean<SeaBass> seaBassBean = createSimpleWebBean(SeaBass.class, manager);
-      Bean<Haddock> haddockBean = createSimpleWebBean(Haddock.class, manager);
-      Bean<Plaice> plaiceBean = createSimpleWebBean(Plaice.class, manager);
+      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
+      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
+      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
+      Bean<SeaBass> seaBassBean = createSimpleBean(SeaBass.class, manager);
+      Bean<Haddock> haddockBean = createSimpleBean(Haddock.class, manager);
+      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class, manager);
       
       manager.addBean(tunaBean);
       manager.addBean(codBean);
@@ -70,8 +70,8 @@ public class ResolutionByNameTest extends AbstractTest
    @Test(groups="resolution") @SpecAssertion(section="4.10.1")
    public void testNoWebBeansFound() throws Exception
    {
-      Bean<Cod> codBean = createSimpleWebBean(Cod.class, manager);
-      Bean<Salmon> salmonBean = createSimpleWebBean(Salmon.class, manager);
+      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
       
       manager.addBean(codBean);
       manager.addBean(salmonBean);

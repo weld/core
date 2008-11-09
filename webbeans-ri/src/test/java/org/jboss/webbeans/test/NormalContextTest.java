@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test;
 
 import static org.jboss.webbeans.test.util.Util.createProducerMethodBean;
-import static org.jboss.webbeans.test.util.Util.createSimpleModel;
+import static org.jboss.webbeans.test.util.Util.createSimpleBean;
 
 import java.lang.reflect.Method;
 
@@ -10,9 +10,9 @@ import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 
 import org.jboss.webbeans.bean.ProducerMethodBean;
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.contexts.AbstractContext;
 import org.jboss.webbeans.contexts.RequestContext;
-import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.beans.SpiderProducer;
 import org.jboss.webbeans.test.beans.Tarantula;
 import org.jboss.webbeans.test.beans.Tuna;
@@ -40,13 +40,13 @@ public class NormalContextTest extends AbstractTest
    
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testGetWithCreateFalseReturnsNull() {
-      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);      
+      Bean<Tuna> tunaBean = Util.createSimpleBean(Tuna.class, manager);      
       assert context.get(tunaBean, false) == null;
    }
 
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testGetWithCreateTrueReturnsBean() {
-      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);      
+      Bean<Tuna> tunaBean = Util.createSimpleBean(Tuna.class, manager);      
       assert context.get(tunaBean, true) != null;
    }
    
@@ -59,7 +59,7 @@ public class NormalContextTest extends AbstractTest
    
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testReturnsCorrectExistingBean() {
-      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);      
+      Bean<Tuna> tunaBean = Util.createSimpleBean(Tuna.class, manager);      
       Tuna firstTuna = context.get(tunaBean, true);
       Tuna secondTuna = context.get(tunaBean, false);
       assert firstTuna == secondTuna;
@@ -67,18 +67,16 @@ public class NormalContextTest extends AbstractTest
 
    @Test(groups={"contexts", "producerMethod"}) @SpecAssertion(section="8.1")
    public void testProducerMethodReturningNullOK() throws SecurityException, NoSuchMethodException {
-      SimpleBeanModel<SpiderProducer> producer = createSimpleModel(SpiderProducer.class, manager);
-      manager.getModelManager().addBeanModel(producer);
+      SimpleBean<SpiderProducer> producer = createSimpleBean(SpiderProducer.class, manager);
+      manager.addBean(producer);
       Method nullProducer = SpiderProducer.class.getMethod("produceShelob");  
-      ProducerMethodBean<Tarantula> producerModel = createProducerMethodBean(Tarantula.class, nullProducer, manager);
-      // TODO Fix this
-      //Bean<Tarantula> shelobBean = new ProducerBeanImpl<Tarantula>(producerModel, manager);
-      //assert context.get(shelobBean, true) == null;
+      ProducerMethodBean<Tarantula> shelobBean = createProducerMethodBean(Tarantula.class, nullProducer, manager, producer);
+      assert shelobBean.create() == null;
    }
 
    @Test(groups={"contexts", "beanDestruction"})
    public void testDestroy() {
-      Bean<Tuna> tunaBean = Util.createSimpleWebBean(Tuna.class, manager);      
+      Bean<Tuna> tunaBean = Util.createSimpleBean(Tuna.class, manager);      
       assert context.get(tunaBean, true) instanceof Tuna;
       ((AbstractContext)context).destroy(manager);
       assert context.get(tunaBean, false) == null;

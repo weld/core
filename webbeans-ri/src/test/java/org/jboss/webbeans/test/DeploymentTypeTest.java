@@ -1,7 +1,6 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.test.util.Util.createSimpleModel;
-import static org.jboss.webbeans.test.util.Util.createSimpleWebBean;
+import static org.jboss.webbeans.test.util.Util.createSimpleBean;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -12,14 +11,12 @@ import java.util.Map;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.DeploymentException;
 import javax.webbeans.Production;
-import javax.webbeans.RequestScoped;
 import javax.webbeans.Standard;
 import javax.webbeans.UnsatisfiedDependencyException;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
-import org.jboss.webbeans.model.bean.SimpleBeanModel;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.FishStereotype;
 import org.jboss.webbeans.test.annotations.HornedAnimalDeploymentType;
@@ -42,7 +39,7 @@ public class DeploymentTypeTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.5.1")
    public void testNonBuiltInComponentUsesStandard()
    {
-      createSimpleWebBean(Gazelle.class, manager);
+      createSimpleBean(Gazelle.class, manager);
    }
    
    @Test(groups="annotationDefinition") @SpecAssertion(section="2.5.2")
@@ -66,53 +63,57 @@ public class DeploymentTypeTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.5.3")
    public void testTooManyDeploymentTypes()
    {
-      createSimpleModel(BeanWithTooManyDeploymentTypes.class, manager);
+      createSimpleBean(BeanWithTooManyDeploymentTypes.class, manager);
    }
    
-   @Test @SpecAssertion(section="2.5.4")
+   @Test(groups="webbeansxml") @SpecAssertion(section="2.5.4")
    public void testXmlDeploymentTypeOverridesJava()
    {
       Map<Class<? extends Annotation>, Annotation> xmlDefinedDeploymentTypeAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
       xmlDefinedDeploymentTypeAnnotations.put(AnotherDeploymentType.class, new AnotherDeploymentTypeAnnotationLiteral());
       AnnotatedClass<BeanWithTooManyDeploymentTypes> xmlDefinedDeploymentTypeAnnotatedItem = new SimpleAnnotatedClass<BeanWithTooManyDeploymentTypes>(BeanWithTooManyDeploymentTypes.class, xmlDefinedDeploymentTypeAnnotations);
       
-      SimpleBeanModel<BeanWithTooManyDeploymentTypes> model = new SimpleBeanModel<BeanWithTooManyDeploymentTypes>(new SimpleAnnotatedClass<BeanWithTooManyDeploymentTypes>(BeanWithTooManyDeploymentTypes.class), xmlDefinedDeploymentTypeAnnotatedItem, manager);
-      assert model.getDeploymentType().equals(AnotherDeploymentType.class);
+      //SimpleBean<BeanWithTooManyDeploymentTypes> model = createSimpleBean(BeanWithTooManyDeploymentTypes.class, xmlDefinedDeploymentTypeAnnotatedItem, manager);
+      //assert model.getDeploymentType().equals(AnotherDeploymentType.class);
+      assert false;
    }
    
 
    
-   @Test @SpecAssertion(section="2.5.4")
+   @Test(groups="webbeansxml") @SpecAssertion(section="2.5.4")
    public void testXmlRespectsJavaDeploymentType()
    {
       AnnotatedClass<Tuna> annotatedItem = new SimpleAnnotatedClass<Tuna>(Tuna.class, new HashMap<Class<? extends Annotation>, Annotation>());
-      SimpleBeanModel<Tuna> tuna = new SimpleBeanModel<Tuna>(new SimpleAnnotatedClass<Tuna>(Tuna.class), annotatedItem, manager);
-      assert tuna.getDeploymentType().equals(AnotherDeploymentType.class);
+      //SimpleBean<Tuna> tuna = createSimpleBean(Tuna.class, annotatedItem, manager);
+      //assert tuna.getDeploymentType().equals(AnotherDeploymentType.class);
+      assert false;
    }
    
    @Test(groups="webbeansxml") @SpecAssertion(section="2.5.5")
    public void testXmlDefaultDeploymentType()
    {
       AnnotatedClass<Antelope> antelopeAnnotatedItem = new SimpleAnnotatedClass<Antelope>(Antelope.class, new HashMap<Class<? extends Annotation>, Annotation>());
-      SimpleBeanModel<Antelope> antelope = new SimpleBeanModel<Antelope>(null, antelopeAnnotatedItem, manager);
-      assert antelope.getDeploymentType().equals(Production.class);
+      //SimpleBean<Antelope> antelope = createSimpleBean(Antelope.class, antelopeAnnotatedItem, manager);
+      // assert antelope.getDeploymentType().equals(Production.class);
+      assert false;
    }
    
    @Test @SpecAssertion(section="2.5.5")
    public void testHighestPrecedenceDeploymentTypeFromStereotype()
    {
-      Bean<?> bean = createSimpleWebBean(Rhinoceros.class, manager);
+      Bean<?> bean = createSimpleBean(Rhinoceros.class, manager);
       assert bean.getDeploymentType().equals(HornedAnimalDeploymentType.class);
    }
    
-   @Test @SpecAssertion(section="2.5.5")
+   @Test(groups="webbeansxml") @SpecAssertion(section="2.5.5")
    public void testDeploymentTypeSpecifiedAndStereotyped()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
       AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
-      SimpleBeanModel<SeaBass> trout = new SimpleBeanModel<SeaBass>(new SimpleAnnotatedClass<SeaBass>(SeaBass.class), annotatedItem, manager);
-      assert trout.getScopeType().equals(RequestScoped.class);
+      //SimpleBean<SeaBass> trout = createSimpleBean(SeaBass.class, annotatedItem, manager);
+      //assert trout.getScopeType().equals(RequestScoped.class);
+       assert false;
    }
    
    @Test(groups="beanLifecycle", expectedExceptions=UnsatisfiedDependencyException.class) @SpecAssertion(section="2.5.6")
@@ -124,7 +125,7 @@ public class DeploymentTypeTest extends AbstractTest
       enabledDeploymentTypes.add(HornedAnimalDeploymentType.class);
       manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
       
-      Bean<RedSnapper> bean = createSimpleWebBean(RedSnapper.class, manager);
+      Bean<RedSnapper> bean = createSimpleBean(RedSnapper.class, manager);
       manager.addBean(bean);
       manager.getInstanceByType(RedSnapper.class);
    }
@@ -170,7 +171,7 @@ public class DeploymentTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.7.2")
    public void testWebBeanDeploymentTypeOverridesStereotype()
    {
-      Bean<Reindeer> bean = createSimpleWebBean(Reindeer.class, manager);
+      Bean<Reindeer> bean = createSimpleBean(Reindeer.class, manager);
       assert bean.getDeploymentType().equals(Production.class);
    }
 }
