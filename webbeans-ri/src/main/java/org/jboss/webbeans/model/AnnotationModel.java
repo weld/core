@@ -40,7 +40,7 @@ public abstract class AnnotationModel<T extends Annotation>
 
    public Class<T> getType()
    {
-      return annotatedAnnotation.getDelegate();
+      return annotatedAnnotation.getType();
    }
    
    protected abstract Class<? extends Annotation> getMetaAnnotation();

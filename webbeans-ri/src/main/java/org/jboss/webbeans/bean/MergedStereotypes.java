@@ -1,4 +1,4 @@
-package org.jboss.webbeans.model;
+package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -6,17 +6,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.webbeans.Stereotype;
-
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.model.StereotypeModel;
 
 /**
  * Meta model for the merged stereotype for a bean
  * @author pmuir
  *
  */
-public class MergedStereotypesModel<T, E>
+public class MergedStereotypes<T, E>
 {
 
    private Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes;
@@ -24,28 +22,17 @@ public class MergedStereotypesModel<T, E>
    private boolean beanNameDefaulted;
    private Set<Class<?>> requiredTypes;
    private Set<Class<? extends Annotation>> supportedScopes;
-   private boolean isDeclaredInXml;
    
-   public MergedStereotypesModel(AnnotatedItem<T, E> annotatedItem, AnnotatedItem<T, E> xmlAnnotatedItem, ManagerImpl manager)
+   public MergedStereotypes(Set<Annotation> stereotypeAnnotations, ManagerImpl manager)
    {
       possibleDeploymentTypes = new HashMap<Class<? extends Annotation>, Annotation>();
       possibleScopeTypes = new HashSet<Annotation>();
       requiredTypes = new HashSet<Class<?>>();
       supportedScopes = new HashSet<Class<? extends Annotation>>();
-      
-      if (xmlAnnotatedItem != null && xmlAnnotatedItem.getAnnotations(Stereotype.class).size() > 0)
-      {
-         merge(xmlAnnotatedItem.getAnnotations(Stereotype.class), manager);
-         isDeclaredInXml = true;
-      }
-      else if (annotatedItem != null)
-      {
-         merge(annotatedItem.getAnnotations(Stereotype.class), manager);
-      }
-      
+      merge(stereotypeAnnotations, manager);
    }
    
-   private void merge(Set<Annotation> stereotypeAnnotations, ManagerImpl manager)
+   protected void merge(Set<Annotation> stereotypeAnnotations, ManagerImpl manager)
    {
       for (Annotation stereotypeAnnotation : stereotypeAnnotations)
       {
@@ -99,7 +86,7 @@ public class MergedStereotypesModel<T, E>
    
    public boolean isDeclaredInXml()
    {
-      return isDeclaredInXml;
+      return false;
    }
    
 }

@@ -8,7 +8,6 @@ import org.jboss.webbeans.model.AnnotationModel;
 import org.jboss.webbeans.model.BindingTypeModel;
 import org.jboss.webbeans.model.ScopeModel;
 import org.jboss.webbeans.model.StereotypeModel;
-import org.jboss.webbeans.model.bean.BeanModel;
 
 import com.google.common.collect.ForwardingMap;
 
@@ -85,8 +84,6 @@ public class ModelManager
    
    private Map<Class<? extends Annotation>, StereotypeModel<?>> stereotypes = new HashMap<Class<? extends Annotation>, StereotypeModel<?>>();
    
-   private Map<Class<?>, BeanModel<?, ?>> beanModels = new HashMap<Class<?>, BeanModel<?,?>>();
-   
    private ScopeModelMap scopes = new ScopeModelMap();
    
    private BindingTypeModelMap bindingTypes = new BindingTypeModelMap();
@@ -100,16 +97,6 @@ public class ModelManager
    public StereotypeModel<?> getStereotype(Class<? extends Annotation> annotationType)
    {
       return stereotypes.get(annotationType);
-   }
-   
-   public void addBeanModel(BeanModel<?, ?> beanModel)
-   {
-      beanModels.put(beanModel.getType(), beanModel);
-   }
-   
-   public BeanModel<?, ?> getBeanModel(Class<?> clazz)
-   {
-      return beanModels.get(clazz);
    }
    
    public <T extends Annotation> ScopeModel<T> getScopeModel(Class<T> scopeType)

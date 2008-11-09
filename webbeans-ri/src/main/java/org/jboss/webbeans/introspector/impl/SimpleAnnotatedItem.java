@@ -94,5 +94,10 @@ public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
    {
       return false;
    }
+
+   public String getName()
+   {
+      throw new IllegalArgumentException("Unable to determine name");
+   }
    
 }

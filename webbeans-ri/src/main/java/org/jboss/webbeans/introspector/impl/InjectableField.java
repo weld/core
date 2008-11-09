@@ -1,10 +1,9 @@
-package org.jboss.webbeans.injectable;
+package org.jboss.webbeans.introspector.impl;
 
 import java.lang.reflect.Field;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedField;
 import org.jboss.webbeans.util.Reflections;
 
 /**

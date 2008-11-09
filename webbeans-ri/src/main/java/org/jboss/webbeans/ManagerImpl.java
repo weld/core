@@ -37,11 +37,8 @@ import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
 import org.jboss.webbeans.event.EventBus;
 import org.jboss.webbeans.exceptions.NameResolutionLocation;
 import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
-import org.jboss.webbeans.injectable.Injectable;
-import org.jboss.webbeans.injectable.ResolverInjectable;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
-import org.jboss.webbeans.model.bean.SimpleBeanModel;
+import org.jboss.webbeans.introspector.impl.Injectable;
+import org.jboss.webbeans.introspector.impl.ResolverInjectable;
 import org.jboss.webbeans.util.ClientProxy;
 import org.jboss.webbeans.util.ProxyPool;
 import org.jboss.webbeans.util.Reflections;
@@ -99,8 +96,7 @@ public class ManagerImpl implements Manager
       this.proxyPool = new ProxyPool(this);
       this.decorators = new HashSet<Decorator>();
       this.interceptors = new HashSet<Interceptor>();
-      SimpleAnnotatedClass<DefaultEnterpriseBeanLookup> sc = new SimpleAnnotatedClass<DefaultEnterpriseBeanLookup>(DefaultEnterpriseBeanLookup.class, new HashMap<Class<? extends Annotation>, Annotation>());
-      addBean( new SimpleBean<DefaultEnterpriseBeanLookup>( new SimpleBeanModel<DefaultEnterpriseBeanLookup>(sc, null, this), this ) );
+      addBean( new SimpleBean<DefaultEnterpriseBeanLookup>( DefaultEnterpriseBeanLookup.class, this ) );
    }
 
    protected void initEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)

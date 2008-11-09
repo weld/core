@@ -13,7 +13,7 @@ import java.util.TreeSet;
 import javax.webbeans.NullableDependencyException;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.injectable.Injectable;
+import org.jboss.webbeans.introspector.impl.Injectable;
 import org.jboss.webbeans.util.ListComparator;
 
 import com.google.common.collect.ForwardingMap;

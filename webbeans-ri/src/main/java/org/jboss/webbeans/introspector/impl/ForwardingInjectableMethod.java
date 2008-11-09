@@ -1,4 +1,4 @@
-package org.jboss.webbeans.injectable;
+package org.jboss.webbeans.introspector.impl;
 
 import java.util.List;
 

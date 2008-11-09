@@ -6,12 +6,16 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Types;
 
@@ -54,6 +58,17 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
          annotationSet.add(entry.getValue());
       }
       return annotationSet;
+   }
+   
+   protected static Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters, ManagerImpl manager)
+   {
+      Object[] parameterValues = new Object[parameters.size()];
+      Iterator<AnnotatedParameter<Object>> iterator = parameters.iterator();   
+      for (int i = 0; i < parameterValues.length; i++)
+      {
+         parameterValues[i] = iterator.next().getValue(manager);
+      }
+      return parameterValues;
    }
 
    public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)

@@ -9,8 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.util.Reflections;
 
 public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>
 {
@@ -21,6 +23,8 @@ public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedMember<T, Method>
    
    private List<AnnotatedParameter<Object>> parameters;
    private Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> annotatedParameters;
+
+   private String propertyName;
    
    public SimpleAnnotatedMethod(Method method)
    {
@@ -149,6 +153,29 @@ public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedMember<T, Method>
    public int hashCode()
    {
       return getDelegate().hashCode();
+   }
+
+   public T invoke(ManagerImpl manager, Object instance)
+   {
+      return (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, manager));
+   }
+   
+   public T invoke(Object instance, Object... parameters)
+   {
+      return (T) Reflections.invokeAndWrap(getDelegate(), instance, parameters);
+   }
+   
+   public String getPropertyName()
+   {
+      if (propertyName == null)
+      {
+         propertyName = Reflections.getPropertyName(getDelegate());
+         if (propertyName == null)
+         {
+            propertyName = getName();
+         }
+      }
+      return propertyName;
    }
 
 }

@@ -8,11 +8,11 @@ import javax.webbeans.Current;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.injectable.ForwardingInjectableMethod;
-import org.jboss.webbeans.injectable.ForwardingInjectableParameter;
-import org.jboss.webbeans.injectable.InjectableMethod;
-import org.jboss.webbeans.injectable.InjectableParameter;
-import org.jboss.webbeans.model.bean.BeanModel;
+import org.jboss.webbeans.bean.EventBean;
+import org.jboss.webbeans.introspector.impl.ForwardingInjectableMethod;
+import org.jboss.webbeans.introspector.impl.ForwardingInjectableParameter;
+import org.jboss.webbeans.introspector.impl.InjectableMethod;
+import org.jboss.webbeans.introspector.impl.InjectableParameter;
 
 import com.google.common.collect.ForwardingIterator;
 import com.google.common.collect.ForwardingList;
@@ -31,7 +31,7 @@ import com.google.common.collect.ForwardingList;
 public class ObserverImpl<T> implements Observer<T>
 {
 
-   private final BeanModel<?, ?> beanModel;
+   private EventBean<T> eventBean;
    private final InjectableMethod<Object> observerMethod;
    private final Class<T> eventType;
 
@@ -58,10 +58,10 @@ public class ObserverImpl<T> implements Observer<T>
     * @param observer The observer method to notify
     * @param eventType The type of event being observed
     */
-   public ObserverImpl(final BeanModel<?, ?> beanModel,
+   public ObserverImpl(final EventBean<T> eventBean,
          final InjectableMethod<Object> observer, final Class<T> eventType)
    {
-      this.beanModel = beanModel;
+      this.eventBean = eventBean;
       this.observerMethod = observer;
       this.eventType = eventType;
    }
@@ -172,7 +172,6 @@ public class ObserverImpl<T> implements Observer<T>
    protected Object getInstance()
    {
       // Return the most specialized instance of the component
-      return manager.getInstanceByType(beanModel.getType(), beanModel
-            .getBindingTypes().toArray(new Annotation[0]));
+      return manager.getInstanceByType(eventBean.getType(), eventBean.getBindingTypes().toArray(new Annotation[0]));
    }
 }

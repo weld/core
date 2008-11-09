@@ -3,6 +3,9 @@ package org.jboss.webbeans.introspector.impl;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+import javax.webbeans.BindingType;
+
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 
 public class SimpleAnnotatedParameter<T> extends AbstractAnnotatedItem<T, Object> implements AnnotatedParameter<T>
@@ -44,5 +47,14 @@ public class SimpleAnnotatedParameter<T> extends AbstractAnnotatedItem<T, Object
       return _static;
    }
    
+   public T getValue(ManagerImpl manager)
+   {
+      return manager.getInstanceByType(getType(), getAnnotationsAsArray(BindingType.class));
+   }
 
+   public String getName()
+   {
+      throw new IllegalArgumentException("Unable to determine name of parameter");
+   }
+   
 }

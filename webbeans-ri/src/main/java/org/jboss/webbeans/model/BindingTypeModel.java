@@ -95,8 +95,8 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
          {
             if (!nonBindingTypes.contains(annotatedMethod))
             {
-               Object thisValue = Reflections.invokeAndWrap(annotatedMethod.getDelegate(), instance);
-               Object thatValue = Reflections.invokeAndWrap(annotatedMethod.getDelegate(), other);
+               Object thisValue = annotatedMethod.invoke(instance);
+               Object thatValue = annotatedMethod.invoke(other);
                if (!thisValue.equals(thatValue))
                {
                   return false;

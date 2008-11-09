@@ -4,7 +4,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.util.Reflections;
 
 public class SimpleAnnotatedField<T> extends AbstractAnnotatedMember<T, Field> implements AnnotatedField<T>
 {
@@ -42,6 +44,16 @@ public class SimpleAnnotatedField<T> extends AbstractAnnotatedMember<T, Field> i
    public Type[] getActualTypeArguments()
    {
       return actualTypeArguments;
+   }
+
+   public void inject(Object instance, ManagerImpl manager)
+   {
+      Reflections.setAndWrap(getDelegate(), instance, getValue(manager));
+   }
+   
+   public String getPropertyName()
+   {
+      return getName();
    }
 
 }

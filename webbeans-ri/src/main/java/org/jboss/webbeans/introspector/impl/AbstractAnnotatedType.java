@@ -23,4 +23,9 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
       return Reflections.isFinal(getDelegate());
    }
    
+   public String getName()
+   {
+      return getDelegate().getName();
+   }
+   
 }

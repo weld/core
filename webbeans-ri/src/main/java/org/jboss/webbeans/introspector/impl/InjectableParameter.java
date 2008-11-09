@@ -1,10 +1,9 @@
-package org.jboss.webbeans.injectable;
+package org.jboss.webbeans.introspector.impl;
 
 import java.lang.annotation.Annotation;
 
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedParameter;
 
 public class InjectableParameter<T> extends Injectable<T, Object>
 {

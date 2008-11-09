@@ -2,12 +2,16 @@ package org.jboss.webbeans.introspector.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.webbeans.ExecutionException;
+
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 
@@ -124,6 +128,30 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Co
          return new ArrayList<AnnotatedParameter<Object>>();
       }
       return annotatedParameters.get(annotationType);
+   }
+   
+   public T newInstance(ManagerImpl manager)
+   {
+      try
+      {
+         return getDelegate().newInstance(getParameterValues(parameters, manager));
+      }
+      catch (IllegalArgumentException e)
+      {
+         throw new ExecutionException(e);
+      }
+      catch (InstantiationException e)
+      {
+         throw new ExecutionException(e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new ExecutionException(e);
+      }
+      catch (InvocationTargetException e)
+      {
+         throw new ExecutionException(e);
+      }
    }
    
    @Override

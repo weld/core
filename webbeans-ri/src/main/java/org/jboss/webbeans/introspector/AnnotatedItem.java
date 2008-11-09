@@ -62,5 +62,7 @@ public interface AnnotatedItem<T, S>
    public boolean isStatic();
    
    public boolean isFinal();
+   
+   public String getName();
 
 }

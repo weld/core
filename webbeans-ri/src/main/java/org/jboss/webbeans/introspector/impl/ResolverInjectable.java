@@ -1,4 +1,4 @@
-package org.jboss.webbeans.injectable;
+package org.jboss.webbeans.introspector.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -8,7 +8,6 @@ import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.TypeLiteral;
 
 import org.jboss.webbeans.ModelManager;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedItem;
 
 /**
  * TODO Rename this to something which implies it only ever used for resolution

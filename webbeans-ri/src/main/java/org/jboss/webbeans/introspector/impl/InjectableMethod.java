@@ -1,10 +1,9 @@
-package org.jboss.webbeans.injectable;
+package org.jboss.webbeans.introspector.impl;
 
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedMethod;
 
 public class InjectableMethod<T> extends Invokable<T, AnnotatedMethod<T>>
 {
