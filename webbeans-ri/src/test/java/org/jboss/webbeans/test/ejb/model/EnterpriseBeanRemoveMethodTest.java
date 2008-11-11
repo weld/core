@@ -1,8 +1,11 @@
 package org.jboss.webbeans.test.ejb.model;
 
 import javax.webbeans.DefinitionException;
+import javax.webbeans.RequestScoped;
+import javax.webbeans.UnremovedException;
 
 import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.contexts.RequestContext;
 import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
 import org.jboss.webbeans.test.SpecVersion;
@@ -15,11 +18,9 @@ import org.jboss.webbeans.test.ejb.model.invalid.Rottweiler;
 import org.jboss.webbeans.test.ejb.model.invalid.RussellTerrier;
 import org.jboss.webbeans.test.ejb.model.invalid.Saluki;
 import org.jboss.webbeans.test.ejb.model.invalid.Spitz;
-import org.jboss.webbeans.test.ejb.model.invalid.Toller;
-import org.jboss.webbeans.test.ejb.model.invalid.WelshCorgie;
-import org.jboss.webbeans.test.ejb.model.invalid.Whippet;
-import org.jboss.webbeans.test.ejb.model.valid.Laika;
-import org.jboss.webbeans.test.ejb.model.valid.Pitbull;
+import org.jboss.webbeans.test.ejb.model.valid.Toller;
+import org.jboss.webbeans.test.ejb.model.valid.WelshCorgie;
+import org.jboss.webbeans.test.ejb.model.valid.Koirus;
 import org.jboss.webbeans.test.util.Util;
 import org.testng.annotations.Test;
 
@@ -28,105 +29,150 @@ import org.testng.annotations.Test;
 public class EnterpriseBeanRemoveMethodTest extends AbstractTest
 {
 
-   @Test
+   public static boolean tickle = false;
+
+   @Test(groups={"ejb3", "removeMethod"}, expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5")
-   public void testStatefulEnterpriseBeanWithoutRemoveMethodInDependentScopeOK()
+   public void testStatelessEnterpriseBeansWithRemoveMethodsFails()
    {
-      EnterpriseBean<Pitbull> pitbull = Util.createEnterpriseBean(Pitbull.class, manager);
+      EnterpriseBean<Armant> bean = Util.createEnterpriseBean(Armant.class, manager);
    }
 
-   @Test(expectedExceptions = DefinitionException.class)
+   @Test(groups={"ejb3", "removeMethod", "lifecycle"})
    @SpecAssertion(section = "3.3.5")
-   public void testStatefulEnterpriseBeanWithoutRemoveMethodInApplicationScopeFails()
+   public void testStatefulEnterpriseBeanRemoveMethodCalledWhenDestroyedByManager()
    {
-      EnterpriseBean<Poodle> poodle = Util.createEnterpriseBean(Poodle.class, manager);
+      EnterpriseBeanRemoveMethodTest.tickle = false;
+      EnterpriseBean<Toller> bena = Util.createEnterpriseBean(Toller.class, manager);
+      RequestContext context = (RequestContext) manager.getContext(RequestScoped.class);
+      Toller instance = context.get(bena, true);
+      context.destroy(manager);
+      assert EnterpriseBeanRemoveMethodTest.tickle;
    }
 
-   @Test(expectedExceptions = DefinitionException.class)
+   @Test(groups={"ejb3", "removeMethod"}, expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5")
-   public void testStatefulEnterpriseBeanWithoutRemoveMethodInSessionScopeFails()
+   public void testStatefulEnterpriseBeanWithoutRemoveMethodMustBeDependentScoped()
    {
-      EnterpriseBean<Rottweiler> rottweiler = Util.createEnterpriseBean(Rottweiler.class, manager);
+      EnterpriseBean<Pumi> bean = Util.createEnterpriseBean(Pumi.class, manager);
    }
 
-   @Test(expectedExceptions = DefinitionException.class)
+   @Test(groups={"ejb3", "removeMethod"})
    @SpecAssertion(section = "3.3.5")
-   public void testStatefulEnterpriseBeanWithoutRemoveMethodInConversationScopeFails()
+   public void testStatefulEnterpriseBeanWithoutRemoveMethodMustBeDependentScoped2()
    {
-      EnterpriseBean<Spitz> spitz = Util.createEnterpriseBean(Spitz.class, manager);
+      EnterpriseBean<WelshCorgie> bean = Util.createEnterpriseBean(WelshCorgie.class, manager);
    }
 
-   @Test(expectedExceptions = DefinitionException.class)
+   @Test(groups={"ejb3", "removeMethod"}, expectedExceptions = UnremovedException.class)
    @SpecAssertion(section = "3.3.5")
-   public void testStatefulEnterpriseBeanWithoutRemoveMethodInRequestScopeFails()
+   public void testStatefulEnterpriseBeanWithoutRemoveMethodMustBeRemovedByApplicationBeforeManager()
    {
-      EnterpriseBean<Saluki> saluki = Util.createEnterpriseBean(Saluki.class, manager);
+      EnterpriseBean<Toller> bean = Util.createEnterpriseBean(Toller.class, manager);
+      Toller instance = manager.getInstance(bean);
+      RequestContext context = (RequestContext) manager
+            .getContext(RequestScoped.class);
+      context.destroy(manager);
    }
 
-   @Test
-   @SpecAssertion(section = "3.3.5.1")
-   public void testAnnotationDefinedEnterpriseBeanWithoutDestructorUsesRemoveMethodWithoutParamsAsWebBeansRemoveMethod()
+   @Test(groups={"ejb3", "removeMethod", "lifecycle"})
+   @SpecAssertion(section = "3.3.5")
+   public void testApplicationRemoveMethodCallRemovesInstanceFromContext()
    {
-      EnterpriseBean<Armant> whippet = Util.createEnterpriseBean(Armant.class, manager);
-      assert whippet.getRemoveMethod().getAnnotatedItem().getName().equals("destroy");
+      EnterpriseBean<Toller> bean = Util.createEnterpriseBean(Toller.class, manager);
+      RequestContext context = (RequestContext) manager.getContext(RequestScoped.class);
+      Toller instance = context.get(bean, true);
+      instance.bye();
+      instance = context.get(bean, false);
+      assert instance == null;
    }
 
-   @Test
-   @SpecAssertion(section = "3.3.5.1")
-   public void testAnnotationDefinedEnterpriseBeanWithoutDestructorAndRemoveMethodWithoutParamsHasNoWebBeansRemoveMethod()
+   @Test(groups={"ejb3", "removeMethod"})
+   @SpecAssertion(section = {"3.3.5.1", "3.3.5.2"})
+   public void testEnterpriseBeanWithoutDestructorUsesNoArgsRemoveAnnotatedMethodAsRemoveMethod()
    {
-      EnterpriseBean<Laika> laika = Util.createEnterpriseBean(Laika.class, manager);
-      assert laika.getRemoveMethod() == null;
+      EnterpriseBean<Toller> bean = Util.createEnterpriseBean(Toller.class, manager);
+      assert "bye".equals(bean.getRemoveMethod().getAnnotatedItem()
+            .getAnnotatedMethod().getName());
    }
 
-   @Test(expectedExceptions = DefinitionException.class)
-   @SpecAssertion(section = "3.3.5.1")
-   public void testEnterpriseBeanWithMultipleDestructorAnnotationsFail()
+   @Test(groups={"ejb3", "removeMethod"})
+   @SpecAssertion(section = {"3.3.5.1", "3.3.5.2"})
+   public void testEnterpriseBeanWithoutDestructorAndNoArgsRemoveAnnotatedMethodHasNoRemoveMethod()
    {
-      EnterpriseBean<Whippet> whippet = Util.createEnterpriseBean(Whippet.class, manager);
+      EnterpriseBean<Koirus> bean = Util.createEnterpriseBean(Koirus.class, manager);
+      assert bean.getRemoveMethod() == null;
    }
 
-   @Test(expectedExceptions = DefinitionException.class)
-   @SpecAssertion(section = "3.3.5.1")
-   public void testAnnotationDefinedEnterpriseBeanWithDestructorAnnotationOnMethodNotAnEJBRemoveMethodFails()
+   @Test(groups={"ejb3", "removeMethod"}, expectedExceptions = DefinitionException.class)
+   @SpecAssertion(section = {"3.3.5.1", "3.3.5.2"})
+   public void testMultipleDestructorAnnotatedMethodsFails()
    {
-      EnterpriseBean<GoldenRetriever> goldenRetriever = Util.createEnterpriseBean(GoldenRetriever.class, manager);
+      EnterpriseBean<Rottweiler> bean = Util.createEnterpriseBean(Rottweiler.class, manager);
    }
 
-   @Test(expectedExceptions = DefinitionException.class)
-   @SpecAssertion(section = "3.3.5.1")
-   public void testAnnotationDefinedEnterpriseBeanWithDestructorWithDisposesParameterFails()
+   @Test(groups={"ejb3", "removeMethod"}, expectedExceptions = DefinitionException.class)
+   @SpecAssertion(section = {"3.3.5.1", "3.3.5.2"})
+   public void testDestructorAnnotatedMethodNotRemoveAnnotatedFails()
    {
-      EnterpriseBean<Pumi> pumi = Util.createEnterpriseBean(Pumi.class, manager);
+      EnterpriseBean<RussellTerrier> bean = Util.createEnterpriseBean(RussellTerrier.class, manager);
    }
 
-   @Test(expectedExceptions = DefinitionException.class)
-   @SpecAssertion(section = "3.3.5.1")
-   public void testEnterpriseBeanWithInitializerAnnotationOnRemoveMethodFails()
+   @Test(groups={"ejb3", "removeMethod"}, expectedExceptions = DefinitionException.class)
+   @SpecAssertion(section = {"3.3.5.1", "3.3.5.2"})
+   public void testRemoveMethodIsInitializerFails()
    {
-      EnterpriseBean<JackRussellTerrier> jackRussellTerrier = Util.createEnterpriseBean(JackRussellTerrier.class, manager);
+      EnterpriseBean<Saluki> bean = Util.createEnterpriseBean(Saluki.class, manager);
    }
 
-   @Test(expectedExceptions = DefinitionException.class)
-   @SpecAssertion(section = "3.3.5.1")
-   public void testEnterpriseBeanWithProducerAnnotationOnRemoveMethodFails()
+   @Test(groups={"ejb3", "removeMethod"}, expectedExceptions = DefinitionException.class)
+   @SpecAssertion(section = {"3.3.5.1", "3.3.5.2"})
+   public void testRemoveMethodIsProducerFails()
    {
-      EnterpriseBean<RussellTerrier> russellTerrier = Util.createEnterpriseBean(RussellTerrier.class, manager);
+      EnterpriseBean<Spitz> bean = Util.createEnterpriseBean(Spitz.class, manager);
    }
 
-   @Test(expectedExceptions = DefinitionException.class)
-   @SpecAssertion(section = "3.3.5.1")
-   public void testEnterpriseBeanWithRemoveMethodTakingObserverAnnotatedParameterFails()
+   @Test(groups={"ejb3", "removeMethod"}, expectedExceptions = DefinitionException.class)
+   @SpecAssertion(section = {"3.3.5.1", "3.3.5.2"})
+   public void testRemoveMethodWithDisposesParameterFails()
    {
-      EnterpriseBean<Toller> toller = Util.createEnterpriseBean(Toller.class, manager);
+      EnterpriseBean<GoldenRetriever> bean = Util.createEnterpriseBean(GoldenRetriever.class, manager);
    }
 
-   @Test(expectedExceptions=DefinitionException.class)
-   public void testStatelessEnterpriseBeansWithDestructorAnnotationFails() 
+   @Test(groups={"ejb3", "removeMethod"}, expectedExceptions = DefinitionException.class)
+   @SpecAssertion(section = {"3.3.5.1", "3.3.5.2"})
+   public void testRemoveMethodWithObservesParameterFails()
    {
-      EnterpriseBean<WelshCorgie> welshCorgie = Util.createEnterpriseBean(WelshCorgie.class, manager);
+      EnterpriseBean<JackRussellTerrier> bean = Util.createEnterpriseBean(JackRussellTerrier.class, manager);
+   }
+
+   @Test(groups={"ejb3", "removeMethod"}, expectedExceptions = DefinitionException.class)
+   @SpecAssertion(section = {"3.3.5.1", "3.3.5.2"})
+   public void testMultipleRemoveAnnotationsButNoDestructorFails()
+   {
+      EnterpriseBean<Poodle> bean = Util.createEnterpriseBean(Poodle.class, manager);
    }
    
    
-   
+   @Test(groups={"ejb3", "removeMethod"})
+   @SpecAssertion(section = "3.3.5.2")
+   public void testXMLDefinedEnterpriseBeanWithMatchingRemoveMethodFails()
+   {
+      assert false;
+   }
+
+   @Test(groups={"ejb3", "removeMethod"})
+   @SpecAssertion(section = "3.3.5.2")
+   public void testXMLDefinedEnterpriseBeanWithMultipleRemoveMethodsFails()
+   {
+      assert false;
+   }
+
+   @Test(groups={"ejb3", "removeMethod"})
+   @SpecAssertion(section = "3.3.5.2")
+   public void testXMLDefinedEnterpriseBeanIgnoresBindingAnnotationOnParameters()
+   {
+      assert false;
+   }
+
 }

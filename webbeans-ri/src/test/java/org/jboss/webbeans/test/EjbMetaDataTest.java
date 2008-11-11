@@ -14,7 +14,7 @@ public class EjbMetaDataTest
    {
       EjbMetaData<Lion> lion = new EjbMetaData<Lion>(Lion.class);
       assert lion.isStateless();
-      assert lion.getRemoveMethods() == null;
+      assert lion.getRemoveMethods().isEmpty();
    }
    
    @Test
@@ -30,7 +30,7 @@ public class EjbMetaDataTest
    {
       EjbMetaData<Leopard> leopard = new EjbMetaData<Leopard>(Leopard.class);
       assert leopard.isMessageDriven();
-      assert leopard.getRemoveMethods() == null;
+      assert leopard.getRemoveMethods().isEmpty();
    }
    
 }

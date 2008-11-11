@@ -1,11 +1,17 @@
 package org.jboss.webbeans.test.ejb.model.invalid;
 
+import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.webbeans.ConversationScoped;
+import javax.webbeans.Produces;
+import javax.webbeans.RequestScoped;
 
 @Stateful
-@ConversationScoped
+@RequestScoped
 public class Spitz
 {
-
+   @Remove @Produces
+   public void bye() {
+      
+   }
+   
 }

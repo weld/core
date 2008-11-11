@@ -1,13 +1,13 @@
 package org.jboss.webbeans.test.ejb.model.invalid;
 
-import javax.ejb.Remove;
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
+import javax.webbeans.Destructor;
 
-@Stateful
+@Stateless
 public class Armant
 {
-   @Remove
-   public void destroy() {
+   @Destructor
+   public void bye() {
       
    }
 }

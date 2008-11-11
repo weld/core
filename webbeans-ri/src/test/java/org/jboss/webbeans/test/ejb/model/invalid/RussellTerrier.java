@@ -1,15 +1,16 @@
 package org.jboss.webbeans.test.ejb.model.invalid;
 
-import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.webbeans.Produces;
+import javax.webbeans.Destructor;
+import javax.webbeans.RequestScoped;
 
 @Stateful
+@RequestScoped
 public class RussellTerrier
 {
-   @Remove
-   @Produces
-   public void destroy() {
+   @Destructor
+   public void bye() {
       
    }
+   
 }

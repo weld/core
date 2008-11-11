@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.webbeans.DefinitionException;
 import javax.webbeans.Destructor;
 
 import org.jboss.webbeans.util.Reflections;
@@ -30,7 +31,9 @@ public class EjbMetaData<T>
    }
    
    private EjbType ejbType;
-   private List<Method> removeMethods;
+   private List<Method> removeMethods = new ArrayList<Method>();
+   private List<Method> destructorMethods = new ArrayList<Method>();
+   private Method noArgsRemoveMethod;
    
    // TODO Populate this from web.xml
    private String ejbLinkJndiName;
@@ -51,18 +54,24 @@ public class EjbMetaData<T>
       if (type.isAnnotationPresent(STATELESS_ANNOTATION))
       {
          this.ejbType = STATELESS;
+         // TODO Has to be done here? If they are not parsed, they can't be detected later on (EnterpriseBean remove method init)
+         if (!Reflections.getMethods(type, Destructor.class).isEmpty()) {
+            throw new DefinitionException("Stateless enterprise beans cannot have @Destructor methods");
+         }
       }
       else if (type.isAnnotationPresent(STATEFUL_ANNOTATION))
       {
          this.ejbType = STATEFUL;
-         this.removeMethods = new ArrayList<Method>();
          for (Method removeMethod : Reflections.getMethods(type, REMOVE_ANNOTATION))
          {
             removeMethods.add(removeMethod);
+            if (removeMethod.getParameterTypes().length == 0) {
+               noArgsRemoveMethod = removeMethod;
+            }
          }
          for (Method destructorMethod : Reflections.getMethods(type, Destructor.class))
          {
-            removeMethods.add(destructorMethod);
+            destructorMethods.add(destructorMethod);
          }
       }
       else if (type.isAnnotationPresent(MESSAGE_DRIVEN_ANNOTATION))
@@ -118,6 +127,21 @@ public class EjbMetaData<T>
    public Class<? extends T> getType()
    {
       return type;
+   }
+
+   public List<Method> getDestructorMethods()
+   {
+      return destructorMethods;
+   }
+
+   public Method getNoArgsRemoveMethod()
+   {
+      return noArgsRemoveMethod;
+   }
+
+   public void setNoArgsRemoveMethod(Method noArgsRemoveMethod)
+   {
+      this.noArgsRemoveMethod = noArgsRemoveMethod;
    }
    
 }

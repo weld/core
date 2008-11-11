@@ -2,8 +2,6 @@ package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.webbeans.ApplicationScoped;
 import javax.webbeans.Decorator;
@@ -24,7 +22,6 @@ import org.jboss.webbeans.ejb.EjbMetaData;
 import org.jboss.webbeans.introspector.impl.InjectableField;
 import org.jboss.webbeans.introspector.impl.InjectableMethod;
 import org.jboss.webbeans.introspector.impl.InjectableParameter;
-import org.jboss.webbeans.util.Reflections;
 
 public class EnterpriseBean<T> extends AbstractClassBean<T>
 {
@@ -130,12 +127,41 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 // TODO logging
    protected void initRemoveMethod()
    {
+      if (!getEjbMetaData().isStateful())
+      {
+         // Nothing to do for stateless enterprise beans;
+         return;
+      }
+      
+      // >1 @Destructor
+      if (getEjbMetaData().getDestructorMethods().size() > 1)
+      {
+         throw new DefinitionException("Multiple @Destructor methods not allowed");
+      }
+
+
+      // <1 (0) @Destructors
+      if (getEjbMetaData().getNoArgsRemoveMethod() != null)
+      {
+         if (getEjbMetaData().getRemoveMethods().size() > 1)
+         {
+            throw new DefinitionException("Multiple @Remove methods but no @Destructor found");
+         }
+         super.removeMethod = checkRemoveMethod(getEjbMetaData().getNoArgsRemoveMethod());
+         return;
+      }
+
+      if (!getScopeType().equals(Dependent.class))
+      {
+         throw new DefinitionException("Only @Dependent scoped enterprise beans can be without remove methods");
+      }
+      
+/*      
       if (getEjbMetaData().isStateful())
       {
          if (getEjbMetaData().getRemoveMethods().size() == 1)
          {
-//          super.removeMethod = new InjectableMethod<Object>(getEjbMetaData().getRemoveMethods().get(0));
-            super.removeMethod = checkRemoveMethod(getEjbMetaData().getRemoveMethods().get(0));
+            super.removeMethod = checkRemoveMethod(getEjbMetaData().getRemoveMethods().iterator().next());
          }
          else if (getEjbMetaData().getRemoveMethods().size() > 1)
          {
@@ -149,7 +175,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
             }
             if (possibleRemoveMethods.size() == 1)
             {
-               super.removeMethod = checkRemoveMethod(possibleRemoveMethods.get(0));
+               super.removeMethod = checkRemoveMethod(possibleRemoveMethods.iterator().next());
             }
             else if (possibleRemoveMethods.size() == 2)
             {
@@ -160,6 +186,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
                if (!firstMethod.equals(secondMethod)) {
                   throw new DefinitionException("Multiple remove methods are annotated @Remove/@Destructor for " + getType());
                }
+               super.removeMethod = checkRemoveMethod(possibleRemoveMethods.iterator().next());
             }
             else if (possibleRemoveMethods.size() > 2) 
             {
@@ -183,6 +210,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
             throw new DefinitionException("Only stateful enterprise beans can have methods annotated @Destructor; " + getType() + " is not a stateful enterprise bean");
          }
       }
+      */
    }
    
 
