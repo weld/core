@@ -2,10 +2,11 @@ package org.jboss.webbeans.test.ejb.lifecycle;
 
 import javax.webbeans.UnremovedException;
 
+import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
 import org.testng.annotations.Test;
 
-public class EnterpriseBeanLifecycleTest
+public class EnterpriseBeanLifecycleTest extends AbstractTest
 {
 
    @Test(groups="removeMethod") @SpecAssertion(section="3.2.3")

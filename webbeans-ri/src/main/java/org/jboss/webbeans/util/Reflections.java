@@ -284,4 +284,25 @@ public class Reflections
       }
    }
    
+   public static Method lookupMethod(Method method, Object instance)
+   {
+      for (Class<? extends Object> clazz = instance.getClass(); clazz != Object.class; clazz = clazz.getSuperclass())
+      {
+         try
+         {
+            Method targetMethod = clazz.getDeclaredMethod(method.getName(),
+                  method.getParameterTypes());
+            if (!targetMethod.isAccessible())
+            {
+               targetMethod.setAccessible(true);
+            }
+            return targetMethod;
+         } catch (NoSuchMethodException nsme)
+         {
+            // Expected, nothing to see here.
+         }
+      }
+      throw new IllegalArgumentException("Method " + method.getName() + " not implemented by instance");
+   }   
+   
 }

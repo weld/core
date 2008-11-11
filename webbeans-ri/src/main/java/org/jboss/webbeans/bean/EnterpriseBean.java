@@ -69,11 +69,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       if (getType().isAnnotationPresent(Interceptor.class))
       {
-         throw new DefinitionException("Enterprise beans can't be interceptors");
+         throw new DefinitionException("Enterprise beans cannot be interceptors");
       }
       if (getType().isAnnotationPresent(Decorator.class))
       {
-         throw new DefinitionException("Enterprise beans can't be decorators");
+         throw new DefinitionException("Enterprise beans cannot be decorators");
       }
    }
 
@@ -151,9 +151,19 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
             {
                super.removeMethod = checkRemoveMethod(possibleRemoveMethods.get(0));
             }
-            else if (possibleRemoveMethods.size() > 1)
+            else if (possibleRemoveMethods.size() == 2)
             {
-               throw new DefinitionException("Multiple remove methods are annotated @Destructor for " + getType());
+               Method firstMethod = possibleRemoveMethods.get(0);
+               Method secondMethod = possibleRemoveMethods.get(1);
+               // If the method has both the @Remove and @Destructor annotation, it gets added twice in 
+               // the EjbMetaData constructor.
+               if (!firstMethod.equals(secondMethod)) {
+                  throw new DefinitionException("Multiple remove methods are annotated @Remove/@Destructor for " + getType());
+               }
+            }
+            else if (possibleRemoveMethods.size() > 2) 
+            {
+               throw new DefinitionException("Multiple remove methods are annotated @Remove/@Destructor for " + getType());
             }
             else if (possibleRemoveMethods.size() == 0)
             {
