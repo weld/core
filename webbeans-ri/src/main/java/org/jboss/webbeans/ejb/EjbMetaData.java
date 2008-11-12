@@ -33,7 +33,7 @@ public class EjbMetaData<T>
    private EjbType ejbType;
    private List<Method> removeMethods = new ArrayList<Method>();
    private List<Method> destructorMethods = new ArrayList<Method>();
-   private Method noArgsRemoveMethod;
+   private List<Method> noArgsRemoveMethods = new ArrayList<Method>();
    
    // TODO Populate this from web.xml
    private String ejbLinkJndiName;
@@ -66,7 +66,7 @@ public class EjbMetaData<T>
          {
             removeMethods.add(removeMethod);
             if (removeMethod.getParameterTypes().length == 0) {
-               noArgsRemoveMethod = removeMethod;
+               noArgsRemoveMethods.add(removeMethod);
             }
          }
          for (Method destructorMethod : Reflections.getMethods(type, Destructor.class))
@@ -136,12 +136,7 @@ public class EjbMetaData<T>
 
    public Method getNoArgsRemoveMethod()
    {
-      return noArgsRemoveMethod;
+      return noArgsRemoveMethods.size() == 1 ? noArgsRemoveMethods.iterator().next() : null;
    }
 
-   public void setNoArgsRemoveMethod(Method noArgsRemoveMethod)
-   {
-      this.noArgsRemoveMethod = noArgsRemoveMethod;
-   }
-   
 }

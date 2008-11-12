@@ -126,9 +126,6 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
       assert false;
    }
 
-
-
-
    @Test(groups="enterpriseBeans")
    @SpecAssertion(section = "3.3.1")
    public void testAnnotatedEnterpriseBean()
