@@ -2,7 +2,6 @@ package org.jboss.webbeans.test.ejb.model.invalid;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.webbeans.Observes;
 import javax.webbeans.RequestScoped;
 
 @Stateful
@@ -15,7 +14,7 @@ public class Poodle
    }
    
    @Remove
-   public void byebye(@Observes Object something) {
+   public void byebye() {
       
    }
    
