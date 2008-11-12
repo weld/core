@@ -9,12 +9,12 @@ import java.io.ObjectOutputStream;
 import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.bean.proxy.ClientProxy;
 import org.jboss.webbeans.test.beans.FinalTuna;
 import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.TunedTuna;
 import org.jboss.webbeans.test.util.Util;
-import org.jboss.webbeans.util.ClientProxy;
 import org.testng.annotations.Test;
 
 @SpecVersion("PDR")
