@@ -29,6 +29,8 @@ import javax.webbeans.manager.Interceptor;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.bean.proxy.ClientProxy;
+import org.jboss.webbeans.bean.proxy.ProxyPool;
 import org.jboss.webbeans.contexts.ApplicationContext;
 import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.contexts.RequestContext;
@@ -39,8 +41,6 @@ import org.jboss.webbeans.exceptions.NameResolutionLocation;
 import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
 import org.jboss.webbeans.introspector.impl.Injectable;
 import org.jboss.webbeans.introspector.impl.ResolverInjectable;
-import org.jboss.webbeans.util.ClientProxy;
-import org.jboss.webbeans.util.ProxyPool;
 import org.jboss.webbeans.util.Reflections;
 
 import com.google.common.collect.ForwardingMap;
