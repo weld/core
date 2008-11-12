@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
 public class NameTest extends AbstractTest
 {
 
-   @Test(groups="el", expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.6")
+   @Test(groups={"stub", "el"}, expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.6")
    public void testInvalidElIdentifierUsedAsWebBeanName()
    {
       assert false;
@@ -39,7 +39,7 @@ public class NameTest extends AbstractTest
       assert moose.getName().equals("aMoose");
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.6.2")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.6.2")
    public void testNonDefaultXmlNamed()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -58,7 +58,7 @@ public class NameTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.6.2")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.6.2")
    public void testXmlNamedOverridesJavaNamed()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -77,7 +77,7 @@ public class NameTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section={"2.6.2", "2.6.3"})
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section={"2.6.2", "2.6.3"})
    public void testJavaNamedUsedWhenNoXmlSpecified()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -96,7 +96,7 @@ public class NameTest extends AbstractTest
       assert haddock.getName().equals("haddock");
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.6.3")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.6.3")
    public void testDefaultXmlNamed()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -138,7 +138,7 @@ public class NameTest extends AbstractTest
       assert model.getName() == null;
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.6.4")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.6.4")
    public void testNotNamedInStereotype()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();

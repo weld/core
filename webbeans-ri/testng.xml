@@ -5,6 +5,7 @@
    <test name="Web Beans RI">
       <groups>
          <run>
+<!--          
             <exclude name="specialization" />
             <exclude name="deployment" />
             <exclude name="disposalMethod" />
@@ -22,12 +23,13 @@
             <exclude name="servlet" />
             
             <exclude name="passivation" />
-            <exclude name="enterpriseBeans" />
-            <exclude name="removeMethod" />
             <exclude name="singletons" />
             <exclude name="ejbjarxml" />
             <exclude name="beanDestruction" />
             <exclude name="commonAnnotations" />
+-->
+            <exclude name="stub" />
+
          </run>
       </groups>
       <packages>

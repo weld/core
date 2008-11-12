@@ -40,7 +40,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
       EnterpriseBean<Armant> bean = Util.createEnterpriseBean(Armant.class, manager);
    }
 
-   @Test(groups={"enterpriseBeans", "removeMethod", "lifecycle"})
+   @Test(groups={"enterpriseBeans", "removeMethod", "lifecycle", "stub"})
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanRemoveMethodCalledWhenDestroyedByManager()
    {
@@ -66,7 +66,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
       EnterpriseBean<WelshCorgie> bean = Util.createEnterpriseBean(WelshCorgie.class, manager);
    }
 
-   @Test(groups={"enterpriseBeans", "removeMethod"}, expectedExceptions = UnremovedException.class)
+   @Test(groups={"enterpriseBeans", "removeMethod", "stub"}, expectedExceptions = UnremovedException.class)
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanWithoutRemoveMethodMustBeRemovedByApplicationBeforeManager()
    {
@@ -77,7 +77,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
       context.destroy(manager);
    }
 
-   @Test(groups={"enterpriseBeans", "removeMethod", "lifecycle"})
+   @Test(groups={"enterpriseBeans", "removeMethod", "lifecycle", "stub"})
    @SpecAssertion(section = "3.3.5")
    public void testApplicationRemoveMethodCallRemovesInstanceFromContext()
    {
@@ -156,22 +156,21 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    }
    
    
-   @Test(groups={"enterpriseBeans", "removeMethod"})
+   @Test(groups={"enterpriseBeans", "removeMethod", "stub"})
    @SpecAssertion(section = "3.3.5.2")
    public void testXMLDefinedEnterpriseBeanWithoutMatchingRemoveMethodFails()
    {
       assert false;
    }
 
-   @Test(groups={"enterpriseBeans", "removeMethod"})
+   @Test(groups={"enterpriseBeans", "removeMethod", "stub"})
    @SpecAssertion(section = "3.3.5.2")
    public void testXMLDefinedEnterpriseBeanWithMultipleRemoveMethodsFails()
    {
-      XmlEnterpriseBean<ChowChow> bean = Util.createXmlEnterpriseBean(ChowChow.class, manager);
       assert false;
    }
 
-   @Test(groups={"enterpriseBeans", "removeMethod"})
+   @Test(groups={"enterpriseBeans", "removeMethod", "stub"})
    @SpecAssertion(section = "3.3.5.2")
    public void testXMLDefinedEnterpriseBeanIgnoresBindingAnnotationOnParameters()
    {

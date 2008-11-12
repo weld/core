@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 public class ManagerTest extends AbstractTest
 {
    
-   @Test(groups={"manager", "injection", "deployment"}) @SpecAssertion(section="4.8")
+   @Test(groups={"stub", "manager", "injection", "deployment"}) @SpecAssertion(section="4.8")
    public void testInjectingManager()
    {
       assert false;
@@ -37,7 +37,7 @@ public class ManagerTest extends AbstractTest
       assert true;
    }
 
-   @Test(expectedExceptions={ContextNotActiveException.class}, groups={"manager"}) @SpecAssertion(section="8.6")
+   @Test(expectedExceptions={ContextNotActiveException.class}, groups={"stub", "manager"}) @SpecAssertion(section="8.6")
    public void testGetContextWithNoRegisteredContextsFails()
    {
       manager.setContexts();
@@ -55,7 +55,7 @@ public class ManagerTest extends AbstractTest
       
    }
 
-   @Test(groups={"manager", "ejb3"}) @SpecAssertion(section="4.8")
+   @Test(groups={"stub", "manager", "ejb3"}) @SpecAssertion(section="4.8")
    public void testManagerLookupInJndi()
    {
       assert false;

@@ -44,19 +44,19 @@ public class BindingTypeTest extends AbstractTest
       order.getBindingTypes().iterator().next().annotationType().equals(Current.class);
    }
 
-   @Test(groups="annotationDefinition") @SpecAssertion(section="2.3.2")
+   @Test(groups={"stub", "annotationDefinition"}) @SpecAssertion(section="2.3.2")
    public void testBindingTypeHasCorrectTarget()
    {
       assert false;
    }
 
-   @Test(groups="annotationDefinition") @SpecAssertion(section="2.3.2")
+   @Test(groups={"stub", "annotationDefinition"}) @SpecAssertion(section="2.3.2")
    public void testBindingTypeHasCorrectRetention()
    {
       assert false;
    }
 
-   @Test(groups="annotationDefinition") @SpecAssertion(section="2.3.2")
+   @Test(groups={"stub", "annotationDefinition"}) @SpecAssertion(section="2.3.2")
    public void testBindingTypeDeclaresBindingTypeAnnotation()
    {
       assert false;
@@ -79,7 +79,7 @@ public class BindingTypeTest extends AbstractTest
    }
    
    @SuppressWarnings("unchecked")
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.3.4")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.3.4")
    public void testBindingTypesDeclaredInXml()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -91,7 +91,7 @@ public class BindingTypeTest extends AbstractTest
       assert false;
    }
 
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.3.4")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.3.4")
    public void testXmlBindingTypeOverridesAndIgnoresJava()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -104,7 +104,7 @@ public class BindingTypeTest extends AbstractTest
       assert false;
    }
    
-	@Test(groups="webbeansxml") @SpecAssertion(section="2.3.4") 
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.3.4")
    public void testNoBindingTypesDeclaredInXml()
    {
 	   Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -116,7 +116,7 @@ public class BindingTypeTest extends AbstractTest
       assert false;
    }
 	
-	@Test(groups="webbeansxml") @SpecAssertion(section={"2.3.4", "2.3.1"}) 
+	@Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section={"2.3.4", "2.3.1"}) 
    public void testDefaultBindingTypeDeclaredInXml()
    {
       SimpleBean<?> model = createSimpleBean(Tuna.class, manager);
@@ -139,13 +139,13 @@ public class BindingTypeTest extends AbstractTest
       assert barn.petSpider instanceof DefangedTarantula;
    }
 	
-	@Test(groups={"injection", "webbeansxml"}) @SpecAssertion(section="2.3.5") 
+	@Test(groups={"stub", "injection", "webbeansxml"}) @SpecAssertion(section="2.3.5") 
    public void testFieldWithBindingTypeInXml()
    {
       assert false;
    }
 	
-	@Test(groups={"injection", "webbeansxml"}) @SpecAssertion(section="2.3.5") 
+	@Test(groups={"stub", "injection", "webbeansxml"}) @SpecAssertion(section="2.3.5") 
    public void testFieldWithBindingTypeInXmlIgnoresAnnotations()
    {
       assert false;
@@ -165,13 +165,13 @@ public class BindingTypeTest extends AbstractTest
       assert spider instanceof DefangedTarantula;
    }
 	
-	@Test(groups={"injection", "webbeansxml"}) @SpecAssertion(section="2.3.6") 
+	@Test(groups={"stub", "injection", "webbeansxml"}) @SpecAssertion(section="2.3.6") 
    public void testMethodWithBindingAnnotationsOnParametersDeclaredInXml()
    {
       assert false;
    }
 	
-	@Test(groups={"injection", "webbeansxml"}) @SpecAssertion(section="2.3.6") 
+	@Test(groups={"stub", "injection", "webbeansxml"}) @SpecAssertion(section="2.3.6") 
    public void testMethodWithBindingAnnotationsOnParametersDeclaredInXmlIgnoresAnnotations()
    {
       assert false;

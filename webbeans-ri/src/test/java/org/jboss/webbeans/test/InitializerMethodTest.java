@@ -26,37 +26,37 @@ public class InitializerMethodTest extends AbstractTest
       createSimpleBean(Dottrel.class, manager);
    }
    
-   @Test(groups={"initializerMethod", "servlet"}) @SpecAssertion(section="3.7")
+   @Test(groups={"stub", "initializerMethod", "servlet"}) @SpecAssertion(section="3.7")
    public void testInitializerMethodCalledOnServlet()
    {
       assert false;
    }
    
-   @Test(groups={"initializerMethod", "ejb3"}) @SpecAssertion(section="3.7")
+   @Test(groups={"stub", "initializerMethod", "ejb3"}) @SpecAssertion(section="3.7")
    public void testInitializerMethodCalledOnEJBSessionBean()
    {
       assert false;
    }
    
-   @Test(groups={"initializerMethod", "ejb3"}) @SpecAssertion(section="3.7")
+   @Test(groups={"stub", "initializerMethod", "ejb3"}) @SpecAssertion(section="3.7")
    public void testInitializerMethodCalledOnEJBMDB()
    {
       assert false;
    }
    
-   @Test(groups={"initializerMethod", "ejb3", "singletons"}) @SpecAssertion(section="3.7")
+   @Test(groups={"stub", "initializerMethod", "ejb3", "singletons"}) @SpecAssertion(section="3.7")
    public void testInitializerMethodCalledOnEJBSingleton()
    {
       assert false;
    }
    
-   @Test(groups={"initializerMethod", "ejb3"}) @SpecAssertion(section="3.7")
+   @Test(groups={"stub", "initializerMethod", "ejb3"}) @SpecAssertion(section="3.7")
    public void testInitializerMethodNotABusinessMethod()
    {
       assert false;
    }
    
-   @Test(groups={"initializerMethod", "interceptors"}) @SpecAssertion(section="3.7")
+   @Test(groups={"stub", "initializerMethod", "interceptors"}) @SpecAssertion(section="3.7")
    public void testMethodInterceptorNotCalledOnInitializerMethod()
    {
       assert false;
@@ -98,25 +98,25 @@ public class InitializerMethodTest extends AbstractTest
       createSimpleBean(Grouse.class, manager);
    }
    
-   @Test(groups={"initializerMethod", "webbeansxml"}) @SpecAssertion(section="3.7.2")
+   @Test(groups={"stub", "initializerMethod", "webbeansxml"}) @SpecAssertion(section="3.7.2")
    public void testInitializerMethodDeclaredInXml()
    {
       assert false;
    }
    
-   @Test(groups={"initializerMethod", "webbeansxml"}) @SpecAssertion(section="3.7.2")
+   @Test(groups={"stub", "initializerMethod", "webbeansxml"}) @SpecAssertion(section="3.7.2")
    public void testInitializerMethodDeclaredInXmlIgnoresBindingAnnotationsInJava()
    {
       assert false;
    }
    
-   @Test(groups={"initializerMethod", "webbeansxml"}, expectedExceptions=NonexistentMethodException.class) @SpecAssertion(section="3.7.2")
+   @Test(groups={"stub", "initializerMethod", "webbeansxml"}, expectedExceptions=NonexistentMethodException.class) @SpecAssertion(section="3.7.2")
    public void testInitializerMethodDeclaredInXmlDoesNotExist()
    {
       assert false;
    }
    
-   @Test(groups={"initializerMethod", "webbeansxml"}) @SpecAssertion(section="3.7.2")
+   @Test(groups={"stub", "initializerMethod", "webbeansxml"}) @SpecAssertion(section="3.7.2")
    public void testBeanHasAllInitializerMethodsDeclaredInJavaAndXml()
    {
       assert false;

@@ -75,7 +75,7 @@ public class InstantiationByNameTest extends AbstractTest
       assert manager.getInstanceByName("salmon") instanceof Salmon;
    }
    
-   @Test(groups={"resolution", "el"}) @SpecAssertion(section="4.10")
+   @Test(groups={"stub", "resolution", "el"}) @SpecAssertion(section="4.10")
    public void testGetInstanceByNameCalledOncePerDistinctNameInElExpression()
    {
       assert false;

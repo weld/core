@@ -112,63 +112,63 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
       EnterpriseBean<Pekingese> pekingese = Util.createEnterpriseBean(Pekingese.class, manager);
    }
 
-   @Test(expectedExceptions = DefinitionException.class, groups = "enterpriseBeans")
+   @Test(expectedExceptions = DefinitionException.class, groups = {"enterpriseBeans", "stub"})
    @SpecAssertion(section = "3.3")
    public void testMultipleAnnotationDefinedEnterpriseBeansWithSameImplementationClassFails()
    {
       assert false;
    }
 
-   @Test(groups = { "webbeansxml", "enterpriseBeans" })
+   @Test(groups = { "webbeansxml", "enterpriseBeans", "stub" })
    @SpecAssertion(section = "3.3")
    public void testMultipleXMLDefinedEnterpriseBeansWithSameImplementationClassOK()
    {
       assert false;
    }
 
-   @Test(groups="enterpriseBeans")
+   @Test(groups={"enterpriseBeans", "stub"})
    @SpecAssertion(section = "3.3.1")
    public void testAnnotatedEnterpriseBean()
    {
       assert false;
    }
 
-   @Test(groups="enterpriseBeans")
+   @Test(groups={"enterpriseBeans", "stub"})
    @SpecAssertion(section = "3.3.1")
    public void testAnnotatedEnterpriseBeanComplementedWithXML()
    {
       assert false;
    }
 
-   @Test(groups={"enterpriseBeans", "ejbjarxml"})
+   @Test(groups={"enterpriseBeans", "ejbjarxml", "stub"})
    @SpecAssertion(section = "3.3.1")
    public void testEJBJARDefinedEnterpriseBean()
    {
       assert false;
    }
 
-   @Test(groups={"enterpriseBeans", "ejbjarxml"})
+   @Test(groups={"enterpriseBeans", "ejbjarxml", "stub"})
    @SpecAssertion(section = "3.3.1")
    public void testEJBJARDefinedEnterpriseBeanComplementedWithXML()
    {
       assert false;
    }
 
-   @Test(groups="enterpriseBeans")
+   @Test(groups={"enterpriseBeans", "stub"})
    @SpecAssertion(section = "3.3.2")
    public void testAPITypesAreLocalInterfacesWithoutWildcardTypesOrTypeVariablesWithSuperInterfaces()
    {
       assert false;
    }
 
-   @Test(groups="enterpriseBeans")
+   @Test(groups={"enterpriseBeans", "stub"})
    @SpecAssertion(section = "3.3.2")
    public void testEnterpriseBeanWithLocalViewAndParameterizedTypeIncludesBeanClassAndSuperclassesInAPITypes()
    {
       assert false;
    }
 
-   @Test
+   @Test(groups="enterpriseBeans")
    @SpecAssertion(section = "3.3.2")
    public void testObjectIsInAPITypes()
    {
@@ -176,28 +176,28 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
       assert laika.getTypes().contains(Object.class);
    }
 
-   @Test(groups="enterpriseBeans")
+   @Test(groups={"enterpriseBeans", "stub"})
    @SpecAssertion(section = "3.3.2")
    public void testRemoteInterfacesAreNotInAPITypes()
    {
       assert false;
    }
 
-   @Test(groups={"enterpriseBeans", "producerMethod", "observerMethod", "renoveMethod", "webbeansxml"})
+   @Test(groups={"enterpriseBeans", "producerMethod", "observerMethod", "removeMethod", "webbeansxml", "stub"})
    @SpecAssertion(section = "3.3.4")
    public void testXMLDefinedEnterpriseBeanIgnoresProducerAndDisposalAndObserverAnnotations()
    {
       assert false;
    }
 
-   @Test(expectedExceptions = DefinitionException.class, groups={"enterpriseBeans", "ejbjarxml", "singletons"})
+   @Test(expectedExceptions = DefinitionException.class, groups={"enterpriseBeans", "ejbjarxml", "singletons", "stub"})
    @SpecAssertion(section = "3.3.4")
    public void testXMLDefinedSingletonsFail()
    {
       assert false;
    }
 
-   @Test(expectedExceptions = DefinitionException.class)
+   @Test(expectedExceptions = DefinitionException.class, groups="enterpriseBeans")
    @SpecAssertion(section = "3.3")
    public void testMessageDrivenBeansNotOK()
    {
@@ -205,7 +205,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    }
 
    
-   @Test
+   @Test(groups="enterpriseBeans")
    @SpecAssertion(section = "3.3.7")
    public void testDefaultName()
    {

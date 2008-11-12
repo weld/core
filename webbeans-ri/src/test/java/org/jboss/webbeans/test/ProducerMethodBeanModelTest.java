@@ -50,7 +50,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       createProducerMethodBean(String.class, method, manager, bean);
    }
    
-   @Test(groups={"producerMethod", "enterpriseBeans"}, expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
+   @Test(groups={"stub", "producerMethod", "enterpriseBeans", "stub"}, expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
    public void testProducerMethodIsNotBusinessMethod() throws Exception
    {
       assert false;
@@ -83,7 +83,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       createProducerMethodBean(FunnelWeaver.class, method, manager, bean);
    }
    
-   @Test(groups={"producerMethod", "deployment"}) @SpecAssertion(section="3.4")
+   @Test(groups={"stub", "producerMethod", "deployment"}) @SpecAssertion(section="3.4")
    public void testBeanDeclaresMultipleProducerMethods()
    {
       assert false;
@@ -232,42 +232,42 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       createProducerMethodBean(String.class, method, manager, bean);
    }
    
-   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.4")
+   @Test(groups={"stub", "disposalMethod"}) @SpecAssertion(section="3.3.4")
    public void testDisposalMethodNonStatic()
    {
       // TODO Placeholder
       assert false;
    }
    
-   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.4")
+   @Test(groups={"stub", "disposalMethod"}) @SpecAssertion(section="3.3.4")
    public void testDisposalMethodMethodDeclaredOnWebBeanImplementationClass()
    {
       // TODO Placeholder
       assert false;
    }
    
-   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.4")
+   @Test(groups={"stub", "disposalMethod"}) @SpecAssertion(section="3.3.4")
    public void testDisposalMethodBindingAnnotations()
    {
       // TODO Placeholder
       assert false;
    }
    
-   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.4")
+   @Test(groups={"stub", "disposalMethod"}) @SpecAssertion(section="3.3.4")
    public void testDisposalMethodDefaultBindingAnnotations()
    {
       // TODO Placeholder
       assert false;
    }
    
-   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.4")
+   @Test(groups={"stub", "disposalMethod"}) @SpecAssertion(section="3.3.4")
    public void testDisposalMethodDoesNotResolveToProducerMethod()
    {
       // TODO Placeholder
       assert false;
    }
    
-   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.5")
+   @Test(groups={"stub", "disposalMethod"}) @SpecAssertion(section="3.3.5")
    public void testDisposalMethodDeclaredOnEnabledBean()
    {
       // TODO Placeholder
@@ -276,7 +276,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.4")
+   @Test(groups={"stub", "disposalMethod"}) @SpecAssertion(section="3.3.5")
    public void testBeanCanDeclareMultipleDisposalMethods()
    {
       // TODO move this 
@@ -284,7 +284,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups="disposalMethod") @SpecAssertion(section="3.3.5")
+   @Test(groups={"stub", "disposalMethod"}) @SpecAssertion(section="3.3.5")
    public void testProducerMethodHasNoMoreThanOneDisposalMethod()
    {
       // TODO move this 

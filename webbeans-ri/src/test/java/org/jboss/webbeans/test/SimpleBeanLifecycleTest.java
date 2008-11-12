@@ -29,7 +29,7 @@ public class SimpleBeanLifecycleTest extends AbstractTest
 	   assert fishPond.goldfish != null;
 	}
 	
-	@Test(groups="specialization") @SpecAssertion(section="3.1.4")
+	@Test(groups={"stub", "specialization"}) @SpecAssertion(section="3.1.4")
    public void testSpecializedBeanAlwaysUsed()
    {
       // TODO Placeholder
@@ -43,31 +43,31 @@ public class SimpleBeanLifecycleTest extends AbstractTest
       assert bean.create() instanceof RedSnapper;
    }
    
-   @Test(groups={"beanLifecycle", "interceptors"}) @SpecAssertion(section="5.3")
+   @Test(groups={"stub", "beanLifecycle", "interceptors"}) @SpecAssertion(section="5.3")
    public void testCreateBindsInterceptorStack()
    {
       assert false;
    }
    
-   @Test(groups={"beanLifecycle", "decorators"}) @SpecAssertion(section="5.3")
+   @Test(groups={"stub", "beanLifecycle", "decorators"}) @SpecAssertion(section="5.3")
    public void testCreateBindsDecoratorStack()
    {
       assert false;
    }
    
-   @Test(groups={"beanLifecycle", "commonAnnotations"}) @SpecAssertion(section="5.3")
+   @Test(groups={"stub", "beanLifecycle", "commonAnnotations"}) @SpecAssertion(section="5.3")
    public void testCreateInjectsEjb()
    {
       assert false;
    }
    
-   @Test(groups={"beanLifecycle", "commonAnnotations"}) @SpecAssertion(section="5.3")
+   @Test(groups={"stub", "beanLifecycle", "commonAnnotations"}) @SpecAssertion(section="5.3")
    public void testCreateInjectsPersistenceContext()
    {
       assert false;
    }
    
-   @Test(groups={"beanLifecycle", "commonAnnotations"}) @SpecAssertion(section="5.3")
+   @Test(groups={"stub", "beanLifecycle", "commonAnnotations"}) @SpecAssertion(section="5.3")
    public void testCreateInjectsResource()
    {
       assert false;

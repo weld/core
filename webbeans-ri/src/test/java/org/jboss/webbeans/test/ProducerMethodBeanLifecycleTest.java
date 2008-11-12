@@ -29,21 +29,21 @@ public class ProducerMethodBeanLifecycleTest extends AbstractTest
       assert tarantula != null;
    }
    
-   @Test(groups="specialization") @SpecAssertion(section="3.3.3")
+   @Test(groups={"stub", "specialization"}) @SpecAssertion(section="3.3.3")
    public void testSpecializedBeanAlwaysUsed()
    {
       // TODO Placeholder
       assert false;
    }
    
-   @Test(groups={"disposalMethod", "beanLifecycle"}) @SpecAssertion(section="3.3.4")
+   @Test(groups={"stub", "disposalMethod", "beanLifecycle"}) @SpecAssertion(section="3.3.4")
    public void testDisposalMethodCalled()
    {
       // TODO Placeholder
       assert false;
    }
    
-   @Test(groups={"disposalMethod", "beanLifecycle"}) @SpecAssertion(section="3.3.4")
+   @Test(groups={"stub", "disposalMethod", "beanLifecycle"}) @SpecAssertion(section="3.3.4")
    public void testDisposalMethodHasParametersInjected()
    {
       // TODO Placeholder

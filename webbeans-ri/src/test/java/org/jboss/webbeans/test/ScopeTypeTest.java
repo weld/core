@@ -44,19 +44,19 @@ public class ScopeTypeTest extends AbstractTest
       assert mullet.getScopeType().equals(AnotherScopeType.class);
    }
    
-   @Test(groups="annotationDefinition") @SpecAssertion(section="2.4.2")
+   @Test(groups={"stub", "annotationDefinition"}) @SpecAssertion(section="2.4.2")
    public void testScopeTypeHasCorrectTarget()
    {
       assert false;
    }
 
-   @Test(groups="annotationDefinition") @SpecAssertion(section="2.4.2")
+   @Test(groups={"stub", "annotationDefinition"}) @SpecAssertion(section="2.4.2")
    public void testScopeTypeHasCorrectRetention()
    {
       assert false;
    }
 
-   @Test(groups="annotationDefinition") @SpecAssertion(section="2.4.2")
+   @Test(groups={"stub", "annotationDefinition"}) @SpecAssertion(section="2.4.2")
    public void testScopeTypeDeclaresScopeTypeAnnotation()
    {
       assert false;
@@ -75,7 +75,7 @@ public class ScopeTypeTest extends AbstractTest
       createSimpleBean(BeanWithTooManyScopeTypes.class, manager);
    }
    
-   @Test(expectedExceptions=DefinitionException.class, groups="webbeansxml")
+   @Test(expectedExceptions=DefinitionException.class, groups={"stub", "webbeansxml"})
    public void testTooManyScopesSpecifiedInXml()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -85,7 +85,7 @@ public class ScopeTypeTest extends AbstractTest
       //createSimpleBean(null, antelopeAnnotatedItem, manager);
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.4.4")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.4.4")
    public void testScopeDeclaredInXml()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -97,7 +97,7 @@ public class ScopeTypeTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.4.4")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.4.4")
    public void testScopeMissingInXml()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -108,7 +108,7 @@ public class ScopeTypeTest extends AbstractTest
       assert false;
    }
 
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.4.4")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.4.4")
    public void testScopeDeclaredInXmlOverridesJava()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -126,7 +126,7 @@ public class ScopeTypeTest extends AbstractTest
       assert order.getScopeType().equals(Dependent.class);
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section={"2.4.5", "2.7.2"})
+   @Test(groups={"stub", "webbeansxml"})@SpecAssertion(section={"2.4.5", "2.7.2"})
    public void testScopeSpecifiedAndStereotyped()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -157,7 +157,7 @@ public class ScopeTypeTest extends AbstractTest
       assert exception;
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.4.5")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.4.5")
    public void testMutipleIncompatibleScopeStereotypesWithScopeSpecified()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -170,7 +170,7 @@ public class ScopeTypeTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.4.5")
+   @Test(groups={"stub", "webbeansxml"})@SpecAssertion(section="2.4.5")
    public void testMutipleCompatibleScopeStereotypes()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();

@@ -49,21 +49,21 @@ public class EnterpriseBeanSpecializationTest extends AbstractTest
       assert houndOfBaskerville.getName().equals("Pongo");
    }
 
-   @Test(expectedExceptions=DefinitionException.class, groups={"specialization", "enterpriseBeans"})
+   @Test(expectedExceptions=DefinitionException.class, groups={"stub", "specialization", "enterpriseBeans"})
    @SpecAssertion(section = "3.3.6")
    public void testSpecializingNotSupportingLocalInterfacesOfSpecializedFails()
    {
       assert false;
    }
 
-   @Test(expectedExceptions=DefinitionException.class, groups={"specialization", "enterpriseBeans"})
+   @Test(expectedExceptions=DefinitionException.class, groups={"stub", "specialization", "enterpriseBeans"})
    @SpecAssertion(section = "3.3.6")
    public void testSpecializingNotSupportingLocalViewOfSpecializedFails()
    {
       assert false;
    }
 
-   @Test(groups={"specialization", "enterpriseBeans"})
+   @Test(groups={"stub", "specialization", "enterpriseBeans"})
    @SpecAssertion(section = "3.3.6")
    public void testXMLDefinedSpecializationOnAnnotationDefinedBean()
    {
@@ -71,7 +71,7 @@ public class EnterpriseBeanSpecializationTest extends AbstractTest
    }
 
    
-   @Test(expectedExceptions = DeploymentException.class, groups={"enterpriseBeans", "specialization"})
+   @Test(expectedExceptions = DeploymentException.class, groups={"stub", "enterpriseBeans", "specialization"})
    @SpecAssertion(section = "3.3")
    public void testMultipleEnabledSpecializedEnterpriseBeanFails()
    {
@@ -85,7 +85,7 @@ public class EnterpriseBeanSpecializationTest extends AbstractTest
       EnterpriseBean<GreaterDane> greaterDane = Util.createEnterpriseBean(GreaterDane.class, manager);
    }
 
-   @Test(expectedExceptions=DefinitionException.class, groups={"specialization", "enterpriseBeans"})
+   @Test(expectedExceptions=DefinitionException.class, groups={"stub", "specialization", "enterpriseBeans"})
    @SpecAssertion(section = "3.3.6")
    public void testXMLDefinedSpecializingEnterpriseBeanNotImplementingAnnotationDefinedEnterpriseBeanFails()
    {

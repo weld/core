@@ -42,19 +42,19 @@ public class DeploymentTypeTest extends AbstractTest
       createSimpleBean(Gazelle.class, manager);
    }
    
-   @Test(groups="annotationDefinition") @SpecAssertion(section="2.5.2")
+   @Test(groups={"stub", "annotationDefinition"}) @SpecAssertion(section="2.5.2")
    public void testDeploymentTypeHasCorrectTarget()
    {
       assert false;
    }
 
-   @Test(groups="annotationDefinition") @SpecAssertion(section="2.5.2")
+   @Test(groups={"stub", "annotationDefinition"}) @SpecAssertion(section="2.5.2")
    public void testDeploymentTypeHasCorrectRetention()
    {
       assert false;
    }
 
-   @Test(groups="annotationDefinition") @SpecAssertion(section="2.5.2")
+   @Test(groups={"stub", "annotationDefinition"}) @SpecAssertion(section="2.5.2")
    public void testDeploymentTypeDeclaresScopeTypeAnnotation()
    {
       assert false;
@@ -66,7 +66,7 @@ public class DeploymentTypeTest extends AbstractTest
       createSimpleBean(BeanWithTooManyDeploymentTypes.class, manager);
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.5.4")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.5.4")
    public void testXmlDeploymentTypeOverridesJava()
    {
       Map<Class<? extends Annotation>, Annotation> xmlDefinedDeploymentTypeAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -80,7 +80,7 @@ public class DeploymentTypeTest extends AbstractTest
    
 
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.5.4")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.5.4")
    public void testXmlRespectsJavaDeploymentType()
    {
       AnnotatedClass<Tuna> annotatedItem = new SimpleAnnotatedClass<Tuna>(Tuna.class, new HashMap<Class<? extends Annotation>, Annotation>());
@@ -89,7 +89,7 @@ public class DeploymentTypeTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.5.5")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.5.5")
    public void testXmlDefaultDeploymentType()
    {
       AnnotatedClass<Antelope> antelopeAnnotatedItem = new SimpleAnnotatedClass<Antelope>(Antelope.class, new HashMap<Class<? extends Annotation>, Annotation>());
@@ -105,7 +105,7 @@ public class DeploymentTypeTest extends AbstractTest
       assert bean.getDeploymentType().equals(HornedAnimalDeploymentType.class);
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.5.5")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.5.5")
    public void testDeploymentTypeSpecifiedAndStereotyped()
    {
       Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -162,7 +162,7 @@ public class DeploymentTypeTest extends AbstractTest
       manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
    }
    
-   @Test(groups="webbeansxml", expectedExceptions=DeploymentException.class) @SpecAssertion(section="2.5.6")
+   @Test(groups={"stub", "webbeansxml"}, expectedExceptions=DeploymentException.class) @SpecAssertion(section="2.5.6")
    public void testMultipleDeployElementsCannotBeDefined()
    {
       

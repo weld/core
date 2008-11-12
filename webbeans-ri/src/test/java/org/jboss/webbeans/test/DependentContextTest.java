@@ -32,7 +32,7 @@ public class DependentContextTest extends AbstractTest
       assert !foxRun.fox.equals(foxRun.anotherFox);
    }
    
-   @Test(groups={"contexts", "el"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "el"}) @SpecAssertion(section="8.3")
    public void testInstanceUsedForElEvalutionNotShared()
    {
       assert false;
@@ -52,7 +52,7 @@ public class DependentContextTest extends AbstractTest
       assert tarantula != tarantula2;
    }
    
-   @Test(groups={"contexts", "observerMethod"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "observerMethod"}) @SpecAssertion(section="8.3")
    public void testInstanceUsedForObserverMethodNotShared()
    {
       assert false;
@@ -85,14 +85,14 @@ public class DependentContextTest extends AbstractTest
       manager.getContext(Dependent.class).isActive();
    }
    
-   @Test(groups={"contexts", "observerMethod"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "observerMethod"}) @SpecAssertion(section="8.3")
    public void testContextIsActiveWhenInvokingObserverMethod()
    {
       assert false;
    }
    
    
-   @Test(groups={"contexts", "el"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "el"}) @SpecAssertion(section="8.3")
    public void testContextIsActiveWhenEvaluatingElExpression()
    {
       assert false;
@@ -109,7 +109,7 @@ public class DependentContextTest extends AbstractTest
       assert foxRun.fox != null;
    }
    
-   @Test(groups={"contexts", "beanDestruction"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "beanDestruction"}) @SpecAssertion(section="8.3")
    public void testContextIsActiveDuringBeanDestruction()
    {
       assert false;
@@ -125,55 +125,55 @@ public class DependentContextTest extends AbstractTest
       assert foxRun.fox != null;
    }
    
-   @Test(groups={"contexts", "ejb3"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "ejb3"}) @SpecAssertion(section="8.3")
    public void testEjbBeanMayMayCreateInstanceFromInitializer()
    {
       assert false;
    }
    
-   @Test(groups={"contexts", "ejb3"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "ejb3"}) @SpecAssertion(section="8.3")
    public void testEjbBeanMayMayCreateInstanceFromPostConstruct()
    {
       assert false;
    }
    
-   @Test(groups={"contexts", "ejb3"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "ejb3"}) @SpecAssertion(section="8.3")
    public void testEjbBeanMayMayCreateInstanceFromPreDestroy()
    {
       assert false;
    }
    
-   @Test(groups={"contexts", "servlet"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "servlet"}) @SpecAssertion(section="8.3")
    public void testServletBeanMayMayCreateInstanceFromInitializer()
    {
       assert false;
    }
    
-   @Test(groups={"contexts", "beanDestruction"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "beanDestruction"}) @SpecAssertion(section="8.3")
    public void testDestroyingParentDestroysDependents()
    {
       assert false;
    }
    
-   @Test(groups={"contexts", "ejb3"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "ejb3"}) @SpecAssertion(section="8.3")
    public void testDestroyingEjbDestroysDependents()
    {
       assert false;
    }
    
-   @Test(groups={"contexts", "servlet"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "servlet"}) @SpecAssertion(section="8.3")
    public void testDestroyingServletDestroysDependents()
    {
       assert false;
    }
    
-   @Test(groups={"contexts", "el"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "el"}) @SpecAssertion(section="8.3")
    public void testDependentsDestroyedWhenElEvaluationCompletes()
    {
       assert false;
    }
    
-   @Test(groups={"contexts", "observerMethod"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "observerMethod"}) @SpecAssertion(section="8.3")
    public void testDependentsDestroyedWhenObserverMethodEvaluationCompletes()
    {
       assert false;

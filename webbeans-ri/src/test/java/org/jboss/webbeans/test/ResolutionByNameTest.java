@@ -17,19 +17,19 @@ import org.testng.annotations.Test;
 public class ResolutionByNameTest extends AbstractTest
 {
 
-   @Test(groups="el") @SpecAssertion(section="4.10")
+   @Test(groups={"stub", "el"}) @SpecAssertion(section="4.10")
    public void testELResolver()
    {
       assert false;
    }
    
-   @Test(groups="el") @SpecAssertion(section="4.10.2")
+   @Test(groups={"stub", "el"})  @SpecAssertion(section="4.10.2")
    public void testELResolverRegisteredWithJsf()
    {
       assert false;
    }
    
-   @Test(groups="el") @SpecAssertion(section="4.10.2")
+   @Test(groups={"stub", "el"})  @SpecAssertion(section="4.10.2")
    public void testELResolverRegisteredWithServlet()
    {
       assert false;

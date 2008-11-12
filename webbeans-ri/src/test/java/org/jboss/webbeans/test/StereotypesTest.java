@@ -39,19 +39,19 @@ import org.testng.annotations.Test;
 public class StereotypesTest extends AbstractTest
 {
 	
-   @Test(groups="annotationDefinition", expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1")
+   @Test(groups={"stub", "annotationDefinition"}, expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1")
    public void testHasCorrectTarget()
    {
 	   assert false;
    }
    
-   @Test(groups="annotationDefinition", expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1")
+   @Test(groups={"stub", "annotationDefinition"}, expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1")
    public void testHasCorrectRetention()
    {
 	   assert false;
    }
    
-   @Test(groups="annotationDefinition", expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1")
+   @Test(groups={"stub", "annotationDefinition"}, expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1")
    public void testHasStereotypeAnnotation()
    {
 	   assert false;
@@ -119,7 +119,7 @@ public class StereotypesTest extends AbstractTest
       assert animalStereotype.getInterceptorBindings().size() == 0;
    }
    
-   @Test(groups="interceptors") @SpecAssertion(section="2.7.1")
+   @Test(groups={"stub", "interceptors"}) @SpecAssertion(section="2.7.1")
    public void testStereotypeWithInterceptors()
    {
       assert false;
@@ -163,7 +163,7 @@ public class StereotypesTest extends AbstractTest
       assert highlandCow.getDeploymentType().equals(HornedAnimalDeploymentType.class);
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.7.3")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.7.3")
    public void testStereotypeDeclaredInXmlIgnoresJavaStereotypes()
    {
       Map<Class<? extends Annotation>, Annotation> cooXmlAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
@@ -179,7 +179,7 @@ public class StereotypesTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.7.3")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.7.3")
    public void testStereotypeDeclaredInXmlIgnoresJavaBindingTypes()
    {
       Map<Class<? extends Annotation>, Annotation> cooXmlAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();

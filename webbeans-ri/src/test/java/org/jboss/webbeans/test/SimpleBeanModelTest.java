@@ -69,7 +69,7 @@ public class SimpleBeanModelTest extends AbstractTest
       createSimpleBean(ParameterizedBean.class, manager);
    }
    
-   @Test(expectedExceptions=DefinitionException.class, groups={"interceptors", "decorators"}) @SpecAssertion(section="3.2")
+   @Test(expectedExceptions=DefinitionException.class, groups={"stub", "interceptors", "decorators"}) @SpecAssertion(section="3.2")
    public void testClassCannotBeInterceptorAndDecorator()
    {
       
@@ -94,55 +94,55 @@ public class SimpleBeanModelTest extends AbstractTest
       assert bean.getTypes().contains(DeadlyAnimal.class);
    }
    
-   @Test(groups={"producerMethod", "webbeansxml"}) @SpecAssertion(section="3.2.4")
+   @Test(groups={"stub", "producerMethod", "webbeansxml"}) @SpecAssertion(section="3.2.4")
    public void testBeanDeclaredInXmlIgnoresProducerMethodDeclaredInJava()
    {
       assert false;
    }
    
-   @Test(groups={"disposalMethod", "webbeansxml"}) @SpecAssertion(section="3.2.4")
+   @Test(groups={"stub", "disposalMethod", "webbeansxml"}) @SpecAssertion(section="3.2.4")
    public void testBeanDeclaredInXmlIgnoresDisposalMethodDeclaredInJava()
    {
       assert false;
    }
    
-   @Test(groups={"observerMethod", "webbeansxml"}) @SpecAssertion(section="3.2.4")
+   @Test(groups={"stub", "observerMethod", "webbeansxml"}) @SpecAssertion(section="3.2.4")
    public void testBeanDeclaredInXmlIgnoresObserverMethodDeclaredInJava()
    {
       assert false;
    }
    
-   @Test(expectedExceptions=DefinitionException.class, groups="webbeansxml") @SpecAssertion(section="3.2.4")
+   @Test(expectedExceptions=DefinitionException.class, groups={"stub", "webbeansxml"}) @SpecAssertion(section="3.2.4")
    public void testAbstractClassDeclaredInXmlIsNotAllowed()
    {
       
    }
    
-   @Test(groups={"innerClass", "webbeansxml"}) @SpecAssertion(section="3.2.4")
+   @Test(groups={"stub", "innerClass", "webbeansxml"}) @SpecAssertion(section="3.2.4")
    public void testStaticInnerClassDeclaredInXmlAllowed()
    {
       assert false;
    }
    
-   @Test(expectedExceptions=DefinitionException.class, groups={"innerClass", "webbeansxml"}) @SpecAssertion(section="3.2.4")
+   @Test(expectedExceptions=DefinitionException.class, groups={"stub", "innerClass", "webbeansxml"}) @SpecAssertion(section="3.2.4")
    public void testNonStaticInnerClassDeclaredInXmlNotAllowed()
    {
       assert false;
    }
    
-   @Test(expectedExceptions=DefinitionException.class, groups="webbeansxml") @SpecAssertion(section="3.2.4")
+   @Test(expectedExceptions=DefinitionException.class, groups={"stub", "webbeansxml"}) @SpecAssertion(section="3.2.4")
    public void testParameterizedClassDeclaredInXmlIsNotAllowed()
    {
       assert false;
    }
    
-   @Test(expectedExceptions=DefinitionException.class, groups={"interceptors"}) @SpecAssertion(section="3.2.4")
+   @Test(expectedExceptions=DefinitionException.class, groups={"stub", "interceptors"}) @SpecAssertion(section="3.2.4")
    public void testClassHasInterceptorInJavaMustHaveInterceptorInXml()
    {
       assert false;
    }
    
-   @Test(expectedExceptions=DefinitionException.class, groups={"interceptors"}) @SpecAssertion(section="3.2.4")
+   @Test(expectedExceptions=DefinitionException.class, groups={"stub", "interceptors"}) @SpecAssertion(section="3.2.4")
    public void testClassHasDecoratorInJavaMustHaveDecoratorInXml()
    {
       assert false;
@@ -204,25 +204,25 @@ public class SimpleBeanModelTest extends AbstractTest
       createSimpleBean(Goose.class, manager);
    }
    
-   @Test(expectedExceptions=DefinitionException.class, groups="disposalMethod") @SpecAssertion(section="3.2.5.1")
+   @Test(expectedExceptions=DefinitionException.class, groups={"stub", "disposalMethod"}) @SpecAssertion(section="3.2.5.1")
    public void testConstructorHasDisposesParameter()
    {
       assert false;
    }
    
-   @Test(expectedExceptions=DefinitionException.class, groups="observerMethod") @SpecAssertion(section="3.2.5.1")
+   @Test(expectedExceptions=DefinitionException.class, groups={"stub", "observerMethod"}) @SpecAssertion(section="3.2.5.1")
    public void testConstructorHasObservesParameter()
    {
       assert false;
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="3.2.5.2")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="3.2.5.2")
    public void testImplicitConstructorDeclaredInXmlUsed()
    {
       assert false;
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="3.2.5.2")
+   @Test(groups={"stub", "webbeansxml"})  @SpecAssertion(section="3.2.5.2")
    public void testEmptyConstructorDeclaredInXmlUsed()
    {
       AnnotatedConstructor<Donkey> constructor = createSimpleBean(Donkey.class, manager).getConstructor();
@@ -230,13 +230,13 @@ public class SimpleBeanModelTest extends AbstractTest
       assert false;
    }
    
-   @Test(expectedExceptions=NonexistentConstructorException.class, groups="webbeansxml") @SpecAssertion(section="3.2.5.2")
+   @Test(expectedExceptions=NonexistentConstructorException.class, groups={"stub", "webbeansxml"}) @SpecAssertion(section="3.2.5.2")
    public void testConstructorDeclaredInXmlDoesNotExist()
    {
       assert false;
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="3.2.5.2")
+   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="3.2.5.2")
    public void testConstructorDeclaredInXmlIgnoresBindingTypesDeclaredInJava()
    {
       assert false;
@@ -278,31 +278,31 @@ public class SimpleBeanModelTest extends AbstractTest
       assert bean.getName().equals("plough");
    }
    
-   @Test(groups="specialization") @SpecAssertion(section="3.2.6")
+   @Test(groups={"stub", "specialization"}) @SpecAssertion(section="3.2.6")
    public void testLessSpecializedClassNotInstantiated()
    {
       assert false;
    }
    
-   @Test(groups="specialization",expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2.6")
+   @Test(groups={"stub", "specialization"},expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2.6")
    public void testSpecializedClassMustExtendAnotherWebBean()
    {
       assert false;
    }
    
-   @Test(groups="specialization") @SpecAssertion(section="3.2.6")
+   @Test(groups={"stub", "specialization"}) @SpecAssertion(section="3.2.6")
    public void testSpecializedClassDeclaredInXmlInheritsBindingTypes()
    {
       assert false;
    }
    
-   @Test(groups="specialization") @SpecAssertion(section="3.2.6")
+   @Test(groups={"stub", "specialization"}) @SpecAssertion(section="3.2.6")
    public void testSpecializedClassDeclaredInXmlInheritsName()
    {
       assert false;
    }
    
-   @Test(groups="specialization") @SpecAssertion(section="3.2.6")
+   @Test(groups={"stub", "specialization"}) @SpecAssertion(section="3.2.6")
    public void testLessSpecializedClassDeclaredInXmlNotInstantiated()
    {
       assert false;
