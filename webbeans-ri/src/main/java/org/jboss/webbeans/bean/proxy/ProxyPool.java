@@ -1,4 +1,4 @@
-package org.jboss.webbeans.util;
+package org.jboss.webbeans.bean.proxy;
 
 import java.io.Serializable;
 import java.util.ArrayList;

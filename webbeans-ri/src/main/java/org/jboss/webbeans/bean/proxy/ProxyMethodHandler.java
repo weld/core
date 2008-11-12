@@ -1,4 +1,4 @@
-package org.jboss.webbeans.util;
+package org.jboss.webbeans.bean.proxy;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -9,6 +9,7 @@ import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.util.Reflections;
 
 public class ProxyMethodHandler implements MethodHandler, Serializable
 {

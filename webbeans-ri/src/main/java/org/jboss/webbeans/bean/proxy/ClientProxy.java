@@ -1,4 +1,6 @@
-package org.jboss.webbeans.util;
+package org.jboss.webbeans.bean.proxy;
+
+import org.jboss.webbeans.util.Reflections;
 
 
 
