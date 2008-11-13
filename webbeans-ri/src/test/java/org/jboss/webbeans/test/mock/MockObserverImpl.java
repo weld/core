@@ -2,7 +2,7 @@ package org.jboss.webbeans.test.mock;
 
 import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.event.ObserverImpl;
-import org.jboss.webbeans.introspector.impl.InjectableMethod;
+import org.jboss.webbeans.introspector.AnnotatedMethod;
 
 /**
  * An implementation used for unit testing only.
@@ -16,7 +16,7 @@ public class MockObserverImpl<T> extends ObserverImpl<T> {
    
 
    public MockObserverImpl(EventBean<T> beanModel,
-         InjectableMethod<Object> observer, Class<T> eventType)
+         AnnotatedMethod<Object> observer, Class<T> eventType)
    {
       super(beanModel, observer, eventType);
    }

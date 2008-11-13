@@ -7,7 +7,7 @@ import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
 import org.jboss.webbeans.test.SpecVersion;
-import org.jboss.webbeans.test.ejb.model.valid.GreaterDane;
+import org.jboss.webbeans.test.ejb.model.invalid.GreaterDane;
 import org.jboss.webbeans.test.ejb.model.valid.Hound;
 import org.jboss.webbeans.test.ejb.model.valid.HoundOfBaskerville;
 import org.jboss.webbeans.test.util.Util;

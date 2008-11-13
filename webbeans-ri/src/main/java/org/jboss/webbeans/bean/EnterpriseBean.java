@@ -1,8 +1,5 @@
 package org.jboss.webbeans.bean;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-
 import javax.webbeans.ApplicationScoped;
 import javax.webbeans.Decorator;
 import javax.webbeans.DefinitionException;
@@ -19,9 +16,9 @@ import javax.webbeans.manager.EnterpriseBeanLookup;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.ejb.EJB;
 import org.jboss.webbeans.ejb.EjbMetaData;
-import org.jboss.webbeans.introspector.impl.InjectableField;
-import org.jboss.webbeans.introspector.impl.InjectableMethod;
-import org.jboss.webbeans.introspector.impl.InjectableParameter;
+import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
 
 public class EnterpriseBean<T> extends AbstractClassBean<T>
 {
@@ -47,6 +44,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       checkEnterpriseScopeAllowed();
       checkConflictingRoles();
       checkSpecialization();
+      checkRemoveMethod();
    }
    
    @Override
@@ -55,7 +53,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       super.initInjectionPoints();
       if (removeMethod != null)
       {
-         for (InjectableParameter<?> injectable : removeMethod.getParameters())
+         for (AnnotatedParameter<?> injectable : removeMethod.getParameters())
          {
             injectionPoints.add(injectable);
          }
@@ -109,15 +107,16 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          return;
       }
-      if (annotationDefined)
+      if (!isDefinedInXml())
       {
-         if (!isEJB(getType().getSuperclass()))
+         if (!getManager().getModelManager().getEjbMetaData(getAnnotatedItem().getSuperclass()).isEjb())
          {
             throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
          }
-      } else
+      } 
+      else
       {
-         if (!isEJB(getType()))
+         if (getManager().getModelManager().getEjbMetaData(getAnnotatedItem().getSuperclass()).isEjb())
          {
             throw new DefinitionException("XML defined specializing EJB must have annotation defined EJB implementation");
          }
@@ -141,9 +140,9 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
 
       // <1 (0) @Destructors
-      if (getEjbMetaData().getNoArgsRemoveMethod() != null)
+      if (getEjbMetaData().getNoArgsRemoveMethods().size() == 1)
       {
-         super.removeMethod = checkRemoveMethod(getEjbMetaData().getNoArgsRemoveMethod());
+         super.removeMethod = getEjbMetaData().getNoArgsRemoveMethods().get(0);
          return;
       }
 
@@ -154,24 +153,31 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
    }
    
-   private InjectableMethod<?> checkRemoveMethod(Method method)
+   private void checkRemoveMethod()
    {
-      if (method.isAnnotationPresent(Destructor.class) && !method.isAnnotationPresent(EJB.REMOVE_ANNOTATION)) {
-         throw new DefinitionException("Methods marked @Destructor must also be marked @Remove on " + method.getName());
+      if (removeMethod != null)
+      {
+         if (removeMethod.isAnnotationPresent(Destructor.class) && !removeMethod.isAnnotationPresent(EJB.REMOVE_ANNOTATION)) 
+         {
+            throw new DefinitionException("Methods marked @Destructor must also be marked @Remove on " + removeMethod.getName());
+         }
+         else if (removeMethod.isAnnotationPresent(Initializer.class)) 
+         {
+            throw new DefinitionException("Remove methods cannot be initializers on " + removeMethod.getName());
+         }
+         else if (removeMethod.isAnnotationPresent(Produces.class)) 
+         {
+            throw new DefinitionException("Remove methods cannot be producers on " + removeMethod.getName());
+         }
+         else if (removeMethod.getAnnotatedParameters(Disposes.class).size() > 0) 
+         {
+            throw new DefinitionException("Remove method can't have @Disposes annotated parameters on " + removeMethod.getName());
+         }
+         else if (removeMethod.getAnnotatedParameters(Observes.class).size() > 0) 
+         {
+            throw new DefinitionException("Remove method can't have @Observes annotated parameters on " + removeMethod.getName());
+         }
       }
-      if (method.isAnnotationPresent(Initializer.class)) {
-         throw new DefinitionException("Remove methods cannot be initializers on " + method.getName());
-      }
-      if (method.isAnnotationPresent(Produces.class)) {
-         throw new DefinitionException("Remove methods cannot be producers on " + method.getName());
-      }
-      if (hasParameterAnnotation(method.getParameterAnnotations(), Disposes.class)) {
-         throw new DefinitionException("Remove method can't have @Disposes annotated parameters on " + method.getName());
-      }
-      if (hasParameterAnnotation(method.getParameterAnnotations(), Observes.class)) {
-         throw new DefinitionException("Remove method can't have @Observes annotated parameters on " + method.getName());
-      }
-      return new InjectableMethod<Object>(method);
    }
 
    @Override
@@ -194,7 +200,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
    protected void callInitializers(T instance)
    {
-      for (InjectableMethod<Object> initializer : getInitializerMethods())
+      for (AnnotatedMethod<Object> initializer : getInitializerMethods())
       {
          initializer.invoke(getManager(), instance);
       }
@@ -207,9 +213,9 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    
    protected void injectBoundFields(T instance)
    {
-      for (InjectableField<?> injectableField : getInjectableFields())
+      for (AnnotatedField<?> field : getInjectableFields())
       {
-         injectableField.inject(instance, getManager());
+         field.inject(instance, getManager());
       }
    }
 
@@ -220,19 +226,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          location = "type: Enterprise Bean; declaring class: " + getType() +";";
       }
       return location;
-   }
-   
-   //FIXME move up?
-   private boolean hasParameterAnnotation(Annotation[][] parameterAnnotations, Class<? extends Annotation> clazz)
-   {
-      for (Annotation[] parameter : parameterAnnotations) {
-         for (Annotation annotation : parameter) {
-            if (annotation.annotationType() == clazz) {
-               return true;
-            }
-         }
-      }
-      return false;
    }
 
    @Override
@@ -248,13 +241,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          throw new RuntimeException();
       }
       
-   }
-
-   private boolean isEJB(Class<? super T> clazz)
-   {
-      return clazz.isAnnotationPresent(EJB.SINGLETON_ANNOTATION)
-            || clazz.isAnnotationPresent(EJB.STATEFUL_ANNOTATION)
-            || clazz.isAnnotationPresent(EJB.STATELESS_ANNOTATION);
    }
 
    private void checkEnterpriseBeanTypeAllowed()

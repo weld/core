@@ -43,9 +43,4 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
       return name;
    }
    
-   public Class<?> getDeclaringClass()
-   {
-      return getDelegate().getDeclaringClass();
-   }
-   
 }

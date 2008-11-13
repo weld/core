@@ -12,8 +12,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.webbeans.BindingType;
+
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
+import org.jboss.webbeans.bean.proxy.ClientProxy;
+import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.util.Reflections;
@@ -22,6 +25,9 @@ import org.jboss.webbeans.util.Types;
 public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
 {
 
+   private static final Annotation[] DEFAULT_BINDING_ARRAY = {new CurrentAnnotationLiteral()};
+   private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
+   
    private Map<Class<? extends Annotation>, Annotation> annotationMap;
    private Map<Class<? extends Annotation>, Set<Annotation>> metaAnnotationMap;
    private Set<Annotation> annotationSet;
@@ -177,7 +183,51 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    @Override
    public String toString()
    {
-      return TypesafeResolutionLocation.createMessage(getType(), getActualTypeArguments(), getAnnotations());
+      String string = getType().toString();
+      if (getActualTypeArguments().length > 0)
+      {
+         string += "<";
+         for (int i = 0; i < getActualTypeArguments().length; i++)
+         {
+            string += getActualTypeArguments()[i].toString();
+            if (i < getActualTypeArguments().length - 1)
+            {
+               string += ",";
+            }
+         }
+         string += ">";
+      }
+      string += getAnnotations();
+      return string;
+   }
+   
+   public Set<Annotation> getBindingTypes()
+   {
+      if (getAnnotations(BindingType.class).size() > 0)
+      {
+         return getAnnotations(BindingType.class);
+      }
+      else
+      {
+         return DEFAULT_BINDING;
+      }
+   }
+   
+   public Annotation[] getBindingTypesAsArray()
+   {
+      if (getAnnotationsAsArray(BindingType.class).length > 0)
+      {
+         return getAnnotationsAsArray(BindingType.class);
+      }
+      else
+      {
+         return DEFAULT_BINDING_ARRAY;
+      }
+   }
+   
+   public boolean isProxyable()
+   {
+      return ClientProxy.isProxyable(getType());
    }
 
 }

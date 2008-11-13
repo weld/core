@@ -3,21 +3,14 @@ package org.jboss.webbeans.test;
 import static org.jboss.webbeans.test.util.Util.createProducerMethodBean;
 import static org.jboss.webbeans.test.util.Util.createSimpleBean;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.webbeans.Current;
 
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
-import org.jboss.webbeans.test.annotations.Asynchronous;
 import org.jboss.webbeans.test.annotations.Synchronous;
-import org.jboss.webbeans.test.beans.Antelope;
 import org.jboss.webbeans.test.beans.Barn;
 import org.jboss.webbeans.test.beans.Cat;
 import org.jboss.webbeans.test.beans.Cod;
@@ -27,7 +20,6 @@ import org.jboss.webbeans.test.beans.Spider;
 import org.jboss.webbeans.test.beans.SpiderProducer;
 import org.jboss.webbeans.test.beans.Tarantula;
 import org.jboss.webbeans.test.beans.Tuna;
-import org.jboss.webbeans.test.bindings.AsynchronousAnnotationLiteral;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.Test;
 
@@ -82,9 +74,9 @@ public class BindingTypeTest extends AbstractTest
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.3.4")
    public void testBindingTypesDeclaredInXml()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
-      AnnotatedClass annotatedItem = new SimpleAnnotatedClass(Antelope.class, annotations);
+      //Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      //annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
+      //AnnotatedClass annotatedItem = new SimpleAnnotatedClass(Antelope.class, annotations);
       
       //SimpleBean<Antelope> antelope = createSimpleBean(Antelope.class, annotatedItem, manager);
       // assert Reflections.annotationSetMatches(antelope.getBindingTypes(), Asynchronous.class);
@@ -94,9 +86,9 @@ public class BindingTypeTest extends AbstractTest
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.3.4")
    public void testXmlBindingTypeOverridesAndIgnoresJava()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
-      AnnotatedClass<Cat> annotatedItem = new SimpleAnnotatedClass<Cat>(Cat.class, annotations);
+      //Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      //annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
+      //AnnotatedClass<Cat> annotatedItem = new SimpleAnnotatedClass<Cat>(Cat.class, annotations);
       
       //SimpleBean<Cat> cat = createSimpleBean(Cat.class, annotatedItem, manager);
       //assert cat.getBindingTypes().size() == 1;
@@ -107,8 +99,8 @@ public class BindingTypeTest extends AbstractTest
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.3.4")
    public void testNoBindingTypesDeclaredInXml()
    {
-	   Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      AnnotatedClass<Cat> annotatedItem = new SimpleAnnotatedClass<Cat>(Cat.class, annotations);
+	   //Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      //AnnotatedClass<Cat> annotatedItem = new SimpleAnnotatedClass<Cat>(Cat.class, annotations);
       
       //SimpleBean<Cat> cat = createSimpleBean(Cat.class, annotatedItem, manager);
       //assert cat.getBindingTypes().size() == 1;

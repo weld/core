@@ -2,24 +2,18 @@ package org.jboss.webbeans.test;
 
 import static org.jboss.webbeans.test.util.Util.createSimpleBean;
 
-import java.lang.annotation.Annotation;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.webbeans.DefinitionException;
 import javax.webbeans.RequestScoped;
 
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
 import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.test.annotations.AnimalOrderStereotype;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
 import org.jboss.webbeans.test.annotations.HornedAnimalDeploymentType;
 import org.jboss.webbeans.test.annotations.HornedMammalStereotype;
 import org.jboss.webbeans.test.annotations.RequestScopedAnimalStereotype;
-import org.jboss.webbeans.test.annotations.Synchronous;
 import org.jboss.webbeans.test.annotations.Tame;
 import org.jboss.webbeans.test.annotations.broken.StereotypeWithBindingTypes;
 import org.jboss.webbeans.test.annotations.broken.StereotypeWithNonEmptyNamed;
@@ -31,8 +25,6 @@ import org.jboss.webbeans.test.beans.Goldfish;
 import org.jboss.webbeans.test.beans.HighlandCow;
 import org.jboss.webbeans.test.beans.Order;
 import org.jboss.webbeans.test.beans.broken.Carp;
-import org.jboss.webbeans.test.bindings.HornedMamalStereotypeAnnotationLiteral;
-import org.jboss.webbeans.test.bindings.SynchronousAnnotationLiteral;
 import org.testng.annotations.Test;
 
 @SpecVersion("PDR")
@@ -166,9 +158,9 @@ public class StereotypesTest extends AbstractTest
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.7.3")
    public void testStereotypeDeclaredInXmlIgnoresJavaStereotypes()
    {
-      Map<Class<? extends Annotation>, Annotation> cooXmlAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      cooXmlAnnotations.put(HornedMammalStereotype.class, new HornedMamalStereotypeAnnotationLiteral());
-      AnnotatedClass<HighlandCow> cooXmlAnnotatedItem = new SimpleAnnotatedClass<HighlandCow>(HighlandCow.class, cooXmlAnnotations);
+      //Map<Class<? extends Annotation>, Annotation> cooXmlAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      //cooXmlAnnotations.put(HornedMammalStereotype.class, new HornedMamalStereotypeAnnotationLiteral());
+      //AnnotatedClass<HighlandCow> cooXmlAnnotatedItem = new SimpleAnnotatedClass<HighlandCow>(HighlandCow.class, cooXmlAnnotations);
       
       /*SimpleBean<HighlandCow> coo = createSimpleBean(HighlandCow.class, cooXmlAnnotatedItem, manager);
       assert coo.getDeploymentType().equals(HornedAnimalDeploymentType.class);
@@ -182,10 +174,10 @@ public class StereotypesTest extends AbstractTest
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.7.3")
    public void testStereotypeDeclaredInXmlIgnoresJavaBindingTypes()
    {
-      Map<Class<? extends Annotation>, Annotation> cooXmlAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      cooXmlAnnotations.put(HornedMammalStereotype.class, new HornedMamalStereotypeAnnotationLiteral());
-      cooXmlAnnotations.put(Synchronous.class, new SynchronousAnnotationLiteral());
-      AnnotatedClass<HighlandCow> cooXmlAnnotatedItem = new SimpleAnnotatedClass<HighlandCow>(HighlandCow.class, cooXmlAnnotations);
+      //Map<Class<? extends Annotation>, Annotation> cooXmlAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      //cooXmlAnnotations.put(HornedMammalStereotype.class, new HornedMamalStereotypeAnnotationLiteral());
+      //cooXmlAnnotations.put(Synchronous.class, new SynchronousAnnotationLiteral());
+      //AnnotatedClass<HighlandCow> cooXmlAnnotatedItem = new SimpleAnnotatedClass<HighlandCow>(HighlandCow.class, cooXmlAnnotations);
       
       /*SimpleBean<HighlandCow> coo = createSimpleBean(HighlandCow.class, cooXmlAnnotatedItem, manager);
       assert coo.getBindingTypes().size() == 1;

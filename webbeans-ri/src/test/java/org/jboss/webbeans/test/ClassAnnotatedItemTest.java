@@ -23,7 +23,7 @@ public class ClassAnnotatedItemTest
       AnnotatedClass<Order> annotatedElement = new SimpleAnnotatedClass<Order>(Order.class);
       assert annotatedElement.getAnnotations().size() == 1;
       assert annotatedElement.getAnnotation(Production.class) != null;
-      assert annotatedElement.getAnnotatedClass().equals(Order.class);
+      assert annotatedElement.getType().equals(Order.class);
    }
    
    @Test

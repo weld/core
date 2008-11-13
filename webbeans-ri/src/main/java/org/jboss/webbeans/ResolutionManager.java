@@ -13,7 +13,9 @@ import java.util.TreeSet;
 import javax.webbeans.NullableDependencyException;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.introspector.impl.Injectable;
+import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.ForwardingAnnotatedItem;
+import org.jboss.webbeans.model.BindingTypeModel;
 import org.jboss.webbeans.util.ListComparator;
 
 import com.google.common.collect.ForwardingMap;
@@ -21,27 +23,54 @@ import com.google.common.collect.ForwardingMap;
 public class ResolutionManager
 {
 
+   private abstract class ResolvableAnnotatedItem<T, S> extends ForwardingAnnotatedItem<T, S>
+   {
+      
+      @Override
+      public boolean equals(Object other)
+      {
+         // TODO Do we need to check the other direction too?
+         if (other instanceof AnnotatedItem)
+         {
+            AnnotatedItem<?, ?> that = (AnnotatedItem<?, ?>) other;
+            return delegate().isAssignableFrom(that) &&
+               that.getBindingTypes().equals(this.getBindingTypes());
+         }
+         else
+         {
+            return false;
+         }
+      }
+    
+      @Override
+      public int hashCode()
+      {
+         return delegate().hashCode();
+      }
+      
+   }
+   
    // TODO Why can't we generify Set?
    
    @SuppressWarnings("unchecked")
-   private class InjectableMap extends ForwardingMap<Injectable<?, ?>, Set>
+   private class AnnotatedItemMap extends ForwardingMap<AnnotatedItem<?, ?>, Set>
    {
 
-      private Map<Injectable<?, ?>, Set> delegate;
+      private Map<AnnotatedItem<?, ?>, Set> delegate;
       
-      public InjectableMap()
+      public AnnotatedItemMap()
       {
-         delegate = new HashMap<Injectable<?, ?>, Set>();
+         delegate = new HashMap<AnnotatedItem<?, ?>, Set>();
       }
       
       @SuppressWarnings("unchecked")
-      public <T> Set<Bean<T>> get(Injectable<T, ?> key)
+      public <T> Set<Bean<T>> get(AnnotatedItem<T, ?> key)
       {
          return (Set<Bean<T>>) super.get(key);
       }
       
       @Override
-      protected Map<Injectable<?, ?>, Set> delegate()
+      protected Map<AnnotatedItem<?, ?>, Set> delegate()
       {
          return delegate;
       }
@@ -49,8 +78,8 @@ public class ResolutionManager
    }
 
    
-   private InjectableMap resolvedInjectionPoints;
-   private Set<Injectable<?, ?>> injectionPoints;
+   private AnnotatedItemMap resolvedInjectionPoints;
+   private Set<AnnotatedItem<?, ?>> injectionPoints;
    
    private Map<String, Set<Bean<?>>> resolvedNames;
    
@@ -58,20 +87,20 @@ public class ResolutionManager
    
    public ResolutionManager(ManagerImpl manager)
    {
-      this.injectionPoints = new HashSet<Injectable<?,?>>();
-      this.resolvedInjectionPoints = new InjectableMap();
+      this.injectionPoints = new HashSet<AnnotatedItem<?,?>>();
+      this.resolvedInjectionPoints = new AnnotatedItemMap();
       this.manager = manager;
    }
    
-   public void addInjectionPoint(Injectable<?, ?> injectable)
+   public <T, S> void addInjectionPoint(final AnnotatedItem<T, S> element)
    {
-      injectionPoints.add(injectable);
+      injectionPoints.add(element);
    }
    
-   private void registerInjectionPoint(Injectable<?, ?> injectable)
+   private <T, S> void registerInjectionPoint(final AnnotatedItem<T, S> element)
    {
-      Set<Bean<?>> beans = retainHighestPrecedenceBeans(injectable.getMatchingBeans(manager.getBeans(), manager.getModelManager()), manager.getEnabledDeploymentTypes());
-      if (injectable.getType().isPrimitive())
+      Set<Bean<?>> beans = retainHighestPrecedenceBeans(getMatchingBeans(element, manager.getBeans(), manager.getModelManager()), manager.getEnabledDeploymentTypes());
+      if (element.getType().isPrimitive())
       {
          for (Bean<?> bean : beans)
          {
@@ -81,38 +110,60 @@ public class ResolutionManager
             }
          }
       }
-	   resolvedInjectionPoints.put(injectable, beans); 
+	   resolvedInjectionPoints.put(new ResolvableAnnotatedItem<T, S>()
+	   {
+
+         @Override
+         public AnnotatedItem<T, S> delegate()
+         {
+            return element;
+         }
+         
+      }, beans);
    }
    
    public void clear()
    {
-      resolvedInjectionPoints = new InjectableMap();
+      resolvedInjectionPoints = new AnnotatedItemMap();
       resolvedNames = new HashMap<String, Set<Bean<?>>>();
    }
    
    public void resolveInjectionPoints()
    {
-      for (Injectable<?, ?> injectable : injectionPoints)
+      for (AnnotatedItem<?, ?> injectable : injectionPoints)
       {
          registerInjectionPoint(injectable);
       }
    }
    
-   public <T> Set<Bean<T>> get(Injectable<T, ?> key)
+   public <T, S> Set<Bean<T>> get(final AnnotatedItem<T, S> key)
    {
-      Set<Bean<T>> beans;
-      if (key.getType().equals(Object.class))
+      Set<Bean<T>> beans = new HashSet<Bean<T>>();
+
+      AnnotatedItem<T, S> element = new ResolvableAnnotatedItem<T, S>()
+      {
+
+         @Override
+         public AnnotatedItem<T, S> delegate()
+         {
+            return key;
+         }
+         
+      };
+      
+      // TODO We don't need this I think
+      if (element.getType().equals(Object.class))
       {
          // TODO Fix this cast
          beans = new HashSet<Bean<T>>((List) manager.getBeans());
       }
       else
       {
-         if (!resolvedInjectionPoints.containsKey(key))
+         if (!resolvedInjectionPoints.containsKey(element))
          {
-            registerInjectionPoint(key);
+            registerInjectionPoint(element);
          }
-         beans = resolvedInjectionPoints.get(key);
+         beans = resolvedInjectionPoints.get(element);
       }
       return Collections.unmodifiableSet(beans);
    }
@@ -170,6 +221,47 @@ public class ResolutionManager
       {
          return beans;
       }
+   }
+   
+   private static Set<Bean<?>> getMatchingBeans(AnnotatedItem<?, ?> element, List<Bean<?>> beans, ModelManager modelManager)
+   {
+      Set<Bean<?>> resolvedBeans = new HashSet<Bean<?>>();
+      for (Bean<?> bean : beans)
+      {
+         if (element.isAssignableFrom(bean.getTypes()) && containsAllBindingBindingTypes(element, bean.getBindingTypes(), modelManager))
+         {
+            resolvedBeans.add(bean);
+         }
+      }
+      return resolvedBeans;
+   }
+   
+   private static boolean containsAllBindingBindingTypes(AnnotatedItem<?, ?> element, Set<Annotation> bindingTypes, ModelManager modelManager)
+   {
+      for (Annotation bindingType : element.getBindingTypes())
+      {
+         BindingTypeModel<?> bindingTypeModel = modelManager.getBindingTypeModel(bindingType.annotationType());
+         if (bindingTypeModel.getNonBindingTypes().size() > 0)
+         {
+            boolean matchFound = false;
+            for (Annotation otherBindingType : bindingTypes)
+            {
+               if (bindingTypeModel.isEqual(bindingType, otherBindingType))
+               {
+                  matchFound = true;
+               }
+            }
+            if (!matchFound)
+            {
+               return false;
+            }
+         }
+         else if (!bindingTypes.contains(bindingType))
+         {
+            return false;
+         }
+      }
+      return true;
    }
 
 }

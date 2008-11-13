@@ -25,9 +25,8 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.impl.Injectable;
-import org.jboss.webbeans.introspector.impl.InjectableMethod;
-import org.jboss.webbeans.introspector.impl.InjectableParameter;
+import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
@@ -60,9 +59,9 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    private MergedStereotypes<T, E> mergedStereotypes;
    protected Class<? extends Annotation> deploymentType;
    protected Class<T> type;
-   protected InjectableMethod<?> removeMethod;
+   protected AnnotatedMethod<Object> removeMethod;
    protected Set<Class<?>> apiTypes;
-   protected Set<Injectable<?, ?>> injectionPoints;
+   protected Set<AnnotatedItem<?, ?>> injectionPoints;
    
    private boolean primitive;
    
@@ -183,10 +182,10 @@ public abstract class AbstractBean<T, E> extends Bean<T>
 
    protected void initInjectionPoints()
    {
-      injectionPoints = new HashSet<Injectable<?,?>>();
+      injectionPoints = new HashSet<AnnotatedItem<?,?>>();
       if (removeMethod != null)
       {
-         for (InjectableParameter<?> injectable : removeMethod.getParameters())
+         for (AnnotatedParameter<?> injectable : removeMethod.getParameters())
          {
             injectionPoints.add(injectable);
          }
@@ -368,7 +367,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       return deploymentType;
    }
    
-   public Set<Injectable<?, ?>> getInjectionPoints()
+   public Set<AnnotatedItem<?, ?>> getInjectionPoints()
    {
       return injectionPoints;
    }
@@ -389,7 +388,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       return name;
    }
 
-   public InjectableMethod<?> getRemoveMethod()
+   public AnnotatedMethod<?> getRemoveMethod()
    {
       return removeMethod;
    }

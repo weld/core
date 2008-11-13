@@ -1,6 +1,7 @@
 package org.jboss.webbeans.bean;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -10,11 +11,9 @@ import javax.webbeans.Initializer;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
+import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.introspector.impl.InjectableField;
-import org.jboss.webbeans.introspector.impl.InjectableMethod;
-import org.jboss.webbeans.introspector.impl.InjectableParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
@@ -23,7 +22,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
 {
    
    private static LogProvider log = Logging.getLogProvider(SimpleBean.class);
-   private static Set<Class<?>> NO_ARGUMENTS = Collections.emptySet();
+   private static List<Class<?>> NO_ARGUMENTS = Collections.emptyList();
    
    private AnnotatedConstructor<T> constructor;
    private String location;
@@ -63,7 +62,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          try
          {
-            preDestroy.getAnnotatedMethod().invoke(instance);
+            preDestroy.invoke(instance);
          }
          catch (Exception e) 
          {
@@ -90,7 +89,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
 
    protected void callInitializers(T instance)
    {
-      for (InjectableMethod<Object> initializer : getInitializerMethods())
+      for (AnnotatedMethod<Object> initializer : getInitializerMethods())
       {
          initializer.invoke(getManager(), instance);
       }
@@ -103,7 +102,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    
    protected void injectBoundFields(T instance)
    {
-      for (InjectableField<?> injectableField : getInjectableFields())
+      for (AnnotatedField<?> injectableField : getInjectableFields())
       {
          injectableField.inject(instance, getManager());
       }
@@ -127,7 +126,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       super.initInjectionPoints();
       for (AnnotatedParameter<Object> parameter : constructor.getParameters())
       {
-         injectionPoints.add(new InjectableParameter<Object>(parameter));
+         injectionPoints.add(parameter);
       }
    }
    

@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Reflections;
 
 public class SimpleAnnotatedField<T> extends AbstractAnnotatedMember<T, Field> implements AnnotatedField<T>
@@ -14,11 +15,13 @@ public class SimpleAnnotatedField<T> extends AbstractAnnotatedMember<T, Field> i
    private Type[] actualTypeArguments = new Type[0];
    
    private Field field;
+   private AnnotatedType<?> declaringClass;
    
-   public SimpleAnnotatedField(Field field)
+   public SimpleAnnotatedField(Field field, AnnotatedType<?> declaringClass)
    {
       super(buildAnnotationMap(field));
       this.field = field;
+      this.declaringClass = declaringClass;
       if (field.getGenericType() instanceof ParameterizedType)
       {
          ParameterizedType type = (ParameterizedType) field.getGenericType();
@@ -54,6 +57,11 @@ public class SimpleAnnotatedField<T> extends AbstractAnnotatedMember<T, Field> i
    public String getPropertyName()
    {
       return getName();
+   }
+   
+   public AnnotatedType<?> getDeclaringClass()
+   {
+      return declaringClass;
    }
 
 }

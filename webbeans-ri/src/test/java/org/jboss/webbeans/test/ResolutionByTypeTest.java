@@ -4,8 +4,6 @@ import static org.jboss.webbeans.test.util.Util.createProducerMethodBean;
 import static org.jboss.webbeans.test.util.Util.createSimpleBean;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javax.webbeans.AnnotationLiteral;
@@ -17,7 +15,10 @@ import javax.webbeans.manager.Bean;
 import org.jboss.webbeans.ResolutionManager;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
-import org.jboss.webbeans.introspector.impl.InjectableField;
+import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedField;
 import org.jboss.webbeans.test.annotations.Expensive;
 import org.jboss.webbeans.test.annotations.Whitefish;
 import org.jboss.webbeans.test.beans.Animal;
@@ -47,12 +48,14 @@ import org.testng.annotations.Test;
 @SpecVersion("PDR")
 public class ResolutionByTypeTest extends AbstractTest
 {
+   
+   private AnnotatedClass<FishFarm> fishFarmClass = new SimpleAnnotatedClass<FishFarm>(FishFarm.class);
 
    @Test(groups="resolution")
-   public void testInjectableField() throws Exception
+   public void testAnnotatedField() throws Exception
    {
-      InjectableField<Tuna> tuna = new InjectableField<Tuna>(FishFarm.class.getDeclaredField("tuna"));
-      assert tuna.getAnnotatedItem().getType().isAssignableFrom(Tuna.class);
+      AnnotatedField<Tuna> tuna = new SimpleAnnotatedField<Tuna>(FishFarm.class.getDeclaredField("tuna"), fishFarmClass);
+      assert tuna.getType().isAssignableFrom(Tuna.class);
       assert tuna.getBindingTypes().size() == 1;
       assert tuna.getBindingTypes().contains(new CurrentAnnotationLiteral());
       assert tuna.getType().isAssignableFrom(Tuna.class);
@@ -61,11 +64,10 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test(groups="resolution") @SpecAssertion(section="4.9.2")
    public void testSingleApiTypeWithCurrent() throws Exception
    {
-      InjectableField<Tuna> tunaField = new InjectableField<Tuna>(FishFarm.class.getDeclaredField("tuna"));
+      AnnotatedField<Tuna> tunaField = new SimpleAnnotatedField<Tuna>(FishFarm.class.getDeclaredField("tuna"), fishFarmClass);
       Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
-      List<Bean<?>> beans = new ArrayList<Bean<?>>();
-      beans.add(tunaBean);
-      Set<Bean<?>> possibleTargets = tunaField.getMatchingBeans(beans, manager.getModelManager());
+      manager.addBean(tunaBean);
+      Set<Bean<Tuna>> possibleTargets = manager.getResolutionManager().get(tunaField);
       assert possibleTargets.size() == 1;
       assert possibleTargets.contains(tunaBean);
    }
@@ -85,16 +87,14 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test
    public void testOneBindingType() throws Exception
    {
-      InjectableField<ScottishFish> whiteScottishFishField = new InjectableField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"));
+      AnnotatedField<ScottishFish> whiteScottishFishField = new SimpleAnnotatedField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
       Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
       Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
       Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
-      
-      List<Bean<?>> beans = new ArrayList<Bean<?>>();
-      beans.add(codBean);
-      beans.add(salmonBean);
-      beans.add(soleBean);
-      Set<Bean<?>> possibleTargets = whiteScottishFishField.getMatchingBeans(beans, manager.getModelManager());
+      manager.addBean(codBean);
+      manager.addBean(salmonBean);
+      manager.addBean(soleBean);
+      Set<Bean<ScottishFish>> possibleTargets = manager.getResolutionManager().get(whiteScottishFishField);
       assert possibleTargets.size() == 2;
       assert possibleTargets.contains(codBean);
       assert possibleTargets.contains(soleBean);
@@ -103,17 +103,16 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test
    public void testABindingType() throws Exception
    {
-      InjectableField<Animal> whiteChunkyFishField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("realChunkyWhiteFish"));
+      AnnotatedField<Animal> whiteChunkyFishField = new SimpleAnnotatedField<Animal>(FishFarm.class.getDeclaredField("realChunkyWhiteFish"), fishFarmClass);
       
       Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
       Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
       Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
       
-      List<Bean<?>> beans = new ArrayList<Bean<?>>();
-      beans.add(codBean);
-      beans.add(salmonBean);
-      beans.add(soleBean);
-      Set<Bean<?>> possibleTargets = whiteChunkyFishField.getMatchingBeans(beans, manager.getModelManager());
+      manager.addBean(codBean);
+      manager.addBean(salmonBean);
+      manager.addBean(soleBean);
+      Set<Bean<Animal>> possibleTargets = manager.getResolutionManager().get(whiteChunkyFishField); 
       assert possibleTargets.size() == 1;
       assert possibleTargets.contains(codBean);
    }
@@ -121,13 +120,12 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test
    public void testMultipleApiTypeWithCurrent() throws Exception
    {
-      InjectableField<Animal> animalField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("animal"));
+      AnnotatedField<Animal> animalField = new SimpleAnnotatedField<Animal>(FishFarm.class.getDeclaredField("animal"), fishFarmClass);
       Bean<SeaBass> seaBassBean = createSimpleBean(SeaBass.class, manager);
       Bean<Haddock> haddockBean = createSimpleBean(Haddock.class, manager);
-      List<Bean<?>> beans = new ArrayList<Bean<?>>();
-      beans.add(seaBassBean);
-      beans.add(haddockBean);
-      Set<Bean<?>> possibleTargets = animalField.getMatchingBeans(beans, manager.getModelManager());
+      manager.addBean(seaBassBean);
+      manager.addBean(haddockBean);
+      Set<Bean<Animal>> possibleTargets = manager.getResolutionManager().get(animalField);
       assert possibleTargets.size() == 2;
       assert possibleTargets.contains(seaBassBean);
       assert possibleTargets.contains(haddockBean);
@@ -194,7 +192,7 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test(groups="resolution") @SpecAssertion(section="4.9.2")
    public void testResolveByTypeWithTypeParameter() throws Exception
    {
-      InjectableField<Farmer<ScottishFish>> scottishFishFarmerField = new InjectableField<Farmer<ScottishFish>>(FishFarm.class.getDeclaredField("scottishFishFarmer"));
+      AnnotatedField<Farmer<ScottishFish>> scottishFishFarmerField = new SimpleAnnotatedField<Farmer<ScottishFish>>(FishFarm.class.getDeclaredField("scottishFishFarmer"), fishFarmClass);
       
       Bean<ScottishFishFarmer> scottishFishFarmerBean = createSimpleBean(ScottishFishFarmer.class, manager);
       Bean<AnimalFarmer> farmerBean = createSimpleBean(AnimalFarmer.class, manager);
@@ -228,7 +226,7 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test @SpecAssertion(section="4.9.2")
    public void testOnlyHighestEnabledPreecedenceWebBeansResolved() throws Exception
    {
-      InjectableField<Animal> whiteFishField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("whiteFish"));
+      AnnotatedField<Animal> whiteFishField = new SimpleAnnotatedField<Animal>(FishFarm.class.getDeclaredField("whiteFish"), fishFarmClass);
       Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
       Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
       Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class, manager);
@@ -250,7 +248,7 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test(groups="resolution") @SpecAssertion(section="4.9.2")
    public void testResolveByTypeWithNonBindingMembers() throws Exception
    {
-      InjectableField<Animal> veryExpensiveWhitefishField = new InjectableField<Animal>(FishFarm.class.getDeclaredField("veryExpensiveWhitefish"));
+      AnnotatedField<Animal> veryExpensiveWhitefishField = new SimpleAnnotatedField<Animal>(FishFarm.class.getDeclaredField("veryExpensiveWhitefish"), fishFarmClass);
       Bean<Halibut> halibutBean = createSimpleBean(Halibut.class, manager);
       Bean<RoundWhitefish> roundWhiteFishBean = createSimpleBean(RoundWhitefish.class, manager);
       Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
@@ -284,7 +282,7 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test(groups="resolution") @SpecAssertion(section="4.9.2")
    public void testNoWebBeansFound() throws Exception
    {
-      InjectableField<ScottishFish> whiteScottishFishField = new InjectableField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"));
+      AnnotatedField<ScottishFish> whiteScottishFishField = new SimpleAnnotatedField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
       Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
       Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
       Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class, manager);

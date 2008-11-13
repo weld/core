@@ -1,24 +1,18 @@
 package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Set;
 
 
 /**
- * AnnotatedType provides a uniform access to the annotations on an annotated
- * class defined either in Java or XML 
+ * Represents a Class
  * 
  * @author Pete Muir
  *
  */
 public interface AnnotatedClass<T> extends AnnotatedType<T>
 {
-   
-   /**
-    * Return the class of the annotated item. If this annotatedItem isn't in use
-    * then this method should return null
-    */
-   public Class<? extends T> getAnnotatedClass();
    
    /**
     * Get all fields on the type
@@ -36,8 +30,7 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
    public Set<AnnotatedField<Object>> getAnnotatedFields(Class<? extends Annotation> annotationType);
    
    /**
-    * Get all fields which are annotated with the given meta annotation 
-    * type
+    * Get all fields which are meta-annotated with metaAnnotationType 
     * 
     * If no annotations are present which are annotated with the given meta
     * annotation an empty set is returned
@@ -46,19 +39,26 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
          Class<? extends Annotation> metaAnnotationType);
    
    /**
-    * Get all fields which are annotated with the given meta annotation 
-    * type
-    * 
-    * If no annotations are present which are annotated with the given meta
-    * annotation an empty set is returned
+    * Get all constructors which are annotated with annotationType
     */
-   public Set<AnnotatedMethod<Object>> getAnnotatedMethods(
-         Class<? extends Annotation> annotationType);
-   
    public Set<AnnotatedConstructor<T>> getAnnotatedConstructors(Class<? extends Annotation> annotationType);
    
+   /**
+    * Get all constructors
+    * 
+    */
    public Set<AnnotatedConstructor<T>> getConstructors();
    
-   public AnnotatedConstructor<T> getConstructor(Set<Class<?>> arguments);
+   /**
+    * Get the constructor with arguments given
+    */
+   public AnnotatedConstructor<T> getConstructor(List<Class<?>> arguments);
+   
+   /**
+    * Get all the members annotated with annotationType
+    */
+   public Set<AnnotatedMethod<Object>> getAnnotatedMethods(Class<? extends Annotation> annotationType);
+   
+   public AnnotatedClass<Object> getSuperclass();
    
 }

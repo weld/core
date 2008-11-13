@@ -21,10 +21,10 @@ public class EventBean<T> extends AbstractBean<EventImpl<T>, Field>
    private String location;
    private AnnotatedField<EventImpl<T>> annotatedItem;
 
-   public EventBean(Field field, ManagerImpl manager)
+   public EventBean(Field field, ManagerImpl manager, AbstractClassBean<?> declaringBean)
    {
       super(manager);
-      this.annotatedItem = new SimpleAnnotatedField<EventImpl<T>>(field);
+      this.annotatedItem = new SimpleAnnotatedField<EventImpl<T>>(field, declaringBean.getAnnotatedItem());
       init();
    }
 

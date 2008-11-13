@@ -18,7 +18,7 @@ public interface AnnotatedField<T> extends AnnotatedItem<T, Field>
    
    public void inject(Object instance, ManagerImpl manager);
    
-   public Class<?> getDeclaringClass();
+   public AnnotatedType<?> getDeclaringClass();
    
    public String getPropertyName();
 

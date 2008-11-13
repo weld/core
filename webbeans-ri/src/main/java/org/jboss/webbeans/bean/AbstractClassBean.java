@@ -15,8 +15,6 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.impl.InjectableField;
-import org.jboss.webbeans.introspector.impl.InjectableMethod;
 import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -29,9 +27,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    private static final LogProvider log = Logging.getLogProvider(AbstractClassBean.class);
    
    private AnnotatedClass<T> annotatedItem;
-   private Set<InjectableField<?>> injectableFields;
-   private Set<InjectableMethod<Object>> initializerMethods;
-   protected boolean annotationDefined;
+   private Set<AnnotatedField<Object>> injectableFields;
+   private Set<AnnotatedMethod<Object>> initializerMethods;
    
    /**
     * 
@@ -73,7 +70,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    protected void initInjectionPoints()
    {
       super.initInjectionPoints();
-      injectableFields = new HashSet<InjectableField<?>>();
+      injectableFields = new HashSet<AnnotatedField<Object>>();
       for (AnnotatedField<Object> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
       {
          if (annotatedField.isStatic())
@@ -84,9 +81,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          {
             throw new DefinitionException("Don't place binding annotations on final fields " + annotatedField);
          }
-         InjectableField<?> injectableField = new InjectableField<Object>(annotatedField);
-         injectableFields.add(injectableField);
-         super.injectionPoints.add(injectableField);
+         injectableFields.add(annotatedField);
+         super.injectionPoints.add(annotatedField);
       }
    }
    
@@ -98,7 +94,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       }
       else
       {
-         initializerMethods = new HashSet<InjectableMethod<Object>>();
+         initializerMethods = new HashSet<AnnotatedMethod<Object>>();
          for (AnnotatedMethod<Object> annotatedMethod : annotatedItem.getAnnotatedMethods(Initializer.class))
          {
             if (annotatedMethod.isStatic())
@@ -123,7 +119,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             }
             else
             {
-               initializerMethods.add(new InjectableMethod<Object>(annotatedMethod));
+               initializerMethods.add(annotatedMethod);
             }
          }
       }
@@ -179,12 +175,12 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       return name;
    }
    
-   public Set<InjectableField<?>> getInjectableFields()
+   public Set<AnnotatedField<Object>> getInjectableFields()
    {
       return injectableFields;
    }
    
-   public Set<InjectableMethod<Object>> getInitializerMethods()
+   public Set<AnnotatedMethod<Object>> getInitializerMethods()
    {
       return initializerMethods;
    }

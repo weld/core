@@ -10,14 +10,15 @@ import static org.jboss.webbeans.ejb.EjbMetaData.EjbType.SINGLETON;
 import static org.jboss.webbeans.ejb.EjbMetaData.EjbType.STATEFUL;
 import static org.jboss.webbeans.ejb.EjbMetaData.EjbType.STATELESS;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Destructor;
 
-import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
 
 public class EjbMetaData<T>
 {
@@ -31,9 +32,9 @@ public class EjbMetaData<T>
    }
    
    private EjbType ejbType;
-   private List<Method> removeMethods = new ArrayList<Method>();
-   private List<Method> destructorMethods = new ArrayList<Method>();
-   private List<Method> noArgsRemoveMethods = new ArrayList<Method>();
+   private List<AnnotatedMethod<Object>> removeMethods = new ArrayList<AnnotatedMethod<Object>>();
+   private List<AnnotatedMethod<Object>> destructorMethods = new ArrayList<AnnotatedMethod<Object>>();
+   private List<AnnotatedMethod<Object>> noArgsRemoveMethods = new ArrayList<AnnotatedMethod<Object>>();
    
    // TODO Populate this from web.xml
    private String ejbLinkJndiName;
@@ -44,10 +45,15 @@ public class EjbMetaData<T>
    // TODO Initialize the ejb name
    private String ejbName;
    
-   private Class<? extends T> type;
+   private AnnotatedClass<T> type;
    
 
-   public EjbMetaData(Class<? extends T> type)
+   public EjbMetaData(Class<T> type)
+   {
+      this(new SimpleAnnotatedClass<T>(type));
+   }
+   
+   public EjbMetaData(AnnotatedClass<T> type)
    {
       // TODO Merge in ejb-jar.xml
       this.type = type;
@@ -55,21 +61,22 @@ public class EjbMetaData<T>
       {
          this.ejbType = STATELESS;
          // TODO Has to be done here? If they are not parsed, they can't be detected later on (EnterpriseBean remove method init)
-         if (!Reflections.getMethods(type, Destructor.class).isEmpty()) {
+         if (type.getAnnotatedMethods(Destructor.class).size() > 0)
+         {
             throw new DefinitionException("Stateless enterprise beans cannot have @Destructor methods");
          }
       }
       else if (type.isAnnotationPresent(STATEFUL_ANNOTATION))
       {
          this.ejbType = STATEFUL;
-         for (Method removeMethod : Reflections.getMethods(type, REMOVE_ANNOTATION))
+         for (AnnotatedMethod<Object> removeMethod : type.getAnnotatedMethods(REMOVE_ANNOTATION))
          {
             removeMethods.add(removeMethod);
-            if (removeMethod.getParameterTypes().length == 0) {
+            if (removeMethod.getParameters().size() == 0) {
                noArgsRemoveMethods.add(removeMethod);
             }
          }
-         for (Method destructorMethod : Reflections.getMethods(type, Destructor.class))
+         for (AnnotatedMethod<Object> destructorMethod : type.getAnnotatedMethods(Destructor.class))
          {
             destructorMethods.add(destructorMethod);
          }
@@ -104,7 +111,12 @@ public class EjbMetaData<T>
       return SINGLETON.equals(ejbType);
    }
    
-   public List<Method> getRemoveMethods()
+   public boolean isEjb()
+   {
+      return ejbType != null;
+   }
+   
+   public List<AnnotatedMethod<Object>> getRemoveMethods()
    {
       return removeMethods;
    }
@@ -124,19 +136,19 @@ public class EjbMetaData<T>
       return ejbName;
    }
    
-   public Class<? extends T> getType()
+   public Class<T> getType()
    {
-      return type;
+      return type.getType();
    }
 
-   public List<Method> getDestructorMethods()
+   public List<AnnotatedMethod<Object>> getDestructorMethods()
    {
       return destructorMethods;
    }
 
-   public Method getNoArgsRemoveMethod()
+   public List<AnnotatedMethod<Object>> getNoArgsRemoveMethods()
    {
-      return noArgsRemoveMethods.size() == 1 ? noArgsRemoveMethods.iterator().next() : null;
+      return noArgsRemoveMethods;
    }
 
 }

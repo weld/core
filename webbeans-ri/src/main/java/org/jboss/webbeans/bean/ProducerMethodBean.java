@@ -16,14 +16,12 @@ import javax.webbeans.Observes;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.introspector.impl.InjectableMethod;
-import org.jboss.webbeans.introspector.impl.InjectableParameter;
 import org.jboss.webbeans.introspector.impl.SimpleAnnotatedMethod;
 
 public class ProducerMethodBean<T> extends AbstractBean<T, Method>
 {
    
-   private AnnotatedMethod<T> annotatedMethod;
+   private AnnotatedMethod<T> method;
    private AbstractClassBean<?> declaringBean;
    
    // Cached values
@@ -32,7 +30,7 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
    public ProducerMethodBean(Method method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       super(manager);
-      this.annotatedMethod = new SimpleAnnotatedMethod<T>(method);
+      this.method = new SimpleAnnotatedMethod<T>(method, declaringBean.getAnnotatedItem());
       this.declaringBean = declaringBean;
       init();
    }
@@ -40,7 +38,7 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
    @Override
    public T create()
    {
-      T instance = annotatedMethod.invoke(getManager(), getManager().getInstance(getDeclaringBean()));
+      T instance = method.invoke(getManager(), getManager().getInstance(getDeclaringBean()));
       if (instance == null && !getScopeType().equals(Dependent.class))
       {
          throw new IllegalProductException("Cannot return null from a non-dependent method");
@@ -61,13 +59,13 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
    protected void initInjectionPoints()
    {
       super.initInjectionPoints();
-      for (AnnotatedParameter<Object> annotatedParameter : annotatedMethod.getParameters())
+      for (AnnotatedParameter<Object> parameter : method.getParameters())
       {
-         injectionPoints.add(new InjectableParameter<Object>(annotatedParameter));
+         injectionPoints.add(parameter);
       }
       if (removeMethod != null)
       {
-         for (InjectableParameter<?> injectable : removeMethod.getParameters())
+         for (AnnotatedParameter<?> injectable : removeMethod.getParameters())
          {
             injectionPoints.add(injectable);
          }
@@ -88,7 +86,7 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
    {
       if (getAnnotatedItem().isStatic())
       {
-         throw new DefinitionException("Producer method cannot be static " + annotatedMethod);
+         throw new DefinitionException("Producer method cannot be static " + method);
       }
       else if (getAnnotatedItem().isAnnotationPresent(Destructor.class))
       {
@@ -116,10 +114,10 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
    
    protected void initRemoveMethod()
    {
-      Set<Method> disposalMethods = getManager().resolveDisposalMethods(getType(), getBindingTypes().toArray(new Annotation[0]));
+      Set<AnnotatedMethod<Object>> disposalMethods = getManager().resolveDisposalMethods(getType(), getBindingTypes().toArray(new Annotation[0]));
       if (disposalMethods.size() == 1)
       {
-         removeMethod = new InjectableMethod<Object>(disposalMethods.iterator().next());
+         removeMethod = disposalMethods.iterator().next();
       }
       else if (disposalMethods.size() > 1)
       {
@@ -137,13 +135,13 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
    @Override
    protected AnnotatedMethod<T> getAnnotatedItem()
    {
-      return annotatedMethod;
+      return method;
    }
 
    @Override
    protected String getDefaultName()
    {
-      return annotatedMethod.getPropertyName();
+      return method.getPropertyName();
    }
 
    @Override
@@ -158,7 +156,7 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       }
       catch (ClassCastException e) 
       {
-         throw new RuntimeException(getLocation() + " Cannot cast producer method return type " + annotatedMethod.getAnnotatedMethod().getReturnType() + " to bean type " + (getDeclaredBeanType() == null ? " unknown " : getDeclaredBeanType()), e);
+         throw new RuntimeException(getLocation() + " Cannot cast producer method return type " + method.getType() + " to bean type " + (getDeclaredBeanType() == null ? " unknown " : getDeclaredBeanType()), e);
       }
    }
    
@@ -188,12 +186,12 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
    {
       if (location == null)
       {
-         location = "type: Producer Method; declaring class: " + annotatedMethod.getAnnotatedMethod().getDeclaringClass() +"; producer method: " + annotatedMethod.getAnnotatedMethod().toString() + ";";
+         location = "type: Producer Method; declaring class: " + method.getDeclaringClass() +"; producer method: " + method.toString() + ";";
       }
       return location;
    }
    
-   public InjectableMethod<?> getDisposalMethod()
+   public AnnotatedMethod<?> getDisposalMethod()
    {
       return removeMethod;
    }

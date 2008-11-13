@@ -55,7 +55,7 @@ public class SimpleAnnotatedAnnotation<T extends Annotation> extends AbstractAnn
       this.members = new HashSet<AnnotatedMethod<?>>();
       for (Method member : clazz.getDeclaredMethods())
       {
-         members.add(new SimpleAnnotatedMethod<Object>(member));
+         members.add(new SimpleAnnotatedMethod<Object>(member, this));
       }
    }
 

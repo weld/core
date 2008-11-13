@@ -16,8 +16,6 @@ import org.jboss.webbeans.ManagerImpl;
 public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
 {
    
-   public Method getAnnotatedMethod();
-   
    public List<AnnotatedParameter<Object>> getParameters();
    
    public List<AnnotatedParameter<Object>> getAnnotatedParameters(Class<? extends Annotation> metaAnnotationType);
@@ -26,7 +24,7 @@ public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
    
    public T invoke(Object instance, Object...parameters);
    
-   public Class<?> getDeclaringClass();
+   public AnnotatedType<?> getDeclaringClass();
    
    public String getPropertyName();
 

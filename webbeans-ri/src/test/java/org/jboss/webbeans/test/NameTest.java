@@ -2,24 +2,13 @@ package org.jboss.webbeans.test;
 
 import static org.jboss.webbeans.test.util.Util.createSimpleBean;
 
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.webbeans.DefinitionException;
-import javax.webbeans.Named;
 
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.bindings.NamedAnnotationLiteral;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
-import org.jboss.webbeans.test.annotations.RiverFishStereotype;
-import org.jboss.webbeans.test.beans.Cod;
 import org.jboss.webbeans.test.beans.Haddock;
 import org.jboss.webbeans.test.beans.Moose;
 import org.jboss.webbeans.test.beans.RedSnapper;
 import org.jboss.webbeans.test.beans.SeaBass;
-import org.jboss.webbeans.test.bindings.RiverFishStereotypeAnnotationLiteral;
 import org.testng.annotations.Test;
 
 @SpecVersion("PDR")
@@ -42,7 +31,7 @@ public class NameTest extends AbstractTest
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.6.2")
    public void testNonDefaultXmlNamed()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      /*Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Named.class, new NamedAnnotationLiteral(){
          
          public String value()
@@ -51,7 +40,7 @@ public class NameTest extends AbstractTest
          }
          
       });
-      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
+      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);*/
       //SimpleBean<SeaBass> trout = createSimpleBean(SeaBass.class, annotatedItem, manager);
       
       //assert trout.getName().equals("aTrout");
@@ -61,7 +50,7 @@ public class NameTest extends AbstractTest
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.6.2")
    public void testXmlNamedOverridesJavaNamed()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      /*Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Named.class, new NamedAnnotationLiteral(){
          
          public String value()
@@ -70,7 +59,7 @@ public class NameTest extends AbstractTest
          }
          
       });
-      AnnotatedClass<Cod> annotatedItem = new SimpleAnnotatedClass<Cod>(Cod.class, annotations);
+      AnnotatedClass<Cod> annotatedItem = new SimpleAnnotatedClass<Cod>(Cod.class, annotations);*/
       //SimpleBean<Cod> cod = createSimpleBean(Cod.class, annotatedItem, manager);
       
       //assert cod.getName().equals("aTrout");
@@ -80,8 +69,8 @@ public class NameTest extends AbstractTest
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section={"2.6.2", "2.6.3"})
    public void testJavaNamedUsedWhenNoXmlSpecified()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      AnnotatedClass<Cod> annotatedItem = new SimpleAnnotatedClass<Cod>(Cod.class, annotations);
+      //Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      //AnnotatedClass<Cod> annotatedItem = new SimpleAnnotatedClass<Cod>(Cod.class, annotations);
       //SimpleBean<Cod> cod = createSimpleBean(Cod.class, annotatedItem, manager);
       
       //assert cod.getName().equals("whitefish");
@@ -99,7 +88,7 @@ public class NameTest extends AbstractTest
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.6.3")
    public void testDefaultXmlNamed()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      /*Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(Named.class, new NamedAnnotationLiteral() {
          
          public String value()
@@ -108,7 +97,7 @@ public class NameTest extends AbstractTest
          }
          
       });
-      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
+      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);*/
       //SimpleBean<SeaBass> trout = createSimpleBean(SeaBass.class, annotatedItem, manager);
       
       //assert trout.getName() != null;
@@ -141,9 +130,9 @@ public class NameTest extends AbstractTest
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.6.4")
    public void testNotNamedInStereotype()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      /*Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(RiverFishStereotype.class, new RiverFishStereotypeAnnotationLiteral());
-      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
+      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);*/
       //SimpleBean<SeaBass> model = createSimpleBean(SeaBass.class, annotatedItem, manager);
       //assert model.getName() == null;
       assert false;

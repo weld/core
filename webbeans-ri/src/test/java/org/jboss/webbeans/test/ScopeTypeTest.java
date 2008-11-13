@@ -2,35 +2,18 @@ package org.jboss.webbeans.test;
 
 import static org.jboss.webbeans.test.util.Util.createSimpleBean;
 
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.webbeans.ConversationScoped;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.RequestScoped;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.bindings.ConversationScopedAnnotationLiteral;
-import org.jboss.webbeans.bindings.RequestScopedAnnotationLiteral;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
-import org.jboss.webbeans.test.annotations.AnimalStereotype;
 import org.jboss.webbeans.test.annotations.AnotherScopeType;
-import org.jboss.webbeans.test.annotations.FishStereotype;
-import org.jboss.webbeans.test.annotations.RiverFishStereotype;
-import org.jboss.webbeans.test.beans.Antelope;
 import org.jboss.webbeans.test.beans.BeanWithTooManyScopeTypes;
-import org.jboss.webbeans.test.beans.Haddock;
 import org.jboss.webbeans.test.beans.Mullet;
 import org.jboss.webbeans.test.beans.Order;
 import org.jboss.webbeans.test.beans.RedSnapper;
 import org.jboss.webbeans.test.beans.SeaBass;
-import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
-import org.jboss.webbeans.test.bindings.FishStereotypeAnnotationLiteral;
-import org.jboss.webbeans.test.bindings.RiverFishStereotypeAnnotationLiteral;
 import org.testng.annotations.Test;
 
 @SpecVersion("PDR")
@@ -78,19 +61,19 @@ public class ScopeTypeTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class, groups={"stub", "webbeansxml"})
    public void testTooManyScopesSpecifiedInXml()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(RequestScoped.class, new RequestScopedAnnotationLiteral());
-      annotations.put(ConversationScoped.class, new ConversationScopedAnnotationLiteral());
-      AnnotatedClass<Antelope> antelopeAnnotatedItem = new SimpleAnnotatedClass<Antelope>(Antelope.class, annotations);
+      //Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      //annotations.put(RequestScoped.class, new RequestScopedAnnotationLiteral());
+      //annotations.put(ConversationScoped.class, new ConversationScopedAnnotationLiteral());
+      //AnnotatedClass<Antelope> antelopeAnnotatedItem = new SimpleAnnotatedClass<Antelope>(Antelope.class, annotations);
       //createSimpleBean(null, antelopeAnnotatedItem, manager);
    }
    
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.4.4")
    public void testScopeDeclaredInXml()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(RequestScoped.class, new RequestScopedAnnotationLiteral());
-      AnnotatedClass<Order> annotatedItem = new SimpleAnnotatedClass<Order>(Order.class, annotations);
+      //Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      //annotations.put(RequestScoped.class, new RequestScopedAnnotationLiteral());
+      //AnnotatedClass<Order> annotatedItem = new SimpleAnnotatedClass<Order>(Order.class, annotations);
       
       //SimpleBean<Order> order = createSimpleBean(Order.class, annotatedItem, manager);
       //assert order.getScopeType().equals(RequestScoped.class);
@@ -100,8 +83,8 @@ public class ScopeTypeTest extends AbstractTest
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.4.4")
    public void testScopeMissingInXml()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
+      //Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      //AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
       
       //SimpleBean<SeaBass> trout =createSimpleBean(SeaBass.class, annotatedItem, manager);
       //assert trout.getScopeType().equals(RequestScoped.class);
@@ -111,9 +94,9 @@ public class ScopeTypeTest extends AbstractTest
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.4.4")
    public void testScopeDeclaredInXmlOverridesJava()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(ConversationScoped.class, new ConversationScopedAnnotationLiteral());
-      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
+      //Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      //annotations.put(ConversationScoped.class, new ConversationScopedAnnotationLiteral());
+      //AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
       //SimpleBean<SeaBass> trout = createSimpleBean(SeaBass.class, annotatedItem, manager);
       //assert trout.getScopeType().equals(ConversationScoped.class);
       assert false;
@@ -129,41 +112,27 @@ public class ScopeTypeTest extends AbstractTest
    @Test(groups={"stub", "webbeansxml"})@SpecAssertion(section={"2.4.5", "2.7.2"})
    public void testScopeSpecifiedAndStereotyped()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
-      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
+      //Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      //annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
+      //AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
       //SimpleBean<SeaBass> trout = createSimpleBean(SeaBass.class, annotatedItem, manager);
       //assert trout.getScopeType().equals(RequestScoped.class);
       assert false;
    }
    
-   @Test(groups="webbeansxml") @SpecAssertion(section="2.4.5")
+   @Test(groups={"webbeansxml", "stub"}) @SpecAssertion(section="2.4.5")
    public void testMutipleIncompatibleScopeStereotypes()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
-      annotations.put(AnimalStereotype.class, new AnimalStereotypeAnnotationLiteral());
-      AnnotatedClass<Haddock> annotatedItem = new SimpleAnnotatedClass<Haddock>(Haddock.class, annotations);
-      
-      boolean exception = false;
-      try
-      {
-         //createSimpleBean(Haddock.class, annotatedItem, manager);
-      }
-      catch (Exception e) 
-      {
-         exception = true;
-      }
-      assert exception;
+      assert false;
    }
    
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.4.5")
    public void testMutipleIncompatibleScopeStereotypesWithScopeSpecified()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      /*Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
       annotations.put(AnimalStereotype.class, new AnimalStereotypeAnnotationLiteral());
-      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
+      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);*/
       
       //SimpleBean<SeaBass> trout = createSimpleBean(SeaBass.class, annotatedItem, manager);
       //assert trout.getScopeType().equals(RequestScoped.class);
@@ -173,10 +142,10 @@ public class ScopeTypeTest extends AbstractTest
    @Test(groups={"stub", "webbeansxml"})@SpecAssertion(section="2.4.5")
    public void testMutipleCompatibleScopeStereotypes()
    {
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      /*Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
       annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
       annotations.put(RiverFishStereotype.class, new RiverFishStereotypeAnnotationLiteral());
-      AnnotatedClass<Haddock> annotatedItem = new SimpleAnnotatedClass<Haddock>(Haddock.class, annotations);
+      AnnotatedClass<Haddock> annotatedItem = new SimpleAnnotatedClass<Haddock>(Haddock.class, annotations);*/
       
       //SimpleBean<Haddock> haddock = createSimpleBean(Haddock.class, annotatedItem, manager);
       //assert haddock.getScopeType().equals(ApplicationScoped.class);

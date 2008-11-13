@@ -14,6 +14,7 @@ import javax.webbeans.ExecutionException;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.introspector.AnnotatedType;
 
 public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Constructor<T>> implements AnnotatedConstructor<T>
 {
@@ -25,10 +26,13 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Co
    private List<AnnotatedParameter<Object>> parameters;
    private Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> annotatedParameters;
    
-   public SimpleAnnotatedConstructor(Constructor<T> constructor)
+   private AnnotatedType<T> declaringClass;
+   
+   public SimpleAnnotatedConstructor(Constructor<T> constructor, AnnotatedType<T> declaringClass)
    {
       super(buildAnnotationMap(constructor));
       this.constructor = constructor;
+      this.declaringClass = declaringClass;
    }
 
    public Constructor<T> getAnnotatedConstructor()
@@ -170,6 +174,11 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Co
    public int hashCode()
    {
       return getDelegate().hashCode();
+   }
+   
+   public AnnotatedType<T> getDeclaringClass()
+   {
+      return declaringClass;
    }
 
 }

@@ -1,21 +1,13 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.webbeans.Current;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.EventBean;
-import org.jboss.webbeans.introspector.impl.ForwardingInjectableMethod;
-import org.jboss.webbeans.introspector.impl.ForwardingInjectableParameter;
-import org.jboss.webbeans.introspector.impl.InjectableMethod;
-import org.jboss.webbeans.introspector.impl.InjectableParameter;
-
-import com.google.common.collect.ForwardingIterator;
-import com.google.common.collect.ForwardingList;
+import org.jboss.webbeans.introspector.AnnotatedMethod;
 
 /**
  * <p>
@@ -32,7 +24,7 @@ public class ObserverImpl<T> implements Observer<T>
 {
 
    private EventBean<T> eventBean;
-   private final InjectableMethod<Object> observerMethod;
+   private final AnnotatedMethod<Object> observerMethod;
    private final Class<T> eventType;
 
    /**
@@ -59,7 +51,7 @@ public class ObserverImpl<T> implements Observer<T>
     * @param eventType The type of event being observed
     */
    public ObserverImpl(final EventBean<T> eventBean,
-         final InjectableMethod<Object> observer, final Class<T> eventType)
+         final AnnotatedMethod<Object> observer, final Class<T> eventType)
    {
       this.eventBean = eventBean;
       this.observerMethod = observer;
@@ -88,77 +80,8 @@ public class ObserverImpl<T> implements Observer<T>
       Object instance = getInstance();
       if (instance != null)
       {
-         new ForwardingInjectableMethod<Object>()
-         {
-
-            @Override
-            public List<InjectableParameter<Object>> getParameters()
-            {
-               final List<InjectableParameter<Object>>parameters = super.getParameters();
-               
-               return new ForwardingList<InjectableParameter<Object>>()
-               {
-
-                  @Override
-                  public Iterator<InjectableParameter<Object>> iterator()
-                  {
-                     final Iterator<InjectableParameter<Object>> iterator = super.iterator();
-                     return new ForwardingIterator<InjectableParameter<Object>>()
-                     {
-                        
-                        @Override
-                        public InjectableParameter<Object> next()
-                        {
-                           final InjectableParameter<Object> parameter = super.next();
-                           if (parameter.getType().isAssignableFrom(event.getClass()))
-                           {
-                              return new ForwardingInjectableParameter<Object>()
-                              {
-                                 @Override
-                                 public Object getValue(ManagerImpl manager)
-                                 {
-                                    return event;
-                                 }
-
-                                 @Override
-                                 protected InjectableParameter<? extends Object> delegate()
-                                 {
-                                    return parameter;
-                                 }
-                              };
-                           }
-                           else
-                           {
-                              return parameter;
-                           }
-                        }
-
-                        @Override
-                        protected Iterator<InjectableParameter<Object>> delegate()
-                        {
-                           return iterator;
-                        }
-                        
-                     };
-                  }
-                  
-                  @Override
-                  protected List<InjectableParameter<Object>> delegate()
-                  {
-                     return parameters;
-                  }
-                  
-               };
-            }
-            
-            
-            @Override
-            protected InjectableMethod<Object> delegate()
-            {
-               return observerMethod;
-            }
-            
-         }.invoke(manager, instance);
+         // TODO replace event parameter
+         observerMethod.invoke(manager, instance);
       }
 
    }

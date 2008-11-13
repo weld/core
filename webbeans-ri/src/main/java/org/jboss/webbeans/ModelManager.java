@@ -4,6 +4,8 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.webbeans.ejb.EjbMetaData;
+import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.model.AnnotationModel;
 import org.jboss.webbeans.model.BindingTypeModel;
 import org.jboss.webbeans.model.ScopeModel;
@@ -82,11 +84,42 @@ public class ModelManager
       
    }
    
+   private class EjbMetaDataMap extends ForwardingMap<AnnotatedClass<?>, EjbMetaData<?>>
+   {
+      
+      private Map<AnnotatedClass<?>, EjbMetaData<?>> delegate;
+
+      public EjbMetaDataMap()
+      {
+         delegate = new HashMap<AnnotatedClass<?>, EjbMetaData<?>>();
+      }
+      
+      @Override
+      protected Map<AnnotatedClass<?>, EjbMetaData<?>> delegate()
+      {
+         return delegate;
+      }
+      
+      public <T> EjbMetaData<T> putIfAbsent(AnnotatedClass<T> key)
+      {
+         if (!containsKey(key))
+         {
+            EjbMetaData<T> ejbMetaData = new EjbMetaData<T>(key); 
+            super.put(key, ejbMetaData);
+            return ejbMetaData;
+         }
+         return (EjbMetaData<T>) super.get(key);
+      }
+      
+   }
+   
    private Map<Class<? extends Annotation>, StereotypeModel<?>> stereotypes = new HashMap<Class<? extends Annotation>, StereotypeModel<?>>();
    
    private ScopeModelMap scopes = new ScopeModelMap();
    
    private BindingTypeModelMap bindingTypes = new BindingTypeModelMap();
+   
+   private EjbMetaDataMap ejbMetaDataMap = new EjbMetaDataMap();
    
 
    public void addStereotype(StereotypeModel<?> stereotype)
@@ -109,6 +142,9 @@ public class ModelManager
       return bindingTypes.putIfAbsent(bindingType);
    }
    
-  
+   public <E> EjbMetaData<E> getEjbMetaData(AnnotatedClass<E> clazz)
+   {
+      return ejbMetaDataMap.putIfAbsent(clazz);
+   }
 
 }

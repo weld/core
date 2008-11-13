@@ -3,10 +3,13 @@ package org.jboss.webbeans.introspector.impl;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
+import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.util.Reflections;
 
 public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>>
 {
+   
+   private AnnotatedClass<Object> superclass;
 
    public AbstractAnnotatedType(Map<Class<? extends Annotation>, Annotation> annotationMap)
    {
@@ -26,6 +29,17 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
    public String getName()
    {
       return getDelegate().getName();
+   }
+   
+   @SuppressWarnings("unchecked")
+   // TODO Fix this
+   public AnnotatedClass<Object> getSuperclass()
+   {
+      if (superclass == null)
+      {
+         superclass = new SimpleAnnotatedClass(getDelegate().getSuperclass());
+      }
+      return superclass;
    }
    
 }

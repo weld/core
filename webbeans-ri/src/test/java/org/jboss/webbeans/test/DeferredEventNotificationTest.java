@@ -4,21 +4,18 @@ import static org.jboss.webbeans.test.util.Util.createSimpleBean;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.webbeans.Observes;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.impl.InjectableMethod;
+import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedMethod;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.Asynchronous;
 import org.jboss.webbeans.test.beans.Tuna;
-import org.jboss.webbeans.test.bindings.AsynchronousAnnotationLiteral;
 import org.testng.annotations.Test;
 
 /**
@@ -68,15 +65,16 @@ public class DeferredEventNotificationTest extends AbstractTest
       // invoked which in turn invokes the observer. Here the mock observer
       // is used to keep track of the event being fired.
       SimpleBean<Tuna> tuna;
-      InjectableMethod<Object> om;
+      AnnotatedMethod<Object> om;
       
 
       // Create an observer with known binding types
-      Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
-      AnnotatedClass<Tuna> annotatedItem = new SimpleAnnotatedClass<Tuna>(Tuna.class, annotations);
+      //Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
+      //annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
+      //AnnotatedClass<Tuna> annotatedItem = new SimpleAnnotatedClass<Tuna>(Tuna.class, annotations);
+      // TODO This should test a real class
       tuna = createSimpleBean(Tuna.class, manager);
-      om = new InjectableMethod<Object>(AnObserver.class.getMethod("observe", new Class[] { Event.class }));
+      om = new SimpleAnnotatedMethod<Object>(AnObserver.class.getMethod("observe", new Class[] { Event.class }), new SimpleAnnotatedClass<AnObserver>(AnObserver.class));
 
       AnObserver observerInstance = new AnObserver();
       // TODO Fix this Observer<Event> observer = new MockObserverImpl<Event>(tuna, om, Event.class);

@@ -7,8 +7,7 @@ import java.util.List;
 import org.jboss.webbeans.ManagerImpl;
 
 /**
- * AnnotatedType provides a uniform access to the annotations on an annotated
- * class defined either in Java or XML 
+ * Represents a Class Constructor
  * 
  * @author Pete Muir
  *
@@ -16,12 +15,24 @@ import org.jboss.webbeans.ManagerImpl;
 public interface AnnotatedConstructor<T> extends AnnotatedItem<T, Constructor<T>>
 {
    
+   /**
+    * Get all parameters to the constructor
+    */
    public List<AnnotatedParameter<Object>> getParameters();
    
-   public List<AnnotatedParameter<Object>> getAnnotatedParameters(Class<? extends Annotation> metaAnnotationType);
+   /**
+    * Get all parameters to the constructor which are annotated with annotationType
+    */
+   public List<AnnotatedParameter<Object>> getAnnotatedParameters(Class<? extends Annotation> annotationType);
    
+   /**
+    * Create a new instance of the class, using this constructor
+    */
    public T newInstance(ManagerImpl manager);
    
-   public Class<?> getDeclaringClass();
+   /**
+    * 
+    */
+   public AnnotatedType<T> getDeclaringClass();
 
 }

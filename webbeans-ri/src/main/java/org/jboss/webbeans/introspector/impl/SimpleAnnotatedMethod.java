@@ -12,6 +12,7 @@ import java.util.Map;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Reflections;
 
 public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>
@@ -25,11 +26,14 @@ public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedMember<T, Method>
    private Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> annotatedParameters;
 
    private String propertyName;
+
+   private AnnotatedType<?> declaringClass;
    
-   public SimpleAnnotatedMethod(Method method)
+   public SimpleAnnotatedMethod(Method method, AnnotatedType<?> declaringClass)
    {
       super(buildAnnotationMap(method));
       this.method = method;
+      this.declaringClass = declaringClass;
       if (method.getGenericReturnType() instanceof ParameterizedType)
       {
          actualTypeArgements = ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments();
@@ -176,6 +180,11 @@ public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedMember<T, Method>
          }
       }
       return propertyName;
+   }
+
+   public AnnotatedType<?> getDeclaringClass()
+   {
+      return declaringClass;
    }
 
 }

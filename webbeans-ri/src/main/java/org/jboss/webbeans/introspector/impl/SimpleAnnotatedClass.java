@@ -9,6 +9,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,8 +19,7 @@ import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 
 /**
- * Base class for implementing AnnotatedItem. This implementation assumes 
- * the annotationMap is immutable.
+ * Base class for implementing AnnotatedItem.
  * 
  * @author pmuir
  *
@@ -39,16 +39,15 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
    
    private Set<AnnotatedConstructor<T>> constructors;
    private Map<Class<? extends Annotation>, Set<AnnotatedConstructor<T>>> annotatedConstructors;
-   private Map<Set<Class<?>>, AnnotatedConstructor<T>> constructorsByArgumentMap;
+   private Map<List<Class<?>>, AnnotatedConstructor<T>> constructorsByArgumentMap;
    
-   public SimpleAnnotatedClass(Class<T> annotatedClass, Map<Class<? extends Annotation>, Annotation> annotationMap)
+   public SimpleAnnotatedClass(Class<T> rawType, Type type, Annotation[] annotations)
    {
-      super(annotationMap);
-      this.clazz = annotatedClass;
-      if (this.clazz.getGenericSuperclass() instanceof ParameterizedType)
+      super(buildAnnotationMap(annotations));
+      this.clazz = rawType;
+      if (type instanceof ParameterizedType)
       {
-         ParameterizedType type = (ParameterizedType) this.clazz.getGenericSuperclass();
-         actualTypeArguments = type.getActualTypeArguments();
+         actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
       }
       else
       {
@@ -56,9 +55,9 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
       }
    }
    
-   public SimpleAnnotatedClass(Class<T> annotatedClass)
+   public SimpleAnnotatedClass(Class<T> clazz)
    {
-      this(annotatedClass, buildAnnotationMap(annotatedClass));
+      this(clazz, clazz, clazz.getAnnotations());
    }
    
    public Class<? extends T> getAnnotatedClass()
@@ -97,7 +96,7 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
          for(Field field : clazz.getDeclaredFields())
          {
             if ( !field.isAccessible() ) field.setAccessible(true);
-            fields.add(new SimpleAnnotatedField<Object>(field));
+            fields.add(new SimpleAnnotatedField<Object>(field, this));
          }
       }
    }
@@ -185,7 +184,7 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
          for (Method method : clazz.getDeclaredMethods())
          {
             if (!method.isAccessible()) method.setAccessible(true);
-            methods.add(new SimpleAnnotatedMethod<Object>(method));
+            methods.add(new SimpleAnnotatedMethod<Object>(method, this));
          }
       }
    }
@@ -230,13 +229,13 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
    private void initConstructors()
    {
       this.constructors = new HashSet<AnnotatedConstructor<T>>();
-      this.constructorsByArgumentMap = new HashMap<Set<Class<?>>, AnnotatedConstructor<T>>();
+      this.constructorsByArgumentMap = new HashMap<List<Class<?>>, AnnotatedConstructor<T>>();
       for (Constructor<T> constructor : clazz.getDeclaredConstructors())
       {
-         AnnotatedConstructor<T> annotatedConstructor = new SimpleAnnotatedConstructor<T>(constructor);
+         AnnotatedConstructor<T> annotatedConstructor = new SimpleAnnotatedConstructor<T>(constructor, this);
          if (!constructor.isAccessible()) constructor.setAccessible(true);
          constructors.add(annotatedConstructor);
-         constructorsByArgumentMap.put(new HashSet<Class<?>>(Arrays.asList(constructor.getParameterTypes())), annotatedConstructor);
+         constructorsByArgumentMap.put(Arrays.asList(constructor.getParameterTypes()), annotatedConstructor);
       }
    }
    
@@ -277,7 +276,7 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
       }
    }
    
-   public AnnotatedConstructor<T> getConstructor(Set<Class<?>> arguments)
+   public AnnotatedConstructor<T> getConstructor(List<Class<?>> arguments)
    {
       return constructorsByArgumentMap.get(arguments);
    }

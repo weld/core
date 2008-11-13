@@ -36,7 +36,7 @@ public class DefaultEnterpriseBeanLookup implements EnterpriseBeanLookup
    }
    
    //TODO: this method needs to get called at startup
-   public <T> EjbMetaData<T> registerEjbMetaData(Class<? extends T> clazz)
+   public <T> EjbMetaData<T> registerEjbMetaData(Class<T> clazz)
    {
       EjbMetaData<T> ejbMetaData = new EjbMetaData<T>(clazz); 
       ejbMetaDataMap.put(ejbMetaData.getEjbName(), ejbMetaData);

@@ -1,7 +1,6 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,9 +11,11 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.webbeans.AmbiguousDependencyException;
+import javax.webbeans.BindingType;
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.Dependent;
 import javax.webbeans.DeploymentException;
+import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Observer;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
@@ -29,7 +30,6 @@ import javax.webbeans.manager.Interceptor;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.bean.proxy.ClientProxy;
 import org.jboss.webbeans.bean.proxy.ProxyPool;
 import org.jboss.webbeans.contexts.ApplicationContext;
 import org.jboss.webbeans.contexts.DependentContext;
@@ -38,9 +38,9 @@ import org.jboss.webbeans.contexts.SessionContext;
 import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
 import org.jboss.webbeans.event.EventBus;
 import org.jboss.webbeans.exceptions.NameResolutionLocation;
-import org.jboss.webbeans.exceptions.TypesafeResolutionLocation;
-import org.jboss.webbeans.introspector.impl.Injectable;
-import org.jboss.webbeans.introspector.impl.ResolverInjectable;
+import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
 import org.jboss.webbeans.util.Reflections;
 
 import com.google.common.collect.ForwardingMap;
@@ -74,6 +74,8 @@ public class ManagerImpl implements Manager
          return delegate;
       }
    }
+   
+   
 
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
    private ModelManager modelManager;
@@ -152,9 +154,9 @@ public class ManagerImpl implements Manager
 
    }
 
-   public <T> Set<Method> resolveDisposalMethods(Class<T> apiType, Annotation... bindingTypes)
+   public <T> Set<AnnotatedMethod<Object>> resolveDisposalMethods(Class<T> apiType, Annotation... bindingTypes)
    {
-      return new HashSet<Method>();
+      return new HashSet<AnnotatedMethod<Object>>();
    }
 
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
@@ -174,27 +176,33 @@ public class ManagerImpl implements Manager
 
    public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindingTypes)
    {
-      return resolveByType(new ResolverInjectable<T>(type, bindingTypes, getModelManager()));
+      return resolveByType(new SimpleAnnotatedClass<T>(type, type, bindingTypes), bindingTypes);
    }
 
-   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType, Annotation... bindingTypes)
+   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> type, Annotation... bindingTypes)
    {
-      return resolveByType(new ResolverInjectable<T>(apiType, bindingTypes, getModelManager()));
+      return resolveByType(new SimpleAnnotatedClass<T>(type.getRawType(), type.getType(), bindingTypes), bindingTypes);
    }
-
-   private <T> Set<Bean<T>> resolveByType(Injectable<T, ?> injectable)
+   
+   public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, Annotation... bindingTypes)
    {
-      Set<Bean<T>> beans = getResolutionManager().get(injectable);
-
-      if (beans == null)
+      checkBindingAnnotations(element, bindingTypes);
+      return getResolutionManager().get(element);
+   }
+   
+   private void checkBindingAnnotations(AnnotatedItem<?, ?> element, Annotation... bindingTypes)
+   {
+      for (Annotation annotation : element.getAnnotations())
       {
-         return new HashSet<Bean<T>>();
+         if (!modelManager.getBindingTypeModel(annotation.annotationType()).isValid())
+         {
+            throw new IllegalArgumentException("Not a binding type " + annotation);
+         }
       }
-      else
+      if (bindingTypes.length > element.getAnnotations(BindingType.class).size())
       {
-         return beans;
+         throw new DuplicateBindingTypeException(element.toString());
       }
-
    }
 
    public ResolutionManager getResolutionManager()
@@ -337,31 +345,31 @@ public class ManagerImpl implements Manager
 
    public <T> T getInstanceByType(Class<T> type, Annotation... bindingTypes)
    {
-      return getInstanceByType(new ResolverInjectable<T>(type, bindingTypes, getModelManager()));
+      return getInstanceByType(new SimpleAnnotatedClass<T>(type, type, bindingTypes), bindingTypes);
    }
 
    public <T> T getInstanceByType(TypeLiteral<T> type, Annotation... bindingTypes)
    {
-      return getInstanceByType(new ResolverInjectable<T>(type, bindingTypes, getModelManager()));
+      return getInstanceByType(new SimpleAnnotatedClass<T>(type.getRawType(), type.getType(), bindingTypes), bindingTypes);
    }
 
-   private <T> T getInstanceByType(Injectable<T, ?> injectable)
+   public <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindingTypes)
    {
-      Set<Bean<T>> beans = resolveByType(injectable);
+      Set<Bean<T>> beans = resolveByType(element, bindingTypes);
       if (beans.size() == 0)
       {
-         throw new UnsatisfiedDependencyException(new TypesafeResolutionLocation(injectable) + "Unable to resolve any Web Beans");
+         throw new UnsatisfiedDependencyException(element + "Unable to resolve any Web Beans");
       }
       else if (beans.size() > 1)
       {
-         throw new AmbiguousDependencyException(new TypesafeResolutionLocation(injectable) + "Resolved multiple Web Beans");
+         throw new AmbiguousDependencyException(element + "Resolved multiple Web Beans");
       }
       else
       {
          Bean<T> bean = beans.iterator().next();
-         if (getModelManager().getScopeModel(bean.getScopeType()).isNormal() && !ClientProxy.isProxyable(injectable.getType()))
+         if (getModelManager().getScopeModel(bean.getScopeType()).isNormal() && !element.isProxyable())
          {
-            throw new UnproxyableDependencyException(new TypesafeResolutionLocation(injectable) + "Unable to proxy");
+            throw new UnproxyableDependencyException(element + "Unable to proxy");
          }
          else
          {

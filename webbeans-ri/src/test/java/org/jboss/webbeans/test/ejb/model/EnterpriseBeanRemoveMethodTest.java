@@ -5,13 +5,11 @@ import javax.webbeans.RequestScoped;
 import javax.webbeans.UnremovedException;
 
 import org.jboss.webbeans.bean.EnterpriseBean;
-import org.jboss.webbeans.bean.XmlEnterpriseBean;
 import org.jboss.webbeans.contexts.RequestContext;
 import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
 import org.jboss.webbeans.test.SpecVersion;
 import org.jboss.webbeans.test.ejb.model.invalid.Armant;
-import org.jboss.webbeans.test.ejb.model.invalid.ChowChow;
 import org.jboss.webbeans.test.ejb.model.invalid.GoldenRetriever;
 import org.jboss.webbeans.test.ejb.model.invalid.JackRussellTerrier;
 import org.jboss.webbeans.test.ejb.model.invalid.Poodle;
@@ -20,9 +18,9 @@ import org.jboss.webbeans.test.ejb.model.invalid.Rottweiler;
 import org.jboss.webbeans.test.ejb.model.invalid.RussellTerrier;
 import org.jboss.webbeans.test.ejb.model.invalid.Saluki;
 import org.jboss.webbeans.test.ejb.model.invalid.Spitz;
+import org.jboss.webbeans.test.ejb.model.valid.Koirus;
 import org.jboss.webbeans.test.ejb.model.valid.Toller;
 import org.jboss.webbeans.test.ejb.model.valid.WelshCorgie;
-import org.jboss.webbeans.test.ejb.model.valid.Koirus;
 import org.jboss.webbeans.test.util.Util;
 import org.testng.annotations.Test;
 
@@ -94,8 +92,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    public void testEnterpriseBeanWithoutDestructorUsesNoArgsRemoveAnnotatedMethodAsRemoveMethod()
    {
       EnterpriseBean<Toller> bean = Util.createEnterpriseBean(Toller.class, manager);
-      assert "bye".equals(bean.getRemoveMethod().getAnnotatedItem()
-            .getAnnotatedMethod().getName());
+      assert "bye".equals(bean.getRemoveMethod().getName());
    }
 
    @Test(groups={"enterpriseBeans", "removeMethod"})

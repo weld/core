@@ -73,13 +73,5 @@ public class NormalContextTest extends AbstractTest
       ProducerMethodBean<Tarantula> shelobBean = createProducerMethodBean(Tarantula.class, nullProducer, manager, producer);
       assert shelobBean.create() == null;
    }
-
-   @Test(groups={"contexts", "beanDestruction"})
-   public void testDestroy() {
-      Bean<Tuna> tunaBean = Util.createSimpleBean(Tuna.class, manager);      
-      assert context.get(tunaBean, true) instanceof Tuna;
-      ((AbstractContext)context).destroy(manager);
-      assert context.get(tunaBean, false) == null;
-   }
    
 }
