@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.test.util.Util.createProducerMethodBean;
-import static org.jboss.webbeans.test.util.Util.createSimpleBean;
+import static org.jboss.webbeans.util.BeanFactory.createProducerMethodBean;
+import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
 
 import java.lang.reflect.Method;
 
@@ -16,7 +16,7 @@ import org.jboss.webbeans.contexts.RequestContext;
 import org.jboss.webbeans.test.beans.SpiderProducer;
 import org.jboss.webbeans.test.beans.Tarantula;
 import org.jboss.webbeans.test.beans.Tuna;
-import org.jboss.webbeans.test.util.Util;
+import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -40,13 +40,13 @@ public class NormalContextTest extends AbstractTest
    
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testGetWithCreateFalseReturnsNull() {
-      Bean<Tuna> tunaBean = Util.createSimpleBean(Tuna.class, manager);      
+      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class, manager);      
       assert context.get(tunaBean, false) == null;
    }
 
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testGetWithCreateTrueReturnsBean() {
-      Bean<Tuna> tunaBean = Util.createSimpleBean(Tuna.class, manager);      
+      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class, manager);      
       assert context.get(tunaBean, true) != null;
    }
    
@@ -59,7 +59,7 @@ public class NormalContextTest extends AbstractTest
    
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testReturnsCorrectExistingBean() {
-      Bean<Tuna> tunaBean = Util.createSimpleBean(Tuna.class, manager);      
+      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class, manager);      
       Tuna firstTuna = context.get(tunaBean, true);
       Tuna secondTuna = context.get(tunaBean, false);
       assert firstTuna == secondTuna;

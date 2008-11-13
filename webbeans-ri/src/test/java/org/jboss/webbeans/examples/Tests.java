@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.AbstractTest;
-import org.jboss.webbeans.test.util.Util;
+import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.Test;
 
 public class Tests extends AbstractTest
@@ -26,11 +26,11 @@ public class Tests extends AbstractTest
 
    private void setupGameGenerator() throws NoSuchMethodException
    {
-      SimpleBean<Game> gameBean = Util.createSimpleBean(Game.class, manager);
-        SimpleBean<Generator> generatorBean = Util.createSimpleBean(Generator.class, manager);
+      SimpleBean<Game> gameBean = BeanFactory.createSimpleBean(Game.class, manager);
+        SimpleBean<Generator> generatorBean = BeanFactory.createSimpleBean(Generator.class, manager);
         Method method = Generator.class.getDeclaredMethod("next");
         method.setAccessible(true);
-        ProducerMethodBean<Integer> nextBean = Util.createProducerMethodBean(int.class, method, manager, generatorBean);
+        ProducerMethodBean<Integer> nextBean = BeanFactory.createProducerMethodBean(int.class, method, manager, generatorBean);
         
         manager.addBean(gameBean);
         manager.addBean(generatorBean);
@@ -65,10 +65,10 @@ public class Tests extends AbstractTest
    
    private void setupTextTranslator()
    {
-      SimpleBean<SentenceParser> spBean = Util.createSimpleBean(SentenceParser.class, manager);
-      SimpleBean<SentenceTranslator> stBean = Util.createSimpleBean(SentenceTranslator.class, manager);
-      SimpleBean<MockSentenceTranslator> mstBean = Util.createSimpleBean(MockSentenceTranslator.class, manager);
-      SimpleBean<TextTranslator> ttBean = Util.createSimpleBean(TextTranslator.class, manager);
+      SimpleBean<SentenceParser> spBean = BeanFactory.createSimpleBean(SentenceParser.class, manager);
+      SimpleBean<SentenceTranslator> stBean = BeanFactory.createSimpleBean(SentenceTranslator.class, manager);
+      SimpleBean<MockSentenceTranslator> mstBean = BeanFactory.createSimpleBean(MockSentenceTranslator.class, manager);
+      SimpleBean<TextTranslator> ttBean = BeanFactory.createSimpleBean(TextTranslator.class, manager);
       
       manager.addBean(spBean);
       manager.addBean(stBean);

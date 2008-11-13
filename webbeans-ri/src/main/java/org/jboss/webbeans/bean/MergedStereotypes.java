@@ -40,7 +40,7 @@ public class MergedStereotypes<T, E>
          StereotypeModel<?> stereotype = manager.getModelManager().getStereotype(stereotypeAnnotation.annotationType());
          if (stereotype == null)
          {
-            throw new NullPointerException("Stereotype " + stereotypeAnnotation + " not registered with container");
+            throw new IllegalStateException("Stereotype " + stereotypeAnnotation + " not registered with container");
          }
          if (stereotype.getDefaultDeploymentType() != null)
          {

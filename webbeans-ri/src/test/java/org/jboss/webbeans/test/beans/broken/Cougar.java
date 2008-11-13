@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.beans;
+package org.jboss.webbeans.test.beans.broken;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;

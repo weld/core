@@ -9,6 +9,7 @@ import javax.webbeans.Interceptor;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
 
+import org.jboss.webbeans.bootstrap.Bootstrap;
 import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
@@ -18,6 +19,7 @@ import org.jboss.webbeans.test.annotations.HornedMammalStereotype;
 import org.jboss.webbeans.test.annotations.MammalStereotype;
 import org.jboss.webbeans.test.annotations.RequestScopedAnimalStereotype;
 import org.jboss.webbeans.test.annotations.RiverFishStereotype;
+import org.jboss.webbeans.test.mock.MockBootstrap;
 import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.testng.annotations.BeforeMethod;
 
@@ -25,12 +27,14 @@ public class AbstractTest
 {
    
    protected MockManagerImpl manager;
+   protected Bootstrap bootstrap;
 
    
    @BeforeMethod
    public final void before()
    {
       manager = new MockManagerImpl();
+      bootstrap = new MockBootstrap(manager);
       init();
    }
    

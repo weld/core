@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.test.util.Util.createSimpleBean;
+import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
 
 import java.util.Arrays;
 

@@ -14,7 +14,7 @@ import org.jboss.webbeans.test.beans.FinalTuna;
 import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.TunedTuna;
-import org.jboss.webbeans.test.util.Util;
+import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.Test;
 
 @SpecVersion("PDR")
@@ -25,7 +25,7 @@ public class ClientProxyTest extends AbstractTest
    @SpecAssertion(section = { "4.4", "4.8" })
    public void testClientProxyUsedForNormalScope()
    {
-      Bean<Tuna> tunaBean = Util.createSimpleBean(Tuna.class, manager);
+      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class, manager);
       Tuna tuna = manager.getInstance(tunaBean);
       assert ClientProxy.isProxy(tuna);
    }
@@ -34,7 +34,7 @@ public class ClientProxyTest extends AbstractTest
    @SpecAssertion(section = { "4.4", "4.8" })
    public void testClientProxyNotUsedForPseudoScope()
    {
-      Bean<Fox> foxBean = Util.createSimpleBean(Fox.class, manager);
+      Bean<Fox> foxBean = BeanFactory.createSimpleBean(Fox.class, manager);
       Fox fox = manager.getInstance(foxBean);
       assert !ClientProxy.isProxy(fox);
    }
@@ -55,7 +55,7 @@ public class ClientProxyTest extends AbstractTest
    @SpecAssertion(section = "4.4")
    public void testSimpleWebBeanClientProxyIsSerializable() throws IOException, ClassNotFoundException
    {
-      Bean<TunedTuna> tunaBean = Util.createSimpleBean(TunedTuna.class, manager);
+      Bean<TunedTuna> tunaBean = BeanFactory.createSimpleBean(TunedTuna.class, manager);
       TunedTuna tuna = manager.getInstance(tunaBean);
       assert ClientProxy.isProxy(tuna);
       byte[] bytes = serializeBean(tuna);
@@ -68,7 +68,7 @@ public class ClientProxyTest extends AbstractTest
    @SpecAssertion(section = "4.4.1")
    public void testInjectionPointWithUnproxyableTypeWhichResolvesToNormalScopedWebBean()
    {
-      Bean<FinalTuna> tunaBean = Util.createSimpleBean(FinalTuna.class, manager);
+      Bean<FinalTuna> tunaBean = BeanFactory.createSimpleBean(FinalTuna.class, manager);
       manager.addBean(tunaBean);
       FinalTuna tuna = manager.getInstanceByType(FinalTuna.class);      
       assert false;
@@ -78,7 +78,7 @@ public class ClientProxyTest extends AbstractTest
    @SpecAssertion(section = "4.4.2")
    public void testClientProxyInvocation()
    {
-      Bean<TunedTuna> tunaBean = Util.createSimpleBean(TunedTuna.class, manager);
+      Bean<TunedTuna> tunaBean = BeanFactory.createSimpleBean(TunedTuna.class, manager);
       manager.addBean(tunaBean);
       TunedTuna tuna = manager.getInstance(tunaBean);
       assert ClientProxy.isProxy(tuna);
@@ -87,7 +87,7 @@ public class ClientProxyTest extends AbstractTest
    
    @Test(groups = "clientProxy")
    public void testProxyCreationDoesImplicitAddBean() {
-      Bean<Tuna> tunaBean = Util.createSimpleBean(Tuna.class, manager);
+      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class, manager);
       Tuna tuna = manager.getInstance(tunaBean);
       assert manager.getBeans().size() == 2;
    }

@@ -66,6 +66,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       }
    }
    
+   public Set<AnnotatedMethod<Object>> getProducerMethods()
+   {
+      return getAnnotatedItem().getAnnotatedMethods(Produces.class);
+   }
+   
    @Override
    protected void initInjectionPoints()
    {

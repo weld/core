@@ -29,8 +29,13 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
 
    public ProducerMethodBean(Method method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
+      this(new AnnotatedMethodImpl<T>(method, declaringBean.getAnnotatedItem()), declaringBean, manager);
+   }
+   
+   public ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   {
       super(manager);
-      this.method = new AnnotatedMethodImpl<T>(method, declaringBean.getAnnotatedItem());
+      this.method = method;
       this.declaringBean = declaringBean;
       init();
    }

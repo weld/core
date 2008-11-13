@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.webbeans.ejb.EjbMetaData;
-import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.model.AnnotationModel;
 import org.jboss.webbeans.model.BindingTypeModel;
 import org.jboss.webbeans.model.ScopeModel;
@@ -84,23 +83,23 @@ public class ModelManager
       
    }
    
-   private class EjbMetaDataMap extends ForwardingMap<AnnotatedClass<?>, EjbMetaData<?>>
+   private class EjbMetaDataMap extends ForwardingMap<Class<?>, EjbMetaData<?>>
    {
       
-      private Map<AnnotatedClass<?>, EjbMetaData<?>> delegate;
+      private Map<Class<?>, EjbMetaData<?>> delegate;
 
       public EjbMetaDataMap()
       {
-         delegate = new HashMap<AnnotatedClass<?>, EjbMetaData<?>>();
+         delegate = new HashMap<Class<?>, EjbMetaData<?>>();
       }
       
       @Override
-      protected Map<AnnotatedClass<?>, EjbMetaData<?>> delegate()
+      protected Map<Class<?>, EjbMetaData<?>> delegate()
       {
          return delegate;
       }
       
-      public <T> EjbMetaData<T> putIfAbsent(AnnotatedClass<T> key)
+      public <T> EjbMetaData<T> putIfAbsent(Class<T> key)
       {
          if (!containsKey(key))
          {
@@ -142,7 +141,7 @@ public class ModelManager
       return bindingTypes.putIfAbsent(bindingType);
    }
    
-   public <E> EjbMetaData<E> getEjbMetaData(AnnotatedClass<E> clazz)
+   public <T> EjbMetaData<T> getEjbMetaData(Class<T> clazz)
    {
       return ejbMetaDataMap.putIfAbsent(clazz);
    }

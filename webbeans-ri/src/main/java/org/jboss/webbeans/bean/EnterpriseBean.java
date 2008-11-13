@@ -109,14 +109,14 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       if (!isDefinedInXml())
       {
-         if (!getManager().getModelManager().getEjbMetaData(getAnnotatedItem().getSuperclass()).isEjb())
+         if (!getManager().getModelManager().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
          {
             throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
          }
       } 
       else
       {
-         if (getManager().getModelManager().getEjbMetaData(getAnnotatedItem().getSuperclass()).isEjb())
+         if (getManager().getModelManager().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
          {
             throw new DefinitionException("XML defined specializing EJB must have annotation defined EJB implementation");
          }
@@ -135,7 +135,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       // >1 @Destructor
       if (getEjbMetaData().getDestructorMethods().size() > 1)
       {
-         throw new DefinitionException("Multiple @Destructor methods not allowed");
+         throw new DefinitionException("Multiple @Destructor methods not allowed on " + getAnnotatedItem());
       }
 
 

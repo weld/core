@@ -1,8 +1,8 @@
 package org.jboss.webbeans.test;
 
 
-import static org.jboss.webbeans.test.util.Util.createProducerMethodBean;
-import static org.jboss.webbeans.test.util.Util.createSimpleBean;
+import static org.jboss.webbeans.util.BeanFactory.createProducerMethodBean;
+import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
 
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.DefinitionException;
