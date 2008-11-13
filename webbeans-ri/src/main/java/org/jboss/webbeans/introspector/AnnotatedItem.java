@@ -29,10 +29,10 @@ public interface AnnotatedItem<T, S>
     * If no annotations are present which are annotated with the given meta
     * annotation an empty set is returned
     */
-   public Set<Annotation> getAnnotations(
+   public Set<Annotation> getMetaAnnotations(
          Class<? extends Annotation> metaAnnotationType);
    
-   public Annotation[] getAnnotationsAsArray(
+   public Annotation[] getMetaAnnotationsAsArray(
          Class<? extends Annotation> metaAnnotationType);
    
    /**

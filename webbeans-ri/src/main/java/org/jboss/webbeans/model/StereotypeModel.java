@@ -42,7 +42,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    
    private void checkBindingTypes()
    {
-      Set<Annotation> bindingTypes = getAnnotatedAnnotation().getAnnotations(BindingType.class);
+      Set<Annotation> bindingTypes = getAnnotatedAnnotation().getMetaAnnotations(BindingType.class);
       if (bindingTypes.size() > 0)
       {
          throw new DefinitionException("Cannot declare binding types on a stereotype " + getAnnotatedAnnotation());
@@ -51,7 +51,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
 
    private void initInterceptorBindings()
    {
-      interceptorBindings = getAnnotatedAnnotation().getAnnotations(InterceptorBindingType.class);
+      interceptorBindings = getAnnotatedAnnotation().getMetaAnnotations(InterceptorBindingType.class);
    }
 
    private void initSupportedScopes()
@@ -88,7 +88,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
 
    private void initDefaultScopeType()
    {
-      Set<Annotation> scopeTypes = getAnnotatedAnnotation().getAnnotations(ScopeType.class);
+      Set<Annotation> scopeTypes = getAnnotatedAnnotation().getMetaAnnotations(ScopeType.class);
       if (scopeTypes.size() > 1)
       {
          throw new DefinitionException("At most one scope type may be specified for " + getAnnotatedAnnotation());
@@ -101,7 +101,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
 
    private void initDefaultDeploymentType()
    {
-      Set<Annotation> deploymentTypes = getAnnotatedAnnotation().getAnnotations(DeploymentType.class);
+      Set<Annotation> deploymentTypes = getAnnotatedAnnotation().getMetaAnnotations(DeploymentType.class);
       if (deploymentTypes.size() > 1)
       {
          throw new DefinitionException("At most one deployment type may be specified on " + getAnnotatedAnnotation());

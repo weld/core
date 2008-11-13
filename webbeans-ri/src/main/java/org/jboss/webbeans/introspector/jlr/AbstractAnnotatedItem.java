@@ -82,7 +82,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return (A) annotationMap.get(annotationType);
    }
 
-   public Set<Annotation> getAnnotations(Class<? extends Annotation> metaAnnotationType)
+   public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
       if (metaAnnotationMap == null)
       {
@@ -92,12 +92,12 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return metaAnnotationMap.get(metaAnnotationType);
    }
    
-   public Annotation[] getAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
+   public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
    {
       if (annotationArray == null)
       {
          annotationArray = new Annotation[0];
-         annotationArray = getAnnotations(metaAnnotationType).toArray(annotationArray);
+         annotationArray = getMetaAnnotations(metaAnnotationType).toArray(annotationArray);
       }
       return annotationArray;
    }
@@ -203,9 +203,9 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    
    public Set<Annotation> getBindingTypes()
    {
-      if (getAnnotations(BindingType.class).size() > 0)
+      if (getMetaAnnotations(BindingType.class).size() > 0)
       {
-         return getAnnotations(BindingType.class);
+         return getMetaAnnotations(BindingType.class);
       }
       else
       {
@@ -215,9 +215,9 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    
    public Annotation[] getBindingTypesAsArray()
    {
-      if (getAnnotationsAsArray(BindingType.class).length > 0)
+      if (getMetaAnnotationsAsArray(BindingType.class).length > 0)
       {
-         return getAnnotationsAsArray(BindingType.class);
+         return getMetaAnnotationsAsArray(BindingType.class);
       }
       else
       {

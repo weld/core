@@ -76,7 +76,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    
    protected void init()
    {
-      mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getAnnotations(Stereotype.class), manager);
+      mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class), manager);
       initType();
       initPrimitive();
       log.debug("Building Web Bean bean metadata for " +  getType());
@@ -116,7 +116,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       else if (!mergedStereotypes.isDeclaredInXml())
       {
          boolean specialization = getAnnotatedItem().isAnnotationPresent(Specializes.class);
-         this.bindingTypes.addAll(getAnnotatedItem().getAnnotations(BindingType.class));
+         this.bindingTypes.addAll(getAnnotatedItem().getMetaAnnotations(BindingType.class));
          if (specialization)
          {
             this.bindingTypes.addAll(getSpecializedType().getBindingTypes());
@@ -154,7 +154,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       }
       else
       {
-         Set<Annotation> deploymentTypes = getAnnotatedItem().getAnnotations(DeploymentType.class);
+         Set<Annotation> deploymentTypes = getAnnotatedItem().getMetaAnnotations(DeploymentType.class);
          
          if (deploymentTypes.size() > 1)
          {
@@ -279,14 +279,14 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       }
       else
       {
-         if (getAnnotatedItem().getAnnotations(ScopeType.class).size() > 1)
+         if (getAnnotatedItem().getMetaAnnotations(ScopeType.class).size() > 1)
          {
             throw new DefinitionException("At most one scope may be specified");
          }
          
-         if (getAnnotatedItem().getAnnotations(ScopeType.class).size() == 1)
+         if (getAnnotatedItem().getMetaAnnotations(ScopeType.class).size() == 1)
          {
-            this.scopeType = getAnnotatedItem().getAnnotations(ScopeType.class).iterator().next().annotationType();
+            this.scopeType = getAnnotatedItem().getMetaAnnotations(ScopeType.class).iterator().next().annotationType();
             log.trace("Scope " + scopeType + " specified b annotation");
             return;
          }

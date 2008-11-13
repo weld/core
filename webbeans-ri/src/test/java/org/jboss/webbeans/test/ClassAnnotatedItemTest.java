@@ -30,7 +30,7 @@ public class ClassAnnotatedItemTest
    public void testMetaAnnotations()
    {
       AnnotatedClass<Order> annotatedElement = new AnnotatedClassImpl<Order>(Order.class);
-      Set<Annotation> annotations = annotatedElement.getAnnotations(DeploymentType.class);
+      Set<Annotation> annotations = annotatedElement.getMetaAnnotations(DeploymentType.class);
       assert annotations.size() == 1;
       Iterator<Annotation> it = annotations.iterator();
       Annotation production = it.next();
@@ -42,7 +42,7 @@ public class ClassAnnotatedItemTest
    {
       AnnotatedClass<Order> annotatedElement = new AnnotatedClassImpl<Order>(Order.class);
       assert annotatedElement.getAnnotation(Stereotype.class) == null;
-      assert annotatedElement.getAnnotations(Stereotype.class).size() == 0;
+      assert annotatedElement.getMetaAnnotations(Stereotype.class).size() == 0;
       AnnotatedClass<Antelope> classWithNoAnnotations = new AnnotatedClassImpl<Antelope>(Antelope.class);
       assert classWithNoAnnotations.getAnnotations().size() == 0;
    }

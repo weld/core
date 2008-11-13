@@ -199,7 +199,7 @@ public class ManagerImpl implements Manager
             throw new IllegalArgumentException("Not a binding type " + annotation);
          }
       }
-      if (bindingTypes.length > element.getAnnotations(BindingType.class).size())
+      if (bindingTypes.length > element.getMetaAnnotations(BindingType.class).size())
       {
          throw new DuplicateBindingTypeException(element.toString());
       }

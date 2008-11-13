@@ -49,7 +49,7 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
    
    public T getValue(ManagerImpl manager)
    {
-      return manager.getInstanceByType(getType(), getAnnotationsAsArray(BindingType.class));
+      return manager.getInstanceByType(getType(), getMetaAnnotationsAsArray(BindingType.class));
    }
 
    public String getName()

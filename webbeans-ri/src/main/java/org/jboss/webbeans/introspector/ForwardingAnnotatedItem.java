@@ -22,14 +22,14 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
       return delegate().getAnnotations();
    }
    
-   public Set<Annotation> getAnnotations(Class<? extends Annotation> metaAnnotationType)
+   public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
-      return delegate().getAnnotations(metaAnnotationType);
+      return delegate().getMetaAnnotations(metaAnnotationType);
    }
    
-   public Annotation[] getAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
+   public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
    {
-      return delegate().getAnnotationsAsArray(metaAnnotationType);
+      return delegate().getMetaAnnotationsAsArray(metaAnnotationType);
    }
    
    public Set<Annotation> getBindingTypes()
