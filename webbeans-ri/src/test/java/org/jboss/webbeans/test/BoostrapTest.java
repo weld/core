@@ -1,6 +1,10 @@
 package org.jboss.webbeans.test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,6 +25,8 @@ import org.jboss.webbeans.test.beans.TarantulaProducer;
 import org.jboss.webbeans.test.beans.Tiger;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.ejb.model.valid.Hound;
+import org.jboss.webbeans.test.mock.MockBootstrap;
+import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
 import org.testng.annotations.Test;
 
 public class BoostrapTest extends AbstractTest
@@ -28,7 +34,7 @@ public class BoostrapTest extends AbstractTest
    @Test(groups="bootstrap")
    public void testSingleSimpleBean()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.discoverBeans(Tuna.class);
+      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(Tuna.class);
       assert beans.size() == 1;
       assert beans.iterator().next().getType().equals(Tuna.class);
    }
@@ -36,7 +42,7 @@ public class BoostrapTest extends AbstractTest
    @Test(groups="bootstrap")
    public void testSingleEnterpriseBean()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.discoverBeans(Hound.class);
+      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(Hound.class);
       assert beans.size() == 1;
       assert beans.iterator().next().getType().equals(Hound.class);
    }
@@ -44,7 +50,7 @@ public class BoostrapTest extends AbstractTest
    @Test(groups="bootstrap")
    public void testMultipleSimpleBean()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.discoverBeans(Tuna.class, Salmon.class, SeaBass.class, Sole.class);
+      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(Tuna.class, Salmon.class, SeaBass.class, Sole.class);
       assert beans.size() == 4;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (AbstractBean<?, ?> bean : beans)
@@ -65,7 +71,7 @@ public class BoostrapTest extends AbstractTest
    @Test(groups="bootstrap")
    public void testProducerMethodBean()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.discoverBeans(TarantulaProducer.class);
+      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(TarantulaProducer.class);
       assert beans.size() == 2;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (AbstractBean<?, ?> bean : beans)
@@ -82,7 +88,7 @@ public class BoostrapTest extends AbstractTest
    @Test(groups="bootstrap")
    public void testMultipleEnterpriseBean()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.discoverBeans(Hound.class, Elephant.class, Panther.class, Tiger.class);
+      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(Hound.class, Elephant.class, Panther.class, Tiger.class);
       assert beans.size() == 4;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (AbstractBean<?, ?> bean : beans)
@@ -103,7 +109,7 @@ public class BoostrapTest extends AbstractTest
    @Test(groups="bootstrap")
    public void testMultipleEnterpriseAndSimpleBean()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.discoverBeans(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class);
+      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class);
       assert beans.size() == 8;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (AbstractBean<?, ?> bean : beans)
@@ -151,6 +157,55 @@ public class BoostrapTest extends AbstractTest
    public void testRegisterMultipleEnterpriseAndSimpleBean()
    {
       bootstrap.registerBeans(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class);
+      assert manager.getBeans().size() == 9;
+      Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
+      for (Bean<?> bean : manager.getBeans())
+      {
+         
+         classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+      }
+      assert classes.containsKey(DefaultEnterpriseBeanLookup.class);
+      assert classes.containsKey(Hound.class);
+      assert classes.containsKey(Elephant.class);
+      assert classes.containsKey(Panther.class);
+      assert classes.containsKey(Tiger.class);
+      assert classes.containsKey(Tuna.class);
+      assert classes.containsKey(Salmon.class);
+      assert classes.containsKey(SeaBass.class);
+      assert classes.containsKey(Sole.class);
+      
+      assert classes.get(Hound.class) instanceof EnterpriseBean;
+      assert classes.get(Elephant.class) instanceof EnterpriseBean;
+      assert classes.get(Panther.class) instanceof EnterpriseBean;
+      assert classes.get(Tiger.class) instanceof EnterpriseBean;
+      assert classes.get(Tuna.class) instanceof SimpleBean;
+      assert classes.get(Salmon.class) instanceof SimpleBean;
+      assert classes.get(SeaBass.class) instanceof SimpleBean;
+      assert classes.get(Sole.class) instanceof SimpleBean;
+   }
+   
+   @Test(groups="bootstrap", expectedExceptions=IllegalStateException.class)
+   public void testDiscoverFails()
+   {
+      bootstrap = new MockBootstrap(manager)
+      {
+         
+         @Override
+         protected List<String> getWebBeanDiscoveryClassNames()
+         {
+            return new ArrayList<String>();
+         }
+         
+      };
+      bootstrap.discoverBeans();
+   }
+   
+   @Test(groups="bootstrap")
+   public void testDiscover()
+   {
+      MockWebBeanDiscovery.webBeanClasses = new HashSet<Class<?>>(Arrays.asList(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class));
+      bootstrap.discoverBeans();
+      
       assert manager.getBeans().size() == 9;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : manager.getBeans())
