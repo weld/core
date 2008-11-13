@@ -10,8 +10,8 @@ import javax.webbeans.Standard;
 
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedMethod;
+import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
+import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.Asynchronous;
 import org.jboss.webbeans.test.beans.Tuna;
@@ -64,7 +64,7 @@ public class ObserverTest
       //AnnotatedClass<Tuna> annotatedItem = new SimpleAnnotatedClass<Tuna>(Tuna.class, annotations);
       
       tuna = createSimpleBean(Tuna.class, manager);
-      om = new SimpleAnnotatedMethod<Object>(AnObserver.class.getMethod("observe", new Class[] { SampleEvent.class }), new SimpleAnnotatedClass<AnObserver>(AnObserver.class));
+      om = new AnnotatedMethodImpl<Object>(AnObserver.class.getMethod("observe", new Class[] { SampleEvent.class }), new AnnotatedClassImpl<AnObserver>(AnObserver.class));
    }
 
    /**

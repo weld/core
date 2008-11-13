@@ -1,4 +1,4 @@
-package org.jboss.webbeans.introspector.impl;
+package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -11,7 +11,7 @@ import java.util.Set;
 import org.jboss.webbeans.introspector.AnnotatedAnnotation;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 
-public class SimpleAnnotatedAnnotation<T extends Annotation> extends AbstractAnnotatedType<T> implements AnnotatedAnnotation<T>
+public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnotatedType<T> implements AnnotatedAnnotation<T>
 {
    
    private Map<Class<? extends Annotation>, Set<AnnotatedMethod<?>>> annotatedMembers;
@@ -20,7 +20,7 @@ public class SimpleAnnotatedAnnotation<T extends Annotation> extends AbstractAnn
    
    private Set<AnnotatedMethod<?>> members;
    
-   public SimpleAnnotatedAnnotation(Class<T> annotationType)
+   public AnnotatedAnnotationImpl(Class<T> annotationType)
    {
       super(buildAnnotationMap(annotationType));
       this.clazz = annotationType;
@@ -55,7 +55,7 @@ public class SimpleAnnotatedAnnotation<T extends Annotation> extends AbstractAnn
       this.members = new HashSet<AnnotatedMethod<?>>();
       for (Method member : clazz.getDeclaredMethods())
       {
-         members.add(new SimpleAnnotatedMethod<Object>(member, this));
+         members.add(new AnnotatedMethodImpl<Object>(member, this));
       }
    }
 

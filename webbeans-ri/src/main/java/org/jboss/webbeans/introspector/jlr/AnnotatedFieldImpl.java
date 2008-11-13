@@ -1,4 +1,4 @@
-package org.jboss.webbeans.introspector.impl;
+package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -9,7 +9,7 @@ import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Reflections;
 
-public class SimpleAnnotatedField<T> extends AbstractAnnotatedMember<T, Field> implements AnnotatedField<T>
+public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> implements AnnotatedField<T>
 {
    
    private Type[] actualTypeArguments = new Type[0];
@@ -17,7 +17,7 @@ public class SimpleAnnotatedField<T> extends AbstractAnnotatedMember<T, Field> i
    private Field field;
    private AnnotatedType<?> declaringClass;
    
-   public SimpleAnnotatedField(Field field, AnnotatedType<?> declaringClass)
+   public AnnotatedFieldImpl(Field field, AnnotatedType<?> declaringClass)
    {
       super(buildAnnotationMap(field));
       this.field = field;

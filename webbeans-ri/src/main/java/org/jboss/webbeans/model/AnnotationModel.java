@@ -5,7 +5,7 @@ import java.lang.annotation.Annotation;
 import javax.webbeans.DefinitionException;
 
 import org.jboss.webbeans.introspector.AnnotatedAnnotation;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedAnnotation;
+import org.jboss.webbeans.introspector.jlr.AnnotatedAnnotationImpl;
 
 public abstract class AnnotationModel<T extends Annotation>
 {
@@ -15,7 +15,7 @@ public abstract class AnnotationModel<T extends Annotation>
    
    public AnnotationModel(Class<T> type)
    {
-      this.annotatedAnnotation = new SimpleAnnotatedAnnotation<T>(type);
+      this.annotatedAnnotation = new AnnotatedAnnotationImpl<T>(type);
       init();
    }
    

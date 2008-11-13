@@ -8,8 +8,8 @@ import javax.webbeans.manager.Bean;
 import org.jboss.webbeans.ResolutionManager;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedField;
+import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
+import org.jboss.webbeans.introspector.jlr.AnnotatedFieldImpl;
 import org.jboss.webbeans.test.beans.Cod;
 import org.jboss.webbeans.test.beans.FishFarm;
 import org.jboss.webbeans.test.beans.Haddock;
@@ -24,12 +24,12 @@ import org.testng.annotations.Test;
 public class InstantiationByNameTest extends AbstractTest
 {
    
-   private AnnotatedClass<FishFarm> fishFarmClass = new SimpleAnnotatedClass<FishFarm>(FishFarm.class);
+   private AnnotatedClass<FishFarm> fishFarmClass = new AnnotatedClassImpl<FishFarm>(FishFarm.class);
    
    @Test(groups="resolution") @SpecAssertion(section="4.10")
    public void testNoWebBeansFound() throws Exception
    {
-      AnnotatedField<ScottishFish> whiteScottishFishField = new SimpleAnnotatedField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
+      AnnotatedField<ScottishFish> whiteScottishFishField = new AnnotatedFieldImpl<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
       Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
       Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
       manager.addBean(codBean);
@@ -44,7 +44,7 @@ public class InstantiationByNameTest extends AbstractTest
    @Test(expectedExceptions=AmbiguousDependencyException.class) @SpecAssertion(section="4.10.1")
    public void testAmbiguousDependencies() throws Exception
    {
-      AnnotatedField<ScottishFish> whiteScottishFishField = new SimpleAnnotatedField<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
+      AnnotatedField<ScottishFish> whiteScottishFishField = new AnnotatedFieldImpl<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
       Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
       Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
       Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);

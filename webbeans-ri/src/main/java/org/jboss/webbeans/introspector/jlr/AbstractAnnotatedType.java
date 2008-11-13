@@ -1,4 +1,4 @@
-package org.jboss.webbeans.introspector.impl;
+package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -37,7 +37,7 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
    {
       if (superclass == null)
       {
-         superclass = new SimpleAnnotatedClass(getDelegate().getSuperclass());
+         superclass = new AnnotatedClassImpl(getDelegate().getSuperclass());
       }
       return superclass;
    }

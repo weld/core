@@ -1,4 +1,4 @@
-package org.jboss.webbeans.introspector.impl;
+package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;

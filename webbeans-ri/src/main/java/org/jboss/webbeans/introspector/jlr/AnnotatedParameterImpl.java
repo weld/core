@@ -1,4 +1,4 @@
-package org.jboss.webbeans.introspector.impl;
+package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -8,7 +8,7 @@ import javax.webbeans.BindingType;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 
-public class SimpleAnnotatedParameter<T> extends AbstractAnnotatedItem<T, Object> implements AnnotatedParameter<T>
+public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> implements AnnotatedParameter<T>
 {
 
    private Class<T> type;
@@ -16,7 +16,7 @@ public class SimpleAnnotatedParameter<T> extends AbstractAnnotatedItem<T, Object
    private boolean _final;
    private boolean _static;
 
-   public SimpleAnnotatedParameter(Annotation[] annotations, Class<T> type)
+   public AnnotatedParameterImpl(Annotation[] annotations, Class<T> type)
    {
       super(buildAnnotationMap(annotations));
       this.type = type;

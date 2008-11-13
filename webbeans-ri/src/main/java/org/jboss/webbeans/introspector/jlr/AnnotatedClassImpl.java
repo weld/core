@@ -1,4 +1,4 @@
-package org.jboss.webbeans.introspector.impl;
+package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -24,7 +24,7 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
  * @author pmuir
  *
  */
-public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements AnnotatedClass<T>
+public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements AnnotatedClass<T>
 {
    
    private Class<T> clazz;
@@ -41,7 +41,7 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
    private Map<Class<? extends Annotation>, Set<AnnotatedConstructor<T>>> annotatedConstructors;
    private Map<List<Class<?>>, AnnotatedConstructor<T>> constructorsByArgumentMap;
    
-   public SimpleAnnotatedClass(Class<T> rawType, Type type, Annotation[] annotations)
+   public AnnotatedClassImpl(Class<T> rawType, Type type, Annotation[] annotations)
    {
       super(buildAnnotationMap(annotations));
       this.clazz = rawType;
@@ -55,7 +55,7 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
       }
    }
    
-   public SimpleAnnotatedClass(Class<T> clazz)
+   public AnnotatedClassImpl(Class<T> clazz)
    {
       this(clazz, clazz, clazz.getAnnotations());
    }
@@ -96,7 +96,7 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
          for(Field field : clazz.getDeclaredFields())
          {
             if ( !field.isAccessible() ) field.setAccessible(true);
-            fields.add(new SimpleAnnotatedField<Object>(field, this));
+            fields.add(new AnnotatedFieldImpl<Object>(field, this));
          }
       }
    }
@@ -184,7 +184,7 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
          for (Method method : clazz.getDeclaredMethods())
          {
             if (!method.isAccessible()) method.setAccessible(true);
-            methods.add(new SimpleAnnotatedMethod<Object>(method, this));
+            methods.add(new AnnotatedMethodImpl<Object>(method, this));
          }
       }
    }
@@ -232,7 +232,7 @@ public class SimpleAnnotatedClass<T> extends AbstractAnnotatedType<T> implements
       this.constructorsByArgumentMap = new HashMap<List<Class<?>>, AnnotatedConstructor<T>>();
       for (Constructor<T> constructor : clazz.getDeclaredConstructors())
       {
-         AnnotatedConstructor<T> annotatedConstructor = new SimpleAnnotatedConstructor<T>(constructor, this);
+         AnnotatedConstructor<T> annotatedConstructor = new AnnotatedConstructorImpl<T>(constructor, this);
          if (!constructor.isAccessible()) constructor.setAccessible(true);
          constructors.add(annotatedConstructor);
          constructorsByArgumentMap.put(Arrays.asList(constructor.getParameterTypes()), annotatedConstructor);

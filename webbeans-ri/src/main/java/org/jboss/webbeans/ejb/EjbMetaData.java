@@ -18,7 +18,7 @@ import javax.webbeans.Destructor;
 
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
+import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 
 public class EjbMetaData<T>
 {
@@ -50,7 +50,7 @@ public class EjbMetaData<T>
 
    public EjbMetaData(Class<T> type)
    {
-      this(new SimpleAnnotatedClass<T>(type));
+      this(new AnnotatedClassImpl<T>(type));
    }
    
    public EjbMetaData(AnnotatedClass<T> type)

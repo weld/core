@@ -16,7 +16,7 @@ import javax.webbeans.Observes;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedMethod;
+import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
 
 public class ProducerMethodBean<T> extends AbstractBean<T, Method>
 {
@@ -30,7 +30,7 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
    public ProducerMethodBean(Method method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       super(manager);
-      this.method = new SimpleAnnotatedMethod<T>(method, declaringBean.getAnnotatedItem());
+      this.method = new AnnotatedMethodImpl<T>(method, declaringBean.getAnnotatedItem());
       this.declaringBean = declaringBean;
       init();
    }

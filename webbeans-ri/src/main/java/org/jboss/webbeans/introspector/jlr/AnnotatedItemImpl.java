@@ -1,4 +1,4 @@
-package org.jboss.webbeans.introspector.impl;
+package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -7,25 +7,25 @@ import java.util.Map;
 
 import javax.webbeans.TypeLiteral;
 
-public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
+public class AnnotatedItemImpl<T, S> extends AbstractAnnotatedItem<T, S>
 {
 
    private Type[] actualTypeArguments = new Type[0];
    private Class<T> type;
    private Annotation[] actualAnnotations;
    
-   private SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap)
+   private AnnotatedItemImpl(Map<Class<? extends Annotation>, Annotation> annotationMap)
    {
       super(annotationMap);
    }
    
-   private SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap, Class<T> type)
+   private AnnotatedItemImpl(Map<Class<? extends Annotation>, Annotation> annotationMap, Class<T> type)
    {
       super(annotationMap);
       this.type = type;
    }
    
-   private SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap, TypeLiteral<T> apiType)
+   private AnnotatedItemImpl(Map<Class<? extends Annotation>, Annotation> annotationMap, TypeLiteral<T> apiType)
    {
       super(annotationMap);
       this.type = apiType.getRawType();
@@ -35,31 +35,31 @@ public class SimpleAnnotatedItem<T, S> extends AbstractAnnotatedItem<T, S>
       }
    }
    
-   private SimpleAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap, Class<T> type, Type[] actualTypeArguments)
+   private AnnotatedItemImpl(Map<Class<? extends Annotation>, Annotation> annotationMap, Class<T> type, Type[] actualTypeArguments)
    {
       this(annotationMap, type);
       this.actualTypeArguments = actualTypeArguments;
    }
    
-   public SimpleAnnotatedItem(Annotation[] annotations)
+   public AnnotatedItemImpl(Annotation[] annotations)
    {
       this(buildAnnotationMap(annotations));
       this.actualAnnotations = annotations;
    }
    
-   public SimpleAnnotatedItem(Annotation[] annotations, Class<T> type)
+   public AnnotatedItemImpl(Annotation[] annotations, Class<T> type)
    {
       this(buildAnnotationMap(annotations), type);
       this.actualAnnotations = annotations;
    }
    
-   public SimpleAnnotatedItem(Annotation[] annotations, TypeLiteral<T> apiType)
+   public AnnotatedItemImpl(Annotation[] annotations, TypeLiteral<T> apiType)
    {
       this(buildAnnotationMap(annotations), apiType);
       this.actualAnnotations = annotations;
    }
    
-   public SimpleAnnotatedItem(Annotation[] annotations, Class<T> type, Type[] actualTypeArguments)
+   public AnnotatedItemImpl(Annotation[] annotations, Class<T> type, Type[] actualTypeArguments)
    {
       this(buildAnnotationMap(annotations), type, actualTypeArguments);
       this.actualAnnotations = annotations;

@@ -1,4 +1,4 @@
-package org.jboss.webbeans.introspector.impl;
+package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -15,7 +15,7 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Reflections;
 
-public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>
+public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>
 {
    
    private Type[] actualTypeArgements = new Type[0];
@@ -29,7 +29,7 @@ public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedMember<T, Method>
 
    private AnnotatedType<?> declaringClass;
    
-   public SimpleAnnotatedMethod(Method method, AnnotatedType<?> declaringClass)
+   public AnnotatedMethodImpl(Method method, AnnotatedType<?> declaringClass)
    {
       super(buildAnnotationMap(method));
       this.method = method;
@@ -77,13 +77,13 @@ public class SimpleAnnotatedMethod<T> extends AbstractAnnotatedMember<T, Method>
          if (method.getParameterAnnotations()[i].length > 0)
          {
             Class<? extends Object> clazz = method.getParameterTypes()[i];
-            AnnotatedParameter<Object> parameter = new SimpleAnnotatedParameter<Object>(method.getParameterAnnotations()[i], (Class<Object>) clazz);
+            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(method.getParameterAnnotations()[i], (Class<Object>) clazz);
             parameters.add(parameter);
          }
          else
          {
             Class<? extends Object> clazz = method.getParameterTypes()[i];
-            AnnotatedParameter<Object> parameter = new SimpleAnnotatedParameter<Object>(new Annotation[0], (Class<Object>) clazz);
+            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(new Annotation[0], (Class<Object>) clazz);
             parameters.add(parameter);
          }
       }

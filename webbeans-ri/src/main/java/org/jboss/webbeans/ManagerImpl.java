@@ -40,7 +40,7 @@ import org.jboss.webbeans.event.EventBus;
 import org.jboss.webbeans.exceptions.NameResolutionLocation;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedClass;
+import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.util.Reflections;
 
 import com.google.common.collect.ForwardingMap;
@@ -176,12 +176,12 @@ public class ManagerImpl implements Manager
 
    public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindingTypes)
    {
-      return resolveByType(new SimpleAnnotatedClass<T>(type, type, bindingTypes), bindingTypes);
+      return resolveByType(new AnnotatedClassImpl<T>(type, type, bindingTypes), bindingTypes);
    }
 
    public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> type, Annotation... bindingTypes)
    {
-      return resolveByType(new SimpleAnnotatedClass<T>(type.getRawType(), type.getType(), bindingTypes), bindingTypes);
+      return resolveByType(new AnnotatedClassImpl<T>(type.getRawType(), type.getType(), bindingTypes), bindingTypes);
    }
    
    public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, Annotation... bindingTypes)
@@ -345,12 +345,12 @@ public class ManagerImpl implements Manager
 
    public <T> T getInstanceByType(Class<T> type, Annotation... bindingTypes)
    {
-      return getInstanceByType(new SimpleAnnotatedClass<T>(type, type, bindingTypes), bindingTypes);
+      return getInstanceByType(new AnnotatedClassImpl<T>(type, type, bindingTypes), bindingTypes);
    }
 
    public <T> T getInstanceByType(TypeLiteral<T> type, Annotation... bindingTypes)
    {
-      return getInstanceByType(new SimpleAnnotatedClass<T>(type.getRawType(), type.getType(), bindingTypes), bindingTypes);
+      return getInstanceByType(new AnnotatedClassImpl<T>(type.getRawType(), type.getType(), bindingTypes), bindingTypes);
    }
 
    public <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindingTypes)

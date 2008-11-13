@@ -1,4 +1,4 @@
-package org.jboss.webbeans.introspector.impl;
+package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -16,7 +16,7 @@ import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
 
-public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Constructor<T>> implements AnnotatedConstructor<T>
+public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Constructor<T>> implements AnnotatedConstructor<T>
 {
 
    private static final Type[] actualTypeArguments = new Type[0];
@@ -28,7 +28,7 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Co
    
    private AnnotatedType<T> declaringClass;
    
-   public SimpleAnnotatedConstructor(Constructor<T> constructor, AnnotatedType<T> declaringClass)
+   public AnnotatedConstructorImpl(Constructor<T> constructor, AnnotatedType<T> declaringClass)
    {
       super(buildAnnotationMap(constructor));
       this.constructor = constructor;
@@ -72,13 +72,13 @@ public class SimpleAnnotatedConstructor<T> extends AbstractAnnotatedMember<T, Co
          if (constructor.getParameterAnnotations()[i].length > 0)
          {
             Class<? extends Object> clazz = constructor.getParameterTypes()[i];
-            AnnotatedParameter<Object> parameter = new SimpleAnnotatedParameter<Object>(constructor.getParameterAnnotations()[i], (Class<Object>) clazz);
+            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(constructor.getParameterAnnotations()[i], (Class<Object>) clazz);
             parameters.add(parameter);
          }
          else
          {
             Class<? extends Object> clazz = constructor.getParameterTypes()[i];
-            AnnotatedParameter<Object> parameter = new SimpleAnnotatedParameter<Object>(new Annotation[0], (Class<Object>) clazz);
+            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(new Annotation[0], (Class<Object>) clazz);
             parameters.add(parameter);
          }
       }

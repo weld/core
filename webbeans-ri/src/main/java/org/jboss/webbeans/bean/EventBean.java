@@ -9,7 +9,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.impl.SimpleAnnotatedField;
+import org.jboss.webbeans.introspector.jlr.AnnotatedFieldImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -24,7 +24,7 @@ public class EventBean<T> extends AbstractBean<EventImpl<T>, Field>
    public EventBean(Field field, ManagerImpl manager, AbstractClassBean<?> declaringBean)
    {
       super(manager);
-      this.annotatedItem = new SimpleAnnotatedField<EventImpl<T>>(field, declaringBean.getAnnotatedItem());
+      this.annotatedItem = new AnnotatedFieldImpl<EventImpl<T>>(field, declaringBean.getAnnotatedItem());
       init();
    }
 
