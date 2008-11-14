@@ -1,7 +1,6 @@
 package org.jboss.webbeans.contexts;
 
 import java.lang.annotation.Annotation;
-import java.util.Map;
 
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.manager.Bean;
@@ -16,12 +15,6 @@ public abstract class NormalContext extends AbstractContext
       super(scopeType);
       beans = new BeanMap();
       // TODO active on create?
-      active = true;
-   }
-   
-   public NormalContext(Class<? extends Annotation> scopeType, Map<String, Object> data) {
-      super(scopeType);
-      // TODO: load data into map
       active = true;
    }
    
