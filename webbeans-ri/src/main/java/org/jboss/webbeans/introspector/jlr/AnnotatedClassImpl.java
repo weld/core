@@ -230,9 +230,9 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    {
       this.constructors = new HashSet<AnnotatedConstructor<T>>();
       this.constructorsByArgumentMap = new HashMap<List<Class<?>>, AnnotatedConstructor<T>>();
-      for (Constructor<T> constructor : clazz.getDeclaredConstructors())
+      for (Constructor<?> constructor : clazz.getDeclaredConstructors())
       {
-         AnnotatedConstructor<T> annotatedConstructor = new AnnotatedConstructorImpl<T>(constructor, this);
+         AnnotatedConstructor<T> annotatedConstructor = new AnnotatedConstructorImpl<T>((Constructor<T>) constructor, this);
          if (!constructor.isAccessible()) constructor.setAccessible(true);
          constructors.add(annotatedConstructor);
          constructorsByArgumentMap.put(Arrays.asList(constructor.getParameterTypes()), annotatedConstructor);
