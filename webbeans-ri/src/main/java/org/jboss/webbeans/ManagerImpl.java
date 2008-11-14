@@ -66,7 +66,7 @@ public class ManagerImpl implements Manager
 
       public DependentContext getDependentContext()
       {
-         return (DependentContext) get(Dependent.class).get(0);
+         return (DependentContext) get(Dependent.class).iterator().next();
       }
 
       @Override
