@@ -29,6 +29,7 @@ import javax.webbeans.manager.InterceptionType;
 import javax.webbeans.manager.Interceptor;
 import javax.webbeans.manager.Manager;
 
+import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bean.proxy.ProxyPool;
 import org.jboss.webbeans.contexts.ApplicationContext;
@@ -215,10 +216,10 @@ public class ManagerImpl implements Manager
     * Since this overwrites any existing list of beans in the manager,
     * this should only be done on startup and other controlled situations.
     * 
-    * @param beans The collection of beans to wrap.
     */
-   public Manager setBeans(Collection<Bean<?>> beans) {
+   public Manager setBeans(Set<AbstractBean<?, ?>> beans) {
       this.beans = new CopyOnWriteArrayList<Bean<?>>(beans);
+      getResolutionManager().clear();
       return this;
    }
    

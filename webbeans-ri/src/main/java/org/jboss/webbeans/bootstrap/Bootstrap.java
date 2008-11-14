@@ -95,10 +95,7 @@ public class Bootstrap
    public void registerBeans(Set<Class<?>> classes)
    {
       Set<AbstractBean<?, ?>> beans = createBeans(classes);
-      for (Bean<?> bean : beans)
-      {
-         manager.addBean(bean);
-      }
+      manager.setBeans(beans);
    }
    
    /**
