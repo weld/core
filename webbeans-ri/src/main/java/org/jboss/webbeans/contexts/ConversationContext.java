@@ -3,7 +3,7 @@ package org.jboss.webbeans.contexts;
 import javax.webbeans.ConversationScoped;
 
 
-public class ConversationContext extends NormalContext {
+public class ConversationContext extends PrivateContext {
 
    public ConversationContext()
    {

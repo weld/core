@@ -11,13 +11,13 @@ public class DependentContext extends AbstractContext
    public DependentContext()
    {
       super(Dependent.class);
-      active = false;
+      setActive(false);
    }
 
    @Override
    public <T> T get(Bean<T> bean, boolean create)
    {
-      if (!active)
+      if (!isActive())
       {
          throw new ContextNotActiveException();
       }

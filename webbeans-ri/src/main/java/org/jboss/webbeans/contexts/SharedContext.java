@@ -6,21 +6,20 @@ import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Manager;
 
-public abstract class NormalContext extends AbstractContext
+public abstract class SharedContext extends AbstractContext
 {
    private BeanMap beans;
 
-   public NormalContext(Class<? extends Annotation> scopeType)
+   public SharedContext(Class<? extends Annotation> scopeType)
    {
       super(scopeType);
       beans = new BeanMap();
-      // TODO active on create?
-      active = true;
+      setActive(true);
    }
    
    public <T> T get(Bean<T> bean, boolean create)
    {
-      if (!active)
+      if (!isActive())
       {
          throw new ContextNotActiveException();
       }
@@ -52,7 +51,6 @@ public abstract class NormalContext extends AbstractContext
          destroy(manager, bean);
       }
       beans = new BeanMap();
-      active = false;
    }
 
 }

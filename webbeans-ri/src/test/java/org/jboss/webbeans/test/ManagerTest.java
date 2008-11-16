@@ -4,7 +4,7 @@ import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.RequestScoped;
 import javax.webbeans.manager.Context;
 
-import org.jboss.webbeans.contexts.NormalContext;
+import org.jboss.webbeans.contexts.PrivateContext;
 import org.jboss.webbeans.contexts.RequestContext;
 import org.testng.annotations.Test;
 
@@ -22,7 +22,7 @@ public class ManagerTest extends AbstractTest
    public void testGetContextWithNoActiveContextsFails()
    {
       Context requestContext = new RequestContext();
-      ((NormalContext)requestContext).setActive(false);
+      ((PrivateContext)requestContext).setActive(false);
       manager.setContexts(requestContext);
       manager.getContext(RequestScoped.class);
    }

@@ -2,7 +2,7 @@ package org.jboss.webbeans.contexts;
 
 import javax.webbeans.ApplicationScoped;
 
-public class ApplicationContext extends NormalContext {
+public class ApplicationContext extends SharedContext {
 
    public ApplicationContext()
    {

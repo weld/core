@@ -3,6 +3,7 @@ package org.jboss.webbeans.contexts;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
@@ -21,10 +22,10 @@ import com.google.common.collect.ForwardingMap;
 public abstract class AbstractContext implements Context
 {
    
-   protected class BeanMap extends ForwardingMap<Bean<? extends Object>, Object>
+   public class BeanMap extends ForwardingMap<Bean<? extends Object>, Object>
    {
       
-      Map<Bean<? extends Object>, Object> delegate;
+      protected Map<Bean<? extends Object>, Object> delegate;
       
       public BeanMap()
       {
@@ -46,12 +47,12 @@ public abstract class AbstractContext implements Context
    }
    
    private Class<? extends Annotation> scopeType;
-   protected boolean active;
+   protected AtomicBoolean active;
 
    public AbstractContext(Class<? extends Annotation> scopeType)
    {
       this.scopeType = scopeType;
-      
+      active = new AtomicBoolean(true);
    }
 
    public abstract <T> T get(Bean<T> bean, boolean create);
@@ -65,12 +66,12 @@ public abstract class AbstractContext implements Context
 
    public boolean isActive()
    {
-      return active;
+      return active.get();
    }
 
-   public void setActive(boolean active)
+   public void setActive(boolean value)
    {
-      this.active = active;
+      active.set(value);
    }
 
 }

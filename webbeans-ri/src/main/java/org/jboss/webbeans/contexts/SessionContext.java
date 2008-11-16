@@ -2,7 +2,7 @@ package org.jboss.webbeans.contexts;
 
 import javax.webbeans.SessionScoped;
 
-public class SessionContext extends NormalContext {
+public class SessionContext extends PrivateContext {
 
    public SessionContext()
    {
