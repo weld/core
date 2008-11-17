@@ -92,7 +92,7 @@ public class Bootstrap
       registerBeans(new HashSet<Class<?>>(Arrays.asList(classes)));
    }
    
-   public void registerBeans(Set<Class<?>> classes)
+   public void registerBeans(Iterable<Class<?>> classes)
    {
       Set<AbstractBean<?, ?>> beans = createBeans(classes);
       manager.setBeans(beans);
@@ -108,7 +108,7 @@ public class Bootstrap
       return createBeans(new HashSet<Class<?>>(Arrays.asList(classes)));
    }
    
-   public Set<AbstractBean<?, ?>> createBeans(Set<Class<?>> classes)
+   public Set<AbstractBean<?, ?>> createBeans(Iterable<Class<?>> classes)
    {
       Set<AbstractBean<?, ?>> beans = new HashSet<AbstractBean<?, ?>>();
       for (Class<?> clazz : classes)
