@@ -18,15 +18,21 @@ public class BeanMap extends ForwardingMap<Bean<? extends Object>, Object>
    }
 
    @SuppressWarnings("unchecked")
-   public <T extends Object> T get(Bean<? extends T> key)
+   public <T extends Object> T get(Bean<? extends T> bean)
    {
-      return (T) super.get(key);
+      return (T) super.get(bean);
    }
 
    @Override
    public Map<Bean<? extends Object>, Object> delegate()
    {
       return delegate;
+   }
+   
+   @SuppressWarnings("unchecked")
+   public <T extends Object> T remove(Bean<? extends T> bean)
+   {
+      return (T) super.remove(bean);
    }
 
 }

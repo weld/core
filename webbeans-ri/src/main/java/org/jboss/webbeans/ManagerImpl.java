@@ -41,6 +41,7 @@ import org.jboss.webbeans.exceptions.NameResolutionLocation;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
+import org.jboss.webbeans.servlet.ServletLifecycle;
 import org.jboss.webbeans.util.Reflections;
 
 import com.google.common.collect.ForwardingMap;
@@ -126,7 +127,7 @@ public class ManagerImpl implements Manager
       {
          addContext(new DependentContext());
          addContext(new RequestContext());
-         addContext(new SessionContext());
+         addContext(new SessionContext(this));
          addContext(new ApplicationContext());
       }
       else
