@@ -1,77 +1,73 @@
 package org.jboss.webbeans.contexts;
 
 import java.lang.annotation.Annotation;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 import javax.webbeans.manager.Manager;
 
-import com.google.common.collect.ForwardingMap;
-
-/**
- * Basic implementation of javax.webbeans.Context, backed by a HashMap
- * 
- * @author Shane Bryzak
- * @author Nicklas Karlsson (nickarls@gmail.com)
- * @author Pete Muir
- * 
- */
 public abstract class AbstractContext implements Context
 {
-   
-   public class BeanMap extends ForwardingMap<Bean<? extends Object>, Object>
-   {
-      
-      protected Map<Bean<? extends Object>, Object> delegate;
-      
-      public BeanMap()
-      {
-         delegate = new ConcurrentHashMap<Bean<? extends Object>, Object>();
-      }
-      
-      @SuppressWarnings("unchecked")
-      public <T extends Object> T get(Bean<? extends T> key)
-      {
-         return (T) super.get(key);
-      }
-      
-      @Override
-      protected Map<Bean<? extends Object>, Object> delegate()
-      {
-         return delegate;
-      }
-
-   }
-   
    private Class<? extends Annotation> scopeType;
-   protected AtomicBoolean active;
 
    public AbstractContext(Class<? extends Annotation> scopeType)
    {
       this.scopeType = scopeType;
-      active = new AtomicBoolean(true);
    }
 
-   public abstract <T> T get(Bean<T> bean, boolean create);
+   public <T> T get(Bean<T> bean, boolean create)
+   {
+      if (!isActive())
+      {
+         throw new ContextNotActiveException();
+      }
+      T instance = getBeanMap().get(bean);
+      if (instance != null)
+      {
+         return instance;
+      }
+      if (!create)
+      {
+         return null;
+      }
+
+      // TODO should bean creation be synchronized?
+      instance = bean.create();
+      getBeanMap().put(bean, instance);
+      return instance;
+   }
 
    public Class<? extends Annotation> getScopeType()
    {
       return scopeType;
    }
 
-   public abstract void destroy(Manager manager);
-
    public boolean isActive()
    {
-      return active.get();
+      return getActive().get();
+   }
+   
+   public void setActive(boolean active) {
+      getActive().set(active);
+   }
+   
+   private <T> void destroy(Manager manager, Bean<T> bean)
+   {
+      bean.destroy(getBeanMap().get(bean));
    }
 
-   public void setActive(boolean value)
+   public void destroy(Manager manager)
    {
-      active.set(value);
-   }
+      for (Bean<? extends Object> bean : getBeanMap().keySet())
+      {
+         destroy(manager, bean);
+      }
+      getBeanMap().clear();
+   }   
+   
+   protected abstract BeanMap getBeanMap();
+   protected abstract AtomicBoolean getActive();
 
 }

@@ -1,17 +1,21 @@
 package org.jboss.webbeans.contexts;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.Dependent;
 import javax.webbeans.manager.Bean;
-import javax.webbeans.manager.Manager;
 
 public class DependentContext extends AbstractContext
 {
-
+   private BeanMap beans;
+   private AtomicBoolean active;
+   
    public DependentContext()
    {
       super(Dependent.class);
-      setActive(false);
+      beans = new BeanMap();
+      active = new AtomicBoolean(false);
    }
 
    @Override
@@ -26,15 +30,20 @@ public class DependentContext extends AbstractContext
    }   
 
    @Override
-   public String toString()
+   protected AtomicBoolean getActive()
    {
-      return "Dependent context";
+      return active;
+   }
+
+   @Override
+   protected BeanMap getBeanMap()
+   {
+      return beans;
    }
    
    @Override
-   public void destroy(Manager manager)
+   public String toString()
    {
-      
-   }
-   
+      return "Dependent context";
+   }   
 }
