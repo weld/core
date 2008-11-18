@@ -8,6 +8,12 @@ import javax.webbeans.manager.Bean;
 
 import com.google.common.collect.ForwardingMap;
 
+/**
+ * A BeanMap that uses a simple forwarding HashMap as backing map
+ * 
+ * @author Nicklas Karlsson
+ *
+ */
 public class SimpleBeanMap extends ForwardingMap<Bean<? extends Object>, Object> implements BeanMap
 {
 

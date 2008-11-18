@@ -2,7 +2,11 @@ package org.jboss.webbeans.contexts;
 
 import javax.webbeans.ConversationScoped;
 
-
+/**
+ * The conversation context
+ * 
+ * @author Nicklas Karlsson
+ */
 public class ConversationContext extends PrivateContext {
 
    public ConversationContext()

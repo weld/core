@@ -74,6 +74,8 @@ public abstract class AbstractContext implements Context
    
    /** 
     * Set the context active, internal API for WBRI
+    * 
+    * @param active The new state
     */
    public void setActive(boolean active) {
       getActive().set(active);

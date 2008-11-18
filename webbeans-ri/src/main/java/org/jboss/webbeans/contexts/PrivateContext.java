@@ -3,6 +3,13 @@ package org.jboss.webbeans.contexts;
 import java.lang.annotation.Annotation;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * The abstraction of a private context, on that operates on a ThreadLocal
+ * BeanMap and ThreadLocal active state
+ * 
+ * @author Nicklas Karlsson
+ *
+ */
 public class PrivateContext extends AbstractContext
 {
    private ThreadLocal<AtomicBoolean> active;

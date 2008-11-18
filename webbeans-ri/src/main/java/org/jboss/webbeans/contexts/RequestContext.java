@@ -2,6 +2,11 @@ package org.jboss.webbeans.contexts;
 
 import javax.webbeans.RequestScoped;
 
+/**
+ * The request context
+ * 
+ * @author Nicklas Karlsson
+ */
 public class RequestContext extends PrivateContext
 {
 
