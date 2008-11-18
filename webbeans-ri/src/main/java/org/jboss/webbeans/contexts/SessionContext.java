@@ -6,12 +6,12 @@ import org.jboss.webbeans.ManagerImpl;
 
 public class SessionContext extends PrivateContext {
 
-   private ThreadLocal<SessionBeanMap> beans;
+   private ThreadLocal<BeanMap> beans;
    
    public SessionContext(ManagerImpl manager)
    {
       super(SessionScoped.class);
-      beans = new ThreadLocal<SessionBeanMap>();
+      beans = new ThreadLocal<BeanMap>();
       beans.set(new SessionBeanMap(manager));
    }
    

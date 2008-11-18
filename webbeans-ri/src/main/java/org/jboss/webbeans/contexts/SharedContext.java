@@ -11,7 +11,7 @@ public class SharedContext extends AbstractContext
    public SharedContext(Class<? extends Annotation> scopeType)
    {
       super(scopeType);
-      beans = new BeanMap();
+      beans = new SimpleBeanMap();
       active = new AtomicBoolean(true);
    }
 

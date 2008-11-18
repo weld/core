@@ -1,40 +1,93 @@
 package org.jboss.webbeans.contexts;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 
-public class SessionBeanMap extends BeanMap
+public class SessionBeanMap implements BeanMap
 {
+   private static final String KEY_PREFIX = "SessionScoped#";
+
    private HttpSession session;
    private ManagerImpl manager;
-   
-   public SessionBeanMap(ManagerImpl manager) {
+   private BeanMap cache;
+
+   public SessionBeanMap(ManagerImpl manager)
+   {
       super();
       this.manager = manager;
+      cache = new SimpleBeanMap();
    }
 
-   public void setSession(HttpSession session) {
+   public void setSession(HttpSession session)
+   {
       this.session = session;
    }
-   
-   @Override
+
+   @SuppressWarnings("unchecked")
    public <T> T get(Bean<? extends T> bean)
    {
-      String id = Integer.toString(manager.getBeans().indexOf(bean));
-      T instance = super.get(bean);
-      session.setAttribute(id, instance);
+      T instance = cache.get(bean);
+      if (instance != null)
+      {
+         return instance;
+      }
+      String id = KEY_PREFIX + manager.getBeans().indexOf(bean);
+      instance = (T) session.getAttribute(id);
+      if (instance != null)
+      {
+         cache.put(bean, instance);
+      }
       return instance;
    }
 
-   @Override
    public <T> T remove(Bean<? extends T> bean)
    {
-      T instance = super.remove(bean);
-      String id = Integer.toString(manager.getBeans().indexOf(bean));
+      T instance = get(bean);
+      String id = KEY_PREFIX + manager.getBeans().indexOf(bean);
       session.removeAttribute(id);
+      cache.remove(bean);
       return instance;
+   }
+
+   @SuppressWarnings("unchecked")
+   public void clear()
+   {
+      Enumeration names = session.getAttributeNames();
+      while (names.hasMoreElements()) {
+         String name = (String) names.nextElement();
+         session.removeAttribute(name);
+      }
+      cache.clear();
+   }
+
+   public Iterable<Bean<? extends Object>> keySet()
+   {
+      List<Bean<?>> beans = new ArrayList<Bean<?>>();
+
+      Enumeration names = session.getAttributeNames();
+      while (names.hasMoreElements()) {
+         String name = (String) names.nextElement();
+         if (name.startsWith(KEY_PREFIX)) {
+            String id = name.substring(KEY_PREFIX.length());
+            Bean<?> bean = manager.getBeans().get(Integer.parseInt(id));
+            beans.add(bean);
+         }
+      }
+      
+      return beans;
+   }
+
+   public <T> T put(Bean<? extends T> bean, T instance)
+   {
+      String id = KEY_PREFIX + manager.getBeans().indexOf(bean);
+      session.setAttribute(id, instance);
+      return cache.put(bean, instance);
    }
 
 }

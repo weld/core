@@ -12,14 +12,9 @@ public class PrivateContext extends AbstractContext
    {
       super(scopeType);
       beans = new ThreadLocal<BeanMap>();
-      beans.set(new BeanMap());
+      beans.set(new SimpleBeanMap());
       active = new ThreadLocal<AtomicBoolean>();
       active.set(new AtomicBoolean(true));
-   }
-
-   public void setBeans(BeanMap beans)
-   {
-      this.beans.set(beans);
    }
 
    @Override
