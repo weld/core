@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class PrivateContext extends AbstractContext
 {
    private ThreadLocal<AtomicBoolean> active;
-   private ThreadLocal<BeanMap> beans;
+   protected ThreadLocal<BeanMap> beans;
 
    public PrivateContext(Class<? extends Annotation> scopeType)
    {

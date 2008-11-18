@@ -28,10 +28,17 @@ public class SessionBeanMap implements BeanMap
    {
       this.session = session;
    }
+   
+   private void checkSession() {
+      if (session == null) {
+         throw new IllegalArgumentException("Session has not been initialized in SessionBeanMap");
+      }
+   }
 
    @SuppressWarnings("unchecked")
    public <T> T get(Bean<? extends T> bean)
    {
+      checkSession();
       T instance = cache.get(bean);
       if (instance != null)
       {
@@ -48,6 +55,7 @@ public class SessionBeanMap implements BeanMap
 
    public <T> T remove(Bean<? extends T> bean)
    {
+      checkSession();
       T instance = get(bean);
       String id = KEY_PREFIX + manager.getBeans().indexOf(bean);
       session.removeAttribute(id);
@@ -58,6 +66,7 @@ public class SessionBeanMap implements BeanMap
    @SuppressWarnings("unchecked")
    public void clear()
    {
+      checkSession();
       Enumeration names = session.getAttributeNames();
       while (names.hasMoreElements()) {
          String name = (String) names.nextElement();
@@ -66,8 +75,11 @@ public class SessionBeanMap implements BeanMap
       cache.clear();
    }
 
+   @SuppressWarnings("unchecked")
    public Iterable<Bean<? extends Object>> keySet()
    {
+      checkSession();
+
       List<Bean<?>> beans = new ArrayList<Bean<?>>();
 
       Enumeration names = session.getAttributeNames();
@@ -85,6 +97,7 @@ public class SessionBeanMap implements BeanMap
 
    public <T> T put(Bean<? extends T> bean, T instance)
    {
+      checkSession();
       String id = KEY_PREFIX + manager.getBeans().indexOf(bean);
       session.setAttribute(id, instance);
       return cache.put(bean, instance);

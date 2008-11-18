@@ -8,9 +8,12 @@ import javax.webbeans.SessionScoped;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.contexts.SessionBeanMap;
 import org.jboss.webbeans.contexts.SessionContext;
+import org.jboss.webbeans.util.JNDI;
 
 public class ServletLifecycle
 {
+   private static final String MANAGER_JNDI_KEY = "java:comp/Manager";
+   
    private static ServletContext servletContext;
    
    public static void beginApplication(ServletContext context)
@@ -30,10 +33,9 @@ public class ServletLifecycle
    }   
    
    public static void beginRequest(HttpServletRequest request) {
-      ManagerImpl manager = new ManagerImpl();
+      ManagerImpl manager = (ManagerImpl) JNDI.lookup(MANAGER_JNDI_KEY);
       SessionContext sessionContext = (SessionContext) manager.getContext(SessionScoped.class);
-      SessionBeanMap sessionBeanMap = (SessionBeanMap) sessionContext.getBeanMap();
-      sessionBeanMap.setSession(request.getSession(true));
+      sessionContext.setSession(request.getSession(true));
    }
    
    public static void endRequest(HttpServletRequest request) {
