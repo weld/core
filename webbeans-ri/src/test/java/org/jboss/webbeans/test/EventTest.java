@@ -107,7 +107,7 @@ public class EventTest
     * Tests the {@link Event#observe(javax.webbeans.Observer, Annotation...)}
     * method with a locally instantiated implementation.
     */
-   @Test(groups = "observerMethod")
+   @Test(groups = {"observerMethod", "broken"})
    @SpecAssertion(section = "7.6")
    public void testObserve()
    {

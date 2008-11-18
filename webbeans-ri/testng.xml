@@ -29,7 +29,7 @@
             <exclude name="commonAnnotations" />
 -->
             <exclude name="stub" />
-
+            <exclude name="broken" />
          </run>
       </groups>
       <packages>
