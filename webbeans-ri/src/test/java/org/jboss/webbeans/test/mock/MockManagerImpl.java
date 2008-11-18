@@ -3,7 +3,6 @@ package org.jboss.webbeans.test.mock;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.webbeans.Observer;
@@ -94,7 +93,7 @@ public class MockManagerImpl extends ManagerImpl
       return observer;
    }
    
-   public void setEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
+   public void setEnabledDeploymentTypes(Class<? extends Annotation>... enabledDeploymentTypes)
    {
       initEnabledDeploymentTypes(enabledDeploymentTypes);
    }

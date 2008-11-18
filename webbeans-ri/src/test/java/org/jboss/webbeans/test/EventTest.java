@@ -55,7 +55,7 @@ public class EventTest
       enabledDeploymentTypes.add(Standard.class);
       enabledDeploymentTypes.add(AnotherDeploymentType.class);
       manager = new MockManagerImpl();
-      manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
+      manager.setEnabledDeploymentTypes(Standard.class, AnotherDeploymentType.class);
    }
 
    /**

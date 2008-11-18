@@ -1,9 +1,6 @@
 package org.jboss.webbeans.test;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.webbeans.Standard;
 
@@ -30,11 +27,8 @@ public class EventBeanModelTest
    @BeforeMethod
    public void before() throws Exception
    {
-      List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
-      enabledDeploymentTypes.add(Standard.class);
-      enabledDeploymentTypes.add(AnotherDeploymentType.class);
       manager = new MockManagerImpl();
-      manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
+      manager.setEnabledDeploymentTypes(Standard.class, AnotherDeploymentType.class);
       Field eventModelField = this.getClass().getDeclaredField("eventModelField");
       /*eventBeanModel = new EventBeanModel<EventImpl<DangerCall>>(
             new SimpleAnnotatedField<EventImpl<DangerCall>>(eventModelField),

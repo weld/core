@@ -1,9 +1,5 @@
 package org.jboss.webbeans.test;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.webbeans.Decorator;
 import javax.webbeans.Interceptor;
 import javax.webbeans.Production;
@@ -46,12 +42,7 @@ public class AbstractTest
    
    protected void addEnabledDeploymentTypes()
    {
-      List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
-      enabledDeploymentTypes.add(Standard.class);
-      enabledDeploymentTypes.add(Production.class);
-      enabledDeploymentTypes.add(AnotherDeploymentType.class);
-      enabledDeploymentTypes.add(HornedAnimalDeploymentType.class);
-      manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
+      manager.setEnabledDeploymentTypes(Standard.class, Production.class, AnotherDeploymentType.class, HornedAnimalDeploymentType.class);
    }
    
    protected void addStereotypes()

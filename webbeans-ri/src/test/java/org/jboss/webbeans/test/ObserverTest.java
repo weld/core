@@ -55,7 +55,7 @@ public class ObserverTest
       enabledDeploymentTypes.add(Standard.class);
       enabledDeploymentTypes.add(AnotherDeploymentType.class);
       manager = new MockManagerImpl();
-      manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
+      manager.setEnabledDeploymentTypes(Standard.class, AnotherDeploymentType.class);
 
       // Create an observer with known binding types
       // TODO This should be a real class being mapped

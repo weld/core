@@ -41,7 +41,6 @@ import org.jboss.webbeans.exceptions.NameResolutionLocation;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
-import org.jboss.webbeans.servlet.ServletLifecycle;
 import org.jboss.webbeans.util.Reflections;
 
 import com.google.common.collect.ForwardingMap;
@@ -90,8 +89,6 @@ public class ManagerImpl implements Manager
 
    public ManagerImpl()
    {
-      initEnabledDeploymentTypes(null);
-      initContexts(null);
       this.modelManager = new ModelManager();
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
       this.eventBus = new EventBus();
@@ -99,10 +96,17 @@ public class ManagerImpl implements Manager
       this.proxyPool = new ProxyPool(this);
       this.decorators = new HashSet<Decorator>();
       this.interceptors = new HashSet<Interceptor>();
+      initEnabledDeploymentTypes(null);
+      initContexts();
+      addStandardBeans();
+   }
+   
+   protected void addStandardBeans()
+   {
       addBean( new SimpleBean<DefaultEnterpriseBeanLookup>( DefaultEnterpriseBeanLookup.class, this ) );
    }
 
-   protected void initEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
+   protected void initEnabledDeploymentTypes(Class<? extends Annotation> ... enabledDeploymentTypes)
    {
       this.enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       if (enabledDeploymentTypes == null)
@@ -112,7 +116,10 @@ public class ManagerImpl implements Manager
       }
       else
       {
-         this.enabledDeploymentTypes.addAll(enabledDeploymentTypes);
+         for (Class<? extends Annotation> enabledDeploymentType : enabledDeploymentTypes)
+         {
+            this.enabledDeploymentTypes.add(enabledDeploymentType);
+         }
          if (!this.enabledDeploymentTypes.get(0).equals(Standard.class))
          {
             throw new DeploymentException("@Standard must be the lowest precedence deployment type");
@@ -123,7 +130,7 @@ public class ManagerImpl implements Manager
    protected void initContexts(Context... contexts)
    {
       this.contextMap = new ContextMap();
-      if (contexts == null)
+      if (contexts.length == 0)
       {
          addContext(new DependentContext());
          addContext(new RequestContext());
@@ -220,6 +227,7 @@ public class ManagerImpl implements Manager
    public Manager setBeans(Set<AbstractBean<?, ?>> beans) {
       this.beans = new CopyOnWriteArrayList<Bean<?>>(beans);
       getResolutionManager().clear();
+      addStandardBeans();
       return this;
    }
    

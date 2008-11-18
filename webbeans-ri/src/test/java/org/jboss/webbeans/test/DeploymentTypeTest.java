@@ -2,10 +2,6 @@ package org.jboss.webbeans.test;
 
 import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.webbeans.DefinitionException;
 import javax.webbeans.DeploymentException;
 import javax.webbeans.Production;
@@ -109,11 +105,7 @@ public class DeploymentTypeTest extends AbstractTest
    @Test(groups="beanLifecycle", expectedExceptions=UnsatisfiedDependencyException.class) @SpecAssertion(section="2.5.6")
    public void testBeanWithDisabledDeploymentTypeNotInstantiated()
    {
-      List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
-      enabledDeploymentTypes.add(Standard.class);
-      enabledDeploymentTypes.add(AnotherDeploymentType.class);
-      enabledDeploymentTypes.add(HornedAnimalDeploymentType.class);
-      manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
+      manager.setEnabledDeploymentTypes(Standard.class, AnotherDeploymentType.class, HornedAnimalDeploymentType.class);
       
       Bean<RedSnapper> bean = createSimpleBean(RedSnapper.class, manager);
       manager.addBean(bean);
@@ -132,11 +124,7 @@ public class DeploymentTypeTest extends AbstractTest
    @Test @SpecAssertion(section={"2.5.6", "2.5.7"})
    public void testCustomDeploymentTypes()
    {
-      List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
-      enabledDeploymentTypes.add(Standard.class);
-      enabledDeploymentTypes.add(AnotherDeploymentType.class);
-      enabledDeploymentTypes.add(HornedAnimalDeploymentType.class);
-      manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
+      manager.setEnabledDeploymentTypes(Standard.class, AnotherDeploymentType.class, HornedAnimalDeploymentType.class);
       assert manager.getEnabledDeploymentTypes().size() == 3;
       assert manager.getEnabledDeploymentTypes().get(0).equals(Standard.class);
       assert manager.getEnabledDeploymentTypes().get(1).equals(AnotherDeploymentType.class);
@@ -146,10 +134,7 @@ public class DeploymentTypeTest extends AbstractTest
    @Test(expectedExceptions=DeploymentException.class) @SpecAssertion(section="2.5.6")
    public void testStandardMustBeDeclared()
    {
-      List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
-      enabledDeploymentTypes.add(AnotherDeploymentType.class);
-      enabledDeploymentTypes.add(HornedAnimalDeploymentType.class);
-      manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
+      manager.setEnabledDeploymentTypes(AnotherDeploymentType.class, HornedAnimalDeploymentType.class);
    }
    
    @Test(groups={"stub", "webbeansxml"}, expectedExceptions=DeploymentException.class) @SpecAssertion(section="2.5.6")

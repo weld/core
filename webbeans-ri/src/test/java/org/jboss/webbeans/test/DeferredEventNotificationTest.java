@@ -2,10 +2,6 @@ package org.jboss.webbeans.test;
 
 import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.webbeans.Observes;
 import javax.webbeans.Standard;
 
@@ -36,10 +32,7 @@ public class DeferredEventNotificationTest extends AbstractTest
    @Override
    protected void addEnabledDeploymentTypes()
    {
-      List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
-      enabledDeploymentTypes.add(Standard.class);
-      enabledDeploymentTypes.add(AnotherDeploymentType.class);
-      manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
+      manager.setEnabledDeploymentTypes(Standard.class, AnotherDeploymentType.class);
    }
 
    public class AnObserver
