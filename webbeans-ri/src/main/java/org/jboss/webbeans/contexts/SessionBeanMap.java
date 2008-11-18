@@ -90,8 +90,7 @@ public class SessionBeanMap implements BeanMap
    public <T> T get(Bean<? extends T> bean)
    {
       checkSession();
-      String id = getBeanKey(bean);
-      return (T) session.getAttribute(id);
+      return (T) session.getAttribute(getBeanKey(bean));
    }
 
    /**
@@ -166,8 +165,6 @@ public class SessionBeanMap implements BeanMap
     * @param bean The bean to use as key
     * 
     * @param instance The bean instance to add
-    * 
-    * @return The instance added
     */
    public <T> void put(Bean<? extends T> bean, T instance)
    {
