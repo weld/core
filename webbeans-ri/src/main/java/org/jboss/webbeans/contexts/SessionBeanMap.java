@@ -37,15 +37,12 @@ public class SessionBeanMap implements BeanMap
 {
    private HttpSession session;
    private ManagerImpl manager;
-   private BeanMap cache;
    private String keyPrefix;
 
    public SessionBeanMap(ManagerImpl manager, String keyPrefix)
    {
       super();
       this.manager = manager;
-      // A "normal" BeanMap is used as cache
-      cache = new SimpleBeanMap();
       this.keyPrefix = keyPrefix;
    }
 
@@ -77,19 +74,15 @@ public class SessionBeanMap implements BeanMap
     * 
     * @return A unique key;
     */
-   @SuppressWarnings("unused")
    private String getBeanKey(Bean<?> bean) {
-      // TODO Append scope to in order to make class usable by multiple contexts
       return keyPrefix + manager.getBeans().indexOf(bean);
    }
    
    /**
     * Gets a bean from the session
     * 
-    * First, checks that the session is present. Then tries to get the instance from the cache and
-    * return it if found. It determines an ID for the bean which and looks for it in the session. 
-    * If the instance is found in, it is added to the cache. The bean instance is returned (null 
-    * if not found in the session).
+    * First, checks that the session is present. It determines an ID for the bean which and 
+    * looks for it in the session. The bean instance is returned (null if not found in the session).
     * 
     * @param bean The bean to get from the session 
     */
@@ -97,26 +90,15 @@ public class SessionBeanMap implements BeanMap
    public <T> T get(Bean<? extends T> bean)
    {
       checkSession();
-      T instance = cache.get(bean);
-      if (instance != null)
-      {
-         return instance;
-      }
       String id = getBeanKey(bean);
-      instance = (T) session.getAttribute(id);
-      if (instance != null)
-      {
-         cache.put(bean, instance);
-      }
-      return instance;
+      return (T) session.getAttribute(id);
    }
 
    /**
     * Removes a bean instance from the session
     * 
-    * First, checks that the session is present. Then, tries to get the bean instance from the cache.
-    * It determines an ID for the bean and that key is then removed from the session and the cache, whether
-    * they were present in the first place or not.
+    * First, checks that the session is present. It determines an ID for the bean and 
+    * that key is then removed from the session, whether it was present in the first place or not.
     * 
     * @param bean The bean whose instance to remove.
     */
@@ -124,9 +106,7 @@ public class SessionBeanMap implements BeanMap
    {
       checkSession();
       T instance = get(bean);
-      String id = getBeanKey(bean);
-      session.removeAttribute(id);
-      cache.remove(bean);
+      session.removeAttribute(getBeanKey(bean));
       return instance;
    }
 
@@ -135,7 +115,6 @@ public class SessionBeanMap implements BeanMap
     * 
     * First, checks that the session is present. Then, iterates
     * over the attribute names in the session and removes them if they start with the know prefix.
-    * Finally, clears the cache.
     */
    @SuppressWarnings("unchecked")
    public void clear()
@@ -146,7 +125,6 @@ public class SessionBeanMap implements BeanMap
          String name = (String) names.nextElement();
          session.removeAttribute(name);
       }
-      cache.clear();
    }
 
    /**
@@ -183,7 +161,7 @@ public class SessionBeanMap implements BeanMap
     * Puts a bean instance in the session
     * 
     * First, checks that the session is present. Generates a bean map key, puts the instance in the 
-    * session under that key and adds the bean instance to the cache.
+    * session under that key.
     * 
     * @param bean The bean to use as key
     * 
@@ -191,12 +169,10 @@ public class SessionBeanMap implements BeanMap
     * 
     * @return The instance added
     */
-   public <T> T put(Bean<? extends T> bean, T instance)
+   public <T> void put(Bean<? extends T> bean, T instance)
    {
       checkSession();
-      String id = getBeanKey(bean);
-      session.setAttribute(id, instance);
-      return cache.put(bean, instance);
+      session.setAttribute(getBeanKey(bean), instance);
    }
 
 }

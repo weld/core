@@ -66,10 +66,9 @@ public class SimpleBeanMap extends ForwardingMap<Bean<? extends Object>, Object>
       return delegate.keySet();
    }
    
-   @SuppressWarnings("unchecked")
-   public <T> T put(Bean<? extends T> bean, T instance)
+   public <T> void put(Bean<? extends T> bean, T instance)
    {
-      return (T) delegate.put(bean, instance);
+      delegate.put(bean, instance);
    }
 
 }

@@ -2,17 +2,14 @@ package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.webbeans.AmbiguousDependencyException;
 import javax.webbeans.BindingType;
 import javax.webbeans.ContextNotActiveException;
-import javax.webbeans.Dependent;
 import javax.webbeans.DeploymentException;
 import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Observer;
@@ -32,6 +29,7 @@ import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bean.proxy.ProxyPool;
 import org.jboss.webbeans.contexts.ApplicationContext;
+import org.jboss.webbeans.contexts.ContextMap;
 import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.contexts.RequestContext;
 import org.jboss.webbeans.contexts.SessionContext;
@@ -43,40 +41,8 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.util.Reflections;
 
-import com.google.common.collect.ForwardingMap;
-
 public class ManagerImpl implements Manager
 {
-
-   private class ContextMap extends ForwardingMap<Class<? extends Annotation>, List<Context>>
-   {
-      
-      private Map<Class<? extends Annotation>, List<Context>> delegate;
-      
-      public ContextMap()
-      {
-         delegate = new HashMap<Class<? extends Annotation>, List<Context>>();
-      }
-
-      public List<Context> get(Class<? extends Annotation> key)
-      {
-         return (List<Context>) super.get(key);
-      }
-
-      public DependentContext getDependentContext()
-      {
-         return (DependentContext) get(Dependent.class).iterator().next();
-      }
-
-      @Override
-      protected Map<Class<? extends Annotation>, List<Context>> delegate()
-      {
-         return delegate;
-      }
-   }
-   
-   
-
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
    private ModelManager modelManager;
    private EventBus eventBus;
@@ -157,10 +123,10 @@ public class ManagerImpl implements Manager
       return this;
    }
 
-   public <T> void removeObserver(Observer<T> observer)
-   {
-
-   }
+//   public <T> void removeObserver(Observer<T> observer)
+//   {
+//
+//   }
 
    public <T> Set<AnnotatedMethod<Object>> resolveDisposalMethods(Class<T> apiType, Annotation... bindingTypes)
    {

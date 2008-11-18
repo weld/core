@@ -69,5 +69,5 @@ public interface BeanMap
     * 
     * @return The instance added
     */
-   public abstract <T extends Object> T put(Bean<? extends T> bean, T instance);
+   public abstract <T> void put(Bean<? extends T> bean, T instance);
 }
