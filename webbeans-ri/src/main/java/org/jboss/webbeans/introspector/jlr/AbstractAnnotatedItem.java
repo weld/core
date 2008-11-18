@@ -15,7 +15,6 @@ import java.util.Map.Entry;
 import javax.webbeans.BindingType;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bean.proxy.ClientProxy;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
@@ -227,7 +226,26 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    
    public boolean isProxyable()
    {
-      return ClientProxy.isProxyable(getType());
+      if (Reflections.getConstructor(getType()) == null)
+      {
+         return false;
+      }
+      else if (Reflections.isTypeOrAnyMethodFinal(getType()))
+      {
+         return false;
+      }
+      else if (Reflections.isPrimitive(getType()))
+      {
+         return false;
+      }
+      else if (Reflections.isArrayType(getType()))
+      {
+         return false;
+      }
+      else
+      {
+         return true;
+      }
    }
 
 }

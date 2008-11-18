@@ -303,6 +303,11 @@ public class Reflections
          }
       }
       throw new IllegalArgumentException("Method " + method.getName() + " not implemented by instance");
+   }  
+   
+   public static boolean isProxy(Object instance) 
+   {
+      return instance.getClass().getName().indexOf("_$$_javassist_") > 0;
    }   
    
 }

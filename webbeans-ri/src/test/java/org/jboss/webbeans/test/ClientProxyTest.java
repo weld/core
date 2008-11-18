@@ -9,34 +9,34 @@ import java.io.ObjectOutputStream;
 import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.bean.proxy.ClientProxy;
 import org.jboss.webbeans.test.beans.FinalTuna;
 import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.TunedTuna;
 import org.jboss.webbeans.util.BeanFactory;
+import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.Test;
 
 @SpecVersion("PDR")
 public class ClientProxyTest extends AbstractTest
 {
 
-   @Test(groups = "clientProxy")
+   @Test(groups = "Reflections")
    @SpecAssertion(section = { "4.4", "4.8" })
-   public void testClientProxyUsedForNormalScope()
+   public void testReflectionsUsedForNormalScope()
    {
       Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class, manager);
       Tuna tuna = manager.getInstance(tunaBean);
-      assert ClientProxy.isProxy(tuna);
+      assert Reflections.isProxy(tuna);
    }
 
-   @Test(groups = "clientProxy")
+   @Test(groups = "Reflections")
    @SpecAssertion(section = { "4.4", "4.8" })
-   public void testClientProxyNotUsedForPseudoScope()
+   public void testReflectionsNotUsedForPseudoScope()
    {
       Bean<Fox> foxBean = BeanFactory.createSimpleBean(Fox.class, manager);
       Fox fox = manager.getInstance(foxBean);
-      assert !ClientProxy.isProxy(fox);
+      assert !Reflections.isProxy(fox);
    }
 
    private byte[] serializeBean(Object instance) throws IOException {
@@ -51,20 +51,20 @@ public class ClientProxyTest extends AbstractTest
       return in.readObject();
    }
    
-   @Test(groups = "clientProxy")
+   @Test(groups = "Reflections")
    @SpecAssertion(section = "4.4")
-   public void testSimpleWebBeanClientProxyIsSerializable() throws IOException, ClassNotFoundException
+   public void testSimpleWebBeanReflectionsIsSerializable() throws IOException, ClassNotFoundException
    {
       Bean<TunedTuna> tunaBean = BeanFactory.createSimpleBean(TunedTuna.class, manager);
       TunedTuna tuna = manager.getInstance(tunaBean);
-      assert ClientProxy.isProxy(tuna);
+      assert Reflections.isProxy(tuna);
       byte[] bytes = serializeBean(tuna);
       tuna = (TunedTuna) deserializeBean(bytes);
-      assert ClientProxy.isProxy(tuna);
+      assert Reflections.isProxy(tuna);
       assert tuna.getState().equals("tuned");
    }
 
-   @Test(groups = "clientProxy", expectedExceptions = UnproxyableDependencyException.class)
+   @Test(groups = "Reflections", expectedExceptions = UnproxyableDependencyException.class)
    @SpecAssertion(section = "4.4.1")
    public void testInjectionPointWithUnproxyableTypeWhichResolvesToNormalScopedWebBean()
    {
@@ -74,18 +74,18 @@ public class ClientProxyTest extends AbstractTest
       assert false;
    }
 
-   @Test(groups = "clientProxy")
+   @Test(groups = "Reflections")
    @SpecAssertion(section = "4.4.2")
-   public void testClientProxyInvocation()
+   public void testReflectionsInvocation()
    {
       Bean<TunedTuna> tunaBean = BeanFactory.createSimpleBean(TunedTuna.class, manager);
       manager.addBean(tunaBean);
       TunedTuna tuna = manager.getInstance(tunaBean);
-      assert ClientProxy.isProxy(tuna);
+      assert Reflections.isProxy(tuna);
       assert tuna.getState().equals("tuned");
    }
    
-   @Test(groups = "clientProxy")
+   @Test(groups = "Reflections")
    public void testProxyCreationDoesImplicitAddBean() {
       Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class, manager);
       Tuna tuna = manager.getInstance(tunaBean);
