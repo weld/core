@@ -6,19 +6,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class SharedContext extends AbstractContext
 {
    private BeanMap beans;
-   private AtomicBoolean active;
+   private ThreadLocal<AtomicBoolean> active;
 
    public SharedContext(Class<? extends Annotation> scopeType)
    {
       super(scopeType);
       beans = new SimpleBeanMap();
-      active = new AtomicBoolean(true);
+      active = new ThreadLocal<AtomicBoolean>();
+      active.set(new AtomicBoolean(true));
    }
 
    @Override
    protected AtomicBoolean getActive()
    {
-      return active;
+      return active.get();
    }
 
    @Override
