@@ -30,6 +30,9 @@ import javax.webbeans.manager.Manager;
  * 
  * @author Nicklas Karlsson
  * @author Pete Muir
+ * 
+ * @see org.jboss.webbeans.contexts.SharedContext
+ * @see org.jboss.webbeans.contexts.PrivateContext
  */
 public abstract class AbstractContext implements Context
 {

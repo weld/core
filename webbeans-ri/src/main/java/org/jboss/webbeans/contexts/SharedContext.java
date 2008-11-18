@@ -25,7 +25,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * with a private active state
  *  
  * @author Nicklas Karlsson
- * @see org.jboss.webbeans.ApplicationContext
+ * 
+ * @see org.jboss.webbeans.contexts.ApplicationContext
  */
 public class SharedContext extends AbstractContext
 {

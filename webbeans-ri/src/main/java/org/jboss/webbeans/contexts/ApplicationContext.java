@@ -23,6 +23,8 @@ import javax.webbeans.ApplicationScoped;
  * The Application context
  * 
  * @author Nicklas Karlsson
+ *
+ * @see org.jboss.webbeans.contexts.ApplicationContext
  */
 public class ApplicationContext extends SharedContext {
 

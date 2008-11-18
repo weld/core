@@ -30,7 +30,8 @@ import org.jboss.webbeans.ManagerImpl;
  * A BeanMap that uses a HTTP session as backing map
  * 
  * @author Nicklas Karlsson
- * @see org.jboss.webbeans.SessionContext
+ * 
+ * @see org.jboss.webbeans.contexts.SessionContext
  */
 public class SessionBeanMap implements BeanMap
 {

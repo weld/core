@@ -24,9 +24,10 @@ import javax.webbeans.manager.Bean;
  * storage. Used primarily by the contexts.
  * 
  * @author Nicklas Karlsson
- *
+ * 
+ * @see org.jboss.webbeans.contexts.SimpleBeanMap
+ * @see org.jboss.webbeans.contexts.SessionBeanMap
  */
-
 public interface BeanMap
 {
    /**

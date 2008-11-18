@@ -25,10 +25,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * BeanMap and ThreadLocal active state
  * 
  * @author Nicklas Karlsson
- * @see org.jboss.webbeans.DependentContext
- * @see org.jboss.webbeans.RequestContext
- * @see org.jboss.webbeans.ConversationContext
- * @see org.jboss.webbeans.SessionContext
+ * 
+ * @see org.jboss.webbeans.contexts.DependentContext
+ * @see org.jboss.webbeans.contexts.RequestContext
+ * @see org.jboss.webbeans.contexts.ConversationContext
+ * @see org.jboss.webbeans.contexts.SessionContext
  */
 public class PrivateContext extends AbstractContext
 {
