@@ -6,7 +6,6 @@ import javax.servlet.http.HttpSession;
 import javax.webbeans.SessionScoped;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.contexts.SessionBeanMap;
 import org.jboss.webbeans.contexts.SessionContext;
 import org.jboss.webbeans.util.JNDI;
 

@@ -35,18 +35,18 @@ import org.jboss.webbeans.ManagerImpl;
  */
 public class SessionBeanMap implements BeanMap
 {
-   private static final String KEY_PREFIX = "SessionScoped#";
-
    private HttpSession session;
    private ManagerImpl manager;
    private BeanMap cache;
+   private String keyPrefix;
 
-   public SessionBeanMap(ManagerImpl manager)
+   public SessionBeanMap(ManagerImpl manager, String keyPrefix)
    {
       super();
       this.manager = manager;
       // A "normal" BeanMap is used as cache
       cache = new SimpleBeanMap();
+      this.keyPrefix = keyPrefix;
    }
 
    /**
@@ -80,7 +80,7 @@ public class SessionBeanMap implements BeanMap
    @SuppressWarnings("unused")
    private String getBeanKey(Bean<?> bean) {
       // TODO Append scope to in order to make class usable by multiple contexts
-      return KEY_PREFIX + manager.getBeans().indexOf(bean);
+      return keyPrefix + manager.getBeans().indexOf(bean);
    }
    
    /**
@@ -169,8 +169,8 @@ public class SessionBeanMap implements BeanMap
       Enumeration names = session.getAttributeNames();
       while (names.hasMoreElements()) {
          String name = (String) names.nextElement();
-         if (name.startsWith(KEY_PREFIX)) {
-            String id = name.substring(KEY_PREFIX.length());
+         if (name.startsWith(keyPrefix)) {
+            String id = name.substring(keyPrefix.length());
             Bean<?> bean = manager.getBeans().get(Integer.parseInt(id));
             beans.add(bean);
          }
