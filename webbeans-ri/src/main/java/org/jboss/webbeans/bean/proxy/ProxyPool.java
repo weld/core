@@ -45,7 +45,8 @@ public class ProxyPool
    private ManagerImpl manager;
    private Pool pool;
    
-   public ProxyPool(ManagerImpl manager) {
+   public ProxyPool(ManagerImpl manager) 
+   {
       this.manager = manager;
       this.pool = new Pool();
    }
@@ -55,14 +56,19 @@ public class ProxyPool
       Class<?> superclass;
    }
    
-   private TypeInfo getTypeInfo(Set<Class<?>> types) {
+   private TypeInfo getTypeInfo(Set<Class<?>> types) 
+   {
       TypeInfo typeInfo = new TypeInfo();
       List<Class<?>> interfaces = new ArrayList<Class<?>>();
       Class<?> superclass = null;
-      for (Class<?> type : types) {
-         if (type.isInterface()) {
+      for (Class<?> type : types) 
+      {
+         if (type.isInterface()) 
+         {
             interfaces.add(type);
-         } else if (superclass == null || (type != Object.class && superclass.isAssignableFrom(type))) {
+         }
+         else if (superclass == null || (type != Object.class && superclass.isAssignableFrom(type))) 
+         {
             superclass = type;
          }
       }
@@ -72,14 +78,15 @@ public class ProxyPool
       return typeInfo;
    }
    
-   private <T> T createClientProxy(Bean<T> bean, int beanIndex) throws InstantiationException, IllegalAccessException {
+   private <T> T createClientProxy(Bean<T> bean, int beanIndex) throws InstantiationException, IllegalAccessException 
+   {
       ProxyFactory proxyFactory = new ProxyFactory();
       TypeInfo typeInfo = getTypeInfo(bean.getTypes());
       proxyFactory.setInterfaces(typeInfo.interfaces);
       proxyFactory.setSuperclass(typeInfo.superclass);
       T clientProxy = (T) proxyFactory.createClass().newInstance();
       ProxyMethodHandler proxyMethodHandler = new ProxyMethodHandler(bean, beanIndex, manager);
-      ((ProxyObject)clientProxy).setHandler(proxyMethodHandler);
+      ((ProxyObject) clientProxy).setHandler(proxyMethodHandler);
       return clientProxy;
    }
 
@@ -92,7 +99,8 @@ public class ProxyPool
          {
             int beanIndex = manager.getBeans().indexOf(bean);
             // Implicit add required since it is looked up on activation with then index
-            if (beanIndex < 0) {
+            if (beanIndex < 0) 
+            {
                manager.addBean(bean);
                beanIndex = manager.getBeans().size() - 1;
             }
@@ -107,6 +115,5 @@ public class ProxyPool
       }
       return clientProxy;
    }
-   
    
 }

@@ -26,8 +26,7 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
       ProxyMethodHandler.manager = manager;
    }
 
-   public Object invoke(Object self, Method method, Method proceed,
-         Object[] args) throws Throwable
+   public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
       if (bean == null)
       {
@@ -38,7 +37,5 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
       return proxiedMethod.invoke(proxiedInstance, args);
    }
-
-
-
+   
 }
