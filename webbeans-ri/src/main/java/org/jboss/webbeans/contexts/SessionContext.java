@@ -20,7 +20,12 @@ package org.jboss.webbeans.contexts;
 import javax.servlet.http.HttpSession;
 import javax.webbeans.SessionScoped;
 
+import org.apache.log4j.Logger;
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bootstrap.Bootstrap;
+import org.jboss.webbeans.log.Log;
+import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Logging;
 
 /**
  * The session context
@@ -29,19 +34,16 @@ import org.jboss.webbeans.ManagerImpl;
  */
 public class SessionContext extends PrivateContext {
 
+   private static LogProvider log = Logging.getLogProvider(SessionContext.class);
+   
    public SessionContext(ManagerImpl manager)
    {
       super(SessionScoped.class);
       // Replaces the BeanMap implementation with a session-based one
       beans.set(new SessionBeanMap(manager, getScopeType().getName() + "#"));
+      log.trace("Created session context");
    }
-   
-   @Override
-   public String toString()
-   {
-      return "Session context";
-   }   
-   
+ 
    /**
     * Sets the session in the session bean map
     * 
@@ -50,4 +52,15 @@ public class SessionContext extends PrivateContext {
    public void setSession(HttpSession session) {
       ((SessionBeanMap)getBeanMap()).setSession(session);
    }
+   
+   @Override
+   public String toString()
+   {
+      return 
+         "Session context:\n" + 
+         "Active: " + getActive().toString() + 
+         "Beans: " + getBeanMap().toString();
+   }   
+   
+
 }
