@@ -1,19 +1,19 @@
 /*
-* JBoss, Home of Professional Open Source
-* Copyright 2008, Red Hat Middleware LLC, and individual contributors
-* by the @authors tag. See the copyright.txt in the distribution for a
-* full listing of individual contributors.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* http://www.apache.org/licenses/LICENSE-2.0
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,  
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.jboss.webbeans.contexts;
 
@@ -26,7 +26,9 @@ import javax.webbeans.manager.Context;
 import javax.webbeans.manager.Manager;
 
 /**
- * Base for the Context implementations
+ * Base for the Context implementations. Delegates calls to the abstract
+ * getBeanMap and getActive to allow for different implementations (storage
+ * types and ThreadLocal vs. shared)
  * 
  * @author Nicklas Karlsson
  * @author Pete Muir
@@ -36,7 +38,7 @@ import javax.webbeans.manager.Manager;
  */
 public abstract class AbstractContext implements Context
 {
-   
+
    private Class<? extends Annotation> scopeType;
 
    public AbstractContext(Class<? extends Annotation> scopeType)
@@ -48,10 +50,9 @@ public abstract class AbstractContext implements Context
     * Get the bean if it exists in the contexts.
     * 
     * @param create If true, a new instance of the bean will be created if none
-    * exists
-    * 
+    *           exists
+    * @return An instance of the bean
     * @throws ContextNotActiveException if the context is not active
-    *  
     */
    public <T> T get(Bean<T> bean, boolean create)
    {
@@ -77,6 +78,8 @@ public abstract class AbstractContext implements Context
 
    /**
     * Get the scope the context is for
+    * 
+    * @return The scope type
     */
    public Class<? extends Annotation> getScopeType()
    {
@@ -85,21 +88,24 @@ public abstract class AbstractContext implements Context
 
    /**
     * Return true if the context is active
+    * 
+    * @return The active state
     */
    public boolean isActive()
    {
       return getActive().get();
    }
-   
-   /** 
+
+   /**
     * Set the context active, internal API for WBRI
     * 
     * @param active The new state
     */
-   public void setActive(boolean active) {
+   public void setActive(boolean active)
+   {
       getActive().set(active);
    }
-   
+
    // TODO Do we need this
    private <T> void destroy(Manager manager, Bean<T> bean)
    {
@@ -114,9 +120,29 @@ public abstract class AbstractContext implements Context
          destroy(manager, bean);
       }
       getBeanMap().clear();
-   }   
-   
+   }
+
+   /**
+    * A method that should return the actual bean map implementation
+    * 
+    * @return The actual bean map
+    */
    protected abstract BeanMap getBeanMap();
+   
+   /**
+    * A method that should return the actual atomic boolean instance
+    * 
+    * @return The active boolean
+    */
    protected abstract AtomicBoolean getActive();
 
+   @Override
+   public String toString()
+   {
+      return 
+         "Context type: " + getScopeType().getName() + 
+         "\nActive: " + getActive().toString() + 
+         "\nBeans: " + getBeanMap().toString();
+   }   
+   
 }

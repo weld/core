@@ -1,3 +1,20 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
@@ -45,11 +62,11 @@ import org.jboss.webbeans.util.Reflections;
 /**
  * Implementation of the Web Beans Manager.
  * 
- * Essentially a singleton for registering Beans, Contexts, Observers, 
+ * Essentially a singleton for registering Beans, Contexts, Observers,
  * Interceptors etc. as well as providing resolution
  * 
  * @author Pete Muir
- *
+ * 
  */
 public class ManagerImpl implements Manager
 {
@@ -63,6 +80,7 @@ public class ManagerImpl implements Manager
    private Set<Decorator> decorators;
    private Set<Interceptor> interceptors;
 
+   @SuppressWarnings("unchecked")
    public ManagerImpl()
    {
       this.metaDataCache = new MetaDataCache();
@@ -76,20 +94,23 @@ public class ManagerImpl implements Manager
       initContexts();
       initStandardBeans();
    }
-   
+
    /**
     * Add any beans provided by the Web Beans RI to the registry
     */
    protected void initStandardBeans()
    {
-      addBean( new SimpleBean<DefaultEnterpriseBeanLookup>( DefaultEnterpriseBeanLookup.class, this ) );
+      addBean(new SimpleBean<DefaultEnterpriseBeanLookup>(DefaultEnterpriseBeanLookup.class, this));
    }
 
    /**
     * Set up the enabled deployment types, if none are specified by the user,
     * the default @Production and @Standard are used
+    * 
+    * @param enabledDeploymentTypes The enabled deployment types from
+    *           web-beans.xml
     */
-   protected void initEnabledDeploymentTypes(Class<? extends Annotation> ... enabledDeploymentTypes)
+   protected void initEnabledDeploymentTypes(Class<? extends Annotation>... enabledDeploymentTypes)
    {
       this.enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       if (enabledDeploymentTypes.length == 0)
@@ -112,8 +133,10 @@ public class ManagerImpl implements Manager
 
    /**
     * Set up the contexts. By default, the built in contexts are set up, but a
-    * mock ManagerImpl may override this method to allow tests to set up 
-    * other contexts
+    * mock ManagerImpl may override this method to allow tests to set up other
+    * contexts
+    * 
+    * @param contexts Non-built-in contexts to add
     */
    protected void initContexts(Context... contexts)
    {
@@ -135,6 +158,11 @@ public class ManagerImpl implements Manager
    }
 
    /**
+    * Registers a bean with the manager
+    * 
+    * @param bean The bean to register
+    * @return A reference to manager
+    * 
     * @see javax.webbeans.manager.Manager#addBean(javax.webbeans.manager.Bean)
     */
    public Manager addBean(Bean<?> bean)
@@ -150,10 +178,10 @@ public class ManagerImpl implements Manager
 
    /**
     * Resolve the disposal method for the given producer method
-    * @param <T>
-    * @param apiType
-    * @param bindingTypes
-    * @return
+    * 
+    * @param apiType The API type to match
+    * @param bindingTypes The binding types to match
+    * @return The set of matching disposal methods
     */
    public <T> Set<AnnotatedMethod<Object>> resolveDisposalMethods(Class<T> apiType, Annotation... bindingTypes)
    {
@@ -161,28 +189,52 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * @see javax.webbeans.manager.Manager#resolveObservers(java.lang.Object, java.lang.annotation.Annotation[])
+    * Resolves observers for given event and bindings
+    * 
+    * @param event The event to match
+    * @param bindings The binding types to match
+    * @return The set of matching observers
+    * 
+    * @see javax.webbeans.manager.Manager#resolveObservers(java.lang.Object,
+    *      java.lang.annotation.Annotation[])
     */
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
    {
-      return (Set<Observer<T>>) eventBus.getObservers(event, bindings);
+      return eventBus.getObservers(event, bindings);
    }
 
    /**
     * A strongly ordered list of enabled deployment types
+    * 
+    * @return The ordered enabled deployment types known to the manager
     */
    public List<Class<? extends Annotation>> getEnabledDeploymentTypes()
    {
       return enabledDeploymentTypes;
    }
+
    
+   /**
+    * Returns the metadata cache
+    * 
+    * @return The cache
+    * 
+    * @see org.jboss.webbeans.MetaDataCache
+    */
    public MetaDataCache getMetaDataCache()
    {
       return this.metaDataCache;
    }
 
    /**
-    * @see javax.webbeans.manager.Manager#resolveByType(java.lang.Class, java.lang.annotation.Annotation[])
+    * Resolves beans by API type and binding types
+    * 
+    * @param type The API type to match
+    * @param bindingTypes The binding types to match
+    * @return The set of matching beans
+    * 
+    * @see javax.webbeans.manager.Manager#resolveByType(java.lang.Class,
+    *      java.lang.annotation.Annotation[])
     */
    public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindingTypes)
    {
@@ -190,16 +242,27 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * @see javax.webbeans.manager.Manager#resolveByType(javax.webbeans.TypeLiteral, java.lang.annotation.Annotation[])
+    * Resolves beans by API type literal and binding types
+    * 
+    * @param type The API type literal to match
+    * @param bindingTypes The binding types to match
+    * @return The set of matching beans
+    * 
+    * @see javax.webbeans.manager.Manager#resolveByType(javax.webbeans.TypeLiteral,
+    *      java.lang.annotation.Annotation[])
     */
    public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> type, Annotation... bindingTypes)
    {
       return resolveByType(new AnnotatedClassImpl<T>(type.getRawType(), type.getType(), bindingTypes), bindingTypes);
    }
-   
+
    /**
-    * Check the resolution request is valid, and then ask the resolver to 
+    * Check the resolution request is valid, and then ask the resolver to
     * perform the resolution
+    * 
+    * @param element The item to resolve
+    * @param bindingTypes The binding types to match
+    * @return The set of matching beans 
     */
    public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, Annotation... bindingTypes)
    {
@@ -218,20 +281,25 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * Wraps a collection of beans into a thread safe list.
-    * Since this overwrites any existing list of beans in the manager,
-    * this should only be done on startup and other controlled situations.
+    * Wraps a collection of beans into a thread safe list. Since this overwrites
+    * any existing list of beans in the manager, this should only be done on
+    * startup and other controlled situations.
     * 
+    * @param beans The set of beans to add
+    * @return A reference to the manager
     */
-   public Manager setBeans(Set<AbstractBean<?, ?>> beans) {
+   public Manager setBeans(Set<AbstractBean<?, ?>> beans)
+   {
       this.beans = new CopyOnWriteArrayList<Bean<?>>(beans);
       resolver.clear();
       initStandardBeans();
       return this;
    }
-   
+
    /**
     * The beans registered with the Web Bean manager
+    * 
+    * @return The list of known beans
     */
    public List<Bean<?>> getBeans()
    {
@@ -239,6 +307,11 @@ public class ManagerImpl implements Manager
    }
 
    /**
+    * Adds a context
+    * 
+    * @param context The context to add
+    * @return A reference to the manager
+    * 
     * @see javax.webbeans.manager.Manager#addContext(javax.webbeans.manager.Context)
     */
    public Manager addContext(Context context)
@@ -254,6 +327,11 @@ public class ManagerImpl implements Manager
    }
 
    /**
+    * Adds a decorator
+    * 
+    * @param decorator The decorator to add
+    * @return A reference to the manager
+    * 
     * @see javax.webbeans.manager.Manager#addDecorator(javax.webbeans.manager.Decorator)
     */
    public Manager addDecorator(Decorator decorator)
@@ -263,6 +341,11 @@ public class ManagerImpl implements Manager
    }
 
    /**
+    * Adds an interceptor
+    * 
+    * @param interceptor The interceptor to add
+    * @return A reference to the manager
+    * 
     * @see javax.webbeans.manager.Manager#addInterceptor(javax.webbeans.manager.Interceptor)
     */
    public Manager addInterceptor(Interceptor interceptor)
@@ -272,7 +355,15 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * @see javax.webbeans.manager.Manager#addObserver(javax.webbeans.Observer, java.lang.Class, java.lang.annotation.Annotation[])
+    * Adds an observer for a given event type and binding types
+    * 
+    * @param observer The observer to add
+    * @param eventType The event type to match
+    * @param bindings The bindings to match
+    * @return A reference to the manager
+    * 
+    * @see javax.webbeans.manager.Manager#addObserver(javax.webbeans.Observer,
+    *      java.lang.Class, java.lang.annotation.Annotation[])
     */
    public <T> Manager addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
@@ -281,8 +372,17 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * @see javax.webbeans.manager.Manager#addObserver(javax.webbeans.Observer, javax.webbeans.TypeLiteral, java.lang.annotation.Annotation[])
+    * Adds an observer for a given event type literal and binding types
+    * 
+    * @param observer The observer to add
+    * @param eventType The event type literal to match
+    * @param bindings The bindings to match
+    * @return A reference to the manager
+    * 
+    * @see javax.webbeans.manager.Manager#addObserver(javax.webbeans.Observer,
+    *      javax.webbeans.TypeLiteral, java.lang.annotation.Annotation[])
     */
+   @SuppressWarnings("unchecked")
    public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
       // TODO Using the eventType TypeLiteral<T>, the Class<T> object must be
@@ -292,7 +392,13 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * @see javax.webbeans.manager.Manager#fireEvent(java.lang.Object, java.lang.annotation.Annotation[])
+    * Fires an event object with given event object for given bindings
+    * 
+    * @param event The event object to pass along
+    * @param bindings The binding types to match
+    * 
+    * @see javax.webbeans.manager.Manager#fireEvent(java.lang.Object,
+    *      java.lang.annotation.Annotation[])
     */
    public void fireEvent(Object event, Annotation... bindings)
    {
@@ -310,6 +416,12 @@ public class ManagerImpl implements Manager
    }
 
    /**
+    * Gets an active context of the given scope. Throws an exception if there
+    * are no active contexts found or if there are too many matches
+    * 
+    * @param scopeType The scope to match
+    * @return A single active context of the given scope
+    * 
     * @see javax.webbeans.manager.Manager#getContext(java.lang.Class)
     */
    public Context getContext(Class<? extends Annotation> scopeType)
@@ -335,12 +447,18 @@ public class ManagerImpl implements Manager
       {
          throw new IllegalArgumentException("More than one context active for scope type " + scopeType.getName());
       }
-      return activeContexts.get(0);
+      return activeContexts.iterator().next();
    }
 
    /**
+    * Returns an instance of a bean
+    * 
+    * @param bean The bean to instantiate
+    * @return An instance of the bean
+    * 
     * @see javax.webbeans.manager.Manager#getInstance(javax.webbeans.manager.Bean)
     */
+   @SuppressWarnings("unchecked")
    public <T> T getInstance(Bean<T> bean)
    {
       try
@@ -362,6 +480,12 @@ public class ManagerImpl implements Manager
    }
 
    /**
+    * Gets an instance by name, returning null if none is found and throwing an
+    * exception if too many beans match
+    * 
+    * @param name The name to match
+    * @return An instance of the bean
+    * 
     * @see javax.webbeans.manager.Manager#getInstanceByName(java.lang.String)
     */
    public Object getInstanceByName(String name)
@@ -382,7 +506,14 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * @see javax.webbeans.manager.Manager#getInstanceByType(java.lang.Class, java.lang.annotation.Annotation[])
+    * Returns an instance by API type and binding types
+    * 
+    * @param type The API type to match
+    * @param bindingTypes The binding types to match
+    * @return An instance of the bean
+    * 
+    * @see javax.webbeans.manager.Manager#getInstanceByType(java.lang.Class,
+    *      java.lang.annotation.Annotation[])
     */
    public <T> T getInstanceByType(Class<T> type, Annotation... bindingTypes)
    {
@@ -390,7 +521,14 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * @see javax.webbeans.manager.Manager#getInstanceByType(javax.webbeans.TypeLiteral, java.lang.annotation.Annotation[])
+    * Returns an instance by type literal and binding types
+    * 
+    * @param type The type to match
+    * @param bindingTypes The binding types to match
+    * @return An instance of the bean
+    * 
+    * @see javax.webbeans.manager.Manager#getInstanceByType(javax.webbeans.TypeLiteral,
+    *      java.lang.annotation.Annotation[])
     */
    public <T> T getInstanceByType(TypeLiteral<T> type, Annotation... bindingTypes)
    {
@@ -401,6 +539,9 @@ public class ManagerImpl implements Manager
     * Resolve an instance, verify that the resolved bean can be instantiated,
     * and return
     * 
+    * @param element The annotated item to match
+    * @param bindingTypes The binding types to match
+    * @return An instance of the bean
     */
    public <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindingTypes)
    {
@@ -428,7 +569,15 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * @see javax.webbeans.manager.Manager#removeObserver(javax.webbeans.Observer, java.lang.Class, java.lang.annotation.Annotation[])
+    * Removes an observer
+    * 
+    * @param observer The observer to remove
+    * @param eventType The event type to match
+    * @param bindings the binding types to match
+    * @return A reference to the manager
+    * 
+    * @see javax.webbeans.manager.Manager#removeObserver(javax.webbeans.Observer,
+    *      java.lang.Class, java.lang.annotation.Annotation[])
     */
    public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
@@ -437,8 +586,17 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * @see javax.webbeans.manager.Manager#removeObserver(javax.webbeans.Observer, javax.webbeans.TypeLiteral, java.lang.annotation.Annotation[])
+    * Removes an observer
+    * 
+    * @param observer The observer to remove
+    * @param eventType The event type to match
+    * @param bindings the binding types to match
+    * @return A reference to the manager
+    * 
+    * @see javax.webbeans.manager.Manager#removeObserver(javax.webbeans.Observer,
+    *      javax.webbeans.TypeLiteral, java.lang.annotation.Annotation[])
     */
+   @SuppressWarnings("unchecked")
    public <T> Manager removeObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
       // TODO The Class<T> for the event type must be retrieved from the
@@ -448,6 +606,11 @@ public class ManagerImpl implements Manager
    }
 
    /**
+    * Resolves a set of beans based on their name
+    * 
+    * @param The name to match
+    * @return The set of matching beans
+    * 
     * @see javax.webbeans.manager.Manager#resolveByName(java.lang.String)
     */
    public Set<Bean<?>> resolveByName(String name)
@@ -456,26 +619,40 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * @see javax.webbeans.manager.Manager#resolveDecorators(java.util.Set, java.lang.annotation.Annotation[])
+    * Resolves a list of decorators based on API types and binding types
+    * 
+    * @param types The set of API types to match
+    * @param bindingTypes The binding types to match
+    * @return A list of matching decorators
+    * 
+    * @see javax.webbeans.manager.Manager#resolveDecorators(java.util.Set,
+    *      java.lang.annotation.Annotation[])
     */
    public List<Decorator> resolveDecorators(Set<Class<?>> types, Annotation... bindingTypes)
    {
-      // TODO Auto-generated method stub
-      return null;
+      return resolver.resolveDecorators(types, bindingTypes);
    }
 
    /**
-    * @see javax.webbeans.manager.Manager#resolveInterceptors(javax.webbeans.manager.InterceptionType, java.lang.annotation.Annotation[])
+    * Resolves a list of interceptors based on interception type and interceptor
+    * bindings
+    * 
+    * @param type The interception type to resolve
+    * @param interceptorBindings The binding types to match
+    * @return A list of matching interceptors
+    * 
+    * @see javax.webbeans.manager.Manager#resolveInterceptors(javax.webbeans.manager.InterceptionType,
+    *      java.lang.annotation.Annotation[])
     */
    public List<Interceptor> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings)
    {
-      // TODO Auto-generated method stub
-      return null;
+      return resolver.resolveInterceptors(type, interceptorBindings);
    }
-   
+
    /**
     * Get the web bean resolver
-    * @return
+    * 
+    * @return The resolver
     */
    public Resolver getResolver()
    {

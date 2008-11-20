@@ -38,7 +38,7 @@ import org.jboss.webbeans.log.Logging;
 public class SessionBeanMap implements BeanMap
 {
    private static LogProvider log = Logging.getLogProvider(SessionBeanMap.class);
-   
+
    private HttpSession session;
    private ManagerImpl manager;
    private String keyPrefix;
@@ -80,7 +80,6 @@ public class SessionBeanMap implements BeanMap
     * the Bean in the Manager bean list.
     * 
     * @param bean The bean to generate a key for.
-    * 
     * @return A unique key;
     */
    private String getBeanKey(Bean<?> bean)
@@ -96,6 +95,7 @@ public class SessionBeanMap implements BeanMap
     * (null if not found in the session).
     * 
     * @param bean The bean to get from the session
+    * @return An instance of the bean
     */
    @SuppressWarnings("unchecked")
    public <T> T get(Bean<? extends T> bean)
@@ -115,6 +115,7 @@ public class SessionBeanMap implements BeanMap
     * in the first place or not.
     * 
     * @param bean The bean whose instance to remove.
+    * @return The instance removed
     */
    public <T> T remove(Bean<? extends T> bean)
    {
@@ -185,7 +186,6 @@ public class SessionBeanMap implements BeanMap
     * the instance in the session under that key.
     * 
     * @param bean The bean to use as key
-    * 
     * @param instance The bean instance to add
     */
    public <T> void put(Bean<? extends T> bean, T instance)
@@ -195,16 +195,18 @@ public class SessionBeanMap implements BeanMap
       session.setAttribute(key, instance);
       log.trace("Stored bean " + bean + " under key " + key + " in session");
    }
-   
+
    @SuppressWarnings("unchecked")
    @Override
-   public String toString() {
+   public String toString()
+   {
       StringBuffer buffer = new StringBuffer();
       List<Bean<?>> beans = (List) keySet();
       buffer.append(beans.size() + " found in session");
-      for (Bean<?> bean : beans) {
+      for (Bean<?> bean : beans)
+      {
          Object instance = get(bean);
-         buffer.append(getBeanKey(bean) + ": " + instance);
+         buffer.append(getBeanKey(bean) + ": " + instance + "\n");
       }
       return buffer.toString();
    }
