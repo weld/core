@@ -48,7 +48,6 @@ public class Bootstrap
    {
       Set<AbstractBean<?, ?>> beans = createBeans(classes);
       manager.setBeans(beans);
-      manager.getResolver().resolveInjectionPoints();
    }
    
    /**
@@ -96,6 +95,8 @@ public class Bootstrap
          throw new IllegalStateException("No WebBeanDiscovery provider found, you need to implement the org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery interface, and tell the RI to use it by specifying -D" + Bootstrap.WEB_BEAN_DISCOVERY_PROPERTY_NAME + "=<classname>");
       }
       registerBeans(webBeanDiscovery.discoverWebBeanClasses());
+      log.info("Validing Web Bean injection points");
+      manager.getResolver().resolveInjectionPoints();
    }
    
    public static String getVersion()
