@@ -9,11 +9,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.webbeans.manager.Bean;
-
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractClassBean;
+import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.log.LogProvider;
@@ -96,6 +95,7 @@ public class Bootstrap
    {
       Set<AbstractBean<?, ?>> beans = createBeans(classes);
       manager.setBeans(beans);
+      manager.getResolver().resolveInjectionPoints();
    }
    
    /**
@@ -114,7 +114,7 @@ public class Bootstrap
       for (Class<?> clazz : classes)
       {
          AbstractClassBean<?> bean;
-         if (manager.getModelManager().getEjbMetaData(clazz).isEjb())
+         if (manager.getMetaDataCache().getEjbMetaData(clazz).isEjb())
          {
             bean = createEnterpriseBean(clazz, manager);
          }
@@ -123,9 +123,12 @@ public class Bootstrap
             bean = createSimpleBean(clazz, manager);
          }
          beans.add(bean);
+         manager.getResolver().addInjectionPoints(bean.getInjectionPoints());
          for (AnnotatedMethod<Object> producerMethod : bean.getProducerMethods())
          {
-            beans.add(createProducerMethodBean(producerMethod.getType(), producerMethod, manager, bean));
+            ProducerMethodBean<?> producerMethodBean = createProducerMethodBean(producerMethod.getType(), producerMethod, manager, bean);
+            beans.add(producerMethodBean);
+            manager.getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
          }
          
       }

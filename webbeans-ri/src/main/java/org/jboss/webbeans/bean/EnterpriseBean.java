@@ -109,14 +109,14 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       if (!isDefinedInXml())
       {
-         if (!getManager().getModelManager().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
+         if (!getManager().getMetaDataCache().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
          {
             throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
          }
       } 
       else
       {
-         if (getManager().getModelManager().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
+         if (getManager().getMetaDataCache().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
          {
             throw new DefinitionException("XML defined specializing EJB must have annotation defined EJB implementation");
          }

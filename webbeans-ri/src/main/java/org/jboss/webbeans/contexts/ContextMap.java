@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.webbeans.Dependent;
 import javax.webbeans.manager.Context;
 
 import com.google.common.collect.ForwardingMap;
@@ -26,9 +25,9 @@ public class ContextMap extends
       return (List<Context>) super.get(key);
    }
 
-   public DependentContext getDependentContext()
+   public DependentContext getBuiltInContext(Class<? extends Annotation> scopeType)
    {
-      return (DependentContext) get(Dependent.class).iterator().next();
+      return (DependentContext) get(scopeType).iterator().next();
    }
 
    @Override

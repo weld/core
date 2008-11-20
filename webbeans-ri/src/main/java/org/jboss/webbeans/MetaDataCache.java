@@ -12,7 +12,7 @@ import org.jboss.webbeans.model.StereotypeModel;
 
 import com.google.common.collect.ForwardingMap;
 
-public class ModelManager
+public class MetaDataCache
 {
    
    @SuppressWarnings("unchecked")

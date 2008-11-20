@@ -33,7 +33,7 @@ import org.jboss.webbeans.util.Reflections;
 
 public abstract class AbstractBean<T, E> extends Bean<T>
 {
- 
+   
    private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(DefaultEnterpriseBeanLookup.class));
    
    public static Class<? extends Annotation> getDeploymentType(List<Class<? extends Annotation>> enabledDeploymentTypes, Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes)
@@ -42,7 +42,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       {
          if (possibleDeploymentTypes.containsKey((enabledDeploymentTypes.get(i))))
          {
-            return enabledDeploymentTypes.get(i); 
+            return enabledDeploymentTypes.get(i);
          }
       }
       return null;
@@ -79,7 +79,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class), manager);
       initType();
       initPrimitive();
-      log.debug("Building Web Bean bean metadata for " +  getType());
+      log.debug("Building Web Bean bean metadata for " + getType());
       initBindingTypes();
       initName();
       initDeploymentType();
@@ -107,7 +107,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
             this.bindingTypes.addAll(bindingTypes);
             log.trace("Using binding types " + this.bindingTypes + " specified in XML and specialized type");
          }
-         else 
+         else
          {
             log.trace("Using binding types " + this.bindingTypes + " specified in XML");
          }
@@ -134,7 +134,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          return;
       }
    }
-
+   
    protected void initDeploymentType()
    {
       if (isDefinedInXml())
@@ -147,7 +147,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          
          if (xmlDeploymentTypes.size() == 1)
          {
-            this.deploymentType = xmlDeploymentTypes.iterator().next().annotationType(); 
+            this.deploymentType = xmlDeploymentTypes.iterator().next().annotationType();
             log.trace("Deployment type " + deploymentType + " specified in XML");
             return;
          }
@@ -179,10 +179,10 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       log.trace("Using default @Production deployment type");
       return;
    }
-
+   
    protected void initInjectionPoints()
    {
-      injectionPoints = new HashSet<AnnotatedItem<?,?>>();
+      injectionPoints = new HashSet<AnnotatedItem<?, ?>>();
       if (removeMethod != null)
       {
          for (AnnotatedParameter<?> injectable : removeMethod.getParameters())
@@ -191,14 +191,14 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          }
       }
    }
-
+   
    protected void initName()
    {
       boolean beanNameDefaulted = false;
       if (isDefinedInXml())
       {
          boolean xmlSpecialization = false;
-         if (xmlSpecialization) 
+         if (xmlSpecialization)
          {
             throw new DefinitionException("Name specified for specialized bean (declared in XML)");
          }
@@ -251,12 +251,12 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          return;
       }
    }
-
+   
    protected void initPrimitive()
    {
       this.primitive = Reflections.isPrimitive(getType());
    }
-
+   
    /**
     * Return the scope of the bean
     */
@@ -337,12 +337,12 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
    
    protected abstract AnnotatedItem<T, E> getAnnotatedItem();
-
+   
    public Set<Annotation> getBindingTypes()
    {
       return bindingTypes;
    }
-
+   
    protected Type getDeclaredBeanType()
    {
       if (declaredBeanType == null)
@@ -359,7 +359,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       }
       return declaredBeanType;
    }
-
+   
    protected abstract String getDefaultName();
    
    public Class<? extends Annotation> getDeploymentType()
@@ -387,23 +387,21 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    {
       return name;
    }
-
+   
    public AnnotatedMethod<?> getRemoveMethod()
    {
       return removeMethod;
    }
-
+   
    public Class<? extends Annotation> getScopeType()
    {
       return scopeType;
    }
    
-   protected AbstractBean<? extends T, E> getSpecializedType() 
+   protected AbstractBean<? extends T, E> getSpecializedType()
    {
       throw new UnsupportedOperationException();
    }
-   
-
    
    public Class<T> getType()
    {
@@ -435,7 +433,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    {
       return this.getAnnotatedItem().isAssignableFrom(annotatedItem);
    }
-
+   
    protected boolean isDefinedInXml()
    {
       return false;
@@ -458,5 +456,5 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       // TODO Auto-generated method stub
       return false;
    }
-
+   
 }

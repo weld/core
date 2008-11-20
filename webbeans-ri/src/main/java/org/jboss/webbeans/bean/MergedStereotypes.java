@@ -37,7 +37,7 @@ public class MergedStereotypes<T, E>
       for (Annotation stereotypeAnnotation : stereotypeAnnotations)
       {
          // Retrieve and merge all metadata from stereotypes
-         StereotypeModel<?> stereotype = manager.getModelManager().getStereotype(stereotypeAnnotation.annotationType());
+         StereotypeModel<?> stereotype = manager.getMetaDataCache().getStereotype(stereotypeAnnotation.annotationType());
          if (stereotype == null)
          {
             throw new IllegalStateException("Stereotype " + stereotypeAnnotation + " not registered with container");

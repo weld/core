@@ -9,7 +9,6 @@ import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.UnsatisfiedDependencyException;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.ResolutionManager;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -64,10 +63,6 @@ public class InstantiationByTypeTest extends AbstractTest
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
       
-      ResolutionManager resolutionManager = manager.getResolutionManager();
-      resolutionManager.addInjectionPoint(whiteScottishFishField);
-      resolutionManager.resolveInjectionPoints();
-      
       manager.getInstanceByType(ScottishFish.class, new AnnotationLiteral<Whitefish>(){});
    }
    
@@ -82,10 +77,6 @@ public class InstantiationByTypeTest extends AbstractTest
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
       
-      ResolutionManager resolutionManager = manager.getResolutionManager();
-      resolutionManager.addInjectionPoint(whiteScottishFishField);
-      resolutionManager.resolveInjectionPoints();
-      
       manager.getInstanceByType(Tuna.class, new CurrentAnnotationLiteral());
    }
    
@@ -95,10 +86,6 @@ public class InstantiationByTypeTest extends AbstractTest
       AnnotatedField<Plaice> plaiceField = new AnnotatedFieldImpl<Plaice>(PlaiceFarm.class.getDeclaredField("plaice"), fishFarmClass);
       Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class, manager);
       manager.addBean(plaiceBean);
-      
-      ResolutionManager resolutionManager = manager.getResolutionManager();
-      resolutionManager.addInjectionPoint(plaiceField);
-      resolutionManager.resolveInjectionPoints();
       
       manager.getInstanceByType(Plaice.class, new AnnotationLiteral<Whitefish>(){});
    }

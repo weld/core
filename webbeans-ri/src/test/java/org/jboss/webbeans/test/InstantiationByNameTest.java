@@ -5,7 +5,6 @@ import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
 import javax.webbeans.AmbiguousDependencyException;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.ResolutionManager;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
@@ -35,9 +34,6 @@ public class InstantiationByNameTest extends AbstractTest
       manager.addBean(codBean);
       manager.addBean(salmonBean);
       
-      ResolutionManager resolutionManager = manager.getResolutionManager();
-      resolutionManager.addInjectionPoint(whiteScottishFishField);
-      
       assert manager.getInstanceByName("foo") == null;
    }
    
@@ -51,9 +47,6 @@ public class InstantiationByNameTest extends AbstractTest
       manager.addBean(codBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
-      
-      ResolutionManager resolutionManager = manager.getResolutionManager();
-      resolutionManager.addInjectionPoint(whiteScottishFishField);
       
       manager.getInstanceByName("whitefish");
    }

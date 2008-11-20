@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.webbeans.AmbiguousDependencyException;
 import javax.webbeans.BindingType;
 import javax.webbeans.ContextNotActiveException;
+import javax.webbeans.Dependent;
 import javax.webbeans.DeploymentException;
 import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Observer;
@@ -41,12 +42,21 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.util.Reflections;
 
+/**
+ * Implementation of the Web Beans Manager.
+ * 
+ * Essentially a singleton for registering Beans, Contexts, Observers, 
+ * Interceptors etc. as well as providing resolution
+ * 
+ * @author Pete Muir
+ *
+ */
 public class ManagerImpl implements Manager
 {
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
-   private ModelManager modelManager;
+   private MetaDataCache metaDataCache;
    private EventBus eventBus;
-   private ResolutionManager resolutionManager;
+   private Resolver resolver;
    private ContextMap contextMap;
    private ProxyPool proxyPool;
    private List<Bean<?>> beans;
@@ -55,27 +65,34 @@ public class ManagerImpl implements Manager
 
    public ManagerImpl()
    {
-      this.modelManager = new ModelManager();
+      this.metaDataCache = new MetaDataCache();
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
       this.eventBus = new EventBus();
-      this.resolutionManager = new ResolutionManager(this);
+      this.resolver = new Resolver(this);
       this.proxyPool = new ProxyPool(this);
       this.decorators = new HashSet<Decorator>();
       this.interceptors = new HashSet<Interceptor>();
-      initEnabledDeploymentTypes(null);
+      initEnabledDeploymentTypes();
       initContexts();
-      addStandardBeans();
+      initStandardBeans();
    }
    
-   protected void addStandardBeans()
+   /**
+    * Add any beans provided by the Web Beans RI to the registry
+    */
+   protected void initStandardBeans()
    {
       addBean( new SimpleBean<DefaultEnterpriseBeanLookup>( DefaultEnterpriseBeanLookup.class, this ) );
    }
 
+   /**
+    * Set up the enabled deployment types, if none are specified by the user,
+    * the default @Production and @Standard are used
+    */
    protected void initEnabledDeploymentTypes(Class<? extends Annotation> ... enabledDeploymentTypes)
    {
       this.enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
-      if (enabledDeploymentTypes == null)
+      if (enabledDeploymentTypes.length == 0)
       {
          this.enabledDeploymentTypes.add(0, Standard.class);
          this.enabledDeploymentTypes.add(1, Production.class);
@@ -93,6 +110,11 @@ public class ManagerImpl implements Manager
       }
    }
 
+   /**
+    * Set up the contexts. By default, the built in contexts are set up, but a
+    * mock ManagerImpl may override this method to allow tests to set up 
+    * other contexts
+    */
    protected void initContexts(Context... contexts)
    {
       this.contextMap = new ContextMap();
@@ -112,63 +134,78 @@ public class ManagerImpl implements Manager
       }
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#addBean(javax.webbeans.manager.Bean)
+    */
    public Manager addBean(Bean<?> bean)
    {
       if (beans.contains(bean))
       {
          return this;
       }
-      getResolutionManager().clear();
+      resolver.clear();
       beans.add(bean);
       return this;
    }
 
-//   public <T> void removeObserver(Observer<T> observer)
-//   {
-//
-//   }
-
+   /**
+    * Resolve the disposal method for the given producer method
+    * @param <T>
+    * @param apiType
+    * @param bindingTypes
+    * @return
+    */
    public <T> Set<AnnotatedMethod<Object>> resolveDisposalMethods(Class<T> apiType, Annotation... bindingTypes)
    {
       return new HashSet<AnnotatedMethod<Object>>();
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#resolveObservers(java.lang.Object, java.lang.annotation.Annotation[])
+    */
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
    {
       return (Set<Observer<T>>) eventBus.getObservers(event, bindings);
    }
 
+   /**
+    * A strongly ordered list of enabled deployment types
+    */
    public List<Class<? extends Annotation>> getEnabledDeploymentTypes()
    {
       return enabledDeploymentTypes;
    }
-
-   public ModelManager getModelManager()
+   
+   public MetaDataCache getMetaDataCache()
    {
-      return this.modelManager;
+      return this.metaDataCache;
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#resolveByType(java.lang.Class, java.lang.annotation.Annotation[])
+    */
    public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindingTypes)
    {
       return resolveByType(new AnnotatedClassImpl<T>(type, type, bindingTypes), bindingTypes);
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#resolveByType(javax.webbeans.TypeLiteral, java.lang.annotation.Annotation[])
+    */
    public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> type, Annotation... bindingTypes)
    {
       return resolveByType(new AnnotatedClassImpl<T>(type.getRawType(), type.getType(), bindingTypes), bindingTypes);
    }
    
+   /**
+    * Check the resolution request is valid, and then ask the resolver to 
+    * perform the resolution
+    */
    public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, Annotation... bindingTypes)
-   {
-      checkBindingAnnotations(element, bindingTypes);
-      return getResolutionManager().get(element);
-   }
-   
-   private void checkBindingAnnotations(AnnotatedItem<?, ?> element, Annotation... bindingTypes)
    {
       for (Annotation annotation : element.getAnnotations())
       {
-         if (!modelManager.getBindingTypeModel(annotation.annotationType()).isValid())
+         if (!metaDataCache.getBindingTypeModel(annotation.annotationType()).isValid())
          {
             throw new IllegalArgumentException("Not a binding type " + annotation);
          }
@@ -177,11 +214,7 @@ public class ManagerImpl implements Manager
       {
          throw new DuplicateBindingTypeException(element.toString());
       }
-   }
-
-   public ResolutionManager getResolutionManager()
-   {
-      return resolutionManager;
+      return resolver.get(element);
    }
 
    /**
@@ -192,16 +225,22 @@ public class ManagerImpl implements Manager
     */
    public Manager setBeans(Set<AbstractBean<?, ?>> beans) {
       this.beans = new CopyOnWriteArrayList<Bean<?>>(beans);
-      getResolutionManager().clear();
-      addStandardBeans();
+      resolver.clear();
+      initStandardBeans();
       return this;
    }
    
+   /**
+    * The beans registered with the Web Bean manager
+    */
    public List<Bean<?>> getBeans()
    {
       return beans;
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#addContext(javax.webbeans.manager.Context)
+    */
    public Manager addContext(Context context)
    {
       List<Context> contexts = contextMap.get(context.getScopeType());
@@ -214,24 +253,36 @@ public class ManagerImpl implements Manager
       return this;
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#addDecorator(javax.webbeans.manager.Decorator)
+    */
    public Manager addDecorator(Decorator decorator)
    {
       decorators.add(decorator);
       return this;
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#addInterceptor(javax.webbeans.manager.Interceptor)
+    */
    public Manager addInterceptor(Interceptor interceptor)
    {
       interceptors.add(interceptor);
       return this;
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#addObserver(javax.webbeans.Observer, java.lang.Class, java.lang.annotation.Annotation[])
+    */
    public <T> Manager addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
       this.eventBus.addObserver(observer, eventType, bindings);
       return this;
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#addObserver(javax.webbeans.Observer, javax.webbeans.TypeLiteral, java.lang.annotation.Annotation[])
+    */
    public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
       // TODO Using the eventType TypeLiteral<T>, the Class<T> object must be
@@ -240,6 +291,9 @@ public class ManagerImpl implements Manager
       return this;
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#fireEvent(java.lang.Object, java.lang.annotation.Annotation[])
+    */
    public void fireEvent(Object event, Annotation... bindings)
    {
       // Check the event object for template parameters which are not allowed by
@@ -255,6 +309,9 @@ public class ManagerImpl implements Manager
       this.eventBus.notifyObservers(observers, event);
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#getContext(java.lang.Class)
+    */
    public Context getContext(Class<? extends Annotation> scopeType)
    {
       List<Context> contexts = contextMap.get(scopeType);
@@ -281,12 +338,15 @@ public class ManagerImpl implements Manager
       return activeContexts.get(0);
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#getInstance(javax.webbeans.manager.Bean)
+    */
    public <T> T getInstance(Bean<T> bean)
    {
       try
       {
-         contextMap.getDependentContext().setActive(true);
-         if (getModelManager().getScopeModel(bean.getScopeType()).isNormal())
+         contextMap.getBuiltInContext(Dependent.class).setActive(true);
+         if (getMetaDataCache().getScopeModel(bean.getScopeType()).isNormal())
          {
             return (T) proxyPool.getClientProxy(bean);
          }
@@ -297,10 +357,13 @@ public class ManagerImpl implements Manager
       }
       finally
       {
-         contextMap.getDependentContext().setActive(false);
+         contextMap.getBuiltInContext(Dependent.class).setActive(false);
       }
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#getInstanceByName(java.lang.String)
+    */
    public Object getInstanceByName(String name)
    {
       Set<Bean<?>> beans = resolveByName(name);
@@ -318,16 +381,27 @@ public class ManagerImpl implements Manager
       }
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#getInstanceByType(java.lang.Class, java.lang.annotation.Annotation[])
+    */
    public <T> T getInstanceByType(Class<T> type, Annotation... bindingTypes)
    {
       return getInstanceByType(new AnnotatedClassImpl<T>(type, type, bindingTypes), bindingTypes);
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#getInstanceByType(javax.webbeans.TypeLiteral, java.lang.annotation.Annotation[])
+    */
    public <T> T getInstanceByType(TypeLiteral<T> type, Annotation... bindingTypes)
    {
       return getInstanceByType(new AnnotatedClassImpl<T>(type.getRawType(), type.getType(), bindingTypes), bindingTypes);
    }
 
+   /**
+    * Resolve an instance, verify that the resolved bean can be instantiated,
+    * and return
+    * 
+    */
    public <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindingTypes)
    {
       Set<Bean<T>> beans = resolveByType(element, bindingTypes);
@@ -342,7 +416,7 @@ public class ManagerImpl implements Manager
       else
       {
          Bean<T> bean = beans.iterator().next();
-         if (getModelManager().getScopeModel(bean.getScopeType()).isNormal() && !element.isProxyable())
+         if (getMetaDataCache().getScopeModel(bean.getScopeType()).isNormal() && !element.isProxyable())
          {
             throw new UnproxyableDependencyException(element + "Unable to proxy");
          }
@@ -353,12 +427,18 @@ public class ManagerImpl implements Manager
       }
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#removeObserver(javax.webbeans.Observer, java.lang.Class, java.lang.annotation.Annotation[])
+    */
    public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
       this.eventBus.removeObserver(observer, eventType, bindings);
       return this;
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#removeObserver(javax.webbeans.Observer, javax.webbeans.TypeLiteral, java.lang.annotation.Annotation[])
+    */
    public <T> Manager removeObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
       // TODO The Class<T> for the event type must be retrieved from the
@@ -367,21 +447,39 @@ public class ManagerImpl implements Manager
       return this;
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#resolveByName(java.lang.String)
+    */
    public Set<Bean<?>> resolveByName(String name)
    {
-      return getResolutionManager().get(name);
+      return resolver.get(name);
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#resolveDecorators(java.util.Set, java.lang.annotation.Annotation[])
+    */
    public List<Decorator> resolveDecorators(Set<Class<?>> types, Annotation... bindingTypes)
    {
       // TODO Auto-generated method stub
       return null;
    }
 
+   /**
+    * @see javax.webbeans.manager.Manager#resolveInterceptors(javax.webbeans.manager.InterceptionType, java.lang.annotation.Annotation[])
+    */
    public List<Interceptor> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings)
    {
       // TODO Auto-generated method stub
       return null;
+   }
+   
+   /**
+    * Get the web bean resolver
+    * @return
+    */
+   public Resolver getResolver()
+   {
+      return resolver;
    }
 
 }

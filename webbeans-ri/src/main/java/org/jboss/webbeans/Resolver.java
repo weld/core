@@ -1,6 +1,7 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,9 +21,19 @@ import org.jboss.webbeans.util.ListComparator;
 
 import com.google.common.collect.ForwardingMap;
 
-public class ResolutionManager
+/**
+ * Implementation of Web Beans type safe and name based bean resolution
+ * @author Pete Muir
+ *
+ */
+public class Resolver
 {
 
+   /**
+    * Extension of an element which bases equality not only on type, but also
+    * on binding type
+    *
+    */
    private abstract class ResolvableAnnotatedItem<T, S> extends ForwardingAnnotatedItem<T, S>
    {
       
@@ -52,6 +63,9 @@ public class ResolutionManager
    
    // TODO Why can't we generify Set?
    
+   /**
+    * Type safe map for caching annotation metadata
+    */
    @SuppressWarnings("unchecked")
    private class AnnotatedItemMap extends ForwardingMap<AnnotatedItem<?, ?>, Set>
    {
@@ -77,7 +91,6 @@ public class ResolutionManager
 
    }
 
-   
    private AnnotatedItemMap resolvedInjectionPoints;
    private Set<AnnotatedItem<?, ?>> injectionPoints;
    
@@ -85,21 +98,25 @@ public class ResolutionManager
    
    private ManagerImpl manager;
    
-   public ResolutionManager(ManagerImpl manager)
+   public Resolver(ManagerImpl manager)
    {
+      this.manager = manager;
       this.injectionPoints = new HashSet<AnnotatedItem<?,?>>();
       this.resolvedInjectionPoints = new AnnotatedItemMap();
-      this.manager = manager;
    }
    
-   public <T, S> void addInjectionPoint(final AnnotatedItem<T, S> element)
+   /**
+    * Add multiple injection points for later resolving using 
+    * {@link #registerInjectionPoint(AnnotatedItem)}. Useful during bootstrap.
+    */
+   public void addInjectionPoints(Collection<AnnotatedItem<?, ?>> elements)
    {
-      injectionPoints.add(element);
+      injectionPoints.addAll(elements);
    }
    
    private <T, S> void registerInjectionPoint(final AnnotatedItem<T, S> element)
    {
-      Set<Bean<?>> beans = retainHighestPrecedenceBeans(getMatchingBeans(element, manager.getBeans(), manager.getModelManager()), manager.getEnabledDeploymentTypes());
+      Set<Bean<?>> beans = retainHighestPrecedenceBeans(getMatchingBeans(element, manager.getBeans(), manager.getMetaDataCache()), manager.getEnabledDeploymentTypes());
       if (element.getType().isPrimitive())
       {
          for (Bean<?> bean : beans)
@@ -122,12 +139,19 @@ public class ResolutionManager
       }, beans);
    }
    
+   /**
+    * Reset all cached injection points. You must reset all cached injection
+    * points when you add a bean to the manager
+    */
    public void clear()
    {
       resolvedInjectionPoints = new AnnotatedItemMap();
       resolvedNames = new HashMap<String, Set<Bean<?>>>();
    }
    
+   /**
+    * Resolve all injection points added using {@link #addInjectionPoints(Collection)}
+    */
    public void resolveInjectionPoints()
    {
       for (AnnotatedItem<?, ?> injectable : injectionPoints)
@@ -136,6 +160,9 @@ public class ResolutionManager
       }
    }
    
+   /**
+    * Get the possible beans for the given element
+    */
    public <T, S> Set<Bean<T>> get(final AnnotatedItem<T, S> key)
    {
       Set<Bean<T>> beans = new HashSet<Bean<T>>();
@@ -168,6 +195,9 @@ public class ResolutionManager
       return Collections.unmodifiableSet(beans);
    }
    
+   /**
+    * Get the possible beans for the given name
+    */
    public Set<Bean<?>> get(String name)
    {
       Set<Bean<?>> beans;
@@ -223,12 +253,12 @@ public class ResolutionManager
       }
    }
    
-   private static Set<Bean<?>> getMatchingBeans(AnnotatedItem<?, ?> element, List<Bean<?>> beans, ModelManager modelManager)
+   private static Set<Bean<?>> getMatchingBeans(AnnotatedItem<?, ?> element, List<Bean<?>> beans, MetaDataCache metaDataCache)
    {
       Set<Bean<?>> resolvedBeans = new HashSet<Bean<?>>();
       for (Bean<?> bean : beans)
       {
-         if (element.isAssignableFrom(bean.getTypes()) && containsAllBindingBindingTypes(element, bean.getBindingTypes(), modelManager))
+         if (element.isAssignableFrom(bean.getTypes()) && containsAllBindingBindingTypes(element, bean.getBindingTypes(), metaDataCache))
          {
             resolvedBeans.add(bean);
          }
@@ -236,11 +266,11 @@ public class ResolutionManager
       return resolvedBeans;
    }
    
-   private static boolean containsAllBindingBindingTypes(AnnotatedItem<?, ?> element, Set<Annotation> bindingTypes, ModelManager modelManager)
+   private static boolean containsAllBindingBindingTypes(AnnotatedItem<?, ?> element, Set<Annotation> bindingTypes, MetaDataCache metaDataCache)
    {
       for (Annotation bindingType : element.getBindingTypes())
       {
-         BindingTypeModel<?> bindingTypeModel = modelManager.getBindingTypeModel(bindingType.annotationType());
+         BindingTypeModel<?> bindingTypeModel = metaDataCache.getBindingTypeModel(bindingType.annotationType());
          if (bindingTypeModel.getNonBindingTypes().size() > 0)
          {
             boolean matchFound = false;

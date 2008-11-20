@@ -12,7 +12,6 @@ import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.TypeLiteral;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.ResolutionManager;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedClass;
@@ -67,7 +66,7 @@ public class ResolutionByTypeTest extends AbstractTest
       AnnotatedField<Tuna> tunaField = new AnnotatedFieldImpl<Tuna>(FishFarm.class.getDeclaredField("tuna"), fishFarmClass);
       Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
       manager.addBean(tunaBean);
-      Set<Bean<Tuna>> possibleTargets = manager.getResolutionManager().get(tunaField);
+      Set<Bean<Tuna>> possibleTargets = manager.resolveByType(tunaField);
       assert possibleTargets.size() == 1;
       assert possibleTargets.contains(tunaBean);
    }
@@ -94,7 +93,7 @@ public class ResolutionByTypeTest extends AbstractTest
       manager.addBean(codBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
-      Set<Bean<ScottishFish>> possibleTargets = manager.getResolutionManager().get(whiteScottishFishField);
+      Set<Bean<ScottishFish>> possibleTargets = manager.resolveByType(whiteScottishFishField);
       assert possibleTargets.size() == 2;
       assert possibleTargets.contains(codBean);
       assert possibleTargets.contains(soleBean);
@@ -112,7 +111,7 @@ public class ResolutionByTypeTest extends AbstractTest
       manager.addBean(codBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
-      Set<Bean<Animal>> possibleTargets = manager.getResolutionManager().get(whiteChunkyFishField); 
+      Set<Bean<Animal>> possibleTargets = manager.resolveByType(whiteChunkyFishField); 
       assert possibleTargets.size() == 1;
       assert possibleTargets.contains(codBean);
    }
@@ -125,7 +124,7 @@ public class ResolutionByTypeTest extends AbstractTest
       Bean<Haddock> haddockBean = createSimpleBean(Haddock.class, manager);
       manager.addBean(seaBassBean);
       manager.addBean(haddockBean);
-      Set<Bean<Animal>> possibleTargets = manager.getResolutionManager().get(animalField);
+      Set<Bean<Animal>> possibleTargets = manager.resolveByType(animalField);
       assert possibleTargets.size() == 2;
       assert possibleTargets.contains(seaBassBean);
       assert possibleTargets.contains(haddockBean);
@@ -200,10 +199,6 @@ public class ResolutionByTypeTest extends AbstractTest
       manager.addBean(scottishFishFarmerBean);
       manager.addBean(farmerBean);
       
-      ResolutionManager resolutionManager = manager.getResolutionManager();
-      resolutionManager.addInjectionPoint(scottishFishFarmerField);
-      resolutionManager.resolveInjectionPoints();
-      
       assert manager.resolveByType(new TypeLiteral<Farmer<ScottishFish>>(){}).size() == 1;
       assert manager.resolveByType(new TypeLiteral<Farmer<ScottishFish>>(){}).contains(scottishFishFarmerBean);
    }
@@ -235,10 +230,6 @@ public class ResolutionByTypeTest extends AbstractTest
       manager.addBean(plaiceBean);
       manager.addBean(codBean);
       manager.addBean(soleBean);
-      
-      ResolutionManager resolutionManager = manager.getResolutionManager();
-      resolutionManager.addInjectionPoint(whiteFishField);
-      resolutionManager.resolveInjectionPoints();
 
       assert manager.resolveByType(Animal.class, new AnnotationLiteral<Whitefish>() {}).size() == 1;
       assert manager.resolveByType(Animal.class, new AnnotationLiteral<Whitefish>() {}).contains(plaiceBean);
@@ -255,10 +246,6 @@ public class ResolutionByTypeTest extends AbstractTest
       manager.addBean(halibutBean);
       manager.addBean(roundWhiteFishBean);
       manager.addBean(soleBean);
-      
-      ResolutionManager resolutionManager = manager.getResolutionManager();
-      resolutionManager.addInjectionPoint(veryExpensiveWhitefishField);
-      resolutionManager.resolveInjectionPoints();
       
       Set<Bean<Animal>> beans = manager.resolveByType(Animal.class, new ExpensiveAnnotationLiteral() 
       {
@@ -289,10 +276,6 @@ public class ResolutionByTypeTest extends AbstractTest
       manager.addBean(plaiceBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
-      
-      ResolutionManager resolutionManager = manager.getResolutionManager();
-      resolutionManager.addInjectionPoint(whiteScottishFishField);
-      resolutionManager.resolveInjectionPoints();
       
       assert manager.resolveByType(Tuna.class, new CurrentAnnotationLiteral()).size() == 0;
    }

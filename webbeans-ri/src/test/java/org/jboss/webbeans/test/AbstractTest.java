@@ -47,14 +47,14 @@ public class AbstractTest
    
    protected void addStereotypes()
    {
-      manager.getModelManager().addStereotype(new StereotypeModel<Decorator>(Decorator.class));
-      manager.getModelManager().addStereotype(new StereotypeModel<Interceptor>(Interceptor.class));
-      manager.getModelManager().addStereotype(new StereotypeModel<AnimalStereotype>(AnimalStereotype.class));
-      manager.getModelManager().addStereotype(new StereotypeModel<HornedMammalStereotype>(HornedMammalStereotype.class));
-      manager.getModelManager().addStereotype(new StereotypeModel<MammalStereotype>(MammalStereotype.class));
-      manager.getModelManager().addStereotype(new StereotypeModel<FishStereotype>(FishStereotype.class));
-      manager.getModelManager().addStereotype(new StereotypeModel<RiverFishStereotype>(RiverFishStereotype.class));
-      manager.getModelManager().addStereotype(new StereotypeModel<RequestScopedAnimalStereotype>(RequestScopedAnimalStereotype.class));
+      manager.getMetaDataCache().addStereotype(new StereotypeModel<Decorator>(Decorator.class));
+      manager.getMetaDataCache().addStereotype(new StereotypeModel<Interceptor>(Interceptor.class));
+      manager.getMetaDataCache().addStereotype(new StereotypeModel<AnimalStereotype>(AnimalStereotype.class));
+      manager.getMetaDataCache().addStereotype(new StereotypeModel<HornedMammalStereotype>(HornedMammalStereotype.class));
+      manager.getMetaDataCache().addStereotype(new StereotypeModel<MammalStereotype>(MammalStereotype.class));
+      manager.getMetaDataCache().addStereotype(new StereotypeModel<FishStereotype>(FishStereotype.class));
+      manager.getMetaDataCache().addStereotype(new StereotypeModel<RiverFishStereotype>(RiverFishStereotype.class));
+      manager.getMetaDataCache().addStereotype(new StereotypeModel<RequestScopedAnimalStereotype>(RequestScopedAnimalStereotype.class));
    }
 
 }

@@ -115,7 +115,7 @@ public class DeploymentTypeTest extends AbstractTest
    @Test @SpecAssertion(section={"2.5.6", "2.5.7"})
    public void testDefaultEnabledDeploymentTypes()
    {
-      manager.setEnabledDeploymentTypes(null);
+      manager.setEnabledDeploymentTypes();
       assert manager.getEnabledDeploymentTypes().size() == 2;
       assert manager.getEnabledDeploymentTypes().get(0).equals(Standard.class);
       assert manager.getEnabledDeploymentTypes().get(1).equals(Production.class);
