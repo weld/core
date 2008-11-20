@@ -9,9 +9,11 @@ import java.util.Set;
 
 import javax.webbeans.BindingType;
 import javax.webbeans.Current;
+import javax.webbeans.Dependent;
 import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Event;
 import javax.webbeans.Observer;
+import javax.webbeans.Standard;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.util.Reflections;
@@ -24,10 +26,11 @@ import org.jboss.webbeans.util.Reflections;
  * @author David Allen
  * 
  */
+@Standard
+@Dependent
 public class EventImpl<T> implements Event<T>
 {
    private Collection<? extends Annotation> eventBindings;
-   private Class<T> eventType;
 
    // The current WB manager
    @Current
@@ -69,6 +72,7 @@ public class EventImpl<T> implements Event<T>
             .fireEvent(event, eventBindings.toArray(new Annotation[0]));
    }
 
+   @SuppressWarnings("unchecked")
    public void observe(Observer<T> observer, Annotation... bindings)
    {
       // Register the observer with the web beans manager
