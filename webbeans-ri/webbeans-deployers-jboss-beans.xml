@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Web Beans RI + JBossAS integration
+-->
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+  <!-- Web Beans deployer -->
+  <bean name="WebBeansDeployer" class="org.jboss.webbeans.integration.jbossas.WebBeanDiscoveryDeployer"/>
+
+</deployment>

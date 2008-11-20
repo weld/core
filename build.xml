@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<project name="JBoss5DeployerInstall" default="install" basedir="." xmlns:artifact="urn:maven-artifact-ant">
+	
+	<path id="maven-ant-tasks.classpath" path="lib/maven-ant-tasks.jar" />
+	<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpathref="maven-ant-tasks.classpath" />
+	
+	<target name="install">
+		
+		<fail unless="jboss.home" message="Please pass in -Djboss.home=..."/>
+		
+		<mkdir dir="target/webbeans.deployer"/>
+		
+		<artifact:dependencies filesetId="jboss5.deployer.fileset" versionsId="jboss5.deployer.versions">
+         <dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-jbossas" version="5.2.0-SNAPSHOT"/>
+      </artifact:dependencies>
+		
+		<artifact:dependencies filesetId="google.collections.fileset">
+         <dependency groupId="com.google.collections" artifactId="google-collections" version="0.8"/>
+      </artifact:dependencies>
+	   
+		<copy todir="target/webbeans.deployer">
+			<fileset refid="jboss5.deployer.fileset"/>
+			<flattenmapper />
+		</copy>
+			
+	   <mkdir dir="target/webbeans.deployer/META-INF" />
+		
+		<copy todir="target/webbeans.deployer/META-INF">
+			<fileset dir="${basedir}/webbeans-ri">
+            <include name="webbeans-deployers-jboss-beans.xml"/>
+         </fileset>
+		</copy>
+		
+		<copy todir="${jboss.home}/server/default/deployers">
+			<fileset dir="target">
+				<include name="webbeans.deployer/**" />
+			</fileset>
+		</copy>
+		
+	    <copy todir="${jboss.home}/server/default/lib">
+         <fileset dir="webbeans-ri/target">
+         	<include name="webbeans-ri*.jar" />
+         </fileset>
+	    	<fileset dir="webbeans-api/target">
+            <include name="webbeans-api*.jar" />
+         </fileset>
+	    	<fileset refid="google.collections.fileset" />
+	    	<flattenmapper />
+       </copy>
+		
+	</target>
+	
+</project>

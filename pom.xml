@@ -154,17 +154,16 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-
-         <executions>
-          <execution>
-            <id>attach-sources</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-        </plugin>
+            <executions>
+               <execution>
+                  <id>attach-sources</id>
+                  <phase>verify</phase>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
       </plugins>
       <pluginManagement>
          <plugins>
@@ -181,6 +180,22 @@
                <groupId>org.codehaus.mojo</groupId>
                <artifactId>cobertura-maven-plugin</artifactId>
                <version>2.2</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-jar-plugin</artifactId>
+               <configuration>
+                  <archive>
+                     <manifest>
+                        <addDefaultImplementationEntries>
+                           true
+                        </addDefaultImplementationEntries>
+                        <addDefaultSpecificationEntries>
+                           true
+                        </addDefaultSpecificationEntries>
+                     </manifest>
+                  </archive>
+               </configuration>
             </plugin>
          </plugins>
       </pluginManagement>

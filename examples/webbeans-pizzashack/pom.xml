@@ -15,6 +15,16 @@
    <packaging>war</packaging>
    <name>Web Beans Examples: Pizzashack</name>
    
+   <pluginRepositories>
+        <pluginRepository>
+            <id>codehaus snapshot repository</id>
+            <url>http://snapshots.repository.codehaus.org/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+   
    <dependencies>
       <dependency>
             <groupId>org.testng</groupId>
