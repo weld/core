@@ -1,18 +1,23 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-import javax.webbeans.Current;
 import javax.webbeans.Observer;
+
+import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.util.JNDI;
 
 /**
  * The event bus is where observers are registered and events are fired.
@@ -22,64 +27,62 @@ import javax.webbeans.Observer;
  */
 public class EventBus
 {
-   private final Map<Class<?>, ArrayList<EventObserver<?>>> registeredObservers;
-   
-   @Current
+   private ManagerImpl manager;
+   private final Map<Class<?>, CopyOnWriteArrayList<EventObserver<?>>> registeredObservers;
    private TransactionManager transactionManager;
 
    /**
     * Initializes a new instance of the EventBus. This includes looking up the
     * transaction manager which is needed to defer events till the end of a
-    * transaction. 
+    * transaction.
     */
-   public EventBus()
+   public EventBus(ManagerImpl manager)
    {
-      registeredObservers = new HashMap<Class<?>, ArrayList<EventObserver<?>>>();
+      this.manager = manager;
+      transactionManager = (TransactionManager) JNDI.lookup("java:/TransactionManager");
+      registeredObservers = new ConcurrentHashMap<Class<?>, CopyOnWriteArrayList<EventObserver<?>>>();
    }
 
    /**
     * Adds an observer to the event bus so that it receives event notifications.
     * 
-    * @param observer
-    *           The observer that should receive events
+    * @param observer The observer that should receive events
     */
    public <T> void addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
-      ArrayList<EventObserver<?>> l = registeredObservers.get(eventType);
-      if (l == null)
+      CopyOnWriteArrayList<EventObserver<?>> eventTypeObservers = registeredObservers.get(eventType);
+      if (eventTypeObservers == null)
       {
-         l = new ArrayList<EventObserver<?>>();
-         registeredObservers.put(eventType, l);
+         eventTypeObservers = new CopyOnWriteArrayList<EventObserver<?>>();
+         registeredObservers.put(eventType, eventTypeObservers);
       }
       EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, bindings);
-      if (!l.contains(eventObserver))
-         l.add(eventObserver);
+      if (!eventTypeObservers.contains(eventObserver))
+      {
+         eventTypeObservers.add(eventObserver);
+      }
    }
 
    /**
     * Defers delivery of an event till the end of the currently active
     * transaction.
     * 
-    * @param container
-    *           The WebBeans container
-    * @param event
-    *           The event object to deliver
-    * @param observer
-    *           The observer to receive the event
+    * @param event The event object to deliver
+    * @param observer The observer to receive the event
     * @throws SystemException
     * @throws IllegalStateException
     * @throws RollbackException
     */
-   public <T> void deferEvent(T event, Observer<T> observer)
-         throws SystemException, IllegalStateException, RollbackException
+   public <T> void deferEvent(T event, Observer<T> observer) throws SystemException, IllegalStateException, RollbackException
    {
       if (transactionManager != null)
       {
          // Get the current transaction associated with the thread
-         Transaction t = transactionManager.getTransaction();
-         if (t != null)
-            t.registerSynchronization(new DeferredEventNotification<T>(
-                  event, observer));
+         Transaction transaction = transactionManager.getTransaction();
+         if (transaction != null)
+         {
+            transaction.registerSynchronization(new DeferredEventNotification<T>(event, observer));
+         }
       }
    }
 
@@ -87,27 +90,29 @@ public class EventBus
     * Resolves the list of observers to be notified for a given event and
     * optional event bindings.
     * 
-    * @param event
-    *           The event object
-    * @param bindings
-    *           Optional event bindings
+    * @param event The event object
+    * @param bindings Optional event bindings
     * @return A set of Observers
     */
    @SuppressWarnings("unchecked")
    public <T> Set<Observer<T>> getObservers(T event, Annotation... bindings)
    {
-      Set<Observer<T>> results = new HashSet<Observer<T>>();
+      Set<Observer<T>> interestedObservers = new HashSet<Observer<T>>();
       for (EventObserver<?> observer : registeredObservers.get(event.getClass()))
       {
          if (observer.isObserverInterested(bindings))
-            results.add((Observer<T>) observer.getObserver());
+         {
+            interestedObservers.add((Observer<T>) observer.getObserver());
+         }
       }
-      return results;
+      return interestedObservers;
    }
 
    /**
-    * Notifies each observer immediately of the event unless a transaction is currently in
-    * progress, in which case a deferred event is created and registered.
+    * Notifies each observer immediately of the event unless a transaction is
+    * currently in progress, in which case a deferred event is created and
+    * registered.
+    * 
     * @param <T>
     * @param observers
     * @param event
@@ -121,7 +126,8 @@ public class EventBus
          try
          {
             transaction = transactionManager.getTransaction();
-         } catch (SystemException e)
+         }
+         catch (SystemException e)
          {
          }
          if (transaction != null)
@@ -129,15 +135,20 @@ public class EventBus
             try
             {
                deferEvent(event, observer);
-            } catch (IllegalStateException e)
-            {
-            } catch (SystemException e)
-            {
-            } catch (RollbackException e)
-            {
-               // TODO If transaction is being rolled back, perhaps notification should terminate now
             }
-         } else
+            catch (IllegalStateException e)
+            {
+            }
+            catch (SystemException e)
+            {
+            }
+            catch (RollbackException e)
+            {
+               // TODO If transaction is being rolled back, perhaps notification
+               // should terminate now
+            }
+         }
+         else
          {
             // Notify observer immediately in the same context as this method
             observer.notify(event);
@@ -148,29 +159,35 @@ public class EventBus
    /**
     * Removes an observer from the event bus.
     * 
-    * @param observer
-    *           The observer to remove
+    * @param observer The observer to remove
     */
    public <T> void removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
-      ArrayList<EventObserver<?>> observers = registeredObservers.get(eventType);
-      for (int i = 0; i < observers.size(); i++)
+      List<EventObserver<?>> observers = registeredObservers.get(eventType);
+      for (Iterator<EventObserver<?>> i = observers.iterator(); i.hasNext();)
       {
-         EventObserver<?> eventObserver = observers.get(i);
-         if (eventObserver.getObserver().equals(observer))
+         if (observer.equals(i.next()))
          {
-            observers.remove(i);
+            i.remove();
             break;
          }
       }
    }
 
-   /**
-    * TODO Remove this once injection of the transaction manager works.
-    * @param transactionManager the TransactionManager to set
-    */
-   public final void setTransactionManager(TransactionManager transactionManager)
+
+   @Override
+   public String toString()
    {
-      this.transactionManager = transactionManager;
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("Registered observers: " + registeredObservers.size() + "\n");
+      for (Entry<Class<?>, CopyOnWriteArrayList<EventObserver<?>>> entry : registeredObservers.entrySet())
+      {
+         buffer.append(entry.getKey().getName() + ":\n");
+         for (EventObserver<?> observer : entry.getValue())
+         {
+            buffer.append("  " + observer.toString());
+         }
+      }
+      return buffer.toString();
    }
 }

@@ -161,5 +161,12 @@ public class MetaDataCache
    {
       return ejbMetaDataMap.putIfAbsent(clazz);
    }
+   
+   @Override
+   public String toString() {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("FIX ME");
+      return buffer.toString();
+   }
 
 }

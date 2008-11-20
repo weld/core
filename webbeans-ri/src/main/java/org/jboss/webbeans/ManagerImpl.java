@@ -85,7 +85,7 @@ public class ManagerImpl implements Manager
    {
       this.metaDataCache = new MetaDataCache();
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
-      this.eventBus = new EventBus();
+      this.eventBus = new EventBus(this);
       this.resolver = new Resolver(this);
       this.proxyPool = new ProxyPool(this);
       this.decorators = new HashSet<Decorator>();
@@ -213,7 +213,6 @@ public class ManagerImpl implements Manager
       return enabledDeploymentTypes;
    }
 
-   
    /**
     * Returns the metadata cache
     * 
@@ -262,7 +261,7 @@ public class ManagerImpl implements Manager
     * 
     * @param element The item to resolve
     * @param bindingTypes The binding types to match
-    * @return The set of matching beans 
+    * @return The set of matching beans
     */
    public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, Annotation... bindingTypes)
    {
@@ -657,6 +656,53 @@ public class ManagerImpl implements Manager
    public Resolver getResolver()
    {
       return resolver;
+   }
+
+   @Override
+   public String toString()
+   {
+      StringBuffer buffer = new StringBuffer();
+      
+      buffer.append("Enabled deployment types:\n");
+      for (Class<? extends Annotation> deploymentType : enabledDeploymentTypes)
+      {
+         buffer.append(deploymentType.getName() + "\n");
+      }
+      
+      buffer.append("Event bus:\n");
+      buffer.append(eventBus.toString());
+      
+      buffer.append("Metadata cache:\n");
+      buffer.append(metaDataCache.toString());
+      
+      buffer.append("Event bus:\n");
+      buffer.append(eventBus.toString());
+      
+      buffer.append("Resolver:\n");
+      buffer.append(resolver.toString());
+      
+      buffer.append("Context map:\n");
+      buffer.append(contextMap.toString());
+
+      buffer.append("Proxy pool:\n");
+      buffer.append(proxyPool.toString());
+      
+      buffer.append("Registered beans: " + beans.size() + "\n");
+      for (Bean<?> bean : beans) {
+         buffer.append(bean.toString());
+      }
+      
+      buffer.append("Registered decorators: " + decorators.size() + "\n");
+      for (Decorator decorator : decorators) {
+         buffer.append(decorator.toString());
+      }
+      
+      buffer.append("Registered interceptors: " + interceptors.size() + "\n");
+      for (Interceptor interceptor : interceptors) {
+         buffer.append(interceptor.toString());
+      }
+      
+      return buffer.toString();
    }
 
 }

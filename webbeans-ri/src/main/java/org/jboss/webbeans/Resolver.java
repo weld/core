@@ -324,5 +324,12 @@ public class Resolver
       // TODO Auto-generated method stub
       return null;
    }
+   
+   @Override
+   public String toString() {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("FIX ME");
+      return buffer.toString();
+   }
 
 }
