@@ -1,10 +1,8 @@
 package org.jboss.webbeans.test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,7 +23,6 @@ import org.jboss.webbeans.test.beans.TarantulaProducer;
 import org.jboss.webbeans.test.beans.Tiger;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.ejb.model.valid.Hound;
-import org.jboss.webbeans.test.mock.MockBootstrap;
 import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
 import org.testng.annotations.Test;
 
@@ -187,24 +184,13 @@ public class BoostrapTest extends AbstractTest
    @Test(groups="bootstrap", expectedExceptions=IllegalStateException.class)
    public void testDiscoverFails()
    {
-      bootstrap = new MockBootstrap(manager)
-      {
-         
-         @Override
-         protected List<String> getWebBeanDiscoveryClassNames()
-         {
-            return new ArrayList<String>();
-         }
-         
-      };
-      bootstrap.discoverBeans();
+      bootstrap.boot(null);
    }
    
    @Test(groups="bootstrap")
    public void testDiscover()
    {
-      MockWebBeanDiscovery.webBeanClasses = new HashSet<Class<?>>(Arrays.asList(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class));
-      bootstrap.discoverBeans();
+      bootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class)), null, null));
       
       assert manager.getBeans().size() == 9;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();

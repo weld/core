@@ -12,12 +12,20 @@ import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 public class MockWebBeanDiscovery implements WebBeanDiscovery
 {
    
-   public static Set<Class<?>> webBeanClasses = new HashSet<Class<?>>();
+   private Set<Class<?>> webBeanClasses = new HashSet<Class<?>>();
 
-   public static Set<URL> webBeansXmlFiles = new HashSet<URL>();
+   private Set<URL> webBeansXmlFiles = new HashSet<URL>();
    
-   public static Map<Class<?>, EjbDescriptor<?>> ejbs = new HashMap<Class<?>, EjbDescriptor<?>>();
+   private Map<Class<?>, EjbDescriptor<?>> ejbs = new HashMap<Class<?>, EjbDescriptor<?>>();
    
+   public MockWebBeanDiscovery(Set<Class<?>> webBeanClasses, Set<URL> webBeansXmlFiles, Map<Class<?>, EjbDescriptor<?>> ejbs)
+   {
+      super();
+      this.webBeanClasses = webBeanClasses;
+      this.webBeansXmlFiles = webBeansXmlFiles;
+      this.ejbs = ejbs;
+   }
+
    public Iterable<Class<?>> discoverWebBeanClasses()
    {
       return webBeanClasses;

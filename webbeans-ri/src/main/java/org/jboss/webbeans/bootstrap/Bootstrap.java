@@ -6,7 +6,6 @@ import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -21,12 +20,11 @@ import org.jboss.webbeans.log.Logging;
 public class Bootstrap
 {
    
-   private LogProvider log = Logging.getLogProvider(Bootstrap.class);
+   public static String WEB_BEAN_DISCOVERY_PROPERTY_NAME = "org.jboss.webbeans.bootstrap.webBeanDiscovery";
    
-   private static String WEB_BEAN_DISCOVERY_PROPERTY_NAME = "org.jboss.webbeans.bootstrap.webBeanDiscovery";
+   private static LogProvider log = Logging.getLogProvider(Bootstrap.class);
    
    private ManagerImpl manager;
-   private DeploymentProperties deploymentProperties;
    
    public Bootstrap()
    {
@@ -36,51 +34,6 @@ public class Bootstrap
    protected Bootstrap(ManagerImpl manager)
    {
       this.manager = manager;
-      this.deploymentProperties = new DeploymentProperties(Thread.currentThread().getContextClassLoader());
-   }
-   
-   protected List<String> getWebBeanDiscoveryClassNames()
-   {
-      return deploymentProperties.getPropertyValues(WEB_BEAN_DISCOVERY_PROPERTY_NAME);
-   }
-   
-   public void discoverBeans()
-   {
-      WebBeanDiscovery webBeanDiscovery = null;
-      for (String className : getWebBeanDiscoveryClassNames())
-      {
-         Class<WebBeanDiscovery> webBeanDiscoveryClass = null;
-         try
-         {
-            webBeanDiscoveryClass = (Class<WebBeanDiscovery>) Class.forName(className);
-         }
-         catch (ClassNotFoundException e) 
-         {
-            log.debug("Unable to load WebBeanDiscovery provider " + className, e);
-         }
-         catch (NoClassDefFoundError e) {
-            log.warn("Unable to load WebBeanDiscovery provider " + className + " due classDependencyProblem", e);
-         }
-         
-         try
-         {
-            webBeanDiscovery = webBeanDiscoveryClass.newInstance();
-            break;
-         }
-         catch (InstantiationException e)
-         {
-            log.warn("Error creating WebBeanDiscovery provider" + className, e);
-         }
-         catch (IllegalAccessException e)
-         {
-            log.warn("Error creating WebBeanDiscovery provider" + className, e);
-         }
-      }
-      if (webBeanDiscovery == null)
-      {
-         throw new IllegalStateException("No WebBeanDiscovery provider found, you need to implement the org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery interface, and tell the RI to use it by specifying -D" + WEB_BEAN_DISCOVERY_PROPERTY_NAME + "=<classname>");
-      }
-      registerBeans(webBeanDiscovery.discoverWebBeanClasses());
    }
    
    /**
@@ -130,9 +83,49 @@ public class Bootstrap
             beans.add(producerMethodBean);
             manager.getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
          }
-         
+         log.info("Web Bean: " + bean);
       }
       return beans;
    }
+
+   public void boot(WebBeanDiscovery webBeanDiscovery)
+   {
+      log.info("Starting Web Beans RI " + getVersion());
+      if (webBeanDiscovery == null)
+      {
+         throw new IllegalStateException("No WebBeanDiscovery provider found, you need to implement the org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery interface, and tell the RI to use it by specifying -D" + Bootstrap.WEB_BEAN_DISCOVERY_PROPERTY_NAME + "=<classname>");
+      }
+      registerBeans(webBeanDiscovery.discoverWebBeanClasses());
+   }
+   
+   public static String getVersion()
+   {
+      Package pkg = Bootstrap.class.getPackage();
+      return pkg != null ? pkg.getImplementationVersion() : null;      
+   }
+   
+   
+   public static Set<Class<? extends WebBeanDiscovery>> getWebBeanDiscoveryClasses()
+   {
+      Set<Class<? extends WebBeanDiscovery>> webBeanDiscoveryClasses = new HashSet<Class<? extends WebBeanDiscovery>>();
+      for (String className : new DeploymentProperties(Thread.currentThread().getContextClassLoader()).getPropertyValues(WEB_BEAN_DISCOVERY_PROPERTY_NAME))
+      {
+         Class<WebBeanDiscovery> webBeanDiscoveryClass = null;
+         try
+         {
+            webBeanDiscoveryClasses.add((Class<WebBeanDiscovery>) Class.forName(className));
+         }
+         catch (ClassNotFoundException e) 
+         {
+            log.debug("Unable to load WebBeanDiscovery provider " + className, e);
+         }
+         catch (NoClassDefFoundError e) {
+            log.warn("Unable to load WebBeanDiscovery provider " + className + " due classDependencyProblem", e);
+         }
+      }
+      return webBeanDiscoveryClasses;
+   }
+   
+   
    
 }
