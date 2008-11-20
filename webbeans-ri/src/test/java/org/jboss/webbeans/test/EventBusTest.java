@@ -45,7 +45,7 @@ public class EventBusTest extends AbstractTest
    @Test(groups = "observerMethod")
    public void testAddObserver()
    {
-      EventBus eventBus = new EventBus();
+      EventBus eventBus = new EventBus(manager);
       Observer<DangerCall> observer = new AnObserver<DangerCall>();
       eventBus.addObserver(observer, DangerCall.class);
       DangerCall event = new DangerCall();
@@ -70,7 +70,7 @@ public class EventBusTest extends AbstractTest
    @Test(groups = "observerMethod")
    public void testRemoveObserver()
    {
-      EventBus eventBus = new EventBus();
+      EventBus eventBus = new EventBus(manager);
       Observer<DangerCall> observer = new AnObserver<DangerCall>();
       eventBus.addObserver(observer, DangerCall.class);
       eventBus.removeObserver(observer, DangerCall.class);
@@ -174,8 +174,7 @@ public class EventBusTest extends AbstractTest
          }
          
       };
-      EventBus eventBus = new EventBus();
-      eventBus.setTransactionManager(tm);
+      EventBus eventBus = new EventBus(manager);
       Observer<DangerCall> observer = new AnObserver<DangerCall>();
       try
       {
