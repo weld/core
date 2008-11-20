@@ -48,6 +48,7 @@ public class EventTest
       }
    }
 
+   @SuppressWarnings("unchecked")
    @BeforeMethod
    public void before() throws Exception
    {
@@ -107,7 +108,7 @@ public class EventTest
     * Tests the {@link Event#observe(javax.webbeans.Observer, Annotation...)}
     * method with a locally instantiated implementation.
     */
-   @Test(groups = {"observerMethod", "broken"})
+   @Test(groups = {"observerMethod"})
    @SpecAssertion(section = "7.6")
    public void testObserve()
    {
@@ -115,6 +116,7 @@ public class EventTest
       // event object
       Annotation[] annotations = new Annotation[] { new TameAnnotationLiteral() };
       EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>();
+      eventComponent.setEventType(DangerCall.class);
       eventComponent.setEventBindings(annotations);
       eventComponent.setManager(manager);
       Observer<DangerCall> observer = new AnObserver<DangerCall>();

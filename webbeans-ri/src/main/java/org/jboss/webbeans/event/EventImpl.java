@@ -1,7 +1,6 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -16,8 +15,6 @@ import javax.webbeans.Observer;
 import javax.webbeans.Standard;
 import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.util.Reflections;
-
 /**
  * Implementation of the {@link Event} interface used for the container provided
  * Web Bean to be injected for an observable event. See section 7.4 of the JSR
@@ -31,6 +28,7 @@ import org.jboss.webbeans.util.Reflections;
 public class EventImpl<T> implements Event<T>
 {
    private Collection<? extends Annotation> eventBindings;
+   private Class<T>                         eventType;
 
    // The current WB manager
    @Current
@@ -72,7 +70,6 @@ public class EventImpl<T> implements Event<T>
             .fireEvent(event, eventBindings.toArray(new Annotation[0]));
    }
 
-   @SuppressWarnings("unchecked")
    public void observe(Observer<T> observer, Annotation... bindings)
    {
       // Register the observer with the web beans manager
@@ -80,8 +77,7 @@ public class EventImpl<T> implements Event<T>
       Set<Annotation> eventBindings = new HashSet<Annotation>();
       eventBindings.addAll(this.getBindingTypes());
       addAnnotationBindings(eventBindings, bindings);
-      Type[] observerTypeArguments = Reflections.getActualTypeArguments(observer.getClass());
-      webBeansManager.addObserver(observer, (Class<T>) observerTypeArguments[0], bindings);
+      webBeansManager.addObserver(observer, eventType, bindings);
    }
 
    /**
@@ -155,6 +151,12 @@ public class EventImpl<T> implements Event<T>
    public void setManager(Manager manager)
    {
       this.webBeansManager = manager;
+   }
+   
+   // TODO Use constructor injection
+   public void setEventType(Class<T> eventType)
+   {
+      this.eventType = eventType;
    }
 
 }

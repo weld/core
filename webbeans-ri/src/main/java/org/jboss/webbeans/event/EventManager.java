@@ -1,3 +1,20 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
@@ -14,10 +31,8 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
+import javax.webbeans.Current;
 import javax.webbeans.Observer;
-
-import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.util.JNDI;
 
 /**
  * The event bus is where observers are registered and events are fired.
@@ -25,28 +40,28 @@ import org.jboss.webbeans.util.JNDI;
  * @author David Allen
  * 
  */
-public class EventBus
+public class EventManager
 {
-   private ManagerImpl manager;
    private final Map<Class<?>, CopyOnWriteArrayList<EventObserver<?>>> registeredObservers;
+   
+   @Current
    private TransactionManager transactionManager;
 
    /**
-    * Initializes a new instance of the EventBus. This includes looking up the
+    * Initializes a new instance of the EventManager. This includes looking up the
     * transaction manager which is needed to defer events till the end of a
-    * transaction.
+    * transaction. 
     */
-   public EventBus(ManagerImpl manager)
+   public EventManager()
    {
-      this.manager = manager;
-      transactionManager = (TransactionManager) JNDI.lookup("java:/TransactionManager");
       registeredObservers = new ConcurrentHashMap<Class<?>, CopyOnWriteArrayList<EventObserver<?>>>();
    }
 
    /**
     * Adds an observer to the event bus so that it receives event notifications.
     * 
-    * @param observer The observer that should receive events
+    * @param observer
+    *           The observer that should receive events
     */
    public <T> void addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
@@ -126,8 +141,7 @@ public class EventBus
          try
          {
             transaction = transactionManager.getTransaction();
-         }
-         catch (SystemException e)
+         } catch (SystemException e)
          {
          }
          if (transaction != null)
@@ -135,20 +149,15 @@ public class EventBus
             try
             {
                deferEvent(event, observer);
-            }
-            catch (IllegalStateException e)
+            } catch (IllegalStateException e)
             {
-            }
-            catch (SystemException e)
+            } catch (SystemException e)
             {
-            }
-            catch (RollbackException e)
+            } catch (RollbackException e)
             {
-               // TODO If transaction is being rolled back, perhaps notification
-               // should terminate now
+               // TODO If transaction is being rolled back, perhaps notification should terminate now
             }
-         }
-         else
+         } else
          {
             // Notify observer immediately in the same context as this method
             observer.notify(event);
@@ -159,7 +168,8 @@ public class EventBus
    /**
     * Removes an observer from the event bus.
     * 
-    * @param observer The observer to remove
+    * @param observer
+    *           The observer to remove
     */
    public <T> void removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {

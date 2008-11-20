@@ -52,7 +52,7 @@ import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.contexts.RequestContext;
 import org.jboss.webbeans.contexts.SessionContext;
 import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
-import org.jboss.webbeans.event.EventBus;
+import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.exceptions.NameResolutionLocation;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -72,7 +72,7 @@ public class ManagerImpl implements Manager
 {
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
    private MetaDataCache metaDataCache;
-   private EventBus eventBus;
+   private EventManager eventManager;
    private Resolver resolver;
    private ContextMap contextMap;
    private ProxyPool proxyPool;
@@ -85,7 +85,7 @@ public class ManagerImpl implements Manager
    {
       this.metaDataCache = new MetaDataCache();
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
-      this.eventBus = new EventBus(this);
+      this.eventManager = new EventManager();
       this.resolver = new Resolver(this);
       this.proxyPool = new ProxyPool(this);
       this.decorators = new HashSet<Decorator>();
@@ -200,7 +200,7 @@ public class ManagerImpl implements Manager
     */
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
    {
-      return eventBus.getObservers(event, bindings);
+      return eventManager.getObservers(event, bindings);
    }
 
    /**
@@ -366,7 +366,7 @@ public class ManagerImpl implements Manager
     */
    public <T> Manager addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
-      this.eventBus.addObserver(observer, eventType, bindings);
+      this.eventManager.addObserver(observer, eventType, bindings);
       return this;
    }
 
@@ -386,7 +386,7 @@ public class ManagerImpl implements Manager
    {
       // TODO Using the eventType TypeLiteral<T>, the Class<T> object must be
       // retrieved
-      this.eventBus.addObserver(observer, (Class<T>) Reflections.getActualTypeArguments(eventType.getClass())[0], bindings);
+      this.eventManager.addObserver(observer, (Class<T>) Reflections.getActualTypeArguments(eventType.getClass())[0], bindings);
       return this;
    }
 
@@ -411,7 +411,7 @@ public class ManagerImpl implements Manager
       // parameterized, this
       // method is not, so we have to use Observer<Object> for observers.
       Set<Observer<Object>> observers = this.resolveObservers(event, bindings);
-      this.eventBus.notifyObservers(observers, event);
+      this.eventManager.notifyObservers(observers, event);
    }
 
    /**
@@ -580,7 +580,7 @@ public class ManagerImpl implements Manager
     */
    public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
-      this.eventBus.removeObserver(observer, eventType, bindings);
+      this.eventManager.removeObserver(observer, eventType, bindings);
       return this;
    }
 
@@ -600,7 +600,7 @@ public class ManagerImpl implements Manager
    {
       // TODO The Class<T> for the event type must be retrieved from the
       // TypeLiteral<T> instance
-      this.eventBus.removeObserver(observer, (Class<T>) Reflections.getActualTypeArguments(eventType.getClass())[0], bindings);
+      this.eventManager.removeObserver(observer, (Class<T>) Reflections.getActualTypeArguments(eventType.getClass())[0], bindings);
       return this;
    }
 
@@ -669,8 +669,8 @@ public class ManagerImpl implements Manager
          buffer.append("  " + deploymentType.getName() + "\n");
       }
 
-      buffer.append("Event bus:\n");
-      buffer.append(eventBus.toString());
+      buffer.append("Event manager:\n");
+      buffer.append(eventManager.toString());
 
       buffer.append("Metadata cache:\n");
       buffer.append(metaDataCache.toString());
