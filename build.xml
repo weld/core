@@ -12,6 +12,7 @@
 		
 		<artifact:dependencies filesetId="jboss5.deployer.fileset" versionsId="jboss5.deployer.versions">
          <dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-microcontainer" version="5.2.0-SNAPSHOT"/>
+         <dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-jbossas" version="5.2.0-SNAPSHOT"/>
       </artifact:dependencies>
 		
 		<artifact:dependencies filesetId="google.collections.fileset">
