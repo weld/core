@@ -180,4 +180,11 @@ public class ProxyPool
       return clientProxy;
    }
    
+   @Override
+   public String toString() {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("FIX ME!\n");
+      return buffer.toString();
+   }   
+   
 }
