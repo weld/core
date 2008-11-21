@@ -37,12 +37,12 @@ public interface Manager
    public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindings);
 
    public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,
-         Annotation... bindingTypes);
+         Annotation... bindings);
 
-   public <T> T getInstanceByType(Class<T> type, Annotation... bindingTypes);
+   public <T> T getInstanceByType(Class<T> type, Annotation... bindings);
 
    public <T> T getInstanceByType(TypeLiteral<T> type,
-         Annotation... bindingTypes);
+         Annotation... bindings);
 
    public Set<Bean<?>> resolveByName(String name);
 
@@ -80,6 +80,6 @@ public interface Manager
          Annotation... interceptorBindings);
 
    public List<Decorator> resolveDecorators(Set<Class<?>> types,
-         Annotation... bindingTypes);
+         Annotation... bindings);
 
 }
