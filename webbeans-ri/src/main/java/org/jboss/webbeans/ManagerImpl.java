@@ -669,10 +669,7 @@ public class ManagerImpl implements Manager
          buffer.append("  " + deploymentType.getName() + "\n");
       }
 
-      buffer.append("Event manager:\n");
       buffer.append(eventManager.toString());
-
-      buffer.append("Metadata cache:\n");
       buffer.append(metaDataCache.toString());
 
       buffer.append("Resolver:\n");

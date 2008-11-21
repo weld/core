@@ -1,19 +1,19 @@
 /*
-* JBoss, Home of Professional Open Source
-* Copyright 2008, Red Hat Middleware LLC, and individual contributors
-* by the @authors tag. See the copyright.txt in the distribution for a
-* full listing of individual contributors.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* http://www.apache.org/licenses/LICENSE-2.0
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,  
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.jboss.webbeans.bean.proxy;
 
@@ -50,46 +50,61 @@ public class ProxyPool
     */
    private class Pool extends ForwardingMap<Bean<?>, Object>
    {
-      
+
       Map<Bean<?>, Object> delegate;
-      
+
       public Pool()
       {
          delegate = new ConcurrentHashMap<Bean<?>, Object>();
       }
 
+      @SuppressWarnings("unchecked")
       public <T> T get(Bean<T> key)
       {
          return (T) super.get(key);
       }
-      
+
       @Override
       protected Map<Bean<?>, Object> delegate()
       {
          return delegate;
       }
-      
+
+      @Override
+      public String toString()
+      {
+         StringBuffer buffer = new StringBuffer();
+         buffer.append("Proxy pool holding " + delegate.size() + " proxies\n");
+         int i = 0;
+         for (Entry<Bean<?>, Object> entry : delegate.entrySet())
+         {
+            buffer.append(i + " - " + entry.getKey().toString() + ": " + entry.getValue().toString());
+         }
+         return buffer.toString();
+      }
+
    }
-   
+
    private ManagerImpl manager;
    private Pool pool;
-   
-   public ProxyPool(ManagerImpl manager) 
+
+   public ProxyPool(ManagerImpl manager)
    {
       this.manager = manager;
       this.pool = new Pool();
    }
-        
+
    /**
     * Type info (interfaces and superclasses) for a class
     * 
     * @author Nicklas Karlsson
     */
-   private class TypeInfo {
+   private class TypeInfo
+   {
       Class<?>[] interfaces;
       Class<?> superclass;
    }
-   
+
    /**
     * Gets the type info for a class
     * 
@@ -100,18 +115,18 @@ public class ProxyPool
     * @param types A set of types (interfaces and superclasses) of a class
     * @return The TypeInfo with categorized information
     */
-   private TypeInfo getTypeInfo(Set<Class<?>> types) 
+   private TypeInfo getTypeInfo(Set<Class<?>> types)
    {
       TypeInfo typeInfo = new TypeInfo();
       List<Class<?>> interfaces = new ArrayList<Class<?>>();
       Class<?> superclass = null;
-      for (Class<?> type : types) 
+      for (Class<?> type : types)
       {
-         if (type.isInterface()) 
+         if (type.isInterface())
          {
             interfaces.add(type);
          }
-         else if (superclass == null || (type != Object.class && superclass.isAssignableFrom(type))) 
+         else if (superclass == null || (type != Object.class && superclass.isAssignableFrom(type)))
          {
             superclass = type;
          }
@@ -121,12 +136,13 @@ public class ProxyPool
       typeInfo.superclass = superclass;
       return typeInfo;
    }
-   
+
    /**
     * Creates a Javassist scope adaptor (client proxy) for a bean
     * 
     * Creates a Javassist proxy factory. Gets the type info. Sets the interfaces
-    * and superclass to the factory. Hooks in the MethodHandler and creates the proxy.
+    * and superclass to the factory. Hooks in the MethodHandler and creates the
+    * proxy.
     * 
     * @param bean The bean to proxy
     * @param beanIndex The index to the bean in the manager bean list
@@ -134,7 +150,8 @@ public class ProxyPool
     * @throws InstantiationException When the proxy couldn't be created
     * @throws IllegalAccessException When the proxy couldn't be created
     */
-   private <T> T createClientProxy(Bean<T> bean, int beanIndex) throws InstantiationException, IllegalAccessException 
+   @SuppressWarnings("unchecked")
+   private <T> T createClientProxy(Bean<T> bean, int beanIndex) throws InstantiationException, IllegalAccessException
    {
       ProxyFactory proxyFactory = new ProxyFactory();
       TypeInfo typeInfo = getTypeInfo(bean.getTypes());
@@ -149,8 +166,9 @@ public class ProxyPool
    /**
     * Gets a client proxy for a bean
     * 
-    * Looks for a proxy in the pool. If not found, one is created and added to the pool
-    *  
+    * Looks for a proxy in the pool. If not found, one is created and added to
+    * the pool
+    * 
     * @param bean
     * @return
     */
@@ -162,8 +180,9 @@ public class ProxyPool
          try
          {
             int beanIndex = manager.getBeans().indexOf(bean);
-            // Implicit add required since it is looked up on activation with then index
-            if (beanIndex < 0) 
+            // Implicit add required since it is looked up on activation with
+            // then index
+            if (beanIndex < 0)
             {
                manager.addBean(bean);
                beanIndex = manager.getBeans().size() - 1;
@@ -179,12 +198,13 @@ public class ProxyPool
       }
       return clientProxy;
    }
-   
+
    @Override
-   public String toString() {
+   public String toString()
+   {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("FIX ME!\n");
+      buffer.append("Proxy pool: " + pool.toString() + "\n");
       return buffer.toString();
-   }   
-   
+   }
+
 }

@@ -1,3 +1,20 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
@@ -31,11 +48,27 @@ import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
 
+/**
+ * An abstract bean representation common for all beans
+ * 
+ * @author Pete Muir
+ * 
+ * @param <T>
+ * @param <E>
+ */
 public abstract class AbstractBean<T, E> extends Bean<T>
 {
-   
+
+   @SuppressWarnings("unchecked")
    private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(DefaultEnterpriseBeanLookup.class));
-   
+
+   /**
+    * Helper class for getting deployment type
+    * 
+    * @param enabledDeploymentTypes The currently enabled deployment types
+    * @param possibleDeploymentTypes The possible deployment types
+    * @return The deployment type
+    */
    public static Class<? extends Annotation> getDeploymentType(List<Class<? extends Annotation>> enabledDeploymentTypes, Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes)
    {
       for (int i = (enabledDeploymentTypes.size() - 1); i > 0; i--)
@@ -47,10 +80,10 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       }
       return null;
    }
-   
+
    // Logger
    private LogProvider log = Logging.getLogProvider(AbstractBean.class);
-   
+
    // Reference to WBRI manager
    private ManagerImpl manager;
    private Set<Annotation> bindingTypes;
@@ -62,18 +95,26 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    protected AnnotatedMethod<Object> removeMethod;
    protected Set<Class<?>> apiTypes;
    protected Set<AnnotatedItem<?, ?>> injectionPoints;
-   
+
    private boolean primitive;
-   
+
    // Cached values
    private Type declaredBeanType;
-   
+
+   /**
+    * Constructor
+    * 
+    * @param manager The Web Beans manager
+    */
    public AbstractBean(ManagerImpl manager)
    {
       super(manager);
       this.manager = manager;
    }
-   
+
+   /**
+    * Initializes the bean and its metadata
+    */
    protected void init()
    {
       mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class), manager);
@@ -87,15 +128,21 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       initScopeType();
       initApiTypes();
    }
-   
+
+   /**
+    * Initializes the API types
+    */
    protected void initApiTypes()
    {
-      apiTypes = getTypeHierachy(getType());
+      apiTypes = Reflections.getTypeHierachy(getType());
    }
-   
+
+   /**
+    * Initializes the binding types
+    */
    protected void initBindingTypes()
    {
-      
+
       this.bindingTypes = new HashSet<Annotation>();
       if (isDefinedInXml())
       {
@@ -134,7 +181,11 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          return;
       }
    }
-   
+
+   /**
+    * Initializes the deployment types
+    */
+   @SuppressWarnings("null")
    protected void initDeploymentType()
    {
       if (isDefinedInXml())
@@ -144,7 +195,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          {
             throw new RuntimeException("At most one deployment type may be specified (" + xmlDeploymentTypes + " are specified)");
          }
-         
+
          if (xmlDeploymentTypes.size() == 1)
          {
             this.deploymentType = xmlDeploymentTypes.iterator().next().annotationType();
@@ -155,7 +206,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       else
       {
          Set<Annotation> deploymentTypes = getAnnotatedItem().getMetaAnnotations(DeploymentType.class);
-         
+
          if (deploymentTypes.size() > 1)
          {
             throw new DefinitionException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().toString());
@@ -166,7 +217,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
             log.trace("Deployment type " + deploymentType + " specified by annotation");
             return;
          }
-         
+
          if (getMergedStereotypes().getPossibleDeploymentTypes().size() > 0)
          {
             this.deploymentType = getDeploymentType(manager.getEnabledDeploymentTypes(), getMergedStereotypes().getPossibleDeploymentTypes());
@@ -174,12 +225,15 @@ public abstract class AbstractBean<T, E> extends Bean<T>
             return;
          }
       }
-      
+
       this.deploymentType = Production.class;
       log.trace("Using default @Production deployment type");
       return;
    }
-   
+
+   /**
+    * Initializes the injection points
+    */
    protected void initInjectionPoints()
    {
       injectionPoints = new HashSet<AnnotatedItem<?, ?>>();
@@ -191,7 +245,10 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          }
       }
    }
-   
+
+   /**
+    * Initializes the name
+    */
    protected void initName()
    {
       boolean beanNameDefaulted = false;
@@ -244,22 +301,26 @@ public abstract class AbstractBean<T, E> extends Bean<T>
             return;
          }
       }
-      
+
       if (beanNameDefaulted || getMergedStereotypes().isBeanNameDefaulted())
       {
          this.name = getDefaultName();
          return;
       }
    }
-   
+
+   /**
+    * Initializes the primitive flag
+    */
    protected void initPrimitive()
    {
       this.primitive = Reflections.isPrimitive(getType());
    }
-   
+
    /**
-    * Return the scope of the bean
+    * Initializes the scope type
     */
+   @SuppressWarnings("null")
    protected void initScopeType()
    {
       if (isDefinedInXml())
@@ -269,7 +330,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          {
             throw new DefinitionException("At most one scope may be specified in XML");
          }
-         
+
          if (scopeTypes.size() == 1)
          {
             this.scopeType = scopeTypes.iterator().next();
@@ -283,7 +344,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          {
             throw new DefinitionException("At most one scope may be specified");
          }
-         
+
          if (getAnnotatedItem().getMetaAnnotations(ScopeType.class).size() == 1)
          {
             this.scopeType = getAnnotatedItem().getMetaAnnotations(ScopeType.class).iterator().next().annotationType();
@@ -291,7 +352,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
             return;
          }
       }
-      
+
       if (getMergedStereotypes().getPossibleScopeTypes().size() == 1)
       {
          this.scopeType = getMergedStereotypes().getPossibleScopeTypes().iterator().next().annotationType();
@@ -305,9 +366,15 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       this.scopeType = Dependent.class;
       log.trace("Using default @Dependent scope");
    }
-   
+
+   /**
+    * Initializes the type of the bean
+    */
    protected abstract void initType();
-   
+
+   /**
+    * Validates the deployment type
+    */
    protected void checkDeploymentType()
    {
       if (deploymentType == null)
@@ -319,30 +386,56 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          throw new DefinitionException(getAnnotatedItem() + " cannot have deployment type @Standard");
       }
    }
-   
+
+   /**
+    * Destroys a bean instance
+    * 
+    * @param instance The instance to destroy
+    */
    @Override
    public void destroy(T instance)
    {
       // TODO Auto-generated method stub
    }
-   
+
+   /**
+    * Binds the decorators to the proxy
+    */
    protected void bindDecorators()
    {
       // TODO
    }
-   
+
+   /**
+    * Binds the interceptors to the proxy
+    */
    protected void bindInterceptors()
    {
       // TODO
    }
-   
+
+   /**
+    * Returns the annotated time the bean reresents
+    * 
+    * @return The annotated item
+    */
    protected abstract AnnotatedItem<T, E> getAnnotatedItem();
-   
+
+   /**
+    * Returns the binding types
+    * 
+    * @return The set of binding types
+    */
    public Set<Annotation> getBindingTypes()
    {
       return bindingTypes;
    }
-   
+
+   /**
+    * Returns the declared bean type
+    * 
+    * @return The bean type
+    */
    protected Type getDeclaredBeanType()
    {
       if (declaredBeanType == null)
@@ -359,102 +452,202 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       }
       return declaredBeanType;
    }
-   
+
+   /**
+    * Returns the default name of the bean
+    * 
+    * @return The default name
+    */
    protected abstract String getDefaultName();
-   
+
+   /**
+    * Returns the deployment type of the bean
+    * 
+    * @return The deployment type
+    */
    public Class<? extends Annotation> getDeploymentType()
    {
       return deploymentType;
    }
-   
+
+   /**
+    * Returns the injection points of the bean
+    * 
+    * @return The set of injection points
+    */
    public Set<AnnotatedItem<?, ?>> getInjectionPoints()
    {
       return injectionPoints;
    }
-   
+
+   /**
+    * Returns the Web Beans manager reference
+    * 
+    * @return The manager
+    */
    @Override
    protected ManagerImpl getManager()
    {
       return manager;
    }
-   
+
+   /**
+    * Returns the merged sterotypes of the bean
+    * 
+    * @return The set of merged stereotypes
+    */
    public MergedStereotypes<T, E> getMergedStereotypes()
    {
       return mergedStereotypes;
    }
-   
+
+   /**
+    * Returns the name of the bean
+    * 
+    * @return The name
+    */
    public String getName()
    {
       return name;
    }
-   
+
+   /**
+    * Returns the remove method of the bean
+    * 
+    * @return The remove method
+    */
    public AnnotatedMethod<?> getRemoveMethod()
    {
       return removeMethod;
    }
-   
+
+   /**
+    * Returns the scope type of the bean
+    * 
+    * @return The scope type
+    */
    public Class<? extends Annotation> getScopeType()
    {
       return scopeType;
    }
-   
+
+   /**
+    * Returns the specializes type of the bean
+    * 
+    * @return The specialized type
+    */
    protected AbstractBean<? extends T, E> getSpecializedType()
    {
       throw new UnsupportedOperationException();
    }
-   
+
+   /**
+    * Returns the type of the bean
+    * 
+    * @return The type
+    */
    public Class<T> getType()
    {
       return type;
    }
-   
-   protected Set<Class<?>> getTypeHierachy(Class<?> clazz)
-   {
-      Set<Class<?>> classes = new HashSet<Class<?>>();
-      if (clazz != null)
-      {
-         classes.add(clazz);
-         classes.addAll(getTypeHierachy(clazz.getSuperclass()));
-         for (Class<?> c : clazz.getInterfaces())
-         {
-            classes.addAll(getTypeHierachy(c));
-         }
-      }
-      return classes;
-   }
-   
+
+   /**
+    * Returns the API types of the bean
+    * 
+    * @return The set of API types
+    */
    @Override
    public Set<Class<?>> getTypes()
    {
       return apiTypes;
    }
-   
+
+   /**
+    * Checks if this beans annotated item is assignable from another annotated
+    * item
+    * 
+    * @param annotatedItem The other annotation to check
+    * @return True if assignable, otherwise false
+    */
    public boolean isAssignableFrom(AnnotatedItem<?, ?> annotatedItem)
    {
       return this.getAnnotatedItem().isAssignableFrom(annotatedItem);
    }
-   
+
+   /**
+    * Indicates if bean was defined in XML
+    * 
+    * @return True if defined in XML, false if defined with annotations
+    */
    protected boolean isDefinedInXml()
    {
       return false;
    }
-   
+
+   /**
+    * Inicates if bean is nullable
+    * 
+    * @return True if nullable, false otherwise
+    */
    @Override
    public boolean isNullable()
    {
       return !isPrimitive();
    }
-   
+
+   /**
+    * Indicates if bean type is a primitive
+    * 
+    * @return True if primitive, false otherwise
+    */
    public boolean isPrimitive()
    {
       return primitive;
    }
-   
+
+   /**
+    * Indicates if bean is serializable
+    * 
+    * @return True if serializable, false otherwise
+    */
    @Override
    public boolean isSerializable()
    {
       // TODO Auto-generated method stub
       return false;
    }
-   
+
+   @Override
+   public String toString()
+   {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("Name: " + name + "\n");
+      buffer.append("Type: " + type + "\n");
+      buffer.append("Scope type " + scopeType.getName() + "\n");
+      buffer.append("Deployment type: " + deploymentType.getName() + "\n");
+      buffer.append("Primitive : " + primitive + "\n");
+      buffer.append("Declared bean type: " + (declaredBeanType == null ? "null" : declaredBeanType.toString()) + "\n");
+      buffer.append("Remove method: " + (removeMethod == null ? "null" : removeMethod.toString()) + "\n");
+      buffer.append("Binding types: " + bindingTypes.size() + "\n");
+      int i = 0;
+      for (Annotation bindingType : bindingTypes)
+      {
+         buffer.append(++i + " - " + bindingType.toString() + "\n");
+      }
+      buffer.append("API types: " + apiTypes.size() + "\n");
+      i = 0;
+      for (Class<?> apiType : apiTypes)
+      {
+         buffer.append(++i + " - " + apiType.getName() + "\n");
+      }
+      buffer.append("Merged stereotype\n");
+      buffer.append(mergedStereotypes.toString() + "\n");
+      buffer.append("Injection points: " + injectionPoints.size() + "\n");
+      i = 0;
+      for (AnnotatedItem<?, ?> injectionPoint : injectionPoints)
+      {
+         buffer.append(++i + " - " + injectionPoint.toString() + "\n");
+      }
+      return buffer.toString();
+   }
 }

@@ -108,4 +108,18 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
       return false;
    }
    
+   @Override
+   public String toString() {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("Binding type model\n");
+      buffer.append("Hash code : " + hashCode() + "\n");
+      buffer.append("Valid : " + isValid() + "\n");
+      buffer.append("Non-binding types\n");
+      for (AnnotatedMethod<?> method : nonBindingTypes) {
+         method.toString();
+      }
+      buffer.append("Annotated type " + getAnnotatedAnnotation().getName());
+      return buffer.toString();
+   }
+   
 }

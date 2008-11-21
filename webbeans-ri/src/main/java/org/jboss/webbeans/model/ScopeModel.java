@@ -53,4 +53,13 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
       return ScopeType.class;
    }
    
+   @Override
+   public String toString() {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("Scope model\n");
+      buffer.append("Valid : " + isValid() + "\n");
+      buffer.append("Annotated type " + getAnnotatedAnnotation().toString());
+      return buffer.toString();
+   }
+   
 }

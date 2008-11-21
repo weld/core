@@ -1,19 +1,19 @@
 /*
-* JBoss, Home of Professional Open Source
-* Copyright 2008, Red Hat Middleware LLC, and individual contributors
-* by the @authors tag. See the copyright.txt in the distribution for a
-* full listing of individual contributors.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* http://www.apache.org/licenses/LICENSE-2.0
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,  
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.jboss.webbeans.bean.proxy;
 
@@ -29,9 +29,9 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.util.Reflections;
 
 /**
- * A Javassist MethodHandler that delegates method calls to a proxied bean.
- * If the transient bean has become null, it is looked up from the manager
- * bean list before the invocation.
+ * A Javassist MethodHandler that delegates method calls to a proxied bean. If
+ * the transient bean has become null, it is looked up from the manager bean
+ * list before the invocation.
  * 
  * @author Nicklas Karlsson
  * 
@@ -62,13 +62,13 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
    /**
     * The method proxy
     * 
-    * Uses reflection to look up the corresponding method on the proxy and executes 
-    * that method with the same parameters.
+    * Uses reflection to look up the corresponding method on the proxy and
+    * executes that method with the same parameters.
     * 
-    *  @param self A reference to the proxy
-    *  @param method The method to execute
-    *  @param process The next method to proceed to
-    *  @param args The method calling arguments 
+    * @param self A reference to the proxy
+    * @param method The method to execute
+    * @param process The next method to proceed to
+    * @param args The method calling arguments
     */
    public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
@@ -81,5 +81,15 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
       return proxiedMethod.invoke(proxiedInstance, args);
    }
-   
+
+   @Override
+   public String toString()
+   {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("Proxy method handler\n");
+      buffer.append("Bean " + (bean == null ? "null" : bean.toString()));
+      buffer.append("Bean index: " + beanIndex + "\n");
+      return buffer.toString();
+   }
+
 }

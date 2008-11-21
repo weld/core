@@ -189,6 +189,7 @@ public class EventManager
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
+      buffer.append("Event manager\n");
       buffer.append("Registered observers: " + registeredObservers.size() + "\n");
       for (Entry<Class<?>, CopyOnWriteArrayList<EventObserver<?>>> entry : registeredObservers.entrySet())
       {

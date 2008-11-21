@@ -1,3 +1,20 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
@@ -18,6 +35,13 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
 
+/**
+ * Represents a producer method bean
+ * 
+ * @author Pete Muir
+ *
+ * @param <T>
+ */
 public class ProducerMethodBean<T> extends AbstractBean<T, Method>
 {
    
@@ -27,11 +51,25 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
    // Cached values
    private String location;
 
+   /**
+    * Constructor
+    * 
+    * @param method The producer method
+    * @param declaringBean The declaring bean instance
+    * @param manager The Web Beans manager
+    */
    public ProducerMethodBean(Method method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       this(new AnnotatedMethodImpl<T>(method, declaringBean.getAnnotatedItem()), declaringBean, manager);
    }
    
+   /**
+    * Constructor
+    * 
+    * @param method The producer method abstraction
+    * @param declaringBean The declaring bean
+    * @param manager The Web Beans manager
+    */
    public ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       super(manager);
@@ -40,6 +78,11 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       init();
    }
 
+   /**
+    * Creates an instance of the bean
+    * 
+    * @returns The instance
+    */
    @Override
    public T create()
    {
@@ -51,6 +94,9 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       return instance;
    }
 
+   /**
+    * Initializes the bean and its metadata
+    */
    @Override
    protected void init()
    {
@@ -60,6 +106,9 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       initInjectionPoints();
    }
    
+   /**
+    * Initializes the injection points
+    */   
    @Override
    protected void initInjectionPoints()
    {
@@ -77,6 +126,9 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       }
    }
    
+   /**
+    * Initializes the deployment type
+    */
    @Override
    protected void initDeploymentType()
    {
@@ -87,6 +139,9 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       }
    }
    
+   /**
+    * Validates the producer method
+    */
    protected void checkProducerMethod()
    {
       if (getAnnotatedItem().isStatic())
@@ -117,6 +172,9 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       }
    }
    
+   /**
+    * Initializes the remove method
+    */
    protected void initRemoveMethod()
    {
       Set<AnnotatedMethod<Object>> disposalMethods = getManager().resolveDisposalMethods(getType(), getBindingTypes().toArray(new Annotation[0]));
@@ -131,24 +189,32 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       }
    }
    
-   @Override
-   public String toString()
-   {
-      return "ProducerMethodBean[" + getType().getName() + "]";
-   }
 
+   /**
+    * Gets the annotated item representing the method
+    * 
+    * @return The annotated item
+    */
    @Override
    protected AnnotatedMethod<T> getAnnotatedItem()
    {
       return method;
    }
 
+   /**
+    * Returns the default name
+    * 
+    * @return The default name
+    */
    @Override
    protected String getDefaultName()
    {
       return method.getPropertyName();
    }
 
+   /**
+    * Initializes the type
+    */
    @Override
    protected void initType()
    {
@@ -165,6 +231,9 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       }
    }
    
+   /**
+    * Initializes the API types
+    */
    @Override
    protected void initApiTypes()
    {
@@ -185,8 +254,11 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       }
    }
    
-
-   
+   /**
+    * Gets the debugging location info
+    * 
+    * @return The location string
+    */   
    public String getLocation()
    {
       if (location == null)
@@ -196,14 +268,36 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       return location;
    }
    
+   /**
+    * Returns the disposal method
+    * 
+    * @return The method representation
+    */
    public AnnotatedMethod<?> getDisposalMethod()
    {
       return removeMethod;
    }
    
+   /**
+    * Returns the declaring bean
+    * 
+    * @return The bean representation
+    */
    public AbstractClassBean<?> getDeclaringBean()
    {
       return declaringBean;
+   }
+
+   @Override
+   public String toString()
+   {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("ProducerMethodBean[" + getType().getName() + "]\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append("Location: " + location + "\n");
+      buffer.append("Declaring bean: " + declaringBean.toString() + "\n");
+      buffer.append("Method: " + method.toString() + "\n");
+      return buffer.toString();      
    }
 
    

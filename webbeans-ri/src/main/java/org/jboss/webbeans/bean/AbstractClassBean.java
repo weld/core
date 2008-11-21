@@ -1,3 +1,20 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.webbeans.bean;
 
 import java.util.HashSet;
@@ -21,27 +38,38 @@ import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
+/**
+ * An abstract bean representation common for class-based beans
+ * 
+ * @author Pete Muir
+ * 
+ * @param <T>
+ * @param <E>
+ */
 public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 {
-   
+
    private static final LogProvider log = Logging.getLogProvider(AbstractClassBean.class);
-   
+
    private AnnotatedClass<T> annotatedItem;
    private Set<AnnotatedField<Object>> injectableFields;
    private Set<AnnotatedMethod<Object>> initializerMethods;
-   
+
    /**
     * 
     * @param annotatedItem Annotations read from java classes
     * @param xmlAnnotatedItem Annotations read from XML
-    * @param manager
+    * @param manager The Web Beans manager
     */
    public AbstractClassBean(Class<T> type, ManagerImpl manager)
    {
       super(manager);
       this.annotatedItem = new AnnotatedClassImpl<T>(type);
    }
-   
+
+   /**
+    * Initializes the bean and its metadata
+    */
    @Override
    protected void init()
    {
@@ -52,7 +80,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       // TODO Interceptors
       initInitializerMethods();
    }
-   
+
+   /**
+    * Initializes the bean type
+    */
    protected void initType()
    {
       if (isDefinedInXml())
@@ -65,12 +96,20 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          this.type = getAnnotatedItem().getType();
       }
    }
-   
+
+   /**
+    * Returns the producer methods
+    * 
+    * @return A set of producer methods
+    */
    public Set<AnnotatedMethod<Object>> getProducerMethods()
    {
       return getAnnotatedItem().getAnnotatedMethods(Produces.class);
    }
-   
+
+   /**
+    * Initializes the injection points
+    */
    @Override
    protected void initInjectionPoints()
    {
@@ -90,12 +129,15 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          super.injectionPoints.add(annotatedField);
       }
    }
-   
+
+   /**
+    * Initializes the initializer methods
+    */
    protected void initInitializerMethods()
    {
       if (isDefinedInXml())
       {
-        
+
       }
       else
       {
@@ -129,7 +171,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          }
       }
    }
-   
+
+   /**
+    * Validates that the required types are implemented
+    */
    protected void checkRequiredTypesImplemented()
    {
       for (Class<?> requiredType : getMergedStereotypes().getRequiredTypes())
@@ -141,10 +186,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          }
       }
    }
-   
+
    /**
-    * Check that the scope type is allowed by the stereotypes on the bean and the bean type
-    * @param type 
+    * Validate that the scope type is allowed by the stereotypes on the bean and
+    * the bean type
     */
    protected void checkScopeAllowed()
    {
@@ -157,7 +202,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          }
       }
    }
-   
+
+   /**
+    * Validates the bean implementation
+    */
    protected void checkBeanImplementation()
    {
       if (Reflections.isAbstract(getType()))
@@ -165,30 +213,69 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          throw new DefinitionException("Web Bean implementation class " + type + " cannot be declared abstract");
       }
    }
-   
+
+   /**
+    * Returns the annotated item
+    * 
+    * @return The annotated item
+    */
    @Override
    protected AnnotatedClass<T> getAnnotatedItem()
    {
       return annotatedItem;
    }
-   
+
+   /**
+    * Returns the default name
+    * 
+    * @return The default name
+    */
    @Override
    protected String getDefaultName()
    {
-      String name = Strings.decapitalize(getType().getSimpleName()); 
-      log.trace("Default name of " + type + " is " + name );
+      String name = Strings.decapitalize(getType().getSimpleName());
+      log.trace("Default name of " + type + " is " + name);
       return name;
    }
-   
+
+   /**
+    * Returns the injectable fields
+    * 
+    * @return The set of injectable fields
+    */
    public Set<AnnotatedField<Object>> getInjectableFields()
    {
       return injectableFields;
    }
-   
+
+   /**
+    * Returns the annotated methods
+    * 
+    * @return The set of annotated methods
+    */
    public Set<AnnotatedMethod<Object>> getInitializerMethods()
    {
       return initializerMethods;
    }
 
-   
+   @Override
+   public String toString()
+   {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append(super.toString());
+      buffer.append("Annotated item: " + annotatedItem.toString() + "\n");
+      buffer.append("Initializer methods: " + initializerMethods.size() + "\n");
+      int i = 0;
+      for (AnnotatedMethod<?> initializerMethod : initializerMethods)
+      {
+         buffer.append(++i + " - " + initializerMethod.toString());
+      }
+      i = 0;
+      buffer.append("Injectable fields " + injectableFields.size());
+      for (AnnotatedField<?> injectableField : injectableFields)
+      {
+         buffer.append(++i + " - " + injectableField.toString());
+      }
+      return buffer.toString();
+   }
 }

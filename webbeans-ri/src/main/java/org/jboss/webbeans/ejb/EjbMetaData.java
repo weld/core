@@ -25,34 +25,30 @@ public class EjbMetaData<T>
 
    public enum EjbType
    {
-      STATELESS,
-      STATEFUL,
-      SINGLETON,
-      MESSAGE_DRIVEN;
+      STATELESS, STATEFUL, SINGLETON, MESSAGE_DRIVEN;
    }
-   
+
    private EjbType ejbType;
    private List<AnnotatedMethod<Object>> removeMethods = new ArrayList<AnnotatedMethod<Object>>();
    private List<AnnotatedMethod<Object>> destructorMethods = new ArrayList<AnnotatedMethod<Object>>();
    private List<AnnotatedMethod<Object>> noArgsRemoveMethods = new ArrayList<AnnotatedMethod<Object>>();
-   
+
    // TODO Populate this from web.xml
    private String ejbLinkJndiName;
-   
+
    // TODO Initialize this based on the EJB 3.1 spec
    private String defaultJndiName;
-   
+
    // TODO Initialize the ejb name
    private String ejbName;
-   
+
    private AnnotatedClass<T> type;
-   
 
    public EjbMetaData(Class<T> type)
    {
       this(new AnnotatedClassImpl<T>(type));
    }
-   
+
    public EjbMetaData(AnnotatedClass<T> type)
    {
       // TODO Merge in ejb-jar.xml
@@ -60,7 +56,8 @@ public class EjbMetaData<T>
       if (type.isAnnotationPresent(STATELESS_ANNOTATION))
       {
          this.ejbType = STATELESS;
-         // TODO Has to be done here? If they are not parsed, they can't be detected later on (EnterpriseBean remove method init)
+         // TODO Has to be done here? If they are not parsed, they can't be
+         // detected later on (EnterpriseBean remove method init)
          if (type.getAnnotatedMethods(Destructor.class).size() > 0)
          {
             throw new DefinitionException("Stateless enterprise beans cannot have @Destructor methods");
@@ -72,7 +69,8 @@ public class EjbMetaData<T>
          for (AnnotatedMethod<Object> removeMethod : type.getAnnotatedMethods(REMOVE_ANNOTATION))
          {
             removeMethods.add(removeMethod);
-            if (removeMethod.getParameters().size() == 0) {
+            if (removeMethod.getParameters().size() == 0)
+            {
                noArgsRemoveMethods.add(removeMethod);
             }
          }
@@ -110,17 +108,17 @@ public class EjbMetaData<T>
    {
       return SINGLETON.equals(ejbType);
    }
-   
+
    public boolean isEjb()
    {
       return ejbType != null;
    }
-   
+
    public List<AnnotatedMethod<Object>> getRemoveMethods()
    {
       return removeMethods;
    }
-   
+
    public String getEjbLinkJndiName()
    {
       return ejbLinkJndiName;
@@ -130,12 +128,12 @@ public class EjbMetaData<T>
    {
       return defaultJndiName;
    }
-   
+
    public String getEjbName()
    {
       return ejbName;
    }
-   
+
    public Class<T> getType()
    {
       return type.getType();
@@ -149,6 +147,37 @@ public class EjbMetaData<T>
    public List<AnnotatedMethod<Object>> getNoArgsRemoveMethods()
    {
       return noArgsRemoveMethods;
+   }
+
+   @Override
+   public String toString()
+   {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("EJB metadata model\n");
+      buffer.append("EJB name: " + ejbName + "\n");
+      buffer.append("EJB type: " + ejbType + "\n");
+      buffer.append("EJB link JNDI name " + ejbLinkJndiName + "\n");
+      buffer.append("Default JNDI name: " + defaultJndiName + "\n");
+      buffer.append("Type: " + type.toString() + "\n");
+      buffer.append("Desctructor methods: " + destructorMethods.size() + "\n");
+      int i = 0;
+      for (AnnotatedMethod<?> method : destructorMethods)
+      {
+         buffer.append(++i + " - " + method.toString());
+      }
+      i = 0;
+      buffer.append("Remove methods: " + removeMethods.size() + "\n");
+      for (AnnotatedMethod<?> method : removeMethods)
+      {
+         buffer.append(++i + " - " + method.toString());
+      }
+      i = 0;
+      buffer.append("No-args remove methods: " + noArgsRemoveMethods.size() + "\n");
+      for (AnnotatedMethod<?> method : noArgsRemoveMethods)
+      {
+         buffer.append(++i + " - " + method.toString());
+      }
+      return buffer.toString();
    }
 
 }

@@ -20,6 +20,7 @@ package org.jboss.webbeans;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.jboss.webbeans.ejb.EjbMetaData;
 import org.jboss.webbeans.model.AnnotationModel;
@@ -60,7 +61,7 @@ public class MetaDataCache
       {
          return delegate;
       }
-
+      
    }
 
    @SuppressWarnings("unchecked")
@@ -97,6 +98,27 @@ public class MetaDataCache
          return new BindingTypeModel<S>(type);
       }
 
+      @Override
+      public String toString() {
+         StringBuffer buffer = new StringBuffer();
+         buffer.append("Binding types\n");
+         for (Entry<Class<? extends Annotation>, BindingTypeModel<?>> entry : delegate.entrySet()) {
+            buffer.append(entry.getKey().getName() + ": " + entry.getValue().toString() + "\n");
+         }
+         buffer.append("EJB metadata\n");
+         for (Entry<Class<?>, EjbMetaData<?>> entry : ejbMetaDataMap.entrySet()) {
+            buffer.append(entry.getKey().getName() + ": " + entry.getValue().toString());
+         }
+         buffer.append("Scopes\n");
+         for (Entry<Class<? extends Annotation>, ScopeModel<?>> entry : scopes.entrySet()) {
+            buffer.append(entry.getKey().getName() + ": " + entry.getValue().toString());
+         }
+         buffer.append("Stereotypes\n");
+         for (Entry<Class<? extends Annotation>, StereotypeModel<?>> entry : stereotypes.entrySet()) {
+            buffer.append(entry.getKey().getName() + ": " + entry.getValue().toString());
+         }
+         return buffer.toString();
+      }
    }
 
    private class EjbMetaDataMap extends ForwardingMap<Class<?>, EjbMetaData<?>>
@@ -161,11 +183,20 @@ public class MetaDataCache
    {
       return ejbMetaDataMap.putIfAbsent(clazz);
    }
-   
+
    @Override
-   public String toString() {
+   public String toString()
+   {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("FIX ME!\n");
+      buffer.append("Metadata cache\n");
+      buffer.append(bindingTypes.toString());
+      buffer.append(ejbMetaDataMap.toString());
+      buffer.append(scopes.toString());
+      buffer.append("Stereotypes:\n");
+      for (Entry<Class<? extends Annotation>, StereotypeModel<?>> entry : stereotypes.entrySet())
+      {
+         buffer.append(entry.getKey().getName() + ": " + entry.getValue().toString() + "\n");
+      }
       return buffer.toString();
    }
 

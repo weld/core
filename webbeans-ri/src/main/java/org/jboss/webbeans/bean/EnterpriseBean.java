@@ -1,3 +1,20 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.webbeans.bean;
 
 import javax.webbeans.ApplicationScoped;
@@ -20,19 +37,35 @@ import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 
+/**
+ * An enterprise bean representation
+ * 
+ * @author Pete Muir
+ * 
+ * @param <T>
+ */
 public class EnterpriseBean<T> extends AbstractClassBean<T>
 {
-   
+
    private String location;
-   
+
    private EjbMetaData<T> ejbMetaData;
-   
-   public EnterpriseBean(Class<T> type, ManagerImpl container)
+
+   /**
+    * Constructor
+    * 
+    * @param type The type of the bean
+    * @param manager The Web Beans manager
+    */
+   public EnterpriseBean(Class<T> type, ManagerImpl manager)
    {
-      super(type, container);
+      super(type, manager);
       init();
    }
-   
+
+   /**
+    * Initializes the bean and its metadata
+    */
    @Override
    protected void init()
    {
@@ -46,7 +79,10 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       checkSpecialization();
       checkRemoveMethod();
    }
-   
+
+   /**
+    * Initializes the injection points
+    */
    @Override
    protected void initInjectionPoints()
    {
@@ -59,7 +95,10 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          }
       }
    }
-   
+
+   /**
+    * Validates for non-conflicting roles
+    */
    protected void checkConflictingRoles()
    {
       if (getType().isAnnotationPresent(Interceptor.class))
@@ -75,32 +114,22 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    /**
     * Check that the scope type is allowed by the stereotypes on the bean and
     * the bean type
-    * 
-    * @param type
     */
    protected void checkEnterpriseScopeAllowed()
    {
-      if (getEjbMetaData().isStateless()
-            && !getScopeType().equals(Dependent.class))
+      if (getEjbMetaData().isStateless() && !getScopeType().equals(Dependent.class))
       {
-         throw new DefinitionException("Scope " + getScopeType()
-               + " is not allowed on stateless enterpise beans for "
-               + getType()
-               + ". Only @Dependent is allowed on stateless enterprise beans");
+         throw new DefinitionException("Scope " + getScopeType() + " is not allowed on stateless enterpise beans for " + getType() + ". Only @Dependent is allowed on stateless enterprise beans");
       }
-      if (getEjbMetaData().isSingleton()
-            && (!(getScopeType().equals(Dependent.class) || getScopeType()
-                  .equals(ApplicationScoped.class))))
+      if (getEjbMetaData().isSingleton() && (!(getScopeType().equals(Dependent.class) || getScopeType().equals(ApplicationScoped.class))))
       {
-         throw new DefinitionException(
-               "Scope "
-                     + getScopeType()
-                     + " is not allowed on singleton enterpise beans for "
-                     + getType()
-                     + ". Only @Dependent or @ApplicationScoped is allowed on singleton enterprise beans");
+         throw new DefinitionException("Scope " + getScopeType() + " is not allowed on singleton enterpise beans for " + getType() + ". Only @Dependent or @ApplicationScoped is allowed on singleton enterprise beans");
       }
    }
-   
+
+   /**
+    * Validates specialization
+    */
    private void checkSpecialization()
    {
       if (!getType().isAnnotationPresent(Specializes.class))
@@ -113,7 +142,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          {
             throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
          }
-      } 
+      }
       else
       {
          if (getManager().getMetaDataCache().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
@@ -122,8 +151,10 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          }
       }
    }
-   
-// TODO logging
+
+   /**
+    * Initializes the remvoe method
+    */
    protected void initRemoveMethod()
    {
       if (!getEjbMetaData().isStateful())
@@ -131,13 +162,12 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          // Nothing to do for stateless enterprise beans;
          return;
       }
-      
+
       // >1 @Destructor
       if (getEjbMetaData().getDestructorMethods().size() > 1)
       {
          throw new DefinitionException("Multiple @Destructor methods not allowed on " + getAnnotatedItem());
       }
-
 
       // <1 (0) @Destructors
       if (getEjbMetaData().getNoArgsRemoveMethods().size() == 1)
@@ -152,34 +182,45 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
 
    }
-   
+
+   /**
+    * Validates the remove method
+    */
    private void checkRemoveMethod()
    {
-      if (removeMethod != null)
+      if (removeMethod == null)
       {
-         if (removeMethod.isAnnotationPresent(Destructor.class) && !removeMethod.isAnnotationPresent(EJB.REMOVE_ANNOTATION)) 
-         {
-            throw new DefinitionException("Methods marked @Destructor must also be marked @Remove on " + removeMethod.getName());
-         }
-         else if (removeMethod.isAnnotationPresent(Initializer.class)) 
-         {
-            throw new DefinitionException("Remove methods cannot be initializers on " + removeMethod.getName());
-         }
-         else if (removeMethod.isAnnotationPresent(Produces.class)) 
-         {
-            throw new DefinitionException("Remove methods cannot be producers on " + removeMethod.getName());
-         }
-         else if (removeMethod.getAnnotatedParameters(Disposes.class).size() > 0) 
-         {
-            throw new DefinitionException("Remove method can't have @Disposes annotated parameters on " + removeMethod.getName());
-         }
-         else if (removeMethod.getAnnotatedParameters(Observes.class).size() > 0) 
-         {
-            throw new DefinitionException("Remove method can't have @Observes annotated parameters on " + removeMethod.getName());
-         }
+         return;
+      }
+
+      if (removeMethod.isAnnotationPresent(Destructor.class) && !removeMethod.isAnnotationPresent(EJB.REMOVE_ANNOTATION))
+      {
+         throw new DefinitionException("Methods marked @Destructor must also be marked @Remove on " + removeMethod.getName());
+      }
+      else if (removeMethod.isAnnotationPresent(Initializer.class))
+      {
+         throw new DefinitionException("Remove methods cannot be initializers on " + removeMethod.getName());
+      }
+      else if (removeMethod.isAnnotationPresent(Produces.class))
+      {
+         throw new DefinitionException("Remove methods cannot be producers on " + removeMethod.getName());
+      }
+      else if (removeMethod.getAnnotatedParameters(Disposes.class).size() > 0)
+      {
+         throw new DefinitionException("Remove method can't have @Disposes annotated parameters on " + removeMethod.getName());
+      }
+      else if (removeMethod.getAnnotatedParameters(Observes.class).size() > 0)
+      {
+         throw new DefinitionException("Remove method can't have @Observes annotated parameters on " + removeMethod.getName());
       }
    }
 
+   /**
+    * Creates an instance of the bean
+    * 
+    * @return The instance
+    */
+   @SuppressWarnings("unchecked")
    @Override
    public T create()
    {
@@ -189,15 +230,25 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       injectEjbAndCommonFields();
       injectBoundFields(instance);
       callInitializers(instance);
-      return instance;      
+      return instance;
    }
-   
+
+   /**
+    * Destroys an instance of a bean
+    * 
+    * @param instance The instance
+    */
    @Override
    public void destroy(T instance)
    {
       super.destroy(instance);
    }
 
+   /**
+    * Calls all initializers of the bean
+    * 
+    * @param instance The bean instance
+    */
    protected void callInitializers(T instance)
    {
       for (AnnotatedMethod<Object> initializer : getInitializerMethods())
@@ -205,12 +256,20 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          initializer.invoke(getManager(), instance);
       }
    }
-   
+
+   /**
+    * Injects EJBs and common fields
+    */
    protected void injectEjbAndCommonFields()
    {
       // TODO
    }
-   
+
+   /**
+    * Injects bound fields
+    * 
+    * @param instance The bean instance
+    */
    protected void injectBoundFields(T instance)
    {
       for (AnnotatedField<?> field : getInjectableFields())
@@ -219,50 +278,70 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
    }
 
+   /**
+    * Gets the debugging location info
+    * 
+    * @return The location string
+    */
    public String getLocation()
    {
       if (location == null)
       {
-         location = "type: Enterprise Bean; declaring class: " + getType() +";";
+         location = "type: Enterprise Bean; declaring class: " + getType() + ";";
       }
       return location;
    }
 
+   /**
+    * Returns the specializes type of the bean
+    * 
+    * @return The specialized type
+    */
+   @SuppressWarnings("unchecked")
    @Override
    protected AbstractBean<? extends T, Class<T>> getSpecializedType()
    {
-      //TODO: lots of validation!
+      // TODO: lots of validation!
       Class<?> superclass = getAnnotatedItem().getType().getSuperclass();
-      if ( superclass!=null )
+      if (superclass != null)
       {
          return new EnterpriseBean(superclass, getManager());
       }
-      else {
+      else
+      {
          throw new RuntimeException();
       }
-      
+
    }
 
+   /**
+    * Validates the bean type
+    */
    private void checkEnterpriseBeanTypeAllowed()
    {
       if (getEjbMetaData().isMessageDriven())
       {
-         throw new DefinitionException(
-               "Message Driven Beans can't be Web Beans");
+         throw new DefinitionException("Message Driven Beans can't be Web Beans");
       }
    }
 
+   /**
+    * Returns the EJB metadata
+    * 
+    * @return The metadata
+    */
    protected EjbMetaData<T> getEjbMetaData()
    {
       return ejbMetaData;
    }
-   
+
    @Override
    public String toString()
    {
-      return "EnterpriseBean[" + getType().getName() + "]";
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("EnterpriseBean[" + getType().getName() + "]\n");
+      buffer.append(ejbMetaData.toString() + "\n");
+      return buffer.toString();
    }
 
-   
-   
 }

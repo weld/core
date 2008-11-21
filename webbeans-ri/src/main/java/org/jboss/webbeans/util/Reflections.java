@@ -12,6 +12,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -308,6 +309,21 @@ public class Reflections
    public static boolean isProxy(Object instance) 
    {
       return instance.getClass().getName().indexOf("_$$_javassist_") > 0;
+   }
+   
+   public static Set<Class<?>> getTypeHierachy(Class<?> clazz)
+   {
+      Set<Class<?>> classes = new HashSet<Class<?>>();
+      if (clazz != null)
+      {
+         classes.add(clazz);
+         classes.addAll(getTypeHierachy(clazz.getSuperclass()));
+         for (Class<?> c : clazz.getInterfaces())
+         {
+            classes.addAll(getTypeHierachy(c));
+         }
+      }
+      return classes;
    }   
    
 }
