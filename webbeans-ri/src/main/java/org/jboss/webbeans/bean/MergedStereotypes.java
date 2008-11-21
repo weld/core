@@ -154,30 +154,30 @@ public class MergedStereotypes<T, E>
    {
       StringBuffer buffer = new StringBuffer();
       buffer.append("Merged stereotype\n");
-      buffer.append("Bean name defaulted: " + beanNameDefaulted);
-      buffer.append("Possible deployment types: " + possibleDeploymentTypes.size());
+      buffer.append("Bean name defaulted: " + beanNameDefaulted + "\n");
+      buffer.append("Possible deployment types: " + possibleDeploymentTypes.size() + "\n");
       int i = 0;
       for (Entry<Class<? extends Annotation>, Annotation> entry : possibleDeploymentTypes.entrySet())
       {
-         buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString());
+         buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString() + "\n");
       }
-      buffer.append("Possible scope types: " + possibleScopeTypes.size());
+      buffer.append("Possible scope types: " + possibleScopeTypes.size() + "\n");
       i = 0;
       for (Annotation scopeType : possibleScopeTypes)
       {
          buffer.append(++i + " - " + scopeType.toString());
       }
-      buffer.append("Required types: " + requiredTypes.size());
+      buffer.append("Required types: " + requiredTypes.size() + "\n");
       i = 0;
       for (Class<?> requiredType : requiredTypes)
       {
-         buffer.append(++i + " - " + requiredType.getName());
+         buffer.append(++i + " - " + requiredType.getName() + "\n");
       }
-      buffer.append("Supported scopes: " + supportedScopes.size());
+      buffer.append("Supported scopes: " + supportedScopes.size() + "\n");
       i = 0;
       for (Class<?> supportedScope : supportedScopes)
       {
-         buffer.append(++i + " - " + supportedScope.getName());
+         buffer.append(++i + " - " + supportedScope.getName() + "\n");
       }
       return buffer.toString();
    }

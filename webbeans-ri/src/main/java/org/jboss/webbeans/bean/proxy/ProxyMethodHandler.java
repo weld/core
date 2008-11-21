@@ -87,7 +87,7 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
    {
       StringBuffer buffer = new StringBuffer();
       buffer.append("Proxy method handler\n");
-      buffer.append("Bean " + (bean == null ? "null" : bean.toString()));
+      buffer.append("Bean " + (bean == null ? "null" : bean.toString()) + "\n");
       buffer.append("Bean index: " + beanIndex + "\n");
       return buffer.toString();
    }

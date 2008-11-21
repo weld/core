@@ -184,21 +184,22 @@ public class EventManager
       }
    }
 
-
    @Override
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
       buffer.append("Event manager\n");
       buffer.append("Registered observers: " + registeredObservers.size() + "\n");
+      int i = 1;
       for (Entry<Class<?>, CopyOnWriteArrayList<EventObserver<?>>> entry : registeredObservers.entrySet())
       {
-         buffer.append(entry.getKey().getName() + ":\n");
          for (EventObserver<?> observer : entry.getValue())
          {
-            buffer.append("  " + observer.toString());
+            buffer.append(i + " - " + entry.getKey().getName() + ": " + observer.toString() + "\n");
          }
+         i++;
       }
+      buffer.append("Transaction manager: " + transactionManager + "\n");
       return buffer.toString();
    }
 }

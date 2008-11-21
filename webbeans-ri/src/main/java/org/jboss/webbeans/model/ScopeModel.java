@@ -58,7 +58,7 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
       StringBuffer buffer = new StringBuffer();
       buffer.append("Scope model\n");
       buffer.append("Valid : " + isValid() + "\n");
-      buffer.append("Annotated type " + getAnnotatedAnnotation().toString());
+      buffer.append("Annotated type " + getAnnotatedAnnotation().toString() + "\n");
       return buffer.toString();
    }
    

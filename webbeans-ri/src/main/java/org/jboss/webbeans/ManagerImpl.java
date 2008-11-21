@@ -663,40 +663,36 @@ public class ManagerImpl implements Manager
    {
       StringBuffer buffer = new StringBuffer();
 
-      buffer.append("Enabled deployment types:\n");
+      buffer.append("Enabled deployment types: " + enabledDeploymentTypes.size() + "\n");
+      int i = 0;
       for (Class<? extends Annotation> deploymentType : enabledDeploymentTypes)
       {
-         buffer.append("  " + deploymentType.getName() + "\n");
+         buffer.append(++i + " - " + deploymentType.getName() + "\n");
       }
-
-      buffer.append(eventManager.toString());
-      buffer.append(metaDataCache.toString());
-
-      buffer.append("Resolver:\n");
-      buffer.append(resolver.toString());
-
-      buffer.append("Context map:\n");
-      buffer.append(contextMap.toString());
-
-      buffer.append("Proxy pool:\n");
-      buffer.append(proxyPool.toString());
-
+      buffer.append(eventManager.toString() + "\n");
+      buffer.append(metaDataCache.toString() + "\n");
+      buffer.append(resolver.toString() + "\n");
+      buffer.append(contextMap.toString() + "\n");
+      buffer.append(proxyPool.toString() + "\n");
       buffer.append("Registered beans: " + beans.size() + "\n");
+      i = 0;
       for (Bean<?> bean : beans)
       {
-         buffer.append("  " + bean.toString() + "\n");
+         buffer.append(++i + " - " + bean.toString() + "\n");
       }
 
       buffer.append("Registered decorators: " + decorators.size() + "\n");
+      i = 0;
       for (Decorator decorator : decorators)
       {
-         buffer.append("  " + decorator.toString() + "\n");
+         buffer.append(++i + " - " + decorator.toString() + "\n");
       }
 
       buffer.append("Registered interceptors: " + interceptors.size() + "\n");
+      i = 0;
       for (Interceptor interceptor : interceptors)
       {
-         buffer.append("  " + interceptor.toString() + "\n");
+         buffer.append(++i + " - " + interceptor.toString() + "\n");
       }
 
       return buffer.toString();

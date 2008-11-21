@@ -202,7 +202,7 @@ public class SessionBeanMap implements BeanMap
    {
       StringBuffer buffer = new StringBuffer();
       List<Bean<?>> beans = (List) keySet();
-      buffer.append(beans.size() + " found in session");
+      buffer.append(beans.size() + " found in session\n");
       for (Bean<?> bean : beans)
       {
          Object instance = get(bean);

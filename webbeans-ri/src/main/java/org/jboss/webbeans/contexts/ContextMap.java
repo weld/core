@@ -81,12 +81,14 @@ public class ContextMap extends ForwardingMap<Class<? extends Annotation>, List<
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
+      buffer.append("Context map\n");
       buffer.append("Known scope types: " + delegate.size() + "\n");
+      int i = 0;
       for (Entry<Class<? extends Annotation>, List<Context>> entry : delegate.entrySet())
       {
          for (Context context : entry.getValue())
          {
-            buffer.append(context.toString() + "\n");
+            buffer.append(++i + " - " + entry.getKey().getName() + ": " + context.toString() + "\n");
          }
       }
       return buffer.toString();

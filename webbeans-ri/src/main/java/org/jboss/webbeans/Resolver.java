@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import javax.webbeans.NullableDependencyException;
 import javax.webbeans.manager.Bean;
@@ -77,6 +78,15 @@ public class Resolver
          return delegate().hashCode();
       }
 
+      @Override
+      public String toString()
+      {
+         StringBuffer buffer = new StringBuffer();
+         buffer.append("Resolvable annotation item\n");
+         buffer.append(delegate().toString() + "\n");
+         return buffer.toString();
+      }
+
    }
 
    // TODO Why can't we generify Set?
@@ -105,6 +115,15 @@ public class Resolver
       {
          return delegate;
       }
+      
+      @Override
+      public String toString()
+      {
+         StringBuffer buffer = new StringBuffer();
+         buffer.append("Annotated item\n");
+         buffer.append(delegate().toString() + "\n");
+         return buffer.toString();
+      }      
 
    }
 
@@ -324,11 +343,25 @@ public class Resolver
       // TODO Auto-generated method stub
       return null;
    }
-   
+
    @Override
-   public String toString() {
+   public String toString()
+   {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("FIX ME!\n");
+      buffer.append("Resolver\n");
+      buffer.append(resolvedInjectionPoints.toString() + "\n");
+      buffer.append("Injection points: " + injectionPoints.size() + "\n");
+      int i = 0;
+      for (AnnotatedItem<?, ?> injectionPoint : injectionPoints)
+      {
+         buffer.append(++i + " - " + injectionPoint.toString() + "\n");
+      }
+      buffer.append("Resolved names: " + resolvedNames.size() + "\n");
+      i = 0;
+      for (Entry<String, Set<Bean<?>>> entry : resolvedNames.entrySet())
+      {
+         buffer.append(++i + " - " + entry + ": " + entry.getValue().toString() + "\n");
+      }
       return buffer.toString();
    }
 

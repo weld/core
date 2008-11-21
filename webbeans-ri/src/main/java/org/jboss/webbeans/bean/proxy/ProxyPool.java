@@ -78,7 +78,7 @@ public class ProxyPool
          int i = 0;
          for (Entry<Bean<?>, Object> entry : delegate.entrySet())
          {
-            buffer.append(i + " - " + entry.getKey().toString() + ": " + entry.getValue().toString());
+            buffer.append(i + " - " + entry.getKey().toString() + ": " + entry.getValue().toString() + "\n");
          }
          return buffer.toString();
       }
@@ -203,7 +203,8 @@ public class ProxyPool
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("Proxy pool: " + pool.toString() + "\n");
+      buffer.append("Proxy pool\n");
+      buffer.append(pool.toString() + "\n");
       return buffer.toString();
    }
 

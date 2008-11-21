@@ -268,13 +268,13 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       int i = 0;
       for (AnnotatedMethod<?> initializerMethod : initializerMethods)
       {
-         buffer.append(++i + " - " + initializerMethod.toString());
+         buffer.append(++i + " - " + initializerMethod.toString() + "\n");
       }
       i = 0;
-      buffer.append("Injectable fields " + injectableFields.size());
+      buffer.append("Injectable fields " + injectableFields.size() + "\n");
       for (AnnotatedField<?> injectableField : injectableFields)
       {
-         buffer.append(++i + " - " + injectableField.toString());
+         buffer.append(++i + " - " + injectableField.toString() + "\n");
       }
       return buffer.toString();
    }

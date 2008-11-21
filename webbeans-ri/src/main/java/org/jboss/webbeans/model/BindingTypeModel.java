@@ -118,7 +118,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
       for (AnnotatedMethod<?> method : nonBindingTypes) {
          method.toString();
       }
-      buffer.append("Annotated type " + getAnnotatedAnnotation().getName());
+      buffer.append("Annotated type " + getAnnotatedAnnotation().getName() + "\n");
       return buffer.toString();
    }
    

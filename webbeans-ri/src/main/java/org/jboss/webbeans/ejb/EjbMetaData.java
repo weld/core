@@ -163,19 +163,19 @@ public class EjbMetaData<T>
       int i = 0;
       for (AnnotatedMethod<?> method : destructorMethods)
       {
-         buffer.append(++i + " - " + method.toString());
+         buffer.append(++i + " - " + method.toString() + "\n");
       }
       i = 0;
       buffer.append("Remove methods: " + removeMethods.size() + "\n");
       for (AnnotatedMethod<?> method : removeMethods)
       {
-         buffer.append(++i + " - " + method.toString());
+         buffer.append(++i + " - " + method.toString() + "\n");
       }
       i = 0;
       buffer.append("No-args remove methods: " + noArgsRemoveMethods.size() + "\n");
       for (AnnotatedMethod<?> method : noArgsRemoveMethods)
       {
-         buffer.append(++i + " - " + method.toString());
+         buffer.append(++i + " - " + method.toString() + "\n");
       }
       return buffer.toString();
    }
