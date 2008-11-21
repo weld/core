@@ -183,7 +183,7 @@ public class ManagerImpl implements Manager
     * @param bindingTypes The binding types to match
     * @return The set of matching disposal methods
     */
-   public <T> Set<AnnotatedMethod<Object>> resolveDisposalMethods(Class<T> apiType, Annotation... bindingTypes)
+   public <T> Set<AnnotatedMethod<Object>> resolveDisposalMethods(Class<T> apiType, Annotation... bindings)
    {
       return new HashSet<AnnotatedMethod<Object>>();
    }
@@ -235,9 +235,9 @@ public class ManagerImpl implements Manager
     * @see javax.webbeans.manager.Manager#resolveByType(java.lang.Class,
     *      java.lang.annotation.Annotation[])
     */
-   public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindingTypes)
+   public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindings)
    {
-      return resolveByType(new AnnotatedClassImpl<T>(type, type, bindingTypes), bindingTypes);
+      return resolveByType(new AnnotatedClassImpl<T>(type, type, bindings), bindings);
    }
 
    /**
@@ -250,9 +250,9 @@ public class ManagerImpl implements Manager
     * @see javax.webbeans.manager.Manager#resolveByType(javax.webbeans.TypeLiteral,
     *      java.lang.annotation.Annotation[])
     */
-   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> type, Annotation... bindingTypes)
+   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> type, Annotation... bindings)
    {
-      return resolveByType(new AnnotatedClassImpl<T>(type.getRawType(), type.getType(), bindingTypes), bindingTypes);
+      return resolveByType(new AnnotatedClassImpl<T>(type.getRawType(), type.getType(), bindings), bindings);
    }
 
    /**
@@ -263,7 +263,7 @@ public class ManagerImpl implements Manager
     * @param bindingTypes The binding types to match
     * @return The set of matching beans
     */
-   public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, Annotation... bindingTypes)
+   public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
       for (Annotation annotation : element.getAnnotations())
       {
@@ -272,7 +272,7 @@ public class ManagerImpl implements Manager
             throw new IllegalArgumentException("Not a binding type " + annotation);
          }
       }
-      if (bindingTypes.length > element.getMetaAnnotations(BindingType.class).size())
+      if (bindings.length > element.getMetaAnnotations(BindingType.class).size())
       {
          throw new DuplicateBindingTypeException(element.toString());
       }
@@ -514,9 +514,9 @@ public class ManagerImpl implements Manager
     * @see javax.webbeans.manager.Manager#getInstanceByType(java.lang.Class,
     *      java.lang.annotation.Annotation[])
     */
-   public <T> T getInstanceByType(Class<T> type, Annotation... bindingTypes)
+   public <T> T getInstanceByType(Class<T> type, Annotation... bindings)
    {
-      return getInstanceByType(new AnnotatedClassImpl<T>(type, type, bindingTypes), bindingTypes);
+      return getInstanceByType(new AnnotatedClassImpl<T>(type, type, bindings), bindings);
    }
 
    /**
@@ -529,9 +529,9 @@ public class ManagerImpl implements Manager
     * @see javax.webbeans.manager.Manager#getInstanceByType(javax.webbeans.TypeLiteral,
     *      java.lang.annotation.Annotation[])
     */
-   public <T> T getInstanceByType(TypeLiteral<T> type, Annotation... bindingTypes)
+   public <T> T getInstanceByType(TypeLiteral<T> type, Annotation... bindings)
    {
-      return getInstanceByType(new AnnotatedClassImpl<T>(type.getRawType(), type.getType(), bindingTypes), bindingTypes);
+      return getInstanceByType(new AnnotatedClassImpl<T>(type.getRawType(), type.getType(), bindings), bindings);
    }
 
    /**
@@ -542,9 +542,9 @@ public class ManagerImpl implements Manager
     * @param bindingTypes The binding types to match
     * @return An instance of the bean
     */
-   public <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindingTypes)
+   public <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
-      Set<Bean<T>> beans = resolveByType(element, bindingTypes);
+      Set<Bean<T>> beans = resolveByType(element, bindings);
       if (beans.size() == 0)
       {
          throw new UnsatisfiedDependencyException(element + "Unable to resolve any Web Beans");
@@ -627,9 +627,9 @@ public class ManagerImpl implements Manager
     * @see javax.webbeans.manager.Manager#resolveDecorators(java.util.Set,
     *      java.lang.annotation.Annotation[])
     */
-   public List<Decorator> resolveDecorators(Set<Class<?>> types, Annotation... bindingTypes)
+   public List<Decorator> resolveDecorators(Set<Class<?>> types, Annotation... bindings)
    {
-      return resolver.resolveDecorators(types, bindingTypes);
+      return resolver.resolveDecorators(types, bindings);
    }
 
    /**
