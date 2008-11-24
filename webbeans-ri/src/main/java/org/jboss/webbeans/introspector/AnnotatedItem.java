@@ -1,117 +1,166 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-
 /**
  * AnnotatedItem provides a uniform access to the annotations on an annotated
- * item defined either in Java or XML 
+ * item defined either in Java or XML
  * 
  * @author Pete Muir
- *
+ * 
  */
 public interface AnnotatedItem<T, S>
 {
 
    /**
-    * Get all annotations on the item
+    * Gets all annotations on the item
     * 
-    * An empty set is returned if no annotations are present
+    * @return A set of annotations. Returns an empty set if there are no
+    *         matches.
     */
    public <A extends Annotation> Set<A> getAnnotations();
 
    /**
-    * Get all annotations which are annotated with the given meta annotation 
+    * Gets all annotations which are annotated with the given meta annotation
     * type
     * 
-    * If no annotations are present which are annotated with the given meta
-    * annotation an empty set is returned
+    * @param The meta annotation to match
+    * @return A set of matching meta-annotations. Returns an empty set if there
+    *         are no matches.
     */
-   public Set<Annotation> getMetaAnnotations(
-         Class<? extends Annotation> metaAnnotationType);
-   
-   public Annotation[] getMetaAnnotationsAsArray(
-         Class<? extends Annotation> metaAnnotationType);
-   
+   public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
+
    /**
-    * Get the binding types for this element
+    * Gets all annotations which are annotated with the given meta annotation
+    * type
+    * 
+    * @param The meta annotation to match
+    * @return An array of matching meta-annotations. Returns an empty array if
+    *         there are no matches.
+    */
+   public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType);
+
+   /**
+    * Gets the binding types for this element
+    * 
+    * @returns A set of binding types present on the type. Returns an empty set
+    *          if there are no matches.
     */
    public Set<Annotation> getBindingTypes();
-   
+
+   /**
+    * Gets the binding types for this element
+    * 
+    * @returns An array of binding types present on the type. Returns an empty
+    *          array if there are no matches.
+    */
    public Annotation[] getBindingTypesAsArray();
 
    /**
-    * Get an annotation for the annotation type specified.
+    * Gets an annotation for the annotation type specified.
     * 
-    * If the annotation isn't present, null is returned
+    * @param annotationType The annotation to match
+    * @return An annotation if found, null if the annotation wasn't present.
     */
-   public <A extends Annotation> A getAnnotation(
-         Class<? extends A> annotationType);
+   public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType);
 
    /**
-    * Return true if the annotation type specified is present
+    * Indicates if an annotation type specified is present
+    * 
+    * @param annotationType The annotation to match
+    * @return True if present, false if not
     */
-   public boolean isAnnotationPresent(
-         Class<? extends Annotation> annotationType);
-   
+   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType);
+
    /**
-    * Get the underlying element
-    * @return
+    * Gets the underlying element
+    * 
+    * @return The annotated item
     */
    public S getDelegate();
-   
+
    /**
-    * The type of the element
-    * @return
+    * Gets the type of the element
+    * 
+    * @return The type of the element
     */
    public Class<T> getType();
-   
+
    /**
-    * Extends Java Class assignability such that actual type parameters are also 
+    * Extends Java Class assignability such that actual type parameters are also
     * considered
+    * 
+    * @param that The other item to check assignability against
+    * @return True if assignable, false otherwise.
     */
    public boolean isAssignableFrom(AnnotatedItem<?, ?> that);
-   
+
    /**
-    * Returns true if any of the types provided are assignable to this, using 
+    * Checks if any of the types provided are assignable to this, using
     * the extended assingablity algorithm provided by AnnotatedItem.
     * 
     * The types are assumed to contain their own actual type parameterization.
+    * 
+    * @param types The set of types to match
+    * @return True if assignable, false otherwise.
     */
    public boolean isAssignableFrom(Set<Class<?>> types);
-   
+
    /**
-    * Return the actual type arguments for any parameterized types that this
+    * Gets the actual type arguments for any parameterized types that this
     * AnnotatedItem represents.
+    * 
+    * @return An array of type arguments
     */
    public Type[] getActualTypeArguments();
-   
+
    /**
-    * Return true if this AnnotatedItem represents a static element
+    * Indicates if this AnnotatedItem represents a static element
+    * 
+    * @return True if static, false otherwise
     */
    public boolean isStatic();
-   
+
    /**
-    * Return true if this AnnotatedItem represents a final element
+    * Indicates if this AnnotatedItem represents a final element    
+    * @return True if final, false otherwise
     */
    public boolean isFinal();
-   
+
    /**
-    * Return true if this AnnotatedItem can be proxyed
-    * @return
+    * Indicates if this AnnotatedItem can be proxyed
+    * 
+    * @return True if proxyable, false otherwise
     */
    public boolean isProxyable();
-   
+
    /**
-    * Return the name of this AnnotatedItem
+    * Gets the name of this AnnotatedItem
     * 
     * If it is not possible to determine the name of the underling element, a
     * IllegalArgumentException is thrown
+    * 
+    * @return The name
     */
    public String getName();
-
-   
 
 }
