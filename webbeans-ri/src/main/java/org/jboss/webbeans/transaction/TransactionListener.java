@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJBException;
+import javax.ejb.Remove;
 import javax.ejb.SessionSynchronization;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
@@ -16,7 +17,7 @@ import javax.webbeans.RequestScoped;
 @Stateful
 @RequestScoped
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class TransactionListener implements SessionSynchronization
+public class TransactionListener implements LocalTransactionListener, SessionSynchronization
 {
 
    private List<Synchronization> synchronizations = new ArrayList<Synchronization>();
@@ -45,5 +46,10 @@ public class TransactionListener implements SessionSynchronization
    public void registerSynhronization(Synchronization synchronization)
    {
       synchronizations.add(synchronization);
+   }
+
+   @Remove
+   public void destroy()
+   {      
    }
 }
