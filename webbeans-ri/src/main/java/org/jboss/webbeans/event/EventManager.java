@@ -48,7 +48,8 @@ public class EventManager
    private final Map<Class<?>, CopyOnWriteArrayList<EventObserver<?>>> registeredObservers;
    private ManagerImpl manager;
    // TODO: can we do this?
-   @Resource TransactionManager transactionManager;
+   @Resource
+   TransactionManager transactionManager;
 
    /**
     * Initializes a new instance of the EventManager. This includes looking up
@@ -81,7 +82,6 @@ public class EventManager
       }
    }
 
-
    /**
     * Resolves the list of observers to be notified for a given event and
     * optional event bindings.
@@ -104,7 +104,8 @@ public class EventManager
       return interestedObservers;
    }
 
-   private boolean isTransactionActive() {
+   private boolean isTransactionActive()
+   {
       try
       {
          // TODO: Check NPE conditions;
@@ -113,9 +114,9 @@ public class EventManager
       catch (SystemException e)
       {
          return false;
-      }      
+      }
    }
-   
+
    /**
     * Notifies each observer immediately of the event unless a transaction is
     * currently in progress, in which case a deferred event is created and
@@ -129,14 +130,22 @@ public class EventManager
    {
       for (Observer<T> observer : observers)
       {
-         if (isTransactionActive() && ((ObserverImpl<?>) observer).isTransactional()) {
-            TransactionListener transactionListener = manager.getInstanceByType(TransactionListener.class);
-            DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, observer);
-            transactionListener.registerSynhronization(deferredEvent);
-         } else {
+         if (isTransactionActive() && ((ObserverImpl<?>) observer).isTransactional())
+         {
+            deferEvent(event, observer);
+         }
+         else
+         {
             observer.notify(event);
          }
       }
+   }
+
+   private <T> void deferEvent(T event, Observer<T> observer)
+   {
+      TransactionListener transactionListener = manager.getInstanceByType(TransactionListener.class);
+      DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, observer);
+      transactionListener.registerSynhronization(deferredEvent);
    }
 
    /**
