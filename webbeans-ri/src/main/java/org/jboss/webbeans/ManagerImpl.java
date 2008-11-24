@@ -87,7 +87,7 @@ public class ManagerImpl implements Manager
    {
       this.metaDataCache = new MetaDataCache();
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
-      this.eventManager = new EventManager();
+      this.eventManager = new EventManager(this);
       this.resolver = new Resolver(this);
       this.proxyPool = new ProxyPool(this);
       this.decorators = new HashSet<Decorator>();
