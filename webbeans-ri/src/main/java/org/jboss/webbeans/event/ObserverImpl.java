@@ -6,6 +6,7 @@ import javax.webbeans.AfterTransactionCompletion;
 import javax.webbeans.AfterTransactionFailure;
 import javax.webbeans.AfterTransactionSuccess;
 import javax.webbeans.BeforeTransactionCompletion;
+import javax.webbeans.IfExists;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -30,6 +31,7 @@ public class ObserverImpl<T> implements Observer<T>
    private final AnnotatedMethod<Object> observerMethod;
    private final Class<T> eventType;
    private boolean transactional;
+   private boolean conditional;
    private ManagerImpl manager;
 
    /**
@@ -50,11 +52,8 @@ public class ObserverImpl<T> implements Observer<T>
       this.eventBean = eventBean;
       this.observerMethod = observer;
       this.eventType = eventType;
-      transactional = 
-         !observerMethod.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty() || 
-         !observerMethod.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty() || 
-         !observerMethod.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty() || 
-         !observerMethod.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty();
+      transactional = !observerMethod.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty() || !observerMethod.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty() || !observerMethod.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty() || !observerMethod.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty();
+      conditional = !observerMethod.getAnnotatedParameters(IfExists.class).isEmpty();
    }
 
    /*
@@ -76,7 +75,7 @@ public class ObserverImpl<T> implements Observer<T>
    public void notify(final T event)
    {
       // Get the most specialized instance of the component
-      Object instance = getInstance();
+      Object instance = getInstance(isConditional());
       if (instance != null)
       {
          // TODO replace event parameter
@@ -88,10 +87,11 @@ public class ObserverImpl<T> implements Observer<T>
    /**
     * Uses the container to retrieve the most specialized instance of this
     * observer.
+    * @param conditional 
     * 
     * @return the most specialized instance
     */
-   protected Object getInstance()
+   protected Object getInstance(boolean conditional)
    {
       // Return the most specialized instance of the component
       return manager.getInstanceByType(eventBean.getType(), eventBean.getBindingTypes().toArray(new Annotation[0]));
@@ -99,6 +99,11 @@ public class ObserverImpl<T> implements Observer<T>
 
    public boolean isTransactional()
    {
-      return transactional; 
+      return transactional;
+   }
+
+   public boolean isConditional()
+   {
+      return conditional;
    }
 }

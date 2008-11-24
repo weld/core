@@ -22,7 +22,7 @@ public class MockObserverImpl<T> extends ObserverImpl<T>
    }
 
    @Override
-   protected final Object getInstance()
+   protected final Object getInstance(boolean conditional)
    {
       return specializedInstance;
    }
