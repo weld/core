@@ -2,6 +2,10 @@ package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
 
+import javax.webbeans.AfterTransactionCompletion;
+import javax.webbeans.AfterTransactionFailure;
+import javax.webbeans.AfterTransactionSuccess;
+import javax.webbeans.BeforeTransactionCompletion;
 import javax.webbeans.Current;
 import javax.webbeans.Observer;
 
@@ -96,5 +100,13 @@ public class ObserverImpl<T> implements Observer<T>
    {
       // Return the most specialized instance of the component
       return manager.getInstanceByType(eventBean.getType(), eventBean.getBindingTypes().toArray(new Annotation[0]));
+   }
+   
+   public boolean isTransactional() {
+      return
+         !observerMethod.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty() ||
+         !observerMethod.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty() ||
+         !observerMethod.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty() ||
+         !observerMethod.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty();
    }
 }

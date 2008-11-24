@@ -27,12 +27,16 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.annotation.Resource;
 import javax.transaction.RollbackException;
+import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-import javax.webbeans.Current;
 import javax.webbeans.Observer;
+
+import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.transaction.TransactionListener;
 
 /**
  * The event bus is where observers are registered and events are fired.
@@ -43,25 +47,25 @@ import javax.webbeans.Observer;
 public class EventManager
 {
    private final Map<Class<?>, CopyOnWriteArrayList<EventObserver<?>>> registeredObservers;
-   
-   @Current
-   private TransactionManager transactionManager;
+   private ManagerImpl manager;
+   // TODO: can we do this?
+   @Resource TransactionManager transactionManager;
 
    /**
-    * Initializes a new instance of the EventManager. This includes looking up the
-    * transaction manager which is needed to defer events till the end of a
-    * transaction. 
+    * Initializes a new instance of the EventManager. This includes looking up
+    * the transaction manager which is needed to defer events till the end of a
+    * transaction.
     */
-   public EventManager()
+   public EventManager(ManagerImpl manager)
    {
       registeredObservers = new ConcurrentHashMap<Class<?>, CopyOnWriteArrayList<EventObserver<?>>>();
+      this.manager = manager;
    }
 
    /**
     * Adds an observer to the event bus so that it receives event notifications.
     * 
-    * @param observer
-    *           The observer that should receive events
+    * @param observer The observer that should receive events
     */
    public <T> void addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
@@ -78,28 +82,6 @@ public class EventManager
       }
    }
 
-   /**
-    * Defers delivery of an event till the end of the currently active
-    * transaction.
-    * 
-    * @param event The event object to deliver
-    * @param observer The observer to receive the event
-    * @throws SystemException
-    * @throws IllegalStateException
-    * @throws RollbackException
-    */
-   public <T> void deferEvent(T event, Observer<T> observer) throws SystemException, IllegalStateException, RollbackException
-   {
-      if (transactionManager != null)
-      {
-         // Get the current transaction associated with the thread
-         Transaction transaction = transactionManager.getTransaction();
-         if (transaction != null)
-         {
-            transaction.registerSynchronization(new DeferredEventNotification<T>(event, observer));
-         }
-      }
-   }
 
    /**
     * Resolves the list of observers to be notified for a given event and
@@ -123,6 +105,18 @@ public class EventManager
       return interestedObservers;
    }
 
+   private boolean isTransactionActive() {
+      try
+      {
+         // TODO: Check NPE conditions;
+         return transactionManager.getTransaction().getStatus() == Status.STATUS_ACTIVE;
+      }
+      catch (SystemException e)
+      {
+         return false;
+      }      
+   }
+   
    /**
     * Notifies each observer immediately of the event unless a transaction is
     * currently in progress, in which case a deferred event is created and
@@ -136,30 +130,11 @@ public class EventManager
    {
       for (Observer<T> observer : observers)
       {
-         // TODO Replace this with the correct transaction code
-         Transaction transaction = null;
-         try
-         {
-            transaction = transactionManager.getTransaction();
-         } catch (SystemException e)
-         {
-         }
-         if (transaction != null)
-         {
-            try
-            {
-               deferEvent(event, observer);
-            } catch (IllegalStateException e)
-            {
-            } catch (SystemException e)
-            {
-            } catch (RollbackException e)
-            {
-               // TODO If transaction is being rolled back, perhaps notification should terminate now
-            }
-         } else
-         {
-            // Notify observer immediately in the same context as this method
+         if (isTransactionActive() && ((ObserverImpl<?>) observer).isTransactional()) {
+            TransactionListener transactionListener = manager.getInstanceByType(TransactionListener.class);
+            DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, observer);
+            transactionListener.registerSynhronization(deferredEvent);
+         } else {
             observer.notify(event);
          }
       }
@@ -168,8 +143,7 @@ public class EventManager
    /**
     * Removes an observer from the event bus.
     * 
-    * @param observer
-    *           The observer to remove
+    * @param observer The observer to remove
     */
    public <T> void removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
