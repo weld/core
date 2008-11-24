@@ -185,7 +185,7 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       else if (disposalMethods.size() > 1)
       {
          // TODO List out found disposal methods
-         throw new RuntimeException(getLocation() + "Cannot declare multiple disposal methods for this producer method");
+         throw new DefinitionException (getLocation() + "Cannot declare multiple disposal methods for this producer method");
       }
    }
    

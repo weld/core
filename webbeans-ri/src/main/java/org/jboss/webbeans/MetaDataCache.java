@@ -66,29 +66,29 @@ public class MetaDataCache
       public String toString()
       {
          StringBuffer buffer = new StringBuffer();
-         buffer.append("Binding types " + bindingTypes.size() + "\n");
+         buffer.append("Binding types: " + bindingTypes.size() + "\n");
          int i = 0;
          for (Entry<Class<? extends Annotation>, BindingTypeModel<?>> entry : bindingTypes.entrySet())
          {
             buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString() + "\n");
          }
-         buffer.append("EJB metadata " + ejbMetaDataMap.size() + "\n");
+         buffer.append("EJB metadata: " + ejbMetaDataMap.size() + "\n");
          i = 0;
          for (Entry<Class<?>, EjbMetaData<?>> entry : ejbMetaDataMap.entrySet())
          {
-            buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString());
+            buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString() + "\n");
          }
-         buffer.append("Scopes " + scopes.size() + "\n");
+         buffer.append("Scopes: " + scopes.size() + "\n");
          i = 0;
          for (Entry<Class<? extends Annotation>, ScopeModel<?>> entry : scopes.entrySet())
          {
-            buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString());
+            buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString() + "\n");
          }
-         buffer.append("Stereotypes " + stereotypes.size() + "\n");
+         buffer.append("Stereotypes: " + stereotypes.size() + "\n");
          i = 0;
          for (Entry<Class<? extends Annotation>, StereotypeModel<?>> entry : stereotypes.entrySet())
          {
-            buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString());
+            buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString() + "\n");
          }
          return buffer.toString();
       }
@@ -116,6 +116,7 @@ public class MetaDataCache
       {
          StringBuffer buffer = new StringBuffer();
          buffer.append("Scope model map\n");
+         buffer.append("--------------------\n");
          buffer.append(super.toString() + "\n");
          return buffer.toString();
       }
@@ -143,6 +144,7 @@ public class MetaDataCache
       {
          StringBuffer buffer = new StringBuffer();
          buffer.append("Binding type model map\n");
+         buffer.append("--------------------\n");
          buffer.append(super.toString() + "\n");
          return buffer.toString();
       }
@@ -181,6 +183,7 @@ public class MetaDataCache
       {
          StringBuffer buffer = new StringBuffer();
          buffer.append("EJB metadata: " + delegate.size() + "\n");
+         buffer.append("--------------------\n");
          int i = 0;
          for (Entry<Class<?>, EjbMetaData<?>> entry : delegate.entrySet())
          {
@@ -228,7 +231,9 @@ public class MetaDataCache
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
+      buffer.append("====================\n");
       buffer.append("Metadata cache\n");
+      buffer.append("====================\n");
       buffer.append(bindingTypes.toString() + "\n");
       buffer.append(ejbMetaDataMap.toString() + "\n");
       buffer.append(scopes.toString() + "\n");
@@ -238,6 +243,7 @@ public class MetaDataCache
       {
          buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString() + "\n");
       }
+      buffer.append("====================\n");
       return buffer.toString();
    }
 

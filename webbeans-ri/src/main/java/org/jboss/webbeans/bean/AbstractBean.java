@@ -65,6 +65,10 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    /**
     * Helper class for getting deployment type
     * 
+    * Loops through the enabled deployment types (backwards) and returns the first one
+    * present in the possible deployments type, resulting in the deployment type of 
+    * highest priority
+    * 
     * @param enabledDeploymentTypes The currently enabled deployment types
     * @param possibleDeploymentTypes The possible deployment types
     * @return The deployment type
@@ -193,7 +197,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          Set<Annotation> xmlDeploymentTypes = null;
          if (xmlDeploymentTypes.size() > 1)
          {
-            throw new RuntimeException("At most one deployment type may be specified (" + xmlDeploymentTypes + " are specified)");
+            throw new DefinitionException ("At most one deployment type may be specified (" + xmlDeploymentTypes + " are specified)");
          }
 
          if (xmlDeploymentTypes.size() == 1)
@@ -361,7 +365,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       }
       else if (getMergedStereotypes().getPossibleScopeTypes().size() > 1)
       {
-         throw new RuntimeException("All stereotypes must specify the same scope OR a scope must be specified on the bean");
+         throw new DefinitionException ("All stereotypes must specify the same scope OR a scope must be specified on the bean");
       }
       this.scopeType = Dependent.class;
       log.trace("Using default @Dependent scope");
@@ -379,7 +383,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    {
       if (deploymentType == null)
       {
-         throw new RuntimeException("type: " + getType() + " must specify a deployment type");
+         throw new DefinitionException ("type: " + getType() + " must specify a deployment type");
       }
       else if (deploymentType.equals(Standard.class) && !STANDARD_WEB_BEAN_CLASSES.contains(getAnnotatedItem().getType()))
       {
