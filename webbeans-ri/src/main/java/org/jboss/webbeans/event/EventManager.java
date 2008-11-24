@@ -19,7 +19,6 @@ package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -148,14 +147,8 @@ public class EventManager
    public <T> void removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
       List<EventObserver<?>> observers = registeredObservers.get(eventType);
-      for (Iterator<EventObserver<?>> i = observers.iterator(); i.hasNext();)
-      {
-         if (observer.equals(i.next().getObserver()))
-         {
-            i.remove();
-            break;
-         }
-      }
+      EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, bindings);
+      observers.remove(eventObserver);
    }
 
    @Override
