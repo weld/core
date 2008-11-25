@@ -1,20 +1,21 @@
 package org.jboss.webbeans.event;
 
+import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.webbeans.Observer;
 
 /**
- * A synchronization object which will deliver the event to the observer
- * after the JTA transaction currently in effect is committed.
+ * A synchronization object which will deliver the event to the observer after
+ * the JTA transaction currently in effect is committed.
  * 
  * @author David Allen
- *
+ * 
  */
 public class DeferredEventNotification<T> implements Synchronization
 {
-   private Observer<T> observer;
+   private ObserverImpl<T> observer;
    private T event;
-   
+
    /**
     * Creates a new deferred event notifier.
     * 
@@ -24,7 +25,7 @@ public class DeferredEventNotification<T> implements Synchronization
     */
    public DeferredEventNotification(T event, Observer<T> observer)
    {
-      this.observer = observer;
+      this.observer = (ObserverImpl<T>) observer;
       this.event = event;
    }
 
@@ -36,15 +37,34 @@ public class DeferredEventNotification<T> implements Synchronization
       return observer;
    }
 
-   public void afterCompletion(int arg0)
+   public void afterCompletion(int status)
    {
-      // The event is already delivered before completion
+      if (observer.isInterestedInTransactionPhase(TransactionObservationPhase.AFTER_COMPLETION))
+      {
+         observer.notify(event);
+      }
+      switch (status)
+      {
+      case Status.STATUS_COMMITTED:
+         if (observer.isInterestedInTransactionPhase(TransactionObservationPhase.AFTER_SUCCESS))
+         {
+            observer.notify();
+         }
+         break;
+      case Status.STATUS_ROLLEDBACK:
+         if (observer.isInterestedInTransactionPhase(TransactionObservationPhase.AFTER_FAILURE))
+         {
+            observer.notify();
+         }
+         break;
+      }
    }
 
    public void beforeCompletion()
    {
-      // Execute the observer method on the event
-      observer.notify(event);      
+      if (observer.isInterestedInTransactionPhase(TransactionObservationPhase.BEFORE_COMPLETION))
+      {
+         observer.notify(event);
+      }
    }
-
 }
