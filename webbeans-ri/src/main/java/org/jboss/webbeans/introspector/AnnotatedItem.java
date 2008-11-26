@@ -30,7 +30,6 @@ import java.util.Set;
  */
 public interface AnnotatedItem<T, S>
 {
-
    /**
     * Gets all annotations on the item
     * 

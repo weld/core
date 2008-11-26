@@ -1,8 +1,6 @@
 package org.jboss.webbeans.introspector.jlr;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
-import java.util.Map;
 
 import javax.webbeans.BindingType;
 
@@ -14,7 +12,7 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    
    private String name;
 
-   public AbstractAnnotatedMember(Map<Class<? extends Annotation>, Annotation> annotationMap)
+   public AbstractAnnotatedMember(AnnotationMap annotationMap)
    {
       super(annotationMap);
    }

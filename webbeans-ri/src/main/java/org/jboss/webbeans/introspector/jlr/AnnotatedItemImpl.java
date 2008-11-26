@@ -3,7 +3,6 @@ package org.jboss.webbeans.introspector.jlr;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Map;
 
 import javax.webbeans.TypeLiteral;
 
@@ -14,18 +13,18 @@ public class AnnotatedItemImpl<T, S> extends AbstractAnnotatedItem<T, S>
    private Class<T> type;
    private Annotation[] actualAnnotations;
    
-   private AnnotatedItemImpl(Map<Class<? extends Annotation>, Annotation> annotationMap)
+   private AnnotatedItemImpl(AnnotationMap annotationMap)
    {
       super(annotationMap);
    }
    
-   private AnnotatedItemImpl(Map<Class<? extends Annotation>, Annotation> annotationMap, Class<T> type)
+   private AnnotatedItemImpl(AnnotationMap annotationMap, Class<T> type)
    {
       super(annotationMap);
       this.type = type;
    }
    
-   private AnnotatedItemImpl(Map<Class<? extends Annotation>, Annotation> annotationMap, TypeLiteral<T> apiType)
+   private AnnotatedItemImpl(AnnotationMap annotationMap, TypeLiteral<T> apiType)
    {
       super(annotationMap);
       this.type = apiType.getRawType();
@@ -35,7 +34,7 @@ public class AnnotatedItemImpl<T, S> extends AbstractAnnotatedItem<T, S>
       }
    }
    
-   private AnnotatedItemImpl(Map<Class<? extends Annotation>, Annotation> annotationMap, Class<T> type, Type[] actualTypeArguments)
+   private AnnotatedItemImpl(AnnotationMap annotationMap, Class<T> type, Type[] actualTypeArguments)
    {
       this(annotationMap, type);
       this.actualTypeArguments = actualTypeArguments;

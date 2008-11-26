@@ -21,18 +21,54 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Types;
 
+import com.google.common.collect.ForwardingMap;
+
 public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
 {
 
-   private static final Annotation[] DEFAULT_BINDING_ARRAY = {new CurrentAnnotationLiteral()};
+   public static class AnnotationMap extends ForwardingMap<Class<? extends Annotation>, Annotation>
+   {
+      private Map<Class<? extends Annotation>, Annotation> delegate;
+
+      public AnnotationMap()
+      {
+         delegate = new HashMap<Class<? extends Annotation>, Annotation>();
+      }
+
+      @Override
+      protected Map<Class<? extends Annotation>, Annotation> delegate()
+      {
+         return delegate;
+      }
+
+   }
+
+   public static class MetaAnnotationMap extends ForwardingMap<Class<? extends Annotation>, Set<Annotation>>
+   {
+      private Map<Class<? extends Annotation>, Set<Annotation>> delegate;
+
+      public MetaAnnotationMap()
+      {
+         delegate = new HashMap<Class<? extends Annotation>, Set<Annotation>>();
+      }
+
+      @Override
+      protected Map<Class<? extends Annotation>, Set<Annotation>> delegate()
+      {
+         return delegate;
+      }
+
+   }
+
+   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentAnnotationLiteral() };
    private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
-   
-   private Map<Class<? extends Annotation>, Annotation> annotationMap;
-   private Map<Class<? extends Annotation>, Set<Annotation>> metaAnnotationMap;
+
+   private AnnotationMap annotationMap;
+   private MetaAnnotationMap metaAnnotationMap;
    private Set<Annotation> annotationSet;
    private Annotation[] annotationArray;
-   
-   public AbstractAnnotatedItem(Map<Class<? extends Annotation>, Annotation> annotationMap)
+
+   public AbstractAnnotatedItem(AnnotationMap annotationMap)
    {
       if (annotationMap == null)
       {
@@ -40,15 +76,15 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       }
       this.annotationMap = annotationMap;
    }
-   
-   protected static Map<Class<? extends Annotation>, Annotation> buildAnnotationMap(AnnotatedElement element)
+
+   protected static AnnotationMap buildAnnotationMap(AnnotatedElement element)
    {
       return buildAnnotationMap(element.getAnnotations());
    }
-   
-   protected static Map<Class<? extends Annotation>, Annotation> buildAnnotationMap(Annotation[] annotations)
+
+   protected static AnnotationMap buildAnnotationMap(Annotation[] annotations)
    {
-      Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
+      AnnotationMap annotationMap = new AnnotationMap();
       for (Annotation annotation : annotations)
       {
          annotationMap.put(annotation.annotationType(), annotation);
@@ -56,7 +92,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return annotationMap;
    }
 
-   protected static Set<Annotation> populateAnnotationSet(Set<Annotation> annotationSet, Map<Class<? extends Annotation>, Annotation> annotationMap)
+   protected static Set<Annotation> populateAnnotationSet(Set<Annotation> annotationSet, AnnotationMap annotationMap)
    {
       for (Entry<Class<? extends Annotation>, Annotation> entry : annotationMap.entrySet())
       {
@@ -64,11 +100,11 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       }
       return annotationSet;
    }
-   
+
    protected static Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters, ManagerImpl manager)
    {
       Object[] parameterValues = new Object[parameters.size()];
-      Iterator<AnnotatedParameter<Object>> iterator = parameters.iterator();   
+      Iterator<AnnotatedParameter<Object>> iterator = parameters.iterator();
       for (int i = 0; i < parameterValues.length; i++)
       {
          parameterValues[i] = iterator.next().getValue(manager);
@@ -76,6 +112,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return parameterValues;
    }
 
+   @SuppressWarnings("unchecked")
    public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)
    {
       return (A) annotationMap.get(annotationType);
@@ -85,12 +122,12 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    {
       if (metaAnnotationMap == null)
       {
-         metaAnnotationMap = new HashMap<Class<? extends Annotation>, Set<Annotation>>();
+         metaAnnotationMap = new MetaAnnotationMap();
       }
       metaAnnotationMap = populateMetaAnnotationMap(metaAnnotationType, metaAnnotationMap, annotationMap);
       return metaAnnotationMap.get(metaAnnotationType);
    }
-   
+
    public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
    {
       if (annotationArray == null)
@@ -115,10 +152,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return annotationMap.containsKey(annotatedType);
    }
 
-   protected static <A extends Annotation> Map<Class<? extends Annotation>, Set<Annotation>> populateMetaAnnotationMap(
-         Class<A> metaAnnotationType, Map<Class<? extends Annotation>, 
-         Set<Annotation>> metaAnnotationMap, 
-         Map<Class<? extends Annotation>, Annotation> annotationMap)
+   protected static <A extends Annotation> MetaAnnotationMap populateMetaAnnotationMap(Class<A> metaAnnotationType, MetaAnnotationMap metaAnnotationMap, AnnotationMap annotationMap)
    {
       if (!metaAnnotationMap.containsKey(metaAnnotationType))
       {
@@ -135,11 +169,11 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return metaAnnotationMap;
    }
 
-   protected Map<Class<? extends Annotation>, Annotation> getAnnotationMap()
+   protected AnnotationMap getAnnotationMap()
    {
       return annotationMap;
    }
-   
+
    @Override
    public boolean equals(Object other)
    {
@@ -150,12 +184,12 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       }
       return false;
    }
-   
+
    public boolean isAssignableFrom(AnnotatedItem<?, ?> that)
    {
       return isAssignableFrom(that.getType(), that.getActualTypeArguments());
    }
-   
+
    public boolean isAssignableFrom(Set<Class<?>> types)
    {
       for (Class<?> type : types)
@@ -167,18 +201,18 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       }
       return false;
    }
-   
+
    private boolean isAssignableFrom(Class<?> type, Type[] actualTypeArguments)
    {
       return Types.boxedType(getType()).isAssignableFrom(Types.boxedType(type)) && Arrays.equals(getActualTypeArguments(), actualTypeArguments);
    }
-   
+
    @Override
    public int hashCode()
    {
       return getType().hashCode();
    }
-   
+
    @Override
    public String toString()
    {
@@ -199,7 +233,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       string += getAnnotations();
       return string;
    }
-   
+
    public Set<Annotation> getBindingTypes()
    {
       if (getMetaAnnotations(BindingType.class).size() > 0)
@@ -211,7 +245,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
          return DEFAULT_BINDING;
       }
    }
-   
+
    public Annotation[] getBindingTypesAsArray()
    {
       if (getMetaAnnotationsAsArray(BindingType.class).length > 0)
@@ -223,7 +257,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
          return DEFAULT_BINDING_ARRAY;
       }
    }
-   
+
    public boolean isProxyable()
    {
       if (Reflections.getConstructor(getType()) == null)
