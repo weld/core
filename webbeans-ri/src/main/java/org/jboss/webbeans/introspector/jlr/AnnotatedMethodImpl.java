@@ -18,7 +18,7 @@ import org.jboss.webbeans.util.Reflections;
 public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>
 {
    
-   private Type[] actualTypeArgements = new Type[0];
+   private Type[] actualTypeArguments = new Type[0];
    
    private Method method;
    
@@ -36,7 +36,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       this.declaringClass = declaringClass;
       if (method.getGenericReturnType() instanceof ParameterizedType)
       {
-         actualTypeArgements = ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments();
+         actualTypeArguments = ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments();
       }
    }
 
@@ -57,7 +57,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    
    public Type[] getActualTypeArguments()
    {
-      return actualTypeArgements;
+      return actualTypeArguments;
    }
    
    public List<AnnotatedParameter<Object>> getParameters()

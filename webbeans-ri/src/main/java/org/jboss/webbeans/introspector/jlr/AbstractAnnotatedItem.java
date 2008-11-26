@@ -92,15 +92,6 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return annotationMap;
    }
 
-   protected static Set<Annotation> populateAnnotationSet(Set<Annotation> annotationSet, AnnotationMap annotationMap)
-   {
-      for (Entry<Class<? extends Annotation>, Annotation> entry : annotationMap.entrySet())
-      {
-         annotationSet.add(entry.getValue());
-      }
-      return annotationSet;
-   }
-
    protected static Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters, ManagerImpl manager)
    {
       Object[] parameterValues = new Object[parameters.size()];
@@ -142,7 +133,8 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    {
       if (annotationSet == null)
       {
-         annotationSet = populateAnnotationSet(new HashSet<Annotation>(), annotationMap);
+         annotationSet = new HashSet<Annotation>();
+         annotationSet.addAll(annotationMap.values());
       }
       return annotationSet;
    }
@@ -159,7 +151,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
          Set<Annotation> s = new HashSet<Annotation>();
          for (Entry<Class<? extends Annotation>, Annotation> entry : annotationMap.entrySet())
          {
-            if (entry.getValue().annotationType().isAnnotationPresent(metaAnnotationType))
+            if (entry.getKey().isAnnotationPresent(metaAnnotationType))
             {
                s.add(entry.getValue());
             }

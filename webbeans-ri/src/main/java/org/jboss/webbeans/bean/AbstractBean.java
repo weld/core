@@ -352,7 +352,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          if (getAnnotatedItem().getMetaAnnotations(ScopeType.class).size() == 1)
          {
             this.scopeType = getAnnotatedItem().getMetaAnnotations(ScopeType.class).iterator().next().annotationType();
-            log.trace("Scope " + scopeType + " specified b annotation");
+            log.trace("Scope " + scopeType + " specified by annotation");
             return;
          }
       }

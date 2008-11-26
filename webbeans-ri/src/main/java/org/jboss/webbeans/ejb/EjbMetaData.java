@@ -69,7 +69,7 @@ public class EjbMetaData<T>
          for (AnnotatedMethod<Object> removeMethod : type.getAnnotatedMethods(REMOVE_ANNOTATION))
          {
             removeMethods.add(removeMethod);
-            if (removeMethod.getParameters().size() == 0)
+            if (removeMethod.getDelegate().getParameterTypes().length == 0)
             {
                noArgsRemoveMethods.add(removeMethod);
             }
