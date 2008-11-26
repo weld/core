@@ -1,8 +1,8 @@
 package org.jboss.webbeans.transaction;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.ejb.EJBException;
 import javax.ejb.Remove;
@@ -20,7 +20,7 @@ import javax.webbeans.RequestScoped;
 public class TransactionListener implements LocalTransactionListener, SessionSynchronization
 {
 
-   private List<Synchronization> synchronizations = new ArrayList<Synchronization>();
+   private List<Synchronization> synchronizations = new CopyOnWriteArrayList<Synchronization>();
 
    public void afterBegin() throws EJBException, RemoteException
    {
