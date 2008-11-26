@@ -1,13 +1,14 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.webbeans.AfterTransactionCompletion;
 import javax.webbeans.AfterTransactionFailure;
 import javax.webbeans.AfterTransactionSuccess;
 import javax.webbeans.BeforeTransactionCompletion;
+import javax.webbeans.DefinitionException;
 import javax.webbeans.IfExists;
 import javax.webbeans.Observer;
 
@@ -31,7 +32,7 @@ public class ObserverImpl<T> implements Observer<T>
    private EventBean<T> eventBean;
    private final AnnotatedMethod<Object> observerMethod;
    private final Class<T> eventType;
-   private Set<TransactionObservationPhase> transactionObservationPhases;
+   private TransactionObservationPhase transactionObservationPhase;
    private boolean conditional;
    private ManagerImpl manager;
 
@@ -53,28 +54,40 @@ public class ObserverImpl<T> implements Observer<T>
       this.eventBean = eventBean;
       this.observerMethod = observer;
       this.eventType = eventType;
-      initTransactionObservationPhases();
+      initTransactionObservationPhase();
       conditional = !observerMethod.getAnnotatedParameters(IfExists.class).isEmpty();
    }
 
-   private void initTransactionObservationPhases()
+   private void initTransactionObservationPhase()
    {
-      transactionObservationPhases = new HashSet<TransactionObservationPhase>();
+      List<TransactionObservationPhase> observationPhases = new ArrayList<TransactionObservationPhase>();
       if (observerMethod.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty())
       {
-         transactionObservationPhases.add(TransactionObservationPhase.BEFORE_COMPLETION);
+         observationPhases.add(TransactionObservationPhase.BEFORE_COMPLETION);
       }
       if (observerMethod.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty())
       {
-         transactionObservationPhases.add(TransactionObservationPhase.AFTER_COMPLETION);
+         observationPhases.add(TransactionObservationPhase.AFTER_COMPLETION);
       }
       if (observerMethod.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty())
       {
-         transactionObservationPhases.add(TransactionObservationPhase.AFTER_FAILURE);
+         observationPhases.add(TransactionObservationPhase.AFTER_FAILURE);
       }
       if (observerMethod.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty())
       {
-         transactionObservationPhases.add(TransactionObservationPhase.AFTER_SUCCESS);
+         observationPhases.add(TransactionObservationPhase.AFTER_SUCCESS);
+      }
+      if (observationPhases.size() > 1)
+      {
+         throw new DefinitionException("Transactional observers can only observe on a single phase");
+      }
+      else if (observationPhases.size() == 1)
+      {
+         transactionObservationPhase = observationPhases.iterator().next();
+      }
+      else
+      {
+         transactionObservationPhase = TransactionObservationPhase.NONE;
       }
    }
 
@@ -122,7 +135,7 @@ public class ObserverImpl<T> implements Observer<T>
 
    public boolean isTransactional()
    {
-      return !transactionObservationPhases.isEmpty();
+      return !TransactionObservationPhase.NONE.equals(transactionObservationPhase);
    }
 
    public boolean isConditional()
@@ -130,9 +143,9 @@ public class ObserverImpl<T> implements Observer<T>
       return conditional;
    }
 
-   public boolean isInterestedInTransactionPhase(TransactionObservationPhase transactionObservationPhase)
+   public boolean isInterestedInTransactionPhase(TransactionObservationPhase currentPhase)
    {
-      return transactionObservationPhases.contains(transactionObservationPhase);
+      return transactionObservationPhase.equals(currentPhase);
    }
 
 }

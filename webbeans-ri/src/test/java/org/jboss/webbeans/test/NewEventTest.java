@@ -209,6 +209,13 @@ public class NewEventTest extends AbstractTest
    }
    
    @Test(groups={"stub", "events"})
+   @SpecAssertion(section="7.1")
+   public void testTransactionalObserverCanOnlyObserveSinglePhase() 
+   {
+      assert false;
+   }
+   
+   @Test(groups={"stub", "events"})
    @SpecAssertion(section="7.5.6")
    public void testTransactionalObserverNotifiedImmediatelyWhenNoTransactionInProgress() 
    {
