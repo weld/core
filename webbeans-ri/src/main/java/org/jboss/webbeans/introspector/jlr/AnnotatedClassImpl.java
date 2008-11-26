@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
@@ -22,25 +23,25 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
  * Base class for implementing AnnotatedItem.
  * 
  * @author pmuir
- *
+ * 
  */
 public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements AnnotatedClass<T>
 {
-   
+
    private Class<T> clazz;
    private Type[] actualTypeArguments;
-   
+
    private Set<AnnotatedField<Object>> fields;
    private Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> annotatedFields;
    private Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> metaAnnotatedFields;
-   
+
    private Set<AnnotatedMethod<Object>> methods;
    private Map<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>> annotatedMethods;
-   
+
    private Set<AnnotatedConstructor<T>> constructors;
    private Map<Class<? extends Annotation>, Set<AnnotatedConstructor<T>>> annotatedConstructors;
    private Map<List<Class<?>>, AnnotatedConstructor<T>> constructorsByArgumentMap;
-   
+
    public AnnotatedClassImpl(Class<T> rawType, Type type, Annotation[] annotations)
    {
       super(buildAnnotationMap(annotations));
@@ -54,22 +55,22 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
          actualTypeArguments = new Type[0];
       }
    }
-   
+
    public AnnotatedClassImpl(Class<T> clazz)
    {
       this(clazz, clazz, clazz.getAnnotations());
    }
-   
+
    public Class<? extends T> getAnnotatedClass()
    {
       return clazz;
    }
-   
+
    public Class<T> getDelegate()
    {
       return clazz;
    }
-   
+
    public Set<AnnotatedField<Object>> getFields()
    {
       if (fields == null)
@@ -78,7 +79,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
       return fields;
    }
-   
+
    public Set<AnnotatedConstructor<T>> getConstructors()
    {
       if (constructors == null)
@@ -87,22 +88,22 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
       return constructors;
    }
-   
+
    private void initFields()
    {
       this.fields = new HashSet<AnnotatedField<Object>>();
-      for(Class c=clazz;c!=Object.class;c=c.getSuperclass())
+      for (Class c = clazz; c != Object.class; c = c.getSuperclass())
       {
-         for(Field field : clazz.getDeclaredFields())
+         for (Field field : clazz.getDeclaredFields())
          {
-            if ( !field.isAccessible() ) field.setAccessible(true);
+            if (!field.isAccessible())
+               field.setAccessible(true);
             fields.add(new AnnotatedFieldImpl<Object>(field, this));
          }
       }
    }
 
-   public Set<AnnotatedField<Object>> getMetaAnnotatedFields(
-         Class<? extends Annotation> metaAnnotationType)
+   public Set<AnnotatedField<Object>> getMetaAnnotatedFields(Class<? extends Annotation> metaAnnotationType)
    {
       if (metaAnnotatedFields == null)
       {
@@ -115,29 +116,25 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       populateMetaAnnotatedFieldMap(metaAnnotationType, annotatedFields, metaAnnotatedFields);
       return metaAnnotatedFields.get(metaAnnotationType);
    }
-   
-   protected static <T extends Annotation> Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> populateMetaAnnotatedFieldMap(
-         Class<T> metaAnnotationType, 
-         Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> annotatedFields, 
-         Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> metaAnnotatedFields)
+
+   protected static <T extends Annotation> Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> populateMetaAnnotatedFieldMap(Class<T> metaAnnotationType, Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> annotatedFields, Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> metaAnnotatedFields)
    {
       if (!metaAnnotatedFields.containsKey(metaAnnotationType))
       {
-         Set<AnnotatedField<Object>> s = new HashSet<AnnotatedField<Object>>();
-         for (Class<? extends Annotation> annotationType: annotatedFields.keySet())
+         Set<AnnotatedField<Object>> fields = new HashSet<AnnotatedField<Object>>();
+         for (Entry<Class<? extends Annotation>, Set<AnnotatedField<Object>>> entry : annotatedFields.entrySet())
          {
-            if (annotationType.isAnnotationPresent(metaAnnotationType))
+            if (entry.getKey().isAnnotationPresent(metaAnnotationType))
             {
-               s.addAll(annotatedFields.get(annotationType));
+               fields.addAll(entry.getValue());
             }
          }
-         metaAnnotatedFields.put(metaAnnotationType, s);
+         metaAnnotatedFields.put(metaAnnotationType, fields);
       }
       return metaAnnotatedFields;
    }
 
-   public Set<AnnotatedField<Object>> getAnnotatedFields(
-         Class<? extends Annotation> annotationType)
+   public Set<AnnotatedField<Object>> getAnnotatedFields(Class<? extends Annotation> annotationType)
    {
       if (annotatedFields == null)
       {
@@ -175,27 +172,28 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    {
       return actualTypeArguments;
    }
-   
+
    private void initMethods()
    {
       this.methods = new HashSet<AnnotatedMethod<Object>>();
-      for(Class c=clazz;c!=Object.class;c=c.getSuperclass())
+      for (Class c = clazz; c != Object.class; c = c.getSuperclass())
       {
          for (Method method : clazz.getDeclaredMethods())
          {
-            if (!method.isAccessible()) method.setAccessible(true);
+            if (!method.isAccessible())
+               method.setAccessible(true);
             methods.add(new AnnotatedMethodImpl<Object>(method, this));
          }
       }
    }
-   
+
    public Set<AnnotatedMethod<Object>> getAnnotatedMethods(Class<? extends Annotation> annotationType)
    {
       if (annotatedMethods == null)
       {
          initAnnotatedMethods();
       }
-       
+
       if (!annotatedMethods.containsKey(annotationType))
       {
          return new HashSet<AnnotatedMethod<Object>>();
@@ -225,7 +223,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
          }
       }
    }
-   
+
    private void initConstructors()
    {
       this.constructors = new HashSet<AnnotatedConstructor<T>>();
@@ -233,19 +231,20 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       for (Constructor<?> constructor : clazz.getDeclaredConstructors())
       {
          AnnotatedConstructor<T> annotatedConstructor = new AnnotatedConstructorImpl<T>((Constructor<T>) constructor, this);
-         if (!constructor.isAccessible()) constructor.setAccessible(true);
+         if (!constructor.isAccessible())
+            constructor.setAccessible(true);
          constructors.add(annotatedConstructor);
          constructorsByArgumentMap.put(Arrays.asList(constructor.getParameterTypes()), annotatedConstructor);
       }
    }
-   
+
    public Set<AnnotatedConstructor<T>> getAnnotatedConstructors(Class<? extends Annotation> annotationType)
    {
       if (annotatedConstructors == null)
       {
          initAnnotatedConstructors();
       }
-       
+
       if (!annotatedConstructors.containsKey(annotationType))
       {
          return new HashSet<AnnotatedConstructor<T>>();
@@ -275,7 +274,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
          }
       }
    }
-   
+
    public AnnotatedConstructor<T> getConstructor(List<Class<?>> arguments)
    {
       return constructorsByArgumentMap.get(arguments);

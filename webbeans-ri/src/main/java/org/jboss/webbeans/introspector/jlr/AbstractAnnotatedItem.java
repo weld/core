@@ -148,15 +148,15 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    {
       if (!metaAnnotationMap.containsKey(metaAnnotationType))
       {
-         Set<Annotation> s = new HashSet<Annotation>();
+         Set<Annotation> annotations = new HashSet<Annotation>();
          for (Entry<Class<? extends Annotation>, Annotation> entry : annotationMap.entrySet())
          {
             if (entry.getKey().isAnnotationPresent(metaAnnotationType))
             {
-               s.add(entry.getValue());
+               annotations.add(entry.getValue());
             }
          }
-         metaAnnotationMap.put(metaAnnotationType, s);
+         metaAnnotationMap.put(metaAnnotationType, annotations);
       }
       return metaAnnotationMap;
    }
