@@ -115,7 +115,7 @@ public interface AnnotatedItem<T, S>
 
    /**
     * Checks if any of the types provided are assignable to this, using
-    * the extended assingablity algorithm provided by AnnotatedItem.
+    * the extended assignability algorithm provided by AnnotatedItem.
     * 
     * The types are assumed to contain their own actual type parameterization.
     * 
