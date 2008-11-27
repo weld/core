@@ -80,7 +80,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * annotations
     * 
     */
-   public static class MetaAnnotationMap extends ForwardingMap<Class<? extends Annotation>, Set<Annotation>>
+   private static class MetaAnnotationMap extends ForwardingMap<Class<? extends Annotation>, Set<Annotation>>
    {
       private Map<Class<? extends Annotation>, Set<Annotation>> delegate;
 

@@ -48,7 +48,10 @@ import com.google.common.collect.ForwardingMap;
 public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements AnnotatedClass<T>
 {
 
-   protected static class AnnotatedFields extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedField<Object>>>
+   /**
+    * A (annotation type -> set of field abstractions with annotation) map
+    */
+   private static class AnnotatedFields extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedField<Object>>>
    {
       private Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> delegate;
 
@@ -64,7 +67,10 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
    }
 
-   protected static class MetaAnnotatedFields extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedField<Object>>>
+   /**
+    * A (annotation type -> set of field abstractions with meta-annotation) map
+    */
+   private static class MetaAnnotatedFields extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedField<Object>>>
    {
       private Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> delegate;
 
@@ -80,7 +86,10 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
    }
 
-   protected class AnnotatedMethods extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>>
+   /**
+    * A (annotation type -> set of method abstractions with annotation) map
+    */   
+   private class AnnotatedMethods extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>>
    {
       private Map<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>> delegate;
 
@@ -96,7 +105,10 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
    }
 
-   protected class AnnotatedConstructors extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedConstructor<T>>>
+   /**
+    * A (annotation type -> set of constructor abstractions with annotation) map
+    */
+   private class AnnotatedConstructors extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedConstructor<T>>>
    {
       private Map<Class<? extends Annotation>, Set<AnnotatedConstructor<T>>> delegate;
 
@@ -112,7 +124,10 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
    }
 
-   protected class ConstructorsByArgument extends ForwardingMap<List<Class<?>>, AnnotatedConstructor<T>>
+   /**
+    * A (class list -> set of constructor abstractions with matching parameters) map
+    */
+   private class ConstructorsByArgument extends ForwardingMap<List<Class<?>>, AnnotatedConstructor<T>>
    {
       private Map<List<Class<?>>, AnnotatedConstructor<T>> delegate;
 
