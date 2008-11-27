@@ -25,53 +25,142 @@ import javax.webbeans.BindingType;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 
+/**
+ * Represents a parameter
+ * 
+ * @author Pete Muir
+ * 
+ * @param <T>
+ */
 public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> implements AnnotatedParameter<T>
 {
-
+   // The type
    private Class<T> type;
+   // The actual type arguments
    private Type[] actualTypeArguments = new Type[0];
+   // The final state
    private boolean _final;
+   // The static state
    private boolean _static;
 
+   /**
+    * Constructor
+    * 
+    * @param annotations The annotations array
+    * @param type The type of the parameter
+    */
    public AnnotatedParameterImpl(Annotation[] annotations, Class<T> type)
    {
       super(buildAnnotationMap(annotations));
       this.type = type;
    }
 
+   /**
+    * Gets the actual type arguments
+    * 
+    * @return The type arguments
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#getActualTypeArguments()
+    */
    public Type[] getActualTypeArguments()
    {
       return actualTypeArguments;
    }
 
+   /**
+    * Gets the delegate
+    * 
+    * @return The delegate (null)
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#getDelegate()
+    */
    public Object getDelegate()
    {
       return null;
    }
 
+   /**
+    * Gets the type of the parameter
+    * 
+    * @return The type
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#getType()
+    */
    public Class<T> getType()
    {
       return type;
    }
 
+   /**
+    * Indicates if the parameter is final
+    * 
+    * @return True if final, false otherwise
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#isFinal()
+    */
    public boolean isFinal()
    {
       return _final;
    }
 
+   /**
+    * Indicates if the parameter is static
+    * 
+    * @return True if static, false otherwise
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#isStatic()
+    */
    public boolean isStatic()
    {
       return _static;
    }
-   
+
+   /**
+    * Gets the current value
+    * 
+    * @param manager The Web Beans manager
+    * @return the value
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedParameter
+    */
    public T getValue(ManagerImpl manager)
    {
       return manager.getInstanceByType(getType(), getMetaAnnotationsAsArray(BindingType.class));
    }
 
+   /**
+    * Gets the name of the parameter
+    * 
+    * @throws IllegalArgumentException (not supported)
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#getName()
+    */
    public String getName()
    {
       throw new IllegalArgumentException("Unable to determine name of parameter");
    }
-   
+
+   /**
+    * Gets a string representation of the parameter
+    * 
+    * @return A string representation
+    */
+   public String toString()
+   {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("AnnotatedParameterImpl:\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append("Type: " + type.toString() + "\n");
+      buffer.append("Final: " + _final + "\n");
+      buffer.append("Static: " + _static + "\n");
+      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
+      int i = 0;
+      for (Type actualTypeArgument : actualTypeArguments)
+      {
+         buffer.append(++i + " - " + actualTypeArgument.toString() + "\n");
+      }
+
+      return buffer.toString();
+   }
+
 }

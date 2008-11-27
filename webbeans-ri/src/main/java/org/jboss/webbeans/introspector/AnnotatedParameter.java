@@ -30,7 +30,7 @@ public interface AnnotatedParameter<T> extends AnnotatedItem<T, Object>
 {
 
    /**
-    * Gets the value of the parameter
+    * Gets the actual value of the parameter from the manager
     * 
     * @param manager The Web Beans Manager
     * @return The value

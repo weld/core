@@ -32,20 +32,79 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Reflections;
 
+import com.google.common.collect.ForwardingMap;
+
+/**
+ * Represents an annotated method
+ * 
+ * @author Pete Muir
+ * 
+ * @param <T>
+ */
 public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>
 {
-   
-   private Type[] actualTypeArguments = new Type[0];
-   
-   private Method method;
-   
-   private List<AnnotatedParameter<Object>> parameters;
-   private Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> annotatedParameters;
+   /**
+    * A annotation type -> list of parameter abstractions with given annotations
+    * present mapping
+    */
+   private class AnnotatedParameters extends ForwardingMap<Class<? extends Annotation>, List<AnnotatedParameter<Object>>>
+   {
+      private Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> delegate;
 
+      public AnnotatedParameters()
+      {
+         delegate = new HashMap<Class<? extends Annotation>, List<AnnotatedParameter<Object>>>();
+      }
+
+      @Override
+      protected Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> delegate()
+      {
+         return delegate;
+      }
+
+      @Override
+      public String toString()
+      {
+         StringBuffer buffer = new StringBuffer();
+         buffer.append("Annotation -> parameter mappings: " + super.size() + "\n");
+         int i = 0;
+         for (Entry<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> entry : delegate.entrySet())
+         {
+            for (AnnotatedParameter<?> parameter : entry.getValue())
+            {
+               buffer.append(++i + " - " + entry.getKey().toString() + ": " + parameter.toString() + "\n");
+            }
+         }
+         return buffer.toString();
+      }
+   }
+
+   // The actual type arguments
+   private Type[] actualTypeArguments = new Type[0];
+   // The underlying method
+   private Method method;
+
+   // The abstracted parameters
+   private List<AnnotatedParameter<Object>> parameters;
+   // A mapping from annotation type to parameter abstraction with that
+   // annotation present
+   private AnnotatedParameters annotatedParameters;
+
+   // The property name
    private String propertyName;
 
+   // The abstracted declaring class
    private AnnotatedType<?> declaringClass;
-   
+
+   /**
+    * Constructor
+    * 
+    * Initializes the superclass with the built annotation map, sets the method
+    * and declaring class abstraction and detects the actual type arguments
+    * 
+    * @param method The underlying method
+    * @param declaringClass The declaring class abstraction
+    */
    public AnnotatedMethodImpl(Method method, AnnotatedType<?> declaringClass)
    {
       super(buildAnnotationMap(method));
@@ -57,26 +116,58 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       }
    }
 
+   /**
+    * Gets the annotated method
+    * 
+    * @return The method
+    */
    public Method getAnnotatedMethod()
    {
       return method;
    }
 
+   /**
+    * Gets the delegate
+    * 
+    * @return The delegate
+    */
    public Method getDelegate()
    {
       return method;
    }
-   
+
+   /**
+    * Gets the type of the method
+    * 
+    * @return The return type of the method
+    */
+   @SuppressWarnings("unchecked")
    public Class<T> getType()
    {
       return (Class<T>) method.getReturnType();
    }
-   
+
+   /**
+    * Gets the actual type arguments
+    * 
+    * @return The actual type arguments
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#getActualTypeArguments()
+    */
    public Type[] getActualTypeArguments()
    {
       return actualTypeArguments;
    }
-   
+
+   /**
+    * Gets the annotated parameters
+    * 
+    * If the parameters are null, they are initialized first
+    * 
+    * @return The annotated parameters
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedMethod#getParameters()
+    */
    public List<AnnotatedParameter<Object>> getParameters()
    {
       if (parameters == null)
@@ -85,7 +176,14 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       }
       return parameters;
    }
-   
+
+   /**
+    * Initializes the parameter abstractions
+    * 
+    * Iterates over the method abstraction parameters and creates an abstraction
+    * of the parameter
+    */
+   @SuppressWarnings("unchecked")
    private void initParameters()
    {
       this.parameters = new ArrayList<AnnotatedParameter<Object>>();
@@ -105,31 +203,40 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
          }
       }
    }
-   
-   public List<AnnotatedParameter<Object>> getAnnotatedMethods(Class<? extends Annotation> annotationType)
-   {
-      if (annotatedParameters == null)
-      {
-         initAnnotatedParameters();
-      }
-       
-      if (!annotatedParameters.containsKey(annotationType))
-      {
-         return new ArrayList<AnnotatedParameter<Object>>();
-      }
-      else
-      {
-         return annotatedParameters.get(annotationType);
-      }
-   }
 
+   // TODO: Don't get this one - NIK
+   // public List<AnnotatedParameter<Object>> getAnnotatedMethods(Class<?
+   // extends Annotation> annotationType)
+   // {
+   // if (annotatedParameters == null)
+   // {
+   // initAnnotatedParameters();
+   // }
+   //
+   // if (!annotatedParameters.containsKey(annotationType))
+   // {
+   // return new ArrayList<AnnotatedParameter<Object>>();
+   // }
+   // else
+   // {
+   // return annotatedParameters.get(annotationType);
+   // }
+   // }
+
+   /**
+    * Initializes the annotated parameters
+    * 
+    * If the parameters are null, they are initialized first. Iterates over the
+    * parameter abstractions and for each annotation present, maps the parameter
+    * abstraction under that annotation type key.
+    */
    private void initAnnotatedParameters()
    {
       if (parameters == null)
       {
          initParameters();
       }
-      annotatedParameters = new HashMap<Class<? extends Annotation>, List<AnnotatedParameter<Object>>>();
+      annotatedParameters = new AnnotatedParameters();
       for (AnnotatedParameter<Object> parameter : parameters)
       {
          for (Annotation annotation : parameter.getAnnotations())
@@ -143,6 +250,15 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       }
    }
 
+   /**
+    * Gets the parameter abstractions with a given annotation type
+    * 
+    * If the parameter abstractions are null, they are initialized first
+    * 
+    * @param annotationType The annotation type to match
+    * @return The list of abstracted parameters with given annotation type
+    *         present. An empty list is returned if there are no matches
+    */
    public List<AnnotatedParameter<Object>> getAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
       if (annotatedParameters == null)
@@ -155,7 +271,12 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       }
       return annotatedParameters.get(annotationType);
    }
-   
+
+   /**
+    * Compares two annotated methods (delegates)
+    * 
+    * @return True if equals, false otherwise
+    */
    @Override
    public boolean equals(Object other)
    {
@@ -169,23 +290,55 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
          return false;
       }
    }
-   
+
+   /**
+    * Gets the hash code (of the delegate)
+    * 
+    * @return The hash code
+    */
    @Override
    public int hashCode()
    {
       return getDelegate().hashCode();
    }
 
+   /**
+    * Invokes the method on an instance with current parameters from manager
+    * 
+    * @param mananger The Web Beans manager
+    * @param instance The instance to invoke on
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedMethod#invoke(ManagerImpl,
+    *      Object)
+    */
+   @SuppressWarnings("unchecked")
    public T invoke(ManagerImpl manager, Object instance)
    {
       return (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, manager));
    }
-   
+
+   /**
+    * Invokes the method on an instance with given parameters
+    * 
+    * @param instance The instance to invoke on
+    * @param parameters The parameters
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedMethod#invoke(Object,
+    *      Object...)
+    */
+   @SuppressWarnings("unchecked")
    public T invoke(Object instance, Object... parameters)
    {
       return (T) Reflections.invokeAndWrap(getDelegate(), instance, parameters);
    }
-   
+
+   /**
+    * Gets the name of the property
+    * 
+    * @return The name
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedMethod#getPropertyName()
+    */
    public String getPropertyName()
    {
       if (propertyName == null)
@@ -199,9 +352,47 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       return propertyName;
    }
 
+   /**
+    * Gets the declaring class
+    * 
+    * @return The declaring class
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedMethod#getDeclaringClass()
+    */
    public AnnotatedType<?> getDeclaringClass()
    {
       return declaringClass;
+   }
+
+   /**
+    * Gets a string representation of the method
+    * 
+    * @return A string representation
+    */
+   public String toString()
+   {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("AnnotatedMethodImpl:\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
+      int i = 0;
+      for (Type actualTypeArgument : actualTypeArguments)
+      {
+         buffer.append(++i + " - " + actualTypeArgument.toString());
+      }
+      buffer.append(annotatedParameters == null ? "" : (annotatedParameters.toString() + "\n"));
+      buffer.append("Declaring class:\n");
+      buffer.append(declaringClass.toString());
+      buffer.append("Method:\n");
+      buffer.append(method.toString());
+      buffer.append("Property name: " + propertyName + "\n");
+      i = 0;
+      buffer.append("Parameters: " + getParameters().size() + "\n");
+      for (AnnotatedParameter<?> parameter : parameters)
+      {
+         buffer.append(++i + " - " + parameter.toString() + "\n");
+      }
+      return buffer.toString();
    }
 
 }

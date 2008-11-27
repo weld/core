@@ -51,6 +51,8 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
     * Indicates if the member is static (through the delegate)
     * 
     * @return True if static, false otherwise
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#isStatic()
     */
    public boolean isStatic()
    {
@@ -61,6 +63,8 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
     * Indicates if the member if final (through the delegate)
     * 
     * @return True if final, false otherwise
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#isFinal()
     */
    public boolean isFinal()
    {
@@ -82,6 +86,8 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
     * Gets the name of the member
     * 
     * @returns The name (or the name of the delegate if none is defined)
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#getName()
     */
    public String getName()
    {
@@ -92,4 +98,21 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
       return name;
    }
 
+   /**
+    * Gets a string representation of the member
+    * 
+    * @return A string representation
+    */
+   public String toString()
+   {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("AbstractAnnotatedMember:\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append("Final: " + isFinal() + "\n");
+      buffer.append("Static: " + isStatic() + "\n");
+      buffer.append("Name: " + getName() + "\n");
+      return buffer.toString();
+   }
+   
+   
 }

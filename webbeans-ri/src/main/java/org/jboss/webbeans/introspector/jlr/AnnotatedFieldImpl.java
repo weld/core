@@ -26,14 +26,31 @@ import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Reflections;
 
+/**
+ * Represents an annotated field
+ * 
+ * @author Pete Muir
+ * 
+ * @param <T>
+ */
 public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> implements AnnotatedField<T>
 {
-   
+   // The actual type arguments
    private Type[] actualTypeArguments = new Type[0];
-   
+   // The underlying field
    private Field field;
+   // The abstraction of the declaring class
    private AnnotatedType<?> declaringClass;
-   
+
+   /**
+    * Constructor
+    * 
+    * Initializes the superclass with the built annotation map and detects the
+    * type arguments
+    * 
+    * @param field The actual field
+    * @param declaringClass The abstraction of the declaring class
+    */
    public AnnotatedFieldImpl(Field field, AnnotatedType<?> declaringClass)
    {
       super(buildAnnotationMap(field));
@@ -46,6 +63,11 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
       }
    }
 
+   /**
+    * Gets the underlying field
+    * 
+    * @return The fields
+    */
    public Field getAnnotatedField()
    {
       return field;
@@ -55,30 +77,87 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
    {
       return field;
    }
-   
+
+   /**
+    * Gets the type
+    * 
+    * @return The type
+    */
+   @SuppressWarnings("unchecked")
    public Class<T> getType()
    {
       return (Class<T>) field.getType();
    }
-   
+
+   /**
+    * Gets the actual type arguments
+    * 
+    * @return The type arguments
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedField#getActualTypeArguments()
+    */
    public Type[] getActualTypeArguments()
    {
       return actualTypeArguments;
    }
 
+   /**
+    * Gets the current value and injects this instance into an instance
+    * 
+    * @param instance The instance to inject into
+    * @param manager The Web Beans manager
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedField#inject(Object, ManagerImpl)
+    */
    public void inject(Object instance, ManagerImpl manager)
    {
       Reflections.setAndWrap(getDelegate(), instance, getValue(manager));
    }
-   
+
+   /**
+    * Gets the property name
+    * 
+    * @return The property name
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedField#getName()
+    */
    public String getPropertyName()
    {
       return getName();
    }
-   
+
+   /**
+    * Gets the abstracted declaring class
+    * 
+    * @return The declaring class
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedField#getDeclaringClass()
+    */
    public AnnotatedType<?> getDeclaringClass()
    {
       return declaringClass;
+   }
+
+   /**
+    * Gets a string representation of the field
+    * 
+    * @return A string representation
+    */
+   public String toString()
+   {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("AnnotatedFieldImpl:\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
+      int i = 0;
+      for (Type actualTypeArgument : actualTypeArguments)
+      {
+         buffer.append(++i + " - " + actualTypeArgument.toString());
+      }
+      buffer.append("Declaring class:\n");
+      buffer.append(declaringClass.toString() + "\n");
+      buffer.append("Field: " + field + "\n");
+      return buffer.toString();
    }
 
 }

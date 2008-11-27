@@ -321,5 +321,17 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
    {
       return declaringClass;
    }
+   
+   /**
+    * Gets a string representation of the constructor
+    * 
+    * @return A string representation
+    */
+   public String toString()
+   {
+      StringBuffer buffer = new StringBuffer();
+      return buffer.toString();
+   }
+   
 
 }

@@ -73,6 +73,24 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
          return delegate;
       }
 
+      /**
+       * Gets a string representation of the Map
+       * 
+       * @return A string representation
+       */
+      @Override
+      public String toString()
+      {
+         StringBuffer buffer = new StringBuffer();
+         buffer.append("Annotation type -> annotation mappings: " + super.size() + "\n");
+         int i = 0;
+         for (Entry<Class<? extends Annotation>, Annotation> entry : delegate.entrySet())
+         {
+            buffer.append(++i + " - " + entry.getKey().toString() + ": " + entry.getValue().toString() + "\n");
+         }
+         return buffer.toString();
+      }
+
    }
 
    /**
@@ -118,6 +136,27 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
          return annotations;
       }
 
+      /**
+       * Gets a string representation of the Map
+       * 
+       * @return A string representation
+       */
+      @Override
+      public String toString()
+      {
+         StringBuffer buffer = new StringBuffer();
+         buffer.append("Annotation type -> meta annotation mappings: " + super.size() + "\n");
+         int i = 0;
+         for (Entry<Class<? extends Annotation>, Set<Annotation>> entry : delegate.entrySet())
+         {
+            for (Annotation annotation : entry.getValue())
+            {
+               buffer.append(++i + " - " + entry.getKey().toString() + ": " + annotation.toString() + "\n");
+            }
+         }
+         return buffer.toString();
+      }
+
    }
 
    // The array of default binding types
@@ -131,7 +170,8 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
 
    // The annotation map (annotation type -> annotation) of the item
    private AnnotationMap annotationMap;
-   // The meta-annotation map (annotation type -> set of annotations containing meta-annotation) of the item
+   // The meta-annotation map (annotation type -> set of annotations containing
+   // meta-annotation) of the item
    private MetaAnnotationMap metaAnnotationMap;
    // The set of all annotations on the item
    private Set<Annotation> annotationSet;
@@ -234,6 +274,8 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * 
     * @param annotationType the annotation type to match
     * @return The annotation if found, null if no match was found
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#getAnnotation(Class)
     */
    @SuppressWarnings("unchecked")
    public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)
@@ -247,6 +289,8 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * @param metaAnnotationType The meta-annotation type to match
     * @return The set of annotations containing this meta-annotation. An empty
     *         set is returned if no match is found.
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#getMetaAnnotations(Class)
     */
    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
@@ -262,6 +306,8 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * @param metaAnnotationType meta-annotation type to match
     * @return The array of annotations to match. An empty array is returned if
     *         no match is found.
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#getMetaAnnotationsAsArray(Class)
     */
    public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
    {
@@ -279,6 +325,8 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * Populates the annotationSet if it was empty
     * 
     * @return The set of annotations on this item.
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#getAnnotations()
     */
    public Set<Annotation> getAnnotations()
    {
@@ -295,6 +343,8 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * 
     * @param annotatedType The annotation type to check for
     * @return True if present, false otherwise.
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#isAnnotationPresent(Class)
     */
    public boolean isAnnotationPresent(Class<? extends Annotation> annotatedType)
    {
@@ -334,6 +384,8 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * 
     * @param that The other annotated item to check against
     * @return True if assignable, false otherwise
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#isAssignableFrom(AnnotatedItem)
     */
    public boolean isAssignableFrom(AnnotatedItem<?, ?> that)
    {
@@ -345,6 +397,8 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * 
     * @param types The set of types to check against
     * @return True if assignable, false otherwise
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#isAssignableFrom(Set)
     */
    public boolean isAssignableFrom(Set<Class<?>> types)
    {
@@ -389,22 +443,17 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    @Override
    public String toString()
    {
-      String string = getType().toString();
-      if (getActualTypeArguments().length > 0)
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("AbstractAnnotatedItem:\n");
+      buffer.append("Annotations: " + getAnnotations().size() + "\n");
+      int i = 0;
+      for (Annotation annotation : getAnnotations())
       {
-         string += "<";
-         for (int i = 0; i < getActualTypeArguments().length; i++)
-         {
-            string += getActualTypeArguments()[i].toString();
-            if (i < getActualTypeArguments().length - 1)
-            {
-               string += ",";
-            }
-         }
-         string += ">";
+         buffer.append(++i + " - " + annotation.toString() + "\n");
       }
-      string += getAnnotations();
-      return string;
+      buffer.append(annotationMap == null ? "" : (annotationMap.toString() + "\n"));
+      buffer.append(metaAnnotationMap == null ? "" : (metaAnnotationMap.toString()) + "\n");
+      return buffer.toString();
    }
 
    /**
@@ -414,6 +463,8 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * meta-annotation. Returns default binding (current) if none specified.
     * 
     * @return A set of (binding type) annotations
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#getBindingTypes()
     */
    public Set<Annotation> getBindingTypes()
    {
@@ -434,6 +485,8 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * meta-annotation. Returns default binding (current) if none specified.
     * 
     * @return An array of (binding type) annotations
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#getBindingTypesAsArray()
     */
    public Annotation[] getBindingTypesAsArray()
    {
@@ -451,6 +504,8 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * Indicates if the type is proxyable to a set of pre-defined rules
     * 
     * @return True if proxyable, false otherwise.
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#isProxyable()
     */
    public boolean isProxyable()
    {
