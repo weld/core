@@ -148,18 +148,17 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("AnnotatedParameterImpl:\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append("Type: " + type.toString() + "\n");
-      buffer.append("Final: " + _final + "\n");
-      buffer.append("Static: " + _static + "\n");
-      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
-      int i = 0;
-      for (Type actualTypeArgument : actualTypeArguments)
-      {
-         buffer.append(++i + " - " + actualTypeArgument.toString() + "\n");
-      }
-
+//      buffer.append("AnnotatedParameterImpl:\n");
+//      buffer.append(super.toString() + "\n");
+//      buffer.append("Type: " + type.toString() + "\n");
+//      buffer.append("Final: " + _final + "\n");
+//      buffer.append("Static: " + _static + "\n");
+//      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
+//      int i = 0;
+//      for (Type actualTypeArgument : actualTypeArguments)
+//      {
+//         buffer.append(++i + " - " + actualTypeArgument.toString() + "\n");
+//      }
       return buffer.toString();
    }
 

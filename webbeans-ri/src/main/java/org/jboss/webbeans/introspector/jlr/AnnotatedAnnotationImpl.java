@@ -227,17 +227,17 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("AnnotatedConstructorImpl:\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append("Class: " + clazz.toString() + "\n");
-
-      buffer.append("Members: " + getMembers().size() + "\n");
-      int i = 0;
-      for (AnnotatedMethod<?> member : getMembers())
-      {
-         buffer.append(++i + " - " + member.toString());
-      }
-      buffer.append(annotatedMembers == null ? "" : (annotatedMembers.toString() + "\n"));
+//      buffer.append("AnnotatedConstructorImpl:\n");
+//      buffer.append(super.toString() + "\n");
+//      buffer.append("Class: " + clazz.toString() + "\n");
+//
+//      buffer.append("Members: " + getMembers().size() + "\n");
+//      int i = 0;
+//      for (AnnotatedMethod<?> member : getMembers())
+//      {
+//         buffer.append(++i + " - " + member.toString());
+//      }
+//      buffer.append(annotatedMembers == null ? "" : (annotatedMembers.toString() + "\n"));
       return buffer.toString();
    }
 

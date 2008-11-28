@@ -102,12 +102,12 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("AbstractAnnotatedType:\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append("Superclass: " + superclass.toString() + "\n");
-      buffer.append("Name: " + getName() + "\n");
-      buffer.append("Final: " + isFinal() + "\n");
-      buffer.append("Static: " + isStatic() + "\n");
+//      buffer.append("AbstractAnnotatedType:\n");
+//      buffer.append(super.toString() + "\n");
+//      buffer.append("Superclass: " + (superclass == null ? "" : superclass.toString()) + "\n");
+//      buffer.append("Name: " + getName() + "\n");
+//      buffer.append("Final: " + isFinal() + "\n");
+//      buffer.append("Static: " + isStatic() + "\n");
       return buffer.toString();
    }
 

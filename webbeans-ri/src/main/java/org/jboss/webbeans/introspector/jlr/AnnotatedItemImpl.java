@@ -236,20 +236,20 @@ public class AnnotatedItemImpl<T, S> extends AbstractAnnotatedItem<T, S>
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("AnnotatedItemImpl:\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
-      int i = 0;
-      for (Type actualTypeArgument : actualTypeArguments)
-      {
-         buffer.append(++i + " - " + actualTypeArgument.toString());
-      }
-      buffer.append("Actual annotations: " + actualAnnotations.length + "\n");
-      i = 0;
-      for (Annotation actualAnnotation : actualAnnotations)
-      {
-         buffer.append(++i + " - " + actualAnnotation.toString());
-      }
+//      buffer.append("AnnotatedItemImpl:\n");
+//      buffer.append(super.toString() + "\n");
+//      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
+//      int i = 0;
+//      for (Type actualTypeArgument : actualTypeArguments)
+//      {
+//         buffer.append(++i + " - " + actualTypeArgument.toString());
+//      }
+//      buffer.append("Actual annotations: " + actualAnnotations.length + "\n");
+//      i = 0;
+//      for (Annotation actualAnnotation : actualAnnotations)
+//      {
+//         buffer.append(++i + " - " + actualAnnotation.toString());
+//      }
       return buffer.toString();
    }
 

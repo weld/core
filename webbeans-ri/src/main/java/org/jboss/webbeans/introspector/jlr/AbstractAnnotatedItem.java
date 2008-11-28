@@ -445,15 +445,15 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("AbstractAnnotatedItem:\n");
-      buffer.append("Annotations: " + getAnnotations().size() + "\n");
-      int i = 0;
-      for (Annotation annotation : getAnnotations())
-      {
-         buffer.append(++i + " - " + annotation.toString() + "\n");
-      }
-      buffer.append(annotationMap == null ? "" : (annotationMap.toString() + "\n"));
-      buffer.append(metaAnnotationMap == null ? "" : (metaAnnotationMap.toString()) + "\n");
+//      buffer.append("AbstractAnnotatedItem:\n");
+//      buffer.append("Annotations: " + getAnnotations().size() + "\n");
+//      int i = 0;
+//      for (Annotation annotation : getAnnotations())
+//      {
+//         buffer.append(++i + " - " + annotation.toString() + "\n");
+//      }
+//      buffer.append(annotationMap == null ? "" : (annotationMap.toString() + "\n"));
+//      buffer.append(metaAnnotationMap == null ? "" : (metaAnnotationMap.toString()) + "\n");
       return buffer.toString();
    }
 

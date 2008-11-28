@@ -653,38 +653,38 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("AnnotatedConstructorImpl:\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
-      int i = 0;
-      for (Type actualTypeArgument : actualTypeArguments)
-      {
-         buffer.append(++i + " - " + actualTypeArgument.toString());
-      }
-      buffer.append("Class: " + clazz.toString() + "\n");
-      buffer.append("Fields: " + getFields().size() + "\n");
-      i = 0;
-      for (AnnotatedField<Object> field : getFields())
-      {
-         buffer.append(++i + " - " + field.toString());
-      }
-      buffer.append("Methods: " + methods.size() + "\n");
-      i = 0;
-      for (AnnotatedMethod<Object> method : methods)
-      {
-         buffer.append(++i + " - " + method.toString());
-      }
-      buffer.append("Constructors: " + methods.size() + "\n");
-      i = 0;
-      for (AnnotatedConstructor<T> constructor : getConstructors())
-      {
-         buffer.append(++i + " - " + constructor.toString());
-      }
-      buffer.append(annotatedConstructors == null ? "" : (annotatedConstructors.toString() + "\n"));
-      buffer.append(annotatedFields == null ? "" : (annotatedFields.toString() + "\n"));
-      buffer.append(annotatedMethods == null ? "" : (annotatedMethods.toString() + "\n"));
-      buffer.append(constructorsByArgumentMap == null ? "" : (constructorsByArgumentMap.toString() + "\n"));
-      buffer.append(metaAnnotatedFields == null ? "" : (metaAnnotatedFields.toString() + "\n"));
+//      buffer.append("AnnotatedConstructorImpl:\n");
+//      buffer.append(super.toString() + "\n");
+//      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
+//      int i = 0;
+//      for (Type actualTypeArgument : actualTypeArguments)
+//      {
+//         buffer.append(++i + " - " + actualTypeArgument.toString());
+//      }
+//      buffer.append("Class: " + clazz.toString() + "\n");
+//      buffer.append("Fields: " + getFields().size() + "\n");
+//      i = 0;
+//      for (AnnotatedField<Object> field : getFields())
+//      {
+//         buffer.append(++i + " - " + field.toString());
+//      }
+//      buffer.append("Methods: " + methods.size() + "\n");
+//      i = 0;
+//      for (AnnotatedMethod<Object> method : methods)
+//      {
+//         buffer.append(++i + " - " + method.toString());
+//      }
+//      buffer.append("Constructors: " + methods.size() + "\n");
+//      i = 0;
+//      for (AnnotatedConstructor<T> constructor : getConstructors())
+//      {
+//         buffer.append(++i + " - " + constructor.toString());
+//      }
+//      buffer.append(annotatedConstructors == null ? "" : (annotatedConstructors.toString() + "\n"));
+//      buffer.append(annotatedFields == null ? "" : (annotatedFields.toString() + "\n"));
+//      buffer.append(annotatedMethods == null ? "" : (annotatedMethods.toString() + "\n"));
+//      buffer.append(constructorsByArgumentMap == null ? "" : (constructorsByArgumentMap.toString() + "\n"));
+//      buffer.append(metaAnnotatedFields == null ? "" : (metaAnnotatedFields.toString() + "\n"));
       return buffer.toString();
    }
 

@@ -106,11 +106,11 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("AbstractAnnotatedMember:\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append("Final: " + isFinal() + "\n");
-      buffer.append("Static: " + isStatic() + "\n");
-      buffer.append("Name: " + getName() + "\n");
+//      buffer.append("AbstractAnnotatedMember:\n");
+//      buffer.append(super.toString() + "\n");
+//      buffer.append("Final: " + isFinal() + "\n");
+//      buffer.append("Static: " + isStatic() + "\n");
+//      buffer.append("Name: " + getName() + "\n");
       return buffer.toString();
    }
    

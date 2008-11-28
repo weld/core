@@ -146,17 +146,17 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("AnnotatedFieldImpl:\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
-      int i = 0;
-      for (Type actualTypeArgument : actualTypeArguments)
-      {
-         buffer.append(++i + " - " + actualTypeArgument.toString());
-      }
-      buffer.append("Declaring class:\n");
-      buffer.append(declaringClass.toString() + "\n");
-      buffer.append("Field: " + field + "\n");
+//      buffer.append("AnnotatedFieldImpl:\n");
+//      buffer.append(super.toString() + "\n");
+//      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
+//      int i = 0;
+//      for (Type actualTypeArgument : actualTypeArguments)
+//      {
+//         buffer.append(++i + " - " + actualTypeArgument.toString());
+//      }
+//      buffer.append("Declaring class:\n");
+//      buffer.append(declaringClass.toString() + "\n");
+//      buffer.append("Field: " + field + "\n");
       return buffer.toString();
    }
 
