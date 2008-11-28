@@ -1,3 +1,20 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.webbeans.model;
 
 import java.lang.annotation.Annotation;
@@ -14,20 +31,32 @@ import javax.webbeans.ScopeType;
 import javax.webbeans.Stereotype;
 
 /**
- * A meta model for a stereotype, allows us to cache a stereotype and to validate it
+ * A meta model for a stereotype, allows us to cache a stereotype and to
+ * validate it
  * 
- * @author pmuir
- *
+ * @author Pete Muir
+ * 
  */
 public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
 {
+   // The default deployment type
    private Annotation defaultDeploymentType;
+   // The default scope type
    private Annotation defaultScopeType;
+   // Is the bean name defaulted
    private boolean beanNameDefaulted;
+   // The supported scopes
    private Set<Class<? extends Annotation>> supportedScopes;
+   // The required types
    private Set<Class<?>> requiredTypes;
+   // The interceptor bindings
    private Set<Annotation> interceptorBindings;
-   
+
+   /**
+    * Constructor
+    * 
+    * @param sterotype The stereotype
+    */
    public StereotypeModel(Class<T> sterotype)
    {
       super(sterotype);
@@ -39,7 +68,10 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
       initInterceptorBindings();
       checkBindingTypes();
    }
-   
+
+   /**
+    * Validates the binding types
+    */
    private void checkBindingTypes()
    {
       Set<Annotation> bindingTypes = getAnnotatedAnnotation().getMetaAnnotations(BindingType.class);
@@ -49,11 +81,17 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
       }
    }
 
+   /**
+    * Initializes the interceptor bindings
+    */
    private void initInterceptorBindings()
    {
       interceptorBindings = getAnnotatedAnnotation().getMetaAnnotations(InterceptorBindingType.class);
    }
 
+   /**
+    * Initializes the supported scopes
+    */
    private void initSupportedScopes()
    {
       this.supportedScopes = new HashSet<Class<? extends Annotation>>();
@@ -63,7 +101,10 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
          this.supportedScopes.addAll(Arrays.asList(supportedScopes));
       }
    }
-   
+
+   /**
+    * Initializes the required types
+    */
    private void initRequiredTypes()
    {
       this.requiredTypes = new HashSet<Class<?>>();
@@ -74,6 +115,9 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
       }
    }
 
+   /**
+    * Initializes the bean name defaulted
+    */
    private void initBeanNameDefaulted()
    {
       if (getAnnotatedAnnotation().isAnnotationPresent(Named.class))
@@ -86,6 +130,9 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
       }
    }
 
+   /**
+    * Initializes the default scope type
+    */
    private void initDefaultScopeType()
    {
       Set<Annotation> scopeTypes = getAnnotatedAnnotation().getMetaAnnotations(ScopeType.class);
@@ -99,6 +146,9 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
       }
    }
 
+   /**
+    * Initializes the default deployment type
+    */
    private void initDefaultDeploymentType()
    {
       Set<Annotation> deploymentTypes = getAnnotatedAnnotation().getMetaAnnotations(DeploymentType.class);
@@ -111,77 +161,123 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
          this.defaultDeploymentType = deploymentTypes.iterator().next();
       }
    }
-   
+
    /**
-    * Get the default deployment type the stereotype specifies, or null if none
-    * is specified
+    * Get the default deployment type the stereotype specifies
+    * 
+    * @return The default deployment type, or null if none is specified
     */
    public Annotation getDefaultDeploymentType()
    {
       return defaultDeploymentType;
    }
-   
+
    /**
-    * Get the default scope type the stereotype specifies, or null if none is
-    * specified
+    * Get the default scope type the stereotype specifies
+    * 
+    * @return The default scope type, or null if none is specified
     */
    public Annotation getDefaultScopeType()
    {
       return defaultScopeType;
    }
-   
+
    /**
-    * Get any interceptor bindings the the stereotype specifies, or an empty set
-    * if none are specified
+    * Get any interceptor bindings the the stereotype specifies
+    * 
+    * @return The interceptor bindings, or an empty set if none are specified.
     */
    public Set<Annotation> getInterceptorBindings()
    {
       return interceptorBindings;
    }
-   
+
    /**
-    * Returns true if the stereotype specifies the bean name should be 
-    * defaulted
+    * Indicates if the bean name is defaulted
+    * 
+    * @return True if defaulted, false otherwise
     */
    public boolean isBeanNameDefaulted()
    {
       return beanNameDefaulted;
    }
-   
+
    /**
-    * Returns the scopes this stereotype allows, or an empty set if none are 
-    * specified
+    * Gets the supported scopes
+    * 
+    * @return A set of supported scopes, or an empty set if none are specified
     */
    public Set<Class<? extends Annotation>> getSupportedScopes()
    {
       return supportedScopes;
    }
-   
+
    /**
-    * Returns the types this stereotype requires, or an empty set if none are
-    * specified
+    * Gets the required types
+    * 
+    * @return A set of required types, or an empty set if none are specified
     */
    public Set<Class<?>> getRequiredTypes()
    {
       return requiredTypes;
    }
-   
+
+   /**
+    * Gets the type
+    * 
+    * @return The type
+    */
    @Deprecated
    public Class<? extends Annotation> getStereotypeClass()
    {
       return getType();
    }
-   
+
+   /**
+    * Gets a string representation of the stereotype
+    * 
+    * @return The string representation
+    */
    @Override
    public String toString()
    {
-      return "StereotypeModel[" + getType() + "]";
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("StereotypeModel:\n");
+      buffer.append(super.toString());
+      buffer.append("Bean name defaulted: " + isBeanNameDefaulted());
+      buffer.append("Default deployment type: " + getDefaultDeploymentType());
+      buffer.append("Default scope type: " + getDefaultScopeType());
+      buffer.append("Meta-annotation: " + getMetaAnnotation().toString());
+      buffer.append("Interceptor bindings: " + getInterceptorBindings().size());
+      int i = 0;
+      for (Annotation annotation : getInterceptorBindings())
+      {
+         buffer.append(++i + " - " + annotation.toString());
+      }
+      buffer.append("Required types: " + getRequiredTypes().size());
+      i = 0;
+      for (Class<?> requiredType : getRequiredTypes())
+      {
+         buffer.append(++i + " - " + requiredType.toString());
+      }
+      buffer.append("Supported scopes: " + getSupportedScopes().size());
+      i = 0;
+      for (Class<?> supportedScope : getSupportedScopes())
+      {
+         buffer.append(++i + " - " + supportedScope.toString());
+      }
+      return buffer.toString();
    }
 
+   /**
+    * Gets the meta-annotation type
+    * 
+    * @return The Stereotype class
+    */
    @Override
    protected Class<? extends Annotation> getMetaAnnotation()
    {
       return Stereotype.class;
    }
-   
+
 }

@@ -29,15 +29,19 @@ import org.jboss.webbeans.model.StereotypeModel;
 /**
  * Meta model for the merged stereotype for a bean
  * 
- * @author pmuir
- * 
+ * @author Pete Muir
  */
 public class MergedStereotypes<T, E>
 {
+   // The possible deployment types
    private AnnotationMap possibleDeploymentTypes;
+   // The possible scope types
    private Set<Annotation> possibleScopeTypes;
+   // Is the bean name defaulted?
    private boolean beanNameDefaulted;
+   // The required types
    private Set<Class<?>> requiredTypes;
+   // The supported scopes
    private Set<Class<? extends Annotation>> supportedScopes;
 
    /**
@@ -148,6 +152,11 @@ public class MergedStereotypes<T, E>
       return false;
    }
 
+   /**
+    * Gets a string representation of the merged stereotypes
+    * 
+    * @return The string representation
+    */
    @Override
    public String toString()
    {

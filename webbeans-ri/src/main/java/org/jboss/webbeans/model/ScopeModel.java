@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.jboss.webbeans.model;
 
 import java.lang.annotation.Annotation;
@@ -27,39 +26,66 @@ import javax.webbeans.ScopeType;
  * Model of a scope
  * 
  * @author Pete Muir
- *
+ * 
  */
 public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
 {
-   
+   /**
+    * Constrctor
+    * 
+    * @param scope The scope type
+    */
    public ScopeModel(Class<T> scope)
    {
       super(scope);
    }
-   
+
+   /**
+    * Indicates if the scope is "normal"
+    * 
+    * @return True if normal, false otherwise
+    */
    public boolean isNormal()
    {
       return getAnnotatedAnnotation().getAnnotation(ScopeType.class).normal();
    }
-   
+
+   /**
+    * Indicates if the scope is "passivating"
+    * 
+    * @return True if passivating, false otherwise
+    */
    public boolean isPassivating()
    {
       return getAnnotatedAnnotation().getAnnotation(ScopeType.class).passivating();
    }
-   
+
+   /**
+    * Gets the corresponding meta-annotation type class
+    * 
+    * @return The ScopeType class
+    */
    @Override
    protected Class<? extends Annotation> getMetaAnnotation()
    {
       return ScopeType.class;
    }
-   
+
+   /**
+    * Gets a string representation of the stereotype
+    * 
+    * @return The string representation
+    */
    @Override
-   public String toString() {
+   public String toString()
+   {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("Scope model\n");
-      buffer.append("Valid : " + isValid() + "\n");
-      buffer.append("Annotated type " + getAnnotatedAnnotation().toString() + "\n");
+      buffer.append("ScopeModel:\n");
+      buffer.append(super.toString());
+      buffer.append("Normal: " + isNormal());
+      buffer.append("Passivating: " + isPassivating());
+      buffer.append("Meta-annotation: " + getMetaAnnotation().toString());
       return buffer.toString();
    }
-   
+
 }

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.jboss.webbeans.model;
 
 import java.lang.annotation.Annotation;
@@ -33,19 +32,28 @@ import org.jboss.webbeans.util.Reflections;
  * Model of a binding type
  * 
  * @author Pete Muir
- *
+ * 
  */
 public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
 {
-   
+   // The non-binding types
    private Set<AnnotatedMethod<?>> nonBindingTypes;
+   // The hash code
    private Integer hashCode;
-   
+
+   /**
+    * Constructor
+    * 
+    * @param type The type
+    */
    public BindingTypeModel(Class<T> type)
    {
       super(type);
    }
-   
+
+   /**
+    * Initializes the non-binding types and validates the members
+    */
    @Override
    protected void init()
    {
@@ -53,7 +61,10 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
       initNonBindingTypes();
       checkArrayAndAnnotationValuedMembers();
    }
-   
+
+   /**
+    * Validates the members
+    */
    private void checkArrayAndAnnotationValuedMembers()
    {
       for (AnnotatedMethod<?> annotatedMethod : getAnnotatedAnnotation().getMembers())
@@ -63,30 +74,56 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
             throw new DefinitionException("Member of array type or annotation type must be annotated @NonBinding " + annotatedMethod);
          }
       }
-      
+
    }
 
+   /**
+    * Gets the meta-annotation type
+    * 
+    * @return The BindingType class
+    */
    @Override
    protected Class<? extends Annotation> getMetaAnnotation()
    {
       return BindingType.class;
    }
-   
+
+   /**
+    * Indicates if there are non-binding types present
+    * 
+    * @return True if present, false otherwise
+    */
    public boolean hasNonBindingTypes()
    {
       return nonBindingTypes.size() > 0;
    }
-   
+
+   /**
+    * Gets the non-binding types
+    * 
+    * @return A set of non-binding types, or an empty set if there are none
+    *         present
+    */
    public Set<AnnotatedMethod<?>> getNonBindingTypes()
    {
       return nonBindingTypes;
    }
-   
+
+   /**
+    * Initializes the non-binding types
+    */
    protected void initNonBindingTypes()
    {
       nonBindingTypes = getAnnotatedAnnotation().getAnnotatedMembers(NonBinding.class);
    }
-   
+
+   /**
+    * Comparator for checking equality
+    * 
+    * @param instance The instance to check against
+    * @param other The other binding type
+    * @return True if equal, false otherwise
+    */
    public boolean isEqual(Annotation instance, Annotation other)
    {
       if (instance.annotationType().equals(getType()) && other.annotationType().equals(getType()))
@@ -107,19 +144,26 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
       }
       return false;
    }
-   
+
+   /**
+    * Gets a string representation of the stereotype
+    * 
+    * @return The string representation
+    */
    @Override
-   public String toString() {
+   public String toString()
+   {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("Binding type model\n");
-      buffer.append("Hash code : " + hashCode() + "\n");
-      buffer.append("Valid : " + isValid() + "\n");
-      buffer.append("Non-binding types\n");
-      for (AnnotatedMethod<?> method : nonBindingTypes) {
-         method.toString();
+      buffer.append("BindingTypeModel:\n");
+      buffer.append(super.toString());
+      buffer.append("Hash code: " + hashCode);
+      buffer.append("Non-binding types: " + nonBindingTypes.size());
+      int i = 0;
+      for (AnnotatedMethod<?> nonBindingType : getNonBindingTypes())
+      {
+         buffer.append(++i + " - " + nonBindingType.toString());
       }
-      buffer.append("Annotated type " + getAnnotatedAnnotation().getName() + "\n");
       return buffer.toString();
    }
-   
+
 }
