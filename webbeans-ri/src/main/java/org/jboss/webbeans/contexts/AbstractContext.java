@@ -38,9 +38,14 @@ import javax.webbeans.manager.Manager;
  */
 public abstract class AbstractContext implements Context
 {
-
+   // The scope type
    private Class<? extends Annotation> scopeType;
 
+   /**
+    * Constructor
+    * 
+    * @param scopeType The scope type
+    */
    public AbstractContext(Class<? extends Annotation> scopeType)
    {
       this.scopeType = scopeType;
@@ -53,6 +58,8 @@ public abstract class AbstractContext implements Context
     *           exists
     * @return An instance of the bean
     * @throws ContextNotActiveException if the context is not active
+    * 
+    * @see javax.webbeans.manager.Context#get(Bean, boolean)
     */
    public <T> T get(Bean<T> bean, boolean create)
    {
@@ -80,6 +87,8 @@ public abstract class AbstractContext implements Context
     * Get the scope the context is for
     * 
     * @return The scope type
+    * 
+    * @see javax.webbeans.manager.Context#getScopeType()
     */
    public Class<? extends Annotation> getScopeType()
    {
@@ -90,6 +99,8 @@ public abstract class AbstractContext implements Context
     * Return true if the context is active
     * 
     * @return The active state
+    * 
+    * @see javax.webbeans.manager.Context#isActive()
     */
    public boolean isActive()
    {
@@ -128,7 +139,7 @@ public abstract class AbstractContext implements Context
     * @return The actual bean map
     */
    protected abstract BeanMap getBeanMap();
-   
+
    /**
     * A method that should return the actual atomic boolean instance
     * 
@@ -139,10 +150,12 @@ public abstract class AbstractContext implements Context
    @Override
    public String toString()
    {
-      return 
-         "Context type: " + getScopeType().getName() + 
-         "\nActive: " + getActive().toString() + 
-         "\nBeans: " + getBeanMap().toString();
-   }   
-   
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("AbstractContext:\n");
+      buffer.append("Scope type: " + getScopeType().toString() + "\n");
+      buffer.append("Active: " + getActive().toString() + "\n");
+      buffer.append(getBeanMap().toString() + "\n");
+      return buffer.toString();
+   }
+
 }

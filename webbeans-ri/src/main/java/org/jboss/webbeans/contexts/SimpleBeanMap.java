@@ -17,13 +17,14 @@
 
 package org.jboss.webbeans.contexts;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.webbeans.manager.Bean;
+
+import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Logging;
 
 import com.google.common.collect.ForwardingMap;
 
@@ -34,8 +35,14 @@ import com.google.common.collect.ForwardingMap;
  */
 public class SimpleBeanMap extends ForwardingMap<Bean<? extends Object>, Object> implements BeanMap
 {
+   private static LogProvider log = Logging.getLogProvider(SimpleBeanMap.class);
+   
+   // The backing map
    protected Map<Bean<? extends Object>, Object> delegate;
 
+   /**
+    * Constructor
+    */
    public SimpleBeanMap()
    {
       delegate = new ConcurrentHashMap<Bean<? extends Object>, Object>();
@@ -46,11 +53,15 @@ public class SimpleBeanMap extends ForwardingMap<Bean<? extends Object>, Object>
     * 
     * @param The bean to look for
     * @return An instance, if found
+    * 
+    * @see org.jboss.webbeans.contexts.BeanMap#get(Bean)
     */
    @SuppressWarnings("unchecked")
    public <T extends Object> T get(Bean<? extends T> bean)
    {
-      return (T) super.get(bean);
+      T instance = (T) super.get(bean);
+      log.trace("Searched bean map for " + bean + " and got " + instance);
+      return instance;
    }
 
    /**
@@ -63,31 +74,40 @@ public class SimpleBeanMap extends ForwardingMap<Bean<? extends Object>, Object>
    {
       return delegate;
    }
-   
+
    /**
     * Removed a instance from the map
     * 
-    *  @param bean the bean to remove
-    *  @return The instance removed
+    * @param bean the bean to remove
+    * @return The instance removed
+    *
+    * @see org.jboss.webbeans.contexts.BeanMap#remove(Bean)
     */
    @SuppressWarnings("unchecked")
    public <T extends Object> T remove(Bean<? extends T> bean)
    {
-      return (T) super.remove(bean);
+      T instance = (T) super.remove(bean);
+      log.trace("Removed instace " + instance + " for bean " + bean + " from the bean map");
+      return instance;
    }
 
    /**
     * Clears the map
+    * 
+    * @see org.jboss.webbeans.contexts.BeanMap#clear()
     */
    public void clear()
    {
       delegate.clear();
+      log.trace("Bean map cleared");
    }
 
    /**
     * Returns the beans contained in the map
     * 
     * @return The beans present
+    * 
+    * @see org.jboss.webbeans.contexts.BeanMap#keySet()
     */
    public Set<Bean<? extends Object>> keySet()
    {
@@ -99,20 +119,24 @@ public class SimpleBeanMap extends ForwardingMap<Bean<? extends Object>, Object>
     * 
     * @param bean The bean
     * @param instance the instance
+    * 
+    * @see org.jboss.webbeans.contexts.BeanMap#put(Bean, Object)
     */
    public <T> void put(Bean<? extends T> bean, T instance)
    {
       delegate.put(bean, instance);
+      log.trace("Stored instance " + instance + " for bean " + bean + " in bean map");
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append(delegate.size() + " found in session\n");
-      for (Entry<Bean<? extends Object>, Object> entry : delegate.entrySet()) {
-         buffer.append(entry.getKey().toString() + ": " + entry.getValue().toString() + "\n");
+      buffer.append("Bean -> bean instance mappings: " + delegate.size() + "\n");
+      int i = 0;
+      for (Entry<Bean<? extends Object>, Object> entry : delegate.entrySet())
+      {
+         buffer.append(++i + " - " + entry.getKey().toString() + ": " + entry.getValue().toString() + "\n");
       }
       return buffer.toString();
    }

@@ -39,10 +39,19 @@ public class SessionBeanMap implements BeanMap
 {
    private static LogProvider log = Logging.getLogProvider(SessionBeanMap.class);
 
+   // The HTTP session to use as backing map
    private HttpSession session;
+   // The Web Beans manager
    private ManagerImpl manager;
+   // The storage prefix to put before names
    private String keyPrefix;
 
+   /**
+    * Constructor
+    * 
+    * @param manager The Web Beans manager
+    * @param keyPrefix The storage names prefix
+    */
    public SessionBeanMap(ManagerImpl manager, String keyPrefix)
    {
       super();
@@ -96,6 +105,8 @@ public class SessionBeanMap implements BeanMap
     * 
     * @param bean The bean to get from the session
     * @return An instance of the bean
+    * 
+    * @see org.jboss.webbeans.contexts.BeanMap#get(Bean)
     */
    @SuppressWarnings("unchecked")
    public <T> T get(Bean<? extends T> bean)
@@ -116,6 +127,8 @@ public class SessionBeanMap implements BeanMap
     * 
     * @param bean The bean whose instance to remove.
     * @return The instance removed
+    * 
+    * @see org.jboss.webbeans.contexts.BeanMap#remove(Bean)
     */
    public <T> T remove(Bean<? extends T> bean)
    {
@@ -133,6 +146,8 @@ public class SessionBeanMap implements BeanMap
     * First, checks that the session is present. Then, iterates over the
     * attribute names in the session and removes them if they start with the
     * know prefix.
+    * 
+    * @see org.jboss.webbeans.contexts.BeanMap#clear()
     */
    @SuppressWarnings("unchecked")
    public void clear()
@@ -156,6 +171,8 @@ public class SessionBeanMap implements BeanMap
     * Finally, returns the list.
     * 
     * @return An Iterable to the beans in the storage
+    * 
+    * @see org.jboss.webbeans.contexts.BeanMap#keySet()
     */
    @SuppressWarnings("unchecked")
    public Iterable<Bean<? extends Object>> keySet()
@@ -187,13 +204,15 @@ public class SessionBeanMap implements BeanMap
     * 
     * @param bean The bean to use as key
     * @param instance The bean instance to add
+    * 
+    * @see org.jboss.webbeans.contexts.BeanMap#put(Bean, Object)
     */
    public <T> void put(Bean<? extends T> bean, T instance)
    {
       checkSession();
       String key = getBeanKey(bean);
       session.setAttribute(key, instance);
-      log.trace("Stored bean " + bean + " under key " + key + " in session");
+      log.trace("Stored instance " + instance + " for bean " + bean + " under key " + key + " in session");
    }
 
    @SuppressWarnings("unchecked")
@@ -202,11 +221,12 @@ public class SessionBeanMap implements BeanMap
    {
       StringBuffer buffer = new StringBuffer();
       List<Bean<?>> beans = (List) keySet();
-      buffer.append(beans.size() + " found in session\n");
+      buffer.append("Bean -> bean instance mappings in HTTP session: " + beans.size() + "\n");
+      int i = 0;
       for (Bean<?> bean : beans)
       {
          Object instance = get(bean);
-         buffer.append(getBeanKey(bean) + ": " + instance + "\n");
+         buffer.append(++i + " - " + getBeanKey(bean) + ": " + instance + "\n");
       }
       return buffer.toString();
    }

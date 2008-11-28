@@ -37,7 +37,7 @@ public class DependentContext extends PrivateContext
    }
 
    /**
-    * Overriden method always creating a new instance
+    * Overridden method always creating a new instance
     * 
     *  @param bean The bean to create
     *  @param create Should a new one be created
