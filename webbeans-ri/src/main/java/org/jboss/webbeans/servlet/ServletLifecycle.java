@@ -1,3 +1,20 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.webbeans.servlet;
 
 import java.lang.reflect.Constructor;
@@ -17,15 +34,27 @@ import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.JNDI;
 import org.jboss.webbeans.util.Reflections;
 
+/**
+ * Reacts to phases of the servlet life cycles
+ * 
+ * @author Pete Muir
+ * @author Nicklas Karlsson
+ */
 public class ServletLifecycle
 {
-   
    private static LogProvider log = Logging.getLogProvider(ServletLifecycle.class);
-   
+   // Where to find the manager in JNDI
    private static final String MANAGER_JNDI_KEY = "java:comp/Manager";
-   
+   // The servlet context
    private static ServletContext servletContext;
    
+   /**
+    * Starts the application
+    * 
+    * Runs the bootstrapper for bean discover and initialization
+    * 
+    * @param context The servlet context
+    */
    public static void beginApplication(ServletContext context)
    {
       servletContext = context;
@@ -33,31 +62,66 @@ public class ServletLifecycle
       bootstrap.boot(getWebBeanDiscovery());
    }
    
+   /**
+    * Ends the application
+    */
    public static void endApplication() {
       servletContext = null;
    }
    
+   /**
+    * Begins a session
+    * 
+    * @param session The HTTP session
+    */
    public static void beginSession(HttpSession session)
    {
    }
    
+   /**
+    * Ends a session
+    * 
+    * @param session The HTTP session
+    */
    public static void endSession(HttpSession session) {
    }   
    
+   /**
+    * Begins a HTTP request 
+    * 
+    * Sets the session into the session context
+    * 
+    * @param request The request
+    */
    public static void beginRequest(HttpServletRequest request) {
       ManagerImpl manager = (ManagerImpl) JNDI.lookup(MANAGER_JNDI_KEY);
       SessionContext sessionContext = (SessionContext) manager.getContext(SessionScoped.class);
       sessionContext.setSession(request.getSession(true));
    }
    
+   /**
+    * Ends a HTTP request
+    * 
+    * @param request The request
+    */
    public static void endRequest(HttpServletRequest request) {
    }
    
+   /**
+    * Gets the servlet context
+    * 
+    * @return The servlet context
+    */
    public static ServletContext getServletContext() 
    {
       return servletContext;
    }
    
+   /**
+    * Gets the Web Beans discovery class
+    * 
+    * @return The discoverer
+    */
    // TODO move some of this bootstrap for reuse outside Servlet
    private static WebBeanDiscovery getWebBeanDiscovery()
    {
