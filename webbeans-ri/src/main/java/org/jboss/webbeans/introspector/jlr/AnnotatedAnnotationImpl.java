@@ -28,6 +28,8 @@ import java.util.Set;
 import org.jboss.webbeans.introspector.AnnotatedAnnotation;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 
+import com.google.common.collect.ForwardingMap;
+
 /**
  * Represents an annotated annotation
  * 
@@ -37,8 +39,44 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
  */
 public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnotatedType<T> implements AnnotatedAnnotation<T>
 {
+
+   /**
+    * A (annotation type -> set of method abstractions with annotation) map
+    */
+   private class AnnotatedMembers extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedMethod<?>>>
+   {
+      private Map<Class<? extends Annotation>, Set<AnnotatedMethod<?>>> delegate;
+
+      public AnnotatedMembers()
+      {
+         delegate = new HashMap<Class<? extends Annotation>, Set<AnnotatedMethod<?>>>();
+      }
+
+      @Override
+      protected Map<Class<? extends Annotation>, Set<AnnotatedMethod<?>>> delegate()
+      {
+         return delegate;
+      }
+
+      @Override
+      public String toString()
+      {
+         StringBuffer buffer = new StringBuffer();
+         buffer.append("Annotation type -> member abstraction mappings: " + super.size() + "\n");
+         int i = 0;
+         for (Entry<Class<? extends Annotation>, Set<AnnotatedMethod<?>>> entry : delegate.entrySet())
+         {
+            for (AnnotatedMethod<?> parameter : entry.getValue())
+            {
+               buffer.append(++i + " - " + entry.getKey().toString() + ": " + parameter.toString() + "\n");
+            }
+         }
+         return buffer.toString();
+      }
+   }
+
    // The annotated members map (annotation -> member with annotation)
-   private Map<Class<? extends Annotation>, Set<AnnotatedMethod<?>>> annotatedMembers;
+   private AnnotatedMembers annotatedMembers;
    // The implementation class of the annotation
    private Class<T> clazz;
    // The set of abstracted members
@@ -61,6 +99,8 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
     * Gets the actual type arguments
     * 
     * @return The type arguments
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedAnnotation#getActualTypeArguments()
     */
    public Type[] getActualTypeArguments()
    {
@@ -73,6 +113,8 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
     * Initializes the members first if they are null
     * 
     * @return The set of abstracted members
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedAnnotation#getMembers()
     */
    public Set<AnnotatedMethod<?>> getMembers()
    {
@@ -87,6 +129,8 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
     * Gets the delegate
     * 
     * @return The delegate
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedAnnotation#getDelegate()
     */
    public Class<T> getDelegate()
    {
@@ -95,6 +139,8 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
 
    /**
     * Gets the type of the annotation
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedAnnotation#getType()
     */
    public Class<T> getType()
    {
@@ -124,6 +170,8 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
     * @param annotationType The annotation type to match
     * @return The set of abstracted members with the given annotation type
     *         present. An empty set is returned if no matches are found
+    *         
+    * @see org.jboss.webbeans.introspector.AnnotatedAnnotation#getAnnotatedMembers(Class)
     */
    public Set<AnnotatedMethod<?>> getAnnotatedMembers(Class<? extends Annotation> annotationType)
    {
@@ -157,7 +205,7 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
       {
          initMembers();
       }
-      annotatedMembers = new HashMap<Class<? extends Annotation>, Set<AnnotatedMethod<?>>>();
+      annotatedMembers = new AnnotatedMembers();
       for (AnnotatedMethod<?> member : members)
       {
          for (Annotation annotation : member.getAnnotations())
@@ -169,6 +217,28 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
             annotatedMembers.get(annotation.annotationType()).add(member);
          }
       }
+   }
+
+   /**
+    * Gets a string representation of the constructor
+    * 
+    * @return A string representation
+    */
+   public String toString()
+   {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("AnnotatedConstructorImpl:\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append("Class: " + clazz.toString() + "\n");
+
+      buffer.append("Members: " + getMembers().size() + "\n");
+      int i = 0;
+      for (AnnotatedMethod<?> member : getMembers())
+      {
+         buffer.append(++i + " - " + member.toString());
+      }
+      buffer.append(annotatedMembers == null ? "" : (annotatedMembers.toString() + "\n"));
+      return buffer.toString();
    }
 
 }

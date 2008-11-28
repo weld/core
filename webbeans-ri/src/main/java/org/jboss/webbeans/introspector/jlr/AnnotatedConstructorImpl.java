@@ -46,7 +46,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
 {
 
    /**
-    * An annotation type -> list of annotations map 
+    * An annotation type -> list of annotations map
     */
    private class AnnotatedParameters extends ForwardingMap<Class<? extends Annotation>, List<AnnotatedParameter<Object>>>
    {
@@ -61,6 +61,22 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
       protected Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> delegate()
       {
          return delegate;
+      }
+
+      @Override
+      public String toString()
+      {
+         StringBuffer buffer = new StringBuffer();
+         buffer.append("Annotation type -> parameter abstraction mappings: " + super.size() + "\n");
+         int i = 0;
+         for (Entry<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> entry : delegate.entrySet())
+         {
+            for (AnnotatedParameter<?> parameter : entry.getValue())
+            {
+               buffer.append(++i + " - " + entry.getKey().toString() + ": " + parameter.toString() + "\n");
+            }
+         }
+         return buffer.toString();
       }
    }
 
@@ -126,6 +142,8 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     * Gets the actual type arguments
     * 
     * @return The type arguments
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedConstructor#getActualTypeArguments()
     */
    public Type[] getActualTypeArguments()
    {
@@ -138,6 +156,8 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     * If the parameters are null, initalize them first
     * 
     * @return A list of annotated parameter abstractions
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedConstructor#getParameters()
     */
    public List<AnnotatedParameter<Object>> getParameters()
    {
@@ -236,6 +256,8 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     * @param annotationType The annotation type to match
     * @return A list of matching parameter abstractions. An empty list is
     *         returned if there are no matches.
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedConstructor#getAnnotatedParameters(Class)
     */
    public List<AnnotatedParameter<Object>> getAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
@@ -255,6 +277,8 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     * 
     * @param manager The Web Beans manager
     * @return An instance
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedConstructor#newInstance(ManagerImpl)
     */
    public T newInstance(ManagerImpl manager)
    {
@@ -321,7 +345,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
    {
       return declaringClass;
    }
-   
+
    /**
     * Gets a string representation of the constructor
     * 
@@ -330,8 +354,26 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
+      buffer.append("AnnotatedConstructorImpl:\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
+      int i = 0;
+      for (Type actualTypeArgument : actualTypeArguments)
+      {
+         buffer.append(++i + " - " + actualTypeArgument.toString());
+      }
+      buffer.append("Declaring class:\n");
+      buffer.append(declaringClass.toString() + "\n");
+      buffer.append("Constructor:\n");
+      buffer.append(constructor.toString() + "\n");
+      buffer.append("Parameters: " + getParameters().size() + "\n");
+      i = 0;
+      for (AnnotatedParameter<?> parameter : getParameters())
+      {
+         buffer.append(++i + " - " + parameter.toString());
+      }
+      buffer.append(annotatedParameters.toString() + "\n");
       return buffer.toString();
    }
-   
 
 }

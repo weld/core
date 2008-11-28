@@ -65,6 +65,23 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       {
          return delegate;
       }
+
+      @Override
+      public String toString()
+      {
+         StringBuffer buffer = new StringBuffer();
+         buffer.append("Annotation type -> field abstraction mappings: " + super.size() + "\n");
+         int i = 0;
+         for (Entry<Class<? extends Annotation>, Set<AnnotatedField<Object>>> entry : delegate.entrySet())
+         {
+            for (AnnotatedField<Object> parameter : entry.getValue())
+            {
+               buffer.append(++i + " - " + entry.getKey().toString() + ": " + parameter.toString() + "\n");
+            }
+         }
+         return buffer.toString();
+      }
+
    }
 
    /**
@@ -84,11 +101,27 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       {
          return delegate;
       }
+
+      @Override
+      public String toString()
+      {
+         StringBuffer buffer = new StringBuffer();
+         buffer.append("Meta-annotation type -> method abstraction mappings: " + super.size() + "\n");
+         int i = 0;
+         for (Entry<Class<? extends Annotation>, Set<AnnotatedField<Object>>> entry : delegate.entrySet())
+         {
+            for (AnnotatedField<Object> parameter : entry.getValue())
+            {
+               buffer.append(++i + " - " + entry.getKey().toString() + ": " + parameter.toString() + "\n");
+            }
+         }
+         return buffer.toString();
+      }
    }
 
    /**
     * A (annotation type -> set of method abstractions with annotation) map
-    */   
+    */
    private class AnnotatedMethods extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>>
    {
       private Map<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>> delegate;
@@ -102,6 +135,22 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       protected Map<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>> delegate()
       {
          return delegate;
+      }
+
+      @Override
+      public String toString()
+      {
+         StringBuffer buffer = new StringBuffer();
+         buffer.append("Annotation type -> method abstraction mappings: " + super.size() + "\n");
+         int i = 0;
+         for (Entry<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>> entry : delegate.entrySet())
+         {
+            for (AnnotatedMethod<Object> parameter : entry.getValue())
+            {
+               buffer.append(++i + " - " + entry.getKey().toString() + ": " + parameter.toString() + "\n");
+            }
+         }
+         return buffer.toString();
       }
    }
 
@@ -122,10 +171,27 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       {
          return delegate;
       }
+
+      @Override
+      public String toString()
+      {
+         StringBuffer buffer = new StringBuffer();
+         buffer.append("Annotation type -> constructor abstraction mappings: " + super.size() + "\n");
+         int i = 0;
+         for (Entry<Class<? extends Annotation>, Set<AnnotatedConstructor<T>>> entry : delegate.entrySet())
+         {
+            for (AnnotatedConstructor<T> parameter : entry.getValue())
+            {
+               buffer.append(++i + " - " + entry.getKey().toString() + ": " + parameter.toString() + "\n");
+            }
+         }
+         return buffer.toString();
+      }
    }
 
    /**
-    * A (class list -> set of constructor abstractions with matching parameters) map
+    * A (class list -> set of constructor abstractions with matching parameters)
+    * map
     */
    private class ConstructorsByArgument extends ForwardingMap<List<Class<?>>, AnnotatedConstructor<T>>
    {
@@ -140,6 +206,19 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       protected Map<List<Class<?>>, AnnotatedConstructor<T>> delegate()
       {
          return delegate;
+      }
+
+      @Override
+      public String toString()
+      {
+         StringBuffer buffer = new StringBuffer();
+         buffer.append("Annotation type -> constructor by arguments mappings: " + super.size() + "\n");
+         int i = 0;
+         for (Entry<List<Class<?>>, AnnotatedConstructor<T>> entry : delegate.entrySet())
+         {
+            buffer.append(++i + " - " + entry.getKey().toString() + ": " + entry.getValue().toString() + "\n");
+         }
+         return buffer.toString();
       }
    }
 
@@ -389,6 +468,8 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     * Gets the actual type arguments
     * 
     * @return The type arguments
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedClass#getActualTypeArguments()
     */
    public Type[] getActualTypeArguments()
    {
@@ -425,6 +506,8 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     * @param annotationType The annotation type to match
     * @return A set of matching method abstractions. Returns an empty set if no
     *         matches are found.
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedClass#getAnnotatedMethods(Class)
     */
    public Set<AnnotatedMethod<Object>> getAnnotatedMethods(Class<? extends Annotation> annotationType)
    {
@@ -501,6 +584,8 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     * @return A set of abstracted constructors with given annotation type. If
     *         the constructors set is empty, initialize it first .Returns an
     *         empty set if there are no matches.
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedClass#getAnnotatedConstructors(Class)
     */
    public Set<AnnotatedConstructor<T>> getAnnotatedConstructors(Class<? extends Annotation> annotationType)
    {
@@ -546,9 +631,61 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
    }
 
+   /**
+    * Gets a constructor with given arguments
+    * 
+    * @param arguments The arguments to match
+    * @return A constructor which takes given arguments. Null is returned if
+    *         there are no matches.
+    * 
+    * @see org.jboss.webbeans.introspector.AnnotatedClass#getConstructor(List)
+    */
    public AnnotatedConstructor<T> getConstructor(List<Class<?>> arguments)
    {
       return constructorsByArgumentMap.get(arguments);
+   }
+
+   /**
+    * Gets a string representation of the constructor
+    * 
+    * @return A string representation
+    */
+   public String toString()
+   {
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("AnnotatedConstructorImpl:\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
+      int i = 0;
+      for (Type actualTypeArgument : actualTypeArguments)
+      {
+         buffer.append(++i + " - " + actualTypeArgument.toString());
+      }
+      buffer.append("Class: " + clazz.toString() + "\n");
+      buffer.append("Fields: " + getFields().size() + "\n");
+      i = 0;
+      for (AnnotatedField<Object> field : getFields())
+      {
+         buffer.append(++i + " - " + field.toString());
+      }
+      buffer.append("Methods: " + methods.size() + "\n");
+      i = 0;
+      for (AnnotatedMethod<Object> method : methods)
+      {
+         buffer.append(++i + " - " + method.toString());
+      }
+      buffer.append("Constructors: " + methods.size() + "\n");
+      i = 0;
+      for (AnnotatedConstructor<T> constructor : getConstructors())
+      {
+         buffer.append(++i + " - " + constructor.toString());
+      }
+      buffer.append(annotatedConstructors == null ? "" : (annotatedConstructors.toString() + "\n"));
+      buffer.append(annotatedFields == null ? "" : (annotatedFields.toString() + "\n"));
+      buffer.append(annotatedMethods == null ? "" : (annotatedMethods.toString() + "\n"));
+      buffer.append(constructorsByArgumentMap == null ? "" : (constructorsByArgumentMap.toString() + "\n"));
+      buffer.append(metaAnnotatedFields == null ? "" : (metaAnnotatedFields.toString() + "\n"));
+      return buffer.toString();
    }
 
 }

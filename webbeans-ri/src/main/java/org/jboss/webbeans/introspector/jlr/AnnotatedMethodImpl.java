@@ -31,6 +31,7 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.Strings;
 
 import com.google.common.collect.ForwardingMap;
 
@@ -66,7 +67,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       public String toString()
       {
          StringBuffer buffer = new StringBuffer();
-         buffer.append("Annotation -> parameter mappings: " + super.size() + "\n");
+         buffer.append("Annotation type -> parameter abstraction mappings: " + super.size() + "\n");
          int i = 0;
          for (Entry<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> entry : delegate.entrySet())
          {
@@ -152,7 +153,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     * 
     * @return The actual type arguments
     * 
-    * @see org.jboss.webbeans.introspector.AnnotatedItem#getActualTypeArguments()
+    * @see org.jboss.webbeans.introspector.AnnotatedMethod#getActualTypeArguments()
     */
    public Type[] getActualTypeArguments()
    {
