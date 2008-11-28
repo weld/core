@@ -17,12 +17,20 @@
 
 package org.jboss.webbeans.introspector.jlr;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.webbeans.BindingType;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.Strings;
+
+import com.google.common.collect.ForwardingMap;
 
 /**
  * Represents an abstract annotated memeber (field, method or constructor)
@@ -34,6 +42,31 @@ import org.jboss.webbeans.util.Reflections;
  */
 public abstract class AbstractAnnotatedMember<T, S extends Member> extends AbstractAnnotatedItem<T, S>
 {
+   /**
+    * An annotation type -> list of annotations map
+    */
+   protected class AnnotatedParameterMap extends ForwardingMap<Class<? extends Annotation>, List<AnnotatedParameter<Object>>>
+   {
+      private Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> delegate;
+
+      public AnnotatedParameterMap()
+      {
+         delegate = new HashMap<Class<? extends Annotation>, List<AnnotatedParameter<Object>>>();
+      }
+
+      @Override
+      protected Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> delegate()
+      {
+         return delegate;
+      }
+
+      @Override
+      public String toString()
+      {
+         return Strings.mapToString("AnnotatedParameterMap (annotation type -> parameter abstraction list): ", delegate);
+      }
+   }   
+   
    // The name of the member
    private String name;
 

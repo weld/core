@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.jboss.webbeans.introspector.AnnotatedAnnotation;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.util.Strings;
 
 import com.google.common.collect.ForwardingMap;
 
@@ -43,11 +44,11 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
    /**
     * A (annotation type -> set of method abstractions with annotation) map
     */
-   private class AnnotatedMembers extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedMethod<?>>>
+   private class AnnotatedMemberMap extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedMethod<?>>>
    {
       private Map<Class<? extends Annotation>, Set<AnnotatedMethod<?>>> delegate;
 
-      public AnnotatedMembers()
+      public AnnotatedMemberMap()
       {
          delegate = new HashMap<Class<? extends Annotation>, Set<AnnotatedMethod<?>>>();
       }
@@ -61,22 +62,12 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
       @Override
       public String toString()
       {
-         StringBuffer buffer = new StringBuffer();
-         buffer.append("Annotation type -> member abstraction mappings: " + super.size() + "\n");
-         int i = 0;
-         for (Entry<Class<? extends Annotation>, Set<AnnotatedMethod<?>>> entry : delegate.entrySet())
-         {
-            for (AnnotatedMethod<?> parameter : entry.getValue())
-            {
-               buffer.append(++i + " - " + entry.getKey().toString() + ": " + parameter.toString() + "\n");
-            }
-         }
-         return buffer.toString();
+         return Strings.mapToString("AnnotatedMemberMap (annotation type -> set of member abstractions: ", delegate);
       }
    }
 
    // The annotated members map (annotation -> member with annotation)
-   private AnnotatedMembers annotatedMembers;
+   private AnnotatedMemberMap annotatedMembers;
    // The implementation class of the annotation
    private Class<T> clazz;
    // The set of abstracted members
@@ -170,7 +161,7 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
     * @param annotationType The annotation type to match
     * @return The set of abstracted members with the given annotation type
     *         present. An empty set is returned if no matches are found
-    *         
+    * 
     * @see org.jboss.webbeans.introspector.AnnotatedAnnotation#getAnnotatedMembers(Class)
     */
    public Set<AnnotatedMethod<?>> getAnnotatedMembers(Class<? extends Annotation> annotationType)
@@ -205,7 +196,7 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
       {
          initMembers();
       }
-      annotatedMembers = new AnnotatedMembers();
+      annotatedMembers = new AnnotatedMemberMap();
       for (AnnotatedMethod<?> member : members)
       {
          for (Annotation annotation : member.getAnnotations())
@@ -227,17 +218,18 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-//      buffer.append("AnnotatedConstructorImpl:\n");
-//      buffer.append(super.toString() + "\n");
-//      buffer.append("Class: " + clazz.toString() + "\n");
-//
-//      buffer.append("Members: " + getMembers().size() + "\n");
-//      int i = 0;
-//      for (AnnotatedMethod<?> member : getMembers())
-//      {
-//         buffer.append(++i + " - " + member.toString());
-//      }
-//      buffer.append(annotatedMembers == null ? "" : (annotatedMembers.toString() + "\n"));
+      // buffer.append("AnnotatedConstructorImpl:\n");
+      // buffer.append(super.toString() + "\n");
+      // buffer.append("Class: " + clazz.toString() + "\n");
+      //
+      // buffer.append("Members: " + getMembers().size() + "\n");
+      // int i = 0;
+      // for (AnnotatedMethod<?> member : getMembers())
+      // {
+      // buffer.append(++i + " - " + member.toString());
+      // }
+      // buffer.append(annotatedMembers == null ? "" :
+      // (annotatedMembers.toString() + "\n"));
       return buffer.toString();
    }
 

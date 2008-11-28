@@ -27,6 +27,7 @@ import org.jboss.webbeans.model.AnnotationModel;
 import org.jboss.webbeans.model.BindingTypeModel;
 import org.jboss.webbeans.model.ScopeModel;
 import org.jboss.webbeans.model.StereotypeModel;
+import org.jboss.webbeans.util.Strings;
 
 import com.google.common.collect.ForwardingMap;
 
@@ -65,32 +66,7 @@ public class MetaDataCache
       @Override
       public String toString()
       {
-         StringBuffer buffer = new StringBuffer();
-         buffer.append("Binding types: " + bindingTypes.size() + "\n");
-         int i = 0;
-         for (Entry<Class<? extends Annotation>, BindingTypeModel<?>> entry : bindingTypes.entrySet())
-         {
-            buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString() + "\n");
-         }
-         buffer.append("EJB metadata: " + ejbMetaDataMap.size() + "\n");
-         i = 0;
-         for (Entry<Class<?>, EjbMetaData<?>> entry : ejbMetaDataMap.entrySet())
-         {
-            buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString() + "\n");
-         }
-         buffer.append("Scopes: " + scopes.size() + "\n");
-         i = 0;
-         for (Entry<Class<? extends Annotation>, ScopeModel<?>> entry : scopes.entrySet())
-         {
-            buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString() + "\n");
-         }
-         buffer.append("Stereotypes: " + stereotypes.size() + "\n");
-         i = 0;
-         for (Entry<Class<? extends Annotation>, StereotypeModel<?>> entry : stereotypes.entrySet())
-         {
-            buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString() + "\n");
-         }
-         return buffer.toString();
+         return Strings.mapToString("AnnotationModelMap (annotation -> ?): ", delegate);
       }
 
    }
@@ -114,11 +90,7 @@ public class MetaDataCache
       @Override
       public String toString()
       {
-         StringBuffer buffer = new StringBuffer();
-         buffer.append("Scope model map\n");
-         buffer.append("--------------------\n");
-         buffer.append(super.toString() + "\n");
-         return buffer.toString();
+         return Strings.mapToString("ScopeModelMap (annotation -> ScopeModel): ", delegate);
       }
 
    }
@@ -142,11 +114,7 @@ public class MetaDataCache
       @Override
       public String toString()
       {
-         StringBuffer buffer = new StringBuffer();
-         buffer.append("Binding type model map\n");
-         buffer.append("--------------------\n");
-         buffer.append(super.toString() + "\n");
-         return buffer.toString();
+         return Strings.mapToString("BindingTypeModelMap (annotation -> BindingTypeModel): ", delegate);
       }
    }
 
@@ -181,15 +149,7 @@ public class MetaDataCache
       @Override
       public String toString()
       {
-         StringBuffer buffer = new StringBuffer();
-         buffer.append("EJB metadata: " + delegate.size() + "\n");
-         buffer.append("--------------------\n");
-         int i = 0;
-         for (Entry<Class<?>, EjbMetaData<?>> entry : delegate.entrySet())
-         {
-            buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString() + "\n");
-         }
-         return buffer.toString();
+         return Strings.mapToString("EJBMetadataMap (class -> EJBMetaData): ", delegate);
       }
 
    }

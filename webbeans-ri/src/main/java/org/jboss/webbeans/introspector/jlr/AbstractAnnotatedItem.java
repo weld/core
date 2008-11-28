@@ -35,6 +35,7 @@ import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.Strings;
 import org.jboss.webbeans.util.Types;
 
 import com.google.common.collect.ForwardingMap;
@@ -81,14 +82,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       @Override
       public String toString()
       {
-         StringBuffer buffer = new StringBuffer();
-         buffer.append("Annotation type -> annotation mappings: " + super.size() + "\n");
-         int i = 0;
-         for (Entry<Class<? extends Annotation>, Annotation> entry : delegate.entrySet())
-         {
-            buffer.append(++i + " - " + entry.getKey().toString() + ": " + entry.getValue().toString() + "\n");
-         }
-         return buffer.toString();
+         return Strings.mapToString("AnnotationMap (annotation type -> annotation): ", delegate);
       }
 
    }
@@ -144,17 +138,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       @Override
       public String toString()
       {
-         StringBuffer buffer = new StringBuffer();
-         buffer.append("Annotation type -> meta annotation mappings: " + super.size() + "\n");
-         int i = 0;
-         for (Entry<Class<? extends Annotation>, Set<Annotation>> entry : delegate.entrySet())
-         {
-            for (Annotation annotation : entry.getValue())
-            {
-               buffer.append(++i + " - " + entry.getKey().toString() + ": " + annotation.toString() + "\n");
-            }
-         }
-         return buffer.toString();
+         return Strings.mapToString("MetaAnnotationMap (annotation type -> annotation set: ", delegate);
       }
 
    }

@@ -25,6 +25,7 @@ import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.util.Strings;
 
 import com.google.common.collect.ForwardingMap;
 
@@ -131,14 +132,7 @@ public class SimpleBeanMap extends ForwardingMap<Bean<? extends Object>, Object>
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
-      buffer.append("Bean -> bean instance mappings: " + delegate.size() + "\n");
-      int i = 0;
-      for (Entry<Bean<? extends Object>, Object> entry : delegate.entrySet())
-      {
-         buffer.append(++i + " - " + entry.getKey().toString() + ": " + entry.getValue().toString() + "\n");
-      }
-      return buffer.toString();
+      return Strings.mapToString("SimpleBeanMap (bean -> instance): ", delegate);
    }
 
 }

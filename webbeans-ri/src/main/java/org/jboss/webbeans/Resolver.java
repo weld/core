@@ -39,6 +39,7 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedItem;
 import org.jboss.webbeans.model.BindingTypeModel;
 import org.jboss.webbeans.util.ListComparator;
+import org.jboss.webbeans.util.Strings;
 
 import com.google.common.collect.ForwardingMap;
 
@@ -119,10 +120,7 @@ public class Resolver
       @Override
       public String toString()
       {
-         StringBuffer buffer = new StringBuffer();
-         buffer.append("Annotated item\n");
-         buffer.append(delegate().toString() + "\n");
-         return buffer.toString();
+         return Strings.mapToString("AnnotatedItemMap (annotated item -> bean set): ", delegate);
       }      
 
    }

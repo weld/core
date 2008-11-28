@@ -22,9 +22,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.webbeans.ExecutionException;
 
@@ -32,8 +30,6 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
-
-import com.google.common.collect.ForwardingMap;
 
 /**
  * Represents an annotated constructor
@@ -44,42 +40,6 @@ import com.google.common.collect.ForwardingMap;
  */
 public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Constructor<T>> implements AnnotatedConstructor<T>
 {
-
-   /**
-    * An annotation type -> list of annotations map
-    */
-   private class AnnotatedParameters extends ForwardingMap<Class<? extends Annotation>, List<AnnotatedParameter<Object>>>
-   {
-      private Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> delegate;
-
-      public AnnotatedParameters()
-      {
-         delegate = new HashMap<Class<? extends Annotation>, List<AnnotatedParameter<Object>>>();
-      }
-
-      @Override
-      protected Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> delegate()
-      {
-         return delegate;
-      }
-
-      @Override
-      public String toString()
-      {
-         StringBuffer buffer = new StringBuffer();
-         buffer.append("Annotation type -> parameter abstraction mappings: " + super.size() + "\n");
-         int i = 0;
-         for (Entry<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> entry : delegate.entrySet())
-         {
-            for (AnnotatedParameter<?> parameter : entry.getValue())
-            {
-               buffer.append(++i + " - " + entry.getKey().toString() + ": " + parameter.toString() + "\n");
-            }
-         }
-         return buffer.toString();
-      }
-   }
-
    // The type arguments
    private static final Type[] actualTypeArguments = new Type[0];
    // The underlying constructor
@@ -88,7 +48,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
    // The list of parameter abstractions
    private List<AnnotatedParameter<Object>> parameters;
    // The mapping of annotation -> parameter abstraction
-   private AnnotatedParameters annotatedParameters;
+   private AnnotatedParameterMap annotatedParameters;
 
    // The declaring class abstraction
    private AnnotatedType<T> declaringClass;
@@ -234,7 +194,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
       {
          initParameters();
       }
-      annotatedParameters = new AnnotatedParameters();
+      annotatedParameters = new AnnotatedParameterMap();
       for (AnnotatedParameter<Object> parameter : parameters)
       {
          for (Annotation annotation : parameter.getAnnotations())

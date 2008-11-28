@@ -31,6 +31,7 @@ import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.util.Strings;
 
 import com.google.common.collect.ForwardingMap;
 
@@ -73,14 +74,7 @@ public class ProxyPool
       @Override
       public String toString()
       {
-         StringBuffer buffer = new StringBuffer();
-         buffer.append("Proxy pool holding " + delegate.size() + " proxies\n");
-         int i = 0;
-         for (Entry<Bean<?>, Object> entry : delegate.entrySet())
-         {
-            buffer.append(i + " - " + entry.getKey().toString() + ": " + entry.getValue().toString() + "\n");
-         }
-         return buffer.toString();
+         return Strings.mapToString("ProxyPool (bean -> proxy): ", delegate);
       }
 
    }

@@ -22,17 +22,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Reflections;
-
-import com.google.common.collect.ForwardingMap;
 
 /**
  * Represents an annotated method
@@ -43,42 +39,6 @@ import com.google.common.collect.ForwardingMap;
  */
 public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>
 {
-   /**
-    * A annotation type -> list of parameter abstractions with given annotations
-    * present mapping
-    */
-   private class AnnotatedParameters extends ForwardingMap<Class<? extends Annotation>, List<AnnotatedParameter<Object>>>
-   {
-      private Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> delegate;
-
-      public AnnotatedParameters()
-      {
-         delegate = new HashMap<Class<? extends Annotation>, List<AnnotatedParameter<Object>>>();
-      }
-
-      @Override
-      protected Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> delegate()
-      {
-         return delegate;
-      }
-
-      @Override
-      public String toString()
-      {
-         StringBuffer buffer = new StringBuffer();
-         buffer.append("Annotation type -> parameter abstraction mappings: " + super.size() + "\n");
-         int i = 0;
-         for (Entry<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> entry : delegate.entrySet())
-         {
-            for (AnnotatedParameter<?> parameter : entry.getValue())
-            {
-               buffer.append(++i + " - " + entry.getKey().toString() + ": " + parameter.toString() + "\n");
-            }
-         }
-         return buffer.toString();
-      }
-   }
-
    // The actual type arguments
    private Type[] actualTypeArguments = new Type[0];
    // The underlying method
@@ -88,7 +48,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    private List<AnnotatedParameter<Object>> parameters;
    // A mapping from annotation type to parameter abstraction with that
    // annotation present
-   private AnnotatedParameters annotatedParameters;
+   private AnnotatedParameterMap annotatedParameters;
 
    // The property name
    private String propertyName;
@@ -236,7 +196,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       {
          initParameters();
       }
-      annotatedParameters = new AnnotatedParameters();
+      annotatedParameters = new AnnotatedParameterMap();
       for (AnnotatedParameter<Object> parameter : parameters)
       {
          for (Annotation annotation : parameter.getAnnotations())

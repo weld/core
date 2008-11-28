@@ -44,7 +44,6 @@ import javax.webbeans.manager.Interceptor;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.bean.AbstractBean;
-import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bean.proxy.ProxyPool;
 import org.jboss.webbeans.contexts.ApplicationContext;
@@ -58,7 +57,6 @@ import org.jboss.webbeans.exceptions.NameResolutionLocation;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
-import org.jboss.webbeans.transaction.TransactionListener;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -103,8 +101,6 @@ public class ManagerImpl implements Manager
    protected void initStandardBeans()
    {
       addBean(new SimpleBean<DefaultEnterpriseBeanLookup>(DefaultEnterpriseBeanLookup.class, this));
-// TODO: Fix tests that rely that there are a specific number of beans registered/present/matched etc.      
-//      addBean(new EnterpriseBean<TransactionListener>(TransactionListener.class, this));
    }
 
    /**
