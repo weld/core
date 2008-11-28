@@ -152,7 +152,7 @@ public class MergedStereotypes<T, E>
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("Merged stereotype\n");
+      buffer.append("Merged stereotypes:\n");
       buffer.append("Bean name defaulted: " + beanNameDefaulted + "\n");
       buffer.append("Possible deployment types: " + possibleDeploymentTypes.size() + "\n");
       int i = 0;

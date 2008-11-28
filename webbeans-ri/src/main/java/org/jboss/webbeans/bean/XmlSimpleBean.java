@@ -52,7 +52,7 @@ public class XmlSimpleBean<T> extends SimpleBean<T>
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("XML-defined simple bean\n");
+      buffer.append("XmlLSimpleBean\n");
       buffer.append(super.toString() + "\n");
       return buffer.toString();
    }

@@ -339,7 +339,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("EnterpriseBean[" + getType().getName() + "]\n");
+      buffer.append("EnterpriseBean:\n");
+      buffer.append(super.toString() + "\n");
       buffer.append(ejbMetaData.toString() + "\n");
       return buffer.toString();
    }

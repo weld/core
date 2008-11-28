@@ -292,7 +292,7 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("ProducerMethodBean[" + getType().getName() + "]\n");
+      buffer.append("ProducerMethodBean:\n");
       buffer.append(super.toString() + "\n");
       buffer.append("Location: " + location + "\n");
       buffer.append("Declaring bean: " + declaringBean.toString() + "\n");

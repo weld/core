@@ -360,7 +360,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append("SimpleWebBean[" + getAnnotatedItem().toString() + "]\n");
+      buffer.append("SimpleBean\n");
       buffer.append(super.toString() + "\n");
       buffer.append("Location: " + location + "\n");
       buffer.append("Constructor: " + constructor.toString() + "\n");

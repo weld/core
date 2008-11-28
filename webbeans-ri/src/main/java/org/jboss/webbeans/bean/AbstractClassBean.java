@@ -262,7 +262,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      buffer.append(super.toString());
+      buffer.append("AbstractClassBean:\n");
+      buffer.append(super.toString() + "\n");
       buffer.append("Annotated item: " + annotatedItem.toString() + "\n");
       buffer.append("Initializer methods: " + initializerMethods.size() + "\n");
       int i = 0;

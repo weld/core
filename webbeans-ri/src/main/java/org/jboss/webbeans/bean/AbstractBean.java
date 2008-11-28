@@ -395,6 +395,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * Destroys a bean instance
     * 
     * @param instance The instance to destroy
+    * 
+    * @see javax.webbeans.manager.Bean#destroy(Object)
     */
    @Override
    public void destroy(T instance)
@@ -429,6 +431,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * Returns the binding types
     * 
     * @return The set of binding types
+    * 
+    * @see javax.webbeans.manager.Bean#getBindingTypes()
     */
    public Set<Annotation> getBindingTypes()
    {
@@ -468,6 +472,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * Returns the deployment type of the bean
     * 
     * @return The deployment type
+    * 
+    * @see javax.webbeans.manager.Bean#getDeploymentType()
     */
    public Class<? extends Annotation> getDeploymentType()
    {
@@ -509,6 +515,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * Returns the name of the bean
     * 
     * @return The name
+    * 
+    * @see javax.webbeans.manager.Bean#getName()
     */
    public String getName()
    {
@@ -529,6 +537,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * Returns the scope type of the bean
     * 
     * @return The scope type
+    * 
+    * @see javax.webbeans.manager.Bean#getScopeType()
     */
    public Class<? extends Annotation> getScopeType()
    {
@@ -559,6 +569,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * Returns the API types of the bean
     * 
     * @return The set of API types
+    * 
+    * @see javax.webbeans.manager.Bean#getTypes()
     */
    @Override
    public Set<Class<?>> getTypes()
@@ -592,6 +604,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * Inicates if bean is nullable
     * 
     * @return True if nullable, false otherwise
+    * 
+    * @see javax.webbeans.manager.Bean#isNullable()
     */
    @Override
    public boolean isNullable()
@@ -613,6 +627,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * Indicates if bean is serializable
     * 
     * @return True if serializable, false otherwise
+    * 
+    * @see @see javax.webbeans.manager.Bean#isSerializable()
     */
    @Override
    public boolean isSerializable()
@@ -625,10 +641,11 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
+      buffer.append("AbstractBean:\n");
       buffer.append("Name: " + name + "\n");
       buffer.append("Type: " + type + "\n");
-      buffer.append("Scope type " + scopeType.getName() + "\n");
-      buffer.append("Deployment type: " + deploymentType.getName() + "\n");
+      buffer.append("Scope type " + scopeType.toString() + "\n");
+      buffer.append("Deployment type: " + deploymentType.toString() + "\n");
       buffer.append("Primitive : " + primitive + "\n");
       buffer.append("Declared bean type: " + (declaredBeanType == null ? "null" : declaredBeanType.toString()) + "\n");
       buffer.append("Remove method: " + (removeMethod == null ? "null" : removeMethod.toString()) + "\n");
@@ -644,7 +661,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       {
          buffer.append(++i + " - " + apiType.getName() + "\n");
       }
-      buffer.append("Merged stereotype\n");
       buffer.append(mergedStereotypes.toString() + "\n");
       buffer.append("Injection points: " + injectionPoints.size() + "\n");
       i = 0;

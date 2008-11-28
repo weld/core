@@ -31,7 +31,6 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Reflections;
-import org.jboss.webbeans.util.Strings;
 
 import com.google.common.collect.ForwardingMap;
 
