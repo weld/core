@@ -1,3 +1,20 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
@@ -28,7 +45,7 @@ import javax.webbeans.manager.Manager;
 public class EventImpl<T> implements Event<T>
 {
    private Collection<? extends Annotation> eventBindings;
-   private Class<T>                         eventType;
+   private Class<T> eventType;
 
    // The current WB manager
    @Current
@@ -38,8 +55,7 @@ public class EventImpl<T> implements Event<T>
     * Used to set the event bindings for this type of event after it is
     * constructed with the default constructor.
     * 
-    * @param eventBindings
-    *           Annotations that are bindings for the event
+    * @param eventBindings Annotations that are bindings for the event
     */
    public void setEventBindings(Annotation... eventBindings)
    {
@@ -66,14 +82,13 @@ public class EventImpl<T> implements Event<T>
       addAnnotationBindings(eventBindings, bindings);
 
       // Invoke the container method to fire the event per 7.2
-      webBeansManager
-            .fireEvent(event, eventBindings.toArray(new Annotation[0]));
+      webBeansManager.fireEvent(event, eventBindings.toArray(new Annotation[0]));
    }
 
    public void observe(Observer<T> observer, Annotation... bindings)
    {
       // Register the observer with the web beans manager
-      
+
       Set<Annotation> eventBindings = new HashSet<Annotation>();
       eventBindings.addAll(this.getBindingTypes());
       addAnnotationBindings(eventBindings, bindings);
@@ -85,35 +100,32 @@ public class EventImpl<T> implements Event<T>
     * already exists in the set, a {@link DuplicateBindingTypeException} is
     * thrown.
     * 
-    * @param bindingsSet
-    *           The set of annotation binding objects
-    * @param bindings
-    *           An array of annotation bindings to add to the set
-    * @throws DuplicateBindingTypeException
-    *            if any of bindings are duplicates
-    * @throws IllegalArgumentException
-    *            if any annotation is not a binding type
+    * @param bindingsSet The set of annotation binding objects
+    * @param bindings An array of annotation bindings to add to the set
+    * @throws DuplicateBindingTypeException if any of bindings are duplicates
+    * @throws IllegalArgumentException if any annotation is not a binding type
     */
-   private void addAnnotationBindings(Set<Annotation> bindingsSet,
-         Annotation[] bindings)
+   private void addAnnotationBindings(Set<Annotation> bindingsSet, Annotation[] bindings)
    {
       if (bindings != null)
       {
          Set<Class<? extends Annotation>> bindingTypes = new HashSet<Class<? extends Annotation>>();
-         // Add the bindings types that are already in the set being added to.  This will
-         // provide detection of duplicates across construction and later invocations.
+         // Add the bindings types that are already in the set being added to.
+         // This will
+         // provide detection of duplicates across construction and later
+         // invocations.
          for (Annotation annotation : bindingsSet)
          {
             bindingTypes.add(annotation.annotationType());
          }
-         
-         // Now go through the new annotations being added to make sure these are binding
+
+         // Now go through the new annotations being added to make sure these
+         // are binding
          // types and are not duplicates
          for (Annotation annotation : bindings)
          {
             // Check that the binding type is indeed a binding type
-            Annotation[] bindingAnnotations = annotation.annotationType()
-                  .getAnnotations();
+            Annotation[] bindingAnnotations = annotation.annotationType().getAnnotations();
             boolean isBindingType = false;
             for (Annotation bindingAnnotation : bindingAnnotations)
             {
@@ -123,15 +135,15 @@ public class EventImpl<T> implements Event<T>
                }
             }
             if (!isBindingType)
-               throw new IllegalArgumentException("Annotation " + annotation
-                     + " is not a binding type");
+               throw new IllegalArgumentException("Annotation " + annotation + " is not a binding type");
 
             // Check that no binding type was specified more than once in the
             // annotations
             if (bindingTypes.contains(annotation.annotationType()))
             {
                throw new DuplicateBindingTypeException();
-            } else
+            }
+            else
             {
                bindingTypes.add(annotation.annotationType());
             }
@@ -152,7 +164,7 @@ public class EventImpl<T> implements Event<T>
    {
       this.webBeansManager = manager;
    }
-   
+
    // TODO Use constructor injection
    public void setEventType(Class<T> eventType)
    {
