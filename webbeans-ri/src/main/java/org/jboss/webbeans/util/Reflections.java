@@ -1,3 +1,20 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.webbeans.util;
 
 import java.beans.Introspector;
@@ -18,9 +35,22 @@ import java.util.Set;
 
 import javax.webbeans.ExecutionException;
 
+/**
+ * Utility class for static reflection-type operations
+ * 
+ * @author Pete Muir
+ * 
+ */
 public class Reflections
 {
 
+   /**
+    * Creates an instance from a class name
+    * 
+    * @param name The class name
+    * @return The instance
+    * @throws ClassNotFoundException If the class if not found
+    */
    public static Class<?> classForName(String name) throws ClassNotFoundException
    {
       try
@@ -33,6 +63,13 @@ public class Reflections
       }
    }
 
+   /**
+    * Gets the property name from a getter method
+    * 
+    * @param method The getter method
+    * @return The name of the property. Returns null if method wasn't JavaBean
+    *         getter-styled
+    */
    public static String getPropertyName(Method method)
    {
       String methodName = method.getName();
@@ -51,16 +88,34 @@ public class Reflections
 
    }
 
+   /**
+    * Checks if class is final
+    * 
+    * @param clazz The class to check
+    * @return True if final, false otherwise
+    */
    public static boolean isFinal(Class<?> clazz)
    {
       return Modifier.isFinal(clazz.getModifiers());
    }
 
+   /**
+    * Checks if member is final
+    * 
+    * @param member The member to check
+    * @return True if final, false otherwise
+    */
    public static boolean isFinal(Member member)
    {
       return Modifier.isFinal(member.getModifiers());
    }
 
+   /**
+    * Checks if type or member is final
+    * 
+    * @param type Type or member
+    * @return True if final, false otherwise
+    */
    public static boolean isTypeOrAnyMethodFinal(Class<?> type)
    {
       if (isFinal(type))
@@ -77,36 +132,80 @@ public class Reflections
       return false;
    }
 
+   /**
+    * Checks if type is primitive
+    * 
+    * @param type Type to check
+    * @return True if primitive, false otherwise
+    */
    public static boolean isPrimitive(Class<?> type)
    {
       return type.isPrimitive();
    }
 
+   /**
+    * Checks if type is static
+    * 
+    * @param type Type to check
+    * @return True if static, false otherwise
+    */
    public static boolean isStatic(Class<?> type)
    {
       return Modifier.isStatic(type.getModifiers());
    }
 
+   /**
+    * Checks if member is static
+    * 
+    * @param member Member to check
+    * @return True if static, false otherwise
+    */
    public static boolean isStatic(Member member)
    {
       return Modifier.isStatic(member.getModifiers());
    }
 
+   /**
+    * Checks if clazz is abstract
+    * 
+    * @param clazz Class to check
+    * @return True if abstract, false otherwise
+    */
    public static boolean isAbstract(Class<?> clazz)
    {
       return Modifier.isAbstract(clazz.getModifiers());
    }
 
+   /**
+    * Checks if class is a static inner one
+    * 
+    * @param clazz Class to check
+    * @return True if static, false otherwise
+    */
    public static boolean isStaticInnerClass(Class<?> clazz)
    {
       return clazz.isMemberClass() && isStatic(clazz);
    }
 
+   /**
+    * Checks if class is a non-static inner one
+    * 
+    * @param clazz Class to Check
+    * @return True if static, false otherwise
+    */
    public static boolean isNonStaticInnerClass(Class<?> clazz)
    {
       return clazz.isMemberClass() && !isStatic(clazz);
    }
 
+   /**
+    * Gets a constructor with matching parameter types
+    * 
+    * @param <T> The type
+    * @param clazz The class
+    * @param parameterTypes The parameter types
+    * @return The matching constructor. Null is returned if none is found
+    */
    public static <T> Constructor<T> getConstructor(Class<T> clazz, Class<?>... parameterTypes)
    {
       try
@@ -123,6 +222,14 @@ public class Reflections
       }
    }
 
+   /**
+    * Gets all methods with a given annotation
+    * 
+    * @param clazz The class the examine
+    * @param annotationType The annotation type to search for
+    * @return A list of matching methods. An empty list is returned if no
+    *         matches are found
+    */
    public static List<Method> getMethods(Class<?> clazz, Class<? extends Annotation> annotationType)
    {
       List<Method> methods = new ArrayList<Method>();
@@ -136,6 +243,15 @@ public class Reflections
       return methods;
    }
 
+   /**
+    * Gets all constructors with a given annotation
+    * 
+    * @param <T> The type of the class
+    * @param clazz The class
+    * @param annotationType The annotation type
+    * @return A list of matching constructors. An empty list is returned if no
+    *         matches are found
+    */
    @SuppressWarnings("unchecked")
    public static <T> List<Constructor<T>> getAnnotatedConstructors(Class<? extends T> clazz, Class<? extends Annotation> annotationType)
    {
@@ -150,6 +266,15 @@ public class Reflections
       return constructors;
    }
 
+   /**
+    * Gets constructors with a given annotated parameter
+    * 
+    * @param <T> The type
+    * @param clazz The class
+    * @param parameterAnnotationType The parameter annotation type
+    * @return A list of matching constructors. An empty list is returned if no
+    *         matches are found
+    */
    @SuppressWarnings("unchecked")
    public static <T> List<Constructor<T>> getConstructorsForAnnotatedParameter(Class<? extends T> clazz, Class<? extends Annotation> parameterAnnotationType)
    {
@@ -170,6 +295,15 @@ public class Reflections
       return constructors;
    }
 
+   /**
+    * Gets constructors with a given meta-annotated parameter
+    * 
+    * @param <T> The type
+    * @param clazz The class
+    * @param metaAnnotationType The parameter meta-annotation type
+    * @return A list of matching constructors. An empty list is returned if no
+    *         matches are found
+    */
    @SuppressWarnings("unchecked")
    public static <T> List<Constructor<T>> getConstructorsForMetaAnnotatedParameter(Class<? extends T> clazz, Class<? extends Annotation> metaAnnotationType)
    {
@@ -190,6 +324,13 @@ public class Reflections
       return constructors;
    }
 
+   /**
+    * Checks if all annotations types are in a given set of annotations
+    * 
+    * @param annotations The annotation set
+    * @param annotationTypes The annotation types to match
+    * @return True if match, false otherwise
+    */
    public static boolean annotationTypeSetMatches(Set<Class<? extends Annotation>> annotations, Class<? extends Annotation>... annotationTypes)
    {
       List<Class<? extends Annotation>> annotationTypeList = new ArrayList<Class<? extends Annotation>>();
@@ -208,6 +349,13 @@ public class Reflections
       return annotationTypeList.size() == 0;
    }
 
+   /**
+    * Checks if all annotations are in a given set of annotations
+    * 
+    * @param annotations The annotation set
+    * @param annotationTypes The annotations to match
+    * @return True if match, false otherwise
+    */
    public static boolean annotationSetMatches(Set<Annotation> annotations, Class<? extends Annotation>... annotationTypes)
    {
       List<Class<? extends Annotation>> annotationTypeList = new ArrayList<Class<? extends Annotation>>();
@@ -226,6 +374,12 @@ public class Reflections
       return annotationTypeList.size() == 0;
    }
 
+   /**
+    * Gets the actual type arguments of a class
+    * 
+    * @param clazz The class to examine
+    * @return The type arguments
+    */
    public static Type[] getActualTypeArguments(Class<?> clazz)
    {
       if (clazz.getGenericSuperclass() instanceof ParameterizedType)
@@ -238,16 +392,36 @@ public class Reflections
       }
    }
 
+   /**
+    * Checks if raw type is array type
+    * 
+    * @param rawType The raw type to check
+    * @return True if array, false otherwise
+    */
    public static boolean isArrayType(Class<?> rawType)
    {
       return rawType.isArray();
    }
 
+   /**
+    * Checks if type is parameterized type
+    * 
+    * @param type The type to check
+    * @return True if parameterized, false otherwise
+    */
    public static boolean isParameterizedType(Class<?> type)
    {
       return type.getTypeParameters().length > 0;
    }
 
+   /**
+    * Invokes a method and wraps exceptions
+    * 
+    * @param method The method to invoke
+    * @param instance The instance to invoke on
+    * @param parameters The parameters
+    * @return The return value
+    */
    public static Object invokeAndWrap(Method method, Object instance, Object... parameters)
    {
       try
@@ -268,6 +442,13 @@ public class Reflections
       }
    }
 
+   /**
+    * Sets value of a field and wraps exceptions
+    * 
+    * @param field The field to set on
+    * @param target The instance to set on
+    * @param value The value to set
+    */
    public static void setAndWrap(Field field, Object target, Object value)
    {
       try
@@ -284,6 +465,13 @@ public class Reflections
       }
    }
 
+   /**
+    * Looks up a method in the type hierarchy of an instance
+    * 
+    * @param method The method to look for
+    * @param instance The instance to start from
+    * @return The method found, or an NoSuchMethodException if it is not found
+    */
    public static Method lookupMethod(Method method, Object instance)
    {
       for (Class<? extends Object> clazz = instance.getClass(); clazz != Object.class; clazz = clazz.getSuperclass())
@@ -305,6 +493,12 @@ public class Reflections
       throw new IllegalArgumentException("Method " + method.getName() + " not implemented by instance");
    }
 
+   /**
+    * Indicates if an instance is a Javassist proxy
+    * 
+    * @param instance The instance to examine
+    * @return True if proxy, false otherwise
+    */
    public static boolean isProxy(Object instance)
    {
       return instance.getClass().getName().indexOf("_$$_javassist_") > 0;
