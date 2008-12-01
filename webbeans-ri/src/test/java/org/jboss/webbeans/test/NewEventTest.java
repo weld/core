@@ -1,5 +1,12 @@
 package org.jboss.webbeans.test;
 
+import java.lang.annotation.Annotation;
+import java.util.Set;
+
+import javax.webbeans.Observer;
+import javax.webbeans.TypeLiteral;
+
+import org.jboss.webbeans.test.bindings.RoleBinding;
 import org.testng.annotations.Test;
 
 /**
@@ -11,6 +18,19 @@ import org.testng.annotations.Test;
 @SpecVersion("PDR")
 public class NewEventTest extends AbstractTest
 {
+   public static class AnEventType
+   {
+   }
+   
+   public static class AnObserver implements Observer<AnEventType>
+   {
+
+      public void notify(AnEventType event)
+      {
+      }
+      
+   }
+
    @Test(groups={"stub", "events"})
    @SpecAssertion(section="7.1")
    public void testEventTypeIncludesAllSuperclassesAndInterfacesOfEventObject() 
@@ -34,7 +54,7 @@ public class NewEventTest extends AbstractTest
    
    @Test(groups={"stub", "events"})
    @SpecAssertion(section="7.1")
-   public void testConsumerNotifiedWhenEventTypeAndAllBindingMathces() 
+   public void testConsumerNotifiedWhenEventTypeAndAllBindingsMatch() 
    {
       assert false;
    }
@@ -46,18 +66,83 @@ public class NewEventTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups={"stub", "events"})
+   @Test(groups={"events"})
    @SpecAssertion(section="7.3")
    public void testManagerAddObserver() 
    {
-      assert false;
+      Observer<AnEventType> observer = new AnObserver();
+      
+      // First test with the Class<T> of the event type
+      manager.addObserver(observer, AnEventType.class);
+      Set<Observer<AnEventType>> resolvedObservers = manager.resolveObservers(new AnEventType());
+      assert !resolvedObservers.isEmpty();
+      assert resolvedObservers.size() == 1;
+      assert resolvedObservers.iterator().next() == observer;
+      
+      // Now test with the TypeLiteral<T> of the event type
+      observer = new AnObserver();
+      manager.addObserver(observer, new TypeLiteral<AnEventType>(){});
+      resolvedObservers = manager.resolveObservers(new AnEventType());
+      assert !resolvedObservers.isEmpty();
+      assert resolvedObservers.size() == 2;
+      boolean foundObserver = false;
+      for (Observer<AnEventType> obs : resolvedObservers)
+      {
+         if (obs == observer)
+         {
+            foundObserver = true;
+            break;
+         }
+      }
+      assert foundObserver;
+      
+      // Try adding an observer with some binding types
+      observer = new AnObserver();
+      Annotation[] bindingTypes = new Annotation[] { new RoleBinding("Admin"), new RoleBinding("Manager") };
+      manager.addObserver(observer, AnEventType.class, bindingTypes);
+      resolvedObservers = manager.resolveObservers(new AnEventType(), bindingTypes);
+      assert !resolvedObservers.isEmpty();
+      assert resolvedObservers.size() == 3;
+      foundObserver = false;
+      for (Observer<AnEventType> obs : resolvedObservers)
+      {
+         if (obs == observer)
+         {
+            foundObserver = true;
+            break;
+         }
+      }
+      assert foundObserver;
    }
     
-   @Test(groups={"stub", "events"})
+   @Test(groups={"events"})
    @SpecAssertion(section="7.3")
    public void testManagerRemoveObserver() 
    {
-      assert false;
+      Observer<AnEventType> observer = new AnObserver();
+      
+      // First test with the Class<T> of the event type
+      manager.addObserver(observer, AnEventType.class);
+      manager.removeObserver(observer, AnEventType.class);
+      Set<Observer<AnEventType>> resolvedObservers = manager.resolveObservers(new AnEventType());
+      assert resolvedObservers.isEmpty();
+      
+      // Now test with the TypeLiteral<T> of the event type
+      observer = new AnObserver();
+      manager.addObserver(observer, new TypeLiteral<AnEventType>(){});
+      manager.removeObserver(observer, new TypeLiteral<AnEventType>(){});
+      resolvedObservers = manager.resolveObservers(new AnEventType());
+      assert resolvedObservers.isEmpty();
+      
+      // Also test with binding types
+      Annotation[] bindings = new Annotation[] { new RoleBinding("Admin") };
+      manager.addObserver(observer, AnEventType.class, bindings);
+      manager.removeObserver(observer, AnEventType.class);
+      resolvedObservers = manager.resolveObservers(new AnEventType(), bindings);
+      assert !resolvedObservers.isEmpty();
+      manager.removeObserver(observer, AnEventType.class, new RoleBinding("Admin"));
+      resolvedObservers = manager.resolveObservers(new AnEventType(), bindings);
+      assert resolvedObservers.isEmpty();
    }
    
    @Test(groups={"stub", "events"})
@@ -196,7 +281,7 @@ public class NewEventTest extends AbstractTest
    
    @Test(groups={"stub", "events"})
    @SpecAssertion(section="7.5.4")
-   public void testObserverMethodRecievesInjectionsOnNonObservesParameters() 
+   public void testObserverMethodReceivesInjectionsOnNonObservesParameters() 
    {
       assert false;
    }

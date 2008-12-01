@@ -378,9 +378,7 @@ public class ManagerImpl implements Manager
    @SuppressWarnings("unchecked")
    public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
-      // TODO Using the eventType TypeLiteral<T>, the Class<T> object must be
-      // retrieved
-      this.eventManager.addObserver(observer, (Class<T>) Reflections.getActualTypeArguments(eventType.getClass())[0], bindings);
+      this.eventManager.addObserver(observer, (Class<T>) eventType.getType(), bindings);
       return this;
    }
 
@@ -592,9 +590,7 @@ public class ManagerImpl implements Manager
    @SuppressWarnings("unchecked")
    public <T> Manager removeObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
-      // TODO The Class<T> for the event type must be retrieved from the
-      // TypeLiteral<T> instance
-      this.eventManager.removeObserver(observer, (Class<T>) Reflections.getActualTypeArguments(eventType.getClass())[0], bindings);
+      this.eventManager.removeObserver(observer, (Class<T>) eventType.getType(), bindings);
       return this;
    }
 
