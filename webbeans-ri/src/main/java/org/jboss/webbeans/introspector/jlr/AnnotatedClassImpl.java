@@ -537,7 +537,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     * 
     * @param annotationType The annotation type to match
     * @return A set of abstracted constructors with given annotation type. If
-    *         the constructors set is empty, initialize it first .Returns an
+    *         the constructors set is empty, initialize it first. Returns an
     *         empty set if there are no matches.
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedClass#getAnnotatedConstructors(Class)

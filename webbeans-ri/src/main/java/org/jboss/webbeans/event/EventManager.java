@@ -27,15 +27,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.Resource;
-import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
-import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.transaction.TransactionListener;
+
+import com.google.common.collect.ForwardingMap;
 
 /**
  * The event bus is where observers are registered and events are fired.
@@ -45,7 +45,43 @@ import org.jboss.webbeans.transaction.TransactionListener;
  */
 public class EventManager
 {
-   private final Map<Class<?>, CopyOnWriteArrayList<EventObserver<?>>> registeredObservers;
+   private class RegisteredObserversMap extends ForwardingMap<Class<?>, List<EventObserver<?>>>
+   {
+
+      private Map<Class<?>, List<EventObserver<?>>> delegate;
+
+      public RegisteredObserversMap()
+      {
+         delegate = new ConcurrentHashMap<Class<?>, List<EventObserver<?>>>();
+      }
+
+      @Override
+      protected Map<Class<?>, List<EventObserver<?>>> delegate()
+      {
+         return delegate;
+      }
+
+      @Override
+      public CopyOnWriteArrayList<EventObserver<?>> get(Object key)
+      {
+         CopyOnWriteArrayList<EventObserver<?>> observers = (CopyOnWriteArrayList<EventObserver<?>>) super.get(key);
+         return observers != null ? observers : new CopyOnWriteArrayList<EventObserver<?>>();
+      }
+
+      public void put(Class<?> eventType, EventObserver<?> observer)
+      {
+         List<EventObserver<?>> observers = super.get(eventType);
+         if (observers == null)
+         {
+            observers = new CopyOnWriteArrayList<EventObserver<?>>();
+            super.put(eventType, observers);
+         }
+         observers.add(observer);
+      }
+
+   }
+
+   private final RegisteredObserversMap registeredObservers;
    private ManagerImpl manager;
    // TODO: can we do this?
    @Resource
@@ -58,7 +94,7 @@ public class EventManager
     */
    public EventManager(ManagerImpl manager)
    {
-      registeredObservers = new ConcurrentHashMap<Class<?>, CopyOnWriteArrayList<EventObserver<?>>>();
+      registeredObservers = new RegisteredObserversMap();
       this.manager = manager;
    }
 
@@ -70,7 +106,7 @@ public class EventManager
    public <T> void addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
       CopyOnWriteArrayList<EventObserver<?>> eventTypeObservers = registeredObservers.get(eventType);
-      if (eventTypeObservers == null)
+      if (eventTypeObservers.isEmpty())
       {
          eventTypeObservers = new CopyOnWriteArrayList<EventObserver<?>>();
          registeredObservers.put(eventType, eventTypeObservers);
@@ -167,7 +203,7 @@ public class EventManager
       buffer.append("Event manager\n");
       buffer.append("Registered observers: " + registeredObservers.size() + "\n");
       int i = 1;
-      for (Entry<Class<?>, CopyOnWriteArrayList<EventObserver<?>>> entry : registeredObservers.entrySet())
+      for (Entry<Class<?>, List<EventObserver<?>>> entry : registeredObservers.entrySet())
       {
          for (EventObserver<?> observer : entry.getValue())
          {
