@@ -19,6 +19,7 @@ package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,13 +61,31 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
          return delegate;
       }
 
+      public void put(Class<? extends Annotation> key, AnnotatedParameter<Object> value)
+      {
+         List<AnnotatedParameter<Object>> parameters = super.get(key);
+         if (parameters == null)
+         {
+            parameters = new ArrayList<AnnotatedParameter<Object>>();
+            super.put(key, parameters);
+         }
+         parameters.add(value);
+      }
+
       @Override
       public String toString()
       {
          return Strings.mapToString("AnnotatedParameterMap (annotation type -> parameter abstraction list): ", delegate);
       }
-   }   
-   
+
+      @Override
+      public List<AnnotatedParameter<Object>> get(Object key)
+      {
+         List<AnnotatedParameter<Object>> parameters = super.get(key);
+         return parameters != null ? parameters : new ArrayList<AnnotatedParameter<Object>>();
+      }
+   }
+
    // The name of the member
    private String name;
 
@@ -139,13 +158,12 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-//      buffer.append("AbstractAnnotatedMember:\n");
-//      buffer.append(super.toString() + "\n");
-//      buffer.append("Final: " + isFinal() + "\n");
-//      buffer.append("Static: " + isStatic() + "\n");
-//      buffer.append("Name: " + getName() + "\n");
+      // buffer.append("AbstractAnnotatedMember:\n");
+      // buffer.append(super.toString() + "\n");
+      // buffer.append("Final: " + isFinal() + "\n");
+      // buffer.append("Static: " + isStatic() + "\n");
+      // buffer.append("Name: " + getName() + "\n");
       return buffer.toString();
    }
-   
-   
+
 }

@@ -18,9 +18,11 @@
 package org.jboss.webbeans.contexts;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.webbeans.manager.Context;
 
@@ -41,18 +43,7 @@ public class ContextMap extends ForwardingMap<Class<? extends Annotation>, List<
 
    public ContextMap()
    {
-      delegate = new HashMap<Class<? extends Annotation>, List<Context>>();
-   }
-
-   /**
-    * Gets a list of contexts for a give scope type
-    * 
-    * @param key The scope type class
-    * @return The list of contexts (null if none found)
-    */
-   public List<Context> get(Class<? extends Annotation> key)
-   {
-      return (List<Context>) super.get(key);
+      delegate = new ConcurrentHashMap<Class<? extends Annotation>, List<Context>>();
    }
 
    /**
@@ -81,6 +72,39 @@ public class ContextMap extends ForwardingMap<Class<? extends Annotation>, List<
    @Override
    public String toString()
    {
-      return Strings.mapToString("ContextMAp (scope type -> context list): ", delegate);
+      return Strings.mapToString("ContextMap (scope type -> context list): ", delegate);
    }
+
+   /**
+    * Adds a context under a scope type
+    * 
+    * Creates the list of contexts if it doesn't exist
+    * 
+    * @param context The new context
+    */
+   public void add(Context context)
+   {
+      List<Context> contexts = super.get(context.getScopeType());
+      if (contexts == null)
+      {
+         contexts = new CopyOnWriteArrayList<Context>();
+         put(context.getScopeType(), contexts);
+      }
+      contexts.add(context);
+   }
+
+   /**
+    * Gets a context list for a scope type
+    * 
+    * @param scopeType The scope type
+    * @return A list of contexts. An empty list is returned if there are no registered scopes of this type
+    */
+   public List<Context> get(Class<? extends Annotation> scopeType)
+   {
+      List<Context> contexts = super.get(scopeType);
+      return contexts != null ? contexts : new ArrayList<Context>();
+   }
+   
+   
+
 }

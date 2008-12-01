@@ -110,24 +110,32 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       /**
        * Gets the set of annotations matching the given annotation type
        * 
-       * If the key is not found, an empty set is created and placed in the map
-       * before returned
-       * 
        * @param key The meta-annotation to match
        * @returns The set of matching annotations containing this
        *          meta-annotation
        */
-      @SuppressWarnings("unchecked")
       @Override
       public Set<Annotation> get(Object key)
+      {
+         Set<Annotation> annotations = super.get(key);
+         return annotations != null ? annotations : new HashSet<Annotation>();
+      }
+
+      /**
+       * Adds an annotation under the meta-annotation type key
+       * 
+       * @param key The meta-annotation type
+       * @param value The annotation
+       */
+      public void put(Class<? extends Annotation> key, Annotation value)
       {
          Set<Annotation> annotations = super.get(key);
          if (annotations == null)
          {
             annotations = new HashSet<Annotation>();
-            super.put((Class<? extends Annotation>) key, annotations);
+            super.put(key, annotations);
          }
-         return annotations;
+         annotations.add(value);
       }
 
       /**
@@ -201,7 +209,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
             // literals for all?
             // if (MAPPED_METAANNOTATIONS.contains(metaAnnotation))
             // {
-            metaAnnotationMap.get(metaAnnotation.annotationType()).add(annotation);
+            metaAnnotationMap.put(metaAnnotation.annotationType(), annotation);
             // }
          }
       }
@@ -429,15 +437,17 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-//      buffer.append("AbstractAnnotatedItem:\n");
-//      buffer.append("Annotations: " + getAnnotations().size() + "\n");
-//      int i = 0;
-//      for (Annotation annotation : getAnnotations())
-//      {
-//         buffer.append(++i + " - " + annotation.toString() + "\n");
-//      }
-//      buffer.append(annotationMap == null ? "" : (annotationMap.toString() + "\n"));
-//      buffer.append(metaAnnotationMap == null ? "" : (metaAnnotationMap.toString()) + "\n");
+      // buffer.append("AbstractAnnotatedItem:\n");
+      // buffer.append("Annotations: " + getAnnotations().size() + "\n");
+      // int i = 0;
+      // for (Annotation annotation : getAnnotations())
+      // {
+      // buffer.append(++i + " - " + annotation.toString() + "\n");
+      // }
+      // buffer.append(annotationMap == null ? "" : (annotationMap.toString() +
+      // "\n"));
+      // buffer.append(metaAnnotationMap == null ? "" :
+      // (metaAnnotationMap.toString()) + "\n");
       return buffer.toString();
    }
 

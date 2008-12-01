@@ -64,6 +64,24 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
       {
          return Strings.mapToString("AnnotatedMemberMap (annotation type -> set of member abstractions: ", delegate);
       }
+
+      @Override
+      public Set<AnnotatedMethod<?>> get(Object key)
+      {
+         Set<AnnotatedMethod<?>> methods = super.get(key);
+         return methods != null ? methods : new HashSet<AnnotatedMethod<?>>();
+      }
+
+      public void put(Class<? extends Annotation> key, AnnotatedMethod<?> value)
+      {
+         Set<AnnotatedMethod<?>> members = super.get(key);
+         if (members == null)
+         {
+            members = new HashSet<AnnotatedMethod<?>>();
+            super.put(key, members);
+         }
+         members.add(value);
+      }
    }
 
    // The annotated members map (annotation -> member with annotation)
@@ -170,15 +188,7 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
       {
          initAnnotatedMembers();
       }
-
-      if (!annotatedMembers.containsKey(annotationType))
-      {
-         return new HashSet<AnnotatedMethod<?>>();
-      }
-      else
-      {
-         return annotatedMembers.get(annotationType);
-      }
+      return annotatedMembers.get(annotationType);
    }
 
    /**
@@ -201,11 +211,7 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
       {
          for (Annotation annotation : member.getAnnotations())
          {
-            if (!annotatedMembers.containsKey(annotation))
-            {
-               annotatedMembers.put(annotation.annotationType(), new HashSet<AnnotatedMethod<?>>());
-            }
-            annotatedMembers.get(annotation.annotationType()).add(member);
+            annotatedMembers.put(annotation.annotationType(), member);
          }
       }
    }

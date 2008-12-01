@@ -315,13 +315,7 @@ public class ManagerImpl implements Manager
     */
    public Manager addContext(Context context)
    {
-      List<Context> contexts = contextMap.get(context.getScopeType());
-      if (contexts == null)
-      {
-         contexts = new ArrayList<Context>();
-         contextMap.put(context.getScopeType(), contexts);
-      }
-      contexts.add(context);
+      contextMap.add(context);
       return this;
    }
 
@@ -426,7 +420,7 @@ public class ManagerImpl implements Manager
    public Context getContext(Class<? extends Annotation> scopeType)
    {
       List<Context> contexts = contextMap.get(scopeType);
-      if (contexts == null)
+      if (contexts.isEmpty())
       {
          throw new ContextNotActiveException("No active contexts for " + scopeType.getName());
       }

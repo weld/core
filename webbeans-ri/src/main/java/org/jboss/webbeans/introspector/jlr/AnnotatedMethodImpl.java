@@ -201,11 +201,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       {
          for (Annotation annotation : parameter.getAnnotations())
          {
-            if (!annotatedParameters.containsKey(annotation))
-            {
-               annotatedParameters.put(annotation.annotationType(), new ArrayList<AnnotatedParameter<Object>>());
-            }
-            annotatedParameters.get(annotation.annotationType()).add(parameter);
+            annotatedParameters.put(annotation.annotationType(), parameter);
          }
       }
    }
@@ -224,10 +220,6 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       if (annotatedParameters == null)
       {
          initAnnotatedParameters();
-      }
-      if (!annotatedParameters.containsKey(annotationType))
-      {
-         return new ArrayList<AnnotatedParameter<Object>>();
       }
       return annotatedParameters.get(annotationType);
    }
@@ -332,26 +324,28 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-//      buffer.append("AnnotatedMethodImpl:\n");
-//      buffer.append(super.toString() + "\n");
-//      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
-//      int i = 0;
-//      for (Type actualTypeArgument : actualTypeArguments)
-//      {
-//         buffer.append(++i + " - " + actualTypeArgument.toString());
-//      }
-//      buffer.append(annotatedParameters == null ? "" : (annotatedParameters.toString() + "\n"));
-//      buffer.append("Declaring class:\n");
-//      buffer.append(declaringClass.toString());
-//      buffer.append("Method:\n");
-//      buffer.append(method.toString());
-//      buffer.append("Property name: " + propertyName + "\n");
-//      i = 0;
-//      buffer.append("Parameters: " + getParameters().size() + "\n");
-//      for (AnnotatedParameter<?> parameter : parameters)
-//      {
-//         buffer.append(++i + " - " + parameter.toString() + "\n");
-//      }
+      // buffer.append("AnnotatedMethodImpl:\n");
+      // buffer.append(super.toString() + "\n");
+      // buffer.append("Actual type arguments: " + actualTypeArguments.length +
+      // "\n");
+      // int i = 0;
+      // for (Type actualTypeArgument : actualTypeArguments)
+      // {
+      // buffer.append(++i + " - " + actualTypeArgument.toString());
+      // }
+      // buffer.append(annotatedParameters == null ? "" :
+      // (annotatedParameters.toString() + "\n"));
+      // buffer.append("Declaring class:\n");
+      // buffer.append(declaringClass.toString());
+      // buffer.append("Method:\n");
+      // buffer.append(method.toString());
+      // buffer.append("Property name: " + propertyName + "\n");
+      // i = 0;
+      // buffer.append("Parameters: " + getParameters().size() + "\n");
+      // for (AnnotatedParameter<?> parameter : parameters)
+      // {
+      // buffer.append(++i + " - " + parameter.toString() + "\n");
+      // }
       return buffer.toString();
    }
 

@@ -170,15 +170,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
       {
          initAnnotatedParameters();
       }
-
-      if (!annotatedParameters.containsKey(annotationType))
-      {
-         return new ArrayList<AnnotatedParameter<Object>>();
-      }
-      else
-      {
-         return annotatedParameters.get(annotationType);
-      }
+      return annotatedParameters.get(annotationType);
    }
 
    /**
@@ -199,11 +191,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
       {
          for (Annotation annotation : parameter.getAnnotations())
          {
-            if (!annotatedParameters.containsKey(annotation))
-            {
-               annotatedParameters.put(annotation.annotationType(), new ArrayList<AnnotatedParameter<Object>>());
-            }
-            annotatedParameters.get(annotation.annotationType()).add(parameter);
+            annotatedParameters.put(annotation.annotationType(), parameter);
          }
       }
    }
@@ -224,10 +212,6 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
       if (annotatedParameters == null)
       {
          initAnnotatedParameters();
-      }
-      if (!annotatedParameters.containsKey(annotationType))
-      {
-         return new ArrayList<AnnotatedParameter<Object>>();
       }
       return annotatedParameters.get(annotationType);
    }
@@ -314,25 +298,26 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-//      buffer.append("AnnotatedConstructorImpl:\n");
-//      buffer.append(super.toString() + "\n");
-//      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
-//      int i = 0;
-//      for (Type actualTypeArgument : actualTypeArguments)
-//      {
-//         buffer.append(++i + " - " + actualTypeArgument.toString());
-//      }
-//      buffer.append("Declaring class:\n");
-//      buffer.append(declaringClass.toString() + "\n");
-//      buffer.append("Constructor:\n");
-//      buffer.append(constructor.toString() + "\n");
-//      buffer.append("Parameters: " + getParameters().size() + "\n");
-//      i = 0;
-//      for (AnnotatedParameter<?> parameter : getParameters())
-//      {
-//         buffer.append(++i + " - " + parameter.toString());
-//      }
-//      buffer.append(annotatedParameters.toString() + "\n");
+      // buffer.append("AnnotatedConstructorImpl:\n");
+      // buffer.append(super.toString() + "\n");
+      // buffer.append("Actual type arguments: " + actualTypeArguments.length +
+      // "\n");
+      // int i = 0;
+      // for (Type actualTypeArgument : actualTypeArguments)
+      // {
+      // buffer.append(++i + " - " + actualTypeArgument.toString());
+      // }
+      // buffer.append("Declaring class:\n");
+      // buffer.append(declaringClass.toString() + "\n");
+      // buffer.append("Constructor:\n");
+      // buffer.append(constructor.toString() + "\n");
+      // buffer.append("Parameters: " + getParameters().size() + "\n");
+      // i = 0;
+      // for (AnnotatedParameter<?> parameter : getParameters())
+      // {
+      // buffer.append(++i + " - " + parameter.toString());
+      // }
+      // buffer.append(annotatedParameters.toString() + "\n");
       return buffer.toString();
    }
 
