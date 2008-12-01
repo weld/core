@@ -22,18 +22,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.annotation.Resource;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
+import javax.transaction.UserTransaction;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.transaction.TransactionListener;
+import org.jboss.webbeans.util.JNDI;
+import org.jboss.webbeans.util.Strings;
 
 import com.google.common.collect.ForwardingMap;
 
@@ -45,29 +45,57 @@ import com.google.common.collect.ForwardingMap;
  */
 public class EventManager
 {
+   /**
+    * An event type -> observer list map
+    */
    private class RegisteredObserversMap extends ForwardingMap<Class<?>, List<EventObserver<?>>>
    {
 
+      // The map delegate
       private Map<Class<?>, List<EventObserver<?>>> delegate;
 
+      /**
+       * Constructor. Initializes the delegate
+       */
       public RegisteredObserversMap()
       {
          delegate = new ConcurrentHashMap<Class<?>, List<EventObserver<?>>>();
       }
 
+      /**
+       * Returns the delegate for the ForwardingMap
+       * 
+       * @return The delegate
+       */
       @Override
       protected Map<Class<?>, List<EventObserver<?>>> delegate()
       {
          return delegate;
       }
 
+      /**
+       * Gets the list of observers for a given event type
+       * 
+       * @param eventType The event type
+       * @return The list of interested observers. An empty list is returned if
+       *         there are no matches.
+       */
       @Override
-      public CopyOnWriteArrayList<EventObserver<?>> get(Object key)
+      public CopyOnWriteArrayList<EventObserver<?>> get(Object eventType)
       {
-         CopyOnWriteArrayList<EventObserver<?>> observers = (CopyOnWriteArrayList<EventObserver<?>>) super.get(key);
+         CopyOnWriteArrayList<EventObserver<?>> observers = (CopyOnWriteArrayList<EventObserver<?>>) super.get(eventType);
          return observers != null ? observers : new CopyOnWriteArrayList<EventObserver<?>>();
       }
 
+      /**
+       * Adds an observer for a given event type
+       * 
+       * Implicitly creates a new list if there is none for the event type. Only adds the observer if
+       * it is not already present
+       * 
+       * @param eventType The event type
+       * @param observer The observer to add
+       */
       public void put(Class<?> eventType, EventObserver<?> observer)
       {
          List<EventObserver<?>> observers = super.get(eventType);
@@ -76,46 +104,56 @@ public class EventManager
             observers = new CopyOnWriteArrayList<EventObserver<?>>();
             super.put(eventType, observers);
          }
-         observers.add(observer);
+         if (!observers.contains(observer))
+         {
+            observers.add(observer);
+         }
+      }
+
+      /**
+       * Gets a string representation of the map
+       * 
+       * @return A string representation
+       */
+      @Override
+      public String toString()
+      {
+         return Strings.mapToString("RegisteredObserversMap (event type -> observers list): ", delegate);
       }
 
    }
 
+   // The map of registered observers for a give
    private final RegisteredObserversMap registeredObservers;
+   // The Web Beans manager
    private ManagerImpl manager;
-   // TODO: can we do this?
-   @Resource
-   TransactionManager transactionManager;
+   // The current UserTransaction
+   UserTransaction userTransaction;
 
    /**
-    * Initializes a new instance of the EventManager. This includes looking up
-    * the transaction manager which is needed to defer events till the end of a
-    * transaction.
+    * Initializes a new instance of the EventManager.
+    * 
+    * @param manager The Web Beans manager
     */
    public EventManager(ManagerImpl manager)
    {
       registeredObservers = new RegisteredObserversMap();
       this.manager = manager;
+      // TODO. Check where to *really* get this from
+      userTransaction = (UserTransaction) JNDI.lookup("java:/UserTransaction");
    }
 
    /**
     * Adds an observer to the event bus so that it receives event notifications.
     * 
     * @param observer The observer that should receive events
+    * @param eventType The event type the observer is interested in
+    * @param bindings The bindings the observer wants to filter on
     */
    public <T> void addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
-      CopyOnWriteArrayList<EventObserver<?>> eventTypeObservers = registeredObservers.get(eventType);
-      if (eventTypeObservers.isEmpty())
-      {
-         eventTypeObservers = new CopyOnWriteArrayList<EventObserver<?>>();
-         registeredObservers.put(eventType, eventTypeObservers);
-      }
       EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, bindings);
-      if (!eventTypeObservers.contains(eventObserver))
-      {
-         eventTypeObservers.add(eventObserver);
-      }
+      registeredObservers.put(eventType, eventObserver);
    }
 
    /**
@@ -124,7 +162,8 @@ public class EventManager
     * 
     * @param event The event object
     * @param bindings Optional event bindings
-    * @return A set of Observers
+    * @return A set of Observers. An empty set is returned if there are no
+    *         matches.
     */
    @SuppressWarnings("unchecked")
    public <T> Set<Observer<T>> getObservers(T event, Annotation... bindings)
@@ -140,12 +179,16 @@ public class EventManager
       return interestedObservers;
    }
 
+   /**
+    * Checks if there is currently a transaction active
+    * 
+    * @return True if there is one, false otherwise
+    */
    private boolean isTransactionActive()
    {
       try
       {
-         // TODO: Check NPE conditions;
-         return transactionManager.getTransaction().getStatus() == Status.STATUS_ACTIVE;
+         return userTransaction.getStatus() == Status.STATUS_ACTIVE;
       }
       catch (SystemException e)
       {
@@ -154,13 +197,12 @@ public class EventManager
    }
 
    /**
-    * Notifies each observer immediately of the event unless a transaction is
-    * currently in progress, in which case a deferred event is created and
-    * registered.
+    * Iterates over the interested observers. If the observers is transactional
+    * and there is a transaction currently in progress, the event is deferred.
+    * In other cases, the observer is notified immediately.
     * 
-    * @param <T>
-    * @param observers
-    * @param event
+    * @param observers The interested observers
+    * @param event The event type
     */
    public <T> void notifyObservers(Set<Observer<T>> observers, T event)
    {
@@ -177,6 +219,15 @@ public class EventManager
       }
    }
 
+   /**
+    * Defers an event with regard to current transaction phase
+    * 
+    * Gets the transaction listener, creates a deferred event representation and
+    * registers the deferred event.
+    * 
+    * @param event The event type
+    * @param observer The interested observer
+    */
    private <T> void deferEvent(T event, Observer<T> observer)
    {
       TransactionListener transactionListener = manager.getInstanceByType(TransactionListener.class);
@@ -188,6 +239,8 @@ public class EventManager
     * Removes an observer from the event bus.
     * 
     * @param observer The observer to remove
+    * @param eventType The event type of the observer to remove
+    * @param bindings The bindings of the observer to remove
     */
    public <T> void removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
@@ -201,17 +254,7 @@ public class EventManager
    {
       StringBuffer buffer = new StringBuffer();
       buffer.append("Event manager\n");
-      buffer.append("Registered observers: " + registeredObservers.size() + "\n");
-      int i = 1;
-      for (Entry<Class<?>, List<EventObserver<?>>> entry : registeredObservers.entrySet())
-      {
-         for (EventObserver<?> observer : entry.getValue())
-         {
-            buffer.append(i + " - " + entry.getKey().getName() + ": " + observer.toString() + "\n");
-         }
-         i++;
-      }
-      buffer.append("Transaction manager: " + transactionManager + "\n");
+      buffer.append(registeredObservers.toString());
       return buffer.toString();
    }
 }
