@@ -407,7 +407,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       {
          for (Annotation annotation : field.getAnnotations())
          {
-            annotatedFields.get(annotation.annotationType()).add(field);
+            annotatedFields.put(annotation.annotationType(), field);
             for (Annotation metaAnnotation : annotation.annotationType().getAnnotations())
             {
                metaAnnotatedFields.put(metaAnnotation.annotationType(), field);

@@ -25,6 +25,7 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.Destructor;
 import javax.webbeans.Disposes;
 import javax.webbeans.Initializer;
+import javax.webbeans.Observable;
 import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 
@@ -116,7 +117,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    public Set<AnnotatedField<Object>> getEventFields()
    {
-      return getAnnotatedItem().getAnnotatedFields(Observes.class);
+      return getAnnotatedItem().getAnnotatedFields(Observable.class);
    }
 
    /**
