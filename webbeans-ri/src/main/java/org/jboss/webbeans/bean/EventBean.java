@@ -45,13 +45,31 @@ public class EventBean<T> extends AbstractBean<EventImpl<T>, Field>
    private String location;
    private AnnotatedField<EventImpl<T>> annotatedItem;
 
-   public EventBean(Field field, ManagerImpl manager, AbstractClassBean<?> declaringBean)
+   @SuppressWarnings("unchecked")
+   public EventBean(AnnotatedField<T> field, ManagerImpl manager)
    {
       super(manager);
-      this.annotatedItem = new AnnotatedFieldImpl<EventImpl<T>>(field, declaringBean.getAnnotatedItem());
+      this.annotatedItem = (AnnotatedField<EventImpl<T>>) field;
       init();
    }
 
+   /**
+    * Initializes the bean
+    * 
+    * Calls super method and validates the annotated item
+    */
+   protected void init() {
+      super.init();
+      checkAnnotatedItem();
+   }
+   
+   /**
+    * Validates the annotated item
+    */
+   private void checkAnnotatedItem() {
+      // TODO: checks
+   }
+   
    /**
     * Caches the constructor for this type of bean to avoid future reflections
     * during use.

@@ -20,6 +20,7 @@ package org.jboss.webbeans.bootstrap;
 import static org.jboss.webbeans.util.BeanFactory.createEnterpriseBean;
 import static org.jboss.webbeans.util.BeanFactory.createProducerMethodBean;
 import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
+import static org.jboss.webbeans.util.BeanFactory.createEventBean;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -28,8 +29,10 @@ import java.util.Set;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractClassBean;
+import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -139,10 +142,17 @@ public class Bootstrap
             beans.add(producerMethodBean);
             manager.getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
          }
+         for (AnnotatedField<Object> eventField : bean.getEventFields())
+         {
+            EventBean<?> eventBean = createEventBean(eventField.getType(), eventField, manager);
+            beans.add(eventBean);
+            manager.getResolver().addInjectionPoints(eventBean.getInjectionPoints());
+         }
          log.info("Web Bean: " + bean);
       }
       return beans;
    }
+
 
    /**
     * Starts the boot process.
