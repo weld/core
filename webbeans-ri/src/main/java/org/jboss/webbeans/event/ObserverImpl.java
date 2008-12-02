@@ -31,6 +31,13 @@ import javax.webbeans.Observer;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.EventBean;
+import org.jboss.webbeans.event.EventManager.TransactionObservationPhase;
+
+import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.AFTER_COMPLETION;
+import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.AFTER_FAILURE;
+import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.AFTER_SUCCESS;
+import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.BEFORE_COMPLETION;
+import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.NONE;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 
 /**
@@ -80,19 +87,19 @@ public class ObserverImpl<T> implements Observer<T>
       List<TransactionObservationPhase> observationPhases = new ArrayList<TransactionObservationPhase>();
       if (observerMethod.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty())
       {
-         observationPhases.add(TransactionObservationPhase.BEFORE_COMPLETION);
+         observationPhases.add(BEFORE_COMPLETION);
       }
       if (observerMethod.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty())
       {
-         observationPhases.add(TransactionObservationPhase.AFTER_COMPLETION);
+         observationPhases.add(AFTER_COMPLETION);
       }
       if (observerMethod.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty())
       {
-         observationPhases.add(TransactionObservationPhase.AFTER_FAILURE);
+         observationPhases.add(AFTER_FAILURE);
       }
       if (observerMethod.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty())
       {
-         observationPhases.add(TransactionObservationPhase.AFTER_SUCCESS);
+         observationPhases.add(AFTER_SUCCESS);
       }
       if (observationPhases.size() > 1)
       {
@@ -104,7 +111,7 @@ public class ObserverImpl<T> implements Observer<T>
       }
       else
       {
-         transactionObservationPhase = TransactionObservationPhase.NONE;
+         transactionObservationPhase = NONE;
       }
    }
 

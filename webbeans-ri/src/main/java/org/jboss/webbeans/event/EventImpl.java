@@ -22,10 +22,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.webbeans.BindingType;
+import javax.webbeans.Dependent;
 import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Event;
 import javax.webbeans.Observable;
 import javax.webbeans.Observer;
+import javax.webbeans.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
 
@@ -37,6 +39,8 @@ import org.jboss.webbeans.ManagerImpl;
  * @param <T>
  * @see javax.webbeans.Event
  */
+@Standard
+@Dependent
 public class EventImpl<T> implements Event<T>
 {
    // The set of binding types

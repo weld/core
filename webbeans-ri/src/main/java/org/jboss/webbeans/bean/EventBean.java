@@ -18,8 +18,11 @@
 package org.jboss.webbeans.bean;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 
+import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
+import javax.webbeans.Event;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -36,7 +39,7 @@ import org.jboss.webbeans.log.Logging;
  * 
  * @param <T>
  */
-public class EventBean<T> extends AbstractBean<EventImpl<T>, Field>
+public class EventBean<T> extends AbstractBean<Event<T>, Field>
 {
 
    private static LogProvider log = Logging.getLogProvider(EventBean.class);
@@ -44,7 +47,7 @@ public class EventBean<T> extends AbstractBean<EventImpl<T>, Field>
    // The debug location
    private String location;
    // The underlying annotated item
-   private AnnotatedField<EventImpl<T>> annotatedItem;
+   private AnnotatedField<Event<T>> annotatedItem;
 
    /**
     * Constructor
@@ -57,7 +60,7 @@ public class EventBean<T> extends AbstractBean<EventImpl<T>, Field>
    public EventBean(AnnotatedField<T> field, ManagerImpl manager)
    {
       super(manager);
-      this.annotatedItem = (AnnotatedField<EventImpl<T>>) field;
+      this.annotatedItem = (AnnotatedField<Event<T>>) field;
       init();
    }
 
@@ -77,7 +80,15 @@ public class EventBean<T> extends AbstractBean<EventImpl<T>, Field>
     */
    private void checkAnnotatedItem()
    {
-      // TODO: checks
+      Type[] actualTypeArguments = annotatedItem.getActualTypeArguments();
+      if (actualTypeArguments.length != 1)
+      {
+         throw new DefinitionException("Event must have type arguments");
+      }
+      if (!(actualTypeArguments[0] instanceof Class))
+      {
+         throw new DefinitionException("Event must have concrete type argument");
+      }
    }
 
    /**
@@ -102,7 +113,7 @@ public class EventBean<T> extends AbstractBean<EventImpl<T>, Field>
     * @see org.jboss.webbeans.bean.AbstractBean#getAnnotatedItem()
     */
    @Override
-   protected AnnotatedItem<EventImpl<T>, Field> getAnnotatedItem()
+   protected AnnotatedItem<Event<T>, Field> getAnnotatedItem()
    {
       return annotatedItem;
    }
@@ -154,7 +165,7 @@ public class EventBean<T> extends AbstractBean<EventImpl<T>, Field>
     * @see javax.webbeans.manager.Bean#create()
     */
    @Override
-   public EventImpl<T> create()
+   public Event<T> create()
    {
       return new EventImpl<T>(getManager(), annotatedItem.getBindingTypesAsArray());
    }

@@ -21,6 +21,11 @@ import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.webbeans.Observer;
 
+import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.AFTER_COMPLETION;
+import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.AFTER_SUCCESS;
+import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.AFTER_FAILURE;
+import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.BEFORE_COMPLETION;
+
 /**
  * A synchronization object which will deliver the event to the observer after
  * the JTA transaction currently in effect is committed.
@@ -69,20 +74,20 @@ public class DeferredEventNotification<T> implements Synchronization
     */
    public void afterCompletion(int status)
    {
-      if (observer.isInterestedInTransactionPhase(TransactionObservationPhase.AFTER_COMPLETION))
+      if (observer.isInterestedInTransactionPhase(AFTER_COMPLETION))
       {
          observer.notify(event);
       }
       switch (status)
       {
       case Status.STATUS_COMMITTED:
-         if (observer.isInterestedInTransactionPhase(TransactionObservationPhase.AFTER_SUCCESS))
+         if (observer.isInterestedInTransactionPhase(AFTER_SUCCESS))
          {
             observer.notify();
          }
          break;
       case Status.STATUS_ROLLEDBACK:
-         if (observer.isInterestedInTransactionPhase(TransactionObservationPhase.AFTER_FAILURE))
+         if (observer.isInterestedInTransactionPhase(AFTER_FAILURE))
          {
             observer.notify();
          }
@@ -98,7 +103,7 @@ public class DeferredEventNotification<T> implements Synchronization
     */
    public void beforeCompletion()
    {
-      if (observer.isInterestedInTransactionPhase(TransactionObservationPhase.BEFORE_COMPLETION))
+      if (observer.isInterestedInTransactionPhase(BEFORE_COMPLETION))
       {
          observer.notify(event);
       }

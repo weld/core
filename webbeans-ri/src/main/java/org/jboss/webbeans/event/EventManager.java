@@ -46,6 +46,15 @@ import com.google.common.collect.ForwardingMap;
 public class EventManager
 {
    /**
+    * The known transactional phases a transactional event observer can be
+    * interested in
+    */ 
+   protected enum TransactionObservationPhase
+   {
+      NONE, BEFORE_COMPLETION, AFTER_COMPLETION, AFTER_FAILURE, AFTER_SUCCESS
+   }   
+   
+   /**
     * An event type -> observer list map
     */
    private class RegisteredObserversMap extends ForwardingMap<Class<?>, List<EventObserver<?>>>

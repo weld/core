@@ -29,6 +29,7 @@ import javax.webbeans.BindingType;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.DeploymentType;
+import javax.webbeans.Event;
 import javax.webbeans.Named;
 import javax.webbeans.Production;
 import javax.webbeans.ScopeType;
@@ -60,7 +61,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
 {
 
    @SuppressWarnings("unchecked")
-   private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(DefaultEnterpriseBeanLookup.class));
+   private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(DefaultEnterpriseBeanLookup.class, Event.class));
 
    /**
     * Helper class for getting deployment type
@@ -387,7 +388,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       }
       else if (deploymentType.equals(Standard.class) && !STANDARD_WEB_BEAN_CLASSES.contains(getAnnotatedItem().getType()))
       {
-         throw new DefinitionException(getAnnotatedItem() + " cannot have deployment type @Standard");
+         throw new DefinitionException(getAnnotatedItem().getName() + " cannot have deployment type @Standard");
       }
    }
 
