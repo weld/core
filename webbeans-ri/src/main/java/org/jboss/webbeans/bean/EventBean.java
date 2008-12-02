@@ -26,7 +26,6 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.jlr.AnnotatedFieldImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -42,9 +41,18 @@ public class EventBean<T> extends AbstractBean<EventImpl<T>, Field>
 
    private static LogProvider log = Logging.getLogProvider(EventBean.class);
 
+   // The debug location
    private String location;
+   // The underlying annotated item
    private AnnotatedField<EventImpl<T>> annotatedItem;
 
+   /**
+    * Constructor
+    * 
+    * @param field The underlying field abstraction
+    * @param declaringBean
+    * @param manager The Web Beans manager
+    */
    @SuppressWarnings("unchecked")
    public EventBean(AnnotatedField<T> field, ManagerImpl manager)
    {
@@ -58,41 +66,82 @@ public class EventBean<T> extends AbstractBean<EventImpl<T>, Field>
     * 
     * Calls super method and validates the annotated item
     */
-   protected void init() {
+   protected void init()
+   {
       super.init();
       checkAnnotatedItem();
    }
-   
+
    /**
     * Validates the annotated item
     */
-   private void checkAnnotatedItem() {
+   private void checkAnnotatedItem()
+   {
       // TODO: checks
    }
-   
+
    /**
-    * Caches the constructor for this type of bean to avoid future reflections
-    * during use.
+    * @see org.jboss.webbeans.bean.AbstractBean#initScopeType()
     */
-   @SuppressWarnings("unused")
-   private void initConstructor()
+   @Override
+   protected void initScopeType()
+   {
+      this.scopeType = Dependent.class;
+   }
+
+   /**
+    * @see org.jboss.webbeans.bean.AbstractBean#initDeploymentType()
+    */
+   @Override
+   protected void initDeploymentType()
+   {
+      this.deploymentType = Standard.class;
+   }
+
+   /**
+    * @see org.jboss.webbeans.bean.AbstractBean#getAnnotatedItem()
+    */
+   @Override
+   protected AnnotatedItem<EventImpl<T>, Field> getAnnotatedItem()
+   {
+      return annotatedItem;
+   }
+
+   /**
+    * @see org.jboss.webbeans.bean.AbstractBean#getDefaultName()
+    */
+   @Override
+   protected String getDefaultName()
+   {
+      return null;
+   }
+
+   /**
+    * @see org.jboss.webbeans.bean.AbstractBean#initType()
+    */
+   @Override
+   protected void initType()
    {
       try
       {
-         // constructor = new SimpleConstructor<T>((Constructor<T>)
-         // EventImpl.class.getConstructor((Class[])null));
+         if (getAnnotatedItem() != null)
+         {
+            this.type = getAnnotatedItem().getType();
+         }
       }
-      catch (Exception e)
+      catch (ClassCastException e)
       {
-         log.warn("Unable to get constructor for build-in Event implementation", e);
+         // TODO: Expand error
+         throw new IllegalArgumentException("Type mismatch");
       }
    }
 
-   /*
-    * public BeanConstructor<T> getConstructor() { return constructor; }
+   /**
+    * Gets the debug location
+    * 
+    * @return A string describing the location
     */
-
-   public String getLocation()
+   private String getLocation()
    {
       if (location == null)
       {
@@ -101,63 +150,13 @@ public class EventBean<T> extends AbstractBean<EventImpl<T>, Field>
       return location;
    }
 
-   @Override
-   public String toString()
-   {
-      return "EventBean[" + getType().getName() + "]";
-   }
-
-   @Override
-   protected void initType()
-   {
-      log.trace("Bean type specified in Java");
-      this.type = annotatedItem.getType();
-   }
-
-   @Override
-   protected AnnotatedItem<EventImpl<T>, Field> getAnnotatedItem()
-   {
-      return annotatedItem;
-   }
-
-   @Override
-   protected String getDefaultName()
-   {
-      // No name per 7.4
-      return null;
-   }
-
-   @Override
-   protected void initDeploymentType()
-   {
-      // This is always @Standard per 7.4
-      this.deploymentType = Standard.class;
-   }
-
-   @Override
-   protected void checkDeploymentType()
-   {
-      // No - op
-   }
-
-   @Override
-   protected void initName()
-   {
-      // No name per 7.4
-      this.name = null;
-   }
-
-   @Override
-   protected void initScopeType()
-   {
-      // This is always @Dependent per 7.4
-      this.scopeType = Dependent.class;
-   }
-
+   /**
+    * @see javax.webbeans.manager.Bean#create()
+    */
    @Override
    public EventImpl<T> create()
    {
-      return new EventImpl<T>();
+      return new EventImpl<T>(getManager(), annotatedItem.getBindingTypesAsArray());
    }
 
 }

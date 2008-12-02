@@ -59,93 +59,93 @@ public class EventTest
       manager.setEnabledDeploymentTypes(Standard.class, AnotherDeploymentType.class);
    }
 
-   /**
-    * Tests the {@link Event#fire(Object, Annotation...)} method with a locally
-    * instantiated implementation.
-    */
-   @SuppressWarnings("unchecked")
-   @Test(groups = "event")
-   @SpecAssertion(section = "7.6")
-   public void testFireEvent()
-   {
-      DangerCall anEvent = new DangerCall();
-      // Create a test annotation for the event and use it to construct the
-      // event object
-      Annotation[] annotations = new Annotation[] { new TameAnnotationLiteral() };
-      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>();
-      eventComponent.setEventBindings(annotations);
-      eventComponent.setManager(manager);
-      eventComponent.fire(anEvent, new SynchronousAnnotationLiteral());
-      assert anEvent.equals(manager.getEvent());
-      assert Reflections.annotationSetMatches(manager.getEventBindings(),
-            Tame.class, Synchronous.class);
+//   /**
+//    * Tests the {@link Event#fire(Object, Annotation...)} method with a locally
+//    * instantiated implementation.
+//    */
+//   @SuppressWarnings("unchecked")
+//   @Test(groups = "event")
+//   @SpecAssertion(section = "7.6")
+//   public void testFireEvent()
+//   {
+//      DangerCall anEvent = new DangerCall();
+//      // Create a test annotation for the event and use it to construct the
+//      // event object
+//      Annotation[] annotations = new Annotation[] { new TameAnnotationLiteral() };
+//      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>();
+//      eventComponent.setEventBindings(annotations);
+//      eventComponent.setManager(manager);
+//      eventComponent.fire(anEvent, new SynchronousAnnotationLiteral());
+//      assert anEvent.equals(manager.getEvent());
+//      assert Reflections.annotationSetMatches(manager.getEventBindings(),
+//            Tame.class, Synchronous.class);
+//
+//      // Test duplicate annotations on the fire method call
+//      boolean duplicateDetected = false;
+//      try
+//      {
+//         eventComponent.fire(anEvent, new TameAnnotationLiteral(),
+//               new TameAnnotationLiteral());
+//      } catch (DuplicateBindingTypeException e)
+//      {
+//         duplicateDetected = true;
+//      }
+//      assert duplicateDetected;
+//
+//      // Test annotations that are not binding types
+//      boolean nonBindingTypeDetected = false;
+//      try
+//      {
+//         eventComponent.fire(anEvent, new FishStereotypeAnnotationLiteral());
+//      } catch (IllegalArgumentException e)
+//      {
+//         nonBindingTypeDetected = true;
+//      }
+//      assert nonBindingTypeDetected;
+//   }
 
-      // Test duplicate annotations on the fire method call
-      boolean duplicateDetected = false;
-      try
-      {
-         eventComponent.fire(anEvent, new TameAnnotationLiteral(),
-               new TameAnnotationLiteral());
-      } catch (DuplicateBindingTypeException e)
-      {
-         duplicateDetected = true;
-      }
-      assert duplicateDetected;
-
-      // Test annotations that are not binding types
-      boolean nonBindingTypeDetected = false;
-      try
-      {
-         eventComponent.fire(anEvent, new FishStereotypeAnnotationLiteral());
-      } catch (IllegalArgumentException e)
-      {
-         nonBindingTypeDetected = true;
-      }
-      assert nonBindingTypeDetected;
-   }
-
-   /**
-    * Tests the {@link Event#observe(javax.webbeans.Observer, Annotation...)}
-    * method with a locally instantiated implementation.
-    */
-   @Test(groups = {"observerMethod"})
-   @SpecAssertion(section = "7.6")
-   public void testObserve()
-   {
-      // Create a test annotation for the event and use it to construct the
-      // event object
-      Annotation[] annotations = new Annotation[] { new TameAnnotationLiteral() };
-      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>();
-      eventComponent.setEventType(DangerCall.class);
-      eventComponent.setEventBindings(annotations);
-      eventComponent.setManager(manager);
-      Observer<DangerCall> observer = new AnObserver<DangerCall>();
-      eventComponent.observe(observer, new SynchronousAnnotationLiteral());
-      assert manager.getEventType().equals(DangerCall.class);
-
-      // Try duplicate annotation bindings
-      boolean duplicateDetected = false;
-      try
-      {
-         eventComponent.observe(observer,
-               new TameAnnotationLiteral());
-      } catch (DuplicateBindingTypeException e)
-      {
-         duplicateDetected = true;
-      }
-      assert duplicateDetected;
-
-      // Try an invalid binding type
-      boolean nonBindingTypeDetected = false;
-      try
-      {
-         eventComponent.observe(observer,
-               new RiverFishStereotypeAnnotationLiteral());
-      } catch (IllegalArgumentException e)
-      {
-         nonBindingTypeDetected = true;
-      }
-      assert nonBindingTypeDetected;
-   }
+//   /**
+//    * Tests the {@link Event#observe(javax.webbeans.Observer, Annotation...)}
+//    * method with a locally instantiated implementation.
+//    */
+//   @Test(groups = {"observerMethod"})
+//   @SpecAssertion(section = "7.6")
+//   public void testObserve()
+//   {
+//      // Create a test annotation for the event and use it to construct the
+//      // event object
+//      Annotation[] annotations = new Annotation[] { new TameAnnotationLiteral() };
+//      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>();
+//      eventComponent.setEventType(DangerCall.class);
+//      eventComponent.setEventBindings(annotations);
+//      eventComponent.setManager(manager);
+//      Observer<DangerCall> observer = new AnObserver<DangerCall>();
+//      eventComponent.observe(observer, new SynchronousAnnotationLiteral());
+//      assert manager.getEventType().equals(DangerCall.class);
+//
+//      // Try duplicate annotation bindings
+//      boolean duplicateDetected = false;
+//      try
+//      {
+//         eventComponent.observe(observer,
+//               new TameAnnotationLiteral());
+//      } catch (DuplicateBindingTypeException e)
+//      {
+//         duplicateDetected = true;
+//      }
+//      assert duplicateDetected;
+//
+//      // Try an invalid binding type
+//      boolean nonBindingTypeDetected = false;
+//      try
+//      {
+//         eventComponent.observe(observer,
+//               new RiverFishStereotypeAnnotationLiteral());
+//      } catch (IllegalArgumentException e)
+//      {
+//         nonBindingTypeDetected = true;
+//      }
+//      assert nonBindingTypeDetected;
+//   }
 
 }

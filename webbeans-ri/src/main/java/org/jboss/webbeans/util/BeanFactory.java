@@ -22,10 +22,12 @@ import java.lang.reflect.Method;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bean.XmlEnterpriseBean;
 import org.jboss.webbeans.bean.XmlSimpleBean;
+import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 
 /**
@@ -105,9 +107,8 @@ public class BeanFactory
    /**
     * Creates a producer method Web Bean
     * 
-    * @param <T> The type
-    * @param type The class
-    * @param method The underlying method
+    * @param type The type
+    * @param method The underlying method abstraction
     * @param manager The Web Beans manager
     * @param declaringBean The declaring bean abstraction
     * @return A producer Web Bean
@@ -115,6 +116,21 @@ public class BeanFactory
    public static <T> ProducerMethodBean<T> createProducerMethodBean(Class<T> type, AnnotatedMethod<T> method, ManagerImpl manager, AbstractClassBean<?> declaringBean)
    {
       return new ProducerMethodBean<T>(method, declaringBean, manager);
+   }
+
+   /**
+    * Creates an event Web Bean
+    * 
+    * @param <T>
+    * @param type The type
+    * @param field The observer field abstraction
+    * @param manager The Web Beans manager
+    * @param declaringBean The declaring bean abstraction
+    * @return An event Web Bean
+    */
+   public static <T> EventBean<T> createEventBean(Class<T> type, AnnotatedField<T> field, ManagerImpl manager)
+   {
+      return new EventBean<T>(field, manager);
    }
 
 }

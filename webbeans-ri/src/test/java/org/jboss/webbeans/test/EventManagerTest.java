@@ -2,16 +2,7 @@ package org.jboss.webbeans.test;
 
 import java.util.Set;
 
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.InvalidTransactionException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
 import javax.transaction.Synchronization;
-import javax.transaction.SystemException;
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
-import javax.transaction.xa.XAResource;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.event.DeferredEventNotification;
