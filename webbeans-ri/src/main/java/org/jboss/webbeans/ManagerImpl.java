@@ -19,6 +19,7 @@ package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -210,7 +211,7 @@ public class ManagerImpl implements Manager
     */
    public List<Class<? extends Annotation>> getEnabledDeploymentTypes()
    {
-      return enabledDeploymentTypes;
+      return Collections.unmodifiableList(enabledDeploymentTypes);
    }
 
    /**
@@ -289,10 +290,13 @@ public class ManagerImpl implements Manager
     */
    public Manager setBeans(Set<AbstractBean<?, ?>> beans)
    {
-      this.beans = new CopyOnWriteArrayList<Bean<?>>(beans);
-      resolver.clear();
-      initStandardBeans();
-      return this;
+      synchronized (beans)
+      {
+         this.beans = new CopyOnWriteArrayList<Bean<?>>(beans);
+         resolver.clear();
+         initStandardBeans();
+         return this;
+      }
    }
 
    /**
@@ -302,7 +306,7 @@ public class ManagerImpl implements Manager
     */
    public List<Bean<?>> getBeans()
    {
-      return beans;
+      return Collections.unmodifiableList(beans);
    }
 
    /**

@@ -22,7 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
@@ -49,24 +53,24 @@ public class ProxyPool
     * 
     * @author Nicklas Karlsson
     */
-   private class Pool extends ForwardingMap<Bean<?>, Object>
+   private class Pool extends ForwardingMap<Bean<?>, Future<Object>>
    {
 
-      Map<Bean<?>, Object> delegate;
+      Map<Bean<?>, Future<Object>> delegate;
 
       public Pool()
       {
-         delegate = new ConcurrentHashMap<Bean<?>, Object>();
+         delegate = new ConcurrentHashMap<Bean<?>, Future<Object>>();
       }
 
       @SuppressWarnings("unchecked")
-      public <T> T get(Bean<T> key)
+      public <T> Future<T> get(Bean<T> key)
       {
-         return (T) super.get(key);
+         return (Future<T>) super.get(key);
       }
 
       @Override
-      protected Map<Bean<?>, Object> delegate()
+      protected Map<Bean<?>, Future<Object>> delegate()
       {
          return delegate;
       }
@@ -93,7 +97,7 @@ public class ProxyPool
     * 
     * @author Nicklas Karlsson
     */
-   private class TypeInfo
+   private static class TypeInfo
    {
       Class<?>[] interfaces;
       Class<?> superclass;
@@ -109,7 +113,7 @@ public class ProxyPool
     * @param types A set of types (interfaces and superclasses) of a class
     * @return The TypeInfo with categorized information
     */
-   private TypeInfo getTypeInfo(Set<Class<?>> types)
+   private static TypeInfo getTypeInfo(Set<Class<?>> types)
    {
       TypeInfo typeInfo = new TypeInfo();
       List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -145,7 +149,7 @@ public class ProxyPool
     * @throws IllegalAccessException When the proxy couldn't be created
     */
    @SuppressWarnings("unchecked")
-   private <T> T createClientProxy(Bean<T> bean, int beanIndex) throws RuntimeException
+   private static <T> T createClientProxy(Bean<T> bean, int beanIndex, ManagerImpl manager) throws RuntimeException
    {
       ProxyFactory proxyFactory = new ProxyFactory();
       TypeInfo typeInfo = getTypeInfo(bean.getTypes());
@@ -178,21 +182,66 @@ public class ProxyPool
     * @param bean
     * @return
     */
-   public Object getClientProxy(Bean<?> bean)
+   public Object getClientProxy(final Bean<?> bean)
    {
-      Object clientProxy = pool.get(bean);
+      Future<?> clientProxy = pool.get(bean);
       if (clientProxy == null)
       {
-         int beanIndex = manager.getBeans().indexOf(bean);
-         if (beanIndex < 0)
+         FutureTask<Object> task = new FutureTask<Object>(new Callable<Object>()
          {
-            throw new DefinitionException(bean + " is not known to the manager");
-         }
-         clientProxy = createClientProxy(bean, beanIndex);
-
-         pool.put(bean, clientProxy);
+   
+            public Object call() throws Exception
+            {
+               int beanIndex = manager.getBeans().indexOf(bean);
+               if (beanIndex < 0)
+               {
+                  throw new DefinitionException(bean + " is not known to the manager");
+               }
+               return createClientProxy(bean, beanIndex, manager);
+            }
+      
+         });
+         clientProxy = task;
+         pool.put(bean, task);
+         task.run();
       }
-      return clientProxy;
+      boolean interrupted = false;
+      try
+      {
+         while (true)
+         {
+            try
+            {
+               return clientProxy.get();
+            }
+            catch (InterruptedException e)
+            {
+               interrupted = true;
+            }
+            catch (ExecutionException e)
+            {
+               if (e.getCause() instanceof RuntimeException)
+               {
+                  throw (RuntimeException) e.getCause();
+               }
+               else if (e.getCause() instanceof Error)
+               {
+                  throw (Error) e.getCause();
+               }
+               else
+               {
+                  throw new IllegalStateException(e.getCause());
+               }
+            };
+         }
+      }
+      finally
+      {
+         if (interrupted)
+         {
+            Thread.currentThread().interrupt();
+         }
+      }
    }
 
    @Override

@@ -21,6 +21,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jboss.webbeans.ejb.EjbMetaData;
 import org.jboss.webbeans.model.AnnotationModel;
@@ -41,7 +42,7 @@ public class MetaDataCache
 
       public AnnotationModelMap()
       {
-         delegate = new HashMap<Class<? extends Annotation>, T>();
+         delegate = new ConcurrentHashMap<Class<? extends Annotation>, T>();
       }
 
       public <S extends Annotation> T putIfAbsent(Class<S> key)

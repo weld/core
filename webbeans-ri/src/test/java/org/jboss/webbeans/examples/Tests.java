@@ -2,6 +2,9 @@ package org.jboss.webbeans.examples;
 
 import java.lang.reflect.Method;
 
+import javax.webbeans.Production;
+import javax.webbeans.Standard;
+
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.AbstractTest;
@@ -41,7 +44,7 @@ public class Tests extends AbstractTest
    public void testMockSentenceTranslator() throws Exception {
       setupTextTranslator();
       
-      manager.getEnabledDeploymentTypes().add(Mock.class);
+      manager.setEnabledDeploymentTypes(Standard.class, Production.class, Mock.class);
       
       TextTranslator tt2 = manager.getInstanceByType(TextTranslator.class);
       assert "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.".equals( tt2.translate("Hello world. How's tricks?") );

@@ -87,8 +87,12 @@ public class ContextMap extends ForwardingMap<Class<? extends Annotation>, List<
       List<Context> contexts = super.get(context.getScopeType());
       if (contexts == null)
       {
-         contexts = new CopyOnWriteArrayList<Context>();
-         put(context.getScopeType(), contexts);
+         synchronized (delegate)
+         {
+            contexts = new CopyOnWriteArrayList<Context>();
+            put(context.getScopeType(), contexts);
+         }
+         contexts = super.get(context.getScopeType());
       }
       contexts.add(context);
    }
