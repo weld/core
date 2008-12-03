@@ -28,7 +28,6 @@ import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
 import javax.webbeans.DefinitionException;
-import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -146,13 +145,25 @@ public class ProxyPool
     * @throws IllegalAccessException When the proxy couldn't be created
     */
    @SuppressWarnings("unchecked")
-   private <T> T createClientProxy(Bean<T> bean, int beanIndex) throws InstantiationException, IllegalAccessException
+   private <T> T createClientProxy(Bean<T> bean, int beanIndex) throws RuntimeException
    {
       ProxyFactory proxyFactory = new ProxyFactory();
       TypeInfo typeInfo = getTypeInfo(bean.getTypes());
       proxyFactory.setInterfaces(typeInfo.interfaces);
       proxyFactory.setSuperclass(typeInfo.superclass);
-      T clientProxy = (T) proxyFactory.createClass().newInstance();
+      T clientProxy;
+      try
+      {
+         clientProxy = (T) proxyFactory.createClass().newInstance();
+      }
+      catch (InstantiationException e)
+      {
+         throw new RuntimeException("Could not instantiate client proxy for " + bean, e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new RuntimeException("Could not access bean correctly when creating client proxy for " + bean, e);
+      }
       ProxyMethodHandler proxyMethodHandler = new ProxyMethodHandler(bean, beanIndex, manager);
       ((ProxyObject) clientProxy).setHandler(proxyMethodHandler);
       return clientProxy;
@@ -172,24 +183,13 @@ public class ProxyPool
       Object clientProxy = pool.get(bean);
       if (clientProxy == null)
       {
-         try
+         int beanIndex = manager.getBeans().indexOf(bean);
+         if (beanIndex < 0)
          {
-            int beanIndex = manager.getBeans().indexOf(bean);
-            if (beanIndex < 0)
-            {
-               throw new DefinitionException(bean + " is not known to the manager");
-            }
-            clientProxy = createClientProxy(bean, beanIndex);
+            throw new DefinitionException(bean + " is not known to the manager");
          }
-         catch (DefinitionException e)
-         {
-            throw e;
-         }
-         catch (Exception e)
-         {
-            // TODO: What to *really* do here?
-            throw new UnproxyableDependencyException("Could not create client proxy for " + bean.getName(), e);
-         }
+         clientProxy = createClientProxy(bean, beanIndex);
+
          pool.put(bean, clientProxy);
       }
       return clientProxy;

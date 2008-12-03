@@ -27,6 +27,7 @@ public class ClientProxyTest extends AbstractTest
    public void testReflectionsUsedForNormalScope()
    {
       Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class, manager);
+      manager.addBean(tunaBean);
       Tuna tuna = manager.getInstance(tunaBean);
       assert Reflections.isProxy(tuna);
    }
@@ -57,6 +58,7 @@ public class ClientProxyTest extends AbstractTest
    public void testSimpleWebBeanReflectionsIsSerializable() throws IOException, ClassNotFoundException
    {
       Bean<TunedTuna> tunaBean = BeanFactory.createSimpleBean(TunedTuna.class, manager);
+      manager.addBean(tunaBean);
       TunedTuna tuna = manager.getInstance(tunaBean);
       assert Reflections.isProxy(tuna);
       byte[] bytes = serializeBean(tuna);
