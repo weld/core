@@ -23,7 +23,7 @@ import org.jboss.webbeans.util.Reflections;
 /**
  * Represents an abstract annotated type
  * 
- * This class is immutable, and therefore threadsage
+ * This class is immutable, and therefore threadsafe
  * 
  * @author Pete Muir
  * 
@@ -33,7 +33,11 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
 {
    // The superclass abstraction of the type
    private final AnnotatedClass<Object> superclass;
+   // The name of the type
    private final String name;
+   
+   // Cached string representation
+   private String toString;
 
    /**
     * Constructor
@@ -96,7 +100,6 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
     * 
     * @return The superclass abstraction
     */
-   @SuppressWarnings("unchecked")
    public AnnotatedClass<Object> getSuperclass()
    {
       return superclass;
@@ -109,14 +112,19 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
     */
    public String toString()
    {
+      if (toString != null)
+      {
+         return toString;
+      }
       StringBuffer buffer = new StringBuffer();
-//      buffer.append("AbstractAnnotatedType:\n");
-//      buffer.append(super.toString() + "\n");
-//      buffer.append("Superclass: " + (superclass == null ? "" : superclass.toString()) + "\n");
-//      buffer.append("Name: " + getName() + "\n");
-//      buffer.append("Final: " + isFinal() + "\n");
-//      buffer.append("Static: " + isStatic() + "\n");
-      return buffer.toString();
+      buffer.append("AbstractAnnotatedType:\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append("Superclass: " + (superclass == null ? "" : superclass.toString()) + "\n");
+      buffer.append("Name: " + getName() + "\n");
+      buffer.append("Final: " + isFinal() + "\n");
+      buffer.append("Static: " + isStatic() + "\n");
+      toString = buffer.toString();
+      return toString;
    }
 
 }

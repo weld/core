@@ -19,16 +19,18 @@ package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 
 import javax.webbeans.BindingType;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.util.Strings;
 
 /**
  * Represents a parameter
  * 
- * This class is immutable and thus threadsafe
+ * This class is immutable and therefore threadsafe
  * 
  * @author Pete Muir
  * 
@@ -44,6 +46,9 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
    private final boolean _final = false;
    // The static state
    private final boolean _static = false;
+
+   // Cached string representation
+   private String toString;
 
    /**
     * Constructor
@@ -149,19 +154,19 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
     */
    public String toString()
    {
+      if (toString != null)
+      {
+         return toString;
+      }
       StringBuffer buffer = new StringBuffer();
-//      buffer.append("AnnotatedParameterImpl:\n");
-//      buffer.append(super.toString() + "\n");
-//      buffer.append("Type: " + type.toString() + "\n");
-//      buffer.append("Final: " + _final + "\n");
-//      buffer.append("Static: " + _static + "\n");
-//      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
-//      int i = 0;
-//      for (Type actualTypeArgument : actualTypeArguments)
-//      {
-//         buffer.append(++i + " - " + actualTypeArgument.toString() + "\n");
-//      }
-      return buffer.toString();
+      buffer.append("AnnotatedParameterImpl:\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append("Type: " + type.toString() + "\n");
+      buffer.append("Final: " + _final + "\n");
+      buffer.append("Static: " + _static + "\n");
+      buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));
+      toString = buffer.toString();
+      return toString;
    }
 
 }

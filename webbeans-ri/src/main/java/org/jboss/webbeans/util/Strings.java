@@ -80,12 +80,17 @@ public class Strings
    public static String mapToString(String header, Map<?, ?> map)
    {
       StringBuffer buffer = new StringBuffer();
+      if (map == null)
+      {
+         buffer.append(header + "null\n");
+         return buffer.toString();
+      }
       buffer.append(header + "[" + map.size() + " entries]\n");
       int i = 0;
       for (Object key : map.keySet())
       {
          Object value = map.get(key);
-         buffer.append("  #" + ++i + ": " + key.toString() + "->");
+         buffer.append("  #" + ++i + ": " + key.toString() + " -> ");
          if (value instanceof Iterable)
          {
             buffer.append("\n");
@@ -98,6 +103,23 @@ public class Strings
          {
             buffer.append(value.toString() + "\n");
          }
+      }
+      return buffer.toString();
+   }
+
+   public static String collectionToString(String header, Collection<?> collection)
+   {
+      StringBuffer buffer = new StringBuffer();
+      if (collection == null)
+      {
+         buffer.append(header + "null\n");
+         return buffer.toString();
+      }
+      buffer.append(header + "[" + collection.size() + " entries]\n");
+      int i = 0;
+      for (Object item : collection)
+      {
+         buffer.append("  #" + ++i + ": " + item.toString() + "\n");
       }
       return buffer.toString();
    }

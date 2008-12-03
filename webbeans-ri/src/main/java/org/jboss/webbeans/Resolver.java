@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -95,7 +94,6 @@ public class Resolver
 
    }
 
-
    /**
     * Type safe map for caching annotation metadata
     */
@@ -116,16 +114,16 @@ public class Resolver
       }
 
       @Override
-      protected Map<AnnotatedItem<?, ?>, Future > delegate()
+      protected Map<AnnotatedItem<?, ?>, Future> delegate()
       {
          return delegate;
       }
-      
+
       @Override
       public String toString()
       {
          return Strings.mapToString("AnnotatedItemMap (annotated item -> bean set): ", delegate);
-      }      
+      }
 
    }
 
@@ -151,7 +149,7 @@ public class Resolver
    {
       injectionPoints.addAll(elements);
    }
-   
+
    private void registerName(final String name)
    {
       FutureTask<Set<Bean<?>>> task = new FutureTask<Set<Bean<?>>>(new Callable<Set<Bean<?>>>()
@@ -169,13 +167,13 @@ public class Resolver
             }
             return retainHighestPrecedenceBeans(beans, manager.getEnabledDeploymentTypes());
          }
-   
+
       });
       resolvedNames.put(name, task);
-      
+
       task.run();
    }
-   
+
    private <T, S> void registerInjectionPoint(final AnnotatedItem<T, S> element)
    {
       FutureTask<Set<Bean<?>>> task = new FutureTask<Set<Bean<?>>>(new Callable<Set<Bean<?>>>()
@@ -196,9 +194,9 @@ public class Resolver
             }
             return beans;
          }
-         
+
       });
-      
+
       resolvedInjectionPoints.put(new ResolvableAnnotatedItem<T, S>()
       {
 
@@ -209,7 +207,7 @@ public class Resolver
          }
 
       }, task);
-      
+
       task.run();
    }
 
@@ -265,7 +263,7 @@ public class Resolver
          {
             registerInjectionPoint(element);
          }
-         
+
          boolean interupted = false;
          try
          {
@@ -316,7 +314,7 @@ public class Resolver
       {
          registerName(name);
       }
-      
+
       boolean interupted = false;
       try
       {
@@ -446,18 +444,8 @@ public class Resolver
       StringBuffer buffer = new StringBuffer();
       buffer.append("Resolver\n");
       buffer.append(resolvedInjectionPoints.toString() + "\n");
-      buffer.append("Injection points: " + injectionPoints.size() + "\n");
-      int i = 0;
-      for (AnnotatedItem<?, ?> injectionPoint : injectionPoints)
-      {
-         buffer.append(++i + " - " + injectionPoint.toString() + "\n");
-      }
-      buffer.append("Resolved names: " + resolvedNames.size() + "\n");
-      i = 0;
-      for (Entry<String, Future<Set<Bean<?>>>> entry : resolvedNames.entrySet())
-      {
-         buffer.append(++i + " - " + entry + ": " + entry.getValue().toString() + "\n");
-      }
+      buffer.append(Strings.collectionToString("Injection points: ", injectionPoints));
+      buffer.append(Strings.mapToString("Resolved names: ", resolvedNames));
       return buffer.toString();
    }
 

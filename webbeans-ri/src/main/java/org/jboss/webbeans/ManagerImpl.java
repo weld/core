@@ -59,6 +59,7 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.Strings;
 
 /**
  * Implementation of the Web Beans Manager.
@@ -656,39 +657,15 @@ public class ManagerImpl implements Manager
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-
-      buffer.append("Enabled deployment types: " + enabledDeploymentTypes.size() + "\n");
-      int i = 0;
-      for (Class<? extends Annotation> deploymentType : enabledDeploymentTypes)
-      {
-         buffer.append(++i + " - " + deploymentType.getName() + "\n");
-      }
+      buffer.append(Strings.collectionToString("Enabled deployment types: ", getEnabledDeploymentTypes()));
       buffer.append(eventManager.toString() + "\n");
       buffer.append(metaDataCache.toString() + "\n");
       buffer.append(resolver.toString() + "\n");
       buffer.append(contextMap.toString() + "\n");
       buffer.append(proxyPool.toString() + "\n");
-      buffer.append("Registered beans: " + beans.size() + "\n");
-      i = 0;
-      for (Bean<?> bean : beans)
-      {
-         buffer.append(++i + " - " + bean.toString() + "\n");
-      }
-
-      buffer.append("Registered decorators: " + decorators.size() + "\n");
-      i = 0;
-      for (Decorator decorator : decorators)
-      {
-         buffer.append(++i + " - " + decorator.toString() + "\n");
-      }
-
-      buffer.append("Registered interceptors: " + interceptors.size() + "\n");
-      i = 0;
-      for (Interceptor interceptor : interceptors)
-      {
-         buffer.append(++i + " - " + interceptor.toString() + "\n");
-      }
-
+      buffer.append(Strings.collectionToString("Registered beans: ", getBeans()));
+      buffer.append(Strings.collectionToString("Registered decorators: ", decorators));
+      buffer.append(Strings.collectionToString("Registered interceptors: ", interceptors));
       return buffer.toString();
    }
 

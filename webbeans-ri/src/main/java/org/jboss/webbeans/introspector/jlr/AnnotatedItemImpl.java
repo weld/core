@@ -19,11 +19,14 @@ package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+
+import org.jboss.webbeans.util.Strings;
 
 /**
  * Represents an annotated item
  * 
- * This class is immutable, and thus threadsafe
+ * This class is immutable, and therefore threadsafe
  * 
  * @author Pete Muir
  * 
@@ -38,6 +41,9 @@ public class AnnotatedItemImpl<T, S> extends AbstractAnnotatedItem<T, S>
    private final Class<T> type;
    // The actual annotations
    private final Annotation[] actualAnnotations;
+
+   // Cached string representation
+   private String toString;
 
    /**
     * Constructor
@@ -143,22 +149,17 @@ public class AnnotatedItemImpl<T, S> extends AbstractAnnotatedItem<T, S>
     */
    public String toString()
    {
+      if (toString != null)
+      {
+         return toString;
+      }
       StringBuffer buffer = new StringBuffer();
-//      buffer.append("AnnotatedItemImpl:\n");
-//      buffer.append(super.toString() + "\n");
-//      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
-//      int i = 0;
-//      for (Type actualTypeArgument : actualTypeArguments)
-//      {
-//         buffer.append(++i + " - " + actualTypeArgument.toString());
-//      }
-//      buffer.append("Actual annotations: " + actualAnnotations.length + "\n");
-//      i = 0;
-//      for (Annotation actualAnnotation : actualAnnotations)
-//      {
-//         buffer.append(++i + " - " + actualAnnotation.toString());
-//      }
-      return buffer.toString();
+      buffer.append("AnnotatedItemImpl:\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));
+      buffer.append(Strings.collectionToString("Actual annotations: ", Arrays.asList(getActualAnnotations())));
+      toString = buffer.toString();
+      return toString;
    }
 
 }

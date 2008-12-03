@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem.AnnotationMap;
 import org.jboss.webbeans.model.StereotypeModel;
+import org.jboss.webbeans.util.Strings;
 
 /**
  * Meta model for the merged stereotype for a bean
@@ -163,30 +164,10 @@ public class MergedStereotypes<T, E>
       StringBuffer buffer = new StringBuffer();
       buffer.append("Merged stereotypes:\n");
       buffer.append("Bean name defaulted: " + beanNameDefaulted + "\n");
-      buffer.append("Possible deployment types: " + possibleDeploymentTypes.size() + "\n");
-      int i = 0;
-      for (Entry<Class<? extends Annotation>, Annotation> entry : possibleDeploymentTypes.entrySet())
-      {
-         buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString() + "\n");
-      }
-      buffer.append("Possible scope types: " + possibleScopeTypes.size() + "\n");
-      i = 0;
-      for (Annotation scopeType : possibleScopeTypes)
-      {
-         buffer.append(++i + " - " + scopeType.toString());
-      }
-      buffer.append("Required types: " + requiredTypes.size() + "\n");
-      i = 0;
-      for (Class<?> requiredType : requiredTypes)
-      {
-         buffer.append(++i + " - " + requiredType.getName() + "\n");
-      }
-      buffer.append("Supported scopes: " + supportedScopes.size() + "\n");
-      i = 0;
-      for (Class<?> supportedScope : supportedScopes)
-      {
-         buffer.append(++i + " - " + supportedScope.getName() + "\n");
-      }
+      buffer.append("Possible deployment types: " + getPossibleDeploymentTypes().toString());
+      buffer.append(Strings.collectionToString("Possible scope types: ", getPossibleScopeTypes()));
+      buffer.append(Strings.collectionToString("Required types: ", getRequiredTypes()));
+      buffer.append(Strings.collectionToString("Supported scopes: ", getSupportedScopes()));
       return buffer.toString();
    }
 

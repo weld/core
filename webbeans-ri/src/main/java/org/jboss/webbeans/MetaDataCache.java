@@ -198,12 +198,7 @@ public class MetaDataCache
       buffer.append(bindingTypes.toString() + "\n");
       buffer.append(ejbMetaDataMap.toString() + "\n");
       buffer.append(scopes.toString() + "\n");
-      buffer.append("Stereotypes: " + stereotypes.size() + "\n");
-      int i = 0;
-      for (Entry<Class<? extends Annotation>, StereotypeModel<?>> entry : stereotypes.entrySet())
-      {
-         buffer.append(++i + " - " + entry.getKey().getName() + ": " + entry.getValue().toString() + "\n");
-      }
+      buffer.append(Strings.mapToString("Stereotypes: ", stereotypes));
       buffer.append("====================\n");
       return buffer.toString();
    }

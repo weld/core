@@ -22,6 +22,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,9 +32,12 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
+import org.jboss.webbeans.util.Strings;
 
 /**
  * Represents an annotated constructor
+ * 
+ * This class is immutable, and therefore threadsafe
  * 
  * @author Pete Muir
  * 
@@ -54,6 +58,9 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
    // The declaring class abstraction
    private final AnnotatedType<T> declaringClass;
 
+   // Cached string representation
+   private String toString;
+
    /**
     * Constructor
     * 
@@ -62,12 +69,13 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     * @param constructor The constructor method
     * @param declaringClass The declaring class
     */
+   @SuppressWarnings("unchecked")
    public AnnotatedConstructorImpl(Constructor<T> constructor, AnnotatedType<T> declaringClass)
    {
       super(buildAnnotationMap(constructor), constructor);
       this.constructor = constructor;
       this.declaringClass = declaringClass;
-      
+
       this.parameters = new ArrayList<AnnotatedParameter<Object>>();
       annotatedParameters = new AnnotatedParameterMap();
       for (int i = 0; i < constructor.getParameterTypes().length; i++)
@@ -77,7 +85,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
             Class<? extends Object> clazz = constructor.getParameterTypes()[i];
             AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(constructor.getParameterAnnotations()[i], (Class<Object>) clazz);
             parameters.add(parameter);
-            
+
             for (Annotation annotation : parameter.getAnnotations())
             {
                annotatedParameters.put(annotation.annotationType(), parameter);
@@ -88,7 +96,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
             Class<? extends Object> clazz = constructor.getParameterTypes()[i];
             AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(new Annotation[0], (Class<Object>) clazz);
             parameters.add(parameter);
-            
+
             for (Annotation annotation : parameter.getAnnotations())
             {
                annotatedParameters.put(annotation.annotationType(), parameter);
@@ -264,28 +272,22 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     */
    public String toString()
    {
+      if (toString != null)
+      {
+         return toString;
+      }
       StringBuffer buffer = new StringBuffer();
-      // buffer.append("AnnotatedConstructorImpl:\n");
-      // buffer.append(super.toString() + "\n");
-      // buffer.append("Actual type arguments: " + actualTypeArguments.length +
-      // "\n");
-      // int i = 0;
-      // for (Type actualTypeArgument : actualTypeArguments)
-      // {
-      // buffer.append(++i + " - " + actualTypeArgument.toString());
-      // }
-      // buffer.append("Declaring class:\n");
-      // buffer.append(declaringClass.toString() + "\n");
-      // buffer.append("Constructor:\n");
-      // buffer.append(constructor.toString() + "\n");
-      // buffer.append("Parameters: " + getParameters().size() + "\n");
-      // i = 0;
-      // for (AnnotatedParameter<?> parameter : getParameters())
-      // {
-      // buffer.append(++i + " - " + parameter.toString());
-      // }
-      // buffer.append(annotatedParameters.toString() + "\n");
-      return buffer.toString();
+      buffer.append("AnnotatedConstructorImpl:\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));
+      buffer.append("Declaring class:\n");
+      buffer.append(declaringClass.getName() + "[ " + declaringClass.getType() + "]" + "\n");
+      buffer.append("Constructor:\n");
+      buffer.append(constructor.toString() + "\n");
+      buffer.append(Strings.collectionToString("Parameters: ", getParameters()));
+      buffer.append(annotatedParameters.toString() + "\n");
+      toString = buffer.toString();
+      return toString;
    }
 
 }

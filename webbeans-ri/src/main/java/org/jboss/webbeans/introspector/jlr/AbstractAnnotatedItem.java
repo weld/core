@@ -161,10 +161,14 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentAnnotationLiteral() };
    // The set of default binding types
    private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
-   
+
    // The set of meta-annotations to map
+   @SuppressWarnings("unchecked")
    private static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(BindingType.class, DeploymentType.class, Stereotype.class, ScopeType.class));
-   
+
+   // Cached string representation
+   private String toString;
+
    /**
     * Static helper method for building annotation map from an annotated element
     * 
@@ -191,7 +195,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       }
       return annotationMap;
    }
-   
+
    /**
     * Static helper method for getting the current parameter values from a list
     * of annotated parameters.
@@ -294,7 +298,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
    {
-       return getMetaAnnotations(metaAnnotationType).toArray(new Annotation[0]);
+      return getMetaAnnotations(metaAnnotationType).toArray(new Annotation[0]);
    }
 
    /**
@@ -416,19 +420,17 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    @Override
    public String toString()
    {
+      if (toString != null)
+      {
+         return toString;
+      }
       StringBuffer buffer = new StringBuffer();
-      // buffer.append("AbstractAnnotatedItem:\n");
-      // buffer.append("Annotations: " + getAnnotations().size() + "\n");
-      // int i = 0;
-      // for (Annotation annotation : getAnnotations())
-      // {
-      // buffer.append(++i + " - " + annotation.toString() + "\n");
-      // }
-      // buffer.append(annotationMap == null ? "" : (annotationMap.toString() +
-      // "\n"));
-      // buffer.append(metaAnnotationMap == null ? "" :
-      // (metaAnnotationMap.toString()) + "\n");
-      return buffer.toString();
+      buffer.append("AbstractAnnotatedItem:\n");
+      buffer.append(Strings.collectionToString("Annotations: ", getAnnotations()));
+      buffer.append(annotationMap == null ? "" : (annotationMap.toString() + "\n"));
+      buffer.append(metaAnnotationMap == null ? "" : (metaAnnotationMap.toString()) + "\n");
+      toString = buffer.toString();
+      return toString;
    }
 
    /**
@@ -505,7 +507,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
          return true;
       }
    }
-   
+
    protected abstract S getDelegate();
 
 }

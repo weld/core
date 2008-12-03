@@ -36,6 +36,7 @@ import javax.webbeans.Destructor;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
+import org.jboss.webbeans.util.Strings;
 
 /**
  * EJB metadata
@@ -265,24 +266,9 @@ public class EjbMetaData<T>
       buffer.append("EJB link JNDI name " + ejbLinkJndiName + "\n");
       buffer.append("Default JNDI name: " + defaultJndiName + "\n");
       buffer.append("Type: " + type.toString() + "\n");
-      buffer.append("Desctructor methods: " + destructorMethods.size() + "\n");
-      int i = 0;
-      for (AnnotatedMethod<?> method : destructorMethods)
-      {
-         buffer.append(++i + " - " + method.toString() + "\n");
-      }
-      i = 0;
-      buffer.append("Remove methods: " + removeMethods.size() + "\n");
-      for (AnnotatedMethod<?> method : removeMethods)
-      {
-         buffer.append(++i + " - " + method.toString() + "\n");
-      }
-      i = 0;
-      buffer.append("No-args remove methods: " + noArgsRemoveMethods.size() + "\n");
-      for (AnnotatedMethod<?> method : noArgsRemoveMethods)
-      {
-         buffer.append(++i + " - " + method.toString() + "\n");
-      }
+      buffer.append(Strings.collectionToString("Desctructor methods: ", getDestructorMethods()));
+      buffer.append(Strings.collectionToString("Remove methods: ", getRemoveMethods()));
+      buffer.append(Strings.collectionToString("No-args remove methods: ", getNoArgsRemoveMethods()));
       return buffer.toString();
    }
 

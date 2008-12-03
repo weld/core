@@ -42,7 +42,7 @@ import com.google.common.collect.ForwardingMap;
 /**
  * Represents an annotated class
  * 
- * This class is immutable, and thus threadsafe
+ * This class is immutable, and therefore threadsafe
  * 
  * @author Pete Muir
  * 
@@ -204,14 +204,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       @Override
       public String toString()
       {
-         StringBuffer buffer = new StringBuffer();
-         buffer.append("Annotation type -> constructor by arguments mappings: " + super.size() + "\n");
-         int i = 0;
-         for (Entry<List<Class<?>>, AnnotatedConstructor<T>> entry : delegate.entrySet())
-         {
-            buffer.append(++i + " - " + entry.getKey().toString() + ": " + entry.getValue().toString() + "\n");
-         }
-         return buffer.toString();
+         return Strings.mapToString("Annotation type -> constructor by arguments mappings: ", delegate);
       }
    }
 
@@ -239,6 +232,9 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    // The map from class list to abstracted constructor
    private final ConstructorsByArgumentMap constructorsByArgumentMap;
 
+   // Cached string representation
+   private String toString;
+
    /**
     * Constructor
     * 
@@ -249,6 +245,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     * @param type The type of the class
     * @param annotations The array of annotations on the class
     */
+   @SuppressWarnings("unchecked")
    public AnnotatedClassImpl(Class<T> rawType, Type type, Annotation[] annotations)
    {
       super(buildAnnotationMap(annotations), rawType);
@@ -261,7 +258,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       {
          actualTypeArguments = new Type[0];
       }
-      
+
       this.fields = new HashSet<AnnotatedField<Object>>();
       this.annotatedFields = new AnnotatedFieldMap();
       this.metaAnnotatedFields = new AnnotatedFieldMap();
@@ -273,7 +270,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
             {
                field.setAccessible(true);
             }
-            AnnotatedField<Object> annotatedField = new AnnotatedFieldImpl<Object>(field, this); 
+            AnnotatedField<Object> annotatedField = new AnnotatedFieldImpl<Object>(field, this);
             this.fields.add(annotatedField);
             for (Annotation annotation : annotatedField.getAnnotations())
             {
@@ -283,10 +280,10 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
                   this.metaAnnotatedFields.put(metaAnnotation.annotationType(), annotatedField);
                }
             }
-            
+
          }
       }
-      
+
       this.constructors = new HashSet<AnnotatedConstructor<T>>();
       this.constructorsByArgumentMap = new ConstructorsByArgumentMap();
       this.annotatedConstructors = new AnnotatedConstructorMap();
@@ -299,7 +296,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
          }
          this.constructors.add(annotatedConstructor);
          this.constructorsByArgumentMap.put(Arrays.asList(constructor.getParameterTypes()), annotatedConstructor);
-         
+
          for (Annotation annotation : annotatedConstructor.getAnnotations())
          {
             if (!annotatedConstructors.containsKey(annotation.annotationType()))
@@ -309,7 +306,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
             annotatedConstructors.get(annotation.annotationType()).add(annotatedConstructor);
          }
       }
-      
+
       this.methods = new HashSet<AnnotatedMethod<Object>>();
       this.annotatedMethods = new AnnotatedMethodMap();
       for (Class<?> c = clazz; c != Object.class && c != null; c = c.getSuperclass())
@@ -320,7 +317,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
             {
                method.setAccessible(true);
             }
-            
+
             AnnotatedMethod<Object> annotatedMethod = new AnnotatedMethodImpl<Object>(method, this);
             this.methods.add(annotatedMethod);
             for (Annotation annotation : annotatedMethod.getAnnotations())
@@ -496,46 +493,25 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     */
    public String toString()
    {
+      if (toString != null)
+      {
+         return toString;
+      }
       StringBuffer buffer = new StringBuffer();
-      // buffer.append("AnnotatedConstructorImpl:\n");
-      // buffer.append(super.toString() + "\n");
-      // buffer.append("Actual type arguments: " + actualTypeArguments.length +
-      // "\n");
-      // int i = 0;
-      // for (Type actualTypeArgument : actualTypeArguments)
-      // {
-      // buffer.append(++i + " - " + actualTypeArgument.toString());
-      // }
-      // buffer.append("Class: " + clazz.toString() + "\n");
-      // buffer.append("Fields: " + getFields().size() + "\n");
-      // i = 0;
-      // for (AnnotatedField<Object> field : getFields())
-      // {
-      // buffer.append(++i + " - " + field.toString());
-      // }
-      // buffer.append("Methods: " + methods.size() + "\n");
-      // i = 0;
-      // for (AnnotatedMethod<Object> method : methods)
-      // {
-      // buffer.append(++i + " - " + method.toString());
-      // }
-      // buffer.append("Constructors: " + methods.size() + "\n");
-      // i = 0;
-      // for (AnnotatedConstructor<T> constructor : getConstructors())
-      // {
-      // buffer.append(++i + " - " + constructor.toString());
-      // }
-      // buffer.append(annotatedConstructors == null ? "" :
-      // (annotatedConstructors.toString() + "\n"));
-      // buffer.append(annotatedFields == null ? "" :
-      // (annotatedFields.toString() + "\n"));
-      // buffer.append(annotatedMethods == null ? "" :
-      // (annotatedMethods.toString() + "\n"));
-      // buffer.append(constructorsByArgumentMap == null ? "" :
-      // (constructorsByArgumentMap.toString() + "\n"));
-      // buffer.append(metaAnnotatedFields == null ? "" :
-      // (metaAnnotatedFields.toString() + "\n"));
-      return buffer.toString();
+      buffer.append("AnnotatedConstructorImpl:\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));
+      buffer.append("Class: " + clazz.toString() + "\n");
+      buffer.append(Strings.collectionToString("Fields: ", getFields()));
+      buffer.append(Strings.collectionToString("Methods: ", methods));
+      buffer.append(Strings.collectionToString("Constructors: ", getConstructors()));
+      buffer.append(annotatedConstructors == null ? "" : (annotatedConstructors.toString() + "\n"));
+      buffer.append(annotatedFields == null ? "" : (annotatedFields.toString() + "\n"));
+      buffer.append(annotatedMethods == null ? "" : (annotatedMethods.toString() + "\n"));
+      buffer.append(constructorsByArgumentMap == null ? "" : (constructorsByArgumentMap.toString() + "\n"));
+      buffer.append(metaAnnotatedFields == null ? "" : (metaAnnotatedFields.toString() + "\n"));
+      toString = buffer.toString();
+      return toString;
    }
 
 }

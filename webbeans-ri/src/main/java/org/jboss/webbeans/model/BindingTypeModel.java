@@ -26,6 +26,7 @@ import javax.webbeans.NonBinding;
 
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.Strings;
 
 /**
  * 
@@ -157,12 +158,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
       buffer.append("BindingTypeModel:\n");
       buffer.append(super.toString());
       buffer.append("Hash code: " + hashCode);
-      buffer.append("Non-binding types: " + nonBindingTypes.size());
-      int i = 0;
-      for (AnnotatedMethod<?> nonBindingType : getNonBindingTypes())
-      {
-         buffer.append(++i + " - " + nonBindingType.toString());
-      }
+      buffer.append(Strings.collectionToString("Non-binding types: ", getNonBindingTypes()));
       return buffer.toString();
    }
 

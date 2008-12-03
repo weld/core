@@ -48,6 +48,7 @@ import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem.AnnotationMap;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.Strings;
 
 /**
  * An abstract bean representation common for all beans
@@ -66,9 +67,9 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    /**
     * Helper class for getting deployment type
     * 
-    * Loops through the enabled deployment types (backwards) and returns the first one
-    * present in the possible deployments type, resulting in the deployment type of 
-    * highest priority
+    * Loops through the enabled deployment types (backwards) and returns the
+    * first one present in the possible deployments type, resulting in the
+    * deployment type of highest priority
     * 
     * @param enabledDeploymentTypes The currently enabled deployment types
     * @param possibleDeploymentTypes The possible deployment types
@@ -198,7 +199,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          Set<Annotation> xmlDeploymentTypes = null;
          if (xmlDeploymentTypes.size() > 1)
          {
-            throw new DefinitionException ("At most one deployment type may be specified (" + xmlDeploymentTypes + " are specified)");
+            throw new DefinitionException("At most one deployment type may be specified (" + xmlDeploymentTypes + " are specified)");
          }
 
          if (xmlDeploymentTypes.size() == 1)
@@ -366,7 +367,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       }
       else if (getMergedStereotypes().getPossibleScopeTypes().size() > 1)
       {
-         throw new DefinitionException ("All stereotypes must specify the same scope OR a scope must be specified on the bean");
+         throw new DefinitionException("All stereotypes must specify the same scope OR a scope must be specified on the bean");
       }
       this.scopeType = Dependent.class;
       log.trace("Using default @Dependent scope");
@@ -384,7 +385,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    {
       if (deploymentType == null)
       {
-         throw new DefinitionException ("type: " + getType() + " must specify a deployment type");
+         throw new DefinitionException("type: " + getType() + " must specify a deployment type");
       }
       else if (deploymentType.equals(Standard.class) && !STANDARD_WEB_BEAN_CLASSES.contains(getAnnotatedItem().getType()))
       {
@@ -650,25 +651,10 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       buffer.append("Primitive : " + primitive + "\n");
       buffer.append("Declared bean type: " + (declaredBeanType == null ? "null" : declaredBeanType.toString()) + "\n");
       buffer.append("Remove method: " + (removeMethod == null ? "null" : removeMethod.toString()) + "\n");
-      buffer.append("Binding types: " + bindingTypes.size() + "\n");
-      int i = 0;
-      for (Annotation bindingType : bindingTypes)
-      {
-         buffer.append(++i + " - " + bindingType.toString() + "\n");
-      }
-      buffer.append("API types: " + apiTypes.size() + "\n");
-      i = 0;
-      for (Class<?> apiType : apiTypes)
-      {
-         buffer.append(++i + " - " + apiType.getName() + "\n");
-      }
+      buffer.append(Strings.collectionToString("Binding types: ", getBindingTypes()));
+      buffer.append(Strings.collectionToString("API types: ", getTypes()));
+      buffer.append(Strings.collectionToString("Injection points: ", getInjectionPoints()));
       buffer.append(mergedStereotypes.toString() + "\n");
-      buffer.append("Injection points: " + injectionPoints.size() + "\n");
-      i = 0;
-      for (AnnotatedItem<?, ?> injectionPoint : injectionPoints)
-      {
-         buffer.append(++i + " - " + injectionPoint.toString() + "\n");
-      }
       return buffer.toString();
    }
 }

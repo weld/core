@@ -91,6 +91,9 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    // The name of the member
    private final String name;
 
+   // Cached string representation
+   private String toString;
+
    /**
     * Constructor
     * 
@@ -156,13 +159,18 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
     */
    public String toString()
    {
+      if (toString != null)
+      {
+         return toString;
+      }
       StringBuffer buffer = new StringBuffer();
-      // buffer.append("AbstractAnnotatedMember:\n");
-      // buffer.append(super.toString() + "\n");
-      // buffer.append("Final: " + isFinal() + "\n");
-      // buffer.append("Static: " + isStatic() + "\n");
-      // buffer.append("Name: " + getName() + "\n");
-      return buffer.toString();
+      buffer.append("AbstractAnnotatedMember:\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append("Final: " + isFinal() + "\n");
+      buffer.append("Static: " + isStatic() + "\n");
+      buffer.append("Name: " + getName() + "\n");
+      toString = buffer.toString();
+      return toString;
    }
 
 }

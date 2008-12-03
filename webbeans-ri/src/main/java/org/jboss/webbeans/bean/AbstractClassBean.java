@@ -278,18 +278,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       buffer.append("AbstractClassBean:\n");
       buffer.append(super.toString() + "\n");
       buffer.append("Annotated item: " + annotatedItem.toString() + "\n");
-      buffer.append("Initializer methods: " + initializerMethods.size() + "\n");
-      int i = 0;
-      for (AnnotatedMethod<?> initializerMethod : initializerMethods)
-      {
-         buffer.append(++i + " - " + initializerMethod.toString() + "\n");
-      }
-      i = 0;
-      buffer.append("Injectable fields " + injectableFields.size() + "\n");
-      for (AnnotatedField<?> injectableField : injectableFields)
-      {
-         buffer.append(++i + " - " + injectableField.toString() + "\n");
-      }
+      buffer.append(Strings.collectionToString("Initializer methods: ", getInitializerMethods()));
+      buffer.append(Strings.collectionToString("Injectable fields: ", getInjectableFields()));
+      buffer.append(Strings.collectionToString("Producer methods: ", getProducerMethods()));
       return buffer.toString();
    }
 }

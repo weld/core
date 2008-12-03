@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,11 +31,12 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.Strings;
 
 /**
  * Represents an annotated method
  * 
- * This class is immutable and thus threadsafe
+ * This class is immutable and therefore threadsafe
  * 
  * @author Pete Muir
  * 
@@ -59,6 +61,9 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    // The abstracted declaring class
    private final AnnotatedType<?> declaringClass;
 
+   // Cached string representation
+   private String toString;
+
    /**
     * Constructor
     * 
@@ -68,6 +73,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     * @param method The underlying method
     * @param declaringClass The declaring class abstraction
     */
+   @SuppressWarnings("unchecked")
    public AnnotatedMethodImpl(Method method, AnnotatedType<?> declaringClass)
    {
       super(buildAnnotationMap(method), method);
@@ -81,7 +87,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       {
          this.actualTypeArguments = new Type[0];
       }
-      
+
       this.parameters = new ArrayList<AnnotatedParameter<Object>>();
       this.annotatedParameters = new AnnotatedParameterMap();
       for (int i = 0; i < method.getParameterTypes().length; i++)
@@ -107,7 +113,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
             }
          }
       }
-      
+
       String propertyName = Reflections.getPropertyName(getDelegate());
       if (propertyName == null)
       {
@@ -281,30 +287,23 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     */
    public String toString()
    {
+      if (toString != null)
+      {
+         return toString;
+      }
       StringBuffer buffer = new StringBuffer();
-      // buffer.append("AnnotatedMethodImpl:\n");
-      // buffer.append(super.toString() + "\n");
-      // buffer.append("Actual type arguments: " + actualTypeArguments.length +
-      // "\n");
-      // int i = 0;
-      // for (Type actualTypeArgument : actualTypeArguments)
-      // {
-      // buffer.append(++i + " - " + actualTypeArgument.toString());
-      // }
-      // buffer.append(annotatedParameters == null ? "" :
-      // (annotatedParameters.toString() + "\n"));
-      // buffer.append("Declaring class:\n");
-      // buffer.append(declaringClass.toString());
-      // buffer.append("Method:\n");
-      // buffer.append(method.toString());
-      // buffer.append("Property name: " + propertyName + "\n");
-      // i = 0;
-      // buffer.append("Parameters: " + getParameters().size() + "\n");
-      // for (AnnotatedParameter<?> parameter : parameters)
-      // {
-      // buffer.append(++i + " - " + parameter.toString() + "\n");
-      // }
-      return buffer.toString();
+      buffer.append("AnnotatedMethodImpl:\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));
+      buffer.append(annotatedParameters == null ? "" : (annotatedParameters.toString() + "\n"));
+      buffer.append("Declaring class:\n");
+      buffer.append(declaringClass.getName() + "[ " + declaringClass.getType() + "]" + "\n");
+      buffer.append("Method:\n");
+      buffer.append(method.toString());
+      buffer.append("Property name: " + propertyName + "\n");
+      buffer.append(Strings.collectionToString("Parameters: ", getParameters()));
+      toString = buffer.toString();
+      return toString;
    }
 
 }

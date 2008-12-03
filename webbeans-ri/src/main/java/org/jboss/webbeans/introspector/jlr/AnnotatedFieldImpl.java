@@ -20,16 +20,18 @@ package org.jboss.webbeans.introspector.jlr;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.Strings;
 
 /**
  * Represents an annotated field
  * 
- * This class is immutable, and thus threadsafe
+ * This class is immutable, and therefore threadsafe
  * 
  * @author Pete Muir
  * 
@@ -43,6 +45,9 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
    private final Field field;
    // The abstraction of the declaring class
    private final AnnotatedType<?> declaringClass;
+
+   // Cached string representation
+   private String toString;
 
    /**
     * Constructor
@@ -113,7 +118,8 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
     * @param instance The instance to inject into
     * @param manager The Web Beans manager
     * 
-    * @see org.jboss.webbeans.introspector.AnnotatedField#inject(Object, ManagerImpl)
+    * @see org.jboss.webbeans.introspector.AnnotatedField#inject(Object,
+    *      ManagerImpl)
     */
    public void inject(Object instance, ManagerImpl manager)
    {
@@ -151,19 +157,19 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
     */
    public String toString()
    {
+      if (toString != null)
+      {
+         return toString;
+      }
       StringBuffer buffer = new StringBuffer();
-//      buffer.append("AnnotatedFieldImpl:\n");
-//      buffer.append(super.toString() + "\n");
-//      buffer.append("Actual type arguments: " + actualTypeArguments.length + "\n");
-//      int i = 0;
-//      for (Type actualTypeArgument : actualTypeArguments)
-//      {
-//         buffer.append(++i + " - " + actualTypeArgument.toString());
-//      }
-//      buffer.append("Declaring class:\n");
-//      buffer.append(declaringClass.toString() + "\n");
-//      buffer.append("Field: " + field + "\n");
-      return buffer.toString();
+      buffer.append("AnnotatedFieldImpl:\n");
+      buffer.append(super.toString() + "\n");
+      buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));
+      buffer.append("Declaring class:\n");
+      buffer.append(declaringClass.getName() + "[ " + declaringClass.getType() + "]" + "\n");
+      buffer.append("Field: " + field + "\n");
+      toString = buffer.toString();
+      return toString;
    }
 
 }
