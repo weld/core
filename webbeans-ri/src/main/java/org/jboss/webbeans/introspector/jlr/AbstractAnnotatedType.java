@@ -23,6 +23,8 @@ import org.jboss.webbeans.util.Reflections;
 /**
  * Represents an abstract annotated type
  * 
+ * This class is immutable, and therefore threadsage
+ * 
  * @author Pete Muir
  * 
  * @param <T>
@@ -30,20 +32,31 @@ import org.jboss.webbeans.util.Reflections;
 public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>>
 {
    // The superclass abstraction of the type
-   private AnnotatedClass<Object> superclass;
+   private final AnnotatedClass<Object> superclass;
+   private final String name;
 
    /**
     * Constructor
     * 
     * @param annotationMap The annotation map
     */
-   public AbstractAnnotatedType(AnnotationMap annotationMap)
+   @SuppressWarnings("unchecked")
+   public AbstractAnnotatedType(AnnotationMap annotationMap, Class<T> type)
    {
       super(annotationMap);
+      this.name = type.getName();
+      if (type.getSuperclass() != null)
+      {
+         this.superclass = new AnnotatedClassImpl(type.getSuperclass());
+      }
+      else
+      {
+         this.superclass = null;
+      }
    }
 
    /**
-    * Indicates if the type is static (through the delegate)
+    * Indicates if the type is static
     * 
     * @return True if static, false otherwise
     * 
@@ -55,7 +68,7 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
    }
 
    /**
-    * Indicates if the type if final (through the delegate)
+    * Indicates if the type if final
     * 
     * @return True if final, false otherwise
     * 
@@ -69,13 +82,13 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
    /**
     * Gets the name of the type
     * 
-    * @returns The name (through the delegate)
+    * @returns The name
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedItem#getName()
     */
    public String getName()
    {
-      return getDelegate().getName();
+      return name;
    }
 
    /**
@@ -84,13 +97,8 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
     * @return The superclass abstraction
     */
    @SuppressWarnings("unchecked")
-   // TODO Fix this
    public AnnotatedClass<Object> getSuperclass()
    {
-      if (superclass == null)
-      {
-         superclass = new AnnotatedClassImpl(getDelegate().getSuperclass());
-      }
       return superclass;
    }
 

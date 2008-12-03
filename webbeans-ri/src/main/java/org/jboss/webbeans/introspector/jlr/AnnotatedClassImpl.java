@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +41,8 @@ import com.google.common.collect.ForwardingMap;
 
 /**
  * Represents an annotated class
+ * 
+ * This class is immutable, and thus threadsafe
  * 
  * @author Pete Muir
  * 
@@ -213,28 +216,28 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    }
 
    // The implementing class
-   private Class<T> clazz;
+   private final Class<T> clazz;
    // The type arguments
-   private Type[] actualTypeArguments;
+   private final Type[] actualTypeArguments;
 
    // The set of abstracted fields
-   private Set<AnnotatedField<Object>> fields;
+   private final Set<AnnotatedField<Object>> fields;
    // The map from annotation type to abstracted field with annotation
-   private AnnotatedFieldMap annotatedFields;
+   private final AnnotatedFieldMap annotatedFields;
    // The map from annotation type to abstracted field with meta-annotation
-   private AnnotatedFieldMap metaAnnotatedFields;
+   private final AnnotatedFieldMap metaAnnotatedFields;
 
    // The set of abstracted methods
-   private Set<AnnotatedMethod<Object>> methods;
+   private final Set<AnnotatedMethod<Object>> methods;
    // The map from annotation type to abstracted method with annotation
-   private AnnotatedMethodMap annotatedMethods;
+   private final AnnotatedMethodMap annotatedMethods;
 
    // The set of abstracted constructors
-   private Set<AnnotatedConstructor<T>> constructors;
+   private final Set<AnnotatedConstructor<T>> constructors;
    // The map from annotation type to abstracted constructor with annotation
-   private AnnotatedConstructorMap annotatedConstructors;
+   private final AnnotatedConstructorMap annotatedConstructors;
    // The map from class list to abstracted constructor
-   private ConstructorsByArgumentMap constructorsByArgumentMap;
+   private final ConstructorsByArgumentMap constructorsByArgumentMap;
 
    /**
     * Constructor
@@ -248,7 +251,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     */
    public AnnotatedClassImpl(Class<T> rawType, Type type, Annotation[] annotations)
    {
-      super(buildAnnotationMap(annotations));
+      super(buildAnnotationMap(annotations), rawType);
       this.clazz = rawType;
       if (type instanceof ParameterizedType)
       {
@@ -257,6 +260,78 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       else
       {
          actualTypeArguments = new Type[0];
+      }
+      
+      this.fields = new HashSet<AnnotatedField<Object>>();
+      this.annotatedFields = new AnnotatedFieldMap();
+      this.metaAnnotatedFields = new AnnotatedFieldMap();
+      for (Class<?> c = clazz; c != Object.class && c != null; c = c.getSuperclass())
+      {
+         for (Field field : clazz.getDeclaredFields())
+         {
+            if (!field.isAccessible())
+            {
+               field.setAccessible(true);
+            }
+            AnnotatedField<Object> annotatedField = new AnnotatedFieldImpl<Object>(field, this); 
+            this.fields.add(annotatedField);
+            for (Annotation annotation : annotatedField.getAnnotations())
+            {
+               this.annotatedFields.put(annotation.annotationType(), annotatedField);
+               for (Annotation metaAnnotation : annotation.annotationType().getAnnotations())
+               {
+                  this.metaAnnotatedFields.put(metaAnnotation.annotationType(), annotatedField);
+               }
+            }
+            
+         }
+      }
+      
+      this.constructors = new HashSet<AnnotatedConstructor<T>>();
+      this.constructorsByArgumentMap = new ConstructorsByArgumentMap();
+      this.annotatedConstructors = new AnnotatedConstructorMap();
+      for (Constructor<?> constructor : clazz.getDeclaredConstructors())
+      {
+         AnnotatedConstructor<T> annotatedConstructor = new AnnotatedConstructorImpl<T>((Constructor<T>) constructor, this);
+         if (!constructor.isAccessible())
+         {
+            constructor.setAccessible(true);
+         }
+         this.constructors.add(annotatedConstructor);
+         this.constructorsByArgumentMap.put(Arrays.asList(constructor.getParameterTypes()), annotatedConstructor);
+         
+         for (Annotation annotation : annotatedConstructor.getAnnotations())
+         {
+            if (!annotatedConstructors.containsKey(annotation.annotationType()))
+            {
+               annotatedConstructors.put(annotation.annotationType(), new HashSet<AnnotatedConstructor<T>>());
+            }
+            annotatedConstructors.get(annotation.annotationType()).add(annotatedConstructor);
+         }
+      }
+      
+      this.methods = new HashSet<AnnotatedMethod<Object>>();
+      this.annotatedMethods = new AnnotatedMethodMap();
+      for (Class<?> c = clazz; c != Object.class && c != null; c = c.getSuperclass())
+      {
+         for (Method method : clazz.getDeclaredMethods())
+         {
+            if (!method.isAccessible())
+            {
+               method.setAccessible(true);
+            }
+            
+            AnnotatedMethod<Object> annotatedMethod = new AnnotatedMethodImpl<Object>(method, this);
+            this.methods.add(annotatedMethod);
+            for (Annotation annotation : annotatedMethod.getAnnotations())
+            {
+               if (!annotatedMethods.containsKey(annotation.annotationType()))
+               {
+                  annotatedMethods.put(annotation.annotationType(), new HashSet<AnnotatedMethod<Object>>());
+               }
+               annotatedMethods.get(annotation.annotationType()).add(annotatedMethod);
+            }
+         }
       }
    }
 
@@ -301,11 +376,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     */
    public Set<AnnotatedField<Object>> getFields()
    {
-      if (fields == null)
-      {
-         initFields();
-      }
-      return fields;
+      return Collections.unmodifiableSet(fields);
    }
 
    /**
@@ -317,34 +388,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     */
    public Set<AnnotatedConstructor<T>> getConstructors()
    {
-      if (constructors == null)
-      {
-         initConstructors();
-      }
-      return constructors;
-   }
-
-   /**
-    * Initializes the fields
-    * 
-    * Iterates through the type hierarchy and adds the abstracted fields to the
-    * fields list
-    * 
-    */
-   private void initFields()
-   {
-      this.fields = new HashSet<AnnotatedField<Object>>();
-      for (Class<?> c = clazz; c != Object.class; c = c.getSuperclass())
-      {
-         for (Field field : clazz.getDeclaredFields())
-         {
-            if (!field.isAccessible())
-            {
-               field.setAccessible(true);
-            }
-            fields.add(new AnnotatedFieldImpl<Object>(field, this));
-         }
-      }
+      return Collections.unmodifiableSet(constructors);
    }
 
    /**
@@ -361,11 +405,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     */
    public Set<AnnotatedField<Object>> getMetaAnnotatedFields(Class<? extends Annotation> metaAnnotationType)
    {
-      if (annotatedFields == null || metaAnnotatedFields == null)
-      {
-         initAnnotatedAndMetaAnnotatedFields();
-      }
-      return metaAnnotatedFields.get(metaAnnotationType);
+      return Collections.unmodifiableSet(metaAnnotatedFields.get(metaAnnotationType));
    }
 
    /**
@@ -379,41 +419,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     */
    public Set<AnnotatedField<Object>> getAnnotatedFields(Class<? extends Annotation> annotationType)
    {
-      if (annotatedFields == null)
-      {
-         initAnnotatedAndMetaAnnotatedFields();
-      }
-      return annotatedFields.get(annotationType);
-   }
-
-   /**
-    * Initializes the annotated/meta-annotated fields map
-    * 
-    * If the fields set if empty, populate it first. Iterate through the fields,
-    * for each field, iterate over the annotations and map the field abstraction
-    * under the annotation type key. In the inner loop, iterate over the
-    * annotations of the annotations (the meta-annotations) and map the field
-    * under the meta-annotation type key.
-    */
-   private void initAnnotatedAndMetaAnnotatedFields()
-   {
-      if (fields == null)
-      {
-         initFields();
-      }
-      annotatedFields = new AnnotatedFieldMap();
-      metaAnnotatedFields = new AnnotatedFieldMap();
-      for (AnnotatedField<Object> field : fields)
-      {
-         for (Annotation annotation : field.getAnnotations())
-         {
-            annotatedFields.put(annotation.annotationType(), field);
-            for (Annotation metaAnnotation : annotation.annotationType().getAnnotations())
-            {
-               metaAnnotatedFields.put(metaAnnotation.annotationType(), field);
-            }
-         }
-      }
+      return Collections.unmodifiableSet(annotatedFields.get(annotationType));
    }
 
    /**
@@ -439,28 +445,6 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    }
 
    /**
-    * Initializes the methods
-    * 
-    * Iterate over the class hierarchy and for each type, add all methods
-    * abstracted to the methods list
-    */
-   private void initMethods()
-   {
-      this.methods = new HashSet<AnnotatedMethod<Object>>();
-      for (Class<?> c = clazz; c != Object.class; c = c.getSuperclass())
-      {
-         for (Method method : clazz.getDeclaredMethods())
-         {
-            if (!method.isAccessible())
-            {
-               method.setAccessible(true);
-            }
-            methods.add(new AnnotatedMethodImpl<Object>(method, this));
-         }
-      }
-   }
-
-   /**
     * Gets the abstracted methods that have a certain annotation type present
     * 
     * If the annotated methods map is null, initialize it first
@@ -473,63 +457,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     */
    public Set<AnnotatedMethod<Object>> getAnnotatedMethods(Class<? extends Annotation> annotationType)
    {
-      if (annotatedMethods == null)
-      {
-         initAnnotatedMethods();
-      }
-
-      return annotatedMethods.get(annotationType);
-   }
-
-   /**
-    * Initializes the annotated methods
-    * 
-    * If the methods set is null, initialize it first. Iterate over all method
-    * abstractions and for each annotation, map the method abstraction under the
-    * annotation type key.
-    */
-   private void initAnnotatedMethods()
-   {
-      if (methods == null)
-      {
-         initMethods();
-      }
-      annotatedMethods = new AnnotatedMethodMap();
-      for (AnnotatedMethod<Object> member : methods)
-      {
-         for (Annotation annotation : member.getAnnotations())
-         {
-            if (!annotatedMethods.containsKey(annotation.annotationType()))
-            {
-               annotatedMethods.put(annotation.annotationType(), new HashSet<AnnotatedMethod<Object>>());
-            }
-            annotatedMethods.get(annotation.annotationType()).add(member);
-         }
-      }
-   }
-
-   /**
-    * Initializes the constructors set and constructors-by-argument map
-    * 
-    * Iterate over the constructors and for each constructor, add an abstracted
-    * constructor to the constructors set and the same constructor abstraction
-    * to the constructors-by-argument map under the argument-list-key.
-    */
-   @SuppressWarnings("unchecked")
-   private void initConstructors()
-   {
-      this.constructors = new HashSet<AnnotatedConstructor<T>>();
-      this.constructorsByArgumentMap = new ConstructorsByArgumentMap();
-      for (Constructor<?> constructor : clazz.getDeclaredConstructors())
-      {
-         AnnotatedConstructor<T> annotatedConstructor = new AnnotatedConstructorImpl<T>((Constructor<T>) constructor, this);
-         if (!constructor.isAccessible())
-         {
-            constructor.setAccessible(true);
-         }
-         constructors.add(annotatedConstructor);
-         constructorsByArgumentMap.put(Arrays.asList(constructor.getParameterTypes()), annotatedConstructor);
-      }
+      return Collections.unmodifiableSet(annotatedMethods.get(annotationType));
    }
 
    /**
@@ -544,39 +472,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     */
    public Set<AnnotatedConstructor<T>> getAnnotatedConstructors(Class<? extends Annotation> annotationType)
    {
-      if (annotatedConstructors == null)
-      {
-         initAnnotatedConstructors();
-      }
-
-      return annotatedConstructors.get(annotationType);
-   }
-
-   /**
-    * Initializes the annotated constructors.
-    * 
-    * If the constructors set is empty, initialize it first. Iterate over all
-    * constructor abstractions and for each annotation on the constructor, map
-    * the constructor abstraction under the annotation key.
-    */
-   private void initAnnotatedConstructors()
-   {
-      if (constructors == null)
-      {
-         initConstructors();
-      }
-      annotatedConstructors = new AnnotatedConstructorMap();
-      for (AnnotatedConstructor<T> constructor : constructors)
-      {
-         for (Annotation annotation : constructor.getAnnotations())
-         {
-            if (!annotatedConstructors.containsKey(annotation.annotationType()))
-            {
-               annotatedConstructors.put(annotation.annotationType(), new HashSet<AnnotatedConstructor<T>>());
-            }
-            annotatedConstructors.get(annotation.annotationType()).add(constructor);
-         }
-      }
+      return Collections.unmodifiableSet(annotatedConstructors.get(annotationType));
    }
 
    /**

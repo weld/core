@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -33,6 +34,8 @@ import org.jboss.webbeans.util.Reflections;
 /**
  * Represents an annotated method
  * 
+ * This class is immutable and thus threadsafe
+ * 
  * @author Pete Muir
  * 
  * @param <T>
@@ -40,21 +43,21 @@ import org.jboss.webbeans.util.Reflections;
 public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>
 {
    // The actual type arguments
-   private Type[] actualTypeArguments = new Type[0];
+   private final Type[] actualTypeArguments;
    // The underlying method
-   private Method method;
+   private final Method method;
 
    // The abstracted parameters
-   private List<AnnotatedParameter<Object>> parameters;
+   private final List<AnnotatedParameter<Object>> parameters;
    // A mapping from annotation type to parameter abstraction with that
    // annotation present
-   private AnnotatedParameterMap annotatedParameters;
+   private final AnnotatedParameterMap annotatedParameters;
 
    // The property name
-   private String propertyName;
+   private final String propertyName;
 
    // The abstracted declaring class
-   private AnnotatedType<?> declaringClass;
+   private final AnnotatedType<?> declaringClass;
 
    /**
     * Constructor
@@ -67,12 +70,52 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     */
    public AnnotatedMethodImpl(Method method, AnnotatedType<?> declaringClass)
    {
-      super(buildAnnotationMap(method));
+      super(buildAnnotationMap(method), method);
       this.method = method;
       this.declaringClass = declaringClass;
       if (method.getGenericReturnType() instanceof ParameterizedType)
       {
-         actualTypeArguments = ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments();
+         this.actualTypeArguments = ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments();
+      }
+      else
+      {
+         this.actualTypeArguments = new Type[0];
+      }
+      
+      this.parameters = new ArrayList<AnnotatedParameter<Object>>();
+      this.annotatedParameters = new AnnotatedParameterMap();
+      for (int i = 0; i < method.getParameterTypes().length; i++)
+      {
+         if (method.getParameterAnnotations()[i].length > 0)
+         {
+            Class<? extends Object> clazz = method.getParameterTypes()[i];
+            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(method.getParameterAnnotations()[i], (Class<Object>) clazz);
+            this.parameters.add(parameter);
+            for (Annotation annotation : parameter.getAnnotations())
+            {
+               annotatedParameters.put(annotation.annotationType(), parameter);
+            }
+         }
+         else
+         {
+            Class<? extends Object> clazz = method.getParameterTypes()[i];
+            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(new Annotation[0], (Class<Object>) clazz);
+            this.parameters.add(parameter);
+            for (Annotation annotation : parameter.getAnnotations())
+            {
+               annotatedParameters.put(annotation.annotationType(), parameter);
+            }
+         }
+      }
+      
+      String propertyName = Reflections.getPropertyName(getDelegate());
+      if (propertyName == null)
+      {
+         this.propertyName = getName();
+      }
+      else
+      {
+         this.propertyName = propertyName;
       }
    }
 
@@ -130,80 +173,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     */
    public List<AnnotatedParameter<Object>> getParameters()
    {
-      if (parameters == null)
-      {
-         initParameters();
-      }
-      return parameters;
-   }
-
-   /**
-    * Initializes the parameter abstractions
-    * 
-    * Iterates over the method abstraction parameters and creates an abstraction
-    * of the parameter
-    */
-   @SuppressWarnings("unchecked")
-   private void initParameters()
-   {
-      this.parameters = new ArrayList<AnnotatedParameter<Object>>();
-      for (int i = 0; i < method.getParameterTypes().length; i++)
-      {
-         if (method.getParameterAnnotations()[i].length > 0)
-         {
-            Class<? extends Object> clazz = method.getParameterTypes()[i];
-            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(method.getParameterAnnotations()[i], (Class<Object>) clazz);
-            parameters.add(parameter);
-         }
-         else
-         {
-            Class<? extends Object> clazz = method.getParameterTypes()[i];
-            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(new Annotation[0], (Class<Object>) clazz);
-            parameters.add(parameter);
-         }
-      }
-   }
-
-   // TODO: Don't get this one - NIK
-   // public List<AnnotatedParameter<Object>> getAnnotatedMethods(Class<?
-   // extends Annotation> annotationType)
-   // {
-   // if (annotatedParameters == null)
-   // {
-   // initAnnotatedParameters();
-   // }
-   //
-   // if (!annotatedParameters.containsKey(annotationType))
-   // {
-   // return new ArrayList<AnnotatedParameter<Object>>();
-   // }
-   // else
-   // {
-   // return annotatedParameters.get(annotationType);
-   // }
-   // }
-
-   /**
-    * Initializes the annotated parameters
-    * 
-    * If the parameters are null, they are initialized first. Iterates over the
-    * parameter abstractions and for each annotation present, maps the parameter
-    * abstraction under that annotation type key.
-    */
-   private void initAnnotatedParameters()
-   {
-      if (parameters == null)
-      {
-         initParameters();
-      }
-      annotatedParameters = new AnnotatedParameterMap();
-      for (AnnotatedParameter<Object> parameter : parameters)
-      {
-         for (Annotation annotation : parameter.getAnnotations())
-         {
-            annotatedParameters.put(annotation.annotationType(), parameter);
-         }
-      }
+      return Collections.unmodifiableList(parameters);
    }
 
    /**
@@ -217,11 +187,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     */
    public List<AnnotatedParameter<Object>> getAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
-      if (annotatedParameters == null)
-      {
-         initAnnotatedParameters();
-      }
-      return annotatedParameters.get(annotationType);
+      return Collections.unmodifiableList(annotatedParameters.get(annotationType));
    }
 
    /**
@@ -235,7 +201,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       if (other instanceof AnnotatedMethod)
       {
          AnnotatedMethod<?> that = (AnnotatedMethod<?>) other;
-         return this.getDelegate().equals(that.getDelegate());
+         return this.getDeclaringClass().equals(that.getDeclaringClass()) && this.getName().equals(that.getName()) && this.getParameters().equals(that.getParameters());
       }
       else
       {
@@ -293,14 +259,6 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     */
    public String getPropertyName()
    {
-      if (propertyName == null)
-      {
-         propertyName = Reflections.getPropertyName(getDelegate());
-         if (propertyName == null)
-         {
-            propertyName = getName();
-         }
-      }
       return propertyName;
    }
 

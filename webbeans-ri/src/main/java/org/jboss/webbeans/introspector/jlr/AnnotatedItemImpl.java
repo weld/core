@@ -18,13 +18,12 @@
 package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-
-import javax.webbeans.TypeLiteral;
 
 /**
  * Represents an annotated item
+ * 
+ * This class is immutable, and thus threadsafe
  * 
  * @author Pete Muir
  * 
@@ -34,104 +33,11 @@ import javax.webbeans.TypeLiteral;
 public class AnnotatedItemImpl<T, S> extends AbstractAnnotatedItem<T, S>
 {
    // The actual type arguments
-   private Type[] actualTypeArguments = new Type[0];
+   private final Type[] actualTypeArguments;
    // The type of the item
-   private Class<T> type;
+   private final Class<T> type;
    // The actual annotations
-   private Annotation[] actualAnnotations;
-
-   /**
-    * Constructor
-    * 
-    * Initializes the superclass with the annotation map
-    * 
-    * @param annotationMap The annotated map
-    */
-   private AnnotatedItemImpl(AnnotationMap annotationMap)
-   {
-      super(annotationMap);
-   }
-
-   /**
-    * Constructor
-    * 
-    * Initializes the superclass with the annotation map and sets the type
-    * 
-    * @param annotationMap The annotation map
-    * @param type The type of the item
-    */
-   private AnnotatedItemImpl(AnnotationMap annotationMap, Class<T> type)
-   {
-      super(annotationMap);
-      this.type = type;
-   }
-
-   /**
-    * Constructor
-    * 
-    * Initializes the superclass with the annotation map, sets the api type and
-    * determines the type arguments
-    * 
-    * @param annotationMap The annotation map
-    * @param apiType The api type
-    */
-   private AnnotatedItemImpl(AnnotationMap annotationMap, TypeLiteral<T> apiType)
-   {
-      super(annotationMap);
-      this.type = apiType.getRawType();
-      if (apiType.getType() instanceof ParameterizedType)
-      {
-         actualTypeArguments = ((ParameterizedType) apiType.getType()).getActualTypeArguments();
-      }
-   }
-
-   /**
-    * Constructor
-    * 
-    * @param annotationMap The annotation map
-    * @param type The type
-    * @param actualTypeArguments The actual type arguments
-    */
-   private AnnotatedItemImpl(AnnotationMap annotationMap, Class<T> type, Type[] actualTypeArguments)
-   {
-      this(annotationMap, type);
-      this.actualTypeArguments = actualTypeArguments;
-   }
-
-   /**
-    * Constructor
-    * 
-    * @param annotations The annotations array of the type
-    */
-   public AnnotatedItemImpl(Annotation[] annotations)
-   {
-      this(buildAnnotationMap(annotations));
-      this.actualAnnotations = annotations;
-   }
-
-   /**
-    * Constructor
-    * 
-    * @param annotations The annotations array of the type
-    * @param type The type
-    */
-   public AnnotatedItemImpl(Annotation[] annotations, Class<T> type)
-   {
-      this(buildAnnotationMap(annotations), type);
-      this.actualAnnotations = annotations;
-   }
-
-   /**
-    * Constructor
-    * 
-    * @param annotations The annotations array of the type
-    * @param apiType The API typeliteral
-    */
-   public AnnotatedItemImpl(Annotation[] annotations, TypeLiteral<T> apiType)
-   {
-      this(buildAnnotationMap(annotations), apiType);
-      this.actualAnnotations = annotations;
-   }
+   private final Annotation[] actualAnnotations;
 
    /**
     * Constructor
@@ -142,7 +48,9 @@ public class AnnotatedItemImpl<T, S> extends AbstractAnnotatedItem<T, S>
     */
    public AnnotatedItemImpl(Annotation[] annotations, Class<T> type, Type[] actualTypeArguments)
    {
-      this(buildAnnotationMap(annotations), type, actualTypeArguments);
+      super(buildAnnotationMap(annotations));
+      this.type = type;
+      this.actualTypeArguments = actualTypeArguments;
       this.actualAnnotations = annotations;
    }
 

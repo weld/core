@@ -29,6 +29,8 @@ import org.jboss.webbeans.util.Reflections;
 /**
  * Represents an annotated field
  * 
+ * This class is immutable, and thus threadsafe
+ * 
  * @author Pete Muir
  * 
  * @param <T>
@@ -36,11 +38,11 @@ import org.jboss.webbeans.util.Reflections;
 public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> implements AnnotatedField<T>
 {
    // The actual type arguments
-   private Type[] actualTypeArguments = new Type[0];
+   private final Type[] actualTypeArguments;
    // The underlying field
-   private Field field;
+   private final Field field;
    // The abstraction of the declaring class
-   private AnnotatedType<?> declaringClass;
+   private final AnnotatedType<?> declaringClass;
 
    /**
     * Constructor
@@ -53,13 +55,17 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
     */
    public AnnotatedFieldImpl(Field field, AnnotatedType<?> declaringClass)
    {
-      super(buildAnnotationMap(field));
+      super(buildAnnotationMap(field), field);
       this.field = field;
       this.declaringClass = declaringClass;
       if (field.getGenericType() instanceof ParameterizedType)
       {
          ParameterizedType type = (ParameterizedType) field.getGenericType();
          actualTypeArguments = type.getActualTypeArguments();
+      }
+      else
+      {
+         actualTypeArguments = new Type[0];
       }
    }
 

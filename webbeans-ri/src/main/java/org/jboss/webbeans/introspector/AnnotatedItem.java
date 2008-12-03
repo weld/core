@@ -91,13 +91,6 @@ public interface AnnotatedItem<T, S>
    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType);
 
    /**
-    * Gets the underlying element
-    * 
-    * @return The annotated item
-    */
-   public S getDelegate();
-
-   /**
     * Gets the type of the element
     * 
     * @return The type of the element

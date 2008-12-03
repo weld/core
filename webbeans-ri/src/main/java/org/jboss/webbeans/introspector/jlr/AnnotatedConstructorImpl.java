@@ -22,6 +22,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.webbeans.ExecutionException;
@@ -43,15 +44,15 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
    // The type arguments
    private static final Type[] actualTypeArguments = new Type[0];
    // The underlying constructor
-   private Constructor<T> constructor;
+   private final Constructor<T> constructor;
 
    // The list of parameter abstractions
-   private List<AnnotatedParameter<Object>> parameters;
+   private final List<AnnotatedParameter<Object>> parameters;
    // The mapping of annotation -> parameter abstraction
-   private AnnotatedParameterMap annotatedParameters;
+   private final AnnotatedParameterMap annotatedParameters;
 
    // The declaring class abstraction
-   private AnnotatedType<T> declaringClass;
+   private final AnnotatedType<T> declaringClass;
 
    /**
     * Constructor
@@ -63,9 +64,37 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     */
    public AnnotatedConstructorImpl(Constructor<T> constructor, AnnotatedType<T> declaringClass)
    {
-      super(buildAnnotationMap(constructor));
+      super(buildAnnotationMap(constructor), constructor);
       this.constructor = constructor;
       this.declaringClass = declaringClass;
+      
+      this.parameters = new ArrayList<AnnotatedParameter<Object>>();
+      annotatedParameters = new AnnotatedParameterMap();
+      for (int i = 0; i < constructor.getParameterTypes().length; i++)
+      {
+         if (constructor.getParameterAnnotations()[i].length > 0)
+         {
+            Class<? extends Object> clazz = constructor.getParameterTypes()[i];
+            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(constructor.getParameterAnnotations()[i], (Class<Object>) clazz);
+            parameters.add(parameter);
+            
+            for (Annotation annotation : parameter.getAnnotations())
+            {
+               annotatedParameters.put(annotation.annotationType(), parameter);
+            }
+         }
+         else
+         {
+            Class<? extends Object> clazz = constructor.getParameterTypes()[i];
+            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(new Annotation[0], (Class<Object>) clazz);
+            parameters.add(parameter);
+            
+            for (Annotation annotation : parameter.getAnnotations())
+            {
+               annotatedParameters.put(annotation.annotationType(), parameter);
+            }
+         }
+      }
    }
 
    /**
@@ -121,38 +150,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     */
    public List<AnnotatedParameter<Object>> getParameters()
    {
-      if (parameters == null)
-      {
-         initParameters();
-      }
-      return parameters;
-   }
-
-   /**
-    * Initializes the parameter abstractions
-    * 
-    * Iterates over the constructor parameters, adding the parameter abstraction
-    * to the parameters list.
-    */
-   @SuppressWarnings("unchecked")
-   private void initParameters()
-   {
-      parameters = new ArrayList<AnnotatedParameter<Object>>();
-      for (int i = 0; i < constructor.getParameterTypes().length; i++)
-      {
-         if (constructor.getParameterAnnotations()[i].length > 0)
-         {
-            Class<? extends Object> clazz = constructor.getParameterTypes()[i];
-            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(constructor.getParameterAnnotations()[i], (Class<Object>) clazz);
-            parameters.add(parameter);
-         }
-         else
-         {
-            Class<? extends Object> clazz = constructor.getParameterTypes()[i];
-            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(new Annotation[0], (Class<Object>) clazz);
-            parameters.add(parameter);
-         }
-      }
+      return Collections.unmodifiableList(parameters);
    }
 
    /**
@@ -166,34 +164,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     */
    public List<AnnotatedParameter<Object>> getAnnotatedMethods(Class<? extends Annotation> annotationType)
    {
-      if (annotatedParameters == null)
-      {
-         initAnnotatedParameters();
-      }
-      return annotatedParameters.get(annotationType);
-   }
-
-   /**
-    * Initializes the annotated parameters
-    * 
-    * If the parameters are null, they are initialized first. Iterate over the
-    * parameters and for each parameter annotation map it under the annotation
-    * type.
-    */
-   private void initAnnotatedParameters()
-   {
-      if (parameters == null)
-      {
-         initParameters();
-      }
-      annotatedParameters = new AnnotatedParameterMap();
-      for (AnnotatedParameter<Object> parameter : parameters)
-      {
-         for (Annotation annotation : parameter.getAnnotations())
-         {
-            annotatedParameters.put(annotation.annotationType(), parameter);
-         }
-      }
+      return Collections.unmodifiableList(annotatedParameters.get(annotationType));
    }
 
    /**
@@ -209,11 +180,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     */
    public List<AnnotatedParameter<Object>> getAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
-      if (annotatedParameters == null)
-      {
-         initAnnotatedParameters();
-      }
-      return annotatedParameters.get(annotationType);
+      return Collections.unmodifiableList(annotatedParameters.get(annotationType));
    }
 
    /**
@@ -262,7 +229,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
       if (super.equals(other) && other instanceof AnnotatedConstructor)
       {
          AnnotatedConstructor<?> that = (AnnotatedConstructor<?>) other;
-         return this.getDelegate().equals(that.getDelegate());
+         return this.getDeclaringClass().equals(that.getDeclaringClass()) && this.getParameters().equals(that.getParameters());
       }
       return false;
    }

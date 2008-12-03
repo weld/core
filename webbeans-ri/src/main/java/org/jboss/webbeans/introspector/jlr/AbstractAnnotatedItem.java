@@ -21,6 +21,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,6 +30,9 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.webbeans.BindingType;
+import javax.webbeans.DeploymentType;
+import javax.webbeans.ScopeType;
+import javax.webbeans.Stereotype;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
@@ -43,6 +47,8 @@ import com.google.common.collect.ForwardingMap;
 /**
  * Represents functionality common for all annotated items, mainly different
  * mappings of the annotations and meta-annotations
+ * 
+ * AbstractAnnotatedItem is an immutable class and therefore threadsafe
  * 
  * @author Pete Muir
  * @author Nicklas Karlsson
@@ -61,7 +67,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    public static class AnnotationMap extends ForwardingMap<Class<? extends Annotation>, Annotation>
    {
-      private Map<Class<? extends Annotation>, Annotation> delegate;
+      private final Map<Class<? extends Annotation>, Annotation> delegate;
 
       public AnnotationMap()
       {
@@ -94,7 +100,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    private static class MetaAnnotationMap extends ForwardingMap<Class<? extends Annotation>, Set<Annotation>>
    {
-      private Map<Class<? extends Annotation>, Set<Annotation>> delegate;
+      private final Map<Class<? extends Annotation>, Set<Annotation>> delegate;
 
       public MetaAnnotationMap()
       {
@@ -155,66 +161,10 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentAnnotationLiteral() };
    // The set of default binding types
    private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
-   // The array of meta-annotations to map
-   private static final Annotation[] MAPPED_METAANNOTATIONS_ARRAY = {};
+   
    // The set of meta-annotations to map
-   private static final Set<Annotation> MAPPED_METAANNOTATIONS = new HashSet<Annotation>(Arrays.asList(MAPPED_METAANNOTATIONS_ARRAY));
-
-   // The annotation map (annotation type -> annotation) of the item
-   private AnnotationMap annotationMap;
-   // The meta-annotation map (annotation type -> set of annotations containing
-   // meta-annotation) of the item
-   private MetaAnnotationMap metaAnnotationMap;
-   // The set of all annotations on the item
-   private Set<Annotation> annotationSet;
-   // The array of all annotations on the item
-   private Annotation[] annotationArray;
-
-   /**
-    * Constructor
-    * 
-    * Also builds the meta-annotation map. Throws a NullPointerException if
-    * trying to register a null map
-    * 
-    * @param annotationMap A map of annotation to register
-    * 
-    */
-   public AbstractAnnotatedItem(AnnotationMap annotationMap)
-   {
-      if (annotationMap == null)
-      {
-         throw new NullPointerException("annotationMap cannot be null");
-      }
-      this.annotationMap = annotationMap;
-      buildMetaAnnotationMap(annotationMap);
-   }
-
-   /**
-    * Build the meta-annotation map
-    * 
-    * Iterates through the annotationMap values (annotations) and for each
-    * meta-annotation on the annotation register the annotation in the set under
-    * they key of the meta-annotation type.
-    * 
-    * @param annotationMap The annotation map to parse
-    */
-   private void buildMetaAnnotationMap(AnnotationMap annotationMap)
-   {
-      metaAnnotationMap = new MetaAnnotationMap();
-      for (Annotation annotation : annotationMap.values())
-      {
-         for (Annotation metaAnnotation : annotation.annotationType().getAnnotations())
-         {
-            // TODO: Check with Pete how to fill the array. Make annotation
-            // literals for all?
-            // if (MAPPED_METAANNOTATIONS.contains(metaAnnotation))
-            // {
-            metaAnnotationMap.put(metaAnnotation.annotationType(), annotation);
-            // }
-         }
-      }
-   }
-
+   private static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(BindingType.class, DeploymentType.class, Stereotype.class, ScopeType.class));
+   
    /**
     * Static helper method for building annotation map from an annotated element
     * 
@@ -241,7 +191,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       }
       return annotationMap;
    }
-
+   
    /**
     * Static helper method for getting the current parameter values from a list
     * of annotated parameters.
@@ -260,6 +210,46 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
          parameterValues[i] = iterator.next().getValue(manager);
       }
       return parameterValues;
+   }
+
+   // The annotation map (annotation type -> annotation) of the item
+   private final AnnotationMap annotationMap;
+   // The meta-annotation map (annotation type -> set of annotations containing
+   // meta-annotation) of the item
+   private final MetaAnnotationMap metaAnnotationMap;
+   // The set of all annotations on the item
+   private final Set<Annotation> annotationSet;
+
+   /**
+    * Constructor
+    * 
+    * Also builds the meta-annotation map. Throws a NullPointerException if
+    * trying to register a null map
+    * 
+    * @param annotationMap A map of annotation to register
+    * 
+    */
+   public AbstractAnnotatedItem(AnnotationMap annotationMap)
+   {
+      if (annotationMap == null)
+      {
+         throw new NullPointerException("annotationMap cannot be null");
+      }
+      this.annotationMap = annotationMap;
+      this.annotationSet = new HashSet<Annotation>();
+      this.metaAnnotationMap = new MetaAnnotationMap();
+      for (Annotation annotation : annotationMap.values())
+      {
+         for (Annotation metaAnnotation : annotation.annotationType().getAnnotations())
+         {
+            // Only map meta-annotations we are interested in
+            if (MAPPED_METAANNOTATIONS.contains(metaAnnotation.annotationType()))
+            {
+               metaAnnotationMap.put(metaAnnotation.annotationType(), annotation);
+            }
+         }
+         annotationSet.add(annotation);
+      }
    }
 
    /**
@@ -287,7 +277,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
-      return metaAnnotationMap.get(metaAnnotationType);
+      return Collections.unmodifiableSet(metaAnnotationMap.get(metaAnnotationType));
    }
 
    /**
@@ -304,12 +294,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
    {
-      if (annotationArray == null)
-      {
-         annotationArray = new Annotation[0];
-         annotationArray = getMetaAnnotations(metaAnnotationType).toArray(annotationArray);
-      }
-      return annotationArray;
+       return getMetaAnnotations(metaAnnotationType).toArray(new Annotation[0]);
    }
 
    /**
@@ -323,12 +308,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    public Set<Annotation> getAnnotations()
    {
-      if (annotationSet == null)
-      {
-         annotationSet = new HashSet<Annotation>();
-         annotationSet.addAll(annotationMap.values());
-      }
-      return annotationSet;
+      return Collections.unmodifiableSet(annotationSet);
    }
 
    /**
@@ -349,9 +329,9 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * 
     * @return The annotation map
     */
-   protected AnnotationMap getAnnotationMap()
+   protected Map<Class<? extends Annotation>, Annotation> getAnnotationMap()
    {
-      return annotationMap;
+      return Collections.unmodifiableMap(annotationMap);
    }
 
    /**
@@ -465,11 +445,11 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    {
       if (getMetaAnnotations(BindingType.class).size() > 0)
       {
-         return getMetaAnnotations(BindingType.class);
+         return Collections.unmodifiableSet(getMetaAnnotations(BindingType.class));
       }
       else
       {
-         return DEFAULT_BINDING;
+         return Collections.unmodifiableSet(DEFAULT_BINDING);
       }
    }
 
@@ -525,5 +505,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
          return true;
       }
    }
+   
+   protected abstract S getDelegate();
 
 }

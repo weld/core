@@ -36,6 +36,8 @@ import com.google.common.collect.ForwardingMap;
 /**
  * Represents an abstract annotated memeber (field, method or constructor)
  * 
+ * This class is immutable, and therefore threadsafe
+ * 
  * @author Pete Muir
  * 
  * @param <T>
@@ -87,20 +89,21 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    }
 
    // The name of the member
-   private String name;
+   private final String name;
 
    /**
     * Constructor
     * 
     * @param annotationMap The annotation map
     */
-   public AbstractAnnotatedMember(AnnotationMap annotationMap)
+   public AbstractAnnotatedMember(AnnotationMap annotationMap, Member member)
    {
       super(annotationMap);
+      name = member.getName();
    }
 
    /**
-    * Indicates if the member is static (through the delegate)
+    * Indicates if the member is static
     * 
     * @return True if static, false otherwise
     * 
@@ -112,7 +115,7 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    }
 
    /**
-    * Indicates if the member if final (through the delegate)
+    * Indicates if the member if final
     * 
     * @return True if final, false otherwise
     * 
@@ -137,16 +140,12 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    /**
     * Gets the name of the member
     * 
-    * @returns The name (or the name of the delegate if none is defined)
+    * @returns The name
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedItem#getName()
     */
    public String getName()
    {
-      if (name == null)
-      {
-         name = getDelegate().getName();
-      }
       return name;
    }
 

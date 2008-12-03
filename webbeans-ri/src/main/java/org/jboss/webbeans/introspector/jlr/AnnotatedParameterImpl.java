@@ -28,6 +28,8 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
 /**
  * Represents a parameter
  * 
+ * This class is immutable and thus threadsafe
+ * 
  * @author Pete Muir
  * 
  * @param <T>
@@ -35,13 +37,13 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
 public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> implements AnnotatedParameter<T>
 {
    // The type
-   private Class<T> type;
+   private final Class<T> type;
    // The actual type arguments
-   private Type[] actualTypeArguments = new Type[0];
+   private final Type[] actualTypeArguments = new Type[0];
    // The final state
-   private boolean _final;
+   private final boolean _final = false;
    // The static state
-   private boolean _static;
+   private final boolean _static = false;
 
    /**
     * Constructor
