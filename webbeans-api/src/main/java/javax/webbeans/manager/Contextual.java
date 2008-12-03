@@ -15,42 +15,17 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.contexts;
-
-import javax.webbeans.ContextNotActiveException;
-import javax.webbeans.Dependent;
-import javax.webbeans.manager.Contextual;
+package javax.webbeans.manager;
 
 /**
- * The dependent context
+ * The contract between a Context and an object that has its lifecycle managed
+ * by the context
  * 
  * @author Nicklas Karlsson
  */
-public class DependentContext extends PrivateContext
+public interface Contextual<T>
 {
+   public abstract T create();
 
-   public DependentContext()
-   {
-      super(Dependent.class);
-      // TODO starts as non-active?
-      setActive(false);
-   }
-
-   /**
-    * Overridden method always creating a new instance
-    * 
-    *  @param bean The bean to create
-    *  @param create Should a new one be created
-    */
-   @Override
-   public <T> T get(Contextual<T> bean, boolean create)
-   {
-      if (!isActive())
-      {
-         throw new ContextNotActiveException();
-      }
-      // Dependent contexts don't really use any BeanMap storage
-      return create == false ? null : bean.create();
-   }
-
+   public abstract void destroy(T instance);
 }

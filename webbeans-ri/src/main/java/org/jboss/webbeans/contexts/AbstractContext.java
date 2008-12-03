@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
+import javax.webbeans.manager.Contextual;
 import javax.webbeans.manager.Manager;
 
 /**
@@ -61,7 +62,7 @@ public abstract class AbstractContext implements Context
     * 
     * @see javax.webbeans.manager.Context#get(Bean, boolean)
     */
-   public <T> T get(Bean<T> bean, boolean create)
+   public <T> T get(Contextual<T> bean, boolean create)
    {
       if (!isActive())
       {
@@ -118,7 +119,7 @@ public abstract class AbstractContext implements Context
    }
 
    // TODO Do we need this
-   private <T> void destroy(Manager manager, Bean<T> bean)
+   private <T> void destroy(Manager manager, Contextual<T> bean)
    {
       bean.destroy(getBeanMap().get(bean));
    }
@@ -126,7 +127,7 @@ public abstract class AbstractContext implements Context
    // TODO Do we need this
    public void destroy(Manager manager)
    {
-      for (Bean<? extends Object> bean : getBeanMap().keySet())
+      for (Contextual<? extends Object> bean : getBeanMap().keySet())
       {
          destroy(manager, bean);
       }

@@ -17,7 +17,7 @@
 
 package org.jboss.webbeans.contexts;
 
-import javax.webbeans.manager.Bean;
+import javax.webbeans.manager.Contextual;
 
 /**
  * Interface for different implementations of Bean to Bean instance storage.
@@ -36,7 +36,7 @@ public interface BeanMap
     * @param bean The bean whose instance to return
     * @return The instance. Null if not found
     */
-   public abstract <T extends Object> T get(Bean<? extends T> bean);
+   public abstract <T extends Object> T get(Contextual<? extends T> bean);
 
    /**
     * Removes an instance of a bean from the storage
@@ -44,7 +44,7 @@ public interface BeanMap
     * @param bean The bean whose instance to remove
     * @return The removed instance. Null if not found in storage.
     */
-   public abstract <T extends Object> T remove(Bean<? extends T> bean);
+   public abstract <T extends Object> T remove(Contextual<? extends T> bean);
 
    /**
     * Clears the storage of any bean instances
@@ -56,7 +56,7 @@ public interface BeanMap
     * 
     * @return An Iterable over the keys in the storage
     */
-   public abstract Iterable<Bean<? extends Object>> keySet();
+   public abstract Iterable<Contextual<? extends Object>> keySet();
 
    /**
     * Adds a bean instance to the storage
@@ -65,5 +65,5 @@ public interface BeanMap
     * @param instance The instance to add
     * @return The instance added
     */
-   public abstract <T> void put(Bean<? extends T> bean, T instance);
+   public abstract <T> void put(Contextual<? extends T> bean, T instance);
 }

@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 import javax.webbeans.manager.Bean;
+import javax.webbeans.manager.Contextual;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.log.LogProvider;
@@ -91,7 +92,7 @@ public class SessionBeanMap implements BeanMap
     * @param bean The bean to generate a key for.
     * @return A unique key;
     */
-   private String getBeanKey(Bean<?> bean)
+   private String getBeanKey(Contextual<?> bean)
    {
       return keyPrefix + manager.getBeans().indexOf(bean);
    }
@@ -109,7 +110,7 @@ public class SessionBeanMap implements BeanMap
     * @see org.jboss.webbeans.contexts.BeanMap#get(Bean)
     */
    @SuppressWarnings("unchecked")
-   public <T> T get(Bean<? extends T> bean)
+   public <T> T get(Contextual<? extends T> bean)
    {
       checkSession();
       String key = getBeanKey(bean);
@@ -130,7 +131,7 @@ public class SessionBeanMap implements BeanMap
     * 
     * @see org.jboss.webbeans.contexts.BeanMap#remove(Bean)
     */
-   public <T> T remove(Bean<? extends T> bean)
+   public <T> T remove(Contextual<? extends T> bean)
    {
       checkSession();
       T instance = get(bean);
@@ -175,11 +176,11 @@ public class SessionBeanMap implements BeanMap
     * @see org.jboss.webbeans.contexts.BeanMap#keySet()
     */
    @SuppressWarnings("unchecked")
-   public Iterable<Bean<? extends Object>> keySet()
+   public Iterable<Contextual<? extends Object>> keySet()
    {
       checkSession();
 
-      List<Bean<?>> beans = new ArrayList<Bean<?>>();
+      List<Contextual<?>> beans = new ArrayList<Contextual<?>>();
 
       Enumeration names = session.getAttributeNames();
       while (names.hasMoreElements())
@@ -188,7 +189,7 @@ public class SessionBeanMap implements BeanMap
          if (name.startsWith(keyPrefix))
          {
             String id = name.substring(keyPrefix.length());
-            Bean<?> bean = manager.getBeans().get(Integer.parseInt(id));
+            Contextual<?> bean = manager.getBeans().get(Integer.parseInt(id));
             beans.add(bean);
          }
       }
@@ -207,7 +208,7 @@ public class SessionBeanMap implements BeanMap
     * 
     * @see org.jboss.webbeans.contexts.BeanMap#put(Bean, Object)
     */
-   public <T> void put(Bean<? extends T> bean, T instance)
+   public <T> void put(Contextual<? extends T> bean, T instance)
    {
       checkSession();
       String key = getBeanKey(bean);
@@ -220,10 +221,10 @@ public class SessionBeanMap implements BeanMap
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
-      List<Bean<?>> beans = (List) keySet();
+      List<Contextual<?>> beans = (List) keySet();
       buffer.append("Bean -> bean instance mappings in HTTP session: " + beans.size() + "\n");
       int i = 0;
-      for (Bean<?> bean : beans)
+      for (Contextual<?> bean : beans)
       {
          Object instance = get(bean);
          buffer.append(++i + " - " + getBeanKey(bean) + ": " + instance + "\n");

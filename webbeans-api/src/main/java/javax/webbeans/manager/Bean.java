@@ -26,10 +26,9 @@ import java.util.Set;
  * 
  * @author Gavin King
  * 
- * @param <T>
- *           an API type of the Web Bean
+ * @param <T> an API type of the Web Bean
  */
-public abstract class Bean<T>
+public abstract class Bean<T> implements Contextual<T>
 {
 
    private final Manager manager;

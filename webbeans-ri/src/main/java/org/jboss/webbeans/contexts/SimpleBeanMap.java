@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.webbeans.manager.Bean;
+import javax.webbeans.manager.Contextual;
 
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -34,19 +35,19 @@ import com.google.common.collect.ForwardingMap;
  * 
  * @author Nicklas Karlsson
  */
-public class SimpleBeanMap extends ForwardingMap<Bean<? extends Object>, Object> implements BeanMap
+public class SimpleBeanMap extends ForwardingMap<Contextual<? extends Object>, Object> implements BeanMap
 {
    private static LogProvider log = Logging.getLogProvider(SimpleBeanMap.class);
    
    // The backing map
-   protected Map<Bean<? extends Object>, Object> delegate;
+   protected Map<Contextual<? extends Object>, Object> delegate;
 
    /**
     * Constructor
     */
    public SimpleBeanMap()
    {
-      delegate = new ConcurrentHashMap<Bean<? extends Object>, Object>();
+      delegate = new ConcurrentHashMap<Contextual<? extends Object>, Object>();
    }
 
    /**
@@ -58,7 +59,7 @@ public class SimpleBeanMap extends ForwardingMap<Bean<? extends Object>, Object>
     * @see org.jboss.webbeans.contexts.BeanMap#get(Bean)
     */
    @SuppressWarnings("unchecked")
-   public <T extends Object> T get(Bean<? extends T> bean)
+   public <T extends Object> T get(Contextual<? extends T> bean)
    {
       T instance = (T) super.get(bean);
       log.trace("Searched bean map for " + bean + " and got " + instance);
@@ -71,7 +72,7 @@ public class SimpleBeanMap extends ForwardingMap<Bean<? extends Object>, Object>
     * @return The delegate
     */
    @Override
-   public Map<Bean<? extends Object>, Object> delegate()
+   public Map<Contextual<? extends Object>, Object> delegate()
    {
       return delegate;
    }
@@ -85,7 +86,7 @@ public class SimpleBeanMap extends ForwardingMap<Bean<? extends Object>, Object>
     * @see org.jboss.webbeans.contexts.BeanMap#remove(Bean)
     */
    @SuppressWarnings("unchecked")
-   public <T extends Object> T remove(Bean<? extends T> bean)
+   public <T extends Object> T remove(Contextual<? extends T> bean)
    {
       T instance = (T) super.remove(bean);
       log.trace("Removed instace " + instance + " for bean " + bean + " from the bean map");
@@ -110,7 +111,7 @@ public class SimpleBeanMap extends ForwardingMap<Bean<? extends Object>, Object>
     * 
     * @see org.jboss.webbeans.contexts.BeanMap#keySet()
     */
-   public Set<Bean<? extends Object>> keySet()
+   public Set<Contextual<? extends Object>> keySet()
    {
       return delegate.keySet();
    }
@@ -123,7 +124,7 @@ public class SimpleBeanMap extends ForwardingMap<Bean<? extends Object>, Object>
     * 
     * @see org.jboss.webbeans.contexts.BeanMap#put(Bean, Object)
     */
-   public <T> void put(Bean<? extends T> bean, T instance)
+   public <T> void put(Contextual<? extends T> bean, T instance)
    {
       delegate.put(bean, instance);
       log.trace("Stored instance " + instance + " for bean " + bean + " in bean map");
