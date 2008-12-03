@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import javax.webbeans.DefinitionException;
 import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.manager.Bean;
 
@@ -85,11 +86,11 @@ public class ClientProxyTest extends AbstractTest
       assert tuna.getState().equals("tuned");
    }
    
-   @Test(groups = "Reflections")
-   public void testProxyCreationDoesImplicitAddBean() {
+   @Test(groups = "Reflections", expectedExceptions=DefinitionException.class)
+   public void testGettingUnknownBeanFails() {
       Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class, manager);
       Tuna tuna = manager.getInstance(tunaBean);
-      assert manager.getBeans().size() == 2;
+      assert false;
    }
 
 }

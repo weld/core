@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
+import javax.webbeans.DefinitionException;
 import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.manager.Bean;
 
@@ -174,14 +175,15 @@ public class ProxyPool
          try
          {
             int beanIndex = manager.getBeans().indexOf(bean);
-            // Implicit add required since it is looked up on activation with
-            // then index
             if (beanIndex < 0)
             {
-               manager.addBean(bean);
-               beanIndex = manager.getBeans().size() - 1;
+               throw new DefinitionException(bean + " is not known to the manager");
             }
             clientProxy = createClientProxy(bean, beanIndex);
+         }
+         catch (DefinitionException e)
+         {
+            throw e;
          }
          catch (Exception e)
          {
