@@ -29,6 +29,24 @@ import java.util.Iterator;
  */
 public interface EjbDescriptor<T>
 {
+   
+   public interface BusinessInterfaceDescriptor 
+   {
+   
+      /**
+       * Gets the business interface class
+       */
+      public Class<?> getInterface();
+   
+      /**
+       * Gets the JNDI name under which the EJB is registered
+       * 
+       * @return The JNDI name
+       */
+      public String getJndiName();
+      
+   }
+   
    /**
     * Gets the EJB type
     * 
@@ -37,18 +55,18 @@ public interface EjbDescriptor<T>
    public Class<T> getType();
 
    /**
-    * Gets the JNDI name under which the EJB is registered
+    * Gets the local business interfaces of the EJB
     * 
-    * @return The JNDI name
+    * @return An iterator over the local business interfaces
     */
-   public String getJndiName();
-
+   public Iterator<BusinessInterfaceDescriptor> getLocalBusinessInterfaces();
+   
    /**
-    * Gets the local interfaces of the EJB
+    * Gets the remote business interfaces of the EJB
     * 
-    * @return An iterator to the local interfaces 
+    * @return An iterator over the remote business interfaces
     */
-   public Iterator<Class<?>> getLocalInterfaces();
+   public Iterator<BusinessInterfaceDescriptor> getRemoteBusinessInterfaces();
 
    /**
     * Get the remove methods of the EJB

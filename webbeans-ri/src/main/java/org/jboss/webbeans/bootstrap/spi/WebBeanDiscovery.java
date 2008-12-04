@@ -48,6 +48,6 @@ public interface WebBeanDiscovery
     * 
     * @return The bean class to descriptor map 
     */
-   public Map<Class<?>, EjbDescriptor<?>> discoverEjbs();
+   public Map<String, EjbDescriptor<?>> discoverEjbs();
    
 }

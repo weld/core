@@ -31,7 +31,7 @@ public class MockWebBeanDiscovery implements WebBeanDiscovery
       return webBeanClasses;
    }
 
-   public Map<Class<?>, EjbDescriptor<?>> discoverEjbs()
+   public Map<String, EjbDescriptor<?>> discoverEjbs()
    {
       // TODO Auto-generated method stub
       return null;
