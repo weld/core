@@ -38,21 +38,16 @@ public class MetaDataCache
 
    private ConcurrentCache<Class<?>, EjbMetaData<?>> ejbMetaDataMap = new ConcurrentCache<Class<?>, EjbMetaData<?>>();
 
-   public <T extends Annotation> void addStereotype(final Class<T> stereotype)
+   public <T extends Annotation> StereotypeModel<T> getStereotype(final Class<T> stereotype)
    {
-      stereotypes.putIfAbsent(stereotype, new Callable<StereotypeModel<?>>()
+      return stereotypes.putIfAbsent(stereotype, new Callable<StereotypeModel<T>>()
       {
 
-         public StereotypeModel<?> call() throws Exception
+         public StereotypeModel<T> call() throws Exception
          {
             return new StereotypeModel<T>(stereotype);
          }
       });
-   }
-
-   public StereotypeModel<?> getStereotype(Class<? extends Annotation> annotationType)
-   {
-      return stereotypes.getValue(annotationType);
    }
 
    public <T extends Annotation> ScopeModel<T> getScopeModel(final Class<T> scopeType)
@@ -64,7 +59,7 @@ public class MetaDataCache
          {
             return new ScopeModel<T>(scopeType);
          }
-   
+
       });
    }
 
@@ -77,7 +72,7 @@ public class MetaDataCache
          {
             return new BindingTypeModel<T>(bindingType);
          }
-   
+
       });
    }
 
@@ -90,7 +85,7 @@ public class MetaDataCache
          {
             return new EjbMetaData<T>(clazz);
          }
-   
+
       });
    }
 
