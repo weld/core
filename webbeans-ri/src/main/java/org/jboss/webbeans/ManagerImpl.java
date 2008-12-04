@@ -422,7 +422,7 @@ public class ManagerImpl implements Manager
     */
    public Context getContext(Class<? extends Annotation> scopeType)
    {
-      List<Context> contexts = contextMap.get(scopeType);
+      List<Context> contexts = contextMap.getContext(scopeType);
       if (contexts.isEmpty())
       {
          throw new ContextNotActiveException("No active contexts for " + scopeType.getName());

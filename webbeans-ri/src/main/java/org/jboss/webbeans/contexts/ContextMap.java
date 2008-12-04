@@ -18,17 +18,15 @@
 package org.jboss.webbeans.contexts;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
 
 import javax.webbeans.manager.Context;
 
+import org.jboss.webbeans.util.ConcurrentCache;
 import org.jboss.webbeans.util.Strings;
-
-import com.google.common.collect.ForwardingMap;
 
 /**
  * A map from a scope to a list of contexts
@@ -37,14 +35,8 @@ import com.google.common.collect.ForwardingMap;
  * @author Pete Muir
  * 
  */
-public class ContextMap extends ForwardingMap<Class<? extends Annotation>, List<Context>>
+public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, List<Context>>
 {
-   private Map<Class<? extends Annotation>, List<Context>> delegate;
-
-   public ContextMap()
-   {
-      delegate = new ConcurrentHashMap<Class<? extends Annotation>, List<Context>>();
-   }
 
    /**
     * Gets the dependent context
@@ -52,27 +44,71 @@ public class ContextMap extends ForwardingMap<Class<? extends Annotation>, List<
     * @param scopeType The scope type to get
     * @return The dependent context
     */
-   public DependentContext getBuiltInContext(Class<? extends Annotation> scopeType)
+   public AbstractContext getBuiltInContext(Class<? extends Annotation> scopeType)
    {
-      // TODO Why can we request any scopetype and the cast it to dependent?
-      return (DependentContext) get(scopeType).iterator().next();
+      boolean interrupted = false;
+      try
+      {
+         while (true)
+         {
+            try
+            {
+               return (AbstractContext) get(scopeType).get().iterator().next();
+            }
+            catch (InterruptedException e)
+            {
+               interrupted = true;
+            }
+            catch (ExecutionException e)
+            {
+               rethrow(e);
+            }
+         }
+      }
+      finally
+      {
+         if (interrupted)
+         {
+            Thread.currentThread().interrupt();
+         }
+      }
    }
-
-   /**
-    * Returns the delegate of the forwarding map
-    * 
-    * @return the delegate
-    */
-   @Override
-   protected Map<Class<? extends Annotation>, List<Context>> delegate()
+   
+   public List<Context> getContext(Class<? extends Annotation> scopeType)
    {
-      return delegate;
+      boolean interrupted = false;
+      // TODO Why can we request any scopetype and the cast it to dependent?
+      try
+      {
+         while (true)
+         {
+            try
+            {
+               return get(scopeType).get();
+            }
+            catch (InterruptedException e)
+            {
+               interrupted = true;
+            }
+            catch (ExecutionException e)
+            {
+               rethrow(e);
+            }
+         }
+      }
+      finally
+      {
+         if (interrupted)
+         {
+            Thread.currentThread().interrupt();
+         }
+      }
    }
 
    @Override
    public String toString()
    {
-      return Strings.mapToString("ContextMap (scope type -> context list): ", delegate);
+      return Strings.mapToString("ContextMap (scope type -> context list): ", delegate());
    }
 
    /**
@@ -84,31 +120,16 @@ public class ContextMap extends ForwardingMap<Class<? extends Annotation>, List<
     */
    public void add(Context context)
    {
-      List<Context> contexts = super.get(context.getScopeType());
-      if (contexts == null)
+      List<Context> contexts = putIfAbsent(context.getScopeType(), new Callable<List<Context>>()
       {
-         synchronized (delegate)
+         
+         public List<Context> call() throws Exception
          {
-            contexts = new CopyOnWriteArrayList<Context>();
-            put(context.getScopeType(), contexts);
+            return new CopyOnWriteArrayList<Context>();
          }
-         contexts = super.get(context.getScopeType());
-      }
+   
+      });
       contexts.add(context);
    }
-
-   /**
-    * Gets a context list for a scope type
-    * 
-    * @param scopeType The scope type
-    * @return A list of contexts. An empty list is returned if there are no registered scopes of this type
-    */
-   public List<Context> get(Class<? extends Annotation> scopeType)
-   {
-      List<Context> contexts = super.get(scopeType);
-      return contexts != null ? contexts : new ArrayList<Context>();
-   }
-   
-   
 
 }

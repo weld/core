@@ -20,18 +20,12 @@ package org.jboss.webbeans;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import javax.webbeans.NullableDependencyException;
 import javax.webbeans.manager.Bean;
@@ -42,10 +36,9 @@ import javax.webbeans.manager.Interceptor;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedItem;
 import org.jboss.webbeans.model.BindingTypeModel;
+import org.jboss.webbeans.util.ConcurrentCache;
 import org.jboss.webbeans.util.ListComparator;
 import org.jboss.webbeans.util.Strings;
-
-import com.google.common.collect.ForwardingMap;
 
 /**
  * Implementation of Web Beans type safe and name based bean resolution
@@ -94,43 +87,10 @@ public class Resolver
 
    }
 
-   /**
-    * Type safe map for caching annotation metadata
-    */
-   @SuppressWarnings("unchecked")
-   private class ConcurrentAnnotatedItemMap extends ForwardingMap<AnnotatedItem<?, ?>, Future>
-   {
-
-      private Map<AnnotatedItem<?, ?>, Future> delegate;
-
-      public ConcurrentAnnotatedItemMap()
-      {
-         delegate = new ConcurrentHashMap<AnnotatedItem<?, ?>, Future>();
-      }
-
-      public <T> Future<Set<Bean<T>>> get(AnnotatedItem<T, ?> key)
-      {
-         return (Future<Set<Bean<T>>>) super.get(key);
-      }
-
-      @Override
-      protected Map<AnnotatedItem<?, ?>, Future> delegate()
-      {
-         return delegate;
-      }
-
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("AnnotatedItemMap (annotated item -> bean set): ", delegate);
-      }
-
-   }
-
-   private ConcurrentAnnotatedItemMap resolvedInjectionPoints;
+   private ConcurrentCache<ResolvableAnnotatedItem<?, ?>, Set<Bean<?>>> resolvedInjectionPoints;
    private Set<AnnotatedItem<?, ?>> injectionPoints;
 
-   private Map<String, Future<Set<Bean<?>>>> resolvedNames;
+   private ConcurrentCache<String, Set<Bean<?>>> resolvedNames;
 
    private ManagerImpl manager;
 
@@ -138,7 +98,8 @@ public class Resolver
    {
       this.manager = manager;
       this.injectionPoints = new HashSet<AnnotatedItem<?, ?>>();
-      this.resolvedInjectionPoints = new ConcurrentAnnotatedItemMap();
+      this.resolvedInjectionPoints = new ConcurrentCache<ResolvableAnnotatedItem<?,?>, Set<Bean<?>>>();
+      this.resolvedNames = new ConcurrentCache<String, Set<Bean<?>>>();
    }
 
    /**
@@ -150,38 +111,14 @@ public class Resolver
       injectionPoints.addAll(elements);
    }
 
-   private void registerName(final String name)
+   private <T, S> Set<Bean<T>> registerInjectionPoint(final ResolvableAnnotatedItem<T, S> element)
    {
-      FutureTask<Set<Bean<?>>> task = new FutureTask<Set<Bean<?>>>(new Callable<Set<Bean<?>>>()
+      Callable<Set<Bean<T>>> callable = new Callable<Set<Bean<T>>>()
       {
 
-         public Set<Bean<?>> call() throws Exception
+         public Set<Bean<T>> call() throws Exception
          {
-            Set<Bean<?>> beans = new HashSet<Bean<?>>();
-            for (Bean<?> bean : manager.getBeans())
-            {
-               if ((bean.getName() == null && name == null) || (bean.getName() != null && bean.getName().equals(name)))
-               {
-                  beans.add(bean);
-               }
-            }
-            return retainHighestPrecedenceBeans(beans, manager.getEnabledDeploymentTypes());
-         }
-
-      });
-      resolvedNames.put(name, task);
-
-      task.run();
-   }
-
-   private <T, S> void registerInjectionPoint(final AnnotatedItem<T, S> element)
-   {
-      FutureTask<Set<Bean<?>>> task = new FutureTask<Set<Bean<?>>>(new Callable<Set<Bean<?>>>()
-      {
-
-         public Set<Bean<?>> call() throws Exception
-         {
-            Set<Bean<?>> beans = retainHighestPrecedenceBeans(getMatchingBeans(element, manager.getBeans(), manager.getMetaDataCache()), manager.getEnabledDeploymentTypes());
+            Set<Bean<T>> beans = retainHighestPrecedenceBeans(getMatchingBeans(element, manager.getBeans(), manager.getMetaDataCache()), manager.getEnabledDeploymentTypes());
             if (element.getType().isPrimitive())
             {
                for (Bean<?> bean : beans)
@@ -195,20 +132,8 @@ public class Resolver
             return beans;
          }
 
-      });
-
-      resolvedInjectionPoints.put(new ResolvableAnnotatedItem<T, S>()
-      {
-
-         @Override
-         public AnnotatedItem<T, S> delegate()
-         {
-            return element;
-         }
-
-      }, task);
-
-      task.run();
+      };
+      return resolvedInjectionPoints.putIfAbsent(element, callable);
    }
 
    /**
@@ -217,8 +142,8 @@ public class Resolver
     */
    public void clear()
    {
-      resolvedInjectionPoints = new ConcurrentAnnotatedItemMap();
-      resolvedNames = new HashMap<String, Future<Set<Bean<?>>>>();
+      this.resolvedInjectionPoints = new ConcurrentCache<ResolvableAnnotatedItem<?,?>, Set<Bean<?>>>();
+      resolvedNames = new ConcurrentCache<String, Set<Bean<?>>>();
    }
 
    /**
@@ -227,9 +152,17 @@ public class Resolver
     */
    public void resolveInjectionPoints()
    {
-      for (AnnotatedItem<?, ?> injectable : injectionPoints)
+      for (final AnnotatedItem injectable : injectionPoints)
       {
-         registerInjectionPoint(injectable);
+         registerInjectionPoint(new ResolvableAnnotatedItem<Object, Object>()
+         {
+
+            @Override
+            public AnnotatedItem<Object, Object> delegate()
+            {
+               return injectable;
+            }
+         });
       }
    }
 
@@ -241,7 +174,7 @@ public class Resolver
    {
       Set<Bean<T>> beans = new HashSet<Bean<T>>();
 
-      AnnotatedItem<T, S> element = new ResolvableAnnotatedItem<T, S>()
+      final ResolvableAnnotatedItem<T, S> element = new ResolvableAnnotatedItem<T, S>()
       {
 
          @Override
@@ -259,48 +192,7 @@ public class Resolver
       }
       else
       {
-         if (!resolvedInjectionPoints.containsKey(element))
-         {
-            registerInjectionPoint(element);
-         }
-
-         boolean interupted = false;
-         try
-         {
-            while (true)
-            {
-               try
-               {
-                  return Collections.unmodifiableSet(resolvedInjectionPoints.get(element).get());
-               }
-               catch (ExecutionException e)
-               {
-                  if (e.getCause() instanceof RuntimeException)
-                  {
-                     throw (RuntimeException) e.getCause();
-                  }
-                  else if (e.getCause() instanceof Error)
-                  {
-                     throw (Error) e.getCause();
-                  }
-                  else
-                  {
-                     throw new IllegalStateException(e.getCause());
-                  }
-               }
-               catch (InterruptedException e)
-               {
-                  interupted = true;
-               }
-            }
-         }
-         finally
-         {
-            if (interupted)
-            {
-               Thread.currentThread().interrupt();
-            }
-         }
+         beans = registerInjectionPoint(element);
       }
       return Collections.unmodifiableSet(beans);
    }
@@ -308,53 +200,28 @@ public class Resolver
    /**
     * Get the possible beans for the given name
     */
-   public Set<Bean<?>> get(String name)
+   public Set<Bean<?>> get(final String name)
    {
-      if (!resolvedNames.containsKey(name))
+      return resolvedNames.putIfAbsent(name, new Callable<Set<Bean<?>>>()
       {
-         registerName(name);
-      }
 
-      boolean interupted = false;
-      try
-      {
-         while (true)
+         public Set<Bean<?>> call() throws Exception
          {
-            try
+            Set<Bean<?>> beans = new HashSet<Bean<?>>();
+            for (Bean<?> bean : manager.getBeans())
             {
-               return Collections.unmodifiableSet(resolvedNames.get(name).get());
-            }
-            catch (ExecutionException e)
-            {
-               if (e.getCause() instanceof RuntimeException)
+               if ((bean.getName() == null && name == null) || (bean.getName() != null && bean.getName().equals(name)))
                {
-                  throw (RuntimeException) e.getCause();
-               }
-               else if (e.getCause() instanceof Error)
-               {
-                  throw (Error) e.getCause();
-               }
-               else
-               {
-                  throw new IllegalStateException(e.getCause());
+                  beans.add(bean);
                }
             }
-            catch (InterruptedException e)
-            {
-               interupted = true;
-            }
+            return retainHighestPrecedenceBeans((Set) beans, manager.getEnabledDeploymentTypes());
          }
-      }
-      finally
-      {
-         if (interupted)
-         {
-            Thread.currentThread().interrupt();
-         }
-      }
+
+      });
    }
 
-   private static Set<Bean<?>> retainHighestPrecedenceBeans(Set<Bean<?>> beans, List<Class<? extends Annotation>> enabledDeploymentTypes)
+   private static <T> Set<Bean<T>> retainHighestPrecedenceBeans(Set<Bean<T>> beans, List<Class<? extends Annotation>> enabledDeploymentTypes)
    {
       if (beans.size() > 0)
       {
@@ -364,12 +231,12 @@ public class Resolver
             possibleDeploymentTypes.add(bean.getDeploymentType());
          }
          possibleDeploymentTypes.retainAll(enabledDeploymentTypes);
-         Set<Bean<?>> trimmed = new HashSet<Bean<?>>();
+         Set<Bean<T>> trimmed = new HashSet<Bean<T>>();
          if (possibleDeploymentTypes.size() > 0)
          {
             Class<? extends Annotation> highestPrecedencePossibleDeploymentType = possibleDeploymentTypes.last();
 
-            for (Bean<?> bean : beans)
+            for (Bean<T> bean : beans)
             {
                if (bean.getDeploymentType().equals(highestPrecedencePossibleDeploymentType))
                {
@@ -385,14 +252,14 @@ public class Resolver
       }
    }
 
-   private static Set<Bean<?>> getMatchingBeans(AnnotatedItem<?, ?> element, List<Bean<?>> beans, MetaDataCache metaDataCache)
+   private static <T> Set<Bean<T>> getMatchingBeans(AnnotatedItem<T, ?> element, List<Bean<?>> beans, MetaDataCache metaDataCache)
    {
-      Set<Bean<?>> resolvedBeans = new HashSet<Bean<?>>();
+      Set<Bean<T>> resolvedBeans = new HashSet<Bean<T>>();
       for (Bean<?> bean : beans)
       {
          if (element.isAssignableFrom(bean.getTypes()) && containsAllBindingBindingTypes(element, bean.getBindingTypes(), metaDataCache))
          {
-            resolvedBeans.add(bean);
+            resolvedBeans.add((Bean<T>) bean);
          }
       }
       return resolvedBeans;

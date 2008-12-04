@@ -20,13 +20,8 @@ package org.jboss.webbeans.bean.proxy;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
@@ -35,9 +30,7 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.util.Strings;
-
-import com.google.common.collect.ForwardingMap;
+import org.jboss.webbeans.util.ConcurrentCache;
 
 /**
  * A proxy pool for holding scope adaptors (client proxies)
@@ -53,43 +46,14 @@ public class ProxyPool
     * 
     * @author Nicklas Karlsson
     */
-   private class Pool extends ForwardingMap<Bean<?>, Future<Object>>
-   {
-
-      Map<Bean<?>, Future<Object>> delegate;
-
-      public Pool()
-      {
-         delegate = new ConcurrentHashMap<Bean<?>, Future<Object>>();
-      }
-
-      @SuppressWarnings("unchecked")
-      public <T> Future<T> get(Bean<T> key)
-      {
-         return (Future<T>) super.get(key);
-      }
-
-      @Override
-      protected Map<Bean<?>, Future<Object>> delegate()
-      {
-         return delegate;
-      }
-
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("ProxyPool (bean -> proxy): ", delegate);
-      }
-
-   }
 
    private ManagerImpl manager;
-   private Pool pool;
+   private ConcurrentCache<Bean<? extends Object>, Object> pool;
 
    public ProxyPool(ManagerImpl manager)
    {
       this.manager = manager;
-      this.pool = new Pool();
+      this.pool = new ConcurrentCache<Bean<? extends Object>, Object>();
    }
 
    /**
@@ -182,66 +146,22 @@ public class ProxyPool
     * @param bean
     * @return
     */
-   public Object getClientProxy(final Bean<?> bean)
+   public <T> T getClientProxy(final Bean<T> bean)
    {
-      Future<?> clientProxy = pool.get(bean);
-      if (clientProxy == null)
+      return pool.putIfAbsent(bean, new Callable<T>()
       {
-         FutureTask<Object> task = new FutureTask<Object>(new Callable<Object>()
+
+         public T call() throws Exception
          {
+            int beanIndex = manager.getBeans().indexOf(bean);
+            if (beanIndex < 0)
+            {
+               throw new DefinitionException(bean + " is not known to the manager");
+            }
+            return createClientProxy(bean, beanIndex, manager);
+         }
    
-            public Object call() throws Exception
-            {
-               int beanIndex = manager.getBeans().indexOf(bean);
-               if (beanIndex < 0)
-               {
-                  throw new DefinitionException(bean + " is not known to the manager");
-               }
-               return createClientProxy(bean, beanIndex, manager);
-            }
-      
-         });
-         clientProxy = task;
-         pool.put(bean, task);
-         task.run();
-      }
-      boolean interrupted = false;
-      try
-      {
-         while (true)
-         {
-            try
-            {
-               return clientProxy.get();
-            }
-            catch (InterruptedException e)
-            {
-               interrupted = true;
-            }
-            catch (ExecutionException e)
-            {
-               if (e.getCause() instanceof RuntimeException)
-               {
-                  throw (RuntimeException) e.getCause();
-               }
-               else if (e.getCause() instanceof Error)
-               {
-                  throw (Error) e.getCause();
-               }
-               else
-               {
-                  throw new IllegalStateException(e.getCause());
-               }
-            };
-         }
-      }
-      finally
-      {
-         if (interrupted)
-         {
-            Thread.currentThread().interrupt();
-         }
-      }
+      });
    }
 
    @Override
