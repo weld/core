@@ -305,6 +305,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       Class<?> superclass = getAnnotatedItem().getType().getSuperclass();
       if (superclass != null)
       {
+         // TODO look up this bean and do this via init
          return new EnterpriseBean(superclass, getManager());
       }
       else

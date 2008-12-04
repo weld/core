@@ -31,7 +31,6 @@ import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.contexts.SessionContext;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.util.JNDI;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -94,7 +93,7 @@ public class ServletLifecycle
     * @param request The request
     */
    public static void beginRequest(HttpServletRequest request) {
-      ManagerImpl manager = (ManagerImpl) JNDI.lookup(MANAGER_JNDI_KEY);
+      ManagerImpl manager = ManagerImpl.instance();
       SessionContext sessionContext = (SessionContext) manager.getContext(SessionScoped.class);
       sessionContext.setSession(request.getSession(true));
    }
@@ -122,7 +121,6 @@ public class ServletLifecycle
     * 
     * @return The discoverer
     */
-   // TODO move some of this bootstrap for reuse outside Servlet
    private static WebBeanDiscovery getWebBeanDiscovery()
    {
       WebBeanDiscovery webBeanDiscovery = null;

@@ -72,6 +72,14 @@ import org.jboss.webbeans.util.Strings;
  */
 public class ManagerImpl implements Manager
 {
+   
+   private static ManagerImpl instance = new ManagerImpl();
+   
+   public static ManagerImpl instance()
+   {
+      return instance;
+   }
+   
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
    private MetaDataCache metaDataCache;
    private EventManager eventManager;

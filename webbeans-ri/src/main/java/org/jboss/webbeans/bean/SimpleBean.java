@@ -328,6 +328,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       Class<?> superclass = getAnnotatedItem().getType().getSuperclass();
       if (superclass != null)
       {
+         // TODO look up this bean and do this via init
          return new SimpleBean(superclass, getManager());
       }
       else

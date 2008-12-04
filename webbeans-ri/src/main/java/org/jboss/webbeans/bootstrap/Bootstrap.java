@@ -18,9 +18,9 @@
 package org.jboss.webbeans.bootstrap;
 
 import static org.jboss.webbeans.util.BeanFactory.createEnterpriseBean;
+import static org.jboss.webbeans.util.BeanFactory.createEventBean;
 import static org.jboss.webbeans.util.BeanFactory.createProducerMethodBean;
 import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
-import static org.jboss.webbeans.util.BeanFactory.createEventBean;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -56,11 +56,11 @@ public class Bootstrap
    /**
     * Constructor
     * 
-    * Starts up with a fresh manager
+    * Starts up with the singleton Manager
     */
    public Bootstrap()
    {
-      this(new ManagerImpl());
+      this(ManagerImpl.instance());
    }
 
    /**
