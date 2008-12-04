@@ -23,6 +23,8 @@ import java.util.Iterator;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 
+import org.jboss.webbeans.ManagerImpl;
+
 public class WebBeansELResolver extends ELResolver
 {
 
@@ -32,7 +34,6 @@ public class WebBeansELResolver extends ELResolver
    @Override
    public Class<?> getCommonPropertyType(ELContext context, Object base)
    {
-      // TODO Auto-generated method stub
       return null;
    }
 
@@ -42,7 +43,6 @@ public class WebBeansELResolver extends ELResolver
    @Override
    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base)
    {
-      // TODO Auto-generated method stub
       return null;
    }
 
@@ -52,7 +52,6 @@ public class WebBeansELResolver extends ELResolver
    @Override
    public Class<?> getType(ELContext context, Object base, Object property)
    {
-      // TODO Auto-generated method stub
       return null;
    }
 
@@ -62,8 +61,14 @@ public class WebBeansELResolver extends ELResolver
    @Override
    public Object getValue(ELContext context, Object base, Object property)
    {
-      // TODO Auto-generated method stub
-      return null;
+      if (base == null && property != null)
+      {
+         return ManagerImpl.instance().getInstanceByName(property.toString());
+      }
+      else
+      {
+         return null;
+      }
    }
 
    /**
@@ -72,7 +77,6 @@ public class WebBeansELResolver extends ELResolver
    @Override
    public boolean isReadOnly(ELContext context, Object base, Object property)
    {
-      // TODO Auto-generated method stub
       return false;
    }
 
@@ -82,7 +86,6 @@ public class WebBeansELResolver extends ELResolver
    @Override
    public void setValue(ELContext context, Object base, Object property, Object value)
    {
-      // TODO Auto-generated method stub
    }
 
 }
