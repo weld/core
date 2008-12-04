@@ -37,6 +37,7 @@ public class EJB
    public static final Class<? extends Annotation> STATELESS_ANNOTATION;
    public static final Class<? extends Annotation> STATEFUL_ANNOTATION;
    public static final Class<? extends Annotation> MESSAGE_DRIVEN_ANNOTATION;
+   public static final Class<? extends Annotation> FAKE_MESSAGE_DRIVEN_ANNOTATION;
    public static final Class<? extends Annotation> SINGLETON_ANNOTATION;
    public static final Class<? extends Annotation> REMOVE_ANNOTATION;
 
@@ -48,7 +49,9 @@ public class EJB
       STATELESS_ANNOTATION = classForName("javax.ejb.Stateless");
       STATEFUL_ANNOTATION = classForName("javax.ejb.Stateful");
       MESSAGE_DRIVEN_ANNOTATION = classForName("javax.ejb.MessageDriven");
-      // FIXME Faking singleton
+      // Fake MDB for tests
+      FAKE_MESSAGE_DRIVEN_ANNOTATION = classForName("org.jboss.webbeans.test.annotations.MessageDriven");
+      // FIXME Faking singleton for tests
       SINGLETON_ANNOTATION = classForName("org.jboss.webbeans.test.annotations.Singleton");
       // SINGLETON_ANNOTATION = classForName("javax.ejb.Singleton");
       REMOVE_ANNOTATION = classForName("javax.ejb.Remove");

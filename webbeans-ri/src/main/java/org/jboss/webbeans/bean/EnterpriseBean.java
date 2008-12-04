@@ -70,7 +70,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected void init()
    {
       super.init();
-      ejbMetaData = new EjbMetaData<T>(getType());
+      ejbMetaData = ManagerImpl.instance().getMetaDataCache().getEjbMetaData(getType());
       initRemoveMethod();
       initInjectionPoints();
       checkEnterpriseBeanTypeAllowed();

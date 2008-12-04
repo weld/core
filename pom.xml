@@ -33,6 +33,10 @@
       <developer>
          <name>David Allen</name>
       </developer>
+      
+      <developer>
+         <name>Nicklas Karlsson</name>
+      </developer>
    </developers>
 
    <repositories>
@@ -42,8 +46,10 @@
          <url>http://repository.jboss.org/maven2</url>
       </repository>
       <repository>
-         <id>scannotation.sf.net</id>
-         <url>http://scannotation.sourceforge.net/maven2/</url>
+         <id>snapshots.jboss.org</id>
+         <name>JBoss Snapshots Repository</name>
+         <url>http://snapshots.jboss.org/maven2</url>
+         <snapshots />
       </repository>
       <repository>
          <id>google-maven-repository</id>
@@ -137,6 +143,12 @@
             <groupId>com.google.collections</groupId>
             <artifactId>google-collections</artifactId>
             <version>0.8</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.ejb3</groupId>
+            <artifactId>jboss-ejb3-embedded</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
          </dependency>
 
       </dependencies>

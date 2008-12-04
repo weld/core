@@ -17,6 +17,7 @@
 
 package org.jboss.webbeans.ejb;
 
+import static org.jboss.webbeans.ejb.EJB.FAKE_MESSAGE_DRIVEN_ANNOTATION;
 import static org.jboss.webbeans.ejb.EJB.MESSAGE_DRIVEN_ANNOTATION;
 import static org.jboss.webbeans.ejb.EJB.REMOVE_ANNOTATION;
 import static org.jboss.webbeans.ejb.EJB.SINGLETON_ANNOTATION;
@@ -127,7 +128,7 @@ public class EjbMetaData<T>
             destructorMethods.add(destructorMethod);
          }
       }
-      else if (type.isAnnotationPresent(MESSAGE_DRIVEN_ANNOTATION))
+      else if (type.isAnnotationPresent(MESSAGE_DRIVEN_ANNOTATION) || type.isAnnotationPresent(FAKE_MESSAGE_DRIVEN_ANNOTATION))
       {
          this.ejbType = MESSAGE_DRIVEN;
       }
