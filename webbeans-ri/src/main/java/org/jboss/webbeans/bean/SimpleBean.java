@@ -361,6 +361,14 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
+      buffer.append("Annotated " + getScopeType().getSimpleName().toLowerCase() + " " + " simple bean '" + getName() + "' " + "[" + getType().getName() + "]\n");
+      buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
+      return buffer.toString();
+   }
+
+   public String toDetailedString()
+   {
+      StringBuffer buffer = new StringBuffer();
       buffer.append("SimpleBean\n");
       buffer.append(super.toString() + "\n");
       buffer.append("Location: " + location + "\n");

@@ -340,6 +340,36 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    public String toString()
    {
       StringBuffer buffer = new StringBuffer();
+      String ejbType = "";
+      if (getEjbMetaData().isMessageDriven())
+      {
+         ejbType = "message driven";
+      }
+      else if (getEjbMetaData().isSingleton())
+      {
+         ejbType = "singleton";
+      }
+      else if (getEjbMetaData().isStateful())
+      {
+         ejbType = "stateful";
+      }
+      else if (getEjbMetaData().isStateless())
+      {
+         ejbType = "stateless";
+      }
+      else
+      {
+         ejbType = "unknown";
+      }
+      buffer.append("Annotated " + getScopeType().getSimpleName().toLowerCase() + " " + ejbType + " enterprise bean '" + getName() + "' " + "[" + getType().getName() + "]\n");
+      buffer.append("   EJB name: " + getEjbMetaData().getEjbName() + ", default JNDI name: " + getEjbMetaData().getDefaultJndiName() + ", EJB link JNDI name: " + getEjbMetaData().getEjbLinkJndiName() + "\n");
+      buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
+      return buffer.toString();
+   }
+
+   public String toDetailedString()
+   {
+      StringBuffer buffer = new StringBuffer();
       buffer.append("EnterpriseBean:\n");
       buffer.append(super.toString() + "\n");
       buffer.append(ejbMetaData.toString() + "\n");
