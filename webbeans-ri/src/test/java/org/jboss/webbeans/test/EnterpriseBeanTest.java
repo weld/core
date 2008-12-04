@@ -11,12 +11,6 @@ import org.testng.annotations.Test;
 public class EnterpriseBeanTest extends AbstractEjbEmbeddableTest
 {
 
-   @Override
-   protected String getTestClassesPath()
-   {
-      return "org/jboss/webbeans/";
-   }
-
    @Test(expectedExceptions=UnsupportedOperationException.class)
    public void test() throws NamingException
    {

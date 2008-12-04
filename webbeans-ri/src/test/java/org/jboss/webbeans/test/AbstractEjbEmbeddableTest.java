@@ -31,7 +31,10 @@ public abstract class AbstractEjbEmbeddableTest extends AbstractTest
       EJBContainer.createEJBContainer(properties);
    }
    
-   protected abstract String getTestClassesPath();
+   protected String getTestClassesPath()
+   {
+      return "org/jboss/webbeans/test";
+   }
    
    private static String getURLToTestClasses(String path)
    {
