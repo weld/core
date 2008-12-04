@@ -18,174 +18,80 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Callable;
 
 import org.jboss.webbeans.ejb.EjbMetaData;
-import org.jboss.webbeans.model.AnnotationModel;
 import org.jboss.webbeans.model.BindingTypeModel;
 import org.jboss.webbeans.model.ScopeModel;
 import org.jboss.webbeans.model.StereotypeModel;
+import org.jboss.webbeans.util.ConcurrentCache;
 import org.jboss.webbeans.util.Strings;
-
-import com.google.common.collect.ForwardingMap;
 
 public class MetaDataCache
 {
 
-   private abstract class AnnotationModelMap<T extends AnnotationModel<?>> extends ForwardingMap<Class<? extends Annotation>, T>
+   private ConcurrentCache<Class<? extends Annotation>, StereotypeModel<?>> stereotypes = new ConcurrentCache<Class<? extends Annotation>, StereotypeModel<?>>();
+
+   private ConcurrentCache<Class<? extends Annotation>, ScopeModel<?>> scopes = new ConcurrentCache<Class<? extends Annotation>, ScopeModel<?>>();
+
+   private ConcurrentCache<Class<? extends Annotation>, BindingTypeModel<?>> bindingTypes = new ConcurrentCache<Class<? extends Annotation>, BindingTypeModel<?>>();
+
+   private ConcurrentCache<Class<?>, EjbMetaData<?>> ejbMetaDataMap = new ConcurrentCache<Class<?>, EjbMetaData<?>>();
+
+   public <T extends Annotation> void addStereotype(final Class<T> stereotype)
    {
-
-      Map<Class<? extends Annotation>, T> delegate;
-
-      public AnnotationModelMap()
+      stereotypes.putIfAbsent(stereotype, new Callable<StereotypeModel<?>>()
       {
-         delegate = new ConcurrentHashMap<Class<? extends Annotation>, T>();
-      }
 
-      public <S extends Annotation> T putIfAbsent(Class<S> key)
-      {
-         if (!containsKey(key))
+         public StereotypeModel<?> call() throws Exception
          {
-            T model = createAnnotationModel(key);
-            super.put(key, model);
-            return model;
+            return new StereotypeModel<T>(stereotype);
          }
-         return (T) super.get(key);
-      }
-
-      protected abstract <S extends Annotation> T createAnnotationModel(Class<S> type);
-
-      @Override
-      protected Map<Class<? extends Annotation>, T> delegate()
-      {
-         return delegate;
-      }
-
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("AnnotationModelMap (annotation -> ?): ", delegate);
-      }
-
-   }
-
-   @SuppressWarnings("unchecked")
-   private class ScopeModelMap extends AnnotationModelMap<ScopeModel<?>>
-   {
-
-      @Override
-      public <S extends Annotation> ScopeModel<S> putIfAbsent(Class<S> key)
-      {
-         return (ScopeModel<S>) super.putIfAbsent(key);
-      }
-
-      @Override
-      protected <S extends Annotation> ScopeModel<?> createAnnotationModel(Class<S> type)
-      {
-         return new ScopeModel<S>(type);
-      }
-
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("ScopeModelMap (annotation -> ScopeModel): ", delegate);
-      }
-
-   }
-
-   @SuppressWarnings("unchecked")
-   private class BindingTypeModelMap extends AnnotationModelMap<BindingTypeModel<?>>
-   {
-
-      @Override
-      public <S extends Annotation> BindingTypeModel<S> putIfAbsent(Class<S> key)
-      {
-         return (BindingTypeModel<S>) super.putIfAbsent(key);
-      }
-
-      @Override
-      protected <S extends Annotation> BindingTypeModel<?> createAnnotationModel(Class<S> type)
-      {
-         return new BindingTypeModel<S>(type);
-      }
-
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("BindingTypeModelMap (annotation -> BindingTypeModel): ", delegate);
-      }
-   }
-
-   private class EjbMetaDataMap extends ForwardingMap<Class<?>, EjbMetaData<?>>
-   {
-
-      private Map<Class<?>, EjbMetaData<?>> delegate;
-
-      public EjbMetaDataMap()
-      {
-         delegate = new HashMap<Class<?>, EjbMetaData<?>>();
-      }
-
-      @Override
-      protected Map<Class<?>, EjbMetaData<?>> delegate()
-      {
-         return delegate;
-      }
-
-      @SuppressWarnings("unchecked")
-      public <T> EjbMetaData<T> putIfAbsent(Class<T> key)
-      {
-         if (!containsKey(key))
-         {
-            EjbMetaData<T> ejbMetaData = new EjbMetaData<T>(key);
-            super.put(key, ejbMetaData);
-            return ejbMetaData;
-         }
-         return (EjbMetaData<T>) super.get(key);
-      }
-
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("EJBMetadataMap (class -> EJBMetaData): ", delegate);
-      }
-
-   }
-
-   private Map<Class<? extends Annotation>, StereotypeModel<?>> stereotypes = new HashMap<Class<? extends Annotation>, StereotypeModel<?>>();
-
-   private ScopeModelMap scopes = new ScopeModelMap();
-
-   private BindingTypeModelMap bindingTypes = new BindingTypeModelMap();
-
-   private EjbMetaDataMap ejbMetaDataMap = new EjbMetaDataMap();
-
-   public void addStereotype(StereotypeModel<?> stereotype)
-   {
-      stereotypes.put(stereotype.getType(), stereotype);
+      });
    }
 
    public StereotypeModel<?> getStereotype(Class<? extends Annotation> annotationType)
    {
-      return stereotypes.get(annotationType);
+      return stereotypes.getValue(annotationType);
    }
 
-   public <T extends Annotation> ScopeModel<T> getScopeModel(Class<T> scopeType)
+   public <T extends Annotation> ScopeModel<T> getScopeModel(final Class<T> scopeType)
    {
-      return scopes.putIfAbsent(scopeType);
+      return scopes.putIfAbsent(scopeType, new Callable<ScopeModel<T>>()
+      {
+
+         public ScopeModel<T> call() throws Exception
+         {
+            return new ScopeModel<T>(scopeType);
+         }
+   
+      });
    }
 
-   public <T extends Annotation> BindingTypeModel<T> getBindingTypeModel(Class<T> bindingType)
+   public <T extends Annotation> BindingTypeModel<T> getBindingTypeModel(final Class<T> bindingType)
    {
-      return bindingTypes.putIfAbsent(bindingType);
+      return bindingTypes.putIfAbsent(bindingType, new Callable<BindingTypeModel<T>>()
+      {
+
+         public BindingTypeModel<T> call() throws Exception
+         {
+            return new BindingTypeModel<T>(bindingType);
+         }
+   
+      });
    }
 
-   public <T> EjbMetaData<T> getEjbMetaData(Class<T> clazz)
+   public <T> EjbMetaData<T> getEjbMetaData(final Class<T> clazz)
    {
-      return ejbMetaDataMap.putIfAbsent(clazz);
+      return ejbMetaDataMap.putIfAbsent(clazz, new Callable<EjbMetaData<T>>()
+      {
+
+         public EjbMetaData<T> call() throws Exception
+         {
+            return new EjbMetaData<T>(clazz);
+         }
+   
+      });
    }
 
    @Override

@@ -21,9 +21,40 @@ public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
    }
 
    @SuppressWarnings("unchecked")
-   public <T extends V> Future<T> get(K key)
+   public <T extends V> Future<T> getFuture(K key)
    {
       return (Future<T>) super.get(key);
+   }
+   
+   public <T extends V> T getValue(K key)
+   {
+      Future<T> value = (Future<T>) map.get(key);
+      boolean interrupted = false;
+      try
+      {
+         while (true)
+         {
+            try
+            {
+               return value.get();
+            }
+            catch (InterruptedException e)
+            {
+               interrupted = true;
+            }
+            catch (ExecutionException e)
+            {
+               rethrow(e);
+            };
+         }
+      }
+      finally
+      {
+         if (interrupted)
+         {
+            Thread.currentThread().interrupt();
+         }
+      }
    }
    
    public <E> E putIfAbsent(K key, Callable<E> callable)

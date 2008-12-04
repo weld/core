@@ -6,7 +6,6 @@ import javax.webbeans.Production;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.bootstrap.Bootstrap;
-import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.FishStereotype;
@@ -47,14 +46,14 @@ public class AbstractTest
    
    protected void addStereotypes()
    {
-      manager.getMetaDataCache().addStereotype(new StereotypeModel<Decorator>(Decorator.class));
-      manager.getMetaDataCache().addStereotype(new StereotypeModel<Interceptor>(Interceptor.class));
-      manager.getMetaDataCache().addStereotype(new StereotypeModel<AnimalStereotype>(AnimalStereotype.class));
-      manager.getMetaDataCache().addStereotype(new StereotypeModel<HornedMammalStereotype>(HornedMammalStereotype.class));
-      manager.getMetaDataCache().addStereotype(new StereotypeModel<MammalStereotype>(MammalStereotype.class));
-      manager.getMetaDataCache().addStereotype(new StereotypeModel<FishStereotype>(FishStereotype.class));
-      manager.getMetaDataCache().addStereotype(new StereotypeModel<RiverFishStereotype>(RiverFishStereotype.class));
-      manager.getMetaDataCache().addStereotype(new StereotypeModel<RequestScopedAnimalStereotype>(RequestScopedAnimalStereotype.class));
+      manager.getMetaDataCache().addStereotype(Decorator.class);
+      manager.getMetaDataCache().addStereotype(Interceptor.class);
+      manager.getMetaDataCache().addStereotype(AnimalStereotype.class);
+      manager.getMetaDataCache().addStereotype(HornedMammalStereotype.class);
+      manager.getMetaDataCache().addStereotype(MammalStereotype.class);
+      manager.getMetaDataCache().addStereotype(FishStereotype.class);
+      manager.getMetaDataCache().addStereotype(RiverFishStereotype.class);
+      manager.getMetaDataCache().addStereotype(RequestScopedAnimalStereotype.class);
    }
 
 }

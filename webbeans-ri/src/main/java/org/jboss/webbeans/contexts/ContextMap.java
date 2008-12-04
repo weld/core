@@ -53,7 +53,7 @@ public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, Lis
          {
             try
             {
-               return (AbstractContext) get(scopeType).get().iterator().next();
+               return (AbstractContext) getFuture(scopeType).get().iterator().next();
             }
             catch (InterruptedException e)
             {
@@ -84,7 +84,7 @@ public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, Lis
          {
             try
             {
-               return get(scopeType).get();
+               return getFuture(scopeType).get();
             }
             catch (InterruptedException e)
             {
