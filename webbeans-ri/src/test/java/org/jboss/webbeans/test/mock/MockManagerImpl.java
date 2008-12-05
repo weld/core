@@ -5,19 +5,18 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.webbeans.Observer;
 import javax.webbeans.manager.Context;
+import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 
 public class MockManagerImpl extends ManagerImpl
 {
-   private Object       event = null;
-   private Class<? extends Object>     eventType = null;
+   private Object event = null;
    private Annotation[] eventBindings = null;
+   private Class<? extends Object> observedEventType = null;
 
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.ManagerImpl#fireEvent(java.lang.Object, java.lang.annotation.Annotation[])
-    */
    @Override
    public void fireEvent(Object event, Annotation... bindings)
    {
@@ -25,6 +24,13 @@ public class MockManagerImpl extends ManagerImpl
       this.event = event;
       this.eventBindings = bindings;
       super.fireEvent(event, bindings);
+   }
+   
+   @Override
+   public <T> Manager addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
+   {
+	   this.observedEventType = eventType;
+	   return super.addObserver(observer, eventType, bindings);
    }
 
    /**
@@ -50,9 +56,9 @@ public class MockManagerImpl extends ManagerImpl
    /**
     * @return the eventType
     */
-   public final Class<?> getEventType()
+   public final Class<?> getObservedEventType()
    {
-      return eventType;
+      return observedEventType;
    }
 
    public void setEnabledDeploymentTypes(Class<? extends Annotation>... enabledDeploymentTypes)

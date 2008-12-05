@@ -25,6 +25,7 @@ import javax.webbeans.Dependent;
 import javax.webbeans.Event;
 import javax.webbeans.Standard;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -164,7 +165,8 @@ public class EventBean<T> extends AbstractBean<Event<T>, Field>
    @Override
    public Event<T> create()
    {
-      return new EventImpl<T>(annotatedItem.getBindingTypesAsArray());
+      Class<T> eventType = (Class<T>) annotatedItem.getType().getTypeParameters()[0].getClass();
+	  return new EventImpl<T>(ManagerImpl.instance(), eventType, annotatedItem.getBindingTypesAsArray());
    }
 
 }

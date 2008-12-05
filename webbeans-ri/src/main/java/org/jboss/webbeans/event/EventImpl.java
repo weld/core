@@ -44,20 +44,22 @@ import org.jboss.webbeans.ManagerImpl;
 public class EventImpl<T> implements Event<T>
 {
    // The set of binding types
-   private Set<? extends Annotation> bindingTypes;
+   private final Set<? extends Annotation> bindingTypes;
    // The event type
-   private Class<T> eventType;
+   private final Class<T> eventType;
    // The Web Beans manager
-   protected static final ManagerImpl manager = ManagerImpl.instance();
+   protected final ManagerImpl manager;
 
    /**
     * Constructor
     * 
     * @param bindingTypes The binding types
     */
-   public EventImpl(Annotation... bindingTypes)
+   public EventImpl(ManagerImpl manager, Class<T> eventType, Annotation... bindingTypes)
    {
-      this.bindingTypes = checkBindingTypes(bindingTypes);
+      this.bindingTypes = getBindingTypes(bindingTypes);
+      this.eventType = eventType;
+      this.manager = manager;
    }
 
    /**
@@ -66,28 +68,49 @@ public class EventImpl<T> implements Event<T>
     * Removes @Observable from the list
     * 
     * @param annotations The annotations to validate
-    * @return A set of unique binding type annotations (minus @Observable, if it
+    * @return A set of binding type annotations (minus @Observable, if it
     *         was present)
     */
-   private Set<Annotation> checkBindingTypes(Annotation... annotations)
+   private static Set<Annotation> getBindingTypes(Annotation... annotations)
    {
-      Set<Annotation> uniqueAnnotations = new HashSet<Annotation>();
+      Set<Annotation> result = new HashSet<Annotation>();
       for (Annotation annotation : annotations)
       {
          if (!annotation.annotationType().isAnnotationPresent(BindingType.class))
          {
             throw new IllegalArgumentException(annotation + " is not a binding type");
          }
-         if (uniqueAnnotations.contains(annotation))
-         {
-            throw new DuplicateBindingTypeException(annotation + " is already present in the bindings list");
-         }
          if (!annotation.annotationType().equals(Observable.class))
          {
-            uniqueAnnotations.add(annotation);
+            result.add(annotation);
          }
       }
-      return uniqueAnnotations;
+      return result;
+   }
+
+   /**
+    * Validates the binding types and checks for dupes
+    * 
+    * @param annotations The annotations to validate
+    * @return A set of unique binding type annotations
+    */
+   private Set<Annotation> checkBindingTypes(Annotation... annotations)
+   {
+      Set<Annotation> result = new HashSet<Annotation>();
+      for (Annotation annotation : annotations)
+      {
+         if (!annotation.annotationType().isAnnotationPresent(BindingType.class))
+         {
+            throw new IllegalArgumentException(annotation + " is not a binding type");
+         }
+         for (Annotation bindingAnnotation: this.bindingTypes) {
+            if (bindingAnnotation.annotationType().equals(annotation.annotationType())) {
+               throw new DuplicateBindingTypeException(annotation + " is already present in the bindings list");
+ 	        }
+         }
+         result.add(annotation);
+      }
+      return result;
    }
 
    /**
@@ -115,5 +138,5 @@ public class EventImpl<T> implements Event<T>
       bindingParameters.addAll(this.bindingTypes);
       manager.addObserver(observer, eventType, bindingParameters.toArray(new Annotation[0]));
    }
-
+   
 }
