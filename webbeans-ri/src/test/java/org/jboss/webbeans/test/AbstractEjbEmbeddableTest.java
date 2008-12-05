@@ -1,17 +1,10 @@
 package org.jboss.webbeans.test;
 
-import java.net.URL;
-import java.util.Properties;
-
-import javax.ejb.EJBContainer;
-
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 
 public abstract class AbstractEjbEmbeddableTest extends AbstractTest
 {
 
-   @AfterClass
+   /*@AfterClass
    public void afterClass()
    {
       EJBContainer current = EJBContainer.getCurrentEJBContainer();
@@ -41,6 +34,6 @@ public abstract class AbstractEjbEmbeddableTest extends AbstractTest
       URL url = Thread.currentThread().getContextClassLoader().getResource(path);
       String s = url.toString();
       return s.substring(0, s.length() - path.length());
-   }
+   }*/
    
 }
