@@ -27,6 +27,7 @@ import javax.servlet.http.HttpSession;
 import org.jboss.webbeans.bootstrap.Bootstrap;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.contexts.ApplicationContext;
+import org.jboss.webbeans.contexts.RequestContext;
 import org.jboss.webbeans.contexts.SessionContext;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -64,6 +65,7 @@ public class ServletLifecycle
     */
    public static void endApplication() 
    {
+      ApplicationContext.instance().destroy();
       ApplicationContext.instance().setBeanMap(null);
       servletContext = null;
    }
@@ -84,6 +86,8 @@ public class ServletLifecycle
     */
    public static void endSession(HttpSession session) 
    {
+      SessionContext.instance().destroy();
+      SessionContext.instance().setBeanMap(null);
    }   
    
    /**
@@ -105,6 +109,7 @@ public class ServletLifecycle
     */
    public static void endRequest(HttpServletRequest request) 
    {
+      RequestContext.instance().destroy();
       SessionContext.instance().setBeanMap(null);
    }
    

@@ -23,7 +23,6 @@ import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 import javax.webbeans.manager.Contextual;
-import javax.webbeans.manager.Manager;
 
 /**
  * Base for the Context implementations. Delegates calls to the abstract
@@ -126,18 +125,16 @@ public abstract class AbstractContext implements Context
       this.active.set(Boolean.valueOf(active));
    }
 
-   // TODO Do we need this
-   private <T> void destroy(Manager manager, Contextual<T> bean)
+   private <T> void destroy(Contextual<T> bean)
    {
       bean.destroy(getBeanMap().get(bean));
    }
 
-   // TODO Do we need this
-   public void destroy(Manager manager)
+   public void destroy()
    {
       for (Contextual<? extends Object> bean : getBeanMap().keySet())
       {
-         destroy(manager, bean);
+         destroy(bean);
       }
       getBeanMap().clear();
    }

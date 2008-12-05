@@ -46,7 +46,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
       EnterpriseBean<Toller> bena = BeanFactory.createEnterpriseBean(Toller.class);
       RequestContext context = (RequestContext) manager.getContext(RequestScoped.class);
       Toller instance = context.get(bena, true);
-      context.destroy(manager);
+      context.destroy();
       assert EnterpriseBeanRemoveMethodTest.tickle;
    }
 
@@ -72,7 +72,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
       Toller instance = manager.getInstance(bean);
       RequestContext context = (RequestContext) manager
             .getContext(RequestScoped.class);
-      context.destroy(manager);
+      context.destroy();
    }
 
    @Test(groups={"enterpriseBeans", "removeMethod", "lifecycle", "stub"})
