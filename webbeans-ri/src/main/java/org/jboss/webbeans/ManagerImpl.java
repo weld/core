@@ -702,4 +702,16 @@ public class ManagerImpl implements Manager
       return null;
    }
 
+   public Manager createChildManager()
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   public Manager setCurrent()
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
 }

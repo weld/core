@@ -64,7 +64,11 @@ public interface Manager
    public Manager validate();
    
    public Manager parse(InputStream xmlStream);
+   
+   public Manager createChildManager();
 
+   public Manager setCurrent();   
+   
    public <T> Manager addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings);
 
    public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings);
