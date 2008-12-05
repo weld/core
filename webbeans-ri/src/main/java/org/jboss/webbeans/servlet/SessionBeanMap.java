@@ -48,7 +48,6 @@ public class SessionBeanMap extends AbstractBeanMapAdaptor
    /**
     * Constructor
     * 
-    * @param manager The Web Beans manager
     * @param keyPrefix The storage names prefix
     */
    public SessionBeanMap(HttpSession httpSession)

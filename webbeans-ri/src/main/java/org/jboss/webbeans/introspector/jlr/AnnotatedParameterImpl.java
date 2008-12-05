@@ -125,7 +125,6 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
    /**
     * Gets the current value
     * 
-    * @param manager The Web Beans manager
     * @return the value
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedParameter

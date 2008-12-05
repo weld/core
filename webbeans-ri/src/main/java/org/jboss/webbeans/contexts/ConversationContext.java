@@ -27,6 +27,9 @@ import javax.webbeans.ConversationScoped;
 public class ConversationContext extends BasicContext
 {
 
+   /**
+    * Constructor
+    */
    public ConversationContext()
    {
       super(ConversationScoped.class);

@@ -58,7 +58,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * Constructor
     * 
     * @param type The type of the bean
-    * @param manager The Web Beans manager
     */
    public SimpleBean(Class<T> type)
    {

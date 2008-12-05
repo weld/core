@@ -53,7 +53,6 @@ public class EventImpl<T> implements Event<T>
    /**
     * Constructor
     * 
-    * @param manager The Web Beans manager
     * @param bindingTypes The binding types
     */
    public EventImpl(Annotation... bindingTypes)

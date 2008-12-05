@@ -29,11 +29,19 @@ import org.jboss.webbeans.ManagerImpl;
 public class RequestContext extends BasicContext
 {
 
+   /**
+    * Constructor
+    */
    public RequestContext()
    {
       super(RequestScoped.class);
    }
    
+   /**
+    * Helper method for accessing context
+    * 
+    * @return The request context
+    */   
    public static RequestContext instance()
    {
       return (RequestContext) ManagerImpl.instance().getBuiltInContext(RequestScoped.class);

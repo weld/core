@@ -194,7 +194,6 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
    /**
     * Creates a new instance
     * 
-    * @param manager The Web Beans manager
     * @return An instance
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedConstructor#newInstance(ManagerImpl)

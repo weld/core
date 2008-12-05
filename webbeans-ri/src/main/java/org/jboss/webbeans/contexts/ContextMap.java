@@ -73,7 +73,14 @@ public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, Lis
          }
       }
    }
-   
+
+   /**
+    * Gets the list of context with the given scope type
+    * 
+    * @param scopeType The scope type to match
+    * @return A list of matching contexts. An empty list is returned if there
+    *         are no matches
+    */
    public List<Context> getContext(Class<? extends Annotation> scopeType)
    {
       boolean interrupted = false;
@@ -122,12 +129,12 @@ public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, Lis
    {
       List<Context> contexts = putIfAbsent(context.getScopeType(), new Callable<List<Context>>()
       {
-         
+
          public List<Context> call() throws Exception
          {
             return new CopyOnWriteArrayList<Context>();
          }
-   
+
       });
       contexts.add(context);
    }

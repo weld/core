@@ -51,7 +51,6 @@ public interface AnnotatedConstructor<T> extends AnnotatedItem<T, Constructor<T>
    /**
     * Creates a new instance of the class, using this constructor
     * 
-    * @param manager The Web Beans manager
     * @return The created instance
     */
    public T newInstance();

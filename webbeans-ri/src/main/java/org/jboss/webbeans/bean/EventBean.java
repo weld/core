@@ -52,8 +52,6 @@ public class EventBean<T> extends AbstractBean<Event<T>, Field>
     * Constructor
     * 
     * @param field The underlying field abstraction
-    * @param declaringBean
-    * @param manager The Web Beans manager
     */
    @SuppressWarnings("unchecked")
    public EventBean(AnnotatedField<T> field)

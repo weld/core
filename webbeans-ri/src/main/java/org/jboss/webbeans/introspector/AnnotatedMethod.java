@@ -51,7 +51,6 @@ public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
    /**
     * Invokes the method
     * 
-    * @param manager The Web Beans manager
     * @param instance The instance to invoke
     * @return A reference to the instance
     */

@@ -29,13 +29,20 @@ public class ApplicationBeanMap extends AbstractBeanMapAdaptor
 {
    private LogProvider log = Logging.getLogProvider(ApplicationBeanMap.class);
    
+   // The current servlet context
    private ServletContext servletContext;
 
+   /**
+    * Constructor
+    * 
+    * @param servletContext The servlet context
+    */
    public ApplicationBeanMap(ServletContext servletContext)
    {
       this.servletContext = servletContext;
    }
 
+   
    public void clear()
    {
       throw new UnsupportedOperationException(); 

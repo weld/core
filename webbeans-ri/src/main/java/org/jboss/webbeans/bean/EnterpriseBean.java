@@ -56,7 +56,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * Constructor
     * 
     * @param type The type of the bean
-    * @param manager The Web Beans manager
     */
    public EnterpriseBean(Class<T> type)
    {

@@ -49,7 +49,6 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
     * 
     * @param bean The bean to proxy
     * @param beanIndex The index to the bean in the manager bean list
-    * @param manager The manager implementation
     */
    public ProxyMethodHandler(Bean<?> bean, int beanIndex)
    {

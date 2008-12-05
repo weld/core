@@ -34,8 +34,14 @@ import java.lang.annotation.Annotation;
  */
 public abstract class BasicContext extends AbstractContext
 {
+   // The beans
    protected ThreadLocal<BeanMap> beans;
 
+   /**
+    * Constructor 
+    * 
+    * @param scopeType The scope types
+    */
    public BasicContext(Class<? extends Annotation> scopeType)
    {
       super(scopeType);

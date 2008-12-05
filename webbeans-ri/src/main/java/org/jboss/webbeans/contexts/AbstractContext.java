@@ -125,11 +125,20 @@ public abstract class AbstractContext implements Context
       this.active.set(Boolean.valueOf(active));
    }
 
+   /**
+    * Destroys a bean
+    * 
+    * @param <T> The type of the bean
+    * @param bean The bean to destroy
+    */
    private <T> void destroy(Contextual<T> bean)
    {
       bean.destroy(getBeanMap().get(bean));
    }
 
+   /**
+    * Destroys the context
+    */
    public void destroy()
    {
       for (Contextual<? extends Object> bean : getBeanMap().keySet())

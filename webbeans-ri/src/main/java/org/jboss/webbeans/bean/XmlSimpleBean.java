@@ -32,7 +32,6 @@ public class XmlSimpleBean<T> extends SimpleBean<T>
     * Constructor
     * 
     * @param type The type of the bean
-    * @param manager The Web Beans manager
     */
    public XmlSimpleBean(Class<T> type)
    {

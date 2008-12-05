@@ -48,7 +48,6 @@ public class SessionBeanMap implements BeanMap
    /**
     * Constructor
     * 
-    * @param manager The Web Beans manager
     * @param keyPrefix The storage names prefix
     */
    public SessionBeanMap(String keyPrefix)

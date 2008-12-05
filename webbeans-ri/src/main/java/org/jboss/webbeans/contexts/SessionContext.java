@@ -30,28 +30,46 @@ import org.jboss.webbeans.log.Logging;
  */
 public class SessionContext extends AbstractContext
 {
-
    private static LogProvider log = Logging.getLogProvider(SessionContext.class);
-   
+   // The beans
    private ThreadLocal<BeanMap> beanMap;
 
+   /**
+    * Constructor
+    */
    public SessionContext()
    {
       super(SessionScoped.class);
       log.trace("Created session context");
    }
-   
+
+   /**
+    * Gets the bean map
+    * 
+    * @returns The bean map
+    * @see org.jboss.webbeans.contexts.AbstractContext#getBeanMap()
+    */
    @Override
    public BeanMap getBeanMap()
    {
       return beanMap.get();
    }
-   
+
+   /**
+    * Sets the bean map
+    * 
+    * @param beanMap The bean map
+    */
    public void setBeanMap(BeanMap beanMap)
    {
       this.beanMap.set(beanMap);
    }
-   
+
+   /**
+    * Helper method for accessing context
+    * 
+    * @return The session context
+    */
    public static SessionContext instance()
    {
       return (SessionContext) ManagerImpl.instance().getBuiltInContext(SessionScoped.class);

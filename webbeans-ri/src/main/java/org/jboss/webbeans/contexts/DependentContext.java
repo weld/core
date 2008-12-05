@@ -29,6 +29,9 @@ import javax.webbeans.manager.Contextual;
 public class DependentContext extends BasicContext
 {
 
+   /**
+    * Constructor
+    */
    public DependentContext()
    {
       super(Dependent.class);

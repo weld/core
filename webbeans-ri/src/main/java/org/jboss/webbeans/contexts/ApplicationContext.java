@@ -32,38 +32,67 @@ import org.jboss.webbeans.ManagerImpl;
  */
 public class ApplicationContext extends AbstractContext
 {
-
+   // The beans
    private BeanMap beanMap;
+   // Is the context active?
    private AtomicBoolean active;
    
+   /**
+    * Constructor
+    */
    public ApplicationContext()
    {
       super(ApplicationScoped.class);
       this.active = new AtomicBoolean(true);
    }
 
+   /**
+    * Gets the bean map
+    * 
+    * @return The bean map
+    */
    @Override
    public BeanMap getBeanMap()
    {
       return this.beanMap;
    }
    
+   /**
+    * Sets the bean map
+    * 
+    * @param applicationBeanMap The bean map
+    */
    public void setBeanMap(BeanMap applicationBeanMap)
    {
       this.beanMap = applicationBeanMap;
    }
    
+   /**
+    * Helper method for accessing context
+    * 
+    * @return The application context
+    */   
    public static ApplicationContext instance()
    {
       return (ApplicationContext) ManagerImpl.instance().getBuiltInContext(ApplicationScoped.class);
    }
    
+   /**
+    * Indicates if the context is active
+    * 
+    * @return True if active, false otherwise
+    */
    @Override
    public boolean isActive()
    {
       return active.get();
    }
    
+   /**
+    * Sets the active state of the context
+    * 
+    * @param active The new state
+    */
    @Override
    public void setActive(boolean active)
    {

@@ -41,7 +41,6 @@ public class BeanFactory
     * 
     * @param <T> The type
     * @param clazz The class
-    * @param manager The Web Beans manager
     * @return A Web Bean
     */
    public static <T> SimpleBean<T> createSimpleBean(Class<T> clazz)
@@ -54,7 +53,6 @@ public class BeanFactory
     * 
     * @param <T> The type
     * @param clazz The class
-    * @param manager The Web Beans manager
     * @return A Web Bean
     */
    public static <T> XmlSimpleBean<T> createXmlSimpleBean(Class<T> clazz)
@@ -67,7 +65,6 @@ public class BeanFactory
     * 
     * @param <T> The type
     * @param clazz The class
-    * @param manager The Web Beans manager
     * @return An Enterprise Web Bean
     */
    public static <T> EnterpriseBean<T> createEnterpriseBean(Class<T> clazz)
@@ -80,7 +77,6 @@ public class BeanFactory
     * 
     * @param <T> The type
     * @param clazz The class
-    * @param manager The Web Beans manager
     * @return An Enterprise Web Bean
     */
    public static <T> XmlEnterpriseBean<T> createXmlEnterpriseBean(Class<T> clazz)
@@ -94,7 +90,6 @@ public class BeanFactory
     * @param <T> The type
     * @param type The class
     * @param method The underlying method
-    * @param manager The Web Beans manager
     * @param declaringBean The declaring bean abstraction
     * @return A producer Web Bean
     */
@@ -108,7 +103,6 @@ public class BeanFactory
     * 
     * @param type The type
     * @param method The underlying method abstraction
-    * @param manager The Web Beans manager
     * @param declaringBean The declaring bean abstraction
     * @return A producer Web Bean
     */
@@ -123,7 +117,6 @@ public class BeanFactory
     * @param <T>
     * @param type The type
     * @param field The observer field abstraction
-    * @param manager The Web Beans manager
     * @param declaringBean The declaring bean abstraction
     * @return An event Web Bean
     */

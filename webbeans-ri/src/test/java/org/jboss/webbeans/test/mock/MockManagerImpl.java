@@ -11,12 +11,6 @@ import org.jboss.webbeans.ManagerImpl;
 
 public class MockManagerImpl extends ManagerImpl
 {
-   
-   public static void setInstance(ManagerImpl manager)
-   {
-      ManagerImpl.instance = manager;
-   }
-   
    private Object       event = null;
    private Class<? extends Object>     eventType = null;
    private Annotation[] eventBindings = null;
@@ -70,5 +64,10 @@ public class MockManagerImpl extends ManagerImpl
    {
       initContexts(contexts);
    }
+   
+   public static void setInstance(ManagerImpl manager)
+   {
+      ManagerImpl.instance = manager;
+   }   
 
 }

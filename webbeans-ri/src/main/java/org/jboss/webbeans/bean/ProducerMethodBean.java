@@ -56,7 +56,6 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
     * 
     * @param method The producer method
     * @param declaringBean The declaring bean instance
-    * @param manager The Web Beans manager
     */
    public ProducerMethodBean(Method method, AbstractClassBean<?> declaringBean)
    {
@@ -68,7 +67,6 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
     * 
     * @param method The producer method abstraction
     * @param declaringBean The declaring bean
-    * @param manager The Web Beans manager
     */
    public ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean)
    {

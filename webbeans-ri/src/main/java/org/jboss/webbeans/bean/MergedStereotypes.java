@@ -48,7 +48,6 @@ public class MergedStereotypes<T, E>
     * Constructor
     * 
     * @param stereotypeAnnotations The stereotypes to merge
-    * @param manager The Web Beans manager
     */
    public MergedStereotypes(Set<Annotation> stereotypeAnnotations)
    {
@@ -63,7 +62,6 @@ public class MergedStereotypes<T, E>
     * Perform the merge
     * 
     * @param stereotypeAnnotations The stereotype annotations
-    * @param manager The Web Beans manager
     */
    protected void merge(Set<Annotation> stereotypeAnnotations)
    {

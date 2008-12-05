@@ -43,7 +43,6 @@ public class DeferredEventNotification<T> implements Synchronization
    /**
     * Creates a new deferred event notifier.
     * 
-    * @param manager The Web Beans manager
     * @param observer The observer to be notified
     * @param event The event being fired
     */

@@ -116,7 +116,6 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
     * Gets the current value and injects this instance into an instance
     * 
     * @param instance The instance to inject into
-    * @param manager The Web Beans manager
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedField#inject(Object,
     *      ManagerImpl)

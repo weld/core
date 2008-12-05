@@ -32,7 +32,6 @@ public class XmlEnterpriseBean<T> extends EnterpriseBean<T>
     * Constructor
     * 
     * @param type The type of the bean
-    * @param manager The Web Beans manager
     */
    public XmlEnterpriseBean(Class<T> type)
    {

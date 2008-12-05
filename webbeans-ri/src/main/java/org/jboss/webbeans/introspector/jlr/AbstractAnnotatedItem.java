@@ -200,7 +200,6 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * of annotated parameters.
     * 
     * @param parameters The list of annotated parameter to look up
-    * @param manager The Web Beans manager
     * @return The object array of looked up values
     * 
     */
