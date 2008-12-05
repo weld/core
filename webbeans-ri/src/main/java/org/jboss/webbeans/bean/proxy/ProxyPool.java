@@ -167,7 +167,7 @@ public class ProxyPool
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("Proxy pool\n");
       buffer.append(pool.toString() + "\n");
       return buffer.toString();

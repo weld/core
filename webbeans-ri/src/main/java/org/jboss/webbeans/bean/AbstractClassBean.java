@@ -274,7 +274,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("AbstractClassBean:\n");
       buffer.append(super.toString() + "\n");
       buffer.append("Annotated item: " + annotatedItem.toString() + "\n");

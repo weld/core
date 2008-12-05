@@ -220,7 +220,7 @@ public class SessionBeanMap implements BeanMap
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       List<Contextual<?>> beans = (List) keySet();
       buffer.append("Bean -> bean instance mappings in HTTP session: " + beans.size() + "\n");
       int i = 0;

@@ -153,7 +153,7 @@ public class AnnotatedItemImpl<T, S> extends AbstractAnnotatedItem<T, S>
       {
          return toString;
       }
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("AnnotatedItemImpl:\n");
       buffer.append(super.toString() + "\n");
       buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));

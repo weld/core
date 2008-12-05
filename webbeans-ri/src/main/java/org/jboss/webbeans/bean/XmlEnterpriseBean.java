@@ -51,7 +51,7 @@ public class XmlEnterpriseBean<T> extends EnterpriseBean<T>
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("XmlEnterpriseBean\n");
       buffer.append(super.toString() + "\n");
       return buffer.toString();

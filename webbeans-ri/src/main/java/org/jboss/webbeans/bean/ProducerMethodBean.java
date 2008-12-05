@@ -291,7 +291,7 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("ProducerMethodBean:\n");
       buffer.append(super.toString() + "\n");
       buffer.append("Location: " + location + "\n");

@@ -497,7 +497,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       {
          return toString;
       }
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("AnnotatedConstructorImpl:\n");
       buffer.append(super.toString() + "\n");
       buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));

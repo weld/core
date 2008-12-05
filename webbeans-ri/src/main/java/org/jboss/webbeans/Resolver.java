@@ -79,7 +79,7 @@ public class Resolver
       @Override
       public String toString()
       {
-         StringBuffer buffer = new StringBuffer();
+         StringBuilder buffer = new StringBuilder();
          buffer.append("Resolvable annotation item\n");
          buffer.append(delegate().toString() + "\n");
          return buffer.toString();
@@ -308,7 +308,7 @@ public class Resolver
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("Resolver\n");
       buffer.append(resolvedInjectionPoints.toString() + "\n");
       buffer.append(Strings.collectionToString("Injection points: ", injectionPoints));

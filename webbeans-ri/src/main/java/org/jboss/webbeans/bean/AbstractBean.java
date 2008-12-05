@@ -642,7 +642,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("AbstractBean:\n");
       buffer.append("Name: " + name + "\n");
       buffer.append("Type: " + type + "\n");

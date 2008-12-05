@@ -154,7 +154,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("BindingTypeModel:\n");
       buffer.append(super.toString());
       buffer.append("Hash code: " + hashCode);

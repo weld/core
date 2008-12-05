@@ -163,7 +163,7 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
       {
          return toString;
       }
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("AbstractAnnotatedMember:\n");
       buffer.append(super.toString() + "\n");
       buffer.append("Final: " + isFinal() + "\n");

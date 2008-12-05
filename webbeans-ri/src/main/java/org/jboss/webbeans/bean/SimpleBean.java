@@ -33,6 +33,7 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -360,15 +361,24 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
-      buffer.append("Annotated " + getScopeType().getSimpleName().toLowerCase() + " " + " simple bean '" + getName() + "' " + "[" + getType().getName() + "]\n");
+      StringBuilder buffer = new StringBuilder();
+      buffer.append("Annotated " + Names.scopeTypeToString(getScopeType()));
+      if (getName() == null)
+      {
+         buffer.append("unnamed simple bean");
+      }
+      else
+      {
+         buffer.append("simple bean '" + getName() + "'");
+      }
+      buffer.append(" [" + getType().getName() + "]\n");
       buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
       return buffer.toString();
    }
 
    public String toDetailedString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("SimpleBean\n");
       buffer.append(super.toString() + "\n");
       buffer.append("Location: " + location + "\n");

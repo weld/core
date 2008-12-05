@@ -184,7 +184,7 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
       {
          return toString;
       }
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("AnnotatedConstructorImpl:\n");
       buffer.append(super.toString() + "\n");
       buffer.append("Class: " + clazz.toString() + "\n");

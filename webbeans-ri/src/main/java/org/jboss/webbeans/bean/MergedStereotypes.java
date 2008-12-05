@@ -161,7 +161,7 @@ public class MergedStereotypes<T, E>
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("Merged stereotypes:\n");
       buffer.append("Bean name defaulted: " + beanNameDefaulted + "\n");
       buffer.append("Possible deployment types: " + getPossibleDeploymentTypes().toString());

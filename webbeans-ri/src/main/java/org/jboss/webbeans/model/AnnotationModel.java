@@ -120,7 +120,7 @@ public abstract class AnnotationModel<T extends Annotation>
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("AnnotationModel:\n");
       buffer.append("Annotated annotation: " + getAnnotatedAnnotation().toString());
       buffer.append("Valid: " + isValid());

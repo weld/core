@@ -151,7 +151,7 @@ public abstract class AbstractContext implements Context
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("AbstractContext:\n");
       buffer.append("Scope type: " + getScopeType().toString() + "\n");
       buffer.append("Active: " + getActive().toString() + "\n");

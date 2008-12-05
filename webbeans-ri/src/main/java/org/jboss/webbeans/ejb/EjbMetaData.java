@@ -260,7 +260,7 @@ public class EjbMetaData<T>
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("EJB metadata model\n");
       buffer.append("EJB name: " + ejbName + "\n");
       buffer.append("EJB type: " + ejbType + "\n");

@@ -243,7 +243,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("StereotypeModel:\n");
       buffer.append(super.toString());
       buffer.append("Bean name defaulted: " + isBeanNameDefaulted());

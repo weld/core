@@ -36,6 +36,7 @@ import org.jboss.webbeans.ejb.EjbMetaData;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.util.Names;
 
 /**
  * An enterprise bean representation
@@ -339,7 +340,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       String ejbType = "";
       if (getEjbMetaData().isMessageDriven())
       {
@@ -361,7 +362,16 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          ejbType = "unknown";
       }
-      buffer.append("Annotated " + getScopeType().getSimpleName().toLowerCase() + " " + ejbType + " enterprise bean '" + getName() + "' " + "[" + getType().getName() + "]\n");
+      buffer.append("Annotated " + Names.scopeTypeToString(getScopeType()) + ejbType);
+      if (getName() == null)
+      {
+         buffer.append(" unnamed enterprise bean");
+      }
+      else
+      {
+         buffer.append(" enterprise bean '" + getName() + "'");
+      }
+      buffer.append(" [" + getType().getName() + "]\n");
       buffer.append("   EJB name: " + getEjbMetaData().getEjbName() + ", default JNDI name: " + getEjbMetaData().getDefaultJndiName() + ", EJB link JNDI name: " + getEjbMetaData().getEjbLinkJndiName() + "\n");
       buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
       return buffer.toString();
@@ -369,7 +379,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
    public String toDetailedString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("EnterpriseBean:\n");
       buffer.append(super.toString() + "\n");
       buffer.append(ejbMetaData.toString() + "\n");

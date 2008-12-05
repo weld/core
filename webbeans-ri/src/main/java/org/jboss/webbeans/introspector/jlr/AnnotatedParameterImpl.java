@@ -158,7 +158,7 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
       {
          return toString;
       }
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("AnnotatedParameterImpl:\n");
       buffer.append(super.toString() + "\n");
       buffer.append("Type: " + type.toString() + "\n");

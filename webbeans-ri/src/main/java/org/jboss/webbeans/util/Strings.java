@@ -79,7 +79,7 @@ public class Strings
     */
    public static String mapToString(String header, Map<?, ?> map)
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       if (map == null)
       {
          buffer.append(header + "null\n");
@@ -109,7 +109,7 @@ public class Strings
 
    public static String collectionToString(String header, Collection<?> collection)
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       if (collection == null)
       {
          buffer.append(header + "null\n");

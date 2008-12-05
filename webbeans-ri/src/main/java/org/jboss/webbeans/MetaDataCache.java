@@ -92,7 +92,7 @@ public class MetaDataCache
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("====================\n");
       buffer.append("Metadata cache\n");
       buffer.append("====================\n");

@@ -664,7 +664,7 @@ public class ManagerImpl implements Manager
    @Override
    public String toString()
    {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append(Strings.collectionToString("Enabled deployment types: ", getEnabledDeploymentTypes()));
       buffer.append(eventManager.toString() + "\n");
       buffer.append(metaDataCache.toString() + "\n");

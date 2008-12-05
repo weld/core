@@ -424,7 +424,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       {
          return toString;
       }
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("AbstractAnnotatedItem:\n");
       buffer.append(Strings.collectionToString("Annotations: ", getAnnotations()));
       buffer.append(annotationMap == null ? "" : (annotationMap.toString() + "\n"));
