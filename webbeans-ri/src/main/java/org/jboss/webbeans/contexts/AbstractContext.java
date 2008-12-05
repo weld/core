@@ -55,7 +55,7 @@ public abstract class AbstractContext implements Context
          @Override
          protected Boolean initialValue()
          {
-            return Boolean.FALSE;
+            return Boolean.TRUE;
          } 
       };
    }

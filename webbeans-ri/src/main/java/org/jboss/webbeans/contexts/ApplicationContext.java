@@ -39,6 +39,7 @@ public class ApplicationContext extends AbstractContext
    public ApplicationContext()
    {
       super(ApplicationScoped.class);
+      this.active = new AtomicBoolean(true);
    }
 
    @Override
