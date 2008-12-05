@@ -1,21 +1,19 @@
 package org.jboss.webbeans.test;
-import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
-
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Method;
 
+import javax.webbeans.AnnotationLiteral;
+import javax.webbeans.Observer;
 import javax.webbeans.Observes;
-import javax.webbeans.Standard;
 
 import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
-import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.Asynchronous;
-import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.mock.MockManagerImpl;
+import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -29,42 +27,43 @@ import org.testng.annotations.Test;
 public class ObserverTest
 {
    private MockManagerImpl manager;
-   private SimpleBean<Tuna> tuna;
+   //private SimpleBean<Tuna> tuna;
+   private SimpleBean<SampleObserver> ob;
    private AnnotatedMethod<Object> om;
+   Observer<SampleEvent> observer;
 
-   public class SampleEvent
+   private static boolean notified = false;
+
+   public static class SampleEvent
    {
       // Simple class used for testing
    }
 
-   public class AnObserver
+   public static class SampleObserver
    {
-      protected boolean notified = false;
 
       public void observe(@Observes @Asynchronous SampleEvent e)
       {
          // An observer method
-         this.notified = true;
+         notified = true;
       }
+      
    }
+   
+   public static @interface Foo {}
 
    @BeforeMethod
    public void before() throws Exception
    {
-      List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
-      enabledDeploymentTypes.add(Standard.class);
-      enabledDeploymentTypes.add(AnotherDeploymentType.class);
       manager = new MockManagerImpl();
-      manager.setEnabledDeploymentTypes(Standard.class, AnotherDeploymentType.class);
-
-      // Create an observer with known binding types
-      // TODO This should be a real class being mapped
-      //Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      //annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
-      //AnnotatedClass<Tuna> annotatedItem = new SimpleAnnotatedClass<Tuna>(Tuna.class, annotations);
-      
-      tuna = createSimpleBean(Tuna.class);
-      om = new AnnotatedMethodImpl<Object>(AnObserver.class.getMethod("observe", new Class[] { SampleEvent.class }), new AnnotatedClassImpl<AnObserver>(AnObserver.class));
+      ob = BeanFactory.createSimpleBean(SampleObserver.class);
+      manager.addBean(ob);
+      Method method = SampleObserver.class.getMethod("observe", SampleEvent.class);
+      om = new AnnotatedMethodImpl<Object>(method, new AnnotatedClassImpl<SampleObserver>(SampleObserver.class));
+      observer = new ObserverImpl<SampleEvent>(ob, om, SampleEvent.class);
+      Annotation annotation = method.getParameterAnnotations()[0][1];
+      manager.addObserver(observer, SampleEvent.class, annotation);
+      notified = false;
    }
 
    /**
@@ -75,12 +74,23 @@ public class ObserverTest
    @Test(groups = "observerMethod") @SpecAssertion(section={"7.5.7"})
    public final void testNotify() throws Exception
    {
-      AnObserver observerInstance = new AnObserver();
-      /*Observer<SampleEvent> observer = new MockObserverImpl<SampleEvent>(tuna, om, SampleEvent.class);
-      ((MockObserverImpl<SampleEvent>) observer).setInstance(observerInstance);
-      SampleEvent event = new SampleEvent();
+	  SampleEvent event = new SampleEvent();
+      assert notified == false;
       observer.notify(event);
-      assert observerInstance.notified;*/
+      assert notified == true;
+   }
+
+   @Test(groups = "observerMethod") @SpecAssertion(section={"7.5.7"})
+   public final void testNotifyViaManager() throws Exception
+   {
+	  SampleEvent event = new SampleEvent();
+      assert notified == false;
+      manager.fireEvent(event);
+      assert notified == false;
+      manager.fireEvent(event, new AnnotationLiteral<Foo>() {});
+      assert notified == false;
+      manager.fireEvent(event, new AnnotationLiteral<Asynchronous>() {});
+      assert notified == true;
    }
 
 }

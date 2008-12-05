@@ -194,7 +194,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       }
       return annotationMap;
    }
-
+   
    /**
     * Static helper method for getting the current parameter values from a list
     * of annotated parameters.
@@ -205,11 +205,32 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    protected static Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters)
    {
+      return getParameterValues(parameters, null, null);
+   }
+
+   /**
+    * Static helper method for getting the current parameter values from a list
+    * of annotated parameters.
+    * 
+    * @param parameters The list of annotated parameter to look up
+    * @return The object array of looked up values
+    * 
+    */
+   protected static Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters, Object specialVal, Class<? extends Annotation> specialParam)
+   {
       Object[] parameterValues = new Object[parameters.size()];
       Iterator<AnnotatedParameter<Object>> iterator = parameters.iterator();
       for (int i = 0; i < parameterValues.length; i++)
       {
-         parameterValues[i] = iterator.next().getValue();
+         AnnotatedParameter<Object> param = iterator.next();
+         if ( specialParam!=null && param.isAnnotationPresent(specialParam)) 
+         {
+            parameterValues[i] = specialVal;
+         }
+         else 
+         {
+            parameterValues[i] = param.getValue();
+         }
       }
       return parameterValues;
    }

@@ -17,7 +17,12 @@
 
 package org.jboss.webbeans.event;
 
-import java.lang.annotation.Annotation;
+import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.AFTER_COMPLETION;
+import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.AFTER_FAILURE;
+import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.AFTER_SUCCESS;
+import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.BEFORE_COMPLETION;
+import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.NONE;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,16 +33,11 @@ import javax.webbeans.BeforeTransactionCompletion;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.IfExists;
 import javax.webbeans.Observer;
+import javax.webbeans.Observes;
+import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.event.EventManager.TransactionObservationPhase;
-
-import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.AFTER_COMPLETION;
-import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.AFTER_FAILURE;
-import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.AFTER_SUCCESS;
-import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.BEFORE_COMPLETION;
-import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.NONE;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 
 /**
@@ -53,7 +53,7 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
  */
 public class ObserverImpl<T> implements Observer<T>
 {
-   private EventBean<T> eventBean;
+   private Bean<?> observerBean;
    private final AnnotatedMethod<Object> observerMethod;
    private final Class<T> eventType;
    private TransactionObservationPhase transactionObservationPhase;
@@ -71,9 +71,9 @@ public class ObserverImpl<T> implements Observer<T>
     * @param observer The observer method to notify
     * @param eventType The type of event being observed
     */
-   public ObserverImpl(final EventBean<T> eventBean, final AnnotatedMethod<Object> observer, final Class<T> eventType)
+   public ObserverImpl(final Bean<?> observerBean, final AnnotatedMethod<Object> observer, final Class<T> eventType)
    {
-      this.eventBean = eventBean;
+      this.observerBean = observerBean;
       this.observerMethod = observer;
       this.eventType = eventType;
       initTransactionObservationPhase();
@@ -83,19 +83,19 @@ public class ObserverImpl<T> implements Observer<T>
    private void initTransactionObservationPhase()
    {
       List<TransactionObservationPhase> observationPhases = new ArrayList<TransactionObservationPhase>();
-      if (observerMethod.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty())
+      if (!observerMethod.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty())
       {
          observationPhases.add(BEFORE_COMPLETION);
       }
-      if (observerMethod.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty())
+      if (!observerMethod.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty())
       {
          observationPhases.add(AFTER_COMPLETION);
       }
-      if (observerMethod.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty())
+      if (!observerMethod.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty())
       {
          observationPhases.add(AFTER_FAILURE);
       }
-      if (observerMethod.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty())
+      if (!observerMethod.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty())
       {
          observationPhases.add(AFTER_SUCCESS);
       }
@@ -113,22 +113,11 @@ public class ObserverImpl<T> implements Observer<T>
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see javax.webbeans.Observer#getEventType()
-    */
    public Class<T> getEventType()
    {
       return eventType;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see javax.webbeans.Observer#notify(javax.webbeans.Container,
-    * java.lang.Object)
-    */
    public void notify(final T event)
    {
       // Get the most specialized instance of the component
@@ -136,7 +125,7 @@ public class ObserverImpl<T> implements Observer<T>
       if (instance != null)
       {
          // TODO replace event parameter
-         observerMethod.invoke(instance);
+         observerMethod.invokeWithSpecialValue(instance, Observes.class, event);
       }
 
    }
@@ -152,7 +141,7 @@ public class ObserverImpl<T> implements Observer<T>
    protected Object getInstance(boolean conditional)
    {
       // Return the most specialized instance of the component
-      return ManagerImpl.instance().getInstanceByType(eventBean.getType(), eventBean.getBindingTypes().toArray(new Annotation[0]));
+      return ManagerImpl.instance().getMostSpecializedInstance(observerBean, conditional);
    }
 
    /**

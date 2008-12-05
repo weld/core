@@ -212,7 +212,7 @@ public class ManagerImpl implements Manager
     */
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
    {
-      return eventManager.getObservers(event, bindings);
+      return eventManager.getObservers(metaDataCache, event, bindings);
    }
 
    /**
@@ -535,6 +535,12 @@ public class ManagerImpl implements Manager
    public <T> T getInstanceByType(Class<T> type, Annotation... bindings)
    {
       return getInstanceByType(new AnnotatedClassImpl<T>(type, type, bindings), bindings);
+   }
+   
+   public <T> T getMostSpecializedInstance(Bean<T> bean, boolean create)
+   {
+	   //TODO!!!!!
+	   return getInstance(bean);
    }
 
    /**

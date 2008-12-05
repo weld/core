@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.transaction.Synchronization;
 import javax.webbeans.Observer;
 
+import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.event.DeferredEventNotification;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.test.beans.DangerCall;
@@ -41,16 +42,16 @@ public class EventManagerTest extends AbstractTest
       eventManager.addObserver(observer, DangerCall.class);
       DangerCall event = new DangerCall();
 
-      Set<Observer<DangerCall>> observerSet = eventManager.getObservers(event);
+      Set<Observer<DangerCall>> observerSet = eventManager.getObservers(new MetaDataCache(), event);
       assert observerSet.size() == 1;
       assert observerSet.iterator().next().equals(observer);
 
       // Add another observer for the same event, but with an event binding
       observer = new AnObserver<DangerCall>();
       eventManager.addObserver(observer, DangerCall.class, new TameAnnotationLiteral());
-      observerSet = eventManager.getObservers(event);
+      observerSet = eventManager.getObservers(new MetaDataCache(), event);
       assert observerSet.size() == 1;
-      observerSet = eventManager.getObservers(event, new TameAnnotationLiteral());
+      observerSet = eventManager.getObservers(new MetaDataCache(), event, new TameAnnotationLiteral());
       assert observerSet.size() == 2;
    }
 
@@ -66,7 +67,7 @@ public class EventManagerTest extends AbstractTest
       eventManager.addObserver(observer, DangerCall.class);
       eventManager.removeObserver(observer, DangerCall.class);
       // FIXME CopyOnWrite broke remove, have to check later
-      assert eventManager.getObservers(new DangerCall()).isEmpty();
+      assert eventManager.getObservers(new MetaDataCache(), new DangerCall()).isEmpty();
    }
 
    /**

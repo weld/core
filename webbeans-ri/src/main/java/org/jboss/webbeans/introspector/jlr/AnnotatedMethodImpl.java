@@ -241,6 +241,12 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       return (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters));
    }
 
+   @SuppressWarnings("unchecked")
+   public T invokeWithSpecialValue(Object instance, Class<? extends Annotation> specialParam, Object specialVal)
+   {
+      return (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, specialVal, specialParam));
+   }
+
    /**
     * Invokes the method on an instance with given parameters
     * 

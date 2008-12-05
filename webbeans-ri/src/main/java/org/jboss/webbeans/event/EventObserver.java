@@ -23,6 +23,8 @@ import java.util.List;
 
 import javax.webbeans.Observer;
 
+import org.jboss.webbeans.MetaDataCache;
+
 /**
  * <p>
  * EventObserver wraps various {@link Observer} objects created by application
@@ -88,17 +90,30 @@ public class EventObserver<T>
     * @param bindings The event bindings
     * @return true only if all required bindings match
     */
-   public boolean isObserverInterested(Annotation... bindings)
+   public boolean isObserverInterested(MetaDataCache mdc, Annotation... bindings)
    {
       // Simply check that all event bindings specified by the observer are
       // in the list provided.
-      List<Annotation> bindingsArray = Arrays.asList(bindings);
-      boolean result = true;
-      if (!this.eventBindings.isEmpty())
+      if (this.eventBindings.isEmpty())
       {
-         result = bindingsArray.containsAll(this.eventBindings);
+         return true;
       }
-      return result;
+      else
+      {
+	     //List<Annotation> bindingsArray = Arrays.asList(bindings);
+         //return bindingsArray.containsAll(this.eventBindings);
+         for (Annotation x: eventBindings) {
+            boolean found = false;
+            for (Annotation y: bindings)
+            {
+        	if ( mdc.getBindingTypeModel(x.annotationType()).isEqual(x, y) ) {
+               found = true;
+            }
+            }
+            if (!found) return false;
+         }
+         return true;
+      }
    }
 
    /*

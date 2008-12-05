@@ -31,6 +31,7 @@ import javax.transaction.UserTransaction;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.transaction.TransactionListener;
 import org.jboss.webbeans.util.JNDI;
 import org.jboss.webbeans.util.Strings;
@@ -170,12 +171,12 @@ public class EventManager
     *         matches.
     */
    @SuppressWarnings("unchecked")
-   public <T> Set<Observer<T>> getObservers(T event, Annotation... bindings)
+   public <T> Set<Observer<T>> getObservers(MetaDataCache mdc, T event, Annotation... bindings)
    {
       Set<Observer<T>> interestedObservers = new HashSet<Observer<T>>();
       for (EventObserver<?> observer : registeredObservers.get(event.getClass()))
       {
-         if (observer.isObserverInterested(bindings))
+         if (observer.isObserverInterested(mdc, bindings))
          {
             interestedObservers.add((Observer<T>) observer.getObserver());
          }
@@ -192,7 +193,7 @@ public class EventManager
    {
       try
       {
-         return userTransaction.getStatus() == Status.STATUS_ACTIVE;
+         return userTransaction!=null && userTransaction.getStatus() == Status.STATUS_ACTIVE;
       }
       catch (SystemException e)
       {
