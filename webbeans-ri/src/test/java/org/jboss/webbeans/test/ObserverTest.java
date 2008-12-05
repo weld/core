@@ -75,7 +75,7 @@ public class ObserverTest
    public final void testNotify() throws Exception
    {
 	  SampleEvent event = new SampleEvent();
-      assert notified == false;
+	  notified = false;
       observer.notify(event);
       assert notified == true;
    }
@@ -83,13 +83,17 @@ public class ObserverTest
    @Test(groups = "observerMethod") @SpecAssertion(section={"7.5.7"})
    public final void testNotifyViaManager() throws Exception
    {
-	  SampleEvent event = new SampleEvent();
+	  notified = false;
+      manager.fireEvent(new SampleEvent());
       assert notified == false;
-      manager.fireEvent(event);
+      manager.fireEvent(new Object(), new AnnotationLiteral<Asynchronous>() {});
       assert notified == false;
-      manager.fireEvent(event, new AnnotationLiteral<Foo>() {});
+      manager.fireEvent(new SampleEvent(), new AnnotationLiteral<Foo>() {});
       assert notified == false;
-      manager.fireEvent(event, new AnnotationLiteral<Asynchronous>() {});
+      manager.fireEvent(new SampleEvent(), new AnnotationLiteral<Asynchronous>() {});
+      assert notified == true;
+      notified = false;
+      manager.fireEvent(new SampleEvent(), new AnnotationLiteral<Asynchronous>() {}, new AnnotationLiteral<Foo>() {});
       assert notified == true;
    }
 
