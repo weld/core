@@ -126,13 +126,13 @@ public class Bootstrap
          ManagerImpl.instance().getResolver().addInjectionPoints(bean.getInjectionPoints());
          for (AnnotatedMethod<Object> producerMethod : bean.getProducerMethods())
          {
-            ProducerMethodBean<?> producerMethodBean = createProducerMethodBean(producerMethod.getType(), producerMethod, bean);
+            ProducerMethodBean<?> producerMethodBean = createProducerMethodBean(producerMethod, bean);
             beans.add(producerMethodBean);
             ManagerImpl.instance().getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
          }
          for (AnnotatedField<Object> eventField : bean.getEventFields())
          {
-            EventBean<?> eventBean = createEventBean(eventField.getType(), eventField);
+            EventBean<?> eventBean = createEventBean(eventField);
             beans.add(eventBean);
             ManagerImpl.instance().getResolver().addInjectionPoints(eventBean.getInjectionPoints());
          }

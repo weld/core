@@ -60,7 +60,7 @@ public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
     * Invokes the observer method
     * 
     * @param instance The instance to invoke
- * @param event the event object
+    * @param event the event object
     * @return A reference to the instance
     */
    public T invokeWithSpecialValue(Object instance, Class<? extends Annotation> specialParam, Object specialVal);

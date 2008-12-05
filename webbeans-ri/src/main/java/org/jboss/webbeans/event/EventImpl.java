@@ -39,27 +39,22 @@ import org.jboss.webbeans.ManagerImpl;
  * @param <T>
  * @see javax.webbeans.Event
  */
-@Standard
-@Dependent
 public class EventImpl<T> implements Event<T>
 {
    // The set of binding types
    private final Set<? extends Annotation> bindingTypes;
    // The event type
    private final Class<T> eventType;
-   // The Web Beans manager
-   protected final ManagerImpl manager;
 
    /**
     * Constructor
     * 
     * @param bindingTypes The binding types
     */
-   public EventImpl(ManagerImpl manager, Class<T> eventType, Annotation... bindingTypes)
+   public EventImpl(Class<T> eventType, Annotation... bindingTypes)
    {
       this.bindingTypes = getBindingTypes(bindingTypes);
       this.eventType = eventType;
-      this.manager = manager;
    }
 
    /**
@@ -68,8 +63,8 @@ public class EventImpl<T> implements Event<T>
     * Removes @Observable from the list
     * 
     * @param annotations The annotations to validate
-    * @return A set of binding type annotations (minus @Observable, if it
-    *         was present)
+    * @return A set of binding type annotations (minus @Observable, if it was
+    *         present)
     */
    private static Set<Annotation> getBindingTypes(Annotation... annotations)
    {
@@ -103,10 +98,12 @@ public class EventImpl<T> implements Event<T>
          {
             throw new IllegalArgumentException(annotation + " is not a binding type");
          }
-         for (Annotation bindingAnnotation: this.bindingTypes) {
-            if (bindingAnnotation.annotationType().equals(annotation.annotationType())) {
+         for (Annotation bindingAnnotation : this.bindingTypes)
+         {
+            if (bindingAnnotation.annotationType().equals(annotation.annotationType()))
+            {
                throw new DuplicateBindingTypeException(annotation + " is already present in the bindings list");
- 	        }
+            }
          }
          result.add(annotation);
       }
@@ -123,7 +120,7 @@ public class EventImpl<T> implements Event<T>
    {
       Set<Annotation> bindingParameters = checkBindingTypes(bindingTypes);
       bindingParameters.addAll(this.bindingTypes);
-      manager.fireEvent(event, bindingParameters.toArray(new Annotation[0]));
+      ManagerImpl.instance().fireEvent(event, bindingParameters.toArray(new Annotation[0]));
    }
 
    /**
@@ -136,7 +133,7 @@ public class EventImpl<T> implements Event<T>
    {
       Set<Annotation> bindingParameters = checkBindingTypes(bindingTypes);
       bindingParameters.addAll(this.bindingTypes);
-      manager.addObserver(observer, eventType, bindingParameters.toArray(new Annotation[0]));
+      ManagerImpl.instance().addObserver(observer, eventType, bindingParameters.toArray(new Annotation[0]));
    }
-   
+
 }

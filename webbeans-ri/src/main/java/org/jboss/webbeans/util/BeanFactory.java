@@ -101,12 +101,11 @@ public class BeanFactory
    /**
     * Creates a producer method Web Bean
     * 
-    * @param type The type
     * @param method The underlying method abstraction
     * @param declaringBean The declaring bean abstraction
     * @return A producer Web Bean
     */
-   public static <T> ProducerMethodBean<T> createProducerMethodBean(Class<T> type, AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean)
+   public static <T> ProducerMethodBean<T> createProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean)
    {
       return new ProducerMethodBean<T>(method, declaringBean);
    }
@@ -114,13 +113,11 @@ public class BeanFactory
    /**
     * Creates an event Web Bean
     * 
-    * @param <T>
-    * @param type The type
     * @param field The observer field abstraction
     * @param declaringBean The declaring bean abstraction
     * @return An event Web Bean
     */
-   public static <T> EventBean<T> createEventBean(Class<T> type, AnnotatedField<T> field)
+   public static <T> EventBean<T> createEventBean(AnnotatedField<T> field)
    {
       return new EventBean<T>(field);
    }

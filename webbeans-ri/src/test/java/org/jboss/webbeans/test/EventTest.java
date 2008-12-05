@@ -56,6 +56,7 @@ public class EventTest
       enabledDeploymentTypes.add(Standard.class);
       enabledDeploymentTypes.add(AnotherDeploymentType.class);
       manager = new MockManagerImpl();
+      MockManagerImpl.setInstance(manager);
       manager.setEnabledDeploymentTypes(Standard.class, AnotherDeploymentType.class);
    }
 
@@ -72,7 +73,7 @@ public class EventTest
       //Create a test annotation for the event and use it to construct the
       //event object
       Annotation[] annotations = new Annotation[] { new TameAnnotationLiteral() };
-      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>(manager, DangerCall.class, annotations);
+      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>(DangerCall.class, annotations);
       eventComponent.fire(anEvent, new SynchronousAnnotationLiteral());
       assert anEvent.equals(manager.getEvent());
       assert Reflections.annotationSetMatches(manager.getEventBindings(),
@@ -113,7 +114,7 @@ public class EventTest
       //Create a test annotation for the event and use it to construct the
       //event object
       Annotation[] annotations = new Annotation[] { new TameAnnotationLiteral() };
-      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>(manager, DangerCall.class, annotations);
+      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>(DangerCall.class, annotations);
       Observer<DangerCall> observer = new AnObserver<DangerCall>();
       eventComponent.observe(observer, new SynchronousAnnotationLiteral());
       assert manager.getObservedEventType().equals(DangerCall.class);
