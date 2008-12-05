@@ -199,12 +199,12 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedConstructor#newInstance(ManagerImpl)
     */
-   public T newInstance(ManagerImpl manager)
+   public T newInstance()
    {
       try
       {
          // TODO: more details in the exceptions
-         return getDelegate().newInstance(getParameterValues(parameters, manager));
+         return getDelegate().newInstance(getParameterValues(parameters));
       }
       catch (IllegalArgumentException e)
       {

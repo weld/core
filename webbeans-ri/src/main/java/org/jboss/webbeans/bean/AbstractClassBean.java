@@ -29,7 +29,6 @@ import javax.webbeans.Observable;
 import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -62,9 +61,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * @param xmlAnnotatedItem Annotations read from XML
     * @param manager The Web Beans manager
     */
-   public AbstractClassBean(Class<T> type, ManagerImpl manager)
+   public AbstractClassBean(Class<T> type)
    {
-      super(manager);
+      super();
       this.annotatedItem = new AnnotatedClassImpl<T>(type);
    }
 

@@ -135,9 +135,9 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
     * @param manager The Web Beans manager
     * @return The current value
     */
-   public T getValue(ManagerImpl manager)
+   public T getValue()
    {
-      return manager.getInstanceByType(getType(), getMetaAnnotationsAsArray(BindingType.class));
+      return ManagerImpl.instance().getInstanceByType(getType(), getMetaAnnotationsAsArray(BindingType.class));
    }
 
    /**

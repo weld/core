@@ -34,7 +34,6 @@ import javax.webbeans.DeploymentType;
 import javax.webbeans.ScopeType;
 import javax.webbeans.Stereotype;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
@@ -205,13 +204,13 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * @return The object array of looked up values
     * 
     */
-   protected static Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters, ManagerImpl manager)
+   protected static Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters)
    {
       Object[] parameterValues = new Object[parameters.size()];
       Iterator<AnnotatedParameter<Object>> iterator = parameters.iterator();
       for (int i = 0; i < parameterValues.length; i++)
       {
-         parameterValues[i] = iterator.next().getValue(manager);
+         parameterValues[i] = iterator.next().getValue();
       }
       return parameterValues;
    }

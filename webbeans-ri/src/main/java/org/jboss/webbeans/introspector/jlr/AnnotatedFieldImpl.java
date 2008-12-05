@@ -121,9 +121,9 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
     * @see org.jboss.webbeans.introspector.AnnotatedField#inject(Object,
     *      ManagerImpl)
     */
-   public void inject(Object instance, ManagerImpl manager)
+   public void inject(Object instance)
    {
-      Reflections.setAndWrap(getDelegate(), instance, getValue(manager));
+      Reflections.setAndWrap(getDelegate(), instance, getValue());
    }
 
    /**

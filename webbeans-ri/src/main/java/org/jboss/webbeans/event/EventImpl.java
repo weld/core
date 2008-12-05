@@ -48,7 +48,7 @@ public class EventImpl<T> implements Event<T>
    // The event type
    private Class<T> eventType;
    // The Web Beans manager
-   protected ManagerImpl manager;
+   protected static final ManagerImpl manager = ManagerImpl.instance();
 
    /**
     * Constructor
@@ -56,9 +56,8 @@ public class EventImpl<T> implements Event<T>
     * @param manager The Web Beans manager
     * @param bindingTypes The binding types
     */
-   public EventImpl(ManagerImpl manager, Annotation... bindingTypes)
+   public EventImpl(Annotation... bindingTypes)
    {
-      this.manager = manager;
       this.bindingTypes = checkBindingTypes(bindingTypes);
    }
 

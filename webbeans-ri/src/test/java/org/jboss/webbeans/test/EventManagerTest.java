@@ -36,7 +36,7 @@ public class EventManagerTest extends AbstractTest
    @Test(groups = "observerMethod")
    public void testAddObserver()
    {
-      EventManager eventManager = new EventManager(manager);
+      EventManager eventManager = new EventManager();
       Observer<DangerCall> observer = new AnObserver<DangerCall>();
       eventManager.addObserver(observer, DangerCall.class);
       DangerCall event = new DangerCall();
@@ -61,7 +61,7 @@ public class EventManagerTest extends AbstractTest
    @Test(groups = { "observerMethod" })
    public void testRemoveObserver()
    {
-      EventManager eventManager = new EventManager(manager);
+      EventManager eventManager = new EventManager();
       Observer<DangerCall> observer = new AnObserver<DangerCall>();
       eventManager.addObserver(observer, DangerCall.class);
       eventManager.removeObserver(observer, DangerCall.class);
@@ -166,7 +166,7 @@ public class EventManagerTest extends AbstractTest
       // }
       //         
       // };
-      EventManager eventManager = new EventManager(manager);
+      EventManager eventManager = new EventManager();
       Observer<DangerCall> observer = new AnObserver<DangerCall>();
       try
       {

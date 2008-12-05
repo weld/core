@@ -40,13 +40,13 @@ public class NormalContextTest extends AbstractTest
    
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testGetWithCreateFalseReturnsNull() {
-      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class, manager);      
+      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class);      
       assert context.get(tunaBean, false) == null;
    }
 
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testGetWithCreateTrueReturnsBean() {
-      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class, manager);      
+      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class);      
       assert context.get(tunaBean, true) != null;
    }
    
@@ -59,7 +59,7 @@ public class NormalContextTest extends AbstractTest
    
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testReturnsCorrectExistingBean() {
-      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class, manager);      
+      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class);      
       Tuna firstTuna = context.get(tunaBean, true);
       Tuna secondTuna = context.get(tunaBean, false);
       assert firstTuna == secondTuna;
@@ -67,10 +67,10 @@ public class NormalContextTest extends AbstractTest
 
    @Test(groups={"contexts", "producerMethod"}) @SpecAssertion(section="8.1")
    public void testProducerMethodReturningNullOK() throws SecurityException, NoSuchMethodException {
-      SimpleBean<SpiderProducer> producer = createSimpleBean(SpiderProducer.class, manager);
+      SimpleBean<SpiderProducer> producer = createSimpleBean(SpiderProducer.class);
       manager.addBean(producer);
       Method nullProducer = SpiderProducer.class.getMethod("produceShelob");  
-      ProducerMethodBean<Tarantula> shelobBean = createProducerMethodBean(Tarantula.class, nullProducer, manager, producer);
+      ProducerMethodBean<Tarantula> shelobBean = createProducerMethodBean(Tarantula.class, nullProducer, producer);
       assert shelobBean.create() == null;
    }
    

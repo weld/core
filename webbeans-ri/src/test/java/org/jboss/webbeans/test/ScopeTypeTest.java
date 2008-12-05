@@ -23,7 +23,7 @@ public class ScopeTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.4")
    public void testScopeTypesAreExtensible()
    {
-      Bean<Mullet> mullet = createSimpleBean(Mullet.class, manager);
+      Bean<Mullet> mullet = createSimpleBean(Mullet.class);
       assert mullet.getScopeType().equals(AnotherScopeType.class);
    }
    
@@ -48,14 +48,14 @@ public class ScopeTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.4.3")
    public void testScopeDeclaredInJava()
    {
-      SimpleBean<SeaBass> trout = createSimpleBean(SeaBass.class, manager);
+      SimpleBean<SeaBass> trout = createSimpleBean(SeaBass.class);
       assert trout.getScopeType().equals(RequestScoped.class);
    }
    
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.4.3")
    public void testTooManyScopesSpecifiedInJava()
    {
-      createSimpleBean(BeanWithTooManyScopeTypes.class, manager);
+      createSimpleBean(BeanWithTooManyScopeTypes.class);
    }
    
    @Test(expectedExceptions=DefinitionException.class, groups={"stub", "webbeansxml"})
@@ -105,7 +105,7 @@ public class ScopeTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.4.5")
    public void testDefaultScope()
    {
-      SimpleBean<Order> order = createSimpleBean(Order.class, manager);
+      SimpleBean<Order> order = createSimpleBean(Order.class);
       assert order.getScopeType().equals(Dependent.class);
    }
    
@@ -155,7 +155,7 @@ public class ScopeTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.7.2")
    public void testWebBeanScopeTypeOverridesStereotype()
    {
-      Bean<RedSnapper> bean = createSimpleBean(RedSnapper.class, manager);
+      Bean<RedSnapper> bean = createSimpleBean(RedSnapper.class);
       assert bean.getScopeType().equals(RequestScoped.class);
    }
    

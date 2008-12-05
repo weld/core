@@ -430,6 +430,8 @@ public class Reflections
       }
       catch (IllegalArgumentException e)
       {
+         System.out.println(method.getDeclaringClass() + " " + instance.getClass());
+         e.printStackTrace();
          throw new ExecutionException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
       catch (IllegalAccessException e)

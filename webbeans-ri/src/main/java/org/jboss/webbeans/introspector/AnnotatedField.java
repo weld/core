@@ -19,8 +19,6 @@ package org.jboss.webbeans.introspector;
 
 import java.lang.reflect.Field;
 
-import org.jboss.webbeans.ManagerImpl;
-
 /**
  * AnnotatedField provides a uniform access to the annotations on an annotated
  * field 
@@ -44,7 +42,7 @@ public interface AnnotatedField<T> extends AnnotatedItem<T, Field>
     * @param instance The instance to inject
     * @param manager The Web Beans manager
     */
-   public void inject(Object instance, ManagerImpl manager);
+   public void inject(Object instance);
    
    /**
     * Gets an abstraction of the declaring class

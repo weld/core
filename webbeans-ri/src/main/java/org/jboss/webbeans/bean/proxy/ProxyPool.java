@@ -47,12 +47,10 @@ public class ProxyPool
     * @author Nicklas Karlsson
     */
 
-   private ManagerImpl manager;
    private ConcurrentCache<Bean<? extends Object>, Object> pool;
 
-   public ProxyPool(ManagerImpl manager)
+   public ProxyPool()
    {
-      this.manager = manager;
       this.pool = new ConcurrentCache<Bean<? extends Object>, Object>();
    }
 
@@ -113,7 +111,7 @@ public class ProxyPool
     * @throws IllegalAccessException When the proxy couldn't be created
     */
    @SuppressWarnings("unchecked")
-   private static <T> T createClientProxy(Bean<T> bean, int beanIndex, ManagerImpl manager) throws RuntimeException
+   private static <T> T createClientProxy(Bean<T> bean, int beanIndex) throws RuntimeException
    {
       ProxyFactory proxyFactory = new ProxyFactory();
       TypeInfo typeInfo = getTypeInfo(bean.getTypes());
@@ -132,7 +130,7 @@ public class ProxyPool
       {
          throw new RuntimeException("Could not access bean correctly when creating client proxy for " + bean, e);
       }
-      ProxyMethodHandler proxyMethodHandler = new ProxyMethodHandler(bean, beanIndex, manager);
+      ProxyMethodHandler proxyMethodHandler = new ProxyMethodHandler(bean, beanIndex);
       ((ProxyObject) clientProxy).setHandler(proxyMethodHandler);
       return clientProxy;
    }
@@ -153,12 +151,12 @@ public class ProxyPool
 
          public T call() throws Exception
          {
-            int beanIndex = manager.getBeans().indexOf(bean);
+            int beanIndex = ManagerImpl.instance().getBeans().indexOf(bean);
             if (beanIndex < 0)
             {
                throw new DefinitionException(bean + " is not known to the manager");
             }
-            return createClientProxy(bean, beanIndex, manager);
+            return createClientProxy(bean, beanIndex);
          }
    
       });

@@ -21,8 +21,7 @@ import java.lang.annotation.Annotation;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * The abstraction of a shared context with common beans but with a private
- * active state
+ * The abstraction of a shared context with common beans and active state state
  * 
  * @author Nicklas Karlsson
  * 
@@ -31,14 +30,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class SharedContext extends AbstractContext
 {
    private BeanMap beans;
-   private ThreadLocal<AtomicBoolean> active;
+   private AtomicBoolean active;
 
    public SharedContext(Class<? extends Annotation> scopeType)
    {
       super(scopeType);
       beans = new SimpleBeanMap();
-      active = new ThreadLocal<AtomicBoolean>();
-      active.set(new AtomicBoolean(true));
+      active = new AtomicBoolean(true);
    }
 
    /**
@@ -47,7 +45,7 @@ public class SharedContext extends AbstractContext
    @Override
    protected AtomicBoolean getActive()
    {
-      return active.get();
+      return active;
    }
 
    /**

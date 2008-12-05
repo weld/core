@@ -20,7 +20,6 @@ package org.jboss.webbeans.bean;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem.AnnotationMap;
@@ -44,20 +43,20 @@ public class MergedStereotypes<T, E>
    private Set<Class<?>> requiredTypes;
    // The supported scopes
    private Set<Class<? extends Annotation>> supportedScopes;
-
+   
    /**
     * Constructor
     * 
     * @param stereotypeAnnotations The stereotypes to merge
     * @param manager The Web Beans manager
     */
-   public MergedStereotypes(Set<Annotation> stereotypeAnnotations, ManagerImpl manager)
+   public MergedStereotypes(Set<Annotation> stereotypeAnnotations)
    {
       possibleDeploymentTypes = new AnnotationMap();
       possibleScopeTypes = new HashSet<Annotation>();
       requiredTypes = new HashSet<Class<?>>();
       supportedScopes = new HashSet<Class<? extends Annotation>>();
-      merge(stereotypeAnnotations, manager);
+      merge(stereotypeAnnotations);
    }
 
    /**
@@ -66,12 +65,12 @@ public class MergedStereotypes<T, E>
     * @param stereotypeAnnotations The stereotype annotations
     * @param manager The Web Beans manager
     */
-   protected void merge(Set<Annotation> stereotypeAnnotations, ManagerImpl manager)
+   protected void merge(Set<Annotation> stereotypeAnnotations)
    {
       for (Annotation stereotypeAnnotation : stereotypeAnnotations)
       {
          // Retrieve and merge all metadata from stereotypes
-         StereotypeModel<?> stereotype = manager.getMetaDataCache().getStereotype(stereotypeAnnotation.annotationType());
+         StereotypeModel<?> stereotype = ManagerImpl.instance().getMetaDataCache().getStereotype(stereotypeAnnotation.annotationType());
          if (stereotype == null)
          {
             throw new IllegalStateException("Stereotype " + stereotypeAnnotation + " not registered with container");

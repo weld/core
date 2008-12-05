@@ -26,7 +26,6 @@ import javax.annotation.PreDestroy;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Initializer;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -54,16 +53,16 @@ public class SimpleBean<T> extends AbstractClassBean<T>
 
    private AnnotatedMethod<Object> postConstruct;
    private AnnotatedMethod<Object> preDestroy;
-
+   
    /**
     * Constructor
     * 
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   public SimpleBean(Class<T> type, ManagerImpl manager)
+   public SimpleBean(Class<T> type)
    {
-      super(type, manager);
+      super(type);
       init();
    }
 
@@ -75,7 +74,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    @Override
    public T create()
    {
-      T instance = constructor.newInstance(getManager());
+      T instance = constructor.newInstance();
       bindDecorators();
       bindInterceptors();
       injectEjbAndCommonFields();
@@ -147,7 +146,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       for (AnnotatedMethod<Object> initializer : getInitializerMethods())
       {
-         initializer.invoke(getManager(), instance);
+         initializer.invoke(instance);
       }
    }
 
@@ -168,7 +167,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       for (AnnotatedField<?> injectableField : getInjectableFields())
       {
-         injectableField.inject(instance, getManager());
+         injectableField.inject(instance);
       }
    }
 
@@ -330,7 +329,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       if (superclass != null)
       {
          // TODO look up this bean and do this via init
-         return new SimpleBean(superclass, getManager());
+         return new SimpleBean(superclass);
       }
       else
       {

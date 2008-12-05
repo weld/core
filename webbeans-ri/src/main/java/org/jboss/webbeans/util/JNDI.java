@@ -17,6 +17,7 @@
 
 package org.jboss.webbeans.util;
 
+
 /**
  * Provides JNDI access abstraction
  * 
@@ -35,7 +36,7 @@ public class JNDI
    {
       return lookup(name, Object.class);
    }
-   
+
    /**
     * Typed JNDI lookup
     * 
@@ -48,5 +49,10 @@ public class JNDI
    {
       return null;
    }
-   
+
+   public static void set(String key, Object value)
+   {
+      // TODO stub
+   }
+
 }

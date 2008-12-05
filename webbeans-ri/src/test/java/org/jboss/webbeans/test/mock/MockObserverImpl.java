@@ -18,7 +18,7 @@ public class MockObserverImpl<T> extends ObserverImpl<T>
 
    public MockObserverImpl(ManagerImpl manager, EventBean<T> beanModel, AnnotatedMethod<Object> observer, Class<T> eventType)
    {
-      super(manager, beanModel, observer, eventType);
+      super(beanModel, observer, eventType);
    }
 
    @Override

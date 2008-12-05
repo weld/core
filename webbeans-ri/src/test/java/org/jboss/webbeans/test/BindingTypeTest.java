@@ -31,7 +31,7 @@ public class BindingTypeTest extends AbstractTest
    @Test @SpecAssertion(section={"2.3.3", "2.3.1"}) 
    public void testDefaultBindingTypeDeclaredInJava()
    {
-      SimpleBean<Order> order = createSimpleBean(Order.class, manager);
+      SimpleBean<Order> order = createSimpleBean(Order.class);
       assert order.getBindingTypes().size() == 1;
       order.getBindingTypes().iterator().next().annotationType().equals(Current.class);
    }
@@ -58,7 +58,7 @@ public class BindingTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.3.3")
    public void testBindingTypesDeclaredInJava()
    {
-      SimpleBean<Cat> cat = createSimpleBean(Cat.class, manager);
+      SimpleBean<Cat> cat = createSimpleBean(Cat.class);
       assert cat.getBindingTypes().size() == 1;
       assert Reflections.annotationSetMatches(cat.getBindingTypes(), Synchronous.class);
    }
@@ -66,7 +66,7 @@ public class BindingTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.3.3") 
    public void testMultipleBindingTypes()
    {
-      SimpleBean<?> model = createSimpleBean(Cod.class, manager);
+      SimpleBean<?> model = createSimpleBean(Cod.class);
       assert model.getBindingTypes().size() == 2;
    }
    
@@ -111,7 +111,7 @@ public class BindingTypeTest extends AbstractTest
 	@Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section={"2.3.4", "2.3.1"}) 
    public void testDefaultBindingTypeDeclaredInXml()
    {
-      SimpleBean<?> model = createSimpleBean(Tuna.class, manager);
+      SimpleBean<?> model = createSimpleBean(Tuna.class);
       assert model.getBindingTypes().size() == 1;
       assert model.getBindingTypes().contains(new CurrentAnnotationLiteral());
       assert false;
@@ -122,11 +122,11 @@ public class BindingTypeTest extends AbstractTest
 	@Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="2.3.5") 
    public void testFieldInjectedFromProducerMethod() throws Exception
    {
-	   SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class, manager);
+	   SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class);
       manager.addBean(spiderProducer);
       Method method = SpiderProducer.class.getMethod("produceTameTarantula");
-	   manager.addBean(createProducerMethodBean(Tarantula.class, method, manager, spiderProducer));
-      Barn barn = createSimpleBean(Barn.class, manager).create();
+	   manager.addBean(createProducerMethodBean(Tarantula.class, method, spiderProducer));
+      Barn barn = createSimpleBean(Barn.class).create();
       assert barn.petSpider != null;
       assert barn.petSpider instanceof DefangedTarantula;
    }
@@ -146,12 +146,12 @@ public class BindingTypeTest extends AbstractTest
 	@Test(groups={"injection", "producerMethod"})
    public void testMethodWithBindingAnnotationsOnParametersAreInjected() throws Exception
    {
-	   SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class, manager);
+	   SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class);
       manager.addBean(spiderProducer);
       Method method = SpiderProducer.class.getMethod("produceTameTarantula");
-      manager.addBean(createProducerMethodBean(Tarantula.class, method, manager, spiderProducer));
+      manager.addBean(createProducerMethodBean(Tarantula.class, method, spiderProducer));
       method = SpiderProducer.class.getMethod("produceSpiderFromInjection", Tarantula.class);
-      ProducerMethodBean<Spider> spiderBean = createProducerMethodBean(Spider.class, method, manager, spiderProducer);
+      ProducerMethodBean<Spider> spiderBean = createProducerMethodBean(Spider.class, method, spiderProducer);
       Spider spider = spiderBean.create();
       assert spider != null;
       assert spider instanceof DefangedTarantula;

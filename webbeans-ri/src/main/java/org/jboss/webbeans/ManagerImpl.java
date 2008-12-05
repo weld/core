@@ -73,6 +73,8 @@ import org.jboss.webbeans.util.Strings;
 public class ManagerImpl implements Manager
 {
    
+   public static final String JNDI_KEY = "java:comp/Manager";
+   
    private static ManagerImpl instance = new ManagerImpl();
    
    public static ManagerImpl instance()
@@ -95,9 +97,9 @@ public class ManagerImpl implements Manager
    {
       this.metaDataCache = new MetaDataCache();
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
-      this.eventManager = new EventManager(this);
-      this.resolver = new Resolver(this);
-      this.proxyPool = new ProxyPool(this);
+      this.eventManager = new EventManager();
+      this.resolver = new Resolver();
+      this.proxyPool = new ProxyPool();
       this.decorators = new HashSet<Decorator>();
       this.interceptors = new HashSet<Interceptor>();
       initEnabledDeploymentTypes();
@@ -110,7 +112,7 @@ public class ManagerImpl implements Manager
     */
    protected void initStandardBeans()
    {
-      addBean(new SimpleBean<DefaultEnterpriseBeanLookup>(DefaultEnterpriseBeanLookup.class, this));
+      addBean(new SimpleBean<DefaultEnterpriseBeanLookup>(DefaultEnterpriseBeanLookup.class));
    }
 
    /**
@@ -686,6 +688,12 @@ public class ManagerImpl implements Manager
       buffer.append(Strings.collectionToString("Registered decorators: ", decorators));
       buffer.append(Strings.collectionToString("Registered interceptors: ", interceptors));
       return buffer.toString();
+   }
+
+   // TODO: Temp
+   public static void setInstance(ManagerImpl manager)
+   {
+      ManagerImpl.instance = manager;
    }
 
 }

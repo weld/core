@@ -26,6 +26,7 @@ public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
       return (Future<T>) super.get(key);
    }
    
+   @SuppressWarnings("unchecked")
    public <T extends V> T getValue(K key)
    {
       Future<T> value = (Future<T>) map.get(key);
@@ -57,6 +58,7 @@ public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
       }
    }
    
+   @SuppressWarnings("unchecked")
    public <E> E putIfAbsent(K key, Callable<E> callable)
    {
       Future<E> value = (Future<E>) map.get(key);

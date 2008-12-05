@@ -92,11 +92,8 @@ public class Resolver
 
    private ConcurrentCache<String, Set<Bean<?>>> resolvedNames;
 
-   private ManagerImpl manager;
-
-   public Resolver(ManagerImpl manager)
+   public Resolver()
    {
-      this.manager = manager;
       this.injectionPoints = new HashSet<AnnotatedItem<?, ?>>();
       this.resolvedInjectionPoints = new ConcurrentCache<ResolvableAnnotatedItem<?,?>, Set<Bean<?>>>();
       this.resolvedNames = new ConcurrentCache<String, Set<Bean<?>>>();
@@ -118,7 +115,7 @@ public class Resolver
 
          public Set<Bean<T>> call() throws Exception
          {
-            Set<Bean<T>> beans = retainHighestPrecedenceBeans(getMatchingBeans(element, manager.getBeans(), manager.getMetaDataCache()), manager.getEnabledDeploymentTypes());
+            Set<Bean<T>> beans = retainHighestPrecedenceBeans(getMatchingBeans(element, ManagerImpl.instance().getBeans(), ManagerImpl.instance().getMetaDataCache()), ManagerImpl.instance().getEnabledDeploymentTypes());
             if (element.getType().isPrimitive())
             {
                for (Bean<?> bean : beans)
@@ -150,6 +147,7 @@ public class Resolver
     * Resolve all injection points added using
     * {@link #addInjectionPoints(Collection)}
     */
+   @SuppressWarnings("unchecked")
    public void resolveInjectionPoints()
    {
       for (final AnnotatedItem injectable : injectionPoints)
@@ -188,7 +186,7 @@ public class Resolver
       if (element.getType().equals(Object.class))
       {
          // TODO Fix this cast
-         beans = new HashSet<Bean<T>>((List) manager.getBeans());
+         beans = new HashSet<Bean<T>>((List) ManagerImpl.instance().getBeans());
       }
       else
       {
@@ -205,17 +203,18 @@ public class Resolver
       return resolvedNames.putIfAbsent(name, new Callable<Set<Bean<?>>>()
       {
 
+         @SuppressWarnings("unchecked")
          public Set<Bean<?>> call() throws Exception
          {
             Set<Bean<?>> beans = new HashSet<Bean<?>>();
-            for (Bean<?> bean : manager.getBeans())
+            for (Bean<?> bean : ManagerImpl.instance().getBeans())
             {
                if ((bean.getName() == null && name == null) || (bean.getName() != null && bean.getName().equals(name)))
                {
                   beans.add(bean);
                }
             }
-            return retainHighestPrecedenceBeans((Set) beans, manager.getEnabledDeploymentTypes());
+            return retainHighestPrecedenceBeans((Set) beans, ManagerImpl.instance().getEnabledDeploymentTypes());
          }
 
       });
@@ -252,6 +251,7 @@ public class Resolver
       }
    }
 
+   @SuppressWarnings("unchecked")
    private static <T> Set<Bean<T>> getMatchingBeans(AnnotatedItem<T, ?> element, List<Bean<?>> beans, MetaDataCache metaDataCache)
    {
       Set<Bean<T>> resolvedBeans = new HashSet<Bean<T>>();

@@ -18,9 +18,7 @@
 package org.jboss.webbeans.util;
 
 import java.beans.Introspector;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -122,20 +120,6 @@ public class Strings
          buffer.append("  #" + ++i + ": " + item.toString() + "\n");
       }
       return buffer.toString();
-   }
-
-   public static void main(String[] args)
-   {
-      Map map = new HashMap<String, Collection<?>>();
-      Collection a = new ArrayList<String>();
-      a.add("1");
-      a.add("2");
-      map.put("foo", a);
-      Collection b = new ArrayList<String>();
-      b.add("3");
-      b.add("4");
-      map.put("bar", b);
-      System.out.println(mapToString("Header: ", map));
    }
 
 }

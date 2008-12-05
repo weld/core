@@ -236,9 +236,9 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     *      Object)
     */
    @SuppressWarnings("unchecked")
-   public T invoke(ManagerImpl manager, Object instance)
+   public T invoke(Object instance)
    {
-      return (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, manager));
+      return (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters));
    }
 
    /**

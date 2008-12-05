@@ -3,6 +3,7 @@ package org.jboss.webbeans.test;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.Bootstrap;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.HornedAnimalDeploymentType;
@@ -21,7 +22,8 @@ public class AbstractTest
    public final void before()
    {
       manager = new MockManagerImpl();
-      bootstrap = new MockBootstrap(manager);
+      ManagerImpl.setInstance(manager);
+      bootstrap = new MockBootstrap();
       init();
    }
    

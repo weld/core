@@ -43,7 +43,6 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
 
    private transient Bean<?> bean;
    private int beanIndex;
-   private static ManagerImpl manager;
 
    /**
     * Constructor
@@ -52,11 +51,10 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
     * @param beanIndex The index to the bean in the manager bean list
     * @param manager The manager implementation
     */
-   public ProxyMethodHandler(Bean<?> bean, int beanIndex, ManagerImpl manager)
+   public ProxyMethodHandler(Bean<?> bean, int beanIndex)
    {
       this.bean = bean;
       this.beanIndex = beanIndex;
-      ProxyMethodHandler.manager = manager;
    }
 
    /**
@@ -74,9 +72,9 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
    {
       if (bean == null)
       {
-         bean = manager.getBeans().get(beanIndex);
+         bean = ManagerImpl.instance().getBeans().get(beanIndex);
       }
-      Context context = manager.getContext(bean.getScopeType());
+      Context context = ManagerImpl.instance().getContext(bean.getScopeType());
       Object proxiedInstance = context.get(bean, true);
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
       return proxiedMethod.invoke(proxiedInstance, args);

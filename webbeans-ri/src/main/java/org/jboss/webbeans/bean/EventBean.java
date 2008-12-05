@@ -25,7 +25,6 @@ import javax.webbeans.Dependent;
 import javax.webbeans.Event;
 import javax.webbeans.Standard;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -57,9 +56,9 @@ public class EventBean<T> extends AbstractBean<Event<T>, Field>
     * @param manager The Web Beans manager
     */
    @SuppressWarnings("unchecked")
-   public EventBean(AnnotatedField<T> field, ManagerImpl manager)
+   public EventBean(AnnotatedField<T> field)
    {
-      super(manager);
+      super();
       this.annotatedItem = (AnnotatedField<Event<T>>) field;
       init();
    }
@@ -167,7 +166,7 @@ public class EventBean<T> extends AbstractBean<Event<T>, Field>
    @Override
    public Event<T> create()
    {
-      return new EventImpl<T>(getManager(), annotatedItem.getBindingTypesAsArray());
+      return new EventImpl<T>(annotatedItem.getBindingTypesAsArray());
    }
 
 }

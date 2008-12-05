@@ -32,10 +32,10 @@ public class InjectionTests extends AbstractTest
    @Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="4.2")
    public void testInjectionPerformsBoxingIfNecessary() throws Exception
    {
-      SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class, manager);
+      SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class);
       manager.addBean(spiderProducer);
-      Bean<SpiderNest> spiderNestBean = createSimpleBean(SpiderNest.class, manager);
-      manager.addBean(createProducerMethodBean(Integer.class, SpiderProducer.class.getMethod("getWolfSpiderSize"), manager, spiderProducer));
+      Bean<SpiderNest> spiderNestBean = createSimpleBean(SpiderNest.class);
+      manager.addBean(createProducerMethodBean(Integer.class, SpiderProducer.class.getMethod("getWolfSpiderSize"), spiderProducer));
       SpiderNest spiderNest = spiderNestBean.create();
       assert spiderNest.numberOfSpiders != null;
       assert spiderNest.numberOfSpiders.equals(4);
@@ -44,17 +44,17 @@ public class InjectionTests extends AbstractTest
    @Test(groups={"injection", "producerMethod"}, expectedExceptions=NullableDependencyException.class) @SpecAssertion(section="4.2")
    public void testPrimitiveInjectionPointResolvesToNullableWebBean() throws Exception
    {
-      Bean<FarmHouse> farmHouseBean = createSimpleBean(FarmHouse.class, manager);
-      SimpleBean<FarmHouseProducer> farmHouseProducerBean = createSimpleBean(FarmHouseProducer.class, manager);
-      manager.addBean(createProducerMethodBean(Integer.class, FarmHouseProducer.class.getMethod("getNumberOfBedrooms"), manager, farmHouseProducerBean));
+      Bean<FarmHouse> farmHouseBean = createSimpleBean(FarmHouse.class);
+      SimpleBean<FarmHouseProducer> farmHouseProducerBean = createSimpleBean(FarmHouseProducer.class);
+      manager.addBean(createProducerMethodBean(Integer.class, FarmHouseProducer.class.getMethod("getNumberOfBedrooms"), farmHouseProducerBean));
       farmHouseBean.create();
    }
    
    @Test(groups={"injection", "clientProxy"}, expectedExceptions=ContextNotActiveException.class) @SpecAssertion(section="4.3")
    public void testInvokeNormalInjectedWebBeanWhenContextNotActive()
    {
-      SimpleBean<TunaFarm> tunaFarmBean = createSimpleBean(TunaFarm.class, manager);
-      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
+      SimpleBean<TunaFarm> tunaFarmBean = createSimpleBean(TunaFarm.class);
+      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class);
       manager.addBean(tunaBean);
       TunaFarm tunaFarm = tunaFarmBean.create();
       assert tunaFarm.tuna != null;
@@ -66,8 +66,8 @@ public class InjectionTests extends AbstractTest
    @Test(groups="injection") @SpecAssertion(section="4.3")
    public void testInvokeDependentScopeWhenContextNotActive()
    {
-      Bean<FoxRun> foxRunBean = createSimpleBean(FoxRun.class, manager);
-      Bean<Fox> foxBean = createSimpleBean(Fox.class, manager);
+      Bean<FoxRun> foxRunBean = createSimpleBean(FoxRun.class);
+      Bean<Fox> foxBean = createSimpleBean(Fox.class);
       manager.addBean(foxBean);
       FoxRun foxRun = foxRunBean.create();
       assert foxRun.fox.getName().equals("gavin");
@@ -76,8 +76,8 @@ public class InjectionTests extends AbstractTest
    @Test(groups="injection", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.6")
    public void testInjectingStaticField()
    {
-      SimpleBean<BeanWithStaticBoundField> bean = createSimpleBean(BeanWithStaticBoundField.class, manager);
-      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
+      SimpleBean<BeanWithStaticBoundField> bean = createSimpleBean(BeanWithStaticBoundField.class);
+      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class);
       manager.addBean(tunaBean);
       BeanWithStaticBoundField instance = bean.create();
    }
@@ -85,8 +85,8 @@ public class InjectionTests extends AbstractTest
    @Test(groups="injection",expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.6")
    public void testInjectingFinalField()
    {
-      SimpleBean<BeanWithFinalBoundField> bean = createSimpleBean(BeanWithFinalBoundField.class, manager);
-      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
+      SimpleBean<BeanWithFinalBoundField> bean = createSimpleBean(BeanWithFinalBoundField.class);
+      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class);
       manager.addBean(tunaBean);
       BeanWithFinalBoundField instance = bean.create();
    }

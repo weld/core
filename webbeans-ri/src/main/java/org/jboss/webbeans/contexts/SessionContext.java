@@ -38,7 +38,7 @@ public class SessionContext extends PrivateContext
    {
       super(SessionScoped.class);
       // Replaces the BeanMap implementation with a session-based one
-      beans.set(new SessionBeanMap(manager, getScopeType().getName() + "#"));
+      beans.set(new SessionBeanMap(getScopeType().getName() + "#"));
       log.trace("Created session context");
    }
 

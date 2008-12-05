@@ -42,8 +42,6 @@ public class SessionBeanMap implements BeanMap
 
    // The HTTP session to use as backing map
    private HttpSession session;
-   // The Web Beans manager
-   private ManagerImpl manager;
    // The storage prefix to put before names
    private String keyPrefix;
 
@@ -53,10 +51,9 @@ public class SessionBeanMap implements BeanMap
     * @param manager The Web Beans manager
     * @param keyPrefix The storage names prefix
     */
-   public SessionBeanMap(ManagerImpl manager, String keyPrefix)
+   public SessionBeanMap(String keyPrefix)
    {
       super();
-      this.manager = manager;
       this.keyPrefix = keyPrefix;
       log.trace("SessionBeanMap created with prefix " + keyPrefix);
    }
@@ -94,7 +91,7 @@ public class SessionBeanMap implements BeanMap
     */
    private String getBeanKey(Contextual<?> bean)
    {
-      return keyPrefix + manager.getBeans().indexOf(bean);
+      return keyPrefix + ManagerImpl.instance().getBeans().indexOf(bean);
    }
 
    /**
@@ -189,7 +186,7 @@ public class SessionBeanMap implements BeanMap
          if (name.startsWith(keyPrefix))
          {
             String id = name.substring(keyPrefix.length());
-            Contextual<?> bean = manager.getBeans().get(Integer.parseInt(id));
+            Contextual<?> bean = ManagerImpl.instance().getBeans().get(Integer.parseInt(id));
             beans.add(bean);
          }
       }

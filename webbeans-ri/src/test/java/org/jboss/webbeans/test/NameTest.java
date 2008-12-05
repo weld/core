@@ -24,7 +24,7 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section="2.6.1")
    public void testNonDefaultNamed()
    {
-      SimpleBean<Moose> moose = createSimpleBean(Moose.class, manager);
+      SimpleBean<Moose> moose = createSimpleBean(Moose.class);
       assert moose.getName().equals("aMoose");
    }
    
@@ -80,7 +80,7 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section={"2.6.3", "3.2.7"})
    public void testDefaultNamed()
    {
-      SimpleBean<Haddock> haddock = createSimpleBean(Haddock.class, manager);
+      SimpleBean<Haddock> haddock = createSimpleBean(Haddock.class);
       assert haddock.getName() != null;
       assert haddock.getName().equals("haddock");
    }
@@ -108,7 +108,7 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section={"2.6.3", "2.7"})
    public void testSterotypeDefaultsName()
    {
-      SimpleBean<RedSnapper> model = createSimpleBean(RedSnapper.class, manager);
+      SimpleBean<RedSnapper> model = createSimpleBean(RedSnapper.class);
       assert model.getMergedStereotypes().isBeanNameDefaulted();
       assert model.getName().equals("redSnapper");
    }
@@ -116,14 +116,14 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section="2.6.4")
    public void testNotNamedInJava()
    {
-      SimpleBean<SeaBass> model = createSimpleBean(SeaBass.class, manager);
+      SimpleBean<SeaBass> model = createSimpleBean(SeaBass.class);
       assert model.getName() == null;
    }
    
    @Test @SpecAssertion(section="2.6.4")
    public void testNotNamedInXml()
    {
-      SimpleBean<SeaBass> model = createSimpleBean(SeaBass.class, manager);
+      SimpleBean<SeaBass> model = createSimpleBean(SeaBass.class);
       assert model.getName() == null;
    }
    

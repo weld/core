@@ -23,7 +23,7 @@ public class InitializerMethodTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class, groups="initializerMethod") @SpecAssertion(section="3.7")
    public void testStaticInitializerMethodNotAllowed()
    {
-      createSimpleBean(Dottrel.class, manager);
+      createSimpleBean(Dottrel.class);
    }
    
    @Test(groups={"stub", "initializerMethod", "servlet"}) @SpecAssertion(section="3.7")
@@ -65,10 +65,10 @@ public class InitializerMethodTest extends AbstractTest
    @Test(groups={"initializerMethod"}) @SpecAssertion(section={"3.7", "5.3", "3.7.2", "3.7.3"})
    public void testMultipleInitializerMethodsAreCalled()
    {
-      manager.addBean(createSimpleBean(Fox.class, manager));
-      manager.addBean(createSimpleBean(Chicken.class, manager));
+      manager.addBean(createSimpleBean(Fox.class));
+      manager.addBean(createSimpleBean(Chicken.class));
       
-      Bean<ChickenHutch> chickenHutchBean = createSimpleBean(ChickenHutch.class, manager);
+      Bean<ChickenHutch> chickenHutchBean = createSimpleBean(ChickenHutch.class);
       ChickenHutch chickenHutch = chickenHutchBean.create();
       assert chickenHutch.fox != null;
       assert chickenHutch.chicken != null;
@@ -77,25 +77,25 @@ public class InitializerMethodTest extends AbstractTest
    @Test(groups="initializerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section={"3.7.1", "3.4.2"})
    public void testInitializerMethodAnnotatedProduces()
    {
-      createSimpleBean(Pheasant.class, manager);
+      createSimpleBean(Pheasant.class);
    }
    
    @Test(groups="initializerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.7.1")
    public void testInitializerMethodAnnotatedDestructor()
    {
-      createSimpleBean(Shrike.class, manager);
+      createSimpleBean(Shrike.class);
    }
    
    @Test(groups="initializerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.7.1")
    public void testInitializerMethodHasParameterAnnotatedDisposes()
    {
-      createSimpleBean(Capercaillie.class, manager);
+      createSimpleBean(Capercaillie.class);
    }
    
    @Test(groups="initializerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.7.1")
    public void testInitializerMethodHasParameterAnnotatedObserves()
    {
-      createSimpleBean(Grouse.class, manager);
+      createSimpleBean(Grouse.class);
    }
    
    @Test(groups={"stub", "initializerMethod", "webbeansxml"}) @SpecAssertion(section="3.7.2")

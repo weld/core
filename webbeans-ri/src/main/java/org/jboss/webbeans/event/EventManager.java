@@ -134,8 +134,6 @@ public class EventManager
 
    // The map of registered observers for a give
    private final RegisteredObserversMap registeredObservers;
-   // The Web Beans manager
-   private ManagerImpl manager;
    // The current UserTransaction
    UserTransaction userTransaction;
 
@@ -144,10 +142,9 @@ public class EventManager
     * 
     * @param manager The Web Beans manager
     */
-   public EventManager(ManagerImpl manager)
+   public EventManager()
    {
       registeredObservers = new RegisteredObserversMap();
-      this.manager = manager;
       // TODO. Check where to *really* get this from
       userTransaction = (UserTransaction) JNDI.lookup("java:/UserTransaction");
    }
@@ -239,7 +236,7 @@ public class EventManager
     */
    private <T> void deferEvent(T event, Observer<T> observer)
    {
-      TransactionListener transactionListener = manager.getInstanceByType(TransactionListener.class);
+      TransactionListener transactionListener = ManagerImpl.instance().getInstanceByType(TransactionListener.class);
       DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, observer);
       transactionListener.registerSynhronization(deferredEvent);
    }

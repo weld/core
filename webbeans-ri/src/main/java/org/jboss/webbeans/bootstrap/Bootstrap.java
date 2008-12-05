@@ -36,6 +36,7 @@ import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.util.JNDI;
 
 /**
  * Bootstrapping functionality that is run at application startup and detects
@@ -50,9 +51,6 @@ public class Bootstrap
 
    private static LogProvider log = Logging.getLogProvider(Bootstrap.class);
 
-   // The Web Beans manager
-   private ManagerImpl manager;
-
    /**
     * Constructor
     * 
@@ -60,17 +58,7 @@ public class Bootstrap
     */
    public Bootstrap()
    {
-      this(ManagerImpl.instance());
-   }
-
-   /**
-    * Constructor
-    * 
-    * @param manager The Web Beans manager
-    */
-   protected Bootstrap(ManagerImpl manager)
-   {
-      this.manager = manager;
+      JNDI.set(ManagerImpl.JNDI_KEY, ManagerImpl.instance());
    }
 
    /**
@@ -93,7 +81,7 @@ public class Bootstrap
    public void registerBeans(Iterable<Class<?>> classes)
    {
       Set<AbstractBean<?, ?>> beans = createBeans(classes);
-      manager.setBeans(beans);
+      ManagerImpl.instance().setBeans(beans);
    }
 
    /**
@@ -126,27 +114,27 @@ public class Bootstrap
       for (Class<?> clazz : classes)
       {
          AbstractClassBean<?> bean;
-         if (manager.getMetaDataCache().getEjbMetaData(clazz).isEjb())
+         if (ManagerImpl.instance().getMetaDataCache().getEjbMetaData(clazz).isEjb())
          {
-            bean = createEnterpriseBean(clazz, manager);
+            bean = createEnterpriseBean(clazz);
          }
          else
          {
-            bean = createSimpleBean(clazz, manager);
+            bean = createSimpleBean(clazz);
          }
          beans.add(bean);
-         manager.getResolver().addInjectionPoints(bean.getInjectionPoints());
+         ManagerImpl.instance().getResolver().addInjectionPoints(bean.getInjectionPoints());
          for (AnnotatedMethod<Object> producerMethod : bean.getProducerMethods())
          {
-            ProducerMethodBean<?> producerMethodBean = createProducerMethodBean(producerMethod.getType(), producerMethod, manager, bean);
+            ProducerMethodBean<?> producerMethodBean = createProducerMethodBean(producerMethod.getType(), producerMethod, bean);
             beans.add(producerMethodBean);
-            manager.getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
+            ManagerImpl.instance().getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
          }
          for (AnnotatedField<Object> eventField : bean.getEventFields())
          {
-            EventBean<?> eventBean = createEventBean(eventField.getType(), eventField, manager);
+            EventBean<?> eventBean = createEventBean(eventField.getType(), eventField);
             beans.add(eventBean);
-            manager.getResolver().addInjectionPoints(eventBean.getInjectionPoints());
+            ManagerImpl.instance().getResolver().addInjectionPoints(eventBean.getInjectionPoints());
          }
          log.info("Web Bean: " + bean);
       }
@@ -171,7 +159,7 @@ public class Bootstrap
       }
       registerBeans(webBeanDiscovery.discoverWebBeanClasses());
       log.info("Validing Web Bean injection points");
-      manager.getResolver().resolveInjectionPoints();
+      ManagerImpl.instance().getResolver().resolveInjectionPoints();
    }
 
    /**

@@ -21,8 +21,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.jboss.webbeans.ManagerImpl;
-
 /**
  * Represents a Class Constructor
  * 
@@ -56,7 +54,7 @@ public interface AnnotatedConstructor<T> extends AnnotatedItem<T, Constructor<T>
     * @param manager The Web Beans manager
     * @return The created instance
     */
-   public T newInstance(ManagerImpl manager);
+   public T newInstance();
 
    /**
     * Gets the declaring class of the annotation

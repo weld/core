@@ -21,8 +21,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.jboss.webbeans.ManagerImpl;
-
 /**
  * AnnotatedType provides a uniform access to the annotations on an annotated
  * class defined either in Java or XML
@@ -57,7 +55,7 @@ public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
     * @param instance The instance to invoke
     * @return A reference to the instance
     */
-   public T invoke(ManagerImpl manager, Object instance);
+   public T invoke(Object instance);
 
    /**
     * Invokes the method

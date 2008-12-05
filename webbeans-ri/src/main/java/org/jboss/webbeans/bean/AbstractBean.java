@@ -90,8 +90,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    // Logger
    private LogProvider log = Logging.getLogProvider(AbstractBean.class);
 
-   // Reference to WBRI manager
-   private ManagerImpl manager;
    private Set<Annotation> bindingTypes;
    protected String name;
    protected Class<? extends Annotation> scopeType;
@@ -112,10 +110,9 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * 
     * @param manager The Web Beans manager
     */
-   public AbstractBean(ManagerImpl manager)
+   public AbstractBean()
    {
-      super(manager);
-      this.manager = manager;
+      super(ManagerImpl.instance());
    }
 
    /**
@@ -123,7 +120,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     */
    protected void init()
    {
-      mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class), manager);
+      mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class));
       initType();
       initPrimitive();
       log.debug("Building Web Bean bean metadata for " + getType());
@@ -226,7 +223,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
 
          if (getMergedStereotypes().getPossibleDeploymentTypes().size() > 0)
          {
-            this.deploymentType = getDeploymentType(manager.getEnabledDeploymentTypes(), getMergedStereotypes().getPossibleDeploymentTypes());
+            this.deploymentType = getDeploymentType(ManagerImpl.instance().getEnabledDeploymentTypes(), getMergedStereotypes().getPossibleDeploymentTypes());
             log.trace("Deployment type " + deploymentType + " specified by stereotype");
             return;
          }
@@ -490,17 +487,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    public Set<AnnotatedItem<?, ?>> getInjectionPoints()
    {
       return injectionPoints;
-   }
-
-   /**
-    * Returns the Web Beans manager reference
-    * 
-    * @return The manager
-    */
-   @Override
-   protected ManagerImpl getManager()
-   {
-      return manager;
    }
 
    /**

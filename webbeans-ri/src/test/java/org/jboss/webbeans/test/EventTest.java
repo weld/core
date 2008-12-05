@@ -4,24 +4,12 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.webbeans.DuplicateBindingTypeException;
-import javax.webbeans.Event;
 import javax.webbeans.Observer;
 import javax.webbeans.Standard;
 
-import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
-import org.jboss.webbeans.test.annotations.Synchronous;
-import org.jboss.webbeans.test.annotations.Tame;
-import org.jboss.webbeans.test.beans.DangerCall;
-import org.jboss.webbeans.test.bindings.FishStereotypeAnnotationLiteral;
-import org.jboss.webbeans.test.bindings.RiverFishStereotypeAnnotationLiteral;
-import org.jboss.webbeans.test.bindings.SynchronousAnnotationLiteral;
-import org.jboss.webbeans.test.bindings.TameAnnotationLiteral;
 import org.jboss.webbeans.test.mock.MockManagerImpl;
-import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 /**
  * Tests for the implementation of an Event component.

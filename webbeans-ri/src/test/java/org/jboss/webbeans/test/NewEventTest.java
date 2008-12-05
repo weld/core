@@ -3,10 +3,15 @@ package org.jboss.webbeans.test;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
+import javax.webbeans.Event;
 import javax.webbeans.Observer;
 import javax.webbeans.TypeLiteral;
 
+import org.jboss.webbeans.bean.EventBean;
+import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.test.bindings.RoleBinding;
+import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.Test;
 
 /**
@@ -29,6 +34,17 @@ public class NewEventTest extends AbstractTest
       {
       }
       
+   }
+   
+   @SuppressWarnings("unchecked")
+   @Test
+   public void create() {
+      SimpleBean<MyTest> myTestBean = BeanFactory.createSimpleBean(MyTest.class);
+      for (AnnotatedField<Object> field : myTestBean.getEventFields()) {
+         EventBean eventBean = BeanFactory.createEventBean(field.getType(), field);
+         @SuppressWarnings("unused")
+         Event<Param> event = eventBean.create();
+      }
    }
 
    @Test(groups={"stub", "events"})

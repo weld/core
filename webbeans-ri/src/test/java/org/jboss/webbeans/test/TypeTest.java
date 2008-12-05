@@ -12,7 +12,7 @@ public class TypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.6.3")
    public void testDefaultNamed()
    {
-      SimpleBean<Haddock> haddock = createSimpleBean(Haddock.class, manager);
+      SimpleBean<Haddock> haddock = createSimpleBean(Haddock.class);
       assert haddock.getName() != null;
       assert haddock.getName().equals("haddock");
    }

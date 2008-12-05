@@ -29,41 +29,41 @@ public class CommonWebBeanTest extends AbstractTest
 	@Test @SpecAssertion(section="2")
 	public void testApiTypesNonEmpty()
 	{
-	   Bean<?> model = createSimpleBean(RedSnapper.class, manager);
+	   Bean<?> model = createSimpleBean(RedSnapper.class);
       assert model.getTypes().size() > 0;
 	}
 	
 	@Test @SpecAssertion(section="2")
 	public void testBindingTypesNonEmpty()
 	{
-	   Bean<?> model = createSimpleBean(RedSnapper.class, manager);
+	   Bean<?> model = createSimpleBean(RedSnapper.class);
       assert model.getBindingTypes().size() > 0;
 	}
 	
 	@Test @SpecAssertion(section="2")
 	public void testHasScopeType()
 	{
-	   Bean<?> model = createSimpleBean(RedSnapper.class, manager);
+	   Bean<?> model = createSimpleBean(RedSnapper.class);
       assert model.getScopeType().equals(RequestScoped.class);
 	}
 	
 	@Test @SpecAssertion(section="2")
 	public void testHasDeploymentType()
 	{
-		Bean<?> model = createSimpleBean(RedSnapper.class, manager);
+		Bean<?> model = createSimpleBean(RedSnapper.class);
 		assert model.getDeploymentType().equals(Production.class);
 	}
 	
 	@Test(groups="producerMethod") @SpecAssertion(section="4.2")
    public void testIsNullable() throws Exception
    {
-	   SimpleBean<SpiderProducer> spiderProducerBean = createSimpleBean(SpiderProducer.class, manager);
+	   SimpleBean<SpiderProducer> spiderProducerBean = createSimpleBean(SpiderProducer.class);
 	   manager.addBean(spiderProducerBean);
       Method method = SpiderProducer.class.getMethod("getWolfSpiderSize");
-      Bean<Integer> bean = createProducerMethodBean(int.class, method, manager, spiderProducerBean);
+      Bean<Integer> bean = createProducerMethodBean(int.class, method, spiderProducerBean);
       assert !bean.isNullable();
       method = SpiderProducer.class.getMethod("makeASpider");
-      Bean<Spider> spiderBean = createProducerMethodBean(Spider.class, method, manager, spiderProducerBean);
+      Bean<Spider> spiderBean = createProducerMethodBean(Spider.class, method, spiderProducerBean);
       assert spiderBean.isNullable();
    }
 	

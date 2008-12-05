@@ -58,9 +58,9 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
     * @param declaringBean The declaring bean instance
     * @param manager The Web Beans manager
     */
-   public ProducerMethodBean(Method method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   public ProducerMethodBean(Method method, AbstractClassBean<?> declaringBean)
    {
-      this(new AnnotatedMethodImpl<T>(method, declaringBean.getAnnotatedItem()), declaringBean, manager);
+      this(new AnnotatedMethodImpl<T>(method, declaringBean.getAnnotatedItem()), declaringBean);
    }
    
    /**
@@ -70,9 +70,9 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
     * @param declaringBean The declaring bean
     * @param manager The Web Beans manager
     */
-   public ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   public ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean)
    {
-      super(manager);
+      super();
       this.method = method;
       this.declaringBean = declaringBean;
       init();
@@ -86,7 +86,7 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
    @Override
    public T create()
    {
-      T instance = method.invoke(getManager(), getManager().getInstance(getDeclaringBean()));
+      T instance = method.invoke(ManagerImpl.instance().getInstance(getDeclaringBean()));
       if (instance == null && !getScopeType().equals(Dependent.class))
       {
          throw new IllegalProductException("Cannot return null from a non-dependent method");
@@ -177,7 +177,7 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
     */
    protected void initRemoveMethod()
    {
-      Set<AnnotatedMethod<Object>> disposalMethods = getManager().resolveDisposalMethods(getType(), getBindingTypes().toArray(new Annotation[0]));
+      Set<AnnotatedMethod<Object>> disposalMethods = ManagerImpl.instance().resolveDisposalMethods(getType(), getBindingTypes().toArray(new Annotation[0]));
       if (disposalMethods.size() == 1)
       {
          removeMethod = disposalMethods.iterator().next();

@@ -63,7 +63,7 @@ public class ObserverTest
       //annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
       //AnnotatedClass<Tuna> annotatedItem = new SimpleAnnotatedClass<Tuna>(Tuna.class, annotations);
       
-      tuna = createSimpleBean(Tuna.class, manager);
+      tuna = createSimpleBean(Tuna.class);
       om = new AnnotatedMethodImpl<Object>(AnObserver.class.getMethod("observe", new Class[] { SampleEvent.class }), new AnnotatedClassImpl<AnObserver>(AnObserver.class));
    }
 

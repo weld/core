@@ -58,9 +58,9 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   public EnterpriseBean(Class<T> type, ManagerImpl manager)
+   public EnterpriseBean(Class<T> type)
    {
-      super(type, manager);
+      super(type);
       init();
    }
 
@@ -139,14 +139,14 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       if (!isDefinedInXml())
       {
-         if (!getManager().getMetaDataCache().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
+         if (!ManagerImpl.instance().getMetaDataCache().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
          {
             throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
          }
       }
       else
       {
-         if (getManager().getMetaDataCache().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
+         if (ManagerImpl.instance().getMetaDataCache().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
          {
             throw new DefinitionException("XML defined specializing EJB must have annotation defined EJB implementation");
          }
@@ -225,7 +225,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    @Override
    public T create()
    {
-      T instance = (T) getManager().getInstanceByType(EnterpriseBeanLookup.class).lookup(ejbMetaData.getEjbName());
+      T instance = (T) ManagerImpl.instance().getInstanceByType(EnterpriseBeanLookup.class).lookup(ejbMetaData.getEjbName());
       bindDecorators();
       bindInterceptors();
       injectEjbAndCommonFields();
@@ -254,7 +254,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       for (AnnotatedMethod<Object> initializer : getInitializerMethods())
       {
-         initializer.invoke(getManager(), instance);
+         initializer.invoke(instance);
       }
    }
 
@@ -275,7 +275,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       for (AnnotatedField<?> field : getInjectableFields())
       {
-         field.inject(instance, getManager());
+         field.inject(instance);
       }
    }
 
@@ -307,7 +307,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       if (superclass != null)
       {
          // TODO look up this bean and do this via init
-         return new EnterpriseBean(superclass, getManager());
+         return new EnterpriseBean(superclass);
       }
       else
       {

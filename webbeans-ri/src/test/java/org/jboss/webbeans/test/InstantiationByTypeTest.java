@@ -35,7 +35,7 @@ public class InstantiationByTypeTest extends AbstractTest
    @Test(groups={"resolution", "beanLifecycle"}) @SpecAssertion(section="4.9")
    public void testCurrentBindingTypeAssumed()
    {
-      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
+      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class);
       manager.addBean(tunaBean);
       assert manager.getInstanceByType(Tuna.class) != null;
    }
@@ -56,9 +56,9 @@ public class InstantiationByTypeTest extends AbstractTest
    public void testAmbiguousDependencies() throws Exception
    {
       AnnotatedField<ScottishFish> whiteScottishFishField = new AnnotatedFieldImpl<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
-      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
+      Bean<Cod> codBean = createSimpleBean(Cod.class);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class);
+      Bean<Sole> soleBean = createSimpleBean(Sole.class);
       manager.addBean(codBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
@@ -70,9 +70,9 @@ public class InstantiationByTypeTest extends AbstractTest
    public void testUnsatisfiedDependencies() throws Exception
    {
       AnnotatedField<ScottishFish> whiteScottishFishField = new AnnotatedFieldImpl<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
-      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
+      Bean<Cod> codBean = createSimpleBean(Cod.class);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class);
+      Bean<Sole> soleBean = createSimpleBean(Sole.class);
       manager.addBean(codBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
@@ -84,7 +84,7 @@ public class InstantiationByTypeTest extends AbstractTest
    public void testUnproxyableDependencies() throws Exception
    {
       AnnotatedField<Plaice> plaiceField = new AnnotatedFieldImpl<Plaice>(PlaiceFarm.class.getDeclaredField("plaice"), fishFarmClass);
-      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class, manager);
+      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class);
       manager.addBean(plaiceBean);
       
       manager.getInstanceByType(Plaice.class, new AnnotationLiteral<Whitefish>(){});

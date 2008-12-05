@@ -25,7 +25,7 @@ public class DeploymentTypeTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.5.1")
    public void testNonBuiltInComponentUsesStandard()
    {
-      createSimpleBean(Gazelle.class, manager);
+      createSimpleBean(Gazelle.class);
    }
    
    @Test(groups={"stub", "annotationDefinition"}) @SpecAssertion(section="2.5.2")
@@ -49,7 +49,7 @@ public class DeploymentTypeTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.5.3")
    public void testTooManyDeploymentTypes()
    {
-      createSimpleBean(BeanWithTooManyDeploymentTypes.class, manager);
+      createSimpleBean(BeanWithTooManyDeploymentTypes.class);
    }
    
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.5.4")
@@ -87,7 +87,7 @@ public class DeploymentTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.5.5")
    public void testHighestPrecedenceDeploymentTypeFromStereotype()
    {
-      Bean<?> bean = createSimpleBean(Rhinoceros.class, manager);
+      Bean<?> bean = createSimpleBean(Rhinoceros.class);
       assert bean.getDeploymentType().equals(HornedAnimalDeploymentType.class);
    }
    
@@ -107,7 +107,7 @@ public class DeploymentTypeTest extends AbstractTest
    {
       manager.setEnabledDeploymentTypes(Standard.class, AnotherDeploymentType.class, HornedAnimalDeploymentType.class);
       
-      Bean<RedSnapper> bean = createSimpleBean(RedSnapper.class, manager);
+      Bean<RedSnapper> bean = createSimpleBean(RedSnapper.class);
       manager.addBean(bean);
       manager.getInstanceByType(RedSnapper.class);
    }
@@ -146,7 +146,7 @@ public class DeploymentTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.7.2")
    public void testWebBeanDeploymentTypeOverridesStereotype()
    {
-      Bean<Reindeer> bean = createSimpleBean(Reindeer.class, manager);
+      Bean<Reindeer> bean = createSimpleBean(Reindeer.class);
       assert bean.getDeploymentType().equals(Production.class);
    }
 }
