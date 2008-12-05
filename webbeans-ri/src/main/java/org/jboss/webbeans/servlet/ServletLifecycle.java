@@ -42,8 +42,6 @@ import org.jboss.webbeans.util.Reflections;
 public class ServletLifecycle
 {
    private static LogProvider log = Logging.getLogProvider(ServletLifecycle.class);
-   // Where to find the manager in JNDI
-   private static final String MANAGER_JNDI_KEY = "java:comp/Manager";
    // The servlet context
    private static ServletContext servletContext;
    
@@ -94,7 +92,7 @@ public class ServletLifecycle
     */
    public static void beginRequest(HttpServletRequest request) {
       ManagerImpl manager = ManagerImpl.instance();
-      SessionContext sessionContext = (SessionContext) manager.getContext(SessionScoped.class);
+      SessionContext sessionContext = (SessionContext) manager.getBuiltInContext(SessionScoped.class);
       sessionContext.setSession(request.getSession(true));
    }
    

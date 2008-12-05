@@ -19,6 +19,9 @@ package org.jboss.webbeans.servlet;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.ServletRequestEvent;
+import javax.servlet.ServletRequestListener;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
@@ -32,7 +35,7 @@ import javax.servlet.http.HttpSessionListener;
  * @author Nicklas Karlsson
  *
  */
-public class WebBeansListener implements ServletContextListener, HttpSessionListener
+public class WebBeansListener implements ServletContextListener, HttpSessionListener, ServletRequestListener
 {
 
    /**
@@ -73,6 +76,30 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
    public void contextDestroyed(ServletContextEvent event) 
    {
       ServletLifecycle.endApplication();
+   }
+
+   public void requestDestroyed(ServletRequestEvent sre)
+   {
+      if (sre.getServletRequest() instanceof HttpServletRequest)
+      {
+         ServletLifecycle.endRequest((HttpServletRequest) sre.getServletRequest());
+      }
+      else
+      {
+         throw new IllegalStateException("Non HTTP-Servlet lifecycle not defined");
+      }
+   }
+
+   public void requestInitialized(ServletRequestEvent sre)
+   {
+      if (sre.getServletRequest() instanceof HttpServletRequest)
+      {
+         ServletLifecycle.beginRequest((HttpServletRequest) sre.getServletRequest());
+      }
+      else
+      {
+         throw new IllegalStateException("Non HTTP-Servlet lifecycle not defined");
+      }
    }
 
 }

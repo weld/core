@@ -453,6 +453,17 @@ public class ManagerImpl implements Manager
       }
       return activeContexts.iterator().next();
    }
+   
+   /**
+    * Direct access to build in contexts for internal use
+    * 
+    * @param scopeType
+    * @return
+    */
+   public Context getBuiltInContext(Class<? extends Annotation> scopeType)
+   {
+      return contextMap.getBuiltInContext(scopeType);
+   }
 
    /**
     * Returns an instance of a bean
