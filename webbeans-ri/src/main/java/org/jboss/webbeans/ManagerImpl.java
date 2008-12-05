@@ -75,7 +75,7 @@ public class ManagerImpl implements Manager
 {
    public static final String JNDI_KEY = "java:comp/Manager";
    
-   private static ManagerImpl instance = new ManagerImpl();
+   protected static ManagerImpl instance = new ManagerImpl();
    
    public static ManagerImpl instance()
    {
@@ -157,7 +157,7 @@ public class ManagerImpl implements Manager
       {
          addContext(new DependentContext());
          addContext(new RequestContext());
-         addContext(new SessionContext(this));
+         addContext(new SessionContext());
          addContext(new ApplicationContext());
       }
       else
@@ -688,12 +688,6 @@ public class ManagerImpl implements Manager
       buffer.append(Strings.collectionToString("Registered decorators: ", decorators));
       buffer.append(Strings.collectionToString("Registered interceptors: ", interceptors));
       return buffer.toString();
-   }
-
-   // TODO: Temp
-   public static void setInstance(ManagerImpl manager)
-   {
-      ManagerImpl.instance = manager;
    }
 
    public Manager parse(InputStream xmlStream)

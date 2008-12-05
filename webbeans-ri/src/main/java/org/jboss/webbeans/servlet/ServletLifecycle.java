@@ -23,11 +23,10 @@ import java.lang.reflect.InvocationTargetException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.webbeans.SessionScoped;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.Bootstrap;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.contexts.ApplicationContext;
 import org.jboss.webbeans.contexts.SessionContext;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -57,12 +56,15 @@ public class ServletLifecycle
       servletContext = context;
       Bootstrap bootstrap = new Bootstrap();
       bootstrap.boot(getWebBeanDiscovery());
+      ApplicationContext.instance().setBeanMap(new ApplicationBeanMap(servletContext));
    }
    
    /**
     * Ends the application
     */
-   public static void endApplication() {
+   public static void endApplication() 
+   {
+      ApplicationContext.instance().setBeanMap(null);
       servletContext = null;
    }
    
@@ -80,7 +82,8 @@ public class ServletLifecycle
     * 
     * @param session The HTTP session
     */
-   public static void endSession(HttpSession session) {
+   public static void endSession(HttpSession session) 
+   {
    }   
    
    /**
@@ -90,10 +93,9 @@ public class ServletLifecycle
     * 
     * @param request The request
     */
-   public static void beginRequest(HttpServletRequest request) {
-      ManagerImpl manager = ManagerImpl.instance();
-      SessionContext sessionContext = (SessionContext) manager.getBuiltInContext(SessionScoped.class);
-      sessionContext.setSession(request.getSession(true));
+   public static void beginRequest(HttpServletRequest request) 
+   {
+      SessionContext.instance().setBeanMap(new SessionBeanMap(request.getSession()));
    }
    
    /**
@@ -101,7 +103,9 @@ public class ServletLifecycle
     * 
     * @param request The request
     */
-   public static void endRequest(HttpServletRequest request) {
+   public static void endRequest(HttpServletRequest request) 
+   {
+      SessionContext.instance().setBeanMap(null);
    }
    
    /**

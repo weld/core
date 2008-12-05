@@ -27,15 +27,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 
  * @see org.jboss.webbeans.contexts.ApplicationContext
  */
-public class SharedContext extends AbstractContext
+public abstract class SharedContext extends AbstractContext
 {
-   private BeanMap beans;
    private AtomicBoolean active;
 
    public SharedContext(Class<? extends Annotation> scopeType)
    {
       super(scopeType);
-      beans = new SimpleBeanMap();
       active = new AtomicBoolean(true);
    }
 
@@ -47,14 +45,9 @@ public class SharedContext extends AbstractContext
    {
       return active;
    }
-
-   /**
-    * Delegates to the map implementation
-    */
-   @Override
-   protected BeanMap getBeanMap()
-   {
-      return beans;
-   }
+   
+   protected abstract BeanMap getBeanMap();
+   
+   public abstract void setBeanMap(BeanMap beanMap); 
 
 }

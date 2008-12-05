@@ -17,7 +17,6 @@
 
 package org.jboss.webbeans.contexts;
 
-import javax.servlet.http.HttpSession;
 import javax.webbeans.SessionScoped;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -29,27 +28,34 @@ import org.jboss.webbeans.log.Logging;
  * 
  * @author Nicklas Karlsson
  */
-public class SessionContext extends PrivateContext
+public class SessionContext extends SharedContext
 {
 
    private static LogProvider log = Logging.getLogProvider(SessionContext.class);
+   
+   private ThreadLocal<BeanMap> beanMap;
 
-   public SessionContext(ManagerImpl manager)
+   public SessionContext()
    {
       super(SessionScoped.class);
-      // Replaces the BeanMap implementation with a session-based one
-      beans.set(new SessionBeanMap(getScopeType().getName() + "#"));
       log.trace("Created session context");
    }
-
-   /**
-    * Sets the session in the session bean map
-    * 
-    * @param session The session to set
-    */
-   public void setSession(HttpSession session)
+   
+   @Override
+   public BeanMap getBeanMap()
    {
-      ((SessionBeanMap) getBeanMap()).setSession(session);
+      return beanMap.get();
+   }
+   
+   @Override
+   public void setBeanMap(BeanMap beanMap)
+   {
+      this.beanMap.set(beanMap);
+   }
+   
+   public static SessionContext instance()
+   {
+      return (SessionContext) ManagerImpl.instance().getBuiltInContext(SessionScoped.class);
    }
 
 }

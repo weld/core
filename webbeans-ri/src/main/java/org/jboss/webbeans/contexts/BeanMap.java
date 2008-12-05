@@ -26,7 +26,7 @@ import javax.webbeans.manager.Contextual;
  * @author Nicklas Karlsson
  * 
  * @see org.jboss.webbeans.contexts.SimpleBeanMap
- * @see org.jboss.webbeans.contexts.SessionBeanMap
+ * @see org.jboss.webbeans.servlet.SessionBeanMap
  */
 public interface BeanMap
 {

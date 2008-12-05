@@ -24,6 +24,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * The abstraction of a private context, on that operates on a ThreadLocal
  * BeanMap and ThreadLocal active state
  * 
+ * A private context doesn't rely on some external context to hold it's state
+ * 
  * @author Nicklas Karlsson
  * 
  * @see org.jboss.webbeans.contexts.DependentContext
@@ -39,8 +41,16 @@ public class PrivateContext extends AbstractContext
    public PrivateContext(Class<? extends Annotation> scopeType)
    {
       super(scopeType);
-      beans = new ThreadLocal<BeanMap>();
-      beans.set(new SimpleBeanMap());
+      beans = new ThreadLocal<BeanMap>()
+      {
+         
+         @Override
+         protected BeanMap initialValue()
+         {
+            return new SimpleBeanMap();
+         }
+         
+      };
       active = new ThreadLocal<AtomicBoolean>();
       active.set(new AtomicBoolean(true));
    }

@@ -19,6 +19,8 @@ package org.jboss.webbeans.contexts;
 
 import javax.webbeans.ApplicationScoped;
 
+import org.jboss.webbeans.ManagerImpl;
+
 /**
  * The Application context
  * 
@@ -29,9 +31,27 @@ import javax.webbeans.ApplicationScoped;
 public class ApplicationContext extends SharedContext
 {
 
+   private BeanMap beanMap;
+   
    public ApplicationContext()
    {
       super(ApplicationScoped.class);
    }
 
+   @Override
+   public BeanMap getBeanMap()
+   {
+      return this.beanMap;
+   }
+   
+   public void setBeanMap(BeanMap applicationBeanMap)
+   {
+      this.beanMap = applicationBeanMap;
+   }
+   
+   public static ApplicationContext instance()
+   {
+      return (ApplicationContext) ManagerImpl.instance().getBuiltInContext(ApplicationScoped.class);
+   }
+   
 }

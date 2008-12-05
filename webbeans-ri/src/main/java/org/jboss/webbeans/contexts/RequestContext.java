@@ -19,6 +19,8 @@ package org.jboss.webbeans.contexts;
 
 import javax.webbeans.RequestScoped;
 
+import org.jboss.webbeans.ManagerImpl;
+
 /**
  * The request context
  * 
@@ -31,5 +33,11 @@ public class RequestContext extends PrivateContext
    {
       super(RequestScoped.class);
    }
+   
+   public static RequestContext instance()
+   {
+      return (RequestContext) ManagerImpl.instance().getBuiltInContext(RequestScoped.class);
+   }
+   
 
 }

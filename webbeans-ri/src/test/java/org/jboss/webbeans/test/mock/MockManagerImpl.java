@@ -5,15 +5,18 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.webbeans.Observer;
-import javax.webbeans.TypeLiteral;
 import javax.webbeans.manager.Context;
-import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 
 public class MockManagerImpl extends ManagerImpl
 {
+   
+   public static void setInstance(ManagerImpl manager)
+   {
+      ManagerImpl.instance = manager;
+   }
+   
    private Object       event = null;
    private Class<? extends Object>     eventType = null;
    private Annotation[] eventBindings = null;
