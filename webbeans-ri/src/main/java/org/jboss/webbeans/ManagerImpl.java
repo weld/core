@@ -17,6 +17,7 @@
 
 package org.jboss.webbeans;
 
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,7 +73,6 @@ import org.jboss.webbeans.util.Strings;
  */
 public class ManagerImpl implements Manager
 {
-   
    public static final String JNDI_KEY = "java:comp/Manager";
    
    private static ManagerImpl instance = new ManagerImpl();
@@ -694,6 +694,18 @@ public class ManagerImpl implements Manager
    public static void setInstance(ManagerImpl manager)
    {
       ManagerImpl.instance = manager;
+   }
+
+   public Manager parse(InputStream xmlStream)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   public Manager validate()
+   {
+      // TODO Auto-generated method stub
+      return null;
    }
 
 }

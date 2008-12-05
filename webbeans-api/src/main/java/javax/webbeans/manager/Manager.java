@@ -17,6 +17,7 @@
 
 package javax.webbeans.manager;
 
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Set;
@@ -36,13 +37,11 @@ public interface Manager
 
    public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindings);
 
-   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,
-         Annotation... bindings);
+   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType, Annotation... bindings);
 
    public <T> T getInstanceByType(Class<T> type, Annotation... bindings);
 
-   public <T> T getInstanceByType(TypeLiteral<T> type,
-         Annotation... bindings);
+   public <T> T getInstanceByType(TypeLiteral<T> type, Annotation... bindings);
 
    public Set<Bean<?>> resolveByName(String name);
 
@@ -61,25 +60,23 @@ public interface Manager
    public Manager addInterceptor(Interceptor interceptor);
 
    public Manager addDecorator(Decorator decorator);
+   
+   public Manager validate();
+   
+   public Manager parse(InputStream xmlStream);
 
-   public <T> Manager addObserver(Observer<T> observer, Class<T> eventType,
-         Annotation... bindings);
+   public <T> Manager addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings);
 
-   public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType,
-         Annotation... bindings);
+   public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings);
 
-   public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType,
-         Annotation... bindings);
+   public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings);
 
-   public <T> Manager removeObserver(Observer<T> observer,
-         TypeLiteral<T> eventType, Annotation... bindings);
+   public <T> Manager removeObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings);
 
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings);
 
-   public List<Interceptor> resolveInterceptors(InterceptionType type,
-         Annotation... interceptorBindings);
+   public List<Interceptor> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings);
 
-   public List<Decorator> resolveDecorators(Set<Class<?>> types,
-         Annotation... bindings);
+   public List<Decorator> resolveDecorators(Set<Class<?>> types, Annotation... bindings);
 
 }
