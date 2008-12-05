@@ -17,6 +17,8 @@
 
 package org.jboss.webbeans.contexts;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.webbeans.ApplicationScoped;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -28,10 +30,11 @@ import org.jboss.webbeans.ManagerImpl;
  * 
  * @see org.jboss.webbeans.contexts.ApplicationContext
  */
-public class ApplicationContext extends SharedContext
+public class ApplicationContext extends AbstractContext
 {
 
    private BeanMap beanMap;
+   private AtomicBoolean active;
    
    public ApplicationContext()
    {
@@ -52,6 +55,18 @@ public class ApplicationContext extends SharedContext
    public static ApplicationContext instance()
    {
       return (ApplicationContext) ManagerImpl.instance().getBuiltInContext(ApplicationScoped.class);
+   }
+   
+   @Override
+   public boolean isActive()
+   {
+      return active.get();
+   }
+   
+   @Override
+   public void setActive(boolean active)
+   {
+      this.active.set(active);
    }
    
 }

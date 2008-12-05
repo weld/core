@@ -18,36 +18,46 @@
 package org.jboss.webbeans.contexts;
 
 import java.lang.annotation.Annotation;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * The abstraction of a shared context with common beans and active state state
+ * The abstraction of a private context, on that operates on a ThreadLocal
+ * BeanMap and ThreadLocal active state
+ * 
+ * A private context doesn't rely on some external context to hold it's state
  * 
  * @author Nicklas Karlsson
  * 
- * @see org.jboss.webbeans.contexts.ApplicationContext
+ * @see org.jboss.webbeans.contexts.DependentContext
+ * @see org.jboss.webbeans.contexts.RequestContext
+ * @see org.jboss.webbeans.contexts.ConversationContext
+ * @see org.jboss.webbeans.contexts.SessionContext
  */
-public abstract class SharedContext extends AbstractContext
+public abstract class BasicContext extends AbstractContext
 {
-   private AtomicBoolean active;
+   protected ThreadLocal<BeanMap> beans;
 
-   public SharedContext(Class<? extends Annotation> scopeType)
+   public BasicContext(Class<? extends Annotation> scopeType)
    {
       super(scopeType);
-      active = new AtomicBoolean(true);
+      beans = new ThreadLocal<BeanMap>()
+      {
+         
+         @Override
+         protected BeanMap initialValue()
+         {
+            return new SimpleBeanMap();
+         }
+         
+      };
    }
 
    /**
-    * Delegates to the ThreadLocal
+    * Delegates to a ThreadLocal instance
     */
    @Override
-   protected AtomicBoolean getActive()
+   protected BeanMap getBeanMap()
    {
-      return active;
+      return beans.get();
    }
-   
-   protected abstract BeanMap getBeanMap();
-   
-   public abstract void setBeanMap(BeanMap beanMap); 
 
 }

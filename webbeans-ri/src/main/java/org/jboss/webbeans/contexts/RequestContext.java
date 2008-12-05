@@ -26,7 +26,7 @@ import org.jboss.webbeans.ManagerImpl;
  * 
  * @author Nicklas Karlsson
  */
-public class RequestContext extends PrivateContext
+public class RequestContext extends BasicContext
 {
 
    public RequestContext()

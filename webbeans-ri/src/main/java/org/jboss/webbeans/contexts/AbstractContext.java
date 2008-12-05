@@ -18,7 +18,6 @@
 package org.jboss.webbeans.contexts;
 
 import java.lang.annotation.Annotation;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.manager.Bean;
@@ -35,12 +34,13 @@ import javax.webbeans.manager.Manager;
  * @author Pete Muir
  * 
  * @see org.jboss.webbeans.contexts.SharedContext
- * @see org.jboss.webbeans.contexts.PrivateContext
+ * @see org.jboss.webbeans.contexts.BasicContext
  */
 public abstract class AbstractContext implements Context
 {
    // The scope type
    private Class<? extends Annotation> scopeType;
+   private ThreadLocal<Boolean> active;
 
    /**
     * Constructor
@@ -50,6 +50,14 @@ public abstract class AbstractContext implements Context
    public AbstractContext(Class<? extends Annotation> scopeType)
    {
       this.scopeType = scopeType;
+      this.active = new ThreadLocal<Boolean>()
+      {
+         @Override
+         protected Boolean initialValue()
+         {
+            return Boolean.FALSE;
+         } 
+      };
    }
 
    /**
@@ -105,7 +113,7 @@ public abstract class AbstractContext implements Context
     */
    public boolean isActive()
    {
-      return getActive().get();
+      return active.get().booleanValue();
    }
 
    /**
@@ -115,7 +123,7 @@ public abstract class AbstractContext implements Context
     */
    public void setActive(boolean active)
    {
-      getActive().set(active);
+      this.active.set(Boolean.valueOf(active));
    }
 
    // TODO Do we need this
@@ -141,13 +149,6 @@ public abstract class AbstractContext implements Context
     */
    protected abstract BeanMap getBeanMap();
 
-   /**
-    * A method that should return the actual atomic boolean instance
-    * 
-    * @return The active boolean
-    */
-   protected abstract AtomicBoolean getActive();
-
    @Override
    public String toString()
    {
@@ -157,6 +158,14 @@ public abstract class AbstractContext implements Context
       buffer.append("Active: " + getActive().toString() + "\n");
       buffer.append(getBeanMap().toString() + "\n");
       return buffer.toString();
+   }
+
+   /**
+    * Delegates to a ThreadLocal instance
+    */
+   protected Boolean getActive()
+   {
+      return active.get();
    }
 
 }

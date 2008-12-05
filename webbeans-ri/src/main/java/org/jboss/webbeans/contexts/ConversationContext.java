@@ -24,7 +24,7 @@ import javax.webbeans.ConversationScoped;
  * 
  * @author Nicklas Karlsson
  */
-public class ConversationContext extends PrivateContext
+public class ConversationContext extends BasicContext
 {
 
    public ConversationContext()

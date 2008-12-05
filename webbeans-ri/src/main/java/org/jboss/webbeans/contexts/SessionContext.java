@@ -28,7 +28,7 @@ import org.jboss.webbeans.log.Logging;
  * 
  * @author Nicklas Karlsson
  */
-public class SessionContext extends SharedContext
+public class SessionContext extends AbstractContext
 {
 
    private static LogProvider log = Logging.getLogProvider(SessionContext.class);
@@ -47,7 +47,6 @@ public class SessionContext extends SharedContext
       return beanMap.get();
    }
    
-   @Override
    public void setBeanMap(BeanMap beanMap)
    {
       this.beanMap.set(beanMap);

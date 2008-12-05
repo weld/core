@@ -26,7 +26,7 @@ import javax.webbeans.manager.Contextual;
  * 
  * @author Nicklas Karlsson
  */
-public class DependentContext extends PrivateContext
+public class DependentContext extends BasicContext
 {
 
    public DependentContext()
