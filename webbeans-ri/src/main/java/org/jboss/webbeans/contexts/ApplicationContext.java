@@ -21,8 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.webbeans.ApplicationScoped;
 
-import org.jboss.webbeans.ManagerImpl;
-
 /**
  * The Application context
  * 
@@ -32,6 +30,9 @@ import org.jboss.webbeans.ManagerImpl;
  */
 public class ApplicationContext extends AbstractContext
 {
+
+   public static ApplicationContext INSTANCE = new ApplicationContext();
+   
    // The beans
    private BeanMap beanMap;
    // Is the context active?
@@ -40,7 +41,7 @@ public class ApplicationContext extends AbstractContext
    /**
     * Constructor
     */
-   public ApplicationContext()
+   protected ApplicationContext()
    {
       super(ApplicationScoped.class);
       this.active = new AtomicBoolean(true);
@@ -65,16 +66,6 @@ public class ApplicationContext extends AbstractContext
    public void setBeanMap(BeanMap applicationBeanMap)
    {
       this.beanMap = applicationBeanMap;
-   }
-   
-   /**
-    * Helper method for accessing context
-    * 
-    * @return The application context
-    */   
-   public static ApplicationContext instance()
-   {
-      return (ApplicationContext) ManagerImpl.rootManager().getBuiltInContext(ApplicationScoped.class);
    }
    
    /**

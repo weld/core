@@ -57,7 +57,7 @@ public class ServletLifecycle
       servletContext = context;
       Bootstrap bootstrap = new Bootstrap();
       bootstrap.boot(getWebBeanDiscovery());
-      ApplicationContext.instance().setBeanMap(new ApplicationBeanMap(servletContext));
+      ApplicationContext.INSTANCE.setBeanMap(new ApplicationBeanMap(servletContext));
    }
    
    /**
@@ -65,8 +65,8 @@ public class ServletLifecycle
     */
    public static void endApplication() 
    {
-      ApplicationContext.instance().destroy();
-      ApplicationContext.instance().setBeanMap(null);
+      ApplicationContext.INSTANCE.destroy();
+      ApplicationContext.INSTANCE.setBeanMap(null);
       servletContext = null;
    }
    
@@ -86,8 +86,8 @@ public class ServletLifecycle
     */
    public static void endSession(HttpSession session) 
    {
-      SessionContext.instance().destroy();
-      SessionContext.instance().setBeanMap(null);
+      SessionContext.INSTANCE.destroy();
+      SessionContext.INSTANCE.setBeanMap(null);
    }   
    
    /**
@@ -99,7 +99,7 @@ public class ServletLifecycle
     */
    public static void beginRequest(HttpServletRequest request) 
    {
-      SessionContext.instance().setBeanMap(new SessionBeanMap(request.getSession()));
+      SessionContext.INSTANCE.setBeanMap(new SessionBeanMap(request.getSession()));
    }
    
    /**
@@ -109,8 +109,8 @@ public class ServletLifecycle
     */
    public static void endRequest(HttpServletRequest request) 
    {
-      RequestContext.instance().destroy();
-      SessionContext.instance().setBeanMap(null);
+      RequestContext.INSTANCE.destroy();
+      SessionContext.INSTANCE.setBeanMap(null);
    }
    
    /**

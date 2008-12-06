@@ -35,7 +35,7 @@ public class NormalContextTest extends AbstractTest
    
    @BeforeMethod
    public void initContext() {
-      context = new RequestContext();
+      context = new RequestContext() {};
    }
    
    @Test(groups="contexts") @SpecAssertion(section="8.1")

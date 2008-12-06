@@ -156,9 +156,9 @@ public class ManagerImpl implements Manager
       if (contexts.length == 0)
       {
          addContext(new DependentContext());
-         addContext(new RequestContext());
-         addContext(new SessionContext());
-         addContext(new ApplicationContext());
+         addContext(RequestContext.INSTANCE);
+         addContext(SessionContext.INSTANCE);
+         addContext(ApplicationContext.INSTANCE);
       }
       else
       {

@@ -19,7 +19,7 @@ public class PassivatingContextTest extends AbstractTest
    @BeforeMethod
    public void initContext()
    {
-      context = new RequestContext();
+      context = new RequestContext() {};
    }
 
    @Test(groups = {"stub", "contexts", "passivation" }) @SpecAssertion(section = "8.4")

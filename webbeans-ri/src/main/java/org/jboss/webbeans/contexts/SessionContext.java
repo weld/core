@@ -19,7 +19,6 @@ package org.jboss.webbeans.contexts;
 
 import javax.webbeans.SessionScoped;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -31,13 +30,16 @@ import org.jboss.webbeans.log.Logging;
 public class SessionContext extends AbstractContext
 {
    private static LogProvider log = Logging.getLogProvider(SessionContext.class);
+
+   public static SessionContext INSTANCE = new SessionContext();
+   
    // The beans
    private ThreadLocal<BeanMap> beanMap;
 
    /**
     * Constructor
     */
-   public SessionContext()
+   protected SessionContext()
    {
       super(SessionScoped.class);
       log.trace("Created session context");
@@ -63,16 +65,6 @@ public class SessionContext extends AbstractContext
    public void setBeanMap(BeanMap beanMap)
    {
       this.beanMap.set(beanMap);
-   }
-
-   /**
-    * Helper method for accessing context
-    * 
-    * @return The session context
-    */
-   public static SessionContext instance()
-   {
-      return (SessionContext) ManagerImpl.rootManager().getBuiltInContext(SessionScoped.class);
    }
 
 }

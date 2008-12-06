@@ -17,7 +17,6 @@ public class AbstractTest
    
    protected MockManagerImpl manager;
    protected Bootstrap bootstrap;
-
    
    @BeforeMethod
    public final void before()
@@ -25,7 +24,7 @@ public class AbstractTest
       manager = new MockManagerImpl();
       MockManagerImpl.setInstance(manager);
       // Mock the ApplicationContext as a simple map
-      ApplicationContext.instance().setBeanMap(new SimpleBeanMap());
+      ApplicationContext.INSTANCE.setBeanMap(new SimpleBeanMap());
       bootstrap = new MockBootstrap();
       init();
    }

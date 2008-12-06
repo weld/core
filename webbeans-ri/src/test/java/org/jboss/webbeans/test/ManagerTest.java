@@ -21,7 +21,7 @@ public class ManagerTest extends AbstractTest
    @Test(expectedExceptions={ContextNotActiveException.class}, groups={"manager"}) @SpecAssertion(section="8.6")
    public void testGetContextWithNoActiveContextsFails()
    {
-      Context requestContext = new RequestContext();
+      Context requestContext = new RequestContext() {};
       ((AbstractContext)requestContext).setActive(false);
       manager.setContexts(requestContext);
       manager.getContext(RequestScoped.class);
@@ -30,8 +30,8 @@ public class ManagerTest extends AbstractTest
    @Test(expectedExceptions={IllegalArgumentException.class}, groups={"manager"}) @SpecAssertion(section="8.6")
    public void testGetContextWithTooManyActiveContextsFails()
    {
-      Context firstContext = new RequestContext();
-      Context secondContext = new RequestContext();
+      Context firstContext = new RequestContext() {};
+      Context secondContext = new RequestContext() {};
       manager.setContexts(firstContext, secondContext);
       manager.getContext(RequestScoped.class);
       assert true;
@@ -48,7 +48,7 @@ public class ManagerTest extends AbstractTest
    @Test(groups={"manager"}) @SpecAssertion(section="8.6")
    public void testGetContextReturnsActiveContext()
    {
-      Context requestContext = new RequestContext();
+      Context requestContext = new RequestContext() {};
       manager.setContexts(requestContext);
       Context testContext = manager.getContext(RequestScoped.class);
       assert testContext == requestContext;
