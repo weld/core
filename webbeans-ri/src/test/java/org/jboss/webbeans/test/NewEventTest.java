@@ -41,7 +41,7 @@ public class NewEventTest extends AbstractTest
    public void create() {
       SimpleBean<MyTest> myTestBean = BeanFactory.createSimpleBean(MyTest.class);
       for (AnnotatedField<Object> field : myTestBean.getEventFields()) {
-         EventBean eventBean = BeanFactory.createEventBean(field.getType(), field);
+         EventBean eventBean = BeanFactory.createEventBean(field);
          @SuppressWarnings("unused")
          Event<Param> event = eventBean.create();
       }
