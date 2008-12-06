@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.webbeans.Observer;
-import javax.webbeans.manager.Context;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -66,9 +65,4 @@ public class MockManagerImpl extends ManagerImpl
       initEnabledDeploymentTypes(enabledDeploymentTypes);
    }
    
-   public static void setInstance(ManagerImpl manager)
-   {
-      ManagerImpl.rootManager = manager;
-   }   
-
 }

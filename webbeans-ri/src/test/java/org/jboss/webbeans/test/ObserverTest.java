@@ -6,6 +6,7 @@ import javax.webbeans.AnnotationLiteral;
 import javax.webbeans.Observer;
 import javax.webbeans.Observes;
 
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -56,6 +57,7 @@ public class ObserverTest
    public void before() throws Exception
    {
       manager = new MockManagerImpl();
+      CurrentManager.setRootManager(manager);
       ob = BeanFactory.createSimpleBean(SampleObserver.class);
       manager.addBean(ob);
       Method method = SampleObserver.class.getMethod("observe", SampleEvent.class);

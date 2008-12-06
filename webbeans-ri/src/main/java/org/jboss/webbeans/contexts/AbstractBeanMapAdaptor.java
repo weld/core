@@ -19,7 +19,7 @@ package org.jboss.webbeans.contexts;
 
 import javax.webbeans.manager.Contextual;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.CurrentManager;
 
 public abstract class AbstractBeanMapAdaptor implements BeanMap
 {
@@ -40,7 +40,7 @@ public abstract class AbstractBeanMapAdaptor implements BeanMap
     */
    protected String getBeanKey(Contextual<?> bean)
    {
-      return getKeyPrefix() + "#" + ManagerImpl.rootManager().getBeans().indexOf(bean);
+      return getKeyPrefix() + "#" + CurrentManager.rootManager().getBeans().indexOf(bean);
    }
    
 }

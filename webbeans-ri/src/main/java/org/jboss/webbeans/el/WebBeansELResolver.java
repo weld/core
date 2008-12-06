@@ -23,7 +23,7 @@ import java.util.Iterator;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.CurrentManager;
 
 public class WebBeansELResolver extends ELResolver
 {
@@ -63,7 +63,7 @@ public class WebBeansELResolver extends ELResolver
    {
       if (base == null && property != null)
       {
-         return ManagerImpl.rootManager().getInstanceByName(property.toString());
+         return CurrentManager.rootManager().getInstanceByName(property.toString());
       }
       else
       {

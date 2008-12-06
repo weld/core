@@ -19,7 +19,7 @@ package org.jboss.webbeans.util;
 
 import java.lang.reflect.Method;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.EventBean;
@@ -46,7 +46,7 @@ public class BeanFactory
     */
    public static <T> SimpleBean<T> createSimpleBean(Class<T> clazz)
    {
-      return new SimpleBean<T>(clazz, ManagerImpl.rootManager());
+      return new SimpleBean<T>(clazz, CurrentManager.rootManager());
    }
 
    /**
@@ -58,7 +58,7 @@ public class BeanFactory
     */
    public static <T> XmlSimpleBean<T> createXmlSimpleBean(Class<T> clazz)
    {
-      return new XmlSimpleBean<T>(clazz, ManagerImpl.rootManager());
+      return new XmlSimpleBean<T>(clazz, CurrentManager.rootManager());
    }
 
    /**
@@ -70,7 +70,7 @@ public class BeanFactory
     */
    public static <T> EnterpriseBean<T> createEnterpriseBean(Class<T> clazz)
    {
-      return new EnterpriseBean<T>(clazz, ManagerImpl.rootManager());
+      return new EnterpriseBean<T>(clazz, CurrentManager.rootManager());
    }
 
    /**
@@ -82,7 +82,7 @@ public class BeanFactory
     */
    public static <T> XmlEnterpriseBean<T> createXmlEnterpriseBean(Class<T> clazz)
    {
-      return new XmlEnterpriseBean<T>(clazz, ManagerImpl.rootManager());
+      return new XmlEnterpriseBean<T>(clazz, CurrentManager.rootManager());
    }
 
    /**
@@ -96,7 +96,7 @@ public class BeanFactory
     */
    public static <T> ProducerMethodBean<T> createProducerMethodBean(Class<T> type, Method method, AbstractClassBean<?> declaringBean)
    {
-      return new ProducerMethodBean<T>(method, declaringBean, ManagerImpl.rootManager());
+      return new ProducerMethodBean<T>(method, declaringBean, CurrentManager.rootManager());
    }
 
    /**
@@ -108,7 +108,7 @@ public class BeanFactory
     */
    public static <T> ProducerMethodBean<T> createProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean)
    {
-      return new ProducerMethodBean<T>(method, declaringBean, ManagerImpl.rootManager());
+      return new ProducerMethodBean<T>(method, declaringBean, CurrentManager.rootManager());
    }
 
    /**
@@ -120,7 +120,7 @@ public class BeanFactory
     */
    public static <T> EventBean<T> createEventBean(AnnotatedField<T> field)
    {
-      return new EventBean<T>(field, ManagerImpl.rootManager());
+      return new EventBean<T>(field, CurrentManager.rootManager());
    }
 
 }

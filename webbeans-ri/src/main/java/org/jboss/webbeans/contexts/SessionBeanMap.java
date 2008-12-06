@@ -25,7 +25,7 @@ import javax.servlet.http.HttpSession;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Contextual;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -90,7 +90,7 @@ public class SessionBeanMap implements BeanMap
     */
    private String getBeanKey(Contextual<?> bean)
    {
-      return keyPrefix + ManagerImpl.rootManager().getBeans().indexOf(bean);
+      return keyPrefix + CurrentManager.rootManager().getBeans().indexOf(bean);
    }
 
    /**
@@ -185,7 +185,7 @@ public class SessionBeanMap implements BeanMap
          if (name.startsWith(keyPrefix))
          {
             String id = name.substring(keyPrefix.length());
-            Contextual<?> bean = ManagerImpl.rootManager().getBeans().get(Integer.parseInt(id));
+            Contextual<?> bean = CurrentManager.rootManager().getBeans().get(Integer.parseInt(id));
             beans.add(bean);
          }
       }

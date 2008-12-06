@@ -29,7 +29,7 @@ import javassist.util.proxy.ProxyObject;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.util.ConcurrentCache;
 
 /**
@@ -151,7 +151,7 @@ public class ProxyPool
 
          public T call() throws Exception
          {
-            int beanIndex = ManagerImpl.rootManager().getBeans().indexOf(bean);
+            int beanIndex = CurrentManager.rootManager().getBeans().indexOf(bean);
             if (beanIndex < 0)
             {
                throw new DefinitionException(bean + " is not known to the manager");

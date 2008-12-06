@@ -25,7 +25,7 @@ import javassist.util.proxy.MethodHandler;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -72,9 +72,9 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
       //TODO: account for child managers
       if (bean == null)
       {
-         bean = ManagerImpl.rootManager().getBeans().get(beanIndex);
+         bean = CurrentManager.rootManager().getBeans().get(beanIndex);
       }
-      Context context = ManagerImpl.rootManager().getContext(bean.getScopeType());
+      Context context = CurrentManager.rootManager().getContext(bean.getScopeType());
       Object proxiedInstance = context.get(bean, true);
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
       return proxiedMethod.invoke(proxiedInstance, args);

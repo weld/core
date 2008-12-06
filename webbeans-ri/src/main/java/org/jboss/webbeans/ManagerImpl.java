@@ -48,11 +48,8 @@ import javax.webbeans.manager.Manager;
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bean.proxy.ProxyPool;
-import org.jboss.webbeans.contexts.ApplicationContext;
 import org.jboss.webbeans.contexts.ContextMap;
 import org.jboss.webbeans.contexts.DependentContext;
-import org.jboss.webbeans.contexts.RequestContext;
-import org.jboss.webbeans.contexts.SessionContext;
 import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.exceptions.NameResolutionLocation;
@@ -74,19 +71,7 @@ import org.jboss.webbeans.util.Strings;
 public class ManagerImpl implements Manager
 {
    public static final String JNDI_KEY = "java:comp/Manager";
-   
-   protected static ManagerImpl rootManager = new ManagerImpl();
-   static {
-      rootManager.addContext(RequestContext.INSTANCE);
-      rootManager.addContext(SessionContext.INSTANCE);
-      rootManager.addContext(ApplicationContext.INSTANCE);
-   }
-   
-   public static ManagerImpl rootManager()
-   {
-      return rootManager;
-   }
-   
+      
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
    private MetaDataCache metaDataCache;
    private EventManager eventManager;

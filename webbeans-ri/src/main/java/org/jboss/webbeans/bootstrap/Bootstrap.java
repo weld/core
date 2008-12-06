@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractClassBean;
@@ -58,7 +59,7 @@ public class Bootstrap
     */
    public Bootstrap()
    {
-      JNDI.set(ManagerImpl.JNDI_KEY, ManagerImpl.rootManager());
+      JNDI.set(ManagerImpl.JNDI_KEY, CurrentManager.rootManager());
    }
 
    /**
@@ -81,7 +82,7 @@ public class Bootstrap
    public void registerBeans(Iterable<Class<?>> classes)
    {
       Set<AbstractBean<?, ?>> beans = createBeans(classes);
-      ManagerImpl.rootManager().setBeans(beans);
+      CurrentManager.rootManager().setBeans(beans);
    }
 
    /**
@@ -114,7 +115,7 @@ public class Bootstrap
       for (Class<?> clazz : classes)
       {
          AbstractClassBean<?> bean;
-         if (ManagerImpl.rootManager().getMetaDataCache().getEjbMetaData(clazz).isEjb())
+         if (CurrentManager.rootManager().getMetaDataCache().getEjbMetaData(clazz).isEjb())
          {
             bean = createEnterpriseBean(clazz);
          }
@@ -123,18 +124,18 @@ public class Bootstrap
             bean = createSimpleBean(clazz);
          }
          beans.add(bean);
-         ManagerImpl.rootManager().getResolver().addInjectionPoints(bean.getInjectionPoints());
+         CurrentManager.rootManager().getResolver().addInjectionPoints(bean.getInjectionPoints());
          for (AnnotatedMethod<Object> producerMethod : bean.getProducerMethods())
          {
             ProducerMethodBean<?> producerMethodBean = createProducerMethodBean(producerMethod, bean);
             beans.add(producerMethodBean);
-            ManagerImpl.rootManager().getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
+            CurrentManager.rootManager().getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
          }
          for (AnnotatedField<Object> eventField : bean.getEventFields())
          {
             EventBean<?> eventBean = createEventBean(eventField);
             beans.add(eventBean);
-            ManagerImpl.rootManager().getResolver().addInjectionPoints(eventBean.getInjectionPoints());
+            CurrentManager.rootManager().getResolver().addInjectionPoints(eventBean.getInjectionPoints());
          }
          log.info("Web Bean: " + bean);
       }
@@ -159,7 +160,7 @@ public class Bootstrap
       }
       registerBeans(webBeanDiscovery.discoverWebBeanClasses());
       log.info("Validing Web Bean injection points");
-      ManagerImpl.rootManager().getResolver().resolveInjectionPoints();
+      CurrentManager.rootManager().getResolver().resolveInjectionPoints();
    }
 
    /**

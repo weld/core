@@ -1,16 +1,13 @@
 package org.jboss.webbeans.test;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Event;
 import javax.webbeans.Observer;
-import javax.webbeans.Standard;
 
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.event.EventImpl;
-import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.Synchronous;
 import org.jboss.webbeans.test.annotations.Tame;
 import org.jboss.webbeans.test.beans.DangerCall;
@@ -52,12 +49,8 @@ public class EventTest
    @BeforeMethod
    public void before() throws Exception
    {
-      List<Class<? extends Annotation>> enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
-      enabledDeploymentTypes.add(Standard.class);
-      enabledDeploymentTypes.add(AnotherDeploymentType.class);
       manager = new MockManagerImpl();
-      MockManagerImpl.setInstance(manager);
-      manager.setEnabledDeploymentTypes(Standard.class, AnotherDeploymentType.class);
+      CurrentManager.setRootManager(manager);
    }
 
    /**

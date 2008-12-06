@@ -13,7 +13,7 @@ import java.util.List;
 import javax.servlet.ServletContext;
 import javax.webbeans.manager.Contextual;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.contexts.AbstractBeanMapAdaptor;
 import org.jboss.webbeans.contexts.ApplicationContext;
 import org.jboss.webbeans.log.LogProvider;
@@ -85,7 +85,7 @@ public class ApplicationBeanMap extends AbstractBeanMapAdaptor
          if (name.startsWith(getKeyPrefix()))
          {
             String id = name.substring(getKeyPrefix().length());
-            Contextual<?> bean = ManagerImpl.rootManager().getBeans().get(Integer.parseInt(id));
+            Contextual<?> bean = CurrentManager.rootManager().getBeans().get(Integer.parseInt(id));
             beans.add(bean);
          }
       }
