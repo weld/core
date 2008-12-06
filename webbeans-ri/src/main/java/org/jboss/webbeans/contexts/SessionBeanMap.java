@@ -90,7 +90,7 @@ public class SessionBeanMap implements BeanMap
     */
    private String getBeanKey(Contextual<?> bean)
    {
-      return keyPrefix + ManagerImpl.instance().getBeans().indexOf(bean);
+      return keyPrefix + ManagerImpl.rootManager().getBeans().indexOf(bean);
    }
 
    /**
@@ -185,7 +185,7 @@ public class SessionBeanMap implements BeanMap
          if (name.startsWith(keyPrefix))
          {
             String id = name.substring(keyPrefix.length());
-            Contextual<?> bean = ManagerImpl.instance().getBeans().get(Integer.parseInt(id));
+            Contextual<?> bean = ManagerImpl.rootManager().getBeans().get(Integer.parseInt(id));
             beans.add(bean);
          }
       }

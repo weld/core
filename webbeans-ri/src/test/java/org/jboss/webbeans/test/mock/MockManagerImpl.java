@@ -73,7 +73,7 @@ public class MockManagerImpl extends ManagerImpl
    
    public static void setInstance(ManagerImpl manager)
    {
-      ManagerImpl.instance = manager;
+      ManagerImpl.rootManager = manager;
    }   
 
 }

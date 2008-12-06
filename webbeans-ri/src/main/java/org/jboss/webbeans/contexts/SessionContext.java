@@ -72,7 +72,7 @@ public class SessionContext extends AbstractContext
     */
    public static SessionContext instance()
    {
-      return (SessionContext) ManagerImpl.instance().getBuiltInContext(SessionScoped.class);
+      return (SessionContext) ManagerImpl.rootManager().getBuiltInContext(SessionScoped.class);
    }
 
 }

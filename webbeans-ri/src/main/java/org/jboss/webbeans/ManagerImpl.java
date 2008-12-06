@@ -75,11 +75,11 @@ public class ManagerImpl implements Manager
 {
    public static final String JNDI_KEY = "java:comp/Manager";
    
-   protected static ManagerImpl instance = new ManagerImpl();
+   protected static ManagerImpl rootManager = new ManagerImpl();
    
-   public static ManagerImpl instance()
+   public static ManagerImpl rootManager()
    {
-      return instance;
+      return rootManager;
    }
    
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
@@ -97,8 +97,8 @@ public class ManagerImpl implements Manager
    {
       this.metaDataCache = new MetaDataCache();
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
-      this.eventManager = new EventManager();
-      this.resolver = new Resolver();
+      this.eventManager = new EventManager(this);
+      this.resolver = new Resolver(this);
       this.proxyPool = new ProxyPool();
       this.decorators = new HashSet<Decorator>();
       this.interceptors = new HashSet<Interceptor>();
@@ -112,7 +112,7 @@ public class ManagerImpl implements Manager
     */
    protected void initStandardBeans()
    {
-      addBean(new SimpleBean<DefaultEnterpriseBeanLookup>(DefaultEnterpriseBeanLookup.class));
+      addBean(new SimpleBean<DefaultEnterpriseBeanLookup>(DefaultEnterpriseBeanLookup.class, this));
    }
 
    /**
@@ -212,7 +212,7 @@ public class ManagerImpl implements Manager
     */
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
    {
-      return eventManager.getObservers(metaDataCache, event, bindings);
+      return eventManager.getObservers(event, bindings);
    }
 
    /**

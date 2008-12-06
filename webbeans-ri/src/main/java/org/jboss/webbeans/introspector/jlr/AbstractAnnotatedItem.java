@@ -33,6 +33,7 @@ import javax.webbeans.BindingType;
 import javax.webbeans.DeploymentType;
 import javax.webbeans.ScopeType;
 import javax.webbeans.Stereotype;
+import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -203,9 +204,9 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * @return The object array of looked up values
     * 
     */
-   protected static Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters)
+   protected static Object[] getParameterValues(Manager manager, List<AnnotatedParameter<Object>> parameters)
    {
-      return getParameterValues(parameters, null, null);
+      return getParameterValues(manager, parameters, null, null);
    }
 
    /**
@@ -216,7 +217,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * @return The object array of looked up values
     * 
     */
-   protected static Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters, Object specialVal, Class<? extends Annotation> specialParam)
+   protected static Object[] getParameterValues(Manager manager, List<AnnotatedParameter<Object>> parameters, Object specialVal, Class<? extends Annotation> specialParam)
    {
       Object[] parameterValues = new Object[parameters.size()];
       Iterator<AnnotatedParameter<Object>> iterator = parameters.iterator();
@@ -229,7 +230,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
          }
          else 
          {
-            parameterValues[i] = param.getValue();
+            parameterValues[i] = param.getValue(manager);
          }
       }
       return parameterValues;

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.webbeans.BindingType;
+import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
@@ -134,9 +135,9 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
     * 
     * @return The current value
     */
-   public T getValue()
+   public T getValue(Manager manager)
    {
-      return ManagerImpl.instance().getInstanceByType(getType(), getMetaAnnotationsAsArray(BindingType.class));
+      return manager.getInstanceByType(getType(), getMetaAnnotationsAsArray(BindingType.class));
    }
 
    /**

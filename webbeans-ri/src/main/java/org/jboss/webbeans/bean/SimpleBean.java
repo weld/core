@@ -25,7 +25,9 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Initializer;
+import javax.webbeans.manager.Manager;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -59,9 +61,9 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * 
     * @param type The type of the bean
     */
-   public SimpleBean(Class<T> type)
+   public SimpleBean(Class<T> type, ManagerImpl manager)
    {
-      super(type);
+      super(type, manager);
       init();
    }
 
@@ -73,11 +75,11 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    @Override
    public T create()
    {
-      T instance = constructor.newInstance();
+      T instance = constructor.newInstance(manager);
       bindDecorators();
       bindInterceptors();
       injectEjbAndCommonFields();
-      injectBoundFields(instance);
+      injectBoundFields(manager, instance);
       callInitializers(instance);
       callPostConstruct(instance);
       return instance;
@@ -106,7 +108,8 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          try
          {
-            preDestroy.invoke(instance);
+        	//note: RI supports injection into @PreDestroy
+            preDestroy.invoke(manager, instance);
          }
          catch (Exception e)
          {
@@ -127,7 +130,8 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          try
          {
-            postConstruct.invoke(instance);
+            //note: RI supports injection into @PostConstruct
+            postConstruct.invoke(manager, instance);
          }
          catch (Exception e)
          {
@@ -145,7 +149,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       for (AnnotatedMethod<Object> initializer : getInitializerMethods())
       {
-         initializer.invoke(instance);
+         initializer.invoke(manager, instance);
       }
    }
 
@@ -162,11 +166,11 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * 
     * @param instance The instance to inject into
     */
-   protected void injectBoundFields(T instance)
+   protected void injectBoundFields(Manager manager, T instance)
    {
       for (AnnotatedField<?> injectableField : getInjectableFields())
       {
-         injectableField.inject(instance);
+         injectableField.inject(manager, instance);
       }
    }
 
@@ -328,7 +332,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       if (superclass != null)
       {
          // TODO look up this bean and do this via init
-         return new SimpleBean(superclass);
+         return new SimpleBean(superclass, manager);
       }
       else
       {

@@ -74,7 +74,7 @@ public class ApplicationContext extends AbstractContext
     */   
    public static ApplicationContext instance()
    {
-      return (ApplicationContext) ManagerImpl.instance().getBuiltInContext(ApplicationScoped.class);
+      return (ApplicationContext) ManagerImpl.rootManager().getBuiltInContext(ApplicationScoped.class);
    }
    
    /**

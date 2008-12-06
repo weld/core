@@ -29,6 +29,7 @@ import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 import javax.webbeans.Specializes;
 import javax.webbeans.manager.EnterpriseBeanLookup;
+import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.ejb.EJB;
@@ -57,9 +58,9 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * 
     * @param type The type of the bean
     */
-   public EnterpriseBean(Class<T> type)
+   public EnterpriseBean(Class<T> type, ManagerImpl manager)
    {
-      super(type);
+      super(type, manager);
       init();
    }
 
@@ -70,7 +71,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected void init()
    {
       super.init();
-      ejbMetaData = ManagerImpl.instance().getMetaDataCache().getEjbMetaData(getType());
+      ejbMetaData = manager.getMetaDataCache().getEjbMetaData(getType());
       initRemoveMethod();
       initInjectionPoints();
       checkEnterpriseBeanTypeAllowed();
@@ -138,14 +139,14 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       if (!isDefinedInXml())
       {
-         if (!ManagerImpl.instance().getMetaDataCache().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
+         if (!manager.getMetaDataCache().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
          {
             throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
          }
       }
       else
       {
-         if (ManagerImpl.instance().getMetaDataCache().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
+         if (manager.getMetaDataCache().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
          {
             throw new DefinitionException("XML defined specializing EJB must have annotation defined EJB implementation");
          }
@@ -224,11 +225,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    @Override
    public T create()
    {
-      T instance = (T) ManagerImpl.instance().getInstanceByType(EnterpriseBeanLookup.class).lookup(ejbMetaData.getEjbName());
+      T instance = (T) manager.getInstanceByType(EnterpriseBeanLookup.class).lookup(ejbMetaData.getEjbName());
       bindDecorators();
       bindInterceptors();
       injectEjbAndCommonFields();
-      injectBoundFields(instance);
+      injectBoundFields(manager, instance);
       callInitializers(instance);
       return instance;
    }
@@ -253,7 +254,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       for (AnnotatedMethod<Object> initializer : getInitializerMethods())
       {
-         initializer.invoke(instance);
+         initializer.invoke(manager, instance);
       }
    }
 
@@ -270,11 +271,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * 
     * @param instance The bean instance
     */
-   protected void injectBoundFields(T instance)
+   protected void injectBoundFields(Manager manager, T instance)
    {
       for (AnnotatedField<?> field : getInjectableFields())
       {
-         field.inject(instance);
+         field.inject(manager, instance);
       }
    }
 
@@ -306,7 +307,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       if (superclass != null)
       {
          // TODO look up this bean and do this via init
-         return new EnterpriseBean(superclass);
+         return new EnterpriseBean(superclass, manager);
       }
       else
       {

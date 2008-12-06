@@ -60,7 +60,7 @@ public class ObserverTest
       manager.addBean(ob);
       Method method = SampleObserver.class.getMethod("observe", SampleEvent.class);
       om = new AnnotatedMethodImpl<Object>(method, new AnnotatedClassImpl<SampleObserver>(SampleObserver.class));
-      observer = new ObserverImpl<SampleEvent>(ob, om, SampleEvent.class);
+      observer = new ObserverImpl<SampleEvent>(manager, ob, om, SampleEvent.class);
       Annotation annotation = method.getParameterAnnotations()[0][1];
       manager.addObserver(observer, SampleEvent.class, annotation);
       notified = false;

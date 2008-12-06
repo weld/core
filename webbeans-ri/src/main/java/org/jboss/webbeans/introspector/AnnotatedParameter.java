@@ -17,6 +17,8 @@
 
 package org.jboss.webbeans.introspector;
 
+import javax.webbeans.manager.Manager;
+
 
 /**
  * AnnotatedParameter provides a uniform access to a method parameter defined
@@ -33,6 +35,6 @@ public interface AnnotatedParameter<T> extends AnnotatedItem<T, Object>
     * 
     * @return The value
     */
-   public T getValue();
+   public T getValue(Manager manager);
 
 }

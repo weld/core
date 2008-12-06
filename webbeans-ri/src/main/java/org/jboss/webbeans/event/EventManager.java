@@ -31,7 +31,6 @@ import javax.transaction.UserTransaction;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.transaction.TransactionListener;
 import org.jboss.webbeans.util.JNDI;
 import org.jboss.webbeans.util.Strings;
@@ -46,6 +45,8 @@ import com.google.common.collect.ForwardingMap;
  */
 public class EventManager
 {
+	private ManagerImpl manager;
+	
    /**
     * The known transactional phases a transactional event observer can be
     * interested in
@@ -141,8 +142,9 @@ public class EventManager
    /**
     * Initializes a new instance of the EventManager.
     */
-   public EventManager()
+   public EventManager(ManagerImpl manager)
    {
+      this.manager = manager;
       registeredObservers = new RegisteredObserversMap();
       // TODO. Check where to *really* get this from
       userTransaction = (UserTransaction) JNDI.lookup("java:/UserTransaction");
@@ -157,7 +159,7 @@ public class EventManager
     */
    public <T> void addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
-      EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, bindings);
+      EventObserver<T> eventObserver = new EventObserver<T>(manager.getMetaDataCache(), observer, eventType, bindings);
       registeredObservers.put(eventType, eventObserver);
    }
 
@@ -171,12 +173,12 @@ public class EventManager
     *         matches.
     */
    @SuppressWarnings("unchecked")
-   public <T> Set<Observer<T>> getObservers(MetaDataCache mdc, T event, Annotation... bindings)
+   public <T> Set<Observer<T>> getObservers(T event, Annotation... bindings)
    {
       Set<Observer<T>> interestedObservers = new HashSet<Observer<T>>();
       for (EventObserver<?> observer : registeredObservers.get(event.getClass()))
       {
-         if (observer.isObserverInterested(mdc, bindings))
+         if (observer.isObserverInterested(bindings))
          {
             interestedObservers.add((Observer<T>) observer.getObserver());
          }
@@ -235,7 +237,7 @@ public class EventManager
     */
    private <T> void deferEvent(T event, Observer<T> observer)
    {
-      TransactionListener transactionListener = ManagerImpl.instance().getInstanceByType(TransactionListener.class);
+      TransactionListener transactionListener = manager.getInstanceByType(TransactionListener.class);
       DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, observer);
       transactionListener.registerSynhronization(deferredEvent);
    }
@@ -250,7 +252,7 @@ public class EventManager
    public <T> void removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
       List<EventObserver<?>> observers = registeredObservers.get(eventType);
-      EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, bindings);
+      EventObserver<T> eventObserver = new EventObserver<T>(manager.getMetaDataCache(), observer, eventType, bindings);
       observers.remove(eventObserver);
    }
 
@@ -262,4 +264,5 @@ public class EventManager
       buffer.append(registeredObservers.toString());
       return buffer.toString();
    }
+
 }

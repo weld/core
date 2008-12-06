@@ -85,7 +85,7 @@ public class ApplicationBeanMap extends AbstractBeanMapAdaptor
          if (name.startsWith(getKeyPrefix()))
          {
             String id = name.substring(getKeyPrefix().length());
-            Contextual<?> bean = ManagerImpl.instance().getBeans().get(Integer.parseInt(id));
+            Contextual<?> bean = ManagerImpl.rootManager().getBeans().get(Integer.parseInt(id));
             beans.add(bean);
          }
       }

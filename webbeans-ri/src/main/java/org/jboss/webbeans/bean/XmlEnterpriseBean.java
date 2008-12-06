@@ -17,6 +17,8 @@
 
 package org.jboss.webbeans.bean;
 
+import org.jboss.webbeans.ManagerImpl;
+
 
 /**
  * Represents an XML defined enterprise bean
@@ -33,9 +35,9 @@ public class XmlEnterpriseBean<T> extends EnterpriseBean<T>
     * 
     * @param type The type of the bean
     */
-   public XmlEnterpriseBean(Class<T> type)
+   public XmlEnterpriseBean(Class<T> type, ManagerImpl manager)
    {
-      super(type);
+      super(type, manager);
    }
 
    /**

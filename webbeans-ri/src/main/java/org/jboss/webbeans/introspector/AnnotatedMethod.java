@@ -21,6 +21,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import javax.webbeans.manager.Manager;
+
 /**
  * AnnotatedType provides a uniform access to the annotations on an annotated
  * class defined either in Java or XML
@@ -54,7 +56,7 @@ public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
     * @param instance The instance to invoke
     * @return A reference to the instance
     */
-   public T invoke(Object instance);
+   public T invoke(Manager manager, Object instance);
 
    /**
     * Invokes the observer method
@@ -63,7 +65,7 @@ public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
     * @param event the event object
     * @return A reference to the instance
     */
-   public T invokeWithSpecialValue(Object instance, Class<? extends Annotation> specialParam, Object specialVal);
+   public T invokeWithSpecialValue(Manager manager, Object instance, Class<? extends Annotation> specialParam, Object specialVal);
 
    /**
     * Invokes the method

@@ -146,7 +146,7 @@ public class BindingTypeTest extends AbstractTest
 	@Test(groups={"injection", "producerMethod"})
    public void testMethodWithBindingAnnotationsOnParametersAreInjected() throws Exception
    {
-	   SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class);
+      SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class);
       manager.addBean(spiderProducer);
       Method method = SpiderProducer.class.getMethod("produceTameTarantula");
       manager.addBean(createProducerMethodBean(Tarantula.class, method, spiderProducer));

@@ -58,6 +58,7 @@ public class ObserverImpl<T> implements Observer<T>
    private final Class<T> eventType;
    private TransactionObservationPhase transactionObservationPhase;
    private boolean conditional;
+   private ManagerImpl manager;
 
    /**
     * Creates an Observer which describes and encapsulates an observer method
@@ -71,8 +72,9 @@ public class ObserverImpl<T> implements Observer<T>
     * @param observer The observer method to notify
     * @param eventType The type of event being observed
     */
-   public ObserverImpl(final Bean<?> observerBean, final AnnotatedMethod<Object> observer, final Class<T> eventType)
+   public ObserverImpl(final ManagerImpl manager, final Bean<?> observerBean, final AnnotatedMethod<Object> observer, final Class<T> eventType)
    {
+      this.manager = manager;
       this.observerBean = observerBean;
       this.observerMethod = observer;
       this.eventType = eventType;
@@ -125,7 +127,7 @@ public class ObserverImpl<T> implements Observer<T>
       if (instance != null)
       {
          // TODO replace event parameter
-         observerMethod.invokeWithSpecialValue(instance, Observes.class, event);
+         observerMethod.invokeWithSpecialValue(manager, instance, Observes.class, event);
       }
 
    }
@@ -141,7 +143,7 @@ public class ObserverImpl<T> implements Observer<T>
    protected Object getInstance(boolean conditional)
    {
       // Return the most specialized instance of the component
-      return ManagerImpl.instance().getMostSpecializedInstance(observerBean, conditional);
+      return manager.getMostSpecializedInstance(observerBean, conditional);
    }
 
    /**

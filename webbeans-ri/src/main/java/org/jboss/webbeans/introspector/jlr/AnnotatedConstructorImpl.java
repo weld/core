@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.webbeans.ExecutionException;
+import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
@@ -198,12 +199,12 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedConstructor#newInstance(ManagerImpl)
     */
-   public T newInstance()
+   public T newInstance(Manager manager)
    {
       try
       {
          // TODO: more details in the exceptions
-         return getDelegate().newInstance(getParameterValues(parameters));
+         return getDelegate().newInstance(getParameterValues(manager, parameters));
       }
       catch (IllegalArgumentException e)
       {

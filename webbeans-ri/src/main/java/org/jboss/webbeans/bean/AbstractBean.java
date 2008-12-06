@@ -101,6 +101,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    protected Set<AnnotatedItem<?, ?>> injectionPoints;
 
    private boolean primitive;
+   
+   protected ManagerImpl manager;
 
    // Cached values
    private Type declaredBeanType;
@@ -108,9 +110,10 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    /**
     * Constructor
     */
-   public AbstractBean()
+   public AbstractBean(ManagerImpl manager)
    {
-      super(ManagerImpl.instance());
+      super(manager);
+      this.manager = manager;
    }
 
    /**
@@ -118,7 +121,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     */
    protected void init()
    {
-      mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class));
+      mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class), manager.getMetaDataCache());
       initType();
       initPrimitive();
       log.debug("Building Web Bean bean metadata for " + getType());
@@ -221,7 +224,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
 
          if (getMergedStereotypes().getPossibleDeploymentTypes().size() > 0)
          {
-            this.deploymentType = getDeploymentType(ManagerImpl.instance().getEnabledDeploymentTypes(), getMergedStereotypes().getPossibleDeploymentTypes());
+            this.deploymentType = getDeploymentType(manager.getEnabledDeploymentTypes(), getMergedStereotypes().getPossibleDeploymentTypes());
             log.trace("Deployment type " + deploymentType + " specified by stereotype");
             return;
          }

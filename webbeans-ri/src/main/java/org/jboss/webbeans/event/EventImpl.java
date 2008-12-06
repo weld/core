@@ -22,12 +22,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.webbeans.BindingType;
-import javax.webbeans.Dependent;
 import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Event;
 import javax.webbeans.Observable;
 import javax.webbeans.Observer;
-import javax.webbeans.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
 
@@ -45,14 +43,16 @@ public class EventImpl<T> implements Event<T>
    private final Set<? extends Annotation> bindingTypes;
    // The event type
    private final Class<T> eventType;
+   private final ManagerImpl manager;
 
    /**
     * Constructor
     * 
     * @param bindingTypes The binding types
     */
-   public EventImpl(Class<T> eventType, Annotation... bindingTypes)
+   public EventImpl(ManagerImpl manager, Class<T> eventType, Annotation... bindingTypes)
    {
+      this.manager = manager;
       this.bindingTypes = getBindingTypes(bindingTypes);
       this.eventType = eventType;
    }
@@ -120,7 +120,7 @@ public class EventImpl<T> implements Event<T>
    {
       Set<Annotation> bindingParameters = checkBindingTypes(bindingTypes);
       bindingParameters.addAll(this.bindingTypes);
-      ManagerImpl.instance().fireEvent(event, bindingParameters.toArray(new Annotation[0]));
+      manager.fireEvent(event, bindingParameters.toArray(new Annotation[0]));
    }
 
    /**
@@ -133,7 +133,7 @@ public class EventImpl<T> implements Event<T>
    {
       Set<Annotation> bindingParameters = checkBindingTypes(bindingTypes);
       bindingParameters.addAll(this.bindingTypes);
-      ManagerImpl.instance().addObserver(observer, eventType, bindingParameters.toArray(new Annotation[0]));
+      manager.addObserver(observer, eventType, bindingParameters.toArray(new Annotation[0]));
    }
 
 }

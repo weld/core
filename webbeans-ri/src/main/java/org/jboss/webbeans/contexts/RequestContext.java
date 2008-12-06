@@ -44,7 +44,7 @@ public class RequestContext extends BasicContext
     */   
    public static RequestContext instance()
    {
-      return (RequestContext) ManagerImpl.instance().getBuiltInContext(RequestScoped.class);
+      return (RequestContext) ManagerImpl.rootManager().getBuiltInContext(RequestScoped.class);
    }
    
 

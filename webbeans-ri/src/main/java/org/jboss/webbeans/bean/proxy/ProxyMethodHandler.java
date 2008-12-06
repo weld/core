@@ -69,11 +69,12 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
     */
    public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
+      //TODO: account for child managers
       if (bean == null)
       {
-         bean = ManagerImpl.instance().getBeans().get(beanIndex);
+         bean = ManagerImpl.rootManager().getBeans().get(beanIndex);
       }
-      Context context = ManagerImpl.instance().getContext(bean.getScopeType());
+      Context context = ManagerImpl.rootManager().getContext(bean.getScopeType());
       Object proxiedInstance = context.get(bean, true);
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
       return proxiedMethod.invoke(proxiedInstance, args);

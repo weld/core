@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 
 import javax.webbeans.BindingType;
+import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
@@ -129,9 +130,9 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedParameter
     */
-   public T getValue()
+   public T getValue(Manager manager)
    {
-      return ManagerImpl.instance().getInstanceByType(getType(), getMetaAnnotationsAsArray(BindingType.class));
+      return manager.getInstanceByType(getType(), getMetaAnnotationsAsArray(BindingType.class));
    }
 
    /**

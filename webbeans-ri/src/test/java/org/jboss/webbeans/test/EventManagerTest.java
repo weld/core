@@ -37,21 +37,21 @@ public class EventManagerTest extends AbstractTest
    @Test(groups = "observerMethod")
    public void testAddObserver()
    {
-      EventManager eventManager = new EventManager();
+      EventManager eventManager = new EventManager(manager);
       Observer<DangerCall> observer = new AnObserver<DangerCall>();
       eventManager.addObserver(observer, DangerCall.class);
       DangerCall event = new DangerCall();
 
-      Set<Observer<DangerCall>> observerSet = eventManager.getObservers(new MetaDataCache(), event);
+      Set<Observer<DangerCall>> observerSet = eventManager.getObservers(event);
       assert observerSet.size() == 1;
       assert observerSet.iterator().next().equals(observer);
 
       // Add another observer for the same event, but with an event binding
       observer = new AnObserver<DangerCall>();
       eventManager.addObserver(observer, DangerCall.class, new TameAnnotationLiteral());
-      observerSet = eventManager.getObservers(new MetaDataCache(), event);
+      observerSet = eventManager.getObservers(event);
       assert observerSet.size() == 1;
-      observerSet = eventManager.getObservers(new MetaDataCache(), event, new TameAnnotationLiteral());
+      observerSet = eventManager.getObservers(event, new TameAnnotationLiteral());
       assert observerSet.size() == 2;
    }
 
@@ -62,12 +62,12 @@ public class EventManagerTest extends AbstractTest
    @Test(groups = { "observerMethod" })
    public void testRemoveObserver()
    {
-      EventManager eventManager = new EventManager();
+      EventManager eventManager = new EventManager(manager);
       Observer<DangerCall> observer = new AnObserver<DangerCall>();
       eventManager.addObserver(observer, DangerCall.class);
       eventManager.removeObserver(observer, DangerCall.class);
       // FIXME CopyOnWrite broke remove, have to check later
-      assert eventManager.getObservers(new MetaDataCache(), new DangerCall()).isEmpty();
+      assert eventManager.getObservers(new DangerCall()).isEmpty();
    }
 
    /**
@@ -167,7 +167,7 @@ public class EventManagerTest extends AbstractTest
       // }
       //         
       // };
-      EventManager eventManager = new EventManager();
+      EventManager eventManager = new EventManager(manager);
       Observer<DangerCall> observer = new AnObserver<DangerCall>();
       try
       {

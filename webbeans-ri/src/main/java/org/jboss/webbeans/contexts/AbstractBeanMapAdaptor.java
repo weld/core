@@ -40,7 +40,7 @@ public abstract class AbstractBeanMapAdaptor implements BeanMap
     */
    protected String getBeanKey(Contextual<?> bean)
    {
-      return getKeyPrefix() + "#" + ManagerImpl.instance().getBeans().indexOf(bean);
+      return getKeyPrefix() + "#" + ManagerImpl.rootManager().getBeans().indexOf(bean);
    }
    
 }

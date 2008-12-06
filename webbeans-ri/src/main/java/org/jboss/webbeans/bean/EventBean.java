@@ -25,11 +25,10 @@ import javax.webbeans.Dependent;
 import javax.webbeans.Event;
 import javax.webbeans.Standard;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.log.LogProvider;
-import org.jboss.webbeans.log.Logging;
 
 /**
  * An event bean representation
@@ -41,10 +40,6 @@ import org.jboss.webbeans.log.Logging;
 public class EventBean<T> extends AbstractBean<Event<T>, Field>
 {
 
-   private static LogProvider log = Logging.getLogProvider(EventBean.class);
-
-   // The debug location
-   private String location;
    // The underlying annotated item
    private AnnotatedField<Event<T>> annotatedItem;
 
@@ -54,9 +49,9 @@ public class EventBean<T> extends AbstractBean<Event<T>, Field>
     * @param field The underlying field abstraction
     */
    @SuppressWarnings("unchecked")
-   public EventBean(AnnotatedField<T> field)
+   public EventBean(AnnotatedField<T> field, ManagerImpl manager)
    {
-      super();
+      super(manager);
       this.annotatedItem = (AnnotatedField<Event<T>>) field;
       init();
    }
@@ -88,45 +83,30 @@ public class EventBean<T> extends AbstractBean<Event<T>, Field>
       }
    }
 
-   /**
-    * @see org.jboss.webbeans.bean.AbstractBean#initScopeType()
-    */
    @Override
    protected void initScopeType()
    {
       this.scopeType = Dependent.class;
    }
 
-   /**
-    * @see org.jboss.webbeans.bean.AbstractBean#initDeploymentType()
-    */
    @Override
    protected void initDeploymentType()
    {
       this.deploymentType = Standard.class;
    }
 
-   /**
-    * @see org.jboss.webbeans.bean.AbstractBean#getAnnotatedItem()
-    */
    @Override
    protected AnnotatedItem<Event<T>, Field> getAnnotatedItem()
    {
       return annotatedItem;
    }
 
-   /**
-    * @see org.jboss.webbeans.bean.AbstractBean#getDefaultName()
-    */
    @Override
    protected String getDefaultName()
    {
       return null;
    }
 
-   /**
-    * @see org.jboss.webbeans.bean.AbstractBean#initType()
-    */
    @Override
    protected void initType()
    {
@@ -144,29 +124,12 @@ public class EventBean<T> extends AbstractBean<Event<T>, Field>
       }
    }
 
-   /**
-    * Gets the debug location
-    * 
-    * @return A string describing the location
-    */
-   private String getLocation()
-   {
-      if (location == null)
-      {
-         location = "type: Event Bean;";
-      }
-      return location;
-   }
-
-   /**
-    * @see javax.webbeans.manager.Bean#create()
-    */
    @SuppressWarnings("unchecked")
    @Override
    public Event<T> create()
    {
       Class<T> eventType = (Class<T>) annotatedItem.getType().getTypeParameters()[0].getClass();
-	  return new EventImpl<T>(eventType, annotatedItem.getBindingTypesAsArray());
+	  return new EventImpl<T>(manager, eventType, annotatedItem.getBindingTypesAsArray());
    }
 
 }

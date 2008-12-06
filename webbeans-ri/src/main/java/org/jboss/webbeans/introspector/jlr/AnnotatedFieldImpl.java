@@ -22,6 +22,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
+import javax.webbeans.manager.Manager;
+
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedType;
@@ -120,9 +122,9 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
     * @see org.jboss.webbeans.introspector.AnnotatedField#inject(Object,
     *      ManagerImpl)
     */
-   public void inject(Object instance)
+   public void inject(Manager manager, Object instance)
    {
-      Reflections.setAndWrap(getDelegate(), instance, getValue());
+      Reflections.setAndWrap(getDelegate(), instance, getValue(manager));
    }
 
    /**

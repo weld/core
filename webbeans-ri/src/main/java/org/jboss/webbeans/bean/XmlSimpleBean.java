@@ -17,6 +17,8 @@
 
 package org.jboss.webbeans.bean;
 
+import org.jboss.webbeans.ManagerImpl;
+
 
 /**
  * Represents a simple, XML defined bean
@@ -33,9 +35,9 @@ public class XmlSimpleBean<T> extends SimpleBean<T>
     * 
     * @param type The type of the bean
     */
-   public XmlSimpleBean(Class<T> type)
+   public XmlSimpleBean(Class<T> type, ManagerImpl manager)
    {
-      super(type);
+      super(type, manager);
    }
 
    /**

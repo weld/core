@@ -44,6 +44,7 @@ public class EventObserver<T>
    private final Class<T> eventType;
    private final List<Annotation> eventBindings;
    private final Observer<T> observer;
+   private final MetaDataCache metaDataCache;
 
    /**
     * Constructs a new wrapper for an observer.
@@ -52,11 +53,12 @@ public class EventObserver<T>
     * @param eventType The class of event being observed
     * @param eventBindings The array of annotation event bindings, if any
     */
-   public EventObserver(final Observer<T> observer, final Class<T> eventType, final Annotation... eventBindings)
+   public EventObserver(MetaDataCache metaDataCache, final Observer<T> observer, final Class<T> eventType, final Annotation... eventBindings)
    {
       this.observer = observer;
       this.eventType = eventType;
       this.eventBindings = Arrays.asList(eventBindings);
+      this.metaDataCache = metaDataCache;
    }
 
    /**
@@ -90,7 +92,7 @@ public class EventObserver<T>
     * @param bindings The event bindings
     * @return true only if all required bindings match
     */
-   public boolean isObserverInterested(MetaDataCache mdc, Annotation... bindings)
+   public boolean isObserverInterested(Annotation... bindings)
    {
       // Simply check that all event bindings specified by the observer are
       // in the list provided.
@@ -106,7 +108,7 @@ public class EventObserver<T>
             boolean found = false;
             for (Annotation y: bindings)
             {
-        	if ( mdc.getBindingTypeModel(x.annotationType()).isEqual(x, y) ) {
+        	if ( metaDataCache.getBindingTypeModel(x.annotationType()).isEqual(x, y) ) {
                found = true;
             }
             }
@@ -116,11 +118,7 @@ public class EventObserver<T>
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#hashCode()
-    */
+
    @Override
    public int hashCode()
    {
@@ -132,11 +130,6 @@ public class EventObserver<T>
       return result;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj)
    {
