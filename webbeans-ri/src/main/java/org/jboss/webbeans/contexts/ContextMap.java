@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.webbeans.manager.Context;
 
@@ -53,7 +54,9 @@ public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, Lis
          {
             try
             {
-               return (AbstractContext) getFuture(scopeType).get().iterator().next();
+               Future<List<Context>> future = getFuture(scopeType);
+               if (future==null) return null;
+               return (AbstractContext) future.get().iterator().next();
             }
             catch (InterruptedException e)
             {

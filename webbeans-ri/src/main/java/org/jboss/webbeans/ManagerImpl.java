@@ -76,6 +76,11 @@ public class ManagerImpl implements Manager
    public static final String JNDI_KEY = "java:comp/Manager";
    
    protected static ManagerImpl rootManager = new ManagerImpl();
+   static {
+      rootManager.addContext(RequestContext.INSTANCE);
+      rootManager.addContext(SessionContext.INSTANCE);
+      rootManager.addContext(ApplicationContext.INSTANCE);
+   }
    
    public static ManagerImpl rootManager()
    {
@@ -102,9 +107,10 @@ public class ManagerImpl implements Manager
       this.proxyPool = new ProxyPool();
       this.decorators = new HashSet<Decorator>();
       this.interceptors = new HashSet<Interceptor>();
+      this.contextMap = new ContextMap();
       initEnabledDeploymentTypes();
-      initContexts();
       initStandardBeans();
+      addContext(new DependentContext());
    }
 
    /**
@@ -139,32 +145,6 @@ public class ManagerImpl implements Manager
          if (!this.enabledDeploymentTypes.get(0).equals(Standard.class))
          {
             throw new DeploymentException("@Standard must be the lowest precedence deployment type");
-         }
-      }
-   }
-
-   /**
-    * Set up the contexts. By default, the built in contexts are set up, but a
-    * mock ManagerImpl may override this method to allow tests to set up other
-    * contexts
-    * 
-    * @param contexts Non-built-in contexts to add
-    */
-   protected void initContexts(Context... contexts)
-   {
-      this.contextMap = new ContextMap();
-      if (contexts.length == 0)
-      {
-         addContext(new DependentContext());
-         addContext(RequestContext.INSTANCE);
-         addContext(SessionContext.INSTANCE);
-         addContext(ApplicationContext.INSTANCE);
-      }
-      else
-      {
-         for (Context context : contexts)
-         {
-            addContext(context);
          }
       }
    }

@@ -66,11 +66,6 @@ public class MockManagerImpl extends ManagerImpl
       initEnabledDeploymentTypes(enabledDeploymentTypes);
    }
    
-   public void setContexts(Context ... contexts)
-   {
-      initContexts(contexts);
-   }
-   
    public static void setInstance(ManagerImpl manager)
    {
       ManagerImpl.rootManager = manager;

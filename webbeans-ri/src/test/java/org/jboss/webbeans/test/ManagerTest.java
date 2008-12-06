@@ -23,7 +23,7 @@ public class ManagerTest extends AbstractTest
    {
       Context requestContext = new RequestContext() {};
       ((AbstractContext)requestContext).setActive(false);
-      manager.setContexts(requestContext);
+      manager.addContext(requestContext);
       manager.getContext(RequestScoped.class);
    }
 
@@ -32,7 +32,8 @@ public class ManagerTest extends AbstractTest
    {
       Context firstContext = new RequestContext() {};
       Context secondContext = new RequestContext() {};
-      manager.setContexts(firstContext, secondContext);
+      manager.addContext(firstContext);
+      manager.addContext(secondContext);
       manager.getContext(RequestScoped.class);
       assert true;
    }
@@ -40,7 +41,6 @@ public class ManagerTest extends AbstractTest
    @Test(expectedExceptions={ContextNotActiveException.class}, groups={"stub", "manager"}) @SpecAssertion(section="8.6")
    public void testGetContextWithNoRegisteredContextsFails()
    {
-      manager.setContexts();
       manager.getContext(RequestScoped.class);
       assert false;
    }
@@ -49,7 +49,7 @@ public class ManagerTest extends AbstractTest
    public void testGetContextReturnsActiveContext()
    {
       Context requestContext = new RequestContext() {};
-      manager.setContexts(requestContext);
+      manager.addContext(requestContext);
       Context testContext = manager.getContext(RequestScoped.class);
       assert testContext == requestContext;
       
