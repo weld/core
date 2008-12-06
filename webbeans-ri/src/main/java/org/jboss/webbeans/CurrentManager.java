@@ -6,7 +6,7 @@ import org.jboss.webbeans.contexts.SessionContext;
 
 public class CurrentManager {
 
-   protected static ManagerImpl rootManager = new ManagerImpl();
+   protected static ManagerImpl rootManager;
 
    public static ManagerImpl rootManager()
    {
