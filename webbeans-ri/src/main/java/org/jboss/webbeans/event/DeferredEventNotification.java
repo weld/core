@@ -53,16 +53,6 @@ public class DeferredEventNotification<T> implements Synchronization
    }
 
    /**
-    * Gets the observer
-    * 
-    * @return the observer
-    */
-   public final Observer<T> getObserver()
-   {
-      return observer;
-   }
-
-   /**
     * Called after completion of a transaction
     * 
     * Checks if the observer is interested in this particular transaction phase

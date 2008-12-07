@@ -66,9 +66,9 @@ public class EventObserver<T>
    }
 
    /**
-    * Checks that each event binding specified on the observer is indeed a binding
-    * type (annotated with @BindingType) and that there are no duplicate bindings
-    * specified.
+    * Checks that each event binding specified on the observer is indeed a
+    * binding type (annotated with @BindingType) and that there are no duplicate
+    * bindings specified.
     * 
     * @param observerEventBindings The list of event bindings for the observer
     */
@@ -130,17 +130,17 @@ public class EventObserver<T>
       }
       else
       {
-	     //List<Annotation> bindingsArray = Arrays.asList(bindings);
-         //return bindingsArray.containsAll(this.eventBindings);
-         for (Annotation x: eventBindings) 
+         // List<Annotation> bindingsArray = Arrays.asList(bindings);
+         // return bindingsArray.containsAll(this.eventBindings);
+         for (Annotation x : eventBindings)
          {
             boolean found = false;
-            for (Annotation y: bindings)
+            for (Annotation y : bindings)
             {
-              	if ( MetaDataCache.instance().getBindingTypeModel(x.annotationType()).isEqual(x, y) ) 
-              	{
-                     found = true;
-              	}
+               if (MetaDataCache.instance().getBindingTypeModel(x.annotationType()).isEqual(x, y))
+               {
+                  found = true;
+               }
             }
             if (!found)
             {
@@ -150,7 +150,6 @@ public class EventObserver<T>
          return true;
       }
    }
-
 
    @Override
    public int hashCode()
@@ -164,62 +163,34 @@ public class EventObserver<T>
    }
 
    @Override
-   public boolean equals(Object obj)
+   public boolean equals(Object other)
    {
-      if (this == obj)
-      {
-         return true;
-      }
-      if (obj == null)
+      if (other == null || (!(other instanceof EventObserver)))
       {
          return false;
       }
-      if (getClass() != obj.getClass())
+      EventObserver<T> otherObserver = (EventObserver<T>) other;
+      if (!eventType.equals(otherObserver.getEventType()))
       {
          return false;
       }
-      EventObserver<?> other = (EventObserver<?>) obj;
-      if (eventBindings == null)
-      {
-         if (other.eventBindings != null)
-            return false;
-      }
-      else if (!eventBindings.equals(other.eventBindings))
-      {
-         return false;
-
-      }
-      if (eventType == null)
-      {
-         if (other.eventType != null)
-         {
-            return false;
-         }
-      }
-      else if (!eventType.equals(other.eventType))
+      if (!eventBindings.equals(otherObserver.getEventBindings()))
       {
          return false;
       }
-      if (observer == null)
-      {
-         if (other.observer != null)
-         {
-            return false;
-         }
-      }
-      else if (!observer.equals(other.observer))
+      if (!observer.equals(otherObserver.getObserver()))
       {
          return false;
       }
       return true;
    }
-   
+
    @Override
    public String toString()
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Event Observer:\n");
-      buffer.append("  Event Type: " + eventType.getName() +"\n");
+      buffer.append("  Event Type: " + eventType.getName() + "\n");
       buffer.append(Strings.collectionToString("  Event Bindings: ", eventBindings));
       buffer.append("  Observer: " + observer);
       return buffer.toString();
