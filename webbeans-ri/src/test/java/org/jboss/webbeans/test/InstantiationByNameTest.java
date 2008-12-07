@@ -20,6 +20,7 @@ import org.jboss.webbeans.test.beans.Sole;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.testng.annotations.Test;
 
+@SpecVersion("20081206")
 public class InstantiationByNameTest extends AbstractTest
 {
    

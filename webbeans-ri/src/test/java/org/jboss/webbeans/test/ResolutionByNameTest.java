@@ -13,7 +13,7 @@ import org.jboss.webbeans.test.beans.Sole;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.testng.annotations.Test;
 
-@SpecVersion("PDR")
+@SpecVersion("20081206")
 public class ResolutionByNameTest extends AbstractTest
 {
 
