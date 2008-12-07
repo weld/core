@@ -140,6 +140,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       injectableFields = new HashSet<AnnotatedField<Object>>();
       for (AnnotatedField<Object> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
       {
+         if ( !annotatedField.isAnnotationPresent(Produces.class) )
+         {
          if (annotatedField.isStatic())
          {
             throw new DefinitionException("Don't place binding annotations on static fields " + annotatedField);
@@ -150,6 +152,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          }
          injectableFields.add(annotatedField);
          super.injectionPoints.add(annotatedField);
+         }
       }
    }
 
