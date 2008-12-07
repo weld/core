@@ -19,6 +19,8 @@ package org.jboss.webbeans.contexts;
 
 import javax.webbeans.RequestScoped;
 
+import org.jboss.webbeans.util.Names;
+
 /**
  * The request context
  * 
@@ -36,5 +38,13 @@ public class RequestContext extends BasicContext
    {
       super(RequestScoped.class);
    }   
+
+   @Override
+   public String toString()
+   {
+      String active = isActive() ? "Active " : "Inactive ";
+      String count = getBeanMap() == null ? "" : "holding " + Names.count(getBeanMap().keySet()) + " instances ";
+      return active + "request context " + count; 
+   }
 
 }

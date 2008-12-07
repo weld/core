@@ -21,6 +21,7 @@ import javax.webbeans.SessionScoped;
 
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.util.Names;
 
 /**
  * The session context
@@ -32,7 +33,7 @@ public class SessionContext extends AbstractContext
    private static LogProvider log = Logging.getLogProvider(SessionContext.class);
 
    public static SessionContext INSTANCE = new SessionContext();
-   
+
    // The beans
    private ThreadLocal<BeanMap> beanMap;
 
@@ -65,6 +66,15 @@ public class SessionContext extends AbstractContext
    public void setBeanMap(BeanMap beanMap)
    {
       this.beanMap.set(beanMap);
+   }
+
+   @Override
+   public String toString()
+   {
+      String active = isActive() ? "Active " : "Inactive ";
+      String count = getBeanMap() == null ? "" : "holding " + Names.count(getBeanMap().keySet()) + " instances ";
+      String prefix = getBeanMap() == null ? "" : "with key prefix " + ((AbstractBeanMapAdaptor) getBeanMap()).getKeyPrefix();
+      return active + "session context " + count + prefix; 
    }
 
 }

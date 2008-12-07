@@ -155,17 +155,6 @@ public abstract class AbstractContext implements Context
     */
    protected abstract BeanMap getBeanMap();
 
-   @Override
-   public String toString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("AbstractContext:\n");
-      buffer.append("Scope type: " + getScopeType().toString() + "\n");
-      buffer.append("Active: " + getActive().toString() + "\n");
-      buffer.append(getBeanMap().toString() + "\n");
-      return buffer.toString();
-   }
-
    /**
     * Delegates to a ThreadLocal instance
     */

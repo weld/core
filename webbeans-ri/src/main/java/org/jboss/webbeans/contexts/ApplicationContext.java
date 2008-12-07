@@ -21,6 +21,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.webbeans.ApplicationScoped;
 
+import org.jboss.webbeans.util.Names;
+
 /**
  * The Application context
  * 
@@ -32,12 +34,12 @@ public class ApplicationContext extends AbstractContext
 {
 
    public static ApplicationContext INSTANCE = new ApplicationContext();
-   
+
    // The beans
    private BeanMap beanMap;
    // Is the context active?
    private AtomicBoolean active;
-   
+
    /**
     * Constructor
     */
@@ -57,7 +59,7 @@ public class ApplicationContext extends AbstractContext
    {
       return this.beanMap;
    }
-   
+
    /**
     * Sets the bean map
     * 
@@ -67,7 +69,7 @@ public class ApplicationContext extends AbstractContext
    {
       this.beanMap = applicationBeanMap;
    }
-   
+
    /**
     * Indicates if the context is active
     * 
@@ -78,7 +80,7 @@ public class ApplicationContext extends AbstractContext
    {
       return active.get();
    }
-   
+
    /**
     * Sets the active state of the context
     * 
@@ -89,5 +91,14 @@ public class ApplicationContext extends AbstractContext
    {
       this.active.set(active);
    }
-   
+
+   @Override
+   public String toString()
+   {
+      String active = isActive() ? "Active " : "Inactive ";
+      String count = getBeanMap() == null ? "" : "holding " + Names.count(getBeanMap().keySet()) + " instances ";
+      String prefix = getBeanMap() == null ? "" : "with key prefix " + ((AbstractBeanMapAdaptor) getBeanMap()).getKeyPrefix();
+      return active + "application context " + count + prefix; 
+   }
+
 }

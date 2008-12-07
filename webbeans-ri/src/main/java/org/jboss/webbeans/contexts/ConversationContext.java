@@ -19,6 +19,8 @@ package org.jboss.webbeans.contexts;
 
 import javax.webbeans.ConversationScoped;
 
+import org.jboss.webbeans.util.Names;
+
 /**
  * The conversation context
  * 
@@ -33,6 +35,14 @@ public class ConversationContext extends BasicContext
    public ConversationContext()
    {
       super(ConversationScoped.class);
+   }
+
+   @Override
+   public String toString()
+   {
+      String active = isActive() ? "Active " : "Inactive ";
+      String count = getBeanMap() == null ? "" : "holding " + Names.count(getBeanMap().keySet()) + " instances ";
+      return active + "conversation context " + count; 
    }
 
 }

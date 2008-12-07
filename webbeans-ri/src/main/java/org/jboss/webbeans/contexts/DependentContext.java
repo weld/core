@@ -21,6 +21,8 @@ import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.Dependent;
 import javax.webbeans.manager.Contextual;
 
+import org.jboss.webbeans.util.Names;
+
 /**
  * The dependent context
  * 
@@ -56,4 +58,12 @@ public class DependentContext extends BasicContext
       return create == false ? null : bean.create();
    }
 
+   @Override
+   public String toString()
+   {
+      String active = isActive() ? "Active " : "Inactive ";
+      String count = getBeanMap() == null ? "" : "holding " + Names.count(getBeanMap().keySet()) + " instances ";
+      return active + "dependent context " + count; 
+   }
+   
 }

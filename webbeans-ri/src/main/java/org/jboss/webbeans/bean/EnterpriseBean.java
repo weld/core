@@ -316,28 +316,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    public String toString()
    {
       StringBuilder buffer = new StringBuilder();
-      String ejbType = "";
-      if (getEjbMetaData().isMessageDriven())
-      {
-         ejbType = "message driven";
-      }
-      else if (getEjbMetaData().isSingleton())
-      {
-         ejbType = "singleton";
-      }
-      else if (getEjbMetaData().isStateful())
-      {
-         ejbType = "stateful";
-      }
-      else if (getEjbMetaData().isStateless())
-      {
-         ejbType = "stateless";
-      }
-      else
-      {
-         ejbType = "unknown";
-      }
-      buffer.append("Annotated " + Names.scopeTypeToString(getScopeType()) + ejbType);
+      buffer.append("Annotated " + Names.scopeTypeToString(getScopeType()) + Names.ejbTypeFromMetaData(getEjbMetaData()));
       if (getName() == null)
       {
          buffer.append(" unnamed enterprise bean");
@@ -347,7 +326,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          buffer.append(" enterprise bean '" + getName() + "'");
       }
       buffer.append(" [" + getType().getName() + "]\n");
-      buffer.append("   EJB name: " + getEjbMetaData().getEjbName() + ", default JNDI name: " + getEjbMetaData().getDefaultJndiName() + ", EJB link JNDI name: " + getEjbMetaData().getEjbLinkJndiName() + "\n");
       buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
       return buffer.toString();
    }

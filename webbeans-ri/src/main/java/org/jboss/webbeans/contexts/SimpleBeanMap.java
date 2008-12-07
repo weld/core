@@ -133,6 +133,11 @@ public class SimpleBeanMap extends ForwardingMap<Contextual<? extends Object>, O
    @Override
    public String toString()
    {
+      return "SimpleBeanMap holding " + delegate.size() + " instances";
+   }
+
+   public String toDetailedString()
+   {
       return Strings.mapToString("SimpleBeanMap (bean -> instance): ", delegate);
    }
 
