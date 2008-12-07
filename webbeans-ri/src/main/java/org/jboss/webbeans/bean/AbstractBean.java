@@ -145,7 +145,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     */
    protected void initBindingTypes()
    {
-
       this.bindingTypes = new HashSet<Annotation>();
       if (isDefinedInXml())
       {
