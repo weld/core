@@ -20,6 +20,7 @@ package org.jboss.webbeans.bootstrap;
 import static org.jboss.webbeans.util.BeanFactory.createEnterpriseBean;
 import static org.jboss.webbeans.util.BeanFactory.createEventBean;
 import static org.jboss.webbeans.util.BeanFactory.createObserver;
+import static org.jboss.webbeans.util.BeanFactory.createProducerFieldBean;
 import static org.jboss.webbeans.util.BeanFactory.createProducerMethodBean;
 import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
 
@@ -38,6 +39,7 @@ import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EventBean;
+import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
@@ -140,6 +142,12 @@ public class Bootstrap
             beans.add(producerMethodBean);
             CurrentManager.rootManager().getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
             log.info("Web Bean: " + producerMethodBean);
+         }
+         for (AnnotatedField<Object> producerField : bean.getProducerFields())
+         {
+            ProducerFieldBean<?> producerFieldBean = createProducerFieldBean(producerField, bean);
+            beans.add(producerFieldBean);
+            log.info("Web Bean: " + producerFieldBean);
          }
          for (AnnotatedField<Object> eventField : bean.getEventFields())
          {

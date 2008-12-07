@@ -17,12 +17,14 @@
 
 package org.jboss.webbeans.util;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.EventBean;
+import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.event.ObserverImpl;
@@ -72,6 +74,32 @@ public class BeanFactory
    public static <T> ProducerMethodBean<T> createProducerMethodBean(Class<T> type, Method method, AbstractClassBean<?> declaringBean)
    {
       return new ProducerMethodBean<T>(method, declaringBean, CurrentManager.rootManager());
+   }
+
+   /**
+    * Creates a producer field Web Bean
+    * 
+    * @param <T> The type
+    * @param type The class
+    * @param field The underlying field
+    * @param declaringBean The declaring bean abstraction
+    * @return A producer Web Bean
+    */
+   public static <T> ProducerFieldBean<T> createProducerFieldBean(Class<T> type, Field field, AbstractClassBean<?> declaringBean)
+   {
+      return new ProducerFieldBean<T>(field, declaringBean, CurrentManager.rootManager());
+   }
+
+   /**
+    * Creates a producer field Web Bean
+    * 
+    * @param field The underlying method abstraction
+    * @param declaringBean The declaring bean abstraction
+    * @return A producer Web Bean
+    */
+   public static <T> ProducerFieldBean<T> createProducerFieldBean(AnnotatedField<T> field, AbstractClassBean<?> declaringBean)
+   {
+      return new ProducerFieldBean<T>(field, declaringBean, CurrentManager.rootManager());
    }
 
    /**

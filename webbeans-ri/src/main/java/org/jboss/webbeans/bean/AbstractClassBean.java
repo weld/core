@@ -104,6 +104,17 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    }
 
    /**
+    * Returns the producer fields
+    * 
+    * @return A set of producer fields. An empty set is returned if there are
+    *         none present
+    */
+   public Set<AnnotatedField<Object>> getProducerFields()
+   {
+      return getAnnotatedItem().getAnnotatedFields(Produces.class);
+   }
+
+   /**
     * Returns @Observer annotated fields.
     * 
     * @return A set of observing fields. An empty set is returned if there are
