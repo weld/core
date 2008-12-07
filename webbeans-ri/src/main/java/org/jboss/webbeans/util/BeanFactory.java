@@ -27,6 +27,7 @@ import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bean.XmlEnterpriseBean;
 import org.jboss.webbeans.bean.XmlSimpleBean;
+import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 
@@ -121,6 +122,11 @@ public class BeanFactory
    public static <T> EventBean<T> createEventBean(AnnotatedField<T> field)
    {
       return new EventBean<T>(field, CurrentManager.rootManager());
+   }
+   
+   public static <T> ObserverImpl<T> createObserver(AnnotatedMethod<Object> method, AbstractClassBean<?> declaringBean)
+   {
+      return new ObserverImpl<T>(method, declaringBean, CurrentManager.rootManager());
    }
 
 }

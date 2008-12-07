@@ -6,4 +6,9 @@ import javax.webbeans.ApplicationScoped;
 public class LadybirdSpider extends Spider
 {
 
+   public void spinWeb()
+   {
+      
+   }
+   
 }

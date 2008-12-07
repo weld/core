@@ -19,12 +19,18 @@ package org.jboss.webbeans.bootstrap;
 
 import static org.jboss.webbeans.util.BeanFactory.createEnterpriseBean;
 import static org.jboss.webbeans.util.BeanFactory.createEventBean;
+import static org.jboss.webbeans.util.BeanFactory.createObserver;
 import static org.jboss.webbeans.util.BeanFactory.createProducerMethodBean;
 import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.webbeans.DefinitionException;
+import javax.webbeans.Observer;
+import javax.webbeans.Observes;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
@@ -33,7 +39,9 @@ import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
+import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.log.LogProvider;
@@ -131,12 +139,27 @@ public class Bootstrap
             ProducerMethodBean<?> producerMethodBean = createProducerMethodBean(producerMethod, bean);
             beans.add(producerMethodBean);
             CurrentManager.rootManager().getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
+            log.info("Web Bean: " + producerMethodBean);
          }
          for (AnnotatedField<Object> eventField : bean.getEventFields())
          {
             EventBean<?> eventBean = createEventBean(eventField);
             beans.add(eventBean);
             CurrentManager.rootManager().getResolver().addInjectionPoints(eventBean.getInjectionPoints());
+            log.info("Web Bean: " + eventBean);
+         }
+         for (AnnotatedMethod<Object> observerMethod : bean.getObserverMethods())
+         {
+            ObserverImpl<?> observer = createObserver(observerMethod, bean);
+            if (observerMethod.getAnnotatedParameters(Observes.class).size() == 1)
+            {
+               registerObserver(observer, observerMethod.getAnnotatedParameters(Observes.class).get(0).getType(), observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingTypesAsArray());
+            }
+            else
+            {
+               throw new DefinitionException("Observer method can only have one parameter annotated @Observes " + observer);
+            }
+            
          }
          log.info("Web Bean: " + bean);
       }
@@ -162,6 +185,8 @@ public class Bootstrap
       registerBeans(webBeanDiscovery.discoverWebBeanClasses());
       log.info("Validing Web Bean injection points");
       CurrentManager.rootManager().getResolver().resolveInjectionPoints();
+      CurrentManager.rootManager().fireEvent(CurrentManager.rootManager(), new InitializedBinding());
+      log.info("Web Beans RI initialized");
    }
 
    /**
@@ -204,6 +229,12 @@ public class Bootstrap
          }
       }
       return webBeanDiscoveryClasses;
+   }
+   
+   @SuppressWarnings("unchecked")
+   private static <T> void registerObserver(Observer<T> observer, Class<?> eventType, Annotation[] bindings)
+   {
+      CurrentManager.rootManager().addObserver(observer, (Class<T>) eventType, bindings);
    }
 
 }

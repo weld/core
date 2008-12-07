@@ -137,6 +137,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
          }
          methods.add(value);
       }
+
    }
 
    /**
@@ -224,6 +225,8 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    private final Set<AnnotatedMethod<Object>> methods;
    // The map from annotation type to abstracted method with annotation
    private final AnnotatedMethodMap annotatedMethods;
+   // The map from annotation type to method with a parameter with annotation
+   private final AnnotatedMethodMap methodsByAnnotatedParameters;
 
    // The set of abstracted constructors
    private final Set<AnnotatedConstructor<T>> constructors;
@@ -234,6 +237,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
 
    // Cached string representation
    private String toString;
+   
 
    /**
     * Constructor
@@ -309,6 +313,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
 
       this.methods = new HashSet<AnnotatedMethod<Object>>();
       this.annotatedMethods = new AnnotatedMethodMap();
+      this.methodsByAnnotatedParameters = new AnnotatedMethodMap();
       for (Class<?> c = clazz; c != Object.class && c != null; c = c.getSuperclass())
       {
          for (Method method : clazz.getDeclaredMethods())
@@ -327,6 +332,13 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
                   annotatedMethods.put(annotation.annotationType(), new HashSet<AnnotatedMethod<Object>>());
                }
                annotatedMethods.get(annotation.annotationType()).add(annotatedMethod);
+            }
+            for (Class<? extends Annotation> annotationType : AnnotatedMethod.MAPPED_PARAMETER_ANNOTATIONS)
+            {
+               if (annotatedMethod.getAnnotatedParameters(annotationType).size() > 0)
+               {
+                  methodsByAnnotatedParameters.put(annotationType, annotatedMethod);
+               }
             }
          }
       }
@@ -484,6 +496,11 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    public AnnotatedConstructor<T> getConstructor(List<Class<?>> arguments)
    {
       return constructorsByArgumentMap.get(arguments);
+   }
+   
+   public Set<AnnotatedMethod<Object>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
+   {
+      return methodsByAnnotatedParameters.get(annotationType);
    }
 
    /**

@@ -30,9 +30,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.webbeans.BindingType;
-import javax.webbeans.DeploymentType;
-import javax.webbeans.ScopeType;
-import javax.webbeans.Stereotype;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
@@ -161,10 +158,6 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentAnnotationLiteral() };
    // The set of default binding types
    private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
-
-   // The set of meta-annotations to map
-   @SuppressWarnings("unchecked")
-   private static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(BindingType.class, DeploymentType.class, Stereotype.class, ScopeType.class));
 
    // Cached string representation
    private String toString;

@@ -19,7 +19,14 @@ package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
+
+import javax.webbeans.BindingType;
+import javax.webbeans.DeploymentType;
+import javax.webbeans.ScopeType;
+import javax.webbeans.Stereotype;
 
 /**
  * AnnotatedItem provides a uniform access to the annotations on an annotated
@@ -30,6 +37,11 @@ import java.util.Set;
  */
 public interface AnnotatedItem<T, S>
 {
+   
+// The set of meta-annotations to map
+   @SuppressWarnings("unchecked")
+   public static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(BindingType.class, DeploymentType.class, Stereotype.class, ScopeType.class));
+   
    /**
     * Gets all annotations on the item
     * 

@@ -19,8 +19,18 @@ package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.webbeans.AfterTransactionCompletion;
+import javax.webbeans.AfterTransactionFailure;
+import javax.webbeans.AfterTransactionSuccess;
+import javax.webbeans.BeforeTransactionCompletion;
+import javax.webbeans.Disposes;
+import javax.webbeans.IfExists;
+import javax.webbeans.Observes;
 import javax.webbeans.manager.Manager;
 
 /**
@@ -32,6 +42,8 @@ import javax.webbeans.manager.Manager;
  */
 public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
 {
+   
+   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Disposes.class, Observes.class, IfExists.class, BeforeTransactionCompletion.class, AfterTransactionCompletion.class, AfterTransactionFailure.class, AfterTransactionSuccess.class));
 
    /**
     * Gets the abstracted parameters of the method
@@ -42,9 +54,9 @@ public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
    public List<AnnotatedParameter<Object>> getParameters();
 
    /**
-    * Gets the list of annotated parameters for a given meta annotation
+    * Gets the list of annotated parameters for a given annotation
     * 
-    * @param metaAnnotationType The meta annotation to match
+    * @param metaAnnotationType The annotation to match
     * @return A set of matching parameter abstractions. Returns an empty list if
     *         there are no matches.
     */

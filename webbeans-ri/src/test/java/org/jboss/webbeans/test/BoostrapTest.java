@@ -14,6 +14,10 @@ import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
 import org.jboss.webbeans.test.beans.Elephant;
+import org.jboss.webbeans.test.beans.InitializedObserver;
+import org.jboss.webbeans.test.beans.InitializedObserverWhichUsesApplicationContext;
+import org.jboss.webbeans.test.beans.InitializedObserverWhichUsesRequestContext;
+import org.jboss.webbeans.test.beans.LadybirdSpider;
 import org.jboss.webbeans.test.beans.Panther;
 import org.jboss.webbeans.test.beans.Salmon;
 import org.jboss.webbeans.test.beans.SeaBass;
@@ -218,4 +222,27 @@ public class BoostrapTest extends AbstractTest
       assert classes.get(SeaBass.class) instanceof SimpleBean;
       assert classes.get(Sole.class) instanceof SimpleBean;
    }
+   
+   @Test(groups="bootstrap")
+   public void testInitializedEvent()
+   {
+      assert !InitializedObserver.observered;
+      
+      bootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(InitializedObserver.class)), null, null));
+      
+      assert InitializedObserver.observered;
+   }
+   
+   @Test(groups="bootstrap")
+   public void testRequestContextActiveDuringInitializtionEvent()
+   {
+      bootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(InitializedObserverWhichUsesRequestContext.class, Tuna.class)), null, null));
+   }
+   
+   @Test(groups="bootstrap")
+   public void testApplicationContextActiveDuringInitializtionEvent()
+   {
+      bootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(InitializedObserverWhichUsesApplicationContext.class, LadybirdSpider.class)), null, null));
+   }
+   
 }

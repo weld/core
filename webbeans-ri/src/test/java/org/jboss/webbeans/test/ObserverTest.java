@@ -8,7 +8,6 @@ import javax.webbeans.Observes;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
@@ -62,7 +61,7 @@ public class ObserverTest
       manager.addBean(ob);
       Method method = SampleObserver.class.getMethod("observe", SampleEvent.class);
       om = new AnnotatedMethodImpl<Object>(method, new AnnotatedClassImpl<SampleObserver>(SampleObserver.class));
-      observer = new ObserverImpl<SampleEvent>(manager, ob, om, SampleEvent.class);
+      observer = BeanFactory.createObserver( om, ob);
       Annotation annotation = method.getParameterAnnotations()[0][1];
       manager.addObserver(observer, SampleEvent.class, annotation);
       notified = false;

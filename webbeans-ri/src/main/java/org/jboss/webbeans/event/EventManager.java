@@ -33,6 +33,7 @@ import javax.webbeans.Observer;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.transaction.TransactionListener;
 import org.jboss.webbeans.util.JNDI;
+import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
 import com.google.common.collect.ForwardingMap;
@@ -176,11 +177,14 @@ public class EventManager
    public <T> Set<Observer<T>> getObservers(T event, Annotation... bindings)
    {
       Set<Observer<T>> interestedObservers = new HashSet<Observer<T>>();
-      for (EventObserver<?> observer : registeredObservers.get(event.getClass()))
+      for (Class<?> clazz : Reflections.getTypeHierachy(event.getClass()))
       {
-         if (observer.isObserverInterested(bindings))
+         for (EventObserver<?> observer : registeredObservers.get(clazz))
          {
-            interestedObservers.add((Observer<T>) observer.getObserver());
+            if (observer.isObserverInterested(bindings))
+            {
+               interestedObservers.add((Observer<T>) observer.getObserver());
+            }
          }
       }
       return interestedObservers;

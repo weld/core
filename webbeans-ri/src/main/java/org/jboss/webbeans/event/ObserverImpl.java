@@ -55,11 +55,11 @@ public class ObserverImpl<T> implements Observer<T>
 {
    private Bean<?> observerBean;
    private final AnnotatedMethod<Object> observerMethod;
-   private final Class<T> eventType;
    private TransactionObservationPhase transactionObservationPhase;
    private boolean conditional;
    private ManagerImpl manager;
 
+   
    /**
     * Creates an Observer which describes and encapsulates an observer method
     * (7.5).
@@ -72,12 +72,11 @@ public class ObserverImpl<T> implements Observer<T>
     * @param observer The observer method to notify
     * @param eventType The type of event being observed
     */
-   public ObserverImpl(final ManagerImpl manager, final Bean<?> observerBean, final AnnotatedMethod<Object> observer, final Class<T> eventType)
+   public ObserverImpl(final AnnotatedMethod<Object> observer, final Bean<?> observerBean, final ManagerImpl manager)
    {
       this.manager = manager;
       this.observerBean = observerBean;
       this.observerMethod = observer;
-      this.eventType = eventType;
       initTransactionObservationPhase();
       conditional = !observerMethod.getAnnotatedParameters(IfExists.class).isEmpty();
    }
@@ -113,11 +112,6 @@ public class ObserverImpl<T> implements Observer<T>
       {
          transactionObservationPhase = NONE;
       }
-   }
-
-   public Class<T> getEventType()
-   {
-      return eventType;
    }
 
    public void notify(final T event)
@@ -175,6 +169,16 @@ public class ObserverImpl<T> implements Observer<T>
    public boolean isInterestedInTransactionPhase(TransactionObservationPhase currentPhase)
    {
       return transactionObservationPhase.equals(currentPhase);
+   }
+   
+   @Override
+   public String toString()
+   {
+      StringBuilder builder = new StringBuilder();
+      builder.append("Observer Implentation: \n");
+      builder.append("  Observer (Declaring) bean: " + observerBean);
+      builder.append("  Observer method: " + observerMethod);
+      return builder.toString();
    }
 
 }

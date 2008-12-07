@@ -46,6 +46,7 @@ import org.jboss.webbeans.util.Strings;
  */
 public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>
 {
+   
    // The actual type arguments
    private final Type[] actualTypeArguments;
    // The underlying method
@@ -101,7 +102,10 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
             this.parameters.add(parameter);
             for (Annotation annotation : parameter.getAnnotations())
             {
-               annotatedParameters.put(annotation.annotationType(), parameter);
+               if (MAPPED_PARAMETER_ANNOTATIONS.contains(annotation.annotationType()))
+               {
+                  annotatedParameters.put(annotation.annotationType(), parameter);
+               }
             }
          }
          else
@@ -109,10 +113,6 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
             Class<? extends Object> clazz = method.getParameterTypes()[i];
             AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(new Annotation[0], (Class<Object>) clazz);
             this.parameters.add(parameter);
-            for (Annotation annotation : parameter.getAnnotations())
-            {
-               annotatedParameters.put(annotation.annotationType(), parameter);
-            }
          }
       }
 

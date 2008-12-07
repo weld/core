@@ -118,6 +118,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       return getAnnotatedItem().getAnnotatedFields(Observable.class);
    }
+   
+   public Set<AnnotatedMethod<Object>> getObserverMethods()
+   {
+      return getAnnotatedItem().getMethodsWithAnnotatedParameters(Observes.class);
+   }
 
    /**
     * Initializes the injection points

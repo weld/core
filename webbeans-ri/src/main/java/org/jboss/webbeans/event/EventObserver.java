@@ -24,6 +24,7 @@ import java.util.List;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.MetaDataCache;
+import org.jboss.webbeans.util.Strings;
 
 /**
  * <p>
@@ -182,6 +183,17 @@ public class EventObserver<T>
          return false;
       }
       return true;
+   }
+   
+   @Override
+   public String toString()
+   {
+      StringBuilder buffer = new StringBuilder();
+      buffer.append("Event Observer:\n");
+      buffer.append("  Event Type: " + eventType.getName() +"\n");
+      buffer.append(Strings.collectionToString("  Event Bindings: ", eventBindings));
+      buffer.append("  Observer: " + observer);
+      return buffer.toString();
    }
 
 }
