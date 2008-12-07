@@ -4,7 +4,8 @@ import org.jboss.webbeans.contexts.ApplicationContext;
 import org.jboss.webbeans.contexts.RequestContext;
 import org.jboss.webbeans.contexts.SessionContext;
 
-public class CurrentManager {
+public class CurrentManager 
+{
 
    protected static ManagerImpl rootManager;
 
@@ -13,7 +14,8 @@ public class CurrentManager {
       return rootManager;
    }
    
-   public static void setRootManager(ManagerImpl rootManager) {
+   public static void setRootManager(ManagerImpl rootManager) 
+   {
       CurrentManager.rootManager = rootManager;
    }
 
@@ -21,7 +23,8 @@ public class CurrentManager {
     * Set up the root manager. 
     * TODO: move this to Bootstrap
     */
-   static {
+   static 
+   {
       rootManager = new ManagerImpl();
       rootManager.addContext(RequestContext.INSTANCE);
       rootManager.addContext(SessionContext.INSTANCE);
