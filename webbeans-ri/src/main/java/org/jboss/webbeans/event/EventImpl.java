@@ -21,13 +21,14 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.webbeans.BindingType;
 import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Event;
 import javax.webbeans.Observable;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.Strings;
 
 /**
  * Implementation of the Event interface
@@ -71,7 +72,7 @@ public class EventImpl<T> implements Event<T>
       Set<Annotation> result = new HashSet<Annotation>();
       for (Annotation annotation : annotations)
       {
-         if (!annotation.annotationType().isAnnotationPresent(BindingType.class))
+         if (!Reflections.isBindingType(annotation))
          {
             throw new IllegalArgumentException(annotation + " is not a binding type");
          }
@@ -84,7 +85,7 @@ public class EventImpl<T> implements Event<T>
    }
 
    /**
-    * Validates the binding types and checks for dupes
+    * Validates the binding types and checks for duplicates among the annotations.
     * 
     * @param annotations The annotations to validate
     * @return A set of unique binding type annotations
@@ -94,16 +95,13 @@ public class EventImpl<T> implements Event<T>
       Set<Annotation> result = new HashSet<Annotation>();
       for (Annotation annotation : annotations)
       {
-         if (!annotation.annotationType().isAnnotationPresent(BindingType.class))
+         if (!Reflections.isBindingType(annotation))
          {
-            throw new IllegalArgumentException(annotation + " is not a binding type");
+            throw new IllegalArgumentException(annotation + " is not a binding type for " + this);
          }
-         for (Annotation bindingAnnotation : this.bindingTypes)
+         if (result.contains(annotation) || this.bindingTypes.contains(annotation))
          {
-            if (bindingAnnotation.annotationType().equals(annotation.annotationType()))
-            {
-               throw new DuplicateBindingTypeException(annotation + " is already present in the bindings list");
-            }
+            throw new DuplicateBindingTypeException(annotation + " is already present in the bindings list for " + this);
          }
          result.add(annotation);
       }
@@ -134,6 +132,16 @@ public class EventImpl<T> implements Event<T>
       Set<Annotation> bindingParameters = checkBindingTypes(bindingTypes);
       bindingParameters.addAll(this.bindingTypes);
       manager.addObserver(observer, eventType, bindingParameters.toArray(new Annotation[0]));
+   }
+
+   @Override
+   public String toString()
+   {
+      StringBuilder buffer = new StringBuilder();
+      buffer.append("Observable Event:\n");
+      buffer.append("  Event Type: " + eventType.getName() +"\n");
+      buffer.append(Strings.collectionToString("  Event Bindings: ", bindingTypes));
+      return buffer.toString();
    }
 
 }

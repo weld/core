@@ -3,6 +3,7 @@ package org.jboss.webbeans.test;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
+import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Event;
 import javax.webbeans.Observer;
 import javax.webbeans.TypeLiteral;
@@ -10,7 +11,9 @@ import javax.webbeans.TypeLiteral;
 import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.RoleBinding;
+import org.jboss.webbeans.test.bindings.TameAnnotationLiteral;
 import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.Test;
 
@@ -27,6 +30,10 @@ public class NewEventTest extends AbstractTest
    {
    }
    
+   public static class ATemplatedEventType<T>
+   {
+   }
+   
    public static class AnObserver implements Observer<AnEventType>
    {
 
@@ -37,13 +44,13 @@ public class NewEventTest extends AbstractTest
    }
    
    @SuppressWarnings("unchecked")
-   @Test
-   public void create() {
+   @Test(groups="events")
+   public void testEventBeanCreation() {
       SimpleBean<MyTest> myTestBean = BeanFactory.createSimpleBean(MyTest.class);
       for (AnnotatedField<Object> field : myTestBean.getEventFields()) {
          EventBean eventBean = BeanFactory.createEventBean(field);
-         @SuppressWarnings("unused")
          Event<Param> event = eventBean.create();
+         assert event != null;
       }
    }
 
@@ -56,32 +63,73 @@ public class NewEventTest extends AbstractTest
 
    @Test(groups={"stub", "events"})
    @SpecAssertion(section="7.1")
-   public void testEventObjectWithTypeVariablesFails() 
-   {
-      assert false;
-   }
-   
-   @Test(groups={"stub", "events"})
-   @SpecAssertion(section="7.1")
-   public void testEventObjectWithWildcardsFails() 
-   {
-      assert false;
-   }
-   
-   @Test(groups={"stub", "events"})
-   @SpecAssertion(section="7.1")
    public void testConsumerNotifiedWhenEventTypeAndAllBindingsMatch() 
    {
       assert false;
    }
 
-   @Test(groups={"stub", "events"})
+   @Test(groups={"events"})
    @SpecAssertion(section="7.2")
-   public void testManagerFireEvent() 
+   public void testManagerFireEvent()
    {
-      assert false;
+      // First a simple event with no bindings is fired
+      AnEventType anEvent = new AnEventType();
+      manager.fireEvent(anEvent);
+
+      // Next an event with some event bindings is fired
+      manager.fireEvent(anEvent, new RoleBinding("Admin"));
    }
    
+   @Test(groups={"events"})
+   @SpecAssertion(section="7.1,7.2")
+   public void testManagerFireEventWithParametersFails()
+   {
+      boolean fireEventFailed = false;
+      try
+      {
+         ATemplatedEventType<String> anEvent = new ATemplatedEventType<String>();
+         manager.fireEvent(anEvent);
+      }
+      catch (IllegalArgumentException e)
+      {
+         fireEventFailed = true;
+      }
+      assert fireEventFailed;
+
+      // Although the above is really the same as with a wildcard, we will test
+      // it anyhow since the specification calls it out separately.
+      fireEventFailed = false;
+      try
+      {
+         ATemplatedEventType<?> anEventOnAnyType = new ATemplatedEventType<String>();
+         manager.fireEvent(anEventOnAnyType);
+      }
+      catch (IllegalArgumentException e)
+      {
+         fireEventFailed = true;
+      }
+      assert fireEventFailed;
+   }
+
+   @Test(groups={"events"})
+   @SpecAssertion(section="7.1,7.2")
+   public void testManagerFireEventWithNonBindingAnnotationsFails()
+   {
+      // The specs are not exactly clear on what is supposed to happen here, but borrowing
+      // from Section 7.x, we'll expect the same behavior here for a consistent API.
+      boolean fireEventFailed = false;
+      try
+      {
+         AnEventType anEvent = new AnEventType();
+         manager.fireEvent(anEvent, new AnimalStereotypeAnnotationLiteral());
+      }
+      catch (IllegalArgumentException e)
+      {
+         fireEventFailed = true;
+      }
+      assert fireEventFailed;
+   }
+
    @Test(groups={"events"})
    @SpecAssertion(section="7.3")
    public void testManagerAddObserver() 
@@ -161,18 +209,39 @@ public class NewEventTest extends AbstractTest
       assert resolvedObservers.isEmpty();
    }
    
-   @Test(groups={"stub", "events"})
+   @Test(groups={"events"})
    @SpecAssertion(section="7.3")
    public void testMultipleInstancesOfSameBindingTypeWhenAddingObserverFails() 
    {
-      assert false;
+      boolean failedAddingObserver = false;
+      try
+      {
+         Observer<AnEventType> observer = new AnObserver();
+         manager.addObserver(observer, AnEventType.class, new RoleBinding("Admin"), new TameAnnotationLiteral(), new TameAnnotationLiteral());
+      }
+      catch (DuplicateBindingTypeException e)
+      {
+         failedAddingObserver = true;
+      }
+      assert failedAddingObserver;
    }
    
-   @Test(groups={"stub", "events"})
+   @Test(groups={"events"})
    @SpecAssertion(section="7.3")
    public void testMultipleInstancesOfSameBindingTypeWhenRemovingObserverFails() 
    {
-      assert false;
+      boolean failedAddingObserver = false;
+      try
+      {
+         Observer<AnEventType> observer = new AnObserver();
+         manager.addObserver(observer, AnEventType.class);
+         manager.removeObserver(observer, AnEventType.class, new RoleBinding("Admin"), new TameAnnotationLiteral(), new TameAnnotationLiteral());
+      }
+      catch (DuplicateBindingTypeException e)
+      {
+         failedAddingObserver = true;
+      }
+      assert failedAddingObserver;
    }
 
    @Test(groups={"stub", "events"})

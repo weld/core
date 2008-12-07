@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.webbeans.BindingType;
 import javax.webbeans.ExecutionException;
 
 /**
@@ -532,4 +533,20 @@ public class Reflections
       return classes;
    }
 
+   /**
+    * Checks the bindingType to make sure the annotation was declared properly
+    * as a binding type (annotated with @BindingType).
+    * 
+    * @param bindingType The binding type to check
+    * @return true only if the annotation is really a binding type
+    */
+   public static boolean isBindingType(Annotation bindingType)
+   {
+      boolean isBindingAnnotation = false;
+      if (bindingType.annotationType().isAnnotationPresent(BindingType.class))
+      {
+         isBindingAnnotation = true;
+      }
+      return isBindingAnnotation;
+   }
 }

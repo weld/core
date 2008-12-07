@@ -365,9 +365,18 @@ public class ManagerImpl implements Manager
       {
          throw new IllegalArgumentException("Event type " + event.getClass().getName() + " is not allowed because it is a generic");
       }
+      // Also check that the binding types are truly binding types
+      for (Annotation binding : bindings)
+      {
+         if (!Reflections.isBindingType(binding))
+         {
+            throw new IllegalArgumentException("Event type " + event.getClass().getName() + " cannot be fired with non-binding type " + binding.getClass().getName() + " specified");
+         }
+      }
+
       // Get the observers for this event. Although resolveObservers is
-      // parameterized, this
-      // method is not, so we have to use Observer<Object> for observers.
+      // parameterized, this method is not, so we have to use
+      // Observer<Object> for observers.
       Set<Observer<Object>> observers = this.resolveObservers(event, bindings);
       this.eventManager.notifyObservers(observers, event);
    }

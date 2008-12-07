@@ -19,11 +19,15 @@ package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.MetaDataCache;
+import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
 /**
@@ -58,6 +62,31 @@ public class EventObserver<T>
       this.observer = observer;
       this.eventType = eventType;
       this.eventBindings = Arrays.asList(eventBindings);
+      checkEventBindings(eventBindings);
+   }
+
+   /**
+    * Checks that each event binding specified on the observer is indeed a binding
+    * type (annotated with @BindingType) and that there are no duplicate bindings
+    * specified.
+    * 
+    * @param observerEventBindings The list of event bindings for the observer
+    */
+   private void checkEventBindings(Annotation[] observerEventBindings)
+   {
+      Set<Annotation> checkedBindings = new HashSet<Annotation>();
+      for (Annotation annotation : observerEventBindings)
+      {
+         if (!Reflections.isBindingType(annotation))
+         {
+            throw new IllegalArgumentException(annotation + " is not a binding type for " + this);
+         }
+         if (checkedBindings.contains(annotation))
+         {
+            throw new DuplicateBindingTypeException(annotation + " is already present in the bindings list for " + this);
+         }
+         checkedBindings.add(annotation);
+      }
    }
 
    /**
