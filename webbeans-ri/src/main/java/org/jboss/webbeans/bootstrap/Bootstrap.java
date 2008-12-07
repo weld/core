@@ -17,6 +17,13 @@
 
 package org.jboss.webbeans.bootstrap;
 
+import static org.jboss.webbeans.ejb.EJB.ENTERPRISE_BEAN_CLASS;
+import static org.jboss.webbeans.jsf.JSF.UICOMPONENT_CLASS;
+import static org.jboss.webbeans.servlet.Servlet.FILTER_CLASS;
+import static org.jboss.webbeans.servlet.Servlet.HTTP_SESSION_LISTENER_CLASS;
+import static org.jboss.webbeans.servlet.Servlet.SERVLET_CLASS;
+import static org.jboss.webbeans.servlet.Servlet.SERVLET_CONTEXT_LISTENER_CLASS;
+import static org.jboss.webbeans.servlet.Servlet.SERVLET_REQUEST_LISTENER_CLASS;
 import static org.jboss.webbeans.util.BeanFactory.createEnterpriseBean;
 import static org.jboss.webbeans.util.BeanFactory.createEventBean;
 import static org.jboss.webbeans.util.BeanFactory.createObserver;
@@ -125,53 +132,56 @@ public class Bootstrap
       Set<AbstractBean<?, ?>> beans = new HashSet<AbstractBean<?, ?>>();
       for (Class<?> clazz : classes)
       {
-         AbstractClassBean<?> bean;
          if (MetaDataCache.instance().getEjbMetaData(clazz).isEjb())
          {
-            bean = createEnterpriseBean(clazz);
+            createBean(createEnterpriseBean(clazz), beans);
+         }
+         else if (isTypeSimpleWebBean(clazz))
+         {
+            createBean(createSimpleBean(clazz), beans);
+         }
+      }
+      return beans;
+   }
+   
+   public void createBean(AbstractClassBean<?> bean, Set<AbstractBean<?, ?>> beans)
+   {
+      beans.add(bean);
+      CurrentManager.rootManager().getResolver().addInjectionPoints(bean.getInjectionPoints());
+      for (AnnotatedMethod<Object> producerMethod : bean.getProducerMethods())
+      {
+         ProducerMethodBean<?> producerMethodBean = createProducerMethodBean(producerMethod, bean);
+         beans.add(producerMethodBean);
+         CurrentManager.rootManager().getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
+         log.info("Web Bean: " + producerMethodBean);
+      }
+      for (AnnotatedField<Object> producerField : bean.getProducerFields())
+      {
+         ProducerFieldBean<?> producerFieldBean = createProducerFieldBean(producerField, bean);
+         beans.add(producerFieldBean);
+         log.info("Web Bean: " + producerFieldBean);
+      }
+      for (AnnotatedField<Object> eventField : bean.getEventFields())
+      {
+         EventBean<?> eventBean = createEventBean(eventField);
+         beans.add(eventBean);
+         CurrentManager.rootManager().getResolver().addInjectionPoints(eventBean.getInjectionPoints());
+         log.info("Web Bean: " + eventBean);
+      }
+      for (AnnotatedMethod<Object> observerMethod : bean.getObserverMethods())
+      {
+         ObserverImpl<?> observer = createObserver(observerMethod, bean);
+         if (observerMethod.getAnnotatedParameters(Observes.class).size() == 1)
+         {
+            registerObserver(observer, observerMethod.getAnnotatedParameters(Observes.class).get(0).getType(), observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingTypesAsArray());
          }
          else
          {
-            bean = createSimpleBean(clazz);
+            throw new DefinitionException("Observer method can only have one parameter annotated @Observes " + observer);
          }
-         beans.add(bean);
-         CurrentManager.rootManager().getResolver().addInjectionPoints(bean.getInjectionPoints());
-         for (AnnotatedMethod<Object> producerMethod : bean.getProducerMethods())
-         {
-            ProducerMethodBean<?> producerMethodBean = createProducerMethodBean(producerMethod, bean);
-            beans.add(producerMethodBean);
-            CurrentManager.rootManager().getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
-            log.info("Web Bean: " + producerMethodBean);
-         }
-         for (AnnotatedField<Object> producerField : bean.getProducerFields())
-         {
-            ProducerFieldBean<?> producerFieldBean = createProducerFieldBean(producerField, bean);
-            beans.add(producerFieldBean);
-            log.info("Web Bean: " + producerFieldBean);
-         }
-         for (AnnotatedField<Object> eventField : bean.getEventFields())
-         {
-            EventBean<?> eventBean = createEventBean(eventField);
-            beans.add(eventBean);
-            CurrentManager.rootManager().getResolver().addInjectionPoints(eventBean.getInjectionPoints());
-            log.info("Web Bean: " + eventBean);
-         }
-         for (AnnotatedMethod<Object> observerMethod : bean.getObserverMethods())
-         {
-            ObserverImpl<?> observer = createObserver(observerMethod, bean);
-            if (observerMethod.getAnnotatedParameters(Observes.class).size() == 1)
-            {
-               registerObserver(observer, observerMethod.getAnnotatedParameters(Observes.class).get(0).getType(), observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingTypesAsArray());
-            }
-            else
-            {
-               throw new DefinitionException("Observer method can only have one parameter annotated @Observes " + observer);
-            }
-            
-         }
-         log.info("Web Bean: " + bean);
+         
       }
-      return beans;
+      log.info("Web Bean: " + bean);
    }
 
 
@@ -243,6 +253,11 @@ public class Bootstrap
    private static <T> void registerObserver(Observer<T> observer, Class<?> eventType, Annotation[] bindings)
    {
       CurrentManager.rootManager().addObserver(observer, (Class<T>) eventType, bindings);
+   }
+   
+   protected static boolean isTypeSimpleWebBean(Class<?> type)
+   {
+      return !SERVLET_CLASS.isAssignableFrom(type) && !FILTER_CLASS.isAssignableFrom(type) && !SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(type) && !HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(type) && !SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(type) && !ENTERPRISE_BEAN_CLASS.isAssignableFrom(type) && !UICOMPONENT_CLASS.isAssignableFrom(type);
    }
 
 }

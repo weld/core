@@ -3,7 +3,9 @@ package org.jboss.webbeans.test;
 import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,10 +30,18 @@ import org.jboss.webbeans.test.beans.broken.Goose;
 import org.jboss.webbeans.test.beans.broken.ParameterizedBean;
 import org.jboss.webbeans.test.beans.broken.OuterBean.InnerBean;
 import org.jboss.webbeans.test.beans.broken.OuterBean.StaticInnerBean;
+import org.jboss.webbeans.test.beans.nonBeans.EnterpriseBeanWebBean;
+import org.jboss.webbeans.test.beans.nonBeans.FilterBean;
+import org.jboss.webbeans.test.beans.nonBeans.HttpSessionListenerBean;
+import org.jboss.webbeans.test.beans.nonBeans.ServletBean;
+import org.jboss.webbeans.test.beans.nonBeans.ServletContextListenerBean;
+import org.jboss.webbeans.test.beans.nonBeans.ServletRequestListenerBean;
+import org.jboss.webbeans.test.beans.nonBeans.UIComponentBean;
 import org.jboss.webbeans.test.bindings.SynchronousAnnotationLiteral;
+import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
 import org.testng.annotations.Test;
 
-@SpecVersion("PDR")
+@SpecVersion("20081206")
 public class SimpleBeanModelTest extends AbstractTest
 {   
    
@@ -68,8 +78,35 @@ public class SimpleBeanModelTest extends AbstractTest
       
    }
    
-   @Test(groups="deployment") @SpecAssertion(section="3.2")
-   public void testOnlyOneWebBeanPerAnnotatedClass()
+   @Test(groups="stub")
+   public void testEntitiesNotDiscoveredAsSimpleBeans()
+   {
+      assert false;
+   }
+   
+   @Test
+   public void testClassesImplementingServletInterfacesNotDiscoveredAsSimpleBeans()
+   {
+      bootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(FilterBean.class, HttpSessionListenerBean.class, ServletBean.class, ServletContextListenerBean.class, ServletRequestListenerBean.class)), null, null));
+      assert manager.getBeans().size() == 1;
+   }
+   
+   @Test
+   public void testClassesImplementingEnterpriseBeanInterfaceNotDiscoveredAsSimpleBean()
+   {
+      bootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(EnterpriseBeanWebBean.class)), null, null));
+      assert manager.getBeans().size() == 1;
+   }
+   
+   @Test
+   public void testClassExtendingUiComponentNotDiscoveredAsSimpleBean()
+   {
+      bootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(UIComponentBean.class)), null, null));
+      assert manager.getBeans().size() == 1;
+   }
+   
+   @Test(groups="stub")
+   public void testEjbsNotDiscoveredAsSimpleBean()
    {
       
    }

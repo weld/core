@@ -19,19 +19,15 @@ package org.jboss.webbeans.ejb;
 
 import java.lang.annotation.Annotation;
 
-import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.ApiAbstraction;
 
 /**
  * Utility class for EJB annotations etc
  * 
  * @author Pete Muir
  */
-public class EJB
+public class EJB extends ApiAbstraction
 {
-
-   public @interface Dummy
-   {
-   }
 
    // Annotation instances
    public static final Class<? extends Annotation> STATELESS_ANNOTATION;
@@ -40,41 +36,23 @@ public class EJB
    public static final Class<? extends Annotation> FAKE_MESSAGE_DRIVEN_ANNOTATION;
    public static final Class<? extends Annotation> SINGLETON_ANNOTATION;
    public static final Class<? extends Annotation> REMOVE_ANNOTATION;
+   public static final Class<?> ENTERPRISE_BEAN_CLASS;
 
    /**
     * Static initialization block
     */
    static
    {
-      STATELESS_ANNOTATION = classForName("javax.ejb.Stateless");
-      STATEFUL_ANNOTATION = classForName("javax.ejb.Stateful");
-      MESSAGE_DRIVEN_ANNOTATION = classForName("javax.ejb.MessageDriven");
+      STATELESS_ANNOTATION = annotationTypeForName("javax.ejb.Stateless");
+      STATEFUL_ANNOTATION = annotationTypeForName("javax.ejb.Stateful");
+      MESSAGE_DRIVEN_ANNOTATION = annotationTypeForName("javax.ejb.MessageDriven");
       // Fake MDB for tests
-      FAKE_MESSAGE_DRIVEN_ANNOTATION = classForName("org.jboss.webbeans.test.annotations.MessageDriven");
+      FAKE_MESSAGE_DRIVEN_ANNOTATION = annotationTypeForName("org.jboss.webbeans.test.annotations.MessageDriven");
       // FIXME Faking singleton for tests
-      SINGLETON_ANNOTATION = classForName("org.jboss.webbeans.test.annotations.Singleton");
+      SINGLETON_ANNOTATION = annotationTypeForName("org.jboss.webbeans.test.annotations.Singleton");
       // SINGLETON_ANNOTATION = classForName("javax.ejb.Singleton");
-      REMOVE_ANNOTATION = classForName("javax.ejb.Remove");
-   }
-
-   /**
-    * Initializes an annotation class
-    * 
-    * @param name The name of the annotation class
-    * @return The instance of the annotation. Returns a dummy if the class was
-    *         not found
-    */
-   @SuppressWarnings("unchecked")
-   private static Class<? extends Annotation> classForName(String name)
-   {
-      try
-      {
-         return (Class<? extends Annotation>) Reflections.classForName(name);
-      }
-      catch (ClassNotFoundException cnfe)
-      {
-         return Dummy.class;
-      }
+      REMOVE_ANNOTATION = annotationTypeForName("javax.ejb.Remove");
+      ENTERPRISE_BEAN_CLASS = classForName("javax.ejb.EnterpriseBean");
    }
 
 }

@@ -14,7 +14,7 @@ import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.TunaFarm;
 import org.testng.annotations.Test;
 
-@SpecVersion("PDR")
+@SpecVersion("20081206")
 public class SimpleBeanLifecycleTest extends AbstractTest
 {
 	
