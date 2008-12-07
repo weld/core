@@ -43,7 +43,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       tarantulaModel.getDeploymentType().equals(AnotherDeploymentType.class);
    }
    
-   @Test(groups="producerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
+   @Test(groups="producerMethod") @SpecAssertion(section="3.4")
    public void testStaticMethod() throws Exception
    {
       SimpleBean<BeanWithStaticProducerMethod> bean = createSimpleBean(BeanWithStaticProducerMethod.class);
