@@ -23,7 +23,7 @@ import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.Test;
 
-@SpecVersion("PDR")
+@SpecVersion("2001206")
 public class BindingTypeTest extends AbstractTest 
 {
 	
