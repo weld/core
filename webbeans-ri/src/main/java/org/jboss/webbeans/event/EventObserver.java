@@ -102,15 +102,20 @@ public class EventObserver<T>
       {
 	     //List<Annotation> bindingsArray = Arrays.asList(bindings);
          //return bindingsArray.containsAll(this.eventBindings);
-         for (Annotation x: eventBindings) {
+         for (Annotation x: eventBindings) 
+         {
             boolean found = false;
             for (Annotation y: bindings)
             {
-        	if ( MetaDataCache.instance().getBindingTypeModel(x.annotationType()).isEqual(x, y) ) {
-               found = true;
+              	if ( MetaDataCache.instance().getBindingTypeModel(x.annotationType()).isEqual(x, y) ) 
+              	{
+                     found = true;
+              	}
             }
+            if (!found)
+            {
+               return false;
             }
-            if (!found) return false;
          }
          return true;
       }
