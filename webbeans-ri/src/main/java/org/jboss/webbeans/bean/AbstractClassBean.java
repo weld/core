@@ -88,15 +88,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initType()
    {
-      if (isDefinedInXml())
-      {
-         log.trace("Bean type specified in Java");
-      }
-      else
-      {
-         log.trace("Bean type specified in Java");
-         this.type = getAnnotatedItem().getType();
-      }
+      log.trace("Bean type specified in Java");
+      this.type = getAnnotatedItem().getType();
    }
 
    /**
@@ -154,39 +147,32 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initInitializerMethods()
    {
-      if (isDefinedInXml())
+      initializerMethods = new HashSet<AnnotatedMethod<Object>>();
+      for (AnnotatedMethod<Object> annotatedMethod : annotatedItem.getAnnotatedMethods(Initializer.class))
       {
-
-      }
-      else
-      {
-         initializerMethods = new HashSet<AnnotatedMethod<Object>>();
-         for (AnnotatedMethod<Object> annotatedMethod : annotatedItem.getAnnotatedMethods(Initializer.class))
+         if (annotatedMethod.isStatic())
          {
-            if (annotatedMethod.isStatic())
-            {
-               throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be static");
-            }
-            else if (annotatedMethod.getAnnotation(Produces.class) != null)
-            {
-               throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be annotated @Produces");
-            }
-            else if (annotatedMethod.getAnnotation(Destructor.class) != null)
-            {
-               throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be annotated @Destructor");
-            }
-            else if (annotatedMethod.getAnnotatedParameters(Disposes.class).size() > 0)
-            {
-               throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot have parameters annotated @Disposes");
-            }
-            else if (annotatedMethod.getAnnotatedParameters(Observes.class).size() > 0)
-            {
-               throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be annotated @Observes");
-            }
-            else
-            {
-               initializerMethods.add(annotatedMethod);
-            }
+            throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be static");
+         }
+         else if (annotatedMethod.getAnnotation(Produces.class) != null)
+         {
+            throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be annotated @Produces");
+         }
+         else if (annotatedMethod.getAnnotation(Destructor.class) != null)
+         {
+            throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be annotated @Destructor");
+         }
+         else if (annotatedMethod.getAnnotatedParameters(Disposes.class).size() > 0)
+         {
+            throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot have parameters annotated @Disposes");
+         }
+         else if (annotatedMethod.getAnnotatedParameters(Observes.class).size() > 0)
+         {
+            throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be annotated @Observes");
+         }
+         else
+         {
+            initializerMethods.add(annotatedMethod);
          }
       }
    }

@@ -51,7 +51,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    private static List<Class<?>> NO_ARGUMENTS = Collections.emptyList();
 
    private AnnotatedConstructor<T> constructor;
-   private String location;
 
    private AnnotatedMethod<Object> postConstruct;
    private AnnotatedMethod<Object> preDestroy;
@@ -306,20 +305,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    }
 
    /**
-    * Gets the debugging location info
-    * 
-    * @return The location string
-    */
-   public String getLocation()
-   {
-      if (location == null)
-      {
-         location = "type: Simple Bean; declaring class: " + getType() + ";";
-      }
-      return location;
-   }
-
-   /**
     * Returns the specializes type of the bean
     * 
     * @return The specialized type
@@ -383,7 +368,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       StringBuilder buffer = new StringBuilder();
       buffer.append("SimpleBean\n");
       buffer.append(super.toString() + "\n");
-      buffer.append("Location: " + location + "\n");
       buffer.append("Constructor: " + constructor.toString() + "\n");
       buffer.append("Post-construct: " + (postConstruct == null ? "null" : postConstruct.toString()) + "\n");
       buffer.append("Pre-destroy: " + (preDestroy == null ? "null" : preDestroy.toString()) + "\n");

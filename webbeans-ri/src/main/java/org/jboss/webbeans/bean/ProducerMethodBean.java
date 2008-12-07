@@ -47,9 +47,6 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
    
    private AnnotatedMethod<T> method;
    private AbstractClassBean<?> declaringBean;
-   
-   // Cached values
-   private String location;
 
    /**
     * Constructor
@@ -176,7 +173,7 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       else if (disposalMethods.size() > 1)
       {
          // TODO List out found disposal methods
-         throw new DefinitionException (getLocation() + "Cannot declare multiple disposal methods for this producer method");
+         throw new DefinitionException ("Cannot declare multiple disposal methods for this producer method");
       }
    }
    
@@ -218,7 +215,7 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       }
       catch (ClassCastException e) 
       {
-         throw new RuntimeException(getLocation() + " Cannot cast producer method return type " + method.getType() + " to bean type " + (getDeclaredBeanType() == null ? " unknown " : getDeclaredBeanType()), e);
+         throw new RuntimeException(" Cannot cast producer method return type " + method.getType() + " to bean type " + (getDeclaredBeanType() == null ? " unknown " : getDeclaredBeanType()), e);
       }
    }
    
@@ -243,20 +240,6 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       {
          super.initApiTypes();
       }
-   }
-   
-   /**
-    * Gets the debugging location info
-    * 
-    * @return The location string
-    */   
-   public String getLocation()
-   {
-      if (location == null)
-      {
-         location = "type: Producer Method; declaring class: " + method.getDeclaringClass() +"; producer method: " + method.toString() + ";";
-      }
-      return location;
    }
    
    /**
@@ -285,7 +268,6 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       StringBuilder buffer = new StringBuilder();
       buffer.append("ProducerMethodBean:\n");
       buffer.append(super.toString() + "\n");
-      buffer.append("Location: " + location + "\n");
       buffer.append("Declaring bean: " + declaringBean.toString() + "\n");
       buffer.append("Method: " + method.toString() + "\n");
       return buffer.toString();      

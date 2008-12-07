@@ -52,7 +52,6 @@ import org.jboss.webbeans.contexts.ContextMap;
 import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
 import org.jboss.webbeans.event.EventManager;
-import org.jboss.webbeans.exceptions.NameResolutionLocation;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
@@ -474,7 +473,7 @@ public class ManagerImpl implements Manager
       }
       else if (beans.size() > 1)
       {
-         throw new AmbiguousDependencyException(new NameResolutionLocation(name) + "Resolved multiple Web Beans");
+         throw new AmbiguousDependencyException("Resolved multiple Web Beans with " + name);
       }
       else
       {

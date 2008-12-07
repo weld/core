@@ -50,8 +50,6 @@ import org.jboss.webbeans.util.Names;
 public class EnterpriseBean<T> extends AbstractClassBean<T>
 {
 
-   private String location;
-
    private EjbMetaData<T> ejbMetaData;
 
    /**
@@ -138,19 +136,9 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          return;
       }
-      if (!isDefinedInXml())
+      if (!MetaDataCache.instance().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
       {
-         if (!MetaDataCache.instance().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
-         {
-            throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
-         }
-      }
-      else
-      {
-         if (MetaDataCache.instance().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
-         {
-            throw new DefinitionException("XML defined specializing EJB must have annotation defined EJB implementation");
-         }
+         throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
       }
    }
 
@@ -278,20 +266,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          field.inject(manager, instance);
       }
-   }
-
-   /**
-    * Gets the debugging location info
-    * 
-    * @return The location string
-    */
-   public String getLocation()
-   {
-      if (location == null)
-      {
-         location = "type: Enterprise Bean; declaring class: " + getType() + ";";
-      }
-      return location;
    }
 
    /**

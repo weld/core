@@ -146,42 +146,23 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    protected void initBindingTypes()
    {
       this.bindingTypes = new HashSet<Annotation>();
-      if (isDefinedInXml())
+      boolean specialization = getAnnotatedItem().isAnnotationPresent(Specializes.class);
+      this.bindingTypes.addAll(getAnnotatedItem().getMetaAnnotations(BindingType.class));
+      if (specialization)
       {
-         boolean xmlSpecialization = false;
-         Set<Annotation> xmlBindingTypes = null;
-         this.bindingTypes.addAll(xmlBindingTypes);
-         if (xmlSpecialization)
-         {
-            this.bindingTypes.addAll(bindingTypes);
-            log.trace("Using binding types " + this.bindingTypes + " specified in XML and specialized type");
-         }
-         else
-         {
-            log.trace("Using binding types " + this.bindingTypes + " specified in XML");
-         }
-         return;
+         this.bindingTypes.addAll(getSpecializedType().getBindingTypes());
+         log.trace("Using binding types " + bindingTypes + " specified by annotations and specialized supertype");
       }
-      else if (!mergedStereotypes.isDeclaredInXml())
+      else if (bindingTypes.size() == 0)
       {
-         boolean specialization = getAnnotatedItem().isAnnotationPresent(Specializes.class);
-         this.bindingTypes.addAll(getAnnotatedItem().getMetaAnnotations(BindingType.class));
-         if (specialization)
-         {
-            this.bindingTypes.addAll(getSpecializedType().getBindingTypes());
-            log.trace("Using binding types " + bindingTypes + " specified by annotations and specialized supertype");
-         }
-         else if (bindingTypes.size() == 0)
-         {
-            log.trace("Adding default @Current binding type");
-            this.bindingTypes.add(new CurrentAnnotationLiteral());
-         }
-         else
-         {
-            log.trace("Using binding types " + bindingTypes + " specified by annotations");
-         }
-         return;
+         log.trace("Adding default @Current binding type");
+         this.bindingTypes.add(new CurrentAnnotationLiteral());
       }
+      else
+      {
+         log.trace("Using binding types " + bindingTypes + " specified by annotations");
+      }
+      return;
    }
 
    /**
@@ -190,42 +171,24 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    @SuppressWarnings("null")
    protected void initDeploymentType()
    {
-      if (isDefinedInXml())
-      {
-         Set<Annotation> xmlDeploymentTypes = null;
-         if (xmlDeploymentTypes.size() > 1)
-         {
-            throw new DefinitionException("At most one deployment type may be specified (" + xmlDeploymentTypes + " are specified)");
-         }
+      Set<Annotation> deploymentTypes = getAnnotatedItem().getMetaAnnotations(DeploymentType.class);
 
-         if (xmlDeploymentTypes.size() == 1)
-         {
-            this.deploymentType = xmlDeploymentTypes.iterator().next().annotationType();
-            log.trace("Deployment type " + deploymentType + " specified in XML");
-            return;
-         }
+      if (deploymentTypes.size() > 1)
+      {
+         throw new DefinitionException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().toString());
       }
-      else
+      if (deploymentTypes.size() == 1)
       {
-         Set<Annotation> deploymentTypes = getAnnotatedItem().getMetaAnnotations(DeploymentType.class);
+         this.deploymentType = deploymentTypes.iterator().next().annotationType();
+         log.trace("Deployment type " + deploymentType + " specified by annotation");
+         return;
+      }
 
-         if (deploymentTypes.size() > 1)
-         {
-            throw new DefinitionException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().toString());
-         }
-         if (deploymentTypes.size() == 1)
-         {
-            this.deploymentType = deploymentTypes.iterator().next().annotationType();
-            log.trace("Deployment type " + deploymentType + " specified by annotation");
-            return;
-         }
-
-         if (getMergedStereotypes().getPossibleDeploymentTypes().size() > 0)
-         {
-            this.deploymentType = getDeploymentType(manager.getEnabledDeploymentTypes(), getMergedStereotypes().getPossibleDeploymentTypes());
-            log.trace("Deployment type " + deploymentType + " specified by stereotype");
-            return;
-         }
+      if (getMergedStereotypes().getPossibleDeploymentTypes().size() > 0)
+      {
+         this.deploymentType = getDeploymentType(manager.getEnabledDeploymentTypes(), getMergedStereotypes().getPossibleDeploymentTypes());
+         log.trace("Deployment type " + deploymentType + " specified by stereotype");
+         return;
       }
 
       this.deploymentType = getDefaultDeploymentType();
@@ -256,54 +219,31 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    protected void initName()
    {
       boolean beanNameDefaulted = false;
-      if (isDefinedInXml())
+      boolean specialization = getAnnotatedItem().isAnnotationPresent(Specializes.class);
+      if (getAnnotatedItem().isAnnotationPresent(Named.class))
       {
-         boolean xmlSpecialization = false;
-         if (xmlSpecialization)
+         if (specialization)
          {
-            throw new DefinitionException("Name specified for specialized bean (declared in XML)");
+            throw new DefinitionException("Name specified for specialized bean");
          }
-         String xmlName = "";
-         if ("".equals(xmlName))
+         String javaName = getAnnotatedItem().getAnnotation(Named.class).value();
+         if ("".equals(javaName))
          {
-            log.trace("Using default name (specified in XML)");
+            log.trace("Using default name (specified by annotations)");
             beanNameDefaulted = true;
          }
          else
          {
-            log.trace("Using name " + xmlName + " specified in XML");
-            this.name = xmlName;
+            log.trace("Using name " + javaName + " specified by annotations");
+            this.name = javaName;
             return;
          }
       }
-      else
+      else if (specialization)
       {
-         boolean specialization = getAnnotatedItem().isAnnotationPresent(Specializes.class);
-         if (getAnnotatedItem().isAnnotationPresent(Named.class))
-         {
-            if (specialization)
-            {
-               throw new DefinitionException("Name specified for specialized bean");
-            }
-            String javaName = getAnnotatedItem().getAnnotation(Named.class).value();
-            if ("".equals(javaName))
-            {
-               log.trace("Using default name (specified by annotations)");
-               beanNameDefaulted = true;
-            }
-            else
-            {
-               log.trace("Using name " + javaName + " specified by annotations");
-               this.name = javaName;
-               return;
-            }
-         }
-         else if (specialization)
-         {
-            this.name = getSpecializedType().getName();
-            log.trace("Using supertype name");
-            return;
-         }
+         this.name = getSpecializedType().getName();
+         log.trace("Using supertype name");
+         return;
       }
 
       if (beanNameDefaulted || getMergedStereotypes().isBeanNameDefaulted())
@@ -327,34 +267,16 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    @SuppressWarnings("null")
    protected void initScopeType()
    {
-      if (isDefinedInXml())
+      if (getAnnotatedItem().getMetaAnnotations(ScopeType.class).size() > 1)
       {
-         Set<Class<? extends Annotation>> scopeTypes = null;
-         if (scopeTypes.size() > 1)
-         {
-            throw new DefinitionException("At most one scope may be specified in XML");
-         }
-
-         if (scopeTypes.size() == 1)
-         {
-            this.scopeType = scopeTypes.iterator().next();
-            log.trace("Scope " + scopeType + " specified in XML");
-            return;
-         }
+         throw new DefinitionException("At most one scope may be specified");
       }
-      else
-      {
-         if (getAnnotatedItem().getMetaAnnotations(ScopeType.class).size() > 1)
-         {
-            throw new DefinitionException("At most one scope may be specified");
-         }
 
-         if (getAnnotatedItem().getMetaAnnotations(ScopeType.class).size() == 1)
-         {
-            this.scopeType = getAnnotatedItem().getMetaAnnotations(ScopeType.class).iterator().next().annotationType();
-            log.trace("Scope " + scopeType + " specified by annotation");
-            return;
-         }
+      if (getAnnotatedItem().getMetaAnnotations(ScopeType.class).size() == 1)
+      {
+         this.scopeType = getAnnotatedItem().getMetaAnnotations(ScopeType.class).iterator().next().annotationType();
+         log.trace("Scope " + scopeType + " specified by annotation");
+         return;
       }
 
       if (getMergedStereotypes().getPossibleScopeTypes().size() == 1)
@@ -577,16 +499,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    public boolean isAssignableFrom(AnnotatedItem<?, ?> annotatedItem)
    {
       return this.getAnnotatedItem().isAssignableFrom(annotatedItem);
-   }
-
-   /**
-    * Indicates if bean was defined in XML
-    * 
-    * @return True if defined in XML, false if defined with annotations
-    */
-   protected boolean isDefinedInXml()
-   {
-      return false;
    }
 
    /**

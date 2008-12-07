@@ -25,8 +25,6 @@ import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.bean.XmlEnterpriseBean;
-import org.jboss.webbeans.bean.XmlSimpleBean;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -51,18 +49,6 @@ public class BeanFactory
    }
 
    /**
-    * Creates a simple, XML defined Web Bean
-    * 
-    * @param <T> The type
-    * @param clazz The class
-    * @return A Web Bean
-    */
-   public static <T> XmlSimpleBean<T> createXmlSimpleBean(Class<T> clazz)
-   {
-      return new XmlSimpleBean<T>(clazz, CurrentManager.rootManager());
-   }
-
-   /**
     * Creates a simple, annotation defined Enterprise Web Bean
     * 
     * @param <T> The type
@@ -72,18 +58,6 @@ public class BeanFactory
    public static <T> EnterpriseBean<T> createEnterpriseBean(Class<T> clazz)
    {
       return new EnterpriseBean<T>(clazz, CurrentManager.rootManager());
-   }
-
-   /**
-    * Creates a simple, XML defined Enterprise Web Bean
-    * 
-    * @param <T> The type
-    * @param clazz The class
-    * @return An Enterprise Web Bean
-    */
-   public static <T> XmlEnterpriseBean<T> createXmlEnterpriseBean(Class<T> clazz)
-   {
-      return new XmlEnterpriseBean<T>(clazz, CurrentManager.rootManager());
    }
 
    /**
