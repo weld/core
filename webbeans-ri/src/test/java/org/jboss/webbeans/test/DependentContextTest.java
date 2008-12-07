@@ -22,7 +22,7 @@ import org.testng.annotations.Test;
 public class DependentContextTest extends AbstractTest
 {
    
-   @Test(groups={"contexts", "injection"}) @SpecAssertion(section="8.3")
+   @Test(groups={"contexts", "injection"}) @SpecAssertion(section="9.4")
    public void testInstanceNotSharedBetweenInjectionPoints()
    {
       Bean<FoxRun> foxRunBean = createSimpleBean(FoxRun.class);
@@ -32,13 +32,13 @@ public class DependentContextTest extends AbstractTest
       assert !foxRun.fox.equals(foxRun.anotherFox);
    }
    
-   @Test(groups={"stub", "contexts", "el"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "el"}) @SpecAssertion(section="9.4")
    public void testInstanceUsedForElEvalutionNotShared()
    {
       assert false;
    }
    
-   @Test(groups={"contexts", "producerMethod"}) @SpecAssertion(section="8.3")
+   @Test(groups={"contexts", "producerMethod"}) @SpecAssertion(section="9.4")
    public void testInstanceUsedForProducerMethodNotShared() throws Exception
    {
       SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class); 
@@ -52,13 +52,13 @@ public class DependentContextTest extends AbstractTest
       assert tarantula != tarantula2;
    }
    
-   @Test(groups={"stub", "contexts", "observerMethod"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "observerMethod"}) @SpecAssertion(section="9.4")
    public void testInstanceUsedForObserverMethodNotShared()
    {
       assert false;
    }
    
-   @Test(groups="contexts") @SpecAssertion(section="8.3")
+   @Test(groups="contexts") @SpecAssertion(section="9.4")
    public void testContextGetWithCreateTrueReturnsNewInstance()
    {
       Bean<Fox> foxBean = createSimpleBean(Fox.class);
@@ -69,7 +69,7 @@ public class DependentContextTest extends AbstractTest
       assert context.get(foxBean, true) instanceof Fox;
    }
    
-   @Test(groups="contexts") @SpecAssertion(section="8.3")
+   @Test(groups="contexts") @SpecAssertion(section="9.4")
    public void testContextGetWithCreateFalseReturnsNull()
    {
       Bean<Fox> foxBean = createSimpleBean(Fox.class);
@@ -79,26 +79,26 @@ public class DependentContextTest extends AbstractTest
       assert context.get(foxBean, false) == null;
    }
    
-   @Test(groups="contexts", expectedExceptions=ContextNotActiveException.class) @SpecAssertion(section="8.3")
+   @Test(groups="contexts", expectedExceptions=ContextNotActiveException.class) @SpecAssertion(section="9.4")
    public void testContextIsInactive()
    {
       manager.getContext(Dependent.class).isActive();
    }
    
-   @Test(groups={"stub", "contexts", "observerMethod"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "observerMethod"}) @SpecAssertion(section="9.4")
    public void testContextIsActiveWhenInvokingObserverMethod()
    {
       assert false;
    }
    
    
-   @Test(groups={"stub", "contexts", "el"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "el"}) @SpecAssertion(section="9.4")
    public void testContextIsActiveWhenEvaluatingElExpression()
    {
       assert false;
    }
    
-   @Test(groups={"contexts", "beanLifecycle"}) @SpecAssertion(section="8.3")
+   @Test(groups={"contexts", "beanLifecycle"}) @SpecAssertion(section="9.4")
    public void testContextIsActiveDuringBeanCreation()
    {
       // Slightly roundabout, but I can't see a better way to test atm
@@ -109,13 +109,13 @@ public class DependentContextTest extends AbstractTest
       assert foxRun.fox != null;
    }
    
-   @Test(groups={"stub", "contexts", "beanDestruction"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "beanDestruction"}) @SpecAssertion(section="9.4")
    public void testContextIsActiveDuringBeanDestruction()
    {
       assert false;
    }
    
-   @Test(groups={"contexts", "injection"}) @SpecAssertion(section="8.3")
+   @Test(groups={"contexts", "injection"}) @SpecAssertion(section="9.4")
    public void testContextIsActiveDuringInjection()
    {
       Bean<FoxRun> foxRunBean = createSimpleBean(FoxRun.class);
@@ -125,55 +125,55 @@ public class DependentContextTest extends AbstractTest
       assert foxRun.fox != null;
    }
    
-   @Test(groups={"stub", "contexts", "ejb3"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "ejb3"}) @SpecAssertion(section="9.4")
    public void testEjbBeanMayMayCreateInstanceFromInitializer()
    {
       assert false;
    }
    
-   @Test(groups={"stub", "contexts", "ejb3"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "ejb3"}) @SpecAssertion(section="9.4")
    public void testEjbBeanMayMayCreateInstanceFromPostConstruct()
    {
       assert false;
    }
    
-   @Test(groups={"stub", "contexts", "ejb3"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "ejb3"}) @SpecAssertion(section="9.4")
    public void testEjbBeanMayMayCreateInstanceFromPreDestroy()
    {
       assert false;
    }
    
-   @Test(groups={"stub", "contexts", "servlet"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "servlet"}) @SpecAssertion(section="9.4")
    public void testServletBeanMayMayCreateInstanceFromInitializer()
    {
       assert false;
    }
    
-   @Test(groups={"stub", "contexts", "beanDestruction"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "beanDestruction"}) @SpecAssertion(section="9.4")
    public void testDestroyingParentDestroysDependents()
    {
       assert false;
    }
    
-   @Test(groups={"stub", "contexts", "ejb3"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "ejb3"}) @SpecAssertion(section="9.4")
    public void testDestroyingEjbDestroysDependents()
    {
       assert false;
    }
    
-   @Test(groups={"stub", "contexts", "servlet"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "servlet"}) @SpecAssertion(section="9.4")
    public void testDestroyingServletDestroysDependents()
    {
       assert false;
    }
    
-   @Test(groups={"stub", "contexts", "el"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "el"}) @SpecAssertion(section="9.4")
    public void testDependentsDestroyedWhenElEvaluationCompletes()
    {
       assert false;
    }
    
-   @Test(groups={"stub", "contexts", "observerMethod"}) @SpecAssertion(section="8.3")
+   @Test(groups={"stub", "contexts", "observerMethod"}) @SpecAssertion(section="9.4")
    public void testDependentsDestroyedWhenObserverMethodEvaluationCompletes()
    {
       assert false;
