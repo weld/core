@@ -44,7 +44,7 @@ import org.jboss.webbeans.test.bindings.ChunkyAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.ExpensiveAnnotationLiteral;
 import org.testng.annotations.Test;
 
-@SpecVersion("PDR")
+@SpecVersion("20081206")
 public class ResolutionByTypeTest extends AbstractTest
 {
    
@@ -60,7 +60,7 @@ public class ResolutionByTypeTest extends AbstractTest
       assert tuna.getType().isAssignableFrom(Tuna.class);
    }
    
-   @Test(groups="resolution") @SpecAssertion(section="4.9.2")
+   @Test(groups="resolution") @SpecAssertion(section="5.9.2")
    public void testSingleApiTypeWithCurrent() throws Exception
    {
       AnnotatedField<Tuna> tunaField = new AnnotatedFieldImpl<Tuna>(FishFarm.class.getDeclaredField("tuna"), fishFarmClass);
@@ -71,13 +71,13 @@ public class ResolutionByTypeTest extends AbstractTest
       assert possibleTargets.contains(tunaBean);
    }
    
-   @Test(groups="resolution", expectedExceptions=DuplicateBindingTypeException.class) @SpecAssertion(section="4.9.2")
+   @Test(groups="resolution", expectedExceptions=DuplicateBindingTypeException.class) @SpecAssertion(section="5.9.2")
    public void testDuplicateBindingTypesUsed()
    {
       manager.resolveByType(Tuna.class, new CurrentAnnotationLiteral(), new CurrentAnnotationLiteral());
    }
    
-   @Test(groups="resolution", expectedExceptions=IllegalArgumentException.class) @SpecAssertion(section="4.9.2")
+   @Test(groups="resolution", expectedExceptions=IllegalArgumentException.class) @SpecAssertion(section="5.9.2")
    public void testNonBindingTypeUsed()
    {
       manager.resolveByType(Tuna.class, new AnotherDeploymentTypeAnnotationLiteral());
@@ -130,7 +130,7 @@ public class ResolutionByTypeTest extends AbstractTest
       assert possibleTargets.contains(haddockBean);
    }
    
-   @Test(groups="resolution") @SpecAssertion(section={"4.9.2", "4.9.4"})
+   @Test(groups="resolution") @SpecAssertion(section={"5.9.2", "5.9.4"})
    public void testResolveByType() throws Exception
    {
       Bean<Tuna> tunaBean = createSimpleBean(Tuna.class);
@@ -188,7 +188,7 @@ public class ResolutionByTypeTest extends AbstractTest
       assert manager.resolveByType(ScottishFish.class, new AnnotationLiteral<Whitefish>() {}).contains(soleBean);
    }
    
-   @Test(groups="resolution") @SpecAssertion(section="4.9.2")
+   @Test(groups="resolution") @SpecAssertion(section="5.9.2")
    public void testResolveByTypeWithTypeParameter() throws Exception
    {
       AnnotatedField<Farmer<ScottishFish>> scottishFishFarmerField = new AnnotatedFieldImpl<Farmer<ScottishFish>>(FishFarm.class.getDeclaredField("scottishFishFarmer"), fishFarmClass);
@@ -203,7 +203,7 @@ public class ResolutionByTypeTest extends AbstractTest
       assert manager.resolveByType(new TypeLiteral<Farmer<ScottishFish>>(){}).contains(scottishFishFarmerBean);
    }
    
-   @Test(groups={"resolution", "producerMethod"}) @SpecAssertion(section="4.9.2")
+   @Test(groups={"resolution", "producerMethod"}) @SpecAssertion(section="5.9.2")
    public void testResolveByTypeWithArray() throws Exception
    {
       SimpleBean<SpiderProducer> spiderProducerBean = createSimpleBean(SpiderProducer.class);
@@ -218,7 +218,7 @@ public class ResolutionByTypeTest extends AbstractTest
       assert manager.resolveByType(Spider[].class).size() == 1;
    }
    
-   @Test @SpecAssertion(section="4.9.2")
+   @Test @SpecAssertion(section="5.9.2")
    public void testOnlyHighestEnabledPreecedenceWebBeansResolved() throws Exception
    {
       AnnotatedField<Animal> whiteFishField = new AnnotatedFieldImpl<Animal>(FishFarm.class.getDeclaredField("whiteFish"), fishFarmClass);
@@ -236,7 +236,7 @@ public class ResolutionByTypeTest extends AbstractTest
       
    }
    
-   @Test(groups="resolution") @SpecAssertion(section="4.9.2")
+   @Test(groups="resolution") @SpecAssertion(section="5.9.2")
    public void testResolveByTypeWithNonBindingMembers() throws Exception
    {
       AnnotatedField<Animal> veryExpensiveWhitefishField = new AnnotatedFieldImpl<Animal>(FishFarm.class.getDeclaredField("veryExpensiveWhitefish"), fishFarmClass);
@@ -266,7 +266,7 @@ public class ResolutionByTypeTest extends AbstractTest
       assert beans.contains(roundWhiteFishBean);
    }
    
-   @Test(groups="resolution") @SpecAssertion(section="4.9.2")
+   @Test(groups="resolution") @SpecAssertion(section="5.9.2")
    public void testNoWebBeansFound() throws Exception
    {
       AnnotatedField<ScottishFish> whiteScottishFishField = new AnnotatedFieldImpl<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
@@ -280,7 +280,7 @@ public class ResolutionByTypeTest extends AbstractTest
       assert manager.resolveByType(Tuna.class, new CurrentAnnotationLiteral()).size() == 0;
    }
    
-   @Test(groups="resolution") @SpecAssertion(section={"4.9.2", "2.2"})
+   @Test(groups="resolution") @SpecAssertion(section={"5.9.2", "2.2"})
    public void testResolveObject() throws Exception
    {
       Bean<Salmon> salmonBean = createSimpleBean(Salmon.class);
@@ -297,7 +297,7 @@ public class ResolutionByTypeTest extends AbstractTest
       
    }
    
-   @Test(groups="resolution", expectedExceptions=DefinitionException.class) @SpecAssertion(section="4.9.2.1")
+   @Test(groups="resolution", expectedExceptions=DefinitionException.class) @SpecAssertion(section="5.9.2.1")
    public void testArrayValuedAnnotationMemberWithoutNonBinding()
    {
       manager.resolveByType(Animal.class, new BindingTypeWithBindingArrayTypeMemberAnnotationLiteral() {
@@ -310,7 +310,7 @@ public class ResolutionByTypeTest extends AbstractTest
       });
    }
    
-   @Test(groups="resolution", expectedExceptions=DefinitionException.class) @SpecAssertion(section="4.9.2.1")
+   @Test(groups="resolution", expectedExceptions=DefinitionException.class) @SpecAssertion(section="5.9.2.1")
    public void testAnnotationValuedAnnotationMemberWithoutNonBinding()
    {
       manager.resolveByType(Animal.class, new BindingTypeWithBindingAnnotationMemberAnnotationLiteral()

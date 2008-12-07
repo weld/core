@@ -19,6 +19,9 @@ package org.jboss.webbeans;
 
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -232,6 +235,17 @@ public class ManagerImpl implements Manager
          if (!MetaDataCache.instance().getBindingTypeModel(annotation.annotationType()).isValid())
          {
             throw new IllegalArgumentException("Not a binding type " + annotation);
+         }
+      }
+      for (Type type : element.getActualTypeArguments())
+      {
+         if (type instanceof WildcardType)
+         {
+            throw new IllegalArgumentException("Cannot resolve a type parameterized with a wildcard " + element);
+         }
+         if (type instanceof TypeVariable)
+         {
+            throw new IllegalArgumentException("Cannot resolve a type parameterized with a type parameter " + element);
          }
       }
       if (bindings.length > element.getMetaAnnotations(BindingType.class).size())
