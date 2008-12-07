@@ -49,6 +49,7 @@ import javax.webbeans.manager.Interceptor;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.bean.AbstractBean;
+import org.jboss.webbeans.bean.ManagerBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bean.proxy.ProxyPool;
 import org.jboss.webbeans.contexts.ContextMap;
@@ -82,7 +83,7 @@ public class ManagerImpl implements Manager
    private List<Bean<?>> beans;
    private Set<Decorator> decorators;
    private Set<Interceptor> interceptors;
-
+   
    @SuppressWarnings("unchecked")
    public ManagerImpl()
    {
@@ -104,6 +105,7 @@ public class ManagerImpl implements Manager
    protected void initStandardBeans()
    {
       addBean(new SimpleBean<DefaultEnterpriseBeanLookup>(DefaultEnterpriseBeanLookup.class, this));
+      addBean(new ManagerBean(this));
    }
 
    /**

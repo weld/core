@@ -23,7 +23,7 @@ public class ClientProxyTest extends AbstractTest
 {
 
    @Test(groups = "Reflections")
-   @SpecAssertion(section = { "4.4", "4.8" })
+   @SpecAssertion(section = { "4.4", "5.8" })
    public void testReflectionsUsedForNormalScope()
    {
       Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class);
@@ -33,7 +33,7 @@ public class ClientProxyTest extends AbstractTest
    }
 
    @Test(groups = "Reflections")
-   @SpecAssertion(section = { "4.4", "4.8" })
+   @SpecAssertion(section = { "4.4", "5.8" })
    public void testReflectionsNotUsedForPseudoScope()
    {
       Bean<Fox> foxBean = BeanFactory.createSimpleBean(Fox.class);

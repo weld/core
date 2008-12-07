@@ -17,25 +17,25 @@ import org.testng.annotations.Test;
 public class ResolutionByNameTest extends AbstractTest
 {
 
-   @Test(groups={"stub", "el"}) @SpecAssertion(section="4.10")
+   @Test(groups={"stub", "el"}) @SpecAssertion(section="5.11")
    public void testELResolver()
    {
       assert false;
    }
    
-   @Test(groups={"stub", "el"})  @SpecAssertion(section="4.10.2")
+   @Test(groups={"stub", "el"})  @SpecAssertion(section="5.11.2")
    public void testELResolverRegisteredWithJsf()
    {
       assert false;
    }
    
-   @Test(groups={"stub", "el"})  @SpecAssertion(section="4.10.2")
+   @Test(groups={"stub", "el"})  @SpecAssertion(section="5.11.2")
    public void testELResolverRegisteredWithServlet()
    {
       assert false;
    }
    
-   @Test @SpecAssertion(section="4.10.1")
+   @Test @SpecAssertion(section="5.11.1")
    public void testNamedBasedResolution()
    {
       
@@ -67,7 +67,7 @@ public class ResolutionByNameTest extends AbstractTest
       assert manager.resolveByName("whitefish").contains(plaiceBean);
    }
    
-   @Test(groups="resolution") @SpecAssertion(section="4.10.1")
+   @Test(groups="resolution") @SpecAssertion(section="5.11.1")
    public void testNoWebBeansFound() throws Exception
    {
       Bean<Cod> codBean = createSimpleBean(Cod.class);
@@ -79,9 +79,15 @@ public class ResolutionByNameTest extends AbstractTest
       assert manager.resolveByName("foo").size() == 0;
    }
    
+   @Test(groups="stub") @SpecAssertion(section="5.11.1")
+   public void testOnlyHigestPrecedenceResolved()
+   {
+      assert false;
+   }
+   
    /*
 
-   @Test(groups="el") @SpecAssertion(section="4.10")
+   @Test(groups="el") @SpecAssertion(section="5.11")
    public void test
    {
       assert false;

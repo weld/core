@@ -37,11 +37,13 @@ import org.jboss.webbeans.test.beans.Sole;
 import org.jboss.webbeans.test.beans.Spider;
 import org.jboss.webbeans.test.beans.SpiderProducer;
 import org.jboss.webbeans.test.beans.Tuna;
+import org.jboss.webbeans.test.beans.broken.ParameterizedBean;
 import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.BindingTypeWithBindingAnnotationMemberAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.BindingTypeWithBindingArrayTypeMemberAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.ChunkyAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.ExpensiveAnnotationLiteral;
+import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.testng.annotations.Test;
 
 @SpecVersion("20081206")
@@ -61,7 +63,7 @@ public class ResolutionByTypeTest extends AbstractTest
    }
    
    @Test(groups="resolution") @SpecAssertion(section="5.9.2")
-   public void testSingleApiTypeWithCurrent() throws Exception
+   public void testDefaultBindingTypeAssumed() throws Exception
    {
       AnnotatedField<Tuna> tunaField = new AnnotatedFieldImpl<Tuna>(FishFarm.class.getDeclaredField("tuna"), fishFarmClass);
       Bean<Tuna> tunaBean = createSimpleBean(Tuna.class);
@@ -69,6 +71,18 @@ public class ResolutionByTypeTest extends AbstractTest
       Set<Bean<Tuna>> possibleTargets = manager.resolveByType(tunaField);
       assert possibleTargets.size() == 1;
       assert possibleTargets.contains(tunaBean);
+   }
+   
+   @Test(groups="resolution", expectedExceptions=IllegalArgumentException.class) @SpecAssertion(section="5.9")
+   public void testParameterizedTypeWithWildcardParameter()
+   {
+      manager.resolveByType(new TypeLiteral<ParameterizedBean<?>>(){});
+   }
+   
+   @Test(groups="resolution", expectedExceptions=IllegalArgumentException.class) @SpecAssertion(section="5.9")
+   public  <T> void testParameterizedTypeWithTypeParameter()
+   {
+      manager.resolveByType(new TypeLiteral<ParameterizedBean<T>>(){});
    }
    
    @Test(groups="resolution", expectedExceptions=DuplicateBindingTypeException.class) @SpecAssertion(section="5.9.2")
@@ -130,7 +144,7 @@ public class ResolutionByTypeTest extends AbstractTest
       assert possibleTargets.contains(haddockBean);
    }
    
-   @Test(groups="resolution") @SpecAssertion(section={"5.9.2", "5.9.4"})
+   @Test(groups="resolution") @SpecAssertion(section={"5.9.2"})
    public void testResolveByType() throws Exception
    {
       Bean<Tuna> tunaBean = createSimpleBean(Tuna.class);
@@ -155,7 +169,7 @@ public class ResolutionByTypeTest extends AbstractTest
       assert manager.resolveByType(Animal.class, new CurrentAnnotationLiteral()).contains(haddockBean);
    }
    
-   @Test(groups="injection") @SpecAssertion(section="2.3.5") 
+   @Test(groups="injection") @SpecAssertion(section={"2.3.5","5.9.2.2"}) 
    public void testAllBindingTypesSpecifiedForResolutionMustAppearOnWebBean()
    {
       Bean<Cod> codBean = createSimpleBean(Cod.class);
@@ -235,8 +249,40 @@ public class ResolutionByTypeTest extends AbstractTest
       assert manager.resolveByType(Animal.class, new AnnotationLiteral<Whitefish>() {}).contains(plaiceBean);
       
    }
+  
    
    @Test(groups="resolution") @SpecAssertion(section="5.9.2")
+   public void testNoWebBeansFound() throws Exception
+   {
+      AnnotatedField<ScottishFish> whiteScottishFishField = new AnnotatedFieldImpl<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class);
+      Bean<Sole> soleBean = createSimpleBean(Sole.class);
+      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class);
+      manager.addBean(plaiceBean);
+      manager.addBean(salmonBean);
+      manager.addBean(soleBean);
+      
+      assert manager.resolveByType(Tuna.class, new CurrentAnnotationLiteral()).size() == 0;
+   }
+   
+   @Test(groups="resolution") @SpecAssertion(section={"5.9.2", "2.2"})
+   public void testResolveObject() throws Exception
+   {
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class);
+      Bean<Sole> soleBean = createSimpleBean(Sole.class);
+      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class);
+      manager.addBean(plaiceBean);
+      manager.addBean(salmonBean);
+      manager.addBean(soleBean);
+      
+      assert manager.resolveByType(Object.class).size() == 3 +  MockManagerImpl.BUILT_IN_BEANS;
+      assert manager.resolveByType(Object.class).contains(plaiceBean);
+      assert manager.resolveByType(Object.class).contains(salmonBean);
+      assert manager.resolveByType(Object.class).contains(soleBean);
+      
+   }
+   
+   @Test(groups="resolution") @SpecAssertion(section="5.9.2.1")
    public void testResolveByTypeWithNonBindingMembers() throws Exception
    {
       AnnotatedField<Animal> veryExpensiveWhitefishField = new AnnotatedFieldImpl<Animal>(FishFarm.class.getDeclaredField("veryExpensiveWhitefish"), fishFarmClass);
@@ -264,37 +310,6 @@ public class ResolutionByTypeTest extends AbstractTest
       assert beans.size() == 2;
       assert beans.contains(halibutBean);
       assert beans.contains(roundWhiteFishBean);
-   }
-   
-   @Test(groups="resolution") @SpecAssertion(section="5.9.2")
-   public void testNoWebBeansFound() throws Exception
-   {
-      AnnotatedField<ScottishFish> whiteScottishFishField = new AnnotatedFieldImpl<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class);
-      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class);
-      manager.addBean(plaiceBean);
-      manager.addBean(salmonBean);
-      manager.addBean(soleBean);
-      
-      assert manager.resolveByType(Tuna.class, new CurrentAnnotationLiteral()).size() == 0;
-   }
-   
-   @Test(groups="resolution") @SpecAssertion(section={"5.9.2", "2.2"})
-   public void testResolveObject() throws Exception
-   {
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class);
-      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class);
-      manager.addBean(plaiceBean);
-      manager.addBean(salmonBean);
-      manager.addBean(soleBean);
-      
-      assert manager.resolveByType(Object.class).size() == 4;
-      assert manager.resolveByType(Object.class).contains(plaiceBean);
-      assert manager.resolveByType(Object.class).contains(salmonBean);
-      assert manager.resolveByType(Object.class).contains(soleBean);
-      
    }
    
    @Test(groups="resolution", expectedExceptions=DefinitionException.class) @SpecAssertion(section="5.9.2.1")

@@ -27,6 +27,7 @@ import org.jboss.webbeans.test.beans.TarantulaProducer;
 import org.jboss.webbeans.test.beans.Tiger;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.ejb.model.valid.Hound;
+import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
 import org.testng.annotations.Test;
 
@@ -140,11 +141,14 @@ public class BoostrapTest extends AbstractTest
    public void testRegisterProducerMethodBean()
    {
       bootstrap.registerBeans(TarantulaProducer.class);
-      assert manager.getBeans().size() == 3;
+      assert manager.getBeans().size() == 4;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {
-         classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+         if (bean instanceof AbstractBean)
+         {
+            classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+         }
       }
       assert classes.containsKey(TarantulaProducer.class);
       assert classes.containsKey(Tarantula.class);
@@ -158,12 +162,14 @@ public class BoostrapTest extends AbstractTest
    public void testRegisterMultipleEnterpriseAndSimpleBean()
    {
       bootstrap.registerBeans(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class);
-      assert manager.getBeans().size() == 9;
+      assert manager.getBeans().size() == 8 + MockManagerImpl.BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {
-         
-         classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+         if (bean instanceof AbstractBean)
+         {
+            classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+         }
       }
       assert classes.containsKey(DefaultEnterpriseBeanLookup.class);
       assert classes.containsKey(Hound.class);
@@ -196,12 +202,14 @@ public class BoostrapTest extends AbstractTest
    {
       bootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class)), null, null));
       
-      assert manager.getBeans().size() == 9;
+      assert manager.getBeans().size() == 10;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {
-         
-         classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+         if (bean instanceof AbstractBean)
+         {
+            classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+         }
       }
       assert classes.containsKey(DefaultEnterpriseBeanLookup.class);
       assert classes.containsKey(Hound.class);

@@ -12,6 +12,9 @@ import org.jboss.webbeans.ManagerImpl;
 
 public class MockManagerImpl extends ManagerImpl
 {
+   
+   public static int BUILT_IN_BEANS = 2;
+   
    private Object event = null;
    private Annotation[] eventBindings = null;
    private Class<? extends Object> observedEventType = null;

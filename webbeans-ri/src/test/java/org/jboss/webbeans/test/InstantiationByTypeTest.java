@@ -45,13 +45,13 @@ public class InstantiationByTypeTest extends AbstractTest
    @Test(groups="resolution", expectedExceptions=IllegalArgumentException.class) @SpecAssertion(section="5.9")
    public void testParameterizedTypeWithWildcardParameter()
    {
-      manager.resolveByType(new TypeLiteral<ParameterizedBean<?>>(){});
+      manager.getInstanceByType(new TypeLiteral<ParameterizedBean<?>>(){});
    }
    
    @Test(groups="resolution", expectedExceptions=IllegalArgumentException.class) @SpecAssertion(section="5.9")
    public  <T> void testParameterizedTypeWithTypeParameter()
    {
-      manager.resolveByType(new TypeLiteral<ParameterizedBean<T>>(){});
+      manager.getInstanceByType(new TypeLiteral<ParameterizedBean<T>>(){});
    }
    
    
