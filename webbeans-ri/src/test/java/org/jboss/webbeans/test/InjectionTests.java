@@ -25,11 +25,11 @@ import org.jboss.webbeans.test.beans.broken.FarmHouse;
 import org.jboss.webbeans.test.beans.broken.FarmHouseProducer;
 import org.testng.annotations.Test;
 
-@SpecVersion("PDR")
+@SpecVersion("20081206")
 public class InjectionTests extends AbstractTest
 {
    
-   @Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="4.2")
+   @Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="5.2")
    public void testInjectionPerformsBoxingIfNecessary() throws Exception
    {
       SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class);
@@ -41,7 +41,7 @@ public class InjectionTests extends AbstractTest
       assert spiderNest.numberOfSpiders.equals(4);
    }
    
-   @Test(groups={"injection", "producerMethod"}, expectedExceptions=NullableDependencyException.class) @SpecAssertion(section="4.2")
+   @Test(groups={"injection", "producerMethod"}, expectedExceptions=NullableDependencyException.class) @SpecAssertion(section="5.2")
    public void testPrimitiveInjectionPointResolvesToNullableWebBean() throws Exception
    {
       Bean<FarmHouse> farmHouseBean = createSimpleBean(FarmHouse.class);
@@ -50,7 +50,7 @@ public class InjectionTests extends AbstractTest
       farmHouseBean.create();
    }
    
-   @Test(groups={"injection", "clientProxy"}, expectedExceptions=ContextNotActiveException.class) @SpecAssertion(section="4.3")
+   @Test(groups={"injection", "clientProxy"}, expectedExceptions=ContextNotActiveException.class) @SpecAssertion(section="5.3")
    public void testInvokeNormalInjectedWebBeanWhenContextNotActive()
    {
       SimpleBean<TunaFarm> tunaFarmBean = createSimpleBean(TunaFarm.class);
@@ -63,7 +63,7 @@ public class InjectionTests extends AbstractTest
       tunaFarm.tuna.getName();
    }
    
-   @Test(groups="injection") @SpecAssertion(section="4.3")
+   @Test(groups="injection") @SpecAssertion(section="5.3")
    public void testInvokeDependentScopeWhenContextNotActive()
    {
       Bean<FoxRun> foxRunBean = createSimpleBean(FoxRun.class);
@@ -73,7 +73,7 @@ public class InjectionTests extends AbstractTest
       assert foxRun.fox.getName().equals("gavin");
    }
    
-   @Test(groups="injection", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.6")
+   @Test(groups="injection", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.7")
    public void testInjectingStaticField()
    {
       SimpleBean<BeanWithStaticBoundField> bean = createSimpleBean(BeanWithStaticBoundField.class);
@@ -82,7 +82,7 @@ public class InjectionTests extends AbstractTest
       BeanWithStaticBoundField instance = bean.create();
    }
    
-   @Test(groups="injection",expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.6")
+   @Test(groups="injection",expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.7")
    public void testInjectingFinalField()
    {
       SimpleBean<BeanWithFinalBoundField> bean = createSimpleBean(BeanWithFinalBoundField.class);
@@ -91,31 +91,31 @@ public class InjectionTests extends AbstractTest
       BeanWithFinalBoundField instance = bean.create();
    }
    
-   @Test(groups={"stub", "injection", "webbeansxml"}) @SpecAssertion(section="3.6.2")
+   @Test(groups={"stub", "injection", "webbeansxml"}) @SpecAssertion(section="3.7.2")
    public void testInjectFieldsDeclaredInXml()
    {
       assert false;
    }
    
-   @Test(groups={"stub", "injection", "webbeansxml"}) @SpecAssertion(section="3.6.2")
+   @Test(groups={"stub", "injection", "webbeansxml"}) @SpecAssertion(section="3.7.2")
    public void testInjectedFieldDeclaredInXmlIgnoresJavaAnnotations()
    {
       assert false;
    }
    
-   @Test(groups={"stub", "injection", "webbeansxml"}) @SpecAssertion(section="3.6.2")
+   @Test(groups={"stub", "injection", "webbeansxml"}) @SpecAssertion(section="3.7.2")
    public void testInjectedFieldDeclaredInXmlAssumesCurrent()
    {
       assert false;
    }
    
-   @Test(groups={"stub", "injection", "webbeansxml"}, expectedExceptions=NonexistentFieldException.class) @SpecAssertion(section="3.6.2")
+   @Test(groups={"stub", "injection", "webbeansxml"}, expectedExceptions=NonexistentFieldException.class) @SpecAssertion(section="3.7.2")
    public void testNonexistentFieldDefinedInXml()
    {
       assert false;
    }
    
-   @Test(groups={"stub", "injection", "webbeansxml"}) @SpecAssertion(section="3.6.2")
+   @Test(groups={"stub", "injection", "webbeansxml"}) @SpecAssertion(section="3.7.2")
    public void testInjectFieldsDeclaredInXmlAndJava()
    {
       assert false;

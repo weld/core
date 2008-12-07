@@ -18,13 +18,13 @@ import org.jboss.webbeans.util.BeanFactory;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.Test;
 
-@SpecVersion("PDR")
+@SpecVersion("20081206")
 public class ClientProxyTest extends AbstractTest
 {
 
    @Test(groups = "Reflections")
-   @SpecAssertion(section = { "4.4", "5.8" })
-   public void testReflectionsUsedForNormalScope()
+   @SpecAssertion(section = { "5.4" })
+   public void testClientProxyUsedForNormalScope()
    {
       Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class);
       manager.addBean(tunaBean);
@@ -33,8 +33,8 @@ public class ClientProxyTest extends AbstractTest
    }
 
    @Test(groups = "Reflections")
-   @SpecAssertion(section = { "4.4", "5.8" })
-   public void testReflectionsNotUsedForPseudoScope()
+   @SpecAssertion(section = { "5.4" })
+   public void testClientProxyNotUsedForPseudoScope()
    {
       Bean<Fox> foxBean = BeanFactory.createSimpleBean(Fox.class);
       Fox fox = manager.getInstance(foxBean);
@@ -54,8 +54,8 @@ public class ClientProxyTest extends AbstractTest
    }
    
    @Test(groups = "Reflections")
-   @SpecAssertion(section = "4.4")
-   public void testSimpleWebBeanReflectionsIsSerializable() throws IOException, ClassNotFoundException
+   @SpecAssertion(section = "5.4")
+   public void testSimpleWebBeanClientProxyIsSerializable() throws IOException, ClassNotFoundException
    {
       Bean<TunedTuna> tunaBean = BeanFactory.createSimpleBean(TunedTuna.class);
       manager.addBean(tunaBean);
@@ -68,7 +68,7 @@ public class ClientProxyTest extends AbstractTest
    }
 
    @Test(groups = "Reflections", expectedExceptions = UnproxyableDependencyException.class)
-   @SpecAssertion(section = "4.4.1")
+   @SpecAssertion(section = "5.4.1")
    public void testInjectionPointWithUnproxyableTypeWhichResolvesToNormalScopedWebBean()
    {
       Bean<FinalTuna> tunaBean = BeanFactory.createSimpleBean(FinalTuna.class);
@@ -78,8 +78,8 @@ public class ClientProxyTest extends AbstractTest
    }
 
    @Test(groups = "Reflections")
-   @SpecAssertion(section = "4.4.2")
-   public void testReflectionsInvocation()
+   @SpecAssertion(section = "5.4.2")
+   public void testClientProxyInvocation()
    {
       Bean<TunedTuna> tunaBean = BeanFactory.createSimpleBean(TunedTuna.class);
       manager.addBean(tunaBean);
