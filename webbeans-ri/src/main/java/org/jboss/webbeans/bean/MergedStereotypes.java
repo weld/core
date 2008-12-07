@@ -49,13 +49,13 @@ public class MergedStereotypes<T, E>
     * 
     * @param stereotypeAnnotations The stereotypes to merge
     */
-   public MergedStereotypes(Set<Annotation> stereotypeAnnotations, MetaDataCache metaDataCache)
+   public MergedStereotypes(Set<Annotation> stereotypeAnnotations)
    {
       possibleDeploymentTypes = new AnnotationMap();
       possibleScopeTypes = new HashSet<Annotation>();
       requiredTypes = new HashSet<Class<?>>();
       supportedScopes = new HashSet<Class<? extends Annotation>>();
-      merge(stereotypeAnnotations, metaDataCache);
+      merge(stereotypeAnnotations);
    }
 
    /**
@@ -63,12 +63,12 @@ public class MergedStereotypes<T, E>
     * 
     * @param stereotypeAnnotations The stereotype annotations
     */
-   protected void merge(Set<Annotation> stereotypeAnnotations, MetaDataCache metaDataCache)
+   protected void merge(Set<Annotation> stereotypeAnnotations)
    {
       for (Annotation stereotypeAnnotation : stereotypeAnnotations)
       {
          // Retrieve and merge all metadata from stereotypes
-         StereotypeModel<?> stereotype = metaDataCache.getStereotype(stereotypeAnnotation.annotationType());
+         StereotypeModel<?> stereotype = MetaDataCache.instance().getStereotype(stereotypeAnnotation.annotationType());
          if (stereotype == null)
          {
             throw new IllegalStateException("Stereotype " + stereotypeAnnotation + " not registered with container");

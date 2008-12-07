@@ -44,7 +44,6 @@ public class EventObserver<T>
    private final Class<T> eventType;
    private final List<Annotation> eventBindings;
    private final Observer<T> observer;
-   private final MetaDataCache metaDataCache;
 
    /**
     * Constructs a new wrapper for an observer.
@@ -53,12 +52,11 @@ public class EventObserver<T>
     * @param eventType The class of event being observed
     * @param eventBindings The array of annotation event bindings, if any
     */
-   public EventObserver(MetaDataCache metaDataCache, final Observer<T> observer, final Class<T> eventType, final Annotation... eventBindings)
+   public EventObserver(final Observer<T> observer, final Class<T> eventType, final Annotation... eventBindings)
    {
       this.observer = observer;
       this.eventType = eventType;
       this.eventBindings = Arrays.asList(eventBindings);
-      this.metaDataCache = metaDataCache;
    }
 
    /**
@@ -108,7 +106,7 @@ public class EventObserver<T>
             boolean found = false;
             for (Annotation y: bindings)
             {
-        	if ( metaDataCache.getBindingTypeModel(x.annotationType()).isEqual(x, y) ) {
+        	if ( MetaDataCache.instance().getBindingTypeModel(x.annotationType()).isEqual(x, y) ) {
                found = true;
             }
             }

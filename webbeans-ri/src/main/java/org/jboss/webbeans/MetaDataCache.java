@@ -30,6 +30,18 @@ import org.jboss.webbeans.util.Strings;
 public class MetaDataCache
 {
 
+   private static MetaDataCache instance;
+   
+   public static MetaDataCache instance()
+   {
+      return instance;
+   }
+   
+   static
+   {
+      instance = new MetaDataCache();
+   }
+   
    private ConcurrentCache<Class<? extends Annotation>, StereotypeModel<?>> stereotypes = new ConcurrentCache<Class<? extends Annotation>, StereotypeModel<?>>();
 
    private ConcurrentCache<Class<? extends Annotation>, ScopeModel<?>> scopes = new ConcurrentCache<Class<? extends Annotation>, ScopeModel<?>>();

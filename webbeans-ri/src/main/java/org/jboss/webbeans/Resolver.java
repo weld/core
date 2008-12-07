@@ -270,10 +270,9 @@ public class Resolver
 
    private boolean containsAllBindingBindingTypes(AnnotatedItem<?, ?> element, Set<Annotation> bindingTypes)
    {
-      MetaDataCache metaDataCache = manager.getMetaDataCache();
       for (Annotation bindingType : element.getBindingTypes())
       {
- 		BindingTypeModel<?> bindingTypeModel = metaDataCache.getBindingTypeModel(bindingType.annotationType());
+         BindingTypeModel<?> bindingTypeModel = MetaDataCache.instance().getBindingTypeModel(bindingType.annotationType());
          if (bindingTypeModel.getNonBindingTypes().size() > 0)
          {
             boolean matchFound = false;

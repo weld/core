@@ -121,7 +121,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     */
    protected void init()
    {
-      mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class), manager.getMetaDataCache());
+      mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class));
       initType();
       initPrimitive();
       log.debug("Building Web Bean bean metadata for " + getType());

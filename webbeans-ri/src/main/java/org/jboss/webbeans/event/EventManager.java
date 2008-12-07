@@ -159,7 +159,7 @@ public class EventManager
     */
    public <T> void addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
-      EventObserver<T> eventObserver = new EventObserver<T>(manager.getMetaDataCache(), observer, eventType, bindings);
+      EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, bindings);
       registeredObservers.put(eventType, eventObserver);
    }
 
@@ -252,7 +252,7 @@ public class EventManager
    public <T> void removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
       List<EventObserver<?>> observers = registeredObservers.get(eventType);
-      EventObserver<T> eventObserver = new EventObserver<T>(manager.getMetaDataCache(), observer, eventType, bindings);
+      EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, bindings);
       observers.remove(eventObserver);
    }
 

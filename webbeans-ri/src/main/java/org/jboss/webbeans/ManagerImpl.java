@@ -73,7 +73,6 @@ public class ManagerImpl implements Manager
    public static final String JNDI_KEY = "java:comp/Manager";
       
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
-   private MetaDataCache metaDataCache;
    private EventManager eventManager;
    private Resolver resolver;
    private ContextMap contextMap;
@@ -85,7 +84,6 @@ public class ManagerImpl implements Manager
    @SuppressWarnings("unchecked")
    public ManagerImpl()
    {
-      this.metaDataCache = new MetaDataCache();
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
       this.eventManager = new EventManager(this);
       this.resolver = new Resolver(this);
@@ -191,18 +189,6 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * Returns the metadata cache
-    * 
-    * @return The cache
-    * 
-    * @see org.jboss.webbeans.MetaDataCache
-    */
-   public MetaDataCache getMetaDataCache()
-   {
-      return this.metaDataCache;
-   }
-
-   /**
     * Resolves beans by API type and binding types
     * 
     * @param type The API type to match
@@ -244,7 +230,7 @@ public class ManagerImpl implements Manager
    {
       for (Annotation annotation : element.getAnnotations())
       {
-         if (!metaDataCache.getBindingTypeModel(annotation.annotationType()).isValid())
+         if (!MetaDataCache.instance().getBindingTypeModel(annotation.annotationType()).isValid())
          {
             throw new IllegalArgumentException("Not a binding type " + annotation);
          }
@@ -446,7 +432,7 @@ public class ManagerImpl implements Manager
       try
       {
          contextMap.getBuiltInContext(Dependent.class).setActive(true);
-         if (getMetaDataCache().getScopeModel(bean.getScopeType()).isNormal())
+         if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal())
          {
             return (T) proxyPool.getClientProxy(bean);
          }
@@ -545,7 +531,7 @@ public class ManagerImpl implements Manager
       else
       {
          Bean<T> bean = beans.iterator().next();
-         if (getMetaDataCache().getScopeModel(bean.getScopeType()).isNormal() && !element.isProxyable())
+         if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal() && !element.isProxyable())
          {
             throw new UnproxyableDependencyException(element + "Unable to proxy");
          }
@@ -651,7 +637,7 @@ public class ManagerImpl implements Manager
       StringBuilder buffer = new StringBuilder();
       buffer.append(Strings.collectionToString("Enabled deployment types: ", getEnabledDeploymentTypes()));
       buffer.append(eventManager.toString() + "\n");
-      buffer.append(metaDataCache.toString() + "\n");
+      buffer.append(MetaDataCache.instance().toString() + "\n");
       buffer.append(resolver.toString() + "\n");
       buffer.append(contextMap.toString() + "\n");
       buffer.append(proxyPool.toString() + "\n");

@@ -2,7 +2,6 @@ package org.jboss.webbeans.test;
 
 import javax.webbeans.Observer;
 
-import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.event.EventObserver;
 import org.jboss.webbeans.test.beans.DangerCall;
 import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
@@ -38,7 +37,7 @@ public class EventObserverTest
    public void testIsObserverInterested()
    {
       Observer<DangerCall> observer = new AnObserver<DangerCall>();
-      EventObserver<DangerCall> wrappedObserver = new EventObserver<DangerCall>(new MetaDataCache(), observer, DangerCall.class, new TameAnnotationLiteral());
+      EventObserver<DangerCall> wrappedObserver = new EventObserver<DangerCall>(observer, DangerCall.class, new TameAnnotationLiteral());
       assert wrappedObserver.getEventBindings().size() == 1;
       assert wrappedObserver.isObserverInterested(new TameAnnotationLiteral());
       assert !wrappedObserver.isObserverInterested(new AnimalStereotypeAnnotationLiteral());
@@ -46,7 +45,7 @@ public class EventObserverTest
       assert wrappedObserver.isObserverInterested(new TameAnnotationLiteral(), new RoleBinding("Admin"));
       
       // Perform some tests with binding values (7.7.1)
-      wrappedObserver = new EventObserver<DangerCall>(new MetaDataCache(), observer, DangerCall.class, new RoleBinding("Admin"));
+      wrappedObserver = new EventObserver<DangerCall>(observer, DangerCall.class, new RoleBinding("Admin"));
       assert wrappedObserver.getEventBindings().size() == 1;
       assert wrappedObserver.isObserverInterested(new RoleBinding("Admin"));
       assert !wrappedObserver.isObserverInterested(new RoleBinding("User"));

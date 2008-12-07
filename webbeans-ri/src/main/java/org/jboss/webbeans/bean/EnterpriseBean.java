@@ -32,6 +32,7 @@ import javax.webbeans.manager.EnterpriseBeanLookup;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.ejb.EJB;
 import org.jboss.webbeans.ejb.EjbMetaData;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -71,7 +72,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected void init()
    {
       super.init();
-      ejbMetaData = manager.getMetaDataCache().getEjbMetaData(getType());
+      ejbMetaData = MetaDataCache.instance().getEjbMetaData(getType());
       initRemoveMethod();
       initInjectionPoints();
       checkEnterpriseBeanTypeAllowed();
@@ -139,14 +140,14 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       if (!isDefinedInXml())
       {
-         if (!manager.getMetaDataCache().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
+         if (!MetaDataCache.instance().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
          {
             throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
          }
       }
       else
       {
-         if (manager.getMetaDataCache().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
+         if (MetaDataCache.instance().getEjbMetaData(getAnnotatedItem().getSuperclass().getType()).isEjb())
          {
             throw new DefinitionException("XML defined specializing EJB must have annotation defined EJB implementation");
          }

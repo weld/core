@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EventBean;
@@ -115,7 +116,7 @@ public class Bootstrap
       for (Class<?> clazz : classes)
       {
          AbstractClassBean<?> bean;
-         if (CurrentManager.rootManager().getMetaDataCache().getEjbMetaData(clazz).isEjb())
+         if (MetaDataCache.instance().getEjbMetaData(clazz).isEjb())
          {
             bean = createEnterpriseBean(clazz);
          }
