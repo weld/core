@@ -20,7 +20,6 @@ package org.jboss.webbeans.bean;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.webbeans.DefinitionException;
@@ -42,11 +41,10 @@ import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
  *
  * @param <T>
  */
-public class ProducerMethodBean<T> extends AbstractBean<T, Method>
+public class ProducerMethodBean<T> extends ProducerBean<T, Method>
 {
    
    private AnnotatedMethod<T> method;
-   private AbstractClassBean<?> declaringBean;
 
    /**
     * Constructor
@@ -67,9 +65,8 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
     */
    public ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
-      super(manager);
+      super(manager, declaringBean);
       this.method = method;
-      this.declaringBean = declaringBean;
       init();
    }
 
@@ -84,7 +81,7 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       T instance = method.invoke(manager, manager.getInstance(getDeclaringBean()));
       if (instance == null && !getScopeType().equals(Dependent.class))
       {
-         throw new IllegalProductException("Cannot return null from a non-dependent method");
+         throw new IllegalProductException("Cannot return null from a non-dependent producer method");
       }
       return instance;
    }
@@ -121,12 +118,6 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       }
    }
    
-   @Override
-   protected Class<? extends Annotation> getDefaultDeploymentType()
-   {
-      return deploymentType = declaringBean.getDeploymentType();
-   }
-   
    /**
     * Validates the producer method
     */
@@ -154,7 +145,7 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
          {
             if (!(type instanceof Class))
             {
-               throw new DefinitionException("Producer method cannot return type parameterized with type parameter or wildcard");
+               throw new DefinitionException("Producer method return type cannot be parameterized with type parameter or wildcard");
             }
          }
       }
@@ -201,48 +192,6 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
    }
 
    /**
-    * Initializes the type
-    */
-   @Override
-   protected void initType()
-   {
-      try
-      {
-         if (getAnnotatedItem() != null)
-         {
-            this.type = getAnnotatedItem().getType();
-         }
-      }
-      catch (ClassCastException e) 
-      {
-         throw new RuntimeException(" Cannot cast producer method return type " + method.getType() + " to bean type " + (getDeclaredBeanType() == null ? " unknown " : getDeclaredBeanType()), e);
-      }
-   }
-   
-   /**
-    * Initializes the API types
-    */
-   @Override
-   protected void initApiTypes()
-   {
-      if (getType().isArray() || getType().isPrimitive())
-      {
-         super.apiTypes = new HashSet<Class<?>>();
-         super.apiTypes.add(getType());
-         super.apiTypes.add(Object.class);
-      }
-      else if (getType().isInterface())
-      {
-         super.initApiTypes();
-         super.apiTypes.add(Object.class);
-      }
-      else
-      {
-         super.initApiTypes();
-      }
-   }
-   
-   /**
     * Returns the disposal method
     * 
     * @return The method representation
@@ -250,16 +199,6 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
    public AnnotatedMethod<?> getDisposalMethod()
    {
       return removeMethod;
-   }
-   
-   /**
-    * Returns the declaring bean
-    * 
-    * @return The bean representation
-    */
-   public AbstractClassBean<?> getDeclaringBean()
-   {
-      return declaringBean;
    }
 
    @Override

@@ -469,6 +469,29 @@ public class Reflections
    }
 
    /**
+    * Gets value of a field and wraps exceptions
+    * 
+    * @param field The field to set on
+    * @param target The instance to set on
+    * @return The value to set
+    */
+   public static Object getAndWrap(Field field, Object target)
+   {
+      try
+      {
+         return field.get(target);
+      }
+      catch (IllegalArgumentException e)
+      {
+         throw new ExecutionException("Error getting field " + field.getName() + " on " + field.getDeclaringClass(), e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new ExecutionException("Error getting field " + field.getName() + " on " + field.getDeclaringClass(), e);
+      }
+   }
+
+   /**
     * Looks up a method in the type hierarchy of an instance
     * 
     * @param method The method to look for

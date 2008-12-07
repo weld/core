@@ -46,6 +46,13 @@ public interface AnnotatedField<T> extends AnnotatedItem<T, Field>
    public void inject(Manager manager, Object instance);
    
    /**
+    * Injects an instance
+    * 
+    * @param instance The instance to inject
+    */
+   public T get(Object instance);
+   
+   /**
     * Gets an abstraction of the declaring class
     * 
     * @return The declaring class

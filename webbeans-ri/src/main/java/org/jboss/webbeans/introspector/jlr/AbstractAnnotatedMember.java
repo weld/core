@@ -27,7 +27,6 @@ import java.util.Map;
 import javax.webbeans.BindingType;
 import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;

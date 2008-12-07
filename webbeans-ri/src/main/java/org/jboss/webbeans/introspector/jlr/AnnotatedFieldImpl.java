@@ -126,6 +126,10 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
    {
       Reflections.setAndWrap(getDelegate(), instance, getValue(manager));
    }
+   
+   public T get(Object instance) {
+      return (T) Reflections.getAndWrap(getDelegate(), instance);
+   }
 
    /**
     * Gets the property name
