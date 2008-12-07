@@ -18,11 +18,6 @@
 package org.jboss.webbeans.bean;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-
-import javax.webbeans.DefinitionException;
-import javax.webbeans.Dependent;
-import javax.webbeans.IllegalProductException;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -72,44 +67,9 @@ public class ProducerFieldBean<T> extends ProducerBean<T, Field>
    @Override
    public T create()
    {
-      T instance = field.get(manager.getInstance(getDeclaringBean()));
-      if (instance == null && !getScopeType().equals(Dependent.class))
-      {
-         throw new IllegalProductException("Cannot return null from a non-dependent producer field");
-      }
+      T instance = field.get(getReceiver());
+      checkReturnValue(instance);
       return instance;
-   }
-
-   /**
-    * Initializes the bean and its metadata
-    */
-   @Override
-   protected void init()
-   {
-      super.init();
-      checkProducerField();
-   }
-   
-   
-   /**
-    * Validates the producer method
-    */
-   protected void checkProducerField()
-   {
-      if (getAnnotatedItem().isStatic())
-      {
-         throw new DefinitionException("Producer method cannot be static " + field);
-      }
-      else if (getAnnotatedItem().getActualTypeArguments().length > 0)
-      {
-         for (Type type : getAnnotatedItem().getActualTypeArguments())
-         {
-            if (!(type instanceof Class))
-            {
-               throw new DefinitionException("Producer field type cannot be parameterized with type parameter or wildcard");
-            }
-         }
-      }
    }
 
    /**

@@ -19,14 +19,11 @@ package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.webbeans.DefinitionException;
-import javax.webbeans.Dependent;
 import javax.webbeans.Destructor;
 import javax.webbeans.Disposes;
-import javax.webbeans.IllegalProductException;
 import javax.webbeans.Observes;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -78,11 +75,8 @@ public class ProducerMethodBean<T> extends ProducerBean<T, Method>
    @Override
    public T create()
    {
-      T instance = method.invoke(manager, manager.getInstance(getDeclaringBean()));
-      if (instance == null && !getScopeType().equals(Dependent.class))
-      {
-         throw new IllegalProductException("Cannot return null from a non-dependent producer method");
-      }
+      T instance = method.invoke(manager, getReceiver());
+      checkReturnValue(instance);
       return instance;
    }
 
@@ -94,7 +88,7 @@ public class ProducerMethodBean<T> extends ProducerBean<T, Method>
    {
       super.init();
       checkProducerMethod();
-      initRemoveMethod();
+      initDisposalMethod();
       initInjectionPoints();
    }
    
@@ -123,11 +117,7 @@ public class ProducerMethodBean<T> extends ProducerBean<T, Method>
     */
    protected void checkProducerMethod()
    {
-      if (getAnnotatedItem().isStatic())
-      {
-         throw new DefinitionException("Producer method cannot be static " + method);
-      }
-      else if (getAnnotatedItem().isAnnotationPresent(Destructor.class))
+      if (getAnnotatedItem().isAnnotationPresent(Destructor.class))
       {
          throw new DefinitionException("Producer method cannot be annotated @Destructor");
       }
@@ -139,22 +129,12 @@ public class ProducerMethodBean<T> extends ProducerBean<T, Method>
       {
          throw new DefinitionException("Producer method cannot have parameter annotated @Disposes");
       }
-      else if (getAnnotatedItem().getActualTypeArguments().length > 0)
-      {
-         for (Type type : getAnnotatedItem().getActualTypeArguments())
-         {
-            if (!(type instanceof Class))
-            {
-               throw new DefinitionException("Producer method return type cannot be parameterized with type parameter or wildcard");
-            }
-         }
-      }
    }
    
    /**
     * Initializes the remove method
     */
-   protected void initRemoveMethod()
+   protected void initDisposalMethod()
    {
       Set<AnnotatedMethod<Object>> disposalMethods = manager.resolveDisposalMethods(getType(), getBindingTypes().toArray(new Annotation[0]));
       if (disposalMethods.size() == 1)
