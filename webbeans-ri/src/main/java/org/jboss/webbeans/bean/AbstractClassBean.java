@@ -17,6 +17,7 @@
 
 package org.jboss.webbeans.bean;
 
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +29,7 @@ import javax.webbeans.Initializer;
 import javax.webbeans.Observable;
 import javax.webbeans.Observes;
 import javax.webbeans.Produces;
+import javax.webbeans.Production;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedClass;
@@ -286,5 +288,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       buffer.append(Strings.collectionToString("Injectable fields: ", getInjectableFields()));
       buffer.append(Strings.collectionToString("Producer methods: ", getProducerMethods()));
       return buffer.toString();
+   }
+   
+   @Override
+   protected Class<? extends Annotation> getDefaultDeploymentType()
+   {
+      return Production.class;
    }
 }

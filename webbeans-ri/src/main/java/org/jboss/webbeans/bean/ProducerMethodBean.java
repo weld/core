@@ -124,17 +124,10 @@ public class ProducerMethodBean<T> extends AbstractBean<T, Method>
       }
    }
    
-   /**
-    * Initializes the deployment type
-    */
    @Override
-   protected void initDeploymentType()
+   protected Class<? extends Annotation> getDefaultDeploymentType()
    {
-      super.initDeploymentType();
-      if (getDeploymentType() == null)
-      {
-         deploymentType = declaringBean.getDeploymentType();
-      }
+      return deploymentType = declaringBean.getDeploymentType();
    }
    
    /**

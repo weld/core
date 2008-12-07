@@ -10,7 +10,6 @@ import java.util.Set;
 import javax.webbeans.AnnotationLiteral;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.NonexistentConstructorException;
-import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
@@ -18,16 +17,11 @@ import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.test.annotations.HeavyDuty;
 import org.jboss.webbeans.test.annotations.Motorized;
-import org.jboss.webbeans.test.beans.Animal;
 import org.jboss.webbeans.test.beans.Cow;
-import org.jboss.webbeans.test.beans.DeadlyAnimal;
-import org.jboss.webbeans.test.beans.DeadlySpider;
 import org.jboss.webbeans.test.beans.Donkey;
 import org.jboss.webbeans.test.beans.Duck;
 import org.jboss.webbeans.test.beans.Order;
 import org.jboss.webbeans.test.beans.Sheep;
-import org.jboss.webbeans.test.beans.Spider;
-import org.jboss.webbeans.test.beans.Tarantula;
 import org.jboss.webbeans.test.beans.Tractor;
 import org.jboss.webbeans.test.beans.Turkey;
 import org.jboss.webbeans.test.beans.broken.Goose;
@@ -78,19 +72,6 @@ public class SimpleBeanModelTest extends AbstractTest
    public void testOnlyOneWebBeanPerAnnotatedClass()
    {
       
-   }
-   
-   @Test @SpecAssertion(section="3.2.2")
-   public void testApiTypes()
-   {
-      Bean<Tarantula> bean = createSimpleBean(Tarantula.class);
-      assert bean.getTypes().size() == 6;
-      assert bean.getTypes().contains(Tarantula.class);
-      assert bean.getTypes().contains(Spider.class);
-      assert bean.getTypes().contains(Animal.class);
-      assert bean.getTypes().contains(Object.class);
-      assert bean.getTypes().contains(DeadlySpider.class);
-      assert bean.getTypes().contains(DeadlyAnimal.class);
    }
    
    @Test(groups={"stub", "producerMethod", "webbeansxml"}) @SpecAssertion(section="3.2.4")

@@ -1,6 +1,9 @@
 package org.jboss.webbeans.test;
 
+import static org.jboss.webbeans.util.BeanFactory.createProducerMethodBean;
 import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
+
+import java.lang.reflect.Method;
 
 import javax.webbeans.DefinitionException;
 import javax.webbeans.DeploymentException;
@@ -9,16 +12,20 @@ import javax.webbeans.Standard;
 import javax.webbeans.UnsatisfiedDependencyException;
 import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.bean.ProducerMethodBean;
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.HornedAnimalDeploymentType;
+import org.jboss.webbeans.test.beans.BlackWidow;
 import org.jboss.webbeans.test.beans.RedSnapper;
 import org.jboss.webbeans.test.beans.Reindeer;
 import org.jboss.webbeans.test.beans.Rhinoceros;
+import org.jboss.webbeans.test.beans.SpiderProducer;
 import org.jboss.webbeans.test.beans.broken.BeanWithTooManyDeploymentTypes;
 import org.jboss.webbeans.test.beans.broken.Gazelle;
 import org.testng.annotations.Test;
 
-@SpecVersion("PDR")
+@SpecVersion("20081206")
 public class DeploymentTypeTest extends AbstractTest
 {
    
@@ -50,6 +57,16 @@ public class DeploymentTypeTest extends AbstractTest
    public void testTooManyDeploymentTypes()
    {
       createSimpleBean(BeanWithTooManyDeploymentTypes.class);
+   }
+   
+   @Test @SpecAssertion(section="2.5.3")
+   public void testDeploymentTypeInhertitedFromDeclaringBean() throws Exception
+   {
+      SimpleBean<SpiderProducer> bean = createSimpleBean(SpiderProducer.class);
+      manager.addBean(bean);
+      Method method = SpiderProducer.class.getMethod("produceBlackWidow");
+      ProducerMethodBean<BlackWidow> blackWidowSpiderModel = createProducerMethodBean(BlackWidow.class, method, bean);
+      assert blackWidowSpiderModel.getDeploymentType().equals(AnotherDeploymentType.class);
    }
    
    @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.5.4")
@@ -89,17 +106,6 @@ public class DeploymentTypeTest extends AbstractTest
    {
       Bean<?> bean = createSimpleBean(Rhinoceros.class);
       assert bean.getDeploymentType().equals(HornedAnimalDeploymentType.class);
-   }
-   
-   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.5.5")
-   public void testDeploymentTypeSpecifiedAndStereotyped()
-   {
-      //Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      //annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
-      //AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
-      //SimpleBean<SeaBass> trout = createSimpleBean(SeaBass.class, annotatedItem, manager);
-      //assert trout.getScopeType().equals(RequestScoped.class);
-       assert false;
    }
    
    @Test(groups="beanLifecycle", expectedExceptions=UnsatisfiedDependencyException.class) @SpecAssertion(section="2.5.6")
@@ -143,7 +149,7 @@ public class DeploymentTypeTest extends AbstractTest
       
    }
    
-   @Test @SpecAssertion(section="2.7.2")
+   @Test @SpecAssertion(section={"2.5.5", "2.7.2"})
    public void testWebBeanDeploymentTypeOverridesStereotype()
    {
       Bean<Reindeer> bean = createSimpleBean(Reindeer.class);

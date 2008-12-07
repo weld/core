@@ -2,6 +2,7 @@ package org.jboss.webbeans.test;
 
 import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
 
+import javax.webbeans.ApplicationScoped;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.RequestScoped;
@@ -10,13 +11,17 @@ import javax.webbeans.manager.Bean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.annotations.AnotherScopeType;
 import org.jboss.webbeans.test.beans.BeanWithTooManyScopeTypes;
+import org.jboss.webbeans.test.beans.Grayling;
+import org.jboss.webbeans.test.beans.Minnow;
 import org.jboss.webbeans.test.beans.Mullet;
 import org.jboss.webbeans.test.beans.Order;
+import org.jboss.webbeans.test.beans.Pollock;
 import org.jboss.webbeans.test.beans.RedSnapper;
 import org.jboss.webbeans.test.beans.SeaBass;
+import org.jboss.webbeans.test.beans.broken.Scallop;
 import org.testng.annotations.Test;
 
-@SpecVersion("PDR")
+@SpecVersion("20081206")
 public class ScopeTypeTest extends AbstractTest
 {
    
@@ -109,47 +114,31 @@ public class ScopeTypeTest extends AbstractTest
       assert order.getScopeType().equals(Dependent.class);
    }
    
-   @Test(groups={"stub", "webbeansxml"})@SpecAssertion(section={"2.4.5", "2.7.2"})
+   @Test @SpecAssertion(section={"2.4.5", "2.7.2"})
    public void testScopeSpecifiedAndStereotyped()
    {
-      //Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      //annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
-      //AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);
-      //SimpleBean<SeaBass> trout = createSimpleBean(SeaBass.class, annotatedItem, manager);
-      //assert trout.getScopeType().equals(RequestScoped.class);
-      assert false;
+      Bean<Minnow> minnow = createSimpleBean(Minnow.class);
+      assert minnow.getScopeType().equals(RequestScoped.class);
    }
    
-   @Test(groups={"webbeansxml", "stub"}) @SpecAssertion(section="2.4.5")
+   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.4.5")
    public void testMutipleIncompatibleScopeStereotypes()
    {
-      assert false;
+      createSimpleBean(Scallop.class);
    }
    
-   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.4.5")
+   @Test @SpecAssertion(section="2.4.5")
    public void testMutipleIncompatibleScopeStereotypesWithScopeSpecified()
    {
-      /*Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
-      annotations.put(AnimalStereotype.class, new AnimalStereotypeAnnotationLiteral());
-      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);*/
-      
-      //SimpleBean<SeaBass> trout = createSimpleBean(SeaBass.class, annotatedItem, manager);
-      //assert trout.getScopeType().equals(RequestScoped.class);
-      assert false;
+      Bean<Pollock> pollock = createSimpleBean(Pollock.class);
+      assert pollock.getScopeType().equals(Dependent.class);
    }
    
-   @Test(groups={"stub", "webbeansxml"})@SpecAssertion(section="2.4.5")
+   @Test @SpecAssertion(section="2.4.5")
    public void testMutipleCompatibleScopeStereotypes()
    {
-      /*Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(FishStereotype.class, new FishStereotypeAnnotationLiteral());
-      annotations.put(RiverFishStereotype.class, new RiverFishStereotypeAnnotationLiteral());
-      AnnotatedClass<Haddock> annotatedItem = new SimpleAnnotatedClass<Haddock>(Haddock.class, annotations);*/
-      
-      //SimpleBean<Haddock> haddock = createSimpleBean(Haddock.class, annotatedItem, manager);
-      //assert haddock.getScopeType().equals(ApplicationScoped.class);
-      assert false;
+      Bean<Grayling> grayling = createSimpleBean(Grayling.class);
+      assert grayling.getScopeType().equals(ApplicationScoped.class);
    }
    
    @Test @SpecAssertion(section="2.7.2")

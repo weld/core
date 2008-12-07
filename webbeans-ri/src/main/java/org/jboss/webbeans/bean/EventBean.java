@@ -17,12 +17,14 @@
 
 package org.jboss.webbeans.bean;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.Event;
+import javax.webbeans.Production;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -130,6 +132,12 @@ public class EventBean<T> extends AbstractBean<Event<T>, Field>
    {
       Class<T> eventType = (Class<T>) annotatedItem.getType().getTypeParameters()[0].getClass();
 	  return new EventImpl<T>(manager, eventType, annotatedItem.getBindingTypesAsArray());
+   }
+   
+   @Override
+   protected Class<? extends Annotation> getDefaultDeploymentType()
+   {
+      return Production.class;
    }
 
 }

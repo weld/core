@@ -280,7 +280,7 @@ public class ResolutionByTypeTest extends AbstractTest
       assert manager.resolveByType(Tuna.class, new CurrentAnnotationLiteral()).size() == 0;
    }
    
-   @Test(groups="resolution") @SpecAssertion(section="4.9.2")
+   @Test(groups="resolution") @SpecAssertion(section={"4.9.2", "2.2"})
    public void testResolveObject() throws Exception
    {
       Bean<Salmon> salmonBean = createSimpleBean(Salmon.class);

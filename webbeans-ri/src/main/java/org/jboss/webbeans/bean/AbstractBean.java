@@ -31,7 +31,6 @@ import javax.webbeans.Dependent;
 import javax.webbeans.DeploymentType;
 import javax.webbeans.Event;
 import javax.webbeans.Named;
-import javax.webbeans.Production;
 import javax.webbeans.ScopeType;
 import javax.webbeans.Specializes;
 import javax.webbeans.Standard;
@@ -230,10 +229,12 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          }
       }
 
-      this.deploymentType = Production.class;
+      this.deploymentType = getDefaultDeploymentType();
       log.trace("Using default @Production deployment type");
       return;
    }
+   
+   protected abstract Class<? extends Annotation> getDefaultDeploymentType();
 
    /**
     * Initializes the injection points

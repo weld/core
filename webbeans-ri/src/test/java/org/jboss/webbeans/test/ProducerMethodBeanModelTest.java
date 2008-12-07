@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 
 import javax.webbeans.Current;
 import javax.webbeans.DefinitionException;
+import javax.webbeans.Production;
 import javax.webbeans.RequestScoped;
 
 import org.jboss.webbeans.bean.ProducerMethodBean;
@@ -140,7 +141,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert intModel.getTypes().contains(Object.class);
    }
    
-   @Test(groups="producerMethod") @SpecAssertion(section="3.4.1")
+   @Test(groups="producerMethod") @SpecAssertion(section={"3.4.1", "2.2"})
    public void testApiTypeForArrayTypeReturn() throws Exception
    {
       SimpleBean<SpiderProducer> bean = createSimpleBean(SpiderProducer.class);
@@ -182,7 +183,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       manager.addBean(bean);
       Method method = SpiderProducer.class.getMethod("getLadybirdSpider");
       ProducerMethodBean<LadybirdSpider> ladybirdSpiderModel = createProducerMethodBean(LadybirdSpider.class, method, bean);
-      assert ladybirdSpiderModel.getDeploymentType().equals(AnotherDeploymentType.class);
+      assert ladybirdSpiderModel.getDeploymentType().equals(Production.class);
    }
    
    @Test(groups="producerMethod") @SpecAssertion(section="3.4.2")
@@ -292,7 +293,7 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups="producerMethod") @SpecAssertion(section={"2.7.2", "3.4.2"})
+   @Test(groups="producerMethod") @SpecAssertion(section={"2.7.2", "3.4.2", "2.2"})
    public void testStereotype() throws Exception
    {
       SimpleBean<SpiderProducer> bean = createSimpleBean(SpiderProducer.class);

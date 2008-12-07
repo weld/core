@@ -3,6 +3,7 @@ package org.jboss.webbeans.test.beans;
 import javax.webbeans.Dependent;
 import javax.webbeans.Named;
 import javax.webbeans.Produces;
+import javax.webbeans.Production;
 import javax.webbeans.RequestScoped;
 
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
@@ -40,7 +41,7 @@ public class SpiderProducer
       return new DaddyLongLegs();
    }
    
-   @Produces @Named @AnotherDeploymentType public LadybirdSpider getLadybirdSpider()
+   @Produces @Named @Production public LadybirdSpider getLadybirdSpider()
    {
       return new LadybirdSpider();
    }

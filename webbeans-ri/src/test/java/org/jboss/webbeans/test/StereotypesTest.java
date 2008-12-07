@@ -27,7 +27,7 @@ import org.jboss.webbeans.test.beans.Order;
 import org.jboss.webbeans.test.beans.broken.Carp;
 import org.testng.annotations.Test;
 
-@SpecVersion("PDR")
+@SpecVersion("20081206")
 public class StereotypesTest extends AbstractTest
 {
 	
@@ -90,46 +90,46 @@ public class StereotypesTest extends AbstractTest
       assert animalStereotype.getDefaultDeploymentType() == null;
    }
    
-   @Test @SpecAssertion(section="2.7.1")
+   @Test @SpecAssertion(section="2.7.1.1")
    public void testStereotypeWithScopeType()
    {
 	   StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(AnimalStereotype.class);
 	   assert animalStereotype.getDefaultScopeType().annotationType().equals(RequestScoped.class);
    }
    
-   @Test @SpecAssertion(section="2.7.1")
+   @Test @SpecAssertion(section="2.7.1.1")
    public void testStereotypeWithoutScopeType()
    {
 	   StereotypeModel<HornedMammalStereotype> animalStereotype = new StereotypeModel<HornedMammalStereotype>(HornedMammalStereotype.class);
 	   assert animalStereotype.getDefaultScopeType() == null;
    }
    
-   @Test @SpecAssertion(section="2.7.1")
+   @Test @SpecAssertion(section="2.7.1.2")
    public void testStereotypeWithoutInterceptors()
    {
       StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(AnimalStereotype.class);
       assert animalStereotype.getInterceptorBindings().size() == 0;
    }
    
-   @Test(groups={"stub", "interceptors"}) @SpecAssertion(section="2.7.1")
+   @Test(groups={"stub", "interceptors"}) @SpecAssertion(section="2.7.1.2")
    public void testStereotypeWithInterceptors()
    {
       assert false;
    }
    
-   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1")
+   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1.1")
    public void testStereotypeWithTooManyScopeTypes()
    {
       new StereotypeModel<StereotypeWithTooManyScopeTypes>(StereotypeWithTooManyScopeTypes.class);
    }
    
-   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1")
+   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1.1")
    public void testStereotypeWithTooManyDeploymentTypes()
    {
       new StereotypeModel<StereotypeWithTooManyDeploymentTypes>(StereotypeWithTooManyDeploymentTypes.class);
    }
    
-   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1")
+   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.1.3")
    public void testStereotypeWithNonEmptyNamed()
    {
       new StereotypeModel<StereotypeWithNonEmptyNamed>(StereotypeWithNonEmptyNamed.class);
@@ -186,28 +186,30 @@ public class StereotypesTest extends AbstractTest
       
    }
    
-   @Test@SpecAssertion(section="2.7.4")
+   @Test@SpecAssertion(section={"2.7.1.4", "2.7.4"})
    public void testRequiredTypeIsImplemented()
    {
          createSimpleBean(HighlandCow.class);
    }
    
-   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.4")
+   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section={"2.7.1.4", "2.7.4"})
    public void testRequiredTypeIsNotImplemented()
    {
       createSimpleBean(Chair.class);      
    }
    
-   @Test @SpecAssertion(section="2.7.4")
+   @Test @SpecAssertion(section={"2.7.1.4", "2.7.4"})
    public void testScopeIsSupported()
    {
       createSimpleBean(Goldfish.class);
    }
    
-   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.7.4")
+   @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section={"2.7.1.4", "2.7.4"})
    public void testScopeIsNotSupported()
    {
       createSimpleBean(Carp.class);    
    }
+   
+   // TODO Stereotype inheritance tests
    
 }

@@ -6,16 +6,17 @@ import javax.webbeans.DefinitionException;
 
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.beans.Haddock;
+import org.jboss.webbeans.test.beans.Minnow;
 import org.jboss.webbeans.test.beans.Moose;
 import org.jboss.webbeans.test.beans.RedSnapper;
 import org.jboss.webbeans.test.beans.SeaBass;
 import org.testng.annotations.Test;
 
-@SpecVersion("PDR")
+@SpecVersion("20081206")
 public class NameTest extends AbstractTest
 {
 
-   @Test(groups={"stub", "el"}, expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.6")
+   @Test(groups="stub", expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.6")
    public void testInvalidElIdentifierUsedAsWebBeanName()
    {
       assert false;
@@ -127,15 +128,11 @@ public class NameTest extends AbstractTest
       assert model.getName() == null;
    }
    
-   @Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section="2.6.4")
+   @Test @SpecAssertion(section="2.6.4")
    public void testNotNamedInStereotype()
    {
-      /*Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-      annotations.put(RiverFishStereotype.class, new RiverFishStereotypeAnnotationLiteral());
-      AnnotatedClass<SeaBass> annotatedItem = new SimpleAnnotatedClass<SeaBass>(SeaBass.class, annotations);*/
-      //SimpleBean<SeaBass> model = createSimpleBean(SeaBass.class, annotatedItem, manager);
-      //assert model.getName() == null;
-      assert false;
+      SimpleBean<Minnow> model = createSimpleBean(Minnow.class);
+      assert model.getName() == null;
    }
    
 }
