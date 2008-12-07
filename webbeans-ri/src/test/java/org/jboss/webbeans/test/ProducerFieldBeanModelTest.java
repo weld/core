@@ -27,6 +27,7 @@ import org.jboss.webbeans.test.beans.Tarantula;
 import org.jboss.webbeans.test.beans.WolfSpider;
 import org.testng.annotations.Test;
 
+@SpecVersion("20081206")
 public class ProducerFieldBeanModelTest extends AbstractTest
 {
    

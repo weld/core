@@ -15,6 +15,7 @@ import org.jboss.webbeans.test.beans.Tarantula;
 import org.jboss.webbeans.test.beans.broken.BrokenSpiderProducer;
 import org.testng.annotations.Test;
 
+@SpecVersion("20081206")
 public class ProducerMethodBeanLifecycleTest extends AbstractTest
 {
    

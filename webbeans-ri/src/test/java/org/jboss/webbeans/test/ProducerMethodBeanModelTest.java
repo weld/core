@@ -29,6 +29,7 @@ import org.jboss.webbeans.test.beans.broken.BeanWithStaticProducerMethod;
 import org.jboss.webbeans.test.beans.broken.BrokenSpiderProducer;
 import org.testng.annotations.Test;
 
+@SpecVersion("20081206")
 public class ProducerMethodBeanModelTest extends AbstractTest
 {
    
@@ -82,12 +83,6 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       manager.addBean(bean);
       Method method = SpiderProducer.class.getMethod("getFunnelWeaver");
       createProducerMethodBean(FunnelWeaver.class, method, bean);
-   }
-   
-   @Test(groups={"stub", "producerMethod", "deployment"}) @SpecAssertion(section="3.4")
-   public void testBeanDeclaresMultipleProducerMethods()
-   {
-      assert false;
    }
    
    @Test(groups="producerMethod") @SpecAssertion(section={"3.4", "2.3.1"})
