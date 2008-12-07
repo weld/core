@@ -37,7 +37,7 @@ public class ProducerFieldBeanLifecycleTest extends AbstractTest
    }
    
    
-   @Test(groups="producerField") @SpecAssertion(section={"3.4", "5.6", "8.3"})
+   @Test(groups="producerField") @SpecAssertion(section={"3.5", "5.6", "8.3"})
    public void testProducerFieldReturnsNullIsDependent() throws Exception
    {
       SimpleBean<OtherSpiderProducer> spiderProducer = createSimpleBean(OtherSpiderProducer.class); 
@@ -48,7 +48,7 @@ public class ProducerFieldBeanLifecycleTest extends AbstractTest
       assert spider == null;
    }
    
-   @Test(groups="producerField", expectedExceptions=IllegalProductException.class) @SpecAssertion(section={"3.4", "5.6"})
+   @Test(groups="producerField", expectedExceptions=IllegalProductException.class) @SpecAssertion(section={"3.5", "5.6"})
    public void testProducerFieldReturnsNullIsNotDependent() throws Exception
    {
       SimpleBean<OtherBrokenSpiderProducer> spiderProducer = createSimpleBean(OtherBrokenSpiderProducer.class);

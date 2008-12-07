@@ -25,7 +25,6 @@ import org.jboss.webbeans.test.beans.OtherSpiderProducer;
 import org.jboss.webbeans.test.beans.Spider;
 import org.jboss.webbeans.test.beans.Tarantula;
 import org.jboss.webbeans.test.beans.WolfSpider;
-import org.jboss.webbeans.test.beans.broken.OtherBrokenSpiderProducer;
 import org.testng.annotations.Test;
 
 public class ProducerFieldBeanModelTest extends AbstractTest
@@ -41,7 +40,7 @@ public class ProducerFieldBeanModelTest extends AbstractTest
       tarantulaModel.getDeploymentType().equals(AnotherDeploymentType.class);
    }
    
-   /*@Test(groups="producerField", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
+   /*@Test(groups="producerField", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.5")
    public void testStaticField() throws Exception
    {
       SimpleBean<BeanWithStaticProducerField> bean = createSimpleBean(BeanWithStaticProducerField.class);
@@ -50,13 +49,13 @@ public class ProducerFieldBeanModelTest extends AbstractTest
       createProducerFieldBean(String.class, field, bean);
    }*/
    
-   @Test(groups={"stub", "producerField", "enterpriseBeans", "stub"}, expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
+   @Test(groups={"stub", "producerField", "enterpriseBeans", "stub"}, expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.5")
    public void testProducerFieldIsNotBusinessField() throws Exception
    {
       assert false;
    }
    
-   @Test(groups="producerField") @SpecAssertion(section="3.4")
+   @Test(groups="producerField") @SpecAssertion(section="3.5")
    public void testParameterizedReturnType() throws Exception
    {
       SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class);
@@ -65,7 +64,7 @@ public class ProducerFieldBeanModelTest extends AbstractTest
       createProducerFieldBean(FunnelWeaver.class, field, bean);
    }
    
-   @Test(groups="producerField", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.4")
+   @Test(groups="producerField", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.5")
    public void testParameterizedReturnTypeWithWildcard() throws Exception
    {
       SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class);
@@ -74,13 +73,13 @@ public class ProducerFieldBeanModelTest extends AbstractTest
       createProducerFieldBean(FunnelWeaver.class, field, bean);
    }
    
-   @Test(groups={"stub", "producerField", "deployment"}) @SpecAssertion(section="3.4")
+   @Test(groups={"stub", "producerField", "deployment"}) @SpecAssertion(section="3.5")
    public void testBeanDeclaresMultipleProducerFields()
    {
       assert false;
    }
    
-   @Test(groups="producerField") @SpecAssertion(section={"3.4", "2.3.1"})
+   @Test(groups="producerField") @SpecAssertion(section={"3.5", "2.3.1"})
    public void testDefaultBindingType() throws Exception
    {
       SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class);
@@ -91,7 +90,7 @@ public class ProducerFieldBeanModelTest extends AbstractTest
       assert tarantulaModel.getBindingTypes().iterator().next().annotationType().equals(Current.class);
    }
    
-   @Test(groups="producerField") @SpecAssertion(section="3.4.1")
+   @Test(groups="producerField") @SpecAssertion(section="3.5.1")
    public void testApiTypeForClassReturn() throws Exception
    {
       SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class);
@@ -107,7 +106,7 @@ public class ProducerFieldBeanModelTest extends AbstractTest
       assert tarantulaModel.getTypes().contains(Object.class);
    }
    
-   @Test(groups="producerField") @SpecAssertion(section="3.4.1")
+   @Test(groups="producerField") @SpecAssertion(section="3.5.1")
    public void testApiTypeForInterfaceReturn() throws Exception
    {
       SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class);
@@ -119,7 +118,7 @@ public class ProducerFieldBeanModelTest extends AbstractTest
       assert animalModel.getTypes().contains(Object.class);
    }
    
-   @Test(groups="producerField") @SpecAssertion(section="3.4.1")
+   @Test(groups="producerField") @SpecAssertion(section="3.5.1")
    public void testApiTypeForPrimitiveReturn() throws Exception
    {
       SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class);
@@ -131,7 +130,7 @@ public class ProducerFieldBeanModelTest extends AbstractTest
       assert intModel.getTypes().contains(Object.class);
    }
    
-   @Test(groups="producerField") @SpecAssertion(section={"3.4.1", "2.2"})
+   @Test(groups="producerField") @SpecAssertion(section={"3.5.1", "2.2"})
    public void testApiTypeForArrayTypeReturn() throws Exception
    {
       SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class);
@@ -143,7 +142,7 @@ public class ProducerFieldBeanModelTest extends AbstractTest
       assert spidersModel.getTypes().contains(Object.class);
    }
    
-   @Test(groups="producerField") @SpecAssertion(section="3.4.2")
+   @Test(groups="producerField") @SpecAssertion(section="3.5.2")
    public void testBindingType() throws Exception
    {
       SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class);
@@ -154,7 +153,7 @@ public class ProducerFieldBeanModelTest extends AbstractTest
       assert tarantulaModel.getBindingTypes().iterator().next().annotationType().equals(Tame.class);
    }
    
-   @Test(groups="producerField") @SpecAssertion(section="3.4.2")
+   @Test(groups="producerField") @SpecAssertion(section="3.5.2")
    public void testScopeType() throws Exception
    {
       SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class);
@@ -166,7 +165,7 @@ public class ProducerFieldBeanModelTest extends AbstractTest
       // TODO Inherit scope from returned web bean?
    }
    
-   @Test(groups="producerField") @SpecAssertion(section="3.4.2")
+   @Test(groups="producerField") @SpecAssertion(section="3.5.2")
    public void testDeploymentType() throws Exception
    {
       SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class);
@@ -176,7 +175,7 @@ public class ProducerFieldBeanModelTest extends AbstractTest
       assert ladybirdSpiderModel.getDeploymentType().equals(Production.class);
    }
    
-   @Test(groups="producerField") @SpecAssertion(section="3.4.2")
+   @Test(groups="producerField") @SpecAssertion(section="3.5.2")
    public void testNamedField() throws Exception
    {
       SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class);
@@ -186,7 +185,7 @@ public class ProducerFieldBeanModelTest extends AbstractTest
       assert blackWidowSpiderModel.getName().equals("blackWidow");
    }
    
-   @Test(groups="producerField") @SpecAssertion(section="3.4.2")
+   @Test(groups="producerField") @SpecAssertion(section="3.5.2")
    public void testDefaultNamedField() throws Exception
    {
       SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class);
@@ -196,35 +195,35 @@ public class ProducerFieldBeanModelTest extends AbstractTest
       assert daddyLongLegsSpiderModel.getName().equals("produceDaddyLongLegs");
    }
    
-   @Test(groups={"stub", "disposalField"}) @SpecAssertion(section="3.3.4")
+   @Test(groups={"stub", "disposalField"}) @SpecAssertion(section="3.3.5")
    public void testDisposalFieldNonStatic()
    {
       // TODO Placeholder
       assert false;
    }
    
-   @Test(groups={"stub", "disposalField"}) @SpecAssertion(section="3.3.4")
+   @Test(groups={"stub", "disposalField"}) @SpecAssertion(section="3.3.5")
    public void testDisposalFieldFieldDeclaredOnWebBeanImplementationClass()
    {
       // TODO Placeholder
       assert false;
    }
    
-   @Test(groups={"stub", "disposalField"}) @SpecAssertion(section="3.3.4")
+   @Test(groups={"stub", "disposalField"}) @SpecAssertion(section="3.3.5")
    public void testDisposalFieldBindingAnnotations()
    {
       // TODO Placeholder
       assert false;
    }
    
-   @Test(groups={"stub", "disposalField"}) @SpecAssertion(section="3.3.4")
+   @Test(groups={"stub", "disposalField"}) @SpecAssertion(section="3.3.5")
    public void testDisposalFieldDefaultBindingAnnotations()
    {
       // TODO Placeholder
       assert false;
    }
    
-   @Test(groups={"stub", "disposalField"}) @SpecAssertion(section="3.3.4")
+   @Test(groups={"stub", "disposalField"}) @SpecAssertion(section="3.3.5")
    public void testDisposalFieldDoesNotResolveToProducerField()
    {
       // TODO Placeholder
@@ -256,7 +255,7 @@ public class ProducerFieldBeanModelTest extends AbstractTest
       assert false;
    }
    
-   @Test(groups="producerField") @SpecAssertion(section={"2.7.2", "3.4.2", "2.2"})
+   @Test(groups="producerField") @SpecAssertion(section={"2.7.2", "3.5.2", "2.2"})
    public void testStereotype() throws Exception
    {
       SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class);
