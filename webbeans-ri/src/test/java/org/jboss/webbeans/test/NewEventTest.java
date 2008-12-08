@@ -18,6 +18,7 @@ import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.test.beans.BananaSpider;
 import org.jboss.webbeans.test.beans.RecluseSpider;
+import org.jboss.webbeans.test.beans.SweeWaxbill;
 import org.jboss.webbeans.test.beans.TeaCupPomeranian;
 import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.RoleBinding;
@@ -567,18 +568,24 @@ public class NewEventTest extends AbstractTest
       manager.fireEvent(new Integer(1));
    }
 
-   @Test(groups = { "stub", "events" })
+   @Test(groups = { "broken", "events" }, expectedExceptions = { DuplicateBindingTypeException.class })
    @SpecAssertion(section = "8.6")
    public void testDuplicateBindingsToFireFails()
    {
-      assert false;
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(SweeWaxbill.class);
+      assert beans.size() == 1;
+      SweeWaxbill bean = (SweeWaxbill)beans.iterator().next().create();
+      bean.methodThatFiresEvent();
    }
 
-   @Test(groups = { "stub", "events" })
+   @Test(groups = { "broken", "events" })
    @SpecAssertion(section = "8.6")
    public void testDuplicateBindingsToObservesFails()
    {
-      assert false;
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(SweeWaxbill.class);
+      assert beans.size() == 1;
+      SweeWaxbill bean = (SweeWaxbill)beans.iterator().next().create();
+      bean.methodThatRegistersObserver();
    }
 
    @Test(groups = { "stub", "events" })
