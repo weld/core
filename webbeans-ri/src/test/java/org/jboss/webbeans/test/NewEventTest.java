@@ -324,7 +324,7 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5")
    public void testObserverMethodOnEnterpriseBeanIsBusinessMethodOrStatic()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(Pomeranian.class);
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(Pomeranian.class);
       assert beans.size() == 1;
       Set<Observer<MockManagerImpl>> observers = manager.resolveObservers(manager, new InitializedBinding());
       assert observers.size() == 2;
@@ -334,7 +334,7 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5")
    public void testObserverMethodOnEnterpriseBeanNotBusinessMethodOrStaticFails()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(TibetanTerrier.class);
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(TibetanTerrier.class);
       assert beans.size() == 1;
       Set<Observer<MockManagerImpl>> observers = manager.resolveObservers(manager, new InitializedBinding());
       assert observers.size() == 1;
@@ -354,7 +354,7 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = { "8.5.1", "8.5.2" })
    public void testObserverMethodMustHaveOnlyOneEventParameter()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(YorkshireTerrier.class);
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(YorkshireTerrier.class);
       assert beans != null;
    }
 
@@ -362,7 +362,7 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.1")
    public void testObserverMethodCannotObserveParameterizedEvents()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(BostonTerrier.class);
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(BostonTerrier.class);
       assert beans != null;
    }
 
@@ -371,7 +371,7 @@ public class NewEventTest extends AbstractTest
    public void testObserverMethodWithoutBindingTypesObservesEventsWithoutBindingTypes()
    {
       // This observer has no binding types specified
-      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(Pomeranian.class);
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(Pomeranian.class);
       assert beans.size() == 1;
 
       // Resolve registered observers with an event containing no binding types
@@ -384,7 +384,7 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.2")
    public void testObserverMethodAnnotatedProducesFails()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(BorderTerrier.class);
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(BorderTerrier.class);
       assert beans != null;
    }
 
@@ -392,7 +392,7 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.2")
    public void testObserverMethodAnnotatedInitializerFails()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(AustralianTerrier.class);
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(AustralianTerrier.class);
       assert beans != null;
    }
 
@@ -400,7 +400,7 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.2")
    public void testObserverMethodAnnotatedDestructorFails()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(CairnsTerrier.class);
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(CairnsTerrier.class);
       assert beans != null;
    }
 
@@ -408,7 +408,7 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.2")
    public void testObserverMethodWithDisposesParamFails()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(FoxTerrier.class);
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(FoxTerrier.class);
       assert beans != null;
    }
 
@@ -416,7 +416,7 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.2")
    public void testObserverMethodMayHaveMultipleBindingTypes()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(BullTerrier.class);
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(BullTerrier.class);
       assert beans != null;
       // If we can resolve the observer with the two binding types,
       // then it worked
@@ -444,7 +444,7 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.4")
    public void testObserverMethodReceivesInjectionsOnNonObservesParameters()
    {
-      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(BananaSpider.class);
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(BananaSpider.class);
       assert beans != null;
    }
 
@@ -458,7 +458,7 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.5")
    public void testConditionalObserver()
    {
-      bootstrap.registerBeans(RecluseSpider.class);
+      webBeansBootstrap.registerBeans(RecluseSpider.class);
 
       manager.fireEvent("New string event");
       // Should not be notified since bean is not instantiated yet

@@ -24,9 +24,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.ejb.EJBException;
 import javax.ejb.Remove;
 import javax.ejb.SessionSynchronization;
-import javax.ejb.Stateful;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.webbeans.RequestScoped;
@@ -37,9 +34,9 @@ import javax.webbeans.RequestScoped;
  * @author Nicklas Karlsson
  * 
  */
-@Stateful
+//@Stateful
 @RequestScoped
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+//@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class TransactionListener implements LocalTransactionListener, SessionSynchronization
 {
    // The registered synchronizations

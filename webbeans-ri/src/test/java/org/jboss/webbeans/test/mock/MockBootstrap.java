@@ -1,8 +1,8 @@
 package org.jboss.webbeans.test.mock;
 
-import org.jboss.webbeans.bootstrap.Bootstrap;
+import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 
-public class MockBootstrap extends Bootstrap
+public class MockBootstrap extends WebBeansBootstrap
 { 
    
    public MockBootstrap()

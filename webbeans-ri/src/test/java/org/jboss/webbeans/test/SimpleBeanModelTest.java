@@ -88,21 +88,21 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test
    public void testClassesImplementingServletInterfacesNotDiscoveredAsSimpleBeans()
    {
-      bootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(FilterBean.class, HttpSessionListenerBean.class, ServletBean.class, ServletContextListenerBean.class, ServletRequestListenerBean.class)), null, null));
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(FilterBean.class, HttpSessionListenerBean.class, ServletBean.class, ServletContextListenerBean.class, ServletRequestListenerBean.class)), null, null));
       assert manager.getBeans().size() == MockManagerImpl.BUILT_IN_BEANS;
    }
    
    @Test
    public void testClassesImplementingEnterpriseBeanInterfaceNotDiscoveredAsSimpleBean()
    {
-      bootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(EnterpriseBeanWebBean.class)), null, null));
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(EnterpriseBeanWebBean.class)), null, null));
       assert manager.getBeans().size() == MockManagerImpl.BUILT_IN_BEANS;
    }
    
    @Test
    public void testClassExtendingUiComponentNotDiscoveredAsSimpleBean()
    {
-      bootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(UIComponentBean.class)), null, null));
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(UIComponentBean.class)), null, null));
       assert manager.getBeans().size() == MockManagerImpl.BUILT_IN_BEANS;
    }
    

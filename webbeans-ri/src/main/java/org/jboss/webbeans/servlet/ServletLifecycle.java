@@ -24,7 +24,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.webbeans.bootstrap.Bootstrap;
+import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.contexts.ApplicationContext;
 import org.jboss.webbeans.contexts.RequestContext;
@@ -55,8 +55,8 @@ public class ServletLifecycle
    public static void beginApplication(ServletContext context)
    {
       servletContext = context;
-      Bootstrap bootstrap = new Bootstrap();
-      bootstrap.boot(getWebBeanDiscovery());
+      WebBeansBootstrap webBeansBootstrap = new WebBeansBootstrap();
+      webBeansBootstrap.boot(getWebBeanDiscovery());
       ApplicationContext.INSTANCE.setBeanMap(new ApplicationBeanMap(servletContext));
    }
    
@@ -132,7 +132,7 @@ public class ServletLifecycle
    {
       WebBeanDiscovery webBeanDiscovery = null;
 
-      for (Class<? extends WebBeanDiscovery> clazz : Bootstrap.getWebBeanDiscoveryClasses())
+      for (Class<? extends WebBeanDiscovery> clazz : WebBeansBootstrap.getWebBeanDiscoveryClasses())
       {
          Constructor<? extends WebBeanDiscovery> constructor = Reflections.getConstructor(clazz, ServletContext.class);
          if (constructor != null)

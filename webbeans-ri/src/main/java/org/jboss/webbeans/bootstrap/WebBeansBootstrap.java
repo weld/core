@@ -62,6 +62,7 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.JNDI;
+import org.jboss.webbeans.util.Reflections;
 
 /**
  * Bootstrapping functionality that is run at application startup and detects
@@ -69,19 +70,19 @@ import org.jboss.webbeans.util.JNDI;
  * 
  * @author Pete Muir
  */
-public class Bootstrap
+public class WebBeansBootstrap
 {
    // The property name of the discovery class
    public static String WEB_BEAN_DISCOVERY_PROPERTY_NAME = "org.jboss.webbeans.bootstrap.webBeanDiscovery";
 
-   private static LogProvider log = Logging.getLogProvider(Bootstrap.class);
+   private static LogProvider log = Logging.getLogProvider(WebBeansBootstrap.class);
 
    /**
     * Constructor
     * 
     * Starts up with the singleton Manager
     */
-   public Bootstrap()
+   public WebBeansBootstrap()
    {
       JNDI.set(ManagerImpl.JNDI_KEY, CurrentManager.rootManager());
    }
@@ -214,7 +215,7 @@ public class Bootstrap
       log.info("Starting Web Beans RI " + getVersion());
       if (webBeanDiscovery == null)
       {
-         throw new IllegalStateException("No WebBeanDiscovery provider found, you need to implement the org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery interface, and tell the RI to use it by specifying -D" + Bootstrap.WEB_BEAN_DISCOVERY_PROPERTY_NAME + "=<classname>");
+         throw new IllegalStateException("No WebBeanDiscovery provider found, you need to implement the org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery interface, and tell the RI to use it by specifying -D" + WebBeansBootstrap.WEB_BEAN_DISCOVERY_PROPERTY_NAME + "=<classname>");
       }
       registerBeans(webBeanDiscovery.discoverWebBeanClasses());
       log.info("Validing Web Bean injection points");
@@ -230,7 +231,7 @@ public class Bootstrap
     */
    public static String getVersion()
    {
-      Package pkg = Bootstrap.class.getPackage();
+      Package pkg = WebBeansBootstrap.class.getPackage();
       return pkg != null ? pkg.getImplementationVersion() : null;
    }
 
@@ -273,7 +274,7 @@ public class Bootstrap
    
    protected static boolean isTypeSimpleWebBean(Class<?> type)
    {
-      return !SERVLET_CLASS.isAssignableFrom(type) && !FILTER_CLASS.isAssignableFrom(type) && !SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(type) && !HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(type) && !SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(type) && !ENTERPRISE_BEAN_CLASS.isAssignableFrom(type) && !UICOMPONENT_CLASS.isAssignableFrom(type);
+      return !type.isAnnotation() && !Reflections.isAbstract(type) && !SERVLET_CLASS.isAssignableFrom(type) && !FILTER_CLASS.isAssignableFrom(type) && !SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(type) && !HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(type) && !SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(type) && !ENTERPRISE_BEAN_CLASS.isAssignableFrom(type) && !UICOMPONENT_CLASS.isAssignableFrom(type);
    }
 
 }
