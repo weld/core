@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.bean;
+package org.jboss.webbeans.model;
 
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem.AnnotationMap;
-import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.util.Strings;
 
 /**

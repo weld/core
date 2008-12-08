@@ -46,6 +46,7 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem.AnnotationMap;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.model.MergedStereotypes;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
