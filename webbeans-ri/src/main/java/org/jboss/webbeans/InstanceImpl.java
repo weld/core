@@ -15,41 +15,46 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.bean;
+package org.jboss.webbeans;
 
+import java.lang.annotation.Annotation;
 
-import javax.webbeans.Event;
+import javax.webbeans.Instance;
 
-import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.event.EventImpl;
-import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.util.Strings;
 
 /**
- * An event bean representation
+ * Implementation of the Event interface
  * 
  * @author David Allen
  * 
  * @param <T>
+ * @see javax.webbeans.Event
  */
-public class EventBean<T, S> extends FacadeBean<Event<T>, S, T>
+public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
 {
-
    /**
     * Constructor
     * 
-    * @param field The underlying field abstraction
+    * @param bindingTypes The binding types
     */
-   @SuppressWarnings("unchecked")
-   public EventBean(AnnotatedItem<Event<T>, S> field, ManagerImpl manager)
+   public InstanceImpl(ManagerImpl manager, Class<T> type, Annotation... bindingTypes)
    {
-      super(field, manager);
+      super(manager, type, bindingTypes);
    }
 
-   @SuppressWarnings("unchecked")
-   @Override
-   public Event<T> create()
+   public T get(Annotation... bindingTypes) 
    {
-      return new EventImpl<T>(manager, getTypeParameter(), getBindingTypesArray());
+      return manager.getInstanceByType(type, mergeBindings(bindingTypes));
+   }
+
+   @Override
+   public String toString()
+   {
+      StringBuilder buffer = new StringBuilder();
+      buffer.append("Obtainable Instance:\n");
+      buffer.append(Strings.collectionToString("  Bindings: ", bindingTypes));
+      return buffer.toString();
    }
 
 }

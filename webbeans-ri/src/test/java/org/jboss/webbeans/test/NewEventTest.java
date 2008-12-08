@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Event;
+import javax.webbeans.Observable;
 import javax.webbeans.Observer;
 import javax.webbeans.TypeLiteral;
 
@@ -74,12 +75,17 @@ public class NewEventTest extends AbstractTest
    public void testEventBeanCreation()
    {
       SimpleBean<MyTest> myTestBean = BeanFactory.createSimpleBean(MyTest.class);
-      for (AnnotatedField<Object> field : myTestBean.getEventFields())
-      {
-         EventBean eventBean = BeanFactory.createEventBean(field);
-         Event<Param> event = eventBean.create();
-         assert event != null;
+      boolean found = false;
+      for (AnnotatedField field : myTestBean.getInjectableFields()) {
+         if ( field.isAnnotationPresent(Observable.class) )
+         {
+            EventBean eventBean = BeanFactory.createEventBean(field);
+            Event<Param> event = eventBean.create();
+            assert event != null;
+            found = true;
+         }
       }
+      assert found;
    }
 
    @Test(groups = { "stub", "events" })

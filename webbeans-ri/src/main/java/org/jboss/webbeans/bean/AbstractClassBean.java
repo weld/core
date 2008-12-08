@@ -26,7 +26,6 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.Destructor;
 import javax.webbeans.Disposes;
 import javax.webbeans.Initializer;
-import javax.webbeans.Observable;
 import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 import javax.webbeans.Production;
@@ -112,17 +111,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    public Set<AnnotatedField<Object>> getProducerFields()
    {
       return getAnnotatedItem().getAnnotatedFields(Produces.class);
-   }
-
-   /**
-    * Returns @Observer annotated fields.
-    * 
-    * @return A set of observing fields. An empty set is returned if there are
-    *         none present.
-    */
-   public Set<AnnotatedField<Object>> getEventFields()
-   {
-      return getAnnotatedItem().getAnnotatedFields(Observable.class);
    }
    
    public Set<AnnotatedMethod<Object>> getObserverMethods()

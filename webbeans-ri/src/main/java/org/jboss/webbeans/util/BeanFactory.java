@@ -20,15 +20,20 @@ package org.jboss.webbeans.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import javax.webbeans.Event;
+import javax.webbeans.Instance;
+
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.EventBean;
+import org.jboss.webbeans.bean.InstanceBean;
 import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 
 /**
@@ -117,13 +122,25 @@ public class BeanFactory
    /**
     * Creates an event Web Bean
     * 
-    * @param field The observer field abstraction
+    * @param field The event injection point abstraction
     * @param declaringBean The declaring bean abstraction
     * @return An event Web Bean
     */
-   public static <T> EventBean<T> createEventBean(AnnotatedField<T> field)
+   public static <T, S> EventBean<T, S> createEventBean(AnnotatedItem<Event<T>, S> field)
    {
-      return new EventBean<T>(field, CurrentManager.rootManager());
+      return new EventBean<T, S>(field, CurrentManager.rootManager());
+   }
+   
+   /**
+    * Creates an instance Web Bean
+    * 
+    * @param field The instance injection point abstraction
+    * @param declaringBean The declaring bean abstraction
+    * @return An event Web Bean
+    */
+   public static <T, S> InstanceBean<T, S> createInstanceBean(AnnotatedItem<Instance<T>, S> field)
+   {
+      return new InstanceBean<T, S>(field, CurrentManager.rootManager());
    }
    
    public static <T> ObserverImpl<T> createObserver(AnnotatedMethod<Object> method, AbstractClassBean<?> declaringBean)

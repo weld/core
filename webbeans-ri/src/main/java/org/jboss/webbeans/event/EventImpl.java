@@ -18,16 +18,12 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Event;
-import javax.webbeans.Observable;
 import javax.webbeans.Observer;
 
+import org.jboss.webbeans.FacadeImpl;
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
 /**
@@ -38,14 +34,8 @@ import org.jboss.webbeans.util.Strings;
  * @param <T>
  * @see javax.webbeans.Event
  */
-public class EventImpl<T> implements Event<T>
+public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
 {
-   // The set of binding types
-   private final Set<? extends Annotation> bindingTypes;
-   // The event type
-   private final Class<T> eventType;
-   private final ManagerImpl manager;
-
    /**
     * Constructor
     * 
@@ -53,59 +43,7 @@ public class EventImpl<T> implements Event<T>
     */
    public EventImpl(ManagerImpl manager, Class<T> eventType, Annotation... bindingTypes)
    {
-      this.manager = manager;
-      this.bindingTypes = getBindingTypes(bindingTypes);
-      this.eventType = eventType;
-   }
-
-   /**
-    * Validates the binding types
-    * 
-    * Removes @Observable from the list
-    * 
-    * @param annotations The annotations to validate
-    * @return A set of binding type annotations (minus @Observable, if it was
-    *         present)
-    */
-   private static Set<Annotation> getBindingTypes(Annotation... annotations)
-   {
-      Set<Annotation> result = new HashSet<Annotation>();
-      for (Annotation annotation : annotations)
-      {
-         if (!Reflections.isBindingType(annotation))
-         {
-            throw new IllegalArgumentException(annotation + " is not a binding type");
-         }
-         if (!annotation.annotationType().equals(Observable.class))
-         {
-            result.add(annotation);
-         }
-      }
-      return result;
-   }
-
-   /**
-    * Validates the binding types and checks for duplicates among the annotations.
-    * 
-    * @param annotations The annotations to validate
-    * @return A set of unique binding type annotations
-    */
-   private Set<Annotation> checkBindingTypes(Annotation... annotations)
-   {
-      Set<Annotation> result = new HashSet<Annotation>();
-      for (Annotation annotation : annotations)
-      {
-         if (!Reflections.isBindingType(annotation))
-         {
-            throw new IllegalArgumentException(annotation + " is not a binding type for " + this);
-         }
-         if (result.contains(annotation) || this.bindingTypes.contains(annotation))
-         {
-            throw new DuplicateBindingTypeException(annotation + " is already present in the bindings list for " + this);
-         }
-         result.add(annotation);
-      }
-      return result;
+      super(manager, eventType, bindingTypes);
    }
 
    /**
@@ -116,9 +54,7 @@ public class EventImpl<T> implements Event<T>
     */
    public void fire(T event, Annotation... bindingTypes)
    {
-      Set<Annotation> bindingParameters = checkBindingTypes(bindingTypes);
-      bindingParameters.addAll(this.bindingTypes);
-      manager.fireEvent(event, bindingParameters.toArray(new Annotation[0]));
+      manager.fireEvent(event, mergeBindings(bindingTypes));
    }
 
    /**
@@ -129,9 +65,7 @@ public class EventImpl<T> implements Event<T>
     */
    public void observe(Observer<T> observer, Annotation... bindingTypes)
    {
-      Set<Annotation> bindingParameters = checkBindingTypes(bindingTypes);
-      bindingParameters.addAll(this.bindingTypes);
-      manager.addObserver(observer, eventType, bindingParameters.toArray(new Annotation[0]));
+      manager.addObserver(observer, type, mergeBindings(bindingTypes));
    }
 
    @Override
@@ -139,7 +73,7 @@ public class EventImpl<T> implements Event<T>
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Observable Event:\n");
-      buffer.append("  Event Type: " + eventType.getName() +"\n");
+      buffer.append("  Event Type: " + type.getName() +"\n");
       buffer.append(Strings.collectionToString("  Event Bindings: ", bindingTypes));
       return buffer.toString();
    }

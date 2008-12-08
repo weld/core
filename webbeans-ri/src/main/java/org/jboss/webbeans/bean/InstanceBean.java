@@ -18,10 +18,10 @@
 package org.jboss.webbeans.bean;
 
 
-import javax.webbeans.Event;
+import javax.webbeans.Instance;
 
+import org.jboss.webbeans.InstanceImpl;
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 
 /**
@@ -31,7 +31,7 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
  * 
  * @param <T>
  */
-public class EventBean<T, S> extends FacadeBean<Event<T>, S, T>
+public class InstanceBean<T, S> extends FacadeBean<Instance<T>, S, T>
 {
 
    /**
@@ -40,16 +40,16 @@ public class EventBean<T, S> extends FacadeBean<Event<T>, S, T>
     * @param field The underlying field abstraction
     */
    @SuppressWarnings("unchecked")
-   public EventBean(AnnotatedItem<Event<T>, S> field, ManagerImpl manager)
+   public InstanceBean(AnnotatedItem<Instance<T>, S> field, ManagerImpl manager)
    {
       super(field, manager);
    }
 
    @SuppressWarnings("unchecked")
    @Override
-   public Event<T> create()
+   public Instance<T> create()
    {
-      return new EventImpl<T>(manager, getTypeParameter(), getBindingTypesArray());
+      return new InstanceImpl<T>(manager, getTypeParameter(), getBindingTypesArray());
    }
 
 }

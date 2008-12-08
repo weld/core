@@ -26,19 +26,23 @@ import static org.jboss.webbeans.servlet.Servlet.SERVLET_CONTEXT_LISTENER_CLASS;
 import static org.jboss.webbeans.servlet.Servlet.SERVLET_REQUEST_LISTENER_CLASS;
 import static org.jboss.webbeans.util.BeanFactory.createEnterpriseBean;
 import static org.jboss.webbeans.util.BeanFactory.createEventBean;
+import static org.jboss.webbeans.util.BeanFactory.createInstanceBean;
 import static org.jboss.webbeans.util.BeanFactory.createObserver;
 import static org.jboss.webbeans.util.BeanFactory.createProducerFieldBean;
 import static org.jboss.webbeans.util.BeanFactory.createProducerMethodBean;
 import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.webbeans.DefinitionException;
+import javax.webbeans.Observable;
 import javax.webbeans.Observer;
 import javax.webbeans.Observes;
+import javax.webbeans.Obtainable;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
@@ -46,12 +50,14 @@ import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EventBean;
+import org.jboss.webbeans.bean.InstanceBean;
 import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -161,12 +167,22 @@ public class Bootstrap
          beans.add(producerFieldBean);
          log.info("Web Bean: " + producerFieldBean);
       }
-      for (AnnotatedField<Object> eventField : bean.getEventFields())
+      for (AnnotatedItem injectionPoint : bean.getInjectionPoints())
       {
-         EventBean<?> eventBean = createEventBean(eventField);
-         beans.add(eventBean);
-         CurrentManager.rootManager().getResolver().addInjectionPoints(eventBean.getInjectionPoints());
-         log.info("Web Bean: " + eventBean);
+         if ( injectionPoint.isAnnotationPresent(Observable.class) )  
+         {
+            EventBean<Object, Field> eventBean = createEventBean(injectionPoint);
+            beans.add(eventBean);
+            //CurrentManager.rootManager().getResolver().addInjectionPoints(eventBean.getInjectionPoints());
+            log.info("Web Bean: " + eventBean);
+         }
+         if ( injectionPoint.isAnnotationPresent(Obtainable.class) )  
+         {
+            InstanceBean<Object, Field> instanceBean = createInstanceBean(injectionPoint);
+            beans.add(instanceBean);
+            //CurrentManager.rootManager().getResolver().addInjectionPoints(eventBean.getInjectionPoints());
+            log.info("Web Bean: " + instanceBean);
+         }
       }
       for (AnnotatedMethod<Object> observerMethod : bean.getObserverMethods())
       {
