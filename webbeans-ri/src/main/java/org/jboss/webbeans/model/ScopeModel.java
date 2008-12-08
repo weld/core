@@ -72,12 +72,20 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
    }
 
    /**
-    * Gets a string representation of the stereotype
+    * Gets a string representation of the scope model
     * 
     * @return The string representation
     */
    @Override
    public String toString()
+   {
+      String valid = isValid() ? "Valid " : "Invalid";
+      String normal = isNormal() ? "normal " : "non-normal ";
+      String passivating = isPassivating() ? "passivating " : "pon-passivating ";
+      return valid + normal + passivating + " scope model for " + getType();
+   }
+
+   public String toDetailedString()
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("ScopeModel:\n");

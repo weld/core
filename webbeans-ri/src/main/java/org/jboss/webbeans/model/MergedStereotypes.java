@@ -157,6 +157,18 @@ public class MergedStereotypes<T, E>
    @Override
    public String toString()
    {
+     return "Merged stereotype model with possible deployment types " + 
+        possibleDeploymentTypes + ", required types " + requiredTypes +
+        ", possible scopes " + possibleScopeTypes + " and supported scopes " + supportedScopes; 
+   }
+   
+   /**
+    * Gets a string representation of the merged stereotypes
+    * 
+    * @return The string representation
+    */
+   public String toDetailedString()
+   {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Merged stereotypes:\n");
       buffer.append("Bean name defaulted: " + beanNameDefaulted + "\n");

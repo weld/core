@@ -243,6 +243,11 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    @Override
    public String toString()
    {
+     return "Stereotype model with required types " + requiredTypes + " and supported scopes " + supportedScopes; 
+   }   
+   
+   public String toDetailedString()
+   {
       StringBuilder buffer = new StringBuilder();
       buffer.append("StereotypeModel:\n");
       buffer.append(super.toString());

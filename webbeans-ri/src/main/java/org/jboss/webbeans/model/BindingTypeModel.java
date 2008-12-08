@@ -147,12 +147,17 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
    }
 
    /**
-    * Gets a string representation of the stereotype
+    * Gets a string representation of the binding type model
     * 
     * @return The string representation
     */
    @Override
    public String toString()
+   {
+     return (isValid() ? "Valid" : "Invalid") + " binding type model for " + getType() + " with non-binding types " + getNonBindingTypes();
+   }
+
+   public String toDetailedString()
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("BindingTypeModel:\n");

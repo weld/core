@@ -113,12 +113,17 @@ public abstract class AnnotationModel<T extends Annotation>
    }
 
    /**
-    * Gets a string representation of the annotation
+    * Gets a string representation of the annotation model
     * 
     * @return The string representation
     */
    @Override
    public String toString()
+   {
+     return (isValid() ? "Valid" : "Invalid") + " annotation model for " + getType();
+   }
+   
+   public String toDetailedString()
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("AnnotationModel:\n");
@@ -126,4 +131,5 @@ public abstract class AnnotationModel<T extends Annotation>
       buffer.append("Valid: " + isValid());
       return buffer.toString();
    }
+   
 }
