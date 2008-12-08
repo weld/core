@@ -17,6 +17,10 @@ public class Pomeranian
    {
    }
 
+   public void observeSimpleString(@Observes String someString)
+   {
+   }
+
    public static void staticallyObserveInitialized(@Observes @Initialized Manager manager)
    {
    }

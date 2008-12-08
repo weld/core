@@ -18,11 +18,10 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+import javax.webbeans.Current;
 import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Observer;
 
@@ -61,31 +60,33 @@ public class EventObserver<T>
    {
       this.observer = observer;
       this.eventType = eventType;
-      this.eventBindings = Arrays.asList(eventBindings);
+      this.eventBindings = new ArrayList<Annotation>();
       checkEventBindings(eventBindings);
    }
 
    /**
     * Checks that each event binding specified on the observer is indeed a
     * binding type (annotated with @BindingType) and that there are no duplicate
-    * bindings specified.
-    * 
-    * @param observerEventBindings The list of event bindings for the observer
+    * bindings specified.  If the @Current binding type is found, it is removed
+    * since this is only a default supplied by the container but no applicable
+    * for the actual event objects which get fired.
     */
-   private void checkEventBindings(Annotation[] observerEventBindings)
+   private void checkEventBindings(Annotation[] bindingAnnotations)
    {
-      Set<Annotation> checkedBindings = new HashSet<Annotation>();
-      for (Annotation annotation : observerEventBindings)
+      for (Annotation annotation : bindingAnnotations)
       {
          if (!Reflections.isBindingType(annotation))
          {
             throw new IllegalArgumentException(annotation + " is not a binding type for " + this);
          }
-         if (checkedBindings.contains(annotation))
+         if (eventBindings.contains(annotation))
          {
             throw new DuplicateBindingTypeException(annotation + " is already present in the bindings list for " + this);
          }
-         checkedBindings.add(annotation);
+         if (!annotation.annotationType().equals(Current.class))
+         {
+            eventBindings.add(annotation);
+         }
       }
    }
 
@@ -162,6 +163,7 @@ public class EventObserver<T>
       return result;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public boolean equals(Object other)
    {

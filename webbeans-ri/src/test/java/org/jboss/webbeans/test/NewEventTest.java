@@ -25,6 +25,7 @@ import org.jboss.webbeans.test.ejb.model.invalid.CairnsTerrier;
 import org.jboss.webbeans.test.ejb.model.invalid.FoxTerrier;
 import org.jboss.webbeans.test.ejb.model.invalid.TibetanTerrier;
 import org.jboss.webbeans.test.ejb.model.invalid.YorkshireTerrier;
+import org.jboss.webbeans.test.ejb.model.valid.BullTerrier;
 import org.jboss.webbeans.test.ejb.model.valid.Pomeranian;
 import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.jboss.webbeans.util.BeanFactory;
@@ -76,8 +77,9 @@ public class NewEventTest extends AbstractTest
    {
       SimpleBean<MyTest> myTestBean = BeanFactory.createSimpleBean(MyTest.class);
       boolean found = false;
-      for (AnnotatedField field : myTestBean.getInjectableFields()) {
-         if ( field.isAnnotationPresent(Observable.class) )
+      for (AnnotatedField field : myTestBean.getInjectableFields())
+      {
+         if (field.isAnnotationPresent(Observable.class))
          {
             EventBean eventBean = BeanFactory.createEventBean(field);
             Event<Param> event = eventBean.create();
@@ -439,6 +441,20 @@ public class NewEventTest extends AbstractTest
    }
 
    @Test(groups = { "events" })
+   @SpecAssertion(section = "8.5.1")
+   public void testObserverMethodWithoutBindingTypesObservesEventsWithoutBindingTypes()
+   {
+      // This observer has no binding types specified
+      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(Pomeranian.class);
+      assert beans.size() == 1;
+
+      // Resolve registered observers with an event containing no binding types
+      Set<Observer<String>> resolvedObservers = manager.resolveObservers("A new event");
+      assert !resolvedObservers.isEmpty();
+      assert resolvedObservers.size() == 1;
+   }
+
+   @Test(groups = { "events" })
    @SpecAssertion(section = "8.5.2")
    public void testObserverMethodAnnotatedProducesFails()
    {
@@ -506,11 +522,18 @@ public class NewEventTest extends AbstractTest
       assert definitionException;
    }
 
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.5.1")
-   public void testObserverMethodWithoutBindingTypesObservesEventsWithoutBindingTypes()
+   @Test(groups = { "events" })
+   @SpecAssertion(section = "8.5.2")
+   public void testObserverMethodMayHaveMultipleBindingTypes()
    {
-      assert false;
+      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(BullTerrier.class);
+      assert beans != null;
+      // If we can resolve the observer with the two binding types,
+      // then it worked
+      Set<Observer<String>> resolvedObservers = manager.resolveObservers("An event object", new RoleBinding("Admin"), new TameAnnotationLiteral());
+      assert !resolvedObservers.isEmpty();
+      assert resolvedObservers.size() == 1;
+
    }
 
    @Test(groups = { "stub", "events" })
