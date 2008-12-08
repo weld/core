@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.jlr.AnnotatedFieldImpl;
+import org.jboss.webbeans.util.Names;
 
 /**
  * Represents a producer method bean
@@ -96,6 +97,23 @@ public class ProducerFieldBean<T> extends ProducerBean<T, Field>
    
    @Override
    public String toString()
+   {
+      StringBuilder buffer = new StringBuilder();
+      buffer.append("Annotated " + Names.scopeTypeToString(getScopeType()));
+      if (getName() == null)
+      {
+         buffer.append("unnamed producer field bean");
+      }
+      else
+      {
+         buffer.append("simple producer field bean '" + getName() + "'");
+      }
+      buffer.append(" [" + getType().getName() + "]\n");
+      buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
+      return buffer.toString();
+   }   
+
+   public String toDetailedString()
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("ProducerFieldBean:\n");

@@ -106,16 +106,23 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
    }
 
    /**
-    * Gets a string representation of the annotated type
+    * Gets a string representation of the type
     * 
     * @return A string representation
     */
+   @Override
    public String toString()
    {
       if (toString != null)
       {
          return toString;
       }
+      toString = "Abstract annotated type " + getName();
+      return toString;
+   }
+
+   public String toDetailedString()
+   {
       StringBuilder buffer = new StringBuilder();
       buffer.append("AbstractAnnotatedType:\n");
       buffer.append(super.toString() + "\n");
@@ -123,8 +130,7 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
       buffer.append("Name: " + getName() + "\n");
       buffer.append("Final: " + isFinal() + "\n");
       buffer.append("Static: " + isStatic() + "\n");
-      toString = buffer.toString();
-      return toString;
+      return buffer.toString();
    }
 
 }

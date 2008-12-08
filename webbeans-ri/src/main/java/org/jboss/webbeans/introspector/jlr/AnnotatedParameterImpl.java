@@ -24,8 +24,8 @@ import java.util.Arrays;
 import javax.webbeans.BindingType;
 import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Strings;
 
 /**
@@ -152,12 +152,19 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
     * 
     * @return A string representation
     */
+   @Override
    public String toString()
    {
       if (toString != null)
       {
          return toString;
       }
+      toString = "Annotated parameter " + Names.type2String(getDelegate().getClass());
+      return toString;
+   }
+
+   public String toDetailedString()
+   {
       StringBuilder buffer = new StringBuilder();
       buffer.append("AnnotatedParameterImpl:\n");
       buffer.append(super.toString() + "\n");
@@ -165,8 +172,7 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
       buffer.append("Final: " + _final + "\n");
       buffer.append("Static: " + _static + "\n");
       buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));
-      toString = buffer.toString();
-      return toString;
+      return buffer.toString();
    }
 
 }

@@ -21,6 +21,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
+import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Strings;
 
 /**
@@ -147,19 +148,25 @@ public class AnnotatedItemImpl<T, S> extends AbstractAnnotatedItem<T, S>
     * 
     * @return A string representation
     */
+   @Override
    public String toString()
    {
       if (toString != null)
       {
          return toString;
       }
+      toString = "Annotated item " + Names.type2String(getDelegate().getClass());
+      return toString;
+   }
+   
+   public String toDetailedString()
+   {
       StringBuilder buffer = new StringBuilder();
       buffer.append("AnnotatedItemImpl:\n");
       buffer.append(super.toString() + "\n");
       buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));
       buffer.append(Strings.collectionToString("Actual annotations: ", Arrays.asList(getActualAnnotations())));
-      toString = buffer.toString();
-      return toString;
+      return buffer.toString();
    }
 
 }

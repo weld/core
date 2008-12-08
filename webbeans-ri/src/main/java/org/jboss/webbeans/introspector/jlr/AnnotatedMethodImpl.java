@@ -32,6 +32,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
+import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
@@ -293,12 +294,19 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     * 
     * @return A string representation
     */
+   @Override
    public String toString()
    {
       if (toString != null)
       {
          return toString;
       }
+      toString = "Annotated method " + Names.method2String(method);
+      return toString;
+   }
+
+   public String toDetailedString()
+   {
       StringBuilder buffer = new StringBuilder();
       buffer.append("AnnotatedMethodImpl:\n");
       buffer.append(super.toString() + "\n");
@@ -310,8 +318,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       buffer.append(method.toString());
       buffer.append("Property name: " + propertyName + "\n");
       buffer.append(Strings.collectionToString("Parameters: ", getParameters()));
-      toString = buffer.toString();
-      return toString;
+      return buffer.toString();
    }
 
 }

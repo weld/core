@@ -156,20 +156,26 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
     * 
     * @return A string representation
     */
+   @Override
    public String toString()
    {
       if (toString != null)
       {
          return toString;
       }
+      toString = "Abstract annotated member " + getName();
+      return toString;
+   }   
+
+   public String toDetailedString()
+   {
       StringBuilder buffer = new StringBuilder();
       buffer.append("AbstractAnnotatedMember:\n");
       buffer.append(super.toString() + "\n");
       buffer.append("Final: " + isFinal() + "\n");
       buffer.append("Static: " + isStatic() + "\n");
       buffer.append("Name: " + getName() + "\n");
-      toString = buffer.toString();
-      return toString;
+      return buffer.toString();
    }
 
 }

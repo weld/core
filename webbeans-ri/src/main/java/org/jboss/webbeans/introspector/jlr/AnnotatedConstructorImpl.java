@@ -33,6 +33,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
+import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Strings;
 
 /**
@@ -270,12 +271,19 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     * 
     * @return A string representation
     */
+   @Override
    public String toString()
    {
       if (toString != null)
       {
          return toString;
       }
+      toString = "Annotated method " + Names.constructor2String(constructor);
+      return toString;
+   }   
+
+   public String toDetailedString()
+   {
       StringBuilder buffer = new StringBuilder();
       buffer.append("AnnotatedConstructorImpl:\n");
       buffer.append(super.toString() + "\n");
@@ -286,8 +294,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
       buffer.append(constructor.toString() + "\n");
       buffer.append(Strings.collectionToString("Parameters: ", getParameters()));
       buffer.append(annotatedParameters.toString() + "\n");
-      toString = buffer.toString();
-      return toString;
+      return buffer.toString();
    }
 
 }

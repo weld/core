@@ -35,6 +35,7 @@ import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Strings;
 
 import com.google.common.collect.ForwardingMap;
@@ -504,16 +505,23 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    }
 
    /**
-    * Gets a string representation of the constructor
+    * Gets a string representation of the class
     * 
     * @return A string representation
     */
+   @Override
    public String toString()
    {
       if (toString != null)
       {
          return toString;
       }
+      toString = "Annotated class " + Names.class2String(getDelegate());
+      return toString;
+   }
+   
+   public String toDetailedString()
+   {
       StringBuilder buffer = new StringBuilder();
       buffer.append("AnnotatedConstructorImpl:\n");
       buffer.append(super.toString() + "\n");
@@ -527,8 +535,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       buffer.append(annotatedMethods == null ? "" : (annotatedMethods.toString() + "\n"));
       buffer.append(constructorsByArgumentMap == null ? "" : (constructorsByArgumentMap.toString() + "\n"));
       buffer.append(metaAnnotatedFields == null ? "" : (metaAnnotatedFields.toString() + "\n"));
-      toString = buffer.toString();
-      return toString;
+      return buffer.toString();
    }
 
 }

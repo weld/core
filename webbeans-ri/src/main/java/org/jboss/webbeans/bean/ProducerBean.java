@@ -9,6 +9,7 @@ import javax.webbeans.Dependent;
 import javax.webbeans.IllegalProductException;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.util.Names;
 
 public abstract class ProducerBean<T, S> extends AbstractBean<T, S> {
 
@@ -107,5 +108,23 @@ public abstract class ProducerBean<T, S> extends AbstractBean<T, S> {
       return getAnnotatedItem().isStatic() ? 
               null : manager.getInstance(getDeclaringBean());
    }
+   
+   @Override
+   public String toString()
+   {
+      StringBuilder buffer = new StringBuilder();
+      buffer.append("Annotated " + Names.scopeTypeToString(getScopeType()));
+      if (getName() == null)
+      {
+         buffer.append("unnamed producer bean");
+      }
+      else
+      {
+         buffer.append("simple producer bean '" + getName() + "'");
+      }
+      buffer.append(" [" + getType().getName() + "]\n");
+      buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
+      return buffer.toString();
+   }     
 
 }

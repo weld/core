@@ -27,6 +27,7 @@ import javax.webbeans.manager.Manager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedType;
+import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
@@ -127,6 +128,7 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
       Reflections.setAndWrap(getDelegate(), instance, getValue(manager));
    }
    
+   @SuppressWarnings("unchecked")
    public T get(Object instance) {
       return (T) Reflections.getAndWrap(getDelegate(), instance);
    }
@@ -160,12 +162,19 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
     * 
     * @return A string representation
     */
+   @Override
    public String toString()
    {
       if (toString != null)
       {
          return toString;
       }
+      toString = "Annotated method " + Names.field2String(field);
+      return toString;
+   }
+
+   public String toDetailedString()
+   {
       StringBuilder buffer = new StringBuilder();
       buffer.append("AnnotatedFieldImpl:\n");
       buffer.append(super.toString() + "\n");
@@ -173,8 +182,7 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
       buffer.append("Declaring class:\n");
       buffer.append(declaringClass.getName() + "[ " + declaringClass.getType() + "]" + "\n");
       buffer.append("Field: " + field + "\n");
-      toString = buffer.toString();
-      return toString;
+      return buffer.toString();
    }
 
 }

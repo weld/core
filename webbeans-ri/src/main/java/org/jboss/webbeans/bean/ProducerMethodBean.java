@@ -30,6 +30,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
+import org.jboss.webbeans.util.Names;
 
 /**
  * Represents a producer method bean
@@ -181,8 +182,26 @@ public class ProducerMethodBean<T> extends ProducerBean<T, Method>
       return removeMethod;
    }
 
+
    @Override
    public String toString()
+   {
+      StringBuilder buffer = new StringBuilder();
+      buffer.append("Annotated " + Names.scopeTypeToString(getScopeType()));
+      if (getName() == null)
+      {
+         buffer.append("unnamed producer method bean");
+      }
+      else
+      {
+         buffer.append("simple producer method bean '" + getName() + "'");
+      }
+      buffer.append(" [" + getType().getName() + "]\n");
+      buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
+      return buffer.toString();
+   }    
+
+   public String toDetailedString()
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("ProducerMethodBean:\n");
