@@ -14,7 +14,6 @@ import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.Test;
 
 @SpecVersion("20081206")
-@SuppressWarnings("unused")
 public class EnterpriseBeanSpecializationTest extends AbstractTest
 {
    /**
