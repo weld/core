@@ -45,13 +45,13 @@ public abstract class FacadeImpl<T>
     * Constructor
     * 
     * @param manager The Web Beans manager
-    * @param eventType The event type
+    * @param type The event type
     * @param bindingTypes The binding types
     */
-   protected FacadeImpl(ManagerImpl manager, Class<T> eventType, Annotation... bindingTypes)
+   protected FacadeImpl(ManagerImpl manager, Class<T> type, Annotation... bindingTypes)
    {
       this.manager = manager;
-      this.type = eventType;
+      this.type = type;
       this.bindingTypes = mergeBindingTypes(new HashSet<Annotation>(), bindingTypes);
    }
 
