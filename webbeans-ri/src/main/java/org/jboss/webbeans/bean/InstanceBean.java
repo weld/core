@@ -25,11 +25,12 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 
 /**
- * An event bean representation
+ * Helper bean for accessing instances
  * 
- * @author David Allen
- * 
+ * @author Gavin King
+ *
  * @param <T>
+ * @param <S>
  */
 public class InstanceBean<T, S> extends FacadeBean<Instance<T>, S, T>
 {
@@ -37,15 +38,19 @@ public class InstanceBean<T, S> extends FacadeBean<Instance<T>, S, T>
    /**
     * Constructor
     * 
-    * @param field The underlying field abstraction
+    * @param field The underlying fields
+    * @param manager The Web Beans manager
     */
-   @SuppressWarnings("unchecked")
    public InstanceBean(AnnotatedItem<Instance<T>, S> field, ManagerImpl manager)
    {
       super(field, manager);
    }
 
-   @SuppressWarnings("unchecked")
+   /**
+    * Creates the implementing bean
+    * 
+    * @return The implementation
+    */
    @Override
    public Instance<T> create()
    {

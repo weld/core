@@ -23,6 +23,7 @@ import javax.webbeans.Event;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.util.Names;
 
 /**
  * An event bean representation
@@ -39,17 +40,38 @@ public class EventBean<T, S> extends FacadeBean<Event<T>, S, T>
     * 
     * @param field The underlying field abstraction
     */
-   @SuppressWarnings("unchecked")
    public EventBean(AnnotatedItem<Event<T>, S> field, ManagerImpl manager)
    {
       super(field, manager);
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public Event<T> create()
    {
       return new EventImpl<T>(manager, getTypeParameter(), getBindingTypesArray());
    }
+   
+   /**
+    * Returns a string representation
+    * 
+    * @return The string representation
+    */
+   @Override
+   public String toString()
+   {
+      StringBuilder buffer = new StringBuilder();
+      buffer.append("Annotated " + Names.scopeTypeToString(getScopeType()));
+      if (getName() == null)
+      {
+         buffer.append(" unnamed event bean");
+      }
+      else
+      {
+         buffer.append(" enterprise bean '" + getName() + "'");
+      }
+      buffer.append(" [" + getType().getName() + "]\n");
+      buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
+      return buffer.toString();
+   } 
 
 }

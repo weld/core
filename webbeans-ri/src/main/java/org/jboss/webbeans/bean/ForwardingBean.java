@@ -93,12 +93,6 @@ public abstract class ForwardingBean<T> extends Bean<T>
    }
    
    @Override
-   public String toString()
-   {
-      return delegate().toString();
-   }
-   
-   @Override
    public int hashCode()
    {
       return delegate().hashCode();
@@ -111,5 +105,16 @@ public abstract class ForwardingBean<T> extends Bean<T>
    }
    
    protected abstract Bean<T> delegate();
+
+   /**
+    * Returns a string representation
+    * 
+    * @return The string representation
+    */
+   @Override
+   public String toString()
+   {
+      return "ForwardingBean " + getName();
+   }   
    
 }

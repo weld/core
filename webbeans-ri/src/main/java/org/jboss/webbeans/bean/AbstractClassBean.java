@@ -112,7 +112,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       return getAnnotatedItem().getAnnotatedFields(Produces.class);
    }
-   
+
    public Set<AnnotatedMethod<Object>> getObserverMethods()
    {
       return getAnnotatedItem().getMethodsWithAnnotatedParameters(Observes.class);
@@ -128,18 +128,18 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       injectableFields = new HashSet<AnnotatedField<Object>>();
       for (AnnotatedField<Object> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
       {
-         if ( !annotatedField.isAnnotationPresent(Produces.class) )
+         if (!annotatedField.isAnnotationPresent(Produces.class))
          {
-         if (annotatedField.isStatic())
-         {
-            throw new DefinitionException("Don't place binding annotations on static fields " + annotatedField);
-         }
-         if (annotatedField.isFinal())
-         {
-            throw new DefinitionException("Don't place binding annotations on final fields " + annotatedField);
-         }
-         injectableFields.add(annotatedField);
-         super.injectionPoints.add(annotatedField);
+            if (annotatedField.isStatic())
+            {
+               throw new DefinitionException("Don't place binding annotations on static fields " + annotatedField);
+            }
+            if (annotatedField.isFinal())
+            {
+               throw new DefinitionException("Don't place binding annotations on final fields " + annotatedField);
+            }
+            injectableFields.add(annotatedField);
+            super.injectionPoints.add(annotatedField);
          }
       }
    }
@@ -265,8 +265,18 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       return initializerMethods;
    }
 
+   /**
+    * Returns a string representation
+    * 
+    * @return The string representation
+    */
    @Override
    public String toString()
+   {
+      return "AbstractClassBean " + getName();
+   }
+
+   public String toDetailedString()
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("AbstractClassBean:\n");
@@ -277,7 +287,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       buffer.append(Strings.collectionToString("Producer methods: ", getProducerMethods()));
       return buffer.toString();
    }
-   
+
    @Override
    protected Class<? extends Annotation> getDefaultDeploymentType()
    {

@@ -59,6 +59,9 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
       return buffer.toString();
    }
 
+   /**
+    * @see org.jboss.webbeans.FacadeImpl#getFilteredAnnotations
+    */
    @Override
    protected Set<Class<? extends Annotation>> getFilteredAnnotations()
    {

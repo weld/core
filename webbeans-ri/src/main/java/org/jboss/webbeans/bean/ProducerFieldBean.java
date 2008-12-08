@@ -25,7 +25,7 @@ import org.jboss.webbeans.introspector.jlr.AnnotatedFieldImpl;
 import org.jboss.webbeans.util.Names;
 
 /**
- * Represents a producer method bean
+ * Represents a producer field bean
  * 
  * @author Pete Muir
  *
@@ -39,7 +39,7 @@ public class ProducerFieldBean<T> extends ProducerBean<T, Field>
    /**
     * Constructor
     * 
-    * @param method The producer method
+    * @param method The producer field
     * @param declaringBean The declaring bean instance
     */
    public ProducerFieldBean(Field field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
@@ -50,7 +50,7 @@ public class ProducerFieldBean<T> extends ProducerBean<T, Field>
    /**
     * Constructor
     * 
-    * @param method The producer method abstraction
+    * @param method The producer field abstraction
     * @param declaringBean The declaring bean
     */
    public ProducerFieldBean(AnnotatedField<T> field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
@@ -74,7 +74,7 @@ public class ProducerFieldBean<T> extends ProducerBean<T, Field>
    }
 
    /**
-    * Gets the annotated item representing the method
+    * Gets the annotated item representing the field
     * 
     * @return The annotated item
     */

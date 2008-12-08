@@ -59,7 +59,7 @@ import org.jboss.webbeans.util.Reflections;
  */
 public class ObserverImpl<T> implements Observer<T>
 {
-   private Bean<?> observerBean;
+   private Bean<?> eventBean;
    private final AnnotatedMethod<Object> observerMethod;
    private TransactionObservationPhase transactionObservationPhase;
    private boolean conditional;
@@ -81,7 +81,7 @@ public class ObserverImpl<T> implements Observer<T>
    public ObserverImpl(final AnnotatedMethod<Object> observer, final Bean<?> observerBean, final ManagerImpl manager)
    {
       this.manager = manager;
-      this.observerBean = observerBean;
+      this.eventBean = observerBean;
       this.observerMethod = observer;
       validateObserverMethod();
       initTransactionObservationPhase();
@@ -187,7 +187,7 @@ public class ObserverImpl<T> implements Observer<T>
    protected Object getInstance(boolean conditional)
    {
       // Return the most specialized instance of the component
-      return manager.getMostSpecializedInstance(observerBean, conditional);
+      return manager.getMostSpecializedInstance(eventBean, conditional);
    }
 
    /**
@@ -226,7 +226,7 @@ public class ObserverImpl<T> implements Observer<T>
    {
       StringBuilder builder = new StringBuilder();
       builder.append("Observer Implentation: \n");
-      builder.append("  Observer (Declaring) bean: " + observerBean);
+      builder.append("  Observer (Declaring) bean: " + eventBean);
       builder.append("  Observer method: " + observerMethod);
       return builder.toString();
    }

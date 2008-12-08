@@ -101,7 +101,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    protected Set<AnnotatedItem<?, ?>> injectionPoints;
 
    private boolean primitive;
-   
+
    protected ManagerImpl manager;
 
    // Cached values
@@ -169,7 +169,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    /**
     * Initializes the deployment types
     */
-   @SuppressWarnings("null")
    protected void initDeploymentType()
    {
       Set<Annotation> deploymentTypes = getAnnotatedItem().getMetaAnnotations(DeploymentType.class);
@@ -196,7 +195,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       log.trace("Using default @Production deployment type");
       return;
    }
-   
+
    protected abstract Class<? extends Annotation> getDefaultDeploymentType();
 
    /**
@@ -265,7 +264,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    /**
     * Initializes the scope type
     */
-   @SuppressWarnings("null")
    protected void initScopeType()
    {
       if (getAnnotatedItem().getMetaAnnotations(ScopeType.class).size() > 1)
@@ -539,8 +537,18 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       return false;
    }
 
+   /**
+    * Returns a string representation
+    * 
+    * @return The string representation
+    */
    @Override
    public String toString()
+   {
+      return "AbstractBean " + getName();
+   }
+
+   public String toDetailedString()
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("AbstractBean:\n");
