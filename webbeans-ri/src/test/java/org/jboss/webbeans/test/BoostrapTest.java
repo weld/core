@@ -26,7 +26,7 @@ import org.jboss.webbeans.test.beans.Tarantula;
 import org.jboss.webbeans.test.beans.TarantulaProducer;
 import org.jboss.webbeans.test.beans.Tiger;
 import org.jboss.webbeans.test.beans.Tuna;
-import org.jboss.webbeans.test.ejb.model.valid.Hound;
+import org.jboss.webbeans.test.ejb.valid.Hound;
 import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
 import org.testng.annotations.Test;
