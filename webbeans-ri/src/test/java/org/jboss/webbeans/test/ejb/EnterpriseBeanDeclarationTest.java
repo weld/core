@@ -24,6 +24,17 @@ import org.jboss.webbeans.test.ejb.valid.Pitbull;
 import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.Test;
 
+/**
+ * Sections
+ * 
+ * 3.3. Enterprise Web Beans
+ * 3.3.1. Which EJBs are enterprise Web Beans?
+ * 3.3.2. API types of an enterprise Web Bean
+ * 3.3.3. Declaring an enterprise Web Bean using annotations
+ * 3.3.4. Declaring an enterprise Web Bean using XML
+ * 
+ * @author Nicklas Karlsson
+ */
 @SpecVersion("20081206")
 @SuppressWarnings("unused")
 public class EnterpriseBeanDeclarationTest extends AbstractTest
@@ -354,7 +365,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
       EnterpriseBean<Pitbull> pitbull = BeanFactory.createEnterpriseBean(Pitbull.class);
       assert pitbull.getName().equals("pitbull");
    }
-   
+
    /**
     * An enterprise bean proxy implements all local interfaces of the EJB.
     */
@@ -363,6 +374,6 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    public void testEnterpriseBeanProxyImplementsAllLocalInterfaces()
    {
       assert false;
-   }   
+   }
 
 }

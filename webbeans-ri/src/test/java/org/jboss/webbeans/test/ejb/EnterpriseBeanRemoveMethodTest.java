@@ -24,6 +24,16 @@ import org.jboss.webbeans.test.ejb.valid.WelshCorgie;
 import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.Test;
 
+/**
+ * Sections
+ * 
+ * 3.3.5. Web Bean remove methods
+ * 3.3.5.1. Declaring a Web Bean remove method using annotations.
+ * 3.3.5.2. Declaring a Web Bean remove method using XML
+ * 3.3.5.3. Remove method parameters
+ *  
+ * @author Nicklas Karlsson
+ */
 @SpecVersion("20081206")
 @SuppressWarnings("unused")
 public class EnterpriseBeanRemoveMethodTest extends AbstractTest

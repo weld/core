@@ -13,6 +13,13 @@ import org.jboss.webbeans.test.ejb.valid.HoundOfBaskerville;
 import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.Test;
 
+/**
+ * Sections
+ * 
+ * 3.3.6. Specializing an enterprise Web Bean
+ * 
+ * @author Nicklas Karlsson
+ */
 @SpecVersion("20081206")
 public class EnterpriseBeanSpecializationTest extends AbstractTest
 {
