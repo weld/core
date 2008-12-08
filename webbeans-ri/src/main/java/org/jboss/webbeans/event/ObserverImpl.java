@@ -23,6 +23,7 @@ import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.
 import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.BEFORE_COMPLETION;
 import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.NONE;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +34,11 @@ import javax.webbeans.BeforeTransactionCompletion;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Destructor;
 import javax.webbeans.Disposes;
+import javax.webbeans.ExecutionException;
 import javax.webbeans.IfExists;
 import javax.webbeans.Initializer;
 import javax.webbeans.Observer;
+import javax.webbeans.ObserverException;
 import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 import javax.webbeans.manager.Bean;
@@ -171,9 +174,26 @@ public class ObserverImpl<T> implements Observer<T>
       if (instance != null)
       {
          // TODO replace event parameter
-         observerMethod.invokeWithSpecialValue(manager, instance, Observes.class, event);
+         try
+         {
+            observerMethod.invokeWithSpecialValue(manager, instance, Observes.class, event);
+         }
+         catch (ExecutionException e)
+         {
+            if ((e.getCause() != null) && (e.getCause() instanceof InvocationTargetException))
+            {
+               InvocationTargetException wrappedException = (InvocationTargetException) e.getCause();
+               if ((wrappedException.getCause() != null) && (RuntimeException.class.isAssignableFrom(wrappedException.getCause().getClass())))
+               {
+                  throw (RuntimeException) wrappedException.getCause();
+               }
+               else
+               {
+                  throw new ObserverException(wrappedException.getCause().getMessage(), wrappedException.getCause());
+               }
+            }
+         }
       }
-
    }
 
    /**

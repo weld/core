@@ -77,6 +77,8 @@ public class DefaultEnterpriseBeanLookup implements EnterpriseBeanLookup
     */
    public Object lookup(String ejbName)
    {
+      if (ejbName == null)
+         throw new NullPointerException("No EJB name supplied for lookup");
       return lookup(ejbMetaDataMap.get(ejbName));
    }
 

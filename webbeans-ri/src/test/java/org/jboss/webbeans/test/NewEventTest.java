@@ -8,6 +8,7 @@ import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Event;
 import javax.webbeans.Observable;
 import javax.webbeans.Observer;
+import javax.webbeans.ObserverException;
 import javax.webbeans.TypeLiteral;
 
 import org.jboss.webbeans.bean.AbstractBean;
@@ -17,6 +18,7 @@ import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.test.beans.BananaSpider;
 import org.jboss.webbeans.test.beans.RecluseSpider;
+import org.jboss.webbeans.test.beans.TeaCupPomeranian;
 import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.RoleBinding;
 import org.jboss.webbeans.test.bindings.TameAnnotationLiteral;
@@ -434,20 +436,20 @@ public class NewEventTest extends AbstractTest
 
    }
 
-   // @Test(groups = { "stub", "events" })
-   // @SpecAssertion(section = "8.5.3")
-   // public void testXMLDefinedObserverMethodIgnoresBindingAnnotations()
-   // {
-   // assert false;
-   // }
-   //
-   // @Test(groups = { "stub", "events" })
-   // @SpecAssertion(section = "8.5.3")
-   // public void testXMLDefinedObserverNotFindingImplementationMethodFails()
-   // {
-   // assert false;
-   // }
-   //
+   @Test(groups = { "stub", "events" })
+   @SpecAssertion(section = "8.5.3")
+   public void testXMLDefinedObserverMethodIgnoresBindingAnnotations()
+   {
+      assert false;
+   }
+
+   @Test(groups = { "stub", "events" })
+   @SpecAssertion(section = "8.5.3")
+   public void testXMLDefinedObserverNotFindingImplementationMethodFails()
+   {
+      assert false;
+   }
+   
    @Test(groups = { "events" })
    @SpecAssertion(section = "8.5.4")
    public void testObserverMethodReceivesInjectionsOnNonObservesParameters()
@@ -515,18 +517,29 @@ public class NewEventTest extends AbstractTest
       assert false;
    }
 
-   @Test(groups = { "stub", "events" })
+   @Test(groups = { "events" })
    @SpecAssertion(section = "8.5.7")
    public void testObserverMethodRegistration()
    {
-      assert false;
+      // For now, this test is checking the registration of methods
+      testObserverMethodOnEnterpriseBeanIsBusinessMethodOrStatic();
    }
 
-   @Test(groups = { "stub", "events" })
+   /**
+    * 
+    */
+   @Test(groups = { "broken", "events" })
    @SpecAssertion(section = "8.5.7")
    public void testEnterpriseBeanObserverMethodCalledWithCallerContext()
    {
-      assert false;
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(Pomeranian.class);
+      assert beans.size() == 1;
+      String event = "A new event";
+      Set<Observer<String>> observers = manager.resolveObservers(event);
+      assert observers.size() == 1;
+      
+      manager.fireEvent(event);
+      assert Thread.currentThread().equals(Pomeranian.notificationThread);
    }
 
    @Test(groups = { "stub", "events" })
@@ -536,18 +549,22 @@ public class NewEventTest extends AbstractTest
       assert false;
    }
 
-   @Test(groups = { "stub", "events" })
+   @Test(groups = { "events" }, expectedExceptions={ TeaCupPomeranian.OversizedException.class })
    @SpecAssertion(section = "8.5.7")
    public void testNonTransactionalObserverThrownNonCheckedExceptionIsRethrown()
    {
-      assert false;
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(TeaCupPomeranian.class);
+      assert beans.size() == 1;
+      manager.fireEvent("Another event");
    }
 
-   @Test(groups = { "stub", "events" })
+   @Test(groups = { "events" }, expectedExceptions={ ObserverException.class })
    @SpecAssertion(section = "8.5.7")
    public void testNonTransactionalObserverThrownCheckedExceptionIsWrappedAndRethrown()
    {
-      assert false;
+      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(TeaCupPomeranian.class);
+      assert beans.size() == 1;
+      manager.fireEvent(new Integer(1));
    }
 
    @Test(groups = { "stub", "events" })
