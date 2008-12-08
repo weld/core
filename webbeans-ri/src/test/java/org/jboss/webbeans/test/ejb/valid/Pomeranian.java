@@ -17,6 +17,10 @@ public class Pomeranian
    {
    }
 
+   public void observeSimpleEvent(@Observes String someEvent)
+   {
+   }
+
    public static void staticallyObserveInitialized(@Observes @Initialized Manager manager)
    {
    }
