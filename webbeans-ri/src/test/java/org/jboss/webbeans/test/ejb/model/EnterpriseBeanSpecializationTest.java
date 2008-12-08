@@ -13,11 +13,30 @@ import org.jboss.webbeans.test.ejb.model.valid.HoundOfBaskerville;
 import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.Test;
 
-@SpecVersion("PDR")
+@SpecVersion("20081206")
 @SuppressWarnings("unused")
 public class EnterpriseBeanSpecializationTest extends AbstractTest
 {
-   @Test(groups={"specialization", "enterpriseBeans"})
+   /**
+    * If an implementation class of an enterprise Web Bean X defined using
+    * annotations is annotated @Specializes, then the implementation class of X
+    * must directly extend the implementation class of another enterprise Web
+    * Bean Y defined using annotations. If the implementation class of X does
+    * not directly extend the implementation class of another enterprise Web
+    * Bean, a DefinitionException is thrown by the Web Bean manager at
+    * initialization time
+    */
+   @Test(groups = { "specialization", "enterpriseBeans", "stub" })
+   @SpecAssertion(section = "3.3.6")
+   public void testAnnotationDefinedSpecializingEnterpriseBeanMustDirectlyExtendAnotherAnnotationDefinedEnterpriseBean()
+   {
+      assert false;
+   }
+
+   /**
+    * X inherits all binding types of Y
+    */
+   @Test(groups = { "specialization", "enterpriseBeans" })
    @SpecAssertion(section = "3.3.6")
    public void testSpecializingBeanInheritsBindingTypes()
    {
@@ -26,22 +45,27 @@ public class EnterpriseBeanSpecializationTest extends AbstractTest
       assert compareBindingTypesOK(hound, houndOfBaskerville);
    }
 
-   private boolean compareBindingTypesOK(EnterpriseBean<Hound> hound,
-         EnterpriseBean<HoundOfBaskerville> houndOfBaskerville)
+   private boolean compareBindingTypesOK(EnterpriseBean<Hound> hound, EnterpriseBean<HoundOfBaskerville> houndOfBaskerville)
    {
-      if (hound.getBindingTypes().size() != houndOfBaskerville.getBindingTypes().size()) {
+      if (hound.getBindingTypes().size() != houndOfBaskerville.getBindingTypes().size())
+      {
          return false;
       }
-      if (!hound.getBindingTypes().containsAll(houndOfBaskerville.getBindingTypes())) {
+      if (!hound.getBindingTypes().containsAll(houndOfBaskerville.getBindingTypes()))
+      {
          return false;
       }
-      if (!houndOfBaskerville.getBindingTypes().containsAll(hound.getBindingTypes())) {
+      if (!houndOfBaskerville.getBindingTypes().containsAll(hound.getBindingTypes()))
+      {
          return false;
       }
       return true;
    }
 
-   @Test(groups={"specialization", "enterpriseBeans"})
+   /**
+    * if Y has a name, X has the same name as Y.
+    */
+   @Test(groups = { "specialization", "enterpriseBeans" })
    @SpecAssertion(section = "3.3.6")
    public void testSpecializingBeanInheritsNameIfAny()
    {
@@ -49,47 +73,67 @@ public class EnterpriseBeanSpecializationTest extends AbstractTest
       assert houndOfBaskerville.getName().equals("Pongo");
    }
 
-   @Test(expectedExceptions=DefinitionException.class, groups={"stub", "specialization", "enterpriseBeans"})
+   /**
+    * X must support all local interfaces supported by Y. Otherwise, a
+    * DefinitionException is thrown by the Web Bean manager at initialization
+    * time.
+    */
+   @Test(expectedExceptions = DefinitionException.class, groups = { "stub", "specialization", "enterpriseBeans" })
    @SpecAssertion(section = "3.3.6")
    public void testSpecializingNotSupportingLocalInterfacesOfSpecializedFails()
    {
       assert false;
    }
 
-   @Test(expectedExceptions=DefinitionException.class, groups={"stub", "specialization", "enterpriseBeans"})
+   /**
+    * if Y supports a bean-class local view, X must also support a bean-class
+    * local view. Otherwise, a DefinitionException is thrown by the Web Bean
+    * manager at initialization time.
+    */
+   @Test(expectedExceptions = DefinitionException.class, groups = { "stub", "specialization", "enterpriseBeans" })
    @SpecAssertion(section = "3.3.6")
    public void testSpecializingNotSupportingLocalViewOfSpecializedFails()
    {
       assert false;
    }
 
-   @Test(groups={"stub", "specialization", "enterpriseBeans"})
+   /**
+    * We say that X directly specializes Y, and we can be certain that Y will
+    * never be instantiated or called by the Web Bean manager if X is enabled.
+    */
+   @Test(expectedExceptions = DefinitionException.class, groups = { "stub", "specialization", "enterpriseBeans" })
+   @SpecAssertion(section = "3.3.6")
+   public void EnabledSpecializationOverridesSpecialized()
+   {
+      assert false;
+   }
+
+   @Test(groups = { "stub", "specialization", "enterpriseBeans" })
    @SpecAssertion(section = "3.3.6")
    public void testXMLDefinedSpecializationOnAnnotationDefinedBean()
    {
       assert false;
    }
 
-   
-   @Test(expectedExceptions = DeploymentException.class, groups={"stub", "enterpriseBeans", "specialization"})
+   @Test(expectedExceptions = DeploymentException.class, groups = { "stub", "enterpriseBeans", "specialization" })
    @SpecAssertion(section = "3.3")
    public void testMultipleEnabledSpecializedEnterpriseBeanFails()
    {
       assert false;
    }
-      
-   @Test(expectedExceptions=DefinitionException.class, groups={"specialization", "enterpriseBeans"})
+
+   @Test(expectedExceptions = DefinitionException.class, groups = { "specialization", "enterpriseBeans" })
    @SpecAssertion(section = "3.3.6")
    public void testAnnotationDefinedSpecializingEnterpriseBeanNotDirectlyExtendingAnnotationDefinedEnterpriseBeanFails()
    {
       EnterpriseBean<GreaterDane> greaterDane = BeanFactory.createEnterpriseBean(GreaterDane.class);
    }
 
-   @Test(expectedExceptions=DefinitionException.class, groups={"stub", "specialization", "enterpriseBeans"})
+   @Test(expectedExceptions = DefinitionException.class, groups = { "stub", "specialization", "enterpriseBeans" })
    @SpecAssertion(section = "3.3.6")
    public void testXMLDefinedSpecializingEnterpriseBeanNotImplementingAnnotationDefinedEnterpriseBeanFails()
    {
-     assert false;
+      assert false;
    }
-   
+
 }

@@ -12,6 +12,6 @@ public class Toller
 {
    @Remove
    public void bye() {
-      EnterpriseBeanRemoveMethodTest.tickle = true;
+      EnterpriseBeanRemoveMethodTest.visited = true;
    }
 }

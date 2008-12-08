@@ -16,6 +16,6 @@ public class Pitbull
 
    @Remove @Destructor
    public void bye() {
-      EnterpriseBeanRemoveMethodTest.tickle = true;
+      EnterpriseBeanRemoveMethodTest.visited = true;
    }
 }
