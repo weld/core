@@ -44,6 +44,7 @@ public class SessionContext extends AbstractContext
    {
       super(SessionScoped.class);
       log.trace("Created session context");
+      this.beanMap = new ThreadLocal<BeanMap>();
    }
 
    /**
