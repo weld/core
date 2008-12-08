@@ -5,12 +5,7 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jboss.webbeans.bean.EnterpriseBean;
-import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.contexts.ApplicationContext;
 import org.jboss.webbeans.ejb.EjbMetaData;
-import org.jboss.webbeans.test.beans.Chicken;
-import org.jboss.webbeans.test.ejb.model.valid.Laika;
 
 /**
  * Utility class to produce friendly names e.g. for debugging
