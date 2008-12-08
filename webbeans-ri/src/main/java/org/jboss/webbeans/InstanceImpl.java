@@ -18,6 +18,8 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.Set;
 
 import javax.webbeans.Instance;
 
@@ -55,6 +57,12 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
       buffer.append("Obtainable Instance:\n");
       buffer.append(Strings.collectionToString("  Bindings: ", bindingTypes));
       return buffer.toString();
+   }
+
+   @Override
+   protected Set<Class<? extends Annotation>> getFilteredAnnotations()
+   {
+      return Collections.emptySet();
    }
 
 }
