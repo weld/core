@@ -111,6 +111,10 @@ public class NewEventTest extends AbstractTest
       manager.fireEvent(anEvent, new RoleBinding("Admin"));
    }
 
+   /**
+    * If the type of the event object passed to fireEvent() contains type
+    * variables or wildcards, an IllegalArgumentException is thrown
+    */
    @Test(groups = { "events" }, expectedExceptions = { IllegalArgumentException.class })
    @SpecAssertion(section = { "8.1", "8.2" })
    public void testManagerFireEventWithEventTypeParametersFails()
@@ -119,6 +123,10 @@ public class NewEventTest extends AbstractTest
       manager.fireEvent(anEvent);
    }
 
+   /**
+    * If the type of the event object passed to fireEvent() contains type
+    * variables or wildcards, an IllegalArgumentException is thrown
+    */
    @Test(groups = { "events" }, expectedExceptions = { IllegalArgumentException.class })
    @SpecAssertion(section = { "8.1", "8.2" })
    public void testManagerFireEventWithEventTypeWildcardsFails()
