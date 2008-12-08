@@ -15,6 +15,8 @@ import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.test.beans.BananaSpider;
+import org.jboss.webbeans.test.beans.RecluseSpider;
 import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.RoleBinding;
 import org.jboss.webbeans.test.bindings.TameAnnotationLiteral;
@@ -109,57 +111,35 @@ public class NewEventTest extends AbstractTest
       manager.fireEvent(anEvent, new RoleBinding("Admin"));
    }
 
-   @Test(groups = { "events" })
+   @Test(groups = { "events" }, expectedExceptions = { IllegalArgumentException.class })
    @SpecAssertion(section = { "8.1", "8.2" })
-   public void testManagerFireEventWithParameterizedEventFails()
+   public void testManagerFireEventWithEventTypeParametersFails()
    {
-      boolean fireEventFailed = false;
-      try
-      {
-         ATemplatedEventType<String> anEvent = new ATemplatedEventType<String>();
-         manager.fireEvent(anEvent);
-      }
-      catch (IllegalArgumentException e)
-      {
-         fireEventFailed = true;
-      }
-      assert fireEventFailed;
-
-      // Although the above is really the same as with a wildcard, we will test
-      // it anyhow since the specification calls it out separately.
-      fireEventFailed = false;
-      try
-      {
-         ATemplatedEventType<?> anEventOnAnyType = new ATemplatedEventType<String>();
-         manager.fireEvent(anEventOnAnyType);
-      }
-      catch (IllegalArgumentException e)
-      {
-         fireEventFailed = true;
-      }
-      assert fireEventFailed;
+      ATemplatedEventType<String> anEvent = new ATemplatedEventType<String>();
+      manager.fireEvent(anEvent);
    }
 
-   @Test(groups = { "events" })
+   @Test(groups = { "events" }, expectedExceptions = { IllegalArgumentException.class })
+   @SpecAssertion(section = { "8.1", "8.2" })
+   public void testManagerFireEventWithEventTypeWildcardsFails()
+   {
+      // Although the above test is really the same as with a wildcard, we will
+      // test
+      // it anyhow since the specification calls it out separately.
+      ATemplatedEventType<?> anEventOnAnyType = new ATemplatedEventType<String>();
+      manager.fireEvent(anEventOnAnyType);
+   }
+
+   @Test(groups = { "events" }, expectedExceptions = { IllegalArgumentException.class })
    @SpecAssertion(section = { "8.1", "8.2" })
    public void testManagerFireEventWithNonBindingAnnotationsFails()
    {
-      // The specs are not exactly clear on what is supposed to happen here, but
-      // borrowing
-      // from Section 8.3, we'll expect the same behavior here for a consistent
-      // API.
+      // The specs are not exactly clear on what is supposed to happen here,
+      // but borrowing from Section 8.3, we'll expect the same behavior here
+      // for a consistent API.
       // TODO Verify that fireEvent should fail on non-binding annotations
-      boolean fireEventFailed = false;
-      try
-      {
-         AnEventType anEvent = new AnEventType();
-         manager.fireEvent(anEvent, new AnimalStereotypeAnnotationLiteral());
-      }
-      catch (IllegalArgumentException e)
-      {
-         fireEventFailed = true;
-      }
-      assert fireEventFailed;
+      AnEventType anEvent = new AnEventType();
+      manager.fireEvent(anEvent, new AnimalStereotypeAnnotationLiteral());
    }
 
    @Test(groups = { "events" })
@@ -247,74 +227,38 @@ public class NewEventTest extends AbstractTest
       assert resolvedObservers.isEmpty();
    }
 
-   @Test(groups = { "events" })
+   @Test(groups = { "events" }, expectedExceptions = { DuplicateBindingTypeException.class })
    @SpecAssertion(section = "8.3")
    public void testMultipleInstancesOfSameBindingTypeWhenAddingObserverFails()
    {
-      boolean failedAddingObserver = false;
-      try
-      {
-         Observer<AnEventType> observer = new AnObserver();
-         manager.addObserver(observer, AnEventType.class, new RoleBinding("Admin"), new TameAnnotationLiteral(), new TameAnnotationLiteral());
-      }
-      catch (DuplicateBindingTypeException e)
-      {
-         failedAddingObserver = true;
-      }
-      assert failedAddingObserver;
+      Observer<AnEventType> observer = new AnObserver();
+      manager.addObserver(observer, AnEventType.class, new RoleBinding("Admin"), new TameAnnotationLiteral(), new TameAnnotationLiteral());
    }
 
-   @Test(groups = { "events" })
+   @Test(groups = { "events" }, expectedExceptions = { IllegalArgumentException.class })
    @SpecAssertion(section = "8.3")
    public void testNonBindingTypePassedToAddObserverFails()
    {
-      boolean failedAddingObserver = false;
-      try
-      {
-         Observer<AnEventType> observer = new AnObserver();
-         manager.addObserver(observer, AnEventType.class, new AnimalStereotypeAnnotationLiteral());
-      }
-      catch (IllegalArgumentException e)
-      {
-         failedAddingObserver = true;
-      }
-      assert failedAddingObserver;
+      Observer<AnEventType> observer = new AnObserver();
+      manager.addObserver(observer, AnEventType.class, new AnimalStereotypeAnnotationLiteral());
    }
 
-   @Test(groups = { "events" })
+   @Test(groups = { "events" }, expectedExceptions = { DuplicateBindingTypeException.class })
    @SpecAssertion(section = "8.3")
    public void testMultipleInstancesOfSameBindingTypeWhenRemovingObserverFails()
    {
-      boolean failedRemovingObserver = false;
-      try
-      {
-         Observer<AnEventType> observer = new AnObserver();
-         manager.addObserver(observer, AnEventType.class);
-         manager.removeObserver(observer, AnEventType.class, new RoleBinding("Admin"), new TameAnnotationLiteral(), new TameAnnotationLiteral());
-      }
-      catch (DuplicateBindingTypeException e)
-      {
-         failedRemovingObserver = true;
-      }
-      assert failedRemovingObserver;
+      Observer<AnEventType> observer = new AnObserver();
+      manager.addObserver(observer, AnEventType.class);
+      manager.removeObserver(observer, AnEventType.class, new RoleBinding("Admin"), new TameAnnotationLiteral(), new TameAnnotationLiteral());
    }
 
-   @Test(groups = { "events" })
+   @Test(groups = { "events" }, expectedExceptions = { IllegalArgumentException.class })
    @SpecAssertion(section = "8.3")
    public void testNonBindingTypePassedToRemoveObserverFails()
    {
-      boolean failedAddingObserver = false;
-      try
-      {
-         Observer<AnEventType> observer = new AnObserver();
-         manager.addObserver(observer, AnEventType.class);
-         manager.removeObserver(observer, AnEventType.class, new AnimalStereotypeAnnotationLiteral());
-      }
-      catch (IllegalArgumentException e)
-      {
-         failedAddingObserver = true;
-      }
-      assert failedAddingObserver;
+      Observer<AnEventType> observer = new AnObserver();
+      manager.addObserver(observer, AnEventType.class);
+      manager.removeObserver(observer, AnEventType.class, new AnimalStereotypeAnnotationLiteral());
    }
 
    @Test(groups = { "events" })
@@ -406,38 +350,20 @@ public class NewEventTest extends AbstractTest
       testObserverMethodOnEnterpriseBeanIsBusinessMethodOrStatic();
    }
 
-   @Test(groups = { "events" })
+   @Test(groups = { "events" }, expectedExceptions = { DefinitionException.class })
    @SpecAssertion(section = { "8.5.1", "8.5.2" })
    public void testObserverMethodMustHaveOnlyOneEventParameter()
    {
-      boolean definitionException = false;
-      try
-      {
-         Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(YorkshireTerrier.class);
-         assert beans != null;
-      }
-      catch (DefinitionException e)
-      {
-         definitionException = true;
-      }
-      assert definitionException;
+      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(YorkshireTerrier.class);
+      assert beans != null;
    }
 
-   @Test(groups = { "events" })
+   @Test(groups = { "events" }, expectedExceptions = { DefinitionException.class })
    @SpecAssertion(section = "8.5.1")
    public void testObserverMethodCannotObserveParameterizedEvents()
    {
-      boolean definitionException = false;
-      try
-      {
-         Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(BostonTerrier.class);
-         assert beans != null;
-      }
-      catch (DefinitionException e)
-      {
-         definitionException = true;
-      }
-      assert definitionException;
+      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(BostonTerrier.class);
+      assert beans != null;
    }
 
    @Test(groups = { "events" })
@@ -454,72 +380,36 @@ public class NewEventTest extends AbstractTest
       assert resolvedObservers.size() == 1;
    }
 
-   @Test(groups = { "events" })
+   @Test(groups = { "events" }, expectedExceptions = { DefinitionException.class })
    @SpecAssertion(section = "8.5.2")
    public void testObserverMethodAnnotatedProducesFails()
    {
-      boolean definitionException = false;
-      try
-      {
-         Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(BorderTerrier.class);
-         assert beans != null;
-      }
-      catch (DefinitionException e)
-      {
-         definitionException = true;
-      }
-      assert definitionException;
+      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(BorderTerrier.class);
+      assert beans != null;
    }
 
-   @Test(groups = { "events" })
+   @Test(groups = { "events" }, expectedExceptions = { DefinitionException.class })
    @SpecAssertion(section = "8.5.2")
    public void testObserverMethodAnnotatedInitializerFails()
    {
-      boolean definitionException = false;
-      try
-      {
-         Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(AustralianTerrier.class);
-         assert beans != null;
-      }
-      catch (DefinitionException e)
-      {
-         definitionException = true;
-      }
-      assert definitionException;
+      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(AustralianTerrier.class);
+      assert beans != null;
    }
 
-   @Test(groups = { "events" })
+   @Test(groups = { "events" }, expectedExceptions = { DefinitionException.class })
    @SpecAssertion(section = "8.5.2")
    public void testObserverMethodAnnotatedDestructorFails()
    {
-      boolean definitionException = false;
-      try
-      {
-         Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(CairnsTerrier.class);
-         assert beans != null;
-      }
-      catch (DefinitionException e)
-      {
-         definitionException = true;
-      }
-      assert definitionException;
+      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(CairnsTerrier.class);
+      assert beans != null;
    }
 
-   @Test(groups = { "events" })
+   @Test(groups = { "events" }, expectedExceptions = { DefinitionException.class })
    @SpecAssertion(section = "8.5.2")
    public void testObserverMethodWithDisposesParamFails()
    {
-      boolean definitionException = false;
-      try
-      {
-         Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(FoxTerrier.class);
-         assert beans != null;
-      }
-      catch (DefinitionException e)
-      {
-         definitionException = true;
-      }
-      assert definitionException;
+      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(FoxTerrier.class);
+      assert beans != null;
    }
 
    @Test(groups = { "events" })
@@ -536,32 +426,43 @@ public class NewEventTest extends AbstractTest
 
    }
 
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.5.3")
-   public void testXMLDefinedObserverMethodIgnoresBindingAnnotations()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.5.3")
-   public void testXMLDefinedObserverNotFindingImplementationMethodFails()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
+   // @Test(groups = { "stub", "events" })
+   // @SpecAssertion(section = "8.5.3")
+   // public void testXMLDefinedObserverMethodIgnoresBindingAnnotations()
+   // {
+   // assert false;
+   // }
+   //
+   // @Test(groups = { "stub", "events" })
+   // @SpecAssertion(section = "8.5.3")
+   // public void testXMLDefinedObserverNotFindingImplementationMethodFails()
+   // {
+   // assert false;
+   // }
+   //
+   @Test(groups = { "events" })
    @SpecAssertion(section = "8.5.4")
    public void testObserverMethodReceivesInjectionsOnNonObservesParameters()
    {
-      assert false;
+      Set<AbstractBean<?, ?>> beans = bootstrap.createBeans(BananaSpider.class);
+      assert beans != null;
    }
 
-   @Test(groups = { "stub", "events" })
+   /**
+    * Tests that a conditional observer is not notified of events until after it
+    * is created by some other separate action.
+    * 
+    * This test will not be supported till after Alpha 1 of the RI.
+    */
+   @Test(groups = { "broken", "events" })
    @SpecAssertion(section = "8.5.5")
    public void testConditionalObserver()
    {
-      assert false;
+      bootstrap.registerBeans(RecluseSpider.class);
+
+      manager.fireEvent("New string event");
+      // Should not be notified since bean is not instantiated yet
+      assert !RecluseSpider.notified;
    }
 
    @Test(groups = { "stub", "events" })
