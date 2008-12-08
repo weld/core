@@ -208,7 +208,7 @@ public class EventManager
    }
 
    /**
-    * Iterates over the interested observers. If the observers is transactional
+    * Iterates over the interested observers. If an observer is transactional
     * and there is a transaction currently in progress, the event is deferred.
     * In other cases, the observer is notified immediately.
     * 
@@ -231,7 +231,7 @@ public class EventManager
    }
 
    /**
-    * Defers an event with regard to current transaction phase
+    * Defers an event for processing in a later phase of the current transaction.
     * 
     * Gets the transaction listener, creates a deferred event representation and
     * registers the deferred event.

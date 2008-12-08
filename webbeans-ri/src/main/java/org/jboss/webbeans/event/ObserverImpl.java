@@ -31,14 +31,20 @@ import javax.webbeans.AfterTransactionFailure;
 import javax.webbeans.AfterTransactionSuccess;
 import javax.webbeans.BeforeTransactionCompletion;
 import javax.webbeans.DefinitionException;
+import javax.webbeans.Destructor;
+import javax.webbeans.Disposes;
 import javax.webbeans.IfExists;
+import javax.webbeans.Initializer;
 import javax.webbeans.Observer;
 import javax.webbeans.Observes;
+import javax.webbeans.Produces;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.event.EventManager.TransactionObservationPhase;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.util.Reflections;
 
 /**
  * <p>
@@ -62,7 +68,7 @@ public class ObserverImpl<T> implements Observer<T>
    
    /**
     * Creates an Observer which describes and encapsulates an observer method
-    * (7.5).
+    * (8.5).
     * 
     * @param componentModel The model for the component which defines the
     *           observer method
@@ -77,6 +83,7 @@ public class ObserverImpl<T> implements Observer<T>
       this.manager = manager;
       this.observerBean = observerBean;
       this.observerMethod = observer;
+      validateObserverMethod();
       initTransactionObservationPhase();
       conditional = !observerMethod.getAnnotatedParameters(IfExists.class).isEmpty();
    }
@@ -111,6 +118,49 @@ public class ObserverImpl<T> implements Observer<T>
       else
       {
          transactionObservationPhase = NONE;
+      }
+   }
+
+   /**
+    * Performs validation of the observer method for compliance with the specifications.
+    */
+   private void validateObserverMethod()
+   {
+      // Make sure exactly one and only one parameter is annotated with Observes
+      List<AnnotatedParameter<Object>> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
+      if (eventObjects.size() > 1)
+      {
+         throw new DefinitionException(this + " is invalid because it contains more than event parameter");
+      }
+      // Make sure the event object above is not parameterized with a type
+      // variable or wildcard
+      if (eventObjects.size() > 0)
+      {
+         AnnotatedParameter<Object> eventParam = eventObjects.iterator().next();
+         if (Reflections.isParameterizedType(eventParam.getType()))
+         {
+            throw new DefinitionException(this + " cannot observe parameterized event types");
+         }
+      }
+      // Check for parameters annotated with @Disposes
+      List<AnnotatedParameter<Object>> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
+      if (disposeParams.size() > 0)
+      {
+         throw new DefinitionException(this + " cannot have any parameters annotated with @Dispose");
+      }
+      // Check annotations on the method to make sure this is not a producer
+      // method, initializer method, or destructor method.
+      if ( this.observerMethod.isAnnotationPresent(Produces.class) )
+      {
+         throw new DefinitionException(this + " cannot be annotated with @Produces");
+      }
+      if (this.observerMethod.isAnnotationPresent(Initializer.class))
+      {
+         throw new DefinitionException(this + " cannot be annotated with @Initializer");
+      }
+      if ( this.observerMethod.isAnnotationPresent(Destructor.class) )
+      {
+         throw new DefinitionException(this + " cannot be annotated with @Destructor");
       }
    }
 
