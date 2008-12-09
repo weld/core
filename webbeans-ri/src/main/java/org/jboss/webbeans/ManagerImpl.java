@@ -72,17 +72,29 @@ import org.jboss.webbeans.util.Strings;
  */
 public class ManagerImpl implements Manager
 {
+   // The JNDI key to place the manager under
    public static final String JNDI_KEY = "java:comp/Manager";
 
+   // The enabled deployment types from web-beans.xml
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
+   // The Web Beans manager
    private EventManager eventManager;
+   // The bean resolver
    private Resolver resolver;
+   // The registered contexts
    private ContextMap contextMap;
+   // The client proxy pool
    private ProxyPool proxyPool;
+   // The registered beans
    private List<Bean<?>> beans;
+   // The registered decorators
    private Set<Decorator> decorators;
+   // The registered interceptors
    private Set<Interceptor> interceptors;
 
+   /**
+    * Constructor
+    */
    @SuppressWarnings("unchecked")
    public ManagerImpl()
    {
@@ -109,7 +121,7 @@ public class ManagerImpl implements Manager
 
    /**
     * Set up the enabled deployment types, if none are specified by the user,
-    * the default @Production and @Standard are used
+    * the default @Production and @Standard are used. For internal use.
     * 
     * @param enabledDeploymentTypes The enabled deployment types from
     *           web-beans.xml
@@ -155,7 +167,7 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * Resolve the disposal method for the given producer method
+    * Resolve the disposal method for the given producer method. For internal use.
     * 
     * @param apiType The API type to match
     * @param bindingTypes The binding types to match
@@ -182,7 +194,7 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * A strongly ordered list of enabled deployment types
+    * A strongly ordered, unmodifyable list of enabled deployment types
     * 
     * @return The ordered enabled deployment types known to the manager
     */
@@ -223,7 +235,7 @@ public class ManagerImpl implements Manager
 
    /**
     * Check the resolution request is valid, and then ask the resolver to
-    * perform the resolution
+    * perform the resolution. For internal use.
     * 
     * @param element The item to resolve
     * @param bindingTypes The binding types to match
@@ -259,7 +271,7 @@ public class ManagerImpl implements Manager
    /**
     * Wraps a collection of beans into a thread safe list. Since this overwrites
     * any existing list of beans in the manager, this should only be done on
-    * startup and other controlled situations.
+    * startup and other controlled situations. For internal use.
     * 
     * @param beans The set of beans to add
     * @return A reference to the manager
@@ -276,7 +288,7 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * The beans registered with the Web Bean manager
+    * The beans registered with the Web Bean manager. For internal use
     * 
     * @return The list of known beans
     */
@@ -286,7 +298,7 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * Adds a context
+    * Registers a context with the manager
     * 
     * @param context The context to add
     * @return A reference to the manager
@@ -300,9 +312,9 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * Adds a decorator
+    * Registers a decorator with the manager
     * 
-    * @param decorator The decorator to add
+    * @param decorator The decorator to register
     * @return A reference to the manager
     * 
     * @see javax.webbeans.manager.Manager#addDecorator(javax.webbeans.manager.Decorator)
@@ -314,9 +326,9 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * Adds an interceptor
+    * Registers an interceptor with the manager
     * 
-    * @param interceptor The interceptor to add
+    * @param interceptor The interceptor to register
     * @return A reference to the manager
     * 
     * @see javax.webbeans.manager.Manager#addInterceptor(javax.webbeans.manager.Interceptor)
@@ -328,9 +340,9 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * Adds an observer for a given event type and binding types
+    * Registers an observer for a given event type and binding types
     * 
-    * @param observer The observer to add
+    * @param observer The observer to register
     * @param eventType The event type to match
     * @param bindings The bindings to match
     * @return A reference to the manager
@@ -345,9 +357,9 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * Adds an observer for a given event type literal and binding types
+    * Registers an observer for a given event type literal and binding types
     * 
-    * @param observer The observer to add
+    * @param observer The observer to register
     * @param eventType The event type literal to match
     * @param bindings The bindings to match
     * @return A reference to the manager
@@ -358,7 +370,7 @@ public class ManagerImpl implements Manager
    @SuppressWarnings("unchecked")
    public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
-      this.eventManager.addObserver(observer, (Class<T>) eventType.getType(), bindings);
+      eventManager.addObserver(observer, (Class<T>) eventType.getType(), bindings);
       return this;
    }
 
@@ -391,8 +403,8 @@ public class ManagerImpl implements Manager
       // Get the observers for this event. Although resolveObservers is
       // parameterized, this method is not, so we have to use
       // Observer<Object> for observers.
-      Set<Observer<Object>> observers = this.resolveObservers(event, bindings);
-      this.eventManager.notifyObservers(observers, event);
+      Set<Observer<Object>> observers = resolveObservers(event, bindings);
+      eventManager.notifyObservers(observers, event);
    }
 
    /**
@@ -431,10 +443,10 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * Direct access to build in contexts for internal use
+    * Direct access to built in contexts. For internal use.
     * 
-    * @param scopeType
-    * @return
+    * @param scopeType The scope type of the context
+    * @return The context
     */
    public Context getBuiltInContext(Class<? extends Annotation> scopeType)
    {
@@ -636,7 +648,7 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * Get the web bean resolver
+    * Get the web bean resolver. For internal use
     * 
     * @return The resolver
     */
@@ -646,7 +658,18 @@ public class ManagerImpl implements Manager
    }
 
    @Override
-   public String toString()
+   public String toString() {
+      StringBuilder buffer = new StringBuilder();
+      buffer.append("Manager\n");
+      buffer.append("Enabled deployment types: " + getEnabledDeploymentTypes() + "\n");
+      buffer.append("Registered contexts: " + contextMap.keySet() + "\n");
+      buffer.append("Registered beans: " + getBeans().size() + "\n");
+      buffer.append("Registered decorators: " + decorators.size() + "\n");
+      buffer.append("Registered interceptors: " + interceptors.size() + "\n");
+      return buffer.toString();
+   }
+   
+   public String toDetailedString()
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append(Strings.collectionToString("Enabled deployment types: ", getEnabledDeploymentTypes()));

@@ -59,7 +59,7 @@ public abstract class FacadeImpl<T>
    /**
     * Merges and validates the current and new bindings
     * 
-    * Checkes with an abstract method for annotations to exclude
+    * Checks with an abstract method for annotations to exclude
     * 
     * @param currentBindings Existing bindings
     * @param newBindings New bindings

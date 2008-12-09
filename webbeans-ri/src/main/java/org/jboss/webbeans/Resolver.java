@@ -38,7 +38,6 @@ import org.jboss.webbeans.introspector.ForwardingAnnotatedItem;
 import org.jboss.webbeans.model.BindingTypeModel;
 import org.jboss.webbeans.util.ConcurrentCache;
 import org.jboss.webbeans.util.ListComparator;
-import org.jboss.webbeans.util.Strings;
 
 /**
  * Implementation of Web Beans type safe and name based bean resolution
@@ -79,25 +78,29 @@ public class Resolver
       @Override
       public String toString()
       {
-         StringBuilder buffer = new StringBuilder();
-         buffer.append("Resolvable annotation item\n");
-         buffer.append(delegate().toString() + "\n");
-         return buffer.toString();
+         return "Resolvable annotated item for " + delegate();
       }
 
    }
 
+   // The resolved injection points
    private ConcurrentCache<ResolvableAnnotatedItem<?, ?>, Set<Bean<?>>> resolvedInjectionPoints;
+   // The registerd injection points
    private Set<AnnotatedItem<?, ?>> injectionPoints;
-
+   // The resolved names
    private ConcurrentCache<String, Set<Bean<?>>> resolvedNames;
-   
+   // The Web Beans manager
    private ManagerImpl manager;
 
+   /**
+    * Constructor
+    * 
+    * @param manager The Web Beans manager
+    */
    public Resolver(ManagerImpl manager)
    {
       this.injectionPoints = new HashSet<AnnotatedItem<?, ?>>();
-      this.resolvedInjectionPoints = new ConcurrentCache<ResolvableAnnotatedItem<?,?>, Set<Bean<?>>>();
+      this.resolvedInjectionPoints = new ConcurrentCache<ResolvableAnnotatedItem<?, ?>, Set<Bean<?>>>();
       this.resolvedNames = new ConcurrentCache<String, Set<Bean<?>>>();
       this.manager = manager;
    }
@@ -105,12 +108,22 @@ public class Resolver
    /**
     * Add multiple injection points for later resolving using
     * {@link #registerInjectionPoint(AnnotatedItem)}. Useful during bootstrap.
+    * 
+    * @param elements The injection points to add
     */
    public void addInjectionPoints(Collection<AnnotatedItem<?, ?>> elements)
    {
       injectionPoints.addAll(elements);
    }
 
+   /**
+    * Registers an injection point
+    * 
+    * @param <T>
+    * @param <S>
+    * @param element The injection point to add
+    * @return A set of matching beans for the injection point
+    */
    private <T, S> Set<Bean<T>> registerInjectionPoint(final ResolvableAnnotatedItem<T, S> element)
    {
       Callable<Set<Bean<T>>> callable = new Callable<Set<Bean<T>>>()
@@ -142,7 +155,7 @@ public class Resolver
     */
    public void clear()
    {
-      this.resolvedInjectionPoints = new ConcurrentCache<ResolvableAnnotatedItem<?,?>, Set<Bean<?>>>();
+      this.resolvedInjectionPoints = new ConcurrentCache<ResolvableAnnotatedItem<?, ?>, Set<Bean<?>>>();
       resolvedNames = new ConcurrentCache<String, Set<Bean<?>>>();
    }
 
@@ -169,6 +182,9 @@ public class Resolver
 
    /**
     * Get the possible beans for the given element
+    * 
+    * @param key The resolving criteria
+    * @return An unmodifiable set of matching beans
     */
    @SuppressWarnings("unchecked")
    public <T, S> Set<Bean<T>> get(final AnnotatedItem<T, S> key)
@@ -200,6 +216,9 @@ public class Resolver
 
    /**
     * Get the possible beans for the given name
+    * 
+    * @param name The name to match
+    * @return The set of matching beans
     */
    public Set<Bean<?>> get(final String name)
    {
@@ -223,6 +242,14 @@ public class Resolver
       });
    }
 
+   /**
+    * Filters out the beans with the highest enabled deployment type
+    * 
+    * @param <T>
+    * @param beans The beans to filter
+    * @param enabledDeploymentTypes The enabled deployment types
+    * @return The filtered beans
+    */
    private static <T> Set<Bean<T>> retainHighestPrecedenceBeans(Set<Bean<T>> beans, List<Class<? extends Annotation>> enabledDeploymentTypes)
    {
       if (beans.size() > 0)
@@ -254,6 +281,14 @@ public class Resolver
       }
    }
 
+   /**
+    * Gets the matching beans for binding criteria from a list of beans
+    * 
+    * @param <T> The type of the beans
+    * @param element The binding criteria
+    * @param beans The beans to filter
+    * @return A set of filtered beans
+    */
    @SuppressWarnings("unchecked")
    private <T> Set<Bean<T>> getMatchingBeans(AnnotatedItem<T, ?> element, List<Bean<?>> beans)
    {
@@ -268,6 +303,13 @@ public class Resolver
       return resolvedBeans;
    }
 
+   /**
+    * Checks if binding criteria fulfill all binding types
+    * 
+    * @param element The binding criteria to check
+    * @param bindingTypes The binding types to check
+    * @return True if all matches, false otherwise
+    */
    private boolean containsAllBindingBindingTypes(AnnotatedItem<?, ?> element, Set<Annotation> bindingTypes)
    {
       for (Annotation bindingType : element.getBindingTypes())
@@ -296,12 +338,26 @@ public class Resolver
       return true;
    }
 
+   /**
+    * Resolves decorators according to binding criteria
+    * 
+    * @param types The set of API types to match
+    * @param bindingTypes The binding types to match
+    * @return The set of matching decorators
+    */
    public List<Decorator> resolveDecorators(Set<Class<?>> types, Annotation[] bindingTypes)
    {
       // TODO Auto-generated method stub
       return null;
    }
 
+   /**
+    * Resolves interceptors according to binding criteria
+    * 
+    * @param types The set of API types to match
+    * @param bindingTypes The binding types to match
+    * @return The set of matching interceptors
+    */
    public List<Interceptor> resolveInterceptors(InterceptionType type, Annotation[] interceptorBindings)
    {
       // TODO Auto-generated method stub
@@ -313,9 +369,9 @@ public class Resolver
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Resolver\n");
-      buffer.append(resolvedInjectionPoints.toString() + "\n");
-      buffer.append(Strings.collectionToString("Injection points: ", injectionPoints));
-      buffer.append(Strings.mapToString("Resolved names: ", resolvedNames));
+      buffer.append("Injection points: " + injectionPoints.size() + "\n");
+      buffer.append("Resolved injection points: " + resolvedInjectionPoints.size() + "\n");
+      buffer.append("Resolved names points: " + resolvedNames.size() + "\n");
       return buffer.toString();
    }
 

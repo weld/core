@@ -27,29 +27,50 @@ import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.util.ConcurrentCache;
 import org.jboss.webbeans.util.Strings;
 
+/**
+ * Metadata singleton for holding EJB metadata, scope models etc.
+ * 
+ * @author Pete Muir
+ * 
+ */
 public class MetaDataCache
 {
-
+   // The singleton instance
    private static MetaDataCache instance;
-   
+
+   /**
+    * Gets the singleton
+    * 
+    * @return The instance
+    */
    public static MetaDataCache instance()
    {
       return instance;
    }
-   
+
    static
    {
       instance = new MetaDataCache();
    }
-   
+
+   // The stereotype models
    private ConcurrentCache<Class<? extends Annotation>, StereotypeModel<?>> stereotypes = new ConcurrentCache<Class<? extends Annotation>, StereotypeModel<?>>();
-
+   // The scope models
    private ConcurrentCache<Class<? extends Annotation>, ScopeModel<?>> scopes = new ConcurrentCache<Class<? extends Annotation>, ScopeModel<?>>();
-
+   // The binding type models
    private ConcurrentCache<Class<? extends Annotation>, BindingTypeModel<?>> bindingTypes = new ConcurrentCache<Class<? extends Annotation>, BindingTypeModel<?>>();
-
+   // EJB metadata
    private ConcurrentCache<Class<?>, EjbMetaData<?>> ejbMetaDataMap = new ConcurrentCache<Class<?>, EjbMetaData<?>>();
 
+   /**
+    * Gets a stereotype model
+    * 
+    * Adds the model if it is not present.
+    * 
+    * @param <T> The type
+    * @param stereotype The stereotype
+    * @return The stereotype model
+    */
    public <T extends Annotation> StereotypeModel<T> getStereotype(final Class<T> stereotype)
    {
       return stereotypes.putIfAbsent(stereotype, new Callable<StereotypeModel<T>>()
@@ -62,6 +83,15 @@ public class MetaDataCache
       });
    }
 
+   /**
+    * Gets a scope model
+    * 
+    * Adds the model if it is not present.
+    * 
+    * @param <T> The type
+    * @param scopeType The scope type
+    * @return The scope type model
+    */
    public <T extends Annotation> ScopeModel<T> getScopeModel(final Class<T> scopeType)
    {
       return scopes.putIfAbsent(scopeType, new Callable<ScopeModel<T>>()
@@ -75,6 +105,15 @@ public class MetaDataCache
       });
    }
 
+   /**
+    * Gets a binding type model.
+    * 
+    * Adds the model if it is not present.
+    * 
+    * @param <T> The type
+    * @param bindingType The binding type
+    * @return The binding type model
+    */
    public <T extends Annotation> BindingTypeModel<T> getBindingTypeModel(final Class<T> bindingType)
    {
       return bindingTypes.putIfAbsent(bindingType, new Callable<BindingTypeModel<T>>()
@@ -88,6 +127,15 @@ public class MetaDataCache
       });
    }
 
+   /**
+    * Gets metadata for an EJB
+    * 
+    * Adds the model if it is not present
+    * 
+    * @param <T> The type
+    * @param clazz The class of the EJB
+    * @return The EJB metadata
+    */
    public <T> EjbMetaData<T> getEjbMetaData(final Class<T> clazz)
    {
       return ejbMetaDataMap.putIfAbsent(clazz, new Callable<EjbMetaData<T>>()
@@ -103,6 +151,17 @@ public class MetaDataCache
 
    @Override
    public String toString()
+   {
+      StringBuilder buffer = new StringBuilder();
+      buffer.append("Metadata cache\n");
+      buffer.append("Registered binding type models: " + bindingTypes.size() + "\n");
+      buffer.append("Registered scope type models: " + scopes.size() + "\n");
+      buffer.append("Registered stereotype models: " + stereotypes.size() + "\n");
+      buffer.append("Registered EJB metadata: " + ejbMetaDataMap.size() + "\n");
+      return buffer.toString();
+   }
+
+   public String toDetailedString()
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("====================\n");

@@ -24,22 +24,20 @@ import java.util.Set;
 import javax.webbeans.Instance;
 import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.util.Strings;
-
 /**
- * Implementation of the Event interface
+ * Helper implementation for Instance for getting instances
  * 
- * @author David Allen
+ * @author Gavin King
  * 
  * @param <T>
- * @see javax.webbeans.Event
+ * @see javax.webbeans.Instace
  */
 public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
 {
    /**
     * Constructor
     * 
-    * @param type The event type
+    * @param type The obtainable type
     * @param manager The Web Beans manager
     * @param bindingTypes The binding types
     */
@@ -48,6 +46,15 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
       super(type, manager, bindingTypes);
    }
 
+   /**
+    * Gets an instance with the matching binding types
+    * 
+    * @param bindingTypes The binding types
+    * @return The instance
+    * 
+    * @see javax.webbeans.Instance#get(Annotation...)
+    * @see javax.webbeans.manager.Manager#getInstanceByType(Class, Annotation...)
+    */
    public T get(Annotation... bindingTypes) 
    {
       return manager.getInstanceByType(type, mergeBindings(bindingTypes));
@@ -56,13 +63,16 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
    @Override
    public String toString()
    {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("Obtainable Instance:\n");
-      buffer.append(Strings.collectionToString("  Bindings: ", bindingTypes));
-      return buffer.toString();
+      return "Obtainable instance for type " + type + " and binding types " + bindingTypes;
    }
 
    /**
+    * Filters annotations from the binding type or parameter lists
+    * 
+    * This implementation filters no annotations
+    * 
+    * @return A set of annotations to filter
+    * 
     * @see org.jboss.webbeans.FacadeImpl#getFilteredAnnotations
     */
    @Override
