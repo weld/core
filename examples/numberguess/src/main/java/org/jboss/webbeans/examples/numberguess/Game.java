@@ -11,12 +11,16 @@ import javax.webbeans.SessionScoped;
 @SessionScoped
 public class Game
 {
-   private final int number;
+   private int number;
    
    private int guess;
    private int smallest;
    private int biggest;
    private int remainingGuesses;
+   
+   public Game()
+   {
+   }
    
    @Initializer
    Game(@Random int number, @MaxNumber int maxNumber)

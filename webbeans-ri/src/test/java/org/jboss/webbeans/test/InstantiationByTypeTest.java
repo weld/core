@@ -18,13 +18,12 @@ import org.jboss.webbeans.introspector.jlr.AnnotatedFieldImpl;
 import org.jboss.webbeans.test.annotations.Whitefish;
 import org.jboss.webbeans.test.beans.Cod;
 import org.jboss.webbeans.test.beans.FishFarm;
-import org.jboss.webbeans.test.beans.Plaice;
 import org.jboss.webbeans.test.beans.Salmon;
 import org.jboss.webbeans.test.beans.ScottishFish;
 import org.jboss.webbeans.test.beans.Sole;
 import org.jboss.webbeans.test.beans.Tuna;
+import org.jboss.webbeans.test.beans.broken.FinalTuna;
 import org.jboss.webbeans.test.beans.broken.ParameterizedBean;
-import org.jboss.webbeans.test.beans.broken.PlaiceFarm;
 import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
 import org.testng.annotations.Test;
 
@@ -98,11 +97,10 @@ public class InstantiationByTypeTest extends AbstractTest
    @Test(expectedExceptions=UnproxyableDependencyException.class) @SpecAssertion(section="5.9")
    public void testUnproxyableDependencies() throws Exception
    {
-      AnnotatedField<Plaice> plaiceField = new AnnotatedFieldImpl<Plaice>(PlaiceFarm.class.getDeclaredField("plaice"), fishFarmClass);
-      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class);
-      manager.addBean(plaiceBean);
+      Bean<FinalTuna> FinalTunaBean = createSimpleBean(FinalTuna.class);
+      manager.addBean(FinalTunaBean);
       
-      manager.getInstanceByType(Plaice.class, new AnnotationLiteral<Whitefish>(){});
+      manager.getInstanceByType(FinalTuna.class, new AnnotationLiteral<Whitefish>(){});
    }
    
    /*

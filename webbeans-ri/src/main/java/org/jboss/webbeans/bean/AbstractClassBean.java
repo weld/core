@@ -29,8 +29,10 @@ import javax.webbeans.Initializer;
 import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 import javax.webbeans.Production;
+import javax.webbeans.UnproxyableDependencyException;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -218,6 +220,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       if (Reflections.isAbstract(getType()))
       {
          throw new DefinitionException("Web Bean implementation class " + type + " cannot be declared abstract");
+      }
+      if (MetaDataCache.instance().getScopeModel(getScopeType()).isNormal() && !getAnnotatedItem().isProxyable())
+      {
+         throw new UnproxyableDependencyException(toString() + " is not proxyable");
       }
    }
 

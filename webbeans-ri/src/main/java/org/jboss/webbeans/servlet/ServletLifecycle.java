@@ -55,9 +55,9 @@ public class ServletLifecycle
    public static void beginApplication(ServletContext context)
    {
       servletContext = context;
+      ApplicationContext.INSTANCE.setBeanMap(new ApplicationBeanMap(servletContext));
       WebBeansBootstrap webBeansBootstrap = new WebBeansBootstrap();
       webBeansBootstrap.boot(getWebBeanDiscovery());
-      ApplicationContext.INSTANCE.setBeanMap(new ApplicationBeanMap(servletContext));
    }
    
    /**

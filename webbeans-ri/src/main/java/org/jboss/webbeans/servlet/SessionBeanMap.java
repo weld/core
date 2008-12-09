@@ -144,7 +144,7 @@ public class SessionBeanMap extends AbstractBeanMapAdaptor
          String name = (String) names.nextElement();
          if (name.startsWith(getKeyPrefix()))
          {
-            String id = name.substring(getKeyPrefix().length());
+            String id = name.substring(getKeyPrefix().length() + 1);
             Contextual<?> bean = CurrentManager.rootManager().getBeans().get(Integer.parseInt(id));
             beans.add(bean);
          }

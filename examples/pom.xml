@@ -35,31 +35,5 @@
       </pluginManagement>
    </build>
 
-   <profiles>
-      <profile>
-         <activation>
-            <property>
-               <name>explode</name>
-            </property>
-         </activation>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-war-plugin</artifactId>
-                  <configuration>
-                     <webappDirectory>
-                        ${jboss.home}/server/default/deploy/${project.build.finalName}.war
-                     </webappDirectory>
-                  </configuration>
-               </plugin>
-            </plugins>
-            <defaultGoal>war:exploded</defaultGoal>
-         </build>
-      </profile>
-   </profiles>
-   
-   
-
 </project>
 

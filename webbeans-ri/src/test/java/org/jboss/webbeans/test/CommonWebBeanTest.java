@@ -13,7 +13,7 @@ import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.beans.Animal;
 import org.jboss.webbeans.test.beans.DeadlyAnimal;
 import org.jboss.webbeans.test.beans.DeadlySpider;
-import org.jboss.webbeans.test.beans.FinalTuna;
+import org.jboss.webbeans.test.beans.DependentFinalTuna;
 import org.jboss.webbeans.test.beans.RedSnapper;
 import org.jboss.webbeans.test.beans.Spider;
 import org.jboss.webbeans.test.beans.SpiderProducer;
@@ -90,7 +90,7 @@ public class CommonWebBeanTest extends AbstractTest
    @Test @SpecAssertion(section="2.2")
    public void testFinalApiType()
    {
-      createSimpleBean(FinalTuna.class);
+      createSimpleBean(DependentFinalTuna.class);
    }
 	
 }

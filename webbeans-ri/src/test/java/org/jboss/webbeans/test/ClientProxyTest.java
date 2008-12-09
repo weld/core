@@ -10,10 +10,10 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.test.beans.FinalTuna;
 import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.TunedTuna;
+import org.jboss.webbeans.test.beans.broken.FinalTuna;
 import org.jboss.webbeans.util.BeanFactory;
 import org.jboss.webbeans.util.Reflections;
 import org.testng.annotations.Test;

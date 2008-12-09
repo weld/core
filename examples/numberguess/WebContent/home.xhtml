@@ -9,16 +9,14 @@
     <ui:define name="content">
        <h1>Guess a number...</h1>
        <h:form id="NumberGuessMain">
-          <div>
+          <div style="color: red">
              <h:messages id="messages" globalOnly="true"/>
              <h:outputText id="Higher" value="Higher!" rendered="#{game.number gt game.guess}"/>
              <h:outputText id="Lower" value="Lower!" rendered="#{game.number lt game.guess}"/>
           </div>
    
           <div>
-             I'm thinking of a number between <h:outputText id="Smallest" value="#{game.smallest}"/> and 
-             <h:outputText id="Biggest" value="#{game.biggest}"/>. You have 
-             <h:outputText id="RemainingGuesses" value="#{game.remainingGuesses}"/> guesses.
+             I'm thinking of a number between #{game.smallest} and #{game.biggest}. You have #{game.remainingGuesses} guesses.
           </div>
      
           <div>
