@@ -46,5 +46,9 @@
       </dependency>
    </dependencies>
    
+   <build>
+      <finalName>webbeans-numberguess</finalName>
+   </build>
+   
 </project>
 
