@@ -32,16 +32,24 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
  * Facade bean for implicit beans
  * 
  * @author Gavin King
- *
+ * 
  * @param <T>
  * @param <S>
  * @param <P>
  */
-public abstract class FacadeBean<T, S, P> extends AbstractBean<T, S> {
-
+public abstract class FacadeBean<T, S, P> extends AbstractBean<T, S>
+{
+   // The underlying item
    protected AnnotatedItem<T, S> annotatedItem;
 
-   public FacadeBean(AnnotatedItem<T, S> field, ManagerImpl manager) {
+   /**
+    * Constructor
+    * 
+    * @param field The facaded field
+    * @param manager The Web Beans manager
+    */
+   public FacadeBean(AnnotatedItem<T, S> field, ManagerImpl manager)
+   {
       super(manager);
       this.annotatedItem = field;
       init();
@@ -52,7 +60,8 @@ public abstract class FacadeBean<T, S, P> extends AbstractBean<T, S> {
     * 
     * Calls super method and validates the annotated item
     */
-   protected void init() {
+   protected void init()
+   {
       super.init();
       checkAnnotatedItem();
    }
@@ -60,7 +69,8 @@ public abstract class FacadeBean<T, S, P> extends AbstractBean<T, S> {
    /**
     * Validates the annotated item
     */
-   private void checkAnnotatedItem() {
+   private void checkAnnotatedItem()
+   {
       Type[] actualTypeArguments = annotatedItem.getActualTypeArguments();
       if (actualTypeArguments.length != 1)
       {
@@ -72,37 +82,73 @@ public abstract class FacadeBean<T, S, P> extends AbstractBean<T, S> {
       }
    }
 
-   protected Annotation[] getBindingTypesArray() {
+   /*
+    * Gets the binding type as an array
+    * 
+    * @return The binding types
+    */
+   protected Annotation[] getBindingTypesArray()
+   {
       return annotatedItem.getBindingTypesAsArray();
    }
 
+   /**
+    * Gets the type paramater of the facade
+    * 
+    * @return The type parameter
+    */
    @SuppressWarnings("unchecked")
-   protected Class<P> getTypeParameter() {
+   protected Class<P> getTypeParameter()
+   {
       return (Class<P>) annotatedItem.getType().getTypeParameters()[0].getClass();
    }
 
+   /**
+    * Initializes the scope type to dependent
+    */
    @Override
-   protected void initScopeType() {
+   protected void initScopeType()
+   {
       this.scopeType = Dependent.class;
    }
 
+   /**
+    * Initializes the deployment type to Standard
+    */
    @Override
-   protected void initDeploymentType() {
+   protected void initDeploymentType()
+   {
       this.deploymentType = Standard.class;
    }
 
+   /**
+    * Gets the underlying item
+    * 
+    * @return The underlying item
+    */
    @Override
-   protected AnnotatedItem<T, S> getAnnotatedItem() {
+   protected AnnotatedItem<T, S> getAnnotatedItem()
+   {
       return annotatedItem;
    }
 
+   /**
+    * Gets the default name
+    * 
+    * @return The default name
+    */
    @Override
-   protected String getDefaultName() {
+   protected String getDefaultName()
+   {
       return null;
    }
 
+   /**
+    * Initializes the type
+    */
    @Override
-   protected void initType() {
+   protected void initType()
+   {
       try
       {
          if (getAnnotatedItem() != null)
@@ -117,11 +163,15 @@ public abstract class FacadeBean<T, S, P> extends AbstractBean<T, S> {
       }
    }
 
+   /**
+    * Gets the default deployment type, Production
+    */
    @Override
-   protected Class<? extends Annotation> getDefaultDeploymentType() {
+   protected Class<? extends Annotation> getDefaultDeploymentType()
+   {
       return Production.class;
    }
-   
+
    /**
     * Returns a string representation
     * 
@@ -130,7 +180,7 @@ public abstract class FacadeBean<T, S, P> extends AbstractBean<T, S> {
    @Override
    public String toString()
    {
-      return "FacadeBean " + getName();
-   }   
+      return "FacadeBean " + getName() + " for " + annotatedItem;
+   }
 
 }

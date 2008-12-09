@@ -60,6 +60,11 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
       return manager.getInstanceByType(type, mergeBindings(bindingTypes));
    }
 
+   /**
+    * Gets a string representation
+    * 
+    * @return A string representation
+    */
    @Override
    public String toString()
    {

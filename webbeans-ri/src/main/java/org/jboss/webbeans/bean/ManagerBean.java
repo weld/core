@@ -34,71 +34,120 @@ import org.jboss.webbeans.util.Reflections;
  * Helper bean for accessing the Manager
  * 
  * @author Gavin King
- *
+ * 
  */
 public class ManagerBean extends Bean<Manager>
 {
-   
+   // The API types of the manager
    private static Set<Class<?>> types = Reflections.getTypeHierachy(Manager.class);
+   // The binding types of the manager
    private static final Set<Annotation> BINDING = new HashSet<Annotation>(Arrays.asList(new CurrentAnnotationLiteral()));
 
+   /**
+    * Constructor
+    * 
+    * @param manager The Web Beans manager
+    */
    public ManagerBean(Manager manager)
    {
       super(manager);
    }
-   
+
+   /**
+    * Creates an instance of the manager
+    * 
+    * @return An instance
+    */
    @Override
    public Manager create()
    {
       return getManager();
    }
 
+   /**
+    * Destroys the manager (not)
+    */
    @Override
    public void destroy(Manager instance)
    {
-      //No -op
+      // No -op
    }
 
+   /**
+    * Gets the binding types
+    * 
+    * @return A set containing Current
+    */
    @Override
    public Set<Annotation> getBindingTypes()
    {
       return BINDING;
    }
 
+   /**
+    * Gets the deployment types
+    * 
+    * @return Standard
+    */
    @Override
    public Class<? extends Annotation> getDeploymentType()
    {
       return Standard.class;
    }
 
+   /**
+    * Gets the name
+    * 
+    * @return null
+    */
    @Override
    public String getName()
    {
       return null;
    }
 
+   /**
+    * Gets the scope type
+    * 
+    * @return Dependent
+    */
    @Override
    public Class<? extends Annotation> getScopeType()
    {
       return Dependent.class;
    }
 
+   /**
+    * Gets the API types
+    * 
+    * @return The API types
+    */
    @Override
    public Set<Class<?>> getTypes()
    {
       return types;
    }
 
+   /**
+    * Indicates if the bean is nullable
+    * 
+    * @return true
+    */
    @Override
    public boolean isNullable()
    {
       return true;
    }
 
+   /**
+    * Indicates if the bean is serializable
+    * 
+    * @return false
+    */
    @Override
    public boolean isSerializable()
    {
       return false;
    }
-   
+
 }

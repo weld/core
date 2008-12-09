@@ -106,4 +106,15 @@ public abstract class FacadeImpl<T>
       return mergeBindingTypes(bindingTypes, newBindingTypes).toArray(new Annotation[0]);
    }
 
+   /**
+    * Gets a string representation
+    * 
+    * @return A string representation
+    */
+   @Override
+   public String toString()
+   {
+      return "Abstract facade implmentation";
+   }
+
 }

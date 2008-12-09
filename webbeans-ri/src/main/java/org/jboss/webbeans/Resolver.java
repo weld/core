@@ -364,6 +364,11 @@ public class Resolver
       return null;
    }
 
+   /**
+    * Gets a string representation
+    * 
+    * @return A string representation
+    */
    @Override
    public String toString()
    {

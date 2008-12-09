@@ -46,13 +46,15 @@ import org.jboss.webbeans.util.Reflections;
  */
 public class SimpleBean<T> extends AbstractClassBean<T>
 {
-
+   // Logger
    private static LogProvider log = Logging.getLogProvider(SimpleBean.class);
+   // Empty list representing no-args
    private static List<Class<?>> NO_ARGUMENTS = Collections.emptyList();
-
+   // The constructor
    private AnnotatedConstructor<T> constructor;
-
+   // The post-construct method
    private AnnotatedMethod<Object> postConstruct;
+   // The pre-destroy method
    private AnnotatedMethod<Object> preDestroy;
    
    /**
@@ -347,6 +349,11 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       return preDestroy;
    }
 
+   /**
+    * Gets a string representation
+    * 
+    * @return The string representation
+    */
    @Override
    public String toString()
    {

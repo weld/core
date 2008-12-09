@@ -27,83 +27,148 @@ import javax.webbeans.manager.Manager;
  * A delegating bean
  * 
  * @author Pete Muir
- *
+ * 
  * @param <T>
  */
 public abstract class ForwardingBean<T> extends Bean<T>
 {
-   
+
+   /**
+    * Constructor
+    * 
+    * @param manager The Web Beans manager
+    */
    public ForwardingBean(Manager manager)
    {
       super(manager);
    }
 
+   /**
+    * Creates an instance of the delegate
+    * 
+    * @return an instance of the delegate
+    */
    @Override
    public T create()
    {
       return delegate().create();
    }
 
+   /**
+    * Destroys an instance through the delegate
+    * 
+    * @param instance The instance to destroy
+    */
    @Override
    public void destroy(T instance)
    {
       delegate().destroy(instance);
    }
 
+   /**
+    * Gets the binding types of the delegate
+    * 
+    * @return The binding types
+    */
    @Override
    public Set<Annotation> getBindingTypes()
    {
       return delegate().getBindingTypes();
    }
 
+   /**
+    * Gets the deployment types of the delegate
+    * 
+    * @return The deployment types
+    */
    @Override
    public Class<? extends Annotation> getDeploymentType()
    {
       return delegate().getDeploymentType();
    }
 
+   /**
+    * Gets the name of the delegate
+    * 
+    * @return The name
+    */
    @Override
    public String getName()
    {
       return delegate().getName();
    }
 
+   /**
+    * Gets the scope type of the delegate
+    * 
+    * @return The scope type
+    */
    @Override
    public Class<? extends Annotation> getScopeType()
    {
       return delegate().getScopeType();
    }
 
+   /**
+    * Gets the API types of the delegate
+    * 
+    * @return The API types
+    */
    @Override
    public Set<Class<?>> getTypes()
    {
       return delegate().getTypes();
    }
 
+   /**
+    * Indicates if the delegate is nullable
+    * 
+    * @return True if nullable, false otherwise
+    */
    @Override
    public boolean isNullable()
    {
       return delegate().isNullable();
    }
 
+   /**
+    * Indicates if the delegate is serializable
+    * 
+    * @return True if serializable, false otherwise
+    */
    @Override
    public boolean isSerializable()
    {
       return delegate().isSerializable();
    }
-   
+
+   /**
+    * Gets the hash code of the delegate
+    * 
+    * @return The hash code
+    */
    @Override
    public int hashCode()
    {
       return delegate().hashCode();
    }
-   
+
+   /**
+    * Compares an object with the delegate
+    * 
+    * @return True if equals, false otherwise
+    */
    @Override
    public boolean equals(Object obj)
    {
       return delegate().equals(obj);
    }
-   
+
+   /**
+    * Abstract getter for the delegate
+    * 
+    * @return The delegate
+    */
    protected abstract Bean<T> delegate();
 
    /**
@@ -114,7 +179,7 @@ public abstract class ForwardingBean<T> extends Bean<T>
    @Override
    public String toString()
    {
-      return "ForwardingBean " + getName();
-   }   
-   
+      return "ForwardingBean " + getName() + " for " + delegate().toString();
+   }
+
 }

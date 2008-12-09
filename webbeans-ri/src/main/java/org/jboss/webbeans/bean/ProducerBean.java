@@ -29,23 +29,38 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.util.Names;
 
 /**
+ * The implicit producer bean
  * 
  * @author Gavin King
- *
+ * 
  * @param <T>
  * @param <S>
  */
-public abstract class ProducerBean<T, S> extends AbstractBean<T, S> {
-
+public abstract class ProducerBean<T, S> extends AbstractBean<T, S>
+{
+   // The declaring bean
    protected AbstractClassBean<?> declaringBean;
 
-   public ProducerBean(AbstractClassBean<?> declaringBean, ManagerImpl manager) {
+   /**
+    * Constructor
+    * 
+    * @param declaringBean The declaring bean
+    * @param manager The Web Beans manager
+    */
+   public ProducerBean(AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   {
       super(manager);
       this.declaringBean = declaringBean;
    }
 
+   /**
+    * Gets the deployment types
+    * 
+    * @return The deployment types of the declaring bean
+    */
    @Override
-   protected Class<? extends Annotation> getDefaultDeploymentType() {
+   protected Class<? extends Annotation> getDefaultDeploymentType()
+   {
       return deploymentType = declaringBean.getDeploymentType();
    }
 
@@ -53,7 +68,8 @@ public abstract class ProducerBean<T, S> extends AbstractBean<T, S> {
     * Initializes the API types
     */
    @Override
-   protected void initApiTypes() {
+   protected void initApiTypes()
+   {
       if (getType().isArray() || getType().isPrimitive())
       {
          apiTypes = new HashSet<Class<?>>();
@@ -84,25 +100,27 @@ public abstract class ProducerBean<T, S> extends AbstractBean<T, S> {
             this.type = getAnnotatedItem().getType();
          }
       }
-      catch (ClassCastException e) 
+      catch (ClassCastException e)
       {
          throw new RuntimeException(" Cannot cast producer type " + getAnnotatedItem().getType() + " to bean type " + (getDeclaredBeanType() == null ? " unknown " : getDeclaredBeanType()), e);
       }
    }
-   
+
    /**
     * Returns the declaring bean
     * 
     * @return The bean representation
     */
-   public AbstractClassBean<?> getDeclaringBean() {
+   public AbstractClassBean<?> getDeclaringBean()
+   {
       return declaringBean;
    }
 
    /**
     * Validates the producer method
     */
-   protected void checkProducerReturnType() {
+   protected void checkProducerReturnType()
+   {
       for (Type type : getAnnotatedItem().getActualTypeArguments())
       {
          if (!(type instanceof Class))
@@ -116,23 +134,40 @@ public abstract class ProducerBean<T, S> extends AbstractBean<T, S> {
     * Initializes the bean and its metadata
     */
    @Override
-   protected void init() {
+   protected void init()
+   {
       super.init();
       checkProducerReturnType();
    }
 
-   protected void checkReturnValue(T instance) {
+   /**
+    * Validates the return value
+    * 
+    * @param instance The instance to validate
+    */
+   protected void checkReturnValue(T instance)
+   {
       if (instance == null && !getScopeType().equals(Dependent.class))
       {
          throw new IllegalProductException("Cannot return null from a non-dependent producer method");
       }
    }
 
-   protected Object getReceiver() {
-      return getAnnotatedItem().isStatic() ? 
-              null : manager.getInstance(getDeclaringBean());
+   /**
+    * Gets the receiver of the product
+    * 
+    * @return The receiver
+    */
+   protected Object getReceiver()
+   {
+      return getAnnotatedItem().isStatic() ? null : manager.getInstance(getDeclaringBean());
    }
-   
+
+   /**
+    * Gets a string representation
+    * 
+    * @return The string representation
+    */
    @Override
    public String toString()
    {
@@ -149,6 +184,6 @@ public abstract class ProducerBean<T, S> extends AbstractBean<T, S> {
       buffer.append(" [" + getType().getName() + "]\n");
       buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
       return buffer.toString();
-   }     
+   }
 
 }

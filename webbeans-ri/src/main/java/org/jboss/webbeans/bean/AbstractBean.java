@@ -89,21 +89,28 @@ public abstract class AbstractBean<T, E> extends Bean<T>
 
    // Logger
    private LogProvider log = Logging.getLogProvider(AbstractBean.class);
-
+   // The binding types
    private Set<Annotation> bindingTypes;
+   // The name
    protected String name;
+   // The scope type 
    protected Class<? extends Annotation> scopeType;
+   // The merged stereotypes
    private MergedStereotypes<T, E> mergedStereotypes;
+   // The deployment type
    protected Class<? extends Annotation> deploymentType;
+   // The type
    protected Class<T> type;
+   // The remove method
    protected AnnotatedMethod<Object> removeMethod;
+   // The API types
    protected Set<Class<?>> apiTypes;
+   // The injection points
    protected Set<AnnotatedItem<?, ?>> injectionPoints;
-
+   // If the type a primitive?
    private boolean primitive;
-
+   // The Web Beans manager
    protected ManagerImpl manager;
-
    // Cached values
    private Type declaredBeanType;
 
@@ -198,6 +205,11 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       return;
    }
 
+   /**
+    * Gets the default deployment type
+    * 
+    * @return The default deployment type
+    */
    protected abstract Class<? extends Annotation> getDefaultDeploymentType();
 
    /**
@@ -344,14 +356,14 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
 
    /**
-    * Returns the annotated time the bean reresents
+    * Returns the annotated time the bean represents
     * 
     * @return The annotated item
     */
    protected abstract AnnotatedItem<T, E> getAnnotatedItem();
 
    /**
-    * Returns the binding types
+    * Gets the binding types
     * 
     * @return The set of binding types
     * 
@@ -363,7 +375,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
 
    /**
-    * Returns the declared bean type
+    * Gets the declared bean type
     * 
     * @return The bean type
     */
@@ -385,14 +397,14 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
 
    /**
-    * Returns the default name of the bean
+    * Gets the default name of the bean
     * 
     * @return The default name
     */
    protected abstract String getDefaultName();
 
    /**
-    * Returns the deployment type of the bean
+    * Gets the deployment type of the bean
     * 
     * @return The deployment type
     * 
@@ -404,7 +416,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
 
    /**
-    * Returns the injection points of the bean
+    * Gets the injection points of the bean
     * 
     * @return The set of injection points
     */
@@ -414,7 +426,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
 
    /**
-    * Returns the merged sterotypes of the bean
+    * Gets the merged stereotypes of the bean
     * 
     * @return The set of merged stereotypes
     */
@@ -424,7 +436,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
 
    /**
-    * Returns the name of the bean
+    * Gets the name of the bean
     * 
     * @return The name
     * 
@@ -436,7 +448,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
 
    /**
-    * Returns the remove method of the bean
+    * Gets the remove method of the bean
     * 
     * @return The remove method
     */
@@ -446,7 +458,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
 
    /**
-    * Returns the scope type of the bean
+    * Gets the scope type of the bean
     * 
     * @return The scope type
     * 
@@ -458,7 +470,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
 
    /**
-    * Returns the specializes type of the bean
+    * Gets the specializes type of the bean
     * 
     * @return The specialized type
     */
@@ -468,7 +480,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
 
    /**
-    * Returns the type of the bean
+    * Gets the type of the bean
     * 
     * @return The type
     */
@@ -478,7 +490,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
 
    /**
-    * Returns the API types of the bean
+    * Gets the API types of the bean
     * 
     * @return The set of API types
     * 
@@ -503,7 +515,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
 
    /**
-    * Inicates if bean is nullable
+    * Indicates if bean is nullable
     * 
     * @return True if nullable, false otherwise
     * 
@@ -540,7 +552,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
 
    /**
-    * Returns a string representation
+    * Gets a string representation
     * 
     * @return The string representation
     */

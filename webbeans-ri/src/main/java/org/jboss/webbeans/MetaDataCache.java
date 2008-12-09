@@ -149,6 +149,11 @@ public class MetaDataCache
       });
    }
 
+   /**
+    * Gets a string representation
+    * 
+    * @return A string representation
+    */
    @Override
    public String toString()
    {

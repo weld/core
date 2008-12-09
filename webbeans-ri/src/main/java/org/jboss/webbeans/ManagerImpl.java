@@ -657,6 +657,11 @@ public class ManagerImpl implements Manager
       return resolver;
    }
 
+   /**
+    * Gets a string representation
+    * 
+    * @return A string representation
+    */
    @Override
    public String toString() {
       StringBuilder buffer = new StringBuilder();

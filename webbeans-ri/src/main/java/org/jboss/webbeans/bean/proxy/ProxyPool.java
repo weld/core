@@ -162,6 +162,11 @@ public class ProxyPool
       });
    }
 
+   /**
+    * Gets a string representation
+    * 
+    * @return The string representation
+    */
    @Override
    public String toString()
    {

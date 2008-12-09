@@ -31,6 +31,7 @@ import org.jboss.webbeans.util.Names;
  * @author David Allen
  * 
  * @param <T>
+ * @param <S>
  */
 public class EventBean<T, S> extends FacadeBean<Event<T>, S, T>
 {
@@ -46,6 +47,11 @@ public class EventBean<T, S> extends FacadeBean<Event<T>, S, T>
       super(field, manager);
    }
 
+   /**
+    * Creates an instance
+    * 
+    * @return an event instance
+    */
    @Override
    public Event<T> create()
    {

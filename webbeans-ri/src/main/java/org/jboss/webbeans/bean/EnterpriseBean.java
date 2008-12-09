@@ -271,7 +271,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    }
 
    /**
-    * Returns the specializes type of the bean
+    * Gets the specializes type of the bean
     * 
     * @return The specialized type
     */
@@ -305,7 +305,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    }
 
    /**
-    * Returns the EJB metadata
+    * Gets the EJB metadata
     * 
     * @return The metadata
     */
@@ -314,6 +314,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       return ejbMetaData;
    }
 
+   /**
+    * Gets a string representation
+    * 
+    * @return The string representation
+    */
    @Override
    public String toString()
    {

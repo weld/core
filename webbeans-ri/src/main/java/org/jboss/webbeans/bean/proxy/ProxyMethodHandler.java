@@ -40,8 +40,9 @@ import org.jboss.webbeans.util.Reflections;
 public class ProxyMethodHandler implements MethodHandler, Serializable
 {
    private static final long serialVersionUID = -5391564935097267888L;
-
+   // The bean
    private transient Bean<?> bean;
+   // The bean index in the manager
    private int beanIndex;
 
    /**
@@ -80,6 +81,11 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
       return proxiedMethod.invoke(proxiedInstance, args);
    }
 
+   /**
+    * Gets a string representation
+    * 
+    * @return The string representation
+    */
    @Override
    public String toString()
    {

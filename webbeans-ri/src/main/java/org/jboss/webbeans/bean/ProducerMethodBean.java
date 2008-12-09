@@ -41,7 +41,7 @@ import org.jboss.webbeans.util.Names;
  */
 public class ProducerMethodBean<T> extends ProducerBean<T, Method>
 {
-   
+   // The underlying method
    private AnnotatedMethod<T> method;
 
    /**
@@ -184,7 +184,11 @@ public class ProducerMethodBean<T> extends ProducerBean<T, Method>
       return removeMethod;
    }
 
-
+   /**
+    * Gets a string representation
+    * 
+    * @return The string representation
+    */
    @Override
    public String toString()
    {
@@ -213,5 +217,4 @@ public class ProducerMethodBean<T> extends ProducerBean<T, Method>
       return buffer.toString();      
    }
 
-   
 }

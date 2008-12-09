@@ -52,11 +52,13 @@ import org.jboss.webbeans.util.Strings;
  */
 public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 {
-
+   // Logger
    private static final LogProvider log = Logging.getLogProvider(AbstractClassBean.class);
-
+   // The item representation
    private AnnotatedClass<T> annotatedItem;
+   // The injectable fields
    private Set<AnnotatedField<Object>> injectableFields;
+   // The initializer methods
    private Set<AnnotatedMethod<Object>> initializerMethods;
 
    /**
@@ -95,7 +97,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    }
 
    /**
-    * Returns the producer methods
+    * Gets the producer methods
     * 
     * @return A set of producer methods. An empty set is returned if there are
     *         none present
@@ -106,7 +108,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    }
 
    /**
-    * Returns the producer fields
+    * Gets the producer fields
     * 
     * @return A set of producer fields. An empty set is returned if there are
     *         none present
@@ -116,6 +118,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       return getAnnotatedItem().getAnnotatedFields(Produces.class);
    }
 
+   /**
+    * Gets the observer methods
+    * 
+    * @return A set of observer methods. An empty set is returned if there are no matches.
+    */
    public Set<AnnotatedMethod<Object>> getObserverMethods()
    {
       return getAnnotatedItem().getMethodsWithAnnotatedParameters(Observes.class);
@@ -229,7 +236,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    }
 
    /**
-    * Returns the annotated item
+    * Gets the annotated item
     * 
     * @return The annotated item
     */
@@ -240,7 +247,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    }
 
    /**
-    * Returns the default name
+    * Gets the default name
     * 
     * @return The default name
     */
@@ -253,7 +260,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    }
 
    /**
-    * Returns the injectable fields
+    * Gets the injectable fields
     * 
     * @return The set of injectable fields
     */
@@ -263,7 +270,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    }
 
    /**
-    * Returns the annotated methods
+    * Gets the annotated methods
     * 
     * @return The set of annotated methods
     */
@@ -273,7 +280,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    }
 
    /**
-    * Returns a string representation
+    * Gets a string representation
     * 
     * @return The string representation
     */
@@ -296,6 +303,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    }
 
    @Override
+   /**
+    * Gets the default deployment type
+    * 
+    * @return The default deployment type
+    */
    protected Class<? extends Annotation> getDefaultDeploymentType()
    {
       return Production.class;

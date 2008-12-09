@@ -33,7 +33,7 @@ import org.jboss.webbeans.util.Names;
  */
 public class ProducerFieldBean<T> extends ProducerBean<T, Field>
 {
-   
+   // The underlying field
    private AnnotatedField<T> field;
    
    /**
@@ -97,6 +97,11 @@ public class ProducerFieldBean<T> extends ProducerBean<T, Field>
       return field.getPropertyName();
    }
    
+   /**
+    * Gets a string representation
+    * 
+    * @return The string representation
+    */   
    @Override
    public String toString()
    {
@@ -125,5 +130,4 @@ public class ProducerFieldBean<T> extends ProducerBean<T, Field>
       return buffer.toString();      
    }
 
-   
 }
