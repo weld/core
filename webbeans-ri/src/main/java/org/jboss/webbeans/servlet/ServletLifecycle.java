@@ -86,6 +86,7 @@ public class ServletLifecycle
     */
    public static void endSession(HttpSession session) 
    {
+      SessionContext.INSTANCE.setBeanMap(new SessionBeanMap(session));
       SessionContext.INSTANCE.destroy();
       SessionContext.INSTANCE.setBeanMap(null);
    }   

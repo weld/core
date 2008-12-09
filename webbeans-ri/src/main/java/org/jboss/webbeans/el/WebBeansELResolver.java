@@ -63,7 +63,12 @@ public class WebBeansELResolver extends ELResolver
    {
       if (base == null && property != null)
       {
-         return CurrentManager.rootManager().getInstanceByName(property.toString());
+         Object value = CurrentManager.rootManager().getInstanceByName(property.toString());
+         if (value != null)
+         {
+            context.setPropertyResolved(true);
+         }
+         return value;
       }
       else
       {

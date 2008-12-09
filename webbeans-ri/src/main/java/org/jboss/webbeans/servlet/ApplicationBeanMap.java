@@ -18,6 +18,7 @@ import org.jboss.webbeans.contexts.AbstractBeanMapAdaptor;
 import org.jboss.webbeans.contexts.ApplicationContext;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.util.EnumerationIterable;
 
 /**
  * Abstracts the servlet API specific application context
@@ -43,9 +44,16 @@ public class ApplicationBeanMap extends AbstractBeanMapAdaptor
    }
 
    
+   @SuppressWarnings("unchecked")
    public void clear()
    {
-      throw new UnsupportedOperationException(); 
+      for (String name : new EnumerationIterable<String>(servletContext.getAttributeNames()))
+      {
+         if (name.startsWith(getKeyPrefix()))
+         {
+            servletContext.removeAttribute(name);
+         }
+      }
    }
 
    @SuppressWarnings("unchecked")
@@ -84,7 +92,7 @@ public class ApplicationBeanMap extends AbstractBeanMapAdaptor
          String name = (String) names.nextElement();
          if (name.startsWith(getKeyPrefix()))
          {
-            String id = name.substring(getKeyPrefix().length());
+            String id = name.substring(getKeyPrefix().length() + 1);
             Contextual<?> bean = CurrentManager.rootManager().getBeans().get(Integer.parseInt(id));
             beans.add(bean);
          }
