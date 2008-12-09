@@ -7,8 +7,32 @@
 
   <ui:composition template="template.xhtml">
     <ui:define name="content">
-      A Web Beans example
-      <h:outputText value="#{game.number}" />
+       <h1>Guess a number...</h1>
+       <h:form id="NumberGuessMain">
+          <div>
+             <h:messages id="messages" globalOnly="true"/>
+             <h:outputText id="Higher" value="Higher!" rendered="#{game.number gt game.guess}"/>
+             <h:outputText id="Lower" value="Lower!" rendered="#{game.number lt game.guess}"/>
+          </div>
+   
+          <div>
+             I'm thinking of a number between <h:outputText id="Smallest" value="#{game.smallest}"/> and 
+             <h:outputText id="Biggest" value="#{game.biggest}"/>. You have 
+             <h:outputText id="RemainingGuesses" value="#{game.remainingGuesses}"/> guesses.
+          </div>
+     
+          <div>
+             Your guess: 
+             <h:inputText id="inputGuess" value="#{game.guess}" required="true" size="3">
+                <f:validateLongRange maximum="#{game.biggest}" minimum="#{game.smallest}"/>
+             </h:inputText>
+            <h:commandButton id="GuessButton" value="Guess" action="#{game.check}"/>
+          </div>
+   
+          <div>
+             <h:message id="message" for="inputGuess" style="color: red"/>
+          </div>
+       </h:form>
     </ui:define>
   </ui:composition>
 </html>

@@ -19,6 +19,11 @@
       <servlet-name>Faces Servlet</servlet-name>
       <url-pattern>*.jsf</url-pattern>
    </servlet-mapping>
+   
+   <context-param>
+      <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+      <param-value>.xhtml</param-value>
+   </context-param>
 
    <session-config>
       <session-timeout>10</session-timeout>
