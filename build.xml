@@ -4,6 +4,8 @@
 	<path id="maven-ant-tasks.classpath" path="lib/maven-ant-tasks.jar" />
 	<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpathref="maven-ant-tasks.classpath" />
 	
+	<property file="build.properties" />
+	
 	<target name="install-jboss5">
 		
 		<fail unless="jboss.home" message="Please pass in -Djboss.home=..."/>
