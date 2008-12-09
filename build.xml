@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
-<project name="JBoss5DeployerInstall" default="install" basedir="." xmlns:artifact="urn:maven-artifact-ant">
+<project name="JBoss5DeployerInstall" default="install-jboss5" basedir="." xmlns:artifact="urn:maven-artifact-ant">
 	
 	<path id="maven-ant-tasks.classpath" path="lib/maven-ant-tasks.jar" />
 	<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpathref="maven-ant-tasks.classpath" />
 	
-	<target name="install">
+	<target name="install-jboss5">
 		
 		<fail unless="jboss.home" message="Please pass in -Djboss.home=..."/>
 		
 		<mkdir dir="target/webbeans.deployer"/>
 		
-		<artifact:dependencies filesetId="jboss5.deployer.fileset" versionsId="jboss5.deployer.versions">
+		<artifact:dependencies filesetId="jboss5.deployer.fileset" versionsId="jboss5.deployer.versions" >
          <dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-microcontainer" version="5.2.0-SNAPSHOT"/>
          <dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-jbossas" version="5.2.0-SNAPSHOT"/>
       </artifact:dependencies>
@@ -32,22 +32,14 @@
          </fileset>
 		</copy>
 		
-		<copy todir="${jboss.home}/server/default/deployers">
-			<fileset dir="target">
-				<include name="webbeans.deployer/**" />
+		<copy todir="${jboss.home}/server/default/deployers/webbeans.deployer">
+			<fileset dir="target/webbeans.deployer">
+				<include name="**/*.xml" />
+				<include name="webbeans-*.jar" />
+				<include name="google*.jar" />
 			</fileset>
+			<mapper classpathref="maven-ant-tasks.classpath" classname="org.apache.maven.artifact.ant.VersionMapper" from="${jboss5.deployer.versions}" to="flatten" />
 		</copy>
-		
-	    <copy todir="${jboss.home}/server/default/lib">
-         <fileset dir="webbeans-ri/target">
-         	<include name="webbeans-ri*.jar" />
-         </fileset>
-	    	<fileset dir="webbeans-api/target">
-            <include name="webbeans-api*.jar" />
-         </fileset>
-	    	<fileset refid="google.collections.fileset" />
-	    	<flattenmapper />
-       </copy>
 		
 	</target>
 	
