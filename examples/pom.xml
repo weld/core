@@ -18,7 +18,7 @@
    </description>
 
    <modules>
-      <module>webbeans-pizzashack</module>
+      <module>webbeans-numberguess</module>
    </modules>
    
    <profiles>
@@ -29,7 +29,7 @@
             </property>
          </activation>
          <build>
-            <finalName>webbeans-pizzashack</finalName>
+            <finalName>webbeans-numberguess</finalName>
             <plugins>
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
