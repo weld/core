@@ -20,7 +20,21 @@
    <modules>
       <module>numberguess</module>
    </modules>
-   
+
+   <build>
+      <pluginManagement>
+         <plugins>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-war-plugin</artifactId>
+               <configuration>
+                  <warSourceDirectory>${basedir}/WebContent</warSourceDirectory>
+               </configuration>
+            </plugin>
+         </plugins>
+      </pluginManagement>
+   </build>
+
    <profiles>
       <profile>
          <activation>
@@ -29,12 +43,10 @@
             </property>
          </activation>
          <build>
-            <finalName>webbeans-numberguess</finalName>
             <plugins>
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-war-plugin</artifactId>
-                  <version>2.0</version>
                   <configuration>
                      <webappDirectory>
                         ${jboss.home}/server/default/deploy/${project.build.finalName}.war
@@ -46,6 +58,8 @@
          </build>
       </profile>
    </profiles>
+   
+   
 
 </project>
 
