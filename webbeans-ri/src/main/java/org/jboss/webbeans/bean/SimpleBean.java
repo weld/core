@@ -59,6 +59,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * Constructor
     * 
     * @param type The type of the bean
+    * @param manager The Web Beans manager
     */
    public SimpleBean(Class<T> type, ManagerImpl manager)
    {
@@ -78,7 +79,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       bindDecorators();
       bindInterceptors();
       injectEjbAndCommonFields();
-      injectBoundFields(manager, instance);
+      injectBoundFields(instance, manager);
       callInitializers(instance);
       callPostConstruct(instance);
       return instance;
@@ -108,7 +109,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          try
          {
         	//note: RI supports injection into @PreDestroy
-            preDestroy.invoke(manager, instance);
+            preDestroy.invoke(instance, manager);
          }
          catch (Exception e)
          {
@@ -130,7 +131,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          try
          {
             //note: RI supports injection into @PostConstruct
-            postConstruct.invoke(manager, instance);
+            postConstruct.invoke(instance, manager);
          }
          catch (Exception e)
          {
@@ -148,7 +149,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       for (AnnotatedMethod<Object> initializer : getInitializerMethods())
       {
-         initializer.invoke(manager, instance);
+         initializer.invoke(instance, manager);
       }
    }
 
@@ -164,12 +165,13 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * Injects bound fields
     * 
     * @param instance The instance to inject into
+    * @param manager The Web Beans manager
     */
-   protected void injectBoundFields(Manager manager, T instance)
+   protected void injectBoundFields(T instance, Manager manager)
    {
       for (AnnotatedField<?> injectableField : getInjectableFields())
       {
-         injectableField.inject(manager, instance);
+         injectableField.inject(instance, manager);
       }
    }
 

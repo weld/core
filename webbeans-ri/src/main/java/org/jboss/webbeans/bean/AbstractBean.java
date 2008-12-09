@@ -109,6 +109,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
 
    /**
     * Constructor
+    * 
+    * @param manager The Web Beans manager
     */
    public AbstractBean(ManagerImpl manager)
    {

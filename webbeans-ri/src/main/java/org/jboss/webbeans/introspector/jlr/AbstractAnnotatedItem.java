@@ -194,12 +194,12 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * of annotated parameters.
     * 
     * @param parameters The list of annotated parameter to look up
+    * @param manager The Web Beans manager
     * @return The object array of looked up values
-    * 
     */
-   protected static Object[] getParameterValues(Manager manager, List<AnnotatedParameter<Object>> parameters)
+   protected static Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters, Manager manager)
    {
-      return getParameterValues(manager, parameters, null, null);
+      return getParameterValues(parameters, null, null, manager);
    }
 
    /**
@@ -207,10 +207,10 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * of annotated parameters.
     * 
     * @param parameters The list of annotated parameter to look up
+    * @param manager The Web Beans manager
     * @return The object array of looked up values
-    * 
     */
-   protected static Object[] getParameterValues(Manager manager, List<AnnotatedParameter<Object>> parameters, Object specialVal, Class<? extends Annotation> specialParam)
+   protected static Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters, Object specialVal, Class<? extends Annotation> specialParam, Manager manager)
    {
       Object[] parameterValues = new Object[parameters.size()];
       Iterator<AnnotatedParameter<Object>> iterator = parameters.iterator();

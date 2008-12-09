@@ -132,6 +132,7 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    /**
     * Gets the current value of the member
     * 
+    * @param manager The Web Beans manager
     * @return The current value
     */
    public T getValue(Manager manager)

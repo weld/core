@@ -25,9 +25,9 @@ import java.util.Set;
 import javax.webbeans.Event;
 import javax.webbeans.Observable;
 import javax.webbeans.Observer;
+import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.FacadeImpl;
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.util.Strings;
 
 /**
@@ -46,11 +46,13 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
    /**
     * Constructor
     * 
+    * @param eventType The event type
+    * @param manager The Web Beans manager
     * @param bindingTypes The binding types
     */
-   public EventImpl(ManagerImpl manager, Class<T> eventType, Annotation... bindingTypes)
+   public EventImpl(Class<T> eventType, Manager manager, Annotation... bindingTypes)
    {
-      super(manager, eventType, bindingTypes);
+      super(eventType, manager, bindingTypes);
    }
 
    /**

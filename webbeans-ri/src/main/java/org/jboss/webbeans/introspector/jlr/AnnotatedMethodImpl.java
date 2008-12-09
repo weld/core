@@ -232,22 +232,22 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    /**
     * Invokes the method on an instance with current parameters from manager
     * 
-    * @param mananger The Web Beans manager
     * @param instance The instance to invoke on
-    * 
+    * @param manager The Web Beans manager
+    * @return The return value of the invocation 
     * @see org.jboss.webbeans.introspector.AnnotatedMethod#invoke(ManagerImpl,
     *      Object)
     */
    @SuppressWarnings("unchecked")
-   public T invoke(Manager manager, Object instance)
+   public T invoke(Object instance, Manager manager)
    {
-      return (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(manager, parameters));
+      return (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, manager));
    }
 
    @SuppressWarnings("unchecked")
-   public T invokeWithSpecialValue(Manager manager, Object instance, Class<? extends Annotation> specialParam, Object specialVal)
+   public T invokeWithSpecialValue(Object instance, Class<? extends Annotation> specialParam, Object specialVal, Manager manager)
    {
-      return (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(manager, parameters, specialVal, specialParam));
+      return (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, specialVal, specialParam, manager));
    }
 
    /**

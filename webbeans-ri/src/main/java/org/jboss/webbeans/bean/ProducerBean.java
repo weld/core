@@ -39,7 +39,7 @@ public abstract class ProducerBean<T, S> extends AbstractBean<T, S> {
 
    protected AbstractClassBean<?> declaringBean;
 
-   public ProducerBean(ManagerImpl manager, AbstractClassBean<?> declaringBean) {
+   public ProducerBean(AbstractClassBean<?> declaringBean, ManagerImpl manager) {
       super(manager);
       this.declaringBean = declaringBean;
    }

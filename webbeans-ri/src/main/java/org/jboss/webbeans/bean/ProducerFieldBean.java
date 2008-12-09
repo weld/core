@@ -41,6 +41,7 @@ public class ProducerFieldBean<T> extends ProducerBean<T, Field>
     * 
     * @param method The producer field
     * @param declaringBean The declaring bean instance
+    * @param manager The Web Beans manager
     */
    public ProducerFieldBean(Field field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
@@ -52,10 +53,11 @@ public class ProducerFieldBean<T> extends ProducerBean<T, Field>
     * 
     * @param method The producer field abstraction
     * @param declaringBean The declaring bean
+    * @param manager The Web Beans manager
     */
    public ProducerFieldBean(AnnotatedField<T> field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
-      super(manager, declaringBean);
+      super(declaringBean, manager);
       this.field = field;
       init();
    }

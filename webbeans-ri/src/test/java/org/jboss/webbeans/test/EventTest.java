@@ -66,7 +66,7 @@ public class EventTest
       //Create a test annotation for the event and use it to construct the
       //event object
       Annotation[] annotations = new Annotation[] { new TameAnnotationLiteral() };
-      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>(manager, DangerCall.class, annotations);
+      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>(DangerCall.class, manager, annotations);
       eventComponent.fire(anEvent, new SynchronousAnnotationLiteral());
       assert anEvent.equals(manager.getEvent());
       assert Reflections.annotationSetMatches(manager.getEventBindings(),
@@ -107,7 +107,7 @@ public class EventTest
       //Create a test annotation for the event and use it to construct the
       //event object
       Annotation[] annotations = new Annotation[] { new TameAnnotationLiteral() };
-      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>(manager, DangerCall.class, annotations);
+      EventImpl<DangerCall> eventComponent = new EventImpl<DangerCall>(DangerCall.class, manager, annotations);
       Observer<DangerCall> observer = new AnObserver<DangerCall>();
       eventComponent.observe(observer, new SynchronousAnnotationLiteral());
       assert manager.getObservedEventType().equals(DangerCall.class);

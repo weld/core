@@ -24,7 +24,6 @@ import java.util.Arrays;
 
 import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Names;
@@ -119,17 +118,18 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
     * Gets the current value and injects this instance into an instance
     * 
     * @param instance The instance to inject into
-    * 
+    * @param manager The Web Beans manager
     * @see org.jboss.webbeans.introspector.AnnotatedField#inject(Object,
-    *      ManagerImpl)
+    *      Manager)
     */
-   public void inject(Manager manager, Object instance)
+   public void inject(Object instance, Manager manager)
    {
       Reflections.setAndWrap(getDelegate(), instance, getValue(manager));
    }
-   
+
    @SuppressWarnings("unchecked")
-   public T get(Object instance) {
+   public T get(Object instance)
+   {
       return (T) Reflections.getAndWrap(getDelegate(), instance);
    }
 

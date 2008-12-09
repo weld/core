@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.webbeans.DuplicateBindingTypeException;
+import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.util.Reflections;
 
@@ -37,18 +38,18 @@ public abstract class FacadeImpl<T>
    // The binding types the helper operates on
    protected final Set<? extends Annotation> bindingTypes;
    // The Web Beans manager
-   protected final ManagerImpl manager;
+   protected final Manager manager;
    // The type of the operation
    protected final Class<T> type;
 
    /**
     * Constructor
     * 
-    * @param manager The Web Beans manager
     * @param type The event type
+    * @param manager The Web Beans manager
     * @param bindingTypes The binding types
     */
-   protected FacadeImpl(ManagerImpl manager, Class<T> type, Annotation... bindingTypes)
+   protected FacadeImpl(Class<T> type, Manager manager, Annotation... bindingTypes)
    {
       this.manager = manager;
       this.type = type;

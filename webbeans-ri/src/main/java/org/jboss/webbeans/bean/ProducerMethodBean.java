@@ -49,6 +49,7 @@ public class ProducerMethodBean<T> extends ProducerBean<T, Method>
     * 
     * @param method The producer method
     * @param declaringBean The declaring bean instance
+    * @param manager The Web Beans manager
     */
    public ProducerMethodBean(Method method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
@@ -60,10 +61,11 @@ public class ProducerMethodBean<T> extends ProducerBean<T, Method>
     * 
     * @param method The producer method abstraction
     * @param declaringBean The declaring bean
+    * @param manager The Web Beans manager
     */
    public ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
-      super(manager, declaringBean);
+      super(declaringBean, manager);
       this.method = method;
       init();
    }
@@ -76,7 +78,7 @@ public class ProducerMethodBean<T> extends ProducerBean<T, Method>
    @Override
    public T create()
    {
-      T instance = method.invoke(manager, getReceiver());
+      T instance = method.invoke(getReceiver(), manager);
       checkReturnValue(instance);
       return instance;
    }

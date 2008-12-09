@@ -39,6 +39,7 @@ public class EventBean<T, S> extends FacadeBean<Event<T>, S, T>
     * Constructor
     * 
     * @param field The underlying field abstraction
+    * @param manager The Web Beans manager
     */
    public EventBean(AnnotatedItem<Event<T>, S> field, ManagerImpl manager)
    {
@@ -48,7 +49,7 @@ public class EventBean<T, S> extends FacadeBean<Event<T>, S, T>
    @Override
    public Event<T> create()
    {
-      return new EventImpl<T>(manager, getTypeParameter(), getBindingTypesArray());
+      return new EventImpl<T>(getTypeParameter(), manager, getBindingTypesArray());
    }
    
    /**

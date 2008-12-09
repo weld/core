@@ -66,18 +66,20 @@ public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
     * Invokes the method
     * 
     * @param instance The instance to invoke
+    * @param manager The Web Beans manager
     * @return A reference to the instance
     */
-   public T invoke(Manager manager, Object instance);
+   public T invoke(Object instance, Manager manager);
 
    /**
     * Invokes the observer method
     * 
     * @param instance The instance to invoke
     * @param event the event object
+    * @param manager The Web Beans manager
     * @return A reference to the instance
     */
-   public T invokeWithSpecialValue(Manager manager, Object instance, Class<? extends Annotation> specialParam, Object specialVal);
+   public T invokeWithSpecialValue(Object instance, Class<? extends Annotation> specialParam, Object specialVal, Manager manager);
 
    /**
     * Invokes the method

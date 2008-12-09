@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import javax.webbeans.Instance;
+import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.util.Strings;
 
@@ -38,11 +39,13 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
    /**
     * Constructor
     * 
+    * @param type The event type
+    * @param manager The Web Beans manager
     * @param bindingTypes The binding types
     */
-   public InstanceImpl(ManagerImpl manager, Class<T> type, Annotation... bindingTypes)
+   public InstanceImpl(Class<T> type, Manager manager, Annotation... bindingTypes)
    {
-      super(manager, type, bindingTypes);
+      super(type, manager, bindingTypes);
    }
 
    public T get(Annotation... bindingTypes) 

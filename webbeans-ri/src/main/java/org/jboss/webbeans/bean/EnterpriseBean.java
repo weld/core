@@ -56,6 +56,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * Constructor
     * 
     * @param type The type of the bean
+    * @param manager The Web Beans manager
     */
    public EnterpriseBean(Class<T> type, ManagerImpl manager)
    {
@@ -218,7 +219,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       bindDecorators();
       bindInterceptors();
       injectEjbAndCommonFields();
-      injectBoundFields(manager, instance);
+      injectBoundFields(instance, manager);
       callInitializers(instance);
       return instance;
    }
@@ -259,12 +260,13 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * Injects bound fields
     * 
     * @param instance The bean instance
+    * @param manager The Web Beans manager
     */
-   protected void injectBoundFields(Manager manager, T instance)
+   protected void injectBoundFields(T instance, Manager manager)
    {
       for (AnnotatedField<?> field : getInjectableFields())
       {
-         field.inject(manager, instance);
+         field.inject(instance, manager);
       }
    }
 

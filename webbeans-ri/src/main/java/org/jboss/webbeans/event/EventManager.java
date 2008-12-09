@@ -142,6 +142,8 @@ public class EventManager
 
    /**
     * Initializes a new instance of the EventManager.
+    * 
+    * @param manager The Web Beans manager
     */
    public EventManager(ManagerImpl manager)
    {

@@ -54,7 +54,7 @@ public class InstanceBean<T, S> extends FacadeBean<Instance<T>, S, T>
    @Override
    public Instance<T> create()
    {
-      return new InstanceImpl<T>(manager, getTypeParameter(), getBindingTypesArray());
+      return new InstanceImpl<T>(getTypeParameter(), manager, getBindingTypesArray());
    }
 
 }

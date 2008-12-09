@@ -39,7 +39,6 @@ import javax.webbeans.Observer;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
 import javax.webbeans.TypeLiteral;
-import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.UnsatisfiedDependencyException;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
@@ -74,7 +73,7 @@ import org.jboss.webbeans.util.Strings;
 public class ManagerImpl implements Manager
 {
    public static final String JNDI_KEY = "java:comp/Manager";
-      
+
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
    private EventManager eventManager;
    private Resolver resolver;
@@ -83,7 +82,7 @@ public class ManagerImpl implements Manager
    private List<Bean<?>> beans;
    private Set<Decorator> decorators;
    private Set<Interceptor> interceptors;
-   
+
    @SuppressWarnings("unchecked")
    public ManagerImpl()
    {
@@ -430,7 +429,7 @@ public class ManagerImpl implements Manager
       }
       return activeContexts.iterator().next();
    }
-   
+
    /**
     * Direct access to build in contexts for internal use
     * 
@@ -450,7 +449,6 @@ public class ManagerImpl implements Manager
     * 
     * @see javax.webbeans.manager.Manager#getInstance(javax.webbeans.manager.Bean)
     */
-   @SuppressWarnings("unchecked")
    public <T> T getInstance(Bean<T> bean)
    {
       try
@@ -511,11 +509,11 @@ public class ManagerImpl implements Manager
    {
       return getInstanceByType(new AnnotatedClassImpl<T>(type, type, bindings), bindings);
    }
-   
+
    public <T> T getMostSpecializedInstance(Bean<T> bean, boolean create)
    {
-	   //TODO!!!!!
-	   return getInstance(bean);
+      // TODO!!!!!
+      return getInstance(bean);
    }
 
    /**
@@ -554,15 +552,7 @@ public class ManagerImpl implements Manager
       }
       else
       {
-         Bean<T> bean = beans.iterator().next();
-         if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal() && !element.isProxyable())
-         {
-            throw new UnproxyableDependencyException(element + "Unable to proxy");
-         }
-         else
-         {
-            return getInstance(bean);
-         }
+         return getInstance(beans.iterator().next());
       }
    }
 

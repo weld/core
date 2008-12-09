@@ -42,8 +42,9 @@ public interface AnnotatedField<T> extends AnnotatedItem<T, Field>
     * Injects an instance
     * 
     * @param instance The instance to inject
+    * @param manager The Web Beans manager
     */
-   public void inject(Manager manager, Object instance);
+   public void inject(Object instance, Manager manager);
    
    /**
     * Injects an instance

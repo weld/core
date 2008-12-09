@@ -73,13 +73,9 @@ public class ObserverImpl<T> implements Observer<T>
     * Creates an Observer which describes and encapsulates an observer method
     * (8.5).
     * 
-    * @param componentModel The model for the component which defines the
-    *           observer method
-    * @param observer The observer method to notify
-    * @param eventType The type of event being observed
-    * @param beanModel The model for the bean which defines the observer method
-    * @param observer The observer method to notify
-    * @param eventType The type of event being observed
+    * @param observer The observer
+    * @param observerBean The observer bean
+    * @param manager The Web Beans manager
     */
    public ObserverImpl(final AnnotatedMethod<Object> observer, final Bean<?> observerBean, final ManagerImpl manager)
    {
@@ -176,7 +172,7 @@ public class ObserverImpl<T> implements Observer<T>
          // TODO replace event parameter
          try
          {
-            observerMethod.invokeWithSpecialValue(manager, instance, Observes.class, event);
+            observerMethod.invokeWithSpecialValue(instance, Observes.class, event, manager);
          }
          catch (ExecutionException e)
          {

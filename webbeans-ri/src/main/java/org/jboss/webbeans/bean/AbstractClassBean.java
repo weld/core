@@ -60,9 +60,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    private Set<AnnotatedMethod<Object>> initializerMethods;
 
    /**
+    * Constructor
     * 
-    * @param annotatedItem Annotations read from java classes
-    * @param xmlAnnotatedItem Annotations read from XML
+    * @param type The type
+    * @param manager The Web Beans manager
     */
    public AbstractClassBean(Class<T> type, ManagerImpl manager)
    {
