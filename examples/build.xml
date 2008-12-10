@@ -1,0 +1,59 @@
+<project basedir="." name="example.build.script" default="restart">
+	
+	<dirname property="wbri.dir" file="${ant.file.example.build.script}/../" />
+	
+	<property name="maven.dir" location="${wbri.dir}/maven" />
+	
+	<property file="${wbri.dir}/build.properties"/>
+	
+	<target name="package">
+		 <maven target="package" basedir="${basedir}"/>
+	</target>
+	
+	<target name="explode" depends="package">
+		<mkdir dir="${jboss.home}/server/default/deploy/${example.name}.war"/>
+		<copy todir="${jboss.home}/server/default/deploy/${example.name}.war">
+		 	<fileset dir="${basedir}/target/${example.name}" />
+		</copy>
+	</target>
+	
+	<target name="deploy" depends="package">
+		<copy todir="${jboss.home}/server/default/deploy/" file="${basedir}/target/${example.name}.war"/>
+	</target>
+	
+	<target name="clean">
+		<maven target="clean" basedir="${basedir}"/>
+	</target>
+	
+	<target name="restart" depends="explode">
+		<touch file="${jboss.home}/server/default/deploy/${example.name}.war/WEB-INF/web.xml" />
+	</target>
+	
+	<target name="undeploy">
+		<delete dir="${jboss.home}/server/default/deploy/${example.name}.war" failonerror="false" />
+      <delete file="${jboss.home}/server/default/deploy/${example.name}.war" failonerror="false" />
+	</target>
+	
+	  <macrodef name="maven">
+	      <attribute name="target" />
+	      <attribute name="basedir" />
+	      <element name="args" implicit="true" optional="true" />
+	      <sequential>
+	         <java classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}">
+	            <classpath>
+	               <fileset dir="${maven.dir}/boot">
+	                  <include name="*.jar" />
+	               </fileset>
+	               <fileset dir="${maven.dir}/bin">
+	                  <include name="*.*" />
+	               </fileset>
+	            </classpath>
+	            <sysproperty key="classworlds.conf" value="${maven.dir}/bin/m2.conf" />
+	            <sysproperty key="maven.home" value="${maven.dir}" />
+	            <args />
+	            <arg line="@{target}" />
+	         </java>
+	      </sequential>
+	   </macrodef>
+	
+</project>
