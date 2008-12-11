@@ -34,26 +34,26 @@
       <delete file="${jboss.home}/server/default/deploy/${example.name}.war" failonerror="false" />
 	</target>
 	
-	  <macrodef name="maven">
-	      <attribute name="target" />
-	      <attribute name="basedir" />
-	      <element name="args" implicit="true" optional="true" />
-	      <sequential>
-	         <java classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}">
-	            <classpath>
-	               <fileset dir="${maven.dir}/boot">
-	                  <include name="*.jar" />
-	               </fileset>
-	               <fileset dir="${maven.dir}/bin">
-	                  <include name="*.*" />
-	               </fileset>
-	            </classpath>
-	            <sysproperty key="classworlds.conf" value="${maven.dir}/bin/m2.conf" />
-	            <sysproperty key="maven.home" value="${maven.dir}" />
-	            <args />
-	            <arg line="@{target}" />
-	         </java>
-	      </sequential>
-	   </macrodef>
+  <macrodef name="maven">
+      <attribute name="target" />
+      <attribute name="basedir" />
+      <element name="args" implicit="true" optional="true" />
+      <sequential>
+         <java classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}">
+            <classpath>
+               <fileset dir="${maven.dir}/boot">
+                  <include name="*.jar" />
+               </fileset>
+               <fileset dir="${maven.dir}/bin">
+                  <include name="*.*" />
+               </fileset>
+            </classpath>
+            <sysproperty key="classworlds.conf" value="${maven.dir}/bin/m2.conf" />
+            <sysproperty key="maven.home" value="${maven.dir}" />
+            <args />
+            <arg line="@{target}" />
+         </java>
+      </sequential>
+   </macrodef>
 	
 </project>

@@ -1,41 +1,43 @@
 <?xml version="1.0"?>
 <project name="JBoss5DeployerInstall" default="install-jboss5" basedir="." xmlns:artifact="urn:maven-artifact-ant">
-	
+
 	<path id="maven-ant-tasks.classpath" path="lib/maven-ant-tasks.jar" />
 	<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpathref="maven-ant-tasks.classpath" />
 	
+	<property name="maven.dir" location="${basedir}/maven" />
+
 	<property file="build.properties" />
-	
+
 	<target name="install-jboss5">
-		
+
 		<fail unless="jboss.home" message="Please pass in -Djboss.home=..."/>
-		
+
 		<mkdir dir="target/webbeans.deployer"/>
-		
+
 		<artifact:dependencies filesetId="jboss5.deployer.fileset" versionsId="jboss5.deployer.versions" >
-         <dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-microcontainer" version="5.2.0-SNAPSHOT"/>
-         <dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-jbossas" version="5.2.0-SNAPSHOT"/>
+			<dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-microcontainer" version="5.2.0-SNAPSHOT"/>
+			<dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-jbossas" version="5.2.0-SNAPSHOT"/>
 			<remoteRepository id="snapshots.jboss.org" url="http://snapshots.jboss.org/maven2" />
 			<remoteRepository id="repository.jboss.org" url="http://repository.jboss.org/maven2" />
-      </artifact:dependencies>
-		
+		</artifact:dependencies>
+
 		<artifact:dependencies filesetId="google.collections.fileset">
-         <dependency groupId="com.google.collections" artifactId="google-collections" version="0.8"/>
-      </artifact:dependencies>
-	   
+			<dependency groupId="com.google.collections" artifactId="google-collections" version="0.8"/>
+		</artifact:dependencies>
+
 		<copy todir="target/webbeans.deployer">
 			<fileset refid="jboss5.deployer.fileset"/>
 			<flattenmapper />
 		</copy>
-			
-	   <mkdir dir="target/webbeans.deployer/META-INF" />
-		
+
+		<mkdir dir="target/webbeans.deployer/META-INF" />
+
 		<copy todir="target/webbeans.deployer/META-INF">
 			<fileset dir="${basedir}/webbeans-ri">
-            <include name="webbeans-deployers-jboss-beans.xml"/>
-         </fileset>
+				<include name="webbeans-deployers-jboss-beans.xml"/>
+			</fileset>
 		</copy>
-		
+
 		<copy todir="${jboss.home}/server/default/deployers/webbeans.deployer">
 			<fileset dir="target/webbeans.deployer">
 				<include name="**/*.xml" />
@@ -44,7 +46,33 @@
 			</fileset>
 			<mapper classpathref="maven-ant-tasks.classpath" classname="org.apache.maven.artifact.ant.VersionMapper" from="${jboss5.deployer.versions}" to="flatten" />
 		</copy>
-		
+
 	</target>
 	
+	<target name="install">
+		<maven target="install" basedir="${basedir}"/>
+	</target>
+
+	<macrodef name="maven">
+		<attribute name="target" />
+		<attribute name="basedir" />
+		<element name="args" implicit="true" optional="true" />
+		<sequential>
+			<java classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}">
+				<classpath>
+					<fileset dir="${maven.dir}/boot">
+						<include name="*.jar" />
+					</fileset>
+					<fileset dir="${maven.dir}/bin">
+						<include name="*.*" />
+					</fileset>
+				</classpath>
+				<sysproperty key="classworlds.conf" value="${maven.dir}/bin/m2.conf" />
+				<sysproperty key="maven.home" value="${maven.dir}" />
+				<args />
+				<arg line="@{target}" />
+			</java>
+		</sequential>
+	</macrodef>
+
 </project>
