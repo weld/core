@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test;
+package org.jboss.webbeans.test.contexts;
 
 import static org.jboss.webbeans.util.BeanFactory.createProducerMethodBean;
 import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
@@ -13,6 +13,9 @@ import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.contexts.AbstractContext;
 import org.jboss.webbeans.contexts.RequestContext;
+import org.jboss.webbeans.test.AbstractTest;
+import org.jboss.webbeans.test.SpecAssertion;
+import org.jboss.webbeans.test.SpecVersion;
 import org.jboss.webbeans.test.beans.SpiderProducer;
 import org.jboss.webbeans.test.beans.Tarantula;
 import org.jboss.webbeans.test.beans.Tuna;

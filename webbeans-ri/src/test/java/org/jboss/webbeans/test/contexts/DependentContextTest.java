@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test;
+package org.jboss.webbeans.test.contexts;
 
 import static org.jboss.webbeans.util.BeanFactory.createProducerMethodBean;
 import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
@@ -12,6 +12,9 @@ import javax.webbeans.manager.Bean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.test.AbstractTest;
+import org.jboss.webbeans.test.SpecAssertion;
+import org.jboss.webbeans.test.SpecVersion;
 import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.FoxRun;
 import org.jboss.webbeans.test.beans.SpiderProducer;
