@@ -55,7 +55,6 @@ import org.jboss.webbeans.bean.InstanceBean;
 import org.jboss.webbeans.bean.ManagerBean;
 import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
-import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.contexts.DependentContext;
@@ -66,6 +65,8 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.transaction.Transaction;
+import org.jboss.webbeans.util.BeanFactory;
 import org.jboss.webbeans.util.JNDI;
 import org.jboss.webbeans.util.Reflections;
 
@@ -120,7 +121,6 @@ public class WebBeansBootstrap
    public void registerBeans(Iterable<Class<?>> classes)
    {
       Set<Bean<?>> beans = (Set) createBeans(classes);
-      beans.add(new SimpleBean<DefaultEnterpriseBeanLookup>(DefaultEnterpriseBeanLookup.class, manager));
       beans.add(new ManagerBean(manager));
       manager.setBeans(beans);
    }
@@ -150,6 +150,8 @@ public class WebBeansBootstrap
             createBean(createSimpleBean(clazz, manager), beans);
          }
       }
+      createBean(BeanFactory.createSimpleBean(Transaction.class, manager), beans);
+      createBean(BeanFactory.createSimpleBean(DefaultEnterpriseBeanLookup.class, manager), beans);
       return beans;
    }
    

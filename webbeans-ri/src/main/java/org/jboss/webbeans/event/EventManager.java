@@ -27,12 +27,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.transaction.Status;
 import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.transaction.TransactionListener;
-import org.jboss.webbeans.util.JNDI;
+import org.jboss.webbeans.transaction.UserTransaction;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
@@ -138,7 +136,7 @@ public class EventManager
    // The map of registered observers for a give
    private final RegisteredObserversMap registeredObservers;
    // The current UserTransaction
-   UserTransaction userTransaction;
+   private UserTransaction userTransaction;
 
    /**
     * Initializes a new instance of the EventManager.
@@ -149,8 +147,7 @@ public class EventManager
    {
       this.manager = manager;
       registeredObservers = new RegisteredObserversMap();
-      // TODO. Check where to *really* get this from
-      userTransaction = (UserTransaction) JNDI.lookup("java:/UserTransaction");
+      userTransaction = manager.getInstanceByType(UserTransaction.class);
    }
 
    /**
@@ -243,9 +240,8 @@ public class EventManager
     */
    private <T> void deferEvent(T event, Observer<T> observer)
    {
-      TransactionListener transactionListener = manager.getInstanceByType(TransactionListener.class);
       DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, observer);
-      transactionListener.registerSynhronization(deferredEvent);
+      userTransaction.registerSynchronization(deferredEvent);
    }
 
    /**

@@ -116,8 +116,6 @@ public class DeploymentProperties
       catch (IOException e)
       {
          // No - op, file is optional
-         // TODO: Isn't this more of a open/read/close error? If the file wasn't
-         // there in the first place you wouldn't be in the loop?
       }
    }
 

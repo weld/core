@@ -158,8 +158,7 @@ public abstract class AbstractFacadeBean<T, S, P> extends AbstractBean<T, S>
       }
       catch (ClassCastException e)
       {
-         // TODO: Expand error
-         throw new IllegalArgumentException("Type mismatch");
+         throw new IllegalArgumentException("Cannot create an instance of " + toString() + " with " + getAnnotatedItem());
       }
    }
 
