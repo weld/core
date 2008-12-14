@@ -122,7 +122,7 @@ public class WebBeansBootstrap
       Set<Bean<?>> beans = (Set) createBeans(classes);
       beans.add(new SimpleBean<DefaultEnterpriseBeanLookup>(DefaultEnterpriseBeanLookup.class, manager));
       beans.add(new ManagerBean(manager));
-      CurrentManager.rootManager().setBeans(beans);
+      manager.setBeans(beans);
    }
 
    /**
