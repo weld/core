@@ -5,7 +5,6 @@ import java.util.Arrays;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
 
-import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.contexts.ApplicationContext;
 import org.jboss.webbeans.contexts.RequestContext;
 import org.jboss.webbeans.contexts.SessionContext;
@@ -20,7 +19,7 @@ public class AbstractTest
 {
    
    protected MockManagerImpl manager;
-   protected WebBeansBootstrap webBeansBootstrap;
+   protected MockBootstrap webBeansBootstrap;
    
    @BeforeMethod
    public final void before()

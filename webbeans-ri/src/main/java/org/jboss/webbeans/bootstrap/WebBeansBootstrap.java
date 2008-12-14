@@ -126,19 +126,6 @@ public class WebBeansBootstrap
    }
 
    /**
-    * Discover any beans defined by the provided classes
-    * 
-    * Beans discovered are not registered with the manager
-    * 
-    * @param classes The classes to create Web Beans from
-    * @return A set of Web Beans that represents the classes
-    */
-   public Set<AbstractBean<?, ?>> createBeans(Class<?>... classes)
-   {
-      return createBeans(new HashSet<Class<?>>(Arrays.asList(classes)));
-   }
-
-   /**
     * Creates Web Beans from a set of classes
     * 
     * Iterates over the classes and creates a Web Bean of the corresponding

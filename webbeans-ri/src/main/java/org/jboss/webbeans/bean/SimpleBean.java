@@ -160,7 +160,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void injectEjbAndCommonFields()
    {
-      // TODO
+      // Support common and EJB annotations
    }
 
    /**
@@ -266,7 +266,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          // TODO: actually this is wrong, in EJB you can have @PostConstruct
          // methods on the superclass,
          // though the Web Beans spec is silent on the issue
-         throw new DefinitionException("Cannot have more than one post construct method annotated with @Initializer for " + getType());
+         throw new DefinitionException("Cannot have more than one post construct method annotated with @PostConstruct for " + getType());
       }
       else if (postConstructMethods.size() == 1)
       {
@@ -288,7 +288,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          // TODO: actually this is wrong, in EJB you can have @PreDestroy
          // methods on the superclass,
          // though the Web Beans spec is silent on the issue
-         throw new DefinitionException("Cannot have more than one pre destroy method annotated with @Initializer for " + getType());
+         throw new DefinitionException("Cannot have more than one pre destroy method annotated with @PreDestroy for " + getType());
       }
       else if (preDestroyMethods.size() == 1)
       {

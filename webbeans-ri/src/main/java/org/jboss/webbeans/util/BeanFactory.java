@@ -48,7 +48,7 @@ public class BeanFactory
     * 
     * @param <T> The type
     * @param clazz The class
-    * @param manager TODO
+    * @param manager the current manager
     * @return A Web Bean
     */
    public static <T> SimpleBean<T> createSimpleBean(Class<T> clazz, ManagerImpl manager)
@@ -61,7 +61,7 @@ public class BeanFactory
     * 
     * @param <T> The type
     * @param clazz The class
-    * @param manager TODO
+    * @param manager the current manager
     * @return An Enterprise Web Bean
     */
    public static <T> EnterpriseBean<T> createEnterpriseBean(Class<T> clazz, ManagerImpl manager)
@@ -76,7 +76,7 @@ public class BeanFactory
     * @param type The class
     * @param method The underlying method
     * @param declaringBean The declaring bean abstraction
-    * @param manager TODO
+    * @param manager the current manager
     * @return A producer Web Bean
     */
    public static <T> ProducerMethodBean<T> createProducerMethodBean(Class<T> type, Method method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
@@ -91,7 +91,7 @@ public class BeanFactory
     * @param type The class
     * @param field The underlying field
     * @param declaringBean The declaring bean abstraction
-    * @param manager TODO
+    * @param manager the current manager
     * @return A producer Web Bean
     */
    public static <T> ProducerFieldBean<T> createProducerFieldBean(Class<T> type, Field field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
@@ -104,7 +104,7 @@ public class BeanFactory
     * 
     * @param field The underlying method abstraction
     * @param declaringBean The declaring bean abstraction
-    * @param manager TODO
+    * @param manager the current manager
     * @return A producer Web Bean
     */
    public static <T> ProducerFieldBean<T> createProducerFieldBean(AnnotatedField<T> field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
@@ -117,7 +117,7 @@ public class BeanFactory
     * 
     * @param method The underlying method abstraction
     * @param declaringBean The declaring bean abstraction
-    * @param manager TODO
+    * @param manager the current manager
     * @return A producer Web Bean
     */
    public static <T> ProducerMethodBean<T> createProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
@@ -129,7 +129,7 @@ public class BeanFactory
     * Creates an event Web Bean
     * 
     * @param field The event injection point abstraction
-    * @param manager TODO
+    * @param manager the current manager
     * @param declaringBean The declaring bean abstraction
     * @return An event Web Bean
     */
@@ -142,7 +142,7 @@ public class BeanFactory
     * Creates an instance Web Bean
     * 
     * @param field The instance injection point abstraction
-    * @param manager TODO
+    * @param manager the current manager
     * @param declaringBean The declaring bean abstraction
     * @return An event Web Bean
     */

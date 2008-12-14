@@ -48,7 +48,7 @@ public class EJB extends ApiAbstraction
       MESSAGE_DRIVEN_ANNOTATION = annotationTypeForName("javax.ejb.MessageDriven");
       // Fake MDB for tests
       FAKE_MESSAGE_DRIVEN_ANNOTATION = annotationTypeForName("org.jboss.webbeans.test.annotations.MessageDriven");
-      // FIXME Faking singleton for tests
+      // TODO Faking singleton for tests
       SINGLETON_ANNOTATION = annotationTypeForName("org.jboss.webbeans.test.annotations.Singleton");
       // SINGLETON_ANNOTATION = classForName("javax.ejb.Singleton");
       REMOVE_ANNOTATION = annotationTypeForName("javax.ejb.Remove");

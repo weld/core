@@ -253,7 +253,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     */
    protected void injectEjbAndCommonFields()
    {
-      // TODO
+      // TODO Support commons and EJB annotations
    }
 
    /**

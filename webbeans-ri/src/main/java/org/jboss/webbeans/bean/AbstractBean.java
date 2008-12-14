@@ -344,7 +344,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     */
    protected void bindDecorators()
    {
-      // TODO
+      // TODO Implement decorators
    }
 
    /**
@@ -352,7 +352,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     */
    protected void bindInterceptors()
    {
-      // TODO
+      // TODO Implement interceptors
    }
 
    /**
