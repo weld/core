@@ -28,10 +28,10 @@ import java.lang.annotation.Target;
 
 /**
  * Annotates a variable to be injected with an Event object that can be fired and 
- * observed by observer methods.
+ * observed by observer methods
  * 
  * @author David Allen
- * @author Gvin King
+ * @author Gavin King
  */
 
 @BindingType

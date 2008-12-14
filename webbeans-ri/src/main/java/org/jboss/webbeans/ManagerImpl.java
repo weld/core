@@ -95,7 +95,6 @@ public class ManagerImpl implements Manager
     * @param enabledDeploymentTypes any enabled deployment types, an empty set
     * if none are specified
     */
-   @SuppressWarnings("unchecked")
    public ManagerImpl()
    {
       this.beans = new CopyOnWriteArrayList<Bean<?>>();

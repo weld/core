@@ -35,7 +35,7 @@ import org.jboss.webbeans.util.Strings;
  * 
  * @author David Allen
  * 
- * @param <T>
+ * @param <T> The type of event being wrapped
  * @see javax.webbeans.Event
  */
 public class EventImpl<T> extends FacadeImpl<T> implements Event<T>

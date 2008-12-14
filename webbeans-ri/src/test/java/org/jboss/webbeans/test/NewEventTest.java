@@ -568,23 +568,21 @@ public class NewEventTest extends AbstractTest
       manager.fireEvent(new Integer(1));
    }
 
-   @Test(groups = { "broken", "events" }, expectedExceptions = { DuplicateBindingTypeException.class })
+   @Test(groups = { "events" }, expectedExceptions = { DuplicateBindingTypeException.class })
    @SpecAssertion(section = "8.6")
    public void testDuplicateBindingsToFireFails()
    {
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(SweeWaxbill.class);
-      assert beans.size() == 1;
-      SweeWaxbill bean = (SweeWaxbill)beans.iterator().next().create();
+      webBeansBootstrap.registerBeans(SweeWaxbill.class);
+      SweeWaxbill bean = manager.getInstanceByType(SweeWaxbill.class);
       bean.methodThatFiresEvent();
    }
 
-   @Test(groups = { "broken", "events" })
+   @Test(groups = { "events" }, expectedExceptions={ DuplicateBindingTypeException.class })
    @SpecAssertion(section = "8.6")
    public void testDuplicateBindingsToObservesFails()
    {
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(SweeWaxbill.class);
-      assert beans.size() == 1;
-      SweeWaxbill bean = (SweeWaxbill)beans.iterator().next().create();
+      webBeansBootstrap.registerBeans(SweeWaxbill.class);
+      SweeWaxbill bean = manager.getInstanceByType(SweeWaxbill.class);
       bean.methodThatRegistersObserver();
    }
 

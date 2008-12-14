@@ -9,8 +9,7 @@ import org.jboss.webbeans.test.bindings.RoleBinding;
 
 public class SweeWaxbill
 {
-   @Observable
-   @Role("Admin")
+   @Observable @Role("Admin")
    private Event<String> simpleEvent;
 
    public void methodThatFiresEvent()
