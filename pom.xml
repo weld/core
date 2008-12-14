@@ -49,10 +49,6 @@
 
    <pluginRepositories>
       <pluginRepository>
-         <id>snapshots.repository.codehaus.org</id>
-         <url>http://snapshots.repository.codehaus.org</url>
-      </pluginRepository>
-      <pluginRepository>
          <id>repository.jboss.org</id>
          <name>JBoss Repository</name>
          <url>http://repository.jboss.org/maven2</url>
@@ -237,7 +233,48 @@
          </plugins>
       </pluginManagement>
    </build>
-
+   
+   <profiles>
+      <profile>
+         <id>coverage</id>
+         <activation>
+            <property>
+               <name>coverage</name>
+            </property>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>emma-maven-plugin</artifactId>
+                  <version>1.0-alpha-1</version>
+                  <inherited>true</inherited>
+                  <executions>
+                     <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                           <goal>instrument</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <inherited>true</inherited>
+                  <configuration>
+                     <forkMode>once</forkMode>
+                     <reportFormat>xml</reportFormat>
+                     <classesDirectory>
+                        ${project.build.directory}/generated-classes/emma/classes
+                     </classesDirectory>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
+   
    <ciManagement>
       <system>Hudson</system>
       <url></url>
