@@ -22,10 +22,10 @@ public class ProducerFieldBeanLifecycleTest extends AbstractTest
    @Test(groups="producerField") @SpecAssertion(section="5.6")
    public void testProducerFieldBeanCreate() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> spiderProducer = createSimpleBean(OtherSpiderProducer.class); 
+      SimpleBean<OtherSpiderProducer> spiderProducer = createSimpleBean(OtherSpiderProducer.class, manager); 
       manager.addBean(spiderProducer);
       Field method = OtherSpiderProducer.class.getField("produceTarantula");
-      ProducerFieldBean<Tarantula> tarantulaBean = createProducerFieldBean(Tarantula.class, method, spiderProducer);
+      ProducerFieldBean<Tarantula> tarantulaBean = createProducerFieldBean(Tarantula.class, method, spiderProducer, manager);
       Tarantula tarantula = tarantulaBean.create();
       assert tarantula != null;
    }
@@ -41,10 +41,10 @@ public class ProducerFieldBeanLifecycleTest extends AbstractTest
    @Test(groups="producerField") @SpecAssertion(section={"3.5", "5.6", "8.3"})
    public void testProducerFieldReturnsNullIsDependent() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> spiderProducer = createSimpleBean(OtherSpiderProducer.class); 
+      SimpleBean<OtherSpiderProducer> spiderProducer = createSimpleBean(OtherSpiderProducer.class, manager); 
       manager.addBean(spiderProducer);
       Field method = OtherSpiderProducer.class.getField("getNullSpider");
-      ProducerFieldBean<Spider> spiderBean = createProducerFieldBean(Spider.class, method, spiderProducer);
+      ProducerFieldBean<Spider> spiderBean = createProducerFieldBean(Spider.class, method, spiderProducer, manager);
       Spider spider = spiderBean.create();
       assert spider == null;
    }
@@ -52,10 +52,10 @@ public class ProducerFieldBeanLifecycleTest extends AbstractTest
    @Test(groups="producerField", expectedExceptions=IllegalProductException.class) @SpecAssertion(section={"3.5", "5.6"})
    public void testProducerFieldReturnsNullIsNotDependent() throws Exception
    {
-      SimpleBean<OtherBrokenSpiderProducer> spiderProducer = createSimpleBean(OtherBrokenSpiderProducer.class);
+      SimpleBean<OtherBrokenSpiderProducer> spiderProducer = createSimpleBean(OtherBrokenSpiderProducer.class, manager);
       manager.addBean(spiderProducer);
       Field method = OtherBrokenSpiderProducer.class.getField("getRequestScopedSpider");
-      createProducerFieldBean(Spider.class, method, spiderProducer).create();
+      createProducerFieldBean(Spider.class, method, spiderProducer, manager).create();
    }
    
 }

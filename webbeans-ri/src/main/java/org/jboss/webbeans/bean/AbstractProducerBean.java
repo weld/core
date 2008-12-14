@@ -36,7 +36,7 @@ import org.jboss.webbeans.util.Names;
  * @param <T>
  * @param <S>
  */
-public abstract class ProducerBean<T, S> extends AbstractBean<T, S>
+public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
 {
    // The declaring bean
    protected AbstractClassBean<?> declaringBean;
@@ -47,7 +47,7 @@ public abstract class ProducerBean<T, S> extends AbstractBean<T, S>
     * @param declaringBean The declaring bean
     * @param manager The Web Beans manager
     */
-   public ProducerBean(AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   public AbstractProducerBean(AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       super(manager);
       this.declaringBean = declaringBean;

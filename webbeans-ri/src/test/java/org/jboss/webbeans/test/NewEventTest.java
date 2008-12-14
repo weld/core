@@ -80,13 +80,13 @@ public class NewEventTest extends AbstractTest
    @Test(groups = "events")
    public void testEventBeanCreation()
    {
-      SimpleBean<MyTest> myTestBean = BeanFactory.createSimpleBean(MyTest.class);
+      SimpleBean<MyTest> myTestBean = BeanFactory.createSimpleBean(MyTest.class, manager);
       boolean found = false;
       for (AnnotatedField field : myTestBean.getInjectableFields())
       {
          if (field.isAnnotationPresent(Observable.class))
          {
-            EventBean eventBean = BeanFactory.createEventBean(field);
+            EventBean eventBean = BeanFactory.createEventBean(field, manager);
             Event<Param> event = eventBean.create();
             assert event != null;
             found = true;

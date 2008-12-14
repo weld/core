@@ -33,7 +33,7 @@ import org.jboss.webbeans.util.Names;
  * @param <T>
  * @param <S>
  */
-public class EventBean<T, S> extends FacadeBean<Event<T>, S, T>
+public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
 {
 
    /**

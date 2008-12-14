@@ -1,6 +1,7 @@
 package org.jboss.webbeans.examples;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
@@ -29,11 +30,11 @@ public class Tests extends AbstractTest
 
    private void setupGameGenerator() throws NoSuchMethodException
    {
-      SimpleBean<Game> gameBean = BeanFactory.createSimpleBean(Game.class);
-        SimpleBean<Generator> generatorBean = BeanFactory.createSimpleBean(Generator.class);
+      SimpleBean<Game> gameBean = BeanFactory.createSimpleBean(Game.class, manager);
+        SimpleBean<Generator> generatorBean = BeanFactory.createSimpleBean(Generator.class, manager);
         Method method = Generator.class.getDeclaredMethod("next");
         method.setAccessible(true);
-        ProducerMethodBean<Integer> nextBean = BeanFactory.createProducerMethodBean(int.class, method, generatorBean);
+        ProducerMethodBean<Integer> nextBean = BeanFactory.createProducerMethodBean(int.class, method, generatorBean, manager);
         
         manager.addBean(gameBean);
         manager.addBean(generatorBean);
@@ -44,7 +45,7 @@ public class Tests extends AbstractTest
    public void testMockSentenceTranslator() throws Exception {
       setupTextTranslator();
       
-      manager.setEnabledDeploymentTypes(Standard.class, Production.class, Mock.class);
+      manager.setEnabledDeploymentTypes(Arrays.asList(Standard.class, Production.class, Mock.class));
       
       TextTranslator tt2 = manager.getInstanceByType(TextTranslator.class);
       assert "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.".equals( tt2.translate("Hello world. How's tricks?") );
@@ -68,10 +69,10 @@ public class Tests extends AbstractTest
    
    private void setupTextTranslator()
    {
-      SimpleBean<SentenceParser> spBean = BeanFactory.createSimpleBean(SentenceParser.class);
-      SimpleBean<SentenceTranslator> stBean = BeanFactory.createSimpleBean(SentenceTranslator.class);
-      SimpleBean<MockSentenceTranslator> mstBean = BeanFactory.createSimpleBean(MockSentenceTranslator.class);
-      SimpleBean<TextTranslator> ttBean = BeanFactory.createSimpleBean(TextTranslator.class);
+      SimpleBean<SentenceParser> spBean = BeanFactory.createSimpleBean(SentenceParser.class, manager);
+      SimpleBean<SentenceTranslator> stBean = BeanFactory.createSimpleBean(SentenceTranslator.class, manager);
+      SimpleBean<MockSentenceTranslator> mstBean = BeanFactory.createSimpleBean(MockSentenceTranslator.class, manager);
+      SimpleBean<TextTranslator> ttBean = BeanFactory.createSimpleBean(TextTranslator.class, manager);
       
       manager.addBean(spBean);
       manager.addBean(stBean);

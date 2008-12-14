@@ -31,6 +31,8 @@ import org.jboss.webbeans.util.Names;
 public class DependentContext extends BasicContext
 {
 
+   public static final DependentContext INSTANCE = new DependentContext();
+   
    /**
     * Constructor
     */

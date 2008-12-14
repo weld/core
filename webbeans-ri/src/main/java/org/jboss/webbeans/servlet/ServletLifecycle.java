@@ -24,6 +24,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.contexts.ApplicationContext;
@@ -57,6 +58,9 @@ public class ServletLifecycle
       servletContext = context;
       ApplicationContext.INSTANCE.setBeanMap(new ApplicationBeanMap(servletContext));
       WebBeansBootstrap webBeansBootstrap = new WebBeansBootstrap();
+      CurrentManager.rootManager().addContext(RequestContext.INSTANCE);
+      CurrentManager.rootManager().addContext(SessionContext.INSTANCE);
+      CurrentManager.rootManager().addContext(ApplicationContext.INSTANCE);
       webBeansBootstrap.boot(getWebBeanDiscovery());
    }
    

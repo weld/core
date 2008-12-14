@@ -144,7 +144,7 @@ public class StereotypesTest extends AbstractTest
    @Test @SpecAssertion(section={"2.7.2", "2.7.4"})
    public void testMultipleStereotypes()
    {
-      SimpleBean<HighlandCow> highlandCow = createSimpleBean(HighlandCow.class);
+      SimpleBean<HighlandCow> highlandCow = createSimpleBean(HighlandCow.class, manager);
       assert highlandCow.getName() == null;
       assert highlandCow.getBindingTypes().iterator().next().annotationType().equals(Tame.class);
       assert highlandCow.getScopeType().equals(RequestScoped.class);
@@ -189,25 +189,25 @@ public class StereotypesTest extends AbstractTest
    @Test@SpecAssertion(section={"2.7.1.4", "2.7.4"})
    public void testRequiredTypeIsImplemented()
    {
-         createSimpleBean(HighlandCow.class);
+         createSimpleBean(HighlandCow.class, manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section={"2.7.1.4", "2.7.4"})
    public void testRequiredTypeIsNotImplemented()
    {
-      createSimpleBean(Chair.class);      
+      createSimpleBean(Chair.class, manager);      
    }
    
    @Test @SpecAssertion(section={"2.7.1.4", "2.7.4"})
    public void testScopeIsSupported()
    {
-      createSimpleBean(Goldfish.class);
+      createSimpleBean(Goldfish.class, manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section={"2.7.1.4", "2.7.4"})
    public void testScopeIsNotSupported()
    {
-      createSimpleBean(Carp.class);    
+      createSimpleBean(Carp.class, manager);    
    }
    
    // TODO Stereotype inheritance tests

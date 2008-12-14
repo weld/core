@@ -32,7 +32,7 @@ import java.util.Set;
 import javax.webbeans.BindingType;
 import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
+import org.jboss.webbeans.bindings.CurrentBinding;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.util.Reflections;
@@ -155,7 +155,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    }
 
    // The array of default binding types
-   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentAnnotationLiteral() };
+   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentBinding() };
    // The set of default binding types
    private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
 

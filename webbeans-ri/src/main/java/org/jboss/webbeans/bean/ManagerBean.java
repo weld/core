@@ -27,13 +27,13 @@ import javax.webbeans.Standard;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
+import org.jboss.webbeans.bindings.CurrentBinding;
 import org.jboss.webbeans.util.Reflections;
 
 /**
  * Helper bean for accessing the Manager
  * 
- * @author Gavin King
+ * @author Pete Muir
  * 
  */
 public class ManagerBean extends Bean<Manager>
@@ -41,7 +41,7 @@ public class ManagerBean extends Bean<Manager>
    // The API types of the manager
    private static Set<Class<?>> types = Reflections.getTypeHierachy(Manager.class);
    // The binding types of the manager
-   private static final Set<Annotation> BINDING = new HashSet<Annotation>(Arrays.asList(new CurrentAnnotationLiteral()));
+   private static final Set<Annotation> BINDING = new HashSet<Annotation>(Arrays.asList(new CurrentBinding()));
 
    /**
     * Constructor

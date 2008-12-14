@@ -39,7 +39,7 @@ import org.jboss.webbeans.util.Names;
  *
  * @param <T>
  */
-public class ProducerMethodBean<T> extends ProducerBean<T, Method>
+public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
 {
    // The underlying method
    private AnnotatedMethod<T> method;

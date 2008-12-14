@@ -22,10 +22,10 @@ public class ProducerMethodBeanLifecycleTest extends AbstractTest
    @Test(groups="producerMethod") @SpecAssertion(section="5.6")
    public void testProducerMethodBeanCreate() throws Exception
    {
-      SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class); 
+      SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class, manager); 
       manager.addBean(spiderProducer);
       Method method = SpiderProducer.class.getMethod("produceTarantula");
-      ProducerMethodBean<Tarantula> tarantulaBean = createProducerMethodBean(Tarantula.class, method, spiderProducer);
+      ProducerMethodBean<Tarantula> tarantulaBean = createProducerMethodBean(Tarantula.class, method, spiderProducer, manager);
       Tarantula tarantula = tarantulaBean.create();
       assert tarantula != null;
    }
@@ -55,10 +55,10 @@ public class ProducerMethodBeanLifecycleTest extends AbstractTest
    @Test(groups="producerMethod") @SpecAssertion(section={"3.4", "5.6", "8.3"})
    public void testProducerMethodReturnsNullIsDependent() throws Exception
    {
-      SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class); 
+      SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class, manager); 
       manager.addBean(spiderProducer);
       Method method = SpiderProducer.class.getMethod("getNullSpider");
-      ProducerMethodBean<Spider> spiderBean = createProducerMethodBean(Spider.class, method, spiderProducer);
+      ProducerMethodBean<Spider> spiderBean = createProducerMethodBean(Spider.class, method, spiderProducer, manager);
       Spider spider = spiderBean.create();
       assert spider == null;
    }
@@ -66,10 +66,10 @@ public class ProducerMethodBeanLifecycleTest extends AbstractTest
    @Test(groups="producerMethod", expectedExceptions=IllegalProductException.class) @SpecAssertion(section={"3.4", "5.6"})
    public void testProducerMethodReturnsNullIsNotDependent() throws Exception
    {
-      SimpleBean<BrokenSpiderProducer> spiderProducer = createSimpleBean(BrokenSpiderProducer.class);
+      SimpleBean<BrokenSpiderProducer> spiderProducer = createSimpleBean(BrokenSpiderProducer.class, manager);
       manager.addBean(spiderProducer);
       Method method = BrokenSpiderProducer.class.getMethod("getRequestScopedSpider");
-      createProducerMethodBean(Spider.class, method, spiderProducer).create();
+      createProducerMethodBean(Spider.class, method, spiderProducer, manager).create();
    }
    
 }

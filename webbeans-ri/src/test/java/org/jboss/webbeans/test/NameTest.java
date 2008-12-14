@@ -25,7 +25,7 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section="2.6.1")
    public void testNonDefaultNamed()
    {
-      SimpleBean<Moose> moose = createSimpleBean(Moose.class);
+      SimpleBean<Moose> moose = createSimpleBean(Moose.class, manager);
       assert moose.getName().equals("aMoose");
    }
    
@@ -81,7 +81,7 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section={"2.6.3", "3.2.7"})
    public void testDefaultNamed()
    {
-      SimpleBean<Haddock> haddock = createSimpleBean(Haddock.class);
+      SimpleBean<Haddock> haddock = createSimpleBean(Haddock.class, manager);
       assert haddock.getName() != null;
       assert haddock.getName().equals("haddock");
    }
@@ -109,7 +109,7 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section={"2.6.3", "2.7"})
    public void testSterotypeDefaultsName()
    {
-      SimpleBean<RedSnapper> model = createSimpleBean(RedSnapper.class);
+      SimpleBean<RedSnapper> model = createSimpleBean(RedSnapper.class, manager);
       assert model.getMergedStereotypes().isBeanNameDefaulted();
       assert model.getName().equals("redSnapper");
    }
@@ -117,21 +117,21 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section="2.6.4")
    public void testNotNamedInJava()
    {
-      SimpleBean<SeaBass> model = createSimpleBean(SeaBass.class);
+      SimpleBean<SeaBass> model = createSimpleBean(SeaBass.class, manager);
       assert model.getName() == null;
    }
    
    @Test @SpecAssertion(section="2.6.4")
    public void testNotNamedInXml()
    {
-      SimpleBean<SeaBass> model = createSimpleBean(SeaBass.class);
+      SimpleBean<SeaBass> model = createSimpleBean(SeaBass.class, manager);
       assert model.getName() == null;
    }
    
    @Test @SpecAssertion(section="2.6.4")
    public void testNotNamedInStereotype()
    {
-      SimpleBean<Minnow> model = createSimpleBean(Minnow.class);
+      SimpleBean<Minnow> model = createSimpleBean(Minnow.class, manager);
       assert model.getName() == null;
    }
    

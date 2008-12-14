@@ -47,7 +47,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = "3.3.5")
    public void testStatelessEnterpriseBeansWithRemoveMethodsFails()
    {
-      EnterpriseBean<Armant> bean = BeanFactory.createEnterpriseBean(Armant.class);
+      EnterpriseBean<Armant> bean = BeanFactory.createEnterpriseBean(Armant.class, manager);
    }
 
    /**
@@ -59,7 +59,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    public void testStatefulEnterpriseBeanRemoveMethodCalledWhenDestroyedByManager()
    {
       EnterpriseBeanRemoveMethodTest.visited = false;
-      EnterpriseBean<Toller> bena = BeanFactory.createEnterpriseBean(Toller.class);
+      EnterpriseBean<Toller> bena = BeanFactory.createEnterpriseBean(Toller.class, manager);
       RequestContext context = (RequestContext) manager.getContext(RequestScoped.class);
       Toller instance = context.get(bena, true);
       context.destroy();
@@ -88,7 +88,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanWithoutRemoveMethodMustBeDependentScoped()
    {
-      EnterpriseBean<Pumi> bean = BeanFactory.createEnterpriseBean(Pumi.class);
+      EnterpriseBean<Pumi> bean = BeanFactory.createEnterpriseBean(Pumi.class, manager);
    }
 
    /**
@@ -102,7 +102,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanWithoutRemoveMethodMustBeDependentScoped2()
    {
-      EnterpriseBean<WelshCorgie> bean = BeanFactory.createEnterpriseBean(WelshCorgie.class);
+      EnterpriseBean<WelshCorgie> bean = BeanFactory.createEnterpriseBean(WelshCorgie.class, manager);
    }
 
    /**
@@ -116,7 +116,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanWithoutRemoveMethodMustBeRemovedByApplicationBeforeManager()
    {
-      EnterpriseBean<Toller> bean = BeanFactory.createEnterpriseBean(Toller.class);
+      EnterpriseBean<Toller> bean = BeanFactory.createEnterpriseBean(Toller.class, manager);
       Toller instance = manager.getInstance(bean);
       RequestContext context = (RequestContext) manager.getContext(RequestScoped.class);
       context.destroy();
@@ -164,7 +164,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = "3.3.5")
    public void testApplicationRemoveMethodCallRemovesInstanceFromContext()
    {
-      EnterpriseBean<Toller> bean = BeanFactory.createEnterpriseBean(Toller.class);
+      EnterpriseBean<Toller> bean = BeanFactory.createEnterpriseBean(Toller.class, manager);
       RequestContext context = (RequestContext) manager.getContext(RequestScoped.class);
       Toller instance = context.get(bean, true);
       instance.bye();
@@ -182,7 +182,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testEnterpriseBeanWithoutDestructorUsesNoArgsRemoveAnnotatedMethodAsWebBeansRemoveMethod()
    {
-      EnterpriseBean<Toller> bean = BeanFactory.createEnterpriseBean(Toller.class);
+      EnterpriseBean<Toller> bean = BeanFactory.createEnterpriseBean(Toller.class, manager);
       assert "bye".equals(bean.getRemoveMethod().getName());
    }
 
@@ -195,7 +195,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testEnterpriseBeanWithoutDestructorAndNoOrMultipleNoArgsRemoveMethodsHasNoWebBeansRemoveMethod()
    {
-      EnterpriseBean<Koirus> bean = BeanFactory.createEnterpriseBean(Koirus.class);
+      EnterpriseBean<Koirus> bean = BeanFactory.createEnterpriseBean(Koirus.class, manager);
       assert bean.getRemoveMethod() == null;
    }
 
@@ -208,7 +208,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testMultipleDestructorAnnotatedMethodsFails()
    {
-      EnterpriseBean<Rottweiler> bean = BeanFactory.createEnterpriseBean(Rottweiler.class);
+      EnterpriseBean<Rottweiler> bean = BeanFactory.createEnterpriseBean(Rottweiler.class, manager);
    }
 
    /**
@@ -222,7 +222,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testDestructorAnnotatedMethodNotRemoveAnnotatedFails()
    {
-      EnterpriseBean<RussellTerrier> bean = BeanFactory.createEnterpriseBean(RussellTerrier.class);
+      EnterpriseBean<RussellTerrier> bean = BeanFactory.createEnterpriseBean(RussellTerrier.class, manager);
    }
 
    /**
@@ -235,7 +235,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testRemoveMethodIsInitializerFails()
    {
-      EnterpriseBean<Saluki> bean = BeanFactory.createEnterpriseBean(Saluki.class);
+      EnterpriseBean<Saluki> bean = BeanFactory.createEnterpriseBean(Saluki.class, manager);
    }
 
    /**
@@ -248,7 +248,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testRemoveMethodIsProducerFails()
    {
-      EnterpriseBean<Spitz> bean = BeanFactory.createEnterpriseBean(Spitz.class);
+      EnterpriseBean<Spitz> bean = BeanFactory.createEnterpriseBean(Spitz.class, manager);
    }
 
    /**
@@ -261,7 +261,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testRemoveMethodWithDisposesParameterFails()
    {
-      EnterpriseBean<GoldenRetriever> bean = BeanFactory.createEnterpriseBean(GoldenRetriever.class);
+      EnterpriseBean<GoldenRetriever> bean = BeanFactory.createEnterpriseBean(GoldenRetriever.class, manager);
    }
 
    /**
@@ -274,7 +274,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testRemoveMethodWithObservesParameterFails()
    {
-      EnterpriseBean<JackRussellTerrier> bean = BeanFactory.createEnterpriseBean(JackRussellTerrier.class);
+      EnterpriseBean<JackRussellTerrier> bean = BeanFactory.createEnterpriseBean(JackRussellTerrier.class, manager);
    }
 
    // TODO: where did this come from?

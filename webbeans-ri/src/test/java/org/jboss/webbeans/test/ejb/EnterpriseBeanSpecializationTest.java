@@ -46,8 +46,8 @@ public class EnterpriseBeanSpecializationTest extends AbstractTest
    @SpecAssertion(section = "3.3.6")
    public void testSpecializingBeanInheritsBindingTypes()
    {
-      EnterpriseBean<Hound> hound = BeanFactory.createEnterpriseBean(Hound.class);
-      EnterpriseBean<HoundOfBaskerville> houndOfBaskerville = BeanFactory.createEnterpriseBean(HoundOfBaskerville.class);
+      EnterpriseBean<Hound> hound = BeanFactory.createEnterpriseBean(Hound.class, manager);
+      EnterpriseBean<HoundOfBaskerville> houndOfBaskerville = BeanFactory.createEnterpriseBean(HoundOfBaskerville.class, manager);
       assert compareBindingTypesOK(hound, houndOfBaskerville);
    }
 
@@ -75,7 +75,7 @@ public class EnterpriseBeanSpecializationTest extends AbstractTest
    @SpecAssertion(section = "3.3.6")
    public void testSpecializingBeanInheritsNameIfAny()
    {
-      EnterpriseBean<HoundOfBaskerville> houndOfBaskerville = BeanFactory.createEnterpriseBean(HoundOfBaskerville.class);
+      EnterpriseBean<HoundOfBaskerville> houndOfBaskerville = BeanFactory.createEnterpriseBean(HoundOfBaskerville.class, manager);
       assert houndOfBaskerville.getName().equals("Pongo");
    }
 
@@ -132,7 +132,7 @@ public class EnterpriseBeanSpecializationTest extends AbstractTest
    @SpecAssertion(section = "3.3.6")
    public void testAnnotationDefinedSpecializingEnterpriseBeanNotDirectlyExtendingAnnotationDefinedEnterpriseBeanFails()
    {
-      EnterpriseBean<GreaterDane> greaterDane = BeanFactory.createEnterpriseBean(GreaterDane.class);
+      EnterpriseBean<GreaterDane> greaterDane = BeanFactory.createEnterpriseBean(GreaterDane.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class, groups = { "stub", "specialization", "enterpriseBeans" })

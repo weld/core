@@ -38,7 +38,7 @@ import javax.webbeans.Stereotype;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
+import org.jboss.webbeans.bindings.CurrentBinding;
 import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -166,7 +166,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       else if (bindingTypes.size() == 0)
       {
          log.trace("Adding default @Current binding type");
-         this.bindingTypes.add(new CurrentAnnotationLiteral());
+         this.bindingTypes.add(new CurrentBinding());
       }
       else
       {

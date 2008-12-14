@@ -18,7 +18,7 @@ public class ManagerTest extends AbstractTest
    @Test(groups={"manager", "injection", "deployment"}) @SpecAssertion(section="5.8")
    public void testInjectingManager()
    {
-      FishFarmOffice fishFarmOffice = createSimpleBean(FishFarmOffice.class).create();
+      FishFarmOffice fishFarmOffice = createSimpleBean(FishFarmOffice.class, manager).create();
       assert fishFarmOffice.manager != null;
    }
    

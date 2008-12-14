@@ -5,14 +5,12 @@ import java.lang.reflect.Method;
 import javax.webbeans.Observer;
 import javax.webbeans.Observes;
 
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
 import org.jboss.webbeans.test.annotations.Role;
 import org.jboss.webbeans.test.bindings.RoleBinding;
-import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -24,9 +22,9 @@ import org.testng.annotations.Test;
  * 
  */
 @SpecVersion("20081024-PDR")
-public class ObserverTest
+public class ObserverTest extends AbstractTest
 {
-   private MockManagerImpl manager;
+   
    // private SimpleBean<Tuna> tuna;
    private SimpleBean<SampleObserver> ob;
    private AnnotatedMethod<Object> om;
@@ -55,15 +53,14 @@ public class ObserverTest
    }
 
    @BeforeMethod
-   public void before() throws Exception
+   public void beforeObserverTest() throws Exception
    {
-      manager = new MockManagerImpl();
-      CurrentManager.setRootManager(manager);
-      ob = BeanFactory.createSimpleBean(SampleObserver.class);
+      super.before();
+      ob = BeanFactory.createSimpleBean(SampleObserver.class, manager);
       manager.addBean(ob);
       Method method = SampleObserver.class.getMethod("observe", SampleEvent.class);
       om = new AnnotatedMethodImpl<Object>(method, new AnnotatedClassImpl<SampleObserver>(SampleObserver.class));
-      observer = BeanFactory.createObserver(om, ob);
+      observer = BeanFactory.createObserver(om, ob, manager);
       manager.addObserver(observer, SampleEvent.class, new RoleBinding("Admin"));
       notified = false;
    }

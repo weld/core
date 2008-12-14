@@ -9,7 +9,7 @@ import javax.webbeans.Current;
 
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.bindings.CurrentAnnotationLiteral;
+import org.jboss.webbeans.bindings.CurrentBinding;
 import org.jboss.webbeans.test.annotations.Synchronous;
 import org.jboss.webbeans.test.beans.Barn;
 import org.jboss.webbeans.test.beans.Cat;
@@ -31,7 +31,7 @@ public class BindingTypeTest extends AbstractTest
    @Test @SpecAssertion(section={"2.3.3", "2.3.1"}) 
    public void testDefaultBindingTypeDeclaredInJava()
    {
-      SimpleBean<Order> order = createSimpleBean(Order.class);
+      SimpleBean<Order> order = createSimpleBean(Order.class, manager);
       assert order.getBindingTypes().size() == 1;
       order.getBindingTypes().iterator().next().annotationType().equals(Current.class);
    }
@@ -58,7 +58,7 @@ public class BindingTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.3.3")
    public void testBindingTypesDeclaredInJava()
    {
-      SimpleBean<Cat> cat = createSimpleBean(Cat.class);
+      SimpleBean<Cat> cat = createSimpleBean(Cat.class, manager);
       assert cat.getBindingTypes().size() == 1;
       assert Reflections.annotationSetMatches(cat.getBindingTypes(), Synchronous.class);
    }
@@ -66,7 +66,7 @@ public class BindingTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.3.3") 
    public void testMultipleBindingTypes()
    {
-      SimpleBean<?> model = createSimpleBean(Cod.class);
+      SimpleBean<?> model = createSimpleBean(Cod.class, manager);
       assert model.getBindingTypes().size() == 2;
    }
    
@@ -111,9 +111,9 @@ public class BindingTypeTest extends AbstractTest
 	@Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section={"2.3.4", "2.3.1"}) 
    public void testDefaultBindingTypeDeclaredInXml()
    {
-      SimpleBean<?> model = createSimpleBean(Tuna.class);
+      SimpleBean<?> model = createSimpleBean(Tuna.class, manager);
       assert model.getBindingTypes().size() == 1;
-      assert model.getBindingTypes().contains(new CurrentAnnotationLiteral());
+      assert model.getBindingTypes().contains(new CurrentBinding());
       assert false;
    }
 	
@@ -122,11 +122,11 @@ public class BindingTypeTest extends AbstractTest
 	@Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="2.3.5") 
    public void testFieldInjectedFromProducerMethod() throws Exception
    {
-	   SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class);
+	   SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class, manager);
       manager.addBean(spiderProducer);
       Method method = SpiderProducer.class.getMethod("produceTameTarantula");
-	   manager.addBean(createProducerMethodBean(Tarantula.class, method, spiderProducer));
-      Barn barn = createSimpleBean(Barn.class).create();
+	   manager.addBean(createProducerMethodBean(Tarantula.class, method, spiderProducer, manager));
+      Barn barn = createSimpleBean(Barn.class, manager).create();
       assert barn.petSpider != null;
       assert barn.petSpider instanceof DefangedTarantula;
    }
@@ -146,12 +146,12 @@ public class BindingTypeTest extends AbstractTest
 	@Test(groups={"injection", "producerMethod"})
    public void testMethodWithBindingAnnotationsOnParametersAreInjected() throws Exception
    {
-      SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class);
+      SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class, manager);
       manager.addBean(spiderProducer);
       Method method = SpiderProducer.class.getMethod("produceTameTarantula");
-      manager.addBean(createProducerMethodBean(Tarantula.class, method, spiderProducer));
+      manager.addBean(createProducerMethodBean(Tarantula.class, method, spiderProducer, manager));
       method = SpiderProducer.class.getMethod("produceSpiderFromInjection", Tarantula.class);
-      ProducerMethodBean<Spider> spiderBean = createProducerMethodBean(Spider.class, method, spiderProducer);
+      ProducerMethodBean<Spider> spiderBean = createProducerMethodBean(Spider.class, method, spiderProducer, manager);
       Spider spider = spiderBean.create();
       assert spider != null;
       assert spider instanceof DefangedTarantula;

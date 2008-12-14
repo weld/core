@@ -39,13 +39,13 @@ public class ResolutionByNameTest extends AbstractTest
    public void testNamedBasedResolution()
    {
       
-      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class);
-      Bean<Cod> codBean = createSimpleBean(Cod.class);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class);
-      Bean<SeaBass> seaBassBean = createSimpleBean(SeaBass.class);
-      Bean<Haddock> haddockBean = createSimpleBean(Haddock.class);
-      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class);
+      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
+      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
+      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
+      Bean<SeaBass> seaBassBean = createSimpleBean(SeaBass.class, manager);
+      Bean<Haddock> haddockBean = createSimpleBean(Haddock.class, manager);
+      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class, manager);
       
       manager.addBean(tunaBean);
       manager.addBean(codBean);
@@ -70,8 +70,8 @@ public class ResolutionByNameTest extends AbstractTest
    @Test(groups="resolution") @SpecAssertion(section="5.11.1")
    public void testNoWebBeansFound() throws Exception
    {
-      Bean<Cod> codBean = createSimpleBean(Cod.class);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class);
+      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
       
       manager.addBean(codBean);
       manager.addBean(salmonBean);

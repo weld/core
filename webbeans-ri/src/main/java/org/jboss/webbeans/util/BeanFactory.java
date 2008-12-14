@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import javax.webbeans.Event;
 import javax.webbeans.Instance;
 
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.EventBean;
@@ -48,11 +48,12 @@ public class BeanFactory
     * 
     * @param <T> The type
     * @param clazz The class
+    * @param manager TODO
     * @return A Web Bean
     */
-   public static <T> SimpleBean<T> createSimpleBean(Class<T> clazz)
+   public static <T> SimpleBean<T> createSimpleBean(Class<T> clazz, ManagerImpl manager)
    {
-      return new SimpleBean<T>(clazz, CurrentManager.rootManager());
+      return new SimpleBean<T>(clazz, manager);
    }
 
    /**
@@ -60,11 +61,12 @@ public class BeanFactory
     * 
     * @param <T> The type
     * @param clazz The class
+    * @param manager TODO
     * @return An Enterprise Web Bean
     */
-   public static <T> EnterpriseBean<T> createEnterpriseBean(Class<T> clazz)
+   public static <T> EnterpriseBean<T> createEnterpriseBean(Class<T> clazz, ManagerImpl manager)
    {
-      return new EnterpriseBean<T>(clazz, CurrentManager.rootManager());
+      return new EnterpriseBean<T>(clazz, manager);
    }
 
    /**
@@ -74,11 +76,12 @@ public class BeanFactory
     * @param type The class
     * @param method The underlying method
     * @param declaringBean The declaring bean abstraction
+    * @param manager TODO
     * @return A producer Web Bean
     */
-   public static <T> ProducerMethodBean<T> createProducerMethodBean(Class<T> type, Method method, AbstractClassBean<?> declaringBean)
+   public static <T> ProducerMethodBean<T> createProducerMethodBean(Class<T> type, Method method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
-      return new ProducerMethodBean<T>(method, declaringBean, CurrentManager.rootManager());
+      return new ProducerMethodBean<T>(method, declaringBean, manager);
    }
 
    /**
@@ -88,11 +91,12 @@ public class BeanFactory
     * @param type The class
     * @param field The underlying field
     * @param declaringBean The declaring bean abstraction
+    * @param manager TODO
     * @return A producer Web Bean
     */
-   public static <T> ProducerFieldBean<T> createProducerFieldBean(Class<T> type, Field field, AbstractClassBean<?> declaringBean)
+   public static <T> ProducerFieldBean<T> createProducerFieldBean(Class<T> type, Field field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
-      return new ProducerFieldBean<T>(field, declaringBean, CurrentManager.rootManager());
+      return new ProducerFieldBean<T>(field, declaringBean, manager);
    }
 
    /**
@@ -100,11 +104,12 @@ public class BeanFactory
     * 
     * @param field The underlying method abstraction
     * @param declaringBean The declaring bean abstraction
+    * @param manager TODO
     * @return A producer Web Bean
     */
-   public static <T> ProducerFieldBean<T> createProducerFieldBean(AnnotatedField<T> field, AbstractClassBean<?> declaringBean)
+   public static <T> ProducerFieldBean<T> createProducerFieldBean(AnnotatedField<T> field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
-      return new ProducerFieldBean<T>(field, declaringBean, CurrentManager.rootManager());
+      return new ProducerFieldBean<T>(field, declaringBean, manager);
    }
 
    /**
@@ -112,40 +117,43 @@ public class BeanFactory
     * 
     * @param method The underlying method abstraction
     * @param declaringBean The declaring bean abstraction
+    * @param manager TODO
     * @return A producer Web Bean
     */
-   public static <T> ProducerMethodBean<T> createProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean)
+   public static <T> ProducerMethodBean<T> createProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
-      return new ProducerMethodBean<T>(method, declaringBean, CurrentManager.rootManager());
+      return new ProducerMethodBean<T>(method, declaringBean, manager);
    }
 
    /**
     * Creates an event Web Bean
     * 
     * @param field The event injection point abstraction
+    * @param manager TODO
     * @param declaringBean The declaring bean abstraction
     * @return An event Web Bean
     */
-   public static <T, S> EventBean<T, S> createEventBean(AnnotatedItem<Event<T>, S> field)
+   public static <T, S> EventBean<T, S> createEventBean(AnnotatedItem<Event<T>, S> field, ManagerImpl manager)
    {
-      return new EventBean<T, S>(field, CurrentManager.rootManager());
+      return new EventBean<T, S>(field, manager);
    }
    
    /**
     * Creates an instance Web Bean
     * 
     * @param field The instance injection point abstraction
+    * @param manager TODO
     * @param declaringBean The declaring bean abstraction
     * @return An event Web Bean
     */
-   public static <T, S> InstanceBean<T, S> createInstanceBean(AnnotatedItem<Instance<T>, S> field)
+   public static <T, S> InstanceBean<T, S> createInstanceBean(AnnotatedItem<Instance<T>, S> field, ManagerImpl manager)
    {
-      return new InstanceBean<T, S>(field, CurrentManager.rootManager());
+      return new InstanceBean<T, S>(field, manager);
    }
    
-   public static <T> ObserverImpl<T> createObserver(AnnotatedMethod<Object> method, AbstractClassBean<?> declaringBean)
+   public static <T> ObserverImpl<T> createObserver(AnnotatedMethod<Object> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
-      return new ObserverImpl<T>(method, declaringBean, CurrentManager.rootManager());
+      return new ObserverImpl<T>(method, declaringBean, manager);
    }
 
 }

@@ -18,13 +18,11 @@
 package org.jboss.webbeans.bindings;
 
 import javax.webbeans.AnnotationLiteral;
-import javax.webbeans.Named;
+import javax.webbeans.Current;
 
 /**
- * Annotation literal for @Named
+ * Annotation literal for @Current
  * 
  * @author Pete Muir
  */
-public abstract class NamedAnnotationLiteral extends AnnotationLiteral<Named> implements Named
-{
-}
+public class CurrentBinding extends AnnotationLiteral<Current> implements Current {}

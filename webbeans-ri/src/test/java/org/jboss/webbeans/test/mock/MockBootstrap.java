@@ -1,13 +1,14 @@
 package org.jboss.webbeans.test.mock;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 
 public class MockBootstrap extends WebBeansBootstrap
 { 
    
-   public MockBootstrap()
+   public MockBootstrap(ManagerImpl manager)
    {
-      super();
+      super(manager);
    }
    
 }

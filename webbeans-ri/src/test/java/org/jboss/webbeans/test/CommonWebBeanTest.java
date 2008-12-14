@@ -35,41 +35,41 @@ public class CommonWebBeanTest extends AbstractTest
 	@Test @SpecAssertion(section="2")
 	public void testApiTypesNonEmpty()
 	{
-	   Bean<?> model = createSimpleBean(RedSnapper.class);
+	   Bean<?> model = createSimpleBean(RedSnapper.class, manager);
       assert model.getTypes().size() > 0;
 	}
 	
 	@Test @SpecAssertion(section="2")
 	public void testBindingTypesNonEmpty()
 	{
-	   Bean<?> model = createSimpleBean(RedSnapper.class);
+	   Bean<?> model = createSimpleBean(RedSnapper.class, manager);
       assert model.getBindingTypes().size() > 0;
 	}
 	
 	@Test @SpecAssertion(section="2")
 	public void testHasScopeType()
 	{
-	   Bean<?> model = createSimpleBean(RedSnapper.class);
+	   Bean<?> model = createSimpleBean(RedSnapper.class, manager);
       assert model.getScopeType().equals(RequestScoped.class);
 	}
 	
 	@Test @SpecAssertion(section="2")
 	public void testHasDeploymentType()
 	{
-		Bean<?> model = createSimpleBean(RedSnapper.class);
+		Bean<?> model = createSimpleBean(RedSnapper.class, manager);
 		assert model.getDeploymentType().equals(Production.class);
 	}
 	
 	@Test(groups="producerMethod") @SpecAssertion(section="5.2")
    public void testIsNullable() throws Exception
    {
-	   SimpleBean<SpiderProducer> spiderProducerBean = createSimpleBean(SpiderProducer.class);
+	   SimpleBean<SpiderProducer> spiderProducerBean = createSimpleBean(SpiderProducer.class, manager);
 	   manager.addBean(spiderProducerBean);
       Method method = SpiderProducer.class.getMethod("getWolfSpiderSize");
-      Bean<Integer> bean = createProducerMethodBean(int.class, method, spiderProducerBean);
+      Bean<Integer> bean = createProducerMethodBean(int.class, method, spiderProducerBean, manager);
       assert !bean.isNullable();
       method = SpiderProducer.class.getMethod("makeASpider");
-      Bean<Spider> spiderBean = createProducerMethodBean(Spider.class, method, spiderProducerBean);
+      Bean<Spider> spiderBean = createProducerMethodBean(Spider.class, method, spiderProducerBean, manager);
       assert spiderBean.isNullable();
    }
 	
@@ -77,7 +77,7 @@ public class CommonWebBeanTest extends AbstractTest
    @Test @SpecAssertion(section={"3.2.2", "2.2"})
    public void testApiTypes()
    {
-      Bean<Tarantula> bean = createSimpleBean(Tarantula.class);
+      Bean<Tarantula> bean = createSimpleBean(Tarantula.class, manager);
       assert bean.getTypes().size() == 6;
       assert bean.getTypes().contains(Tarantula.class);
       assert bean.getTypes().contains(Spider.class);
@@ -90,7 +90,7 @@ public class CommonWebBeanTest extends AbstractTest
    @Test @SpecAssertion(section="2.2")
    public void testFinalApiType()
    {
-      createSimpleBean(DependentFinalTuna.class);
+      createSimpleBean(DependentFinalTuna.class, manager);
    }
 	
 }

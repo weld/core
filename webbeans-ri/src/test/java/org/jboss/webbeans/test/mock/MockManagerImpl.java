@@ -62,10 +62,5 @@ public class MockManagerImpl extends ManagerImpl
    {
       return observedEventType;
    }
-
-   public void setEnabledDeploymentTypes(Class<? extends Annotation>... enabledDeploymentTypes)
-   {
-      initEnabledDeploymentTypes(enabledDeploymentTypes);
-   }
    
 }

@@ -32,7 +32,7 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
  * @param <T>
  * @param <S>
  */
-public class InstanceBean<T, S> extends FacadeBean<Instance<T>, S, T>
+public class InstanceBean<T, S> extends AbstractFacadeBean<Instance<T>, S, T>
 {
 
    /**

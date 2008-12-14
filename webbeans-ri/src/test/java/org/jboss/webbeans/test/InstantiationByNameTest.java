@@ -30,8 +30,8 @@ public class InstantiationByNameTest extends AbstractTest
    public void testNoWebBeansFound() throws Exception
    {
       AnnotatedField<ScottishFish> whiteScottishFishField = new AnnotatedFieldImpl<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
-      Bean<Cod> codBean = createSimpleBean(Cod.class);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class);
+      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
       manager.addBean(codBean);
       manager.addBean(salmonBean);
       
@@ -42,9 +42,9 @@ public class InstantiationByNameTest extends AbstractTest
    public void testAmbiguousDependencies() throws Exception
    {
       AnnotatedField<ScottishFish> whiteScottishFishField = new AnnotatedFieldImpl<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
-      Bean<Cod> codBean = createSimpleBean(Cod.class);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class);
+      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
+      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
       manager.addBean(codBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
@@ -55,13 +55,13 @@ public class InstantiationByNameTest extends AbstractTest
    @Test(groups={"resolution", "beanLifecycle"}) @SpecAssertion(section="4.10.1")
    public void testGetInstanceByName()
    {
-      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class);
-      Bean<Cod> codBean = createSimpleBean(Cod.class);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class);
-      Bean<SeaBass> seaBassBean = createSimpleBean(SeaBass.class);
-      Bean<Haddock> haddockBean = createSimpleBean(Haddock.class);
-      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class);
+      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
+      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
+      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
+      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
+      Bean<SeaBass> seaBassBean = createSimpleBean(SeaBass.class, manager);
+      Bean<Haddock> haddockBean = createSimpleBean(Haddock.class, manager);
+      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class, manager);
       
       manager.addBean(tunaBean);
       manager.addBean(codBean);

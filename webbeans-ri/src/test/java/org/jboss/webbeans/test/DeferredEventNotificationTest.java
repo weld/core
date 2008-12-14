@@ -2,6 +2,8 @@ package org.jboss.webbeans.test;
 
 import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
 
+import java.util.Arrays;
+
 import javax.webbeans.Observes;
 import javax.webbeans.Standard;
 
@@ -30,9 +32,9 @@ public class DeferredEventNotificationTest extends AbstractTest
    }
    
    @Override
-   protected void addEnabledDeploymentTypes()
+   protected void addStandardDeploymentTypesForTests()
    {
-      manager.setEnabledDeploymentTypes(Standard.class, AnotherDeploymentType.class);
+      manager.setEnabledDeploymentTypes(Arrays.asList(Standard.class, AnotherDeploymentType.class));
    }
 
    public class AnObserver
@@ -66,7 +68,7 @@ public class DeferredEventNotificationTest extends AbstractTest
       //annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
       //AnnotatedClass<Tuna> annotatedItem = new SimpleAnnotatedClass<Tuna>(Tuna.class, annotations);
       // TODO This should test a real class
-      tuna = createSimpleBean(Tuna.class);
+      tuna = createSimpleBean(Tuna.class, manager);
       om = new AnnotatedMethodImpl<Object>(AnObserver.class.getMethod("observe", new Class[] { Event.class }), new AnnotatedClassImpl<AnObserver>(AnObserver.class));
 
       AnObserver observerInstance = new AnObserver();

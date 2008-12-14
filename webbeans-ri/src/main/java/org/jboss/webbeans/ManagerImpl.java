@@ -32,7 +32,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.webbeans.AmbiguousDependencyException;
 import javax.webbeans.BindingType;
 import javax.webbeans.ContextNotActiveException;
-import javax.webbeans.Dependent;
 import javax.webbeans.DeploymentException;
 import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.Observer;
@@ -47,13 +46,9 @@ import javax.webbeans.manager.InterceptionType;
 import javax.webbeans.manager.Interceptor;
 import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.bean.AbstractBean;
-import org.jboss.webbeans.bean.ManagerBean;
-import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bean.proxy.ProxyPool;
 import org.jboss.webbeans.contexts.ContextMap;
 import org.jboss.webbeans.contexts.DependentContext;
-import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -94,6 +89,9 @@ public class ManagerImpl implements Manager
 
    /**
     * Constructor
+    * 
+    * @param enabledDeploymentTypes any enabled deployment types, an empty set
+    * if none are specified
     */
    @SuppressWarnings("unchecked")
    public ManagerImpl()
@@ -105,18 +103,11 @@ public class ManagerImpl implements Manager
       this.decorators = new HashSet<Decorator>();
       this.interceptors = new HashSet<Interceptor>();
       this.contextMap = new ContextMap();
-      initEnabledDeploymentTypes();
-      initStandardBeans();
-      addContext(new DependentContext());
-   }
-
-   /**
-    * Add any beans provided by the Web Beans RI to the registry
-    */
-   protected void initStandardBeans()
-   {
-      addBean(new SimpleBean<DefaultEnterpriseBeanLookup>(DefaultEnterpriseBeanLookup.class, this));
-      addBean(new ManagerBean(this));
+      
+      List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
+      defaultEnabledDeploymentTypes.add(0, Standard.class);
+      defaultEnabledDeploymentTypes.add(1, Production.class);
+      setEnabledDeploymentTypes(defaultEnabledDeploymentTypes);
    }
 
    /**
@@ -126,24 +117,11 @@ public class ManagerImpl implements Manager
     * @param enabledDeploymentTypes The enabled deployment types from
     *           web-beans.xml
     */
-   protected void initEnabledDeploymentTypes(Class<? extends Annotation>... enabledDeploymentTypes)
+   protected void checkEnabledDeploymentTypes()
    {
-      this.enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
-      if (enabledDeploymentTypes.length == 0)
+      if (!this.enabledDeploymentTypes.get(0).equals(Standard.class))
       {
-         this.enabledDeploymentTypes.add(0, Standard.class);
-         this.enabledDeploymentTypes.add(1, Production.class);
-      }
-      else
-      {
-         for (Class<? extends Annotation> enabledDeploymentType : enabledDeploymentTypes)
-         {
-            this.enabledDeploymentTypes.add(enabledDeploymentType);
-         }
-         if (!this.enabledDeploymentTypes.get(0).equals(Standard.class))
-         {
-            throw new DeploymentException("@Standard must be the lowest precedence deployment type");
-         }
+         throw new DeploymentException("@Standard must be the lowest precedence deployment type");
       }
    }
 
@@ -194,13 +172,23 @@ public class ManagerImpl implements Manager
    }
 
    /**
-    * A strongly ordered, unmodifyable list of enabled deployment types
+    * A strongly ordered, unmodifiable list of enabled deployment types
     * 
     * @return The ordered enabled deployment types known to the manager
     */
    public List<Class<? extends Annotation>> getEnabledDeploymentTypes()
    {
       return Collections.unmodifiableList(enabledDeploymentTypes);
+   }
+   
+   /**
+    * Set the enabled deployment types
+    * @param enabledDeploymentTypes
+    */
+   public void setEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
+   {
+      this.enabledDeploymentTypes = enabledDeploymentTypes;
+      checkEnabledDeploymentTypes();
    }
 
    /**
@@ -276,14 +264,12 @@ public class ManagerImpl implements Manager
     * @param beans The set of beans to add
     * @return A reference to the manager
     */
-   public Manager setBeans(Set<AbstractBean<?, ?>> beans)
+   public void setBeans(Set<Bean<?>> beans)
    {
       synchronized (beans)
       {
          this.beans = new CopyOnWriteArrayList<Bean<?>>(beans);
          resolver.clear();
-         initStandardBeans();
-         return this;
       }
    }
 
@@ -465,7 +451,7 @@ public class ManagerImpl implements Manager
    {
       try
       {
-         contextMap.getBuiltInContext(Dependent.class).setActive(true);
+         DependentContext.INSTANCE.setActive(true);
          if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal())
          {
             return (T) proxyPool.getClientProxy(bean);
@@ -477,7 +463,7 @@ public class ManagerImpl implements Manager
       }
       finally
       {
-         contextMap.getBuiltInContext(Dependent.class).setActive(false);
+         DependentContext.INSTANCE.setActive(false);
       }
    }
 

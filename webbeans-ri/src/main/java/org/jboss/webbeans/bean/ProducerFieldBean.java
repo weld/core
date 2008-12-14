@@ -31,7 +31,7 @@ import org.jboss.webbeans.util.Names;
  *
  * @param <T>
  */
-public class ProducerFieldBean<T> extends ProducerBean<T, Field>
+public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
 {
    // The underlying field
    private AnnotatedField<T> field;

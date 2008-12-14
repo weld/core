@@ -1,9 +1,10 @@
 package org.jboss.webbeans.test;
 
+import java.util.Arrays;
+
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
 
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.contexts.ApplicationContext;
 import org.jboss.webbeans.contexts.RequestContext;
@@ -25,24 +26,25 @@ public class AbstractTest
    public final void before()
    {
       manager = new MockManagerImpl();
+      webBeansBootstrap = new MockBootstrap(manager);
       manager.addContext(RequestContext.INSTANCE);
+      SessionContext.INSTANCE.setBeanMap(new SimpleBeanMap());
       manager.addContext(SessionContext.INSTANCE);
-      manager.addContext(ApplicationContext.INSTANCE);
-      CurrentManager.setRootManager(manager);
-      // Mock the ApplicationContext as a simple map
       ApplicationContext.INSTANCE.setBeanMap(new SimpleBeanMap());
-      webBeansBootstrap = new MockBootstrap();
+      manager.addContext(ApplicationContext.INSTANCE);
+      // Load the build in beans
+      webBeansBootstrap.registerBeans();
       init();
    }
    
    protected void init()
    {
-      addEnabledDeploymentTypes();
+      addStandardDeploymentTypesForTests();
    }
    
-   protected void addEnabledDeploymentTypes()
+   protected void addStandardDeploymentTypesForTests()
    {
-      manager.setEnabledDeploymentTypes(Standard.class, Production.class, AnotherDeploymentType.class, HornedAnimalDeploymentType.class);
+      manager.setEnabledDeploymentTypes(Arrays.asList(Standard.class, Production.class, AnotherDeploymentType.class, HornedAnimalDeploymentType.class));
    }
 
 }

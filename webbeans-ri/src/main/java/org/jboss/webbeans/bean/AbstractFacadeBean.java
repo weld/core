@@ -37,7 +37,7 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
  * @param <S>
  * @param <P>
  */
-public abstract class FacadeBean<T, S, P> extends AbstractBean<T, S>
+public abstract class AbstractFacadeBean<T, S, P> extends AbstractBean<T, S>
 {
    // The underlying item
    protected AnnotatedItem<T, S> annotatedItem;
@@ -48,7 +48,7 @@ public abstract class FacadeBean<T, S, P> extends AbstractBean<T, S>
     * @param field The facaded field
     * @param manager The Web Beans manager
     */
-   public FacadeBean(AnnotatedItem<T, S> field, ManagerImpl manager)
+   public AbstractFacadeBean(AnnotatedItem<T, S> field, ManagerImpl manager)
    {
       super(manager);
       this.annotatedItem = field;

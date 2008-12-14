@@ -43,13 +43,13 @@ public class NormalContextTest extends AbstractTest
    
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testGetWithCreateFalseReturnsNull() {
-      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class);      
+      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class, manager);      
       assert context.get(tunaBean, false) == null;
    }
 
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testGetWithCreateTrueReturnsBean() {
-      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class);      
+      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class, manager);      
       assert context.get(tunaBean, true) != null;
    }
    
@@ -62,7 +62,7 @@ public class NormalContextTest extends AbstractTest
    
    @Test(groups="contexts") @SpecAssertion(section="8.1")
    public void testReturnsCorrectExistingBean() {
-      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class);      
+      Bean<Tuna> tunaBean = BeanFactory.createSimpleBean(Tuna.class, manager);
       Tuna firstTuna = context.get(tunaBean, true);
       Tuna secondTuna = context.get(tunaBean, false);
       assert firstTuna == secondTuna;
@@ -70,10 +70,10 @@ public class NormalContextTest extends AbstractTest
 
    @Test(groups={"contexts", "producerMethod"}) @SpecAssertion(section="8.1")
    public void testProducerMethodReturningNullOK() throws SecurityException, NoSuchMethodException {
-      SimpleBean<SpiderProducer> producer = createSimpleBean(SpiderProducer.class);
+      SimpleBean<SpiderProducer> producer = createSimpleBean(SpiderProducer.class, manager);
       manager.addBean(producer);
       Method nullProducer = SpiderProducer.class.getMethod("produceShelob");  
-      ProducerMethodBean<Tarantula> shelobBean = createProducerMethodBean(Tarantula.class, nullProducer, producer);
+      ProducerMethodBean<Tarantula> shelobBean = createProducerMethodBean(Tarantula.class, nullProducer, producer, manager);
       assert shelobBean.create() == null;
    }
    
