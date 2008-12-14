@@ -1,6 +1,5 @@
 package org.jboss.webbeans.transaction;
 
-import javax.persistence.EntityManager;
 import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
 
@@ -25,5 +24,5 @@ public interface UserTransaction extends javax.transaction.UserTransaction
    public boolean isConversationContextRequired();
    public abstract void registerSynchronization(Synchronization sync);
 
-   public void enlist(EntityManager entityManager) throws SystemException;
+   // public void enlist(EntityManager entityManager) throws SystemException;
 }

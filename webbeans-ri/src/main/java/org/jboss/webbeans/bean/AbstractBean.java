@@ -62,7 +62,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
 {
 
    @SuppressWarnings("unchecked")
-   private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(DefaultEnterpriseBeanLookup.class, Event.class));
+   private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(DefaultEnterpriseBeanLookup.class, Event.class, ManagerImpl.class));
 
    /**
     * Helper class for getting deployment type

@@ -43,7 +43,6 @@ import javax.webbeans.Observable;
 import javax.webbeans.Observer;
 import javax.webbeans.Observes;
 import javax.webbeans.Obtainable;
-import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
@@ -52,7 +51,6 @@ import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.bean.InstanceBean;
-import org.jboss.webbeans.bean.ManagerBean;
 import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bindings.InitializedBinding;
@@ -120,8 +118,7 @@ public class WebBeansBootstrap
     */
    public void registerBeans(Iterable<Class<?>> classes)
    {
-      Set<Bean<?>> beans = (Set) createBeans(classes);
-      beans.add(new ManagerBean(manager));
+      Set<AbstractBean<?, ?>> beans = createBeans(classes);
       manager.setBeans(beans);
    }
 
@@ -151,6 +148,7 @@ public class WebBeansBootstrap
          }
       }
       createBean(BeanFactory.createSimpleBean(Transaction.class, manager), beans);
+      createBean(BeanFactory.createSimpleBean(ManagerImpl.class, manager), beans);
       createBean(BeanFactory.createSimpleBean(DefaultEnterpriseBeanLookup.class, manager), beans);
       return beans;
    }

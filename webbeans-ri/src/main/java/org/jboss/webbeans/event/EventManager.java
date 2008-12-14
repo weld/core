@@ -135,8 +135,7 @@ public class EventManager
 
    // The map of registered observers for a give
    private final RegisteredObserversMap registeredObservers;
-   // The current UserTransaction
-   private UserTransaction userTransaction;
+
 
    /**
     * Initializes a new instance of the EventManager.
@@ -147,7 +146,6 @@ public class EventManager
    {
       this.manager = manager;
       registeredObservers = new RegisteredObserversMap();
-      userTransaction = manager.getInstanceByType(UserTransaction.class);
    }
 
    /**
@@ -196,6 +194,7 @@ public class EventManager
     */
    private boolean isTransactionActive()
    {
+      UserTransaction userTransaction = manager.getInstanceByType(UserTransaction.class);
       try
       {
          return userTransaction!=null && userTransaction.getStatus() == Status.STATUS_ACTIVE;
@@ -240,6 +239,7 @@ public class EventManager
     */
    private <T> void deferEvent(T event, Observer<T> observer)
    {
+      UserTransaction userTransaction = manager.getInstanceByType(UserTransaction.class);
       DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, observer);
       userTransaction.registerSynchronization(deferredEvent);
    }

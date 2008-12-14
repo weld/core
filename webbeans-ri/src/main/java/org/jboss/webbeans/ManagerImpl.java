@@ -46,6 +46,7 @@ import javax.webbeans.manager.InterceptionType;
 import javax.webbeans.manager.Interceptor;
 import javax.webbeans.manager.Manager;
 
+import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.proxy.ProxyPool;
 import org.jboss.webbeans.contexts.ContextMap;
 import org.jboss.webbeans.contexts.DependentContext;
@@ -65,6 +66,7 @@ import org.jboss.webbeans.util.Strings;
  * @author Pete Muir
  * 
  */
+@Standard
 public class ManagerImpl implements Manager
 {
    // The JNDI key to place the manager under
@@ -97,12 +99,12 @@ public class ManagerImpl implements Manager
    public ManagerImpl()
    {
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
-      this.eventManager = new EventManager(this);
       this.resolver = new Resolver(this);
       this.proxyPool = new ProxyPool();
       this.decorators = new HashSet<Decorator>();
       this.interceptors = new HashSet<Interceptor>();
       this.contextMap = new ContextMap();
+      this.eventManager = new EventManager(this);
       
       List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       defaultEnabledDeploymentTypes.add(0, Standard.class);
@@ -264,7 +266,7 @@ public class ManagerImpl implements Manager
     * @param beans The set of beans to add
     * @return A reference to the manager
     */
-   public void setBeans(Set<Bean<?>> beans)
+   public void setBeans(Set<AbstractBean<?, ?>> beans)
    {
       synchronized (beans)
       {

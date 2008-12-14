@@ -336,7 +336,7 @@ public class NewEventTest extends AbstractTest
    public void testObserverMethodOnEnterpriseBeanIsBusinessMethodOrStatic()
    {
       Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(Pomeranian.class);
-      assert beans.size() == 1;
+      assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
       Set<Observer<MockManagerImpl>> observers = manager.resolveObservers(manager, new InitializedBinding());
       assert observers.size() == 2;
    }
@@ -346,7 +346,7 @@ public class NewEventTest extends AbstractTest
    public void testObserverMethodOnEnterpriseBeanNotBusinessMethodOrStaticFails()
    {
       Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(TibetanTerrier.class);
-      assert beans.size() == 1;
+      assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
       Set<Observer<MockManagerImpl>> observers = manager.resolveObservers(manager, new InitializedBinding());
       assert observers.size() == 1;
    }
@@ -383,7 +383,7 @@ public class NewEventTest extends AbstractTest
    {
       // This observer has no binding types specified
       Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(Pomeranian.class);
-      assert beans.size() == 1;
+      assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
 
       // Resolve registered observers with an event containing no binding types
       Set<Observer<String>> resolvedObservers = manager.resolveObservers("A new event");
@@ -555,7 +555,7 @@ public class NewEventTest extends AbstractTest
    public void testNonTransactionalObserverThrownNonCheckedExceptionIsRethrown()
    {
       Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(TeaCupPomeranian.class);
-      assert beans.size() == 1;
+      assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
       manager.fireEvent("Another event");
    }
 
@@ -564,7 +564,7 @@ public class NewEventTest extends AbstractTest
    public void testNonTransactionalObserverThrownCheckedExceptionIsWrappedAndRethrown()
    {
       Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(TeaCupPomeranian.class);
-      assert beans.size() == 1;
+      assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
       manager.fireEvent(new Integer(1));
    }
 

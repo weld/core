@@ -37,23 +37,33 @@ public class BoostrapTest extends AbstractTest
    public void testSingleSimpleBean()
    {
       Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(Tuna.class);
-      assert beans.size() == 1;
-      assert beans.iterator().next().getType().equals(Tuna.class);
+      assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
+      Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
+      for (AbstractBean<?, ?> bean : beans)
+      {
+         classes.put(bean.getType(), bean);
+      }
+      assert classes.containsKey(Tuna.class);
    }
    
    @Test(groups="bootstrap")
    public void testSingleEnterpriseBean()
    {
       Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(Hound.class);
-      assert beans.size() == 1;
-      assert beans.iterator().next().getType().equals(Hound.class);
+      assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
+      Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
+      for (AbstractBean<?, ?> bean : beans)
+      {
+         classes.put(bean.getType(), bean);
+      }
+      assert classes.containsKey(Hound.class);
    }
    
    @Test(groups="bootstrap")
    public void testMultipleSimpleBean()
    {
       Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(Tuna.class, Salmon.class, SeaBass.class, Sole.class);
-      assert beans.size() == 4;
+      assert beans.size() == 4 + MockManagerImpl.BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (AbstractBean<?, ?> bean : beans)
       {
@@ -74,7 +84,7 @@ public class BoostrapTest extends AbstractTest
    public void testProducerMethodBean()
    {
       Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(TarantulaProducer.class);
-      assert beans.size() == 2;
+      assert beans.size() == 2 + MockManagerImpl.BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (AbstractBean<?, ?> bean : beans)
       {
@@ -91,7 +101,7 @@ public class BoostrapTest extends AbstractTest
    public void testMultipleEnterpriseBean()
    {
       Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(Hound.class, Elephant.class, Panther.class, Tiger.class);
-      assert beans.size() == 4;
+      assert beans.size() == 4 + MockManagerImpl.BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (AbstractBean<?, ?> bean : beans)
       {
@@ -112,7 +122,7 @@ public class BoostrapTest extends AbstractTest
    public void testMultipleEnterpriseAndSimpleBean()
    {
       Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class);
-      assert beans.size() == 8;
+      assert beans.size() == 8 + MockManagerImpl.BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (AbstractBean<?, ?> bean : beans)
       {
@@ -141,7 +151,7 @@ public class BoostrapTest extends AbstractTest
    public void testRegisterProducerMethodBean()
    {
       webBeansBootstrap.registerBeans(TarantulaProducer.class);
-      assert manager.getBeans().size() == 4;
+      assert manager.getBeans().size() == 2 + MockManagerImpl.BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {
@@ -202,7 +212,7 @@ public class BoostrapTest extends AbstractTest
    {
       webBeansBootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class)), null, null));
       
-      assert manager.getBeans().size() == 10;
+      assert manager.getBeans().size() == 8 + MockManagerImpl.BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {
@@ -211,7 +221,6 @@ public class BoostrapTest extends AbstractTest
             classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
          }
       }
-      assert classes.containsKey(DefaultEnterpriseBeanLookup.class);
       assert classes.containsKey(Hound.class);
       assert classes.containsKey(Elephant.class);
       assert classes.containsKey(Panther.class);

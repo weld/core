@@ -205,24 +205,23 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
    {
       try
       {
-         // TODO: more details in the exceptions
          return getDelegate().newInstance(getParameterValues(parameters, manager));
       }
       catch (IllegalArgumentException e)
       {
-         throw new ExecutionException(e);
+         throw new ExecutionException("Error instantiating " + toString, e);
       }
       catch (InstantiationException e)
       {
-         throw new ExecutionException(e);
+         throw new ExecutionException("Error instantiating " + toString, e);
       }
       catch (IllegalAccessException e)
       {
-         throw new ExecutionException(e);
+         throw new ExecutionException("Error instantiating " + toString, e);
       }
       catch (InvocationTargetException e)
       {
-         throw new ExecutionException(e);
+         throw new ExecutionException("Error instantiating " + toString, e);
       }
    }
 

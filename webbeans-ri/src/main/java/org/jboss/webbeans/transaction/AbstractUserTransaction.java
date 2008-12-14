@@ -6,7 +6,6 @@ import static javax.transaction.Status.STATUS_MARKED_ROLLBACK;
 import static javax.transaction.Status.STATUS_NO_TRANSACTION;
 import static javax.transaction.Status.STATUS_ROLLEDBACK;
 
-import javax.persistence.EntityManager;
 import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
 
@@ -63,12 +62,12 @@ public abstract class AbstractUserTransaction implements UserTransaction
    
    public abstract void registerSynchronization(Synchronization sync);
    
-   public void enlist(EntityManager entityManager) throws SystemException
+   /*public void enlist(EntityManager entityManager) throws SystemException
    {
       if ( isActiveOrMarkedRollback() )
       {
          entityManager.joinTransaction();
       }
-   }
+   }*/
       
 }
