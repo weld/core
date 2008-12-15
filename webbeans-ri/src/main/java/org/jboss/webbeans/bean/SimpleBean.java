@@ -263,9 +263,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       log.trace("Found " + postConstructMethods + " constructors annotated with @Initializer for " + getType());
       if (postConstructMethods.size() > 1)
       {
-         // TODO: actually this is wrong, in EJB you can have @PostConstruct
-         // methods on the superclass,
-         // though the Web Beans spec is silent on the issue
+         // TODO actually this is wrong, in EJB you can have @PostConstruct methods on the superclass, though the Web Beans spec is silent on the issue
          throw new DefinitionException("Cannot have more than one post construct method annotated with @PostConstruct for " + getType());
       }
       else if (postConstructMethods.size() == 1)
@@ -285,9 +283,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       log.trace("Found " + preDestroyMethods + " constructors annotated with @Initializer for " + getType());
       if (preDestroyMethods.size() > 1)
       {
-         // TODO: actually this is wrong, in EJB you can have @PreDestroy
-         // methods on the superclass,
-         // though the Web Beans spec is silent on the issue
+         // TODO actually this is wrong, in EJB you can have @PreDestroy methods on the superclass, though the Web Beans spec is silent on the issue
          throw new DefinitionException("Cannot have more than one pre destroy method annotated with @PreDestroy for " + getType());
       }
       else if (preDestroyMethods.size() == 1)
@@ -316,7 +312,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    @SuppressWarnings("unchecked")
    protected AbstractBean<? extends T, Class<T>> getSpecializedType()
    {
-      // TODO: lots of validation!
+      // TODO lots of validation!
       Class<?> superclass = getAnnotatedItem().getType().getSuperclass();
       if (superclass != null)
       {

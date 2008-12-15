@@ -673,25 +673,25 @@ public class ManagerImpl implements Manager
 
    public Manager parse(InputStream xmlStream)
    {
-      // TODO Auto-generated method stub
+      // TODO Implement XML parsing
       return null;
    }
 
    public Manager validate()
    {
-      // TODO Auto-generated method stub
+      // TODO Implement XML parsing
       return null;
    }
 
    public Manager createChildManager()
    {
-      // TODO Auto-generated method stub
+      // TODO Implement hierarchical managers
       return null;
    }
 
    public Manager setCurrent()
    {
-      // TODO Auto-generated method stub
+      // TODO Implement hierarchical managers
       return null;
    }
 

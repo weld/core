@@ -279,7 +279,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    @Override
    protected AbstractBean<? extends T, Class<T>> getSpecializedType()
    {
-      // TODO: lots of validation!
+      // TODO lots of validation!
       Class<?> superclass = getAnnotatedItem().getType().getSuperclass();
       if (superclass != null)
       {

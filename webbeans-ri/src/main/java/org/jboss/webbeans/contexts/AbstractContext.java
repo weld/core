@@ -84,8 +84,6 @@ public abstract class AbstractContext implements Context
       {
          return null;
       }
-
-      // TODO should bean creation be synchronized?
       instance = bean.create();
       getBeanMap().put(bean, instance);
       return instance;

@@ -8,13 +8,11 @@ public class ServletRequestListenerBean implements ServletRequestListener
    
    public void requestDestroyed(ServletRequestEvent arg0)
    {
-      // TODO Auto-generated method stub
       
    }
    
    public void requestInitialized(ServletRequestEvent arg0)
    {
-      // TODO Auto-generated method stub
       
    }
    

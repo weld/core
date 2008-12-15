@@ -547,7 +547,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    @Override
    public boolean isSerializable()
    {
-      // TODO Auto-generated method stub
+      // TODO Implement passivating scopes
       return false;
    }
 

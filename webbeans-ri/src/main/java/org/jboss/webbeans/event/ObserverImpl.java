@@ -169,7 +169,6 @@ public class ObserverImpl<T> implements Observer<T>
       Object instance = getInstance(isConditional());
       if (instance != null)
       {
-         // TODO replace event parameter
          try
          {
             observerMethod.invokeWithSpecialValue(instance, Observes.class, event, manager);

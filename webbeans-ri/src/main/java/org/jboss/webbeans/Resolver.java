@@ -57,7 +57,6 @@ public class Resolver
       @Override
       public boolean equals(Object other)
       {
-         // TODO Do we need to check the other direction too?
          if (other instanceof AnnotatedItem)
          {
             AnnotatedItem<?, ?> that = (AnnotatedItem<?, ?>) other;
@@ -204,7 +203,6 @@ public class Resolver
 
       if (element.getType().equals(Object.class))
       {
-         // TODO Fix this cast
          beans = new HashSet<Bean<T>>((List) manager.getBeans());
       }
       else
@@ -347,7 +345,7 @@ public class Resolver
     */
    public List<Decorator> resolveDecorators(Set<Class<?>> types, Annotation[] bindingTypes)
    {
-      // TODO Auto-generated method stub
+      // TODO Implement decorators
       return null;
    }
 
@@ -360,7 +358,7 @@ public class Resolver
     */
    public List<Interceptor> resolveInterceptors(InterceptionType type, Annotation[] interceptorBindings)
    {
-      // TODO Auto-generated method stub
+      // TODO Implement interceptors
       return null;
    }
 

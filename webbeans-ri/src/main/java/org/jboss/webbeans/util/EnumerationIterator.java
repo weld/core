@@ -3,7 +3,7 @@ package org.jboss.webbeans.util;
 import java.util.Enumeration;
 import java.util.Iterator;
 
-public class EnumerationIterator<T> implements Iterator<T>, Iterable<T>
+public class EnumerationIterator<T> implements Iterator<T>
 {
    private Enumeration e;
 
@@ -26,12 +26,5 @@ public class EnumerationIterator<T> implements Iterator<T>, Iterable<T>
    {
       throw new UnsupportedOperationException();
    }
-
-   public Iterator<T> iterator()
-   {
-      // TODO Auto-generated method stub
-      return null;
-   }
-   
    
 }

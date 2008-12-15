@@ -7,13 +7,11 @@ public class HttpSessionListenerBean implements javax.servlet.http.HttpSessionLi
    
    public void sessionCreated(HttpSessionEvent arg0)
    {
-      // TODO Auto-generated method stub
       
    }
    
    public void sessionDestroyed(HttpSessionEvent arg0)
    {
-      // TODO Auto-generated method stub
       
    }
    

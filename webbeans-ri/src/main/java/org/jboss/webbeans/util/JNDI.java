@@ -52,7 +52,7 @@ public class JNDI
 
    public static void set(String key, Object value)
    {
-      // TODO stub
+      // TODO Implement JNDI lookup
    }
 
 }

@@ -275,6 +275,8 @@ public class ResolutionByTypeTest extends AbstractTest
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
       
+      Set<Bean<Object>> beans = manager.resolveByType(Object.class);
+      
       assert manager.resolveByType(Object.class).size() == 3 +  MockManagerImpl.BUILT_IN_BEANS;
       assert manager.resolveByType(Object.class).contains(plaiceBean);
       assert manager.resolveByType(Object.class).contains(salmonBean);

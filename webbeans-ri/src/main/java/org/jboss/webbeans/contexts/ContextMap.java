@@ -88,7 +88,6 @@ public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, Lis
    public List<Context> getContext(Class<? extends Annotation> scopeType)
    {
       boolean interrupted = false;
-      // TODO Why can we request any scopetype and the cast it to dependent?
       try
       {
          while (true)

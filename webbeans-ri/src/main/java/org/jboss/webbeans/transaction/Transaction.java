@@ -18,13 +18,11 @@ public class Transaction
          
          public void begin() throws NotSupportedException, SystemException
          {
-            // TODO Auto-generated method stub
             
          }
          
          public void commit() throws RollbackException, HeuristicMixedException, HeuristicRollbackException, SecurityException, IllegalStateException, SystemException
          {
-            // TODO Auto-generated method stub
             
          }
          
@@ -35,19 +33,16 @@ public class Transaction
          
          public void rollback() throws IllegalStateException, SecurityException, SystemException
          {
-            // TODO Auto-generated method stub
             
          }
          
          public void setRollbackOnly() throws IllegalStateException, SystemException
          {
-            // TODO Auto-generated method stub
             
          }
          
          public void setTransactionTimeout(int arg0) throws SystemException
          {
-            // TODO Auto-generated method stub
             
          }
          

@@ -70,7 +70,7 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
     */
    public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
-      //TODO: account for child managers
+      //TODO account for child managers
       if (bean == null)
       {
          bean = CurrentManager.rootManager().getBeans().get(beanIndex);

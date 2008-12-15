@@ -39,7 +39,6 @@ public class DependentContext extends BasicContext
    public DependentContext()
    {
       super(Dependent.class);
-      // TODO starts as non-active?
       setActive(false);
    }
 
