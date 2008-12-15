@@ -10,6 +10,7 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.TunedTuna;
@@ -37,8 +38,16 @@ public class ClientProxyTest extends AbstractTest
    public void testClientProxyNotUsedForPseudoScope()
    {
       Bean<Fox> foxBean = BeanFactory.createSimpleBean(Fox.class, manager);
-      Fox fox = manager.getInstance(foxBean);
-      assert !Reflections.isProxy(fox);
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         Fox fox = manager.getInstance(foxBean);
+         assert !Reflections.isProxy(fox);
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
    private byte[] serializeBean(Object instance) throws IOException {

@@ -30,6 +30,7 @@ import javax.transaction.SystemException;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.transaction.UserTransaction;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
@@ -215,16 +216,24 @@ public class EventManager
     */
    public <T> void notifyObservers(Set<Observer<T>> observers, T event)
    {
-      for (Observer<T> observer : observers)
+      try
       {
-         if (isTransactionActive() && ((ObserverImpl<?>) observer).isTransactional())
+         DependentContext.INSTANCE.setActive(true);
+         for (Observer<T> observer : observers)
          {
-            deferEvent(event, observer);
+            if (isTransactionActive() && ((ObserverImpl<?>) observer).isTransactional())
+            {
+               deferEvent(event, observer);
+            }
+            else
+            {
+               observer.notify(event);
+            }
          }
-         else
-         {
-            observer.notify(event);
-         }
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
       }
    }
 

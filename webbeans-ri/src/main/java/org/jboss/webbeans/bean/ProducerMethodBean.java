@@ -27,6 +27,7 @@ import javax.webbeans.Disposes;
 import javax.webbeans.Observes;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
@@ -78,15 +79,31 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    @Override
    public T create()
    {
-      T instance = method.invoke(getReceiver(), manager);
-      checkReturnValue(instance);
-      return instance;
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         T instance = method.invoke(getReceiver(), manager);
+         checkReturnValue(instance);
+         return instance;
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
    
    @Override
    public void destroy(T instance)
    {
-      // TODO Implement any cleanup needed
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         // TODO Implement any cleanup needed
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
    /**

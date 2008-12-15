@@ -15,6 +15,7 @@ import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bindings.InitializedBinding;
+import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.test.beans.BananaSpider;
 import org.jboss.webbeans.test.beans.RecluseSpider;
@@ -573,8 +574,16 @@ public class NewEventTest extends AbstractTest
    public void testDuplicateBindingsToFireFails()
    {
       webBeansBootstrap.registerBeans(SweeWaxbill.class);
-      SweeWaxbill bean = manager.getInstanceByType(SweeWaxbill.class);
-      bean.methodThatFiresEvent();
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         SweeWaxbill bean = manager.getInstanceByType(SweeWaxbill.class);
+         bean.methodThatFiresEvent();
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
    @Test(groups = { "events" }, expectedExceptions={ DuplicateBindingTypeException.class })
@@ -582,8 +591,16 @@ public class NewEventTest extends AbstractTest
    public void testDuplicateBindingsToObservesFails()
    {
       webBeansBootstrap.registerBeans(SweeWaxbill.class);
-      SweeWaxbill bean = manager.getInstanceByType(SweeWaxbill.class);
-      bean.methodThatRegistersObserver();
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         SweeWaxbill bean = manager.getInstanceByType(SweeWaxbill.class);
+         bean.methodThatRegistersObserver();
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
    @Test(groups = { "stub", "events" })

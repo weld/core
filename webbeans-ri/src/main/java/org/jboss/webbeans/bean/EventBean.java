@@ -21,6 +21,7 @@ package org.jboss.webbeans.bean;
 import javax.webbeans.Event;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.util.Names;
@@ -55,13 +56,29 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
    @Override
    public Event<T> create()
    {
-      return new EventImpl<T>(getTypeParameter(), manager, getBindingTypesArray());
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         return new EventImpl<T>(getTypeParameter(), manager, getBindingTypesArray());
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
    
    @Override
    public void destroy(Event<T> instance)
    {
-      // TODO Implement any EventBean destruction needed
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         // TODO Implement any EventBean destruction needed
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
    
    /**

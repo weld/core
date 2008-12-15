@@ -28,6 +28,7 @@ import javax.webbeans.Initializer;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -77,14 +78,22 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    @Override
    public T create()
    {
-      T instance = constructor.newInstance(manager);
-      bindDecorators();
-      bindInterceptors();
-      injectEjbAndCommonFields();
-      injectBoundFields(instance, manager);
-      callInitializers(instance);
-      callPostConstruct(instance);
-      return instance;
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         T instance = constructor.newInstance(manager);
+         bindDecorators();
+         bindInterceptors();
+         injectEjbAndCommonFields();
+         injectBoundFields(instance, manager);
+         callInitializers(instance);
+         callPostConstruct(instance);
+         return instance;
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
    /**
@@ -97,11 +106,16 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       try
       {
+         DependentContext.INSTANCE.setActive(true);
          callPreDestroy(instance);
       }
       catch (Exception e) 
       {
          log.error("Error destroying " + toString(), e);
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
       }
    }
 

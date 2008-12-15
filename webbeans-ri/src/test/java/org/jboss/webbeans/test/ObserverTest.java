@@ -6,6 +6,7 @@ import javax.webbeans.Observer;
 import javax.webbeans.Observes;
 
 import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
@@ -76,7 +77,16 @@ public class ObserverTest extends AbstractTest
    {
       SampleEvent event = new SampleEvent();
       notified = false;
-      observer.notify(event);
+      // The Dependent context isn't automatically activated when calling ObserverImpl.notify, only when through the EventManager
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         observer.notify(event);
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
       assert notified == true;
    }
 

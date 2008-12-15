@@ -22,6 +22,7 @@ import javax.webbeans.Instance;
 
 import org.jboss.webbeans.InstanceImpl;
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 
 /**
@@ -54,13 +55,29 @@ public class InstanceBean<T, S> extends AbstractFacadeBean<Instance<T>, S, T>
    @Override
    public Instance<T> create()
    {
-      return new InstanceImpl<T>(getTypeParameter(), manager, getBindingTypesArray());
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         return new InstanceImpl<T>(getTypeParameter(), manager, getBindingTypesArray());
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
    
    @Override
    public void destroy(Instance<T> instance)
    {
-      // TODO Implement any cleanup needed
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         // TODO Implement any cleanup needed
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
 }

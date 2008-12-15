@@ -24,6 +24,7 @@ import javax.el.ELContext;
 import javax.el.ELResolver;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.contexts.DependentContext;
 
 public class WebBeansELResolver extends ELResolver
 {
@@ -63,12 +64,20 @@ public class WebBeansELResolver extends ELResolver
    {
       if (base == null && property != null)
       {
-         Object value = CurrentManager.rootManager().getInstanceByName(property.toString());
-         if (value != null)
+         try
          {
-            context.setPropertyResolved(true);
+            DependentContext.INSTANCE.setActive(true);
+            Object value = CurrentManager.rootManager().getInstanceByName(property.toString());
+            if (value != null)
+            {
+               context.setPropertyResolved(true);
+            }
+            return value;
          }
-         return value;
+         finally
+         {
+            DependentContext.INSTANCE.setActive(false);
+         }
       }
       else
       {

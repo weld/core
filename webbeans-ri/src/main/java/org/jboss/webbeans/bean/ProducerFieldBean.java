@@ -20,6 +20,7 @@ package org.jboss.webbeans.bean;
 import java.lang.reflect.Field;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.jlr.AnnotatedFieldImpl;
 import org.jboss.webbeans.util.Names;
@@ -70,15 +71,31 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
    @Override
    public T create()
    {
-      T instance = field.get(getReceiver());
-      checkReturnValue(instance);
-      return instance;
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         T instance = field.get(getReceiver());
+         checkReturnValue(instance);
+         return instance;
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
    
    @Override
    public void destroy(T instance)
    {
-      // TODO Implement any cleanup needed
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         // TODO Implement any cleanup needed
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
    /**

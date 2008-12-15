@@ -33,6 +33,7 @@ import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
+import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.ejb.EJB;
 import org.jboss.webbeans.ejb.EjbMetaData;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -219,13 +220,21 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    @Override
    public T create()
    {
-      T instance = (T) manager.getInstanceByType(EnterpriseBeanLookup.class).lookup(ejbMetaData.getEjbName());
-      bindDecorators();
-      bindInterceptors();
-      injectEjbAndCommonFields();
-      injectBoundFields(instance, manager);
-      callInitializers(instance);
-      return instance;
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         T instance = (T) manager.getInstanceByType(EnterpriseBeanLookup.class).lookup(ejbMetaData.getEjbName());
+         bindDecorators();
+         bindInterceptors();
+         injectEjbAndCommonFields();
+         injectBoundFields(instance, manager);
+         callInitializers(instance);
+         return instance;
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
    /**
@@ -238,11 +247,16 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       try
       {
+         DependentContext.INSTANCE.setActive(true);
          getRemoveMethod().invoke(instance);
       }
       catch (Exception e) 
       {
          log.error("Error destroying " + toString(), e);
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
       }
    }
 

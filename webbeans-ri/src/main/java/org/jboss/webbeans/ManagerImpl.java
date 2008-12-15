@@ -49,7 +49,6 @@ import javax.webbeans.manager.Manager;
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.proxy.ProxyPool;
 import org.jboss.webbeans.contexts.ContextMap;
-import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -445,21 +444,13 @@ public class ManagerImpl implements Manager
     */
    public <T> T getInstance(Bean<T> bean)
    {
-      try
+      if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal())
       {
-         DependentContext.INSTANCE.setActive(true);
-         if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal())
-         {
-            return (T) proxyPool.getClientProxy(bean);
-         }
-         else
-         {
-            return getContext(bean.getScopeType()).get(bean, true);
-         }
+         return (T) proxyPool.getClientProxy(bean);
       }
-      finally
+      else
       {
-         DependentContext.INSTANCE.setActive(false);
+         return getContext(bean.getScopeType()).get(bean, true);
       }
    }
 

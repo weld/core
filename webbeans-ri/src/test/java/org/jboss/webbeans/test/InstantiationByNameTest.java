@@ -5,6 +5,7 @@ import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
 import javax.webbeans.AmbiguousDependencyException;
 import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
@@ -71,7 +72,15 @@ public class InstantiationByNameTest extends AbstractTest
       manager.addBean(seaBassBean);
       manager.addBean(plaiceBean);
       
-      assert manager.getInstanceByName("salmon") instanceof Salmon;
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         assert manager.getInstanceByName("salmon") instanceof Salmon;
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
    
    @Test(groups={"stub", "resolution", "el"}) @SpecAssertion(section="4.10")

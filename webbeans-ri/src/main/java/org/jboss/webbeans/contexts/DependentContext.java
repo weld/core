@@ -17,6 +17,8 @@
 
 package org.jboss.webbeans.contexts;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.Dependent;
 import javax.webbeans.manager.Contextual;
@@ -33,13 +35,23 @@ public class DependentContext extends BasicContext
 
    public static final DependentContext INSTANCE = new DependentContext();
    
+   private ThreadLocal<AtomicInteger> reentrantActiveCount;
+   
    /**
     * Constructor
     */
    public DependentContext()
    {
       super(Dependent.class);
-      setActive(false);
+      super.setActive(false);
+      this.reentrantActiveCount = new ThreadLocal<AtomicInteger>()
+      {
+         @Override
+         protected AtomicInteger initialValue()
+         {
+            return new AtomicInteger(0);
+         }
+      };
    }
 
    /**
@@ -65,6 +77,25 @@ public class DependentContext extends BasicContext
       String active = isActive() ? "Active " : "Inactive ";
       String count = getBeanMap() == null ? "" : "holding " + Names.count(getBeanMap().keySet()) + " instances ";
       return active + "dependent context " + count; 
+   }
+   
+   @Override
+   public void setActive(boolean active)
+   {
+      if (active)
+      {
+         if (reentrantActiveCount.get().incrementAndGet() == 1)
+         {
+            super.setActive(true);
+         }
+      }
+      else
+      {
+         if (reentrantActiveCount.get().decrementAndGet() == 0)
+         {
+            super.setActive(false);
+         }
+      }
    }
    
 }
