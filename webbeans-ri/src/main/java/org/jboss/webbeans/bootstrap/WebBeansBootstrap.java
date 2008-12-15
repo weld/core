@@ -17,6 +17,13 @@
 
 package org.jboss.webbeans.bootstrap;
 
+import static org.jboss.webbeans.bean.BeanFactory.createEnterpriseBean;
+import static org.jboss.webbeans.bean.BeanFactory.createEventBean;
+import static org.jboss.webbeans.bean.BeanFactory.createInstanceBean;
+import static org.jboss.webbeans.bean.BeanFactory.createObserver;
+import static org.jboss.webbeans.bean.BeanFactory.createProducerFieldBean;
+import static org.jboss.webbeans.bean.BeanFactory.createProducerMethodBean;
+import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
 import static org.jboss.webbeans.ejb.EJB.ENTERPRISE_BEAN_CLASS;
 import static org.jboss.webbeans.jsf.JSF.UICOMPONENT_CLASS;
 import static org.jboss.webbeans.servlet.Servlet.FILTER_CLASS;
@@ -24,13 +31,6 @@ import static org.jboss.webbeans.servlet.Servlet.HTTP_SESSION_LISTENER_CLASS;
 import static org.jboss.webbeans.servlet.Servlet.SERVLET_CLASS;
 import static org.jboss.webbeans.servlet.Servlet.SERVLET_CONTEXT_LISTENER_CLASS;
 import static org.jboss.webbeans.servlet.Servlet.SERVLET_REQUEST_LISTENER_CLASS;
-import static org.jboss.webbeans.util.BeanFactory.createEnterpriseBean;
-import static org.jboss.webbeans.util.BeanFactory.createEventBean;
-import static org.jboss.webbeans.util.BeanFactory.createInstanceBean;
-import static org.jboss.webbeans.util.BeanFactory.createObserver;
-import static org.jboss.webbeans.util.BeanFactory.createProducerFieldBean;
-import static org.jboss.webbeans.util.BeanFactory.createProducerMethodBean;
-import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -49,6 +49,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractClassBean;
+import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.bean.InstanceBean;
 import org.jboss.webbeans.bean.ProducerFieldBean;
@@ -64,7 +65,6 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.transaction.Transaction;
-import org.jboss.webbeans.util.BeanFactory;
 import org.jboss.webbeans.util.JNDI;
 import org.jboss.webbeans.util.Reflections;
 

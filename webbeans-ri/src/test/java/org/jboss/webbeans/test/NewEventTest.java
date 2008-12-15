@@ -12,6 +12,7 @@ import javax.webbeans.ObserverException;
 import javax.webbeans.TypeLiteral;
 
 import org.jboss.webbeans.bean.AbstractBean;
+import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bindings.InitializedBinding;
@@ -34,7 +35,6 @@ import org.jboss.webbeans.test.ejb.invalid.YorkshireTerrier;
 import org.jboss.webbeans.test.ejb.valid.BullTerrier;
 import org.jboss.webbeans.test.ejb.valid.Pomeranian;
 import org.jboss.webbeans.test.mock.MockManagerImpl;
-import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.Test;
 
 /**

@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.contexts;
 
-import static org.jboss.webbeans.util.BeanFactory.createProducerMethodBean;
-import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
+import static org.jboss.webbeans.bean.BeanFactory.createProducerMethodBean;
+import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
 
 import java.lang.reflect.Method;
 
@@ -9,6 +9,7 @@ import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 
+import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.contexts.AbstractContext;
@@ -19,7 +20,6 @@ import org.jboss.webbeans.test.SpecVersion;
 import org.jboss.webbeans.test.beans.SpiderProducer;
 import org.jboss.webbeans.test.beans.Tarantula;
 import org.jboss.webbeans.test.beans.Tuna;
-import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

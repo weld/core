@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import javax.webbeans.Observer;
 import javax.webbeans.Observes;
 
+import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -12,7 +13,6 @@ import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
 import org.jboss.webbeans.test.annotations.Role;
 import org.jboss.webbeans.test.bindings.RoleBinding;
-import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

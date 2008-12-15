@@ -4,6 +4,7 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.RequestScoped;
 import javax.webbeans.UnremovedException;
 
+import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.contexts.RequestContext;
 import org.jboss.webbeans.test.AbstractTest;
@@ -21,7 +22,6 @@ import org.jboss.webbeans.test.ejb.invalid.Spitz;
 import org.jboss.webbeans.test.ejb.valid.Koirus;
 import org.jboss.webbeans.test.ejb.valid.Toller;
 import org.jboss.webbeans.test.ejb.valid.WelshCorgie;
-import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.Test;
 
 /**

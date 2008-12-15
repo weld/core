@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.util.BeanFactory.createProducerMethodBean;
-import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
+import static org.jboss.webbeans.bean.BeanFactory.createProducerMethodBean;
+import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
 
 import java.lang.reflect.Method;
 

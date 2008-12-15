@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.util.BeanFactory.createSimpleBean;
+import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
 
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.beans.Haddock;

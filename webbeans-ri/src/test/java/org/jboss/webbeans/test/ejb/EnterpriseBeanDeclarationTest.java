@@ -3,6 +3,7 @@ package org.jboss.webbeans.test.ejb;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.DeploymentException;
 
+import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
@@ -21,7 +22,6 @@ import org.jboss.webbeans.test.ejb.invalid.Pekingese;
 import org.jboss.webbeans.test.ejb.invalid.Pug;
 import org.jboss.webbeans.test.ejb.valid.Laika;
 import org.jboss.webbeans.test.ejb.valid.Pitbull;
-import org.jboss.webbeans.util.BeanFactory;
 import org.testng.annotations.Test;
 
 /**

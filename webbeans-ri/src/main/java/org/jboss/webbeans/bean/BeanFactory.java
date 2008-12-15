@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.util;
+package org.jboss.webbeans.bean;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -24,13 +24,6 @@ import javax.webbeans.Event;
 import javax.webbeans.Instance;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bean.AbstractClassBean;
-import org.jboss.webbeans.bean.EnterpriseBean;
-import org.jboss.webbeans.bean.EventBean;
-import org.jboss.webbeans.bean.InstanceBean;
-import org.jboss.webbeans.bean.ProducerFieldBean;
-import org.jboss.webbeans.bean.ProducerMethodBean;
-import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
