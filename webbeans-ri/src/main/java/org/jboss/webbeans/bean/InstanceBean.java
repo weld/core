@@ -56,5 +56,11 @@ public class InstanceBean<T, S> extends AbstractFacadeBean<Instance<T>, S, T>
    {
       return new InstanceImpl<T>(getTypeParameter(), manager, getBindingTypesArray());
    }
+   
+   @Override
+   public void destroy(Instance<T> instance)
+   {
+      // TODO Implement any cleanup needed
+   }
 
 }

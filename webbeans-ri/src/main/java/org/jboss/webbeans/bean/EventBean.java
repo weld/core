@@ -58,6 +58,12 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
       return new EventImpl<T>(getTypeParameter(), manager, getBindingTypesArray());
    }
    
+   @Override
+   public void destroy(Event<T> instance)
+   {
+      // TODO Implement any EventBean destruction needed
+   }
+   
    /**
     * Returns a string representation
     * 

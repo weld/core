@@ -74,6 +74,12 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
       checkReturnValue(instance);
       return instance;
    }
+   
+   @Override
+   public void destroy(T instance)
+   {
+      // TODO Implement any cleanup needed
+   }
 
    /**
     * Gets the annotated item representing the field

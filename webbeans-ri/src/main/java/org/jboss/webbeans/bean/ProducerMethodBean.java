@@ -82,6 +82,12 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       checkReturnValue(instance);
       return instance;
    }
+   
+   @Override
+   public void destroy(T instance)
+   {
+      // TODO Implement any cleanup needed
+   }
 
    /**
     * Initializes the bean and its metadata

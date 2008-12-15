@@ -327,19 +327,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
 
    /**
-    * Destroys a bean instance
-    * 
-    * @param instance The instance to destroy
-    * 
-    * @see javax.webbeans.manager.Bean#destroy(Object)
-    */
-   @Override
-   public void destroy(T instance)
-   {
-      // TODO Auto-generated method stub
-   }
-
-   /**
     * Binds the decorators to the proxy
     */
    protected void bindDecorators()
@@ -579,4 +566,5 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       buffer.append(mergedStereotypes.toString() + "\n");
       return buffer.toString();
    }
+   
 }

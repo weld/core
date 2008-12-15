@@ -38,6 +38,8 @@ import org.jboss.webbeans.ejb.EjbMetaData;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Names;
 
 /**
@@ -49,6 +51,8 @@ import org.jboss.webbeans.util.Names;
  */
 public class EnterpriseBean<T> extends AbstractClassBean<T>
 {
+   
+   private LogProvider log = Logging.getLogProvider(EnterpriseBean.class);
 
    private EjbMetaData<T> ejbMetaData;
 
@@ -225,14 +229,21 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    }
 
    /**
-    * Destroys an instance of a bean
+    * Destroys an instance of the bean
     * 
     * @param instance The instance
     */
    @Override
    public void destroy(T instance)
    {
-      super.destroy(instance);
+      try
+      {
+         getRemoveMethod().invoke(instance);
+      }
+      catch (Exception e) 
+      {
+         log.error("Error destroying " + toString(), e);
+      }
    }
 
    /**

@@ -95,7 +95,14 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    @Override
    public void destroy(T instance)
    {
-      callPreDestroy(instance);
+      try
+      {
+         callPreDestroy(instance);
+      }
+      catch (Exception e) 
+      {
+         log.error("Error destroying " + toString(), e);
+      }
    }
 
    /**
