@@ -55,6 +55,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 {
    private LogProvider log = Logging.getLogProvider(EnterpriseBean.class);
    
+   // The EJB descriptor
    private EjbDescriptor<T> ejbDescriptor;
 
    /**

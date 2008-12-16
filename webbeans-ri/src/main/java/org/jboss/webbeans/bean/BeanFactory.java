@@ -143,7 +143,15 @@ public class BeanFactory
    {
       return new InstanceBean<T, S>(field, manager);
    }
-   
+ 
+   /**
+    * Creates an observer
+    * 
+    * @param method The observer method abstraction
+    * @param declaringBean The declaring bean
+    * @param manager The Web Beans manager
+    * @return An observer implementation built from the method abstraction
+    */
    public static <T> ObserverImpl<T> createObserver(AnnotatedMethod<Object> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       return new ObserverImpl<T>(method, declaringBean, manager);

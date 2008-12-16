@@ -34,6 +34,12 @@ import org.jboss.webbeans.util.JNDI;
 public class DefaultEnterpriseBeanLookup implements EnterpriseBeanLookup
 {
 
+   /**
+    * Looks up and EJB based on the name
+    * 
+    * @param ejbName The EJB name
+    * @return The EJB reference
+    */
    public Object lookup(String ejbName)
    {
       if (ejbName == null)
@@ -43,6 +49,13 @@ public class DefaultEnterpriseBeanLookup implements EnterpriseBeanLookup
       return lookup(EjbDescriptorCache.instance().get(ejbName));
    }
 
+   /**
+    * Looks up an EJB based on the EJB descriptor
+    * 
+    * @param <T> The type of the EJB
+    * @param ejbDescriptor The EJB descriptor
+    * @return The EJB reference
+    */
    @SuppressWarnings("unchecked")
    public static <T> T lookup(EjbDescriptor<T> ejbDescriptor)
    {

@@ -53,37 +53,42 @@ public interface EjbDescriptor<T>
    /**
     * Get the remove methods of the EJB
     * 
-    * @return An iterator the remove methods
+    * @return An iterator over the remove methods
     */
    public Iterable<Method> getRemoveMethods();
 
    /**
-    * The type of EJB
-    * @return true if the bean is stateless
+    * Indicates if the bean is stateless
+    * 
+    * @return True if stateless, false otherwise
     */
    public boolean isStateless();
 
    /**
-    * The type of EJB
-    * @return true if the bean is an EJB 3.1 singleton
+    * Indicates if the bean is a EJB 3.1 Singleton
+    * 
+    * @return True if the bean is a singleton, false otherwise
     */
    public boolean isSingleton();
 
    /**
-    * The type of EJB
-    * @return true if the bean is stateful
+    * Indicates if the EJB is stateful
+    * 
+    * @return True if the bean is stateful, false otherwise
     */
    public boolean isStateful();
 
    /**
-    * The type of EJB
-    * @return true if the bean is an MDB
+    * Indicates if the EJB is and MDB
+    * 
+    * @return True if the bean is an MDB, false otherwise
     */
    public boolean isMessageDriven();
 
    /**
+    * Gets the EJB name
     * 
-    * @return The ejbName
+    * @return The name
     */
    public String getEjbName();
    

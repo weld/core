@@ -79,9 +79,9 @@ public class WebBeansBootstrap
 {
    // The property name of the discovery class
    public static String WEB_BEAN_DISCOVERY_PROPERTY_NAME = "org.jboss.webbeans.bootstrap.webBeanDiscovery";
-
+   // The log provider
    private static LogProvider log = Logging.getLogProvider(WebBeansBootstrap.class);
-   
+   // The Web Beans manager
    protected ManagerImpl manager;
 
    /**
@@ -124,6 +124,11 @@ public class WebBeansBootstrap
       manager.setBeans(beans);
    }
    
+   /**
+    * Creates the standard beans used internally by the RI
+    * 
+    * @return A set containing the created beans
+    */
    protected Set<AbstractBean<?, ?>> createStandardBeans()
    {
       Set<AbstractBean<?, ?>> beans = new HashSet<AbstractBean<?, ?>>();
@@ -161,6 +166,14 @@ public class WebBeansBootstrap
       return beans;
    }
    
+   /**
+    * Creates a Web Bean from a bean abstraction and adds it to the set of created beans
+    * 
+    * Also creates the implicit field- and method-level beans, if present
+    * 
+    * @param bean The bean representation
+    * @param beans The set of created beans
+    */
    @SuppressWarnings("unchecked")
    protected void createBean(AbstractClassBean<?> bean, Set<AbstractBean<?, ?>> beans)
    {
@@ -285,13 +298,26 @@ public class WebBeansBootstrap
       }
       return webBeanDiscoveryClasses;
    }
-   
+
+   /**
+    * Registers an observer with the manager
+    * 
+    * @param observer The observer
+    * @param eventType The event type to observe
+    * @param bindings The binding types to observe on
+    */
    @SuppressWarnings("unchecked")
    private <T> void registerObserver(Observer<T> observer, Class<?> eventType, Annotation[] bindings)
    {
       manager.addObserver(observer, (Class<T>) eventType, bindings);
    }
    
+   /**
+    * Indicates if the type is a simple Web Bean
+    * 
+    * @param type The type to inspect
+    * @return True if simple Web Bean, false otherwise
+    */
    protected static boolean isTypeSimpleWebBean(Class<?> type)
    {
       return !type.isAnnotation() && !Reflections.isAbstract(type) && !SERVLET_CLASS.isAssignableFrom(type) && !FILTER_CLASS.isAssignableFrom(type) && !SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(type) && !HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(type) && !SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(type) && !ENTERPRISE_BEAN_CLASS.isAssignableFrom(type) && !UICOMPONENT_CLASS.isAssignableFrom(type);
