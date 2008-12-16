@@ -59,8 +59,22 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
     */
    protected void init()
    {
+      validateInjectionPoint();
       super.init();
       checkAnnotatedItem();
+   }
+
+   /**
+    * Performs early validation on the annotated item to make
+    * certain the field or parameter is of the proper type.
+    */
+   private void validateInjectionPoint()
+   {
+      if (!this.getAnnotatedItem().getType().equals(Event.class))
+      {
+         throw new DefinitionException("Observable field/parameter is not of type Event<T>: " + this.getAnnotatedItem());
+      }
+      
    }
 
    /**

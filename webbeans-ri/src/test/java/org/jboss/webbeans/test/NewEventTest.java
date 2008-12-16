@@ -26,6 +26,10 @@ import org.jboss.webbeans.test.beans.FinchKeeper;
 import org.jboss.webbeans.test.beans.RecluseSpider;
 import org.jboss.webbeans.test.beans.StarFinch;
 import org.jboss.webbeans.test.beans.TeaCupPomeranian;
+import org.jboss.webbeans.test.beans.broken.BlackRumpedWaxbill;
+import org.jboss.webbeans.test.beans.broken.CommonWaxbill;
+import org.jboss.webbeans.test.beans.broken.GoldbreastWaxbill;
+import org.jboss.webbeans.test.beans.broken.JavaSparrow;
 import org.jboss.webbeans.test.beans.broken.OwlFinch;
 import org.jboss.webbeans.test.beans.broken.SweeWaxbill;
 import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
@@ -728,32 +732,72 @@ public class NewEventTest extends AbstractTest
       assert false;
    }
 
-   @Test(groups = { "stub", "events" })
+   @Test(groups = { "events" }, expectedExceptions = { DefinitionException.class })
    @SpecAssertion(section = "8.6")
    public void testObservableAnnotationOnNonEventTypeInjectionPointFails()
    {
-      assert false;
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(CommonWaxbill.class));
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         CommonWaxbill bean = manager.getInstanceByType(CommonWaxbill.class);
+         assert bean != null;
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
-   @Test(groups = { "stub", "events" })
+   @Test(groups = { "events" }, expectedExceptions = { DefinitionException.class })
    @SpecAssertion(section = "8.6")
-   public void testObservableannotationOnInjectionPointWithoutTypeParameterFails()
+   public void testObservableAnnotationOnInjectionPointWithoutTypeParameterFails()
    {
-      assert false;
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(BlackRumpedWaxbill.class));
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         BlackRumpedWaxbill bean = manager.getInstanceByType(BlackRumpedWaxbill.class);
+         assert bean != null;
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
-   @Test(groups = { "stub", "events" })
+   @Test(groups = { "events" }, expectedExceptions = { DefinitionException.class })
    @SpecAssertion(section = "8.6")
-   public void testObservableannotationOnInjectionPointWithWildcardedTypeParameterFails()
+   public void testObservableAnnotationOnInjectionPointWithWildcardedTypeParameterFails()
    {
-      assert false;
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(GoldbreastWaxbill.class));
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         GoldbreastWaxbill bean = manager.getInstanceByType(GoldbreastWaxbill.class);
+         assert bean != null;
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
-   @Test(groups = { "stub", "events" })
+   @Test(groups = { "events" }, expectedExceptions = { DefinitionException.class })
    @SpecAssertion(section = "8.6")
-   public void testObservableannotationOnInjectionPointWithTypeVariabledTypeParameterFails()
+   public void testObservableAnnotationOnInjectionPointWithTypeVariabledTypeParameterFails()
    {
-      assert false;
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(JavaSparrow.class));
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         JavaSparrow bean = manager.getInstanceByType(JavaSparrow.class);
+         assert bean != null;
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
    @Test(groups = { "stub", "events" })
