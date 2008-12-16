@@ -20,12 +20,10 @@ package org.jboss.webbeans;
 import java.lang.annotation.Annotation;
 import java.util.concurrent.Callable;
 
-import org.jboss.webbeans.ejb.EjbMetaData;
 import org.jboss.webbeans.model.BindingTypeModel;
 import org.jboss.webbeans.model.ScopeModel;
 import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.util.ConcurrentCache;
-import org.jboss.webbeans.util.Strings;
 
 /**
  * Metadata singleton for holding EJB metadata, scope models etc.
@@ -59,8 +57,6 @@ public class MetaDataCache
    private ConcurrentCache<Class<? extends Annotation>, ScopeModel<?>> scopes = new ConcurrentCache<Class<? extends Annotation>, ScopeModel<?>>();
    // The binding type models
    private ConcurrentCache<Class<? extends Annotation>, BindingTypeModel<?>> bindingTypes = new ConcurrentCache<Class<? extends Annotation>, BindingTypeModel<?>>();
-   // EJB metadata
-   private ConcurrentCache<Class<?>, EjbMetaData<?>> ejbMetaDataMap = new ConcurrentCache<Class<?>, EjbMetaData<?>>();
 
    /**
     * Gets a stereotype model
@@ -128,28 +124,6 @@ public class MetaDataCache
    }
 
    /**
-    * Gets metadata for an EJB
-    * 
-    * Adds the model if it is not present
-    * 
-    * @param <T> The type
-    * @param clazz The class of the EJB
-    * @return The EJB metadata
-    */
-   public <T> EjbMetaData<T> getEjbMetaData(final Class<T> clazz)
-   {
-      return ejbMetaDataMap.putIfAbsent(clazz, new Callable<EjbMetaData<T>>()
-      {
-
-         public EjbMetaData<T> call() throws Exception
-         {
-            return new EjbMetaData<T>(clazz);
-         }
-
-      });
-   }
-
-   /**
     * Gets a string representation
     * 
     * @return A string representation
@@ -162,21 +136,6 @@ public class MetaDataCache
       buffer.append("Registered binding type models: " + bindingTypes.size() + "\n");
       buffer.append("Registered scope type models: " + scopes.size() + "\n");
       buffer.append("Registered stereotype models: " + stereotypes.size() + "\n");
-      buffer.append("Registered EJB metadata: " + ejbMetaDataMap.size() + "\n");
-      return buffer.toString();
-   }
-
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("====================\n");
-      buffer.append("Metadata cache\n");
-      buffer.append("====================\n");
-      buffer.append(bindingTypes.toString() + "\n");
-      buffer.append(ejbMetaDataMap.toString() + "\n");
-      buffer.append(scopes.toString() + "\n");
-      buffer.append(Strings.mapToString("Stereotypes: ", stereotypes));
-      buffer.append("====================\n");
       return buffer.toString();
    }
 

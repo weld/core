@@ -210,7 +210,7 @@ public class BoostrapTest extends AbstractTest
    @Test(groups="bootstrap")
    public void testDiscover()
    {
-      webBeansBootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class)), null, null));
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class)), null, new HashSet<Class<?>>()));
       
       assert manager.getBeans().size() == 8 + MockManagerImpl.BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
@@ -244,8 +244,7 @@ public class BoostrapTest extends AbstractTest
    public void testInitializedEvent()
    {
       assert !InitializedObserver.observered;
-      
-      webBeansBootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(InitializedObserver.class)), null, null));
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(InitializedObserver.class)), null, new HashSet<Class<?>>()));
       
       assert InitializedObserver.observered;
    }
@@ -253,13 +252,13 @@ public class BoostrapTest extends AbstractTest
    @Test(groups="bootstrap")
    public void testRequestContextActiveDuringInitializtionEvent()
    {
-      webBeansBootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(InitializedObserverWhichUsesRequestContext.class, Tuna.class)), null, null));
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(InitializedObserverWhichUsesRequestContext.class, Tuna.class)), null, new HashSet<Class<?>>()));
    }
    
    @Test(groups="bootstrap")
    public void testApplicationContextActiveDuringInitializtionEvent()
    {
-      webBeansBootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(InitializedObserverWhichUsesApplicationContext.class, LadybirdSpider.class)), null, null));
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(InitializedObserverWhichUsesApplicationContext.class, LadybirdSpider.class)), null, new HashSet<Class<?>>()));
    }
    
 }

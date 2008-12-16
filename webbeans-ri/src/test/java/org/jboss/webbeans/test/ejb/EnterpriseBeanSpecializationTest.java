@@ -109,7 +109,7 @@ public class EnterpriseBeanSpecializationTest extends AbstractTest
     */
    @Test(expectedExceptions = DefinitionException.class, groups = { "stub", "specialization", "enterpriseBeans" })
    @SpecAssertion(section = "3.3.6")
-   public void EnabledSpecializationOverridesSpecialized()
+   public void testEnabledSpecializationOverridesSpecialized()
    {
       assert false;
    }

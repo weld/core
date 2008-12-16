@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jboss.webbeans.ejb.EjbMetaData;
-
 /**
  * Utility class to produce friendly names e.g. for debugging
  * 
@@ -40,33 +38,6 @@ public class Names
          result.append(matcher.group().toLowerCase() + " ");
       }
       return result.toString();
-   }
-
-   /**
-    * Gets EJB type from metadata
-    * 
-    * @param ejbMetaData The EJB meta data
-    * @return The EJB type
-    */
-   public static String ejbTypeFromMetaData(EjbMetaData<?> ejbMetaData)
-   {
-      if (ejbMetaData.isMessageDriven())
-      {
-         return "message driven";
-      }
-      else if (ejbMetaData.isSingleton())
-      {
-         return "singleton";
-      }
-      else if (ejbMetaData.isStateful())
-      {
-         return "stateful";
-      }
-      else if (ejbMetaData.isStateless())
-      {
-         return "stateless";
-      }
-      return "unknown";
    }
 
    /**

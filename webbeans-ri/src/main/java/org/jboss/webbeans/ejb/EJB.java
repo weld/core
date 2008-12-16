@@ -54,5 +54,11 @@ public class EJB extends ApiAbstraction
       REMOVE_ANNOTATION = annotationTypeForName("javax.ejb.Remove");
       ENTERPRISE_BEAN_CLASS = classForName("javax.ejb.EnterpriseBean");
    }
+   
+   public static boolean isEjb(Class<?> clazz)
+   {
+      return clazz.isAnnotationPresent(STATEFUL_ANNOTATION) || clazz.isAnnotationPresent(STATELESS_ANNOTATION) || clazz.isAnnotationPresent(SINGLETON_ANNOTATION);
+   }
+
 
 }

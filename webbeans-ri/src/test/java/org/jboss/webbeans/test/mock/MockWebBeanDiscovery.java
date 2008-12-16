@@ -11,19 +11,30 @@ import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 
 public class MockWebBeanDiscovery implements WebBeanDiscovery
 {
-   
+
    private Set<Class<?>> webBeanClasses = new HashSet<Class<?>>();
 
    private Set<URL> webBeansXmlFiles = new HashSet<URL>();
-   
-   private Map<Class<?>, EjbDescriptor<?>> ejbs = new HashMap<Class<?>, EjbDescriptor<?>>();
-   
-   public MockWebBeanDiscovery(Set<Class<?>> webBeanClasses, Set<URL> webBeansXmlFiles, Map<Class<?>, EjbDescriptor<?>> ejbs)
+
+   private Map<String, EjbDescriptor<?>> ejbs = new HashMap<String, EjbDescriptor<?>>();
+
+   @SuppressWarnings("unchecked")
+   public MockWebBeanDiscovery(Set<Class<?>> webBeanClasses, Set<URL> webBeansXmlFiles, Set<Class<?>> ejbs)
    {
       super();
       this.webBeanClasses = webBeanClasses;
       this.webBeansXmlFiles = webBeansXmlFiles;
-      this.ejbs = ejbs;
+      this.ejbs = new HashMap<String, EjbDescriptor<?>>();
+      for (Class<?> ejb : ejbs)
+      {
+         String ejbName = getEjbName(ejb);
+         this.ejbs.put(ejbName, new MockEjbDescriptor(ejbName, ejb));
+      }
+   }
+
+   private String getEjbName(Class<?> clazz)
+   {
+      return clazz.getSimpleName() + "/local";
    }
 
    public Iterable<Class<?>> discoverWebBeanClasses()
@@ -33,13 +44,13 @@ public class MockWebBeanDiscovery implements WebBeanDiscovery
 
    public Map<String, EjbDescriptor<?>> discoverEjbs()
    {
-      // TODO Implement EJB discovery for embedded EJB
-      return null;
+      // TODO Auto-generated method stub
+      return new HashMap<String, EjbDescriptor<?>>();
    }
 
    public Iterable<URL> discoverWebBeansXml()
    {
       return webBeansXmlFiles;
    }
-   
+
 }

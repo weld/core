@@ -46,7 +46,6 @@ import javax.webbeans.Obtainable;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.BeanFactory;
@@ -58,6 +57,8 @@ import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
+import org.jboss.webbeans.ejb.EJB;
+import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -138,7 +139,7 @@ public class WebBeansBootstrap
       Set<AbstractBean<?, ?>> beans = new HashSet<AbstractBean<?, ?>>();
       for (Class<?> clazz : classes)
       {
-         if (MetaDataCache.instance().getEjbMetaData(clazz).isEjb())
+         if (EJB.isEjb(clazz))
          {
             createBean(createEnterpriseBean(clazz, manager), beans);
          }
@@ -153,6 +154,7 @@ public class WebBeansBootstrap
       return beans;
    }
    
+
    public void createBean(AbstractClassBean<?> bean, Set<AbstractBean<?, ?>> beans)
    {
       beans.add(bean);
@@ -218,6 +220,7 @@ public class WebBeansBootstrap
          throw new IllegalStateException("No WebBeanDiscovery provider found, you need to implement the org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery interface, and tell the RI to use it by specifying -D" + WebBeansBootstrap.WEB_BEAN_DISCOVERY_PROPERTY_NAME + "=<classname>");
       }
       registerBeans(webBeanDiscovery.discoverWebBeanClasses());
+      EjbDescriptorCache.instance().setEjbDescriptors(webBeanDiscovery.discoverEjbs());
       log.info("Validing Web Bean injection points");
       manager.getResolver().resolveInjectionPoints();
       manager.fireEvent(manager, new InitializedBinding());

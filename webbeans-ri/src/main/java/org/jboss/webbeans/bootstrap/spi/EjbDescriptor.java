@@ -67,12 +67,22 @@ public interface EjbDescriptor<T>
     * @return An iterator over the remote business interfaces
     */
    public Iterator<BusinessInterfaceDescriptor> getRemoteBusinessInterfaces();
-
+   
    /**
     * Get the remove methods of the EJB
     * 
     * @return An iterator the remove methods
     */
    public Iterator<Method> getRemoveMethods();
+
+   public boolean isStateless();
+
+   public boolean isSingleton();
+
+   public boolean isStateful();
+
+   public boolean isMessageDriven();
+
+   public String getEjbName();
    
 }
