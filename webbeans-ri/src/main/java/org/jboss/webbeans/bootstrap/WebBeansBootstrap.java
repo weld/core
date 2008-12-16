@@ -34,6 +34,7 @@ import static org.jboss.webbeans.servlet.Servlet.SERVLET_REQUEST_LISTENER_CLASS;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -160,7 +161,7 @@ public class WebBeansBootstrap
       return beans;
    }
    
-
+   @SuppressWarnings("unchecked")
    protected void createBean(AbstractClassBean<?> bean, Set<AbstractBean<?, ?>> beans)
    {
       beans.add(bean);
@@ -170,6 +171,15 @@ public class WebBeansBootstrap
          ProducerMethodBean<?> producerMethodBean = createProducerMethodBean(producerMethod, bean, manager);
          beans.add(producerMethodBean);
          manager.getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
+         for (AnnotatedItem injectionPoint : producerMethodBean.getInjectionPoints())
+         {
+            if ( injectionPoint.isAnnotationPresent(Observable.class) )
+            {
+               EventBean<Object, Method> eventBean = createEventBean(injectionPoint, manager);
+               beans.add(eventBean);
+               log.info("Web Bean: " + eventBean);
+            }
+         }
          log.info("Web Bean: " + producerMethodBean);
       }
       for (AnnotatedField<Object> producerField : bean.getProducerFields())

@@ -20,9 +20,14 @@ import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.test.beans.BananaSpider;
+import org.jboss.webbeans.test.beans.BirdCage;
+import org.jboss.webbeans.test.beans.BlueFacedParrotFinch;
+import org.jboss.webbeans.test.beans.FinchKeeper;
 import org.jboss.webbeans.test.beans.RecluseSpider;
-import org.jboss.webbeans.test.beans.SweeWaxbill;
+import org.jboss.webbeans.test.beans.StarFinch;
 import org.jboss.webbeans.test.beans.TeaCupPomeranian;
+import org.jboss.webbeans.test.beans.broken.OwlFinch;
+import org.jboss.webbeans.test.beans.broken.SweeWaxbill;
 import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.RoleBinding;
 import org.jboss.webbeans.test.bindings.TameAnnotationLiteral;
@@ -619,32 +624,80 @@ public class NewEventTest extends AbstractTest
       }
    }
 
-   @Test(groups = { "stub", "events" })
+   @Test(groups = { "events" }, expectedExceptions = { IllegalArgumentException.class })
    @SpecAssertion(section = "8.6")
    public void testNonBindingTypePassedToFireFails()
    {
-      assert false;
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(OwlFinch.class));
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         OwlFinch bean = manager.getInstanceByType(OwlFinch.class);
+         bean.methodThatFiresEvent();
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
-   @Test(groups = { "stub", "events" })
+   @Test(groups = { "events" }, expectedExceptions = { IllegalArgumentException.class })
    @SpecAssertion(section = "8.6")
    public void testNonBindingTypePassedToObservesFails()
    {
-      assert false;
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(OwlFinch.class));
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         OwlFinch bean = manager.getInstanceByType(OwlFinch.class);
+         bean.methodThatRegistersObserver();
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
-   @Test(groups = { "stub", "events" })
+   @Test(groups = { "events" })
    @SpecAssertion(section = "8.6")
    public void testObservableAnnotationOnField()
    {
-      assert false;
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(BlueFacedParrotFinch.class));
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         BlueFacedParrotFinch bean = manager.getInstanceByType(BlueFacedParrotFinch.class);
+         bean.methodThatRegistersObserver();
+
+         Set<Observer<String>> observers = manager.resolveObservers("String type event");
+         assert observers.size() == 1;
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
-   @Test(groups = { "stub", "events" })
+   @Test(groups = { "broken", "events" })
    @SpecAssertion(section = "8.6")
    public void testObservableAnnotationOnParameterOfProducerMethod()
    {
-      assert false;
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(StarFinch.class, FinchKeeper.class, BirdCage.class));
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         StarFinch starFinch = manager.getInstanceByType(StarFinch.class);
+         FinchKeeper birdKeeper = manager.getInstanceByType(FinchKeeper.class);
+         BirdCage birdCage = manager.getInstanceByType(BirdCage.class);
+         assert starFinch != null;
+         assert birdCage != null;
+         assert birdCage.someMess != null;
+         assert birdKeeper.newMessDetected;
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
    @Test(groups = { "stub", "events" })

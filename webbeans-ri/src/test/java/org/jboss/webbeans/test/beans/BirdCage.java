@@ -1,0 +1,17 @@
+package org.jboss.webbeans.test.beans;
+
+import javax.webbeans.Current;
+import javax.webbeans.RequestScoped;
+
+import org.jboss.webbeans.test.beans.StarFinch.Mess;
+
+@RequestScoped
+public class BirdCage
+{
+   @Current
+   public Mess someMess;
+
+   public BirdCage()
+   {
+   }
+}

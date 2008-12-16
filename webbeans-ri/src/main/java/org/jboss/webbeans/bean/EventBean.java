@@ -18,12 +18,16 @@
 package org.jboss.webbeans.bean;
 
 
+import java.lang.reflect.Type;
+
+import javax.webbeans.DefinitionException;
 import javax.webbeans.Event;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.util.Names;
 
 /**
@@ -49,17 +53,58 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
    }
 
    /**
+    * Initializes the bean
+    * 
+    * Calls super method and validates the annotated item
+    */
+   protected void init()
+   {
+      super.init();
+      checkAnnotatedItem();
+   }
+
+   /**
+    * Validates the annotated item
+    */
+   private void checkAnnotatedItem()
+   {
+      // Only check the type arguments if this is for a field.  Parameters
+      // do not have access to the type arguments in Java 6.
+      if (!(this.annotatedItem instanceof AnnotatedParameter))
+      {
+         Type[] actualTypeArguments = annotatedItem.getActualTypeArguments();
+         if (actualTypeArguments.length != 1)
+         {
+            throw new DefinitionException("Event must have type arguments");
+         }
+         if (!(actualTypeArguments[0] instanceof Class))
+         {
+            throw new DefinitionException("Event must have concrete type argument");
+         }
+      }
+   }
+
+   /**
     * Creates an instance
     * 
     * @return an event instance
     */
+   @SuppressWarnings("unchecked")
    @Override
    public Event<T> create()
    {
       try
       {
          DependentContext.INSTANCE.setActive(true);
-         return new EventImpl<T>(getTypeParameter(), manager, getBindingTypesArray());
+         Class eventType = null;
+         if (this.getAnnotatedItem() instanceof AnnotatedParameter)
+         {
+            eventType = Object.class;
+         } else
+         {
+            eventType = (Class<T>) getAnnotatedItem().getActualTypeArguments()[0];         
+         }
+         return new EventImpl(eventType, manager, getBindingTypesArray());
       }
       finally
       {

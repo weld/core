@@ -18,9 +18,6 @@
 package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-
-import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
@@ -53,33 +50,6 @@ public abstract class AbstractFacadeBean<T, S, P> extends AbstractBean<T, S>
       super(manager);
       this.annotatedItem = field;
       init();
-   }
-
-   /**
-    * Initializes the bean
-    * 
-    * Calls super method and validates the annotated item
-    */
-   protected void init()
-   {
-      super.init();
-      checkAnnotatedItem();
-   }
-
-   /**
-    * Validates the annotated item
-    */
-   private void checkAnnotatedItem()
-   {
-      Type[] actualTypeArguments = annotatedItem.getActualTypeArguments();
-      if (actualTypeArguments.length != 1)
-      {
-         throw new DefinitionException("Event must have type arguments");
-      }
-      if (!(actualTypeArguments[0] instanceof Class))
-      {
-         throw new DefinitionException("Event must have concrete type argument");
-      }
    }
 
    /*
