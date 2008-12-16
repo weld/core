@@ -7,7 +7,6 @@ import java.util.HashSet;
 
 import javax.ejb.MessageDriven;
 import javax.ejb.Remove;
-import javax.ejb.Singleton;
 import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 
@@ -65,7 +64,8 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
 
    public boolean isSingleton()
    {
-      return type.isAnnotationPresent(Singleton.class);
+      return false;
+      //return type.isAnnotationPresent(Singleton.class);
    }
 
    public boolean isStateful()

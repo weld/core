@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.ejb.MessageDriven;
-import javax.ejb.Singleton;
 import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 
@@ -71,7 +70,7 @@ public class MockWebBeanDiscovery implements WebBeanDiscovery
       Set<Class<?>> ejbs = new HashSet<Class<?>>();
       for (Class<?> clazz : webBeanClasses)
       {
-         if (clazz.isAnnotationPresent(Stateless.class) || clazz.isAnnotationPresent(Stateful.class) || clazz.isAnnotationPresent(MessageDriven.class) || clazz.isAnnotationPresent(Singleton.class)) 
+         if (clazz.isAnnotationPresent(Stateless.class) || clazz.isAnnotationPresent(Stateful.class) || clazz.isAnnotationPresent(MessageDriven.class)) 
          {
             ejbs.add(clazz);
          }
