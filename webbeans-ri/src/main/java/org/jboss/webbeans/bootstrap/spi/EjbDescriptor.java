@@ -18,7 +18,6 @@
 package org.jboss.webbeans.bootstrap.spi;
 
 import java.lang.reflect.Method;
-import java.util.Iterator;
 
 /**
  * EJB metadata from the EJB descriptor
@@ -29,23 +28,6 @@ import java.util.Iterator;
  */
 public interface EjbDescriptor<T>
 {
-   
-   public interface BusinessInterfaceDescriptor 
-   {
-   
-      /**
-       * Gets the business interface class
-       */
-      public Class<?> getInterface();
-   
-      /**
-       * Gets the JNDI name under which the EJB is registered
-       * 
-       * @return The JNDI name
-       */
-      public String getJndiName();
-      
-   }
    
    /**
     * Gets the EJB type
@@ -59,30 +41,50 @@ public interface EjbDescriptor<T>
     * 
     * @return An iterator over the local business interfaces
     */
-   public Iterator<BusinessInterfaceDescriptor> getLocalBusinessInterfaces();
+   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces();
    
    /**
     * Gets the remote business interfaces of the EJB
     * 
     * @return An iterator over the remote business interfaces
     */
-   public Iterator<BusinessInterfaceDescriptor> getRemoteBusinessInterfaces();
+   public Iterable<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces();
    
    /**
     * Get the remove methods of the EJB
     * 
     * @return An iterator the remove methods
     */
-   public Iterator<Method> getRemoveMethods();
+   public Iterable<Method> getRemoveMethods();
 
+   /**
+    * The type of EJB
+    * @return true if the bean is stateless
+    */
    public boolean isStateless();
 
+   /**
+    * The type of EJB
+    * @return true if the bean is an EJB 3.1 singleton
+    */
    public boolean isSingleton();
 
+   /**
+    * The type of EJB
+    * @return true if the bean is stateful
+    */
    public boolean isStateful();
 
+   /**
+    * The type of EJB
+    * @return true if the bean is an MDB
+    */
    public boolean isMessageDriven();
 
+   /**
+    * 
+    * @return The ejbName
+    */
    public String getEjbName();
    
 }

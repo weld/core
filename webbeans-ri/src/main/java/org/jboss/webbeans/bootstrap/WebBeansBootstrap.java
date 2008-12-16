@@ -57,7 +57,6 @@ import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
-import org.jboss.webbeans.ejb.EJB;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -82,7 +81,7 @@ public class WebBeansBootstrap
 
    private static LogProvider log = Logging.getLogProvider(WebBeansBootstrap.class);
    
-   private ManagerImpl manager;
+   protected ManagerImpl manager;
 
    /**
     * Constructor
@@ -107,7 +106,7 @@ public class WebBeansBootstrap
     * 
     * @param classes The classes to register
     */
-   public void registerBeans(Class<?>... classes)
+   protected void registerBeans(Class<?>... classes)
    {
       registerBeans(new HashSet<Class<?>>(Arrays.asList(classes)));
    }
@@ -117,10 +116,20 @@ public class WebBeansBootstrap
     * 
     * @param classes The classes to register as Web Beans
     */
-   public void registerBeans(Iterable<Class<?>> classes)
+   protected void registerBeans(Iterable<Class<?>> classes)
    {
       Set<AbstractBean<?, ?>> beans = createBeans(classes);
+      beans.addAll(createStandardBeans());
       manager.setBeans(beans);
+   }
+   
+   protected Set<AbstractBean<?, ?>> createStandardBeans()
+   {
+      Set<AbstractBean<?, ?>> beans = new HashSet<AbstractBean<?, ?>>();
+      createBean(BeanFactory.createSimpleBean(Transaction.class, manager), beans);
+      createBean(BeanFactory.createSimpleBean(ManagerImpl.class, manager), beans);
+      createBean(BeanFactory.createSimpleBean(DefaultEnterpriseBeanLookup.class, manager), beans);
+      return beans;
    }
 
    /**
@@ -134,12 +143,12 @@ public class WebBeansBootstrap
     * @param classes The classes to adapt
     * @return A set of adapted Web Beans
     */
-   public Set<AbstractBean<?, ?>> createBeans(Iterable<Class<?>> classes)
+   protected Set<AbstractBean<?, ?>> createBeans(Iterable<Class<?>> classes)
    {
       Set<AbstractBean<?, ?>> beans = new HashSet<AbstractBean<?, ?>>();
       for (Class<?> clazz : classes)
       {
-         if (EJB.isEjb(clazz))
+         if (EjbDescriptorCache.instance().containsKey(clazz))
          {
             createBean(createEnterpriseBean(clazz, manager), beans);
          }
@@ -148,14 +157,11 @@ public class WebBeansBootstrap
             createBean(createSimpleBean(clazz, manager), beans);
          }
       }
-      createBean(BeanFactory.createSimpleBean(Transaction.class, manager), beans);
-      createBean(BeanFactory.createSimpleBean(ManagerImpl.class, manager), beans);
-      createBean(BeanFactory.createSimpleBean(DefaultEnterpriseBeanLookup.class, manager), beans);
       return beans;
    }
    
 
-   public void createBean(AbstractClassBean<?> bean, Set<AbstractBean<?, ?>> beans)
+   protected void createBean(AbstractClassBean<?> bean, Set<AbstractBean<?, ?>> beans)
    {
       beans.add(bean);
       manager.getResolver().addInjectionPoints(bean.getInjectionPoints());
@@ -219,8 +225,9 @@ public class WebBeansBootstrap
       {
          throw new IllegalStateException("No WebBeanDiscovery provider found, you need to implement the org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery interface, and tell the RI to use it by specifying -D" + WebBeansBootstrap.WEB_BEAN_DISCOVERY_PROPERTY_NAME + "=<classname>");
       }
+      // Must populate EJB cache first, as we need it to detect whether a bean is an EJB!
+      EjbDescriptorCache.instance().addAll(webBeanDiscovery.discoverEjbs());
       registerBeans(webBeanDiscovery.discoverWebBeanClasses());
-      EjbDescriptorCache.instance().setEjbDescriptors(webBeanDiscovery.discoverEjbs());
       log.info("Validing Web Bean injection points");
       manager.getResolver().resolveInjectionPoints();
       manager.fireEvent(manager, new InitializedBinding());

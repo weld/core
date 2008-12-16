@@ -2,21 +2,27 @@ package org.jboss.webbeans.test.mock;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 
+import javax.ejb.MessageDriven;
+import javax.ejb.Remove;
+import javax.ejb.Singleton;
+import javax.ejb.Stateful;
+import javax.ejb.Stateless;
+
+import org.jboss.webbeans.bootstrap.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
-import org.jboss.webbeans.ejb.EJB;
 
 public class MockEjbDescriptor<T> implements EjbDescriptor<T>
 {
    private Class<T> type;
    private String ejbName;
 
-   public MockEjbDescriptor(String ejbName, Class<T> type)
+   public MockEjbDescriptor(Class<T> type)
    {
-      this.ejbName = ejbName;
       this.type = type;
+      this.ejbName = type.getSimpleName() + "/local";
    }
 
    public String getEjbName()
@@ -24,27 +30,27 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       return ejbName;
    }
 
-   public Iterator<BusinessInterfaceDescriptor> getLocalBusinessInterfaces()
+   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces()
    {
-      return new HashSet<BusinessInterfaceDescriptor>().iterator();
+      return Collections.emptyList();
+   }
+   
+   public Iterable<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces()
+   {
+      return Collections.emptyList();
    }
 
-   public Iterator<BusinessInterfaceDescriptor> getRemoteBusinessInterfaces()
-   {
-      return new HashSet<BusinessInterfaceDescriptor>().iterator();
-   }
-
-   public Iterator<Method> getRemoveMethods()
+   public Iterable<Method> getRemoveMethods()
    {
       Collection<Method> removeMethods = new HashSet<Method>();
       for (Method method : type.getMethods())
       {
-         if (method.isAnnotationPresent(EJB.REMOVE_ANNOTATION))
+         if (method.isAnnotationPresent(Remove.class))
          {
             removeMethods.add(method);
          }
       }
-      return removeMethods.iterator();
+      return removeMethods;
    }
 
    public Class<T> getType()
@@ -54,22 +60,22 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
 
    public boolean isMessageDriven()
    {
-      return type.isAnnotationPresent(EJB.MESSAGE_DRIVEN_ANNOTATION);
+      return type.isAnnotationPresent(MessageDriven.class);
    }
 
    public boolean isSingleton()
    {
-      return type.isAnnotationPresent(EJB.SINGLETON_ANNOTATION);
+      return type.isAnnotationPresent(Singleton.class);
    }
 
    public boolean isStateful()
    {
-      return type.isAnnotationPresent(EJB.STATEFUL_ANNOTATION);
+      return type.isAnnotationPresent(Stateful.class);
    }
 
    public boolean isStateless()
    {
-      return type.isAnnotationPresent(EJB.STATELESS_ANNOTATION);
+      return type.isAnnotationPresent(Stateless.class);
    }
 
 }

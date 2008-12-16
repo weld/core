@@ -1,6 +1,7 @@
 package org.jboss.webbeans.test;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Set;
 
 import javax.webbeans.DefinitionException;
@@ -10,8 +11,8 @@ import javax.webbeans.Observable;
 import javax.webbeans.Observer;
 import javax.webbeans.ObserverException;
 import javax.webbeans.TypeLiteral;
+import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.bean.SimpleBean;
@@ -35,6 +36,7 @@ import org.jboss.webbeans.test.ejb.invalid.YorkshireTerrier;
 import org.jboss.webbeans.test.ejb.valid.BullTerrier;
 import org.jboss.webbeans.test.ejb.valid.Pomeranian;
 import org.jboss.webbeans.test.mock.MockManagerImpl;
+import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
 import org.testng.annotations.Test;
 
 /**
@@ -336,7 +338,8 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5")
    public void testObserverMethodOnEnterpriseBeanIsBusinessMethodOrStatic()
    {
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(Pomeranian.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(Pomeranian.class));
+      List<Bean<?>> beans = manager.getBeans();
       assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
       Set<Observer<MockManagerImpl>> observers = manager.resolveObservers(manager, new InitializedBinding());
       assert observers.size() == 2;
@@ -346,7 +349,8 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5")
    public void testObserverMethodOnEnterpriseBeanNotBusinessMethodOrStaticFails()
    {
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(TibetanTerrier.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(TibetanTerrier.class));
+      List<Bean<?>> beans = manager.getBeans();
       assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
       Set<Observer<MockManagerImpl>> observers = manager.resolveObservers(manager, new InitializedBinding());
       assert observers.size() == 1;
@@ -366,7 +370,8 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = { "8.5.1", "8.5.2" })
    public void testObserverMethodMustHaveOnlyOneEventParameter()
    {
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(YorkshireTerrier.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(YorkshireTerrier.class));
+      List<Bean<?>> beans = manager.getBeans();
       assert beans != null;
    }
 
@@ -374,7 +379,8 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.1")
    public void testObserverMethodCannotObserveParameterizedEvents()
    {
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(BostonTerrier.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(BostonTerrier.class));
+      List<Bean<?>> beans = manager.getBeans();
       assert beans != null;
    }
 
@@ -383,7 +389,8 @@ public class NewEventTest extends AbstractTest
    public void testObserverMethodWithoutBindingTypesObservesEventsWithoutBindingTypes()
    {
       // This observer has no binding types specified
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(Pomeranian.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(Pomeranian.class));
+      List<Bean<?>> beans = manager.getBeans();
       assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
 
       // Resolve registered observers with an event containing no binding types
@@ -396,7 +403,8 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.2")
    public void testObserverMethodAnnotatedProducesFails()
    {
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(BorderTerrier.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(BorderTerrier.class));
+      List<Bean<?>> beans = manager.getBeans();
       assert beans != null;
    }
 
@@ -404,7 +412,8 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.2")
    public void testObserverMethodAnnotatedInitializerFails()
    {
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(AustralianTerrier.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(AustralianTerrier.class));
+      List<Bean<?>> beans = manager.getBeans();
       assert beans != null;
    }
 
@@ -412,7 +421,8 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.2")
    public void testObserverMethodAnnotatedDestructorFails()
    {
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(CairnsTerrier.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(CairnsTerrier.class));
+      List<Bean<?>> beans = manager.getBeans();
       assert beans != null;
    }
 
@@ -420,7 +430,8 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.2")
    public void testObserverMethodWithDisposesParamFails()
    {
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(FoxTerrier.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(FoxTerrier.class));
+      List<Bean<?>> beans = manager.getBeans();
       assert beans != null;
    }
 
@@ -428,7 +439,8 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.2")
    public void testObserverMethodMayHaveMultipleBindingTypes()
    {
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(BullTerrier.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(BullTerrier.class));
+      List<Bean<?>> beans = manager.getBeans();
       assert beans != null;
       // If we can resolve the observer with the two binding types,
       // then it worked
@@ -456,7 +468,8 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.4")
    public void testObserverMethodReceivesInjectionsOnNonObservesParameters()
    {
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(BananaSpider.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(BananaSpider.class));
+      List<Bean<?>> beans = manager.getBeans();
       assert beans != null;
    }
 
@@ -470,7 +483,7 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.5")
    public void testConditionalObserver()
    {
-      webBeansBootstrap.registerBeans(RecluseSpider.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(RecluseSpider.class));
 
       manager.fireEvent("New string event");
       // Should not be notified since bean is not instantiated yet
@@ -534,7 +547,8 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.7")
    public void testEnterpriseBeanObserverMethodCalledWithCallerContext()
    {
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(Pomeranian.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(Pomeranian.class));
+      List<Bean<?>> beans = manager.getBeans();
       assert beans.size() == 1;
       String event = "A new event";
       Set<Observer<String>> observers = manager.resolveObservers(event);
@@ -555,7 +569,8 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.7")
    public void testNonTransactionalObserverThrownNonCheckedExceptionIsRethrown()
    {
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(TeaCupPomeranian.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(TeaCupPomeranian.class));
+      List<Bean<?>> beans = manager.getBeans();
       assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
       manager.fireEvent("Another event");
    }
@@ -564,7 +579,8 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.5.7")
    public void testNonTransactionalObserverThrownCheckedExceptionIsWrappedAndRethrown()
    {
-      Set<AbstractBean<?, ?>> beans = webBeansBootstrap.createBeans(TeaCupPomeranian.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(TeaCupPomeranian.class));
+      List<Bean<?>> beans = manager.getBeans();
       assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
       manager.fireEvent(new Integer(1));
    }
@@ -573,7 +589,7 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.6")
    public void testDuplicateBindingsToFireFails()
    {
-      webBeansBootstrap.registerBeans(SweeWaxbill.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(SweeWaxbill.class));
       try
       {
          DependentContext.INSTANCE.setActive(true);
@@ -590,7 +606,7 @@ public class NewEventTest extends AbstractTest
    @SpecAssertion(section = "8.6")
    public void testDuplicateBindingsToObservesFails()
    {
-      webBeansBootstrap.registerBeans(SweeWaxbill.class);
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(SweeWaxbill.class));
       try
       {
          DependentContext.INSTANCE.setActive(true);

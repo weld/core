@@ -37,7 +37,6 @@ import javax.webbeans.manager.Manager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
 import org.jboss.webbeans.contexts.DependentContext;
-import org.jboss.webbeans.ejb.EJB;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -144,7 +143,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          return;
       }
-      if (!EJB.isEjb(getType().getSuperclass()))
+      if (EjbDescriptorCache.instance().containsKey(getType().getSuperclass()))
       {
          throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
       }
@@ -185,13 +184,13 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    private Set<AnnotatedMethod<Object>> getNoArgsRemoveMethods()
    {
       Set<AnnotatedMethod<Object>> noArgsRemoveMethods = new HashSet<AnnotatedMethod<Object>>();
-      for (AnnotatedMethod<Object> removeMethod : getAnnotatedItem().getAnnotatedMethods(EJB.REMOVE_ANNOTATION))
+      /*for (AnnotatedMethod<Object> removeMethod : getAnnotatedItem().getAnnotatedMethods(EJB.REMOVE_ANNOTATION))
       {
          if (removeMethod.getParameters().isEmpty())
          {
             noArgsRemoveMethods.add(removeMethod);
          }
-      }
+      }*/
       return noArgsRemoveMethods;
    }
 
@@ -205,10 +204,10 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          return;
       }
 
-      if (removeMethod.isAnnotationPresent(Destructor.class) && !removeMethod.isAnnotationPresent(EJB.REMOVE_ANNOTATION))
+      /*if (removeMethod.isAnnotationPresent(Destructor.class) && !removeMethod.isAnnotationPresent(EJB.REMOVE_ANNOTATION))
       {
          throw new DefinitionException("Methods marked @Destructor must also be marked @Remove on " + removeMethod.getName());
-      }
+      }*/
       else if (removeMethod.isAnnotationPresent(Initializer.class))
       {
          throw new DefinitionException("Remove methods cannot be initializers on " + removeMethod.getName());

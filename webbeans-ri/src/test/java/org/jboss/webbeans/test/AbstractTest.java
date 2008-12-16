@@ -31,8 +31,8 @@ public class AbstractTest
       manager.addContext(SessionContext.INSTANCE);
       ApplicationContext.INSTANCE.setBeanMap(new SimpleBeanMap());
       manager.addContext(ApplicationContext.INSTANCE);
-      // Load the build in beans
-      webBeansBootstrap.registerBeans();
+      // Load the built in beans
+      webBeansBootstrap.registerStandardBeans();
       init();
    }
    

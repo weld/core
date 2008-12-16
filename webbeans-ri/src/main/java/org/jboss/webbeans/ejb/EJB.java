@@ -17,25 +17,16 @@
 
 package org.jboss.webbeans.ejb;
 
-import java.lang.annotation.Annotation;
-
 import org.jboss.webbeans.util.ApiAbstraction;
 
 /**
- * Utility class for EJB annotations etc
+ * Utility class for EJB classes etc. EJB metadata should NOT be inspected here
  * 
  * @author Pete Muir
  */
 public class EJB extends ApiAbstraction
 {
 
-   // Annotation instances
-   public static final Class<? extends Annotation> STATELESS_ANNOTATION;
-   public static final Class<? extends Annotation> STATEFUL_ANNOTATION;
-   public static final Class<? extends Annotation> MESSAGE_DRIVEN_ANNOTATION;
-   public static final Class<? extends Annotation> FAKE_MESSAGE_DRIVEN_ANNOTATION;
-   public static final Class<? extends Annotation> SINGLETON_ANNOTATION;
-   public static final Class<? extends Annotation> REMOVE_ANNOTATION;
    public static final Class<?> ENTERPRISE_BEAN_CLASS;
 
    /**
@@ -43,22 +34,7 @@ public class EJB extends ApiAbstraction
     */
    static
    {
-      STATELESS_ANNOTATION = annotationTypeForName("javax.ejb.Stateless");
-      STATEFUL_ANNOTATION = annotationTypeForName("javax.ejb.Stateful");
-      MESSAGE_DRIVEN_ANNOTATION = annotationTypeForName("javax.ejb.MessageDriven");
-      // Fake MDB for tests
-      FAKE_MESSAGE_DRIVEN_ANNOTATION = annotationTypeForName("org.jboss.webbeans.test.annotations.MessageDriven");
-      // TODO Faking singleton for tests
-      SINGLETON_ANNOTATION = annotationTypeForName("org.jboss.webbeans.test.annotations.Singleton");
-      // SINGLETON_ANNOTATION = classForName("javax.ejb.Singleton");
-      REMOVE_ANNOTATION = annotationTypeForName("javax.ejb.Remove");
       ENTERPRISE_BEAN_CLASS = classForName("javax.ejb.EnterpriseBean");
    }
-   
-   public static boolean isEjb(Class<?> clazz)
-   {
-      return clazz.isAnnotationPresent(STATEFUL_ANNOTATION) || clazz.isAnnotationPresent(STATELESS_ANNOTATION) || clazz.isAnnotationPresent(SINGLETON_ANNOTATION);
-   }
-
 
 }

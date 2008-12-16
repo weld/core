@@ -18,7 +18,6 @@
 package org.jboss.webbeans.bootstrap.spi;
 
 import java.net.URL;
-import java.util.Map;
 
 /**
  * A container should implement this interface to allow the Web Beans RI to
@@ -44,10 +43,10 @@ public interface WebBeanDiscovery
    public Iterable<URL> discoverWebBeansXml();
    
    /**
-    * Gets a Map of EJB descriptors, keyed by the EJB bean class
+    * Gets a descriptor for each EJB in the application
     * 
     * @return The bean class to descriptor map 
     */
-   public Map<String, EjbDescriptor<?>> discoverEjbs();
+   public Iterable<EjbDescriptor<?>> discoverEjbs();
    
 }

@@ -1,13 +1,11 @@
 package org.jboss.webbeans.ejb;
 
-import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
-import org.jboss.webbeans.test.mock.MockEjbDescriptor;
-import org.jboss.webbeans.util.Strings;
-
-import com.google.common.collect.ForwardingMap;
 
 public class EjbDescriptorCache
 {
@@ -23,43 +21,48 @@ public class EjbDescriptorCache
       instance = new EjbDescriptorCache();
    }
 
-   private class EjbDescriptorMap extends ForwardingMap<String, EjbDescriptor<?>>
+   private ConcurrentMap<String, EjbDescriptor<?>> ejbsByName;
+   private ConcurrentMap<Class<?>, Set<EjbDescriptor<?>>> ejbsByBeanClass;
+
+   public EjbDescriptorCache()
    {
-      private Map<String, EjbDescriptor<?>> delegate;
-
-      public EjbDescriptorMap()
-      {
-         delegate = new ConcurrentHashMap<String, EjbDescriptor<?>>();
-      }
-
-      @Override
-      protected Map<String, EjbDescriptor<?>> delegate()
-      {
-         return delegate;
-      }
-
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("EjbMetaDataMap (EJB name -> metadata): ", delegate);
-      }
-   }
-
-   private EjbDescriptorMap ejbDescriptorMap = new EjbDescriptorMap();
-
-   public void setEjbDescriptors(Map<String, EjbDescriptor<?>> ejbDescriptorMap)
-   {
-      ejbDescriptorMap.putAll(ejbDescriptorMap);
+      this.ejbsByName = new ConcurrentHashMap<String, EjbDescriptor<?>>();
+      this.ejbsByBeanClass = new ConcurrentHashMap<Class<?>, Set<EjbDescriptor<?>>>();
    }
 
    public EjbDescriptor<?> get(String ejbName)
    {
-      return ejbDescriptorMap.get(ejbName);
+      return ejbsByName.get(ejbName);
+   }
+   
+   public Iterable<EjbDescriptor<?>> get(Class<?> beanClass)
+   {
+      return ejbsByBeanClass.get(beanClass);
    }
 
-   public void addEjbDescriptor(String ejbName, EjbDescriptor<?> ejbDescriptor)
+   public void add(EjbDescriptor<?> ejbDescriptor)
    {
-      ejbDescriptorMap.put(ejbName, ejbDescriptor);
+      ejbsByName.put(ejbDescriptor.getEjbName(), ejbDescriptor);
+      ejbsByBeanClass.putIfAbsent(ejbDescriptor.getType(), new CopyOnWriteArraySet<EjbDescriptor<?>>());
+      ejbsByBeanClass.get(ejbDescriptor.getType()).add(ejbDescriptor);
+   }
+   
+   public boolean containsKey(String ejbName)
+   {
+      return ejbsByName.containsKey(ejbName);
+   }
+   
+   public boolean containsKey(Class<?> beanClass)
+   {
+      return ejbsByBeanClass.containsKey(beanClass);
+   }
+   
+   public void addAll(Iterable<EjbDescriptor<?>> ejbDescriptors)
+   {
+      for (EjbDescriptor<?> ejbDescriptor : ejbDescriptors)
+      {
+         add(ejbDescriptor);
+      }
    }
 
 }
