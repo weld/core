@@ -49,14 +49,14 @@ import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
 import org.testng.annotations.Test;
 
 /**
- * Temporary name until synchronized with David Allen
+ * Event bus tests
  * 
  * @author Nicklas Karlsson
  * @author David Allen
  * 
  */
 @SpecVersion("20081206")
-public class NewEventTest extends AbstractTest
+public class EventBusTest extends AbstractTest
 {
    public static class AnEventType
    {
