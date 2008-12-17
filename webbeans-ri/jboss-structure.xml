@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<structure>
+    <context>
+        <path name=""/>
+        <metaDataPath>
+            <path name="META-INF"/>
+        </metaDataPath>
+        <classpath>
+            <path name="" suffixes=".jar" />
+        </classpath>
+    </context>
+</structure>
