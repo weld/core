@@ -40,8 +40,8 @@
       </dependency>
       
       <dependency>
-         <groupId>javax.faces</groupId>
-         <artifactId>jsf-api</artifactId>
+         <groupId>javax.ejb</groupId>
+         <artifactId>ejb-api</artifactId>
          <scope>provided</scope>
       </dependency>
       
