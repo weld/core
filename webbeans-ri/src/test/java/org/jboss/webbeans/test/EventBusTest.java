@@ -88,25 +88,6 @@ public class EventBusTest extends AbstractTest
       }
    }
 
-   @SuppressWarnings("unchecked")
-   @Test(groups = "events")
-   public void testEventBeanCreation()
-   {
-      SimpleBean<MyTest> myTestBean = BeanFactory.createSimpleBean(MyTest.class, manager);
-      boolean found = false;
-      for (AnnotatedField field : myTestBean.getInjectableFields())
-      {
-         if (field.isAnnotationPresent(Observable.class))
-         {
-            EventBean eventBean = BeanFactory.createEventBean(field, manager);
-            Event<Param> event = eventBean.create();
-            assert event != null;
-            found = true;
-         }
-      }
-      assert found;
-   }
-
    @Test(groups = { "stub", "events" })
    @SpecAssertion(section = "8.1")
    public void testEventTypeIncludesAllSuperclassesAndInterfacesOfEventObject()
