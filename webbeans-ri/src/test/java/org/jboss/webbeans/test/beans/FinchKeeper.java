@@ -14,10 +14,15 @@ public class FinchKeeper
    {
    }
 
-   public boolean newMessDetected = false;
+   private boolean newMessDetected = false;
 
    public void observesMesses(@Observes Mess aNewMess)
    {
       newMessDetected = true;
+   }
+   
+   public boolean isNewMessDetected()
+   {
+      return newMessDetected;
    }
 }

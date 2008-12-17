@@ -11,9 +11,14 @@ import org.jboss.webbeans.test.beans.StarFinch.Mess;
 public class BirdCage
 {
    @Current
-   public Mess someMess;
+   private Mess someMess;
 
    public BirdCage()
    {
+   }
+   
+   public Mess getSomeMess()
+   {
+      return someMess;
    }
 }

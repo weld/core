@@ -6,19 +6,13 @@ import java.util.Set;
 
 import javax.webbeans.DefinitionException;
 import javax.webbeans.DuplicateBindingTypeException;
-import javax.webbeans.Event;
-import javax.webbeans.Observable;
 import javax.webbeans.Observer;
 import javax.webbeans.ObserverException;
 import javax.webbeans.TypeLiteral;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.bean.BeanFactory;
-import org.jboss.webbeans.bean.EventBean;
-import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.contexts.DependentContext;
-import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.test.beans.BananaSpider;
 import org.jboss.webbeans.test.beans.BirdCage;
 import org.jboss.webbeans.test.beans.BlueFacedParrotFinch;
@@ -676,8 +670,8 @@ public class EventBusTest extends AbstractTest
          BirdCage birdCage = manager.getInstanceByType(BirdCage.class);
          assert starFinch != null;
          assert birdCage != null;
-         assert birdCage.someMess != null;
-         assert birdKeeper.newMessDetected;
+         assert birdCage.getSomeMess() != null;
+         assert birdKeeper.isNewMessDetected();
       }
       finally
       {
