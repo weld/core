@@ -1,40 +1,14 @@
 package org.jboss.webbeans.examples.translator;
 
-import javax.ejb.Stateful;
-import javax.webbeans.Current;
-import javax.webbeans.Named;
-import javax.webbeans.RequestScoped;
-
-@Stateful
-@RequestScoped
-@Named("translator")
-public class TranslatorController
+public interface TranslatorController
 {
    
-   @Current TextTranslator translator;
+   public String getText();
    
-   private String inputText;
+   public void setText(String text);
    
-   private String translatedText;
+   public void translate();
    
-   public String getText()
-   {
-      return inputText;
-   }
-   
-   public void setText(String text)
-   {
-      this.inputText = text;
-   }
-   
-   public void translate()
-   {
-      translatedText = translator.translate(inputText);
-   }
-   
-   public String getTranslatedText()
-   {
-      return translatedText;
-   }
+   public String getTranslatedText();
    
 }
