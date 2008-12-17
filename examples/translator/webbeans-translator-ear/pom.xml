@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   
+   <parent>
+      <groupId>org.jboss.webbeans.examples.translator</groupId>
+      <artifactId>parent</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+   </parent>
+   
+   <groupId>org.jboss.webbeans.examples</groupId>
+   <artifactId>webbeans-translator-ear</artifactId>
+   <packaging>ear</packaging>
+   <name>Web Beans Examples: Translator (ear)</name>
+   
+   <pluginRepositories>
+        <pluginRepository>
+            <id>codehaus snapshot repository</id>
+            <url>http://snapshots.repository.codehaus.org/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+   
+   <dependencies>
+   
+      <dependency>
+         <groupId>org.jboss.webbeans.examples.translator</groupId>
+         <artifactId>webbeans-translator-ejb</artifactId>
+         <type>ejb</type>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.webbeans.examples.translator</groupId>
+         <artifactId>webbeans-translator-war</artifactId>
+         <type>war</type>
+      </dependency>
+   
+      <dependency>
+         <groupId>org.testng</groupId>
+         <artifactId>testng</artifactId>
+         <scope>test</scope>
+         <classifier>jdk15</classifier>
+      </dependency>
+      
+      <!-- <dependency>
+         <groupId>org.jboss.el</groupId>
+         <artifactId>jboss-el</artifactId>
+         <exclusions>
+            <exclusion>
+               <groupId>javax.el</groupId>
+               <artifactId>el-api</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>-->
+      
+   </dependencies>
+   
+   <build>
+      <finalName>webbeans-translator</finalName>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-ear-plugin</artifactId>
+            <configuration>
+               <modules>
+                  <webModule>
+                     <groupId>org.jboss.webbeans.examples.translator</groupId>
+                     <artifactId>webbeans-translator-war</artifactId>
+                     <contextRoot>/webbeans-translator</contextRoot>
+                  </webModule>
+               </modules>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+   
+</project>
+

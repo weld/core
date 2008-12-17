@@ -1,0 +1,8 @@
+<project basedir="." name="Numberguess Example Build" default="restart">
+	
+	<property name="example.name" value="webbeans-translator" />
+	<property name="type" value="ear" />
+
+	<import file="../build.xml" />
+	
+</project>
