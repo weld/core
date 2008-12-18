@@ -166,7 +166,7 @@ public class ObserverImpl<T> implements Observer<T>
    public void notify(final T event)
    {
       // Get the most specialized instance of the component
-      Object instance = getInstance(isConditional());
+      Object instance = getInstance(!isConditional());
       if (instance != null)
       {
          try
@@ -195,14 +195,14 @@ public class ObserverImpl<T> implements Observer<T>
     * Uses the container to retrieve the most specialized instance of this
     * observer.
     * 
-    * @param conditional T
+    * @param create True if the instance should be created if not already done
     * 
     * @return the most specialized instance
     */
-   protected Object getInstance(boolean conditional)
+   protected Object getInstance(boolean create)
    {
       // Return the most specialized instance of the component
-      return manager.getMostSpecializedInstance(eventBean, conditional);
+      return manager.getMostSpecializedInstance(eventBean, create);
    }
 
    /**

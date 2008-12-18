@@ -139,27 +139,37 @@ public class ProxyPool
     * Gets a client proxy for a bean
     * 
     * Looks for a proxy in the pool. If not found, one is created and added to
-    * the pool
+    * the pool if the create argument is true.
     * 
-    * @param bean
-    * @return
+    * @param bean The bean to get a proxy to
+    * @param create Flag indicating if the proxy should be created if it does
+    *           not already exist
+    * @return the client proxy for the bean
     */
-   public <T> T getClientProxy(final Bean<T> bean)
+   @SuppressWarnings("unchecked")
+   public <T> T getClientProxy(final Bean<T> bean, boolean create)
    {
-      return pool.putIfAbsent(bean, new Callable<T>()
+      if (create)
       {
-
-         public T call() throws Exception
+         return pool.putIfAbsent(bean, new Callable<T>()
          {
-            int beanIndex = CurrentManager.rootManager().getBeans().indexOf(bean);
-            if (beanIndex < 0)
+
+            public T call() throws Exception
             {
-               throw new DefinitionException(bean + " is not known to the manager");
+               int beanIndex = CurrentManager.rootManager().getBeans().indexOf(bean);
+               if (beanIndex < 0)
+               {
+                  throw new DefinitionException(bean + " is not known to the manager");
+               }
+               return createClientProxy(bean, beanIndex);
             }
-            return createClientProxy(bean, beanIndex);
-         }
-   
-      });
+
+         });
+      }
+      else
+      {
+         return (T)pool.getValue(bean);
+      }
    }
 
    /**

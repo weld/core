@@ -450,7 +450,7 @@ public class ManagerImpl implements Manager
    {
       if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal())
       {
-         return (T) proxyPool.getClientProxy(bean);
+         return (T) proxyPool.getClientProxy(bean, true);
       }
       else
       {
@@ -502,7 +502,14 @@ public class ManagerImpl implements Manager
    public <T> T getMostSpecializedInstance(Bean<T> bean, boolean create)
    {
       // TODO Implement specialization
-      return getInstance(bean);
+      if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal())
+      {
+         return (T) proxyPool.getClientProxy(bean, create);
+      }
+      else
+      {
+         return getContext(bean.getScopeType()).get(bean, create);
+      }
    }
 
    /**

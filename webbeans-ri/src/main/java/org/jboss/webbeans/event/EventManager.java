@@ -221,7 +221,7 @@ public class EventManager
          DependentContext.INSTANCE.setActive(true);
          for (Observer<T> observer : observers)
          {
-            if (isTransactionActive() && ((ObserverImpl<?>) observer).isTransactional())
+            if ((observer instanceof ObserverImpl) && isTransactionActive() && ((ObserverImpl<?>) observer).isTransactional())
             {
                deferEvent(event, observer);
             }

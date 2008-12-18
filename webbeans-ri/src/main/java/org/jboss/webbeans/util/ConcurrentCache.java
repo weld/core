@@ -57,7 +57,7 @@ public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
    {
       return (Future<T>) super.get(key);
    }
-   
+
    /**
     * Gets a value from the map. Blocks until it is available
     *  
@@ -68,34 +68,42 @@ public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
    public <T extends V> T getValue(K key)
    {
       Future<T> value = (Future<T>) map.get(key);
-      boolean interrupted = false;
-      try
+      if (value != null)
       {
-         while (true)
+         boolean interrupted = false;
+         try
          {
-            try
+            while (true)
             {
-               return value.get();
+               try
+               {
+                  return value.get();
+               }
+               catch (InterruptedException e)
+               {
+                  interrupted = true;
+               }
+               catch (ExecutionException e)
+               {
+                  rethrow(e);
+               }
+               ;
             }
-            catch (InterruptedException e)
+         }
+         finally
+         {
+            if (interrupted)
             {
-               interrupted = true;
+               Thread.currentThread().interrupt();
             }
-            catch (ExecutionException e)
-            {
-               rethrow(e);
-            };
          }
       }
-      finally
+      else
       {
-         if (interrupted)
-         {
-            Thread.currentThread().interrupt();
-         }
+         return null;
       }
    }
-   
+
    /**
     * Adds an item to the map if it's not already there
 
@@ -130,7 +138,8 @@ public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
             catch (ExecutionException e)
             {
                rethrow(e);
-            };
+            }
+            ;
          }
       }
       finally
@@ -152,7 +161,7 @@ public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
    {
       return map;
    }
-   
+
    /**
     * Examines and re-throws an exception
     * 
