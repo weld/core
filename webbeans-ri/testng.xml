@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="WebBeans RI" verbose="1">
+<suite name="WebBeans RI" verbose="1"  >
 
    <test name="Web Beans RI">
       <groups>
@@ -36,8 +36,7 @@
          <package name="org.jboss.webbeans.test"></package>
          <package name="org.jboss.webbeans.test.contexts"></package>
          <package name="org.jboss.webbeans.examples"></package>
-         <package name="org.jboss.webbeans.test.ejb.lifecycle"></package>
-         <package name="org.jboss.webbeans.test.ejb.model"></package>
+         <package name="org.jboss.webbeans.test.ejb"></package>
       </packages>
    </test>
    

@@ -58,7 +58,6 @@ import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
-import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -155,7 +154,7 @@ public class WebBeansBootstrap
       Set<AbstractBean<?, ?>> beans = new HashSet<AbstractBean<?, ?>>();
       for (Class<?> clazz : classes)
       {
-         if (EjbDescriptorCache.instance().containsKey(clazz))
+         if (manager.getEjbDescriptorCache().containsKey(clazz))
          {
             createBean(createEnterpriseBean(clazz, manager), beans);
          }
@@ -239,7 +238,7 @@ public class WebBeansBootstrap
     * 
     * @param webBeanDiscovery The discovery implementation
     */
-   public void boot(WebBeanDiscovery webBeanDiscovery)
+   public synchronized void boot(WebBeanDiscovery webBeanDiscovery)
    {
       log.info("Starting Web Beans RI " + getVersion());
       if (webBeanDiscovery == null)
@@ -247,7 +246,7 @@ public class WebBeansBootstrap
          throw new IllegalStateException("No WebBeanDiscovery provider found, you need to implement the org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery interface, and tell the RI to use it by specifying -D" + WebBeansBootstrap.WEB_BEAN_DISCOVERY_PROPERTY_NAME + "=<classname>");
       }
       // Must populate EJB cache first, as we need it to detect whether a bean is an EJB!
-      EjbDescriptorCache.instance().addAll(webBeanDiscovery.discoverEjbs());
+      manager.getEjbDescriptorCache().addAll(webBeanDiscovery.discoverEjbs());
       registerBeans(webBeanDiscovery.discoverWebBeanClasses());
       log.info("Validing Web Bean injection points");
       manager.getResolver().resolveInjectionPoints();

@@ -510,7 +510,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       // TODO Cache?
       for (AnnotatedMethod<Object> annotatedMethod : methods)
       {
-         if (annotatedMethod.getName().equals(methodDescriptor.getMethodName()) && annotatedMethod.getParameterTypesAsArray().equals(methodDescriptor.getMethodParameterTypes()))
+         if (annotatedMethod.getName().equals(methodDescriptor.getMethodName()) && Arrays.equals(annotatedMethod.getParameterTypesAsArray(), methodDescriptor.getMethodParameterTypes()))
          {
             return annotatedMethod;
          }
