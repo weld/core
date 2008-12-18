@@ -18,9 +18,12 @@
 package org.jboss.webbeans.ejb;
 
 import javax.webbeans.CreationException;
+import javax.webbeans.Current;
+import javax.webbeans.Initializer;
 import javax.webbeans.Standard;
 import javax.webbeans.manager.EnterpriseBeanLookup;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
 import org.jboss.webbeans.util.JNDI;
 
@@ -33,6 +36,14 @@ import org.jboss.webbeans.util.JNDI;
 @Standard
 public class DefaultEnterpriseBeanLookup implements EnterpriseBeanLookup
 {
+   
+   private ManagerImpl manager;
+   
+   @Initializer
+   public DefaultEnterpriseBeanLookup(@Current ManagerImpl manager)
+   {
+      this.manager = manager;
+   }
 
    /**
     * Looks up and EJB based on the name
@@ -46,7 +57,7 @@ public class DefaultEnterpriseBeanLookup implements EnterpriseBeanLookup
       {
          throw new NullPointerException("No EJB name supplied for lookup");
       }
-      return lookup(EjbDescriptorCache.instance().get(ejbName));
+      return lookup(manager.getEjbDescriptorCache().get(ejbName));
    }
 
    /**
@@ -59,9 +70,15 @@ public class DefaultEnterpriseBeanLookup implements EnterpriseBeanLookup
    @SuppressWarnings("unchecked")
    public static <T> T lookup(EjbDescriptor<T> ejbDescriptor)
    {
+      if (!ejbDescriptor.getLocalBusinessInterfaces().iterator().hasNext())
+      {
+         throw new RuntimeException("EJB must have local interface " + ejbDescriptor);
+      }
+      String jndiName = ejbDescriptor.getLocalBusinessInterfaces().iterator().next().getJndiName();
       try
       {
-         return (T) JNDI.lookup(ejbDescriptor.getEjbName());
+         // TODO Implement enterprise proxies and select the correct jndiName
+         return (T) JNDI.lookup(jndiName);
       }
       catch (Exception e)
       {

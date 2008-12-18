@@ -14,14 +14,16 @@ import org.jboss.webbeans.test.ejb.invalid.Beagle;
 import org.jboss.webbeans.test.ejb.invalid.Boxer;
 import org.jboss.webbeans.test.ejb.invalid.Bullmastiff;
 import org.jboss.webbeans.test.ejb.invalid.Dachshund;
-import org.jboss.webbeans.test.ejb.invalid.GreatDane;
 import org.jboss.webbeans.test.ejb.invalid.Greyhound;
 import org.jboss.webbeans.test.ejb.invalid.Husky;
 import org.jboss.webbeans.test.ejb.invalid.IrishTerrier;
 import org.jboss.webbeans.test.ejb.invalid.Pekingese;
 import org.jboss.webbeans.test.ejb.invalid.Pug;
+import org.jboss.webbeans.test.ejb.invalid.Saluki;
+import org.jboss.webbeans.test.ejb.valid.Labrador;
 import org.jboss.webbeans.test.ejb.valid.Laika;
 import org.jboss.webbeans.test.ejb.valid.Pitbull;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -39,6 +41,26 @@ import org.testng.annotations.Test;
 @SuppressWarnings("unused")
 public class EnterpriseBeanDeclarationTest extends AbstractTest
 {
+   
+   @BeforeMethod
+   public void setupEjbDescriptors()
+   {
+      addToEjbCache(Pug.class);
+      addToEjbCache(Giraffe.class);
+      addToEjbCache(Husky.class);
+      addToEjbCache(Pitbull.class);
+      addToEjbCache(IrishTerrier.class);
+      addToEjbCache(Laika.class);
+      addToEjbCache(Leopard.class);
+      addToEjbCache(Labrador.class);
+      addToEjbCache(Greyhound.class);
+      addToEjbCache(Dachshund.class);
+      addToEjbCache(Bullmastiff.class);
+      addToEjbCache(Pekingese.class);
+      addToEjbCache(Boxer.class);
+      addToEjbCache(Beagle.class);
+      addToEjbCache(Saluki.class);
+   }
 
    /**
     * An EJB stateless session bean must belong to the @Dependent pseudo-scope.
@@ -116,7 +138,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testSingletonWithDependentScopeOK()
    {
-      EnterpriseBean<GreatDane> greatDane = BeanFactory.createEnterpriseBean(GreatDane.class, manager);
+      BeanFactory.createEnterpriseBean(Labrador.class, manager);
    }
 
    /**

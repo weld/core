@@ -1,9 +1,10 @@
 package org.jboss.webbeans.test.mock;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 import javax.ejb.MessageDriven;
 import javax.ejb.Remove;
@@ -13,47 +14,44 @@ import javax.ejb.Stateless;
 import org.jboss.webbeans.bootstrap.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
 import org.jboss.webbeans.bootstrap.spi.MethodDescriptor;
+import org.jboss.webbeans.test.annotations.Singleton;
 
 public class MockEjbDescriptor<T> implements EjbDescriptor<T>
 {
-   private Class<T> type;
-   private String ejbName;
+   private final Class<T> type;
+   private final String ejbName;
+   private final List<BusinessInterfaceDescriptor<?>> localInterfaces;
+   private final HashSet<MethodDescriptor> removeMethods;
 
-   public MockEjbDescriptor(Class<T> type)
+   public MockEjbDescriptor(final Class<T> type)
    {
       this.type = type;
-      this.ejbName = type.getSimpleName() + "/local";
-   }
+      this.ejbName = type.getSimpleName();
+      this.localInterfaces = new ArrayList<BusinessInterfaceDescriptor<?>>();
+      for (final Class<Object> clazz : type.getInterfaces())
+      {
+         localInterfaces.add(new BusinessInterfaceDescriptor<Object>()
+               {
 
-   public String getEjbName()
-   {
-      return ejbName;
-   }
+                  public Class<Object> getInterface()
+                  {
+                     return clazz;
+                  }
 
-   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces()
-   {
-      return Collections.emptyList();
-   }
-   
-   public Iterable<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces()
-   {
-      return Collections.emptyList();
-   }
-
-   public Iterable<MethodDescriptor> getRemoveMethods()
-   {
-      Collection<MethodDescriptor> removeMethods = new HashSet<MethodDescriptor>();
+                  public String getJndiName()
+                  {
+                     return clazz.getSimpleName() + "/local";
+                  }
+            
+               });
+      }
+      this.removeMethods = new HashSet<MethodDescriptor>();
       for (final Method method : type.getMethods())
       {
          if (method.isAnnotationPresent(Remove.class))
          {
             removeMethods.add(new MethodDescriptor()
             {
-               
-               public Class<?> getDeclaringClass()
-               {
-                  return type;
-               }
                
                public String getMethodName()
                {
@@ -65,9 +63,35 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
                   return method.getParameterTypes();
                }
                
+               @Override
+               public String toString()
+               {
+                  return method.toString();
+               }
+               
             });
          }
       }
+   }
+
+   public String getEjbName()
+   {
+      return ejbName;
+   }
+
+   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces()
+   {
+      return localInterfaces;
+   }
+   
+   public Iterable<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces()
+   {
+      return Collections.emptyList();
+   }
+
+   public Iterable<MethodDescriptor> getRemoveMethods()
+   {
+
       return removeMethods;
    }
 
@@ -83,8 +107,7 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
 
    public boolean isSingleton()
    {
-      return false;
-      //return type.isAnnotationPresent(Singleton.class);
+      return type.isAnnotationPresent(Singleton.class);
    }
 
    public boolean isStateful()
@@ -118,6 +141,7 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       {
          builder.append(" (MDB)");
       }
+      builder.append("remove methods; " + removeMethods + "; ");
       builder.append("; BeanClass: " + getType() + "; Local Business Interfaces: " + getLocalBusinessInterfaces());
       return builder.toString(); 
    }

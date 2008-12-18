@@ -49,6 +49,7 @@ import javax.webbeans.manager.Manager;
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.proxy.ProxyPool;
 import org.jboss.webbeans.contexts.ContextMap;
+import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -87,6 +88,8 @@ public class ManagerImpl implements Manager
    private Set<Decorator> decorators;
    // The registered interceptors
    private Set<Interceptor> interceptors;
+   
+   private EjbDescriptorCache ejbDescriptorCache;
 
    /**
     * Constructor
@@ -103,6 +106,7 @@ public class ManagerImpl implements Manager
       this.interceptors = new HashSet<Interceptor>();
       this.contextMap = new ContextMap();
       this.eventManager = new EventManager(this);
+      this.ejbDescriptorCache = new EjbDescriptorCache();
       
       List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       defaultEnabledDeploymentTypes.add(0, Standard.class);
@@ -628,6 +632,11 @@ public class ManagerImpl implements Manager
    public Resolver getResolver()
    {
       return resolver;
+   }
+   
+   public EjbDescriptorCache getEjbDescriptorCache()
+   {
+      return ejbDescriptorCache;
    }
 
    /**

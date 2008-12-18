@@ -13,7 +13,6 @@ import org.jboss.webbeans.test.SpecVersion;
 import org.jboss.webbeans.test.ejb.invalid.Armant;
 import org.jboss.webbeans.test.ejb.invalid.GoldenRetriever;
 import org.jboss.webbeans.test.ejb.invalid.JackRussellTerrier;
-import org.jboss.webbeans.test.ejb.invalid.Poodle;
 import org.jboss.webbeans.test.ejb.invalid.Pumi;
 import org.jboss.webbeans.test.ejb.invalid.Rottweiler;
 import org.jboss.webbeans.test.ejb.invalid.RussellTerrier;
@@ -22,6 +21,7 @@ import org.jboss.webbeans.test.ejb.invalid.Spitz;
 import org.jboss.webbeans.test.ejb.valid.Koirus;
 import org.jboss.webbeans.test.ejb.valid.Toller;
 import org.jboss.webbeans.test.ejb.valid.WelshCorgie;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -38,6 +38,22 @@ import org.testng.annotations.Test;
 @SuppressWarnings("unused")
 public class EnterpriseBeanRemoveMethodTest extends AbstractTest
 {
+   
+   @BeforeMethod
+   public void setupEjbDescriptors()
+   {
+      addToEjbCache(JackRussellTerrier.class);
+      addToEjbCache(Pumi.class);
+      addToEjbCache(RussellTerrier.class);
+      addToEjbCache(Rottweiler.class);
+      addToEjbCache(GoldenRetriever.class);
+      addToEjbCache(Armant.class);
+      addToEjbCache(Spitz.class);
+      addToEjbCache(Toller.class);
+      addToEjbCache(WelshCorgie.class);
+      addToEjbCache(Koirus.class);
+   }
+   
    public static boolean visited = false;
 
    /**

@@ -25,31 +25,13 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
 
 /**
- * Singleton for accessing EJB descriptors by EJB implementation class or name
+ * EJB descriptors by EJB implementation class or name
  * 
  * @author Pete Muir
  * 
  */
 public class EjbDescriptorCache
 {
-   // The singleton
-   private static EjbDescriptorCache instance;
-
-   /**
-    * Accessor for the singleton
-    * 
-    * @return The instance
-    */
-   public static EjbDescriptorCache instance()
-   {
-      return instance;
-   }
-
-   // Static initalizer block
-   static
-   {
-      instance = new EjbDescriptorCache();
-   }
 
    // EJB name -> EJB descriptor map
    private ConcurrentMap<String, EjbDescriptor<?>> ejbsByName;
@@ -133,6 +115,18 @@ public class EjbDescriptorCache
       {
          add(ejbDescriptor);
       }
+   }
+   
+   public void clear()
+   {
+      ejbsByBeanClass.clear();
+      ejbsByName.clear();
+   }
+   
+   @Override
+   public String toString()
+   {
+      return ejbsByBeanClass + "\n" + ejbsByName;
    }
 
 }

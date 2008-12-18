@@ -17,6 +17,15 @@
 
 package org.jboss.webbeans.util;
 
+import java.util.Hashtable;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.webbeans.ExecutionException;
+
+import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Logging;
+
 
 /**
  * Provides JNDI access abstraction
@@ -26,6 +35,62 @@ package org.jboss.webbeans.util;
 public class JNDI
 {
 
+   private static final LogProvider log = Logging.getLogProvider(JNDI.class);
+   private static Hashtable initialContextProperties;
+   
+   private static InitialContext initialContext;
+
+   public static InitialContext getInitialContext(Hashtable<String, String> props) throws NamingException 
+   {
+       if (props==null)
+       {
+           throw new IllegalStateException("JNDI properties not initialized, Seam was not started correctly");
+       }
+
+       if (log.isDebugEnabled())
+       {
+           log.debug("JNDI InitialContext properties:" + props);
+       }
+       
+       try {
+           return props.size()==0 ?
+                   new InitialContext() :
+                   new InitialContext(props);
+       }
+       catch (NamingException e) {
+           log.debug("Could not obtain initial context", e);
+           throw e;
+       }
+       
+   }
+   
+   public static InitialContext getInitialContext() throws NamingException 
+   {
+      if (initialContext == null) initInitialContext(); 
+         
+      return initialContext;
+   }
+   
+   private static synchronized void initInitialContext() throws NamingException
+   {
+      if (initialContext == null)
+      {
+         initialContext = getInitialContext(initialContextProperties);
+      }
+   }
+   
+   public static void setInitialContextProperties(Hashtable initialContextProperties) 
+   {
+      initialContextProperties = initialContextProperties;
+      initialContext = null;
+   }
+
+   public static Hashtable getInitialContextProperties() 
+   {
+      return initialContextProperties;
+   }
+
+   
    /**
     * Looks up a object in JNDI
     * 
@@ -47,7 +112,14 @@ public class JNDI
     */
    public static <T> T lookup(String name, Class<? extends T> expectedType)
    {
-      return null;
+      try
+      {
+         return (T) getInitialContext().lookup(name);
+      }
+      catch (NamingException e)
+      {
+         throw new ExecutionException("Error looking " + name + " up in JNDI", e);
+      }
    }
 
    public static void set(String key, Object value)

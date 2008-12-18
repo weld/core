@@ -11,7 +11,7 @@ import org.jboss.webbeans.test.annotations.Tame;
 @Stateful
 @Tame
 @Named("Teddy")
-public class Pomeranian
+public class Pomeranian implements PomeranianInterface
 {
    public static Thread notificationThread;
    

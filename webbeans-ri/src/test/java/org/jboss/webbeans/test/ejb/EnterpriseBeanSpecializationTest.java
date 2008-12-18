@@ -11,6 +11,7 @@ import org.jboss.webbeans.test.SpecVersion;
 import org.jboss.webbeans.test.ejb.invalid.GreaterDane;
 import org.jboss.webbeans.test.ejb.valid.Hound;
 import org.jboss.webbeans.test.ejb.valid.HoundOfBaskerville;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -23,6 +24,15 @@ import org.testng.annotations.Test;
 @SpecVersion("20081206")
 public class EnterpriseBeanSpecializationTest extends AbstractTest
 {
+   
+   @BeforeMethod
+   public void setupEjbDescriptors()
+   {
+      addToEjbCache(HoundOfBaskerville.class);
+      addToEjbCache(Hound.class);
+      addToEjbCache(GreaterDane.class);
+   }
+   
    /**
     * If an implementation class of an enterprise Web Bean X defined using
     * annotations is annotated @Specializes, then the implementation class of X
@@ -132,7 +142,7 @@ public class EnterpriseBeanSpecializationTest extends AbstractTest
    @SpecAssertion(section = "3.3.6")
    public void testAnnotationDefinedSpecializingEnterpriseBeanNotDirectlyExtendingAnnotationDefinedEnterpriseBeanFails()
    {
-      EnterpriseBean<GreaterDane> greaterDane = BeanFactory.createEnterpriseBean(GreaterDane.class, manager);
+      BeanFactory.createEnterpriseBean(GreaterDane.class, manager);
    }
 
    @Test(expectedExceptions = DefinitionException.class, groups = { "stub", "specialization", "enterpriseBeans" })

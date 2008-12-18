@@ -31,14 +31,13 @@ import javax.webbeans.Interceptor;
 import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 import javax.webbeans.Specializes;
-import javax.webbeans.manager.EnterpriseBeanLookup;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
 import org.jboss.webbeans.bootstrap.spi.MethodDescriptor;
 import org.jboss.webbeans.contexts.DependentContext;
-import org.jboss.webbeans.ejb.EjbDescriptorCache;
+import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
@@ -83,7 +82,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected void init()
    {
       super.init();
-      Iterable<EjbDescriptor<T>> ejbDescriptors = EjbDescriptorCache.instance().get(getType());
+      Iterable<EjbDescriptor<T>> ejbDescriptors = manager.getEjbDescriptorCache().get(getType());
+      if (ejbDescriptors == null)
+      {
+         throw new DefinitionException("Not an EJB " + toString());
+      }
       for (EjbDescriptor<T> ejbDescriptor : ejbDescriptors)
       {
          if (this.ejbDescriptor == null)
@@ -160,7 +163,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          return;
       }
-      if (EjbDescriptorCache.instance().containsKey(getType().getSuperclass()))
+      // TODO Should also check the bean type it does contain!
+      if (!manager.getEjbDescriptorCache().containsKey(getType().getSuperclass()))
       {
          throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
       }
@@ -171,18 +175,27 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     */
    protected void initRemoveMethod()
    {
-      if (!ejbDescriptor.isStateful())
-      {
-         // Nothing to do for stateless enterprise beans;
-         return;
-      }
 
       // >1 @Destructor
       if (getAnnotatedItem().getAnnotatedMethods(Destructor.class).size() > 1)
       {
          throw new DefinitionException("Multiple @Destructor methods not allowed on " + getAnnotatedItem());
       }
-
+      
+      if (getAnnotatedItem().getAnnotatedMethods(Destructor.class).size() == 1)
+      {
+         AnnotatedMethod<?> destructorMethod = getAnnotatedItem().getAnnotatedMethods(Destructor.class).iterator().next();
+         for (MethodDescriptor removeMethod : ejbDescriptor.getRemoveMethods())
+         {
+            AnnotatedMethod<?> annotatedRemoveMethod = getAnnotatedItem().getMethod(removeMethod);
+            if (annotatedRemoveMethod != null && annotatedRemoveMethod.equals(destructorMethod))
+            {
+               this.removeMethod = destructorMethod;
+               return;
+            }
+         }
+         throw new DefinitionException("Method annotated @Destructor is not an EJB remove method on " + toString());
+      }
       // <1 (0) @Destructors
       Set<MethodDescriptor> noArgsRemoveMethods = getNoArgsRemoveMethods(ejbDescriptor);
       if (noArgsRemoveMethods.size() == 1)
@@ -190,10 +203,10 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          this.removeMethod = annotatedItem.getMethod(noArgsRemoveMethods.iterator().next());
          return;
       }
-
+      
       if (!getScopeType().equals(Dependent.class))
       {
-         throw new DefinitionException("Only @Dependent scoped enterprise beans can be without remove methods");
+         throw new DefinitionException("Only @Dependent scoped enterprise beans can be without remove methods " + toString());
       }
 
    }
@@ -210,16 +223,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       return noArgsRemoveMethods;
    }
-
-   private void checkDestructorMethods()
-   {
-      // TODO Check that any method annotated @Destructor is actually in the remove method list
-      /*
-      if (removeMethod.isAnnotationPresent(Destructor.class) && !removeMethod.isAnnotationPresent(EJB.REMOVE_ANNOTATION))
-      {
-         throw new DefinitionException("Methods marked @Destructor must also be marked @Remove on " + removeMethod.getName());
-      }*/
-   }
    
    /**
     * Validates the remove method
@@ -230,7 +233,10 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          return;
       }
-
+      else if (ejbDescriptor.isStateless())
+      {
+         throw new DefinitionException("Can't define a remove method on SLSBs");
+      }
       if (removeMethod.isAnnotationPresent(Initializer.class))
       {
          throw new DefinitionException("Remove methods cannot be initializers on " + removeMethod.getName());
@@ -261,7 +267,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       try
       {
          DependentContext.INSTANCE.setActive(true);
-         T instance = (T) manager.getInstanceByType(EnterpriseBeanLookup.class).lookup(ejbDescriptor.getEjbName());
+         T instance = (T) manager.getInstanceByType(DefaultEnterpriseBeanLookup.class).lookup(ejbDescriptor);
          bindDecorators();
          bindInterceptors();
          injectEjbAndCommonFields();
