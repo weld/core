@@ -14,10 +14,12 @@
 
 		<mkdir dir="target/webbeans.deployer"/>
 
-		<artifact:dependencies filesetId="jboss5.deployer.fileset" versionsId="jboss5.deployer.versions" >
+		<artifact:dependencies filesetId="jboss5.deployer.fileset" versionsId="jboss5.deployer.versions">
 			<dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-microcontainer" version="5.2.0-SNAPSHOT"/>
 			<dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-jbossas" version="5.2.0-SNAPSHOT"/>
-			<remoteRepository id="snapshots.jboss.org" url="http://snapshots.jboss.org/maven2" />
+			<remoteRepository id="snapshots.jboss.org" url="http://snapshots.jboss.org/maven2">
+				 <snapshots updatePolicy="always" />
+			</remoteRepository>
 			<remoteRepository id="repository.jboss.org" url="http://repository.jboss.org/maven2" />
 		</artifact:dependencies>
 
