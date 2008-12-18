@@ -8,7 +8,7 @@
 
 	<property file="build.properties" />
 
-	<target name="install-jboss5">
+	<target name="install-jboss5" depends="install-jboss-ejb3-update">
 
 		<fail unless="jboss.home" message="Please pass in -Djboss.home=..."/>
 
@@ -35,6 +35,7 @@
 		<copy todir="target/webbeans.deployer/META-INF">
 			<fileset dir="${basedir}/webbeans-ri">
 				<include name="webbeans-deployers-jboss-beans.xml"/>
+				<include name="jboss-structure.xml"/>
 			</fileset>
 		</copy>
 
@@ -47,6 +48,28 @@
 			<mapper classpathref="maven-ant-tasks.classpath" classname="org.apache.maven.artifact.ant.VersionMapper" from="${jboss5.deployer.versions}" to="flatten" />
 		</copy>
 
+	</target>
+	
+	<target name="install-jboss-ejb3-update">
+		
+		<fail unless="jboss.home" message="Please pass in -Djboss.home=..."/>
+		
+		<artifact:dependencies filesetId="jboss.ejb3.plugin.fileset" versionsId="jboss.ejb3.plugin.versions">
+   		<dependency groupId="org.jboss.ejb3" artifactId="jboss-ejb3-plugin" version="1.0.0-Alpha1" classifier="installer"/>
+   		<remoteRepository id="repository.jboss.org" url="http://repository.jboss.org/maven2" />
+	   </artifact:dependencies>
+		
+		<mkdir dir="target/ejb3.plugin"/>
+	   <copy todir="target/ejb3.plugin">
+         <fileset refid="jboss.ejb3.plugin.fileset"/>
+	   	<chainedmapper>
+	   		<flattenmapper />
+	   		<mapper classpathref="maven-ant-tasks.classpath" classname="org.apache.maven.artifact.ant.VersionMapper" from="${jboss.ejb3.plugin.versions}" to="flatten" />
+	   	</chainedmapper>
+	   </copy>
+		<java jar="target/ejb3.plugin/jboss-ejb3-plugin-installer.jar" fork="true">
+			<arg line="${jboss.home}" />
+		</java>
 	</target>
 	
 	<target name="install">
