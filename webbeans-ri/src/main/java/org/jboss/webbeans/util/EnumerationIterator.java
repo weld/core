@@ -25,6 +25,7 @@ import java.util.Iterator;
  *  
  * @author Pete Muir
  */
+@SuppressWarnings("unchecked")
 public class EnumerationIterator<T> implements Iterator<T>
 {
    // The enumeration

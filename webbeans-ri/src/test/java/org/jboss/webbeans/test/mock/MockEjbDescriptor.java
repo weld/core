@@ -28,14 +28,15 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       this.type = type;
       this.ejbName = type.getSimpleName();
       this.localInterfaces = new ArrayList<BusinessInterfaceDescriptor<?>>();
-      for (final Class<Object> clazz : type.getInterfaces())
+      for (final Class<?> clazz : type.getInterfaces())
       {
          localInterfaces.add(new BusinessInterfaceDescriptor<Object>()
                {
 
+                  @SuppressWarnings("unchecked")
                   public Class<Object> getInterface()
                   {
-                     return clazz;
+                     return (Class<Object>) clazz;
                   }
 
                   public String getJndiName()

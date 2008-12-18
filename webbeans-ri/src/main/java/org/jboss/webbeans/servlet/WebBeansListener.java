@@ -69,7 +69,7 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
    }
 
    /**
-    * Called when the context is destroyed (application sopped)
+    * Called when the context is destroyed (application scoped)
     * 
     * @param event The context event
     */

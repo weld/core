@@ -43,11 +43,9 @@ public class UTTransaction extends AbstractUserTransaction
             HeuristicRollbackException, SecurityException, IllegalStateException, SystemException
    {
       log.debug("committing JTA transaction");
-      boolean success = false;
       try
       {
          delegate.commit();
-         success = true;
       }
       finally
       {

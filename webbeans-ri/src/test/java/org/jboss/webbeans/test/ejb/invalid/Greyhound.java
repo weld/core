@@ -1,8 +1,7 @@
 package org.jboss.webbeans.test.ejb.invalid;
 
+import javax.ejb.Singleton;
 import javax.webbeans.RequestScoped;
-
-import org.jboss.webbeans.test.annotations.Singleton;
 
 @Singleton
 @RequestScoped

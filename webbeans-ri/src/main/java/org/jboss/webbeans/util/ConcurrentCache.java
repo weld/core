@@ -35,19 +35,35 @@ import com.google.common.collect.ForwardingMap;
 public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
 {
 
+   // The backing map with the value wrapped in a Future instance
    private ConcurrentMap<K, Future<V>> map;
 
+   /**
+    * Constructor
+    */
    public ConcurrentCache()
    {
       map = new ConcurrentHashMap<K, Future<V>>();
    }
 
+   /**
+    * Gets the Future value from the map
+    *  
+    * @param key The key to look for
+    * @return The Future instance of the value
+    */
    @SuppressWarnings("unchecked")
    public <T extends V> Future<T> getFuture(K key)
    {
       return (Future<T>) super.get(key);
    }
    
+   /**
+    * Gets a value from the map. Blocks until it is available
+    *  
+    * @param key The key to look for
+    * @return The value
+    */
    @SuppressWarnings("unchecked")
    public <T extends V> T getValue(K key)
    {
@@ -80,6 +96,13 @@ public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
       }
    }
    
+   /**
+    * Adds an item to the map if it's not already there
+
+    * @param key The key to place the item under
+    * @param callable The item, wrapped in a Callable instance
+    * @return The item added
+    */
    @SuppressWarnings("unchecked")
    public <E> E putIfAbsent(K key, Callable<E> callable)
    {
@@ -119,12 +142,22 @@ public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
       }
    }
 
+   /**
+    * Gets the delegate map
+    * 
+    * @return The backing map
+    */
    @Override
    protected Map<K, Future<V>> delegate()
    {
       return map;
    }
    
+   /**
+    * Examines and re-throws an exception
+    * 
+    * @param e The exception that happened during execution
+    */
    protected void rethrow(ExecutionException e)
    {
       if (e.getCause() instanceof RuntimeException)
