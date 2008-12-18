@@ -184,6 +184,11 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    {
       return Collections.unmodifiableList(parameters);
    }
+   
+   public Class<?>[] getParameterTypesAsArray()
+   {
+      return method.getParameterTypes();
+   }
 
    /**
     * Gets the parameter abstractions with a given annotation type
@@ -242,6 +247,12 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    public T invoke(Object instance, Manager manager)
    {
       return (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, manager));
+   }
+   
+   @SuppressWarnings("unchecked")
+   public T invokeOnInstance(Object instance, Manager manager)
+   {
+      return (T) Reflections.invokeAndWrap(getName(), getParameterTypesAsArray(), instance, getParameterValues(parameters, manager));
    }
 
    @SuppressWarnings("unchecked")

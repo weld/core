@@ -445,8 +445,6 @@ public class Reflections
       }
       catch (IllegalArgumentException e)
       {
-         System.out.println(method.getDeclaringClass() + " " + instance.getClass());
-         e.printStackTrace();
          throw new ExecutionException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
       catch (IllegalAccessException e)
@@ -456,6 +454,43 @@ public class Reflections
       catch (InvocationTargetException e)
       {
          throw new ExecutionException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
+      }
+   }
+   
+   /**
+    * Invokes a method and wraps exceptions
+    * 
+    * @param methodName The method name to find on the instance and invoke
+    * @param parameterTypes The method name to find on the instance and invoke
+    * @param instance The instance to invoke on
+    * @param parameterValues The parameters values
+    * @return The return value
+    */
+   public static Object invokeAndWrap(String methodName, Class<?>[] parameterTypes, Object instance, Object[] parameterValues)
+   {
+      try
+      {
+         return instance.getClass().getMethod(methodName, parameterTypes).invoke(instance, parameterValues);
+      }
+      catch (IllegalArgumentException e)
+      {
+         throw new ExecutionException("Error invoking method " + methodName + " on " + instance.getClass(), e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new ExecutionException("Error invoking method " + methodName + " on " + instance.getClass(), e);
+      }
+      catch (InvocationTargetException e)
+      {
+         throw new ExecutionException("Error invoking method " + methodName + " on " + instance.getClass(), e);
+      }
+      catch (SecurityException e)
+      {
+         throw new ExecutionException("Error invoking method " + methodName + " on " + instance.getClass(), e);
+      }
+      catch (NoSuchMethodException e)
+      {
+         throw new ExecutionException("Error invoking method " + methodName + " on " + instance.getClass(), e);
       }
    }
 

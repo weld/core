@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 
 import org.jboss.webbeans.bootstrap.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
+import org.jboss.webbeans.bootstrap.spi.MethodDescriptor;
 
 public class MockEjbDescriptor<T> implements EjbDescriptor<T>
 {
@@ -39,14 +40,32 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       return Collections.emptyList();
    }
 
-   public Iterable<Method> getRemoveMethods()
+   public Iterable<MethodDescriptor> getRemoveMethods()
    {
-      Collection<Method> removeMethods = new HashSet<Method>();
-      for (Method method : type.getMethods())
+      Collection<MethodDescriptor> removeMethods = new HashSet<MethodDescriptor>();
+      for (final Method method : type.getMethods())
       {
          if (method.isAnnotationPresent(Remove.class))
          {
-            removeMethods.add(method);
+            removeMethods.add(new MethodDescriptor()
+            {
+               
+               public Class<?> getDeclaringClass()
+               {
+                  return type;
+               }
+               
+               public String getMethodName()
+               {
+                  return method.getName();
+               }
+               
+               public Class<?>[] getMethodParameterTypes()
+               {
+                  return method.getParameterTypes();
+               }
+               
+            });
          }
       }
       return removeMethods;

@@ -44,6 +44,8 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
 {
    // The underlying method
    private AnnotatedMethod<T> method;
+   
+   private AnnotatedMethod<?> disposalMethod;
 
    /**
     * Constructor
@@ -129,9 +131,9 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       {
          injectionPoints.add(parameter);
       }
-      if (removeMethod != null)
+      if (disposalMethod != null)
       {
-         for (AnnotatedParameter<?> injectable : removeMethod.getParameters())
+         for (AnnotatedParameter<?> injectable : disposalMethod.getParameters())
          {
             injectionPoints.add(injectable);
          }
@@ -165,7 +167,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       Set<AnnotatedMethod<Object>> disposalMethods = manager.resolveDisposalMethods(getType(), getBindingTypes().toArray(new Annotation[0]));
       if (disposalMethods.size() == 1)
       {
-         removeMethod = disposalMethods.iterator().next();
+         this.disposalMethod = disposalMethods.iterator().next();
       }
       else if (disposalMethods.size() > 1)
       {
@@ -204,7 +206,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     */
    public AnnotatedMethod<?> getDisposalMethod()
    {
-      return removeMethod;
+      return disposalMethod;
    }
 
    /**

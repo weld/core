@@ -21,6 +21,8 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.webbeans.bootstrap.spi.MethodDescriptor;
+
 /**
  * Represents a Class
  * 
@@ -88,6 +90,14 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     *         empty set if there are no matches
     */
    public Set<AnnotatedMethod<Object>> getAnnotatedMethods(Class<? extends Annotation> annotationType);
+   
+   /**
+    * Find the annotated method for a given methodDescriptor
+    * 
+    * @param methodDescriptor
+    * @return
+    */
+   public AnnotatedMethod<Object> getMethod(MethodDescriptor methodDescriptor);
    
    /**
     * Gets all with parameters annotated with annotationType

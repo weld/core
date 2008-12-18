@@ -61,6 +61,11 @@ public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
     *         there are no matches.
     */
    public List<AnnotatedParameter<Object>> getAnnotatedParameters(Class<? extends Annotation> metaAnnotationType);
+   
+   /**
+    * Get the parameter types as an array
+    */
+   public Class<?>[] getParameterTypesAsArray();
 
    /**
     * Invokes the method
@@ -70,6 +75,16 @@ public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
     * @return A reference to the instance
     */
    public T invoke(Object instance, Manager manager);
+   
+   /**
+    * Invokes the method on the class of the passed instance, not the declaring 
+    * class. Useful with proxies
+    * 
+    * @param instance The instance to invoke
+    * @param manager The Web Beans manager
+    * @return A reference to the instance
+    */
+   public T invokeOnInstance(Object instance, Manager manager);
 
    /**
     * Invokes the observer method

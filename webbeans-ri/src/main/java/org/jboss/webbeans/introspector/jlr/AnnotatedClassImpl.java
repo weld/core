@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.webbeans.bootstrap.spi.MethodDescriptor;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -209,7 +210,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
          return Strings.mapToString("Annotation type -> constructor by arguments mappings: ", delegate);
       }
    }
-
+   
    // The implementing class
    private final Class<T> clazz;
    // The type arguments
@@ -502,6 +503,19 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    public Set<AnnotatedMethod<Object>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
       return methodsByAnnotatedParameters.get(annotationType);
+   }
+   
+   public AnnotatedMethod<Object> getMethod(MethodDescriptor methodDescriptor)
+   {
+      // TODO Cache?
+      for (AnnotatedMethod<Object> annotatedMethod : methods)
+      {
+         if (annotatedMethod.getName().equals(methodDescriptor.getMethodName()) && annotatedMethod.getParameterTypesAsArray().equals(methodDescriptor.getMethodParameterTypes()))
+         {
+            return annotatedMethod;
+         }
+      }
+      return null;
    }
 
    /**

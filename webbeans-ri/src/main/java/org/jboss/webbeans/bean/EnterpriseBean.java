@@ -36,6 +36,7 @@ import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
+import org.jboss.webbeans.bootstrap.spi.MethodDescriptor;
 import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -57,6 +58,10 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    
    // The EJB descriptor
    private EjbDescriptor<T> ejbDescriptor;
+   
+   // The remove method on the bean class (do not call!)
+   private AnnotatedMethod<?> removeMethod;
+   
 
    /**
     * Constructor
@@ -168,10 +173,10 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
 
       // <1 (0) @Destructors
-      Set<AnnotatedMethod<Object>> noArgsRemoveMethods = getNoArgsRemoveMethods();
+      Set<MethodDescriptor> noArgsRemoveMethods = getNoArgsRemoveMethods(ejbDescriptor);
       if (noArgsRemoveMethods.size() == 1)
       {
-         super.removeMethod = noArgsRemoveMethods.iterator().next();
+         this.removeMethod = annotatedItem.getMethod(noArgsRemoveMethods.iterator().next());
          return;
       }
 
@@ -182,19 +187,29 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
    }
 
-   private Set<AnnotatedMethod<Object>> getNoArgsRemoveMethods()
+   private static Set<MethodDescriptor> getNoArgsRemoveMethods(EjbDescriptor<?> ejbDescriptor)
    {
-      Set<AnnotatedMethod<Object>> noArgsRemoveMethods = new HashSet<AnnotatedMethod<Object>>();
-      /*for (AnnotatedMethod<Object> removeMethod : getAnnotatedItem().getAnnotatedMethods(EJB.REMOVE_ANNOTATION))
+      Set<MethodDescriptor> noArgsRemoveMethods = new HashSet<MethodDescriptor>();
+      for (MethodDescriptor removeMethod : ejbDescriptor.getRemoveMethods())
       {
-         if (removeMethod.getParameters().isEmpty())
+         if (removeMethod.getMethodParameterTypes().length == 0)
          {
             noArgsRemoveMethods.add(removeMethod);
          }
-      }*/
+      }
       return noArgsRemoveMethods;
    }
 
+   private void checkDestructorMethods()
+   {
+      // TODO Check that any method annotated @Destructor is actually in the remove method list
+      /*
+      if (removeMethod.isAnnotationPresent(Destructor.class) && !removeMethod.isAnnotationPresent(EJB.REMOVE_ANNOTATION))
+      {
+         throw new DefinitionException("Methods marked @Destructor must also be marked @Remove on " + removeMethod.getName());
+      }*/
+   }
+   
    /**
     * Validates the remove method
     */
@@ -205,11 +220,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          return;
       }
 
-      /*if (removeMethod.isAnnotationPresent(Destructor.class) && !removeMethod.isAnnotationPresent(EJB.REMOVE_ANNOTATION))
-      {
-         throw new DefinitionException("Methods marked @Destructor must also be marked @Remove on " + removeMethod.getName());
-      }*/
-      else if (removeMethod.isAnnotationPresent(Initializer.class))
+      if (removeMethod.isAnnotationPresent(Initializer.class))
       {
          throw new DefinitionException("Remove methods cannot be initializers on " + removeMethod.getName());
       }
@@ -264,7 +275,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       try
       {
          DependentContext.INSTANCE.setActive(true);
-         getRemoveMethod().invoke(instance);
+         removeMethod.invokeOnInstance(instance, manager);
       }
       catch (Exception e) 
       {
@@ -332,6 +343,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          throw new RuntimeException();
       }
 
+   }
+   
+   public AnnotatedMethod<?> getRemoveMethod()
+   {
+      return removeMethod;
    }
 
    /**

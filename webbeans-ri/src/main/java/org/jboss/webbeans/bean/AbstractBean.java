@@ -41,8 +41,6 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bindings.CurrentBinding;
 import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem.AnnotationMap;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -101,8 +99,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    protected Class<? extends Annotation> deploymentType;
    // The type
    protected Class<T> type;
-   // The remove method
-   protected AnnotatedMethod<Object> removeMethod;
    // The API types
    protected Set<Class<?>> apiTypes;
    // The injection points
@@ -217,14 +213,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     */
    protected void initInjectionPoints()
    {
-      injectionPoints = new HashSet<AnnotatedItem<?, ?>>();
-      if (removeMethod != null)
-      {
-         for (AnnotatedParameter<?> injectable : removeMethod.getParameters())
-         {
-            injectionPoints.add(injectable);
-         }
-      }
+      injectionPoints = new HashSet<AnnotatedItem<?,?>>();
    }
 
    /**
@@ -435,16 +424,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
 
    /**
-    * Gets the remove method of the bean
-    * 
-    * @return The remove method
-    */
-   public AnnotatedMethod<?> getRemoveMethod()
-   {
-      return removeMethod;
-   }
-
-   /**
     * Gets the scope type of the bean
     * 
     * @return The scope type
@@ -559,7 +538,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       buffer.append("Deployment type: " + deploymentType.toString() + "\n");
       buffer.append("Primitive : " + primitive + "\n");
       buffer.append("Declared bean type: " + (declaredBeanType == null ? "null" : declaredBeanType.toString()) + "\n");
-      buffer.append("Remove method: " + (removeMethod == null ? "null" : removeMethod.toString()) + "\n");
       buffer.append(Strings.collectionToString("Binding types: ", getBindingTypes()));
       buffer.append(Strings.collectionToString("API types: ", getTypes()));
       buffer.append(Strings.collectionToString("Injection points: ", getInjectionPoints()));

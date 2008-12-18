@@ -55,7 +55,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    // Logger
    private static final LogProvider log = Logging.getLogProvider(AbstractClassBean.class);
    // The item representation
-   private AnnotatedClass<T> annotatedItem;
+   protected AnnotatedClass<T> annotatedItem;
    // The injectable fields
    private Set<AnnotatedField<Object>> injectableFields;
    // The initializer methods
