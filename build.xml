@@ -8,7 +8,7 @@
 
 	<property file="build.properties" />
 
-	<target name="install-jboss5" depends="install-jboss-ejb3-update">
+	<target name="install-jboss5" depends="install-jboss-ejb3-update, install">
 
 		<fail unless="jboss.home" message="Please pass in -Djboss.home=..."/>
 
