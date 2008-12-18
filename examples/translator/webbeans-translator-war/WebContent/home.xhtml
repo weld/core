@@ -10,20 +10,29 @@
        <h1>Translate your text into Latin!</h1>
        <h:form id="NumberGuessMain">
             
-          <div style="vertical-align: middle;">
-             Your text: 
-             <h:inputTextarea id="text" value="#{translator.translate}" required="true" rows="5" cols="80">
-                <f:validateLongRange maximum="#{game.biggest}" minimum="#{game.smallest}"/>
-             </h:inputTextarea>
-          </div>
-          
+          <table>
+             <tr align="center" style="font-weight: bold" >
+               <td>
+                  Your text
+               </td>
+               <td>
+                  Translation
+               </td>
+            </tr>
+            <tr>
+               <td>
+                  <h:inputTextarea id="text" value="#{translator.text}" required="true" rows="5" cols="80" />
+               </td>
+               <td>
+                  <h:outputText value="#{translator.translatedText}" />
+               </td>
+            </tr>
+          </table>
           <div>
-            <h:commandButton id="GuessButton" value="Guess" action="#{game.check}"/>
+            <h:commandButton id="button" value="Translate" action="#{translator.translate}"/>
           </div>
    
-          <div>
-             <h:outputText value="#{translator.translatedText}" />
-          </div>
+
        </h:form>
     </ui:define>
   </ui:composition>

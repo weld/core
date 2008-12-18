@@ -126,6 +126,11 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
    {
       Reflections.setAndWrap(getDelegate(), instance, getValue(manager));
    }
+   
+   public void injectIntoInstance(Object instance, Manager manager)
+   {
+      Reflections.setAndWrap(getName(), instance, getValue(manager));
+   }
 
    @SuppressWarnings("unchecked")
    public T get(Object instance)

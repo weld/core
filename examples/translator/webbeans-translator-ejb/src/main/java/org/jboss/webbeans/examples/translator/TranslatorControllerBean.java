@@ -1,5 +1,6 @@
 package org.jboss.webbeans.examples.translator;
 
+import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.webbeans.Current;
 import javax.webbeans.Named;
@@ -35,6 +36,12 @@ public class TranslatorControllerBean implements TranslatorController
    public String getTranslatedText()
    {
       return translatedText;
+   }
+   
+   @Remove
+   public void remove()
+   {
+      
    }
    
 }

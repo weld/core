@@ -28,6 +28,7 @@ import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.contexts.ApplicationContext;
+import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.contexts.RequestContext;
 import org.jboss.webbeans.contexts.SessionContext;
 import org.jboss.webbeans.log.LogProvider;
@@ -105,6 +106,7 @@ public class ServletLifecycle
    public static void beginRequest(HttpServletRequest request) 
    {
       SessionContext.INSTANCE.setBeanMap(new SessionBeanMap(request.getSession()));
+      DependentContext.INSTANCE.setActive(true);
    }
    
    /**
@@ -114,6 +116,7 @@ public class ServletLifecycle
     */
    public static void endRequest(HttpServletRequest request) 
    {
+      DependentContext.INSTANCE.setActive(false);
       RequestContext.INSTANCE.destroy();
       SessionContext.INSTANCE.setBeanMap(null);
    }

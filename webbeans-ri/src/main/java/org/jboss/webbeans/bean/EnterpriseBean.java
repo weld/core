@@ -268,11 +268,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          DependentContext.INSTANCE.setActive(true);
          T instance = (T) manager.getInstanceByType(DefaultEnterpriseBeanLookup.class).lookup(ejbDescriptor);
-         bindDecorators();
-         bindInterceptors();
-         injectEjbAndCommonFields();
-         injectBoundFields(instance, manager);
-         callInitializers(instance);
+         // TODO Return enterprise proxy
          return instance;
       }
       finally
@@ -400,6 +396,24 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       buffer.append(" [" + getType().getName() + "]\n");
       buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
       return buffer.toString();
+   }
+
+   public void postConstruct(T instance)
+   {
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         bindDecorators();
+         bindInterceptors();
+         injectEjbAndCommonFields();
+         injectBoundFields(instance, manager);
+         callInitializers(instance);
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
+      
    }
 
 }

@@ -75,14 +75,15 @@ public class DefaultEnterpriseBeanLookup implements EnterpriseBeanLookup
          throw new RuntimeException("EJB must have local interface " + ejbDescriptor);
       }
       String jndiName = ejbDescriptor.getLocalBusinessInterfaces().iterator().next().getJndiName();
+      String s = jndiName.substring(0, jndiName.lastIndexOf("-"));
       try
       {
          // TODO Implement enterprise proxies and select the correct jndiName
-         return (T) JNDI.lookup(jndiName);
+         return (T) JNDI.lookup(s);
       }
       catch (Exception e)
       {
-         throw new CreationException("could not find the EJB in JNDI", e);
+         throw new CreationException("could not find the name in JNDI " + s, e);
       }
    }
 

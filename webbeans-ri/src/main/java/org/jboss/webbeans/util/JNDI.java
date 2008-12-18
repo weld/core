@@ -44,7 +44,7 @@ public class JNDI
    {
        if (props==null)
        {
-           throw new IllegalStateException("JNDI properties not initialized, Seam was not started correctly");
+           throw new IllegalStateException("JNDI properties not initialized");
        }
 
        if (log.isDebugEnabled())
@@ -66,7 +66,10 @@ public class JNDI
    
    public static InitialContext getInitialContext() throws NamingException 
    {
-      if (initialContext == null) initInitialContext(); 
+      if (initialContext == null) 
+      {
+         initInitialContext(); 
+      }
          
       return initialContext;
    }
@@ -75,21 +78,9 @@ public class JNDI
    {
       if (initialContext == null)
       {
-         initialContext = getInitialContext(initialContextProperties);
+         initialContext = getInitialContext(new Hashtable<String, String>());
       }
    }
-   
-   public static void setInitialContextProperties(Hashtable initialContextProperties) 
-   {
-      initialContextProperties = initialContextProperties;
-      initialContext = null;
-   }
-
-   public static Hashtable getInitialContextProperties() 
-   {
-      return initialContextProperties;
-   }
-
    
    /**
     * Looks up a object in JNDI

@@ -11,4 +11,6 @@ public interface TranslatorController
    
    public String getTranslatedText();
    
+   public void remove();
+   
 }

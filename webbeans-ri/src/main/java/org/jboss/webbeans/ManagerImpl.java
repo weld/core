@@ -26,7 +26,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.webbeans.AmbiguousDependencyException;
@@ -84,6 +86,7 @@ public class ManagerImpl implements Manager
    private ProxyPool proxyPool;
    // The registered beans
    private List<Bean<?>> beans;
+   private Map<Class<?>, Bean<?>> beanMap;
    // The registered decorators
    private Set<Decorator> decorators;
    // The registered interceptors
@@ -100,6 +103,7 @@ public class ManagerImpl implements Manager
    public ManagerImpl()
    {
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
+      this.beanMap = new ConcurrentHashMap<Class<?>, Bean<?>>();
       this.resolver = new Resolver(this);
       this.proxyPool = new ProxyPool();
       this.decorators = new HashSet<Decorator>();
@@ -273,8 +277,17 @@ public class ManagerImpl implements Manager
       synchronized (beans)
       {
          this.beans = new CopyOnWriteArrayList<Bean<?>>(beans);
+         for (AbstractBean<?, ?> bean : beans)
+         {
+            beanMap.put(bean.getType(), bean);
+         }
          resolver.clear();
       }
+   }
+   
+   public Map<Class<?>, Bean<?>> getBeanMap()
+   {
+      return beanMap;
    }
 
    /**

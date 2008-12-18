@@ -516,6 +516,37 @@ public class Reflections
          throw new ExecutionException("Error setting field " + field.getName() + " on " + field.getDeclaringClass(), e);
       }
    }
+   
+   /**
+    * Sets value of a field and wraps exceptions
+    * 
+    * @param field The field to set on
+    * @param target The instance to set on
+    * @param value The value to set
+    */
+   public static void setAndWrap(String fieldName, Object target, Object value)
+   {
+      try
+      {
+         target.getClass().getField(fieldName).set(target, value);
+      }
+      catch (IllegalArgumentException e)
+      {
+         throw new ExecutionException("Error setting field " + fieldName + " on " + target.getClass(), e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new ExecutionException("Error setting field " + fieldName + " on " + target.getClass(), e);
+      }
+      catch (SecurityException e)
+      {
+         throw new ExecutionException("Error setting field " + fieldName + " on " + target.getClass(), e);
+      }
+      catch (NoSuchFieldException e)
+      {
+         throw new ExecutionException("Error setting field " + fieldName + " on " + target.getClass(), e);
+      }
+   }
 
    /**
     * Gets value of a field and wraps exceptions
