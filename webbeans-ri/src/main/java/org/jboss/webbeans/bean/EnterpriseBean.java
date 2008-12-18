@@ -83,7 +83,18 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected void init()
    {
       super.init();
-      ejbDescriptor = (EjbDescriptor<T>) EjbDescriptorCache.instance().get(getType().getSimpleName() + "/local");
+      Iterable<EjbDescriptor<T>> ejbDescriptors = EjbDescriptorCache.instance().get(getType());
+      for (EjbDescriptor<T> ejbDescriptor : ejbDescriptors)
+      {
+         if (this.ejbDescriptor == null)
+         {
+            this.ejbDescriptor = ejbDescriptor;
+         }
+         else
+         {
+            throw new RuntimeException("TODO Multiple EJBs have the same bean class! " + getType() );
+         }
+      }
       initRemoveMethod();
       initInjectionPoints();
       checkEnterpriseBeanTypeAllowed();

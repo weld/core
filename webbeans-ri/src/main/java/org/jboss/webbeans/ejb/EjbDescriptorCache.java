@@ -82,9 +82,9 @@ public class EjbDescriptorCache
     * @param beanClass The EJB class
     * @return An iterator
     */
-   public Iterable<EjbDescriptor<?>> get(Class<?> beanClass)
+   public <T> Iterable<EjbDescriptor<T>> get(Class<T> beanClass)
    {
-      return ejbsByBeanClass.get(beanClass);
+      return (Iterable) ejbsByBeanClass.get(beanClass);
    }
 
    /**

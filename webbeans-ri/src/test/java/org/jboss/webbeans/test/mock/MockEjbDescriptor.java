@@ -96,5 +96,50 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
    {
       return type.isAnnotationPresent(Stateless.class);
    }
+   
+   @Override
+   public String toString()
+   {
+      StringBuilder builder = new StringBuilder();
+      builder.append(getEjbName());
+      if (isStateful())
+      {
+         builder.append(" (SFSB)");
+      }
+      if (isStateless())
+      {
+         builder.append(" (SLSB)");
+      }
+      if (isSingleton())
+      {
+         builder.append(" (Singleton)");
+      }
+      if (isMessageDriven())
+      {
+         builder.append(" (MDB)");
+      }
+      builder.append("; BeanClass: " + getType() + "; Local Business Interfaces: " + getLocalBusinessInterfaces());
+      return builder.toString(); 
+   }
+   
+   @Override
+   public boolean equals(Object other)
+   {
+      if (other instanceof EjbDescriptor)
+      {
+         EjbDescriptor<T> that = (EjbDescriptor<T>) other;
+         return this.getEjbName().equals(that.getEjbName());
+      }
+      else
+      {
+         return false;
+      }
+   }
+   
+   @Override
+   public int hashCode()
+   {
+      return getEjbName().hashCode();
+   }
 
 }
