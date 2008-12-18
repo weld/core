@@ -164,20 +164,6 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
    }
 
    /**
-    * Gets the parameter abstractions with a given annotation type
-    * 
-    * if the annotated parameters map is null, it is initialized first.
-    * 
-    * @param annotationType The annotation type to match
-    * @return The list of parameter abstractions with given annotation type. An
-    *         empty list is returned if there are no matches.
-    */
-   public List<AnnotatedParameter<Object>> getAnnotatedMethods(Class<? extends Annotation> annotationType)
-   {
-      return Collections.unmodifiableList(annotatedParameters.get(annotationType));
-   }
-
-   /**
     * Gets parameter abstractions with a given annotation type.
     * 
     * If the parameters are null, they are initializes first.

@@ -157,7 +157,7 @@ public class Names
     * @param annotations The annotations
     * @return The string representation
     */
-   private static String annotations2String(Annotation[] annotations)
+   public static String annotations2String(Annotation[] annotations)
    {
       StringBuilder buffer = new StringBuilder();
       for (Annotation annotation : annotations)

@@ -13,9 +13,12 @@ import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.test.beans.AuroraFinch;
 import org.jboss.webbeans.test.beans.BananaSpider;
 import org.jboss.webbeans.test.beans.BirdCage;
 import org.jboss.webbeans.test.beans.BlueFacedParrotFinch;
+import org.jboss.webbeans.test.beans.EuropeanGoldfinch;
+import org.jboss.webbeans.test.beans.OrangeCheekedWaxbill;
 import org.jboss.webbeans.test.beans.FinchKeeper;
 import org.jboss.webbeans.test.beans.RecluseSpider;
 import org.jboss.webbeans.test.beans.StarFinch;
@@ -657,7 +660,7 @@ public class EventBusTest extends AbstractTest
       }
    }
 
-   @Test(groups = { "broken", "events" })
+   @Test(groups = { "events" })
    @SpecAssertion(section = "8.6")
    public void testObservableAnnotationOnParameterOfProducerMethod()
    {
@@ -679,13 +682,27 @@ public class EventBusTest extends AbstractTest
       }
    }
 
-   @Test(groups = { "stub", "events" })
+   @Test(groups = { "events" })
    @SpecAssertion(section = "8.6")
    public void testObservableAnnotationOnParameterOfInitializerMethod()
    {
-      assert false;
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(OrangeCheekedWaxbill.class, FinchKeeper.class));
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         OrangeCheekedWaxbill bird = manager.getInstanceByType(OrangeCheekedWaxbill.class);
+         FinchKeeper birdKeeper = manager.getInstanceByType(FinchKeeper.class);
+         assert bird != null;
+         assert bird.getSomeMess() != null;
+         assert birdKeeper.isNewMessDetected();
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
+   //TODO Implement once disposal methods are included
    @Test(groups = { "stub", "events" })
    @SpecAssertion(section = "8.6")
    public void testObservableAnnotationOnParameterOfDisposalMethod()
@@ -693,18 +710,44 @@ public class EventBusTest extends AbstractTest
       assert false;
    }
 
-   @Test(groups = { "stub", "events" })
+   //TODO Make sure this test works once EJBs are fully supported
+   @Test(groups = { "broken", "events" })
    @SpecAssertion(section = "8.6")
    public void testObservableAnnotationOnParameterOfRemoveMethod()
    {
-      assert false;
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(EuropeanGoldfinch.class, FinchKeeper.class));
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         EuropeanGoldfinch bird = manager.getInstanceByType(EuropeanGoldfinch.class);
+         FinchKeeper birdKeeper = manager.getInstanceByType(FinchKeeper.class);
+         assert bird != null;
+         
+         assert birdKeeper.isNewMessDetected();
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
-   @Test(groups = { "stub", "events" })
+   @Test(groups = { "events" })
    @SpecAssertion(section = "8.6")
    public void testObservableAnnotationOnParameterOfConstructor()
    {
-      assert false;
+      webBeansBootstrap.boot(new MockWebBeanDiscovery(AuroraFinch.class, FinchKeeper.class));
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         AuroraFinch bird = manager.getInstanceByType(AuroraFinch.class);
+         FinchKeeper birdKeeper = manager.getInstanceByType(FinchKeeper.class);
+         assert bird != null;
+         assert birdKeeper.isNewMessDetected();
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 
    @Test(groups = { "events" }, expectedExceptions = { DefinitionException.class })
@@ -775,130 +818,130 @@ public class EventBusTest extends AbstractTest
       }
    }
 
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.6")
-   public void testImplicitObserverBeanMatchesAPITypeOfInectionPoint()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.6")
-   public void testImplicitObserverBeanMatchesBindingAnnotationsOfInjectionPoint()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.6")
-   public void testImplicitObserverBeanHasStandardDeploymentType()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.6")
-   public void testImplicitObserverBeanHasDependentScope()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.6")
-   public void testFireMethodCallsManagerFireWithEventObject()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.6")
-   public void testFireMethodCallsManagerFireWithBindingAnnotationsExceptObservable()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.6")
-   public void testFireMethodCallsManagerFireWithAllBindingAnnotationInstances()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.6")
-   public void testObserveMethodCallsManagerAddObserverWithObserverObject()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.6")
-   public void testObserveMethodCallsManagerAddObserverWithAllBindingAnnotationsExceptObservable()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.6")
-   public void testObserveMethodCallsManagerAddObserverWithAllBindingAnnotationInstance()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.7")
-   public void testEventObjectContainsTypeVariablesWhenResolvingFails()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.7")
-   public void testEventObjectContainsWildcardsWhenResolvingFails()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.7")
-   public void testDuplicateBindingTypesWhenResolvingFails()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.7")
-   public void testNonBindingTypeAnnotationWhenResolvingFails()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.7")
-   public void testResolvingChecksEventType()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.7")
-   public void testResolvingChecksTypeParameters()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.7")
-   public void testResolvingChecksBindingTypes()
-   {
-      assert false;
-   }
-
-   @Test(groups = { "stub", "events" })
-   @SpecAssertion(section = "8.7")
-   public void testResolvingChecksBindingTypeMembers()
-   {
-      assert false;
-   }
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.6")
+//   public void testImplicitObserverBeanMatchesAPITypeOfInectionPoint()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.6")
+//   public void testImplicitObserverBeanMatchesBindingAnnotationsOfInjectionPoint()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.6")
+//   public void testImplicitObserverBeanHasStandardDeploymentType()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.6")
+//   public void testImplicitObserverBeanHasDependentScope()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.6")
+//   public void testFireMethodCallsManagerFireWithEventObject()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.6")
+//   public void testFireMethodCallsManagerFireWithBindingAnnotationsExceptObservable()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.6")
+//   public void testFireMethodCallsManagerFireWithAllBindingAnnotationInstances()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.6")
+//   public void testObserveMethodCallsManagerAddObserverWithObserverObject()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.6")
+//   public void testObserveMethodCallsManagerAddObserverWithAllBindingAnnotationsExceptObservable()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.6")
+//   public void testObserveMethodCallsManagerAddObserverWithAllBindingAnnotationInstance()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.7")
+//   public void testEventObjectContainsTypeVariablesWhenResolvingFails()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.7")
+//   public void testEventObjectContainsWildcardsWhenResolvingFails()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.7")
+//   public void testDuplicateBindingTypesWhenResolvingFails()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.7")
+//   public void testNonBindingTypeAnnotationWhenResolvingFails()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.7")
+//   public void testResolvingChecksEventType()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.7")
+//   public void testResolvingChecksTypeParameters()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.7")
+//   public void testResolvingChecksBindingTypes()
+//   {
+//      assert false;
+//   }
+//
+//   @Test(groups = { "stub", "events" })
+//   @SpecAssertion(section = "8.7")
+//   public void testResolvingChecksBindingTypeMembers()
+//   {
+//      assert false;
+//   }
 
 }

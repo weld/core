@@ -160,7 +160,7 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
       {
          return toString;
       }
-      toString = "Annotated parameter " + Names.type2String(getDelegate().getClass());
+      toString = toDetailedString();
       return toString;
    }
 
@@ -168,8 +168,8 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("AnnotatedParameterImpl:\n");
-      buffer.append(super.toString() + "\n");
       buffer.append("Type: " + type.toString() + "\n");
+      buffer.append("Annotations: " + Names.annotations2String(this.getAnnotations().toArray(new Annotation[0])));
       buffer.append("Final: " + _final + "\n");
       buffer.append("Static: " + _static + "\n");
       buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));

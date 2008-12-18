@@ -63,6 +63,7 @@ import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.transaction.Transaction;
@@ -184,15 +185,7 @@ public class WebBeansBootstrap
          ProducerMethodBean<?> producerMethodBean = createProducerMethodBean(producerMethod, bean, manager);
          beans.add(producerMethodBean);
          manager.getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
-         for (AnnotatedItem injectionPoint : producerMethodBean.getInjectionPoints())
-         {
-            if ( injectionPoint.isAnnotationPresent(Observable.class) )
-            {
-               EventBean<Object, Method> eventBean = createEventBean(injectionPoint, manager);
-               beans.add(eventBean);
-               log.info("Web Bean: " + eventBean);
-            }
-         }
+         registerEvents(producerMethodBean.getInjectionPoints(), beans);
          log.info("Web Bean: " + producerMethodBean);
       }
       for (AnnotatedField<Object> producerField : bean.getProducerFields())
@@ -201,13 +194,18 @@ public class WebBeansBootstrap
          beans.add(producerFieldBean);
          log.info("Web Bean: " + producerFieldBean);
       }
+      for (AnnotatedMethod<Object> initializerMethod : bean.getInitializerMethods())
+      {
+         for (AnnotatedParameter<Object> parameter : initializerMethod.getAnnotatedParameters(Observable.class))
+         {
+            registerEvent(parameter, beans);
+         }
+      }
       for (AnnotatedItem injectionPoint : bean.getInjectionPoints())
       {
          if ( injectionPoint.isAnnotationPresent(Observable.class) )  
          {
-            EventBean<Object, Field> eventBean = createEventBean(injectionPoint, manager);
-            beans.add(eventBean);
-            log.info("Web Bean: " + eventBean);
+            registerEvent(injectionPoint, beans);
          }
          if ( injectionPoint.isAnnotationPresent(Obtainable.class) )  
          {
@@ -312,6 +310,32 @@ public class WebBeansBootstrap
       manager.addObserver(observer, (Class<T>) eventType, bindings);
    }
    
+   /**
+    * Iterates through the injection points and creates and registers any Event
+    * observables specified with the @Observable annotation
+    * 
+    * @param injectionPoints A set of injection points to inspect
+    * @param beans A set of beans to add the Event beans to
+    */
+   @SuppressWarnings("unchecked")
+   private void registerEvents(Set<AnnotatedItem<?,?>> injectionPoints, Set<AbstractBean<?, ?>> beans)
+   {
+      for (AnnotatedItem injectionPoint : injectionPoints)
+      {
+         registerEvent(injectionPoint, beans);
+      }
+   }
+   
+   @SuppressWarnings("unchecked")
+   private void registerEvent(AnnotatedItem injectionPoint, Set<AbstractBean<?, ?>> beans)
+   {
+      if ( injectionPoint.isAnnotationPresent(Observable.class) )
+      {
+         EventBean<Object, Method> eventBean = createEventBean(injectionPoint, manager);
+         beans.add(eventBean);
+         log.info("Web Bean: " + eventBean);
+      }      
+   }
    /**
     * Indicates if the type is a simple Web Bean
     * 
