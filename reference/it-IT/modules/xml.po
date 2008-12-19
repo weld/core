@@ -3,11 +3,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml \n"
+"Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-19 20:26+0000\n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2008-12-20 00:46+0100\n"
+"Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,16 +17,13 @@ msgstr ""
 #: xml.xml:4
 #, no-c-format
 msgid "Defining Web Beans using XML"
-msgstr ""
+msgstr "Definire i Web Beans tramite XML"
 
 #. Tag: para
 #: xml.xml:6
 #, no-c-format
-msgid ""
-"So far, we've seen plenty of examples of Web Beans declared using "
-"annotations. However, there are a couple of occasions when we can't use "
-"annotations to define the Web Bean:"
-msgstr ""
+msgid "So far, we've seen plenty of examples of Web Beans declared using annotations. However, there are a couple of occasions when we can't use annotations to define the Web Bean:"
+msgstr "Finora abbiamo visto molti esempi di Web Bean dichiarati usando annotazioni. Comunque ci sono varie occasioni in cui non è possibile usare le annotazioni per definire un Web Bean:"
 
 #. Tag: para
 #: xml.xml:12
@@ -37,8 +34,7 @@ msgstr ""
 #. Tag: para
 #: xml.xml:15
 #, no-c-format
-msgid ""
-"when there should be multiple Web Beans with the same implementation class."
+msgid "when there should be multiple Web Beans with the same implementation class."
 msgstr ""
 
 #. Tag: para
@@ -62,60 +58,38 @@ msgstr ""
 #. Tag: para
 #: xml.xml:27
 #, no-c-format
-msgid ""
-"Many frameworks use XML to provide metadata relating to Java classes. "
-"However, Web Beans uses a very different approach to specifying the names of "
-"Java classes, fields or methods to most other frameworks. Instead of writing "
-"class and member names as the string values of XML elements and attributes, "
-"Web Beans lets you use the class or member name as the name of the XML "
-"element."
+msgid "Many frameworks use XML to provide metadata relating to Java classes. However, Web Beans uses a very different approach to specifying the names of Java classes, fields or methods to most other frameworks. Instead of writing class and member names as the string values of XML elements and attributes, Web Beans lets you use the class or member name as the name of the XML element."
 msgstr ""
 
 #. Tag: para
 #: xml.xml:33
 #, no-c-format
-msgid ""
-"The advantage of this approach is that you can write an XML schema that "
-"prevents spelling errors in your XML document. It's even possible for a tool "
-"to generate the XML schema automatically from the compiled Java code. Or, an "
-"integrated development environment could perform the same validation without "
-"the need for the explicit intermediate generation step."
+msgid "The advantage of this approach is that you can write an XML schema that prevents spelling errors in your XML document. It's even possible for a tool to generate the XML schema automatically from the compiled Java code. Or, an integrated development environment could perform the same validation without the need for the explicit intermediate generation step."
 msgstr ""
 
 #. Tag: title
 #: xml.xml:40
 #, no-c-format
 msgid "Declaring Web Bean classes"
-msgstr ""
+msgstr "Dichiarare classi Web Bean"
 
 #. Tag: para
 #: xml.xml:42
 #, no-c-format
-msgid ""
-"For each Java package, Web Beans defines a corresponding XML namespace. The "
-"namespace is formed by prepending <literal>urn:java:</literal> to the Java "
-"package name. For the package <literal>com.mydomain.myapp</literal>, the XML "
-"namespace is <literal>urn:java:com.mydomain.myapp</literal>."
+msgid "For each Java package, Web Beans defines a corresponding XML namespace. The namespace is formed by prepending <literal>urn:java:</literal> to the Java package name. For the package <literal>com.mydomain.myapp</literal>, the XML namespace is <literal>urn:java:com.mydomain.myapp</literal>."
 msgstr ""
 
 #. Tag: para
 #: xml.xml:47
 #, no-c-format
-msgid ""
-"Java types belonging to a package are referred to using an XML element in "
-"the namespace corresponding to the package. The name of the element is the "
-"name of the Java type. Fields and methods of the type are specified by child "
-"elements in the same namespace. If the type is an annotation, members are "
-"specified by attributes of the element."
+msgid "Java types belonging to a package are referred to using an XML element in the namespace corresponding to the package. The name of the element is the name of the Java type. Fields and methods of the type are specified by child elements in the same namespace. If the type is an annotation, members are specified by attributes of the element."
 msgstr ""
 
 #. Tag: para
 #: xml.xml:53
 #, no-c-format
-msgid ""
-"For example, the element <literal>&lt;util:Date/&gt;</literal> in the "
-"following XML fragment refers to the class <literal>java.util.Date</literal>:"
-msgstr ""
+msgid "For example, the element <literal>&lt;util:Date/&gt;</literal> in the following XML fragment refers to the class <literal>java.util.Date</literal>:"
+msgstr "Per esempio l'elemento <literal>&lt;util:Date/&gt;</literal> nel seguente frammento XML si riferisce alla classe <literal>java.util.Date</literal>:"
 
 #. Tag: programlisting
 #: xml.xml:56
@@ -128,34 +102,35 @@ msgid ""
 "\n"
 "</WebBeans>]]>"
 msgstr ""
+"<![CDATA[<WebBeans xmlns=\"urn:java:javax.webbeans\"\n"
+"          xmlns:util=\"urn:java:java.util\">\n"
+"\n"
+"    <util:Date/>\n"
+"\n"
+"</WebBeans>]]>"
 
 #. Tag: para
 #: xml.xml:58
 #, no-c-format
-msgid ""
-"And this is all the code we need to declare that <literal>Date</literal> is "
-"a simple Web Bean! An instance of <literal>Date</literal> may now be "
-"injected by any other Web Bean:"
+msgid "And this is all the code we need to declare that <literal>Date</literal> is a simple Web Bean! An instance of <literal>Date</literal> may now be injected by any other Web Bean:"
 msgstr ""
 
 #. Tag: programlisting
 #: xml.xml:62
 #, no-c-format
 msgid "<![CDATA[@Current Date date]]>"
-msgstr ""
+msgstr "<![CDATA[@Current Date date]]>"
 
 #. Tag: title
 #: xml.xml:67
 #, no-c-format
 msgid "Declaring Web Bean metadata"
-msgstr ""
+msgstr "Dichiarare metadati Web Bean"
 
 #. Tag: para
 #: xml.xml:69
 #, no-c-format
-msgid ""
-"We can declare the scope, deployment type and interceptor binding types "
-"using direct child elements of the Web Bean declaration:"
+msgid "We can declare the scope, deployment type and interceptor binding types using direct child elements of the Web Bean declaration:"
 msgstr ""
 
 #. Tag: programlisting
@@ -168,6 +143,11 @@ msgid ""
 "    <myfwk:Secure/>\n"
 "</myapp:ShoppingCart>]]>"
 msgstr ""
+"<![CDATA[<myapp:ShoppingCart>\n"
+"    <SessionScoped/>\n"
+"    <myfwk:Transactional requiresNew=\"true\"/>\n"
+"    <myfwk:Secure/>\n"
+"</myapp:ShoppingCart>]]>"
 
 #. Tag: para
 #: xml.xml:74
@@ -195,13 +175,26 @@ msgid ""
 "    <Named>systemStartTime</Named>\n"
 "</util:Date>]]>"
 msgstr ""
+"<![CDATA[<util:Date>\n"
+"    <Named>currentTime</Named>\n"
+"</util:Date>\n"
+"\n"
+"<util:Date>\n"
+"    <SessionScoped/>\n"
+"    <myapp:Login/>\n"
+"    <Named>loginTime</Named>\n"
+"</util:Date>\n"
+"\n"
+"<util:Date>\n"
+"    <ApplicationScoped/>\n"
+"    <myapp:SystemStart/>\n"
+"    <Named>systemStartTime</Named>\n"
+"</util:Date>]]>"
 
 #. Tag: para
 #: xml.xml:78
 #, no-c-format
-msgid ""
-"Where <literal>@Login</literal> and <literal>@SystemStart</literal> are "
-"binding annotations types."
+msgid "Where <literal>@Login</literal> and <literal>@SystemStart</literal> are binding annotations types."
 msgstr ""
 
 #. Tag: programlisting
@@ -212,6 +205,9 @@ msgid ""
 "@Login Date loginTime;\n"
 "@SystemStart Date systemStartTime;]]>"
 msgstr ""
+"<![CDATA[@Current Date currentTime;\n"
+"@Login Date loginTime;\n"
+"@SystemStart Date systemStartTime;]]>"
 
 #. Tag: para
 #: xml.xml:83
@@ -228,13 +224,15 @@ msgid ""
 "    <myapp:Asynchronous/>\n"
 "</myapp:AsynchronousChequePaymentProcessor>]]>"
 msgstr ""
+"<![CDATA[<myapp:AsynchronousChequePaymentProcessor>\n"
+"    <myapp:PayByCheque/>\n"
+"    <myapp:Asynchronous/>\n"
+"</myapp:AsynchronousChequePaymentProcessor>]]>"
 
 #. Tag: para
 #: xml.xml:87
 #, no-c-format
-msgid ""
-"Interceptors and decorators are just simple Web Beans, so they may be "
-"declared just like any other simple Web Bean:"
+msgid "Interceptors and decorators are just simple Web Beans, so they may be declared just like any other simple Web Bean:"
 msgstr ""
 
 #. Tag: programlisting
@@ -246,18 +244,22 @@ msgid ""
 "    <myfwk:Transactional/>\n"
 "</myfwk:TransactionInterceptor>]]>"
 msgstr ""
+"<![CDATA[<myfwk:TransactionInterceptor>\n"
+"    <Interceptor/>\n"
+"    <myfwk:Transactional/>\n"
+"</myfwk:TransactionInterceptor>]]>"
 
 #. Tag: title
 #: xml.xml:95
 #, no-c-format
 msgid "Declaring Web Bean members"
-msgstr ""
+msgstr "Dichiarare membri Web Bean"
 
 #. Tag: para
 #: xml.xml:97
 #, no-c-format
 msgid "TODO!"
-msgstr ""
+msgstr "DA FARE!"
 
 #. Tag: title
 #: xml.xml:104
@@ -286,41 +288,39 @@ msgid ""
 "    </myapp:admin>\n"
 "</myapp:System>]]>"
 msgstr ""
+"<![CDATA[<myapp:System>\n"
+"    <ApplicationScoped/>\n"
+"    <myapp:admin>\n"
+"        <myapp:Name>\n"
+"            <myapp:firstname>Gavin</myapp:firstname>\n"
+"            <myapp:lastname>King</myapp:lastname>\n"
+"            <myapp:email>gavin@hibernate.org</myapp:email>\n"
+"        </myapp:Name>\n"
+"    </myapp:admin>\n"
+"</myapp:System>]]>"
 
 #. Tag: para
 #: xml.xml:110
 #, no-c-format
-msgid ""
-"The <literal>&lt;Name&gt;</literal> element declares a simple Web Bean of "
-"scope <literal>@Dependent</literal> and class <literal>Name</literal>, with "
-"a set of initial field values. This Web Bean has a special, container-"
-"generated binding and is therefore injectable only to the specific injection "
-"point at which it is declared."
+msgid "The <literal>&lt;Name&gt;</literal> element declares a simple Web Bean of scope <literal>@Dependent</literal> and class <literal>Name</literal>, with a set of initial field values. This Web Bean has a special, container-generated binding and is therefore injectable only to the specific injection point at which it is declared."
 msgstr ""
 
 #. Tag: para
 #: xml.xml:116
 #, no-c-format
-msgid ""
-"This simple but powerful feature allows the Web Beans XML format to be used "
-"to specify whole graphs of Java objects. It's not quite a full databinding "
-"solution, but it's close!"
+msgid "This simple but powerful feature allows the Web Beans XML format to be used to specify whole graphs of Java objects. It's not quite a full databinding solution, but it's close!"
 msgstr ""
 
 #. Tag: title
 #: xml.xml:123
 #, no-c-format
 msgid "Using a schema"
-msgstr ""
+msgstr "Uso di uno schema"
 
 #. Tag: para
 #: xml.xml:125
 #, no-c-format
-msgid ""
-"If we want our XML document format to be authored by people who aren't Java "
-"developers, or who don't have access to our code, we need to provide a "
-"schema. There's nothing specific to Web Beans about writing or using the "
-"schema."
+msgid "If we want our XML document format to be authored by people who aren't Java developers, or who don't have access to our code, we need to provide a schema. There's nothing specific to Web Beans about writing or using the schema."
 msgstr ""
 
 #. Tag: programlisting
@@ -330,10 +330,8 @@ msgid ""
 "<![CDATA[<WebBeans xmlns=\"urn:java:javax.webbeans\"\n"
 "          xmlns:myapp=\"urn:java:com.mydomain.myapp\"\n"
 "          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-"          xsi:schemaLocation=\"urn:java:javax.webbeans http://java.sun.com/"
-"jee/web-beans-1.0.xsd\n"
-"                              urn:java:com.mydomain.myapp http://mydomain."
-"com/xsd/myapp-1.2.xsd\">\n"
+"          xsi:schemaLocation=\"urn:java:javax.webbeans http://java.sun.com/jee/web-beans-1.0.xsd\n"
+"                              urn:java:com.mydomain.myapp http://mydomain.com/xsd/myapp-1.2.xsd\">\n"
 "\n"
 "    <myapp:System>\n"
 "        ...\n"
@@ -341,12 +339,21 @@ msgid ""
 "\n"
 "</WebBeans>]]>"
 msgstr ""
+"<![CDATA[<WebBeans xmlns=\"urn:java:javax.webbeans\"\n"
+"          xmlns:myapp=\"urn:java:com.mydomain.myapp\"\n"
+"          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"          xsi:schemaLocation=\"urn:java:javax.webbeans http://java.sun.com/jee/web-beans-1.0.xsd\n"
+"                              urn:java:com.mydomain.myapp http://mydomain.com/xsd/myapp-1.2.xsd\">\n"
+"\n"
+"    <myapp:System>\n"
+"        ...\n"
+"    </myapp:System>\n"
+"\n"
+"</WebBeans>]]>"
 
 #. Tag: para
 #: xml.xml:132
 #, no-c-format
-msgid ""
-"Writing an XML schema is quite tedious. Therefore, the Web Beans RI project "
-"will provide a tool which automatically generates the XML schema from "
-"compiled Java code."
+msgid "Writing an XML schema is quite tedious. Therefore, the Web Beans RI project will provide a tool which automatically generates the XML schema from compiled Java code."
 msgstr ""
+

@@ -3,11 +3,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml \n"
+"Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-19 20:26+0000\n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2008-12-20 00:48+0100\n"
+"Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,22 +17,18 @@ msgstr ""
 #: stereotypes.xml:4
 #, no-c-format
 msgid "Stereotypes"
-msgstr ""
+msgstr "Stereotipi"
 
 #. Tag: para
 #: stereotypes.xml:6
 #, no-c-format
 msgid "According to the Web Beans specification:"
-msgstr ""
+msgstr "Secondo la specifica Web Beans:"
 
 #. Tag: para
 #: stereotypes.xml:10
 #, no-c-format
-msgid ""
-"In many systems, use of architectural patterns produces a set of recurring "
-"Web Bean roles. A stereotype allows a framework developer to identify such a "
-"role and declare some common metadata for Web Beans with that role in a "
-"central place."
+msgid "In many systems, use of architectural patterns produces a set of recurring Web Bean roles. A stereotype allows a framework developer to identify such a role and declare some common metadata for Web Beans with that role in a central place."
 msgstr ""
 
 #. Tag: para
@@ -74,9 +70,7 @@ msgstr ""
 #. Tag: para
 #: stereotypes.xml:34
 #, no-c-format
-msgid ""
-"A stereotype may also specify that all Web Beans with the stereotype have "
-"defaulted Web Bean names."
+msgid "A stereotype may also specify that all Web Beans with the stereotype have defaulted Web Bean names."
 msgstr ""
 
 #. Tag: para
@@ -88,9 +82,7 @@ msgstr ""
 #. Tag: para
 #: stereotypes.xml:41
 #, no-c-format
-msgid ""
-"A stereotype is a Java annotation type. This stereotype identifies action "
-"classes in some MVC framework:"
+msgid "A stereotype is a Java annotation type. This stereotype identifies action classes in some MVC framework:"
 msgstr ""
 
 #. Tag: programlisting
@@ -102,6 +94,10 @@ msgid ""
 "@Stereotype\n"
 "public @interface Action {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@Stereotype\n"
+"public @interface Action {}]]>"
 
 #. Tag: para
 #: stereotypes.xml:46
@@ -116,6 +112,8 @@ msgid ""
 "<![CDATA[@Action \n"
 "public class LoginAction { ... }]]>"
 msgstr ""
+"<![CDATA[@Action \n"
+"public class LoginAction { ... }]]>"
 
 #. Tag: title
 #: stereotypes.xml:51
@@ -126,12 +124,7 @@ msgstr ""
 #. Tag: para
 #: stereotypes.xml:53
 #, no-c-format
-msgid ""
-"A stereotype may specify a default scope and/or default deployment type for "
-"Web Beans with that stereotype. For example, if the deployment type "
-"<literal>@WebTier</literal> identifies Web Beans that should only be "
-"deployed when the system executes as a web application, we might specify the "
-"following defaults for action classes:"
+msgid "A stereotype may specify a default scope and/or default deployment type for Web Beans with that stereotype. For example, if the deployment type <literal>@WebTier</literal> identifies Web Beans that should only be deployed when the system executes as a web application, we might specify the following defaults for action classes:"
 msgstr ""
 
 #. Tag: programlisting
@@ -145,13 +138,17 @@ msgid ""
 "@Stereotype\n"
 "public @interface Action {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@RequestScoped\n"
+"@WebTier\n"
+"@Stereotype\n"
+"public @interface Action {}]]>"
 
 #. Tag: para
 #: stereotypes.xml:61
 #, no-c-format
-msgid ""
-"Of course, a particular action may still override these defaults if "
-"necessary:"
+msgid "Of course, a particular action may still override these defaults if necessary:"
 msgstr ""
 
 #. Tag: programlisting
@@ -161,12 +158,13 @@ msgid ""
 "<![CDATA[@Dependent @Mock @Action \n"
 "public class MockLoginAction { ... }]]>"
 msgstr ""
+"<![CDATA[@Dependent @Mock @Action \n"
+"public class MockLoginAction { ... }]]>"
 
 #. Tag: para
 #: stereotypes.xml:66
 #, no-c-format
-msgid ""
-"If we want to force all actions to a particular scope, we can do that too."
+msgid "If we want to force all actions to a particular scope, we can do that too."
 msgstr ""
 
 #. Tag: title
@@ -178,10 +176,7 @@ msgstr ""
 #. Tag: para
 #: stereotypes.xml:74
 #, no-c-format
-msgid ""
-"Suppose that we wish to prevent actions from declaring certain scopes. Web "
-"Beans lets us explicitly specify the set of allowed scopes for Web Beans "
-"with a certain stereotype. For example:"
+msgid "Suppose that we wish to prevent actions from declaring certain scopes. Web Beans lets us explicitly specify the set of allowed scopes for Web Beans with a certain stereotype. For example:"
 msgstr ""
 
 #. Tag: programlisting
@@ -195,22 +190,23 @@ msgid ""
 "@Stereotype(supportedScopes=RequestScoped.class)\n"
 "public @interface Action {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@RequestScoped\n"
+"@WebTier\n"
+"@Stereotype(supportedScopes=RequestScoped.class)\n"
+"public @interface Action {}]]>"
 
 #. Tag: para
 #: stereotypes.xml:80
 #, no-c-format
-msgid ""
-"If a particular action class attempts to specify a scope other than the Web "
-"Beans request scope, an exception will be thrown by the Web Bean manager at "
-"initialization time."
+msgid "If a particular action class attempts to specify a scope other than the Web Beans request scope, an exception will be thrown by the Web Bean manager at initialization time."
 msgstr ""
 
 #. Tag: para
 #: stereotypes.xml:84
 #, no-c-format
-msgid ""
-"We can also force all Web Bean with a certain stereotype to implement an "
-"interface or extend a class:"
+msgid "We can also force all Web Bean with a certain stereotype to implement an interface or extend a class:"
 msgstr ""
 
 #. Tag: programlisting
@@ -224,14 +220,17 @@ msgid ""
 "@Stereotype(requiredTypes=AbstractAction.class)\n"
 "public @interface Action {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@RequestScoped\n"
+"@WebTier\n"
+"@Stereotype(requiredTypes=AbstractAction.class)\n"
+"public @interface Action {}]]>"
 
 #. Tag: para
 #: stereotypes.xml:89
 #, no-c-format
-msgid ""
-"If a particular action class does not extend the class "
-"<literal>AbstractAction</literal>, an exception will be thrown by the Web "
-"Bean manager at initialization time."
+msgid "If a particular action class does not extend the class <literal>AbstractAction</literal>, an exception will be thrown by the Web Bean manager at initialization time."
 msgstr ""
 
 #. Tag: title
@@ -243,9 +242,7 @@ msgstr ""
 #. Tag: para
 #: stereotypes.xml:98
 #, no-c-format
-msgid ""
-"A stereotype may specify a set of interceptor bindings to be inherited by "
-"all Web Beans with that stereotype."
+msgid "A stereotype may specify a set of interceptor bindings to be inherited by all Web Beans with that stereotype."
 msgstr ""
 
 #. Tag: programlisting
@@ -261,13 +258,19 @@ msgid ""
 "@Stereotype\n"
 "public @interface Action {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@RequestScoped\n"
+"@Transactional(requiresNew=true)\n"
+"@Secure\n"
+"@WebTier\n"
+"@Stereotype\n"
+"public @interface Action {}]]>"
 
 #. Tag: para
 #: stereotypes.xml:103
 #, no-c-format
-msgid ""
-"This helps us get technical concerns even further away from the business "
-"code!"
+msgid "This helps us get technical concerns even further away from the business code!"
 msgstr ""
 
 #. Tag: title
@@ -279,11 +282,7 @@ msgstr ""
 #. Tag: para
 #: stereotypes.xml:111
 #, no-c-format
-msgid ""
-"Finally, we can specify that all Web Beans with a certain stereotype have a "
-"Web Bean name, defaulted by the Web Bean manager. Actions are often "
-"referenced in JSP pages, so they're a perfect use case for this feature. All "
-"we need to do is add an empty <literal>@Named</literal> annotation:"
+msgid "Finally, we can specify that all Web Beans with a certain stereotype have a Web Bean name, defaulted by the Web Bean manager. Actions are often referenced in JSP pages, so they're a perfect use case for this feature. All we need to do is add an empty <literal>@Named</literal> annotation:"
 msgstr ""
 
 #. Tag: programlisting
@@ -300,28 +299,32 @@ msgid ""
 "@Stereotype\n"
 "public @interface Action {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@RequestScoped\n"
+"@Transactional(requiresNew=true)\n"
+"@Secure\n"
+"@Named\n"
+"@WebTier\n"
+"@Stereotype\n"
+"public @interface Action {}]]>"
 
 #. Tag: para
 #: stereotypes.xml:118
 #, no-c-format
-msgid ""
-"Now, <literal>LoginAction</literal> will have the name <literal>loginAction</"
-"literal>."
+msgid "Now, <literal>LoginAction</literal> will have the name <literal>loginAction</literal>."
 msgstr ""
 
 #. Tag: title
 #: stereotypes.xml:124
 #, no-c-format
 msgid "Standard stereotypes"
-msgstr ""
+msgstr "Stereotipi standard"
 
 #. Tag: para
 #: stereotypes.xml:126
 #, no-c-format
-msgid ""
-"We've already met two standard stereotypes defined by the Web Beans "
-"specification: <literal>@Interceptor</literal> and <literal>@Decorator</"
-"literal>."
+msgid "We've already met two standard stereotypes defined by the Web Beans specification: <literal>@Interceptor</literal> and <literal>@Decorator</literal>."
 msgstr ""
 
 #. Tag: para
@@ -341,12 +344,16 @@ msgid ""
 "@Retention(RUNTIME) \n"
 "public @interface Model {} ]]>"
 msgstr ""
+"<![CDATA[@Named \n"
+"@RequestScoped \n"
+"@Stereotype \n"
+"@Target({TYPE, METHOD}) \n"
+"@Retention(RUNTIME) \n"
+"public @interface Model {} ]]>"
 
 #. Tag: para
 #: stereotypes.xml:133
 #, no-c-format
-msgid ""
-"This stereotype is intended for use with JSF. Instead of using JSF managed "
-"beans, just annotate a Web Bean <literal>@Model</literal>, and use it "
-"directly in your JSF page."
+msgid "This stereotype is intended for use with JSF. Instead of using JSF managed beans, just annotate a Web Bean <literal>@Model</literal>, and use it directly in your JSF page."
 msgstr ""
+
