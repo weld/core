@@ -1,0 +1,329 @@
+# Language ja-JP translations for master.xml package.
+# Automatically generated, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: master.xml \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2008-12-19 20:26+0000\n"
+"PO-Revision-Date: 2008-12-19 20:26+0000\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: ee.xml:4
+#, no-c-format
+msgid "Java EE integration"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:6
+#, no-c-format
+msgid ""
+"Web Beans is fully integrated into the Java EE environment. Web Beans have "
+"access to Java EE resources and JPA persistence contexts. They may be used "
+"in Unified EL expressions in JSF and JSP pages. They may even be injected "
+"into some objects, such as Servlets and Message-Driven Beans, which are not "
+"Web Beans."
+msgstr ""
+
+#. Tag: title
+#: ee.xml:12
+#, no-c-format
+msgid "Injecting Java EE resources into a Web Bean"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:14
+#, no-c-format
+msgid ""
+"All simple and enterprise Web Beans may take advantage of Java EE dependency "
+"injection using <literal>@Resource</literal>, <literal>@EJB</literal> and "
+"<literal>@PersistenceContext</literal>. We've already seen a couple of "
+"examples of this, though we didn't pay much attention at the time:"
+msgstr ""
+
+#. Tag: programlisting
+#: ee.xml:19
+#, no-c-format
+msgid ""
+"<![CDATA[@Transactional @Interceptor\n"
+"public class TransactionInterceptor {\n"
+"\n"
+"    @Resource Transaction transaction;\n"
+"\n"
+"    @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
+"{ ... }\n"
+"    \n"
+"}]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: ee.xml:21
+#, no-c-format
+msgid ""
+"<![CDATA[@SessionScoped\n"
+"public class Login {\n"
+"\n"
+"    @Current Credentials credentials;\n"
+"    @PersistenceContext EntityManager userDatabase;\n"
+"    \n"
+"    ...\n"
+"\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:23
+#, no-c-format
+msgid ""
+"The Java EE <literal>@PostConstruct</literal> and <literal>@PreDestroy</"
+"literal> callbacks are also supported for all simple and enterprise Web "
+"Beans. The <literal>@PostConstruct</literal> method is called after "
+"<emphasis>all</emphasis> injection has been performed."
+msgstr ""
+
+#. Tag: para
+#: ee.xml:28
+#, no-c-format
+msgid ""
+"There is one restriction to be aware of here: <literal>@PersistenceContext"
+"(type=EXTENDED)</literal> is not supported for simple Web Beans."
+msgstr ""
+
+#. Tag: title
+#: ee.xml:35
+#, no-c-format
+msgid "Calling a Web Bean from a Servlet"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:37
+#, no-c-format
+msgid ""
+"It's easy to use a Web Bean from a Servlet in Java EE 6. Simply inject the "
+"Web Bean using Web Beans field or initializer method injection."
+msgstr ""
+
+#. Tag: programlisting
+#: ee.xml:40
+#, no-c-format
+msgid ""
+"public class Login extends HttpServlet {\n"
+"\n"
+"    @Current Credentials credentials;\n"
+"    @Current Login login;\n"
+"\n"
+"    @Override\n"
+"    public void service(HttpServletRequest request, HttpServletResponse "
+"response)\n"
+"        throws ServletException, IOException {\n"
+"        credentials.setUsername( request.getAttribute(\"username\") ):\n"
+"        credentials.setPassword( request.getAttribute(\"password\") ):\n"
+"        login.login();\n"
+"        if ( login.isLoggedIn() ) {\n"
+"            response.sendRedirect(\"/home.jsp\");\n"
+"        }\n"
+"        else {\n"
+"            response.sendRedirect(\"/loginError.jsp\");\n"
+"        }\n"
+"    }\n"
+"            \n"
+"}"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:42
+#, no-c-format
+msgid ""
+"The Web Beans client proxy takes care of routing method invocations from the "
+"Servlet to the correct instances of <literal>Credentials</literal> and "
+"<literal>Login</literal> for the current request and HTTP session."
+msgstr ""
+
+#. Tag: title
+#: ee.xml:49
+#, no-c-format
+msgid "Calling a Web Bean from a Message-Driven Bean"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:51
+#, no-c-format
+msgid ""
+"Web Beans injection applies to all EJBs, even when they aren't under the "
+"control of the Web Bean manager (if they were obtained by direct JNDI "
+"lookup, or injection using <literal>@EJB</literal>, for example. In "
+"particular, you can use Web Beans injection in Message-Driven Beans, which "
+"are not considered Web Beans because you can't inject them."
+msgstr ""
+
+#. Tag: para
+#: ee.xml:57
+#, no-c-format
+msgid ""
+"You can even use Web Beans interceptor bindings for Message-Driven Beans."
+msgstr ""
+
+#. Tag: programlisting
+#: ee.xml:59
+#, no-c-format
+msgid ""
+"@Transactional @MessageDriven\n"
+"public class ProcessOrder implements MessageListener {\n"
+"\n"
+"    @Current Inventory inventory;\n"
+"    @PersistenceContext EntityManager em;\n"
+"\n"
+"    public void onMessage(Message message) {\n"
+"        ...\n"
+"    }\n"
+"            \n"
+"}"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:61
+#, no-c-format
+msgid ""
+"Thus, receiving messages is super-easy in a Web Beans environment. But "
+"beware that there is no session or conversation context available when a "
+"message is delivered to a Message-Driven Bean. Only <literal>@RequestScoped</"
+"literal> and <literal>@ApplicationScoped</literal> Web Beans are available."
+msgstr ""
+
+#. Tag: para
+#: ee.xml:66
+#, no-c-format
+msgid "It's also easy to send messages using Web Beans."
+msgstr ""
+
+#. Tag: title
+#: ee.xml:71
+#, no-c-format
+msgid "JMS endpoints"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:73
+#, no-c-format
+msgid ""
+"Sending messages using JMS can be quite complex, because of the number of "
+"different objects you need to deal with. For queues we have <literal>Queue</"
+"literal>, <literal>QueueConnectionFactory</literal>, "
+"<literal>QueueConnection</literal>, <literal>QueueSession</literal> and "
+"<literal>QueueSender</literal>. For topics we have <literal>Topic</literal>, "
+"<literal>TopicConnectionFactory</literal>, <literal>TopicConnection</"
+"literal>, <literal>TopicSession</literal> and <literal>TopicPublisher</"
+"literal>. Each of these objects has its own lifecycle and threading model "
+"that we need to worry about."
+msgstr ""
+
+#. Tag: para
+#: ee.xml:82
+#, no-c-format
+msgid ""
+"Web Beans takes care of all this for us. All we need to do is declare the "
+"queue or topic in <literal>web-beans.xml</literal>, specifying an associated "
+"binding type and connection factory."
+msgstr ""
+
+#. Tag: programlisting
+#: ee.xml:86
+#, no-c-format
+msgid ""
+"<![CDATA[<Queue>\n"
+"    <destination>java:comp/env/jms/OrderQueue</destination>\n"
+"    <connectionFactory>java:comp/env/jms/QueueConnectionFactory</"
+"connectionFactory>\n"
+"    <myapp:OrderProcessor/>    \n"
+"</Queue>]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: ee.xml:88
+#, no-c-format
+msgid ""
+"<![CDATA[<Topic>\n"
+"    <destination>java:comp/env/jms/StockPrices</destination>\n"
+"    <connectionFactory>java:comp/env/jms/TopicConnectionFactory</"
+"connectionFactory>\n"
+"    <myapp:StockPrices/>    \n"
+"</Topic>]]>"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:90
+#, no-c-format
+msgid ""
+"Now we can just inject the <literal>Queue</literal>, "
+"<literal>QueueConnection</literal>, <literal>QueueSession</literal> or "
+"<literal>QueueSender</literal> for a queue, or the <literal>Topic</literal>, "
+"<literal>TopicConnection</literal>, <literal>TopicSession</literal> or "
+"<literal>TopicPublisher</literal> for a topic."
+msgstr ""
+
+#. Tag: programlisting
+#: ee.xml:96
+#, no-c-format
+msgid ""
+"@OrderProcessor QueueSender orderSender;\n"
+"@OrderProcessor QueueSession orderSession;\n"
+"\n"
+"public void sendMessage() {\n"
+"    MapMessage msg = orderSession.createMapMessage();\n"
+"    ...\n"
+"    orderSender.send(msg);\n"
+"}"
+msgstr ""
+
+#. Tag: programlisting
+#: ee.xml:98
+#, no-c-format
+msgid ""
+"@StockPrices TopicPublisher pricePublisher;\n"
+"@StockPrices TopicSession priceSession;\n"
+"\n"
+"public void sendMessage(String price) {\n"
+"    pricePublisher.send( priceSession.createTextMessage(price) );\n"
+"}"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:100
+#, no-c-format
+msgid ""
+"The lifecycle of the injected JMS objects are completely controlled by the "
+"Web Bean manager."
+msgstr ""
+
+#. Tag: title
+#: ee.xml:106
+#, no-c-format
+msgid "Packaging and deployment"
+msgstr ""
+
+#. Tag: para
+#: ee.xml:108
+#, no-c-format
+msgid ""
+"Web Beans doesn't define any special deployment archive. You can package Web "
+"Beans in JARs, EJB-JARs or WARs&#151;any deployment location in the "
+"application classpath. However, each archive that contains Web Beans must "
+"include a file named <literal>web-beans.xml</literal> in the <literal>META-"
+"INF</literal> or <literal>WEB-INF</literal> directory. The file may be "
+"empty. Web Beans deployed in archives that do not have a <literal>web-beans."
+"xml</literal> file will not be available for use in the application."
+msgstr ""
+
+#. Tag: para
+#: ee.xml:116
+#, no-c-format
+msgid ""
+"For Java SE execution, Web Beans may be deployed in any location in which "
+"EJBs may be deployed for execution by the embeddable EJB Lite container. "
+"Again, each location must contain a <literal>web-beans.xml</literal> file."
+msgstr ""

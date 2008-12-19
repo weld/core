@@ -2,7 +2,7 @@
 #Created by Jeff Fearn <jfearn@redhat.com>
 #Copyright Red Hat Inc. 2006
 
-XML_LANG	= en-US
+XML_LANG	= en
 DOCNAME		= master.xml
 PRODUCT		= WebBeansReferenceManual
 BRAND		= JBoss

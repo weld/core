@@ -1,0 +1,650 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2008-12-19 20:29+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: application/x-xml2pot; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: events.xml:4
+#, no-c-format
+msgid "Events"
+msgstr ""
+
+#. Tag: para
+#: events.xml:6
+#, no-c-format
+msgid ""
+"The Web Beans event notification facility allows Web Beans to interact in a "
+"totally decoupled manner. Event <emphasis>producers</emphasis> raise events "
+"that are then delivered to event <emphasis>observers</emphasis> by the Web "
+"Bean manager. This basic schema might sound like the familiar observer/"
+"observable pattern, but there are a couple of twists:"
+msgstr ""
+
+#. Tag: para
+#: events.xml:14
+#, no-c-format
+msgid ""
+"not only are event producers decoupled from observers; observers are "
+"completely decoupled from producers,"
+msgstr ""
+
+#. Tag: para
+#: events.xml:18
+#, no-c-format
+msgid ""
+"observers can specify a combination of \"selectors\" to narrow the set of "
+"event notifications they will receive, and"
+msgstr ""
+
+#. Tag: para
+#: events.xml:22
+#, no-c-format
+msgid ""
+"observers can be notified immediately, or can specify that delivery of the "
+"event should be delayed until the end of the current transaction"
+msgstr ""
+
+#. Tag: title
+#: events.xml:28
+#, no-c-format
+msgid "Event observers"
+msgstr ""
+
+#. Tag: para
+#: events.xml:30
+#, no-c-format
+msgid ""
+"An <emphasis>observer method</emphasis> is a method of a Web Bean with a "
+"parameter annotated <literal>@Observes</literal>."
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:33
+#, no-c-format
+msgid ""
+"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+"{ ... }]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:35
+#, no-c-format
+msgid ""
+"The annotated parameter is called the <emphasis>event parameter</emphasis>. "
+"The type of the event parameter is the observed <emphasis>event type</"
+"emphasis>. Observer methods may also specify \"selectors\", which are just "
+"instances of Web Beans binding types. When a binding type is used as an "
+"event selector, it is called an <emphasis>event binding type</emphasis>."
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:41
+#, no-c-format
+msgid ""
+"<![CDATA[@BindingType\n"
+"@Target({PARAMETER, FIELD})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Updated { ... }]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:43
+#, no-c-format
+msgid ""
+"We specify the event bindings of the observer method by annotating the event "
+"parameter:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:46 events.xml:190
+#, no-c-format
+msgid ""
+"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+"document) { ... }]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:48
+#, no-c-format
+msgid ""
+"An observer method need not specify any event bindings&#151;in this case it "
+"is interested in <emphasis>all</emphasis> events of a particular type. If it "
+"does specify event bindings, it is only interested in events which also have "
+"those event bindings."
+msgstr ""
+
+#. Tag: para
+#: events.xml:53
+#, no-c-format
+msgid ""
+"The observer method may have additional parameters, which are injected "
+"according to the usual Web Beans method parameter injection semantics:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:56
+#, no-c-format
+msgid ""
+"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+"document, User user) { ... }]]>"
+msgstr ""
+
+#. Tag: title
+#: events.xml:61
+#, no-c-format
+msgid "Event producers"
+msgstr ""
+
+#. Tag: para
+#: events.xml:63
+#, no-c-format
+msgid ""
+"The event producer may obtain an <emphasis>event notifier</emphasis> object "
+"by injection:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:66
+#, no-c-format
+msgid "<![CDATA[@Observable Event<Document> documentEvent]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:68
+#, no-c-format
+msgid ""
+"The <literal>@Observable</literal> annotation implicitly defines a Web Bean "
+"with scope <literal>@Dependent</literal> and deployment type "
+"<literal>@Standard</literal>, with an implementation provided by the Web "
+"Bean manager."
+msgstr ""
+
+#. Tag: para
+#: events.xml:72
+#, no-c-format
+msgid ""
+"A producer raises events by calling the <literal>fire()</literal> method of "
+"the <literal>Event</literal> interface, passing an <emphasis>event object</"
+"emphasis>:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:75
+#, no-c-format
+msgid "<![CDATA[documentEvent.fire(document);]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:77
+#, no-c-format
+msgid ""
+"An event object may be an instance of any Java class that has no type "
+"variables or wildcard type parameters. The event will be delivered to every "
+"observer method that:"
+msgstr ""
+
+#. Tag: para
+#: events.xml:83 events.xml:107 events.xml:126
+#, no-c-format
+msgid "has an event parameter to which the event object is assignable, and"
+msgstr ""
+
+#. Tag: para
+#: events.xml:86
+#, no-c-format
+msgid "specifies no event bindings."
+msgstr ""
+
+#. Tag: para
+#: events.xml:90
+#, no-c-format
+msgid ""
+"The Web Bean manager simply calls all the observer methods, passing the "
+"event object as the value of the event parameter. If any observer method "
+"throws an exception, the Web Bean manager stops calling observer methods, "
+"and the exception is rethrown by the <literal>fire()</literal> method."
+msgstr ""
+
+#. Tag: para
+#: events.xml:95
+#, no-c-format
+msgid ""
+"To specify a \"selector\", the event producer may pass an instance of the "
+"event binding type to the <literal>fire()</literal> method:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:98
+#, no-c-format
+msgid ""
+"<![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>()"
+"{} );]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:100
+#, no-c-format
+msgid ""
+"The helper class <literal>AnnotationLiteral</literal> makes it possible to "
+"instantiate binding types inline, since this is otherwise difficult to do in "
+"Java."
+msgstr ""
+
+#. Tag: para
+#: events.xml:103
+#, no-c-format
+msgid "The event will be delivered to every observer method that:"
+msgstr ""
+
+#. Tag: para
+#: events.xml:110
+#, no-c-format
+msgid ""
+"does not specify any event binding <emphasis>except</emphasis> for the event "
+"bindings passed to <literal>fire()</literal>."
+msgstr ""
+
+#. Tag: para
+#: events.xml:115
+#, no-c-format
+msgid ""
+"Alternatively, event bindings may be specified by annotating the event "
+"notifier injection point:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:118
+#, no-c-format
+msgid "<![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:120
+#, no-c-format
+msgid ""
+"Then every event fired via this instance of <literal>Event</literal> has the "
+"annotated event binding. The event will be delivered to every observer "
+"method that:"
+msgstr ""
+
+#. Tag: para
+#: events.xml:129
+#, no-c-format
+msgid ""
+"does not specify any event binding <emphasis>except</emphasis> for the event "
+"bindings passed to <literal>fire()</literal> or the annotated event bindings "
+"of the event notifier injection point."
+msgstr ""
+
+#. Tag: title
+#: events.xml:138
+#, no-c-format
+msgid "Registering observers dynamically"
+msgstr ""
+
+#. Tag: para
+#: events.xml:140
+#, no-c-format
+msgid ""
+"It's often useful to register an event observer dynamically. The application "
+"may implement the <literal>Observer</literal> interface and register an "
+"instance with an event notifier by calling the <literal>observe()</literal> "
+"method."
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:144
+#, no-c-format
+msgid ""
+"<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify"
+"(Document doc) { ... } } );]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:146
+#, no-c-format
+msgid ""
+"Event binding types may be specified by the event notifier injection point "
+"or by passing event binding type instances to the <literal>observe()</"
+"literal> method:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:149
+#, no-c-format
+msgid ""
+"<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify"
+"(Document doc) { ... } }, \n"
+"                                                new "
+"AnnotationLiteral<Updated>(){} );]]>"
+msgstr ""
+
+#. Tag: title
+#: events.xml:154
+#, no-c-format
+msgid "Event bindings with members"
+msgstr ""
+
+#. Tag: para
+#: events.xml:156
+#, no-c-format
+msgid "An event binding type may have annotation members:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:158
+#, no-c-format
+msgid ""
+"<![CDATA[@BindingType\n"
+"@Target({PARAMETER, FIELD})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Role {\n"
+"    RoleType value();\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:160
+#, no-c-format
+msgid ""
+"The member value is used to narrow the messages delivered to the observer:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:162
+#, no-c-format
+msgid ""
+"<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
+"{ ... }]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:164
+#, no-c-format
+msgid ""
+"Event binding type members may be specified statically by the event "
+"producer, via annotations at the event notifier injection point:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:167
+#, no-c-format
+msgid "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:169
+#, no-c-format
+msgid ""
+"Alternatively, the value of the event binding type member may be determined "
+"dynamically by the event producer. We start by writing an abstract subclass "
+"of <literal>AnnotationLiteral</literal>:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:172
+#, no-c-format
+msgid ""
+"<![CDATA[abstract class RoleBinding \n"
+"    extends AnnotationLiteral<Role> \n"
+"    implements Role {}]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:174
+#, no-c-format
+msgid ""
+"The event producer passes an instance of this class to <literal>fire()</"
+"literal>:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:176
+#, no-c-format
+msgid ""
+"<![CDATA[documentEvent.fire( document, new RoleBinding() { public void value"
+"() { return user.getRole(); } } );]]>"
+msgstr ""
+
+#. Tag: title
+#: events.xml:181
+#, no-c-format
+msgid "Multiple event bindings"
+msgstr ""
+
+#. Tag: para
+#: events.xml:183
+#, no-c-format
+msgid "Event binding types may be combined, for example:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:185
+#, no-c-format
+msgid ""
+"<![CDATA[@Observable @Blog Event<Document> blogEvent;\n"
+"...\n"
+"if (document.isBlog()) blogEvent.fire(document, new "
+"AnnotationLiteral<Updated>(){});]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:187
+#, no-c-format
+msgid ""
+"When this event occurs, all of the following observer methods will be "
+"notified:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:189
+#, no-c-format
+msgid ""
+"<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
+"document) { ... }]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:191
+#, no-c-format
+msgid ""
+"<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
+"{ ... }]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:192
+#, no-c-format
+msgid ""
+"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+"{ ... }}}]]>"
+msgstr ""
+
+#. Tag: title
+#: events.xml:197
+#, no-c-format
+msgid "Transactional observers"
+msgstr ""
+
+#. Tag: para
+#: events.xml:199
+#, no-c-format
+msgid ""
+"Transactional observers receive their event notifications during the before "
+"or after completion phase of the transaction in which the event was raised. "
+"For example, the following observer method needs to refresh a query result "
+"set that is cached in the application context, but only when transactions "
+"that update the <literal>Category</literal> tree succeed:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:205
+#, no-c-format
+msgid ""
+"<![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess @Observes "
+"CategoryUpdateEvent event) { ... }]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:207
+#, no-c-format
+msgid "There are three kinds of transactional observers:"
+msgstr ""
+
+#. Tag: para
+#: events.xml:211
+#, no-c-format
+msgid ""
+"<literal>@AfterTransactionSuccess</literal> observers are called during the "
+"after completion phase of the transaction, but only if the transaction "
+"completes successfully"
+msgstr ""
+
+#. Tag: para
+#: events.xml:216
+#, no-c-format
+msgid ""
+"<literal>@AfterTransactionFailure</literal> observers are called during the "
+"after completion phase of the transaction, but only if the transaction fails "
+"to complete successfully"
+msgstr ""
+
+#. Tag: para
+#: events.xml:221
+#, no-c-format
+msgid ""
+"<literal>@AfterTransactionCompletion</literal> observers are called during "
+"the after completion phase of the transaction"
+msgstr ""
+
+#. Tag: para
+#: events.xml:225
+#, no-c-format
+msgid ""
+"<literal>@BeforeTransactionCompletion</literal> observers are called during "
+"the before completion phase of the transaction"
+msgstr ""
+
+#. Tag: para
+#: events.xml:230
+#, no-c-format
+msgid ""
+"Transactional observers are very important in a stateful object model like "
+"Web Beans, because state is often held for longer than a single atomic "
+"transaction."
+msgstr ""
+
+#. Tag: para
+#: events.xml:233
+#, no-c-format
+msgid ""
+"Imagine that we have cached a JPA query result set in the application scope:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:235
+#, no-c-format
+msgid ""
+"<![CDATA[@ApplicationScoped @Singleton\n"
+"public class Catalog {\n"
+"\n"
+"    @PersistenceContext EntityManager em;\n"
+"    \n"
+"    List<Product> products;\n"
+"\n"
+"    @Produces @Catalog \n"
+"    List<Product> getCatalog() {\n"
+"        if (products==null) {\n"
+"            products = em.createQuery(\"select p from Product p where p."
+"deleted = false\")\n"
+"                .getResultList();\n"
+"        }\n"
+"        return products;\n"
+"    }\n"
+"    \n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:237
+#, no-c-format
+msgid ""
+"From time to time, a <literal>Product</literal> is created or deleted. When "
+"this occurs, we need to refresh the <literal>Product</literal> catalog. But "
+"we should wait until <emphasis>after</emphasis> the transaction completes "
+"successfully before performing this refresh!"
+msgstr ""
+
+#. Tag: para
+#: events.xml:242
+#, no-c-format
+msgid ""
+"The Web Bean that creates and deletes <literal>Product</literal>s could "
+"raise events, for example:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:245
+#, no-c-format
+msgid ""
+"<![CDATA[@Stateless\n"
+"public class ProductManager {\n"
+"\n"
+"    @PersistenceContext EntityManager em;\n"
+"    @Observable Event<Product> productEvent;\n"
+"\n"
+"    public void delete(Product product) {\n"
+"        em.delete(product);\n"
+"        productEvent.fire(product, new AnnotationLiteral<Deleted>(){});\n"
+"    }\n"
+"    \n"
+"    public void persist(Product product) {\n"
+"        em.persist(product);\n"
+"        productEvent.fire(product, new AnnotationLiteral<Created>(){});\n"
+"    }\n"
+"    \n"
+"    ...\n"
+"    \n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: events.xml:247
+#, no-c-format
+msgid ""
+"And now <literal>Catalog</literal> can observe the events after successful "
+"completion of the transaction:"
+msgstr ""
+
+#. Tag: programlisting
+#: events.xml:250
+#, no-c-format
+msgid ""
+"<![CDATA[@ApplicationScoped @Singleton\n"
+"public class Catalog {\n"
+"\n"
+"    ...\n"
+"    \n"
+"    void addProduct(@AfterTransactionSuccess @Observes @Created Product "
+"product) {\n"
+"        products.add(product);\n"
+"    }\n"
+"    \n"
+"    void addProduct(@AfterTransactionSuccess @Observes @Deleted Product "
+"product) {\n"
+"        products.remove(product);\n"
+"    }\n"
+"    \n"
+"}]]>"
+msgstr ""
