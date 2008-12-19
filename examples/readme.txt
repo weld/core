@@ -1,8 +1,11 @@
-The Web Beans RI currently comes with a single example, webbeans-numberguess.
+The Web Beans RI currently comes with a two examples, webbeans-numberguess (a 
+war example) and webbeans-translator (an EJB example).
 
 To run the example on JBoss AS 5.0.0.GA, you need to add the Web Beans RI 
-deployer to JBoss 5. First, set the path to JBoss 5 in ../build.properties. 
-Then, run ant -f ../build.xml install-jboss5 in the examples directory.
+deployer to JBoss 5. First, set the path to JBoss 5 in ../build.properties.
+Make sure you have the ANT_HOME environment variable set, and pointing to your
+ant install. Then, run ant -f ../build.xml install-jboss5 in the examples 
+directory.
 
 To deploy the example to JBoss AS 5, change into numberguess directory and 
 choose between:

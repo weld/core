@@ -70,19 +70,14 @@ public class DefaultEnterpriseBeanLookup implements EnterpriseBeanLookup
    @SuppressWarnings("unchecked")
    public static <T> T lookup(EjbDescriptor<T> ejbDescriptor)
    {
-      if (!ejbDescriptor.getLocalBusinessInterfaces().iterator().hasNext())
-      {
-         throw new RuntimeException("EJB must have local interface " + ejbDescriptor);
-      }
-      String jndiName = ejbDescriptor.getLocalBusinessInterfaces().iterator().next().getJndiName();
       try
       {
          // TODO Implement enterprise proxies and select the correct jndiName
-         return (T) JNDI.lookup(jndiName);
+         return (T) JNDI.lookup(ejbDescriptor.getLocalJndiName());
       }
       catch (Exception e)
       {
-         throw new CreationException("could not find the name in JNDI " + jndiName, e);
+         throw new CreationException("could not find the name in JNDI " + ejbDescriptor.getLocalJndiName(), e);
       }
    }
 

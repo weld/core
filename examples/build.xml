@@ -6,6 +6,8 @@
 	
 	<property file="${wbri.dir}/build.properties"/>
 	
+	<property name="final.url" value="http://localhost:8080/${example.name}" />
+	
 	<property name="type" value="war" />
 	
 	<condition property="war">
@@ -37,6 +39,7 @@
 	
 	<target name="deploy" depends="package">
 		<copy todir="${jboss.home}/server/default/deploy/" file="${artifact.target.dir}/${example.name}.${type}"/>
+		<echo message="The app can be accessed at ${final.url}" />
 	</target>
 	
 	<target name="clean">
@@ -52,6 +55,7 @@
    </target>
 	
 	<target name="restart" depends="restart.war, restart.ear">
+		<echo message="The app can be accessed at ${final.url}" />
 	</target>
 	
 	<target name="undeploy">

@@ -91,4 +91,6 @@ public interface EjbDescriptor<T>
     */
    public String getEjbName();
    
+   public String getLocalJndiName();
+   
 }

@@ -121,6 +121,11 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       return type.isAnnotationPresent(Stateless.class);
    }
    
+   public String getLocalJndiName()
+   {
+      return type.getSimpleName() + "/local";
+   }
+   
    @Override
    public String toString()
    {
