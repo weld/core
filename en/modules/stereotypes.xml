@@ -1,0 +1,179 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+
+<chapter id="stereotypes">
+  <title>Stereotypes</title>
+  
+  <para>According to the Web Beans specification:</para>
+  
+  <blockquote>
+  
+  <para>In many systems, use of architectural patterns produces a set of recurring Web 
+  Bean roles. A stereotype allows a framework developer to identify such a role and 
+  declare some common metadata for Web Beans with that role in a central place.</para>
+  
+  <para>A stereotype encapsulates any combination of:</para>
+  
+  <itemizedlist>
+    <listitem>
+      <para>a default deployment type,</para>
+    </listitem>
+    <listitem>
+      <para>a default scope type,</para>
+    </listitem>
+    <listitem>
+      <para>a restriction upon the Web Bean scope,</para>
+    </listitem>
+    <listitem>
+      <para>a requirement that the Web Bean implement or extend a certain type, and</para>
+    </listitem>
+    <listitem>
+      <para>a set of interceptor binding annotations.</para>
+    </listitem>
+  </itemizedlist>
+  
+  <para>A stereotype may also specify that all Web Beans with the stereotype have 
+  defaulted Web Bean names.</para>
+  
+  <para>A Web Bean may declare zero, one or multiple stereotypes.</para>
+  
+  </blockquote>
+  
+  <para>A stereotype is a Java annotation type. This stereotype identifies
+  action classes in some MVC framework:</para>
+  
+<programlisting><![CDATA[@Retention(RUNTIME)
+@Target(TYPE)
+@Stereotype
+public @interface Action {}]]></programlisting>
+
+  <para>We use the stereotype by applying the annotation to a Web Bean.</para>
+  
+<programlisting><![CDATA[@Action 
+public class LoginAction { ... }]]></programlisting>
+
+  <section>
+    <title>Default scope and deployment type for a stereotype</title>
+  
+    <para>A stereotype may specify a default scope and/or default deployment
+    type for Web Beans with that stereotype. For example, if the deployment
+    type <literal>@WebTier</literal> identifies Web Beans that should only
+    be deployed when the system executes as a web application, we might
+    specify the following defaults for action classes:</para>
+    
+<programlisting><![CDATA[@Retention(RUNTIME)
+@Target(TYPE)
+@RequestScoped
+@WebTier
+@Stereotype
+public @interface Action {}]]></programlisting>
+
+    <para>Of course, a particular action may still override these defaults
+    if necessary:</para>
+    
+<programlisting><![CDATA[@Dependent @Mock @Action 
+public class MockLoginAction { ... }]]></programlisting>
+
+    <para>If we want to force all actions to a particular scope, we can
+    do that too.</para>
+
+  </section>
+  
+  <section>
+    <title>Restricting scope and type with a stereotype</title>
+    
+    <para>Suppose that we wish to prevent actions from declaring certain
+    scopes. Web Beans lets us explicitly specify the set of allowed scopes
+    for Web Beans with a certain stereotype. For example:</para>
+    
+<programlisting><![CDATA[@Retention(RUNTIME)
+@Target(TYPE)
+@RequestScoped
+@WebTier
+@Stereotype(supportedScopes=RequestScoped.class)
+public @interface Action {}]]></programlisting>
+
+    <para>If a particular action class attempts to specify a scope other
+    than the Web Beans request scope, an exception will be thrown by the 
+    Web Bean manager at initialization time.</para>
+
+    <para>We can also force all Web Bean with a certain stereotype to
+    implement an interface or extend a class:</para>
+    
+<programlisting><![CDATA[@Retention(RUNTIME)
+@Target(TYPE)
+@RequestScoped
+@WebTier
+@Stereotype(requiredTypes=AbstractAction.class)
+public @interface Action {}]]></programlisting>
+
+    <para>If a particular action class does not extend the class
+    <literal>AbstractAction</literal>, an exception will be thrown by the 
+    Web Bean manager at initialization time.</para>
+
+  </section>
+  
+  <section>
+    <title>Interceptor bindings for stereotypes</title>
+    
+    <para>A stereotype may specify a set of interceptor bindings to be 
+    inherited by all Web Beans with that stereotype.</para>
+    
+<programlisting><![CDATA[@Retention(RUNTIME)
+@Target(TYPE)
+@RequestScoped
+@Transactional(requiresNew=true)
+@Secure
+@WebTier
+@Stereotype
+public @interface Action {}]]></programlisting>
+
+    <para>This helps us get technical concerns even further away from the
+    business code!</para>
+
+  </section>
+  
+  <section>
+    <title>Name defaulting with stereotypes</title>
+    
+    <para>Finally, we can specify that all Web Beans with a certain stereotype
+    have a Web Bean name, defaulted by the Web Bean manager. Actions are often
+    referenced in JSP pages, so they're a perfect use case for this feature.
+    All we need to do is add an empty <literal>@Named</literal> annotation:</para>
+    
+<programlisting><![CDATA[@Retention(RUNTIME)
+@Target(TYPE)
+@RequestScoped
+@Transactional(requiresNew=true)
+@Secure
+@Named
+@WebTier
+@Stereotype
+public @interface Action {}]]></programlisting>
+
+    <para>Now, <literal>LoginAction</literal> will have the name 
+    <literal>loginAction</literal>.</para>
+    
+  </section>
+  
+  <section>
+    <title>Standard stereotypes</title>
+    
+    <para>We've already met two standard stereotypes defined by the Web Beans
+    specification: <literal>@Interceptor</literal> and <literal>@Decorator</literal>.</para>
+    
+    <para>Web Beans defines one further standard stereotype:</para>
+    
+<programlisting><![CDATA[@Named 
+@RequestScoped 
+@Stereotype 
+@Target({TYPE, METHOD}) 
+@Retention(RUNTIME) 
+public @interface Model {} ]]></programlisting>
+
+    <para>This stereotype is intended for use with JSF. Instead of using JSF
+    managed beans, just annotate a Web Bean <literal>@Model</literal>, and
+    use it directly in your JSF page.</para>
+    
+  </section>
+
+</chapter>

@@ -1,0 +1,163 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+
+<chapter id="extend">
+  <title>Extending Web Beans</title>
+  
+  <para>Web Beans is intended to be a platform for frameworks, extensions and 
+  integration with other technologies. Therefore, Web Beans exposes a set of 
+  SPIs for the use of developers of portable extensions to Web Beans. For
+  example, the following kinds of extensions were envisaged by the designers
+  of Web Beans:</para>
+  
+  <itemizedlist>
+    <listitem>
+      <para>integration with Business Process Management engines,</para>
+    </listitem>
+    <listitem>
+      <para>integration with third-party frameworks such as Spring, 
+      Seam, GWT or Wicket, and</para>
+    </listitem>
+    <listitem>
+      <para>new technology based upon the Web Beans programming model.</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>The nerve center for extending Web Beans is the <literal>Manager</literal>
+  object.</para>
+  
+  <section>
+    <title>The <literal>Manager</literal> object</title>
+    
+    <para>The <literal>Manager</literal> interface lets us register and obtain
+    Web Beans, interceptors, decorators, observers and contexts programatically.</para>
+    
+<programlisting><![CDATA[public interface Manager
+{
+
+   public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindings);
+
+   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,
+         Annotation... bindings);
+
+   public <T> T getInstanceByType(Class<T> type, Annotation... bindings);
+
+   public <T> T getInstanceByType(TypeLiteral<T> type,
+         Annotation... bindings);
+
+   public Set<Bean<?>> resolveByName(String name);
+
+   public Object getInstanceByName(String name);
+
+   public <T> T getInstance(Bean<T> bean);
+
+   public void fireEvent(Object event, Annotation... bindings);
+
+   public Context getContext(Class<? extends Annotation> scopeType);
+
+   public Manager addContext(Context context);
+
+   public Manager addBean(Bean<?> bean);
+
+   public Manager addInterceptor(Interceptor interceptor);
+
+   public Manager addDecorator(Decorator decorator);
+
+   public <T> Manager addObserver(Observer<T> observer, Class<T> eventType,
+         Annotation... bindings);
+
+   public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType,
+         Annotation... bindings);
+
+   public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType,
+         Annotation... bindings);
+
+   public <T> Manager removeObserver(Observer<T> observer,
+         TypeLiteral<T> eventType, Annotation... bindings);
+
+   public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings);
+
+   public List<Interceptor> resolveInterceptors(InterceptionType type,
+         Annotation... interceptorBindings);
+
+   public List<Decorator> resolveDecorators(Set<Class<?>> types,
+         Annotation... bindings);
+
+}]]></programlisting>
+
+    <para>We can obtain an instance of <literal>Manager</literal> via injection:</para>
+    
+<programlisting>@Current Manager manager</programlisting>
+    
+  </section>
+  
+  <section>
+    <title>The <literal>Bean</literal> class</title>
+    
+    <para>Instances of the abstract class <literal>Bean</literal> represent
+    Web Beans. There is an instance of <literal>Bean</literal> registered
+    with the <literal>Manager</literal> object for every Web Bean in the
+    application.</para>
+    
+<programlisting>public abstract class Bean&lt;T&gt; {
+    
+    private final Manager manager;
+    
+    protected Bean(Manager manager) {
+        this.manager=manager;
+    }
+    
+    protected Manager getManager() {
+        return manager;
+    }
+    
+    public abstract Set&lt;Class&gt; getTypes();
+    public abstract Set&lt;Annotation&gt; getBindingTypes();
+    public abstract Class&lt;? extends Annotation&gt; getScopeType();
+    public abstract Class&lt;? extends Annotation&gt; getDeploymentType(); 
+    public abstract String getName();
+    
+    public abstract boolean isSerializable();
+    public abstract boolean isNullable();
+
+    public abstract T create();
+    public abstract void destroy(T instance);
+    
+}</programlisting>
+
+    <para>It's possible to extend the <literal>Bean</literal> class and
+    register instances by calling <literal>Manager.addBean()</literal> to
+    provide support for new kinds of Web Beans, beyond those defined by the
+    Web Beans specification (simple and enterprise Web Beans, producer 
+    methods and JMS endpoints). For example, we could use the 
+    <literal>Bean</literal> class to allow objects managed by another framework
+    to be injected into Web Beans.</para>
+    
+    <para>There are two subclasses of <literal>Bean</literal> defined by the
+    Web Beans specification: <literal>Interceptor</literal> and
+    <literal>Decorator</literal>.</para>
+    
+  </section>
+
+  <section>
+    <title>The <literal>Context</literal> interface</title>
+    
+    <para>The <literal>Context</literal> interface supports addition of new
+    scopes to Web Beans, or extension of the built-in scopes to new environments.</para>
+    
+<programlisting>public interface Context {
+    
+    public Class&lt;? extends Annotation&gt; getScopeType();
+    
+    public &lt;T&gt; T get(Bean&lt;T&gt; bean, boolean create);
+    
+    boolean isActive();
+    
+}</programlisting>
+
+    <para>For example, we might implement <literal>Context</literal> to add a
+    business process scope to Web Beans, or to add support for the conversation
+    scope to an application that uses Wicket.</para>
+    
+  </section>
+  
+</chapter>

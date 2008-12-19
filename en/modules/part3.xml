@@ -1,0 +1,76 @@
+<!DOCTYPE partintro PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+
+<partintro>
+  
+  <para>The second major theme of Web Beans is <emphasis>strong typing</emphasis>.
+  The information about the dependencies, interceptors and decorators of a 
+  Web Bean, and the information about event consumers for an event producer, is
+  contained in typesafe Java constructs that may be validated by the compiler.</para>
+  
+  <para>You don't see string-based identifiers in Web Beans code, not because the 
+  framework is hiding them from you using clever defaulting rules&#151;so-called
+  "configuration by convention"&#151;but because there are simply no strings there 
+  to begin with!</para>
+
+  <para>The obvious benefit of this approach is that <emphasis>any</emphasis> IDE can 
+  provide autocompletion, validation and refactoring without the need for special tooling. 
+  But there is a second, less-immediately-obvious, benefit. It turns out that when you 
+  start thinking of identifying objects, events or interceptors via annotations instead 
+  of names, you have an opportunity to lift the semantic level of your code.</para>
+
+  <para>Web Beans encourages you develop annotations that model concepts, for 
+  example,</para>
+
+  <itemizedlist>
+    <listitem>
+      <para><literal>@Asynchronous</literal>,</para>
+    </listitem>
+    <listitem>
+      <para><literal>@Mock</literal>,</para>
+    </listitem>
+    <listitem>
+      <para><literal>@Secure</literal> or</para>
+    </listitem>
+    <listitem>
+      <para><literal>@Updated</literal>,</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>instead of using compound names like</para>
+
+  <itemizedlist>
+    <listitem>
+      <para><literal>asyncPaymentProcessor</literal>,</para>
+    </listitem>
+    <listitem>
+      <para><literal>mockPaymentProcessor</literal>,</para>
+    </listitem>
+    <listitem>
+      <para><literal>SecurityInterceptor</literal> or</para>
+    </listitem>
+    <listitem>
+      <para><literal>DocumentUpdatedEvent</literal>.</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>The annotations are reusable. They help describe common qualities of disparate
+  parts of the system. They help us categorize and understand our code. They help us
+  deal with common concerns in a common way. They make our code more literate and
+  more understandable.</para>
+  
+  <para>Web Beans <emphasis>stereotypes</emphasis> take this idea a step further. A
+  stereotype models a common <emphasis>role</emphasis> in your application architecture. 
+  It encapsulates various properties of the role, including scope, interceptor bindings, 
+  deployment type, etc, into a single reusable package.</para>
+  
+  <para>Even Web Beans XML metadata is strongly typed! There's no compiler for XML, so 
+  Web Beans takes advantage of XML schemas to validate the Java types and attributes
+  that appear in XML. This approach turns out to make the XML more literate, just like
+  annotations made our Java code more literate.</para>
+  
+  <para>We're now ready to meet some more advanced features of Web Beans. Bear in mind that 
+  these features exist to make our code both easier to validate and more understandable.
+  Most of the time you don't ever really <emphasis>need</emphasis> to use these features,
+  but if you use them wisely, you'll come to appreciate their power.</para>
+  
+</partintro>

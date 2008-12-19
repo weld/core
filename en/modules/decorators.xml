@@ -1,0 +1,132 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+
+<chapter id="decorators">
+  <title>Decorators</title>
+  
+  <para>Interceptors are a powerful way to capture and separate concerns
+  which are <emphasis>orthogonal</emphasis> to the type system. Any
+  interceptor is able to intercept invocations of any Java type. This makes
+  them perfect for solving technical concerns such as transaction management
+  and security. However, by nature, interceptors are unaware of the actual
+  semantics of the events they intercept. Thus, interceptors aren't an
+  appropriate tool for separating business-related concerns.</para>
+  
+  <para>The reverse is true of <emphasis>decorators</emphasis>. A decorator
+  intercepts invocations only for a certain Java interface, and is therefore
+  aware of all the semantics attached to that interface. This makes decorators
+  a perfect tool for modeling some kinds of business concerns. It also 
+  means that a decorator doesn't have the generality of an interceptor. 
+  Decorators aren't able to solve technical concerns that cut across many
+  disparate types.</para>
+  
+  <para>Suppose we have an interface that represents accounts:</para>
+  
+<programlisting><![CDATA[public interface Account {
+    public BigDecimal getBalance();
+    public User getOwner();
+    public void withdraw(BigDecimal amount);
+    public void deposit(BigDecimal amount);
+}]]></programlisting>
+
+  <para>Several different Web Beans in our system implement the 
+  <literal>Account</literal> interface. However, we have a common legal 
+  requirement that, for any kind of account, large transactions must be 
+  recorded by the system in a special log. This is a perfect job for a
+  decorator.</para>
+  
+  <para>A decorator is a simple Web Bean that implements the type it
+  decorates and is annotated <literal>@Decorator</literal>.</para>
+  
+<programlisting><![CDATA[@Decorator
+public abstract class LargeTransactionDecorator 
+        implements Account {
+    
+    @Decorates Account account;
+    
+    @PersistenceContext EntityManager em;
+    
+    public void withdraw(BigDecimal amount) {
+        account.withdraw(amount);
+        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {
+            em.persist( new LoggedWithdrawl(amount) );
+        }
+    }
+    
+    public void deposit(BigDecimal amount);
+        account.deposit(amount);
+        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {
+            em.persist( new LoggedDeposit(amount) );
+        }
+    }
+    
+}]]></programlisting>
+
+  <para>Unlike other simple Web Beans, a decorator may be an abstract 
+  class. If there's nothing special the decorator needs to do for a 
+  particular method of the decorated interface, you don't need to 
+  implement that method.</para>
+  
+  <section>
+    <title>Delegate attributes</title>
+  
+    <para>All decorators have a <emphasis>delegate attribute</emphasis>. 
+    The type and binding types of the delegate attribute determine which
+    Web Beans the decorator is bound to. The delegate attribute type must
+    implement or extend all interfaces implemented by the decorator.</para>
+    
+    <para>This delegate attribute specifies that the decorator is bound to
+    all Web Beans that implement <literal>Account</literal>:</para>
+    
+<programlisting><![CDATA[@Decorates Account account;]]></programlisting>
+
+    <para>A delegate attribute may specify a binding annotation. Then the
+    decorator will only be bound to Web Beans with the same binding.</para>
+    
+<programlisting><![CDATA[@Decorates @Foreign Account account;]]></programlisting>
+
+    <para>A decorator is bound to any Web Bean which:</para>
+    
+    <itemizedlist>
+      <listitem>
+        <para>has the type of the delegate attribute as an API type, and</para>
+      </listitem>
+      <listitem>
+        <para>has all binding types that are declared by the delegate attribute.</para>
+      </listitem>
+    </itemizedlist>
+    
+    <para>The decorator may invoke the delegate attribute, which has much the same
+    effect as calling <literal>InvocationContext.proceed()</literal> from an
+    interceptor.</para>
+  
+  </section>
+  
+<section>
+  <title>Enabling decorators</title>
+
+  <para>We need to <emphasis>enable</emphasis> our decorator in 
+  <literal>web-beans.xml</literal>.</para>
+
+<programlisting><![CDATA[<Decorators>
+    <myapp:LargeTransactionDecorator/>
+</Decorators>]]></programlisting>
+
+  <para>This declaration serves the same purpose for decorators that the
+  <literal>&lt;Interceptors&gt;</literal> declaration serves for interceptors:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>it enables us to specify a total ordering for all decorators 
+      in our system, ensuring deterministic behavior, and</para>
+    </listitem>
+    <listitem>
+      <para>it lets us enable or disable decorator classes at deployment time.</para>
+    </listitem>
+  </itemizedlist> 
+
+  <para>Interceptors for a method are called before decorators that apply to
+  that method.</para>
+
+</section>
+  
+</chapter>

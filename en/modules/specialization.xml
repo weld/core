@@ -1,0 +1,150 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+
+<chapter id="specialization">
+  <title>Specialization</title>
+  
+  <para>We've already seen how the Web Beans dependency injection model lets
+  us <emphasis>override</emphasis> the implementation of an API at deployment 
+  time. For example, the following enterprise Web Bean provides an implementation 
+  of the API <literal>PaymentProcessor</literal> in production:</para>
+  
+<programlisting>@CreditCard @Stateless
+public class CreditCardPaymentProcessor 
+        implements PaymentProcessor {
+    ...
+}</programlisting>
+
+  <para>But in our staging environment, we override that implementation of 
+  <literal>PaymentProcessor</literal> with a different Web Bean:</para>
+  
+<programlisting>@CreditCard @Stateless @Staging
+public class StagingCreditCardPaymentProcessor 
+        implements PaymentProcessor {
+    ...
+}</programlisting>
+
+  <para>What we've tried to do with <literal>StagingCreditCardPaymentProcessor</literal> 
+  is to completely replace <literal>AsyncPaymentProcessor</literal> in a particular
+  deployment of the system. In that deployment, the deployment type <literal>@Staging</literal>
+  would have a higher priority than the default deployment type <literal>@Production</literal>,
+  and therefore clients with the following injection point:</para>
+  
+<programlisting>@CreditCard PaymentProcessor ccpp</programlisting>
+
+  <para>Would receive an instance of <literal>StagingCreditCardPaymentProcessor</literal>.</para>
+
+  <para>Unfortunately, there are several traps we can easily fall into:</para>
+  
+  <itemizedlist>
+    <listitem>
+      <para>the higher-priority Web Bean may not implement all the API types of
+      the Web Bean that it attempts to override,</para>
+    </listitem>
+    <listitem>
+      <para>the higher-priority Web Bean may not declare all the binding types of
+      the Web Bean that it attempts to override,</para>
+    </listitem>
+    <listitem>
+      <para>the higher-priority Web Bean might not have the same name as the Web 
+      Bean that it attempts to override, or</para>
+    </listitem>
+    <listitem>
+      <para>the Web Bean that it attempts to override might declare a producer
+      method, disposal method or observer method.</para>
+    </listitem>
+  </itemizedlist>
+  
+  <para>In each of these cases, the Web Bean that we tried to override could still 
+  be called at runtime. Therefore, overriding is somewhat prone to developer error.</para>
+  
+  <para>Web Beans provides a special feature, called <emphasis>specialization</emphasis>,
+  that helps the developer avoid these traps. Specialization looks a little esoteric
+  at first, but it's easy to use in practice, and you'll really appreciate the extra
+  security it provides.</para>
+  
+  <section>
+    <title>Using specialization</title>
+  
+  <para>Specialization is a feature that is specific to simple and enterprise Web Beans.
+  To make use of specialization, the higher-priority Web Bean must:</para>
+  
+  <itemizedlist>
+    <listitem>
+      <para>be a direct subclass of the Web Bean it overrides, and</para>
+    </listitem>
+    <listitem>
+      <para>be a simple Web Bean if the Web Bean it overrides is a simple Web Bean or 
+      an enterprise Web Bean if the Web Bean it overrides is an enterprise Web Bean, 
+      and</para>
+    </listitem>
+    <listitem>
+      <para>be annotated <literal>@Specializes</literal>.</para>
+    </listitem>
+  </itemizedlist>
+  
+<programlisting>@Stateless @Staging @Specializes
+public class StagingCreditCardPaymentProcessor 
+        extends CreditCardPaymentProcessor {
+    ...
+}</programlisting>
+
+  <para>We say that the higher-priority Web Bean <emphasis>specializes</emphasis> its
+  superclass.</para>
+  
+  </section>
+  
+  <section>
+    <title>Advantages of specialization</title>
+
+  <para>When specialization is used:</para>
+  
+  <itemizedlist>
+    <listitem>
+      <para>the binding types of the superclass are automatically inherited by the
+      Web Bean annotated <literal>@Specializes</literal>, and</para>
+    </listitem>
+    <listitem>
+      <para>the Web Bean name of the superclass is automatically inherited by the 
+      Web Bean annotated <literal>@Specializes</literal>, and</para>
+    </listitem>
+    <listitem>
+      <para>producer methods, disposal methods and observer methods declared by the
+      superclass are called upon an instance of the Web Bean annotated 
+      <literal>@Specializes</literal>.</para>
+    </listitem>
+  </itemizedlist>
+  
+  <para>In our example, the binding type <literal>@CreditCard</literal> of 
+  <literal>CreditCardPaymentProcessor</literal> is inherited by 
+  <literal>StagingCreditCardPaymentProcessor</literal>.</para>
+  
+  <para>Furthermore, the Web Bean manager will validate that:</para>
+  
+  <itemizedlist>
+    <listitem>
+      <para>all API types of the superclass are API types of the Web Bean
+      annotated <literal>@Specializes</literal> (all local interfaces
+      of the superclass enterprise bean are also local interfaces of the
+      subclass),</para>
+    </listitem>
+    <listitem>
+      <para>the deployment type of the Web Bean annotated 
+      <literal>@Specializes</literal> has a higher precedence than the
+      deployment type of the superclass, and</para>
+    </listitem>
+    <listitem>
+      <para>there is no other enabled Web Bean that also specializes
+      the superclass.</para>
+    </listitem>
+  </itemizedlist>
+  
+  <para>If any of these conditions are violated, the Web Bean manager throws
+  an exception at initialization time.</para>
+  
+  <para>Therefore, we can be certain that the superclass with <emphasis>never</emphasis>
+  be called in any deployment of the system where the Web Bean annotated 
+  <literal>@Specializes</literal> is deployed and enabled.</para>
+  
+  </section>
+  
+</chapter>

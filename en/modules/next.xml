@@ -1,0 +1,21 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+
+<chapter>
+  <title>Next steps</title>
+  
+  <para>Because Web Beans is so new, there's not yet a lot of information
+  available online.</para>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+  
+  <para>Of course, the Web Beans specification is the best source of more
+  information about Web Beans. The spec is about 100 pages long, only 
+  twice the length of this article, and almost as readable. But, of course, 
+  it covers many details that we've skipped over. The spec is available 
+  from <literal>http://jcp.org/en/jsr/detail?id=299</literal>.</para>
+  
+  <para>The Web Beans Reference implementation is being developed at
+  <literal>http://seamframework.org/WebBeans</literal>. The RI development
+  team and the Web Beans spec lead blog at <literal>http://in.relation.to</literal>.
+  This article is substantially based upon a series of blog entries published
+  there.</para>
+  
+</chapter>

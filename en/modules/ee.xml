@@ -1,0 +1,186 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+
+<chapter id="ee">
+  <title>Java EE integration</title>
+  
+  <para>Web Beans is fully integrated into the Java EE environment. Web Beans have 
+  access to Java EE resources and JPA persistence contexts. They may be used in 
+  Unified EL expressions in JSF and JSP pages. They may even be injected into some 
+  objects, such as Servlets and Message-Driven Beans, which are not Web Beans.</para>
+  
+  <section>
+    <title>Injecting Java EE resources into a Web Bean</title>
+    
+    <para>All simple and enterprise Web Beans may take advantage of Java EE dependency 
+    injection using <literal>@Resource</literal>, <literal>@EJB</literal> and 
+    <literal>@PersistenceContext</literal>. We've already seen a couple of examples of 
+    this, though we didn't pay much attention at the time:</para>
+    
+<programlisting><![CDATA[@Transactional @Interceptor
+public class TransactionInterceptor {
+
+    @Resource Transaction transaction;
+
+    @AroundInvoke public Object manageTransaction(InvocationContext ctx) { ... }
+    
+}]]></programlisting>
+
+<programlisting><![CDATA[@SessionScoped
+public class Login {
+
+    @Current Credentials credentials;
+    @PersistenceContext EntityManager userDatabase;
+    
+    ...
+
+}]]></programlisting>
+    
+    <para>The Java EE <literal>@PostConstruct</literal> and 
+    <literal>@PreDestroy</literal> callbacks are also supported for all simple
+    and enterprise Web Beans. The <literal>@PostConstruct</literal> method is
+    called after <emphasis>all</emphasis> injection has been performed.</para>
+    
+    <para>There is one restriction to be aware of here: 
+    <literal>@PersistenceContext(type=EXTENDED)</literal> is not supported
+    for simple Web Beans.</para>
+    
+  </section>
+  
+  <section>
+    <title>Calling a Web Bean from a Servlet</title>
+    
+    <para>It's easy to use a Web Bean from a Servlet in Java EE 6. Simply inject 
+    the Web Bean using Web Beans field or initializer method injection.</para>
+    
+<programlisting>public class Login extends HttpServlet {
+
+    @Current Credentials credentials;
+    @Current Login login;
+
+    @Override
+    public void service(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        credentials.setUsername( request.getAttribute("username") ):
+        credentials.setPassword( request.getAttribute("password") ):
+        login.login();
+        if ( login.isLoggedIn() ) {
+            response.sendRedirect("/home.jsp");
+        }
+        else {
+            response.sendRedirect("/loginError.jsp");
+        }
+    }
+            
+}</programlisting>
+
+    <para>The Web Beans client proxy takes care of routing method invocations from
+    the Servlet to the correct instances of <literal>Credentials</literal> and
+    <literal>Login</literal> for the current request and HTTP session.</para> 
+    
+  </section>
+  
+  <section>
+    <title>Calling a Web Bean from a Message-Driven Bean</title>
+    
+    <para>Web Beans injection applies to all EJBs, even when they aren't under the
+    control of the Web Bean manager (if they were obtained by direct JNDI lookup,
+    or injection using <literal>@EJB</literal>, for example. In particular, you can 
+    use Web Beans injection in Message-Driven Beans, which are not considered Web
+    Beans because you can't inject them.</para>
+    
+    <para>You can even use Web Beans interceptor bindings for Message-Driven Beans.</para>
+
+<programlisting>@Transactional @MessageDriven
+public class ProcessOrder implements MessageListener {
+
+    @Current Inventory inventory;
+    @PersistenceContext EntityManager em;
+
+    public void onMessage(Message message) {
+        ...
+    }
+            
+}</programlisting>
+
+    <para>Thus, receiving messages is super-easy in a Web Beans environment. But 
+    beware that there is no session or conversation context available when a message
+    is delivered to a Message-Driven Bean. Only <literal>@RequestScoped</literal> and
+    <literal>@ApplicationScoped</literal> Web Beans are available.</para>
+    
+    <para>It's also easy to send messages using Web Beans.</para>
+
+  </section>
+  
+  <section id="jms">
+    <title>JMS endpoints</title>
+    
+    <para>Sending messages using JMS can be quite complex, because of the number of
+    different objects you need to deal with. For queues we have <literal>Queue</literal>, 
+    <literal>QueueConnectionFactory</literal>, <literal>QueueConnection</literal>, 
+    <literal>QueueSession</literal> and <literal>QueueSender</literal>. For topics we
+    have <literal>Topic</literal>, <literal>TopicConnectionFactory</literal>, 
+    <literal>TopicConnection</literal>, <literal>TopicSession</literal> and 
+    <literal>TopicPublisher</literal>. Each of these objects has its own lifecycle and 
+    threading model that we need to worry about.</para>
+    
+    <para>Web Beans takes care of all this for us. All we need to do is declare the
+    queue or topic in <literal>web-beans.xml</literal>, specifying an associated
+    binding type and connection factory.</para>
+    
+      <programlisting><![CDATA[<Queue>
+    <destination>java:comp/env/jms/OrderQueue</destination>
+    <connectionFactory>java:comp/env/jms/QueueConnectionFactory</connectionFactory>
+    <myapp:OrderProcessor/>    
+</Queue>]]></programlisting>
+    
+      <programlisting><![CDATA[<Topic>
+    <destination>java:comp/env/jms/StockPrices</destination>
+    <connectionFactory>java:comp/env/jms/TopicConnectionFactory</connectionFactory>
+    <myapp:StockPrices/>    
+</Topic>]]></programlisting>
+
+    <para>Now we can just inject the <literal>Queue</literal>, 
+    <literal>QueueConnection</literal>, <literal>QueueSession</literal> or 
+    <literal>QueueSender</literal> for a queue, or the <literal>Topic</literal>, 
+    <literal>TopicConnection</literal>, <literal>TopicSession</literal> or 
+    <literal>TopicPublisher</literal> for a topic.</para>
+    
+    <programlisting>@OrderProcessor QueueSender orderSender;
+@OrderProcessor QueueSession orderSession;
+
+public void sendMessage() {
+    MapMessage msg = orderSession.createMapMessage();
+    ...
+    orderSender.send(msg);
+}</programlisting>
+    
+    <programlisting>@StockPrices TopicPublisher pricePublisher;
+@StockPrices TopicSession priceSession;
+
+public void sendMessage(String price) {
+    pricePublisher.send( priceSession.createTextMessage(price) );
+}</programlisting>
+
+    <para>The lifecycle of the injected JMS objects are completely controlled by the
+    Web Bean manager.</para> 
+    
+  </section>
+  
+  <section>
+    <title>Packaging and deployment</title>
+    
+    <para>Web Beans doesn't define any special deployment archive. You can package
+    Web Beans in JARs, EJB-JARs or WARs&#151;any deployment location in the application 
+    classpath. However, each archive that contains Web Beans must include a file named 
+    <literal>web-beans.xml</literal> in the <literal>META-INF</literal> or
+    <literal>WEB-INF</literal> directory. The file may be empty. Web Beans deployed in 
+    archives that do not have a <literal>web-beans.xml</literal> file will not be available 
+    for use in the application.</para>
+    
+    <para>For Java SE execution, Web Beans may be deployed in any location in which
+    EJBs may be deployed for execution by the embeddable EJB Lite container. Again,
+    each location must contain a <literal>web-beans.xml</literal> file.</para>
+    
+  </section>
+  
+</chapter>

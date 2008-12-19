@@ -1,0 +1,280 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+
+<chapter id="interceptors">
+  <title>Interceptors</title>
+
+<para>Web Beans re-uses the basic interceptor architecture of EJB 3.0, extending 
+the functionality in two directions:</para>
+
+<itemizedlist>
+  <listitem>
+    <para>Any Web Bean may have interceptors, not just session beans.</para>
+  </listitem>
+  <listitem>
+    <para>Web Beans features a more sophisticated annotation-based approach 
+    to binding interceptors to Web Beans.</para>
+  </listitem>
+</itemizedlist>
+
+<!--section>
+  <title>Method and lifecycle callback interceptors</title-->
+  
+  <para>The EJB specification defines two kinds of interception points:</para>
+  
+  <itemizedlist>
+    <listitem>
+      <para>business method interception, and</para>
+    </listitem>
+    <listitem>
+      <para>lifecycle callback interception.</para>
+    </listitem>
+  </itemizedlist>
+  
+  <para>A <emphasis>business method interceptor</emphasis> applies to 
+  invocations of methods of the Web Bean by clients of the Web Bean:</para>
+  
+<programlisting><![CDATA[public class TransactionInterceptor {
+    @AroundInvoke public Object manageTransaction(InvocationContext ctx) { ... }
+}]]></programlisting>
+  
+  <para>A <emphasis>lifecycle callback interceptor</emphasis> applies to
+  invocations of lifecycle callbacks by the container:</para>
+  
+<programlisting><![CDATA[public class DependencyInjectionInterceptor {
+    @PostConstruct public void injectDependencies(InvocationContext ctx) { ... }
+}]]></programlisting>
+
+  <para>An interceptor class may intercept both lifecycle callbacks and 
+  business methods.</para>
+  
+<!--/section-->
+
+<section>
+  <title>Interceptor bindings</title>
+
+  <para>Suppose we want to declare that some of our Web Beans are transactional. 
+  The first thing we need is an <emphasis>interceptor binding annotation</emphasis> 
+  to specify exactly which Web Beans we're interested in:</para>
+
+<programlisting><![CDATA[@InterceptorBindingType
+@Target({METHOD, TYPE})
+@Retention(RUNTIME)
+public @interface Transactional {}]]></programlisting>
+
+  <para>Now we can easily specify that our <literal>ShoppingCart</literal> is a 
+  transactional object:</para>
+
+<programlisting><![CDATA[@Transactional
+public class ShoppingCart { ... }]]></programlisting>
+
+  <para>Or, if we prefer, we can specify that just one method is transactional:</para>
+
+<programlisting><![CDATA[public class ShoppingCart {
+    @Transactional public void checkout() { ... }
+}]]></programlisting>
+
+</section>
+
+<section>
+  <title>Implementing interceptors</title>
+
+  <para>That's great, but somewhere along the line we're going to have to actually 
+  implement the interceptor that provides this transaction management aspect. All 
+  we need to do is create a standard EJB interceptor, and annotate it 
+  <literal>@Interceptor</literal> and <literal>@Transactional</literal>.</para>
+
+<programlisting><![CDATA[@Transactional @Interceptor
+public class TransactionInterceptor {
+    @AroundInvoke public Object manageTransaction(InvocationContext ctx) { ... }
+}]]></programlisting>
+
+  <para>All Web Beans interceptors are simple Web Beans, and can take advantage
+  of dependency injection and contextual lifecycle management.</para>
+
+<programlisting><![CDATA[@ApplicationScoped @Transactional @Interceptor
+public class TransactionInterceptor {
+
+    @Resource Transaction transaction;
+
+    @AroundInvoke public Object manageTransaction(InvocationContext ctx) { ... }
+    
+}]]></programlisting>
+
+  <para>Multiple interceptors may use the same interceptor binding type.</para>
+
+</section>
+
+<section>
+  <title>Enabling interceptors</title>
+
+  <para>Finally, we need to <emphasis>enable</emphasis> our interceptor in 
+  <literal>web-beans.xml</literal>.</para>
+
+<programlisting><![CDATA[<Interceptors>
+    <tx:TransactionInterceptor/>
+</Interceptors>]]></programlisting>
+
+  <para>Whoah! Why the angle bracket stew?</para> 
+
+  <para>Well, the XML declaration solves two problems:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>it enables us to specify a total ordering for all the interceptors 
+      in our system, ensuring deterministic behavior, and</para>
+    </listitem>
+    <listitem>
+      <para>it lets us enable or disable interceptor classes at deployment time.</para>
+    </listitem>
+  </itemizedlist> 
+
+  <para>For example, we could specify that our security interceptor runs before our 
+  <literal>TransactionInterceptor</literal>.</para>
+
+<programlisting><![CDATA[<Interceptors>
+    <sx:SecurityInterceptor/>
+    <tx:TransactionInterceptor/>
+</Interceptors>]]></programlisting>
+
+<para>Or we could turn them both off in our test environment!</para>
+
+  </section>
+
+<section>
+  <title>Interceptor bindings with members</title>
+
+  <para>Suppose we want to add some extra information to our <literal>@Transactional</literal> 
+  annotation:</para>
+
+<programlisting><![CDATA[@InterceptorBindingType
+@Target({METHOD, TYPE})
+@Retention(RUNTIME)
+public @interface Transactional {
+    boolean requiresNew() default false;
+}]]></programlisting>
+
+  <para>Web Beans will use the value of <literal>requiresNew</literal> to choose between 
+  two different interceptors, <literal>TransactionInterceptor</literal> and 
+  <literal>RequiresNewTransactionInterceptor</literal>.</para>
+
+<programlisting><![CDATA[@Transactional(requiresNew=true) @Interceptor
+public class RequiresNewTransactionInterceptor {
+    @AroundInvoke public Object manageTransaction(InvocationContext ctx) { ... }
+}]]></programlisting>
+
+  <para>Now we can use <literal>RequiresNewTransactionInterceptor</literal> like this:</para>
+
+<programlisting><![CDATA[@Transactional(requiresNew=true)
+public class ShoppingCart { ... }]]></programlisting>
+
+  <para>But what if we only have one interceptor and we want the manager to ignore the 
+  value of <literal>requiresNew</literal> when binding interceptors? We can use the 
+  <literal>@NonBinding</literal> annotation:</para>
+
+<programlisting><![CDATA[@InterceptorBindingType
+@Target({METHOD, TYPE})
+@Retention(RUNTIME)
+public @interface Secure {
+    @NonBinding String[] rolesAllowed() default {};
+}]]></programlisting>
+
+</section>
+
+<section>
+  <title>Multiple interceptor binding annotations</title>
+
+  <para>Usually we use combinations of interceptor bindings types to bind multiple 
+  interceptors to a Web Bean. For example, the following declaration would be used 
+  to bind <literal>TransactionInterceptor</literal> and 
+  <literal>SecurityInterceptor</literal> to the same Web Bean:</para>
+
+<programlisting><![CDATA[@Secure(rolesAllowed="admin") @Transactional
+public class ShoppingCart { ... }]]></programlisting>
+
+  <para>However, in very complex cases, an interceptor itself may specify some 
+  combination of interceptor binding types:</para>
+
+<programlisting><![CDATA[@Transactional @Secure @Interceptor
+public class TransactionalSecureInterceptor { ... }]]></programlisting>
+
+  <para>Then this interceptor could be bound to the <literal>checkout()</literal> 
+  method using any one of the following combinations:</para>
+
+<programlisting><![CDATA[public class ShoppingCart {
+    @Transactional @Secure public void checkout() { ... }
+}]]></programlisting>
+
+<programlisting><![CDATA[@Secure
+public class ShoppingCart {
+    @Transactional public void checkout() { ... }
+}]]></programlisting>
+
+<programlisting><![CDATA[@Transactionl
+public class ShoppingCart {
+    @Secure public void checkout() { ... }
+}]]></programlisting>
+
+<programlisting><![CDATA[@Transactional @Secure
+public class ShoppingCart {
+    public void checkout() { ... }
+}]]></programlisting>
+
+</section>
+
+<section>
+  <title>Interceptor binding type inheritance</title>
+  
+  <para>One limitation of the Java language support for annotations is the lack 
+  of annotation inheritance. Really, annotations should have reuse built in, to 
+  allow this kind of thing to work:</para>
+
+<programlisting><![CDATA[public @interface Action extends Transactional, Secure { ... }]]></programlisting>
+
+  <para>Well, fortunately, Web Beans works around this missing feature of Java.
+  We may annotate one interceptor binding type with other interceptor binding
+  types. The interceptor bindings are transitive&#151;any Web Bean with the first
+  interceptor binding inherits the interceptor bindings declared as meta-annotations.</para>
+
+<programlisting><![CDATA[@Transactional @Secure
+@InterceptorBindingType
+@Target(TYPE)
+@Retention(RUNTIME)
+public @interface Action { ... }]]></programlisting>
+
+  <para>Any Web Bean annotated <literal>@Action</literal> will be bound to both 
+  <literal>TransactionInterceptor</literal> and <literal>SecurityInterceptor</literal>. 
+  (And even <literal>TransactionalSecureInterceptor</literal>, if it exists.)</para>
+
+</section>
+
+<section>
+  <title>Use of <literal>@Interceptors</literal></title>
+  
+  <para>The <literal>@Interceptors</literal> annotation defined by the EJB specification
+  is supported for both enterprise and simple Web Beans, for example:</para>
+  
+<programlisting><![CDATA[@Interceptors({TransactionInterceptor.class, @SecurityInterceptor.class})
+public class ShoppingCart {
+    public void checkout() { ... }
+}]]></programlisting>
+
+  <para>However, this approach suffers the following drawbacks:</para>
+  
+  <itemizedlist>
+    <listitem>
+      <para>the interceptor implementation is hardcoded in business code,</para>
+    </listitem>
+    <listitem>
+      <para>interceptors may not be easily disabled at deployment time, and</para>
+    </listitem>
+    <listitem>
+      <para>the interceptor ordering is non-global&#151;it is determined 
+      by the order in which interceptors are listed at the class level.</para>
+    </listitem>
+  </itemizedlist>
+  
+  <para>Therefore, we recommend the use of Web Beans-style interceptor bindings.</para>
+  
+</section>
+
+</chapter>

@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding="iso-8859-1"?>
+
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+
+<book lang="en">
+    
+    <bookinfo>
+      <title>Introduction to Web Beans</title>
+      <subtitle>The new Java standard for dependency injection and 
+      contextual state management</subtitle>
+      <authorgroup>
+         <author>
+           <firstname>Gavin</firstname>
+           <surname>King</surname>
+           <affiliation>
+             <jobtitle>Web Beans (JSR-299) specification lead</jobtitle>
+             <orgname>Red Hat Middleware LLC</orgname>
+             
+           </affiliation>
+         </author>
+         <author>
+           <firstname>Pete</firstname>
+           <surname>Muir</surname>
+           <affiliation>
+             <jobtitle>Web Beans (JSR-299) Reference Implementation lead</jobtitle>
+             <orgname>Red Hat Middleware LLC</orgname>
+           </affiliation>
+         </author>
+      </authorgroup>
+    </bookinfo>
+    
+    <toc/>
+    
+    <part>
+      <title>Using contextual objects</title>
+      
+      <xi:include href="modules/part1.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="modules/intro.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="modules/example.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="modules/injection.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="modules/scopescontexts.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="modules/producermethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      
+    </part>
+    
+    <part>
+      <title>Developing loosely-coupled code</title>
+      
+      <xi:include href="modules/part2.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="modules/interceptors.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="modules/decorators.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="modules/events.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      
+    </part>
+    
+    <part>
+      <title>Making the most of strong typing</title>
+      
+      <xi:include href="modules/part3.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      
+      <xi:include href="modules/stereotypes.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="modules/specialization.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="modules/xml.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+    </part>
+    
+    <part>
+      <title>Web Beans and the Java EE ecosystem</title>
+      
+      <xi:include href="modules/part4.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      
+      <xi:include href="modules/ee.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="modules/extend.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      
+    </part>
+
+    <xi:include href="modules/next.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+    
+</book>
+
