@@ -109,7 +109,7 @@ public class ManagerImpl implements Manager
       this.decorators = new HashSet<Decorator>();
       this.interceptors = new HashSet<Interceptor>();
       this.contextMap = new ContextMap();
-      this.eventManager = new EventManager(this);
+      this.eventManager = new EventManager();
       this.ejbDescriptorCache = new EjbDescriptorCache();
       
       List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();

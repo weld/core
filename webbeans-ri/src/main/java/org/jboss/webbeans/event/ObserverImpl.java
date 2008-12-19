@@ -17,16 +17,12 @@
 
 package org.jboss.webbeans.event;
 
-import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.AFTER_COMPLETION;
-import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.AFTER_FAILURE;
-import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.AFTER_SUCCESS;
-import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.BEFORE_COMPLETION;
-import static org.jboss.webbeans.event.EventManager.TransactionObservationPhase.NONE;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Status;
+import javax.transaction.SystemException;
 import javax.webbeans.AfterTransactionCompletion;
 import javax.webbeans.AfterTransactionFailure;
 import javax.webbeans.AfterTransactionSuccess;
@@ -44,9 +40,9 @@ import javax.webbeans.Produces;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.event.EventManager.TransactionObservationPhase;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.transaction.UserTransaction;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -62,7 +58,16 @@ import org.jboss.webbeans.util.Reflections;
  */
 public class ObserverImpl<T> implements Observer<T>
 {
-   private Bean<?> eventBean;
+   /**
+    * The known transactional phases a transactional event observer can be
+    * interested in
+    */ 
+   protected enum TransactionObservationPhase
+   {
+      NONE, BEFORE_COMPLETION, AFTER_COMPLETION, AFTER_FAILURE, AFTER_SUCCESS
+   }   
+   
+   private Bean<?> observerBean;
    private final AnnotatedMethod<Object> observerMethod;
    private TransactionObservationPhase transactionObservationPhase;
    private boolean conditional;
@@ -80,7 +85,7 @@ public class ObserverImpl<T> implements Observer<T>
    public ObserverImpl(final AnnotatedMethod<Object> observer, final Bean<?> observerBean, final ManagerImpl manager)
    {
       this.manager = manager;
-      this.eventBean = observerBean;
+      this.observerBean = observerBean;
       this.observerMethod = observer;
       validateObserverMethod();
       initTransactionObservationPhase();
@@ -92,19 +97,19 @@ public class ObserverImpl<T> implements Observer<T>
       List<TransactionObservationPhase> observationPhases = new ArrayList<TransactionObservationPhase>();
       if (!observerMethod.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty())
       {
-         observationPhases.add(BEFORE_COMPLETION);
+         observationPhases.add(TransactionObservationPhase.BEFORE_COMPLETION);
       }
       if (!observerMethod.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty())
       {
-         observationPhases.add(AFTER_COMPLETION);
+         observationPhases.add(TransactionObservationPhase.AFTER_COMPLETION);
       }
       if (!observerMethod.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty())
       {
-         observationPhases.add(AFTER_FAILURE);
+         observationPhases.add(TransactionObservationPhase.AFTER_FAILURE);
       }
       if (!observerMethod.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty())
       {
-         observationPhases.add(AFTER_SUCCESS);
+         observationPhases.add(TransactionObservationPhase.AFTER_SUCCESS);
       }
       if (observationPhases.size() > 1)
       {
@@ -116,7 +121,7 @@ public class ObserverImpl<T> implements Observer<T>
       }
       else
       {
-         transactionObservationPhase = NONE;
+         transactionObservationPhase = TransactionObservationPhase.NONE;
       }
    }
 
@@ -171,7 +176,14 @@ public class ObserverImpl<T> implements Observer<T>
       {
          try
          {
-            observerMethod.invokeWithSpecialValue(instance, Observes.class, event, manager);
+            if ( isTransactional() && isTransactionActive() )
+            {
+               deferEvent(event);
+            }
+            else
+            {
+               observerMethod.invokeWithSpecialValue(instance, Observes.class, event, manager);
+            }
          }
          catch (ExecutionException e)
          {
@@ -202,7 +214,40 @@ public class ObserverImpl<T> implements Observer<T>
    protected Object getInstance(boolean create)
    {
       // Return the most specialized instance of the component
-      return manager.getMostSpecializedInstance(eventBean, create);
+      return manager.getMostSpecializedInstance(observerBean, create);
+   }
+
+   /**
+    * Checks if there is currently a transaction active
+    * 
+    * @return True if there is one, false otherwise
+    */
+   private boolean isTransactionActive()
+   {
+      UserTransaction userTransaction = manager.getInstanceByType(UserTransaction.class);
+      try
+      {
+         return userTransaction!=null && userTransaction.getStatus() == Status.STATUS_ACTIVE;
+      }
+      catch (SystemException e)
+      {
+         return false;
+      }
+   }
+
+   /**
+    * Defers an event for processing in a later phase of the current transaction.
+    * 
+    * Gets the transaction listener, creates a deferred event representation and
+    * registers the deferred event.
+    * 
+    * @param event The event type
+    */
+   private void deferEvent(T event)
+   {
+      UserTransaction userTransaction = manager.getInstanceByType(UserTransaction.class);
+      DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, this);
+      userTransaction.registerSynchronization(deferredEvent);
    }
 
    /**
@@ -241,7 +286,7 @@ public class ObserverImpl<T> implements Observer<T>
    {
       StringBuilder builder = new StringBuilder();
       builder.append("Observer Implentation: \n");
-      builder.append("  Observer (Declaring) bean: " + eventBean);
+      builder.append("  Observer (Declaring) bean: " + observerBean);
       builder.append("  Observer method: " + observerMethod);
       return builder.toString();
    }

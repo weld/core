@@ -25,13 +25,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.transaction.Status;
-import javax.transaction.SystemException;
 import javax.webbeans.Observer;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.contexts.DependentContext;
-import org.jboss.webbeans.transaction.UserTransaction;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
@@ -45,18 +41,7 @@ import com.google.common.collect.ForwardingMap;
  */
 public class EventManager
 {
-	private ManagerImpl manager;
-	
-   /**
-    * The known transactional phases a transactional event observer can be
-    * interested in
-    */ 
-   protected enum TransactionObservationPhase
-   {
-      NONE, BEFORE_COMPLETION, AFTER_COMPLETION, AFTER_FAILURE, AFTER_SUCCESS
-   }   
-   
-   /**
+	/**
     * An event type -> observer list map
     */
    private class RegisteredObserversMap extends ForwardingMap<Class<?>, List<EventObserver<?>>>
@@ -140,12 +125,9 @@ public class EventManager
 
    /**
     * Initializes a new instance of the EventManager.
-    * 
-    * @param manager The Web Beans manager
     */
-   public EventManager(ManagerImpl manager)
+   public EventManager()
    {
-      this.manager = manager;
       registeredObservers = new RegisteredObserversMap();
    }
 
@@ -189,24 +171,6 @@ public class EventManager
    }
 
    /**
-    * Checks if there is currently a transaction active
-    * 
-    * @return True if there is one, false otherwise
-    */
-   private boolean isTransactionActive()
-   {
-      UserTransaction userTransaction = manager.getInstanceByType(UserTransaction.class);
-      try
-      {
-         return userTransaction!=null && userTransaction.getStatus() == Status.STATUS_ACTIVE;
-      }
-      catch (SystemException e)
-      {
-         return false;
-      }
-   }
-
-   /**
     * Iterates over the interested observers. If an observer is transactional
     * and there is a transaction currently in progress, the event is deferred.
     * In other cases, the observer is notified immediately.
@@ -221,36 +185,13 @@ public class EventManager
          DependentContext.INSTANCE.setActive(true);
          for (Observer<T> observer : observers)
          {
-            if ((observer instanceof ObserverImpl) && isTransactionActive() && ((ObserverImpl<?>) observer).isTransactional())
-            {
-               deferEvent(event, observer);
-            }
-            else
-            {
-               observer.notify(event);
-            }
+            observer.notify(event);
          }
       }
       finally
       {
          DependentContext.INSTANCE.setActive(false);
       }
-   }
-
-   /**
-    * Defers an event for processing in a later phase of the current transaction.
-    * 
-    * Gets the transaction listener, creates a deferred event representation and
-    * registers the deferred event.
-    * 
-    * @param event The event type
-    * @param observer The interested observer
-    */
-   private <T> void deferEvent(T event, Observer<T> observer)
-   {
-      UserTransaction userTransaction = manager.getInstanceByType(UserTransaction.class);
-      DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, observer);
-      userTransaction.registerSynchronization(deferredEvent);
    }
 
    /**
