@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="JBoss5DeployerInstall" default="install-jboss5" basedir="." xmlns:artifact="urn:maven-artifact-ant">
+<project name="JBoss5DeployerInstall" default="update" basedir="." xmlns:artifact="urn:maven-artifact-ant">
 
 	<path id="maven-ant-tasks.classpath" path="lib/maven-ant-tasks.jar" />
 	<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpathref="maven-ant-tasks.classpath" />
@@ -8,10 +8,12 @@
 
 	<property file="build.properties" />
 
-	<target name="install-jboss5" depends="install-jboss-ejb3-update, install">
+	<target name="update" depends="install-jboss-ejb3-update">
 
 		<fail unless="jboss.home" message="Please pass in -Djboss.home=..."/>
 
+		<delete dir="${jboss.home}/server/default/deployers/webbeans.deployer" failonerror="false" />
+		
 		<mkdir dir="target/webbeans.deployer"/>
 
 		<artifact:dependencies filesetId="jboss5.deployer.fileset" versionsId="jboss5.deployer.versions">
@@ -72,10 +74,6 @@
 		<java jar="target/ejb3.plugin/jboss-ejb3-plugin-installer.jar" fork="true">
 			<arg line="${jboss.home}" />
 		</java>
-	</target>
-	
-	<target name="install">
-		<maven target="install" basedir="${basedir}"/>
 	</target>
 
 	<macrodef name="maven">
