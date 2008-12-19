@@ -5,7 +5,7 @@
    <groupId>org.jboss.webbeans</groupId>
    <artifactId>webbeans-docbook-xslt</artifactId>
    <packaging>jar</packaging>
-   <version>1.1.1.BETA1</version>
+   <version>1.1.1-SNAPSHOT</version>
 
    <name>Web Beans DocBook XSLT</name>
    <description>
@@ -15,8 +15,8 @@
    <url>http://www.seamframework.org</url>
 
    <scm>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/doc/tags/webbeans-docbook-xslt-1.1.1.BETA1</developerConnection>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/doc/tags/webbeans-docbook-xslt-1.1.1.BETA1</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/doc/trunk/xslt</developerConnection>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/doc/trunk/xslt</connection>
    </scm>
    
    <contributors>
