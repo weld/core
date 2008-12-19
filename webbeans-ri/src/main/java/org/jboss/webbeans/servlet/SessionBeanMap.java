@@ -17,17 +17,12 @@
 
 package org.jboss.webbeans.servlet;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 
 import javax.servlet.http.HttpSession;
-import javax.webbeans.manager.Bean;
-import javax.webbeans.manager.Contextual;
 
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.contexts.AbstractBeanMapAdaptor;
-import org.jboss.webbeans.contexts.SessionContext;
+import org.jboss.webbeans.contexts.ApplicationContext;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -36,161 +31,70 @@ import org.jboss.webbeans.log.Logging;
  * 
  * @author Nicklas Karlsson
  * 
- * @see org.jboss.webbeans.contexts.SessionContext
+ * @see org.jboss.webbeans.contexts.ApplicationContext
  */
 public class SessionBeanMap extends AbstractBeanMapAdaptor
 {
-   private static LogProvider log = Logging.getLogProvider(SessionBeanMap.class);
-
-   // The HTTP session to use as backing map
+   // The log provider
+   private static LogProvider log = Logging.getLogProvider(ApplicationBeanMap.class);
+   // The HTTP session context to use as backing map
    private HttpSession session;
 
    /**
     * Constructor
     * 
-    * @param keyPrefix The storage names prefix
+    * @param session The HTTP session
     */
-   public SessionBeanMap(HttpSession httpSession)
+   public SessionBeanMap(HttpSession session)
    {
       super();
-      this.session = httpSession;
-      log.trace("SessionBeanMap created with prefix " + getKeyPrefix());
+      this.session = session;
    }
 
    /**
-    * Gets a bean from the session
-    * 
-    * It determines an ID for the
-    * bean which and looks for it in the session. The bean instance is returned
-    * (null if not found in the session).
-    * 
-    * @param bean The bean to get from the session
-    * @return An instance of the bean
-    * 
-    * @see org.jboss.webbeans.contexts.BeanMap#get(Bean)
+    * @see org.jboss.webbeans.contexts.AbstractBeanMapAdaptor#getKeyPrefix()
     */
-   @SuppressWarnings("unchecked")
-   public <T> T get(Contextual<? extends T> bean)
-   {
-      String key = getBeanKey(bean);
-      T instance = (T) session.getAttribute(key);
-      log.trace("Searched session for key " + key + " and got " + instance);
-      return instance;
-   }
-
-   /**
-    * Removes a bean instance from the session
-    * 
-    * It determines an ID for the
-    * bean and that key is then removed from the session, whether it was present
-    * in the first place or not.
-    * 
-    * @param bean The bean whose instance to remove.
-    * @return The instance removed
-    * 
-    * @see org.jboss.webbeans.contexts.BeanMap#remove(Bean)
-    */
-   public <T> T remove(Contextual<? extends T> bean)
-   {
-      T instance = get(bean);
-      String key = getBeanKey(bean);
-      session.removeAttribute(key);
-      log.trace("Removed bean " + bean + " with key " + key + " from session");
-      return instance;
-   }
-
-   /**
-    * Clears the session of any beans.
-    * 
-    * First, checks that the session is present. Then, iterates over the
-    * attribute names in the session and removes them if they start with the
-    * know prefix.
-    * 
-    * @see org.jboss.webbeans.contexts.BeanMap#clear()
-    */
-   @SuppressWarnings("unchecked")
-   public void clear()
-   {
-      Enumeration names = session.getAttributeNames();
-      while (names.hasMoreElements())
-      {
-         String name = (String) names.nextElement();
-         session.removeAttribute(name);
-      }
-      log.trace("Session cleared");
-   }
-
-   /**
-    * Gets an iterable over the beans present in the storage.
-    * 
-    * Iterates over the names in the session. If a name starts with the known
-    * prefix, strips it out to get the index to the bean in the manager bean
-    * list. Retrieves the bean from that list and puts it in the result-list.
-    * Finally, returns the list.
-    * 
-    * @return An Iterable to the beans in the storage
-    * 
-    * @see org.jboss.webbeans.contexts.BeanMap#keySet()
-    */
-   @SuppressWarnings("unchecked")
-   public Iterable<Contextual<? extends Object>> keySet()
-   {
-
-      List<Contextual<?>> beans = new ArrayList<Contextual<?>>();
-
-      Enumeration names = session.getAttributeNames();
-      while (names.hasMoreElements())
-      {
-         String name = (String) names.nextElement();
-         if (name.startsWith(getKeyPrefix()))
-         {
-            String id = name.substring(getKeyPrefix().length() + 1);
-            Contextual<?> bean = CurrentManager.rootManager().getBeans().get(Integer.parseInt(id));
-            beans.add(bean);
-         }
-      }
-
-      return beans;
-   }
-
-   /**
-    * Puts a bean instance in the session
-    * 
-    * Generates a bean map key, puts
-    * the instance in the session under that key.
-    * 
-    * @param bean The bean to use as key
-    * @param instance The bean instance to add
-    * 
-    * @see org.jboss.webbeans.contexts.BeanMap#put(Bean, Object)
-    */
-   public <T> void put(Contextual<? extends T> bean, T instance)
-   {
-      String key = getBeanKey(bean);
-      session.setAttribute(key, instance);
-      log.trace("Stored instance " + instance + " for bean " + bean + " under key " + key + " in session");
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public String toString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      List<Contextual<?>> beans = (List) keySet();
-      buffer.append("Bean -> bean instance mappings in HTTP session: " + beans.size() + "\n");
-      int i = 0;
-      for (Contextual<?> bean : beans)
-      {
-         Object instance = get(bean);
-         buffer.append(++i + " - " + getBeanKey(bean) + ": " + instance + "\n");
-      }
-      return buffer.toString();
-   }
-
    @Override
    protected String getKeyPrefix()
    {
-      return SessionContext.class.getName();
+      return ApplicationContext.class.getName();
+   }
+
+   /**
+    * @see org.jboss.webbeans.contexts.AbstractBeanMapAdaptor#getAttribute()
+    */
+   @Override
+   protected Object getAttribute(String key)
+   {
+      return session.getAttribute(key);
+   }
+
+   /**
+    * @see org.jboss.webbeans.contexts.AbstractBeanMapAdaptor#getAttributeNames()
+    */
+   @SuppressWarnings("unchecked")
+   @Override
+   protected Enumeration<String> getAttributeNames()
+   {
+      return session.getAttributeNames();
+   }
+
+   /**
+    * @see org.jboss.webbeans.contexts.AbstractBeanMapAdaptor#removeAttributes()
+    */
+   @Override
+   protected void removeAttribute(String key)
+   {
+      session.removeAttribute(key);
+   }
+
+   /**
+    * @see org.jboss.webbeans.contexts.AbstractBeanMapAdaptor#setAttribute()
+    */
+   @Override
+   protected void setAttribute(String key, Object instance)
+   {
+      session.setAttribute(key, instance);
    }
 
 }
