@@ -29,6 +29,15 @@ $ unzip ~/jboss-5.0.0.GA.zip]]></programlisting>
    <programlisting><![CDATA[$ cd ~/
 $ unzip ~/webbeans-1.0.0.ALPHA1.zip]]></programlisting>
 
+   
+   <para>
+      Next, we need to tell Web Beans where JBoss is located. Edit
+      <literal>jboss-as/build.properties</literal> and set the
+      <literal>jboss.home</literal> property. For example:
+   </para>
+   
+   <programlisting>jboss.home=/Applications/jboss-5.0.0.GA</programlisting>
+
    <para>
       As Web Beans is a new piece of software, you need to update JBoss AS to 
       run the Web Beans RI. Future versions of JBoss AS will include these
