@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<project name="DistributionBuilder" default="dist" basedir="." xmlns:artifact="urn:maven-artifact-ant">
+
+   <path id="maven-ant-tasks.classpath" path="lib/maven-ant-tasks.jar" />
+   <typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpathref="maven-ant-tasks.classpath" />
+   
+   <property name="maven.dir" location="${basedir}/lib/maven" />
+	
+	<property name="dist.dir" value="dist" />
+	<property name="dist.doc.dir" value="${dist.dir}/doc" />
+	<property name="dist.src.dir" value="${dist.dir}/src" />
+	<property name="dist.src.doc.dir" value="${dist.src.dir}/reference" />
+	
+	<property name="refdoc.dir" value="reference-guide" />
+	
+	<target name="dist" description="Build the distribution">
+		<maven target="clean" basedir="${basedir}" />
+		<maven target="clean" basedir="${refdoc.dir}" />
+		<delete dir="${dist.dir}" failonerror="false"/>
+		<mkdir dir="${dist.dir}"/>
+		
+		<mkdir dir="${dist.src.dir}" />
+		      
+      <copy todir="${dist.src.dir}">
+         <fileset dir="${basedir}">
+            <include name="webbeans-ri/**" />
+         	<include name="webbeans-api/**" />
+         	<include name="pom.xml" />
+         </fileset>
+      </copy>
+		
+		<copy todir="${dist.src.doc.dir}">
+			<fileset dir="${refdoc.dir}"/>
+      </copy>
+
+		<copy todir="${dist.dir}">
+         <fileset dir="${basedir}">
+            <include name="examples/**"/>
+         	<include name="jboss-as/**"/>
+         	<include name="lib/**"/>
+         </fileset>
+      </copy>
+		
+		<maven target="package" basedir="${refdoc.dir}" />
+		<mkdir dir="${dist.doc.dir}" />
+		<copy todir="${dist.doc.dir}">
+			<fileset dir="${refdoc.dir}/target/docbook/publish" />
+		</copy>
+		<maven target="clean" basedir="${refdoc.dir}" />
+		
+	</target>
+	
+   <macrodef name="maven">
+      <attribute name="target" />
+      <attribute name="basedir" />
+      <element name="args" implicit="true" optional="true" />
+      <sequential>
+         <java classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}">
+            <classpath>
+               <fileset dir="${maven.dir}/boot">
+                  <include name="*.jar" />
+               </fileset>
+               <fileset dir="${maven.dir}/bin">
+                  <include name="*.*" />
+               </fileset>
+            </classpath>
+            <sysproperty key="classworlds.conf" value="${maven.dir}/bin/m2.conf" />
+            <sysproperty key="maven.home" value="${maven.dir}" />
+            <args />
+            <arg line="@{target}" />
+         </java>
+      </sequential>
+   </macrodef>
+	
+</project>
