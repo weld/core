@@ -1,6 +1,7 @@
 package org.jboss.webbeans.ejb;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.interceptor.InvocationContext;
 import javax.webbeans.manager.Bean;
 
@@ -13,13 +14,34 @@ public class SessionBeanInterceptor
    @PostConstruct
    public void postConstruct(InvocationContext invocationContext)
    {
+      EnterpriseBean<Object> enterpriseBean = getBean(invocationContext);
+      if (enterpriseBean != null)
+      {
+         enterpriseBean.postConstruct(invocationContext.getTarget());
+      }
+   }
+   
+   @PreDestroy
+   public void preDestroy(InvocationContext invocationContext)
+   {
+      EnterpriseBean<Object> enterpriseBean = getBean(invocationContext);
+      if (enterpriseBean != null)
+      {
+         enterpriseBean.preDestroy(invocationContext.getTarget());
+      }
+   }
+   
+   private static EnterpriseBean<Object> getBean(InvocationContext invocationContext)
+   {
       Class<?> beanClass = invocationContext.getTarget().getClass();
-      // TODO Don't like this
       Bean<?> bean = CurrentManager.rootManager().getBeanMap().get(beanClass);
       if (bean instanceof EnterpriseBean)
       {
-         EnterpriseBean<Object> enterpriseBean = (EnterpriseBean<Object>) bean;
-         enterpriseBean.postConstruct(invocationContext.getTarget());
+         return (EnterpriseBean<Object>) bean;
+      }
+      else
+      {
+         return null;
       }
    }
    
