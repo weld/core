@@ -23,8 +23,6 @@ import javax.servlet.ServletContext;
 
 import org.jboss.webbeans.contexts.AbstractBeanMapAdaptor;
 import org.jboss.webbeans.contexts.ApplicationContext;
-import org.jboss.webbeans.log.LogProvider;
-import org.jboss.webbeans.log.Logging;
 
 /**
  * A BeanMap that uses a servlet context as backing map
@@ -35,8 +33,6 @@ import org.jboss.webbeans.log.Logging;
  */
 public class ApplicationBeanMap extends AbstractBeanMapAdaptor
 {
-   // The log provider
-   private static LogProvider log = Logging.getLogProvider(ApplicationBeanMap.class);
    // The servlet context to use as backing map
    private ServletContext context;
 

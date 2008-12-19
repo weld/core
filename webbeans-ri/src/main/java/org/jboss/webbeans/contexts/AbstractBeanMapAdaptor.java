@@ -24,9 +24,15 @@ import java.util.List;
 import javax.webbeans.manager.Contextual;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.servlet.ApplicationBeanMap;
 
 public abstract class AbstractBeanMapAdaptor implements BeanMap
 {
+   // The log provider
+   private static LogProvider log = Logging.getLogProvider(ApplicationBeanMap.class);
+   
    /**
     * Gets a bean from the map
     * 
@@ -38,6 +44,7 @@ public abstract class AbstractBeanMapAdaptor implements BeanMap
    {
       String key = getBeanKey(bean);
       T instance = (T) getAttribute(key);
+      log.trace("Looked for " + key + " and got " + instance);
       return instance;
    }
 
@@ -52,6 +59,7 @@ public abstract class AbstractBeanMapAdaptor implements BeanMap
       T instance = get(bean);
       String key = getBeanKey(bean);
       removeAttribute(key);
+      log.trace("Removed bean under key " + key);
       return instance;
    }
 
@@ -66,7 +74,9 @@ public abstract class AbstractBeanMapAdaptor implements BeanMap
       {
          String name = (String) names.nextElement();
          removeAttribute(name);
+         log.trace("Cleared " + name);
       }
+      log.trace("Bean Map cleared");
    }
 
    /**
@@ -103,6 +113,7 @@ public abstract class AbstractBeanMapAdaptor implements BeanMap
    {
       String key = getBeanKey(bean);
       setAttribute(key, instance);
+      log.trace("Added bean " + bean + " under key " + key);
    }
 
    /**
@@ -127,6 +138,12 @@ public abstract class AbstractBeanMapAdaptor implements BeanMap
     */
    protected abstract Enumeration<String> getAttributeNames();
 
+   /**
+    * Sets an instance under a key in the underlying storage
+    * 
+    * @param key The key
+    * @param instance The instance
+    */
    protected abstract void setAttribute(String key, Object instance);
 
    /**

@@ -23,8 +23,6 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.contexts.AbstractBeanMapAdaptor;
 import org.jboss.webbeans.contexts.ApplicationContext;
-import org.jboss.webbeans.log.LogProvider;
-import org.jboss.webbeans.log.Logging;
 
 /**
  * A BeanMap that uses a HTTP session as backing map
@@ -35,8 +33,6 @@ import org.jboss.webbeans.log.Logging;
  */
 public class SessionBeanMap extends AbstractBeanMapAdaptor
 {
-   // The log provider
-   private static LogProvider log = Logging.getLogProvider(ApplicationBeanMap.class);
    // The HTTP session context to use as backing map
    private HttpSession session;
 
