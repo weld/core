@@ -30,12 +30,13 @@
          <plugin>
             <groupId>org.jboss.maven.plugins</groupId>
             <artifactId>maven-jdocbook-plugin</artifactId>
+            
             <extensions>true</extensions>
             <dependencies>
                <dependency>
-                  <groupId>org.jboss.seam</groupId>
-                  <artifactId>seam-docbook-xslt</artifactId>
-                  <version>1.1.0.GA</version>
+                  <groupId>org.jboss.webbeans</groupId>
+                  <artifactId>webbeans-docbook-xslt</artifactId>
+                  <version>1.1.1-SNAPSHOT</version>
                   <exclusions>
                      <exclusion>
                         <groupId>org.eclipse.wst.css</groupId>
@@ -76,7 +77,7 @@
                   <format>
                      <formatName>pdf</formatName>
                      <stylesheetResource>
-                        classpath:/xslt/org/jboss/seam/pdf.xsl
+                        classpath:/xslt/org/jboss/webbeans/pdf.xsl
                      </stylesheetResource>
                      <finalName>webbeans_reference.pdf</finalName>
                   </format>
