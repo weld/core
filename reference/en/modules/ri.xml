@@ -65,7 +65,7 @@ $ ant update</programlisting>
       Now, you're ready to deploy your first example!
    </para>
    
-   <note>
+   <tip>
       <para>
          The build scripts for the examples offer a number of targets, these 
          are:
@@ -99,7 +99,7 @@ $ ant update</programlisting>
            </para>
          </listitem>
       </itemizedlist>
-   </note>
+   </tip>
 
    <para>
       To deploy the numberguess example:
@@ -127,5 +127,363 @@ ant deploy</programlisting>
       Wait for the application to deploy, and visit
       <ulink url="http://localhost:8080/webbeans-translator" />!
    </para>
+   
+   <section>
+      <title>The numberguess example</title>
+      
+      <para>
+         In the numberguess application you get given 10 attempts to guess a
+         number between 1 and 100. After each attempt, you will be told whether
+         you are too high, or too low.
+      </para>
+      
+      <para>
+         The numberguess example is comprised of a number of Web Beans, 
+         configuration files, and Facelet JSF pages, packaged as a war. Let's 
+         start with the configuration files.
+      </para>
+      
+      <para>
+          All the configuration files for this example are located in 
+          <literal>WEB-INF/</literal>, which is stored in
+          <literal>WebContent</literal> in the source tree. First, we have 
+          <literal>faces-config.xml</literal>, in which we tell JSF to use
+          Facelets:
+      </para>
+      
+      <programlisting role="XML"><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="1.2"
+              xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
+    
+    <application>
+        <view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
+    </application>
+
+</faces-config>]]></programlisting>
+
+      <para>
+         There is an empty <literal>web-beans.xml</literal> file, which marks
+         this application as a Web Beans application.
+      </para>
+      
+      <para>
+         Finally there is <literal>web.xml</literal>:
+      </para>
+      
+      <programlistingco>
+         <areaspec>
+            <area id="faces.servlet" coords="12" />
+            <area id="faces.servlet.mapping" coords="18" />
+            <area id="faces.default.suffix" coords="23" />
+            <area id="session.timeout" coords="28" />
+            <area id="webbeans.listener" coords="32" />
+         </areaspec>
+         <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app version="2.5"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+   
+   <display-name>Web Beans Numbergues example</display-name>
+
+   <!-- JSF -->
+
+   <servlet>
+      <servlet-name>Faces Servlet</servlet-name>
+      <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+      <load-on-startup>1</load-on-startup>
+   </servlet>
+
+   <servlet-mapping>
+      <servlet-name>Faces Servlet</servlet-name>
+      <url-pattern>*.jsf</url-pattern>
+   </servlet-mapping>
+   
+   <context-param>
+      <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+      <param-value>.xhtml</param-value>
+   </context-param>
+
+   <session-config>
+      <session-timeout>10</session-timeout>
+   </session-config>
+   
+    <listener>
+       <listener-class>org.jboss.webbeans.servlet.WebBeansListener</listener-class>
+    </listener>
+
+</web-app>]]></programlisting>
+         <calloutlist>
+            <callout arearefs="faces.servlet">
+               <para>
+                  Enable and load the JSF servlet
+               </para>
+            </callout>
+            <callout arearefs="faces.servlet.mapping">
+               <para>
+                  Configure requests to <literal>.jsf</literal> pages to be
+                  handled by JSF
+               </para>
+            </callout>
+            <callout arearefs="faces.default.suffix">
+               <para>
+                  Tell JSF that we will be giving our source files (facelets) an
+                  extension of <literal>.jsf</literal>
+               </para>
+            </callout>
+            <callout arearefs="session.timeout">
+               <para>
+                  Configure a session timeout of 10 minutes
+               </para>
+            </callout>
+            <callout arearefs="webbeans.listener">
+               <para>
+                  Configure the Web Beans listener, so that Web Beans services
+                  can be used in the servlet request
+               </para>
+            </callout>
+         </calloutlist>
+      </programlistingco>
+      
+      <note>
+         <para>
+            The only configuration required by the Web Beans RI in 
+            <literal>web.xml</literal> is to add the Web Beans listener.
+         </para>
+         <para>
+            Whilst this demo is a JSF demo, you can use the Web Beans RI with 
+            any Servlet based web framework; just configure the Web Beans 
+            listener.
+         </para>
+      </note>
+      
+      <para>
+         Let's take a look at the Facelet view:
+      </para>
+      
+      <programlistingco>
+         <areaspec>
+            <area id="template" coords="8" />
+            <area id="messages" coords="12" />
+            <area id="instructions" coords="19" />
+            <area id="guess" coords="25" />
+            <area id="validator" coords="29" />
+            <area id="submit" coords="32" />
+         </areaspec>
+         <programlisting><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:s="http://jboss.com/products/seam/taglib">
+
+  <ui:composition template="template.xhtml">
+    <ui:define name="content">
+       <h1>Guess a number...</h1>
+       <h:form id="NumberGuessMain">
+          <div style="color: red">
+             <h:messages id="messages" globalOnly="false"/>
+             <h:outputText id="Higher" value="Higher!" rendered="#{game.number gt game.guess}"/>
+             <h:outputText id="Lower" value="Lower!" rendered="#{game.number lt game.guess}"/>
+          </div>
+   
+          <div>
+             I'm thinking of a number between #{game.smallest} and #{game.biggest}.
+             You have #{game.remainingGuesses} guesses.
+          </div>
+     
+          <div>
+             Your guess: 
+             <h:inputText id="inputGuess" 
+                          value="#{game.guess}" 
+                          required="true" 
+                          size="3">
+                <f:validateLongRange maximum="#{game.biggest}" 
+                                     minimum="#{game.smallest}"/>
+             </h:inputText>
+            <h:commandButton id="GuessButton" 
+                             value="Guess" 
+                             action="#{game.check}"/>
+          </div>
+   
+       </h:form>
+    </ui:define>
+  </ui:composition>
+</html>]]></programlisting>
+         <calloutlist>
+            <callout arearefs="template">
+               <para>
+                  Facelets is a templating language for JSF, here we are 
+                  wrapping our page in a template which defines the header.
+               </para>
+            </callout>
+            <callout arearefs="messages">
+               <para>
+                  There are a number of messages which can be sent to the user,
+                  "Higher!", "Lower!" and "Correct!"
+               </para>
+            </callout>
+            <callout arearefs="instructions">
+               <para>
+                  As the user guesses, the range of numbers they can guess gets
+                  smaller - this sentance changes to make sure they know what 
+                  range to guess in.
+               </para>
+            </callout>
+            <callout arearefs="guess">
+               <para>
+                  This input field is bound to a Web Bean, using the value
+                  expression.
+               </para>
+            </callout>
+            <callout arearefs="validator">
+               <para>
+                  A range validator is used to make sure the user doesn't
+                  accidentally input a number outside of the range in which they
+                  can guess - if the validator wasn't here, the user might use
+                  up a guess on an out of range number.
+               </para>
+            </callout>
+            <callout arearefs="submit">
+               <para>
+                  And, of course, there must be a way for the user to send their
+                  guess to the server. Here we bind to an action method on the
+                  Web Bean.
+               </para>
+            </callout>
+         </calloutlist>
+      </programlistingco>
+      
+      <para>
+         The example exists of 4 classes, the first two of which are binding
+         types. First, there is the <literal>@Random</literal> binding type, 
+         used for injecting a random number:
+      </para>
+      
+      <programlisting role="JAVA"><![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })
+@Retention(RUNTIME)
+@Documented
+@BindingType
+public @interface Random {}]]></programlisting>
+
+      <para>
+         There is also the <literal>@MaxNumber</literal> binding type, used for
+         injecting the maximum number that can be injected:
+      </para>
+      
+      <programlisting role="JAVA"><![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })
+@Retention(RUNTIME)
+@Documented
+@BindingType
+public @interface MaxNumber {}
+]]></programlisting>
+
+      <para>
+         The <literal>Generator</literal> class is responsible for creating the
+         random number, via a producer method. It also exposes the maximum
+         possible number via a producer method:
+      </para>
+
+      <programlisting role="JAVA"><![CDATA[@ApplicationScoped
+public class Generator {
+   
+   private java.util.Random random = new java.util.Random( System.currentTimeMillis() );
+   
+   private int maxNumber = 100;
+   
+   java.util.Random getRandom()
+   {
+      return random;
+   }
+   
+   @Produces @Random int next() { 
+      return getRandom().nextInt(maxNumber); 
+   }
+   
+   @Produces @MaxNumber int getMaxNumber()
+   {
+      return maxNumber;
+   }
+
+}]]></programlisting>
+
+      <para>
+         You'll notice that the <literal>Generator</literal> is application
+         scoped; therefore we don't get a different random each time.
+      </para>
+      
+      <para>
+         The final Web Bean in the application is the session scoped
+         <literal>Game</literal>. By making <literal>Game</literal> session 
+         scoped, you can only play the game once per browser session. You could
+         easily add a reset button - a good exercise for the reader :-)
+      </para>
+      
+      <para>
+         You'll also note that we've used the <literal>@Named</literal> 
+         annotation, so that we can use the bean through EL in the JSF page.
+         Finally, we've used constructor injection to initialize the game with
+         a random number. And of course, we need to tell the player when they've
+         won, so we give feedback with a <literal>FacesMessage</literal>.
+      </para>
+      
+      <programlisting role="JAVA"><![CDATA[@Named
+@SessionScoped
+public class Game
+{
+   private int number;
+   
+   private int guess;
+   private int smallest;
+   private int biggest;
+   private int remainingGuesses;
+   
+   public Game()
+   {
+   }
+   
+   @Initializer
+   Game(@Random int number, @MaxNumber int maxNumber)
+   {
+      this.number = number;
+      this.smallest = 1;
+      this.biggest = maxNumber;
+      this.remainingGuesses = 10;
+   }
+
+   // Getters and setters for fields
+   
+   public String check()
+   {
+      if (guess>number)
+      {
+         biggest = guess - 1;
+      }
+      if (guess<number)
+      {
+         smallest = guess + 1;
+      }
+      if (guess == number)
+      {
+         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Correct!"));
+      }
+      remainingGuesses--;
+      return null;
+   }
+   
+}]]></programlisting>
+   </section>
+   
+   <section>
+      <title>The translator example</title>
+      
+      <para>
+         The translator example will take any sentences you enter, and translate
+         them to Latin.
+      </para>
+   </section>
 
 </chapter>
