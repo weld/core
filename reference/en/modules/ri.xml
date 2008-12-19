@@ -1,0 +1,131 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+
+<chapter id="ri">
+   <title>Using the Web Beans Reference Implementation</title>
+
+    <para>
+      The Web Beans RI comes with a two examples, 
+      <literal>webbeans-numberguess</literal> (a war example, containing only
+      simple beans) and <literal>webbeans-translator</literal> (an ear example,
+      containing enterprise beans).
+   </para>
+   
+   <para>
+      Currently, the Web Beans RI only runs on JBoss Application Server 5. 
+      You'll need to download JBoss AS 5.0.0.GA from 
+      <ulink url="http://www.jboss.org/jbossas/downloads/">jboss.org</ulink>,
+      and unzip it. For example:
+   </para>
+   
+   <programlisting><![CDATA[$ cd /Applications
+$ unzip ~/jboss-5.0.0.GA.zip]]></programlisting>
+
+   <para>
+      Next, download the Web Beans RI from 
+      <ulink url="http://seamframework.org/WebBeans">seamframework.org</ulink>,
+      and unzip it. For example
+   </para>
+   
+   <programlisting><![CDATA[$ cd ~/
+$ unzip ~/webbeans-1.0.0.ALPHA1.zip]]></programlisting>
+
+   <para>
+      As Web Beans is a new piece of software, you need to update JBoss AS to 
+      run the Web Beans RI. Future versions of JBoss AS will include these
+      updates, and this step won't be necessary.
+   </para>
+   
+   <note>
+      <para>
+         Currently, two updates are needed. Firstly, a new deployer,
+         <literal>webbeans.deployer</literal> is added. This adds supports for
+         Web Bean archives to JBoss AS, and allows the Web Beans RI to query the
+         EJB3 container and discover which EJBs are installed in your 
+         application. Secondly, an update to JBoss EJB3 is needed.
+      </para>
+   </note>
+   
+   <para>
+      To install the update, you'll need ant 1.7.0 installed, and the 
+      <literal>ANT_HOME</literal> environment variable set. For example:
+   </para>
+   
+      <programlisting>$ unzip apache-ant-1.7.0.zip
+$ export ANT_HOME=~/apache-ant-1.7.0</programlisting>
+
+   <para>
+      Then, you can install the update. The update script will use Maven to
+      download the Web Beans and EJB3 automatically.
+   </para>
+   
+   <programlisting>$ cd webbeans-1.0.0.ALPHA1/jboss-as
+$ ant update</programlisting>
+
+   <para>
+      Now, you're ready to deploy your first example!
+   </para>
+   
+   <note>
+      <para>
+         The build scripts for the examples offer a number of targets, these 
+         are:
+      </para>
+      <itemizedlist>
+         <listitem>
+            <para>
+               <literal>ant restart</literal> - deploy the example in exploded 
+               format
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>ant explode</literal> - update an exploded example, without
+               restarting the deployment
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>ant deploy</literal> - deploy the example in compressed jar format
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>ant undeploy</literal> - remove the example from the server
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>ant clean</literal> - clean the example
+           </para>
+         </listitem>
+      </itemizedlist>
+   </note>
+
+   <para>
+      To deploy the numberguess example:
+   </para>
+
+   <programlisting>$ cd examples/numberguess
+ant deploy</programlisting>
+
+   <para>
+      Wait for the application to deploy, and enjoy hours of fun at
+      <ulink url="http://localhost:8080/webbeans-numberguess" />!
+   </para>
+   
+   <para>
+      The Web Beans RI includes a second simple example that will translate your text
+      into Latin. The numberguess example is a war example, and uses only simple
+      beans; the translator example is an ear example, and includes enterprise
+      beans, packaged in an EJB module. To try it out:
+   </para>
+
+   <programlisting>$ cd examples/traslator
+ant deploy</programlisting>
+
+   <para>
+      Wait for the application to deploy, and visit
+      <ulink url="http://localhost:8080/webbeans-translator" />!
+   </para>
+
+</chapter>

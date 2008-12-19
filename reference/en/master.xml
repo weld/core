@@ -36,6 +36,7 @@
       
       <xi:include href="modules/part1.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="modules/intro.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="modules/ri.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="modules/example.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="modules/injection.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="modules/scopescontexts.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
