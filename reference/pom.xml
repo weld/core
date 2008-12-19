@@ -36,7 +36,7 @@
                <dependency>
                   <groupId>org.jboss.webbeans</groupId>
                   <artifactId>webbeans-docbook-xslt</artifactId>
-                  <version>1.1.1-SNAPSHOT</version>
+                  <version>1.1.1.BETA2</version>
                   <exclusions>
                      <exclusion>
                         <groupId>org.eclipse.wst.css</groupId>
@@ -84,14 +84,14 @@
                   <format>
                      <formatName>html</formatName>
                      <stylesheetResource>
-                        classpath:/xslt/org/jboss/seam/xhtml.xsl
+                        classpath:/xslt/org/jboss/webbeans/xhtml.xsl
                      </stylesheetResource>
                      <finalName>index.html</finalName>
                   </format>
                   <format>
                      <formatName>html_single</formatName>
                      <stylesheetResource>
-                        classpath:/xslt/org/jboss/seam/xhtml-single.xsl
+                        classpath:/xslt/org/jboss/webbeans/xhtml-single.xsl
                      </stylesheetResource>
                      <finalName>index.html</finalName>
                   </format>
