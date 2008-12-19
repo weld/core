@@ -47,8 +47,8 @@
    <dependencyManagement>
       <dependencies>
          <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jbossorg-docbook-xslt</artifactId>
+            <groupId>org.jboss.seam</groupId>
+            <artifactId>seam-docbook-xslt</artifactId>
             <version>1.1.0.GA</version>
          </dependency>
       </dependencies>
