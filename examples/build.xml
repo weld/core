@@ -4,7 +4,7 @@
 	
 	<property name="maven.dir" location="${wbri.dir}/maven" />
 	
-	<property file="${wbri.dir}/build.properties"/>
+	<property file="${wbri.dir}/jboss-as/build.properties"/>
 	
 	<property name="final.url" value="http://localhost:8080/${example.name}" />
 	
