@@ -4,7 +4,7 @@
 	<path id="maven-ant-tasks.classpath" path="../lib/maven-ant-tasks.jar" />
 	<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpathref="maven-ant-tasks.classpath" />
 	
-	<property name="maven.dir" location="${basedir}/maven" />
+	<property name="maven.dir" location="${basedir}/lib/maven" />
 
 	<property file="build.properties" />
 	
@@ -17,6 +17,7 @@
 		<fail unless="jboss.home" message="Please pass in -Djboss.home=..."/>
 
 		<delete dir="${jboss.home}/server/default/deployers/webbeans.deployer" failonerror="false" />
+		<delete dir="target/webbeans.deployer" failonerror="false"/>
 		
 		<mkdir dir="target/webbeans.deployer"/>
 

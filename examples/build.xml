@@ -2,7 +2,7 @@
 	
 	<dirname property="wbri.dir" file="${ant.file.example.build.script}/../" />
 	
-	<property name="maven.dir" location="${wbri.dir}/maven" />
+	<property name="maven.dir" location="${wbri.dir}/lib/maven" />
 	
 	<property file="${wbri.dir}/jboss-as/build.properties"/>
 	
