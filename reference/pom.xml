@@ -26,6 +26,7 @@
    </repositories>
 
    <build>
+      <defaultGoal>package</defaultGoal>
       <plugins>
          <plugin>
             <groupId>org.jboss.maven.plugins</groupId>
