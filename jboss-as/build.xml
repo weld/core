@@ -36,7 +36,10 @@
 
 		<copy todir="target/webbeans.deployer">
 			<fileset refid="jboss5.deployer.fileset"/>
-			<flattenmapper />
+			<chainedmapper>
+			   <mapper classpathref="maven-ant-tasks.classpath" classname="org.apache.maven.artifact.ant.VersionMapper" from="${jboss5.deployer.versions}" to="flatten" />
+			   <flattenmapper />
+			</chainedmapper>
 		</copy>
 
 		<mkdir dir="target/webbeans.deployer/META-INF" />
@@ -54,7 +57,6 @@
 				<include name="webbeans-*.jar" />
 				<include name="google*.jar" />
 			</fileset>
-			<mapper classpathref="maven-ant-tasks.classpath" classname="org.apache.maven.artifact.ant.VersionMapper" from="${jboss5.deployer.versions}" to="flatten" />
 		</copy>
 
 	</target>
