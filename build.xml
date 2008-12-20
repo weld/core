@@ -100,7 +100,7 @@
       </zip>
 	</target>
 	
-	<target name="deploy-dist" depends="deploy">
+	<target name="deploy-dist" depends="dist">
 		<maven target="deploy:deploy-file" basedir="${basedir}">
 			<arg line="-DpomFile=${basedir}/pom.xml" />
 			<arg line="-Dpackaging=zip" />
