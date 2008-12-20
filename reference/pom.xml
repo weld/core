@@ -26,7 +26,7 @@
    </repositories>
 
    <build>
-      <defaultGoal>package</defaultGoal>
+      <defaultGoal>process-classes</defaultGoal>
       <plugins>
          <plugin>
             <groupId>org.jboss.maven.plugins</groupId>
@@ -112,7 +112,7 @@
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
                <execution>
-                  <phase>package</phase>
+                  <phase>process-classes</phase>
                   <configuration>
                      <tasks>
                         <copy file="${basedir}/target/docbook/publish/en/pdf/webbeans_reference.pdf" todir="${basedir}" />
