@@ -4,7 +4,7 @@
 
 <book lang="en">
 
-	<xi:include href="Book_Info.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	 <xi:include href="modules/Book_Info.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
     
     <toc/>
     
