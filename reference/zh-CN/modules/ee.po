@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2008-12-19 20:26+0000\n"
+"POT-Creation-Date: 2008-12-20 22:08+0000\n"
 "PO-Revision-Date: 2008-12-19 20:26+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -296,7 +296,7 @@ msgstr ""
 #: ee.xml:100
 #, no-c-format
 msgid ""
-"The lifecycle of the injected JMS objects are completely controlled by the "
+"The lifecycle of the injected JMS objects is completely controlled by the "
 "Web Bean manager."
 msgstr ""
 
