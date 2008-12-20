@@ -12,7 +12,9 @@
 		<delete dir="target" failonerror="false"/>
 	</target>
 
-	<target name="update" depends="install-jboss-ejb3-update" description="Update JBoss 5 for the Web Beans RI">
+	<target name="update" depends="install-jboss-ejb3-update, install-webbeans.deployer" description="Update JBoss 5 for the Web Beans RI" />
+		
+	<target name="install-webbeans.deployer">
 
 		<fail unless="jboss.home" message="Please pass in -Djboss.home=..."/>
 
@@ -24,6 +26,7 @@
 		<artifact:dependencies filesetId="jboss5.deployer.fileset" versionsId="jboss5.deployer.versions">
 			<dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-microcontainer" version="5.2.0-SNAPSHOT"/>
 			<dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-jbossas" version="5.2.0-SNAPSHOT"/>
+			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-ri" version="1.0.0-SNAPSHOT"/>
 			<remoteRepository id="snapshots.jboss.org" url="http://snapshots.jboss.org/maven2">
 				 <snapshots updatePolicy="always" />
 			</remoteRepository>
@@ -50,11 +53,22 @@
 				<include name="jboss-structure.xml"/>
 			</fileset>
 		</copy>
+		
+		<mkdir dir="${jboss.home}/server/default/deployers/webbeans.deployer/lib-int" />
+		
+		<copy todir="${jboss.home}/server/default/deployers/webbeans.deployer/lib-int">
+         <fileset dir="target/webbeans.deployer">
+            <include name="webbeans-ri.jar" />
+         </fileset>
+      </copy>
 
 		<copy todir="${jboss.home}/server/default/deployers/webbeans.deployer">
 			<fileset dir="target/webbeans.deployer">
 				<include name="**/*.xml" />
-				<include name="webbeans-*.jar" />
+				<include name="webbeans-ri-int-microcontainer.jar" />
+				<include name="webbeans-ri-int-jbossas.jar" />
+				<include name="webbeans-api.jar" />
+				<include name="webbeans-ri-spi.jar" />
 				<include name="google*.jar" />
 			</fileset>
 		</copy>

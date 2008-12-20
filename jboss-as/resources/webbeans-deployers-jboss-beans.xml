@@ -6,6 +6,7 @@
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
   <!-- Web Beans deployer -->
-  <bean name="WebBeansDeployer" class="org.jboss.webbeans.integration.microcontainer.WebBeanDiscoveryDeployer"/>
+  <bean name="WebBeansDiscoveryDeployer" class="org.jboss.webbeans.integration.microcontainer.WebBeanDiscoveryDeployer"/>
+  <bean name="WebBeansDeployer" class="org.jboss.webbeans.integration.microcontainer.WebBeansWebUrlIntegrationDeployer"/>
 
 </deployment>
