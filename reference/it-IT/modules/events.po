@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-20 00:11+0100\n"
+"PO-Revision-Date: 2008-12-20 15:39+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -23,25 +23,25 @@ msgstr "Eventi"
 #: events.xml:6
 #, no-c-format
 msgid "The Web Beans event notification facility allows Web Beans to interact in a totally decoupled manner. Event <emphasis>producers</emphasis> raise events that are then delivered to event <emphasis>observers</emphasis> by the Web Bean manager. This basic schema might sound like the familiar observer/observable pattern, but there are a couple of twists:"
-msgstr ""
+msgstr "Il sistema di notifica a eventi di Web Beans consente a Web Beans di interagire in maniera totalmente disaccoppiata. I <emphasis>produttori</emphasis> di eventi sollevano eventi che vengono consegnati agli <emphasis>osservatori</emphasis> di eventi tramite il manager Web Bean. Lo schema base può suonare simile al familiare pattern observer/observable, ma ci sono un paio di differenze:"
 
 #. Tag: para
 #: events.xml:14
 #, no-c-format
 msgid "not only are event producers decoupled from observers; observers are completely decoupled from producers,"
-msgstr ""
+msgstr "non solo i produttori di eventi sono disaccoppiati dagli osservatori; gli osservatori sono completamente disaccoppiati dai produttori,"
 
 #. Tag: para
 #: events.xml:18
 #, no-c-format
 msgid "observers can specify a combination of \"selectors\" to narrow the set of event notifications they will receive, and"
-msgstr ""
+msgstr "gli osservatori possono specificare una combinazione di \"selettori\" per restringere il set di notifiche di eventi da ricevere, e"
 
 #. Tag: para
 #: events.xml:22
 #, no-c-format
 msgid "observers can be notified immediately, or can specify that delivery of the event should be delayed until the end of the current transaction"
-msgstr ""
+msgstr "gli osservatori possono essere notificati immediatamente, o possono specificare che la consegna degli eventi venga ritardata fino alla fine della transazione conrrente"
 
 #. Tag: title
 #: events.xml:28

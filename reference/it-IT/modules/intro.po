@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-19 23:43+0100\n"
+"PO-Revision-Date: 2008-12-20 16:44+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 #: intro.xml:4
 #, no-c-format
 msgid "Getting started with Web Beans"
-msgstr ""
+msgstr "Iniziare con Web Beans"
 
 #. Tag: para
 #: intro.xml:6
@@ -29,7 +29,7 @@ msgstr ""
 #: intro.xml:13
 #, no-c-format
 msgid "Your first Web Bean"
-msgstr ""
+msgstr "Il primo Web Bean"
 
 #. Tag: para
 #: intro.xml:15
@@ -201,7 +201,7 @@ msgstr ""
 #: intro.xml:80
 #, no-c-format
 msgid "What is a Web Bean?"
-msgstr ""
+msgstr "Cosa è un Web Bean?"
 
 #. Tag: para
 #: intro.xml:82
