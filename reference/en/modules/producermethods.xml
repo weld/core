@@ -53,7 +53,7 @@
   of deployment-time polymorphism. But once the system is deployed, the Web Bean 
   implementation is fixed. A producer method has no such limitation:</para>
 
-<programlisting><![CDATA[@SessionScoped
+<programlisting role="JAVA"><![CDATA[@SessionScoped
 public class Preferences {
     
     private PaymentStrategyType paymentStrategy;
@@ -74,7 +74,7 @@ public class Preferences {
 
   <para>Consider an injection point:</para>
 
-<programlisting><![CDATA[@Preferred PaymentStrategy paymentStrat;]]></programlisting>
+<programlisting role="JAVA"><![CDATA[@Preferred PaymentStrategy paymentStrat;]]></programlisting>
 
   <para>This injection point has the same type and binding annotations as the producer
   method, so it resolves to the producer method using the usual Web Beans injection 
@@ -92,7 +92,7 @@ public class Preferences {
   <para>To change this behavior, we can add a <literal>@SessionScoped</literal> annotation 
   to the method.</para>
   
-<programlisting><![CDATA[@Produces @Preferred @SessionScoped
+<programlisting role="JAVA"><![CDATA[@Produces @Preferred @SessionScoped
 public PaymentStrategy getPaymentStrategy() {
     ...
 }]]></programlisting>
@@ -114,7 +114,7 @@ public PaymentStrategy getPaymentStrategy() {
   <para>If this isn't what we want we can use dependency injection into the 
   producer method to obtain Web Bean instances:</para>
 
-<programlisting><![CDATA[@Produces @Preferred @SessionScoped
+<programlisting role="JAVA"><![CDATA[@Produces @Preferred @SessionScoped
 public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy ccps,
                                           ChequePaymentStrategy cps,
                                           PayPalPaymentStrategy ppps) {
@@ -150,7 +150,7 @@ public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy ccps,
   
   <para>Consider the following producer method:</para>
 
-<programlisting><![CDATA[@Produces @Preferred @SessionScoped
+<programlisting role="JAVA"><![CDATA[@Produces @Preferred @SessionScoped
 public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy ccps,
                                           @New ChequePaymentStrategy cps,
                                           @New PayPalPaymentStrategy ppps) {

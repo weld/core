@@ -34,7 +34,7 @@ session, and automatically destroyed when the session ends.</para>
 <para>Web Beans features an <emphasis>extensible context model</emphasis>. It is possible 
 to define new scopes by creating a new scope type annotation:</para>
 
-<programlisting><![CDATA[@Retention(RUNTIME)
+<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
 @Target({TYPE, METHOD})
 @ScopeType
 public @interface ClusterScoped {}]]></programlisting>
@@ -47,7 +47,7 @@ framework development only.</para>
 <para>We can apply a scope type annotation to a Web Bean implementation class to specify 
 the scope of the Web Bean:</para>
 
-<programlisting><![CDATA[@ClusterScoped
+<programlisting role="JAVA"><![CDATA[@ClusterScoped
 public class SecondLevelCache { ... }]]></programlisting>
 
 <!--  
@@ -156,7 +156,7 @@ is new.</para>
   <para>Web Beans provides a built-in Web Bean for controlling the lifecyle of
   conversations in a JSF application. This Web Bean may be obtained by injection:</para>
   
-  <programlisting>@Current Conversation conversation;</programlisting>
+  <programlisting role="JAVA">@Current Conversation conversation;</programlisting>
   
   <para>To promote the conversation associated with the current request to a 
   long-running conversation, call the <literal>begin()</literal> method from
@@ -166,7 +166,7 @@ is new.</para>
   <para>In the following example, a conversation-scoped Web Bean controls the
   conversation with which it is associated:</para>
   
-<programlisting>@ConversationScoped @Stateful
+<programlisting role="JAVA">@ConversationScoped @Stateful
 public class OrderBuilder {
 
     private Order order;
@@ -219,7 +219,7 @@ public class OrderBuilder {
     
     <para>Therefore, the following link propagates the conversation:</para>
     
-    <programlisting><![CDATA[<a href="/addProduct.jsp?cid=#{conversation.id}">Add Product</a>]]></programlisting>
+    <programlisting role="HTML"><![CDATA[<a href="/addProduct.jsp?cid=#{conversation.id}">Add Product</a>]]></programlisting>
     
     <para>The Web Bean manager is also required to propagate conversations
     across any redirect, even if the conversation is not marked long-running.
@@ -243,7 +243,7 @@ public class OrderBuilder {
     the timeout. This is a hint to the Web Bean manager, which is free to ignore
     the setting.</para>
     
-    <programlisting>conversation.setTimeout(timeoutInMillis);</programlisting>
+    <programlisting role="JAVA">conversation.setTimeout(timeoutInMillis);</programlisting>
     
   </section>
   
@@ -258,7 +258,7 @@ public class OrderBuilder {
 
   <para>For example, this Web Bean has the scope type <literal>@Dependent</literal>:</para>
 
-<programlisting><![CDATA[public class Calculator { ... }]]></programlisting>
+<programlisting role="JAVA"><![CDATA[public class Calculator { ... }]]></programlisting>
 
   <para>When an injection point of a Web Bean resolves to a dependent Web Bean,
   a new instance of the dependent Web Bean is created every time the first
@@ -285,7 +285,7 @@ public class OrderBuilder {
 <emphasis>implicit</emphasis> definition of a dependent Web Bean at an injection point. 
 Suppose we declare the following injected field:</para>
 
-<programlisting><![CDATA[@New Calculator calculator;]]></programlisting>
+<programlisting role="JAVA"><![CDATA[@New Calculator calculator;]]></programlisting>
 
 <para>Then a Web Bean with scope <literal>@Dependent</literal>, binding type 
 <literal>@New</literal>, API type <literal>Calculator</literal>, implementation class 
@@ -295,13 +295,13 @@ implicitly defined.</para>
 <para>This is true even if <literal>Calculator</literal> is <emphasis>already</emphasis> 
 declared with a different scope type, for example:</para>
 
-<programlisting><![CDATA[@ConversationScoped
+<programlisting role="JAVA"><![CDATA[@ConversationScoped
 public class Calculator { ... }]]></programlisting>
 
 <para>So the following injected attributes each get a different instance of 
 <literal>Calculator</literal>:</para>
 
-<programlisting><![CDATA[public class PaymentCalc {
+<programlisting role="JAVA"><![CDATA[public class PaymentCalc {
 
     @Current Calculator calculator;
     @New Calculator newCalculator;

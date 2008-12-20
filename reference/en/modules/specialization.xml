@@ -8,7 +8,7 @@
   time. For example, the following enterprise Web Bean provides an implementation 
   of the API <literal>PaymentProcessor</literal> in production:</para>
   
-<programlisting>@CreditCard @Stateless
+<programlisting role="JAVA">@CreditCard @Stateless
 public class CreditCardPaymentProcessor 
         implements PaymentProcessor {
     ...
@@ -17,7 +17,7 @@ public class CreditCardPaymentProcessor
   <para>But in our staging environment, we override that implementation of 
   <literal>PaymentProcessor</literal> with a different Web Bean:</para>
   
-<programlisting>@CreditCard @Stateless @Staging
+<programlisting role="JAVA">@CreditCard @Stateless @Staging
 public class StagingCreditCardPaymentProcessor 
         implements PaymentProcessor {
     ...
@@ -29,7 +29,7 @@ public class StagingCreditCardPaymentProcessor
   would have a higher priority than the default deployment type <literal>@Production</literal>,
   and therefore clients with the following injection point:</para>
   
-<programlisting>@CreditCard PaymentProcessor ccpp</programlisting>
+<programlisting role="JAVA">@CreditCard PaymentProcessor ccpp</programlisting>
 
   <para>Would receive an instance of <literal>StagingCreditCardPaymentProcessor</literal>.</para>
 
@@ -82,7 +82,7 @@ public class StagingCreditCardPaymentProcessor
     </listitem>
   </itemizedlist>
   
-<programlisting>@Stateless @Staging @Specializes
+<programlisting role="JAVA">@Stateless @Staging @Specializes
 public class StagingCreditCardPaymentProcessor 
         extends CreditCardPaymentProcessor {
     ...

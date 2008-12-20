@@ -26,7 +26,7 @@
     for years in various applications. The first class parses a string into a 
     list of sentences:</para>
     
-    <programlisting><![CDATA[public class SentenceParser {
+    <programlisting role="JAVA"><![CDATA[public class SentenceParser {
     public List<String> parse(String text) { ... }
 }]]></programlisting>
 
@@ -34,14 +34,14 @@
     external system that is able to translate sentences from one language to 
     another:</para>
     
-    <programlisting><![CDATA[@Stateless
+    <programlisting role="JAVA"><![CDATA[@Stateless
 public class SentenceTranslator implements Translator {
     public String translate(String sentence) { ... }
 }]]></programlisting>
 
     <para>Where <literal>Translator</literal> is the local interface:</para>
     
-    <programlisting><![CDATA[@Local
+    <programlisting role="JAVA"><![CDATA[@Local
 public interface Translator {
     public String translate(String sentence);
 }]]></programlisting>
@@ -49,7 +49,7 @@ public interface Translator {
     <para>Unfortunately, we don't have a preexisting class that translates whole
     text documents. So let's write a Web Bean that does this job:</para>
     
-    <programlisting><![CDATA[public class TextTranslator {
+    <programlisting role="JAVA"><![CDATA[public class TextTranslator {
     
     private SentenceParser sentenceParser;
     private Translator sentenceTranslator;
@@ -73,7 +73,7 @@ public interface Translator {
     <para>We may obtain an instance of <literal>TextTranslator</literal> by 
     injecting it into a Web Bean, Servlet or EJB:</para>
     
-    <programlisting><![CDATA[@Initializer
+    <programlisting role="JAVA"><![CDATA[@Initializer
 public setTextTranslator(TextTranslator textTranslator) {
     this.textTranslator = textTranslator;
 }]]></programlisting>
@@ -81,7 +81,7 @@ public setTextTranslator(TextTranslator textTranslator) {
     <para>Alternatively, we may obtain an instance by directly calling a method 
     of the Web Bean manager:</para>
 
-    <programlisting><![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator.class);]]></programlisting>
+    <programlisting role="JAVA"><![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator.class);]]></programlisting>
     
     <para>But wait: <literal>TextTranslator</literal> does not have a constructor
     with no parameters! Is it still a Web Bean? Well, a class that does not have a 
@@ -218,7 +218,7 @@ public setTextTranslator(TextTranslator textTranslator) {
   injection point has API type <literal>PaymentProcessor</literal> and binding
   type <literal>@CreditCard</literal>:</para>
 
-<programlisting><![CDATA[@CreditCard PaymentProcessor paymentProcessor]]></programlisting>
+<programlisting role="JAVA"><![CDATA[@CreditCard PaymentProcessor paymentProcessor]]></programlisting>
 
   <para>If no binding type is explicitly specified at an injection point, the 
   default binding type <literal>@Current</literal> is assumed.</para>
@@ -231,7 +231,7 @@ public setTextTranslator(TextTranslator textTranslator) {
   and implements the API type <literal>PaymentProcessor</literal>. It could 
   therefore be injected to the example injection point:</para>
 
-<programlisting><![CDATA[@CreditCard
+<programlisting role="JAVA"><![CDATA[@CreditCard
 public class CreditCardPaymentProcessor 
     implements PaymentProcessor { ... }]]></programlisting>
 
@@ -262,7 +262,7 @@ public class CreditCardPaymentProcessor
   <para>In a testing environment, we might want to replace the <literal>SentenceTranslator</literal>
   Web Bean with a "mock object":</para>
 
-<programlisting><![CDATA[@Mock
+<programlisting role="JAVA"><![CDATA[@Mock
 public class MockSentenceTranslator implements Translator {
     public String translate(String sentence) {
         return "Lorem ipsum dolor sit amet";
@@ -291,7 +291,7 @@ public class MockSentenceTranslator implements Translator {
   <para>For example, any web application may have <emphasis>session scoped</emphasis> 
   Web Beans:</para>
 
-<programlisting><![CDATA[@SessionScoped
+<programlisting role="JAVA"><![CDATA[@SessionScoped
 public class ShoppingCart { ... }]]></programlisting>
 
   <para>An instance of a session scoped Web Bean is bound to a user session
@@ -313,19 +313,19 @@ public class ShoppingCart { ... }]]></programlisting>
   used in Unified EL expressions. It's easy to specify the name of a Web 
   Bean:</para>
 
-<programlisting><![CDATA[@SessionScoped @Named("cart")
+<programlisting role="JAVA"><![CDATA[@SessionScoped @Named("cart")
 public class ShoppingCart { ... }]]></programlisting>
 
   <para>Now we can easily use the Web Bean in any JSF or JSP page:</para>
 
-<programlisting><![CDATA[<h:dataTable value="#{cart.lineItems}" var="item">
+<programlisting role="HTML"><![CDATA[<h:dataTable value="#{cart.lineItems}" var="item">
     ....
 </h:dataTable>]]></programlisting>
 
   <para>It's even easier to just let the name be defaulted by the Web Bean
   manager:</para>
 
-<programlisting><![CDATA[@SessionScoped @Named
+<programlisting role="JAVA"><![CDATA[@SessionScoped @Named
 public class ShoppingCart { ... }]]></programlisting>
 
   <para>In this case, the name defaults to <literal>shoppingCart</literal>&#151;the
@@ -344,7 +344,7 @@ public class ShoppingCart { ... }]]></programlisting>
   <para>It remains possible to directly specify the interceptor class via 
   use of the <literal>@Interceptors</literal> annotation:</para>
   
-<programlisting><![CDATA[@SessionScoped 
+<programlisting role="JAVA"><![CDATA[@SessionScoped 
 @Interceptors(TransactionInterceptor.class)
 public class ShoppingCart { ... }]]></programlisting>
 
@@ -352,7 +352,7 @@ public class ShoppingCart { ... }]]></programlisting>
   interceptor binding through an <emphasis>interceptor binding 
   type</emphasis>:</para>
   
-<programlisting><![CDATA[@SessionScoped @Transactional
+<programlisting role="JAVA"><![CDATA[@SessionScoped @Transactional
 public class ShoppingCart { ... }]]></programlisting>
 
   <para>We'll discuss Web Beans interceptors and decorators in
@@ -420,7 +420,7 @@ public class ShoppingCart { ... }]]></programlisting>
     end of its lifecycle. This method is called the <emphasis>destructor</emphasis>
     method of the enterprise Web Bean.</para>
     
-<programlisting><![CDATA[@Stateful @SessionScoped
+<programlisting role="JAVA"><![CDATA[@Stateful @SessionScoped
 public class ShoppingCart {
 
     ...
@@ -485,7 +485,7 @@ public class ShoppingCart {
     of the instantiation process, instead of leaving instantiation to the Web Bean
     manager. For example:</para>
 
-<programlisting><![CDATA[@ApplicationScoped
+<programlisting role="JAVA"><![CDATA[@ApplicationScoped
 public class Generator {
 
     private Random random = new Random( System.currentTimeMillis() );
@@ -498,7 +498,7 @@ public class Generator {
 
     <para>The result of a producer method is injected just like any other Web Bean.</para>
 
-    <programlisting><![CDATA[@Random int randomNumber]]></programlisting>
+    <programlisting role="JAVA"><![CDATA[@Random int randomNumber]]></programlisting>
     
     <para>The method return type and all interfaces it extends/implements directly or indirectly 
     are API types of the producer method. If the return type is a class, all superclasses are 
@@ -506,13 +506,13 @@ public class Generator {
     
     <para>Some producer methods return objects that require explicit destruction:</para>
     
-<programlisting><![CDATA[@Produces @RequestScoped Connection connect(User user) {
+<programlisting role="JAVA"><![CDATA[@Produces @RequestScoped Connection connect(User user) {
     return createConnection( user.getId(), user.getPassword() );
 }]]></programlisting>
 
     <para>These producer methods may define matching <emphasis>disposal methods</emphasis>:</para>
     
-<programlisting><![CDATA[void close(@Disposes Connection connection) {
+<programlisting role="JAVA"><![CDATA[void close(@Disposes Connection connection) {
     connection.close();
 }]]></programlisting>
 

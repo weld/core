@@ -53,7 +53,7 @@
   <para>For example, the element <literal>&lt;util:Date/&gt;</literal> in the following
   XML fragment refers to the class <literal>java.util.Date</literal>:</para>
 
-<programlisting><![CDATA[<WebBeans xmlns="urn:java:javax.webbeans"
+<programlisting role="XML"><![CDATA[<WebBeans xmlns="urn:java:javax.webbeans"
           xmlns:util="urn:java:java.util">
 
     <util:Date/>
@@ -64,7 +64,7 @@
   a simple Web Bean! An instance of <literal>Date</literal> may now be injected by 
   any other Web Bean:</para>
 
-<programlisting><![CDATA[@Current Date date]]></programlisting>
+<programlisting role="JAVA"><![CDATA[@Current Date date]]></programlisting>
 
 </section>
 
@@ -74,7 +74,7 @@
   <para>We can declare the scope, deployment type and interceptor binding types 
   using direct child elements of the Web Bean declaration:</para>
 
-<programlisting><![CDATA[<myapp:ShoppingCart>
+<programlisting role="XML"><![CDATA[<myapp:ShoppingCart>
     <SessionScoped/>
     <myfwk:Transactional requiresNew="true"/>
     <myfwk:Secure/>
@@ -82,7 +82,7 @@
 
   <para>We use exactly the same approach to specify names and binding type:</para>
 
-<programlisting><![CDATA[<util:Date>
+<programlisting role="XML"><![CDATA[<util:Date>
     <Named>currentTime</Named>
 </util:Date>
 
@@ -101,13 +101,13 @@
   <para>Where <literal>@Login</literal> and <literal>@SystemStart</literal> are 
   binding annotations types.</para>
 
-<programlisting><![CDATA[@Current Date currentTime;
+<programlisting role="JAVA"><![CDATA[@Current Date currentTime;
 @Login Date loginTime;
 @SystemStart Date systemStartTime;]]></programlisting>
 
   <para>As usual, a Web Bean may support multiple binding types:</para>
 
-<programlisting><![CDATA[<myapp:AsynchronousChequePaymentProcessor>
+<programlisting role="XML"><![CDATA[<myapp:AsynchronousChequePaymentProcessor>
     <myapp:PayByCheque/>
     <myapp:Asynchronous/>
 </myapp:AsynchronousChequePaymentProcessor>]]></programlisting>
@@ -115,7 +115,7 @@
   <para>Interceptors and decorators are just simple Web Beans, so they may be
   declared just like any other simple Web Bean:</para>
 
-<programlisting><![CDATA[<myfwk:TransactionInterceptor>
+<programlisting role="XML"><![CDATA[<myfwk:TransactionInterceptor>
     <Interceptor/>
     <myfwk:Transactional/>
 </myfwk:TransactionInterceptor>]]></programlisting>
@@ -136,7 +136,7 @@
   
   <para>Web Beans lets us define a Web Bean at an injection point. For example:</para>
   
-<programlisting><![CDATA[<myapp:System>
+<programlisting role="XML"><![CDATA[<myapp:System>
     <ApplicationScoped/>
     <myapp:admin>
         <myapp:Name>
@@ -167,7 +167,7 @@
   a schema. There's nothing specific to Web Beans about writing or using the
   schema.</para>
   
-<programlisting><![CDATA[<WebBeans xmlns="urn:java:javax.webbeans"
+<programlisting role="XML"><![CDATA[<WebBeans xmlns="urn:java:javax.webbeans"
           xmlns:myapp="urn:java:com.mydomain.myapp"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="urn:java:javax.webbeans http://java.sun.com/jee/web-beans-1.0.xsd

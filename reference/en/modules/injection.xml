@@ -7,7 +7,7 @@
 
 <para>Constructor parameter injection:</para>
 
-<programlisting><![CDATA[public class Checkout {
+<programlisting role="JAVA"><![CDATA[public class Checkout {
         
     private final ShoppingCart cart;
     
@@ -20,7 +20,7 @@
 
 <para><emphasis>Initializer</emphasis> method parameter injection:</para>
 
-<programlisting><![CDATA[public class Checkout {
+<programlisting role="JAVA"><![CDATA[public class Checkout {
         
     private ShoppingCart cart;
 
@@ -33,7 +33,7 @@
 
 <para>And direct field injection:</para>
 
-<programlisting><![CDATA[public class Checkout {
+<programlisting role="JAVA"><![CDATA[public class Checkout {
 
     private @Current ShoppingCart cart;
     
@@ -72,7 +72,7 @@ type, it will not be injected.</para>
 
 <para>Producer methods also support parameter injection:</para>
 
-<programlisting><![CDATA[@Produces Checkout createCheckout(ShoppingCart cart) {
+<programlisting role="JAVA"><![CDATA[@Produces Checkout createCheckout(ShoppingCart cart) {
     return new Checkout(cart);
 }]]></programlisting>
 
@@ -119,12 +119,12 @@ injection point can specify exactly which Web Bean should be injected using a bi
 annotation. For example, there might be two implementations of 
 <literal>PaymentProcessor</literal>:</para>
 
-<programlisting><![CDATA[@PayByCheque
+<programlisting role="JAVA"><![CDATA[@PayByCheque
 public class ChequePaymentProcessor implements PaymentProcessor {
     public void process(Payment payment) { ... }
 }]]></programlisting>      
 
-<programlisting><![CDATA[@PayByCreditCard
+<programlisting role="JAVA"><![CDATA[@PayByCreditCard
 public class CreditCardPaymentProcessor implements PaymentProcessor {
     public void process(Payment payment) { ... }
 }]]></programlisting>
@@ -132,12 +132,12 @@ public class CreditCardPaymentProcessor implements PaymentProcessor {
 <para>Where <literal>@PayByCheque</literal> and <literal>@PayByCreditCard</literal> 
 are binding annotations:</para>
 
-<programlisting><![CDATA[@Retention(RUNTIME)
+<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
 @Target({TYPE, METHOD, FIELD, PARAMETER})
 @BindingType
 public @interface PayByCheque {}]]></programlisting>
 
-<programlisting><![CDATA[@Retention(RUNTIME)
+<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
 @Target({TYPE, METHOD, FIELD, PARAMETER})
 @BindingType
 public @interface PayByCreditCard {}]]></programlisting>
@@ -147,12 +147,12 @@ Web Bean should be injected.</para>
 
 <para>Using field injection:</para>
 
-<programlisting><![CDATA[@PayByCheque PaymentProcessor chequePaymentProcessor;
+<programlisting role="JAVA"><![CDATA[@PayByCheque PaymentProcessor chequePaymentProcessor;
 @PayByCreditCard PaymentProcessor creditCardPaymentProcessor;]]></programlisting>
 
 <para>Using initializer method injection:</para>
 
-<programlisting><![CDATA[@Initializer
+<programlisting role="JAVA"><![CDATA[@Initializer
 public void setPaymentProcessors(@PayByCheque PaymentProcessor chequePaymentProcessor, 
                                  @PayByCreditCard PaymentProcessor creditCardPaymentProcessor) {
    this.chequePaymentProcessor = chequePaymentProcessor;
@@ -161,7 +161,7 @@ public void setPaymentProcessors(@PayByCheque PaymentProcessor chequePaymentProc
 
 <para>Or using constructor injection:</para>
 
-<programlisting><![CDATA[@Initializer
+<programlisting role="JAVA"><![CDATA[@Initializer
 public Checkout(@PayByCheque PaymentProcessor chequePaymentProcessor, 
                 @PayByCreditCard PaymentProcessor creditCardPaymentProcessor) {
    this.chequePaymentProcessor = chequePaymentProcessor;
@@ -173,7 +173,7 @@ public Checkout(@PayByCheque PaymentProcessor chequePaymentProcessor,
 
   <para>Binding annotations may have members:</para>
 
-<programlisting><![CDATA[@Retention(RUNTIME)
+<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
 @Target({TYPE, METHOD, FIELD, PARAMETER})
 @BindingType
 public @interface PayBy {
@@ -182,7 +182,7 @@ public @interface PayBy {
 
   <para>In which case, the member value is significant:</para>
 
-<programlisting><![CDATA[@PayBy(CHEQUE) PaymentProcessor chequePaymentProcessor;
+<programlisting role="JAVA"><![CDATA[@PayBy(CHEQUE) PaymentProcessor chequePaymentProcessor;
 @PayBy(CREDIT_CARD) PaymentProcessor creditCardPaymentProcessor;]]></programlisting>
 
   <para>You can tell the Web Bean manager to ignore a member of a binding annotation
@@ -195,7 +195,7 @@ public @interface PayBy {
 
   <para>An injection point may even specify multiple binding annotations:</para>
 
-<programlisting><![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]></programlisting>
+<programlisting role="JAVA"><![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]></programlisting>
 
   <para>In this case, only a Web Bean which has <emphasis>both</emphasis> binding 
   annotations would be eligible for injection.</para>
@@ -207,7 +207,7 @@ public @interface PayBy {
 
 <para>Even producer methods may specify binding annotations:</para>
 
-<programlisting><![CDATA[@Produces 
+<programlisting role="JAVA"><![CDATA[@Produces 
 @Asynchronous @PayByCheque 
 PaymentProcessor createAsyncPaymentProcessor(@PayByCheque PaymentProcessor processor) {
     return new AsynchronousPaymentProcessor(processor);
@@ -251,7 +251,7 @@ PaymentProcessor createAsyncPaymentProcessor(@PayByCheque PaymentProcessor proce
   which would identify Web Beans that should only be installed when the system executes
   inside an integration testing environment:</para>
 
-  <programlisting><![CDATA[@Retention(RUNTIME)
+  <programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
   @Target({TYPE, METHOD})
   @DeploymentType
   public @interface Mock {}]]></programlisting>
@@ -259,7 +259,7 @@ PaymentProcessor createAsyncPaymentProcessor(@PayByCheque PaymentProcessor proce
   <para>Suppose we had some Web Bean that interacted with an external system to
   process payments:</para>
 
-<programlisting><![CDATA[public class ExternalPaymentProcessor {
+<programlisting role="JAVA"><![CDATA[public class ExternalPaymentProcessor {
         
     public void process(Payment p) {
         ...
@@ -273,7 +273,7 @@ PaymentProcessor createAsyncPaymentProcessor(@PayByCheque PaymentProcessor proce
   <para>For integration or unit testing, the external system is slow or unavailable.
   So we would create a mock object:</para>
 
-<programlisting><![CDATA[@Mock 
+<programlisting role="JAVA"><![CDATA[@Mock 
 public class MockPaymentProcessor implements PaymentProcessor {
 
     @Override
@@ -298,7 +298,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
   <para>Going back to our example, when we deploy our integration tests, we want all 
   our <literal>@Mock</literal> objects to be installed:</para>
 
-<programlisting><![CDATA[<WebBeans>
+<programlisting role="JAVA"><![CDATA[<WebBeans>
     <Deploy>
         <Standard/>
         <Production/>
@@ -328,7 +328,7 @@ manager decides which implementation&#151;<literal>ExternalPaymentProcessor</lit
 or <literal>MockPaymentProcessor</literal>&#151;to choose. Consider what happens when 
 the manager encounters this injection point:</para>
 
-<programlisting><![CDATA[@Current PaymentProcessor paymentProcessor]]></programlisting>
+<programlisting role="JAVA"><![CDATA[@Current PaymentProcessor paymentProcessor]]></programlisting>
 
 <para>There are now two Web Beans which satisfy the <literal>PaymentProcessor</literal> 
 contract. Of course, we can't use a binding annotation to disambiguate, since binding 
@@ -474,28 +474,28 @@ scenarios the Web Bean will be used in.</para>
   <para>The application may obtain an instance of the interface <literal>Manager</literal>
   by injection:</para>
   
-  <programlisting><![CDATA[@Current Manager manager;]]></programlisting>
+  <programlisting role="JAVA"><![CDATA[@Current Manager manager;]]></programlisting>
   
   <para>The <literal>Manager</literal> object provides a set of methods for obtaining a
   Web Bean instance programatically.</para>
   
-  <programlisting><![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor.class);]]></programlisting>
+  <programlisting role="JAVA"><![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor.class);]]></programlisting>
   
   <para>Binding annotations may be specified by subclassing the helper class 
   <literal>AnnotationLiteral</literal>, since it is otherwise difficult to instantiate an
   annotation type in Java.</para>
   
-  <programlisting><![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor.class, 
+  <programlisting role="JAVA"><![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor.class, 
                                                new AnnotationLiteral<CreditCard>(){});]]></programlisting>
   
   <para>If the binding type has an annotation member, we can't use an anonymous subclass of 
   <literal>AnnotationLiteral</literal>&#151;instead we'll need to create a named subclass:</para>
   
-<programlisting><![CDATA[abstract class CreditCardBinding 
+<programlisting role="JAVA"><![CDATA[abstract class CreditCardBinding 
     extends AnnotationLiteral<CreditCard> 
     implements CreditCard {}]]></programlisting>
 
-<programlisting><![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor.class, 
+<programlisting role="JAVA"><![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor.class, 
                                                new CreditCardBinding() { 
                                                    public void value() { return paymentType; } 
                                                } );]]></programlisting>
@@ -551,12 +551,12 @@ scenarios the Web Bean will be used in.</para>
   <para>Let's look at an example. The following code is verbose, and vulnerable to refactoring
   problems:</para>
 
-<programlisting><![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]></programlisting>
+<programlisting role="JAVA"><![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]></programlisting>
 
   <para>This clever little producer method lets you inject a JDK <literal>Logger</literal> without 
   explicitly specifying the log category:</para>
 
-<programlisting><![CDATA[class LogFactory {
+<programlisting role="JAVA"><![CDATA[class LogFactory {
 
    @Produces Logger createLogger(InjectionPoint injectionPoint) { 
       return Logger.getLogger(injectionPoint.getMember().getDeclaringClass().getName()); 
@@ -566,12 +566,12 @@ scenarios the Web Bean will be used in.</para>
 
   <para>We can now write:</para>
 
-<programlisting><![CDATA[@Current Logger log;]]></programlisting>
+<programlisting role="JAVA"><![CDATA[@Current Logger log;]]></programlisting>
 
   <para>Not convinced? Then here's a second example. To inject HTTP parameters, we need to define 
   a binding type:</para>
 
-<programlisting><![CDATA[@BindingType
+<programlisting role="JAVA"><![CDATA[@BindingType
 @Retention(RUNTIME)
 @Target({TYPE, METHOD, FIELD, PARAMETER})
 public @interface HttpParam {
@@ -580,12 +580,12 @@ public @interface HttpParam {
 
   <para>We would use this binding type at injection points as follows:</para>
 
-<programlisting><![CDATA[@HttpParam("username") String username;
+<programlisting role="JAVA"><![CDATA[@HttpParam("username") String username;
 @HttpParam("password") String password;]]></programlisting>
 
   <para>The following producer method does the work:</para>
 
-<programlisting><![CDATA[class HttpParams
+<programlisting role="JAVA"><![CDATA[class HttpParams
 
    @Produces @HttpParam("")
    String getParamValue(ServletRequest request, InjectionPoint ip) {
@@ -600,7 +600,7 @@ public @interface HttpParam {
 <para>The Web Bean manager provides a built-in Web Bean that implements the
 <literal>InjectionPoint</literal> interface:</para>
 
-<programlisting><![CDATA[public interface InjectionPoint { 
+<programlisting role="JAVA"><![CDATA[public interface InjectionPoint { 
    public Object getInstance(); 
    public Bean<?> getBean(); 
    public Member getMember(): 

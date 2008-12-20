@@ -21,7 +21,7 @@
   
   <para>Suppose we have an interface that represents accounts:</para>
   
-<programlisting><![CDATA[public interface Account {
+<programlisting role="JAVA"><![CDATA[public interface Account {
     public BigDecimal getBalance();
     public User getOwner();
     public void withdraw(BigDecimal amount);
@@ -37,7 +37,7 @@
   <para>A decorator is a simple Web Bean that implements the type it
   decorates and is annotated <literal>@Decorator</literal>.</para>
   
-<programlisting><![CDATA[@Decorator
+<programlisting role="JAVA"><![CDATA[@Decorator
 public abstract class LargeTransactionDecorator 
         implements Account {
     
@@ -77,12 +77,12 @@ public abstract class LargeTransactionDecorator
     <para>This delegate attribute specifies that the decorator is bound to
     all Web Beans that implement <literal>Account</literal>:</para>
     
-<programlisting><![CDATA[@Decorates Account account;]]></programlisting>
+<programlisting role="JAVA"><![CDATA[@Decorates Account account;]]></programlisting>
 
     <para>A delegate attribute may specify a binding annotation. Then the
     decorator will only be bound to Web Beans with the same binding.</para>
     
-<programlisting><![CDATA[@Decorates @Foreign Account account;]]></programlisting>
+<programlisting role="JAVA"><![CDATA[@Decorates @Foreign Account account;]]></programlisting>
 
     <para>A decorator is bound to any Web Bean which:</para>
     
@@ -107,7 +107,7 @@ public abstract class LargeTransactionDecorator
   <para>We need to <emphasis>enable</emphasis> our decorator in 
   <literal>web-beans.xml</literal>.</para>
 
-<programlisting><![CDATA[<Decorators>
+<programlisting role="XML"><![CDATA[<Decorators>
     <myapp:LargeTransactionDecorator/>
 </Decorators>]]></programlisting>
 

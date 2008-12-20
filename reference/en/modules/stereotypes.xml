@@ -41,14 +41,14 @@
   <para>A stereotype is a Java annotation type. This stereotype identifies
   action classes in some MVC framework:</para>
   
-<programlisting><![CDATA[@Retention(RUNTIME)
+<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
 @Target(TYPE)
 @Stereotype
 public @interface Action {}]]></programlisting>
 
   <para>We use the stereotype by applying the annotation to a Web Bean.</para>
   
-<programlisting><![CDATA[@Action 
+<programlisting role="JAVA"><![CDATA[@Action 
 public class LoginAction { ... }]]></programlisting>
 
   <section>
@@ -60,7 +60,7 @@ public class LoginAction { ... }]]></programlisting>
     be deployed when the system executes as a web application, we might
     specify the following defaults for action classes:</para>
     
-<programlisting><![CDATA[@Retention(RUNTIME)
+<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
 @Target(TYPE)
 @RequestScoped
 @WebTier
@@ -70,7 +70,7 @@ public @interface Action {}]]></programlisting>
     <para>Of course, a particular action may still override these defaults
     if necessary:</para>
     
-<programlisting><![CDATA[@Dependent @Mock @Action 
+<programlisting role="JAVA"><![CDATA[@Dependent @Mock @Action 
 public class MockLoginAction { ... }]]></programlisting>
 
     <para>If we want to force all actions to a particular scope, we can
@@ -85,7 +85,7 @@ public class MockLoginAction { ... }]]></programlisting>
     scopes. Web Beans lets us explicitly specify the set of allowed scopes
     for Web Beans with a certain stereotype. For example:</para>
     
-<programlisting><![CDATA[@Retention(RUNTIME)
+<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
 @Target(TYPE)
 @RequestScoped
 @WebTier
@@ -99,7 +99,7 @@ public @interface Action {}]]></programlisting>
     <para>We can also force all Web Bean with a certain stereotype to
     implement an interface or extend a class:</para>
     
-<programlisting><![CDATA[@Retention(RUNTIME)
+<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
 @Target(TYPE)
 @RequestScoped
 @WebTier
@@ -118,7 +118,7 @@ public @interface Action {}]]></programlisting>
     <para>A stereotype may specify a set of interceptor bindings to be 
     inherited by all Web Beans with that stereotype.</para>
     
-<programlisting><![CDATA[@Retention(RUNTIME)
+<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
 @Target(TYPE)
 @RequestScoped
 @Transactional(requiresNew=true)
@@ -140,7 +140,7 @@ public @interface Action {}]]></programlisting>
     referenced in JSP pages, so they're a perfect use case for this feature.
     All we need to do is add an empty <literal>@Named</literal> annotation:</para>
     
-<programlisting><![CDATA[@Retention(RUNTIME)
+<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
 @Target(TYPE)
 @RequestScoped
 @Transactional(requiresNew=true)
@@ -163,7 +163,7 @@ public @interface Action {}]]></programlisting>
     
     <para>Web Beans defines one further standard stereotype:</para>
     
-<programlisting><![CDATA[@Named 
+<programlisting role="JAVA"><![CDATA[@Named 
 @RequestScoped 
 @Stereotype 
 @Target({TYPE, METHOD}) 

@@ -8,7 +8,7 @@
   we'll define a Web Bean to hold the username and password entered during 
   login:</para>
 
-<programlisting><![CDATA[@Named
+<programlisting role="JAVA"><![CDATA[@Named
 public class Credentials {
 	
     private String username;
@@ -24,7 +24,7 @@ public class Credentials {
 
   <para>This Web Bean is bound to the login prompt in the following JSF form:</para>
 
-<programlisting><![CDATA[<f:form>
+<programlisting role="JAVA"><![CDATA[<f:form>
     <h:panelGrid columns="2" rendered="#{!login.loggedIn}">
         <h:outputLabel for="username">Username:</h:outputLabel>
         <h:inputText id="username" value="#{credentials.username}"/>
@@ -39,7 +39,7 @@ public class Credentials {
   information about the currently logged-in user and exposes the <literal>User</literal>
   entity to other Web Beans:</para>
 
-<programlisting><![CDATA[@SessionScoped @Named
+<programlisting role="JAVA"><![CDATA[@SessionScoped @Named
 public class Login {
 
     @Current Credentials credentials;
@@ -77,14 +77,14 @@ public class Login {
 
   <para>Of course, <literal>@LoggedIn</literal> is a binding annotation:</para>
 
-<programlisting><![CDATA[@Retention(RUNTIME)
+<programlisting role="JAVA"><![CDATA[@Retention(RUNTIME)
 @Target({TYPE, METHOD, FIELD})
 @BindingType
 public @interface LoggedIn {}]]></programlisting>
 
   <para>Now, any other Web Bean can easily inject the current user:</para>
 
-<programlisting><![CDATA[public class DocumentEditor {
+<programlisting role="JAVA"><![CDATA[public class DocumentEditor {
 
     @Current Document document;
     @LoggedIn User currentUser;

@@ -31,7 +31,7 @@
     <para>The <literal>Manager</literal> interface lets us register and obtain
     Web Beans, interceptors, decorators, observers and contexts programatically.</para>
     
-<programlisting><![CDATA[public interface Manager
+<programlisting role="JAVA"><![CDATA[public interface Manager
 {
 
    public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindings);
@@ -86,7 +86,7 @@
 
     <para>We can obtain an instance of <literal>Manager</literal> via injection:</para>
     
-<programlisting>@Current Manager manager</programlisting>
+<programlisting role="JAVA">@Current Manager manager</programlisting>
     
   </section>
   
@@ -98,7 +98,7 @@
     with the <literal>Manager</literal> object for every Web Bean in the
     application.</para>
     
-<programlisting>public abstract class Bean&lt;T&gt; {
+<programlisting role="JAVA">public abstract class Bean&lt;T&gt; {
     
     private final Manager manager;
     
@@ -144,7 +144,7 @@
     <para>The <literal>Context</literal> interface supports addition of new
     scopes to Web Beans, or extension of the built-in scopes to new environments.</para>
     
-<programlisting>public interface Context {
+<programlisting role="JAVA">public interface Context {
     
     public Class&lt;? extends Annotation&gt; getScopeType();
     

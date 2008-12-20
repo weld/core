@@ -30,7 +30,7 @@
   <para>An <emphasis>observer method</emphasis> is a method of a Web Bean with a 
   parameter annotated <literal>@Observes</literal>.</para>
 
-<programlisting><![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }]]></programlisting>
+<programlisting role="JAVA"><![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }]]></programlisting>
 
   <para>The annotated parameter is called the <emphasis>event parameter</emphasis>. 
   The type of the event parameter is the observed <emphasis>event type</emphasis>.
@@ -38,7 +38,7 @@
   binding types. When a binding type is used as an event selector, it is called an 
   <emphasis>event binding type</emphasis>.</para>
 
-<programlisting><![CDATA[@BindingType
+<programlisting role="JAVA"><![CDATA[@BindingType
 @Target({PARAMETER, FIELD})
 @Retention(RUNTIME)
 public @interface Updated { ... }]]></programlisting>
@@ -46,7 +46,7 @@ public @interface Updated { ... }]]></programlisting>
   <para>We specify the event bindings of the observer method by annotating the event 
   parameter:</para>
 
-<programlisting><![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document) { ... }]]></programlisting>
+<programlisting role="JAVA"><![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document) { ... }]]></programlisting>
 
   <para>An observer method need not specify any event bindings&#151;in this case it
   is interested in <emphasis>all</emphasis> events of a particular type. If it does
@@ -56,7 +56,7 @@ public @interface Updated { ... }]]></programlisting>
   <para>The observer method may have additional parameters, which are injected according 
   to the usual Web Beans method parameter injection semantics:</para>
 
-<programlisting><![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document, User user) { ... }]]></programlisting>
+<programlisting role="JAVA"><![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document, User user) { ... }]]></programlisting>
 
 </section>
 
@@ -66,7 +66,7 @@ public @interface Updated { ... }]]></programlisting>
   <para>The event producer may obtain an <emphasis>event notifier</emphasis> object 
   by injection:</para>
 
-<programlisting><![CDATA[@Observable Event<Document> documentEvent]]></programlisting>
+<programlisting role="JAVA"><![CDATA[@Observable Event<Document> documentEvent]]></programlisting>
 
   <para>The <literal>@Observable</literal> annotation implicitly defines a Web Bean
   with scope <literal>@Dependent</literal> and deployment type <literal>@Standard</literal>,
@@ -75,7 +75,7 @@ public @interface Updated { ... }]]></programlisting>
   <para>A producer raises events by calling the <literal>fire()</literal> method 
   of the <literal>Event</literal> interface, passing an <emphasis>event object</emphasis>:</para>
 
-<programlisting><![CDATA[documentEvent.fire(document);]]></programlisting>
+<programlisting role="JAVA"><![CDATA[documentEvent.fire(document);]]></programlisting>
 
   <para>An event object may be an instance of any Java class that has no type
   variables or wildcard type parameters. The event will be delivered to every
@@ -98,7 +98,7 @@ public @interface Updated { ... }]]></programlisting>
   <para>To specify a "selector", the event producer may pass an instance of the event 
   binding type to the <literal>fire()</literal> method:</para>
 
-<programlisting><![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>(){} );]]></programlisting>
+<programlisting role="JAVA"><![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>(){} );]]></programlisting>
 
   <para>The helper class <literal>AnnotationLiteral</literal> makes it possible to
   instantiate binding types inline, since this is otherwise difficult to do in Java.</para>
@@ -118,7 +118,7 @@ public @interface Updated { ... }]]></programlisting>
   <para>Alternatively, event bindings may be specified by annotating the event notifier
   injection point:</para>
 
-<programlisting><![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]></programlisting>
+<programlisting role="JAVA"><![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]></programlisting>
 
   <para>Then every event fired via this instance of <literal>Event</literal> has
   the annotated event binding. The event will be delivered to every observer method 
@@ -144,12 +144,12 @@ public @interface Updated { ... }]]></programlisting>
   may implement the <literal>Observer</literal> interface and register an instance
   with an event notifier by calling the <literal>observe()</literal> method.</para>
   
-  <programlisting><![CDATA[documentEvent.observe( new Observer<Document>() { public void notify(Document doc) { ... } } );]]></programlisting>
+  <programlisting role="JAVA"><![CDATA[documentEvent.observe( new Observer<Document>() { public void notify(Document doc) { ... } } );]]></programlisting>
   
   <para>Event binding types may be specified by the event notifier injection point or by 
   passing event binding type instances to the <literal>observe()</literal> method:</para>
   
-<programlisting><![CDATA[documentEvent.observe( new Observer<Document>() { public void notify(Document doc) { ... } }, 
+<programlisting role="JAVA"><![CDATA[documentEvent.observe( new Observer<Document>() { public void notify(Document doc) { ... } }, 
                                                 new AnnotationLiteral<Updated>(){} );]]></programlisting>
 
 </section>
@@ -159,7 +159,7 @@ public @interface Updated { ... }]]></programlisting>
 
   <para>An event binding type may have annotation members:</para>
 
-<programlisting><![CDATA[@BindingType
+<programlisting role="JAVA"><![CDATA[@BindingType
 @Target({PARAMETER, FIELD})
 @Retention(RUNTIME)
 public @interface Role {
@@ -168,23 +168,23 @@ public @interface Role {
 
   <para>The member value is used to narrow the messages delivered to the observer:</para>
 
-<programlisting><![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) { ... }]]></programlisting>
+<programlisting role="JAVA"><![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) { ... }]]></programlisting>
 
   <para>Event binding type members may be specified statically by the event producer, via
   annotations at the event notifier injection point:</para>
 
-<programlisting><![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]></programlisting>
+<programlisting role="JAVA"><![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]></programlisting>
 
   <para>Alternatively, the value of the event binding type member may be determined dynamically
   by the event producer. We start by writing an abstract subclass of <literal>AnnotationLiteral</literal>:</para>
   
-<programlisting><![CDATA[abstract class RoleBinding 
+<programlisting role="JAVA"><![CDATA[abstract class RoleBinding 
     extends AnnotationLiteral<Role> 
     implements Role {}]]></programlisting>
     
   <para>The event producer passes an instance of this class to <literal>fire()</literal>:</para>
 
-<programlisting><![CDATA[documentEvent.fire( document, new RoleBinding() { public void value() { return user.getRole(); } } );]]></programlisting>
+<programlisting role="JAVA"><![CDATA[documentEvent.fire( document, new RoleBinding() { public void value() { return user.getRole(); } } );]]></programlisting>
 
 </section>
 
@@ -193,16 +193,16 @@ public @interface Role {
 
   <para>Event binding types may be combined, for example:</para>
 
-<programlisting><![CDATA[@Observable @Blog Event<Document> blogEvent;
+<programlisting role="JAVA"><![CDATA[@Observable @Blog Event<Document> blogEvent;
 ...
 if (document.isBlog()) blogEvent.fire(document, new AnnotationLiteral<Updated>(){});]]></programlisting>
 
   <para>When this event occurs, all of the following observer methods will be notified:</para>
 
-<programlisting><![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document document) { ... }]]></programlisting>
-<programlisting><![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document) { ... }]]></programlisting>
-<programlisting><![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) { ... }]]></programlisting>
-<programlisting><![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }}}]]></programlisting>
+<programlisting role="JAVA"><![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document document) { ... }]]></programlisting>
+<programlisting role="JAVA"><![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document) { ... }]]></programlisting>
+<programlisting role="JAVA"><![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) { ... }]]></programlisting>
+<programlisting role="JAVA"><![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }}}]]></programlisting>
 
 </section>
 
@@ -215,7 +215,7 @@ if (document.isBlog()) blogEvent.fire(document, new AnnotationLiteral<Updated>()
   the application context, but only when transactions that update the 
   <literal>Category</literal> tree succeed:</para>
 
-<programlisting><![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess @Observes CategoryUpdateEvent event) { ... }]]></programlisting>
+<programlisting role="JAVA"><![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess @Observes CategoryUpdateEvent event) { ... }]]></programlisting>
 
   <para>There are three kinds of transactional observers:</para>
 
@@ -245,7 +245,7 @@ if (document.isBlog()) blogEvent.fire(document, new AnnotationLiteral<Updated>()
   
   <para>Imagine that we have cached a JPA query result set in the application scope:</para>
   
-  <programlisting><![CDATA[@ApplicationScoped @Singleton
+  <programlisting role="JAVA"><![CDATA[@ApplicationScoped @Singleton
 public class Catalog {
 
     @PersistenceContext EntityManager em;
@@ -271,7 +271,7 @@ public class Catalog {
   <para>The Web Bean that creates and deletes <literal>Product</literal>s could raise
   events, for example:</para>
   
-  <programlisting><![CDATA[@Stateless
+  <programlisting role="JAVA"><![CDATA[@Stateless
 public class ProductManager {
 
     @PersistenceContext EntityManager em;
@@ -294,7 +294,7 @@ public class ProductManager {
   <para>And now <literal>Catalog</literal> can observe the events after successful
   completion of the transaction:</para>
   
-  <programlisting><![CDATA[@ApplicationScoped @Singleton
+  <programlisting role="JAVA"><![CDATA[@ApplicationScoped @Singleton
 public class Catalog {
 
     ...

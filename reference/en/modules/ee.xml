@@ -16,7 +16,7 @@
     <literal>@PersistenceContext</literal>. We've already seen a couple of examples of 
     this, though we didn't pay much attention at the time:</para>
     
-<programlisting><![CDATA[@Transactional @Interceptor
+<programlisting role="JAVA"><![CDATA[@Transactional @Interceptor
 public class TransactionInterceptor {
 
     @Resource Transaction transaction;
@@ -25,7 +25,7 @@ public class TransactionInterceptor {
     
 }]]></programlisting>
 
-<programlisting><![CDATA[@SessionScoped
+<programlisting role="JAVA"><![CDATA[@SessionScoped
 public class Login {
 
     @Current Credentials credentials;
@@ -52,7 +52,7 @@ public class Login {
     <para>It's easy to use a Web Bean from a Servlet in Java EE 6. Simply inject 
     the Web Bean using Web Beans field or initializer method injection.</para>
     
-<programlisting>public class Login extends HttpServlet {
+<programlisting role="JAVA">public class Login extends HttpServlet {
 
     @Current Credentials credentials;
     @Current Login login;
@@ -90,7 +90,7 @@ public class Login {
     
     <para>You can even use Web Beans interceptor bindings for Message-Driven Beans.</para>
 
-<programlisting>@Transactional @MessageDriven
+<programlisting role="JAVA">@Transactional @MessageDriven
 public class ProcessOrder implements MessageListener {
 
     @Current Inventory inventory;
@@ -127,13 +127,13 @@ public class ProcessOrder implements MessageListener {
     queue or topic in <literal>web-beans.xml</literal>, specifying an associated
     binding type and connection factory.</para>
     
-      <programlisting><![CDATA[<Queue>
+      <programlisting role="XML"><![CDATA[<Queue>
     <destination>java:comp/env/jms/OrderQueue</destination>
     <connectionFactory>java:comp/env/jms/QueueConnectionFactory</connectionFactory>
     <myapp:OrderProcessor/>    
 </Queue>]]></programlisting>
     
-      <programlisting><![CDATA[<Topic>
+      <programlisting role="XML"><![CDATA[<Topic>
     <destination>java:comp/env/jms/StockPrices</destination>
     <connectionFactory>java:comp/env/jms/TopicConnectionFactory</connectionFactory>
     <myapp:StockPrices/>    
@@ -145,7 +145,7 @@ public class ProcessOrder implements MessageListener {
     <literal>TopicConnection</literal>, <literal>TopicSession</literal> or 
     <literal>TopicPublisher</literal> for a topic.</para>
     
-    <programlisting>@OrderProcessor QueueSender orderSender;
+    <programlisting role="JAVA">@OrderProcessor QueueSender orderSender;
 @OrderProcessor QueueSession orderSession;
 
 public void sendMessage() {
@@ -154,7 +154,7 @@ public void sendMessage() {
     orderSender.send(msg);
 }</programlisting>
     
-    <programlisting>@StockPrices TopicPublisher pricePublisher;
+    <programlisting role="JAVA">@StockPrices TopicPublisher pricePublisher;
 @StockPrices TopicSession priceSession;
 
 public void sendMessage(String price) {
