@@ -108,6 +108,7 @@
 			<arg line="-Dfile=${basedir}/webbeans-${version}.zip" />
 			<arg line="-Durl=dav:https://snapshots.jboss.org/maven2" />
 			<arg line="-DrepositoryId=snapshots.jboss.org" />
+			<arg line="-DuniqueVersion=false" />
 		</maven>
 	</target>
 	
