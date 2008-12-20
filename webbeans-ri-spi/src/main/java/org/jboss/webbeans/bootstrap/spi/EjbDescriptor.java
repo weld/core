@@ -91,6 +91,11 @@ public interface EjbDescriptor<T>
     */
    public String getEjbName();
    
+   /**
+    * @return The JNDI string which can be used to lookup a proxy which 
+    * implements all local business interfaces 
+    * 
+    */
    public String getLocalJndiName();
    
 }
