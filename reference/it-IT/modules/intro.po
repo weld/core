@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-20 16:44+0100\n"
+"PO-Revision-Date: 2008-12-20 18:01+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -19,11 +19,12 @@ msgstr ""
 msgid "Getting started with Web Beans"
 msgstr "Iniziare con Web Beans"
 
+# Rendere la frase "wondering what kinds of hoops the Web Beans specification will make you jump through!" più italiana.
 #. Tag: para
 #: intro.xml:6
 #, no-c-format
 msgid "So you're already keen to get started writing your first Web Bean? Or perhaps you're skeptical, wondering what kinds of hoops the Web Beans specification will make you jump through! The good news is that you've probably already written and used hundreds, perhaps thousands of Web Beans. You might not even remember the first Web Bean you wrote."
-msgstr ""
+msgstr "Non vedi l'ora di iniziare a scrivere il primo Web Beans? O forse sei un pò scettico e ti domandi in quali cerchi ti farà saltare dentro la specifica Web Beans! La buona notizia è che probabilmente hai già scritto e usato centinaia, forse migliaia di Web Beans. Si potrebbe addirittura non ricordare il primo Web Bean scritto."
 
 #. Tag: title
 #: intro.xml:13
@@ -35,7 +36,7 @@ msgstr "Il primo Web Bean"
 #: intro.xml:15
 #, no-c-format
 msgid "With certain, very special exceptions, every Java class with a constructor that accepts no parameters is a Web Bean. That includes every JavaBean. Furthermore, every EJB 3-style session bean is a Web Bean. Sure, the JavaBeans and EJBs you've been writing every day have not been able to take advantage of the new services defined by the Web Beans specification, but you'll be able to use every one of them as Web Beans&#151;injecting them into other Web Beans, configuring them via the Web Beans XML configuration facility, even adding interceptors and decorators to them&#151;without touching your existing code."
-msgstr ""
+msgstr "Con alcune eccezioni molto speciali, ogni classe Java con un costruttore che non accetta paramentri è un Web Bean. Questo include ogni JavaBean. Inoltre, ogni session bean di stile EJB3 è un Web Bean. Sicuramente i JavaBean e gli EJB3 che si sono sempre scritti non erano in grado di sfruttare i nuovi servizi definiti dalla specifica Web Beans, ma si sarà presto in grado di usare ciascuno di essi come Web Bean&#151;iniettandoli in altri Web Beans, configurandoli tramite strumenti di configurazione XML Web Bean, e perfino aggiungendo a loro interceptor e decoratori&#151;senza toccare il codice esistente."
 
 #. Tag: para
 #: intro.xml:25
@@ -429,7 +430,7 @@ msgstr ""
 #: intro.xml:217
 #, no-c-format
 msgid "Deployment types"
-msgstr ""
+msgstr "Tipi di deploy"
 
 #. Tag: para
 #: intro.xml:219
@@ -483,7 +484,7 @@ msgstr ""
 #: intro.xml:246
 #, no-c-format
 msgid "Scope"
-msgstr ""
+msgstr "Scope"
 
 #. Tag: para
 #: intro.xml:248

@@ -29,7 +29,7 @@ msgstr "Poiché Web Beans è così nuova, non è ancora disponibile molta inform
 #: next.xml:9
 #, no-c-format
 msgid "Of course, the Web Beans specification is the best source of more information about Web Beans. The spec is about 100 pages long, only twice the length of this article, and almost as readable. But, of course, it covers many details that we've skipped over. The spec is available from <literal>http://jcp.org/en/jsr/detail?id=299</literal>."
-msgstr "Certamente la specifica Web Beans è la migliore fonte per avere informazioni su Web Beans. La specifica è lunga circa 100 pagine, solo il doppio di quest'articolo e per lo più leggibile altrettanto facilmente. Ma sicuramente copre molti dettagli che sono stati saltati nel presente documento. La specifica è disponibile da <literal>http://jcp.org/en/jsr/detail?id=299</literal>."
+msgstr "La specifica Web Beans è sicuramente la migliore fonte per avere informazioni su Web Beans. La specifica è lunga circa 100 pagine, circa quest'articolo e per lo più leggibile altrettanto facilmente. Ma sicuramente copre molti dettagli che sono stati saltati nel presente documento. La specifica è disponibile al seguente indirizzo <literal>http://jcp.org/en/jsr/detail?id=299</literal>."
 
 #. Tag: para
 #: next.xml:15

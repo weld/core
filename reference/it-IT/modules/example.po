@@ -23,7 +23,7 @@ msgstr "Esempio di applicazione web JSF"
 #: example.xml:6
 #, no-c-format
 msgid "Let's illustrate these ideas with a full example. We're going to implement user login/logout for an application that uses JSF. First, we'll define a Web Bean to hold the username and password entered during login:"
-msgstr "Illustriamo queste idee con un esempio completo. Implementeremo il login/logout dell'utente per un'applicazione che utilizza JSF. Innanzitutto definiamo un Web Bean che mantenga username e password digitati durante il login:"
+msgstr "Illustriamo queste idee con un esempio completo. Implementiamo il login/logout dell'utente per un'applicazione che utilizza JSF. Innanzitutto definiamo un Web Bean che mantenga username e password digitati durante il login:"
 
 #. Tag: programlisting
 #: example.xml:11
@@ -195,7 +195,7 @@ msgstr ""
 #: example.xml:27
 #, no-c-format
 msgid "Now, any other Web Bean can easily inject the current user:"
-msgstr "Ora qualsiasi altro Web Bean può facilemente iniettare l'utente corrente:"
+msgstr "Ora qualsiasi altro Web Bean può facilmente iniettare l'utente corrente:"
 
 #. Tag: programlisting
 #: example.xml:29

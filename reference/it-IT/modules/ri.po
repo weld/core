@@ -617,7 +617,7 @@ msgstr "Esempio di traduttore"
 #: ri.xml:319
 #, no-c-format
 msgid "The translator example will take any sentences you enter, and translate them to Latin."
-msgstr "L'esempio di traduttore prende le frasi che vengono inserite e le traduce in latino."
+msgstr "L'esempio del traduttore prende le frasi che vengono inserite e le traduce in latino."
 
 #. Tag: para
 #: ri.xml:324
