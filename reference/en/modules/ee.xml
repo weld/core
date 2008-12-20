@@ -161,7 +161,7 @@ public void sendMessage(String price) {
     pricePublisher.send( priceSession.createTextMessage(price) );
 }</programlisting>
 
-    <para>The lifecycle of the injected JMS objects are completely controlled by the
+    <para>The lifecycle of the injected JMS objects is completely controlled by the
     Web Bean manager.</para> 
     
   </section>
