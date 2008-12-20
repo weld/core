@@ -1,5 +1,7 @@
 package org.jboss.webbeans.test;
 
+import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
+
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,7 +41,6 @@ import org.jboss.webbeans.test.bindings.SynchronousAnnotationLiteral;
 import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
 import org.testng.annotations.Test;
-import static org.jboss.webbeans.bean.BeanFactory.*;
 
 @SpecVersion("20081206")
 public class SimpleBeanModelTest extends AbstractTest

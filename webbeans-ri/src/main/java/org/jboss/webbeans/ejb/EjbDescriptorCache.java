@@ -17,6 +17,7 @@
 
 package org.jboss.webbeans.ejb;
 
+import java.io.Serializable;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -30,7 +31,7 @@ import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
  * @author Pete Muir
  * 
  */
-public class EjbDescriptorCache
+public class EjbDescriptorCache implements Serializable
 {
 
    // EJB name -> EJB descriptor map

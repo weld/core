@@ -92,9 +92,14 @@ public class WebBeansBootstrap
    public WebBeansBootstrap(ManagerImpl manager)
    {
       this.manager = manager;
-      CurrentManager.setRootManager(manager);
+      registerManager();
       manager.addContext(DependentContext.INSTANCE);
-      JNDI.set(ManagerImpl.JNDI_KEY, manager);
+   }
+   
+   protected void registerManager()
+   {
+      JNDI.bind(ManagerImpl.JNDI_KEY, manager);
+      CurrentManager.setRootManager(manager);
    }
    
    public WebBeansBootstrap()

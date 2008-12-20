@@ -17,6 +17,7 @@
 
 package org.jboss.webbeans;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,14 +45,14 @@ import org.jboss.webbeans.util.ListComparator;
  * 
  * @author Pete Muir
  */
-public class Resolver
+public class Resolver implements Serializable
 {
 
    /**
     * Extension of an element which bases equality not only on type, but also on
     * binding type
     */
-   private abstract class ResolvableAnnotatedItem<T, S> extends ForwardingAnnotatedItem<T, S>
+   private abstract class ResolvableAnnotatedItem<T, S> extends ForwardingAnnotatedItem<T, S> implements Serializable
    {
 
       @Override

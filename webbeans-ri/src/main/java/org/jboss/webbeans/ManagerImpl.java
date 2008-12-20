@@ -18,6 +18,7 @@
 package org.jboss.webbeans;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -69,7 +70,7 @@ import org.jboss.webbeans.util.Strings;
  * 
  */
 @Standard
-public class ManagerImpl implements Manager
+public class ManagerImpl implements Manager, Serializable
 {
    // The JNDI key to place the manager under
    public static final String JNDI_KEY = "java:comp/Manager";

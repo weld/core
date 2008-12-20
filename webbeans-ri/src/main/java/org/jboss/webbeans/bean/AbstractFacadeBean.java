@@ -18,6 +18,7 @@
 package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
+
 import javax.webbeans.Dependent;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;

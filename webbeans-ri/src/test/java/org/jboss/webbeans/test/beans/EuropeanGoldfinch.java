@@ -6,6 +6,7 @@ import javax.webbeans.ConversationScoped;
 import javax.webbeans.Destructor;
 import javax.webbeans.Event;
 import javax.webbeans.Observable;
+
 import org.jboss.webbeans.test.beans.StarFinch.Mess;
 
 @ConversationScoped @Stateful

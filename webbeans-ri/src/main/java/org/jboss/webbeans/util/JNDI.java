@@ -18,7 +18,9 @@
 package org.jboss.webbeans.util;
 
 import java.util.Hashtable;
+import java.util.Properties;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.webbeans.ExecutionException;
@@ -36,11 +38,8 @@ public class JNDI
 {
 
    private static final LogProvider log = Logging.getLogProvider(JNDI.class);
-   private static Hashtable initialContextProperties;
-   
-   private static InitialContext initialContext;
 
-   public static InitialContext getInitialContext(Hashtable<String, String> props) throws NamingException 
+   public static InitialContext getInitialContext(Hashtable props) throws NamingException 
    {
        if (props==null)
        {
@@ -66,20 +65,7 @@ public class JNDI
    
    public static InitialContext getInitialContext() throws NamingException 
    {
-      if (initialContext == null) 
-      {
-         initInitialContext(); 
-      }
-         
-      return initialContext;
-   }
-   
-   private static synchronized void initInitialContext() throws NamingException
-   {
-      if (initialContext == null)
-      {
-         initialContext = getInitialContext(new Hashtable<String, String>());
-      }
+      return getInitialContext(new Properties());
    }
    
    /**
@@ -105,7 +91,8 @@ public class JNDI
    {
       try
       {
-         return (T) getInitialContext().lookup(name);
+         Object instance = getInitialContext().lookup(name); 
+         return (T) instance;
       }
       catch (NamingException e)
       {
@@ -113,9 +100,29 @@ public class JNDI
       }
    }
 
-   public static void set(String key, Object value)
+   public static void bind(String key, Object value)
    {
-      // TODO Implement JNDI lookup
+      try
+      {
+         getInitialContext().bind(key, value);
+      }
+      catch (NamingException e)
+      {
+         throw new ExecutionException("Error binding " + value + " to " + key + " in JNDI", e);
+      }
+   }
+   
+   public static void bind(String env, String name, Object value)
+   {
+      try
+      {
+         Context environment = (Context) getInitialContext().lookup(env);
+         environment.bind(name, value);
+      }
+      catch (NamingException e)
+      {
+         throw new ExecutionException("Error binding " + value + " to " + name + " in JNDI", e);
+      }
    }
 
 }

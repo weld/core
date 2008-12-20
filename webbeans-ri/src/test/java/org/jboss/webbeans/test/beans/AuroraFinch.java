@@ -3,6 +3,7 @@ package org.jboss.webbeans.test.beans;
 import javax.webbeans.Event;
 import javax.webbeans.Initializer;
 import javax.webbeans.Observable;
+
 import org.jboss.webbeans.test.beans.StarFinch.Mess;
 
 public class AuroraFinch

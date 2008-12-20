@@ -17,14 +17,14 @@
 
 package org.jboss.webbeans.event;
 
+import static org.jboss.webbeans.event.ObserverImpl.TransactionObservationPhase.AFTER_COMPLETION;
+import static org.jboss.webbeans.event.ObserverImpl.TransactionObservationPhase.AFTER_FAILURE;
+import static org.jboss.webbeans.event.ObserverImpl.TransactionObservationPhase.AFTER_SUCCESS;
+import static org.jboss.webbeans.event.ObserverImpl.TransactionObservationPhase.BEFORE_COMPLETION;
+
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.webbeans.Observer;
-
-import static org.jboss.webbeans.event.ObserverImpl.TransactionObservationPhase.AFTER_COMPLETION;
-import static org.jboss.webbeans.event.ObserverImpl.TransactionObservationPhase.AFTER_SUCCESS;
-import static org.jboss.webbeans.event.ObserverImpl.TransactionObservationPhase.AFTER_FAILURE;
-import static org.jboss.webbeans.event.ObserverImpl.TransactionObservationPhase.BEFORE_COMPLETION;
 
 /**
  * A synchronization object which will deliver the event to the observer after

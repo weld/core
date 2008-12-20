@@ -39,7 +39,7 @@ import org.jboss.webbeans.util.ConcurrentCache;
  * 
  * @see org.jboss.webbeans.bean.proxy.ProxyMethodHandler
  */
-public class ProxyPool
+public class ProxyPool implements Serializable
 {
    /**
     * A container/cache for previously created proxies
