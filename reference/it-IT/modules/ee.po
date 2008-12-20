@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-20 00:09+0100\n"
+"PO-Revision-Date: 2008-12-20 13:47+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Integrazione Java EE"
 #: ee.xml:6
 #, no-c-format
 msgid "Web Beans is fully integrated into the Java EE environment. Web Beans have access to Java EE resources and JPA persistence contexts. They may be used in Unified EL expressions in JSF and JSP pages. They may even be injected into some objects, such as Servlets and Message-Driven Beans, which are not Web Beans."
-msgstr ""
+msgstr "Web Beans è pienamente integrata nell'ambiente Java EE. Web Beans ha accesso alle risorse Java EE ed ai contesti di persistenza JPA. I Web Beans possono essere usati in espressioni Unified EL dentro pagine JSF e JSP. Possono anche essere iniettati negli oggetti, come Servlet e Message-Driven Beans, che non sono Web Beans."
 
 #. Tag: title
 #: ee.xml:12
@@ -35,7 +35,7 @@ msgstr "Iniettare risorse Java EE in un Web Bean"
 #: ee.xml:14
 #, no-c-format
 msgid "All simple and enterprise Web Beans may take advantage of Java EE dependency injection using <literal>@Resource</literal>, <literal>@EJB</literal> and <literal>@PersistenceContext</literal>. We've already seen a couple of examples of this, though we didn't pay much attention at the time:"
-msgstr ""
+msgstr "Tutti i Web Beans sia semplici che enterprise si avvantaggiano della dependency injection di Java EE usando <literal>@Resource</literal>, <literal>@EJB</literal> e <literal>@PersistenceContext</literal>. Abbiamo già visto un paio di esempi a riguardo, sebbene non ci siamo soffermati molto a suo tempo."
 
 #. Tag: programlisting
 #: ee.xml:19
@@ -87,13 +87,13 @@ msgstr ""
 #: ee.xml:23
 #, no-c-format
 msgid "The Java EE <literal>@PostConstruct</literal> and <literal>@PreDestroy</literal> callbacks are also supported for all simple and enterprise Web Beans. The <literal>@PostConstruct</literal> method is called after <emphasis>all</emphasis> injection has been performed."
-msgstr ""
+msgstr "Le chiamate Java EE <literal>@PostConstruct</literal> e <literal>@PreDestroy</literal> vengono anche supportate per tutti i Web Beans (semplici e enterprise). Il metodo <literal>@PostConstruct</literal> viene chiamato dopo che <emphasis>tutta</emphasis> l'injection è stata eseguita."
 
 #. Tag: para
 #: ee.xml:28
 #, no-c-format
 msgid "There is one restriction to be aware of here: <literal>@PersistenceContext(type=EXTENDED)</literal> is not supported for simple Web Beans."
-msgstr ""
+msgstr "C'è una restrizione di cui essere informati: <literal>@PersistenceContext(type=EXTENDED)</literal> non è supportato per i Web Beans semplici."
 
 #. Tag: title
 #: ee.xml:35
@@ -105,7 +105,7 @@ msgstr "Chiamare un Web Bean da un servlet"
 #: ee.xml:37
 #, no-c-format
 msgid "It's easy to use a Web Bean from a Servlet in Java EE 6. Simply inject the Web Bean using Web Beans field or initializer method injection."
-msgstr ""
+msgstr "E' facile utilizzare i Web Beans da un Servlet in Java EE 6. Semplicemente si inietti il Web Bean utilizzando l'injection del campo Web Bean o del metodo inizializzatore."
 
 #. Tag: programlisting
 #: ee.xml:40
@@ -157,25 +157,26 @@ msgstr ""
 #: ee.xml:42
 #, no-c-format
 msgid "The Web Beans client proxy takes care of routing method invocations from the Servlet to the correct instances of <literal>Credentials</literal> and <literal>Login</literal> for the current request and HTTP session."
-msgstr ""
+msgstr "Il client proxy Web Beans si occupa di instradare le invocazioni dei metodi da un Servlet alle corrette istanze di <literal>Credentials</literal> e <literal>Login</literal> per la richiesta corrente e la sessione HTTP."
 
 #. Tag: title
 #: ee.xml:49
 #, no-c-format
 msgid "Calling a Web Bean from a Message-Driven Bean"
-msgstr ""
+msgstr "Chiamare un Web Bean da un Message-Driven Bean"
 
 #. Tag: para
 #: ee.xml:51
 #, no-c-format
 msgid "Web Beans injection applies to all EJBs, even when they aren't under the control of the Web Bean manager (if they were obtained by direct JNDI lookup, or injection using <literal>@EJB</literal>, for example. In particular, you can use Web Beans injection in Message-Driven Beans, which are not considered Web Beans because you can't inject them."
-msgstr ""
+msgstr "L'injection dei Web Beans si applica a tutti gli EJB3, perfino quando non sono sotto il controllo del manager Web Bean (per esempio se sono stati ottenuti da ricerca JNDI diretta, o injection usando <literal>@EJB</literal>) In particolaresi può usare l'injection di Web Beans nei Message-Driven Beans, che non sono considerati Web Beans poiché non possono essere iniettati."
 
+# Web Beans interceptor bindings =?
 #. Tag: para
 #: ee.xml:57
 #, no-c-format
 msgid "You can even use Web Beans interceptor bindings for Message-Driven Beans."
-msgstr ""
+msgstr "Si possono perfino associare degli interceptor Web Beans ai Message-Driven Beans."
 
 #. Tag: programlisting
 #: ee.xml:59
@@ -209,7 +210,7 @@ msgstr ""
 #: ee.xml:61
 #, no-c-format
 msgid "Thus, receiving messages is super-easy in a Web Beans environment. But beware that there is no session or conversation context available when a message is delivered to a Message-Driven Bean. Only <literal>@RequestScoped</literal> and <literal>@ApplicationScoped</literal> Web Beans are available."
-msgstr ""
+msgstr "Quindi ricevere i messaggi è veramente facile in ambiente Web Beans. Ma attenzione che non è disponibile alcun contesto di sessione o conversazione quando il messaggio viene consegnato al Message-Driven Bean. Solamente i Web Beans <literal>@RequestScoped</literal> and <literal>@ApplicationScoped</literal> sono disponibili."
 
 #. Tag: para
 #: ee.xml:66
@@ -227,13 +228,13 @@ msgstr "Endpoint JMS"
 #: ee.xml:73
 #, no-c-format
 msgid "Sending messages using JMS can be quite complex, because of the number of different objects you need to deal with. For queues we have <literal>Queue</literal>, <literal>QueueConnectionFactory</literal>, <literal>QueueConnection</literal>, <literal>QueueSession</literal> and <literal>QueueSender</literal>. For topics we have <literal>Topic</literal>, <literal>TopicConnectionFactory</literal>, <literal>TopicConnection</literal>, <literal>TopicSession</literal> and <literal>TopicPublisher</literal>. Each of these objects has its own lifecycle and threading model that we need to worry about."
-msgstr ""
+msgstr "La spedizione dei messaggi usando JMS può essere abbastanza complessa, a causa del numero di oggetti differenti da trattare. Per le code si hanno <literal>Queue</literal>, <literal>QueueConnectionFactory</literal>, <literal>QueueConnection</literal>, <literal>QueueSession</literal> e <literal>QueueSender</literal>. Per i topic si hanno <literal>Topic</literal>, <literal>TopicConnectionFactory</literal>, <literal>TopicConnection</literal>, <literal>TopicSession</literal> e <literal>TopicPublisher</literal>. Ciascuno di questi oggetti ha il proprio ciclo di vita e modello di thread di cui bisogna (pre)occuparsi."
 
 #. Tag: para
 #: ee.xml:82
 #, no-c-format
 msgid "Web Beans takes care of all this for us. All we need to do is declare the queue or topic in <literal>web-beans.xml</literal>, specifying an associated binding type and connection factory."
-msgstr ""
+msgstr "I Web Beans si prendono cura di tutto questo per noi. Tutto ciò che occorre fare è dichiarare la coda od il topic in <literal>web-beans.xml</literal>, specificando un "
 
 #. Tag: programlisting
 #: ee.xml:86
@@ -271,7 +272,7 @@ msgstr ""
 #: ee.xml:90
 #, no-c-format
 msgid "Now we can just inject the <literal>Queue</literal>, <literal>QueueConnection</literal>, <literal>QueueSession</literal> or <literal>QueueSender</literal> for a queue, or the <literal>Topic</literal>, <literal>TopicConnection</literal>, <literal>TopicSession</literal> or <literal>TopicPublisher</literal> for a topic."
-msgstr ""
+msgstr "Ora è possibile iniettare <literal>Queue</literal>, <literal>QueueConnection</literal>, <literal>QueueSession</literal> o <literal>QueueSender</literal> per una coda, oppure <literal>Topic</literal>, <literal>TopicConnection</literal>, <literal>TopicSession</literal> o <literal>TopicPublisher</literal> per un topic."
 
 #. Tag: programlisting
 #: ee.xml:96
@@ -317,7 +318,7 @@ msgstr ""
 #: ee.xml:100
 #, no-c-format
 msgid "The lifecycle of the injected JMS objects are completely controlled by the Web Bean manager."
-msgstr ""
+msgstr "Il ciclo di vita degli oggetti JMS iniettati è interamente controllato dal manager Web Bean."
 
 #. Tag: title
 #: ee.xml:106
@@ -329,11 +330,11 @@ msgstr "Packaging and deployment"
 #: ee.xml:108
 #, no-c-format
 msgid "Web Beans doesn't define any special deployment archive. You can package Web Beans in JARs, EJB-JARs or WARs&#151;any deployment location in the application classpath. However, each archive that contains Web Beans must include a file named <literal>web-beans.xml</literal> in the <literal>META-INF</literal> or <literal>WEB-INF</literal> directory. The file may be empty. Web Beans deployed in archives that do not have a <literal>web-beans.xml</literal> file will not be available for use in the application."
-msgstr ""
+msgstr "Web Beans non definisce nessuno archivio speciale per il deploy. Si può impacchettare i Web Beans in JAR, EJB-JAR o WAR&#151;qualsiasi locazione di deploy nel classpath dell'applicazione. Comunque ciascun archivio che contiene Web Beans devi includere un file chiamato <literal>web-beans.xml</literal> nella directory <literal>META-INF</literal> o <literal>WEB-INF</literal>. Il file può essere vuoto. I Web Beans collocati negli archivi che non hanno un file <literal>web-beans.xml</literal> non saranno disponibili per l'uso nell'applicazione."
 
 #. Tag: para
 #: ee.xml:116
 #, no-c-format
 msgid "For Java SE execution, Web Beans may be deployed in any location in which EJBs may be deployed for execution by the embeddable EJB Lite container. Again, each location must contain a <literal>web-beans.xml</literal> file."
-msgstr ""
+msgstr "Per l'esecuzione in Java SE, Web Beans può essere deployato in un qualsiasi posto nel quale gli EJB siano stati messi per essere eseguito da un embeddable EJB Lite container.  Di nuovo ogni locazioni deve contenere un file <literal>web-beans.xml</literal>."
 

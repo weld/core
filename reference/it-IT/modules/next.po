@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-19 23:55+0100\n"
+"PO-Revision-Date: 2008-12-20 01:10+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr "Poiché Web Beans è così nuova, non è ancora disponibile molta inform
 #: next.xml:9
 #, no-c-format
 msgid "Of course, the Web Beans specification is the best source of more information about Web Beans. The spec is about 100 pages long, only twice the length of this article, and almost as readable. But, of course, it covers many details that we've skipped over. The spec is available from <literal>http://jcp.org/en/jsr/detail?id=299</literal>."
-msgstr "Certamente la specifica Web Beans è la migliore fonte per avere informazioni su Web Beans. La specifica è lunga circa 100 pagine, solo il doppio di quest'articolo e per lo più leggibile altrettanto facilmente. Ma sicuramente copre molti dettagli che sono stati saltati qua. La specifica è disponibile da <literal>http://jcp.org/en/jsr/detail?id=299</literal>."
+msgstr "Certamente la specifica Web Beans è la migliore fonte per avere informazioni su Web Beans. La specifica è lunga circa 100 pagine, solo il doppio di quest'articolo e per lo più leggibile altrettanto facilmente. Ma sicuramente copre molti dettagli che sono stati saltati nel presente documento. La specifica è disponibile da <literal>http://jcp.org/en/jsr/detail?id=299</literal>."
 
 #. Tag: para
 #: next.xml:15
