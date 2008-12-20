@@ -253,7 +253,7 @@ public @interface Action { ... }]]></programlisting>
   <para>The <literal>@Interceptors</literal> annotation defined by the EJB specification
   is supported for both enterprise and simple Web Beans, for example:</para>
   
-<programlisting role="JAVA"><![CDATA[@Interceptors({TransactionInterceptor.class, @SecurityInterceptor.class})
+<programlisting role="JAVA"><![CDATA[@Interceptors({TransactionInterceptor.class, SecurityInterceptor.class})
 public class ShoppingCart {
     public void checkout() { ... }
 }]]></programlisting>
