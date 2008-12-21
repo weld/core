@@ -8,7 +8,7 @@
   we'll define a Web Bean to hold the username and password entered during 
   login:</para>
 
-<programlisting role="JAVA"><![CDATA[@Named
+<programlisting role="JAVA"><![CDATA[@Named @RequestScoped
 public class Credentials {
 	
     private String username;
@@ -69,7 +69,7 @@ public class Login {
        return user!=null;
     }
     
-    @Produces @LoggedIn User getCurrentUser() {
+    @Produces @LoggedIn @Dependent User getCurrentUser() {
         return user;
     }
 
