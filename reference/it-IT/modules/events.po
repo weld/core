@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-20 15:39+0100\n"
+"PO-Revision-Date: 2008-12-21 03:42+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -53,7 +53,7 @@ msgstr "Osservatori di eventi"
 #: events.xml:30
 #, no-c-format
 msgid "An <emphasis>observer method</emphasis> is a method of a Web Bean with a parameter annotated <literal>@Observes</literal>."
-msgstr ""
+msgstr "Un <emphasis>metodo osservatore</emphasis> è un metodo di un Web Bean con un parametro annotato <literal>@Observes</literal>."
 
 #. Tag: programlisting
 #: events.xml:33
@@ -65,7 +65,7 @@ msgstr "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) { .
 #: events.xml:35
 #, no-c-format
 msgid "The annotated parameter is called the <emphasis>event parameter</emphasis>. The type of the event parameter is the observed <emphasis>event type</emphasis>. Observer methods may also specify \"selectors\", which are just instances of Web Beans binding types. When a binding type is used as an event selector, it is called an <emphasis>event binding type</emphasis>."
-msgstr ""
+msgstr "Il parametro annotato viene chiamato <emphasis>parametro evento</emphasis>. Il tipo di parametro evento è il <emphasis>tipo evento</emphasis> osservato. I metodi osservatori possono anche specificare dei \"selettori\", che sono solo istanze di tipi di binding di Web Beans. Quando un tipo di binding viene usato come selettore di eventi viene chiamato <emphasis>tipo binding di evento</emphasis>. "
 
 #. Tag: programlisting
 #: events.xml:41
@@ -85,7 +85,7 @@ msgstr ""
 #: events.xml:43
 #, no-c-format
 msgid "We specify the event bindings of the observer method by annotating the event parameter:"
-msgstr ""
+msgstr "Specifichiamo i binding di evento del metodo osservatore annotando il parametro evento:"
 
 #. Tag: programlisting
 #: events.xml:46
@@ -98,13 +98,13 @@ msgstr "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document doc
 #: events.xml:48
 #, no-c-format
 msgid "An observer method need not specify any event bindings&#151;in this case it is interested in <emphasis>all</emphasis> events of a particular type. If it does specify event bindings, it is only interested in events which also have those event bindings."
-msgstr ""
+msgstr "Un metodo osservatore non ha bisogno di specificare alcun binding di evento&#151;in questo caso è interessato a <emphasis>tutti</emphasis> gli eventi di un particolare tipo. Se specifica dei binding di evento, è solamente interessato agli eventi che hanno anche gli stessi binding di evento."
 
 #. Tag: para
 #: events.xml:53
 #, no-c-format
 msgid "The observer method may have additional parameters, which are injected according to the usual Web Beans method parameter injection semantics:"
-msgstr ""
+msgstr "Il metodo osservatore può avere parametri addizionali che vengono iniettati secondo la solita semantica di iniezione del parametro del metodo Web Beans."
 
 #. Tag: programlisting
 #: events.xml:56
@@ -452,7 +452,7 @@ msgstr ""
 #: events.xml:233
 #, no-c-format
 msgid "Imagine that we have cached a JPA query result set in the application scope:"
-msgstr ""
+msgstr "Si immagini di avere cachato un risultato di query JPA nello scope di applicazione:"
 
 #. Tag: programlisting
 #: events.xml:235
@@ -498,7 +498,7 @@ msgstr ""
 #: events.xml:237
 #, no-c-format
 msgid "From time to time, a <literal>Product</literal> is created or deleted. When this occurs, we need to refresh the <literal>Product</literal> catalog. But we should wait until <emphasis>after</emphasis> the transaction completes successfully before performing this refresh!"
-msgstr ""
+msgstr "Di tanto in tanto un <literal>Product</literal> viene creato o cancellato. Quando questo avviene occorre aggiornare il catalogo del <literal>Product</literal>. Ma si dovrebbe aspettare che la transazione  <emphasis>abbia completato</emphasis> con successo prima di eseguire l'aggiornamento!"
 
 #. Tag: para
 #: events.xml:242
