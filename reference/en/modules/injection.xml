@@ -298,7 +298,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
   <para>Going back to our example, when we deploy our integration tests, we want all 
   our <literal>@Mock</literal> objects to be installed:</para>
 
-<programlisting role="JAVA"><![CDATA[<WebBeans>
+<programlisting role="XML"><![CDATA[<WebBeans>
     <Deploy>
         <Standard/>
         <Production/>

@@ -1,14 +1,33 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 
 <chapter id="ri">
-   <title>Using the Web Beans Reference Implementation</title>
+   <title>The Web Beans Reference Implementation</title>
+
+   <para>
+     The Web Beans Reference Implementation is being developed at
+     <ulink url="http://seamframework.org/WebBeans">the Seam project</ulink>.
+     You can download the latest developer release of Web Beans from the
+     <ulink url="http://seamframework.org/Download">the downloads page</ulink>.
+   </para> 
 
     <para>
-      The Web Beans RI comes with a two examples, 
+      The Web Beans RI comes with a two deployable example applications, 
       <literal>webbeans-numberguess</literal> (a war example, containing only
       simple beans) and <literal>webbeans-translator</literal> (an ear example,
-      containing enterprise beans).
+      containing enterprise beans). To run the examples you'll need the following:
    </para>
+   
+   <itemizedlist>
+     <listitem>
+       <para>the latest release of the Web Beans RI,</para>
+     </listitem>
+     <listitem>
+       <para>JBoss AS 5.0.0.GA, and</para>
+     </listitem>
+     <listitem>
+       <para>Ant 1.7.0.</para>
+     </listitem>
+   </itemizedlist>
    
    <para>
       Currently, the Web Beans RI only runs on JBoss Application Server 5. 
@@ -22,7 +41,7 @@ $ unzip ~/jboss-5.0.0.GA.zip]]></programlisting>
 
    <para>
       Next, download the Web Beans RI from 
-      <ulink url="http://seamframework.org/WebBeans">seamframework.org</ulink>,
+      <ulink url="http://seamframework.org/Download">seamframework.org</ulink>,
       and unzip it. For example
    </para>
    
@@ -55,7 +74,7 @@ $ unzip ~/webbeans-1.0.0.ALPHA1.zip]]></programlisting>
    </note>
    
    <para>
-      To install the update, you'll need ant 1.7.0 installed, and the 
+      To install the update, you'll need Ant 1.7.0 installed, and the 
       <literal>ANT_HOME</literal> environment variable set. For example:
    </para>
    
@@ -129,7 +148,7 @@ ant deploy</programlisting>
       beans, packaged in an EJB module. To try it out:
    </para>
 
-   <programlisting>$ cd examples/traslator
+   <programlisting>$ cd examples/translator
 ant deploy</programlisting>
 
    <para>
@@ -189,7 +208,7 @@ ant deploy</programlisting>
             <area id="session.timeout" coords="28" />
             <area id="webbeans.listener" coords="32" />
          </areaspec>
-         <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+         <programlisting role="XML"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 
 <web-app version="2.5"
     xmlns="http://java.sun.com/xml/ns/javaee"
@@ -282,7 +301,7 @@ ant deploy</programlisting>
             <area id="validator" coords="29" />
             <area id="submit" coords="32" />
          </areaspec>
-         <programlisting><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+         <programlisting role="XML"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:h="http://java.sun.com/jsf/html"
