@@ -33,7 +33,7 @@ public class Credentials {
     </h:panelGrid>
     <h:commandButton value="Login" action="#{login.login}" rendered="#{!login.loggedIn}"/>
     <h:commandButton value="Logout" acion="#{login.logout}" rendered="#{login.loggedIn}"/>
-</f:form]]></programlisting>
+</f:form>]]></programlisting>
 
   <para>The actual work is done by a session scoped Web Bean that maintains 
   information about the currently logged-in user and exposes the <literal>User</literal>
