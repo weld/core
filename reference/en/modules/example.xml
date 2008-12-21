@@ -24,7 +24,7 @@ public class Credentials {
 
   <para>This Web Bean is bound to the login prompt in the following JSF form:</para>
 
-<programlisting role="JAVA"><![CDATA[<f:form>
+<programlisting role="JAVA"><![CDATA[<h:form>
     <h:panelGrid columns="2" rendered="#{!login.loggedIn}">
         <h:outputLabel for="username">Username:</h:outputLabel>
         <h:inputText id="username" value="#{credentials.username}"/>
@@ -33,7 +33,7 @@ public class Credentials {
     </h:panelGrid>
     <h:commandButton value="Login" action="#{login.login}" rendered="#{!login.loggedIn}"/>
     <h:commandButton value="Logout" acion="#{login.logout}" rendered="#{login.loggedIn}"/>
-</f:form>]]></programlisting>
+</h:form>]]></programlisting>
 
   <para>The actual work is done by a session scoped Web Bean that maintains 
   information about the currently logged-in user and exposes the <literal>User</literal>
