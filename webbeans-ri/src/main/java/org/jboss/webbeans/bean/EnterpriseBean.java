@@ -77,7 +77,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    /**
     * Initializes the bean and its metadata
     */
-   @SuppressWarnings("unchecked")
    @Override
    protected void init()
    {
@@ -260,7 +259,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * 
     * @return The instance
     */
-   @SuppressWarnings("unchecked")
    @Override
    public T create()
    {

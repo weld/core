@@ -177,7 +177,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    protected void initDeploymentType()
    {
       Set<Annotation> deploymentTypes = getAnnotatedItem().getMetaAnnotations(DeploymentType.class);
-
       if (deploymentTypes.size() > 1)
       {
          throw new DefinitionException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().toString());
@@ -189,9 +188,10 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          return;
       }
 
-      if (getMergedStereotypes().getPossibleDeploymentTypes().size() > 0)
+      AnnotationMap possibleDeploymentTypes = getMergedStereotypes().getPossibleDeploymentTypes();
+      if (possibleDeploymentTypes.size() > 0)
       {
-         this.deploymentType = getDeploymentType(manager.getEnabledDeploymentTypes(), getMergedStereotypes().getPossibleDeploymentTypes());
+         this.deploymentType = getDeploymentType(manager.getEnabledDeploymentTypes(), possibleDeploymentTypes);
          log.trace("Deployment type " + deploymentType + " specified by stereotype");
          return;
       }
@@ -269,25 +269,26 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     */
    protected void initScopeType()
    {
-      if (getAnnotatedItem().getMetaAnnotations(ScopeType.class).size() > 1)
+      Set<Annotation> scopeAnnotations = getAnnotatedItem().getMetaAnnotations(ScopeType.class);
+      if (scopeAnnotations.size() > 1)
       {
          throw new DefinitionException("At most one scope may be specified");
       }
-
-      if (getAnnotatedItem().getMetaAnnotations(ScopeType.class).size() == 1)
+      if (scopeAnnotations.size() == 1)
       {
-         this.scopeType = getAnnotatedItem().getMetaAnnotations(ScopeType.class).iterator().next().annotationType();
+         this.scopeType = scopeAnnotations.iterator().next().annotationType();
          log.trace("Scope " + scopeType + " specified by annotation");
          return;
       }
 
-      if (getMergedStereotypes().getPossibleScopeTypes().size() == 1)
+      Set<Annotation> possibleScopeTypes = getMergedStereotypes().getPossibleScopeTypes();
+      if (possibleScopeTypes.size() == 1)
       {
-         this.scopeType = getMergedStereotypes().getPossibleScopeTypes().iterator().next().annotationType();
+         this.scopeType = possibleScopeTypes.iterator().next().annotationType();
          log.trace("Scope " + scopeType + " specified by stereotype");
          return;
       }
-      else if (getMergedStereotypes().getPossibleScopeTypes().size() > 1)
+      else if (possibleScopeTypes.size() > 1)
       {
          throw new DefinitionException("All stereotypes must specify the same scope OR a scope must be specified on the bean");
       }

@@ -68,7 +68,7 @@ public class DefaultEnterpriseBeanLookup implements EnterpriseBeanLookup
     * @return The EJB reference
     */
    @SuppressWarnings("unchecked")
-   public static <T> T lookup(EjbDescriptor<T> ejbDescriptor)
+   public <T> T lookup(EjbDescriptor<T> ejbDescriptor)
    {
       try
       {
