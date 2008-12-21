@@ -65,6 +65,7 @@ public class EjbDescriptorCache implements Serializable
     * @param beanClass The EJB class
     * @return An iterator
     */
+   @SuppressWarnings("unchecked")
    public <T> Iterable<EjbDescriptor<T>> get(Class<T> beanClass)
    {
       return (Iterable) ejbsByBeanClass.get(beanClass);

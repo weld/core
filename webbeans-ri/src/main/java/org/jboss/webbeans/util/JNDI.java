@@ -17,7 +17,6 @@
 
 package org.jboss.webbeans.util;
 
-import java.util.Hashtable;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -39,7 +38,7 @@ public class JNDI
 
    private static final LogProvider log = Logging.getLogProvider(JNDI.class);
 
-   public static InitialContext getInitialContext(Hashtable props) throws NamingException 
+   public static InitialContext getInitialContext(Properties props) throws NamingException 
    {
        if (props==null)
        {
@@ -87,12 +86,12 @@ public class JNDI
     * @param expectedType The excpected type
     * @return The object
     */
+   @SuppressWarnings("unchecked")
    public static <T> T lookup(String name, Class<? extends T> expectedType)
    {
       try
       {
-         Object instance = getInitialContext().lookup(name); 
-         return (T) instance;
+         return (T) getInitialContext().lookup(name);
       }
       catch (NamingException e)
       {

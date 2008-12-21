@@ -43,7 +43,7 @@ import javax.webbeans.manager.Manager;
  */
 public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
 {
-   
+   @SuppressWarnings("unchecked")
    public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Disposes.class, Observes.class, Observable.class, IfExists.class, BeforeTransactionCompletion.class, AfterTransactionCompletion.class, AfterTransactionFailure.class, AfterTransactionSuccess.class));
 
    /**

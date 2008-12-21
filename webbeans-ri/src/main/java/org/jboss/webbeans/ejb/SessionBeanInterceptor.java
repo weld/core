@@ -31,6 +31,7 @@ public class SessionBeanInterceptor
       }
    }
    
+   @SuppressWarnings("unchecked")
    private static EnterpriseBean<Object> getBean(InvocationContext invocationContext)
    {
       Class<?> beanClass = invocationContext.getTarget().getClass();
