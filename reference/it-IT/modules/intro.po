@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-20 18:01+0100\n"
+"PO-Revision-Date: 2008-12-21 12:01+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -36,13 +36,13 @@ msgstr "Il primo Web Bean"
 #: intro.xml:15
 #, no-c-format
 msgid "With certain, very special exceptions, every Java class with a constructor that accepts no parameters is a Web Bean. That includes every JavaBean. Furthermore, every EJB 3-style session bean is a Web Bean. Sure, the JavaBeans and EJBs you've been writing every day have not been able to take advantage of the new services defined by the Web Beans specification, but you'll be able to use every one of them as Web Beans&#151;injecting them into other Web Beans, configuring them via the Web Beans XML configuration facility, even adding interceptors and decorators to them&#151;without touching your existing code."
-msgstr "Con alcune eccezioni molto speciali, ogni classe Java con un costruttore che non accetta paramentri è un Web Bean. Questo include ogni JavaBean. Inoltre, ogni session bean di stile EJB3 è un Web Bean. Sicuramente i JavaBean e gli EJB3 che si sono sempre scritti non erano in grado di sfruttare i nuovi servizi definiti dalla specifica Web Beans, ma si sarà presto in grado di usare ciascuno di essi come Web Bean&#151;iniettandoli in altri Web Beans, configurandoli tramite strumenti di configurazione XML Web Bean, e perfino aggiungendo a loro interceptor e decoratori&#151;senza toccare il codice esistente."
+msgstr "Con alcune eccezioni molto particolari, ogni classe Java con un costruttore che non accetta parametri è un Web Bean. Questo include ogni JavaBean. Inoltre, ogni session bean di stile EJB3 è un Web Bean. Sicuramente i JavaBean e gli EJB3 che si sono sempre scritti non erano in grado di sfruttare i nuovi servizi definiti dalla specifica Web Beans, ma si sarà presto in grado di usare ciascuno di essi come Web Bean&#151;iniettandoli in altri Web Beans, configurandoli tramite strumenti di configurazione XML Web Bean, e perfino aggiungendo a loro interceptor e decoratori&#151;senza toccare il codice esistente."
 
 #. Tag: para
 #: intro.xml:25
 #, no-c-format
 msgid "Suppose that we have two existing Java classes, that we've been using for years in various applications. The first class parses a string into a list of sentences:"
-msgstr ""
+msgstr "Si supponga di avere due classi Java esistenti, usate da anni in varie applicazioni. La prima classe esegue il parsing una stringa in una lista di frasi:"
 
 #. Tag: programlisting
 #: intro.xml:29
@@ -60,7 +60,7 @@ msgstr ""
 #: intro.xml:31
 #, no-c-format
 msgid "The second existing class is a stateless session bean front-end for an external system that is able to translate sentences from one language to another:"
-msgstr ""
+msgstr "La seconda classe è un session bean stateless front-end per un sistema esterno capace di tradurre le frasi da una lingua ad un altra:"
 
 #. Tag: programlisting
 #: intro.xml:35
@@ -80,7 +80,7 @@ msgstr ""
 #: intro.xml:37
 #, no-c-format
 msgid "Where <literal>Translator</literal> is the local interface:"
-msgstr ""
+msgstr "Dove <literal>Translator</literal> è l'interfaccia locale:"
 
 #. Tag: programlisting
 #: intro.xml:39
@@ -100,7 +100,7 @@ msgstr ""
 #: intro.xml:41
 #, no-c-format
 msgid "Unfortunately, we don't have a preexisting class that translates whole text documents. So let's write a Web Bean that does this job:"
-msgstr ""
+msgstr "Sfortunatamente non ci sono classi preesistenti che traducano l'intero testo dei documenti. Quindi occorre scrivere un Web Bean che faccia questo lavoro:"
 
 #. Tag: programlisting
 #: intro.xml:44
@@ -152,7 +152,7 @@ msgstr ""
 #: intro.xml:46
 #, no-c-format
 msgid "We may obtain an instance of <literal>TextTranslator</literal> by injecting it into a Web Bean, Servlet or EJB:"
-msgstr ""
+msgstr "Si può ottenere un'istanza di <literal>TextTranslator</literal> iniettandolo in un Web Bean, Servlet o EJB:"
 
 #. Tag: programlisting
 #: intro.xml:49
@@ -208,7 +208,7 @@ msgstr "Cosa è un Web Bean?"
 #: intro.xml:82
 #, no-c-format
 msgid "So what, <emphasis>exactly</emphasis>, is a Web Bean?"
-msgstr ""
+msgstr "Ma cosa è <emphasis>esattamente</emphasis> un Web Bean?"
 
 #. Tag: para
 #: intro.xml:84
@@ -232,7 +232,7 @@ msgstr ""
 #: intro.xml:105
 #, no-c-format
 msgid "the lifecycle of each instance of the Web Bean and"
-msgstr ""
+msgstr "il ciclo di vita di ogni istanza del Web Bean e"
 
 #. Tag: para
 #: intro.xml:108
@@ -268,7 +268,7 @@ msgstr ""
 #: intro.xml:135
 #, no-c-format
 msgid "their lifecycles are completely decoupled"
-msgstr ""
+msgstr "il loro ciclo di vita è completamente disaccoppiato"
 
 #. Tag: para
 #: intro.xml:139
@@ -292,49 +292,49 @@ msgstr ""
 #: intro.xml:153
 #, no-c-format
 msgid "A Web Bean comprises:"
-msgstr ""
+msgstr "Un Web Bean comprende:"
 
 #. Tag: para
 #: intro.xml:156
 #, no-c-format
 msgid "A (nonempty) set of API types"
-msgstr ""
+msgstr "Un set (non vuoto) di tipi di API"
 
 #. Tag: para
 #: intro.xml:157
 #, no-c-format
 msgid "A (nonempty) set of binding annotation types"
-msgstr ""
+msgstr "Un set (non vuoto) di tipi di annotazione di binding"
 
 #. Tag: para
 #: intro.xml:158
 #, no-c-format
 msgid "A scope"
-msgstr ""
+msgstr "Uno scope"
 
 #. Tag: para
 #: intro.xml:159
 #, no-c-format
 msgid "A deployment type"
-msgstr ""
+msgstr "Un tipo di deploy"
 
 #. Tag: para
 #: intro.xml:160
 #, no-c-format
 msgid "Optionally, a Web Bean name"
-msgstr ""
+msgstr "Opzionalmente un nome Web Bean"
 
 #. Tag: para
 #: intro.xml:161
 #, no-c-format
 msgid "A set of interceptor binding types"
-msgstr ""
+msgstr "Un set di tipi di interceptor binding"
 
 #. Tag: para
 #: intro.xml:162
 #, no-c-format
 msgid "A Web Bean implementation"
-msgstr ""
+msgstr "Un implementazione Web Bean"
 
 #. Tag: para
 #: intro.xml:167
@@ -358,13 +358,13 @@ msgstr ""
 #: intro.xml:177
 #, no-c-format
 msgid "an API type, together with"
-msgstr ""
+msgstr "un tipo di API, assieme a"
 
 #. Tag: para
 #: intro.xml:178
 #, no-c-format
 msgid "a set of binding types."
-msgstr ""
+msgstr "un set di tipi di binding."
 
 #. Tag: para
 #: intro.xml:181
@@ -592,13 +592,13 @@ msgstr ""
 #: intro.xml:295
 #, no-c-format
 msgid "Interceptor binding types"
-msgstr ""
+msgstr "Tipi di interceptor binding"
 
 #. Tag: para
 #: intro.xml:297
 #, no-c-format
 msgid "Web Beans supports the interceptor functionality defined by EJB 3, not only for EJB beans, but also for plain Java classes. In addition, Web Beans provides a new approach to binding interceptors to EJB beans and other Web Beans."
-msgstr ""
+msgstr "Web Beans supporta la funzionalità di interceptor definita da EJB 3, non solo per i bean EJB, ma anche per classi Java semplici (plain). In aggiunto, Web Beans fornisce un nuovo approccio al binding di interceptor nei confronti di bean EJB e di altri Web Beans."
 
 #. Tag: para
 #: intro.xml:302
@@ -644,7 +644,7 @@ msgstr ""
 #: intro.xml:321
 #, no-c-format
 msgid "What kinds of objects can be Web Beans?"
-msgstr ""
+msgstr "Quali tipi di oggetti possono essere Web Beans?"
 
 #. Tag: para
 #: intro.xml:323
@@ -656,7 +656,7 @@ msgstr ""
 #: intro.xml:327
 #, no-c-format
 msgid "Simple Web Beans"
-msgstr ""
+msgstr "Web Beans Semplici"
 
 #. Tag: para
 #: intro.xml:329
@@ -674,13 +674,13 @@ msgstr ""
 #: intro.xml:338
 #, no-c-format
 msgid "it is not a non-static static inner class,"
-msgstr ""
+msgstr "non è una classe interna statica/non statica,"
 
 #. Tag: para
 #: intro.xml:341
 #, no-c-format
 msgid "it is not a parameterized type, and"
-msgstr ""
+msgstr "non è un tipo parametrizzato, e"
 
 #. Tag: para
 #: intro.xml:344
@@ -704,7 +704,7 @@ msgstr ""
 #: intro.xml:358
 #, no-c-format
 msgid "Enterprise Web Beans"
-msgstr ""
+msgstr "Web Bean Enterprise"
 
 #. Tag: para
 #: intro.xml:360
@@ -758,13 +758,13 @@ msgstr ""
 #: intro.xml:387
 #, no-c-format
 msgid "method-level transaction management and security,"
-msgstr ""
+msgstr "gestione delle transazioni a livello di metodo e sicurezza,"
 
 #. Tag: para
 #: intro.xml:390
 #, no-c-format
 msgid "concurrency management,"
-msgstr ""
+msgstr "gestione della concorrenza,"
 
 #. Tag: para
 #: intro.xml:393
@@ -776,13 +776,13 @@ msgstr ""
 #: intro.xml:397
 #, no-c-format
 msgid "remote and web service invocation, and"
-msgstr ""
+msgstr "invocazione remota e web service, e"
 
 #. Tag: para
 #: intro.xml:400
 #, no-c-format
 msgid "timers and asynchronous methods,"
-msgstr ""
+msgstr "timer e metodi asincroni,"
 
 #. Tag: para
 #: intro.xml:404
@@ -818,7 +818,7 @@ msgstr ""
 #: intro.xml:427
 #, no-c-format
 msgid "Producer methods"
-msgstr ""
+msgstr "Metodi produttori"
 
 #. Tag: para
 #: intro.xml:429
@@ -922,7 +922,7 @@ msgstr ""
 #: intro.xml:461
 #, no-c-format
 msgid "JMS endpoints"
-msgstr ""
+msgstr "Endpoint JMS"
 
 #. Tag: para
 #: intro.xml:463
