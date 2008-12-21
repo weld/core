@@ -23,4 +23,5 @@ lib/webbeans
    
 src/
    -- The sources of the Web Beans RI, including src/webbeans-api, 
-      src/webbeans-ri and src/reference
+      src/webbeans-ri and src/reference. To build the sources, just type mvn in
+      the subdirectory.
