@@ -69,7 +69,7 @@ public class Login {
        return user!=null;
     }
     
-    @Produces @LoggedIn @Dependent User getCurrentUser() {
+    @Produces @LoggedIn User getCurrentUser() {
         return user;
     }
 
