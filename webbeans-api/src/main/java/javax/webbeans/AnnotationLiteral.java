@@ -57,7 +57,6 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
       this.members = annotationType.getDeclaredMethods();
    }
    
-   @SuppressWarnings("unchecked")
    private static Class<?> getAnnotationLiteralSubclass(Class<?> clazz)
    {
       Class<?> superclass = clazz.getSuperclass();

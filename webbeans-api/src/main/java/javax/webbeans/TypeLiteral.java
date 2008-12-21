@@ -76,7 +76,6 @@ public abstract class TypeLiteral<T>
       }
    }
    
-   @SuppressWarnings("unchecked")
    private static Class<?> getTypeLiteralSubclass(Class<?> clazz)
    {
       Class<?> superclass = clazz.getSuperclass();
@@ -94,7 +93,6 @@ public abstract class TypeLiteral<T>
       }
    }
    
-   @SuppressWarnings("unchecked")
    private static Type getTypeParameter(Class<?> superclass)
    {
       Type type = superclass.getGenericSuperclass();
