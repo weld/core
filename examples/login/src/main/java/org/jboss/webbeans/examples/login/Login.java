@@ -6,7 +6,6 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.webbeans.Current;
-import javax.webbeans.Dependent;
 import javax.webbeans.Named;
 import javax.webbeans.Produces;
 import javax.webbeans.SessionScoped;
@@ -47,8 +46,7 @@ public class Login {
        return user!=null;
     }
     
-    @Produces @LoggedIn @Dependent 
-    User getCurrentUser() {
+    @Produces @LoggedIn User getCurrentUser() {
         return user;
     }
 
