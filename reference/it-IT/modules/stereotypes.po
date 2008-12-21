@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-20 00:48+0100\n"
+"PO-Revision-Date: 2008-12-21 13:01+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -29,61 +29,61 @@ msgstr "Secondo la specifica Web Beans:"
 #: stereotypes.xml:10
 #, no-c-format
 msgid "In many systems, use of architectural patterns produces a set of recurring Web Bean roles. A stereotype allows a framework developer to identify such a role and declare some common metadata for Web Beans with that role in a central place."
-msgstr ""
+msgstr "In molti sistemi l'uso di pattern architetturali produce un set di ruoli Web Bean ricorrenti. Uno stereotipo consente allo sviluppatore di framework di identificare tale ruolo e di dichiarare alcuni metadati comuni per i Web Bean con tale ruolo come parte principale."
 
 #. Tag: para
 #: stereotypes.xml:14
 #, no-c-format
 msgid "A stereotype encapsulates any combination of:"
-msgstr ""
+msgstr "Uno stereotipo incapsula qualsiasi combinazione di:"
 
 #. Tag: para
 #: stereotypes.xml:18
 #, no-c-format
 msgid "a default deployment type,"
-msgstr ""
+msgstr "un tipo di deploy di default,"
 
 #. Tag: para
 #: stereotypes.xml:21
 #, no-c-format
 msgid "a default scope type,"
-msgstr ""
+msgstr "un tipo di scope di default,"
 
 #. Tag: para
 #: stereotypes.xml:24
 #, no-c-format
 msgid "a restriction upon the Web Bean scope,"
-msgstr ""
+msgstr "una restrizione sullo scope del Web Bean,"
 
 #. Tag: para
 #: stereotypes.xml:27
 #, no-c-format
 msgid "a requirement that the Web Bean implement or extend a certain type, and"
-msgstr ""
+msgstr "un requisito che il Web Bean implementi o estenda un certo tipo, e"
 
 #. Tag: para
 #: stereotypes.xml:30
 #, no-c-format
 msgid "a set of interceptor binding annotations."
-msgstr ""
+msgstr "un set di annotazioni di interceptor binding."
 
 #. Tag: para
 #: stereotypes.xml:34
 #, no-c-format
 msgid "A stereotype may also specify that all Web Beans with the stereotype have defaulted Web Bean names."
-msgstr ""
+msgstr "Uno stereotipo può anche specificare che tutti i Web Beans con tale stereotipo abbiano nomi Web Bean di default."
 
 #. Tag: para
 #: stereotypes.xml:37
 #, no-c-format
 msgid "A Web Bean may declare zero, one or multiple stereotypes."
-msgstr ""
+msgstr "Un Web Bean può dichiarare zero, uno o più stereotipi."
 
 #. Tag: para
 #: stereotypes.xml:41
 #, no-c-format
 msgid "A stereotype is a Java annotation type. This stereotype identifies action classes in some MVC framework:"
-msgstr ""
+msgstr "Uno stereotipo è un tipo di annotazione Java. Questo stereotipo identifica le classi di azione in alcuni framework MVC:"
 
 #. Tag: programlisting
 #: stereotypes.xml:44
@@ -103,7 +103,7 @@ msgstr ""
 #: stereotypes.xml:46
 #, no-c-format
 msgid "We use the stereotype by applying the annotation to a Web Bean."
-msgstr ""
+msgstr "Lo stereotipo viene impiegato applicando l'annotazione al Web Bean."
 
 #. Tag: programlisting
 #: stereotypes.xml:48
@@ -119,7 +119,7 @@ msgstr ""
 #: stereotypes.xml:51
 #, no-c-format
 msgid "Default scope and deployment type for a stereotype"
-msgstr ""
+msgstr "Scope di default e tipo di deploy per uno stereotipo"
 
 #. Tag: para
 #: stereotypes.xml:53
@@ -277,7 +277,7 @@ msgstr ""
 #: stereotypes.xml:109
 #, no-c-format
 msgid "Name defaulting with stereotypes"
-msgstr ""
+msgstr "Assegnare nomi di default con gli stereotipi"
 
 #. Tag: para
 #: stereotypes.xml:111

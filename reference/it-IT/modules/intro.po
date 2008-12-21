@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-21 12:01+0100\n"
+"PO-Revision-Date: 2008-12-21 13:53+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -42,7 +42,7 @@ msgstr "Con alcune eccezioni molto particolari, ogni classe Java con un costrutt
 #: intro.xml:25
 #, no-c-format
 msgid "Suppose that we have two existing Java classes, that we've been using for years in various applications. The first class parses a string into a list of sentences:"
-msgstr "Si supponga di avere due classi Java esistenti, usate da anni in varie applicazioni. La prima classe esegue il parsing una stringa in una lista di frasi:"
+msgstr "Si supponga di avere due classi Java esistenti, usate da anni in varie applicazioni. La prima classe esegue il parsing di una stringa in una lista di frasi:"
 
 #. Tag: programlisting
 #: intro.xml:29
@@ -598,7 +598,7 @@ msgstr "Tipi di interceptor binding"
 #: intro.xml:297
 #, no-c-format
 msgid "Web Beans supports the interceptor functionality defined by EJB 3, not only for EJB beans, but also for plain Java classes. In addition, Web Beans provides a new approach to binding interceptors to EJB beans and other Web Beans."
-msgstr "Web Beans supporta la funzionalità di interceptor definita da EJB 3, non solo per i bean EJB, ma anche per classi Java semplici (plain). In aggiunto, Web Beans fornisce un nuovo approccio al binding di interceptor nei confronti di bean EJB e di altri Web Beans."
+msgstr "Web Beans supporta la funzionalità di interceptor definita da EJB 3, non solo per i bean EJB, ma anche per classi Java semplici (plain). In aggiunta, Web Beans fornisce un nuovo approccio al binding di interceptor nei confronti di bean EJB e di altri Web Beans."
 
 #. Tag: para
 #: intro.xml:302

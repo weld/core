@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-20 15:44+0100\n"
+"PO-Revision-Date: 2008-12-21 14:06+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 #: injection.xml:4
 #, no-c-format
 msgid "Dependency injection"
-msgstr ""
+msgstr "Dependency injection"
 
 #. Tag: para
 #: injection.xml:6
@@ -157,7 +157,7 @@ msgstr ""
 #: injection.xml:51
 #, no-c-format
 msgid "Producer methods also support parameter injection:"
-msgstr ""
+msgstr "I metodi produttori supportano anche l'iniezione dei parametri:"
 
 #. Tag: programlisting
 #: injection.xml:53
@@ -217,7 +217,7 @@ msgstr ""
 #: injection.xml:91
 #, no-c-format
 msgid "Binding annotations"
-msgstr ""
+msgstr "Annotazioni di binding"
 
 #. Tag: para
 #: injection.xml:93
@@ -494,7 +494,7 @@ msgstr ""
 #: injection.xml:187
 #, no-c-format
 msgid "Deployment types"
-msgstr ""
+msgstr "Tipi di deploy"
 
 #. Tag: para
 #: injection.xml:189
@@ -650,7 +650,7 @@ msgstr ""
 #: injection.xml:244
 #, no-c-format
 msgid "Deployment type precedence"
-msgstr ""
+msgstr "Precedenza del tipo di deploy"
 
 #. Tag: para
 #: injection.xml:246
@@ -692,7 +692,7 @@ msgstr ""
 #: injection.xml:284
 #, no-c-format
 msgid "Example deployment types"
-msgstr ""
+msgstr "Esempio dei tipi di deploy "
 
 #. Tag: para
 #: injection.xml:286
@@ -944,7 +944,7 @@ msgstr ""
 #: injection.xml:440
 #, no-c-format
 msgid "The <literal>InjectionPoint</literal> object"
-msgstr ""
+msgstr "L'oggetto <literal>InjectionPoint</literal>"
 
 #. Tag: para
 #: injection.xml:442
@@ -1018,7 +1018,7 @@ msgstr ""
 #: injection.xml:475
 #, no-c-format
 msgid "We can now write:"
-msgstr ""
+msgstr "Ora è possibile scrivere:"
 
 #. Tag: programlisting
 #: injection.xml:477
@@ -1070,7 +1070,7 @@ msgstr ""
 #: injection.xml:488
 #, no-c-format
 msgid "The following producer method does the work:"
-msgstr ""
+msgstr "Il seguente metodo produttore esegue il lavoro:"
 
 #. Tag: programlisting
 #: injection.xml:490
