@@ -39,7 +39,6 @@ import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bindings.CurrentBinding;
-import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem.AnnotationMap;
 import org.jboss.webbeans.log.LogProvider;
@@ -60,7 +59,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
 {
 
    @SuppressWarnings("unchecked")
-   private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(DefaultEnterpriseBeanLookup.class, Event.class, ManagerImpl.class));
+   private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(Event.class, ManagerImpl.class));
 
    /**
     * Helper class for getting deployment type

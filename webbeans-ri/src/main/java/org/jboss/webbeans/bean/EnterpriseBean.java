@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.webbeans.ApplicationScoped;
+import javax.webbeans.CreationException;
 import javax.webbeans.Decorator;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
@@ -37,12 +38,12 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
 import org.jboss.webbeans.bootstrap.spi.MethodDescriptor;
 import org.jboss.webbeans.contexts.DependentContext;
-import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.util.JNDI;
 
 /**
  * An enterprise bean representation
@@ -265,9 +266,12 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       try
       {
          DependentContext.INSTANCE.setActive(true);
-         T instance = (T) manager.getInstanceByType(DefaultEnterpriseBeanLookup.class).lookup(ejbDescriptor);
-         // TODO Return enterprise proxy
-         return instance;
+         // TODO Implement enterprise bean proxies and select the correct jndiName
+         return (T) JNDI.lookup(ejbDescriptor.getLocalJndiName());
+      }
+      catch (Exception e)
+      {
+         throw new CreationException("could not find the name in JNDI " + ejbDescriptor.getLocalJndiName(), e);
       }
       finally
       {

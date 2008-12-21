@@ -59,7 +59,6 @@ import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.contexts.DependentContext;
-import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -141,7 +140,6 @@ public class WebBeansBootstrap
       Set<AbstractBean<?, ?>> beans = new HashSet<AbstractBean<?, ?>>();
       createBean(BeanFactory.createSimpleBean(Transaction.class, manager), beans);
       createBean(BeanFactory.createSimpleBean(ManagerImpl.class, manager), beans);
-      createBean(BeanFactory.createSimpleBean(DefaultEnterpriseBeanLookup.class, manager), beans);
       return beans;
    }
 

@@ -5,6 +5,6 @@ import org.jboss.webbeans.ManagerImpl;
 public class MockManagerImpl extends ManagerImpl
 {
    
-   public static int BUILT_IN_BEANS = 4;
+   public static int BUILT_IN_BEANS = 3;
    
 }

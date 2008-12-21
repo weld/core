@@ -12,7 +12,6 @@ import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.ejb.DefaultEnterpriseBeanLookup;
 import org.jboss.webbeans.test.beans.Elephant;
 import org.jboss.webbeans.test.beans.InitializedObserver;
 import org.jboss.webbeans.test.beans.InitializedObserverWhichUsesApplicationContext;
@@ -205,7 +204,6 @@ public class BoostrapTest extends AbstractTest
             classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
          }
       }
-      assert classes.containsKey(DefaultEnterpriseBeanLookup.class);
       assert classes.containsKey(Hound.class);
       assert classes.containsKey(Elephant.class);
       assert classes.containsKey(Panther.class);
