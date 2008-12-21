@@ -33,6 +33,7 @@ import static org.jboss.webbeans.servlet.Servlet.SERVLET_CONTEXT_LISTENER_CLASS;
 import static org.jboss.webbeans.servlet.Servlet.SERVLET_REQUEST_LISTENER_CLASS;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -40,6 +41,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.webbeans.DefinitionException;
+import javax.webbeans.Initializer;
 import javax.webbeans.Observable;
 import javax.webbeans.Observer;
 import javax.webbeans.Observes;
@@ -348,7 +350,32 @@ public class WebBeansBootstrap
     */
    protected static boolean isTypeSimpleWebBean(Class<?> type)
    {
-      return !type.isAnnotation() && !Reflections.isAbstract(type) && !SERVLET_CLASS.isAssignableFrom(type) && !FILTER_CLASS.isAssignableFrom(type) && !SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(type) && !HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(type) && !SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(type) && !ENTERPRISE_BEAN_CLASS.isAssignableFrom(type) && !UICOMPONENT_CLASS.isAssignableFrom(type);
+      //TODO: check 3.2.1 for more rules!!!!!!
+      return !type.isAnnotation() && 
+      	    !Reflections.isAbstract(type) && 
+      	    !SERVLET_CLASS.isAssignableFrom(type) && 
+      	    !FILTER_CLASS.isAssignableFrom(type) && 
+      	    !SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(type) && 
+      	    !HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(type) && 
+      	    !SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(type) && 
+      	    !ENTERPRISE_BEAN_CLASS.isAssignableFrom(type) && 
+      	    !UICOMPONENT_CLASS.isAssignableFrom(type) &&
+      	    hasSimpleWebBeanConstructor(type);
+   }
+
+   private static boolean hasSimpleWebBeanConstructor(Class<?> type) {
+      try {
+         type.getDeclaredConstructor();
+         return true;
+      }
+      catch (NoSuchMethodException nsme)
+      {
+         for (Constructor<?> c: type.getDeclaredConstructors())
+         {
+            if (c.isAnnotationPresent(Initializer.class)) return true;
+         }
+         return false;
+      }
    }
 
 }
