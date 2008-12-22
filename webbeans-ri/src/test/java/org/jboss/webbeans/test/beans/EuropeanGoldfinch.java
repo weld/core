@@ -5,7 +5,7 @@ import javax.ejb.Stateful;
 import javax.webbeans.ConversationScoped;
 import javax.webbeans.Destructor;
 import javax.webbeans.Event;
-import javax.webbeans.Fires;
+import javax.webbeans.Observable;
 
 import org.jboss.webbeans.test.beans.StarFinch.Mess;
 
@@ -20,7 +20,7 @@ public class EuropeanGoldfinch
    }
 
    @Destructor @Remove
-   public void remove(@Fires Event<Mess> eventObject)
+   public void remove(@Observable Event<Mess> eventObject)
    {
       // Create a new mess and fire the event for it
       someMess = new Mess();

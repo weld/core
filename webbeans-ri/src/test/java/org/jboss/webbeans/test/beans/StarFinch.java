@@ -2,7 +2,7 @@ package org.jboss.webbeans.test.beans;
 
 import javax.webbeans.Event;
 import javax.webbeans.Named;
-import javax.webbeans.Fires;
+import javax.webbeans.Observable;
 import javax.webbeans.Produces;
 import javax.webbeans.RequestScoped;
 
@@ -19,7 +19,7 @@ public class StarFinch
    }
 
    @Produces
-   public Mess producerOfMesses(@Fires Event<Mess> messEvent)
+   public Mess producerOfMesses(@Observable Event<Mess> messEvent)
    {
       Mess newMess = new Mess();
       messEvent.fire(newMess);

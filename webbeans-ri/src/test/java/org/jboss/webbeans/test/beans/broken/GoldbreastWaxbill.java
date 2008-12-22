@@ -1,11 +1,11 @@
 package org.jboss.webbeans.test.beans.broken;
 
 import javax.webbeans.Event;
-import javax.webbeans.Fires;
+import javax.webbeans.Observable;
 
 public class GoldbreastWaxbill
 {
-   @Fires
+   @Observable
    private Event<?> simpleEvent;
 
    public void eliminateWarning()

@@ -1,14 +1,14 @@
 package org.jboss.webbeans.test.beans.broken;
 
 import javax.webbeans.Event;
-import javax.webbeans.Fires;
+import javax.webbeans.Observable;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
 
 public class OwlFinch
 {
-   @Fires
+   @Observable
    private Event<String> simpleEvent;
 
    public void methodThatFiresEvent()

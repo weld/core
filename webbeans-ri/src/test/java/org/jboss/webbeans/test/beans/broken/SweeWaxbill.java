@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.beans.broken;
 
 import javax.webbeans.Event;
-import javax.webbeans.Fires;
+import javax.webbeans.Observable;
 import javax.webbeans.Observer;
 
 import org.jboss.webbeans.test.annotations.Role;
@@ -9,7 +9,7 @@ import org.jboss.webbeans.test.bindings.RoleBinding;
 
 public class SweeWaxbill
 {
-   @Fires @Role("Admin")
+   @Observable @Role("Admin")
    private Event<String> simpleEvent;
 
    public void methodThatFiresEvent()

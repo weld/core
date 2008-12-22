@@ -1,12 +1,12 @@
 package org.jboss.webbeans.test.beans;
 
 import javax.webbeans.Event;
-import javax.webbeans.Fires;
+import javax.webbeans.Observable;
 import javax.webbeans.Observer;
 
 public class BlueFacedParrotFinch
 {
-   @Fires
+   @Observable
    private Event<String> simpleEvent;
 
    public void methodThatFiresEvent()

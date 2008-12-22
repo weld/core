@@ -3,11 +3,11 @@ package org.jboss.webbeans.test.beans.broken;
 import java.util.ArrayList;
 
 import javax.webbeans.Event;
-import javax.webbeans.Fires;
+import javax.webbeans.Observable;
 
 public class JavaSparrow
 {
-   @Fires
+   @Observable
    private Event<ArrayList<String>> simpleEvent;
 
    public void eliminateWarning()

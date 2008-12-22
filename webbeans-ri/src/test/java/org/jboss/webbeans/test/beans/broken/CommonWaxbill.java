@@ -2,11 +2,11 @@ package org.jboss.webbeans.test.beans.broken;
 
 import java.util.ArrayList;
 
-import javax.webbeans.Fires;
+import javax.webbeans.Observable;
 
 public class CommonWaxbill
 {
-   @Fires
+   @Observable
    private ArrayList<String> simpleEvent;
 
    public void eliminateWarning()

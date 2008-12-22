@@ -42,10 +42,10 @@ import java.util.Set;
 
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Initializer;
-import javax.webbeans.Fires;
+import javax.webbeans.Observable;
 import javax.webbeans.Observer;
 import javax.webbeans.Observes;
-import javax.webbeans.Obtains;
+import javax.webbeans.Obtainable;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
@@ -200,18 +200,18 @@ public class WebBeansBootstrap
       }
       for (AnnotatedMethod<Object> initializerMethod : bean.getInitializerMethods())
       {
-         for (AnnotatedParameter<Object> parameter : initializerMethod.getAnnotatedParameters(Fires.class))
+         for (AnnotatedParameter<Object> parameter : initializerMethod.getAnnotatedParameters(Observable.class))
          {
             registerEvent(parameter, beans);
          }
       }
       for (AnnotatedItem injectionPoint : bean.getInjectionPoints())
       {
-         if ( injectionPoint.isAnnotationPresent(Fires.class) )  
+         if ( injectionPoint.isAnnotationPresent(Observable.class) )  
          {
             registerEvent(injectionPoint, beans);
          }
-         if ( injectionPoint.isAnnotationPresent(Obtains.class) )  
+         if ( injectionPoint.isAnnotationPresent(Obtainable.class) )  
          {
             InstanceBean<Object, Field> instanceBean = createInstanceBean(injectionPoint, manager);
             beans.add(instanceBean);
@@ -333,7 +333,7 @@ public class WebBeansBootstrap
    @SuppressWarnings("unchecked")
    private void registerEvent(AnnotatedItem injectionPoint, Set<AbstractBean<?, ?>> beans)
    {
-      if ( injectionPoint.isAnnotationPresent(Fires.class) )
+      if ( injectionPoint.isAnnotationPresent(Observable.class) )
       {
          EventBean<Object, Method> eventBean = createEventBean(injectionPoint, manager);
          beans.add(eventBean);
