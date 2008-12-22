@@ -11,10 +11,10 @@
    </para> 
 
     <para>
-      The Web Beans RI comes with a two deployable example applications, 
-      <literal>webbeans-numberguess</literal> (a war example, containing only
-      simple beans) and <literal>webbeans-translator</literal> (an ear example,
-      containing enterprise beans). To run the examples you'll need the following:
+      The Web Beans RI comes with a two deployable example applications:
+      <literal>webbeans-numberguess</literal>, a war example, containing only
+      simple beans, and <literal>webbeans-translator</literal> an ear example,
+      containing enterprise beans. To run the examples you'll need the following:
    </para>
    
    <itemizedlist>
@@ -208,7 +208,7 @@ ant deploy</programlisting>
             <area id="session.timeout" coords="28" />
             <area id="webbeans.listener" coords="32" />
          </areaspec>
-         <programlisting role="XML"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+         <programlisting><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 
 <web-app version="2.5"
     xmlns="http://java.sun.com/xml/ns/javaee"
@@ -301,7 +301,7 @@ ant deploy</programlisting>
             <area id="validator" coords="29" />
             <area id="submit" coords="32" />
          </areaspec>
-         <programlisting role="XML"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+         <programlisting><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:h="http://java.sun.com/jsf/html"
