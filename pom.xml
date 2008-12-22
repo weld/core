@@ -296,10 +296,8 @@
    </licenses>
 
    <scm>
-      <connection>http://anonsvn.jboss.org/repos/webbeans</connection>
-      <developerConnection>
-         https://svn.jboss.org/repos/webbeans
-      </developerConnection>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans</developerConnection>
       <url>http://fisheye.jboss.org/browse/WebBeans</url>
    </scm>
 
