@@ -35,7 +35,7 @@ import javax.webbeans.TypeLiteral;
 public interface Manager
 {
 
-   public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindings);
+   public <T> Set<Bean<T>> resolveByType(Class<T> apiType, Annotation... bindings);
 
    public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType, Annotation... bindings);
 
