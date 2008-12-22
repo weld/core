@@ -1,12 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.webbeans</groupId>
    <artifactId>parent</artifactId>
    <packaging>pom</packaging>
-   <version>1.0.0-SNAPSHOT</version>
+   <version>1.0.0.ALPHA1</version>
 
    <name>Web Beans</name>
    <url>http://www.seamframework.org/WebBeans</url>
@@ -310,7 +307,7 @@
    
    <ciManagement>
       <system>Hudson</system>
-      <url></url>
+      <url />
 
    </ciManagement>
 
@@ -330,9 +327,9 @@
 
    <scm>
 
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri</developerConnection>
-      <url>http://fisheye.jboss.org/browse/WebBeans/ri</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/tags/1.0.0.ALPHA1</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/tags/1.0.0.ALPHA1</developerConnection>
+      <url>http://fisheye.jboss.org/browse/WebBeans/ri/tags/1.0.0.ALPHA1</url>
    </scm>
 
    <distributionManagement>
@@ -376,7 +373,7 @@
    </reporting>
    
    <properties>
-      <webbeans.version>1.0.0-SNAPSHOT</webbeans.version>
+      <webbeans.version>1.0.0.ALPHA1</webbeans.version>
    </properties>
 
 </project>
