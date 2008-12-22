@@ -1,9 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.webbeans</groupId>
    <artifactId>parent</artifactId>
    <packaging>pom</packaging>
-   <version>1.0.0.ALPHA1</version>
+   <version>1.0.0-SNAPSHOT</version>
+
    <name>Web Beans</name>
    <url>http://www.seamframework.org/WebBeans</url>
 
@@ -13,6 +17,7 @@
 
    <developers>
       <developer>
+
          <name>Pete Muir</name>
          <roles>
             <role>Project Lead</role>
@@ -20,6 +25,7 @@
          <email>pete.muir@jboss.org</email>
          <organization>JBoss, a division of Red Hat</organization>
          <url>http://in.relation.to/Bloggers/Pete</url>
+
       </developer>
 
       <developer>
@@ -29,6 +35,7 @@
 
       <developer>
          <name>David Allen</name>
+
       </developer>
       
       <developer>
@@ -39,6 +46,7 @@
    <repositories>
       <repository>
          <id>repository.jboss.org</id>
+
          <name>JBoss Repository</name>
          <url>http://repository.jboss.org/maven2</url>
       </repository>
@@ -47,6 +55,7 @@
    <pluginRepositories>
       <pluginRepository>
          <id>repository.jboss.org</id>
+
          <name>JBoss Repository</name>
          <url>http://repository.jboss.org/maven2</url>
       </pluginRepository>
@@ -55,6 +64,7 @@
    <modules>
       <module>webbeans-api</module>
       <module>webbeans-ri</module>
+
       <module>webbeans-ri-spi</module>
    </modules>
 
@@ -64,6 +74,7 @@
          <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+
             <version>5.8</version>
             <classifier>jdk15</classifier>
          </dependency>
@@ -71,6 +82,7 @@
          <dependency>
             <groupId>javax.ejb</groupId>
             <artifactId>ejb-api</artifactId>
+
             <version>3.0</version>
          </dependency>
 
@@ -78,6 +90,7 @@
             <groupId>javax.annotation</groupId>
             <artifactId>jsr250-api</artifactId>
             <version>1.0</version>
+
          </dependency>
 
          <dependency>
@@ -94,6 +107,7 @@
 
          <dependency>
             <groupId>javax.servlet</groupId>
+
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
          </dependency>
@@ -101,6 +115,7 @@
          <dependency>
             <groupId>javax.transaction</groupId>
             <artifactId>jta</artifactId>
+
             <version>1.0.1B</version>
          </dependency>
 
@@ -108,6 +123,7 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.14</version>
+
          </dependency>
 
          <dependency>
@@ -117,6 +133,7 @@
          </dependency>
          
          <dependency>
+
             <groupId>javax.faces</groupId>
             <artifactId>jsf-api</artifactId>
             <version>1.2_10</version>
@@ -124,6 +141,7 @@
 
          <dependency>
             <groupId>com.google.collections</groupId>
+
             <artifactId>google-collections</artifactId>
             <version>0.8</version>
          </dependency>
@@ -132,6 +150,7 @@
             <groupId>org.jboss.ejb3</groupId>
             <artifactId>jboss-ejb3-embedded</artifactId>
             <version>1.0.0-Alpha1</version>
+
          </dependency>
          
          <dependency>
@@ -141,6 +160,7 @@
          </dependency>
 
          <dependency>
+
             <groupId>com.sun.facelets</groupId>
             <artifactId>jsf-facelets</artifactId>
             <version>1.1.15.B1</version>
@@ -148,6 +168,7 @@
 
          <dependency>
             <groupId>javax.el</groupId>
+
             <artifactId>el-ri</artifactId>
             <version>1.2</version>
          </dependency>
@@ -155,6 +176,7 @@
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>webbeans-api</artifactId>
+
             <version>${webbeans.version}</version>
          </dependency>
          
@@ -163,6 +185,7 @@
             <artifactId>webbeans-ri</artifactId>
             <version>${webbeans.version}</version>
          </dependency>
+
          
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
@@ -180,6 +203,7 @@
             <artifactId>wagon-webdav</artifactId>
             <version>1.0-beta-2</version>
          </extension>
+
       </extensions>
       <plugins>
          <plugin>
@@ -188,6 +212,7 @@
             <executions>
                <execution>
                   <id>attach-sources</id>
+
                   <phase>verify</phase>
                   <goals>
                      <goal>jar</goal>
@@ -196,6 +221,7 @@
             </executions>
          </plugin>
       </plugins>
+
       <pluginManagement>
          <plugins>
             <plugin>
@@ -203,6 +229,7 @@
                <artifactId>maven-compiler-plugin</artifactId>
                <version>2.0.2</version>
                <configuration>
+
                   <source>1.5</source>
                   <target>1.5</target>
                </configuration>
@@ -210,6 +237,7 @@
             <plugin>
                <groupId>org.codehaus.mojo</groupId>
                <artifactId>cobertura-maven-plugin</artifactId>
+
                <version>2.2</version>
             </plugin>
             <plugin>
@@ -217,6 +245,7 @@
                <artifactId>maven-jar-plugin</artifactId>
                <configuration>
                   <archive>
+
                      <manifest>
                         <addDefaultImplementationEntries>
                            true
@@ -227,6 +256,7 @@
                      </manifest>
                   </archive>
                </configuration>
+
             </plugin>
          </plugins>
       </pluginManagement>
@@ -236,6 +266,7 @@
       <profile>
          <id>coverage</id>
          <activation>
+
             <property>
                <name>coverage</name>
             </property>
@@ -244,6 +275,7 @@
             <plugins>
                <plugin>
                   <groupId>org.codehaus.mojo</groupId>
+
                   <artifactId>emma-maven-plugin</artifactId>
                   <version>1.0-alpha-1</version>
                   <inherited>true</inherited>
@@ -251,6 +283,7 @@
                      <execution>
                         <phase>process-classes</phase>
                         <goals>
+
                            <goal>instrument</goal>
                         </goals>
                      </execution>
@@ -259,6 +292,7 @@
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-surefire-plugin</artifactId>
+
                   <inherited>true</inherited>
                   <configuration>
                      <forkMode>once</forkMode>
@@ -267,6 +301,7 @@
                         ${project.build.directory}/generated-classes/emma/classes
                      </classesDirectory>
                   </configuration>
+
                </plugin>
             </plugins>
          </build>
@@ -275,7 +310,8 @@
    
    <ciManagement>
       <system>Hudson</system>
-      <url />
+      <url></url>
+
    </ciManagement>
 
    <issueManagement>
@@ -293,14 +329,16 @@
    </licenses>
 
    <scm>
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/tags/parent-1.0.0.ALPHA1</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/tags/parent-1.0.0.ALPHA1</developerConnection>
-      <url>http://fisheye.jboss.org/browse/WebBeans/tags/parent-1.0.0.ALPHA1</url>
+
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri</developerConnection>
+      <url>http://fisheye.jboss.org/browse/WebBeans/ri</url>
    </scm>
 
    <distributionManagement>
       <repository>
          <!-- Copy the dist to the local checkout of the JBoss maven2 repo ${maven.repository.root} -->
+
          <!-- It is anticipated that ${maven.repository.root} be set in user's settings.xml -->
          <!-- todo : replace this with direct svn access once the svnkit providers are available -->
          <id>repository.jboss.org</id>
@@ -308,6 +346,7 @@
       </repository>
       <snapshotRepository>
          <id>snapshots.jboss.org</id>
+
          <name>JBoss Snapshot Repository</name>
          <url>dav:https://snapshots.jboss.org/maven2</url>
       </snapshotRepository>
@@ -316,6 +355,7 @@
    <reporting>
       <plugins>
          <plugin>
+
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>cobertura-maven-plugin</artifactId>
             <configuration>
@@ -323,6 +363,7 @@
                   <format>html</format>
                   <format>xml</format>
                </formats>
+
                <instrumentation>
                   <ignores>
                      <ignore>javax.webbeans.*</ignore>
@@ -331,10 +372,11 @@
             </configuration>
          </plugin>
       </plugins>
+
    </reporting>
    
    <properties>
-      <webbeans.version>1.0.0.ALPHA1</webbeans.version>
+      <webbeans.version>1.0.0-SNAPSHOT</webbeans.version>
    </properties>
 
 </project>
