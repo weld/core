@@ -3,11 +3,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml \n"
+"Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-19 20:26+0000\n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2008-12-22 10:45+0800\n"
+"Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,214 +16,162 @@ msgstr ""
 #. Tag: para
 #: part1.xml:5
 #, no-c-format
-msgid ""
-"The Web Beans (JSR-299) specification defines a set of services for the Java "
-"EE environment that makes applications much easier to develop. Web Beans "
-"layers an enhanced lifecycle and interaction model over existing Java "
-"component types including JavaBeans and Enterprise Java Beans. As a "
-"complement to the traditional Java EE programming model, the Web Beans "
-"services provide:"
-msgstr ""
+msgid "The Web Beans (JSR-299) specification defines a set of services for the Java EE environment that makes applications much easier to develop. Web Beans layers an enhanced lifecycle and interaction model over existing Java component types including JavaBeans and Enterprise Java Beans. As a complement to the traditional Java EE programming model, the Web Beans services provide:"
+msgstr "The Web Beans (JSR-299)规范为Java EE环境定义了一套服务以便开发者能够更轻松地开发应用。Web Beans在现有的包括JavaBeans和企业JavaBeans在内的Java组件类型之上增强了生命周期和交互的模型层。作为传统的Java EE编程模型的补充，Web Beans服务提供了："
 
 #. Tag: para
 #: part1.xml:14
 #, no-c-format
-msgid ""
-"an improved lifecycle for stateful components, bound to well-defined "
-"<emphasis>contexts</emphasis>,"
-msgstr ""
+msgid "an improved lifecycle for stateful components, bound to well-defined <emphasis>contexts</emphasis>,"
+msgstr "一个为有状态组件而改良的并且绑定到定义明确的 <emphasis>上下文</emphasis>上的生命周期，"
 
 #. Tag: para
 #: part1.xml:18
 #, no-c-format
 msgid "a typesafe approach to <emphasis>dependency injection</emphasis>,"
-msgstr ""
+msgstr "一个类型安全的<emphasis>依赖注入</emphasis>方法,"
 
 #. Tag: para
 #: part1.xml:21
 #, no-c-format
-msgid ""
-"interaction via an <emphasis>event notification</emphasis> facility, and"
-msgstr ""
+msgid "interaction via an <emphasis>event notification</emphasis> facility, and"
+msgstr "通过 <emphasis>事件通知</emphasis> 机制实现的交互，并且"
 
 #. Tag: para
 #: part1.xml:25
 #, no-c-format
-msgid ""
-"a better approach to binding <emphasis>interceptors</emphasis> to "
-"components, along with a new kind of interceptor, called a "
-"<emphasis>decorator</emphasis>, that is more appropriate for use in solving "
-"business problems."
-msgstr ""
+msgid "a better approach to binding <emphasis>interceptors</emphasis> to components, along with a new kind of interceptor, called a <emphasis>decorator</emphasis>, that is more appropriate for use in solving business problems."
+msgstr "一个更好的将<emphasis>拦截器</emphasis>绑定到组件上的方法，同时提供了一个名为<emphasis>装饰器(decorator)</emphasis>的新型拦截器，这种拦截器更加适合解决业务问题。"
 
 #. Tag: para
 #: part1.xml:32
 #, no-c-format
-msgid ""
-"Dependency injection, together with contextual lifecycle management, saves "
-"the user of an unfamiliar API from having to ask and answer the following "
-"questions:"
-msgstr ""
+msgid "Dependency injection, together with contextual lifecycle management, saves the user of an unfamiliar API from having to ask and answer the following questions:"
+msgstr "依赖注入和具备上下文的生命周期管理节省了开发者出于对接口的不熟悉而不得不处理下列问题所浪费时间："
 
 #. Tag: para
 #: part1.xml:38
 #, no-c-format
 msgid "what is the lifecycle of this object?"
-msgstr ""
+msgstr "这个对象的生命周期是什么？"
 
 #. Tag: para
 #: part1.xml:41
 #, no-c-format
 msgid "how many simultaneous clients can it have?"
-msgstr ""
+msgstr "它能够有多少个并发的客户端"
 
 #. Tag: para
 #: part1.xml:44
 #, no-c-format
 msgid "is it multithreaded?"
-msgstr ""
+msgstr "它是多线程的么？"
 
 #. Tag: para
 #: part1.xml:47
 #, no-c-format
 msgid "where can I get one from?"
-msgstr ""
+msgstr "我能从哪里得到一个对象？"
 
 #. Tag: para
 #: part1.xml:50
 #, no-c-format
 msgid "do I need to explicitly destroy it?"
-msgstr ""
+msgstr "我需要显式地销毁它么？"
 
 #. Tag: para
 #: part1.xml:53
 #, no-c-format
 msgid "where should I keep my reference to it when I'm not using it directly?"
-msgstr ""
+msgstr "当我不再直接使用它的时候，我需要将它的引用保存到哪里？"
 
 #. Tag: para
 #: part1.xml:57
 #, no-c-format
-msgid ""
-"how can I add an indirection layer, so that the implementation of this "
-"object can vary at deployment time?"
-msgstr ""
+msgid "how can I add an indirection layer, so that the implementation of this object can vary at deployment time?"
+msgstr "我如何才能添加一个间接层，以便在部署的时候可以更换这个对象的不同实现？"
 
 #. Tag: para
 #: part1.xml:61
 #, no-c-format
 msgid "how should I go about sharing this object between other objects?"
-msgstr ""
+msgstr "我应该如何在其他对象中共享这个对象？"
 
 #. Tag: para
 #: part1.xml:65
 #, no-c-format
-msgid ""
-"A Web Bean specifies only the type and semantics of other Web Beans it "
-"depends upon. It need not be aware of the actual lifecycle, concrete "
-"implementation, threading model or other clients of any Web Bean it depends "
-"upon. Even better, the concrete implementation, lifecycle and threading "
-"model of a Web Bean it depends upon may vary according to the deployment "
-"scenario, without affecting any client."
-msgstr ""
+msgid "A Web Bean specifies only the type and semantics of other Web Beans it depends upon. It need not be aware of the actual lifecycle, concrete implementation, threading model or other clients of any Web Bean it depends upon. Even better, the concrete implementation, lifecycle and threading model of a Web Bean it depends upon may vary according to the deployment scenario, without affecting any client."
+msgstr "一个Web Bean仅仅需要指定它所依赖的其他Web Bean的类型和语义。它不需要知道他所依赖的任何Web Bean的实际生命周期，具体的实现，线程模型或者这个Web Bean的其他客户端。更棒的是，它所依赖的Web Bean的具体实现和生命周期，线程模型可以根据部署场景而更改，却丝毫不影响任何客户端。"
 
 #. Tag: para
 #: part1.xml:72
 #, no-c-format
-msgid ""
-"Events, interceptors and decorators enhance the <emphasis>loose-coupling</"
-"emphasis> that is inherent in this model:"
-msgstr ""
+msgid "Events, interceptors and decorators enhance the <emphasis>loose-coupling</emphasis> that is inherent in this model:"
+msgstr "事件，拦截器和装饰器增强了这个模型固有的<emphasis>松耦合</emphasis>特性："
 
 #. Tag: para
 #: part1.xml:77
 #, no-c-format
-msgid ""
-"<emphasis>event notifications</emphasis> decouple event producers from event "
-"consumers,"
-msgstr ""
+msgid "<emphasis>event notifications</emphasis> decouple event producers from event consumers,"
+msgstr "<emphasis>事件通知</emphasis>将事件的消费者和事件的产生者解耦，"
 
 #. Tag: para
 #: part1.xml:81
 #, no-c-format
-msgid ""
-"<emphasis>interceptors</emphasis> decouple technical concerns from business "
-"logic, and"
-msgstr ""
+msgid "<emphasis>interceptors</emphasis> decouple technical concerns from business logic, and"
+msgstr "<emphasis>拦截器</emphasis>将技术关注点从业务逻辑中解耦，并且"
 
 #. Tag: para
 #: part1.xml:85
 #, no-c-format
-msgid ""
-"<emphasis>decorators</emphasis> allow business concerns to be "
-"compartmentalized."
-msgstr ""
+msgid "<emphasis>decorators</emphasis> allow business concerns to be compartmentalized."
+msgstr "<emphasis>装饰器</emphasis>允许开发者划分业务关注点。"
 
 #. Tag: para
 #: part1.xml:90
 #, no-c-format
-msgid ""
-"Most importantly, Web Beans provides all these facilities in a "
-"<emphasis>typesafe</emphasis> way. Web Beans never uses string-based "
-"identifiers to determine how collaborating objects fit together. And XML, "
-"though it remains an option, is rarely used. Instead, Web Beans uses the "
-"typing information that is already available in the Java object model, "
-"together with a new pattern, called <emphasis>binding annotations</"
-"emphasis>, to wire together Web Beans, their dependencies, their "
-"interceptors and decorators and their event consumers."
-msgstr ""
+msgid "Most importantly, Web Beans provides all these facilities in a <emphasis>typesafe</emphasis> way. Web Beans never uses string-based identifiers to determine how collaborating objects fit together. And XML, though it remains an option, is rarely used. Instead, Web Beans uses the typing information that is already available in the Java object model, together with a new pattern, called <emphasis>binding annotations</emphasis>, to wire together Web Beans, their dependencies, their interceptors and decorators and their event consumers."
+msgstr "最重要的是，Web Beans以一种<emphasis>类型安全</emphasis>的方式提供所有的特性。Web Beans从来不使用基于字符串的标识符来决定交互的对象如何关联在一起。至于XML, 虽然它仍旧是一个选项，但也可以几乎不使用。取而代之，Web Bean使用Java对象模型的类型信息和一种新的<emphasis>绑定注释</emphasis>模式将Web Beans和它们的依赖以及拦截器，装饰器和事件消费者关联在一起。"
 
 #. Tag: para
 #: part1.xml:100
 #, no-c-format
-msgid ""
-"The Web Beans services are general and apply to the following types of "
-"components that exist in the Java EE environment:"
-msgstr ""
+msgid "The Web Beans services are general and apply to the following types of components that exist in the Java EE environment:"
+msgstr "Web Beans服务是相当普遍的，可以应用在下列Java EE环境中的组件类型中："
 
 #. Tag: para
 #: part1.xml:105
 #, no-c-format
 msgid "all JavaBeans,"
-msgstr ""
+msgstr "所有的JavaBeans,"
 
 #. Tag: para
 #: part1.xml:108
 #, no-c-format
 msgid "all EJBs, and"
-msgstr ""
+msgstr "所有的EJB, 和"
 
 #. Tag: para
 #: part1.xml:111
 #, no-c-format
 msgid "all Servlets."
-msgstr ""
+msgstr "所有的Servlet。"
 
 #. Tag: para
 #: part1.xml:115
 #, no-c-format
-msgid ""
-"Web Beans even provides the necessary integration points so that other kinds "
-"of components defined by future Java EE specifications or by non-standard "
-"frameworks may be cleanly integrated with Web Beans, take advantage of the "
-"Web Beans services, and interact with any other kind of Web Bean."
-msgstr ""
+msgid "Web Beans even provides the necessary integration points so that other kinds of components defined by future Java EE specifications or by non-standard frameworks may be cleanly integrated with Web Beans, take advantage of the Web Beans services, and interact with any other kind of Web Bean."
+msgstr "Web Beans甚至提供了必要的整合点，以便未来的Java EE规范或者其他非标准的框架中的不同组件能够和Web Beans轻松整合，使用Web Beans服务以及和任何其他类型的Web Bean交互。"
 
 #. Tag: para
 #: part1.xml:120
 #, no-c-format
-msgid ""
-"Web Beans was influenced by a number of existing Java frameworks, including "
-"Seam, Guice and Spring. However, Web Beans has its own very distinct "
-"character: more typesafe than Seam, more stateful and less XML-centric than "
-"Spring, more web and enterprise-application capable than Guice."
-msgstr ""
+msgid "Web Beans was influenced by a number of existing Java frameworks, including Seam, Guice and Spring. However, Web Beans has its own very distinct character: more typesafe than Seam, more stateful and less XML-centric than Spring, more web and enterprise-application capable than Guice."
+msgstr "Web Beans受到了包括Seam, Guice和Spring在内的很多现有的Java框架的影响。然而，Web Beans具有自己鲜明的特性：在类型安全方面优于Seam，比Spring更加具备状态和使用更少的XML, 比Guice更加具备Web和企业应用的能力。"
 
 #. Tag: para
 #: part1.xml:125
 #, no-c-format
-msgid ""
-"Most importantly, Web Beans is a JCP standard that integrates cleanly with "
-"Java EE, and with any Java SE environment where embeddable EJB Lite is "
-"available."
-msgstr ""
+msgid "Most importantly, Web Beans is a JCP standard that integrates cleanly with Java EE, and with any Java SE environment where embeddable EJB Lite is available."
+msgstr "最重要的是，Web Beans是一个JCP标准，能够干净地整合到Java EE中。Web Beans也可以整合到任何使用轻量的内嵌EJB的Java SE环境中。"
+
