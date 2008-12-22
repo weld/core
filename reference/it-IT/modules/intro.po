@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-22 07:07+0100\n"
+"PO-Revision-Date: 2008-12-22 23:19+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -184,19 +184,19 @@ msgstr "<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator.cl
 #: intro.xml:56
 #, no-c-format
 msgid "But wait: <literal>TextTranslator</literal> does not have a constructor with no parameters! Is it still a Web Bean? Well, a class that does not have a constructor with no parameters can still be a Web Bean if it has a constructor annotated <literal>@Initializer</literal>."
-msgstr ""
+msgstr "Ma <literal>TextTranslator</literal> non ha un costruttore con nessun parametro! E' ancora un Web Bean? Una classe che non ha un costruttore senza parametri può essere un Web Bean se il suo costruttore è annotato con <literal>@Initializer</literal>."
 
 #. Tag: para
 #: intro.xml:61
 #, no-c-format
 msgid "As you've guessed, the <literal>@Initializer</literal> annotation has something to do with dependency injection! <literal>@Initializer</literal> may be applied to a constructor or method of a Web Bean, and tells the Web Bean manager to call that constructor or method when instantiating the Web Bean. The Web Bean manager will inject other Web Beans to the parameters of the constructor or method."
-msgstr ""
+msgstr "Come hai indovinato, l'annotazione <literal>@Initializer</literal> ha qualcosaa che fare conla dependency injection! <literal>@Initializer</literal> può essere applicato ad un costruttore od un metodo di un Web Bean, e dice al manager Web Bean di chiamare quel costruttore o metodo quando si istanzia il Web Bean. Il manager Web Bean inietterà altri Web Bean nei parametri del costruttore o del metodo."
 
 #. Tag: para
 #: intro.xml:68
 #, no-c-format
 msgid "At system initialization time, the Web Bean manager must validate that exactly one Web Bean exists which satisfies each injection point. In our example, if no implementation of <literal>Translator</literal> available&#151;if the <literal>SentenceTranslator</literal> EJB was not deployed&#151;the Web Bean manager would throw an <literal>UnsatisfiedDependencyException</literal>. If more than one implementation of <literal>Translator</literal> was available, the Web Bean manager would throw an <literal>AmbiguousDependencyException</literal>."
-msgstr ""
+msgstr "In fase di inizializzazione del sistema, il manager Web Bean deve convalidare che esattamente un solo Web Bean esista e soddisfi ciascun punto di iniezione. Nell'esempio, se nessuna implementazione di <literal>Translator</literal> fosse disponibile&#151;se l'EJB <literal>SentenceTranslator</literal> non è stato deplyato&#151;il manager Web Bean lancerebbe una <literal>UnsatisfiedDependencyException</literal>. Se più di un'implementazione di <literal>Translator</literal> fosse disponibile, il manager Web Bean lancerebbe una <literal>AmbiguousDependencyException</literal>."
 
 #. Tag: title
 #: intro.xml:80
@@ -214,13 +214,13 @@ msgstr "Ma cosa è <emphasis>esattamente</emphasis> un Web Bean?"
 #: intro.xml:84
 #, no-c-format
 msgid "A Web Bean is an application class that contains business logic. A Web Bean may be called directly from Java code, or it may be invoked via Unified EL. A Web Bean may access transactional resources. Dependencies between Web Beans are managed automatically by the Web Bean manager. Most Web Beans are <emphasis>stateful</emphasis> and <emphasis>contextual</emphasis>. The lifecycle of a Web Bean is always managed by the Web Bean manager."
-msgstr ""
+msgstr "Un Web Bean è una classe di applicazione che contiene della logica di business. Può essere chiamato direttamente da codice Java, o può essere invocato via Unified EL. Un Web Bean può accedere a risorse transazionali. Le dipendenze tra Web Beans sono gestite automaticamente dal manager Web Bean. La maggior parte dei Web Beans sono <emphasis>stateful</emphasis> e <emphasis>contestuali</emphasis>. Il ciclo di vita di un Web Bean è sempre gestito da un manager Web Bean."
 
 #. Tag: para
 #: intro.xml:91
 #, no-c-format
 msgid "Let's back up a second. What does it really mean to be \"contextual\"? Since Web Beans may be stateful, it matters <emphasis>which</emphasis> bean instance I have. Unlike a stateless component model (for example, stateless session beans) or a singleton component model (such as servlets, or singleton beans), different clients of a Web Bean see the Web Bean in different states. The client-visible state depends upon which instance of the Web Bean the client has a reference to."
-msgstr ""
+msgstr "Torniamo indietro un attimo. Cosa significa veramente essere \"contestuale\"? Poiché Web Beans può essere stateful, è importante <emphasis>quale</emphasis> istanza di bean si ha. Diversamente da un modello a componenti stateless (per esempio, i session bean stateless) o un modello a componenti singleton (come i servlet o i bean singleton) i client di un Web Bean vedono il Web Bean in stati differenti. Lo stato del client visibile dipende dall'istanza del Web Bean alla quale il client ha il riferimento."
 
 #. Tag: para
 #: intro.xml:98
@@ -916,7 +916,7 @@ msgstr ""
 #: intro.xml:456
 #, no-c-format
 msgid "We'll talk much more about producer methods in <xref linkend=\"producermethods\"/>."
-msgstr ""
+msgstr "Si parlerà in maggior dettaglio dei metodi produttori in <xref linkend=\"producermethods\"/>."
 
 #. Tag: title
 #: intro.xml:461
