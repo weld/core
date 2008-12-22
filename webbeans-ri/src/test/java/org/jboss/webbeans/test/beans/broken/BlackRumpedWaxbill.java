@@ -1,11 +1,11 @@
 package org.jboss.webbeans.test.beans.broken;
 
 import javax.webbeans.Event;
-import javax.webbeans.Observable;
+import javax.webbeans.Fires;
 
 public class BlackRumpedWaxbill
 {
-   @Observable
+   @Fires
    private Event simpleEvent;
 
    public void eliminateWarning()

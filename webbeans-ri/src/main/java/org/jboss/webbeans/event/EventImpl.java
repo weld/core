@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.webbeans.Event;
-import javax.webbeans.Observable;
+import javax.webbeans.Fires;
 import javax.webbeans.Observer;
 import javax.webbeans.manager.Manager;
 
@@ -41,7 +41,7 @@ import org.jboss.webbeans.util.Strings;
 public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
 {
    @SuppressWarnings("unchecked")
-   private static final Set<Class<? extends Annotation>> FILTERED_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Observable.class));
+   private static final Set<Class<? extends Annotation>> FILTERED_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Fires.class));
 
    /**
     * Constructor

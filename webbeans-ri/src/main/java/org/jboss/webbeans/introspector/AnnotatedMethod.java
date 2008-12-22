@@ -30,7 +30,7 @@ import javax.webbeans.AfterTransactionSuccess;
 import javax.webbeans.BeforeTransactionCompletion;
 import javax.webbeans.Disposes;
 import javax.webbeans.IfExists;
-import javax.webbeans.Observable;
+import javax.webbeans.Fires;
 import javax.webbeans.Observes;
 import javax.webbeans.manager.Manager;
 
@@ -44,7 +44,7 @@ import javax.webbeans.manager.Manager;
 public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
 {
    @SuppressWarnings("unchecked")
-   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Disposes.class, Observes.class, Observable.class, IfExists.class, BeforeTransactionCompletion.class, AfterTransactionCompletion.class, AfterTransactionFailure.class, AfterTransactionSuccess.class));
+   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Disposes.class, Observes.class, Fires.class, IfExists.class, BeforeTransactionCompletion.class, AfterTransactionCompletion.class, AfterTransactionFailure.class, AfterTransactionSuccess.class));
 
    /**
     * Gets the abstracted parameters of the method
