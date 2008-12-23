@@ -68,7 +68,7 @@
       <attribute name="basedir" />
       <element name="args" implicit="true" optional="true" />
       <sequential>
-         <java classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}">
+         <java classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}" failonerror="true">
             <classpath>
                <fileset dir="${maven.dir}/boot">
                   <include name="*.jar" />

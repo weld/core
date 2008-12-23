@@ -120,7 +120,7 @@
       <attribute name="basedir" />
       <element name="args" implicit="true" optional="true" />
       <sequential>
-         <java classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}">
+         <java classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}" maxmemory="512m" failonerror="true">
             <classpath>
                <fileset dir="${maven.dir}/boot">
                   <include name="*.jar" />
@@ -129,6 +129,7 @@
                   <include name="*.*" />
                </fileset>
             </classpath>
+         	<jvmarg line="-Xms128m -Xmx512m -XX:MaxPermSize=128m"/>
             <sysproperty key="classworlds.conf" value="${maven.dir}/bin/m2.conf" />
             <sysproperty key="maven.home" value="${maven.dir}" />
             <args />
