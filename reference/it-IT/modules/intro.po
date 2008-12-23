@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-22 23:19+0100\n"
+"PO-Revision-Date: 2008-12-23 20:00+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -226,7 +226,7 @@ msgstr "Torniamo indietro un attimo. Cosa significa veramente essere \"contestua
 #: intro.xml:98
 #, no-c-format
 msgid "However, like a stateless or singleton model, but <emphasis>unlike</emphasis> stateful session beans, the client does not control the lifecycle of the instance by explicitly creating and destroying it. Instead, the <emphasis>scope</emphasis> of the Web Bean determines:"
-msgstr ""
+msgstr "Comunque, in modo simile ad un modello stateless o singleton, ma <emphasis>non come</emphasis> i session bean stateful, il client non ha il controllo del ciclo di vita dell'istanza, creandola e distruggendola esplicitamente. Invece, lo <emphasis>scope</emphasis> del Web Bean determina:"
 
 #. Tag: para
 #: intro.xml:105
@@ -238,31 +238,31 @@ msgstr "il ciclo di vita di ogni istanza del Web Bean e"
 #: intro.xml:108
 #, no-c-format
 msgid "which clients share a reference to a particular instance of the Web Bean."
-msgstr ""
+msgstr "quali client condividono un referenza con una particolare istanza del Web Bean."
 
 #. Tag: para
 #: intro.xml:113
 #, no-c-format
 msgid "For a given thread in a Web Beans application, there may be an <emphasis>active context</emphasis> associated with the scope of the Web Bean. This context may be unique to the thread (for example, if the Web Bean is request scoped), or it may be shared with certain other threads (for example, if the Web Bean is session scoped) or even all other threads (if it is application scoped)."
-msgstr ""
+msgstr "Per un dato thread in un'applicazione Web Beans, ci può essere un <emphasis>contesto attivo</emphasis> associato allo scope del Web Bean. Questo contesto può essere univoco nel thread (per esempio, se il Web Bean è con scope di richesta), o può essere condiviso con alcuni altri thread (per esempio, se il Web Bean è con scope di sessione) od anche tutti gli altri thread (se è scope di applicazione). "
 
 #. Tag: para
 #: intro.xml:119
 #, no-c-format
 msgid "Clients (for example, other Web Beans) executing in the same context will see the same instance of the Web Bean. But clients in a different context will see a different instance."
-msgstr ""
+msgstr "I client (per esempio, altri Web Beans) che sono in esecuzione nello stesso contesto vedranno la stessa istanza del Web Bean. Ma i client in un contesto diverso vedranno un istanza diversa."
 
 #. Tag: para
 #: intro.xml:123
 #, no-c-format
 msgid "One great advantage of the contextual model is that it allows stateful Web Beans to be treated like services! The client need not concern itself with managing the lifecycle of the Web Bean it is using, <emphasis>nor does it even need to know what that lifecyle is.</emphasis> Web Beans interact by passing messages, and the Web Bean implementations define the lifecycle of their own state. The Web Beans are loosely coupled because:"
-msgstr ""
+msgstr "Un grande vantaggio del modello contestuale è che consente ai Web Beans stateful di essere trattati come servizi! Il client non deve preoccuparsi di gestire il ciclo di vita del Web Bean che sta utilizzando, <emphasis>e neppure deve sapere quali sia il ciclo di vita.</emphasis> Web Beans interagisce passando i messaggi, e le implementazioni Web Bean definiscono il ciclo di vita del proprio stato. I Web Beans sono debolmente disaccoppiati (loosely coupled) poiché:"
 
 #. Tag: para
 #: intro.xml:132
 #, no-c-format
 msgid "they interact via well-defined public APIs"
-msgstr ""
+msgstr "interagiscono tramite delle API pubblica ben-definita"
 
 #. Tag: para
 #: intro.xml:135
@@ -274,19 +274,20 @@ msgstr "il loro ciclo di vita è completamente disaccoppiato"
 #: intro.xml:139
 #, no-c-format
 msgid "We can replace one Web Bean with a different Web Bean that implements the same API and has a different lifecycle (a different scope) without affecting the other Web Bean implementation. In fact, Web Beans defines a sophisticated facility for overriding Web Bean implementations at deployment time, as we will see in <xref linkend=\"deploymenttypes\"/>."
-msgstr ""
+msgstr "Si può sostituire un Web Bean con un diverso Web Bean che implementa la stessa API ed ha un diverso ciclo di vita (un diverso scope) senza alterare l'implementazione dell'altro Web Bean. Infatti Web Beans definisce un meccanismo sofisticato per fare l'override delle implementazioni Web Bean al momento del deploy, come visto in <xref linkend=\"deploymenttypes\"/>."
 
 #. Tag: para
 #: intro.xml:145
 #, no-c-format
 msgid "Note that not all clients of a Web Bean are Web Beans. Other objects such as Servlets or Message-Driven Beans&#151;which are by nature not injectable, contextual objects&#151;may also obtain references to Web Beans by injection."
-msgstr ""
+msgstr "Si noti che non tutti i client dei un Web Bean sono Web Bean. Altri oggetti come Servlet o Message-Driven Beans&#151;che sono per natura non iniettabili, oggetti contestuali&#151;possono pure ottenere riferimenti a Web Bean tramite iniezione."
 
+# Tolto "Enough hand-waving."
 #. Tag: para
 #: intro.xml:149
 #, no-c-format
 msgid "Enough hand-waving. More formally, according to the spec:"
-msgstr ""
+msgstr "Più formalmente, secondo la specifica:"
 
 #. Tag: para
 #: intro.xml:153
@@ -340,19 +341,19 @@ msgstr "Un implementazione Web Bean"
 #: intro.xml:167
 #, no-c-format
 msgid "Let's see what some of these terms mean, to the Web Bean developer."
-msgstr ""
+msgstr "Vediamo cosa significano alcuni di questi termini per lo sviluppatore Web Bean."
 
 #. Tag: title
 #: intro.xml:170
 #, no-c-format
 msgid "API types, binding types and dependency injection"
-msgstr ""
+msgstr "Tipi di API, tipi di binding e dependency injection"
 
 #. Tag: para
 #: intro.xml:172
 #, no-c-format
 msgid "Web Beans usually acquire references to other Web Beans via dependency injection. Any injected attribute specifies a \"contract\" that must be satisfied by the Web Bean to be injected. The contract is:"
-msgstr ""
+msgstr "I Web Bean solitamente acquisiscono riferimenti ad altri Web Bean tramite la dependency injection. Ogni attributo iniettato specifica un \"contratto\" che deve essere soddisfatto dal Web Bean per essere iniettato. Il contratto è:"
 
 #. Tag: para
 #: intro.xml:177
@@ -366,17 +367,18 @@ msgstr "un tipo di API, assieme a"
 msgid "a set of binding types."
 msgstr "un set di tipi di binding."
 
+# client-visible semantic  =?
 #. Tag: para
 #: intro.xml:181
 #, no-c-format
 msgid "An API is a user-defined class or interface. (If the Web Bean is an EJB session bean, the API type is the <literal>@Local</literal> interface or bean-class local view). A binding type represents some client-visible semantic that is satisfied by some implementations of the API and not by others."
-msgstr ""
+msgstr "Un API è una classe o interfaccia definita dall'utente. (Se il Web Bean è un session bean EJB, il tipo di API è l'interfaccia <literal>@Local</literal> o la vista locale della classe-bean). Un tipo di binding rappresenta un semantica del client che è soddisfatta da certe implementazioni dell'API e non da altre."
 
 #. Tag: para
 #: intro.xml:186
 #, no-c-format
 msgid "Binding types are represented by user-defined annotations that are themselves annotated <literal>@BindingType</literal>. For example, the following injection point has API type <literal>PaymentProcessor</literal> and binding type <literal>@CreditCard</literal>:"
-msgstr ""
+msgstr "I tipi di binding sono rappresentati da annotazioni definite dall'utente che sono loro stesse annotate con <literal>@BindingType</literal>. Per esempio, il seguente punto di iniezione ha un tipo di API <literal>PaymentProcessor</literal> ed un tipo di binding <literal>@CreditCard</literal>:"
 
 #. Tag: programlisting
 #: intro.xml:191
@@ -388,13 +390,13 @@ msgstr "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
 #: intro.xml:193
 #, no-c-format
 msgid "If no binding type is explicitly specified at an injection point, the default binding type <literal>@Current</literal> is assumed."
-msgstr ""
+msgstr "Se nessun tipo di binding viene specificato in modo esplicito ad un punto di iniezione, il tipo di binding di default si assume essere <literal>@Current</literal>."
 
 #. Tag: para
 #: intro.xml:196
 #, no-c-format
 msgid "For each injection point, the Web Bean manager searches for a Web Bean which satisfies the contract (implements the API, and has all the binding types), and injects that Web Bean."
-msgstr ""
+msgstr "Per ogni punto di iniezione, il manager Web Bean cerca un Web Bean che soddisfi il contratto (che implementi la API, e che abbia tutti i tipi di binding), ed inietta tale Web Bean."
 
 #. Tag: para
 #: intro.xml:200
@@ -692,7 +694,7 @@ msgstr ""
 #: intro.xml:349
 #, no-c-format
 msgid "Thus, almost every JavaBean is a simple Web Bean."
-msgstr ""
+msgstr "Quindi quasi ogni JavaBean è un Web Bean semplice."
 
 #. Tag: para
 #: intro.xml:351
@@ -874,7 +876,7 @@ msgstr ""
 #: intro.xml:445
 #, no-c-format
 msgid "Some producer methods return objects that require explicit destruction:"
-msgstr ""
+msgstr "Alcuni metodi produttori restituiscono oggetti che richiedono una distruzione esplicita:"
 
 #. Tag: programlisting
 #: intro.xml:447
@@ -892,7 +894,7 @@ msgstr ""
 #: intro.xml:449
 #, no-c-format
 msgid "These producer methods may define matching <emphasis>disposal methods</emphasis>:"
-msgstr ""
+msgstr "Questi metodi produttori possono definire corrispondenti <emphasis>metodi distruttori</emphasis>:\""
 
 #. Tag: programlisting
 #: intro.xml:451
