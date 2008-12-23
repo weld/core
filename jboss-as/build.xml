@@ -24,9 +24,9 @@
 		<mkdir dir="target/webbeans.deployer"/>
 
 		<artifact:dependencies filesetId="jboss5.deployer.fileset" versionsId="jboss5.deployer.versions">
-			<dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-microcontainer" version="5.2.0.ALPHA1"/>
-			<dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-jbossas" version="5.2.0.ALPHA1"/>
-			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-ri" version="1.0.0-SNAPSHOT"/>
+			<dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-microcontainer" version="${webbeans-ri-int.version}"/>
+			<dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-jbossas" version="${webbeans-ri-int.version}"/>
+			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-ri" version="${webbeans-ri.version}"/>
 			<remoteRepository id="snapshots.jboss.org" url="http://snapshots.jboss.org/maven2">
 				 <snapshots updatePolicy="always" />
 			</remoteRepository>
@@ -80,7 +80,7 @@
 		<fail unless="jboss.home" message="Please pass in -Djboss.home=..."/>
 		
 		<artifact:dependencies filesetId="jboss.ejb3.plugin.fileset" versionsId="jboss.ejb3.plugin.versions">
-   		<dependency groupId="org.jboss.ejb3" artifactId="jboss-ejb3-plugin" version="1.0.0-Alpha1" classifier="installer"/>
+   		<dependency groupId="org.jboss.ejb3" artifactId="jboss-ejb3-plugin" version="${jboss-ejb3.version}" classifier="installer"/>
    		<remoteRepository id="repository.jboss.org" url="http://repository.jboss.org/maven2" />
 	   </artifact:dependencies>
 		
