@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-23 20:00+0100\n"
+"PO-Revision-Date: 2008-12-23 20:18+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -238,7 +238,7 @@ msgstr "il ciclo di vita di ogni istanza del Web Bean e"
 #: intro.xml:108
 #, no-c-format
 msgid "which clients share a reference to a particular instance of the Web Bean."
-msgstr "quali client condividono un referenza con una particolare istanza del Web Bean."
+msgstr "quali client condividono una referenza con una particolare istanza del Web Bean."
 
 #. Tag: para
 #: intro.xml:113
