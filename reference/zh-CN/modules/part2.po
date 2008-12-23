@@ -3,11 +3,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml \n"
+"Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-19 20:26+0000\n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2008-12-23 17:08+0800\n"
+"Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,87 +16,66 @@ msgstr ""
 #. Tag: para
 #: part2.xml:5
 #, no-c-format
-msgid ""
-"The first major theme of Web Beans is <emphasis>loose coupling</emphasis>. "
-"We've already seen three means of achieving loose coupling:"
-msgstr ""
+msgid "The first major theme of Web Beans is <emphasis>loose coupling</emphasis>. We've already seen three means of achieving loose coupling:"
+msgstr "Web Bean的首要宗旨就是<emphasis>松耦合</emphasis>。我们已经看到三种实现松耦合的方法："
 
 #. Tag: para
 #: part2.xml:10
 #, no-c-format
-msgid ""
-"<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
-msgstr ""
+msgid "<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
+msgstr "<emphasis>部署类型</emphasis>能够实现部署时多态性"
 
 #. Tag: para
 #: part2.xml:14
 #, no-c-format
 msgid "<emphasis>producer methods</emphasis> enable runtime polymorphism, and"
-msgstr ""
+msgstr "<emphasis>生产者方法</emphasis>能够实现运行时多态性，并且"
 
 #. Tag: para
 #: part2.xml:18
 #, no-c-format
-msgid ""
-"<emphasis>contextual lifecycle management</emphasis> decouples Web Bean "
-"lifecycles."
-msgstr ""
+msgid "<emphasis>contextual lifecycle management</emphasis> decouples Web Bean lifecycles."
+msgstr "<emphasis>具备上下文的生命周期管理</emphasis>将Web Bean的生命周期解耦。"
 
 #. Tag: para
 #: part2.xml:23
 #, no-c-format
-msgid ""
-"These techniques serve to enable loose coupling of client and server. The "
-"client is no longer tightly bound to an implementation of an API, nor is it "
-"required to manage the lifecycle of the server object. This approach lets "
-"<emphasis>stateful objects interact as if they were services</emphasis>."
-msgstr ""
+msgid "These techniques serve to enable loose coupling of client and server. The client is no longer tightly bound to an implementation of an API, nor is it required to manage the lifecycle of the server object. This approach lets <emphasis>stateful objects interact as if they were services</emphasis>."
+msgstr "这些技术都是为了将客户端和服务器端解耦。客户端不在和一个API的具体实现紧密绑定，也不需要管理服务器端对象的生命周期。这种方法<emphasis>能够让有状态的对象像服务一样交互</emphasis>。"
 
 #. Tag: para
 #: part2.xml:28
 #, no-c-format
-msgid ""
-"Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system "
-"can respond to change in a well-defined manner. In the past, frameworks that "
-"attempted to provide the facilities listed above invariably did it by "
-"sacrificing type safety. Web Beans is the first technology that achieves "
-"this level of loose coupling in a typesafe way."
-msgstr ""
+msgid "Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system can respond to change in a well-defined manner. In the past, frameworks that attempted to provide the facilities listed above invariably did it by sacrificing type safety. Web Beans is the first technology that achieves this level of loose coupling in a typesafe way."
+msgstr "松耦合能够让系统更加<emphasis>动态</emphasis>。系统可以以定义良好的方式来相应变化。在过去，多数框架总是通过牺牲类型安全来提供上述功能。实现此种高度的松耦合，同时又能够保证类型安全，Web Beans是第一个实现这个目标的技术。"
 
 #. Tag: para
 #: part2.xml:34
 #, no-c-format
-msgid ""
-"Web Beans provides three extra important facilities that further the goal of "
-"loose coupling:"
-msgstr ""
+msgid "Web Beans provides three extra important facilities that further the goal of loose coupling:"
+msgstr "Web Bean提供三种额外的功能来实现松耦合的目标："
 
 #. Tag: para
 #: part2.xml:39
 #, no-c-format
-msgid ""
-"<emphasis>interceptors</emphasis> decouple technical concerns from business "
-"logic,"
-msgstr ""
+msgid "<emphasis>interceptors</emphasis> decouple technical concerns from business logic,"
+msgstr "<emphasis>拦截器</emphasis>能够将技术关注点从业务逻辑中解耦。"
 
 #. Tag: para
 #: part2.xml:43
 #, no-c-format
-msgid ""
-"<emphasis>decorators</emphasis> may be used to decouple some business "
-"concerns, and"
-msgstr ""
+msgid "<emphasis>decorators</emphasis> may be used to decouple some business concerns, and"
+msgstr "<emphasis>装饰器</emphasis>能够将一些业务关注点解耦，并且"
 
 #. Tag: para
 #: part2.xml:47
 #, no-c-format
-msgid ""
-"<emphasis>event notifications</emphasis> decouple event producers from event "
-"consumers."
-msgstr ""
+msgid "<emphasis>event notifications</emphasis> decouple event producers from event consumers."
+msgstr "<emphasis>事件通知</emphasis>机制能将事件消费者和事件生产者解耦。"
 
 #. Tag: para
 #: part2.xml:52
 #, no-c-format
 msgid "Let's explore interceptors first."
-msgstr ""
+msgstr "让我们首先研究拦截器。"
+
