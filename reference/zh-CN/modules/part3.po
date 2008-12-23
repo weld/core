@@ -3,11 +3,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml \n"
+"Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-19 20:26+0000\n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2008-12-23 17:29+0800\n"
+"Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,135 +16,102 @@ msgstr ""
 #. Tag: para
 #: part3.xml:5
 #, no-c-format
-msgid ""
-"The second major theme of Web Beans is <emphasis>strong typing</emphasis>. "
-"The information about the dependencies, interceptors and decorators of a Web "
-"Bean, and the information about event consumers for an event producer, is "
-"contained in typesafe Java constructs that may be validated by the compiler."
-msgstr ""
+msgid "The second major theme of Web Beans is <emphasis>strong typing</emphasis>. The information about the dependencies, interceptors and decorators of a Web Bean, and the information about event consumers for an event producer, is contained in typesafe Java constructs that may be validated by the compiler."
+msgstr "Web Bean的第二个宗旨是<emphasis>强类型</emphasis>。Web Bean有关依赖，拦截器和装饰器的信息以及事件生产者对应的事件消费者的信息都包含在类型安全的Java构件中，可以被编译器验证。"
 
 #. Tag: para
 #: part3.xml:10
 #, no-c-format
-msgid ""
-"You don't see string-based identifiers in Web Beans code, not because the "
-"framework is hiding them from you using clever defaulting rules&#151;so-"
-"called \"configuration by convention\"&#151;but because there are simply no "
-"strings there to begin with!"
-msgstr ""
+msgid "You don't see string-based identifiers in Web Beans code, not because the framework is hiding them from you using clever defaulting rules&#151;so-called \"configuration by convention\"&#151;but because there are simply no strings there to begin with!"
+msgstr "在Web Bean代码中，你不会看到基于字符串的标识符。这不是因为这个框架使用智能默认规则&#151;也叫\"按惯例配置\"&#151;将它们隐藏起来，这是因为从开始就没有任何字符串！"
 
 #. Tag: para
 #: part3.xml:15
 #, no-c-format
-msgid ""
-"The obvious benefit of this approach is that <emphasis>any</emphasis> IDE "
-"can provide autocompletion, validation and refactoring without the need for "
-"special tooling. But there is a second, less-immediately-obvious, benefit. "
-"It turns out that when you start thinking of identifying objects, events or "
-"interceptors via annotations instead of names, you have an opportunity to "
-"lift the semantic level of your code."
-msgstr ""
+msgid "The obvious benefit of this approach is that <emphasis>any</emphasis> IDE can provide autocompletion, validation and refactoring without the need for special tooling. But there is a second, less-immediately-obvious, benefit. It turns out that when you start thinking of identifying objects, events or interceptors via annotations instead of names, you have an opportunity to lift the semantic level of your code."
+msgstr "这种方法的显而易见的好处是<emphasis>任何</emphasis>IDE都可以提供自动完成，验证和重构而无需任何特殊工具。除此之外，还有第二个，不是那么明显的好处。它能够让你考虑识别对象，事件或者拦截器的时候使用注释，而不是名字，这样你将可以提升你的代码的语义水平。"
 
 #. Tag: para
 #: part3.xml:21
 #, no-c-format
-msgid ""
-"Web Beans encourages you develop annotations that model concepts, for "
-"example,"
-msgstr ""
+msgid "Web Beans encourages you develop annotations that model concepts, for example,"
+msgstr "Web Beans能够鼓励你为概念建模，开发注释。例如："
 
 #. Tag: para
 #: part3.xml:26
 #, no-c-format
 msgid "<literal>@Asynchronous</literal>,"
-msgstr ""
+msgstr "<literal>@Asynchronous</literal>,"
 
 #. Tag: para
 #: part3.xml:29
 #, no-c-format
 msgid "<literal>@Mock</literal>,"
-msgstr ""
+msgstr "<literal>@Mock</literal>,"
 
 #. Tag: para
 #: part3.xml:32
 #, no-c-format
 msgid "<literal>@Secure</literal> or"
-msgstr ""
+msgstr "<literal>@Secure</literal> or"
 
 #. Tag: para
 #: part3.xml:35
 #, no-c-format
 msgid "<literal>@Updated</literal>,"
-msgstr ""
+msgstr "<literal>@Updated</literal>,"
 
 #. Tag: para
 #: part3.xml:39
 #, no-c-format
 msgid "instead of using compound names like"
-msgstr ""
+msgstr "而不是使用复合名字，像："
 
 #. Tag: para
 #: part3.xml:43
 #, no-c-format
 msgid "<literal>asyncPaymentProcessor</literal>,"
-msgstr ""
+msgstr "<literal>asyncPaymentProcessor</literal>,"
 
 #. Tag: para
 #: part3.xml:46
 #, no-c-format
 msgid "<literal>mockPaymentProcessor</literal>,"
-msgstr ""
+msgstr "<literal>mockPaymentProcessor</literal>,"
 
 #. Tag: para
 #: part3.xml:49
 #, no-c-format
 msgid "<literal>SecurityInterceptor</literal> or"
-msgstr ""
+msgstr "<literal>SecurityInterceptor</literal> or"
 
 #. Tag: para
 #: part3.xml:52
 #, no-c-format
 msgid "<literal>DocumentUpdatedEvent</literal>."
-msgstr ""
+msgstr "<literal>DocumentUpdatedEvent</literal>."
 
 #. Tag: para
 #: part3.xml:56
 #, no-c-format
-msgid ""
-"The annotations are reusable. They help describe common qualities of "
-"disparate parts of the system. They help us categorize and understand our "
-"code. They help us deal with common concerns in a common way. They make our "
-"code more literate and more understandable."
-msgstr ""
+msgid "The annotations are reusable. They help describe common qualities of disparate parts of the system. They help us categorize and understand our code. They help us deal with common concerns in a common way. They make our code more literate and more understandable."
+msgstr "注释可以重用。它们能够描述系统不同部分的通用特征。它们能够帮助我们分类和理解我们的代码。它们能够以通用的方式为我们处理共同的关注点。它们能够让我们的代码具有更高的可读性，更加容易被理解。"
 
 #. Tag: para
 #: part3.xml:61
 #, no-c-format
-msgid ""
-"Web Beans <emphasis>stereotypes</emphasis> take this idea a step further. A "
-"stereotype models a common <emphasis>role</emphasis> in your application "
-"architecture. It encapsulates various properties of the role, including "
-"scope, interceptor bindings, deployment type, etc, into a single reusable "
-"package."
-msgstr ""
+msgid "Web Beans <emphasis>stereotypes</emphasis> take this idea a step further. A stereotype models a common <emphasis>role</emphasis> in your application architecture. It encapsulates various properties of the role, including scope, interceptor bindings, deployment type, etc, into a single reusable package."
+msgstr "Web Beans的<emphasis>模板</emphasis>是这种思想的延伸。一个模板为我们应用体系中的一个通用的<emphasis>角色</emphasis>建模。它将一个角色的各种不同的属性，包括范围，拦截器绑定，部署类型，等等封装到一个单一的可重用的包中。"
 
 #. Tag: para
 #: part3.xml:66
 #, no-c-format
-msgid ""
-"Even Web Beans XML metadata is strongly typed! There's no compiler for XML, "
-"so Web Beans takes advantage of XML schemas to validate the Java types and "
-"attributes that appear in XML. This approach turns out to make the XML more "
-"literate, just like annotations made our Java code more literate."
-msgstr ""
+msgid "Even Web Beans XML metadata is strongly typed! There's no compiler for XML, so Web Beans takes advantage of XML schemas to validate the Java types and attributes that appear in XML. This approach turns out to make the XML more literate, just like annotations made our Java code more literate."
+msgstr "甚至Web Bean的XML元数据也是强类型的！对于XML没有编译器，Web Bean充分利用了XML模式去验证XML中出现的Java类型和属性。这种方式让XML更加具有可读性，就像注释让我们的Java代码更加具有可读性一样。"
 
 #. Tag: para
 #: part3.xml:71
 #, no-c-format
-msgid ""
-"We're now ready to meet some more advanced features of Web Beans. Bear in "
-"mind that these features exist to make our code both easier to validate and "
-"more understandable. Most of the time you don't ever really <emphasis>need</"
-"emphasis> to use these features, but if you use them wisely, you'll come to "
-"appreciate their power."
-msgstr ""
+msgid "We're now ready to meet some more advanced features of Web Beans. Bear in mind that these features exist to make our code both easier to validate and more understandable. Most of the time you don't ever really <emphasis>need</emphasis> to use these features, but if you use them wisely, you'll come to appreciate their power."
+msgstr "我们现在可以接触Web Bean中更加高级的特性了。要记住这些特性能够让我们的代码不仅更容易验证，也更容易理解。大部分时间，你根本不<emphasis>需要</emphasis>这些特性，但是如果你能聪明地运用它们的话，你将充分体会到它们的强大。"
+
