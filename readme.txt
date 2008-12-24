@@ -12,7 +12,7 @@ examples/
       the reference guide 
    
 jboss-as/
-   -- Installer for JBoss AS, change into this directory, and run ant install
+   -- Installer for JBoss AS, change into this directory, and run ant update
       There are more details in the reference guide
 
 lib/

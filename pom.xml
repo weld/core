@@ -61,7 +61,6 @@
    <modules>
       <module>webbeans-api</module>
       <module>webbeans-ri</module>
-
       <module>webbeans-ri-spi</module>
    </modules>
 
@@ -174,20 +173,20 @@
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>webbeans-api</artifactId>
 
-            <version>${webbeans.version}</version>
+            <version>${project.version}</version>
          </dependency>
          
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>webbeans-ri</artifactId>
-            <version>${webbeans.version}</version>
+            <version>${project.version}</version>
          </dependency>
 
          
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>webbeans-ri-spi</artifactId>
-            <version>${webbeans.version}</version>
+            <version>${project.version}</version>
          </dependency>
 
       </dependencies>
@@ -372,8 +371,4 @@
 
    </reporting>
    
-   <properties>
-      <webbeans.version>1.0.0.ALPHA1</webbeans.version>
-   </properties>
-
 </project>
