@@ -38,6 +38,6 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target( { TYPE, METHOD, FIELD, PARAMETER })
 @Documented
-public @interface Observable
+public @interface Fires
 {
 }
