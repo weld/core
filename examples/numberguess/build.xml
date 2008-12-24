@@ -1,7 +1,0 @@
-<project basedir="." name="Numberguess Example Build" default="restart">
-	
-	<property name="example.name" value="webbeans-numberguess" />
-
-	<import file="../build.xml" />
-	
-</project>
