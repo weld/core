@@ -1,7 +1,0 @@
-<project basedir="." name="Login Example Build" default="restart">
-	
-	<property name="example.name" value="webbeans-login" />
-
-	<import file="../build.xml" />
-	
-</project>
