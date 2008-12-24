@@ -18,10 +18,9 @@
 package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
-
-import org.jboss.webbeans.bootstrap.spi.MethodDescriptor;
 
 /**
  * Represents a Class
@@ -97,7 +96,7 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     * @param methodDescriptor
     * @return
     */
-   public AnnotatedMethod<Object> getMethod(MethodDescriptor methodDescriptor);
+   public AnnotatedMethod<Object> getMethod(Method method);
    
    /**
     * Gets all with parameters annotated with annotationType

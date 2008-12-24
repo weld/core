@@ -29,8 +29,8 @@ import javax.webbeans.AfterTransactionFailure;
 import javax.webbeans.AfterTransactionSuccess;
 import javax.webbeans.BeforeTransactionCompletion;
 import javax.webbeans.Disposes;
-import javax.webbeans.IfExists;
 import javax.webbeans.Fires;
+import javax.webbeans.IfExists;
 import javax.webbeans.Observes;
 import javax.webbeans.manager.Manager;
 
@@ -119,5 +119,13 @@ public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
     * @return The name
     */
    public String getPropertyName();
+   
+   /**
+    * Checks if a this is equivalent to a JLR method
+    * 
+    * @param method The JLR method
+    * @return true if equivalent
+    */
+   public boolean isEquivalent(Method method);
 
 }

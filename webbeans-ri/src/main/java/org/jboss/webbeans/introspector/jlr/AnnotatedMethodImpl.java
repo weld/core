@@ -222,6 +222,11 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
          return false;
       }
    }
+   
+   public boolean isEquivalent(Method method)
+   {
+      return this.getDeclaringClass().isEquivalent(method.getDeclaringClass()) && this.getName().equals(method.getName()) && Arrays.equals(this.getParameterTypesAsArray(), method.getParameterTypes());
+   }
 
    /**
     * Gets the hash code (of the delegate)

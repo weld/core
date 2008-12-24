@@ -17,6 +17,8 @@
 
 package org.jboss.webbeans.bootstrap.spi;
 
+import java.lang.reflect.Method;
+
 
 /**
  * EJB metadata from the EJB descriptor
@@ -54,7 +56,7 @@ public interface EjbDescriptor<T>
     * 
     * @return An iterator over the remove methods
     */
-   public Iterable<MethodDescriptor> getRemoveMethods();
+   public Iterable<Method> getRemoveMethods();
 
    /**
     * Indicates if the bean is stateless

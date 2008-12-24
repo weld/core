@@ -104,6 +104,11 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
    {
       return superclass;
    }
+   
+   public boolean isEquivalent(Class<?> clazz)
+   {
+      return getDelegate().equals(clazz);
+   }
 
    /**
     * Gets a string representation of the type

@@ -33,5 +33,12 @@ public interface AnnotatedType<T> extends AnnotatedItem<T, Class<T>>
     * @return The abstracted superclass
     */
    public AnnotatedType<Object> getSuperclass();
+   
+   /**
+    * Check if this is equivalent to a java class
+    * @param clazz The Java class
+    * @return true if equivalent
+    */
+   public boolean isEquivalent(Class<?> clazz);
 
 }

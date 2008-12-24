@@ -13,7 +13,6 @@ import javax.ejb.Stateless;
 
 import org.jboss.webbeans.bootstrap.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
-import org.jboss.webbeans.bootstrap.spi.MethodDescriptor;
 import org.jboss.webbeans.test.annotations.Singleton;
 
 public class MockEjbDescriptor<T> implements EjbDescriptor<T>
@@ -21,7 +20,7 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
    private final Class<T> type;
    private final String ejbName;
    private final List<BusinessInterfaceDescriptor<?>> localInterfaces;
-   private final HashSet<MethodDescriptor> removeMethods;
+   private final HashSet<Method> removeMethods;
 
    public MockEjbDescriptor(final Class<T> type)
    {
@@ -46,31 +45,12 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
             
                });
       }
-      this.removeMethods = new HashSet<MethodDescriptor>();
+      this.removeMethods = new HashSet<Method>();
       for (final Method method : type.getMethods())
       {
          if (method.isAnnotationPresent(Remove.class))
          {
-            removeMethods.add(new MethodDescriptor()
-            {
-               
-               public String getMethodName()
-               {
-                  return method.getName();
-               }
-               
-               public Class<?>[] getMethodParameterTypes()
-               {
-                  return method.getParameterTypes();
-               }
-               
-               @Override
-               public String toString()
-               {
-                  return method.toString();
-               }
-               
-            });
+            removeMethods.add(method);
          }
       }
    }
@@ -90,7 +70,7 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       return Collections.emptyList();
    }
 
-   public Iterable<MethodDescriptor> getRemoveMethods()
+   public Iterable<Method> getRemoveMethods()
    {
 
       return removeMethods;
