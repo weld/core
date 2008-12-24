@@ -4,8 +4,9 @@ Release process for Web Beans RI
 * Run the testsuite and examples
 * Tag using mvn release:prepare in the ri/trunk checkout
 * Tag docs using mvn release:prepare in the doc/trunk/reference checkout
-* Check the tag
-* Build the maven artifacts using release:perform in both locations
+* Tag examples using mvn release:prepare in the examples/trunk checkout
+* Check the tags
+* Build the maven artifacts using release:perform in all locations
 * Verify the checkout of the tag
 * Release the webbeans-ri-int for jbossas if necessary
 * Edit the checkout of the tag, and alter the versions in jboss-as/build.properties to released versions

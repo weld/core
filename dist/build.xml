@@ -58,6 +58,9 @@
          	<include name="lib/**"/>
          	<include name="readme.txt"/>
          </fileset>
+			<fileset dir="${basedir}">
+				<include name="readme.txt"/>
+			</fileset>
 			<fileset dir="${examples.dir}" />
       </copy>
 		
