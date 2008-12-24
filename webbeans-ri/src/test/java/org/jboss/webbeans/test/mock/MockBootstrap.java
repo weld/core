@@ -1,26 +1,63 @@
 package org.jboss.webbeans.test.mock;
 
-import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
+import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.contexts.ApplicationContext;
+import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.contexts.RequestContext;
+import org.jboss.webbeans.contexts.SessionContext;
+import org.jboss.webbeans.contexts.SimpleBeanMap;
+import org.jboss.webbeans.resources.spi.ResourceLoader;
 
 public class MockBootstrap extends WebBeansBootstrap
 { 
    
-   public MockBootstrap(ManagerImpl manager)
+   private WebBeanDiscovery webBeanDiscovery;
+   private ResourceLoader resourceLoader;
+   private MockManagerImpl manager;
+   
+   public MockBootstrap()
    {
-      super(manager);
+      this.manager = new MockManagerImpl();
+      this.resourceLoader = new MockResourceLoader();
+      registerManager();
+      registerStandardBeans();
+      
+      // Set up the mock contexts
+      manager.addContext(RequestContext.INSTANCE);
+      SessionContext.INSTANCE.setBeanMap(new SimpleBeanMap());
+      manager.addContext(SessionContext.INSTANCE);
+      ApplicationContext.INSTANCE.setBeanMap(new SimpleBeanMap());
+      manager.addContext(ApplicationContext.INSTANCE);
+      manager.addContext(DependentContext.INSTANCE);
    }
    
-   public void registerStandardBeans()
+   protected void registerStandardBeans()
    {
-      manager.setBeans(createStandardBeans());
+      getManager().setBeans(createStandardBeans());
+   }
+   
+   public void setWebBeanDiscovery(WebBeanDiscovery webBeanDiscovery)
+   {
+      this.webBeanDiscovery = webBeanDiscovery;
    }
    
    @Override
-   protected void registerManager()
+   protected WebBeanDiscovery getWebBeanDiscovery()
    {
-      CurrentManager.setRootManager(manager);
+      return this.webBeanDiscovery;
+   }
+
+   @Override
+   public ResourceLoader getResourceLoader()
+   {
+      return resourceLoader;
+   }
+
+   @Override
+   public MockManagerImpl getManager()
+   {
+      return manager;
    }
    
 }

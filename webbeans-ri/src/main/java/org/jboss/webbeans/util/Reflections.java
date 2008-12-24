@@ -64,7 +64,7 @@ public class Reflections
     * @return The instance
     * @throws ClassNotFoundException If the class if not found
     */
-   public static Class<?> classForName(String name, ClassLoader classLoader) throws ClassNotFoundException
+   private static Class<?> classForName(String name, ClassLoader classLoader) throws ClassNotFoundException
    {
       try
       {

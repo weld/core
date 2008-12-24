@@ -41,8 +41,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.webbeans.DefinitionException;
-import javax.webbeans.Initializer;
 import javax.webbeans.Fires;
+import javax.webbeans.Initializer;
 import javax.webbeans.Observer;
 import javax.webbeans.Observes;
 import javax.webbeans.Obtains;
@@ -59,7 +59,6 @@ import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
-import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -67,50 +66,52 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.transaction.Transaction;
-import org.jboss.webbeans.util.JNDI;
 import org.jboss.webbeans.util.Reflections;
 
 /**
- * Bootstrapping functionality that is run at application startup and detects
+ * Common bootstrapping functionality that is run at application startup and detects
  * and register beans
  * 
  * @author Pete Muir
  */
-public class WebBeansBootstrap
+public abstract class WebBeansBootstrap
 {
-   // The property name of the discovery class
-   public static String WEB_BEAN_DISCOVERY_PROPERTY_NAME = "org.jboss.webbeans.bootstrap.webBeanDiscovery";
+   
    // The log provider
    private static LogProvider log = Logging.getLogProvider(WebBeansBootstrap.class);
-   // The Web Beans manager
-   protected ManagerImpl manager;
-
-   /**
-    * Constructor
-    * 
-    * Starts up with the singleton Manager
-    */
-   public WebBeansBootstrap(ManagerImpl manager)
-   {
-      this.manager = manager;
-      registerManager();
-      manager.addContext(DependentContext.INSTANCE);
-   }
    
    protected void registerManager()
    {
-      JNDI.bind(ManagerImpl.JNDI_KEY, manager);
-      CurrentManager.setRootManager(manager);
+      getManager().getNaming().bind(ManagerImpl.JNDI_KEY, getManager());
+      CurrentManager.setRootManager(getManager());
    }
    
-   public WebBeansBootstrap()
+   public abstract ManagerImpl getManager();
+
+   protected abstract WebBeanDiscovery getWebBeanDiscovery();
+
+   public abstract ResourceLoader getResourceLoader();
+   
+   protected void validateBootstrap()
    {
-      this(new ManagerImpl());
+      if (getManager() == null)
+      {
+         throw new IllegalStateException("getManager() is not set on bootstrap");
+      }
+      if (getWebBeanDiscovery() == null)
+      {
+         throw new IllegalStateException("WebBeanDiscovery plugin not set on bootstrap");
+      }
+      if (getResourceLoader() == null)
+      {
+         throw new IllegalStateException("ResourceLoader plugin not set on bootstrap");
+      }
    }
 
    /**
-    * Register any beans defined by the provided classes with the manager
+    * Register any beans defined by the provided classes with the getManager()
     * 
     * @param classes The classes to register
     */
@@ -120,7 +121,7 @@ public class WebBeansBootstrap
    }
 
    /**
-    * Register the bean with the manager, including any standard (built in) beans
+    * Register the bean with the getManager(), including any standard (built in) beans
     * 
     * @param classes The classes to register as Web Beans
     */
@@ -128,7 +129,7 @@ public class WebBeansBootstrap
    {
       Set<AbstractBean<?, ?>> beans = createBeans(classes);
       beans.addAll(createStandardBeans());
-      manager.setBeans(beans);
+      getManager().setBeans(beans);
    }
    
    /**
@@ -139,14 +140,15 @@ public class WebBeansBootstrap
    protected Set<AbstractBean<?, ?>> createStandardBeans()
    {
       Set<AbstractBean<?, ?>> beans = new HashSet<AbstractBean<?, ?>>();
-      createBean(BeanFactory.createSimpleBean(Transaction.class, manager), beans);
-      createBean(new SimpleBean<ManagerImpl>(ManagerImpl.class, manager)
+      createBean(BeanFactory.createSimpleBean(Transaction.class, getManager()), beans);
+      final ManagerImpl managerImpl = getManager();
+      createBean(new SimpleBean<ManagerImpl>(ManagerImpl.class, getManager())
       {
    
          @Override
          public ManagerImpl create()
          {
-            return manager;
+            return managerImpl;
          }
    
       }, beans);
@@ -169,13 +171,13 @@ public class WebBeansBootstrap
       Set<AbstractBean<?, ?>> beans = new HashSet<AbstractBean<?, ?>>();
       for (Class<?> clazz : classes)
       {
-         if (manager.getEjbDescriptorCache().containsKey(clazz))
+         if (getManager().getEjbDescriptorCache().containsKey(clazz))
          {
-            createBean(createEnterpriseBean(clazz, manager), beans);
+            createBean(createEnterpriseBean(clazz, getManager()), beans);
          }
          else if (isTypeSimpleWebBean(clazz))
          {
-            createBean(createSimpleBean(clazz, manager), beans);
+            createBean(createSimpleBean(clazz, getManager()), beans);
          }
       }
       return beans;
@@ -193,18 +195,18 @@ public class WebBeansBootstrap
    protected void createBean(AbstractClassBean<?> bean, Set<AbstractBean<?, ?>> beans)
    {
       beans.add(bean);
-      manager.getResolver().addInjectionPoints(bean.getInjectionPoints());
+      getManager().getResolver().addInjectionPoints(bean.getInjectionPoints());
       for (AnnotatedMethod<Object> producerMethod : bean.getProducerMethods())
       {
-         ProducerMethodBean<?> producerMethodBean = createProducerMethodBean(producerMethod, bean, manager);
+         ProducerMethodBean<?> producerMethodBean = createProducerMethodBean(producerMethod, bean, getManager());
          beans.add(producerMethodBean);
-         manager.getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
+         getManager().getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
          registerEvents(producerMethodBean.getInjectionPoints(), beans);
          log.info("Web Bean: " + producerMethodBean);
       }
       for (AnnotatedField<Object> producerField : bean.getProducerFields())
       {
-         ProducerFieldBean<?> producerFieldBean = createProducerFieldBean(producerField, bean, manager);
+         ProducerFieldBean<?> producerFieldBean = createProducerFieldBean(producerField, bean, getManager());
          beans.add(producerFieldBean);
          log.info("Web Bean: " + producerFieldBean);
       }
@@ -223,14 +225,14 @@ public class WebBeansBootstrap
          }
          if ( injectionPoint.isAnnotationPresent(Obtains.class) )  
          {
-            InstanceBean<Object, Field> instanceBean = createInstanceBean(injectionPoint, manager);
+            InstanceBean<Object, Field> instanceBean = createInstanceBean(injectionPoint, getManager());
             beans.add(instanceBean);
             log.info("Web Bean: " + instanceBean);
          }
       }
       for (AnnotatedMethod<Object> observerMethod : bean.getObserverMethods())
       {
-         ObserverImpl<?> observer = createObserver(observerMethod, bean, manager);
+         ObserverImpl<?> observer = createObserver(observerMethod, bean, getManager());
          if (observerMethod.getAnnotatedParameters(Observes.class).size() == 1)
          {
             registerObserver(observer, observerMethod.getAnnotatedParameters(Observes.class).get(0).getType(), observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingTypesAsArray());
@@ -248,25 +250,25 @@ public class WebBeansBootstrap
    /**
     * Starts the boot process.
     * 
-    * Discovers the beans and registers them with the manager. Also resolves the
+    * Discovers the beans and registers them with the getManager(). Also resolves the
     * injection points.
     * 
     * @param webBeanDiscovery The discovery implementation
     */
-   public synchronized void boot(WebBeanDiscovery webBeanDiscovery)
+   public void boot()
    {
-      log.info("Starting Web Beans RI " + getVersion());
-      if (webBeanDiscovery == null)
+      synchronized (this)
       {
-         throw new IllegalStateException("No WebBeanDiscovery provider found, you need to implement the org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery interface, and tell the RI to use it by specifying -D" + WebBeansBootstrap.WEB_BEAN_DISCOVERY_PROPERTY_NAME + "=<classname>");
+         log.info("Starting Web Beans RI " + getVersion());
+         validateBootstrap();
+         // Must populate EJB cache first, as we need it to detect whether a bean is an EJB!
+         getManager().getEjbDescriptorCache().addAll(getWebBeanDiscovery().discoverEjbs());
+         registerBeans(getWebBeanDiscovery().discoverWebBeanClasses());
+         log.info("Validing Web Bean injection points");
+         getManager().getResolver().resolveInjectionPoints();
+         getManager().fireEvent(getManager(), new InitializedBinding());
+         log.info("Web Beans RI initialized");
       }
-      // Must populate EJB cache first, as we need it to detect whether a bean is an EJB!
-      manager.getEjbDescriptorCache().addAll(webBeanDiscovery.discoverEjbs());
-      registerBeans(webBeanDiscovery.discoverWebBeanClasses());
-      log.info("Validing Web Bean injection points");
-      manager.getResolver().resolveInjectionPoints();
-      manager.fireEvent(manager, new InitializedBinding());
-      log.info("Web Beans RI initialized");
    }
 
    /**
@@ -281,38 +283,7 @@ public class WebBeansBootstrap
    }
 
    /**
-    * Gets the available discovery implementations
-    * 
-    * Parses the web-beans-ri.properties file and for each row describing a
-    * discover class, instantiate that class and add it to the set
-    * 
-    * @return A set of discovery implementations
-    * @see org.jboss.webbeans.bootstrap.DeploymentProperties
-    */
-   @SuppressWarnings("unchecked")
-   public static Set<Class<? extends WebBeanDiscovery>> getWebBeanDiscoveryClasses()
-   {
-      Set<Class<? extends WebBeanDiscovery>> webBeanDiscoveryClasses = new HashSet<Class<? extends WebBeanDiscovery>>();
-      for (String className : new DeploymentProperties(Thread.currentThread().getContextClassLoader()).getPropertyValues(WEB_BEAN_DISCOVERY_PROPERTY_NAME))
-      {
-         try
-         {
-            webBeanDiscoveryClasses.add((Class<WebBeanDiscovery>) Class.forName(className));
-         }
-         catch (ClassNotFoundException e)
-         {
-            log.debug("Unable to load WebBeanDiscovery provider " + className, e);
-         }
-         catch (NoClassDefFoundError e)
-         {
-            log.warn("Unable to load WebBeanDiscovery provider " + className + " due classDependencyProblem", e);
-         }
-      }
-      return webBeanDiscoveryClasses;
-   }
-
-   /**
-    * Registers an observer with the manager
+    * Registers an observer with the getManager()
     * 
     * @param observer The observer
     * @param eventType The event type to observe
@@ -321,7 +292,7 @@ public class WebBeansBootstrap
    @SuppressWarnings("unchecked")
    private <T> void registerObserver(Observer<T> observer, Class<?> eventType, Annotation[] bindings)
    {
-      manager.addObserver(observer, (Class<T>) eventType, bindings);
+      getManager().addObserver(observer, (Class<T>) eventType, bindings);
    }
    
    /**
@@ -345,7 +316,7 @@ public class WebBeansBootstrap
    {
       if ( injectionPoint.isAnnotationPresent(Fires.class) )
       {
-         EventBean<Object, Method> eventBean = createEventBean(injectionPoint, manager);
+         EventBean<Object, Method> eventBean = createEventBean(injectionPoint, getManager());
          beans.add(eventBean);
          log.info("Web Bean: " + eventBean);
       }      

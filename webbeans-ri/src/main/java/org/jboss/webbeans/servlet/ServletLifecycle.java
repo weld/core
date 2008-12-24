@@ -17,23 +17,16 @@
 
 package org.jboss.webbeans.servlet;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
-import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.contexts.ApplicationContext;
 import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.contexts.RequestContext;
 import org.jboss.webbeans.contexts.SessionContext;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.util.Reflections;
 
 /**
  * Reacts to phases of the servlet life cycles
@@ -44,8 +37,6 @@ import org.jboss.webbeans.util.Reflections;
 public class ServletLifecycle
 {
    private static LogProvider log = Logging.getLogProvider(ServletLifecycle.class);
-   // The servlet context
-   private static ServletContext servletContext;
    
    /**
     * Starts the application
@@ -54,15 +45,9 @@ public class ServletLifecycle
     * 
     * @param context The servlet context
     */
-   public static void beginApplication(ServletContext context)
+   public static void beginApplication(ServletContext servletContext)
    {
-      servletContext = context;
-      ApplicationContext.INSTANCE.setBeanMap(new ApplicationBeanMap(servletContext));
-      WebBeansBootstrap webBeansBootstrap = new WebBeansBootstrap();
-      CurrentManager.rootManager().addContext(RequestContext.INSTANCE);
-      CurrentManager.rootManager().addContext(SessionContext.INSTANCE);
-      CurrentManager.rootManager().addContext(ApplicationContext.INSTANCE);
-      webBeansBootstrap.boot(getWebBeanDiscovery());
+      new ServletBootstrap(servletContext).boot();
    }
    
    /**
@@ -72,7 +57,6 @@ public class ServletLifecycle
    {
       ApplicationContext.INSTANCE.destroy();
       ApplicationContext.INSTANCE.setBeanMap(null);
-      servletContext = null;
    }
    
    /**
@@ -119,56 +103,6 @@ public class ServletLifecycle
       DependentContext.INSTANCE.setActive(false);
       RequestContext.INSTANCE.destroy();
       SessionContext.INSTANCE.setBeanMap(null);
-   }
-   
-   /**
-    * Gets the servlet context
-    * 
-    * @return The servlet context
-    */
-   public static ServletContext getServletContext() 
-   {
-      return servletContext;
-   }
-   
-   /**
-    * Gets the Web Beans discovery class
-    * 
-    * @return The discoverer
-    */
-   private static WebBeanDiscovery getWebBeanDiscovery()
-   {
-      WebBeanDiscovery webBeanDiscovery = null;
-
-      for (Class<? extends WebBeanDiscovery> clazz : WebBeansBootstrap.getWebBeanDiscoveryClasses())
-      {
-         Constructor<? extends WebBeanDiscovery> constructor = Reflections.getConstructor(clazz, ServletContext.class);
-         if (constructor != null)
-         {
-            try
-            {
-               webBeanDiscovery = constructor.newInstance(servletContext);
-               break;
-            }
-            catch (InstantiationException e)
-            {
-               log.warn("Error creating WebBeanDiscovery provider" + clazz.getName(), e);
-            }
-            catch (IllegalAccessException e)
-            {
-               log.warn("Error creating WebBeanDiscovery provider" + clazz.getName(), e);
-            }
-            catch (IllegalArgumentException e)
-            {
-               log.warn("Error creating WebBeanDiscovery provider" + clazz.getName(), e);
-            }
-            catch (InvocationTargetException e)
-            {
-               log.warn("Error creating WebBeanDiscovery provider" + clazz.getName(), e);
-            }
-         }
-      }
-      return webBeanDiscovery;
    }
    
 }

@@ -57,6 +57,7 @@ import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
+import org.jboss.webbeans.resources.spi.Naming;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
@@ -94,6 +95,9 @@ public class ManagerImpl implements Manager, Serializable
    private Set<Interceptor> interceptors;
    
    private EjbDescriptorCache ejbDescriptorCache;
+   
+   // The Naming (JNDI) access
+   private Naming naming;
 
    /**
     * Constructor
@@ -714,6 +718,16 @@ public class ManagerImpl implements Manager, Serializable
    {
       // TODO Implement hierarchical managers
       return null;
+   }
+   
+   public Naming getNaming()
+   {
+      return naming;
+   }
+   
+   public void setNaming(Naming naming)
+   {
+      this.naming = naming;
    }
 
 }

@@ -26,7 +26,7 @@ import org.jboss.webbeans.util.ApiAbstraction;
  */
 public class EJB extends ApiAbstraction
 {
-
+   
    public static final Class<?> ENTERPRISE_BEAN_CLASS;
 
    /**

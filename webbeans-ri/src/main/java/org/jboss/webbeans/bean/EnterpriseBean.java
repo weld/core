@@ -43,7 +43,6 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.util.JNDI;
 
 /**
  * An enterprise bean representation
@@ -260,7 +259,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          DependentContext.INSTANCE.setActive(true);
          // TODO Implement enterprise bean proxies and select the correct jndiName
-         return (T) JNDI.lookup(ejbDescriptor.getLocalJndiName());
+         return (T) manager.getNaming().lookup(ejbDescriptor.getLocalJndiName(), getType());
       }
       catch (Exception e)
       {

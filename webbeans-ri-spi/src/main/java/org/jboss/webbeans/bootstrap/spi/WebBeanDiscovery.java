@@ -28,6 +28,9 @@ import java.net.URL;
  */
 public interface WebBeanDiscovery
 {
+  
+   public static final String PROPERTY_NAME = WebBeanDiscovery.class.getName();
+   
    /**
     * Gets list of all classes in classpath archives with web-beans.xml files
     * 

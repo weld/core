@@ -5,10 +5,6 @@ import java.util.Arrays;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
 
-import org.jboss.webbeans.contexts.ApplicationContext;
-import org.jboss.webbeans.contexts.RequestContext;
-import org.jboss.webbeans.contexts.SessionContext;
-import org.jboss.webbeans.contexts.SimpleBeanMap;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.HornedAnimalDeploymentType;
 import org.jboss.webbeans.test.mock.MockBootstrap;
@@ -25,20 +21,8 @@ public class AbstractTest
    @BeforeMethod
    public final void before()
    {
-      manager = new MockManagerImpl();
-      webBeansBootstrap = new MockBootstrap(manager);
-      manager.addContext(RequestContext.INSTANCE);
-      SessionContext.INSTANCE.setBeanMap(new SimpleBeanMap());
-      manager.addContext(SessionContext.INSTANCE);
-      ApplicationContext.INSTANCE.setBeanMap(new SimpleBeanMap());
-      manager.addContext(ApplicationContext.INSTANCE);
-      // Load the built in beans
-      webBeansBootstrap.registerStandardBeans();
-      init();
-   }
-   
-   protected void init()
-   {
+      webBeansBootstrap = new MockBootstrap();
+      manager = webBeansBootstrap.getManager();
       addStandardDeploymentTypesForTests();
    }
    

@@ -21,9 +21,9 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import javax.webbeans.ExecutionException;
 import javax.webbeans.manager.Context;
 
 import org.jboss.webbeans.util.ConcurrentCache;
@@ -63,7 +63,7 @@ public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, Lis
             {
                interrupted = true;
             }
-            catch (ExecutionException e)
+            catch (java.util.concurrent.ExecutionException e)
             {
                rethrow(e);
             }
@@ -94,13 +94,17 @@ public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, Lis
          {
             try
             {
+               if (getFuture(scopeType) == null)
+               {
+                  throw new ExecutionException("No scope registered for " + scopeType);
+               }
                return getFuture(scopeType).get();
             }
             catch (InterruptedException e)
             {
                interrupted = true;
             }
-            catch (ExecutionException e)
+            catch (java.util.concurrent.ExecutionException e)
             {
                rethrow(e);
             }

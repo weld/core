@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.bootstrap;
+package org.jboss.webbeans.util;
 
 import static org.jboss.webbeans.util.Strings.split;
 
@@ -23,9 +23,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+
+import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.webbeans.resources.spi.ResourceLoadingException;
 
 /**
  * Utility class to load deployment properties
@@ -36,20 +42,20 @@ public class DeploymentProperties
 {
    // The resource bundle used to control Web Beans RI deployment
    public static final String RESOURCE_BUNDLE = "META-INF/web-beans-ri.properties";
+   
+   private static LogProvider log = Logging.getLogProvider(DeploymentProperties.class);
 
    // The class to work from
-   private ClassLoader classLoader;
-   // An enumeration of URLs to work on
-   private Enumeration<URL> urlEnum;
+   private ResourceLoader resourceLoader;
 
    /**
     * Constructor
     * 
     * @param classLoader The classloader to work on
     */
-   public DeploymentProperties(ClassLoader classLoader)
+   public DeploymentProperties(ResourceLoader classLoader)
    {
-      this.classLoader = classLoader;
+      this.resourceLoader = classLoader;
    }
 
    /**
@@ -94,9 +100,8 @@ public class DeploymentProperties
    {
       try
       {
-         while (getResources().hasMoreElements())
+         for (URL url : resourceLoader.getResources(RESOURCE_BUNDLE))
          {
-            URL url = getResources().nextElement();
             Properties properties = new Properties();
             InputStream propertyStream = url.openStream();
             try
@@ -139,21 +144,31 @@ public class DeploymentProperties
 
       }
    }
-
+   
    /**
-    * Gets all Web Beans property files relative to the provided classloader
+    * Gets the possible implementation class for a given property for which the
+    * values are classanames
     * 
-    * @return An enumeration of URLs to the property files
-    * @throws IOException If the resource files could not be loaded
+    * @param deploymentProperties The deployment properties object to use
+    * @param resourceLoader The resource laoder to use to attempt
+    * @param propertyName The name of the property to load
+    * @return A set of classes specified
     */
-   private Enumeration<URL> getResources() throws IOException
+   public static <T> Set<Class<? extends T>> getClasses(DeploymentProperties deploymentProperties, ResourceLoader resourceLoader, String propertyName, Class<T> expectedType)
    {
-
-      if (urlEnum == null)
+      Set<Class<? extends T>> classes = new HashSet<Class<? extends T>>();
+      for (String className : deploymentProperties.getPropertyValues(propertyName))
       {
-         urlEnum = classLoader.getResources(RESOURCE_BUNDLE);
+         try
+         {
+            classes.add((Class<? extends T>) resourceLoader.classForName(className));
+         }
+         catch (ResourceLoadingException e)
+         {
+            log.debug("Unable to load class " + className + " for property " + propertyName, e);
+         }
       }
-      return urlEnum;
+      return classes;
    }
 
 }
