@@ -46,39 +46,6 @@ public class Reflections
 {
 
    /**
-    * Creates an instance from a class name
-    * 
-    * @param name The class name
-    * @return The instance
-    * @throws ClassNotFoundException If the class if not found
-    */
-   public static Class<?> classForName(String name) throws ClassNotFoundException
-   {
-      return classForName(name, Thread.currentThread().getContextClassLoader());
-   }
-   
-   /**
-    * Creates an instance from a class name
-    * 
-    * @param name The class name
-    * @return The instance
-    * @throws ClassNotFoundException If the class if not found
-    */
-   private static Class<?> classForName(String name, ClassLoader classLoader) throws ClassNotFoundException
-   {
-      try
-      {
-         return classLoader.loadClass(name);
-      }
-      catch (Exception e)
-      {
-         return Class.forName(name);
-      }
-   }
-   
-   
-
-   /**
     * Gets the property name from a getter method
     * 
     * @param method The getter method

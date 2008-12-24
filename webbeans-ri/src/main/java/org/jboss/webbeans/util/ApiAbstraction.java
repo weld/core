@@ -19,6 +19,9 @@ package org.jboss.webbeans.util;
 
 import java.lang.annotation.Annotation;
 
+import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.webbeans.resources.spi.ResourceLoadingException;
+
 /**
  * A base class for utility classes that represent annotations, classes etc
  * 
@@ -26,6 +29,8 @@ import java.lang.annotation.Annotation;
  */
 public class ApiAbstraction
 {
+   
+   private ResourceLoader resourceLoader;
 
    /**
     * "Not found" annotation
@@ -40,6 +45,13 @@ public class ApiAbstraction
    public interface Dummy
    {
    }
+   
+   
+
+   public ApiAbstraction(ResourceLoader resourceLoader)
+   {
+      this.resourceLoader = resourceLoader;
+   }
 
    /**
     * Initializes an annotation class
@@ -49,13 +61,13 @@ public class ApiAbstraction
     *         not found
     */
    @SuppressWarnings("unchecked")
-   protected static Class<? extends Annotation> annotationTypeForName(String name)
+   protected Class<? extends Annotation> annotationTypeForName(String name)
    {
       try
       {
-         return (Class<? extends Annotation>) Reflections.classForName(name);
+         return (Class<? extends Annotation>) resourceLoader.classForName(name);
       }
-      catch (ClassNotFoundException cnfe)
+      catch (ResourceLoadingException cnfe)
       {
          return DummyAnnotation.class;
       }
@@ -69,13 +81,13 @@ public class ApiAbstraction
     *         found.
     */
    @SuppressWarnings("unchecked")
-   protected static Class<?> classForName(String name)
+   protected Class<?> classForName(String name)
    {
       try
       {
-         return (Class<? extends Annotation>) Reflections.classForName(name);
+         return (Class<? extends Annotation>) resourceLoader.classForName(name);
       }
-      catch (ClassNotFoundException cnfe)
+      catch (ResourceLoadingException cnfe)
       {
          return Dummy.class;
       }

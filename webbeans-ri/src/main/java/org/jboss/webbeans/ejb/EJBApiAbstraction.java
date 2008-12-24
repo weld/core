@@ -15,19 +15,25 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.jsf;
+package org.jboss.webbeans.ejb;
 
+import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.util.ApiAbstraction;
 
 /**
- * Utility class for JSF related components, concepts etc.
+ * Utility class for EJB classes etc. EJB metadata should NOT be inspected here
  * 
  * @author Pete Muir
- * 
  */
-public class JSF extends ApiAbstraction
+public class EJBApiAbstraction extends ApiAbstraction
 {
-   // An UI component
-   public static final Class<?> UICOMPONENT_CLASS = classForName("javax.faces.component.UIComponent");
+   
+   public EJBApiAbstraction(ResourceLoader resourceLoader)
+   {
+      super(resourceLoader);
+      ENTERPRISE_BEAN_CLASS = classForName("javax.ejb.EnterpriseBean");
+   }
+
+   public final Class<?> ENTERPRISE_BEAN_CLASS;
 
 }

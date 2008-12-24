@@ -24,13 +24,6 @@ import static org.jboss.webbeans.bean.BeanFactory.createObserver;
 import static org.jboss.webbeans.bean.BeanFactory.createProducerFieldBean;
 import static org.jboss.webbeans.bean.BeanFactory.createProducerMethodBean;
 import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
-import static org.jboss.webbeans.ejb.EJB.ENTERPRISE_BEAN_CLASS;
-import static org.jboss.webbeans.jsf.JSF.UICOMPONENT_CLASS;
-import static org.jboss.webbeans.servlet.Servlet.FILTER_CLASS;
-import static org.jboss.webbeans.servlet.Servlet.HTTP_SESSION_LISTENER_CLASS;
-import static org.jboss.webbeans.servlet.Servlet.SERVLET_CLASS;
-import static org.jboss.webbeans.servlet.Servlet.SERVLET_CONTEXT_LISTENER_CLASS;
-import static org.jboss.webbeans.servlet.Servlet.SERVLET_REQUEST_LISTENER_CLASS;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -59,14 +52,17 @@ import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.jsf.JSFApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.transaction.Transaction;
 import org.jboss.webbeans.util.Reflections;
 
@@ -327,18 +323,21 @@ public abstract class WebBeansBootstrap
     * @param type The type to inspect
     * @return True if simple Web Bean, false otherwise
     */
-   protected static boolean isTypeSimpleWebBean(Class<?> type)
+   protected boolean isTypeSimpleWebBean(Class<?> type)
    {
+      EJBApiAbstraction ejbApiAbstraction = new EJBApiAbstraction(getResourceLoader());
+      JSFApiAbstraction jsfApiAbstraction = new JSFApiAbstraction(getResourceLoader());
+      ServletApiAbstraction servletApiAbstraction = new ServletApiAbstraction(getResourceLoader());
       //TODO: check 3.2.1 for more rules!!!!!!
       return !type.isAnnotation() && 
       	    !Reflections.isAbstract(type) && 
-      	    !SERVLET_CLASS.isAssignableFrom(type) && 
-      	    !FILTER_CLASS.isAssignableFrom(type) && 
-      	    !SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(type) && 
-      	    !HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(type) && 
-      	    !SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(type) && 
-      	    !ENTERPRISE_BEAN_CLASS.isAssignableFrom(type) && 
-      	    !UICOMPONENT_CLASS.isAssignableFrom(type) &&
+      	    !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(type) && 
+      	    !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(type) && 
+      	    !servletApiAbstraction.SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(type) && 
+      	    !servletApiAbstraction.HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(type) && 
+      	    !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(type) && 
+      	    !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(type) && 
+      	    !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(type) &&
       	    hasSimpleWebBeanConstructor(type);
    }
 
