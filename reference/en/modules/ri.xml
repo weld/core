@@ -298,8 +298,8 @@ ant deploy</programlisting>
             <area id="messages" coords="12" />
             <area id="instructions" coords="19" />
             <area id="guess" coords="25" />
-            <area id="validator" coords="29" />
-            <area id="submit" coords="32" />
+            <area id="validator" coords="30" />
+            <area id="submit" coords="33" />
          </areaspec>
          <programlisting><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -314,8 +314,8 @@ ant deploy</programlisting>
        <h:form id="NumberGuessMain">
           <div style="color: red">
              <h:messages id="messages" globalOnly="false"/>
-             <h:outputText id="Higher" value="Higher!" rendered="#{game.number gt game.guess}"/>
-             <h:outputText id="Lower" value="Lower!" rendered="#{game.number lt game.guess}"/>
+             <h:outputText id="Higher" value="Higher!" rendered="#{game.number gt game.guess and game.guess ne 0}"/>
+             <h:outputText id="Lower" value="Lower!" rendered="#{game.number lt game.guess and game.guess ne 0}"/>
           </div>
    
           <div>
@@ -328,15 +328,19 @@ ant deploy</programlisting>
              <h:inputText id="inputGuess" 
                           value="#{game.guess}" 
                           required="true" 
-                          size="3">
+                          size="3" 
+                          disabled="#{game.number eq game.guess}">
                 <f:validateLongRange maximum="#{game.biggest}" 
                                      minimum="#{game.smallest}"/>
              </h:inputText>
-            <h:commandButton id="GuessButton" 
+            <h:commandButton id="GuessButton"  
                              value="Guess" 
-                             action="#{game.check}"/>
+                             action="#{game.check}" 
+                             disabled="#{game.number eq game.guess}"/>
           </div>
-   
+          <div>
+            <h:commandButton id="RestartButton" value="Reset" action="#{game.reset}" immediate="true" />
+          </div>
        </h:form>
     </ui:define>
   </ui:composition>
@@ -445,22 +449,34 @@ public class Generator {
       
       <para>
          The final Web Bean in the application is the session scoped
-         <literal>Game</literal>. By making <literal>Game</literal> session 
-         scoped, you can only play the game once per browser session. You could
-         easily add a reset button - a good exercise for the reader :-)
+         <literal>Game</literal>.
       </para>
       
       <para>
-         You'll also note that we've used the <literal>@Named</literal> 
+         You'll note that we've used the <literal>@Named</literal> 
          annotation, so that we can use the bean through EL in the JSF page.
          Finally, we've used constructor injection to initialize the game with
          a random number. And of course, we need to tell the player when they've
          won, so we give feedback with a <literal>FacesMessage</literal>.
       </para>
       
-      <programlisting role="JAVA"><![CDATA[@Named
+      <programlisting role="JAVA"><![CDATA[package org.jboss.webbeans.examples.numberguess;
+
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.webbeans.AnnotationLiteral;
+import javax.webbeans.Current;
+import javax.webbeans.Initializer;
+import javax.webbeans.Named;
+import javax.webbeans.SessionScoped;
+import javax.webbeans.manager.Manager;
+
+@Named
 @SessionScoped
-public class Game {
+public class Game
+{
    private int number;
    
    private int guess;
@@ -468,30 +484,73 @@ public class Game {
    private int biggest;
    private int remainingGuesses;
    
-   public Game() {}
+   @Current Manager manager;
+   
+   public Game()
+   {
+   }
    
    @Initializer
-   Game(@Random int number, @MaxNumber int maxNumber) {
-      this.number = number;
-      this.smallest = 1;
+   Game(@MaxNumber int maxNumber)
+   {      
       this.biggest = maxNumber;
-      this.remainingGuesses = 10;
    }
 
-   // Getters and setters for fields
+   public int getNumber()
+   {
+      return number;
+   }
    
-   public String check() {
-      if (guess>number) {
+   public int getGuess()
+   {
+      return guess;
+   }
+   
+   public void setGuess(int guess)
+   {
+      this.guess = guess;
+   }
+   
+   public int getSmallest()
+   {
+      return smallest;
+   }
+   
+   public int getBiggest()
+   {
+      return biggest;
+   }
+   
+   public int getRemainingGuesses()
+   {
+      return remainingGuesses;
+   }
+   
+   public String check()
+   {
+      if (guess>number)
+      {
          biggest = guess - 1;
       }
-      if (guess<number) {
+      if (guess<number)
+      {
          smallest = guess + 1;
       }
-      if (guess == number) {
+      if (guess == number)
+      {
          FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Correct!"));
       }
       remainingGuesses--;
       return null;
+   }
+   
+   @PostConstruct
+   public void reset()
+   {
+      this.smallest = 0;
+      this.guess = 0;
+      this.remainingGuesses = 10;
+      this.number = manager.getInstanceByType(Integer.class, new AnnotationLiteral<Random>(){});
    }
    
 }]]></programlisting>
