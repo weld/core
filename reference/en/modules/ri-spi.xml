@@ -97,7 +97,7 @@
     * 
     * @return An iterator over the remove methods
     */
-   public Iterable<MethodDescriptor> getRemoveMethods();
+   public Iterable<Method> getRemoveMethods();
 
    /**
     * Indicates if the bean is stateless
@@ -147,10 +147,7 @@
        The contract described the JavaDoc is enough to implement 
        an EJBDescriptor. In addition to these two interfaces, there is 
        <literal>BusinessInterfaceDescriptor</literal> which represents a local 
-       business interface (encapsulating the interface class and jndi name), and
-       <literal>MethodDescriptor</literal> which encapsulates the method name
-       and parameter types (allowing it to be invoked on any instance of the
-       EJB, proxy or otherwise).
+       business interface (encapsulating the interface class and jndi name).
     </para>
     
     <para>
