@@ -7,6 +7,7 @@
 	<property name="maven.dir" location="${basedir}/lib/maven" />
 
 	<property file="build.properties" />
+        <property file="local.build.properties" />
 	
 	<target name="clean" description="Clean up after the JBoss updater">
 		<delete dir="target" failonerror="false"/>
