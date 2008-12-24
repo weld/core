@@ -1,11 +1,15 @@
 package org.jboss.webbeans.examples.numberguess;
 
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.webbeans.AnnotationLiteral;
+import javax.webbeans.Current;
 import javax.webbeans.Initializer;
 import javax.webbeans.Named;
 import javax.webbeans.SessionScoped;
+import javax.webbeans.manager.Manager;
 
 @Named
 @SessionScoped
@@ -18,17 +22,16 @@ public class Game
    private int biggest;
    private int remainingGuesses;
    
+   @Current Manager manager;
+   
    public Game()
    {
    }
    
    @Initializer
-   Game(@Random int number, @MaxNumber int maxNumber)
-   {
-      this.number = number;
-      this.smallest = 1;
+   Game(@MaxNumber int maxNumber)
+   {      
       this.biggest = maxNumber;
-      this.remainingGuesses = 10;
    }
 
    public int getNumber()
@@ -77,6 +80,15 @@ public class Game
       }
       remainingGuesses--;
       return null;
+   }
+   
+   @PostConstruct
+   public void reset()
+   {
+      this.smallest = 0;
+      this.guess = 0;
+      this.remainingGuesses = 10;
+      this.number = manager.getInstanceByType(Integer.class, new AnnotationLiteral<Random>(){});
    }
    
 }

@@ -11,8 +11,8 @@
        <h:form id="NumberGuessMain">
           <div style="color: red">
              <h:messages id="messages" globalOnly="false"/>
-             <h:outputText id="Higher" value="Higher!" rendered="#{game.number gt game.guess}"/>
-             <h:outputText id="Lower" value="Lower!" rendered="#{game.number lt game.guess}"/>
+             <h:outputText id="Higher" value="Higher!" rendered="#{game.number gt game.guess and game.guess ne 0}"/>
+             <h:outputText id="Lower" value="Lower!" rendered="#{game.number lt game.guess and game.guess ne 0}"/>
           </div>
    
           <div>
@@ -25,6 +25,9 @@
                 <f:validateLongRange maximum="#{game.biggest}" minimum="#{game.smallest}"/>
              </h:inputText>
             <h:commandButton id="GuessButton" value="Guess" action="#{game.check}" disabled="#{game.number eq game.guess}"/>
+          </div>
+          <div>
+            <h:commandButton id="RestartButton" value="Reset" action="#{game.reset}" immediate="true" />
           </div>
        </h:form>
     </ui:define>
