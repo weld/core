@@ -61,7 +61,9 @@
 			<fileset dir="${examples.dir}" />
       </copy>
 		
-		<maven target="package" basedir="${refdoc.dir}" />
+		<maven target="package" basedir="${refdoc.dir}">
+			<arg line="-Dbuild.translations" />
+		</maven>
 		<mkdir dir="${dist.doc.dir}" />
 		<copy todir="${dist.doc.dir}">
 			<fileset dir="${refdoc.dir}/target/docbook/publish" />
