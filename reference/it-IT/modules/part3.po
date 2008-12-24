@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-24 10:04+0100\n"
-"Last-Translator: Francesco Milesi <milesif@gmail.com>\n"
+"PO-Revision-Date: 2008-12-24 19:30+0100\n"
+"Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -93,30 +93,26 @@ msgstr "<literal>SecurityInterceptor</literal> or"
 msgid "<literal>DocumentUpdatedEvent</literal>."
 msgstr "<literal>DocumentUpdatedEvent</literal>."
 
-# concerns=problemi?
 # literate=elegante?
 #. Tag: para
 #: part3.xml:56
 #, no-c-format
 msgid "The annotations are reusable. They help describe common qualities of disparate parts of the system. They help us categorize and understand our code. They help us deal with common concerns in a common way. They make our code more literate and more understandable."
-msgstr "Le annotazioni sono riutilizzabili. Aiutano a descrivere caratteristiche comuni di parti diverse del sistema. Ci aiutano a categorizzare e comprendere il nostro stesso codice. Ci aiutano ad affrontare problemi comuni in un modo comune. Rendono il nostro codice più elegante e comprensibile."
+msgstr "Le annotazioni sono riutilizzabili. Aiutano a descrivere caratteristiche comuni di parti diverse del sistema. Ci aiutano a categorizzare e comprendere il nostro stesso codice. Ci aiutano ad affrontare i concern comuni in un modo comune. Rendono il nostro codice più elegante e comprensibile."
 
-# scope=ambito?
 #. Tag: para
 #: part3.xml:61
 #, no-c-format
 msgid "Web Beans <emphasis>stereotypes</emphasis> take this idea a step further. A stereotype models a common <emphasis>role</emphasis> in your application architecture. It encapsulates various properties of the role, including scope, interceptor bindings, deployment type, etc, into a single reusable package."
 msgstr "Gli <emphasis>stereotipi (stereotypes)</emphasis> di Web Beans fanno fare un ulteriore passo in avanti a questa idea. Uno stereotipo descrive un <emphasis>ruolo</emphasis> comune nell'architettura di un'applicazione. Incapsula in un unico pacchetto riutilizzabile varie proprietà del ruolo stesso, inclusi lo scope, gli interceptor bindings, il tipo di deployment, etc, ."
 
-# strongly typed?
-# schemi XML?
 # literate=elegante (come in altri contesti)? oppure = letterato/informato/cosciente. Qui scelgo informato... nel senso di cosciente di se stesso.
 # l'XML=i descrittori XML, il codice XML?
 #. Tag: para
 #: part3.xml:66
 #, no-c-format
 msgid "Even Web Beans XML metadata is strongly typed! There's no compiler for XML, so Web Beans takes advantage of XML schemas to validate the Java types and attributes that appear in XML. This approach turns out to make the XML more literate, just like annotations made our Java code more literate."
-msgstr "Persino i metadati XML di Web Beans sono tipizzati (strongly typed)! Non esistendo un compilatore XML, Web Beans si basa sugli schemi XML per validare i tipi Java e gli attributi che compaiono nell'XML. Questo approccio finisce col rendere il codice XML più informato, proprio come le annotazioni rendono il codice Java + informato."
+msgstr "Persino i metadati XML di Web Beans sono fortemente tipizzati (strongly typed)! Non esistendo un compilatore XML, Web Beans si basa sugli schemi XML per validare i tipi Java e gli attributi che compaiono nell'XML. Questo approccio finisce col rendere il codice XML più informato, proprio come le annotazioni rendono il codice Java + informato."
 
 #. Tag: para
 #: part3.xml:71

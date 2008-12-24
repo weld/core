@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-24 09:41+0100\n"
-"Last-Translator: Francesco Milesi <milesif@gmail.com>\n"
+"PO-Revision-Date: 2008-12-24 19:21+0100\n"
+"Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,12 +28,11 @@ msgstr "La specifica Web Beans (JSR-299) definisce un insieme di servizi per l'a
 msgid "an improved lifecycle for stateful components, bound to well-defined <emphasis>contexts</emphasis>,"
 msgstr "una migliore gestione del ciclo di vita dei componenti stateful, associata a <emphasis>contesti</emphasis> ben definiti"
 
-# chiedere nicola come ha tradotto dependency injection
 #. Tag: para
 #: part1.xml:18
 #, no-c-format
 msgid "a typesafe approach to <emphasis>dependency injection</emphasis>,"
-msgstr "un approccio  typesafe alla <emphasis>dependency injection</emphasis>,"
+msgstr "un approccio typesafe alla <emphasis>dependency injection</emphasis>,"
 
 # facility=struttura?
 #. Tag: para
@@ -42,13 +41,11 @@ msgstr "un approccio  typesafe alla <emphasis>dependency injection</emphasis>,"
 msgid "interaction via an <emphasis>event notification</emphasis> facility, and"
 msgstr "interazioni basate su una struttura per <emphasis>la notifica degli eventi</emphasis>, e"
 
-# interceptors?
-# decorator?
 #. Tag: para
 #: part1.xml:25
 #, no-c-format
 msgid "a better approach to binding <emphasis>interceptors</emphasis> to components, along with a new kind of interceptor, called a <emphasis>decorator</emphasis>, that is more appropriate for use in solving business problems."
-msgstr "un migliore approccio nell'associazione degli <emphasis>interceptors</emphasis> ai componenti, unitamente all'introduzione di un nuovo tipo di interceptor, chiamato <emphasis>decorator</emphasis>, più adatto ad essere utilizzato nella soluzione di problemi legati alla business logic."
+msgstr "un migliore approccio nell'associazione degli <emphasis>interceptors</emphasis> ai componenti, unitamente all'introduzione di un nuovo tipo di interceptor, chiamato <emphasis>decoratore</emphasis>, più adatto ad essere utilizzato nella soluzione di problemi legati alla business logic."
 
 #. Tag: para
 #: part1.xml:32
@@ -93,12 +90,11 @@ msgstr "devo distruggerlo esplicitamente?"
 msgid "where should I keep my reference to it when I'm not using it directly?"
 msgstr "dove dovrei tenerne il riferimento quando non lo sto usando direttamente?"
 
-# deployment time?
 #. Tag: para
 #: part1.xml:57
 #, no-c-format
 msgid "how can I add an indirection layer, so that the implementation of this object can vary at deployment time?"
-msgstr "come posso aggiungere un livello di indirezione, in modo che l'implementazione di tale oggetto possa variare a deployment time?"
+msgstr "come posso aggiungere un livello di indirezione, in modo che l'implementazione di tale oggetto possa variare deployment time?"
 
 # go about (dovrei comportarmi)???
 #. Tag: para
@@ -120,7 +116,7 @@ msgstr "Un Web Bean specifica soltanto il tipo e la semantica degli altri Web Be
 #: part1.xml:72
 #, no-c-format
 msgid "Events, interceptors and decorators enhance the <emphasis>loose-coupling</emphasis> that is inherent in this model:"
-msgstr "Eventi, interceptors and decorators potenziano l'<emphasis>accoppiamento debole</emphasis> (loose-coupling) inerente a questo modello:"
+msgstr "Eventi, interceptor e decoratori potenziano l'<emphasis>accoppiamento debole</emphasis> (loose-coupling) inerente a questo modello:"
 
 # notifiche o eventi?
 #. Tag: para
@@ -139,14 +135,14 @@ msgstr "gli <emphasis>interceptor</emphasis> disaccoppiano i problemi tecnici da
 #: part1.xml:85
 #, no-c-format
 msgid "<emphasis>decorators</emphasis> allow business concerns to be compartmentalized."
-msgstr "i <emphasis>decorator</emphasis> permettono di compartimentare i problemi di business logic."
+msgstr "i <emphasis>decoratori</emphasis> permettono di compartimentare i problemi di business logic."
 
 # loro consumatori di eventi? destinatari è meglio?
 #. Tag: para
 #: part1.xml:90
 #, no-c-format
 msgid "Most importantly, Web Beans provides all these facilities in a <emphasis>typesafe</emphasis> way. Web Beans never uses string-based identifiers to determine how collaborating objects fit together. And XML, though it remains an option, is rarely used. Instead, Web Beans uses the typing information that is already available in the Java object model, together with a new pattern, called <emphasis>binding annotations</emphasis>, to wire together Web Beans, their dependencies, their interceptors and decorators and their event consumers."
-msgstr "Soprattutto, Web Beans fornisce tutti questi strumenti in un modo <emphasis>typesafe</emphasis>. Web Beans non usa mai identificatori di tipo stringa per determinare come interagiscono oggetti che collaborano fra di loro. Sebbene resti un'opzione, il linguaggio XML è usato raramente. Invece Web Beans utilizza l'informazione di tipo già presente nel modello a oggetti di Java, insieme ad un nuovo pattern, chiamato <emphasis>binding annotations</emphasis>, per assemblare i Web Beans, le loro dipendenze, i loro interceptor e decorator e i loro consumatori di eventi."
+msgstr "Soprattutto, Web Beans fornisce tutti questi strumenti in un modo <emphasis>typesafe</emphasis>. Web Beans non usa mai identificatori di tipo stringa per determinare come interagiscono oggetti che collaborano fra di loro. Sebbene resti un'opzione, il linguaggio XML è usato raramente. Invece Web Beans utilizza l'informazione di tipo già presente nel modello a oggetti di Java, insieme ad un nuovo pattern, chiamato <emphasis>binding annotations</emphasis>, per assemblare i Web Beans, le loro dipendenze, i loro interceptor e decoratori e i loro consumatori di eventi."
 
 #. Tag: para
 #: part1.xml:100
