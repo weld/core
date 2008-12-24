@@ -56,6 +56,7 @@ import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.bean.InstanceBean;
 import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.bindings.InitializedBinding;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.contexts.DependentContext;
@@ -139,7 +140,16 @@ public class WebBeansBootstrap
    {
       Set<AbstractBean<?, ?>> beans = new HashSet<AbstractBean<?, ?>>();
       createBean(BeanFactory.createSimpleBean(Transaction.class, manager), beans);
-      createBean(BeanFactory.createSimpleBean(ManagerImpl.class, manager), beans);
+      createBean(new SimpleBean<ManagerImpl>(ManagerImpl.class, manager)
+      {
+   
+         @Override
+         public ManagerImpl create()
+         {
+            return manager;
+         }
+   
+      }, beans);
       return beans;
    }
 
