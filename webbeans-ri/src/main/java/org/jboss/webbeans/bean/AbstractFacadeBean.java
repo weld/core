@@ -91,6 +91,12 @@ public abstract class AbstractFacadeBean<T, S, P> extends AbstractBean<T, S>
    {
       this.deploymentType = Standard.class;
    }
+   
+   @Override
+   protected void checkDeploymentType()
+   {
+      // Allow @Standard here
+   }
 
    /**
     * Gets the underlying item
