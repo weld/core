@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-21 09:46+0100\n"
+"PO-Revision-Date: 2008-12-25 15:29+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Definire i Web Beans tramite XML"
 #: xml.xml:6
 #, no-c-format
 msgid "So far, we've seen plenty of examples of Web Beans declared using annotations. However, there are a couple of occasions when we can't use annotations to define the Web Bean:"
-msgstr "Finora abbiamo visto molti esempi di Web Bean dichiarati usando annotazioni. Comunque ci sono varie occasioni in cui non è possibile usare le annotazioni per definire un Web Bean:"
+msgstr "Finora si sono visti molti esempi di Web Bean dichiarati usando annotazioni. Comunque ci sono varie occasioni in cui non è possibile usare le annotazioni per definire un Web Bean:"
 
 #. Tag: para
 #: xml.xml:12
@@ -131,7 +131,7 @@ msgstr "Dichiarare metadati Web Bean"
 #: xml.xml:69
 #, no-c-format
 msgid "We can declare the scope, deployment type and interceptor binding types using direct child elements of the Web Bean declaration:"
-msgstr "Possiamo dichiarare lo scope, il tipo di deploy ed i tipi di binding degli interceptor usando elementi figli diretti della dichiarazione Web Bean:"
+msgstr "E' possibile dichiarare lo scope, il tipo di deploy ed i tipi di binding degli interceptor usando elementi figli diretti della dichiarazione Web Bean:"
 
 #. Tag: programlisting
 #: xml.xml:72
@@ -153,7 +153,7 @@ msgstr ""
 #: xml.xml:74
 #, no-c-format
 msgid "We use exactly the same approach to specify names and binding type:"
-msgstr "Utilizziamo esattamente lo stesso approccio per specificare i nomi ed il tipo di binding:"
+msgstr "Si utilizza esattamente lo stesso approccio per specificare i nomi ed il tipo di binding:"
 
 #. Tag: programlisting
 #: xml.xml:76
