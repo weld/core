@@ -66,7 +66,7 @@
                <masterTranslation>en</masterTranslation>
                <translations>
                  <translation>it-IT</translation>
-                 <translation>zh-ZH</translation>
+                 <translation>zh-CN</translation>
                </translations>
                <imageResource>
                   <directory>${pom.basedir}/en</directory>
