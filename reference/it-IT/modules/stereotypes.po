@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-21 13:01+0100\n"
+"PO-Revision-Date: 2008-12-25 12:05+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -125,7 +125,7 @@ msgstr "Scope di default e tipo di deploy per uno stereotipo"
 #: stereotypes.xml:53
 #, no-c-format
 msgid "A stereotype may specify a default scope and/or default deployment type for Web Beans with that stereotype. For example, if the deployment type <literal>@WebTier</literal> identifies Web Beans that should only be deployed when the system executes as a web application, we might specify the following defaults for action classes:"
-msgstr ""
+msgstr "Uno stereotipo può specificare uno scope di default e/o un tipo di deploy di default per Web Bean con tale stereotipo. Per esempio, se il tipo di deploy <literal>@WebTier</literal> identifica Web Bean che dovrebbero essere deployati quando il sistema viene eseguito come applicazione web, si potrebbero specificare i seguenti valori di default per le classi d'azione:"
 
 #. Tag: programlisting
 #: stereotypes.xml:59
@@ -149,7 +149,7 @@ msgstr ""
 #: stereotypes.xml:61
 #, no-c-format
 msgid "Of course, a particular action may still override these defaults if necessary:"
-msgstr ""
+msgstr "Certamente una particolare azione può comunque fare l'override di questi valore se necessario:"
 
 #. Tag: programlisting
 #: stereotypes.xml:64
@@ -165,19 +165,19 @@ msgstr ""
 #: stereotypes.xml:66
 #, no-c-format
 msgid "If we want to force all actions to a particular scope, we can do that too."
-msgstr ""
+msgstr "Se si vuole forzare tutte le azioni ad un particolare scope, è possibile."
 
 #. Tag: title
 #: stereotypes.xml:72
 #, no-c-format
 msgid "Restricting scope and type with a stereotype"
-msgstr ""
+msgstr "Restringere lo scope ed il tipo con uno stereotipo"
 
 #. Tag: para
 #: stereotypes.xml:74
 #, no-c-format
 msgid "Suppose that we wish to prevent actions from declaring certain scopes. Web Beans lets us explicitly specify the set of allowed scopes for Web Beans with a certain stereotype. For example:"
-msgstr ""
+msgstr "Si supponga di voler prevenire le azioni dal dichiarare certi scope. Web Beans consente esplicitamente di specificare un set di scope consentiti per Web Bean con certi stereotipi. Per esempio:"
 
 #. Tag: programlisting
 #: stereotypes.xml:78
@@ -201,13 +201,13 @@ msgstr ""
 #: stereotypes.xml:80
 #, no-c-format
 msgid "If a particular action class attempts to specify a scope other than the Web Beans request scope, an exception will be thrown by the Web Bean manager at initialization time."
-msgstr ""
+msgstr "Se una particolare classe d'azione tenta di specificare uno scope diverso dallo scope di richiesta Web Bean, verrà lanciata un'eccezione dal manager Web Bean in fase di inizializzazione."
 
 #. Tag: para
 #: stereotypes.xml:84
 #, no-c-format
 msgid "We can also force all Web Bean with a certain stereotype to implement an interface or extend a class:"
-msgstr ""
+msgstr "Si può forzare tutti i Web Bean con certi stereotipi ad implementare un'interfaccia o ad estendere una classe:"
 
 #. Tag: programlisting
 #: stereotypes.xml:87
@@ -231,19 +231,19 @@ msgstr ""
 #: stereotypes.xml:89
 #, no-c-format
 msgid "If a particular action class does not extend the class <literal>AbstractAction</literal>, an exception will be thrown by the Web Bean manager at initialization time."
-msgstr ""
+msgstr "Se una particolare classe d'azione non estende la classe <literal>AbstractAction</literal>, verrà lanciata un'eccezione dal manager Web Bean in fase di inizializzazione."
 
 #. Tag: title
 #: stereotypes.xml:96
 #, no-c-format
 msgid "Interceptor bindings for stereotypes"
-msgstr ""
+msgstr "Interceptor binding per gli stereotipi"
 
 #. Tag: para
 #: stereotypes.xml:98
 #, no-c-format
 msgid "A stereotype may specify a set of interceptor bindings to be inherited by all Web Beans with that stereotype."
-msgstr ""
+msgstr "Uno stereotipo può specificare un set di interceptor binding da ereditare da tutti i Web Bean con quello stereotipo."
 
 #. Tag: programlisting
 #: stereotypes.xml:101
@@ -271,7 +271,7 @@ msgstr ""
 #: stereotypes.xml:103
 #, no-c-format
 msgid "This helps us get technical concerns even further away from the business code!"
-msgstr ""
+msgstr "Questo aiuta ad ottenere concern tecnici anche lontano dal codice di business!"
 
 #. Tag: title
 #: stereotypes.xml:109
@@ -283,7 +283,7 @@ msgstr "Assegnare nomi di default con gli stereotipi"
 #: stereotypes.xml:111
 #, no-c-format
 msgid "Finally, we can specify that all Web Beans with a certain stereotype have a Web Bean name, defaulted by the Web Bean manager. Actions are often referenced in JSP pages, so they're a perfect use case for this feature. All we need to do is add an empty <literal>@Named</literal> annotation:"
-msgstr ""
+msgstr "Infine è possibile specificare che tutti i Web Bean con certi stereotipi abbiamo un certo nome Web Bean, messo di default dal manager Web Bean. Le azioni sono spesso referenziate nelle pagine JSP, e quindi sono un caso d'uso perfetto per questa funzionalità. Basta aggiungere un'annotazione vuota <literal>@Named</literal>:"
 
 #. Tag: programlisting
 #: stereotypes.xml:116
@@ -313,7 +313,7 @@ msgstr ""
 #: stereotypes.xml:118
 #, no-c-format
 msgid "Now, <literal>LoginAction</literal> will have the name <literal>loginAction</literal>."
-msgstr ""
+msgstr "Ora, <literal>LoginAction</literal> avrà nome <literal>loginAction</literal>."
 
 #. Tag: title
 #: stereotypes.xml:124
@@ -325,13 +325,13 @@ msgstr "Stereotipi standard"
 #: stereotypes.xml:126
 #, no-c-format
 msgid "We've already met two standard stereotypes defined by the Web Beans specification: <literal>@Interceptor</literal> and <literal>@Decorator</literal>."
-msgstr ""
+msgstr "Si sono già visti due stereotipi standard definiti dalla specifica Web Bean: <literal>@Interceptor</literal> e <literal>@Decorator</literal>."
 
 #. Tag: para
 #: stereotypes.xml:129
 #, no-c-format
 msgid "Web Beans defines one further standard stereotype:"
-msgstr ""
+msgstr "Web Bean definisce un ulteriore stereotipo standard:"
 
 #. Tag: programlisting
 #: stereotypes.xml:131
@@ -355,5 +355,5 @@ msgstr ""
 #: stereotypes.xml:133
 #, no-c-format
 msgid "This stereotype is intended for use with JSF. Instead of using JSF managed beans, just annotate a Web Bean <literal>@Model</literal>, and use it directly in your JSF page."
-msgstr ""
+msgstr "Questo stereotipo è inteso per l'uso con JSF. Invece di usare bean gestiti da JSF, basta annotare un Web Bean con <literal>@Model</literal>, e usarlo direttamente nelle pagine JSF."
 

@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-20 22:07+0000\n"
-"PO-Revision-Date: 2008-12-21 03:45+0100\n"
+"PO-Revision-Date: 2008-12-24 19:39+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgstr ""
 #: ri-spi.xml:24
 #, no-c-format
 msgid "The Web Beans RI SPI"
-msgstr ""
+msgstr "Web Beans RI SPI"
 
 #. Tag: para
 #: ri-spi.xml:26
@@ -293,7 +293,7 @@ msgstr ""
 #: ri-spi.xml:79
 #, no-c-format
 msgid "The contract with the container"
-msgstr ""
+msgstr "Il contratto con il container"
 
 #. Tag: para
 #: ri-spi.xml:81
@@ -317,7 +317,7 @@ msgstr ""
 #: ri-spi.xml:102
 #, no-c-format
 msgid "The <literal>webbeans-ri.jar</literal>"
-msgstr ""
+msgstr "<literal>webbeans-ri.jar</literal>"
 
 #. Tag: para
 #: ri-spi.xml:106

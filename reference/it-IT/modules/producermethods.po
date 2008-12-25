@@ -23,7 +23,7 @@ msgstr "Metodi produttori"
 #: producermethods.xml:7
 #, no-c-format
 msgid "Producer methods let us overcome certain limitations that arise when the Web Bean manager, instead of the application, is responsible for instantiating objects. They're also the easiest way to integrate objects which are not Web Beans into the Web Beans environment. (We'll meet a second approach in <xref linkend=\"xml\"/>.)"
-msgstr "I metodi produttori consentono di superare alcune limitazioni che sorgono quando il manager Web Bean è responsabile dell'istanziazione degli oggetti al posto dell'applicazione. Questi metodi sono anche il modo migliore per integrare gli oggetti che non sono Web Beans dentro l'ambiente Web Beans. (Si incontrerà un secondo approccio in <xref linkend=\"xml\"/>.)"
+msgstr "I metodi produttori consentono di superare alcune limitazioni che sorgono quando il manager Web Bean è responsabile dell'istanziamento degli oggetti al posto dell'applicazione. Questi metodi sono anche il modo migliore per integrare gli oggetti che non sono Web Beans dentro l'ambiente Web Beans. (Si incontrerà un secondo approccio in <xref linkend=\"xml\"/>.)"
 
 #. Tag: para
 #: producermethods.xml:12

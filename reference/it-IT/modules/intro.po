@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-23 20:18+0100\n"
+"PO-Revision-Date: 2008-12-25 12:11+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -190,13 +190,13 @@ msgstr "Ma <literal>TextTranslator</literal> non ha un costruttore con nessun pa
 #: intro.xml:61
 #, no-c-format
 msgid "As you've guessed, the <literal>@Initializer</literal> annotation has something to do with dependency injection! <literal>@Initializer</literal> may be applied to a constructor or method of a Web Bean, and tells the Web Bean manager to call that constructor or method when instantiating the Web Bean. The Web Bean manager will inject other Web Beans to the parameters of the constructor or method."
-msgstr "Come hai indovinato, l'annotazione <literal>@Initializer</literal> ha qualcosaa che fare conla dependency injection! <literal>@Initializer</literal> può essere applicato ad un costruttore od un metodo di un Web Bean, e dice al manager Web Bean di chiamare quel costruttore o metodo quando si istanzia il Web Bean. Il manager Web Bean inietterà altri Web Bean nei parametri del costruttore o del metodo."
+msgstr "Come hai indovinato, l'annotazione <literal>@Initializer</literal> ha qualcosa che fare con la dependency injection! <literal>@Initializer</literal> può essere applicato ad un costruttore od un metodo di un Web Bean, e dice al manager Web Bean di chiamare quel costruttore o metodo quando si istanzia il Web Bean. Il manager Web Bean inietterà altri Web Bean nei parametri del costruttore o del metodo."
 
 #. Tag: para
 #: intro.xml:68
 #, no-c-format
 msgid "At system initialization time, the Web Bean manager must validate that exactly one Web Bean exists which satisfies each injection point. In our example, if no implementation of <literal>Translator</literal> available&#151;if the <literal>SentenceTranslator</literal> EJB was not deployed&#151;the Web Bean manager would throw an <literal>UnsatisfiedDependencyException</literal>. If more than one implementation of <literal>Translator</literal> was available, the Web Bean manager would throw an <literal>AmbiguousDependencyException</literal>."
-msgstr "In fase di inizializzazione del sistema, il manager Web Bean deve convalidare che esattamente un solo Web Bean esista e soddisfi ciascun punto di iniezione. Nell'esempio, se nessuna implementazione di <literal>Translator</literal> fosse disponibile&#151;se l'EJB <literal>SentenceTranslator</literal> non è stato deplyato&#151;il manager Web Bean lancerebbe una <literal>UnsatisfiedDependencyException</literal>. Se più di un'implementazione di <literal>Translator</literal> fosse disponibile, il manager Web Bean lancerebbe una <literal>AmbiguousDependencyException</literal>."
+msgstr "In fase di inizializzazione del sistema, il manager Web Bean deve convalidare che esattamente un solo Web Bean esista e soddisfi ciascun punto di iniezione. Nell'esempio, se nessuna implementazione di <literal>Translator</literal> fosse disponibile&#151;se l'EJB <literal>SentenceTranslator</literal> non venisse deployato&#151;il manager Web Bean lancerebbe una <literal>UnsatisfiedDependencyException</literal>. Se più di un'implementazione di <literal>Translator</literal> fosse disponibile, il manager Web Bean lancerebbe una <literal>AmbiguousDependencyException</literal>."
 
 #. Tag: title
 #: intro.xml:80
@@ -214,7 +214,7 @@ msgstr "Ma cosa è <emphasis>esattamente</emphasis> un Web Bean?"
 #: intro.xml:84
 #, no-c-format
 msgid "A Web Bean is an application class that contains business logic. A Web Bean may be called directly from Java code, or it may be invoked via Unified EL. A Web Bean may access transactional resources. Dependencies between Web Beans are managed automatically by the Web Bean manager. Most Web Beans are <emphasis>stateful</emphasis> and <emphasis>contextual</emphasis>. The lifecycle of a Web Bean is always managed by the Web Bean manager."
-msgstr "Un Web Bean è una classe di applicazione che contiene della logica di business. Può essere chiamato direttamente da codice Java, o può essere invocato via Unified EL. Un Web Bean può accedere a risorse transazionali. Le dipendenze tra Web Beans sono gestite automaticamente dal manager Web Bean. La maggior parte dei Web Beans sono <emphasis>stateful</emphasis> e <emphasis>contestuali</emphasis>. Il ciclo di vita di un Web Bean è sempre gestito da un manager Web Bean."
+msgstr "Un Web Bean è una classe di un'applicazione che contiene della logica di business. Può essere chiamato direttamente da codice Java, o può essere invocato via Unified EL. Un Web Bean può accedere a risorse transazionali. Le dipendenze tra Web Beans sono gestite automaticamente dal manager Web Bean. La maggior parte dei Web Beans sono <emphasis>stateful</emphasis> e <emphasis>contestuali</emphasis>. Il ciclo di vita di un Web Bean è sempre gestito da un manager Web Bean."
 
 #. Tag: para
 #: intro.xml:91
@@ -226,7 +226,7 @@ msgstr "Torniamo indietro un attimo. Cosa significa veramente essere \"contestua
 #: intro.xml:98
 #, no-c-format
 msgid "However, like a stateless or singleton model, but <emphasis>unlike</emphasis> stateful session beans, the client does not control the lifecycle of the instance by explicitly creating and destroying it. Instead, the <emphasis>scope</emphasis> of the Web Bean determines:"
-msgstr "Comunque, in modo simile ad un modello stateless o singleton, ma <emphasis>non come</emphasis> i session bean stateful, il client non ha il controllo del ciclo di vita dell'istanza, creandola e distruggendola esplicitamente. Invece, lo <emphasis>scope</emphasis> del Web Bean determina:"
+msgstr "Comunque, in modo simile ad un modello stateless o singleton, ma <emphasis>non come</emphasis> i session bean stateful, il client non ha il controllo sul ciclo di vita dell'istanza, creandola e distruggendola esplicitamente. Invece, lo <emphasis>scope</emphasis> del Web Bean determina:"
 
 #. Tag: para
 #: intro.xml:105
@@ -256,7 +256,7 @@ msgstr "I client (per esempio, altri Web Beans) che sono in esecuzione nello ste
 #: intro.xml:123
 #, no-c-format
 msgid "One great advantage of the contextual model is that it allows stateful Web Beans to be treated like services! The client need not concern itself with managing the lifecycle of the Web Bean it is using, <emphasis>nor does it even need to know what that lifecyle is.</emphasis> Web Beans interact by passing messages, and the Web Bean implementations define the lifecycle of their own state. The Web Beans are loosely coupled because:"
-msgstr "Un grande vantaggio del modello contestuale è che consente ai Web Beans stateful di essere trattati come servizi! Il client non deve preoccuparsi di gestire il ciclo di vita del Web Bean che sta utilizzando, <emphasis>e neppure deve sapere quali sia il ciclo di vita.</emphasis> Web Beans interagisce passando i messaggi, e le implementazioni Web Bean definiscono il ciclo di vita del proprio stato. I Web Beans sono debolmente disaccoppiati (loosely coupled) poiché:"
+msgstr "Un grande vantaggio del modello contestuale è che consente ai Web Beans stateful di essere trattati come servizi! Il client non deve preoccuparsi di gestire il ciclo di vita del Web Bean che sta utilizzando, <emphasis>e neppure deve sapere quale sia il ciclo di vita.</emphasis> Web Beans interagisce passando i messaggi, e le implementazioni Web Bean definiscono il ciclo di vita del proprio stato. I Web Beans sono debolmente disaccoppiati (loosely coupled) poiché:"
 
 #. Tag: para
 #: intro.xml:132
@@ -402,7 +402,7 @@ msgstr "Per ogni punto di iniezione, il manager Web Bean cerca un Web Bean che s
 #: intro.xml:200
 #, no-c-format
 msgid "The following Web Bean has the binding type <literal>@CreditCard</literal> and implements the API type <literal>PaymentProcessor</literal>. It could therefore be injected to the example injection point:"
-msgstr ""
+msgstr "Il seguente Web Bean ha il tipo binding <literal>@CreditCard</literal> e implementa il tipo API <literal>PaymentProcessor</literal>. Può quindi essere iniettato nel punto di iniezione d'esempio:"
 
 #. Tag: programlisting
 #: intro.xml:204
@@ -420,13 +420,13 @@ msgstr ""
 #: intro.xml:206
 #, no-c-format
 msgid "If a Web Bean does not explicitly specify a set of binding types, it has exactly one binding type: the default binding type <literal>@Current</literal>."
-msgstr ""
+msgstr "Se un Web Bean non specifica esplicitamente un set di tipi di binding, ha esattamente un solo tipo di binding: il tipo di binding di default <literal>@Current</literal>."
 
 #. Tag: para
 #: intro.xml:209
 #, no-c-format
 msgid "Web Beans defines a sophisticated but intuitive <emphasis>resolution algorithm</emphasis> that helps the container decide what to do if there is more than one Web Bean that satisfies a particular contract. We'll get into the details in <xref linkend=\"injection\"/>."
-msgstr ""
+msgstr "Web Beans definisce un <emphasis>algoritmo di risoluzione</emphasis> sofisticato ma intuitivo che aiuta il container a decidere cosa fare se più di un Web Bean soddisfa un particolare contratto. Vedremo i dettagli in <xref linkend=\"injection\"/>."
 
 #. Tag: title
 #: intro.xml:217
@@ -438,19 +438,19 @@ msgstr "Tipi di deploy"
 #: intro.xml:219
 #, no-c-format
 msgid "<emphasis>Deployment types</emphasis> let us classify our Web Beans by deployment scenario. A deployment type is an annotation that represents a particular deployment scenario, for example <literal>@Mock</literal>, <literal>@Staging</literal> or <literal>@AustralianTaxLaw</literal>. We apply the annotation to Web Beans which should be deployed in that scenario. A deployment type allows a whole set of Web Beans to be conditionally deployed, with a just single line of configuration."
-msgstr ""
+msgstr "<emphasis>I tipi di deploy</emphasis> consentono di classificare i Web Bean secondo uno scenario di deploy. Un tipo di deploy è un'annotazione che rappresenta un particolare scenario di deploy, per esempio <literal>@Mock</literal>, <literal>@Staging</literal> oppure <literal>@AustralianTaxLaw</literal>. Si applica l'annotazione ai Web Bean che dovrebbero essere deployati in tale scenario. Un tipo di deploy consente ad un intero set di Web Bean di essere deployati in modo condizionato, con una sola linea di configurazione."
 
 #. Tag: para
 #: intro.xml:226
 #, no-c-format
 msgid "Many Web Beans just use the default deployment type <literal>@Production</literal>, in which case no deployment type need be explicitly specified. All three Web Bean in our example have the deployment type <literal>@Production</literal>."
-msgstr ""
+msgstr "Molti Web Bean usano soltanto il tipo di deploy di default <literal>@Production</literal>, ed in questo caso non occorre specificare esplicitamente nessun tipo di deploy. Tutti e tre i Web Bean d'esempio hanno ul tipo di deploy <literal>@Production</literal>. "
 
 #. Tag: para
 #: intro.xml:230
 #, no-c-format
 msgid "In a testing environment, we might want to replace the <literal>SentenceTranslator</literal> Web Bean with a \"mock object\":"
-msgstr ""
+msgstr "In un ambiente di test è possibile sostituire il Web Bean <literal>SentenceTranslator</literal> con un \"oggetto mock\":"
 
 #. Tag: programlisting
 #: intro.xml:233
@@ -474,13 +474,13 @@ msgstr ""
 #: intro.xml:236
 #, no-c-format
 msgid "We would enable the deployment type <literal>@Mock</literal> in our testing environment, to indicate that <literal>MockSentenceTranslator</literal> and any other Web Bean annotated <literal>@Mock</literal> should be used."
-msgstr ""
+msgstr "In ambiente di test si dovrebbe abilitare il tipo di deploy <literal>@Mock</literal> per indicare che l'uso di <literal>MockSentenceTranslator</literal> ed ogni altro Web Bean annotato con <literal>@Mock</literal>."
 
 #. Tag: para
 #: intro.xml:240
 #, no-c-format
 msgid "We'll talk more about this unique and powerful feature in <xref linkend=\"deploymenttypes\"/>."
-msgstr ""
+msgstr "Si discuterà questa potente funzionalità con maggior dettaglio in <xref linkend=\"deploymenttypes\"/>.\" "
 
 #. Tag: title
 #: intro.xml:246
@@ -488,17 +488,18 @@ msgstr ""
 msgid "Scope"
 msgstr "Scope"
 
+# arbitrary scope è corretto "scope arbitrari" ?
 #. Tag: para
 #: intro.xml:248
 #, no-c-format
 msgid "The <emphasis>scope</emphasis> defines the lifecycle and visibility of instances of the Web Bean. The Web Beans context model is extensible, accommodating arbitrary scopes. However, certain important scopes are built-in to the specification, and provided by the Web Bean manager. A scope is represented by an annotation type."
-msgstr ""
+msgstr "Lo <emphasis>scope</emphasis> definisce il ciclo di vita e la visibilità delle istanze di Web Bean. Il modello di contesto Web Bean è estensibile e facilita gli scope arbitrari. Comunque alcuni importanti scope sono predefiniti all'internodella specifica e vengono forniti dal manager Web Bean. Uno scope è rapresentato da un tipo di annotazione."
 
 #. Tag: para
 #: intro.xml:254
 #, no-c-format
 msgid "For example, any web application may have <emphasis>session scoped</emphasis> Web Beans:"
-msgstr ""
+msgstr "Per esempio un'applicazione web può avere Web Bean con <emphasis>scope di sessione</emphasis>"
 
 #. Tag: programlisting
 #: intro.xml:257
@@ -514,13 +515,13 @@ msgstr ""
 #: intro.xml:259
 #, no-c-format
 msgid "An instance of a session scoped Web Bean is bound to a user session and is shared by all requests that execute in the context of that session."
-msgstr ""
+msgstr "Un'istanza di un Web Bean con scope sessione è legato ad una sessione utente ed è condivisa da tutte le richieste che si eseguono nel contesto di tale sessione."
 
 #. Tag: para
 #: intro.xml:262
 #, no-c-format
 msgid "By default, Web Beans belong to a special scope called the <emphasis>dependent pseudo-scope</emphasis>. Web Beans with this scope are pure dependent objects of the object into which they are injected, and their lifecycle is bound to the lifecycle of that object."
-msgstr ""
+msgstr "Di default i Web Bean appartengono ad uno speciale scope chiamato <emphasis>pseudo-scope dipendente</emphasis>. Web Bean con questo scope sono oggetti puri dipendenti dall'oggetto nel quale vengono iniettati ed il loro ciclo di vita è legato al ciclo di vita di tale oggetto."
 
 #. Tag: para
 #: intro.xml:267
@@ -538,7 +539,7 @@ msgstr "Nomi Web Bean e Unified EL"
 #: intro.xml:274
 #, no-c-format
 msgid "A Web Bean may have a <emphasis>name</emphasis>, allowing it to be used in Unified EL expressions. It's easy to specify the name of a Web Bean:"
-msgstr ""
+msgstr "Un Web Bean può avere un <emphasis>nome</emphasis> che gli consente di essere usato in un'espressione Unified EL. E' facile specificare il nome del Web Bean:"
 
 #. Tag: programlisting
 #: intro.xml:278
@@ -620,11 +621,12 @@ msgstr ""
 "@Interceptors(TransactionInterceptor.class)\n"
 "public class ShoppingCart { ... }]]>"
 
+# indirect = ?
 #. Tag: para
 #: intro.xml:307
 #, no-c-format
 msgid "However, it is more elegant, and better practice, to indirect the interceptor binding through an <emphasis>interceptor binding type</emphasis>:"
-msgstr ""
+msgstr "Comunque è più elegante ed è considerata una pratica migliore quella di giungere indirettamente ad un interceptor binding tramite un <emphasis>tipo di interceptor binding</emphasis>:"
 
 #. Tag: programlisting
 #: intro.xml:311
@@ -640,7 +642,7 @@ msgstr ""
 #: intro.xml:313
 #, no-c-format
 msgid "We'll discuss Web Beans interceptors and decorators in <xref linkend=\"interceptors\"/> and <xref linkend=\"decorators\"/>."
-msgstr ""
+msgstr "Si discuteranno gli interceptor e i decoratori di Web BEans in <xref linkend=\"interceptors\"/> e <xref linkend=\"decorators\"/>."
 
 #. Tag: title
 #: intro.xml:321
@@ -652,7 +654,7 @@ msgstr "Quali tipi di oggetti possono essere Web Beans?"
 #: intro.xml:323
 #, no-c-format
 msgid "We've already seen that JavaBeans, EJBs and some other Java classes can be Web Beans. But exactly what kinds of objects are Web Beans?"
-msgstr ""
+msgstr "Si è già visto che JavaBeans, EJB ed altri tipi di classi Java possono essere Web Bean. Ma esattamente quali tipi di oggetti sono Web Beans?"
 
 #. Tag: title
 #: intro.xml:327
@@ -664,13 +666,13 @@ msgstr "Web Beans Semplici"
 #: intro.xml:329
 #, no-c-format
 msgid "The Web Beans specification says that a concrete Java class is a <emphasis>simple</emphasis> Web Bean if:"
-msgstr ""
+msgstr "La specifica Web Beans dice che una classe concreta Java è un Web Bean <emphasis>semplice</emphasis> se:"
 
 #. Tag: para
 #: intro.xml:334
 #, no-c-format
 msgid "it is not an EE container-managed component, like an EJB, a Servlet or a JPA entity,"
-msgstr ""
+msgstr "Non è un componente gestito da un container EE, come EJB, un Servlet o un entity JPA,"
 
 #. Tag: para
 #: intro.xml:338
@@ -688,7 +690,7 @@ msgstr "non è un tipo parametrizzato, e"
 #: intro.xml:344
 #, no-c-format
 msgid "it has a constructor with no parameters, or a constructor annotated <literal>@Initializer</literal>."
-msgstr ""
+msgstr "ha un costruttore senza parametro, o un costruttore annotato con <literal>@Initializer</literal>."
 
 #. Tag: para
 #: intro.xml:349
@@ -700,7 +702,7 @@ msgstr "Quindi quasi ogni JavaBean è un Web Bean semplice."
 #: intro.xml:351
 #, no-c-format
 msgid "Every interface implemented directly or indirectly by a simple Web Bean is an API type of the simple Web Bean. The class and its superclasses are also API types."
-msgstr ""
+msgstr "Ogni interfaccia implementata direttamente o indirettamente da un Web Bean semplice è un tipo di API di un Web Bean semplice. La classe e le sue superclassi sono anch'essere tipi di API."
 
 #. Tag: title
 #: intro.xml:358
@@ -712,19 +714,20 @@ msgstr "Web Bean Enterprise"
 #: intro.xml:360
 #, no-c-format
 msgid "The specification says that all EJB 3-style session and singleton beans are <emphasis>enterprise</emphasis> Web Beans. Message driven beans are not Web Beans&#151;since they are not intended to be injected into other objects&#151;but they can take advantage of most of the functionality of Web Beans, including dependency injection and interceptors."
-msgstr ""
+msgstr "La specifica dice che tutti i bean di sessione stile EJB3 e quelli singleton sono Web Bean <emphasis>enterprise</emphasis>. I bean message driven non sono Web Bean&#151;poiché non sono intesi per essere iniettati in altri oggetti&#151;ma possono sfruttare la maggior parte della funzionalità dei Web Bean, inclusi dependency injection e interceptor."
 
+# bean class local view = ?
 #. Tag: para
 #: intro.xml:366
 #, no-c-format
 msgid "Every local interface of an enterprise Web Bean that does not have a wildcard type parameter or type variable, and every one of its superinterfaces, is an API type of the enterprise Web Bean. If the EJB bean has a bean class local view, the bean class, and every one of its superclasses, is also an API type."
-msgstr ""
+msgstr "Ogni interfaccia locale di un Web Bean enterprise che non ha un parametro tipo wildcard o variabile tipo, e ciascuna delle sue superinterfacce, è un tipo di API del Web Bean enterprise. Se il bean EJB ha una vista locale di classe bean, la classe bean e ogni sua superclasse è anch'essa un tipo di API."
 
 #. Tag: para
 #: intro.xml:372
 #, no-c-format
 msgid "Stateful session beans should declare a remove method with no parameters or a remove method annotated <literal>@Destructor</literal>. The Web Bean manager calls this method to destroy the stateful session bean instance at the end of its lifecycle. This method is called the <emphasis>destructor</emphasis> method of the enterprise Web Bean."
-msgstr ""
+msgstr "I session bean stateful dovrebbero dichiarare un metodo remoto senza parametri od un metodo annotato con <literal>@Destructor</literal>. Il manager Web Bean chiama questo metodo per distruggere l'istanza del session bean statefull alla fine del suo ciclo di vita. Questo metodo è chiamato metodo <emphasis>distruttore</emphasis> del Web Bean enterprise."
 
 #. Tag: programlisting
 #: intro.xml:378
@@ -754,7 +757,7 @@ msgstr ""
 #: intro.xml:380
 #, no-c-format
 msgid "So when should we use an enterprise Web Bean instead of a simple Web Bean? Well, whenever we need the advanced enterprise services offered by EJB, such as:"
-msgstr ""
+msgstr "Ma allora quando occorre usare un Web Bean enterprise invece di un Web Bean semplice? Quando occorrono servizi enterprise avanzati offerti da EJB, quali:"
 
 #. Tag: para
 #: intro.xml:387
@@ -772,7 +775,7 @@ msgstr "gestione della concorrenza,"
 #: intro.xml:393
 #, no-c-format
 msgid "instance-level passivation for stateful session beans and instance-pooling for stateless session beans,"
-msgstr ""
+msgstr "passivazione a livello di istanza per session bean stateful e pooling di istanze per session bean stateless,"
 
 #. Tag: para
 #: intro.xml:397
@@ -790,31 +793,32 @@ msgstr "timer e metodi asincroni,"
 #: intro.xml:404
 #, no-c-format
 msgid "we should use an enterprise Web Bean. When we don't need any of these things, a simple Web Bean will serve just fine."
-msgstr ""
+msgstr "si dovrebbe usare un Web Bean enterprise. Quando non occorrono queste cose, va bene utilizzare un Web Bean semplice."
 
 #. Tag: para
 #: intro.xml:407
 #, no-c-format
 msgid "Many Web Beans (including any session or application scoped Web Bean) are available for concurrent access. Therefore, the concurrency management provided by EJB 3.1 is especially useful. Most session and application scoped Web Beans should be EJBs."
-msgstr ""
+msgstr "Molti Web Bean (inclusi Web Bean con scope di sessione o applicazione) sono disponibili per accessi concorrenti. Quindi la gestione della concorrenza fornita da EJB3.1 è molto utile. La maggior parte dei Web Bean con scope sessione e applicazione dovrebbero essere EJB."
 
+# internal state benefit =?
 #. Tag: para
 #: intro.xml:412
 #, no-c-format
 msgid "Web Beans which hold references to heavy-weight resources, or hold a lot of internal state benefit from the advanced container-managed lifecycle defined by the EJB <literal>@Stateless</literal>/<literal>@Stateful</literal>/<literal>@Singleton</literal> model, with its support for passivation and instance pooling."
-msgstr ""
+msgstr "Web Bean che mantengono riferimenti alle risorse pesanti o mantengono molti benefici dello stato interno dal ciclo di vita avanzato, gestito dal container, definito dal modello EJB <literal>@Stateless</literal>/<literal>@Stateful</literal>/<literal>@Singleton</literal>\", con supporto alla passivazione e pooling delle istanze."
 
 #. Tag: para
 #: intro.xml:417
 #, no-c-format
 msgid "Finally, it's usually obvious when method-level transaction management, method-level security, timers, remote methods or asynchronous methods are needed."
-msgstr ""
+msgstr "Infine è ovvio quando occorre usare la gestione delle transazioni a livello di metodo, la sicurezza a livello di metoto, i timer, i metodi remoti o i metodi asincroni."
 
 #. Tag: para
 #: intro.xml:420
 #, no-c-format
 msgid "It's usually easy to start with simple Web Bean, and then turn it into an EJB, just by adding an annotation: <literal>@Stateless</literal>, <literal>@Stateful</literal> or <literal>@Singleton</literal>."
-msgstr ""
+msgstr "E' facile iniziare con un Web Bean semplice e poi volgere a EJB semplicemente aggiungendo l'annotazione: <literal>@Stateless</literal>, <literal>@Stateful</literal> o <literal>@Singleton</literal>."
 
 #. Tag: title
 #: intro.xml:427
@@ -826,7 +830,7 @@ msgstr "Metodi produttori"
 #: intro.xml:429
 #, no-c-format
 msgid "A <emphasis>producer method</emphasis> is a method that is called by the Web Bean manager to obtain an instance of the Web Bean when no instance exists in the current context. A producer method lets the application take full control of the instantiation process, instead of leaving instantiation to the Web Bean manager. For example:"
-msgstr ""
+msgstr "Un <emphasis>metodo produttore</emphasis> è un metodo che viene chiamato dal manager Web Bean per ottenere un'istanza di un Web Bean quando non esiste alcuna istanza nel contesto corrente. Un metodo produttore lascia all'applicazione il pieno controllo del processo di istanziamento, invece di lasciare l'istanziamento al manager Web Bean. Per esempio:"
 
 #. Tag: programlisting
 #: intro.xml:435
@@ -870,7 +874,7 @@ msgstr "<![CDATA[@Random int randomNumber]]>"
 #: intro.xml:441
 #, no-c-format
 msgid "The method return type and all interfaces it extends/implements directly or indirectly are API types of the producer method. If the return type is a class, all superclasses are also API types."
-msgstr ""
+msgstr "Il tipo di ritorno del metodo e tutte le interfacce che estende/implementa direttamente o indirettamente sono tipi di API del metodo produttore. Se il tipo di ritorno è una classe, tutte le superclassi sono anch'esse tipi di API."
 
 #. Tag: para
 #: intro.xml:445
@@ -912,7 +916,7 @@ msgstr ""
 #: intro.xml:453
 #, no-c-format
 msgid "This disposal method is called automatically by the Web Bean manager at the end of the request."
-msgstr ""
+msgstr "Il metodo distruttore è chiamato direttamente dal manager Web Bean alla fine della richiesta."
 
 #. Tag: para
 #: intro.xml:456
@@ -930,5 +934,5 @@ msgstr "Endpoint JMS"
 #: intro.xml:463
 #, no-c-format
 msgid "Finally, a JMS queue or topic can be a Web Bean. Web Beans relieves the developer from the tedium of managing the lifecycles of all the various JMS objects required to send messages to queues and topics. We'll discuss JMS endpoints in <xref linkend=\"jms\"/>."
-msgstr ""
+msgstr "Infine una coda od un topic JMS possono essere Web Bean. Web Beans solleva lo sviluppatore dalla noia della gestione dei cicli di vita di tutti i vari oggetti JMS richiesto per inviare messaggi a code o topic. Si discuteranno gli endpoint JMS in <xref linkend=\"jms\"/>."
 
