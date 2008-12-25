@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-25 12:40+0100\n"
+"PO-Revision-Date: 2008-12-25 13:41+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -405,7 +405,7 @@ msgstr "Osservatori transazionali"
 #: events.xml:199
 #, no-c-format
 msgid "Transactional observers receive their event notifications during the before or after completion phase of the transaction in which the event was raised. For example, the following observer method needs to refresh a query result set that is cached in the application context, but only when transactions that update the <literal>Category</literal> tree succeed:"
-msgstr ""
+msgstr "Gli osservatori transazionali ricevono notifiche d'evento prima o dopo la fase di completamento della transazione, nella quale l'evento viene sollevato. Per esempio, il seguente metodo osservatore ha bisogno di aggiornare il set di risultati della query memorizzato nel contesto dell'applicazione, ma solo quando hanno successo le transazioni che aggiornano l'albero <literal>Category</literal>."
 
 #. Tag: programlisting
 #: events.xml:205
@@ -417,37 +417,37 @@ msgstr "<![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess @Obser
 #: events.xml:207
 #, no-c-format
 msgid "There are three kinds of transactional observers:"
-msgstr ""
+msgstr "Ci sono tre tipi di osservatori transazionali:"
 
 #. Tag: para
 #: events.xml:211
 #, no-c-format
 msgid "<literal>@AfterTransactionSuccess</literal> observers are called during the after completion phase of the transaction, but only if the transaction completes successfully"
-msgstr ""
+msgstr "gli osservatori <literal>@AfterTransactionSuccess</literal> vengono chiamati dopo la fase di completamento della transazione, ma solo se questa si completa con successo"
 
 #. Tag: para
 #: events.xml:216
 #, no-c-format
 msgid "<literal>@AfterTransactionFailure</literal> observers are called during the after completion phase of the transaction, but only if the transaction fails to complete successfully"
-msgstr ""
+msgstr "gli osservatori <literal>@AfterTransactionFailure</literal> vengono chiamati dopo la fase di completamento della transazione, ma solo se questa fallisce e quindi non completa con successo"
 
 #. Tag: para
 #: events.xml:221
 #, no-c-format
 msgid "<literal>@AfterTransactionCompletion</literal> observers are called during the after completion phase of the transaction"
-msgstr ""
+msgstr "gli osservatori <literal>@AfterTransactionCompletion</literal> vengono chiamati dopo la fase di completamento della transazione"
 
 #. Tag: para
 #: events.xml:225
 #, no-c-format
 msgid "<literal>@BeforeTransactionCompletion</literal> observers are called during the before completion phase of the transaction"
-msgstr ""
+msgstr "gli osservatori <literal>@BeforeTransactionCompletion</literal> vengono chiamati prima della fase di completamento della transazione"
 
 #. Tag: para
 #: events.xml:230
 #, no-c-format
 msgid "Transactional observers are very important in a stateful object model like Web Beans, because state is often held for longer than a single atomic transaction."
-msgstr ""
+msgstr "Gli osservatori transazionali sono molto importanti in un modello ad oggetto stateful come Web Beans, poiché lo stato è spesso mantenuto per un tempo più lungo di una singola transazione atomica."
 
 #. Tag: para
 #: events.xml:233

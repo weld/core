@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-20 22:07+0000\n"
-"PO-Revision-Date: 2008-12-24 19:39+0100\n"
+"PO-Revision-Date: 2008-12-25 14:12+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -17,19 +17,19 @@ msgstr ""
 #: ri-spi.xml:4
 #, no-c-format
 msgid "Integrating the Web Beans RI into other environments"
-msgstr ""
+msgstr "Integrazione di Web Beans RI in altri ambienti"
 
 #. Tag: para
 #: ri-spi.xml:6
 #, no-c-format
 msgid "Currently the Web Beans RI only runs in JBoss AS 5; integrating the RI into other EE environments (for example another application server like Glassfish), into a servlet container (like Tomcat), or with an Embedded EJB3.1 implementation is fairly easy. In this Appendix we will briefly discuss the steps needed."
-msgstr ""
+msgstr "Attualmente Web Bean RI funziona solo in JBoss AS 5; l'integrazione di RI in altri ambienti EE (per esempio in un application server come Glassfish), in un servlet container (come Tomcat), o con un'implementazione EJB3.1 Embedded è abbastanza facile. In questo appendice si discuterà brevemente dei passi necessari."
 
 #. Tag: para
 #: ri-spi.xml:15
 #, no-c-format
 msgid "It should be possible to run Web Beans in an SE environment, but you'll to do more work, adding your own contexts and lifecycle. The Web Beans RI currently doesn't expose lifecycle extension points, so you would have to code directly against Web Beans RI classes."
-msgstr ""
+msgstr "Dovrebbe essere possibile far funzionare Web Beans in un ambiente SE, ma occorre molto lavoro per aggiungere i propri contesti ed il ciclo di vita. Web Beans RI attualmemnte non espone punti di estensione del ciclo di vita, così occorre codificare direttamente nelle classi Web Beans RI."
 
 #. Tag: title
 #: ri-spi.xml:24
@@ -41,13 +41,13 @@ msgstr "Web Beans RI SPI"
 #: ri-spi.xml:26
 #, no-c-format
 msgid "The Web Beans SPI is located in <literal>webbeans-ri-spi</literal> module, and packaged as <literal>webbeans-ri-spi.jar</literal>."
-msgstr ""
+msgstr "Web Beans SPI è collocato nel modulo <literal>webbeans-ri-spi</literal>, ed è impacchettato come <literal>webbeans-ri-spi.jar</literal>.\""
 
 #. Tag: para
 #: ri-spi.xml:31
 #, no-c-format
 msgid "Currently, the only SPI to implement is the bootstrap spi:"
-msgstr ""
+msgstr "Attualmente l'unico SPI (Service Provider Interface) da implementare è l'spi di bootstrap:"
 
 #. Tag: programlisting
 #: ri-spi.xml:35
@@ -105,13 +105,13 @@ msgstr ""
 #: ri-spi.xml:37
 #, no-c-format
 msgid "The discovery of Web Bean classes and <literal>web-bean.xml</literal> files is self-explanatory (the algorithm is described in Section 11.1 of the JSR-299 specification, and isn't repeated here)."
-msgstr ""
+msgstr "L'analisi dei file delle classi Web Bean e di <literal>web-bean.xml</literal> è molto istruttiva (l'algoritmo è descritto nella sezione 11.1 della specifica JSR-299 e non viene qua ripetuto)."
 
 #. Tag: para
 #: ri-spi.xml:43
 #, no-c-format
 msgid "The Web Beans RI also delegates EJB3 bean discovery to the container so that it doesn't have to scan for EJB3 annotations or parse <literal>ejb-jar.xml</literal>. For each EJB in the application an EJBDescriptor should be discovered:"
-msgstr ""
+msgstr "Web Beans RI delega al container la rilevazione dei bean EJB3 così da non essere necessario eseguire lo scan delle annotazioni EJB3 o fare il parsing di <literal>ejb-jar.xml</literal>. Per ciascun EJB nell'applicazione dovrebbe essere rilevato un EJBDescriptor:"
 
 #. Tag: programlisting
 #: ri-spi.xml:50
@@ -269,13 +269,13 @@ msgstr ""
 #: ri-spi.xml:52
 #, no-c-format
 msgid "The contract described the JavaDoc is enough to implement an EJBDescriptor. In addition to these two interfaces, there is <literal>BusinessInterfaceDescriptor</literal> which represents a local business interface (encapsulating the interface class and jndi name), and <literal>MethodDescriptor</literal> which encapsulates the method name and parameter types (allowing it to be invoked on any instance of the EJB, proxy or otherwise)."
-msgstr ""
+msgstr "Il contrattodescritto in JavaDoc è sufficiente per implementare un EJBDescriptor. In aggiunta a queste due interfacce, vi è <literal>BusinessInterfaceDescriptor</literal> a rappresentare un'interfaccia locale di business (che incapsula la classe d'interfaccia ed il nome jndi), e <literal>MethodDescriptor</literal> che incapsula il nome del metodo ed i tipi di parametri (che consentono di essere invocati su qualsiasi istanza di EJB, proxy o altro)."
 
 #. Tag: para
 #: ri-spi.xml:62
 #, no-c-format
 msgid "The Web Beans RI can be told to load your implementation of <literal>WebBeanDiscovery</literal> using the property <literal>org.jboss.webbeans.bootstrap.webBeanDiscovery</literal> with the fully qualified class name as the value. For example:"
-msgstr ""
+msgstr "Web Beans RI può essere istruita a caricare la propria implementazione di <literal>WebBeanDiscovery</literal> usando la proprietà <literal>org.jboss.webbeans.bootstrap.webBeanDiscovery</literal> con il nome della classe pienamente qualificato (fully qualified) come valore. Per esempio:"
 
 #. Tag: programlisting
 #: ri-spi.xml:69
@@ -287,7 +287,7 @@ msgstr "org.jboss.webbeans.bootstrap.webBeanDiscovery=org.jboss.webbeans.integra
 #: ri-spi.xml:71
 #, no-c-format
 msgid "The property can either be specified as a system property, or in a properties file <literal>META-INF/web-beans-ri.properties</literal>."
-msgstr ""
+msgstr "La proprietà può essere specificata come proprietà di sistema o nel file di proprietà <literal>META-INF/web-beans-ri.properties</literal>."
 
 #. Tag: title
 #: ri-spi.xml:79
@@ -295,23 +295,24 @@ msgstr ""
 msgid "The contract with the container"
 msgstr "Il contratto con il container"
 
+# rivedere la frase
 #. Tag: para
 #: ri-spi.xml:81
 #, no-c-format
 msgid "There are a number of requirements that the Web Beans RI places on the container for correct functioning that fall outside implementation of APIs"
-msgstr ""
+msgstr "Ci sono un numero di requisiti che Web Beans RI pone nel container per il corretto funzionamento al di fuori dell'implementazione delle API"
 
 #. Tag: term
 #: ri-spi.xml:89
 #, no-c-format
 msgid "Classloader isolation"
-msgstr ""
+msgstr "Isolamento del classloader"
 
 #. Tag: para
 #: ri-spi.xml:93
 #, no-c-format
 msgid "If you are integrating the Web Beans into an environment that supports deployment of applications, you must enable, automatically, or through user configuation, classloader isolation for each Web Beans application"
-msgstr ""
+msgstr "Se si integra Web Beans in un ambiente che supporta il deploy di applicazioni, occorre abilitare, automaticamente o attraverso la configurazione utente, l'isolamento del classloader for ogni applicazione Web Beans"
 
 #. Tag: term
 #: ri-spi.xml:102
@@ -323,5 +324,5 @@ msgstr "<literal>webbeans-ri.jar</literal>"
 #: ri-spi.xml:106
 #, no-c-format
 msgid "If you are integrating the Web Beans into an environment that supports deployment of applications, you must insert the <literal>webbeans-ri.jar</literal> into the applications isolated classloader. It cannot be loaded from a shared classloader."
-msgstr ""
+msgstr "Se si integra Web Beans in un ambiente che supporta il deploy di applicazioni, occorre inserire <literal>webbeans-ri.jar</literal> nel classloader isolato delle applicazioni. Non può essere caricato da un classloader condiviso."
 
