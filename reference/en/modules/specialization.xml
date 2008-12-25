@@ -141,7 +141,7 @@ public class StagingCreditCardPaymentProcessor
   <para>If any of these conditions are violated, the Web Bean manager throws
   an exception at initialization time.</para>
   
-  <para>Therefore, we can be certain that the superclass with <emphasis>never</emphasis>
+  <para>Therefore, we can be certain that the superclass will <emphasis>never</emphasis>
   be called in any deployment of the system where the Web Bean annotated 
   <literal>@Specializes</literal> is deployed and enabled.</para>
   
