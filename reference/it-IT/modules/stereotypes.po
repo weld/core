@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-25 12:05+0100\n"
+"PO-Revision-Date: 2008-12-25 22:17+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -207,7 +207,7 @@ msgstr "Se una particolare classe d'azione tenta di specificare uno scope divers
 #: stereotypes.xml:84
 #, no-c-format
 msgid "We can also force all Web Bean with a certain stereotype to implement an interface or extend a class:"
-msgstr "Si può forzare tutti i Web Bean con certi stereotipi ad implementare un'interfaccia o ad estendere una classe:"
+msgstr "Tutti i Web Bean con certi stereotipi possono venire forzati ad implementare un'interfaccia o ad estendere una classe:"
 
 #. Tag: programlisting
 #: stereotypes.xml:87
