@@ -5,7 +5,7 @@ import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
 import javax.webbeans.AmbiguousDependencyException;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;

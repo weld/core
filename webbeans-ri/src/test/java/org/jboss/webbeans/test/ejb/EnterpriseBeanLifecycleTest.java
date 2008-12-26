@@ -4,7 +4,7 @@ import javax.webbeans.UnremovedException;
 
 import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.EnterpriseBean;
-import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
 import org.jboss.webbeans.test.SpecVersion;

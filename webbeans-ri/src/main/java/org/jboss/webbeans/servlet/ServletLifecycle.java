@@ -21,10 +21,11 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.webbeans.contexts.ApplicationContext;
-import org.jboss.webbeans.contexts.DependentContext;
-import org.jboss.webbeans.contexts.RequestContext;
-import org.jboss.webbeans.contexts.SessionContext;
+import org.jboss.webbeans.context.ApplicationContext;
+import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.context.RequestContext;
+import org.jboss.webbeans.context.SessionContext;
+import org.jboss.webbeans.context.beanmap.SessionBeanMap;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 

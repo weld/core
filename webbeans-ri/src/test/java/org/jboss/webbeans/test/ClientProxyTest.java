@@ -11,7 +11,7 @@ import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.bean.BeanFactory;
-import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.TunedTuna;

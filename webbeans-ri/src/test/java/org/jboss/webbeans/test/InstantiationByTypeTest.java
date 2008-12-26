@@ -10,7 +10,7 @@ import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.UnsatisfiedDependencyException;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.bindings.CurrentBinding;
+import org.jboss.webbeans.binding.CurrentBinding;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;

@@ -2,7 +2,7 @@ package org.jboss.webbeans.test.contexts;
 
 import javax.webbeans.manager.Context;
 
-import org.jboss.webbeans.contexts.RequestContext;
+import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
 import org.jboss.webbeans.test.SpecVersion;

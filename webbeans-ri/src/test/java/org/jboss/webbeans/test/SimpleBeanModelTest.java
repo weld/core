@@ -14,7 +14,7 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.NonexistentConstructorException;
 
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.bindings.CurrentBinding;
+import org.jboss.webbeans.binding.CurrentBinding;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.test.annotations.HeavyDuty;

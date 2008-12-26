@@ -24,7 +24,7 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.Event;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedParameter;

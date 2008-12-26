@@ -38,7 +38,7 @@ import javax.webbeans.Stereotype;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bindings.CurrentBinding;
+import org.jboss.webbeans.binding.CurrentBinding;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem.AnnotationMap;
 import org.jboss.webbeans.log.LogProvider;

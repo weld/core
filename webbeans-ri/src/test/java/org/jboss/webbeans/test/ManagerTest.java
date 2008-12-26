@@ -6,8 +6,8 @@ import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.RequestScoped;
 import javax.webbeans.manager.Context;
 
-import org.jboss.webbeans.contexts.AbstractBeanMapContext;
-import org.jboss.webbeans.contexts.RequestContext;
+import org.jboss.webbeans.context.AbstractBeanMapContext;
+import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.test.beans.FishFarmOffice;
 import org.testng.annotations.Test;
 

@@ -22,7 +22,7 @@ import javax.webbeans.Instance;
 
 import org.jboss.webbeans.InstanceImpl;
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 
 /**

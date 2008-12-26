@@ -11,7 +11,7 @@ import javax.webbeans.ObserverException;
 import javax.webbeans.TypeLiteral;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.test.beans.AuroraFinch;
 import org.jboss.webbeans.test.beans.BananaSpider;
 import org.jboss.webbeans.test.beans.BirdCage;

@@ -9,7 +9,7 @@ import javax.webbeans.Current;
 
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.bindings.CurrentBinding;
+import org.jboss.webbeans.binding.CurrentBinding;
 import org.jboss.webbeans.test.annotations.Synchronous;
 import org.jboss.webbeans.test.beans.Barn;
 import org.jboss.webbeans.test.beans.Cat;

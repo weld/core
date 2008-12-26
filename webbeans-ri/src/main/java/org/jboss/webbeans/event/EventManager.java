@@ -28,7 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.webbeans.Observer;
 
-import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 

@@ -51,7 +51,7 @@ import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.proxy.ProxyPool;
-import org.jboss.webbeans.contexts.ContextMap;
+import org.jboss.webbeans.context.ContextMap;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.introspector.AnnotatedItem;

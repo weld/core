@@ -24,10 +24,11 @@ import javax.servlet.ServletContext;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.PropertiesBasedBootstrap;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
-import org.jboss.webbeans.contexts.ApplicationContext;
-import org.jboss.webbeans.contexts.DependentContext;
-import org.jboss.webbeans.contexts.RequestContext;
-import org.jboss.webbeans.contexts.SessionContext;
+import org.jboss.webbeans.context.ApplicationContext;
+import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.context.RequestContext;
+import org.jboss.webbeans.context.SessionContext;
+import org.jboss.webbeans.context.beanmap.ApplicationBeanMap;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.util.DeploymentProperties;
 

@@ -9,7 +9,7 @@ import javax.webbeans.Standard;
 import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.test.AbstractTest;
 import org.testng.annotations.Test;
 

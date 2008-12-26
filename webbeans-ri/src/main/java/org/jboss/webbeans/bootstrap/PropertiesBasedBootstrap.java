@@ -24,7 +24,7 @@ import javax.webbeans.ExecutionException;
 
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.resources.DefaultNaming;
+import org.jboss.webbeans.resource.DefaultNaming;
 import org.jboss.webbeans.resources.spi.Naming;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.ServletBootstrap;
@@ -73,7 +73,7 @@ public abstract class PropertiesBasedBootstrap extends WebBeansBootstrap
     * Creates an instance of the type
     * 
     * @param constructor The constructor to use
-    * @param parameters The parameters to pass to the contstructor
+    * @param parameters The parameters to pass to the constructor
     * @return An instance of the type
     */
    protected static <T> T newInstance(Constructor<T> constructor, Object... parameters)

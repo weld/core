@@ -12,7 +12,7 @@ import javax.webbeans.RequestScoped;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.contexts.RequestContext;
+import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.FoxRun;
 import org.jboss.webbeans.test.beans.SpiderNest;

@@ -27,7 +27,7 @@ import javax.webbeans.Disposes;
 import javax.webbeans.Observes;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;

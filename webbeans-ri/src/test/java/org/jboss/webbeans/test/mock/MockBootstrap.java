@@ -2,11 +2,11 @@ package org.jboss.webbeans.test.mock;
 
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
-import org.jboss.webbeans.contexts.ApplicationContext;
-import org.jboss.webbeans.contexts.DependentContext;
-import org.jboss.webbeans.contexts.RequestContext;
-import org.jboss.webbeans.contexts.SessionContext;
-import org.jboss.webbeans.contexts.SimpleBeanMap;
+import org.jboss.webbeans.context.ApplicationContext;
+import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.context.RequestContext;
+import org.jboss.webbeans.context.SessionContext;
+import org.jboss.webbeans.context.beanmap.SimpleBeanMap;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 
 public class MockBootstrap extends WebBeansBootstrap

@@ -20,7 +20,7 @@ package org.jboss.webbeans.bean;
 import java.lang.reflect.Field;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.jlr.AnnotatedFieldImpl;
 import org.jboss.webbeans.util.Names;

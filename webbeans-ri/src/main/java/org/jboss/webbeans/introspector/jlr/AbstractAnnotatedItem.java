@@ -32,7 +32,7 @@ import java.util.Set;
 import javax.webbeans.BindingType;
 import javax.webbeans.manager.Manager;
 
-import org.jboss.webbeans.bindings.CurrentBinding;
+import org.jboss.webbeans.binding.CurrentBinding;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.util.Reflections;

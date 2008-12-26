@@ -37,7 +37,7 @@ import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
-import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;

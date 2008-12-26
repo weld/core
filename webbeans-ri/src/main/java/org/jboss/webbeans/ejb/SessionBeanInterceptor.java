@@ -46,7 +46,12 @@ public class SessionBeanInterceptor
          enterpriseBean.postConstruct(invocationContext.getTarget());
       }
    }
-   
+
+   /**
+    * Gets the underlying target and calls the pre-destroy method
+    * 
+    * @param invocationContext The invocation context
+    */
    @PreDestroy
    public void preDestroy(InvocationContext invocationContext)
    {
@@ -56,7 +61,13 @@ public class SessionBeanInterceptor
          enterpriseBean.preDestroy(invocationContext.getTarget());
       }
    }
-   
+
+   /**
+    * Gets a bean based on the target in the invocation context
+    * 
+    * @param invocationContext The invocation context
+    * @return The found bean or null if the bean was not an enterprise bean
+    */
    @SuppressWarnings("unchecked")
    private static EnterpriseBean<Object> getBean(InvocationContext invocationContext)
    {
@@ -71,5 +82,5 @@ public class SessionBeanInterceptor
          return null;
       }
    }
-   
+
 }

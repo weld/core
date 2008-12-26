@@ -50,7 +50,7 @@ import org.jboss.webbeans.bean.InstanceBean;
 import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.bindings.InitializedBinding;
+import org.jboss.webbeans.binding.InitializedBinding;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.event.ObserverImpl;
@@ -73,8 +73,7 @@ import org.jboss.webbeans.util.Reflections;
  * @author Pete Muir
  */
 public abstract class WebBeansBootstrap
-{
-   
+{ 
    // The log provider
    private static LogProvider log = Logging.getLogProvider(WebBeansBootstrap.class);
    

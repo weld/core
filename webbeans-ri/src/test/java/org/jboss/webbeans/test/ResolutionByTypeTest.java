@@ -13,7 +13,7 @@ import javax.webbeans.TypeLiteral;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.bindings.CurrentBinding;
+import org.jboss.webbeans.binding.CurrentBinding;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;

@@ -28,7 +28,7 @@ import javax.webbeans.Initializer;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.contexts.DependentContext;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
