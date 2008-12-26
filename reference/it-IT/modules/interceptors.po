@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-26 13:43+0100\n"
+"PO-Revision-Date: 2008-12-26 19:27+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -109,7 +109,7 @@ msgstr "Interceptor bindings"
 #: interceptors.xml:51
 #, no-c-format
 msgid "Suppose we want to declare that some of our Web Beans are transactional. The first thing we need is an <emphasis>interceptor binding annotation</emphasis> to specify exactly which Web Beans we're interested in:"
-msgstr ""
+msgstr "Si supponga di voler dichiarare transazionali alcuni Web Beans. La prima cosa necessaria è un'<emphasis>annotazione di interceptor binding</emphasis> per specificare esattamente quali Web Beans sono interessati:"
 
 #. Tag: programlisting
 #: interceptors.xml:55
@@ -129,7 +129,7 @@ msgstr ""
 #: interceptors.xml:57
 #, no-c-format
 msgid "Now we can easily specify that our <literal>ShoppingCart</literal> is a transactional object:"
-msgstr ""
+msgstr "Ora è facilmente possibile specificare che <literal>ShoppingCart</literal> è un oggetto transazionale:"
 
 #. Tag: programlisting
 #: interceptors.xml:60
@@ -169,7 +169,7 @@ msgstr "Implementare gli interceptor"
 #: interceptors.xml:71
 #, no-c-format
 msgid "That's great, but somewhere along the line we're going to have to actually implement the interceptor that provides this transaction management aspect. All we need to do is create a standard EJB interceptor, and annotate it <literal>@Interceptor</literal> and <literal>@Transactional</literal>."
-msgstr ""
+msgstr "Bene, ma da qualche parte è necessario implementare l'interceptor che fornisce l'aspect di gestione della transazione. Occore quindi creare un interceptor EJB standard e annotarlo con <literal>@Interceptor</literal> e <literal>@Transactional</literal>.\""
 
 #. Tag: programlisting
 #: interceptors.xml:76
@@ -189,7 +189,7 @@ msgstr ""
 #: interceptors.xml:78
 #, no-c-format
 msgid "All Web Beans interceptors are simple Web Beans, and can take advantage of dependency injection and contextual lifecycle management."
-msgstr ""
+msgstr "Tutti gli interceptor dei Web Beans sono Web Beans semplici e possono sfruttare la dependency injection e la gestione del ciclo di vita contestuale."
 
 #. Tag: programlisting
 #: interceptors.xml:81
@@ -217,7 +217,7 @@ msgstr ""
 #: interceptors.xml:83
 #, no-c-format
 msgid "Multiple interceptors may use the same interceptor binding type."
-msgstr ""
+msgstr "Diverso interceptor possono usare lo stesso tipo di interceptor binding."
 
 #. Tag: title
 #: interceptors.xml:88
@@ -229,7 +229,7 @@ msgstr "Abilitare gli interceptor"
 #: interceptors.xml:90
 #, no-c-format
 msgid "Finally, we need to <emphasis>enable</emphasis> our interceptor in <literal>web-beans.xml</literal>."
-msgstr ""
+msgstr "Infine occorre <emphasis>abilitare</emphasis> l'interceptor in <literal>web-beans.xml</literal>."
 
 #. Tag: programlisting
 #: interceptors.xml:93
@@ -253,25 +253,25 @@ msgstr ""
 #: interceptors.xml:97
 #, no-c-format
 msgid "Well, the XML declaration solves two problems:"
-msgstr ""
+msgstr "La dichiarazione XML risolve due problemi:"
 
 #. Tag: para
 #: interceptors.xml:101
 #, no-c-format
 msgid "it enables us to specify a total ordering for all the interceptors in our system, ensuring deterministic behavior, and"
-msgstr ""
+msgstr "Ci consente di specificare un ordinamento totale per tutti gli interceptor del sistema, assicurando un comportamente deterministico, e"
 
 #. Tag: para
 #: interceptors.xml:105
 #, no-c-format
 msgid "it lets us enable or disable interceptor classes at deployment time."
-msgstr ""
+msgstr "consente di abilitare o disabilitare le classi di interceptor a deployment time."
 
 #. Tag: para
 #: interceptors.xml:109
 #, no-c-format
 msgid "For example, we could specify that our security interceptor runs before our <literal>TransactionInterceptor</literal>."
-msgstr ""
+msgstr "Per esempio è possibile specificare che l'interceptor di sicurezza venga eseguito prima di <literal>TransactionInterceptor</literal>.\""
 
 #. Tag: programlisting
 #: interceptors.xml:112
@@ -485,7 +485,7 @@ msgstr ""
 #: interceptors.xml:173
 #, no-c-format
 msgid "Interceptor binding type inheritance"
-msgstr ""
+msgstr "Ereditarietà del tipo di interceptor binding"
 
 #. Tag: para
 #: interceptors.xml:175
