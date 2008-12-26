@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-20 16:43+0100\n"
+"PO-Revision-Date: 2008-12-26 13:43+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -23,43 +23,44 @@ msgstr "Gli interceptor"
 #: interceptors.xml:6
 #, no-c-format
 msgid "Web Beans re-uses the basic interceptor architecture of EJB 3.0, extending the functionality in two directions:"
-msgstr ""
+msgstr "Web Beans riutilizza l'architettura base degli interceptor di EJB3.0, estendendo la funzionalità in due direzioni:"
 
 #. Tag: para
 #: interceptors.xml:11
 #, no-c-format
 msgid "Any Web Bean may have interceptors, not just session beans."
-msgstr ""
+msgstr "Qualsiasi Web Bean può avere interceptor, non solo i session bean."
 
 #. Tag: para
 #: interceptors.xml:14
 #, no-c-format
 msgid "Web Beans features a more sophisticated annotation-based approach to binding interceptors to Web Beans."
-msgstr ""
+msgstr "Web Bean fornisce un più sofisticato approccio basato su annotazioni per associare interceptor ai Web Beans."
 
 #. Tag: para
 #: interceptors.xml:22
 #, no-c-format
 msgid "The EJB specification defines two kinds of interception points:"
-msgstr ""
+msgstr "\"La specifica Web Bean definisce due tipi di punti di intercettazione:"
 
 #. Tag: para
 #: interceptors.xml:26
 #, no-c-format
 msgid "business method interception, and"
-msgstr ""
+msgstr "intercettazione del metodo di business, e"
 
+# lifecycle callback interception = ?
 #. Tag: para
 #: interceptors.xml:29
 #, no-c-format
 msgid "lifecycle callback interception."
-msgstr ""
+msgstr "intercettazione della chiamata del ciclo di vita."
 
 #. Tag: para
 #: interceptors.xml:33
 #, no-c-format
 msgid "A <emphasis>business method interceptor</emphasis> applies to invocations of methods of the Web Bean by clients of the Web Bean:"
-msgstr ""
+msgstr "Un <emphasis>interceptor di un metodo di business</emphasis> si applica alle invocazioni di metodi del Web Bean da parte di client del Web Bean:"
 
 #. Tag: programlisting
 #: interceptors.xml:36
@@ -73,11 +74,12 @@ msgstr ""
 "    @AroundInvoke public Object manageTransaction(InvocationContext ctx) { ... }\n"
 "}]]>"
 
+# rivedere la frase
 #. Tag: para
 #: interceptors.xml:38
 #, no-c-format
 msgid "A <emphasis>lifecycle callback interceptor</emphasis> applies to invocations of lifecycle callbacks by the container:"
-msgstr ""
+msgstr "Un <emphasis>interceptor di chiamata del ciclo di vita</emphasis> si applica alle invocazioni delle chiamate del ciclo di vita da parte del container:"
 
 #. Tag: programlisting
 #: interceptors.xml:41
@@ -95,13 +97,13 @@ msgstr ""
 #: interceptors.xml:43
 #, no-c-format
 msgid "An interceptor class may intercept both lifecycle callbacks and business methods."
-msgstr ""
+msgstr "Una classe interceptor può intercettare entrambi le chiamate del ciclo di vita ed i metodi di business."
 
 #. Tag: title
 #: interceptors.xml:49
 #, no-c-format
 msgid "Interceptor bindings"
-msgstr ""
+msgstr "Interceptor bindings"
 
 #. Tag: para
 #: interceptors.xml:51
@@ -143,7 +145,7 @@ msgstr ""
 #: interceptors.xml:62
 #, no-c-format
 msgid "Or, if we prefer, we can specify that just one method is transactional:"
-msgstr ""
+msgstr "O se si preferisce, si può specificare che solo un metodo sia transazionale:"
 
 #. Tag: programlisting
 #: interceptors.xml:64
@@ -161,7 +163,7 @@ msgstr ""
 #: interceptors.xml:69
 #, no-c-format
 msgid "Implementing interceptors"
-msgstr ""
+msgstr "Implementare gli interceptor"
 
 #. Tag: para
 #: interceptors.xml:71
@@ -221,7 +223,7 @@ msgstr ""
 #: interceptors.xml:88
 #, no-c-format
 msgid "Enabling interceptors"
-msgstr ""
+msgstr "Abilitare gli interceptor"
 
 #. Tag: para
 #: interceptors.xml:90
@@ -529,7 +531,7 @@ msgstr ""
 #: interceptors.xml:195
 #, no-c-format
 msgid "Use of <literal>@Interceptors</literal>"
-msgstr ""
+msgstr "Uso di <literal>@Interceptors</literal>"
 
 #. Tag: para
 #: interceptors.xml:197
