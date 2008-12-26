@@ -28,7 +28,6 @@ import java.net.URL;
  */
 public interface WebBeanDiscovery
 {
-  
    public static final String PROPERTY_NAME = WebBeanDiscovery.class.getName();
    
    /**

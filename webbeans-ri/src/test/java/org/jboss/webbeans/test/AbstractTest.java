@@ -14,10 +14,11 @@ import org.testng.annotations.BeforeMethod;
 
 public class AbstractTest
 {
-   
    protected MockManagerImpl manager;
    protected MockBootstrap webBeansBootstrap;
-   
+
+   public static boolean visited = false;
+
    @BeforeMethod
    public final void before()
    {

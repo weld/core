@@ -73,6 +73,8 @@ import org.jboss.webbeans.util.Strings;
 @Standard
 public class ManagerImpl implements Manager, Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    // The JNDI key to place the manager under
    public static final String JNDI_KEY = "java:comp/Manager";
 
@@ -88,12 +90,13 @@ public class ManagerImpl implements Manager, Serializable
    private ProxyPool proxyPool;
    // The registered beans
    private List<Bean<?>> beans;
+   // The registered beans, mapped by implementation class
    private Map<Class<?>, Bean<?>> beanMap;
    // The registered decorators
    private Set<Decorator> decorators;
    // The registered interceptors
    private Set<Interceptor> interceptors;
-   
+
    private EjbDescriptorCache ejbDescriptorCache;
    
    // The Naming (JNDI) access
@@ -103,7 +106,7 @@ public class ManagerImpl implements Manager, Serializable
     * Constructor
     * 
     * @param enabledDeploymentTypes any enabled deployment types, an empty set
-    * if none are specified
+    *           if none are specified
     */
    public ManagerImpl()
    {
@@ -116,7 +119,7 @@ public class ManagerImpl implements Manager, Serializable
       this.contextMap = new ContextMap();
       this.eventManager = new EventManager();
       this.ejbDescriptorCache = new EjbDescriptorCache();
-      
+
       List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       defaultEnabledDeploymentTypes.add(0, Standard.class);
       defaultEnabledDeploymentTypes.add(1, Production.class);
@@ -158,7 +161,8 @@ public class ManagerImpl implements Manager, Serializable
    }
 
    /**
-    * Resolve the disposal method for the given producer method. For internal use.
+    * Resolve the disposal method for the given producer method. For internal
+    * use.
     * 
     * @param apiType The API type to match
     * @param bindingTypes The binding types to match
@@ -193,9 +197,10 @@ public class ManagerImpl implements Manager, Serializable
    {
       return Collections.unmodifiableList(enabledDeploymentTypes);
    }
-   
+
    /**
     * Set the enabled deployment types
+    * 
     * @param enabledDeploymentTypes
     */
    public void setEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
@@ -272,7 +277,8 @@ public class ManagerImpl implements Manager, Serializable
    /**
     * Wraps a collection of beans into a thread safe list. Since this overwrites
     * any existing list of beans in the manager, this should only be done on
-    * startup and other controlled situations. For internal use.
+    * startup and other controlled situations. Also maps the beans by
+    * implementation class. For internal use.
     * 
     * @param beans The set of beans to add
     * @return A reference to the manager
@@ -289,7 +295,12 @@ public class ManagerImpl implements Manager, Serializable
          resolver.clear();
       }
    }
-   
+
+   /**
+    * Gets the class-mapped beans. For internal use.
+    * 
+    * @return The bean map
+    */
    public Map<Class<?>, Bean<?>> getBeanMap()
    {
       return beanMap;
@@ -658,7 +669,7 @@ public class ManagerImpl implements Manager, Serializable
    {
       return resolver;
    }
-   
+
    public EjbDescriptorCache getEjbDescriptorCache()
    {
       return ejbDescriptorCache;
@@ -670,7 +681,8 @@ public class ManagerImpl implements Manager, Serializable
     * @return A string representation
     */
    @Override
-   public String toString() {
+   public String toString()
+   {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Manager\n");
       buffer.append("Enabled deployment types: " + getEnabledDeploymentTypes() + "\n");
@@ -680,7 +692,7 @@ public class ManagerImpl implements Manager, Serializable
       buffer.append("Registered interceptors: " + interceptors.size() + "\n");
       return buffer.toString();
    }
-   
+
    public String toDetailedString()
    {
       StringBuilder buffer = new StringBuilder();

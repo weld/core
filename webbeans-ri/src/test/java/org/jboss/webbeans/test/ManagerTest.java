@@ -6,7 +6,7 @@ import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.RequestScoped;
 import javax.webbeans.manager.Context;
 
-import org.jboss.webbeans.contexts.AbstractContext;
+import org.jboss.webbeans.contexts.AbstractBeanMapContext;
 import org.jboss.webbeans.contexts.RequestContext;
 import org.jboss.webbeans.test.beans.FishFarmOffice;
 import org.testng.annotations.Test;
@@ -26,7 +26,7 @@ public class ManagerTest extends AbstractTest
    public void testGetContextWithNoActiveContextsFails()
    {
       Context requestContext = new RequestContext() {};
-      ((AbstractContext)requestContext).setActive(false);
+      ((AbstractBeanMapContext)requestContext).setActive(false);
       manager.addContext(requestContext);
       manager.getContext(RequestScoped.class);
    }

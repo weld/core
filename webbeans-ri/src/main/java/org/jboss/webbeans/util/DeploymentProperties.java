@@ -154,6 +154,7 @@ public class DeploymentProperties
     * @param propertyName The name of the property to load
     * @return A set of classes specified
     */
+   @SuppressWarnings("unchecked")
    public static <T> Set<Class<? extends T>> getClasses(DeploymentProperties deploymentProperties, ResourceLoader resourceLoader, String propertyName, Class<T> expectedType)
    {
       Set<Class<? extends T>> classes = new HashSet<Class<? extends T>>();

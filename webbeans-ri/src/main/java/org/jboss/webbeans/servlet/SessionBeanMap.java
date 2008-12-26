@@ -21,7 +21,7 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpSession;
 
-import org.jboss.webbeans.contexts.AbstractBeanMapAdaptor;
+import org.jboss.webbeans.contexts.AbstractBeanMap;
 import org.jboss.webbeans.contexts.ApplicationContext;
 
 /**
@@ -31,7 +31,7 @@ import org.jboss.webbeans.contexts.ApplicationContext;
  * 
  * @see org.jboss.webbeans.contexts.ApplicationContext
  */
-public class SessionBeanMap extends AbstractBeanMapAdaptor
+public class SessionBeanMap extends AbstractBeanMap
 {
    // The HTTP session context to use as backing map
    private HttpSession session;
@@ -48,7 +48,7 @@ public class SessionBeanMap extends AbstractBeanMapAdaptor
    }
 
    /**
-    * @see org.jboss.webbeans.contexts.AbstractBeanMapAdaptor#getKeyPrefix()
+    * @see org.jboss.webbeans.contexts.AbstractBeanMap#getKeyPrefix()
     */
    @Override
    protected String getKeyPrefix()
@@ -57,7 +57,7 @@ public class SessionBeanMap extends AbstractBeanMapAdaptor
    }
 
    /**
-    * @see org.jboss.webbeans.contexts.AbstractBeanMapAdaptor#getAttribute()
+    * @see org.jboss.webbeans.contexts.AbstractBeanMap#getAttribute()
     */
    @Override
    protected Object getAttribute(String key)
@@ -66,7 +66,7 @@ public class SessionBeanMap extends AbstractBeanMapAdaptor
    }
 
    /**
-    * @see org.jboss.webbeans.contexts.AbstractBeanMapAdaptor#getAttributeNames()
+    * @see org.jboss.webbeans.contexts.AbstractBeanMap#getAttributeNames()
     */
    @SuppressWarnings("unchecked")
    @Override
@@ -76,7 +76,7 @@ public class SessionBeanMap extends AbstractBeanMapAdaptor
    }
 
    /**
-    * @see org.jboss.webbeans.contexts.AbstractBeanMapAdaptor#removeAttributes()
+    * @see org.jboss.webbeans.contexts.AbstractBeanMap#removeAttributes()
     */
    @Override
    protected void removeAttribute(String key)
@@ -85,7 +85,7 @@ public class SessionBeanMap extends AbstractBeanMapAdaptor
    }
 
    /**
-    * @see org.jboss.webbeans.contexts.AbstractBeanMapAdaptor#setAttribute()
+    * @see org.jboss.webbeans.contexts.AbstractBeanMap#setAttribute()
     */
    @Override
    protected void setAttribute(String key, Object instance)

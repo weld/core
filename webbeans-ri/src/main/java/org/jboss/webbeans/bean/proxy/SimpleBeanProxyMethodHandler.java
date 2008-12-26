@@ -26,6 +26,8 @@ import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -37,9 +39,11 @@ import org.jboss.webbeans.util.Reflections;
  * 
  * @see org.jboss.webbeans.bean.proxy.ProxyPool
  */
-public class ProxyMethodHandler implements MethodHandler, Serializable
+public class SimpleBeanProxyMethodHandler implements MethodHandler, Serializable
 {
    private static final long serialVersionUID = -5391564935097267888L;
+   // The log provider
+   private LogProvider log = Logging.getLogProvider(SimpleBeanProxyMethodHandler.class);
    // The bean
    private transient Bean<?> bean;
    // The bean index in the manager
@@ -51,10 +55,11 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
     * @param bean The bean to proxy
     * @param beanIndex The index to the bean in the manager bean list
     */
-   public ProxyMethodHandler(Bean<?> bean, int beanIndex)
+   public SimpleBeanProxyMethodHandler(Bean<?> bean, int beanIndex)
    {
       this.bean = bean;
       this.beanIndex = beanIndex;
+      log.trace("Created method handler for bean " + bean + " indexed as " + beanIndex);
    }
 
    /**
@@ -70,7 +75,7 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
     */
    public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
-      //TODO account for child managers
+      // TODO account for child managers
       if (bean == null)
       {
          bean = CurrentManager.rootManager().getBeans().get(beanIndex);
@@ -78,7 +83,9 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
       Context context = CurrentManager.rootManager().getContext(bean.getScopeType());
       Object proxiedInstance = context.get(bean, true);
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
-      return proxiedMethod.invoke(proxiedInstance, args);
+      Object returnValue = proxiedMethod.invoke(proxiedInstance, args);
+      log.trace("Executed method " + proxiedMethod + " on " + proxiedInstance + " with parameters " + args + " and got return value " + returnValue);
+      return returnValue;
    }
 
    /**

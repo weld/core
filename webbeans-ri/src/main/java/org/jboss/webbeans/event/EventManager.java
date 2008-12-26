@@ -42,11 +42,14 @@ import com.google.common.collect.ForwardingMap;
  */
 public class EventManager implements Serializable
 {
-	/**
+   private static final long serialVersionUID = 1L;
+
+   /**
     * An event type -> observer list map
     */
    private class RegisteredObserversMap extends ForwardingMap<Class<?>, List<EventObserver<?>>> implements Serializable
    {
+      private static final long serialVersionUID = 1L;
 
       // The map delegate
       private ConcurrentHashMap<Class<?>, List<EventObserver<?>>> delegate;

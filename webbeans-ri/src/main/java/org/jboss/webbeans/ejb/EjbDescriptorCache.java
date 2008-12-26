@@ -33,6 +33,7 @@ import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
  */
 public class EjbDescriptorCache implements Serializable
 {
+   private static final long serialVersionUID = 1L;
 
    // EJB name -> EJB descriptor map
    private ConcurrentMap<String, EjbDescriptor<?>> ejbsByName;
@@ -118,17 +119,20 @@ public class EjbDescriptorCache implements Serializable
          add(ejbDescriptor);
       }
    }
-   
+
+   /**
+    * Clears both maps
+    */
    public void clear()
    {
       ejbsByBeanClass.clear();
       ejbsByName.clear();
    }
-   
+
    @Override
    public String toString()
    {
-      return ejbsByBeanClass + "\n" + ejbsByName;
+      return "EJB Descriptor cache has indexed " + ejbsByBeanClass.size() + " EJBs by class and " + ejbsByName + " by name";
    }
 
 }

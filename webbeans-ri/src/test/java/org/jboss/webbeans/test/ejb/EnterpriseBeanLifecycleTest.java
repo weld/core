@@ -2,9 +2,15 @@ package org.jboss.webbeans.test.ejb;
 
 import javax.webbeans.UnremovedException;
 
+import org.jboss.webbeans.bean.BeanFactory;
+import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.contexts.DependentContext;
 import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
 import org.jboss.webbeans.test.SpecVersion;
+import org.jboss.webbeans.test.ejb.valid.GoodDoggie;
+import org.jboss.webbeans.test.ejb.valid.LocalGoodDoggie;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -22,7 +28,16 @@ import org.testng.annotations.Test;
 @SpecVersion("20081206")
 public class EnterpriseBeanLifecycleTest extends AbstractTest
 {
-
+   /**
+    * Initializes the EJB descriptors for the EJBs about to be used
+    */
+   @BeforeMethod
+   public void setupEjbDescriptors()
+   {
+      addToEjbCache(GoodDoggie.class);
+      addToEjbCache(LocalGoodDoggie.class);
+   }
+   
    /**
     * When the create() method is called, the Web Bean manager creates and
     * returns an enterprise bean proxy
@@ -38,11 +53,17 @@ public class EnterpriseBeanLifecycleTest extends AbstractTest
     * When the destroy() method is called, the Web Bean manager calls the Web
     * Bean remove method upon the proxy
     */
-   @Test(groups = { "enterpriseBeans", "clientProxy", "lifecycle", "stub" })
+   @Test(groups = { "enterpriseBeans", "clientProxy", "lifecycle", "stub"})
    @SpecAssertion(section = "6.4")
    public void testRemoveMethodCalled()
    {
-      assert false;
+      visited = false;
+      DependentContext.INSTANCE.setActive(true);
+      EnterpriseBean<GoodDoggie> bean = BeanFactory.createEnterpriseBean(GoodDoggie.class, manager);
+      manager.addBean(bean);
+      GoodDoggie doggie = manager.getInstance(bean);
+      bean.destroy(doggie);
+      assert visited = true;
    }
 
    /**

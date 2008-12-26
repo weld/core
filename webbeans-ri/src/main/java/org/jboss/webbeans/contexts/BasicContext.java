@@ -32,7 +32,7 @@ import java.lang.annotation.Annotation;
  * @see org.jboss.webbeans.contexts.ConversationContext
  * @see org.jboss.webbeans.contexts.SessionContext
  */
-public abstract class BasicContext extends AbstractContext
+public abstract class BasicContext extends AbstractBeanMapContext
 {
    // The beans
    protected ThreadLocal<BeanMap> beans;

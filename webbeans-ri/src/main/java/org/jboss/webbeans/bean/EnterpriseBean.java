@@ -252,7 +252,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * @return The instance
     */
    @Override
-   @SuppressWarnings("unchecked")
    public T create()
    {
       try

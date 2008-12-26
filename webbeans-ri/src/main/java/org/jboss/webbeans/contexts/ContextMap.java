@@ -38,6 +38,7 @@ import org.jboss.webbeans.util.Strings;
  */
 public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, List<Context>>
 {
+   private static final long serialVersionUID = 1L;
 
    /**
     * Gets the dependent context

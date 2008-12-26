@@ -34,6 +34,7 @@ import com.google.common.collect.ForwardingMap;
  */
 public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>> implements Serializable
 {
+   private static final long serialVersionUID = 1L;
 
    // The backing map with the value wrapped in a Future instance
    private ConcurrentHashMap<K, Future<V>> map;

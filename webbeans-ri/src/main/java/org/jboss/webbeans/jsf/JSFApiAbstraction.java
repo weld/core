@@ -29,7 +29,6 @@ import org.jboss.webbeans.util.ApiAbstraction;
 public class JSFApiAbstraction extends ApiAbstraction
 {
 
-
    // An UI component
    public final Class<?> UICOMPONENT_CLASS;
    

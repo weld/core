@@ -41,14 +41,18 @@ import org.jboss.webbeans.util.ConcurrentCache;
  */
 public class ProxyPool implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    /**
     * A container/cache for previously created proxies
     * 
     * @author Nicklas Karlsson
     */
-
    private ConcurrentCache<Bean<? extends Object>, Object> pool;
 
+   /**
+    * Constructor
+    */
    public ProxyPool()
    {
       this.pool = new ConcurrentCache<Bean<? extends Object>, Object>();
@@ -130,7 +134,7 @@ public class ProxyPool implements Serializable
       {
          throw new RuntimeException("Could not access bean correctly when creating client proxy for " + bean, e);
       }
-      ProxyMethodHandler proxyMethodHandler = new ProxyMethodHandler(bean, beanIndex);
+      SimpleBeanProxyMethodHandler proxyMethodHandler = new SimpleBeanProxyMethodHandler(bean, beanIndex);
       ((ProxyObject) clientProxy).setHandler(proxyMethodHandler);
       return clientProxy;
    }

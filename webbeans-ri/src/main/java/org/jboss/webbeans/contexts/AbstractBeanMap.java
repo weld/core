@@ -28,7 +28,7 @@ import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.servlet.ApplicationBeanMap;
 
-public abstract class AbstractBeanMapAdaptor implements BeanMap
+public abstract class AbstractBeanMap implements BeanMap
 {
    // The log provider
    private static LogProvider log = Logging.getLogProvider(ApplicationBeanMap.class);

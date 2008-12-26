@@ -23,14 +23,12 @@ import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.Dependent;
 import javax.webbeans.manager.Contextual;
 
-import org.jboss.webbeans.util.Names;
-
 /**
  * The dependent context
  * 
  * @author Nicklas Karlsson
  */
-public class DependentContext extends BasicContext
+public class DependentContext extends AbstractContext
 {
 
    public static final DependentContext INSTANCE = new DependentContext();
@@ -75,8 +73,7 @@ public class DependentContext extends BasicContext
    public String toString()
    {
       String active = isActive() ? "Active " : "Inactive ";
-      String count = getBeanMap() == null ? "" : "holding " + Names.count(getBeanMap().keySet()) + " instances ";
-      return active + "dependent context " + count; 
+      return active + "dependent context";
    }
    
    @Override

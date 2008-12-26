@@ -28,7 +28,7 @@ import org.jboss.webbeans.util.Names;
  * 
  * @author Nicklas Karlsson
  */
-public class SessionContext extends AbstractContext
+public class SessionContext extends AbstractBeanMapContext
 {
    private static LogProvider log = Logging.getLogProvider(SessionContext.class);
 
@@ -74,7 +74,7 @@ public class SessionContext extends AbstractContext
    {
       String active = isActive() ? "Active " : "Inactive ";
       String count = getBeanMap() == null ? "" : "holding " + Names.count(getBeanMap().keySet()) + " instances ";
-      String prefix = getBeanMap() == null ? "" : "with key prefix " + ((AbstractBeanMapAdaptor) getBeanMap()).getKeyPrefix();
+      String prefix = getBeanMap() == null ? "" : "with key prefix " + ((AbstractBeanMap) getBeanMap()).getKeyPrefix();
       return active + "session context " + count + prefix; 
    }
 

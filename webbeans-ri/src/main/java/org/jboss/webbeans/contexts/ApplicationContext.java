@@ -30,7 +30,7 @@ import org.jboss.webbeans.util.Names;
  * 
  * @see org.jboss.webbeans.contexts.ApplicationContext
  */
-public class ApplicationContext extends AbstractContext
+public class ApplicationContext extends AbstractBeanMapContext
 {
 
    public static ApplicationContext INSTANCE = new ApplicationContext();
@@ -97,7 +97,7 @@ public class ApplicationContext extends AbstractContext
    {
       String active = isActive() ? "Active " : "Inactive ";
       String count = getBeanMap() == null ? "" : "holding " + Names.count(getBeanMap().keySet()) + " instances ";
-      String prefix = getBeanMap() == null ? "" : "with key prefix " + ((AbstractBeanMapAdaptor) getBeanMap()).getKeyPrefix();
+      String prefix = getBeanMap() == null ? "" : "with key prefix " + ((AbstractBeanMap) getBeanMap()).getKeyPrefix();
       return active + "application context " + count + prefix; 
    }
 

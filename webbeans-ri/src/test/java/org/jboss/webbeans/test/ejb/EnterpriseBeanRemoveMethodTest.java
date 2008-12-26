@@ -18,6 +18,7 @@ import org.jboss.webbeans.test.ejb.invalid.Rottweiler;
 import org.jboss.webbeans.test.ejb.invalid.RussellTerrier;
 import org.jboss.webbeans.test.ejb.invalid.Saluki;
 import org.jboss.webbeans.test.ejb.invalid.Spitz;
+import org.jboss.webbeans.test.ejb.valid.GoodDoggie;
 import org.jboss.webbeans.test.ejb.valid.Koirus;
 import org.jboss.webbeans.test.ejb.valid.Toller;
 import org.jboss.webbeans.test.ejb.valid.WelshCorgie;
@@ -27,18 +28,20 @@ import org.testng.annotations.Test;
 /**
  * Sections
  * 
- * 3.3.5. Web Bean remove methods
- * 3.3.5.1. Declaring a Web Bean remove method using annotations.
- * 3.3.5.2. Declaring a Web Bean remove method using XML
+ * 3.3.5. Web Bean remove methods 3.3.5.1. Declaring a Web Bean remove method
+ * using annotations. 3.3.5.2. Declaring a Web Bean remove method using XML
  * 3.3.5.3. Remove method parameters
- *  
+ * 
  * @author Nicklas Karlsson
  */
 @SpecVersion("20081206")
 @SuppressWarnings("unused")
 public class EnterpriseBeanRemoveMethodTest extends AbstractTest
 {
-   
+
+   /**
+    * Initializes the EJB descriptors for the EJBs about to be used
+    */
    @BeforeMethod
    public void setupEjbDescriptors()
    {
@@ -52,9 +55,8 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
       addToEjbCache(Toller.class);
       addToEjbCache(WelshCorgie.class);
       addToEjbCache(Koirus.class);
+      addToEjbCache(GoodDoggie.class);
    }
-   
-   public static boolean visited = false;
 
    /**
     * EJB spec
@@ -99,7 +101,6 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
     * DefinitionException is thrown by the Web Bean manager at initialization
     * time
     */
-   // TODO: sentenced duplicated in previous paragraph in specs
    @Test(groups = { "enterpriseBeans", "removeMethod" }, expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanWithoutRemoveMethodMustBeDependentScoped()
@@ -113,7 +114,6 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
     * DefinitionException is thrown by the Web Bean manager at initialization
     * time
     */
-   // TODO: sentenced duplicated in previous paragraph in specs
    @Test(groups = { "enterpriseBeans", "removeMethod" })
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanWithoutRemoveMethodMustBeDependentScoped2()
@@ -127,7 +127,6 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
     * the application before the Web Bean manager attempts to destroy the
     * instance, an UnremovedException is thrown by the Web Bean manager
     */
-   // TODO: sentenced duplicated in previous paragraph in specs
    @Test(groups = { "enterpriseBeans", "removeMethod", "stub" }, expectedExceptions = UnremovedException.class)
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanWithoutRemoveMethodMustBeRemovedByApplicationBeforeManager()
@@ -165,9 +164,8 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    /**
     * If the application directly calls an EJB remove method of an instance of
     * an enterprise Web Bean that is a stateful session bean and has scope
-    * 
     * @Dependent, the Web Bean manager ignores the instance when instead of
-    *             destroying it
+    * destroying it
     */
    @Test(groups = { "enterpriseBeans", "removeMethod", "lifecycle", "stub" })
    @SpecAssertion(section = "3.3.5")
@@ -241,6 +239,13 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
       EnterpriseBean<RussellTerrier> bean = BeanFactory.createEnterpriseBean(RussellTerrier.class, manager);
    }
 
+   @Test(groups = { "enterpriseBeans", "removeMethod" })
+   @SpecAssertion(section = { "3.3.5.1" })
+   public void testDestructorAnnotatedSingleRemoveMethod()
+   {
+      EnterpriseBean<GoodDoggie> bean = BeanFactory.createEnterpriseBean(GoodDoggie.class, manager);
+   }
+
    /**
     * If a Web Bean remove method is annotated @Initializer or @Produces, has a
     * parameter annotated @Disposes, or has a parameter annotated @Observes, a
@@ -292,16 +297,6 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    {
       EnterpriseBean<JackRussellTerrier> bean = BeanFactory.createEnterpriseBean(JackRussellTerrier.class, manager);
    }
-
-   // TODO: where did this come from?
-   // @Test(groups = { "enterpriseBeans", "removeMethod" }, expectedExceptions =
-   // DefinitionException.class)
-   // @SpecAssertion(section = { "3.3.5.1", "3.3.5.2" })
-   // public void testMultipleRemoveAnnotationsButNoDestructorFails()
-   // {
-   // EnterpriseBean<Poodle> bean =
-   // BeanFactory.createEnterpriseBean(Poodle.class);
-   // }
 
    /**
     * If an enterprise Web Bean defined using XML does not explicitly declare a

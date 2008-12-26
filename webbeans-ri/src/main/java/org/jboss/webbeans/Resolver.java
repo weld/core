@@ -47,6 +47,7 @@ import org.jboss.webbeans.util.ListComparator;
  */
 public class Resolver implements Serializable
 {
+   private static final long serialVersionUID = 1L;
 
    /**
     * Extension of an element which bases equality not only on type, but also on
@@ -54,6 +55,7 @@ public class Resolver implements Serializable
     */
    private abstract class ResolvableAnnotatedItem<T, S> extends ForwardingAnnotatedItem<T, S> implements Serializable
    {
+      private static final long serialVersionUID = 1L;
 
       @Override
       public boolean equals(Object other)
@@ -170,6 +172,7 @@ public class Resolver implements Serializable
       {
          registerInjectionPoint(new ResolvableAnnotatedItem<Object, Object>()
          {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public AnnotatedItem<Object, Object> delegate()
@@ -193,6 +196,7 @@ public class Resolver implements Serializable
 
       final ResolvableAnnotatedItem<T, S> element = new ResolvableAnnotatedItem<T, S>()
       {
+         private static final long serialVersionUID = 1L;
 
          @Override
          public AnnotatedItem<T, S> delegate()

@@ -46,8 +46,12 @@ public class ApiAbstraction
    {
    }
    
-   
 
+   /**
+    * Constructor
+    * 
+    * @param resourceLoader The root resource loaderS
+    */
    public ApiAbstraction(ResourceLoader resourceLoader)
    {
       this.resourceLoader = resourceLoader;

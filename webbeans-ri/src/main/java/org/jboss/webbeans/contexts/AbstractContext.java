@@ -19,26 +19,13 @@ package org.jboss.webbeans.contexts;
 
 import java.lang.annotation.Annotation;
 
-import javax.webbeans.ContextNotActiveException;
-import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
-import javax.webbeans.manager.Contextual;
 
-/**
- * Base for the Context implementations. Delegates calls to the abstract
- * getBeanMap and getActive to allow for different implementations (storage
- * types and ThreadLocal vs. shared)
- * 
- * @author Nicklas Karlsson
- * @author Pete Muir
- * 
- * @see org.jboss.webbeans.contexts.SharedContext
- * @see org.jboss.webbeans.contexts.BasicContext
- */
 public abstract class AbstractContext implements Context
 {
    // The scope type
    private Class<? extends Annotation> scopeType;
+   // The active state of the context
    private ThreadLocal<Boolean> active;
 
    /**
@@ -57,36 +44,6 @@ public abstract class AbstractContext implements Context
             return Boolean.TRUE;
          } 
       };
-   }
-
-   /**
-    * Get the bean if it exists in the contexts.
-    * 
-    * @param create If true, a new instance of the bean will be created if none
-    *           exists
-    * @return An instance of the bean
-    * @throws ContextNotActiveException if the context is not active
-    * 
-    * @see javax.webbeans.manager.Context#get(Bean, boolean)
-    */
-   public <T> T get(Contextual<T> bean, boolean create)
-   {
-      if (!isActive())
-      {
-         throw new ContextNotActiveException();
-      }
-      T instance = getBeanMap().get(bean);
-      if (instance != null)
-      {
-         return instance;
-      }
-      if (!create)
-      {
-         return null;
-      }
-      instance = bean.create();
-      getBeanMap().put(bean, instance);
-      return instance;
    }
 
    /**
@@ -122,36 +79,6 @@ public abstract class AbstractContext implements Context
    {
       this.active.set(Boolean.valueOf(active));
    }
-
-   /**
-    * Destroys a bean
-    * 
-    * @param <T> The type of the bean
-    * @param bean The bean to destroy
-    */
-   private <T> void destroy(Contextual<T> bean)
-   {
-      bean.destroy(getBeanMap().get(bean));
-   }
-
-   /**
-    * Destroys the context
-    */
-   public void destroy()
-   {
-      for (Contextual<? extends Object> bean : getBeanMap().keySet())
-      {
-         destroy(bean);
-      }
-      getBeanMap().clear();
-   }
-
-   /**
-    * A method that should return the actual bean map implementation
-    * 
-    * @return The actual bean map
-    */
-   protected abstract BeanMap getBeanMap();
 
    /**
     * Delegates to a ThreadLocal instance
