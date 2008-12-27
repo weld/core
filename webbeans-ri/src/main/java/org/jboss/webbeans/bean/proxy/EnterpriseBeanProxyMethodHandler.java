@@ -59,7 +59,7 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
     * @param process The next method to proceed to
     * @param args The method calling arguments
     */
-   @Override
+   //@Override
    public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
       Method proxiedMethod = Reflections.lookupMethod(method, proxy);
