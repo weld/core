@@ -1,0 +1,31 @@
+<!DOCTYPE authorgroup PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd" [
+]>
+<authorgroup>
+	<author>
+		<firstname>Gavin</firstname>
+		<surname>King</surname>
+		<affiliation>
+			<jobtitle>Web Beans (JSR-299) specification lead</jobtitle>
+			<orgname>Red Hat Middleware LLC</orgname>
+		</affiliation>
+	</author>
+	<author>
+		<firstname>Pete</firstname>
+		<surname>Muir</surname>
+		<affiliation>
+			<jobtitle>Web Beans (JSR-299) Reference Implementation lead
+			</jobtitle>
+			<orgname>Red Hat Middleware LLC</orgname>
+		</affiliation>
+	</author>
+	<othercredit>
+		<firstname>Nicola</firstname>
+		<surname>Benaglia</surname>
+		<contrib>Italian Translation</contrib>
+	</othercredit>
+	<othercredit>
+		<firstname>Francesco</firstname>
+		<surname>Milesi</surname>
+		<contrib>Italian Translation</contrib>
+	</othercredit>
+</authorgroup>
