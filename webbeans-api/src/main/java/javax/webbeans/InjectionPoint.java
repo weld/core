@@ -8,12 +8,12 @@ import java.util.Set;
 import javax.webbeans.manager.Bean;
 
 public interface InjectionPoint { 
-	public Type getType(); 
-	public Set<Annotation> getBindingTypes(); 
-	public Object getInstance(); 
-	public Bean<?> getBean(); 
+	public Type getType();
+	public Set<Annotation> getBindingTypes();
+	public Object getInstance();
+	public Bean<?> getBean();
 	public Member getMember();
-	public <T extends Annotation> T getAnnotation(Class<T> annotationType); 
-	public Annotation[] getAnnotations(); 
-	public boolean isAnnotationPresent(Class<? extends Annotation> annotationType); 
+	public <T extends Annotation> T getAnnotation(Class<T> annotationType);
+	public Annotation[] getAnnotations();
+	public boolean isAnnotationPresent(Class<? extends Annotation> annotationType);
 } 
