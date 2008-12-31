@@ -200,7 +200,7 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
       return buffer.toString();
    }
 
-   protected Class<T> getDelegate()
+   public Class<T> getDelegate()
    {
       return clazz;
    }

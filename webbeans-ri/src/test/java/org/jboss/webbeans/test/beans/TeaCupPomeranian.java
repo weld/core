@@ -6,7 +6,7 @@ import javax.webbeans.Observes;
 import org.jboss.webbeans.test.annotations.Tame;
 
 @Tame
-@Named("Ted")
+@Named("Teddy")
 public class TeaCupPomeranian
 {
    public static class OversizedException extends RuntimeException

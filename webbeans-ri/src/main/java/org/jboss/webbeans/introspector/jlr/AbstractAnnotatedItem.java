@@ -526,6 +526,6 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       }
    }
 
-   protected abstract S getDelegate();
+   public abstract S getDelegate();
 
 }
