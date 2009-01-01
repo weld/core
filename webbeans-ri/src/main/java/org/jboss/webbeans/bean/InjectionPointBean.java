@@ -55,49 +55,49 @@ public class InjectionPointBean implements InjectionPoint
       this.beanInstance = beanInstance;
    }
 
-   @Override
+   //@Override
    public <T extends Annotation> T getAnnotation(Class<T> annotationType)
    {
       return this.memberInjectionPoint.getAnnotation(annotationType);
    }
 
-   @Override
+   //@Override
    public Annotation[] getAnnotations()
    {
       return this.memberInjectionPoint.getAnnotations().toArray(new Annotation[0]);
    }
 
-   @Override
+   //@Override
    public Bean<?> getBean()
    {
       return this.bean;
    }
 
-   @Override
+   //@Override
    public Set<Annotation> getBindingTypes()
    {
       return this.memberInjectionPoint.getBindingTypes();
    }
 
-   @Override
+   //@Override
    public Object getInstance()
    {
       return this.beanInstance;
    }
 
-   @Override
+   //@Override
    public Member getMember()
    {
       return this.memberInjectionPoint.getDelegate();
    }
 
-   @Override
+   //@Override
    public Type getType()
    {
       return this.memberInjectionPoint.getType();
    }
 
-   @Override
+   //@Override
    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
    {
       return this.memberInjectionPoint.isAnnotationPresent(annotationType);
