@@ -25,7 +25,7 @@ package javax.webbeans.manager;
  */
 public interface Contextual<T>
 {
-   public abstract T create();
+   public T create();
 
-   public abstract void destroy(T instance);
+   public void destroy(T instance);
 }
