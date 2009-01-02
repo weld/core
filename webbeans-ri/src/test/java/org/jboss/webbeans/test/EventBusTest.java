@@ -715,7 +715,7 @@ public class EventBusTest extends AbstractTest
       }
    }
 
-   @Test(groups = { "events" })
+   @Test(groups = { "events", "broken" })
    @SpecAssertion(section = "8.6")
    public void testObservableAnnotationOnParameterOfInitializerMethod()
    {
