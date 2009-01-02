@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-27 02:48+0100\n"
+"PO-Revision-Date: 2009-01-02 19:56+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -247,7 +247,7 @@ msgstr ""
 #: interceptors.xml:95
 #, no-c-format
 msgid "Whoah! Why the angle bracket stew?"
-msgstr ""
+msgstr "Ma perché viene usato ancora XML, quando Web Beans non dovrebbe utilizzarlo?"
 
 #. Tag: para
 #: interceptors.xml:97
