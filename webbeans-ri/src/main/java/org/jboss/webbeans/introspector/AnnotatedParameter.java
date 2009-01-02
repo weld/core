@@ -29,7 +29,6 @@ import javax.webbeans.manager.Manager;
  */
 public interface AnnotatedParameter<T> extends AnnotatedItem<T, Object>
 {
-
    /**
     * Gets the actual value of the parameter from the manager
     * 
@@ -37,5 +36,4 @@ public interface AnnotatedParameter<T> extends AnnotatedItem<T, Object>
     * @return The value
     */
    public T getValue(Manager manager);
-
 }

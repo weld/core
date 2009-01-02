@@ -90,7 +90,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    private Set<Annotation> bindingTypes;
    // The name
    protected String name;
-   // The scope type 
+   // The scope type
    protected Class<? extends Annotation> scopeType;
    // The merged stereotypes
    private MergedStereotypes<T, E> mergedStereotypes;
@@ -212,7 +212,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     */
    protected void initInjectionPoints()
    {
-      injectionPoints = new HashSet<AnnotatedItem<?,?>>();
+      injectionPoints = new HashSet<AnnotatedItem<?, ?>>();
    }
 
    /**
@@ -503,18 +503,11 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       return primitive;
    }
 
-   /**
-    * Indicates if bean is serializable
-    * 
-    * @return True if serializable, false otherwise
-    * 
-    * @see @see javax.webbeans.manager.Bean#isSerializable()
-    */
    @Override
    public boolean isSerializable()
    {
-      // TODO Implement passivating scopes
-      return false;
+      // TODO: OK?
+      return true;
    }
 
    /**
@@ -544,5 +537,5 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       buffer.append(mergedStereotypes.toString() + "\n");
       return buffer.toString();
    }
-   
+
 }

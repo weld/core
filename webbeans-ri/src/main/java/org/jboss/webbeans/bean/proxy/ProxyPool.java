@@ -19,6 +19,7 @@ package org.jboss.webbeans.bean.proxy;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -82,7 +83,7 @@ public class ProxyPool implements Serializable
    private static TypeInfo getTypeInfo(Set<Class<?>> types)
    {
       TypeInfo typeInfo = new TypeInfo();
-      List<Class<?>> interfaces = new ArrayList<Class<?>>();
+      Set<Class<?>> interfaces = new HashSet<Class<?>>();
       Class<?> superclass = null;
       for (Class<?> type : types)
       {

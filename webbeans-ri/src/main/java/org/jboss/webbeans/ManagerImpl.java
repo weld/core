@@ -42,6 +42,7 @@ import javax.webbeans.Production;
 import javax.webbeans.Standard;
 import javax.webbeans.TypeLiteral;
 import javax.webbeans.UnsatisfiedDependencyException;
+import javax.webbeans.UnserializableDependencyException;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 import javax.webbeans.manager.Decorator;
@@ -98,7 +99,7 @@ public class ManagerImpl implements Manager, Serializable
    private Set<Interceptor> interceptors;
 
    private EjbDescriptorCache ejbDescriptorCache;
-   
+
    // The Naming (JNDI) access
    private Naming naming;
 
@@ -711,32 +712,68 @@ public class ManagerImpl implements Manager, Serializable
    public Manager parse(InputStream xmlStream)
    {
       // TODO Implement XML parsing
-      return null;
+      return this;
    }
 
    public Manager validate()
    {
-      // TODO Implement XML parsing
-      return null;
+      checkPassivation();
+      return this;
+   }
+
+   private void checkPassivation()
+   {
+      for (Bean<?> bean : beans)
+      {
+         boolean passivatingScoped = MetaDataCache.instance().getScopeModel(bean.getScopeType()).isPassivating();
+         if (passivatingScoped && !bean.isSerializable())
+         {
+            throw new UnserializableDependencyException(bean + " is not serializable or has unserializable dependencies");
+         }
+         // // TODO: Not that pretty. Can this logic be moved to the
+         // isSerializable()
+         // // of SimpleBean and EnterpriseBean or are they too strict there?
+         // if (bean instanceof EnterpriseBean)
+         // {
+         // boolean stateful =
+         // getEjbDescriptorCache().containsKey(((EnterpriseBean<?>)
+         // bean).getType());
+         // if (stateful && !bean.isSerializable())
+         // {
+         // throw new UnserializableDependencyException(bean +
+         // " is not serializable or has unserializable dependencies");
+         // }
+         // }
+         // else if (bean instanceof SimpleBean)
+         // {
+         // boolean passivating =
+         // MetaDataCache.instance().getScopeModel(bean.getScopeType()).isPassivating();
+         // if (passivating && !bean.isSerializable())
+         // {
+         // throw new UnserializableDependencyException(bean +
+         // " is not serializable or has unserializable dependencies");
+         // }
+         // }
+      }
    }
 
    public Manager createChildManager()
    {
       // TODO Implement hierarchical managers
-      return null;
+      return this;
    }
 
    public Manager setCurrent()
    {
       // TODO Implement hierarchical managers
-      return null;
+      return this;
    }
-   
+
    public Naming getNaming()
    {
       return naming;
    }
-   
+
    public void setNaming(Naming naming)
    {
       this.naming = naming;

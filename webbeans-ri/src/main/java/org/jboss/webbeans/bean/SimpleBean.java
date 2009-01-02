@@ -28,6 +28,7 @@ import javax.webbeans.Initializer;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -57,7 +58,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    private AnnotatedMethod<Object> postConstruct;
    // The pre-destroy method
    private AnnotatedMethod<Object> preDestroy;
-   
+
    /**
     * Constructor
     * 
@@ -81,6 +82,11 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       try
       {
          DependentContext.INSTANCE.setActive(true);
+         boolean passivating = MetaDataCache.instance().getScopeModel(scopeType).isPassivating();
+         if (passivating)
+         {
+            checkProducedInjectionPoints();
+         }
          T instance = constructor.newInstance(manager);
          bindDecorators();
          bindInterceptors();
@@ -109,7 +115,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          DependentContext.INSTANCE.setActive(true);
          callPreDestroy(instance);
       }
-      catch (Exception e) 
+      catch (Exception e)
       {
          log.error("Error destroying " + toString(), e);
       }
@@ -131,7 +137,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          try
          {
-        	//note: RI supports injection into @PreDestroy
+            // note: RI supports injection into @PreDestroy
             preDestroy.invoke(instance, manager);
          }
          catch (Exception e)
@@ -153,7 +159,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          try
          {
-            //note: RI supports injection into @PostConstruct
+            // note: RI supports injection into @PostConstruct
             postConstruct.invoke(instance, manager);
          }
          catch (Exception e)
@@ -206,7 +212,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       super.init();
       initConstructor();
-      checkType(getType());
+      checkType();
       initInjectionPoints();
       initPostConstruct();
       initPreDestroy();
@@ -224,14 +230,19 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          injectionPoints.add(parameter);
       }
+      for (AnnotatedMethod<Object> initializer : getInitializerMethods())
+      {
+         for (AnnotatedParameter<Object> parameter : initializer.getParameters())
+         {
+            injectionPoints.add(parameter);
+         }
+      }
    }
 
    /**
     * Validates the type
-    * 
-    * @param type The type to validate
     */
-   public static void checkType(Class<?> type)
+   private void checkType()
    {
       if (Reflections.isNonStaticInnerClass(type))
       {
@@ -240,6 +251,11 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       if (Reflections.isParameterizedType(type))
       {
          throw new DefinitionException("Simple Web Bean " + type + " cannot be a parameterized type");
+      }
+      boolean passivating = MetaDataCache.instance().getScopeModel(scopeType).isPassivating();
+      if (passivating && !Reflections.isSerializable(type))
+      {
+         throw new DefinitionException("Simple Web Beans declaring a passivating scope must have a serializable implementation class");
       }
    }
 
@@ -284,7 +300,9 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       log.trace("Found " + postConstructMethods + " constructors annotated with @Initializer for " + getType());
       if (postConstructMethods.size() > 1)
       {
-         // TODO actually this is wrong, in EJB you can have @PostConstruct methods on the superclass, though the Web Beans spec is silent on the issue
+         // TODO actually this is wrong, in EJB you can have @PostConstruct
+         // methods on the superclass, though the Web Beans spec is silent on
+         // the issue
          throw new DefinitionException("Cannot have more than one post construct method annotated with @PostConstruct for " + getType());
       }
       else if (postConstructMethods.size() == 1)
@@ -304,7 +322,8 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       log.trace("Found " + preDestroyMethods + " constructors annotated with @Initializer for " + getType());
       if (preDestroyMethods.size() > 1)
       {
-         // TODO actually this is wrong, in EJB you can have @PreDestroy methods on the superclass, though the Web Beans spec is silent on the issue
+         // TODO actually this is wrong, in EJB you can have @PreDestroy methods
+         // on the superclass, though the Web Beans spec is silent on the issue
          throw new DefinitionException("Cannot have more than one pre destroy method annotated with @PreDestroy for " + getType());
       }
       else if (preDestroyMethods.size() == 1)
@@ -398,6 +417,41 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       buffer.append("Post-construct: " + (postConstruct == null ? "null" : postConstruct.toString()) + "\n");
       buffer.append("Pre-destroy: " + (preDestroy == null ? "null" : preDestroy.toString()) + "\n");
       return buffer.toString();
+   }
+
+   /**
+    * Indicates if the bean is serializable
+    * 
+    * Beans declaring normal scopes are serializable themselves because they are
+    * accessed through a proxy but we still need to check that the dependencies
+    * are serializable (through the super.isSerializable).
+    * 
+    * Beans declaring pseudo-scopes are serializable if the implementation class
+    * is serializable.
+    * 
+    * @return true If serializable, false otherwise
+    */
+   @Override
+   public boolean isSerializable()
+   {
+      boolean normalScoped = MetaDataCache.instance().getScopeModel(scopeType).isNormal();
+      if (normalScoped)
+      {
+         boolean passivatingScoped = MetaDataCache.instance().getScopeModel(scopeType).isPassivating();
+         if (passivatingScoped)
+         {
+            checkInjectionPoints();
+            return true;
+         }
+         else
+         {
+            return true;
+         }
+      }
+      else
+      {
+         return Reflections.isSerializable(getType());
+      }
    }
 
 }

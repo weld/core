@@ -32,19 +32,20 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
 import org.jboss.webbeans.util.Names;
+import org.jboss.webbeans.util.Reflections;
 
 /**
  * Represents a producer method bean
  * 
  * @author Pete Muir
- *
+ * 
  * @param <T>
  */
 public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
 {
    // The underlying method
    private AnnotatedMethod<T> method;
-   
+
    private AnnotatedMethod<?> disposalMethod;
 
    /**
@@ -58,7 +59,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       this(new AnnotatedMethodImpl<T>(method, declaringBean.getAnnotatedItem()), declaringBean, manager);
    }
-   
+
    /**
     * Constructor
     * 
@@ -93,7 +94,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          DependentContext.INSTANCE.setActive(false);
       }
    }
-   
+
    @Override
    public void destroy(T instance)
    {
@@ -119,10 +120,10 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       initDisposalMethod();
       initInjectionPoints();
    }
-   
+
    /**
     * Initializes the injection points
-    */   
+    */
    @Override
    protected void initInjectionPoints()
    {
@@ -139,7 +140,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          }
       }
    }
-   
+
    /**
     * Validates the producer method
     */
@@ -158,7 +159,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          throw new DefinitionException("Producer method cannot have parameter annotated @Disposes");
       }
    }
-   
+
    /**
     * Initializes the remove method
     */
@@ -172,10 +173,9 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       else if (disposalMethods.size() > 1)
       {
          // TODO List out found disposal methods
-         throw new DefinitionException ("Cannot declare multiple disposal methods for this producer method");
+         throw new DefinitionException("Cannot declare multiple disposal methods for this producer method");
       }
    }
-   
 
    /**
     * Gets the annotated item representing the method
@@ -230,7 +230,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       buffer.append(" [" + getType().getName() + "]\n");
       buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
       return buffer.toString();
-   }    
+   }
 
    public String toDetailedString()
    {
@@ -239,7 +239,12 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       buffer.append(super.toString() + "\n");
       buffer.append("Declaring bean: " + declaringBean.toString() + "\n");
       buffer.append("Method: " + method.toString() + "\n");
-      return buffer.toString();      
+      return buffer.toString();
    }
 
+   @Override
+   public boolean isSerializable()
+   {
+      return Reflections.isSerializable(method.getAnnotatedMethod().getReturnType());
+   }
 }

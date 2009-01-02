@@ -58,7 +58,6 @@ public class DependentContext extends AbstractContext
     *  @param bean The bean to create
     *  @param create Should a new one be created
     */
-   //@Override
    public <T> T get(Contextual<T> bean, boolean create)
    {
       if (!isActive())

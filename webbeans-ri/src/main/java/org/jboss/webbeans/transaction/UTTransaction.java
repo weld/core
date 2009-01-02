@@ -11,7 +11,7 @@ import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
 /**
- * Wraps JTA transaction management in a Seam UserTransaction 
+ * Wraps JTA transaction management in a Web Beans UserTransaction 
  * interface.
  * 
  * @author Mike Youngstrom

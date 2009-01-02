@@ -18,6 +18,7 @@
 package org.jboss.webbeans.util;
 
 import java.beans.Introspector;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -145,6 +146,11 @@ public class Reflections
    public static boolean isStatic(Member member)
    {
       return Modifier.isStatic(member.getModifiers());
+   }
+
+   public static boolean isTransient(Member member)
+   {
+      return Modifier.isTransient(member.getModifiers());
    }
 
    /**
@@ -423,7 +429,7 @@ public class Reflections
          throw new ExecutionException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
    }
-   
+
    /**
     * Invokes a method and wraps exceptions
     * 
@@ -483,7 +489,7 @@ public class Reflections
          throw new ExecutionException("Error setting field " + field.getName() + " on " + field.getDeclaringClass(), e);
       }
    }
-   
+
    /**
     * Sets value of a field and wraps exceptions
     * 
@@ -618,5 +624,10 @@ public class Reflections
          isBindingAnnotation = true;
       }
       return isBindingAnnotation;
+   }
+
+   public static boolean isSerializable(Class<?> clazz)
+   {
+      return getTypeHierachy(clazz).contains(Serializable.class);
    }
 }

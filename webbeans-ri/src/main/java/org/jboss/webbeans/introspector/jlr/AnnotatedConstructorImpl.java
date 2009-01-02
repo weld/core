@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.webbeans.ExecutionException;
+import javax.webbeans.IllegalProductException;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -34,6 +35,7 @@ import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Names;
+import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
 /**
@@ -266,7 +268,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
       }
       toString = "Annotated method " + Names.constructor2String(constructor);
       return toString;
-   }   
+   }
 
    public String toDetailedString()
    {

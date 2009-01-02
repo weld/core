@@ -129,6 +129,11 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
       return Reflections.isFinal(getDelegate());
    }
 
+   public boolean isTransient()
+   {
+      return Reflections.isTransient(getDelegate());
+   }
+   
    /**
     * Gets the current value of the member
     * 

@@ -54,13 +54,12 @@ import org.jboss.webbeans.log.Logging;
 public class EnterpriseBean<T> extends AbstractClassBean<T>
 {
    private LogProvider log = Logging.getLogProvider(EnterpriseBean.class);
-   
+
    // The EJB descriptor
    private EjbDescriptor<T> ejbDescriptor;
-   
+
    // The remove method on the bean class (do not call!)
    private AnnotatedMethod<?> removeMethod;
-   
 
    /**
     * Constructor
@@ -94,7 +93,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          }
          else
          {
-            throw new RuntimeException("TODO Multiple EJBs have the same bean class! " + getType() );
+            throw new RuntimeException("TODO Multiple EJBs have the same bean class! " + getType());
          }
       }
       initRemoveMethod();
@@ -180,7 +179,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          throw new DefinitionException("Multiple @Destructor methods not allowed on " + getAnnotatedItem());
       }
-      
+
       if (getAnnotatedItem().getAnnotatedMethods(Destructor.class).size() == 1)
       {
          AnnotatedMethod<?> destructorMethod = getAnnotatedItem().getAnnotatedMethods(Destructor.class).iterator().next();
@@ -207,14 +206,14 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          this.removeMethod = annotatedItem.getMethod(noArgsRemoveMethods.iterator().next());
          return;
       }
-      
+
       if (!getScopeType().equals(Dependent.class))
       {
          throw new DefinitionException("Only @Dependent scoped enterprise beans can be without remove methods " + toString());
       }
 
    }
-   
+
    /**
     * Validates the remove method
     */
@@ -257,7 +256,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       try
       {
          DependentContext.INSTANCE.setActive(true);
-         // TODO Implement enterprise bean proxies and select the correct jndiName
+         // TODO Implement enterprise bean proxies and select the correct
+         // jndiName
          return (T) manager.getNaming().lookup(ejbDescriptor.getLocalJndiName(), getType());
       }
       catch (Exception e)
@@ -283,7 +283,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          DependentContext.INSTANCE.setActive(true);
          removeMethod.invokeOnInstance(instance, manager);
       }
-      catch (Exception e) 
+      catch (Exception e)
       {
          log.error("Error destroying " + toString(), e);
       }
@@ -350,7 +350,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
 
    }
-   
+
    public AnnotatedMethod<?> getRemoveMethod()
    {
       return removeMethod;
@@ -396,6 +396,10 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       try
       {
          DependentContext.INSTANCE.setActive(true);
+         if (ejbDescriptor.isStateful())
+         {
+            checkProducedInjectionPoints();
+         }
          bindDecorators();
          bindInterceptors();
          injectEjbAndCommonFields();
@@ -406,12 +410,26 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          DependentContext.INSTANCE.setActive(false);
       }
-      
+
    }
 
    public void preDestroy(Object target)
    {
-      
+
+   }
+
+   @Override
+   public boolean isSerializable()
+   {
+      if (ejbDescriptor.isStateful())
+      {
+         checkInjectionPoints();
+         return true;
+      }
+      else
+      {
+         return true;
+      }
    }
 
 }

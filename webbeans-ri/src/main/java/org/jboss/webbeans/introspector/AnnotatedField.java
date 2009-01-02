@@ -75,4 +75,6 @@ public interface AnnotatedField<T> extends AnnotatedItem<T, Field>
     */
    public String getPropertyName();
 
+   public boolean isTransient();
+
 }

@@ -26,7 +26,9 @@ import javax.webbeans.Dependent;
 import javax.webbeans.IllegalProductException;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.util.Names;
+import org.jboss.webbeans.util.Reflections;
 
 /**
  * The implicit producer bean
@@ -150,6 +152,11 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       if (instance == null && !getScopeType().equals(Dependent.class))
       {
          throw new IllegalProductException("Cannot return null from a non-dependent producer method");
+      }
+      boolean passivating = MetaDataCache.instance().getScopeModel(getScopeType()).isPassivating();
+      if (passivating && !Reflections.isSerializable(instance.getClass()))
+      {
+         throw new IllegalProductException("Producers cannot declare passivating and return non-serializable class");
       }
    }
 

@@ -128,4 +128,6 @@ public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
     */
    public boolean isEquivalent(Method method);
 
+   public Method getAnnotatedMethod();
+
 }

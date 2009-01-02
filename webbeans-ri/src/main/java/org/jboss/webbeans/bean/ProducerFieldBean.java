@@ -24,19 +24,20 @@ import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.jlr.AnnotatedFieldImpl;
 import org.jboss.webbeans.util.Names;
+import org.jboss.webbeans.util.Reflections;
 
 /**
  * Represents a producer field bean
  * 
  * @author Pete Muir
- *
+ * 
  * @param <T>
  */
 public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
 {
    // The underlying field
    private AnnotatedField<T> field;
-   
+
    /**
     * Constructor
     * 
@@ -48,7 +49,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
    {
       this(new AnnotatedFieldImpl<T>(field, declaringBean.getAnnotatedItem()), declaringBean, manager);
    }
-   
+
    /**
     * Constructor
     * 
@@ -83,7 +84,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
          DependentContext.INSTANCE.setActive(false);
       }
    }
-   
+
    @Override
    public void destroy(T instance)
    {
@@ -119,12 +120,12 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
    {
       return field.getPropertyName();
    }
-   
+
    /**
     * Gets a string representation
     * 
     * @return The string representation
-    */   
+    */
    @Override
    public String toString()
    {
@@ -141,7 +142,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
       buffer.append(" [" + getType().getName() + "]\n");
       buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
       return buffer.toString();
-   }   
+   }
 
    public String toDetailedString()
    {
@@ -150,7 +151,13 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
       buffer.append(super.toString() + "\n");
       buffer.append("Declaring bean: " + declaringBean.toString() + "\n");
       buffer.append("Field: " + field.toString() + "\n");
-      return buffer.toString();      
+      return buffer.toString();
+   }
+
+   @Override
+   public boolean isSerializable()
+   {
+      return Reflections.isSerializable(field.getAnnotatedField().getClass());
    }
 
 }

@@ -23,19 +23,26 @@ import java.util.Set;
 
 import javax.webbeans.BindingType;
 import javax.webbeans.DefinitionException;
+import javax.webbeans.Dependent;
 import javax.webbeans.Destructor;
 import javax.webbeans.Disposes;
+import javax.webbeans.IllegalProductException;
 import javax.webbeans.Initializer;
 import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 import javax.webbeans.Production;
 import javax.webbeans.UnproxyableDependencyException;
+import javax.webbeans.UnserializableDependencyException;
+import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedMember;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -87,6 +94,23 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       initInitializerMethods();
    }
 
+   protected void checkPassivation()
+   {
+      for (AnnotatedField<Object> injectableField : injectableFields)
+      {
+         if (injectableField.isTransient())
+         {
+            continue;
+         }
+
+         Bean<?> bean = CurrentManager.rootManager().resolveByType(injectableField).iterator().next();
+         if (Dependent.class.equals(bean.getScopeType()) && !bean.isSerializable())
+         {
+            throw new UnserializableDependencyException("Dependent Web Beans cannot be injected into non-transient fields of beans declaring a passivating scope");
+         }
+      }
+   }
+
    /**
     * Initializes the bean type
     */
@@ -121,7 +145,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    /**
     * Gets the observer methods
     * 
-    * @return A set of observer methods. An empty set is returned if there are no matches.
+    * @return A set of observer methods. An empty set is returned if there are
+    *         no matches.
     */
    public Set<AnnotatedMethod<Object>> getObserverMethods()
    {
@@ -303,7 +328,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    }
 
    @Override
-   /**
+   /*
     * Gets the default deployment type
     * 
     * @return The default deployment type
@@ -311,5 +336,39 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    protected Class<? extends Annotation> getDefaultDeploymentType()
    {
       return Production.class;
+   }
+
+   protected void checkProducedInjectionPoints()
+   {
+      for (AnnotatedItem<?, ?> injectionPoint : getInjectionPoints())
+      {
+         if (injectionPoint instanceof AbstractAnnotatedMember)
+         {
+            if (((AbstractAnnotatedMember<?, ?>) injectionPoint).isTransient())
+            {
+               continue;
+            }
+         }
+         Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
+         Bean<?> bean = manager.resolveByType(injectionPoint.getType(), bindings).iterator().next();
+         boolean producerBean = (bean instanceof ProducerMethodBean || bean instanceof ProducerFieldBean);
+         if (producerBean && Dependent.class.equals(bean.getScopeType()) && !bean.isSerializable())
+         {
+            throw new IllegalProductException("Dependent-scoped producer bean " + producerBean + " produces a non-serializable product for injection for " + injectionPoint + " in " + this);
+         }
+      }
+   }
+
+   protected void checkInjectionPoints()
+   {
+      for (AnnotatedItem<?, ?> injectionPoint : getInjectionPoints())
+      {
+         Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
+         Bean<?> bean = manager.resolveByType(injectionPoint.getType(), bindings).iterator().next();
+         if (Dependent.class.equals(bean.getScopeType()) && !bean.isSerializable())
+         {
+            throw new UnserializableDependencyException(bean + " is a non-serializable dependent injection for " + injectionPoint + " in " + this);
+         }
+      }
    }
 }
