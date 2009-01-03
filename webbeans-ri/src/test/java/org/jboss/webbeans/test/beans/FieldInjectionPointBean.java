@@ -17,18 +17,23 @@
 
 package org.jboss.webbeans.test.beans;
 
+import java.io.Serializable;
+
 import javax.webbeans.Current;
 import javax.webbeans.SessionScoped;
 
 /**
- * Test bean to inject another bean which uses injection point metadata in a field
+ * Test bean to inject another bean which uses injection point metadata in a
+ * field
  * 
  * @author David Allen
- *
+ * 
  */
 @SessionScoped
-public class FieldInjectionPointBean
+public class FieldInjectionPointBean implements Serializable
 {
+   private static final long serialVersionUID = 1L;
+
    @Current
    public FieldInjectionPoint injectedBean;
 }
