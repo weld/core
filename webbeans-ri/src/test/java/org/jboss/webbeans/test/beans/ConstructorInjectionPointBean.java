@@ -17,17 +17,24 @@
 package org.jboss.webbeans.test.beans;
 
 import javax.webbeans.Current;
-import javax.webbeans.SessionScoped;
 
 /**
- * Test bean to inject another bean which uses injection point metadata on the constructor
+ * Test bean to inject a bean using injection point metadata into a constructor
  * 
  * @author David Allen
- *
+ * 
  */
-@SessionScoped
 public class ConstructorInjectionPointBean
 {
-   @Current
-   public ConstructorInjectionPoint injectedBean;
+   private BeanWithInjectionPointMetadata injectedBean;
+
+   public ConstructorInjectionPointBean(@Current BeanWithInjectionPointMetadata injectedBean)
+   {
+      this.injectedBean = injectedBean;
+   }
+   
+   public BeanWithInjectionPointMetadata getInjectedBean()
+   {
+      return injectedBean;
+   }
 }

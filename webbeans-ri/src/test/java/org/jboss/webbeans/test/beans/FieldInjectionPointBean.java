@@ -17,10 +17,9 @@
 
 package org.jboss.webbeans.test.beans;
 
-import java.io.Serializable;
-
 import javax.webbeans.Current;
-import javax.webbeans.SessionScoped;
+
+import org.jboss.webbeans.test.annotations.AnimalStereotype;
 
 /**
  * Test bean to inject another bean which uses injection point metadata in a
@@ -29,11 +28,13 @@ import javax.webbeans.SessionScoped;
  * @author David Allen
  * 
  */
-@SessionScoped
-public class FieldInjectionPointBean implements Serializable
+public class FieldInjectionPointBean
 {
-   private static final long serialVersionUID = 1L;
+   @Current @AnimalStereotype
+   private BeanWithInjectionPointMetadata injectedBean;
 
-   @Current
-   public FieldInjectionPoint injectedBean;
+   public BeanWithInjectionPointMetadata getInjectedBean()
+   {
+      return injectedBean;
+   }
 }

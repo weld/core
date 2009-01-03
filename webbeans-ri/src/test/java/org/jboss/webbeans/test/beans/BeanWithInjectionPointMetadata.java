@@ -14,21 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.webbeans.test.beans;
 
 import javax.webbeans.Current;
 import javax.webbeans.InjectionPoint;
 
 /**
- * Test bean with injected metadata in a field about where this bean is injected
- * into another bean
+ * Test bean with injection point on the constructor of the bean
  * 
  * @author David Allen
- *
+ * 
  */
-public class FieldInjectionPoint
+public class BeanWithInjectionPointMetadata
 {
    @Current
-   public InjectionPoint injectedMetadata;
+   private InjectionPoint injectedMetadata;
+
+   public InjectionPoint getInjectedMetadata()
+   {
+      return injectedMetadata;
+   }
 }
