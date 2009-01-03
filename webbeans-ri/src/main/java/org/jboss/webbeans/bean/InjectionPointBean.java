@@ -41,9 +41,10 @@ public class InjectionPointBean implements InjectionPoint
    private final AbstractAnnotatedMember<?, ? extends Member> memberInjectionPoint;
    private final Bean<?> bean;
    private final Object beanInstance;
-   
+
    /**
     * Creates a new metadata bean for the given injection point information.
+    * 
     * @param injectedMember The member of the bean being injected
     * @param bean The bean being injected
     * @param beanInstance The instance of the bean being injected
@@ -55,49 +56,41 @@ public class InjectionPointBean implements InjectionPoint
       this.beanInstance = beanInstance;
    }
 
-   //@Override
    public <T extends Annotation> T getAnnotation(Class<T> annotationType)
    {
       return this.memberInjectionPoint.getAnnotation(annotationType);
    }
 
-   //@Override
    public Annotation[] getAnnotations()
    {
       return this.memberInjectionPoint.getAnnotations().toArray(new Annotation[0]);
    }
 
-   //@Override
    public Bean<?> getBean()
    {
       return this.bean;
    }
 
-   //@Override
    public Set<Annotation> getBindingTypes()
    {
       return this.memberInjectionPoint.getBindingTypes();
    }
 
-   //@Override
    public Object getInstance()
    {
       return this.beanInstance;
    }
 
-   //@Override
    public Member getMember()
    {
       return this.memberInjectionPoint.getDelegate();
    }
 
-   //@Override
    public Type getType()
    {
       return this.memberInjectionPoint.getType();
    }
 
-   //@Override
    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
    {
       return this.memberInjectionPoint.isAnnotationPresent(annotationType);
