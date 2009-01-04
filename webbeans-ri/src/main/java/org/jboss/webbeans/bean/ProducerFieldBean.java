@@ -20,7 +20,6 @@ package org.jboss.webbeans.bean;
 import java.lang.reflect.Field;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.jlr.AnnotatedFieldImpl;
 import org.jboss.webbeans.util.Names;
@@ -64,40 +63,13 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
       init();
    }
 
-   /**
-    * Creates an instance of the bean
-    * 
-    * @returns The instance
-    */
-   @Override
-   public T create()
-   {
-      try
-      {
-         DependentContext.INSTANCE.setActive(true);
-         T instance = field.get(getReceiver());
-         checkReturnValue(instance);
-         return instance;
-      }
-      finally
-      {
-         DependentContext.INSTANCE.setActive(false);
-      }
-   }
 
    @Override
-   public void destroy(T instance)
+   public T produceInstance()
    {
-      try
-      {
-         DependentContext.INSTANCE.setActive(true);
-         // TODO Implement any cleanup needed
-      }
-      finally
-      {
-         DependentContext.INSTANCE.setActive(false);
-      }
+      return field.get(getReceiver());
    }
+
 
    /**
     * Gets the annotated item representing the field
@@ -144,18 +116,8 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
       return buffer.toString();
    }
 
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("ProducerFieldBean:\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append("Declaring bean: " + declaringBean.toString() + "\n");
-      buffer.append("Field: " + field.toString() + "\n");
-      return buffer.toString();
-   }
-
    @Override
-   public boolean isSerializable()
+   public boolean isProductSerializable()
    {
       return Reflections.isSerializable(field.getAnnotatedField().getClass());
    }

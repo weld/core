@@ -27,7 +27,6 @@ import javax.webbeans.Disposes;
 import javax.webbeans.Observes;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
@@ -74,39 +73,9 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       init();
    }
 
-   /**
-    * Creates an instance of the bean
-    * 
-    * @returns The instance
-    */
-   @Override
-   public T create()
+   public T produceInstance()
    {
-      try
-      {
-         DependentContext.INSTANCE.setActive(true);
-         T instance = method.invoke(getReceiver(), manager);
-         checkReturnValue(instance);
-         return instance;
-      }
-      finally
-      {
-         DependentContext.INSTANCE.setActive(false);
-      }
-   }
-
-   @Override
-   public void destroy(T instance)
-   {
-      try
-      {
-         DependentContext.INSTANCE.setActive(true);
-         // TODO Implement any cleanup needed
-      }
-      finally
-      {
-         DependentContext.INSTANCE.setActive(false);
-      }
+      return method.invoke(getReceiver(), manager);
    }
 
    /**
@@ -232,19 +201,10 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       return buffer.toString();
    }
 
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("ProducerMethodBean:\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append("Declaring bean: " + declaringBean.toString() + "\n");
-      buffer.append("Method: " + method.toString() + "\n");
-      return buffer.toString();
-   }
-
    @Override
-   public boolean isSerializable()
+   protected boolean isProductSerializable()
    {
       return Reflections.isSerializable(method.getAnnotatedMethod().getReturnType());
    }
+
 }

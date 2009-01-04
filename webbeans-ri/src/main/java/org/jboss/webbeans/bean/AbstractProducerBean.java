@@ -21,12 +21,18 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 
+import javax.webbeans.BindingType;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.IllegalProductException;
+import javax.webbeans.UnserializableDependencyException;
+import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
+import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedMember;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
@@ -170,6 +176,82 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       return getAnnotatedItem().isStatic() ? null : manager.getInstance(getDeclaringBean());
    }
 
+   protected void checkInjectionPoints()
+   {
+      for (AnnotatedItem<?, ?> injectionPoint : getInjectionPoints())
+      {
+         Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
+         Bean<?> bean = manager.resolveByType(injectionPoint.getType(), bindings).iterator().next();
+         if (Dependent.class.equals(bean.getScopeType()) && !bean.isSerializable())
+         {
+            throw new UnserializableDependencyException(bean + " is a non-serializable dependent injection for " + injectionPoint + " in " + this);
+         }
+      }
+   }
+
+   /**
+    * Creates an instance of the bean
+    * 
+    * @returns The instance
+    */
+   @Override
+   public T create()
+   {
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         boolean passivating = MetaDataCache.instance().getScopeModel(scopeType).isPassivating();
+         if (passivating)
+         {
+            checkProducedInjectionPoints();
+         }
+         T instance = produceInstance();
+         checkReturnValue(instance);
+         return instance;
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
+   }
+
+   @Override
+   public void destroy(T instance)
+   {
+      try
+      {
+         DependentContext.INSTANCE.setActive(true);
+         // TODO Implement any cleanup needed
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
+   }
+
+   protected void checkProducedInjectionPoints()
+   {
+      for (AnnotatedItem<?, ?> injectionPoint : getInjectionPoints())
+      {
+         if (injectionPoint instanceof AbstractAnnotatedMember)
+         {
+            if (((AbstractAnnotatedMember<?, ?>) injectionPoint).isTransient())
+            {
+               continue;
+            }
+         }
+         Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
+         Bean<?> bean = manager.resolveByType(injectionPoint.getType(), bindings).iterator().next();
+         boolean producerBean = (bean instanceof ProducerMethodBean || bean instanceof ProducerFieldBean);
+         if (producerBean && Dependent.class.equals(bean.getScopeType()) && !bean.isSerializable())
+         {
+            throw new IllegalProductException("Dependent-scoped producer bean " + producerBean + " produces a non-serializable product for injection for " + injectionPoint + " in " + this);
+         }
+      }
+   }
+
+   protected abstract T produceInstance();
+
    /**
     * Gets a string representation
     * 
@@ -192,5 +274,30 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
       return buffer.toString();
    }
+
+   @Override
+   public boolean isSerializable()
+   {
+      boolean normalScoped = MetaDataCache.instance().getScopeModel(scopeType).isNormal();
+      if (normalScoped)
+      {
+         boolean passivatingScoped = MetaDataCache.instance().getScopeModel(scopeType).isPassivating();
+         if (passivatingScoped)
+         {
+            checkInjectionPoints();
+            return true;
+         }
+         else
+         {
+            return true;
+         }
+      }
+      else
+      {
+         return isProductSerializable();
+      }
+   }
+
+   protected abstract boolean isProductSerializable();
 
 }

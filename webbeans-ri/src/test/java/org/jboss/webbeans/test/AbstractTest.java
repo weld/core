@@ -1,5 +1,10 @@
 package org.jboss.webbeans.test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
 import javax.webbeans.Production;
@@ -27,6 +32,7 @@ public class AbstractTest
       addStandardDeploymentTypesForTests();
    }
    
+   @SuppressWarnings("unchecked")
    protected void addStandardDeploymentTypesForTests()
    {
       manager.setEnabledDeploymentTypes(Arrays.asList(Standard.class, Production.class, AnotherDeploymentType.class, HornedAnimalDeploymentType.class));
@@ -36,5 +42,17 @@ public class AbstractTest
    {
       manager.getEjbDescriptorCache().add(new MockEjbDescriptor<T>(clazz));
    }
+   
+   protected byte[] serialize(Object instance) throws IOException {
+      ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+      ObjectOutputStream out = new ObjectOutputStream(bytes);
+      out.writeObject(instance);
+      return bytes.toByteArray();
+   }
+   
+   protected Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
+      ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
+      return in.readObject();
+   }   
    
 }
