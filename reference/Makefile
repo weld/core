@@ -3,8 +3,8 @@
 #Copyright Red Hat Inc. 2006
 
 XML_LANG	= en-US
-DOCNAME		= master.xml
-PRODUCT		= WebBeansReferenceManual
+DOCNAME		= WebBeans_Reference_Guide
+PRODUCT		= Web_Beans
 BRAND		= JBoss
 
 TRANSLATIONS    = $(XML_LANG)
