@@ -63,13 +63,13 @@
             <configuration>
                <sourceDirectory>${pom.basedir}</sourceDirectory>
                <sourceDocumentName>master.xml</sourceDocumentName>
-               <masterTranslation>en</masterTranslation>
+               <masterTranslation>en-US</masterTranslation>
                <translations>
                  <translation>it-IT</translation>
                  <translation>zh-CN</translation>
                </translations>
                <imageResource>
-                  <directory>${pom.basedir}/en</directory>
+                  <directory>${pom.basedir}/en-US</directory>
                   <includes>
                      <include>images/*.png</include>
                   </includes>
@@ -114,7 +114,7 @@
                   <phase>process-classes</phase>
                   <configuration>
                      <tasks>
-                        <copy file="${basedir}/target/docbook/publish/en/pdf/webbeans_reference.pdf" todir="${basedir}" />
+                        <copy file="${basedir}/target/docbook/publish/en-US/pdf/webbeans_reference.pdf" todir="${basedir}" />
                      </tasks>
                   </configuration>
                   <goals>
