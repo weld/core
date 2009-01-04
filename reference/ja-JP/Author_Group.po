@@ -1,0 +1,60 @@
+# Language ja-JP translations for Introduction_to_Web_Beans package.
+# Automatically generated, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2009-01-04 23:18+0000\n"
+"PO-Revision-Date: 2009-01-04 23:18+0000\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: author
+#: Author_Group.xml:4
+#, no-c-format
+msgid "<firstname>Gavin</firstname> <surname>King</surname>"
+msgstr ""
+
+#. Tag: affiliation
+#: Author_Group.xml:7
+#, no-c-format
+msgid ""
+"<jobtitle>Web Beans (JSR-299) specification lead</jobtitle> <orgname>Red Hat "
+"Middleware LLC</orgname>"
+msgstr ""
+
+#. Tag: author
+#: Author_Group.xml:12
+#, no-c-format
+msgid "<firstname>Pete</firstname> <surname>Muir</surname>"
+msgstr ""
+
+#. Tag: affiliation
+#: Author_Group.xml:15
+#, no-c-format
+msgid ""
+"<jobtitle>Web Beans (JSR-299) Reference Implementation lead </jobtitle> "
+"<orgname>Red Hat Middleware LLC</orgname>"
+msgstr ""
+
+#. Tag: othercredit
+#: Author_Group.xml:21
+#, no-c-format
+msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
+msgstr ""
+
+#. Tag: contrib
+#: Author_Group.xml:24 Author_Group.xml:29
+#, no-c-format
+msgid "Italian Translation"
+msgstr ""
+
+#. Tag: othercredit
+#: Author_Group.xml:26
+#, no-c-format
+msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
+msgstr ""

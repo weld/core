@@ -1,0 +1,249 @@
+# Language it-IT translations for master.xml package.
+# Automatically generated, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: master.xml\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2009-01-04 23:18+0000\n"
+"PO-Revision-Date: 2009-01-05 00:30+0100\n"
+"Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: specialization.xml:4
+#, no-c-format
+msgid "Specialization"
+msgstr "Specializzazione"
+
+#. Tag: para
+#: specialization.xml:6
+#, no-c-format
+msgid "We've already seen how the Web Beans dependency injection model lets us <emphasis>override</emphasis> the implementation of an API at deployment time. For example, the following enterprise Web Bean provides an implementation of the API <literal>PaymentProcessor</literal> in production:"
+msgstr "Si è già visto come il modello di dependency injection di Web Beans consenta l'<emphasis>override</emphasis> dell'implementazione di un API a deployment time. Per esempio, il seguente Web Bean enterprise fornisce un'implementazione di un API <literal>PaymentProcessor</literal> in produzione:"
+
+#. Tag: programlisting
+#: specialization.xml:11
+#, no-c-format
+msgid ""
+"@CreditCard @Stateless\n"
+"public class CreditCardPaymentProcessor \n"
+"        implements PaymentProcessor {\n"
+"    ...\n"
+"}"
+msgstr ""
+"@CreditCard @Stateless\n"
+"public class CreditCardPaymentProcessor \n"
+"        implements PaymentProcessor {\n"
+"    ...\n"
+"}"
+
+#. Tag: para
+#: specialization.xml:13
+#, no-c-format
+msgid "But in our staging environment, we override that implementation of <literal>PaymentProcessor</literal> with a different Web Bean:"
+msgstr "Ma in quest'ambiente di prova si procede con l'override dell'implementazione di <literal>PaymentProcessor</literal> con un Web Bean differente:"
+
+#. Tag: programlisting
+#: specialization.xml:16
+#, no-c-format
+msgid ""
+"@CreditCard @Stateless @Staging\n"
+"public class StagingCreditCardPaymentProcessor \n"
+"        implements PaymentProcessor {\n"
+"    ...\n"
+"}"
+msgstr ""
+"@CreditCard @Stateless @Staging\n"
+"public class StagingCreditCardPaymentProcessor \n"
+"        implements PaymentProcessor {\n"
+"    ...\n"
+"}"
+
+#. Tag: para
+#: specialization.xml:18
+#, no-c-format
+msgid "What we've tried to do with <literal>StagingCreditCardPaymentProcessor</literal> is to completely replace <literal>AsyncPaymentProcessor</literal> in a particular deployment of the system. In that deployment, the deployment type <literal>@Staging</literal> would have a higher priority than the default deployment type <literal>@Production</literal>, and therefore clients with the following injection point:"
+msgstr "Quello che si è cercato di fare con  <literal>StagingCreditCardPaymentProcessor</literal> è sostituire completamente <literal>AsyncPaymentProcessor</literal> in un particolare deployment del sistema. In tale deployment, il tipo di deploy <literal>@Staging</literal> avrebbe più alta priorità del tipo di deploy di default <literal>@Production</literal>, e quindi client con il seguente punto di iniezione:"
+
+#. Tag: programlisting
+#: specialization.xml:24
+#, no-c-format
+msgid "@CreditCard PaymentProcessor ccpp"
+msgstr "@CreditCard PaymentProcessor ccpp"
+
+#. Tag: para
+#: specialization.xml:26
+#, no-c-format
+msgid "Would receive an instance of <literal>StagingCreditCardPaymentProcessor</literal>."
+msgstr "riceverebbero un'istanza di <literal>StagingCreditCardPaymentProcessor</literal>."
+
+#. Tag: para
+#: specialization.xml:28
+#, no-c-format
+msgid "Unfortunately, there are several traps we can easily fall into:"
+msgstr "Sfortunatamente ci sono parecchie trappole in cui è facile cadere:"
+
+#. Tag: para
+#: specialization.xml:32
+#, no-c-format
+msgid "the higher-priority Web Bean may not implement all the API types of the Web Bean that it attempts to override,"
+msgstr "il Web Bean con più alta priorità potrebbe non implementare tutti i tipi di API del Web Bean di cui tenta di fare override,"
+
+#. Tag: para
+#: specialization.xml:36
+#, no-c-format
+msgid "the higher-priority Web Bean may not declare all the binding types of the Web Bean that it attempts to override,"
+msgstr "il Web Bean con più alta priorità potrebbe non dichiare tutti i tipi di binding del Web Bean di cui tenta di fare override,"
+
+#. Tag: para
+#: specialization.xml:40
+#, no-c-format
+msgid "the higher-priority Web Bean might not have the same name as the Web Bean that it attempts to override, or"
+msgstr "il Web Bean con più alta priorità potrebbe non avere lo stesso nome del Web Bean di cui tenta di fare override, oppure"
+
+#. Tag: para
+#: specialization.xml:44
+#, no-c-format
+msgid "the Web Bean that it attempts to override might declare a producer method, disposal method or observer method."
+msgstr "il Web Bean di cui tenta di fare override potrebbe dichiarare un metodo produttore, metodo distruttore o metodo osservatore."
+
+#. Tag: para
+#: specialization.xml:49
+#, no-c-format
+msgid "In each of these cases, the Web Bean that we tried to override could still be called at runtime. Therefore, overriding is somewhat prone to developer error."
+msgstr "In ciascuno di questi casi, il Web Bean di cui si tenta l'override potrebbe ancora venire chiamato a runtime. Quindi, l'override è qualcosa di incline all'errore per lo sviluppatore."
+
+#. Tag: para
+#: specialization.xml:52
+#, no-c-format
+msgid "Web Beans provides a special feature, called <emphasis>specialization</emphasis>, that helps the developer avoid these traps. Specialization looks a little esoteric at first, but it's easy to use in practice, and you'll really appreciate the extra security it provides."
+msgstr "Web Beans fornisce una funzionalità speciale chiamata <emphasis>specializzazione</emphasis>, che aiuta lo sviluppatore ad evitare queste trappole. La specializzazione sembra inizialmente un pò esoterica, ma in pratica è facile da usare, e si apprezzerà veramente la sicurezza extra che fornisce. "
+
+#. Tag: title
+#: specialization.xml:58
+#, no-c-format
+msgid "Using specialization"
+msgstr "Usare la specializzazione"
+
+#. Tag: para
+#: specialization.xml:60
+#, no-c-format
+msgid "Specialization is a feature that is specific to simple and enterprise Web Beans. To make use of specialization, the higher-priority Web Bean must:"
+msgstr "La specializzazione è una funzionalità specifica dei Web Bean semplici ed enterprise. Per fare uso della specializzazione il Web Bean a più alta priorità deve:"
+
+#. Tag: para
+#: specialization.xml:65
+#, no-c-format
+msgid "be a direct subclass of the Web Bean it overrides, and"
+msgstr "essere un diretta sottoclasse del Web Bean di cui fa l'override, e"
+
+#. Tag: para
+#: specialization.xml:68
+#, no-c-format
+msgid "be a simple Web Bean if the Web Bean it overrides is a simple Web Bean or an enterprise Web Bean if the Web Bean it overrides is an enterprise Web Bean, and"
+msgstr "essere un semplice Web Bean se il Web Bean di cui fare override è un semplice Web Bean o un Web Bean Enterprise se il Web Bean di cui fa override è un Web Bean Enterprise, e"
+
+#. Tag: para
+#: specialization.xml:73
+#, no-c-format
+msgid "be annotated <literal>@Specializes</literal>."
+msgstr "essere annotato con <literal>@Specializes</literal>."
+
+#. Tag: programlisting
+#: specialization.xml:77
+#, no-c-format
+msgid ""
+"@Stateless @Staging @Specializes\n"
+"public class StagingCreditCardPaymentProcessor \n"
+"        extends CreditCardPaymentProcessor {\n"
+"    ...\n"
+"}"
+msgstr ""
+"@Stateless @Staging @Specializes\n"
+"public class StagingCreditCardPaymentProcessor \n"
+"        extends CreditCardPaymentProcessor {\n"
+"    ...\n"
+"}"
+
+#. Tag: para
+#: specialization.xml:79
+#, no-c-format
+msgid "We say that the higher-priority Web Bean <emphasis>specializes</emphasis> its superclass."
+msgstr "Si dice che il Web Bean a più alta priorità <emphasis>specializza</emphasis> la sua superclasse."
+
+#. Tag: title
+#: specialization.xml:85
+#, no-c-format
+msgid "Advantages of specialization"
+msgstr "Vantaggi della specializzazione"
+
+#. Tag: para
+#: specialization.xml:87
+#, no-c-format
+msgid "When specialization is used:"
+msgstr "Quando viene usata la specializzazione:"
+
+#. Tag: para
+#: specialization.xml:91
+#, no-c-format
+msgid "the binding types of the superclass are automatically inherited by the Web Bean annotated <literal>@Specializes</literal>, and"
+msgstr "i tipi di binding della superclasse vengono automaticamente ereditati dal Web Bean annotato con <literal>@Specializes</literal>, e"
+
+#. Tag: para
+#: specialization.xml:95
+#, no-c-format
+msgid "the Web Bean name of the superclass is automatically inherited by the Web Bean annotated <literal>@Specializes</literal>, and"
+msgstr "il nome del Web Bean della superclasse è automaticamente ereditato dal Web Bean annotato con <literal>@Specializes</literal>, e"
+
+#. Tag: para
+#: specialization.xml:99
+#, no-c-format
+msgid "producer methods, disposal methods and observer methods declared by the superclass are called upon an instance of the Web Bean annotated <literal>@Specializes</literal>."
+msgstr "i metodi produttori, metodi distruttori e metodi osservatori dichiarati dalla superclasse vengono chiamati da un'istanza del Web Bean annotato con <literal>@Specializes</literal>."
+
+#. Tag: para
+#: specialization.xml:105
+#, no-c-format
+msgid "In our example, the binding type <literal>@CreditCard</literal> of <literal>CreditCardPaymentProcessor</literal> is inherited by <literal>StagingCreditCardPaymentProcessor</literal>."
+msgstr "Nel nostro esempio, il tipo di binding <literal>@CreditCard</literal> di <literal>CreditCardPaymentProcessor</literal> viene ereditato da <literal>StagingCreditCardPaymentProcessor</literal>."
+
+#. Tag: para
+#: specialization.xml:109
+#, no-c-format
+msgid "Furthermore, the Web Bean manager will validate that:"
+msgstr "Inoltre il manager Web Bean validerà che:"
+
+#. Tag: para
+#: specialization.xml:113
+#, no-c-format
+msgid "all API types of the superclass are API types of the Web Bean annotated <literal>@Specializes</literal> (all local interfaces of the superclass enterprise bean are also local interfaces of the subclass),"
+msgstr "tutti i tipi di API della superclasse sono tipi di API del Web Bean annotato con <literal>@Specializes</literal> (tutte le interfacce locali del bean enterprise della superclasse sono anch'essi interfacce della sottoclasse),"
+
+#. Tag: para
+#: specialization.xml:119
+#, no-c-format
+msgid "the deployment type of the Web Bean annotated <literal>@Specializes</literal> has a higher precedence than the deployment type of the superclass, and"
+msgstr "il tipo di deploy di un Web Bean annotato con <literal>@Specializes</literal> ha una precedenza più alta di un tipo di deploy della superclasse, e"
+
+#. Tag: para
+#: specialization.xml:124
+#, no-c-format
+msgid "there is no other enabled Web Bean that also specializes the superclass."
+msgstr "non esiste nessun altro Web Bean che specializza la superclasse."
+
+#. Tag: para
+#: specialization.xml:129
+#, no-c-format
+msgid "If any of these conditions are violated, the Web Bean manager throws an exception at initialization time."
+msgstr "Se una di queste condizioni viene violata, il manager Web Bean lancia un'eccezione in fase di inizializzazione."
+
+#. Tag: para
+#: specialization.xml:132
+#, no-c-format
+msgid "Therefore, we can be certain that the superclass will <emphasis>never</emphasis> be called in any deployment of the system where the Web Bean annotated <literal>@Specializes</literal> is deployed and enabled."
+msgstr "Quindi, si può essere certi che la superclasse non verrà <emphasis>mai</emphasis> chiamata in alcun deploy del sistema in cui viene deployato ed abilitato il Web Bean annotato con <literal>@Specializes</literal>."
+
