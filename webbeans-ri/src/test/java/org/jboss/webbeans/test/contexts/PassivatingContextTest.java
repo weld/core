@@ -25,6 +25,7 @@ import org.jboss.webbeans.test.SpecVersion;
 import org.jboss.webbeans.test.contexts.invalid.CityProducer;
 import org.jboss.webbeans.test.contexts.invalid.CityProducer2;
 import org.jboss.webbeans.test.contexts.invalid.CityProducer3;
+import org.jboss.webbeans.test.contexts.invalid.Loviisa;
 import org.jboss.webbeans.test.contexts.invalid.Peraseinajoki;
 import org.jboss.webbeans.test.contexts.invalid.Espoo;
 import org.jboss.webbeans.test.contexts.invalid.Forssa;
@@ -340,12 +341,12 @@ public class PassivatingContextTest extends AbstractTest
     * UnserializableDependencyException must be thrown by the Web Bean manager
     * at initialization time.
     */
-   @Test(groups = { "stub", "contexts", "passivation" }, expectedExceptions = UnserializableDependencyException.class)
+   @Test(groups = { "contexts", "passivation" }, expectedExceptions = UnserializableDependencyException.class)
    @SpecAssertion(section = "9.5")
    public void testSimpleDependentWebBeanWithNonSerializableImplementationInjectedIntoConstructorParameterOfWebBeanWithPassivatingScopeFails()
    {
-      // TODO: case?
-      assert false;
+      registerBeans(new Class<?>[] { Violation.class, Loviisa.class} );
+      manager.validate();
    }
 
    /**
@@ -443,11 +444,12 @@ public class PassivatingContextTest extends AbstractTest
     * parameter of a producer method which declares a passivating scope type, an
     * IllegalProductException is thrown by the Web Bean manager.
     */
-   @Test(groups = { "stub", "contexts", "passivation" }, expectedExceptions = IllegalProductException.class)
+   @Test(groups = { "contexts", "passivation" }, expectedExceptions = IllegalProductException.class)
    @SpecAssertion(section = "9.5")
    public void testDependentScopedProducerMethodReturnsNonSerializableObjectForInjectionIntoConstructorParameterOfWebBeanWithPassivatingScopeFails()
    {
-      assert false;
+      registerProducerBean(CityProducer2.class, "create", Violation.class);
+      getInstance(Loviisa.class).ping();
    }
 
    /**
@@ -547,12 +549,12 @@ public class PassivatingContextTest extends AbstractTest
     * parameter of a producer method which declares a passivating scope type, an
     * IllegalProductException is thrown by the Web Bean manager.
     */
-   @Test(groups = { "stub", "contexts", "passivation" }, expectedExceptions = IllegalProductException.class)
+   @Test(groups = { "contexts", "passivation" }, expectedExceptions = IllegalProductException.class)
    @SpecAssertion(section = "9.5")
    public void testDependentScopedProducerFieldReturnsNonSerializableObjectForInjectionIntoConstructorParameterOfWebBeanWithPassivatingScopeFails()
    {
-      // TODO: case?
-      assert false;
+      registerProducerBean(CityProducer.class, "reference", Violation.class);
+      getInstance(Loviisa.class).ping();
    }
 
    /**
