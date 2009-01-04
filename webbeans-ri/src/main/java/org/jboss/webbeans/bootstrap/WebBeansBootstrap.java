@@ -205,13 +205,6 @@ public abstract class WebBeansBootstrap
          beans.add(producerFieldBean);
          log.info("Web Bean: " + producerFieldBean);
       }
-      for (AnnotatedMethod<Object> initializerMethod : bean.getInitializerMethods())
-      {
-         for (AnnotatedParameter<Object> parameter : initializerMethod.getAnnotatedParameters(Fires.class))
-         {
-            registerEvent(parameter, beans);
-         }
-      }
       for (AnnotatedItem injectionPoint : bean.getInjectionPoints())
       {
          if ( injectionPoint.isAnnotationPresent(Fires.class) )  
