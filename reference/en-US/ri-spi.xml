@@ -25,14 +25,24 @@
       
       <para>
          The Web Beans SPI is located in <literal>webbeans-ri-spi</literal>
-         module, and packaged as <literal>webbeans-ri-spi.jar</literal>.
+         module, and packaged as <literal>webbeans-ri-spi.jar</literal>. Some
+         SPIs are optional, if you need to override the default behavior, 
+         others are required.
       </para>
       
-      <para>
-         Currently, the only SPI to implement is the bootstrap spi:
-      </para>
+       <para>
+         You can specify the implementation of an SPI either as a system 
+         property, or in a properties file 
+         <literal>META-INF/web-beans-ri.properties</literal>. All property names
+         are the fully qualified class name of the implemented interface; all
+         property values are the fully qualified class name of the 
+         implementation class.
+       </para>
       
-      <programlisting role="JAVA"><![CDATA[public interface WebBeanDiscovery {
+      <section>
+         <title>Web Bean Discovery</title>
+      
+         <programlisting role="JAVA"><![CDATA[public interface WebBeanDiscovery {
    /**
     * Gets list of all classes in classpath archives with web-beans.xml files
     * 
@@ -56,20 +66,20 @@
    
 }]]></programlisting>
 
-      <para>
-         The discovery of Web Bean classes and <literal>web-bean.xml</literal> 
-         files is self-explanatory (the algorithm is described in Section 11.1 
-         of the JSR-299 specification, and isn't repeated here).
-      </para>
-      
-      <para>
-         The Web Beans RI also delegates EJB3 bean discovery to the container
-         so that it doesn't have to scan for EJB3 annotations or parse
-         <literal>ejb-jar.xml</literal>. For each EJB in the application an
-         EJBDescriptor should be discovered:
-      </para>
-      
-      <programlisting role="JAVA"><![CDATA[public interface EjbDescriptor<T> {
+         <para>
+            The discovery of Web Bean classes and <literal>web-bean.xml</literal> 
+            files is self-explanatory (the algorithm is described in Section 11.1 
+            of the JSR-299 specification, and isn't repeated here).
+         </para>
+         
+         <para>
+            The Web Beans RI also delegates EJB3 bean discovery to the container
+            so that it doesn't have to scan for EJB3 annotations or parse
+            <literal>ejb-jar.xml</literal>. For each EJB in the application an
+            EJBDescriptor should be discovered:
+         </para>
+         
+         <programlisting role="JAVA"><![CDATA[public interface EjbDescriptor<T> {
    
    /**
     * Gets the EJB type
@@ -142,27 +152,113 @@
    public String getLocalJndiName();
    
 }]]></programlisting>
+      
+          <para>
+             The contract described the JavaDoc is enough to implement 
+             an EJBDescriptor. In addition to these two interfaces, there is 
+             <literal>BusinessInterfaceDescriptor</literal> which represents a local 
+             business interface (encapsulating the interface class and jndi name).
+          </para>
+       
+          <para>
+            The Web Beans RI can be told to load your implementation of
+            <literal>WebBeanDiscovery</literal> using the property
+            <literal>org.jboss.webbeans.bootstrap.WebBeanDiscovery</literal> with the
+            fully qualified class name as the value. For example:
+          </para>
+          
+          <programlisting>org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans.integration.jbossas.WebBeanDiscoveryImpl</programlisting>
+       </section>
+       
+       <section>
+         <title>JNDI</title>
+         
+         <para>
+            The Web Beans RI implements JNDI binding and lookup according to
+            standards, however you may want to alter the binding and lookup (for
+            example in an environment where JNDI isn't available). To do this,
+            implement 
+            <literal>org.jboss.webbeans.spi.resources.Naming</literal>:
+         </para>
+         
+         <programlisting role="JAVA"><![CDATA[public interface Naming extends Serializable {
    
-    <para>
-       The contract described the JavaDoc is enough to implement 
-       an EJBDescriptor. In addition to these two interfaces, there is 
-       <literal>BusinessInterfaceDescriptor</literal> which represents a local 
-       business interface (encapsulating the interface class and jndi name).
-    </para>
+   /**
+    * Typed JNDI lookup
+    * 
+    * @param <T> The type
+    * @param name The JNDI name
+    * @param expectedType The expected type
+    * @return The object
+    */
+   public <T> T lookup(String name, Class<? extends T> expectedType);
+
+   /**
+    * Binds an item to JNDI
+    * 
+    * @param key The key to bind under
+    * @param value The item to bind
+    */
+   public void bind(String key, Object value);
+   
+}]]></programlisting>
+
+          <para>
+             and tell the RI to use it:
+          </para>
+          
+          <programlisting>org.jboss.webbeans.resources.spi.Naming=com.acme.MyNaming</programlisting>
+         
+       </section>
+       
+       <section>
+         <title>Resource loading</title>
+         
+         <para>
+            The Web Beans RI needs to load classes and resources from the 
+            classpath at various times. By default, they are loaded from the 
+            same classloader that was used to load the RI, however this may not
+            be correct for some environments. If this is case, you can implement
+            <literal>org.jboss.webbeans.spi.ResourceLoader</literal>:
+         </para>
+         
+         <programlisting role="JAVA"><![CDATA[
+         public interface ResourceLoader {
     
-    <para>
-      The Web Beans RI can be told to load your implementation of
-      <literal>WebBeanDiscovery</literal> using the property
-      <literal>org.jboss.webbeans.bootstrap.webBeanDiscovery</literal> with the
-      fully qualified class name as the value. For example:
-    </para>
-    
-    <programlisting>org.jboss.webbeans.bootstrap.webBeanDiscovery=org.jboss.webbeans.integration.jbossas.WebBeanDiscoveryImpl</programlisting>
-    
-    <para>
-      The property can either be specified as a system property, or in a
-      properties file <literal>META-INF/web-beans-ri.properties</literal>.
-    </para>
+   /**
+    * Creates a class from a given FQCN
+    * 
+    * @param name The name of the clsas
+    * @return The class
+    */
+   public Class<?> classForName(String name);
+   
+   /**
+    * Gets a resource as a URL by name
+    * 
+    * @param name The name of the resource
+    * @return An URL to the resource
+    */
+   public URL getResource(String name);
+   
+   /**
+    * Gets resources as URLs by name
+    * 
+    * @param name The name of the resource
+    * @return An iterable reference to the URLS
+    */
+   public Iterable<URL> getResources(String name);
+   
+}
+         ]]></programlisting>
+
+          <para>
+             and tell the RI to use it:
+          </para>
+          
+          <programlisting>org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader</programlisting>
+         
+       </section>
    
     </section>
     
