@@ -191,7 +191,7 @@ public class PassivatingContextTest extends AbstractTest
     * @throws IOException
     */
    // TODO requires an EJB instance
-   @Test(groups = { "contexts", "passivation", "borken" })
+   @Test(groups = { "contexts", "passivation", "broken" })
    @SpecAssertion(section = "9.5")
    public void testStatefulEJBIsSerializedWhenPassivatedByEJBContainer() throws IOException, ClassNotFoundException
    {
