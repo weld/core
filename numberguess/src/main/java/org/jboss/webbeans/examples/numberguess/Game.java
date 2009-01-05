@@ -8,7 +8,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.webbeans.AnnotationLiteral;
 import javax.webbeans.Current;
-import javax.webbeans.Initializer;
 import javax.webbeans.Named;
 import javax.webbeans.SessionScoped;
 import javax.webbeans.manager.Manager;
@@ -21,19 +20,15 @@ public class Game implements Serializable
    
    private int guess;
    private int smallest;
-   private int biggest;
+   
+   @MaxNumber
+   private transient int biggest;
    private int remainingGuesses;
    
    @Current Manager manager;
    
    public Game()
    {
-   }
-   
-   @Initializer
-   Game(@MaxNumber int maxNumber)
-   {      
-      this.biggest = maxNumber;
    }
 
    public int getNumber()
