@@ -36,30 +36,34 @@ public class SessionBeanInterceptor
     * Gets the underlying target and calls the post-construct method
     * 
     * @param invocationContext The invocation context
+    * @throws Exception 
     */
    @PostConstruct
-   public void postConstruct(InvocationContext invocationContext)
+   public void postConstruct(InvocationContext invocationContext) throws Exception
    {
       EnterpriseBean<Object> enterpriseBean = getBean(invocationContext);
       if (enterpriseBean != null)
       {
          enterpriseBean.postConstruct(invocationContext.getTarget());
       }
+      invocationContext.proceed();
    }
 
    /**
     * Gets the underlying target and calls the pre-destroy method
     * 
     * @param invocationContext The invocation context
+    * @throws Exception 
     */
    @PreDestroy
-   public void preDestroy(InvocationContext invocationContext)
+   public void preDestroy(InvocationContext invocationContext) throws Exception
    {
       EnterpriseBean<Object> enterpriseBean = getBean(invocationContext);
       if (enterpriseBean != null)
       {
          enterpriseBean.preDestroy(invocationContext.getTarget());
       }
+      invocationContext.proceed();
    }
 
    /**
