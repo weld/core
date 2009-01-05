@@ -15,13 +15,14 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.context.beanmap;
+package org.jboss.webbeans.servlet;
 
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.context.ApplicationContext;
+import org.jboss.webbeans.context.beanmap.AbstractBeanMap;
 
 /**
  * A BeanMap that uses a HTTP session as backing map

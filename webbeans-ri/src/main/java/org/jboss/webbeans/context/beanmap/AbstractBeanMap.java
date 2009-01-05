@@ -26,6 +26,7 @@ import javax.webbeans.manager.Contextual;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.servlet.ApplicationBeanMap;
 import org.jboss.webbeans.util.Names;
 
 public abstract class AbstractBeanMap implements BeanMap

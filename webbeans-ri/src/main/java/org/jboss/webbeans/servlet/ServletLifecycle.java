@@ -25,7 +25,6 @@ import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
-import org.jboss.webbeans.context.beanmap.SessionBeanMap;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 

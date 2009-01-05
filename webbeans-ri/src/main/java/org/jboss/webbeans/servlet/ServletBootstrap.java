@@ -28,7 +28,6 @@ import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
-import org.jboss.webbeans.context.beanmap.ApplicationBeanMap;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.util.DeploymentProperties;
 
