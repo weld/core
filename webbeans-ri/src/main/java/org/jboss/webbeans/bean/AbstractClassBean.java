@@ -338,37 +338,4 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       return Production.class;
    }
 
-   protected void checkProducedInjectionPoints()
-   {
-      for (AnnotatedItem<?, ?> injectionPoint : getInjectionPoints())
-      {
-         if (injectionPoint instanceof AbstractAnnotatedMember)
-         {
-            if (((AbstractAnnotatedMember<?, ?>) injectionPoint).isTransient())
-            {
-               continue;
-            }
-         }
-         Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
-         Bean<?> bean = manager.resolveByType(injectionPoint.getType(), bindings).iterator().next();
-         boolean producerBean = (bean instanceof ProducerMethodBean || bean instanceof ProducerFieldBean);
-         if (producerBean && Dependent.class.equals(bean.getScopeType()) && !bean.isSerializable())
-         {
-            throw new IllegalProductException("Dependent-scoped producer bean " + producerBean + " produces a non-serializable product for injection for " + injectionPoint + " in " + this);
-         }
-      }
-   }
-
-   protected void checkInjectionPoints()
-   {
-      for (AnnotatedItem<?, ?> injectionPoint : getInjectionPoints())
-      {
-         Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
-         Bean<?> bean = manager.resolveByType(injectionPoint.getType(), bindings).iterator().next();
-         if (Dependent.class.equals(bean.getScopeType()) && !bean.isSerializable())
-         {
-            throw new UnserializableDependencyException(bean + " is a non-serializable dependent injection for " + injectionPoint + " in " + this);
-         }
-      }
-   }
 }

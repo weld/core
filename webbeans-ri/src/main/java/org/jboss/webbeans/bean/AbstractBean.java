@@ -30,16 +30,19 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.DeploymentType;
 import javax.webbeans.Event;
+import javax.webbeans.IllegalProductException;
 import javax.webbeans.Named;
 import javax.webbeans.ScopeType;
 import javax.webbeans.Specializes;
 import javax.webbeans.Standard;
 import javax.webbeans.Stereotype;
+import javax.webbeans.UnserializableDependencyException;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.binding.CurrentBinding;
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedMember;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem.AnnotationMap;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -263,6 +266,40 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       this.primitive = Reflections.isPrimitive(getType());
    }
 
+   protected void checkProducedInjectionPoints()
+   {
+      for (AnnotatedItem<?, ?> injectionPoint : getInjectionPoints())
+      {
+         if (injectionPoint instanceof AbstractAnnotatedMember)
+         {
+            if (((AbstractAnnotatedMember<?, ?>) injectionPoint).isTransient())
+            {
+               continue;
+            }
+         }
+         Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
+         Bean<?> bean = manager.resolveByType(injectionPoint.getType(), bindings).iterator().next();
+         boolean producerBean = (bean instanceof ProducerMethodBean || bean instanceof ProducerFieldBean);
+         if (producerBean && Dependent.class.equals(bean.getScopeType()) && !bean.isSerializable())
+         {
+            throw new IllegalProductException("Dependent-scoped producer bean " + producerBean + " produces a non-serializable product for injection for " + injectionPoint + " in " + this);
+         }
+      }
+   }
+   
+   protected void checkInjectionPoints()
+   {
+      for (AnnotatedItem<?, ?> injectionPoint : getInjectionPoints())
+      {
+         Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
+         Bean<?> bean = manager.resolveByType(injectionPoint.getType(), bindings).iterator().next();
+         if (Dependent.class.equals(bean.getScopeType()) && !bean.isSerializable())
+         {
+            throw new UnserializableDependencyException(bean + " is a non-serializable dependent injection for " + injectionPoint + " in " + this);
+         }
+      }
+   }     
+   
    /**
     * Initializes the scope type
     */
