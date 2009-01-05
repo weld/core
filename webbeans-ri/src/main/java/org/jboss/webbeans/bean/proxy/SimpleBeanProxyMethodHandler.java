@@ -28,6 +28,7 @@ import javax.webbeans.manager.Context;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.util.Reflections;
 
 /**
  * A Javassist MethodHandler that delegates method calls to a proxied bean. If
@@ -81,8 +82,7 @@ public class SimpleBeanProxyMethodHandler implements MethodHandler, Serializable
       }
       Context context = CurrentManager.rootManager().getContext(bean.getScopeType());
       Object proxiedInstance = context.get(bean, true);
-      proxiedMethod.setAccessible(true);
-      Object returnValue = proxiedMethod.invoke(proxiedInstance, args);
+      Object returnValue = Reflections.lookupMethod(proxiedMethod, proxiedInstance).invoke(proxiedInstance, args);
       log.trace("Executed method " + proxiedMethod + " on " + proxiedInstance + " with parameters " + args + " and got return value " + returnValue);
       return returnValue;
    }

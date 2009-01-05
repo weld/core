@@ -553,7 +553,7 @@ public class Reflections
     */
    public static Method lookupMethod(Method method, Object instance)
    {
-      for (Class<? extends Object> clazz = instance.getClass(); clazz != Object.class; clazz = clazz.getSuperclass())
+      for (Class<? extends Object> clazz = instance.getClass(); clazz != null; clazz = clazz.getSuperclass())
       {
          try
          {
