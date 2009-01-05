@@ -1,10 +1,10 @@
 <project basedir="." name="example.build.script" default="restart">
+
+	<dirname property="wbexamples.dir" file="${ant.file.example.build.script}" />
 	
-	<dirname property="wbri.dir" file="${ant.file.example.build.script}/../" />
+	<property name="maven.dir" location="${wbexamples.dir}/lib/maven" />
 	
-	<property name="maven.dir" location="${wbri.dir}/lib/maven" />
-	
-	<property file="${wbri.dir}/jboss-as/build.properties"/>
+	<property file="${wbexamples.dir}/build.properties"/>
 	
 	<property name="final.url" value="http://localhost:8080/${example.name}" />
 	

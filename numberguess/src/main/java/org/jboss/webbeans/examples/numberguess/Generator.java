@@ -1,12 +1,17 @@
 package org.jboss.webbeans.examples.numberguess;
 
 
+import java.io.Serializable;
+
 import javax.webbeans.ApplicationScoped;
 import javax.webbeans.Produces;
 
 @ApplicationScoped
-public class Generator {
+public class Generator implements Serializable 
+{
    
+   private static final long serialVersionUID = -7213673465118041882L;
+
    private java.util.Random random = new java.util.Random( System.currentTimeMillis() );
    
    private int maxNumber = 100;

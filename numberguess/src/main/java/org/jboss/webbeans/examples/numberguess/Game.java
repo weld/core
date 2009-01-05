@@ -1,6 +1,8 @@
 package org.jboss.webbeans.examples.numberguess;
 
 
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -13,7 +15,7 @@ import javax.webbeans.manager.Manager;
 
 @Named
 @SessionScoped
-public class Game
+public class Game implements Serializable
 {
    private int number;
    
