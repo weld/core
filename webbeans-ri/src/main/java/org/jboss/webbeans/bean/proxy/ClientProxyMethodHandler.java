@@ -39,11 +39,11 @@ import org.jboss.webbeans.util.Reflections;
  * 
  * @see org.jboss.webbeans.bean.proxy.ProxyPool
  */
-public class SimpleBeanProxyMethodHandler implements MethodHandler, Serializable
+public class ClientProxyMethodHandler implements MethodHandler, Serializable
 {
    private static final long serialVersionUID = -5391564935097267888L;
    // The log provider
-   private static transient LogProvider log = Logging.getLogProvider(SimpleBeanProxyMethodHandler.class);
+   private static transient LogProvider log = Logging.getLogProvider(ClientProxyMethodHandler.class);
    // The bean
    private transient Bean<?> bean;
    // The bean index in the manager
@@ -55,7 +55,7 @@ public class SimpleBeanProxyMethodHandler implements MethodHandler, Serializable
     * @param bean The bean to proxy
     * @param beanIndex The index to the bean in the manager bean list
     */
-   public SimpleBeanProxyMethodHandler(Bean<?> bean, int beanIndex)
+   public ClientProxyMethodHandler(Bean<?> bean, int beanIndex)
    {
       this.bean = bean;
       this.beanIndex = beanIndex;

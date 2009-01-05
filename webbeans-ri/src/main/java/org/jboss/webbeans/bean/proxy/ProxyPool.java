@@ -76,7 +76,7 @@ public class ProxyPool implements Serializable
       
       try
       {
-         SimpleBeanProxyMethodHandler proxyMethodHandler = new SimpleBeanProxyMethodHandler(bean, beanIndex);
+         ClientProxyMethodHandler proxyMethodHandler = new ClientProxyMethodHandler(bean, beanIndex);
          Set<Type> classes = new HashSet<Type>(bean.getTypes());
          classes.add(Serializable.class);
          ProxyFactory proxyFactory = Proxies.getProxyFactory(classes);
