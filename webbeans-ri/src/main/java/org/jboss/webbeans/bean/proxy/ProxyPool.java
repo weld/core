@@ -18,20 +18,18 @@
 package org.jboss.webbeans.bean.proxy;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javassist.util.proxy.ProxyFactory;
-import javassist.util.proxy.ProxyObject;
 
 import javax.webbeans.DefinitionException;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.util.ConcurrentCache;
+import org.jboss.webbeans.util.Proxies;
 
 /**
  * A proxy pool for holding scope adaptors (client proxies)
@@ -42,8 +40,8 @@ import org.jboss.webbeans.util.ConcurrentCache;
  */
 public class ProxyPool implements Serializable
 {
-   private static final long serialVersionUID = 1L;
-
+   
+   
    /**
     * A container/cache for previously created proxies
     * 
@@ -57,49 +55,6 @@ public class ProxyPool implements Serializable
    public ProxyPool()
    {
       this.pool = new ConcurrentCache<Bean<? extends Object>, Object>();
-   }
-
-   /**
-    * Type info (interfaces and superclasses) for a class
-    * 
-    * @author Nicklas Karlsson
-    */
-   private static class TypeInfo
-   {
-      Class<?>[] interfaces;
-      Class<?> superclass;
-   }
-
-   /**
-    * Gets the type info for a class
-    * 
-    * Looks through the give methods and organizes it into a TypeInfo object
-    * containing an array of interfaces and the most common superclass. Adds
-    * Serializable to the interfaces list also.
-    * 
-    * @param types A set of types (interfaces and superclasses) of a class
-    * @return The TypeInfo with categorized information
-    */
-   private static TypeInfo getTypeInfo(Set<Class<?>> types)
-   {
-      TypeInfo typeInfo = new TypeInfo();
-      Set<Class<?>> interfaces = new HashSet<Class<?>>();
-      Class<?> superclass = null;
-      for (Class<?> type : types)
-      {
-         if (type.isInterface())
-         {
-            interfaces.add(type);
-         }
-         else if (superclass == null || (type != Object.class && superclass.isAssignableFrom(type)))
-         {
-            superclass = type;
-         }
-      }
-      interfaces.add(Serializable.class);
-      typeInfo.interfaces = interfaces.toArray(new Class<?>[0]);
-      typeInfo.superclass = superclass;
-      return typeInfo;
    }
 
    /**
@@ -118,14 +73,16 @@ public class ProxyPool implements Serializable
    @SuppressWarnings("unchecked")
    private static <T> T createClientProxy(Bean<T> bean, int beanIndex) throws RuntimeException
    {
-      ProxyFactory proxyFactory = new ProxyFactory();
-      TypeInfo typeInfo = getTypeInfo(bean.getTypes());
-      proxyFactory.setInterfaces(typeInfo.interfaces);
-      proxyFactory.setSuperclass(typeInfo.superclass);
-      T clientProxy;
+      
       try
       {
-         clientProxy = (T) proxyFactory.createClass().newInstance();
+         SimpleBeanProxyMethodHandler proxyMethodHandler = new SimpleBeanProxyMethodHandler(bean, beanIndex);
+         Set<Class<?>> classes = new HashSet<Class<?>>(bean.getTypes());
+         classes.add(Serializable.class);
+         ProxyFactory proxyFactory = Proxies.getProxyFactory(classes);
+         proxyFactory.setHandler(proxyMethodHandler);
+         Class<?> clazz = proxyFactory.createClass();
+         return (T) clazz.newInstance();
       }
       catch (InstantiationException e)
       {
@@ -135,9 +92,6 @@ public class ProxyPool implements Serializable
       {
          throw new RuntimeException("Could not access bean correctly when creating client proxy for " + bean, e);
       }
-      SimpleBeanProxyMethodHandler proxyMethodHandler = new SimpleBeanProxyMethodHandler(bean, beanIndex);
-      ((ProxyObject) clientProxy).setHandler(proxyMethodHandler);
-      return clientProxy;
    }
 
    /**

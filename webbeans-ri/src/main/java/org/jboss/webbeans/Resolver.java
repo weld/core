@@ -17,7 +17,6 @@
 
 package org.jboss.webbeans;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +28,7 @@ import java.util.TreeSet;
 import java.util.concurrent.Callable;
 
 import javax.webbeans.NullableDependencyException;
+import javax.webbeans.TypeLiteral;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Decorator;
 import javax.webbeans.manager.InterceptionType;
@@ -45,15 +45,19 @@ import org.jboss.webbeans.util.ListComparator;
  * 
  * @author Pete Muir
  */
-public class Resolver implements Serializable
+public class Resolver
 {
    private static final long serialVersionUID = 1L;
 
+   private static final Class<AnnotatedItem<Object, Object>> ANNOTATED_ITEM_GENERIFIED_WITH_OBJECT_OBJECT = new TypeLiteral<AnnotatedItem<Object, Object>>(){}.getRawType();
+   private static final Class<Set<Bean<Object>>> BEAN_SET_GENERIFIED_WITH_OBJECT = new TypeLiteral<Set<Bean<Object>>>(){}.getRawType();
+   private static final Class<Set<Bean<?>>> BEAN_SET_GENERIFIED_WITH_WILDCARD = new TypeLiteral<Set<Bean<?>>>(){}.getRawType();
+   
    /**
     * Extension of an element which bases equality not only on type, but also on
     * binding type
     */
-   private abstract class ResolvableAnnotatedItem<T, S> extends ForwardingAnnotatedItem<T, S> implements Serializable
+   private abstract class ResolvableAnnotatedItem<T, S> extends ForwardingAnnotatedItem<T, S>
    {
       private static final long serialVersionUID = 1L;
 
@@ -165,11 +169,11 @@ public class Resolver implements Serializable
     * Resolve all injection points added using
     * {@link #addInjectionPoints(Collection)}
     */
-   @SuppressWarnings("unchecked")
    public void resolveInjectionPoints()
    {
-      for (final AnnotatedItem injectable : injectionPoints)
+      for (final AnnotatedItem<? extends Object, ? extends Object> injectable : injectionPoints)
       {
+         
          registerInjectionPoint(new ResolvableAnnotatedItem<Object, Object>()
          {
             private static final long serialVersionUID = 1L;
@@ -177,7 +181,7 @@ public class Resolver implements Serializable
             @Override
             public AnnotatedItem<Object, Object> delegate()
             {
-               return injectable;
+               return ANNOTATED_ITEM_GENERIFIED_WITH_OBJECT_OBJECT.cast(injectable); 
             }
          });
       }
@@ -223,14 +227,14 @@ public class Resolver implements Serializable
     * @param name The name to match
     * @return The set of matching beans
     */
-   public Set<Bean<?>> get(final String name)
+   public Set<Bean<? extends Object>> get(final String name)
    {
       return resolvedNames.putIfAbsent(name, new Callable<Set<Bean<?>>>()
       {
 
-         @SuppressWarnings("unchecked")
-         public Set<Bean<?>> call() throws Exception
+         public Set<Bean<? extends Object>> call() throws Exception
          {
+            
             Set<Bean<?>> beans = new HashSet<Bean<?>>();
             for (Bean<?> bean : manager.getBeans())
             {
@@ -239,11 +243,19 @@ public class Resolver implements Serializable
                   beans.add(bean);
                }
             }
-            return retainHighestPrecedenceBeans((Set) beans, manager.getEnabledDeploymentTypes());
+            return retainHighestPrecedenceBeans(beans, manager.getEnabledDeploymentTypes());
+         }
+         
+         // Helper method to deal with dynamic casts being needed
+         private Set<Bean<?>> retainHighestPrecedenceBeans(Set<Bean<?>> beans, List<Class<? extends Annotation>> enabledDeploymentTypes)
+         {
+            return BEAN_SET_GENERIFIED_WITH_WILDCARD.cast(Resolver.retainHighestPrecedenceBeans(BEAN_SET_GENERIFIED_WITH_OBJECT.cast(beans), enabledDeploymentTypes));
          }
 
       });
    }
+   
+   
 
    /**
     * Filters out the beans with the highest enabled deployment type

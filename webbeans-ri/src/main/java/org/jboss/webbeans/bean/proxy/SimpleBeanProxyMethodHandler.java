@@ -28,7 +28,6 @@ import javax.webbeans.manager.Context;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.util.Reflections;
 
 /**
  * A Javassist MethodHandler that delegates method calls to a proxied bean. If
@@ -43,7 +42,7 @@ public class SimpleBeanProxyMethodHandler implements MethodHandler, Serializable
 {
    private static final long serialVersionUID = -5391564935097267888L;
    // The log provider
-   private LogProvider log = Logging.getLogProvider(SimpleBeanProxyMethodHandler.class);
+   private static transient LogProvider log = Logging.getLogProvider(SimpleBeanProxyMethodHandler.class);
    // The bean
    private transient Bean<?> bean;
    // The bean index in the manager
@@ -69,11 +68,11 @@ public class SimpleBeanProxyMethodHandler implements MethodHandler, Serializable
     * executes that method with the same parameters.
     * 
     * @param self A reference to the proxy
-    * @param method The method to execute
-    * @param process The next method to proceed to
+    * @param proxiedMethod The method to execute
+    * @param proceed The next method to proceed to
     * @param args The method calling arguments
     */
-   public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
+   public Object invoke(Object self, Method proxiedMethod, Method proceed, Object[] args) throws Throwable
    {
       // TODO account for child managers
       if (bean == null)
@@ -82,7 +81,7 @@ public class SimpleBeanProxyMethodHandler implements MethodHandler, Serializable
       }
       Context context = CurrentManager.rootManager().getContext(bean.getScopeType());
       Object proxiedInstance = context.get(bean, true);
-      Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
+      proxiedMethod.setAccessible(true);
       Object returnValue = proxiedMethod.invoke(proxiedInstance, args);
       log.trace("Executed method " + proxiedMethod + " on " + proxiedInstance + " with parameters " + args + " and got return value " + returnValue);
       return returnValue;

@@ -74,7 +74,8 @@ import org.jboss.webbeans.util.Strings;
 @Standard
 public class ManagerImpl implements Manager, Serializable
 {
-   private static final long serialVersionUID = 1L;
+   
+   private static final long serialVersionUID = 3021562879133838561L;
 
    // The JNDI key to place the manager under
    public static final String JNDI_KEY = "java:comp/Manager";
@@ -83,8 +84,11 @@ public class ManagerImpl implements Manager, Serializable
    private List<Class<? extends Annotation>> enabledDeploymentTypes;
    // The Web Beans manager
    private EventManager eventManager;
+
    // The bean resolver
-   private Resolver resolver;
+   // The cache can be rebuilt at any time
+   private transient Resolver resolver;
+   
    // The registered contexts
    private ContextMap contextMap;
    // The client proxy pool
@@ -387,10 +391,9 @@ public class ManagerImpl implements Manager, Serializable
     * @see javax.webbeans.manager.Manager#addObserver(javax.webbeans.Observer,
     *      javax.webbeans.TypeLiteral, java.lang.annotation.Annotation[])
     */
-   @SuppressWarnings("unchecked")
    public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
-      eventManager.addObserver(observer, (Class<T>) eventType.getType(), bindings);
+      eventManager.addObserver(observer, eventType.getRawType(), bindings);
       return this;
    }
 
@@ -610,10 +613,9 @@ public class ManagerImpl implements Manager, Serializable
     * @see javax.webbeans.manager.Manager#removeObserver(javax.webbeans.Observer,
     *      javax.webbeans.TypeLiteral, java.lang.annotation.Annotation[])
     */
-   @SuppressWarnings("unchecked")
    public <T> Manager removeObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
-      this.eventManager.removeObserver(observer, (Class<T>) eventType.getType(), bindings);
+      this.eventManager.removeObserver(observer, eventType.getRawType(), bindings);
       return this;
    }
 

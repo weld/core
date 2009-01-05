@@ -278,6 +278,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
             }
          }
          Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
+         // TODO is this really safe? I got an NPE from here with a injection point missing
          Bean<?> bean = manager.resolveByType(injectionPoint.getType(), bindings).iterator().next();
          boolean producerBean = (bean instanceof ProducerMethodBean || bean instanceof ProducerFieldBean);
          if (producerBean && Dependent.class.equals(bean.getScopeType()) && !bean.isSerializable())
