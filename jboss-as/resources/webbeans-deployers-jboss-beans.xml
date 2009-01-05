@@ -5,8 +5,21 @@
 -->
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
-  <!-- Web Beans deployer -->
+  <!-- Web Beans deployers -->
+  
+  <!-- Responsible for discovering Web Bean classes -->
   <bean name="WebBeansDiscoveryDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.env.WebBeanDiscoveryDeployer"/>
-  <bean name="WebBeansDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.cl.WebBeansWebUrlIntegrationDeployer"/>
+  
+  <!-- Responsible for pushing the Web Beans RI onto the application classpath -->
+  <bean name="WebBeansWebUrlInteegrationDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.cl.WebBeansWebUrlIntegrationDeployer"/>
+  
+  <!-- Responsible for inserting the Web Beans RI EJB interceptor -->
+  <bean name="PostEjbJarMetadataDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.metadata.PostEjbJarMetadataDeployer"/>
+  
+  <!-- Responsible for enabling classloader isolation for Web Bean wars -->
+  <!-- <bean name="PostJBossWebMetadataDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.metadata.PostJBossWebMetadataDeployer"/>-->
+  
+  <!-- Responsible for adding the Web Beans RI listener to the Servlet -->
+  <bean name="PostWebMetadataDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.metadata.PostWebMetadataDeployer"/>
 
 </deployment>
