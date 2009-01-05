@@ -593,20 +593,33 @@ public class Reflections
     * 
     * @param clazz The class to examine
     * @return The set of classes and interfaces in the hierarchy
+    * @see #getTypeHierachy(Class, Set)
     */
    public static Set<Class<?>> getTypeHierachy(Class<?> clazz)
    {
       Set<Class<?>> classes = new HashSet<Class<?>>();
+      getTypeHierachy(clazz, classes);
+      return classes;
+   }
+   
+   /**
+    * Gets the flattened type hierarchy for a class, including all super classes
+    * and the entire interface type hierarchy
+    * 
+    * @param clazz the class to examine
+    * @param classes the set of types
+    */
+   public static void getTypeHierachy(Class<?> clazz, Set<? super Class<?>> classes)
+   {
       if (clazz != null)
       {
          classes.add(clazz);
-         classes.addAll(getTypeHierachy(clazz.getSuperclass()));
+         getTypeHierachy(clazz.getSuperclass(), classes);
          for (Class<?> c : clazz.getInterfaces())
          {
-            classes.addAll(getTypeHierachy(c));
+            getTypeHierachy(c, classes);
          }
       }
-      return classes;
    }
 
    /**

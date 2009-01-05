@@ -18,6 +18,7 @@
 package javax.webbeans.manager;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Set;
 
 /**
@@ -47,7 +48,7 @@ public abstract class Bean<T> implements Contextual<T>
 
    public abstract void destroy(T instance);
 
-   public abstract Set<Class<?>> getTypes();
+   public abstract Set<Type> getTypes();
 
    public abstract Set<Annotation> getBindingTypes();
 

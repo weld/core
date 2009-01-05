@@ -123,7 +123,7 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
    /**
     * @see org.jboss.webbeans.introspector.AnnotatedItem
     */
-   public boolean isAssignableFrom(Set<Class<?>> types)
+   public boolean isAssignableFrom(Set<Type> types)
    {
       return delegate().isAssignableFrom(types);
    }

@@ -104,9 +104,9 @@ public class Proxies
     * @param classes Additional interfaces the proxy should implement
     * @return the proxy factory
     */
-   public static ProxyFactory getProxyFactory(Set<Class<?>> types)
+   public static ProxyFactory getProxyFactory(Set<Type> types)
    {
-      return TypeInfo.ofClasses(types).createProxyFactory();
+      return TypeInfo.ofTypes(types).createProxyFactory();
    }
    
 }

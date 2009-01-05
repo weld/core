@@ -18,6 +18,7 @@
 package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.webbeans.manager.Bean;
@@ -115,7 +116,7 @@ public abstract class ForwardingBean<T> extends Bean<T>
     * @return The API types
     */
    @Override
-   public Set<Class<?>> getTypes()
+   public Set<Type> getTypes()
    {
       return delegate().getTypes();
    }

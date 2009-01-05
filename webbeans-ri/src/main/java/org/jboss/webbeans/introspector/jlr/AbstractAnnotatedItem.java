@@ -390,13 +390,21 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedItem#isAssignableFrom(Set)
     */
-   public boolean isAssignableFrom(Set<Class<?>> types)
+   public boolean isAssignableFrom(Set<Type> types)
    {
-      for (Class<?> type : types)
+      for (Type type : types)
       {
-         if (isAssignableFrom(type, Reflections.getActualTypeArguments(type)))
+         if (type instanceof Class)
          {
-            return true;
+            Class<?> clazz = (Class<?>) type;
+            if (isAssignableFrom(clazz, Reflections.getActualTypeArguments(clazz)))
+            {
+               return true;
+            }
+         }
+         else
+         {
+            
          }
       }
       return false;

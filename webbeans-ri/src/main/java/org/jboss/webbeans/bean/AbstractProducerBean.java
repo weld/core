@@ -21,18 +21,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 
-import javax.webbeans.BindingType;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.IllegalProductException;
-import javax.webbeans.UnserializableDependencyException;
-import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedMember;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
@@ -76,22 +71,22 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
     * Initializes the API types
     */
    @Override
-   protected void initApiTypes()
+   protected void initTypes()
    {
       if (getType().isArray() || getType().isPrimitive())
       {
-         apiTypes = new HashSet<Class<?>>();
-         apiTypes.add(getType());
-         apiTypes.add(Object.class);
+         types = new HashSet<Type>();
+         types.add(getType());
+         types.add(Object.class);
       }
       else if (getType().isInterface())
       {
-         super.initApiTypes();
-         apiTypes.add(Object.class);
+         super.initTypes();
+         types.add(Object.class);
       }
       else
       {
-         super.initApiTypes();
+         super.initTypes();
       }
    }
 

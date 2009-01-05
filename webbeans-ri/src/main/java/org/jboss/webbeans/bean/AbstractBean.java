@@ -102,7 +102,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    // The type
    protected Class<T> type;
    // The API types
-   protected Set<Class<?>> apiTypes;
+   protected Set<Type> types;
    // The injection points
    protected Set<AnnotatedItem<?, ?>> injectionPoints;
    // If the type a primitive?
@@ -137,15 +137,16 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       initDeploymentType();
       checkDeploymentType();
       initScopeType();
-      initApiTypes();
+      initTypes();
    }
 
    /**
     * Initializes the API types
     */
-   protected void initApiTypes()
+   protected void initTypes()
    {
-      apiTypes = Reflections.getTypeHierachy(getType());
+      types = new HashSet<Type>();
+      Reflections.getTypeHierachy(getType(), types);
    }
 
    /**
@@ -501,9 +502,9 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * @see javax.webbeans.manager.Bean#getTypes()
     */
    @Override
-   public Set<Class<?>> getTypes()
+   public Set<Type> getTypes()
    {
-      return apiTypes;
+      return types;
    }
 
    /**

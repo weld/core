@@ -127,7 +127,7 @@ public interface AnnotatedItem<T, S>
     * @param types The set of types to match
     * @return True if assignable, false otherwise.
     */
-   public boolean isAssignableFrom(Set<Class<?>> types);
+   public boolean isAssignableFrom(Set<Type> types);
 
    /**
     * Gets the actual type arguments for any parameterized types that this
