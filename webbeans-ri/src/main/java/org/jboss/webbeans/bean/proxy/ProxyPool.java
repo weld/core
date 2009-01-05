@@ -70,7 +70,6 @@ public class ProxyPool implements Serializable
     * @throws InstantiationException When the proxy couldn't be created
     * @throws IllegalAccessException When the proxy couldn't be created
     */
-   @SuppressWarnings("unchecked")
    private static <T> T createClientProxy(Bean<T> bean, int beanIndex) throws RuntimeException
    {
       
@@ -82,7 +81,11 @@ public class ProxyPool implements Serializable
          ProxyFactory proxyFactory = Proxies.getProxyFactory(classes);
          proxyFactory.setHandler(proxyMethodHandler);
          Class<?> clazz = proxyFactory.createClass();
-         return (T) clazz.newInstance();
+         
+         @SuppressWarnings("unchecked")
+         T instance = (T) clazz.newInstance();
+         
+         return instance;
       }
       catch (InstantiationException e)
       {
