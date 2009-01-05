@@ -23,6 +23,7 @@ import javax.servlet.ServletContext;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.PropertiesBasedBootstrap;
+import org.jboss.webbeans.bootstrap.SimpleResourceLoader;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.DependentContext;
@@ -52,20 +53,15 @@ public class ServletBootstrap extends PropertiesBasedBootstrap
       // Create the manager
       this.manager = new ManagerImpl();
       
-      // Create a resouce loader based on the servlet context for initial loading 
-      ResourceLoader servletContextResourceLoader = new ServletContextResourceLoader(servletContext);
-      this.deploymentProperties = new DeploymentProperties(servletContextResourceLoader);
+      // Create a simpple resource loader based for initial loading 
+      this.resourceLoader = new SimpleResourceLoader();
+      this.deploymentProperties = new DeploymentProperties(resourceLoader);
       
       // Attempt to create a plugin resource loader
-      Constructor<? extends ResourceLoader> resourceLoaderConstructor = getClassConstructor(deploymentProperties, servletContextResourceLoader, ResourceLoader.PROPERTY_NAME, ResourceLoader.class, ServletContext.class);
+      Constructor<? extends ResourceLoader> resourceLoaderConstructor = getClassConstructor(deploymentProperties, resourceLoader, ResourceLoader.PROPERTY_NAME, ResourceLoader.class, ServletContext.class);
       if (resourceLoaderConstructor != null)
       {
          this.resourceLoader = newInstance(resourceLoaderConstructor, servletContext);
-      }
-      else
-      {
-         // If no plugin resource loader, use the servlet context resource loader
-         this.resourceLoader = servletContextResourceLoader;
       }
       
       // Now safe to initialize other properties and register the manager
