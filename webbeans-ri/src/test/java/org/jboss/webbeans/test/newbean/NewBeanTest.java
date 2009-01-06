@@ -1,13 +1,41 @@
-package org.jboss.webbeans.test;
+package org.jboss.webbeans.test.newbean;
+
+import java.lang.annotation.Annotation;
+import java.util.Set;
 
 import javax.webbeans.DefinitionException;
+import javax.webbeans.Dependent;
+import javax.webbeans.Standard;
 
+import org.jboss.webbeans.bean.BeanFactory;
+import org.jboss.webbeans.bean.NewSimpleBean;
+import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.binding.NewBinding;
+import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.test.AbstractTest;
+import org.jboss.webbeans.test.SpecAssertion;
+import org.jboss.webbeans.test.SpecVersion;
+import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
+import org.jboss.webbeans.test.newbean.valid.Sample;
+import org.jboss.webbeans.test.newbean.valid.WrappedBean;
+import org.jboss.webbeans.util.Proxies.TypeInfo;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 @SpecVersion("20081222")
-public class NewTest extends AbstractTest
+public class NewBeanTest extends AbstractTest
 {
-
+   private SimpleBean<WrappedBean> wrappedBean;
+   private NewSimpleBean<WrappedBean> newBean;
+   
+   @BeforeMethod
+   public void initNewBean() {
+      wrappedBean = BeanFactory.createSimpleBean(WrappedBean.class, manager);
+      manager.addBean(wrappedBean);
+      newBean = BeanFactory.createNewSimpleBean(WrappedBean.class, manager);
+      manager.addBean(newBean);
+   }
+   
    /**
     * When the built-in binding type @New is applied to an injection point, a
     * Web Bean is implicitly defined with: • scope @Dependent, • deployment type
@@ -16,11 +44,11 @@ public class NewTest extends AbstractTest
     *            stereotypes, and such that • the implementation class is the
     *            declared type of the injection point.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanIsDependentScoped()
    {
-      assert false;
+      assert Dependent.class.equals(newBean.getScopeType());
    }
 
    /**
@@ -31,11 +59,11 @@ public class NewTest extends AbstractTest
     *            stereotypes, and such that • the implementation class is the
     *            declared type of the injection point.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanIsOfStandardDeploymentType()
    {
-      assert false;
+      assert Standard.class.equals(newBean.getDeploymentType());
    }
 
    /**
@@ -46,11 +74,12 @@ public class NewTest extends AbstractTest
     *            stereotypes, and such that • the implementation class is the
     *            declared type of the injection point.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanIsHasOnlyNewBinding()
    {
-      assert false;
+      assert newBean.getBindingTypes().size() == 1;
+      assert newBean.getBindingTypes().iterator().next().annotationType().equals(new NewBinding().annotationType());
    }
 
    /**
@@ -61,11 +90,11 @@ public class NewTest extends AbstractTest
     *            stereotypes, and such that • the implementation class is the
     *            declared type of the injection point.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasNoWebBeanName()
    {
-      assert false;
+      assert newBean.getName() == null;
    }
 
    /**
@@ -91,11 +120,11 @@ public class NewTest extends AbstractTest
     *            stereotypes, and such that • the implementation class is the
     *            declared type of the injection point.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasImplementationClassOfInjectionPointType()
    {
-      assert false;
+      assert newBean.getType().equals(WrappedBean.class);
    }
 
    /**
@@ -141,11 +170,11 @@ public class NewTest extends AbstractTest
     * types declared by annotations that appear on the implementation class, and
     * • has no decorators.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasSameConstructorAsWrappedBean()
    {
-      assert false;
+      assert wrappedBean.getConstructor().equals(newBean.getConstructor());
    }
 
    /**
@@ -159,11 +188,11 @@ public class NewTest extends AbstractTest
     * types declared by annotations that appear on the implementation class, and
     * • has no decorators.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasSameInitializerMethodsAsWrappedBean()
    {
-      assert false;
+      assert newBean.getInitializerMethods().equals(wrappedBean.getInitializerMethods());
    }
 
    /**
@@ -177,13 +206,15 @@ public class NewTest extends AbstractTest
     * types declared by annotations that appear on the implementation class, and
     * • has no decorators.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasSameInjectedFieldsAsWrappedBean()
    {
-      assert false;
+      Set<AnnotatedItem<?, ?>> wrappedBeanInjectionPoints = wrappedBean.getInjectionPoints();
+      Set<AnnotatedItem<?, ?>> newBeanInjectionPoints = newBean.getInjectionPoints();
+      assert wrappedBeanInjectionPoints.equals(newBeanInjectionPoints);
    }
-
+   
    /**
     * Furthermore, this Web Bean: • has the same Web Bean constructor,
     * initializer methods and injected fields as a Web Bean defined using
@@ -195,11 +226,11 @@ public class NewTest extends AbstractTest
     * types declared by annotations that appear on the implementation class, and
     * • has no decorators.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = {"new" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasNoObservers()
    {
-      assert false;
+      assert newBean.getObserverMethods().isEmpty();
    }
 
    /**
@@ -213,11 +244,11 @@ public class NewTest extends AbstractTest
     * types declared by annotations that appear on the implementation class, and
     * • has no decorators.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasNoProducerFields()
    {
-      assert false;
+      assert newBean.getProducerFields().isEmpty();
    }
 
    /**
@@ -231,11 +262,11 @@ public class NewTest extends AbstractTest
     * types declared by annotations that appear on the implementation class, and
     * • has no decorators.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasNoProducerMethods()
    {
-      assert false;
+      assert newBean.getProducerMethods().isEmpty();
    }
 
    /**
@@ -249,11 +280,12 @@ public class NewTest extends AbstractTest
     * types declared by annotations that appear on the implementation class, and
     * • has no decorators.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasNoDisposalMethods()
    {
-      assert false;
+      Class<?> type = TypeInfo.ofTypes(newBean.getTypes()).getSuperClass();
+      assert manager.resolveDisposalMethods(type, newBean.getBindingTypes().toArray(new Annotation[0])).isEmpty();
    }
 
    /**
@@ -285,11 +317,12 @@ public class NewTest extends AbstractTest
     * types declared by annotations that appear on the implementation class, and
     * • has no decorators.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasNoDecorators()
    {
-      assert false;
+      Annotation[] bindingTypes = newBean.getBindingTypes().toArray(new Annotation[0]);
+      assert manager.resolveDecorators(newBean.getTypes(), bindingTypes).isEmpty();
    }
 
    /**
@@ -304,7 +337,9 @@ public class NewTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToField()
    {
-      assert false;
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(Sample.class));
+      webBeansBootstrap.boot();
+      assert manager.resolveByType(WrappedBean.class, new NewBinding()).size() == 1;
    }
 
    /**
@@ -390,4 +425,6 @@ public class NewTest extends AbstractTest
    {
       assert false;
    }
+   
+   
 }

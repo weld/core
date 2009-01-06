@@ -60,7 +60,6 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.resources.spi.Naming;
 import org.jboss.webbeans.util.Reflections;
-import org.jboss.webbeans.util.Strings;
 
 /**
  * Implementation of the Web Beans Manager.
@@ -175,7 +174,8 @@ public class ManagerImpl implements Manager, Serializable
     */
    public <T> Set<AnnotatedMethod<Object>> resolveDisposalMethods(Class<T> apiType, Annotation... bindings)
    {
-      return new HashSet<AnnotatedMethod<Object>>();
+      //TODO Implement disposal methods
+      return Collections.emptySet();
    }
 
    /**
@@ -634,7 +634,7 @@ public class ManagerImpl implements Manager, Serializable
 
    /**
     * Resolves a list of decorators based on API types and binding types
-    * 
+    * Os
     * @param types The set of API types to match
     * @param bindingTypes The binding types to match
     * @return A list of matching decorators
@@ -642,7 +642,7 @@ public class ManagerImpl implements Manager, Serializable
     * @see javax.webbeans.manager.Manager#resolveDecorators(java.util.Set,
     *      java.lang.annotation.Annotation[])
     */
-   public List<Decorator> resolveDecorators(Set<Class<?>> types, Annotation... bindings)
+   public List<Decorator> resolveDecorators(Set<Type> types, Annotation... bindings)
    {
       return resolver.resolveDecorators(types, bindings);
    }
@@ -696,21 +696,6 @@ public class ManagerImpl implements Manager, Serializable
       return buffer.toString();
    }
 
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append(Strings.collectionToString("Enabled deployment types: ", getEnabledDeploymentTypes()));
-      buffer.append(eventManager.toString() + "\n");
-      buffer.append(MetaDataCache.instance().toString() + "\n");
-      buffer.append(resolver.toString() + "\n");
-      buffer.append(contextMap.toString() + "\n");
-      buffer.append(proxyPool.toString() + "\n");
-      buffer.append(Strings.collectionToString("Registered beans: ", getBeans()));
-      buffer.append(Strings.collectionToString("Registered decorators: ", decorators));
-      buffer.append(Strings.collectionToString("Registered interceptors: ", interceptors));
-      return buffer.toString();
-   }
-
    public Manager parse(InputStream xmlStream)
    {
       // TODO Implement XML parsing
@@ -732,30 +717,6 @@ public class ManagerImpl implements Manager, Serializable
          {
             throw new UnserializableDependencyException(bean + " is not serializable or has unserializable dependencies");
          }
-         // // TODO: Not that pretty. Can this logic be moved to the
-         // isSerializable()
-         // // of SimpleBean and EnterpriseBean or are they too strict there?
-         // if (bean instanceof EnterpriseBean)
-         // {
-         // boolean stateful =
-         // getEjbDescriptorCache().containsKey(((EnterpriseBean<?>)
-         // bean).getType());
-         // if (stateful && !bean.isSerializable())
-         // {
-         // throw new UnserializableDependencyException(bean +
-         // " is not serializable or has unserializable dependencies");
-         // }
-         // }
-         // else if (bean instanceof SimpleBean)
-         // {
-         // boolean passivating =
-         // MetaDataCache.instance().getScopeModel(bean.getScopeType()).isPassivating();
-         // if (passivating && !bean.isSerializable())
-         // {
-         // throw new UnserializableDependencyException(bean +
-         // " is not serializable or has unserializable dependencies");
-         // }
-         // }
       }
    }
 

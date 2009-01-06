@@ -30,8 +30,6 @@ import javax.webbeans.Named;
 import javax.webbeans.ScopeType;
 import javax.webbeans.Stereotype;
 
-import org.jboss.webbeans.util.Strings;
-
 /**
  * A meta model for a stereotype, allows us to cache a stereotype and to
  * validate it
@@ -245,21 +243,6 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    {
      return "Stereotype model with required types " + requiredTypes + " and supported scopes " + supportedScopes; 
    }   
-   
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("StereotypeModel:\n");
-      buffer.append(super.toString());
-      buffer.append("Bean name defaulted: " + isBeanNameDefaulted());
-      buffer.append("Default deployment type: " + getDefaultDeploymentType());
-      buffer.append("Default scope type: " + getDefaultScopeType());
-      buffer.append("Meta-annotation: " + getMetaAnnotation().toString());
-      buffer.append(Strings.collectionToString("Interceptor bindings: ", getInterceptorBindings()));
-      buffer.append(Strings.collectionToString("Required types: ", getRequiredTypes()));
-      buffer.append(Strings.collectionToString("Supported scopes: ", getSupportedScopes()));
-      return buffer.toString();
-   }
 
    /**
     * Gets the meta-annotation type

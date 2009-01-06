@@ -22,12 +22,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import javax.webbeans.ExecutionException;
-import javax.webbeans.IllegalProductException;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -35,8 +33,6 @@ import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Names;
-import org.jboss.webbeans.util.Reflections;
-import org.jboss.webbeans.util.Strings;
 
 /**
  * Represents an annotated constructor
@@ -268,21 +264,6 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
       }
       toString = "Annotated method " + Names.constructor2String(constructor);
       return toString;
-   }
-
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("AnnotatedConstructorImpl:\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));
-      buffer.append("Declaring class:\n");
-      buffer.append(declaringClass.getName() + "[ " + declaringClass.getType() + "]" + "\n");
-      buffer.append("Constructor:\n");
-      buffer.append(constructor.toString() + "\n");
-      buffer.append(Strings.collectionToString("Parameters: ", getParameters()));
-      buffer.append(annotatedParameters.toString() + "\n");
-      return buffer.toString();
    }
 
 }

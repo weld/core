@@ -130,7 +130,7 @@ public class BeanFactory
    {
       return new EventBean<T, S>(field, manager);
    }
-   
+
    /**
     * Creates an instance Web Bean
     * 
@@ -143,7 +143,7 @@ public class BeanFactory
    {
       return new InstanceBean<T, S>(field, manager);
    }
- 
+
    /**
     * Creates an observer
     * 
@@ -155,6 +155,11 @@ public class BeanFactory
    public static <T> ObserverImpl<T> createObserver(AnnotatedMethod<Object> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       return new ObserverImpl<T>(method, declaringBean, manager);
+   }
+
+   public static <T> NewSimpleBean<T> createNewSimpleBean(Class<T> type, ManagerImpl manager)
+   {
+      return new NewSimpleBean<T>(type, manager);
    }
 
 }

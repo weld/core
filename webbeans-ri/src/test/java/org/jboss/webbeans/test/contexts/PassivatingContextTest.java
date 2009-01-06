@@ -304,21 +304,6 @@ public class PassivatingContextTest extends AbstractTest
       // System.out.println(instance.test());
    }
 
-   private void registerBeans(Class<?>[] classes)
-   {
-      for (Class<?> clazz : classes)
-      {
-         if (CurrentManager.rootManager().getEjbDescriptorCache().containsKey(clazz))
-         {
-            CurrentManager.rootManager().addBean(BeanFactory.createEnterpriseBean(clazz, manager));
-         }
-         else
-         {
-            CurrentManager.rootManager().addBean(BeanFactory.createSimpleBean(clazz, manager));
-         }
-      }
-   }
-
    /**
     * If a simple Web Bean of scope @Dependent and a non-serializable
     * implementation class is injected into a stateful session bean, into a

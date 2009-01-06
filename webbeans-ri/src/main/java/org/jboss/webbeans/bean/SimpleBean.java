@@ -408,17 +408,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       return buffer.toString();
    }
 
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("SimpleBean\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append("Constructor: " + constructor.toString() + "\n");
-      buffer.append("Post-construct: " + (postConstruct == null ? "null" : postConstruct.toString()) + "\n");
-      buffer.append("Pre-destroy: " + (preDestroy == null ? "null" : preDestroy.toString()) + "\n");
-      return buffer.toString();
-   }
-
    /**
     * Indicates if the bean is serializable
     * 

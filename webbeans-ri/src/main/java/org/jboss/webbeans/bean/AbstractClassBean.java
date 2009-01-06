@@ -26,7 +26,6 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.Destructor;
 import javax.webbeans.Disposes;
-import javax.webbeans.IllegalProductException;
 import javax.webbeans.Initializer;
 import javax.webbeans.Observes;
 import javax.webbeans.Produces;
@@ -40,9 +39,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
-import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedMember;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -313,18 +310,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    public String toString()
    {
       return "AbstractClassBean " + getName();
-   }
-
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("AbstractClassBean:\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append("Annotated item: " + annotatedItem.toString() + "\n");
-      buffer.append(Strings.collectionToString("Initializer methods: ", getInitializerMethods()));
-      buffer.append(Strings.collectionToString("Injectable fields: ", getInjectableFields()));
-      buffer.append(Strings.collectionToString("Producer methods: ", getProducerMethods()));
-      return buffer.toString();
    }
 
    @Override

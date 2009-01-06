@@ -85,15 +85,4 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
       return valid + normal + passivating + " scope model for " + getType();
    }
 
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("ScopeModel:\n");
-      buffer.append(super.toString());
-      buffer.append("Normal: " + isNormal());
-      buffer.append("Passivating: " + isPassivating());
-      buffer.append("Meta-annotation: " + getMetaAnnotation().toString());
-      return buffer.toString();
-   }
-
 }

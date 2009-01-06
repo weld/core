@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem.AnnotationMap;
-import org.jboss.webbeans.util.Strings;
 
 /**
  * Meta model for the merged stereotype for a bean
@@ -162,21 +161,4 @@ public class MergedStereotypes<T, E>
         ", possible scopes " + possibleScopeTypes + " and supported scopes " + supportedScopes; 
    }
    
-   /**
-    * Gets a string representation of the merged stereotypes
-    * 
-    * @return The string representation
-    */
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("Merged stereotypes:\n");
-      buffer.append("Bean name defaulted: " + beanNameDefaulted + "\n");
-      buffer.append("Possible deployment types: " + getPossibleDeploymentTypes().toString());
-      buffer.append(Strings.collectionToString("Possible scope types: ", getPossibleScopeTypes()));
-      buffer.append(Strings.collectionToString("Required types: ", getRequiredTypes()));
-      buffer.append(Strings.collectionToString("Supported scopes: ", getSupportedScopes()));
-      return buffer.toString();
-   }
-
 }

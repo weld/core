@@ -27,7 +27,6 @@ import javax.webbeans.ExecutionException;
 import javax.webbeans.manager.Context;
 
 import org.jboss.webbeans.util.ConcurrentCache;
-import org.jboss.webbeans.util.Strings;
 
 /**
  * A map from a scope to a list of contexts
@@ -124,11 +123,6 @@ public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, Lis
    public String toString()
    {
       return "ContextMap holding " + delegate().size() + " contexts: " + delegate().keySet();
-   }
-
-   public String toDetailedString()
-   {
-      return Strings.mapToString("ContextMap (scope type -> context list): ", delegate());
    }
 
    /**

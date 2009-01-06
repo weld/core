@@ -10,6 +10,9 @@ import java.util.Arrays;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
 
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.bean.AbstractClassBean;
+import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.HornedAnimalDeploymentType;
 import org.jboss.webbeans.test.mock.MockBootstrap;
@@ -31,7 +34,30 @@ public class AbstractTest
       manager = webBeansBootstrap.getManager();
       addStandardDeploymentTypesForTests();
    }
-   
+
+   protected <T> AbstractClassBean<T> registerBean(Class<T> clazz)
+   {
+      AbstractClassBean<T> bean = null;
+      if (CurrentManager.rootManager().getEjbDescriptorCache().containsKey(clazz))
+      {
+         bean = BeanFactory.createEnterpriseBean(clazz, manager);
+      }
+      else
+      {
+         bean = BeanFactory.createSimpleBean(clazz, manager);
+      }
+      CurrentManager.rootManager().addBean(bean);
+      return bean;
+   }
+
+   protected void registerBeans(Class<?>[] classes)
+   {
+      for (Class<?> clazz : classes)
+      {
+         registerBean(clazz);
+      }
+   }
+
    @SuppressWarnings("unchecked")
    protected void addStandardDeploymentTypesForTests()
    {
@@ -42,17 +68,19 @@ public class AbstractTest
    {
       manager.getEjbDescriptorCache().add(new MockEjbDescriptor<T>(clazz));
    }
-   
-   protected byte[] serialize(Object instance) throws IOException {
+
+   protected byte[] serialize(Object instance) throws IOException
+   {
       ByteArrayOutputStream bytes = new ByteArrayOutputStream();
       ObjectOutputStream out = new ObjectOutputStream(bytes);
       out.writeObject(instance);
       return bytes.toByteArray();
    }
-   
-   protected Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
+
+   protected Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException
+   {
       ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
       return in.readObject();
-   }   
-   
+   }
+
 }

@@ -123,13 +123,4 @@ public abstract class AnnotationModel<T extends Annotation>
      return (isValid() ? "Valid" : "Invalid") + " annotation model for " + getType();
    }
    
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("AnnotationModel:\n");
-      buffer.append("Annotated annotation: " + getAnnotatedAnnotation().toString());
-      buffer.append("Valid: " + isValid());
-      return buffer.toString();
-   }
-   
 }

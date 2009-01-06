@@ -20,7 +20,6 @@ package org.jboss.webbeans.introspector.jlr;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 
 import javax.webbeans.manager.Manager;
 
@@ -28,7 +27,6 @@ import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
-import org.jboss.webbeans.util.Strings;
 
 /**
  * Represents an annotated field
@@ -176,18 +174,6 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
       }
       toString = "Annotated method " + Names.field2String(field);
       return toString;
-   }
-
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("AnnotatedFieldImpl:\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));
-      buffer.append("Declaring class:\n");
-      buffer.append(declaringClass.getName() + "[ " + declaringClass.getType() + "]" + "\n");
-      buffer.append("Field: " + field + "\n");
-      return buffer.toString();
    }
 
 }

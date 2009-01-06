@@ -48,7 +48,6 @@ import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.model.MergedStereotypes;
 import org.jboss.webbeans.util.Reflections;
-import org.jboss.webbeans.util.Strings;
 
 /**
  * An abstract bean representation common for all beans
@@ -559,22 +558,4 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    {
       return "AbstractBean " + getName();
    }
-
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("AbstractBean:\n");
-      buffer.append("Name: " + name + "\n");
-      buffer.append("Type: " + type + "\n");
-      buffer.append("Scope type " + scopeType.toString() + "\n");
-      buffer.append("Deployment type: " + deploymentType.toString() + "\n");
-      buffer.append("Primitive : " + primitive + "\n");
-      buffer.append("Declared bean type: " + (declaredBeanType == null ? "null" : declaredBeanType.toString()) + "\n");
-      buffer.append(Strings.collectionToString("Binding types: ", getBindingTypes()));
-      buffer.append(Strings.collectionToString("API types: ", getTypes()));
-      buffer.append(Strings.collectionToString("Injection points: ", getInjectionPoints()));
-      buffer.append(mergedStereotypes.toString() + "\n");
-      return buffer.toString();
-   }
-
 }

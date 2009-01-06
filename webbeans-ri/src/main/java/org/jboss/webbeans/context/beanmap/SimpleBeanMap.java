@@ -26,7 +26,6 @@ import javax.webbeans.manager.Contextual;
 
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.util.Strings;
 
 import com.google.common.collect.ForwardingMap;
 
@@ -134,11 +133,6 @@ public class SimpleBeanMap extends ForwardingMap<Contextual<? extends Object>, O
    public String toString()
    {
       return "holding " + delegate.size() + " instances";
-   }
-
-   public String toDetailedString()
-   {
-      return Strings.mapToString("SimpleBeanMap (bean -> instance): ", delegate);
    }
 
 }

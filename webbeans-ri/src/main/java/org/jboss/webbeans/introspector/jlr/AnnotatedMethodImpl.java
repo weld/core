@@ -34,7 +34,6 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
-import org.jboss.webbeans.util.Strings;
 
 /**
  * Represents an annotated method
@@ -319,22 +318,6 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       }
       toString = "Annotated method " + Names.method2String(method);
       return toString;
-   }
-
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("AnnotatedMethodImpl:\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));
-      buffer.append(annotatedParameters == null ? "" : (annotatedParameters.toString() + "\n"));
-      buffer.append("Declaring class:\n");
-      buffer.append(declaringClass.getName() + "[ " + declaringClass.getType() + "]" + "\n");
-      buffer.append("Method:\n");
-      buffer.append(method.toString());
-      buffer.append("Property name: " + propertyName + "\n");
-      buffer.append(Strings.collectionToString("Parameters: ", getParameters()));
-      return buffer.toString();
    }
 
 }

@@ -185,19 +185,7 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
       {
          return toString;
       }
-//      toString = "Annotated annotation " + Names.annotation2String(getDelegate());
       return toString;
-   }
-   
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("AnnotatedConstructorImpl:\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append("Class: " + clazz.toString() + "\n");
-      buffer.append(Strings.collectionToString("Members: ", getMembers()));
-      buffer.append(annotatedMembers == null ? "" : (annotatedMembers.toString() + "\n"));
-      return buffer.toString();
    }
 
    public Class<T> getDelegate()

@@ -21,6 +21,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
+import javax.webbeans.InjectionPoint;
+
 /**
  * The contract between the Web Bean manager and a Web Bean. This interface
  * should not be called directly by the application.
@@ -31,7 +33,6 @@ import java.util.Set;
  */
 public abstract class Bean<T> implements Contextual<T>
 {
-
    private final Manager manager;
 
    protected Bean(Manager manager)
@@ -61,5 +62,7 @@ public abstract class Bean<T> implements Contextual<T>
    public abstract boolean isSerializable();
 
    public abstract boolean isNullable();
+
+//   public abstract Set<InjectionPoint> getInjectionPoints();
 
 }

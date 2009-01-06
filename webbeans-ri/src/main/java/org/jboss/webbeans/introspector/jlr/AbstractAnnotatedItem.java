@@ -449,16 +449,6 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return toString;
    }
    
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("AbstractAnnotatedItem:\n");
-      buffer.append(Strings.collectionToString("Annotations: ", getAnnotations()));
-      buffer.append(annotationMap == null ? "" : (annotationMap.toString() + "\n"));
-      buffer.append(metaAnnotationMap == null ? "" : (metaAnnotationMap.toString()) + "\n");
-      return buffer.toString();
-   }
-
    /**
     * Gets the binding types of the item
     * 

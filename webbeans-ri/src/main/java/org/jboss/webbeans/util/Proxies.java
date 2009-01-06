@@ -10,7 +10,7 @@ import javassist.util.proxy.ProxyFactory;
 public class Proxies
 {
    
-   private static class TypeInfo
+   public static class TypeInfo
    {
       
       private static final Class<?>[] EMPTY_INTERFACES_ARRAY = new Class<?>[0];
@@ -25,7 +25,7 @@ public class Proxies
          this.classes = new HashSet<Class<?>>();
       }
       
-      private Class<?> getSuperClass()
+      public Class<?> getSuperClass()
       {
          if (classes.isEmpty())
          {

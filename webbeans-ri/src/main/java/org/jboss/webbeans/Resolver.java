@@ -18,6 +18,7 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -360,10 +361,10 @@ public class Resolver
     * @param bindingTypes The binding types to match
     * @return The set of matching decorators
     */
-   public List<Decorator> resolveDecorators(Set<Class<?>> types, Annotation[] bindingTypes)
+   public List<Decorator> resolveDecorators(Set<Type> types, Annotation[] bindingTypes)
    {
       // TODO Implement decorators
-      return null;
+      return Collections.emptyList();
    }
 
    /**

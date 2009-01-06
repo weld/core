@@ -532,23 +532,5 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       toString = "Annotated class " + Names.class2String(getDelegate());
       return toString;
    }
-   
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("AnnotatedConstructorImpl:\n");
-      buffer.append(super.toString() + "\n");
-      buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));
-      buffer.append("Class: " + clazz.toString() + "\n");
-      buffer.append(Strings.collectionToString("Fields: ", getFields()));
-      buffer.append(Strings.collectionToString("Methods: ", methods));
-      buffer.append(Strings.collectionToString("Constructors: ", getConstructors()));
-      buffer.append(annotatedConstructors == null ? "" : (annotatedConstructors.toString() + "\n"));
-      buffer.append(annotatedFields == null ? "" : (annotatedFields.toString() + "\n"));
-      buffer.append(annotatedMethods == null ? "" : (annotatedMethods.toString() + "\n"));
-      buffer.append(constructorsByArgumentMap == null ? "" : (constructorsByArgumentMap.toString() + "\n"));
-      buffer.append(metaAnnotatedFields == null ? "" : (metaAnnotatedFields.toString() + "\n"));
-      return buffer.toString();
-   }
 
 }

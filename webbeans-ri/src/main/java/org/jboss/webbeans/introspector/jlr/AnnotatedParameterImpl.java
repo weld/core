@@ -19,14 +19,11 @@ package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 
 import javax.webbeans.BindingType;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.util.Names;
-import org.jboss.webbeans.util.Strings;
 
 /**
  * Represents a parameter
@@ -160,20 +157,8 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
       {
          return toString;
       }
-      toString = toDetailedString();
       return toString;
    }
 
-   public String toDetailedString()
-   {
-      StringBuilder buffer = new StringBuilder();
-      buffer.append("AnnotatedParameterImpl:\n");
-      buffer.append("Type: " + type.toString() + "\n");
-      buffer.append("Annotations: " + Names.annotations2String(this.getAnnotations().toArray(new Annotation[0])));
-      buffer.append("Final: " + _final + "\n");
-      buffer.append("Static: " + _static + "\n");
-      buffer.append(Strings.collectionToString("Actual type arguments: ", Arrays.asList(getActualTypeArguments())));
-      return buffer.toString();
-   }
 
 }
