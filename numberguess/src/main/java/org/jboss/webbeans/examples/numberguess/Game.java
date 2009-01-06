@@ -22,7 +22,9 @@ public class Game implements Serializable
    private int smallest;
    
    @MaxNumber
-   private transient int biggest;
+   private transient int maxNumber;
+   
+   private int biggest;
    private int remainingGuesses;
    
    @Current Manager manager;
@@ -85,6 +87,7 @@ public class Game implements Serializable
       this.smallest = 0;
       this.guess = 0;
       this.remainingGuesses = 10;
+      this.biggest = maxNumber;
       this.number = manager.getInstanceByType(Integer.class, new AnnotationLiteral<Random>(){});
    }
    
