@@ -27,6 +27,7 @@ import java.util.Map;
 import javax.webbeans.BindingType;
 import javax.webbeans.manager.Manager;
 
+import org.jboss.webbeans.introspector.AnnotatedMember;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
@@ -43,7 +44,7 @@ import com.google.common.collect.ForwardingMap;
  * @param <T>
  * @param <S>
  */
-public abstract class AbstractAnnotatedMember<T, S extends Member> extends AbstractAnnotatedItem<T, S>
+public abstract class AbstractAnnotatedMember<T, S extends Member> extends AbstractAnnotatedItem<T, S> implements AnnotatedMember<T, S>
 {
    /**
     * An annotation type -> list of annotations map
@@ -172,5 +173,10 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
       toString = "Abstract annotated member " + getName();
       return toString;
    }   
+   
+   public S getMember()
+   {
+      return getDelegate();
+   }
 
 }

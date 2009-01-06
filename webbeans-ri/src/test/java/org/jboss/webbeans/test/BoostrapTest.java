@@ -26,7 +26,6 @@ import org.jboss.webbeans.test.beans.TarantulaProducer;
 import org.jboss.webbeans.test.beans.Tiger;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.ejb.valid.Hound;
-import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
 import org.testng.annotations.Test;
 
@@ -39,7 +38,7 @@ public class BoostrapTest extends AbstractTest
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
-      assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
+      assert beans.size() == 1 + BUILT_IN_BEANS;
       for (Bean<?> bean : beans)
       {
          if (bean instanceof AbstractBean)
@@ -56,7 +55,7 @@ public class BoostrapTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(Hound.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
-      assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
+      assert beans.size() == 1 + BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : beans)
       {
@@ -74,7 +73,7 @@ public class BoostrapTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(Tuna.class, Salmon.class, SeaBass.class, Sole.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
-      assert beans.size() == 4 + MockManagerImpl.BUILT_IN_BEANS;
+      assert beans.size() == 4 + BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : beans)
       {
@@ -100,7 +99,7 @@ public class BoostrapTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(TarantulaProducer.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
-      assert beans.size() == 2 + MockManagerImpl.BUILT_IN_BEANS;
+      assert beans.size() == 2 + BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : beans)
       {
@@ -122,7 +121,7 @@ public class BoostrapTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(Hound.class, Elephant.class, Panther.class, Tiger.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
-      assert beans.size() == 4 + MockManagerImpl.BUILT_IN_BEANS;
+      assert beans.size() == 4 + BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : beans)
       {
@@ -148,7 +147,7 @@ public class BoostrapTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
-      assert beans.size() == 8 + MockManagerImpl.BUILT_IN_BEANS;
+      assert beans.size() == 8 + BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : beans)
       {
@@ -181,7 +180,7 @@ public class BoostrapTest extends AbstractTest
    {
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(TarantulaProducer.class));
       webBeansBootstrap.boot();
-      assert manager.getBeans().size() == 2 + MockManagerImpl.BUILT_IN_BEANS;
+      assert manager.getBeans().size() == 2 + BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {
@@ -203,7 +202,7 @@ public class BoostrapTest extends AbstractTest
    {
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class));
       webBeansBootstrap.boot();
-      assert manager.getBeans().size() == 8 + MockManagerImpl.BUILT_IN_BEANS;
+      assert manager.getBeans().size() == 8 + BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {
@@ -244,7 +243,7 @@ public class BoostrapTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class))));
       webBeansBootstrap.boot();
       
-      assert manager.getBeans().size() == 8 + MockManagerImpl.BUILT_IN_BEANS;
+      assert manager.getBeans().size() == 8 + BUILT_IN_BEANS;
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {

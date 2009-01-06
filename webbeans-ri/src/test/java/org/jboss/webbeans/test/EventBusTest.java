@@ -40,7 +40,6 @@ import org.jboss.webbeans.test.ejb.invalid.TibetanTerrier;
 import org.jboss.webbeans.test.ejb.invalid.YorkshireTerrier;
 import org.jboss.webbeans.test.ejb.valid.BullTerrier;
 import org.jboss.webbeans.test.ejb.valid.Pomeranian;
-import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
 import org.testng.annotations.Test;
 
@@ -327,7 +326,7 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(Pomeranian.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
-      assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
+      assert beans.size() == 1 + BUILT_IN_BEANS;
       Set<Observer<String>> observers = manager.resolveObservers("An event");
       assert observers.size() == 2;
    }
@@ -339,7 +338,7 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(TibetanTerrier.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
-      assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
+      assert beans.size() == 1 + BUILT_IN_BEANS;
       Set<Observer<String>> observers = manager.resolveObservers("An event");
       assert observers.size() == 1;
    }
@@ -382,7 +381,7 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(Pomeranian.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
-      assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
+      assert beans.size() == 1 + BUILT_IN_BEANS;
 
       // Resolve registered observers with an event containing no binding types
       Set<Observer<String>> resolvedObservers = manager.resolveObservers("A new event");
@@ -584,7 +583,7 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(TeaCupPomeranian.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
-      assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
+      assert beans.size() == 1 + BUILT_IN_BEANS;
       manager.fireEvent("Another event");
    }
 
@@ -595,7 +594,7 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(TeaCupPomeranian.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
-      assert beans.size() == 1 + MockManagerImpl.BUILT_IN_BEANS;
+      assert beans.size() == 1 + BUILT_IN_BEANS;
       manager.fireEvent(new Integer(1));
    }
 

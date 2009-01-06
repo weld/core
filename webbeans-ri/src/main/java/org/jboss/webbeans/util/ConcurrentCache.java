@@ -17,7 +17,6 @@
 
 package org.jboss.webbeans.util;
 
-import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,9 +31,8 @@ import com.google.common.collect.ForwardingMap;
  * 
  * @author Pete Muir
  */
-public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>> implements Serializable
+public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
 {
-   private static final long serialVersionUID = 1L;
 
    // The backing map with the value wrapped in a Future instance
    private ConcurrentHashMap<K, Future<V>> map;

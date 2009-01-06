@@ -17,10 +17,7 @@
 
 package org.jboss.webbeans.resources.spi;
 
-import java.io.Serializable;
-
-
-public interface Naming extends Serializable
+public interface Naming
 {
    
    public static final String PROPERTY_NAME = Naming.class.getName();

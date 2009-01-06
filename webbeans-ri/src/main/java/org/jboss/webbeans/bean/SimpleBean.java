@@ -25,11 +25,13 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Initializer;
+import javax.webbeans.InjectionPoint;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.injection.InjectionPointImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -90,7 +92,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          T instance = constructor.newInstance(manager);
          bindDecorators();
          bindInterceptors();
-         injectEjbAndCommonFields();
+         injectEjbAndCommonFields(instance);
          injectBoundFields(instance, manager);
          callInitializers(instance);
          callPostConstruct(instance);
@@ -185,9 +187,23 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    /**
     * Injects EJBs and common fields
     */
-   protected void injectEjbAndCommonFields()
+   protected void injectEjbAndCommonFields(T beanInstance)
    {
-      // Support common and EJB annotations
+      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getEJBAnnotation()))
+      {
+         InjectionPoint injectionPoint = new InjectionPointImpl(field, this, beanInstance);
+         String name = manager.getEjbResolver().resolveEjb(injectionPoint);
+         Object ejbInstance = manager.getNaming().lookup(name, Object.class);
+         field.inject(beanInstance, ejbInstance);
+      }
+      
+      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getPersistenceContextAnnotation()))
+      {
+         InjectionPoint injectionPoint = new InjectionPointImpl(field, this, beanInstance);
+         String name = manager.getEjbResolver().resolvePersistenceUnit(injectionPoint);
+         Object puInstance = manager.getNaming().lookup(name, Object.class);
+         field.inject(beanInstance, puInstance);
+      }
    }
 
    /**

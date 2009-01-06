@@ -46,11 +46,19 @@
       <dependency>
          <groupId>javax.ejb</groupId>
          <artifactId>ejb-api</artifactId>
+         <optional>true</optional>
       </dependency>
 
       <dependency>
          <groupId>javax.annotation</groupId>
          <artifactId>jsr250-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+      
+      <dependency>
+         <groupId>javax.persistence</groupId>
+         <artifactId>persistence-api</artifactId>
+         <optional>true</optional>
       </dependency>
 
       <dependency>

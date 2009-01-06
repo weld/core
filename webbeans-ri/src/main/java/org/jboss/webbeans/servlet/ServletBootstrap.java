@@ -21,7 +21,6 @@ import java.lang.reflect.Constructor;
 
 import javax.servlet.ServletContext;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.PropertiesBasedBootstrap;
 import org.jboss.webbeans.bootstrap.SimpleResourceLoader;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
@@ -29,6 +28,9 @@ import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
+import org.jboss.webbeans.ejb.spi.EjbResolver;
+import org.jboss.webbeans.resource.DefaultNaming;
+import org.jboss.webbeans.resources.spi.Naming;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.util.DeploymentProperties;
 
@@ -39,8 +41,7 @@ import org.jboss.webbeans.util.DeploymentProperties;
  */
 public class ServletBootstrap extends PropertiesBasedBootstrap
 {
-   // The Web Beans manager
-   private ManagerImpl manager;
+   
    // The resource loader
    private ResourceLoader resourceLoader;
    // The discover implementation
@@ -50,8 +51,6 @@ public class ServletBootstrap extends PropertiesBasedBootstrap
    
    public ServletBootstrap(ServletContext servletContext)
    {
-      // Create the manager
-      this.manager = new ManagerImpl();
       
       // Create a simpple resource loader based for initial loading 
       this.resourceLoader = new SimpleResourceLoader();
@@ -64,9 +63,8 @@ public class ServletBootstrap extends PropertiesBasedBootstrap
          this.resourceLoader = newInstance(resourceLoaderConstructor, servletContext);
       }
       
-      // Now safe to initialize other properties and register the manager
-      super.initProperties();
-      super.registerManager();
+      // Now safe to initialize the manager
+      initManager(servletContext);
       
       // Attempt to create a plugin web beans discovery
       Constructor<? extends WebBeanDiscovery> webBeanDiscoveryConstructor = getClassConstructor(deploymentProperties, resourceLoader, WebBeanDiscovery.PROPERTY_NAME, WebBeanDiscovery.class, ServletContext.class);
@@ -87,6 +85,37 @@ public class ServletBootstrap extends PropertiesBasedBootstrap
       ApplicationContext.INSTANCE.setBeanMap(new ApplicationBeanMap(servletContext));
    }
 
+   private void initManager(ServletContext servletContext)
+   {
+      initManager(getNaming(servletContext), getEjbResolver(servletContext), getResourceLoader());
+   }
+   
+   public Naming getNaming(ServletContext servletContext)
+   {
+      Constructor<? extends Naming> namingConstructor = getClassConstructor(getDeploymentProperties(), getResourceLoader(), Naming.PROPERTY_NAME, Naming.class, ServletContext.class);
+      if (namingConstructor != null)
+      {
+         return newInstance(namingConstructor, servletContext);
+      }
+      else
+      {
+         return new DefaultNaming();
+      }
+   }
+   
+   public EjbResolver getEjbResolver(ServletContext servletContext)
+   {
+      Constructor<? extends EjbResolver> constructor = getClassConstructor(getDeploymentProperties(), getResourceLoader(), EjbResolver.PROPERTY_NAME, EjbResolver.class, ServletContext.class);
+      if (constructor != null)
+      {
+         return newInstance(constructor, servletContext);
+      }
+      else
+      {
+         throw new IllegalStateException("Unable to find a EjbResolver, check Web Beans is correctly installed in your container");
+      }
+   }
+
    @Override
    protected DeploymentProperties getDeploymentProperties()
    {
@@ -103,12 +132,6 @@ public class ServletBootstrap extends PropertiesBasedBootstrap
    protected WebBeanDiscovery getWebBeanDiscovery()
    {
       return webBeanDiscovery;
-   }
-   
-   @Override
-   public ManagerImpl getManager()
-   {
-      return manager;
    }
    
 }

@@ -17,7 +17,6 @@
 
 package org.jboss.webbeans.event;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.List;
@@ -40,16 +39,14 @@ import com.google.common.collect.ForwardingMap;
  * @author David Allen
  * 
  */
-public class EventManager implements Serializable
+public class EventManager
 {
-   private static final long serialVersionUID = 1L;
 
    /**
     * An event type -> observer list map
     */
-   private class RegisteredObserversMap extends ForwardingMap<Class<?>, List<EventObserver<?>>> implements Serializable
+   private class RegisteredObserversMap extends ForwardingMap<Class<?>, List<EventObserver<?>>>
    {
-      private static final long serialVersionUID = 1L;
 
       // The map delegate
       private ConcurrentHashMap<Class<?>, List<EventObserver<?>>> delegate;

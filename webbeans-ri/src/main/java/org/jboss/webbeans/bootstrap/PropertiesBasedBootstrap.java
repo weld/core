@@ -24,8 +24,6 @@ import javax.webbeans.ExecutionException;
 
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.resource.DefaultNaming;
-import org.jboss.webbeans.resources.spi.Naming;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.ServletBootstrap;
 import org.jboss.webbeans.util.DeploymentProperties;
@@ -40,6 +38,7 @@ import org.jboss.webbeans.util.Reflections;
  */
 public abstract class PropertiesBasedBootstrap extends WebBeansBootstrap
 {
+
    // The log provider
    private static final LogProvider log = Logging.getLogProvider(ServletBootstrap.class);
    
@@ -99,25 +98,6 @@ public abstract class PropertiesBasedBootstrap extends WebBeansBootstrap
          throw new ExecutionException("Error instantiating " + constructor, e);
       }
    }
-   
-   /**
-    * Initializes the naming provider
-    * 
-    * Only safe to call once resourceloader and deployment properties are set
-    */
-   protected void initProperties()
-   {
-      Constructor<? extends Naming> namingConstructor = getClassConstructor(getDeploymentProperties(), getResourceLoader(), Naming.PROPERTY_NAME, Naming.class);
-      if (namingConstructor != null)
-      {
-         getManager().setNaming(newInstance(namingConstructor));
-      }
-      else
-      {
-         getManager().setNaming(new DefaultNaming());
-      }
-   }
-   
    
    /**
     * Gets the deployment properties

@@ -38,7 +38,6 @@ import org.jboss.webbeans.test.beans.nonBeans.ServletContextListenerBean;
 import org.jboss.webbeans.test.beans.nonBeans.ServletRequestListenerBean;
 import org.jboss.webbeans.test.beans.nonBeans.UIComponentBean;
 import org.jboss.webbeans.test.bindings.SynchronousAnnotationLiteral;
-import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
 import org.testng.annotations.Test;
 
@@ -90,7 +89,7 @@ public class SimpleBeanModelTest extends AbstractTest
    {
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(FilterBean.class, HttpSessionListenerBean.class, ServletBean.class, ServletContextListenerBean.class, ServletRequestListenerBean.class)), null, new HashSet<Class<?>>()));
       webBeansBootstrap.boot();
-      assert manager.getBeans().size() == MockManagerImpl.BUILT_IN_BEANS;
+      assert manager.getBeans().size() == BUILT_IN_BEANS;
    }
    
    @Test
@@ -98,7 +97,7 @@ public class SimpleBeanModelTest extends AbstractTest
    {
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(EnterpriseBeanWebBean.class)), null, new HashSet<Class<?>>()));
       webBeansBootstrap.boot();
-      assert manager.getBeans().size() == MockManagerImpl.BUILT_IN_BEANS;
+      assert manager.getBeans().size() == BUILT_IN_BEANS;
    }
    
    @Test
@@ -106,7 +105,7 @@ public class SimpleBeanModelTest extends AbstractTest
    {
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(UIComponentBean.class)), null, new HashSet<Class<?>>()));
       webBeansBootstrap.boot();
-      assert manager.getBeans().size() == MockManagerImpl.BUILT_IN_BEANS;
+      assert manager.getBeans().size() == BUILT_IN_BEANS;
    }
    
    @Test(groups="stub")

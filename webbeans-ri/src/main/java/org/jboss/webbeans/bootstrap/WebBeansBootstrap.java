@@ -30,6 +30,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,6 +54,7 @@ import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.binding.InitializedBinding;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
+import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -60,6 +62,7 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.jsf.JSFApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.resources.spi.Naming;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.transaction.Transaction;
@@ -76,13 +79,20 @@ public abstract class WebBeansBootstrap
    // The log provider
    private static LogProvider log = Logging.getLogProvider(WebBeansBootstrap.class);
    
-   protected void registerManager()
+   // The Web Beans manager
+   private ManagerImpl manager;
+   
+   protected void initManager(Naming naming, EjbResolver ejbResolver, ResourceLoader resourceLoader)
    {
-      getManager().getNaming().bind(ManagerImpl.JNDI_KEY, getManager());
-      CurrentManager.setRootManager(getManager());
+      this.manager = new ManagerImpl(naming, ejbResolver, resourceLoader);
+      manager.getNaming().bind(ManagerImpl.JNDI_KEY, getManager());
+      CurrentManager.setRootManager(manager);
    }
    
-   public abstract ManagerImpl getManager();
+   public ManagerImpl getManager()
+   {
+      return manager;
+   }
 
    protected abstract WebBeanDiscovery getWebBeanDiscovery();
 
@@ -139,6 +149,18 @@ public abstract class WebBeansBootstrap
       createBean(new SimpleBean<ManagerImpl>(ManagerImpl.class, getManager())
       {
    
+         @Override
+         protected void initConstructor()
+         {
+            // No - op, no constructor needed
+         }
+         
+         @Override
+         protected void initInjectionPoints()
+         {
+            injectionPoints = Collections.emptySet();
+         }
+         
          @Override
          public ManagerImpl create()
          {

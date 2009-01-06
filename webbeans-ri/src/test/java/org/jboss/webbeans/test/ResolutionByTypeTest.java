@@ -43,7 +43,6 @@ import org.jboss.webbeans.test.bindings.BindingTypeWithBindingAnnotationMemberAn
 import org.jboss.webbeans.test.bindings.BindingTypeWithBindingArrayTypeMemberAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.ChunkyAnnotationLiteral;
 import org.jboss.webbeans.test.bindings.ExpensiveAnnotationLiteral;
-import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.testng.annotations.Test;
 
 @SpecVersion("20081206")
@@ -277,7 +276,7 @@ public class ResolutionByTypeTest extends AbstractTest
       
       Set<Bean<Object>> beans = manager.resolveByType(Object.class);
       
-      assert manager.resolveByType(Object.class).size() == 3 +  MockManagerImpl.BUILT_IN_BEANS;
+      assert manager.resolveByType(Object.class).size() == 3 +  BUILT_IN_BEANS;
       assert manager.resolveByType(Object.class).contains(plaiceBean);
       assert manager.resolveByType(Object.class).contains(salmonBean);
       assert manager.resolveByType(Object.class).contains(soleBean);

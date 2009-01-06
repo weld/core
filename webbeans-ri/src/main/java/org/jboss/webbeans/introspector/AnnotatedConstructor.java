@@ -29,7 +29,7 @@ import javax.webbeans.manager.Manager;
  * @author Pete Muir
  * 
  */
-public interface AnnotatedConstructor<T> extends AnnotatedItem<T, Constructor<T>>
+public interface AnnotatedConstructor<T> extends AnnotatedMember<T, Constructor<T>>
 {
 
    /**

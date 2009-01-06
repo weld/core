@@ -54,11 +54,13 @@ import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.proxy.ProxyPool;
 import org.jboss.webbeans.context.ContextMap;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
+import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.resources.spi.Naming;
+import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -80,40 +82,47 @@ public class ManagerImpl implements Manager, Serializable
    public static final String JNDI_KEY = "java:comp/Manager";
 
    // The enabled deployment types from web-beans.xml
-   private List<Class<? extends Annotation>> enabledDeploymentTypes;
+   private transient List<Class<? extends Annotation>> enabledDeploymentTypes;
    // The Web Beans manager
-   private EventManager eventManager;
+   private transient final EventManager eventManager;
 
    // The bean resolver
-   // The cache can be rebuilt at any time
-   private transient Resolver resolver;
+   private transient final Resolver resolver;
    
    // The registered contexts
-   private ContextMap contextMap;
+   private transient final ContextMap contextMap;
    // The client proxy pool
-   private ProxyPool proxyPool;
+   private transient final ProxyPool proxyPool;
    // The registered beans
-   private List<Bean<?>> beans;
+   private transient List<Bean<?>> beans;
    // The registered beans, mapped by implementation class
-   private Map<Class<?>, Bean<?>> beanMap;
+   private transient final Map<Class<?>, Bean<?>> beanMap;
    // The registered decorators
-   private Set<Decorator> decorators;
+   private transient final Set<Decorator> decorators;
    // The registered interceptors
-   private Set<Interceptor> interceptors;
+   private transient final Set<Interceptor> interceptors;
+   
+   // The EJB resolver provided by the container
+   // TODO This can't be transient!
+   private transient final EjbResolver ejbResolver;
 
-   private EjbDescriptorCache ejbDescriptorCache;
+   private transient final EjbDescriptorCache ejbDescriptorCache;
+   
+   private transient final ResourceLoader resourceLoader;
 
    // The Naming (JNDI) access
-   private Naming naming;
+   private transient final Naming naming;
 
    /**
-    * Constructor
+    * Create a new manager
     * 
-    * @param enabledDeploymentTypes any enabled deployment types, an empty set
-    *           if none are specified
+    * @param ejbResolver the ejbResolver to use
     */
-   public ManagerImpl()
+   public ManagerImpl(Naming naming, EjbResolver ejbResolver, ResourceLoader resourceLoader)
    {
+      this.ejbResolver = ejbResolver;
+      this.naming = naming;
+      this.resourceLoader = resourceLoader;
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
       this.beanMap = new ConcurrentHashMap<Class<?>, Bean<?>>();
       this.resolver = new Resolver(this);
@@ -736,10 +745,17 @@ public class ManagerImpl implements Manager, Serializable
    {
       return naming;
    }
-
-   public void setNaming(Naming naming)
+   
+   public EjbResolver getEjbResolver()
    {
-      this.naming = naming;
+      return ejbResolver;
+   }
+   
+   // Serialization
+   
+   protected Object readResolve()
+   {
+      return CurrentManager.rootManager();
    }
 
 }

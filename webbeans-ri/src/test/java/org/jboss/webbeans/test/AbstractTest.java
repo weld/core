@@ -11,18 +11,20 @@ import javax.webbeans.Production;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.HornedAnimalDeploymentType;
 import org.jboss.webbeans.test.mock.MockBootstrap;
 import org.jboss.webbeans.test.mock.MockEjbDescriptor;
-import org.jboss.webbeans.test.mock.MockManagerImpl;
 import org.testng.annotations.BeforeMethod;
 
 public class AbstractTest
 {
-   protected MockManagerImpl manager;
+   protected static final int BUILT_IN_BEANS = 3;
+   
+   protected ManagerImpl manager;
    protected MockBootstrap webBeansBootstrap;
 
    public static boolean visited = false;

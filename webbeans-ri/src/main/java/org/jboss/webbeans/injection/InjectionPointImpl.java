@@ -27,7 +27,7 @@ import javax.webbeans.InjectionPoint;
 import javax.webbeans.Standard;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedMember;
+import org.jboss.webbeans.introspector.AnnotatedMember;
 
 /**
  * The container provided implementation for InjectionPoint beans
@@ -38,7 +38,7 @@ import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedMember;
 @Dependent
 public class InjectionPointImpl implements InjectionPoint
 {
-   private final AbstractAnnotatedMember<?, ? extends Member> memberInjectionPoint;
+   private final AnnotatedMember<?, ?> memberInjectionPoint;
    private final Bean<?> bean;
    private final Object beanInstance;
 
@@ -49,7 +49,7 @@ public class InjectionPointImpl implements InjectionPoint
     * @param bean The bean being injected
     * @param beanInstance The instance of the bean being injected
     */
-   public InjectionPointImpl(AbstractAnnotatedMember<?, ? extends Member> injectedMember, Bean<?> bean, Object beanInstance)
+   public InjectionPointImpl(AnnotatedMember<?, ?> injectedMember, Bean<?> bean, Object beanInstance)
    {
       this.memberInjectionPoint = injectedMember;
       this.bean = bean;
@@ -83,7 +83,7 @@ public class InjectionPointImpl implements InjectionPoint
 
    public Member getMember()
    {
-      return this.memberInjectionPoint.getDelegate();
+      return this.memberInjectionPoint.getMember();
    }
 
    public Type getType()

@@ -28,7 +28,7 @@ import javax.webbeans.manager.Manager;
  * @author Pete Muir
  *
  */
-public interface AnnotatedField<T> extends AnnotatedItem<T, Field>
+public interface AnnotatedField<T> extends AnnotatedMember<T, Field>
 {
    
    /**
@@ -39,26 +39,46 @@ public interface AnnotatedField<T> extends AnnotatedItem<T, Field>
    public Field getAnnotatedField();
    
    /**
-    * Injects an instance
+    * Injects into the field using the value provided by the manager.
     * 
-    * @param instance The instance to inject
+    * @param declaringInstance The instance to inject into
     * @param manager The Web Beans manager
     */
-   public void inject(Object instance, Manager manager);
+   public void inject(Object declaringInstance, Manager manager);
    
    /**
     * Injects an instance
     * 
-    * @param instance The instance to inject
-    * @param manager The Web Beans manager
+    * 
+    * @param declaringInstance The instance to inject into
+    * @param value The value to inject
     */
-   public void injectIntoInstance(Object instance, Manager manager);
+   public void inject(Object declaringInstance, Object value);
+   
+   /**
+    * Injects into the field using the value provided by the manager
+    * 
+    * Unlike {@link #inject(Object, Manager)} the field injected into is 
+    * discovered from the declaring instance. This is slower, but safe to use
+    * with proxies.
+    * 
+    * @param declaringInstance The instance to inject into
+    * @param value The value to inject
+    */
+   public void injectIntoInstance(Object declaringInstance, Object value);
    
    /**
     * Injects an instance
     * 
-    * @param instance The instance to inject
+    * Unlike {@link #inject(Object, Manager)} the field injected into is 
+    * discovered from the declaring instance. This is slower, but safe to use
+    * with proxies.
+    * 
+    * @param declaringInstance The instance to inject
+    * @param manager The Web Beans manager
     */
+   public void injectIntoInstance(Object declaringInstance, Manager manager);
+   
    public T get(Object instance);
    
    /**

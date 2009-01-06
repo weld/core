@@ -62,6 +62,7 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
    {
       super(buildAnnotationMap(field), field);
       this.field = field;
+      field.setAccessible(true);
       this.declaringClass = declaringClass;
       if (field.getGenericType() instanceof ParameterizedType)
       {
@@ -128,6 +129,16 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
    public void injectIntoInstance(Object instance, Manager manager)
    {
       Reflections.setAndWrap(getName(), instance, getValue(manager));
+   }
+   
+   public void inject(Object instance, Object value)
+   {
+      Reflections.setAndWrap(getDelegate(), instance, value);
+   }
+   
+   public void injectIntoInstance(Object instance, Object value)
+   {
+      Reflections.setAndWrap(getName(), instance, value);
    }
 
    @SuppressWarnings("unchecked")

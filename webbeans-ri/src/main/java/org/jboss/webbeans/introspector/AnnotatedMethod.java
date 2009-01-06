@@ -41,7 +41,7 @@ import javax.webbeans.manager.Manager;
  * @author Pete Muir
  * 
  */
-public interface AnnotatedMethod<T> extends AnnotatedItem<T, Method>
+public interface AnnotatedMethod<T> extends AnnotatedMember<T, Method>
 {
    @SuppressWarnings("unchecked")
    public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Disposes.class, Observes.class, Fires.class, IfExists.class, BeforeTransactionCompletion.class, AfterTransactionCompletion.class, AfterTransactionFailure.class, AfterTransactionSuccess.class));

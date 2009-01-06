@@ -39,7 +39,7 @@ import org.jboss.webbeans.util.Proxies;
  * 
  * @see org.jboss.webbeans.bean.proxy.ProxyMethodHandler
  */
-public class ProxyPool implements Serializable
+public class ProxyPool
 {
    private static final long serialVersionUID = 9029999149357529341L;
 
