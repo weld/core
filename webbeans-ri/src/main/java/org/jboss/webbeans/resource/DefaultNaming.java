@@ -17,6 +17,10 @@
 
 package org.jboss.webbeans.resource;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.webbeans.ExecutionException;
@@ -69,7 +73,13 @@ public class DefaultNaming implements Naming
    {
       try
       {
-         initialContext.bind(key, value);
+         List<String> parts = splitIntoContexts(key);
+         Context context = initialContext;
+         for (int i = 0; i < parts.size() - 1; i++)
+         {
+            context = (Context) context.lookup(parts.get(i));
+         }
+         context.bind(parts.get(parts.size() - 1), value);
       }
       catch (NamingException e)
       {
@@ -104,6 +114,16 @@ public class DefaultNaming implements Naming
       {
          throw new ExecutionException(instance + " not of expected type " + expectedType, e);
       }
+   }
+   
+   private static List<String> splitIntoContexts(String key)
+   {
+      List<String> parts = new ArrayList<String>();
+      for (String part : key.split("/"))
+      {
+         parts.add(part);
+      }
+      return parts;
    }
 
 }
