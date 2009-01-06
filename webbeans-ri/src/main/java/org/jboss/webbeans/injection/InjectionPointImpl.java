@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.bean;
+package org.jboss.webbeans.injection;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
@@ -36,7 +36,7 @@ import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedMember;
  */
 @Standard
 @Dependent
-public class InjectionPointBean implements InjectionPoint
+public class InjectionPointImpl implements InjectionPoint
 {
    private final AbstractAnnotatedMember<?, ? extends Member> memberInjectionPoint;
    private final Bean<?> bean;
@@ -49,7 +49,7 @@ public class InjectionPointBean implements InjectionPoint
     * @param bean The bean being injected
     * @param beanInstance The instance of the bean being injected
     */
-   public InjectionPointBean(AbstractAnnotatedMember<?, ? extends Member> injectedMember, Bean<?> bean, Object beanInstance)
+   public InjectionPointImpl(AbstractAnnotatedMember<?, ? extends Member> injectedMember, Bean<?> bean, Object beanInstance)
    {
       this.memberInjectionPoint = injectedMember;
       this.bean = bean;

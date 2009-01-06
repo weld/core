@@ -131,7 +131,7 @@ public class InjectionPointTest extends AbstractTest
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
          Set<Annotation> bindingTypes = beanWithInjectionPoint.getInjectedMetadata().getBindingTypes();
          assert bindingTypes.size() == 1;
-         assert bindingTypes.iterator().next().equals(Current.class);
+         assert Current.class.isAssignableFrom(bindingTypes.iterator().next().annotationType());
       }
       finally
       {
@@ -251,7 +251,7 @@ public class InjectionPointTest extends AbstractTest
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
-         assert beanWithInjectionPoint.getInjectedMetadata().getBean().getDeploymentType().equals(Standard.class);
+         assert beanWithInjectionPoint.getInjectedMetadata().getClass().isAnnotationPresent(Standard.class);
       }
       finally
       {
@@ -273,7 +273,7 @@ public class InjectionPointTest extends AbstractTest
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
-         assert beanWithInjectionPoint.getInjectedMetadata().getBean().getScopeType().equals(Dependent.class);
+         assert beanWithInjectionPoint.getInjectedMetadata().getClass().isAnnotationPresent(Dependent.class);
       }
       finally
       {
@@ -317,7 +317,7 @@ public class InjectionPointTest extends AbstractTest
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
-         assert beanWithInjectionPoint.getInjectedMetadata().getBean().getBindingTypes().contains(Current.class);
+         assert beanWithInjectionPoint.getInjectedMetadata().getBindingTypes().contains(new CurrentBinding());
       }
       finally
       {
