@@ -1,10 +1,12 @@
 package org.jboss.webbeans.examples.login;
 
+import java.io.Serializable;
+
 import javax.webbeans.Named;
 import javax.webbeans.RequestScoped;
 
 @RequestScoped @Named
-public class Credentials {
+public class Credentials implements Serializable {
 	
     private String username;
     private String password;

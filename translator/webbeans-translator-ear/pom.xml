@@ -73,9 +73,6 @@
                      <contextRoot>/webbeans-translator</contextRoot>
                   </webModule>
                </modules>
-               <jboss>
-                  <loader-repository>webbeans.jboss.org:loader=webbeans-translator</loader-repository>
-               </jboss>
             </configuration>
          </plugin>
       </plugins>

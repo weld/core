@@ -1,5 +1,6 @@
 package org.jboss.webbeans.examples.login;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import javax.webbeans.Produces;
 import javax.webbeans.SessionScoped;
 
 @SessionScoped @Named
-public class Login {
+public class Login implements Serializable {
 
     @Current Credentials credentials;
     //@PersistenceContext EntityManager userDatabase;

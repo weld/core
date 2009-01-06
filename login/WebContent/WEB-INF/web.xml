@@ -28,9 +28,5 @@
    <session-config>
       <session-timeout>10</session-timeout>
    </session-config>
-   
-    <listener>
-       <listener-class>org.jboss.webbeans.servlet.WebBeansListener</listener-class>
-    </listener>
 
 </web-app>

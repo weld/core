@@ -1,8 +1,0 @@
-<jboss-web>  
-  <class-loading java2ClassLoadingCompliance="false">
-    <loader-repository>
-      webbeans.jboss.org:loader=webbeans-numberguess
-      <loader-repository-config>java2ParentDelegation=false</loader-repository-config>
-    </loader-repository>
-  </class-loading>
-</jboss-web>
