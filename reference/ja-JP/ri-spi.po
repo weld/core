@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-04 23:18+0000\n"
+"POT-Creation-Date: 2009-01-06 11:30+0000\n"
 "PO-Revision-Date: 2008-12-20 22:07+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -51,17 +51,29 @@ msgstr ""
 #, no-c-format
 msgid ""
 "The Web Beans SPI is located in <literal>webbeans-ri-spi</literal> module, "
-"and packaged as <literal>webbeans-ri-spi.jar</literal>."
+"and packaged as <literal>webbeans-ri-spi.jar</literal>. Some SPIs are "
+"optional, if you need to override the default behavior, others are required."
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:31
+#: ri-spi.xml:33
 #, no-c-format
-msgid "Currently, the only SPI to implement is the bootstrap spi:"
+msgid ""
+"You can specify the implementation of an SPI either as a system property, or "
+"in a properties file <literal>META-INF/web-beans-ri.properties</literal>. "
+"All property names are the fully qualified class name of the implemented "
+"interface; all property values are the fully qualified class name of the "
+"implementation class."
+msgstr ""
+
+#. Tag: title
+#: ri-spi.xml:43
+#, no-c-format
+msgid "Web Bean Discovery"
 msgstr ""
 
 #. Tag: programlisting
-#: ri-spi.xml:35
+#: ri-spi.xml:45
 #, no-c-format
 msgid ""
 "<![CDATA[public interface WebBeanDiscovery {\n"
@@ -91,7 +103,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:37
+#: ri-spi.xml:47
 #, no-c-format
 msgid ""
 "The discovery of Web Bean classes and <literal>web-bean.xml</literal> files "
@@ -100,7 +112,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:43
+#: ri-spi.xml:53
 #, no-c-format
 msgid ""
 "The Web Beans RI also delegates EJB3 bean discovery to the container so that "
@@ -110,7 +122,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri-spi.xml:50
+#: ri-spi.xml:60
 #, no-c-format
 msgid ""
 "<![CDATA[public interface EjbDescriptor<T> {\n"
@@ -191,7 +203,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:52
+#: ri-spi.xml:62
 #, no-c-format
 msgid ""
 "The contract described the JavaDoc is enough to implement an EJBDescriptor. "
@@ -201,39 +213,144 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:59
+#: ri-spi.xml:69
 #, no-c-format
 msgid ""
 "The Web Beans RI can be told to load your implementation of "
 "<literal>WebBeanDiscovery</literal> using the property <literal>org.jboss."
-"webbeans.bootstrap.webBeanDiscovery</literal> with the fully qualified class "
+"webbeans.bootstrap.WebBeanDiscovery</literal> with the fully qualified class "
 "name as the value. For example:"
 msgstr ""
 
 #. Tag: programlisting
-#: ri-spi.xml:66
+#: ri-spi.xml:76
 #, no-c-format
 msgid ""
-"org.jboss.webbeans.bootstrap.webBeanDiscovery=org.jboss.webbeans.integration."
-"jbossas.WebBeanDiscoveryImpl"
-msgstr ""
-
-#. Tag: para
-#: ri-spi.xml:68
-#, no-c-format
-msgid ""
-"The property can either be specified as a system property, or in a "
-"properties file <literal>META-INF/web-beans-ri.properties</literal>."
+"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
+"integration.jbossas.WebBeanDiscoveryImpl"
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:76
+#: ri-spi.xml:80
+#, no-c-format
+msgid "JNDI"
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:82
+#, no-c-format
+msgid ""
+"The Web Beans RI implements JNDI binding and lookup according to standards, "
+"however you may want to alter the binding and lookup (for example in an "
+"environment where JNDI isn't available). To do this, implement <literal>org."
+"jboss.webbeans.spi.resources.Naming</literal>:"
+msgstr ""
+
+#. Tag: programlisting
+#: ri-spi.xml:90
+#, no-c-format
+msgid ""
+"<![CDATA[public interface Naming extends Serializable {\n"
+"   \n"
+"   /**\n"
+"    * Typed JNDI lookup\n"
+"    * \n"
+"    * @param <T> The type\n"
+"    * @param name The JNDI name\n"
+"    * @param expectedType The expected type\n"
+"    * @return The object\n"
+"    */\n"
+"   public <T> T lookup(String name, Class<? extends T> expectedType);\n"
+"\n"
+"   /**\n"
+"    * Binds an item to JNDI\n"
+"    * \n"
+"    * @param key The key to bind under\n"
+"    * @param value The item to bind\n"
+"    */\n"
+"   public void bind(String key, Object value);\n"
+"   \n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:92 ri-spi.xml:113
+#, no-c-format
+msgid "and tell the RI to use it:"
+msgstr ""
+
+#. Tag: programlisting
+#: ri-spi.xml:96
+#, no-c-format
+msgid "org.jboss.webbeans.resources.spi.Naming=com.acme.MyNaming"
+msgstr ""
+
+#. Tag: title
+#: ri-spi.xml:101
+#, no-c-format
+msgid "Resource loading"
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:103
+#, no-c-format
+msgid ""
+"The Web Beans RI needs to load classes and resources from the classpath at "
+"various times. By default, they are loaded from the same classloader that "
+"was used to load the RI, however this may not be correct for some "
+"environments. If this is case, you can implement <literal>org.jboss.webbeans."
+"spi.ResourceLoader</literal>:"
+msgstr ""
+
+#. Tag: programlisting
+#: ri-spi.xml:111
+#, no-c-format
+msgid ""
+"<![CDATA[\n"
+"         public interface ResourceLoader {\n"
+"    \n"
+"   /**\n"
+"    * Creates a class from a given FQCN\n"
+"    * \n"
+"    * @param name The name of the clsas\n"
+"    * @return The class\n"
+"    */\n"
+"   public Class<?> classForName(String name);\n"
+"   \n"
+"   /**\n"
+"    * Gets a resource as a URL by name\n"
+"    * \n"
+"    * @param name The name of the resource\n"
+"    * @return An URL to the resource\n"
+"    */\n"
+"   public URL getResource(String name);\n"
+"   \n"
+"   /**\n"
+"    * Gets resources as URLs by name\n"
+"    * \n"
+"    * @param name The name of the resource\n"
+"    * @return An iterable reference to the URLS\n"
+"    */\n"
+"   public Iterable<URL> getResources(String name);\n"
+"   \n"
+"}\n"
+"         ]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: ri-spi.xml:117
+#, no-c-format
+msgid "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
+msgstr ""
+
+#. Tag: title
+#: ri-spi.xml:124
 #, no-c-format
 msgid "The contract with the container"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:78
+#: ri-spi.xml:126
 #, no-c-format
 msgid ""
 "There are a number of requirements that the Web Beans RI places on the "
@@ -241,13 +358,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: ri-spi.xml:86
+#: ri-spi.xml:134
 #, no-c-format
 msgid "Classloader isolation"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:90
+#: ri-spi.xml:138
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans into an environment that supports "
@@ -256,13 +373,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: ri-spi.xml:99
+#: ri-spi.xml:147
 #, no-c-format
 msgid "The <literal>webbeans-ri.jar</literal>"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:103
+#: ri-spi.xml:151
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans into an environment that supports "
