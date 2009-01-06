@@ -23,7 +23,7 @@ msgstr "Prossimi passi"
 #: next.xml:6
 #, no-c-format
 msgid "Because Web Beans is so new, there's not yet a lot of information available online."
-msgstr "Poiché Web Beans è così nuova, non è ancora disponibile molta informazione online."
+msgstr "Poiché Web Beans è una tecnologia nuova, non è ancora disponibile molta informazione online."
 
 #. Tag: para
 #: next.xml:9

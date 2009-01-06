@@ -94,7 +94,7 @@ msgstr "dove dovrei tenerne il riferimento quando non lo sto usando direttamente
 #: part1.xml:57
 #, no-c-format
 msgid "how can I add an indirection layer, so that the implementation of this object can vary at deployment time?"
-msgstr "come posso aggiungere un livello di indirezione, in modo che l'implementazione di tale oggetto possa variare deployment time?"
+msgstr "come posso aggiungere un livello di indirezione, in modo che l'implementazione di tale oggetto possa variare a deployment time?"
 
 # go about (dovrei comportarmi)???
 #. Tag: para
@@ -108,7 +108,7 @@ msgstr "cosa dovrei fare per condividere questo oggetto con altri oggetti?"
 #: part1.xml:65
 #, no-c-format
 msgid "A Web Bean specifies only the type and semantics of other Web Beans it depends upon. It need not be aware of the actual lifecycle, concrete implementation, threading model or other clients of any Web Bean it depends upon. Even better, the concrete implementation, lifecycle and threading model of a Web Bean it depends upon may vary according to the deployment scenario, without affecting any client."
-msgstr "Un Web Bean specifica soltanto il tipo e la semantica degli altri Web Beans da cui dipende. Non ha bisogno di essere a conoscenza del reale ciclo di vita, della implementazione, del modello di threading o degli altri client dei Web Bean da cui dipende. Ancor meglio, l'implementazione, il ciclo di vita e il modello di threading di un Web Bean da cui dipende possono variare a secondo dello scenario di deployment, senza avere effetti su nessun client."
+msgstr "Un Web Bean specifica soltanto il tipo e la semantica degli altri Web Beans da cui dipende. Non ha bisogno di essere a conoscenza del reale ciclo di vita, della implementazione, del modello di threading o degli altri client dei Web Bean da cui dipende. Ancor meglio, l'implementazione, il ciclo di vita e il modello di threading di un Web Bean da cui dipende possono variare a seconda dello scenario di deployment, senza avere effetti su nessun client."
 
 # <emphasis>loose-coupling</emphasis> è da tradurre?
 # inerente o inerente a?
@@ -178,7 +178,7 @@ msgstr "Web Beans fornisce anche i necessari punti di integrazione in modo che a
 #: part1.xml:120
 #, no-c-format
 msgid "Web Beans was influenced by a number of existing Java frameworks, including Seam, Guice and Spring. However, Web Beans has its own very distinct character: more typesafe than Seam, more stateful and less XML-centric than Spring, more web and enterprise-application capable than Guice."
-msgstr "Web Beans è stata influenzata da un buon numero di framework Java esistenti, inclusi Seam, Guice and Spring. Comunque, Web Beans ha un proprio chiaro carattere distintivo: è più sicuro nell'uso dei tipi (typesafe) di Seam, è più orientato allo stato (stateful) e meno basato su XML di Spring, e si sposa meglio alle applicazioni web ed enterprise di Guice."
+msgstr "Web Beans è stata influenzata da un buon numero di framework Java esistenti, inclusi Seam, Guice and Spring. Comunque, Web Beans ha un proprio chiaro carattere distintivo: è più sicuro nell'uso dei tipi (typesafe) di Seam, è più orientato allo stato (stateful) e meno basato su XML di Spring, e più capace di Guice nelle applicazioni web ed enterprise."
 
 # dove EJB Lite sia disponibile in modo embeddable
 #. Tag: para
