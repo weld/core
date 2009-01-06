@@ -15,33 +15,36 @@
  * limitations under the License.
  */
 
-
 package javax.webbeans;
 
 /**
+ * An AmbiguousDependencyException is thrown when within the set of enabled Web
+ * Beans with the API type and bind- ing types declared there exists no unique
+ * Web Bean with a higher precedence than all other Web Beans in the set.
+ * 
  * 
  * @author Pete Muir
  */
 public class AmbiguousDependencyException extends DeploymentException
 {
-
+   
    public AmbiguousDependencyException()
    {
    }
-
+   
    public AmbiguousDependencyException(String message, Throwable throwable)
    {
       super(message, throwable);
    }
-
+   
    public AmbiguousDependencyException(String message)
    {
       super(message);
    }
-
+   
    public AmbiguousDependencyException(Throwable throwable)
    {
       super(throwable);
    }
-
+   
 }
