@@ -7,14 +7,20 @@
 
   <!-- Web Beans deployers -->
   
+  <!-- Responsible for discovering Web Bean files -->
+  <bean name="WebBeansFilesDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.metadata.WebBeansFilesDeployer"/>
+
   <!-- Responsible for discovering Web Bean classes -->
   <bean name="WebBeansDiscoveryDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.env.WebBeanDiscoveryDeployer"/>
   
   <!-- Responsible for pushing the Web Beans RI onto the application classpath -->
-  <bean name="WebBeansWebUrlInteegrationDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.cl.WebBeansWebUrlIntegrationDeployer"/>
+  <bean name="WebBeansWebUrlIntegrationDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.cl.WebBeansWebUrlIntegrationDeployer"/>
   
   <!-- Responsible for inserting the Web Beans RI EJB interceptor -->
-  <bean name="PostEjbJarMetadataDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.metadata.PostEjbJarMetadataDeployer"/>
+  <bean name="PostEjbJarMetadataDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.metadata.WBEjbInterceptorMetadataDeployer"/>
+  
+  <!-- Responsible for enabling classloader isolation for Web Bean jars -->
+  <!-- <bean name="PostJBossMetadataDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.metadata.PostJBossMetadataDeployer"/>-->
   
   <!-- Responsible for enabling classloader isolation for Web Bean wars -->
   <!-- <bean name="PostJBossWebMetadataDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.metadata.PostJBossWebMetadataDeployer"/>-->
