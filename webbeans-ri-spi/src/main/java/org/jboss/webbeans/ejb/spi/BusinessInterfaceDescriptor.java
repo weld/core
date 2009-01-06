@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.bootstrap.spi;
+package org.jboss.webbeans.ejb.spi;
 
 /**
  * Represents the business interface of an EJB

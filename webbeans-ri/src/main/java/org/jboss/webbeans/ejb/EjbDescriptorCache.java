@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
+import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
 /**
  * EJB descriptors by EJB implementation class or name

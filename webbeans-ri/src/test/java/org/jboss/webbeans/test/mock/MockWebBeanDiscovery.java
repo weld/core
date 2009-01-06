@@ -11,8 +11,8 @@ import javax.ejb.MessageDriven;
 import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 
-import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
 public class MockWebBeanDiscovery implements WebBeanDiscovery
 {

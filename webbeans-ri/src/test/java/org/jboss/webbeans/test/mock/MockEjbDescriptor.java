@@ -11,8 +11,8 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 
-import org.jboss.webbeans.bootstrap.spi.BusinessInterfaceDescriptor;
-import org.jboss.webbeans.bootstrap.spi.EjbDescriptor;
+import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
+import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.test.annotations.Singleton;
 
 public class MockEjbDescriptor<T> implements EjbDescriptor<T>

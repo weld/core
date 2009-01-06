@@ -19,6 +19,8 @@ package org.jboss.webbeans.bootstrap.spi;
 
 import java.net.URL;
 
+import org.jboss.webbeans.ejb.spi.EjbDescriptor;
+
 /**
  * A container should implement this interface to allow the Web Beans RI to
  * discover the Web Beans to deploy
