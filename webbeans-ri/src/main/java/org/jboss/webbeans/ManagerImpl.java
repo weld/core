@@ -56,6 +56,7 @@ import org.jboss.webbeans.context.ContextMap;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.event.EventManager;
+import org.jboss.webbeans.injection.InjectionPointFactory;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
@@ -83,8 +84,10 @@ public class ManagerImpl implements Manager, Serializable
 
    // The enabled deployment types from web-beans.xml
    private transient List<Class<? extends Annotation>> enabledDeploymentTypes;
-   // The Web Beans manager
+   // The Web Beans event manager
    private transient final EventManager eventManager;
+   // An injection point metadata beans factory
+   InjectionPointFactory injectionPointFactory;
 
    // The bean resolver
    private transient final Resolver resolver;
@@ -132,6 +135,7 @@ public class ManagerImpl implements Manager, Serializable
       this.contextMap = new ContextMap();
       this.eventManager = new EventManager();
       this.ejbDescriptorCache = new EjbDescriptorCache();
+      this.injectionPointFactory = new InjectionPointFactory();
 
       List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       defaultEnabledDeploymentTypes.add(0, Standard.class);
@@ -756,6 +760,17 @@ public class ManagerImpl implements Manager, Serializable
    protected Object readResolve()
    {
       return CurrentManager.rootManager();
+   }
+
+   /**
+    * Accesses the factory used to create each instance of InjectionPoint
+    * that is injected into web beans.
+    * 
+    * @return the factory
+    */
+   public final InjectionPointFactory getInjectionPointFactory()
+   {
+      return injectionPointFactory;
    }
 
 }

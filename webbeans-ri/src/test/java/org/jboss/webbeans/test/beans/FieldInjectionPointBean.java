@@ -18,6 +18,7 @@
 package org.jboss.webbeans.test.beans;
 
 import javax.webbeans.Current;
+import javax.webbeans.RequestScoped;
 
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
 
@@ -28,6 +29,7 @@ import org.jboss.webbeans.test.annotations.AnimalStereotype;
  * @author David Allen
  * 
  */
+@RequestScoped
 public class FieldInjectionPointBean
 {
    @Current @AnimalStereotype

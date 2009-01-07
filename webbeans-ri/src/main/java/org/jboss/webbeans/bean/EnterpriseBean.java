@@ -33,7 +33,6 @@ import javax.webbeans.Interceptor;
 import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 import javax.webbeans.Specializes;
-import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
@@ -340,7 +339,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * @param instance The bean instance
     * @param manager The Web Beans manager
     */
-   protected void injectBoundFields(T instance, Manager manager)
+   protected void injectBoundFields(T instance, ManagerImpl manager)
    {
       for (AnnotatedField<?> field : getInjectableFields())
       {

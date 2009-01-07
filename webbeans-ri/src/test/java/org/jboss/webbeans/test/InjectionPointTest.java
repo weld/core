@@ -35,6 +35,7 @@ import org.jboss.webbeans.test.annotations.AnimalStereotype;
 import org.jboss.webbeans.test.beans.BeanWithInjectionPointMetadata;
 import org.jboss.webbeans.test.beans.ConstructorInjectionPointBean;
 import org.jboss.webbeans.test.beans.FieldInjectionPointBean;
+import org.jboss.webbeans.test.bindings.AnimalStereotypeAnnotationLiteral;
 import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
 import org.testng.annotations.Test;
 
@@ -61,6 +62,7 @@ public class InjectionPointTest extends AbstractTest
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
+         //TODO Fix injection issue where raw bean is used instead of proxied bean
          assert beanWithInjectionPoint.getInjectedMetadata().getInstance().equals(beanWithInjectedBean);
       }
       finally
@@ -84,8 +86,9 @@ public class InjectionPointTest extends AbstractTest
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
 
-         Set<Bean<FieldInjectionPointBean>> theBean = manager.resolveByType(FieldInjectionPointBean.class);
-         assert beanWithInjectionPoint.getInjectedMetadata().getBean().equals(theBean);
+         Set<Bean<FieldInjectionPointBean>> resolvedBeans = manager.resolveByType(FieldInjectionPointBean.class);
+         assert resolvedBeans.size() == 1;
+         assert beanWithInjectionPoint.getInjectedMetadata().getBean().equals(resolvedBeans.iterator().next());
       }
       finally
       {
@@ -107,7 +110,7 @@ public class InjectionPointTest extends AbstractTest
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
-         assert beanWithInjectionPoint.getInjectedMetadata().getType().equals(FieldInjectionPointBean.class);
+         assert beanWithInjectionPoint.getInjectedMetadata().getType().equals(BeanWithInjectionPointMetadata.class);
       }
       finally
       {
@@ -228,8 +231,8 @@ public class InjectionPointTest extends AbstractTest
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
          Set<Annotation> annotations = new HashSet<Annotation>(Arrays.asList(beanWithInjectionPoint.getInjectedMetadata().getAnnotations()));
          assert annotations.size() > 0;
-         assert annotations.contains(Current.class);
-         assert annotations.contains(AnimalStereotype.class);
+         assert annotations.contains(new CurrentBinding());
+         assert annotations.contains(new AnimalStereotypeAnnotationLiteral());
       }
       finally
       {
@@ -295,7 +298,7 @@ public class InjectionPointTest extends AbstractTest
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
-         assert beanWithInjectionPoint.getInjectedMetadata().getBean().getTypes().contains(InjectionPoint.class);
+         assert InjectionPoint.class.isAssignableFrom(beanWithInjectionPoint.getInjectedMetadata().getClass());
       }
       finally
       {
