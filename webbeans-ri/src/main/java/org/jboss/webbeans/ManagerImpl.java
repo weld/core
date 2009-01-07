@@ -87,7 +87,7 @@ public class ManagerImpl implements Manager, Serializable
    // The Web Beans event manager
    private transient final EventManager eventManager;
    // An injection point metadata beans factory
-   InjectionPointFactory injectionPointFactory;
+   private transient final InjectionPointFactory injectionPointFactory;
 
    // The bean resolver
    private transient final Resolver resolver;
@@ -755,22 +755,22 @@ public class ManagerImpl implements Manager, Serializable
       return ejbResolver;
    }
    
-   // Serialization
-   
-   protected Object readResolve()
-   {
-      return CurrentManager.rootManager();
-   }
-
    /**
     * Accesses the factory used to create each instance of InjectionPoint
     * that is injected into web beans.
     * 
     * @return the factory
     */
-   public final InjectionPointFactory getInjectionPointFactory()
+   public InjectionPointFactory getInjectionPointFactory()
    {
       return injectionPointFactory;
+   }
+   
+   // Serialization
+   
+   protected Object readResolve()
+   {
+      return CurrentManager.rootManager();
    }
 
 }
