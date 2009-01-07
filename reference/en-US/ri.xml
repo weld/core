@@ -238,10 +238,6 @@ ant deploy</programlisting>
    <session-config>
       <session-timeout>10</session-timeout>
    </session-config>
-   
-    <listener>
-       <listener-class>org.jboss.webbeans.servlet.WebBeansListener</listener-class>
-    </listener>
 
 </web-app>]]></programlisting>
          <calloutlist>
@@ -267,24 +263,13 @@ ant deploy</programlisting>
                   Configure a session timeout of 10 minutes
                </para>
             </callout>
-            <callout arearefs="webbeans.listener">
-               <para>
-                  Configure the Web Beans listener, so that Web Beans services
-                  can be used in the servlet request
-               </para>
-            </callout>
          </calloutlist>
       </programlistingco>
       
       <note>
          <para>
-            The only configuration required by the Web Beans RI in 
-            <literal>web.xml</literal> is to add the Web Beans listener.
-         </para>
-         <para>
             Whilst this demo is a JSF demo, you can use the Web Beans RI with 
-            any Servlet based web framework; just configure the Web Beans 
-            listener.
+            any Servlet based web framework.
          </para>
       </note>
       
@@ -580,8 +565,7 @@ public class Game
       <para>
          First, let's take a look at the ear aggregator, which is located in 
          <literal>webbeans-translator-ear</literal> module. Maven automatically
-         generates the <literal>application.xml</literal> and 
-         <literal>jboss-app.xml</literal> for us:
+         generates the <literal>application.xml</literal> for us:
       </para>
       
       <programlisting role="XML"><![CDATA[<plugin>
@@ -595,35 +579,18 @@ public class Game
             <contextRoot>/webbeans-translator</contextRoot>
          </webModule>
       </modules>
-      <jboss>
-         <loader-repository>webbeans.jboss.org:loader=webbeans-translator</loader-repository>
-      </jboss>
    </configuration>
 </plugin>]]></programlisting>
 
       <para>
-         We're doing a couple of things here - firstly we set the context path,
-         which gives us a nice url 
-         (<ulink url="http://localhost:8080/webbeans-translator">http://localhost:8080/webbeans-translator</ulink>)
-         and we also enable class loader isolation for JBoss AS.
+         Here we set the context path, which gives us a nice url 
+         (<ulink url="http://localhost:8080/webbeans-translator">http://localhost:8080/webbeans-translator</ulink>).
       </para>
       
       <tip>
          <para>
             If you aren't using Maven to generate these files, you would need
-            <literal>META-INF/jboss-app.xml</literal>:
-         </para>
-
-         <programlisting role="XML"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE jboss-app
-    PUBLIC "-//JBoss//DTD J2EE Application 4.2//EN"
-    "http://www.jboss.org/j2ee/dtd/jboss-app_4_2.dtd">
-<jboss-app>
-  <loader-repository>webbeans.jboss.org:loader=webbeans-translator</loader-repository>
-</jboss-app>]]></programlisting>
-
-         <para>
-            and <literal>META-INF/application.xml</literal>:
+            <literal>META-INF/application.xml</literal>:
          </para>
          
          <programlisting role="XML"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -649,8 +616,8 @@ public class Game
       <para>
          Next, lets look at the war. Just as in the numberguess example, we have
          a <literal>faces-config.xml</literal> (to enabled Facelets) and a 
-         <literal>web.xml</literal> (to enable JSF and attach Web Beans services
-         to the servlet container) in <literal>WebContent/WEB-INF</literal>.
+         <literal>web.xml</literal> (to enable JSF) in 
+         <literal>WebContent/WEB-INF</literal>.
       </para>
       
       <para>
@@ -693,36 +660,11 @@ public class Game
       <para>
          Finally, let's look at the ejb module, 
          <literal>webbeans-translator-ejb</literal>.
-         There are two configuration files in 
-         <literal>src/main/resources/META-INF</literal>, an empty
-         <literal>web-beans.xml</literal>, used to mark the archive as 
-         containing Web Beans, and <literal>ejb-jar.xml</literal>. Web Beans
-         provides injection and initializtion services for all EJBs, and uses 
-         <literal>ejb-jar.xml</literal> to enable this, you'll need this in any
-         EJB project which uses Web Beans:
+         In <literal>src/main/resources/META-INF</literal> there is just an 
+         empty <literal>web-beans.xml</literal>, used to mark the archive as 
+         containing Web Beans.
       </para>
       
-      <programlisting role="XML"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
-         version="3.0">
-         
-   <interceptors>
-     <interceptor>
-       <interceptor-class>org.jboss.webbeans.ejb.SessionBeanInterceptor</interceptor-class>
-     </interceptor>
-   </interceptors>
-   
-   <assembly-descriptor>
-      <interceptor-binding>
-         <ejb-name>*</ejb-name>
-         <interceptor-class>org.jboss.webbeans.ejb.SessionBeanInterceptor</interceptor-class>
-      </interceptor-binding>
-   </assembly-descriptor>
-   
-</ejb-jar>]]></programlisting>
-
       <para>
          We've saved the most interesting bit to last, the code! The project has
          two simple beans, <literal>SentanceParser</literal> and

@@ -278,10 +278,40 @@
             </term>
             <listitem>
                <para>
-                  If you are integrating the Web Beans into an environment that
-                  supports deployment of applications, you must enable,
-                  automatically, or through user configuation, classloader
-                  isolation for each Web Beans application
+                  If you are integrating the Web Beans RI into an environment 
+                  that supports deployment of multiple applications, you must 
+                  enable, automatically, or through user configuation, 
+                  classloader isolation for each Web Beans application.
+               </para>
+            </listitem>
+         </varlistentry>
+         <varlistentry>
+            <term>
+               Servlet listener
+            </term>
+            <listitem>
+               <para>
+                  If you are integrating the Web Beans into a Servlet 
+                  environment you must register 
+                  <literal>org.jboss.webbeans.servlet.WebBeansListener</literal>
+                  as a Servlet listener, either automatically, or through user
+                  configuration, for each Web Beans application which uses 
+                  Servlet.
+               </para>
+            </listitem>
+         </varlistentry>
+         <varlistentry>
+            <term>
+               Session Bean Interceptor
+            </term>
+            <listitem>
+               <para>
+                  If you are integrating the Web Beans into an EJB 
+                  environment you must register 
+                  <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal>
+                  as a EJB interceptor for all EJBs in the application, either 
+                  automatically, or through user configuration, for each Web 
+                  Beans application which uses enterprise beans.
                </para>
             </listitem>
          </varlistentry>
