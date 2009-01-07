@@ -2,7 +2,10 @@ package org.jboss.webbeans.ejb.spi;
 
 import java.lang.annotation.Annotation;
 
+import javax.persistence.EntityManagerFactory;
 import javax.webbeans.InjectionPoint;
+
+import org.jboss.webbeans.resources.spi.Naming;
 
 /**
  * A container should implement this interface to allow the Web Beans RI to
@@ -22,7 +25,7 @@ public interface EjbResolver
     * @param injectionPoint The injection point metadata
     * @return the JNDI name
     */
-   public String resolveEjb(InjectionPoint injectionPoint);
+   public Object resolveEjb(InjectionPoint injectionPoint, Naming naming);
    
    /**
     * Resolve the JNDI name for the @PersistenceContext injection point
@@ -30,7 +33,7 @@ public interface EjbResolver
     * @param injectionPoint The injection point metadata
     * @return the JNDI name
     */
-   public String resolvePersistenceUnit(InjectionPoint injectionPoint);
+   public EntityManagerFactory resolvePersistenceUnit(InjectionPoint injectionPoint, Naming naming);
    
    public Class<? extends Annotation> getEJBAnnotation();
    

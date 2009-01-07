@@ -3,6 +3,7 @@ package org.jboss.webbeans.test.mock;
 import java.lang.annotation.Annotation;
 
 import javax.ejb.EJB;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.webbeans.InjectionPoint;
 
@@ -49,13 +50,13 @@ public class MockBootstrap extends WebBeansBootstrap
          return PersistenceContext.class;
       }
 
-      public String resolveEjb(InjectionPoint injectionPoint)
+      public Object resolveEjb(InjectionPoint injectionPoint, Naming naming)
       {
          // TODO Implement EJB resolution for Unit tests
          return null;
       }
 
-      public String resolvePersistenceUnit(InjectionPoint injectionPoint)
+      public EntityManagerFactory resolvePersistenceUnit(InjectionPoint injectionPoint, Naming naming)
       {
          // TODO Implement PU resolution for Unit tests
          return null;

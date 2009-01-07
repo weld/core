@@ -23,9 +23,11 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.persistence.EntityManagerFactory;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Initializer;
 import javax.webbeans.InjectionPoint;
+
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.context.DependentContext;
@@ -218,25 +220,22 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getEJBAnnotation()))
       {
          InjectionPoint injectionPoint = new InjectionPointImpl(field, this, beanInstance);
-         String name = manager.getEjbResolver().resolveEjb(injectionPoint);
-         Object ejbInstance = manager.getNaming().lookup(name, Object.class);
+         Object ejbInstance = manager.getEjbResolver().resolveEjb(injectionPoint, manager.getNaming());
          field.inject(beanInstance, ejbInstance);
       }
       
       for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getEjbResolver().getEJBAnnotation()))
       {
          InjectionPoint injectionPoint = new InjectionPointImpl(method, this, beanInstance);
-         String name = manager.getEjbResolver().resolveEjb(injectionPoint);
-         Object ejbInstance = manager.getNaming().lookup(name, Object.class);
+         Object ejbInstance = manager.getEjbResolver().resolveEjb(injectionPoint, manager.getNaming());
          method.invoke(beanInstance, ejbInstance);
       }
       
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getPersistenceContextAnnotation()))
       {
          InjectionPoint injectionPoint = new InjectionPointImpl(field, this, beanInstance);
-         String name = manager.getEjbResolver().resolvePersistenceUnit(injectionPoint);
-         Object puInstance = manager.getNaming().lookup(name, Object.class);
-         field.inject(beanInstance, puInstance);
+         EntityManagerFactory entityManagerFactory = manager.getEjbResolver().resolvePersistenceUnit(injectionPoint, manager.getNaming());
+         field.inject(beanInstance, entityManagerFactory.createEntityManager());
       }
    }
 

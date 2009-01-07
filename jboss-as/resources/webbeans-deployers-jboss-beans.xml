@@ -20,10 +20,10 @@
   <bean name="PostEjbJarMetadataDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.metadata.WBEjbInterceptorMetadataDeployer"/>
   
   <!-- Responsible for enabling classloader isolation for Web Bean jars -->
-  <!-- <bean name="PostJBossMetadataDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.metadata.PostJBossMetadataDeployer"/>-->
+  <bean name="PostJBossMetadataDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.metadata.PostJBossMetadataDeployer"/>
   
   <!-- Responsible for enabling classloader isolation for Web Bean wars -->
-  <!-- <bean name="PostJBossWebMetadataDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.metadata.PostJBossWebMetadataDeployer"/>-->
+  <bean name="PostJBossWebMetadataDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.metadata.PostJBossWebMetadataDeployer"/>
   
   <!-- Responsible for adding the Web Beans RI listener to the Servlet -->
   <bean name="PostWebMetadataDeployer" class="org.jboss.webbeans.integration.microcontainer.deployer.metadata.PostWebMetadataDeployer"/>
