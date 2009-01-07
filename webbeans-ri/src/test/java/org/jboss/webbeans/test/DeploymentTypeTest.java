@@ -1,8 +1,5 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.bean.BeanFactory.createProducerMethodBean;
-import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
-
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -33,7 +30,7 @@ public class DeploymentTypeTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.5.1")
    public void testNonBuiltInComponentUsesStandard()
    {
-      createSimpleBean(Gazelle.class, manager);
+      SimpleBean.of(Gazelle.class, manager);
    }
    
    @Test(groups={"stub", "annotationDefinition"}) @SpecAssertion(section="2.5.2")
@@ -57,16 +54,16 @@ public class DeploymentTypeTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.5.3")
    public void testTooManyDeploymentTypes()
    {
-      createSimpleBean(BeanWithTooManyDeploymentTypes.class, manager);
+      SimpleBean.of(BeanWithTooManyDeploymentTypes.class, manager);
    }
    
    @Test @SpecAssertion(section="2.5.3")
    public void testDeploymentTypeInhertitedFromDeclaringBean() throws Exception
    {
-      SimpleBean<SpiderProducer> bean = createSimpleBean(SpiderProducer.class, manager);
+      SimpleBean<SpiderProducer> bean = SimpleBean.of(SpiderProducer.class, manager);
       manager.addBean(bean);
       Method method = SpiderProducer.class.getMethod("produceBlackWidow");
-      ProducerMethodBean<BlackWidow> blackWidowSpiderModel = createProducerMethodBean(BlackWidow.class, method, bean, manager);
+      ProducerMethodBean<BlackWidow> blackWidowSpiderModel = ProducerMethodBean.of(method, bean, manager);
       assert blackWidowSpiderModel.getDeploymentType().equals(AnotherDeploymentType.class);
    }
    
@@ -105,7 +102,7 @@ public class DeploymentTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.5.5")
    public void testHighestPrecedenceDeploymentTypeFromStereotype()
    {
-      Bean<?> bean = createSimpleBean(Rhinoceros.class, manager);
+      Bean<?> bean = SimpleBean.of(Rhinoceros.class, manager);
       assert bean.getDeploymentType().equals(HornedAnimalDeploymentType.class);
    }
    
@@ -114,7 +111,7 @@ public class DeploymentTypeTest extends AbstractTest
    {
       manager.setEnabledDeploymentTypes(Arrays.asList(Standard.class, AnotherDeploymentType.class, HornedAnimalDeploymentType.class));
       
-      Bean<RedSnapper> bean = createSimpleBean(RedSnapper.class, manager);
+      Bean<RedSnapper> bean = SimpleBean.of(RedSnapper.class, manager);
       manager.addBean(bean);
       manager.getInstanceByType(RedSnapper.class);
    }
@@ -144,7 +141,7 @@ public class DeploymentTypeTest extends AbstractTest
    @Test @SpecAssertion(section={"2.5.5", "2.7.2"})
    public void testWebBeanDeploymentTypeOverridesStereotype()
    {
-      Bean<Reindeer> bean = createSimpleBean(Reindeer.class, manager);
+      Bean<Reindeer> bean = SimpleBean.of(Reindeer.class, manager);
       assert bean.getDeploymentType().equals(Production.class);
    }
 }

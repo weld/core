@@ -17,8 +17,6 @@
 
 package org.jboss.webbeans.bootstrap;
 
-import static org.jboss.webbeans.bean.BeanFactory.*;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -41,7 +39,7 @@ import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractClassBean;
-import org.jboss.webbeans.bean.BeanFactory;
+import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.bean.InstanceBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
@@ -73,6 +71,40 @@ import org.jboss.webbeans.util.Reflections;
  */
 public abstract class WebBeansBootstrap
 {
+  
+   private static class ManagerBean extends SimpleBean<ManagerImpl>
+   {
+      
+      public static final SimpleBean<ManagerImpl> of(ManagerImpl manager)
+      {
+         return new ManagerBean(ManagerImpl.class, manager);
+      }
+      
+      protected ManagerBean(Class<ManagerImpl> type, ManagerImpl manager)
+      {
+         super(type, manager);
+      }
+      
+      @Override
+      protected void initConstructor()
+      {
+         // No - op, no constructor needed
+      }
+
+      @Override
+      protected void initInjectionPoints()
+      {
+         injectionPoints = Collections.emptySet();
+      }
+
+      @Override
+      public ManagerImpl create()
+      {
+         return manager;
+      }
+      
+   }
+   
    // The log provider
    private static LogProvider log = Logging.getLogProvider(WebBeansBootstrap.class);
 
@@ -160,7 +192,7 @@ public abstract class WebBeansBootstrap
                }
                else
                {
-                  NewSimpleBean<?> newSimpleBean = createNewSimpleBean(injectionPoint.getType(), manager);
+                  NewSimpleBean<?> newSimpleBean = NewSimpleBean.of(injectionPoint.getType(), manager);
                   newBeans.add(newSimpleBean);
                   log.info("Web Bean: " + newSimpleBean);
                }
@@ -177,30 +209,8 @@ public abstract class WebBeansBootstrap
    protected Set<AbstractBean<?, ?>> createStandardBeans()
    {
       Set<AbstractBean<?, ?>> beans = new HashSet<AbstractBean<?, ?>>();
-      createBean(BeanFactory.createSimpleBean(Transaction.class, getManager()), beans);
-      final ManagerImpl managerImpl = getManager();
-      createBean(new SimpleBean<ManagerImpl>(ManagerImpl.class, getManager())
-      {
-
-         @Override
-         protected void initConstructor()
-         {
-            // No - op, no constructor needed
-         }
-
-         @Override
-         protected void initInjectionPoints()
-         {
-            injectionPoints = Collections.emptySet();
-         }
-
-         @Override
-         public ManagerImpl create()
-         {
-            return managerImpl;
-         }
-
-      }, beans);
+      createBean(SimpleBean.of(Transaction.class, manager), beans);
+      createBean(ManagerBean.of(getManager()), beans);
       return beans;
    }
 
@@ -222,11 +232,11 @@ public abstract class WebBeansBootstrap
       {
          if (getManager().getEjbDescriptorCache().containsKey(clazz))
          {
-            createBean(createEnterpriseBean(clazz, getManager()), beans);
+            createBean(EnterpriseBean.of(clazz, getManager()), beans);
          }
          else if (isTypeSimpleWebBean(clazz))
          {
-            createBean(createSimpleBean(clazz, getManager()), beans);
+            createBean(SimpleBean.of(clazz, manager), beans);
          }
       }
       return beans;
@@ -248,7 +258,7 @@ public abstract class WebBeansBootstrap
       getManager().getResolver().addInjectionPoints(bean.getInjectionPoints());
       for (AnnotatedMethod<Object> producerMethod : bean.getProducerMethods())
       {
-         ProducerMethodBean<?> producerMethodBean = createProducerMethodBean(producerMethod, bean, getManager());
+         ProducerMethodBean<?> producerMethodBean = ProducerMethodBean.of(producerMethod, bean, getManager());
          beans.add(producerMethodBean);
          getManager().getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
          registerEvents(producerMethodBean.getInjectionPoints(), beans);
@@ -256,7 +266,7 @@ public abstract class WebBeansBootstrap
       }
       for (AnnotatedField<Object> producerField : bean.getProducerFields())
       {
-         ProducerFieldBean<?> producerFieldBean = createProducerFieldBean(producerField, bean, getManager());
+         ProducerFieldBean<?> producerFieldBean = ProducerFieldBean.of(producerField, bean, getManager());
          beans.add(producerFieldBean);
          log.info("Web Bean: " + producerFieldBean);
       }
@@ -268,14 +278,14 @@ public abstract class WebBeansBootstrap
          }
          if (injectionPoint.isAnnotationPresent(Obtains.class))
          {
-            InstanceBean<Object, Field> instanceBean = createInstanceBean(injectionPoint, getManager());
+            InstanceBean<Object, Field> instanceBean = InstanceBean.of(injectionPoint, getManager());
             beans.add(instanceBean);
             log.info("Web Bean: " + instanceBean);
          }
       }
       for (AnnotatedMethod<Object> observerMethod : bean.getObserverMethods())
       {
-         ObserverImpl<?> observer = createObserver(observerMethod, bean, getManager());
+         ObserverImpl<?> observer = ObserverImpl.of(observerMethod, bean, getManager());
          if (observerMethod.getAnnotatedParameters(Observes.class).size() == 1)
          {
             registerObserver(observer, observerMethod.getAnnotatedParameters(Observes.class).get(0).getType(), observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingTypesAsArray());
@@ -359,7 +369,7 @@ public abstract class WebBeansBootstrap
    {
       if (injectionPoint.isAnnotationPresent(Fires.class))
       {
-         EventBean<Object, Method> eventBean = createEventBean(injectionPoint, getManager());
+         EventBean<Object, Method> eventBean = EventBean.of(injectionPoint, getManager());
          beans.add(eventBean);
          log.info("Web Bean: " + eventBean);
       }

@@ -4,7 +4,6 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.RequestScoped;
 import javax.webbeans.UnremovedException;
 
-import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.test.AbstractTest;
@@ -65,7 +64,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = "3.3.5")
    public void testStatelessEnterpriseBeansWithRemoveMethodsFails()
    {
-      EnterpriseBean<Armant> bean = BeanFactory.createEnterpriseBean(Armant.class, manager);
+      EnterpriseBean<Armant> bean = EnterpriseBean.of(Armant.class, manager);
    }
 
    /**
@@ -77,7 +76,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    public void testStatefulEnterpriseBeanRemoveMethodCalledWhenDestroyedByManager()
    {
       EnterpriseBeanRemoveMethodTest.visited = false;
-      EnterpriseBean<Toller> bena = BeanFactory.createEnterpriseBean(Toller.class, manager);
+      EnterpriseBean<Toller> bena = EnterpriseBean.of(Toller.class, manager);
       RequestContext context = (RequestContext) manager.getContext(RequestScoped.class);
       Toller instance = context.get(bena, true);
       context.destroy();
@@ -105,7 +104,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanWithoutRemoveMethodMustBeDependentScoped()
    {
-      EnterpriseBean<Pumi> bean = BeanFactory.createEnterpriseBean(Pumi.class, manager);
+      EnterpriseBean<Pumi> bean = EnterpriseBean.of(Pumi.class, manager);
    }
 
    /**
@@ -118,7 +117,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanWithoutRemoveMethodMustBeDependentScoped2()
    {
-      EnterpriseBean<WelshCorgie> bean = BeanFactory.createEnterpriseBean(WelshCorgie.class, manager);
+      EnterpriseBean<WelshCorgie> bean = EnterpriseBean.of(WelshCorgie.class, manager);
    }
 
    /**
@@ -131,7 +130,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = "3.3.5")
    public void testStatefulEnterpriseBeanWithoutRemoveMethodMustBeRemovedByApplicationBeforeManager()
    {
-      EnterpriseBean<Toller> bean = BeanFactory.createEnterpriseBean(Toller.class, manager);
+      EnterpriseBean<Toller> bean = EnterpriseBean.of(Toller.class, manager);
       Toller instance = manager.getInstance(bean);
       RequestContext context = (RequestContext) manager.getContext(RequestScoped.class);
       context.destroy();
@@ -178,7 +177,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = "3.3.5")
    public void testApplicationRemoveMethodCallRemovesInstanceFromContext()
    {
-      EnterpriseBean<Toller> bean = BeanFactory.createEnterpriseBean(Toller.class, manager);
+      EnterpriseBean<Toller> bean = EnterpriseBean.of(Toller.class, manager);
       RequestContext context = (RequestContext) manager.getContext(RequestScoped.class);
       Toller instance = context.get(bean, true);
       instance.bye();
@@ -196,7 +195,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testEnterpriseBeanWithoutDestructorUsesNoArgsRemoveAnnotatedMethodAsWebBeansRemoveMethod()
    {
-      EnterpriseBean<Toller> bean = BeanFactory.createEnterpriseBean(Toller.class, manager);
+      EnterpriseBean<Toller> bean = EnterpriseBean.of(Toller.class, manager);
       assert "bye".equals(bean.getRemoveMethod().getName());
    }
 
@@ -209,7 +208,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testEnterpriseBeanWithoutDestructorAndNoOrMultipleNoArgsRemoveMethodsHasNoWebBeansRemoveMethod()
    {
-      EnterpriseBean<Koirus> bean = BeanFactory.createEnterpriseBean(Koirus.class, manager);
+      EnterpriseBean<Koirus> bean = EnterpriseBean.of(Koirus.class, manager);
       assert bean.getRemoveMethod() == null;
    }
 
@@ -222,7 +221,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testMultipleDestructorAnnotatedMethodsFails()
    {
-      EnterpriseBean<Rottweiler> bean = BeanFactory.createEnterpriseBean(Rottweiler.class, manager);
+      EnterpriseBean<Rottweiler> bean = EnterpriseBean.of(Rottweiler.class, manager);
    }
 
    /**
@@ -236,14 +235,14 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testDestructorAnnotatedMethodNotRemoveAnnotatedFails()
    {
-      EnterpriseBean<RussellTerrier> bean = BeanFactory.createEnterpriseBean(RussellTerrier.class, manager);
+      EnterpriseBean<RussellTerrier> bean = EnterpriseBean.of(RussellTerrier.class, manager);
    }
 
    @Test(groups = { "enterpriseBeans", "removeMethod" })
    @SpecAssertion(section = { "3.3.5.1" })
    public void testDestructorAnnotatedSingleRemoveMethod()
    {
-      EnterpriseBean<GoodDoggie> bean = BeanFactory.createEnterpriseBean(GoodDoggie.class, manager);
+      EnterpriseBean<GoodDoggie> bean = EnterpriseBean.of(GoodDoggie.class, manager);
    }
 
    /**
@@ -256,7 +255,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testRemoveMethodIsInitializerFails()
    {
-      EnterpriseBean<Saluki> bean = BeanFactory.createEnterpriseBean(Saluki.class, manager);
+      EnterpriseBean<Saluki> bean = EnterpriseBean.of(Saluki.class, manager);
    }
 
    /**
@@ -269,7 +268,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testRemoveMethodIsProducerFails()
    {
-      EnterpriseBean<Spitz> bean = BeanFactory.createEnterpriseBean(Spitz.class, manager);
+      EnterpriseBean<Spitz> bean = EnterpriseBean.of(Spitz.class, manager);
    }
 
    /**
@@ -282,7 +281,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testRemoveMethodWithDisposesParameterFails()
    {
-      EnterpriseBean<GoldenRetriever> bean = BeanFactory.createEnterpriseBean(GoldenRetriever.class, manager);
+      EnterpriseBean<GoldenRetriever> bean = EnterpriseBean.of(GoldenRetriever.class, manager);
    }
 
    /**
@@ -295,7 +294,7 @@ public class EnterpriseBeanRemoveMethodTest extends AbstractTest
    @SpecAssertion(section = { "3.3.5.1" })
    public void testRemoveMethodWithObservesParameterFails()
    {
-      EnterpriseBean<JackRussellTerrier> bean = BeanFactory.createEnterpriseBean(JackRussellTerrier.class, manager);
+      EnterpriseBean<JackRussellTerrier> bean = EnterpriseBean.of(JackRussellTerrier.class, manager);
    }
 
    /**

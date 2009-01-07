@@ -1,8 +1,5 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.bean.BeanFactory.createProducerFieldBean;
-import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
-
 import java.lang.reflect.Field;
 
 import javax.webbeans.Current;
@@ -19,7 +16,6 @@ import org.jboss.webbeans.test.beans.BlackWidow;
 import org.jboss.webbeans.test.beans.DaddyLongLegs;
 import org.jboss.webbeans.test.beans.DeadlyAnimal;
 import org.jboss.webbeans.test.beans.DeadlySpider;
-import org.jboss.webbeans.test.beans.FunnelWeaver;
 import org.jboss.webbeans.test.beans.LadybirdSpider;
 import org.jboss.webbeans.test.beans.OtherSpiderProducer;
 import org.jboss.webbeans.test.beans.Spider;
@@ -34,10 +30,10 @@ public class ProducerFieldBeanModelTest extends AbstractTest
    @Test(groups="producerField") @SpecAssertion(section="2.5.3")
    public void testProducerFieldInheritsDeploymentTypeOfDeclaringWebBean() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class, manager);
+      SimpleBean<OtherSpiderProducer> bean = SimpleBean.of(OtherSpiderProducer.class, manager);
       manager.addBean(bean);
       Field field = OtherSpiderProducer.class.getField("produceTameTarantula");
-      ProducerFieldBean<Tarantula> tarantulaModel = createProducerFieldBean(Tarantula.class, field, bean, manager);
+      ProducerFieldBean<Tarantula> tarantulaModel = ProducerFieldBean.of(field, bean, manager);
       tarantulaModel.getDeploymentType().equals(AnotherDeploymentType.class);
    }
    
@@ -59,19 +55,19 @@ public class ProducerFieldBeanModelTest extends AbstractTest
    @Test(groups="producerField") @SpecAssertion(section="3.5")
    public void testParameterizedReturnType() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class, manager);
+      SimpleBean<OtherSpiderProducer> bean = SimpleBean.of(OtherSpiderProducer.class, manager);
       manager.addBean(bean);
       Field field = OtherSpiderProducer.class.getField("getFunnelWeaverSpider");
-      createProducerFieldBean(FunnelWeaver.class, field, bean, manager);
+      ProducerFieldBean.of(field, bean, manager);
    }
    
    @Test(groups="producerField", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.5")
    public void testParameterizedReturnTypeWithWildcard() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class, manager);
+      SimpleBean<OtherSpiderProducer> bean = SimpleBean.of(OtherSpiderProducer.class, manager);
       manager.addBean(bean);
       Field field = OtherSpiderProducer.class.getField("getAnotherFunnelWeaver");
-      createProducerFieldBean(FunnelWeaver.class, field, bean, manager);
+      ProducerFieldBean.of(field, bean, manager);
    }
    
    @Test(groups={"stub", "producerField", "deployment"}) @SpecAssertion(section="3.5")
@@ -83,10 +79,10 @@ public class ProducerFieldBeanModelTest extends AbstractTest
    @Test(groups="producerField") @SpecAssertion(section={"3.5", "2.3.1"})
    public void testDefaultBindingType() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class, manager);
+      SimpleBean<OtherSpiderProducer> bean = SimpleBean.of(OtherSpiderProducer.class, manager);
       manager.addBean(bean);
       Field field = OtherSpiderProducer.class.getField("produceTarantula");
-      ProducerFieldBean<Tarantula> tarantulaModel = createProducerFieldBean(Tarantula.class, field, bean, manager);
+      ProducerFieldBean<Tarantula> tarantulaModel = ProducerFieldBean.of(field, bean, manager);
       assert tarantulaModel.getBindingTypes().size() == 1;
       assert tarantulaModel.getBindingTypes().iterator().next().annotationType().equals(Current.class);
    }
@@ -94,10 +90,10 @@ public class ProducerFieldBeanModelTest extends AbstractTest
    @Test(groups="producerField") @SpecAssertion(section="3.5.1")
    public void testApiTypeForClassReturn() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class, manager);
+      SimpleBean<OtherSpiderProducer> bean = SimpleBean.of(OtherSpiderProducer.class, manager);
       manager.addBean(bean);
       Field field = OtherSpiderProducer.class.getField("produceTarantula");
-      ProducerFieldBean<Tarantula> tarantulaModel = createProducerFieldBean(Tarantula.class, field, bean, manager);
+      ProducerFieldBean<Tarantula> tarantulaModel = ProducerFieldBean.of(field, bean, manager);
       assert tarantulaModel.getTypes().size() == 6;
       assert tarantulaModel.getTypes().contains(Tarantula.class);
       assert tarantulaModel.getTypes().contains(DeadlySpider.class);
@@ -110,10 +106,10 @@ public class ProducerFieldBeanModelTest extends AbstractTest
    @Test(groups="producerField") @SpecAssertion(section="3.5.1")
    public void testApiTypeForInterfaceReturn() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class, manager);
+      SimpleBean<OtherSpiderProducer> bean = SimpleBean.of(OtherSpiderProducer.class, manager);
       manager.addBean(bean);
       Field field = OtherSpiderProducer.class.getField("makeASpider");
-      ProducerFieldBean<Animal> animalModel = createProducerFieldBean(Animal.class, field, bean, manager);
+      ProducerFieldBean<Animal> animalModel = ProducerFieldBean.of(field, bean, manager);
       assert animalModel.getTypes().size() == 2;
       assert animalModel.getTypes().contains(Animal.class);
       assert animalModel.getTypes().contains(Object.class);
@@ -122,10 +118,10 @@ public class ProducerFieldBeanModelTest extends AbstractTest
    @Test(groups="producerField") @SpecAssertion(section="3.5.1")
    public void testApiTypeForPrimitiveReturn() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class, manager);
+      SimpleBean<OtherSpiderProducer> bean = SimpleBean.of(OtherSpiderProducer.class, manager);
       manager.addBean(bean);
       Field field = OtherSpiderProducer.class.getField("getWolfSpiderSize");
-      ProducerFieldBean<Integer> intModel = createProducerFieldBean(int.class, field, bean, manager);
+      ProducerFieldBean<Integer> intModel = ProducerFieldBean.of(field, bean, manager);
       assert intModel.getTypes().size() == 2;
       assert intModel.getTypes().contains(int.class);
       assert intModel.getTypes().contains(Object.class);
@@ -134,10 +130,10 @@ public class ProducerFieldBeanModelTest extends AbstractTest
    @Test(groups="producerField") @SpecAssertion(section={"3.5.1", "2.2"})
    public void testApiTypeForArrayTypeReturn() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class, manager);
+      SimpleBean<OtherSpiderProducer> bean = SimpleBean.of(OtherSpiderProducer.class, manager);
       manager.addBean(bean);
       Field field = OtherSpiderProducer.class.getField("getSpiders");
-      ProducerFieldBean<Spider[]> spidersModel = createProducerFieldBean(Spider[].class, field, bean, manager);
+      ProducerFieldBean<Spider[]> spidersModel = ProducerFieldBean.of(field, bean, manager);
       assert spidersModel.getTypes().size() == 2;
       assert spidersModel.getTypes().contains(Spider[].class);
       assert spidersModel.getTypes().contains(Object.class);
@@ -146,10 +142,10 @@ public class ProducerFieldBeanModelTest extends AbstractTest
    @Test(groups="producerField") @SpecAssertion(section="3.5.2")
    public void testBindingType() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class, manager);
+      SimpleBean<OtherSpiderProducer> bean = SimpleBean.of(OtherSpiderProducer.class, manager);
       manager.addBean(bean);
       Field field = OtherSpiderProducer.class.getField("produceTameTarantula");
-      ProducerFieldBean<Tarantula> tarantulaModel = createProducerFieldBean(Tarantula.class, field, bean, manager);
+      ProducerFieldBean<Tarantula> tarantulaModel = ProducerFieldBean.of(field, bean, manager);
       assert tarantulaModel.getBindingTypes().size() == 1;
       assert tarantulaModel.getBindingTypes().iterator().next().annotationType().equals(Tame.class);
    }
@@ -157,10 +153,10 @@ public class ProducerFieldBeanModelTest extends AbstractTest
    @Test(groups="producerField") @SpecAssertion(section="3.5.2")
    public void testScopeType() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class, manager);
+      SimpleBean<OtherSpiderProducer> bean = SimpleBean.of(OtherSpiderProducer.class, manager);
       manager.addBean(bean);
       Field field = OtherSpiderProducer.class.getField("produceDaddyLongLegs");
-      ProducerFieldBean<DaddyLongLegs> daddyLongLegsModel = createProducerFieldBean(DaddyLongLegs.class, field, bean, manager);
+      ProducerFieldBean<DaddyLongLegs> daddyLongLegsModel = ProducerFieldBean.of(field, bean, manager);
       assert daddyLongLegsModel.getScopeType().equals(RequestScoped.class);
       
       // TODO Inherit scope from returned web bean?
@@ -169,30 +165,30 @@ public class ProducerFieldBeanModelTest extends AbstractTest
    @Test(groups="producerField") @SpecAssertion(section="3.5.2")
    public void testDeploymentType() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class, manager);
+      SimpleBean<OtherSpiderProducer> bean = SimpleBean.of(OtherSpiderProducer.class, manager);
       manager.addBean(bean);
       Field field = OtherSpiderProducer.class.getField("getLadybirdSpider");
-      ProducerFieldBean<LadybirdSpider> ladybirdSpiderModel = createProducerFieldBean(LadybirdSpider.class, field, bean, manager);
+      ProducerFieldBean<LadybirdSpider> ladybirdSpiderModel = ProducerFieldBean.of(field, bean, manager);
       assert ladybirdSpiderModel.getDeploymentType().equals(Production.class);
    }
    
    @Test(groups="producerField") @SpecAssertion(section="3.5.2")
    public void testNamedField() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class, manager);
+      SimpleBean<OtherSpiderProducer> bean = SimpleBean.of(OtherSpiderProducer.class, manager);
       manager.addBean(bean);
       Field field = OtherSpiderProducer.class.getField("produceBlackWidow");
-      ProducerFieldBean<BlackWidow> blackWidowSpiderModel = createProducerFieldBean(BlackWidow.class, field, bean, manager);
+      ProducerFieldBean<BlackWidow> blackWidowSpiderModel = ProducerFieldBean.of(field, bean, manager);
       assert blackWidowSpiderModel.getName().equals("blackWidow");
    }
    
    @Test(groups="producerField") @SpecAssertion(section="3.5.2")
    public void testDefaultNamedField() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class, manager);
+      SimpleBean<OtherSpiderProducer> bean = SimpleBean.of(OtherSpiderProducer.class, manager);
       manager.addBean(bean);
       Field field = OtherSpiderProducer.class.getField("produceDaddyLongLegs");
-      ProducerFieldBean<DaddyLongLegs> daddyLongLegsSpiderModel = createProducerFieldBean(DaddyLongLegs.class, field, bean, manager);
+      ProducerFieldBean<DaddyLongLegs> daddyLongLegsSpiderModel = ProducerFieldBean.of(field, bean, manager);
       assert daddyLongLegsSpiderModel.getName().equals("produceDaddyLongLegs");
    }
    
@@ -259,10 +255,10 @@ public class ProducerFieldBeanModelTest extends AbstractTest
    @Test(groups="producerField") @SpecAssertion(section={"2.7.2", "3.5.2", "2.2"})
    public void testStereotype() throws Exception
    {
-      SimpleBean<OtherSpiderProducer> bean = createSimpleBean(OtherSpiderProducer.class, manager);
+      SimpleBean<OtherSpiderProducer> bean = SimpleBean.of(OtherSpiderProducer.class, manager);
       manager.addBean(bean);
       Field field = OtherSpiderProducer.class.getField("produceWolfSpider");
-      ProducerFieldBean<WolfSpider> wolfSpiderModel = createProducerFieldBean(WolfSpider.class, field, bean, manager);
+      ProducerFieldBean<WolfSpider> wolfSpiderModel = ProducerFieldBean.of(field, bean, manager);
       assert wolfSpiderModel.getMergedStereotypes().getRequiredTypes().size() == 1;
       assert wolfSpiderModel.getMergedStereotypes().getRequiredTypes().contains(Animal.class);
       assert wolfSpiderModel.getScopeType().equals(RequestScoped.class);

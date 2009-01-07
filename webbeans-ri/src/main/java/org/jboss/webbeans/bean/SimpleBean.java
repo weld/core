@@ -60,6 +60,19 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    private AnnotatedMethod<Object> postConstruct;
    // The pre-destroy method
    private AnnotatedMethod<Object> preDestroy;
+   
+   /**
+    * Creates a simple, annotation defined Web Bean
+    * 
+    * @param <T> The type
+    * @param clazz The class
+    * @param manager the current manager
+    * @return A Web Bean
+    */
+   public static <T> SimpleBean<T> of(Class<T> clazz, ManagerImpl manager)
+   {
+      return new SimpleBean<T>(clazz, manager);
+   }
 
    /**
     * Constructor
@@ -67,7 +80,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   public SimpleBean(Class<T> type, ManagerImpl manager)
+   protected SimpleBean(Class<T> type, ManagerImpl manager)
    {
       super(type, manager);
       init();

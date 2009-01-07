@@ -47,16 +47,23 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
 
    private AnnotatedMethod<?> disposalMethod;
 
+
    /**
-    * Constructor
+    * Creates a producer method Web Bean
     * 
-    * @param method The producer method
-    * @param declaringBean The declaring bean instance
-    * @param manager The Web Beans manager
+    * @param method The underlying method abstraction
+    * @param declaringBean The declaring bean abstraction
+    * @param manager the current manager
+    * @return A producer Web Bean
     */
-   public ProducerMethodBean(Method method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   public static <T> ProducerMethodBean<T> of(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
-      this(new AnnotatedMethodImpl<T>(method, declaringBean.getAnnotatedItem()), declaringBean, manager);
+      return new ProducerMethodBean<T>(method, declaringBean, manager);
+   }
+   
+   public static <T> ProducerMethodBean<T> of(Method method, SimpleBean<?> declaringBean, ManagerImpl manager)
+   {
+      return of(new AnnotatedMethodImpl<T>(method, declaringBean.getAnnotatedItem()), declaringBean, manager);
    }
 
    /**
@@ -66,7 +73,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     * @param declaringBean The declaring bean
     * @param manager The Web Beans manager
     */
-   public ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   protected ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       super(declaringBean, manager);
       this.method = method;

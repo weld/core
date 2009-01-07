@@ -35,6 +35,19 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
  */
 public class InstanceBean<T, S> extends AbstractFacadeBean<Instance<T>, S, T>
 {
+   
+   /**
+    * Creates an instance Web Bean
+    * 
+    * @param field The instance injection point abstraction
+    * @param manager the current manager
+    * @param declaringBean The declaring bean abstraction
+    * @return An event Web Bean
+    */
+   public static <T, S> InstanceBean<T, S> of(AnnotatedItem<Instance<T>, S> field, ManagerImpl manager)
+   {
+      return new InstanceBean<T, S>(field, manager);
+   }
 
    /**
     * Constructor
@@ -42,7 +55,7 @@ public class InstanceBean<T, S> extends AbstractFacadeBean<Instance<T>, S, T>
     * @param field The underlying fields
     * @param manager The Web Beans manager
     */
-   public InstanceBean(AnnotatedItem<Instance<T>, S> field, ManagerImpl manager)
+   protected InstanceBean(AnnotatedItem<Instance<T>, S> field, ManagerImpl manager)
    {
       super(field, manager);
    }

@@ -20,7 +20,12 @@ public class NewSimpleBean<T> extends SimpleBean<T>
 {
    private static Set<Annotation> NEW_BINDING_SET = new HashSet<Annotation>(Arrays.asList(new NewBinding()));
 
-   public NewSimpleBean(Class<T> type, ManagerImpl manager)
+   public static <T> NewSimpleBean<T> of(Class<T> clazz, ManagerImpl manager)
+   {
+      return new NewSimpleBean<T>(clazz, manager);
+   }
+   
+   protected NewSimpleBean(Class<T> type, ManagerImpl manager)
    {
       super(type, manager);
    }

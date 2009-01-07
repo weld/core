@@ -1,7 +1,5 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
-
 import javax.webbeans.ApplicationScoped;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
@@ -28,7 +26,7 @@ public class ScopeTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.4")
    public void testScopeTypesAreExtensible()
    {
-      Bean<Mullet> mullet = createSimpleBean(Mullet.class, manager);
+      Bean<Mullet> mullet = SimpleBean.of(Mullet.class, manager);
       assert mullet.getScopeType().equals(AnotherScopeType.class);
    }
    
@@ -53,14 +51,14 @@ public class ScopeTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.4.3")
    public void testScopeDeclaredInJava()
    {
-      SimpleBean<SeaBass> trout = createSimpleBean(SeaBass.class, manager);
+      SimpleBean<SeaBass> trout = SimpleBean.of(SeaBass.class, manager);
       assert trout.getScopeType().equals(RequestScoped.class);
    }
    
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.4.3")
    public void testTooManyScopesSpecifiedInJava()
    {
-      createSimpleBean(BeanWithTooManyScopeTypes.class, manager);
+      SimpleBean.of(BeanWithTooManyScopeTypes.class, manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class, groups={"stub", "webbeansxml"})
@@ -110,41 +108,41 @@ public class ScopeTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.4.5")
    public void testDefaultScope()
    {
-      SimpleBean<Order> order = createSimpleBean(Order.class, manager);
+      SimpleBean<Order> order = SimpleBean.of(Order.class, manager);
       assert order.getScopeType().equals(Dependent.class);
    }
    
    @Test @SpecAssertion(section={"2.4.5", "2.7.2"})
    public void testScopeSpecifiedAndStereotyped()
    {
-      Bean<Minnow> minnow = createSimpleBean(Minnow.class, manager);
+      Bean<Minnow> minnow = SimpleBean.of(Minnow.class, manager);
       assert minnow.getScopeType().equals(RequestScoped.class);
    }
    
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="2.4.5")
    public void testMutipleIncompatibleScopeStereotypes()
    {
-      createSimpleBean(Scallop.class, manager);
+      SimpleBean.of(Scallop.class, manager);
    }
    
    @Test @SpecAssertion(section="2.4.5")
    public void testMutipleIncompatibleScopeStereotypesWithScopeSpecified()
    {
-      Bean<Pollock> pollock = createSimpleBean(Pollock.class, manager);
+      Bean<Pollock> pollock = SimpleBean.of(Pollock.class, manager);
       assert pollock.getScopeType().equals(Dependent.class);
    }
    
    @Test @SpecAssertion(section="2.4.5")
    public void testMutipleCompatibleScopeStereotypes()
    {
-      Bean<Grayling> grayling = createSimpleBean(Grayling.class, manager);
+      Bean<Grayling> grayling = SimpleBean.of(Grayling.class, manager);
       assert grayling.getScopeType().equals(ApplicationScoped.class);
    }
    
    @Test @SpecAssertion(section="2.7.2")
    public void testWebBeanScopeTypeOverridesStereotype()
    {
-      Bean<RedSnapper> bean = createSimpleBean(RedSnapper.class, manager);
+      Bean<RedSnapper> bean = SimpleBean.of(RedSnapper.class, manager);
       assert bean.getScopeType().equals(RequestScoped.class);
    }
    

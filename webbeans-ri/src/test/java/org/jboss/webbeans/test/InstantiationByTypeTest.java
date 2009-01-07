@@ -1,7 +1,5 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
-
 import javax.webbeans.AmbiguousDependencyException;
 import javax.webbeans.AnnotationLiteral;
 import javax.webbeans.DuplicateBindingTypeException;
@@ -10,6 +8,7 @@ import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.UnsatisfiedDependencyException;
 import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.binding.CurrentBinding;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -36,7 +35,7 @@ public class InstantiationByTypeTest extends AbstractTest
    @Test(groups={"resolution", "beanLifecycle"}) @SpecAssertion(section="5.9")
    public void testCurrentBindingTypeAssumed()
    {
-      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
+      Bean<Tuna> tunaBean = SimpleBean.of(Tuna.class, manager);
       manager.addBean(tunaBean);
       assert manager.getInstanceByType(Tuna.class) != null;
    }
@@ -70,9 +69,9 @@ public class InstantiationByTypeTest extends AbstractTest
    public void testAmbiguousDependencies() throws Exception
    {
       AnnotatedField<ScottishFish> whiteScottishFishField = new AnnotatedFieldImpl<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
-      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
+      Bean<Cod> codBean = SimpleBean.of(Cod.class, manager);
+      Bean<Salmon> salmonBean = SimpleBean.of(Salmon.class, manager);
+      Bean<Sole> soleBean = SimpleBean.of(Sole.class, manager);
       manager.addBean(codBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
@@ -84,9 +83,9 @@ public class InstantiationByTypeTest extends AbstractTest
    public void testUnsatisfiedDependencies() throws Exception
    {
       AnnotatedField<ScottishFish> whiteScottishFishField = new AnnotatedFieldImpl<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
-      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
+      Bean<Cod> codBean = SimpleBean.of(Cod.class, manager);
+      Bean<Salmon> salmonBean = SimpleBean.of(Salmon.class, manager);
+      Bean<Sole> soleBean = SimpleBean.of(Sole.class, manager);
       manager.addBean(codBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
@@ -97,7 +96,7 @@ public class InstantiationByTypeTest extends AbstractTest
    @Test(expectedExceptions=UnproxyableDependencyException.class) @SpecAssertion(section="5.9")
    public void testUnproxyableDependencies() throws Exception
    {
-      Bean<FinalTuna> FinalTunaBean = createSimpleBean(FinalTuna.class, manager);
+      Bean<FinalTuna> FinalTunaBean = SimpleBean.of(FinalTuna.class, manager);
       manager.addBean(FinalTunaBean);
       
       manager.getInstanceByType(FinalTuna.class, new AnnotationLiteral<Whitefish>(){});

@@ -1,7 +1,5 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
-
 import javax.webbeans.DefinitionException;
 
 import org.jboss.webbeans.bean.SimpleBean;
@@ -25,7 +23,7 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section="2.6.1")
    public void testNonDefaultNamed()
    {
-      SimpleBean<Moose> moose = createSimpleBean(Moose.class, manager);
+      SimpleBean<Moose> moose = SimpleBean.of(Moose.class, manager);
       assert moose.getName().equals("aMoose");
    }
    
@@ -81,7 +79,7 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section={"2.6.3", "3.2.7"})
    public void testDefaultNamed()
    {
-      SimpleBean<Haddock> haddock = createSimpleBean(Haddock.class, manager);
+      SimpleBean<Haddock> haddock = SimpleBean.of(Haddock.class, manager);
       assert haddock.getName() != null;
       assert haddock.getName().equals("haddock");
    }
@@ -109,7 +107,7 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section={"2.6.3", "2.7"})
    public void testSterotypeDefaultsName()
    {
-      SimpleBean<RedSnapper> model = createSimpleBean(RedSnapper.class, manager);
+      SimpleBean<RedSnapper> model = SimpleBean.of(RedSnapper.class, manager);
       assert model.getMergedStereotypes().isBeanNameDefaulted();
       assert model.getName().equals("redSnapper");
    }
@@ -117,21 +115,21 @@ public class NameTest extends AbstractTest
    @Test @SpecAssertion(section="2.6.4")
    public void testNotNamedInJava()
    {
-      SimpleBean<SeaBass> model = createSimpleBean(SeaBass.class, manager);
+      SimpleBean<SeaBass> model = SimpleBean.of(SeaBass.class, manager);
       assert model.getName() == null;
    }
    
    @Test @SpecAssertion(section="2.6.4")
    public void testNotNamedInXml()
    {
-      SimpleBean<SeaBass> model = createSimpleBean(SeaBass.class, manager);
+      SimpleBean<SeaBass> model = SimpleBean.of(SeaBass.class, manager);
       assert model.getName() == null;
    }
    
    @Test @SpecAssertion(section="2.6.4")
    public void testNotNamedInStereotype()
    {
-      SimpleBean<Minnow> model = createSimpleBean(Minnow.class, manager);
+      SimpleBean<Minnow> model = SimpleBean.of(Minnow.class, manager);
       assert model.getName() == null;
    }
    

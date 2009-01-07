@@ -42,12 +42,25 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
 {
 
    /**
+    * Creates an event Web Bean
+    * 
+    * @param field The event injection point abstraction
+    * @param manager the current manager
+    * @param declaringBean The declaring bean abstraction
+    * @return An event Web Bean
+    */
+   public static <T, S> EventBean<T, S> of(AnnotatedItem<Event<T>, S> field, ManagerImpl manager)
+   {
+      return new EventBean<T, S>(field, manager);
+   }
+   
+   /**
     * Constructor
     * 
     * @param field The underlying field abstraction
     * @param manager The Web Beans manager
     */
-   public EventBean(AnnotatedItem<Event<T>, S> field, ManagerImpl manager)
+   protected EventBean(AnnotatedItem<Event<T>, S> field, ManagerImpl manager)
    {
       super(field, manager);
    }

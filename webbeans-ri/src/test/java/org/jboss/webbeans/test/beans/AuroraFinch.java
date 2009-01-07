@@ -1,8 +1,8 @@
 package org.jboss.webbeans.test.beans;
 
 import javax.webbeans.Event;
-import javax.webbeans.Initializer;
 import javax.webbeans.Fires;
+import javax.webbeans.Initializer;
 
 import org.jboss.webbeans.test.beans.StarFinch.Mess;
 

@@ -3,7 +3,6 @@ package org.jboss.webbeans.test.ejb;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.DeploymentException;
 
-import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
@@ -72,7 +71,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testStatelessWithDependentScopeOK()
    {
-      EnterpriseBean<Giraffe> giraffe = BeanFactory.createEnterpriseBean(Giraffe.class, manager);
+      EnterpriseBean<Giraffe> giraffe = EnterpriseBean.of(Giraffe.class, manager);
    }
 
    /**
@@ -85,7 +84,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testStatelessWithRequestScopeFails()
    {
-      EnterpriseBean<Beagle> beagle = BeanFactory.createEnterpriseBean(Beagle.class, manager);
+      EnterpriseBean<Beagle> beagle = EnterpriseBean.of(Beagle.class, manager);
    }
 
    /**
@@ -99,7 +98,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testStatelessWithConversationScopeFails()
    {
-      EnterpriseBean<Boxer> boxer = BeanFactory.createEnterpriseBean(Boxer.class, manager);
+      EnterpriseBean<Boxer> boxer = EnterpriseBean.of(Boxer.class, manager);
    }
 
    /**
@@ -112,7 +111,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testStatelessWithSessionScopeFails()
    {
-      EnterpriseBean<Bullmastiff> boxer = BeanFactory.createEnterpriseBean(Bullmastiff.class, manager);
+      EnterpriseBean<Bullmastiff> boxer = EnterpriseBean.of(Bullmastiff.class, manager);
    }
 
    /**
@@ -125,7 +124,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testStatelessWithApplicationScopeFails()
    {
-      EnterpriseBean<Dachshund> dachshund = BeanFactory.createEnterpriseBean(Dachshund.class, manager);
+      EnterpriseBean<Dachshund> dachshund = EnterpriseBean.of(Dachshund.class, manager);
    }
 
    /**
@@ -138,7 +137,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testSingletonWithDependentScopeOK()
    {
-      BeanFactory.createEnterpriseBean(Labrador.class, manager);
+      EnterpriseBean.of(Labrador.class, manager);
    }
 
    /**
@@ -151,7 +150,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testSingletonWithRequestScopeFails()
    {
-      EnterpriseBean<Greyhound> greyhound = BeanFactory.createEnterpriseBean(Greyhound.class, manager);
+      EnterpriseBean<Greyhound> greyhound = EnterpriseBean.of(Greyhound.class, manager);
    }
 
    /**
@@ -164,7 +163,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testSingletonWithConversationScopeFails()
    {
-      EnterpriseBean<Husky> husky = BeanFactory.createEnterpriseBean(Husky.class, manager);
+      EnterpriseBean<Husky> husky = EnterpriseBean.of(Husky.class, manager);
    }
 
    /**
@@ -177,7 +176,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testSingletonWithSessionScopeFails()
    {
-      EnterpriseBean<IrishTerrier> irishTerrier = BeanFactory.createEnterpriseBean(IrishTerrier.class, manager);
+      EnterpriseBean<IrishTerrier> irishTerrier = EnterpriseBean.of(IrishTerrier.class, manager);
    }
 
    /**
@@ -190,7 +189,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testSingletonWithApplicationScopeOK()
    {
-      EnterpriseBean<Laika> laika = BeanFactory.createEnterpriseBean(Laika.class, manager);
+      EnterpriseBean<Laika> laika = EnterpriseBean.of(Laika.class, manager);
    }
 
    /**
@@ -218,7 +217,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testEnterpriseBeanInterceptorFails()
    {
-      EnterpriseBean<Pug> pug = BeanFactory.createEnterpriseBean(Pug.class, manager);
+      EnterpriseBean<Pug> pug = EnterpriseBean.of(Pug.class, manager);
    }
 
    /**
@@ -230,7 +229,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testEnterpriseBeanDecoratorFails()
    {
-      EnterpriseBean<Pekingese> pekingese = BeanFactory.createEnterpriseBean(Pekingese.class, manager);
+      EnterpriseBean<Pekingese> pekingese = EnterpriseBean.of(Pekingese.class, manager);
    }
 
    /**
@@ -336,7 +335,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3.2")
    public void testObjectIsInAPITypes()
    {
-      EnterpriseBean<Laika> laika = BeanFactory.createEnterpriseBean(Laika.class, manager);
+      EnterpriseBean<Laika> laika = EnterpriseBean.of(Laika.class, manager);
       assert laika.getTypes().contains(Object.class);
    }
 
@@ -372,7 +371,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3")
    public void testMessageDrivenBeansNotOK()
    {
-      EnterpriseBean<Leopard> Leopard = BeanFactory.createEnterpriseBean(Leopard.class, manager);
+      EnterpriseBean<Leopard> Leopard = EnterpriseBean.of(Leopard.class, manager);
    }
 
    /**
@@ -384,7 +383,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
    @SpecAssertion(section = "3.3.7")
    public void testDefaultName()
    {
-      EnterpriseBean<Pitbull> pitbull = BeanFactory.createEnterpriseBean(Pitbull.class, manager);
+      EnterpriseBean<Pitbull> pitbull = EnterpriseBean.of(Pitbull.class, manager);
       assert pitbull.getName().equals("pitbull");
    }
 

@@ -7,7 +7,6 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.Standard;
 
-import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.binding.NewBinding;
@@ -34,9 +33,9 @@ public class NewBeanTest extends AbstractTest
    
    @BeforeMethod
    public void initNewBean() {
-      wrappedBean = BeanFactory.createSimpleBean(WrappedBean.class, manager);
+      wrappedBean = SimpleBean.of(WrappedBean.class, manager);
       manager.addBean(wrappedBean);
-      newBean = BeanFactory.createNewSimpleBean(WrappedBean.class, manager);
+      newBean = NewSimpleBean.of(WrappedBean.class, manager);
       manager.addBean(newBean);
    }
    

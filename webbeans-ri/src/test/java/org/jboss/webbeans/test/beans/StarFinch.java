@@ -1,8 +1,8 @@
 package org.jboss.webbeans.test.beans;
 
 import javax.webbeans.Event;
-import javax.webbeans.Named;
 import javax.webbeans.Fires;
+import javax.webbeans.Named;
 import javax.webbeans.Produces;
 import javax.webbeans.RequestScoped;
 

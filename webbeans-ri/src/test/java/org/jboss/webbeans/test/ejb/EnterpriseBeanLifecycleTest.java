@@ -2,7 +2,6 @@ package org.jboss.webbeans.test.ejb;
 
 import javax.webbeans.UnremovedException;
 
-import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.test.AbstractTest;
@@ -59,7 +58,7 @@ public class EnterpriseBeanLifecycleTest extends AbstractTest
    {
       visited = false;
       DependentContext.INSTANCE.setActive(true);
-      EnterpriseBean<GoodDoggie> bean = BeanFactory.createEnterpriseBean(GoodDoggie.class, manager);
+      EnterpriseBean<GoodDoggie> bean = EnterpriseBean.of(GoodDoggie.class, manager);
       manager.addBean(bean);
       GoodDoggie doggie = manager.getInstance(bean);
       bean.destroy(doggie);

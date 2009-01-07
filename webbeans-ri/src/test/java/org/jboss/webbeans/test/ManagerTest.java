@@ -1,11 +1,10 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
-
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.RequestScoped;
 import javax.webbeans.manager.Context;
 
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.context.AbstractBeanMapContext;
 import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.test.beans.FishFarmOffice;
@@ -18,7 +17,7 @@ public class ManagerTest extends AbstractTest
    @Test(groups={"manager", "injection", "deployment"}) @SpecAssertion(section="5.8")
    public void testInjectingManager()
    {
-      FishFarmOffice fishFarmOffice = createSimpleBean(FishFarmOffice.class, manager).create();
+      FishFarmOffice fishFarmOffice = SimpleBean.of(FishFarmOffice.class, manager).create();
       assert fishFarmOffice.manager != null;
    }
    

@@ -1,8 +1,5 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.bean.BeanFactory.createProducerMethodBean;
-import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
-
 import java.lang.reflect.Method;
 
 import javax.webbeans.IllegalProductException;
@@ -22,10 +19,10 @@ public class ProducerMethodBeanLifecycleTest extends AbstractTest
    @Test(groups="producerMethod") @SpecAssertion(section="5.6")
    public void testProducerMethodBeanCreate() throws Exception
    {
-      SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class, manager); 
+      SimpleBean<SpiderProducer> spiderProducer = SimpleBean.of(SpiderProducer.class, manager); 
       manager.addBean(spiderProducer);
       Method method = SpiderProducer.class.getMethod("produceTarantula");
-      ProducerMethodBean<Tarantula> tarantulaBean = createProducerMethodBean(Tarantula.class, method, spiderProducer, manager);
+      ProducerMethodBean<Tarantula> tarantulaBean = ProducerMethodBean.of(method, spiderProducer, manager);
       Tarantula tarantula = tarantulaBean.create();
       assert tarantula != null;
    }
@@ -55,10 +52,10 @@ public class ProducerMethodBeanLifecycleTest extends AbstractTest
    @Test(groups="producerMethod") @SpecAssertion(section={"3.4", "5.6", "8.3"})
    public void testProducerMethodReturnsNullIsDependent() throws Exception
    {
-      SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class, manager); 
+      SimpleBean<SpiderProducer> spiderProducer = SimpleBean.of(SpiderProducer.class, manager); 
       manager.addBean(spiderProducer);
       Method method = SpiderProducer.class.getMethod("getNullSpider");
-      ProducerMethodBean<Spider> spiderBean = createProducerMethodBean(Spider.class, method, spiderProducer, manager);
+      ProducerMethodBean<Spider> spiderBean = ProducerMethodBean.of(method, spiderProducer, manager);
       Spider spider = spiderBean.create();
       assert spider == null;
    }
@@ -66,10 +63,10 @@ public class ProducerMethodBeanLifecycleTest extends AbstractTest
    @Test(groups="producerMethod", expectedExceptions=IllegalProductException.class) @SpecAssertion(section={"3.4", "5.6"})
    public void testProducerMethodReturnsNullIsNotDependent() throws Exception
    {
-      SimpleBean<BrokenSpiderProducer> spiderProducer = createSimpleBean(BrokenSpiderProducer.class, manager);
+      SimpleBean<BrokenSpiderProducer> spiderProducer = SimpleBean.of(BrokenSpiderProducer.class, manager);
       manager.addBean(spiderProducer);
       Method method = BrokenSpiderProducer.class.getMethod("getRequestScopedSpider");
-      createProducerMethodBean(Spider.class, method, spiderProducer, manager).create();
+      ProducerMethodBean.of(method, spiderProducer, manager).create();
    }
    
 }

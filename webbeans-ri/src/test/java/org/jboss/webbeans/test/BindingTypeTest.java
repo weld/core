@@ -1,8 +1,5 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.bean.BeanFactory.createProducerMethodBean;
-import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
-
 import java.lang.reflect.Method;
 
 import javax.webbeans.Current;
@@ -31,7 +28,7 @@ public class BindingTypeTest extends AbstractTest
    @Test @SpecAssertion(section={"2.3.3", "2.3.1"}) 
    public void testDefaultBindingTypeDeclaredInJava()
    {
-      SimpleBean<Order> order = createSimpleBean(Order.class, manager);
+      SimpleBean<Order> order = SimpleBean.of(Order.class, manager);
       assert order.getBindingTypes().size() == 1;
       order.getBindingTypes().iterator().next().annotationType().equals(Current.class);
    }
@@ -58,7 +55,7 @@ public class BindingTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.3.3")
    public void testBindingTypesDeclaredInJava()
    {
-      SimpleBean<Cat> cat = createSimpleBean(Cat.class, manager);
+      SimpleBean<Cat> cat = SimpleBean.of(Cat.class, manager);
       assert cat.getBindingTypes().size() == 1;
       assert Reflections.annotationSetMatches(cat.getBindingTypes(), Synchronous.class);
    }
@@ -66,7 +63,7 @@ public class BindingTypeTest extends AbstractTest
    @Test @SpecAssertion(section="2.3.3") 
    public void testMultipleBindingTypes()
    {
-      SimpleBean<?> model = createSimpleBean(Cod.class, manager);
+      SimpleBean<?> model = SimpleBean.of(Cod.class, manager);
       assert model.getBindingTypes().size() == 2;
    }
    
@@ -111,7 +108,7 @@ public class BindingTypeTest extends AbstractTest
 	@Test(groups={"stub", "webbeansxml"}) @SpecAssertion(section={"2.3.4", "2.3.1"}) 
    public void testDefaultBindingTypeDeclaredInXml()
    {
-      SimpleBean<?> model = createSimpleBean(Tuna.class, manager);
+      SimpleBean<?> model = SimpleBean.of(Tuna.class, manager);
       assert model.getBindingTypes().size() == 1;
       assert model.getBindingTypes().contains(new CurrentBinding());
       assert false;
@@ -122,11 +119,11 @@ public class BindingTypeTest extends AbstractTest
 	@Test(groups={"injection", "producerMethod"}) @SpecAssertion(section="2.3.5") 
    public void testFieldInjectedFromProducerMethod() throws Exception
    {
-	   SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class, manager);
+	   SimpleBean<SpiderProducer> spiderProducer = SimpleBean.of(SpiderProducer.class, manager);
       manager.addBean(spiderProducer);
       Method method = SpiderProducer.class.getMethod("produceTameTarantula");
-	   manager.addBean(createProducerMethodBean(Tarantula.class, method, spiderProducer, manager));
-      Barn barn = createSimpleBean(Barn.class, manager).create();
+	   manager.addBean(ProducerMethodBean.of(method, spiderProducer, manager));
+      Barn barn = SimpleBean.of(Barn.class, manager).create();
       assert barn.petSpider != null;
       assert barn.petSpider instanceof DefangedTarantula;
    }
@@ -146,12 +143,12 @@ public class BindingTypeTest extends AbstractTest
 	@Test(groups={"injection", "producerMethod"})
    public void testMethodWithBindingAnnotationsOnParametersAreInjected() throws Exception
    {
-      SimpleBean<SpiderProducer> spiderProducer = createSimpleBean(SpiderProducer.class, manager);
+      SimpleBean<SpiderProducer> spiderProducer = SimpleBean.of(SpiderProducer.class, manager);
       manager.addBean(spiderProducer);
       Method method = SpiderProducer.class.getMethod("produceTameTarantula");
-      manager.addBean(createProducerMethodBean(Tarantula.class, method, spiderProducer, manager));
+      manager.addBean(ProducerMethodBean.of(method, spiderProducer, manager));
       method = SpiderProducer.class.getMethod("produceSpiderFromInjection", Tarantula.class);
-      ProducerMethodBean<Spider> spiderBean = createProducerMethodBean(Spider.class, method, spiderProducer, manager);
+      ProducerMethodBean<Spider> spiderBean = ProducerMethodBean.of(method, spiderProducer, manager);
       Spider spider = spiderBean.create();
       assert spider != null;
       assert spider instanceof DefangedTarantula;

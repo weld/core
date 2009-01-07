@@ -1,9 +1,8 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
-
 import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.beans.Cod;
 import org.jboss.webbeans.test.beans.Haddock;
 import org.jboss.webbeans.test.beans.Plaice;
@@ -39,13 +38,13 @@ public class ResolutionByNameTest extends AbstractTest
    public void testNamedBasedResolution()
    {
       
-      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
-      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
-      Bean<SeaBass> seaBassBean = createSimpleBean(SeaBass.class, manager);
-      Bean<Haddock> haddockBean = createSimpleBean(Haddock.class, manager);
-      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class, manager);
+      Bean<Tuna> tunaBean = SimpleBean.of(Tuna.class, manager);
+      Bean<Cod> codBean = SimpleBean.of(Cod.class, manager);
+      Bean<Salmon> salmonBean = SimpleBean.of(Salmon.class, manager);
+      Bean<Sole> soleBean = SimpleBean.of(Sole.class, manager);
+      Bean<SeaBass> seaBassBean = SimpleBean.of(SeaBass.class, manager);
+      Bean<Haddock> haddockBean = SimpleBean.of(Haddock.class, manager);
+      Bean<Plaice> plaiceBean = SimpleBean.of(Plaice.class, manager);
       
       manager.addBean(tunaBean);
       manager.addBean(codBean);
@@ -70,8 +69,8 @@ public class ResolutionByNameTest extends AbstractTest
    @Test(groups="resolution") @SpecAssertion(section="5.11.1")
    public void testNoWebBeansFound() throws Exception
    {
-      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
+      Bean<Cod> codBean = SimpleBean.of(Cod.class, manager);
+      Bean<Salmon> salmonBean = SimpleBean.of(Salmon.class, manager);
       
       manager.addBean(codBean);
       manager.addBean(salmonBean);

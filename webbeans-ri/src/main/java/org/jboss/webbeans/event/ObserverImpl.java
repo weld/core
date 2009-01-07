@@ -40,6 +40,7 @@ import javax.webbeans.Produces;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.transaction.UserTransaction;
@@ -73,7 +74,19 @@ public class ObserverImpl<T> implements Observer<T>
    private boolean conditional;
    private ManagerImpl manager;
 
-   
+   /**
+    * Creates an observer
+    * 
+    * @param method The observer method abstraction
+    * @param declaringBean The declaring bean
+    * @param manager The Web Beans manager
+    * @return An observer implementation built from the method abstraction
+    */
+   public static <T> ObserverImpl<T> of(AnnotatedMethod<Object> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   {
+      return new ObserverImpl<T>(method, declaringBean, manager);
+   }
+
    /**
     * Creates an Observer which describes and encapsulates an observer method
     * (8.5).

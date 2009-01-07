@@ -1,8 +1,5 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.bean.BeanFactory.createProducerMethodBean;
-import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
-
 import java.lang.reflect.Method;
 import java.util.Set;
 
@@ -12,6 +9,7 @@ import javax.webbeans.DuplicateBindingTypeException;
 import javax.webbeans.TypeLiteral;
 import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.binding.CurrentBinding;
 import org.jboss.webbeans.introspector.AnnotatedClass;
@@ -65,7 +63,7 @@ public class ResolutionByTypeTest extends AbstractTest
    public void testDefaultBindingTypeAssumed() throws Exception
    {
       AnnotatedField<Tuna> tunaField = new AnnotatedFieldImpl<Tuna>(FishFarm.class.getDeclaredField("tuna"), fishFarmClass);
-      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
+      Bean<Tuna> tunaBean = SimpleBean.of(Tuna.class, manager);
       manager.addBean(tunaBean);
       Set<Bean<Tuna>> possibleTargets = manager.resolveByType(tunaField);
       assert possibleTargets.size() == 1;
@@ -100,9 +98,9 @@ public class ResolutionByTypeTest extends AbstractTest
    public void testOneBindingType() throws Exception
    {
       AnnotatedField<ScottishFish> whiteScottishFishField = new AnnotatedFieldImpl<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
-      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
+      Bean<Cod> codBean = SimpleBean.of(Cod.class, manager);
+      Bean<Salmon> salmonBean = SimpleBean.of(Salmon.class, manager);
+      Bean<Sole> soleBean = SimpleBean.of(Sole.class, manager);
       manager.addBean(codBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
@@ -117,9 +115,9 @@ public class ResolutionByTypeTest extends AbstractTest
    {
       AnnotatedField<Animal> whiteChunkyFishField = new AnnotatedFieldImpl<Animal>(FishFarm.class.getDeclaredField("realChunkyWhiteFish"), fishFarmClass);
       
-      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
+      Bean<Cod> codBean = SimpleBean.of(Cod.class, manager);
+      Bean<Salmon> salmonBean = SimpleBean.of(Salmon.class, manager);
+      Bean<Sole> soleBean = SimpleBean.of(Sole.class, manager);
       
       manager.addBean(codBean);
       manager.addBean(salmonBean);
@@ -133,8 +131,8 @@ public class ResolutionByTypeTest extends AbstractTest
    public void testMultipleApiTypeWithCurrent() throws Exception
    {
       AnnotatedField<Animal> animalField = new AnnotatedFieldImpl<Animal>(FishFarm.class.getDeclaredField("animal"), fishFarmClass);
-      Bean<SeaBass> seaBassBean = createSimpleBean(SeaBass.class, manager);
-      Bean<Haddock> haddockBean = createSimpleBean(Haddock.class, manager);
+      Bean<SeaBass> seaBassBean = SimpleBean.of(SeaBass.class, manager);
+      Bean<Haddock> haddockBean = SimpleBean.of(Haddock.class, manager);
       manager.addBean(seaBassBean);
       manager.addBean(haddockBean);
       Set<Bean<Animal>> possibleTargets = manager.resolveByType(animalField);
@@ -146,10 +144,10 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test(groups="resolution") @SpecAssertion(section={"5.9.2"})
    public void testResolveByType() throws Exception
    {
-      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
-      Bean<SeaBass> seaBassBean = createSimpleBean(SeaBass.class, manager);
-      Bean<Haddock> haddockBean = createSimpleBean(Haddock.class, manager);
+      Bean<Tuna> tunaBean = SimpleBean.of(Tuna.class, manager);
+      Bean<Salmon> salmonBean = SimpleBean.of(Salmon.class, manager);
+      Bean<SeaBass> seaBassBean = SimpleBean.of(SeaBass.class, manager);
+      Bean<Haddock> haddockBean = SimpleBean.of(Haddock.class, manager);
       
       manager.addBean(tunaBean);
       manager.addBean(salmonBean);
@@ -171,9 +169,9 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test(groups="injection") @SpecAssertion(section={"2.3.5","5.9.2.2"}) 
    public void testAllBindingTypesSpecifiedForResolutionMustAppearOnWebBean()
    {
-      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
+      Bean<Cod> codBean = SimpleBean.of(Cod.class, manager);
+      Bean<Salmon> salmonBean = SimpleBean.of(Salmon.class, manager);
+      Bean<Sole> soleBean = SimpleBean.of(Sole.class, manager);
       
       manager.addBean(codBean);
       manager.addBean(salmonBean);
@@ -206,8 +204,8 @@ public class ResolutionByTypeTest extends AbstractTest
    {
       AnnotatedField<Farmer<ScottishFish>> scottishFishFarmerField = new AnnotatedFieldImpl<Farmer<ScottishFish>>(FishFarm.class.getDeclaredField("scottishFishFarmer"), fishFarmClass);
       
-      Bean<ScottishFishFarmer> scottishFishFarmerBean = createSimpleBean(ScottishFishFarmer.class, manager);
-      Bean<AnimalFarmer> farmerBean = createSimpleBean(AnimalFarmer.class, manager);
+      Bean<ScottishFishFarmer> scottishFishFarmerBean = SimpleBean.of(ScottishFishFarmer.class, manager);
+      Bean<AnimalFarmer> farmerBean = SimpleBean.of(AnimalFarmer.class, manager);
       
       manager.addBean(scottishFishFarmerBean);
       manager.addBean(farmerBean);
@@ -219,13 +217,13 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test(groups={"resolution", "producerMethod"}) @SpecAssertion(section="5.9.2")
    public void testResolveByTypeWithArray() throws Exception
    {
-      SimpleBean<SpiderProducer> spiderProducerBean = createSimpleBean(SpiderProducer.class, manager);
+      SimpleBean<SpiderProducer> spiderProducerBean = SimpleBean.of(SpiderProducer.class, manager);
       manager.addBean(spiderProducerBean);
       Method method = SpiderProducer.class.getMethod("getSpiders");
-      Bean<Spider[]> spidersModel = createProducerMethodBean(Spider[].class, method, spiderProducerBean, manager);
+      Bean<Spider[]> spidersModel = ProducerMethodBean.of(method, spiderProducerBean, manager);
       manager.addBean(spidersModel);
       method = SpiderProducer.class.getMethod("getStrings");
-      Bean<String[]> stringModel = createProducerMethodBean(String[].class, method, spiderProducerBean, manager);
+      Bean<String[]> stringModel = ProducerMethodBean.of(method, spiderProducerBean, manager);
       manager.addBean(stringModel);
       
       assert manager.resolveByType(Spider[].class).size() == 1;
@@ -235,9 +233,9 @@ public class ResolutionByTypeTest extends AbstractTest
    public void testOnlyHighestEnabledPreecedenceWebBeansResolved() throws Exception
    {
       AnnotatedField<Animal> whiteFishField = new AnnotatedFieldImpl<Animal>(FishFarm.class.getDeclaredField("whiteFish"), fishFarmClass);
-      Bean<Cod> codBean = createSimpleBean(Cod.class, manager);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
-      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class, manager);
+      Bean<Cod> codBean = SimpleBean.of(Cod.class, manager);
+      Bean<Sole> soleBean = SimpleBean.of(Sole.class, manager);
+      Bean<Plaice> plaiceBean = SimpleBean.of(Plaice.class, manager);
       
       
       manager.addBean(plaiceBean);
@@ -254,9 +252,9 @@ public class ResolutionByTypeTest extends AbstractTest
    public void testNoWebBeansFound() throws Exception
    {
       AnnotatedField<ScottishFish> whiteScottishFishField = new AnnotatedFieldImpl<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
-      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class, manager);
+      Bean<Salmon> salmonBean = SimpleBean.of(Salmon.class, manager);
+      Bean<Sole> soleBean = SimpleBean.of(Sole.class, manager);
+      Bean<Plaice> plaiceBean = SimpleBean.of(Plaice.class, manager);
       manager.addBean(plaiceBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
@@ -267,9 +265,9 @@ public class ResolutionByTypeTest extends AbstractTest
    @Test(groups="resolution") @SpecAssertion(section={"5.9.2", "2.2"})
    public void testResolveObject() throws Exception
    {
-      Bean<Salmon> salmonBean = createSimpleBean(Salmon.class, manager);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
-      Bean<Plaice> plaiceBean = createSimpleBean(Plaice.class, manager);
+      Bean<Salmon> salmonBean = SimpleBean.of(Salmon.class, manager);
+      Bean<Sole> soleBean = SimpleBean.of(Sole.class, manager);
+      Bean<Plaice> plaiceBean = SimpleBean.of(Plaice.class, manager);
       manager.addBean(plaiceBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
@@ -287,9 +285,9 @@ public class ResolutionByTypeTest extends AbstractTest
    public void testResolveByTypeWithNonBindingMembers() throws Exception
    {
       AnnotatedField<Animal> veryExpensiveWhitefishField = new AnnotatedFieldImpl<Animal>(FishFarm.class.getDeclaredField("veryExpensiveWhitefish"), fishFarmClass);
-      Bean<Halibut> halibutBean = createSimpleBean(Halibut.class, manager);
-      Bean<RoundWhitefish> roundWhiteFishBean = createSimpleBean(RoundWhitefish.class, manager);
-      Bean<Sole> soleBean = createSimpleBean(Sole.class, manager);
+      Bean<Halibut> halibutBean = SimpleBean.of(Halibut.class, manager);
+      Bean<RoundWhitefish> roundWhiteFishBean = SimpleBean.of(RoundWhitefish.class, manager);
+      Bean<Sole> soleBean = SimpleBean.of(Sole.class, manager);
       manager.addBean(halibutBean);
       manager.addBean(roundWhiteFishBean);
       manager.addBean(soleBean);

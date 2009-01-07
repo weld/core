@@ -16,8 +16,9 @@ import javax.webbeans.manager.Bean;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.bean.AbstractProducerBean;
-import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.bean.ProducerFieldBean;
+import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
@@ -82,7 +83,7 @@ public class PassivatingContextTest extends AbstractTest
    @SpecAssertion(section = "9.5")
    public void testEJBWebBeanCanDeclarePassivatingScope()
    {
-      EnterpriseBean<Turku> bean = BeanFactory.createEnterpriseBean(Turku.class, manager);
+      EnterpriseBean<Turku> bean = EnterpriseBean.of(Turku.class, manager);
       assert true;
    }
 
@@ -110,7 +111,7 @@ public class PassivatingContextTest extends AbstractTest
    @SpecAssertion(section = "9.5")
    public void testSimpleWebBeanWithSerializableImplementationClassOK()
    {
-      SimpleBean<Jyvaskyla> bean = BeanFactory.createSimpleBean(Jyvaskyla.class, manager);
+      SimpleBean<Jyvaskyla> bean = SimpleBean.of(Jyvaskyla.class, manager);
       assert true;
    }
 
@@ -169,7 +170,7 @@ public class PassivatingContextTest extends AbstractTest
    @SpecAssertion(section = "9.5")
    public void testSimpleWebBeanDeclaringPassivatingScopeIsSerializedWhenContextIsPassivated() throws IOException, ClassNotFoundException
    {
-      SimpleBean<Jyvaskyla> bean = BeanFactory.createSimpleBean(Jyvaskyla.class, manager);
+      SimpleBean<Jyvaskyla> bean = SimpleBean.of(Jyvaskyla.class, manager);
       //assert testSerialize(bean);
    }
 
@@ -195,7 +196,7 @@ public class PassivatingContextTest extends AbstractTest
    @SpecAssertion(section = "9.5")
    public void testStatefulEJBIsSerializedWhenPassivatedByEJBContainer() throws IOException, ClassNotFoundException
    {
-      EnterpriseBean<Turku> bean = BeanFactory.createEnterpriseBean(Turku.class, manager);
+      EnterpriseBean<Turku> bean = EnterpriseBean.of(Turku.class, manager);
       assert testSerialize(bean);
    }
 
@@ -209,7 +210,7 @@ public class PassivatingContextTest extends AbstractTest
    @SpecAssertion(section = "9.5")
    public void testDependentInterceptorsOfStatefulEnterpriseBeanMustBeSerializable()
    {
-      EnterpriseBean<Kaarina> bean = BeanFactory.createEnterpriseBean(Kaarina.class, manager);
+      EnterpriseBean<Kaarina> bean = EnterpriseBean.of(Kaarina.class, manager);
    }
 
    /**
@@ -222,7 +223,7 @@ public class PassivatingContextTest extends AbstractTest
    @SpecAssertion(section = "9.5")
    public void testDependentDecoratorsOfStatefulEnterpriseBeanMustBeSerializable()
    {
-      EnterpriseBean<Porvoo> bean = BeanFactory.createEnterpriseBean(Porvoo.class, manager);
+      EnterpriseBean<Porvoo> bean = EnterpriseBean.of(Porvoo.class, manager);
    }
 
    /**
@@ -235,7 +236,7 @@ public class PassivatingContextTest extends AbstractTest
    @SpecAssertion(section = "9.5")
    public void testDependentInterceptorsOfWebBeanWithPassivatingScopeMustBeSerializable()
    {
-      SimpleBean<Kotka> bean = BeanFactory.createSimpleBean(Kotka.class, manager);
+      SimpleBean<Kotka> bean = SimpleBean.of(Kotka.class, manager);
    }
 
    /**
@@ -248,7 +249,7 @@ public class PassivatingContextTest extends AbstractTest
    @SpecAssertion(section = "9.5")
    public void testDependentDecoratorsOfWebBeansWithPassivatingScopeMustBeSerializable()
    {
-      SimpleBean<Raisio> bean = BeanFactory.createSimpleBean(Raisio.class, manager);
+      SimpleBean<Raisio> bean = SimpleBean.of(Raisio.class, manager);
    }
 
    /**
@@ -262,8 +263,8 @@ public class PassivatingContextTest extends AbstractTest
    @SpecAssertion(section = "9.5")
    public void testDependentEJBsAreSerializable() throws IOException, ClassNotFoundException
    {
-      SimpleBean<Vaasa> bean = BeanFactory.createSimpleBean(Vaasa.class, manager);
-      manager.addBean(BeanFactory.createSimpleBean(Helsinki.class, manager));
+      SimpleBean<Vaasa> bean = SimpleBean.of(Vaasa.class, manager);
+      manager.addBean(SimpleBean.of(Helsinki.class, manager));
       assert testSerialize(bean);
    }
 
@@ -280,8 +281,8 @@ public class PassivatingContextTest extends AbstractTest
    @SpecAssertion(section = "9.5")
    public void testSimpleDependentWebBeanWithNonSerializableImplementationInjectedIntoStatefulSessionBeanFails()
    {
-      manager.addBean(BeanFactory.createSimpleBean(Violation.class, manager));
-      EnterpriseBean<Espoo> bean = BeanFactory.createEnterpriseBean(Espoo.class, manager);
+      manager.addBean(SimpleBean.of(Violation.class, manager));
+      EnterpriseBean<Espoo> bean = EnterpriseBean.of(Espoo.class, manager);
       bean.postConstruct(null);
    }
 
@@ -317,7 +318,7 @@ public class PassivatingContextTest extends AbstractTest
    @SpecAssertion(section = "9.5")
    public void testSimpleDependentWebBeanWithNonSerializableImplementationInjectedIntoTransientFieldOK()
    {
-      SimpleBean<Joensuu> bean = BeanFactory.createSimpleBean(Joensuu.class, manager);
+      SimpleBean<Joensuu> bean = SimpleBean.of(Joensuu.class, manager);
    }
 
    /**
@@ -367,7 +368,7 @@ public class PassivatingContextTest extends AbstractTest
    @SpecAssertion(section = "9.5")
    public void testSimpleDependentWebBeanWithNonSerializableImplementationInjectedIntoProducerMethodParameterWithPassivatingScopeFails()
    {
-      manager.addBean(BeanFactory.createSimpleBean(Violation.class, manager));
+      manager.addBean(SimpleBean.of(Violation.class, manager));
       Bean<?> producerBean = registerProducerBean(Peraseinajoki.class, "create", Violation2.class);
       manager.validate();
    }
@@ -388,7 +389,7 @@ public class PassivatingContextTest extends AbstractTest
    public void testDependentScopedProducerMethodReturnsNonSerializableObjectForInjectionIntoStatefulEnterpriseBeanFails() throws SecurityException, NoSuchMethodException
    {
       registerProducerBean(CityProducer2.class, "create", Violation.class);
-      EnterpriseBean<Maarianhamina> ejb = BeanFactory.createEnterpriseBean(Maarianhamina.class, manager);
+      EnterpriseBean<Maarianhamina> ejb = EnterpriseBean.of(Maarianhamina.class, manager);
       ejb.postConstruct(null);
    }
 
@@ -420,8 +421,8 @@ public class PassivatingContextTest extends AbstractTest
    @SpecAssertion(section = "9.5")
    public void testDependentScopedProducerMethodReturnsNonSerializableObjectForInjectionIntoTransientFieldOfWebBeanWithPassivatingScopeOK()
    {
-      SimpleBean<CityProducer2> bean = BeanFactory.createSimpleBean(CityProducer2.class, manager);
-      SimpleBean<Hyvinkaa> ejb = BeanFactory.createSimpleBean(Hyvinkaa.class, manager);
+      SimpleBean<CityProducer2> bean = SimpleBean.of(CityProducer2.class, manager);
+      SimpleBean<Hyvinkaa> ejb = SimpleBean.of(Hyvinkaa.class, manager);
    }
 
    /**
@@ -490,7 +491,7 @@ public class PassivatingContextTest extends AbstractTest
    public void testDependentScopedProducerFieldReturnsNonSerializableObjectForInjectionIntoStatefulSessionBeanFails() throws SecurityException, NoSuchFieldException
    {
       registerProducerBean(CityProducer.class, "reference", Violation.class);
-      EnterpriseBean<Pietarsaari> bean = BeanFactory.createEnterpriseBean(Pietarsaari.class, manager);
+      EnterpriseBean<Pietarsaari> bean = EnterpriseBean.of(Pietarsaari.class, manager);
       // TODO: hack
       bean.postConstruct(null);
       assert true;
@@ -566,11 +567,11 @@ public class PassivatingContextTest extends AbstractTest
       Bean<T> bean = null;
       if (CurrentManager.rootManager().getEjbDescriptorCache().containsKey(clazz))
       {
-         bean = BeanFactory.createEnterpriseBean(clazz, manager);
+         bean = EnterpriseBean.of(clazz, manager);
       }
       else
       {
-         bean = BeanFactory.createSimpleBean(clazz, manager);
+         bean = SimpleBean.of(clazz, manager);
       }
       manager.addBean(bean);
       return manager.getInstance(bean);
@@ -603,7 +604,7 @@ public class PassivatingContextTest extends AbstractTest
 
    private AbstractProducerBean<?, ?> registerProducerBean(Class<?> producerBeanClass, String fieldOrMethodName, Class<?> productClass)
    {
-      SimpleBean<?> producerContainerBean = BeanFactory.createSimpleBean(producerBeanClass, manager);
+      SimpleBean<?> producerContainerBean = SimpleBean.of(producerBeanClass, manager);
       manager.addBean(producerContainerBean);
       AbstractProducerBean<?, ?> producerBean = null;
       try
@@ -611,12 +612,12 @@ public class PassivatingContextTest extends AbstractTest
          if (hasField(producerBeanClass, fieldOrMethodName))
          {
             Field producerField = producerBeanClass.getDeclaredField(fieldOrMethodName);
-            producerBean = BeanFactory.createProducerFieldBean(productClass, producerField, producerContainerBean, manager);
+            producerBean = ProducerFieldBean.of(producerField, producerContainerBean, manager);
          }
          else
          {
             Method producerMethod = getMethod(producerBeanClass, fieldOrMethodName);
-            producerBean = BeanFactory.createProducerMethodBean(productClass, producerMethod, producerContainerBean, manager);
+            producerBean = ProducerMethodBean.of(producerMethod, producerContainerBean, manager);
          }
       }
       catch (Exception e)

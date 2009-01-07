@@ -1,7 +1,5 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
-
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.bean.SimpleBean;
@@ -21,8 +19,8 @@ public class SimpleBeanLifecycleTest extends AbstractTest
 	@Test(groups="beanConstruction") @SpecAssertion(section="3.1.3")
 	public void testInjectionOfParametersIntoBeanConstructor()
 	{
-	   Bean<FishPond> goldfishPondBean = createSimpleBean(FishPond.class, manager);
-	   Bean<Goldfish> goldfishBean = createSimpleBean(Goldfish.class, manager);
+	   Bean<FishPond> goldfishPondBean = SimpleBean.of(FishPond.class, manager);
+	   Bean<Goldfish> goldfishBean = SimpleBean.of(Goldfish.class, manager);
 	   manager.addBean(goldfishBean);
 	   manager.addBean(goldfishPondBean);
 	   FishPond fishPond = goldfishPondBean.create();
@@ -39,7 +37,7 @@ public class SimpleBeanLifecycleTest extends AbstractTest
    @Test(groups="beanLifecycle") @SpecAssertion(section="5.3")
    public void testCreateReturnsInstanceOfBean()
    {
-      Bean<RedSnapper> bean = createSimpleBean(RedSnapper.class, manager);
+      Bean<RedSnapper> bean = SimpleBean.of(RedSnapper.class, manager);
       assert bean.create() instanceof RedSnapper;
    }
    
@@ -76,8 +74,8 @@ public class SimpleBeanLifecycleTest extends AbstractTest
    @Test(groups={"beanLifecycle", "lifecycleCallbacks"}) @SpecAssertion(section="5.3")
    public void testPostConstructPreDestroy() throws Exception
    {
-      Bean<FarmOffice> farmOfficeBean = createSimpleBean(FarmOffice.class, manager);
-      Bean<Farm> farmBean = createSimpleBean(Farm.class, manager);
+      Bean<FarmOffice> farmOfficeBean = SimpleBean.of(FarmOffice.class, manager);
+      Bean<Farm> farmBean = SimpleBean.of(Farm.class, manager);
       manager.addBean(farmOfficeBean);
       manager.addBean(farmBean);
       Farm farm = farmBean.create();
@@ -91,8 +89,8 @@ public class SimpleBeanLifecycleTest extends AbstractTest
    @Test(groups="injection") @SpecAssertion(section="5.3")
    public void testCreateInjectsFieldsDeclaredInJava()
    {
-      SimpleBean<TunaFarm> tunaFarmBean = createSimpleBean(TunaFarm.class, manager);
-      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
+      SimpleBean<TunaFarm> tunaFarmBean = SimpleBean.of(TunaFarm.class, manager);
+      Bean<Tuna> tunaBean = SimpleBean.of(Tuna.class, manager);
       manager.addBean(tunaBean);
       TunaFarm tunaFarm = tunaFarmBean.create();
       assert tunaFarm.tuna != null;
@@ -101,8 +99,8 @@ public class SimpleBeanLifecycleTest extends AbstractTest
    @Test(groups="injection") 
    public void testFieldMissingBindingAnnotationsAreNotInjected()
    {
-      SimpleBean<TunaFarm> tunaFarmBean = createSimpleBean(TunaFarm.class, manager);
-      Bean<Tuna> tunaBean = createSimpleBean(Tuna.class, manager);
+      SimpleBean<TunaFarm> tunaFarmBean = SimpleBean.of(TunaFarm.class, manager);
+      Bean<Tuna> tunaBean = SimpleBean.of(Tuna.class, manager);
       manager.addBean(tunaBean);
       TunaFarm tunaFarm = tunaFarmBean.create();
       assert tunaFarm.notInjectedTuna != manager.getInstance(tunaBean);

@@ -62,12 +62,25 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    private AnnotatedMethod<?> removeMethod;
 
    /**
+    * Creates a simple, annotation defined Enterprise Web Bean
+    * 
+    * @param <T> The type
+    * @param clazz The class
+    * @param manager the current manager
+    * @return An Enterprise Web Bean
+    */
+   public static <T> EnterpriseBean<T> of(Class<T> clazz, ManagerImpl manager)
+   {
+      return new EnterpriseBean<T>(clazz, manager);
+   }
+   
+   /**
     * Constructor
     * 
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   public EnterpriseBean(Class<T> type, ManagerImpl manager)
+   protected EnterpriseBean(Class<T> type, ManagerImpl manager)
    {
       super(type, manager);
       init();

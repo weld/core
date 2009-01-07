@@ -36,17 +36,31 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
 {
    // The underlying field
    private AnnotatedField<T> field;
-
+   
    /**
-    * Constructor
+    * Creates a producer field Web Bean
     * 
-    * @param method The producer field
-    * @param declaringBean The declaring bean instance
-    * @param manager The Web Beans manager
+    * @param field The underlying method abstraction
+    * @param declaringBean The declaring bean abstraction
+    * @param manager the current manager
+    * @return A producer Web Bean
     */
-   public ProducerFieldBean(Field field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   public static <T> ProducerFieldBean<T> of(AnnotatedField<T> field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
-      this(new AnnotatedFieldImpl<T>(field, declaringBean.getAnnotatedItem()), declaringBean, manager);
+      return new ProducerFieldBean<T>(field, declaringBean, manager);
+   }
+   
+   /**
+    * Creates a producer field Web Bean
+    * 
+    * @param field The underlying method abstraction
+    * @param declaringBean The declaring bean abstraction
+    * @param manager the current manager
+    * @return A producer Web Bean
+    */
+   public static <T> ProducerFieldBean<T> of(Field field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   {
+      return new ProducerFieldBean<T>(new AnnotatedFieldImpl<T>(field, declaringBean.getAnnotatedItem()), declaringBean, manager);
    }
 
    /**
@@ -56,7 +70,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
     * @param declaringBean The declaring bean
     * @param manager The Web Beans manager
     */
-   public ProducerFieldBean(AnnotatedField<T> field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   protected ProducerFieldBean(AnnotatedField<T> field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       super(declaringBean, manager);
       this.field = field;

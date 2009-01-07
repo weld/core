@@ -1,7 +1,5 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
-
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,26 +48,26 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2")
    public void testAbstractClassDeclaredInJavaIsNotAllowed()
    {
-      createSimpleBean(Cow.class, manager);
+      SimpleBean.of(Cow.class, manager);
    }
    
    @Test(groups="innerClass") @SpecAssertion(section="3.2")
    public void testStaticInnerClassDeclaredInJavaAllowed()
    {
-      createSimpleBean(StaticInnerBean.class, manager);
+      SimpleBean.of(StaticInnerBean.class, manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class, groups="innerClass") @SpecAssertion(section="3.2")
    public void testNonStaticInnerClassDeclaredInJavaNotAllowed()
    {
-      createSimpleBean(InnerBean.class, manager);
+      SimpleBean.of(InnerBean.class, manager);
    }
    
    @SuppressWarnings("unchecked")
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2")
    public void testParameterizedClassDeclaredInJavaIsNotAllowed()
    {
-      createSimpleBean(ParameterizedBean.class, manager);
+      SimpleBean.of(ParameterizedBean.class, manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class, groups={"stub", "interceptors", "decorators"}) @SpecAssertion(section="3.2")
@@ -171,7 +169,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test @SpecAssertion(section="3.2.5.1")
    public void testInitializerAnnotatedConstructor()
    {
-      AnnotatedConstructor<Sheep> constructor = createSimpleBean(Sheep.class, manager).getConstructor();
+      AnnotatedConstructor<Sheep> constructor = SimpleBean.of(Sheep.class, manager).getConstructor();
       assert constructor.getDeclaringClass().getType().equals(Sheep.class);
       assert constructor.getParameters().size() == 2;
       
@@ -191,7 +189,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test @SpecAssertion(section="3.2.5.1")
    public void testImplicitConstructorUsed()
    {
-      AnnotatedConstructor<Order> constructor = createSimpleBean(Order.class, manager).getConstructor();
+      AnnotatedConstructor<Order> constructor = SimpleBean.of(Order.class, manager).getConstructor();
       assert constructor.getDeclaringClass().getType().equals(Order.class);
       assert constructor.getParameters().size() == 0;
    }
@@ -199,7 +197,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test @SpecAssertion(section="3.2.5.1")
    public void testEmptyConstructorUsed()
    {
-      AnnotatedConstructor<Donkey> constructor = createSimpleBean(Donkey.class, manager).getConstructor();
+      AnnotatedConstructor<Donkey> constructor = SimpleBean.of(Donkey.class, manager).getConstructor();
       assert constructor.getDeclaringClass().getType().equals(Donkey.class);
       assert constructor.getParameters().size() == 0;
    }
@@ -207,7 +205,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test @SpecAssertion(section="3.2.5.1")
    public void testInitializerAnnotatedConstructorUsedOverEmptyConstuctor()
    {
-      AnnotatedConstructor<Turkey> constructor = createSimpleBean(Turkey.class, manager).getConstructor();
+      AnnotatedConstructor<Turkey> constructor = SimpleBean.of(Turkey.class, manager).getConstructor();
       assert constructor.getParameters().size() == 2;
       Map<Class<?>, Set<? extends Annotation>> map = new HashMap<Class<?>, Set<? extends Annotation>>();
       for (AnnotatedParameter<Object> parameter : constructor.getParameters())
@@ -221,7 +219,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.2.5.1")
    public void testTooManyInitializerAnnotatedConstructor()
    {
-      createSimpleBean(Goose.class, manager);
+      SimpleBean.of(Goose.class, manager);
    }
    
    @Test(expectedExceptions=DefinitionException.class, groups={"stub", "disposalMethod"}) @SpecAssertion(section="3.2.5.1")
@@ -245,7 +243,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test(groups={"stub", "webbeansxml"})  @SpecAssertion(section="3.2.5.2")
    public void testEmptyConstructorDeclaredInXmlUsed()
    {
-      AnnotatedConstructor<Donkey> constructor = createSimpleBean(Donkey.class, manager).getConstructor();
+      AnnotatedConstructor<Donkey> constructor = SimpleBean.of(Donkey.class, manager).getConstructor();
       assert constructor.getParameters().size() == 0;
       assert false;
    }
@@ -265,7 +263,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test @SpecAssertion(section="3.2.5.3")
    public void testBindingTypeAnnotatedConstructor()
    {
-      AnnotatedConstructor<Duck> constructor = createSimpleBean(Duck.class, manager).getConstructor();
+      AnnotatedConstructor<Duck> constructor = SimpleBean.of(Duck.class, manager).getConstructor();
       assert constructor.getDeclaringClass().getType().equals(Duck.class);
       assert constructor.getParameters().size() == 2;
       Map<Class<?>, Set<? extends Annotation>> map = new HashMap<Class<?>, Set<? extends Annotation>>();
@@ -284,7 +282,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test(groups="specializationInherit") @SpecAssertion(section="3.2.6")
    public void testSpecializedClassInheritsBindingTypes()
    {
-      SimpleBean<Tractor> bean = createSimpleBean(Tractor.class, manager);
+      SimpleBean<Tractor> bean = SimpleBean.of(Tractor.class, manager);
       assert bean.getBindingTypes().size()==2;
       assert bean.getBindingTypes().contains( new AnnotationLiteral<Motorized>() {} );
       assert bean.getBindingTypes().contains( new AnnotationLiteral<HeavyDuty>() {} );
@@ -293,7 +291,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test(groups="specializationInherit") @SpecAssertion(section="3.2.6")
    public void testSpecializedClassInheritsName()
    {
-      SimpleBean<Tractor> bean = createSimpleBean(Tractor.class, manager);
+      SimpleBean<Tractor> bean = SimpleBean.of(Tractor.class, manager);
       assert bean.getName()!=null;
       assert bean.getName().equals("plough");
    }

@@ -1,11 +1,10 @@
 package org.jboss.webbeans.test;
 
-import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
-
 import javax.webbeans.DefinitionException;
 import javax.webbeans.NonexistentMethodException;
 import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.beans.Chicken;
 import org.jboss.webbeans.test.beans.ChickenHutch;
 import org.jboss.webbeans.test.beans.Fox;
@@ -23,7 +22,7 @@ public class InitializerMethodTest extends AbstractTest
    @Test(expectedExceptions=DefinitionException.class, groups="initializerMethod") @SpecAssertion(section="3.8")
    public void testStaticInitializerMethodNotAllowed()
    {
-      createSimpleBean(Dottrel.class, manager);
+      SimpleBean.of(Dottrel.class, manager);
    }
    
    @Test(groups={"stub", "initializerMethod", "servlet"}) @SpecAssertion(section="3.8")
@@ -65,10 +64,10 @@ public class InitializerMethodTest extends AbstractTest
    @Test(groups={"initializerMethod"}) @SpecAssertion(section={"3.8", "5.3", "3.8.2", "3.8.3"})
    public void testMultipleInitializerMethodsAreCalled()
    {
-      manager.addBean(createSimpleBean(Fox.class, manager));
-      manager.addBean(createSimpleBean(Chicken.class, manager));
+      manager.addBean(SimpleBean.of(Fox.class, manager));
+      manager.addBean(SimpleBean.of(Chicken.class, manager));
       
-      Bean<ChickenHutch> chickenHutchBean = createSimpleBean(ChickenHutch.class, manager);
+      Bean<ChickenHutch> chickenHutchBean = SimpleBean.of(ChickenHutch.class, manager);
       ChickenHutch chickenHutch = chickenHutchBean.create();
       assert chickenHutch.fox != null;
       assert chickenHutch.chicken != null;
@@ -77,25 +76,25 @@ public class InitializerMethodTest extends AbstractTest
    @Test(groups="initializerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section={"3.8.1", "3.4.2"})
    public void testInitializerMethodAnnotatedProduces()
    {
-      createSimpleBean(Pheasant.class, manager);
+      SimpleBean.of(Pheasant.class, manager);
    }
    
    @Test(groups="initializerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.8.1")
    public void testInitializerMethodAnnotatedDestructor()
    {
-      createSimpleBean(Shrike.class, manager);
+      SimpleBean.of(Shrike.class, manager);
    }
    
    @Test(groups="initializerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.8.1")
    public void testInitializerMethodHasParameterAnnotatedDisposes()
    {
-      createSimpleBean(Capercaillie.class, manager);
+      SimpleBean.of(Capercaillie.class, manager);
    }
    
    @Test(groups="initializerMethod", expectedExceptions=DefinitionException.class) @SpecAssertion(section="3.8.1")
    public void testInitializerMethodHasParameterAnnotatedObserves()
    {
-      createSimpleBean(Grouse.class, manager);
+      SimpleBean.of(Grouse.class, manager);
    }
    
    @Test(groups={"stub", "initializerMethod", "webbeansxml"}) @SpecAssertion(section="3.8.2")

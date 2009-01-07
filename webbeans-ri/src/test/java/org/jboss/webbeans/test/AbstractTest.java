@@ -13,7 +13,8 @@ import javax.webbeans.Standard;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
-import org.jboss.webbeans.bean.BeanFactory;
+import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.HornedAnimalDeploymentType;
 import org.jboss.webbeans.test.mock.MockBootstrap;
@@ -42,11 +43,11 @@ public class AbstractTest
       AbstractClassBean<T> bean = null;
       if (CurrentManager.rootManager().getEjbDescriptorCache().containsKey(clazz))
       {
-         bean = BeanFactory.createEnterpriseBean(clazz, manager);
+         bean = EnterpriseBean.of(clazz, manager);
       }
       else
       {
-         bean = BeanFactory.createSimpleBean(clazz, manager);
+         bean = SimpleBean.of(clazz, manager);
       }
       CurrentManager.rootManager().addBean(bean);
       return bean;

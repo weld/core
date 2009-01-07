@@ -6,7 +6,6 @@ import java.util.Arrays;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
 
-import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.context.DependentContext;
@@ -39,11 +38,11 @@ public class Tests extends AbstractTest
 
    private void setupGameGenerator() throws NoSuchMethodException
    {
-      SimpleBean<Game> gameBean = BeanFactory.createSimpleBean(Game.class, manager);
-      SimpleBean<Generator> generatorBean = BeanFactory.createSimpleBean(Generator.class, manager);
+      SimpleBean<Game> gameBean = SimpleBean.of(Game.class, manager);
+      SimpleBean<Generator> generatorBean = SimpleBean.of(Generator.class, manager);
       Method method = Generator.class.getDeclaredMethod("next");
       method.setAccessible(true);
-      ProducerMethodBean<Integer> nextBean = BeanFactory.createProducerMethodBean(int.class, method, generatorBean, manager);
+      ProducerMethodBean<Integer> nextBean = ProducerMethodBean.of(method, generatorBean, manager);
         
       manager.addBean(gameBean);
       manager.addBean(generatorBean);
@@ -94,10 +93,10 @@ public class Tests extends AbstractTest
    
    private void setupTextTranslator()
    {
-      SimpleBean<SentenceParser> spBean = BeanFactory.createSimpleBean(SentenceParser.class, manager);
-      SimpleBean<SentenceTranslator> stBean = BeanFactory.createSimpleBean(SentenceTranslator.class, manager);
-      SimpleBean<MockSentenceTranslator> mstBean = BeanFactory.createSimpleBean(MockSentenceTranslator.class, manager);
-      SimpleBean<TextTranslator> ttBean = BeanFactory.createSimpleBean(TextTranslator.class, manager);
+      SimpleBean<SentenceParser> spBean = SimpleBean.of(SentenceParser.class, manager);
+      SimpleBean<SentenceTranslator> stBean = SimpleBean.of(SentenceTranslator.class, manager);
+      SimpleBean<MockSentenceTranslator> mstBean = SimpleBean.of(MockSentenceTranslator.class, manager);
+      SimpleBean<TextTranslator> ttBean = SimpleBean.of(TextTranslator.class, manager);
       
       manager.addBean(spBean);
       manager.addBean(stBean);
