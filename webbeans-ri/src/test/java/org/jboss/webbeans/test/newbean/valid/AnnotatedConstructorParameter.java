@@ -5,13 +5,13 @@ import javax.webbeans.New;
 import javax.webbeans.Produces;
 
 
-public class Sample
+public class AnnotatedConstructorParameter
 {
    @New
    WrappedBean reference;
 
    @Initializer
-   public Sample(@New WrappedBean reference)
+   public AnnotatedConstructorParameter(@New WrappedBean reference)
    {
    }
 

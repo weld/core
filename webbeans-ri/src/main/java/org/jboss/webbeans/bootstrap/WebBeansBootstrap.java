@@ -17,13 +17,7 @@
 
 package org.jboss.webbeans.bootstrap;
 
-import static org.jboss.webbeans.bean.BeanFactory.createEnterpriseBean;
-import static org.jboss.webbeans.bean.BeanFactory.createEventBean;
-import static org.jboss.webbeans.bean.BeanFactory.createInstanceBean;
-import static org.jboss.webbeans.bean.BeanFactory.createObserver;
-import static org.jboss.webbeans.bean.BeanFactory.createProducerFieldBean;
-import static org.jboss.webbeans.bean.BeanFactory.createProducerMethodBean;
-import static org.jboss.webbeans.bean.BeanFactory.createSimpleBean;
+import static org.jboss.webbeans.bean.BeanFactory.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -37,6 +31,7 @@ import java.util.Set;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Fires;
 import javax.webbeans.Initializer;
+import javax.webbeans.New;
 import javax.webbeans.Observer;
 import javax.webbeans.Observes;
 import javax.webbeans.Obtains;
@@ -48,6 +43,7 @@ import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.BeanFactory;
 import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.bean.InstanceBean;
+import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
@@ -69,26 +65,26 @@ import org.jboss.webbeans.transaction.Transaction;
 import org.jboss.webbeans.util.Reflections;
 
 /**
- * Common bootstrapping functionality that is run at application startup and detects
- * and register beans
+ * Common bootstrapping functionality that is run at application startup and
+ * detects and register beans
  * 
  * @author Pete Muir
  */
 public abstract class WebBeansBootstrap
-{ 
+{
    // The log provider
    private static LogProvider log = Logging.getLogProvider(WebBeansBootstrap.class);
-   
+
    // The Web Beans manager
    private ManagerImpl manager;
-   
+
    protected void initManager(Naming naming, EjbResolver ejbResolver, ResourceLoader resourceLoader)
    {
       this.manager = new ManagerImpl(naming, ejbResolver, resourceLoader);
       manager.getNaming().bind(ManagerImpl.JNDI_KEY, getManager());
       CurrentManager.setRootManager(manager);
    }
-   
+
    public ManagerImpl getManager()
    {
       return manager;
@@ -97,7 +93,7 @@ public abstract class WebBeansBootstrap
    protected abstract WebBeanDiscovery getWebBeanDiscovery();
 
    public abstract ResourceLoader getResourceLoader();
-   
+
    protected void validateBootstrap()
    {
       if (getManager() == null)
@@ -125,7 +121,8 @@ public abstract class WebBeansBootstrap
    }
 
    /**
-    * Register the bean with the getManager(), including any standard (built in) beans
+    * Register the bean with the getManager(), including any standard (built in)
+    * beans
     * 
     * @param classes The classes to register as Web Beans
     */
@@ -133,9 +130,37 @@ public abstract class WebBeansBootstrap
    {
       Set<AbstractBean<?, ?>> beans = createBeans(classes);
       beans.addAll(createStandardBeans());
+      // TODO: Is there any better way to do this? Currently, producer method parameters aren't
+      // listed in the containing beans injection points since they will be separated into 
+      // producer beans of their own so we'll have to make a second pass to make sure we hit the
+      // created producer beans also.
+      registerNewBeans(beans);
       getManager().setBeans(beans);
    }
-   
+
+   private void registerNewBeans(Set<AbstractBean<?, ?>> beans)
+   {
+      Set<AbstractBean<?, ?>> newBeans = new HashSet<AbstractBean<?, ?>>();
+      for (AbstractBean<?, ?> bean : beans)
+      {
+         for (AnnotatedItem<?, ?> injectionPoint : bean.getInjectionPoints())
+            if (injectionPoint.isAnnotationPresent(New.class))
+            {
+               if (manager.getEjbDescriptorCache().containsKey(injectionPoint.getType()))
+               {
+
+               }
+               else
+               {
+                  NewSimpleBean<?> newSimpleBean = createNewSimpleBean(injectionPoint.getType(), manager);
+                  newBeans.add(newSimpleBean);
+                  log.info("Web Bean: " + newSimpleBean);
+               }
+            }
+      }
+      beans.addAll(newBeans);
+   }
+
    /**
     * Creates the standard beans used internally by the RI
     * 
@@ -148,25 +173,25 @@ public abstract class WebBeansBootstrap
       final ManagerImpl managerImpl = getManager();
       createBean(new SimpleBean<ManagerImpl>(ManagerImpl.class, getManager())
       {
-   
+
          @Override
          protected void initConstructor()
          {
             // No - op, no constructor needed
          }
-         
+
          @Override
          protected void initInjectionPoints()
          {
             injectionPoints = Collections.emptySet();
          }
-         
+
          @Override
          public ManagerImpl create()
          {
             return managerImpl;
          }
-   
+
       }, beans);
       return beans;
    }
@@ -198,9 +223,10 @@ public abstract class WebBeansBootstrap
       }
       return beans;
    }
-   
+
    /**
-    * Creates a Web Bean from a bean abstraction and adds it to the set of created beans
+    * Creates a Web Bean from a bean abstraction and adds it to the set of
+    * created beans
     * 
     * Also creates the implicit field- and method-level beans, if present
     * 
@@ -228,11 +254,11 @@ public abstract class WebBeansBootstrap
       }
       for (AnnotatedItem injectionPoint : bean.getInjectionPoints())
       {
-         if ( injectionPoint.isAnnotationPresent(Fires.class) )  
+         if (injectionPoint.isAnnotationPresent(Fires.class))
          {
             registerEvent(injectionPoint, beans);
          }
-         if ( injectionPoint.isAnnotationPresent(Obtains.class) )  
+         if (injectionPoint.isAnnotationPresent(Obtains.class))
          {
             InstanceBean<Object, Field> instanceBean = createInstanceBean(injectionPoint, getManager());
             beans.add(instanceBean);
@@ -250,17 +276,16 @@ public abstract class WebBeansBootstrap
          {
             throw new DefinitionException("Observer method can only have one parameter annotated @Observes " + observer);
          }
-         
+
       }
       log.info("Web Bean: " + bean);
    }
 
-
    /**
     * Starts the boot process.
     * 
-    * Discovers the beans and registers them with the getManager(). Also resolves the
-    * injection points.
+    * Discovers the beans and registers them with the getManager(). Also
+    * resolves the injection points.
     * 
     * @param webBeanDiscovery The discovery implementation
     */
@@ -270,7 +295,8 @@ public abstract class WebBeansBootstrap
       {
          log.info("Starting Web Beans RI " + getVersion());
          validateBootstrap();
-         // Must populate EJB cache first, as we need it to detect whether a bean is an EJB!
+         // Must populate EJB cache first, as we need it to detect whether a
+         // bean is an EJB!
          getManager().getEjbDescriptorCache().addAll(getWebBeanDiscovery().discoverEjbs());
          registerBeans(getWebBeanDiscovery().discoverWebBeanClasses());
          log.info("Validing Web Bean injection points");
@@ -303,7 +329,7 @@ public abstract class WebBeansBootstrap
    {
       getManager().addObserver(observer, (Class<T>) eventType, bindings);
    }
-   
+
    /**
     * Iterates through the injection points and creates and registers any Event
     * observables specified with the @Observable annotation
@@ -312,24 +338,25 @@ public abstract class WebBeansBootstrap
     * @param beans A set of beans to add the Event beans to
     */
    @SuppressWarnings("unchecked")
-   private void registerEvents(Set<AnnotatedItem<?,?>> injectionPoints, Set<AbstractBean<?, ?>> beans)
+   private void registerEvents(Set<AnnotatedItem<?, ?>> injectionPoints, Set<AbstractBean<?, ?>> beans)
    {
       for (AnnotatedItem injectionPoint : injectionPoints)
       {
          registerEvent(injectionPoint, beans);
       }
    }
-   
+
    @SuppressWarnings("unchecked")
    private void registerEvent(AnnotatedItem injectionPoint, Set<AbstractBean<?, ?>> beans)
    {
-      if ( injectionPoint.isAnnotationPresent(Fires.class) )
+      if (injectionPoint.isAnnotationPresent(Fires.class))
       {
          EventBean<Object, Method> eventBean = createEventBean(injectionPoint, getManager());
          beans.add(eventBean);
          log.info("Web Bean: " + eventBean);
-      }      
+      }
    }
+
    /**
     * Indicates if the type is a simple Web Bean
     * 
@@ -341,29 +368,23 @@ public abstract class WebBeansBootstrap
       EJBApiAbstraction ejbApiAbstraction = new EJBApiAbstraction(getResourceLoader());
       JSFApiAbstraction jsfApiAbstraction = new JSFApiAbstraction(getResourceLoader());
       ServletApiAbstraction servletApiAbstraction = new ServletApiAbstraction(getResourceLoader());
-      //TODO: check 3.2.1 for more rules!!!!!!
-      return !type.isAnnotation() && 
-      	    !Reflections.isAbstract(type) && 
-      	    !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(type) && 
-      	    !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(type) && 
-      	    !servletApiAbstraction.SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(type) && 
-      	    !servletApiAbstraction.HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(type) && 
-      	    !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(type) && 
-      	    !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(type) && 
-      	    !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(type) &&
-      	    hasSimpleWebBeanConstructor(type);
+      // TODO: check 3.2.1 for more rules!!!!!!
+      return !type.isAnnotation() && !Reflections.isAbstract(type) && !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(type) && !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(type) && !servletApiAbstraction.SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(type) && !servletApiAbstraction.HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(type) && !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(type) && !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(type) && !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(type) && hasSimpleWebBeanConstructor(type);
    }
 
-   private static boolean hasSimpleWebBeanConstructor(Class<?> type) {
-      try {
+   private static boolean hasSimpleWebBeanConstructor(Class<?> type)
+   {
+      try
+      {
          type.getDeclaredConstructor();
          return true;
       }
       catch (NoSuchMethodException nsme)
       {
-         for (Constructor<?> c: type.getDeclaredConstructors())
+         for (Constructor<?> c : type.getDeclaredConstructors())
          {
-            if (c.isAnnotationPresent(Initializer.class)) return true;
+            if (c.isAnnotationPresent(Initializer.class))
+               return true;
          }
          return false;
       }

@@ -16,7 +16,10 @@ import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
 import org.jboss.webbeans.test.SpecVersion;
 import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
-import org.jboss.webbeans.test.newbean.valid.Sample;
+import org.jboss.webbeans.test.newbean.valid.AnnotatedConstructorParameter;
+import org.jboss.webbeans.test.newbean.valid.AnnotatedField;
+import org.jboss.webbeans.test.newbean.valid.AnnotatedInitializerParameter;
+import org.jboss.webbeans.test.newbean.valid.AnnotatedProducerParameter;
 import org.jboss.webbeans.test.newbean.valid.WrappedBean;
 import org.jboss.webbeans.util.Proxies.TypeInfo;
 import org.testng.annotations.BeforeMethod;
@@ -337,7 +340,7 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToField()
    {
-      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(Sample.class));
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedField.class));
       webBeansBootstrap.boot();
       assert manager.resolveByType(WrappedBean.class, new NewBinding()).size() == 1;
    }
@@ -354,7 +357,9 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToProducerMethodParameter()
    {
-      assert false;
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedProducerParameter.class));
+      webBeansBootstrap.boot();
+      assert manager.resolveByType(WrappedBean.class, new NewBinding()).size() == 1;
    }
 
    /**
@@ -369,7 +374,9 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToInitializerMethodParameter()
    {
-      assert false;
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedInitializerParameter.class));
+      webBeansBootstrap.boot();
+      assert manager.resolveByType(WrappedBean.class, new NewBinding()).size() == 1;
    }
 
    /**
@@ -384,7 +391,9 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToConstructorMethodParameter()
    {
-      assert false;
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedConstructorParameter.class));
+      webBeansBootstrap.boot();
+      assert manager.resolveByType(WrappedBean.class, new NewBinding()).size() == 1;
    }
 
    /**
