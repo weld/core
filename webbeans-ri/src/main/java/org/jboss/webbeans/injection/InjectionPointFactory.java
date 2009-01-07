@@ -23,7 +23,7 @@ import java.util.Stack;
 import javax.webbeans.InjectionPoint;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedMember;
+import org.jboss.webbeans.introspector.AnnotatedMember;
 
 /**
  * Factory used to create the container provided implementation for the
@@ -38,7 +38,7 @@ public class InjectionPointFactory
 {
    private final Stack<Bean<?>> beans = new Stack<Bean<?>>();
    private final Stack<Object> beanInstances = new Stack<Object>();
-   private final Stack<AbstractAnnotatedMember<?, ? extends Member>> injectionPoints = new Stack<AbstractAnnotatedMember<?, ? extends Member>>();
+   private final Stack<AnnotatedMember<?, ? extends Member>> injectionPoints = new Stack<AnnotatedMember<?, ? extends Member>>();
 
    /**
     * Pushes the current bean that is being instantiated onto a stack for later
@@ -67,7 +67,7 @@ public class InjectionPointFactory
     * 
     * @param injectedMember The metadata for the injection point
     */
-   public void pushInjectionPoint(AbstractAnnotatedMember<?, ? extends Member> injectedMember)
+   public void pushInjectionPoint(AnnotatedMember<?, ? extends Member> injectedMember)
    {
       injectionPoints.push(injectedMember);
    }
@@ -106,7 +106,7 @@ public class InjectionPointFactory
       // the bean stack.
       InjectionPoint injectionPoint = null;
       Bean<?> currentBean = beans.pop();
-      AbstractAnnotatedMember<?, ? extends Member> currentInjection = injectionPoints.pop();
+      AnnotatedMember<?, ? extends Member> currentInjection = injectionPoints.pop();
       if (beanInstances.size() < beans.size())
       {
          injectionPoint = new InjectionPointImpl(injectionPoints.peek(), beans.peek(), beanInstances.peek());

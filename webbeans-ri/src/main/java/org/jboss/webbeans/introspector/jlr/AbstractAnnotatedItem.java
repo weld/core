@@ -24,17 +24,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.webbeans.BindingType;
-import javax.webbeans.manager.Manager;
-
 import org.jboss.webbeans.binding.CurrentBinding;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 import org.jboss.webbeans.util.Types;
@@ -189,46 +184,6 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return annotationMap;
    }
    
-   /**
-    * Static helper method for getting the current parameter values from a list
-    * of annotated parameters.
-    * 
-    * @param parameters The list of annotated parameter to look up
-    * @param manager The Web Beans manager
-    * @return The object array of looked up values
-    */
-   protected static Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters, Manager manager)
-   {
-      return getParameterValues(parameters, null, null, manager);
-   }
-
-   /**
-    * Static helper method for getting the current parameter values from a list
-    * of annotated parameters.
-    * 
-    * @param parameters The list of annotated parameter to look up
-    * @param manager The Web Beans manager
-    * @return The object array of looked up values
-    */
-   protected static Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters, Object specialVal, Class<? extends Annotation> specialParam, Manager manager)
-   {
-      Object[] parameterValues = new Object[parameters.size()];
-      Iterator<AnnotatedParameter<Object>> iterator = parameters.iterator();
-      for (int i = 0; i < parameterValues.length; i++)
-      {
-         AnnotatedParameter<Object> param = iterator.next();
-         if ( specialParam!=null && param.isAnnotationPresent(specialParam)) 
-         {
-            parameterValues[i] = specialVal;
-         }
-         else 
-         {
-            parameterValues[i] = param.getValue(manager);
-         }
-      }
-      return parameterValues;
-   }
-
    // The annotation map (annotation type -> annotation) of the item
    private final AnnotationMap annotationMap;
    // The meta-annotation map (annotation type -> set of annotations containing

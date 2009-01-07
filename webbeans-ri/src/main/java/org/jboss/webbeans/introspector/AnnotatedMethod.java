@@ -32,7 +32,7 @@ import javax.webbeans.Disposes;
 import javax.webbeans.Fires;
 import javax.webbeans.IfExists;
 import javax.webbeans.Observes;
-import javax.webbeans.manager.Manager;
+import org.jboss.webbeans.ManagerImpl;
 
 /**
  * AnnotatedType provides a uniform access to the annotations on an annotated
@@ -75,7 +75,7 @@ public interface AnnotatedMethod<T> extends AnnotatedMember<T, Method>
     * @param manager The Web Beans manager
     * @return A reference to the instance
     */
-   public T invoke(Object instance, Manager manager);
+   public T invoke(Object instance, ManagerImpl manager);
    
    /**
     * Invokes the method on the class of the passed instance, not the declaring 
@@ -85,7 +85,7 @@ public interface AnnotatedMethod<T> extends AnnotatedMember<T, Method>
     * @param manager The Web Beans manager
     * @return A reference to the instance
     */
-   public T invokeOnInstance(Object instance, Manager manager);
+   public T invokeOnInstance(Object instance, ManagerImpl manager);
 
    /**
     * Invokes the observer method
@@ -95,7 +95,7 @@ public interface AnnotatedMethod<T> extends AnnotatedMember<T, Method>
     * @param manager The Web Beans manager
     * @return A reference to the instance
     */
-   public T invokeWithSpecialValue(Object instance, Class<? extends Annotation> specialParam, Object specialVal, Manager manager);
+   public T invokeWithSpecialValue(Object instance, Class<? extends Annotation> specialParam, Object specialVal, ManagerImpl manager);
 
    /**
     * Invokes the method

@@ -31,6 +31,7 @@ import javax.webbeans.InjectionPoint;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.injection.InjectionPointFactory;
 import org.jboss.webbeans.injection.InjectionPointImpl;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
@@ -62,7 +63,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    private AnnotatedMethod<Object> postConstruct;
    // The pre-destroy method
    private AnnotatedMethod<Object> preDestroy;
-   
+
    /**
     * Creates a simple, annotation defined Web Bean
     * 
@@ -75,7 +76,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       return of(AnnotatedClassImpl.of(clazz), manager);
    }
-   
+
    /**
     * Creates a simple, annotation defined Web Bean
     * 
@@ -117,13 +118,17 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          {
             checkProducedInjectionPoints();
          }
+         InjectionPointFactory injectionPointFactory = manager.getInjectionPointFactory();
+         injectionPointFactory.pushBean(this);
          T instance = constructor.newInstance(manager);
+         injectionPointFactory.pushInstance(instance);
          bindDecorators();
          bindInterceptors();
          injectEjbAndCommonFields(instance);
          injectBoundFields(instance);
          callInitializers(instance);
          callPostConstruct(instance);
+         injectionPointFactory.popBeanAndInstance();
          return instance;
       }
       finally
@@ -217,25 +222,29 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void injectEjbAndCommonFields(T beanInstance)
    {
+      InjectionPointFactory injectionPointFactory = manager.getInjectionPointFactory();
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getEJBAnnotation()))
       {
+         injectionPointFactory.pushInjectionPoint(field);
          InjectionPoint injectionPoint = new InjectionPointImpl(field, this, beanInstance);
          Object ejbInstance = manager.getEjbResolver().resolveEjb(injectionPoint, manager.getNaming());
          field.inject(beanInstance, ejbInstance);
+         injectionPointFactory.popInjectionPoint();
       }
-      
+
       for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getEjbResolver().getEJBAnnotation()))
       {
          InjectionPoint injectionPoint = new InjectionPointImpl(method, this, beanInstance);
          Object ejbInstance = manager.getEjbResolver().resolveEjb(injectionPoint, manager.getNaming());
          method.invoke(beanInstance, ejbInstance);
       }
-      
+
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getPersistenceContextAnnotation()))
       {
          InjectionPoint injectionPoint = new InjectionPointImpl(field, this, beanInstance);
          EntityManagerFactory entityManagerFactory = manager.getEjbResolver().resolvePersistenceUnit(injectionPoint, manager.getNaming());
          field.inject(beanInstance, entityManagerFactory.createEntityManager());
+         injectionPointFactory.popInjectionPoint();
       }
    }
 
@@ -246,9 +255,19 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void injectBoundFields(T instance)
    {
+      InjectionPointFactory injectionPointFactory = manager.getInjectionPointFactory();
       for (AnnotatedField<?> injectableField : getInjectableFields())
       {
-         injectableField.inject(instance, manager);
+         injectionPointFactory.pushInjectionPoint(injectableField);
+         if (InjectionPoint.class.isAssignableFrom(injectableField.getType()))
+         {
+            injectableField.inject(instance, injectionPointFactory.newInstance());
+         }
+         else
+         {
+            injectableField.inject(instance, manager);
+         }
+         injectionPointFactory.popInjectionPoint();
       }
    }
 

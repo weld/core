@@ -26,8 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.webbeans.manager.Manager;
-
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
@@ -248,19 +246,19 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     *      Object)
     */
    @SuppressWarnings("unchecked")
-   public T invoke(Object instance, Manager manager)
+   public T invoke(Object instance, ManagerImpl manager)
    {
       return (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, manager));
    }
    
    @SuppressWarnings("unchecked")
-   public T invokeOnInstance(Object instance, Manager manager)
+   public T invokeOnInstance(Object instance, ManagerImpl manager)
    {
       return (T) Reflections.invokeAndWrap(getName(), getParameterTypesAsArray(), instance, getParameterValues(parameters, manager));
    }
 
    @SuppressWarnings("unchecked")
-   public T invokeWithSpecialValue(Object instance, Class<? extends Annotation> specialParam, Object specialVal, Manager manager)
+   public T invokeWithSpecialValue(Object instance, Class<? extends Annotation> specialParam, Object specialVal, ManagerImpl manager)
    {
       return (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, specialVal, specialParam, manager));
    }

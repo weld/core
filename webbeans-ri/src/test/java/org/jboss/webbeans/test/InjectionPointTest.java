@@ -71,7 +71,7 @@ public class InjectionPointTest extends AbstractTest
       }
    }
 
-   @Test(groups = { "broken", "injectionPoint" })
+   @Test(groups = { "injectionPoint" })
    @SpecAssertion(section = "5.11")
    public void testGetBean()
    {
@@ -96,7 +96,7 @@ public class InjectionPointTest extends AbstractTest
       }
    }
 
-   @Test(groups = { "broken", "injectionPoint" })
+   @Test(groups = { "injectionPoint" })
    @SpecAssertion(section = "5.11")
    public void testGetType()
    {
@@ -118,7 +118,7 @@ public class InjectionPointTest extends AbstractTest
       }
    }
 
-   @Test(groups = { "broken", "injectionPoint" })
+   @Test(groups = { "injectionPoint" })
    @SpecAssertion(section = "5.11")
    public void testGetBindingTypes()
    {
@@ -142,7 +142,7 @@ public class InjectionPointTest extends AbstractTest
       }
    }
 
-   @Test(groups = { "broken", "injectionPoint" })
+   @Test(groups = { "injectionPoint" })
    @SpecAssertion(section = "5.11")
    public void testGetMemberField()
    {
@@ -193,7 +193,7 @@ public class InjectionPointTest extends AbstractTest
       }
    }
 
-   @Test(groups = { "broken", "injectionPoint" })
+   @Test(groups = { "injectionPoint" })
    @SpecAssertion(section = "5.11")
    public void testGetAnnotation()
    {
@@ -215,7 +215,7 @@ public class InjectionPointTest extends AbstractTest
       }
    }
 
-   @Test(groups = { "broken", "injectionPoint" })
+   @Test(groups = { "injectionPoint" })
    @SpecAssertion(section = "5.11")
    public void testGetAnnotations()
    {
@@ -240,7 +240,7 @@ public class InjectionPointTest extends AbstractTest
       }
    }
 
-   @Test(groups = { "broken", "injectionPoint" })
+   @Test(groups = { "injectionPoint" })
    @SpecAssertion(section = "5.11")
    public void testStandardDeployment()
    {
@@ -262,7 +262,7 @@ public class InjectionPointTest extends AbstractTest
       }
    }
 
-   @Test(groups = { "broken", "injectionPoint" })
+   @Test(groups = { "injectionPoint" })
    @SpecAssertion(section = "5.11")
    public void testDependentScope()
    {
@@ -284,7 +284,7 @@ public class InjectionPointTest extends AbstractTest
       }
    }
 
-   @Test(groups = { "broken", "injectionPoint" })
+   @Test(groups = { "injectionPoint" })
    @SpecAssertion(section = "5.11")
    public void testApiTypeInjectionPoint()
    {
@@ -306,7 +306,7 @@ public class InjectionPointTest extends AbstractTest
       }
    }
 
-   @Test(groups = { "broken", "injectionPoint" })
+   @Test(groups = { "injectionPoint" })
    @SpecAssertion(section = "5.11")
    public void testCurrentBinding()
    {

@@ -26,8 +26,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.webbeans.ExecutionException;
-import javax.webbeans.manager.Manager;
-
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
@@ -185,7 +183,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedConstructor#newInstance(ManagerImpl)
     */
-   public T newInstance(Manager manager)
+   public T newInstance(ManagerImpl manager)
    {
       try
       {
