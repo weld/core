@@ -16,6 +16,7 @@ import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
 import org.jboss.webbeans.test.SpecVersion;
 import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
+import org.jboss.webbeans.test.newbean.invalid.NewAndOtherBindingType;
 import org.jboss.webbeans.test.newbean.valid.AnnotatedConstructorParameter;
 import org.jboss.webbeans.test.newbean.valid.AnnotatedField;
 import org.jboss.webbeans.test.newbean.valid.AnnotatedInitializerParameter;
@@ -336,7 +337,7 @@ public class NewBeanTest extends AbstractTest
     * requirements of a simple Web Bean implementation class or enterprise Web
     * Bean implementation class.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToField()
    {
@@ -353,7 +354,7 @@ public class NewBeanTest extends AbstractTest
     * requirements of a simple Web Bean implementation class or enterprise Web
     * Bean implementation class.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToProducerMethodParameter()
    {
@@ -370,7 +371,7 @@ public class NewBeanTest extends AbstractTest
     * requirements of a simple Web Bean implementation class or enterprise Web
     * Bean implementation class.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToInitializerMethodParameter()
    {
@@ -387,7 +388,7 @@ public class NewBeanTest extends AbstractTest
     * requirements of a simple Web Bean implementation class or enterprise Web
     * Bean implementation class.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToConstructorMethodParameter()
    {
@@ -403,11 +404,12 @@ public class NewBeanTest extends AbstractTest
     * enterprise Web Bean implementation class, a DefinitionException is thrown
     * by the container at deployment time.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" }, expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationCannotAppearInConjunctionWithOtherBindingType()
    {
-      assert false;
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(NewAndOtherBindingType.class));
+      webBeansBootstrap.boot();      
    }
 
    /**

@@ -153,10 +153,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    /**
     * Initializes the injection points
     */
-   @Override
    protected void initInjectionPoints()
    {
-      super.initInjectionPoints();
       injectableFields = new HashSet<AnnotatedField<Object>>();
       for (AnnotatedField<Object> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
       {

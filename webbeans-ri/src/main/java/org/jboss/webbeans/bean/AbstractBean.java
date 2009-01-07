@@ -120,6 +120,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    {
       super(manager);
       this.manager = manager;
+      injectionPoints = new HashSet<AnnotatedItem<?, ?>>();
    }
 
    /**
@@ -209,14 +210,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * @return The default deployment type
     */
    protected abstract Class<? extends Annotation> getDefaultDeploymentType();
-
-   /**
-    * Initializes the injection points
-    */
-   protected void initInjectionPoints()
-   {
-      injectionPoints = new HashSet<AnnotatedItem<?, ?>>();
-   }
 
    /**
     * Initializes the name

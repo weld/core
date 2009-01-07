@@ -61,11 +61,6 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
    {
       validateInjectionPoint();
       super.init();
-      // TODO: A better place to do this? Event beans also pass through the @New bean
-      // parsing in bootstrap so the injectionpoints should not be null. This is usually
-      // done in AbstractClassBean, but it's not in the EventBeans inheritance hierarchy.
-      // Perhaps just init the injectionPoints to an empty set in AbstractBean...
-      super.initInjectionPoints();
       checkAnnotatedItem();
    }
 

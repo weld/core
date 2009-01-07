@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.webbeans.BindingType;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Fires;
 import javax.webbeans.Initializer;
@@ -130,9 +131,12 @@ public abstract class WebBeansBootstrap
    {
       Set<AbstractBean<?, ?>> beans = createBeans(classes);
       beans.addAll(createStandardBeans());
-      // TODO: Is there any better way to do this? Currently, producer method parameters aren't
-      // listed in the containing beans injection points since they will be separated into 
-      // producer beans of their own so we'll have to make a second pass to make sure we hit the
+      // TODO: Is there any better way to do this? Currently, producer method
+      // parameters aren't
+      // listed in the containing beans injection points since they will be
+      // separated into
+      // producer beans of their own so we'll have to make a second pass to make
+      // sure we hit the
       // created producer beans also.
       registerNewBeans(beans);
       getManager().setBeans(beans);
@@ -146,6 +150,10 @@ public abstract class WebBeansBootstrap
          for (AnnotatedItem<?, ?> injectionPoint : bean.getInjectionPoints())
             if (injectionPoint.isAnnotationPresent(New.class))
             {
+               if (injectionPoint.getMetaAnnotations(BindingType.class).size() > 1)
+               {
+                  throw new DefinitionException("@New cannot be used in conjunction with other binding types");
+               }
                if (manager.getEjbDescriptorCache().containsKey(injectionPoint.getType()))
                {
 

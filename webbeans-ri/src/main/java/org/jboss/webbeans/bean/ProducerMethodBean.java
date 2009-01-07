@@ -93,10 +93,8 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    /**
     * Initializes the injection points
     */
-   @Override
    protected void initInjectionPoints()
    {
-      super.initInjectionPoints();
       for (AnnotatedParameter<Object> parameter : method.getParameters())
       {
          injectionPoints.add(parameter);
