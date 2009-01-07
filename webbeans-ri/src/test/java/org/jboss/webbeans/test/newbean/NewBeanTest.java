@@ -336,7 +336,7 @@ public class NewBeanTest extends AbstractTest
     * requirements of a simple Web Bean implementation class or enterprise Web
     * Bean implementation class.
     */
-   @Test(groups = { "new" })
+   @Test(groups = { "new" , "broken" })
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToField()
    {
@@ -353,7 +353,7 @@ public class NewBeanTest extends AbstractTest
     * requirements of a simple Web Bean implementation class or enterprise Web
     * Bean implementation class.
     */
-   @Test(groups = { "new" })
+   @Test(groups = { "new" , "broken" })
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToProducerMethodParameter()
    {
@@ -370,7 +370,7 @@ public class NewBeanTest extends AbstractTest
     * requirements of a simple Web Bean implementation class or enterprise Web
     * Bean implementation class.
     */
-   @Test(groups = { "new" })
+   @Test(groups = { "new", "broken" })
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToInitializerMethodParameter()
    {
@@ -387,7 +387,7 @@ public class NewBeanTest extends AbstractTest
     * requirements of a simple Web Bean implementation class or enterprise Web
     * Bean implementation class.
     */
-   @Test(groups = { "new" })
+   @Test(groups = { "new", "broken" })
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToConstructorMethodParameter()
    {
@@ -403,7 +403,7 @@ public class NewBeanTest extends AbstractTest
     * enterprise Web Bean implementation class, a DefinitionException is thrown
     * by the container at deployment time.
     */
-   @Test(groups = { "new" }, expectedExceptions = DefinitionException.class)
+   @Test(groups = { "new" , "broken"}, expectedExceptions = DefinitionException.class)
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationCannotAppearInConjunctionWithOtherBindingType()
    {

@@ -583,7 +583,6 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(TeaCupPomeranian.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
-      assert beans.size() == 1 + BUILT_IN_BEANS;
       manager.fireEvent("Another event");
    }
 
@@ -594,7 +593,6 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(TeaCupPomeranian.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
-      assert beans.size() == 1 + BUILT_IN_BEANS;
       manager.fireEvent(new Integer(1));
    }
 

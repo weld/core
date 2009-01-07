@@ -26,11 +26,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.webbeans.BindingType;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Fires;
 import javax.webbeans.Initializer;
-import javax.webbeans.New;
 import javax.webbeans.Observer;
 import javax.webbeans.Observes;
 import javax.webbeans.Obtains;
@@ -165,43 +163,10 @@ public abstract class WebBeansBootstrap
    {
       Set<AbstractBean<?, ?>> beans = createBeans(classes);
       beans.addAll(createStandardBeans());
-      // TODO: Is there any better way to do this? Currently, producer method
-      // parameters aren't
-      // listed in the containing beans injection points since they will be
-      // separated into
-      // producer beans of their own so we'll have to make a second pass to make
-      // sure we hit the
-      // created producer beans also.
-      registerNewBeans(beans);
       getManager().setBeans(beans);
    }
 
-   private void registerNewBeans(Set<AbstractBean<?, ?>> beans)
-   {
-      Set<AbstractBean<?, ?>> newBeans = new HashSet<AbstractBean<?, ?>>();
-      for (AbstractBean<?, ?> bean : beans)
-      {
-         for (AnnotatedItem<?, ?> injectionPoint : bean.getInjectionPoints())
-            if (injectionPoint.isAnnotationPresent(New.class))
-            {
-               if (injectionPoint.getMetaAnnotations(BindingType.class).size() > 1)
-               {
-                  throw new DefinitionException("@New cannot be used in conjunction with other binding types");
-               }
-               if (manager.getEjbDescriptorCache().containsKey(injectionPoint.getType()))
-               {
 
-               }
-               else
-               {
-                  NewSimpleBean<?> newSimpleBean = NewSimpleBean.of(injectionPoint.getType(), manager);
-                  newBeans.add(newSimpleBean);
-                  log.info("Web Bean: " + newSimpleBean);
-               }
-            }
-      }
-      beans.addAll(newBeans);
-   }
 
    /**
     * Creates the standard beans used internally by the RI
@@ -240,6 +205,7 @@ public abstract class WebBeansBootstrap
          else if (isTypeSimpleWebBean(clazz))
          {
             createBean(SimpleBean.of(annotatedClass, manager), beans);
+            beans.add(NewSimpleBean.of(annotatedClass, manager));
          }
       }
       return beans;
