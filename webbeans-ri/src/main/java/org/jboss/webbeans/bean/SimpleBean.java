@@ -26,8 +26,6 @@ import javax.annotation.PreDestroy;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Initializer;
 import javax.webbeans.InjectionPoint;
-import javax.webbeans.manager.Manager;
-
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.context.DependentContext;
@@ -121,7 +119,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          bindDecorators();
          bindInterceptors();
          injectEjbAndCommonFields(instance);
-         injectBoundFields(instance, manager);
+         injectBoundFields(instance);
          callInitializers(instance);
          callPostConstruct(instance);
          return instance;
@@ -238,9 +236,8 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * Injects bound fields
     * 
     * @param instance The instance to inject into
-    * @param manager The Web Beans manager
     */
-   protected void injectBoundFields(T instance, Manager manager)
+   protected void injectBoundFields(T instance)
    {
       for (AnnotatedField<?> injectableField : getInjectableFields())
       {

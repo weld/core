@@ -52,7 +52,7 @@ public class NewSimpleBean<T> extends SimpleBean<T>
          bindDecorators();
          bindInterceptors();
          injectEjbAndCommonFields(instance);
-         injectBoundFields(instance, manager);
+         injectBoundFields(instance);
          callInitializers(instance);
          callPostConstruct(instance);
          return instance;

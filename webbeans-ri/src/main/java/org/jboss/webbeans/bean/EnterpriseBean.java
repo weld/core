@@ -337,9 +337,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * Injects bound fields
     * 
     * @param instance The bean instance
-    * @param manager The Web Beans manager
     */
-   protected void injectBoundFields(T instance, ManagerImpl manager)
+   protected void injectBoundFields(T instance)
    {
       for (AnnotatedField<?> field : getInjectableFields())
       {
@@ -422,7 +421,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          bindDecorators();
          bindInterceptors();
          injectEjbAndCommonFields();
-         injectBoundFields(instance, manager);
+         injectBoundFields(instance);
          callInitializers(instance);
       }
       finally
