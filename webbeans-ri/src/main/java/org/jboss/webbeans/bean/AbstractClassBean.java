@@ -40,7 +40,6 @@ import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
@@ -71,10 +70,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * @param type The type
     * @param manager The Web Beans manager
     */
-   public AbstractClassBean(Class<T> type, ManagerImpl manager)
+   public AbstractClassBean(AnnotatedClass<T> type, ManagerImpl manager)
    {
       super(manager);
-      this.annotatedItem = new AnnotatedClassImpl<T>(type);
+      this.annotatedItem = type;
    }
 
    /**

@@ -345,6 +345,11 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
    }
 
+   public static <T> AnnotatedClass<T> of(Class<T> clazz)
+   {
+      return new AnnotatedClassImpl<T>(clazz);
+   }
+   
    /**
     * Constructor
     * 

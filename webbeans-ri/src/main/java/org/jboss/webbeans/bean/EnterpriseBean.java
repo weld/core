@@ -38,9 +38,11 @@ import javax.webbeans.manager.Manager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
+import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -71,6 +73,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     */
    public static <T> EnterpriseBean<T> of(Class<T> clazz, ManagerImpl manager)
    {
+      return of(AnnotatedClassImpl.of(clazz), manager);
+   }
+   
+   public static <T> EnterpriseBean<T> of (AnnotatedClass<T> clazz, ManagerImpl manager)
+   {
       return new EnterpriseBean<T>(clazz, manager);
    }
    
@@ -80,7 +87,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   protected EnterpriseBean(Class<T> type, ManagerImpl manager)
+   protected EnterpriseBean(AnnotatedClass<T> type, ManagerImpl manager)
    {
       super(type, manager);
       init();
@@ -355,7 +362,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       if (superclass != null)
       {
          // TODO look up this bean and do this via init
-         return new EnterpriseBean(superclass, manager);
+         return (EnterpriseBean) EnterpriseBean.of(superclass, manager);
       }
       else
       {

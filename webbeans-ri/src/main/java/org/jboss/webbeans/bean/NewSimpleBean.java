@@ -13,19 +13,26 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.binding.NewBinding;
 import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 
 public class NewSimpleBean<T> extends SimpleBean<T>
 {
    private static Set<Annotation> NEW_BINDING_SET = new HashSet<Annotation>(Arrays.asList(new NewBinding()));
 
-   public static <T> NewSimpleBean<T> of(Class<T> clazz, ManagerImpl manager)
+   public static <T> NewSimpleBean<T> of(AnnotatedClass<T> clazz, ManagerImpl manager)
    {
       return new NewSimpleBean<T>(clazz, manager);
    }
    
-   protected NewSimpleBean(Class<T> type, ManagerImpl manager)
+   public static <T> NewSimpleBean<T> of(Class<T> clazz, ManagerImpl manager)
+   {
+      return of(AnnotatedClassImpl.of(clazz), manager);
+   }
+   
+   protected NewSimpleBean(AnnotatedClass<T> type, ManagerImpl manager)
    {
       super(type, manager);
    }

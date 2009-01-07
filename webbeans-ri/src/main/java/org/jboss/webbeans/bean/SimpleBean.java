@@ -32,10 +32,12 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.injection.InjectionPointImpl;
+import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Names;
@@ -71,6 +73,19 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    public static <T> SimpleBean<T> of(Class<T> clazz, ManagerImpl manager)
    {
+      return of(AnnotatedClassImpl.of(clazz), manager);
+   }
+   
+   /**
+    * Creates a simple, annotation defined Web Bean
+    * 
+    * @param <T> The type
+    * @param clazz The class
+    * @param manager the current manager
+    * @return A Web Bean
+    */
+   public static <T> SimpleBean<T> of(AnnotatedClass<T> clazz, ManagerImpl manager)
+   {
       return new SimpleBean<T>(clazz, manager);
    }
 
@@ -80,7 +95,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   protected SimpleBean(Class<T> type, ManagerImpl manager)
+   protected SimpleBean(AnnotatedClass<T> type, ManagerImpl manager)
    {
       super(type, manager);
       init();
@@ -386,7 +401,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       if (superclass != null)
       {
          // TODO look up this bean and do this via init
-         return new SimpleBean(superclass, manager);
+         return (SimpleBean) SimpleBean.of(superclass, manager);
       }
       else
       {

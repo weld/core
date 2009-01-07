@@ -51,9 +51,11 @@ import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.event.ObserverImpl;
+import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.jsf.JSFApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -77,10 +79,10 @@ public abstract class WebBeansBootstrap
       
       public static final SimpleBean<ManagerImpl> of(ManagerImpl manager)
       {
-         return new ManagerBean(ManagerImpl.class, manager);
+         return new ManagerBean(AnnotatedClassImpl.of(ManagerImpl.class), manager);
       }
       
-      protected ManagerBean(Class<ManagerImpl> type, ManagerImpl manager)
+      protected ManagerBean(AnnotatedClass<ManagerImpl> type, ManagerImpl manager)
       {
          super(type, manager);
       }
@@ -230,13 +232,14 @@ public abstract class WebBeansBootstrap
       Set<AbstractBean<?, ?>> beans = new HashSet<AbstractBean<?, ?>>();
       for (Class<?> clazz : classes)
       {
+         AnnotatedClass<?> annotatedClass = AnnotatedClassImpl.of(clazz);
          if (getManager().getEjbDescriptorCache().containsKey(clazz))
          {
-            createBean(EnterpriseBean.of(clazz, getManager()), beans);
+            createBean(EnterpriseBean.of(annotatedClass, getManager()), beans);
          }
          else if (isTypeSimpleWebBean(clazz))
          {
-            createBean(SimpleBean.of(clazz, manager), beans);
+            createBean(SimpleBean.of(annotatedClass, manager), beans);
          }
       }
       return beans;
