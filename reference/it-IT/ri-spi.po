@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-06 12:43+0100\n"
+"POT-Creation-Date: 2009-01-08 14:07+0000\n"
+"PO-Revision-Date: 2009-01-08 15:12+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -465,17 +465,41 @@ msgstr "Isolamento del classloader"
 #. Tag: para
 #: ri-spi.xml:138
 #, no-c-format
-msgid "If you are integrating the Web Beans into an environment that supports deployment of applications, you must enable, automatically, or through user configuation, classloader isolation for each Web Beans application"
-msgstr "Se si integra Web Beans in un ambiente che supporta il deploy di applicazioni, occorre abilitare, automaticamente o attraverso la configurazione utente, l'isolamento del classloader per ogni applicazione Web Beans"
+msgid "If you are integrating the Web Beans RI into an environment that supports deployment of multiple applications, you must enable, automatically, or through user configuation, classloader isolation for each Web Beans application."
+msgstr "Se si integra Web Beans in un ambiente che supporta il deploy di applicazioni, occorre abilitare, automaticamente o attraverso la configurazione utente, l'isolamento del classloader per ogni applicazione Web Beans."
 
 #. Tag: term
 #: ri-spi.xml:147
+#, no-c-format
+msgid "Servlet listener"
+msgstr "Servlet listener"
+
+#. Tag: para
+#: ri-spi.xml:151
+#, no-c-format
+msgid "If you are integrating the Web Beans into a Servlet environment you must register <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> as a Servlet listener, either automatically, or through user configuration, for each Web Beans application which uses Servlet."
+msgstr "Se si integra Web Beans in un ambiente Servlet occorre registrare <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> come Servlet listener, o automaticamente, o attraverso una configurazione utente, per ciascuna applicazione Web Beans che usa Servlet."
+
+#. Tag: term
+#: ri-spi.xml:162
+#, no-c-format
+msgid "Session Bean Interceptor"
+msgstr "Session Bean Interceptor"
+
+#. Tag: para
+#: ri-spi.xml:166
+#, no-c-format
+msgid "If you are integrating the Web Beans into an EJB environment you must register <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> as a EJB interceptor for all EJBs in the application, either automatically, or through user configuration, for each Web Beans application which uses enterprise beans."
+msgstr "Se si integra Web Beans in un ambiente EJB occorre registrare <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> come interceptor EJB for ogni EJB dell'applicazione, o automaticamente o attraverso una configurazione utente, per ciascuna applicazione Web Beans che utilizza bean enterprise."
+
+#. Tag: term
+#: ri-spi.xml:177
 #, no-c-format
 msgid "The <literal>webbeans-ri.jar</literal>"
 msgstr "<literal>webbeans-ri.jar</literal>"
 
 #. Tag: para
-#: ri-spi.xml:151
+#: ri-spi.xml:181
 #, no-c-format
 msgid "If you are integrating the Web Beans into an environment that supports deployment of applications, you must insert the <literal>webbeans-ri.jar</literal> into the applications isolated classloader. It cannot be loaded from a shared classloader."
 msgstr "Se si integra Web Beans in un ambiente che supporta il deploy di applicazioni, occorre inserire <literal>webbeans-ri.jar</literal> nel classloader isolato delle applicazioni. Non può essere caricato da un classloader condiviso."
