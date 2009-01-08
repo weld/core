@@ -7,9 +7,9 @@ import javax.webbeans.SessionScoped;
 
 @SessionScoped
 @Named("Fred")
-public class WrappedBean implements Serializable
+public class WrappedSimpleBean implements Serializable
 {
-   public WrappedBean() {
+   public WrappedSimpleBean() {
       
    }
 }

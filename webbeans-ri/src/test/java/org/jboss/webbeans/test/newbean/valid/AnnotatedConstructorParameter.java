@@ -7,7 +7,7 @@ import javax.webbeans.New;
 public class AnnotatedConstructorParameter
 {
    @Initializer
-   public AnnotatedConstructorParameter(@New WrappedBean reference)
+   public AnnotatedConstructorParameter(@New WrappedSimpleBean reference)
    {
    }
 }

@@ -7,7 +7,7 @@ import javax.webbeans.Produces;
 public class AnnotatedProducerParameter
 {
    @Produces
-   Object produce(@New WrappedBean reference)
+   Object produce(@New WrappedSimpleBean reference)
    {
       return new Object();
    }

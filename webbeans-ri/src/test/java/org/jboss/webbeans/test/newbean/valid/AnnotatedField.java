@@ -6,6 +6,6 @@ import javax.webbeans.New;
 public class AnnotatedField
 {
    @New
-   WrappedBean reference;
+   WrappedSimpleBean reference;
 
 }

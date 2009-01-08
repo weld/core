@@ -326,7 +326,7 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(Pomeranian.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
-      assert beans.size() == 1 + BUILT_IN_BEANS;
+      assert beans.size() == 2 + BUILT_IN_BEANS;
       Set<Observer<String>> observers = manager.resolveObservers("An event");
       assert observers.size() == 2;
    }
@@ -338,7 +338,7 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(TibetanTerrier.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
-      assert beans.size() == 1 + BUILT_IN_BEANS;
+      assert beans.size() == 2 + BUILT_IN_BEANS;
       Set<Observer<String>> observers = manager.resolveObservers("An event");
       assert observers.size() == 1;
    }
@@ -381,7 +381,7 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(Pomeranian.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
-      assert beans.size() == 1 + BUILT_IN_BEANS;
+      assert beans.size() == 2 + BUILT_IN_BEANS;
 
       // Resolve registered observers with an event containing no binding types
       Set<Observer<String>> resolvedObservers = manager.resolveObservers("A new event");

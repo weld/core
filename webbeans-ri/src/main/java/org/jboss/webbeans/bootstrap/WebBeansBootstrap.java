@@ -40,6 +40,7 @@ import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.EventBean;
 import org.jboss.webbeans.bean.InstanceBean;
+import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
@@ -201,6 +202,7 @@ public abstract class WebBeansBootstrap
          if (getManager().getEjbDescriptorCache().containsKey(clazz))
          {
             createBean(EnterpriseBean.of(annotatedClass, getManager()), beans);
+            beans.add(NewEnterpriseBean.of(annotatedClass, manager));
          }
          else if (isTypeSimpleWebBean(clazz))
          {

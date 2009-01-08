@@ -7,8 +7,8 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.Standard;
 
-import org.jboss.webbeans.bean.NewSimpleBean;
-import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.binding.NewBinding;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.test.AbstractTest;
@@ -20,23 +20,25 @@ import org.jboss.webbeans.test.newbean.valid.AnnotatedConstructorParameter;
 import org.jboss.webbeans.test.newbean.valid.AnnotatedField;
 import org.jboss.webbeans.test.newbean.valid.AnnotatedInitializerParameter;
 import org.jboss.webbeans.test.newbean.valid.AnnotatedProducerParameter;
-import org.jboss.webbeans.test.newbean.valid.WrappedBean;
+import org.jboss.webbeans.test.newbean.valid.WrappedEnterpriseBean;
+import org.jboss.webbeans.test.newbean.valid.WrappedSimpleBean;
 import org.jboss.webbeans.util.Proxies.TypeInfo;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 @SpecVersion("20081222")
-public class NewBeanTest extends AbstractTest
+public class NewEnterpriseBeanTest extends AbstractTest
 {
-   private SimpleBean<WrappedBean> wrappedBean;
-   private NewSimpleBean<WrappedBean> newBean;
+   private EnterpriseBean<WrappedEnterpriseBean> wrappedEnterpriseBean;
+   private NewEnterpriseBean<WrappedEnterpriseBean> newEnterpriseBean;
    
    @BeforeMethod
    public void initNewBean() {
-      wrappedBean = SimpleBean.of(WrappedBean.class, manager);
-      manager.addBean(wrappedBean);
-      newBean = NewSimpleBean.of(WrappedBean.class, manager);
-      manager.addBean(newBean);
+      addToEjbCache(WrappedEnterpriseBean.class);
+      wrappedEnterpriseBean = EnterpriseBean.of(WrappedEnterpriseBean.class, manager);
+      manager.addBean(wrappedEnterpriseBean);
+      newEnterpriseBean = NewEnterpriseBean.of(WrappedEnterpriseBean.class, manager);
+      manager.addBean(newEnterpriseBean);
    }
    
    /**
@@ -51,7 +53,7 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewBeanIsDependentScoped()
    {
-      assert Dependent.class.equals(newBean.getScopeType());
+      assert Dependent.class.equals(newEnterpriseBean.getScopeType());
    }
 
    /**
@@ -66,7 +68,7 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewBeanIsOfStandardDeploymentType()
    {
-      assert Standard.class.equals(newBean.getDeploymentType());
+      assert Standard.class.equals(newEnterpriseBean.getDeploymentType());
    }
 
    /**
@@ -81,8 +83,8 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewBeanIsHasOnlyNewBinding()
    {
-      assert newBean.getBindingTypes().size() == 1;
-      assert newBean.getBindingTypes().iterator().next().annotationType().equals(new NewBinding().annotationType());
+      assert newEnterpriseBean.getBindingTypes().size() == 1;
+      assert newEnterpriseBean.getBindingTypes().iterator().next().annotationType().equals(new NewBinding().annotationType());
    }
 
    /**
@@ -97,7 +99,7 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasNoWebBeanName()
    {
-      assert newBean.getName() == null;
+      assert newEnterpriseBean.getName() == null;
    }
 
    /**
@@ -123,27 +125,11 @@ public class NewBeanTest extends AbstractTest
     *            stereotypes, and such that • the implementation class is the
     *            declared type of the injection point.
     */
-   @Test(groups = { "new" })
+   @Test(groups = { "new", "broken" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasImplementationClassOfInjectionPointType()
    {
-      assert newBean.getType().equals(WrappedBean.class);
-   }
-
-   /**
-    * If the parameter type satisfies the definition of a simple Web Bean
-    * implementation class, Section 3.2.1, “Which Java classes are simple Web
-    * Beans?”, then the Web Bean is a simple Web Bean. If the parameter type
-    * satisfies the definition of an enterprise Web Bean implementation class,
-    * Section 3.3.2, “Which EJBs are enterprise Web Beans?”, then the Web Bean
-    * is an enterprise Web Bean.
-    */
-   @Test(groups = { "stub", "new" })
-   @SpecAssertion(section = "3.9")
-   public void testNewBeanIsSimpleWebBeanIfParameterTypeIsSimpleWebBean()
-   {
-      // TODO: has to be?
-      assert false;
+      assert newEnterpriseBean.getType().equals(WrappedSimpleBean.class);
    }
 
    /**
@@ -177,7 +163,9 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasSameConstructorAsWrappedBean()
    {
-      assert wrappedBean.getConstructor().equals(newBean.getConstructor());
+      // N/A for EJB
+      assert true;
+//      assert wrappedEnterpriseBean.getConstructor().equals(newEnterpriseBean.getConstructor());
    }
 
    /**
@@ -195,7 +183,7 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasSameInitializerMethodsAsWrappedBean()
    {
-      assert newBean.getInitializerMethods().equals(wrappedBean.getInitializerMethods());
+      assert newEnterpriseBean.getInitializerMethods().equals(wrappedEnterpriseBean.getInitializerMethods());
    }
 
    /**
@@ -213,8 +201,8 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasSameInjectedFieldsAsWrappedBean()
    {
-      Set<AnnotatedItem<?, ?>> wrappedBeanInjectionPoints = wrappedBean.getInjectionPoints();
-      Set<AnnotatedItem<?, ?>> newBeanInjectionPoints = newBean.getInjectionPoints();
+      Set<AnnotatedItem<?, ?>> wrappedBeanInjectionPoints = wrappedEnterpriseBean.getInjectionPoints();
+      Set<AnnotatedItem<?, ?>> newBeanInjectionPoints = newEnterpriseBean.getInjectionPoints();
       assert wrappedBeanInjectionPoints.equals(newBeanInjectionPoints);
    }
    
@@ -233,7 +221,7 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasNoObservers()
    {
-      assert newBean.getObserverMethods().isEmpty();
+      assert newEnterpriseBean.getObserverMethods().isEmpty();
    }
 
    /**
@@ -251,7 +239,7 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasNoProducerFields()
    {
-      assert newBean.getProducerFields().isEmpty();
+      assert newEnterpriseBean.getProducerFields().isEmpty();
    }
 
    /**
@@ -269,7 +257,7 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasNoProducerMethods()
    {
-      assert newBean.getProducerMethods().isEmpty();
+      assert newEnterpriseBean.getProducerMethods().isEmpty();
    }
 
    /**
@@ -287,8 +275,8 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasNoDisposalMethods()
    {
-      Class<?> type = TypeInfo.ofTypes(newBean.getTypes()).getSuperClass();
-      assert manager.resolveDisposalMethods(type, newBean.getBindingTypes().toArray(new Annotation[0])).isEmpty();
+      Class<?> type = TypeInfo.ofTypes(newEnterpriseBean.getTypes()).getSuperClass();
+      assert manager.resolveDisposalMethods(type, newEnterpriseBean.getBindingTypes().toArray(new Annotation[0])).isEmpty();
    }
 
    /**
@@ -324,8 +312,8 @@ public class NewBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasNoDecorators()
    {
-      Annotation[] bindingTypes = newBean.getBindingTypes().toArray(new Annotation[0]);
-      assert manager.resolveDecorators(newBean.getTypes(), bindingTypes).isEmpty();
+      Annotation[] bindingTypes = newEnterpriseBean.getBindingTypes().toArray(new Annotation[0]);
+      assert manager.resolveDecorators(newEnterpriseBean.getTypes(), bindingTypes).isEmpty();
    }
 
    /**
@@ -342,7 +330,7 @@ public class NewBeanTest extends AbstractTest
    {
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedField.class));
       webBeansBootstrap.boot();
-      assert manager.resolveByType(WrappedBean.class, new NewBinding()).size() == 1;
+      assert manager.resolveByType(WrappedSimpleBean.class, new NewBinding()).size() == 1;
    }
 
    /**
@@ -359,7 +347,7 @@ public class NewBeanTest extends AbstractTest
    {
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedProducerParameter.class));
       webBeansBootstrap.boot();
-      assert manager.resolveByType(WrappedBean.class, new NewBinding()).size() == 1;
+      assert manager.resolveByType(WrappedSimpleBean.class, new NewBinding()).size() == 1;
    }
 
    /**
@@ -376,7 +364,7 @@ public class NewBeanTest extends AbstractTest
    {
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedInitializerParameter.class));
       webBeansBootstrap.boot();
-      assert manager.resolveByType(WrappedBean.class, new NewBinding()).size() == 1;
+      assert manager.resolveByType(WrappedSimpleBean.class, new NewBinding()).size() == 1;
    }
 
    /**
@@ -393,7 +381,7 @@ public class NewBeanTest extends AbstractTest
    {
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedConstructorParameter.class));
       webBeansBootstrap.boot();
-      assert manager.resolveByType(WrappedBean.class, new NewBinding()).size() == 1;
+      assert manager.resolveByType(WrappedSimpleBean.class, new NewBinding()).size() == 1;
    }
 
    /**
