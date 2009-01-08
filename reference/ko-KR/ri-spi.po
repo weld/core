@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-06 11:30+0000\n"
+"POT-Creation-Date: 2009-01-08 14:07+0000\n"
 "PO-Revision-Date: 2009-01-08 11:10+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -15,7 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
+"\n"
 
 #. Tag: title
 #: ri-spi.xml:4
@@ -496,7 +497,8 @@ msgstr ""
 #: ri-spi.xml:117
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
-msgstr "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
+msgstr ""
+"org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
 
 #. Tag: title
 #: ri-spi.xml:124
@@ -522,19 +524,53 @@ msgstr ""
 #: ri-spi.xml:138
 #, no-c-format
 msgid ""
-"If you are integrating the Web Beans into an environment that supports "
-"deployment of applications, you must enable, automatically, or through user "
-"configuation, classloader isolation for each Web Beans application"
+"If you are integrating the Web Beans RI into an environment that supports "
+"deployment of multiple applications, you must enable, automatically, or "
+"through user configuation, classloader isolation for each Web Beans "
+"application."
 msgstr ""
 
 #. Tag: term
 #: ri-spi.xml:147
 #, no-c-format
-msgid "The <literal>webbeans-ri.jar</literal>"
+msgid "Servlet listener"
 msgstr ""
 
 #. Tag: para
 #: ri-spi.xml:151
+#, no-c-format
+msgid ""
+"If you are integrating the Web Beans into a Servlet environment you must "
+"register <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> as a "
+"Servlet listener, either automatically, or through user configuration, for "
+"each Web Beans application which uses Servlet."
+msgstr ""
+
+#. Tag: term
+#: ri-spi.xml:162
+#, no-c-format
+msgid "Session Bean Interceptor"
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:166
+#, no-c-format
+msgid ""
+"If you are integrating the Web Beans into an EJB environment you must "
+"register <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> as "
+"a EJB interceptor for all EJBs in the application, either automatically, or "
+"through user configuration, for each Web Beans application which uses "
+"enterprise beans."
+msgstr ""
+
+#. Tag: term
+#: ri-spi.xml:177
+#, no-c-format
+msgid "The <literal>webbeans-ri.jar</literal>"
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:181
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans into an environment that supports "
@@ -542,4 +578,3 @@ msgid ""
 "literal> into the applications isolated classloader. It cannot be loaded "
 "from a shared classloader."
 msgstr ""
-

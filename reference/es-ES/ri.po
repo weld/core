@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-04 23:18+0000\n"
+"POT-Creation-Date: 2009-01-08 14:07+0000\n"
 "PO-Revision-Date: 2008-12-19 20:26+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -356,11 +356,6 @@ msgid ""
 "   <session-config>\n"
 "      <session-timeout>10</session-timeout>\n"
 "   </session-config>\n"
-"   \n"
-"    <listener>\n"
-"       <listener-class>org.jboss.webbeans.servlet.WebBeansListener</listener-"
-"class>\n"
-"    </listener>\n"
 "\n"
 "</web-app>]]></programlisting> <calloutlist> <callout arearefs=\"faces."
 "servlet\"> <para> Enable and load the JSF servlet </para> </callout> "
@@ -369,20 +364,16 @@ msgid ""
 "<callout arearefs=\"faces.default.suffix\"> <para> Tell JSF that we will be "
 "giving our source files (facelets) an extension of <literal>.jsf</literal> </"
 "para> </callout> <callout arearefs=\"session.timeout\"> <para> Configure a "
-"session timeout of 10 minutes </para> </callout> <callout arearefs="
-"\"webbeans.listener\"> <para> Configure the Web Beans listener, so that Web "
-"Beans services can be used in the servlet request </para> </callout> </"
-"calloutlist> </programlistingco> <note> <para> The only configuration "
-"required by the Web Beans RI in <literal>web.xml</literal> is to add the Web "
-"Beans listener. </para> <para> Whilst this demo is a JSF demo, you can use "
-"the Web Beans RI with any Servlet based web framework; just configure the "
-"Web Beans listener. </para> </note> <para> Let's take a look at the Facelet "
-"view: </para> <programlistingco> <areaspec> <area id=\"template\" coords=\"8"
-"\"/> <area id=\"messages\" coords=\"12\"/> <area id=\"instructions\" coords="
-"\"19\"/> <area id=\"guess\" coords=\"25\"/> <area id=\"validator\" coords="
-"\"30\"/> <area id=\"submit\" coords=\"33\"/> </areaspec> <programlisting><!"
-"[CDATA[<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" "
-"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+"session timeout of 10 minutes </para> </callout> </calloutlist> </"
+"programlistingco> <note> <para> Whilst this demo is a JSF demo, you can use "
+"the Web Beans RI with any Servlet based web framework. </para> </note> "
+"<para> Let's take a look at the Facelet view: </para> <programlistingco> "
+"<areaspec> <area id=\"template\" coords=\"8\"/> <area id=\"messages\" coords="
+"\"12\"/> <area id=\"instructions\" coords=\"19\"/> <area id=\"guess\" coords="
+"\"25\"/> <area id=\"validator\" coords=\"30\"/> <area id=\"submit\" coords="
+"\"33\"/> </areaspec> <programlisting><![CDATA[<!DOCTYPE html PUBLIC \"-//"
+"W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/"
+"xhtml1-transitional.dtd\">\n"
 "<html xmlns=\"http://www.w3.org/1999/xhtml\"\n"
 "    xmlns:ui=\"http://java.sun.com/jsf/facelets\"\n"
 "    xmlns:h=\"http://java.sun.com/jsf/html\"\n"
@@ -449,7 +440,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:298
+#: ri.xml:287
 #, no-c-format
 msgid ""
 "The example exists of 4 classes, the first two of which are binding types. "
@@ -458,7 +449,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:304
+#: ri.xml:293
 #, no-c-format
 msgid ""
 "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
@@ -469,7 +460,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:306
+#: ri.xml:295
 #, no-c-format
 msgid ""
 "There is also the <literal>@MaxNumber</literal> binding type, used for "
@@ -477,7 +468,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:311
+#: ri.xml:300
 #, no-c-format
 msgid ""
 "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
@@ -489,7 +480,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:313
+#: ri.xml:302
 #, no-c-format
 msgid ""
 "The <literal>Generator</literal> class is responsible for creating the "
@@ -498,7 +489,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:319
+#: ri.xml:308
 #, no-c-format
 msgid ""
 "<![CDATA[@ApplicationScoped\n"
@@ -527,7 +518,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:321
+#: ri.xml:310
 #, no-c-format
 msgid ""
 "You'll notice that the <literal>Generator</literal> is application scoped; "
@@ -535,7 +526,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:326
+#: ri.xml:315
 #, no-c-format
 msgid ""
 "The final Web Bean in the application is the session scoped <literal>Game</"
@@ -543,7 +534,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:331
+#: ri.xml:320
 #, no-c-format
 msgid ""
 "You'll note that we've used the <literal>@Named</literal> annotation, so "
@@ -554,7 +545,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:339
+#: ri.xml:328
 #, no-c-format
 msgid ""
 "<![CDATA[package org.jboss.webbeans.examples.numberguess;\n"
@@ -656,13 +647,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri.xml:343
+#: ri.xml:332
 #, no-c-format
 msgid "The translator example"
 msgstr ""
 
 #. Tag: para
-#: ri.xml:345
+#: ri.xml:334
 #, no-c-format
 msgid ""
 "The translator example will take any sentences you enter, and translate them "
@@ -670,7 +661,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:350
+#: ri.xml:339
 #, no-c-format
 msgid ""
 "The translator example is built as an ear, and contains EJBs and enterprise "
@@ -679,7 +670,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:357
+#: ri.xml:346
 #, no-c-format
 msgid ""
 "EJB 3.1 and Jave EE 6 allow you to package EJBs in a war, which will make "
@@ -687,17 +678,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:363
+#: ri.xml:352
 #, no-c-format
 msgid ""
 "First, let's take a look at the ear aggregator, which is located in "
 "<literal>webbeans-translator-ear</literal> module. Maven automatically "
-"generates the <literal>application.xml</literal> and <literal>jboss-app.xml</"
-"literal> for us:"
+"generates the <literal>application.xml</literal> for us:"
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:370
+#: ri.xml:358
 #, no-c-format
 msgid ""
 "<![CDATA[<plugin>\n"
@@ -711,54 +701,29 @@ msgid ""
 "            <contextRoot>/webbeans-translator</contextRoot>\n"
 "         </webModule>\n"
 "      </modules>\n"
-"      <jboss>\n"
-"         <loader-repository>webbeans.jboss.org:loader=webbeans-translator</"
-"loader-repository>\n"
-"      </jboss>\n"
 "   </configuration>\n"
 "</plugin>]]>"
 msgstr ""
 
 #. Tag: para
-#: ri.xml:372
+#: ri.xml:360
 #, no-c-format
 msgid ""
-"We're doing a couple of things here - firstly we set the context path, which "
-"gives us a nice url (<ulink url=\"http://localhost:8080/webbeans-translator"
-"\">http://localhost:8080/webbeans-translator</ulink>) and we also enable "
-"class loader isolation for JBoss AS."
+"Here we set the context path, which gives us a nice url (<ulink url=\"http://"
+"localhost:8080/webbeans-translator\">http://localhost:8080/webbeans-"
+"translator</ulink>)."
 msgstr ""
 
 #. Tag: para
-#: ri.xml:380
+#: ri.xml:366
 #, no-c-format
 msgid ""
 "If you aren't using Maven to generate these files, you would need "
-"<literal>META-INF/jboss-app.xml</literal>:"
+"<literal>META-INF/application.xml</literal>:"
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:385
-#, no-c-format
-msgid ""
-"<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<!DOCTYPE jboss-app\n"
-"    PUBLIC \"-//JBoss//DTD J2EE Application 4.2//EN\"\n"
-"    \"http://www.jboss.org/j2ee/dtd/jboss-app_4_2.dtd\">\n"
-"<jboss-app>\n"
-"  <loader-repository>webbeans.jboss.org:loader=webbeans-translator</loader-"
-"repository>\n"
-"</jboss-app>]]>"
-msgstr ""
-
-#. Tag: para
-#: ri.xml:387
-#, no-c-format
-msgid "and <literal>META-INF/application.xml</literal>:"
-msgstr ""
-
-#. Tag: programlisting
-#: ri.xml:391
+#: ri.xml:371
 #, no-c-format
 msgid ""
 "<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -784,17 +749,16 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:394
+#: ri.xml:374
 #, no-c-format
 msgid ""
 "Next, lets look at the war. Just as in the numberguess example, we have a "
 "<literal>faces-config.xml</literal> (to enabled Facelets) and a <literal>web."
-"xml</literal> (to enable JSF and attach Web Beans services to the servlet "
-"container) in <literal>WebContent/WEB-INF</literal>."
+"xml</literal> (to enable JSF) in <literal>WebContent/WEB-INF</literal>."
 msgstr ""
 
 #. Tag: para
-#: ri.xml:401
+#: ri.xml:381
 #, no-c-format
 msgid ""
 "More intersting is the facelet used to translate text. Just as in the "
@@ -803,7 +767,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:407
+#: ri.xml:387
 #, no-c-format
 msgid ""
 "<![CDATA[<h:form id=\"NumberGuessMain\">\n"
@@ -836,7 +800,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:409
+#: ri.xml:389
 #, no-c-format
 msgid ""
 "The user can enter some text in the lefthand textarea, and hit the translate "
@@ -844,49 +808,17 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:414
+#: ri.xml:394
 #, no-c-format
 msgid ""
 "Finally, let's look at the ejb module, <literal>webbeans-translator-ejb</"
-"literal>. There are two configuration files in <literal>src/main/resources/"
-"META-INF</literal>, an empty <literal>web-beans.xml</literal>, used to mark "
-"the archive as containing Web Beans, and <literal>ejb-jar.xml</literal>. Web "
-"Beans provides injection and initializtion services for all EJBs, and uses "
-"<literal>ejb-jar.xml</literal> to enable this, you'll need this in any EJB "
-"project which uses Web Beans:"
-msgstr ""
-
-#. Tag: programlisting
-#: ri.xml:426
-#, no-c-format
-msgid ""
-"<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<ejb-jar xmlns=\"http://java.sun.com/xml/ns/javaee\" \n"
-"         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n"
-"         xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java."
-"sun.com/xml/ns/javaee/ejb-jar_3_0.xsd\"\n"
-"         version=\"3.0\">\n"
-"         \n"
-"   <interceptors>\n"
-"     <interceptor>\n"
-"       <interceptor-class>org.jboss.webbeans.ejb.SessionBeanInterceptor</"
-"interceptor-class>\n"
-"     </interceptor>\n"
-"   </interceptors>\n"
-"   \n"
-"   <assembly-descriptor>\n"
-"      <interceptor-binding>\n"
-"         <ejb-name>*</ejb-name>\n"
-"         <interceptor-class>org.jboss.webbeans.ejb.SessionBeanInterceptor</"
-"interceptor-class>\n"
-"      </interceptor-binding>\n"
-"   </assembly-descriptor>\n"
-"   \n"
-"</ejb-jar>]]>"
+"literal>. In <literal>src/main/resources/META-INF</literal> there is just an "
+"empty <literal>web-beans.xml</literal>, used to mark the archive as "
+"containing Web Beans."
 msgstr ""
 
 #. Tag: para
-#: ri.xml:428
+#: ri.xml:402
 #, no-c-format
 msgid ""
 "We've saved the most interesting bit to last, the code! The project has two "
@@ -898,7 +830,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:438
+#: ri.xml:412
 #, no-c-format
 msgid ""
 "Both <literal>SentanceParser</literal> and <literal>TextTranslator</literal> "
@@ -907,7 +839,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:444
+#: ri.xml:418
 #, no-c-format
 msgid ""
 "<![CDATA[public class TextTranslator { \n"
@@ -923,7 +855,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:446
+#: ri.xml:420
 #, no-c-format
 msgid ""
 "<literal>TextTranslator</literal> is a stateless bean (with a local business "
@@ -932,7 +864,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:452
+#: ri.xml:426
 #, no-c-format
 msgid ""
 "Finally, there is UI orientated controller, that collects the text from the "
@@ -941,7 +873,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:458
+#: ri.xml:432
 #, no-c-format
 msgid ""
 "<![CDATA[@Stateful\n"
@@ -954,19 +886,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:460
+#: ri.xml:434
 #, no-c-format
 msgid "The bean also has getters and setters for all the fields on the page."
 msgstr ""
 
 #. Tag: para
-#: ri.xml:464
+#: ri.xml:438
 #, no-c-format
 msgid "As this is a stateful session bean, we have to have a remove method:"
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:468
+#: ri.xml:442
 #, no-c-format
 msgid ""
 "<![CDATA[   @Remove\n"
@@ -977,7 +909,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:470
+#: ri.xml:444
 #, no-c-format
 msgid ""
 "The Web Beans manager will call the remove method for you when the bean is "
@@ -985,7 +917,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:476
+#: ri.xml:450
 #, no-c-format
 msgid ""
 "That concludes our short tour of the Web Beans RI examples. For more on the "
@@ -995,7 +927,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:482
+#: ri.xml:456
 #, no-c-format
 msgid ""
 "We need help in all areas - bug fixing, writing new features, writing "
