@@ -26,15 +26,15 @@ import javax.webbeans.manager.Bean;
 import org.jboss.webbeans.introspector.AnnotatedMember;
 
 /**
- * Factory used to create the container provided implementation for the
- * InjectionPoint beans. This factory maintains a stack with the current bean
- * and instance being created so that this information is readily available for
- * construction of a new InjectionPoint bean.
+ * Used to create the container provided implementation for the
+ * InjectionPoint beans. The instance maintains state information
+ * on a stack so that this information is readily available for
+ * construction of a new InjectionPoint bean instance.
  * 
  * @author David Allen
  * 
  */
-public class InjectionPointFactory
+public class InjectionPointProvider
 {
    private final Stack<Bean<?>> beans = new Stack<Bean<?>>();
    private final Stack<Object> beanInstances = new Stack<Object>();
@@ -100,9 +100,8 @@ public class InjectionPointFactory
    }
 
    /**
-    * Creates an InjectionPoint based on the current state of processing as
-    * indicated by this factory's stack of injection points and related
-    * information.
+    * Returns the InjectionPoint where the current bean under construction
+    * is being injected.
     * 
     * @return a new injection point metadata object
     */

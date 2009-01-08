@@ -29,7 +29,7 @@ import javax.webbeans.BindingType;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.injection.InjectionPointFactory;
+import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.introspector.AnnotatedMember;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.util.Reflections;
@@ -206,8 +206,8 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    protected Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters, Object specialVal, Class<? extends Annotation> specialParam, ManagerImpl manager)
    {
       Object[] parameterValues = new Object[parameters.size()];
-      InjectionPointFactory injectionPointFactory = manager.getInjectionPointFactory();
-      injectionPointFactory.pushInjectionPoint(this);
+      InjectionPointProvider injectionPointProvider = manager.getInjectionPointFactory();
+      injectionPointProvider.pushInjectionPoint(this);
       try
       {
          Iterator<AnnotatedParameter<Object>> iterator = parameters.iterator();
@@ -226,7 +226,7 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
       }
       finally
       {
-         injectionPointFactory.popInjectionPoint();
+         injectionPointProvider.popInjectionPoint();
 
       }
       return parameterValues;

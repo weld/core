@@ -30,7 +30,7 @@ import javax.webbeans.InjectionPoint;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.injection.InjectionPointFactory;
+import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.injection.InjectionPointImpl;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
@@ -117,15 +117,15 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          {
             checkProducedInjectionPoints();
          }
-         InjectionPointFactory injectionPointFactory = manager.getInjectionPointFactory();
-         injectionPointFactory.pushBean(this);
+         InjectionPointProvider injectionPointProvider = manager.getInjectionPointFactory();
+         injectionPointProvider.pushBean(this);
          T instance = null;
          try
          {
             instance = constructor.newInstance(manager);
             try
             {
-               injectionPointFactory.pushInstance(instance);
+               injectionPointProvider.pushInstance(instance);
                bindDecorators();
                bindInterceptors();
                injectEjbAndCommonFields(instance);
@@ -135,12 +135,12 @@ public class SimpleBean<T> extends AbstractClassBean<T>
             }
             finally
             {
-               injectionPointFactory.popInstance();
+               injectionPointProvider.popInstance();
             }
          }
          finally
          {
-            injectionPointFactory.popBean();
+            injectionPointProvider.popBean();
          }
          return instance;
       }
@@ -271,17 +271,17 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void injectBoundFields(T instance)
    {
-      InjectionPointFactory injectionPointFactory = manager.getInjectionPointFactory();
+      InjectionPointProvider injectionPointProvider = manager.getInjectionPointFactory();
       for (AnnotatedField<?> injectableField : getInjectableFields())
       {
-         injectionPointFactory.pushInjectionPoint(injectableField);
+         injectionPointProvider.pushInjectionPoint(injectableField);
          try
          {
             injectableField.inject(instance, manager);
          }
          finally
          {
-            injectionPointFactory.popInjectionPoint();
+            injectionPointProvider.popInjectionPoint();
          }
       }
    }
