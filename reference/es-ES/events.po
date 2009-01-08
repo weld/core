@@ -1,23 +1,26 @@
+# translation of events.po to Spanish
 # Language es-ES translations for master.xml package.
-# Automatically generated, 2008.
 #
+# Automatically generated, 2008.
+# Gladys Guerrero Lozano <gguerrer@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml \n"
+"Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-19 20:26+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-08 17:04+1000\n"
+"Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
+"Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: events.xml:4
 #, no-c-format
 msgid "Events"
-msgstr ""
+msgstr "Eventos"
 
 #. Tag: para
 #: events.xml:6
@@ -29,6 +32,9 @@ msgid ""
 "Bean manager. This basic schema might sound like the familiar observer/"
 "observable pattern, but there are a couple of twists:"
 msgstr ""
+"La notificación de eventos de Web Beans permite a Web Beans interactuar de una manera completamente disociada. Los <emphasis>productores</emphasis> levantan eventos que son enviados luego a <emphasis>observadores</emphasis> de evento por el administrador de Web "
+"Beans. Este esquema básico podría sonar como el patrón de observador familiar/"
+"observable, pero hay un par de cambios:"
 
 #. Tag: para
 #: events.xml:14
@@ -36,7 +42,7 @@ msgstr ""
 msgid ""
 "not only are event producers decoupled from observers; observers are "
 "completely decoupled from producers,"
-msgstr ""
+msgstr "no solamente los productores de eventos están disociados de los observadores; los observadores están completamente disociados de los productores."
 
 #. Tag: para
 #: events.xml:18
@@ -44,7 +50,7 @@ msgstr ""
 msgid ""
 "observers can specify a combination of \"selectors\" to narrow the set of "
 "event notifications they will receive, and"
-msgstr ""
+msgstr "los observadores pueden especificar una combinación de \"selectores\" para estrechar el conjunto de notificaciones de eventos que recibirán y "
 
 #. Tag: para
 #: events.xml:22
@@ -52,13 +58,13 @@ msgstr ""
 msgid ""
 "observers can be notified immediately, or can specify that delivery of the "
 "event should be delayed until the end of the current transaction"
-msgstr ""
+msgstr "los observadores pueden ser notificados inmediatamente o pueden especificar que la entrega del evento sea retrasada hasta el final de la transacción actual"
 
 #. Tag: title
 #: events.xml:28
 #, no-c-format
 msgid "Event observers"
-msgstr ""
+msgstr "Observadores de evento"
 
 #. Tag: para
 #: events.xml:30
@@ -66,7 +72,7 @@ msgstr ""
 msgid ""
 "An <emphasis>observer method</emphasis> is a method of a Web Bean with a "
 "parameter annotated <literal>@Observes</literal>."
-msgstr ""
+msgstr "Un <emphasis>método de observador</emphasis> es un método de un Web Bean con un parámetro anotado <literal>@Observes</literal>."
 
 #. Tag: programlisting
 #: events.xml:33
@@ -75,6 +81,8 @@ msgid ""
 "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
 "{ ... }]]>"
 msgstr ""
+"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+"{ ... }]]>"
 
 #. Tag: para
 #: events.xml:35
@@ -86,6 +94,8 @@ msgid ""
 "instances of Web Beans binding types. When a binding type is used as an "
 "event selector, it is called an <emphasis>event binding type</emphasis>."
 msgstr ""
+"El parámetro anotado es llamado el <emphasis>parámetro de evento</emphasis>. El tipo del parámetro de evento es el <emphasis>tipo de evento</"
+"emphasis> observado. Los métodos de observador pueden también especificar \"selectores\", los cuales son sólo instancias de tipos de enlaces de Web Beans. Cuando un tipo de enlace se utiliza como un selector de evento, es llamado un <emphasis>tipo de enlace de evento</emphasis>."
 
 #. Tag: programlisting
 #: events.xml:41
@@ -96,6 +106,10 @@ msgid ""
 "@Retention(RUNTIME)\n"
 "public @interface Updated { ... }]]>"
 msgstr ""
+"<![CDATA[@BindingType\n"
+"@Target({PARAMETER, FIELD})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Updated { ... }]]>"
 
 #. Tag: para
 #: events.xml:43
@@ -103,7 +117,7 @@ msgstr ""
 msgid ""
 "We specify the event bindings of the observer method by annotating the event "
 "parameter:"
-msgstr ""
+msgstr "Especificamos los enlaces de evento del método de observador al anotar el parámetro de evento:"
 
 #. Tag: programlisting
 #: events.xml:46 events.xml:190
@@ -112,6 +126,8 @@ msgid ""
 "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
 "document) { ... }]]>"
 msgstr ""
+"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+"document) { ... }]]>"
 
 #. Tag: para
 #: events.xml:48
@@ -121,7 +137,7 @@ msgid ""
 "is interested in <emphasis>all</emphasis> events of a particular type. If it "
 "does specify event bindings, it is only interested in events which also have "
 "those event bindings."
-msgstr ""
+msgstr "Un método de observador no necesita especificar ningún enlace de evento &#151;en este caso está interesado en <emphasis>todos</emphasis> los eventos de un tipo determinado. Si no especifica enlaces de eventos, está sólo interesado en eventos que tienen también aquellos enlaces de eventos."
 
 #. Tag: para
 #: events.xml:53
@@ -129,7 +145,7 @@ msgstr ""
 msgid ""
 "The observer method may have additional parameters, which are injected "
 "according to the usual Web Beans method parameter injection semantics:"
-msgstr ""
+msgstr "El método de observador puede tener parámetros adicionales, los cuales se inyectan de acuerdo con la semántica de inyección del parámetro usual de método de Web Beans:"
 
 #. Tag: programlisting
 #: events.xml:56
@@ -138,12 +154,14 @@ msgid ""
 "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
 "document, User user) { ... }]]>"
 msgstr ""
+"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+"document, User user) { ... }]]>"
 
 #. Tag: title
 #: events.xml:61
 #, no-c-format
 msgid "Event producers"
-msgstr ""
+msgstr "Productores de Evento"
 
 #. Tag: para
 #: events.xml:63
@@ -151,13 +169,13 @@ msgstr ""
 msgid ""
 "The event producer may obtain an <emphasis>event notifier</emphasis> object "
 "by injection:"
-msgstr ""
+msgstr "El productor de evento puede obtener un objeto que <emphasis>notifica el evento</emphasis>por inyección:"
 
 #. Tag: programlisting
 #: events.xml:66
 #, no-c-format
 msgid "<![CDATA[@Observable Event<Document> documentEvent]]>"
-msgstr ""
+msgstr "<![CDATA[@Observable Event<Document> documentEvent]]>"
 
 #. Tag: para
 #: events.xml:68
@@ -167,7 +185,7 @@ msgid ""
 "with scope <literal>@Dependent</literal> and deployment type "
 "<literal>@Standard</literal>, with an implementation provided by the Web "
 "Bean manager."
-msgstr ""
+msgstr "La anotación <literal>@Observable</literal> define implícitamente un Web Bean con alcance <literal>@Dependent</literal> y tipo de despliegue <literal>@Standard</literal>, con una implementación provista por el administrador de Web Bean."
 
 #. Tag: para
 #: events.xml:72
@@ -177,12 +195,14 @@ msgid ""
 "the <literal>Event</literal> interface, passing an <emphasis>event object</"
 "emphasis>:"
 msgstr ""
+"Un productor crea eventos llamando al método <literal>fire()</literal> de la interfaz del <literal>Evento</literal>, pasando un <emphasis>objeto de evento</"
+"emphasis>:"
 
 #. Tag: programlisting
 #: events.xml:75
 #, no-c-format
 msgid "<![CDATA[documentEvent.fire(document);]]>"
-msgstr ""
+msgstr "<![CDATA[documentEvent.fire(document);]]>"
 
 #. Tag: para
 #: events.xml:77
@@ -191,19 +211,19 @@ msgid ""
 "An event object may be an instance of any Java class that has no type "
 "variables or wildcard type parameters. The event will be delivered to every "
 "observer method that:"
-msgstr ""
+msgstr "Un objeto de evento puede ser una instancia de una clase de Java que no tiene variables de tecla o parámetros de  comodines. El evento será entregado a cada método de observador que:"
 
 #. Tag: para
 #: events.xml:83 events.xml:107 events.xml:126
 #, no-c-format
 msgid "has an event parameter to which the event object is assignable, and"
-msgstr ""
+msgstr "tenga un parámetro de evento al cual el objeto de evento sea asignable y "
 
 #. Tag: para
 #: events.xml:86
 #, no-c-format
 msgid "specifies no event bindings."
-msgstr ""
+msgstr "especifique que no hay enlaces de eventos."
 
 #. Tag: para
 #: events.xml:90
@@ -213,7 +233,7 @@ msgid ""
 "event object as the value of the event parameter. If any observer method "
 "throws an exception, the Web Bean manager stops calling observer methods, "
 "and the exception is rethrown by the <literal>fire()</literal> method."
-msgstr ""
+msgstr "El administrador de Web Bean simplemente llama a todos los métodos de observador, pasando el objeto del evento como el valor de un parámetro de evento. Si cualquier método de observador lanza una excepción, el administrador de Web Bean se detiene llamando a los métodos de observador y la excepción es reenviada por le método <literal>fire()</literal>."
 
 #. Tag: para
 #: events.xml:95
@@ -356,8 +376,7 @@ msgstr ""
 #. Tag: para
 #: events.xml:160
 #, no-c-format
-msgid ""
-"The member value is used to narrow the messages delivered to the observer:"
+msgid "The member value is used to narrow the messages delivered to the observer:"
 msgstr ""
 
 #. Tag: programlisting
@@ -547,8 +566,7 @@ msgstr ""
 #. Tag: para
 #: events.xml:233
 #, no-c-format
-msgid ""
-"Imagine that we have cached a JPA query result set in the application scope:"
+msgid "Imagine that we have cached a JPA query result set in the application scope:"
 msgstr ""
 
 #. Tag: programlisting
@@ -647,3 +665,4 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+
