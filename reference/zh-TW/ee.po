@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ee\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 09:47+1000\n"
+"PO-Revision-Date: 2009-01-08 19:31+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -31,13 +31,13 @@ msgid ""
 "in Unified EL expressions in JSF and JSP pages. They may even be injected "
 "into some objects, such as Servlets and Message-Driven Beans, which are not "
 "Web Beans."
-msgstr ""
+msgstr "Web Bean 已完整整合入 Java EE 環境中。Web Bean 可存取 Java EE 資源以及 JPA persistence context。它們可能會被使用於 JSF 以及 JSP 網頁中的 Unified EL 表示式中。它們也可被注入一些物件中，例如 Servlets 以及訊息導向的 Bean 中（非 Web Beans）。"
 
 #. Tag: title
 #: ee.xml:12
 #, no-c-format
 msgid "Injecting Java EE resources into a Web Bean"
-msgstr ""
+msgstr "將 Java EE 資源注入 Web Bean 中"
 
 #. Tag: para
 #: ee.xml:14
@@ -48,6 +48,8 @@ msgid ""
 "<literal>@PersistenceContext</literal>. We've already seen a couple of "
 "examples of this, though we didn't pay much attention at the time:"
 msgstr ""
+"所有基本與企業的 Web Bean 都能透過 <literal>@Resource</literal>、<literal>@EJB</literal> 以及 "
+"<literal>@PersistenceContext</literal> 來有效利用 Java EE 相依性注入。我們早已見過了這方面的範例，不過當時我們並未詳細討論到："
 
 #. Tag: programlisting
 #: ee.xml:19
@@ -105,7 +107,7 @@ msgid ""
 "literal> callbacks are also supported for all simple and enterprise Web "
 "Beans. The <literal>@PostConstruct</literal> method is called after "
 "<emphasis>all</emphasis> injection has been performed."
-msgstr ""
+msgstr "所有基本與企業的 Web Bean 也都支援 Java EE <literal>@PostConstruct</literal> 和 <literal>@PreDestroy</literal> 的 callback。<literal>@PostConstruct</literal> 這個 method 會在<emphasis>所有</emphasis>注入被進行後才會被調用。"
 
 #. Tag: para
 #: ee.xml:28
@@ -113,13 +115,13 @@ msgstr ""
 msgid ""
 "There is one restriction to be aware of here: <literal>@PersistenceContext"
 "(type=EXTENDED)</literal> is not supported for simple Web Beans."
-msgstr ""
+msgstr "在此有項需要注意的限制：基本的 Web Bean 並不支援 <literal>@PersistenceContext(type=EXTENDED)</literal>。"
 
 #. Tag: title
 #: ee.xml:35
 #, no-c-format
 msgid "Calling a Web Bean from a Servlet"
-msgstr ""
+msgstr "透過一個 Servlet 來調用 Web Bean"
 
 #. Tag: para
 #: ee.xml:37
@@ -127,7 +129,7 @@ msgstr ""
 msgid ""
 "It's easy to use a Web Bean from a Servlet in Java EE 6. Simply inject the "
 "Web Bean using Web Beans field or initializer method injection."
-msgstr ""
+msgstr "在 Java EE 6 中透過 Servlet 來使用 Web Bean 相當地簡單。只要使用 Web Bean 欄位或是 initializer method 注入來注入 Web Bean 即可。"
 
 #. Tag: programlisting
 #: ee.xml:40
