@@ -238,8 +238,15 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getPersistenceContextAnnotation()))
       {
          InjectionPoint injectionPoint = new InjectionPointImpl(field, this, beanInstance);
-         Object persistenceContext = manager.getEjbResolver().resolvePersistenceUnit(injectionPoint, manager.getNaming());
-         field.inject(beanInstance, persistenceContext);
+         Object puInstance = manager.getEjbResolver().resolvePersistenceUnit(injectionPoint, manager.getNaming());
+         field.inject(beanInstance, puInstance);
+      }
+      
+      for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getEjbResolver().getPersistenceContextAnnotation()))
+      {
+         InjectionPoint injectionPoint = new InjectionPointImpl(method, this, beanInstance);
+         Object puInstance = manager.getEjbResolver().resolvePersistenceUnit(injectionPoint, manager.getNaming());
+         method.invoke(beanInstance, puInstance);
       }
    }
 
