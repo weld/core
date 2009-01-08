@@ -28,6 +28,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 
+import javax.webbeans.InjectionPoint;
 import javax.webbeans.NullableDependencyException;
 import javax.webbeans.TypeLiteral;
 import javax.webbeans.manager.Bean;
@@ -35,6 +36,7 @@ import javax.webbeans.manager.Decorator;
 import javax.webbeans.manager.InterceptionType;
 import javax.webbeans.manager.Interceptor;
 
+import org.jboss.webbeans.bean.InjectionPointBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedItem;
 import org.jboss.webbeans.model.BindingTypeModel;
@@ -214,6 +216,10 @@ public class Resolver
       if (element.getType().equals(Object.class))
       {
          beans = new HashSet<Bean<T>>((List) manager.getBeans());
+      }
+      else if (InjectionPoint.class.isAssignableFrom(element.getType()))
+      {
+         beans.add(InjectionPointBean.of(key, manager));
       }
       else
       {

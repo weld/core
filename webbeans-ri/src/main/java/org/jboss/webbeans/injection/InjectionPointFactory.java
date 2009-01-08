@@ -73,12 +73,20 @@ public class InjectionPointFactory
    }
 
    /**
-    * Pops the bean and its current instance from the stack.  This should be called
+    * Pops the bean from the stack.  This should be called
     * whenever all processing is complete for instantiating a bean.
     */
-   public void popBeanAndInstance()
+   public void popBean()
    {
       beans.pop();
+   }
+
+   /**
+    * Pops the current instance from the stack.  This should be called
+    * whenever all processing is complete for instantiating a bean.
+    */
+   public void popInstance()
+   {
       beanInstances.pop();
    }
 
@@ -98,7 +106,7 @@ public class InjectionPointFactory
     * 
     * @return a new injection point metadata object
     */
-   public InjectionPoint newInstance()
+   public InjectionPoint getPreviousInjectionPoint()
    {
       // When the injected member is a constructor, we are short one instance,
       // so the instance on the top of the stack is the bean instance

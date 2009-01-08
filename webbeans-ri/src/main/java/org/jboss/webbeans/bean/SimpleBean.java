@@ -119,15 +119,29 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          }
          InjectionPointFactory injectionPointFactory = manager.getInjectionPointFactory();
          injectionPointFactory.pushBean(this);
-         T instance = constructor.newInstance(manager);
-         injectionPointFactory.pushInstance(instance);
-         bindDecorators();
-         bindInterceptors();
-         injectEjbAndCommonFields(instance);
-         injectBoundFields(instance);
-         callInitializers(instance);
-         callPostConstruct(instance);
-         injectionPointFactory.popBeanAndInstance();
+         T instance = null;
+         try
+         {
+            instance = constructor.newInstance(manager);
+            try
+            {
+               injectionPointFactory.pushInstance(instance);
+               bindDecorators();
+               bindInterceptors();
+               injectEjbAndCommonFields(instance);
+               injectBoundFields(instance);
+               callInitializers(instance);
+               callPostConstruct(instance);
+            }
+            finally
+            {
+               injectionPointFactory.popInstance();
+            }
+         }
+         finally
+         {
+            injectionPointFactory.popBean();
+         }
          return instance;
       }
       finally
@@ -261,15 +275,14 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       for (AnnotatedField<?> injectableField : getInjectableFields())
       {
          injectionPointFactory.pushInjectionPoint(injectableField);
-         if (InjectionPoint.class.isAssignableFrom(injectableField.getType()))
-         {
-            injectableField.inject(instance, injectionPointFactory.newInstance());
-         }
-         else
+         try
          {
             injectableField.inject(instance, manager);
          }
-         injectionPointFactory.popInjectionPoint();
+         finally
+         {
+            injectionPointFactory.popInjectionPoint();
+         }
       }
    }
 
