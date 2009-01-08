@@ -1,23 +1,27 @@
+# translation of master.po to Korean
 # Language ko-KR translations for Introduction_to_Web_Beans package.
-# Automatically generated, 2009.
 #
+# Automatically generated, 2009.
+# Eunju Kim <eukim@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: master\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-06 11:30+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-08 11:05+1000\n"
+"Last-Translator: Eunju Kim <eukim@redhat.com>\n"
+"Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
 
 #. Tag: title
 #: master.xml:12
 #, no-c-format
 msgid "Using contextual objects"
-msgstr ""
+msgstr "컨텐츠 객체 사용 "
 
 #. Tag: title
 #: master.xml:25
@@ -35,4 +39,5 @@ msgstr ""
 #: master.xml:46
 #, no-c-format
 msgid "Web Beans and the Java EE ecosystem"
-msgstr ""
+msgstr "Web Beans 및 Java EE 에코시스템 "
+

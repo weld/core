@@ -1,23 +1,28 @@
+# translation of Author_Group.po to Korean
 # Language ko-KR translations for Introduction_to_Web_Beans package.
-# Automatically generated, 2009.
 #
+# Automatically generated, 2009.
+# Eunju Kim <eukim@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: Author_Group\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-06 11:30+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-08 10:32+1000\n"
+"Last-Translator: Eunju Kim <eukim@redhat.com>\n"
+"Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 
 #. Tag: author
 #: Author_Group.xml:4
 #, no-c-format
 msgid "<firstname>Gavin</firstname> <surname>King</surname>"
-msgstr ""
+msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
 
 #. Tag: affiliation
 #: Author_Group.xml:7
@@ -26,12 +31,14 @@ msgid ""
 "<jobtitle>Web Beans (JSR-299) specification lead</jobtitle> <orgname>Red Hat "
 "Middleware LLC</orgname>"
 msgstr ""
+"<jobtitle>Web Beans (JSR-299) specification lead</jobtitle> <orgname>Red Hat "
+"Middleware LLC</orgname>"
 
 #. Tag: author
 #: Author_Group.xml:12
 #, no-c-format
 msgid "<firstname>Pete</firstname> <surname>Muir</surname>"
-msgstr ""
+msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
 
 #. Tag: affiliation
 #: Author_Group.xml:15
@@ -40,21 +47,24 @@ msgid ""
 "<jobtitle>Web Beans (JSR-299) Reference Implementation lead </jobtitle> "
 "<orgname>Red Hat Middleware LLC</orgname>"
 msgstr ""
+"<jobtitle>Web Beans (JSR-299) Reference Implementation lead </jobtitle> "
+"<orgname>Red Hat Middleware LLC</orgname>"
 
 #. Tag: othercredit
 #: Author_Group.xml:21
 #, no-c-format
 msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
-msgstr ""
+msgstr "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
 
 #. Tag: contrib
 #: Author_Group.xml:24 Author_Group.xml:29
 #, no-c-format
 msgid "Italian Translation"
-msgstr ""
+msgstr "이탈리아어 번역 "
 
 #. Tag: othercredit
 #: Author_Group.xml:26
 #, no-c-format
 msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
-msgstr ""
+msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
+

@@ -1,17 +1,21 @@
+# translation of intro.po to Korean
 # Language ko-KR translations for Introduction_to_Web_Beans package.
-# Automatically generated, 2009.
 #
+# Automatically generated, 2009.
+# Eunju Kim <eukim@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-06 11:30+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-08 10:58+1000\n"
+"Last-Translator: Eunju Kim <eukim@redhat.com>\n"
+"Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
 
 #. Tag: title
 #: intro.xml:4
@@ -68,6 +72,9 @@ msgid ""
 "    public List<String> parse(String text) { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class SentenceParser {\n"
+"    public List<String> parse(String text) { ... }\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:31
@@ -87,6 +94,10 @@ msgid ""
 "    public String translate(String sentence) { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Stateless\n"
+"public class SentenceTranslator implements Translator {\n"
+"    public String translate(String sentence) { ... }\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:37
@@ -103,6 +114,10 @@ msgid ""
 "    public String translate(String sentence);\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Local\n"
+"public interface Translator {\n"
+"    public String translate(String sentence);\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:41
@@ -138,6 +153,27 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class TextTranslator {\n"
+"    \n"
+"    private SentenceParser sentenceParser;\n"
+"    private Translator sentenceTranslator;\n"
+"    \n"
+"    @Initializer\n"
+"    TextTranslator(SentenceParser sentenceParser, Translator "
+"sentenceTranslator) {\n"
+"        this.sentenceParser = sentenceParser;\n"
+"        this.sentenceTranslator = sentenceTranslator;\n"
+"    }\n"
+"    \n"
+"    public String translate(String text) {\n"
+"        StringBuilder sb = new StringBuilder();\n"
+"        for (String sentence: sentenceParser.parse(text)) {\n"
+"            sb.append(sentenceTranslator.translate(sentence));\n"
+"        }\n"
+"        return sb.toString();\n"
+"    }\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:46
@@ -156,6 +192,10 @@ msgid ""
 "    this.textTranslator = textTranslator;\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Initializer\n"
+"public setTextTranslator(TextTranslator textTranslator) {\n"
+"    this.textTranslator = textTranslator;\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:51
@@ -172,6 +212,8 @@ msgid ""
 "<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator."
 "class);]]>"
 msgstr ""
+"<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator."
+"class);]]>"
 
 #. Tag: para
 #: intro.xml:56
@@ -265,8 +307,7 @@ msgstr ""
 #. Tag: para
 #: intro.xml:108
 #, no-c-format
-msgid ""
-"which clients share a reference to a particular instance of the Web Bean."
+msgid "which clients share a reference to a particular instance of the Web Bean."
 msgstr ""
 
 #. Tag: para
@@ -446,7 +487,7 @@ msgstr ""
 #: intro.xml:191
 #, no-c-format
 msgid "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
-msgstr ""
+msgstr "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
 
 #. Tag: para
 #: intro.xml:193
@@ -482,6 +523,9 @@ msgid ""
 "public class CreditCardPaymentProcessor \n"
 "    implements PaymentProcessor { ... }]]>"
 msgstr ""
+"<![CDATA[@CreditCard\n"
+"public class CreditCardPaymentProcessor \n"
+"    implements PaymentProcessor { ... }]]>"
 
 #. Tag: para
 #: intro.xml:206
@@ -550,6 +594,12 @@ msgid ""
 "    }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Mock\n"
+"public class MockSentenceTranslator implements Translator {\n"
+"    public String translate(String sentence) {\n"
+"        return \"Lorem ipsum dolor sit amet\";\n"
+"    }\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:236
@@ -600,6 +650,8 @@ msgid ""
 "<![CDATA[@SessionScoped\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@SessionScoped\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: intro.xml:259
@@ -646,6 +698,8 @@ msgid ""
 "<![CDATA[@SessionScoped @Named(\"cart\")\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@SessionScoped @Named(\"cart\")\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: intro.xml:280
@@ -661,12 +715,14 @@ msgid ""
 "    ....\n"
 "</h:dataTable>]]>"
 msgstr ""
+"<![CDATA[<h:dataTable value=\"#{cart.lineItems}\" var=\"item\">\n"
+"    ....\n"
+"</h:dataTable>]]>"
 
 #. Tag: para
 #: intro.xml:284
 #, no-c-format
-msgid ""
-"It's even easier to just let the name be defaulted by the Web Bean manager:"
+msgid "It's even easier to just let the name be defaulted by the Web Bean manager:"
 msgstr ""
 
 #. Tag: programlisting
@@ -676,6 +732,8 @@ msgid ""
 "<![CDATA[@SessionScoped @Named\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@SessionScoped @Named\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: intro.xml:289
@@ -717,6 +775,9 @@ msgid ""
 "@Interceptors(TransactionInterceptor.class)\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@SessionScoped \n"
+"@Interceptors(TransactionInterceptor.class)\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: intro.xml:307
@@ -733,6 +794,8 @@ msgid ""
 "<![CDATA[@SessionScoped @Transactional\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@SessionScoped @Transactional\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: intro.xml:313
@@ -866,6 +929,15 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Stateful @SessionScoped\n"
+"public class ShoppingCart {\n"
+"\n"
+"    ...\n"
+"    \n"
+"    @Remove\n"
+"    public void destroy() {}\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:380
@@ -987,19 +1059,28 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@ApplicationScoped\n"
+"public class Generator {\n"
+"\n"
+"    private Random random = new Random( System.currentTimeMillis() );\n"
+"    \n"
+"    @Produces @Random int next() {\n"
+"        return random.nextInt(100);\n"
+"    }\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:437
 #, no-c-format
-msgid ""
-"The result of a producer method is injected just like any other Web Bean."
+msgid "The result of a producer method is injected just like any other Web Bean."
 msgstr ""
 
 #. Tag: programlisting
 #: intro.xml:439
 #, no-c-format
 msgid "<![CDATA[@Random int randomNumber]]>"
-msgstr ""
+msgstr "<![CDATA[@Random int randomNumber]]>"
 
 #. Tag: para
 #: intro.xml:441
@@ -1024,6 +1105,9 @@ msgid ""
 "    return createConnection( user.getId(), user.getPassword() );\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
+"    return createConnection( user.getId(), user.getPassword() );\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:449
@@ -1041,6 +1125,9 @@ msgid ""
 "    connection.close();\n"
 "}]]>"
 msgstr ""
+"<![CDATA[void close(@Disposes Connection connection) {\n"
+"    connection.close();\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:453
@@ -1073,3 +1160,4 @@ msgid ""
 "objects required to send messages to queues and topics. We'll discuss JMS "
 "endpoints in <xref linkend=\"jms\"/>."
 msgstr ""
+

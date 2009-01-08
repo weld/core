@@ -1,17 +1,21 @@
+# translation of interceptors.po to Korean
 # Language ko-KR translations for Introduction_to_Web_Beans package.
-# Automatically generated, 2009.
 #
+# Automatically generated, 2009.
+# Eunju Kim <eukim@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: interceptors\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-06 11:30+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-08 10:56+1000\n"
+"Last-Translator: Eunju Kim <eukim@redhat.com>\n"
+"Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
 
 #. Tag: title
 #: interceptors.xml:4
@@ -76,6 +80,10 @@ msgid ""
 "{ ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class TransactionInterceptor {\n"
+"    @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
+"{ ... }\n"
+"}]]>"
 
 #. Tag: para
 #: interceptors.xml:38
@@ -94,6 +102,10 @@ msgid ""
 "{ ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class DependencyInjectionInterceptor {\n"
+"    @PostConstruct public void injectDependencies(InvocationContext ctx) "
+"{ ... }\n"
+"}]]>"
 
 #. Tag: para
 #: interceptors.xml:43
@@ -127,6 +139,10 @@ msgid ""
 "@Retention(RUNTIME)\n"
 "public @interface Transactional {}]]>"
 msgstr ""
+"<![CDATA[@InterceptorBindingType\n"
+"@Target({METHOD, TYPE})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Transactional {}]]>"
 
 #. Tag: para
 #: interceptors.xml:57
@@ -143,6 +159,8 @@ msgid ""
 "<![CDATA[@Transactional\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@Transactional\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: interceptors.xml:62
@@ -158,6 +176,9 @@ msgid ""
 "    @Transactional public void checkout() { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class ShoppingCart {\n"
+"    @Transactional public void checkout() { ... }\n"
+"}]]>"
 
 #. Tag: title
 #: interceptors.xml:69
@@ -185,6 +206,11 @@ msgid ""
 "{ ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Transactional @Interceptor\n"
+"public class TransactionInterceptor {\n"
+"    @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
+"{ ... }\n"
+"}]]>"
 
 #. Tag: para
 #: interceptors.xml:78
@@ -208,6 +234,15 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[@ApplicationScoped @Transactional @Interceptor\n"
+"public class TransactionInterceptor {\n"
+"\n"
+"    @Resource Transaction transaction;\n"
+"\n"
+"    @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
+"{ ... }\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: interceptors.xml:83
@@ -237,6 +272,9 @@ msgid ""
 "    <tx:TransactionInterceptor/>\n"
 "</Interceptors>]]>"
 msgstr ""
+"<![CDATA[<Interceptors>\n"
+"    <tx:TransactionInterceptor/>\n"
+"</Interceptors>]]>"
 
 #. Tag: para
 #: interceptors.xml:95
@@ -281,6 +319,10 @@ msgid ""
 "    <tx:TransactionInterceptor/>\n"
 "</Interceptors>]]>"
 msgstr ""
+"<![CDATA[<Interceptors>\n"
+"    <sx:SecurityInterceptor/>\n"
+"    <tx:TransactionInterceptor/>\n"
+"</Interceptors>]]>"
 
 #. Tag: para
 #: interceptors.xml:114
@@ -313,6 +355,12 @@ msgid ""
 "    boolean requiresNew() default false;\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@InterceptorBindingType\n"
+"@Target({METHOD, TYPE})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Transactional {\n"
+"    boolean requiresNew() default false;\n"
+"}]]>"
 
 #. Tag: para
 #: interceptors.xml:126
@@ -333,6 +381,11 @@ msgid ""
 "{ ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Transactional(requiresNew=true) @Interceptor\n"
+"public class RequiresNewTransactionInterceptor {\n"
+"    @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
+"{ ... }\n"
+"}]]>"
 
 #. Tag: para
 #: interceptors.xml:132
@@ -349,6 +402,8 @@ msgid ""
 "<![CDATA[@Transactional(requiresNew=true)\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@Transactional(requiresNew=true)\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: interceptors.xml:136
@@ -370,6 +425,12 @@ msgid ""
 "    @NonBinding String[] rolesAllowed() default {};\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@InterceptorBindingType\n"
+"@Target({METHOD, TYPE})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Secure {\n"
+"    @NonBinding String[] rolesAllowed() default {};\n"
+"}]]>"
 
 #. Tag: title
 #: interceptors.xml:145
@@ -394,6 +455,8 @@ msgid ""
 "<![CDATA[@Secure(rolesAllowed=\"admin\") @Transactional\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@Secure(rolesAllowed=\"admin\") @Transactional\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: interceptors.xml:154
@@ -410,6 +473,8 @@ msgid ""
 "<![CDATA[@Transactional @Secure @Interceptor\n"
 "public class TransactionalSecureInterceptor { ... }]]>"
 msgstr ""
+"<![CDATA[@Transactional @Secure @Interceptor\n"
+"public class TransactionalSecureInterceptor { ... }]]>"
 
 #. Tag: para
 #: interceptors.xml:159
@@ -427,6 +492,9 @@ msgid ""
 "    @Transactional @Secure public void checkout() { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class ShoppingCart {\n"
+"    @Transactional @Secure public void checkout() { ... }\n"
+"}]]>"
 
 #. Tag: programlisting
 #: interceptors.xml:164
@@ -437,6 +505,10 @@ msgid ""
 "    @Transactional public void checkout() { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Secure\n"
+"public class ShoppingCart {\n"
+"    @Transactional public void checkout() { ... }\n"
+"}]]>"
 
 #. Tag: programlisting
 #: interceptors.xml:166
@@ -447,6 +519,10 @@ msgid ""
 "    @Secure public void checkout() { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Transactionl\n"
+"public class ShoppingCart {\n"
+"    @Secure public void checkout() { ... }\n"
+"}]]>"
 
 #. Tag: programlisting
 #: interceptors.xml:168
@@ -457,6 +533,10 @@ msgid ""
 "    public void checkout() { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Transactional @Secure\n"
+"public class ShoppingCart {\n"
+"    public void checkout() { ... }\n"
+"}]]>"
 
 #. Tag: title
 #: interceptors.xml:173
@@ -476,9 +556,8 @@ msgstr ""
 #. Tag: programlisting
 #: interceptors.xml:179
 #, no-c-format
-msgid ""
-"<![CDATA[public @interface Action extends Transactional, Secure { ... }]]>"
-msgstr ""
+msgid "<![CDATA[public @interface Action extends Transactional, Secure { ... }]]>"
+msgstr "<![CDATA[public @interface Action extends Transactional, Secure { ... }]]>"
 
 #. Tag: para
 #: interceptors.xml:181
@@ -501,6 +580,11 @@ msgid ""
 "@Retention(RUNTIME)\n"
 "public @interface Action { ... }]]>"
 msgstr ""
+"<![CDATA[@Transactional @Secure\n"
+"@InterceptorBindingType\n"
+"@Target(TYPE)\n"
+"@Retention(RUNTIME)\n"
+"public @interface Action { ... }]]>"
 
 #. Tag: para
 #: interceptors.xml:188
@@ -537,6 +621,11 @@ msgid ""
 "    public void checkout() { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Interceptors({TransactionInterceptor.class, SecurityInterceptor."
+"class})\n"
+"public class ShoppingCart {\n"
+"    public void checkout() { ... }\n"
+"}]]>"
 
 #. Tag: para
 #: interceptors.xml:202
@@ -567,6 +656,6 @@ msgstr ""
 #. Tag: para
 #: interceptors.xml:217
 #, no-c-format
-msgid ""
-"Therefore, we recommend the use of Web Beans-style interceptor bindings."
+msgid "Therefore, we recommend the use of Web Beans-style interceptor bindings."
 msgstr ""
+
