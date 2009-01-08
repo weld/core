@@ -1,17 +1,20 @@
+# translation of events.po to Traditional Chinese
 # Language zh-TW translations for Introduction_to_Web_Beans package.
-# Automatically generated, 2009.
 #
+# Automatically generated, 2009.
+# Terry Chuang <tchuang@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-06 11:30+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-08 09:48+1000\n"
+"Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
+"Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: events.xml:4
@@ -75,6 +78,8 @@ msgid ""
 "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
 "{ ... }]]>"
 msgstr ""
+"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+"{ ... }]]>"
 
 #. Tag: para
 #: events.xml:35
@@ -96,6 +101,10 @@ msgid ""
 "@Retention(RUNTIME)\n"
 "public @interface Updated { ... }]]>"
 msgstr ""
+"<![CDATA[@BindingType\n"
+"@Target({PARAMETER, FIELD})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Updated { ... }]]>"
 
 #. Tag: para
 #: events.xml:43
@@ -112,6 +121,8 @@ msgid ""
 "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
 "document) { ... }]]>"
 msgstr ""
+"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+"document) { ... }]]>"
 
 #. Tag: para
 #: events.xml:48
@@ -138,6 +149,8 @@ msgid ""
 "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
 "document, User user) { ... }]]>"
 msgstr ""
+"<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
+"document, User user) { ... }]]>"
 
 #. Tag: title
 #: events.xml:61
@@ -157,7 +170,7 @@ msgstr ""
 #: events.xml:66
 #, no-c-format
 msgid "<![CDATA[@Observable Event<Document> documentEvent]]>"
-msgstr ""
+msgstr "<![CDATA[@Observable Event<Document> documentEvent]]>"
 
 #. Tag: para
 #: events.xml:68
@@ -182,7 +195,7 @@ msgstr ""
 #: events.xml:75
 #, no-c-format
 msgid "<![CDATA[documentEvent.fire(document);]]>"
-msgstr ""
+msgstr "<![CDATA[documentEvent.fire(document);]]>"
 
 #. Tag: para
 #: events.xml:77
@@ -230,6 +243,8 @@ msgid ""
 "<![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>()"
 "{} );]]>"
 msgstr ""
+"<![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>()"
+"{} );]]>"
 
 #. Tag: para
 #: events.xml:100
@@ -266,7 +281,7 @@ msgstr ""
 #: events.xml:118
 #, no-c-format
 msgid "<![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]>"
-msgstr ""
+msgstr "<![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]>"
 
 #. Tag: para
 #: events.xml:120
@@ -309,6 +324,8 @@ msgid ""
 "<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify"
 "(Document doc) { ... } } );]]>"
 msgstr ""
+"<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify"
+"(Document doc) { ... } } );]]>"
 
 #. Tag: para
 #: events.xml:146
@@ -328,6 +345,10 @@ msgid ""
 "                                                new "
 "AnnotationLiteral<Updated>(){} );]]>"
 msgstr ""
+"<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify"
+"(Document doc) { ... } }, \n"
+"                                                new "
+"AnnotationLiteral<Updated>(){} );]]>"
 
 #. Tag: title
 #: events.xml:154
@@ -352,12 +373,17 @@ msgid ""
 "    RoleType value();\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@BindingType\n"
+"@Target({PARAMETER, FIELD})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Role {\n"
+"    RoleType value();\n"
+"}]]>"
 
 #. Tag: para
 #: events.xml:160
 #, no-c-format
-msgid ""
-"The member value is used to narrow the messages delivered to the observer:"
+msgid "The member value is used to narrow the messages delivered to the observer:"
 msgstr ""
 
 #. Tag: programlisting
@@ -367,6 +393,8 @@ msgid ""
 "<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
 "{ ... }]]>"
 msgstr ""
+"<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
+"{ ... }]]>"
 
 #. Tag: para
 #: events.xml:164
@@ -380,7 +408,7 @@ msgstr ""
 #: events.xml:167
 #, no-c-format
 msgid "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
-msgstr ""
+msgstr "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
 
 #. Tag: para
 #: events.xml:169
@@ -399,6 +427,9 @@ msgid ""
 "    extends AnnotationLiteral<Role> \n"
 "    implements Role {}]]>"
 msgstr ""
+"<![CDATA[abstract class RoleBinding \n"
+"    extends AnnotationLiteral<Role> \n"
+"    implements Role {}]]>"
 
 #. Tag: para
 #: events.xml:174
@@ -415,6 +446,8 @@ msgid ""
 "<![CDATA[documentEvent.fire( document, new RoleBinding() { public void value"
 "() { return user.getRole(); } } );]]>"
 msgstr ""
+"<![CDATA[documentEvent.fire( document, new RoleBinding() { public void value"
+"() { return user.getRole(); } } );]]>"
 
 #. Tag: title
 #: events.xml:181
@@ -437,6 +470,10 @@ msgid ""
 "if (document.isBlog()) blogEvent.fire(document, new "
 "AnnotationLiteral<Updated>(){});]]>"
 msgstr ""
+"<![CDATA[@Observable @Blog Event<Document> blogEvent;\n"
+"...\n"
+"if (document.isBlog()) blogEvent.fire(document, new "
+"AnnotationLiteral<Updated>(){});]]>"
 
 #. Tag: para
 #: events.xml:187
@@ -453,6 +490,8 @@ msgid ""
 "<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
 "document) { ... }]]>"
 msgstr ""
+"<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
+"document) { ... }]]>"
 
 #. Tag: programlisting
 #: events.xml:191
@@ -461,6 +500,8 @@ msgid ""
 "<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
 "{ ... }]]>"
 msgstr ""
+"<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
+"{ ... }]]>"
 
 #. Tag: programlisting
 #: events.xml:192
@@ -469,6 +510,8 @@ msgid ""
 "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
 "{ ... }}}]]>"
 msgstr ""
+"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+"{ ... }}}]]>"
 
 #. Tag: title
 #: events.xml:197
@@ -494,6 +537,8 @@ msgid ""
 "<![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess @Observes "
 "CategoryUpdateEvent event) { ... }]]>"
 msgstr ""
+"<![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess @Observes "
+"CategoryUpdateEvent event) { ... }]]>"
 
 #. Tag: para
 #: events.xml:207
@@ -547,8 +592,7 @@ msgstr ""
 #. Tag: para
 #: events.xml:233
 #, no-c-format
-msgid ""
-"Imagine that we have cached a JPA query result set in the application scope:"
+msgid "Imagine that we have cached a JPA query result set in the application scope:"
 msgstr ""
 
 #. Tag: programlisting
@@ -574,6 +618,24 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[@ApplicationScoped @Singleton\n"
+"public class Catalog {\n"
+"\n"
+"    @PersistenceContext EntityManager em;\n"
+"    \n"
+"    List<Product> products;\n"
+"\n"
+"    @Produces @Catalog \n"
+"    List<Product> getCatalog() {\n"
+"        if (products==null) {\n"
+"            products = em.createQuery(\"select p from Product p where p."
+"deleted = false\")\n"
+"                .getResultList();\n"
+"        }\n"
+"        return products;\n"
+"    }\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: events.xml:237
@@ -617,6 +679,25 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Stateless\n"
+"public class ProductManager {\n"
+"\n"
+"    @PersistenceContext EntityManager em;\n"
+"    @Observable Event<Product> productEvent;\n"
+"\n"
+"    public void delete(Product product) {\n"
+"        em.delete(product);\n"
+"        productEvent.fire(product, new AnnotationLiteral<Deleted>(){});\n"
+"    }\n"
+"    \n"
+"    public void persist(Product product) {\n"
+"        em.persist(product);\n"
+"        productEvent.fire(product, new AnnotationLiteral<Created>(){});\n"
+"    }\n"
+"    \n"
+"    ...\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: events.xml:247
@@ -647,3 +728,20 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[@ApplicationScoped @Singleton\n"
+"public class Catalog {\n"
+"\n"
+"    ...\n"
+"    \n"
+"    void addProduct(@AfterTransactionSuccess @Observes @Created Product "
+"product) {\n"
+"        products.add(product);\n"
+"    }\n"
+"    \n"
+"    void addProduct(@AfterTransactionSuccess @Observes @Deleted Product "
+"product) {\n"
+"        products.remove(product);\n"
+"    }\n"
+"    \n"
+"}]]>"
+

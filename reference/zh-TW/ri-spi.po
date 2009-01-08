@@ -1,17 +1,20 @@
+# translation of ri-spi.po to Traditional Chinese
 # Language zh-TW translations for Introduction_to_Web_Beans package.
-# Automatically generated, 2009.
 #
+# Automatically generated, 2009.
+# Terry Chuang <tchuang@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-06 11:30+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-08 10:59+1000\n"
+"Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
+"Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: ri-spi.xml:4
@@ -44,7 +47,7 @@ msgstr ""
 #: ri-spi.xml:24
 #, no-c-format
 msgid "The Web Beans RI SPI"
-msgstr ""
+msgstr "Web Beans RI SPI"
 
 #. Tag: para
 #: ri-spi.xml:26
@@ -70,7 +73,7 @@ msgstr ""
 #: ri-spi.xml:43
 #, no-c-format
 msgid "Web Bean Discovery"
-msgstr ""
+msgstr "Web Bean Discovery"
 
 #. Tag: programlisting
 #: ri-spi.xml:45
@@ -101,6 +104,30 @@ msgid ""
 "   \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public interface WebBeanDiscovery {\n"
+"   /**\n"
+"    * Gets list of all classes in classpath archives with web-beans.xml "
+"files\n"
+"    * \n"
+"    * @return An iterable over the classes \n"
+"    */\n"
+"   public Iterable<Class<?>> discoverWebBeanClasses();\n"
+"   \n"
+"   /**\n"
+"    * Gets a list of all web-beans.xml files in the app classpath\n"
+"    * \n"
+"    * @return An iterable over the web-beans.xml files \n"
+"    */\n"
+"   public Iterable<URL> discoverWebBeansXml();\n"
+"   \n"
+"   /**\n"
+"    * Gets a descriptor for each EJB in the application\n"
+"    * \n"
+"    * @return The bean class to descriptor map \n"
+"    */\n"
+"   public Iterable<EjbDescriptor<?>> discoverEjbs();\n"
+"   \n"
+"}]]>"
 
 #. Tag: para
 #: ri-spi.xml:47
@@ -201,6 +228,81 @@ msgid ""
 "   \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public interface EjbDescriptor<T> {\n"
+"   \n"
+"   /**\n"
+"    * Gets the EJB type\n"
+"    * \n"
+"    * @return The EJB Bean class\n"
+"    */\n"
+"   public Class<T> getType();\n"
+"\n"
+"   /**\n"
+"    * Gets the local business interfaces of the EJB\n"
+"    * \n"
+"    * @return An iterator over the local business interfaces\n"
+"    */\n"
+"   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces"
+"();\n"
+"   \n"
+"   /**\n"
+"    * Gets the remote business interfaces of the EJB\n"
+"    * \n"
+"    * @return An iterator over the remote business interfaces\n"
+"    */\n"
+"   public Iterable<BusinessInterfaceDescriptor<?>> "
+"getRemoteBusinessInterfaces();\n"
+"   \n"
+"   /**\n"
+"    * Get the remove methods of the EJB\n"
+"    * \n"
+"    * @return An iterator over the remove methods\n"
+"    */\n"
+"   public Iterable<Method> getRemoveMethods();\n"
+"\n"
+"   /**\n"
+"    * Indicates if the bean is stateless\n"
+"    * \n"
+"    * @return True if stateless, false otherwise\n"
+"    */\n"
+"   public boolean isStateless();\n"
+"\n"
+"   /**\n"
+"    * Indicates if the bean is a EJB 3.1 Singleton\n"
+"    * \n"
+"    * @return True if the bean is a singleton, false otherwise\n"
+"    */\n"
+"   public boolean isSingleton();\n"
+"\n"
+"   /**\n"
+"    * Indicates if the EJB is stateful\n"
+"    * \n"
+"    * @return True if the bean is stateful, false otherwise\n"
+"    */\n"
+"   public boolean isStateful();\n"
+"\n"
+"   /**\n"
+"    * Indicates if the EJB is and MDB\n"
+"    * \n"
+"    * @return True if the bean is an MDB, false otherwise\n"
+"    */\n"
+"   public boolean isMessageDriven();\n"
+"\n"
+"   /**\n"
+"    * Gets the EJB name\n"
+"    * \n"
+"    * @return The name\n"
+"    */\n"
+"   public String getEjbName();\n"
+"   \n"
+"   /**\n"
+"    * @return The JNDI string which can be used to lookup a proxy which \n"
+"    * implements all local business interfaces \n"
+"    * \n"
+"    */\n"
+"   public String getLocalJndiName();\n"
+"   \n"
+"}]]>"
 
 #. Tag: para
 #: ri-spi.xml:62
@@ -229,12 +331,14 @@ msgid ""
 "org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
 "integration.jbossas.WebBeanDiscoveryImpl"
 msgstr ""
+"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
+"integration.jbossas.WebBeanDiscoveryImpl"
 
 #. Tag: title
 #: ri-spi.xml:80
 #, no-c-format
 msgid "JNDI"
-msgstr ""
+msgstr "JNDI"
 
 #. Tag: para
 #: ri-spi.xml:82
@@ -272,6 +376,27 @@ msgid ""
 "   \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public interface Naming extends Serializable {\n"
+"   \n"
+"   /**\n"
+"    * Typed JNDI lookup\n"
+"    * \n"
+"    * @param <T> The type\n"
+"    * @param name The JNDI name\n"
+"    * @param expectedType The expected type\n"
+"    * @return The object\n"
+"    */\n"
+"   public <T> T lookup(String name, Class<? extends T> expectedType);\n"
+"\n"
+"   /**\n"
+"    * Binds an item to JNDI\n"
+"    * \n"
+"    * @param key The key to bind under\n"
+"    * @param value The item to bind\n"
+"    */\n"
+"   public void bind(String key, Object value);\n"
+"   \n"
+"}]]>"
 
 #. Tag: para
 #: ri-spi.xml:92 ri-spi.xml:113
@@ -283,13 +408,13 @@ msgstr ""
 #: ri-spi.xml:96
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.Naming=com.acme.MyNaming"
-msgstr ""
+msgstr "org.jboss.webbeans.resources.spi.Naming=com.acme.MyNaming"
 
 #. Tag: title
 #: ri-spi.xml:101
 #, no-c-format
 msgid "Resource loading"
-msgstr ""
+msgstr "資源載入"
 
 #. Tag: para
 #: ri-spi.xml:103
@@ -336,12 +461,41 @@ msgid ""
 "}\n"
 "         ]]>"
 msgstr ""
+"<![CDATA[\n"
+"         public interface ResourceLoader {\n"
+"    \n"
+"   /**\n"
+"    * Creates a class from a given FQCN\n"
+"    * \n"
+"    * @param name The name of the clsas\n"
+"    * @return The class\n"
+"    */\n"
+"   public Class<?> classForName(String name);\n"
+"   \n"
+"   /**\n"
+"    * Gets a resource as a URL by name\n"
+"    * \n"
+"    * @param name The name of the resource\n"
+"    * @return An URL to the resource\n"
+"    */\n"
+"   public URL getResource(String name);\n"
+"   \n"
+"   /**\n"
+"    * Gets resources as URLs by name\n"
+"    * \n"
+"    * @param name The name of the resource\n"
+"    * @return An iterable reference to the URLS\n"
+"    */\n"
+"   public Iterable<URL> getResources(String name);\n"
+"   \n"
+"}\n"
+"         ]]>"
 
 #. Tag: programlisting
 #: ri-spi.xml:117
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
-msgstr ""
+msgstr "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
 
 #. Tag: title
 #: ri-spi.xml:124
@@ -376,7 +530,7 @@ msgstr ""
 #: ri-spi.xml:147
 #, no-c-format
 msgid "The <literal>webbeans-ri.jar</literal>"
-msgstr ""
+msgstr "<literal>webbeans-ri.jar</literal>"
 
 #. Tag: para
 #: ri-spi.xml:151
@@ -387,3 +541,4 @@ msgid ""
 "literal> into the applications isolated classloader. It cannot be loaded "
 "from a shared classloader."
 msgstr ""
+

@@ -1,17 +1,20 @@
+# translation of specialization.po to Traditional Chinese
 # Language zh-TW translations for Introduction_to_Web_Beans package.
-# Automatically generated, 2009.
 #
+# Automatically generated, 2009.
+# Terry Chuang <tchuang@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: specialization\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-06 11:30+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-08 11:01+1000\n"
+"Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
+"Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: specialization.xml:4
@@ -39,6 +42,11 @@ msgid ""
 "    ...\n"
 "}"
 msgstr ""
+"@CreditCard @Stateless\n"
+"public class CreditCardPaymentProcessor \n"
+"        implements PaymentProcessor {\n"
+"    ...\n"
+"}"
 
 #. Tag: para
 #: specialization.xml:13
@@ -58,6 +66,11 @@ msgid ""
 "    ...\n"
 "}"
 msgstr ""
+"@CreditCard @Stateless @Staging\n"
+"public class StagingCreditCardPaymentProcessor \n"
+"        implements PaymentProcessor {\n"
+"    ...\n"
+"}"
 
 #. Tag: para
 #: specialization.xml:18
@@ -75,7 +88,7 @@ msgstr ""
 #: specialization.xml:24
 #, no-c-format
 msgid "@CreditCard PaymentProcessor ccpp"
-msgstr ""
+msgstr "@CreditCard PaymentProcessor ccpp"
 
 #. Tag: para
 #: specialization.xml:26
@@ -187,6 +200,11 @@ msgid ""
 "    ...\n"
 "}"
 msgstr ""
+"@Stateless @Staging @Specializes\n"
+"public class StagingCreditCardPaymentProcessor \n"
+"        extends CreditCardPaymentProcessor {\n"
+"    ...\n"
+"}"
 
 #. Tag: para
 #: specialization.xml:79
@@ -269,8 +287,7 @@ msgstr ""
 #. Tag: para
 #: specialization.xml:124
 #, no-c-format
-msgid ""
-"there is no other enabled Web Bean that also specializes the superclass."
+msgid "there is no other enabled Web Bean that also specializes the superclass."
 msgstr ""
 
 #. Tag: para
@@ -289,3 +306,4 @@ msgid ""
 "emphasis> be called in any deployment of the system where the Web Bean "
 "annotated <literal>@Specializes</literal> is deployed and enabled."
 msgstr ""
+

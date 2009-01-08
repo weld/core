@@ -1,17 +1,20 @@
+# translation of injection.po to Traditional Chinese
 # Language zh-TW translations for Introduction_to_Web_Beans package.
-# Automatically generated, 2009.
 #
+# Automatically generated, 2009.
+# Terry Chuang <tchuang@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-06 11:30+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-08 09:54+1000\n"
+"Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
+"Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: injection.xml:4
@@ -46,6 +49,16 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class Checkout {\n"
+"        \n"
+"    private final ShoppingCart cart;\n"
+"    \n"
+"    @Initializer\n"
+"    public Checkout(ShoppingCart cart) {\n"
+"        this.cart = cart;\n"
+"    }\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:12
@@ -68,6 +81,16 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class Checkout {\n"
+"        \n"
+"    private ShoppingCart cart;\n"
+"\n"
+"    @Initializer \n"
+"    void setShoppingCart(ShoppingCart cart) {\n"
+"        this.cart = cart;\n"
+"    }\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:16
@@ -85,6 +108,11 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class Checkout {\n"
+"\n"
+"    private @Current ShoppingCart cart;\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:20
@@ -157,6 +185,9 @@ msgid ""
 "    return new Checkout(cart);\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Produces Checkout createCheckout(ShoppingCart cart) {\n"
+"    return new Checkout(cart);\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:55
@@ -218,8 +249,7 @@ msgstr ""
 #. Tag: para
 #: injection.xml:88
 #, no-c-format
-msgid ""
-"Let's explore how the Web Beans manager determines a Web Bean to be injected."
+msgid "Let's explore how the Web Beans manager determines a Web Bean to be injected."
 msgstr ""
 
 #. Tag: title
@@ -247,6 +277,10 @@ msgid ""
 "    public void process(Payment payment) { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@PayByCheque\n"
+"public class ChequePaymentProcessor implements PaymentProcessor {\n"
+"    public void process(Payment payment) { ... }\n"
+"}]]>"
 
 #. Tag: programlisting
 #: injection.xml:100
@@ -257,6 +291,10 @@ msgid ""
 "    public void process(Payment payment) { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@PayByCreditCard\n"
+"public class CreditCardPaymentProcessor implements PaymentProcessor {\n"
+"    public void process(Payment payment) { ... }\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:102
@@ -275,6 +313,10 @@ msgid ""
 "@BindingType\n"
 "public @interface PayByCheque {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+"@BindingType\n"
+"public @interface PayByCheque {}]]>"
 
 #. Tag: programlisting
 #: injection.xml:107
@@ -285,6 +327,10 @@ msgid ""
 "@BindingType\n"
 "public @interface PayByCreditCard {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+"@BindingType\n"
+"public @interface PayByCreditCard {}]]>"
 
 #. Tag: para
 #: injection.xml:109
@@ -307,6 +353,8 @@ msgid ""
 "<![CDATA[@PayByCheque PaymentProcessor chequePaymentProcessor;\n"
 "@PayByCreditCard PaymentProcessor creditCardPaymentProcessor;]]>"
 msgstr ""
+"<![CDATA[@PayByCheque PaymentProcessor chequePaymentProcessor;\n"
+"@PayByCreditCard PaymentProcessor creditCardPaymentProcessor;]]>"
 
 #. Tag: para
 #: injection.xml:116
@@ -327,6 +375,14 @@ msgid ""
 "   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Initializer\n"
+"public void setPaymentProcessors(@PayByCheque PaymentProcessor "
+"chequePaymentProcessor, \n"
+"                                 @PayByCreditCard PaymentProcessor "
+"creditCardPaymentProcessor) {\n"
+"   this.chequePaymentProcessor = chequePaymentProcessor;\n"
+"   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:120
@@ -346,6 +402,13 @@ msgid ""
 "   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Initializer\n"
+"public Checkout(@PayByCheque PaymentProcessor chequePaymentProcessor, \n"
+"                @PayByCreditCard PaymentProcessor "
+"creditCardPaymentProcessor) {\n"
+"   this.chequePaymentProcessor = chequePaymentProcessor;\n"
+"   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
+"}]]>"
 
 #. Tag: title
 #: injection.xml:125
@@ -370,6 +433,12 @@ msgid ""
 "    PaymentType value();\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+"@BindingType\n"
+"public @interface PayBy {\n"
+"    PaymentType value();\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:131
@@ -384,6 +453,8 @@ msgid ""
 "<![CDATA[@PayBy(CHEQUE) PaymentProcessor chequePaymentProcessor;\n"
 "@PayBy(CREDIT_CARD) PaymentProcessor creditCardPaymentProcessor;]]>"
 msgstr ""
+"<![CDATA[@PayBy(CHEQUE) PaymentProcessor chequePaymentProcessor;\n"
+"@PayBy(CREDIT_CARD) PaymentProcessor creditCardPaymentProcessor;]]>"
 
 #. Tag: para
 #: injection.xml:135
@@ -408,9 +479,8 @@ msgstr ""
 #. Tag: programlisting
 #: injection.xml:145
 #, no-c-format
-msgid ""
-"<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
-msgstr ""
+msgid "<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
+msgstr "<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
 
 #. Tag: para
 #: injection.xml:147
@@ -443,6 +513,12 @@ msgid ""
 "    return new AsynchronousPaymentProcessor(processor);\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Produces \n"
+"@Asynchronous @PayByCheque \n"
+"PaymentProcessor createAsyncPaymentProcessor(@PayByCheque PaymentProcessor "
+"processor) {\n"
+"    return new AsynchronousPaymentProcessor(processor);\n"
+"}]]>"
 
 #. Tag: title
 #: injection.xml:162
@@ -516,6 +592,10 @@ msgid ""
 "  @DeploymentType\n"
 "  public @interface Mock {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"  @Target({TYPE, METHOD})\n"
+"  @DeploymentType\n"
+"  public @interface Mock {}]]>"
 
 #. Tag: para
 #: injection.xml:199
@@ -537,6 +617,13 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class ExternalPaymentProcessor {\n"
+"        \n"
+"    public void process(Payment p) {\n"
+"        ...\n"
+"    }\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:204
@@ -568,6 +655,15 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Mock \n"
+"public class MockPaymentProcessor implements PaymentProcessor {\n"
+"\n"
+"    @Override\n"
+"    public void process(Payment p) {\n"
+"        p.setSuccessful(true);\n"
+"    }\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:212
@@ -614,6 +710,13 @@ msgid ""
 "    </Deploy>\n"
 "</WebBeans>]]>"
 msgstr ""
+"<![CDATA[<WebBeans>\n"
+"    <Deploy>\n"
+"        <Standard/>\n"
+"        <Production/>\n"
+"        <test:Mock/>\n"
+"    </Deploy>\n"
+"</WebBeans>]]>"
 
 #. Tag: para
 #: injection.xml:229
@@ -662,7 +765,7 @@ msgstr ""
 #: injection.xml:251
 #, no-c-format
 msgid "<![CDATA[@Current PaymentProcessor paymentProcessor]]>"
-msgstr ""
+msgstr "<![CDATA[@Current PaymentProcessor paymentProcessor]]>"
 
 #. Tag: para
 #: injection.xml:253
@@ -724,8 +827,7 @@ msgstr ""
 #. Tag: para
 #: injection.xml:286
 #, no-c-format
-msgid ""
-"Deployment types are useful for all kinds of things, here's some examples:"
+msgid "Deployment types are useful for all kinds of things, here's some examples:"
 msgstr ""
 
 #. Tag: para
@@ -931,7 +1033,7 @@ msgstr ""
 #: injection.xml:397
 #, no-c-format
 msgid "<![CDATA[@Current Manager manager;]]>"
-msgstr ""
+msgstr "<![CDATA[@Current Manager manager;]]>"
 
 #. Tag: para
 #: injection.xml:399
@@ -948,6 +1050,8 @@ msgid ""
 "<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
 "class);]]>"
 msgstr ""
+"<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
+"class);]]>"
 
 #. Tag: para
 #: injection.xml:404
@@ -967,6 +1071,10 @@ msgid ""
 "                                               new "
 "AnnotationLiteral<CreditCard>(){});]]>"
 msgstr ""
+"<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
+"class, \n"
+"                                               new "
+"AnnotationLiteral<CreditCard>(){});]]>"
 
 #. Tag: para
 #: injection.xml:410
@@ -985,6 +1093,9 @@ msgid ""
 "    extends AnnotationLiteral<CreditCard> \n"
 "    implements CreditCard {}]]>"
 msgstr ""
+"<![CDATA[abstract class CreditCardBinding \n"
+"    extends AnnotationLiteral<CreditCard> \n"
+"    implements CreditCard {}]]>"
 
 #. Tag: programlisting
 #: injection.xml:415
@@ -997,6 +1108,12 @@ msgid ""
 "{ return paymentType; } \n"
 "                                               } );]]>"
 msgstr ""
+"<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
+"class, \n"
+"                                               new CreditCardBinding() { \n"
+"                                                   public void value() "
+"{ return paymentType; } \n"
+"                                               } );]]>"
 
 #. Tag: title
 #: injection.xml:419
@@ -1104,7 +1221,7 @@ msgstr ""
 #: injection.xml:468
 #, no-c-format
 msgid "<![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]>"
-msgstr ""
+msgstr "<![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]>"
 
 #. Tag: para
 #: injection.xml:470
@@ -1127,6 +1244,14 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[class LogFactory {\n"
+"\n"
+"   @Produces Logger createLogger(InjectionPoint injectionPoint) { \n"
+"      return Logger.getLogger(injectionPoint.getMember().getDeclaringClass()."
+"getName()); \n"
+"   }\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:475
@@ -1138,7 +1263,7 @@ msgstr ""
 #: injection.xml:477
 #, no-c-format
 msgid "<![CDATA[@Current Logger log;]]>"
-msgstr ""
+msgstr "<![CDATA[@Current Logger log;]]>"
 
 #. Tag: para
 #: injection.xml:479
@@ -1159,6 +1284,12 @@ msgid ""
 "   @NonBinding public String value();\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@BindingType\n"
+"@Retention(RUNTIME)\n"
+"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+"public @interface HttpParam {\n"
+"   @NonBinding public String value();\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:484
@@ -1173,6 +1304,8 @@ msgid ""
 "<![CDATA[@HttpParam(\"username\") String username;\n"
 "@HttpParam(\"password\") String password;]]>"
 msgstr ""
+"<![CDATA[@HttpParam(\"username\") String username;\n"
+"@HttpParam(\"password\") String password;]]>"
 
 #. Tag: para
 #: injection.xml:488
@@ -1194,6 +1327,15 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[class HttpParams\n"
+"\n"
+"   @Produces @HttpParam(\"\")\n"
+"   String getParamValue(ServletRequest request, InjectionPoint ip) {\n"
+"      return request.getParameter(ip.getAnnotation(HttpParam.class).value"
+"());\n"
+"   }\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:492
@@ -1224,3 +1366,11 @@ msgid ""
 "   public Set<T extends Annotation> getAnnotations(); \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public interface InjectionPoint { \n"
+"   public Object getInstance(); \n"
+"   public Bean<?> getBean(); \n"
+"   public Member getMember(): \n"
+"   public <T extends Annotation> T getAnnotation(Class<T> annotation); \n"
+"   public Set<T extends Annotation> getAnnotations(); \n"
+"}]]>"
+

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Author_Group\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 09:26+1000\n"
+"PO-Revision-Date: 2009-01-08 09:27+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -29,12 +29,14 @@ msgid ""
 "<jobtitle>Web Beans (JSR-299) specification lead</jobtitle> <orgname>Red Hat "
 "Middleware LLC</orgname>"
 msgstr ""
+"<jobtitle>Web Beans (JSR-299) specification lead</jobtitle> <orgname>Red Hat "
+"Middleware LLC</orgname>"
 
 #. Tag: author
 #: Author_Group.xml:12
 #, no-c-format
 msgid "<firstname>Pete</firstname> <surname>Muir</surname>"
-msgstr ""
+msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
 
 #. Tag: affiliation
 #: Author_Group.xml:15
@@ -43,22 +45,24 @@ msgid ""
 "<jobtitle>Web Beans (JSR-299) Reference Implementation lead </jobtitle> "
 "<orgname>Red Hat Middleware LLC</orgname>"
 msgstr ""
+"<jobtitle>Web Beans (JSR-299) Reference Implementation lead </jobtitle> "
+"<orgname>Red Hat Middleware LLC</orgname>"
 
 #. Tag: othercredit
 #: Author_Group.xml:21
 #, no-c-format
 msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
-msgstr ""
+msgstr "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
 
 #. Tag: contrib
 #: Author_Group.xml:24 Author_Group.xml:29
 #, no-c-format
 msgid "Italian Translation"
-msgstr ""
+msgstr "義大利文翻譯"
 
 #. Tag: othercredit
 #: Author_Group.xml:26
 #, no-c-format
 msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
-msgstr ""
+msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
 
