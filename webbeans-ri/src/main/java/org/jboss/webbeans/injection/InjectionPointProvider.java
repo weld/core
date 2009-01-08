@@ -26,10 +26,10 @@ import javax.webbeans.manager.Bean;
 import org.jboss.webbeans.introspector.AnnotatedMember;
 
 /**
- * Used to create the container provided implementation for the
- * InjectionPoint beans. The instance maintains state information
- * on a stack so that this information is readily available for
- * construction of a new InjectionPoint bean instance.
+ * Used to create the container provided implementation for the InjectionPoint
+ * beans. The instance maintains state information on a stack so that this
+ * information is readily available for construction of a new InjectionPoint
+ * bean instance.
  * 
  * @author David Allen
  * 
@@ -73,8 +73,8 @@ public class InjectionPointProvider
    }
 
    /**
-    * Pops the bean from the stack.  This should be called
-    * whenever all processing is complete for instantiating a bean.
+    * Pops the bean from the stack. This should be called whenever all
+    * processing is complete for instantiating a bean.
     */
    public void popBean()
    {
@@ -82,8 +82,8 @@ public class InjectionPointProvider
    }
 
    /**
-    * Pops the current instance from the stack.  This should be called
-    * whenever all processing is complete for instantiating a bean.
+    * Pops the current instance from the stack. This should be called whenever
+    * all processing is complete for instantiating a bean.
     */
    public void popInstance()
    {
@@ -91,8 +91,8 @@ public class InjectionPointProvider
    }
 
    /**
-    * Pops the current injection point being processed.  This should be called once
-    * the injection point is bound.
+    * Pops the current injection point being processed. This should be called
+    * once the injection point is bound.
     */
    public void popInjectionPoint()
    {
@@ -100,32 +100,58 @@ public class InjectionPointProvider
    }
 
    /**
-    * Returns the InjectionPoint where the current bean under construction
-    * is being injected.
+    * Returns the InjectionPoint where the current bean under construction is
+    * being injected.
     * 
     * @return a new injection point metadata object
     */
    public InjectionPoint getPreviousInjectionPoint()
    {
-      // When the injected member is a constructor, we are short one instance,
-      // so the instance on the top of the stack is the bean instance
-      // we want. Otherwise, it is the second to last instance same as
-      // the bean stack.
-      InjectionPoint injectionPoint = null;
+      return new InjectionPointImpl(getPreviousInjectionMember(), getPreviousBean(), getPreviousInstance());
+   }
+
+   protected Bean<?> getPreviousBean()
+   {
       Bean<?> currentBean = beans.pop();
-      AnnotatedMember<?, ? extends Member> currentInjection = injectionPoints.pop();
+      Bean<?> result = beans.peek();
+      beans.push(currentBean);
+      return result;
+   }
+
+   protected Object getPreviousInstance()
+   {
+      Object result = null;
       if (beanInstances.size() < beans.size())
       {
-         injectionPoint = new InjectionPointImpl(injectionPoints.peek(), beans.peek(), beanInstances.peek());
+         // Return top of stack since this is the previous instance when a
+         // constructor is being invoked with injection points
+         result = beanInstances.peek();
       }
       else
       {
          Object currentInstance = beanInstances.pop();
-         injectionPoint = new InjectionPointImpl(injectionPoints.peek(), beans.peek(), beanInstances.peek());
+         result = beanInstances.peek();
          beanInstances.push(currentInstance);
       }
-      beans.push(currentBean);
-      injectionPoints.push(currentInjection);
-      return injectionPoint;
+      return result;
+   }
+
+   protected AnnotatedMember<?, ? extends Member> getPreviousInjectionMember()
+   {
+      AnnotatedMember<?, ? extends Member> result = null;
+      if (injectionPoints.size() < beans.size())
+      {
+         // This case only occurs when some internal RI code wants the
+         // injection point but did not push an injection point that
+         // this metadata goes into.
+         result = injectionPoints.peek();
+      }
+      else
+      {
+         AnnotatedMember<?, ? extends Member> currentMember = injectionPoints.pop();
+         result = injectionPoints.peek();
+         injectionPoints.push(currentMember);
+      }
+      return result;
    }
 }
