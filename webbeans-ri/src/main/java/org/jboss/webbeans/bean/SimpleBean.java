@@ -23,7 +23,6 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.persistence.EntityManagerFactory;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Initializer;
 import javax.webbeans.InjectionPoint;
@@ -222,14 +221,11 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void injectEjbAndCommonFields(T beanInstance)
    {
-      InjectionPointFactory injectionPointFactory = manager.getInjectionPointFactory();
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getEJBAnnotation()))
       {
-         injectionPointFactory.pushInjectionPoint(field);
          InjectionPoint injectionPoint = new InjectionPointImpl(field, this, beanInstance);
          Object ejbInstance = manager.getEjbResolver().resolveEjb(injectionPoint, manager.getNaming());
          field.inject(beanInstance, ejbInstance);
-         injectionPointFactory.popInjectionPoint();
       }
 
       for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getEjbResolver().getEJBAnnotation()))
@@ -242,9 +238,8 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getPersistenceContextAnnotation()))
       {
          InjectionPoint injectionPoint = new InjectionPointImpl(field, this, beanInstance);
-         EntityManagerFactory entityManagerFactory = manager.getEjbResolver().resolvePersistenceUnit(injectionPoint, manager.getNaming());
-         field.inject(beanInstance, entityManagerFactory.createEntityManager());
-         injectionPointFactory.popInjectionPoint();
+         Object persistenceContext = manager.getEjbResolver().resolvePersistenceUnit(injectionPoint, manager.getNaming());
+         field.inject(beanInstance, persistenceContext);
       }
    }
 

@@ -2,7 +2,7 @@ package org.jboss.webbeans.ejb.spi;
 
 import java.lang.annotation.Annotation;
 
-import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityManager;
 import javax.webbeans.InjectionPoint;
 
 import org.jboss.webbeans.resources.spi.Naming;
@@ -20,7 +20,7 @@ public interface EjbResolver
    public static final String PROPERTY_NAME = EjbResolver.class.getName();
    
    /**
-    * Resolve the JNDI name for the @EJB injection point
+    * Resolve the value for the given @EJB injection point
     * 
     * @param injectionPoint The injection point metadata
     * @return the JNDI name
@@ -28,12 +28,12 @@ public interface EjbResolver
    public Object resolveEjb(InjectionPoint injectionPoint, Naming naming);
    
    /**
-    * Resolve the JNDI name for the @PersistenceContext injection point
+    * Resolve the value for the given @PersistenceContext injection point
     * 
     * @param injectionPoint The injection point metadata
     * @return the JNDI name
     */
-   public EntityManagerFactory resolvePersistenceUnit(InjectionPoint injectionPoint, Naming naming);
+   public Object resolvePersistenceUnit(InjectionPoint injectionPoint, Naming naming);
    
    public Class<? extends Annotation> getEJBAnnotation();
    
