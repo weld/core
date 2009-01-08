@@ -95,4 +95,10 @@ public class InjectionPointImpl implements InjectionPoint
    {
       return this.memberInjectionPoint.isAnnotationPresent(annotationType);
    }
+   
+   @Override
+   public String toString()
+   {
+      return memberInjectionPoint.toString();
+   }
 }
