@@ -28,8 +28,7 @@ public interface EjbResolver
     *           The injection point metadata
     * @return the JNDI name
     * @throws IllegalArgumentException
-    *            if the injection point is not annotated with
-    * @EJB
+    *            if the injection point is not annotated with @EJB
     * @throws DefinitionException
     *            if the injection point is not suitable for injection
     * @throws IllegalStateException
@@ -46,11 +45,9 @@ public interface EjbResolver
     *           The injection point metadata
     * @return the JNDI name
     * @throws IllegalArgumentException
-    *            if the injection point is not annotated with
-    * @PersistenceContext
+    *            if the injection point is not annotated with @PersistenceContext
     * @throws UnsupportedOperationException
-    *            if the injection point is annotated
-    * @PersistenceContext(EXTENTED)
+    *            if the injection point is annotated @PersistenceContext(EXTENTED)
     * @throws IllegalStateException
     *            if no suitable persistence units can be resolved for injection
     */
@@ -61,8 +58,7 @@ public interface EjbResolver
     * 
     * @EJB injection point
     * 
-    * @return the annotation which defines an
-    * @EJB injection point
+    * @return the annotation which defines an @EJB injection point
     */
    public Class<? extends Annotation> getEJBAnnotation();
    
@@ -71,8 +67,7 @@ public interface EjbResolver
     * 
     * @PersistenceContext injection point
     * 
-    * @return the annoation which defines a
-    * @PersistenceContext injection point
+    * @return the annoation which defines a @PersistenceContext injection point
     */
    public Class<? extends Annotation> getPersistenceContextAnnotation();
    
