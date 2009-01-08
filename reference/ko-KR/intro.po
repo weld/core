@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 10:58+1000\n"
+"PO-Revision-Date: 2009-01-08 16:36+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,12 +16,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
+"\n"
 
 #. Tag: title
 #: intro.xml:4
 #, no-c-format
 msgid "Getting started with Web Beans"
-msgstr ""
+msgstr "Web Beans로 시작하기 "
 
 #. Tag: para
 #: intro.xml:6
@@ -38,7 +41,7 @@ msgstr ""
 #: intro.xml:13
 #, no-c-format
 msgid "Your first Web Bean"
-msgstr ""
+msgstr "첫 번째 Web Bean "
 
 #. Tag: para
 #: intro.xml:15
@@ -255,13 +258,13 @@ msgstr ""
 #: intro.xml:80
 #, no-c-format
 msgid "What is a Web Bean?"
-msgstr ""
+msgstr "Web Bean은 무엇인가요?  "
 
 #. Tag: para
 #: intro.xml:82
 #, no-c-format
 msgid "So what, <emphasis>exactly</emphasis>, is a Web Bean?"
-msgstr ""
+msgstr "<emphasis>정확하게</emphasis> Web Bean은 무엇인가요?"
 
 #. Tag: para
 #: intro.xml:84
@@ -273,7 +276,7 @@ msgid ""
 "Beans are managed automatically by the Web Bean manager. Most Web Beans are "
 "<emphasis>stateful</emphasis> and <emphasis>contextual</emphasis>. The "
 "lifecycle of a Web Bean is always managed by the Web Bean manager."
-msgstr ""
+msgstr "Web Bean은 비지니스 로직이 들어 있는 애플리케이션 클래스입니다. Web Bean은 Java 코드에서 직접 불러오거나 또는 Unified EL을 통해 불러올 수 있습니다. Web Bean은 트랜젝션 리소스에 액세스할 수 있습니다. Web Beans 사이에서의 종속성은 Web Bean 관리자에 의해 자동으로 관리됩니다. 대부분의 Web Beans은 <emphasis>상태 유지 (stateful)</emphasis> 및 <emphasis>컨텍스트</emphasis> 기반입니다. Web Bean 수명 주기는 항상 Web Bean 관리자에 의해 관리됩니다.  "
 
 #. Tag: para
 #: intro.xml:91
