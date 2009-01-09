@@ -1,23 +1,27 @@
+# translation of next.po to Korean
 # Language ko-KR translations for Introduction_to_Web_Beans package.
-# Automatically generated, 2009.
 #
+# Automatically generated, 2009.
+# Eunju Kim <eukim@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: next\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-06 11:30+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-09 11:31+1000\n"
+"Last-Translator: Eunju Kim <eukim@redhat.com>\n"
+"Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
 
 #. Tag: title
 #: next.xml:4
 #, no-c-format
 msgid "Next steps"
-msgstr ""
+msgstr "다음 단계 "
 
 #. Tag: para
 #: next.xml:6
@@ -25,7 +29,7 @@ msgstr ""
 msgid ""
 "Because Web Beans is so new, there's not yet a lot of information available "
 "online."
-msgstr ""
+msgstr "Web Beans는 새로운 기능이기 때문에 아직 온라인에서 사용 가능한 정보가 많지 않습니다. "
 
 #. Tag: para
 #: next.xml:9
@@ -36,7 +40,7 @@ msgid ""
 "the length of this article, and almost as readable. But, of course, it "
 "covers many details that we've skipped over. The spec is available from "
 "<literal>http://jcp.org/en/jsr/detail?id=299</literal>."
-msgstr ""
+msgstr "Web Beans 사양은 자세한 Web Beans 정보가 있는 최고의 소스입니다. 이는 약 100 페이지로 된 이 문서의 두 배 길이로 대부분 읽을 수 있습니다. 이는 여기서 생략된 내용을 자세하게 다루고 있으며, <literal>http://jcp.org/en/jsr/detail?id=299</literal>에서 보실 수 있습니다.  "
 
 #. Tag: para
 #: next.xml:15
@@ -46,4 +50,5 @@ msgid ""
 "seamframework.org/WebBeans</literal>. The RI development team and the Web "
 "Beans spec lead blog at <literal>http://in.relation.to</literal>. This "
 "article is substantially based upon a series of blog entries published there."
-msgstr ""
+msgstr "Web Beans Reference 구현은 <literal>http://seamframework.org/WebBeans</literal>에서 개발되고 있습니다. RI 개발팀 및 Web Beans 사양은 <literal>http://in.relation.to</literal>에 있는 블로그에 있습니다. 이러한 문서는  실질적으로 블로그에 게시된 기사의 시리즈를 기반으로 합니다.  "
+
