@@ -14,7 +14,6 @@
 
    <developers>
       <developer>
-
          <name>Pete Muir</name>
          <roles>
             <role>Project Lead</role>
@@ -22,7 +21,6 @@
          <email>pete.muir@jboss.org</email>
          <organization>JBoss, a division of Red Hat</organization>
          <url>http://in.relation.to/Bloggers/Pete</url>
-
       </developer>
 
       <developer>
@@ -32,7 +30,6 @@
 
       <developer>
          <name>David Allen</name>
-
       </developer>
       
       <developer>
@@ -43,7 +40,6 @@
    <repositories>
       <repository>
          <id>repository.jboss.org</id>
-
          <name>JBoss Repository</name>
          <url>http://repository.jboss.org/maven2</url>
       </repository>
@@ -52,7 +48,6 @@
    <pluginRepositories>
       <pluginRepository>
          <id>repository.jboss.org</id>
-
          <name>JBoss Repository</name>
          <url>http://repository.jboss.org/maven2</url>
       </pluginRepository>
@@ -120,7 +115,6 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.14</version>
-
          </dependency>
 
          <dependency>
@@ -130,7 +124,6 @@
          </dependency>
          
          <dependency>
-
             <groupId>javax.faces</groupId>
             <artifactId>jsf-api</artifactId>
             <version>1.2_10</version>
@@ -146,7 +139,6 @@
             <groupId>org.jboss.ejb3</groupId>
             <artifactId>jboss-ejb3-embedded</artifactId>
             <version>1.0.0-Alpha1</version>
-
          </dependency>
          
          <dependency>
@@ -156,7 +148,6 @@
          </dependency>
 
          <dependency>
-
             <groupId>com.sun.facelets</groupId>
             <artifactId>jsf-facelets</artifactId>
             <version>1.1.15.B1</version>
@@ -257,7 +248,6 @@
                      </manifest>
                   </archive>
                </configuration>
-
             </plugin>
          </plugins>
       </pluginManagement>
@@ -364,7 +354,6 @@
             </configuration>
          </plugin>
       </plugins>
-
    </reporting>
    
 </project>
