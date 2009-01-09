@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-08 17:04+1000\n"
+"PO-Revision-Date: 2009-01-09 11:24+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +32,7 @@ msgid ""
 "Bean manager. This basic schema might sound like the familiar observer/"
 "observable pattern, but there are a couple of twists:"
 msgstr ""
-"La notificación de eventos de Web Beans permite a Web Beans interactuar de una manera completamente disociada. Los <emphasis>productores</emphasis> levantan eventos que son enviados luego a <emphasis>observadores</emphasis> de evento por el administrador de Web "
+"La notificación de eventos de Web Beans permite a Web Beans interactuar de una manera completamente disociada. Los <emphasis>productores</emphasis> crean eventos que son enviados luego a <emphasis>observadores</emphasis> de evento por el administrador de Web "
 "Beans. Este esquema básico podría sonar como el patrón de observador familiar/"
 "observable, pero hay un par de cambios:"
 
@@ -50,7 +50,7 @@ msgstr "no solamente los productores de eventos están disociados de los observa
 msgid ""
 "observers can specify a combination of \"selectors\" to narrow the set of "
 "event notifications they will receive, and"
-msgstr "los observadores pueden especificar una combinación de \"selectores\" para estrechar el conjunto de notificaciones de eventos que recibirán y "
+msgstr "los observadores pueden especificar una combinación de \"selectores\" para limitar el conjunto de notificaciones de eventos que recibirán y"
 
 #. Tag: para
 #: events.xml:22
@@ -185,7 +185,7 @@ msgid ""
 "with scope <literal>@Dependent</literal> and deployment type "
 "<literal>@Standard</literal>, with an implementation provided by the Web "
 "Bean manager."
-msgstr "La anotación <literal>@Observable</literal> define implícitamente un Web Bean con alcance <literal>@Dependent</literal> y tipo de despliegue <literal>@Standard</literal>, con una implementación provista por el administrador de Web Bean."
+msgstr "La anotación <literal>@Observable</literal> define implícitamente un Web Bean con ámbito <literal>@Dependent</literal> y tipo de despliegue <literal>@Standard</literal>, con una implementación provista por el administrador de Web Bean."
 
 #. Tag: para
 #: events.xml:72
@@ -217,7 +217,7 @@ msgstr "Un objeto de evento puede ser una instancia de una clase de Java que no 
 #: events.xml:83 events.xml:107 events.xml:126
 #, no-c-format
 msgid "has an event parameter to which the event object is assignable, and"
-msgstr "tenga un parámetro de evento al cual el objeto de evento sea asignable y "
+msgstr "tenga un parámetro de evento al cual el objeto de evento sea asignable y"
 
 #. Tag: para
 #: events.xml:86
@@ -233,7 +233,7 @@ msgid ""
 "event object as the value of the event parameter. If any observer method "
 "throws an exception, the Web Bean manager stops calling observer methods, "
 "and the exception is rethrown by the <literal>fire()</literal> method."
-msgstr "El administrador de Web Bean simplemente llama a todos los métodos de observador, pasando el objeto del evento como el valor de un parámetro de evento. Si cualquier método de observador lanza una excepción, el administrador de Web Bean se detiene llamando a los métodos de observador y la excepción es reenviada por le método <literal>fire()</literal>."
+msgstr "El administrador de Web Beans simplemente llama a todos los métodos de observador, pasando el objeto del evento como el valor de un parámetro de evento. Si cualquier método de observador lanza una excepción, el administrador de Web Beans se detiene llamando a los métodos de observador y la excepción es reenviada por le método <literal>fire()</literal>."
 
 #. Tag: para
 #: events.xml:95
@@ -241,7 +241,7 @@ msgstr "El administrador de Web Bean simplemente llama a todos los métodos de o
 msgid ""
 "To specify a \"selector\", the event producer may pass an instance of the "
 "event binding type to the <literal>fire()</literal> method:"
-msgstr ""
+msgstr "Para especificar un \"selector\", el productor del evento puede pasar una instancia del tipo de enlace del evento al método <literal>fire()</literal>:"
 
 #. Tag: programlisting
 #: events.xml:98
@@ -250,6 +250,8 @@ msgid ""
 "<![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>()"
 "{} );]]>"
 msgstr ""
+"<![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>()"
+"{} );]]>"
 
 #. Tag: para
 #: events.xml:100
@@ -258,13 +260,13 @@ msgid ""
 "The helper class <literal>AnnotationLiteral</literal> makes it possible to "
 "instantiate binding types inline, since this is otherwise difficult to do in "
 "Java."
-msgstr ""
+msgstr "La <literal>Anotación Literal</literal> clase auxiliar hace posible crear una instancia de tipos de enlaces en línea, ya que de otra manera es difícil hacerlo en Java."
 
 #. Tag: para
 #: events.xml:103
 #, no-c-format
 msgid "The event will be delivered to every observer method that:"
-msgstr ""
+msgstr "El evento será entregado a cada método de observador que:"
 
 #. Tag: para
 #: events.xml:110
@@ -272,7 +274,7 @@ msgstr ""
 msgid ""
 "does not specify any event binding <emphasis>except</emphasis> for the event "
 "bindings passed to <literal>fire()</literal>."
-msgstr ""
+msgstr "no especifique ningún enlace de evento <emphasis>excepto</emphasis> para enlaces de evento pasados a <literal>fire()</literal>."
 
 #. Tag: para
 #: events.xml:115
@@ -280,13 +282,13 @@ msgstr ""
 msgid ""
 "Alternatively, event bindings may be specified by annotating the event "
 "notifier injection point:"
-msgstr ""
+msgstr "De modo alternativo, se pueden especificar eventos de enlaces anotando el punto de inyección de notificador de eventos:"
 
 #. Tag: programlisting
 #: events.xml:118
 #, no-c-format
 msgid "<![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]>"
-msgstr ""
+msgstr "<![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]>"
 
 #. Tag: para
 #: events.xml:120
@@ -295,7 +297,7 @@ msgid ""
 "Then every event fired via this instance of <literal>Event</literal> has the "
 "annotated event binding. The event will be delivered to every observer "
 "method that:"
-msgstr ""
+msgstr "Luego cada evento disparado vía esta instancia de <literal>Evento</literal> tiene el enlace de evento anotado. El evento será enviado a cada método de observador que:"
 
 #. Tag: para
 #: events.xml:129
@@ -304,13 +306,13 @@ msgid ""
 "does not specify any event binding <emphasis>except</emphasis> for the event "
 "bindings passed to <literal>fire()</literal> or the annotated event bindings "
 "of the event notifier injection point."
-msgstr ""
+msgstr "no especifica ningún enlace de evento<emphasis>excepto</emphasis> para los enlaces de eventos pasados a  <literal>fire()</literal> o a los enlaces de evento anotados del punto de inyección del notificador de evento."
 
 #. Tag: title
 #: events.xml:138
 #, no-c-format
 msgid "Registering observers dynamically"
-msgstr ""
+msgstr "Registrando observadores dinámicamente"
 
 #. Tag: para
 #: events.xml:140
@@ -320,7 +322,7 @@ msgid ""
 "may implement the <literal>Observer</literal> interface and register an "
 "instance with an event notifier by calling the <literal>observe()</literal> "
 "method."
-msgstr ""
+msgstr "Suele ser útil registrar dinámicamente un observador de evento. La aplicación puede implementar la interfaz del  <literal>Observador</literal> y registrar una instancia con un notificador de evento llamando el método de <literal>observe()</literal>."
 
 #. Tag: programlisting
 #: events.xml:144
@@ -329,6 +331,8 @@ msgid ""
 "<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify"
 "(Document doc) { ... } } );]]>"
 msgstr ""
+"<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify"
+"(Document doc) { ... } } );]]>"
 
 #. Tag: para
 #: events.xml:146
@@ -338,6 +342,8 @@ msgid ""
 "or by passing event binding type instances to the <literal>observe()</"
 "literal> method:"
 msgstr ""
+"Los tipos de enlace de evento pueden ser especificados por el punto de inyección del notificador del evento o pasando las instancias de tipo de enlace de evento al método <literal>observe()</"
+"literal>:"
 
 #. Tag: programlisting
 #: events.xml:149
@@ -348,18 +354,22 @@ msgid ""
 "                                                new "
 "AnnotationLiteral<Updated>(){} );]]>"
 msgstr ""
+"<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify"
+"(Document doc) { ... } }, \n"
+"                                                new "
+"AnnotationLiteral<Updated>(){} );]]>"
 
 #. Tag: title
 #: events.xml:154
 #, no-c-format
 msgid "Event bindings with members"
-msgstr ""
+msgstr "Enlaces de evento con miembros"
 
 #. Tag: para
 #: events.xml:156
 #, no-c-format
 msgid "An event binding type may have annotation members:"
-msgstr ""
+msgstr "Un tipo de enlace de evento puede tener miembros de anotación:"
 
 #. Tag: programlisting
 #: events.xml:158
@@ -372,12 +382,18 @@ msgid ""
 "    RoleType value();\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@BindingType\n"
+"@Target({PARAMETER, FIELD})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Role {\n"
+"    RoleType value();\n"
+"}]]>"
 
 #. Tag: para
 #: events.xml:160
 #, no-c-format
 msgid "The member value is used to narrow the messages delivered to the observer:"
-msgstr ""
+msgstr "El valor de miembro se utiliza para limitar los mensajes enviados al observador:"
 
 #. Tag: programlisting
 #: events.xml:162
@@ -386,6 +402,8 @@ msgid ""
 "<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
 "{ ... }]]>"
 msgstr ""
+"<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
+"{ ... }]]>"
 
 #. Tag: para
 #: events.xml:164
@@ -393,13 +411,13 @@ msgstr ""
 msgid ""
 "Event binding type members may be specified statically by the event "
 "producer, via annotations at the event notifier injection point:"
-msgstr ""
+msgstr "Los miembros de tipo de enlace de evento se pueden especificar estáticamente por el producto del evento, a través de anotaciones en el punto de inyección del notificador de evento."
 
 #. Tag: programlisting
 #: events.xml:167
 #, no-c-format
 msgid "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
-msgstr ""
+msgstr "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
 
 #. Tag: para
 #: events.xml:169
@@ -408,7 +426,7 @@ msgid ""
 "Alternatively, the value of the event binding type member may be determined "
 "dynamically by the event producer. We start by writing an abstract subclass "
 "of <literal>AnnotationLiteral</literal>:"
-msgstr ""
+msgstr "Alternativamente, el valor del miembro de tipo de enlace de evento puede ser determinado de modo dinámico por el productor de evento. Empezamos por escribir una subclase abstracta de <literal>AnotacíonLiteral</literal>:"
 
 #. Tag: programlisting
 #: events.xml:172
@@ -418,6 +436,9 @@ msgid ""
 "    extends AnnotationLiteral<Role> \n"
 "    implements Role {}]]>"
 msgstr ""
+"<![CDATA[abstract class RoleBinding \n"
+"    extends AnnotationLiteral<Role> \n"
+"    implements Role {}]]>"
 
 #. Tag: para
 #: events.xml:174
@@ -426,6 +447,8 @@ msgid ""
 "The event producer passes an instance of this class to <literal>fire()</"
 "literal>:"
 msgstr ""
+"El productor de evento pasa una instancia de esta clase a <literal>fire()</"
+"literal>:"
 
 #. Tag: programlisting
 #: events.xml:176
@@ -434,18 +457,20 @@ msgid ""
 "<![CDATA[documentEvent.fire( document, new RoleBinding() { public void value"
 "() { return user.getRole(); } } );]]>"
 msgstr ""
+"<![CDATA[documentEvent.fire( document, new RoleBinding() { public void value"
+"() { return user.getRole(); } } );]]>"
 
 #. Tag: title
 #: events.xml:181
 #, no-c-format
 msgid "Multiple event bindings"
-msgstr ""
+msgstr "Enlaces de evento múltiples"
 
 #. Tag: para
 #: events.xml:183
 #, no-c-format
 msgid "Event binding types may be combined, for example:"
-msgstr ""
+msgstr "Los tipos de enlaces de evento pueden combinarse, por ejemplo:"
 
 #. Tag: programlisting
 #: events.xml:185
@@ -456,6 +481,10 @@ msgid ""
 "if (document.isBlog()) blogEvent.fire(document, new "
 "AnnotationLiteral<Updated>(){});]]>"
 msgstr ""
+"<![CDATA[@Observable @Blog Event<Document> blogEvent;\n"
+"...\n"
+"if (document.isBlog()) blogEvent.fire(document, new "
+"AnnotationLiteral<Updated>(){});]]>"
 
 #. Tag: para
 #: events.xml:187
@@ -463,7 +492,7 @@ msgstr ""
 msgid ""
 "When this event occurs, all of the following observer methods will be "
 "notified:"
-msgstr ""
+msgstr "Cuando un evento ocurre, todos los siguientes métodos de observador serán notificados:"
 
 #. Tag: programlisting
 #: events.xml:189
@@ -472,6 +501,8 @@ msgid ""
 "<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
 "document) { ... }]]>"
 msgstr ""
+"<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
+"document) { ... }]]>"
 
 #. Tag: programlisting
 #: events.xml:191
@@ -480,6 +511,8 @@ msgid ""
 "<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
 "{ ... }]]>"
 msgstr ""
+"<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
+"{ ... }]]>"
 
 #. Tag: programlisting
 #: events.xml:192
@@ -488,12 +521,14 @@ msgid ""
 "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
 "{ ... }}}]]>"
 msgstr ""
+"<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
+"{ ... }}}]]>"
 
 #. Tag: title
 #: events.xml:197
 #, no-c-format
 msgid "Transactional observers"
-msgstr ""
+msgstr "Observadores transaccionales"
 
 #. Tag: para
 #: events.xml:199
@@ -504,7 +539,7 @@ msgid ""
 "For example, the following observer method needs to refresh a query result "
 "set that is cached in the application context, but only when transactions "
 "that update the <literal>Category</literal> tree succeed:"
-msgstr ""
+msgstr "Los observadores transaccionales reciben las notificaciones de sus eventos antes o después de la fase de finalización de la transacción en la se creó el evento. Por ejemplo, el siguiente método de observador necesita actualizar un conjunto de resultados de petición almacenado en caché en el contexto de aplicación, pero sólo cuando las transacciones que actualizan el árbol de <literal>Categoría</literal> tengan éxito:"
 
 #. Tag: programlisting
 #: events.xml:205
@@ -513,12 +548,14 @@ msgid ""
 "<![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess @Observes "
 "CategoryUpdateEvent event) { ... }]]>"
 msgstr ""
+"<![CDATA[public void refreshCategoryTree(@AfterTransactionSuccess @Observes "
+"CategoryUpdateEvent event) { ... }]]>"
 
 #. Tag: para
 #: events.xml:207
 #, no-c-format
 msgid "There are three kinds of transactional observers:"
-msgstr ""
+msgstr "Hay tres clases de observadores transaccionales:"
 
 #. Tag: para
 #: events.xml:211
@@ -527,7 +564,7 @@ msgid ""
 "<literal>@AfterTransactionSuccess</literal> observers are called during the "
 "after completion phase of the transaction, but only if the transaction "
 "completes successfully"
-msgstr ""
+msgstr "Los observadores<literal>@AfterTransactionSuccess</literal> son llamados durante la fase de después de finalización de la transacción, pero sólo si la transacción finaliza exitosamente."
 
 #. Tag: para
 #: events.xml:216
@@ -536,7 +573,7 @@ msgid ""
 "<literal>@AfterTransactionFailure</literal> observers are called during the "
 "after completion phase of the transaction, but only if the transaction fails "
 "to complete successfully"
-msgstr ""
+msgstr "Los observadores <literal>@AfterTransactionFailure</literal> son llamados durante la fase de después de la finalización de la transacción, pero sólo si la transacción falla"
 
 #. Tag: para
 #: events.xml:221
@@ -544,7 +581,7 @@ msgstr ""
 msgid ""
 "<literal>@AfterTransactionCompletion</literal> observers are called during "
 "the after completion phase of the transaction"
-msgstr ""
+msgstr "Los observadores <literal>@AfterTransactionCompletion</literal> son llamados durante la fase de después de finalización de la transacción"
 
 #. Tag: para
 #: events.xml:225
@@ -552,7 +589,7 @@ msgstr ""
 msgid ""
 "<literal>@BeforeTransactionCompletion</literal> observers are called during "
 "the before completion phase of the transaction"
-msgstr ""
+msgstr "Los observadores <literal>@BeforeTransactionCompletion</literal> son llamados durante la fase de antes de finalización de la transacción"
 
 #. Tag: para
 #: events.xml:230
@@ -561,13 +598,13 @@ msgid ""
 "Transactional observers are very important in a stateful object model like "
 "Web Beans, because state is often held for longer than a single atomic "
 "transaction."
-msgstr ""
+msgstr "Los observadores transaccionales son muy importantes en un modelo de objetos con estado como Web Beans, porque el estado suele ser mantenido para más de una transacción atómica."
 
 #. Tag: para
 #: events.xml:233
 #, no-c-format
 msgid "Imagine that we have cached a JPA query result set in the application scope:"
-msgstr ""
+msgstr "Imagine que hemos almacenado en caché un conjunto de resultados de petición JPA en el ámbito de la aplicación:"
 
 #. Tag: programlisting
 #: events.xml:235
@@ -592,6 +629,24 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[@ApplicationScoped @Singleton\n"
+"public class Catalog {\n"
+"\n"
+"    @PersistenceContext EntityManager em;\n"
+"    \n"
+"    List<Product> products;\n"
+"\n"
+"    @Produces @Catalog \n"
+"    List<Product> getCatalog() {\n"
+"        if (products==null) {\n"
+"            products = em.createQuery(\"select p from Product p where p."
+"deleted = false\")\n"
+"                .getResultList();\n"
+"        }\n"
+"        return products;\n"
+"    }\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: events.xml:237
@@ -601,7 +656,7 @@ msgid ""
 "this occurs, we need to refresh the <literal>Product</literal> catalog. But "
 "we should wait until <emphasis>after</emphasis> the transaction completes "
 "successfully before performing this refresh!"
-msgstr ""
+msgstr "De vez en cuando, se crea o borra un <literal>Producto</literal>. Cuando esto ocurre, necesitamos refrescar el catálogo del <literal>Producto</literal>. No obstante, deberíamos esperar hasta <emphasis>después</emphasis> de que la transacción finalice exitosamente antes de ¡actualizar!"
 
 #. Tag: para
 #: events.xml:242
@@ -609,7 +664,7 @@ msgstr ""
 msgid ""
 "The Web Bean that creates and deletes <literal>Product</literal>s could "
 "raise events, for example:"
-msgstr ""
+msgstr "El Web Bean que crea y borra <literal>Productos</literal> podría crear eventos, por ejemplo:"
 
 #. Tag: programlisting
 #: events.xml:245
@@ -635,6 +690,25 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Stateless\n"
+"public class ProductManager {\n"
+"\n"
+"    @PersistenceContext EntityManager em;\n"
+"    @Observable Event<Product> productEvent;\n"
+"\n"
+"    public void delete(Product product) {\n"
+"        em.delete(product);\n"
+"        productEvent.fire(product, new AnnotationLiteral<Deleted>(){});\n"
+"    }\n"
+"    \n"
+"    public void persist(Product product) {\n"
+"        em.persist(product);\n"
+"        productEvent.fire(product, new AnnotationLiteral<Created>(){});\n"
+"    }\n"
+"    \n"
+"    ...\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: events.xml:247
@@ -642,7 +716,7 @@ msgstr ""
 msgid ""
 "And now <literal>Catalog</literal> can observe the events after successful "
 "completion of the transaction:"
-msgstr ""
+msgstr "Ahora el <literal>Catálogo</literal> puede observar los eventos después de finalizar la transacción exitosamente:"
 
 #. Tag: programlisting
 #: events.xml:250
@@ -665,4 +739,20 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[@ApplicationScoped @Singleton\n"
+"public class Catalog {\n"
+"\n"
+"    ...\n"
+"    \n"
+"    void addProduct(@AfterTransactionSuccess @Observes @Created Product "
+"product) {\n"
+"        products.add(product);\n"
+"    }\n"
+"    \n"
+"    void addProduct(@AfterTransactionSuccess @Observes @Deleted Product "
+"product) {\n"
+"        products.remove(product);\n"
+"    }\n"
+"    \n"
+"}]]>"
 

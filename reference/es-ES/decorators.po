@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: decorators\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-08 12:15+1000\n"
+"PO-Revision-Date: 2009-01-09 11:30+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +33,7 @@ msgid ""
 "However, by nature, interceptors are unaware of the actual semantics of the "
 "events they intercept. Thus, interceptors aren't an appropriate tool for "
 "separating business-related concerns."
-msgstr "Los interceptores son una forma potente de capturar y distinguir preocupaciones que son <emphasis>ortogonales</emphasis> al tipo de sistema. Cualquier interceptor puede interceptar invocaciones de cualquier tipo Java. Esto los hace perfectos para resolver las dudas técnicas como la administración de transacción y la seguridad. Sin embargo, por naturaleza, los interceptores desconocen la semántica real de los eventos que interceptan. Por lo tanto, los interceptores no son una herramienta apropiada para separar las cuestiones relacionadas con negocios."
+msgstr "Los interceptores son una forma potente de capturar y distinguir cuestiones que son <emphasis>ortogonales</emphasis> al tipo de sistema. Cualquier interceptor puede interceptar invocaciones de cualquier tipo Java. Esto los hace perfectos para resolver las cuestiones técnicas como la administración de transacción y la seguridad. Sin embargo, por naturaleza, los interceptores desconocen la semántica real de los eventos que interceptan. Por lo tanto, los interceptores no son una herramienta apropiada para distinguir cuestiones relacionadas con negocios."
 
 #. Tag: para
 #: decorators.xml:14
@@ -45,7 +45,7 @@ msgid ""
 "a perfect tool for modeling some kinds of business concerns. It also means "
 "that a decorator doesn't have the generality of an interceptor. Decorators "
 "aren't able to solve technical concerns that cut across many disparate types."
-msgstr "Contrario a los <emphasis>decoradores</emphasis>, los cuales interceptan invocaciones únicamente para una cierta interfaz de Java y son por lo tanto, conscientes de toda la semántica asociada a la interfaz. Esto los hace una herramienta perfecta para representar algunos tipos de problemas de negocios. También significa que los decoradores no tienen la generalidad de un interceptor. Los decoradores no pueden resolver problemas técnicos que atraviesan muchos tipos dispares."
+msgstr "Contrario a los <emphasis>decoradores</emphasis>, los cuales interceptan invocaciones únicamente para una cierta interfaz de Java y son por lo tanto, conscientes de toda la semántica asociada a la interfaz. Esto los hace una herramienta perfecta para representar algunas clases de cuestiones de negocios. También significa que los decoradores no tienen la generalidad de un interceptor. Los decoradores no pueden resolver problemas técnicos que atraviesan muchos tipos dispares."
 
 #. Tag: para
 #: decorators.xml:22

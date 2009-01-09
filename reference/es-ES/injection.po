@@ -1,35 +1,38 @@
+# translation of injection.po to Spanish
 # Language es-ES translations for master.xml package.
-# Automatically generated, 2008.
 #
+# Automatically generated, 2008.
+# Gladys Guerrero Lozano <gguerrer@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml \n"
+"Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-19 20:26+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-09 16:28+1000\n"
+"Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
+"Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: injection.xml:4
 #, no-c-format
 msgid "Dependency injection"
-msgstr ""
+msgstr "Inyección de dependencia"
 
 #. Tag: para
 #: injection.xml:6
 #, no-c-format
 msgid "Web Beans supports three primary mechanisms for dependency injection:"
-msgstr ""
+msgstr "Web Beans soporta tres mecanismos primarios para inyección de dependencia:"
 
 #. Tag: para
 #: injection.xml:8
 #, no-c-format
 msgid "Constructor parameter injection:"
-msgstr ""
+msgstr "Constructor de inyección de parámetro:"
 
 #. Tag: programlisting
 #: injection.xml:10
@@ -46,12 +49,22 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class Checkout {\n"
+"        \n"
+"    private final ShoppingCart cart;\n"
+"    \n"
+"    @Initializer\n"
+"    public Checkout(ShoppingCart cart) {\n"
+"        this.cart = cart;\n"
+"    }\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:12
 #, no-c-format
 msgid "<emphasis>Initializer</emphasis> method parameter injection:"
-msgstr ""
+msgstr "Inyección de parámetro de método <emphasis>Iniciador</emphasis>:"
 
 #. Tag: programlisting
 #: injection.xml:14
@@ -68,12 +81,22 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class Checkout {\n"
+"        \n"
+"    private ShoppingCart cart;\n"
+"\n"
+"    @Initializer \n"
+"    void setShoppingCart(ShoppingCart cart) {\n"
+"        this.cart = cart;\n"
+"    }\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:16
 #, no-c-format
 msgid "And direct field injection:"
-msgstr ""
+msgstr "E inyección directa de campo:"
 
 #. Tag: programlisting
 #: injection.xml:18
@@ -85,6 +108,11 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class Checkout {\n"
+"\n"
+"    private @Current ShoppingCart cart;\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:20
@@ -92,7 +120,7 @@ msgstr ""
 msgid ""
 "Dependency injection always occurs when the Web Bean instance is first "
 "instantiated."
-msgstr ""
+msgstr "La inyección de dependencia siempre se presenta cuando la instancia de Web Bean se instancia primero:"
 
 #. Tag: para
 #: injection.xml:25
@@ -100,7 +128,7 @@ msgstr ""
 msgid ""
 "First, the Web Bean manager calls the Web Bean constructor, to obtain an "
 "instance of the Web Bean."
-msgstr ""
+msgstr "Primero, el administrador de Web Bean llama al constructor de Web Bean, para obtener una instancia del Web Bean."
 
 #. Tag: para
 #: injection.xml:29
@@ -108,13 +136,13 @@ msgstr ""
 msgid ""
 "Next, the Web Bean manager initializes the values of all injected fields of "
 "the Web Bean."
-msgstr ""
+msgstr "Luego, el administrador de Web Bean inicializa los valores de los campos inyectados del Web Bean."
 
 #. Tag: para
 #: injection.xml:33
 #, no-c-format
 msgid "Next, the Web Bean manager calls all initializer methods of Web Bean."
-msgstr ""
+msgstr "Más tarde, el administrador de Web Bean llama a todos los métodos inicializadores del Web Bean."
 
 #. Tag: para
 #: injection.xml:37
@@ -122,7 +150,7 @@ msgstr ""
 msgid ""
 "Finally, the <literal>@PostConstruct</literal> method of the Web Bean, if "
 "any, is called."
-msgstr ""
+msgstr "Por último, se llama al método de Web Bean <literal>@PostConstruct</literal>, si existe."
 
 #. Tag: para
 #: injection.xml:42
@@ -131,6 +159,8 @@ msgid ""
 "Constructor parameter injection is not supported for EJB beans, since the "
 "EJB is instantiated by the EJB container, not the Web Bean manager."
 msgstr ""
+"La inyección de parámetro constructor no es admitida por beans de EJB, porque "
+"EJB es instanciada por el contenedor de EJB, no por el administrador de Web Bean."
 
 #. Tag: para
 #: injection.xml:45
@@ -141,13 +171,13 @@ msgid ""
 "Injected fields, however, <emphasis>must</emphasis> specify a binding type, "
 "even when the default binding type applies. If the field does not specify a "
 "binding type, it will not be injected."
-msgstr ""
+msgstr "Los parámetros de constructores y métodos de inicializador no necesitan ser anotados explícitamente cuando el tipo de enlace predeterminado <literal>@Current</literal> se aplique. Los campos inyectados, sin embargo, <emphasis>deben</emphasis> especificar un tipo de enlace, cuando el tipo de enlace por defecto se aplique. Si el campo no especifica ningún tipo de enlace, no será inyectado."
 
 #. Tag: para
 #: injection.xml:51
 #, no-c-format
 msgid "Producer methods also support parameter injection:"
-msgstr ""
+msgstr "Los métodos de productor también admiten inyección de parámetro:"
 
 #. Tag: programlisting
 #: injection.xml:53
@@ -157,6 +187,9 @@ msgid ""
 "    return new Checkout(cart);\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Produces Checkout createCheckout(ShoppingCart cart) {\n"
+"    return new Checkout(cart);\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:55
@@ -164,7 +197,7 @@ msgstr ""
 msgid ""
 "Finally, observer methods (which we'll meet in <xref linkend=\"events\"/>), "
 "disposal methods and destructor methods all support parameter injection."
-msgstr ""
+msgstr "Por último, los métodos de observador (que encontraremos en <xref linkend=\"events\"/>), los métodos desechables y los métodos destructores, admiten inyección de parámetro."
 
 #. Tag: para
 #: injection.xml:58
@@ -179,7 +212,7 @@ msgid ""
 "immediately if a Web Bean's dependencies cannot be satisfied, by throwing a "
 "<literal>UnsatisfiedDependencyException</literal> or "
 "<literal>AmbiguousDependencyException</literal>."
-msgstr ""
+msgstr "La especificación de Web Beans define un procedimiento, llamado <emphasis>algoritmo de resolución de typesafe</emphasis> que el administrador de Web Bean sigue al identificar el Web Bean para inyectar a un punto de inyección. Este algoritmo parece complejo en un principio, pero una vez que lo entienda, es en realidad muy intuitivo. La resolución de Typesafe se realiza al inicializar el sistema, lo que significa que el administrador informará al usuario inmediatamente si se pueden cumplir las dependencias de un Web Bean, lanzando un <literal>UnsatisfiedDependencyException</literal> o un <literal>AmbiguousDependencyException</literal>."
 
 #. Tag: para
 #: injection.xml:67
@@ -187,7 +220,7 @@ msgstr ""
 msgid ""
 "The purpose of this algorithm is to allow multiple Web Beans to implement "
 "the same API type and either:"
-msgstr ""
+msgstr "El propósito de este algoritmo es permitir múltiples Web Beans para implementar el mismo tipo API y ya sea:"
 
 #. Tag: para
 #: injection.xml:72
@@ -195,7 +228,7 @@ msgstr ""
 msgid ""
 "allow the client to select which implementation it requires using "
 "<emphasis>binding annotations</emphasis>,"
-msgstr ""
+msgstr "permitiendo al cliente seleccionar la aplicación que requiere mediante <emphasis>anotaciones de enlace</emphasis>,"
 
 #. Tag: para
 #: injection.xml:77
@@ -204,7 +237,7 @@ msgid ""
 "allow the application deployer to select which implementation is appropriate "
 "for a particular deployment, without changes to the client, by enabling or "
 "disabling <emphasis>deployment types</emphasis>, or"
-msgstr ""
+msgstr "permitiendo al desplegador de aplicación seleccionar la aplicación apropiada para una despliegue particular, sin cambios en el cliente, habilitando o inhabilitando los <emphasis>tipos de despliegue</emphasis>, o"
 
 #. Tag: para
 #: injection.xml:82
@@ -213,20 +246,19 @@ msgid ""
 "allow one implementation of an API to override another implementation of the "
 "same API at deployment time, without changes to the client, using "
 "<emphasis>deployment type precedence</emphasis>."
-msgstr ""
+msgstr "permitiendo que una implementación de un API remplace otra implementación del mismo API en el momento del despliegue, sin cambios al cliente, mediante <emphasis>prioridad de tipo de despliegue</emphasis>."
 
 #. Tag: para
 #: injection.xml:88
 #, no-c-format
-msgid ""
-"Let's explore how the Web Beans manager determines a Web Bean to be injected."
-msgstr ""
+msgid "Let's explore how the Web Beans manager determines a Web Bean to be injected."
+msgstr "Exploremos cómo el administrador de Web Beans determina una Web Bean para ser inyectado."
 
 #. Tag: title
 #: injection.xml:91
 #, no-c-format
 msgid "Binding annotations"
-msgstr ""
+msgstr "Anotaciones de Enlace"
 
 #. Tag: para
 #: injection.xml:93
@@ -236,7 +268,7 @@ msgid ""
 "injection point can specify exactly which Web Bean should be injected using "
 "a binding annotation. For example, there might be two implementations of "
 "<literal>PaymentProcessor</literal>:"
-msgstr ""
+msgstr "Si tenemos más de un Web Bean que implemente un tipo determinado de API, el punto de inyección puede especificar el Web Bean que debe ser inyectado utilizando una anotación de enlace. Por ejemplo, debería haber dos aplicaciones del <literal>PaymentProcessor</literal>:"
 
 #. Tag: programlisting
 #: injection.xml:98
@@ -247,6 +279,10 @@ msgid ""
 "    public void process(Payment payment) { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@PayByCheque\n"
+"public class ChequePaymentProcessor implements PaymentProcessor {\n"
+"    public void process(Payment payment) { ... }\n"
+"}]]>"
 
 #. Tag: programlisting
 #: injection.xml:100
@@ -257,6 +293,10 @@ msgid ""
 "    public void process(Payment payment) { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@PayByCreditCard\n"
+"public class CreditCardPaymentProcessor implements PaymentProcessor {\n"
+"    public void process(Payment payment) { ... }\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:102
@@ -265,6 +305,8 @@ msgid ""
 "Where <literal>@PayByCheque</literal> and <literal>@PayByCreditCard</"
 "literal> are binding annotations:"
 msgstr ""
+"Donde <literal>@PayByCheque</literal> y <literal>@PayByCreditCard</"
+"literal> son anotaciones de enlace:"
 
 #. Tag: programlisting
 #: injection.xml:105
@@ -275,6 +317,10 @@ msgid ""
 "@BindingType\n"
 "public @interface PayByCheque {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+"@BindingType\n"
+"public @interface PayByCheque {}]]>"
 
 #. Tag: programlisting
 #: injection.xml:107
@@ -285,6 +331,10 @@ msgid ""
 "@BindingType\n"
 "public @interface PayByCreditCard {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+"@BindingType\n"
+"public @interface PayByCreditCard {}]]>"
 
 #. Tag: para
 #: injection.xml:109
@@ -292,13 +342,13 @@ msgstr ""
 msgid ""
 "A client Web Bean developer uses the binding annotation to specify exactly "
 "which Web Bean should be injected."
-msgstr ""
+msgstr "Un desarrollador de cliente de Web Bean utiliza la anotación de enlace para especificar exactamente qué Web Bean debe inyectarse."
 
 #. Tag: para
 #: injection.xml:112
 #, no-c-format
 msgid "Using field injection:"
-msgstr ""
+msgstr "Uso de inyección de campo:"
 
 #. Tag: programlisting
 #: injection.xml:114
@@ -307,12 +357,14 @@ msgid ""
 "<![CDATA[@PayByCheque PaymentProcessor chequePaymentProcessor;\n"
 "@PayByCreditCard PaymentProcessor creditCardPaymentProcessor;]]>"
 msgstr ""
+"<![CDATA[@PayByCheque PaymentProcessor chequePaymentProcessor;\n"
+"@PayByCreditCard PaymentProcessor creditCardPaymentProcessor;]]>"
 
 #. Tag: para
 #: injection.xml:116
 #, no-c-format
 msgid "Using initializer method injection:"
-msgstr ""
+msgstr "Uso de inyección de método inicializador:"
 
 #. Tag: programlisting
 #: injection.xml:118
@@ -327,12 +379,20 @@ msgid ""
 "   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Initializer\n"
+"public void setPaymentProcessors(@PayByCheque PaymentProcessor "
+"chequePaymentProcessor, \n"
+"                                 @PayByCreditCard PaymentProcessor "
+"creditCardPaymentProcessor) {\n"
+"   this.chequePaymentProcessor = chequePaymentProcessor;\n"
+"   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:120
 #, no-c-format
 msgid "Or using constructor injection:"
-msgstr ""
+msgstr "O uso de inyección de constructor:"
 
 #. Tag: programlisting
 #: injection.xml:122
@@ -346,18 +406,25 @@ msgid ""
 "   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Initializer\n"
+"public Checkout(@PayByCheque PaymentProcessor chequePaymentProcessor, \n"
+"                @PayByCreditCard PaymentProcessor "
+"creditCardPaymentProcessor) {\n"
+"   this.chequePaymentProcessor = chequePaymentProcessor;\n"
+"   this.creditCardPaymentProcessor = creditCardPaymentProcessor;\n"
+"}]]>"
 
 #. Tag: title
 #: injection.xml:125
 #, no-c-format
 msgid "Binding annotations with members"
-msgstr ""
+msgstr "Anotaciones de enlace con miembros"
 
 #. Tag: para
 #: injection.xml:127
 #, no-c-format
 msgid "Binding annotations may have members:"
-msgstr ""
+msgstr "Las anotaciones de enlace pueden tener miembros:"
 
 #. Tag: programlisting
 #: injection.xml:129
@@ -370,12 +437,18 @@ msgid ""
 "    PaymentType value();\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+"@BindingType\n"
+"public @interface PayBy {\n"
+"    PaymentType value();\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:131
 #, no-c-format
 msgid "In which case, the member value is significant:"
-msgstr ""
+msgstr "En cuyo caso, el valor de miembro es importante:"
 
 #. Tag: programlisting
 #: injection.xml:133
@@ -384,6 +457,8 @@ msgid ""
 "<![CDATA[@PayBy(CHEQUE) PaymentProcessor chequePaymentProcessor;\n"
 "@PayBy(CREDIT_CARD) PaymentProcessor creditCardPaymentProcessor;]]>"
 msgstr ""
+"<![CDATA[@PayBy(CHEQUE) PaymentProcessor chequePaymentProcessor;\n"
+"@PayBy(CREDIT_CARD) PaymentProcessor creditCardPaymentProcessor;]]>"
 
 #. Tag: para
 #: injection.xml:135
@@ -391,26 +466,25 @@ msgstr ""
 msgid ""
 "You can tell the Web Bean manager to ignore a member of a binding annotation "
 "type by annotating the member <literal>@NonBinding</literal>."
-msgstr ""
+msgstr "Se puede pedir al administrador de Web Bean que ignore a un miembro de un tipo de anotación de enlace anotando al miembro <literal>@NonBinding</literal>."
 
 #. Tag: title
 #: injection.xml:141
 #, no-c-format
 msgid "Combinations of binding annnotations"
-msgstr ""
+msgstr "Combinaciones de anotaciones de enlace"
 
 #. Tag: para
 #: injection.xml:143
 #, no-c-format
 msgid "An injection point may even specify multiple binding annotations:"
-msgstr ""
+msgstr "Un punto de inyección puede incluso especificar múltiples anotaciones de enlace:"
 
 #. Tag: programlisting
 #: injection.xml:145
 #, no-c-format
-msgid ""
-"<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
-msgstr ""
+msgid "<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
+msgstr "<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
 
 #. Tag: para
 #: injection.xml:147
@@ -418,19 +492,19 @@ msgstr ""
 msgid ""
 "In this case, only a Web Bean which has <emphasis>both</emphasis> binding "
 "annotations would be eligible for injection."
-msgstr ""
+msgstr "En este caso, sólo un Web Bean que tiene <emphasis>ambas</emphasis> anotaciones de enlace sería elegible para inyección."
 
 #. Tag: title
 #: injection.xml:153
 #, no-c-format
 msgid "Binding annotations and producer methods"
-msgstr ""
+msgstr "Anotaciones de enlace y métodos de productor"
 
 #. Tag: para
 #: injection.xml:155
 #, no-c-format
 msgid "Even producer methods may specify binding annotations:"
-msgstr ""
+msgstr "Incluso los métodos de productor pueden especificar anotaciones de enlace:"
 
 #. Tag: programlisting
 #: injection.xml:157
@@ -443,12 +517,18 @@ msgid ""
 "    return new AsynchronousPaymentProcessor(processor);\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Produces \n"
+"@Asynchronous @PayByCheque \n"
+"PaymentProcessor createAsyncPaymentProcessor(@PayByCheque PaymentProcessor "
+"processor) {\n"
+"    return new AsynchronousPaymentProcessor(processor);\n"
+"}]]>"
 
 #. Tag: title
 #: injection.xml:162
 #, no-c-format
 msgid "The default binding type"
-msgstr ""
+msgstr "El tipo de enlace predeterminado"
 
 #. Tag: para
 #: injection.xml:164
@@ -457,7 +537,7 @@ msgid ""
 "Web Beans defines a binding type <literal>@Current</literal> that is the "
 "default binding type for any injection point or Web Bean that does not "
 "explicitly specify a binding type."
-msgstr ""
+msgstr "Web Beans define un tipo de enlace <literal>@Current</literal> que es el tipo de enlace predeterminado para cualquier punto de inyección o Web Bean que no especifique explícitamente un tipo de enlace."
 
 #. Tag: para
 #: injection.xml:168
@@ -465,7 +545,7 @@ msgstr ""
 msgid ""
 "There are two common circumstances in which it is necessary to explicitly "
 "specify <literal>@Current</literal>:"
-msgstr ""
+msgstr "Hay dos circunstancias comunes en que se necesita especificar explícitamente a <literal>@Current</literal>:"
 
 #. Tag: para
 #: injection.xml:173
@@ -473,7 +553,7 @@ msgstr ""
 msgid ""
 "on a field, in order to declare it as an injected field with the default "
 "binding type, and"
-msgstr ""
+msgstr "en un campo, para declararlo como un campo inyectado con el tipo de enlace por defecto, y "
 
 #. Tag: para
 #: injection.xml:177
@@ -481,13 +561,13 @@ msgstr ""
 msgid ""
 "on a Web Bean which has another binding type in addition to the default "
 "binding type."
-msgstr ""
+msgstr "en un Web Bean, el cual tiene otro tipo de enlace además del tipo de enlace predeterminado."
 
 #. Tag: title
 #: injection.xml:187
 #, no-c-format
 msgid "Deployment types"
-msgstr ""
+msgstr "Tipos de despliegue"
 
 #. Tag: para
 #: injection.xml:189
@@ -496,7 +576,7 @@ msgid ""
 "All Web Beans have a <emphasis>deployment type</emphasis>. Each deployment "
 "type identifies a set of Web Beans that should be conditionally installed in "
 "some deployments of the system."
-msgstr ""
+msgstr "Todos los Web Beans tienen un <emphasis>tipo de despliegue</emphasis>. Cada tipo de despliegue identifica un conjunto de Web Beans que debería ser instalado bajo condiciones en algunos despliegues del sistema."
 
 #. Tag: para
 #: injection.xml:193
@@ -506,6 +586,8 @@ msgid ""
 "literal>, which would identify Web Beans that should only be installed when "
 "the system executes inside an integration testing environment:"
 msgstr ""
+"Por ejemplo, podríamos definir un tipo de despliegue llamado <literal>@Mock</"
+"literal>, el cual identificaría Web Beans que deberían ser instaladas sólo cuando el sistema se ejecute dentro de un entorno de pruebas de integración:"
 
 #. Tag: programlisting
 #: injection.xml:197
@@ -516,6 +598,10 @@ msgid ""
 "  @DeploymentType\n"
 "  public @interface Mock {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"  @Target({TYPE, METHOD})\n"
+"  @DeploymentType\n"
+"  public @interface Mock {}]]>"
 
 #. Tag: para
 #: injection.xml:199
@@ -523,7 +609,7 @@ msgstr ""
 msgid ""
 "Suppose we had some Web Bean that interacted with an external system to "
 "process payments:"
-msgstr ""
+msgstr "Supongamos que tenemos algunos Web Bean que interactuaron con un sistema externo para procesar pagos:"
 
 #. Tag: programlisting
 #: injection.xml:202
@@ -537,6 +623,13 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class ExternalPaymentProcessor {\n"
+"        \n"
+"    public void process(Payment p) {\n"
+"        ...\n"
+"    }\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:204
@@ -544,7 +637,7 @@ msgstr ""
 msgid ""
 "Since this Web Bean does not explicitly specify a deployment type, it has "
 "the default deployment type <literal>@Production</literal>."
-msgstr ""
+msgstr "Como este Web Bean no especifica explícitamente un tipo de despliegue, tiene el tipo de despliegue predeterminado <literal>@Production</literal>."
 
 #. Tag: para
 #: injection.xml:207
@@ -552,7 +645,7 @@ msgstr ""
 msgid ""
 "For integration or unit testing, the external system is slow or unavailable. "
 "So we would create a mock object:"
-msgstr ""
+msgstr "Para prueba de integración o de unidad, el sistema externo está lento o no está disponible. Por lo tanto, cremos el objeto mock:"
 
 #. Tag: programlisting
 #: injection.xml:210
@@ -568,6 +661,15 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Mock \n"
+"public class MockPaymentProcessor implements PaymentProcessor {\n"
+"\n"
+"    @Override\n"
+"    public void process(Payment p) {\n"
+"        p.setSuccessful(true);\n"
+"    }\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:212
@@ -575,13 +677,13 @@ msgstr ""
 msgid ""
 "But how does the Web Bean manager determine which implementation to use in a "
 "particular deployment?"
-msgstr ""
+msgstr "Pero, ¿cómo determina el administrador de Web Bean la aplicación que debe utilizar en un despliegue determinado?"
 
 #. Tag: title
 #: injection.xml:216
 #, no-c-format
 msgid "Enabling deployment types"
-msgstr ""
+msgstr "Habilitar tipos de despliegue"
 
 #. Tag: para
 #: injection.xml:218
@@ -593,6 +695,8 @@ msgid ""
 "can identify additional deployment types to be enabled in a particular "
 "deployment by listing them in <literal>web-beans.xml</literal>."
 msgstr ""
+"Web Beans define dos tipos de despliegue incorporados: <literal>@Production</"
+"literal> y <literal>@Standard</literal>. Por defecto, sólo los Web Beans con tipos de despliegue incorporados se habilitan cuando se despliega el sistema. Podemos identificar tipos de despliegue adicionales en un despliegue particular listándolos en <literal>web-beans.xml</literal>."
 
 #. Tag: para
 #: injection.xml:224
@@ -600,7 +704,7 @@ msgstr ""
 msgid ""
 "Going back to our example, when we deploy our integration tests, we want all "
 "our <literal>@Mock</literal> objects to be installed:"
-msgstr ""
+msgstr "Volviendo a nuestro ejemplo, cuando desplegamos nuestras pruebas de integración, deseamos que todos nuestros objetos <literal>@Mock</literal> sean instalados:"
 
 #. Tag: programlisting
 #: injection.xml:227
@@ -614,6 +718,13 @@ msgid ""
 "    </Deploy>\n"
 "</WebBeans>]]>"
 msgstr ""
+"<![CDATA[<WebBeans>\n"
+"    <Deploy>\n"
+"        <Standard/>\n"
+"        <Production/>\n"
+"        <test:Mock/>\n"
+"    </Deploy>\n"
+"</WebBeans>]]>"
 
 #. Tag: para
 #: injection.xml:229
@@ -623,6 +734,8 @@ msgid ""
 "<literal>@Production</literal>, <literal>@Standard</literal> or "
 "<literal>@Mock</literal> at deployment time."
 msgstr ""
+"Ahora el administrador de Web Bean identificará e instalará todos los Web Beans anotados <literal>@Production</literal>, <literal>@Standard</literal> o "
+"<literal>@Mock</literal> en el momento del despliegue."
 
 #. Tag: para
 #: injection.xml:233
@@ -631,7 +744,7 @@ msgid ""
 "The deployment type <literal>@Standard</literal> is used only for certain "
 "special Web Beans defined by the Web Beans specification. We can't use it "
 "for our own Web Beans, and we can't disable it."
-msgstr ""
+msgstr "El tipo de despliegue <literal>@Standard</literal> es utilizado únicamente por algunos Web Beans especiales definidos por la especificación de Web Beans. No podemos utilizarlo para nuestros propios Web Beans ni inhabilitarlo."
 
 #. Tag: para
 #: injection.xml:237
@@ -640,13 +753,13 @@ msgid ""
 "The deployment type <literal>@Production</literal> is the default deployment "
 "type for Web Beans which don't explicitly declare a deployment type, and may "
 "be disabled."
-msgstr ""
+msgstr "El tipo de despliegue <literal>@Production</literal> es el tipo de despliegue predeterminado para Web Beans que no declaran explícitamente un tipo de despliegue, y que se puede inhabilitar."
 
 #. Tag: title
 #: injection.xml:244
 #, no-c-format
 msgid "Deployment type precedence"
-msgstr ""
+msgstr "Prioridad de tipo de despliegue"
 
 #. Tag: para
 #: injection.xml:246
@@ -657,12 +770,15 @@ msgid ""
 "literal> or <literal>MockPaymentProcessor</literal>&#151;to choose. Consider "
 "what happens when the manager encounters this injection point:"
 msgstr ""
+"Si ha prestado atención, probablemente se estará preguntando cómo escoge Web Bean "
+"la aplicación&#151;<literal>ExternalPaymentProcessor</"
+"literal> o <literal>MockPaymentProcessor</literal>&#151;. Piense en lo que sucede cuando el administrador encuentra este punto de inyección:"
 
 #. Tag: programlisting
 #: injection.xml:251
 #, no-c-format
 msgid "<![CDATA[@Current PaymentProcessor paymentProcessor]]>"
-msgstr ""
+msgstr "<![CDATA[@Current PaymentProcessor paymentProcessor]]>"
 
 #. Tag: para
 #: injection.xml:253
@@ -674,6 +790,8 @@ msgid ""
 "the injection point, and we want the manager to be able to decide at "
 "deployment time!"
 msgstr ""
+"Ahora hay dos Web Beans que cumplen el contrato <literal>PaymentProcessor</"
+"literal>. Claro está que no podemos utilizar una anotación de enlace para explicar, porque las anotaciones de enlace están codificadas en la fuente en el punto de inyección, y queremos que el administrador pueda decidir en el ¡momento de despliegue!"
 
 #. Tag: para
 #: injection.xml:258
@@ -685,6 +803,8 @@ msgid ""
 "literal>. In our example, <literal>@Mock</literal> appears later than "
 "<literal>@Production</literal> so it has a higher precedence."
 msgstr ""
+"La solución a este problema es que cada tipo de despliegue tiene una <emphasis>prioridad</emphasis> diferente. La prioridad de los tipos de despliegue es determinada por el orden de aparición en <literal>web-beans.xml</"
+"literal>. En nuestro ejemplo, <literal>@Mock</literal> posterior a <literal>@Production</literal> por lo tanto tiene una mayor prioridad."
 
 #. Tag: para
 #: injection.xml:264
@@ -697,7 +817,7 @@ msgid ""
 "to inject. So, in our example, the Web Bean manager will inject "
 "<literal>MockPaymentProcessor</literal> when executing in our integration "
 "testing environment (which is exactly what we want)."
-msgstr ""
+msgstr "Cada vez que el administrador descubre que más de un Web Bean cumple el contrato (tipo API más anotaciones de enlace) especificados por un punto de inyección, considera la prioridad relativa de los Web Beans. Si uno tiene una prioridad mayor que los otros, se escoge el Web Bean de mayor prioridad para inyectar. Por lo tanto, en nuestro ejemplo, el administrador de Web Bean inyectará <literal>MockPaymentProcessor</literal> al ejecutar en nuestro entorno de prueba de integración (que es precisamente lo que queremos)."
 
 #. Tag: para
 #: injection.xml:271
@@ -714,6 +834,9 @@ msgid ""
 "browsing the code can easily identify what deployment scenarios the Web Bean "
 "will be used in."
 msgstr ""
+"Es interesante comparar esta facilidad con las arquitecturas populares de administrador de hoy. Varios contenedores de \"pesoliviano\" también permiten despliegue condicional de clases que existen en el classpath, pero las clases que van a ser desplegadas deben ser explicitamente, listadas de modo individual en el código de configuración o en algún archivo de configuración XML. Web Beans no admite definición de Web Bean "
+"ni configuración vía XML, pero en el común de los casos donde no se requiere una configuración compleja, los tipos de despliegue permite habilitar un conjunto completo de Web "
+"Beans con una sóla línea de XML. Mientras tanto, un desarrollador que esté navegando el código puede fácilmente identificar los escenarios de despliegue en el que el Web Bean se utilizará."
 
 #. Tag: title
 #: injection.xml:284
@@ -724,8 +847,7 @@ msgstr ""
 #. Tag: para
 #: injection.xml:286
 #, no-c-format
-msgid ""
-"Deployment types are useful for all kinds of things, here's some examples:"
+msgid "Deployment types are useful for all kinds of things, here's some examples:"
 msgstr ""
 
 #. Tag: para
@@ -734,13 +856,13 @@ msgstr ""
 msgid ""
 "<literal>@Mock</literal> and <literal>@Staging</literal> deployment types "
 "for testing"
-msgstr ""
+msgstr "<literal>@Mock</literal> and <literal>@Staging</literal> tipos de despliegue para evaluación"
 
 #. Tag: para
 #: injection.xml:294
 #, no-c-format
 msgid "<literal>@AustralianTaxLaw</literal> for site-specific Web Beans"
-msgstr ""
+msgstr "<literal>@AustralianTaxLaw</literal> para Web Beans de sitio específico"
 
 #. Tag: para
 #: injection.xml:297
@@ -748,7 +870,7 @@ msgstr ""
 msgid ""
 "<literal>@SeamFramework</literal>, <literal>@Guice</literal> for third-party "
 "frameworks which build on Web Beans"
-msgstr ""
+msgstr "<literal>@SeamFramework</literal>, <literal>@Guice</literal> para marcos de terceras partes que se generan en Web Beans"
 
 #. Tag: para
 #: injection.xml:301
@@ -756,7 +878,7 @@ msgstr ""
 msgid ""
 "<literal>@Standard</literal> for standard Web Beans defined by the Web Beans "
 "specification"
-msgstr ""
+msgstr "<literal>@Standard</literal>para Web Beans definidos por la especificación Web Beans"
 
 #. Tag: para
 #: injection.xml:306
@@ -931,7 +1053,7 @@ msgstr ""
 #: injection.xml:397
 #, no-c-format
 msgid "<![CDATA[@Current Manager manager;]]>"
-msgstr ""
+msgstr "<![CDATA[@Current Manager manager;]]>"
 
 #. Tag: para
 #: injection.xml:399
@@ -948,6 +1070,8 @@ msgid ""
 "<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
 "class);]]>"
 msgstr ""
+"<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
+"class);]]>"
 
 #. Tag: para
 #: injection.xml:404
@@ -967,6 +1091,10 @@ msgid ""
 "                                               new "
 "AnnotationLiteral<CreditCard>(){});]]>"
 msgstr ""
+"<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
+"class, \n"
+"                                               new "
+"AnnotationLiteral<CreditCard>(){});]]>"
 
 #. Tag: para
 #: injection.xml:410
@@ -985,6 +1113,9 @@ msgid ""
 "    extends AnnotationLiteral<CreditCard> \n"
 "    implements CreditCard {}]]>"
 msgstr ""
+"<![CDATA[abstract class CreditCardBinding \n"
+"    extends AnnotationLiteral<CreditCard> \n"
+"    implements CreditCard {}]]>"
 
 #. Tag: programlisting
 #: injection.xml:415
@@ -997,6 +1128,12 @@ msgid ""
 "{ return paymentType; } \n"
 "                                               } );]]>"
 msgstr ""
+"<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor."
+"class, \n"
+"                                               new CreditCardBinding() { \n"
+"                                                   public void value() "
+"{ return paymentType; } \n"
+"                                               } );]]>"
 
 #. Tag: title
 #: injection.xml:419
@@ -1081,7 +1218,7 @@ msgstr ""
 msgid ""
 "Injection of the result of an EL expression evaluation depends upon the "
 "expression that was specified at the injection point."
-msgstr ""
+msgstr "La inyección del resultado de una prueba de expresión EL depende de la expresión que fue especificada en el punto de inyección."
 
 #. Tag: para
 #: injection.xml:461
@@ -1104,7 +1241,7 @@ msgstr ""
 #: injection.xml:468
 #, no-c-format
 msgid "<![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]>"
-msgstr ""
+msgstr "<![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]>"
 
 #. Tag: para
 #: injection.xml:470
@@ -1127,6 +1264,14 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[class LogFactory {\n"
+"\n"
+"   @Produces Logger createLogger(InjectionPoint injectionPoint) { \n"
+"      return Logger.getLogger(injectionPoint.getMember().getDeclaringClass()."
+"getName()); \n"
+"   }\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:475
@@ -1138,7 +1283,7 @@ msgstr ""
 #: injection.xml:477
 #, no-c-format
 msgid "<![CDATA[@Current Logger log;]]>"
-msgstr ""
+msgstr "<![CDATA[@Current Logger log;]]>"
 
 #. Tag: para
 #: injection.xml:479
@@ -1159,6 +1304,12 @@ msgid ""
 "   @NonBinding public String value();\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@BindingType\n"
+"@Retention(RUNTIME)\n"
+"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+"public @interface HttpParam {\n"
+"   @NonBinding public String value();\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:484
@@ -1173,6 +1324,8 @@ msgid ""
 "<![CDATA[@HttpParam(\"username\") String username;\n"
 "@HttpParam(\"password\") String password;]]>"
 msgstr ""
+"<![CDATA[@HttpParam(\"username\") String username;\n"
+"@HttpParam(\"password\") String password;]]>"
 
 #. Tag: para
 #: injection.xml:488
@@ -1194,6 +1347,15 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[class HttpParams\n"
+"\n"
+"   @Produces @HttpParam(\"\")\n"
+"   String getParamValue(ServletRequest request, InjectionPoint ip) {\n"
+"      return request.getParameter(ip.getAnnotation(HttpParam.class).value"
+"());\n"
+"   }\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: injection.xml:492
@@ -1224,3 +1386,11 @@ msgid ""
 "   public Set<T extends Annotation> getAnnotations(); \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public interface InjectionPoint { \n"
+"   public Object getInstance(); \n"
+"   public Bean<?> getBean(); \n"
+"   public Member getMember(): \n"
+"   public <T extends Annotation> T getAnnotation(Class<T> annotation); \n"
+"   public Set<T extends Annotation> getAnnotations(); \n"
+"}]]>"
+
