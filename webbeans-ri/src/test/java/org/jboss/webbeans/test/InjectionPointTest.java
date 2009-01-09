@@ -30,7 +30,6 @@ import javax.webbeans.Standard;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.binding.CurrentBinding;
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
 import org.jboss.webbeans.test.beans.BeanWithInjectionPointMetadata;
 import org.jboss.webbeans.test.beans.ConstructorInjectionPointBean;
@@ -58,7 +57,7 @@ public class InjectionPointTest extends AbstractTest
       // Get an instance of the bean which has another bean injected into it
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
@@ -67,7 +66,7 @@ public class InjectionPointTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -81,7 +80,7 @@ public class InjectionPointTest extends AbstractTest
       // Get an instance of the bean which has another bean injected into it
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
@@ -92,7 +91,7 @@ public class InjectionPointTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -106,7 +105,7 @@ public class InjectionPointTest extends AbstractTest
       // Get an instance of the bean which has another bean injected into it
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
@@ -114,7 +113,7 @@ public class InjectionPointTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -128,7 +127,7 @@ public class InjectionPointTest extends AbstractTest
       // Get an instance of the bean which has another bean injected into it
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
@@ -138,7 +137,7 @@ public class InjectionPointTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -152,7 +151,7 @@ public class InjectionPointTest extends AbstractTest
       // Get an instance of the bean which has another bean injected into it
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
@@ -160,7 +159,7 @@ public class InjectionPointTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -181,7 +180,7 @@ public class InjectionPointTest extends AbstractTest
       // Get an instance of the bean which has another bean injected into it
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          ConstructorInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(ConstructorInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
@@ -189,7 +188,7 @@ public class InjectionPointTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -203,7 +202,7 @@ public class InjectionPointTest extends AbstractTest
       // Get an instance of the bean which has another bean injected into it
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
@@ -211,7 +210,7 @@ public class InjectionPointTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -225,7 +224,7 @@ public class InjectionPointTest extends AbstractTest
       // Get an instance of the bean which has another bean injected into it
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
@@ -236,7 +235,7 @@ public class InjectionPointTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -250,7 +249,7 @@ public class InjectionPointTest extends AbstractTest
       // Get an instance of the bean which has another bean injected into it
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
@@ -258,7 +257,7 @@ public class InjectionPointTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -272,7 +271,7 @@ public class InjectionPointTest extends AbstractTest
       // Get an instance of the bean which has another bean injected into it
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
@@ -280,7 +279,7 @@ public class InjectionPointTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -294,7 +293,7 @@ public class InjectionPointTest extends AbstractTest
       // Get an instance of the bean which has another bean injected into it
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
@@ -302,7 +301,7 @@ public class InjectionPointTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -316,7 +315,7 @@ public class InjectionPointTest extends AbstractTest
       // Get an instance of the bean which has another bean injected into it
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
@@ -324,7 +323,7 @@ public class InjectionPointTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 }

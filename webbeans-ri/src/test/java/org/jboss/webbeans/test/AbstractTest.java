@@ -15,6 +15,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.HornedAnimalDeploymentType;
 import org.jboss.webbeans.test.mock.MockBootstrap;
@@ -86,4 +87,13 @@ public class AbstractTest
       return in.readObject();
    }
 
+   protected void activateDependentContext()
+   {
+      DependentContext.INSTANCE.setActive(true);
+   }
+   
+   protected void deactivateDependentContext()
+   {
+      DependentContext.INSTANCE.setActive(false);
+   }
 }

@@ -7,7 +7,6 @@ import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.test.beans.Fox;
 import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.TunedTuna;
@@ -36,13 +35,13 @@ public class ClientProxyTest extends AbstractTest
       Bean<Fox> foxBean = SimpleBean.of(Fox.class, manager);
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          Fox fox = manager.getInstance(foxBean);
          assert !Reflections.isProxy(fox);
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
    

@@ -11,7 +11,6 @@ import javax.webbeans.ObserverException;
 import javax.webbeans.TypeLiteral;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.test.beans.AuroraFinch;
 import org.jboss.webbeans.test.beans.BananaSpider;
 import org.jboss.webbeans.test.beans.BirdCage;
@@ -487,7 +486,7 @@ public class EventBusTest extends AbstractTest
       // Now instantiate the bean and fire another event
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          RecluseSpider bean = manager.getInstanceByType(RecluseSpider.class);
          assert bean != null;
          
@@ -496,7 +495,7 @@ public class EventBusTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -583,6 +582,7 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(TeaCupPomeranian.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
+      assert !beans.isEmpty();
       manager.fireEvent("Another event");
    }
 
@@ -593,6 +593,7 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(TeaCupPomeranian.class));
       webBeansBootstrap.boot();
       List<Bean<?>> beans = manager.getBeans();
+      assert !beans.isEmpty();
       manager.fireEvent(new Integer(1));
    }
 
@@ -604,13 +605,13 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.boot();
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          SweeWaxbill bean = manager.getInstanceByType(SweeWaxbill.class);
          bean.methodThatFiresEvent();
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -622,13 +623,13 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.boot();
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          SweeWaxbill bean = manager.getInstanceByType(SweeWaxbill.class);
          bean.methodThatRegistersObserver();
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -640,13 +641,13 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.boot();
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          OwlFinch bean = manager.getInstanceByType(OwlFinch.class);
          bean.methodThatFiresEvent();
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -658,13 +659,13 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.boot();
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          OwlFinch bean = manager.getInstanceByType(OwlFinch.class);
          bean.methodThatRegistersObserver();
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -676,7 +677,7 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.boot();
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          BlueFacedParrotFinch bean = manager.getInstanceByType(BlueFacedParrotFinch.class);
          bean.methodThatRegistersObserver();
 
@@ -685,7 +686,7 @@ public class EventBusTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -697,7 +698,7 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.boot();
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          StarFinch starFinch = manager.getInstanceByType(StarFinch.class);
          FinchKeeper birdKeeper = manager.getInstanceByType(FinchKeeper.class);
          BirdCage birdCage = manager.getInstanceByType(BirdCage.class);
@@ -708,7 +709,7 @@ public class EventBusTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -720,7 +721,7 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.boot();
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          OrangeCheekedWaxbill bird = manager.getInstanceByType(OrangeCheekedWaxbill.class);
          FinchKeeper birdKeeper = manager.getInstanceByType(FinchKeeper.class);
          assert bird != null;
@@ -729,7 +730,7 @@ public class EventBusTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -750,7 +751,7 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.boot();
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          EuropeanGoldfinch bird = manager.getInstanceByType(EuropeanGoldfinch.class);
          FinchKeeper birdKeeper = manager.getInstanceByType(FinchKeeper.class);
          assert bird != null;
@@ -759,7 +760,7 @@ public class EventBusTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -771,7 +772,7 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.boot();
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          AuroraFinch bird = manager.getInstanceByType(AuroraFinch.class);
          FinchKeeper birdKeeper = manager.getInstanceByType(FinchKeeper.class);
          assert bird != null;
@@ -779,7 +780,7 @@ public class EventBusTest extends AbstractTest
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -791,13 +792,13 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.boot();
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          CommonWaxbill bean = manager.getInstanceByType(CommonWaxbill.class);
          assert bean != null;
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -809,14 +810,14 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.boot();
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          BlackRumpedWaxbill bean = manager.getInstanceByType(BlackRumpedWaxbill.class);
          webBeansBootstrap.boot();
          assert bean != null;
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -828,13 +829,13 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.boot();
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          GoldbreastWaxbill bean = manager.getInstanceByType(GoldbreastWaxbill.class);
          assert bean != null;
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 
@@ -846,13 +847,13 @@ public class EventBusTest extends AbstractTest
       webBeansBootstrap.boot();
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          JavaSparrow bean = manager.getInstanceByType(JavaSparrow.class);
          assert bean != null;
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
 

@@ -4,7 +4,6 @@ import javax.webbeans.AmbiguousDependencyException;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
@@ -73,12 +72,12 @@ public class InstantiationByNameTest extends AbstractTest
       
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         activateDependentContext();
          assert manager.getInstanceByName("salmon") instanceof Salmon;
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         deactivateDependentContext();
       }
    }
    

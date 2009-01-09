@@ -3,7 +3,6 @@ package org.jboss.webbeans.test.ejb;
 import javax.webbeans.UnremovedException;
 
 import org.jboss.webbeans.bean.EnterpriseBean;
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.SpecAssertion;
 import org.jboss.webbeans.test.SpecVersion;
@@ -57,7 +56,7 @@ public class EnterpriseBeanLifecycleTest extends AbstractTest
    public void testRemoveMethodCalled()
    {
       visited = false;
-      DependentContext.INSTANCE.setActive(true);
+      activateDependentContext();
       EnterpriseBean<GoodDoggie> bean = EnterpriseBean.of(GoodDoggie.class, manager);
       manager.addBean(bean);
       GoodDoggie doggie = manager.getInstance(bean);
