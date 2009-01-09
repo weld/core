@@ -1,4 +1,4 @@
-package org.jboss.webbeans.tck.ri;
+package org.jboss.webbeans.test.tck;
 
 import java.lang.reflect.Method;
 
