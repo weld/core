@@ -2,8 +2,8 @@ package org.jboss.webbeans.test.mock;
 
 import java.lang.annotation.Annotation;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.webbeans.InjectionPoint;
 
@@ -56,9 +56,20 @@ public class MockBootstrap extends WebBeansBootstrap
          return null;
       }
 
-      public EntityManagerFactory resolvePersistenceUnit(InjectionPoint injectionPoint, Naming naming)
+      public Object resolvePersistenceContext(InjectionPoint injectionPoint, Naming naming)
       {
          // TODO Implement PU resolution for Unit tests
+         return null;
+      }
+
+      public Class<? extends Annotation> getResourceAnnotation()
+      {
+         return Resource.class;
+      }
+
+      public Object resolveResource(InjectionPoint injectionPoint, Naming naming)
+      {
+         // TODO Auto-generated method stub
          return null;
       }
 

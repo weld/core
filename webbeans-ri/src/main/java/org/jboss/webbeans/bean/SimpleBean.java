@@ -23,7 +23,10 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.webbeans.DefinitionException;
+import javax.webbeans.ExecutionException;
 import javax.webbeans.Initializer;
 import javax.webbeans.InjectionPoint;
 
@@ -251,17 +254,29 @@ public class SimpleBean<T> extends AbstractClassBean<T>
 
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getPersistenceContextAnnotation()))
       {
+         if (field.getAnnotation(PersistenceContext.class).type().equals(PersistenceContextType.EXTENDED))
+         {
+            throw new ExecutionException("Cannot inject an extended persistence context into " + field);
+         }
          InjectionPoint injectionPoint = new InjectionPointImpl(field, this, beanInstance);
-         Object puInstance = manager.getEjbResolver().resolvePersistenceUnit(injectionPoint, manager.getNaming());
+         Object puInstance = manager.getEjbResolver().resolvePersistenceContext(injectionPoint, manager.getNaming());
          field.inject(beanInstance, puInstance);
       }
       
       for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getEjbResolver().getPersistenceContextAnnotation()))
       {
          InjectionPoint injectionPoint = new InjectionPointImpl(method, this, beanInstance);
-         Object puInstance = manager.getEjbResolver().resolvePersistenceUnit(injectionPoint, manager.getNaming());
+         Object puInstance = manager.getEjbResolver().resolvePersistenceContext(injectionPoint, manager.getNaming());
          method.invoke(beanInstance, puInstance);
       }
+      
+      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getResourceAnnotation()))
+      {
+         InjectionPoint injectionPoint = new InjectionPointImpl(field, this, beanInstance);
+         Object resourceInstance = manager.getEjbResolver().resolveResource(injectionPoint, manager.getNaming());
+         field.inject(beanInstance, resourceInstance);
+      }
+      
    }
 
    /**
