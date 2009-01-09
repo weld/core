@@ -61,7 +61,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       return new ProducerMethodBean<T>(method, declaringBean, manager);
    }
    
-   public static <T> ProducerMethodBean<T> of(Method method, SimpleBean<?> declaringBean, ManagerImpl manager)
+   public static <T> ProducerMethodBean<T> of(Method method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       return of(new AnnotatedMethodImpl<T>(method, declaringBean.getAnnotatedItem()), declaringBean, manager);
    }
