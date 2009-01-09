@@ -19,7 +19,7 @@ public class BeansImpl implements Beans
       return SimpleBean.of(clazz, CurrentManager.rootManager());
    }
 
-   public <T> Bean<T> createProducerMethodBean(Method method, Bean<T> declaringBean)
+   public <T> Bean<T> createProducerMethodBean(Method method, Bean<?> declaringBean)
    {
       if (declaringBean instanceof AbstractClassBean)
       {

@@ -27,6 +27,12 @@
          <classifier>jdk15</classifier>
       </dependency>
       
+      <dependency>
+         <groupId>org.jboss.webbeans.tck</groupId>
+         <artifactId>webbeans-tck-api</artifactId>
+         <scope>test</scope>
+      </dependency>
+      
       <!-- <dependency>
          <groupId>org.jboss.ejb3</groupId>
          <artifactId>jboss-ejb3-embedded</artifactId>
