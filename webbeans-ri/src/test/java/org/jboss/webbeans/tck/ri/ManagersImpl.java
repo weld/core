@@ -1,4 +1,4 @@
-package org.jboss.webbeans.tck.impl;
+package org.jboss.webbeans.tck.ri;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -7,12 +7,14 @@ import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.tck.api.Managers;
+import org.jboss.webbeans.test.mock.MockBootstrap;
 
-public class MangersImpl implements Managers
+public class ManagersImpl implements Managers
 {
 
-   public Manager getManager()
+   public Manager createManager()
    {
+      new MockBootstrap();
       return CurrentManager.rootManager();
    }
 

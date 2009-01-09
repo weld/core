@@ -1,4 +1,4 @@
-package org.jboss.webbeans.tck.impl;
+package org.jboss.webbeans.tck.ri;
 
 import org.jboss.webbeans.context.AbstractContext;
 import org.jboss.webbeans.context.RequestContext;
