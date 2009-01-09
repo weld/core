@@ -181,11 +181,16 @@
             <version>${project.version}</version>
          </dependency>
 
-         
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>webbeans-ri-spi</artifactId>
             <version>${project.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.webbeans.tck</groupId>
+            <artifactId>webbeans-tck-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
          </dependency>
 
       </dependencies>
