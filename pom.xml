@@ -64,7 +64,11 @@
       <module>webbeans-ri</module>
       <module>webbeans-ri-spi</module>
    </modules>
-
+   
+   <properties>
+      <webbeans.tck.version>1.0.0-SNAPSHOT</webbeans.tck.version>
+   </properties>
+   
    <dependencyManagement>
       <dependencies>
 
@@ -187,13 +191,13 @@
          <dependency>
             <groupId>org.jboss.webbeans.tck</groupId>
             <artifactId>webbeans-tck-api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${webbeans.tck.version}</version>
          </dependency>
          
          <dependency>
             <groupId>org.jboss.webbeans.tck</groupId>
             <artifactId>webbeans-tck-impl</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${webbeans.tck.version}</version>
          </dependency>
 
       </dependencies>
