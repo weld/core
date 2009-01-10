@@ -134,7 +134,7 @@
    	      <version>2.4.3</version>
    	      <configuration>
    	         <suiteXmlFiles>
-                  <suiteXmlFile>testng.xml,</suiteXmlFile>
+                  <suiteXmlFile>unit-tests.xml,</suiteXmlFile>
                   <suiteXmlFile>${project.build.directory}/dependency/webbeans-tck-impl-${webbeans.tck.version}-suite.xml</suiteXmlFile>
    	         </suiteXmlFiles>
    	      </configuration>

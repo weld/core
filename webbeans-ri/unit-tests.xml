@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="WebBeans RI" verbose="1"  >
+<suite name="Web Beans RI" verbose="1"  >
 
    <test name="Web Beans RI">
       <groups>
