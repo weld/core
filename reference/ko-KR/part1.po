@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: part1\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-06 11:30+0000\n"
+"POT-Creation-Date: 2009-01-10 14:18+0000\n"
 "PO-Revision-Date: 2009-01-09 14:58+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -15,7 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
+"\n"
 
 #. Tag: para
 #: part1.xml:5
@@ -27,7 +28,12 @@ msgid ""
 "component types including JavaBeans and Enterprise Java Beans. As a "
 "complement to the traditional Java EE programming model, the Web Beans "
 "services provide:"
-msgstr "Web Beans (JSR-299) 사양은 애플리케이션을 보다 쉽게 개발하기 위한 Java EE 환경에 대한 서비스 모음을 정의합니다. Web Beans는 JavaBeans 및 Enterprise Java Bean을 포함하여 기존의 Java 구성 요소 유형을 통해 향상된 수명 주기 및 상호 작용 모델을 계층화합니다. 전통적인 Java EE 프로그래밍 모델의 구성 요소로서, Web Beans는 다음과 같은 서비스를 제공합니다:  "
+msgstr ""
+"Web Beans (JSR-299) 사양은 애플리케이션을 보다 쉽게 개발하기 위한 Java EE 환"
+"경에 대한 서비스 모음을 정의합니다. Web Beans는 JavaBeans 및 Enterprise Java "
+"Bean을 포함하여 기존의 Java 구성 요소 유형을 통해 향상된 수명 주기 및 상호 작"
+"용 모델을 계층화합니다. 전통적인 Java EE 프로그래밍 모델의 구성 요소로서, "
+"Web Beans는 다음과 같은 서비스를 제공합니다:  "
 
 #. Tag: para
 #: part1.xml:14
@@ -35,18 +41,23 @@ msgstr "Web Beans (JSR-299) 사양은 애플리케이션을 보다 쉽게 개발
 msgid ""
 "an improved lifecycle for stateful components, bound to well-defined "
 "<emphasis>contexts</emphasis>,"
-msgstr "명확하게 정의된 <emphasis>컨텍스트</emphasis>에 바인딩된 상태 기반 구성 요소의 수명 주기 개선 "
+msgstr ""
+"명확하게 정의된 <emphasis>컨텍스트</emphasis>에 바인딩된 상태 기반 구성 요소"
+"의 수명 주기 개선 "
 
 #. Tag: para
 #: part1.xml:18
 #, no-c-format
 msgid "a typesafe approach to <emphasis>dependency injection</emphasis>,"
-msgstr "<emphasis>의존성 주입 (dependency injection)</emphasis>으로의 타입 안정적 (typesafe) 접근  "
+msgstr ""
+"<emphasis>의존성 주입 (dependency injection)</emphasis>으로의 타입 안정적 "
+"(typesafe) 접근  "
 
 #. Tag: para
 #: part1.xml:21
 #, no-c-format
-msgid "interaction via an <emphasis>event notification</emphasis> facility, and"
+msgid ""
+"interaction via an <emphasis>event notification</emphasis> facility, and"
 msgstr "<emphasis>이벤트 통지</emphasis> 기능을 통한 상호작용 "
 
 #. Tag: para
@@ -57,7 +68,10 @@ msgid ""
 "components, along with a new kind of interceptor, called a "
 "<emphasis>decorator</emphasis>, that is more appropriate for use in solving "
 "business problems."
-msgstr "<emphasis>decorator</emphasis>라고 불리는 새로운 종류의 인터셉터와 함께 <emphasis>인터셉터</emphasis>를 구성요소에 바인딩하기 위한 개선된 접근으로, 비지니스 문제 해결을 위해 보다 적절하게 사용됩니다. "
+msgstr ""
+"<emphasis>decorator</emphasis>라고 불리는 새로운 종류의 인터셉터와 함께 "
+"<emphasis>인터셉터</emphasis>를 구성요소에 바인딩하기 위한 개선된 접근으로, "
+"비지니스 문제 해결을 위해 보다 적절하게 사용됩니다. "
 
 #. Tag: para
 #: part1.xml:32
@@ -66,7 +80,9 @@ msgid ""
 "Dependency injection, together with contextual lifecycle management, saves "
 "the user of an unfamiliar API from having to ask and answer the following "
 "questions:"
-msgstr "컨텍스트 수명 주기 관리와 함께 의존성 주입은 다음과 같은 질문을 묻고 대답하는 것에서 생소한 API 사용자를 보호합니다:   "
+msgstr ""
+"컨텍스트 수명 주기 관리와 함께 의존성 주입은 다음과 같은 질문을 묻고 대답하"
+"는 것에서 생소한 API 사용자를 보호합니다:   "
 
 #. Tag: para
 #: part1.xml:38
@@ -110,7 +126,9 @@ msgstr "직접 사용하지 않을 경우 참조 사항을 어디에 보관해�
 msgid ""
 "how can I add an indirection layer, so that the implementation of this "
 "object can vary at deployment time?"
-msgstr "어떻게 하면 우회 계층을 추가하여, 이러한 개체 구현을 배포시 다르게할 수 있을까요? "
+msgstr ""
+"어떻게 하면 우회 계층을 추가하여, 이러한 개체 구현을 배포시 다르게할 수 있을"
+"까요? "
 
 #. Tag: para
 #: part1.xml:61
@@ -120,8 +138,7 @@ msgstr "어떻게 하면 다른 개체 사이에서 이러한 개체를 공유�
 
 #. Tag: para
 #: part1.xml:65
-#, no-c-format
-#, fuzzy
+#, fuzzy, no-c-format
 msgid ""
 "A Web Bean specifies only the type and semantics of other Web Beans it "
 "depends upon. It need not be aware of the actual lifecycle, concrete "
@@ -130,8 +147,11 @@ msgid ""
 "model of a Web Bean it depends upon may vary according to the deployment "
 "scenario, without affecting any client."
 msgstr ""
-"Web Bean은 의존하는 다른 Web Beans의 유형 및 의미 만을 지정합니다. 이는 Web Bean이 의존하는 다른 클라이언트 또는 스레딩 모델, 실제적인 수명 주기, 구체적 구현 방식을 인식할 필요가 없습니다. 더 나아가 "
-"이는 실제적인 수명주기, 구체적인 구현 방식, 의존하는 다른 Web Bean 클라이언트 또는 스레딩 모델을 인식할 필요가 없습니다. "
+"Web Bean은 의존하는 다른 Web Beans의 유형 및 의미 만을 지정합니다. 이는 Web "
+"Bean이 의존하는 다른 클라이언트 또는 스레딩 모델, 실제적인 수명 주기, 구체적 "
+"구현 방식을 인식할 필요가 없습니다. 더 나아가 이는 실제적인 수명주기, 구체적"
+"인 구현 방식, 의존하는 다른 Web Bean 클라이언트 또는 스레딩 모델을 인식할 필"
+"요가 없습니다. "
 
 #. Tag: para
 #: part1.xml:72
@@ -233,4 +253,3 @@ msgid ""
 "Java EE, and with any Java SE environment where embeddable EJB Lite is "
 "available."
 msgstr ""
-

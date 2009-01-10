@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Author_Group\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-08 14:07+0000\n"
+"POT-Creation-Date: 2009-01-10 14:18+0000\n"
 "PO-Revision-Date: 2009-01-09 11:40+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
@@ -40,8 +40,7 @@ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
 
 #. Tag: affiliation
 #: Author_Group.xml:15
-#, no-c-format
-#, fuzzy
+#, fuzzy, no-c-format
 msgid ""
 "<jobtitle>Web Beans (JSR-299) Reference Implementation lead </jobtitle> "
 "<orgname>Red Hat Middleware LLC</orgname>"
@@ -66,4 +65,3 @@ msgstr "Traducción en italiano"
 #, no-c-format
 msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
 msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
-
