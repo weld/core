@@ -8,7 +8,7 @@ PRODUCT		= Web_Beans
 BRAND		= JBoss
 
 TRANSLATIONS    = $(XML_LANG)
-OTHER_LANGS    = es-ES fr-FR it-IT ja-JP zh-CN ko-KR zh-TW pt-BR
+OTHER_LANGS    = es-ES fr-FR it-IT ja-JP zh-CN ko-KR zh-TW pt-BR de-DE
 #TRANSLATIONS   = $(XML_LANG) $(OTHER_LANGS)
 
 COMMON_CONFIG  = /usr/share/publican

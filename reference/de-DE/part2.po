@@ -1,0 +1,102 @@
+# Language de-DE translations for Introduction_to_Web_Beans package.
+# Automatically generated, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2009-01-10 14:18+0000\n"
+"PO-Revision-Date: 2009-01-10 14:18+0000\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: para
+#: part2.xml:5
+#, no-c-format
+msgid ""
+"The first major theme of Web Beans is <emphasis>loose coupling</emphasis>. "
+"We've already seen three means of achieving loose coupling:"
+msgstr ""
+
+#. Tag: para
+#: part2.xml:10
+#, no-c-format
+msgid ""
+"<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
+msgstr ""
+
+#. Tag: para
+#: part2.xml:14
+#, no-c-format
+msgid "<emphasis>producer methods</emphasis> enable runtime polymorphism, and"
+msgstr ""
+
+#. Tag: para
+#: part2.xml:18
+#, no-c-format
+msgid ""
+"<emphasis>contextual lifecycle management</emphasis> decouples Web Bean "
+"lifecycles."
+msgstr ""
+
+#. Tag: para
+#: part2.xml:23
+#, no-c-format
+msgid ""
+"These techniques serve to enable loose coupling of client and server. The "
+"client is no longer tightly bound to an implementation of an API, nor is it "
+"required to manage the lifecycle of the server object. This approach lets "
+"<emphasis>stateful objects interact as if they were services</emphasis>."
+msgstr ""
+
+#. Tag: para
+#: part2.xml:28
+#, no-c-format
+msgid ""
+"Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system "
+"can respond to change in a well-defined manner. In the past, frameworks that "
+"attempted to provide the facilities listed above invariably did it by "
+"sacrificing type safety. Web Beans is the first technology that achieves "
+"this level of loose coupling in a typesafe way."
+msgstr ""
+
+#. Tag: para
+#: part2.xml:34
+#, no-c-format
+msgid ""
+"Web Beans provides three extra important facilities that further the goal of "
+"loose coupling:"
+msgstr ""
+
+#. Tag: para
+#: part2.xml:39
+#, no-c-format
+msgid ""
+"<emphasis>interceptors</emphasis> decouple technical concerns from business "
+"logic,"
+msgstr ""
+
+#. Tag: para
+#: part2.xml:43
+#, no-c-format
+msgid ""
+"<emphasis>decorators</emphasis> may be used to decouple some business "
+"concerns, and"
+msgstr ""
+
+#. Tag: para
+#: part2.xml:47
+#, no-c-format
+msgid ""
+"<emphasis>event notifications</emphasis> decouple event producers from event "
+"consumers."
+msgstr ""
+
+#. Tag: para
+#: part2.xml:52
+#, no-c-format
+msgid "Let's explore interceptors first."
+msgstr ""
