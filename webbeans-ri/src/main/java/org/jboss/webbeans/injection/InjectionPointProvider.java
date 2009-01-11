@@ -127,6 +127,35 @@ public class InjectionPointProvider
       return new InjectionPointImpl(getPreviousInjectionMember(), getPreviousBean(), getPreviousInstance());
    }
 
+   /**
+    * Returns the injection point metadata for the injection point currently
+    * being injected.
+    * 
+    * @return current injection point metadata object
+    */
+   public InjectionPoint getCurrentInjectionPoint()
+   {
+      return new InjectionPointImpl(getCurrentInjectionMember(), getCurrentBean(), getCurrentInstance());
+   }
+
+   protected Bean<?> getCurrentBean()
+   {
+      return beans.peek();
+   }
+
+   protected Object getCurrentInstance()
+   {
+      return beanInstances.peek();
+   }
+
+   protected AnnotatedMember<?, ? extends Member> getCurrentInjectionMember()
+   {
+      if (injectionPoints.size() > 0)
+         return injectionPoints.peek();
+      else
+         return null;
+   }
+
    protected Bean<?> getPreviousBean()
    {
       Bean<?> currentBean = beans.pop();
