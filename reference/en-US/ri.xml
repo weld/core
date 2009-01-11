@@ -550,8 +550,7 @@ public class Game
       </para>
       
       <para>
-         The translator example is built as an ear, and contains EJBs and 
-         enterprise beans. As a result, it's structure is more complex than
+         The translator example is built as an ear, and contains EJBs. As a result, it's structure is more complex than
          the numberguess example.
       </para>
       
