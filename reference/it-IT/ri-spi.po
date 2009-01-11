@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-08 14:07+0000\n"
-"PO-Revision-Date: 2009-01-08 15:12+0100\n"
+"PO-Revision-Date: 2009-01-11 15:17+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr "Attualmente Web Bean RI funziona solo in JBoss AS 5; l'integrazione di R
 #: ri-spi.xml:15
 #, no-c-format
 msgid "It should be possible to run Web Beans in an SE environment, but you'll to do more work, adding your own contexts and lifecycle. The Web Beans RI currently doesn't expose lifecycle extension points, so you would have to code directly against Web Beans RI classes."
-msgstr "Dovrebbe essere possibile far funzionare Web Beans in un ambiente SE, ma occorre molto lavoro per aggiungere i propri contesti ed il ciclo di vita. Web Beans RI attualmemnte non espone punti di estensione del ciclo di vita, così occorre codificare direttamente nelle classi Web Beans RI."
+msgstr "Dovrebbe essere possibile far funzionare Web Beans in un ambiente SE, ma occorre molto lavoro per aggiungere i propri contesti ed il ciclo di vita. Web Beans RI attualmente non espone punti di estensione del ciclo di vita, così occorre codificare direttamente nelle classi Web Beans RI."
 
 #. Tag: title
 #: ri-spi.xml:24
@@ -490,7 +490,7 @@ msgstr "Session Bean Interceptor"
 #: ri-spi.xml:166
 #, no-c-format
 msgid "If you are integrating the Web Beans into an EJB environment you must register <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> as a EJB interceptor for all EJBs in the application, either automatically, or through user configuration, for each Web Beans application which uses enterprise beans."
-msgstr "Se si integra Web Beans in un ambiente EJB occorre registrare <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> come interceptor EJB for ogni EJB dell'applicazione, o automaticamente o attraverso una configurazione utente, per ciascuna applicazione Web Beans che utilizza bean enterprise."
+msgstr "Se si integra Web Beans in un ambiente EJB occorre registrare <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> come interceptor EJB per ogni EJB dell'applicazione, o automaticamente o attraverso una configurazione utente, per ciascuna applicazione Web Beans che utilizza bean enterprise."
 
 #. Tag: term
 #: ri-spi.xml:177
