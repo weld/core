@@ -289,14 +289,14 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       InjectionPointProvider injectionPointProvider = manager.getInjectionPointFactory();
       for (AnnotatedField<?> injectableField : getInjectableFields())
       {
-         injectionPointProvider.pushInjectionPoint(injectableField);
+         injectionPointProvider.pushInjectionMember(injectableField);
          try
          {
             injectableField.inject(instance, manager);
          }
          finally
          {
-            injectionPointProvider.popInjectionPoint();
+            injectionPointProvider.popInjectionMember();
          }
       }
    }

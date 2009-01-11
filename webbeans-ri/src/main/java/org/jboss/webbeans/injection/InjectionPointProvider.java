@@ -42,13 +42,15 @@ public class InjectionPointProvider
 
    /**
     * Pushes the current bean that is being instantiated onto a stack for later
-    * use.
+    * use. This always pushes a null bean instance on the stack too which can
+    * later be replaced by a real instance.
     * 
     * @param currentBean The bean being instantiated
     */
    public void pushBean(Bean<?> currentBean)
    {
       beans.push(currentBean);
+      beanInstances.push(null);
    }
 
    /**
@@ -59,15 +61,25 @@ public class InjectionPointProvider
     */
    public void pushInstance(Object currentInstance)
    {
-      beanInstances.push(currentInstance);
+      // Replace the null instance (from pushing the bean) with this one
+      // on the top of the stack.
+      if (beanInstances.peek() == null)
+      {
+         popInstance();
+         beanInstances.push(currentInstance);
+      }
+      else
+      {
+         throw new java.lang.IllegalStateException("More bean instances pushed than there are beans");
+      }
    }
 
    /**
-    * Pushes the current injection point being processed.
+    * Pushes the current injection point member being processed.
     * 
-    * @param injectedMember The metadata for the injection point
+    * @param injectedMember The metadata for the injection point member
     */
-   public void pushInjectionPoint(AnnotatedMember<?, ? extends Member> injectedMember)
+   public void pushInjectionMember(AnnotatedMember<?, ? extends Member> injectedMember)
    {
       injectionPoints.push(injectedMember);
    }
@@ -78,6 +90,11 @@ public class InjectionPointProvider
     */
    public void popBean()
    {
+      if (!beanInstances.isEmpty() && beanInstances.size() == beans.size() && beanInstances.peek() == null)
+      {
+         // Pop the null instance since a real one was never pushed.
+         popInstance();
+      }
       beans.pop();
    }
 
@@ -94,7 +111,7 @@ public class InjectionPointProvider
     * Pops the current injection point being processed. This should be called
     * once the injection point is bound.
     */
-   public void popInjectionPoint()
+   public void popInjectionMember()
    {
       injectionPoints.pop();
    }
