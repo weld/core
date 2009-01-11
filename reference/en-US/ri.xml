@@ -667,7 +667,7 @@ public class Game
       
       <para>
          We've saved the most interesting bit to last, the code! The project has
-         two simple beans, <literal>SentanceParser</literal> and
+         two simple beans, <literal>SentenceParser</literal> and
          <literal>TextTranslator</literal> and two enterprise beans,
          <literal>TanslatorControllerBean</literal> and 
          <literal>SentenceTranslator</literal>. You should be getting quite
@@ -676,7 +676,7 @@ public class Game
       </para>
       
       <para>
-         Both <literal>SentanceParser</literal> and 
+         Both <literal>SentenceParser</literal> and 
          <literal>TextTranslator</literal> are dependent beans, and 
          <literal>TextTranslator</literal> uses constructor initialization:
       </para>
