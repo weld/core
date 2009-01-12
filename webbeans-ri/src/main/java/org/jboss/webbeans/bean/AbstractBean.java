@@ -355,9 +355,9 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * 
     * @return The set of binding types
     * 
-    * @see javax.webbeans.manager.Bean#getBindingTypes()
+    * @see javax.webbeans.manager.Bean#getBindings()
     */
-   public Set<Annotation> getBindingTypes()
+   public Set<Annotation> getBindings()
    {
       return bindingTypes;
    }

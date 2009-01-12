@@ -72,9 +72,9 @@ public abstract class ForwardingBean<T> extends Bean<T>
     * @return The binding types
     */
    @Override
-   public Set<Annotation> getBindingTypes()
+   public Set<Annotation> getBindings()
    {
-      return delegate().getBindingTypes();
+      return delegate().getBindings();
    }
 
    /**

@@ -94,7 +94,7 @@ public class NewSimpleBean<T> extends SimpleBean<T>
    }
 
    @Override
-   public Set<Annotation> getBindingTypes()
+   public Set<Annotation> getBindings()
    {
       return NEW_BINDING_SET;
    }
