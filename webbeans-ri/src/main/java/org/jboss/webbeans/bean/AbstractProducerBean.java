@@ -279,7 +279,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
          buffer.append("simple producer bean '" + getName() + "'");
       }
       buffer.append(" [" + getType().getName() + "]\n");
-      buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
+      buffer.append("   API types " + getTypes() + ", binding types " + getBindings() + "\n");
       return buffer.toString();
    }
 

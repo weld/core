@@ -159,7 +159,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       this.bindingTypes.addAll(getAnnotatedItem().getMetaAnnotations(BindingType.class));
       if (specialization)
       {
-         this.bindingTypes.addAll(getSpecializedType().getBindingTypes());
+         this.bindingTypes.addAll(getSpecializedType().getBindings());
          log.trace("Using binding types " + bindingTypes + " specified by annotations and specialized supertype");
       }
       else if (bindingTypes.size() == 0)

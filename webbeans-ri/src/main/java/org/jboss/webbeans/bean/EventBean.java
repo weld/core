@@ -172,7 +172,7 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
          buffer.append(" enterprise bean '" + getName() + "'");
       }
       buffer.append(" [" + getType().getName() + "]\n");
-      buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
+      buffer.append("   API types " + getTypes() + ", binding types " + getBindings() + "\n");
       return buffer.toString();
    } 
 

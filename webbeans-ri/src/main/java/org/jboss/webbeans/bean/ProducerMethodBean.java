@@ -138,7 +138,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     */
    protected void initDisposalMethod()
    {
-      Set<AnnotatedMethod<Object>> disposalMethods = manager.resolveDisposalMethods(getType(), getBindingTypes().toArray(new Annotation[0]));
+      Set<AnnotatedMethod<Object>> disposalMethods = manager.resolveDisposalMethods(getType(), getBindings().toArray(new Annotation[0]));
       if (disposalMethods.size() == 1)
       {
          this.disposalMethod = disposalMethods.iterator().next();
@@ -201,7 +201,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          buffer.append("simple producer method bean '" + getName() + "'");
       }
       buffer.append(" [" + getType().getName() + "]\n");
-      buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
+      buffer.append("   API types " + getTypes() + ", binding types " + getBindings() + "\n");
       return buffer.toString();
    }
 

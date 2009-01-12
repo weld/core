@@ -489,7 +489,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          buffer.append("simple bean '" + getName() + "'");
       }
       buffer.append(" [" + getType().getName() + "]\n");
-      buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
+      buffer.append("   API types " + getTypes() + ", binding types " + getBindings() + "\n");
       return buffer.toString();
    }
 
