@@ -283,9 +283,9 @@ public class SimpleBeanModelTest extends AbstractTest
    public void testSpecializedClassInheritsBindingTypes()
    {
       SimpleBean<Tractor> bean = SimpleBean.of(Tractor.class, manager);
-      assert bean.getBindingTypes().size()==2;
-      assert bean.getBindingTypes().contains( new AnnotationLiteral<Motorized>() {} );
-      assert bean.getBindingTypes().contains( new AnnotationLiteral<HeavyDuty>() {} );
+      assert bean.getBindings().size()==2;
+      assert bean.getBindings().contains( new AnnotationLiteral<Motorized>() {} );
+      assert bean.getBindings().contains( new AnnotationLiteral<HeavyDuty>() {} );
    }
    
    @Test(groups="specializationInherit") @SpecAssertion(section="3.2.6")

@@ -62,15 +62,15 @@ public class EnterpriseBeanSpecializationTest extends AbstractTest
 
    private boolean compareBindingTypesOK(EnterpriseBean<Hound> hound, EnterpriseBean<HoundOfBaskerville> houndOfBaskerville)
    {
-      if (hound.getBindingTypes().size() != houndOfBaskerville.getBindingTypes().size())
+      if (hound.getBindings().size() != houndOfBaskerville.getBindings().size())
       {
          return false;
       }
-      if (!hound.getBindingTypes().containsAll(houndOfBaskerville.getBindingTypes()))
+      if (!hound.getBindings().containsAll(houndOfBaskerville.getBindings()))
       {
          return false;
       }
-      if (!houndOfBaskerville.getBindingTypes().containsAll(hound.getBindingTypes()))
+      if (!houndOfBaskerville.getBindings().containsAll(hound.getBindings()))
       {
          return false;
       }

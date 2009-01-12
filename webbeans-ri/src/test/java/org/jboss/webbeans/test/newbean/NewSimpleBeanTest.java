@@ -81,8 +81,8 @@ public class NewSimpleBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewBeanIsHasOnlyNewBinding()
    {
-      assert newSimpleBean.getBindingTypes().size() == 1;
-      assert newSimpleBean.getBindingTypes().iterator().next().annotationType().equals(new NewBinding().annotationType());
+      assert newSimpleBean.getBindings().size() == 1;
+      assert newSimpleBean.getBindings().iterator().next().annotationType().equals(new NewBinding().annotationType());
    }
 
    /**
@@ -271,7 +271,7 @@ public class NewSimpleBeanTest extends AbstractTest
    public void testNewBeanHasNoDisposalMethods()
    {
       Class<?> type = TypeInfo.ofTypes(newSimpleBean.getTypes()).getSuperClass();
-      assert manager.resolveDisposalMethods(type, newSimpleBean.getBindingTypes().toArray(new Annotation[0])).isEmpty();
+      assert manager.resolveDisposalMethods(type, newSimpleBean.getBindings().toArray(new Annotation[0])).isEmpty();
    }
 
    /**
@@ -307,7 +307,7 @@ public class NewSimpleBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasNoDecorators()
    {
-      Annotation[] bindingTypes = newSimpleBean.getBindingTypes().toArray(new Annotation[0]);
+      Annotation[] bindingTypes = newSimpleBean.getBindings().toArray(new Annotation[0]);
       assert manager.resolveDecorators(newSimpleBean.getTypes(), bindingTypes).isEmpty();
    }
 

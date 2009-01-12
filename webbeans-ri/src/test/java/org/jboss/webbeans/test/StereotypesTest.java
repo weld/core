@@ -144,7 +144,7 @@ public class StereotypesTest extends AbstractTest
    {
       SimpleBean<HighlandCow> highlandCow = SimpleBean.of(HighlandCow.class, manager);
       assert highlandCow.getName() == null;
-      assert highlandCow.getBindingTypes().iterator().next().annotationType().equals(Tame.class);
+      assert highlandCow.getBindings().iterator().next().annotationType().equals(Tame.class);
       assert highlandCow.getScopeType().equals(RequestScoped.class);
       assert highlandCow.getMergedStereotypes().getRequiredTypes().size() == 1;
       assert highlandCow.getMergedStereotypes().getRequiredTypes().contains(Animal.class);

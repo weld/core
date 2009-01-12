@@ -88,8 +88,8 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       manager.addBean(bean);
       Method method = SpiderProducer.class.getMethod("produceTarantula");
       ProducerMethodBean<Tarantula> tarantulaModel = ProducerMethodBean.of(method, bean, manager);
-      assert tarantulaModel.getBindingTypes().size() == 1;
-      assert tarantulaModel.getBindingTypes().iterator().next().annotationType().equals(Current.class);
+      assert tarantulaModel.getBindings().size() == 1;
+      assert tarantulaModel.getBindings().iterator().next().annotationType().equals(Current.class);
    }
    
    @Test(groups="producerMethod") @SpecAssertion(section="3.4.1")
@@ -151,8 +151,8 @@ public class ProducerMethodBeanModelTest extends AbstractTest
       manager.addBean(bean);
       Method method = SpiderProducer.class.getMethod("produceTameTarantula");
       ProducerMethodBean<Tarantula> tarantulaModel = ProducerMethodBean.of(method, bean, manager);
-      assert tarantulaModel.getBindingTypes().size() == 1;
-      assert tarantulaModel.getBindingTypes().iterator().next().annotationType().equals(Tame.class);
+      assert tarantulaModel.getBindings().size() == 1;
+      assert tarantulaModel.getBindings().iterator().next().annotationType().equals(Tame.class);
    }
    
    @Test(groups="producerMethod") @SpecAssertion(section="3.4.2")
