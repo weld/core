@@ -1,54 +1,27 @@
 package org.jboss.webbeans.transaction;
 
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
+import javax.webbeans.Current;
 import javax.webbeans.Produces;
 
+import org.jboss.webbeans.ManagerImpl;
+
+/**
+ * Transaction manager component
+ * 
+ * @author Pete Muir
+ *
+ */
 public class Transaction
 {
-
+ 
+   public static final String USER_TRANSACTION_JNDI_NAME = "java:comp/UserTransaction";
+   
+   @Current ManagerImpl manager;
+   
    @Produces
    public UserTransaction getCurrentTransaction()
    {
-      return new UTTransaction(new javax.transaction.UserTransaction()
-      {
-         
-         public void begin() throws NotSupportedException, SystemException
-         {
-            
-         }
-         
-         public void commit() throws RollbackException, HeuristicMixedException, HeuristicRollbackException, SecurityException, IllegalStateException, SystemException
-         {
-            
-         }
-         
-         public int getStatus() throws SystemException
-         {
-            return javax.transaction.Status.STATUS_UNKNOWN;
-         }
-         
-         public void rollback() throws IllegalStateException, SecurityException, SystemException
-         {
-            
-         }
-         
-         public void setRollbackOnly() throws IllegalStateException, SystemException
-         {
-            
-         }
-         
-         public void setTransactionTimeout(int arg0) throws SystemException
-         {
-            
-         }
-         
-         
-         
-      });
+      return new UTTransaction(manager.getNaming().lookup(USER_TRANSACTION_JNDI_NAME, javax.transaction.UserTransaction.class));
    }
    
 }
