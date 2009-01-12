@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-09 16:28+1000\n"
+"PO-Revision-Date: 2009-01-12 14:52+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -220,7 +220,7 @@ msgstr "La especificación de Web Beans define un procedimiento, llamado <emphas
 msgid ""
 "The purpose of this algorithm is to allow multiple Web Beans to implement "
 "the same API type and either:"
-msgstr "El propósito de este algoritmo es permitir múltiples Web Beans para implementar el mismo tipo API y ya sea:"
+msgstr "El propósito de este algoritmo es permitir a múltiples Web Beans implementar el mismo tipo API ya sea:"
 
 #. Tag: para
 #: injection.xml:72
@@ -834,21 +834,20 @@ msgid ""
 "browsing the code can easily identify what deployment scenarios the Web Bean "
 "will be used in."
 msgstr ""
-"Es interesante comparar esta facilidad con las arquitecturas populares de administrador de hoy. Varios contenedores de \"pesoliviano\" también permiten despliegue condicional de clases que existen en el classpath, pero las clases que van a ser desplegadas deben ser explicitamente, listadas de modo individual en el código de configuración o en algún archivo de configuración XML. Web Beans no admite definición de Web Bean "
-"ni configuración vía XML, pero en el común de los casos donde no se requiere una configuración compleja, los tipos de despliegue permite habilitar un conjunto completo de Web "
-"Beans con una sóla línea de XML. Mientras tanto, un desarrollador que esté navegando el código puede fácilmente identificar los escenarios de despliegue en el que el Web Bean se utilizará."
+"Es interesante comparar esta facilidad con las arquitecturas populares de administrador de hoy. Varios contenedores \"ligeros\" también permiten el despliegue condicional de clases que existen en el classpath, pero las clases que van a ser desplegadas deben ser explícitamente, listadas de modo individual en el código de configuración o en algún archivo de configuración XML. Web Beans no admite definición de Web Bean "
+"ni configuración vía XML, pero en el común de los casos donde no se requiere una configuración compleja, los tipos de despliegue permiten habilitar un conjunto completo de Web Beans con una sóla línea de XML. Mientras tanto, un desarrollador que esté navegando el código puede fácilmente identificar en qué escenarios de despliegue se utilizará el Web Bean."
 
 #. Tag: title
 #: injection.xml:284
 #, no-c-format
 msgid "Example deployment types"
-msgstr ""
+msgstr "Ejemplo de tipos de despliegue"
 
 #. Tag: para
 #: injection.xml:286
 #, no-c-format
 msgid "Deployment types are useful for all kinds of things, here's some examples:"
-msgstr ""
+msgstr "Los tipos de despliegue son útilies para toda clase de cosas, algunos ejemplos a continuación:"
 
 #. Tag: para
 #: injection.xml:290
@@ -856,7 +855,7 @@ msgstr ""
 msgid ""
 "<literal>@Mock</literal> and <literal>@Staging</literal> deployment types "
 "for testing"
-msgstr "<literal>@Mock</literal> and <literal>@Staging</literal> tipos de despliegue para evaluación"
+msgstr "Tipos de despliegue <literal>@Mock</literal> y <literal>@Staging</literal> para pruebas"
 
 #. Tag: para
 #: injection.xml:294
@@ -884,13 +883,13 @@ msgstr "<literal>@Standard</literal>para Web Beans definidos por la especificaci
 #: injection.xml:306
 #, no-c-format
 msgid "I'm sure you can think of more applications..."
-msgstr ""
+msgstr "Estoy seguro que puede pensar en más aplicaciones..."
 
 #. Tag: title
 #: injection.xml:313
 #, no-c-format
 msgid "Fixing unsatisfied dependencies"
-msgstr ""
+msgstr "Corregir dependencias insatisfechas"
 
 #. Tag: para
 #: injection.xml:315
@@ -900,7 +899,7 @@ msgid ""
 "annotations and and deployment types of all Web Beans that implement the API "
 "type of an injection point, the Web Bean manager is unable to identify "
 "exactly one Web Bean to inject."
-msgstr ""
+msgstr "El algoritmo de resolución typesafe falla cuando, después de considerar las anotaciones de enlace y los tipos de despliegue de todos los Web Beans que implementan el tipo API de un punto de inyección, el administrador de Web Bean no puede identificar con precisión un Web Bean para inyectar."
 
 #. Tag: para
 #: injection.xml:320
@@ -909,6 +908,8 @@ msgid ""
 "It's usually easy to fix an <literal>UnsatisfiedDependencyException</"
 "literal> or <literal>AmbiguousDependencyException</literal>."
 msgstr ""
+"Por lo general es fácil corregir un <literal>UnsatisfiedDependencyException</"
+"literal> o una <literal>AmbiguousDependencyException</literal>."
 
 #. Tag: para
 #: injection.xml:323
@@ -918,7 +919,7 @@ msgid ""
 "a Web Bean which implements the API type and has the binding types of the "
 "injection point&#151;or enable the deployment type of a Web Bean that "
 "already implements the API type and has the binding types."
-msgstr ""
+msgstr "Para corregir una <literal>UnsatisfiedDependencyException</literal>, basta con proporcionar un Web Bean que implemente el tipo API y tenga los tipos de enlace del punto de inyección&#151;o permita el tipo de despliegue de un Web Bean que ya implemente el tipo API y tenga los tipos de enlace."
 
 #. Tag: para
 #: injection.xml:328
@@ -931,6 +932,8 @@ msgid ""
 "<literal>AmbiguousDependencyException</literal> can only occur if two Web "
 "Beans share a binding type and have exactly the same deployment type."
 msgstr ""
+"Para corregir una <literal>AmbiguousDependencyException</literal>, introduzca un tipo de enlace para distinguir entre las dos implementaciones del tipo de API o cambie el tipo de despliegue de una de las implementaciones para que el administrador de Web Bean pueda utilizar la prioridad de tipo de despliegue para escoger entre ellas. Una <literal>AmbiguousDependencyException</literal> sólo puede presentarse si dos Web "
+"Beans comparten un tipo de enlace y tienen exactamente el mismo tipo de despliegue."
 
 #. Tag: para
 #: injection.xml:335
@@ -938,13 +941,13 @@ msgstr ""
 msgid ""
 "There's one more issue you need to be aware of when using dependency "
 "injection in Web Beans."
-msgstr ""
+msgstr "Hay algo más que necesita saber cuando utilice inyección de dependencia en Web Beans."
 
 #. Tag: title
 #: injection.xml:341
 #, no-c-format
 msgid "Client proxies"
-msgstr ""
+msgstr "Los proxy de cliente"
 
 #. Tag: para
 #: injection.xml:343
@@ -952,7 +955,7 @@ msgstr ""
 msgid ""
 "Clients of an injected Web Bean do not usually hold a direct reference to a "
 "Web Bean instance."
-msgstr ""
+msgstr "Los clientes de un Web Bean inyectado no suelen mantener una referencia directa a una instancia de Web Bean."
 
 #. Tag: para
 #: injection.xml:346
@@ -962,7 +965,7 @@ msgid ""
 "reference to a Web Bean bound to the request scope. The application scoped "
 "Web Bean is shared between many different requests. However, each request "
 "should see a different instance of the request scoped Web bean!"
-msgstr ""
+msgstr "Imagine que un Web Bean vinculado al ámbito de aplicación mantiene una referencia directa a un Web Bean vinculado al ámbito de petición. La aplicación en el ámbito de Web Bean se comparte entre muchas peticiones diferentes. No obstante, cada petición ¡debe ver una instancia diferente de la petición en el ámbito de WebBean!"
 
 #. Tag: para
 #: injection.xml:351
@@ -973,7 +976,7 @@ msgid ""
 "the session context is serialized to disk in order to use memory more "
 "efficiently. However, the application scoped Web Bean instance should not be "
 "serialized along with the session scoped Web Bean!"
-msgstr ""
+msgstr "Ahora imaginemos que un enlace de Web Bean a la sesión mantiene una referencia directa a un Web Bean vinculado al ámbito de la aplicación. De vez en cuando, el contexto de sesión se serializa al disco con el fin de utilizar la memoria de un modo más eficiente. Sin embargo, la aplicación en el ámbito de la instancia de Web Bean ¡no debe serializarse junto con la sesión en el ámbito de Web Bean!"
 
 #. Tag: para
 #: injection.xml:357
@@ -988,6 +991,9 @@ msgid ""
 "context to be serialized to disk without recursively serializing other "
 "injected Web Beans."
 msgstr ""
+"Por lo tanto, a menos que un Web Bean tenga un ámbito predeterminado <literal>@Dependent</"
+"literal>, el administrador de Web Bean deberá todas las referencias indirectas inyectadas al "
+"Web Bean a través del objeto de proxy. Este <emphasis>proxy de cliente</emphasis> responsable de garantizar que la instancia de Web Bean reciba un método de invocación es la instancia asociada con el contexto actual. El proxy de cliente también permite a los Web Beans vincularse a contextos tales como el contexto de sesión que debe serializarse al disco sin serializar de modo recursivo otros Web Beans inyectados."
 
 #. Tag: para
 #: injection.xml:365
@@ -997,13 +1003,13 @@ msgid ""
 "cannot be proxied by the Web Bean manager. Therefore, the Web Bean manager "
 "throws an <literal>UnproxyableDependencyException</literal> if the type of "
 "an injection point cannot be proxied."
-msgstr ""
+msgstr "Lamentablemente, debido a limitaciones del lenguaje de Java, el administrador de Web Bean no puede utilizar proxy en algunos tipos de Java. Por lo tanto, el administrador de Web Bean lanza un <literal>UnproxyableDependencyException</literal> si no puede aplicarse proxy al tipo de un punto de una inyección."
 
 #. Tag: para
 #: injection.xml:370
 #, no-c-format
 msgid "The following Java types cannot be proxied by the Web Bean manager:"
-msgstr ""
+msgstr "El administrador de Web Bean no puede aplicar proxy en los siguientes tipos de Java:"
 
 #. Tag: para
 #: injection.xml:374
@@ -1011,19 +1017,19 @@ msgstr ""
 msgid ""
 "classes which are declared <literal>final</literal> or have a "
 "<literal>final</literal> method,"
-msgstr ""
+msgstr "las clases que son declaradas <literal>final</literal> o tienen un método <literal>final</literal>,"
 
 #. Tag: para
 #: injection.xml:378
 #, no-c-format
 msgid "classes which have no non-private constructor with no parameters, and"
-msgstr ""
+msgstr "las clase que no tienen un constructor no-privado sin parámetros y "
 
 #. Tag: para
 #: injection.xml:381
 #, no-c-format
 msgid "arrays and primitive types."
-msgstr ""
+msgstr "matrices y tipos primarios"
 
 #. Tag: para
 #: injection.xml:385
@@ -1034,12 +1040,14 @@ msgid ""
 "introduce an interface, or change the scope of the injected Web Bean to "
 "<literal>@Dependent</literal>."
 msgstr ""
+"Suele ser muy fácil corregir una <literal>UnproxyableDependencyException</"
+"literal>. Basta con añadir un constructor sin parámetros a la clase inyectada, introducir una interfaz, o cambiar el ámbito del Web Bean inyectado a <literal>@Dependent</literal>."
 
 #. Tag: title
 #: injection.xml:392
 #, no-c-format
 msgid "Obtaining a Web Bean by programatic lookup"
-msgstr ""
+msgstr "Obtención de un Web Bean por búsqueda programática"
 
 #. Tag: para
 #: injection.xml:394
@@ -1048,6 +1056,8 @@ msgid ""
 "The application may obtain an instance of the interface <literal>Manager</"
 "literal> by injection:"
 msgstr ""
+"La aplicación puede obtener una instacia de la interfaz <literal>Manager</"
+"literal> a través de inyección:"
 
 #. Tag: programlisting
 #: injection.xml:397
@@ -1061,7 +1071,7 @@ msgstr "<![CDATA[@Current Manager manager;]]>"
 msgid ""
 "The <literal>Manager</literal> object provides a set of methods for "
 "obtaining a Web Bean instance programatically."
-msgstr ""
+msgstr "El objeto <literal>Manager</literal> proporciona un grupo de métodos para obtener una instancia de Web Bean en forma programática."
 
 #. Tag: programlisting
 #: injection.xml:402
@@ -1080,7 +1090,7 @@ msgid ""
 "Binding annotations may be specified by subclassing the helper class "
 "<literal>AnnotationLiteral</literal>, since it is otherwise difficult to "
 "instantiate an annotation type in Java."
-msgstr ""
+msgstr "Las anotaciones de enlace se pueden especificar a través de subclasificaciones de la clase auxiliar <literal>AnnotationLiteral</literal>, porque de otra manera es difícil instanciar un tipo de anotación en Java."
 
 #. Tag: programlisting
 #: injection.xml:408
@@ -1103,7 +1113,7 @@ msgid ""
 "If the binding type has an annotation member, we can't use an anonymous "
 "subclass of <literal>AnnotationLiteral</literal>&#151;instead we'll need to "
 "create a named subclass:"
-msgstr ""
+msgstr "Si el tipo de vinculación tiene un miembro de anotación, no podemos utilizar una subclase anónima de <literal>AnnotationLiteral</literal>&#151;en su lugar necesitaremos crear una subclase llamada:"
 
 #. Tag: programlisting
 #: injection.xml:413
@@ -1142,6 +1152,8 @@ msgid ""
 "Lifecycle callbacks, <literal>@Resource</literal>, <literal>@EJB</literal> "
 "and <literal>@PersistenceContext</literal>"
 msgstr ""
+"El ciclo de vida de los callbacks, <literal>@Resource</literal>, <literal>@EJB</literal> "
+"y <literal>@PersistenceContext</literal>"
 
 #. Tag: para
 #: injection.xml:422
@@ -1152,6 +1164,9 @@ msgid ""
 "literal>, <literal>@PrePassivate</literal> and <literal>@PostActivate</"
 "literal>."
 msgstr ""
+"Los Web Beans de empresa admiten todos los ciclos de vida de las devoluciones de llamadas definidas por la especificación EJB: <literal>@PostConstruct</literal>, <literal>@PreDestroy</"
+"literal>, <literal>@PrePassivate</literal> y <literal>@PostActivate</"
+"literal>."
 
 #. Tag: para
 #: injection.xml:426
@@ -1160,6 +1175,8 @@ msgid ""
 "Simple Web Beans support only the <literal>@PostConstruct</literal> and "
 "<literal>@PreDestroy</literal> callbacks."
 msgstr ""
+"Los Web Beans sencillos admiten únicamente las devoluciones de llamadas <literal>@PostConstruct</literal> y "
+"<literal>@PreDestroy</literal>."
 
 #. Tag: para
 #: injection.xml:429
@@ -1171,6 +1188,11 @@ msgid ""
 "respectively. Simple Web Beans do not support the use of "
 "<literal>@PersistenceContext(type=EXTENDED)</literal>."
 msgstr ""
+"Enterprise and Web Beans sencillos  support the use of <literal>@Resource</"
+"literal>, <literal>@EJB</literal> and <literal>@PersistenceContext</literal> "
+"for injection of Java EE resources, EJBs and JPA persistence contexts, "
+"respectively. Simple Web Beans do not support the use of "
+"<literal>@PersistenceContext(type=EXTENDED)</literal>."
 
 #. Tag: para
 #: injection.xml:434
@@ -1178,13 +1200,13 @@ msgstr ""
 msgid ""
 "The <literal>@PostConstruct</literal> callback always occurs after all "
 "dependencies have been injected."
-msgstr ""
+msgstr "La devolución de llamada <literal>@PostConstruct</literal> siempre se presenta después de que todas las dependencias han sido inyectadas."
 
 #. Tag: title
 #: injection.xml:440
 #, no-c-format
 msgid "The <literal>InjectionPoint</literal> object"
-msgstr ""
+msgstr "El objeto <literal>InjectionPoint</literal>"
 
 #. Tag: para
 #: injection.xml:442
@@ -1194,7 +1216,7 @@ msgid ""
 "<literal>@Dependent</literal>&#151;that need to know something about the "
 "object or injection point into which they are injected in order to be able "
 "to do what they do. For example:"
-msgstr ""
+msgstr "Hay algunas clases de objetos&#151;con ámbito <literal>@Dependent</literal>&#151;que necesitan saber algo acerca del objeto o el punto de inyección dentro del cual son inyectados para poder hacer lo que hacen. Por ejemplo:"
 
 #. Tag: para
 #: injection.xml:448
@@ -1202,7 +1224,7 @@ msgstr ""
 msgid ""
 "The log category for a <literal>Logger</literal> depends upon the class of "
 "the object that owns it."
-msgstr ""
+msgstr "La categoría de registro para un <literal>Logger</literal> depende de la clase de objeto que lo posea."
 
 #. Tag: para
 #: injection.xml:452
@@ -1210,7 +1232,7 @@ msgstr ""
 msgid ""
 "Injection of a HTTP parameter or header value depends upon what parameter or "
 "header name was specified at the injection point."
-msgstr ""
+msgstr "La inyección de un parámetro HTTP o valor de encabezado depende del parámetro o del nombre de encabezado especificado en el punto de inyección."
 
 #. Tag: para
 #: injection.xml:456
@@ -1227,7 +1249,7 @@ msgid ""
 "A Web Bean with scope <literal>@Dependent</literal> may inject an instance "
 "of <literal>InjectionPoint</literal> and access metadata relating to the "
 "injection point to which it belongs."
-msgstr ""
+msgstr "Un Web Bean con ámbito <literal>@Dependent</literal> puede inyectar una instancia de <literal>InjectionPoint</literal> y acceder a metadatos relativos al punto de inyección al que pertenezca."
 
 #. Tag: para
 #: injection.xml:465
@@ -1235,7 +1257,7 @@ msgstr ""
 msgid ""
 "Let's look at an example. The following code is verbose, and vulnerable to "
 "refactoring problems:"
-msgstr ""
+msgstr "Veamos un ejemplo. El código siguiente es detallado, y vulnerable a problemas de refactorización:"
 
 #. Tag: programlisting
 #: injection.xml:468
@@ -1249,7 +1271,7 @@ msgstr "<![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]>"
 msgid ""
 "This clever little producer method lets you inject a JDK <literal>Logger</"
 "literal> without explicitly specifying the log category:"
-msgstr ""
+msgstr "Este método inteligente de productor permite inyectar un <literal>Logger</literal> JDK sin especificar explícitamente la categoría de registro:"
 
 #. Tag: programlisting
 #: injection.xml:473
@@ -1277,7 +1299,7 @@ msgstr ""
 #: injection.xml:475
 #, no-c-format
 msgid "We can now write:"
-msgstr ""
+msgstr "Ahora podemos escribir:"
 
 #. Tag: programlisting
 #: injection.xml:477
@@ -1291,7 +1313,7 @@ msgstr "<![CDATA[@Current Logger log;]]>"
 msgid ""
 "Not convinced? Then here's a second example. To inject HTTP parameters, we "
 "need to define a binding type:"
-msgstr ""
+msgstr "¿No está convencido? Entonces, veamos un segundo ejemplo. Para inyectar parámetros, necesitamos definir el tipo de vinculación:"
 
 #. Tag: programlisting
 #: injection.xml:482
@@ -1315,7 +1337,7 @@ msgstr ""
 #: injection.xml:484
 #, no-c-format
 msgid "We would use this binding type at injection points as follows:"
-msgstr ""
+msgstr "Utilizaríamos este tipo de enlace en puntos de inyección, como a continuación:"
 
 #. Tag: programlisting
 #: injection.xml:486
@@ -1331,7 +1353,7 @@ msgstr ""
 #: injection.xml:488
 #, no-c-format
 msgid "The following producer method does the work:"
-msgstr ""
+msgstr "El siguiente método de productor sí funciona:"
 
 #. Tag: programlisting
 #: injection.xml:490
@@ -1365,6 +1387,8 @@ msgid ""
 "literal> annotation is ignored by the Web Bean manager since it is annotated "
 "<literal>@NonBinding.</literal>)"
 msgstr ""
+"(Observe que el miembro <literal>value()</literal> de la anotación <literal>HttpParam</"
+"literal> es ignorado por el administrador de Web Bean porque está anotado como <literal>@NonBinding.</literal>)"
 
 #. Tag: para
 #: injection.xml:495
@@ -1372,7 +1396,7 @@ msgstr ""
 msgid ""
 "The Web Bean manager provides a built-in Web Bean that implements the "
 "<literal>InjectionPoint</literal> interface:"
-msgstr ""
+msgstr "El administrador de Web Bean proporciona un Web Bean incorporado que implementa la interfaz <literal>InjectionPoint</literal>:"
 
 #. Tag: programlisting
 #: injection.xml:498

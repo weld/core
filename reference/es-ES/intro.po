@@ -1,23 +1,26 @@
+# translation of intro.po to Spanish
 # Language es-ES translations for master.xml package.
-# Automatically generated, 2008.
 #
+# Automatically generated, 2008.
+# Gladys Guerrero Lozano <gguerrer@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml \n"
+"Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-19 20:26+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-12 17:22+1000\n"
+"Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
+"Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: intro.xml:4
 #, no-c-format
 msgid "Getting started with Web Beans"
-msgstr ""
+msgstr "Iniciando con Web Beans"
 
 #. Tag: para
 #: intro.xml:6
@@ -34,7 +37,7 @@ msgstr ""
 #: intro.xml:13
 #, no-c-format
 msgid "Your first Web Bean"
-msgstr ""
+msgstr "Su primer Web Bean"
 
 #. Tag: para
 #: intro.xml:15
@@ -68,6 +71,9 @@ msgid ""
 "    public List<String> parse(String text) { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class SentenceParser {\n"
+"    public List<String> parse(String text) { ... }\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:31
@@ -87,6 +93,10 @@ msgid ""
 "    public String translate(String sentence) { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Stateless\n"
+"public class SentenceTranslator implements Translator {\n"
+"    public String translate(String sentence) { ... }\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:37
@@ -103,6 +113,10 @@ msgid ""
 "    public String translate(String sentence);\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Local\n"
+"public interface Translator {\n"
+"    public String translate(String sentence);\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:41
@@ -138,6 +152,27 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class TextTranslator {\n"
+"    \n"
+"    private SentenceParser sentenceParser;\n"
+"    private Translator sentenceTranslator;\n"
+"    \n"
+"    @Initializer\n"
+"    TextTranslator(SentenceParser sentenceParser, Translator "
+"sentenceTranslator) {\n"
+"        this.sentenceParser = sentenceParser;\n"
+"        this.sentenceTranslator = sentenceTranslator;\n"
+"    }\n"
+"    \n"
+"    public String translate(String text) {\n"
+"        StringBuilder sb = new StringBuilder();\n"
+"        for (String sentence: sentenceParser.parse(text)) {\n"
+"            sb.append(sentenceTranslator.translate(sentence));\n"
+"        }\n"
+"        return sb.toString();\n"
+"    }\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:46
@@ -156,6 +191,10 @@ msgid ""
 "    this.textTranslator = textTranslator;\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Initializer\n"
+"public setTextTranslator(TextTranslator textTranslator) {\n"
+"    this.textTranslator = textTranslator;\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:51
@@ -172,6 +211,8 @@ msgid ""
 "<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator."
 "class);]]>"
 msgstr ""
+"<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator."
+"class);]]>"
 
 #. Tag: para
 #: intro.xml:56
@@ -219,7 +260,7 @@ msgstr ""
 #: intro.xml:82
 #, no-c-format
 msgid "So what, <emphasis>exactly</emphasis>, is a Web Bean?"
-msgstr ""
+msgstr "Entonces, ¿qué es, <emphasis>exactamente</emphasis> un Web Bean?"
 
 #. Tag: para
 #: intro.xml:84
@@ -265,8 +306,7 @@ msgstr ""
 #. Tag: para
 #: intro.xml:108
 #, no-c-format
-msgid ""
-"which clients share a reference to a particular instance of the Web Bean."
+msgid "which clients share a reference to a particular instance of the Web Bean."
 msgstr ""
 
 #. Tag: para
@@ -362,43 +402,43 @@ msgstr ""
 #: intro.xml:158
 #, no-c-format
 msgid "A scope"
-msgstr ""
+msgstr "Un ámbito"
 
 #. Tag: para
 #: intro.xml:159
 #, no-c-format
 msgid "A deployment type"
-msgstr ""
+msgstr "Un tipo de despliegue"
 
 #. Tag: para
 #: intro.xml:160
 #, no-c-format
 msgid "Optionally, a Web Bean name"
-msgstr ""
+msgstr "Alternativamente, un nombre de Web Bean"
 
 #. Tag: para
 #: intro.xml:161
 #, no-c-format
 msgid "A set of interceptor binding types"
-msgstr ""
+msgstr "Un conjunto de tipos de interceptor de enlace"
 
 #. Tag: para
 #: intro.xml:162
 #, no-c-format
 msgid "A Web Bean implementation"
-msgstr ""
+msgstr "Una implementación de Web Bean"
 
 #. Tag: para
 #: intro.xml:167
 #, no-c-format
 msgid "Let's see what some of these terms mean, to the Web Bean developer."
-msgstr ""
+msgstr "Veamos qué significan algunos de estos términos, para el desarrollador de Web Bean."
 
 #. Tag: title
 #: intro.xml:170
 #, no-c-format
 msgid "API types, binding types and dependency injection"
-msgstr ""
+msgstr "Tipos API, tips de enlace e inyección de dependencia"
 
 #. Tag: para
 #: intro.xml:172
@@ -413,13 +453,13 @@ msgstr ""
 #: intro.xml:177
 #, no-c-format
 msgid "an API type, together with"
-msgstr ""
+msgstr "Un tipo API, junto con"
 
 #. Tag: para
 #: intro.xml:178
 #, no-c-format
 msgid "a set of binding types."
-msgstr ""
+msgstr "un conjunto de tipos de enlace."
 
 #. Tag: para
 #: intro.xml:181
@@ -446,7 +486,7 @@ msgstr ""
 #: intro.xml:191
 #, no-c-format
 msgid "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
-msgstr ""
+msgstr "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
 
 #. Tag: para
 #: intro.xml:193
@@ -482,6 +522,9 @@ msgid ""
 "public class CreditCardPaymentProcessor \n"
 "    implements PaymentProcessor { ... }]]>"
 msgstr ""
+"<![CDATA[@CreditCard\n"
+"public class CreditCardPaymentProcessor \n"
+"    implements PaymentProcessor { ... }]]>"
 
 #. Tag: para
 #: intro.xml:206
@@ -506,7 +549,7 @@ msgstr ""
 #: intro.xml:217
 #, no-c-format
 msgid "Deployment types"
-msgstr ""
+msgstr "Tipos de despliegue"
 
 #. Tag: para
 #: intro.xml:219
@@ -530,6 +573,9 @@ msgid ""
 "three Web Bean in our example have the deployment type <literal>@Production</"
 "literal>."
 msgstr ""
+"Muchos Web Beans sólo utilizan el tipo de despliegue por defecto <literal>@Production</"
+"literal>, en cuyo caso no se necesita especificar ningún tipo de despliegue. Todos los tres Web Bean en nuestro ejemplo tienen un tipo de despliegue <literal>@Production</"
+"literal>."
 
 #. Tag: para
 #: intro.xml:230
@@ -537,7 +583,7 @@ msgstr ""
 msgid ""
 "In a testing environment, we might want to replace the "
 "<literal>SentenceTranslator</literal> Web Bean with a \"mock object\":"
-msgstr ""
+msgstr "En un entorno de prueba, podríamos desear remplazar el <literal>SentenceTranslator</literal> Web Bean por un \"mock object\":"
 
 #. Tag: programlisting
 #: intro.xml:233
@@ -550,6 +596,12 @@ msgid ""
 "    }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Mock\n"
+"public class MockSentenceTranslator implements Translator {\n"
+"    public String translate(String sentence) {\n"
+"        return \"Lorem ipsum dolor sit amet\";\n"
+"    }\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:236
@@ -558,7 +610,7 @@ msgid ""
 "We would enable the deployment type <literal>@Mock</literal> in our testing "
 "environment, to indicate that <literal>MockSentenceTranslator</literal> and "
 "any other Web Bean annotated <literal>@Mock</literal> should be used."
-msgstr ""
+msgstr "Habilitaremos un tipo de despliegue <literal>@Mock</literal> en nuestro entorno de prueba, para indicar que <literal>MockSentenceTranslator</literal> y cualquier otro Web Bean anotado <literal>@Mock</literal> debería utilizarse."
 
 #. Tag: para
 #: intro.xml:240
@@ -567,12 +619,14 @@ msgid ""
 "We'll talk more about this unique and powerful feature in <xref linkend="
 "\"deploymenttypes\"/>."
 msgstr ""
+"Hablaremos más acerca de esta característica única y poderosa en <xref linkend="
+"\"deploymenttypes\"/>."
 
 #. Tag: title
 #: intro.xml:246
 #, no-c-format
 msgid "Scope"
-msgstr ""
+msgstr "Ámbito"
 
 #. Tag: para
 #: intro.xml:248
@@ -592,6 +646,8 @@ msgid ""
 "For example, any web application may have <emphasis>session scoped</"
 "emphasis> Web Beans:"
 msgstr ""
+"Por ejemplo, cualquier aplicación de red puede tener una <emphasis>sesión en ámbito</"
+"emphasis> de Web Beans:"
 
 #. Tag: programlisting
 #: intro.xml:257
@@ -600,6 +656,8 @@ msgid ""
 "<![CDATA[@SessionScoped\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@SessionScoped\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: intro.xml:259
@@ -607,7 +665,7 @@ msgstr ""
 msgid ""
 "An instance of a session scoped Web Bean is bound to a user session and is "
 "shared by all requests that execute in the context of that session."
-msgstr ""
+msgstr "Una instancia de una sesión en ámbito Web Bean está vinculada a una sesión de usuario y es compartidoa por todos los solicitantes que ejecutan en el contexto de esa sesión."
 
 #. Tag: para
 #: intro.xml:262
@@ -618,12 +676,14 @@ msgid ""
 "pure dependent objects of the object into which they are injected, and their "
 "lifecycle is bound to the lifecycle of that object."
 msgstr ""
+"Por defecto, Web Beans pertenece a un ámbito especial llamado el "
+"<emphasis>ámbito seudo dependiente</emphasis>. Web Beans con este ámbito son objetos puros dependientes del objeto en el que son inyectados y su ciclo de vida está vinculado al ciclo de vida del objeto."
 
 #. Tag: para
 #: intro.xml:267
 #, no-c-format
 msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\"/>."
-msgstr ""
+msgstr "Hablaremos más acerca de ámbitos en <xref linkend=\"scopescontexts\"/>."
 
 #. Tag: title
 #: intro.xml:272
@@ -646,6 +706,8 @@ msgid ""
 "<![CDATA[@SessionScoped @Named(\"cart\")\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@SessionScoped @Named(\"cart\")\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: intro.xml:280
@@ -661,12 +723,14 @@ msgid ""
 "    ....\n"
 "</h:dataTable>]]>"
 msgstr ""
+"<![CDATA[<h:dataTable value=\"#{cart.lineItems}\" var=\"item\">\n"
+"    ....\n"
+"</h:dataTable>]]>"
 
 #. Tag: para
 #: intro.xml:284
 #, no-c-format
-msgid ""
-"It's even easier to just let the name be defaulted by the Web Bean manager:"
+msgid "It's even easier to just let the name be defaulted by the Web Bean manager:"
 msgstr ""
 
 #. Tag: programlisting
@@ -676,6 +740,8 @@ msgid ""
 "<![CDATA[@SessionScoped @Named\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@SessionScoped @Named\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: intro.xml:289
@@ -689,7 +755,7 @@ msgstr ""
 #: intro.xml:295
 #, no-c-format
 msgid "Interceptor binding types"
-msgstr ""
+msgstr "Tipos de interceptor de enlace"
 
 #. Tag: para
 #: intro.xml:297
@@ -717,6 +783,9 @@ msgid ""
 "@Interceptors(TransactionInterceptor.class)\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@SessionScoped \n"
+"@Interceptors(TransactionInterceptor.class)\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: intro.xml:307
@@ -724,7 +793,7 @@ msgstr ""
 msgid ""
 "However, it is more elegant, and better practice, to indirect the "
 "interceptor binding through an <emphasis>interceptor binding type</emphasis>:"
-msgstr ""
+msgstr "Sin embargo, no es más elegante y mejor práctica, llevar indirectamente el interceptor enlazando a través de un <emphasis>tipo de interceptor de enlace</emphasis>:"
 
 #. Tag: programlisting
 #: intro.xml:311
@@ -733,6 +802,8 @@ msgid ""
 "<![CDATA[@SessionScoped @Transactional\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@SessionScoped @Transactional\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: intro.xml:313
@@ -741,12 +812,14 @@ msgid ""
 "We'll discuss Web Beans interceptors and decorators in <xref linkend="
 "\"interceptors\"/> and <xref linkend=\"decorators\"/>."
 msgstr ""
+"Discutiremos los interceptores de Web Beans y los decoradores en <xref linkend="
+"\"interceptors\"/> y <xref linkend=\"decorators\"/>."
 
 #. Tag: title
 #: intro.xml:321
 #, no-c-format
 msgid "What kinds of objects can be Web Beans?"
-msgstr ""
+msgstr "¿Qué clase de objetos pueden ser Web Beans?"
 
 #. Tag: para
 #: intro.xml:323
@@ -754,13 +827,13 @@ msgstr ""
 msgid ""
 "We've already seen that JavaBeans, EJBs and some other Java classes can be "
 "Web Beans. But exactly what kinds of objects are Web Beans?"
-msgstr ""
+msgstr "Ya hemos visto que JavaBeans, EJB y algunas otras clases de Java pueden ser Web Bean. Pero, exactamente, ¿qué clase de objetos son los Web Beans?"
 
 #. Tag: title
 #: intro.xml:327
 #, no-c-format
 msgid "Simple Web Beans"
-msgstr ""
+msgstr "Web Beans sencillos"
 
 #. Tag: para
 #: intro.xml:329
@@ -768,7 +841,7 @@ msgstr ""
 msgid ""
 "The Web Beans specification says that a concrete Java class is a "
 "<emphasis>simple</emphasis> Web Bean if:"
-msgstr ""
+msgstr "La especificación de Web Beans dice que una clase de Java concreta es un Web Bean <emphasis>sencillo</emphasis> si: "
 
 #. Tag: para
 #: intro.xml:334
@@ -776,19 +849,19 @@ msgstr ""
 msgid ""
 "it is not an EE container-managed component, like an EJB, a Servlet or a JPA "
 "entity,"
-msgstr ""
+msgstr "no es un contenedor EE-componente administrado, como un EJB un Servlet o una entidad JPA, "
 
 #. Tag: para
 #: intro.xml:338
 #, no-c-format
 msgid "it is not a non-static static inner class,"
-msgstr ""
+msgstr "no es una clase interna no estática,"
 
 #. Tag: para
 #: intro.xml:341
 #, no-c-format
 msgid "it is not a parameterized type, and"
-msgstr ""
+msgstr "no es un tipo parametrizado, y"
 
 #. Tag: para
 #: intro.xml:344
@@ -796,13 +869,13 @@ msgstr ""
 msgid ""
 "it has a constructor with no parameters, or a constructor annotated "
 "<literal>@Initializer</literal>."
-msgstr ""
+msgstr "tiene un constructor sin parámetros o un constructor <literal>@Initializer</literal> anotado."
 
 #. Tag: para
 #: intro.xml:349
 #, no-c-format
 msgid "Thus, almost every JavaBean is a simple Web Bean."
-msgstr ""
+msgstr "Entonces, casi cada JavaBean es un Web Bean sencillo"
 
 #. Tag: para
 #: intro.xml:351
@@ -811,13 +884,13 @@ msgid ""
 "Every interface implemented directly or indirectly by a simple Web Bean is "
 "an API type of the simple Web Bean. The class and its superclasses are also "
 "API types."
-msgstr ""
+msgstr "Cada interfaz implementada directamente o indirectamente por un Web Bean sencillo es un tipo API de un Web Bean sencillo. La clase y superclase también son tipos API."
 
 #. Tag: title
 #: intro.xml:358
 #, no-c-format
 msgid "Enterprise Web Beans"
-msgstr ""
+msgstr "Web Beans de empresa"
 
 #. Tag: para
 #: intro.xml:360
@@ -866,6 +939,15 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Stateful @SessionScoped\n"
+"public class ShoppingCart {\n"
+"\n"
+"    ...\n"
+"    \n"
+"    @Remove\n"
+"    public void destroy() {}\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:380
@@ -959,7 +1041,7 @@ msgstr ""
 #: intro.xml:427
 #, no-c-format
 msgid "Producer methods"
-msgstr ""
+msgstr "Métodos de productor"
 
 #. Tag: para
 #: intro.xml:429
@@ -987,19 +1069,28 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@ApplicationScoped\n"
+"public class Generator {\n"
+"\n"
+"    private Random random = new Random( System.currentTimeMillis() );\n"
+"    \n"
+"    @Produces @Random int next() {\n"
+"        return random.nextInt(100);\n"
+"    }\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:437
 #, no-c-format
-msgid ""
-"The result of a producer method is injected just like any other Web Bean."
-msgstr ""
+msgid "The result of a producer method is injected just like any other Web Bean."
+msgstr "El resultado de un método de productor es inyectado como cualquier otro Web Bean."
 
 #. Tag: programlisting
 #: intro.xml:439
 #, no-c-format
 msgid "<![CDATA[@Random int randomNumber]]>"
-msgstr ""
+msgstr "<![CDATA[@Random int randomNumber]]>"
 
 #. Tag: para
 #: intro.xml:441
@@ -1014,7 +1105,7 @@ msgstr ""
 #: intro.xml:445
 #, no-c-format
 msgid "Some producer methods return objects that require explicit destruction:"
-msgstr ""
+msgstr "Algunos métodos de productor retornan objetos que requieren destrucción explícita:"
 
 #. Tag: programlisting
 #: intro.xml:447
@@ -1024,6 +1115,9 @@ msgid ""
 "    return createConnection( user.getId(), user.getPassword() );\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
+"    return createConnection( user.getId(), user.getPassword() );\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:449
@@ -1032,6 +1126,8 @@ msgid ""
 "These producer methods may define matching <emphasis>disposal methods</"
 "emphasis>:"
 msgstr ""
+"Estos métodos de productor pueden definir <emphasis>métodos desechables</"
+"emphasis>:"
 
 #. Tag: programlisting
 #: intro.xml:451
@@ -1041,6 +1137,9 @@ msgid ""
 "    connection.close();\n"
 "}]]>"
 msgstr ""
+"<![CDATA[void close(@Disposes Connection connection) {\n"
+"    connection.close();\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:453
@@ -1048,7 +1147,7 @@ msgstr ""
 msgid ""
 "This disposal method is called automatically by the Web Bean manager at the "
 "end of the request."
-msgstr ""
+msgstr "Este método desechable es llamado automáticamente por el administrador de Web Bean al final de la petición."
 
 #. Tag: para
 #: intro.xml:456
@@ -1057,12 +1156,14 @@ msgid ""
 "We'll talk much more about producer methods in <xref linkend="
 "\"producermethods\"/>."
 msgstr ""
+"Hablaremos mucho más acerca de métodos del productor en <xref linkend="
+"\"producermethods\"/>."
 
 #. Tag: title
 #: intro.xml:461
 #, no-c-format
 msgid "JMS endpoints"
-msgstr ""
+msgstr "endpoints de JMS"
 
 #. Tag: para
 #: intro.xml:463
@@ -1073,3 +1174,4 @@ msgid ""
 "objects required to send messages to queues and topics. We'll discuss JMS "
 "endpoints in <xref linkend=\"jms\"/>."
 msgstr ""
+
