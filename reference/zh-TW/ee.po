@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ee\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 19:31+1000\n"
+"PO-Revision-Date: 2009-01-12 17:24+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -182,17 +182,18 @@ msgstr ""
 #. Tag: para
 #: ee.xml:42
 #, no-c-format
+#, fuzzy
 msgid ""
 "The Web Beans client proxy takes care of routing method invocations from the "
 "Servlet to the correct instances of <literal>Credentials</literal> and "
 "<literal>Login</literal> for the current request and HTTP session."
-msgstr ""
+msgstr "Web Bean 的客戶端 proxy 能處理路由"
 
 #. Tag: title
 #: ee.xml:49
 #, no-c-format
 msgid "Calling a Web Bean from a Message-Driven Bean"
-msgstr ""
+msgstr "透過訊息導向的 Bean 來調用 Web Bean"
 
 #. Tag: para
 #: ee.xml:51
@@ -203,13 +204,13 @@ msgid ""
 "lookup, or injection using <literal>@EJB</literal>, for example. In "
 "particular, you can use Web Beans injection in Message-Driven Beans, which "
 "are not considered Web Beans because you can't inject them."
-msgstr ""
+msgstr "Web Bean 注入適用於所有 EJB，儘管它們不是由 Web Bean 管理員所控制（比方說若它們是透過直接的 JNDI 搜尋或是透過使用 <literal>@EJB</literal> 來被取得的情況下）。特別是，您可在訊息導向的 Bean 中使用 Web Bean 注入，不過這些 Bean 並不被視為是 Web Bean 因為您無法注入它們。"
 
 #. Tag: para
 #: ee.xml:57
 #, no-c-format
 msgid "You can even use Web Beans interceptor bindings for Message-Driven Beans."
-msgstr ""
+msgstr "針對於訊息導向的 Bean，您甚至可使用 Web Bean 攔截器綁定。"
 
 #. Tag: programlisting
 #: ee.xml:59
@@ -247,19 +248,19 @@ msgid ""
 "beware that there is no session or conversation context available when a "
 "message is delivered to a Message-Driven Bean. Only <literal>@RequestScoped</"
 "literal> and <literal>@ApplicationScoped</literal> Web Beans are available."
-msgstr ""
+msgstr "因此，在 Web Bean 環境下，取得訊息是相當地簡單的。不過請注意，當訊息提交至一個訊息導向的 Bean 時，不會有可用的 session 或是對話 context。只有 <literal>@RequestScoped</literal> 和 <literal>@ApplicationScoped</literal> Web Bean 可使用。"
 
 #. Tag: para
 #: ee.xml:66
 #, no-c-format
 msgid "It's also easy to send messages using Web Beans."
-msgstr ""
+msgstr "透過使用 Web Bean 來傳送訊息也相當地簡單。"
 
 #. Tag: title
 #: ee.xml:71
 #, no-c-format
 msgid "JMS endpoints"
-msgstr ""
+msgstr "JMS 端點"
 
 #. Tag: para
 #: ee.xml:73
@@ -275,6 +276,9 @@ msgid ""
 "literal>. Each of these objects has its own lifecycle and threading model "
 "that we need to worry about."
 msgstr ""
+"基於需要處理許多不同的物件，因此透過使用 JMS 來傳送訊息可能會相當複雜。針對於 queue，我們有 <literal>Queue</"
+"literal>、<literal>QueueConnectionFactory</literal>、<literal>QueueConnection</literal>、<literal>QueueSession</literal> 以及 <literal>QueueSender</literal>。針對於 topic 我們有 <literal>Topic</literal>、<literal>TopicConnectionFactory</literal>、<literal>TopicConnection</"
+"literal>、<literal>TopicSession</literal> 以及 <literal>TopicPublisher</literal>。針對於各個這些物件，我們都需要去顧及它們自己各別的生命週期和執行緒模型（threading model）。"
 
 #. Tag: para
 #: ee.xml:82
@@ -283,7 +287,7 @@ msgid ""
 "Web Beans takes care of all this for us. All we need to do is declare the "
 "queue or topic in <literal>web-beans.xml</literal>, specifying an associated "
 "binding type and connection factory."
-msgstr ""
+msgstr "Web Bean 會全部為我們處理。我們只需要在 <literal>web-beans.xml</literal> 中宣告 queue 或是 topic，指定關聯的綁定類型和連接因數（connection factory）。"
 
 #. Tag: programlisting
 #: ee.xml:86
@@ -331,6 +335,9 @@ msgid ""
 "<literal>TopicConnection</literal>, <literal>TopicSession</literal> or "
 "<literal>TopicPublisher</literal> for a topic."
 msgstr ""
+"現在我們只要為 queue 注入 <literal>Queue</literal>、<literal>QueueConnection</literal>、<literal>QueueSession</literal> 或 "
+"<literal>QueueSender</literal>，或是為 topic 注入 <literal>Topic</literal>、<literal>TopicConnection</literal>、<literal>TopicSession</literal> 或是 "
+"<literal>TopicPublisher</literal> 即可。"
 
 #. Tag: programlisting
 #: ee.xml:96
@@ -378,13 +385,13 @@ msgstr ""
 msgid ""
 "The lifecycle of the injected JMS objects is completely controlled by the "
 "Web Bean manager."
-msgstr ""
+msgstr "被注入的 JMS 物件的生命週期完全由 Web Bean 管理員所控制。"
 
 #. Tag: title
 #: ee.xml:106
 #, no-c-format
 msgid "Packaging and deployment"
-msgstr ""
+msgstr "封裝和建置"
 
 #. Tag: para
 #: ee.xml:108
@@ -397,7 +404,7 @@ msgid ""
 "INF</literal> or <literal>WEB-INF</literal> directory. The file may be "
 "empty. Web Beans deployed in archives that do not have a <literal>web-beans."
 "xml</literal> file will not be available for use in the application."
-msgstr ""
+msgstr "Web Bean 不會定義任何特殊的建置 archive。您可將 Web Bean 封裝在 JARs、EJB-JARs 或是 WARs&#151; 中，應用程式 classpath 中的任何建置位置上。不過，各個包含著 Web Bean 的 archive 在 <literal>META-INF</literal> 或是 <literal>WEB-INF</literal> 目錄中都必須包含著一個稱為 <literal>web-beans.xml</literal> 的檔案。該檔案能是空的。建置於一個沒有 <literal>web-beans.xml</literal> 檔案的 archive 中的 Web Bean 將無法使用於應用程式中。"
 
 #. Tag: para
 #: ee.xml:116
@@ -406,5 +413,5 @@ msgid ""
 "For Java SE execution, Web Beans may be deployed in any location in which "
 "EJBs may be deployed for execution by the embeddable EJB Lite container. "
 "Again, each location must contain a <literal>web-beans.xml</literal> file."
-msgstr ""
+msgstr "對於 Java SE 的執行來說，Web Bean 可被建置於任何位置上，同時 EJB 亦可被建置來讓可崁入的 EJB Lite container 執行。再次強調，各個位置都必須包含著一個 <literal>web-beans.xml</literal> 檔案。"
 
