@@ -55,4 +55,22 @@ public abstract class ForwardingEjbDescriptor<T> implements EjbDescriptor<T>
       return delegate().isStateless();
    }
    
+   @Override
+   public String toString()
+   {
+      return delegate().toString();
+   }
+   
+   @Override
+   public int hashCode()
+   {
+      return delegate().hashCode();
+   }
+   
+   @Override
+   public boolean equals(Object obj)
+   {
+      return delegate().equals(obj);
+   }
+   
 }

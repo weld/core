@@ -47,7 +47,9 @@
          <id>snapshots.jboss.org</id>
          <name>JBoss Snapshots Repository</name>
          <url>http://snapshots.jboss.org/maven2</url>
-         <snapshots />
+         <snapshots>
+            <updatePolicy>always</updatePolicy>
+         </snapshots>
       </repository>
    </repositories>
 

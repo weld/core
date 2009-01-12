@@ -30,20 +30,38 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       for (final Class<?> clazz : type.getInterfaces())
       {
          localInterfaces.add(new BusinessInterfaceDescriptor<Object>()
-               {
+         {
 
-                  @SuppressWarnings("unchecked")
-                  public Class<Object> getInterface()
-                  {
-                     return (Class<Object>) clazz;
-                  }
+            @SuppressWarnings("unchecked")
+            public Class<Object> getInterface()
+            {
+               return (Class<Object>) clazz;
+            }
 
-                  public String getJndiName()
-                  {
-                     return clazz.getSimpleName() + "/local";
-                  }
+            public String getJndiName()
+            {
+               return clazz.getSimpleName() + "/local";
+            }
+      
+         });
+      }
+      // cope with EJB 3.1 style no-interface views
+      if (localInterfaces.size() == 0)
+      {
+         localInterfaces.add(new BusinessInterfaceDescriptor<Object>()
+         {
+
+            public Class<Object> getInterface()
+            {
+               return (Class<Object>) type;
+            }
+
+            public String getJndiName()
+            {
+               return type.getSimpleName() +"/local";
+            }
             
-               });
+         });
       }
       this.removeMethods = new HashSet<Method>();
       for (final Method method : type.getMethods())
