@@ -44,7 +44,6 @@ public class InjectionPointImpl implements InjectionPoint
 {
    private final AnnotatedMember<?, ?> memberInjectionPoint;
    private final Bean<?> bean;
-   private final Object beanInstance;
 
    /**
     * Creates a new metadata bean for the given injection point information.
@@ -53,16 +52,15 @@ public class InjectionPointImpl implements InjectionPoint
     * @param bean The bean being injected
     * @param beanInstance The instance of the bean being injected
     */
-   public InjectionPointImpl(AnnotatedMember<?, ?> injectedMember, Bean<?> bean, Object beanInstance)
+   public InjectionPointImpl(AnnotatedMember<?, ?> injectedMember, Bean<?> bean)
    {
       this.memberInjectionPoint = injectedMember;
       this.bean = bean;
-      this.beanInstance = beanInstance;
    }
 
    public static InjectionPointImpl of(AnnotatedMember<?, ?> member)
    {
-      return new InjectionPointImpl(member, null, null);
+      return new InjectionPointImpl(member, null);
    }
 
    public boolean isField()
@@ -103,11 +101,6 @@ public class InjectionPointImpl implements InjectionPoint
    public Set<Annotation> getBindingTypes()
    {
       return this.memberInjectionPoint.getBindingTypes();
-   }
-
-   public Object getInstance()
-   {
-      return this.beanInstance;
    }
 
    public Member getMember()
