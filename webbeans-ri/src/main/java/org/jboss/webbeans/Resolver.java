@@ -317,7 +317,7 @@ public class Resolver
       Set<Bean<T>> resolvedBeans = new HashSet<Bean<T>>();
       for (Bean<?> bean : beans)
       {
-         if (element.isAssignableFrom(bean.getTypes()) && containsAllBindingBindingTypes(element, bean.getBindingTypes()))
+         if (element.isAssignableFrom(bean.getTypes()) && containsAllBindingBindingTypes(element, bean.getBindings()))
          {
             resolvedBeans.add((Bean<T>) bean);
          }
