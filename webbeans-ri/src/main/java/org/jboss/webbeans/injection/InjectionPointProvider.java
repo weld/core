@@ -37,7 +37,6 @@ import org.jboss.webbeans.introspector.AnnotatedMember;
 public class InjectionPointProvider
 {
    private final Stack<Bean<?>> beans = new Stack<Bean<?>>();
-   private final Stack<Object> beanInstances = new Stack<Object>();
    private final Stack<AnnotatedMember<?, ? extends Member>> injectionPoints = new Stack<AnnotatedMember<?, ? extends Member>>();
 
    /**
@@ -50,28 +49,6 @@ public class InjectionPointProvider
    public void pushBean(Bean<?> currentBean)
    {
       beans.push(currentBean);
-      beanInstances.push(null);
-   }
-
-   /**
-    * Pushes the current bean instance that has been instantiated, but has not
-    * yet had any injection points initialized.
-    * 
-    * @param currentInstance The bean instance last instantiated
-    */
-   public void pushInstance(Object currentInstance)
-   {
-      // Replace the null instance (from pushing the bean) with this one
-      // on the top of the stack.
-      if (beanInstances.peek() == null)
-      {
-         popInstance();
-         beanInstances.push(currentInstance);
-      }
-      else
-      {
-         throw new java.lang.IllegalStateException("More bean instances pushed than there are beans");
-      }
    }
 
    /**
@@ -90,21 +67,7 @@ public class InjectionPointProvider
     */
    public void popBean()
    {
-      if (!beanInstances.isEmpty() && beanInstances.size() == beans.size() && beanInstances.peek() == null)
-      {
-         // Pop the null instance since a real one was never pushed.
-         popInstance();
-      }
       beans.pop();
-   }
-
-   /**
-    * Pops the current instance from the stack. This should be called whenever
-    * all processing is complete for instantiating a bean.
-    */
-   public void popInstance()
-   {
-      beanInstances.pop();
    }
 
    /**
@@ -124,7 +87,7 @@ public class InjectionPointProvider
     */
    public InjectionPoint getPreviousInjectionPoint()
    {
-      return new InjectionPointImpl(getPreviousInjectionMember(), getPreviousBean(), getPreviousInstance());
+      return new InjectionPointImpl(getPreviousInjectionMember(), getPreviousBean());
    }
 
    /**
@@ -135,19 +98,13 @@ public class InjectionPointProvider
     */
    public InjectionPoint getCurrentInjectionPoint()
    {
-      return new InjectionPointImpl(getCurrentInjectionMember(), getCurrentBean(), getCurrentInstance());
+      return new InjectionPointImpl(getCurrentInjectionMember(), getCurrentBean());
    }
 
    protected Bean<?> getCurrentBean()
    {
       return beans.peek();
    }
-
-   protected Object getCurrentInstance()
-   {
-      return beanInstances.peek();
-   }
-
    protected AnnotatedMember<?, ? extends Member> getCurrentInjectionMember()
    {
       if (injectionPoints.size() > 0)
@@ -161,24 +118,6 @@ public class InjectionPointProvider
       Bean<?> currentBean = beans.pop();
       Bean<?> result = beans.peek();
       beans.push(currentBean);
-      return result;
-   }
-
-   protected Object getPreviousInstance()
-   {
-      Object result = null;
-      if (beanInstances.size() < beans.size())
-      {
-         // Return top of stack since this is the previous instance when a
-         // constructor is being invoked with injection points
-         result = beanInstances.peek();
-      }
-      else
-      {
-         Object currentInstance = beanInstances.pop();
-         result = beanInstances.peek();
-         beanInstances.push(currentInstance);
-      }
       return result;
    }
 

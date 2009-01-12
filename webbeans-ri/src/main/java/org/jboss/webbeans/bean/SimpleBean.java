@@ -122,20 +122,12 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          try
          {
             instance = constructor.newInstance(manager);
-            try
-            {
-               injectionPointProvider.pushInstance(instance);
-               bindDecorators();
-               bindInterceptors();
-               injectEjbAndCommonFields(instance);
-               injectBoundFields(instance);
-               callInitializers(instance);
-               callPostConstruct(instance);
-            }
-            finally
-            {
-               injectionPointProvider.popInstance();
-            }
+            bindDecorators();
+            bindInterceptors();
+            injectEjbAndCommonFields(instance);
+            injectBoundFields(instance);
+            callInitializers(instance);
+            callPostConstruct(instance);
          }
          finally
          {
@@ -236,14 +228,14 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getEJBAnnotation()))
       {
-         InjectionPoint injectionPoint = new InjectionPointImpl(field, this, beanInstance);
+         InjectionPoint injectionPoint = new InjectionPointImpl(field, this);
          Object ejbInstance = manager.getEjbResolver().resolveEjb(injectionPoint, manager.getNaming());
          field.inject(beanInstance, ejbInstance);
       }
 
       for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getEjbResolver().getEJBAnnotation()))
       {
-         InjectionPoint injectionPoint = new InjectionPointImpl(method, this, beanInstance);
+         InjectionPoint injectionPoint = new InjectionPointImpl(method, this);
          Object ejbInstance = manager.getEjbResolver().resolveEjb(injectionPoint, manager.getNaming());
          method.invoke(beanInstance, ejbInstance);
       }
@@ -254,21 +246,21 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          {
             throw new ExecutionException("Cannot inject an extended persistence context into " + field);
          }
-         InjectionPoint injectionPoint = new InjectionPointImpl(field, this, beanInstance);
+         InjectionPoint injectionPoint = new InjectionPointImpl(field, this);
          Object puInstance = manager.getEjbResolver().resolvePersistenceContext(injectionPoint, manager.getNaming());
          field.inject(beanInstance, puInstance);
       }
 
       for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getEjbResolver().getPersistenceContextAnnotation()))
       {
-         InjectionPoint injectionPoint = new InjectionPointImpl(method, this, beanInstance);
+         InjectionPoint injectionPoint = new InjectionPointImpl(method, this);
          Object puInstance = manager.getEjbResolver().resolvePersistenceContext(injectionPoint, manager.getNaming());
          method.invoke(beanInstance, puInstance);
       }
 
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getResourceAnnotation()))
       {
-         InjectionPoint injectionPoint = new InjectionPointImpl(field, this, beanInstance);
+         InjectionPoint injectionPoint = new InjectionPointImpl(field, this);
          Object resourceInstance = manager.getEjbResolver().resolveResource(injectionPoint, manager.getNaming());
          field.inject(beanInstance, resourceInstance);
       }
