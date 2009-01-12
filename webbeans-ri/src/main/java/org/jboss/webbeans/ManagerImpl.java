@@ -730,7 +730,7 @@ public class ManagerImpl implements Manager, Serializable
          for (InjectionPoint injectionPoint : bean.getInjectionPoints())
          {
             Class<?> type = (Class<?>) injectionPoint.getType();
-            Annotation[] bindingTypes = injectionPoint.getBindingTypes().toArray(new Annotation[0]);
+            Annotation[] bindingTypes = injectionPoint.getBindings().toArray(new Annotation[0]);
             Set<?> resolvedBeans = resolveByType(type, bindingTypes);
             if (resolvedBeans.isEmpty())
             {
