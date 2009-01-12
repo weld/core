@@ -98,7 +98,7 @@ public class InjectionPointImpl implements InjectionPoint
       return this.bean;
    }
 
-   public Set<Annotation> getBindingTypes()
+   public Set<Annotation> getBindings()
    {
       return this.memberInjectionPoint.getBindingTypes();
    }
