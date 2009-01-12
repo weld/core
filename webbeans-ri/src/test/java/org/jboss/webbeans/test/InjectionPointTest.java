@@ -109,7 +109,7 @@ public class InjectionPointTest extends AbstractTest
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
-         Set<Annotation> bindingTypes = beanWithInjectionPoint.getInjectedMetadata().getBindingTypes();
+         Set<Annotation> bindingTypes = beanWithInjectionPoint.getInjectedMetadata().getBindings();
          assert bindingTypes.size() == 1;
          assert Current.class.isAssignableFrom(bindingTypes.iterator().next().annotationType());
       }
@@ -297,7 +297,7 @@ public class InjectionPointTest extends AbstractTest
          FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
-         assert beanWithInjectionPoint.getInjectedMetadata().getBindingTypes().contains(new CurrentBinding());
+         assert beanWithInjectionPoint.getInjectedMetadata().getBindings().contains(new CurrentBinding());
       }
       finally
       {
