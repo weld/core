@@ -41,7 +41,7 @@ public class CommonWebBeanTest extends AbstractTest
 	public void testBindingTypesNonEmpty()
 	{
 	   Bean<?> model = SimpleBean.of(RedSnapper.class, manager);
-      assert model.getBindingTypes().size() > 0;
+      assert model.getBindings().size() > 0;
 	}
 	
 	@Test @SpecAssertion(section="2")
