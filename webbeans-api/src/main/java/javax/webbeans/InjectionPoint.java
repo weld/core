@@ -58,15 +58,6 @@ public interface InjectionPoint
    public Set<Annotation> getBindingTypes();
    
    /**
-    * Get the Web Bean instance into which the dependent object was injected
-    * 
-    * @return the Web Bean instance into which the dependent object was injected
-    * @throws IllegalStateException
-    *            if invoked while the instance is being created or destroyed
-    */
-   public Object getInstance();
-   
-   /**
     * Get the Bean object representing the Web Bean that defines the injection
     * point
     * 
