@@ -18,8 +18,12 @@
 package org.jboss.webbeans.bean;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
+
+import javassist.util.proxy.ProxyFactory;
+import javassist.util.proxy.ProxyObject;
 
 import javax.webbeans.ApplicationScoped;
 import javax.webbeans.CreationException;
@@ -35,8 +39,10 @@ import javax.webbeans.Produces;
 import javax.webbeans.Specializes;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.ejb.spi.EjbDescriptor;
+import org.jboss.webbeans.ejb.InternalEjbDescriptor;
+import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -44,6 +50,7 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.util.Proxies;
 
 /**
  * An enterprise bean representation
@@ -57,7 +64,9 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    private LogProvider log = Logging.getLogProvider(EnterpriseBean.class);
 
    // The EJB descriptor
-   private EjbDescriptor<T> ejbDescriptor;
+   private InternalEjbDescriptor<T> ejbDescriptor;
+   
+   private Class<T> proxyClass;
 
    // The remove method on the bean class (do not call!)
    private AnnotatedMethod<?> removeMethod;
@@ -99,12 +108,12 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected void init()
    {
       super.init();
-      Iterable<EjbDescriptor<T>> ejbDescriptors = manager.getEjbDescriptorCache().get(getType());
+      Iterable<InternalEjbDescriptor<T>> ejbDescriptors = manager.getEjbDescriptorCache().get(getType());
       if (ejbDescriptors == null)
       {
          throw new DefinitionException("Not an EJB " + toString());
       }
-      for (EjbDescriptor<T> ejbDescriptor : ejbDescriptors)
+      for (InternalEjbDescriptor<T> ejbDescriptor : ejbDescriptors)
       {
          if (this.ejbDescriptor == null)
          {
@@ -115,6 +124,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
             throw new RuntimeException("TODO Multiple EJBs have the same bean class! " + getType());
          }
       }
+      initTypesFromLocalInterfaces();
+      initProxyClass();
       initRemoveMethod();
       initInjectionPoints();
       checkEnterpriseBeanTypeAllowed();
@@ -138,6 +149,32 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
             annotatedInjectionPoints.add(injectable);
          }
       }
+   }
+   
+   protected void initTypes()
+   {
+      // Noop, occurs too early
+      // TODO points at class hierachy problem :-(
+   }
+   
+   protected void initTypesFromLocalInterfaces()
+   {
+      types = new HashSet<Type>();
+      for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces())
+      {
+         types.add(businessInterfaceDescriptor.getInterface());
+      }
+      types.add(Object.class);
+   }
+   
+   protected void initProxyClass()
+   {
+      ProxyFactory proxyFactory = Proxies.getProxyFactory(getTypes());
+      
+      @SuppressWarnings("unchecked")
+      Class<T> proxyClass = proxyFactory.createClass();
+      
+      this.proxyClass = proxyClass;
    }
 
    /**
@@ -275,13 +312,21 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       try
       {
          DependentContext.INSTANCE.setActive(true);
-         // TODO Implement enterprise bean proxies and select the correct
-         // jndiName
-         return (T) manager.getNaming().lookup(ejbDescriptor.getLocalJndiName(), getType());
+         T instance = proxyClass.newInstance();
+         ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler(this)); 
+         return instance;
+      }
+      catch (InstantiationException e)
+      {
+         throw new RuntimeException("Could not instantiate enterprise proxy for " + toString(), e);
+      }
+      catch (IllegalAccessException e)
+      {
+         throw new RuntimeException("Could not access bean correctly when creating enterprise proxy for " + toString(), e);
       }
       catch (Exception e)
       {
-         throw new CreationException("could not find the name in JNDI " + ejbDescriptor.getLocalJndiName(), e);
+         throw new CreationException("could not find the EJB in JNDI " + proxyClass, e);
       }
       finally
       {
@@ -448,7 +493,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       return injectionPointsAreSerializable();
    }
 
-   public EjbDescriptor<T> getEjbDescriptor()
+   public InternalEjbDescriptor<T> getEjbDescriptor()
    {
       return ejbDescriptor;
    }

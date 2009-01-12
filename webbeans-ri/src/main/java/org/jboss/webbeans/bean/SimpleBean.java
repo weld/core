@@ -34,8 +34,8 @@ import javax.webbeans.InjectionPoint;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.injection.InjectionPointImpl;
+import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -417,6 +417,15 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          log.trace("Exactly one post construct method (" + preDestroy + ") for " + getType());
          return;
       }
+   }
+   
+   /**
+    * Initializes the bean type
+    */
+   protected void initType()
+   {
+      log.trace("Bean type specified in Java");
+      this.type = getAnnotatedItem().getType();
    }
 
    /**

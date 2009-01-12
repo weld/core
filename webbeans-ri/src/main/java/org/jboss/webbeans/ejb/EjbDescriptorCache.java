@@ -36,17 +36,17 @@ public class EjbDescriptorCache implements Serializable
    private static final long serialVersionUID = 1L;
 
    // EJB name -> EJB descriptor map
-   private ConcurrentMap<String, EjbDescriptor<?>> ejbsByName;
+   private ConcurrentMap<String, InternalEjbDescriptor<?>> ejbsByName;
    // EJB implementation class -> EJB descriptors map
-   private ConcurrentMap<Class<?>, Set<EjbDescriptor<?>>> ejbsByBeanClass;
+   private ConcurrentMap<Class<?>, Set<InternalEjbDescriptor<?>>> ejbsByBeanClass;
 
    /**
     * Constructor
     */
    public EjbDescriptorCache()
    {
-      this.ejbsByName = new ConcurrentHashMap<String, EjbDescriptor<?>>();
-      this.ejbsByBeanClass = new ConcurrentHashMap<Class<?>, Set<EjbDescriptor<?>>>();
+      this.ejbsByName = new ConcurrentHashMap<String, InternalEjbDescriptor<?>>();
+      this.ejbsByBeanClass = new ConcurrentHashMap<Class<?>, Set<InternalEjbDescriptor<?>>>();
    }
 
    /**
@@ -55,7 +55,7 @@ public class EjbDescriptorCache implements Serializable
     * @param ejbName The EJB name
     * @return The EJB descriptor
     */
-   public EjbDescriptor<?> get(String ejbName)
+   public InternalEjbDescriptor<?> get(String ejbName)
    {
       return ejbsByName.get(ejbName);
    }
@@ -67,7 +67,7 @@ public class EjbDescriptorCache implements Serializable
     * @return An iterator
     */
    @SuppressWarnings("unchecked")
-   public <T> Iterable<EjbDescriptor<T>> get(Class<T> beanClass)
+   public <T> Iterable<InternalEjbDescriptor<T>> get(Class<T> beanClass)
    {
       return (Iterable) ejbsByBeanClass.get(beanClass);
    }
@@ -77,11 +77,12 @@ public class EjbDescriptorCache implements Serializable
     * 
     * @param ejbDescriptor The EJB descriptor to add
     */
-   public void add(EjbDescriptor<?> ejbDescriptor)
+   public <T> void add(EjbDescriptor<T> ejbDescriptor)
    {
-      ejbsByName.put(ejbDescriptor.getEjbName(), ejbDescriptor);
-      ejbsByBeanClass.putIfAbsent(ejbDescriptor.getType(), new CopyOnWriteArraySet<EjbDescriptor<?>>());
-      ejbsByBeanClass.get(ejbDescriptor.getType()).add(ejbDescriptor);
+      InternalEjbDescriptor<T> internalEjbDescriptor = new InternalEjbDescriptor<T>(ejbDescriptor);
+      ejbsByName.put(ejbDescriptor.getEjbName(), internalEjbDescriptor);
+      ejbsByBeanClass.putIfAbsent(ejbDescriptor.getType(), new CopyOnWriteArraySet<InternalEjbDescriptor<?>>());
+      ejbsByBeanClass.get(ejbDescriptor.getType()).add(internalEjbDescriptor);
    }
 
    /**

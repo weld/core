@@ -63,15 +63,23 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
    }
 
    /**
-    * The method proxy
+    * Invokes the method on the correct version of the instance as obtained by
+    * a context lookup
     * 
-    * Uses reflection to look up the corresponding method on the proxy and
-    * executes that method with the same parameters.
-    * 
-    * @param self A reference to the proxy
-    * @param proxiedMethod The method to execute
-    * @param proceed The next method to proceed to
-    * @param args The method calling arguments
+    * @param self          the proxy instance.
+    * @param thisMethod    the overridden method declared in the super
+    *                      class or interface.
+    * @param proceed       the forwarder method for invoking the overridden 
+    *                      method.  It is null if the overridden mehtod is
+    *                      abstract or declared in the interface.
+    * @param args          an array of objects containing the values of
+    *                      the arguments passed in the method invocation
+    *                      on the proxy instance.  If a parameter type is
+    *                      a primitive type, the type of the array element
+    *                      is a wrapper class.
+    * @return              the resulting value of the method invocation.
+    *
+    * @throws Throwable    if the method invocation fails.
     */
    public Object invoke(Object self, Method proxiedMethod, Method proceed, Object[] args) throws Throwable
    {

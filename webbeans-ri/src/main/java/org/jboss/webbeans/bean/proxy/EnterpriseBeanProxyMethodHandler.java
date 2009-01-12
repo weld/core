@@ -18,9 +18,13 @@
 package org.jboss.webbeans.bean.proxy;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import javassist.util.proxy.MethodHandler;
 
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
@@ -29,42 +33,65 @@ import org.jboss.webbeans.util.Reflections;
  * Method handler for enterprise bean client proxies
  * 
  * @author Nicklas Karlsson
+ * @author Pete Muir
  *
  */
 public class EnterpriseBeanProxyMethodHandler implements MethodHandler
 {
    // The log provider
-   private LogProvider log = Logging.getLogProvider(EnterpriseBeanProxyMethodHandler.class);
+   private static final transient LogProvider log = Logging.getLogProvider(EnterpriseBeanProxyMethodHandler.class);
+
    // The container provided proxy that implements all interfaces
-   private Object proxy;
+   private final Map<Class<?>, Object> proxiedInstances;
+   private final Map<Class<?>, String> jndiNames;
 
    /**
     * Constructor
     * 
     * @param proxy The generic proxy
     */
-   public EnterpriseBeanProxyMethodHandler(Object proxy)
+   public EnterpriseBeanProxyMethodHandler(EnterpriseBean<?> bean)
    {
-      this.proxy = proxy;
-      log.trace("Created enterprise bean proxy method handler for " + proxy);
+      this.proxiedInstances = new HashMap<Class<?>, Object>();
+      this.jndiNames = bean.getEjbDescriptor().getLocalBusinessInterfacesJndiNames();
+      log.trace("Created enterprise bean proxy method handler for " + bean);
    }
 
    /**
-    * The method proxy
+    * Lookups the EJB in the container and executes the method on it
     * 
-    * Executes the corresponding method on the proxy
-    * 
-    * @param self A reference to the proxy
-    * @param method The method to execute
-    * @param process The next method to proceed to
-    * @param args The method calling arguments
+    * @param self          the proxy instance.
+    * @param method        the overridden method declared in the super
+    *                      class or interface.
+    * @param proceed       the forwarder method for invoking the overridden 
+    *                      method.  It is null if the overridden method is
+    *                      abstract or declared in the interface.
+    * @param args          an array of objects containing the values of
+    *                      the arguments passed in the method invocation
+    *                      on the proxy instance.  If a parameter type is
+    *                      a primitive type, the type of the array element
+    *                      is a wrapper class.
+    * @return              the resulting value of the method invocation.
+    *
+    * @throws Throwable    if the method invocation fails.
     */
-   //@Override
    public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
-      Method proxiedMethod = Reflections.lookupMethod(method, proxy);
-      Object returnValue = Reflections.invokeAndWrap(proxiedMethod, proxy, args);
-      log.trace("Executed " + method + " on " + proxy + " with parameters " + args + " and got return value " + returnValue);
+      Class<?> businessInterface = method.getDeclaringClass();
+      Object proxiedInstance = proxiedInstances.get(businessInterface);
+      if (proxiedInstance == null)
+      {
+         String jndiName = jndiNames.get(businessInterface);
+         if (jndiName == null)
+         {
+            throw new IllegalStateException("Unable to establish jndi name to use to lookup EJB");
+         }
+         proxiedInstance = CurrentManager.rootManager().getNaming().lookup(jndiName, businessInterface);
+         proxiedInstances.put(businessInterface, proxiedInstance);
+      }
+      Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
+      Object returnValue = Reflections.invokeAndWrap(proxiedMethod, proxiedInstance, args);
+      log.trace("Executed " + method + " on " + proxiedInstance + " with parameters " + args + " and got return value " + returnValue);
       return returnValue;
    }
 
