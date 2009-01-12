@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: example\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 09:49+1000\n"
+"PO-Revision-Date: 2009-01-13 01:02+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: example.xml:4
 #, no-c-format
 msgid "JSF web application example"
-msgstr ""
+msgstr "JSF 網站應用程式範例"
 
 #. Tag: para
 #: example.xml:6
@@ -29,7 +29,7 @@ msgid ""
 "Let's illustrate these ideas with a full example. We're going to implement "
 "user login/logout for an application that uses JSF. First, we'll define a "
 "Web Bean to hold the username and password entered during login:"
-msgstr ""
+msgstr "現在我們將採用一個完整的範例來描述這些概念。我們將要為一個使用 JSF 的應用程式實做用戶的登錄/登出。首先，我們將要定義一個 Web Bean 來在登錄時保持已輸入的用戶名稱與密碼："
 
 #. Tag: programlisting
 #: example.xml:11
@@ -67,7 +67,7 @@ msgstr ""
 #: example.xml:13
 #, no-c-format
 msgid "This Web Bean is bound to the login prompt in the following JSF form:"
-msgstr ""
+msgstr "這個 Web Bean 已透過下列 JSF 格式綁定至登錄提示："
 
 #. Tag: programlisting
 #: example.xml:15
@@ -106,7 +106,7 @@ msgid ""
 "The actual work is done by a session scoped Web Bean that maintains "
 "information about the currently logged-in user and exposes the "
 "<literal>User</literal> entity to other Web Beans:"
-msgstr ""
+msgstr "實際的工作是由 session 導向的 Web Bean 所完成的，這個 Web Bean 保留了有關於目前已登入用戶的相關資料並將 <literal>User</literal> 這個 entity 提供給其它 Web Bean："
 
 #. Tag: programlisting
 #: example.xml:21
@@ -190,7 +190,7 @@ msgstr ""
 #: example.xml:23
 #, no-c-format
 msgid "Of course, <literal>@LoggedIn</literal> is a binding annotation:"
-msgstr ""
+msgstr "當然，<literal>@LoggedIn</literal> 是個綁定標記："
 
 #. Tag: programlisting
 #: example.xml:25
@@ -210,7 +210,7 @@ msgstr ""
 #: example.xml:27
 #, no-c-format
 msgid "Now, any other Web Bean can easily inject the current user:"
-msgstr ""
+msgstr "現在，任何其它 Web Bean 都可輕易地注入目前的用戶："
 
 #. Tag: programlisting
 #: example.xml:29
@@ -249,5 +249,5 @@ msgid ""
 "Hopefully, this example gives a flavor of the Web Bean programming model. In "
 "the next chapter, we'll explore Web Beans dependency injection in greater "
 "depth."
-msgstr ""
+msgstr "但願此範例能針對於 Web Bean 編程模組提供益處。在下個章節當中，我們將會更深入地探討 Web Bean 相依性注入（Web Beans dependency injection）。"
 

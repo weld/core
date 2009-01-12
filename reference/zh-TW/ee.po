@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ee\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-12 17:24+1000\n"
+"PO-Revision-Date: 2009-01-13 00:47+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -182,12 +182,13 @@ msgstr ""
 #. Tag: para
 #: ee.xml:42
 #, no-c-format
-#, fuzzy
 msgid ""
 "The Web Beans client proxy takes care of routing method invocations from the "
 "Servlet to the correct instances of <literal>Credentials</literal> and "
 "<literal>Login</literal> for the current request and HTTP session."
-msgstr "Web Bean 的客戶端 proxy 能處理路由"
+msgstr ""
+"Web Bean 的客戶端 proxy 能為目前的請求以及 HTTP session 處理由 Servlet 至 <literal>Credentials</literal> 和 "
+"<literal>Login</literal> 的正確事例的 routing method 調用。"
 
 #. Tag: title
 #: ee.xml:49
