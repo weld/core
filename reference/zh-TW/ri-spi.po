@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-08 14:07+0000\n"
-"PO-Revision-Date: 2009-01-08 10:59+1000\n"
+"PO-Revision-Date: 2009-01-12 20:36+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: ri-spi.xml:4
 #, no-c-format
 msgid "Integrating the Web Beans RI into other environments"
-msgstr ""
+msgstr "將 Web Bean RI 整合入其它環境中"
 
 #. Tag: para
 #: ri-spi.xml:6
@@ -31,7 +31,7 @@ msgid ""
 "Glassfish), into a servlet container (like Tomcat), or with an Embedded "
 "EJB3.1 implementation is fairly easy. In this Appendix we will briefly "
 "discuss the steps needed."
-msgstr ""
+msgstr "目前，Web Bean RI 只能在 JBoss AS 5 中執行；要將 RI 整合入其它 EE 環境中（比方說另一個像是 Glassfish 的應用程式伺服器）、整合入一個 servlet 容器（例如 Tomcat）中，或是和一個崁入式的 EJB3.1 實做整合都是相當容易的。在此附錄中，我們將簡略地討論所需的步驟。"
 
 #. Tag: para
 #: ri-spi.xml:15
@@ -41,7 +41,7 @@ msgid ""
 "do more work, adding your own contexts and lifecycle. The Web Beans RI "
 "currently doesn't expose lifecycle extension points, so you would have to "
 "code directly against Web Beans RI classes."
-msgstr ""
+msgstr "您可在一個 SE 環境下執行 Web Bean，不過您必須進行較多步驟，包括新增您自己的 context 和生命週期。Web Bean RI 目前並不會顯示生命週期的延伸點，因此您必須針對於 Web Bean RI 的 class 來直接地進行編程。"
 
 #. Tag: title
 #: ri-spi.xml:24
@@ -56,7 +56,7 @@ msgid ""
 "The Web Beans SPI is located in <literal>webbeans-ri-spi</literal> module, "
 "and packaged as <literal>webbeans-ri-spi.jar</literal>. Some SPIs are "
 "optional, if you need to override the default behavior, others are required."
-msgstr ""
+msgstr "Web Bean SPI 位於 <literal>webbeans-ri-spi</literal> 模組中，並且被封裝為 <literal>webbeans-ri-spi.jar</literal>。有些 SPI 為可選的，若您需要置換預設的特性，您則需要其它 SPI。"
 
 #. Tag: para
 #: ri-spi.xml:33
@@ -67,13 +67,13 @@ msgid ""
 "All property names are the fully qualified class name of the implemented "
 "interface; all property values are the fully qualified class name of the "
 "implementation class."
-msgstr ""
+msgstr "您可將一個 SPI 的實做作為系統內容來指定，或是在內容檔案 <literal>META-INF/web-beans-ri.properties</literal> 中來指定。所有內容名稱皆為已實做介面的完整類別（class）名稱，並且所有內容值皆為已實做類別的完整類別名稱。"
 
 #. Tag: title
 #: ri-spi.xml:43
 #, no-c-format
 msgid "Web Bean Discovery"
-msgstr "Web Bean Discovery"
+msgstr "Web Bean 搜尋"
 
 #. Tag: programlisting
 #: ri-spi.xml:45
@@ -137,6 +137,8 @@ msgid ""
 "is self-explanatory (the algorithm is described in Section 11.1 of the JSR-"
 "299 specification, and isn't repeated here)."
 msgstr ""
+"Web Bean 類別和 <literal>web-bean.xml</literal> 檔案的搜尋相當明顯（演算法描述於 JSR-"
+"299 規格的章節 11.1 中，在此不重複）。"
 
 #. Tag: para
 #: ri-spi.xml:53
@@ -147,6 +149,8 @@ msgid ""
 "literal>. For each EJB in the application an EJBDescriptor should be "
 "discovered:"
 msgstr ""
+"Web Bean RI 也會委派 EJB3 bean discovery 至 container，因此它便無須掃描 EJB3 記號或剖析 <literal>ejb-jar.xml</"
+"literal>。針對於應用程式中的各個 EJB 都應該能發現一個 EJBDescriptor："
 
 #. Tag: programlisting
 #: ri-spi.xml:60
@@ -312,7 +316,7 @@ msgid ""
 "In addition to these two interfaces, there is "
 "<literal>BusinessInterfaceDescriptor</literal> which represents a local "
 "business interface (encapsulating the interface class and jndi name)."
-msgstr ""
+msgstr "描述 JavaDoc 的合同已足夠實做一個 EJBDescriptor。除了這兩個介面，還有個代表本地商業介面的 <literal>BusinessInterfaceDescriptor</literal>（包含了介面類別以及 jndi 名稱）。"
 
 #. Tag: para
 #: ri-spi.xml:69
@@ -322,7 +326,7 @@ msgid ""
 "<literal>WebBeanDiscovery</literal> using the property <literal>org.jboss."
 "webbeans.bootstrap.WebBeanDiscovery</literal> with the fully qualified class "
 "name as the value. For example:"
-msgstr ""
+msgstr "Web Beans RI 可被指定來透過使用 <literal>org.jboss.webbeans.bootstrap.WebBeanDiscovery</literal> 這個內容以及完整的 class 名稱為值來載入您的 <literal>WebBeanDiscovery</literal> 實做。例如："
 
 #. Tag: programlisting
 #: ri-spi.xml:76
@@ -348,7 +352,7 @@ msgid ""
 "however you may want to alter the binding and lookup (for example in an "
 "environment where JNDI isn't available). To do this, implement <literal>org."
 "jboss.webbeans.spi.resources.Naming</literal>:"
-msgstr ""
+msgstr "Web Beans RI 會實做 JNDI 綁定並依照標準來進行搜尋，不過您可能在某些情況下會希望修改綁定和搜尋（例如在一個 JNDI 無法使用的環境下）。若要如此，請實做 <literal>org.jboss.webbeans.spi.resources.Naming</literal>："
 
 #. Tag: programlisting
 #: ri-spi.xml:90
@@ -402,7 +406,7 @@ msgstr ""
 #: ri-spi.xml:92 ri-spi.xml:113
 #, no-c-format
 msgid "and tell the RI to use it:"
-msgstr ""
+msgstr "並告訴 RI 去使用它："
 
 #. Tag: programlisting
 #: ri-spi.xml:96
@@ -426,6 +430,8 @@ msgid ""
 "environments. If this is case, you can implement <literal>org.jboss.webbeans."
 "spi.ResourceLoader</literal>:"
 msgstr ""
+"Web Beans RI 需要在各個時段由 classpath 載入類別和資源。就預設值，它們會被由和使用來載入 RI 相同的 classloader 所載入，不過這對於某些環境來說可能不是不正確的。若是如此，您可實做 <literal>org.jboss.webbeans."
+"spi.ResourceLoader</literal>："
 
 #. Tag: programlisting
 #: ri-spi.xml:111
@@ -495,14 +501,13 @@ msgstr ""
 #: ri-spi.xml:117
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
-msgstr ""
-"org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
+msgstr "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
 
 #. Tag: title
 #: ri-spi.xml:124
 #, no-c-format
 msgid "The contract with the container"
-msgstr ""
+msgstr "與 container 的合同"
 
 #. Tag: para
 #: ri-spi.xml:126
@@ -510,13 +515,13 @@ msgstr ""
 msgid ""
 "There are a number of requirements that the Web Beans RI places on the "
 "container for correct functioning that fall outside implementation of APIs"
-msgstr ""
+msgstr "Web Bean RI 對於 container 有些需求以便達到 API 實做之外的正確的功能。"
 
 #. Tag: term
 #: ri-spi.xml:134
 #, no-c-format
 msgid "Classloader isolation"
-msgstr ""
+msgstr "Classloader 隔離"
 
 #. Tag: para
 #: ri-spi.xml:138
@@ -526,13 +531,13 @@ msgid ""
 "deployment of multiple applications, you must enable, automatically, or "
 "through user configuation, classloader isolation for each Web Beans "
 "application."
-msgstr ""
+msgstr "若您要將 Web Bean RI 整合入某個支援多重應用程式建置的環境中，您就必須為各個 Web Bean 應用程式透過自動的方式，或是透過用戶配置來啟用 classloader 隔離。"
 
 #. Tag: term
 #: ri-spi.xml:147
 #, no-c-format
 msgid "Servlet listener"
-msgstr ""
+msgstr "Servlet listener"
 
 #. Tag: para
 #: ri-spi.xml:151
@@ -542,13 +547,13 @@ msgid ""
 "register <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> as a "
 "Servlet listener, either automatically, or through user configuration, for "
 "each Web Beans application which uses Servlet."
-msgstr ""
+msgstr "若您要將 Web Bean 整合入一個 Servlet 環境中，您就必須為各個使用 Servlet 的 Web Bean 應用程式透過自動的方式，或是用戶配置來將 <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> 註冊為一個 Servlet listener，"
 
 #. Tag: term
 #: ri-spi.xml:162
 #, no-c-format
 msgid "Session Bean Interceptor"
-msgstr ""
+msgstr "Session Bean 攔截器"
 
 #. Tag: para
 #: ri-spi.xml:166
@@ -559,7 +564,7 @@ msgid ""
 "a EJB interceptor for all EJBs in the application, either automatically, or "
 "through user configuration, for each Web Beans application which uses "
 "enterprise beans."
-msgstr ""
+msgstr "若您要將 Web Bean 整合入一個 EJB 環境中，您就必須針對於各個使用 enterprise bean 的 Web Bean 應用程式來為應用程式中的所有 EJB 透過自動的方式，或是透過用戶配置來將 <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> 註冊為一個 EJB 攔截器。"
 
 #. Tag: term
 #: ri-spi.xml:177
@@ -575,4 +580,5 @@ msgid ""
 "deployment of applications, you must insert the <literal>webbeans-ri.jar</"
 "literal> into the applications isolated classloader. It cannot be loaded "
 "from a shared classloader."
-msgstr ""
+msgstr "若您要將 Web Bean 整合入一個支援應用程式建置的環境中，您就必須將 <literal>webbeans-ri.jar</literal> 插入應用程式隔離的 classholder 中。它無法藉由共享的 classloader 來被載入。"
+
