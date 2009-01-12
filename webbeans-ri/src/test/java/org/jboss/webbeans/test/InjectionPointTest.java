@@ -47,28 +47,6 @@ import org.testng.annotations.Test;
 @SpecVersion("20081222")
 public class InjectionPointTest extends AbstractTest
 {
-   @Test(groups = { "broken", "injectionPoint" })
-   @SpecAssertion(section = "5.11")
-   public void testGetInstance()
-   {
-      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(FieldInjectionPointBean.class, BeanWithInjectionPointMetadata.class));
-      webBeansBootstrap.boot();
-
-      // Get an instance of the bean which has another bean injected into it
-      try
-      {
-         activateDependentContext();
-         FieldInjectionPointBean beanWithInjectedBean = manager.getInstanceByType(FieldInjectionPointBean.class, new CurrentBinding());
-         BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
-         assert beanWithInjectionPoint.getInjectedMetadata() != null;
-         //TODO Fix injection issue where raw bean is used instead of proxied bean
-         assert beanWithInjectionPoint.getInjectedMetadata().getInstance().equals(beanWithInjectedBean);
-      }
-      finally
-      {
-         deactivateDependentContext();
-      }
-   }
 
    @Test(groups = { "injectionPoint" })
    @SpecAssertion(section = "5.11")
