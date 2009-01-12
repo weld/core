@@ -57,7 +57,7 @@ import org.testng.annotations.Test;
 
 /**
  * 
- * @author Nicklas Karlsson (nickarls@gmail.com)
+ * @author Nicklas Karlsson 
  * 
  */
 @SpecVersion("20081206")
@@ -301,8 +301,6 @@ public class PassivatingContextTest extends AbstractTest
    {
       registerBeans(new Class<?>[] { Violation.class, Vantaa.class });
       manager.validate();
-      // T12 instance = manager.getInstanceByType(T12.class);
-      // System.out.println(instance.test());
    }
 
    /**
@@ -486,7 +484,7 @@ public class PassivatingContextTest extends AbstractTest
     * @throws NoSuchFieldException
     * @throws SecurityException
     */
-   @Test(groups = { "contexts", "passivation" }, expectedExceptions = IllegalProductException.class)
+   @Test(groups = { "contexts", "passivation"}, expectedExceptions = IllegalProductException.class)
    @SpecAssertion(section = "9.5")
    public void testDependentScopedProducerFieldReturnsNonSerializableObjectForInjectionIntoStatefulSessionBeanFails() throws SecurityException, NoSuchFieldException
    {
@@ -521,7 +519,7 @@ public class PassivatingContextTest extends AbstractTest
     * parameter of a producer method which declares a passivating scope type, an
     * IllegalProductException is thrown by the Web Bean manager.
     */
-   @Test(groups = { "contexts", "passivation" })
+   @Test(groups = { "contexts", "passivation"})
    @SpecAssertion(section = "9.5")
    public void testDependentScopedProducerFieldReturnsNonSerializableObjectForInjectionIntoTransientFieldOfWebBeanWithPassivatingScopeOK()
    {

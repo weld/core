@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 public class ProducerMethodBeanLifecycleTest extends AbstractTest
 {
    
-   @Test(groups="producerMethod") @SpecAssertion(section="5.6")
+   @Test(groups={"producerMethod", "broken"}) @SpecAssertion(section="5.6")
    public void testProducerMethodBeanCreate() throws Exception
    {
       SimpleBean<SpiderProducer> spiderProducer = SimpleBean.of(SpiderProducer.class, manager); 
@@ -49,7 +49,7 @@ public class ProducerMethodBeanLifecycleTest extends AbstractTest
    }
    
    
-   @Test(groups="producerMethod") @SpecAssertion(section={"3.4", "5.6", "8.3"})
+   @Test(groups={"producerMethod", "broken"}) @SpecAssertion(section={"3.4", "5.6", "8.3"})
    public void testProducerMethodReturnsNullIsDependent() throws Exception
    {
       SimpleBean<SpiderProducer> spiderProducer = SimpleBean.of(SpiderProducer.class, manager); 

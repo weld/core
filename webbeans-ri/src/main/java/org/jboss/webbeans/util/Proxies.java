@@ -9,22 +9,22 @@ import javassist.util.proxy.ProxyFactory;
 
 public class Proxies
 {
-   
+
    public static class TypeInfo
    {
-      
+
       private static final Class<?>[] EMPTY_INTERFACES_ARRAY = new Class<?>[0];
-      
+
       private final Set<Class<?>> interfaces;
       private final Set<Class<?>> classes;
-      
+
       private TypeInfo()
       {
          super();
          this.interfaces = new HashSet<Class<?>>();
          this.classes = new HashSet<Class<?>>();
       }
-      
+
       public Class<?> getSuperClass()
       {
          if (classes.isEmpty())
@@ -43,12 +43,12 @@ public class Proxies
          }
          return superclass;
       }
-      
+
       private Class<?>[] getInterfaces()
       {
          return interfaces.toArray(EMPTY_INTERFACES_ARRAY);
       }
-      
+
       public ProxyFactory createProxyFactory()
       {
          ProxyFactory proxyFactory = new ProxyFactory();
@@ -56,7 +56,7 @@ public class Proxies
          proxyFactory.setInterfaces(getInterfaces());
          return proxyFactory;
       }
-      
+
       private void add(Type type)
       {
          if (type instanceof Class)
@@ -66,7 +66,8 @@ public class Proxies
             {
                interfaces.add(clazz);
             }
-            // TODO Check the class type much more carefully, many things need excluding!
+            // TODO Check the class type much more carefully, many things need
+            // excluding!
             else
             {
                classes.add(clazz);
@@ -74,7 +75,7 @@ public class Proxies
          }
          // TODO what about non-Class types
       }
-      
+
       public static TypeInfo ofTypes(Set<Type> types)
       {
          TypeInfo typeInfo = new TypeInfo();
@@ -84,7 +85,7 @@ public class Proxies
          }
          return typeInfo;
       }
-      
+
       public static TypeInfo ofClasses(Set<Class<?>> classes)
       {
          TypeInfo typeInfo = new TypeInfo();
@@ -94,12 +95,12 @@ public class Proxies
          }
          return typeInfo;
       }
-      
+
    }
-   
+
    /**
     * Get the proxy factory for the given set of types
-    *
+    * 
     * @param types The types to create the proxy factory for
     * @param classes Additional interfaces the proxy should implement
     * @return the proxy factory
@@ -108,5 +109,29 @@ public class Proxies
    {
       return TypeInfo.ofTypes(types).createProxyFactory();
    }
-   
+
+   public static boolean isProxyable(Class<?> clazz)
+   {
+      if (Reflections.getConstructor(clazz) == null)
+      {
+         return false;
+      }
+      else if (Reflections.isTypeOrAnyMethodFinal(clazz))
+      {
+         return false;
+      }
+      else if (Reflections.isPrimitive(clazz))
+      {
+         return false;
+      }
+      else if (Reflections.isArrayType(clazz))
+      {
+         return false;
+      }
+      else
+      {
+         return true;
+      }
+   }
+
 }

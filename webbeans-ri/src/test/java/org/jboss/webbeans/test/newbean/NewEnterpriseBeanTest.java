@@ -140,12 +140,12 @@ public class NewEnterpriseBeanTest extends AbstractTest
     * Section 3.3.2, “Which EJBs are enterprise Web Beans?”, then the Web Bean
     * is an enterprise Web Bean.
     */
-   @Test(groups = { "stub", "new" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanIsEnterpriseWebBeanIfParameterTypeIsEnterpriseWebBean()
    {
-      // TODO: has to be?
-      assert false;
+      assert wrappedEnterpriseBean.getType().equals(newEnterpriseBean.getType());
+      assert manager.getEjbDescriptorCache().containsKey(newEnterpriseBean.getType());
    }
 
    /**
@@ -201,8 +201,8 @@ public class NewEnterpriseBeanTest extends AbstractTest
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasSameInjectedFieldsAsWrappedBean()
    {
-      Set<AnnotatedItem<?, ?>> wrappedBeanInjectionPoints = wrappedEnterpriseBean.getInjectionPoints();
-      Set<AnnotatedItem<?, ?>> newBeanInjectionPoints = newEnterpriseBean.getInjectionPoints();
+      Set<AnnotatedItem<?, ?>> wrappedBeanInjectionPoints = wrappedEnterpriseBean.getAnnotatedInjectionPoints();
+      Set<AnnotatedItem<?, ?>> newBeanInjectionPoints = newEnterpriseBean.getAnnotatedInjectionPoints();
       assert wrappedBeanInjectionPoints.equals(newBeanInjectionPoints);
    }
    
@@ -324,13 +324,13 @@ public class NewEnterpriseBeanTest extends AbstractTest
     * requirements of a simple Web Bean implementation class or enterprise Web
     * Bean implementation class.
     */
-   @Test(groups = { "new" , "broken" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToField()
    {
-      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedField.class));
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedField.class, WrappedEnterpriseBean.class));
       webBeansBootstrap.boot();
-      assert manager.resolveByType(WrappedSimpleBean.class, new NewBinding()).size() == 1;
+      assert manager.resolveByType(WrappedEnterpriseBean.class, new NewBinding()).size() == 1;
    }
 
    /**
@@ -341,13 +341,13 @@ public class NewEnterpriseBeanTest extends AbstractTest
     * requirements of a simple Web Bean implementation class or enterprise Web
     * Bean implementation class.
     */
-   @Test(groups = { "new" , "broken" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToProducerMethodParameter()
    {
-      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedProducerParameter.class));
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedProducerParameter.class, WrappedEnterpriseBean.class));
       webBeansBootstrap.boot();
-      assert manager.resolveByType(WrappedSimpleBean.class, new NewBinding()).size() == 1;
+      assert manager.resolveByType(WrappedEnterpriseBean.class, new NewBinding()).size() == 1;
    }
 
    /**
@@ -358,13 +358,13 @@ public class NewEnterpriseBeanTest extends AbstractTest
     * requirements of a simple Web Bean implementation class or enterprise Web
     * Bean implementation class.
     */
-   @Test(groups = { "new", "broken" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToInitializerMethodParameter()
    {
-      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedInitializerParameter.class));
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedInitializerParameter.class, WrappedEnterpriseBean.class));
       webBeansBootstrap.boot();
-      assert manager.resolveByType(WrappedSimpleBean.class, new NewBinding()).size() == 1;
+      assert manager.resolveByType(WrappedEnterpriseBean.class, new NewBinding()).size() == 1;
    }
 
    /**
@@ -375,13 +375,13 @@ public class NewEnterpriseBeanTest extends AbstractTest
     * requirements of a simple Web Bean implementation class or enterprise Web
     * Bean implementation class.
     */
-   @Test(groups = { "new", "broken" })
+   @Test(groups = { "new" })
    @SpecAssertion(section = "3.9")
    public void testNewAnnotationMayBeAppliedToConstructorMethodParameter()
    {
-      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedConstructorParameter.class));
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(AnnotatedConstructorParameter.class, WrappedEnterpriseBean.class));
       webBeansBootstrap.boot();
-      assert manager.resolveByType(WrappedSimpleBean.class, new NewBinding()).size() == 1;
+      assert manager.resolveByType(WrappedEnterpriseBean.class, new NewBinding()).size() == 1;
    }
 
    /**

@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 /**
  * 
- * @author Nicklas Karlsson (nickarls@gmail.com)
+ * @author Nicklas Karlsson
  * 
  */
 @SpecVersion("20081206")

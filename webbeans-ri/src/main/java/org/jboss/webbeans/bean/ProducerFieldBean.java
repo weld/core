@@ -23,7 +23,6 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.jlr.AnnotatedFieldImpl;
 import org.jboss.webbeans.util.Names;
-import org.jboss.webbeans.util.Reflections;
 
 /**
  * Represents a producer field bean
@@ -128,12 +127,6 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
       buffer.append(" [" + getType().getName() + "]\n");
       buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
       return buffer.toString();
-   }
-
-   @Override
-   public boolean isProductSerializable()
-   {
-      return Reflections.isSerializable(field.getAnnotatedField().getClass());
    }
 
 }

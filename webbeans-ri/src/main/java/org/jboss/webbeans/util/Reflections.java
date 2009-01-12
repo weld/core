@@ -36,6 +36,10 @@ import java.util.Set;
 
 import javax.webbeans.BindingType;
 import javax.webbeans.ExecutionException;
+import javax.webbeans.manager.Bean;
+
+import org.jboss.webbeans.MetaDataCache;
+import org.jboss.webbeans.bean.EnterpriseBean;
 
 /**
  * Utility class for static reflection-type operations
@@ -69,6 +73,18 @@ public class Reflections
          return null;
       }
 
+   }
+
+   public static boolean isPassivatingBean(Bean<?> bean)
+   {
+      if (bean instanceof EnterpriseBean)
+      {
+         return ((EnterpriseBean<?>) bean).getEjbDescriptor().isStateful();
+      }
+      else
+      {
+         return MetaDataCache.instance().getScopeModel(bean.getScopeType()).isPassivating();
+      }
    }
 
    /**
@@ -601,7 +617,7 @@ public class Reflections
       getTypeHierachy(clazz, classes);
       return classes;
    }
-   
+
    /**
     * Gets the flattened type hierarchy for a class, including all super classes
     * and the entire interface type hierarchy
@@ -643,4 +659,5 @@ public class Reflections
    {
       return getTypeHierachy(clazz).contains(Serializable.class);
    }
+
 }

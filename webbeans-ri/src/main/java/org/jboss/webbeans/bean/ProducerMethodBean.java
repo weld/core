@@ -27,11 +27,11 @@ import javax.webbeans.Disposes;
 import javax.webbeans.Observes;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
 import org.jboss.webbeans.util.Names;
-import org.jboss.webbeans.util.Reflections;
 
 /**
  * Represents a producer method bean
@@ -47,7 +47,6 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
 
    private AnnotatedMethod<?> disposalMethod;
 
-
    /**
     * Creates a producer method Web Bean
     * 
@@ -60,7 +59,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       return new ProducerMethodBean<T>(method, declaringBean, manager);
    }
-   
+
    public static <T> ProducerMethodBean<T> of(Method method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       return of(new AnnotatedMethodImpl<T>(method, declaringBean.getAnnotatedItem()), declaringBean, manager);
@@ -104,13 +103,13 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       for (AnnotatedParameter<Object> parameter : method.getParameters())
       {
-         injectionPoints.add(parameter);
+         annotatedInjectionPoints.add(parameter);
       }
       if (disposalMethod != null)
       {
          for (AnnotatedParameter<?> injectable : disposalMethod.getParameters())
          {
-            injectionPoints.add(injectable);
+            annotatedInjectionPoints.add(injectable);
          }
       }
    }
@@ -207,9 +206,14 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    }
 
    @Override
-   protected boolean isProductSerializable()
+   public boolean isSerializable()
    {
-      return Reflections.isSerializable(method.getAnnotatedMethod().getReturnType());
+      boolean passivatingScoped = MetaDataCache.instance().getScopeModel(scopeType).isPassivating();
+      if (passivatingScoped)
+      {
+         return injectionPointsAreSerializable();
+      }
+      return true;
    }
 
 }

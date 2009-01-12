@@ -18,16 +18,20 @@
 package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.IllegalProductException;
+import javax.webbeans.Initializer;
+import javax.webbeans.Produces;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.injection.InjectionPointImpl;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
@@ -150,16 +154,64 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
     */
    protected void checkReturnValue(T instance)
    {
-      if (instance == null && !getScopeType().equals(Dependent.class))
+      boolean dependent = Dependent.class.equals(getScopeType());
+      if (instance == null && !dependent)
       {
          throw new IllegalProductException("Cannot return null from a non-dependent producer method");
       }
       boolean passivating = MetaDataCache.instance().getScopeModel(getScopeType()).isPassivating();
       if (passivating && !Reflections.isSerializable(instance.getClass()))
       {
-         throw new IllegalProductException("Producers cannot declare passivating and return non-serializable class");
+         throw new IllegalProductException("Producers cannot declare passivating scope and return a non-serializable class");
+      }
+      InjectionPointImpl injectionPoint = (InjectionPointImpl) manager.getInjectionPointFactory().getCurrentInjectionPoint();
+      if (dependent && Reflections.isPassivatingBean(injectionPoint.getBean()))
+      {
+         if (injectionPoint.isField())
+         {
+            if (!Reflections.isTransient(injectionPoint.getMember()))
+            {
+               throw new IllegalProductException("Dependent scoped producers cannot produce non-serializable instances for injection into non-transient fields of passivating beans");
+            }
+         }
+         else if (injectionPoint.isMethod())
+         {
+            Method method = (Method) injectionPoint.getMember();
+            if (method.isAnnotationPresent(Initializer.class))
+            {
+               throw new IllegalProductException("Dependent scoped producers cannot produce non-serializable instances for injection into parameters of intializers of beans declaring passivating scope");
+            }
+            if (method.isAnnotationPresent(Produces.class))
+            {
+               throw new IllegalProductException("Dependent scoped producers cannot produce non-serializable instances for injection into parameters of producer methods declaring passivating scope");
+            }
+         }
+         else if (injectionPoint.isConstructor())
+         {
+            throw new IllegalProductException("Dependent scoped producers cannot produce non-serializable instances for injection into parameters of constructors of beans declaring passivating scope");
+         }
+         else
+         {
+            // TODO: possible case?
+         }
       }
    }
+
+   // private boolean recieverIsPassivating()
+   // {
+   // InjectionPoint injectionPoint =
+   // manager.getInjectionPointFactory().getPreviousInjectionPoint();
+   // if (injectionPoint.getBean() instanceof EnterpriseBean)
+   // {
+   // return ((EnterpriseBean<?>)
+   // injectionPoint.getBean()).getEjbDescriptor().isStateful();
+   // }
+   // else
+   // {
+   // return
+   // MetaDataCache.instance().getScopeModel(injectionPoint.getBean().getScopeType()).isPassivating();
+   // }
+   // }
 
    /**
     * Gets the receiver of the product
@@ -182,11 +234,6 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       try
       {
          DependentContext.INSTANCE.setActive(true);
-         boolean passivating = MetaDataCache.instance().getScopeModel(scopeType).isPassivating();
-         if (passivating)
-         {
-            checkProducedInjectionPoints();
-         }
          T instance = produceInstance();
          checkReturnValue(instance);
          return instance;
@@ -235,30 +282,5 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       buffer.append("   API types " + getTypes() + ", binding types " + getBindingTypes() + "\n");
       return buffer.toString();
    }
-
-   @Override
-   public boolean isSerializable()
-   {
-      boolean normalScoped = MetaDataCache.instance().getScopeModel(scopeType).isNormal();
-      if (normalScoped)
-      {
-         boolean passivatingScoped = MetaDataCache.instance().getScopeModel(scopeType).isPassivating();
-         if (passivatingScoped)
-         {
-            checkInjectionPoints();
-            return true;
-         }
-         else
-         {
-            return true;
-         }
-      }
-      else
-      {
-         return isProductSerializable();
-      }
-   }
-
-   protected abstract boolean isProductSerializable();
 
 }

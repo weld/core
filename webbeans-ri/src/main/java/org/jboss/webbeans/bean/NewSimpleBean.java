@@ -10,7 +10,6 @@ import javax.webbeans.Dependent;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.binding.NewBinding;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedClass;
@@ -43,11 +42,6 @@ public class NewSimpleBean<T> extends SimpleBean<T>
       try
       {
          DependentContext.INSTANCE.setActive(true);
-         boolean passivating = MetaDataCache.instance().getScopeModel(getScopeType()).isPassivating();
-         if (passivating)
-         {
-            checkProducedInjectionPoints();
-         }
          T instance = getConstructor().newInstance(manager);
          bindDecorators();
          bindInterceptors();

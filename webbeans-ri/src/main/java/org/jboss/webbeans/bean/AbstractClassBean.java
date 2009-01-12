@@ -168,7 +168,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
                throw new DefinitionException("Don't place binding annotations on final fields " + annotatedField);
             }
             injectableFields.add(annotatedField);
-            super.injectionPoints.add(annotatedField);
+            super.annotatedInjectionPoints.add(annotatedField);
          }
       }
    }

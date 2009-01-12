@@ -18,11 +18,15 @@
 package org.jboss.webbeans.injection;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.webbeans.Dependent;
+import javax.webbeans.Initializer;
 import javax.webbeans.InjectionPoint;
 import javax.webbeans.Standard;
 import javax.webbeans.manager.Bean;
@@ -54,6 +58,31 @@ public class InjectionPointImpl implements InjectionPoint
       this.memberInjectionPoint = injectedMember;
       this.bean = bean;
       this.beanInstance = beanInstance;
+   }
+
+   public static InjectionPointImpl of(AnnotatedMember<?, ?> member)
+   {
+      return new InjectionPointImpl(member, null, null);
+   }
+
+   public boolean isField()
+   {
+      return getMember() instanceof Field;
+   }
+
+   public boolean isMethod()
+   {
+      return getMember() instanceof Method;
+   }
+
+   public boolean isConstructor()
+   {
+      return getMember() instanceof Constructor;
+   }
+
+   public boolean isInitializer()
+   {
+      return isMethod() && isAnnotationPresent(Initializer.class);
    }
 
    public <T extends Annotation> T getAnnotation(Class<T> annotationType)
@@ -95,7 +124,7 @@ public class InjectionPointImpl implements InjectionPoint
    {
       return this.memberInjectionPoint.isAnnotationPresent(annotationType);
    }
-   
+
    @Override
    public String toString()
    {

@@ -95,7 +95,7 @@ public abstract class WebBeansBootstrap
       @Override
       protected void initInjectionPoints()
       {
-         injectionPoints = Collections.emptySet();
+         annotatedInjectionPoints = Collections.emptySet();
       }
 
       @Override
@@ -226,13 +226,13 @@ public abstract class WebBeansBootstrap
    protected void createBean(AbstractClassBean<?> bean, Set<AbstractBean<?, ?>> beans)
    {
       beans.add(bean);
-      getManager().getResolver().addInjectionPoints(bean.getInjectionPoints());
+      getManager().getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
       for (AnnotatedMethod<Object> producerMethod : bean.getProducerMethods())
       {
          ProducerMethodBean<?> producerMethodBean = ProducerMethodBean.of(producerMethod, bean, getManager());
          beans.add(producerMethodBean);
-         getManager().getResolver().addInjectionPoints(producerMethodBean.getInjectionPoints());
-         registerEvents(producerMethodBean.getInjectionPoints(), beans);
+         getManager().getResolver().addInjectionPoints(producerMethodBean.getAnnotatedInjectionPoints());
+         registerEvents(producerMethodBean.getAnnotatedInjectionPoints(), beans);
          log.info("Web Bean: " + producerMethodBean);
       }
       for (AnnotatedField<Object> producerField : bean.getProducerFields())
@@ -241,7 +241,7 @@ public abstract class WebBeansBootstrap
          beans.add(producerFieldBean);
          log.info("Web Bean: " + producerFieldBean);
       }
-      for (AnnotatedItem injectionPoint : bean.getInjectionPoints())
+      for (AnnotatedItem injectionPoint : bean.getAnnotatedInjectionPoints())
       {
          if (injectionPoint.isAnnotationPresent(Fires.class))
          {

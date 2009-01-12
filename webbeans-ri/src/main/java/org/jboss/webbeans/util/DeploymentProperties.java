@@ -64,8 +64,7 @@ public class DeploymentProperties
     * First, System properties are tried, followed by the specified resource
     * bundle (first in classpath only).
     * 
-    * Colon (:) deliminated lists are split out. (gotta love Petes choice of
-    * ASCII art for that one ;-)
+    * Colon (:) deliminated lists are split out.
     * 
     * @param key The key to search for
     * @return A list of possible values. An empty list is returned if there are

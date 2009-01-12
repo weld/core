@@ -53,7 +53,7 @@ public class DependentContextTest extends AbstractTest
     * field, disposal method or observer method invocation exists to service
     * that invocation only
     */
-   @Test(groups = { "contexts", "producerMethod" })
+   @Test(groups = { "contexts", "producerMethod", "broken" })
    @SpecAssertion(section = "9.4")
    public void testInstanceUsedForProducerMethodNotShared() throws Exception
    {
@@ -139,7 +139,7 @@ public class DependentContextTest extends AbstractTest
    /**
     * The @Dependent scope is inactive except:
     */
-   @Test(groups = "contexts", expectedExceptions = ContextNotActiveException.class)
+   @Test(groups = {"contexts"}, expectedExceptions = ContextNotActiveException.class)
    @SpecAssertion(section = "9.4")
    public void testContextIsInactive()
    {

@@ -37,10 +37,13 @@ import javax.webbeans.BindingType;
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.DeploymentException;
 import javax.webbeans.DuplicateBindingTypeException;
+import javax.webbeans.InjectionPoint;
+import javax.webbeans.NullableDependencyException;
 import javax.webbeans.Observer;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
 import javax.webbeans.TypeLiteral;
+import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.UnsatisfiedDependencyException;
 import javax.webbeans.UnserializableDependencyException;
 import javax.webbeans.manager.Bean;
@@ -62,6 +65,7 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.resources.spi.Naming;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -76,7 +80,7 @@ import org.jboss.webbeans.util.Reflections;
 @Standard
 public class ManagerImpl implements Manager, Serializable
 {
-   
+
    private static final long serialVersionUID = 3021562879133838561L;
 
    // The JNDI key to place the manager under
@@ -91,7 +95,7 @@ public class ManagerImpl implements Manager, Serializable
 
    // The bean resolver
    private transient final Resolver resolver;
-   
+
    // The registered contexts
    private transient final ContextMap contextMap;
    // The client proxy pool
@@ -104,13 +108,13 @@ public class ManagerImpl implements Manager, Serializable
    private transient final Set<Decorator> decorators;
    // The registered interceptors
    private transient final Set<Interceptor> interceptors;
-   
+
    // The EJB resolver provided by the container
    // TODO This can't be transient!
    private transient final EjbResolver ejbResolver;
 
    private transient final EjbDescriptorCache ejbDescriptorCache;
-   
+
    private transient final ResourceLoader resourceLoader;
 
    // The Naming (JNDI) access
@@ -187,7 +191,7 @@ public class ManagerImpl implements Manager, Serializable
     */
    public <T> Set<AnnotatedMethod<Object>> resolveDisposalMethods(Class<T> apiType, Annotation... bindings)
    {
-      //TODO Implement disposal methods
+      // TODO Implement disposal methods
       return Collections.emptySet();
    }
 
@@ -646,8 +650,8 @@ public class ManagerImpl implements Manager, Serializable
    }
 
    /**
-    * Resolves a list of decorators based on API types and binding types
-    * Os
+    * Resolves a list of decorators based on API types and binding types Os
+    * 
     * @param types The set of API types to match
     * @param bindingTypes The binding types to match
     * @return A list of matching decorators
@@ -717,20 +721,39 @@ public class ManagerImpl implements Manager, Serializable
 
    public Manager validate()
    {
-      checkPassivation();
-      return this;
-   }
-
-   private void checkPassivation()
-   {
       for (Bean<?> bean : beans)
       {
-         boolean passivatingScoped = MetaDataCache.instance().getScopeModel(bean.getScopeType()).isPassivating();
-         if (passivatingScoped && !bean.isSerializable())
+         if (Reflections.isPassivatingBean(bean) && !bean.isSerializable())
          {
-            throw new UnserializableDependencyException(bean + " is not serializable or has unserializable dependencies");
+            throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scopes but has non-serializable dependencies");
+         }
+         for (InjectionPoint injectionPoint : bean.getInjectionPoints())
+         {
+            Class<?> type = (Class<?>) injectionPoint.getType();
+            Annotation[] bindingTypes = injectionPoint.getBindingTypes().toArray(new Annotation[0]);
+            Set<?> resolvedBeans = resolveByType(type, bindingTypes);
+            if (resolvedBeans.isEmpty())
+            {
+               throw new UnsatisfiedDependencyException("The injection point " + injectionPoint + " has unsatisfied dependencies for type " + type + " and binding types " + bindingTypes + " in " + bean);
+            }
+            if (resolvedBeans.size() > 1)
+            {
+               throw new AmbiguousDependencyException("The injection point " + injectionPoint + " has ambiguos dependencies for type " + type + " and binding types " + bindingTypes + " in " + bean);
+            }
+            Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
+            boolean normalScoped = MetaDataCache.instance().getScopeModel(resolvedBean.getScopeType()).isNormal();
+            if (normalScoped && !Proxies.isProxyable(type))
+            {
+               throw new UnproxyableDependencyException("The injection point " + injectionPoint + " has non-proxyable dependencies");
+            }
+            if (Reflections.isPrimitive((Class<?>) injectionPoint.getType()) && resolvedBean.isNullable())
+            {
+               throw new NullableDependencyException("The injection point " + injectionPoint + " has nullable dependencies");
+            }
+            // Specialization checks
          }
       }
+      return this;
    }
 
    public Manager createChildManager()
@@ -749,15 +772,15 @@ public class ManagerImpl implements Manager, Serializable
    {
       return naming;
    }
-   
+
    public EjbResolver getEjbResolver()
    {
       return ejbResolver;
    }
-   
+
    /**
-    * Accesses the factory used to create each instance of InjectionPoint
-    * that is injected into web beans.
+    * Accesses the factory used to create each instance of InjectionPoint that
+    * is injected into web beans.
     * 
     * @return the factory
     */
@@ -765,9 +788,9 @@ public class ManagerImpl implements Manager, Serializable
    {
       return injectionPointProvider;
    }
-   
+
    // Serialization
-   
+
    protected Object readResolve()
    {
       return CurrentManager.rootManager();

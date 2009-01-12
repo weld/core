@@ -26,6 +26,7 @@ import javax.annotation.PreDestroy;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.webbeans.DefinitionException;
+import javax.webbeans.Dependent;
 import javax.webbeans.ExecutionException;
 import javax.webbeans.Initializer;
 import javax.webbeans.InjectionPoint;
@@ -115,11 +116,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       try
       {
          DependentContext.INSTANCE.setActive(true);
-         boolean passivating = MetaDataCache.instance().getScopeModel(scopeType).isPassivating();
-         if (passivating)
-         {
-            checkProducedInjectionPoints();
-         }
          InjectionPointProvider injectionPointProvider = manager.getInjectionPointFactory();
          injectionPointProvider.pushBean(this);
          T instance = null;
@@ -262,21 +258,21 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          Object puInstance = manager.getEjbResolver().resolvePersistenceContext(injectionPoint, manager.getNaming());
          field.inject(beanInstance, puInstance);
       }
-      
+
       for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getEjbResolver().getPersistenceContextAnnotation()))
       {
          InjectionPoint injectionPoint = new InjectionPointImpl(method, this, beanInstance);
          Object puInstance = manager.getEjbResolver().resolvePersistenceContext(injectionPoint, manager.getNaming());
          method.invoke(beanInstance, puInstance);
       }
-      
+
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getResourceAnnotation()))
       {
          InjectionPoint injectionPoint = new InjectionPointImpl(field, this, beanInstance);
          Object resourceInstance = manager.getEjbResolver().resolveResource(injectionPoint, manager.getNaming());
          field.inject(beanInstance, resourceInstance);
       }
-      
+
    }
 
    /**
@@ -325,13 +321,13 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       super.initInjectionPoints();
       for (AnnotatedParameter<Object> parameter : constructor.getParameters())
       {
-         injectionPoints.add(parameter);
+         annotatedInjectionPoints.add(parameter);
       }
       for (AnnotatedMethod<Object> initializer : getInitializerMethods())
       {
          for (AnnotatedParameter<Object> parameter : initializer.getParameters())
          {
-            injectionPoints.add(parameter);
+            annotatedInjectionPoints.add(parameter);
          }
       }
    }
@@ -508,35 +504,19 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    /**
     * Indicates if the bean is serializable
     * 
-    * Beans declaring normal scopes are serializable themselves because they are
-    * accessed through a proxy but we still need to check that the dependencies
-    * are serializable (through the super.isSerializable).
-    * 
-    * Beans declaring pseudo-scopes are serializable if the implementation class
-    * is serializable.
-    * 
     * @return true If serializable, false otherwise
     */
    @Override
    public boolean isSerializable()
    {
-      boolean normalScoped = MetaDataCache.instance().getScopeModel(scopeType).isNormal();
-      if (normalScoped)
+      boolean dependent = Dependent.class.equals(getScopeType());
+      if (dependent)
       {
-         boolean passivatingScoped = MetaDataCache.instance().getScopeModel(scopeType).isPassivating();
-         if (passivatingScoped)
-         {
-            checkInjectionPoints();
-            return true;
-         }
-         else
-         {
-            return true;
-         }
+         return Reflections.isSerializable(getType());
       }
       else
       {
-         return Reflections.isSerializable(getType());
+         return injectionPointsAreSerializable();
       }
    }
 

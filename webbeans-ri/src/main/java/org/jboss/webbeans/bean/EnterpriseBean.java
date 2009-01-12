@@ -74,12 +74,12 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       return of(AnnotatedClassImpl.of(clazz), manager);
    }
-   
-   public static <T> EnterpriseBean<T> of (AnnotatedClass<T> clazz, ManagerImpl manager)
+
+   public static <T> EnterpriseBean<T> of(AnnotatedClass<T> clazz, ManagerImpl manager)
    {
       return new EnterpriseBean<T>(clazz, manager);
    }
-   
+
    /**
     * Constructor
     * 
@@ -135,7 +135,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          for (AnnotatedParameter<?> injectable : removeMethod.getParameters())
          {
-            injectionPoints.add(injectable);
+            annotatedInjectionPoints.add(injectable);
          }
       }
    }
@@ -342,7 +342,15 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       for (AnnotatedField<?> field : getInjectableFields())
       {
-         field.inject(instance, manager);
+         try
+         {
+            manager.getInjectionPointFactory().pushInjectionMember(field);
+            field.inject(instance, manager);
+         }
+         finally
+         {
+            manager.getInjectionPointFactory().popInjectionMember();
+         }
       }
    }
 
@@ -413,11 +421,9 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       try
       {
+         manager.getInjectionPointFactory().pushBean(this);
+         manager.getInjectionPointFactory().pushInstance(this);
          DependentContext.INSTANCE.setActive(true);
-         if (ejbDescriptor.isStateful())
-         {
-            checkProducedInjectionPoints();
-         }
          bindDecorators();
          bindInterceptors();
          injectEjbAndCommonFields();
@@ -426,6 +432,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       finally
       {
+         manager.getInjectionPointFactory().popInstance();
+         manager.getInjectionPointFactory().popBean();
          DependentContext.INSTANCE.setActive(false);
       }
 
@@ -439,15 +447,12 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    @Override
    public boolean isSerializable()
    {
-      if (ejbDescriptor.isStateful())
-      {
-         checkInjectionPoints();
-         return true;
-      }
-      else
-      {
-         return true;
-      }
+      return injectionPointsAreSerializable();
+   }
+
+   public EjbDescriptor<T> getEjbDescriptor()
+   {
+      return ejbDescriptor;
    }
 
 }

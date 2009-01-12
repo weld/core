@@ -30,6 +30,7 @@ import java.util.Set;
 import javax.webbeans.BindingType;
 import org.jboss.webbeans.binding.CurrentBinding;
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 import org.jboss.webbeans.util.Types;
@@ -457,26 +458,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    public boolean isProxyable()
    {
-      if (Reflections.getConstructor(getType()) == null)
-      {
-         return false;
-      }
-      else if (Reflections.isTypeOrAnyMethodFinal(getType()))
-      {
-         return false;
-      }
-      else if (Reflections.isPrimitive(getType()))
-      {
-         return false;
-      }
-      else if (Reflections.isArrayType(getType()))
-      {
-         return false;
-      }
-      else
-      {
-         return true;
-      }
+      return Proxies.isProxyable(getType());
    }
 
    public abstract S getDelegate();

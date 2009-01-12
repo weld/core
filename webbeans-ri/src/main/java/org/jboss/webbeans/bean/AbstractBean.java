@@ -30,19 +30,19 @@ import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.DeploymentType;
 import javax.webbeans.Event;
-import javax.webbeans.IllegalProductException;
+import javax.webbeans.InjectionPoint;
 import javax.webbeans.Named;
 import javax.webbeans.ScopeType;
 import javax.webbeans.Specializes;
 import javax.webbeans.Standard;
 import javax.webbeans.Stereotype;
-import javax.webbeans.UnserializableDependencyException;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.binding.CurrentBinding;
+import org.jboss.webbeans.injection.InjectionPointImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedMember;
+import org.jboss.webbeans.introspector.AnnotatedMember;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem.AnnotationMap;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -103,7 +103,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    // The API types
    protected Set<Type> types;
    // The injection points
-   protected Set<AnnotatedItem<?, ?>> injectionPoints;
+   protected Set<AnnotatedItem<?, ?>> annotatedInjectionPoints;
    // If the type a primitive?
    private boolean primitive;
    // The Web Beans manager
@@ -120,7 +120,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    {
       super(manager);
       this.manager = manager;
-      injectionPoints = new HashSet<AnnotatedItem<?, ?>>();
+      annotatedInjectionPoints = new HashSet<AnnotatedItem<?, ?>>();
    }
 
    /**
@@ -259,41 +259,22 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       this.primitive = Reflections.isPrimitive(getType());
    }
 
-   protected void checkProducedInjectionPoints()
+   protected boolean injectionPointsAreSerializable()
    {
-      for (AnnotatedItem<?, ?> injectionPoint : getInjectionPoints())
+      // TODO: a bit crude, don't check *all* injectionpoints, only those listed
+      // in the spec for passivation checks
+      for (AnnotatedItem<?, ?> injectionPoint : getAnnotatedInjectionPoints())
       {
-         if (injectionPoint instanceof AbstractAnnotatedMember)
-         {
-            if (((AbstractAnnotatedMember<?, ?>) injectionPoint).isTransient())
-            {
-               continue;
-            }
-         }
          Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
-         // TODO is this really safe? I got an NPE from here with a injection point missing
-         Bean<?> bean = manager.resolveByType(injectionPoint.getType(), bindings).iterator().next();
-         boolean producerBean = (bean instanceof ProducerMethodBean || bean instanceof ProducerFieldBean);
-         if (producerBean && Dependent.class.equals(bean.getScopeType()) && !bean.isSerializable())
+         Bean<?> resolvedBean = manager.resolveByType(injectionPoint.getType(), bindings).iterator().next();
+         if (Dependent.class.equals(resolvedBean.getScopeType()) && !resolvedBean.isSerializable())
          {
-            throw new IllegalProductException("Dependent-scoped producer bean " + producerBean + " produces a non-serializable product for injection for " + injectionPoint + " in " + this);
+            return false;
          }
       }
+      return true;
    }
-   
-   protected void checkInjectionPoints()
-   {
-      for (AnnotatedItem<?, ?> injectionPoint : getInjectionPoints())
-      {
-         Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
-         Bean<?> bean = manager.resolveByType(injectionPoint.getType(), bindings).iterator().next();
-         if (Dependent.class.equals(bean.getScopeType()) && !bean.isSerializable())
-         {
-            throw new UnserializableDependencyException(bean + " is a non-serializable dependent injection for " + injectionPoint + " in " + this);
-         }
-      }
-   }     
-   
+
    /**
     * Initializes the scope type
     */
@@ -427,9 +408,20 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * 
     * @return The set of injection points
     */
-   public Set<AnnotatedItem<?, ?>> getInjectionPoints()
+   public Set<AnnotatedItem<?, ?>> getAnnotatedInjectionPoints()
    {
-      return injectionPoints;
+      return annotatedInjectionPoints;
+   }
+
+   public Set<InjectionPoint> getInjectionPoints()
+   {
+      Set<InjectionPoint> injectionsPoints = new HashSet<InjectionPoint>();
+      for (AnnotatedItem<?, ?> annotatedInjectionPoint : annotatedInjectionPoints)
+      {
+         AnnotatedMember<?, ?> member = (AnnotatedMember<?, ?>) annotatedInjectionPoint;
+         injectionsPoints.add(InjectionPointImpl.of(member));
+      }
+      return injectionsPoints;
    }
 
    /**

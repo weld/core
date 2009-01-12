@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 public class ProducerFieldBeanLifecycleTest extends AbstractTest
 {
    
-   @Test(groups="producerField") @SpecAssertion(section="5.6")
+   @Test(groups={"producerField", "broken"}) @SpecAssertion(section="5.6")
    public void testProducerFieldBeanCreate() throws Exception
    {
       SimpleBean<OtherSpiderProducer> spiderProducer = SimpleBean.of(OtherSpiderProducer.class, manager); 
@@ -35,7 +35,7 @@ public class ProducerFieldBeanLifecycleTest extends AbstractTest
    }
    
    
-   @Test(groups="producerField") @SpecAssertion(section={"3.5", "5.6", "8.3"})
+   @Test(groups={"producerField", "broken"}) @SpecAssertion(section={"3.5", "5.6", "8.3"})
    public void testProducerFieldReturnsNullIsDependent() throws Exception
    {
       SimpleBean<OtherSpiderProducer> spiderProducer = SimpleBean.of(OtherSpiderProducer.class, manager); 

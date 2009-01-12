@@ -63,6 +63,6 @@ public abstract class Bean<T> implements Contextual<T>
 
    public abstract boolean isNullable();
 
-//   public abstract Set<InjectionPoint> getInjectionPoints();
+   public abstract Set<InjectionPoint> getInjectionPoints();
 
 }

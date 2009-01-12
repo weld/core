@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 
 /**
  * 
- * @author Nicklas Karlsson (nickarls@gmail.com)
+ * @author Nicklas Karlsson
  * @author Pete Muir
  * 
  *         This class tests a basic context against section 8 of the
