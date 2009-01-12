@@ -30,7 +30,7 @@ public abstract class Decorator extends Bean<Object>
 
    public abstract Class<?> getDelegateType();
 
-   public abstract Set<Annotation> getDelegateBindingTypes();
+   public abstract Set<Annotation> getDelegateBindings();
 
    public abstract void setDelegate(Object instance, Object delegate);
 

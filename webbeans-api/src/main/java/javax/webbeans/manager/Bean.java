@@ -51,7 +51,7 @@ public abstract class Bean<T> implements Contextual<T>
 
    public abstract Set<Type> getTypes();
 
-   public abstract Set<Annotation> getBindingTypes();
+   public abstract Set<Annotation> getBindings();
 
    public abstract Class<? extends Annotation> getScopeType();
 
