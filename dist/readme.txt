@@ -7,7 +7,7 @@ contextual lifecycle management.
 This distribution, as a whole, is licensed under the terms of the FSF Lesser Gnu 
 Public License (see lgpl.txt). Parts of it are licensed under the Apache Public
 License (see apl.txt). In particular, the Web Beans API and the Web Beans RI 
-rutimes are licensed under the APL. At least these parts are licensed under the 
+runtimes are licensed under the APL. At least these parts are licensed under the 
 APL:
 
 * src/webbeans-ri/main/**/*
