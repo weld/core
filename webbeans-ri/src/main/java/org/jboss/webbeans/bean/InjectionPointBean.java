@@ -53,7 +53,7 @@ public class InjectionPointBean<T, S> extends AbstractFacadeBean<T, S, Object>
    @Override
    public T create()
    {
-      return (T) manager.getInjectionPointFactory().getPreviousInjectionPoint();
+      return (T) manager.getInjectionPointProvider().getPreviousInjectionPoint();
    }
 
    @Override

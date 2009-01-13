@@ -784,7 +784,7 @@ public class ManagerImpl implements Manager, Serializable
     * 
     * @return the factory
     */
-   public InjectionPointProvider getInjectionPointFactory()
+   public InjectionPointProvider getInjectionPointProvider()
    {
       return injectionPointProvider;
    }

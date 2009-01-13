@@ -206,7 +206,7 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    protected Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters, Object specialVal, Class<? extends Annotation> specialParam, ManagerImpl manager)
    {
       Object[] parameterValues = new Object[parameters.size()];
-      InjectionPointProvider injectionPointProvider = manager.getInjectionPointFactory();
+      InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
       injectionPointProvider.pushInjectionMember(this);
       try
       {

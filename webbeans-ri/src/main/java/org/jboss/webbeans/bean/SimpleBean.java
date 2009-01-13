@@ -116,7 +116,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       try
       {
          DependentContext.INSTANCE.setActive(true);
-         InjectionPointProvider injectionPointProvider = manager.getInjectionPointFactory();
+         InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
          injectionPointProvider.pushBean(this);
          T instance = null;
          try
@@ -274,7 +274,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void injectBoundFields(T instance)
    {
-      InjectionPointProvider injectionPointProvider = manager.getInjectionPointFactory();
+      InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
       for (AnnotatedField<?> injectableField : getInjectableFields())
       {
          injectionPointProvider.pushInjectionMember(injectableField);

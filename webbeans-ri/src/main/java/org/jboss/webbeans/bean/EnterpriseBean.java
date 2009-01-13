@@ -389,12 +389,12 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          try
          {
-            manager.getInjectionPointFactory().pushInjectionMember(field);
+            manager.getInjectionPointProvider().pushInjectionMember(field);
             field.inject(instance, manager);
          }
          finally
          {
-            manager.getInjectionPointFactory().popInjectionMember();
+            manager.getInjectionPointProvider().popInjectionMember();
          }
       }
    }
@@ -466,7 +466,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       try
       {
-         manager.getInjectionPointFactory().pushBean(this);
+         manager.getInjectionPointProvider().pushBean(this);
          DependentContext.INSTANCE.setActive(true);
          bindDecorators();
          bindInterceptors();
@@ -476,7 +476,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       finally
       {
-         manager.getInjectionPointFactory().popBean();
+         manager.getInjectionPointProvider().popBean();
          DependentContext.INSTANCE.setActive(false);
       }
 
