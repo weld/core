@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 11:03+1000\n"
+"PO-Revision-Date: 2009-01-13 11:55+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: xml.xml:4
 #, no-c-format
 msgid "Defining Web Beans using XML"
-msgstr ""
+msgstr "使用 XML 來定義 Web Bean"
 
 #. Tag: para
 #: xml.xml:6
@@ -29,37 +29,37 @@ msgid ""
 "So far, we've seen plenty of examples of Web Beans declared using "
 "annotations. However, there are a couple of occasions when we can't use "
 "annotations to define the Web Bean:"
-msgstr ""
+msgstr "到目前為止，我們已看過了許多透過使用標記來宣告的 Web Bean 了。不過，在某些情況下我們無法透過使用標記來定義 Web Bean："
 
 #. Tag: para
 #: xml.xml:12
 #, no-c-format
 msgid "when the implementation class comes from some preexisting library, or"
-msgstr ""
+msgstr "當實做的 class 來自於一些現有的函式庫，或是"
 
 #. Tag: para
 #: xml.xml:15
 #, no-c-format
 msgid "when there should be multiple Web Beans with the same implementation class."
-msgstr ""
+msgstr "當相同的實做 class 應該要有多重 Web Bean。"
 
 #. Tag: para
 #: xml.xml:20
 #, no-c-format
 msgid "In either of these cases, Web Beans gives us two options:"
-msgstr ""
+msgstr "在這兩種情況下，Web Bean 會提供我們兩個選項："
 
 #. Tag: para
 #: xml.xml:23
 #, no-c-format
 msgid "write a producer method, or"
-msgstr ""
+msgstr "撰寫一個 producer method，或是"
 
 #. Tag: para
 #: xml.xml:24
 #, no-c-format
 msgid "declare the Web Bean using XML."
-msgstr ""
+msgstr "使用 XML 來宣告 Web Bean。"
 
 #. Tag: para
 #: xml.xml:27
@@ -71,7 +71,7 @@ msgid ""
 "class and member names as the string values of XML elements and attributes, "
 "Web Beans lets you use the class or member name as the name of the XML "
 "element."
-msgstr ""
+msgstr "許多架構都使用 XML 來提供與 Java class 相關的 metadata。不過，Web Bean 使用了非常不同的方式來將 Java class 的名稱、欄位，或 method 指定給大部分其它的架構。與其將 class 和成員名稱編寫為 XML 要素和屬性的 string value，Web Bean 能讓您使用 class 或是成員名稱來作為 XML 要素的名稱。"
 
 #. Tag: para
 #: xml.xml:33
@@ -82,13 +82,13 @@ msgid ""
 "to generate the XML schema automatically from the compiled Java code. Or, an "
 "integrated development environment could perform the same validation without "
 "the need for the explicit intermediate generation step."
-msgstr ""
+msgstr "這種作法的好處就是您可編寫一個防止您 XML 文件中有拼字錯誤的 XML schema。甚至有工具可藉由已編譯的 Java 程式碼來自動地產生該 XML schema。或是，某個整合的開發環境也能在不需要明確的居中產生步驟的情況下進行相同的驗證。"
 
 #. Tag: title
 #: xml.xml:40
 #, no-c-format
 msgid "Declaring Web Bean classes"
-msgstr ""
+msgstr "宣告 Web Bean class"
 
 #. Tag: para
 #: xml.xml:42
@@ -98,7 +98,7 @@ msgid ""
 "namespace is formed by prepending <literal>urn:java:</literal> to the Java "
 "package name. For the package <literal>com.mydomain.myapp</literal>, the XML "
 "namespace is <literal>urn:java:com.mydomain.myapp</literal>."
-msgstr ""
+msgstr "Web Bean 會針對於各個 Java 套件來定義相應的 XML namespace。這個 namespace 是藉由將 <literal>urn:java:</literal> 放置在 Java 套件名稱之前所形成的。<literal>com.mydomain.myapp</literal> 這個套件的 XML namespace 會是 <literal>urn:java:com.mydomain.myapp</literal>。"
 
 #. Tag: para
 #: xml.xml:47
@@ -109,7 +109,7 @@ msgid ""
 "name of the Java type. Fields and methods of the type are specified by child "
 "elements in the same namespace. If the type is an annotation, members are "
 "specified by attributes of the element."
-msgstr ""
+msgstr "屬於套件的 Java type 會被參照使用和該套件相應的 namespace 中的一個 XML 要素。該要素的名稱就是 Java type 的名稱。這個 type 的欄位和 method 會由相同 namespace 中的子要素所指定。若這個 type 為標記的話，成員則會由要素的屬性所指定。"
 
 #. Tag: para
 #: xml.xml:53
@@ -117,7 +117,7 @@ msgstr ""
 msgid ""
 "For example, the element <literal>&lt;util:Date/&gt;</literal> in the "
 "following XML fragment refers to the class <literal>java.util.Date</literal>:"
-msgstr ""
+msgstr "比方說，下列這段 XML 中的 <literal>&lt;util:Date/&gt;</literal> 要素代表 <literal>java.util.Date</literal> 這個 class："
 
 #. Tag: programlisting
 #: xml.xml:56
@@ -144,7 +144,7 @@ msgid ""
 "And this is all the code we need to declare that <literal>Date</literal> is "
 "a simple Web Bean! An instance of <literal>Date</literal> may now be "
 "injected by any other Web Bean:"
-msgstr ""
+msgstr "並且這些為我們需要宣告的所有程式碼，<literal>Date</literal> 是個基本的 Web Bean！<literal>Date</literal> 的 instance 現在已能被任何其它 Web Bean 注入："
 
 #. Tag: programlisting
 #: xml.xml:62
@@ -156,7 +156,7 @@ msgstr "<![CDATA[@Current Date date]]>"
 #: xml.xml:67
 #, no-c-format
 msgid "Declaring Web Bean metadata"
-msgstr ""
+msgstr "宣告 Web Bean metadata"
 
 #. Tag: para
 #: xml.xml:69
@@ -164,7 +164,7 @@ msgstr ""
 msgid ""
 "We can declare the scope, deployment type and interceptor binding types "
 "using direct child elements of the Web Bean declaration:"
-msgstr ""
+msgstr "我們能直接透過使用 Web Bean 宣告的子要素來宣告功能、建置類型以及攔截器綁定類型："
 
 #. Tag: programlisting
 #: xml.xml:72
@@ -186,7 +186,7 @@ msgstr ""
 #: xml.xml:74
 #, no-c-format
 msgid "We use exactly the same approach to specify names and binding type:"
-msgstr ""
+msgstr "我們能使用完全相同的方式來指定名稱與綁定類型："
 
 #. Tag: programlisting
 #: xml.xml:76
@@ -230,7 +230,7 @@ msgstr ""
 msgid ""
 "Where <literal>@Login</literal> and <literal>@SystemStart</literal> are "
 "binding annotations types."
-msgstr ""
+msgstr "<literal>@Login</literal> 和 <literal>@SystemStart</literal> 為綁定標記類型（binding annotations type）。"
 
 #. Tag: programlisting
 #: xml.xml:81
@@ -248,7 +248,7 @@ msgstr ""
 #: xml.xml:83
 #, no-c-format
 msgid "As usual, a Web Bean may support multiple binding types:"
-msgstr ""
+msgstr "就和平常一樣，Web Bean 可支援多重綁定類型："
 
 #. Tag: programlisting
 #: xml.xml:85
@@ -270,7 +270,7 @@ msgstr ""
 msgid ""
 "Interceptors and decorators are just simple Web Beans, so they may be "
 "declared just like any other simple Web Bean:"
-msgstr ""
+msgstr "攔截器與裝飾器只是基本的 Web Bean，所以它們能像其它任何基本的 Web Bean 一樣地被宣告："
 
 #. Tag: programlisting
 #: xml.xml:90
@@ -290,25 +290,25 @@ msgstr ""
 #: xml.xml:95
 #, no-c-format
 msgid "Declaring Web Bean members"
-msgstr ""
+msgstr "宣告 Web Bean 成員"
 
 #. Tag: para
 #: xml.xml:97
 #, no-c-format
 msgid "TODO!"
-msgstr ""
+msgstr "待辦事項"
 
 #. Tag: title
 #: xml.xml:104
 #, no-c-format
 msgid "Declaring inline Web Beans"
-msgstr ""
+msgstr "宣告內嵌式（inline）Web Bean"
 
 #. Tag: para
 #: xml.xml:106
 #, no-c-format
 msgid "Web Beans lets us define a Web Bean at an injection point. For example:"
-msgstr ""
+msgstr "Web Bean 允許我們於注入點定義一個 Web Bean。例如："
 
 #. Tag: programlisting
 #: xml.xml:108
@@ -345,7 +345,7 @@ msgid ""
 "a set of initial field values. This Web Bean has a special, container-"
 "generated binding and is therefore injectable only to the specific injection "
 "point at which it is declared."
-msgstr ""
+msgstr "<literal>&lt;Name&gt;</literal> 這個要素能透過使用一組初始欄位值來宣告 <literal>@Dependent</literal> 這個 scope 以及 <literal>Name</literal> class 的基本 Web Bean。"
 
 #. Tag: para
 #: xml.xml:116
@@ -354,13 +354,13 @@ msgid ""
 "This simple but powerful feature allows the Web Beans XML format to be used "
 "to specify whole graphs of Java objects. It's not quite a full databinding "
 "solution, but it's close!"
-msgstr ""
+msgstr "這項簡易卻強大的功能可允許 Web Bean XML 格式被使用來指定 Java 物件的整個 graph。它固然不是完整的 databinding 解決方案，不過卻也差得不遠！"
 
 #. Tag: title
 #: xml.xml:123
 #, no-c-format
 msgid "Using a schema"
-msgstr ""
+msgstr "使用 schema"
 
 #. Tag: para
 #: xml.xml:125
@@ -370,7 +370,7 @@ msgid ""
 "developers, or who don't have access to our code, we need to provide a "
 "schema. There's nothing specific to Web Beans about writing or using the "
 "schema."
-msgstr ""
+msgstr "若我們希望我們的 XML 文件格式能由 Java 開發人員以外的人員或是無法存取我們的程式碼的人員來進行編寫的話，我們將需要提供一個 schema。針對於 Web Bean，編寫或使用 schema 並無任何特殊情況。"
 
 #. Tag: programlisting
 #: xml.xml:130
@@ -411,5 +411,5 @@ msgid ""
 "Writing an XML schema is quite tedious. Therefore, the Web Beans RI project "
 "will provide a tool which automatically generates the XML schema from "
 "compiled Java code."
-msgstr ""
+msgstr "編寫 XML schema 非常地冗長。因此，Web Bean RI 專案將會提供一個能夠由已編譯的 Java 程式碼來自動產生 XML schema 的工具。"
 

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: extend\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 09:51+1000\n"
+"PO-Revision-Date: 2009-01-13 11:07+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: extend.xml:4
 #, no-c-format
 msgid "Extending Web Beans"
-msgstr ""
+msgstr "延伸 Web Bean"
 
 #. Tag: para
 #: extend.xml:6
@@ -31,13 +31,13 @@ msgid ""
 "SPIs for the use of developers of portable extensions to Web Beans. For "
 "example, the following kinds of extensions were envisaged by the designers "
 "of Web Beans:"
-msgstr ""
+msgstr "Web Bean 為架構的平台，它可用來進行其它技術的延伸與整合。因此，Web Bean 提供了一組讓 Web Bean 的 portable extension 開發人員可使用的 SPI。比方說，下列類型的延伸為 Web Bean 設計人員所設想的："
 
 #. Tag: para
 #: extend.xml:14
 #, no-c-format
 msgid "integration with Business Process Management engines,"
-msgstr ""
+msgstr "和商業流程管理上的整合、"
 
 #. Tag: para
 #: extend.xml:17
@@ -45,13 +45,13 @@ msgstr ""
 msgid ""
 "integration with third-party frameworks such as Spring, Seam, GWT or Wicket, "
 "and"
-msgstr ""
+msgstr "和第三方架構（例如 Spring、Seam、GWT 或 Wicket）上的整合，以及"
 
 #. Tag: para
 #: extend.xml:21
 #, no-c-format
 msgid "new technology based upon the Web Beans programming model."
-msgstr ""
+msgstr "基於 Web Bean 程式撰寫模型（Programming Model）的新技術。"
 
 #. Tag: para
 #: extend.xml:25
@@ -59,7 +59,7 @@ msgstr ""
 msgid ""
 "The nerve center for extending Web Beans is the <literal>Manager</literal> "
 "object."
-msgstr ""
+msgstr "延伸 Web Bean 的神經中樞為 <literal>Manager</literal> 這個物件。"
 
 #. Tag: title
 #: extend.xml:29
@@ -73,7 +73,7 @@ msgstr "<literal>Manager</literal> 物件"
 msgid ""
 "The <literal>Manager</literal> interface lets us register and obtain Web "
 "Beans, interceptors, decorators, observers and contexts programatically."
-msgstr ""
+msgstr "<literal>Manager</literal> 介面能讓我們程式性地註冊並取得 Web Bean、攔截器（interceptor）、裝飾器（decorator）、觀察器（observer），以及 context。"
 
 #. Tag: programlisting
 #: extend.xml:34
@@ -197,19 +197,19 @@ msgstr ""
 #: extend.xml:36
 #, no-c-format
 msgid "We can obtain an instance of <literal>Manager</literal> via injection:"
-msgstr ""
+msgstr "我們可透過注入來取得 <literal>Manager</literal> 的一個 instance："
 
 #. Tag: programlisting
 #: extend.xml:38
 #, no-c-format
 msgid "@Current Manager manager"
-msgstr ""
+msgstr "@Current Manager 管理員"
 
 #. Tag: title
 #: extend.xml:43
 #, no-c-format
 msgid "The <literal>Bean</literal> class"
-msgstr ""
+msgstr "<literal>Bean</literal> class"
 
 #. Tag: para
 #: extend.xml:45
@@ -218,7 +218,7 @@ msgid ""
 "Instances of the abstract class <literal>Bean</literal> represent Web Beans. "
 "There is an instance of <literal>Bean</literal> registered with the "
 "<literal>Manager</literal> object for every Web Bean in the application."
-msgstr ""
+msgstr "<literal>Bean</literal> 這個 abstract class 的 instance 代表 Web Bean。應用程式中的每個 Web Bean 都會有個與 <literal>Manager</literal> 物件註冊的 <literal>Bean</literal> instance。"
 
 #. Tag: programlisting
 #: extend.xml:50
@@ -286,7 +286,7 @@ msgid ""
 "specification (simple and enterprise Web Beans, producer methods and JMS "
 "endpoints). For example, we could use the <literal>Bean</literal> class to "
 "allow objects managed by another framework to be injected into Web Beans."
-msgstr ""
+msgstr "您可藉由調用 <literal>Manager.addBean()</literal> 來延伸 <literal>Bean</literal> class 並註冊 instance 以便提供較新、未經 Web Bean 規格定義（基本與企業級 Web Bean、producer method 以及 JMS 端點）的 Web Bean 上的支援。比方說，我們可使用 <literal>Bean</literal> class 來允許另一個架構所管理的物件被注入 Web Bean 之中。"
 
 #. Tag: para
 #: extend.xml:60
@@ -295,7 +295,7 @@ msgid ""
 "There are two subclasses of <literal>Bean</literal> defined by the Web Beans "
 "specification: <literal>Interceptor</literal> and <literal>Decorator</"
 "literal>."
-msgstr ""
+msgstr "Web Bean 規格定義了 <literal>Bean</literal> 的兩個 subclass：<literal>Interceptor</literal> 和 <literal>Decorator</literal>。"
 
 #. Tag: title
 #: extend.xml:67
@@ -309,7 +309,7 @@ msgstr "<literal>Context</literal> 介面"
 msgid ""
 "The <literal>Context</literal> interface supports addition of new scopes to "
 "Web Beans, or extension of the built-in scopes to new environments."
-msgstr ""
+msgstr "<literal>Context</literal> 介面支援新增額外的 Web Bean 功能，或針對新環境為內建功能進行延伸。"
 
 #. Tag: programlisting
 #: extend.xml:72
@@ -342,5 +342,5 @@ msgid ""
 "For example, we might implement <literal>Context</literal> to add a business "
 "process scope to Web Beans, or to add support for the conversation scope to "
 "an application that uses Wicket."
-msgstr ""
+msgstr "比方說，我們可能會實做 <literal>Context</literal> 來新增一個商業流程功能至 Web Bean，或是為一個使用 Wicket 的應用程式新增對話功能上的支援。"
 

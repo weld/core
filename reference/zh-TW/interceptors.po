@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: interceptors\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 09:56+1000\n"
+"PO-Revision-Date: 2009-01-13 13:41+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: interceptors.xml:4
 #, no-c-format
 msgid "Interceptors"
-msgstr ""
+msgstr "攔截器（Interceptor）"
 
 #. Tag: para
 #: interceptors.xml:6
@@ -28,13 +28,13 @@ msgstr ""
 msgid ""
 "Web Beans re-uses the basic interceptor architecture of EJB 3.0, extending "
 "the functionality in two directions:"
-msgstr ""
+msgstr "Web Bean 會重新使用 EJB 3.0 的基本攔截器架構，並朝兩個方向來延伸該功能："
 
 #. Tag: para
 #: interceptors.xml:11
 #, no-c-format
 msgid "Any Web Bean may have interceptors, not just session beans."
-msgstr ""
+msgstr "不只是 session bean，任何 Web Bean 都能有攔截器。"
 
 #. Tag: para
 #: interceptors.xml:14
@@ -42,25 +42,25 @@ msgstr ""
 msgid ""
 "Web Beans features a more sophisticated annotation-based approach to binding "
 "interceptors to Web Beans."
-msgstr ""
+msgstr "針對於將攔截器綁定至 Web Bean，Web Bean 含有較為復雜的標記導向方式。"
 
 #. Tag: para
 #: interceptors.xml:22
 #, no-c-format
 msgid "The EJB specification defines two kinds of interception points:"
-msgstr ""
+msgstr "EJB 格式定義了兩種類型的攔截點："
 
 #. Tag: para
 #: interceptors.xml:26
 #, no-c-format
 msgid "business method interception, and"
-msgstr ""
+msgstr "business method 的攔截，以及"
 
 #. Tag: para
 #: interceptors.xml:29
 #, no-c-format
 msgid "lifecycle callback interception."
-msgstr ""
+msgstr "lifecycle callback 的攔截。"
 
 #. Tag: para
 #: interceptors.xml:33
@@ -68,7 +68,7 @@ msgstr ""
 msgid ""
 "A <emphasis>business method interceptor</emphasis> applies to invocations of "
 "methods of the Web Bean by clients of the Web Bean:"
-msgstr ""
+msgstr "<emphasis>business method 攔截器</emphasis>可適用於來自 Web Bean 客戶端的 Web Bean 的 method 調用："
 
 #. Tag: programlisting
 #: interceptors.xml:36
@@ -90,7 +90,7 @@ msgstr ""
 msgid ""
 "A <emphasis>lifecycle callback interceptor</emphasis> applies to invocations "
 "of lifecycle callbacks by the container:"
-msgstr ""
+msgstr "<emphasis>lifecycle callback 攔截器</emphasis>可適用於來自 container 的 lifecycle callback 的調用："
 
 #. Tag: programlisting
 #: interceptors.xml:41
@@ -112,13 +112,13 @@ msgstr ""
 msgid ""
 "An interceptor class may intercept both lifecycle callbacks and business "
 "methods."
-msgstr ""
+msgstr "攔截器 class 可攔截 lifecycle callback 以及 business method。"
 
 #. Tag: title
 #: interceptors.xml:49
 #, no-c-format
 msgid "Interceptor bindings"
-msgstr ""
+msgstr "攔截器綁定"
 
 #. Tag: para
 #: interceptors.xml:51
@@ -127,7 +127,7 @@ msgid ""
 "Suppose we want to declare that some of our Web Beans are transactional. The "
 "first thing we need is an <emphasis>interceptor binding annotation</"
 "emphasis> to specify exactly which Web Beans we're interested in:"
-msgstr ""
+msgstr "假設我們希望宣告我們有些 Web Bean 屬於交易性的 Web Bean。我們首先需要的就是一個 <emphasis>攔截器綁定標記（interceptor binding annotation）</emphasis>來明確指定我們要專注的 Web Bean 是哪個："
 
 #. Tag: programlisting
 #: interceptors.xml:55
@@ -149,7 +149,7 @@ msgstr ""
 msgid ""
 "Now we can easily specify that our <literal>ShoppingCart</literal> is a "
 "transactional object:"
-msgstr ""
+msgstr "現在我們能輕易地指定我們的 <literal>ShoppingCart</literal> 屬於一個交易性的物件："
 
 #. Tag: programlisting
 #: interceptors.xml:60
@@ -165,7 +165,7 @@ msgstr ""
 #: interceptors.xml:62
 #, no-c-format
 msgid "Or, if we prefer, we can specify that just one method is transactional:"
-msgstr ""
+msgstr "或是，若我們想要的話，我們能夠指定只有一個 method 屬於交易性："
 
 #. Tag: programlisting
 #: interceptors.xml:64
@@ -183,7 +183,7 @@ msgstr ""
 #: interceptors.xml:69
 #, no-c-format
 msgid "Implementing interceptors"
-msgstr ""
+msgstr "實做攔截器"
 
 #. Tag: para
 #: interceptors.xml:71
@@ -193,7 +193,7 @@ msgid ""
 "implement the interceptor that provides this transaction management aspect. "
 "All we need to do is create a standard EJB interceptor, and annotate it "
 "<literal>@Interceptor</literal> and <literal>@Transactional</literal>."
-msgstr ""
+msgstr "我們必須在某個階段實際地實做提供此交易管理功能的攔截器。我們只需要建立一個標準的 EJB 攔截器並將它標記為 <literal>@Interceptor</literal> 和 <literal>@Transactional</literal>。"
 
 #. Tag: programlisting
 #: interceptors.xml:76
@@ -217,7 +217,7 @@ msgstr ""
 msgid ""
 "All Web Beans interceptors are simple Web Beans, and can take advantage of "
 "dependency injection and contextual lifecycle management."
-msgstr ""
+msgstr "所有的 Web Bean 攔截器皆為基本的 Web Bean，並且能夠有效利用相依性注入（dependency injection）以及 contextual lifecycle 管理。"
 
 #. Tag: programlisting
 #: interceptors.xml:81
@@ -247,13 +247,13 @@ msgstr ""
 #: interceptors.xml:83
 #, no-c-format
 msgid "Multiple interceptors may use the same interceptor binding type."
-msgstr ""
+msgstr "多個攔截器可能會使用相同的攔截器綁定類型。"
 
 #. Tag: title
 #: interceptors.xml:88
 #, no-c-format
 msgid "Enabling interceptors"
-msgstr ""
+msgstr "啟用攔截器"
 
 #. Tag: para
 #: interceptors.xml:90
@@ -261,7 +261,7 @@ msgstr ""
 msgid ""
 "Finally, we need to <emphasis>enable</emphasis> our interceptor in "
 "<literal>web-beans.xml</literal>."
-msgstr ""
+msgstr "最後，我們需要在 <literal>web-beans.xml</literal> 中<emphasis>啟用</emphasis>我們的攔截器。"
 
 #. Tag: programlisting
 #: interceptors.xml:93
@@ -285,7 +285,7 @@ msgstr ""
 #: interceptors.xml:97
 #, no-c-format
 msgid "Well, the XML declaration solves two problems:"
-msgstr ""
+msgstr "XML 宣告可解決兩項問題："
 
 #. Tag: para
 #: interceptors.xml:101
@@ -293,13 +293,13 @@ msgstr ""
 msgid ""
 "it enables us to specify a total ordering for all the interceptors in our "
 "system, ensuring deterministic behavior, and"
-msgstr ""
+msgstr "它可讓我們為我們系統中的所有攔截器指定全排序（total ordering），並確保決定型的特性，並且"
 
 #. Tag: para
 #: interceptors.xml:105
 #, no-c-format
 msgid "it lets us enable or disable interceptor classes at deployment time."
-msgstr ""
+msgstr "它讓我們能夠在進行建置時啟用或停用攔截器 class。"
 
 #. Tag: para
 #: interceptors.xml:109
@@ -307,7 +307,7 @@ msgstr ""
 msgid ""
 "For example, we could specify that our security interceptor runs before our "
 "<literal>TransactionInterceptor</literal>."
-msgstr ""
+msgstr "比方說，我們能夠指定我們的安全性攔截器能比我們的 <literal>TransactionInterceptor</literal> 還要早執行。"
 
 #. Tag: programlisting
 #: interceptors.xml:112
@@ -327,13 +327,13 @@ msgstr ""
 #: interceptors.xml:114
 #, no-c-format
 msgid "Or we could turn them both off in our test environment!"
-msgstr ""
+msgstr "或是我們可在測試環境中將它們兩者同時關閉！"
 
 #. Tag: title
 #: interceptors.xml:119
 #, no-c-format
 msgid "Interceptor bindings with members"
-msgstr ""
+msgstr "與成員綁定的攔截器"
 
 #. Tag: para
 #: interceptors.xml:121
@@ -341,7 +341,7 @@ msgstr ""
 msgid ""
 "Suppose we want to add some extra information to our "
 "<literal>@Transactional</literal> annotation:"
-msgstr ""
+msgstr "假設我們希望新增一些額外的資訊至我們的 <literal>@Transactional</literal> 標記中："
 
 #. Tag: programlisting
 #: interceptors.xml:124
@@ -369,6 +369,8 @@ msgid ""
 "between two different interceptors, <literal>TransactionInterceptor</"
 "literal> and <literal>RequiresNewTransactionInterceptor</literal>."
 msgstr ""
+"Web Bean 將會使用 <literal>requiresNew</literal> 的值來在兩個不同的攔截器（<literal>TransactionInterceptor</"
+"literal> 與 <literal>RequiresNewTransactionInterceptor</literal>）之間作選擇。"
 
 #. Tag: programlisting
 #: interceptors.xml:130
@@ -392,7 +394,7 @@ msgstr ""
 msgid ""
 "Now we can use <literal>RequiresNewTransactionInterceptor</literal> like "
 "this:"
-msgstr ""
+msgstr "現在我們可如下使用 <literal>RequiresNewTransactionInterceptor</literal>："
 
 #. Tag: programlisting
 #: interceptors.xml:134
@@ -411,7 +413,7 @@ msgid ""
 "But what if we only have one interceptor and we want the manager to ignore "
 "the value of <literal>requiresNew</literal> when binding interceptors? We "
 "can use the <literal>@NonBinding</literal> annotation:"
-msgstr ""
+msgstr "當綁定攔截器時，若我們只有一個攔截器而我們希望管理員忽略 <literal>requiresNew</literal> 的值時該怎麼辦呢？這時我們可使用 <literal>@NonBinding</literal> 標記："
 
 #. Tag: programlisting
 #: interceptors.xml:140
@@ -435,7 +437,7 @@ msgstr ""
 #: interceptors.xml:145
 #, no-c-format
 msgid "Multiple interceptor binding annotations"
-msgstr ""
+msgstr "多重攔截器綁定標記"
 
 #. Tag: para
 #: interceptors.xml:147
@@ -445,7 +447,7 @@ msgid ""
 "interceptors to a Web Bean. For example, the following declaration would be "
 "used to bind <literal>TransactionInterceptor</literal> and "
 "<literal>SecurityInterceptor</literal> to the same Web Bean:"
-msgstr ""
+msgstr "通常，我們會使用不同攔截器綁定類型的組合來將多重攔截器綁定至 Web Bean。比方說，下列宣告會被用來將 <literal>TransactionInterceptor</literal> 和 <literal>SecurityInterceptor</literal> 綁定至相同的 Web Bean："
 
 #. Tag: programlisting
 #: interceptors.xml:152
@@ -463,7 +465,7 @@ msgstr ""
 msgid ""
 "However, in very complex cases, an interceptor itself may specify some "
 "combination of interceptor binding types:"
-msgstr ""
+msgstr "不過，在非常複雜的情況下，攔截器本身會指定一些攔截器綁定類型的組合："
 
 #. Tag: programlisting
 #: interceptors.xml:157
@@ -481,7 +483,7 @@ msgstr ""
 msgid ""
 "Then this interceptor could be bound to the <literal>checkout()</literal> "
 "method using any one of the following combinations:"
-msgstr ""
+msgstr "然後這個攔截器便可透過使用下列任何一個組合來綁定至 <literal>checkout()</literal> 這個 method："
 
 #. Tag: programlisting
 #: interceptors.xml:162
@@ -541,7 +543,7 @@ msgstr ""
 #: interceptors.xml:173
 #, no-c-format
 msgid "Interceptor binding type inheritance"
-msgstr ""
+msgstr "攔截器綁定類型的 inheritance"
 
 #. Tag: para
 #: interceptors.xml:175
@@ -550,7 +552,7 @@ msgid ""
 "One limitation of the Java language support for annotations is the lack of "
 "annotation inheritance. Really, annotations should have reuse built in, to "
 "allow this kind of thing to work:"
-msgstr ""
+msgstr "Java 語言對於標記上的支援有個限制，那就是缺少了標記的 inheritance。"
 
 #. Tag: programlisting
 #: interceptors.xml:179

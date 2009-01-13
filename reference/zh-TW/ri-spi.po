@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-08 14:07+0000\n"
-"PO-Revision-Date: 2009-01-12 20:36+1000\n"
+"PO-Revision-Date: 2009-01-13 10:13+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -41,7 +41,7 @@ msgid ""
 "do more work, adding your own contexts and lifecycle. The Web Beans RI "
 "currently doesn't expose lifecycle extension points, so you would have to "
 "code directly against Web Beans RI classes."
-msgstr "您可在一個 SE 環境下執行 Web Bean，不過您必須進行較多步驟，包括新增您自己的 context 和生命週期。Web Bean RI 目前並不會顯示生命週期的延伸點，因此您必須針對於 Web Bean RI 的 class 來直接地進行編程。"
+msgstr "您可在一個 SE 環境下執行 Web Bean，不過您必須進行較多步驟，包括新增您自己的 context 和生命週期。Web Bean RI 目前並不會顯示生命週期的延伸點，因此您必須針對於 Web Bean RI 的 class 來直接地進行程式撰寫。"
 
 #. Tag: title
 #: ri-spi.xml:24
