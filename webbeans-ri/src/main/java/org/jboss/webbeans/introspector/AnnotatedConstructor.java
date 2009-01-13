@@ -48,7 +48,7 @@ public interface AnnotatedConstructor<T> extends AnnotatedMember<T, Constructor<
     * @return A list of abstracted parameters with the given annotation type.
     *         Returns an empty set if there are no matches.
     */
-   public List<AnnotatedParameter<Object>> getAnnotatedParameters(Class<? extends Annotation> annotationType);
+   public List<AnnotatedParameter<?>> getAnnotatedParameters(Class<? extends Annotation> annotationType);
 
    /**
     * Creates a new instance of the class, using this constructor

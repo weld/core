@@ -144,7 +144,7 @@ public class ObserverImpl<T> implements Observer<T>
    private void validateObserverMethod()
    {
       // Make sure exactly one and only one parameter is annotated with Observes
-      List<AnnotatedParameter<Object>> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
+      List<AnnotatedParameter<?>> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
       if (eventObjects.size() > 1)
       {
          throw new DefinitionException(this + " is invalid because it contains more than event parameter");
@@ -153,14 +153,14 @@ public class ObserverImpl<T> implements Observer<T>
       // variable or wildcard
       if (eventObjects.size() > 0)
       {
-         AnnotatedParameter<Object> eventParam = eventObjects.iterator().next();
+         AnnotatedParameter<?> eventParam = eventObjects.iterator().next();
          if (Reflections.isParameterizedType(eventParam.getType()))
          {
             throw new DefinitionException(this + " cannot observe parameterized event types");
          }
       }
       // Check for parameters annotated with @Disposes
-      List<AnnotatedParameter<Object>> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
+      List<AnnotatedParameter<?>> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
       if (disposeParams.size() > 0)
       {
          throw new DefinitionException(this + " cannot have any parameters annotated with @Dispose");

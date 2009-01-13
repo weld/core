@@ -171,7 +171,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedConstructor#getAnnotatedParameters(Class)
     */
-   public List<AnnotatedParameter<Object>> getAnnotatedParameters(Class<? extends Annotation> annotationType)
+   public List<AnnotatedParameter<?>> getAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableList(annotatedParameters.get(annotationType));
    }

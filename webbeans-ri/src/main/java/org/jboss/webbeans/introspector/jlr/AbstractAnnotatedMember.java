@@ -52,27 +52,27 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    /**
     * An annotation type -> list of annotations map
     */
-   protected class AnnotatedParameterMap extends ForwardingMap<Class<? extends Annotation>, List<AnnotatedParameter<Object>>>
+   protected class AnnotatedParameterMap extends ForwardingMap<Class<? extends Annotation>, List<AnnotatedParameter<?>>>
    {
-      private Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> delegate;
+      private Map<Class<? extends Annotation>, List<AnnotatedParameter<?>>> delegate;
 
       public AnnotatedParameterMap()
       {
-         delegate = new HashMap<Class<? extends Annotation>, List<AnnotatedParameter<Object>>>();
+         delegate = new HashMap<Class<? extends Annotation>, List<AnnotatedParameter<?>>>();
       }
 
       @Override
-      protected Map<Class<? extends Annotation>, List<AnnotatedParameter<Object>>> delegate()
+      protected Map<Class<? extends Annotation>, List<AnnotatedParameter<?>>> delegate()
       {
          return delegate;
       }
 
-      public void put(Class<? extends Annotation> key, AnnotatedParameter<Object> value)
+      public void put(Class<? extends Annotation> key, AnnotatedParameter<?> value)
       {
-         List<AnnotatedParameter<Object>> parameters = super.get(key);
+         List<AnnotatedParameter<?>> parameters = super.get(key);
          if (parameters == null)
          {
-            parameters = new ArrayList<AnnotatedParameter<Object>>();
+            parameters = new ArrayList<AnnotatedParameter<?>>();
             super.put(key, parameters);
          }
          parameters.add(value);
@@ -85,10 +85,10 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
       }
 
       @Override
-      public List<AnnotatedParameter<Object>> get(Object key)
+      public List<AnnotatedParameter<?>> get(Object key)
       {
-         List<AnnotatedParameter<Object>> parameters = super.get(key);
-         return parameters != null ? parameters : new ArrayList<AnnotatedParameter<Object>>();
+         List<AnnotatedParameter<?>> parameters = super.get(key);
+         return parameters != null ? parameters : new ArrayList<AnnotatedParameter<?>>();
       }
    }
 

@@ -62,7 +62,7 @@ public interface AnnotatedMethod<T> extends AnnotatedMember<T, Method>
     * @return A set of matching parameter abstractions. Returns an empty list if
     *         there are no matches.
     */
-   public List<AnnotatedParameter<Object>> getAnnotatedParameters(Class<? extends Annotation> metaAnnotationType);
+   public List<AnnotatedParameter<?>> getAnnotatedParameters(Class<? extends Annotation> metaAnnotationType);
    
    /**
     * Get the parameter types as an array
