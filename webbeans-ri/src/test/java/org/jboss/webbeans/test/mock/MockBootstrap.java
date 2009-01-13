@@ -23,24 +23,17 @@ import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.beanmap.SimpleBeanMap;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
-import org.jboss.webbeans.resource.DefaultNaming;
+import org.jboss.webbeans.resource.AbstractNaming;
 import org.jboss.webbeans.resources.spi.Naming;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 
 public class MockBootstrap extends WebBeansBootstrap
 { 
    
-   public static class MockNaming implements Naming
+   public static class MockNaming extends AbstractNaming
    {
       
       private Context context;
-      
-      private Naming delegate;
-      
-      public MockNaming()
-      {
-         this.delegate = new DefaultNaming();
-      }
       
       public void setContext(Context context)
       {
@@ -56,7 +49,7 @@ public class MockBootstrap extends WebBeansBootstrap
       {
          if (context != null)
          {
-            delegate.bind(key, value);
+            super.bind(key, value);
          }
       }
 
@@ -67,7 +60,7 @@ public class MockBootstrap extends WebBeansBootstrap
             T instance = overrideLookup(name, expectedType);
             if (instance == null)
             {
-               instance = delegate.lookup(name, expectedType);
+               instance = super.lookup(name, expectedType);
             }
             return instance;
          }
@@ -83,7 +76,7 @@ public class MockBootstrap extends WebBeansBootstrap
          // JBoss Embedded EJB 3.1 doesn't seem to bind this!
          if (name.equals("java:comp/UserTransaction"))
          {
-            final TransactionManager tm = delegate.lookup("java:/TransactionManager", TransactionManager.class);
+            final TransactionManager tm = super.lookup("java:/TransactionManager", TransactionManager.class);
             return (T) new UserTransaction()
             {
 
