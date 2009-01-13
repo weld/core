@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: interceptors\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-13 13:41+1000\n"
+"PO-Revision-Date: 2009-01-13 14:09+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -279,7 +279,7 @@ msgstr ""
 #: interceptors.xml:95
 #, no-c-format
 msgid "Whoah! Why the angle bracket stew?"
-msgstr ""
+msgstr "為何會有尖括弧？"
 
 #. Tag: para
 #: interceptors.xml:97
@@ -552,7 +552,7 @@ msgid ""
 "One limitation of the Java language support for annotations is the lack of "
 "annotation inheritance. Really, annotations should have reuse built in, to "
 "allow this kind of thing to work:"
-msgstr "Java 語言對於標記上的支援有個限制，那就是缺少了標記的 inheritance。"
+msgstr "Java 語言對於標記上的支援有個限制，那就是缺少了標記的 inheritance。實際上，標記應該要內建 reuse，以便允許這類型的功能有效："
 
 #. Tag: programlisting
 #: interceptors.xml:179
@@ -569,7 +569,7 @@ msgid ""
 "types. The interceptor bindings are transitive&#151;any Web Bean with the "
 "first interceptor binding inherits the interceptor bindings declared as meta-"
 "annotations."
-msgstr ""
+msgstr "幸運的是，Web Bean 有方法來解決 Java 所缺少的這項功能上的問題。我們可利用其它攔截器綁定類型來標記某個攔截器綁定類型。攔截器綁定為可轉變的&#151;任何含有第一個攔截器綁定的 Web Bean 都會繼承宣告為 meta-annotation 的攔截器綁定。"
 
 #. Tag: programlisting
 #: interceptors.xml:186
@@ -595,7 +595,7 @@ msgid ""
 "<literal>TransactionInterceptor</literal> and <literal>SecurityInterceptor</"
 "literal>. (And even <literal>TransactionalSecureInterceptor</literal>, if it "
 "exists.)"
-msgstr ""
+msgstr "任何標記為 <literal>@Action</literal> 的 Web Bean 都會被綁定至 <literal>TransactionInterceptor</literal> 和 <literal>SecurityInterceptor</literal>。（甚至是 <literal>TransactionalSecureInterceptor</literal>，若它存在的話。）"
 
 #. Tag: title
 #: interceptors.xml:195
@@ -610,7 +610,7 @@ msgid ""
 "The <literal>@Interceptors</literal> annotation defined by the EJB "
 "specification is supported for both enterprise and simple Web Beans, for "
 "example:"
-msgstr ""
+msgstr "企業級與基本的 Web Bean 皆支援 EJB 規格所定義的 <literal>@Interceptors</literal> 標記，例如："
 
 #. Tag: programlisting
 #: interceptors.xml:200
@@ -632,19 +632,19 @@ msgstr ""
 #: interceptors.xml:202
 #, no-c-format
 msgid "However, this approach suffers the following drawbacks:"
-msgstr ""
+msgstr "不過，這個方式有下列缺點："
 
 #. Tag: para
 #: interceptors.xml:206
 #, no-c-format
 msgid "the interceptor implementation is hardcoded in business code,"
-msgstr ""
+msgstr "攔截器的實做會被 hardcode 在 business code 之中、"
 
 #. Tag: para
 #: interceptors.xml:209
 #, no-c-format
 msgid "interceptors may not be easily disabled at deployment time, and"
-msgstr ""
+msgstr "攔截器無法在進行建置時輕易地被停用，以及"
 
 #. Tag: para
 #: interceptors.xml:212
@@ -652,11 +652,11 @@ msgstr ""
 msgid ""
 "the interceptor ordering is non-global&#151;it is determined by the order in "
 "which interceptors are listed at the class level."
-msgstr ""
+msgstr "攔截器的順序會是非全域性的&#151;會由攔截器被列於 class 層級的順序來取決。"
 
 #. Tag: para
 #: interceptors.xml:217
 #, no-c-format
 msgid "Therefore, we recommend the use of Web Beans-style interceptor bindings."
-msgstr ""
+msgstr "因此，我們建議使用 Web Bean 形式的攔截器綁定。"
 

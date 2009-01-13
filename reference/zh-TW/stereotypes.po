@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: stereotypes\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 11:02+1000\n"
+"PO-Revision-Date: 2009-01-13 15:44+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,13 +20,13 @@ msgstr ""
 #: stereotypes.xml:4
 #, no-c-format
 msgid "Stereotypes"
-msgstr ""
+msgstr "主要探討模板（Stereotypes）"
 
 #. Tag: para
 #: stereotypes.xml:6
 #, no-c-format
 msgid "According to the Web Beans specification:"
-msgstr ""
+msgstr "根據 Web Bean 規格："
 
 #. Tag: para
 #: stereotypes.xml:10
@@ -36,43 +36,43 @@ msgid ""
 "Web Bean roles. A stereotype allows a framework developer to identify such a "
 "role and declare some common metadata for Web Beans with that role in a "
 "central place."
-msgstr ""
+msgstr "在許多系統中，使用架構的模式會產生一組循環的 Web Bean 工作。主要探討模板能讓一個 framework 開發人員辨識出這樣的一項工作，並在一個中央位置中為含有該工作的 Web Bean 宣告一些共通 metadata。"
 
 #. Tag: para
 #: stereotypes.xml:14
 #, no-c-format
 msgid "A stereotype encapsulates any combination of:"
-msgstr ""
+msgstr "主要探討模板包含著下列任意的各種組合："
 
 #. Tag: para
 #: stereotypes.xml:18
 #, no-c-format
 msgid "a default deployment type,"
-msgstr ""
+msgstr "預設的建置類型、"
 
 #. Tag: para
 #: stereotypes.xml:21
 #, no-c-format
 msgid "a default scope type,"
-msgstr ""
+msgstr "預設的 scope 類型、"
 
 #. Tag: para
 #: stereotypes.xml:24
 #, no-c-format
 msgid "a restriction upon the Web Bean scope,"
-msgstr ""
+msgstr "基於 Web Bean scope 的限制、"
 
 #. Tag: para
 #: stereotypes.xml:27
 #, no-c-format
 msgid "a requirement that the Web Bean implement or extend a certain type, and"
-msgstr ""
+msgstr "Web Bean 實做或延伸特定類型的需求，以及"
 
 #. Tag: para
 #: stereotypes.xml:30
 #, no-c-format
 msgid "a set of interceptor binding annotations."
-msgstr ""
+msgstr "一組攔截器綁定標記。"
 
 #. Tag: para
 #: stereotypes.xml:34
@@ -80,13 +80,13 @@ msgstr ""
 msgid ""
 "A stereotype may also specify that all Web Beans with the stereotype have "
 "defaulted Web Bean names."
-msgstr ""
+msgstr "主要探討模板亦可指定所有還有該主要探討模板的 Web Bean 都含有預設的 Web Bean 名稱。"
 
 #. Tag: para
 #: stereotypes.xml:37
 #, no-c-format
 msgid "A Web Bean may declare zero, one or multiple stereotypes."
-msgstr ""
+msgstr "Web Bean 可宣告零、一或多個主要探討模板。"
 
 #. Tag: para
 #: stereotypes.xml:41
@@ -94,7 +94,7 @@ msgstr ""
 msgid ""
 "A stereotype is a Java annotation type. This stereotype identifies action "
 "classes in some MVC framework:"
-msgstr ""
+msgstr "主要探討模板為 Java 標記類型。這個主要探討模板可辨識一些 MVC 架構中的動作 class："
 
 #. Tag: programlisting
 #: stereotypes.xml:44
@@ -114,7 +114,7 @@ msgstr ""
 #: stereotypes.xml:46
 #, no-c-format
 msgid "We use the stereotype by applying the annotation to a Web Bean."
-msgstr ""
+msgstr "我們藉由套用標記至 Web Bean 來使用主要探討模板。"
 
 #. Tag: programlisting
 #: stereotypes.xml:48
@@ -130,7 +130,7 @@ msgstr ""
 #: stereotypes.xml:51
 #, no-c-format
 msgid "Default scope and deployment type for a stereotype"
-msgstr ""
+msgstr "主要探討模板的預設 scope 和建置類型"
 
 #. Tag: para
 #: stereotypes.xml:53
@@ -141,7 +141,7 @@ msgid ""
 "<literal>@WebTier</literal> identifies Web Beans that should only be "
 "deployed when the system executes as a web application, we might specify the "
 "following defaults for action classes:"
-msgstr ""
+msgstr "主要探討模板可為含有該主要探討模板的 Web Bean 指定預設的 scope 與/或預設的建置類型。比方說，若 <literal>@WebTier</literal> 這個建置類型將只應在系統被執行時才被建置的 Web Bean 視為一個網站應用程式的話，我們可為 action class 指定下列預設值："
 
 #. Tag: programlisting
 #: stereotypes.xml:59
@@ -167,7 +167,7 @@ msgstr ""
 msgid ""
 "Of course, a particular action may still override these defaults if "
 "necessary:"
-msgstr ""
+msgstr "當然，若有必要的話，有個特定的動作也可置換這些預設值："
 
 #. Tag: programlisting
 #: stereotypes.xml:64
@@ -183,13 +183,13 @@ msgstr ""
 #: stereotypes.xml:66
 #, no-c-format
 msgid "If we want to force all actions to a particular scope, we can do that too."
-msgstr ""
+msgstr "若我們希望強制所有動作依照某個特定 scope 的話，我們也可以這麼作。"
 
 #. Tag: title
 #: stereotypes.xml:72
 #, no-c-format
 msgid "Restricting scope and type with a stereotype"
-msgstr ""
+msgstr "利用主要探討模板來限制 scope 與 type"
 
 #. Tag: para
 #: stereotypes.xml:74
@@ -198,7 +198,7 @@ msgid ""
 "Suppose that we wish to prevent actions from declaring certain scopes. Web "
 "Beans lets us explicitly specify the set of allowed scopes for Web Beans "
 "with a certain stereotype. For example:"
-msgstr ""
+msgstr "假設我們希望防止動作去宣告特定 scope，Web Bean 能讓我們透過特定主要探討模板來明確地為 Web Bean 指定一組被允許的 scope。例如："
 
 #. Tag: programlisting
 #: stereotypes.xml:78
@@ -211,8 +211,12 @@ msgid ""
 "@Stereotype(supportedScopes=RequestScoped.class)\n"
 "public @interface Action {}]]>"
 msgstr ""
-"<![CDATA[@Dependent @Mock @Action \n"
-"public class MockLoginAction { ... }]]>"
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@RequestScoped\n"
+"@WebTier\n"
+"@Stereotype(supportedScopes=RequestScoped.class)\n"
+"public @interface Action {}]]>"
 
 #. Tag: para
 #: stereotypes.xml:80
@@ -221,7 +225,7 @@ msgid ""
 "If a particular action class attempts to specify a scope other than the Web "
 "Beans request scope, an exception will be thrown by the Web Bean manager at "
 "initialization time."
-msgstr ""
+msgstr "若有個特定 action class 嘗試指定一個非 Web Bean 所請求的 scope 的話，Web Bean 管理員便會在初始化時丟出一個 exception。"
 
 #. Tag: para
 #: stereotypes.xml:84
@@ -229,7 +233,7 @@ msgstr ""
 msgid ""
 "We can also force all Web Bean with a certain stereotype to implement an "
 "interface or extend a class:"
-msgstr ""
+msgstr "我們也能強制所有含有特定主要探討模板的 Web Bean 實做一個介面或延伸一個 class："
 
 #. Tag: programlisting
 #: stereotypes.xml:87
@@ -256,13 +260,13 @@ msgid ""
 "If a particular action class does not extend the class "
 "<literal>AbstractAction</literal>, an exception will be thrown by the Web "
 "Bean manager at initialization time."
-msgstr ""
+msgstr "若某個特定 action class 沒有延伸 <literal>AbstractAction</literal> 這個 class 的話，Web Bean 管理員便會在初始化時丟出一個 exception。"
 
 #. Tag: title
 #: stereotypes.xml:96
 #, no-c-format
 msgid "Interceptor bindings for stereotypes"
-msgstr ""
+msgstr "主要探討模板的攔截器綁定"
 
 #. Tag: para
 #: stereotypes.xml:98
@@ -270,7 +274,7 @@ msgstr ""
 msgid ""
 "A stereotype may specify a set of interceptor bindings to be inherited by "
 "all Web Beans with that stereotype."
-msgstr ""
+msgstr "主要探討模板可指定一組攔截器綁定來被所有含有該主要探討模板的 Web Bean 繼承。"
 
 #. Tag: programlisting
 #: stereotypes.xml:101
@@ -300,13 +304,13 @@ msgstr ""
 msgid ""
 "This helps us get technical concerns even further away from the business "
 "code!"
-msgstr ""
+msgstr "這可協助我們減少 business code 中技術上的問題！"
 
 #. Tag: title
 #: stereotypes.xml:109
 #, no-c-format
 msgid "Name defaulting with stereotypes"
-msgstr ""
+msgstr "主要探討模板的名稱預設"
 
 #. Tag: para
 #: stereotypes.xml:111
@@ -316,7 +320,7 @@ msgid ""
 "Web Bean name, defaulted by the Web Bean manager. Actions are often "
 "referenced in JSP pages, so they're a perfect use case for this feature. All "
 "we need to do is add an empty <literal>@Named</literal> annotation:"
-msgstr ""
+msgstr "最後，我們能夠指定所有含有特定主要探討模板的 Web Bean 都擁有一組 Web Bean 名稱，並且由 Web Bean 管理員來預設。動作通常參照於 JSP 頁面中，因此它們針對於此功能為完美的 use case。我們只需要新增一個空的 <literal>@Named</literal> 標記即可："
 
 #. Tag: programlisting
 #: stereotypes.xml:116
@@ -348,13 +352,13 @@ msgstr ""
 msgid ""
 "Now, <literal>LoginAction</literal> will have the name <literal>loginAction</"
 "literal>."
-msgstr ""
+msgstr "現在，<literal>LoginAction</literal> 將會被命名為 <literal>loginAction</literal>。"
 
 #. Tag: title
 #: stereotypes.xml:124
 #, no-c-format
 msgid "Standard stereotypes"
-msgstr ""
+msgstr "標準主要探討模板"
 
 #. Tag: para
 #: stereotypes.xml:126
@@ -364,12 +368,14 @@ msgid ""
 "specification: <literal>@Interceptor</literal> and <literal>@Decorator</"
 "literal>."
 msgstr ""
+"我們已談到了 Web Bean 規格所定義的兩個標準主要探討模板：<literal>@Interceptor</literal> 與 <literal>@Decorator</"
+"literal>。"
 
 #. Tag: para
 #: stereotypes.xml:129
 #, no-c-format
 msgid "Web Beans defines one further standard stereotype:"
-msgstr ""
+msgstr "Web Bean 還額外定義了一個標準主要探討模板："
 
 #. Tag: programlisting
 #: stereotypes.xml:131
@@ -396,5 +402,5 @@ msgid ""
 "This stereotype is intended for use with JSF. Instead of using JSF managed "
 "beans, just annotate a Web Bean <literal>@Model</literal>, and use it "
 "directly in your JSF page."
-msgstr ""
+msgstr "這個主要探討模板主要用於 JSF。與其使用 JSF 管理的 bean，只要標記一個 <literal>@Model</literal> Web Bean 然後直接在您的 JSF 頁面中使用它即可。"
 

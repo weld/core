@@ -1,17 +1,20 @@
+# translation of part2.po to Traditional Chinese
 # Language zh-TW translations for Introduction_to_Web_Beans package.
-# Automatically generated, 2009.
 #
+# Automatically generated, 2009.
+# Terry Chuang <tchuang@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: part2\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-06 11:30+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-13 15:46+1000\n"
+"Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
+"Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: para
 #: part2.xml:5
@@ -19,13 +22,12 @@ msgstr ""
 msgid ""
 "The first major theme of Web Beans is <emphasis>loose coupling</emphasis>. "
 "We've already seen three means of achieving loose coupling:"
-msgstr ""
+msgstr "Web Bean 的第一個重點就是 <emphasis>loose coupling</emphasis>。我們已經看過了三種達成 loose coupling 的方式。"
 
 #. Tag: para
 #: part2.xml:10
 #, no-c-format
-msgid ""
-"<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
+msgid "<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
 msgstr ""
 
 #. Tag: para
@@ -100,3 +102,4 @@ msgstr ""
 #, no-c-format
 msgid "Let's explore interceptors first."
 msgstr ""
+
