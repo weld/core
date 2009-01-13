@@ -51,7 +51,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    private final Method method;
 
    // The abstracted parameters
-   private final List<AnnotatedParameter<Object>> parameters;
+   private final List<AnnotatedParameter<?>> parameters;
    // A mapping from annotation type to parameter abstraction with that
    // annotation present
    private final AnnotatedParameterMap annotatedParameters;
@@ -89,7 +89,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
          this.actualTypeArguments = new Type[0];
       }
 
-      this.parameters = new ArrayList<AnnotatedParameter<Object>>();
+      this.parameters = new ArrayList<AnnotatedParameter<?>>();
       this.annotatedParameters = new AnnotatedParameterMap();
       for (int i = 0; i < method.getParameterTypes().length; i++)
       {
@@ -177,7 +177,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedMethod#getParameters()
     */
-   public List<AnnotatedParameter<Object>> getParameters()
+   public List<AnnotatedParameter<?>> getParameters()
    {
       return Collections.unmodifiableList(parameters);
    }

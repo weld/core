@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.webbeans.ExecutionException;
+
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
@@ -49,7 +50,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
    private final Constructor<T> constructor;
 
    // The list of parameter abstractions
-   private final List<AnnotatedParameter<Object>> parameters;
+   private final List<AnnotatedParameter<?>> parameters;
    // The mapping of annotation -> parameter abstraction
    private final AnnotatedParameterMap annotatedParameters;
 
@@ -74,7 +75,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
       this.constructor = constructor;
       this.declaringClass = declaringClass;
 
-      this.parameters = new ArrayList<AnnotatedParameter<Object>>();
+      this.parameters = new ArrayList<AnnotatedParameter<?>>();
       annotatedParameters = new AnnotatedParameterMap();
       for (int i = 0; i < constructor.getParameterTypes().length; i++)
       {
@@ -154,7 +155,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedConstructor#getParameters()
     */
-   public List<AnnotatedParameter<Object>> getParameters()
+   public List<AnnotatedParameter<?>> getParameters()
    {
       return Collections.unmodifiableList(parameters);
    }

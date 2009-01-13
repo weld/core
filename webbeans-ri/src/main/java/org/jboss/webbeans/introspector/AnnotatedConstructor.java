@@ -38,7 +38,7 @@ public interface AnnotatedConstructor<T> extends AnnotatedMember<T, Constructor<
     * @return A set of abstracted parameters. Returns an empty set if there are
     *         no parameters
     */
-   public List<AnnotatedParameter<Object>> getParameters();
+   public List<AnnotatedParameter<?>> getParameters();
 
    /**
     * Gets all parameters to the constructor which are annotated with

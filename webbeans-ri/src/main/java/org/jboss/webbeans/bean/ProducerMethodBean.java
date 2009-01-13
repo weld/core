@@ -101,7 +101,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     */
    protected void initInjectionPoints()
    {
-      for (AnnotatedParameter<Object> parameter : method.getParameters())
+      for (AnnotatedParameter<?> parameter : method.getParameters())
       {
          annotatedInjectionPoints.add(parameter);
       }

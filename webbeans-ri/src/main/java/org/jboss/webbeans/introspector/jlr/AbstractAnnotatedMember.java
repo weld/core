@@ -190,7 +190,7 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
     * @param manager The Web Beans manager
     * @return The object array of looked up values
     */
-   protected Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters, ManagerImpl manager)
+   protected Object[] getParameterValues(List<AnnotatedParameter<?>> parameters, ManagerImpl manager)
    {
       return getParameterValues(parameters, null, null, manager);
    }
@@ -203,17 +203,17 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
     * @param manager The Web Beans manager
     * @return The object array of looked up values
     */
-   protected Object[] getParameterValues(List<AnnotatedParameter<Object>> parameters, Object specialVal, Class<? extends Annotation> specialParam, ManagerImpl manager)
+   protected Object[] getParameterValues(List<AnnotatedParameter<?>> parameters, Object specialVal, Class<? extends Annotation> specialParam, ManagerImpl manager)
    {
       Object[] parameterValues = new Object[parameters.size()];
       InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
       injectionPointProvider.pushInjectionMember(this);
       try
       {
-         Iterator<AnnotatedParameter<Object>> iterator = parameters.iterator();
+         Iterator<AnnotatedParameter<?>> iterator = parameters.iterator();
          for (int i = 0; i < parameterValues.length; i++)
          {
-            AnnotatedParameter<Object> param = iterator.next();
+            AnnotatedParameter<?> param = iterator.next();
             if (specialParam != null && param.isAnnotationPresent(specialParam))
             {
                parameterValues[i] = specialVal;

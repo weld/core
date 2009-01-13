@@ -32,6 +32,7 @@ import javax.webbeans.Disposes;
 import javax.webbeans.Fires;
 import javax.webbeans.IfExists;
 import javax.webbeans.Observes;
+
 import org.jboss.webbeans.ManagerImpl;
 
 /**
@@ -52,7 +53,7 @@ public interface AnnotatedMethod<T> extends AnnotatedMember<T, Method>
     * @return A list of parameters. Returns an empty list if no parameters are
     *         present.
     */
-   public List<AnnotatedParameter<Object>> getParameters();
+   public List<AnnotatedParameter<?>> getParameters();
 
    /**
     * Gets the list of annotated parameters for a given annotation

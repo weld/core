@@ -174,7 +174,7 @@ public class SimpleBeanModelTest extends AbstractTest
       assert constructor.getParameters().size() == 2;
       
       Map<Class<?>, Set<? extends Annotation>> map = new HashMap<Class<?>, Set<? extends Annotation>>();
-      for (AnnotatedParameter<Object> parameter : constructor.getParameters())
+      for (AnnotatedParameter<?> parameter : constructor.getParameters())
       {
          map.put(parameter.getType(), parameter.getBindingTypes());
       }
@@ -208,7 +208,7 @@ public class SimpleBeanModelTest extends AbstractTest
       AnnotatedConstructor<Turkey> constructor = SimpleBean.of(Turkey.class, manager).getConstructor();
       assert constructor.getParameters().size() == 2;
       Map<Class<?>, Set<? extends Annotation>> map = new HashMap<Class<?>, Set<? extends Annotation>>();
-      for (AnnotatedParameter<Object> parameter : constructor.getParameters())
+      for (AnnotatedParameter<?> parameter : constructor.getParameters())
       {
          map.put(parameter.getType(), parameter.getBindingTypes());
       }
@@ -267,7 +267,7 @@ public class SimpleBeanModelTest extends AbstractTest
       assert constructor.getDeclaringClass().getType().equals(Duck.class);
       assert constructor.getParameters().size() == 2;
       Map<Class<?>, Set<? extends Annotation>> map = new HashMap<Class<?>, Set<? extends Annotation>>();
-      for (AnnotatedParameter<Object> parameter : constructor.getParameters())
+      for (AnnotatedParameter<?> parameter : constructor.getParameters())
       {
          map.put(parameter.getType(), parameter.getBindingTypes());
       }

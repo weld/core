@@ -311,13 +311,13 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected void initInjectionPoints()
    {
       super.initInjectionPoints();
-      for (AnnotatedParameter<Object> parameter : constructor.getParameters())
+      for (AnnotatedParameter<?> parameter : constructor.getParameters())
       {
          annotatedInjectionPoints.add(parameter);
       }
       for (AnnotatedMethod<Object> initializer : getInitializerMethods())
       {
-         for (AnnotatedParameter<Object> parameter : initializer.getParameters())
+         for (AnnotatedParameter<?> parameter : initializer.getParameters())
          {
             annotatedInjectionPoints.add(parameter);
          }
