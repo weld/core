@@ -235,7 +235,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       {
          DependentContext.INSTANCE.setActive(true);
          T instance = produceInstance();
-         checkReturnValue(instance);
+         //checkReturnValue(instance);
          return instance;
       }
       finally

@@ -3,7 +3,7 @@ package org.jboss.webbeans.test.ejb;
 import javax.webbeans.UnremovedException;
 
 import org.jboss.webbeans.bean.EnterpriseBean;
-import org.jboss.webbeans.test.AbstractTest;
+import org.jboss.webbeans.test.AbstractEjbEmbeddableTest;
 import org.jboss.webbeans.test.SpecAssertion;
 import org.jboss.webbeans.test.SpecVersion;
 import org.jboss.webbeans.test.ejb.valid.GoodDoggie;
@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
  */
 
 @SpecVersion("20081206")
-public class EnterpriseBeanLifecycleTest extends AbstractTest
+public class EnterpriseBeanLifecycleTest extends AbstractEjbEmbeddableTest
 {
    /**
     * Initializes the EJB descriptors for the EJBs about to be used
@@ -51,7 +51,7 @@ public class EnterpriseBeanLifecycleTest extends AbstractTest
     * When the destroy() method is called, the Web Bean manager calls the Web
     * Bean remove method upon the proxy
     */
-   @Test(groups = { "enterpriseBeans", "clientProxy", "lifecycle", "stub"})
+   @Test(groups = { "enterpriseBeans", "clientProxy", "lifecycle"})
    @SpecAssertion(section = "6.4")
    public void testRemoveMethodCalled()
    {

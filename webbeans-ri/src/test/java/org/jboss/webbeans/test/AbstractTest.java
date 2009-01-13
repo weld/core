@@ -38,7 +38,7 @@ public class AbstractTest
          AbstractTest.deactivateDependentContext();
       }
       
-      public final void run()
+      public final void run() throws Exception
       {
          try
          {
@@ -51,7 +51,7 @@ public class AbstractTest
          }
       }
       
-      protected abstract void execute();
+      protected abstract void execute() throws Exception;
       
    }
    

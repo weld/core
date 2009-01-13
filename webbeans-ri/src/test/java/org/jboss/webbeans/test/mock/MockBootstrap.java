@@ -4,7 +4,15 @@ import java.lang.annotation.Annotation;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.naming.Context;
 import javax.persistence.PersistenceContext;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.TransactionManager;
+import javax.transaction.UserTransaction;
 import javax.webbeans.InjectionPoint;
 
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
@@ -15,24 +23,106 @@ import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.beanmap.SimpleBeanMap;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
+import org.jboss.webbeans.resource.DefaultNaming;
 import org.jboss.webbeans.resources.spi.Naming;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 
 public class MockBootstrap extends WebBeansBootstrap
 { 
    
-   private static final Naming MOCK_NAMING = new Naming()
+   public static class MockNaming implements Naming
    {
+      
+      private Context context;
+      
+      private Naming delegate;
+      
+      public MockNaming()
+      {
+         this.delegate = new DefaultNaming();
+      }
+      
+      public void setContext(Context context)
+      {
+         this.context = context;
+      }
+      
+      public Context getContext()
+      {
+         return context;
+      }
 
       public void bind(String key, Object value)
       {
-         // no-op
+         if (context != null)
+         {
+            delegate.bind(key, value);
+         }
       }
 
       public <T> T lookup(String name, Class<? extends T> expectedType)
       {
-         // No-op
-         return null;
+         if (context != null)
+         {
+            T instance = overrideLookup(name, expectedType);
+            if (instance == null)
+            {
+               instance = delegate.lookup(name, expectedType);
+            }
+            return instance;
+         }
+         else
+         {
+            return null;
+         }
+      }
+      
+      @SuppressWarnings("unchecked")
+      private <T> T overrideLookup(String name, Class<? extends T> expectedType)
+      {
+         // JBoss Embedded EJB 3.1 doesn't seem to bind this!
+         if (name.equals("java:comp/UserTransaction"))
+         {
+            final TransactionManager tm = delegate.lookup("java:/TransactionManager", TransactionManager.class);
+            return (T) new UserTransaction()
+            {
+
+               public void begin() throws NotSupportedException, SystemException
+               {
+                  tm.begin();
+               }
+
+               public void commit() throws RollbackException, HeuristicMixedException, HeuristicRollbackException, SecurityException, IllegalStateException, SystemException
+               {
+                  tm.commit();
+               }
+
+               public int getStatus() throws SystemException
+               {
+                  return tm.getStatus();
+               }
+
+               public void rollback() throws IllegalStateException, SecurityException, SystemException
+               {
+                  tm.rollback();
+               }
+
+               public void setRollbackOnly() throws IllegalStateException, SystemException
+               {
+                  tm.setRollbackOnly();
+               }
+
+               public void setTransactionTimeout(int seconds) throws SystemException
+               {
+                  tm.setTransactionTimeout(seconds);
+               }
+               
+            };
+         }
+         else
+         {
+            return null;
+         }
       }
       
    };
@@ -80,10 +170,13 @@ public class MockBootstrap extends WebBeansBootstrap
    private WebBeanDiscovery webBeanDiscovery;
    private ResourceLoader resourceLoader;
    
+   private MockNaming mockNaming;
+   
    public MockBootstrap()
    {
       this.resourceLoader = new MockResourceLoader();
-      initManager(MOCK_NAMING, MOCK_EJB_RESOLVER, resourceLoader);
+      this.mockNaming = new MockNaming();
+      initManager(mockNaming, MOCK_EJB_RESOLVER, resourceLoader);
       registerStandardBeans();
       
       // Set up the mock contexts
@@ -115,6 +208,11 @@ public class MockBootstrap extends WebBeansBootstrap
    public ResourceLoader getResourceLoader()
    {
       return resourceLoader;
+   }
+   
+   public MockNaming getNaming()
+   {
+      return mockNaming;
    }
    
 }
