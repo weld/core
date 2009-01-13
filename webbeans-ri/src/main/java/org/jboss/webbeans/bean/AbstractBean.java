@@ -419,7 +419,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       for (AnnotatedItem<?, ?> annotatedInjectionPoint : annotatedInjectionPoints)
       {
          AnnotatedMember<?, ?> member = (AnnotatedMember<?, ?>) annotatedInjectionPoint;
-         injectionsPoints.add(InjectionPointImpl.of(member));
+         injectionsPoints.add(InjectionPointImpl.of(member, this));
       }
       return injectionsPoints;
    }

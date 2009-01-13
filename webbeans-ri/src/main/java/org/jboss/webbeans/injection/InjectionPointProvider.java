@@ -23,7 +23,9 @@ import java.util.Stack;
 import javax.webbeans.InjectionPoint;
 import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMember;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
 
 /**
  * Used to create the container provided implementation for the InjectionPoint
@@ -38,6 +40,7 @@ public class InjectionPointProvider
 {
    private final Stack<Bean<?>> beans = new Stack<Bean<?>>();
    private final Stack<AnnotatedMember<?, ? extends Member>> injectionPoints = new Stack<AnnotatedMember<?, ? extends Member>>();
+   private final Stack<AnnotatedParameter<?>> injectionParameters = new Stack<AnnotatedParameter<?>>();
 
    /**
     * Pushes the current bean that is being instantiated onto a stack for later
@@ -61,6 +64,11 @@ public class InjectionPointProvider
       injectionPoints.push(injectedMember);
    }
 
+   public void pushInjectionParameter(AnnotatedParameter<?> parameter)
+   {
+      injectionParameters.push(parameter);
+   }
+
    /**
     * Pops the bean from the stack. This should be called whenever all
     * processing is complete for instantiating a bean.
@@ -79,6 +87,11 @@ public class InjectionPointProvider
       injectionPoints.pop();
    }
 
+   public void popInjectionParameter()
+   {
+      injectionParameters.pop();
+   }
+
    /**
     * Returns the InjectionPoint where the current bean under construction is
     * being injected.
@@ -87,7 +100,11 @@ public class InjectionPointProvider
     */
    public InjectionPoint getPreviousInjectionPoint()
    {
-      return new InjectionPointImpl(getPreviousInjectionMember(), getPreviousBean());
+      AnnotatedMember<?, ? extends Member> member = getPreviousInjectionMember();
+      if (member instanceof AnnotatedField)
+         return new InjectionPointImpl((AnnotatedField<?>) member, getPreviousBean());
+      else
+         return new InjectionPointImpl(member, getPreviousParameter(), getPreviousBean());
    }
 
    /**
@@ -98,19 +115,29 @@ public class InjectionPointProvider
     */
    public InjectionPoint getCurrentInjectionPoint()
    {
-      return new InjectionPointImpl(getCurrentInjectionMember(), getCurrentBean());
+      AnnotatedMember<?, ? extends Member> member = getCurrentInjectionMember();
+      if (member instanceof AnnotatedField)
+         return new InjectionPointImpl((AnnotatedField<?>) member, getCurrentBean());
+      else
+         return new InjectionPointImpl(member, getCurrentParameter(), getCurrentBean());
    }
 
    protected Bean<?> getCurrentBean()
    {
       return beans.peek();
    }
+
    protected AnnotatedMember<?, ? extends Member> getCurrentInjectionMember()
    {
       if (injectionPoints.size() > 0)
          return injectionPoints.peek();
       else
          return null;
+   }
+
+   protected AnnotatedParameter<?> getCurrentParameter()
+   {
+      return injectionParameters.peek();
    }
 
    protected Bean<?> getPreviousBean()
@@ -139,4 +166,22 @@ public class InjectionPointProvider
       }
       return result;
    }
+
+   protected AnnotatedParameter<?> getPreviousParameter()
+   {
+      AnnotatedParameter<?> result = null;
+      if (getCurrentInjectionMember() instanceof AnnotatedField)
+      {
+         // Since no parameter is pushed, top of stack is the one wanted
+         result = injectionParameters.peek();
+      }
+      else
+      {
+         AnnotatedParameter<?> currentParameter = injectionParameters.pop();
+         result = injectionParameters.peek();
+         injectionParameters.push(currentParameter);
+      }
+      return result;
+   }
+
 }

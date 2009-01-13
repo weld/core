@@ -148,7 +148,7 @@ public class InjectionPointTest extends AbstractTest
       assert false;
    }
 
-   @Test(groups = { "broken", "injectionPoint" })
+   @Test(groups = { "injectionPoint" })
    @SpecAssertion(section = "5.11")
    public void testGetMemberConstructor()
    {
@@ -163,6 +163,10 @@ public class InjectionPointTest extends AbstractTest
          BeanWithInjectionPointMetadata beanWithInjectionPoint = beanWithInjectedBean.getInjectedBean();
          assert beanWithInjectionPoint.getInjectedMetadata() != null;
          assert Constructor.class.isAssignableFrom(beanWithInjectionPoint.getInjectedMetadata().getMember().getClass());
+         
+         // Since the type and bindings must correspond to the parameter, check them
+         assert beanWithInjectionPoint.getInjectedMetadata().getType().equals(BeanWithInjectionPointMetadata.class);
+         assert beanWithInjectionPoint.getInjectedMetadata().getBindings().contains(new CurrentBinding());
       }
       finally
       {

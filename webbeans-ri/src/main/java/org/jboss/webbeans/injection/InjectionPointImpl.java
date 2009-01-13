@@ -31,7 +31,9 @@ import javax.webbeans.InjectionPoint;
 import javax.webbeans.Standard;
 import javax.webbeans.manager.Bean;
 
+import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMember;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
 
 /**
  * The container provided implementation for InjectionPoint beans
@@ -43,6 +45,7 @@ import org.jboss.webbeans.introspector.AnnotatedMember;
 public class InjectionPointImpl implements InjectionPoint
 {
    private final AnnotatedMember<?, ?> memberInjectionPoint;
+   private final AnnotatedParameter<?> parameterInjectionPoint;
    private final Bean<?> bean;
 
    /**
@@ -52,15 +55,41 @@ public class InjectionPointImpl implements InjectionPoint
     * @param bean The bean being injected
     * @param beanInstance The instance of the bean being injected
     */
-   public InjectionPointImpl(AnnotatedMember<?, ?> injectedMember, Bean<?> bean)
+   public InjectionPointImpl(AnnotatedField<?> injectedMember, Bean<?> bean)
    {
       this.memberInjectionPoint = injectedMember;
+      this.parameterInjectionPoint = null;
       this.bean = bean;
    }
 
-   public static InjectionPointImpl of(AnnotatedMember<?, ?> member)
+   /**
+    * Creates a new injection point representing a parameter to a constructor or method.
+    * 
+    * @param injectedMember The constructor or method member
+    * @param parameterInjectionPoint The parameter
+    * @param bean The bean owning the injectedMember
+    */
+   public InjectionPointImpl(AnnotatedMember<?, ?> injectedMember, AnnotatedParameter<?> parameterInjectionPoint, Bean<?> bean)
    {
-      return new InjectionPointImpl(member, null);
+      this.memberInjectionPoint = injectedMember;
+      this.parameterInjectionPoint = parameterInjectionPoint;
+      this.bean = bean;
+   }
+
+   /**
+    * Returns a new injection point of any type.  If this is a parameter, the
+    * information about the parameter is null.
+    * 
+    * @param member The member being injected
+    * @param bean The bean
+    * @return a new injection point metadata bean
+    */
+   public static InjectionPointImpl of(AnnotatedMember<?, ?> member, Bean<?> bean)
+   {
+      if (member instanceof AnnotatedField)
+         return new InjectionPointImpl((AnnotatedField<?>) member, bean);
+      else
+         return new InjectionPointImpl(member, null, bean);
    }
 
    public boolean isField()
@@ -100,7 +129,10 @@ public class InjectionPointImpl implements InjectionPoint
 
    public Set<Annotation> getBindings()
    {
-      return this.memberInjectionPoint.getBindingTypes();
+      if (isField())
+         return this.memberInjectionPoint.getBindingTypes();
+      else
+         return this.parameterInjectionPoint.getBindingTypes();
    }
 
    public Member getMember()
@@ -110,7 +142,10 @@ public class InjectionPointImpl implements InjectionPoint
 
    public Type getType()
    {
-      return this.memberInjectionPoint.getType();
+      if (isField())
+         return this.memberInjectionPoint.getType();
+      else
+         return this.parameterInjectionPoint.getType();
    }
 
    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)

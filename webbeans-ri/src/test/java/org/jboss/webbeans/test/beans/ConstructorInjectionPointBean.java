@@ -17,6 +17,7 @@
 package org.jboss.webbeans.test.beans;
 
 import javax.webbeans.Current;
+import javax.webbeans.Initializer;
 
 /**
  * Test bean to inject a bean using injection point metadata into a constructor
@@ -28,6 +29,7 @@ public class ConstructorInjectionPointBean
 {
    private BeanWithInjectionPointMetadata injectedBean;
 
+   @Initializer
    public ConstructorInjectionPointBean(@Current BeanWithInjectionPointMetadata injectedBean)
    {
       this.injectedBean = injectedBean;

@@ -220,7 +220,9 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
             }
             else
             {
+               injectionPointProvider.pushInjectionParameter(param);
                parameterValues[i] = param.getValue(manager);
+               injectionPointProvider.popInjectionParameter();
             }
          }
       }
