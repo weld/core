@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: extend\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 10:46+1000\n"
+"PO-Revision-Date: 2009-01-13 16:21+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,12 +16,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 
 #. Tag: title
 #: extend.xml:4
 #, no-c-format
 msgid "Extending Web Beans"
-msgstr ""
+msgstr "Web Beans 확장 "
 
 #. Tag: para
 #: extend.xml:6
@@ -66,7 +67,7 @@ msgstr ""
 #: extend.xml:29
 #, no-c-format
 msgid "The <literal>Manager</literal> object"
-msgstr ""
+msgstr "<literal>Manager</literal> 객체 "
 
 #. Tag: para
 #: extend.xml:31
@@ -210,7 +211,7 @@ msgstr "@Current Manager manager"
 #: extend.xml:43
 #, no-c-format
 msgid "The <literal>Bean</literal> class"
-msgstr ""
+msgstr "<literal>Bean</literal> 클래스 "
 
 #. Tag: para
 #: extend.xml:45
@@ -302,7 +303,7 @@ msgstr ""
 #: extend.xml:67
 #, no-c-format
 msgid "The <literal>Context</literal> interface"
-msgstr ""
+msgstr "<literal>Context</literal> 인터페이스 "
 
 #. Tag: para
 #: extend.xml:69

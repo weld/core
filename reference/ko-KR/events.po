@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 10:35+1000\n"
+"PO-Revision-Date: 2009-01-13 16:26+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,12 +16,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 
 #. Tag: title
 #: events.xml:4
 #, no-c-format
 msgid "Events"
-msgstr ""
+msgstr "이벤트 "
 
 #. Tag: para
 #: events.xml:6
@@ -157,7 +158,7 @@ msgstr ""
 #: events.xml:61
 #, no-c-format
 msgid "Event producers"
-msgstr ""
+msgstr "이벤트 생산자 "
 
 #. Tag: para
 #: events.xml:63

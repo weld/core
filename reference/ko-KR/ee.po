@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ee\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-12 17:56+1000\n"
+"PO-Revision-Date: 2009-01-13 16:26+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 
 #. Tag: title
@@ -39,7 +40,7 @@ msgstr ""
 #: ee.xml:12
 #, no-c-format
 msgid "Injecting Java EE resources into a Web Bean"
-msgstr ""
+msgstr "Java EE 리소스를 Web Bean으로 삽입 "
 
 #. Tag: para
 #: ee.xml:14
@@ -121,7 +122,7 @@ msgstr ""
 #: ee.xml:35
 #, no-c-format
 msgid "Calling a Web Bean from a Servlet"
-msgstr ""
+msgstr "Servlet에서 Web Bean 호출 "
 
 #. Tag: para
 #: ee.xml:37
@@ -192,7 +193,7 @@ msgstr ""
 #: ee.xml:49
 #, no-c-format
 msgid "Calling a Web Bean from a Message-Driven Bean"
-msgstr ""
+msgstr "Message-Driven Bean에서 Web Bean 호출 "
 
 #. Tag: para
 #: ee.xml:51
@@ -253,13 +254,13 @@ msgstr ""
 #: ee.xml:66
 #, no-c-format
 msgid "It's also easy to send messages using Web Beans."
-msgstr ""
+msgstr "또한 Web Beans를 사용하여 메세지를 전송하기 쉽습니다.  "
 
 #. Tag: title
 #: ee.xml:71
 #, no-c-format
 msgid "JMS endpoints"
-msgstr ""
+msgstr "JMS 엔드포인트  "
 
 #. Tag: para
 #: ee.xml:73
@@ -384,7 +385,7 @@ msgstr ""
 #: ee.xml:106
 #, no-c-format
 msgid "Packaging and deployment"
-msgstr ""
+msgstr "패키징 및 배포 "
 
 #. Tag: para
 #: ee.xml:108
