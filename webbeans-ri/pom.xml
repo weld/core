@@ -39,11 +39,18 @@
          <scope>test</scope>
       </dependency>
       
-      <!-- <dependency>
+      <dependency>
          <groupId>org.jboss.ejb3</groupId>
          <artifactId>jboss-ejb3-embedded</artifactId>
+         <scope>runtime</scope>
+         <optional>true</optional>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.ejb3</groupId>
+         <artifactId>jboss-ejb3-api</artifactId>
          <scope>test</scope>
-      </dependency>-->
+      </dependency>
 
       <dependency>
          <groupId>javax.servlet</groupId>

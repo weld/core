@@ -151,6 +151,50 @@
             <groupId>org.jboss.ejb3</groupId>
             <artifactId>jboss-ejb3-embedded</artifactId>
             <version>1.0.0-Alpha1</version>
+            <exclusions>
+               <exclusion>
+                  <groupId>org.apache.ant</groupId>
+                  <artifactId>ant</artifactId>
+               </exclusion>
+               <exclusion>
+                  <groupId>bsh</groupId>
+                  <artifactId>bsh</artifactId>
+               </exclusion>
+               <exclusion>
+                  <groupId>org.jboss.cache</groupId>
+                  <artifactId>jbosscache-core</artifactId>
+               </exclusion>
+               <exclusion>
+                  <groupId>org.jboss.cluster</groupId>
+                  <artifactId>jboss-ha-client</artifactId>
+               </exclusion>
+               <exclusion>
+                  <groupId>org.jboss.javaee</groupId>
+                  <artifactId>jboss-ejb-api</artifactId>
+               </exclusion>
+               <exclusion>
+                  <groupId>org.jboss.javaee</groupId>
+                  <artifactId>jboss-servlet-api</artifactId>
+               </exclusion>
+               <exclusion>
+                  <groupId>org.jboss.ws.native</groupId>
+                  <artifactId>jbossws-native-saaj</artifactId>
+               </exclusion>
+               <exclusion>
+                  <groupId>org.jboss.ws.native</groupId>
+                  <artifactId>jbossws-native-jaxws</artifactId>
+               </exclusion>
+               <exclusion>
+                  <groupId>apache-log4j</groupId>
+                  <artifactId>log4j</artifactId>
+               </exclusion>
+            </exclusions>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.ejb3</groupId>
+            <artifactId>jboss-ejb3-api</artifactId>
+            <version>3.1.0-Alpha1</version>
          </dependency>
          
          <dependency>
@@ -324,6 +368,10 @@
       <license>
          <name>Apache License, Version 2.0</name>
          <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      </license>
+      <license>
+         <name>Lesser Gnu Public License, Version 2.1</name>
+         <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
       </license>
    </licenses>
 

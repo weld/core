@@ -1,31 +1,37 @@
 package org.jboss.webbeans.test;
 
 import java.net.URL;
+import java.util.Properties;
+
+import javax.ejb.EJBContainer;
+
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 
 
 
 public abstract class AbstractEjbEmbeddableTest extends AbstractTest
 {
 
-//   @AfterClass
-//   public void afterClass()
-//   {
-//      EJBContainer current = EJBContainer.getCurrentEJBContainer();
-//      if(current != null)
-//      {
-//         current.close();
-//      }
-//   }
+   @AfterClass
+   public void afterClass()
+   {
+      EJBContainer current = EJBContainer.getCurrentEJBContainer();
+      if(current != null)
+      {
+         current.close();
+      }
+   }
    
-//   @BeforeClass
-//   public void beforeClass()
-//   {
-//      Properties properties = new Properties();
-//      String module = getURLToTestClasses(getTestClassesPath());
-//      properties.setProperty(EJBContainer.EMBEDDABLE_MODULES_PROPERTY, module);
-//      
-//      EJBContainer.createEJBContainer(properties);
-//   }
+   @BeforeClass
+   public void beforeClass()
+   {
+      Properties properties = new Properties();
+      String module = getURLToTestClasses(getTestClassesPath());
+      properties.setProperty(EJBContainer.EMBEDDABLE_MODULES_PROPERTY, module);
+      
+      EJBContainer.createEJBContainer(properties);
+   }
    
    protected String getTestClassesPath()
    {

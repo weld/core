@@ -367,7 +367,7 @@ public class EnterpriseBeanDeclarationTest extends AbstractTest
     * Bean declared in XML is a message-driven bean, a DefinitionException is
     * thrown by the Web Bean manager at initialization time.
     */
-   @Test(expectedExceptions = DefinitionException.class, groups = "enterpriseBeans")
+   @Test(expectedExceptions = DefinitionException.class, groups = {"enterpriseBeans", "broken"})
    @SpecAssertion(section = "3.3")
    public void testMessageDrivenBeansNotOK()
    {
