@@ -24,6 +24,37 @@ import org.testng.annotations.BeforeMethod;
 
 public class AbstractTest
 {
+   
+   protected abstract static class RunInDependentContext 
+   {
+      
+      protected void setup()
+      {
+         AbstractTest.activateDependentContext();
+      }
+      
+      protected void cleanup()
+      {
+         AbstractTest.deactivateDependentContext();
+      }
+      
+      public final void run()
+      {
+         try
+         {
+            setup();
+            execute();
+         }
+         finally
+         {
+            cleanup();
+         }
+      }
+      
+      protected abstract void execute();
+      
+   }
+   
    protected static final int BUILT_IN_BEANS = 3;
    
    protected ManagerImpl manager;
@@ -32,7 +63,7 @@ public class AbstractTest
    public static boolean visited = false;
 
    @BeforeMethod
-   public final void before()
+   public void before() throws Exception
    {
       webBeansBootstrap = new MockBootstrap();
       manager = webBeansBootstrap.getManager();
@@ -87,12 +118,12 @@ public class AbstractTest
       return in.readObject();
    }
 
-   protected void activateDependentContext()
+   protected static void activateDependentContext()
    {
       DependentContext.INSTANCE.setActive(true);
    }
    
-   protected void deactivateDependentContext()
+   protected static void deactivateDependentContext()
    {
       DependentContext.INSTANCE.setActive(false);
    }
