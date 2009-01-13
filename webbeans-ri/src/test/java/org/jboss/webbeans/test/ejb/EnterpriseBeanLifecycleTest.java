@@ -51,7 +51,7 @@ public class EnterpriseBeanLifecycleTest extends AbstractEjbEmbeddableTest
     * When the destroy() method is called, the Web Bean manager calls the Web
     * Bean remove method upon the proxy
     */
-   @Test(groups = { "enterpriseBeans", "clientProxy", "lifecycle"})
+   @Test(groups = { "enterpriseBeans", "clientProxy", "lifecycle", "stub"})
    @SpecAssertion(section = "6.4")
    public void testRemoveMethodCalled()
    {
