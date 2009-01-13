@@ -4,9 +4,9 @@ Web Beans RI
 Web Beans (JSR-299) is a new Java standard for dependency injection and 
 contextual lifecycle management.
 
-This distribution, as a whole, is licensed under the terms of FSF Leseer Gnu 
+This distribution, as a whole, is licensed under the terms of FSF Lesser Gnu 
 Public License (see lgpl.txt). Parts of it are licensed under the Apache Public
-License (see as apl.txt). In particular, the Web Beans API and the Web Beans RI 
+License (see apl.txt). In particular, the Web Beans API and the Web Beans RI 
 rutimes are licensed under the APL. At least these parts are licensed under the 
 APL:
 
