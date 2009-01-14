@@ -262,25 +262,6 @@ public class ResolutionByTypeTest extends AbstractTest
       assert manager.resolveByType(Tuna.class, new CurrentBinding()).size() == 0;
    }
    
-   @Test(groups="resolution") @SpecAssertion(section={"5.9.2", "2.2"})
-   public void testResolveObject() throws Exception
-   {
-      Bean<Salmon> salmonBean = SimpleBean.of(Salmon.class, manager);
-      Bean<Sole> soleBean = SimpleBean.of(Sole.class, manager);
-      Bean<Plaice> plaiceBean = SimpleBean.of(Plaice.class, manager);
-      manager.addBean(plaiceBean);
-      manager.addBean(salmonBean);
-      manager.addBean(soleBean);
-      
-      Set<Bean<Object>> beans = manager.resolveByType(Object.class);
-      
-      assert manager.resolveByType(Object.class).size() == 3 +  BUILT_IN_BEANS;
-      assert manager.resolveByType(Object.class).contains(plaiceBean);
-      assert manager.resolveByType(Object.class).contains(salmonBean);
-      assert manager.resolveByType(Object.class).contains(soleBean);
-      
-   }
-   
    @Test(groups="resolution") @SpecAssertion(section="5.9.2.1")
    public void testResolveByTypeWithNonBindingMembers() throws Exception
    {

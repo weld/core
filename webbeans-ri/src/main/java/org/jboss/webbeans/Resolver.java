@@ -196,14 +196,12 @@ public class Resolver
     * @param key The resolving criteria
     * @return An unmodifiable set of matching beans
     */
-   @SuppressWarnings("unchecked")
    public <T, S> Set<Bean<T>> get(final AnnotatedItem<T, S> key)
    {
       Set<Bean<T>> beans = new HashSet<Bean<T>>();
 
       final ResolvableAnnotatedItem<T, S> element = new ResolvableAnnotatedItem<T, S>()
       {
-         private static final long serialVersionUID = 1L;
 
          @Override
          public AnnotatedItem<T, S> delegate()
@@ -213,11 +211,7 @@ public class Resolver
 
       };
 
-      if (element.getType().equals(Object.class))
-      {
-         beans = new HashSet<Bean<T>>((List) manager.getBeans());
-      }
-      else if (InjectionPoint.class.isAssignableFrom(element.getType()))
+      if (InjectionPoint.class.isAssignableFrom(element.getType()))
       {
          beans.add(InjectionPointBean.of(key, manager));
       }
