@@ -1,17 +1,20 @@
+# translation of part1.po to Spanish
 # Language es-ES translations for master.xml package.
-# Automatically generated, 2008.
 #
+# Automatically generated, 2008.
+# Gladys Guerrero Lozano <gguerrer@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml \n"
+"Project-Id-Version: part1\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-19 20:26+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-14 11:28+1000\n"
+"Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
+"Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: para
 #: part1.xml:5
@@ -23,7 +26,7 @@ msgid ""
 "component types including JavaBeans and Enterprise Java Beans. As a "
 "complement to the traditional Java EE programming model, the Web Beans "
 "services provide:"
-msgstr ""
+msgstr "La especificación de Web Beans (JSR-299) define una serie de servicios para el entorno EE de Java que facilitan el desarrollo de aplicaciones. Web Beans entrecruza un ciclo de vida mejorado y un modelo de interacción en tipos de componentes existentes de Java incluyendo los componentes JavaBeans y los Enterprise Java Beans. Como complemento para el modelo tradicional de programación EE de Java, el servicio de Web Beans proporciona servicios:"
 
 #. Tag: para
 #: part1.xml:14
@@ -31,20 +34,19 @@ msgstr ""
 msgid ""
 "an improved lifecycle for stateful components, bound to well-defined "
 "<emphasis>contexts</emphasis>,"
-msgstr ""
+msgstr "un ciclo de vida mejorada para componentes con estado, vinculados a los <emphasis>contextos</emphasis> bien definidos,"
 
 #. Tag: para
 #: part1.xml:18
 #, no-c-format
 msgid "a typesafe approach to <emphasis>dependency injection</emphasis>,"
-msgstr ""
+msgstr "un método typesafe para <emphasis>inyección de dependencia</emphasis>,"
 
 #. Tag: para
 #: part1.xml:21
 #, no-c-format
-msgid ""
-"interaction via an <emphasis>event notification</emphasis> facility, and"
-msgstr ""
+msgid "interaction via an <emphasis>event notification</emphasis> facility, and"
+msgstr "interacción a través de un servicio de <emphasis>notificación de eventos</emphasis>, y"
 
 #. Tag: para
 #: part1.xml:25
@@ -54,7 +56,7 @@ msgid ""
 "components, along with a new kind of interceptor, called a "
 "<emphasis>decorator</emphasis>, that is more appropriate for use in solving "
 "business problems."
-msgstr ""
+msgstr "un mejor método para vincular <emphasis>interceptores</emphasis> a componentes, junto con una nueva clase de interceptor, llamado un <emphasis>decorador</emphasis>, el cual es más apropiado para resolver problemas de negocios."
 
 #. Tag: para
 #: part1.xml:32
@@ -63,43 +65,43 @@ msgid ""
 "Dependency injection, together with contextual lifecycle management, saves "
 "the user of an unfamiliar API from having to ask and answer the following "
 "questions:"
-msgstr ""
+msgstr "Inyección de dependencia, junto con la administración de ciclo de vida contextual, ahorra al usuario de un API desconocido el tener que hacer y contestar las siguientes preguntas:"
 
 #. Tag: para
 #: part1.xml:38
 #, no-c-format
 msgid "what is the lifecycle of this object?"
-msgstr ""
+msgstr "¿cuál es el ciclo de vida de este objeto? "
 
 #. Tag: para
 #: part1.xml:41
 #, no-c-format
 msgid "how many simultaneous clients can it have?"
-msgstr ""
+msgstr "¿cuántos clientes simultáneos puede tener?"
 
 #. Tag: para
 #: part1.xml:44
 #, no-c-format
 msgid "is it multithreaded?"
-msgstr ""
+msgstr "¿es multihilos?"
 
 #. Tag: para
 #: part1.xml:47
 #, no-c-format
 msgid "where can I get one from?"
-msgstr ""
+msgstr "¿en dónde puedo obtener uno?"
 
 #. Tag: para
 #: part1.xml:50
 #, no-c-format
 msgid "do I need to explicitly destroy it?"
-msgstr ""
+msgstr "¿necesito destruirlo explícitamente?"
 
 #. Tag: para
 #: part1.xml:53
 #, no-c-format
 msgid "where should I keep my reference to it when I'm not using it directly?"
-msgstr ""
+msgstr "¿dónde debo mantener mi referencia a éste cuando no lo estoy usando directamente?"
 
 #. Tag: para
 #: part1.xml:57
@@ -107,13 +109,13 @@ msgstr ""
 msgid ""
 "how can I add an indirection layer, so that the implementation of this "
 "object can vary at deployment time?"
-msgstr ""
+msgstr "¿cómo puedo agregar una capa de direccionamiento indirecto, para que la implementación de este objeto pueda variar en el momento de despliegue?"
 
 #. Tag: para
 #: part1.xml:61
 #, no-c-format
 msgid "how should I go about sharing this object between other objects?"
-msgstr ""
+msgstr "¿cómo hago para compartir este objeto con otros objetos?"
 
 #. Tag: para
 #: part1.xml:65
@@ -125,7 +127,7 @@ msgid ""
 "upon. Even better, the concrete implementation, lifecycle and threading "
 "model of a Web Bean it depends upon may vary according to the deployment "
 "scenario, without affecting any client."
-msgstr ""
+msgstr "Un Web Bean especifica únicamente el tipo y la semántica de otros Web Beans de los que depende. No se necesita estar consciente del ciclo de vida real, la implementación concreta, el modelo de hilos u otros clientes de cualquier Web Bean a la que dependa. Mejor aún, la implementación concreta, el ciclo de vida y el modelo de hilos de un Web Bean al que éste depende pueden variar según el escenario de despliegue, sin afectar a ningún cliente."
 
 #. Tag: para
 #: part1.xml:72
@@ -134,6 +136,8 @@ msgid ""
 "Events, interceptors and decorators enhance the <emphasis>loose-coupling</"
 "emphasis> that is inherent in this model:"
 msgstr ""
+"Los eventos, los interceptores y los decoradores mejoran el <emphasis>acoplamiento-flexible</"
+"emphasis>inherente en este modelo:"
 
 #. Tag: para
 #: part1.xml:77
@@ -141,7 +145,7 @@ msgstr ""
 msgid ""
 "<emphasis>event notifications</emphasis> decouple event producers from event "
 "consumers,"
-msgstr ""
+msgstr "La <emphasis>notificación de eventos</emphasis> separa a los productores de eventos de los consumidores,"
 
 #. Tag: para
 #: part1.xml:81
@@ -149,7 +153,7 @@ msgstr ""
 msgid ""
 "<emphasis>interceptors</emphasis> decouple technical concerns from business "
 "logic, and"
-msgstr ""
+msgstr "los <emphasis>interceptores</emphasis> separan las cuestiones técnicas de la lógica de negocios, y"
 
 #. Tag: para
 #: part1.xml:85
@@ -157,7 +161,7 @@ msgstr ""
 msgid ""
 "<emphasis>decorators</emphasis> allow business concerns to be "
 "compartmentalized."
-msgstr ""
+msgstr "los <emphasis>decoradores</emphasis> permiten la compartimentación de las cuestiones de negocios."
 
 #. Tag: para
 #: part1.xml:90
@@ -172,6 +176,8 @@ msgid ""
 "emphasis>, to wire together Web Beans, their dependencies, their "
 "interceptors and decorators and their event consumers."
 msgstr ""
+"Más importante, Web Beans ofrece todos los servicios en forma"
+"<emphasis>typesafe</emphasis>. Web Beans nunca utiliza identificadores de cadena para determinar cómo los objetos de colaboración se ajustan entre sí. Además aunque XML sigue siendo una opción, muy rara vez se utiliza. En su lugar, Web Beans usa la información de teclado disponible en el modelo de objeto Java junto con un nuevo patrón, llamado <emphasis>anotaciones de enlace</emphasis>, para conectar a Web Beans, las dependencias, los interceptores y decoradores y sus consumidores de evento."
 
 #. Tag: para
 #: part1.xml:100
@@ -179,25 +185,25 @@ msgstr ""
 msgid ""
 "The Web Beans services are general and apply to the following types of "
 "components that exist in the Java EE environment:"
-msgstr ""
+msgstr "Los servicios Web Beans son generales y se aplican a los siguiente tipos de componentes que existen en el entorno EE de Java."
 
 #. Tag: para
 #: part1.xml:105
 #, no-c-format
 msgid "all JavaBeans,"
-msgstr ""
+msgstr "todos los JavaBeans,"
 
 #. Tag: para
 #: part1.xml:108
 #, no-c-format
 msgid "all EJBs, and"
-msgstr ""
+msgstr "todos los EJB, y"
 
 #. Tag: para
 #: part1.xml:111
 #, no-c-format
 msgid "all Servlets."
-msgstr ""
+msgstr "todos los Servlets."
 
 #. Tag: para
 #: part1.xml:115
@@ -207,7 +213,7 @@ msgid ""
 "of components defined by future Java EE specifications or by non-standard "
 "frameworks may be cleanly integrated with Web Beans, take advantage of the "
 "Web Beans services, and interact with any other kind of Web Bean."
-msgstr ""
+msgstr "Web Beans incluso proporciona los puntos de integración necesarios para que otras clases de componentes definidos por especificaciones EE de Java futuras, hagan uso de los servicios de Web Beans e interactúen con otra clase de Web Bean."
 
 #. Tag: para
 #: part1.xml:120
@@ -217,7 +223,7 @@ msgid ""
 "Seam, Guice and Spring. However, Web Beans has its own very distinct "
 "character: more typesafe than Seam, more stateful and less XML-centric than "
 "Spring, more web and enterprise-application capable than Guice."
-msgstr ""
+msgstr "Una gran cantidad de marcos existentes de Java, incluyendo Seam, Guice y Spring, influyeron en Web Beans. No obstante, Web Beans tiene su propio carácter distintivo: más typesafe que Seam, más con estado y menos centrada en XML que Spring, más red y aplicación de empresa más capaz que Guice."
 
 #. Tag: para
 #: part1.xml:125
@@ -226,4 +232,5 @@ msgid ""
 "Most importantly, Web Beans is a JCP standard that integrates cleanly with "
 "Java EE, and with any Java SE environment where embeddable EJB Lite is "
 "available."
-msgstr ""
+msgstr "Lo más importante es que Web Beans es un JCP estándar que se integra sin problemas con EE de Java y con cualquier entorno SE dónde EJB Lite incrustado esté disponible."
+

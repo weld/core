@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: master\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:29+0000\n"
-"PO-Revision-Date: 2009-01-12 17:27+1000\n"
+"PO-Revision-Date: 2009-01-14 08:54+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -26,13 +26,13 @@ msgstr "Uso de objetos contextuales"
 #: master.xml:25
 #, no-c-format
 msgid "Developing loosely-coupled code"
-msgstr ""
+msgstr "Desarrollo de código de acoplamiento flexible"
 
 #. Tag: title
 #: master.xml:35
 #, no-c-format
 msgid "Making the most of strong typing"
-msgstr "Haciendo lo máximo de un tecleado fuerte"
+msgstr "Aprovechar al máximo un tecleado fuerte"
 
 #. Tag: title
 #: master.xml:46

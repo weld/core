@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Author_Group\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-09 11:40+1000\n"
+"PO-Revision-Date: 2009-01-14 09:26+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgid ""
 "<jobtitle>Web Beans (JSR-299) specification lead</jobtitle> <orgname>Red Hat "
 "Middleware LLC</orgname>"
 msgstr ""
-"<jobtitle>información de especificación de Web Beans (JSR-299) </jobtitle> "
+"<jobtitle>Guía de especificación de Web Beans (JSR-299) </jobtitle> "
 "<orgname>Red Hat Middleware LLC</orgname>"
 
 #. Tag: author
@@ -40,12 +40,12 @@ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
 
 #. Tag: affiliation
 #: Author_Group.xml:15
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<jobtitle>Web Beans (JSR-299) Reference Implementation lead </jobtitle> "
 "<orgname>Red Hat Middleware LLC</orgname>"
 msgstr ""
-"<jobtitle>Web Beans (JSR-299) Guía de Referencia de Aplicación </jobtitle> "
+"<jobtitle>Guía de Referencia de Aplicación de Web Beans (JSR-299)</jobtitle> "
 "<orgname>Red Hat Middleware LLC</orgname>"
 
 #. Tag: othercredit
@@ -65,3 +65,4 @@ msgstr "Traducción en italiano"
 #, no-c-format
 msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
 msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
+

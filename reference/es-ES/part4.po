@@ -1,17 +1,20 @@
+# translation of part4.po to Spanish
 # Language es-ES translations for master.xml package.
-# Automatically generated, 2008.
 #
+# Automatically generated, 2008.
+# Gladys Guerrero Lozano <gguerrer@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml \n"
+"Project-Id-Version: part4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-19 20:26+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-14 14:24+1000\n"
+"Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
+"Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: para
 #: part4.xml:5
@@ -24,6 +27,8 @@ msgid ""
 "foundation for a new ecosystem of portable extensions and integration with "
 "existing frameworks and technologies."
 msgstr ""
+"El tercer tema de Web Beans es la <emphasis>integración</emphasis>. Web Beans fue diseñada para trabajar junto con otras tecnologías, ayudando al desarrollador de la aplicación a encajar en otras tecnologías."
+"Web Beans es una tecnología abierta. Forma parte de un ecosistema EE de Java y es por si mismo una base para un nuevo ecosistema de extensiones portátiles e integración con marcos y tecnologías existentes."
 
 #. Tag: para
 #: part4.xml:12
@@ -37,7 +42,7 @@ msgid ""
 "interesting technologies that are used in the world of Java application "
 "development, but Web Beans makes it easier to use the technologies which are "
 "not yet part of the platform seamlessly within the Java EE environment."
-msgstr ""
+msgstr "Ya hemos visto cómo Web Beans ayuda a integrar EJB y JSF, permitiendo a los EJB enlazarse directamente a páginas JSF. Esto es apenas el comienzo. Web Beans ofrece el mismo potencial a otras tecnologías, tales como motores de administración de proceso de negocios, otros marcos de red y modelos de componentes de terceras partes. La plataforma EE de Java nunca podrá estandarizar todas las tecnologías interesantes utilizadas en el mundo del desarrollo de la aplicación Java, pero Web Beans facilita el uso de las tecnologías que aún no hacen parte completamente de la plataforma dentro del entorno EE de Java."
 
 #. Tag: para
 #: part4.xml:21
@@ -49,4 +54,5 @@ msgid ""
 "need to use these SPIs directly, but it's nice to know they are there if you "
 "need them. Most importantly, you'll take advantage of them indirectly, every "
 "time you use a third-party extension."
-msgstr ""
+msgstr "Ya estamos a punto de ver cómo aprovechar completamente la plataforma EE de Java en una aplicación que utiliza Web Beans. También veremos brevemente una serie de SPI provistas para soportar extensiones a Web Beans. Puede que nunca las tenga que utilizar directamente, pero es conveniente saber que están allí si se necesitan. Lo más importante, es que podrá aprovecharlas indirectamente cada vez que utilice una extensión de terceras partes."
+
