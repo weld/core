@@ -668,7 +668,7 @@ public class Game
          We've saved the most interesting bit to last, the code! The project has
          two simple beans, <literal>SentenceParser</literal> and
          <literal>TextTranslator</literal> and two enterprise beans,
-         <literal>TanslatorControllerBean</literal> and 
+         <literal>TranslatorControllerBean</literal> and 
          <literal>SentenceTranslator</literal>. You should be getting quite
          familiar with what a Web Bean looks like by now, so we'll just 
          highlight the most interesting bits here.
