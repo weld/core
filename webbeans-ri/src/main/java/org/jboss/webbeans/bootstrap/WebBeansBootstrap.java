@@ -177,9 +177,15 @@ public abstract class WebBeansBootstrap
    protected Set<AbstractBean<?, ?>> createStandardBeans()
    {
       Set<AbstractBean<?, ?>> beans = new HashSet<AbstractBean<?, ?>>();
-      createBean(SimpleBean.of(Transaction.class, manager), beans);
-      createBean(ManagerBean.of(getManager()), beans);
+      createSimpleBean(Transaction.class, beans);
+      beans.add(ManagerBean.of(manager));
       return beans;
+   }
+   
+   private <T> void createSimpleBean(Class<T> clazz, Set<AbstractBean<?, ?>> beans)
+   {
+      AnnotatedClass<T> annotatedClass = new AnnotatedClassImpl<T>(clazz);
+      createBean(SimpleBean.of(annotatedClass, manager), annotatedClass, beans);
    }
 
    /**
@@ -201,12 +207,12 @@ public abstract class WebBeansBootstrap
          AnnotatedClass<?> annotatedClass = AnnotatedClassImpl.of(clazz);
          if (getManager().getEjbDescriptorCache().containsKey(clazz))
          {
-            createBean(EnterpriseBean.of(annotatedClass, getManager()), beans);
+            createBean(EnterpriseBean.of(annotatedClass, getManager()), annotatedClass, beans);
             beans.add(NewEnterpriseBean.of(annotatedClass, manager));
          }
          else if (isTypeSimpleWebBean(clazz))
          {
-            createBean(SimpleBean.of(annotatedClass, manager), beans);
+            createBean(SimpleBean.of(annotatedClass, manager), annotatedClass, beans);
             beans.add(NewSimpleBean.of(annotatedClass, manager));
          }
       }
@@ -223,7 +229,7 @@ public abstract class WebBeansBootstrap
     * @param beans The set of created beans
     */
    @SuppressWarnings("unchecked")
-   protected void createBean(AbstractClassBean<?> bean, Set<AbstractBean<?, ?>> beans)
+   protected void createBean(AbstractClassBean<?> bean, AnnotatedClass<?> annotatedClass, Set<AbstractBean<?, ?>> beans)
    {
       beans.add(bean);
       getManager().getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
@@ -254,7 +260,7 @@ public abstract class WebBeansBootstrap
             log.info("Web Bean: " + instanceBean);
          }
       }
-      for (AnnotatedMethod<Object> observerMethod : bean.getObserverMethods())
+      for (AnnotatedMethod<?> observerMethod : annotatedClass.getMethodsWithAnnotatedParameters(Observes.class))
       {
          ObserverImpl<?> observer = ObserverImpl.of(observerMethod, bean, getManager());
          if (observerMethod.getAnnotatedParameters(Observes.class).size() == 1)

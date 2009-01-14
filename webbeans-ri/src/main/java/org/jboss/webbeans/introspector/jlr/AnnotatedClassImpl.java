@@ -504,9 +504,10 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       return constructorsByArgumentMap.get(arguments);
    }
    
-   public Set<AnnotatedMethod<Object>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
+   public Set<AnnotatedMethod<?>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
-      return methodsByAnnotatedParameters.get(annotationType);
+      // TODO temporary fix
+      return (Set) methodsByAnnotatedParameters.get(annotationType);
    }
    
    public AnnotatedMethod<?> getMethod(Method methodDescriptor)

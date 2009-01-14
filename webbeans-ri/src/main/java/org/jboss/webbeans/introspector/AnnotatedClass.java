@@ -105,7 +105,7 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     * @return A set of abstracted methods with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<AnnotatedMethod<Object>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
+   public Set<AnnotatedMethod<?>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
 
    /**
     * Gets the superclass

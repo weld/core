@@ -133,20 +133,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * @return A set of producer fields. An empty set is returned if there are
     *         none present
     */
+   @Deprecated
    public Set<AnnotatedField<Object>> getProducerFields()
    {
       return getAnnotatedItem().getAnnotatedFields(Produces.class);
-   }
-
-   /**
-    * Gets the observer methods
-    * 
-    * @return A set of observer methods. An empty set is returned if there are
-    *         no matches.
-    */
-   public Set<AnnotatedMethod<Object>> getObserverMethods()
-   {
-      return getAnnotatedItem().getMethodsWithAnnotatedParameters(Observes.class);
    }
 
    /**

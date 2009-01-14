@@ -69,7 +69,7 @@ public class ObserverImpl<T> implements Observer<T>
    }   
    
    private Bean<?> observerBean;
-   private final AnnotatedMethod<Object> observerMethod;
+   private final AnnotatedMethod<?> observerMethod;
    private TransactionObservationPhase transactionObservationPhase;
    private boolean conditional;
    private ManagerImpl manager;
@@ -82,7 +82,7 @@ public class ObserverImpl<T> implements Observer<T>
     * @param manager The Web Beans manager
     * @return An observer implementation built from the method abstraction
     */
-   public static <T> ObserverImpl<T> of(AnnotatedMethod<Object> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   public static <T> ObserverImpl<T> of(AnnotatedMethod<?> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       return new ObserverImpl<T>(method, declaringBean, manager);
    }
@@ -95,7 +95,7 @@ public class ObserverImpl<T> implements Observer<T>
     * @param observerBean The observer bean
     * @param manager The Web Beans manager
     */
-   public ObserverImpl(final AnnotatedMethod<Object> observer, final Bean<?> observerBean, final ManagerImpl manager)
+   public ObserverImpl(final AnnotatedMethod<?> observer, final Bean<?> observerBean, final ManagerImpl manager)
    {
       this.manager = manager;
       this.observerBean = observerBean;

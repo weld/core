@@ -54,12 +54,6 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T>
    }
 
    @Override
-   public Set<AnnotatedMethod<Object>> getObserverMethods()
-   {
-      return Collections.emptySet();
-   }
-
-   @Override
    public Set<AnnotatedField<Object>> getProducerFields()
    {
       return Collections.emptySet();

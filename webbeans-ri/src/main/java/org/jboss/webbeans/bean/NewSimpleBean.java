@@ -76,12 +76,6 @@ public class NewSimpleBean<T> extends SimpleBean<T>
    }
 
    @Override
-   public Set<AnnotatedMethod<Object>> getObserverMethods()
-   {
-      return Collections.emptySet();
-   }
-
-   @Override
    public Set<AnnotatedField<Object>> getProducerFields()
    {
       return Collections.emptySet();
