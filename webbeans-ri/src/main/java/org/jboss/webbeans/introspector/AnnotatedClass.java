@@ -36,7 +36,7 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     * 
     * @return A set of abstracted fields
     */
-   public Set<AnnotatedField<Object>> getFields();
+   public Set<AnnotatedField<?>> getFields();
 
    /**
     * Gets all annotations which are annotated with the given annotation type

@@ -216,7 +216,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    private final Type[] actualTypeArguments;
 
    // The set of abstracted fields
-   private final Set<AnnotatedField<Object>> fields;
+   private final Set<AnnotatedField<?>> fields;
    // The map from annotation type to abstracted field with annotation
    private final AnnotatedFieldMap annotatedFields;
    // The map from annotation type to abstracted field with meta-annotation
@@ -264,7 +264,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
          actualTypeArguments = new Type[0];
       }
 
-      this.fields = new HashSet<AnnotatedField<Object>>();
+      this.fields = new HashSet<AnnotatedField<?>>();
       this.annotatedFields = new AnnotatedFieldMap();
       this.metaAnnotatedFields = new AnnotatedFieldMap();
       for (Class<?> c = clazz; c != Object.class && c != null; c = c.getSuperclass())
@@ -389,7 +389,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     * 
     * @return The set of abstracted fields
     */
-   public Set<AnnotatedField<Object>> getFields()
+   public Set<AnnotatedField<?>> getFields()
    {
       return Collections.unmodifiableSet(fields);
    }
