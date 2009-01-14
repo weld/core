@@ -59,7 +59,7 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
     * @param annotations The annotations array
     * @param type The type of the parameter
     */
-   public AnnotatedParameterImpl(Annotation[] annotations, Class<T> type)
+   private AnnotatedParameterImpl(Annotation[] annotations, Class<T> type)
    {
       super(buildAnnotationMap(annotations));
       this.type = type;
