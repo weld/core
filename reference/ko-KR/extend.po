@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: extend\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-13 16:21+1000\n"
+"PO-Revision-Date: 2009-01-14 15:36+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
+"\n"
 "\n"
 
 #. Tag: title
@@ -33,13 +36,13 @@ msgid ""
 "SPIs for the use of developers of portable extensions to Web Beans. For "
 "example, the following kinds of extensions were envisaged by the designers "
 "of Web Beans:"
-msgstr ""
+msgstr "Web Beans는 다른 기술과의 통합, 확장, 프레임워크에 대한 플랫폼이 되기 위한 것입니다. 따라서, Web Beans는 Web Beans로의 휴대용 확장에 대한 개발자의 사용을 위해 SPI 모음을 노출합니다. 예를 들어, 다음과 같은 종류의 확장은 Web Beans 개발자에 의해 구상되었습니다. "
 
 #. Tag: para
 #: extend.xml:14
 #, no-c-format
 msgid "integration with Business Process Management engines,"
-msgstr ""
+msgstr "비지니스 프로세스 관리 엔진과의 통합 "
 
 #. Tag: para
 #: extend.xml:17
@@ -47,13 +50,13 @@ msgstr ""
 msgid ""
 "integration with third-party frameworks such as Spring, Seam, GWT or Wicket, "
 "and"
-msgstr ""
+msgstr " Spring, Seam, GWT, Wicket과 같은 제삼자 프레임워크와의 통합 "
 
 #. Tag: para
 #: extend.xml:21
 #, no-c-format
 msgid "new technology based upon the Web Beans programming model."
-msgstr ""
+msgstr "Web Beans 프로그래밍 모델을 기반으로 하는 새로운 기술 "
 
 #. Tag: para
 #: extend.xml:25
@@ -61,7 +64,7 @@ msgstr ""
 msgid ""
 "The nerve center for extending Web Beans is the <literal>Manager</literal> "
 "object."
-msgstr ""
+msgstr "Web Beans 확장의 중심은 <literal>Manager</literal> 객체입니다.  "
 
 #. Tag: title
 #: extend.xml:29
@@ -75,7 +78,7 @@ msgstr "<literal>Manager</literal> 객체 "
 msgid ""
 "The <literal>Manager</literal> interface lets us register and obtain Web "
 "Beans, interceptors, decorators, observers and contexts programatically."
-msgstr ""
+msgstr "<literal>Manager</literal> 인터페이스는 Web Beans, 인터셉터, 데코레이터, 옵저버 및 컨텍스트를 프로그램적으로 획득하여 등록할 수 있게 합니다. "
 
 #. Tag: programlisting
 #: extend.xml:34
@@ -199,7 +202,7 @@ msgstr ""
 #: extend.xml:36
 #, no-c-format
 msgid "We can obtain an instance of <literal>Manager</literal> via injection:"
-msgstr ""
+msgstr "삽입을 통해 <literal>Manager</literal> 인스턴스를 얻을 수 있습니다: "
 
 #. Tag: programlisting
 #: extend.xml:38
@@ -220,7 +223,7 @@ msgid ""
 "Instances of the abstract class <literal>Bean</literal> represent Web Beans. "
 "There is an instance of <literal>Bean</literal> registered with the "
 "<literal>Manager</literal> object for every Web Bean in the application."
-msgstr ""
+msgstr "<literal>Bean</literal> 추상 클래스의 인스턴스는 Web Beans를 나타냅니다. 애플리케이션에 있는 모든 Web Bean에 해당하는 <literal>Manager</literal> 객체로 등록된 <literal>Bean</literal> 인스턴스가 있습니다.  "
 
 #. Tag: programlisting
 #: extend.xml:50
@@ -288,7 +291,7 @@ msgid ""
 "specification (simple and enterprise Web Beans, producer methods and JMS "
 "endpoints). For example, we could use the <literal>Bean</literal> class to "
 "allow objects managed by another framework to be injected into Web Beans."
-msgstr ""
+msgstr "Web Beans 사양 (엔터프라이즈 Web Beans, 생산자 방식 및 JMS 엔드포인트)에 의해 정의된 것 이상으로 새로운 종류의 Web Beans을 지원하기 위해 <literal>Bean</literal> 클래스를 확장하고 <literal>Manager.addBean()</literal>를 호출하여 인스턴스를 등록할 수 있습니다. 예를 들어, <literal>Bean</literal> 클래스를 사용하여 Web Beans에 주입된 다른 프레임워크에 의해 관리되는 객체를 허용하게 할 수 있습니다. "
 
 #. Tag: para
 #: extend.xml:60
@@ -297,7 +300,7 @@ msgid ""
 "There are two subclasses of <literal>Bean</literal> defined by the Web Beans "
 "specification: <literal>Interceptor</literal> and <literal>Decorator</"
 "literal>."
-msgstr ""
+msgstr "Web Beans 사양에 의해 정의되는 두 개의 <literal>Bean</literal> 하부 클래스가 있습니다: <literal>Interceptor</literal> 및 <literal>Decorator</literal>. "
 
 #. Tag: title
 #: extend.xml:67
@@ -311,7 +314,7 @@ msgstr "<literal>Context</literal> 인터페이스 "
 msgid ""
 "The <literal>Context</literal> interface supports addition of new scopes to "
 "Web Beans, or extension of the built-in scopes to new environments."
-msgstr ""
+msgstr "<literal>Context</literal> 인터페이스는 Web Beans에 새로운 범위를 추가로 지원하거나 새로운 환경에 내장된 범위를 확장 지원합니다.  "
 
 #. Tag: programlisting
 #: extend.xml:72
@@ -344,5 +347,5 @@ msgid ""
 "For example, we might implement <literal>Context</literal> to add a business "
 "process scope to Web Beans, or to add support for the conversation scope to "
 "an application that uses Wicket."
-msgstr ""
+msgstr "예를 들어, Web Beans에 비지니스 프로세스 범위를 추가하거나 또는 Wicket을 사용하는 애플리케이션에 컨버세이션 범위에 대한 지원을 추가하기 위해 <literal>Context</literal>를 구현할 수 있습니다. "
 

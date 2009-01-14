@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: part3\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-13 14:23+1000\n"
+"PO-Revision-Date: 2009-01-14 15:00+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 
 #. Tag: para
@@ -131,7 +132,7 @@ msgid ""
 "architecture. It encapsulates various properties of the role, including "
 "scope, interceptor bindings, deployment type, etc, into a single reusable "
 "package."
-msgstr "Web Beans의 <emphasis>전형적인 역할</emphasis>은 이러한 기능에 한 단계 더 나아갑니다. 전형적인 역할은 애플리케이션 구조에서의 일반적인 <emphasis>역할</emphasis>을 모델로 합니다. 이는 스코프, 인터셉터 바인딩, 배포 유형 등과 같은 다양한 역할의 속성으로 다시 사용 가능한 단일 패키지로 캡슐화합니다. "
+msgstr "Web Beans의 <emphasis>전형적인 역할</emphasis>은 이러한 기능에 한 단계 더 나아갑니다. 전형적인 역할은 애플리케이션 구조에서의 일반적인 <emphasis>역할</emphasis>을 모델로 합니다. 이는 범위, 인터셉터 바인딩, 배포 유형 등과 같은 다양한 역할의 속성으로 다시 사용 가능한 단일 패키지로 캡슐화합니다.  "
 
 #. Tag: para
 #: part3.xml:66

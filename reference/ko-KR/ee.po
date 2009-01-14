@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ee\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-13 16:26+1000\n"
+"PO-Revision-Date: 2009-01-14 17:13+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 
@@ -34,7 +35,7 @@ msgid ""
 "in Unified EL expressions in JSF and JSP pages. They may even be injected "
 "into some objects, such as Servlets and Message-Driven Beans, which are not "
 "Web Beans."
-msgstr ""
+msgstr "Web Beans는 Java EE 환경으로 완전 통합됩니다. Web Beans는 Java EE 리소스 및 JPA 지속성 컨텍스트로 액세스합니다. 이는 JSF 및 JSP 페이지에서 Unified EL 표현식으로 사용될 수 있습니다. 이는 Web Beans가 아닌 Servlets 및  Message-Driven Beans와 같은 일부 객체로 삽입될 수 도 있습니다. "
 
 #. Tag: title
 #: ee.xml:12
@@ -50,7 +51,7 @@ msgid ""
 "injection using <literal>@Resource</literal>, <literal>@EJB</literal> and "
 "<literal>@PersistenceContext</literal>. We've already seen a couple of "
 "examples of this, though we didn't pay much attention at the time:"
-msgstr ""
+msgstr "모든 엔터프라이즈 Web Beans는 <literal>@Resource</literal>, <literal>@EJB</literal>, <literal>@PersistenceContext</literal>를 사용하여 Java EE 의존성 삽입의 장점을 취할 수 있습니다. 이미 이에 대한 몇몇 예를 살펴보았습니다: "
 
 #. Tag: programlisting
 #: ee.xml:19
@@ -108,7 +109,7 @@ msgid ""
 "literal> callbacks are also supported for all simple and enterprise Web "
 "Beans. The <literal>@PostConstruct</literal> method is called after "
 "<emphasis>all</emphasis> injection has been performed."
-msgstr ""
+msgstr "Java EE <literal>@PostConstruct</literal> 및 <literal>@PreDestroy</literal> 콜백은 모든 엔터프라이즈 Web Beans에 대해 지원됩니다. <emphasis>모든</emphasis> 삽입이 실행된 후 <literal>@PostConstruct</literal> 방식이 호출됩니다. "
 
 #. Tag: para
 #: ee.xml:28
@@ -117,6 +118,8 @@ msgid ""
 "There is one restriction to be aware of here: <literal>@PersistenceContext"
 "(type=EXTENDED)</literal> is not supported for simple Web Beans."
 msgstr ""
+"여기서 유의해야 할 한 가지 제한 사항이 있습니다: <literal>@PersistenceContext"
+"(type=EXTENDED)</literal>는 단순한 Web Beans에 대해 지원되지 않습니다. "
 
 #. Tag: title
 #: ee.xml:35
