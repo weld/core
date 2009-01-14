@@ -32,7 +32,7 @@ public interface AnnotatedType<T> extends AnnotatedItem<T, Class<T>>
     * 
     * @return The abstracted superclass
     */
-   public AnnotatedType<Object> getSuperclass();
+   public AnnotatedType<?> getSuperclass();
    
    /**
     * Check if this is equivalent to a java class
