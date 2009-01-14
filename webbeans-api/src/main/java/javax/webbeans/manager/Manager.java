@@ -62,8 +62,6 @@ public interface Manager
 
    public Manager addDecorator(Decorator decorator);
    
-   public Manager validate();
-   
    public Manager parse(InputStream xmlStream);
    
    public Manager createChildManager();

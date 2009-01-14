@@ -2,7 +2,6 @@ package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +12,6 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.binding.NewBinding;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 
 public class NewSimpleBean<T> extends SimpleBean<T>

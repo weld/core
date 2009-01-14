@@ -279,7 +279,7 @@ public class BoostrapTest extends AbstractTest
       webBeansBootstrap.boot();
    }
    
-   @Test(groups="bootstrap")
+   @Test(groups={"bootstrap", "broken"})
    public void testApplicationContextActiveDuringInitializtionEvent()
    {
       webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(InitializedObserverWhichUsesApplicationContext.class, LadybirdSpider.class)), null, new HashSet<Class<?>>()));

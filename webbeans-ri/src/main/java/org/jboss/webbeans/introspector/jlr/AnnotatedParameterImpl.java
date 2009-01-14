@@ -18,11 +18,13 @@
 package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 
 import javax.webbeans.BindingType;
 import javax.webbeans.manager.Manager;
 
+import org.jboss.webbeans.introspector.AnnotatedMember;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 
 /**
@@ -44,13 +46,14 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
    private final boolean _final = false;
    // The static state
    private final boolean _static = false;
+   private final AnnotatedMember<?, ?> declaringMember;
 
    // Cached string representation
    private String toString;
    
-   public static <T> AnnotatedParameter<T> of(Annotation[] annotations, Class<T> clazz)
+   public static <T> AnnotatedParameter<T> of(Annotation[] annotations, Class<T> clazz, AnnotatedMember<?, ?> declaringMember)
    {
-      return new AnnotatedParameterImpl<T>(annotations, clazz);
+      return new AnnotatedParameterImpl<T>(annotations, clazz, declaringMember);
    }
 
    /**
@@ -59,10 +62,11 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
     * @param annotations The annotations array
     * @param type The type of the parameter
     */
-   private AnnotatedParameterImpl(Annotation[] annotations, Class<T> type)
+   public AnnotatedParameterImpl(Annotation[] annotations, Class<T> type, AnnotatedMember<?, ?> declaringMember)
    {
       super(buildAnnotationMap(annotations));
       this.type = type;
+      this.declaringMember = declaringMember;
    }
 
    /**
@@ -165,5 +169,9 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
       return toString;
    }
 
+   public AnnotatedMember<?, ?> getDeclaringMember()
+   {
+      return declaringMember;
+   }
 
 }

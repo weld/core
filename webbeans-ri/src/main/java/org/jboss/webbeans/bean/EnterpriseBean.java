@@ -389,12 +389,12 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          try
          {
-            manager.getInjectionPointProvider().pushInjectionMember(field);
+            manager.getInjectionPointProvider().pushInjectionPoint(field);
             field.inject(instance, manager);
          }
          finally
          {
-            manager.getInjectionPointProvider().popInjectionMember();
+            manager.getInjectionPointProvider().popInjectionPoint();
          }
       }
    }

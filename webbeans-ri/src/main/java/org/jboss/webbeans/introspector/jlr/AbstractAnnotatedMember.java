@@ -207,7 +207,7 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    {
       Object[] parameterValues = new Object[parameters.size()];
       InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
-      injectionPointProvider.pushInjectionMember(this);
+      injectionPointProvider.pushInjectionPoint(this);
       try
       {
          Iterator<AnnotatedParameter<?>> iterator = parameters.iterator();
@@ -220,15 +220,15 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
             }
             else
             {
-               injectionPointProvider.pushInjectionParameter(param);
+               injectionPointProvider.pushInjectionPoint(param);
                parameterValues[i] = param.getValue(manager);
-               injectionPointProvider.popInjectionParameter();
+               injectionPointProvider.popInjectionPoint();
             }
          }
       }
       finally
       {
-         injectionPointProvider.popInjectionMember();
+         injectionPointProvider.popInjectionPoint();
 
       }
       return parameterValues;

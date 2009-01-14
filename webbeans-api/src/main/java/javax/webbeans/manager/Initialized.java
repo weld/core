@@ -28,7 +28,7 @@ import javax.webbeans.BindingType;
 
 /**
  * Event binding type for the event that is raised by the Web Bean manager when
- * it has completed initialization and discovery.
+ * it has completed discovery and bean creation
  */
 @BindingType
 @Retention(RUNTIME)

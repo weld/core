@@ -42,7 +42,6 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.binding.CurrentBinding;
 import org.jboss.webbeans.injection.InjectionPointImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.AnnotatedMember;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem.AnnotationMap;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -418,8 +417,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       Set<InjectionPoint> injectionsPoints = new HashSet<InjectionPoint>();
       for (AnnotatedItem<?, ?> annotatedInjectionPoint : annotatedInjectionPoints)
       {
-         AnnotatedMember<?, ?> member = (AnnotatedMember<?, ?>) annotatedInjectionPoint;
-         injectionsPoints.add(InjectionPointImpl.of(member, this));
+         injectionsPoints.add(InjectionPointImpl.of(annotatedInjectionPoint, this));
       }
       return injectionsPoints;
    }

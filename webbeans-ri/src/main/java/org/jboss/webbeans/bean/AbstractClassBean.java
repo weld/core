@@ -23,20 +23,14 @@ import java.util.Set;
 
 import javax.webbeans.BindingType;
 import javax.webbeans.DefinitionException;
-import javax.webbeans.Dependent;
 import javax.webbeans.Destructor;
 import javax.webbeans.Disposes;
 import javax.webbeans.Initializer;
 import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 import javax.webbeans.Production;
-import javax.webbeans.UnproxyableDependencyException;
-import javax.webbeans.UnserializableDependencyException;
-import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -88,23 +82,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       checkBeanImplementation();
       // TODO Interceptors
       initInitializerMethods();
-   }
-
-   protected void checkPassivation()
-   {
-      for (AnnotatedField<?> injectableField : injectableFields)
-      {
-         if (injectableField.isTransient())
-         {
-            continue;
-         }
-
-         Bean<?> bean = CurrentManager.rootManager().resolveByType(injectableField).iterator().next();
-         if (Dependent.class.equals(bean.getScopeType()) && !bean.isSerializable())
-         {
-            throw new UnserializableDependencyException("Dependent Web Beans cannot be injected into non-transient fields of beans declaring a passivating scope");
-         }
-      }
    }
 
    /**
@@ -214,10 +191,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       if (Reflections.isAbstract(getType()))
       {
          throw new DefinitionException("Web Bean implementation class " + type + " cannot be declared abstract");
-      }
-      if (MetaDataCache.instance().getScopeModel(getScopeType()).isNormal() && !getAnnotatedItem().isProxyable())
-      {
-         throw new UnproxyableDependencyException(toString() + " is not proxyable");
       }
    }
 

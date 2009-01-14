@@ -52,6 +52,7 @@ import org.jboss.webbeans.test.contexts.valid.Joensuu;
 import org.jboss.webbeans.test.contexts.valid.Jyvaskyla;
 import org.jboss.webbeans.test.contexts.valid.Turku;
 import org.jboss.webbeans.test.contexts.valid.Vaasa;
+import org.jboss.webbeans.util.BeanValidation;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -98,7 +99,6 @@ public class PassivatingContextTest extends AbstractTest
    public void testSimpleWebBeanWithNonSerializableImplementationClassFails()
    {
       registerBeans(new Class<?>[] { Hamina.class });
-      manager.validate();
    }
 
    /**
@@ -300,7 +300,7 @@ public class PassivatingContextTest extends AbstractTest
    public void testSimpleDependentWebBeanWithNonSerializableImplementationInjectedIntoNonTransientFieldOfWebBeanWithPassivatingScopeFails()
    {
       registerBeans(new Class<?>[] { Violation.class, Vantaa.class });
-      manager.validate();
+      BeanValidation.validate(manager.getBeans());
    }
 
    /**
@@ -333,7 +333,7 @@ public class PassivatingContextTest extends AbstractTest
    public void testSimpleDependentWebBeanWithNonSerializableImplementationInjectedIntoConstructorParameterOfWebBeanWithPassivatingScopeFails()
    {
       registerBeans(new Class<?>[] { Violation.class, Loviisa.class} );
-      manager.validate();
+      BeanValidation.validate(manager.getBeans());
    }
 
    /**
@@ -350,7 +350,7 @@ public class PassivatingContextTest extends AbstractTest
    public void testSimpleDependentWebBeanWithNonSerializableImplementationInjectedIntoInitializerParameterOfWebBeanWithPassivatingScopeFails()
    {
       registerBeans(new Class<?>[] { Violation.class, Forssa.class });
-      manager.validate();
+      BeanValidation.validate(manager.getBeans());
    }
 
    /**
@@ -368,7 +368,7 @@ public class PassivatingContextTest extends AbstractTest
    {
       manager.addBean(SimpleBean.of(Violation.class, manager));
       Bean<?> producerBean = registerProducerBean(Peraseinajoki.class, "create", Violation2.class);
-      manager.validate();
+      BeanValidation.validate(manager.getBeans());
    }
 
    /**
@@ -491,6 +491,7 @@ public class PassivatingContextTest extends AbstractTest
       registerProducerBean(CityProducer.class, "reference", Violation.class);
       EnterpriseBean<Pietarsaari> bean = EnterpriseBean.of(Pietarsaari.class, manager);
       // TODO: hack
+      BeanValidation.validate(manager.getBeans());
       bean.postConstruct(null);
       assert true;
    }
@@ -573,57 +574,6 @@ public class PassivatingContextTest extends AbstractTest
       }
       manager.addBean(bean);
       return manager.getInstance(bean);
-   }
-
-   private boolean hasField(Class<?> clazz, String name)
-   {
-      try
-      {
-         Field field = clazz.getDeclaredField(name);
-      }
-      catch (NoSuchFieldException e)
-      {
-         return false;
-      }
-      return true;
-   }
-
-   private Method getMethod(Class<?> clazz, String name)
-   {
-      for (Method method : clazz.getDeclaredMethods())
-      {
-         if (method.getName().equals(name))
-         {
-            return method;
-         }
-      }
-      return null;
-   }
-
-   private AbstractProducerBean<?, ?> registerProducerBean(Class<?> producerBeanClass, String fieldOrMethodName, Class<?> productClass)
-   {
-      SimpleBean<?> producerContainerBean = SimpleBean.of(producerBeanClass, manager);
-      manager.addBean(producerContainerBean);
-      AbstractProducerBean<?, ?> producerBean = null;
-      try
-      {
-         if (hasField(producerBeanClass, fieldOrMethodName))
-         {
-            Field producerField = producerBeanClass.getDeclaredField(fieldOrMethodName);
-            producerBean = ProducerFieldBean.of(producerField, producerContainerBean, manager);
-         }
-         else
-         {
-            Method producerMethod = getMethod(producerBeanClass, fieldOrMethodName);
-            producerBean = ProducerMethodBean.of(producerMethod, producerContainerBean, manager);
-         }
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException("Could not initialize producer bean", e);
-      }
-      manager.addBean(producerBean);
-      return producerBean;
    }
 
    /**

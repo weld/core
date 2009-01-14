@@ -31,131 +31,182 @@ import javax.webbeans.InjectionPoint;
 import javax.webbeans.Standard;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMember;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 
 /**
- * The container provided implementation for InjectionPoint beans
+ * Represents an injection point
  * 
  * @author David Allen
+ * @author Nicklas Karlsson
  */
 @Standard
 @Dependent
 public class InjectionPointImpl implements InjectionPoint
 {
-   private final AnnotatedMember<?, ?> memberInjectionPoint;
-   private final AnnotatedParameter<?> parameterInjectionPoint;
+   // The underlying annotated item
+   private final AnnotatedItem<?, ?> annotatedItem;
+   // The containing bean
    private final Bean<?> bean;
 
    /**
-    * Creates a new metadata bean for the given injection point information.
+    * Creates a new injection point from an annotated item and a bean
     * 
-    * @param injectedMember The member of the bean being injected
-    * @param bean The bean being injected
-    * @param beanInstance The instance of the bean being injected
+    * @param annotatedItem The annotated item
+    * @param bean The containing bean
     */
-   public InjectionPointImpl(AnnotatedField<?> injectedMember, Bean<?> bean)
+   protected InjectionPointImpl(AnnotatedItem<?, ?> annotatedItem, Bean<?> bean)
    {
-      this.memberInjectionPoint = injectedMember;
-      this.parameterInjectionPoint = null;
+      this.annotatedItem = annotatedItem;
       this.bean = bean;
    }
 
    /**
-    * Creates a new injection point representing a parameter to a constructor or method.
+    * Static accessor for construction
     * 
-    * @param injectedMember The constructor or method member
-    * @param parameterInjectionPoint The parameter
-    * @param bean The bean owning the injectedMember
+    * @param item The annotated item
+    * @param bean The containing bean
+    * @return an InjectionPointImpl instance
     */
-   public InjectionPointImpl(AnnotatedMember<?, ?> injectedMember, AnnotatedParameter<?> parameterInjectionPoint, Bean<?> bean)
+   public static InjectionPointImpl of(AnnotatedItem<?, ?> item, Bean<?> bean)
    {
-      this.memberInjectionPoint = injectedMember;
-      this.parameterInjectionPoint = parameterInjectionPoint;
-      this.bean = bean;
+      return new InjectionPointImpl(item, bean);
    }
 
    /**
-    * Returns a new injection point of any type.  If this is a parameter, the
-    * information about the parameter is null.
+    * Indicates if underlying item is a field
     * 
-    * @param member The member being injected
-    * @param bean The bean
-    * @return a new injection point metadata bean
+    * @return True if field, false otherwise
     */
-   public static InjectionPointImpl of(AnnotatedMember<?, ?> member, Bean<?> bean)
-   {
-      if (member instanceof AnnotatedField)
-         return new InjectionPointImpl((AnnotatedField<?>) member, bean);
-      else
-         return new InjectionPointImpl(member, null, bean);
-   }
-
    public boolean isField()
    {
       return getMember() instanceof Field;
    }
 
+   /**
+    * Indicates if underlying item is a method
+    * 
+    * @return True if method, false otherwise
+    */
    public boolean isMethod()
    {
       return getMember() instanceof Method;
    }
 
+   /**
+    * Indicates if underlying item is a constructor
+    * 
+    * @return True if constructor, false otherwise
+    */
    public boolean isConstructor()
    {
       return getMember() instanceof Constructor;
    }
 
+   /**
+    * Indicates if underlying item is an intializer
+    * 
+    * @return True if intializer, false otherwise
+    */
    public boolean isInitializer()
    {
       return isMethod() && isAnnotationPresent(Initializer.class);
    }
 
+   /**
+    * Gets an annotation of a given type from the injection point
+    * 
+    * @param annotationType The meta-annotation to match
+    * @return The found annotation
+    * @see javax.webbeans.InjectionPoint#getAnnotation(Class)
+    */
    public <T extends Annotation> T getAnnotation(Class<T> annotationType)
    {
-      return this.memberInjectionPoint.getAnnotation(annotationType);
+      return annotatedItem.getAnnotation(annotationType);
    }
 
+   /**
+    * Gets the array of annotations on the injection point
+    * 
+    * @return The annotations
+    * @see javax.webbeans.InjectionPoint#getAnnotations()
+    */
    public Annotation[] getAnnotations()
    {
-      return this.memberInjectionPoint.getAnnotations().toArray(new Annotation[0]);
+      return annotatedItem.getAnnotations().toArray(new Annotation[0]);
    }
 
+   /**
+    * Gets the containing bean
+    * 
+    * @return The bean
+    * @see javax.webbeans.InjectionPoint#getBean()
+    */
    public Bean<?> getBean()
    {
       return this.bean;
    }
 
+   /**
+    * Gets the bindings of the injection point
+    * 
+    * @return The bindings
+    * @see javax.webbeans.InjectionPoint#getBindings()
+    */
    public Set<Annotation> getBindings()
    {
-      if (isField())
-         return this.memberInjectionPoint.getBindingTypes();
-      else
-         return this.parameterInjectionPoint.getBindingTypes();
+      return annotatedItem.getBindingTypes();
    }
 
+   /**
+    * Gets the member of the injection
+    * 
+    * @return The underlying member
+    * @see javax.webbeans.InjectionPoint#getMember()
+    */
    public Member getMember()
    {
-      return this.memberInjectionPoint.getMember();
+      if (annotatedItem instanceof AnnotatedMember)
+      {
+         return ((AnnotatedMember<?, ?>) annotatedItem).getMember();
+      }
+      else if (annotatedItem instanceof AnnotatedParameter<?>)
+      {
+         return ((AnnotatedParameter<?>) annotatedItem).getDeclaringMember().getMember();
+      }
+      else
+      {
+         throw new IllegalArgumentException("Annotated item " + annotatedItem + " is of an unsupported type");
+      }
    }
 
+   /**
+    * Gets the type of the injection point
+    * 
+    * @return The type
+    * @see javax.webbeans.InjectionPoint#getType
+    */
    public Type getType()
    {
-      if (isField())
-         return this.memberInjectionPoint.getType();
-      else
-         return this.parameterInjectionPoint.getType();
+      return annotatedItem.getType();
    }
 
+   /**
+    * Indicates if an annotation is present on the injection point
+    *
+    * @param annotationType The annotation type to match
+    * @return True if present, false otherwise
+    * @see javax.webbeans.InjectionPoint#isAnnotationPresent(Class)
+    */
    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
    {
-      return this.memberInjectionPoint.isAnnotationPresent(annotationType);
+      return annotatedItem.isAnnotationPresent(annotationType);
    }
 
    @Override
    public String toString()
    {
-      return memberInjectionPoint.toString();
+      return annotatedItem.toString();
    }
 }

@@ -17,37 +17,30 @@
 
 package org.jboss.webbeans.injection;
 
-import java.lang.reflect.Member;
 import java.util.Stack;
 
 import javax.webbeans.InjectionPoint;
 import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.introspector.AnnotatedField;
-import org.jboss.webbeans.introspector.AnnotatedMember;
-import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.introspector.AnnotatedItem;
 
 /**
- * Used to create the container provided implementation for the InjectionPoint
- * beans. The instance maintains state information on a stack so that this
- * information is readily available for construction of a new InjectionPoint
- * bean instance.
+ * Provides injection point metadata
  * 
  * @author David Allen
- * 
+ * @author Nicklas Karlsson
  */
 public class InjectionPointProvider
 {
+   // The stack of beans
    private final Stack<Bean<?>> beans = new Stack<Bean<?>>();
-   private final Stack<AnnotatedMember<?, ? extends Member>> injectionPoints = new Stack<AnnotatedMember<?, ? extends Member>>();
-   private final Stack<AnnotatedParameter<?>> injectionParameters = new Stack<AnnotatedParameter<?>>();
+   // The stack of injection points
+   private final Stack<InjectionPoint> injectionPoints = new Stack<InjectionPoint>();
 
    /**
-    * Pushes the current bean that is being instantiated onto a stack for later
-    * use. This always pushes a null bean instance on the stack too which can
-    * later be replaced by a real instance.
+    * Pushes a bean to the stack
     * 
-    * @param currentBean The bean being instantiated
+    * @param currentBean The bean to push
     */
    public void pushBean(Bean<?> currentBean)
    {
@@ -55,133 +48,77 @@ public class InjectionPointProvider
    }
 
    /**
-    * Pushes the current injection point member being processed.
-    * 
-    * @param injectedMember The metadata for the injection point member
-    */
-   public void pushInjectionMember(AnnotatedMember<?, ? extends Member> injectedMember)
-   {
-      injectionPoints.push(injectedMember);
-   }
-
-   public void pushInjectionParameter(AnnotatedParameter<?> parameter)
-   {
-      injectionParameters.push(parameter);
-   }
-
-   /**
-    * Pops the bean from the stack. This should be called whenever all
-    * processing is complete for instantiating a bean.
+    * Pops a bean from the stack
     */
    public void popBean()
    {
+      if (beans.isEmpty())
+      {
+         return;
+      }
       beans.pop();
    }
 
    /**
-    * Pops the current injection point being processed. This should be called
-    * once the injection point is bound.
+    * Pushes an injection point to the stack
+    * 
+    * @param injectionPoint The injection point to push
     */
-   public void popInjectionMember()
+   public void pushInjectionPoint(AnnotatedItem<?, ?> injectionPoint)
    {
+      injectionPoints.push(InjectionPointImpl.of(injectionPoint, getCurrentBean()));
+   }
+
+   /**
+    * Pops an injection point
+    */
+   public void popInjectionPoint()
+   {
+      if (injectionPoints.isEmpty())
+      {
+         return;
+      }
       injectionPoints.pop();
    }
 
-   public void popInjectionParameter()
-   {
-      injectionParameters.pop();
-   }
-
    /**
-    * Returns the InjectionPoint where the current bean under construction is
-    * being injected.
+    * Gets the current injection point
     * 
-    * @return a new injection point metadata object
-    */
-   public InjectionPoint getPreviousInjectionPoint()
-   {
-      AnnotatedMember<?, ? extends Member> member = getPreviousInjectionMember();
-      if (member instanceof AnnotatedField)
-         return new InjectionPointImpl((AnnotatedField<?>) member, getPreviousBean());
-      else
-         return new InjectionPointImpl(member, getPreviousParameter(), getPreviousBean());
-   }
-
-   /**
-    * Returns the injection point metadata for the injection point currently
-    * being injected.
-    * 
-    * @return current injection point metadata object
+    * @return The current injection point or null if there is none on the stack
     */
    public InjectionPoint getCurrentInjectionPoint()
    {
-      AnnotatedMember<?, ? extends Member> member = getCurrentInjectionMember();
-      if (member instanceof AnnotatedField)
-         return new InjectionPointImpl((AnnotatedField<?>) member, getCurrentBean());
-      else
-         return new InjectionPointImpl(member, getCurrentParameter(), getCurrentBean());
+      return injectionPoints.isEmpty() ? null : injectionPoints.peek();
    }
 
+   /**
+    * Gets the previous injection point
+    * 
+    * @return The previous injection point or null if there is none on the stack
+    */
+   public InjectionPoint getPreviousInjectionPoint()
+   {
+      return injectionPoints.size() < 2 ? null : injectionPoints.elementAt(injectionPoints.size() - 2);
+   }
+
+   /**
+    * Gets the current bean
+    * 
+    * @return The current bean or null if there is none on the stack
+    */   
    protected Bean<?> getCurrentBean()
    {
-      return beans.peek();
+      return beans.isEmpty() ? null : beans.peek();
    }
 
-   protected AnnotatedMember<?, ? extends Member> getCurrentInjectionMember()
-   {
-      if (injectionPoints.size() > 0)
-         return injectionPoints.peek();
-      else
-         return null;
-   }
-
-   protected AnnotatedParameter<?> getCurrentParameter()
-   {
-      return injectionParameters.peek();
-   }
-
+   /**
+    * Gets the previous bean
+    * 
+    * @return The previous bean or null if there is none on the stack
+    */   
    protected Bean<?> getPreviousBean()
    {
-      Bean<?> currentBean = beans.pop();
-      Bean<?> result = beans.peek();
-      beans.push(currentBean);
-      return result;
-   }
-
-   protected AnnotatedMember<?, ? extends Member> getPreviousInjectionMember()
-   {
-      AnnotatedMember<?, ? extends Member> result = null;
-      if (injectionPoints.size() < beans.size())
-      {
-         // This case only occurs when some internal RI code wants the
-         // injection point but did not push an injection point that
-         // this metadata goes into.
-         result = injectionPoints.peek();
-      }
-      else
-      {
-         AnnotatedMember<?, ? extends Member> currentMember = injectionPoints.pop();
-         result = injectionPoints.peek();
-         injectionPoints.push(currentMember);
-      }
-      return result;
-   }
-
-   protected AnnotatedParameter<?> getPreviousParameter()
-   {
-      AnnotatedParameter<?> result = null;
-      if (getCurrentInjectionMember() instanceof AnnotatedField)
-      {
-         // Since no parameter is pushed, top of stack is the one wanted
-         result = injectionParameters.peek();
-      }
-      else
-      {
-         AnnotatedParameter<?> currentParameter = injectionParameters.pop();
-         result = injectionParameters.peek();
-         injectionParameters.push(currentParameter);
-      }
-      return result;
+      return beans.size() < 2 ? null : beans.elementAt(beans.size() - 2);
    }
 
 }

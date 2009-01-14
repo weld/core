@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import javax.webbeans.Production;
@@ -13,7 +15,10 @@ import javax.webbeans.Standard;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
+import org.jboss.webbeans.bean.AbstractProducerBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.bean.ProducerFieldBean;
+import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
@@ -70,6 +75,58 @@ public class AbstractTest
       addStandardDeploymentTypesForTests();
    }
 
+   private boolean hasField(Class<?> clazz, String name)
+   {
+      try
+      {
+         Field field = clazz.getDeclaredField(name);
+      }
+      catch (NoSuchFieldException e)
+      {
+         return false;
+      }
+      return true;
+   }
+   
+   private Method getMethod(Class<?> clazz, String name)
+   {
+      for (Method method : clazz.getDeclaredMethods())
+      {
+         if (method.getName().equals(name))
+         {
+            return method;
+         }
+      }
+      return null;
+   }
+   
+   protected AbstractProducerBean<?, ?> registerProducerBean(Class<?> producerBeanClass, String fieldOrMethodName, Class<?> productClass)
+   {
+      SimpleBean<?> producerContainerBean = SimpleBean.of(producerBeanClass, manager);
+      manager.addBean(producerContainerBean);
+      AbstractProducerBean<?, ?> producerBean = null;
+      try
+      {
+         if (hasField(producerBeanClass, fieldOrMethodName))
+         {
+            Field producerField = producerBeanClass.getDeclaredField(fieldOrMethodName);
+            producerBean = ProducerFieldBean.of(producerField, producerContainerBean, manager);
+         }
+         else
+         {
+            Method producerMethod = getMethod(producerBeanClass, fieldOrMethodName);
+            producerBean = ProducerMethodBean.of(producerMethod, producerContainerBean, manager);
+         }
+      }
+      catch (Exception e)
+      {
+         throw new RuntimeException("Could not initialize producer bean", e);
+      }
+      manager.addBean(producerBean);
+      return producerBean;
+   }
+   
+   
    protected <T> AbstractClassBean<T> registerBean(Class<T> clazz)
    {
       AbstractClassBean<T> bean = null;

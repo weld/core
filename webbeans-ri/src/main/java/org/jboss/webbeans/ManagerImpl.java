@@ -37,15 +37,12 @@ import javax.webbeans.BindingType;
 import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.DeploymentException;
 import javax.webbeans.DuplicateBindingTypeException;
-import javax.webbeans.InjectionPoint;
-import javax.webbeans.NullableDependencyException;
 import javax.webbeans.Observer;
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
 import javax.webbeans.TypeLiteral;
 import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.UnsatisfiedDependencyException;
-import javax.webbeans.UnserializableDependencyException;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Context;
 import javax.webbeans.manager.Decorator;
@@ -65,6 +62,7 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.resources.spi.Naming;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.webbeans.util.BeanValidation;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 
@@ -595,11 +593,14 @@ public class ManagerImpl implements Manager, Serializable
       else if (beans.size() > 1)
       {
          throw new AmbiguousDependencyException(element + "Resolved multiple Web Beans");
-      }
-      else
+      }      
+      Bean<T> bean = beans.iterator().next();
+      boolean normalScoped = MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal();
+      if (normalScoped && !Proxies.isBeanProxyable(bean))
       {
-         return getInstance(beans.iterator().next());
+         throw new UnproxyableDependencyException("Normal scoped bean " + bean + " is not proxyable");
       }
+      return getInstance(bean);
    }
 
    /**
@@ -716,43 +717,6 @@ public class ManagerImpl implements Manager, Serializable
    public Manager parse(InputStream xmlStream)
    {
       // TODO Implement XML parsing
-      return this;
-   }
-
-   public Manager validate()
-   {
-      for (Bean<?> bean : beans)
-      {
-         if (Reflections.isPassivatingBean(bean) && !bean.isSerializable())
-         {
-            throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scopes but has non-serializable dependencies");
-         }
-         for (InjectionPoint injectionPoint : bean.getInjectionPoints())
-         {
-            Class<?> type = (Class<?>) injectionPoint.getType();
-            Annotation[] bindingTypes = injectionPoint.getBindings().toArray(new Annotation[0]);
-            Set<?> resolvedBeans = resolveByType(type, bindingTypes);
-            if (resolvedBeans.isEmpty())
-            {
-               throw new UnsatisfiedDependencyException("The injection point " + injectionPoint + " has unsatisfied dependencies for type " + type + " and binding types " + bindingTypes + " in " + bean);
-            }
-            if (resolvedBeans.size() > 1)
-            {
-               throw new AmbiguousDependencyException("The injection point " + injectionPoint + " has ambiguos dependencies for type " + type + " and binding types " + bindingTypes + " in " + bean);
-            }
-            Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
-            boolean normalScoped = MetaDataCache.instance().getScopeModel(resolvedBean.getScopeType()).isNormal();
-            if (normalScoped && !Proxies.isProxyable(type))
-            {
-               throw new UnproxyableDependencyException("The injection point " + injectionPoint + " has non-proxyable dependencies");
-            }
-            if (Reflections.isPrimitive((Class<?>) injectionPoint.getType()) && resolvedBean.isNullable())
-            {
-               throw new NullableDependencyException("The injection point " + injectionPoint + " has nullable dependencies");
-            }
-            // Specialization checks
-         }
-      }
       return this;
    }
 

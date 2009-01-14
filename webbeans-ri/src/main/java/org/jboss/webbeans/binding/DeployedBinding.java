@@ -15,27 +15,17 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.introspector;
+package org.jboss.webbeans.binding;
 
-import javax.webbeans.manager.Manager;
-
+import javax.webbeans.AnnotationLiteral;
+import javax.webbeans.manager.Deployed;
 
 /**
- * AnnotatedParameter provides a uniform access to a method parameter defined
- * either in Java or XML
+ * Annotation literal for @Deployed
  * 
- * @author Pete Muir
- * @param <T>
+ * @author Nicklas Karlsson
  */
-public interface AnnotatedParameter<T> extends AnnotatedItem<T, Object>
+public class DeployedBinding extends AnnotationLiteral<Deployed> implements Deployed
 {
-   /**
-    * Gets the actual value of the parameter from the manager
-    * 
-    * @param manager The Web Beans manager
-    * @return The value
-    */
-   public T getValue(Manager manager);
    
-   public AnnotatedMember<?, ?> getDeclaringMember();
 }

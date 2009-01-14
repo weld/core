@@ -228,7 +228,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getEJBAnnotation()))
       {
-         InjectionPoint injectionPoint = new InjectionPointImpl(field, this);
+         InjectionPoint injectionPoint = InjectionPointImpl.of(field, this);
          Object ejbInstance = manager.getEjbResolver().resolveEjb(injectionPoint, manager.getNaming());
          field.inject(beanInstance, ejbInstance);
       }
@@ -246,7 +246,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          {
             throw new ExecutionException("Cannot inject an extended persistence context into " + field);
          }
-         InjectionPoint injectionPoint = new InjectionPointImpl(field, this);
+         InjectionPoint injectionPoint = InjectionPointImpl.of(field, this);
          Object puInstance = manager.getEjbResolver().resolvePersistenceContext(injectionPoint, manager.getNaming());
          field.inject(beanInstance, puInstance);
       }
@@ -260,7 +260,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
 
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getResourceAnnotation()))
       {
-         InjectionPoint injectionPoint = new InjectionPointImpl(field, this);
+         InjectionPoint injectionPoint = InjectionPointImpl.of(field, this);
          Object resourceInstance = manager.getEjbResolver().resolveResource(injectionPoint, manager.getNaming());
          field.inject(beanInstance, resourceInstance);
       }
@@ -277,14 +277,14 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
       for (AnnotatedField<?> injectableField : getInjectableFields())
       {
-         injectionPointProvider.pushInjectionMember(injectableField);
+         injectionPointProvider.pushInjectionPoint(injectableField);
          try
          {
             injectableField.inject(instance, manager);
          }
          finally
          {
-            injectionPointProvider.popInjectionMember();
+            injectionPointProvider.popInjectionPoint();
          }
       }
    }

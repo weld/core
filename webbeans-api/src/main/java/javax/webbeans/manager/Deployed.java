@@ -15,27 +15,25 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.introspector;
+package javax.webbeans.manager;
 
-import javax.webbeans.manager.Manager;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import javax.webbeans.BindingType;
 
 /**
- * AnnotatedParameter provides a uniform access to a method parameter defined
- * either in Java or XML
- * 
- * @author Pete Muir
- * @param <T>
+ * Event binding type for the event that is raised by the Web Bean manager when
+ * it has completed resolving and validation
  */
-public interface AnnotatedParameter<T> extends AnnotatedItem<T, Object>
+
+@BindingType
+@Retention(RUNTIME)
+@Target( { FIELD, PARAMETER })
+public @interface Deployed
 {
-   /**
-    * Gets the actual value of the parameter from the manager
-    * 
-    * @param manager The Web Beans manager
-    * @return The value
-    */
-   public T getValue(Manager manager);
-   
-   public AnnotatedMember<?, ?> getDeclaringMember();
 }

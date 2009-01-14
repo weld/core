@@ -197,22 +197,6 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       }
    }
 
-   // private boolean recieverIsPassivating()
-   // {
-   // InjectionPoint injectionPoint =
-   // manager.getInjectionPointFactory().getPreviousInjectionPoint();
-   // if (injectionPoint.getBean() instanceof EnterpriseBean)
-   // {
-   // return ((EnterpriseBean<?>)
-   // injectionPoint.getBean()).getEjbDescriptor().isStateful();
-   // }
-   // else
-   // {
-   // return
-   // MetaDataCache.instance().getScopeModel(injectionPoint.getBean().getScopeType()).isPassivating();
-   // }
-   // }
-
    /**
     * Gets the receiver of the product
     * 

@@ -64,7 +64,6 @@ public class DependentContext extends AbstractContext
       {
          throw new ContextNotActiveException();
       }
-      // Dependent contexts don't really use any BeanMap storage
       return create == false ? null : bean.create();
    }
 

@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.webbeans.DefinitionException;
@@ -33,6 +34,7 @@ import javax.webbeans.Observer;
 import javax.webbeans.Observes;
 import javax.webbeans.Obtains;
 import javax.webbeans.Produces;
+import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
@@ -47,6 +49,7 @@ import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.binding.InitializedBinding;
+import org.jboss.webbeans.binding.DeployedBinding;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
@@ -63,6 +66,7 @@ import org.jboss.webbeans.resources.spi.Naming;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.transaction.Transaction;
+import org.jboss.webbeans.util.BeanValidation;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -296,10 +300,13 @@ public abstract class WebBeansBootstrap
          // bean is an EJB!
          getManager().getEjbDescriptorCache().addAll(getWebBeanDiscovery().discoverEjbs());
          registerBeans(getWebBeanDiscovery().discoverWebBeanClasses());
-         log.info("Validing Web Bean injection points");
-         getManager().getResolver().resolveInjectionPoints();
          getManager().fireEvent(getManager(), new InitializedBinding());
-         log.info("Web Beans RI initialized");
+         List<Bean<?>> beans = getManager().getBeans();
+         log.info("Initialization completed. Validing " + beans.size() + " Web Beans");
+         getManager().getResolver().resolveInjectionPoints();
+         BeanValidation.validate(getManager().getBeans());
+         getManager().fireEvent(getManager(), new DeployedBinding());
+         log.info("Deploy complete");
       }
    }
 

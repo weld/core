@@ -29,7 +29,6 @@ import java.util.TreeSet;
 import java.util.concurrent.Callable;
 
 import javax.webbeans.InjectionPoint;
-import javax.webbeans.NullableDependencyException;
 import javax.webbeans.TypeLiteral;
 import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Decorator;
@@ -140,18 +139,7 @@ public class Resolver
 
          public Set<Bean<T>> call() throws Exception
          {
-            Set<Bean<T>> beans = retainHighestPrecedenceBeans(getMatchingBeans(element, manager.getBeans()), manager.getEnabledDeploymentTypes());
-            if (element.getType().isPrimitive())
-            {
-               for (Bean<?> bean : beans)
-               {
-                  if (bean.isNullable())
-                  {
-                     throw new NullableDependencyException("Primitive injection points resolves to nullable web bean");
-                  }
-               }
-            }
-            return beans;
+            return retainHighestPrecedenceBeans(getMatchingBeans(element, manager.getBeans()), manager.getEnabledDeploymentTypes());
          }
 
       };

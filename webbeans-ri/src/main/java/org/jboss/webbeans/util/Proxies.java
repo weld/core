@@ -7,6 +7,8 @@ import java.util.Set;
 
 import javassist.util.proxy.ProxyFactory;
 
+import javax.webbeans.manager.Bean;
+
 public class Proxies
 {
 
@@ -110,7 +112,13 @@ public class Proxies
       return TypeInfo.ofTypes(types).createProxyFactory();
    }
 
-   public static boolean isProxyable(Class<?> clazz)
+   /**
+    * Inidicates if a class is proxyable
+    * 
+    * @param clazz The class to test
+    * @return True if proxyable, false otherwise
+    */
+   public static boolean isClassProxyable(Class<?> clazz)
    {
       if (Reflections.getConstructor(clazz) == null)
       {
@@ -132,6 +140,29 @@ public class Proxies
       {
          return true;
       }
+   }
+
+   /**
+    * Indicates if a bean is proxyable
+    * 
+    * @param bean The bean to test
+    * @return True if proxyable, false otherwise
+    */
+   public static boolean isBeanProxyable(Bean<?> bean)
+   {
+      for (Type apiType : bean.getTypes())
+      {
+         if (Object.class.equals(apiType))
+         {
+            continue;
+         }
+         boolean isClass = !((Class<?>) apiType).isInterface();
+         if (isClass && !isClassProxyable((Class<?>) apiType))
+         {
+            return false;
+         }
+      }
+      return true;
    }
 
 }

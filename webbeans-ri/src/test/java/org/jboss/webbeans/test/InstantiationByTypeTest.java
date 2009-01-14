@@ -10,6 +10,7 @@ import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.binding.CurrentBinding;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
@@ -24,6 +25,7 @@ import org.jboss.webbeans.test.beans.Tuna;
 import org.jboss.webbeans.test.beans.broken.FinalTuna;
 import org.jboss.webbeans.test.beans.broken.ParameterizedBean;
 import org.jboss.webbeans.test.bindings.AnotherDeploymentTypeAnnotationLiteral;
+import org.jboss.webbeans.util.BeanValidation;
 import org.testng.annotations.Test;
 
 @SpecVersion("20081206")
@@ -75,7 +77,6 @@ public class InstantiationByTypeTest extends AbstractTest
       manager.addBean(codBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
-      
       manager.getInstanceByType(ScottishFish.class, new AnnotationLiteral<Whitefish>(){});
    }
    
@@ -89,7 +90,6 @@ public class InstantiationByTypeTest extends AbstractTest
       manager.addBean(codBean);
       manager.addBean(salmonBean);
       manager.addBean(soleBean);
-      
       manager.getInstanceByType(Tuna.class, new CurrentBinding());
    }
    
@@ -98,7 +98,7 @@ public class InstantiationByTypeTest extends AbstractTest
    {
       Bean<FinalTuna> FinalTunaBean = SimpleBean.of(FinalTuna.class, manager);
       manager.addBean(FinalTunaBean);
-      
+      BeanValidation.validate(manager.getBeans());
       manager.getInstanceByType(FinalTuna.class, new AnnotationLiteral<Whitefish>(){});
    }
    
