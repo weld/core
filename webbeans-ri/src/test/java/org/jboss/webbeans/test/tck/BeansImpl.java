@@ -38,12 +38,6 @@ public class BeansImpl implements Beans
       return EnterpriseBean.of(clazz, CurrentManager.rootManager());
    }
 
-   public Set<Annotation> getBindings(Bean<?> bean)
-   {
-      // TODO Auto-generated method stub
-      return null;
-   }
-
    public Set<Class<?>> getRequiredTypes(Bean<?> bean)
    {
       // TODO Auto-generated method stub

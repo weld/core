@@ -22,5 +22,11 @@ public class ManagersImpl implements Managers
    {
       CurrentManager.rootManager().setEnabledDeploymentTypes(enabledDeploymentTypes);
    }
+
+   public List<Class<? extends Annotation>> getEnabledDeploymentTypes()
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
    
 }
