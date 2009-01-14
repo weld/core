@@ -50,10 +50,4 @@ public class BeansImpl implements Beans
       return null;
    }
 
-   public boolean isBeanNameDefaulted(Bean<?> bean)
-   {
-      // TODO Auto-generated method stub
-      return false;
-   }
-
 }
