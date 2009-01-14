@@ -96,7 +96,7 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     * @param methodDescriptor
     * @return
     */
-   public AnnotatedMethod<Object> getMethod(Method method);
+   public AnnotatedMethod<?> getMethod(Method method);
    
    /**
     * Gets all with parameters annotated with annotationType

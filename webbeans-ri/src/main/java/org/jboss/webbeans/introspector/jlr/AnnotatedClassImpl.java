@@ -509,10 +509,10 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       return methodsByAnnotatedParameters.get(annotationType);
    }
    
-   public AnnotatedMethod<Object> getMethod(Method methodDescriptor)
+   public AnnotatedMethod<?> getMethod(Method methodDescriptor)
    {
       // TODO Cache?
-      for (AnnotatedMethod<Object> annotatedMethod : methods)
+      for (AnnotatedMethod<?> annotatedMethod : methods)
       {
          if (annotatedMethod.getName().equals(methodDescriptor.getName()) && Arrays.equals(annotatedMethod.getParameterTypesAsArray(), methodDescriptor.getParameterTypes()))
          {
