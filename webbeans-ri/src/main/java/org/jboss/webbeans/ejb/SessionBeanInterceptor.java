@@ -41,10 +41,11 @@ public class SessionBeanInterceptor
    @PostConstruct
    public void postConstruct(InvocationContext invocationContext) throws Exception
    {
-      EnterpriseBean<Object> enterpriseBean = getBean(invocationContext);
+      Object target = invocationContext.getTarget();
+      EnterpriseBean<Object> enterpriseBean = getBean(target.getClass());
       if (enterpriseBean != null)
       {
-         enterpriseBean.postConstruct(invocationContext.getTarget());
+         enterpriseBean.postConstruct(target);
       }
       invocationContext.proceed();
    }
@@ -58,10 +59,11 @@ public class SessionBeanInterceptor
    @PreDestroy
    public void preDestroy(InvocationContext invocationContext) throws Exception
    {
-      EnterpriseBean<Object> enterpriseBean = getBean(invocationContext);
+      Object target = invocationContext.getTarget();
+      EnterpriseBean<Object> enterpriseBean = getBean(target.getClass());
       if (enterpriseBean != null)
       {
-         enterpriseBean.preDestroy(invocationContext.getTarget());
+         enterpriseBean.preDestroy(target);
       }
       invocationContext.proceed();
    }
@@ -73,13 +75,12 @@ public class SessionBeanInterceptor
     * @return The found bean or null if the bean was not an enterprise bean
     */
    @SuppressWarnings("unchecked")
-   private static EnterpriseBean<Object> getBean(InvocationContext invocationContext)
+   private static <T> EnterpriseBean<T> getBean(Class<? extends T> beanClass)
    {
-      Class<?> beanClass = invocationContext.getTarget().getClass();
       Bean<?> bean = CurrentManager.rootManager().getBeanMap().get(beanClass);
       if (bean instanceof EnterpriseBean)
       {
-         return (EnterpriseBean<Object>) bean;
+         return (EnterpriseBean<T>) bean;
       }
       else
       {

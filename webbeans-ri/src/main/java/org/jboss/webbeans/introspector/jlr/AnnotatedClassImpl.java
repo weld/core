@@ -223,7 +223,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    private final AnnotatedFieldMap metaAnnotatedFields;
 
    // The set of abstracted methods
-   private final Set<AnnotatedMethod<Object>> methods;
+   private final Set<AnnotatedMethod<?>> methods;
    // The map from annotation type to abstracted method with annotation
    private final AnnotatedMethodMap annotatedMethods;
    // The map from annotation type to method with a parameter with annotation
@@ -275,7 +275,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
             {
                field.setAccessible(true);
             }
-            AnnotatedField<Object> annotatedField = new AnnotatedFieldImpl<Object>(field, this);
+            AnnotatedField<?> annotatedField = new AnnotatedFieldImpl<Object>(field, this);
             this.fields.add(annotatedField);
             for (Annotation annotation : annotatedField.getAnnotations())
             {
@@ -312,7 +312,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
          }
       }
 
-      this.methods = new HashSet<AnnotatedMethod<Object>>();
+      this.methods = new HashSet<AnnotatedMethod<?>>();
       this.annotatedMethods = new AnnotatedMethodMap();
       this.methodsByAnnotatedParameters = new AnnotatedMethodMap();
       for (Class<?> c = clazz; c != Object.class && c != null; c = c.getSuperclass())
@@ -324,7 +324,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
                method.setAccessible(true);
             }
 
-            AnnotatedMethod<Object> annotatedMethod = new AnnotatedMethodImpl<Object>(method, this);
+            AnnotatedMethod<?> annotatedMethod = new AnnotatedMethodImpl<Object>(method, this);
             this.methods.add(annotatedMethod);
             for (Annotation annotation : annotatedMethod.getAnnotations())
             {

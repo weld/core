@@ -189,7 +189,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param bindingTypes The binding types to match
     * @return The set of matching disposal methods
     */
-   public <T> Set<AnnotatedMethod<Object>> resolveDisposalMethods(Class<T> apiType, Annotation... bindings)
+   public <T> Set<AnnotatedMethod<?>> resolveDisposalMethods(Class<T> apiType, Annotation... bindings)
    {
       // TODO Implement disposal methods
       return Collections.emptySet();

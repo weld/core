@@ -482,7 +482,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
    }
 
-   public void preDestroy(Object target)
+   public void preDestroy(T target)
    {
 
    }

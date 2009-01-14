@@ -112,7 +112,7 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
       annotatedMembers = new AnnotatedMemberMap();
       for (Method member : clazz.getDeclaredMethods())
       {
-         AnnotatedMethod<? extends Object> annotatedMethod = new AnnotatedMethodImpl<Object>(member, this);
+         AnnotatedMethod<?> annotatedMethod = new AnnotatedMethodImpl<Object>(member, this);
          members.add(annotatedMethod);
          for (Annotation annotation : annotatedMethod.getAnnotations())
          {

@@ -95,8 +95,8 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       {
          if (method.getParameterAnnotations()[i].length > 0)
          {
-            Class<? extends Object> clazz = method.getParameterTypes()[i];
-            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(method.getParameterAnnotations()[i], (Class<Object>) clazz);
+            Class<?> clazz = method.getParameterTypes()[i];
+            AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(method.getParameterAnnotations()[i], clazz);
             this.parameters.add(parameter);
             for (Annotation annotation : parameter.getAnnotations())
             {
@@ -108,8 +108,8 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
          }
          else
          {
-            Class<? extends Object> clazz = method.getParameterTypes()[i];
-            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(new Annotation[0], (Class<Object>) clazz);
+            Class<?> clazz = method.getParameterTypes()[i];
+            AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(new Annotation[0], clazz);
             this.parameters.add(parameter);
          }
       }

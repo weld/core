@@ -47,6 +47,11 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
 
    // Cached string representation
    private String toString;
+   
+   public static <T> AnnotatedParameter<T> of(Annotation[] annotations, Class<T> clazz)
+   {
+      return new AnnotatedParameterImpl<T>(annotations, clazz);
+   }
 
    /**
     * Constructor

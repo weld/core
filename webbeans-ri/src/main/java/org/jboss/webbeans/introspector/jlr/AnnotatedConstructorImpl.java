@@ -68,7 +68,6 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     * @param constructor The constructor method
     * @param declaringClass The declaring class
     */
-   @SuppressWarnings("unchecked")
    public AnnotatedConstructorImpl(Constructor<T> constructor, AnnotatedType<T> declaringClass)
    {
       super(buildAnnotationMap(constructor), constructor);
@@ -81,8 +80,8 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
       {
          if (constructor.getParameterAnnotations()[i].length > 0)
          {
-            Class<? extends Object> clazz = constructor.getParameterTypes()[i];
-            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(constructor.getParameterAnnotations()[i], (Class<Object>) clazz);
+            Class<?> clazz = constructor.getParameterTypes()[i];
+            AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(constructor.getParameterAnnotations()[i], clazz);
             parameters.add(parameter);
 
             for (Annotation annotation : parameter.getAnnotations())
@@ -92,8 +91,8 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
          }
          else
          {
-            Class<? extends Object> clazz = constructor.getParameterTypes()[i];
-            AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(new Annotation[0], (Class<Object>) clazz);
+            Class<?> clazz = constructor.getParameterTypes()[i];
+            AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(new Annotation[0], clazz);
             parameters.add(parameter);
 
             for (Annotation annotation : parameter.getAnnotations())

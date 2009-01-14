@@ -138,7 +138,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     */
    protected void initDisposalMethod()
    {
-      Set<AnnotatedMethod<Object>> disposalMethods = manager.resolveDisposalMethods(getType(), getBindings().toArray(new Annotation[0]));
+      Set<AnnotatedMethod<?>> disposalMethods = manager.resolveDisposalMethods(getType(), getBindings().toArray(new Annotation[0]));
       if (disposalMethods.size() == 1)
       {
          this.disposalMethod = disposalMethods.iterator().next();

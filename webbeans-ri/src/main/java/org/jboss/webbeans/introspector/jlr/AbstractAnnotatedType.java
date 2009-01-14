@@ -32,7 +32,7 @@ import org.jboss.webbeans.util.Reflections;
 public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>>
 {
    // The superclass abstraction of the type
-   private final AnnotatedClass<Object> superclass;
+   private final AnnotatedClass<?> superclass;
    // The name of the type
    private final String name;
    
@@ -100,7 +100,7 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
     * 
     * @return The superclass abstraction
     */
-   public AnnotatedClass<Object> getSuperclass()
+   public AnnotatedClass<?> getSuperclass()
    {
       return superclass;
    }
