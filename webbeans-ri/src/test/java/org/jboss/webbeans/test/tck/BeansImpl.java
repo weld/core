@@ -1,6 +1,8 @@
 package org.jboss.webbeans.test.tck;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 import javax.webbeans.manager.Bean;
 
@@ -34,6 +36,30 @@ public class BeansImpl implements Beans
    public <T> Bean<T> createEnterpriseBean(Class<T> clazz)
    {
       return EnterpriseBean.of(clazz, CurrentManager.rootManager());
+   }
+
+   public Set<Annotation> getBindings(Bean<?> bean)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   public Set<Class<?>> getRequiredTypes(Bean<?> bean)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   public Set<Class<? extends Annotation>> getSupportedScopes(Bean<?> bean)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   public boolean isBeanNameDefaulted(Bean<?> bean)
+   {
+      // TODO Auto-generated method stub
+      return false;
    }
 
 }
