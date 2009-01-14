@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ee\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-14 17:13+1000\n"
+"PO-Revision-Date: 2009-01-14 17:57+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -133,7 +133,7 @@ msgstr "Servlet에서 Web Bean 호출 "
 msgid ""
 "It's easy to use a Web Bean from a Servlet in Java EE 6. Simply inject the "
 "Web Bean using Web Beans field or initializer method injection."
-msgstr ""
+msgstr "Java EE 6에 있는 Servlet에서 Web Bean을 사용하기가 쉽습니다. Web Beans 영역 또는 초기화 방식 삽입을 사용하여 Web Bean을 삽입합니다. "
 
 #. Tag: programlisting
 #: ee.xml:40
@@ -186,11 +186,12 @@ msgstr ""
 #. Tag: para
 #: ee.xml:42
 #, no-c-format
+#, fuzzy
 msgid ""
 "The Web Beans client proxy takes care of routing method invocations from the "
 "Servlet to the correct instances of <literal>Credentials</literal> and "
 "<literal>Login</literal> for the current request and HTTP session."
-msgstr ""
+msgstr "Web Beans 클라이언트 프록시는 "
 
 #. Tag: title
 #: ee.xml:49
