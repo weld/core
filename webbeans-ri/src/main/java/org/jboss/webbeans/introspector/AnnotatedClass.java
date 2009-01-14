@@ -112,6 +112,6 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     * 
     * @return The abstracted superclass
     */
-   public AnnotatedClass<Object> getSuperclass();
+   public AnnotatedClass<?> getSuperclass();
 
 }
