@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: part2\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-13 15:46+1000\n"
+"PO-Revision-Date: 2009-01-14 12:31+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,19 +22,19 @@ msgstr ""
 msgid ""
 "The first major theme of Web Beans is <emphasis>loose coupling</emphasis>. "
 "We've already seen three means of achieving loose coupling:"
-msgstr "Web Bean 的第一個重點就是 <emphasis>loose coupling</emphasis>。我們已經看過了三種達成 loose coupling 的方式。"
+msgstr "Web Bean 的第一個重點就是 <emphasis>loose coupling（鬆散結合性）</emphasis>。我們已經看過了三種 loose coupling 的方式："
 
 #. Tag: para
 #: part2.xml:10
 #, no-c-format
 msgid "<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
-msgstr ""
+msgstr "<emphasis>deployment types（建置類型）</emphasis>可啟用建置時間多型性（deployment time polymorphism）、"
 
 #. Tag: para
 #: part2.xml:14
 #, no-c-format
 msgid "<emphasis>producer methods</emphasis> enable runtime polymorphism, and"
-msgstr ""
+msgstr "<emphasis>producer methods</emphasis> 可啟用 runtime Polymorphism（執行期多型性），以及"
 
 #. Tag: para
 #: part2.xml:18
@@ -42,7 +42,7 @@ msgstr ""
 msgid ""
 "<emphasis>contextual lifecycle management</emphasis> decouples Web Bean "
 "lifecycles."
-msgstr ""
+msgstr "<emphasis>contextual lifecycle management</emphasis> 可 decouple Web Bean 的生命週期。"
 
 #. Tag: para
 #: part2.xml:23
@@ -52,7 +52,7 @@ msgid ""
 "client is no longer tightly bound to an implementation of an API, nor is it "
 "required to manage the lifecycle of the server object. This approach lets "
 "<emphasis>stateful objects interact as if they were services</emphasis>."
-msgstr ""
+msgstr "這些技巧都可用來啟用客戶端以及伺服器的 loose coupling。客戶端已不再固定綁定至一個特定 API 的實做，並且它亦無須管理伺服器物件的生命週期。這個方法能讓<emphasis>有狀態的物件被視為服務一般地來進行互動</emphasis>。"
 
 #. Tag: para
 #: part2.xml:28
@@ -63,7 +63,7 @@ msgid ""
 "attempted to provide the facilities listed above invariably did it by "
 "sacrificing type safety. Web Beans is the first technology that achieves "
 "this level of loose coupling in a typesafe way."
-msgstr ""
+msgstr "Loose coupling 會使系統變得更加<emphasis>動態式</emphasis>。系統可透過充足定義的方式來回應變更。過去，有許多 framework 嘗試了提供以上所列出的功能，不過卻都是藉由犧牲了 type safety 來達成的。Web Bean 是第一個以 typesafe 的方式來實現此層級的 loose coupling 的技術。"
 
 #. Tag: para
 #: part2.xml:34
@@ -71,7 +71,7 @@ msgstr ""
 msgid ""
 "Web Beans provides three extra important facilities that further the goal of "
 "loose coupling:"
-msgstr ""
+msgstr "Web Bean 提供了三個額外的重要功能以用來達成 loose coupling："
 
 #. Tag: para
 #: part2.xml:39
@@ -79,7 +79,7 @@ msgstr ""
 msgid ""
 "<emphasis>interceptors</emphasis> decouple technical concerns from business "
 "logic,"
-msgstr ""
+msgstr "<emphasis>interceptors（攔截器）</emphasis>可區分技術問題與商業邏輯，"
 
 #. Tag: para
 #: part2.xml:43
@@ -87,7 +87,7 @@ msgstr ""
 msgid ""
 "<emphasis>decorators</emphasis> may be used to decouple some business "
 "concerns, and"
-msgstr ""
+msgstr "<emphasis>decorators（裝飾器）</emphasis>可被用來區分一些商業問題，並且"
 
 #. Tag: para
 #: part2.xml:47
@@ -96,10 +96,12 @@ msgid ""
 "<emphasis>event notifications</emphasis> decouple event producers from event "
 "consumers."
 msgstr ""
+"<emphasis>event notifications（事件通知）</emphasis>可區分事件產生器（event producer）與事件用戶（event "
+"consumer）。"
 
 #. Tag: para
 #: part2.xml:52
 #, no-c-format
 msgid "Let's explore interceptors first."
-msgstr ""
+msgstr "讓我們先來探討攔截器（interceptor）。"
 

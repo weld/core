@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: part1\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-13 17:04+1000\n"
+"PO-Revision-Date: 2009-01-14 12:05+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -173,7 +173,7 @@ msgid ""
 "together with a new pattern, called <emphasis>binding annotations</"
 "emphasis>, to wire together Web Beans, their dependencies, their "
 "interceptors and decorators and their event consumers."
-msgstr ""
+msgstr "最重要的是，Web Bean 以一種 <emphasis>typesafe</emphasis> 的方式來提供了所有的這些功能。Web Bean 從不使用基於字串的識別符號（identifier）來斷定共同協作的物件如何相輔相成。雖然 XML 也是選項之一不過卻很少被使用到。取而代之，Web Bean 使用了 Java 物件模型中可使用的 typing 資訊並統合了一個稱為 <emphasis>binding annotations（綁定標記）</emphasis>的新格式，它可將 Web Bean、它們的相依性、它們的攔截器和裝飾器以及它們的事件用戶聯繫在一起。"
 
 #. Tag: para
 #: part1.xml:100
@@ -181,7 +181,7 @@ msgstr ""
 msgid ""
 "The Web Beans services are general and apply to the following types of "
 "components that exist in the Java EE environment:"
-msgstr ""
+msgstr "Web Bean 服務為通用的並且適用於下列位於 Java EE 環境中的元件類型："
 
 #. Tag: para
 #: part1.xml:105
@@ -209,7 +209,7 @@ msgid ""
 "of components defined by future Java EE specifications or by non-standard "
 "frameworks may be cleanly integrated with Web Beans, take advantage of the "
 "Web Beans services, and interact with any other kind of Web Bean."
-msgstr ""
+msgstr "Web Bean 甚至提供了必要的整合點來讓未來 Java EE 規格或是非標準架構所定義的其它類型元件能夠利落地與 Web Bean 整合、有效利用 Web Bean 服務，並與任何其它類型的 Web Bean 進行互動。"
 
 #. Tag: para
 #: part1.xml:120
@@ -219,7 +219,7 @@ msgid ""
 "Seam, Guice and Spring. However, Web Beans has its own very distinct "
 "character: more typesafe than Seam, more stateful and less XML-centric than "
 "Spring, more web and enterprise-application capable than Guice."
-msgstr ""
+msgstr "Web Bean 受到了幾個現有的 Java framework（包括 Seam、Guice 以及 Spring）的影響。不過，Web Bean 擁有它自己獨特的特性：比 Seam 還要完善的 typesafe、比 Spring 更 stateful 而沒有那麼地以 XML 為中心，並且針對於網站和企業級的應用程式上的處理能力比 Guice 完善。"
 
 #. Tag: para
 #: part1.xml:125
@@ -228,5 +228,5 @@ msgid ""
 "Most importantly, Web Beans is a JCP standard that integrates cleanly with "
 "Java EE, and with any Java SE environment where embeddable EJB Lite is "
 "available."
-msgstr ""
+msgstr "最重要的是，Web Bean 是一個能與 Java EE 以及可使用崁入式的 EJB Lite 的任何 Java SE 環境整合的 JCP 標準。"
 

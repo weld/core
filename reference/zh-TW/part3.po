@@ -1,17 +1,20 @@
+# translation of part3.po to Traditional Chinese
 # Language zh-TW translations for Introduction_to_Web_Beans package.
-# Automatically generated, 2009.
 #
+# Automatically generated, 2009.
+# Terry Chuang <tchuang@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: part3\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-06 11:30+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-14 16:07+1000\n"
+"Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
+"Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: para
 #: part3.xml:5
@@ -21,7 +24,7 @@ msgid ""
 "The information about the dependencies, interceptors and decorators of a Web "
 "Bean, and the information about event consumers for an event producer, is "
 "contained in typesafe Java constructs that may be validated by the compiler."
-msgstr ""
+msgstr "Web Bean 的第二個重點就是 <emphasis>strong typing（強類型）</emphasis>。有關於 Web Bean 的相依性、攔截器與裝飾器的相關資訊，以及有關於某個事件產生器的事件用戶的相關資訊都包含在編譯器可驗證的 typesafe Java 架構中。"
 
 #. Tag: para
 #: part3.xml:10
@@ -31,7 +34,7 @@ msgid ""
 "framework is hiding them from you using clever defaulting rules&#151;so-"
 "called \"configuration by convention\"&#151;but because there are simply no "
 "strings there to begin with!"
-msgstr ""
+msgstr "您在 Web Bean 的程式碼中不會看見基於字串的識別符號，這不是因為 framework 透過使用預設的規則來將它隱藏起來&#151;又稱為「configuration by convention」&#151;而是因為一開始根本就沒有任何字串！"
 
 #. Tag: para
 #: part3.xml:15
@@ -43,7 +46,7 @@ msgid ""
 "It turns out that when you start thinking of identifying objects, events or "
 "interceptors via annotations instead of names, you have an opportunity to "
 "lift the semantic level of your code."
-msgstr ""
+msgstr "這個作法明顯的好處就是<emphasis>任何</emphasis> IDE 都可在不使用特殊工具的情況下提供自動完成（autocompletion）、驗證（validation）和重整（refactoring）。還有一個較沒那麼明顯且直接的好處。當您希望透過標記來識別物件、事件或是攔截器而不是透過名稱時，您可提昇您程式碼的語意層級（semantic level）。"
 
 #. Tag: para
 #: part3.xml:21
@@ -51,61 +54,61 @@ msgstr ""
 msgid ""
 "Web Beans encourages you develop annotations that model concepts, for "
 "example,"
-msgstr ""
+msgstr "Web Bean 鼓勵您使用塑造概念的標記，例如"
 
 #. Tag: para
 #: part3.xml:26
 #, no-c-format
 msgid "<literal>@Asynchronous</literal>,"
-msgstr ""
+msgstr "<literal>@Asynchronous</literal>、"
 
 #. Tag: para
 #: part3.xml:29
 #, no-c-format
 msgid "<literal>@Mock</literal>,"
-msgstr ""
+msgstr "<literal>@Mock</literal>、"
 
 #. Tag: para
 #: part3.xml:32
 #, no-c-format
 msgid "<literal>@Secure</literal> or"
-msgstr ""
+msgstr "<literal>@Secure</literal> 或"
 
 #. Tag: para
 #: part3.xml:35
 #, no-c-format
 msgid "<literal>@Updated</literal>,"
-msgstr ""
+msgstr "<literal>@Updated</literal>、"
 
 #. Tag: para
 #: part3.xml:39
 #, no-c-format
 msgid "instead of using compound names like"
-msgstr ""
+msgstr "而不是使用像是"
 
 #. Tag: para
 #: part3.xml:43
 #, no-c-format
 msgid "<literal>asyncPaymentProcessor</literal>,"
-msgstr ""
+msgstr "<literal>asyncPaymentProcessor</literal>、"
 
 #. Tag: para
 #: part3.xml:46
 #, no-c-format
 msgid "<literal>mockPaymentProcessor</literal>,"
-msgstr ""
+msgstr "<literal>mockPaymentProcessor</literal>、"
 
 #. Tag: para
 #: part3.xml:49
 #, no-c-format
 msgid "<literal>SecurityInterceptor</literal> or"
-msgstr ""
+msgstr "<literal>SecurityInterceptor</literal> 或是"
 
 #. Tag: para
 #: part3.xml:52
 #, no-c-format
 msgid "<literal>DocumentUpdatedEvent</literal>."
-msgstr ""
+msgstr "<literal>DocumentUpdatedEvent</literal> 的複合式名稱。"
 
 #. Tag: para
 #: part3.xml:56
@@ -115,7 +118,7 @@ msgid ""
 "disparate parts of the system. They help us categorize and understand our "
 "code. They help us deal with common concerns in a common way. They make our "
 "code more literate and more understandable."
-msgstr ""
+msgstr "這些標記可重複使用。它們協助描述系統不同部份的通用要點（common qualities）。它們協助我們分類和理解我們的程式碼。它們協助我們利用通用的方式來處理一般的問題。它們讓我們的程式碼變得更文字化且更容易理解。"
 
 #. Tag: para
 #: part3.xml:61
@@ -126,7 +129,7 @@ msgid ""
 "architecture. It encapsulates various properties of the role, including "
 "scope, interceptor bindings, deployment type, etc, into a single reusable "
 "package."
-msgstr ""
+msgstr "Web Bean <emphasis>stereotype</emphasis> 將這個概念帶領到了另一個更為進階的領域。固定刻板模式（stereotype model）是您應用程式架構中的一個通用<emphasis>角色（role）</emphasis>。它將該角色的各種屬性（包括 scope、攔截器綁定〔interceptor binding〕，建置類型〔deployment type〕等等）壓縮進了一個單獨、可重複使用的套件中。"
 
 #. Tag: para
 #: part3.xml:66
@@ -136,7 +139,7 @@ msgid ""
 "so Web Beans takes advantage of XML schemas to validate the Java types and "
 "attributes that appear in XML. This approach turns out to make the XML more "
 "literate, just like annotations made our Java code more literate."
-msgstr ""
+msgstr "就連 Web Bean XML 的 metadata 也屬於強類型！XML 沒有編譯器，因此 Web Bean 利用了 XML schema 來驗證出現在 XML 中的 Java 類型和屬性。這個方法使得 XML 變得更文字化，就和標記使得我們的 Java 程式碼變得更容易理解一樣。"
 
 #. Tag: para
 #: part3.xml:71
@@ -147,4 +150,5 @@ msgid ""
 "more understandable. Most of the time you don't ever really <emphasis>need</"
 "emphasis> to use these features, but if you use them wisely, you'll come to "
 "appreciate their power."
-msgstr ""
+msgstr "我們現在已準備好談到一些更為進階的 Web Bean 功能。請記得，這些功能是為了使我們的程式碼變得易於驗證和較容易理解。實際上大部分的時候您都不會真的<emphasis>需要</emphasis>使用到這些功能，不過若您可有效地利用這些功能的話，您將可體會到這些功能的強大。"
+
