@@ -248,11 +248,11 @@ public class NewSimpleBeanTest extends AbstractTest
     * types declared by annotations that appear on the implementation class, and
     * • has no decorators.
     */
-   @Test(groups = { "new" })
+   @Test(groups = { "new", "stub" })
    @SpecAssertion(section = "3.9")
    public void testNewBeanHasNoProducerMethods()
    {
-      assert newSimpleBean.getProducerMethods().isEmpty();
+      assert false;
    }
 
    /**

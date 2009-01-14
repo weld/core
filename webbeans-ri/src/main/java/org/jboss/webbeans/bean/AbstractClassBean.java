@@ -60,9 +60,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    // The item representation
    protected AnnotatedClass<T> annotatedItem;
    // The injectable fields
-   private Set<AnnotatedField<Object>> injectableFields;
+   private Set<AnnotatedField<?>> injectableFields;
    // The initializer methods
-   private Set<AnnotatedMethod<Object>> initializerMethods;
+   private Set<AnnotatedMethod<?>> initializerMethods;
 
    /**
     * Constructor
@@ -92,7 +92,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 
    protected void checkPassivation()
    {
-      for (AnnotatedField<Object> injectableField : injectableFields)
+      for (AnnotatedField<?> injectableField : injectableFields)
       {
          if (injectableField.isTransient())
          {
@@ -117,24 +117,12 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    }
 
    /**
-    * Gets the producer methods
-    * 
-    * @return A set of producer methods. An empty set is returned if there are
-    *         none present
-    */
-   @Deprecated
-   public Set<AnnotatedMethod<Object>> getProducerMethods()
-   {
-      return getAnnotatedItem().getAnnotatedMethods(Produces.class);
-   }
-
-   /**
     * Initializes the injection points
     */
    protected void initInjectionPoints()
    {
-      injectableFields = new HashSet<AnnotatedField<Object>>();
-      for (AnnotatedField<Object> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
+      injectableFields = new HashSet<AnnotatedField<?>>();
+      for (AnnotatedField<?> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
       {
          if (!annotatedField.isAnnotationPresent(Produces.class))
          {
@@ -157,8 +145,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initInitializerMethods()
    {
-      initializerMethods = new HashSet<AnnotatedMethod<Object>>();
-      for (AnnotatedMethod<Object> annotatedMethod : annotatedItem.getAnnotatedMethods(Initializer.class))
+      initializerMethods = new HashSet<AnnotatedMethod<?>>();
+      for (AnnotatedMethod<?> annotatedMethod : annotatedItem.getAnnotatedMethods(Initializer.class))
       {
          if (annotatedMethod.isStatic())
          {
@@ -262,7 +250,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * 
     * @return The set of injectable fields
     */
-   public Set<AnnotatedField<Object>> getInjectableFields()
+   public Set<AnnotatedField<?>> getInjectableFields()
    {
       return injectableFields;
    }
@@ -272,7 +260,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * 
     * @return The set of annotated methods
     */
-   public Set<AnnotatedMethod<Object>> getInitializerMethods()
+   public Set<AnnotatedMethod<?>> getInitializerMethods()
    {
       return initializerMethods;
    }

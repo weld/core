@@ -364,7 +364,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     */
    protected void callInitializers(T instance)
    {
-      for (AnnotatedMethod<Object> initializer : getInitializerMethods())
+      for (AnnotatedMethod<?> initializer : getInitializerMethods())
       {
          initializer.invoke(manager, instance);
       }

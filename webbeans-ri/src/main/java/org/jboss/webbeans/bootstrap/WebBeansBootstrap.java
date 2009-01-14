@@ -234,7 +234,7 @@ public abstract class WebBeansBootstrap
    {
       beans.add(bean);
       getManager().getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
-      for (AnnotatedMethod<Object> producerMethod : bean.getProducerMethods())
+      for (AnnotatedMethod<?> producerMethod : annotatedClass.getAnnotatedMethods(Produces.class))
       {
          ProducerMethodBean<?> producerMethodBean = ProducerMethodBean.of(producerMethod, bean, getManager());
          beans.add(producerMethodBean);

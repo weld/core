@@ -63,9 +63,9 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    // The constructor
    private AnnotatedConstructor<T> constructor;
    // The post-construct method
-   private AnnotatedMethod<Object> postConstruct;
+   private AnnotatedMethod<?> postConstruct;
    // The pre-destroy method
-   private AnnotatedMethod<Object> preDestroy;
+   private AnnotatedMethod<?> preDestroy;
 
    /**
     * Creates a simple, annotation defined Web Bean
@@ -171,7 +171,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void callPreDestroy(T instance)
    {
-      AnnotatedMethod<Object> preDestroy = getPreDestroy();
+      AnnotatedMethod<?> preDestroy = getPreDestroy();
       if (preDestroy != null)
       {
          try
@@ -193,7 +193,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void callPostConstruct(T instance)
    {
-      AnnotatedMethod<Object> postConstruct = getPostConstruct();
+      AnnotatedMethod<?> postConstruct = getPostConstruct();
       if (postConstruct != null)
       {
          try
@@ -215,7 +215,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void callInitializers(T instance)
    {
-      for (AnnotatedMethod<Object> initializer : getInitializerMethods())
+      for (AnnotatedMethod<?> initializer : getInitializerMethods())
       {
          initializer.invoke(instance, manager);
       }
@@ -315,7 +315,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          annotatedInjectionPoints.add(parameter);
       }
-      for (AnnotatedMethod<Object> initializer : getInitializerMethods())
+      for (AnnotatedMethod<?> initializer : getInitializerMethods())
       {
          for (AnnotatedParameter<?> parameter : initializer.getParameters())
          {
@@ -381,7 +381,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void initPostConstruct()
    {
-      Set<AnnotatedMethod<Object>> postConstructMethods = getAnnotatedItem().getAnnotatedMethods(PostConstruct.class);
+      Set<AnnotatedMethod<?>> postConstructMethods = getAnnotatedItem().getAnnotatedMethods(PostConstruct.class);
       log.trace("Found " + postConstructMethods + " constructors annotated with @Initializer for " + getType());
       if (postConstructMethods.size() > 1)
       {
@@ -403,7 +403,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void initPreDestroy()
    {
-      Set<AnnotatedMethod<Object>> preDestroyMethods = getAnnotatedItem().getAnnotatedMethods(PreDestroy.class);
+      Set<AnnotatedMethod<?>> preDestroyMethods = getAnnotatedItem().getAnnotatedMethods(PreDestroy.class);
       log.trace("Found " + preDestroyMethods + " constructors annotated with @Initializer for " + getType());
       if (preDestroyMethods.size() > 1)
       {
@@ -464,7 +464,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * 
     * @return The post-construct method
     */
-   public AnnotatedMethod<Object> getPostConstruct()
+   public AnnotatedMethod<?> getPostConstruct()
    {
       return postConstruct;
    }
@@ -474,7 +474,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * 
     * @return The pre-destroy method
     */
-   public AnnotatedMethod<Object> getPreDestroy()
+   public AnnotatedMethod<?> getPreDestroy()
    {
       return preDestroy;
    }

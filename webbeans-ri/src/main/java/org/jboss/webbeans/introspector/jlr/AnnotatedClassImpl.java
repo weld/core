@@ -56,17 +56,17 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     * A (annotation type -> set of field abstractions with annotation/meta
     * annotation) map
     */
-   private static class AnnotatedFieldMap extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedField<Object>>>
+   private static class AnnotatedFieldMap extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedField<?>>>
    {
-      private Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> delegate;
+      private Map<Class<? extends Annotation>, Set<AnnotatedField<?>>> delegate;
 
       public AnnotatedFieldMap()
       {
-         delegate = new HashMap<Class<? extends Annotation>, Set<AnnotatedField<Object>>>();
+         delegate = new HashMap<Class<? extends Annotation>, Set<AnnotatedField<?>>>();
       }
 
       @Override
-      protected Map<Class<? extends Annotation>, Set<AnnotatedField<Object>>> delegate()
+      protected Map<Class<? extends Annotation>, Set<AnnotatedField<?>>> delegate()
       {
          return delegate;
       }
@@ -78,18 +78,18 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
 
       @Override
-      public Set<AnnotatedField<Object>> get(Object key)
+      public Set<AnnotatedField<?>> get(Object key)
       {
-         Set<AnnotatedField<Object>> fields = super.get(key);
-         return fields != null ? fields : new HashSet<AnnotatedField<Object>>();
+         Set<AnnotatedField<?>> fields = super.get(key);
+         return fields != null ? fields : new HashSet<AnnotatedField<?>>();
       }
 
-      public void put(Class<? extends Annotation> key, AnnotatedField<Object> value)
+      public void put(Class<? extends Annotation> key, AnnotatedField<?> value)
       {
-         Set<AnnotatedField<Object>> fields = super.get(key);
+         Set<AnnotatedField<?>> fields = super.get(key);
          if (fields == null)
          {
-            fields = new HashSet<AnnotatedField<Object>>();
+            fields = new HashSet<AnnotatedField<?>>();
             super.put(key, fields);
          }
          fields.add(value);
@@ -100,17 +100,17 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    /**
     * A (annotation type -> set of method abstractions with annotation) map
     */
-   private class AnnotatedMethodMap extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>>
+   private class AnnotatedMethodMap extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedMethod<?>>>
    {
-      private Map<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>> delegate;
+      private Map<Class<? extends Annotation>, Set<AnnotatedMethod<?>>> delegate;
 
       public AnnotatedMethodMap()
       {
-         delegate = new HashMap<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>>();
+         delegate = new HashMap<Class<? extends Annotation>, Set<AnnotatedMethod<?>>>();
       }
 
       @Override
-      protected Map<Class<? extends Annotation>, Set<AnnotatedMethod<Object>>> delegate()
+      protected Map<Class<? extends Annotation>, Set<AnnotatedMethod<?>>> delegate()
       {
          return delegate;
       }
@@ -122,18 +122,18 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
 
       @Override
-      public Set<AnnotatedMethod<Object>> get(Object key)
+      public Set<AnnotatedMethod<?>> get(Object key)
       {
-         Set<AnnotatedMethod<Object>> methods = super.get(key);
-         return methods != null ? methods : new HashSet<AnnotatedMethod<Object>>();
+         Set<AnnotatedMethod<?>> methods = super.get(key);
+         return methods != null ? methods : new HashSet<AnnotatedMethod<?>>();
       }
 
-      public void put(Class<? extends Annotation> key, AnnotatedMethod<Object> value)
+      public void put(Class<? extends Annotation> key, AnnotatedMethod<?> value)
       {
-         Set<AnnotatedMethod<Object>> methods = super.get(key);
+         Set<AnnotatedMethod<?>> methods = super.get(key);
          if (methods == null)
          {
-            methods = new HashSet<AnnotatedMethod<Object>>();
+            methods = new HashSet<AnnotatedMethod<?>>();
             super.put(key, methods);
          }
          methods.add(value);
@@ -330,7 +330,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
             {
                if (!annotatedMethods.containsKey(annotation.annotationType()))
                {
-                  annotatedMethods.put(annotation.annotationType(), new HashSet<AnnotatedMethod<Object>>());
+                  annotatedMethods.put(annotation.annotationType(), new HashSet<AnnotatedMethod<?>>());
                }
                annotatedMethods.get(annotation.annotationType()).add(annotatedMethod);
             }
@@ -418,7 +418,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     * @return The set of abstracted fields with meta-annotation present. Returns
     *         an empty set if no matches are found.
     */
-   public Set<AnnotatedField<Object>> getMetaAnnotatedFields(Class<? extends Annotation> metaAnnotationType)
+   public Set<AnnotatedField<?>> getMetaAnnotatedFields(Class<? extends Annotation> metaAnnotationType)
    {
       return Collections.unmodifiableSet(metaAnnotatedFields.get(metaAnnotationType));
    }
@@ -434,8 +434,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     */
    public Set<AnnotatedField<?>> getAnnotatedFields(Class<? extends Annotation> annotationType)
    {
-      // TODO temp fix
-      return (Set) Collections.unmodifiableSet(annotatedFields.get(annotationType));
+      return Collections.unmodifiableSet(annotatedFields.get(annotationType));
    }
 
    /**
@@ -471,7 +470,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedClass#getAnnotatedMethods(Class)
     */
-   public Set<AnnotatedMethod<Object>> getAnnotatedMethods(Class<? extends Annotation> annotationType)
+   public Set<AnnotatedMethod<?>> getAnnotatedMethods(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(annotatedMethods.get(annotationType));
    }
@@ -507,8 +506,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    
    public Set<AnnotatedMethod<?>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
-      // TODO temporary fix
-      return (Set) methodsByAnnotatedParameters.get(annotationType);
+      return methodsByAnnotatedParameters.get(annotationType);
    }
    
    public AnnotatedMethod<?> getMethod(Method methodDescriptor)

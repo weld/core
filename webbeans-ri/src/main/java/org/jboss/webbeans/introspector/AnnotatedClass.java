@@ -54,7 +54,7 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     * @return A set of abstracted fields with the given meta-annotation. Returns
     *         an empty set if there are no matches
     */
-   public Set<AnnotatedField<Object>> getMetaAnnotatedFields(Class<? extends Annotation> metaAnnotationType);
+   public Set<AnnotatedField<?>> getMetaAnnotatedFields(Class<? extends Annotation> metaAnnotationType);
 
    /**
     * Gets all constructors which are annotated with annotationType
@@ -88,7 +88,7 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     * @return A set of abstracted methods with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<AnnotatedMethod<Object>> getAnnotatedMethods(Class<? extends Annotation> annotationType);
+   public Set<AnnotatedMethod<?>> getAnnotatedMethods(Class<? extends Annotation> annotationType);
    
    /**
     * Find the annotated method for a given methodDescriptor
