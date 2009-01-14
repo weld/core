@@ -51,10 +51,12 @@ public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
     * @param key The key to look for
     * @return The Future instance of the value
     */
-   @SuppressWarnings("unchecked")
+   
    public <T extends V> Future<T> getFuture(K key)
    {
-      return (Future<T>) super.get(key);
+      @SuppressWarnings("unchecked")
+      Future<T> future = (Future<T>) super.get(key);
+      return future;
    }
 
    /**
@@ -63,9 +65,9 @@ public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
     * @param key The key to look for
     * @return The value
     */
-   @SuppressWarnings("unchecked")
    public <T extends V> T getValue(K key)
    {
+      @SuppressWarnings("unchecked")
       Future<T> value = (Future<T>) map.get(key);
       if (value != null)
       {
@@ -110,15 +112,18 @@ public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
     * @param callable The item, wrapped in a Callable instance
     * @return The item added
     */
-   @SuppressWarnings("unchecked")
    public <E> E putIfAbsent(K key, Callable<E> callable)
    {
-      Future<E> value = (Future<E>) map.get(key);
+      @SuppressWarnings("unchecked")
+      Future<E> future = (Future<E>) map.get(key);
+      Future<E> value = future;
       if (value == null)
       {
          FutureTask<E> task = new FutureTask<E>(callable);
          value = task;
-         map.put(key, (Future<V>) task);
+         @SuppressWarnings("unchecked")
+         Future<V> t = (Future<V>) task;
+         map.put(key, t);
          task.run();
       }
       boolean interrupted = false;

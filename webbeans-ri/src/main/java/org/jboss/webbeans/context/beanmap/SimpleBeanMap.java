@@ -57,9 +57,9 @@ public class SimpleBeanMap extends ForwardingMap<Contextual<? extends Object>, O
     * 
     * @see org.jboss.webbeans.context.beanmap.BeanMap#get(Bean)
     */
-   @SuppressWarnings("unchecked")
    public <T extends Object> T get(Contextual<? extends T> bean)
    {
+      @SuppressWarnings("unchecked")
       T instance = (T) super.get(bean);
       log.trace("Searched bean map for " + bean + " and got " + instance);
       return instance;
@@ -84,9 +84,9 @@ public class SimpleBeanMap extends ForwardingMap<Contextual<? extends Object>, O
     *
     * @see org.jboss.webbeans.context.beanmap.BeanMap#remove(Bean)
     */
-   @SuppressWarnings("unchecked")
    public <T extends Object> T remove(Contextual<? extends T> bean)
    {
+      @SuppressWarnings("unchecked")
       T instance = (T) super.remove(bean);
       log.trace("Removed instace " + instance + " for bean " + bean + " from the bean map");
       return instance;

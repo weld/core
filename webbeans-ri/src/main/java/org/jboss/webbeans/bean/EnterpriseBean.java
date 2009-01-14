@@ -172,7 +172,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       ProxyFactory proxyFactory = Proxies.getProxyFactory(getTypes());
       
       @SuppressWarnings("unchecked")
-      Class<T> proxyClass = proxyFactory.createClass();
+      Class<T> proxyClass = proxyFactory.createClass().asSubclass(getType());
       
       this.proxyClass = proxyClass;
    }

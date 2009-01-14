@@ -25,18 +25,17 @@ import java.util.Iterator;
  *  
  * @author Pete Muir
  */
-@SuppressWarnings("unchecked")
 public class EnumerationIterator<T> implements Iterator<T>
 {
    // The enumeration
-   private Enumeration e;
+   private Enumeration<T> e;
 
    /**
     * Constructor
     * 
     * @param e The enumeration
     */
-   public EnumerationIterator(Enumeration e)
+   public EnumerationIterator(Enumeration<T> e)
    {
       this.e = e;
    }

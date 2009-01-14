@@ -311,7 +311,6 @@ public class Resolver
     * @param beans The beans to filter
     * @return A set of filtered beans
     */
-   @SuppressWarnings("unchecked")
    private <T> Set<Bean<T>> getMatchingBeans(AnnotatedItem<T, ?> element, List<Bean<?>> beans)
    {
       Set<Bean<T>> resolvedBeans = new HashSet<Bean<T>>();
@@ -319,7 +318,9 @@ public class Resolver
       {
          if (element.isAssignableFrom(bean.getTypes()) && containsAllBindingBindingTypes(element, bean.getBindings()))
          {
-            resolvedBeans.add((Bean<T>) bean);
+            @SuppressWarnings("unchecked")
+            Bean<T> b = (Bean<T>) bean;
+            resolvedBeans.add(b);
          }
       }
       return resolvedBeans;

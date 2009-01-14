@@ -163,7 +163,6 @@ public class EventObserver<T>
       return result;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public boolean equals(Object other)
    {
@@ -171,6 +170,7 @@ public class EventObserver<T>
       {
          return false;
       }
+      @SuppressWarnings("unchecked")
       EventObserver<T> otherObserver = (EventObserver<T>) other;
       if (!eventType.equals(otherObserver.getEventType()))
       {

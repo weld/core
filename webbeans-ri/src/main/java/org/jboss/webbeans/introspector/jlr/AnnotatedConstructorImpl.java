@@ -59,6 +59,11 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
 
    // Cached string representation
    private String toString;
+   
+   public static <T> AnnotatedConstructor<T> of(Constructor<T> constructor, AnnotatedType<T> declaringClass)
+   {
+      return new AnnotatedConstructorImpl<T>(constructor, declaringClass);
+   }
 
    /**
     * Constructor

@@ -74,13 +74,15 @@ public class SessionBeanInterceptor
     * @param invocationContext The invocation context
     * @return The found bean or null if the bean was not an enterprise bean
     */
-   @SuppressWarnings("unchecked")
    private static <T> EnterpriseBean<T> getBean(Class<? extends T> beanClass)
    {
       Bean<?> bean = CurrentManager.rootManager().getBeanMap().get(beanClass);
       if (bean instanceof EnterpriseBean)
       {
-         return (EnterpriseBean<T>) bean;
+         @SuppressWarnings("unchecked")
+         // TODO shift this into the map!
+         EnterpriseBean<T> enterpriseBean = (EnterpriseBean<T>) bean;
+         return enterpriseBean;
       }
       else
       {

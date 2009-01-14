@@ -44,14 +44,13 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
     * 
     * @param annotationMap The annotation map
     */
-   @SuppressWarnings("unchecked")
    public AbstractAnnotatedType(AnnotationMap annotationMap, Class<T> type)
    {
       super(annotationMap);
       this.name = type.getName();
       if (type.getSuperclass() != null)
       {
-         this.superclass = new AnnotatedClassImpl(type.getSuperclass());
+         this.superclass = AnnotatedClassImpl.of(type.getSuperclass());
       }
       else
       {

@@ -229,7 +229,6 @@ public abstract class WebBeansBootstrap
     * @param bean The bean representation
     * @param beans The set of created beans
     */
-   @SuppressWarnings("unchecked")
    protected void createBean(AbstractClassBean<?> bean, AnnotatedClass<?> annotatedClass, Set<AbstractBean<?, ?>> beans)
    {
       beans.add(bean);
@@ -248,7 +247,7 @@ public abstract class WebBeansBootstrap
          beans.add(producerFieldBean);
          log.info("Web Bean: " + producerFieldBean);
       }
-      for (AnnotatedItem injectionPoint : bean.getAnnotatedInjectionPoints())
+      for (AnnotatedItem<?, ?> injectionPoint : bean.getAnnotatedInjectionPoints())
       {
          if (injectionPoint.isAnnotationPresent(Fires.class))
          {
@@ -256,7 +255,9 @@ public abstract class WebBeansBootstrap
          }
          if (injectionPoint.isAnnotationPresent(Obtains.class))
          {
-            InstanceBean<Object, Field> instanceBean = InstanceBean.of(injectionPoint, getManager());
+            // TODO FIx this
+            @SuppressWarnings("unchecked")
+            InstanceBean<Object, Field> instanceBean = InstanceBean.of((AnnotatedItem) injectionPoint, getManager());
             beans.add(instanceBean);
             log.info("Web Bean: " + instanceBean);
          }
@@ -320,10 +321,12 @@ public abstract class WebBeansBootstrap
     * @param eventType The event type to observe
     * @param bindings The binding types to observe on
     */
-   @SuppressWarnings("unchecked")
    private <T> void registerObserver(Observer<T> observer, Class<?> eventType, Annotation[] bindings)
    {
-      getManager().addObserver(observer, (Class<T>) eventType, bindings);
+      // TODO Fix this!
+      @SuppressWarnings("unchecked")
+      Class<T> clazz = (Class<T>) eventType;
+      getManager().addObserver(observer, clazz, bindings);
    }
 
    /**
@@ -333,21 +336,21 @@ public abstract class WebBeansBootstrap
     * @param injectionPoints A set of injection points to inspect
     * @param beans A set of beans to add the Event beans to
     */
-   @SuppressWarnings("unchecked")
    private void registerEvents(Set<AnnotatedItem<?, ?>> injectionPoints, Set<AbstractBean<?, ?>> beans)
    {
-      for (AnnotatedItem injectionPoint : injectionPoints)
+      for (AnnotatedItem<?, ?> injectionPoint : injectionPoints)
       {
          registerEvent(injectionPoint, beans);
       }
    }
 
-   @SuppressWarnings("unchecked")
-   private void registerEvent(AnnotatedItem injectionPoint, Set<AbstractBean<?, ?>> beans)
+   private void registerEvent(AnnotatedItem<?, ?> injectionPoint, Set<AbstractBean<?, ?>> beans)
    {
       if (injectionPoint.isAnnotationPresent(Fires.class))
       {
-         EventBean<Object, Method> eventBean = EventBean.of(injectionPoint, getManager());
+         // TODO Fix this!
+         @SuppressWarnings("unchecked")
+         EventBean<Object, Method> eventBean = EventBean.of((AnnotatedItem) injectionPoint, getManager());
          beans.add(eventBean);
          log.info("Web Bean: " + eventBean);
       }

@@ -250,7 +250,6 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     * @param type The type of the class
     * @param annotations The array of annotations on the class
     */
-   @SuppressWarnings("unchecked")
    public AnnotatedClassImpl(Class<T> rawType, Type type, Annotation[] annotations)
    {
       super(buildAnnotationMap(annotations), rawType);
@@ -294,7 +293,9 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.annotatedConstructors = new AnnotatedConstructorMap();
       for (Constructor<?> constructor : clazz.getDeclaredConstructors())
       {
-         AnnotatedConstructor<T> annotatedConstructor = new AnnotatedConstructorImpl<T>((Constructor<T>) constructor, this);
+         @SuppressWarnings("unchecked")
+         Constructor<T> c = (Constructor<T>) constructor;
+         AnnotatedConstructor<T> annotatedConstructor = AnnotatedConstructorImpl.of(c, this);
          if (!constructor.isAccessible())
          {
             constructor.setAccessible(true);

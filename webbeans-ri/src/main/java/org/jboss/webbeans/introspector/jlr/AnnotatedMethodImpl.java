@@ -74,7 +74,6 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     * @param method The underlying method
     * @param declaringClass The declaring class abstraction
     */
-   @SuppressWarnings("unchecked")
    public AnnotatedMethodImpl(Method method, AnnotatedType<?> declaringClass)
    {
       super(buildAnnotationMap(method), method);
@@ -245,22 +244,19 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     * @see org.jboss.webbeans.introspector.AnnotatedMethod#invoke(ManagerImpl,
     *      Object)
     */
-   @SuppressWarnings("unchecked")
    public T invoke(Object instance, ManagerImpl manager)
    {
-      return (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, manager));
+      return getType().cast(Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, manager)));
    }
    
-   @SuppressWarnings("unchecked")
    public T invokeOnInstance(Object instance, ManagerImpl manager)
    {
-      return (T) Reflections.invokeAndWrap(getName(), getParameterTypesAsArray(), instance, getParameterValues(parameters, manager));
+      return getType().cast(Reflections.invokeAndWrap(getName(), getParameterTypesAsArray(), instance, getParameterValues(parameters, manager)));
    }
 
-   @SuppressWarnings("unchecked")
    public T invokeWithSpecialValue(Object instance, Class<? extends Annotation> specialParam, Object specialVal, ManagerImpl manager)
    {
-      return (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, specialVal, specialParam, manager));
+      return getType().cast(Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, specialVal, specialParam, manager)));
    }
 
    /**
@@ -272,10 +268,9 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     * @see org.jboss.webbeans.introspector.AnnotatedMethod#invoke(Object,
     *      Object...)
     */
-   @SuppressWarnings("unchecked")
    public T invoke(Object instance, Object... parameters)
    {
-      return (T) Reflections.invokeAndWrap(getDelegate(), instance, parameters);
+      return getType().cast(Reflections.invokeAndWrap(getDelegate(), instance, parameters));
    }
 
    /**

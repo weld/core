@@ -154,7 +154,6 @@ public class EventManager
     * @return A set of Observers. An empty set is returned if there are no
     *         matches.
     */
-   @SuppressWarnings("unchecked")
    public <T> Set<Observer<T>> getObservers(T event, Annotation... bindings)
    {
       Set<Observer<T>> interestedObservers = new HashSet<Observer<T>>();
@@ -164,7 +163,10 @@ public class EventManager
          {
             if (observer.isObserverInterested(bindings))
             {
-               interestedObservers.add((Observer<T>) observer.getObserver());
+               // TODO Fix this!
+               @SuppressWarnings("unchecked")
+               Observer<T> o = (Observer<T>) observer.getObserver();
+               interestedObservers.add(o);
             }
          }
       }

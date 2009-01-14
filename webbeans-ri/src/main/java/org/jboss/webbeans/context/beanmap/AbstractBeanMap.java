@@ -67,10 +67,9 @@ public abstract class AbstractBeanMap implements BeanMap
    /**
     * Clears the bean map
     */
-   @SuppressWarnings("unchecked")
    public void clear()
    {
-      Enumeration names = getAttributeNames();
+      Enumeration<String> names = getAttributeNames();
       while (names.hasMoreElements())
       {
          String name = (String) names.nextElement();
@@ -85,11 +84,10 @@ public abstract class AbstractBeanMap implements BeanMap
     * 
     * @return The beans
     */
-   @SuppressWarnings("unchecked")
    public Iterable<Contextual<? extends Object>> keySet()
    {
       List<Contextual<?>> beans = new ArrayList<Contextual<?>>();
-      Enumeration names = getAttributeNames();
+      Enumeration<String> names = getAttributeNames();
       while (names.hasMoreElements())
       {
          String name = (String) names.nextElement();

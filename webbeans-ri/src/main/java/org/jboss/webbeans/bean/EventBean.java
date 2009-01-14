@@ -116,22 +116,27 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
     * 
     * @return an event instance
     */
-   @SuppressWarnings("unchecked")
    @Override
    public Event<T> create()
    {
       try
       {
          DependentContext.INSTANCE.setActive(true);
-         Class eventType = null;
+         Class<?> clazz;
          if (this.getAnnotatedItem() instanceof AnnotatedParameter)
          {
-            eventType = Object.class;
-         } else
+            clazz = Object.class;
+         } 
+         else
          {
-            eventType = (Class<T>) getAnnotatedItem().getActualTypeArguments()[0];         
+            clazz = Class.class.cast(getAnnotatedItem().getActualTypeArguments()[0]);         
          }
-         return new EventImpl(eventType, manager, getBindingTypesArray());
+         // TODO should be able to move this up into annotated item?!
+         
+         @SuppressWarnings("unchecked")
+         Class<T> eventType = (Class<T>) clazz;
+         
+         return new EventImpl<T>(eventType, manager, getBindingTypesArray());
       }
       finally
       {

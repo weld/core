@@ -49,11 +49,11 @@ public class InjectionPointBean<T, S> extends AbstractFacadeBean<T, S, Object>
       super(field, manager);
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public T create()
    {
-      return (T) manager.getInjectionPointProvider().getPreviousInjectionPoint();
+      // TODO Why do we need to cast here?
+      return getType().cast(manager.getInjectionPointProvider().getPreviousInjectionPoint());
    }
 
    @Override

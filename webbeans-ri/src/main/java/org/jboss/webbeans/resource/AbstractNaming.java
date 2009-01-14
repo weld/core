@@ -45,7 +45,6 @@ public abstract class AbstractNaming implements Naming
     * @param expectedType The expected return type
     * @return The found item
     */
-   @SuppressWarnings("unchecked")
    public <T> T lookup(String name, Class<? extends T> expectedType)
    {
       Object instance;
@@ -59,7 +58,7 @@ public abstract class AbstractNaming implements Naming
       }
       try
       {
-         return (T) instance;
+         return expectedType.cast(instance);
       }
       catch (ClassCastException e)
       {

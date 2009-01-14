@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.webbeans.BindingType;
+
 import org.jboss.webbeans.binding.CurrentBinding;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.util.Proxies;
@@ -233,10 +234,9 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedItem#getAnnotation(Class)
     */
-   @SuppressWarnings("unchecked")
    public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)
    {
-      return (A) annotationMap.get(annotationType);
+      return annotationType.cast(annotationMap.get(annotationType));
    }
 
    /**

@@ -256,7 +256,6 @@ public class Reflections
     * @return A list of matching constructors. An empty list is returned if no
     *         matches are found
     */
-   @SuppressWarnings("unchecked")
    public static <T> List<Constructor<T>> getAnnotatedConstructors(Class<? extends T> clazz, Class<? extends Annotation> annotationType)
    {
       List<Constructor<T>> constructors = new ArrayList<Constructor<T>>();
@@ -264,7 +263,9 @@ public class Reflections
       {
          if (constructor.isAnnotationPresent(annotationType))
          {
-            constructors.add((Constructor<T>) constructor);
+            @SuppressWarnings("unchecked")
+            Constructor<T> c = (Constructor<T>) constructor;
+            constructors.add(c);
          }
       }
       return constructors;
@@ -279,7 +280,6 @@ public class Reflections
     * @return A list of matching constructors. An empty list is returned if no
     *         matches are found
     */
-   @SuppressWarnings("unchecked")
    public static <T> List<Constructor<T>> getConstructorsForAnnotatedParameter(Class<? extends T> clazz, Class<? extends Annotation> parameterAnnotationType)
    {
       List<Constructor<T>> constructors = new ArrayList<Constructor<T>>();
@@ -291,7 +291,9 @@ public class Reflections
             {
                if (annotation.annotationType().equals(parameterAnnotationType))
                {
-                  constructors.add((Constructor<T>) constructor);
+                  @SuppressWarnings("unchecked")
+                  Constructor<T> c = (Constructor<T>) constructor;
+                  constructors.add(c);
                }
             }
          }
@@ -308,7 +310,6 @@ public class Reflections
     * @return A list of matching constructors. An empty list is returned if no
     *         matches are found
     */
-   @SuppressWarnings("unchecked")
    public static <T> List<Constructor<T>> getConstructorsForMetaAnnotatedParameter(Class<? extends T> clazz, Class<? extends Annotation> metaAnnotationType)
    {
       List<Constructor<T>> constructors = new ArrayList<Constructor<T>>();
@@ -320,7 +321,9 @@ public class Reflections
             {
                if (annotation.annotationType().isAnnotationPresent(metaAnnotationType))
                {
-                  constructors.add((Constructor<T>) constructor);
+                  @SuppressWarnings("unchecked")
+                  Constructor<T> c = (Constructor<T>) constructor;
+                  constructors.add(c);
                }
             }
          }

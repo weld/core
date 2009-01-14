@@ -68,6 +68,7 @@ public abstract class AbstractFacadeBean<T, S, P> extends AbstractBean<T, S>
     * 
     * @return The type parameter
     */
+   // TODO This ain't right!
    @SuppressWarnings("unchecked")
    protected Class<P> getTypeParameter()
    {
