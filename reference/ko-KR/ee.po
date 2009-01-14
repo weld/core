@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ee\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-14 17:57+1000\n"
+"PO-Revision-Date: 2009-01-15 02:17+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -186,12 +186,11 @@ msgstr ""
 #. Tag: para
 #: ee.xml:42
 #, no-c-format
-#, fuzzy
 msgid ""
 "The Web Beans client proxy takes care of routing method invocations from the "
 "Servlet to the correct instances of <literal>Credentials</literal> and "
 "<literal>Login</literal> for the current request and HTTP session."
-msgstr "Web Beans 클라이언트 프록시는 "
+msgstr "Web Beans 클라이언트 프록시는 Servlet에서 현재 요청 및 메소드 HTTP 세션의 올바른 <literal>Credentials</literal> 및 <literal>Login</literal> 인스턴스로 호출을 라우팅을 처리합니다.  "
 
 #. Tag: title
 #: ee.xml:49
@@ -208,13 +207,13 @@ msgid ""
 "lookup, or injection using <literal>@EJB</literal>, for example. In "
 "particular, you can use Web Beans injection in Message-Driven Beans, which "
 "are not considered Web Beans because you can't inject them."
-msgstr ""
+msgstr "Web Beans 삽입은 모든 EJB에 적용되며, Web Bean 관리자 제어 하에 있지 않을 경우에도 (예들 들어, JNDI lookup에 의해 획득되었거나 <literal>@EJB</literal>를 사용하여 삽입되었을 경우) 적용됩니다. 특히, Message-Driven Beans에서 Web Beans 삽입을 사용할 수 있으며, 이를 삽입할 수 없기 때문에 이는 Web Beans를 고려하지 않습니다. "
 
 #. Tag: para
 #: ee.xml:57
 #, no-c-format
 msgid "You can even use Web Beans interceptor bindings for Message-Driven Beans."
-msgstr ""
+msgstr "Message-Driven Beans에 대한 Web Beans 인터셉터 바인딩을 사용할 수 있습니다.  "
 
 #. Tag: programlisting
 #: ee.xml:59
@@ -253,6 +252,8 @@ msgid ""
 "message is delivered to a Message-Driven Bean. Only <literal>@RequestScoped</"
 "literal> and <literal>@ApplicationScoped</literal> Web Beans are available."
 msgstr ""
+"따라서, Web Beans 환경에서 메세지를 받는 것은 초간편합니다. 하지만 메세지가 Message-Driven Bean으로 전달될 때 사용할 수 있는 세션 또는 대화 컨텍스트가 없음에 유의하시기 바랍니다. <literal>@RequestScoped</"
+"literal> 및 <literal>@ApplicationScoped</literal> Web Beans 만을 사용할 수 있습니다. "
 
 #. Tag: para
 #: ee.xml:66
@@ -280,6 +281,11 @@ msgid ""
 "literal>. Each of these objects has its own lifecycle and threading model "
 "that we need to worry about."
 msgstr ""
+"JMS를 사용하여 메세지를 전송하는 것은 다소 복잡할 수 있습니다. 이는 다수의 다른 개체를 처리해야 하기 때문입니다. 큐의 경우 <literal>Queue</"
+"literal>, <literal>QueueConnectionFactory</literal>, "
+"<literal>QueueConnection</literal>, <literal>QueueSession</literal> <literal>QueueSender</literal>를 갖습니다. 토픽의 경우 <literal>Topic</literal>, "
+"<literal>TopicConnectionFactory</literal>, <literal>TopicConnection</"
+"literal>, <literal>TopicSession</literal>, <literal>TopicPublisher</literal>를 갖습니다. 이러한 각각의 객체는 자체적으로 수명 주기 및 스레딩 모델을 갖고 있습니다.   "
 
 #. Tag: para
 #: ee.xml:82
@@ -288,7 +294,7 @@ msgid ""
 "Web Beans takes care of all this for us. All we need to do is declare the "
 "queue or topic in <literal>web-beans.xml</literal>, specifying an associated "
 "binding type and connection factory."
-msgstr ""
+msgstr "Web Beans는 이러한 모든 것을 처리합니다. 여기서 처리해야 할 사항은 <literal>web-beans.xml</literal>에 있는 큐 또는 토픽을 명명하고 관련된 바인딩 유형 및 연결 팩토리를 지정하는 것입니다.  "
 
 #. Tag: programlisting
 #: ee.xml:86
@@ -336,6 +342,11 @@ msgid ""
 "<literal>TopicConnection</literal>, <literal>TopicSession</literal> or "
 "<literal>TopicPublisher</literal> for a topic."
 msgstr ""
+"이제 큐의 경우  <literal>Queue</literal>, "
+"<literal>QueueConnection</literal>, <literal>QueueSession</literal>, "
+"<literal>QueueSender</literal>를 삽입할 수 있고, 토픽의 경우 <literal>Topic</literal>, "
+"<literal>TopicConnection</literal>, <literal>TopicSession</literal> "
+"<literal>TopicPublisher</literal>를 삽입할 수 있습니다. "
 
 #. Tag: programlisting
 #: ee.xml:96
@@ -383,7 +394,7 @@ msgstr ""
 msgid ""
 "The lifecycle of the injected JMS objects is completely controlled by the "
 "Web Bean manager."
-msgstr ""
+msgstr "삽입된 JMS 객체의 수명주기는 Web Bean 관리자에 의해 전적으로 관리됩니다. "
 
 #. Tag: title
 #: ee.xml:106
@@ -403,6 +414,8 @@ msgid ""
 "empty. Web Beans deployed in archives that do not have a <literal>web-beans."
 "xml</literal> file will not be available for use in the application."
 msgstr ""
+"Web Beans는 특정 배포 아카이브를 지정하지 않습니다. JAR, EJB-JAR 또는 WAR에 있는 Web Beans &#151; 애플리케이션 classpath에 있는 배포 위치를 패키지화할 수 있습니다. 하지만 Web Beans이 있는 각각의 아카이브에는  <literal>META-INF</literal> 또는 <literal>WEB-INF</literal> 디렉토리에 있는 <literal>web-beans.xml</literal>라는 파일이 들어 있어야 합니다. 파일은 비어 있을 수 도 있습니다. <literal>web-beans."
+"xml</literal> 파일이 없는 아카이브에 배포된 Web Beans는 애플리케이션에서 사용할 수 없습니다. "
 
 #. Tag: para
 #: ee.xml:116
@@ -411,5 +424,5 @@ msgid ""
 "For Java SE execution, Web Beans may be deployed in any location in which "
 "EJBs may be deployed for execution by the embeddable EJB Lite container. "
 "Again, each location must contain a <literal>web-beans.xml</literal> file."
-msgstr ""
+msgstr "Java SE 실행의 경우, 임베드 가능한 EJB Lite 컨테이너에 의해 실행용 EJB를 배포할 수 있는 위치에 Web Beans를 배포할 수 있습니다. 각 위치에서는 <literal>web-beans.xml</literal> 파일이 들어 있어야 합니다.     "
 
