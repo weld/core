@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: part2\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2008-12-19 20:26+0000\n"
+"POT-Creation-Date: 2009-01-14 18:41+0000\n"
 "PO-Revision-Date: 2009-01-14 11:46+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
@@ -22,19 +22,27 @@ msgstr ""
 msgid ""
 "The first major theme of Web Beans is <emphasis>loose coupling</emphasis>. "
 "We've already seen three means of achieving loose coupling:"
-msgstr "El primer tema importante de Web Beans es el <emphasis>acoplamiento flexible</emphasis>. Ya hemos visto tres medios para lograr dicho acomplamiento:"
+msgstr ""
+"El primer tema importante de Web Beans es el <emphasis>acoplamiento "
+"flexible</emphasis>. Ya hemos visto tres medios para lograr dicho "
+"acomplamiento:"
 
 #. Tag: para
 #: part2.xml:10
 #, no-c-format
-msgid "<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
-msgstr "Los <emphasis>tipos de despliegue</emphasis> habilitan el polimorfismo del tiempo de despliegue,"
+msgid ""
+"<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
+msgstr ""
+"Los <emphasis>tipos de despliegue</emphasis> habilitan el polimorfismo del "
+"tiempo de despliegue,"
 
 #. Tag: para
 #: part2.xml:14
 #, no-c-format
 msgid "<emphasis>producer methods</emphasis> enable runtime polymorphism, and"
-msgstr "los <emphasis>métodos de productor</emphasis> habilitan el polimorfismo del tiempo de ejecución, y"
+msgstr ""
+"los <emphasis>métodos de productor</emphasis> habilitan el polimorfismo del "
+"tiempo de ejecución, y"
 
 #. Tag: para
 #: part2.xml:18
@@ -42,7 +50,9 @@ msgstr "los <emphasis>métodos de productor</emphasis> habilitan el polimorfismo
 msgid ""
 "<emphasis>contextual lifecycle management</emphasis> decouples Web Bean "
 "lifecycles."
-msgstr "la <emphasis>administración de ciclo de vida contextual</emphasis> separa los ciclos de vida de WebBean."
+msgstr ""
+"la <emphasis>administración de ciclo de vida contextual</emphasis> separa "
+"los ciclos de vida de WebBean."
 
 #. Tag: para
 #: part2.xml:23
@@ -53,20 +63,28 @@ msgid ""
 "required to manage the lifecycle of the server object. This approach lets "
 "<emphasis>stateful objects interact as if they were services</emphasis>."
 msgstr ""
-"Estas técnicas sirven para habilitar el acoplamiento flexible de cliente y servidor. El cliente ya no está estrechamente ligado a una implementación de un API, ni tiene que administrar el ciclo de vida del objeto del servidor. Este método permite "
-"<emphasis>interactuar a los objetos con estado como si fueran servicios</emphasis>."
+"Estas técnicas sirven para habilitar el acoplamiento flexible de cliente y "
+"servidor. El cliente ya no está estrechamente ligado a una implementación de "
+"un API, ni tiene que administrar el ciclo de vida del objeto del servidor. "
+"Este método permite <emphasis>interactuar a los objetos con estado como si "
+"fueran servicios</emphasis>."
 
 #. Tag: para
 #: part2.xml:28
-#, no-c-format
-#, fuzzy
+#, fuzzy, no-c-format
 msgid ""
 "Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system "
 "can respond to change in a well-defined manner. In the past, frameworks that "
 "attempted to provide the facilities listed above invariably did it by "
 "sacrificing type safety. Web Beans is the first technology that achieves "
 "this level of loose coupling in a typesafe way."
-msgstr "El acoplamiento flexible hace más <emphasis>dinámico</emphasis> a un sistema. El sistema puede responder a cambiar en una manera bien definida . En el pasado, los marcos que trataban de proporcionar servicios listados arriba invariablemente lo hacían sacrificando la seguridad. Web Beans es la primer tecnología que logra este nivel de acoplamiento flexible en una forma typesafe."
+msgstr ""
+"El acoplamiento flexible hace más <emphasis>dinámico</emphasis> a un "
+"sistema. El sistema puede responder a cambiar en una manera bien definida . "
+"En el pasado, los marcos que trataban de proporcionar servicios listados "
+"arriba invariablemente lo hacían sacrificando la seguridad. Web Beans es la "
+"primer tecnología que logra este nivel de acoplamiento flexible en una forma "
+"typesafe."
 
 #. Tag: para
 #: part2.xml:34
@@ -74,7 +92,9 @@ msgstr "El acoplamiento flexible hace más <emphasis>dinámico</emphasis> a un s
 msgid ""
 "Web Beans provides three extra important facilities that further the goal of "
 "loose coupling:"
-msgstr "Web Beans ofrece tres servicios adicionales importantes que amplían el objetivo del acoplamiento flexible:"
+msgstr ""
+"Web Beans ofrece tres servicios adicionales importantes que amplían el "
+"objetivo del acoplamiento flexible:"
 
 #. Tag: para
 #: part2.xml:39
@@ -82,7 +102,9 @@ msgstr "Web Beans ofrece tres servicios adicionales importantes que amplían el 
 msgid ""
 "<emphasis>interceptors</emphasis> decouple technical concerns from business "
 "logic,"
-msgstr "los <emphasis>interceptores</emphasis> separan las cuestiones técnicas de la lógica de negocios,"
+msgstr ""
+"los <emphasis>interceptores</emphasis> separan las cuestiones técnicas de la "
+"lógica de negocios,"
 
 #. Tag: para
 #: part2.xml:43
@@ -90,7 +112,9 @@ msgstr "los <emphasis>interceptores</emphasis> separan las cuestiones técnicas 
 msgid ""
 "<emphasis>decorators</emphasis> may be used to decouple some business "
 "concerns, and"
-msgstr "los <emphasis>decoradores</emphasis> pueden ser utilizados para separar algunas cuestiones de negocios, y"
+msgstr ""
+"los <emphasis>decoradores</emphasis> pueden ser utilizados para separar "
+"algunas cuestiones de negocios, y"
 
 #. Tag: para
 #: part2.xml:47
@@ -98,11 +122,12 @@ msgstr "los <emphasis>decoradores</emphasis> pueden ser utilizados para separar 
 msgid ""
 "<emphasis>event notifications</emphasis> decouple event producers from event "
 "consumers."
-msgstr "las <emphasis>notificaciones de eventos</emphasis> separan a los productores de eventos de los consumidores de eventos."
+msgstr ""
+"las <emphasis>notificaciones de eventos</emphasis> separan a los productores "
+"de eventos de los consumidores de eventos."
 
 #. Tag: para
 #: part2.xml:52
 #, no-c-format
 msgid "Let's explore interceptors first."
 msgstr "En primer lugar, exploremos los interceptores."
-
