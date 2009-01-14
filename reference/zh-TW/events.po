@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 09:48+1000\n"
+"PO-Revision-Date: 2009-01-14 17:48+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: events.xml:4
 #, no-c-format
 msgid "Events"
-msgstr ""
+msgstr "事件（Events）"
 
 #. Tag: para
 #: events.xml:6
@@ -61,7 +61,7 @@ msgstr ""
 #: events.xml:28
 #, no-c-format
 msgid "Event observers"
-msgstr ""
+msgstr "事件觀察器（Event observers）"
 
 #. Tag: para
 #: events.xml:30
@@ -156,7 +156,7 @@ msgstr ""
 #: events.xml:61
 #, no-c-format
 msgid "Event producers"
-msgstr ""
+msgstr "事件產生器（Event producers）"
 
 #. Tag: para
 #: events.xml:63
@@ -216,7 +216,7 @@ msgstr ""
 #: events.xml:86
 #, no-c-format
 msgid "specifies no event bindings."
-msgstr ""
+msgstr "不指定事件綁定。"
 
 #. Tag: para
 #: events.xml:90
@@ -305,7 +305,7 @@ msgstr ""
 #: events.xml:138
 #, no-c-format
 msgid "Registering observers dynamically"
-msgstr ""
+msgstr "動態式地註冊觀察器"
 
 #. Tag: para
 #: events.xml:140
@@ -354,13 +354,13 @@ msgstr ""
 #: events.xml:154
 #, no-c-format
 msgid "Event bindings with members"
-msgstr ""
+msgstr "與成員的事件綁定（Event binding）"
 
 #. Tag: para
 #: events.xml:156
 #, no-c-format
 msgid "An event binding type may have annotation members:"
-msgstr ""
+msgstr "事件綁定類型能夠有下列標記成員："
 
 #. Tag: programlisting
 #: events.xml:158
@@ -402,7 +402,7 @@ msgstr ""
 msgid ""
 "Event binding type members may be specified statically by the event "
 "producer, via annotations at the event notifier injection point:"
-msgstr ""
+msgstr "事件綁定類型的成員可由事件產生器在事件通知器的注入點透過標記來靜態地指定："
 
 #. Tag: programlisting
 #: events.xml:167
@@ -517,7 +517,7 @@ msgstr ""
 #: events.xml:197
 #, no-c-format
 msgid "Transactional observers"
-msgstr ""
+msgstr "交易觀察器（Transactional observers）"
 
 #. Tag: para
 #: events.xml:199
@@ -544,7 +544,7 @@ msgstr ""
 #: events.xml:207
 #, no-c-format
 msgid "There are three kinds of transactional observers:"
-msgstr ""
+msgstr "有三種類型的交易觀察器："
 
 #. Tag: para
 #: events.xml:211
@@ -593,7 +593,7 @@ msgstr ""
 #: events.xml:233
 #, no-c-format
 msgid "Imagine that we have cached a JPA query result set in the application scope:"
-msgstr ""
+msgstr "想像我們已快取了一個設置於應用程式 scope 中的 JPA 查詢結果："
 
 #. Tag: programlisting
 #: events.xml:235
