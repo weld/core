@@ -246,17 +246,23 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     */
    public T invoke(Object instance, ManagerImpl manager)
    {
-      return getType().cast(Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, manager)));
+      @SuppressWarnings("unchecked")
+      T result = (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, manager));
+      return result;
    }
    
    public T invokeOnInstance(Object instance, ManagerImpl manager)
    {
-      return getType().cast(Reflections.invokeAndWrap(getName(), getParameterTypesAsArray(), instance, getParameterValues(parameters, manager)));
+      @SuppressWarnings("unchecked")
+      T result = (T) Reflections.invokeAndWrap(getName(), getParameterTypesAsArray(), instance, getParameterValues(parameters, manager));
+      return result;
    }
 
    public T invokeWithSpecialValue(Object instance, Class<? extends Annotation> specialParam, Object specialVal, ManagerImpl manager)
    {
-      return getType().cast(Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, specialVal, specialParam, manager)));
+      @SuppressWarnings("unchecked")
+      T result = (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, specialVal, specialParam, manager));
+      return result;
    }
 
    /**
@@ -270,7 +276,9 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     */
    public T invoke(Object instance, Object... parameters)
    {
-      return getType().cast(Reflections.invokeAndWrap(getDelegate(), instance, parameters));
+      @SuppressWarnings("unchecked")
+      T result = (T) Reflections.invokeAndWrap(getDelegate(), instance, parameters);
+      return result;
    }
 
    /**
