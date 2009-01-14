@@ -432,9 +432,10 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     * @return A set of matching abstracted fields, null if none are found.
     * 
     */
-   public Set<AnnotatedField<Object>> getAnnotatedFields(Class<? extends Annotation> annotationType)
+   public Set<AnnotatedField<?>> getAnnotatedFields(Class<? extends Annotation> annotationType)
    {
-      return Collections.unmodifiableSet(annotatedFields.get(annotationType));
+      // TODO temp fix
+      return (Set) Collections.unmodifiableSet(annotatedFields.get(annotationType));
    }
 
    /**

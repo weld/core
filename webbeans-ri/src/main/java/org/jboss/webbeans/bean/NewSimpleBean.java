@@ -13,7 +13,6 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.binding.NewBinding;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 
@@ -73,12 +72,6 @@ public class NewSimpleBean<T> extends SimpleBean<T>
    public String getName()
    {
       return null;
-   }
-
-   @Override
-   public Set<AnnotatedField<Object>> getProducerFields()
-   {
-      return Collections.emptySet();
    }
 
    @Override

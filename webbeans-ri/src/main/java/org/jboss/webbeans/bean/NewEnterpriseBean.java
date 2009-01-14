@@ -12,7 +12,6 @@ import javax.webbeans.Standard;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.binding.NewBinding;
 import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 
@@ -51,12 +50,6 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T>
    public String getName()
    {
       return null;
-   }
-
-   @Override
-   public Set<AnnotatedField<Object>> getProducerFields()
-   {
-      return Collections.emptySet();
    }
 
    @Override

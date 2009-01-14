@@ -45,7 +45,7 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     * @return A set of abstracted fields with the given annotation. Returns an
     *         empty set if there are no matches
     */
-   public Set<AnnotatedField<Object>> getAnnotatedFields(Class<? extends Annotation> annotationType);
+   public Set<AnnotatedField<?>> getAnnotatedFields(Class<? extends Annotation> annotationType);
 
    /**
     * Gets all fields which are meta-annotated with metaAnnotationType

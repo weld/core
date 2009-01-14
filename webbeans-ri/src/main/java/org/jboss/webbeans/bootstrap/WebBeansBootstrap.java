@@ -32,6 +32,7 @@ import javax.webbeans.Initializer;
 import javax.webbeans.Observer;
 import javax.webbeans.Observes;
 import javax.webbeans.Obtains;
+import javax.webbeans.Produces;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
@@ -241,7 +242,7 @@ public abstract class WebBeansBootstrap
          registerEvents(producerMethodBean.getAnnotatedInjectionPoints(), beans);
          log.info("Web Bean: " + producerMethodBean);
       }
-      for (AnnotatedField<Object> producerField : bean.getProducerFields())
+      for (AnnotatedField<?> producerField : annotatedClass.getAnnotatedFields(Produces.class))
       {
          ProducerFieldBean<?> producerFieldBean = ProducerFieldBean.of(producerField, bean, getManager());
          beans.add(producerFieldBean);
