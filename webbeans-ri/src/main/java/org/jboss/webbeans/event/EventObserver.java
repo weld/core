@@ -109,7 +109,7 @@ public class EventObserver<T>
    /**
     * @return the observer
     */
-   public final Observer<T> getObserver()
+   public final Observer<? extends T> getObserver()
    {
       return observer;
    }
@@ -170,8 +170,7 @@ public class EventObserver<T>
       {
          return false;
       }
-      @SuppressWarnings("unchecked")
-      EventObserver<T> otherObserver = (EventObserver<T>) other;
+      EventObserver<?> otherObserver = (EventObserver<?>) other;
       if (!eventType.equals(otherObserver.getEventType()))
       {
          return false;

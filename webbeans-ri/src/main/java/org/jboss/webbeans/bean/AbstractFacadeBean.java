@@ -31,9 +31,9 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
  * 
  * @author Gavin King
  * 
- * @param <T>
- * @param <S>
- * @param <P>
+ * @param <T> the bean type
+ * @param <S> the injection point type
+ * @param <P> the parameterized type
  */
 public abstract class AbstractFacadeBean<T, S, P> extends AbstractBean<T, S>
 {

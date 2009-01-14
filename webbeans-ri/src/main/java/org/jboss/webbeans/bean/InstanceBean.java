@@ -39,14 +39,14 @@ public class InstanceBean<T, S> extends AbstractFacadeBean<Instance<T>, S, T>
    /**
     * Creates an instance Web Bean
     * 
-    * @param field The instance injection point abstraction
+    * @param item The instance injection point abstraction
     * @param manager the current manager
     * @param declaringBean The declaring bean abstraction
     * @return An event Web Bean
     */
-   public static <T, S> InstanceBean<T, S> of(AnnotatedItem<Instance<T>, S> field, ManagerImpl manager)
+   public static <T, S> InstanceBean<T, S> of(AnnotatedItem<Instance<T>, S> item, ManagerImpl manager)
    {
-      return new InstanceBean<T, S>(field, manager);
+      return new InstanceBean<T, S>(item, manager);
    }
 
    /**
