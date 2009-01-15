@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: producermethods\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 11:07+1000\n"
+"PO-Revision-Date: 2009-01-15 13:59+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,12 +16,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 
 #. Tag: title
 #: producermethods.xml:5
 #, no-c-format
 msgid "Producer methods"
-msgstr ""
+msgstr "생산자 방식 "
 
 #. Tag: para
 #: producermethods.xml:7
@@ -32,13 +33,13 @@ msgid ""
 "objects. They're also the easiest way to integrate objects which are not Web "
 "Beans into the Web Beans environment. (We'll meet a second approach in <xref "
 "linkend=\"xml\"/>.)"
-msgstr ""
+msgstr "생산자 방식은 Web Bean 관리자가 애플리케이션 대신 인스턴스 객체에 응답할 때 발생할 수 있는 특정한 한계를 극복할 수 있게 합니다. Web Beans이 아닌 객체를 Web Beans 환경으로 통합하기 위한 가장 쉬운 방법이 있습니다. (<xref linkend=\"xml\"/>에서 두번째 방법에 대해 살펴보겠습니다.) "
 
 #. Tag: para
 #: producermethods.xml:12
 #, no-c-format
 msgid "According to the spec:"
-msgstr ""
+msgstr "spec에 의하면: "
 
 #. Tag: chapter
 #: producermethods.xml:12
@@ -87,12 +88,36 @@ msgid ""
 "method will be called by the Web Bean manager to obtain an instance to "
 "service this injection point.</para>."
 msgstr ""
+"<blockquote> <para> Web Beans 생산자 방식은 삽입될 객체 소스로 작동합니다, 여기서 </para> <itemizedlist> <listitem> <para> 삽입될 객체는 Web Beans의 인스턴스가 될 필요가 없습니다,</para> </listitem> <listitem> <para> 삽입되야 할 객체의 구체적 타입은 런타임 시 달라질 수 있습니다 </para> </listitem> <listitem> <para> 사용자 정의 초기화가 필요한 객체는 Web Bean 생성자에 의해 실행되지 않습니다</para> </listitem> </itemizedlist> </blockquote> <para> 예를 들어, 생산자 방식은 다음을 허용합니다: </para> <itemizedlist> <listitem> "
+"<para>Web Bean으로서 JPA 엔티티 노출,</para> </listitem> <listitem> "
+"<para>Web Bean으로서 JDK 클래스 노출,</para> </listitem> <listitem> "
+"<para>동일한 구현 클래스에 대해 다른 범위 또는 초기화를 사용하여 여러 Web Beans를 정의, </para> </listitem> <listitem> <para>런타임 시 다양한 API 유형 구현.</para> </listitem> </itemizedlist> <para> 특히, 생산자 방식은 Web Beans를 사용하여 런타임 다형성을 사용하게 합니다. 이미 알고 있듯이, 배포 유형은 배포 시간 다형성 문제의 강력한 해결책입니다. 하지만 일단 시스템이 운용되면 Web Bean 구현은 고정됩니다. 생산자 방식은 이러한 한계를 갖지 않습니다:</para> <programlisting role=\"JAVA\"><![CDATA"
+"[@SessionScoped\n"
+"public class Preferences {\n"
+"    \n"
+"    private PaymentStrategyType paymentStrategy;\n"
+"    \n"
+"    ...\n"
+"    \n"
+"    @Produces @Preferred \n"
+"    public PaymentStrategy getPaymentStrategy() {\n"
+"        switch (paymentStrategy) {\n"
+"            case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
+"            case CHEQUE: return new ChequePaymentStrategy();\n"
+"            case PAYPAL: return new PayPalPaymentStrategy();\n"
+"            default: return null;\n"
+"        } \n"
+"    }\n"
+"    \n"
+"}]]></programlisting> <para>삽입 지점 고려:</para> "
+"<programlisting role=\"JAVA\"><![CDATA[@Preferred PaymentStrategy "
+"paymentStrat;]]></programlisting> <para> 이러한 삽입 지점은 동일한 유형을 갖으며 생산자 방식으로 어노테이션을 바인딩하므로, 일반적인 Web Beans 삽입 규칙을 사용하여 생산자 방식을 해결합니다. 생산자 방식은 Web Bean 관리자에 의해 호출되어 이러한 삽입 지점을 서비스하기 위해 인스턴스를 획득합니다.</para>.  "
 
 #. Tag: title
 #: producermethods.xml:68
 #, no-c-format
 msgid "Scope of a producer method"
-msgstr ""
+msgstr "생산자 방식의 범위 "
 
 #. Tag: para
 #: producermethods.xml:70
@@ -103,7 +128,7 @@ msgid ""
 "manager injects this field or any other field that resolves to the same "
 "producer method. Thus, there could be multiple instances of the "
 "<literal>PaymentStrategy</literal> object for each user session."
-msgstr ""
+msgstr "생산자 방식의 기본값 범위는 <literal>@Dependent</literal>로 되어 있으므로, <emphasis>매 번</emphasis> Web Bean 관리자가 이러한 영역 또는 동일한 생산자 방식으로 해결되는 다른 영역을 삽입할 때 마다 호출됩니다. 따라서, 각각의 사용자 세션에 대해 <literal>PaymentStrategy</literal> 객체의 인스턴스가 여러개 있을 수 있습니다.  "
 
 #. Tag: para
 #: producermethods.xml:75
@@ -111,7 +136,7 @@ msgstr ""
 msgid ""
 "To change this behavior, we can add a <literal>@SessionScoped</literal> "
 "annotation to the method."
-msgstr ""
+msgstr "이러한 기능을 변경하려면, <literal>@SessionScoped</literal> 어노테이션 방식을 추가할 수 있습니다.  "
 
 #. Tag: programlisting
 #: producermethods.xml:78
@@ -134,13 +159,13 @@ msgid ""
 "Now, when the producer method is called, the returned "
 "<literal>PaymentStrategy</literal> will be bound to the session context. The "
 "producer method won't be called again in the same session."
-msgstr ""
+msgstr "이제 생산자 방식이 호출되면, 반환된 <literal>PaymentStrategy</literal>는 세션 컨텍스트로 바운드됩니다. 동일한 세션에서 생산자 방식은 다시 호출되지 않습니다.  "
 
 #. Tag: title
 #: producermethods.xml:87
 #, no-c-format
 msgid "Injection into producer methods"
-msgstr ""
+msgstr "생산자 방식으로 삽입 "
 
 #. Tag: para
 #: producermethods.xml:89
@@ -152,6 +177,8 @@ msgid ""
 "application can't take advantage of dependency injection and don't have "
 "interceptors."
 msgstr ""
+"위의 코드에 한 가지 문제가 있을 수 있습니다. <literal>CreditCardPaymentStrategy</literal> 구현은 Java "
+"<literal>new</literal> 연산자를 사용하여 인스턴스화됩니다. 애플리케이션에 의해 직접 인스턴스화된 객체는 의존성 삽입의 장점을 취할 수 없으며 인터셉터를 갖지 못합니다. "
 
 #. Tag: para
 #: producermethods.xml:94
@@ -159,7 +186,7 @@ msgstr ""
 msgid ""
 "If this isn't what we want we can use dependency injection into the producer "
 "method to obtain Web Bean instances:"
-msgstr ""
+msgstr "이러한 방식을 원하지 않을 경우, 의존성 삽입을 생산자 방식으로 사용하여 Web Bean 인스턴스를 획득할 수 있습니다:  "
 
 #. Tag: programlisting
 #: producermethods.xml:97
@@ -201,7 +228,7 @@ msgid ""
 "left \"hanging\" in the session scope. This error will <emphasis>not</"
 "emphasis> be detected by the Web Bean manager, so please take extra care "
 "when returning Web Bean instances from producer methods!"
-msgstr ""
+msgstr "<literal>CreditCardPaymentStrategy</literal>가 요청 범위 Web Bean이면 어떻게 합니까? 이럴 경우 생산자 방식은 현재 요청 범위 임스턴스를 세선 범위로 \"활성화되게\" 됩니다. 이는 버그입니다! 요청 범위 객체는 세션이 종료되기 전 Web Bean 관리자에 의해 삭제되지만, 객체에 대한 참조는 세션 범위에 \"남아 있게\" 됩니다. 이러한 오류는 Web Bean 관리자에 의해 검출되지 <emphasis>않으므로</emphasis> 생산자 방식에 Web Bean 인스턴스를 반환할 경우 각별히 주의하시기 바랍니다! "
 
 #. Tag: para
 #: producermethods.xml:107
@@ -212,7 +239,7 @@ msgid ""
 "implementation, but this would affect other clients of that Web Bean. A "
 "better option would be to change the scope of the producer method to "
 "<literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
-msgstr ""
+msgstr "이러한 버그를 해결할 수 있는 세 가지 방법이 있습니다. <literal>CreditCardPaymentStrategy</literal> 구현 범위를 변경할 수 있지만, Web Bean의 클라이언트에 영향을 미칠 수 있습니다. 보다 나은 방법으로 생산자 방식의 범위를 <literal>@Dependent</literal> 또는 <literal>@RequestScoped</literal>로 변경하는 것입니다. "
 
 #. Tag: para
 #: producermethods.xml:113
@@ -220,19 +247,19 @@ msgstr ""
 msgid ""
 "But a more common solution is to use the special <literal>@New</literal> "
 "binding annotation."
-msgstr ""
+msgstr "하지만 보다 일반적인 방법은 특별한 <literal>@New</literal> 바인딩 어노테이션을 사용하는 것입니다. "
 
 #. Tag: title
 #: producermethods.xml:119
 #, no-c-format
 msgid "Use of <literal>@New</literal> with producer methods"
-msgstr ""
+msgstr "생산자 방식과 함께 <literal>@New</literal> 사용 "
 
 #. Tag: para
 #: producermethods.xml:121
 #, no-c-format
 msgid "Consider the following producer method:"
-msgstr ""
+msgstr "다음과 같은 생산자 방식을 고려합니다: "
 
 #. Tag: programlisting
 #: producermethods.xml:123
@@ -276,5 +303,5 @@ msgid ""
 "session context. The dependent object won't be destroyed until the "
 "<literal>Preferences</literal> object is destroyed, at the end of the "
 "session."
-msgstr ""
+msgstr "<literal>CreditCardPaymentStrategy</literal>의 새로운 <emphasis>의존성</emphasis> 인스턴스가 생성되면, 생산자 방식으로 전달하고, 생산자 방식에 의해 반환된 후, 마지막으로 세션 컨텍스트로 바운딩됩니다. 의존성 객체는 세션 마지막에 <literal>Preferences</literal> 객체가 삭제될 때 까지 삭제되지 않습니다.      "
 
