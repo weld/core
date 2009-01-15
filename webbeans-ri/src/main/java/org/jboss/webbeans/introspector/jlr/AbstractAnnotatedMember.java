@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.webbeans.BindingType;
+import javax.webbeans.Produces;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -206,30 +207,30 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    protected Object[] getParameterValues(List<AnnotatedParameter<?>> parameters, Object specialVal, Class<? extends Annotation> specialParam, ManagerImpl manager)
    {
       Object[] parameterValues = new Object[parameters.size()];
+      boolean producerMethod = this.isAnnotationPresent(Produces.class);
       InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
-      injectionPointProvider.pushInjectionPoint(this);
-      try
+      Iterator<AnnotatedParameter<?>> iterator = parameters.iterator();
+      for (int i = 0; i < parameterValues.length; i++)
       {
-         Iterator<AnnotatedParameter<?>> iterator = parameters.iterator();
-         for (int i = 0; i < parameterValues.length; i++)
+         AnnotatedParameter<?> param = iterator.next();
+         if (specialParam != null && param.isAnnotationPresent(specialParam))
          {
-            AnnotatedParameter<?> param = iterator.next();
-            if (specialParam != null && param.isAnnotationPresent(specialParam))
-            {
-               parameterValues[i] = specialVal;
-            }
-            else
-            {
+            parameterValues[i] = specialVal;
+         }
+         else
+         {
+            if (!producerMethod)
                injectionPointProvider.pushInjectionPoint(param);
+            try
+            {
                parameterValues[i] = param.getValue(manager);
-               injectionPointProvider.popInjectionPoint();
+            }
+            finally
+            {
+               if (!producerMethod)
+                  injectionPointProvider.popInjectionPoint();
             }
          }
-      }
-      finally
-      {
-         injectionPointProvider.popInjectionPoint();
-
       }
       return parameterValues;
    }

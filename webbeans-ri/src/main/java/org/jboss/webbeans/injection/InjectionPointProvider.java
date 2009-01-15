@@ -67,6 +67,8 @@ public class InjectionPointProvider
    public void pushInjectionPoint(AnnotatedItem<?, ?> injectionPoint)
    {
       injectionPoints.push(InjectionPointImpl.of(injectionPoint, getCurrentBean()));
+      if (beans.size() != injectionPoints.size())
+         throw new IllegalStateException("Number of beans on stack is inconsistent with number of injection points: " + this);
    }
 
    /**
@@ -119,6 +121,13 @@ public class InjectionPointProvider
    protected Bean<?> getPreviousBean()
    {
       return beans.size() < 2 ? null : beans.elementAt(beans.size() - 2);
+   }
+
+   @Override
+   public String toString()
+   {
+      return "InjectionPointProvider: Bean stack = " + beans.toString() +
+         " InjectionPoint stack = " + injectionPoints.toString();
    }
 
 }

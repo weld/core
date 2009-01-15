@@ -162,9 +162,18 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
    @Override
    public String toString()
    {
-      if (toString != null)
+      if (toString == null)
       {
-         return toString;
+         StringBuilder buffer = new StringBuilder();
+         buffer.append("Annotated parameter ");
+         if (_static)
+            buffer.append("static ");
+         if (_final)
+            buffer.append("final ");
+         buffer.append(getType().getName());
+         buffer.append(" for operation ");
+         buffer.append(getDeclaringMember().toString());
+         toString = buffer.toString();
       }
       return toString;
    }

@@ -183,7 +183,7 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
       {
          return toString;
       }
-      toString = "Annotated method " + Names.field2String(field);
+      toString = "Annotated field " + Names.field2String(field);
       return toString;
    }
 
