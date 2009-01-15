@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: decorators\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-15 17:35+1000\n"
+"PO-Revision-Date: 2009-01-15 22:48+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 
@@ -256,7 +257,7 @@ msgstr ""
 msgid ""
 "This declaration serves the same purpose for decorators that the "
 "<literal>&lt;Interceptors&gt;</literal> declaration serves for interceptors:"
-msgstr ""
+msgstr "이러한 명시 사항은 데코레이터에 대해 <literal>&lt;Interceptors&gt;</literal> 명시가 인터셉터에 대해 실행하는 것과 동일한 목적을 실행합니다:  "
 
 #. Tag: para
 #: decorators.xml:90
@@ -264,13 +265,13 @@ msgstr ""
 msgid ""
 "it enables us to specify a total ordering for all decorators in our system, "
 "ensuring deterministic behavior, and"
-msgstr ""
+msgstr "이는 시스템에서 모든 데코레이터에 대한 전체적인 순서를 지정할 수 있도록 활성화하며, 결정적인 작업를 확인합니다 "
 
 #. Tag: para
 #: decorators.xml:94
 #, no-c-format
 msgid "it lets us enable or disable decorator classes at deployment time."
-msgstr "배포 시 데코레이터 클래스를 활성화 또는 비활성화하게 합니다. "
+msgstr "배포시 데코레이터 클래스를 활성화 또는 비활성화하게 합니다. "
 
 #. Tag: para
 #: decorators.xml:98

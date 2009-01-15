@@ -8,21 +8,21 @@ msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-08 14:07+0000\n"
-"PO-Revision-Date: 2009-01-08 11:10+1000\n"
+"PO-Revision-Date: 2009-01-16 00:40+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
 "\n"
 
 #. Tag: title
 #: ri-spi.xml:4
 #, no-c-format
 msgid "Integrating the Web Beans RI into other environments"
-msgstr ""
+msgstr "Web Beans RI를 다른 환경으로 통합 "
 
 #. Tag: para
 #: ri-spi.xml:6
@@ -33,7 +33,7 @@ msgid ""
 "Glassfish), into a servlet container (like Tomcat), or with an Embedded "
 "EJB3.1 implementation is fairly easy. In this Appendix we will briefly "
 "discuss the steps needed."
-msgstr ""
+msgstr "현재 Web Beans RI는 JBoss AS 5에서만 실행됩니다; RI를 기타 다른 EE 환경 (예를 들어 Glassfish와 같은 다른 애플리케이션 서버)으로 통합, 또는 servlet 컨테이너로 통합 (예: Tomcat), 또는 내장된 EJB3.1 구현과 통합하는 것은 쉽습니다. Appendix에서 필요한 절차에 대해 간략하게 살펴보겠습니다.  "
 
 #. Tag: para
 #: ri-spi.xml:15
@@ -43,13 +43,13 @@ msgid ""
 "do more work, adding your own contexts and lifecycle. The Web Beans RI "
 "currently doesn't expose lifecycle extension points, so you would have to "
 "code directly against Web Beans RI classes."
-msgstr ""
+msgstr "SE 환경에서 Web Beans를 실행할 수 있어야 하지만, 자체적 컨텍스트 및 수명 주기 추가와 같은 더 많은 작업을 해야 합니다. 현재 Web Beans RI는 수명 확장 지점을 나타내지 않고 있으므로, Web Beans RI 클래스에 대해 직접 코드화해야 합니다. "
 
 #. Tag: title
 #: ri-spi.xml:24
 #, no-c-format
 msgid "The Web Beans RI SPI"
-msgstr ""
+msgstr "Web Beans RI SPI "
 
 #. Tag: para
 #: ri-spi.xml:26
@@ -58,7 +58,7 @@ msgid ""
 "The Web Beans SPI is located in <literal>webbeans-ri-spi</literal> module, "
 "and packaged as <literal>webbeans-ri-spi.jar</literal>. Some SPIs are "
 "optional, if you need to override the default behavior, others are required."
-msgstr ""
+msgstr "Web Beans SPI는 <literal>webbeans-ri-spi</literal> 모듈에 위치하고 있으며 <literal>webbeans-ri-spi.jar</literal>로 패키징되어 있습니다. 일부 SPI는 옵션 사항이며, 기본값 동작을 덮어쓰기해야할 경우, 다른 사항이 필요합니다. "
 
 #. Tag: para
 #: ri-spi.xml:33
@@ -69,13 +69,13 @@ msgid ""
 "All property names are the fully qualified class name of the implemented "
 "interface; all property values are the fully qualified class name of the "
 "implementation class."
-msgstr ""
+msgstr "SPI 구현을 시스템 속성으로나 또는 속성 파일 <literal>META-INF/web-beans-ri.properties</literal>로 지정할 수 있습니다. 모든 속성 이름은 구현된 인터페이스의 완전 정규화된 클래스 이름입니다; 모드 속성 값은 구현 클래스의 완전 정규화된 클래스 이름입니다.  "
 
 #. Tag: title
 #: ri-spi.xml:43
 #, no-c-format
 msgid "Web Bean Discovery"
-msgstr ""
+msgstr "Web Bean 검출 "
 
 #. Tag: programlisting
 #: ri-spi.xml:45
@@ -134,11 +134,12 @@ msgstr ""
 #. Tag: para
 #: ri-spi.xml:47
 #, no-c-format
+#, fuzzy
 msgid ""
 "The discovery of Web Bean classes and <literal>web-bean.xml</literal> files "
 "is self-explanatory (the algorithm is described in Section 11.1 of the JSR-"
 "299 specification, and isn't repeated here)."
-msgstr ""
+msgstr "Web Bean 클래스 및 <literal>web-bean.xml</literal> 파일 검출은 쉽게 알 수 있습니다 "
 
 #. Tag: para
 #: ri-spi.xml:53
@@ -497,8 +498,7 @@ msgstr ""
 #: ri-spi.xml:117
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
-msgstr ""
-"org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
+msgstr "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
 
 #. Tag: title
 #: ri-spi.xml:124
@@ -578,3 +578,4 @@ msgid ""
 "literal> into the applications isolated classloader. It cannot be loaded "
 "from a shared classloader."
 msgstr ""
+

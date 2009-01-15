@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-14 14:52+1000\n"
+"PO-Revision-Date: 2009-01-15 22:36+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 
 #. Tag: title
@@ -61,7 +62,7 @@ msgstr ""
 #: xml.xml:24
 #, no-c-format
 msgid "declare the Web Bean using XML."
-msgstr ""
+msgstr "XML을 사용하여 Web Bean 명시 "
 
 #. Tag: para
 #: xml.xml:27
@@ -90,7 +91,7 @@ msgstr ""
 #: xml.xml:40
 #, no-c-format
 msgid "Declaring Web Bean classes"
-msgstr ""
+msgstr "Web Bean 클래스 명시 "
 
 #. Tag: para
 #: xml.xml:42
