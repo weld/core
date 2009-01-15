@@ -21,8 +21,13 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
    private final String ejbName;
    private final List<BusinessInterfaceDescriptor<?>> localInterfaces;
    private final HashSet<Method> removeMethods;
+   
+   public static <T> MockEjbDescriptor<T> of(Class<T> type)
+   {
+      return new MockEjbDescriptor<T>(type);
+   }
 
-   public MockEjbDescriptor(final Class<T> type)
+   private MockEjbDescriptor(final Class<T> type)
    {
       this.type = type;
       this.ejbName = type.getSimpleName();

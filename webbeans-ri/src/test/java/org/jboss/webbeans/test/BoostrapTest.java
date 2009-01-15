@@ -1,8 +1,6 @@
 package org.jboss.webbeans.test;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -232,7 +230,7 @@ public class BoostrapTest extends AbstractTest
    @Test(groups="bootstrap")
    public void testDiscover()
    {
-      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class))));
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(Hound.class, Elephant.class, Panther.class, Tiger.class, Tuna.class, Salmon.class, SeaBass.class, Sole.class));
       webBeansBootstrap.boot();
       
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
@@ -266,7 +264,7 @@ public class BoostrapTest extends AbstractTest
    public void testInitializedEvent()
    {
       assert !InitializedObserver.observered;
-      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(InitializedObserver.class))));
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(InitializedObserver.class));
       webBeansBootstrap.boot();
       
       assert InitializedObserver.observered;
@@ -275,14 +273,14 @@ public class BoostrapTest extends AbstractTest
    @Test(groups="bootstrap")
    public void testRequestContextActiveDuringInitializtionEvent()
    {
-      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(InitializedObserverWhichUsesRequestContext.class, Tuna.class)), null, new HashSet<Class<?>>()));
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(InitializedObserverWhichUsesRequestContext.class, Tuna.class));
       webBeansBootstrap.boot();
    }
    
    @Test(groups={"bootstrap", "broken"})
    public void testApplicationContextActiveDuringInitializtionEvent()
    {
-      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(InitializedObserverWhichUsesApplicationContext.class, LadybirdSpider.class)), null, new HashSet<Class<?>>()));
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(InitializedObserverWhichUsesApplicationContext.class, LadybirdSpider.class));
       webBeansBootstrap.boot();
    }
    

@@ -1,9 +1,7 @@
 package org.jboss.webbeans.test;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -85,7 +83,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test
    public void testClassesImplementingServletInterfacesNotDiscoveredAsSimpleBeans()
    {
-      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(FilterBean.class, HttpSessionListenerBean.class, ServletBean.class, ServletContextListenerBean.class, ServletRequestListenerBean.class)), null, new HashSet<Class<?>>()));
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(FilterBean.class, HttpSessionListenerBean.class, ServletBean.class, ServletContextListenerBean.class, ServletRequestListenerBean.class));
       webBeansBootstrap.boot();
       assert manager.getBeans().size() == BUILT_IN_BEANS;
    }
@@ -93,7 +91,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test
    public void testClassesImplementingEnterpriseBeanInterfaceNotDiscoveredAsSimpleBean()
    {
-      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(EnterpriseBeanWebBean.class)), null, new HashSet<Class<?>>()));
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(EnterpriseBeanWebBean.class));
       webBeansBootstrap.boot();
       assert manager.getBeans().size() == BUILT_IN_BEANS;
    }
@@ -101,7 +99,7 @@ public class SimpleBeanModelTest extends AbstractTest
    @Test
    public void testClassExtendingUiComponentNotDiscoveredAsSimpleBean()
    {
-      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(new HashSet<Class<?>>(Arrays.asList(UIComponentBean.class)), null, new HashSet<Class<?>>()));
+      webBeansBootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(UIComponentBean.class));
       webBeansBootstrap.boot();
       assert manager.getBeans().size() == BUILT_IN_BEANS;
    }

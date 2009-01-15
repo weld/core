@@ -158,7 +158,7 @@ public class AbstractTest
 
    protected <T> void addToEjbCache(Class<T> clazz)
    {
-      manager.getEjbDescriptorCache().add(new MockEjbDescriptor<T>(clazz));
+      manager.getEjbDescriptorCache().add(MockEjbDescriptor.of(clazz));
    }
 
    protected byte[] serialize(Object instance) throws IOException

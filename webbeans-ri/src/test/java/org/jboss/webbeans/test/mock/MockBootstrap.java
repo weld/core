@@ -16,6 +16,7 @@ import javax.transaction.UserTransaction;
 import javax.webbeans.InjectionPoint;
 
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
+import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.DependentContext;
@@ -161,6 +162,7 @@ public class MockBootstrap extends WebBeansBootstrap
    };
    
    private WebBeanDiscovery webBeanDiscovery;
+   private EjbDiscovery ejbDiscovery;
    private ResourceLoader resourceLoader;
    
    private MockNaming mockNaming;
@@ -189,6 +191,10 @@ public class MockBootstrap extends WebBeansBootstrap
    public void setWebBeanDiscovery(WebBeanDiscovery webBeanDiscovery)
    {
       this.webBeanDiscovery = webBeanDiscovery;
+      if (webBeanDiscovery != null)
+      {
+         this.ejbDiscovery = new MockEjbDiscovery(webBeanDiscovery.discoverWebBeanClasses());
+      }
    }
    
    @Override
@@ -206,6 +212,12 @@ public class MockBootstrap extends WebBeansBootstrap
    public MockNaming getNaming()
    {
       return mockNaming;
+   }
+
+   @Override
+   protected EjbDiscovery getEjbDiscovery()
+   {
+      return ejbDiscovery;
    }
    
 }

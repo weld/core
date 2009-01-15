@@ -48,8 +48,9 @@ import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.binding.InitializedBinding;
 import org.jboss.webbeans.binding.DeployedBinding;
+import org.jboss.webbeans.binding.InitializedBinding;
+import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
@@ -130,6 +131,8 @@ public abstract class WebBeansBootstrap
    }
 
    protected abstract WebBeanDiscovery getWebBeanDiscovery();
+   
+   protected abstract EjbDiscovery getEjbDiscovery();
 
    public abstract ResourceLoader getResourceLoader();
 
@@ -298,15 +301,14 @@ public abstract class WebBeansBootstrap
          validateBootstrap();
          // Must populate EJB cache first, as we need it to detect whether a
          // bean is an EJB!
-         getManager().getEjbDescriptorCache().addAll(getWebBeanDiscovery().discoverEjbs());
+         getManager().getEjbDescriptorCache().addAll(getEjbDiscovery().discoverEjbs());
          registerBeans(getWebBeanDiscovery().discoverWebBeanClasses());
          getManager().fireEvent(getManager(), new InitializedBinding());
          List<Bean<?>> beans = getManager().getBeans();
-         log.info("Initialization completed. Validing " + beans.size() + " Web Beans");
+         log.info("Web Beans initialized. Validating beans.");
          getManager().getResolver().resolveInjectionPoints();
          BeanValidation.validate(getManager().getBeans());
          getManager().fireEvent(getManager(), new DeployedBinding());
-         log.info("Deploy complete");
       }
    }
 

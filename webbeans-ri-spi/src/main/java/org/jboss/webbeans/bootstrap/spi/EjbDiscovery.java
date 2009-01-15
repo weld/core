@@ -17,31 +17,26 @@
 
 package org.jboss.webbeans.bootstrap.spi;
 
-import java.net.URL;
+import org.jboss.webbeans.ejb.spi.EjbDescriptor;
+
+
 
 /**
  * A container should implement this interface to allow the Web Beans RI to
- * discover the Web Beans to deploy
+ * discover the EJBs the application contains
  * 
  * @author Pete Muir
  *
  */
-public interface WebBeanDiscovery
+public interface EjbDiscovery
 {
-   public static final String PROPERTY_NAME = WebBeanDiscovery.class.getName();
+   public static final String PROPERTY_NAME = EjbDiscovery.class.getName();
    
    /**
-    * Gets list of all classes in classpath archives with web-beans.xml files
+    * Gets a descriptor for each EJB in the application
     * 
-    * @return An iterable over the classes 
+    * @return The bean class to descriptor map 
     */
-   public Iterable<Class<?>> discoverWebBeanClasses();
-   
-   /**
-    * Gets a list of all web-beans.xml files in the app classpath
-    * 
-    * @return An iterable over the web-beans.xml files 
-    */
-   public Iterable<URL> discoverWebBeansXml();
+   public Iterable<EjbDescriptor<?>> discoverEjbs();
    
 }

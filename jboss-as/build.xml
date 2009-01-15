@@ -60,9 +60,10 @@
 		<copy todir="${jboss.home}/server/default/deployers/webbeans.deployer/lib-int">
          <fileset dir="target/webbeans.deployer">
             <include name="webbeans-ri.jar" />
-	    <include name="webbeans-ri-int-jbossas.jar" />
-    	    <include name="webbeans-api.jar" />
-	    <include name="webbeans-ri-spi.jar" />
+            <include name="webbeans-ri-int-jbossas.jar" />
+         	<include name="webbeans-ri-int-jboss-ejb.jar" />
+            <include name="webbeans-api.jar" />
+            <include name="webbeans-ri-spi.jar" />
          </fileset>
       </copy>
 
