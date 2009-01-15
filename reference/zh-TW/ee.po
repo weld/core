@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ee\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-13 00:47+1000\n"
+"PO-Revision-Date: 2009-01-15 12:12+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -49,7 +49,7 @@ msgid ""
 "examples of this, though we didn't pay much attention at the time:"
 msgstr ""
 "所有基本與企業的 Web Bean 都能透過 <literal>@Resource</literal>、<literal>@EJB</literal> 以及 "
-"<literal>@PersistenceContext</literal> 來有效利用 Java EE 相依性注入。我們早已見過了這方面的範例，不過當時我們並未詳細討論到："
+"<literal>@PersistenceContext</literal> 來有效利用 Java 依賴注入（dependency injection）。我們早已見過了這方面的範例，不過當時我們並未詳細討論到："
 
 #. Tag: programlisting
 #: ee.xml:19

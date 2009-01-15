@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: specialization\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 11:01+1000\n"
+"PO-Revision-Date: 2009-01-15 12:18+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,12 +25,13 @@ msgstr ""
 #. Tag: para
 #: specialization.xml:6
 #, no-c-format
+#, fuzzy
 msgid ""
 "We've already seen how the Web Beans dependency injection model lets us "
 "<emphasis>override</emphasis> the implementation of an API at deployment "
 "time. For example, the following enterprise Web Bean provides an "
 "implementation of the API <literal>PaymentProcessor</literal> in production:"
-msgstr ""
+msgstr "依賴注入"
 
 #. Tag: programlisting
 #: specialization.xml:11

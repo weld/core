@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: producermethods\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-14 17:41+1000\n"
+"PO-Revision-Date: 2009-01-15 12:17+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -168,21 +168,23 @@ msgstr "注入 producer method"
 #. Tag: para
 #: producermethods.xml:89
 #, no-c-format
+#, fuzzy
 msgid ""
 "There's one potential problem with the code above. The implementations of "
 "<literal>CreditCardPaymentStrategy</literal> are instantiated using the Java "
 "<literal>new</literal> operator. Objects instantiated directly by the "
 "application can't take advantage of dependency injection and don't have "
 "interceptors."
-msgstr ""
+msgstr "依賴注入"
 
 #. Tag: para
 #: producermethods.xml:94
 #, no-c-format
+#, fuzzy
 msgid ""
 "If this isn't what we want we can use dependency injection into the producer "
 "method to obtain Web Bean instances:"
-msgstr ""
+msgstr "依賴注入"
 
 #. Tag: programlisting
 #: producermethods.xml:97

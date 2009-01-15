@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-14 17:48+1000\n"
+"PO-Revision-Date: 2009-01-15 12:08+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgid ""
 "that are then delivered to event <emphasis>observers</emphasis> by the Web "
 "Bean manager. This basic schema might sound like the familiar observer/"
 "observable pattern, but there are a couple of twists:"
-msgstr ""
+msgstr "Web Bean 事件通知功能能讓 Web Bean 以一個完全 decouple 的方式來進行互動。事件<emphasis>產生器（producers）</emphasis>會產生事件並且之後會被透過 Web Bean 管理員來傳送給事件<emphasis>觀察器（observers）</emphasis>。這個基本的 schema 可能看起來和熟悉的觀察器/可觀察的格式類似，不過卻有幾點不大相同："
 
 #. Tag: para
 #: events.xml:14
@@ -39,7 +39,7 @@ msgstr ""
 msgid ""
 "not only are event producers decoupled from observers; observers are "
 "completely decoupled from producers,"
-msgstr ""
+msgstr "不只是事件產生器由觀察器被 decouple；觀察器也完全地由產生器被 decouple 了，"
 
 #. Tag: para
 #: events.xml:18
@@ -47,7 +47,7 @@ msgstr ""
 msgid ""
 "observers can specify a combination of \"selectors\" to narrow the set of "
 "event notifications they will receive, and"
-msgstr ""
+msgstr "觀察器可指定一組「選擇器（selectors）」的組合來過濾並減少它們所將會收到的事件通知數量，並且"
 
 #. Tag: para
 #: events.xml:22
@@ -55,7 +55,7 @@ msgstr ""
 msgid ""
 "observers can be notified immediately, or can specify that delivery of the "
 "event should be delayed until the end of the current transaction"
-msgstr ""
+msgstr "觀察器可即刻地被通知，或是您亦可指定將事件的傳送延遲到目前交易動作（又稱為工作邏輯單元）結束之後"
 
 #. Tag: title
 #: events.xml:28
@@ -69,7 +69,7 @@ msgstr "事件觀察器（Event observers）"
 msgid ""
 "An <emphasis>observer method</emphasis> is a method of a Web Bean with a "
 "parameter annotated <literal>@Observes</literal>."
-msgstr ""
+msgstr "<emphasis>observer method</emphasis> 是個 Web Bean 的 method 並有個標記為 <literal>@Observes</literal> 的參數。"
 
 #. Tag: programlisting
 #: events.xml:33
@@ -90,7 +90,7 @@ msgid ""
 "emphasis>. Observer methods may also specify \"selectors\", which are just "
 "instances of Web Beans binding types. When a binding type is used as an "
 "event selector, it is called an <emphasis>event binding type</emphasis>."
-msgstr ""
+msgstr "這個被標記的參數稱為<emphasis>事件參數（event parameter）</emphasis>。這個事件參數的 type 相當於被觀察到的<emphasis>事件類型（event type）</emphasis>。Observer method 也能指定「selector」，它們只不過是 Web Bean 綁定類型（binding types）的 instance。當有個綁定類型被用來作為一個事件選擇器時，它就會被稱為是一個<emphasis>事件綁定類型（event binding type）</emphasis>。"
 
 #. Tag: programlisting
 #: events.xml:41
@@ -112,7 +112,7 @@ msgstr ""
 msgid ""
 "We specify the event bindings of the observer method by annotating the event "
 "parameter:"
-msgstr ""
+msgstr "我們可藉由標記事件參數來指定 observer method 的事件綁定："
 
 #. Tag: programlisting
 #: events.xml:46 events.xml:190
@@ -132,7 +132,7 @@ msgid ""
 "is interested in <emphasis>all</emphasis> events of a particular type. If it "
 "does specify event bindings, it is only interested in events which also have "
 "those event bindings."
-msgstr ""
+msgstr "一個 observer method 不需要指定任何的事件綁定&#151;在此情況下它會專注於特定 type 的<emphasis>所有</emphasis>事件。若它指定了事件綁定的話，它就只會專注於也具有這些事件綁定的事件。"
 
 #. Tag: para
 #: events.xml:53
@@ -140,7 +140,7 @@ msgstr ""
 msgid ""
 "The observer method may have additional parameters, which are injected "
 "according to the usual Web Beans method parameter injection semantics:"
-msgstr ""
+msgstr "Observer method 能夠含有額外的參數，這些參數會被根據一般的 Web Bean method 參數注入語意（parameter injection semantic）來注入："
 
 #. Tag: programlisting
 #: events.xml:56
@@ -164,7 +164,7 @@ msgstr "事件產生器（Event producers）"
 msgid ""
 "The event producer may obtain an <emphasis>event notifier</emphasis> object "
 "by injection:"
-msgstr ""
+msgstr "事件產生器可透過注入來取得一個<emphasis>事件通知器（event notifier）</emphasis> 物件："
 
 #. Tag: programlisting
 #: events.xml:66
@@ -180,7 +180,7 @@ msgid ""
 "with scope <literal>@Dependent</literal> and deployment type "
 "<literal>@Standard</literal>, with an implementation provided by the Web "
 "Bean manager."
-msgstr ""
+msgstr "<literal>@Observable</literal> 這個標記暗示性地以 <literal>@Dependent</literal> 這個 scope 和 <literal>@Standard</literal> 這個建置類型，以及 Web Bean 管理員所提供的實做來定義了一個 Web Bean。"
 
 #. Tag: para
 #: events.xml:72
@@ -189,7 +189,7 @@ msgid ""
 "A producer raises events by calling the <literal>fire()</literal> method of "
 "the <literal>Event</literal> interface, passing an <emphasis>event object</"
 "emphasis>:"
-msgstr ""
+msgstr "產生器可藉由調用 <literal>Event</literal> 介面的 <literal>fire()</literal> method，並傳送一個 <emphasis>event object</emphasis> 來產生事件："
 
 #. Tag: programlisting
 #: events.xml:75
@@ -204,19 +204,19 @@ msgid ""
 "An event object may be an instance of any Java class that has no type "
 "variables or wildcard type parameters. The event will be delivered to every "
 "observer method that:"
-msgstr ""
+msgstr "Event object 可能會是個沒有 type variable 或是 wildcard type 參數的任何 Java class 的 instance。該事件會被傳送給符合下列條件的每個 observer method："
 
 #. Tag: para
 #: events.xml:83 events.xml:107 events.xml:126
 #, no-c-format
 msgid "has an event parameter to which the event object is assignable, and"
-msgstr ""
+msgstr "含有可指派 event object 的事件參數，以及"
 
 #. Tag: para
 #: events.xml:86
 #, no-c-format
 msgid "specifies no event bindings."
-msgstr "不指定事件綁定。"
+msgstr "沒有指定事件綁定的 observer method。"
 
 #. Tag: para
 #: events.xml:90
@@ -226,7 +226,7 @@ msgid ""
 "event object as the value of the event parameter. If any observer method "
 "throws an exception, the Web Bean manager stops calling observer methods, "
 "and the exception is rethrown by the <literal>fire()</literal> method."
-msgstr ""
+msgstr "Web Bean 管理員會調用所有 observer method，並將 event object 作為是事件參數的值一般地來傳送。若任何 observer method 回傳了一個 exception，Web Bean 管理員便會停止調用 observer method，然後這個 exception 會被 <literal>fire()</literal> method 重新回傳。"
 
 #. Tag: para
 #: events.xml:95
@@ -234,7 +234,7 @@ msgstr ""
 msgid ""
 "To specify a \"selector\", the event producer may pass an instance of the "
 "event binding type to the <literal>fire()</literal> method:"
-msgstr ""
+msgstr "若要指定一個「selector」，事件產生器可將事件綁定類型的一個 instance 傳送至 <literal>fire()</literal> 這個 method："
 
 #. Tag: programlisting
 #: events.xml:98
@@ -253,13 +253,13 @@ msgid ""
 "The helper class <literal>AnnotationLiteral</literal> makes it possible to "
 "instantiate binding types inline, since this is otherwise difficult to do in "
 "Java."
-msgstr ""
+msgstr "<literal>AnnotationLiteral</literal> 這個 helper class 可例示內部的綁定類型，因為要在 Java 中這麼作相當的困難。"
 
 #. Tag: para
 #: events.xml:103
 #, no-c-format
 msgid "The event will be delivered to every observer method that:"
-msgstr ""
+msgstr "事件會被傳送給符合下列條件的每個觀察器 method："
 
 #. Tag: para
 #: events.xml:110
@@ -267,7 +267,7 @@ msgstr ""
 msgid ""
 "does not specify any event binding <emphasis>except</emphasis> for the event "
 "bindings passed to <literal>fire()</literal>."
-msgstr ""
+msgstr "不會指定任何的事件綁定，<emphasis>除了</emphasis>傳送給 <literal>fire()</literal> 的事件綁定。"
 
 #. Tag: para
 #: events.xml:115
@@ -275,7 +275,7 @@ msgstr ""
 msgid ""
 "Alternatively, event bindings may be specified by annotating the event "
 "notifier injection point:"
-msgstr ""
+msgstr "另外，事件綁定亦可透過標記事件通知器注入點來指定："
 
 #. Tag: programlisting
 #: events.xml:118
@@ -290,7 +290,7 @@ msgid ""
 "Then every event fired via this instance of <literal>Event</literal> has the "
 "annotated event binding. The event will be delivered to every observer "
 "method that:"
-msgstr ""
+msgstr "若是如此，所有透過 <literal>Event</literal> 的 instance 來產生的事件都會含有被標記的事件綁定。事件會被傳送給符合下列條件的每個觀察器 method："
 
 #. Tag: para
 #: events.xml:129
@@ -299,7 +299,7 @@ msgid ""
 "does not specify any event binding <emphasis>except</emphasis> for the event "
 "bindings passed to <literal>fire()</literal> or the annotated event bindings "
 "of the event notifier injection point."
-msgstr ""
+msgstr "不會指定任何的事件綁定，<emphasis>除了</emphasis>傳送給 <literal>fire()</literal> 的事件綁定或是被標記的事件通知器注入點的事件綁定。"
 
 #. Tag: title
 #: events.xml:138
@@ -315,7 +315,7 @@ msgid ""
 "may implement the <literal>Observer</literal> interface and register an "
 "instance with an event notifier by calling the <literal>observe()</literal> "
 "method."
-msgstr ""
+msgstr "通常以動態式的方式來註冊事件觀察器相當地有幫助。應用程式可實做 <literal>Observer</literal> 介面然後藉由調用 <literal>observe()</literal> method 來以一個事件通知器去註冊某個 instance。"
 
 #. Tag: programlisting
 #: events.xml:144
@@ -335,6 +335,8 @@ msgid ""
 "or by passing event binding type instances to the <literal>observe()</"
 "literal> method:"
 msgstr ""
+"事件綁定類型能由事件通知器注入點來指定，或是透過將事件綁定類型的 instance 傳送至 <literal>observe()</"
+"literal> method："
 
 #. Tag: programlisting
 #: events.xml:149
@@ -354,7 +356,7 @@ msgstr ""
 #: events.xml:154
 #, no-c-format
 msgid "Event bindings with members"
-msgstr "與成員的事件綁定（Event binding）"
+msgstr "member 的事件綁定"
 
 #. Tag: para
 #: events.xml:156
@@ -384,7 +386,7 @@ msgstr ""
 #: events.xml:160
 #, no-c-format
 msgid "The member value is used to narrow the messages delivered to the observer:"
-msgstr ""
+msgstr "member value（這是個編譯期常數）會被使用來過濾並減少傳送至觀察器的訊息數量："
 
 #. Tag: programlisting
 #: events.xml:162
@@ -417,7 +419,7 @@ msgid ""
 "Alternatively, the value of the event binding type member may be determined "
 "dynamically by the event producer. We start by writing an abstract subclass "
 "of <literal>AnnotationLiteral</literal>:"
-msgstr ""
+msgstr "另外，事件綁定類型成員的值亦可藉由事件產生器來動態式地判斷出。我們首先先從編寫一個 <literal>AnnotationLiteral</literal> 的 abstract subclass 開始："
 
 #. Tag: programlisting
 #: events.xml:172
@@ -437,7 +439,7 @@ msgstr ""
 msgid ""
 "The event producer passes an instance of this class to <literal>fire()</"
 "literal>:"
-msgstr ""
+msgstr "事件產生器會將這個 class 的一個 instance 傳送至 <literal>fire()</literal>："
 
 #. Tag: programlisting
 #: events.xml:176
@@ -453,13 +455,13 @@ msgstr ""
 #: events.xml:181
 #, no-c-format
 msgid "Multiple event bindings"
-msgstr ""
+msgstr "多重事件綁定（Multiple event binding）"
 
 #. Tag: para
 #: events.xml:183
 #, no-c-format
 msgid "Event binding types may be combined, for example:"
-msgstr ""
+msgstr "事件綁定類型可被合併，例如："
 
 #. Tag: programlisting
 #: events.xml:185
@@ -481,7 +483,7 @@ msgstr ""
 msgid ""
 "When this event occurs, all of the following observer methods will be "
 "notified:"
-msgstr ""
+msgstr "當這個事件發生時，下列所有 observer method 都會被通知："
 
 #. Tag: programlisting
 #: events.xml:189
@@ -528,7 +530,7 @@ msgid ""
 "For example, the following observer method needs to refresh a query result "
 "set that is cached in the application context, but only when transactions "
 "that update the <literal>Category</literal> tree succeed:"
-msgstr ""
+msgstr "交易觀察器會在事件被產生後，於交易完成之前或之後收到它們的事件通知。比方說，下列 observer method 需要更新一組快取儲存於應用程式 context 中的查詢結果，不過只有更新了 <literal>Category</literal> tree 的交易會成功："
 
 #. Tag: programlisting
 #: events.xml:205
@@ -544,7 +546,7 @@ msgstr ""
 #: events.xml:207
 #, no-c-format
 msgid "There are three kinds of transactional observers:"
-msgstr "有三種類型的交易觀察器："
+msgstr "交易觀察器分為三種類型："
 
 #. Tag: para
 #: events.xml:211
@@ -553,7 +555,7 @@ msgid ""
 "<literal>@AfterTransactionSuccess</literal> observers are called during the "
 "after completion phase of the transaction, but only if the transaction "
 "completes successfully"
-msgstr ""
+msgstr "<literal>@AfterTransactionSuccess</literal> 觀察器會在交易完成之後的階段才會被調用，不過僅限於交易成功完成的情況下"
 
 #. Tag: para
 #: events.xml:216
@@ -562,7 +564,7 @@ msgid ""
 "<literal>@AfterTransactionFailure</literal> observers are called during the "
 "after completion phase of the transaction, but only if the transaction fails "
 "to complete successfully"
-msgstr ""
+msgstr "<literal>@AfterTransactionFailure</literal> 觀察器會在交易完成之後的階段才會被調用，不過僅限於交易無法成功完成的情況下"
 
 #. Tag: para
 #: events.xml:221
@@ -570,7 +572,7 @@ msgstr ""
 msgid ""
 "<literal>@AfterTransactionCompletion</literal> observers are called during "
 "the after completion phase of the transaction"
-msgstr ""
+msgstr "<literal>@AfterTransactionCompletion</literal> 觀察器會在交易完成之後的階段才會被調用"
 
 #. Tag: para
 #: events.xml:225
@@ -578,7 +580,7 @@ msgstr ""
 msgid ""
 "<literal>@BeforeTransactionCompletion</literal> observers are called during "
 "the before completion phase of the transaction"
-msgstr ""
+msgstr "<literal>@BeforeTransactionCompletion</literal> 觀察器會在交易完成之前的階段被調用"
 
 #. Tag: para
 #: events.xml:230
@@ -587,7 +589,7 @@ msgid ""
 "Transactional observers are very important in a stateful object model like "
 "Web Beans, because state is often held for longer than a single atomic "
 "transaction."
-msgstr ""
+msgstr "交易觀察器在一個像是 Web Bean 的 stateful 物件模型中相當地重要，因為 state 一般被保持的時間比單一 atomic transaction（不可分割的交易）還要長。"
 
 #. Tag: para
 #: events.xml:233
@@ -645,7 +647,7 @@ msgid ""
 "this occurs, we need to refresh the <literal>Product</literal> catalog. But "
 "we should wait until <emphasis>after</emphasis> the transaction completes "
 "successfully before performing this refresh!"
-msgstr ""
+msgstr "<literal>Product</literal> 經常會被建立或刪除。當這情況發生時，我們便需要更新 <literal>Product</literal> 的 catalog。不過我們還是應該等到交易成功完成<emphasis>之後</emphasis>才去進行這項更新！"
 
 #. Tag: para
 #: events.xml:242
@@ -653,7 +655,7 @@ msgstr ""
 msgid ""
 "The Web Bean that creates and deletes <literal>Product</literal>s could "
 "raise events, for example:"
-msgstr ""
+msgstr "建立和刪除 <literal>Product</literal> 的 Web Bean 可產生事件，例如："
 
 #. Tag: programlisting
 #: events.xml:245
@@ -705,7 +707,7 @@ msgstr ""
 msgid ""
 "And now <literal>Catalog</literal> can observe the events after successful "
 "completion of the transaction:"
-msgstr ""
+msgstr "而現在，<literal>Catalog</literal> 可在交易成功完成之後觀察事件："
 
 #. Tag: programlisting
 #: events.xml:250

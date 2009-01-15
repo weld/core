@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: interceptors\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-13 14:09+1000\n"
+"PO-Revision-Date: 2009-01-15 12:13+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -217,7 +217,7 @@ msgstr ""
 msgid ""
 "All Web Beans interceptors are simple Web Beans, and can take advantage of "
 "dependency injection and contextual lifecycle management."
-msgstr "所有的 Web Bean 攔截器皆為基本的 Web Bean，並且能夠有效利用相依性注入（dependency injection）以及 contextual lifecycle 管理。"
+msgstr "所有的 Web Bean 攔截器皆為基本的 Web Bean，並且能夠有效利用依賴注入（dependency injection）以及 contextual lifecycle 管理。"
 
 #. Tag: programlisting
 #: interceptors.xml:81

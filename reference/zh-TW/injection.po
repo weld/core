@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 09:54+1000\n"
+"PO-Revision-Date: 2009-01-15 14:48+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,19 +20,19 @@ msgstr ""
 #: injection.xml:4
 #, no-c-format
 msgid "Dependency injection"
-msgstr ""
+msgstr "依賴注入（Dependency injection）"
 
 #. Tag: para
 #: injection.xml:6
 #, no-c-format
 msgid "Web Beans supports three primary mechanisms for dependency injection:"
-msgstr ""
+msgstr "Web Bean 支援了三個主要的依賴注入機制："
 
 #. Tag: para
 #: injection.xml:8
 #, no-c-format
 msgid "Constructor parameter injection:"
-msgstr ""
+msgstr "Constructor parameter injection："
 
 #. Tag: programlisting
 #: injection.xml:10
@@ -64,7 +64,7 @@ msgstr ""
 #: injection.xml:12
 #, no-c-format
 msgid "<emphasis>Initializer</emphasis> method parameter injection:"
-msgstr ""
+msgstr "<emphasis>Initializer</emphasis> method parameter injection："
 
 #. Tag: programlisting
 #: injection.xml:14
@@ -96,7 +96,7 @@ msgstr ""
 #: injection.xml:16
 #, no-c-format
 msgid "And direct field injection:"
-msgstr ""
+msgstr "以及 direct field injection："
 
 #. Tag: programlisting
 #: injection.xml:18
@@ -120,7 +120,7 @@ msgstr ""
 msgid ""
 "Dependency injection always occurs when the Web Bean instance is first "
 "instantiated."
-msgstr ""
+msgstr "每當 Web Bean 的 instance 第一次被例示時，依賴注入就會發生。"
 
 #. Tag: para
 #: injection.xml:25
@@ -128,7 +128,7 @@ msgstr ""
 msgid ""
 "First, the Web Bean manager calls the Web Bean constructor, to obtain an "
 "instance of the Web Bean."
-msgstr ""
+msgstr "首先，Web Bean 管理員會調用 Web Bean constructor，並取得 Web Bean 的某個 instance。"
 
 #. Tag: para
 #: injection.xml:29
@@ -136,13 +136,13 @@ msgstr ""
 msgid ""
 "Next, the Web Bean manager initializes the values of all injected fields of "
 "the Web Bean."
-msgstr ""
+msgstr "接下來，Web Bean 管理員便會初始化 Web Bean 所有已注入欄位的值。"
 
 #. Tag: para
 #: injection.xml:33
 #, no-c-format
 msgid "Next, the Web Bean manager calls all initializer methods of Web Bean."
-msgstr ""
+msgstr "然後，Web Bean 管理員將會調用 Web Bean 的所有 initializer method。"
 
 #. Tag: para
 #: injection.xml:37
@@ -150,7 +150,7 @@ msgstr ""
 msgid ""
 "Finally, the <literal>@PostConstruct</literal> method of the Web Bean, if "
 "any, is called."
-msgstr ""
+msgstr "最後，（若存在的話）Web Bean 的 <literal>@PostConstruct</literal> method 將會被調用。"
 
 #. Tag: para
 #: injection.xml:42
@@ -158,7 +158,7 @@ msgstr ""
 msgid ""
 "Constructor parameter injection is not supported for EJB beans, since the "
 "EJB is instantiated by the EJB container, not the Web Bean manager."
-msgstr ""
+msgstr "EJB Bean 不支援 Constructor parameter injection，因為 EJB 是由 EJB container 來例示（instantiate）的，而不是以 Web Bean 管理員。"
 
 #. Tag: para
 #: injection.xml:45
@@ -169,13 +169,13 @@ msgid ""
 "Injected fields, however, <emphasis>must</emphasis> specify a binding type, "
 "even when the default binding type applies. If the field does not specify a "
 "binding type, it will not be injected."
-msgstr ""
+msgstr "當套用了預設的 <literal>@Current</literal> 綁定類型時，Constructor 和 initializer method 的參數不需要被明確地標記。不過，儘管套用了預設的綁定類型，被注入的欄位還是<emphasis>一定</emphasis>要指定綁定類型。若該欄位不指定綁定類型的話，它將不會被注入。"
 
 #. Tag: para
 #: injection.xml:51
 #, no-c-format
 msgid "Producer methods also support parameter injection:"
-msgstr ""
+msgstr "Producer method 也支援 parameter injection："
 
 #. Tag: programlisting
 #: injection.xml:53
@@ -195,7 +195,7 @@ msgstr ""
 msgid ""
 "Finally, observer methods (which we'll meet in <xref linkend=\"events\"/>), "
 "disposal methods and destructor methods all support parameter injection."
-msgstr ""
+msgstr "最後，observer method（我們會在 <xref linkend=\"events\"/> 中談到）、disposal method 以及 destructor method 全都支援 parameter injection。"
 
 #. Tag: para
 #: injection.xml:58
@@ -211,6 +211,8 @@ msgid ""
 "<literal>UnsatisfiedDependencyException</literal> or "
 "<literal>AmbiguousDependencyException</literal>."
 msgstr ""
+"Web Bean 規格定義了一個流程，該流程稱為 <emphasis>typesafe resolution algorithm</emphasis>（typesafe 解析演算法），當 Web Bean 要注入至一個注入點時，Web Bean 管理員便會遵照該流程來進行。這個演算法乍看之下非常地複雜，不過當您理解它之後，您會發現它實際上並不複雜。Typesafe 解析會在系統初始化時進行，這也代表了若 Web Bean 的相依性無法被滿足的話，管理員會即刻透過回傳一個 <literal>UnsatisfiedDependencyException</literal> 或是 "
+"<literal>AmbiguousDependencyException</literal> 來通知用戶。"
 
 #. Tag: para
 #: injection.xml:67
@@ -218,7 +220,7 @@ msgstr ""
 msgid ""
 "The purpose of this algorithm is to allow multiple Web Beans to implement "
 "the same API type and either:"
-msgstr ""
+msgstr "這個演算法就是為了要讓多重 Web Bean 實做相同的 API 類型以及："
 
 #. Tag: para
 #: injection.xml:72
@@ -226,7 +228,7 @@ msgstr ""
 msgid ""
 "allow the client to select which implementation it requires using "
 "<emphasis>binding annotations</emphasis>,"
-msgstr ""
+msgstr "讓客戶端藉由使用 <emphasis>binding annotations</emphasis> 來選擇需要的實做、"
 
 #. Tag: para
 #: injection.xml:77
@@ -235,7 +237,7 @@ msgid ""
 "allow the application deployer to select which implementation is appropriate "
 "for a particular deployment, without changes to the client, by enabling or "
 "disabling <emphasis>deployment types</emphasis>, or"
-msgstr ""
+msgstr "讓應用程式建置人員在不改變客戶端的情況下藉由啟用或停用 <emphasis>deployment types</emphasis> 來選擇用於特定建置的適當實做，或是"
 
 #. Tag: para
 #: injection.xml:82
@@ -244,19 +246,19 @@ msgid ""
 "allow one implementation of an API to override another implementation of the "
 "same API at deployment time, without changes to the client, using "
 "<emphasis>deployment type precedence</emphasis>."
-msgstr ""
+msgstr "允許建置時透過使用 <emphasis>deployment type precedence</emphasis> 來讓某個 API 的一個實做能在不改變客戶端的情況下置換另一個相同 API 的實做。"
 
 #. Tag: para
 #: injection.xml:88
 #, no-c-format
 msgid "Let's explore how the Web Beans manager determines a Web Bean to be injected."
-msgstr ""
+msgstr "讓我們來探討 Web Bean 管理員如何判斷某個 Web Bean 要如何被注入。"
 
 #. Tag: title
 #: injection.xml:91
 #, no-c-format
 msgid "Binding annotations"
-msgstr ""
+msgstr "綁定標記"
 
 #. Tag: para
 #: injection.xml:93
@@ -266,7 +268,7 @@ msgid ""
 "injection point can specify exactly which Web Bean should be injected using "
 "a binding annotation. For example, there might be two implementations of "
 "<literal>PaymentProcessor</literal>:"
-msgstr ""
+msgstr "若我們擁有超過一個實做特定 API 類型的 Web Bean，注入點可藉由使用綁定標記來確切地指定哪個 Web Bean 應該被注入。比方說，<literal>PaymentProcessor</literal> 的實做可能有兩個："
 
 #. Tag: programlisting
 #: injection.xml:98
@@ -302,7 +304,7 @@ msgstr ""
 msgid ""
 "Where <literal>@PayByCheque</literal> and <literal>@PayByCreditCard</"
 "literal> are binding annotations:"
-msgstr ""
+msgstr "<literal>@PayByCheque</literal> 和 <literal>@PayByCreditCard</literal> 為綁定標記："
 
 #. Tag: programlisting
 #: injection.xml:105
@@ -338,13 +340,13 @@ msgstr ""
 msgid ""
 "A client Web Bean developer uses the binding annotation to specify exactly "
 "which Web Bean should be injected."
-msgstr ""
+msgstr "客戶端 Web Bean 開發人員會使用綁定標記來確切指定哪個 Web Bean 應被注入。"
 
 #. Tag: para
 #: injection.xml:112
 #, no-c-format
 msgid "Using field injection:"
-msgstr ""
+msgstr "使用 field injection："
 
 #. Tag: programlisting
 #: injection.xml:114
@@ -360,7 +362,7 @@ msgstr ""
 #: injection.xml:116
 #, no-c-format
 msgid "Using initializer method injection:"
-msgstr ""
+msgstr "使用 initializer method injection："
 
 #. Tag: programlisting
 #: injection.xml:118
@@ -388,7 +390,7 @@ msgstr ""
 #: injection.xml:120
 #, no-c-format
 msgid "Or using constructor injection:"
-msgstr ""
+msgstr "或使用 constructor injection："
 
 #. Tag: programlisting
 #: injection.xml:122
@@ -414,13 +416,13 @@ msgstr ""
 #: injection.xml:125
 #, no-c-format
 msgid "Binding annotations with members"
-msgstr ""
+msgstr "member 和綁定標記"
 
 #. Tag: para
 #: injection.xml:127
 #, no-c-format
 msgid "Binding annotations may have members:"
-msgstr ""
+msgstr "綁定標記能夠有 member："
 
 #. Tag: programlisting
 #: injection.xml:129
@@ -444,7 +446,7 @@ msgstr ""
 #: injection.xml:131
 #, no-c-format
 msgid "In which case, the member value is significant:"
-msgstr ""
+msgstr "在此情況下，member value 非常重要："
 
 #. Tag: programlisting
 #: injection.xml:133
@@ -462,19 +464,19 @@ msgstr ""
 msgid ""
 "You can tell the Web Bean manager to ignore a member of a binding annotation "
 "type by annotating the member <literal>@NonBinding</literal>."
-msgstr ""
+msgstr "您可藉由標記 <literal>@NonBinding</literal> 這個 member 來讓 Web Bean 管理員忽略某個綁定標記類型的成員。"
 
 #. Tag: title
 #: injection.xml:141
 #, no-c-format
 msgid "Combinations of binding annnotations"
-msgstr ""
+msgstr "綁定標記的組合"
 
 #. Tag: para
 #: injection.xml:143
 #, no-c-format
 msgid "An injection point may even specify multiple binding annotations:"
-msgstr ""
+msgstr "一個注入點甚至有可能會指定多重綁定標記："
 
 #. Tag: programlisting
 #: injection.xml:145
@@ -488,19 +490,19 @@ msgstr "<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>
 msgid ""
 "In this case, only a Web Bean which has <emphasis>both</emphasis> binding "
 "annotations would be eligible for injection."
-msgstr ""
+msgstr "在這種情況下，只有擁有這<emphasis>兩個</emphasis>綁定標記的 Web Bean 可被注入。"
 
 #. Tag: title
 #: injection.xml:153
 #, no-c-format
 msgid "Binding annotations and producer methods"
-msgstr ""
+msgstr "綁定標記和 producer method"
 
 #. Tag: para
 #: injection.xml:155
 #, no-c-format
 msgid "Even producer methods may specify binding annotations:"
-msgstr ""
+msgstr "就連 producer method 也能指定綁定標記："
 
 #. Tag: programlisting
 #: injection.xml:157
@@ -524,7 +526,7 @@ msgstr ""
 #: injection.xml:162
 #, no-c-format
 msgid "The default binding type"
-msgstr ""
+msgstr "預設綁定類型"
 
 #. Tag: para
 #: injection.xml:164
@@ -533,7 +535,7 @@ msgid ""
 "Web Beans defines a binding type <literal>@Current</literal> that is the "
 "default binding type for any injection point or Web Bean that does not "
 "explicitly specify a binding type."
-msgstr ""
+msgstr "Web Bean 定義了一個綁定類型 <literal>@Current</literal>，這是個任何未明確指定綁定類型的注入點或 Web Bean 的預設綁定類型。"
 
 #. Tag: para
 #: injection.xml:168
@@ -541,7 +543,7 @@ msgstr ""
 msgid ""
 "There are two common circumstances in which it is necessary to explicitly "
 "specify <literal>@Current</literal>:"
-msgstr ""
+msgstr "一般來講，在兩個情況下會需要明確地指定 <literal>@Current</literal>："
 
 #. Tag: para
 #: injection.xml:173
@@ -549,7 +551,7 @@ msgstr ""
 msgid ""
 "on a field, in order to declare it as an injected field with the default "
 "binding type, and"
-msgstr ""
+msgstr "在一個 field 上，為了要將該 field 宣告為含有預設綁定類型的已注入欄位，以及"
 
 #. Tag: para
 #: injection.xml:177
@@ -557,13 +559,13 @@ msgstr ""
 msgid ""
 "on a Web Bean which has another binding type in addition to the default "
 "binding type."
-msgstr ""
+msgstr "在一個除了預設綁定類型之外還另擁有一個綁定類型的 Web Bean 上。"
 
 #. Tag: title
 #: injection.xml:187
 #, no-c-format
 msgid "Deployment types"
-msgstr ""
+msgstr "建置類型"
 
 #. Tag: para
 #: injection.xml:189
@@ -572,7 +574,7 @@ msgid ""
 "All Web Beans have a <emphasis>deployment type</emphasis>. Each deployment "
 "type identifies a set of Web Beans that should be conditionally installed in "
 "some deployments of the system."
-msgstr ""
+msgstr "所有 Web Bean 都有一個 <emphasis>deployment type（建置類型）</emphasis>。各個 deployment type 都可標識一組應依照條件性地被安裝在系統的某些 deployment 中的 Web Bean。"
 
 #. Tag: para
 #: injection.xml:193
@@ -581,7 +583,7 @@ msgid ""
 "For example, we could define a deployment type named <literal>@Mock</"
 "literal>, which would identify Web Beans that should only be installed when "
 "the system executes inside an integration testing environment:"
-msgstr ""
+msgstr "比方說，我們可定義一個名為 <literal>@Mock</literal> 的 deployment type，它會找出只應在系統執行於一個整合測試環境中的時候才會被安裝的 Web Bean："
 
 #. Tag: programlisting
 #: injection.xml:197
@@ -603,7 +605,7 @@ msgstr ""
 msgid ""
 "Suppose we had some Web Bean that interacted with an external system to "
 "process payments:"
-msgstr ""
+msgstr "假設我們有一些和外部系統進行互動以便處理款項的 Web Bean："
 
 #. Tag: programlisting
 #: injection.xml:202
@@ -631,7 +633,7 @@ msgstr ""
 msgid ""
 "Since this Web Bean does not explicitly specify a deployment type, it has "
 "the default deployment type <literal>@Production</literal>."
-msgstr ""
+msgstr "因為這個 Web Bean 並未明確地指定一個 deployment type，因此它的 deployment type 會是預設的 <literal>@Production</literal>。"
 
 #. Tag: para
 #: injection.xml:207
@@ -639,7 +641,7 @@ msgstr ""
 msgid ""
 "For integration or unit testing, the external system is slow or unavailable. "
 "So we would create a mock object:"
-msgstr ""
+msgstr "假設要進行整合或是單元測試（unit testing），不過外部系統較慢或是無法使用。因此我們將建立一個 mock 物件："
 
 #. Tag: programlisting
 #: injection.xml:210
@@ -671,13 +673,13 @@ msgstr ""
 msgid ""
 "But how does the Web Bean manager determine which implementation to use in a "
 "particular deployment?"
-msgstr ""
+msgstr "不過 Web Bean 管理員要如何判斷在特定建置中該使用哪個實做？"
 
 #. Tag: title
 #: injection.xml:216
 #, no-c-format
 msgid "Enabling deployment types"
-msgstr ""
+msgstr "啟用 deployment type"
 
 #. Tag: para
 #: injection.xml:218
@@ -689,6 +691,8 @@ msgid ""
 "can identify additional deployment types to be enabled in a particular "
 "deployment by listing them in <literal>web-beans.xml</literal>."
 msgstr ""
+"Web Bean 定義了兩個內建的 deployment type：<literal>@Production</"
+"literal> 和 <literal>@Standard</literal>。就預設值，當系統被建置時，只有含有內建 deployment type 的 Web Bean 會被啟用。我們可藉由將特定 deployment type 列在 <literal>web-beans.xml</literal> 中來識別在特定 deployment 中可啟用的額外 deployment type。"
 
 #. Tag: para
 #: injection.xml:224
@@ -696,7 +700,7 @@ msgstr ""
 msgid ""
 "Going back to our example, when we deploy our integration tests, we want all "
 "our <literal>@Mock</literal> objects to be installed:"
-msgstr ""
+msgstr "回到我們的範例，當我們建置我們的整合測試時，我們希望我們所有的 <literal>@Mock</literal> 物件都會被安裝："
 
 #. Tag: programlisting
 #: injection.xml:227
@@ -725,7 +729,7 @@ msgid ""
 "Now the Web Bean manager will identify and install all Web Beans annotated "
 "<literal>@Production</literal>, <literal>@Standard</literal> or "
 "<literal>@Mock</literal> at deployment time."
-msgstr ""
+msgstr "現在，Web Bean 管理員將會在 deployment time 找出並安裝所有標記為 <literal>@Production</literal>、<literal>@Standard</literal> 或 <literal>@Mock</literal> 的 Web Bean。"
 
 #. Tag: para
 #: injection.xml:233
@@ -734,7 +738,7 @@ msgid ""
 "The deployment type <literal>@Standard</literal> is used only for certain "
 "special Web Beans defined by the Web Beans specification. We can't use it "
 "for our own Web Beans, and we can't disable it."
-msgstr ""
+msgstr "<literal>@Standard</literal> 這個 deployment type 只會被用於 Web Bean 規格所定義的特定特殊 Web Bean。我們無法將它使用於我們自己的 Web Bean 上，並且我們無法將它停用。"
 
 #. Tag: para
 #: injection.xml:237
@@ -743,13 +747,13 @@ msgid ""
 "The deployment type <literal>@Production</literal> is the default deployment "
 "type for Web Beans which don't explicitly declare a deployment type, and may "
 "be disabled."
-msgstr ""
+msgstr "<literal>@Production</literal> 這個 deployment type 屬於未明確定義 deployment type 的 Web Bean 的預設 deployment type，並且可被停用。"
 
 #. Tag: title
 #: injection.xml:244
 #, no-c-format
 msgid "Deployment type precedence"
-msgstr ""
+msgstr "Deployment type 優先權"
 
 #. Tag: para
 #: injection.xml:246
@@ -760,6 +764,8 @@ msgid ""
 "literal> or <literal>MockPaymentProcessor</literal>&#151;to choose. Consider "
 "what happens when the manager encounters this injection point:"
 msgstr ""
+"若您有在細心注意的話，您應該會疑惑 Web Bean 管理員如何決定哪個實做&#151;<literal>ExternalPaymentProcessor</"
+"literal> 和 <literal>MockPaymentProcessor</literal>&#151;中選擇哪一個。請思考當管理員遇上了這個注入點時會如何："
 
 #. Tag: programlisting
 #: injection.xml:251
@@ -776,7 +782,7 @@ msgid ""
 "disambiguate, since binding annotations are hard-coded into the source at "
 "the injection point, and we want the manager to be able to decide at "
 "deployment time!"
-msgstr ""
+msgstr "有兩個 Web Bean 可滿足 <literal>PaymentProcessor</literal> 合同。當然，我們無法使用綁定標記來消除語意上的含糊意義，因為綁定標記已寫死（hard-coded）在注入點的來源之中，而且我們希望管理員能夠在 deployment time 時作決定！"
 
 #. Tag: para
 #: injection.xml:258
@@ -822,7 +828,7 @@ msgstr ""
 #: injection.xml:284
 #, no-c-format
 msgid "Example deployment types"
-msgstr ""
+msgstr "範例 deployment type"
 
 #. Tag: para
 #: injection.xml:286
@@ -836,13 +842,13 @@ msgstr ""
 msgid ""
 "<literal>@Mock</literal> and <literal>@Staging</literal> deployment types "
 "for testing"
-msgstr ""
+msgstr "用來測試的 <literal>@Mock</literal> 和 <literal>@Staging</literal> deployment type"
 
 #. Tag: para
 #: injection.xml:294
 #, no-c-format
 msgid "<literal>@AustralianTaxLaw</literal> for site-specific Web Beans"
-msgstr ""
+msgstr "<literal>@AustralianTaxLaw</literal> 可用於網站特屬的 Web Bean"
 
 #. Tag: para
 #: injection.xml:297
@@ -850,7 +856,7 @@ msgstr ""
 msgid ""
 "<literal>@SeamFramework</literal>, <literal>@Guice</literal> for third-party "
 "frameworks which build on Web Beans"
-msgstr ""
+msgstr "<literal>@SeamFramework</literal>、<literal>@Guice</literal> 可用於建立在 Web Bean 上的第三方 framework"
 
 #. Tag: para
 #: injection.xml:301
@@ -864,7 +870,7 @@ msgstr ""
 #: injection.xml:306
 #, no-c-format
 msgid "I'm sure you can think of more applications..."
-msgstr ""
+msgstr "我們相信您還能想到更多應用程式..."
 
 #. Tag: title
 #: injection.xml:313
@@ -918,13 +924,13 @@ msgstr ""
 msgid ""
 "There's one more issue you need to be aware of when using dependency "
 "injection in Web Beans."
-msgstr ""
+msgstr "當您在 Web Bean 中使用依賴注入時，您還需要注意一個問題。"
 
 #. Tag: title
 #: injection.xml:341
 #, no-c-format
 msgid "Client proxies"
-msgstr ""
+msgstr "客戶端代理伺服器（Client proxies）"
 
 #. Tag: para
 #: injection.xml:343
@@ -1215,7 +1221,7 @@ msgstr ""
 msgid ""
 "Let's look at an example. The following code is verbose, and vulnerable to "
 "refactoring problems:"
-msgstr ""
+msgstr "讓我們來探討下列範例。下列程式碼較為冗長，並且有重構（refactoring）問題上的弱點："
 
 #. Tag: programlisting
 #: injection.xml:468
@@ -1229,7 +1235,7 @@ msgstr "<![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]>"
 msgid ""
 "This clever little producer method lets you inject a JDK <literal>Logger</"
 "literal> without explicitly specifying the log category:"
-msgstr ""
+msgstr "這個 producer method 能讓您在不明確指定 log category 的情況下注入一個 JDK <literal>Logger</literal>："
 
 #. Tag: programlisting
 #: injection.xml:473
@@ -1257,7 +1263,7 @@ msgstr ""
 #: injection.xml:475
 #, no-c-format
 msgid "We can now write:"
-msgstr ""
+msgstr "現在我們可寫入："
 
 #. Tag: programlisting
 #: injection.xml:477
@@ -1271,7 +1277,7 @@ msgstr "<![CDATA[@Current Logger log;]]>"
 msgid ""
 "Not convinced? Then here's a second example. To inject HTTP parameters, we "
 "need to define a binding type:"
-msgstr ""
+msgstr "若您無法被說服的話，我們還有第二個範例。若要注入 HTTP 參數，我們需要定義一個綁定類型："
 
 #. Tag: programlisting
 #: injection.xml:482
@@ -1295,7 +1301,7 @@ msgstr ""
 #: injection.xml:484
 #, no-c-format
 msgid "We would use this binding type at injection points as follows:"
-msgstr ""
+msgstr "我們可如下在注入點使用此綁定類型："
 
 #. Tag: programlisting
 #: injection.xml:486
@@ -1311,7 +1317,7 @@ msgstr ""
 #: injection.xml:488
 #, no-c-format
 msgid "The following producer method does the work:"
-msgstr ""
+msgstr "下列 producer method 可完成此工作："
 
 #. Tag: programlisting
 #: injection.xml:490
@@ -1344,7 +1350,7 @@ msgid ""
 "(Note that the <literal>value()</literal> member of the <literal>HttpParam</"
 "literal> annotation is ignored by the Web Bean manager since it is annotated "
 "<literal>@NonBinding.</literal>)"
-msgstr ""
+msgstr "（請注意，<literal>HttpParam</literal> 標記的 <literal>value()</literal> 成員已被 Web Bean 管理員忽略掉，因為它已被標記為 <literal>@NonBinding.</literal>）"
 
 #. Tag: para
 #: injection.xml:495
@@ -1352,7 +1358,7 @@ msgstr ""
 msgid ""
 "The Web Bean manager provides a built-in Web Bean that implements the "
 "<literal>InjectionPoint</literal> interface:"
-msgstr ""
+msgstr "Web Bean 管理員提供了實做 <literal>InjectionPoint</literal> 介面的內建 Web Bean："
 
 #. Tag: programlisting
 #: injection.xml:498
