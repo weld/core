@@ -46,6 +46,7 @@ import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem.AnnotationMap;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.model.MergedStereotypes;
+import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -61,6 +62,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
 
    @SuppressWarnings("unchecked")
    private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(Event.class, ManagerImpl.class));
+
+   private boolean proxyable;
 
    /**
     * Helper class for getting deployment type
@@ -137,6 +140,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       checkDeploymentType();
       initScopeType();
       initTypes();
+      proxyable = Proxies.apiTypesAreProxyable(getTypes());
    }
 
    /**
@@ -540,5 +544,10 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    public String toString()
    {
       return "AbstractBean " + getName();
+   }
+
+   public boolean isProxyable()
+   {
+      return proxyable;
    }
 }
