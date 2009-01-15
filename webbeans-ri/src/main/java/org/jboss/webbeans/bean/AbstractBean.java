@@ -140,8 +140,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       checkDeploymentType();
       initScopeType();
       initTypes();
-      // TODO: hack due to types not initialized!
-      proxyable = getTypes() == null ? true : Proxies.apiTypesAreProxyable(getTypes());
+      initProxyable();
    }
 
    /**
@@ -253,6 +252,11 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          this.name = getDefaultName();
          return;
       }
+   }
+   
+   protected void initProxyable()
+   {
+      proxyable = Proxies.apiTypesAreProxyable(getTypes());
    }
 
    /**

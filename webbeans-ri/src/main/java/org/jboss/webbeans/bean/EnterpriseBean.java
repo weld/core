@@ -107,7 +107,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    @Override
    protected void init()
    {
-      super.init();
+      initType();
       Iterable<InternalEjbDescriptor<T>> ejbDescriptors = manager.getEjbDescriptorCache().get(getType());
       if (ejbDescriptors == null)
       {
@@ -124,7 +124,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
             throw new RuntimeException("TODO Multiple EJBs have the same bean class! " + getType());
          }
       }
-      initTypesFromLocalInterfaces();
+      super.init();
       initProxyClass();
       initRemoveMethod();
       initInjectionPoints();
@@ -152,12 +152,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    }
    
    protected void initTypes()
-   {
-      // Noop, occurs too early
-      // TODO points at class hierachy problem :-(
-   }
-   
-   protected void initTypesFromLocalInterfaces()
    {
       types = new HashSet<Type>();
       for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces())
