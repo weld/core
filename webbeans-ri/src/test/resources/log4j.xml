@@ -13,7 +13,7 @@
 
     <!-- ############### Embedded EJB3 #################  -->
     <category name="org.jboss">
-        <priority value="INFO"/>
+        <priority value="WARN"/>
     </category>
     <category name="com.arjuna">
         <priority value="ERROR"/>
@@ -45,7 +45,7 @@
     <!-- ############### Web Beans logging ################### -->
 
     <category name="org.jboss.webbeans">
-        <priority value="INFO"/>
+        <priority value="WARN"/>
     </category>
     
     <root>
