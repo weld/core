@@ -433,6 +433,7 @@ public class Reflections
    {
       try
       {
+         method.setAccessible(true);
          return method.invoke(instance, parameters);
       }
       catch (IllegalArgumentException e)
