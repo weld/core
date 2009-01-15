@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-24 19:30+0100\n"
+"PO-Revision-Date: 2009-01-15 20:46+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgstr "Non si vedono identificatori di tipo stringa nel codice basato su Web Be
 #: part3.xml:15
 #, no-c-format
 msgid "The obvious benefit of this approach is that <emphasis>any</emphasis> IDE can provide autocompletion, validation and refactoring without the need for special tooling. But there is a second, less-immediately-obvious, benefit. It turns out that when you start thinking of identifying objects, events or interceptors via annotations instead of names, you have an opportunity to lift the semantic level of your code."
-msgstr "L'ovvio beneficio di questo approccio è che <emphasis>qualunque</emphasis> IDE può fornire autocompletamento, validazione e refactoring senza che sia necessario realizzare dei tools appositi. Ma c'è un secondo beneficio meno immediatamente ovvio. Si scopre che quando si incomincia a pensare di identificare oggetti, eventi o interceptor usando annotazioni invece di nomi, si ha l'opportunità di elevare il livello semantico del proprio codice."
+msgstr "L'ovvio beneficio di questo approccio è che <emphasis>qualunque</emphasis> IDE può fornire autocompletamento, validazione e refactoring senza che sia necessario realizzare dei tool appositi. Ma c'è un secondo beneficio meno immediatamente ovvio. Si scopre che quando si incomincia a pensare di identificare oggetti, eventi o interceptor usando annotazioni invece di nomi, si ha l'opportunità di elevare il livello semantico del proprio codice."
 
 #. Tag: para
 #: part3.xml:21
