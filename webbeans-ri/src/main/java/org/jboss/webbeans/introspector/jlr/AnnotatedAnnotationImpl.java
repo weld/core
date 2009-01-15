@@ -106,7 +106,7 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
     */
    public AnnotatedAnnotationImpl(Class<T> annotationType)
    {
-      super(buildAnnotationMap(annotationType), annotationType);
+      super(buildAnnotationMap(annotationType), buildDeclaredAnnotationMap(annotationType), annotationType);
       this.clazz = annotationType;
       members = new HashSet<AnnotatedMethod<?>>();
       annotatedMembers = new AnnotatedMemberMap();

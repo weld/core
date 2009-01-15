@@ -75,7 +75,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     */
    public AnnotatedConstructorImpl(Constructor<T> constructor, AnnotatedType<T> declaringClass)
    {
-      super(buildAnnotationMap(constructor), constructor);
+      super(buildAnnotationMap(constructor), buildDeclaredAnnotationMap(constructor), constructor);
       this.constructor = constructor;
       this.declaringClass = declaringClass;
 

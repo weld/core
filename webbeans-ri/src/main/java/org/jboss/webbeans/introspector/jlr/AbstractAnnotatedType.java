@@ -44,9 +44,9 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
     * 
     * @param annotationMap The annotation map
     */
-   public AbstractAnnotatedType(AnnotationMap annotationMap, Class<T> type)
+   public AbstractAnnotatedType(AnnotationMap annotationMap, AnnotationMap declaredAnnotationMap, Class<T> type)
    {
-      super(annotationMap);
+      super(annotationMap, declaredAnnotationMap);
       this.name = type.getName();
       if (type.getSuperclass() != null)
       {
@@ -56,6 +56,11 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
       {
          this.superclass = null;
       }
+   }
+   
+   public AbstractAnnotatedType(AnnotationMap annotationMap, Class<T> type)
+   {
+      this(annotationMap, annotationMap, type);
    }
 
    /**

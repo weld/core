@@ -77,7 +77,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    @SuppressWarnings("unchecked")
    public AnnotatedMethodImpl(Method method, AnnotatedType<?> declaringClass)
    {
-      super(buildAnnotationMap(method), method);
+      super(buildAnnotationMap(method), buildDeclaredAnnotationMap(method), method);
       this.method = method;
       this.declaringClass = declaringClass;
       if (method.getGenericReturnType() instanceof ParameterizedType)

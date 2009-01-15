@@ -104,9 +104,9 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
     * 
     * @param annotationMap The annotation map
     */
-   public AbstractAnnotatedMember(AnnotationMap annotationMap, Member member)
+   public AbstractAnnotatedMember(AnnotationMap annotationMap, AnnotationMap declaredAnnotationMap, Member member)
    {
-      super(annotationMap);
+      super(annotationMap, declaredAnnotationMap);
       name = member.getName();
    }
 

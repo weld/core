@@ -60,7 +60,7 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
     */
    public AnnotatedFieldImpl(Field field, AnnotatedType<?> declaringClass)
    {
-      super(buildAnnotationMap(field), field);
+      super(buildAnnotationMap(field), buildDeclaredAnnotationMap(field), field);
       this.field = field;
       field.setAccessible(true);
       this.declaringClass = declaringClass;

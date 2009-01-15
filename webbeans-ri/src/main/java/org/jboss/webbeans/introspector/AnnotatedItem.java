@@ -59,6 +59,16 @@ public interface AnnotatedItem<T, S>
     *         are no matches.
     */
    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
+   
+   /**
+    * Gets all annotations which are declared on this annotated item 
+    * with the given meta annotation type
+    * 
+    * @param The meta annotation to match
+    * @return A set of matching meta-annotations. Returns an empty set if there
+    *         are no matches.
+    */
+   public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
 
    /**
     * Gets all annotations which are annotated with the given meta annotation

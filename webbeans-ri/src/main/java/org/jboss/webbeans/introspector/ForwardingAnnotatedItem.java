@@ -184,6 +184,11 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
    {
       return delegate().toString();
    }
+   
+   public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
+   {
+      return delegate().getDeclaredMetaAnnotations(metaAnnotationType);
+   }
 
    /**
     * Gets the annotated item

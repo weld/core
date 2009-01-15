@@ -169,6 +169,17 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    {
       return buildAnnotationMap(element.getAnnotations());
    }
+   
+   /**
+    * Static helper method for building annotation map from an annotated element
+    * 
+    * @param element The element to examine
+    * @return The annotation map
+    */
+   protected static AnnotationMap buildDeclaredAnnotationMap(AnnotatedElement element)
+   {
+      return buildAnnotationMap(element.getDeclaredAnnotations());
+   }
 
    /**
     * Builds the annotation map (annotation type -> annotation)
@@ -193,6 +204,14 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    private final MetaAnnotationMap metaAnnotationMap;
    // The set of all annotations on the item
    private final Set<Annotation> annotationSet;
+   
+   // The annotation map (annotation type -> annotation) of the item
+   private final AnnotationMap declaredAnnotationMap;
+   // The meta-annotation map (annotation type -> set of annotations containing
+   // meta-annotation) of the item
+   private final MetaAnnotationMap declaredMetaAnnotationMap;
+   // The set of all annotations on the item
+   private final Set<Annotation> declaredAnnotationSet;
 
    /**
     * Constructor
@@ -203,7 +222,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * @param annotationMap A map of annotation to register
     * 
     */
-   public AbstractAnnotatedItem(AnnotationMap annotationMap)
+   public AbstractAnnotatedItem(AnnotationMap annotationMap, AnnotationMap declaredAnnotationMap)
    {
       if (annotationMap == null)
       {
@@ -224,6 +243,31 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
          }
          annotationSet.add(annotation);
       }
+      
+      if (declaredAnnotationMap == null)
+      {
+         throw new NullPointerException("declaredAnnotationMap cannot be null");
+      }
+      this.declaredAnnotationMap = declaredAnnotationMap;
+      this.declaredAnnotationSet = new HashSet<Annotation>();
+      this.declaredMetaAnnotationMap = new MetaAnnotationMap();
+      for (Annotation annotation : declaredAnnotationMap.values())
+      {
+         for (Annotation metaAnnotation : annotation.annotationType().getAnnotations())
+         {
+            // Only map meta-annotations we are interested in
+            if (MAPPED_METAANNOTATIONS.contains(metaAnnotation.annotationType()))
+            {
+               declaredMetaAnnotationMap.put(metaAnnotation.annotationType(), annotation);
+            }
+         }
+         declaredAnnotationSet.add(annotation);
+      }
+   }
+   
+   public AbstractAnnotatedItem(AnnotationMap annotationMap)
+   {
+      this(annotationMap, annotationMap);
    }
 
    /**
@@ -249,6 +293,11 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * @see org.jboss.webbeans.introspector.AnnotatedItem#getMetaAnnotations(Class)
     */
    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
+   {
+      return Collections.unmodifiableSet(metaAnnotationMap.get(metaAnnotationType));
+   }
+   
+   public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
       return Collections.unmodifiableSet(metaAnnotationMap.get(metaAnnotationType));
    }
