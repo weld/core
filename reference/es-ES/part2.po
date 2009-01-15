@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: part2\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-14 18:41+0000\n"
-"PO-Revision-Date: 2009-01-14 11:46+1000\n"
+"PO-Revision-Date: 2009-01-15 16:00+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -25,13 +25,12 @@ msgid ""
 msgstr ""
 "El primer tema importante de Web Beans es el <emphasis>acoplamiento "
 "flexible</emphasis>. Ya hemos visto tres medios para lograr dicho "
-"acomplamiento:"
+"acoplamiento:"
 
 #. Tag: para
 #: part2.xml:10
 #, no-c-format
-msgid ""
-"<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
+msgid "<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
 msgstr ""
 "Los <emphasis>tipos de despliegue</emphasis> habilitan el polimorfismo del "
 "tiempo de despliegue,"
@@ -71,7 +70,7 @@ msgstr ""
 
 #. Tag: para
 #: part2.xml:28
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system "
 "can respond to change in a well-defined manner. In the past, frameworks that "
@@ -80,8 +79,8 @@ msgid ""
 "this level of loose coupling in a typesafe way."
 msgstr ""
 "El acoplamiento flexible hace más <emphasis>dinámico</emphasis> a un "
-"sistema. El sistema puede responder a cambiar en una manera bien definida . "
-"En el pasado, los marcos que trataban de proporcionar servicios listados "
+"sistema. El sistema puede responder al cambio de una manera bien definida. "
+"En el pasado, los marcos que trataban de ofrecer los servicios listados "
 "arriba invariablemente lo hacían sacrificando la seguridad. Web Beans es la "
 "primer tecnología que logra este nivel de acoplamiento flexible en una forma "
 "typesafe."
@@ -131,3 +130,4 @@ msgstr ""
 #, no-c-format
 msgid "Let's explore interceptors first."
 msgstr "En primer lugar, exploremos los interceptores."
+

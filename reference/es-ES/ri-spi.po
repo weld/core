@@ -1,23 +1,26 @@
+# translation of ri-spi.po to Spanish
 # Language es-ES translations for master.xml package.
-# Automatically generated, 2008.
 #
+# Automatically generated, 2008.
+# Gladys Guerrero Lozano <gguerrer@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml \n"
+"Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-08 14:07+0000\n"
-"PO-Revision-Date: 2008-12-20 22:07+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-15 15:20+1000\n"
+"Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
+"Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: ri-spi.xml:4
 #, no-c-format
 msgid "Integrating the Web Beans RI into other environments"
-msgstr ""
+msgstr "Integración de IR de Web Beans en otros entornos"
 
 #. Tag: para
 #: ri-spi.xml:6
@@ -28,7 +31,7 @@ msgid ""
 "Glassfish), into a servlet container (like Tomcat), or with an Embedded "
 "EJB3.1 implementation is fairly easy. In this Appendix we will briefly "
 "discuss the steps needed."
-msgstr ""
+msgstr "Actualmente el IR de Web Beans sólo se ejecuta en JBoss AS 5; integrando el IR dentro de otros entornos EE (por ejemplo otro servidor de aplicación como Glassfish), dentro de un contenedor de servlet (como Tomcat), o con una implementación incrustada EJB3.1 es bastante fácil. En este apéndice veremos brevemente los pasos requeridos."
 
 #. Tag: para
 #: ri-spi.xml:15
@@ -38,13 +41,13 @@ msgid ""
 "do more work, adding your own contexts and lifecycle. The Web Beans RI "
 "currently doesn't expose lifecycle extension points, so you would have to "
 "code directly against Web Beans RI classes."
-msgstr ""
+msgstr "Debería ser posible ejecutar Web Beans en un entorno SE, pero tendría que hacer más cosas, agregar sus propios contextos y ciclo de vida. IR Web Beans actualmente no expone puntos de extensión del ciclo de vida, por lo tanto se tendría que codificar directamente en clases IR de Web Beans."
 
 #. Tag: title
 #: ri-spi.xml:24
 #, no-c-format
 msgid "The Web Beans RI SPI"
-msgstr ""
+msgstr "Los Web Beans IR SPI"
 
 #. Tag: para
 #: ri-spi.xml:26
@@ -53,7 +56,7 @@ msgid ""
 "The Web Beans SPI is located in <literal>webbeans-ri-spi</literal> module, "
 "and packaged as <literal>webbeans-ri-spi.jar</literal>. Some SPIs are "
 "optional, if you need to override the default behavior, others are required."
-msgstr ""
+msgstr "El SPI de Web Beans está ubicado en el módulo <literal>webbeans-ri-spi</literal>, empaquetado como <literal>webbeans-ri-spi.jar</literal>. Algunos SPI son opcionales, si necesita anular la conducta predeterminada, se requerirán otros."
 
 #. Tag: para
 #: ri-spi.xml:33
@@ -65,12 +68,14 @@ msgid ""
 "interface; all property values are the fully qualified class name of the "
 "implementation class."
 msgstr ""
+"Puede especificar la implementación de un SPI ya sea como una propiedad del sistema, o en un archivo de propiedades <literal>META-INF/web-beans-ri.properties</literal>. "
+"Todos los nombres de propiedad son el nombre completo de clase de la interfaz implementada; todos los valores de propiedad son el nombre completo de clase calificado de la clase de implementación."
 
 #. Tag: title
 #: ri-spi.xml:43
 #, no-c-format
 msgid "Web Bean Discovery"
-msgstr ""
+msgstr "Descubrimiento de Web Bean"
 
 #. Tag: programlisting
 #: ri-spi.xml:45
@@ -101,6 +106,30 @@ msgid ""
 "   \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public interface WebBeanDiscovery {\n"
+"   /**\n"
+"    * Gets list of all classes in classpath archives with web-beans.xml "
+"files\n"
+"    * \n"
+"    * @return An iterable over the classes \n"
+"    */\n"
+"   public Iterable<Class<?>> discoverWebBeanClasses();\n"
+"   \n"
+"   /**\n"
+"    * Gets a list of all web-beans.xml files in the app classpath\n"
+"    * \n"
+"    * @return An iterable over the web-beans.xml files \n"
+"    */\n"
+"   public Iterable<URL> discoverWebBeansXml();\n"
+"   \n"
+"   /**\n"
+"    * Gets a descriptor for each EJB in the application\n"
+"    * \n"
+"    * @return The bean class to descriptor map \n"
+"    */\n"
+"   public Iterable<EjbDescriptor<?>> discoverEjbs();\n"
+"   \n"
+"}]]>"
 
 #. Tag: para
 #: ri-spi.xml:47
@@ -109,7 +138,7 @@ msgid ""
 "The discovery of Web Bean classes and <literal>web-bean.xml</literal> files "
 "is self-explanatory (the algorithm is described in Section 11.1 of the JSR-"
 "299 specification, and isn't repeated here)."
-msgstr ""
+msgstr "El descubrimiento de clases de Web Beans y de archivos <literal>web-bean.xml</literal> es autoexplicativo (el algoritmo está descrito en la sección 11.1 de la especificación JSR299 y no se repite aquí)."
 
 #. Tag: para
 #: ri-spi.xml:53
@@ -120,6 +149,9 @@ msgid ""
 "literal>. For each EJB in the application an EJBDescriptor should be "
 "discovered:"
 msgstr ""
+"IR de Web Beans también delega bean de EJB3 bean discovery al contenedor para no tener que examinar las anotaciones EJB3 o analizar <literal>ejb-jar.xml</"
+"literal>. Para cada EJB en la aplicación se descubre un EJBDescriptor."
+"discovered:"
 
 #. Tag: programlisting
 #: ri-spi.xml:60
@@ -201,6 +233,81 @@ msgid ""
 "   \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public interface EjbDescriptor<T> {\n"
+"   \n"
+"   /**\n"
+"    * Gets the EJB type\n"
+"    * \n"
+"    * @return The EJB Bean class\n"
+"    */\n"
+"   public Class<T> getType();\n"
+"\n"
+"   /**\n"
+"    * Gets the local business interfaces of the EJB\n"
+"    * \n"
+"    * @return An iterator over the local business interfaces\n"
+"    */\n"
+"   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces"
+"();\n"
+"   \n"
+"   /**\n"
+"    * Gets the remote business interfaces of the EJB\n"
+"    * \n"
+"    * @return An iterator over the remote business interfaces\n"
+"    */\n"
+"   public Iterable<BusinessInterfaceDescriptor<?>> "
+"getRemoteBusinessInterfaces();\n"
+"   \n"
+"   /**\n"
+"    * Get the remove methods of the EJB\n"
+"    * \n"
+"    * @return An iterator over the remove methods\n"
+"    */\n"
+"   public Iterable<Method> getRemoveMethods();\n"
+"\n"
+"   /**\n"
+"    * Indicates if the bean is stateless\n"
+"    * \n"
+"    * @return True if stateless, false otherwise\n"
+"    */\n"
+"   public boolean isStateless();\n"
+"\n"
+"   /**\n"
+"    * Indicates if the bean is a EJB 3.1 Singleton\n"
+"    * \n"
+"    * @return True if the bean is a singleton, false otherwise\n"
+"    */\n"
+"   public boolean isSingleton();\n"
+"\n"
+"   /**\n"
+"    * Indicates if the EJB is stateful\n"
+"    * \n"
+"    * @return True if the bean is stateful, false otherwise\n"
+"    */\n"
+"   public boolean isStateful();\n"
+"\n"
+"   /**\n"
+"    * Indicates if the EJB is and MDB\n"
+"    * \n"
+"    * @return True if the bean is an MDB, false otherwise\n"
+"    */\n"
+"   public boolean isMessageDriven();\n"
+"\n"
+"   /**\n"
+"    * Gets the EJB name\n"
+"    * \n"
+"    * @return The name\n"
+"    */\n"
+"   public String getEjbName();\n"
+"   \n"
+"   /**\n"
+"    * @return The JNDI string which can be used to lookup a proxy which \n"
+"    * implements all local business interfaces \n"
+"    * \n"
+"    */\n"
+"   public String getLocalJndiName();\n"
+"   \n"
+"}]]>"
 
 #. Tag: para
 #: ri-spi.xml:62
@@ -211,6 +318,9 @@ msgid ""
 "<literal>BusinessInterfaceDescriptor</literal> which represents a local "
 "business interface (encapsulating the interface class and jndi name)."
 msgstr ""
+"El contrato describe que JavaDoc basta para implementar un EJBDescriptor. "
+"Además de estas dos interfaces, está "
+"<literal>BusinessInterfaceDescriptor</literal> la cual representa una interfaz de negocios local (encapsulando la clase de interfaz y el nombre de jndi)."
 
 #. Tag: para
 #: ri-spi.xml:69
@@ -221,6 +331,9 @@ msgid ""
 "webbeans.bootstrap.WebBeanDiscovery</literal> with the fully qualified class "
 "name as the value. For example:"
 msgstr ""
+"Al IR de Web Beans se le puede pedir cargar la implementación de "
+"<literal>WebBeanDiscovery</literal> mediante la propiedad <literal>org.jboss."
+"webbeans.bootstrap.WebBeanDiscovery</literal> con el nombre completo de la clase calificada como el valor, Por ejemplo:"
 
 #. Tag: programlisting
 #: ri-spi.xml:76
@@ -229,12 +342,14 @@ msgid ""
 "org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
 "integration.jbossas.WebBeanDiscoveryImpl"
 msgstr ""
+"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
+"integration.jbossas.WebBeanDiscoveryImpl"
 
 #. Tag: title
 #: ri-spi.xml:80
 #, no-c-format
 msgid "JNDI"
-msgstr ""
+msgstr "JNDI"
 
 #. Tag: para
 #: ri-spi.xml:82
@@ -244,7 +359,7 @@ msgid ""
 "however you may want to alter the binding and lookup (for example in an "
 "environment where JNDI isn't available). To do this, implement <literal>org."
 "jboss.webbeans.spi.resources.Naming</literal>:"
-msgstr ""
+msgstr "El IR de Web Beans RI implementa el enlace JNDI y la búsqueda según los estándares, sin embargo puede que usted desee alterar el enlace y la búsqueda (Por ejemplo en un entorno donde JNDI no está disponible). Para este fin, implemente <literal>org.jboss.webbeans.spi.resources.Naming</literal>:"
 
 #. Tag: programlisting
 #: ri-spi.xml:90
@@ -272,24 +387,45 @@ msgid ""
 "   \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public interface Naming extends Serializable {\n"
+"   \n"
+"   /**\n"
+"    * Typed JNDI lookup\n"
+"    * \n"
+"    * @param <T> The type\n"
+"    * @param name The JNDI name\n"
+"    * @param expectedType The expected type\n"
+"    * @return The object\n"
+"    */\n"
+"   public <T> T lookup(String name, Class<? extends T> expectedType);\n"
+"\n"
+"   /**\n"
+"    * Binds an item to JNDI\n"
+"    * \n"
+"    * @param key The key to bind under\n"
+"    * @param value The item to bind\n"
+"    */\n"
+"   public void bind(String key, Object value);\n"
+"   \n"
+"}]]>"
 
 #. Tag: para
 #: ri-spi.xml:92 ri-spi.xml:113
 #, no-c-format
 msgid "and tell the RI to use it:"
-msgstr ""
+msgstr "y le pide al IR que lo utilice"
 
 #. Tag: programlisting
 #: ri-spi.xml:96
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.Naming=com.acme.MyNaming"
-msgstr ""
+msgstr "org.jboss.webbeans.resources.spi.Naming=com.acme.MyNaming"
 
 #. Tag: title
 #: ri-spi.xml:101
 #, no-c-format
 msgid "Resource loading"
-msgstr ""
+msgstr "Carga de recurso"
 
 #. Tag: para
 #: ri-spi.xml:103
@@ -301,6 +437,8 @@ msgid ""
 "environments. If this is case, you can implement <literal>org.jboss.webbeans."
 "spi.ResourceLoader</literal>:"
 msgstr ""
+"El IR de Web Beans necesita cargar clases y recursos desde el classpath en varios momentos. Por defecto, se cargan desde el mismo classloader utilizado para cargar el IR, sin embargo, esto puede no ser apropiado para algunos entornos. Si este es el caso, puede implementar <literal>org.jboss.webbeans."
+"spi.ResourceLoader</literal>:"
 
 #. Tag: programlisting
 #: ri-spi.xml:111
@@ -336,18 +474,47 @@ msgid ""
 "}\n"
 "         ]]>"
 msgstr ""
+"<![CDATA[\n"
+"         public interface ResourceLoader {\n"
+"    \n"
+"   /**\n"
+"    * Creates a class from a given FQCN\n"
+"    * \n"
+"    * @param name The name of the clsas\n"
+"    * @return The class\n"
+"    */\n"
+"   public Class<?> classForName(String name);\n"
+"   \n"
+"   /**\n"
+"    * Gets a resource as a URL by name\n"
+"    * \n"
+"    * @param name The name of the resource\n"
+"    * @return An URL to the resource\n"
+"    */\n"
+"   public URL getResource(String name);\n"
+"   \n"
+"   /**\n"
+"    * Gets resources as URLs by name\n"
+"    * \n"
+"    * @param name The name of the resource\n"
+"    * @return An iterable reference to the URLS\n"
+"    */\n"
+"   public Iterable<URL> getResources(String name);\n"
+"   \n"
+"}\n"
+"         ]]>"
 
 #. Tag: programlisting
 #: ri-spi.xml:117
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
-msgstr ""
+msgstr "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
 
 #. Tag: title
 #: ri-spi.xml:124
 #, no-c-format
 msgid "The contract with the container"
-msgstr ""
+msgstr "El contrato con le contenedor"
 
 #. Tag: para
 #: ri-spi.xml:126
@@ -355,13 +522,13 @@ msgstr ""
 msgid ""
 "There are a number of requirements that the Web Beans RI places on the "
 "container for correct functioning that fall outside implementation of APIs"
-msgstr ""
+msgstr "Hay una cantidad de requisitos que el IR de Web Beans ubica en un contenedor para el funcionamiento correcto que falla fuera de la implementación de API."
 
 #. Tag: term
 #: ri-spi.xml:134
 #, no-c-format
 msgid "Classloader isolation"
-msgstr ""
+msgstr "Aislamiento de classloader"
 
 #. Tag: para
 #: ri-spi.xml:138
@@ -371,13 +538,13 @@ msgid ""
 "deployment of multiple applications, you must enable, automatically, or "
 "through user configuation, classloader isolation for each Web Beans "
 "application."
-msgstr ""
+msgstr "Si usted está integrando el IR de Web Beans dentro de un entorno que admite despliegue de varias aplicaciones, debe habilitar, automáticamente o a través de la configuración del usuario, el aislamiento de classloader para cada aplicación de Web Beans."
 
 #. Tag: term
 #: ri-spi.xml:147
 #, no-c-format
 msgid "Servlet listener"
-msgstr ""
+msgstr "Oyente de Servlet"
 
 #. Tag: para
 #: ri-spi.xml:151
@@ -387,13 +554,13 @@ msgid ""
 "register <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> as a "
 "Servlet listener, either automatically, or through user configuration, for "
 "each Web Beans application which uses Servlet."
-msgstr ""
+msgstr "Si está integrando el Web Beans en un entorno de Servlet debe registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> como un oyente de Servlet, ya sea automáticamente o a través de la configuración de usuario, para cada aplicación de Web Bean que utiliza Servlet."
 
 #. Tag: term
 #: ri-spi.xml:162
 #, no-c-format
 msgid "Session Bean Interceptor"
-msgstr ""
+msgstr "Intercepción de sesión de Bean"
 
 #. Tag: para
 #: ri-spi.xml:166
@@ -404,13 +571,13 @@ msgid ""
 "a EJB interceptor for all EJBs in the application, either automatically, or "
 "through user configuration, for each Web Beans application which uses "
 "enterprise beans."
-msgstr ""
+msgstr "Si está integrando los Web Beans en un entorno EJB debe registrar <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> como un interceptor EJB interceptor para todos los EJB en la aplicación, automáticamente o a través de la configuración de usuario, para cada aplicación que utilice beans de empresa."
 
 #. Tag: term
 #: ri-spi.xml:177
 #, no-c-format
 msgid "The <literal>webbeans-ri.jar</literal>"
-msgstr ""
+msgstr "El <literal>webbeans-ri.jar</literal>"
 
 #. Tag: para
 #: ri-spi.xml:181
@@ -421,3 +588,6 @@ msgid ""
 "literal> into the applications isolated classloader. It cannot be loaded "
 "from a shared classloader."
 msgstr ""
+"Si está integrando el Web Beans dentro de un entorno que admite despliegue de aplicaciones, debe insertar el <literal>webbeans-ri.jar</"
+"literal> dentro de las aplicaciones del classloader aislado. No puede ser cargado desde el classloader compartido."
+

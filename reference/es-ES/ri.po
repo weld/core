@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-14 18:41+0000\n"
-"PO-Revision-Date: 2009-01-14 16:33+1000\n"
+"PO-Revision-Date: 2009-01-15 13:59+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -32,13 +32,12 @@ msgid ""
 "\"http://seamframework.org/Download\">the downloads page</ulink>."
 msgstr ""
 "La implementación de referencia de Web Beans se desarrolla en <ulink url="
-"\"http://seamframework.org/WebBeans\">the Seam project</ulink>. Se puede "
-"descargar la última versión de Web Beans desde <ulink url=\"http://"
+"\"http://seamframework.org/WebBeans\">the Seam project</ulink>. La última versión de Web Beans se puede descargar desde <ulink url=\"http://"
 "seamframework.org/Download\">the downloads page</ulink>."
 
 #. Tag: para
 #: ri.xml:13
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The Web Beans RI comes with a two deployable example applications: "
 "<literal>webbeans-numberguess</literal>, a war example, containing only "
@@ -46,9 +45,8 @@ msgid ""
 "containing enterprise beans. To run the examples you'll need the following:"
 msgstr ""
 "La IR de Web Beans viene con dos ejemplos de aplicaciones de despliegue: "
-"<literal>webbeans-numberguess</literal>, un ejemplo de guerra, que contiene "
-"sólo beans sencillos y un oído de ejemplo de <literal>webbeans-translator</"
-"literal> que contiene beans de empresa. Para ejecutar los ejemplos "
+"<literal>webbeans-numberguess</literal>, un ejemplo WAR, que contiene "
+"sólo beans sencillos y un ejemplo EAR <literal>webbeans-translator</literal> que contiene beans de empresa. Para ejecutar los ejemplos "
 "necesitará lo siguiente:"
 
 #. Tag: para
@@ -138,7 +136,7 @@ msgid ""
 "the Web Beans RI. Future versions of JBoss AS will include these updates, "
 "and this step won't be necessary."
 msgstr ""
-"Como Web Beans es una nueva parte de software, necesitamos actualizar  JBoss "
+"Como Web Beans es una nueva parte de software, necesitamos actualizar JBoss "
 "AS para ejecutar el IR de Web Beans. Versiones futuras de JBOSS AS incluirán "
 "dichas actualizaciones, y este paso no será necesario."
 
@@ -164,7 +162,7 @@ msgstr ""
 msgid ""
 "To install the update, you'll need Ant 1.7.0 installed, and the "
 "<literal>ANT_HOME</literal> environment variable set. For example:"
-msgstr ""
+msgstr "Para instalar la actualización, necesitaremos que Ant 1.7.0 esté instalado, y que la variable de entorno <literal>ANT_HOME</literal> esté configurada. Por ejemplo:"
 
 #. Tag: programlisting
 #: ri.xml:79
@@ -182,7 +180,7 @@ msgstr ""
 msgid ""
 "Then, you can install the update. The update script will use Maven to "
 "download the Web Beans and EJB3 automatically."
-msgstr ""
+msgstr "Luego, puede instalar la actualización. La actualización utiliza Maven para descargar automáticamente el Web Beans y EJB3."
 
 #. Tag: programlisting
 #: ri.xml:86
@@ -191,25 +189,26 @@ msgid ""
 "$ cd webbeans-1.0.0.ALPHA1/jboss-as\n"
 "$ ant update"
 msgstr ""
+"$ cd webbeans-1.0.0.ALPHA1/jboss-as\n"
+"$ ant update"
 
 #. Tag: para
 #: ri.xml:88
 #, no-c-format
 msgid "Now, you're ready to deploy your first example!"
-msgstr ""
+msgstr "Ahora, ¡está listo para desplegar su primer ejemplo!"
 
 #. Tag: para
 #: ri.xml:93
 #, no-c-format
-msgid ""
-"The build scripts for the examples offer a number of targets, these are:"
-msgstr ""
+msgid "The build scripts for the examples offer a number of targets, these are:"
+msgstr "Los scripts creados para los ejemplos ofrecen una cantidad de objetivos, a saber:"
 
 #. Tag: para
 #: ri.xml:99
 #, no-c-format
 msgid "<literal>ant restart</literal> - deploy the example in exploded format"
-msgstr ""
+msgstr "<literal>ant restart</literal> - despliega el ejemplo en formaro explotado"
 
 #. Tag: para
 #: ri.xml:105
@@ -217,32 +216,31 @@ msgstr ""
 msgid ""
 "<literal>ant explode</literal> - update an exploded example, without "
 "restarting the deployment"
-msgstr ""
+msgstr "<literal>ant explode</literal> - actualiza un ejemplo explotado, sin reiniciar el despliegue"
 
 #. Tag: para
 #: ri.xml:111
 #, no-c-format
-msgid ""
-"<literal>ant deploy</literal> - deploy the example in compressed jar format"
-msgstr ""
+msgid "<literal>ant deploy</literal> - deploy the example in compressed jar format"
+msgstr "<literal>ant deploy</literal> - despliega el ejemplo en formato comprimido jar"
 
 #. Tag: para
 #: ri.xml:116
 #, no-c-format
 msgid "<literal>ant undeploy</literal> - remove the example from the server"
-msgstr ""
+msgstr "<literal>ant undeploy</literal> - quita el ejemplo del servidor"
 
 #. Tag: para
 #: ri.xml:121
 #, no-c-format
 msgid "<literal>ant clean</literal> - clean the example"
-msgstr ""
+msgstr "<literal>ant clean</literal> - borra el ejemplo"
 
 #. Tag: para
 #: ri.xml:128
 #, no-c-format
 msgid "To deploy the numberguess example:"
-msgstr ""
+msgstr "Para desplegar el ejemplo numberguess:"
 
 #. Tag: programlisting
 #: ri.xml:132
@@ -261,6 +259,8 @@ msgid ""
 "Wait for the application to deploy, and enjoy hours of fun at <ulink url="
 "\"http://localhost:8080/webbeans-numberguess\"></ulink>!"
 msgstr ""
+"Espere que despliegue la aplicación, y ¡disfrute horas de diversión en <ulink url="
+"\"http://localhost:8080/webbeans-numberguess\"></ulink>!"
 
 #. Tag: para
 #: ri.xml:139
@@ -270,7 +270,7 @@ msgid ""
 "text into Latin. The numberguess example is a war example, and uses only "
 "simple beans; the translator example is an ear example, and includes "
 "enterprise beans, packaged in an EJB module. To try it out:"
-msgstr ""
+msgstr "El IR de Web Beans RI incluye un segundo ejemplo que traducirá su texto en Latín. El ejemplo numberguess es un ejemplo WAR, y sólo utiliza beans sencillos; el ejemplo de traductor es un ejemplo EAR e incluye beans de empresa, empaquetados en un módulo EJB. Para probar:"
 
 #. Tag: programlisting
 #: ri.xml:146
@@ -289,12 +289,14 @@ msgid ""
 "Wait for the application to deploy, and visit <ulink url=\"http://"
 "localhost:8080/webbeans-translator\"></ulink>!"
 msgstr ""
+"Espere a que despliegue la aplicación, y ¡visite <ulink url=\"http://"
+"localhost:8080/webbeans-translator\"></ulink>!"
 
 #. Tag: title
 #: ri.xml:154
 #, no-c-format
 msgid "The numberguess example"
-msgstr ""
+msgstr "El ejemplo numberguess"
 
 #. Tag: para
 #: ri.xml:156
@@ -303,7 +305,7 @@ msgid ""
 "In the numberguess application you get given 10 attempts to guess a number "
 "between 1 and 100. After each attempt, you will be told whether you are too "
 "high, or too low."
-msgstr ""
+msgstr "En la aplicación numbreguess se le dan 10 intentos para adivinar un número de 1 a 100. Después de cada intento, se le dirá si es mayor o menor a su número."
 
 #. Tag: para
 #: ri.xml:162
@@ -312,7 +314,7 @@ msgid ""
 "The numberguess example is comprised of a number of Web Beans, configuration "
 "files, and Facelet JSF pages, packaged as a war. Let's start with the "
 "configuration files."
-msgstr ""
+msgstr "El ejemplo de numberguess consta de una cantidad de Web Beans, archivos de configuración y páginas Facelet JSF, empaquetadas como una guerra. Empecemos con los archivos de configuración."
 
 #. Tag: para
 #: ri.xml:168
@@ -323,6 +325,8 @@ msgid ""
 "tree. First, we have <literal>faces-config.xml</literal>, in which we tell "
 "JSF to use Facelets:"
 msgstr ""
+"Todos los archivos de configuración para este ejemplo están localizados en <literal>WEB-INF/"
+"</literal>, el cual está almacenado en <literal>WebContent</literal> en el árbol fuente. Primero, tenemos <literal>faces-config.xml</literal>, en las donde le pedimos a JSF que utilice Facelets:"
 
 #. Tag: programlisting
 #: ri.xml:176
@@ -360,13 +364,13 @@ msgstr ""
 msgid ""
 "There is an empty <literal>web-beans.xml</literal> file, which marks this "
 "application as a Web Beans application."
-msgstr ""
+msgstr "Hay un archivo<literal>web-beans.xml</literal> vacío, el cual marca esta aplicación como una aplicación de Web Beans."
 
 #. Tag: para
 #: ri.xml:183
 #, no-c-format
 msgid "Finally there is <literal>web.xml</literal>:"
-msgstr ""
+msgstr "Por último, hay está <literal>web.xml</literal>:"
 
 #. Tag: section
 #: ri.xml:185
@@ -501,7 +505,7 @@ msgstr ""
 "    xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun."
 "com/xml/ns/javaee/web-app_2_5.xsd\">\n"
 "   \n"
-"   <display-name>Web Beans Numbergues example</display-name>\n"
+"   <display-name>ejemplo de Web Beans Numberguess</display-name>\n"
 "\n"
 "   <!-- JSF -->\n"
 "\n"
@@ -526,16 +530,10 @@ msgstr ""
 "   </session-config>\n"
 "\n"
 "</web-app>]]></programlisting> <calloutlist> <callout arearefs=\"faces."
-"servlet\"> <para> Enable and load the JSF servlet </para> </callout> "
-"<callout arearefs=\"faces.servlet.mapping\"> <para> Configure requests to "
-"<literal>.jsf</literal> pages to be handled by JSF </para> </callout> "
-"<callout arearefs=\"faces.default.suffix\"> <para> Tell JSF that we will be "
-"giving our source files (facelets) an extension of <literal>.jsf</literal> </"
-"para> </callout> <callout arearefs=\"session.timeout\"> <para> Configure a "
-"session timeout of 10 minutes </para> </callout> </calloutlist> </"
-"programlistingco> <note> <para> Whilst this demo is a JSF demo, you can use "
-"the Web Beans RI with any Servlet based web framework. </para> </note> "
-"<para> Let's take a look at the Facelet view: </para> <programlistingco> "
+"servlet\"> <para> Habilitar y cargar el servlet de JSF </para> </callout> "
+"<callout arearefs=\"faces.servlet.mapping\"> <para> Configurar peticiones <literal>.jsf</literal> para páginas que van a ser manejadas por JSF </para> </callout> "
+"<callout arearefs=\"faces.default.suffix\"> <para> Decir a JSF que le estaremos dando a nuestros archivos fuente (facelets) una extensión de <literal>.jsf</literal> </para> </callout> <callout arearefs=\"session.timeout\"> <para> Configurar una pausa de 10 minutos </para> </callout> </calloutlist> </programlistingco> <note> <para> Aunque este demo es un demo de JSF, puede utilizar el IR de Web Beans con cualquier marco de la red basado en Servlet. </para> </note> "
+"<para> Observemos una vista de Facelet: </para> <programlistingco> "
 "<areaspec> <area id=\"template\" coords=\"8\"/> <area id=\"messages\" coords="
 "\"12\"/> <area id=\"instructions\" coords=\"19\"/> <area id=\"guess\" coords="
 "\"25\"/> <area id=\"validator\" coords=\"30\"/> <area id=\"submit\" coords="
@@ -550,7 +548,7 @@ msgstr ""
 "\n"
 "  <ui:composition template=\"template.xhtml\">\n"
 "    <ui:define name=\"content\">\n"
-"       <h1>Guess a number...</h1>\n"
+"       <h1>Adivine un número...</h1>\n"
 "       <h:form id=\"NumberGuessMain\">\n"
 "          <div style=\"color: red\">\n"
 "             <h:messages id=\"messages\" globalOnly=\"false\"/>\n"
@@ -561,13 +559,13 @@ msgstr ""
 "          </div>\n"
 "   \n"
 "          <div>\n"
-"             I'm thinking of a number between #{game.smallest} and #{game."
+"             Estoy pensando un número entre #{game.smallest} y #{game."
 "biggest}.\n"
-"             You have #{game.remainingGuesses} guesses.\n"
+"             Le quedan #{game.remainingGuesses} de intentos.\n"
 "          </div>\n"
 "     \n"
 "          <div>\n"
-"             Your guess: \n"
+"             Su número: \n"
 "             <h:inputText id=\"inputGuess\" \n"
 "                          value=\"#{game.guess}\" \n"
 "                          required=\"true\" \n"
@@ -589,21 +587,11 @@ msgstr ""
 "    </ui:define>\n"
 "  </ui:composition>\n"
 "</html>]]></programlisting> <calloutlist> <callout arearefs=\"template\"> "
-"<para> Facelets is a templating language for JSF, here we are wrapping our "
-"page in a template which defines the header. </para> </callout> <callout "
-"arearefs=\"messages\"> <para> There are a number of messages which can be "
-"sent to the user, \"Higher!\", \"Lower!\" and \"Correct!\" </para> </"
-"callout> <callout arearefs=\"instructions\"> <para> As the user guesses, the "
-"range of numbers they can guess gets smaller - this sentance changes to make "
-"sure they know what range to guess in. </para> </callout> <callout arearefs="
-"\"guess\"> <para> This input field is bound to a Web Bean, using the value "
-"expression. </para> </callout> <callout arearefs=\"validator\"> <para> A "
-"range validator is used to make sure the user doesn't accidentally input a "
-"number outside of the range in which they can guess - if the validator "
-"wasn't here, the user might use up a guess on an out of range number. </"
-"para> </callout> <callout arearefs=\"submit\"> <para> And, of course, there "
-"must be a way for the user to send their guess to the server. Here we bind "
-"to an action method on the Web Bean. </para> </callout> </calloutlist> </"
+"<para> Facelets es un lenguaje de plantilla para JSF, aquí se delimita la página en una plantilla que define el encabezado. </para> </callout> <callout "
+"arearefs=\"messages\"> <para> Hay una cantidad de mensajes que pueden ser enviados al usuario, \"Mayor!\", \"Menor!\" y \"Correcto!\" </para> </"
+"callout> <callout arearefs=\"instructions\"> <para> Mientras el usuario adivina, el rango de números que puede adivinar se vuelve cada vez más pequeño-esta oración cambia para estar seguros de que el usuario sabe en qué rango debe adivinar. </para> </callout> <callout arearefs="
+"\"guess\"> <para> Este campo de entrada está vinculado a un Web Bean, utilizando la expresión de valor. </para> </callout> <callout arearefs=\"validator\"> <para> Un rango de validador se utiliza para garantizar que el usuario por accidente no entre un número fuera del rango en el que se puede adivinar - si el validador no estuviera aquí, el usuario podría tratar de adivinar fuera del rango. </"
+"para> </callout> <callout arearefs=\"submit\"> <para> Y, obviamente, debe haber una forma para que el usuario pueda enviar el número al servidor. Aquí nos vincularnos a un método de acción en el Web Bean. </para> </callout> </calloutlist> </"
 "programlistingco>"
 
 #. Tag: para
@@ -613,7 +601,7 @@ msgid ""
 "The example exists of 4 classes, the first two of which are binding types. "
 "First, there is the <literal>@Random</literal> binding type, used for "
 "injecting a random number:"
-msgstr ""
+msgstr "El ejemplo existe de 4 clases, las primeras dos de las cuales son tipos de enlace. Primero, hay un tipo de enlace <literal>@Random</literal>, utilizado para inyectar un número aleatorio:"
 
 #. Tag: programlisting
 #: ri.xml:293
@@ -637,7 +625,7 @@ msgstr ""
 msgid ""
 "There is also the <literal>@MaxNumber</literal> binding type, used for "
 "injecting the maximum number that can be injected:"
-msgstr ""
+msgstr "También hay un tipo de enlace <literal>@MaxNumber</literal>, utilizado para inyectar el número máximo posible:"
 
 #. Tag: programlisting
 #: ri.xml:300
@@ -664,7 +652,7 @@ msgid ""
 "The <literal>Generator</literal> class is responsible for creating the "
 "random number, via a producer method. It also exposes the maximum possible "
 "number via a producer method:"
-msgstr ""
+msgstr "La clase <literal>Generator</literal> es responsable de crear el número aleatorio, a través de un método de productor. También expone el número máximo posible a través del método de productor:"
 
 #. Tag: programlisting
 #: ri.xml:308
@@ -724,7 +712,7 @@ msgstr ""
 msgid ""
 "You'll notice that the <literal>Generator</literal> is application scoped; "
 "therefore we don't get a different random each time."
-msgstr ""
+msgstr "Notará que el <literal>Generador</literal> es una aplicación en ámbito por lo tanto no obtenemos un número aleatorio cada vez."
 
 #. Tag: para
 #: ri.xml:315
@@ -733,6 +721,8 @@ msgid ""
 "The final Web Bean in the application is the session scoped <literal>Game</"
 "literal>."
 msgstr ""
+"El Web Bean final en la aplicación es la sesión en ámbito <literal>Juego</"
+"literal>."
 
 #. Tag: para
 #: ri.xml:320
@@ -743,7 +733,7 @@ msgid ""
 "constructor injection to initialize the game with a random number. And of "
 "course, we need to tell the player when they've won, so we give feedback "
 "with a <literal>FacesMessage</literal>."
-msgstr ""
+msgstr "Notará que hemos utlizado la anotación <literal>@Named</literal>, para poder utlilizar el bean a través de EL en la página JSF. Por último, hemos utilizado la inyección de constructor para inicializar el juego con un número aleatorio. Y, claro está, necesitamos decirle al jugador cuando haya ganado, por lo tanto le damos retroalimentación con <literal>FacesMessage</literal>."
 
 #. Tag: programlisting
 #: ri.xml:328
@@ -947,7 +937,7 @@ msgstr ""
 #: ri.xml:332
 #, no-c-format
 msgid "The translator example"
-msgstr ""
+msgstr "Ejemplo del traductor"
 
 #. Tag: para
 #: ri.xml:334
@@ -955,7 +945,7 @@ msgstr ""
 msgid ""
 "The translator example will take any sentences you enter, and translate them "
 "to Latin."
-msgstr ""
+msgstr "El ejemplo de traductor tomará las oraciones que entre y las traducirá en Latín."
 
 #. Tag: para
 #: ri.xml:339
@@ -963,7 +953,7 @@ msgstr ""
 msgid ""
 "The translator example is built as an ear, and contains EJBs. As a result, "
 "it's structure is more complex than the numberguess example."
-msgstr ""
+msgstr "El ejemplo de traductor está incorporado como un EAR, y contiene EJB. Como resultado, su estructura es más compleja que el ejemplo de Numberguess."
 
 #. Tag: para
 #: ri.xml:345
@@ -971,7 +961,7 @@ msgstr ""
 msgid ""
 "EJB 3.1 and Jave EE 6 allow you to package EJBs in a war, which will make "
 "this structure much simpler!"
-msgstr ""
+msgstr "EJB 3.1 y Java EE 6 le permiten empaquetar EJB en un WAR, lo cual hará la estructura mucho más simple!"
 
 #. Tag: para
 #: ri.xml:351
@@ -980,7 +970,7 @@ msgid ""
 "First, let's take a look at the ear aggregator, which is located in "
 "<literal>webbeans-translator-ear</literal> module. Maven automatically "
 "generates the <literal>application.xml</literal> for us:"
-msgstr ""
+msgstr "Primero, demos una mirada al agregador EAR, el cual está localizado en el módulo <literal>webbeans-translator-ear</literal>. Maven genera automáticamente la <literal>application.xml</literal>:"
 
 #. Tag: programlisting
 #: ri.xml:357
@@ -1022,6 +1012,9 @@ msgid ""
 "localhost:8080/webbeans-translator\">http://localhost:8080/webbeans-"
 "translator</ulink>)."
 msgstr ""
+"Aquí establecemos la ruta de contexto, la cual nos da una url interesante (<ulink url=\"http://"
+"localhost:8080/webbeans-translator\">http://localhost:8080/webbeans-"
+"translator</ulink>)."
 
 #. Tag: para
 #: ri.xml:365
@@ -1029,7 +1022,7 @@ msgstr ""
 msgid ""
 "If you aren't using Maven to generate these files, you would need "
 "<literal>META-INF/application.xml</literal>:"
-msgstr ""
+msgstr "Si no está utilizando Maven para generar estos archivos, usted necesitaría <literal>META-INF/application.xml</literal>:"
 
 #. Tag: programlisting
 #: ri.xml:370
@@ -1063,7 +1056,7 @@ msgstr ""
 "java.sun.com/xml/ns/javaee/application_5.xsd\"\n"
 "             version=\"5\">\n"
 "  <display-name>webbeans-translator-ear</display-name>\n"
-"  <description>Ear Example for the reference implementation of JSR 299: Web "
+"  <description>Ejemplo Ear para la implementación de referencia de JSR 299: Web "
 "Beans</description>\n"
 "  \n"
 "  <module>\n"
@@ -1084,7 +1077,7 @@ msgid ""
 "Next, lets look at the war. Just as in the numberguess example, we have a "
 "<literal>faces-config.xml</literal> (to enabled Facelets) and a <literal>web."
 "xml</literal> (to enable JSF) in <literal>WebContent/WEB-INF</literal>."
-msgstr ""
+msgstr "Ahora veamos el WAR. Al igual que el ejemplo de Numberguess, tenemos un <literal>Generator</literal><literal>faces-config.xml</literal> (para Facelets habilitadas) y un <literal>web.xml</literal> (para habilitar a JSF) en <literal>WebContent/WEB-INF</literal>."
 
 #. Tag: para
 #: ri.xml:380
@@ -1093,7 +1086,7 @@ msgid ""
 "More intersting is the facelet used to translate text. Just as in the "
 "numberguess example we have a template, which surrounds the form (ommitted "
 "here for brevity):"
-msgstr ""
+msgstr "Más interesante aún es el facelet utilizado para traducir texto. Al igual que en el ejemplo de numberguesss tenemos una plantilla, la cual rodea la forma (omitida aqui por razones de brevedad):"
 
 #. Tag: programlisting
 #: ri.xml:386
@@ -1161,7 +1154,7 @@ msgstr ""
 msgid ""
 "The user can enter some text in the lefthand textarea, and hit the translate "
 "button to see the result to the right."
-msgstr ""
+msgstr "El usuario puede entrar texto en el área de texto a mano izquierda y pulsar el botón de traducir para ver el resultado a la derecha."
 
 #. Tag: para
 #: ri.xml:393
@@ -1172,6 +1165,8 @@ msgid ""
 "empty <literal>web-beans.xml</literal>, used to mark the archive as "
 "containing Web Beans."
 msgstr ""
+"Por último, veamos el módulo EJB, <literal>webbeans-translator-ejb</"
+"literal>. En <literal>src/main/resources/META-INF</literal> sólo hay un <literal>web-beans.xml</literal> vacío, utilizado para marcar el archivo como contiene Web Beans."
 
 #. Tag: para
 #: ri.xml:401
@@ -1184,6 +1179,8 @@ msgid ""
 "quite familiar with what a Web Bean looks like by now, so we'll just "
 "highlight the most interesting bits here."
 msgstr ""
+"Hemos guardado la parte más interesante para el final, ¡el código! El proyecto tiene dos beans sencillos, <literal>SentenceParser</literal> y <literal>TextTranslator</literal> y dos beans de empresa, <literal>TranslatorControllerBean</"
+"literal> y <literal>SentenceTranslator</literal>. Por ahora, debe comenzar a familiarizarse con el aspecto de Web Bean, por lo tanto sólo destacaremos las partes más interesantes."
 
 #. Tag: para
 #: ri.xml:411
@@ -1192,7 +1189,7 @@ msgid ""
 "Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal> "
 "are dependent beans, and <literal>TextTranslator</literal> uses constructor "
 "initialization:"
-msgstr ""
+msgstr "Tanto <literal>SentenceParser</literal> como <literal>TextTranslator</literal> son beans dependientes, y <literal>TextTranslator</literal> utiliza inicialización de constructor:"
 
 #. Tag: programlisting
 #: ri.xml:417
@@ -1227,7 +1224,7 @@ msgid ""
 "<literal>TextTranslator</literal> is a stateless bean (with a local business "
 "interface), where the magic happens - of course, we couldn't develop a full "
 "translator, but we gave it a good go!"
-msgstr ""
+msgstr "<literal>TextTranslator</literal> es un bean con estado (con una interfaz local de negocios), donde lo mágico sucede - claro está, que no podemos desarrollar todo un traductor, pero le dimos una luz!"
 
 #. Tag: para
 #: ri.xml:425
@@ -1236,7 +1233,7 @@ msgid ""
 "Finally, there is UI orientated controller, that collects the text from the "
 "user, and dispatches it to the translator. This is a request scoped, named, "
 "stateful session bean, which injects the translator."
-msgstr ""
+msgstr "Por último, hay un controlador orientado UI que recoge el texto desde el usuario y lo envía al traductor. Esta es una petición en ámbito, llamada bean con estado de sesión, el cual inyecta el traductor."
 
 #. Tag: programlisting
 #: ri.xml:431
@@ -1262,13 +1259,13 @@ msgstr ""
 #: ri.xml:433
 #, no-c-format
 msgid "The bean also has getters and setters for all the fields on the page."
-msgstr ""
+msgstr "El bean también tiene capturadores y configuradores para todos los campos en la página."
 
 #. Tag: para
 #: ri.xml:437
 #, no-c-format
 msgid "As this is a stateful session bean, we have to have a remove method:"
-msgstr ""
+msgstr "Como este es un bean de sesión con estado, tenemos que tener un método de eliminación:"
 
 #. Tag: programlisting
 #: ri.xml:441
@@ -1292,7 +1289,7 @@ msgstr ""
 msgid ""
 "The Web Beans manager will call the remove method for you when the bean is "
 "destroyed; in this case at the end of the request."
-msgstr ""
+msgstr "El administrador de Web Beans llamará al método de eliminación cuando el bean sea destruido, en este caso al final de la petición."
 
 #. Tag: para
 #: ri.xml:449
@@ -1303,6 +1300,9 @@ msgid ""
 "WebBeans/Development\">http://www.seamframework.org/WebBeans/Development</"
 "ulink>."
 msgstr ""
+"Aquí termina nuestro corto tour por los ejemplos IR de Web Beans. Para mayor información acerca de IR o ayuda, por favor consulte <ulink url=\"http://www.seamframework.org/"
+"WebBeans/Development\">http://www.seamframework.org/WebBeans/Development</"
+"ulink>."
 
 #. Tag: para
 #: ri.xml:455
@@ -1310,4 +1310,5 @@ msgstr ""
 msgid ""
 "We need help in all areas - bug fixing, writing new features, writing "
 "examples and translating this reference guide."
-msgstr ""
+msgstr "Necesitamos ayuda en todas las áreas - corrección de errores, escritura de nuevas funciones, escritura de ejemplos y traducción de esta guía de referencia."
+
