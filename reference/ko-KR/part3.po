@@ -8,55 +8,37 @@ msgstr ""
 "Project-Id-Version: part3\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-14 15:00+1000\n"
-"Last-Translator: Eunju Kim <eukim@redhat.com>\n"
+"PO-Revision-Date: 2009-01-15 20:53+0100\n"
+"Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
-"\n"
-"\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
 #. Tag: para
 #: part3.xml:5
 #, no-c-format
-msgid ""
-"The second major theme of Web Beans is <emphasis>strong typing</emphasis>. "
-"The information about the dependencies, interceptors and decorators of a Web "
-"Bean, and the information about event consumers for an event producer, is "
-"contained in typesafe Java constructs that may be validated by the compiler."
+msgid "The second major theme of Web Beans is <emphasis>strong typing</emphasis>. The information about the dependencies, interceptors and decorators of a Web Bean, and the information about event consumers for an event producer, is contained in typesafe Java constructs that may be validated by the compiler."
 msgstr "Web Beans의 두번째 주요 기능은 <emphasis>강한 타이핑 (strong typing)</emphasis>입니다. Web Bean의 의존성, 인터셉터, 데코레이터에 관한 정보 및 이벤트 생산자에 대한 이벤트 소비자에 관한 정보는 컴파일러에 의해 사용할 수 있는 타입 안정적 Java 구성 요소에 들어 있습니다. "
 
 #. Tag: para
 #: part3.xml:10
 #, no-c-format
-msgid ""
-"You don't see string-based identifiers in Web Beans code, not because the "
-"framework is hiding them from you using clever defaulting rules&#151;so-"
-"called \"configuration by convention\"&#151;but because there are simply no "
-"strings there to begin with!"
-msgstr "Web Beans 코드에서 문자열 기반 식별자를 보실 수 없습니다. 그 이유는 프레임워크가 &#151;\"관례에 의한 설정\"이라고 부르는&#151 기본값 규칙을 사용하여 이를 숨기려하기 때문이 아니라 시작할 수 있는 문자열이 없기 때문입니다! "
+msgid "You don't see string-based identifiers in Web Beans code, not because the framework is hiding them from you using clever defaulting rules&#151;so-called \"configuration by convention\"&#151;but because there are simply no strings there to begin with!"
+msgstr "Web Beans 코드에서 문자열 기반 식별자를 보실 수 없습니다. 그 이유는 프레임워크가 &#151;\"관례에 의한 설정\"이라고 부르는&#151; 기본값 규칙을 사용하여 이를 숨기려하기 때문이 아니라 시작할 수 있는 문자열이 없기 때문입니다! "
 
 #. Tag: para
 #: part3.xml:15
 #, no-c-format
-msgid ""
-"The obvious benefit of this approach is that <emphasis>any</emphasis> IDE "
-"can provide autocompletion, validation and refactoring without the need for "
-"special tooling. But there is a second, less-immediately-obvious, benefit. "
-"It turns out that when you start thinking of identifying objects, events or "
-"interceptors via annotations instead of names, you have an opportunity to "
-"lift the semantic level of your code."
+msgid "The obvious benefit of this approach is that <emphasis>any</emphasis> IDE can provide autocompletion, validation and refactoring without the need for special tooling. But there is a second, less-immediately-obvious, benefit. It turns out that when you start thinking of identifying objects, events or interceptors via annotations instead of names, you have an opportunity to lift the semantic level of your code."
 msgstr "이러한 접근 방식의 장점은 <emphasis>어떤</emphasis> IDE도 특정 도구 없이 자동 완성, 검증, 리팩토링을 제공할 수 있습니다. 이에는 다른 부수적인 장점도 있습니다. 이름 대신 어노테이션을 통해 객체, 이벤트, 인터셉터를 인식하고자 할 경우 이것이 나타나 코드의 시맨틱 레벨을 해제할 수 있습니다. "
 
 #. Tag: para
 #: part3.xml:21
 #, no-c-format
-msgid ""
-"Web Beans encourages you develop annotations that model concepts, for "
-"example,"
+msgid "Web Beans encourages you develop annotations that model concepts, for example,"
 msgstr "Web Beans는 개념을 모델로 하는 어노테이션을 개발하게 합니다. 예: "
 
 #. Tag: para
@@ -116,42 +98,24 @@ msgstr "<literal>DocumentUpdatedEvent</literal>."
 #. Tag: para
 #: part3.xml:56
 #, no-c-format
-msgid ""
-"The annotations are reusable. They help describe common qualities of "
-"disparate parts of the system. They help us categorize and understand our "
-"code. They help us deal with common concerns in a common way. They make our "
-"code more literate and more understandable."
+msgid "The annotations are reusable. They help describe common qualities of disparate parts of the system. They help us categorize and understand our code. They help us deal with common concerns in a common way. They make our code more literate and more understandable."
 msgstr "어노테이션은 다시 사용할 수 있습니다. 이는 시스템의 연관 없는 부분의 일반적인 기능을 설명하는데 사용되며, 코드를 이해하고 범주화하는데 사용될 수 있습니다. 이는 일반적인 문제를 일반적인 방식으로 해결하는데 도움을 주며, 코드를 보다 더 이해하고 읽고 쓸 수 있게 합니다.  "
 
 #. Tag: para
 #: part3.xml:61
 #, no-c-format
-msgid ""
-"Web Beans <emphasis>stereotypes</emphasis> take this idea a step further. A "
-"stereotype models a common <emphasis>role</emphasis> in your application "
-"architecture. It encapsulates various properties of the role, including "
-"scope, interceptor bindings, deployment type, etc, into a single reusable "
-"package."
+msgid "Web Beans <emphasis>stereotypes</emphasis> take this idea a step further. A stereotype models a common <emphasis>role</emphasis> in your application architecture. It encapsulates various properties of the role, including scope, interceptor bindings, deployment type, etc, into a single reusable package."
 msgstr "Web Beans의 <emphasis>전형적인 역할</emphasis>은 이러한 기능에 한 단계 더 나아갑니다. 전형적인 역할은 애플리케이션 구조에서의 일반적인 <emphasis>역할</emphasis>을 모델로 합니다. 이는 범위, 인터셉터 바인딩, 배포 유형 등과 같은 다양한 역할의 속성으로 다시 사용 가능한 단일 패키지로 캡슐화합니다.  "
 
 #. Tag: para
 #: part3.xml:66
 #, no-c-format
-msgid ""
-"Even Web Beans XML metadata is strongly typed! There's no compiler for XML, "
-"so Web Beans takes advantage of XML schemas to validate the Java types and "
-"attributes that appear in XML. This approach turns out to make the XML more "
-"literate, just like annotations made our Java code more literate."
+msgid "Even Web Beans XML metadata is strongly typed! There's no compiler for XML, so Web Beans takes advantage of XML schemas to validate the Java types and attributes that appear in XML. This approach turns out to make the XML more literate, just like annotations made our Java code more literate."
 msgstr "심지어 Web Beans XML 메타데이터는 강하게 타이핑됩니다! XML 용 컴파일러가 없으므로 Web Beans는 XML 스키마의 장점을 취해 XML에 나타나는 Java 유형 및 속성을 유효하게 합니다. 어노테이션이 Java 코드를 읽고 쓸 수 있게 하는 것 처럼 이러한 접근은 XML을 보다 더 읽고 쓸 수 있게 합니다.   "
 
 #. Tag: para
 #: part3.xml:71
 #, no-c-format
-msgid ""
-"We're now ready to meet some more advanced features of Web Beans. Bear in "
-"mind that these features exist to make our code both easier to validate and "
-"more understandable. Most of the time you don't ever really <emphasis>need</"
-"emphasis> to use these features, but if you use them wisely, you'll come to "
-"appreciate their power."
+msgid "We're now ready to meet some more advanced features of Web Beans. Bear in mind that these features exist to make our code both easier to validate and more understandable. Most of the time you don't ever really <emphasis>need</emphasis> to use these features, but if you use them wisely, you'll come to appreciate their power."
 msgstr "이제 Web Beans의 보다 고급 기능에 대해 알아볼 준비가 되었습니다. 이러한 기능은 코드를 보다 쉽게 유효화하고 이해 가능하게 하기 위해 존재하는 것임을 명심하시기 바랍니다. 대부분 이러한 기능을 사용할 <emphasis>필요가</emphasis> 없지만 이를 보다 효과적으로 사용할 경우, 이러한 기능에 감사하게 될 것입니다. "
 
