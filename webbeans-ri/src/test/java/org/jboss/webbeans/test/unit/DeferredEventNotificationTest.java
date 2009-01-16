@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test;
+package org.jboss.webbeans.test.unit;
 
 import java.util.Arrays;
 
@@ -9,6 +9,7 @@ import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
+import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
 import org.jboss.webbeans.test.annotations.Asynchronous;
 import org.jboss.webbeans.test.beans.Tuna;

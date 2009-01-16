@@ -45,6 +45,8 @@ public class BeanValidation
     * 
     * @param beans The beans to validate
     */
+   // TODO THIS SHOULD NOT BE A STATIC UTITLITY CLASS
+   @Deprecated
    public static void validate(List<Bean<?>> beans)
    {
       for (Bean<?> bean : beans)
