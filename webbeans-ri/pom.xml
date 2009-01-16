@@ -159,7 +159,7 @@
             </executions>
             <configuration>
                <outputDirectory>${project.build.directory}/surefire-reports</outputDirectory>
-               <outputName>index</outputName>
+               <outputName>test-report</outputName>
             </configuration>
          </plugin>
    	</plugins>

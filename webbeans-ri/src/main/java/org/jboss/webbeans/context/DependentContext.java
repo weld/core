@@ -31,7 +31,7 @@ import javax.webbeans.manager.Contextual;
 public class DependentContext extends AbstractContext
 {
 
-   public static final DependentContext INSTANCE = new DependentContext();
+   public static DependentContext INSTANCE = new DependentContext();
    
    private ThreadLocal<AtomicInteger> reentrantActiveCount;
    

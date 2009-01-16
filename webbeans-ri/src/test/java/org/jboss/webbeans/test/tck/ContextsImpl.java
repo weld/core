@@ -10,7 +10,7 @@ public class ContextsImpl implements Contexts<AbstractContext>
 
    public RequestContext getRequestContext()
    {
-      throw new UnsupportedOperationException("Not yet implemented");
+      return RequestContext.INSTANCE;
    }
 
    public void setActive(AbstractContext context)

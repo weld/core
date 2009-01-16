@@ -18,11 +18,6 @@ import javax.webbeans.InjectionPoint;
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
-import org.jboss.webbeans.context.ApplicationContext;
-import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.context.RequestContext;
-import org.jboss.webbeans.context.SessionContext;
-import org.jboss.webbeans.context.beanmap.SimpleBeanMap;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.resource.AbstractNaming;
 import org.jboss.webbeans.resources.spi.Naming;
@@ -173,14 +168,15 @@ public class MockBootstrap extends WebBeansBootstrap
       this.mockNaming = new MockNaming();
       initManager(mockNaming, MOCK_EJB_RESOLVER, resourceLoader);
       registerStandardBeans();
-      
-      // Set up the mock contexts
-      getManager().addContext(RequestContext.INSTANCE);
-      SessionContext.INSTANCE.setBeanMap(new SimpleBeanMap());
-      getManager().addContext(SessionContext.INSTANCE);
-      ApplicationContext.INSTANCE.setBeanMap(new SimpleBeanMap());
-      getManager().addContext(ApplicationContext.INSTANCE);
-      getManager().addContext(DependentContext.INSTANCE);
+      setupContexts();
+   }
+   
+   protected void setupContexts()
+   {
+      getManager().addContext(new MockRequestContext());
+      getManager().addContext(new MockSessionContext());
+      getManager().addContext(new MockApplicationContext());
+      getManager().addContext(new MockDependentContext());
    }
    
    protected void registerStandardBeans()
