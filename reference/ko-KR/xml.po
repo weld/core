@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-15 22:36+1000\n"
+"PO-Revision-Date: 2009-01-16 10:04+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 
@@ -159,7 +160,7 @@ msgstr "<![CDATA[@Current Date date]]>"
 #: xml.xml:67
 #, no-c-format
 msgid "Declaring Web Bean metadata"
-msgstr ""
+msgstr "Web Bean 메타데이터 명시 "
 
 #. Tag: para
 #: xml.xml:69
@@ -189,7 +190,7 @@ msgstr ""
 #: xml.xml:74
 #, no-c-format
 msgid "We use exactly the same approach to specify names and binding type:"
-msgstr ""
+msgstr "이름 및 바인딩 유형을 지정하기 위해 동일한 방법을 사용합니다:  "
 
 #. Tag: programlisting
 #: xml.xml:76
@@ -233,7 +234,7 @@ msgstr ""
 msgid ""
 "Where <literal>@Login</literal> and <literal>@SystemStart</literal> are "
 "binding annotations types."
-msgstr ""
+msgstr "여기서 <literal>@Login</literal> 및 <literal>@SystemStart</literal>는 바인딩 어노테이션 유형입니다.  "
 
 #. Tag: programlisting
 #: xml.xml:81
@@ -251,7 +252,7 @@ msgstr ""
 #: xml.xml:83
 #, no-c-format
 msgid "As usual, a Web Bean may support multiple binding types:"
-msgstr ""
+msgstr "일반적으로 Web Bean은 여러 바인딩 유형을 지원할 수 있습니다:  "
 
 #. Tag: programlisting
 #: xml.xml:85
@@ -273,7 +274,7 @@ msgstr ""
 msgid ""
 "Interceptors and decorators are just simple Web Beans, so they may be "
 "declared just like any other simple Web Bean:"
-msgstr ""
+msgstr "인터셉터 및 데코레이터는 간단한 Web Beans이므로, 기타 다른 간단한 Web Bean같이 나타낼 수 있습니다:  "
 
 #. Tag: programlisting
 #: xml.xml:90
@@ -293,25 +294,25 @@ msgstr ""
 #: xml.xml:95
 #, no-c-format
 msgid "Declaring Web Bean members"
-msgstr ""
+msgstr "Web Bean 멤버 명시 "
 
 #. Tag: para
 #: xml.xml:97
 #, no-c-format
 msgid "TODO!"
-msgstr ""
+msgstr "처리해야 할 사항! "
 
 #. Tag: title
 #: xml.xml:104
 #, no-c-format
 msgid "Declaring inline Web Beans"
-msgstr ""
+msgstr "인라인 Web Beans 명시 "
 
 #. Tag: para
 #: xml.xml:106
 #, no-c-format
 msgid "Web Beans lets us define a Web Bean at an injection point. For example:"
-msgstr ""
+msgstr "Web Beans는 삽입 지점에서 Web Bean을 지정할 수 있게 합니다. 예: "
 
 #. Tag: programlisting
 #: xml.xml:108
@@ -363,7 +364,7 @@ msgstr ""
 #: xml.xml:123
 #, no-c-format
 msgid "Using a schema"
-msgstr ""
+msgstr "스키마 사용 "
 
 #. Tag: para
 #: xml.xml:125

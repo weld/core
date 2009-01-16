@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-08 14:07+0000\n"
-"PO-Revision-Date: 2009-01-16 00:40+1000\n"
+"PO-Revision-Date: 2009-01-16 08:59+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 
 #. Tag: title
@@ -75,7 +76,7 @@ msgstr "SPI 구현을 시스템 속성으로나 또는 속성 파일 <literal>ME
 #: ri-spi.xml:43
 #, no-c-format
 msgid "Web Bean Discovery"
-msgstr "Web Bean 검출 "
+msgstr "Web Bean 검색 "
 
 #. Tag: programlisting
 #: ri-spi.xml:45
@@ -134,12 +135,11 @@ msgstr ""
 #. Tag: para
 #: ri-spi.xml:47
 #, no-c-format
-#, fuzzy
 msgid ""
 "The discovery of Web Bean classes and <literal>web-bean.xml</literal> files "
 "is self-explanatory (the algorithm is described in Section 11.1 of the JSR-"
 "299 specification, and isn't repeated here)."
-msgstr "Web Bean 클래스 및 <literal>web-bean.xml</literal> 파일 검출은 쉽게 알 수 있습니다 "
+msgstr "Web Bean 클래스 및 <literal>web-bean.xml</literal> 파일 검색은 쉽게 알 수 있습니다 (알고리즘은 JSR-299 사양 11.1장에 설명되어 있으므로 여기서 다시 설명하지 않습니다).  "
 
 #. Tag: para
 #: ri-spi.xml:53
@@ -149,7 +149,7 @@ msgid ""
 "it doesn't have to scan for EJB3 annotations or parse <literal>ejb-jar.xml</"
 "literal>. For each EJB in the application an EJBDescriptor should be "
 "discovered:"
-msgstr ""
+msgstr "Web Beans RI는 컨테이너로 EJB3 bean 검색을 위임하므로 EJB3 어노테이션을 검색하거나 <literal>ejb-jar.xml</literal>을 파싱할 필요가 없습니다. 애플리케이션에 있는 각각의 EJB의 경우 EJBDescriptor를 검색해야 합니다: "
 
 #. Tag: programlisting
 #: ri-spi.xml:60

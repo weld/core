@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: specialization\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 11:12+1000\n"
+"PO-Revision-Date: 2009-01-16 11:03+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,12 +16,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 
 #. Tag: title
 #: specialization.xml:4
 #, no-c-format
 msgid "Specialization"
-msgstr ""
+msgstr "특수화 기능 "
 
 #. Tag: para
 #: specialization.xml:6
@@ -31,7 +32,7 @@ msgid ""
 "<emphasis>override</emphasis> the implementation of an API at deployment "
 "time. For example, the following enterprise Web Bean provides an "
 "implementation of the API <literal>PaymentProcessor</literal> in production:"
-msgstr ""
+msgstr "이미 Web Beans 의존성 삽입 모델은 배포시 API 구현을 <emphasis>덮어쓰기</emphasis> 하게 합니다. 예를 들어, 다음과 같은 엔터프라이즈 Web Bean은 제품에서 API <literal>PaymentProcessor</literal> 구현을 제공합니다: "
 
 #. Tag: programlisting
 #: specialization.xml:11
@@ -160,7 +161,7 @@ msgstr ""
 #: specialization.xml:58
 #, no-c-format
 msgid "Using specialization"
-msgstr ""
+msgstr "특수화 기능 사용 "
 
 #. Tag: para
 #: specialization.xml:60
@@ -219,13 +220,13 @@ msgstr ""
 #: specialization.xml:85
 #, no-c-format
 msgid "Advantages of specialization"
-msgstr ""
+msgstr "특수화 기능 장점 "
 
 #. Tag: para
 #: specialization.xml:87
 #, no-c-format
 msgid "When specialization is used:"
-msgstr ""
+msgstr "특수화 기능 사용시: "
 
 #. Tag: para
 #: specialization.xml:91
@@ -259,13 +260,13 @@ msgid ""
 "In our example, the binding type <literal>@CreditCard</literal> of "
 "<literal>CreditCardPaymentProcessor</literal> is inherited by "
 "<literal>StagingCreditCardPaymentProcessor</literal>."
-msgstr ""
+msgstr "예에서 <literal>CreditCardPaymentProcessor</literal>의 <literal>@CreditCard</literal> 바인딩 유형은 <literal>StagingCreditCardPaymentProcessor</literal>에 의해 전승됩니다. "
 
 #. Tag: para
 #: specialization.xml:109
 #, no-c-format
 msgid "Furthermore, the Web Bean manager will validate that:"
-msgstr ""
+msgstr "Web Bean 관리자는 다음 사항을 유효화합니다:  "
 
 #. Tag: para
 #: specialization.xml:113
