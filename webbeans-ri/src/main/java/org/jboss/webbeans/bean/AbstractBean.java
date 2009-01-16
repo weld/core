@@ -141,6 +141,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       initScopeType();
       initTypes();
       initProxyable();
+      checkRequiredTypesImplemented();
    }
 
    /**
@@ -332,6 +333,21 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       else if (deploymentType.equals(Standard.class) && !STANDARD_WEB_BEAN_CLASSES.contains(getAnnotatedItem().getType()))
       {
          throw new DefinitionException(getAnnotatedItem().getName() + " cannot have deployment type @Standard");
+      }
+   }
+   
+   /**
+    * Validates that the required types are implemented
+    */
+   protected void checkRequiredTypesImplemented()
+   {
+      for (Class<?> requiredType : getMergedStereotypes().getRequiredTypes())
+      {
+         log.trace("Checking if required type " + requiredType + " is implemented");
+         if (!requiredType.isAssignableFrom(type))
+         {
+            throw new DefinitionException("Required type " + requiredType + " isn't implemented on " + type);
+         }
       }
    }
 

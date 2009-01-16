@@ -77,7 +77,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    protected void init()
    {
       super.init();
-      checkRequiredTypesImplemented();
       checkScopeAllowed();
       checkBeanImplementation();
       // TODO Interceptors
@@ -148,21 +147,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          else
          {
             initializerMethods.add(annotatedMethod);
-         }
-      }
-   }
-
-   /**
-    * Validates that the required types are implemented
-    */
-   protected void checkRequiredTypesImplemented()
-   {
-      for (Class<?> requiredType : getMergedStereotypes().getRequiredTypes())
-      {
-         log.trace("Checking if required type " + requiredType + " is implemented");
-         if (!requiredType.isAssignableFrom(type))
-         {
-            throw new DefinitionException("Required type " + requiredType + " isn't implemented on " + type);
          }
       }
    }
