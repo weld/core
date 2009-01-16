@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: interceptors\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 10:56+1000\n"
+"PO-Revision-Date: 2009-01-16 16:27+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,12 +16,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 
 #. Tag: title
 #: interceptors.xml:4
 #, no-c-format
 msgid "Interceptors"
-msgstr ""
+msgstr "인터셉터 "
 
 #. Tag: para
 #: interceptors.xml:6
@@ -29,13 +30,13 @@ msgstr ""
 msgid ""
 "Web Beans re-uses the basic interceptor architecture of EJB 3.0, extending "
 "the functionality in two directions:"
-msgstr ""
+msgstr "Web Beans는 EJB 3.0의 기본 인터셉터 구조를 재사용하여, 두 가지 방향으로 기능을 확장합니다: "
 
 #. Tag: para
 #: interceptors.xml:11
 #, no-c-format
 msgid "Any Web Bean may have interceptors, not just session beans."
-msgstr ""
+msgstr "Web Bean에는 세션 beans 만이 아니라 인터셉터도 있을 수 있습니다. "
 
 #. Tag: para
 #: interceptors.xml:14
@@ -49,19 +50,19 @@ msgstr ""
 #: interceptors.xml:22
 #, no-c-format
 msgid "The EJB specification defines two kinds of interception points:"
-msgstr ""
+msgstr "EJB 사양은 두 종류의 인터셉션 지점을 정의합니다:  "
 
 #. Tag: para
 #: interceptors.xml:26
 #, no-c-format
 msgid "business method interception, and"
-msgstr ""
+msgstr "비지니스 방식 인터셉터 "
 
 #. Tag: para
 #: interceptors.xml:29
 #, no-c-format
 msgid "lifecycle callback interception."
-msgstr ""
+msgstr "수명주기 콜백 인터셉터 "
 
 #. Tag: para
 #: interceptors.xml:33
@@ -69,7 +70,7 @@ msgstr ""
 msgid ""
 "A <emphasis>business method interceptor</emphasis> applies to invocations of "
 "methods of the Web Bean by clients of the Web Bean:"
-msgstr ""
+msgstr "<emphasis>비지니스 방식 인터셉터</emphasis>는 Web Bean 클라이언트에 의해 Web Bean 방식 호출에 적용됩니다: "
 
 #. Tag: programlisting
 #: interceptors.xml:36
@@ -91,7 +92,7 @@ msgstr ""
 msgid ""
 "A <emphasis>lifecycle callback interceptor</emphasis> applies to invocations "
 "of lifecycle callbacks by the container:"
-msgstr ""
+msgstr "<emphasis>수명 주기 콜백 인터셉터</emphasis>는 컨테이너에 의해 수명 주기 콜백 호출에 적용됩니다:  "
 
 #. Tag: programlisting
 #: interceptors.xml:41
@@ -113,13 +114,13 @@ msgstr ""
 msgid ""
 "An interceptor class may intercept both lifecycle callbacks and business "
 "methods."
-msgstr ""
+msgstr "인터셉터 클래스는 수명 주기 콜백 및 비지니스 방식 모두를 차단할 수 있습니다. "
 
 #. Tag: title
 #: interceptors.xml:49
 #, no-c-format
 msgid "Interceptor bindings"
-msgstr ""
+msgstr "인터셉터 바인딩 "
 
 #. Tag: para
 #: interceptors.xml:51
@@ -150,7 +151,7 @@ msgstr ""
 msgid ""
 "Now we can easily specify that our <literal>ShoppingCart</literal> is a "
 "transactional object:"
-msgstr ""
+msgstr "<literal>ShoppingCart</literal>가 트랜젝션 객체임을 쉽게 지정할 수 있습니다:  "
 
 #. Tag: programlisting
 #: interceptors.xml:60
@@ -166,7 +167,7 @@ msgstr ""
 #: interceptors.xml:62
 #, no-c-format
 msgid "Or, if we prefer, we can specify that just one method is transactional:"
-msgstr ""
+msgstr "원하실 경우, 하나의 방식 만이 트랙젝션 가능하도록 지정할 수 있습니다: "
 
 #. Tag: programlisting
 #: interceptors.xml:64
@@ -184,7 +185,7 @@ msgstr ""
 #: interceptors.xml:69
 #, no-c-format
 msgid "Implementing interceptors"
-msgstr ""
+msgstr "인터셉터 구현 "
 
 #. Tag: para
 #: interceptors.xml:71
@@ -218,7 +219,7 @@ msgstr ""
 msgid ""
 "All Web Beans interceptors are simple Web Beans, and can take advantage of "
 "dependency injection and contextual lifecycle management."
-msgstr ""
+msgstr "모든 Web Beans 인터셉터는 단순한 Web Beans으로, 의존성 삽입및 컨텍스트 수명 주기 관리의 장점을 취할 수 있습니다.  "
 
 #. Tag: programlisting
 #: interceptors.xml:81
@@ -248,13 +249,13 @@ msgstr ""
 #: interceptors.xml:83
 #, no-c-format
 msgid "Multiple interceptors may use the same interceptor binding type."
-msgstr ""
+msgstr "여러 인터셉터는 동일한 인터셉터 바인딩 유형을 사용할 수 있습니다.  "
 
 #. Tag: title
 #: interceptors.xml:88
 #, no-c-format
 msgid "Enabling interceptors"
-msgstr ""
+msgstr "인터셉터 활성화 "
 
 #. Tag: para
 #: interceptors.xml:90
@@ -262,7 +263,7 @@ msgstr ""
 msgid ""
 "Finally, we need to <emphasis>enable</emphasis> our interceptor in "
 "<literal>web-beans.xml</literal>."
-msgstr ""
+msgstr "마지막으로 <literal>web-beans.xml</literal>에서 인터셉터를 <emphasis>활성화</emphasis>해야 합니다.  "
 
 #. Tag: programlisting
 #: interceptors.xml:93
@@ -286,7 +287,7 @@ msgstr ""
 #: interceptors.xml:97
 #, no-c-format
 msgid "Well, the XML declaration solves two problems:"
-msgstr ""
+msgstr "XML 선언으로 두 가지 문제를 해결합니다:  "
 
 #. Tag: para
 #: interceptors.xml:101

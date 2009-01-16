@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-13 16:26+1000\n"
+"PO-Revision-Date: 2009-01-16 15:05+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
+"\n"
+"\n"
 "\n"
 
 #. Tag: title
@@ -33,7 +37,7 @@ msgid ""
 "that are then delivered to event <emphasis>observers</emphasis> by the Web "
 "Bean manager. This basic schema might sound like the familiar observer/"
 "observable pattern, but there are a couple of twists:"
-msgstr ""
+msgstr "Web Beans 이벤트 통지 기능은 Web Beans가 완전 연결 해제 방식으로 상호 작용하게 합니다. 이벤트 <emphasis>생산자</emphasis>는 이벤트를 제기한 후 Web Bean 관리자에 의해 이벤트 <emphasis>옵저버</emphasis>로 전달합니다. 이러한 기본적인 스키마는 옵저버/옵저버 패턴과 유사하게 들이지만, 몇 가지 다른 부분이 있습니다:  "
 
 #. Tag: para
 #: events.xml:14
@@ -41,7 +45,7 @@ msgstr ""
 msgid ""
 "not only are event producers decoupled from observers; observers are "
 "completely decoupled from producers,"
-msgstr ""
+msgstr "이벤트 생산자만 옵저버에서 연결 해제되는 것이 아니라; 옵저버도 생산자에서 완전하게 연결 해제됩니다. "
 
 #. Tag: para
 #: events.xml:18
@@ -57,13 +61,13 @@ msgstr ""
 msgid ""
 "observers can be notified immediately, or can specify that delivery of the "
 "event should be delayed until the end of the current transaction"
-msgstr ""
+msgstr "옵저버는 바로 통지하거나 또는 현재 트랜젝션이 끝날때 까지 이벤트 전송이 지연되도록 지정할 수 있습니다.  "
 
 #. Tag: title
 #: events.xml:28
 #, no-c-format
 msgid "Event observers"
-msgstr ""
+msgstr "이벤트 옵저버 "
 
 #. Tag: para
 #: events.xml:30
@@ -71,7 +75,7 @@ msgstr ""
 msgid ""
 "An <emphasis>observer method</emphasis> is a method of a Web Bean with a "
 "parameter annotated <literal>@Observes</literal>."
-msgstr ""
+msgstr "<emphasis>옵저버 방식</emphasis>은 매개변수 어노테이션 <literal>@Observes</literal>를 사용하는 Web Bean 방식입니다. "
 
 #. Tag: programlisting
 #: events.xml:33
@@ -114,7 +118,7 @@ msgstr ""
 msgid ""
 "We specify the event bindings of the observer method by annotating the event "
 "parameter:"
-msgstr ""
+msgstr "이벤트 매개 변수를 어노테이션하여 옵저버 방식의 이벤트 바인딩을 지정합니다:  "
 
 #. Tag: programlisting
 #: events.xml:46 events.xml:190
@@ -142,7 +146,7 @@ msgstr ""
 msgid ""
 "The observer method may have additional parameters, which are injected "
 "according to the usual Web Beans method parameter injection semantics:"
-msgstr ""
+msgstr "옵저버 방식은 추가 매개 변수를 갖을 수 있으며, 이는 일반적인 Web Beans 방식 매개 변수 삽입 시멘틱에 따라 삽입됩니다: "
 
 #. Tag: programlisting
 #: events.xml:56
@@ -166,7 +170,7 @@ msgstr "이벤트 생산자 "
 msgid ""
 "The event producer may obtain an <emphasis>event notifier</emphasis> object "
 "by injection:"
-msgstr ""
+msgstr "이벤트 생산자는 삽입을 통해 <emphasis>이벤트 통지</emphasis> 객체를 갖을 수 있습니다: "
 
 #. Tag: programlisting
 #: events.xml:66
@@ -182,7 +186,7 @@ msgid ""
 "with scope <literal>@Dependent</literal> and deployment type "
 "<literal>@Standard</literal>, with an implementation provided by the Web "
 "Bean manager."
-msgstr ""
+msgstr "<literal>@Observable</literal> 어노테이션은 <literal>@Dependent</literal> 범위 및 <literal>@Standard</literal> 배포 유형, Web Bean 관리자에 의해 제공되는 구현으로 Web Bean을 정의합니다. "
 
 #. Tag: para
 #: events.xml:72
@@ -191,7 +195,7 @@ msgid ""
 "A producer raises events by calling the <literal>fire()</literal> method of "
 "the <literal>Event</literal> interface, passing an <emphasis>event object</"
 "emphasis>:"
-msgstr ""
+msgstr "생산자는 <literal>Event</literal> 인터페이스의 <literal>fire()</literal> 방식을 호출하여 이벤트를 제기하고, <emphasis>이벤트 객체</emphasis>를 전달합니다: "
 
 #. Tag: programlisting
 #: events.xml:75
