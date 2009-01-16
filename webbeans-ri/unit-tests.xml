@@ -39,6 +39,7 @@
          <package name="org.jboss.webbeans.examples"></package>
          <package name="org.jboss.webbeans.test.ejb"></package>
          <package name="org.jboss.webbeans.test.newbean"></package>
+         <package name="org.jboss.webbeans.test.unit"></package>
       </packages>
    </test>
    
