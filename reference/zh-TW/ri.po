@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-14 18:41+0000\n"
-"PO-Revision-Date: 2009-01-13 00:43+1000\n"
+"PO-Revision-Date: 2009-01-16 12:56+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -203,8 +203,7 @@ msgstr "現在，您已準備好建置您的第一個範例！"
 #. Tag: para
 #: ri.xml:93
 #, no-c-format
-msgid ""
-"The build scripts for the examples offer a number of targets, these are:"
+msgid "The build scripts for the examples offer a number of targets, these are:"
 msgstr "這些範例的建置 script 提供了一些目標，它們包含了："
 
 #. Tag: para
@@ -219,14 +218,12 @@ msgstr "<literal>ant restart</literal> - 以分解的格式來建置範例"
 msgid ""
 "<literal>ant explode</literal> - update an exploded example, without "
 "restarting the deployment"
-msgstr ""
-"<literal>ant explode</literal> - 在不重新建置的情況下更新一個已分解的範例"
+msgstr "<literal>ant explode</literal> - 在不重新建置的情況下更新一個已分解的範例"
 
 #. Tag: para
 #: ri.xml:111
 #, no-c-format
-msgid ""
-"<literal>ant deploy</literal> - deploy the example in compressed jar format"
+msgid "<literal>ant deploy</literal> - deploy the example in compressed jar format"
 msgstr "<literal>ant deploy</literal> - 以 jar 格式來建置範例"
 
 #. Tag: para
@@ -658,8 +655,7 @@ msgstr ""
 msgid ""
 "There is also the <literal>@MaxNumber</literal> binding type, used for "
 "injecting the maximum number that can be injected:"
-msgstr ""
-"還有個用來注入可注入之最大號碼的 <literal>@MaxNumber</literal> 綁定類型："
+msgstr "還有個用來注入可注入之最大號碼的 <literal>@MaxNumber</literal> 綁定類型："
 
 #. Tag: programlisting
 #: ri.xml:300
@@ -989,13 +985,11 @@ msgstr "轉譯器範例能接受您所輸入的任何句子，然後將它們翻
 
 #. Tag: para
 #: ri.xml:339
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The translator example is built as an ear, and contains EJBs. As a result, "
 "it's structure is more complex than the numberguess example."
-msgstr ""
-"轉換器範例被建置為 ear，並包含著 EJB 和企業級的 bean。正因如此，它的結構比 "
-"numberguess 範例要複雜得多。"
+msgstr "轉換器範例被建置為一個 ear 並包含著 EJB。正因如此，它的結構比 numberguess 範例要複雜得多。"
 
 #. Tag: para
 #: ri.xml:345
@@ -1003,8 +997,7 @@ msgstr ""
 msgid ""
 "EJB 3.1 and Jave EE 6 allow you to package EJBs in a war, which will make "
 "this structure much simpler!"
-msgstr ""
-"EJB 3.1 和 Jave EE 6 能讓您將 EJB 封裝為 war，並使得該結構變得更為簡樸！"
+msgstr "EJB 3.1 和 Jave EE 6 能讓您將 EJB 封裝為 war，並使得該結構變得更為簡樸！"
 
 #. Tag: para
 #: ri.xml:351
@@ -1227,7 +1220,7 @@ msgstr ""
 
 #. Tag: para
 #: ri.xml:401
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We've saved the most interesting bit to last, the code! The project has two "
 "simple beans, <literal>SentenceParser</literal> and <literal>TextTranslator</"
@@ -1235,23 +1228,16 @@ msgid ""
 "literal> and <literal>SentenceTranslator</literal>. You should be getting "
 "quite familiar with what a Web Bean looks like by now, so we'll just "
 "highlight the most interesting bits here."
-msgstr ""
-"我們將最有趣的部份保留到了最後，那就是程式碼！該專案含有兩個基本的 bean，"
-"<literal>SentanceParser</literal> 和 <literal>TextTranslator</literal>，以及"
-"兩個企業級的 bean，<literal>TanslatorControllerBean</literal> 和 "
-"<literal>SentenceTranslator</literal>。到了現在您應該已經很熟悉 Web Bean 長得"
-"如何了，因此我們在此將只著重於最有趣的部份。"
+msgstr "我們將最有趣的部份保留到了最後，那就是程式碼！該專案含有兩個基本的 bean，<literal>SentenceParser</literal> 和 <literal>TextTranslator</literal>，以及兩個企業級的 bean，<literal>TanslatorControllerBean</literal> 和 <literal>SentenceTranslator</literal>。到了現在您應該已經很熟悉 Web Bean 的長相如何了，因此我們在此將只著重於其它的部份。"
 
 #. Tag: para
 #: ri.xml:411
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal> "
 "are dependent beans, and <literal>TextTranslator</literal> uses constructor "
 "initialization:"
-msgstr ""
-"<literal>SentanceParser</literal> 和 <literal>TextTranslator</literal> 兩者皆"
-"為相依 bean，並且 <literal>TextTranslator</literal> 使用 constructor 初始化："
+msgstr "<literal>SentenceParser</literal> 和 <literal>TextTranslator</literal> 兩者皆為相依性的 bean，並且 <literal>TextTranslator</literal> 使用了 constructor 初始化："
 
 #. Tag: programlisting
 #: ri.xml:417
@@ -1383,3 +1369,4 @@ msgid ""
 msgstr ""
 "我們在所有層面都需要協助 - 錯誤修正、編寫新功能、編寫範例，以及翻譯此參照指"
 "南。"
+
