@@ -11,6 +11,14 @@ import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.tck.api.Beans;
 
+/**
+ * Implements the Beans SPI for the TCK specifically for the JBoss RI.
+ * 
+ * @author Shane Bryzak
+ * @author Pete Muir
+ * @author David Allen
+ * 
+ */
 public class BeansImpl implements Beans
 {
 
@@ -34,6 +42,29 @@ public class BeansImpl implements Beans
    public <T> Bean<T> createEnterpriseBean(Class<T> clazz)
    {
       return EnterpriseBean.of(clazz, CurrentManager.rootManager());
+   }
+
+   public boolean isEnterpriseBean(Class<?> clazz)
+   {
+      return CurrentManager.rootManager().getEjbDescriptorCache().containsKey(clazz);
+   }
+
+   public boolean isEntityBean(Class<?> clazz)
+   {
+      // TODO Auto-generated method stub
+      return false;
+   }
+
+   public boolean isStatefulBean(Class<?> clazz)
+   {
+      // TODO Auto-generated method stub
+      return false;
+   }
+
+   public boolean isStatelessBean(Class<?> clazz)
+   {
+      // TODO Auto-generated method stub
+      return false;
    }
 
 }
