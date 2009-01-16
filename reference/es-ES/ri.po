@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-14 18:41+0000\n"
-"PO-Revision-Date: 2009-01-15 13:59+1000\n"
+"PO-Revision-Date: 2009-01-16 15:03+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -222,7 +222,7 @@ msgstr "<literal>ant explode</literal> - actualiza un ejemplo explotado, sin rei
 #: ri.xml:111
 #, no-c-format
 msgid "<literal>ant deploy</literal> - deploy the example in compressed jar format"
-msgstr "<literal>ant deploy</literal> - despliega el ejemplo en formato comprimido jar"
+msgstr "<literal>ant deploy</literal> - despliega el ejemplo en formato comprimido JAR"
 
 #. Tag: para
 #: ri.xml:116
@@ -305,7 +305,7 @@ msgid ""
 "In the numberguess application you get given 10 attempts to guess a number "
 "between 1 and 100. After each attempt, you will be told whether you are too "
 "high, or too low."
-msgstr "En la aplicación numbreguess se le dan 10 intentos para adivinar un número de 1 a 100. Después de cada intento, se le dirá si es mayor o menor a su número."
+msgstr "En la aplicación numberguess se le dan 10 intentos para adivinar un número de 1 a 100. Después de cada intento, se le dirá si es mayor o menor a su número."
 
 #. Tag: para
 #: ri.xml:162
@@ -733,7 +733,7 @@ msgid ""
 "constructor injection to initialize the game with a random number. And of "
 "course, we need to tell the player when they've won, so we give feedback "
 "with a <literal>FacesMessage</literal>."
-msgstr "Notará que hemos utlizado la anotación <literal>@Named</literal>, para poder utlilizar el bean a través de EL en la página JSF. Por último, hemos utilizado la inyección de constructor para inicializar el juego con un número aleatorio. Y, claro está, necesitamos decirle al jugador cuando haya ganado, por lo tanto le damos retroalimentación con <literal>FacesMessage</literal>."
+msgstr "Notará que hemos utilizado la anotación <literal>@Named</literal>, para poder utilizar el bean a través de EL en la página JSF. Por último, hemos utilizado la inyección de constructor para inicializar el juego con un número aleatorio. Y, claro está, necesitamos decirle al jugador cuando haya ganado, por lo tanto le damos retroalimentación con <literal>FacesMessage</literal>."
 
 #. Tag: programlisting
 #: ri.xml:328
@@ -1086,7 +1086,7 @@ msgid ""
 "More intersting is the facelet used to translate text. Just as in the "
 "numberguess example we have a template, which surrounds the form (ommitted "
 "here for brevity):"
-msgstr "Más interesante aún es el facelet utilizado para traducir texto. Al igual que en el ejemplo de numberguesss tenemos una plantilla, la cual rodea la forma (omitida aqui por razones de brevedad):"
+msgstr "Más interesante aún es el facelet utilizado para traducir texto. Al igual que en el ejemplo de numberguess tenemos una plantilla, la cual rodea la forma (omitida aquí por razones de brevedad):"
 
 #. Tag: programlisting
 #: ri.xml:386
@@ -1300,7 +1300,7 @@ msgid ""
 "WebBeans/Development\">http://www.seamframework.org/WebBeans/Development</"
 "ulink>."
 msgstr ""
-"Aquí termina nuestro corto tour por los ejemplos IR de Web Beans. Para mayor información acerca de IR o ayuda, por favor consulte <ulink url=\"http://www.seamframework.org/"
+"Aquí termina nuestro corto recorrido por los ejemplos IR de Web Beans. Para mayor información acerca de IR o ayuda, por favor consulte <ulink url=\"http://www.seamframework.org/"
 "WebBeans/Development\">http://www.seamframework.org/WebBeans/Development</"
 "ulink>."
 

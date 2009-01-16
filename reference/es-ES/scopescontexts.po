@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: scopescontexts\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-15 16:52+1000\n"
+"PO-Revision-Date: 2009-01-16 15:39+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +32,7 @@ msgid ""
 "instances of the Web Bean. According to the Web Beans specification, a scope "
 "determines:"
 msgstr ""
-"Por lo tanto, hemos visto algunos ejemplos de <emphasis>scope type annotations</"
+"Por lo tanto, hemos visto algunos ejemplos de <emphasis>anotaciones de tipo ámbito</"
 "emphasis>. El ámbito de un Web Bean determina el ciclo de vida de instancias del Web Bean. El ámbito también determina qué clientes se refieren a qué instancias del Web Bean. Según la especificación de Web Beans, un ámbito determina:"
 
 #. Tag: para
@@ -51,7 +51,7 @@ msgstr "Cuándo se destruye una instancia existente de cualquier Web Bean con es
 #: scopescontexts.xml:20
 #, no-c-format
 msgid "Which injected references refer to any instance of a Web Bean with that scope"
-msgstr "Cuáles referencias se refieren a una instancia de un Web Bean con ese ámbito"
+msgstr "Qué referencias se refieren a una instancia de un Web Bean con ese ámbito"
 
 #. Tag: para
 #: scopescontexts.xml:25
@@ -67,7 +67,7 @@ msgstr ""
 "Por ejemplo, si tenemos una sesión con ámbito Web Bean, <literal>CurrentUser</"
 "literal>, todos los Web Beans que son llamados en el contexto de la misma "
 "<literal>HttpSession</literal> verán la misma instancia del "
-"<literal>CurrentUser</literal>. Dicha instancia será creada automáticamente la primera vez que se necesite un <literal>CurrentUser</literal> en esa sesión, y será destruida automáticamente cuando termine la sesión."
+"<literal>CurrentUser</literal>. Dicha instancia será creada automáticamente la primera vez que se necesite un <literal>CurrentUser</literal> en esa sesión, y será destruida automáticamente al terminar la sesión."
 
 #. Tag: title
 #: scopescontexts.xml:32
@@ -107,7 +107,7 @@ msgid ""
 "useful, we will also need to define a <literal>Context</literal> object that "
 "implements the scope! Implementing a <literal>Context</literal> is usually a "
 "very technical task, intended for framework development only."
-msgstr "Claro está que esa es la parte fácil. Para que este tipo de ámbito sea útil, necesitaremos también definir un objeto de <literal>Contexto</literal> que implemente el ámbito. La implementación de un suele ser una tarea muy técnica, únicamente destinada a desarrollo de marco."
+msgstr "Claro está que esa es la parte fácil. Para que este tipo de ámbito sea útil, necesitaremos también definir un objeto <literal>Contexto</literal> que implemente el ámbito. La implementación de un <literal>Context</literal> suele ser una tarea muy técnica, únicamente destinada a desarrollo de marco."
 
 #. Tag: para
 #: scopescontexts.xml:44
@@ -226,7 +226,7 @@ msgid ""
 "If the application tries to invoke a Web Bean with a scope that does not "
 "have an active context, a <literal>ContextNotActiveException</literal> is "
 "thrown by the Web Bean manager at runtime."
-msgstr "Si la aplicación trata de invocar un Web Bean con un ámbito que no tiene un contexto activo, un <literal>ContextNotActiveException</literal> es enviada por el administrador de Web Bean en tiempo de ejecución."
+msgstr "Si la aplicación trata de invocar un Web Bean con un ámbito que no tiene un contexto activo, el administrador de Web Bean produce una <literal>ContextNotActiveException</literal> de Web Bean en tiempo de ejecución."
 
 #. Tag: para
 #: scopescontexts.xml:115
@@ -285,7 +285,7 @@ msgid ""
 "conversations are destroyed at the end of the request. If a conversation "
 "should hold state across multiple requests, it must be explicitly promoted "
 "to a <emphasis>long-running conversation</emphasis>."
-msgstr "El contexto de conversación está activo durante cualquier petición JSF. Sin embargo, la mayoría de las conversaciones se destruyen al final de la petición. Si una conversación debe mantener un estado a través de múltiples peticiones, debe ser explícitamente promovido a <emphasis>conversación-larga</emphasis>."
+msgstr "El contexto de conversación está activo durante cualquier petición de JSF. Sin embargo, la mayoría de las conversaciones se destruyen al final de la petición. Si una conversación debe mantener un estado a través de múltiples peticiones, debe ser explícitamente promovido a <emphasis>conversación-larga</emphasis>."
 
 #. Tag: title
 #: scopescontexts.xml:149
@@ -300,7 +300,7 @@ msgid ""
 "Web Beans provides a built-in Web Bean for controlling the lifecyle of "
 "conversations in a JSF application. This Web Bean may be obtained by "
 "injection:"
-msgstr "Web Beans ofrece un Web Bean incorporado para controlar el ciclo de vida de conversaciones en una aplicación a JSF. Dicho Web Bean puede obtenerse por inyección:"
+msgstr "Web Beans ofrece un Web Bean incorporado para controlar el ciclo de vida de conversaciones en una aplicación JSF. Dicho Web Bean puede obtenerse por inyección:"
 
 #. Tag: programlisting
 #: scopescontexts.xml:154
@@ -403,6 +403,8 @@ msgid ""
 "<literal>Conversation</literal> API. But some other Web Beans have a "
 "lifecycle which depends completely upon another object."
 msgstr ""
+"Este Web Bean puede controlar su propio ciclo de vida mediante el API de "
+"<literal>Conversación</literal>. No obstante, algunos otros Web Beans tienen un ciclo de vida que depende totalmente de otro objeto."
 
 #. Tag: title
 #: scopescontexts.xml:173
@@ -417,7 +419,7 @@ msgid ""
 "The conversation context automatically propagates with any JSF faces request "
 "(JSF form submission). It does not automatically propagate with non-faces "
 "requests, for example, navigation via a link."
-msgstr ""
+msgstr "El contexto de conversación se propaga automáticamente con cualquier petición de JSF (presentación de formulario JSF). No se propaga automáticamente con peticiones sin caras, por ejemplo, la navegación mediante un enlace."
 
 #. Tag: para
 #: scopescontexts.xml:179
@@ -429,7 +431,7 @@ msgid ""
 "<literal>cid</literal> for this use. The unique identifier of the "
 "conversation may be obtained from the <literal>Conversation</literal> "
 "object, which has the Web Beans name <literal>conversation</literal>."
-msgstr ""
+msgstr "Podemos forzar la propagación de una conversación con una petición sin-caras al incluir el identificador único de la conversación como un parámetro de petición. La especificación de Web Beans reserva el parámetro llamado <literal>cid</literal> para este uso. El único identificador de la conversación se puede obtener del objeto <literal>Conversation</literal>, el cual tiene el nombre de Web Beans <literal>conversation</literal>."
 
 #. Tag: para
 #: scopescontexts.xml:186
@@ -456,7 +458,7 @@ msgid ""
 "very easy to implement the common POST-then-redirect pattern, without resort "
 "to fragile constructs such as a \"flash\" object. In this case, the Web Bean "
 "manager automatically adds a request parameter to the redirect URL."
-msgstr ""
+msgstr "El administrador de Web Bean también se requiere para propagar conversaciones a través de cualquier  redirección, incluso si la conversación no está marcada como larga. Esto facilita mucho la implementación del patrón de POST-luego-redirija, sin recurrir a construcciones frágiles tales como un objeto \"flash\". En este caso, el administrador de Web Bean agrega automáticamente un parámetro a la URL de redirección."
 
 #. Tag: title
 #: scopescontexts.xml:200
@@ -473,7 +475,7 @@ msgid ""
 "manager implementation will normally do this on the basis of some kind of "
 "timeout&#151;though this is not required by the Web Beans specification. The "
 "timeout is the period of inactivity before the conversation is destroyed."
-msgstr ""
+msgstr "Con el fin de preservar recursos, el administrador de Web Bean puede destruir una conversación y todo el estado en su contexto en cualquier momento. Una implementación de administrador de Web Bean normalmente hace esto con base en alguna clase de pausa&#151;aunque no sea requerido por la especificación de Web Beans. La pausa es el periodo de inactividad antes de que la conversación sea destruida."
 
 #. Tag: para
 #: scopescontexts.xml:208
@@ -529,6 +531,8 @@ msgid ""
 "between different Web Beans or different injection points. They are "
 "<emphasis>dependent objects</emphasis> of some other Web Bean instance."
 msgstr ""
+"Cuando un punto de inyección de un Web Bean apunta a un Web Bean dependiente, una nueva instancia del Web Bean dependiente es creada cada vez que el primer Web "
+"Bean sea instanciado. Las instancias de Web Beans dependientes nunca se comparten entre Web Beans o puntos diferentes de inyección. Ellas son <emphasis>objetos dependientes</emphasis> de alguna otra instancia de Web Bean."
 
 #. Tag: para
 #: scopescontexts.xml:235
@@ -545,7 +549,7 @@ msgid ""
 "Web Beans makes it easy to obtain a dependent instance of a Java class or "
 "EJB bean, even if the class or EJB bean is already declared as a Web Bean "
 "with some other scope type."
-msgstr ""
+msgstr "Web Beans facilita la obtención de una instancia dependiente de una clase de Java o bean EJB, incluso si la clase o el bean EJB ya se declaró como Web Bean con algún otro tipo de ámbito."
 
 #. Tag: title
 #: scopescontexts.xml:248
@@ -638,7 +642,7 @@ msgid ""
 "of <literal>Calculator</literal> injected. The <literal>newCalculator</"
 "literal> field has a new instance of <literal>Calculator</literal> injected, "
 "with a lifecycle that is bound to the owning <literal>PaymentCalc</literal>."
-msgstr ""
+msgstr "El campo <literal>calculadora</literal> tiene una instancia de conversación-en ámbito de <literal>Calculator</literal> inyectada. El campo <literal>newCalculator</literal><literal> tiene una nueva instancia de <literal>Calculator</literal> inyectada con un ciclo de vida vinculado al propietario de <literal>PaymentCalc</literal>."
 
 #. Tag: para
 #: scopescontexts.xml:276

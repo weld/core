@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ee\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-20 22:08+0000\n"
-"PO-Revision-Date: 2009-01-08 16:07+1000\n"
+"PO-Revision-Date: 2009-01-16 15:17+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -106,8 +106,8 @@ msgid ""
 "Beans. The <literal>@PostConstruct</literal> method is called after "
 "<emphasis>all</emphasis> injection has been performed."
 msgstr ""
-"El <literal>@PostConstruct</literal> de Java EE y llamadas de <literal>@PreDestroy</"
-"literal> también son compatibles por todos los Web Beans sencillos y de empresa. El método <literal>@PostConstruct</literal> es llamado después de que se ha realizado <emphasis>toda</emphasis> la inyección."
+"Los <literal>@PostConstruct</literal> de Java EE y las llamadas de <literal>@PreDestroy</"
+"literal> también son soportados por todos los Web Beans sencillos y empresariales. El método <literal>@PostConstruct</literal> es llamado después de realizar <emphasis>toda</emphasis> la inyección."
 
 #. Tag: para
 #: ee.xml:28
@@ -398,7 +398,7 @@ msgid ""
 "The lifecycle of the injected JMS objects is completely controlled by the "
 "Web Bean manager."
 msgstr ""
-"El ciclo de- vida de objetos inyectados JMS objects está totalmente controlado por el administrador de"
+"El ciclo de vida de objetos JMS inyectados está controlado por el administrador de"
 "Web Bean."
 
 #. Tag: title
@@ -420,7 +420,7 @@ msgid ""
 "xml</literal> file will not be available for use in the application."
 msgstr ""
 "Web Beans no define ningún despliegue especial de archivo. Se puede empaquetar Web "
-"Beans en JARs, EJB-JARs o WARs&#151; cualquier ubicación de despliegue en la aplicación classpath. No obstante, cada archivo que contiene Web Beans debe incluir un archivo llamado <literal>web-beans.xml</literal> en <literal>META-INF</literal> o en el directorio <literal>WEB-INF</literal>. El archivo puede estar vacío. Los Web Beans desplegados en archivos que no tienen un archivo <literal>web-beans."
+"Beans en JAR, EJB-JAR o WAR&#151; cualquier ubicación de despliegue en la aplicación classpath. No obstante, cada archivo que contiene Web Beans debe incluir un archivo llamado <literal>web-beans.xml</literal> en <literal>META-INF</literal> o en el directorio <literal>WEB-INF</literal>. El archivo puede estar vacío. Los Web Beans desplegados en archivos que no tienen un archivo <literal>web-beans."
 "xml</literal> no estarán disponibles para uso en la aplicación."
 
 #. Tag: para

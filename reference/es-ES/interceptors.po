@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: interceptors\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-04 23:18+0000\n"
-"PO-Revision-Date: 2009-01-12 16:50+1000\n"
+"PO-Revision-Date: 2009-01-16 14:50+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -149,7 +149,7 @@ msgstr ""
 msgid ""
 "Now we can easily specify that our <literal>ShoppingCart</literal> is a "
 "transactional object:"
-msgstr "Ahora podemos especificar con facilidad que nuestro <literal>Carrito de Compras</literal> es un objeto transaccional:"
+msgstr "Ahora podemos especificar con facilidad que nuestro <literal>Shopping de Compras</literal> es un objeto transaccional:"
 
 #. Tag: programlisting
 #: interceptors.xml:60

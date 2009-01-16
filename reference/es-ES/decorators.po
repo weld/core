@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: decorators\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-09 11:30+1000\n"
+"PO-Revision-Date: 2009-01-16 15:10+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -89,7 +89,7 @@ msgstr ""
 msgid ""
 "A decorator is a simple Web Bean that implements the type it decorates and "
 "is annotated <literal>@Decorator</literal>."
-msgstr "Un decorador es un Web bean sencillo que implementa el tipo que decora y es anotado <literal>@Decorator</literal>."
+msgstr "Un decorador es un Web Bean sencillo que implementa el tipo que decora y es anotado <literal>@Decorator</literal>."
 
 #. Tag: programlisting
 #: decorators.xml:35
@@ -236,7 +236,7 @@ msgid ""
 "We need to <emphasis>enable</emphasis> our decorator in <literal>web-beans."
 "xml</literal>."
 msgstr ""
-"Necesitamos <emphasis>habilitar </emphasis> nuestro decorador en <literal>web-beans."
+"Necesitamos <emphasis>habilitar</emphasis> nuestro decorador en <literal>web-beans."
 "xml</literal>."
 
 #. Tag: programlisting

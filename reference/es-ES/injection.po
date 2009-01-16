@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-12 14:52+1000\n"
+"PO-Revision-Date: 2009-01-16 15:21+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -212,7 +212,7 @@ msgid ""
 "immediately if a Web Bean's dependencies cannot be satisfied, by throwing a "
 "<literal>UnsatisfiedDependencyException</literal> or "
 "<literal>AmbiguousDependencyException</literal>."
-msgstr "La especificación de Web Beans define un procedimiento, llamado <emphasis>algoritmo de resolución de typesafe</emphasis> que el administrador de Web Bean sigue al identificar el Web Bean para inyectar a un punto de inyección. Este algoritmo parece complejo en un principio, pero una vez que lo entienda, es en realidad muy intuitivo. La resolución de Typesafe se realiza al inicializar el sistema, lo que significa que el administrador informará al usuario inmediatamente si se pueden cumplir las dependencias de un Web Bean, lanzando un <literal>UnsatisfiedDependencyException</literal> o un <literal>AmbiguousDependencyException</literal>."
+msgstr "La especificación de Web Beans define un procedimiento, llamado <emphasis>algoritmo de resolución de typesafe</emphasis> que el administrador de Web Bean sigue al identificar el Web Bean para inyectar a un punto de inyección. Este algoritmo parece complejo en un principio, pero una vez que lo entienda, es en realidad muy intuitivo. La resolución de Typesafe se realiza al inicializar el sistema, lo que significa que el administrador informará al usuario inmediatamente si se pueden cumplir las dependencias de un Web Bean, produciendo una <literal>UnsatisfiedDependencyException</literal> o una <literal>AmbiguousDependencyException</literal>."
 
 #. Tag: para
 #: injection.xml:67
@@ -645,7 +645,7 @@ msgstr "Como este Web Bean no especifica explícitamente un tipo de despliegue, 
 msgid ""
 "For integration or unit testing, the external system is slow or unavailable. "
 "So we would create a mock object:"
-msgstr "Para prueba de integración o de unidad, el sistema externo está lento o no está disponible. Por lo tanto, cremos el objeto mock:"
+msgstr "Para prueba de integración o de unidad, el sistema externo está lento o no está disponible. Por lo tanto, creamos el objeto mock:"
 
 #. Tag: programlisting
 #: injection.xml:210
@@ -847,7 +847,7 @@ msgstr "Ejemplo de tipos de despliegue"
 #: injection.xml:286
 #, no-c-format
 msgid "Deployment types are useful for all kinds of things, here's some examples:"
-msgstr "Los tipos de despliegue son útilies para toda clase de cosas, algunos ejemplos a continuación:"
+msgstr "Los tipos de despliegue son útiles para toda clase de cosas, algunos ejemplos a continuación:"
 
 #. Tag: para
 #: injection.xml:290
@@ -1003,7 +1003,7 @@ msgid ""
 "cannot be proxied by the Web Bean manager. Therefore, the Web Bean manager "
 "throws an <literal>UnproxyableDependencyException</literal> if the type of "
 "an injection point cannot be proxied."
-msgstr "Lamentablemente, debido a limitaciones del lenguaje de Java, el administrador de Web Bean no puede utilizar proxy en algunos tipos de Java. Por lo tanto, el administrador de Web Bean lanza un <literal>UnproxyableDependencyException</literal> si no puede aplicarse proxy al tipo de un punto de una inyección."
+msgstr "Lamentablemente, debido a limitaciones del lenguaje de Java, el administrador de Web Bean no puede utilizar proxy en algunos tipos de Java. Por lo tanto, el administrador de Web Bean produce un <literal>UnproxyableDependencyException</literal> si no se puede aplicar proxy al tipo de un punto de inyección."
 
 #. Tag: para
 #: injection.xml:370
@@ -1056,7 +1056,7 @@ msgid ""
 "The application may obtain an instance of the interface <literal>Manager</"
 "literal> by injection:"
 msgstr ""
-"La aplicación puede obtener una instacia de la interfaz <literal>Manager</"
+"La aplicación puede obtener una instancia de la interfaz <literal>Manager</"
 "literal> a través de inyección:"
 
 #. Tag: programlisting
@@ -1188,10 +1188,8 @@ msgid ""
 "respectively. Simple Web Beans do not support the use of "
 "<literal>@PersistenceContext(type=EXTENDED)</literal>."
 msgstr ""
-"Enterprise and Web Beans sencillos  support the use of <literal>@Resource</"
-"literal>, <literal>@EJB</literal> and <literal>@PersistenceContext</literal> "
-"for injection of Java EE resources, EJBs and JPA persistence contexts, "
-"respectively. Simple Web Beans do not support the use of "
+"Web Beans sencillos y empresariales soportan el uso de <literal>@Resource</"
+"literal>, <literal>@EJB</literal> y <literal>@PersistenceContext</literal> para inyección de recursos de Java EE, EJB y contextos de persistencia JPA,respectivamente. Web Beans sencillos no admiten el uso de "
 "<literal>@PersistenceContext(type=EXTENDED)</literal>."
 
 #. Tag: para
@@ -1216,7 +1214,7 @@ msgid ""
 "<literal>@Dependent</literal>&#151;that need to know something about the "
 "object or injection point into which they are injected in order to be able "
 "to do what they do. For example:"
-msgstr "Hay algunas clases de objetos&#151;con ámbito <literal>@Dependent</literal>&#151;que necesitan saber algo acerca del objeto o el punto de inyección dentro del cual son inyectados para poder hacer lo que hacen. Por ejemplo:"
+msgstr "Hay algunas clases de objetos&#151;con ámbito <literal>@Dependent</literal>&#151;que necesitan saber algo acerca del objeto o punto de inyección dentro del cual son inyectados para poder hacer lo que hacen. Por ejemplo:"
 
 #. Tag: para
 #: injection.xml:448

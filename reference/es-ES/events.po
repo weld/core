@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-09 11:24+1000\n"
+"PO-Revision-Date: 2009-01-16 14:42+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -233,7 +233,7 @@ msgid ""
 "event object as the value of the event parameter. If any observer method "
 "throws an exception, the Web Bean manager stops calling observer methods, "
 "and the exception is rethrown by the <literal>fire()</literal> method."
-msgstr "El administrador de Web Beans simplemente llama a todos los métodos de observador, pasando el objeto del evento como el valor de un parámetro de evento. Si cualquier método de observador lanza una excepción, el administrador de Web Beans se detiene llamando a los métodos de observador y la excepción es reenviada por le método <literal>fire()</literal>."
+msgstr "El administrador de Web Beans simplemente llama a todos los métodos de observador, pasando el objeto del evento como el valor de un parámetro de evento. Si cualquier método de observador produce una excepción, el administrador de Web Beans se detiene llamando a los métodos de observador y la excepción es reenviada por le método <literal>fire()</literal>."
 
 #. Tag: para
 #: events.xml:95
@@ -426,7 +426,7 @@ msgid ""
 "Alternatively, the value of the event binding type member may be determined "
 "dynamically by the event producer. We start by writing an abstract subclass "
 "of <literal>AnnotationLiteral</literal>:"
-msgstr "Alternativamente, el valor del miembro de tipo de enlace de evento puede ser determinado de modo dinámico por el productor de evento. Empezamos por escribir una subclase abstracta de <literal>AnotacíonLiteral</literal>:"
+msgstr "Alternativamente, el valor del miembro de tipo de enlace de evento puede ser determinado de modo dinámico por el productor de evento. Empezamos por escribir una subclase abstracta de <literal>AnnotationLiteral</literal>:"
 
 #. Tag: programlisting
 #: events.xml:172

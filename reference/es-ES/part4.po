@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: part4\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-14 14:24+1000\n"
+"PO-Revision-Date: 2009-01-16 10:36+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -42,7 +42,7 @@ msgid ""
 "interesting technologies that are used in the world of Java application "
 "development, but Web Beans makes it easier to use the technologies which are "
 "not yet part of the platform seamlessly within the Java EE environment."
-msgstr "Ya hemos visto cómo Web Beans ayuda a integrar EJB y JSF, permitiendo a los EJB enlazarse directamente a páginas JSF. Esto es apenas el comienzo. Web Beans ofrece el mismo potencial a otras tecnologías, tales como motores de administración de proceso de negocios, otros marcos de red y modelos de componentes de terceras partes. La plataforma EE de Java nunca podrá estandarizar todas las tecnologías interesantes utilizadas en el mundo del desarrollo de la aplicación Java, pero Web Beans facilita el uso de las tecnologías que aún no hacen parte completamente de la plataforma dentro del entorno EE de Java."
+msgstr "Ya hemos visto cómo Web Beans ayuda a integrar EJB y JSF, permitiendo a los EJB enlazarse directamente a páginas JSF. Esto es apenas el comienzo. Web Beans ofrece el mismo potencial a otras tecnologías, tales como motores de administración de proceso de negocios, otros marcos de red y modelos de componentes de terceras partes. La plataforma EE de Java nunca podrá estandarizar todas las tecnologías interesantes utilizadas en el mundo del desarrollo de la aplicación Java, pero Web Beans facilita el uso de las tecnologías que aún no hacen parte completamente de la plataforma dentro del entorno Java EE."
 
 #. Tag: para
 #: part4.xml:21

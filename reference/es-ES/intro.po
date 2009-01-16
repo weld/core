@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-13 14:40+1000\n"
+"PO-Revision-Date: 2009-01-16 14:56+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -250,7 +250,7 @@ msgid ""
 "<literal>UnsatisfiedDependencyException</literal>. If more than one "
 "implementation of <literal>Translator</literal> was available, the Web Bean "
 "manager would throw an <literal>AmbiguousDependencyException</literal>."
-msgstr "En el momento de inicialización, el administrador de Web Bean debe confirmar que exista exactamente un Web Bean que complete cada punto de inyección. En nuestro ejemplo, si no estaba disponible ninguna implementación de <literal>Translator</literal> &#151;si el EJB de <literal>SentenceTranslator</literal> no estaba desplegado&#151;el administrador de Web Bean lanzaría una <literal>UnsatisfiedDependencyException</literal>. Si más de una implementación de <literal>Translator</literal> estuviera disponible, el administrador de Web Bean lanzaría un <literal>AmbiguousDependencyException</literal>."
+msgstr "En el momento de inicialización, el administrador de Web Bean debe confirmar que exista exactamente un Web Bean que complete cada punto de inyección. En nuestro ejemplo, si no estaba disponible ninguna implementación de <literal>Translator</literal> &#151;si el EJB de <literal>SentenceTranslator</literal> no estaba desplegado&#151;el administrador de Web Bean produciría una <literal>UnsatisfiedDependencyException</literal>. Si más de una implementación de <literal>Translator</literal> estuviera disponible, el administrador de Web Bean lanzaría un <literal>AmbiguousDependencyException</literal>."
 
 #. Tag: title
 #: intro.xml:80
@@ -291,7 +291,7 @@ msgid ""
 "singleton beans), different clients of a Web Bean see the Web Bean in "
 "different states. The client-visible state depends upon which instance of "
 "the Web Bean the client has a reference to."
-msgstr "Volvamos atrás por un segundo. ¿Qué significa en realidad que tienen \"contexto\"? Puesto que Web Beans puede tener estados, es importante saber <emphasis>qué</emphasis> instancia de bean tengo. A diferencia de un modelo de componente sin estado (por ejemplo, beans sin estado de sesión) o un modelo de componente singleton (como servlets, o beans sungleton), clientes diferentes de un Web Bean ven el Web Bean en estados diferentes. El estado cliente-visible depende de la instancia de Web Bean a la que se refiere el cliente."
+msgstr "Volvamos atrás por un segundo. ¿Qué significa en realidad que tienen \"contexto\"? Puesto que Web Beans puede tener estados, es importante saber <emphasis>qué</emphasis> instancia de bean tengo. A diferencia de un modelo de componente sin estado (por ejemplo, beans sin estado de sesión) o un modelo de componente singleton (como servlets, o beans singleton), clientes diferentes de un Web Bean ven el Web Bean en estados diferentes. El estado cliente-visible depende de la instancia de Web Bean a la que se refiere el cliente."
 
 #. Tag: para
 #: intro.xml:98
@@ -338,7 +338,7 @@ msgid ""
 "Clients (for example, other Web Beans) executing in the same context will "
 "see the same instance of the Web Bean. But clients in a different context "
 "will see a different instance."
-msgstr "Los clientes (por ejemplo, otros Web Beans) ejecutándo en el mismo contexto verán la misma instancia del Web Bean. Pero los clientes en un contexto diferente verán una instancia diferente."
+msgstr "Los clientes (por ejemplo, otros Web Beans) ejecutando en el mismo contexto verán la misma instancia del Web Bean. Pero los clientes en un contexto diferente verán una instancia diferente."
 
 #. Tag: para
 #: intro.xml:123
@@ -655,7 +655,7 @@ msgid ""
 "accommodating arbitrary scopes. However, certain important scopes are built-"
 "in to the specification, and provided by the Web Bean manager. A scope is "
 "represented by an annotation type."
-msgstr "El <emphasis>ámbito</emphasis> define el ciclo de vida y visibilidad de instancias del Web Bean. El modelo de contexto de Web Beans es extensible, acomodando los ámbitos arbitrarios. Sin embargo, ciertos ámbitos importantes son incorporados en la especificación y provistos por el administrador de Web Bean. Un ambito está representado por un tipo de anotación."
+msgstr "El <emphasis>ámbito</emphasis> define el ciclo de vida y visibilidad de instancias del Web Bean. El modelo de contexto de Web Beans es extensible, acomodando los ámbitos arbitrarios. Sin embargo, ciertos ámbitos importantes son incorporados en la especificación y provistos por el administrador de Web Bean. Un ámbito está representado por un tipo de anotación."
 
 #. Tag: para
 #: intro.xml:254
@@ -683,7 +683,7 @@ msgstr ""
 msgid ""
 "An instance of a session scoped Web Bean is bound to a user session and is "
 "shared by all requests that execute in the context of that session."
-msgstr "Una instancia de una sesión en ámbito Web Bean está vinculada a una sesión de usuario y es compartidoa por todos los solicitantes que ejecutan en el contexto de esa sesión."
+msgstr "Una instancia de una sesión en ámbito Web Bean está vinculada a una sesión de usuario y es compartida por todos los solicitantes que ejecutan en el contexto de esa sesión."
 
 #. Tag: para
 #: intro.xml:262
@@ -882,7 +882,7 @@ msgstr "no es una clase interna no estática,"
 #: intro.xml:341
 #, no-c-format
 msgid "it is not a parameterized type, and"
-msgstr "no es un tipo parametrizado, y"
+msgstr "no es un tipo en parámetros, y"
 
 #. Tag: para
 #: intro.xml:344
@@ -923,7 +923,7 @@ msgid ""
 "objects&#151;but they can take advantage of most of the functionality of Web "
 "Beans, including dependency injection and interceptors."
 msgstr ""
-"La especificación dice que todos los beans de sesión estilo EJB 3-style y singleton son de "
+"La especificación dice que todos los beans de sesión estilo EJB 3- y singleton son de "
 "<emphasis>empresa</emphasis>. Los mensajes de beans no son Web "
 "Beans&#151;porque no están diseñados para ser inyectados en otros objetos&#151;pero pueden aprovechar la mayoría de las funcionalidades de los Web Beans, incluyendo la inyección de dependencia y los interceptores."
 
@@ -1201,5 +1201,5 @@ msgid ""
 "developer from the tedium of managing the lifecycles of all the various JMS "
 "objects required to send messages to queues and topics. We'll discuss JMS "
 "endpoints in <xref linkend=\"jms\"/>."
-msgstr "Por último, una cola o tópico puede ser un Web Bean. Web Beans libera al desarrollador del tedio de manejar los ciclols de vidad de todos los objetos JMS requeridos para enviar mensajes a colas y tópicos, Discutiremos sobre endpoints de JMS en <xref linkend=\"jms\"/>."
+msgstr "Por último, una cola o tópico puede ser un Web Bean. Web Beans libera al desarrollador del tedio de manejar los ciclos de vida de todos los objetos JMS requeridos para enviar mensajes a colas y tópicos, Discutiremos sobre endpoints de JMS en <xref linkend=\"jms\"/>."
 

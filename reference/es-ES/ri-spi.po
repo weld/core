@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-08 14:07+0000\n"
-"PO-Revision-Date: 2009-01-15 15:20+1000\n"
+"PO-Revision-Date: 2009-01-16 15:38+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -41,13 +41,13 @@ msgid ""
 "do more work, adding your own contexts and lifecycle. The Web Beans RI "
 "currently doesn't expose lifecycle extension points, so you would have to "
 "code directly against Web Beans RI classes."
-msgstr "Debería ser posible ejecutar Web Beans en un entorno SE, pero tendría que hacer más cosas, agregar sus propios contextos y ciclo de vida. IR Web Beans actualmente no expone puntos de extensión del ciclo de vida, por lo tanto se tendría que codificar directamente en clases IR de Web Beans."
+msgstr "Debería ser posible ejecutar Web Beans en un entorno SE, pero tendría que hacer más cosas, agregar sus propios contextos y ciclo de vida. IR de Web Beans actualmente no expone puntos de extensión del ciclo de vida, por lo tanto se tendría que codificar directamente en clases IR de Web Beans."
 
 #. Tag: title
 #: ri-spi.xml:24
 #, no-c-format
 msgid "The Web Beans RI SPI"
-msgstr "Los Web Beans IR SPI"
+msgstr "Wl SPI RI de Web Beans"
 
 #. Tag: para
 #: ri-spi.xml:26
@@ -148,10 +148,7 @@ msgid ""
 "it doesn't have to scan for EJB3 annotations or parse <literal>ejb-jar.xml</"
 "literal>. For each EJB in the application an EJBDescriptor should be "
 "discovered:"
-msgstr ""
-"IR de Web Beans también delega bean de EJB3 bean discovery al contenedor para no tener que examinar las anotaciones EJB3 o analizar <literal>ejb-jar.xml</"
-"literal>. Para cada EJB en la aplicación se descubre un EJBDescriptor."
-"discovered:"
+msgstr "El RI de Web Beans también delega al contenedor el descubrimiento de bean EJB3 para no tener que examinar las anotaciones EJB3 o analizar <literal>ejb-jar.xml</literal>. Para cada EJB en la aplicación se debe descubrir un EJBDescriptor:"
 
 #. Tag: programlisting
 #: ri-spi.xml:60
