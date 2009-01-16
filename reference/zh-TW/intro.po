@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-15 12:15+1000\n"
+"PO-Revision-Date: 2009-01-16 12:50+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: intro.xml:4
 #, no-c-format
 msgid "Getting started with Web Beans"
-msgstr ""
+msgstr "開始使用 Web Bean"
 
 #. Tag: para
 #: intro.xml:6
@@ -31,13 +31,13 @@ msgid ""
 "specification will make you jump through! The good news is that you've "
 "probably already written and used hundreds, perhaps thousands of Web Beans. "
 "You might not even remember the first Web Bean you wrote."
-msgstr ""
+msgstr "您是否已準備好開始編寫您的第一個 Web Bean 了呢？或是您針對於 Web Bean 本身的規格還是存有著一些疑問呢？不過好消息就是您從以前到現在可能早就已經編寫並使用了上百甚至是上千個 Web Bean 了。您可能根本已經不記得您所編寫的第一個 Web Bean 為何了。"
 
 #. Tag: title
 #: intro.xml:13
 #, no-c-format
 msgid "Your first Web Bean"
-msgstr ""
+msgstr "您的第一個 Web Bean"
 
 #. Tag: para
 #: intro.xml:15

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: producermethods\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-15 12:17+1000\n"
+"PO-Revision-Date: 2009-01-16 12:31+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -126,7 +126,7 @@ msgid ""
 "manager injects this field or any other field that resolves to the same "
 "producer method. Thus, there could be multiple instances of the "
 "<literal>PaymentStrategy</literal> object for each user session."
-msgstr ""
+msgstr "producer method 的預設 scope 為 <literal>@Dependent</literal>，所以<emphasis>每當</emphasis> Web Bean 管理員注入此欄位或是其它任何會解析為相同 producer method 的欄位時，<literal>@Dependent</literal> 就會被調用。因此，各個用戶 session 都可能會有多個 <literal>PaymentStrategy</literal> 物件的 instance 出現。"
 
 #. Tag: para
 #: producermethods.xml:75
@@ -157,7 +157,7 @@ msgid ""
 "Now, when the producer method is called, the returned "
 "<literal>PaymentStrategy</literal> will be bound to the session context. The "
 "producer method won't be called again in the same session."
-msgstr ""
+msgstr "現在，當 producer method 被調用時，回傳的 <literal>PaymentStrategy</literal> 將會被綁定至 session context。Producer method 將不會在相同的 session 中再次被調用。"
 
 #. Tag: title
 #: producermethods.xml:87
@@ -168,23 +168,21 @@ msgstr "注入 producer method"
 #. Tag: para
 #: producermethods.xml:89
 #, no-c-format
-#, fuzzy
 msgid ""
 "There's one potential problem with the code above. The implementations of "
 "<literal>CreditCardPaymentStrategy</literal> are instantiated using the Java "
 "<literal>new</literal> operator. Objects instantiated directly by the "
 "application can't take advantage of dependency injection and don't have "
 "interceptors."
-msgstr "依賴注入"
+msgstr "上述程式碼有個潛在的問題。<literal>CreditCardPaymentStrategy</literal> 的實做是透過使用 Java 的 <literal>new</literal> operator 來例示（instantiate）的。被應用程式直接例示的物件無法有效利用依賴注入（dependency injection）並且沒有攔截器。"
 
 #. Tag: para
 #: producermethods.xml:94
 #, no-c-format
-#, fuzzy
 msgid ""
 "If this isn't what we want we can use dependency injection into the producer "
 "method to obtain Web Bean instances:"
-msgstr "依賴注入"
+msgstr "若這不是我們所想要的，我們可使用依賴注入至 producer method 之中來取得 Web Bean 的 instance："
 
 #. Tag: programlisting
 #: producermethods.xml:97
@@ -226,7 +224,7 @@ msgid ""
 "left \"hanging\" in the session scope. This error will <emphasis>not</"
 "emphasis> be detected by the Web Bean manager, so please take extra care "
 "when returning Web Bean instances from producer methods!"
-msgstr ""
+msgstr "請稍等，若 <literal>CreditCardPaymentStrategy</literal> 是個請求 scope 的 Web Bean 的話要怎麼辦？若是如此那麼 producer method 便有將現有的 request scope 的 instance「推入」session scope 中的效應。這幾乎能被確定是個 bug！request scope 物件會在 session 結束前被 Web Bean 管理員毀掉，不過該物件的參照會被「保留」在 session scope 中。這項錯誤將<emphasis>不會</emphasis>被 Web Bean 管理員偵測到，所以當由 producer method 回傳 Web Bean 的 instance 時請格外小心！"
 
 #. Tag: para
 #: producermethods.xml:107
@@ -237,7 +235,7 @@ msgid ""
 "implementation, but this would affect other clients of that Web Bean. A "
 "better option would be to change the scope of the producer method to "
 "<literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
-msgstr ""
+msgstr "我們有三種可修正這項錯誤的方法。我們可更改 <literal>CreditCardPaymentStrategy</literal> 實做的 scope，不過這將會影響該 Web Bean 的其它客戶端。較好的方式就是將 producer method 的 scope 更改為 <literal>@Dependent</literal> 或 <literal>@RequestScoped</literal>。"
 
 #. Tag: para
 #: producermethods.xml:113
@@ -245,7 +243,7 @@ msgstr ""
 msgid ""
 "But a more common solution is to use the special <literal>@New</literal> "
 "binding annotation."
-msgstr ""
+msgstr "不過較普遍的解決方式就是使用特殊的 <literal>@New</literal> 綁定標記。"
 
 #. Tag: title
 #: producermethods.xml:119
@@ -301,5 +299,5 @@ msgid ""
 "session context. The dependent object won't be destroyed until the "
 "<literal>Preferences</literal> object is destroyed, at the end of the "
 "session."
-msgstr ""
+msgstr "接著有個新的 <literal>CreditCardPaymentStrategy</literal> 的 <emphasis>dependent</emphasis> instance 將會被建立、傳送至 producer method、被 producer method 回傳然後最後被綁定至 session context。在 <literal>Preferences</literal> 物件於 session 結束時被毀掉之前，dependent 物件不會被毀掉。"
 

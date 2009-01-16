@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-15 14:48+1000\n"
+"PO-Revision-Date: 2009-01-15 14:59+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1047,7 +1047,7 @@ msgstr "<![CDATA[@Current Manager manager;]]>"
 msgid ""
 "The <literal>Manager</literal> object provides a set of methods for "
 "obtaining a Web Bean instance programatically."
-msgstr ""
+msgstr "<literal>Manager</literal> 這個物件提供了一組用來程式性地取得 Web Bean instance 的 method。"
 
 #. Tag: programlisting
 #: injection.xml:402
@@ -1089,7 +1089,7 @@ msgid ""
 "If the binding type has an annotation member, we can't use an anonymous "
 "subclass of <literal>AnnotationLiteral</literal>&#151;instead we'll need to "
 "create a named subclass:"
-msgstr ""
+msgstr "若綁定類型有個標記成員，我們便無法使用 <literal>AnnotationLiteral</literal> 的一個匿名 subclass&#151;我們需要建立一個有命名的 subclass："
 
 #. Tag: programlisting
 #: injection.xml:413
@@ -1127,7 +1127,7 @@ msgstr ""
 msgid ""
 "Lifecycle callbacks, <literal>@Resource</literal>, <literal>@EJB</literal> "
 "and <literal>@PersistenceContext</literal>"
-msgstr ""
+msgstr "Lifecycle callback、<literal>@Resource</literal>、<literal>@EJB</literal> 和 <literal>@PersistenceContext</literal>"
 
 #. Tag: para
 #: injection.xml:422
@@ -1137,7 +1137,7 @@ msgid ""
 "specification: <literal>@PostConstruct</literal>, <literal>@PreDestroy</"
 "literal>, <literal>@PrePassivate</literal> and <literal>@PostActivate</"
 "literal>."
-msgstr ""
+msgstr "企業級的 Web Bean 支援 EJB 規格所定義的所有 lifecycle callback：<literal>@PostConstruct</literal>、<literal>@PreDestroy</literal>、<literal>@PrePassivate</literal> 和 <literal>@PostActivate</literal>。"
 
 #. Tag: para
 #: injection.xml:426
@@ -1145,7 +1145,7 @@ msgstr ""
 msgid ""
 "Simple Web Beans support only the <literal>@PostConstruct</literal> and "
 "<literal>@PreDestroy</literal> callbacks."
-msgstr ""
+msgstr "基本的 Web Bean 只支援 <literal>@PostConstruct</literal> 和 <literal>@PreDestroy</literal> callback。"
 
 #. Tag: para
 #: injection.xml:429
@@ -1170,7 +1170,7 @@ msgstr ""
 #: injection.xml:440
 #, no-c-format
 msgid "The <literal>InjectionPoint</literal> object"
-msgstr ""
+msgstr "<literal>InjectionPoint</literal> 物件"
 
 #. Tag: para
 #: injection.xml:442
