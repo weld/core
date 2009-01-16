@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: interceptors\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-16 16:27+1000\n"
+"PO-Revision-Date: 2009-01-16 17:25+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -295,13 +295,13 @@ msgstr "XML 선언으로 두 가지 문제를 해결합니다:  "
 msgid ""
 "it enables us to specify a total ordering for all the interceptors in our "
 "system, ensuring deterministic behavior, and"
-msgstr ""
+msgstr "이는 시스템에서 모든 인터셉터에 대한 전체적인 순서를 지정할 수 있도록 활성화하며, 결정적인 작업를 확인합니다  "
 
 #. Tag: para
 #: interceptors.xml:105
 #, no-c-format
 msgid "it lets us enable or disable interceptor classes at deployment time."
-msgstr ""
+msgstr "배포시 인터셉터 클래스를 활성화 또는 비활성화하게 합니다.  "
 
 #. Tag: para
 #: interceptors.xml:109
@@ -309,7 +309,7 @@ msgstr ""
 msgid ""
 "For example, we could specify that our security interceptor runs before our "
 "<literal>TransactionInterceptor</literal>."
-msgstr ""
+msgstr "예를 들어, <literal>TransactionInterceptor</literal> 이전에 보안 인터셉터를 실행하도록 지정할 수 있습니다.  "
 
 #. Tag: programlisting
 #: interceptors.xml:112
@@ -329,7 +329,7 @@ msgstr ""
 #: interceptors.xml:114
 #, no-c-format
 msgid "Or we could turn them both off in our test environment!"
-msgstr ""
+msgstr "또는 테스트 환경에서 두 가지 모두를 비활성화시킬 수 있습니다!  "
 
 #. Tag: title
 #: interceptors.xml:119
@@ -343,7 +343,7 @@ msgstr ""
 msgid ""
 "Suppose we want to add some extra information to our "
 "<literal>@Transactional</literal> annotation:"
-msgstr ""
+msgstr "<literal>@Transactional</literal> 어노테이션에 정보를 추가하고자 한다고 가정합시다: "
 
 #. Tag: programlisting
 #: interceptors.xml:124
@@ -370,7 +370,7 @@ msgid ""
 "Web Beans will use the value of <literal>requiresNew</literal> to choose "
 "between two different interceptors, <literal>TransactionInterceptor</"
 "literal> and <literal>RequiresNewTransactionInterceptor</literal>."
-msgstr ""
+msgstr "Web Beans는 <literal>requiresNew</literal> 값을 사용하여 두 개의 다른 인터셉터 <literal>TransactionInterceptor</literal>와 <literal>RequiresNewTransactionInterceptor</literal> 중에서 선택하게 됩니다. "
 
 #. Tag: programlisting
 #: interceptors.xml:130
@@ -394,7 +394,7 @@ msgstr ""
 msgid ""
 "Now we can use <literal>RequiresNewTransactionInterceptor</literal> like "
 "this:"
-msgstr ""
+msgstr "다음과 같이 <literal>RequiresNewTransactionInterceptor</literal>를 사용할 수 있습니다:  "
 
 #. Tag: programlisting
 #: interceptors.xml:134
@@ -437,7 +437,7 @@ msgstr ""
 #: interceptors.xml:145
 #, no-c-format
 msgid "Multiple interceptor binding annotations"
-msgstr ""
+msgstr "여러개의 인터셉터 바인딩 어노테이션  "
 
 #. Tag: para
 #: interceptors.xml:147
@@ -448,6 +448,8 @@ msgid ""
 "used to bind <literal>TransactionInterceptor</literal> and "
 "<literal>SecurityInterceptor</literal> to the same Web Bean:"
 msgstr ""
+"일반적으로 여러개의 인터셉터를 Web Bean에 바인딩하기 위해 인터셉터 바인딩 유형의 조합을 사용합니다. 예를 들어, 다음과 같은 명시를 사용하여 동일한 Web Bean에 <literal>TransactionInterceptor</literal> 및 "
+"<literal>SecurityInterceptor</literal>를 바인딩할 수 있습니다: "
 
 #. Tag: programlisting
 #: interceptors.xml:152
@@ -465,7 +467,7 @@ msgstr ""
 msgid ""
 "However, in very complex cases, an interceptor itself may specify some "
 "combination of interceptor binding types:"
-msgstr ""
+msgstr "하지만 매우 복잡한 경우 인터셉터 자체가 인터셉터 바인딩 유형의 조합을 일부 지정할 수 있습니다:  "
 
 #. Tag: programlisting
 #: interceptors.xml:157
@@ -483,7 +485,7 @@ msgstr ""
 msgid ""
 "Then this interceptor could be bound to the <literal>checkout()</literal> "
 "method using any one of the following combinations:"
-msgstr ""
+msgstr "그 후 이러한 인터셉터는 다음과 같은 조합 중 하나를 사용하여 <literal>checkout()</literal> 방식에 바운딩될 수 있습니다: "
 
 #. Tag: programlisting
 #: interceptors.xml:162
