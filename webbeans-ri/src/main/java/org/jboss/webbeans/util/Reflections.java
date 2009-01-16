@@ -214,7 +214,7 @@ public class Reflections
    {
       try
       {
-         return clazz.getConstructor(parameterTypes);
+         return clazz.getDeclaredConstructor(parameterTypes);
       }
       catch (NoSuchMethodException e)
       {
