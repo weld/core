@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test;
+package org.jboss.webbeans.test.unit;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +10,7 @@ import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.beans.Elephant;
 import org.jboss.webbeans.test.beans.InitializedObserver;
 import org.jboss.webbeans.test.beans.InitializedObserverWhichUsesApplicationContext;

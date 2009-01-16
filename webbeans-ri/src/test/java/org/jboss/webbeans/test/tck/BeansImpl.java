@@ -11,7 +11,9 @@ import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.tck.api.Beans;
+import org.jboss.webbeans.util.Reflections;
 
 /**
  * Implements the Beans SPI for the TCK specifically for the JBoss RI.
@@ -65,20 +67,52 @@ public class BeansImpl implements Beans
 
    public boolean isEntityBean(Class<?> clazz)
    {
-      // TODO Auto-generated method stub
+      if (CurrentManager.rootManager().getEjbDescriptorCache().containsKey(clazz))
+      {
+         for (EjbDescriptor<?> ejbDescriptor : CurrentManager.rootManager().getEjbDescriptorCache().get(clazz))
+         {
+            if (!ejbDescriptor.isMessageDriven() && !ejbDescriptor.isSingleton() && !ejbDescriptor.isStateful() && !ejbDescriptor.isStateless())
+            {
+               return true;
+            }
+         }
+      }
       return false;
    }
 
    public boolean isStatefulBean(Class<?> clazz)
    {
-      // TODO Auto-generated method stub
+      if (CurrentManager.rootManager().getEjbDescriptorCache().containsKey(clazz))
+      {
+         for (EjbDescriptor<?> ejbDescriptor : CurrentManager.rootManager().getEjbDescriptorCache().get(clazz))
+         {
+            if (ejbDescriptor.isStateful())
+            {
+               return true;
+            }
+         }
+      }
       return false;
    }
 
    public boolean isStatelessBean(Class<?> clazz)
    {
-      // TODO Auto-generated method stub
+      if (CurrentManager.rootManager().getEjbDescriptorCache().containsKey(clazz))
+      {
+         for (EjbDescriptor<?> ejbDescriptor : CurrentManager.rootManager().getEjbDescriptorCache().get(clazz))
+         {
+            if (ejbDescriptor.isStateless())
+            {
+               return true;
+            }
+         }
+      }
       return false;
+   }
+   
+   public boolean isProxy(Object instance)
+   {
+      return Reflections.isProxy(instance);
    }
 
 }

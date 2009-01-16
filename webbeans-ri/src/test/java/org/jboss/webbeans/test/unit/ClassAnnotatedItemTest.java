@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test;
+package org.jboss.webbeans.test.unit;
 
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
