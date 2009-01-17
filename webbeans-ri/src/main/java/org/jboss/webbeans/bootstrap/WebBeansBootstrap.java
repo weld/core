@@ -63,7 +63,7 @@ import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.jsf.JSFApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.resources.spi.Naming;
+import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.transaction.Transaction;
@@ -118,9 +118,9 @@ public abstract class WebBeansBootstrap
    // The Web Beans manager
    private ManagerImpl manager;
 
-   protected void initManager(Naming naming, EjbResolver ejbResolver, ResourceLoader resourceLoader)
+   protected void initManager(NamingContext namingContext, EjbResolver ejbResolver, ResourceLoader resourceLoader)
    {
-      this.manager = new ManagerImpl(naming, ejbResolver, resourceLoader);
+      this.manager = new ManagerImpl(namingContext, ejbResolver, resourceLoader);
       manager.getNaming().bind(ManagerImpl.JNDI_KEY, getManager());
       CurrentManager.setRootManager(manager);
    }

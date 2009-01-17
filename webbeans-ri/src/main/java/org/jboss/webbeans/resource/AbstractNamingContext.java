@@ -7,9 +7,9 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.webbeans.ExecutionException;
 
-import org.jboss.webbeans.resources.spi.Naming;
+import org.jboss.webbeans.resources.spi.NamingContext;
 
-public abstract class AbstractNaming implements Naming
+public abstract class AbstractNamingContext implements NamingContext
 {
    
    public abstract Context getContext();

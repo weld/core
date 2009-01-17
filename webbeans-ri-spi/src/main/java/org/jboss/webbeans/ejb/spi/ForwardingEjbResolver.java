@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 
 import javax.webbeans.InjectionPoint;
 
-import org.jboss.webbeans.resources.spi.Naming;
+import org.jboss.webbeans.resources.spi.NamingContext;
 
 /**
  * An implementation of {@link EjbResolver} which forwards all its method calls
@@ -36,19 +36,19 @@ public abstract class ForwardingEjbResolver implements EjbResolver
       return delegate().getResourceAnnotation();
    }
    
-   public Object resolveEjb(InjectionPoint injectionPoint, Naming naming)
+   public Object resolveEjb(InjectionPoint injectionPoint, NamingContext namingContext)
    {
-      return delegate().resolveEjb(injectionPoint, naming);
+      return delegate().resolveEjb(injectionPoint, namingContext);
    }
    
-   public Object resolvePersistenceContext(InjectionPoint injectionPoint, Naming naming)
+   public Object resolvePersistenceContext(InjectionPoint injectionPoint, NamingContext namingContext)
    {
-      return delegate().resolvePersistenceContext(injectionPoint, naming);
+      return delegate().resolvePersistenceContext(injectionPoint, namingContext);
    }
    
-   public Object resolveResource(InjectionPoint injectionPoint, Naming naming)
+   public Object resolveResource(InjectionPoint injectionPoint, NamingContext namingContext)
    {
-      return delegate().resolveResource(injectionPoint, naming);
+      return delegate().resolveResource(injectionPoint, namingContext);
    }
    
    @Override

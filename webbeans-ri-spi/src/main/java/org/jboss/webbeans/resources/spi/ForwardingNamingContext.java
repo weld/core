@@ -2,19 +2,19 @@ package org.jboss.webbeans.resources.spi;
 
 
 /**
- * An implementation of {@link Naming} which forwards all its method calls
- * to another {@link Naming}}. Subclasses should override one or more 
- * methods to modify the behavior of the backing {@link Naming} as desired
+ * An implementation of {@link NamingContext} which forwards all its method calls
+ * to another {@link NamingContext}}. Subclasses should override one or more 
+ * methods to modify the behavior of the backing {@link NamingContext} as desired
  * per the <a
  * href="http://en.wikipedia.org/wiki/Decorator_pattern">decorator pattern</a>.
  * 
  * @author Pete Muir
  *
  */
-public abstract class ForwardingNaming implements Naming
+public abstract class ForwardingNamingContext implements NamingContext
 {
    
-   protected abstract Naming delegate();
+   protected abstract NamingContext delegate();
    
    public void bind(String key, Object value)
    {

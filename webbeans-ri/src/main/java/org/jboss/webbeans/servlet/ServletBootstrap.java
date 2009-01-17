@@ -31,7 +31,7 @@ import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.resource.DefaultNaming;
-import org.jboss.webbeans.resources.spi.Naming;
+import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.util.DeploymentProperties;
 
@@ -81,9 +81,9 @@ public class ServletBootstrap extends PropertiesBasedBootstrap
       initManager(createNaming(servletContext), createEjbResolver(servletContext), getResourceLoader());
    }
    
-   protected Naming createNaming(ServletContext servletContext)
+   protected NamingContext createNaming(ServletContext servletContext)
    {
-      Constructor<? extends Naming> namingConstructor = getClassConstructor(getDeploymentProperties(), getResourceLoader(), Naming.PROPERTY_NAME, Naming.class, ServletContext.class);
+      Constructor<? extends NamingContext> namingConstructor = getClassConstructor(getDeploymentProperties(), getResourceLoader(), NamingContext.PROPERTY_NAME, NamingContext.class, ServletContext.class);
       if (namingConstructor != null)
       {
          return newInstance(namingConstructor, servletContext);

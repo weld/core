@@ -60,7 +60,7 @@ import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
-import org.jboss.webbeans.resources.spi.Naming;
+import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.util.BeanValidation;
 import org.jboss.webbeans.util.Proxies;
@@ -116,17 +116,17 @@ public class ManagerImpl implements Manager, Serializable
    private transient final ResourceLoader resourceLoader;
 
    // The Naming (JNDI) access
-   private transient final Naming naming;
+   private transient final NamingContext namingContext;
 
    /**
     * Create a new manager
     * 
     * @param ejbResolver the ejbResolver to use
     */
-   public ManagerImpl(Naming naming, EjbResolver ejbResolver, ResourceLoader resourceLoader)
+   public ManagerImpl(NamingContext namingContext, EjbResolver ejbResolver, ResourceLoader resourceLoader)
    {
       this.ejbResolver = ejbResolver;
-      this.naming = naming;
+      this.namingContext = namingContext;
       this.resourceLoader = resourceLoader;
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
       this.beanMap = new ConcurrentHashMap<Class<?>, Bean<?>>();
@@ -732,9 +732,9 @@ public class ManagerImpl implements Manager, Serializable
       return this;
    }
 
-   public Naming getNaming()
+   public NamingContext getNaming()
    {
-      return naming;
+      return namingContext;
    }
 
    public EjbResolver getEjbResolver()

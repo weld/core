@@ -26,7 +26,7 @@ import javax.webbeans.ExecutionException;
  * 
  * @author Pete Muir
  */
-public class DefaultNaming extends AbstractNaming
+public class DefaultNaming extends AbstractNamingContext
 {
    private static final long serialVersionUID = 1L;
    // The initial lookup context

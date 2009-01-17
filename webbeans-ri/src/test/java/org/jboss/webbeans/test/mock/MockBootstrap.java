@@ -19,8 +19,8 @@ import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
-import org.jboss.webbeans.resource.AbstractNaming;
-import org.jboss.webbeans.resources.spi.Naming;
+import org.jboss.webbeans.resource.AbstractNamingContext;
+import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.test.mock.context.MockApplicationContext;
 import org.jboss.webbeans.test.mock.context.MockDependentContext;
@@ -30,7 +30,7 @@ import org.jboss.webbeans.test.mock.context.MockSessionContext;
 public class MockBootstrap extends WebBeansBootstrap
 { 
    
-   public static class MockNaming extends AbstractNaming
+   public static class MockNaming extends AbstractNamingContext
    {
       
       private Context context;
@@ -133,13 +133,13 @@ public class MockBootstrap extends WebBeansBootstrap
          return PersistenceContext.class;
       }
 
-      public Object resolveEjb(InjectionPoint injectionPoint, Naming naming)
+      public Object resolveEjb(InjectionPoint injectionPoint, NamingContext namingContext)
       {
          // TODO Implement EJB resolution for Unit tests
          return null;
       }
 
-      public Object resolvePersistenceContext(InjectionPoint injectionPoint, Naming naming)
+      public Object resolvePersistenceContext(InjectionPoint injectionPoint, NamingContext namingContext)
       {
          // TODO Implement PU resolution for Unit tests
          return null;
@@ -150,7 +150,7 @@ public class MockBootstrap extends WebBeansBootstrap
          return Resource.class;
       }
 
-      public Object resolveResource(InjectionPoint injectionPoint, Naming naming)
+      public Object resolveResource(InjectionPoint injectionPoint, NamingContext namingContext)
       {
          // TODO Auto-generated method stub
          return null;

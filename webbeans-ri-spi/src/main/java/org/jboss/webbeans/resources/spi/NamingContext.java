@@ -17,10 +17,10 @@
 
 package org.jboss.webbeans.resources.spi;
 
-public interface Naming
+public interface NamingContext
 {
    
-   public static final String PROPERTY_NAME = Naming.class.getName();
+   public static final String PROPERTY_NAME = NamingContext.class.getName();
    
    /**
     * Typed JNDI lookup
@@ -38,6 +38,6 @@ public interface Naming
     * @param key The key to bind under
     * @param value The item to bind
     */
-   public void bind(String key, Object value);
+   public void bind(String name, Object value);
    
 }

@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 
 import javax.webbeans.InjectionPoint;
 
-import org.jboss.webbeans.resources.spi.Naming;
+import org.jboss.webbeans.resources.spi.NamingContext;
 
 /**
  * A container should implement this interface to allow the Web Beans RI to
@@ -30,13 +30,13 @@ public interface EjbResolver
     * @throws IllegalStateException
     *            if no EJBs can be resolved for injection
     */
-   public Object resolveEjb(InjectionPoint injectionPoint, Naming naming);
+   public Object resolveEjb(InjectionPoint injectionPoint, NamingContext namingContext);
    
    /**
     * Resolve the value for the given @PersistenceContext injection point
     * 
     * @param injectionPoint the injection point metadata
-    * @param naming the pluggable Web Beans JNDI lookup facility
+    * @param namingContext the pluggable Web Beans JNDI lookup facility
     * @return an instance of the persistence unit
     * @throws IllegalArgumentException
     *            if the injection point is not annotated with 
@@ -45,13 +45,13 @@ public interface EjbResolver
     * @throws IllegalStateException
     *            if no suitable persistence units can be resolved for injection
     */
-   public Object resolvePersistenceContext(InjectionPoint injectionPoint, Naming naming);
+   public Object resolvePersistenceContext(InjectionPoint injectionPoint, NamingContext namingContext);
    
    /**
     * Resolve the value for the given @Resource injection point
     * 
     * @param injectionPoint the injection point metadata
-    * @param naming the pluggable Web Beans JNDI lookup facility
+    * @param namingContext the pluggable Web Beans JNDI lookup facility
     * @return an instance of the resource
     * @throws IllegalArgumentException
     *            if the injection point is not annotated with @Resource, or, if 
@@ -60,7 +60,7 @@ public interface EjbResolver
     * @throws IllegalStateException
     *            if no resource can be resolved for injection
     */
-   public Object resolveResource(InjectionPoint injectionPoint, Naming naming);
+   public Object resolveResource(InjectionPoint injectionPoint, NamingContext namingContext);
    
    /**
     * Get the annotation which defines an @EJB injection point
