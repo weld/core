@@ -30,6 +30,8 @@ import javax.webbeans.Standard;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.binding.CurrentBinding;
+import org.jboss.webbeans.tck.impl.SpecAssertion;
+import org.jboss.webbeans.tck.impl.SpecVersion;
 import org.jboss.webbeans.test.annotations.AnimalStereotype;
 import org.jboss.webbeans.test.beans.BeanWithInjectionPointMetadata;
 import org.jboss.webbeans.test.beans.ConstructorInjectionPointBean;

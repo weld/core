@@ -33,13 +33,14 @@
          </run>
       </groups>
       <packages>
-         <package name="org.jboss.webbeans.test.tck"></package>
-         <package name="org.jboss.webbeans.test"></package>
-         <package name="org.jboss.webbeans.test.contexts"></package>
-         <package name="org.jboss.webbeans.examples"></package>
-         <package name="org.jboss.webbeans.test.ejb"></package>
-         <package name="org.jboss.webbeans.test.newbean"></package>
-         <package name="org.jboss.webbeans.test.unit"></package>
+         <package name="org.jboss.webbeans.test" />
+         <package name="org.jboss.webbeans.examples" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap" />
+         <package name="org.jboss.webbeans.test.unit.context" />
+         <package name="org.jboss.webbeans.test.unit.definition" />
+         <package name="org.jboss.webbeans.test.unit.event" />
+         <package name="org.jboss.webbeans.test.unit.implementation" />
+         <package name="org.jboss.webbeans.test.unit.lookup" />
       </packages>
    </test>
    
