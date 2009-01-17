@@ -6,6 +6,16 @@ import javax.webbeans.InjectionPoint;
 
 import org.jboss.webbeans.resources.spi.Naming;
 
+/**
+ * An implementation of {@link EjbResolver} which forwards all its method calls
+ * to another {@link EjbResolver}}. Subclasses should override one or more 
+ * methods to modify the behavior of the backing {@link EjbResolver} as desired
+ * per the <a
+ * href="http://en.wikipedia.org/wiki/Decorator_pattern">decorator pattern</a>.
+ * 
+ * @author Pete Muir
+ *
+ */
 public abstract class ForwardingEjbResolver implements EjbResolver
 {
    
@@ -39,6 +49,24 @@ public abstract class ForwardingEjbResolver implements EjbResolver
    public Object resolveResource(InjectionPoint injectionPoint, Naming naming)
    {
       return delegate().resolveResource(injectionPoint, naming);
+   }
+   
+   @Override
+   public boolean equals(Object obj)
+   {
+      return delegate().equals(obj);
+   }
+   
+   @Override
+   public String toString()
+   {
+      return delegate().toString();
+   }
+   
+   @Override
+   public int hashCode()
+   {
+      return delegate().hashCode();
    }
    
 }
