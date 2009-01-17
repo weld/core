@@ -1,5 +1,6 @@
 package org.jboss.webbeans.test.tck;
 
+import org.jboss.webbeans.context.AbstractBeanMapContext;
 import org.jboss.webbeans.context.AbstractContext;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.RequestContext;
@@ -28,6 +29,16 @@ public class ContextsImpl implements Contexts<AbstractContext>
       return DependentContext.INSTANCE;
    }
    
-   
+   public void destroyContext(AbstractContext context)
+   {
+      if (context instanceof AbstractBeanMapContext)
+      {
+         ((AbstractBeanMapContext) context).destroy();
+      }
+      else
+      {
+         throw new UnsupportedOperationException();
+      }
+   }
    
 }

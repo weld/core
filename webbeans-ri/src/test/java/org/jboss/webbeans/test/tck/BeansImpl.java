@@ -13,6 +13,7 @@ import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.tck.api.Beans;
+import org.jboss.webbeans.test.mock.MockEjbDescriptor;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -57,6 +58,7 @@ public class BeansImpl implements Beans
 
    public <T> Bean<T> createEnterpriseBean(Class<T> clazz)
    {
+      CurrentManager.rootManager().getEjbDescriptorCache().add(MockEjbDescriptor.of(clazz));
       return EnterpriseBean.of(clazz, CurrentManager.rootManager());
    }
 
