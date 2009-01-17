@@ -1,4 +1,4 @@
-package org.jboss.webbeans.examples;
+package org.jboss.webbeans.test.examples;
 
 @Mock
 public class MockSentenceTranslator implements Translator { 

@@ -22,6 +22,10 @@ import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.resource.AbstractNaming;
 import org.jboss.webbeans.resources.spi.Naming;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.webbeans.test.mock.context.MockApplicationContext;
+import org.jboss.webbeans.test.mock.context.MockDependentContext;
+import org.jboss.webbeans.test.mock.context.MockRequestContext;
+import org.jboss.webbeans.test.mock.context.MockSessionContext;
 
 public class MockBootstrap extends WebBeansBootstrap
 { 

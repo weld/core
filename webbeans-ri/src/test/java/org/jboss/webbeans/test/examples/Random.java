@@ -1,4 +1,4 @@
-package org.jboss.webbeans.examples;
+package org.jboss.webbeans.test.examples;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
