@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-08 14:07+0000\n"
-"PO-Revision-Date: 2009-01-16 08:59+1000\n"
+"PO-Revision-Date: 2009-01-18 00:35+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 
@@ -315,7 +316,7 @@ msgid ""
 "In addition to these two interfaces, there is "
 "<literal>BusinessInterfaceDescriptor</literal> which represents a local "
 "business interface (encapsulating the interface class and jndi name)."
-msgstr ""
+msgstr "JavaDoc을 설명하는 계약은 EJBDescriptor를 충분히 구현합니다. 이러한 두 가지 인터페이스에 더하여, 로컬 비지니스 인터페이스를 나타내는 <literal>BusinessInterfaceDescriptor</literal>가 있습니다. (인터페이스 클래스 및 jndi 이름을 캡슐화) "
 
 #. Tag: para
 #: ri-spi.xml:69
@@ -326,6 +327,8 @@ msgid ""
 "webbeans.bootstrap.WebBeanDiscovery</literal> with the fully qualified class "
 "name as the value. For example:"
 msgstr ""
+"Web Beans RI는 완전 정규화된 클래스 이름 값과 함께 <literal>org.jboss."
+"webbeans.bootstrap.WebBeanDiscovery</literal> 속성을 사용하여 <literal>WebBeanDiscovery</literal> 구현을 불러오기하게 할 수 있습니다. 예: "
 
 #. Tag: programlisting
 #: ri-spi.xml:76

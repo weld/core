@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 10:49+1000\n"
+"PO-Revision-Date: 2009-01-18 00:43+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 
 #. Tag: title
 #: injection.xml:4
@@ -1020,7 +1021,7 @@ msgstr ""
 #: injection.xml:392
 #, no-c-format
 msgid "Obtaining a Web Bean by programatic lookup"
-msgstr ""
+msgstr "프로그램적 lookup에 의해 Web Bean 획득 "
 
 #. Tag: para
 #: injection.xml:394
