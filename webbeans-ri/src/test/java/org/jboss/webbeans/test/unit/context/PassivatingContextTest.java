@@ -8,7 +8,7 @@ import javax.webbeans.SessionScoped;
 import org.jboss.webbeans.MetaDataCache;
 import org.testng.annotations.Test;
 
-public class PassivatingContextTest extends org.jboss.webbeans.test.AbstractTest
+public class PassivatingContextTest extends org.jboss.webbeans.test.unit.AbstractTest
 {
    
    /**

@@ -8,12 +8,12 @@ import java.util.List;
 
 import javax.ejb.MessageDriven;
 import javax.ejb.Remove;
+import javax.ejb.Singleton;
 import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
-import org.jboss.webbeans.test.annotations.Singleton;
 
 public class MockEjbDescriptor<T> implements EjbDescriptor<T>
 {

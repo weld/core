@@ -10,7 +10,7 @@ import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.introspector.jlr.AnnotatedFieldImpl;
-import org.jboss.webbeans.test.AbstractTest;
+import org.jboss.webbeans.test.unit.AbstractTest;
 import org.testng.annotations.Test;
 
 public class ResolutionByTypeTest extends AbstractTest

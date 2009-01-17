@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test;
+package org.jboss.webbeans.test.unit;
 
 import java.net.URL;
 import java.util.Properties;

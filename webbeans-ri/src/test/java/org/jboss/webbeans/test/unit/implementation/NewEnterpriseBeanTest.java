@@ -6,13 +6,11 @@ import java.util.Set;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.test.AbstractTest;
-import org.jboss.webbeans.test.SpecVersion;
+import org.jboss.webbeans.test.unit.AbstractTest;
 import org.jboss.webbeans.util.Proxies.TypeInfo;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-@SpecVersion("20081222")
 public class NewEnterpriseBeanTest extends AbstractTest
 {
    private EnterpriseBean<WrappedEnterpriseBean> wrappedEnterpriseBean;

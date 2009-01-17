@@ -10,8 +10,8 @@ import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.test.AbstractTest;
 import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
+import org.jboss.webbeans.test.unit.AbstractTest;
 import org.testng.annotations.Test;
 
 public class BoostrapTest extends AbstractTest

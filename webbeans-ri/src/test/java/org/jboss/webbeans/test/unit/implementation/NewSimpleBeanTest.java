@@ -5,12 +5,10 @@ import java.util.Set;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.test.AbstractTest;
-import org.jboss.webbeans.test.SpecVersion;
+import org.jboss.webbeans.test.unit.AbstractTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-@SpecVersion("20081222")
 public class NewSimpleBeanTest extends AbstractTest
 {
    private SimpleBean<WrappedSimpleBean> wrappedSimpleBean;

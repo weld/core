@@ -1,13 +1,15 @@
-package org.jboss.webbeans.test;
+package org.jboss.webbeans.test.unit;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.webbeans.Production;
 import javax.webbeans.Standard;
@@ -21,8 +23,6 @@ import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.test.annotations.AnotherDeploymentType;
-import org.jboss.webbeans.test.annotations.HornedAnimalDeploymentType;
 import org.jboss.webbeans.test.mock.MockBootstrap;
 import org.jboss.webbeans.test.mock.MockEjbDescriptor;
 import org.testng.annotations.BeforeMethod;
@@ -72,7 +72,7 @@ public class AbstractTest
    {
       webBeansBootstrap = new MockBootstrap();
       manager = webBeansBootstrap.getManager();
-      addStandardDeploymentTypesForTests();
+      manager.setEnabledDeploymentTypes(getEnabledDeploymentTypes());
    }
 
    private boolean hasField(Class<?> clazz, String name)
@@ -151,9 +151,14 @@ public class AbstractTest
    }
 
    @SuppressWarnings("unchecked")
-   protected void addStandardDeploymentTypesForTests()
+   protected List<Class<? extends Annotation>> getEnabledDeploymentTypes()
    {
-      manager.setEnabledDeploymentTypes(Arrays.asList(Standard.class, Production.class, AnotherDeploymentType.class, HornedAnimalDeploymentType.class));
+      return getDefaultDeploymentTypes();
+   }
+   
+   protected final List<Class<? extends Annotation>> getDefaultDeploymentTypes()
+   {
+      return Arrays.asList(Standard.class, Production.class);
    }
 
    protected <T> void addToEjbCache(Class<T> clazz)
