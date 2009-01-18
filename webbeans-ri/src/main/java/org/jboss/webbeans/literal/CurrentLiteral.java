@@ -15,17 +15,14 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.binding;
+package org.jboss.webbeans.literal;
 
 import javax.webbeans.AnnotationLiteral;
-import javax.webbeans.manager.Initialized;
+import javax.webbeans.Current;
 
 /**
- * Annotation literal for @Initialized
+ * Annotation literal for @Current
  * 
  * @author Pete Muir
  */
-public class InitializedBinding extends AnnotationLiteral<Initialized> implements Initialized
-{
-   
-}
+public class CurrentLiteral extends AnnotationLiteral<Current> implements Current {}

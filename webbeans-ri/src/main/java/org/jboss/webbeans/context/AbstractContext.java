@@ -21,6 +21,13 @@ import java.lang.annotation.Annotation;
 
 import javax.webbeans.manager.Context;
 
+/**
+ * Common Context operation
+ * 
+ * @author Nicklas Karlsson
+ * @author Pete Muir
+ *
+ */
 public abstract class AbstractContext implements Context
 {
    // The scope type

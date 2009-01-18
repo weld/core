@@ -48,8 +48,6 @@ import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.binding.DeployedBinding;
-import org.jboss.webbeans.binding.InitializedBinding;
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
@@ -61,6 +59,8 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.jsf.JSFApiAbstraction;
+import org.jboss.webbeans.literal.DeployedLiteral;
+import org.jboss.webbeans.literal.InitializedLiteral;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.spi.NamingContext;
@@ -303,12 +303,12 @@ public abstract class WebBeansBootstrap
          // bean is an EJB!
          getManager().getEjbDescriptorCache().addAll(getEjbDiscovery().discoverEjbs());
          registerBeans(getWebBeanDiscovery().discoverWebBeanClasses());
-         getManager().fireEvent(getManager(), new InitializedBinding());
+         getManager().fireEvent(getManager(), new InitializedLiteral());
          List<Bean<?>> beans = getManager().getBeans();
          log.info("Web Beans initialized. Validating beans.");
          getManager().getResolver().resolveInjectionPoints();
          BeanValidation.validate(getManager().getBeans());
-         getManager().fireEvent(getManager(), new DeployedBinding());
+         getManager().fireEvent(getManager(), new DeployedLiteral());
       }
    }
 

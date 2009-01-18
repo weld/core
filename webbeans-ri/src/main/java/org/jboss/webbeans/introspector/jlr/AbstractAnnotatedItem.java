@@ -29,8 +29,8 @@ import java.util.Set;
 
 import javax.webbeans.BindingType;
 
-import org.jboss.webbeans.binding.CurrentBinding;
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
@@ -152,7 +152,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    }
 
    // The array of default binding types
-   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentBinding() };
+   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentLiteral() };
    // The set of default binding types
    private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.binding;
+package org.jboss.webbeans.literal;
 
 import javax.webbeans.AnnotationLiteral;
 import javax.webbeans.New;
@@ -25,4 +25,4 @@ import javax.webbeans.New;
  * 
  * @author Pete Muir
  */
-public class NewBinding extends AnnotationLiteral<New> implements New {}
+public class NewLiteral extends AnnotationLiteral<New> implements New {}

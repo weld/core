@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.binding;
+package org.jboss.webbeans.literal;
 
 import javax.webbeans.AnnotationLiteral;
-import javax.webbeans.manager.Deployed;
+import javax.webbeans.manager.Initialized;
 
 /**
- * Annotation literal for @Deployed
+ * Annotation literal for @Initialized
  * 
- * @author Nicklas Karlsson
+ * @author Pete Muir
  */
-public class DeployedBinding extends AnnotationLiteral<Deployed> implements Deployed
+public class InitializedLiteral extends AnnotationLiteral<Initialized> implements Initialized
 {
    
 }

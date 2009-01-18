@@ -15,14 +15,17 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.binding;
+package org.jboss.webbeans.literal;
 
 import javax.webbeans.AnnotationLiteral;
-import javax.webbeans.Current;
+import javax.webbeans.manager.Deployed;
 
 /**
- * Annotation literal for @Current
+ * Annotation literal for @Deployed
  * 
- * @author Pete Muir
+ * @author Nicklas Karlsson
  */
-public class CurrentBinding extends AnnotationLiteral<Current> implements Current {}
+public class DeployedLiteral extends AnnotationLiteral<Deployed> implements Deployed
+{
+   
+}

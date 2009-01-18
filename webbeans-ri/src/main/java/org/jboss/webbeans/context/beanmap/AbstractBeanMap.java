@@ -29,6 +29,12 @@ import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.servlet.ApplicationBeanMap;
 import org.jboss.webbeans.util.Names;
 
+/**
+ * Provides common BeanMap operations
+ * 
+ * @author Nicklas Karlsson
+ *
+ */
 public abstract class AbstractBeanMap implements BeanMap
 {
    // The log provider
