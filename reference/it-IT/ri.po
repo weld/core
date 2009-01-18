@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-14 18:41+0000\n"
-"PO-Revision-Date: 2009-01-14 20:29+0100\n"
+"POT-Creation-Date: 2009-01-18 16:31+0000\n"
+"PO-Revision-Date: 2009-01-18 17:44+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -956,7 +956,7 @@ msgstr "Infine, si esamini il modulo ejb, <literal>webbeans-translator-ejb</lite
 #. Tag: para
 #: ri.xml:401
 #, no-c-format
-msgid "We've saved the most interesting bit to last, the code! The project has two simple beans, <literal>SentenceParser</literal> and <literal>TextTranslator</literal> and two enterprise beans, <literal>TanslatorControllerBean</literal> and <literal>SentenceTranslator</literal>. You should be getting quite familiar with what a Web Bean looks like by now, so we'll just highlight the most interesting bits here."
+msgid "We've saved the most interesting bit to last, the code! The project has two simple beans, <literal>SentenceParser</literal> and <literal>TextTranslator</literal> and two enterprise beans, <literal>TranslatorControllerBean</literal> and <literal>SentenceTranslator</literal>. You should be getting quite familiar with what a Web Bean looks like by now, so we'll just highlight the most interesting bits here."
 msgstr "Abbiamo lasciato per ultimo il boccone più prelibato, il codice! Il progetto ha due bean semplici, <literal>SentenceParser</literal> e <literal>TextTranslator</literal> e due bean enterprise, <literal>TranslatorControllerBean</literal> e <literal>SentenceTranslator</literal>. Dovreste ormai essere piuttosto familiari all'aspetto di un Web Bean, così ci limiteremo a evidenziare le parti più interessanti."
 
 #. Tag: para
