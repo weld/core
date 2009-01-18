@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: specialization\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-06 11:30+0000\n"
+"POT-Creation-Date: 2009-01-18 16:31+0000\n"
 "PO-Revision-Date: 2009-01-15 12:18+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -24,8 +24,7 @@ msgstr ""
 
 #. Tag: para
 #: specialization.xml:6
-#, no-c-format
-#, fuzzy
+#, fuzzy, no-c-format
 msgid ""
 "We've already seen how the Web Beans dependency injection model lets us "
 "<emphasis>override</emphasis> the implementation of an API at deployment "
@@ -288,7 +287,8 @@ msgstr ""
 #. Tag: para
 #: specialization.xml:124
 #, no-c-format
-msgid "there is no other enabled Web Bean that also specializes the superclass."
+msgid ""
+"there is no other enabled Web Bean that also specializes the superclass."
 msgstr ""
 
 #. Tag: para
@@ -307,4 +307,3 @@ msgid ""
 "emphasis> be called in any deployment of the system where the Web Bean "
 "annotated <literal>@Specializes</literal> is deployed and enabled."
 msgstr ""
-

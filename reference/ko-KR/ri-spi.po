@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-08 14:07+0000\n"
+"POT-Creation-Date: 2009-01-18 16:31+0000\n"
 "PO-Revision-Date: 2009-01-18 11:39+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -15,7 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -36,7 +37,11 @@ msgid ""
 "Glassfish), into a servlet container (like Tomcat), or with an Embedded "
 "EJB3.1 implementation is fairly easy. In this Appendix we will briefly "
 "discuss the steps needed."
-msgstr "현재 Web Beans RI는 JBoss AS 5에서만 실행됩니다; RI를 기타 다른 EE 환경 (예를 들어 Glassfish와 같은 다른 애플리케이션 서버)으로 통합, 또는 servlet 컨테이너로 통합 (예: Tomcat), 또는 내장된 EJB3.1 구현과 통합하는 것은 쉽습니다. Appendix에서 필요한 절차에 대해 간략하게 살펴보겠습니다.  "
+msgstr ""
+"현재 Web Beans RI는 JBoss AS 5에서만 실행됩니다; RI를 기타 다른 EE 환경 (예"
+"를 들어 Glassfish와 같은 다른 애플리케이션 서버)으로 통합, 또는 servlet 컨테"
+"이너로 통합 (예: Tomcat), 또는 내장된 EJB3.1 구현과 통합하는 것은 쉽습니다. "
+"Appendix에서 필요한 절차에 대해 간략하게 살펴보겠습니다.  "
 
 #. Tag: para
 #: ri-spi.xml:15
@@ -46,7 +51,11 @@ msgid ""
 "do more work, adding your own contexts and lifecycle. The Web Beans RI "
 "currently doesn't expose lifecycle extension points, so you would have to "
 "code directly against Web Beans RI classes."
-msgstr "SE 환경에서 Web Beans를 실행할 수 있어야 하지만, 자체적 컨텍스트 및 수명 주기 추가와 같은 더 많은 작업을 해야 합니다. 현재 Web Beans RI는 수명 확장 지점을 나타내지 않고 있으므로, Web Beans RI 클래스에 대해 직접 코드화해야 합니다. "
+msgstr ""
+"SE 환경에서 Web Beans를 실행할 수 있어야 하지만, 자체적 컨텍스트 및 수명 주"
+"기 추가와 같은 더 많은 작업을 해야 합니다. 현재 Web Beans RI는 수명 확장 지점"
+"을 나타내지 않고 있으므로, Web Beans RI 클래스에 대해 직접 코드화해야 합니"
+"다. "
 
 #. Tag: title
 #: ri-spi.xml:24
@@ -61,7 +70,10 @@ msgid ""
 "The Web Beans SPI is located in <literal>webbeans-ri-spi</literal> module, "
 "and packaged as <literal>webbeans-ri-spi.jar</literal>. Some SPIs are "
 "optional, if you need to override the default behavior, others are required."
-msgstr "Web Beans SPI는 <literal>webbeans-ri-spi</literal> 모듈에 위치하고 있으며 <literal>webbeans-ri-spi.jar</literal>로 패키징되어 있습니다. 일부 SPI는 옵션 사항이며, 기본값 동작을 덮어쓰기해야할 경우, 다른 사항이 필요합니다. "
+msgstr ""
+"Web Beans SPI는 <literal>webbeans-ri-spi</literal> 모듈에 위치하고 있으며 "
+"<literal>webbeans-ri-spi.jar</literal>로 패키징되어 있습니다. 일부 SPI는 옵"
+"션 사항이며, 기본값 동작을 덮어쓰기해야할 경우, 다른 사항이 필요합니다. "
 
 #. Tag: para
 #: ri-spi.xml:33
@@ -72,17 +84,29 @@ msgid ""
 "All property names are the fully qualified class name of the implemented "
 "interface; all property values are the fully qualified class name of the "
 "implementation class."
-msgstr "SPI 구현을 시스템 속성으로나 또는 속성 파일 <literal>META-INF/web-beans-ri.properties</literal>로 지정할 수 있습니다. 모든 속성 이름은 구현된 인터페이스의 완전 정규화된 클래스 이름입니다; 모드 속성 값은 구현 클래스의 완전 정규화된 클래스 이름입니다.  "
+msgstr ""
+"SPI 구현을 시스템 속성으로나 또는 속성 파일 <literal>META-INF/web-beans-ri."
+"properties</literal>로 지정할 수 있습니다. 모든 속성 이름은 구현된 인터페이스"
+"의 완전 정규화된 클래스 이름입니다; 모드 속성 값은 구현 클래스의 완전 정규화"
+"된 클래스 이름입니다.  "
+
+#. Tag: para
+#: ri-spi.xml:42
+#, no-c-format
+msgid ""
+"All interfaces in the SPI support the decorator pattern and provide a "
+"<literal>Forwarding</literal> class."
+msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:43
+#: ri-spi.xml:48
 #, no-c-format
 msgid "Web Bean Discovery"
 msgstr "Web Bean 검색 "
 
 #. Tag: programlisting
-#: ri-spi.xml:45
-#, no-c-format
+#: ri-spi.xml:50
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[public interface WebBeanDiscovery {\n"
 "   /**\n"
@@ -99,13 +123,6 @@ msgid ""
 "    * @return An iterable over the web-beans.xml files \n"
 "    */\n"
 "   public Iterable<URL> discoverWebBeansXml();\n"
-"   \n"
-"   /**\n"
-"    * Gets a descriptor for each EJB in the application\n"
-"    * \n"
-"    * @return The bean class to descriptor map \n"
-"    */\n"
-"   public Iterable<EjbDescriptor<?>> discoverEjbs();\n"
 "   \n"
 "}]]>"
 msgstr ""
@@ -135,27 +152,103 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: ri-spi.xml:47
+#: ri-spi.xml:52
 #, no-c-format
 msgid ""
 "The discovery of Web Bean classes and <literal>web-bean.xml</literal> files "
 "is self-explanatory (the algorithm is described in Section 11.1 of the JSR-"
 "299 specification, and isn't repeated here)."
-msgstr "Web Bean 클래스 및 <literal>web-bean.xml</literal> 파일 검색은 쉽게 알 수 있습니다 (알고리즘은 JSR-299 사양 11.1장에 설명되어 있으므로 여기서 다시 설명하지 않습니다).  "
+msgstr ""
+"Web Bean 클래스 및 <literal>web-bean.xml</literal> 파일 검색은 쉽게 알 수 있"
+"습니다 (알고리즘은 JSR-299 사양 11.1장에 설명되어 있으므로 여기서 다시 설명하"
+"지 않습니다).  "
 
 #. Tag: para
-#: ri-spi.xml:53
+#: ri-spi.xml:58
+#, fuzzy, no-c-format
+msgid ""
+"The Web Beans RI can be told to load your implementation of "
+"<literal>WebBeanDiscovery</literal> using the property <literal>org.jboss."
+"webbeans.bootstrap.spi.WebBeanDiscovery</literal> with the fully qualified "
+"class name as the value. For example:"
+msgstr ""
+"Web Beans RI는 완전 정규화된 클래스 이름 값과 함께 <literal>org.jboss."
+"webbeans.bootstrap.WebBeanDiscovery</literal> 속성을 사용하여 "
+"<literal>WebBeanDiscovery</literal> 구현을 불러오기하게 할 수 있습니다. 예: "
+
+#. Tag: programlisting
+#: ri-spi.xml:65
+#, no-c-format
+msgid ""
+"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
+"integration.jbossas.WebBeanDiscoveryImpl"
+msgstr ""
+"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
+"integration.jbossas.WebBeanDiscoveryImpl"
+
+#. Tag: para
+#: ri-spi.xml:67 ri-spi.xml:113 ri-spi.xml:146 ri-spi.xml:179
+#, no-c-format
+msgid ""
+"If the Web Beans RI is being used in a servlet container, it expects a "
+"constructor of the form:"
+msgstr ""
+
+#. Tag: programlisting
+#: ri-spi.xml:72
+#, no-c-format
+msgid ""
+"<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:74
+#, no-c-format
+msgid ""
+"The servlet context can be used to allow your implementation of "
+"<literal>WebBeanDiscovery</literal> to interact with the container."
+msgstr ""
+
+#. Tag: title
+#: ri-spi.xml:82
+#, fuzzy, no-c-format
+msgid "EJB Discovery"
+msgstr "Web Bean 검색 "
+
+#. Tag: para
+#: ri-spi.xml:84
 #, no-c-format
 msgid ""
 "The Web Beans RI also delegates EJB3 bean discovery to the container so that "
 "it doesn't have to scan for EJB3 annotations or parse <literal>ejb-jar.xml</"
 "literal>. For each EJB in the application an EJBDescriptor should be "
 "discovered:"
-msgstr "Web Beans RI는 컨테이너로 EJB3 bean 검색을 위임하므로 EJB3 어노테이션을 검색하거나 <literal>ejb-jar.xml</literal>을 파싱할 필요가 없습니다. 애플리케이션에 있는 각각의 EJB의 경우 EJBDescriptor를 검색해야 합니다: "
+msgstr ""
+"Web Beans RI는 컨테이너로 EJB3 bean 검색을 위임하므로 EJB3 어노테이션을 검색"
+"하거나 <literal>ejb-jar.xml</literal>을 파싱할 필요가 없습니다. 애플리케이션"
+"에 있는 각각의 EJB의 경우 EJBDescriptor를 검색해야 합니다: "
 
 #. Tag: programlisting
-#: ri-spi.xml:60
+#: ri-spi.xml:91
 #, no-c-format
+msgid ""
+"<![CDATA[public interface EjbDiscovery\n"
+"{\n"
+"   public static final String PROPERTY_NAME = EjbDiscovery.class.getName();\n"
+"   \n"
+"   /**\n"
+"    * Gets a descriptor for each EJB in the application\n"
+"    * \n"
+"    * @return The bean class to descriptor map \n"
+"    */\n"
+"   public Iterable<EjbDescriptor<?>> discoverEjbs();\n"
+"   \n"
+"}]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: ri-spi.xml:93
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[public interface EjbDescriptor<T> {\n"
 "   \n"
@@ -224,12 +317,6 @@ msgid ""
 "    */\n"
 "   public String getEjbName();\n"
 "   \n"
-"   /**\n"
-"    * @return The JNDI string which can be used to lookup a proxy which \n"
-"    * implements all local business interfaces \n"
-"    * \n"
-"    */\n"
-"   public String getLocalJndiName();\n"
 "   \n"
 "}]]>"
 msgstr ""
@@ -310,58 +397,83 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: ri-spi.xml:62
-#, no-c-format
+#: ri-spi.xml:95
+#, fuzzy, no-c-format
 msgid ""
-"The contract described the JavaDoc is enough to implement an EJBDescriptor. "
-"In addition to these two interfaces, there is "
+"The <literal>EjbDescriptor</literal> is fairly self-explanatory, and should "
+"return the relevant metadata as defined in the EJB specification. In "
+"addition to these two interfaces, there is "
 "<literal>BusinessInterfaceDescriptor</literal> which represents a local "
-"business interface (encapsulating the interface class and jndi name)."
-msgstr "JavaDoc을 설명하는 계약은 EJBDescriptor를 충분히 구현합니다. 이러한 두 가지 인터페이스에 더하여, 로컬 비지니스 인터페이스를 나타내는 <literal>BusinessInterfaceDescriptor</literal>가 있습니다. (인터페이스 클래스 및 jndi 이름을 캡슐화) "
+"business interface (encapsulating the interface class and jndi name used to "
+"look up an instance of the EJB)."
+msgstr ""
+"JavaDoc을 설명하는 계약은 EJBDescriptor를 충분히 구현합니다. 이러한 두 가지 "
+"인터페이스에 더하여, 로컬 비지니스 인터페이스를 나타내는 "
+"<literal>BusinessInterfaceDescriptor</literal>가 있습니다. (인터페이스 클래"
+"스 및 jndi 이름을 캡슐화) "
 
 #. Tag: para
-#: ri-spi.xml:69
-#, no-c-format
+#: ri-spi.xml:104
+#, fuzzy, no-c-format
 msgid ""
 "The Web Beans RI can be told to load your implementation of "
-"<literal>WebBeanDiscovery</literal> using the property <literal>org.jboss."
-"webbeans.bootstrap.WebBeanDiscovery</literal> with the fully qualified class "
+"<literal>EjbDiscovery</literal> using the property <literal>org.jboss."
+"webbeans.bootstrap.spi.EjbDiscovery</literal> with the fully qualified class "
 "name as the value. For example:"
 msgstr ""
 "Web Beans RI는 완전 정규화된 클래스 이름 값과 함께 <literal>org.jboss."
-"webbeans.bootstrap.WebBeanDiscovery</literal> 속성을 사용하여 <literal>WebBeanDiscovery</literal> 구현을 불러오기하게 할 수 있습니다. 예: "
+"webbeans.bootstrap.WebBeanDiscovery</literal> 속성을 사용하여 "
+"<literal>WebBeanDiscovery</literal> 구현을 불러오기하게 할 수 있습니다. 예: "
 
 #. Tag: programlisting
-#: ri-spi.xml:76
-#, no-c-format
+#: ri-spi.xml:111
+#, fuzzy, no-c-format
 msgid ""
-"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
-"integration.jbossas.WebBeanDiscoveryImpl"
+"org.jboss.webbeans.bootstrap.spi.EjbDiscovery=org.jboss.webbeans.integration."
+"jbossas.EjbDiscoveryImpl"
 msgstr ""
 "org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
 "integration.jbossas.WebBeanDiscoveryImpl"
 
+#. Tag: programlisting
+#: ri-spi.xml:118
+#, no-c-format
+msgid "<![CDATA[public EjbDiscoveryImpl(ServletContext servletContext) {}]]>"
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:120
+#, no-c-format
+msgid ""
+"The servlet context can be used to allow your implementation of "
+"<literal>EjbDiscovery</literal> to interact with the container."
+msgstr ""
+
 #. Tag: title
-#: ri-spi.xml:80
+#: ri-spi.xml:128
 #, no-c-format
 msgid "JNDI"
 msgstr "JNDI"
 
 #. Tag: para
-#: ri-spi.xml:82
-#, no-c-format
+#: ri-spi.xml:130
+#, fuzzy, no-c-format
 msgid ""
 "The Web Beans RI implements JNDI binding and lookup according to standards, "
 "however you may want to alter the binding and lookup (for example in an "
 "environment where JNDI isn't available). To do this, implement <literal>org."
-"jboss.webbeans.spi.resources.Naming</literal>:"
-msgstr "Web Beans RI는 기준에 따라 JNDI 바인딩 및 lookup을 구현하지만, 바인딩 및 lookup을 변경하고자 하실 수 있습니다 (예를 들어 JNDI를 사용할 수 없는 환경에서). 이를 위해 <literal>org.jboss.webbeans.spi.resources.Naming</literal>을 구현합니다:  "
+"jboss.webbeans.spi.resources.NamingContext</literal>:"
+msgstr ""
+"Web Beans RI는 기준에 따라 JNDI 바인딩 및 lookup을 구현하지만, 바인딩 및 "
+"lookup을 변경하고자 하실 수 있습니다 (예를 들어 JNDI를 사용할 수 없는 환경에"
+"서). 이를 위해 <literal>org.jboss.webbeans.spi.resources.Naming</literal>을 "
+"구현합니다:  "
 
 #. Tag: programlisting
-#: ri-spi.xml:90
-#, no-c-format
+#: ri-spi.xml:138
+#, fuzzy, no-c-format
 msgid ""
-"<![CDATA[public interface Naming extends Serializable {\n"
+"<![CDATA[public interface NamingContext extends Serializable {\n"
 "   \n"
 "   /**\n"
 "    * Typed JNDI lookup\n"
@@ -376,10 +488,10 @@ msgid ""
 "   /**\n"
 "    * Binds an item to JNDI\n"
 "    * \n"
-"    * @param key The key to bind under\n"
+"    * @param name The key to bind under\n"
 "    * @param value The item to bind\n"
 "    */\n"
-"   public void bind(String key, Object value);\n"
+"   public void bind(String name, Object value);\n"
 "   \n"
 "}]]>"
 msgstr ""
@@ -406,25 +518,39 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: ri-spi.xml:92 ri-spi.xml:113
+#: ri-spi.xml:140 ri-spi.xml:173
 #, no-c-format
 msgid "and tell the RI to use it:"
 msgstr "RI에게 사용할 것을 알립니다: "
 
 #. Tag: programlisting
-#: ri-spi.xml:96
-#, no-c-format
-msgid "org.jboss.webbeans.resources.spi.Naming=com.acme.MyNaming"
+#: ri-spi.xml:144
+#, fuzzy, no-c-format
+msgid "org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
 msgstr "org.jboss.webbeans.resources.spi.Naming=com.acme.MyNaming"
 
+#. Tag: programlisting
+#: ri-spi.xml:151
+#, no-c-format
+msgid "<![CDATA[public MyNamingContext(ServletContext servletContext) {}]]>"
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:153
+#, no-c-format
+msgid ""
+"The servlet context can be used to allow your implementation of "
+"<literal>NamingContext</literal> to interact with the container."
+msgstr ""
+
 #. Tag: title
-#: ri-spi.xml:101
+#: ri-spi.xml:161
 #, no-c-format
 msgid "Resource loading"
 msgstr "리소스 불러오기 "
 
 #. Tag: para
-#: ri-spi.xml:103
+#: ri-spi.xml:163
 #, no-c-format
 msgid ""
 "The Web Beans RI needs to load classes and resources from the classpath at "
@@ -433,11 +559,13 @@ msgid ""
 "environments. If this is case, you can implement <literal>org.jboss.webbeans."
 "spi.ResourceLoader</literal>:"
 msgstr ""
-"Web Beans RI는 여러번 classpath에서 클래스 및 리소스를 불러와야 합니다. 기본값으로 RI를 불러오기 위해 사용되었던 동일한 classloader에서 로딩되지만, 일부 환경에서는 작동하지 않을 수 도 있습니다. 이러한 경우, <literal>org.jboss.webbeans."
-"spi.ResourceLoader</literal>를 구현할 수 있습니다:  "
+"Web Beans RI는 여러번 classpath에서 클래스 및 리소스를 불러와야 합니다. 기본"
+"값으로 RI를 불러오기 위해 사용되었던 동일한 classloader에서 로딩되지만, 일부 "
+"환경에서는 작동하지 않을 수 도 있습니다. 이러한 경우, <literal>org.jboss."
+"webbeans.spi.ResourceLoader</literal>를 구현할 수 있습니다:  "
 
 #. Tag: programlisting
-#: ri-spi.xml:111
+#: ri-spi.xml:171
 #, no-c-format
 msgid ""
 "<![CDATA[\n"
@@ -501,65 +629,89 @@ msgstr ""
 "         ]]>"
 
 #. Tag: programlisting
-#: ri-spi.xml:117
+#: ri-spi.xml:177
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
-msgstr "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
+msgstr ""
+"org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
+
+#. Tag: programlisting
+#: ri-spi.xml:184
+#, no-c-format
+msgid "<![CDATA[public MyResourceLoader(ServletContext servletContext) {}]]>"
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:186
+#, no-c-format
+msgid ""
+"The servlet context can be used to allow your implementation of "
+"<literal>ResourceLoader</literal> to interact with the container."
+msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:124
+#: ri-spi.xml:196
 #, no-c-format
 msgid "The contract with the container"
 msgstr "컨테이너와 계약 "
 
 #. Tag: para
-#: ri-spi.xml:126
+#: ri-spi.xml:198
 #, no-c-format
 msgid ""
 "There are a number of requirements that the Web Beans RI places on the "
 "container for correct functioning that fall outside implementation of APIs"
-msgstr "API의 외부 구현에서의 올바른 기능을 실행하게 하기 위해 Web Beans RI이 컨테이너에 위치하게 해야 할 여러 요구 사항이 있습니다 "
+msgstr ""
+"API의 외부 구현에서의 올바른 기능을 실행하게 하기 위해 Web Beans RI이 컨테이"
+"너에 위치하게 해야 할 여러 요구 사항이 있습니다 "
 
 #. Tag: term
-#: ri-spi.xml:134
+#: ri-spi.xml:206
 #, no-c-format
 msgid "Classloader isolation"
 msgstr "Classloader 분리 "
 
 #. Tag: para
-#: ri-spi.xml:138
+#: ri-spi.xml:210
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans RI into an environment that supports "
 "deployment of multiple applications, you must enable, automatically, or "
 "through user configuation, classloader isolation for each Web Beans "
 "application."
-msgstr "Web Beans RI를 다수의 애플리케이션의 운용을 지원하는 환경으로 통합할 경우, 각각의 Web Beans 애플리케이션에 대한 클래스로더 분리를 자동으로 또는 사용자 설정을 통해 반드시 활성화해야 합니다.   "
+msgstr ""
+"Web Beans RI를 다수의 애플리케이션의 운용을 지원하는 환경으로 통합할 경우, 각"
+"각의 Web Beans 애플리케이션에 대한 클래스로더 분리를 자동으로 또는 사용자 설"
+"정을 통해 반드시 활성화해야 합니다.   "
 
 #. Tag: term
-#: ri-spi.xml:147
+#: ri-spi.xml:219
 #, no-c-format
 msgid "Servlet listener"
 msgstr "Servlet 청취자 "
 
 #. Tag: para
-#: ri-spi.xml:151
+#: ri-spi.xml:223
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans into a Servlet environment you must "
 "register <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> as a "
 "Servlet listener, either automatically, or through user configuration, for "
 "each Web Beans application which uses Servlet."
-msgstr "Web Beans를 Servlet 환경으로 통합할 경우, Servlet을 사용하는 각각의 Web Beans 애플리케이션에 대해 자동으로 또는 사용자 설정을 통해 <literal>org.jboss.webbeans.servlet.WebBeansListener</literal>를 Servlet 청취자로 등록해야 합니다.  "
+msgstr ""
+"Web Beans를 Servlet 환경으로 통합할 경우, Servlet을 사용하는 각각의 Web "
+"Beans 애플리케이션에 대해 자동으로 또는 사용자 설정을 통해 <literal>org."
+"jboss.webbeans.servlet.WebBeansListener</literal>를 Servlet 청취자로 등록해"
+"야 합니다.  "
 
 #. Tag: term
-#: ri-spi.xml:162
+#: ri-spi.xml:234
 #, no-c-format
 msgid "Session Bean Interceptor"
 msgstr "Session Bean 인터셉터 "
 
 #. Tag: para
-#: ri-spi.xml:166
+#: ri-spi.xml:238
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans into an EJB environment you must "
@@ -567,21 +719,27 @@ msgid ""
 "a EJB interceptor for all EJBs in the application, either automatically, or "
 "through user configuration, for each Web Beans application which uses "
 "enterprise beans."
-msgstr "Web Beans를 EJB 환경으로 통합하고자 할 경우 엔터프라이즈 beans를 사용하는 각각의 Web Beans 애플리케이션 용으로 모든 EJB 애플리케이션에 대해 EJB 인터셉터로서 <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal>를 자동으로 또는 사용자 설정을 통해 등록해야 합니다.  "
+msgstr ""
+"Web Beans를 EJB 환경으로 통합하고자 할 경우 엔터프라이즈 beans를 사용하는 각"
+"각의 Web Beans 애플리케이션 용으로 모든 EJB 애플리케이션에 대해 EJB 인터셉터"
+"로서 <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal>를 자동"
+"으로 또는 사용자 설정을 통해 등록해야 합니다.  "
 
 #. Tag: term
-#: ri-spi.xml:177
+#: ri-spi.xml:249
 #, no-c-format
 msgid "The <literal>webbeans-ri.jar</literal>"
 msgstr "<literal>webbeans-ri.jar</literal> "
 
 #. Tag: para
-#: ri-spi.xml:181
+#: ri-spi.xml:253
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans into an environment that supports "
 "deployment of applications, you must insert the <literal>webbeans-ri.jar</"
 "literal> into the applications isolated classloader. It cannot be loaded "
 "from a shared classloader."
-msgstr "Web Beans를 애플리케이션 운용을 지원하는 환경으로 통합하고자 할 경우, <literal>webbeans-ri.jar</literal>를 애플리케이션 분리 classloader로 삽입해야 합니다. 이는 공유 classloader에서 불러올 수 없습니다.  "
-
+msgstr ""
+"Web Beans를 애플리케이션 운용을 지원하는 환경으로 통합하고자 할 경우, "
+"<literal>webbeans-ri.jar</literal>를 애플리케이션 분리 classloader로 삽입해"
+"야 합니다. 이는 공유 classloader에서 불러올 수 없습니다.  "

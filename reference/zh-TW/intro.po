@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-06 11:30+0000\n"
+"POT-Creation-Date: 2009-01-18 16:31+0000\n"
 "PO-Revision-Date: 2009-01-16 12:50+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -31,7 +31,11 @@ msgid ""
 "specification will make you jump through! The good news is that you've "
 "probably already written and used hundreds, perhaps thousands of Web Beans. "
 "You might not even remember the first Web Bean you wrote."
-msgstr "您是否已準備好開始編寫您的第一個 Web Bean 了呢？或是您針對於 Web Bean 本身的規格還是存有著一些疑問呢？不過好消息就是您從以前到現在可能早就已經編寫並使用了上百甚至是上千個 Web Bean 了。您可能根本已經不記得您所編寫的第一個 Web Bean 為何了。"
+msgstr ""
+"您是否已準備好開始編寫您的第一個 Web Bean 了呢？或是您針對於 Web Bean 本身的"
+"規格還是存有著一些疑問呢？不過好消息就是您從以前到現在可能早就已經編寫並使用"
+"了上百甚至是上千個 Web Bean 了。您可能根本已經不記得您所編寫的第一個 Web "
+"Bean 為何了。"
 
 #. Tag: title
 #: intro.xml:13
@@ -226,8 +230,7 @@ msgstr ""
 
 #. Tag: para
 #: intro.xml:61
-#, no-c-format
-#, fuzzy
+#, fuzzy, no-c-format
 msgid ""
 "As you've guessed, the <literal>@Initializer</literal> annotation has "
 "something to do with dependency injection! <literal>@Initializer</literal> "
@@ -307,7 +310,8 @@ msgstr ""
 #. Tag: para
 #: intro.xml:108
 #, no-c-format
-msgid "which clients share a reference to a particular instance of the Web Bean."
+msgid ""
+"which clients share a reference to a particular instance of the Web Bean."
 msgstr ""
 
 #. Tag: para
@@ -443,8 +447,7 @@ msgstr "API 類型、綁定類型以及依賴注入"
 
 #. Tag: para
 #: intro.xml:172
-#, no-c-format
-#, fuzzy
+#, fuzzy, no-c-format
 msgid ""
 "Web Beans usually acquire references to other Web Beans via dependency "
 "injection. Any injected attribute specifies a \"contract\" that must be "
@@ -723,7 +726,8 @@ msgstr ""
 #. Tag: para
 #: intro.xml:284
 #, no-c-format
-msgid "It's even easier to just let the name be defaulted by the Web Bean manager:"
+msgid ""
+"It's even easier to just let the name be defaulted by the Web Bean manager:"
 msgstr ""
 
 #. Tag: programlisting
@@ -885,8 +889,7 @@ msgstr ""
 
 #. Tag: para
 #: intro.xml:360
-#, no-c-format
-#, fuzzy
+#, fuzzy, no-c-format
 msgid ""
 "The specification says that all EJB 3-style session and singleton beans are "
 "<emphasis>enterprise</emphasis> Web Beans. Message driven beans are not Web "
@@ -1075,7 +1078,8 @@ msgstr ""
 #. Tag: para
 #: intro.xml:437
 #, no-c-format
-msgid "The result of a producer method is injected just like any other Web Bean."
+msgid ""
+"The result of a producer method is injected just like any other Web Bean."
 msgstr ""
 
 #. Tag: programlisting
@@ -1162,4 +1166,3 @@ msgid ""
 "objects required to send messages to queues and topics. We'll discuss JMS "
 "endpoints in <xref linkend=\"jms\"/>."
 msgstr ""
-
