@@ -38,6 +38,11 @@
          property values are the fully qualified class name of the 
          implementation class.
        </para>
+       
+       <para>
+         All interfaces in the SPI support the decorator pattern and provide a
+         <literal>Forwarding</literal> class.
+       </para>
       
       <section>
          <title>Web Bean Discovery</title>
@@ -57,13 +62,6 @@
     */
    public Iterable<URL> discoverWebBeansXml();
    
-   /**
-    * Gets a descriptor for each EJB in the application
-    * 
-    * @return The bean class to descriptor map 
-    */
-   public Iterable<EjbDescriptor<?>> discoverEjbs();
-   
 }]]></programlisting>
 
          <para>
@@ -73,11 +71,50 @@
          </para>
          
          <para>
+            The Web Beans RI can be told to load your implementation of
+            <literal>WebBeanDiscovery</literal> using the property
+            <literal>org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery</literal> with the
+            fully qualified class name as the value. For example:
+          </para>
+          
+          <programlisting>org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans.integration.jbossas.WebBeanDiscoveryImpl</programlisting>
+          
+          <para>
+             If the Web Beans RI is being used in a servlet container, it
+             expects a constructor of the form:
+          </para>
+          
+          <programlisting><![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]></programlisting>
+          
+          <para>
+             The servlet context can be used to allow your implementation of 
+             <literal>WebBeanDiscovery</literal> to interact with the container.
+          </para>
+         
+      </section>
+      
+      <section>
+         <title>EJB Discovery</title>
+         
+         <para>
             The Web Beans RI also delegates EJB3 bean discovery to the container
             so that it doesn't have to scan for EJB3 annotations or parse
             <literal>ejb-jar.xml</literal>. For each EJB in the application an
             EJBDescriptor should be discovered:
          </para>
+         
+         <programlisting role="JAVA"><![CDATA[public interface EjbDiscovery
+{
+   public static final String PROPERTY_NAME = EjbDiscovery.class.getName();
+   
+   /**
+    * Gets a descriptor for each EJB in the application
+    * 
+    * @return The bean class to descriptor map 
+    */
+   public Iterable<EjbDescriptor<?>> discoverEjbs();
+   
+}]]></programlisting>
          
          <programlisting role="JAVA"><![CDATA[public interface EjbDescriptor<T> {
    
@@ -144,30 +181,39 @@
     */
    public String getEjbName();
    
-   /**
-    * @return The JNDI string which can be used to lookup a proxy which 
-    * implements all local business interfaces 
-    * 
-    */
-   public String getLocalJndiName();
    
 }]]></programlisting>
       
           <para>
-             The contract described the JavaDoc is enough to implement 
-             an EJBDescriptor. In addition to these two interfaces, there is 
-             <literal>BusinessInterfaceDescriptor</literal> which represents a local 
-             business interface (encapsulating the interface class and jndi name).
+             The <literal>EjbDescriptor</literal> is fairly self-explanatory,
+             and should return the relevant metadata as defined in the EJB 
+             specification. In addition to these two interfaces, there is 
+             <literal>BusinessInterfaceDescriptor</literal> which represents a 
+             local business interface (encapsulating the interface class and 
+             jndi name used to look up an instance of the EJB).
           </para>
-       
+          
           <para>
             The Web Beans RI can be told to load your implementation of
-            <literal>WebBeanDiscovery</literal> using the property
-            <literal>org.jboss.webbeans.bootstrap.WebBeanDiscovery</literal> with the
+            <literal>EjbDiscovery</literal> using the property
+            <literal>org.jboss.webbeans.bootstrap.spi.EjbDiscovery</literal> with the
             fully qualified class name as the value. For example:
           </para>
           
-          <programlisting>org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans.integration.jbossas.WebBeanDiscoveryImpl</programlisting>
+          <programlisting>org.jboss.webbeans.bootstrap.spi.EjbDiscovery=org.jboss.webbeans.integration.jbossas.EjbDiscoveryImpl</programlisting>
+          
+          <para>
+             If the Web Beans RI is being used in a servlet container, it
+             expects a constructor of the form:
+          </para>
+          
+          <programlisting><![CDATA[public EjbDiscoveryImpl(ServletContext servletContext) {}]]></programlisting>
+          
+          <para>
+             The servlet context can be used to allow your implementation of 
+             <literal>EjbDiscovery</literal> to interact with the container.
+          </para>
+       
        </section>
        
        <section>
@@ -178,10 +224,10 @@
             standards, however you may want to alter the binding and lookup (for
             example in an environment where JNDI isn't available). To do this,
             implement 
-            <literal>org.jboss.webbeans.spi.resources.Naming</literal>:
+            <literal>org.jboss.webbeans.spi.resources.NamingContext</literal>:
          </para>
          
-         <programlisting role="JAVA"><![CDATA[public interface Naming extends Serializable {
+         <programlisting role="JAVA"><![CDATA[public interface NamingContext extends Serializable {
    
    /**
     * Typed JNDI lookup
@@ -196,10 +242,10 @@
    /**
     * Binds an item to JNDI
     * 
-    * @param key The key to bind under
+    * @param name The key to bind under
     * @param value The item to bind
     */
-   public void bind(String key, Object value);
+   public void bind(String name, Object value);
    
 }]]></programlisting>
 
@@ -207,7 +253,19 @@
              and tell the RI to use it:
           </para>
           
-          <programlisting>org.jboss.webbeans.resources.spi.Naming=com.acme.MyNaming</programlisting>
+          <programlisting>org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext</programlisting>
+          
+         <para>
+             If the Web Beans RI is being used in a servlet container, it
+             expects a constructor of the form:
+          </para>
+          
+          <programlisting><![CDATA[public MyNamingContext(ServletContext servletContext) {}]]></programlisting>
+          
+          <para>
+             The servlet context can be used to allow your implementation of 
+             <literal>NamingContext</literal> to interact with the container.
+          </para>
          
        </section>
        
@@ -257,6 +315,18 @@
           </para>
           
           <programlisting>org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader</programlisting>
+          
+          <para>
+             If the Web Beans RI is being used in a servlet container, it
+             expects a constructor of the form:
+          </para>
+          
+          <programlisting><![CDATA[public MyResourceLoader(ServletContext servletContext) {}]]></programlisting>
+          
+          <para>
+             The servlet context can be used to allow your implementation of 
+             <literal>ResourceLoader</literal> to interact with the container.
+          </para>
          
        </section>
    
