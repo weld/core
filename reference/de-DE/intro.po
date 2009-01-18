@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-18 23:45+1100\n"
+"PO-Revision-Date: 2009-01-19 09:09+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -54,6 +54,11 @@ msgid ""
 "facility, even adding interceptors and decorators to them&#151;without "
 "touching your existing code."
 msgstr ""
+"Mit bestimmten, ganz besonderen Ausnahmen ist jede Java-Klasse mit einem Konstruktor, die keine Parameter akzeptiert ein Web Bean. Das beinhaltet jedes JavaBean. "
+"Desweiteren ist jedes EJB 3-artige Session Bean ein Web Bean. Sicher, die von Ihnen täglich geschriebenen "
+"JavaBeans und EJBs konnten die neuen, in der Web Beans Spezifikation definierten Dienste nicht nutzen, aber Sie werden diese allesamt benutzen können können, das Web Beans&#151;diese in andere "
+"Web Beans einspeisen, diese via der Web Beans XML-Konfigurationseinrichtung konfigurieren "
+"und diesen sogar Interzeptoren und Dekoratoren hinzufügen, ohne den bestehenden Code anzurühren."
 
 #. Tag: para
 #: intro.xml:25
@@ -253,6 +258,9 @@ msgid ""
 "implementation of <literal>Translator</literal> was available, the Web Bean "
 "manager would throw an <literal>AmbiguousDependencyException</literal>."
 msgstr ""
+"Zum Zeitpunkt der Systeminitialisierung muss der Web Bean Manager validieren, dass genau ein "
+"Web Bean existiert, das jedem Einspeisungspunkt gerecht wird. Für unser Beispiel bedeutet das, wenn keine Implementierung von <literal>Translator</literal> verfügbar ist&#151;wenn der <literal>SentenceTranslator</literal> EJB nicht deployt wurde&#151;dass der Web Bean Manager eine <literal>UnsatisfiedDependencyException</literal> melden würde. Wäre mehr als eine Implementierung von <literal>Translator</literal> verfügbar, so würde der Web Bean "
+"Manager eine <literal>AmbiguousDependencyException</literal> melden."
 
 #. Tag: title
 #: intro.xml:80
@@ -277,6 +285,11 @@ msgid ""
 "<emphasis>stateful</emphasis> and <emphasis>contextual</emphasis>. The "
 "lifecycle of a Web Bean is always managed by the Web Bean manager."
 msgstr ""
+"Bei einem Web Bean handelt es sich um eine Anwendungsklasse, die Business Logik enthält. Ein Web Bean "
+"kann direkt von Java Code oder via Unified EL aufgerufen werden. "
+"Ein Web Bean kann auf transaktionale Ressourcen zugreifen. Abhängigkeiten zwischen Web "
+"Beans werden automatisch durch den Web Bean Manager verwaltet. Die meisten Web Beans sind "
+"<emphasis>stateful</emphasis> und <emphasis>kontextbezogen</emphasis>. Der Lebenszyklus eines Web Beans wird immer durch den Web Bean Manager verwaltet."
 
 #. Tag: para
 #: intro.xml:91
@@ -332,7 +345,7 @@ msgid ""
 "Clients (for example, other Web Beans) executing in the same context will "
 "see the same instance of the Web Bean. But clients in a different context "
 "will see a different instance."
-msgstr ""
+msgstr "Clients (etwa andere Web Beans), die in demselben Kontext ausführen sehen dieselbe Instanz des Web Beans. Clients in einem anderen Kontext aber sehen eine andere Instanz."
 
 #. Tag: para
 #: intro.xml:123
@@ -350,13 +363,13 @@ msgstr ""
 #: intro.xml:132
 #, no-c-format
 msgid "they interact via well-defined public APIs"
-msgstr ""
+msgstr "sie interagieren über gut definierte öffentliche APIs"
 
 #. Tag: para
 #: intro.xml:135
 #, no-c-format
 msgid "their lifecycles are completely decoupled"
-msgstr ""
+msgstr "ihre Lebenszyklen sind vollständig abgekuppelt"
 
 #. Tag: para
 #: intro.xml:139
@@ -424,7 +437,7 @@ msgstr "Optional einem Web Bean Namen"
 #: intro.xml:161
 #, no-c-format
 msgid "A set of interceptor binding types"
-msgstr ""
+msgstr "Ein Satz Interzeptor Binding-Typen"
 
 #. Tag: para
 #: intro.xml:162
@@ -457,13 +470,13 @@ msgstr ""
 #: intro.xml:177
 #, no-c-format
 msgid "an API type, together with"
-msgstr ""
+msgstr "ein API-Typ, zusammen mit "
 
 #. Tag: para
 #: intro.xml:178
 #, no-c-format
 msgid "a set of binding types."
-msgstr ""
+msgstr "einem Satz von Binding-Typen."
 
 #. Tag: para
 #: intro.xml:181
@@ -620,6 +633,8 @@ msgid ""
 "We'll talk more about this unique and powerful feature in <xref linkend="
 "\"deploymenttypes\"/>."
 msgstr ""
+"In <xref linkend="
+"\"deploymenttypes\"/> gehen wir näher auf dieses einzigartige und leistungsfähige Feature ein."
 
 #. Tag: title
 #: intro.xml:246
