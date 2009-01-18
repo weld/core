@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-18 13:57+1000\n"
+"PO-Revision-Date: 2009-01-18 18:00+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -151,7 +151,7 @@ msgid ""
 "And this is all the code we need to declare that <literal>Date</literal> is "
 "a simple Web Bean! An instance of <literal>Date</literal> may now be "
 "injected by any other Web Bean:"
-msgstr ""
+msgstr "<literal>Date</literal>는 단순한 Web Bean임을 명시해야 할 모든 코드입니다! <literal>Date</literal>의 인스턴스는 기타 다른 Web Bean에 의해 삽입될 수 있습니다:  "
 
 #. Tag: programlisting
 #: xml.xml:62
@@ -171,7 +171,7 @@ msgstr "Web Bean 메타데이터 명시 "
 msgid ""
 "We can declare the scope, deployment type and interceptor binding types "
 "using direct child elements of the Web Bean declaration:"
-msgstr ""
+msgstr "Web Bean 명시의 직접적인 자식 요소를 사용하여 범위, 배포 유형, 인터셉터 바인딩 유형을 명시할 수 있습니다:   "
 
 #. Tag: programlisting
 #: xml.xml:72
@@ -352,7 +352,7 @@ msgid ""
 "a set of initial field values. This Web Bean has a special, container-"
 "generated binding and is therefore injectable only to the specific injection "
 "point at which it is declared."
-msgstr ""
+msgstr "<literal>&lt;Name&gt;</literal> 요소는 초기화 영역값 설정과 함께 <literal>@Dependent</literal> 범위의 간단한 Web Bean 및 <literal>Name</literal> 클래스를 명시합니다. Web Bean은 특정한 컨테이너 생성 바인딩이 있으므로 명시된 특정 삽입 지점에만 삽입할 수 있습니다.   "
 
 #. Tag: para
 #: xml.xml:116
@@ -361,7 +361,7 @@ msgid ""
 "This simple but powerful feature allows the Web Beans XML format to be used "
 "to specify whole graphs of Java objects. It's not quite a full databinding "
 "solution, but it's close!"
-msgstr ""
+msgstr "이러한 간단하지만 강력한 기능은 Web Beans XML 포맷이 Java 객체의 전체 그래프를 지정하는데 사용하게 합니다. 이는 완전한 데이터바인딩 솔루션이 아니지만, 근접한 솔루션입니다! "
 
 #. Tag: title
 #: xml.xml:123
@@ -377,7 +377,7 @@ msgid ""
 "developers, or who don't have access to our code, we need to provide a "
 "schema. There's nothing specific to Web Beans about writing or using the "
 "schema."
-msgstr ""
+msgstr "Java 개발자 이외나 또는 코드로 액세스할 수 없는 사람들에 의해 작성된 XML 문서 형식을 원하실 경우, 스키마를 제공해야 합니다. 스키마를 사용 또는 작성에 관해 Web Beans에 특정한 사항이 없습니다.  "
 
 #. Tag: programlisting
 #: xml.xml:130
@@ -418,5 +418,5 @@ msgid ""
 "Writing an XML schema is quite tedious. Therefore, the Web Beans RI project "
 "will provide a tool which automatically generates the XML schema from "
 "compiled Java code."
-msgstr ""
+msgstr "XML 스키마 작성은 다소 장황합니다. 따라서 Web Beans RI 프로젝트는 컴파일된 자바 코드에서 XML 스키마를 자동으로 생성하는 도구를 제공하게 됩니다. "
 
