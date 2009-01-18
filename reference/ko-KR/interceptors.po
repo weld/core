@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: interceptors\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-16 17:25+1000\n"
+"PO-Revision-Date: 2009-01-18 23:35+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 
 #. Tag: title
@@ -44,7 +45,7 @@ msgstr "Web Bean에는 세션 beans 만이 아니라 인터셉터도 있을 수 
 msgid ""
 "Web Beans features a more sophisticated annotation-based approach to binding "
 "interceptors to Web Beans."
-msgstr ""
+msgstr "Web Beans는 Web Beans에 인터셉터를 바인딩하기 위해 보다 복잡한 어노테이션 기반 방식을 특징으로 합니다. "
 
 #. Tag: para
 #: interceptors.xml:22
@@ -129,7 +130,7 @@ msgid ""
 "Suppose we want to declare that some of our Web Beans are transactional. The "
 "first thing we need is an <emphasis>interceptor binding annotation</"
 "emphasis> to specify exactly which Web Beans we're interested in:"
-msgstr ""
+msgstr "Web Beans의 일부는 트랜젝션할 수 있음을 명시하고자 한다고 가정합니다. 처음으로 해야할 것은 어떤 Web Beans에 관심이 있는 지를 지정하기 위해 <emphasis>인터셉터 바인딩 어노테이션</emphasis>을 합니다:  "
 
 #. Tag: programlisting
 #: interceptors.xml:55
@@ -195,7 +196,7 @@ msgid ""
 "implement the interceptor that provides this transaction management aspect. "
 "All we need to do is create a standard EJB interceptor, and annotate it "
 "<literal>@Interceptor</literal> and <literal>@Transactional</literal>."
-msgstr ""
+msgstr "행을 따라 어딘가에 이러한 트랜젝션 관리 측면을 제공하기 위해 실제적으로 인터셉터를 구현해야 합니다. 해야 할 작업은 표준 EJB 인터셉터를 생성하고 이를 <literal>@Interceptor</literal> 및 <literal>@Transactional</literal>로 어노테이션하는 것입니다.  "
 
 #. Tag: programlisting
 #: interceptors.xml:76
@@ -281,7 +282,7 @@ msgstr ""
 #: interceptors.xml:95
 #, no-c-format
 msgid "Whoah! Why the angle bracket stew?"
-msgstr ""
+msgstr "왜 각진 괄호를 써야 합니까? "
 
 #. Tag: para
 #: interceptors.xml:97
@@ -335,7 +336,7 @@ msgstr "또는 테스트 환경에서 두 가지 모두를 비활성화시킬 �
 #: interceptors.xml:119
 #, no-c-format
 msgid "Interceptor bindings with members"
-msgstr ""
+msgstr "멤버와 인터셉터 바인딩  "
 
 #. Tag: para
 #: interceptors.xml:121
@@ -413,7 +414,7 @@ msgid ""
 "But what if we only have one interceptor and we want the manager to ignore "
 "the value of <literal>requiresNew</literal> when binding interceptors? We "
 "can use the <literal>@NonBinding</literal> annotation:"
-msgstr ""
+msgstr "한 개의 인터샙터만이 있고 인터셉터를 바인딩할 때 <literal>requiresNew</literal> 값을 무시하기 위한 관리자를 원할 경우에는 <literal>@NonBinding</literal> 어노테이션을 사용할 수 있습니다:  "
 
 #. Tag: programlisting
 #: interceptors.xml:140
@@ -545,16 +546,17 @@ msgstr ""
 #: interceptors.xml:173
 #, no-c-format
 msgid "Interceptor binding type inheritance"
-msgstr ""
+msgstr "인터셉터 바인딩 유형 상속 "
 
 #. Tag: para
 #: interceptors.xml:175
 #, no-c-format
+#, fuzzy
 msgid ""
 "One limitation of the Java language support for annotations is the lack of "
 "annotation inheritance. Really, annotations should have reuse built in, to "
 "allow this kind of thing to work:"
-msgstr ""
+msgstr "어노테이션 용 Java 언어 지원의 한계는 어노테이션 상속의 부족입니다. 실제로 어노테이션은 "
 
 #. Tag: programlisting
 #: interceptors.xml:179
@@ -597,13 +599,13 @@ msgid ""
 "<literal>TransactionInterceptor</literal> and <literal>SecurityInterceptor</"
 "literal>. (And even <literal>TransactionalSecureInterceptor</literal>, if it "
 "exists.)"
-msgstr ""
+msgstr "<literal>@Action</literal>으로 어노테이션된 Web Bean은 <literal>TransactionInterceptor</literal> 및 <literal>SecurityInterceptor</literal>로 바운딩됩니다. (<literal>TransactionalSecureInterceptor</literal>이 있을 경우 이것으로 바운딩됩니다.) "
 
 #. Tag: title
 #: interceptors.xml:195
 #, no-c-format
 msgid "Use of <literal>@Interceptors</literal>"
-msgstr ""
+msgstr "<literal>@Interceptors</literal> 사용 "
 
 #. Tag: para
 #: interceptors.xml:197
@@ -612,7 +614,7 @@ msgid ""
 "The <literal>@Interceptors</literal> annotation defined by the EJB "
 "specification is supported for both enterprise and simple Web Beans, for "
 "example:"
-msgstr ""
+msgstr "EJB 사양에 의해 정의된 <literal>@Interceptors</literal> 어노테이션은 엔터프라이즈 및 단순 Web Beans 모두를 지원합니다. 예: "
 
 #. Tag: programlisting
 #: interceptors.xml:200
@@ -634,19 +636,19 @@ msgstr ""
 #: interceptors.xml:202
 #, no-c-format
 msgid "However, this approach suffers the following drawbacks:"
-msgstr ""
+msgstr "하지만, 이러한 방식은 다음과 같은 결점을 갖습니다: "
 
 #. Tag: para
 #: interceptors.xml:206
 #, no-c-format
 msgid "the interceptor implementation is hardcoded in business code,"
-msgstr ""
+msgstr "인터셉터 구현은 비지니스 코드에서 하드코어되어 있습니다 "
 
 #. Tag: para
 #: interceptors.xml:209
 #, no-c-format
 msgid "interceptors may not be easily disabled at deployment time, and"
-msgstr ""
+msgstr "인터셉터는 배치시 쉽게 비활성화할 수 없습니다, "
 
 #. Tag: para
 #: interceptors.xml:212
@@ -654,11 +656,11 @@ msgstr ""
 msgid ""
 "the interceptor ordering is non-global&#151;it is determined by the order in "
 "which interceptors are listed at the class level."
-msgstr ""
+msgstr "인터셉터 순서는 비전역적입니다&#151;이는 클래스 레벨로 열거된 인터셉터 순서에 의해 결정됩니다. "
 
 #. Tag: para
 #: interceptors.xml:217
 #, no-c-format
 msgid "Therefore, we recommend the use of Web Beans-style interceptor bindings."
-msgstr ""
+msgstr "따라서 Web Beans 형식 인터셉터 바인딩을 사용할 것을 권장합니다.  "
 
