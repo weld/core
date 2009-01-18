@@ -1,23 +1,25 @@
+# translation of intro.po to
 # Language de-DE translations for Introduction_to_Web_Beans package.
 # Automatically generated, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-10 14:18+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-18 23:45+1100\n"
+"Last-Translator: \n"
+"Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: intro.xml:4
 #, no-c-format
 msgid "Getting started with Web Beans"
-msgstr ""
+msgstr "Erste Schritte mit Web Beans"
 
 #. Tag: para
 #: intro.xml:6
@@ -29,12 +31,14 @@ msgid ""
 "probably already written and used hundreds, perhaps thousands of Web Beans. "
 "You might not even remember the first Web Bean you wrote."
 msgstr ""
+"Können Sie es jetzt kaum erwarten Ihr erstes Web Bean zu schreiben? Oder "
+"sind Sie etwas skeptisch und fragen sich, welche Hürden Ihnen bei der Web Beans Spezifikation bevorstehen? Die gute Nachricht ist, dass Sie wahrscheinlich schon hunderte, wenn nicht tausende von Web Beans geschrieben haben. Vielleicht erinnern Sie sich nicht einmal an das erste Web Bean, das Sie je geschrieben haben."
 
 #. Tag: title
 #: intro.xml:13
 #, no-c-format
 msgid "Your first Web Bean"
-msgstr ""
+msgstr "Ihr erstes Web Bean"
 
 #. Tag: para
 #: intro.xml:15
@@ -58,7 +62,7 @@ msgid ""
 "Suppose that we have two existing Java classes, that we've been using for "
 "years in various applications. The first class parses a string into a list "
 "of sentences:"
-msgstr ""
+msgstr "Nehmen wir an, Sie besitzen zwei bestehende Java Klassen, die bis dato in verschiedenen Anwendungen verwendet wurden. Die erste Klasse parst einen String in eine Liste von Sätzen:"
 
 #. Tag: programlisting
 #: intro.xml:29
@@ -68,6 +72,9 @@ msgid ""
 "    public List<String> parse(String text) { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class SentenceParser {\n"
+"    public List<String> parse(String text) { ... }\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:31
@@ -76,7 +83,7 @@ msgid ""
 "The second existing class is a stateless session bean front-end for an "
 "external system that is able to translate sentences from one language to "
 "another:"
-msgstr ""
+msgstr "Bei der zweiten bestehenden Klasse handelt es sich um das Front-End eines \"stateless Session Beans\" für ein externes System, das in der Lage ist Sätze von einer Sprache in eine andere zu übersetzen:"
 
 #. Tag: programlisting
 #: intro.xml:35
@@ -87,12 +94,16 @@ msgid ""
 "    public String translate(String sentence) { ... }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Stateless\n"
+"public class SentenceTranslator implements Translator {\n"
+"    public String translate(String sentence) { ... }\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:37
 #, no-c-format
 msgid "Where <literal>Translator</literal> is the local interface:"
-msgstr ""
+msgstr "Wo <literal>Translator</literal> das lokale Interface ist:"
 
 #. Tag: programlisting
 #: intro.xml:39
@@ -103,6 +114,10 @@ msgid ""
 "    public String translate(String sentence);\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Local\n"
+"public interface Translator {\n"
+"    public String translate(String sentence);\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:41
@@ -110,7 +125,7 @@ msgstr ""
 msgid ""
 "Unfortunately, we don't have a preexisting class that translates whole text "
 "documents. So let's write a Web Bean that does this job:"
-msgstr ""
+msgstr "Leider besitzen wir keine bereits bestehende Klasse die ganze Textdokumente übersetzt. Schreiben wir also ein Web Bean, das diesen Job übernimmt:"
 
 #. Tag: programlisting
 #: intro.xml:44
@@ -138,6 +153,27 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public class TextTranslator {\n"
+"    \n"
+"    private SentenceParser sentenceParser;\n"
+"    private Translator sentenceTranslator;\n"
+"    \n"
+"    @Initializer\n"
+"    TextTranslator(SentenceParser sentenceParser, Translator "
+"sentenceTranslator) {\n"
+"        this.sentenceParser = sentenceParser;\n"
+"        this.sentenceTranslator = sentenceTranslator;\n"
+"    }\n"
+"    \n"
+"    public String translate(String text) {\n"
+"        StringBuilder sb = new StringBuilder();\n"
+"        for (String sentence: sentenceParser.parse(text)) {\n"
+"            sb.append(sentenceTranslator.translate(sentence));\n"
+"        }\n"
+"        return sb.toString();\n"
+"    }\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:46
@@ -145,7 +181,7 @@ msgstr ""
 msgid ""
 "We may obtain an instance of <literal>TextTranslator</literal> by injecting "
 "it into a Web Bean, Servlet or EJB:"
-msgstr ""
+msgstr "Wir erhalten eine Instanz von <literal>TextTranslator</literal> durch dessen Einspeisung in ein Web Bean, Servlet oder EJB:"
 
 #. Tag: programlisting
 #: intro.xml:49
@@ -156,6 +192,10 @@ msgid ""
 "    this.textTranslator = textTranslator;\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Initializer\n"
+"public setTextTranslator(TextTranslator textTranslator) {\n"
+"    this.textTranslator = textTranslator;\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:51
@@ -163,7 +203,7 @@ msgstr ""
 msgid ""
 "Alternatively, we may obtain an instance by directly calling a method of the "
 "Web Bean manager:"
-msgstr ""
+msgstr "Alternativ erhalten wir eine Instanz durch direkten Aufruf einer Methode des Web Bean Managers:"
 
 #. Tag: programlisting
 #: intro.xml:54
@@ -172,6 +212,8 @@ msgid ""
 "<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator."
 "class);]]>"
 msgstr ""
+"<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator."
+"class);]]>"
 
 #. Tag: para
 #: intro.xml:56
@@ -181,7 +223,7 @@ msgid ""
 "no parameters! Is it still a Web Bean? Well, a class that does not have a "
 "constructor with no parameters can still be a Web Bean if it has a "
 "constructor annotated <literal>@Initializer</literal>."
-msgstr ""
+msgstr "Aber warten Sie: <literal>TextTranslator</literal> besitzt keinen Konstruktor ohne Parameter! Handelt es sich noch um ein Web Bean? Nun, eine Klasse, die keinen Konstruktor ohne Parameter besitzt, kann nach wie vor Web Bean sein, falls es einen mit <literal>@Initializer</literal> annotierten Konstruktor besitzt."
 
 #. Tag: para
 #: intro.xml:61
@@ -194,6 +236,9 @@ msgid ""
 "Bean. The Web Bean manager will inject other Web Beans to the parameters of "
 "the constructor or method."
 msgstr ""
+"Wie Sie wahrscheinlich bereits erraten haben, hat die <literal>@Initializer</literal>-Annotation etwas mit Dependency-Einspeisung zu tun! <literal>@Initializer</literal> "
+"kann am Konstruktor oder der Methode eines Web Beans angewendet werden und teilt dem Web "
+"Bean Manager mit, diesen Konstruktor oder diese Methode bei Instantiierung des Web Beans aufzurufen. Der Web Bean Manager speist andere Web Beans in die Parameter des Konstruktors oder der Methode ein."
 
 #. Tag: para
 #: intro.xml:68
@@ -213,13 +258,13 @@ msgstr ""
 #: intro.xml:80
 #, no-c-format
 msgid "What is a Web Bean?"
-msgstr ""
+msgstr "Was ist ein Web Bean?"
 
 #. Tag: para
 #: intro.xml:82
 #, no-c-format
 msgid "So what, <emphasis>exactly</emphasis>, is a Web Bean?"
-msgstr ""
+msgstr "Was also <emphasis>genau</emphasis> ist ein Web Bean?"
 
 #. Tag: para
 #: intro.xml:84
@@ -260,14 +305,13 @@ msgstr ""
 #: intro.xml:105
 #, no-c-format
 msgid "the lifecycle of each instance of the Web Bean and"
-msgstr ""
+msgstr "der Lebenszyklus jeder Instanz des Web Beans und"
 
 #. Tag: para
 #: intro.xml:108
 #, no-c-format
-msgid ""
-"which clients share a reference to a particular instance of the Web Bean."
-msgstr ""
+msgid "which clients share a reference to a particular instance of the Web Bean."
+msgstr "Welche Clients teilen sich eine Referenz zu einer bestimmten Instanz des Web Beans."
 
 #. Tag: para
 #: intro.xml:113
@@ -344,37 +388,37 @@ msgstr ""
 #: intro.xml:153
 #, no-c-format
 msgid "A Web Bean comprises:"
-msgstr ""
+msgstr "Ein Web Bean besteht aus:"
 
 #. Tag: para
 #: intro.xml:156
 #, no-c-format
 msgid "A (nonempty) set of API types"
-msgstr ""
+msgstr "Einem (nicht leeren) Satz von API-Typen"
 
 #. Tag: para
 #: intro.xml:157
 #, no-c-format
 msgid "A (nonempty) set of binding annotation types"
-msgstr ""
+msgstr "Einem (nicht leeren) Satz von bindenden Annotationstypen"
 
 #. Tag: para
 #: intro.xml:158
 #, no-c-format
 msgid "A scope"
-msgstr ""
+msgstr "Einem Geltungsbereich"
 
 #. Tag: para
 #: intro.xml:159
 #, no-c-format
 msgid "A deployment type"
-msgstr ""
+msgstr "Einem Deployment-Typ"
 
 #. Tag: para
 #: intro.xml:160
 #, no-c-format
 msgid "Optionally, a Web Bean name"
-msgstr ""
+msgstr "Optional einem Web Bean Namen"
 
 #. Tag: para
 #: intro.xml:161
@@ -386,19 +430,19 @@ msgstr ""
 #: intro.xml:162
 #, no-c-format
 msgid "A Web Bean implementation"
-msgstr ""
+msgstr "Einer Web Bean Implementierung"
 
 #. Tag: para
 #: intro.xml:167
 #, no-c-format
 msgid "Let's see what some of these terms mean, to the Web Bean developer."
-msgstr ""
+msgstr "Sehen wir uns jetzt genauer an, was diese Begriffe für einen Entwickler von Web Beans bedeuten."
 
 #. Tag: title
 #: intro.xml:170
 #, no-c-format
 msgid "API types, binding types and dependency injection"
-msgstr ""
+msgstr "API-Typen, Binding-Typen und Dependency-Einspeisung"
 
 #. Tag: para
 #: intro.xml:172
@@ -446,7 +490,7 @@ msgstr ""
 #: intro.xml:191
 #, no-c-format
 msgid "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
-msgstr ""
+msgstr "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
 
 #. Tag: para
 #: intro.xml:193
@@ -482,6 +526,9 @@ msgid ""
 "public class CreditCardPaymentProcessor \n"
 "    implements PaymentProcessor { ... }]]>"
 msgstr ""
+"<![CDATA[@CreditCard\n"
+"public class CreditCardPaymentProcessor \n"
+"    implements PaymentProcessor { ... }]]>"
 
 #. Tag: para
 #: intro.xml:206
@@ -506,7 +553,7 @@ msgstr ""
 #: intro.xml:217
 #, no-c-format
 msgid "Deployment types"
-msgstr ""
+msgstr "Deployment-Typen"
 
 #. Tag: para
 #: intro.xml:219
@@ -550,6 +597,12 @@ msgid ""
 "    }\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Mock\n"
+"public class MockSentenceTranslator implements Translator {\n"
+"    public String translate(String sentence) {\n"
+"        return \"Lorem ipsum dolor sit amet\";\n"
+"    }\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:236
@@ -572,7 +625,7 @@ msgstr ""
 #: intro.xml:246
 #, no-c-format
 msgid "Scope"
-msgstr ""
+msgstr "Geltungsbereich"
 
 #. Tag: para
 #: intro.xml:248
@@ -592,6 +645,8 @@ msgid ""
 "For example, any web application may have <emphasis>session scoped</"
 "emphasis> Web Beans:"
 msgstr ""
+"Web-Anwendungen können zum Beispiel <emphasis>Session-begrenzte</"
+"emphasis> Web Beans besitzen:"
 
 #. Tag: programlisting
 #: intro.xml:257
@@ -600,6 +655,8 @@ msgid ""
 "<![CDATA[@SessionScoped\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@SessionScoped\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: intro.xml:259
@@ -629,7 +686,7 @@ msgstr ""
 #: intro.xml:272
 #, no-c-format
 msgid "Web Bean names and Unified EL"
-msgstr ""
+msgstr "Web Bean Namen und Unified EL"
 
 #. Tag: para
 #: intro.xml:274
@@ -646,12 +703,14 @@ msgid ""
 "<![CDATA[@SessionScoped @Named(\"cart\")\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@SessionScoped @Named(\"cart\")\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: intro.xml:280
 #, no-c-format
 msgid "Now we can easily use the Web Bean in any JSF or JSP page:"
-msgstr ""
+msgstr "Jetzt können wir das Web Bean einfach in einer beliebigen JSF- oder JSP-Seite verwenden:"
 
 #. Tag: programlisting
 #: intro.xml:282
@@ -661,12 +720,14 @@ msgid ""
 "    ....\n"
 "</h:dataTable>]]>"
 msgstr ""
+"<![CDATA[<h:dataTable value=\"#{cart.lineItems}\" var=\"item\">\n"
+"    ....\n"
+"</h:dataTable>]]>"
 
 #. Tag: para
 #: intro.xml:284
 #, no-c-format
-msgid ""
-"It's even easier to just let the name be defaulted by the Web Bean manager:"
+msgid "It's even easier to just let the name be defaulted by the Web Bean manager:"
 msgstr ""
 
 #. Tag: programlisting
@@ -676,6 +737,8 @@ msgid ""
 "<![CDATA[@SessionScoped @Named\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@SessionScoped @Named\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: intro.xml:289
@@ -689,7 +752,7 @@ msgstr ""
 #: intro.xml:295
 #, no-c-format
 msgid "Interceptor binding types"
-msgstr ""
+msgstr "Interzeptor Binding-Typen"
 
 #. Tag: para
 #: intro.xml:297
@@ -717,6 +780,9 @@ msgid ""
 "@Interceptors(TransactionInterceptor.class)\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@SessionScoped \n"
+"@Interceptors(TransactionInterceptor.class)\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: intro.xml:307
@@ -733,6 +799,8 @@ msgid ""
 "<![CDATA[@SessionScoped @Transactional\n"
 "public class ShoppingCart { ... }]]>"
 msgstr ""
+"<![CDATA[@SessionScoped @Transactional\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #: intro.xml:313
@@ -746,7 +814,7 @@ msgstr ""
 #: intro.xml:321
 #, no-c-format
 msgid "What kinds of objects can be Web Beans?"
-msgstr ""
+msgstr "Welche Art von Objekten können Web Beans sein?"
 
 #. Tag: para
 #: intro.xml:323
@@ -760,7 +828,7 @@ msgstr ""
 #: intro.xml:327
 #, no-c-format
 msgid "Simple Web Beans"
-msgstr ""
+msgstr "Einfache Web Beans"
 
 #. Tag: para
 #: intro.xml:329
@@ -817,7 +885,7 @@ msgstr ""
 #: intro.xml:358
 #, no-c-format
 msgid "Enterprise Web Beans"
-msgstr ""
+msgstr "Enterprise Web Beans"
 
 #. Tag: para
 #: intro.xml:360
@@ -866,6 +934,15 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Stateful @SessionScoped\n"
+"public class ShoppingCart {\n"
+"\n"
+"    ...\n"
+"    \n"
+"    @Remove\n"
+"    public void destroy() {}\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:380
@@ -886,7 +963,7 @@ msgstr ""
 #: intro.xml:390
 #, no-c-format
 msgid "concurrency management,"
-msgstr ""
+msgstr "Nebenläufigkeits-Management,"
 
 #. Tag: para
 #: intro.xml:393
@@ -906,7 +983,7 @@ msgstr ""
 #: intro.xml:400
 #, no-c-format
 msgid "timers and asynchronous methods,"
-msgstr ""
+msgstr "Timer und asynchrone Methoden,"
 
 #. Tag: para
 #: intro.xml:404
@@ -959,7 +1036,7 @@ msgstr ""
 #: intro.xml:427
 #, no-c-format
 msgid "Producer methods"
-msgstr ""
+msgstr "Producer-Methoden"
 
 #. Tag: para
 #: intro.xml:429
@@ -987,19 +1064,28 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@ApplicationScoped\n"
+"public class Generator {\n"
+"\n"
+"    private Random random = new Random( System.currentTimeMillis() );\n"
+"    \n"
+"    @Produces @Random int next() {\n"
+"        return random.nextInt(100);\n"
+"    }\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:437
 #, no-c-format
-msgid ""
-"The result of a producer method is injected just like any other Web Bean."
-msgstr ""
+msgid "The result of a producer method is injected just like any other Web Bean."
+msgstr "Einspeisung des Ergebnisses einer Producer-Methode erfolgt wie bei einem regulären Web Bean."
 
 #. Tag: programlisting
 #: intro.xml:439
 #, no-c-format
 msgid "<![CDATA[@Random int randomNumber]]>"
-msgstr ""
+msgstr "<![CDATA[@Random int randomNumber]]>"
 
 #. Tag: para
 #: intro.xml:441
@@ -1024,6 +1110,9 @@ msgid ""
 "    return createConnection( user.getId(), user.getPassword() );\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
+"    return createConnection( user.getId(), user.getPassword() );\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:449
@@ -1041,6 +1130,9 @@ msgid ""
 "    connection.close();\n"
 "}]]>"
 msgstr ""
+"<![CDATA[void close(@Disposes Connection connection) {\n"
+"    connection.close();\n"
+"}]]>"
 
 #. Tag: para
 #: intro.xml:453
@@ -1062,7 +1154,7 @@ msgstr ""
 #: intro.xml:461
 #, no-c-format
 msgid "JMS endpoints"
-msgstr ""
+msgstr "JMS-Endpunkte"
 
 #. Tag: para
 #: intro.xml:463
@@ -1073,3 +1165,4 @@ msgid ""
 "objects required to send messages to queues and topics. We'll discuss JMS "
 "endpoints in <xref linkend=\"jms\"/>."
 msgstr ""
+
