@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: interceptors\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-18 23:35+1000\n"
+"PO-Revision-Date: 2009-01-18 23:51+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -551,12 +551,11 @@ msgstr "인터셉터 바인딩 유형 상속 "
 #. Tag: para
 #: interceptors.xml:175
 #, no-c-format
-#, fuzzy
 msgid ""
 "One limitation of the Java language support for annotations is the lack of "
 "annotation inheritance. Really, annotations should have reuse built in, to "
 "allow this kind of thing to work:"
-msgstr "어노테이션 용 Java 언어 지원의 한계는 어노테이션 상속의 부족입니다. 실제로 어노테이션은 "
+msgstr "어노테이션에 대한 Java 언어 지원 한계는 어노테이션 상속의 결여입니다. 실제로 어노테이션은 재사용 기능이 내장되어 있어 이러한 기능이 작동하게 해야 합니다: "
 
 #. Tag: programlisting
 #: interceptors.xml:179
