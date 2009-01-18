@@ -5,11 +5,11 @@ import java.util.Set;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.binding.CurrentLiteral;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.introspector.jlr.AnnotatedFieldImpl;
+import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.test.unit.AbstractTest;
 import org.testng.annotations.Test;
 
