@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: interceptors\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-18 23:51+1000\n"
+"PO-Revision-Date: 2009-01-19 01:00+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -572,7 +572,7 @@ msgid ""
 "types. The interceptor bindings are transitive&#151;any Web Bean with the "
 "first interceptor binding inherits the interceptor bindings declared as meta-"
 "annotations."
-msgstr ""
+msgstr "다행히도 Web Beans는 이러한 생략된 Java의 기능을 해결하여 하나의 인터셉터 바인딩 유형을 다른 인터셉터 바인딩 유형과 어노테이션할 수 있습니다. 인터셉터 바인딩은 트렌젝션 가능하여 &#151; 첫번째 인터셉터 바인딩이 있는 Web Bean은 메타 어노테이션으로 명시된 인터셉터 바인딩을 상속할 수 있습니다. "
 
 #. Tag: programlisting
 #: interceptors.xml:186
