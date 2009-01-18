@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-19 09:09+1100\n"
+"PO-Revision-Date: 2009-01-19 09:14+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -695,7 +695,7 @@ msgstr ""
 #: intro.xml:267
 #, no-c-format
 msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\"/>."
-msgstr ""
+msgstr "In <xref linkend=\"scopescontexts\"/> gehen wir näher auf Geltungsbereiche ein."
 
 #. Tag: title
 #: intro.xml:272
