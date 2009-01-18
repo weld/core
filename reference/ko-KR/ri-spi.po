@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-08 14:07+0000\n"
-"PO-Revision-Date: 2009-01-18 00:35+1000\n"
+"PO-Revision-Date: 2009-01-18 11:39+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -354,7 +355,7 @@ msgid ""
 "however you may want to alter the binding and lookup (for example in an "
 "environment where JNDI isn't available). To do this, implement <literal>org."
 "jboss.webbeans.spi.resources.Naming</literal>:"
-msgstr ""
+msgstr "Web Beans RI는 기준에 따라 JNDI 바인딩 및 lookup을 구현하지만, 바인딩 및 lookup을 변경하고자 하실 수 있습니다 (예를 들어 JNDI를 사용할 수 없는 환경에서). 이를 위해 <literal>org.jboss.webbeans.spi.resources.Naming</literal>을 구현합니다:  "
 
 #. Tag: programlisting
 #: ri-spi.xml:90
@@ -408,7 +409,7 @@ msgstr ""
 #: ri-spi.xml:92 ri-spi.xml:113
 #, no-c-format
 msgid "and tell the RI to use it:"
-msgstr ""
+msgstr "RI에게 사용할 것을 알립니다: "
 
 #. Tag: programlisting
 #: ri-spi.xml:96
@@ -420,7 +421,7 @@ msgstr "org.jboss.webbeans.resources.spi.Naming=com.acme.MyNaming"
 #: ri-spi.xml:101
 #, no-c-format
 msgid "Resource loading"
-msgstr ""
+msgstr "리소스 불러오기 "
 
 #. Tag: para
 #: ri-spi.xml:103
@@ -432,6 +433,8 @@ msgid ""
 "environments. If this is case, you can implement <literal>org.jboss.webbeans."
 "spi.ResourceLoader</literal>:"
 msgstr ""
+"Web Beans RI는 여러번 classpath에서 클래스 및 리소스를 불러와야 합니다. 기본값으로 RI를 불러오기 위해 사용되었던 동일한 classloader에서 로딩되지만, 일부 환경에서는 작동하지 않을 수 도 있습니다. 이러한 경우, <literal>org.jboss.webbeans."
+"spi.ResourceLoader</literal>를 구현할 수 있습니다:  "
 
 #. Tag: programlisting
 #: ri-spi.xml:111
@@ -507,7 +510,7 @@ msgstr "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
 #: ri-spi.xml:124
 #, no-c-format
 msgid "The contract with the container"
-msgstr ""
+msgstr "컨테이너와 계약 "
 
 #. Tag: para
 #: ri-spi.xml:126
@@ -515,13 +518,13 @@ msgstr ""
 msgid ""
 "There are a number of requirements that the Web Beans RI places on the "
 "container for correct functioning that fall outside implementation of APIs"
-msgstr ""
+msgstr "API의 외부 구현에서의 올바른 기능을 실행하게 하기 위해 Web Beans RI이 컨테이너에 위치하게 해야 할 여러 요구 사항이 있습니다 "
 
 #. Tag: term
 #: ri-spi.xml:134
 #, no-c-format
 msgid "Classloader isolation"
-msgstr ""
+msgstr "Classloader 분리 "
 
 #. Tag: para
 #: ri-spi.xml:138
@@ -531,13 +534,13 @@ msgid ""
 "deployment of multiple applications, you must enable, automatically, or "
 "through user configuation, classloader isolation for each Web Beans "
 "application."
-msgstr ""
+msgstr "Web Beans RI를 다수의 애플리케이션의 운용을 지원하는 환경으로 통합할 경우, 각각의 Web Beans 애플리케이션에 대한 클래스로더 분리를 자동으로 또는 사용자 설정을 통해 반드시 활성화해야 합니다.   "
 
 #. Tag: term
 #: ri-spi.xml:147
 #, no-c-format
 msgid "Servlet listener"
-msgstr ""
+msgstr "Servlet 청취자 "
 
 #. Tag: para
 #: ri-spi.xml:151
@@ -547,13 +550,13 @@ msgid ""
 "register <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> as a "
 "Servlet listener, either automatically, or through user configuration, for "
 "each Web Beans application which uses Servlet."
-msgstr ""
+msgstr "Web Beans를 Servlet 환경으로 통합할 경우, Servlet을 사용하는 각각의 Web Beans 애플리케이션에 대해 자동으로 또는 사용자 설정을 통해 <literal>org.jboss.webbeans.servlet.WebBeansListener</literal>를 Servlet 청취자로 등록해야 합니다.  "
 
 #. Tag: term
 #: ri-spi.xml:162
 #, no-c-format
 msgid "Session Bean Interceptor"
-msgstr ""
+msgstr "Session Bean 인터셉터 "
 
 #. Tag: para
 #: ri-spi.xml:166
@@ -564,13 +567,13 @@ msgid ""
 "a EJB interceptor for all EJBs in the application, either automatically, or "
 "through user configuration, for each Web Beans application which uses "
 "enterprise beans."
-msgstr ""
+msgstr "Web Beans를 EJB 환경으로 통합하고자 할 경우 엔터프라이즈 beans를 사용하는 각각의 Web Beans 애플리케이션 용으로 모든 EJB 애플리케이션에 대해 EJB 인터셉터로서 <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal>를 자동으로 또는 사용자 설정을 통해 등록해야 합니다.  "
 
 #. Tag: term
 #: ri-spi.xml:177
 #, no-c-format
 msgid "The <literal>webbeans-ri.jar</literal>"
-msgstr ""
+msgstr "<literal>webbeans-ri.jar</literal> "
 
 #. Tag: para
 #: ri-spi.xml:181
@@ -580,5 +583,5 @@ msgid ""
 "deployment of applications, you must insert the <literal>webbeans-ri.jar</"
 "literal> into the applications isolated classloader. It cannot be loaded "
 "from a shared classloader."
-msgstr ""
+msgstr "Web Beans를 애플리케이션 운용을 지원하는 환경으로 통합하고자 할 경우, <literal>webbeans-ri.jar</literal>를 애플리케이션 분리 classloader로 삽입해야 합니다. 이는 공유 classloader에서 불러올 수 없습니다.  "
 
