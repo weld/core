@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-19 01:02+1000\n"
+"PO-Revision-Date: 2009-01-19 17:28+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -54,7 +55,7 @@ msgstr "이벤트 생산자만 옵저버에서 연결 해제되는 것이 아니
 msgid ""
 "observers can specify a combination of \"selectors\" to narrow the set of "
 "event notifications they will receive, and"
-msgstr ""
+msgstr "옵저버는 \"선택자\" 조합을 지정하여 이벤트 통지 모음의 범위를 좁힙니다. "
 
 #. Tag: para
 #: events.xml:22
@@ -97,7 +98,7 @@ msgid ""
 "emphasis>. Observer methods may also specify \"selectors\", which are just "
 "instances of Web Beans binding types. When a binding type is used as an "
 "event selector, it is called an <emphasis>event binding type</emphasis>."
-msgstr ""
+msgstr "어노테이션된 매개 변수는 <emphasis>이벤트 매개 변수</emphasis>라고 부릅니다. 이벤트 매개 변수의 유형은 옵저버된 <emphasis>이벤트 유형</emphasis>입니다. 옵저버 방식은  Web Beans 바인딩 유형의 인스터스인 \"선택자\"를 지정할 수 있습니다. 바인딩 유형이 이벤트 선택자로 사용될 경우, 이를 <emphasis>이벤트 바인딩 유형</emphasis>이라고 부릅니다.  "
 
 #. Tag: programlisting
 #: events.xml:41

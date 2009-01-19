@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: specialization\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-16 11:03+1000\n"
+"PO-Revision-Date: 2009-01-19 16:38+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 
 #. Tag: title
@@ -56,7 +57,7 @@ msgstr ""
 msgid ""
 "But in our staging environment, we override that implementation of "
 "<literal>PaymentProcessor</literal> with a different Web Bean:"
-msgstr ""
+msgstr "staging 환경에서, 다른 Web Bean을 사용하여 <literal>PaymentProcessor</literal> 구현을 덮어쓰기 합니다:  "
 
 #. Tag: programlisting
 #: specialization.xml:16
@@ -85,6 +86,8 @@ msgid ""
 "default deployment type <literal>@Production</literal>, and therefore "
 "clients with the following injection point:"
 msgstr ""
+"<literal>StagingCreditCardPaymentProcessor</literal>를 사용하여 실행하려는 작업은 "
+"특정 시스템 배치에 <literal>AsyncPaymentProcessor</literal>를 완전 교체하는 것입니다. 여기서 배치 유형 <literal>@Staging</literal>은 기본값 배치 유형 <literal>@Production</literal> 보다 높은 우선 순위를 갖게 되므로 클라이언트는 다음과 같은 삽입 지점을 사용하게 됩니다:  "
 
 #. Tag: programlisting
 #: specialization.xml:24
@@ -98,13 +101,13 @@ msgstr "@CreditCard PaymentProcessor ccpp"
 msgid ""
 "Would receive an instance of <literal>StagingCreditCardPaymentProcessor</"
 "literal>."
-msgstr ""
+msgstr "<literal>StagingCreditCardPaymentProcessor</literal> 인스턴스를 받고자 합니다. "
 
 #. Tag: para
 #: specialization.xml:28
 #, no-c-format
 msgid "Unfortunately, there are several traps we can easily fall into:"
-msgstr ""
+msgstr "불행하게도 여기에는 몇 가지 함정이 있습니다: "
 
 #. Tag: para
 #: specialization.xml:32
@@ -112,7 +115,7 @@ msgstr ""
 msgid ""
 "the higher-priority Web Bean may not implement all the API types of the Web "
 "Bean that it attempts to override,"
-msgstr ""
+msgstr "높은 우선 순위의 Web Bean은 덮어쓰기하려는 Web Bean의 모든 API 유형을 구현할 수 없습니다. "
 
 #. Tag: para
 #: specialization.xml:36
@@ -120,7 +123,7 @@ msgstr ""
 msgid ""
 "the higher-priority Web Bean may not declare all the binding types of the "
 "Web Bean that it attempts to override,"
-msgstr ""
+msgstr "높은 우선 순위의 Web Bean은 덮어쓰기하려는 Web Bean의 모든 바인딩 유형을 명시할 수 없습니다. "
 
 #. Tag: para
 #: specialization.xml:40
@@ -128,7 +131,7 @@ msgstr ""
 msgid ""
 "the higher-priority Web Bean might not have the same name as the Web Bean "
 "that it attempts to override, or"
-msgstr ""
+msgstr "높은 우선 순위의 Web Bean은 덮어 쓰기하려는 Web Bean과 동일한 이름을 갖을 수 없습니다. "
 
 #. Tag: para
 #: specialization.xml:44
@@ -136,7 +139,7 @@ msgstr ""
 msgid ""
 "the Web Bean that it attempts to override might declare a producer method, "
 "disposal method or observer method."
-msgstr ""
+msgstr "덮어쓰기하려는 Web Bean은 생산자 방식, 폐기 방식 또는 옵저버 방식을 명시할 수 있습니다. "
 
 #. Tag: para
 #: specialization.xml:49
@@ -145,17 +148,18 @@ msgid ""
 "In each of these cases, the Web Bean that we tried to override could still "
 "be called at runtime. Therefore, overriding is somewhat prone to developer "
 "error."
-msgstr ""
+msgstr "이러한 경우, 덮어 쓰기하려는 Web Bean은 런타임시 호출 가능해야 합니다 따라서, 덮어쓰기는 다소 개발자 오류를 초래하는 경우가 있습니다. "
 
 #. Tag: para
 #: specialization.xml:52
 #, no-c-format
+#, fuzzy
 msgid ""
 "Web Beans provides a special feature, called <emphasis>specialization</"
 "emphasis>, that helps the developer avoid these traps. Specialization looks "
 "a little esoteric at first, but it's easy to use in practice, and you'll "
 "really appreciate the extra security it provides."
-msgstr ""
+msgstr "Web Beans는 <emphasis>특수화</emphasis>라는 특별 기능을 제공하여, 개발자들이 이러한 함정에 빠지지 않도록 돕습니다. "
 
 #. Tag: title
 #: specialization.xml:58

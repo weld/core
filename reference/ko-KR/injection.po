@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-18 00:43+1000\n"
+"PO-Revision-Date: 2009-01-19 14:48+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,24 +17,26 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
 "\n"
+"\n"
+"\n"
 
 #. Tag: title
 #: injection.xml:4
 #, no-c-format
 msgid "Dependency injection"
-msgstr ""
+msgstr "의존성 삽입 "
 
 #. Tag: para
 #: injection.xml:6
 #, no-c-format
 msgid "Web Beans supports three primary mechanisms for dependency injection:"
-msgstr ""
+msgstr "Web Beans는 의존성 삽입에 대한 세 가지 주요 메카니즘을 지원합니다: "
 
 #. Tag: para
 #: injection.xml:8
 #, no-c-format
 msgid "Constructor parameter injection:"
-msgstr ""
+msgstr "생성자 매개 변수 삽입: "
 
 #. Tag: programlisting
 #: injection.xml:10
@@ -66,7 +68,7 @@ msgstr ""
 #: injection.xml:12
 #, no-c-format
 msgid "<emphasis>Initializer</emphasis> method parameter injection:"
-msgstr ""
+msgstr "<emphasis>초기화</emphasis> 방식 매개 변수 삽입: "
 
 #. Tag: programlisting
 #: injection.xml:14
@@ -98,7 +100,7 @@ msgstr ""
 #: injection.xml:16
 #, no-c-format
 msgid "And direct field injection:"
-msgstr ""
+msgstr "직접적 영역 삽입: "
 
 #. Tag: programlisting
 #: injection.xml:18
@@ -838,7 +840,7 @@ msgstr ""
 msgid ""
 "<literal>@Mock</literal> and <literal>@Staging</literal> deployment types "
 "for testing"
-msgstr ""
+msgstr "테스트 용 <literal>@Mock</literal> 및 <literal>@Staging</literal> 배치 유형 "
 
 #. Tag: para
 #: injection.xml:294
