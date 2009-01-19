@@ -17,8 +17,11 @@
 
 package org.jboss.webbeans.ejb;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
@@ -34,10 +37,11 @@ import org.jboss.webbeans.ejb.spi.EjbDescriptor;
  */
 public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> implements EjbDescriptor<T>
 {
- 
+
    private final Map<Class<?>, String> localBusinessInterfacesJndiNames;
    private final EjbDescriptor<T> delegate;
-   
+   public List<Method> removeMethods;
+
    public InternalEjbDescriptor(EjbDescriptor<T> ejbDescriptor)
    {
       this.delegate = ejbDescriptor;
@@ -46,21 +50,31 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> impleme
       {
          localBusinessInterfacesJndiNames.put(businessInterfaceDescriptor.getInterface(), businessInterfaceDescriptor.getJndiName());
       }
-      // Internally, Object.class is added to the type hierachy of an 
+      // Internally, Object.class is added to the type hierachy of an
       // EnterpriseBean, so we need to represent that here. We can just use any
       // of the local business interfaces
       localBusinessInterfacesJndiNames.put(Object.class, ejbDescriptor.getLocalBusinessInterfaces().iterator().next().getJndiName());
+      removeMethods = new ArrayList<Method>();
+      for (Method removeMethod : ejbDescriptor.getRemoveMethods())
+      {
+         removeMethods.add(removeMethod);
+      }
    }
-   
+
    public Map<Class<?>, String> getLocalBusinessInterfacesJndiNames()
    {
       return Collections.unmodifiableMap(localBusinessInterfacesJndiNames);
    }
-   
+
+   public List<Method> getRemoveMethods()
+   {
+      return Collections.unmodifiableList(removeMethods);
+   }
+
    @Override
    protected EjbDescriptor<T> delegate()
    {
       return delegate;
    }
-   
+
 }

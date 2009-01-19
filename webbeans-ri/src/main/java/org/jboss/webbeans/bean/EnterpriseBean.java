@@ -50,6 +50,7 @@ import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Proxies;
+import org.jboss.webbeans.util.Reflections;
 
 /**
  * An enterprise bean representation
@@ -64,11 +65,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
    // The EJB descriptor
    private InternalEjbDescriptor<T> ejbDescriptor;
-   
-   private Class<T> proxyClass;
 
-   // The remove method on the bean class (do not call!)
-   private AnnotatedMethod<?> removeMethod;
+   private Class<T> proxyClass;
 
    /**
     * Creates a simple, annotation defined Enterprise Web Bean
@@ -125,13 +123,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       super.init();
       initProxyClass();
-      initRemoveMethod();
       initInjectionPoints();
       checkEnterpriseBeanTypeAllowed();
       checkEnterpriseScopeAllowed();
       checkConflictingRoles();
       checkSpecialization();
-      checkRemoveMethod();
    }
 
    /**
@@ -141,15 +137,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected void initInjectionPoints()
    {
       super.initInjectionPoints();
-      if (removeMethod != null)
-      {
-         for (AnnotatedParameter<?> injectable : removeMethod.getParameters())
-         {
-            annotatedInjectionPoints.add(injectable);
-         }
-      }
    }
-   
+
    protected void initTypes()
    {
       types = new HashSet<Type>();
@@ -159,14 +148,14 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       types.add(Object.class);
    }
-   
+
    protected void initProxyClass()
    {
       ProxyFactory proxyFactory = Proxies.getProxyFactory(getTypes());
-      
+
       @SuppressWarnings("unchecked")
       Class<T> proxyClass = proxyFactory.createClass();
-      
+
       this.proxyClass = proxyClass;
    }
 
@@ -218,83 +207,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    }
 
    /**
-    * Initializes the remvoe method
-    */
-   protected void initRemoveMethod()
-   {
-
-      // >1 @Destructor
-      if (getAnnotatedItem().getAnnotatedMethods(Destructor.class).size() > 1)
-      {
-         throw new DefinitionException("Multiple @Destructor methods not allowed on " + getAnnotatedItem());
-      }
-
-      if (getAnnotatedItem().getAnnotatedMethods(Destructor.class).size() == 1)
-      {
-         AnnotatedMethod<?> destructorMethod = getAnnotatedItem().getAnnotatedMethods(Destructor.class).iterator().next();
-         for (Method removeMethod : ejbDescriptor.getRemoveMethods())
-         {
-            if (removeMethod != null && destructorMethod.isEquivalent(removeMethod))
-            {
-               this.removeMethod = destructorMethod;
-               return;
-            }
-         }
-         throw new DefinitionException("Method annotated @Destructor is not an EJB remove method on " + toString());
-      }
-      Set<Method> noArgsRemoveMethods = new HashSet<Method>();
-      for (Method removeMethod : ejbDescriptor.getRemoveMethods())
-      {
-         if (removeMethod.getParameterTypes().length == 0)
-         {
-            noArgsRemoveMethods.add(removeMethod);
-         }
-      }
-      if (noArgsRemoveMethods.size() == 1)
-      {
-         this.removeMethod = annotatedItem.getMethod(noArgsRemoveMethods.iterator().next());
-         return;
-      }
-
-      if (!getScopeType().equals(Dependent.class))
-      {
-         throw new DefinitionException("Only @Dependent scoped enterprise beans can be without remove methods " + toString());
-      }
-
-   }
-
-   /**
-    * Validates the remove method
-    */
-   private void checkRemoveMethod()
-   {
-      if (removeMethod == null)
-      {
-         return;
-      }
-      else if (ejbDescriptor.isStateless())
-      {
-         throw new DefinitionException("Can't define a remove method on SLSBs");
-      }
-      if (removeMethod.isAnnotationPresent(Initializer.class))
-      {
-         throw new DefinitionException("Remove methods cannot be initializers on " + removeMethod.getName());
-      }
-      else if (removeMethod.isAnnotationPresent(Produces.class))
-      {
-         throw new DefinitionException("Remove methods cannot be producers on " + removeMethod.getName());
-      }
-      else if (removeMethod.getAnnotatedParameters(Disposes.class).size() > 0)
-      {
-         throw new DefinitionException("Remove method can't have @Disposes annotated parameters on " + removeMethod.getName());
-      }
-      else if (removeMethod.getAnnotatedParameters(Observes.class).size() > 0)
-      {
-         throw new DefinitionException("Remove method can't have @Observes annotated parameters on " + removeMethod.getName());
-      }
-   }
-
-   /**
     * Creates an instance of the bean
     * 
     * @return The instance
@@ -306,7 +218,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          DependentContext.INSTANCE.setActive(true);
          T instance = proxyClass.newInstance();
-         ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler(this)); 
+         ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler(this, ejbDescriptor.getRemoveMethods()));
          return instance;
       }
       catch (InstantiationException e)
@@ -335,18 +247,10 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    @Override
    public void destroy(T instance)
    {
-      try
+      Boolean isDestroyed = (Boolean) Reflections.invokeAndWrap("isDestroyed", null, instance, null);
+      if (isDestroyed.booleanValue())
       {
-         DependentContext.INSTANCE.setActive(true);
-         removeMethod.invokeOnInstance(instance, manager);
-      }
-      catch (Exception e)
-      {
-         log.error("Error destroying " + toString(), e);
-      }
-      finally
-      {
-         DependentContext.INSTANCE.setActive(false);
+         return;
       }
    }
 
@@ -392,11 +296,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          throw new RuntimeException();
       }
 
-   }
-
-   public AnnotatedMethod<?> getRemoveMethod()
-   {
-      return removeMethod;
    }
 
    /**
@@ -454,9 +353,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
    }
 
-   public void preDestroy(T target)
+   public void preDestroy(T instance)
    {
-
    }
 
    @Override
@@ -468,6 +366,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    public InternalEjbDescriptor<T> getEjbDescriptor()
    {
       return ejbDescriptor;
+   }
+
+   public boolean canCallRemoveMethods()
+   {
+      return getEjbDescriptor().isStateful() && Dependent.class.equals(getScopeType());
    }
 
 }

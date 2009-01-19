@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
@@ -31,47 +30,87 @@ import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.literal.NewLiteral;
 
 /**
+ * Represents a @New enterprise bean
  * 
  * @author Nicklas Karlsson
- *
  */
 public class NewEnterpriseBean<T> extends EnterpriseBean<T>
 {
    private static Set<Annotation> NEW_BINDING_SET = new HashSet<Annotation>(Arrays.asList(new NewLiteral()));
 
+   /**
+    * Creates an instance of a NewEnterpriseBean from an annotated class
+    * 
+    * @param clazz The annotated class
+    * @param manager The Web Beans manager
+    * @return a new NewEnterpriseBean instance
+    */
    public static <T> NewEnterpriseBean<T> of(AnnotatedClass<T> clazz, ManagerImpl manager)
    {
       return new NewEnterpriseBean<T>(clazz, manager);
    }
 
+   /**
+    * Creates an instance of a NewEnterpriseBean from a class
+    * 
+    * @param clazz The class
+    * @param manager The Web Beans manager
+    * @return a new NewEnterpriseBean instance
+    */
    public static <T> NewEnterpriseBean<T> of(Class<T> clazz, ManagerImpl manager)
    {
       return of(AnnotatedClassImpl.of(clazz), manager);
    }
 
+   /**
+    * Protected constructor
+    * 
+    * @param type An annotated class
+    * @param manager The Web Beans manager
+    */
    protected NewEnterpriseBean(AnnotatedClass<T> type, ManagerImpl manager)
    {
       super(type, manager);
    }
 
+   /**
+    * Gets the scope type
+    * 
+    * @return @Dependent
+    */
    @Override
    public Class<? extends Annotation> getScopeType()
    {
       return Dependent.class;
    }
 
+   /**
+    * Gets the deployment type
+    * 
+    * @return The standard deployment type
+    */
    @Override
    public Class<? extends Annotation> getDeploymentType()
    {
       return Standard.class;
    }
 
+   /**
+    * Gets the name of the bean
+    * 
+    * @return null
+    */
    @Override
    public String getName()
    {
       return null;
    }
 
+   /**
+    * Gets the bindings
+    * 
+    * @returns @New
+    */
    @Override
    public Set<Annotation> getBindings()
    {

@@ -32,29 +32,52 @@ import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.literal.NewLiteral;
 
 /**
+ * Represents a @New simple bean
  * 
- * @author Nicklas Karlsson
- *
+ * @author Nicklas Karlsson 
  */
 public class NewSimpleBean<T> extends SimpleBean<T>
 {
    private static Set<Annotation> NEW_BINDING_SET = new HashSet<Annotation>(Arrays.asList(new NewLiteral()));
 
+   /**
+    * Creates an instance of a NewSimpleBean from an annotated class
+    * 
+    * @param clazz The annotated class
+    * @param manager The Web Beans manager
+    * @return a new NewSimpleBean instance
+    */
    public static <T> NewSimpleBean<T> of(AnnotatedClass<T> clazz, ManagerImpl manager)
    {
       return new NewSimpleBean<T>(clazz, manager);
    }
-   
+
+   /**
+    * Creates an instance of a NewSimpleBean from a class
+    * 
+    * @param clazz The class
+    * @param manager The Web Beans manager
+    * @return a new NewSimpleBean instance
+    */
    public static <T> NewSimpleBean<T> of(Class<T> clazz, ManagerImpl manager)
    {
       return of(AnnotatedClassImpl.of(clazz), manager);
    }
-   
+
+   /**
+    * Protected constructor
+    * 
+    * @param type An annotated class
+    * @param manager The Web Beans manager
+    */
    protected NewSimpleBean(AnnotatedClass<T> type, ManagerImpl manager)
    {
       super(type, manager);
    }
 
+   /**
+    * Creates a new instance
+    */
    @Override
    public T create()
    {
@@ -76,24 +99,44 @@ public class NewSimpleBean<T> extends SimpleBean<T>
       }
    }
 
+   /**
+    * Gets the scope type
+    * 
+    * @return @Dependent
+    */
    @Override
    public Class<? extends Annotation> getScopeType()
    {
       return Dependent.class;
    }
 
+   /**
+    * Gets the deployment type
+    * 
+    * @return The standard deployment type
+    */
    @Override
    public Class<? extends Annotation> getDeploymentType()
    {
       return Standard.class;
    }
 
+   /**
+    * Gets the name of the bean
+    * 
+    * @return null
+    */
    @Override
    public String getName()
    {
       return null;
    }
 
+   /**
+    * Gets the bindings
+    * 
+    * @returns @New
+    */
    @Override
    public Set<Annotation> getBindings()
    {

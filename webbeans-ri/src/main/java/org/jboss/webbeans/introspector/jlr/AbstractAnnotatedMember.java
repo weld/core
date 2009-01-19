@@ -220,7 +220,9 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
          else
          {
             if (!producerMethod)
+            {
                injectionPointProvider.pushInjectionPoint(param);
+            }
             try
             {
                parameterValues[i] = param.getValue(manager);
@@ -228,7 +230,9 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
             finally
             {
                if (!producerMethod)
+               {
                   injectionPointProvider.popInjectionPoint();
+               }
             }
          }
       }
