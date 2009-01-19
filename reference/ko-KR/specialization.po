@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: specialization\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-19 16:38+1000\n"
+"PO-Revision-Date: 2009-01-19 23:11+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,12 +18,13 @@ msgstr ""
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
 "\n"
 "\n"
+"\n"
 
 #. Tag: title
 #: specialization.xml:4
 #, no-c-format
 msgid "Specialization"
-msgstr "특수화 기능 "
+msgstr "특성화 "
 
 #. Tag: para
 #: specialization.xml:6
@@ -153,19 +154,18 @@ msgstr "이러한 경우, 덮어 쓰기하려는 Web Bean은 런타임시 호출
 #. Tag: para
 #: specialization.xml:52
 #, no-c-format
-#, fuzzy
 msgid ""
 "Web Beans provides a special feature, called <emphasis>specialization</"
 "emphasis>, that helps the developer avoid these traps. Specialization looks "
 "a little esoteric at first, but it's easy to use in practice, and you'll "
 "really appreciate the extra security it provides."
-msgstr "Web Beans는 <emphasis>특수화</emphasis>라는 특별 기능을 제공하여, 개발자들이 이러한 함정에 빠지지 않도록 돕습니다. "
+msgstr "Web Beans는 <emphasis>특성화</emphasis>라는 특별 기능을 제공하여, 개발자들이 이러한 함정에 빠지지 않도록 돕습니다. 특성화 기능은 처음에는 조금 난해하게 보이지만, 익숙해 지면 사용하기 쉬우며 제공되는 추가 보안 기능에 만족하실 것입니다.  "
 
 #. Tag: title
 #: specialization.xml:58
 #, no-c-format
 msgid "Using specialization"
-msgstr "특수화 기능 사용 "
+msgstr "특성화 기능 사용  "
 
 #. Tag: para
 #: specialization.xml:60
@@ -173,13 +173,13 @@ msgstr "특수화 기능 사용 "
 msgid ""
 "Specialization is a feature that is specific to simple and enterprise Web "
 "Beans. To make use of specialization, the higher-priority Web Bean must:"
-msgstr ""
+msgstr "특성화는 단순한 Web Beans 및 엔터프라이즈 Web Beans에만 있는 기능입니다. 특성화 기능을 사용하려면 높은 우선 순위의 Web Bean은 다음 사항을 따라야 합니다: "
 
 #. Tag: para
 #: specialization.xml:65
 #, no-c-format
 msgid "be a direct subclass of the Web Bean it overrides, and"
-msgstr ""
+msgstr "덮어쓰기할 Web Bean의 직접적인 하부 클래스가 되어야 합니다. "
 
 #. Tag: para
 #: specialization.xml:68
@@ -188,13 +188,13 @@ msgid ""
 "be a simple Web Bean if the Web Bean it overrides is a simple Web Bean or an "
 "enterprise Web Bean if the Web Bean it overrides is an enterprise Web Bean, "
 "and"
-msgstr ""
+msgstr "덮어쓰기할 Web Bean이 단순한 Web Bean일 경우 단순한 Web Bean이 되어야 하고 또는 덮어쓰기 할 Web Bean이 엔터프라이즈 Web Bean일 경우 엔터프라이즈 Web Bean이 되어야 합니다 "
 
 #. Tag: para
 #: specialization.xml:73
 #, no-c-format
 msgid "be annotated <literal>@Specializes</literal>."
-msgstr ""
+msgstr "<literal>@Specializes</literal>로 어노테이션되어야 합니다. "
 
 #. Tag: programlisting
 #: specialization.xml:77
@@ -218,19 +218,19 @@ msgstr ""
 msgid ""
 "We say that the higher-priority Web Bean <emphasis>specializes</emphasis> "
 "its superclass."
-msgstr ""
+msgstr "높은 우선 순위의 Web Bean이 해당 슈퍼클래스(superclass)를 <emphasis>특성화</emphasis>한다고 합니다. "
 
 #. Tag: title
 #: specialization.xml:85
 #, no-c-format
 msgid "Advantages of specialization"
-msgstr "특수화 기능 장점 "
+msgstr "특성화 기능의 장점  "
 
 #. Tag: para
 #: specialization.xml:87
 #, no-c-format
 msgid "When specialization is used:"
-msgstr "특수화 기능 사용시: "
+msgstr "특성화 기능 사용시:  "
 
 #. Tag: para
 #: specialization.xml:91
@@ -239,6 +239,8 @@ msgid ""
 "the binding types of the superclass are automatically inherited by the Web "
 "Bean annotated <literal>@Specializes</literal>, and"
 msgstr ""
+"슈퍼클래스의 바인딩 유형은 <literal>@Specializes</literal>로 어노테이션된 Web "
+"Bean에 의해 자동으로 상속됩니다 "
 
 #. Tag: para
 #: specialization.xml:95
@@ -247,6 +249,8 @@ msgid ""
 "the Web Bean name of the superclass is automatically inherited by the Web "
 "Bean annotated <literal>@Specializes</literal>, and"
 msgstr ""
+"슈퍼클래스의 Web Bean 이름은 <literal>@Specializes</literal>로 어노테이션된 Web "
+"Bean에 의해 자동으로 상속됩니다 "
 
 #. Tag: para
 #: specialization.xml:99
@@ -255,7 +259,7 @@ msgid ""
 "producer methods, disposal methods and observer methods declared by the "
 "superclass are called upon an instance of the Web Bean annotated "
 "<literal>@Specializes</literal>."
-msgstr ""
+msgstr "슈퍼클래스에 의해 명시된 생산자 방식, 폐지 방식 및 옵저버 방식은 <literal>@Specializes</literal>로 어노테이션된 Web Bean 인스턴스를 호출합니다. "
 
 #. Tag: para
 #: specialization.xml:105
@@ -279,7 +283,7 @@ msgid ""
 "all API types of the superclass are API types of the Web Bean annotated "
 "<literal>@Specializes</literal> (all local interfaces of the superclass "
 "enterprise bean are also local interfaces of the subclass),"
-msgstr ""
+msgstr "슈퍼클래스의 모든 API 유형은 <literal>@Specializes</literal>로 어노테이션된 Web Bean의 API 유형입니다 (슈퍼클래스 엔터프라이즈 bean의 모든 로컬 인터페이스는 하부클래스의 로컬 인터페이스도 됩니다) "
 
 #. Tag: para
 #: specialization.xml:119
@@ -288,13 +292,13 @@ msgid ""
 "the deployment type of the Web Bean annotated <literal>@Specializes</"
 "literal> has a higher precedence than the deployment type of the superclass, "
 "and"
-msgstr ""
+msgstr "<literal>@Specializes</literal>로 어노테이션된 Web Bean의 배치 유형은 슈퍼클래스의 배치 유형보다 높은 우선 순위를 갖습니다 "
 
 #. Tag: para
 #: specialization.xml:124
 #, no-c-format
 msgid "there is no other enabled Web Bean that also specializes the superclass."
-msgstr ""
+msgstr "슈퍼클래스를 특성화하는 활성화된 Web Bean이 없습니다.  "
 
 #. Tag: para
 #: specialization.xml:129
@@ -302,7 +306,7 @@ msgstr ""
 msgid ""
 "If any of these conditions are violated, the Web Bean manager throws an "
 "exception at initialization time."
-msgstr ""
+msgstr "이러한 조건을 위반할 경우, Web Bean 관리자는 초기화시 예외 처리를 넘기게 됩니다.   "
 
 #. Tag: para
 #: specialization.xml:132
@@ -311,5 +315,5 @@ msgid ""
 "Therefore, we can be certain that the superclass will <emphasis>never</"
 "emphasis> be called in any deployment of the system where the Web Bean "
 "annotated <literal>@Specializes</literal> is deployed and enabled."
-msgstr ""
+msgstr "따라서, <literal>@Specializes</literal>라고 어노테이션된 Web Bean이 배치되어 활성화된 시스템의 어떤 배치에서도 슈퍼클래스는 <emphasis>절대로</emphasis> 호출되지 않음을 확인할 수 있습니다.  "
 

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-19 17:50+1000\n"
+"PO-Revision-Date: 2009-01-19 23:13+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -315,7 +315,7 @@ msgstr ""
 #: events.xml:138
 #, no-c-format
 msgid "Registering observers dynamically"
-msgstr ""
+msgstr "옵저버를 동적으로 등록 "
 
 #. Tag: para
 #: events.xml:140
@@ -325,7 +325,7 @@ msgid ""
 "may implement the <literal>Observer</literal> interface and register an "
 "instance with an event notifier by calling the <literal>observe()</literal> "
 "method."
-msgstr ""
+msgstr "종종 이벤트 옵저버를 동적으로 등록하는 것이 유용합니다. 애플리케이션은 <literal>Observer</literal> 인터페이스를 구현하고 <literal>observe()</literal> 방식을 호출하여 이벤트 통지와 함께 인스턴스를 등록할 수 있습니다. "
 
 #. Tag: programlisting
 #: events.xml:144
@@ -345,6 +345,8 @@ msgid ""
 "or by passing event binding type instances to the <literal>observe()</"
 "literal> method:"
 msgstr ""
+"이벤트 바인딩 유형은 인벤트 통지 삽입 지점에 의해 지정되거나 <literal>observe()</"
+"literal> 방식에 이벤트 바인딩 유형 인스턴스를 전달하여 지정할 수 있습니다:  "
 
 #. Tag: programlisting
 #: events.xml:149
@@ -364,13 +366,13 @@ msgstr ""
 #: events.xml:154
 #, no-c-format
 msgid "Event bindings with members"
-msgstr ""
+msgstr "멤버와 이벤트 바인딩    "
 
 #. Tag: para
 #: events.xml:156
 #, no-c-format
 msgid "An event binding type may have annotation members:"
-msgstr ""
+msgstr "이벤트 바인딩 유형은 어노테이션 멤버를 갖을 수 있습니다:  "
 
 #. Tag: programlisting
 #: events.xml:158
@@ -394,7 +396,7 @@ msgstr ""
 #: events.xml:160
 #, no-c-format
 msgid "The member value is used to narrow the messages delivered to the observer:"
-msgstr ""
+msgstr "멤버 값은 옵저버에게 전달되는 메세지의 범위를 좁히는데 사용됩니다:  "
 
 #. Tag: programlisting
 #: events.xml:162
@@ -412,7 +414,7 @@ msgstr ""
 msgid ""
 "Event binding type members may be specified statically by the event "
 "producer, via annotations at the event notifier injection point:"
-msgstr ""
+msgstr "이벤트 바인딩 유형 멤버는 이벤트 통지 삽입 지점에 있는 어노테이션을 통해 이벤트 생산자에의해 정적으로 지정될 수 있습니다:  "
 
 #. Tag: programlisting
 #: events.xml:167
@@ -423,11 +425,12 @@ msgstr "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
 #. Tag: para
 #: events.xml:169
 #, no-c-format
+#, fuzzy
 msgid ""
 "Alternatively, the value of the event binding type member may be determined "
 "dynamically by the event producer. We start by writing an abstract subclass "
 "of <literal>AnnotationLiteral</literal>:"
-msgstr ""
+msgstr "다른 방법으로, 이벤트 바인딩 유형 멤버 값은 이벤트 생산자에 의해 동적으로 지정될 수 있습니다. <literal>AnnotationLiteral</literal>의 추상화 하부클래스를 작성하는"
 
 #. Tag: programlisting
 #: events.xml:172
