@@ -57,6 +57,7 @@ import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.injection.InjectionPointProvider;
+import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
@@ -202,8 +203,28 @@ public class ManagerImpl implements Manager, Serializable
     * @see javax.webbeans.manager.Manager#resolveObservers(java.lang.Object,
     *      java.lang.annotation.Annotation[])
     */
+   @SuppressWarnings("unchecked")
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
    {
+      AnnotatedClass<T> element = AnnotatedClassImpl.of((Class<T>)event.getClass());
+      for (Annotation annotation : bindings)
+      {
+         if (!MetaDataCache.instance().getBindingTypeModel(annotation.annotationType()).isValid())
+         {
+            throw new IllegalArgumentException("Not a binding type " + annotation);
+         }
+      }
+      for (Type type : element.getActualTypeArguments())
+      {
+         if (type instanceof WildcardType)
+         {
+            throw new IllegalArgumentException("Cannot resolve an event type parameterized with a wildcard " + element);
+         }
+         if (type instanceof TypeVariable)
+         {
+            throw new IllegalArgumentException("Cannot resolve an event type parameterized with a type parameter " + element);
+         }
+      }
       return eventManager.getObservers(event, bindings);
    }
 

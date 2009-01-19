@@ -163,7 +163,6 @@ public class EventManager
          {
             if (observer.isObserverInterested(bindings))
             {
-               // TODO Fix this!
                @SuppressWarnings("unchecked")
                Observer<T> o = (Observer<T>) observer.getObserver();
                interestedObservers.add(o);
