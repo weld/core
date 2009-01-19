@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-20 01:08+1000\n"
+"PO-Revision-Date: 2009-01-20 01:27+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -565,7 +565,7 @@ msgid ""
 "<literal>@AfterTransactionSuccess</literal> observers are called during the "
 "after completion phase of the transaction, but only if the transaction "
 "completes successfully"
-msgstr ""
+msgstr "트랜잭션의 완료 단계 이후 동안 트랜잭션이 성공적으로 완료했을 경우에만, <literal>@AfterTransactionSuccess</literal> 옵저버를 호출합니다.        "
 
 #. Tag: para
 #: events.xml:216
@@ -574,7 +574,7 @@ msgid ""
 "<literal>@AfterTransactionFailure</literal> observers are called during the "
 "after completion phase of the transaction, but only if the transaction fails "
 "to complete successfully"
-msgstr ""
+msgstr "트랜잭션의 완료 단계 이후 동안 트랜잭션이 성공적으로 완료하지 않을 경우에만, <literal>@AfterTransactionFailure</literal> 옵저버를 호출합니다.   "
 
 #. Tag: para
 #: events.xml:221
@@ -582,7 +582,7 @@ msgstr ""
 msgid ""
 "<literal>@AfterTransactionCompletion</literal> observers are called during "
 "the after completion phase of the transaction"
-msgstr ""
+msgstr "트랜잭션의 완료 단계 이후 동안 <literal>@AfterTransactionCompletion</literal> 옵저버를 호출합니다  "
 
 #. Tag: para
 #: events.xml:225
@@ -590,7 +590,7 @@ msgstr ""
 msgid ""
 "<literal>@BeforeTransactionCompletion</literal> observers are called during "
 "the before completion phase of the transaction"
-msgstr ""
+msgstr "트랜잭션의 완료 단계 이전 동안 <literal>@BeforeTransactionCompletion</literal> 옵저버를 호출합니다 "
 
 #. Tag: para
 #: events.xml:230
@@ -605,7 +605,7 @@ msgstr ""
 #: events.xml:233
 #, no-c-format
 msgid "Imagine that we have cached a JPA query result set in the application scope:"
-msgstr ""
+msgstr "애플리케이션 범위에 있는 JPA 쿼리 결과 모음을 캐시했다고 가정합니다:  "
 
 #. Tag: programlisting
 #: events.xml:235
@@ -657,7 +657,7 @@ msgid ""
 "this occurs, we need to refresh the <literal>Product</literal> catalog. But "
 "we should wait until <emphasis>after</emphasis> the transaction completes "
 "successfully before performing this refresh!"
-msgstr ""
+msgstr "때때로 <literal>Product</literal>는 생성 또는 삭제됩니다. 이러한 상황이 발생하면, <literal>Product</literal> 카탈로그를 새로고침해야 합니다. 하지만, 이러한 새로 고침을 실행하기 전 트랜젝션이 성공적으로 <emphasis>완료할 때</emphasis> 까지 기다리셔야 합니다! "
 
 #. Tag: para
 #: events.xml:242
@@ -665,7 +665,7 @@ msgstr ""
 msgid ""
 "The Web Bean that creates and deletes <literal>Product</literal>s could "
 "raise events, for example:"
-msgstr ""
+msgstr "<literal>Product</literal>를 생성 및 삭제하는 Web Bean은 이벤트를 제기할 수 있습니다, 예:  "
 
 #. Tag: programlisting
 #: events.xml:245
@@ -717,7 +717,7 @@ msgstr ""
 msgid ""
 "And now <literal>Catalog</literal> can observe the events after successful "
 "completion of the transaction:"
-msgstr ""
+msgstr "<literal>Catalog</literal>는 트랜잭션을 성공적으로 완료한 후에 이벤트를 옵저버할 수 있습니다: "
 
 #. Tag: programlisting
 #: events.xml:250
