@@ -240,7 +240,7 @@ public abstract class WebBeansBootstrap
    {
       beans.add(bean);
       getManager().getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
-      for (AnnotatedMethod<?> producerMethod : annotatedClass.getAnnotatedMethods(Produces.class))
+      for (AnnotatedMethod<?> producerMethod : annotatedClass.getDeclaredAnnotatedMethods(Produces.class))
       {
          ProducerMethodBean<?> producerMethodBean = ProducerMethodBean.of(producerMethod, bean, getManager());
          beans.add(producerMethodBean);
@@ -248,7 +248,7 @@ public abstract class WebBeansBootstrap
          registerEvents(producerMethodBean.getAnnotatedInjectionPoints(), beans);
          log.info("Web Bean: " + producerMethodBean);
       }
-      for (AnnotatedField<?> producerField : annotatedClass.getAnnotatedFields(Produces.class))
+      for (AnnotatedField<?> producerField : annotatedClass.getDeclaredAnnotatedFields(Produces.class))
       {
          ProducerFieldBean<?> producerFieldBean = ProducerFieldBean.of(producerField, bean, getManager());
          beans.add(producerFieldBean);
@@ -269,7 +269,7 @@ public abstract class WebBeansBootstrap
             log.info("Web Bean: " + instanceBean);
          }
       }
-      for (AnnotatedMethod<?> observerMethod : annotatedClass.getMethodsWithAnnotatedParameters(Observes.class))
+      for (AnnotatedMethod<?> observerMethod : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Observes.class))
       {
          ObserverImpl<?> observer = ObserverImpl.of(observerMethod, bean, getManager());
          if (observerMethod.getAnnotatedParameters(Observes.class).size() == 1)

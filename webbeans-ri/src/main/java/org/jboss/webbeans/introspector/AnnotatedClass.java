@@ -39,13 +39,24 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
    public Set<AnnotatedField<?>> getFields();
 
    /**
-    * Gets all annotations which are annotated with the given annotation type
+    * Gets all fields which are annotated with the given annotation type on this
+    * class and all super classes
     * 
     * @param annotationType The annotation to match
     * @return A set of abstracted fields with the given annotation. Returns an
     *         empty set if there are no matches
     */
    public Set<AnnotatedField<?>> getAnnotatedFields(Class<? extends Annotation> annotationType);
+   
+   /**
+    * Gets all fields which are annotated with the given annotation type on this
+    * class only.
+    * 
+    * @param annotationType The annotation to match
+    * @return A set of abstracted fields with the given annotation. Returns an
+    *         empty set if there are no matches
+    */
+   public Set<AnnotatedField<?>> getDeclaredAnnotatedFields(Class<? extends Annotation> annotationType);
 
    /**
     * Gets all fields which are meta-annotated with metaAnnotationType
@@ -91,6 +102,15 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
    public Set<AnnotatedMethod<?>> getAnnotatedMethods(Class<? extends Annotation> annotationType);
    
    /**
+    * Gets all methods annotated with annotationType
+    * 
+    * @param annotationType The annotation to match
+    * @return A set of abstracted methods with the given annotation. Returns an
+    *         empty set if there are no matches
+    */
+   public Set<AnnotatedMethod<?>> getDeclaredAnnotatedMethods(Class<? extends Annotation> annotationType);
+   
+   /**
     * Find the annotated method for a given methodDescriptor
     * 
     * @param methodDescriptor
@@ -106,6 +126,15 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     *         empty set if there are no matches
     */
    public Set<AnnotatedMethod<?>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
+   
+   /**
+    * Gets all with parameters annotated with annotationType
+    * 
+    * @param annotationType The annotation to match
+    * @return A set of abstracted methods with the given annotation. Returns an
+    *         empty set if there are no matches
+    */
+   public Set<AnnotatedMethod<?>> getDeclaredMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
 
    /**
     * Gets the superclass.

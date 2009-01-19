@@ -224,12 +224,26 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    // The map from annotation type to abstracted field with meta-annotation
    private final AnnotatedFieldMap metaAnnotatedFields;
    
+// The set of abstracted fields
+   private final Set<AnnotatedField<?>> declaredFields;
+   // The map from annotation type to abstracted field with annotation
+   private final AnnotatedFieldMap declaredAnnotatedFields;
+   // The map from annotation type to abstracted field with meta-annotation
+   private final AnnotatedFieldMap declaredMetaAnnotatedFields;
+   
    // The set of abstracted methods
    private final Set<AnnotatedMethod<?>> methods;
    // The map from annotation type to abstracted method with annotation
    private final AnnotatedMethodMap annotatedMethods;
    // The map from annotation type to method with a parameter with annotation
    private final AnnotatedMethodMap methodsByAnnotatedParameters;
+   
+// The set of abstracted methods
+   private final Set<AnnotatedMethod<?>> declaredMethods;
+   // The map from annotation type to abstracted method with annotation
+   private final AnnotatedMethodMap declaredAnnotatedMethods;
+   // The map from annotation type to method with a parameter with annotation
+   private final AnnotatedMethodMap declaredMethodsByAnnotatedParameters;
    
    // The set of abstracted constructors
    private final Set<AnnotatedConstructor<T>> constructors;
@@ -276,6 +290,9 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.fields = new HashSet<AnnotatedField<?>>();
       this.annotatedFields = new AnnotatedFieldMap();
       this.metaAnnotatedFields = new AnnotatedFieldMap();
+      this.declaredFields = new HashSet<AnnotatedField<?>>();
+      this.declaredAnnotatedFields = new AnnotatedFieldMap();
+      this.declaredMetaAnnotatedFields = new AnnotatedFieldMap();
       for (Class<?> c = clazz; c != Object.class && c != null; c = c.getSuperclass())
       {
          for (Field field : c.getDeclaredFields())
@@ -286,12 +303,24 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
             }
             AnnotatedField<?> annotatedField = new AnnotatedFieldImpl<Object>(field, this);
             this.fields.add(annotatedField);
+            if (c == clazz)
+            {
+               this.declaredFields.add(annotatedField);
+            }
             for (Annotation annotation : annotatedField.getAnnotations())
             {
                this.annotatedFields.put(annotation.annotationType(), annotatedField);
+               if (c == clazz)
+               {
+                  this.declaredAnnotatedFields.put(annotation.annotationType(), annotatedField);
+               }
                for (Annotation metaAnnotation : annotation.annotationType().getAnnotations())
                {
                   this.metaAnnotatedFields.put(metaAnnotation.annotationType(), annotatedField);
+                  if (c == clazz)
+                  {
+                     this.declaredMetaAnnotatedFields.put(metaAnnotation.annotationType(), annotatedField);
+                  }
                }
             }
             
@@ -326,6 +355,9 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.methods = new HashSet<AnnotatedMethod<?>>();
       this.annotatedMethods = new AnnotatedMethodMap();
       this.methodsByAnnotatedParameters = new AnnotatedMethodMap();
+      this.declaredMethods = new HashSet<AnnotatedMethod<?>>();
+      this.declaredAnnotatedMethods = new AnnotatedMethodMap();
+      this.declaredMethodsByAnnotatedParameters = new AnnotatedMethodMap();
       for (Class<?> c = clazz; c != Object.class && c != null; c = c.getSuperclass())
       {
          for (Method method : c.getDeclaredMethods())
@@ -337,19 +369,27 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
             
             AnnotatedMethod<?> annotatedMethod = new AnnotatedMethodImpl<Object>(method, this);
             this.methods.add(annotatedMethod);
+            if (c == clazz)
+            {
+               this.declaredMethods.add(annotatedMethod);
+            }
             for (Annotation annotation : annotatedMethod.getAnnotations())
             {
-               if (!annotatedMethods.containsKey(annotation.annotationType()))
+               annotatedMethods.put(annotation.annotationType(), annotatedMethod);
+               if (c == clazz)
                {
-                  annotatedMethods.put(annotation.annotationType(), new HashSet<AnnotatedMethod<?>>());
+                  this.declaredAnnotatedMethods.put(annotation.annotationType(), annotatedMethod);
                }
-               annotatedMethods.get(annotation.annotationType()).add(annotatedMethod);
             }
             for (Class<? extends Annotation> annotationType : AnnotatedMethod.MAPPED_PARAMETER_ANNOTATIONS)
             {
                if (annotatedMethod.getAnnotatedParameters(annotationType).size() > 0)
                {
                   methodsByAnnotatedParameters.put(annotationType, annotatedMethod);
+                  if (c == clazz)
+                  {
+                     this.declaredMethodsByAnnotatedParameters.put(annotationType, annotatedMethod);
+                  }
                }
             }
          }
@@ -386,6 +426,16 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    public Set<AnnotatedField<?>> getFields()
    {
       return Collections.unmodifiableSet(fields);
+   }
+   
+   public Set<AnnotatedField<?>> getDeclaredFields()
+   {
+      return Collections.unmodifiableSet(declaredFields);
+   }
+   
+   public Set<AnnotatedField<?>> getDeclaredAnnotatedFields(Class<? extends Annotation> annotationType)
+   {
+      return Collections.unmodifiableSet(declaredAnnotatedFields.get(annotationType));
    }
    
    /**
@@ -472,6 +522,11 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       return Collections.unmodifiableSet(annotatedMethods.get(annotationType));
    }
    
+   public Set<AnnotatedMethod<?>> getDeclaredAnnotatedMethods(Class<? extends Annotation> annotationType)
+   {
+      return Collections.unmodifiableSet(declaredAnnotatedMethods.get(annotationType));
+   }
+   
    /**
     * Gets constructors with given annotation type
     * 
@@ -505,7 +560,12 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    
    public Set<AnnotatedMethod<?>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
-      return methodsByAnnotatedParameters.get(annotationType);
+      return Collections.unmodifiableSet(methodsByAnnotatedParameters.get(annotationType));
+   }
+   
+   public Set<AnnotatedMethod<?>> getDeclaredMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
+   {
+      return Collections.unmodifiableSet(declaredMethodsByAnnotatedParameters.get(annotationType));
    }
    
    public AnnotatedMethod<?> getMethod(Method methodDescriptor)
