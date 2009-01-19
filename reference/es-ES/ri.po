@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-18 16:31+0000\n"
-"PO-Revision-Date: 2009-01-16 15:03+1000\n"
+"PO-Revision-Date: 2009-01-19 10:38+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: ri.xml:4
 #, no-c-format
 msgid "The Web Beans Reference Implementation"
-msgstr "Implementación de referencia de Web Beans"
+msgstr "La Implementación de referencia de Web Beans"
 
 #. Tag: para
 #: ri.xml:6
@@ -208,8 +208,7 @@ msgstr "Ahora, ¡está listo para desplegar su primer ejemplo!"
 #. Tag: para
 #: ri.xml:93
 #, no-c-format
-msgid ""
-"The build scripts for the examples offer a number of targets, these are:"
+msgid "The build scripts for the examples offer a number of targets, these are:"
 msgstr ""
 "Los scripts creados para los ejemplos ofrecen una cantidad de objetivos, a "
 "saber:"
@@ -218,8 +217,7 @@ msgstr ""
 #: ri.xml:99
 #, no-c-format
 msgid "<literal>ant restart</literal> - deploy the example in exploded format"
-msgstr ""
-"<literal>ant restart</literal> - despliega el ejemplo en formaro explotado"
+msgstr "<literal>ant restart</literal> - despliega el ejemplo en formato explotado"
 
 #. Tag: para
 #: ri.xml:105
@@ -234,11 +232,8 @@ msgstr ""
 #. Tag: para
 #: ri.xml:111
 #, no-c-format
-msgid ""
-"<literal>ant deploy</literal> - deploy the example in compressed jar format"
-msgstr ""
-"<literal>ant deploy</literal> - despliega el ejemplo en formato comprimido "
-"JAR"
+msgid "<literal>ant deploy</literal> - deploy the example in compressed jar format"
+msgstr "<literal>ant deploy</literal> - despliega el ejemplo en formato JAR comprimido"
 
 #. Tag: para
 #: ri.xml:116
@@ -1255,7 +1250,7 @@ msgstr ""
 
 #. Tag: para
 #: ri.xml:401
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We've saved the most interesting bit to last, the code! The project has two "
 "simple beans, <literal>SentenceParser</literal> and <literal>TextTranslator</"
@@ -1266,10 +1261,10 @@ msgid ""
 msgstr ""
 "Hemos guardado la parte más interesante para el final, ¡el código! El "
 "proyecto tiene dos beans sencillos, <literal>SentenceParser</literal> y "
-"<literal>TextTranslator</literal> y dos beans de empresa, "
+"<literal>TextTranslator</literal> y dos beans empresariales, "
 "<literal>TranslatorControllerBean</literal> y <literal>SentenceTranslator</"
 "literal>. Por ahora, debe comenzar a familiarizarse con el aspecto de Web "
-"Bean, por lo tanto sólo destacaremos las partes más interesantes."
+"Bean, por lo tanto sólo destacaremos aquí las partes más interesantes."
 
 #. Tag: para
 #: ri.xml:411
@@ -1419,3 +1414,4 @@ msgstr ""
 "Necesitamos ayuda en todas las áreas - corrección de errores, escritura de "
 "nuevas funciones, escritura de ejemplos y traducción de esta guía de "
 "referencia."
+
