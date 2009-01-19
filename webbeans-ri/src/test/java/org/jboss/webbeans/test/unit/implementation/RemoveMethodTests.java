@@ -1,10 +1,9 @@
 package org.jboss.webbeans.test.unit.implementation;
 
-import org.jboss.webbeans.bean.EnterpriseBean;
-import org.jboss.webbeans.test.unit.AbstractEjbEmbeddableTest;
+import org.jboss.webbeans.tck.tests.AbstractTest;
 import org.testng.annotations.Test;
 
-public class RemoveMethodTests extends AbstractEjbEmbeddableTest
+public class RemoveMethodTests extends AbstractTest
 {
 
    /**
@@ -26,13 +25,8 @@ public class RemoveMethodTests extends AbstractEjbEmbeddableTest
    @Test(groups = { "enterprisebean", "removemethod", "lifecycle", "stub" })
    public void testApplicationCalledRemoveMethodOfStatefulSessionBeanWithDependentScopeHasNoInjectedParameters()
    {
-      addToEjbCache(Bad.class);
-      addToEjbCache(BadLocal.class);
-      EnterpriseBean<Bad> bean = EnterpriseBean.of(Bad.class, manager);
-      manager.addBean(bean);
-      EnterpriseBean<BadLocal> lbean = EnterpriseBean.of(BadLocal.class, manager);
-      manager.addBean(lbean);
-      BadLocal x = manager.getInstance(bean);
+      deployBeans(Bad.class);
+      BadLocal x = manager.getInstanceByType(BadLocal.class);
       x.bye();
    }
 
