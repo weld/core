@@ -45,6 +45,7 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
    private final boolean _final = false;
    // The static state
    private final boolean _static = false;
+   private final boolean _public = false;
    private final AnnotatedMember<?, ?> declaringMember;
 
    // Cached string representation
@@ -126,6 +127,11 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
    public boolean isStatic()
    {
       return _static;
+   }
+   
+   public boolean isPublic()
+   {
+      return _public;
    }
 
    /**

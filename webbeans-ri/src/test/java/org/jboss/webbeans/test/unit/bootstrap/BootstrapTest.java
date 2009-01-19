@@ -10,6 +10,7 @@ import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.test.mock.MockBootstrap;
 import org.jboss.webbeans.test.unit.AbstractTest;
 import org.testng.annotations.Test;
 
@@ -201,7 +202,9 @@ public class BootstrapTest extends AbstractTest
    @Test(groups="bootstrap", expectedExceptions=IllegalStateException.class)
    public void testDiscoverFails()
    {
-      deployBeans();
+      MockBootstrap bootstrap = new MockBootstrap();
+      bootstrap.setWebBeanDiscovery(null);
+      bootstrap.boot();
    }
    
    @Test(groups="bootstrap")

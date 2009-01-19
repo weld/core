@@ -305,13 +305,13 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    /**
     * Validates the type
     */
-   private void checkType()
+   protected void checkType()
    {
-      if (Reflections.isNonStaticInnerClass(type))
+      if (getAnnotatedItem().isNonStaticMemberClass())
       {
          throw new DefinitionException("Simple Web Bean " + type + " cannot be a non-static inner class");
       }
-      if (Reflections.isParameterizedType(type))
+      if (getAnnotatedItem().isParameterizedType())
       {
          throw new DefinitionException("Simple Web Bean " + type + " cannot be a parameterized type");
       }
@@ -319,6 +319,22 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       if (passivating && !Reflections.isSerializable(type))
       {
          throw new DefinitionException("Simple Web Beans declaring a passivating scope must have a serializable implementation class");
+      }
+   }
+   
+   @Override
+   protected void checkBeanImplementation()
+   {
+      super.checkBeanImplementation();
+      if (!scopeType.equals(Dependent.class))
+      {
+         for (AnnotatedField<?> field : getAnnotatedItem().getFields())
+         {
+            if (field.isPublic() && !field.isStatic())
+            {
+               throw new DefinitionException("Normal scoped Web Bean implementation class has a public field " + getAnnotatedItem());
+            }
+         }
       }
    }
 

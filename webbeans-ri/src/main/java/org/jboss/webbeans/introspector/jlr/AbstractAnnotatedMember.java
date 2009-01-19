@@ -19,6 +19,7 @@ package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -98,6 +99,8 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
 
    // Cached string representation
    private String toString;
+   
+   private final boolean _public;
 
    /**
     * Constructor
@@ -108,6 +111,7 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    {
       super(annotationMap, declaredAnnotationMap);
       name = member.getName();
+      _public = Modifier.isPublic(member.getModifiers());
    }
 
    /**
@@ -137,6 +141,11 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    public boolean isTransient()
    {
       return Reflections.isTransient(getDelegate());
+   }
+   
+   public boolean isPublic()
+   {
+      return _public;
    }
 
    /**

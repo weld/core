@@ -17,6 +17,8 @@
 
 package org.jboss.webbeans.introspector.jlr;
 
+import java.lang.reflect.Modifier;
+
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.util.Reflections;
 
@@ -38,6 +40,7 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
    
    // Cached string representation
    private String toString;
+   private final boolean _public;
 
    /**
     * Constructor
@@ -56,6 +59,7 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
       {
          this.superclass = null;
       }
+      this._public = Modifier.isFinal(type.getModifiers());
    }
    
    public AbstractAnnotatedType(AnnotationMap annotationMap, Class<T> type)
@@ -85,6 +89,11 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
    public boolean isFinal()
    {
       return Reflections.isFinal(getDelegate());
+   }
+   
+   public boolean isPublic()
+   {
+      return _public;
    }
 
    /**

@@ -166,6 +166,13 @@ public interface AnnotatedItem<T, S>
     * @return True if proxyable, false otherwise
     */
    public boolean isProxyable();
+   
+   /**
+    * Indicates if this annotated item is public
+    * 
+    * @return if public, returns true
+    */
+   public boolean isPublic();
 
    /**
     * Gets the name of this AnnotatedItem

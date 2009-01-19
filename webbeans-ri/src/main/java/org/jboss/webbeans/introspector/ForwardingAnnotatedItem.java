@@ -151,6 +151,11 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
    {
       return delegate().isProxyable();
    }
+   
+   public boolean isPublic()
+   {
+      return delegate().isPublic();
+   }
 
    /**
     * Overridden method into delegate

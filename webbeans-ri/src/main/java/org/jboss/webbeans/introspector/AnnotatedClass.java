@@ -142,5 +142,14 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     * @return The abstracted superclass, null if there is no superclass
     */
    public AnnotatedClass<?> getSuperclass();
+   
+   /**
+    * Determine if this is a non-static member class
+    *
+    * @return true if this is a non-static member  
+    */
+   public boolean isNonStaticMemberClass();
+   
+   public boolean isParameterizedType();
 
 }

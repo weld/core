@@ -38,6 +38,7 @@ import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.util.Names;
+import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
 import com.google.common.collect.ForwardingMap;
@@ -255,6 +256,9 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    // Cached string representation
    private String toString;
    
+   private final boolean _nonStaticMemberClass;
+   private final boolean _parameterizedType;
+   
    public static <T> AnnotatedClass<T> of(Class<T> clazz)
    {
       return new AnnotatedClassImpl<T>(clazz, clazz, clazz.getAnnotations(), clazz.getDeclaredAnnotations());
@@ -293,6 +297,8 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.declaredFields = new HashSet<AnnotatedField<?>>();
       this.declaredAnnotatedFields = new AnnotatedFieldMap();
       this.declaredMetaAnnotatedFields = new AnnotatedFieldMap();
+      this._nonStaticMemberClass = Reflections.isNonMemberInnerClass(rawType);
+      this._parameterizedType = Reflections.isParameterizedType(rawType);
       for (Class<?> c = clazz; c != Object.class && c != null; c = c.getSuperclass())
       {
          for (Field field : c.getDeclaredFields())
@@ -491,6 +497,16 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    public Class<T> getType()
    {
       return clazz;
+   }
+   
+   public boolean isNonStaticMemberClass()
+   {
+      return _nonStaticMemberClass;
+   }
+   
+   public boolean isParameterizedType()
+   {
+      return _parameterizedType;
    }
    
    /**
