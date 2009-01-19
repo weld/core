@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-19 14:48+1000\n"
+"PO-Revision-Date: 2009-01-20 01:43+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -124,7 +127,7 @@ msgstr ""
 msgid ""
 "Dependency injection always occurs when the Web Bean instance is first "
 "instantiated."
-msgstr ""
+msgstr "Web Bean 인스턴스가 먼저 인스턴스화되었을 경우 의존성 삽입이 발생합니다. "
 
 #. Tag: para
 #: injection.xml:25
@@ -132,7 +135,7 @@ msgstr ""
 msgid ""
 "First, the Web Bean manager calls the Web Bean constructor, to obtain an "
 "instance of the Web Bean."
-msgstr ""
+msgstr "먼저, Web Bean 관리자는 Web Bean 생성자를 호출하여 Web Bean 인스턴스를 획득합니다.  "
 
 #. Tag: para
 #: injection.xml:29
@@ -140,13 +143,13 @@ msgstr ""
 msgid ""
 "Next, the Web Bean manager initializes the values of all injected fields of "
 "the Web Bean."
-msgstr ""
+msgstr "다음으로, Web Bean 관리자는 Web Bean의 삽입된 모든 영역의 값을 초기화합니다. "
 
 #. Tag: para
 #: injection.xml:33
 #, no-c-format
 msgid "Next, the Web Bean manager calls all initializer methods of Web Bean."
-msgstr ""
+msgstr "그 후, Web Bean 관리자는 Web Bean의 모든 초기화 방식을 호출합니다.  "
 
 #. Tag: para
 #: injection.xml:37
@@ -154,7 +157,7 @@ msgstr ""
 msgid ""
 "Finally, the <literal>@PostConstruct</literal> method of the Web Bean, if "
 "any, is called."
-msgstr ""
+msgstr "마지막으로 Web Bean의 <literal>@PostConstruct</literal> 방식이 호출됩니다. "
 
 #. Tag: para
 #: injection.xml:42
@@ -162,7 +165,7 @@ msgstr ""
 msgid ""
 "Constructor parameter injection is not supported for EJB beans, since the "
 "EJB is instantiated by the EJB container, not the Web Bean manager."
-msgstr ""
+msgstr "EJB가 Web Bean 관리자가 아닌 EJB 컨테이너에 의해 인스턴스화된 이래 생성자 매개변수 삽입은 EJB beans을 지원하지 않습니다. "
 
 #. Tag: para
 #: injection.xml:45
@@ -179,7 +182,7 @@ msgstr ""
 #: injection.xml:51
 #, no-c-format
 msgid "Producer methods also support parameter injection:"
-msgstr ""
+msgstr "생산자 방식은 매개 변수 삽입을 지원합니다:  "
 
 #. Tag: programlisting
 #: injection.xml:53
@@ -199,7 +202,7 @@ msgstr ""
 msgid ""
 "Finally, observer methods (which we'll meet in <xref linkend=\"events\"/>), "
 "disposal methods and destructor methods all support parameter injection."
-msgstr ""
+msgstr "마지막으로 옵저버 방식 (<xref linkend=\"events\"/>에서 살펴보게됨), 폐지 방식 및 소멸자 방식 모두는 매개 변수 삽입을 지원합니다. "
 
 #. Tag: para
 #: injection.xml:58
@@ -260,7 +263,7 @@ msgstr ""
 #: injection.xml:91
 #, no-c-format
 msgid "Binding annotations"
-msgstr ""
+msgstr "바인딩 어노테이션 "
 
 #. Tag: para
 #: injection.xml:93
@@ -270,7 +273,7 @@ msgid ""
 "injection point can specify exactly which Web Bean should be injected using "
 "a binding annotation. For example, there might be two implementations of "
 "<literal>PaymentProcessor</literal>:"
-msgstr ""
+msgstr "특정 API 유형을 구현하는 하나 이상의 Web Bean이 있을 경우, 삽입 지점은 바인딩 어노테이션을 사용하여 어떤 Web Bean이 삽입되어야 할 지를 지정할 수 있습니다. 예를 들어, <literal>PaymentProcessor</literal>의 두 가지 구현이 있을 수 있습니다: "
 
 #. Tag: programlisting
 #: injection.xml:98
@@ -307,6 +310,8 @@ msgid ""
 "Where <literal>@PayByCheque</literal> and <literal>@PayByCreditCard</"
 "literal> are binding annotations:"
 msgstr ""
+"여기서 <literal>@PayByCheque</literal> 및 <literal>@PayByCreditCard</"
+"literal>는 바인딩 어노테이션입니다:  "
 
 #. Tag: programlisting
 #: injection.xml:105
@@ -348,7 +353,7 @@ msgstr ""
 #: injection.xml:112
 #, no-c-format
 msgid "Using field injection:"
-msgstr ""
+msgstr "영역 삽입 사용: "
 
 #. Tag: programlisting
 #: injection.xml:114
@@ -364,7 +369,7 @@ msgstr ""
 #: injection.xml:116
 #, no-c-format
 msgid "Using initializer method injection:"
-msgstr ""
+msgstr "초기화 방식 삽입 사용: "
 
 #. Tag: programlisting
 #: injection.xml:118
@@ -392,7 +397,7 @@ msgstr ""
 #: injection.xml:120
 #, no-c-format
 msgid "Or using constructor injection:"
-msgstr ""
+msgstr "생성자 삽입 사용: "
 
 #. Tag: programlisting
 #: injection.xml:122
@@ -418,13 +423,13 @@ msgstr ""
 #: injection.xml:125
 #, no-c-format
 msgid "Binding annotations with members"
-msgstr ""
+msgstr "멤버와 바인딩 어노테이션 "
 
 #. Tag: para
 #: injection.xml:127
 #, no-c-format
 msgid "Binding annotations may have members:"
-msgstr ""
+msgstr "바인딩 어노테이션은 멤버를 갖을 수 있습니다: "
 
 #. Tag: programlisting
 #: injection.xml:129
@@ -448,7 +453,7 @@ msgstr ""
 #: injection.xml:131
 #, no-c-format
 msgid "In which case, the member value is significant:"
-msgstr ""
+msgstr "이러한 경우, 멤버 값이 중요합니다:   "
 
 #. Tag: programlisting
 #: injection.xml:133
@@ -472,13 +477,13 @@ msgstr ""
 #: injection.xml:141
 #, no-c-format
 msgid "Combinations of binding annnotations"
-msgstr ""
+msgstr "바인딩 어노테이션의 조합 "
 
 #. Tag: para
 #: injection.xml:143
 #, no-c-format
 msgid "An injection point may even specify multiple binding annotations:"
-msgstr ""
+msgstr "삽입 지점은 여러 바인딩 어노테이션을 지정할 수 도 있습니다:  "
 
 #. Tag: programlisting
 #: injection.xml:145
@@ -498,13 +503,13 @@ msgstr ""
 #: injection.xml:153
 #, no-c-format
 msgid "Binding annotations and producer methods"
-msgstr ""
+msgstr "바인딩 어노테이션 및 생산자 방식 "
 
 #. Tag: para
 #: injection.xml:155
 #, no-c-format
 msgid "Even producer methods may specify binding annotations:"
-msgstr ""
+msgstr "생산자 방식은 바인딩 어노테이션을 지정할 수 도 있습니다: "
 
 #. Tag: programlisting
 #: injection.xml:157
@@ -528,7 +533,7 @@ msgstr ""
 #: injection.xml:162
 #, no-c-format
 msgid "The default binding type"
-msgstr ""
+msgstr "기본값 바인딩 유형 "
 
 #. Tag: para
 #: injection.xml:164
@@ -567,7 +572,7 @@ msgstr ""
 #: injection.xml:187
 #, no-c-format
 msgid "Deployment types"
-msgstr ""
+msgstr "배치 유형 "
 
 #. Tag: para
 #: injection.xml:189
