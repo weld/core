@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: extend\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-09 12:09+1000\n"
+"PO-Revision-Date: 2009-01-19 14:15+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgid ""
 "SPIs for the use of developers of portable extensions to Web Beans. For "
 "example, the following kinds of extensions were envisaged by the designers "
 "of Web Beans:"
-msgstr "Web Beans pretende ser una plataforma para marcos, extensiones e integración con otras tecnologías. Por lo tanto, Web Beans expone un conjunto de SPI para el uso de desarrolladores de extensiones portátiles para Web Beans. Por ejemplo, las siguientes clases de extensiones fueron previstas por los diseñadores de Web Beans:"
+msgstr "Web Beans pretende ser una plataforma para marcos, extensiones e integración con otras tecnologías. Por lo tanto, Web Beans expone una serie de SPI para el uso de desarrolladores de extensiones portátiles para Web Beans. Por ejemplo, las siguientes clases de extensiones fueron previstas por los diseñadores de Web Beans:"
 
 #. Tag: para
 #: extend.xml:14
@@ -59,7 +59,7 @@ msgstr "nueva tecnología basada en el modelo de programación de Web Beans."
 msgid ""
 "The nerve center for extending Web Beans is the <literal>Manager</literal> "
 "object."
-msgstr "El centro nervioso para extender Web Beans es el objeto de <literal>Manager</literal>. "
+msgstr "El centro nervioso para extender Web Beans es el objeto <literal>Manager</literal>. "
 
 #. Tag: title
 #: extend.xml:29
@@ -220,7 +220,7 @@ msgid ""
 "Instances of the abstract class <literal>Bean</literal> represent Web Beans. "
 "There is an instance of <literal>Bean</literal> registered with the "
 "<literal>Manager</literal> object for every Web Bean in the application."
-msgstr "Instancias de clase abstracta <literal>Bean</literal> representan Web Beans. Hay una instancia de <literal>Bean</literal> registrada con el objeto <literal>Manager</literal> para cada Web Bean en la aplicación. "
+msgstr "Instancias de clase abstracta <literal>Bean</literal> representan Web Beans. Hay una instancia de <literal>Bean</literal> registrada con el objeto <literal>Manager</literal> para cada Web Bean en la aplicación."
 
 #. Tag: programlisting
 #: extend.xml:50
@@ -288,7 +288,7 @@ msgid ""
 "specification (simple and enterprise Web Beans, producer methods and JMS "
 "endpoints). For example, we could use the <literal>Bean</literal> class to "
 "allow objects managed by another framework to be injected into Web Beans."
-msgstr "Es posible extender la clase <literal>Bean</literal> y registrar instancias llamando a <literal>Manager.addBean()</literal> para proveer soporte a nuevas clases de Web Beans, además de los definidos por la especificación Web Beans (Web Beans sencillos y de empresa, métodos de productor y endpoints JMS). Por ejemplo, podríamos utilizar la clase <literal>Bean</literal> para permitir que los objetos sean administrados por otro marco que se inyecta en Web Beans."
+msgstr "Es posible extender la clase <literal>Bean</literal> y registrar instancias llamando a <literal>Manager.addBean()</literal> para proveer soporte a nuevas clases de Web Beans, además de los definidos por la especificación Web Beans (Web Beans sencillos y empresariales, métodos de productor y endpoints JMS). Por ejemplo, podríamos utilizar la clase <literal>Bean</literal> para permitir que los objetos sean administrados por otro marco que se inyecta en Web Beans."
 
 #. Tag: para
 #: extend.xml:60
@@ -298,14 +298,14 @@ msgid ""
 "specification: <literal>Interceptor</literal> and <literal>Decorator</"
 "literal>."
 msgstr ""
-"Hay dos subclase de <literal>Bean</literal> definidas por la especificación de Web Beans: <literal>Interceptor</literal> y <literal>Decorator</"
+"Hay dos subclases de <literal>Bean</literal> definidas por la especificación de Web Beans: <literal>Interceptor</literal> y <literal>Decorador</"
 "literal>."
 
 #. Tag: title
 #: extend.xml:67
 #, no-c-format
 msgid "The <literal>Context</literal> interface"
-msgstr "La interfaz <literal>Context</literal>"
+msgstr "La interfaz <literal>Contexto</literal>"
 
 #. Tag: para
 #: extend.xml:69
@@ -313,7 +313,7 @@ msgstr "La interfaz <literal>Context</literal>"
 msgid ""
 "The <literal>Context</literal> interface supports addition of new scopes to "
 "Web Beans, or extension of the built-in scopes to new environments."
-msgstr "La interfaz <literal>Context</literal> soporta la adición de nuevos ámbitos a Web Beans, o extensión de los ámbitos incorporados a nuevos entornos."
+msgstr "La interfaz <literal>Contexto</literal> soporta la adición de nuevos ámbitos a Web Beans, o extensión de los ámbitos incorporados a nuevos entornos."
 
 #. Tag: programlisting
 #: extend.xml:72
@@ -346,5 +346,5 @@ msgid ""
 "For example, we might implement <literal>Context</literal> to add a business "
 "process scope to Web Beans, or to add support for the conversation scope to "
 "an application that uses Wicket."
-msgstr "Por ejemplo, podríamos implementar <literal>Context</literal> para agregar un ámbito de proceso de negocio a Web Beans, o agregar soporte para el ámbito de conversación a una aplicación que utiliza Wicket."
+msgstr "Por ejemplo, podríamos implementar <literal>Contexto</literal> para agregar un ámbito de proceso de negocio a Web Beans, o agregar soporte para el ámbito de conversación a una aplicación que utiliza Wicket."
 

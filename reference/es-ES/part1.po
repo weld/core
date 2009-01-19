@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: part1\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-14 11:28+1000\n"
+"PO-Revision-Date: 2009-01-19 16:38+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgid ""
 "component types including JavaBeans and Enterprise Java Beans. As a "
 "complement to the traditional Java EE programming model, the Web Beans "
 "services provide:"
-msgstr "La especificación de Web Beans (JSR-299) define una serie de servicios para el entorno EE de Java que facilitan el desarrollo de aplicaciones. Web Beans entrecruza un ciclo de vida mejorado y un modelo de interacción en tipos de componentes existentes de Java incluyendo los componentes JavaBeans y los Enterprise Java Beans. Como complemento para el modelo tradicional de programación EE de Java, el servicio de Web Beans proporciona servicios:"
+msgstr "La especificación de Web Beans (JSR-299) define una serie de servicios para el entorno de Java EE que facilitan el desarrollo de aplicaciones. Web Beans entrecruza un ciclo de vida mejorado y un modelo de interacción en tipos de componentes existentes de Java incluyendo los componentes JavaBeans y Enterprise Java Beans. Como complemento para el modelo tradicional de programación Java EE, el servicio de Web Beans proporciona servicios:"
 
 #. Tag: para
 #: part1.xml:14
@@ -71,37 +71,37 @@ msgstr "Inyección de dependencia, junto con la administración de ciclo de vida
 #: part1.xml:38
 #, no-c-format
 msgid "what is the lifecycle of this object?"
-msgstr "¿cuál es el ciclo de vida de este objeto? "
+msgstr "¿Cuál es el ciclo de vida de este objeto? "
 
 #. Tag: para
 #: part1.xml:41
 #, no-c-format
 msgid "how many simultaneous clients can it have?"
-msgstr "¿cuántos clientes simultáneos puede tener?"
+msgstr "¿Cuántos clientes simultáneos puede tener?"
 
 #. Tag: para
 #: part1.xml:44
 #, no-c-format
 msgid "is it multithreaded?"
-msgstr "¿es multihilos?"
+msgstr "¿Es multihilos?"
 
 #. Tag: para
 #: part1.xml:47
 #, no-c-format
 msgid "where can I get one from?"
-msgstr "¿en dónde puedo obtener uno?"
+msgstr "¿En dónde puedo obtener uno?"
 
 #. Tag: para
 #: part1.xml:50
 #, no-c-format
 msgid "do I need to explicitly destroy it?"
-msgstr "¿necesito destruirlo explícitamente?"
+msgstr "¿Necesito destruirlo explícitamente?"
 
 #. Tag: para
 #: part1.xml:53
 #, no-c-format
 msgid "where should I keep my reference to it when I'm not using it directly?"
-msgstr "¿dónde debo mantener mi referencia a éste cuando no lo estoy usando directamente?"
+msgstr "¿Dónde debo guardar mi referencia a éste cuando no lo estoy usando directamente?"
 
 #. Tag: para
 #: part1.xml:57
@@ -109,13 +109,13 @@ msgstr "¿dónde debo mantener mi referencia a éste cuando no lo estoy usando d
 msgid ""
 "how can I add an indirection layer, so that the implementation of this "
 "object can vary at deployment time?"
-msgstr "¿cómo puedo agregar una capa de direccionamiento indirecto, para que la implementación de este objeto pueda variar en el momento de despliegue?"
+msgstr "¿Cómo puedo agregar una capa de direccionamiento indirecto, para que la implementación de este objeto pueda variar en el momento de despliegue?"
 
 #. Tag: para
 #: part1.xml:61
 #, no-c-format
 msgid "how should I go about sharing this object between other objects?"
-msgstr "¿cómo hago para compartir este objeto con otros objetos?"
+msgstr "¿Cómo hago para compartir este objeto con otros objetos?"
 
 #. Tag: para
 #: part1.xml:65
@@ -127,7 +127,7 @@ msgid ""
 "upon. Even better, the concrete implementation, lifecycle and threading "
 "model of a Web Bean it depends upon may vary according to the deployment "
 "scenario, without affecting any client."
-msgstr "Un Web Bean especifica únicamente el tipo y la semántica de otros Web Beans de los que depende. No se necesita estar consciente del ciclo de vida real, la implementación concreta, el modelo de hilos u otros clientes de cualquier Web Bean a la que dependa. Mejor aún, la implementación concreta, el ciclo de vida y el modelo de hilos de un Web Bean al que éste depende pueden variar según el escenario de despliegue, sin afectar a ningún cliente."
+msgstr "Un Web Bean especifica únicamente el tipo y la semántica de otros Web Beans de los que depende. No se necesita conocer el ciclo de vida real, la implementación concreta, el modelo de hilos u otros clientes de cualquier Web Bean a la que dependa. Mejor aún, la implementación concreta, el ciclo de vida y el modelo de hilos de un Web Bean al que éste depende pueden variar según el escenario de despliegue, sin afectar a ningún cliente."
 
 #. Tag: para
 #: part1.xml:72
@@ -177,7 +177,7 @@ msgid ""
 "interceptors and decorators and their event consumers."
 msgstr ""
 "Más importante, Web Beans ofrece todos los servicios en forma"
-"<emphasis>typesafe</emphasis>. Web Beans nunca utiliza identificadores de cadena para determinar cómo los objetos de colaboración se ajustan entre sí. Además aunque XML sigue siendo una opción, muy rara vez se utiliza. En su lugar, Web Beans usa la información de teclado disponible en el modelo de objeto Java junto con un nuevo patrón, llamado <emphasis>anotaciones de enlace</emphasis>, para conectar a Web Beans, las dependencias, los interceptores y decoradores y sus consumidores de evento."
+"<emphasis>typesafe</emphasis>. Web Beans nunca utiliza identificadores de cadena para determinar cómo los se ajustan entre sí objetos de colaboración. Además, aunque XML sigue siendo una opción, muy rara vez se utiliza. En su lugar, Web Beans usa la información de teclado disponible en el modelo de objeto Java junto con un nuevo patrón, llamado <emphasis>anotaciones de enlace</emphasis>, para conectar a Web Beans, las dependencias, los interceptores y decoradores y sus consumidores de evento."
 
 #. Tag: para
 #: part1.xml:100
@@ -185,7 +185,7 @@ msgstr ""
 msgid ""
 "The Web Beans services are general and apply to the following types of "
 "components that exist in the Java EE environment:"
-msgstr "Los servicios Web Beans son generales y se aplican a los siguiente tipos de componentes que existen en el entorno EE de Java."
+msgstr "Los servicios Web Beans son generales y se aplican a los siguientes tipos de componentes existentes en el entorno de Java EE."
 
 #. Tag: para
 #: part1.xml:105
@@ -213,7 +213,7 @@ msgid ""
 "of components defined by future Java EE specifications or by non-standard "
 "frameworks may be cleanly integrated with Web Beans, take advantage of the "
 "Web Beans services, and interact with any other kind of Web Bean."
-msgstr "Web Beans incluso proporciona los puntos de integración necesarios para que otras clases de componentes definidos por especificaciones EE de Java futuras, hagan uso de los servicios de Web Beans e interactúen con otra clase de Web Bean."
+msgstr "Web Beans incluso provee los puntos de integración necesarios para que otras clases de componentes definidos por especificaciones de Java EE futuras, hagan uso de los servicios de Web Beans e interactúen con otra clase de Web Bean."
 
 #. Tag: para
 #: part1.xml:120
@@ -223,7 +223,7 @@ msgid ""
 "Seam, Guice and Spring. However, Web Beans has its own very distinct "
 "character: more typesafe than Seam, more stateful and less XML-centric than "
 "Spring, more web and enterprise-application capable than Guice."
-msgstr "Una gran cantidad de marcos existentes de Java, incluyendo Seam, Guice y Spring, influyeron en Web Beans. No obstante, Web Beans tiene su propio carácter distintivo: más typesafe que Seam, más con estado y menos centrada en XML que Spring, más red y aplicación de empresa más capaz que Guice."
+msgstr "Una gran cantidad de marcos existentes de Java, incluyendo Seam, Guice y Spring, influyeron en Web Beans. No obstante, Web Beans tiene su propio carácter distintivo: más typesafe que Seam, más con estado y menos centrada en XML que Spring, red y aplicación empresarial más capaz que Guice."
 
 #. Tag: para
 #: part1.xml:125
@@ -232,5 +232,5 @@ msgid ""
 "Most importantly, Web Beans is a JCP standard that integrates cleanly with "
 "Java EE, and with any Java SE environment where embeddable EJB Lite is "
 "available."
-msgstr "Lo más importante es que Web Beans es un JCP estándar que se integra sin problemas con EE de Java y con cualquier entorno SE dónde EJB Lite incrustado esté disponible."
+msgstr "Lo más importante es que Web Beans es un JCP estándar que se integra sin problemas con Java EE y con cualquier entorno SE dónde EJB Lite incrustado esté disponible."
 

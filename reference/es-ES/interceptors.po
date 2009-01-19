@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: interceptors\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-04 23:18+0000\n"
-"PO-Revision-Date: 2009-01-16 14:50+1000\n"
+"PO-Revision-Date: 2009-01-19 15:37+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -42,13 +42,13 @@ msgstr "Cualquier Web Bean puede tener interceptores, no sólo beans de sesión.
 msgid ""
 "Web Beans features a more sophisticated annotation-based approach to binding "
 "interceptors to Web Beans."
-msgstr "Web Beans ofrece un método de anotación más sofisticado para interceptores de enlaces a Web Beans."
+msgstr "Web Beans ofrece un método de anotación más sofisticado para interceptores de enlace a Web Beans."
 
 #. Tag: para
 #: interceptors.xml:22
 #, no-c-format
 msgid "The EJB specification defines two kinds of interception points:"
-msgstr "La especificación EJB define dos clases de puntos de intercepción:"
+msgstr "La especificación EJB define dos clases de puntos de interceptación:"
 
 #. Tag: para
 #: interceptors.xml:26
@@ -68,7 +68,7 @@ msgstr "la interceptación de devolución de llamadas de ciclo de vida"
 msgid ""
 "A <emphasis>business method interceptor</emphasis> applies to invocations of "
 "methods of the Web Bean by clients of the Web Bean:"
-msgstr "Un <emphasis>método interceptor de negocios</emphasis> se aplica a invocaciones de métodos del Web Bean por clientes del Web Bean:"
+msgstr "Un <emphasis>interceptor de método de negocios</emphasis> se aplica a invocaciones de métodos del Web Bean por clientes del Web Bean:"
 
 #. Tag: programlisting
 #: interceptors.xml:36
@@ -112,13 +112,13 @@ msgstr ""
 msgid ""
 "An interceptor class may intercept both lifecycle callbacks and business "
 "methods."
-msgstr "Una clase de interceptor puede interceptar tanto métodos devolución de llamadas de ciclo de vida como métodos de negocios."
+msgstr "Una clase de interceptor puede interceptar métodos de devolución de llamadas de ciclo de vida y métodos de negocios."
 
 #. Tag: title
 #: interceptors.xml:49
 #, no-c-format
 msgid "Interceptor bindings"
-msgstr "Vinculación de interceptor"
+msgstr "Enlaces de interceptor"
 
 #. Tag: para
 #: interceptors.xml:51
@@ -127,7 +127,7 @@ msgid ""
 "Suppose we want to declare that some of our Web Beans are transactional. The "
 "first thing we need is an <emphasis>interceptor binding annotation</"
 "emphasis> to specify exactly which Web Beans we're interested in:"
-msgstr "Suponga que deseamos declarar que algunos de nuestros Web Beans son transaccionales. La primera cosa que necesitamos es una <emphasis>anotación de vinculación de interceptor</emphasis> para especificar exactamente en cuáles Web Beans estamos interesados:"
+msgstr "Suponga que deseamos declarar que algunos de nuestros Web Beans son transaccionales. La primera cosa que necesitamos es una <emphasis>anotación de enlace de interceptor</emphasis> para especificar exactamente en cuáles Web Beans estamos interesados:"
 
 #. Tag: programlisting
 #: interceptors.xml:55
@@ -149,7 +149,7 @@ msgstr ""
 msgid ""
 "Now we can easily specify that our <literal>ShoppingCart</literal> is a "
 "transactional object:"
-msgstr "Ahora podemos especificar con facilidad que nuestro <literal>Shopping de Compras</literal> es un objeto transaccional:"
+msgstr "Ahora podemos especificar con facilidad que nuestro <literal>ShoppingCart</literal> es un objeto transaccional:"
 
 #. Tag: programlisting
 #: interceptors.xml:60
@@ -253,7 +253,7 @@ msgstr "Múltiples Interceptores pueden utilizar el mismo tipo de vinculación d
 #: interceptors.xml:88
 #, no-c-format
 msgid "Enabling interceptors"
-msgstr "Habilitando Interceptores"
+msgstr "Habilitar Interceptores"
 
 #. Tag: para
 #: interceptors.xml:90
@@ -415,7 +415,7 @@ msgid ""
 "But what if we only have one interceptor and we want the manager to ignore "
 "the value of <literal>requiresNew</literal> when binding interceptors? We "
 "can use the <literal>@NonBinding</literal> annotation:"
-msgstr "Pero, ¿qué sucede si sólo tenemos un interceptor y queremos que el administrador ignore el valor de <literal>requiresNew</literal> cuando se vinculen interceptores? Podemos utilizar la anotación <literal>@NonBinding</literal>:"
+msgstr "Pero, ¿qué sucede si sólo tenemos un interceptor y queremos que el administrador ignore el valor de <literal>requiresNew</literal> al vincular interceptores? Podemos utilizar la anotación <literal>@NonBinding</literal>:"
 
 #. Tag: programlisting
 #: interceptors.xml:140
@@ -449,7 +449,7 @@ msgid ""
 "interceptors to a Web Bean. For example, the following declaration would be "
 "used to bind <literal>TransactionInterceptor</literal> and "
 "<literal>SecurityInterceptor</literal> to the same Web Bean:"
-msgstr "Por lo general utilizamos combinaciones de tipos de interceptores de enlace para vincular múltiples interceptores  a un Web Bean. Por ejemplo, la siguiente declaración sería utilizada para enlazar <literal>TransactionInterceptor</literal> y <literal>SecurityInterceptor</literal> al mismo Web Bean:"
+msgstr "Generalmente utilizamos combinaciones de tipos de interceptores de enlace para vincular múltiples interceptores a un Web Bean. Por ejemplo, la siguiente declaración sería utilizada para enlazar <literal>TransactionInterceptor</literal> y <literal>SecurityInterceptor</literal> al mismo Web Bean:"
 
 #. Tag: programlisting
 #: interceptors.xml:152
@@ -467,7 +467,7 @@ msgstr ""
 msgid ""
 "However, in very complex cases, an interceptor itself may specify some "
 "combination of interceptor binding types:"
-msgstr "Sin embargo, en casos muy complejos, un mismo interceptor puede especificar una combinación de tipos de interceptor de enlace:"
+msgstr "Sin embargo, en casos muy complejos, el mismo interceptor puede especificar una combinación de tipos de interceptor de enlace:"
 
 #. Tag: programlisting
 #: interceptors.xml:157
@@ -554,7 +554,7 @@ msgid ""
 "One limitation of the Java language support for annotations is the lack of "
 "annotation inheritance. Really, annotations should have reuse built in, to "
 "allow this kind of thing to work:"
-msgstr "Una limitación de la compatibilidad del lenguaje de Java para anotaciones es la falta de herencia de anotación. En realidad, las anotaciones se deberían tener una reutilización incorporada, para permitir a este tipo que funcione:"
+msgstr "Una limitación de la compatibilidad del lenguaje de Java para anotaciones es la falta de herencia de anotación. En realidad, las anotaciones deberían tener reutilización incorporada, para permitir a este tipo que funcione:"
 
 #. Tag: programlisting
 #: interceptors.xml:179
@@ -571,7 +571,7 @@ msgid ""
 "types. The interceptor bindings are transitive&#151;any Web Bean with the "
 "first interceptor binding inherits the interceptor bindings declared as meta-"
 "annotations."
-msgstr "Bueno, afortunadamente, Web Beans funciona en torno a esta característica de Java. Podemos anotar un interceptor de tipo de enlace con otros tipos de interceptores de enlace. Los enlaces de interceptor son transitivos&#151; cualquier Web Bean con el primer enlace de interceptor hereda los enlaces de interceptor declarados como meta-anotaciones."
+msgstr "Bueno, afortunadamente, Web Beans funciona en torno a esta característica de Java. Podemos anotar un interceptor de tipo de enlace con otros tipos de interceptores de enlace. Los enlaces de interceptor son transitivos&#151;cualquier Web Bean con el primer enlace de interceptor hereda los enlaces de interceptor declarados como meta-anotaciones."
 
 #. Tag: programlisting
 #: interceptors.xml:186
@@ -615,7 +615,7 @@ msgid ""
 "The <literal>@Interceptors</literal> annotation defined by the EJB "
 "specification is supported for both enterprise and simple Web Beans, for "
 "example:"
-msgstr "La anotación <literal>@Interceptors</literal> definida por la especificación de EJB es compatible con Web Beans de empresa y Web Beans sencillas, por ejemplo:"
+msgstr "La anotación <literal>@Interceptors</literal> definida por la especificación de EJB es compatible con Web Beans empresariales y sencillos, por ejemplo:"
 
 #. Tag: programlisting
 #: interceptors.xml:200

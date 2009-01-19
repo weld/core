@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: master\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:29+0000\n"
-"PO-Revision-Date: 2009-01-14 08:54+1000\n"
+"PO-Revision-Date: 2009-01-19 16:28+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -38,5 +38,5 @@ msgstr "Aprovechar al máximo un tecleado fuerte"
 #: master.xml:46
 #, no-c-format
 msgid "Web Beans and the Java EE ecosystem"
-msgstr "Web Beans en el ecosistema EE de Java"
+msgstr "Web Beans en el ecosistema de Java EE"
 

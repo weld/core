@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-16 15:21+1000\n"
+"PO-Revision-Date: 2009-01-19 15:18+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -64,7 +64,7 @@ msgstr ""
 #: injection.xml:12
 #, no-c-format
 msgid "<emphasis>Initializer</emphasis> method parameter injection:"
-msgstr "Inyección de parámetro de método <emphasis>Iniciador</emphasis>:"
+msgstr "Inyección de parámetro del método <emphasis>Inicializador</emphasis>:"
 
 #. Tag: programlisting
 #: injection.xml:14
@@ -120,7 +120,7 @@ msgstr ""
 msgid ""
 "Dependency injection always occurs when the Web Bean instance is first "
 "instantiated."
-msgstr "La inyección de dependencia siempre se presenta cuando la instancia de Web Bean se instancia primero:"
+msgstr "La inyección de dependencia siempre se presenta cuando la instancia de Web Bean es instanciada primero:"
 
 #. Tag: para
 #: injection.xml:25
@@ -160,7 +160,7 @@ msgid ""
 "EJB is instantiated by the EJB container, not the Web Bean manager."
 msgstr ""
 "La inyección de parámetro constructor no es admitida por beans de EJB, porque "
-"EJB es instanciada por el contenedor de EJB, no por el administrador de Web Bean."
+"EJB es instanciado por el contenedor de EJB, no por el administrador de Web Bean."
 
 #. Tag: para
 #: injection.xml:45
@@ -171,7 +171,7 @@ msgid ""
 "Injected fields, however, <emphasis>must</emphasis> specify a binding type, "
 "even when the default binding type applies. If the field does not specify a "
 "binding type, it will not be injected."
-msgstr "Los parámetros de constructores y métodos de inicializador no necesitan ser anotados explícitamente cuando el tipo de enlace predeterminado <literal>@Current</literal> se aplique. Los campos inyectados, sin embargo, <emphasis>deben</emphasis> especificar un tipo de enlace, cuando el tipo de enlace por defecto se aplique. Si el campo no especifica ningún tipo de enlace, no será inyectado."
+msgstr "Los parámetros de constructores y métodos de inicializador no necesitan ser anotados explícitamente cuando se aplique el tipo de enlace predeterminado <literal>@Current</literal>. Los campos inyectados, sin embargo, <emphasis>deben</emphasis> especificar un tipo de enlace, cuando se aplique el tipo de enlace predeterminado. Si el campo no especifica ningún tipo de enlace, no será inyectado."
 
 #. Tag: para
 #: injection.xml:51
@@ -228,7 +228,7 @@ msgstr "El propósito de este algoritmo es permitir a múltiples Web Beans imple
 msgid ""
 "allow the client to select which implementation it requires using "
 "<emphasis>binding annotations</emphasis>,"
-msgstr "permitiendo al cliente seleccionar la aplicación que requiere mediante <emphasis>anotaciones de enlace</emphasis>,"
+msgstr "permitiendo al cliente seleccionar la aplicación requerida mediante <emphasis>anotaciones de enlace</emphasis>,"
 
 #. Tag: para
 #: injection.xml:77
@@ -246,7 +246,7 @@ msgid ""
 "allow one implementation of an API to override another implementation of the "
 "same API at deployment time, without changes to the client, using "
 "<emphasis>deployment type precedence</emphasis>."
-msgstr "permitiendo que una implementación de un API remplace otra implementación del mismo API en el momento del despliegue, sin cambios al cliente, mediante <emphasis>prioridad de tipo de despliegue</emphasis>."
+msgstr "permitiendo que una implementación de una API remplace otra implementación de la misma API en el momento del despliegue, sin cambios al cliente, mediante <emphasis>prioridad de tipo de despliegue</emphasis>."
 
 #. Tag: para
 #: injection.xml:88
@@ -268,7 +268,7 @@ msgid ""
 "injection point can specify exactly which Web Bean should be injected using "
 "a binding annotation. For example, there might be two implementations of "
 "<literal>PaymentProcessor</literal>:"
-msgstr "Si tenemos más de un Web Bean que implemente un tipo determinado de API, el punto de inyección puede especificar el Web Bean que debe ser inyectado utilizando una anotación de enlace. Por ejemplo, debería haber dos aplicaciones del <literal>PaymentProcessor</literal>:"
+msgstr "Si tenemos más de un Web Bean que implemente un tipo determinado de API, el punto de inyección puede especificar el Web Bean que debe ser inyectado mediante una anotación de enlace. Por ejemplo, deberían haber dos aplicaciones del <literal>PaymentProcessor</literal>:"
 
 #. Tag: programlisting
 #: injection.xml:98
@@ -342,7 +342,7 @@ msgstr ""
 msgid ""
 "A client Web Bean developer uses the binding annotation to specify exactly "
 "which Web Bean should be injected."
-msgstr "Un desarrollador de cliente de Web Bean utiliza la anotación de enlace para especificar exactamente qué Web Bean debe inyectarse."
+msgstr "Un desarrollador de cliente de Web Bean utiliza la anotación de enlace para especificar exactamente el Web Bean que debe inyectarse."
 
 #. Tag: para
 #: injection.xml:112
@@ -492,7 +492,7 @@ msgstr "<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>
 msgid ""
 "In this case, only a Web Bean which has <emphasis>both</emphasis> binding "
 "annotations would be eligible for injection."
-msgstr "En este caso, sólo un Web Bean que tiene <emphasis>ambas</emphasis> anotaciones de enlace sería elegible para inyección."
+msgstr "En este caso, sólo el Web Bean que tiene <emphasis>ambas</emphasis> anotaciones de enlace sería elegible para inyección."
 
 #. Tag: title
 #: injection.xml:153
@@ -537,7 +537,7 @@ msgid ""
 "Web Beans defines a binding type <literal>@Current</literal> that is the "
 "default binding type for any injection point or Web Bean that does not "
 "explicitly specify a binding type."
-msgstr "Web Beans define un tipo de enlace <literal>@Current</literal> que es el tipo de enlace predeterminado para cualquier punto de inyección o Web Bean que no especifique explícitamente un tipo de enlace."
+msgstr "Web Beans define un tipo de enlace <literal>@Current</literal>, el cual es el tipo de enlace predeterminado para cualquier punto de inyección o Web Bean que no especifique explícitamente un tipo de enlace."
 
 #. Tag: para
 #: injection.xml:168
@@ -587,7 +587,7 @@ msgid ""
 "the system executes inside an integration testing environment:"
 msgstr ""
 "Por ejemplo, podríamos definir un tipo de despliegue llamado <literal>@Mock</"
-"literal>, el cual identificaría Web Beans que deberían ser instaladas sólo cuando el sistema se ejecute dentro de un entorno de pruebas de integración:"
+"literal>, el cual identificaría Web Beans que deben ser instalados sólo cuando el sistema se ejecute dentro de un entorno de pruebas de integración:"
 
 #. Tag: programlisting
 #: injection.xml:197
@@ -791,7 +791,7 @@ msgid ""
 "deployment time!"
 msgstr ""
 "Ahora hay dos Web Beans que cumplen el contrato <literal>PaymentProcessor</"
-"literal>. Claro está que no podemos utilizar una anotación de enlace para explicar, porque las anotaciones de enlace están codificadas en la fuente en el punto de inyección, y queremos que el administrador pueda decidir en el ¡momento de despliegue!"
+"literal>. Claro está que no podemos utilizar una anotación de enlace para explicar, porque las anotaciones de enlace están codificadas dentro de la fuente en el punto de inyección, y queremos que el administrador pueda decidir en el ¡momento de despliegue!"
 
 #. Tag: para
 #: injection.xml:258
@@ -804,7 +804,7 @@ msgid ""
 "<literal>@Production</literal> so it has a higher precedence."
 msgstr ""
 "La solución a este problema es que cada tipo de despliegue tiene una <emphasis>prioridad</emphasis> diferente. La prioridad de los tipos de despliegue es determinada por el orden de aparición en <literal>web-beans.xml</"
-"literal>. En nuestro ejemplo, <literal>@Mock</literal> posterior a <literal>@Production</literal> por lo tanto tiene una mayor prioridad."
+"literal>. En nuestro ejemplo, <literal>@Mock</literal> es posterior a <literal>@Production</literal> por lo tanto tiene mayor prioridad."
 
 #. Tag: para
 #: injection.xml:264
@@ -817,7 +817,7 @@ msgid ""
 "to inject. So, in our example, the Web Bean manager will inject "
 "<literal>MockPaymentProcessor</literal> when executing in our integration "
 "testing environment (which is exactly what we want)."
-msgstr "Cada vez que el administrador descubre que más de un Web Bean cumple el contrato (tipo API más anotaciones de enlace) especificados por un punto de inyección, considera la prioridad relativa de los Web Beans. Si uno tiene una prioridad mayor que los otros, se escoge el Web Bean de mayor prioridad para inyectar. Por lo tanto, en nuestro ejemplo, el administrador de Web Bean inyectará <literal>MockPaymentProcessor</literal> al ejecutar en nuestro entorno de prueba de integración (que es precisamente lo que queremos)."
+msgstr "Cada vez que el administrador descubre que más de un Web Bean cumple el contrato (tipo API más anotaciones de enlace) especificado por un punto de inyección, considera la prioridad relativa de los Web Beans. Se escoge el Web Bean que tiene prioridad respecto de los otros para inyectar. Por lo tanto, en nuestro ejemplo, el administrador de Web Bean inyectará <literal>MockPaymentProcessor</literal> al ejecutar en nuestro entorno de prueba de integración (que es precisamente lo que queremos)."
 
 #. Tag: para
 #: injection.xml:271
@@ -834,7 +834,7 @@ msgid ""
 "browsing the code can easily identify what deployment scenarios the Web Bean "
 "will be used in."
 msgstr ""
-"Es interesante comparar esta facilidad con las arquitecturas populares de administrador de hoy. Varios contenedores \"ligeros\" también permiten el despliegue condicional de clases que existen en el classpath, pero las clases que van a ser desplegadas deben ser explícitamente, listadas de modo individual en el código de configuración o en algún archivo de configuración XML. Web Beans no admite definición de Web Bean "
+"Es interesante comparar esta facilidad con las arquitecturas populares del administrador de hoy. Varios contenedores \"ligeros\" también permiten el despliegue condicional de clases existentes en el classpath, pero las clases que van a ser desplegadas deben ser explícitamente, listadas de modo individual en el código de configuración o en algún archivo de configuración XML. Web Beans no admite definición de Web Bean "
 "ni configuración vía XML, pero en el común de los casos donde no se requiere una configuración compleja, los tipos de despliegue permiten habilitar un conjunto completo de Web Beans con una sóla línea de XML. Mientras tanto, un desarrollador que esté navegando el código puede fácilmente identificar en qué escenarios de despliegue se utilizará el Web Bean."
 
 #. Tag: title
@@ -869,7 +869,7 @@ msgstr "<literal>@AustralianTaxLaw</literal> para Web Beans de sitio específico
 msgid ""
 "<literal>@SeamFramework</literal>, <literal>@Guice</literal> for third-party "
 "frameworks which build on Web Beans"
-msgstr "<literal>@SeamFramework</literal>, <literal>@Guice</literal> para marcos de terceras partes que se generan en Web Beans"
+msgstr "<literal>@SeamFramework</literal>, <literal>@Guice</literal> para marcos de terceras partes generados en Web Beans"
 
 #. Tag: para
 #: injection.xml:301
@@ -877,13 +877,13 @@ msgstr "<literal>@SeamFramework</literal>, <literal>@Guice</literal> para marcos
 msgid ""
 "<literal>@Standard</literal> for standard Web Beans defined by the Web Beans "
 "specification"
-msgstr "<literal>@Standard</literal>para Web Beans definidos por la especificación Web Beans"
+msgstr "<literal>@Standard</literal>para Web Beans estándar definidos por la especificación Web Beans"
 
 #. Tag: para
 #: injection.xml:306
 #, no-c-format
 msgid "I'm sure you can think of more applications..."
-msgstr "Estoy seguro que puede pensar en más aplicaciones..."
+msgstr "Estamos seguros que puede pensar en más aplicaciones..."
 
 #. Tag: title
 #: injection.xml:313
@@ -908,7 +908,7 @@ msgid ""
 "It's usually easy to fix an <literal>UnsatisfiedDependencyException</"
 "literal> or <literal>AmbiguousDependencyException</literal>."
 msgstr ""
-"Por lo general es fácil corregir un <literal>UnsatisfiedDependencyException</"
+"Por lo general es fácil corregir una <literal>UnsatisfiedDependencyException</"
 "literal> o una <literal>AmbiguousDependencyException</literal>."
 
 #. Tag: para
@@ -932,7 +932,7 @@ msgid ""
 "<literal>AmbiguousDependencyException</literal> can only occur if two Web "
 "Beans share a binding type and have exactly the same deployment type."
 msgstr ""
-"Para corregir una <literal>AmbiguousDependencyException</literal>, introduzca un tipo de enlace para distinguir entre las dos implementaciones del tipo de API o cambie el tipo de despliegue de una de las implementaciones para que el administrador de Web Bean pueda utilizar la prioridad de tipo de despliegue para escoger entre ellas. Una <literal>AmbiguousDependencyException</literal> sólo puede presentarse si dos Web "
+"Para corregir una <literal>AmbiguousDependencyException</literal>, introduzca un tipo de enlace para distinguir entre las dos implementaciones del tipo de API o cambie el tipo de despliegue de una de las implementaciones con el fin de que el administrador de Web Bean pueda utilizar la prioridad de tipo de despliegue para escoger entre ellas. Una <literal>AmbiguousDependencyException</literal> sólo puede presentarse si dos Web "
 "Beans comparten un tipo de enlace y tienen exactamente el mismo tipo de despliegue."
 
 #. Tag: para
@@ -965,7 +965,7 @@ msgid ""
 "reference to a Web Bean bound to the request scope. The application scoped "
 "Web Bean is shared between many different requests. However, each request "
 "should see a different instance of the request scoped Web bean!"
-msgstr "Imagine que un Web Bean vinculado al ámbito de aplicación mantiene una referencia directa a un Web Bean vinculado al ámbito de petición. La aplicación en el ámbito de Web Bean se comparte entre muchas peticiones diferentes. No obstante, cada petición ¡debe ver una instancia diferente de la petición en el ámbito de WebBean!"
+msgstr "Imagine que un Web Bean vinculado al ámbito de aplicación mantiene una referencia directa a un Web Bean vinculado al ámbito de petición. La aplicación en el ámbito de Web Bean es compartida entre muchas peticiones diferentes. No obstante, cada petición ¡debe ver una instancia diferente de la petición en el ámbito de WebBean!"
 
 #. Tag: para
 #: injection.xml:351
@@ -976,7 +976,7 @@ msgid ""
 "the session context is serialized to disk in order to use memory more "
 "efficiently. However, the application scoped Web Bean instance should not be "
 "serialized along with the session scoped Web Bean!"
-msgstr "Ahora imaginemos que un enlace de Web Bean a la sesión mantiene una referencia directa a un Web Bean vinculado al ámbito de la aplicación. De vez en cuando, el contexto de sesión se serializa al disco con el fin de utilizar la memoria de un modo más eficiente. Sin embargo, la aplicación en el ámbito de la instancia de Web Bean ¡no debe serializarse junto con la sesión en el ámbito de Web Bean!"
+msgstr "Ahora imaginemos que un enlace de Web Bean a la sesión mantiene una referencia directa a un Web Bean enlazado al ámbito de la aplicación. De vez en cuando, el contexto de sesión se serializa al disco con el fin de utilizar la memoria de un modo más eficiente. Sin embargo, la aplicación en el ámbito de la instancia de Web Bean ¡no debe serializarse junto con la sesión en el ámbito de Web Bean!"
 
 #. Tag: para
 #: injection.xml:357
@@ -992,8 +992,8 @@ msgid ""
 "injected Web Beans."
 msgstr ""
 "Por lo tanto, a menos que un Web Bean tenga un ámbito predeterminado <literal>@Dependent</"
-"literal>, el administrador de Web Bean deberá todas las referencias indirectas inyectadas al "
-"Web Bean a través del objeto de proxy. Este <emphasis>proxy de cliente</emphasis> responsable de garantizar que la instancia de Web Bean reciba un método de invocación es la instancia asociada con el contexto actual. El proxy de cliente también permite a los Web Beans vincularse a contextos tales como el contexto de sesión que debe serializarse al disco sin serializar de modo recursivo otros Web Beans inyectados."
+"literal>, el administrador de Web Bean deberá direccionar indirectamente todas las referencias inyectadas al "
+"Web Bean a través del objeto de proxy. Este <emphasis>proxy de cliente</emphasis> responsable de garantizar que la instancia de Web Bean reciba un método de invocación es la instancia asociada con el contexto actual. El proxy de cliente también permite a los Web Beans vincularse a contextos tales como el contexto de sesión que debe serializarse al disco sin serializar de modo recursivo a otros Web Beans inyectados."
 
 #. Tag: para
 #: injection.xml:365
@@ -1023,13 +1023,13 @@ msgstr "las clases que son declaradas <literal>final</literal> o tienen un méto
 #: injection.xml:378
 #, no-c-format
 msgid "classes which have no non-private constructor with no parameters, and"
-msgstr "las clase que no tienen un constructor no-privado sin parámetros y "
+msgstr "las clases que no tienen un constructor no-privado sin parámetros y "
 
 #. Tag: para
 #: injection.xml:381
 #, no-c-format
 msgid "arrays and primitive types."
-msgstr "matrices y tipos primarios"
+msgstr "matrices y tipos primarios."
 
 #. Tag: para
 #: injection.xml:385
@@ -1113,7 +1113,7 @@ msgid ""
 "If the binding type has an annotation member, we can't use an anonymous "
 "subclass of <literal>AnnotationLiteral</literal>&#151;instead we'll need to "
 "create a named subclass:"
-msgstr "Si el tipo de vinculación tiene un miembro de anotación, no podemos utilizar una subclase anónima de <literal>AnnotationLiteral</literal>&#151;en su lugar necesitaremos crear una subclase llamada:"
+msgstr "Si el tipo de vinculación tiene un miembro de anotación, no podemos utilizar una subclase anónima de <literal>AnnotationLiteral</literal>&#151;en su lugar, necesitaremos crear una subclase llamada:"
 
 #. Tag: programlisting
 #: injection.xml:413
@@ -1189,7 +1189,7 @@ msgid ""
 "<literal>@PersistenceContext(type=EXTENDED)</literal>."
 msgstr ""
 "Web Beans sencillos y empresariales soportan el uso de <literal>@Resource</"
-"literal>, <literal>@EJB</literal> y <literal>@PersistenceContext</literal> para inyección de recursos de Java EE, EJB y contextos de persistencia JPA,respectivamente. Web Beans sencillos no admiten el uso de "
+"literal>, <literal>@EJB</literal> y <literal>@PersistenceContext</literal> para inyección de recursos de Java EE, EJB y contextos de persistencia JPA, respectivamente. Web Beans sencillos no admiten el uso de "
 "<literal>@PersistenceContext(type=EXTENDED)</literal>."
 
 #. Tag: para
@@ -1198,7 +1198,7 @@ msgstr ""
 msgid ""
 "The <literal>@PostConstruct</literal> callback always occurs after all "
 "dependencies have been injected."
-msgstr "La devolución de llamada <literal>@PostConstruct</literal> siempre se presenta después de que todas las dependencias han sido inyectadas."
+msgstr "La devolución de llamada <literal>@PostConstruct</literal> siempre se presenta tras la inyección de todas las dependencias."
 
 #. Tag: title
 #: injection.xml:440
@@ -1385,7 +1385,7 @@ msgid ""
 "literal> annotation is ignored by the Web Bean manager since it is annotated "
 "<literal>@NonBinding.</literal>)"
 msgstr ""
-"(Observe que el miembro <literal>value()</literal> de la anotación <literal>HttpParam</"
+"(Observe que el miembro del <literal>valor()</literal> de la anotación <literal>HttpParam</"
 "literal> es ignorado por el administrador de Web Bean porque está anotado como <literal>@NonBinding.</literal>)"
 
 #. Tag: para

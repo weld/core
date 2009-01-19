@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: next\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-16 14:57+1000\n"
+"PO-Revision-Date: 2009-01-19 16:30+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr "Siguientes pasos"
 msgid ""
 "Because Web Beans is so new, there's not yet a lot of information available "
 "online."
-msgstr "Debido a que Web Beans es tan reciente, aún no hay mucha información disponible en línea."
+msgstr "Debido a que Web Beans es tan reciente, aún no hay mucha información en línea disponible."
 
 #. Tag: para
 #: next.xml:9
@@ -39,7 +39,7 @@ msgid ""
 "the length of this article, and almost as readable. But, of course, it "
 "covers many details that we've skipped over. The spec is available from "
 "<literal>http://jcp.org/en/jsr/detail?id=299</literal>."
-msgstr "Claro está que la especificación de Web Beans es la mejor fuente de información acerca de Web Beans. La especificación tiene cerca de 100 páginas, sólo dos veces el tamaño de este artículo y casi tan legible. No obstante, cubre muchos detalles que hemos omitido. La especificación está disponible en <literal>http://jcp.org/en/jsr/detail?id=299</literal>."
+msgstr "Claro está que la especificación de Web Beans es la mejor fuente de información sobre Web Beans. La especificación tiene cerca de 100 páginas, apenas dos veces el tamaño de este artículo y casi tan legible. No obstante, cubre muchos detalles que hemos omitido. La especificación está disponible en <literal>http://jcp.org/en/jsr/detail?id=299</literal>."
 
 #. Tag: para
 #: next.xml:15

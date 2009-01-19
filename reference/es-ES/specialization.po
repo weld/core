@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: specialization\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-04 23:18+0000\n"
-"PO-Revision-Date: 2009-01-16 15:09+1000\n"
+"PO-Revision-Date: 2009-01-19 10:55+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +32,7 @@ msgid ""
 "implementation of the API <literal>PaymentProcessor</literal> in production:"
 msgstr ""
 "Hemos visto cómo el modelo de inyección de dependencia de Web Beans nos permite "
-"<emphasis>omitir</emphasis> la implementación de un API en el momento del despliegue. Por ejemplo, la siguiente empresa ofrece a Web Bean una implementación del <literal>PaymentProcessor</literal> de API en producción:"
+"<emphasis>omitir</emphasis> la implementación de un API en el momento del despliegue. Por ejemplo, la siguiente Web Bean empresarial provee una implementación del <literal>PaymentProcessor</literal> de API en producción:"
 
 #. Tag: programlisting
 #: specialization.xml:11
@@ -179,7 +179,7 @@ msgid ""
 "Beans. To make use of specialization, the higher-priority Web Bean must:"
 msgstr ""
 "Specialization es una función específica para Web "
-"Beans sencillas y empresariales. Para hacer uso de specialization, la Web Bean de prioridad más alta debe:"
+"Beans sencillos y empresariales. Para hacer uso de specialization, la Web Bean de prioridad más alta debe:"
 
 #. Tag: para
 #: specialization.xml:65

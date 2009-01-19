@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-18 16:31+0000\n"
-"PO-Revision-Date: 2009-01-19 10:38+1000\n"
+"PO-Revision-Date: 2009-01-19 17:19+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -48,7 +48,7 @@ msgstr ""
 "La IR de Web Beans viene con dos ejemplos de aplicaciones de despliegue: "
 "<literal>webbeans-numberguess</literal>, un ejemplo WAR, que contiene sólo "
 "beans sencillos y un ejemplo EAR <literal>webbeans-translator</literal> que "
-"contiene beans de empresa. Para ejecutar los ejemplos necesitará lo "
+"contiene beans empresariales. Para ejecutar los ejemplos necesitará lo "
 "siguiente:"
 
 #. Tag: para
@@ -138,7 +138,7 @@ msgid ""
 "the Web Beans RI. Future versions of JBoss AS will include these updates, "
 "and this step won't be necessary."
 msgstr ""
-"Como Web Beans es una nueva parte de software, necesitamos actualizar JBoss "
+"Como Web Beans es una nueva parte de software, necesitaremos actualizar JBoss "
 "AS para ejecutar el IR de Web Beans. Versiones futuras de JBOSS AS incluirán "
 "dichas actualizaciones, y este paso no será necesario."
 
@@ -269,9 +269,7 @@ msgstr ""
 msgid ""
 "Wait for the application to deploy, and enjoy hours of fun at <ulink url="
 "\"http://localhost:8080/webbeans-numberguess\"></ulink>!"
-msgstr ""
-"Espere que despliegue la aplicación, y ¡disfrute horas de diversión en "
-"<ulink url=\"http://localhost:8080/webbeans-numberguess\"></ulink>!"
+msgstr "Espere que despliegue la aplicación, y diviértase en <ulink url=\"http://localhost:8080/webbeans-numberguess\"></ulink>!"
 
 #. Tag: para
 #: ri.xml:139
@@ -284,8 +282,7 @@ msgid ""
 msgstr ""
 "El IR de Web Beans RI incluye un segundo ejemplo que traducirá su texto en "
 "Latín. El ejemplo numberguess es un ejemplo WAR, y sólo utiliza beans "
-"sencillos; el ejemplo de traductor es un ejemplo EAR e incluye beans de "
-"empresa, empaquetados en un módulo EJB. Para probar:"
+"sencillos; el ejemplo de traductor es un ejemplo EAR e incluye beans empresariales, empaquetados en un módulo EJB. Para probar:"
 
 #. Tag: programlisting
 #: ri.xml:146
@@ -334,7 +331,7 @@ msgid ""
 "configuration files."
 msgstr ""
 "El ejemplo de numberguess consta de una cantidad de Web Beans, archivos de "
-"configuración y páginas Facelet JSF, empaquetadas como una guerra. Empecemos "
+"configuración y páginas Facelet JSF, empaquetadas como WAR. Empecemos "
 "con los archivos de configuración."
 
 #. Tag: para
@@ -349,7 +346,7 @@ msgstr ""
 "Todos los archivos de configuración para este ejemplo están localizados en "
 "<literal>WEB-INF/</literal>, el cual está almacenado en <literal>WebContent</"
 "literal> en el árbol fuente. Primero, tenemos <literal>faces-config.xml</"
-"literal>, en las donde le pedimos a JSF que utilice Facelets:"
+"literal>, en donde le pedimos a JSF que utilice Facelets:"
 
 #. Tag: programlisting
 #: ri.xml:176
@@ -395,7 +392,7 @@ msgstr ""
 #: ri.xml:183
 #, no-c-format
 msgid "Finally there is <literal>web.xml</literal>:"
-msgstr "Por último, hay está <literal>web.xml</literal>:"
+msgstr "Por último, está <literal>web.xml</literal>:"
 
 #. Tag: section
 #: ri.xml:185
@@ -764,7 +761,7 @@ msgid ""
 "therefore we don't get a different random each time."
 msgstr ""
 "Notará que el <literal>Generador</literal> es una aplicación en ámbito por "
-"lo tanto no obtenemos un número aleatorio cada vez."
+"lo tanto no obtenemos un número aleatorio diferente cada vez."
 
 #. Tag: para
 #: ri.xml:315
@@ -1147,10 +1144,8 @@ msgid ""
 "<literal>faces-config.xml</literal> (to enabled Facelets) and a <literal>web."
 "xml</literal> (to enable JSF) in <literal>WebContent/WEB-INF</literal>."
 msgstr ""
-"Ahora veamos el WAR. Al igual que el ejemplo de Numberguess, tenemos un "
-"<literal>Generator</literal><literal>faces-config.xml</literal> (para "
-"Facelets habilitadas) y un <literal>web.xml</literal> (para habilitar a JSF) "
-"en <literal>WebContent/WEB-INF</literal>."
+"Ahora veamos al WAR. Al igual que el ejemplo de Numberguess, tenemos un "
+"<literal>faces-config.xml</literal> (para Facelets habilitadas) y un <literal>web.xml</literal> (para habilitar a JSF) en <literal>WebContent/WEB-INF</literal>."
 
 #. Tag: para
 #: ri.xml:380
@@ -1246,7 +1241,7 @@ msgstr ""
 "Por último, veamos el módulo EJB, <literal>webbeans-translator-ejb</"
 "literal>. En <literal>src/main/resources/META-INF</literal> sólo hay un "
 "<literal>web-beans.xml</literal> vacío, utilizado para marcar el archivo "
-"como contiene Web Beans."
+"como si contuviera Web Beans."
 
 #. Tag: para
 #: ri.xml:401
@@ -1326,7 +1321,7 @@ msgid ""
 msgstr ""
 "Por último, hay un controlador orientado UI que recoge el texto desde el "
 "usuario y lo envía al traductor. Esta es una petición en ámbito, llamada "
-"bean con estado de sesión, el cual inyecta el traductor."
+"bean con estado de sesión que inyecta el traductor."
 
 #. Tag: programlisting
 #: ri.xml:431

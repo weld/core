@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: part3\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-16 14:58+1000\n"
+"PO-Revision-Date: 2009-01-19 16:46+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: part3.xml:5
 #, no-c-format
 msgid "The second major theme of Web Beans is <emphasis>strong typing</emphasis>. The information about the dependencies, interceptors and decorators of a Web Bean, and the information about event consumers for an event producer, is contained in typesafe Java constructs that may be validated by the compiler."
-msgstr "El segundo tema importante de Web Beans es el <emphasis>tecleado fuerte</emphasis>. La información acerca de dependencias, interceptores y decoradores de Web Bean y la información sobre consumidores de eventos para un productor de eventos, está contenida formas de Java typesafe que pueden ser validadas por el compilador."
+msgstr "El segundo tema importante de Web Beans es el <emphasis>tecleado fuerte</emphasis>. La información acerca de dependencias, interceptores y decoradores de Web Bean y la información sobre consumidores de eventos para un productor de eventos, está contenida en construcciones de Java typesafe que pueden ser validadas por el compilador."
 
 #. Tag: para
 #: part3.xml:10
@@ -32,13 +32,13 @@ msgstr "No necesita ver los identificadores de cadena en código de Web Beans, n
 #: part3.xml:15
 #, no-c-format
 msgid "The obvious benefit of this approach is that <emphasis>any</emphasis> IDE can provide autocompletion, validation and refactoring without the need for special tooling. But there is a second, less-immediately-obvious, benefit. It turns out that when you start thinking of identifying objects, events or interceptors via annotations instead of names, you have an opportunity to lift the semantic level of your code."
-msgstr "El beneficio evidente de este método es que <emphasis>cualquier</emphasis> IDE puede proporcionar autocompletación, validación y refactorización sin necesitar herramientas especiales. Pero hay un segundo beneficio menos obvio. Resulta que cuando empieza a pensar en identificación de objetos, eventos o interceptores a través de anotaciones en lugar de nombres, tendrá la oportunidad de aumentar el nivel semántico de su código."
+msgstr "El beneficio evidente de este método es que <emphasis>cualquier</emphasis> IDE puede proporcionar autofinalización, validación y refactorización sin necesitar herramientas especiales. Pero hay un segundo beneficio menos evidente. Resulta que cuando empieza a pensar en identificación de objetos, eventos o interceptores a través de anotaciones en lugar de nombres, tendrá la oportunidad de aumentar el nivel semántico de su código."
 
 #. Tag: para
 #: part3.xml:21
 #, no-c-format
 msgid "Web Beans encourages you develop annotations that model concepts, for example,"
-msgstr "Web Bean le anima a desarrollar anotaciones que modelen conceptos, por ejemplo, "
+msgstr "Web Beans le anima a desarrollar anotaciones que modelen conceptos, por ejemplo, "
 
 #. Tag: para
 #: part3.xml:26
@@ -110,7 +110,7 @@ msgstr "Los <emphasis>estereotipos</emphasis> de Web Beans van más allá de est
 #: part3.xml:66
 #, no-c-format
 msgid "Even Web Beans XML metadata is strongly typed! There's no compiler for XML, so Web Beans takes advantage of XML schemas to validate the Java types and attributes that appear in XML. This approach turns out to make the XML more literate, just like annotations made our Java code more literate."
-msgstr "Incluso metadatos XML de Web Beans es teclado ¡fuertemente! No hay compilador para XML, por eso Web Beans aprovecha los esquemas XML para validar los tipos de Java y los atributos que aparecen en XML. Este enfoque hace que el archivo XML sea más leíble, al igual que las anotaciones hicieron a nuestro código de Java más leíble."
+msgstr "Incluso metadatos XML de Web Beans es tecleado ¡fuertemente! No hay compilador para XML, por eso Web Beans aprovecha los esquemas XML para validar los tipos de Java y los atributos que aparecen en XML. Este enfoque hace que el archivo XML sea más leíble, así como las anotaciones lo hicieron con nuestro código de Java."
 
 #. Tag: para
 #: part3.xml:71

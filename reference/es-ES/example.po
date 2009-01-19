@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: example\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-04 23:18+0000\n"
-"PO-Revision-Date: 2009-01-09 11:08+1000\n"
+"PO-Revision-Date: 2009-01-19 14:08+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgid ""
 "Let's illustrate these ideas with a full example. We're going to implement "
 "user login/logout for an application that uses JSF. First, we'll define a "
 "Web Bean to hold the username and password entered during login:"
-msgstr "Ilustremos estas ideas con un ejemplo. Vamos a implementar inicio/cierre de sesión de usuario para una aplicación que utiliza JSF. Primero, definiremos un Web Bean para mantener el nombre de usuario y contraseña escrito durante el inicio de sesión:"
+msgstr "Ilustremos estas ideas con un ejemplo. Vamos a implementar inicio/cierre de sesión de usuario para una aplicación que utiliza JSF. Primero, definiremos un Web Bean para mantener el nombre de usuario y contraseña escritos durante el inicio de sesión:"
 
 #. Tag: programlisting
 #: example.xml:11

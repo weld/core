@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: producermethods\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-20 22:08+0000\n"
-"PO-Revision-Date: 2009-01-16 14:59+1000\n"
+"PO-Revision-Date: 2009-01-19 17:00+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -195,7 +195,7 @@ msgstr ""
 msgid ""
 "If this isn't what we want we can use dependency injection into the producer "
 "method to obtain Web Bean instances:"
-msgstr "SI esto no es lo que deseamos podemos utilizar la inyección de dependencia dentro del método del productor para obtener las instancias de Web Bean:"
+msgstr "Si esto no es lo que deseamos podemos utilizar la inyección de dependencia dentro del método del productor para obtener las instancias de Web Bean:"
 
 #. Tag: programlisting
 #: producermethods.xml:97
@@ -238,7 +238,7 @@ msgid ""
 "emphasis> be detected by the Web Bean manager, so please take extra care "
 "when returning Web Bean instances from producer methods!"
 msgstr ""
-"Espere, ¿qué sucede si <literal>CreditCardPaymentStrategy</literal> es una petición en ámbito de Web Bean? Entonces el método del productor tiene el efecto de \"promover\" la instancia de petición en ámbito actual dentro del ámbito de sesión. ¡Esto casi seguro es un error! El objeto en ámbito de petición será destruido por el administrador de Web Bean antes de que finalice la sesión, pero la referencia al objeto se dejará \"colgando\" en el ámbito de sesión. Este error <emphasis>no</"
+"Espere, ¿qué sucede si <literal>CreditCardPaymentStrategy</literal> es una petición en ámbito de Web Bean? Entonces el método del productor tiene el efecto de \"promover\" la instancia de petición en ámbito actual dentro del ámbito de sesión. ¡Esto casi seguro es un error! El objeto en ámbito de petición será destruido por el administrador de Web Bean antes de finalizar la sesión, pero la referencia al objeto se dejará \"colgando\" en el ámbito de sesión. Este error <emphasis>no</"
 "emphasis> será detectado por el administrador de Web Bean, entonces, ¡por favor tenga un cuidado especial al retornar instancias de Web Bean desde métodos de productor!"
 
 #. Tag: para
@@ -250,7 +250,7 @@ msgid ""
 "implementation, but this would affect other clients of that Web Bean. A "
 "better option would be to change the scope of the producer method to "
 "<literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
-msgstr "Hay al menos tres formas de corregir este error. Podemos cambiar el ámbito de la implementación <literal>CreditCardPaymentStrategy</literal>, pero podría afectar a otros clientes de ese Web Bean. Una mejor opción sería cambiar el ámbito del método del productor a <literal>@Dependent</literal> o <literal>@RequestScoped</literal>."
+msgstr "Hay por lo menos tres formas de corregir este error. Podemos cambiar el ámbito de la implementación <literal>CreditCardPaymentStrategy</literal>, pero podría afectar a otros clientes de ese Web Bean. Una mejor opción sería cambiar el ámbito del método del productor a <literal>@Dependent</literal> o <literal>@RequestScoped</literal>."
 
 #. Tag: para
 #: producermethods.xml:113
@@ -316,5 +316,5 @@ msgid ""
 "session."
 msgstr ""
 "Entonces una nueva instancia <emphasis>dependiente</emphasis> de"
-"<literal>CreditCardPaymentStrategy</literal> será creada, pasada al método de productor, devuelta por el método de productor y finalmente vinculada al contexto de sesión. El objeto dependiente será destruido hasta que el objeto <literal>Preferencias</literal> sea destruido, al final de la sesión."
+"<literal>CreditCardPaymentStrategy</literal> será creada, pasada al método de productor, devuelta por el método de productor y finalmente vinculada al contexto de sesión. El objeto dependiente no será destruido hasta que el objeto <literal>Preferencias</literal> sea destruido, al final de la sesión."
 

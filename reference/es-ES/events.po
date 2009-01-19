@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-16 14:42+1000\n"
+"PO-Revision-Date: 2009-01-19 13:59+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +33,7 @@ msgid ""
 "observable pattern, but there are a couple of twists:"
 msgstr ""
 "La notificación de eventos de Web Beans permite a Web Beans interactuar de una manera completamente disociada. Los <emphasis>productores</emphasis> crean eventos que son enviados luego a <emphasis>observadores</emphasis> de evento por el administrador de Web "
-"Beans. Este esquema básico podría sonar como el patrón de observador familiar/"
+"Beans. Este esquema básico podría parecerse al patrón conocido observador/"
 "observable, pero hay un par de cambios:"
 
 #. Tag: para
@@ -137,7 +137,7 @@ msgid ""
 "is interested in <emphasis>all</emphasis> events of a particular type. If it "
 "does specify event bindings, it is only interested in events which also have "
 "those event bindings."
-msgstr "Un método de observador no necesita especificar ningún enlace de evento &#151;en este caso está interesado en <emphasis>todos</emphasis> los eventos de un tipo determinado. Si no especifica enlaces de eventos, está sólo interesado en eventos que tienen también aquellos enlaces de eventos."
+msgstr "Un método de observador no necesita especificar ningún enlace de evento &#151;en este caso está interesado en <emphasis>todos</emphasis> los eventos de un tipo determinado. Si no especifica enlaces de eventos, sólo está  interesado en eventos que también tienen esos enlaces de eventos."
 
 #. Tag: para
 #: events.xml:53
@@ -233,7 +233,7 @@ msgid ""
 "event object as the value of the event parameter. If any observer method "
 "throws an exception, the Web Bean manager stops calling observer methods, "
 "and the exception is rethrown by the <literal>fire()</literal> method."
-msgstr "El administrador de Web Beans simplemente llama a todos los métodos de observador, pasando el objeto del evento como el valor de un parámetro de evento. Si cualquier método de observador produce una excepción, el administrador de Web Beans se detiene llamando a los métodos de observador y la excepción es reenviada por le método <literal>fire()</literal>."
+msgstr "El administrador de Web Beans simplemente llama a todos los métodos de observador, pasando el objeto del evento como el valor de un parámetro de evento. Si cualquier método de observador produce una excepción, el administrador de Web Beans se detiene llamando a los métodos de observador y la excepción es reenviada por el método <literal>fire()</literal>."
 
 #. Tag: para
 #: events.xml:95
@@ -306,13 +306,13 @@ msgid ""
 "does not specify any event binding <emphasis>except</emphasis> for the event "
 "bindings passed to <literal>fire()</literal> or the annotated event bindings "
 "of the event notifier injection point."
-msgstr "no especifica ningún enlace de evento<emphasis>excepto</emphasis> para los enlaces de eventos pasados a  <literal>fire()</literal> o a los enlaces de evento anotados del punto de inyección del notificador de evento."
+msgstr "no especifica ningún enlace de evento<emphasis>excepto</emphasis> para los enlaces de eventos pasados a <literal>fire()</literal> o a los enlaces de evento anotados del punto de inyección del notificador de evento."
 
 #. Tag: title
 #: events.xml:138
 #, no-c-format
 msgid "Registering observers dynamically"
-msgstr "Registrando observadores dinámicamente"
+msgstr "Registro dinámico de observadores"
 
 #. Tag: para
 #: events.xml:140
@@ -322,7 +322,7 @@ msgid ""
 "may implement the <literal>Observer</literal> interface and register an "
 "instance with an event notifier by calling the <literal>observe()</literal> "
 "method."
-msgstr "Suele ser útil registrar dinámicamente un observador de evento. La aplicación puede implementar la interfaz del  <literal>Observador</literal> y registrar una instancia con un notificador de evento llamando el método de <literal>observe()</literal>."
+msgstr "Suele ser útil registrar dinámicamente un observador de evento. La aplicación puede implementar la interfaz del <literal>Observador</literal> y registrar una instancia con un notificador de evento llamando el método de <literal>observe()</literal>."
 
 #. Tag: programlisting
 #: events.xml:144
@@ -564,7 +564,7 @@ msgid ""
 "<literal>@AfterTransactionSuccess</literal> observers are called during the "
 "after completion phase of the transaction, but only if the transaction "
 "completes successfully"
-msgstr "Los observadores<literal>@AfterTransactionSuccess</literal> son llamados durante la fase de después de finalización de la transacción, pero sólo si la transacción finaliza exitosamente."
+msgstr "Los observadores<literal>@AfterTransactionSuccess</literal> son llamados tras la fase de finalización de la transacción, pero sólo si la transacción finaliza exitosamente."
 
 #. Tag: para
 #: events.xml:216
@@ -573,7 +573,7 @@ msgid ""
 "<literal>@AfterTransactionFailure</literal> observers are called during the "
 "after completion phase of the transaction, but only if the transaction fails "
 "to complete successfully"
-msgstr "Los observadores <literal>@AfterTransactionFailure</literal> son llamados durante la fase de después de la finalización de la transacción, pero sólo si la transacción falla"
+msgstr "Los observadores <literal>@AfterTransactionFailure</literal> son llamados tras la fase de finalización de la transacción, pero sólo si la transacción no se finaliza con éxito."
 
 #. Tag: para
 #: events.xml:221
@@ -581,7 +581,7 @@ msgstr "Los observadores <literal>@AfterTransactionFailure</literal> son llamado
 msgid ""
 "<literal>@AfterTransactionCompletion</literal> observers are called during "
 "the after completion phase of the transaction"
-msgstr "Los observadores <literal>@AfterTransactionCompletion</literal> son llamados durante la fase de después de finalización de la transacción"
+msgstr "Los observadores <literal>@AfterTransactionCompletion</literal> son llamados tras la fase de finalización de la transacción."
 
 #. Tag: para
 #: events.xml:225
@@ -589,7 +589,7 @@ msgstr "Los observadores <literal>@AfterTransactionCompletion</literal> son llam
 msgid ""
 "<literal>@BeforeTransactionCompletion</literal> observers are called during "
 "the before completion phase of the transaction"
-msgstr "Los observadores <literal>@BeforeTransactionCompletion</literal> son llamados durante la fase de antes de finalización de la transacción"
+msgstr "Los observadores <literal>@BeforeTransactionCompletion</literal> son llamados durante la fase anterior de finalización de la transacción"
 
 #. Tag: para
 #: events.xml:230
@@ -604,7 +604,7 @@ msgstr "Los observadores transaccionales son muy importantes en un modelo de obj
 #: events.xml:233
 #, no-c-format
 msgid "Imagine that we have cached a JPA query result set in the application scope:"
-msgstr "Imagine que hemos almacenado en caché un conjunto de resultados de petición JPA en el ámbito de la aplicación:"
+msgstr "Imagine que hemos almacenado en caché una serie de resultados de petición JPA en el ámbito de la aplicación:"
 
 #. Tag: programlisting
 #: events.xml:235
