@@ -14,7 +14,7 @@ import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
 import org.jboss.webbeans.test.unit.AbstractTest;
 import org.testng.annotations.Test;
 
-public class BoostrapTest extends AbstractTest
+public class BootstrapTest extends AbstractTest
 {
    @Test(groups="bootstrap")
    public void testSingleSimpleBean()
