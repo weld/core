@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-19 17:28+1000\n"
+"PO-Revision-Date: 2009-01-19 17:50+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -242,7 +242,7 @@ msgstr ""
 msgid ""
 "To specify a \"selector\", the event producer may pass an instance of the "
 "event binding type to the <literal>fire()</literal> method:"
-msgstr ""
+msgstr "\"선택자\"를 지정하려면, 이벤트 생산자가 이벤트 바인딩 유형을 <literal>fire()</literal> 방식에 전달해야 합니다: "
 
 #. Tag: programlisting
 #: events.xml:98
@@ -267,7 +267,7 @@ msgstr ""
 #: events.xml:103
 #, no-c-format
 msgid "The event will be delivered to every observer method that:"
-msgstr ""
+msgstr "이벤트는 모든 옵저버 방식으로 전달됩니다: "
 
 #. Tag: para
 #: events.xml:110
@@ -275,7 +275,7 @@ msgstr ""
 msgid ""
 "does not specify any event binding <emphasis>except</emphasis> for the event "
 "bindings passed to <literal>fire()</literal>."
-msgstr ""
+msgstr "이는 <literal>fire()</literal>에 전달된 이벤트 바인딩에 대한 모든 이벤트 바인딩 <emphasis>예외 사항</emphasis>을 지정하지 않습니다. "
 
 #. Tag: para
 #: events.xml:115
@@ -283,7 +283,7 @@ msgstr ""
 msgid ""
 "Alternatively, event bindings may be specified by annotating the event "
 "notifier injection point:"
-msgstr ""
+msgstr "다른 방법으로 이벤트 바인딩은 이벤트 통지 삽입 지점을 어노테이션하여 지정될 수 도 있습니다:  "
 
 #. Tag: programlisting
 #: events.xml:118
@@ -298,7 +298,7 @@ msgid ""
 "Then every event fired via this instance of <literal>Event</literal> has the "
 "annotated event binding. The event will be delivered to every observer "
 "method that:"
-msgstr ""
+msgstr "이러한 <literal>Event</literal> 인스턴스를 통해 해제된 모든 이벤트는 어노테이션된 이벤트 바인딩을 갖습니다. 이벤트는 모든 옵저버 방식에 전달됩니다:   "
 
 #. Tag: para
 #: events.xml:129
@@ -308,6 +308,8 @@ msgid ""
 "bindings passed to <literal>fire()</literal> or the annotated event bindings "
 "of the event notifier injection point."
 msgstr ""
+"이는 이벤트 통지 삽입 지점의 어노트에션된 이벤트 바인딩이나 또는 <literal>fire()</literal>에 전달된 이벤트 바인딩에 대한 모든 이벤트 바인딩 "
+"<emphasis>예외 사항</emphasis>을 지정하지 않습니다.  "
 
 #. Tag: title
 #: events.xml:138
