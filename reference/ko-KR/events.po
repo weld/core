@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-19 23:13+1000\n"
+"PO-Revision-Date: 2009-01-20 01:08+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -212,7 +212,7 @@ msgid ""
 "An event object may be an instance of any Java class that has no type "
 "variables or wildcard type parameters. The event will be delivered to every "
 "observer method that:"
-msgstr ""
+msgstr "이벤트 객체는 와일드카드 유형 매개변수나 또는 유형 변수가 없는 Java 클래스의 인스턴스가 될 수 도 있습니다. 이벤트는 다음과 같은 사항을 갖는 모든 옵저버 방식에 전달됩니다:     "
 
 #. Tag: para
 #: events.xml:83 events.xml:107 events.xml:126
@@ -234,7 +234,7 @@ msgid ""
 "event object as the value of the event parameter. If any observer method "
 "throws an exception, the Web Bean manager stops calling observer methods, "
 "and the exception is rethrown by the <literal>fire()</literal> method."
-msgstr ""
+msgstr "Web Bean 관리자는 모든 옵저버 방식을 호출하여, 이벤트 매개 변수 값으로 이벤트 객체를 전달합니다. 옵저버 방식이 예외 처리를 넘기게 될 경우, Web Bean 관리자는 옵저버 방식 호출을 중단하고 예외 처리는 <literal>fire()</literal> 방식에 의해 다시 넘기게 됩니다. "
 
 #. Tag: para
 #: events.xml:95
@@ -261,7 +261,7 @@ msgid ""
 "The helper class <literal>AnnotationLiteral</literal> makes it possible to "
 "instantiate binding types inline, since this is otherwise difficult to do in "
 "Java."
-msgstr ""
+msgstr "Java에서 실행하기 어려웠던 도우미 클래스 <literal>AnnotationLiteral</literal>은 바인딩 유형 인라인을 인스턴스화할 수 있게 합니다. "
 
 #. Tag: para
 #: events.xml:103
@@ -425,12 +425,11 @@ msgstr "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
 #. Tag: para
 #: events.xml:169
 #, no-c-format
-#, fuzzy
 msgid ""
 "Alternatively, the value of the event binding type member may be determined "
 "dynamically by the event producer. We start by writing an abstract subclass "
 "of <literal>AnnotationLiteral</literal>:"
-msgstr "다른 방법으로, 이벤트 바인딩 유형 멤버 값은 이벤트 생산자에 의해 동적으로 지정될 수 있습니다. <literal>AnnotationLiteral</literal>의 추상화 하부클래스를 작성하는"
+msgstr "다른 방법으로, 이벤트 바인딩 유형 멤버 값은 이벤트 생산자에 의해 동적으로 지정될 수 있습니다. <literal>AnnotationLiteral</literal>의 추상화 하부클래스를 작성하여 시작합니다: "
 
 #. Tag: programlisting
 #: events.xml:172
@@ -450,7 +449,7 @@ msgstr ""
 msgid ""
 "The event producer passes an instance of this class to <literal>fire()</"
 "literal>:"
-msgstr ""
+msgstr "이벤트 생산자는 이러한 클래스의 인스턴스를 <literal>fire()</literal>로 전달합니다:  "
 
 #. Tag: programlisting
 #: events.xml:176
@@ -466,13 +465,13 @@ msgstr ""
 #: events.xml:181
 #, no-c-format
 msgid "Multiple event bindings"
-msgstr ""
+msgstr "여러 이벤트 바인딩 "
 
 #. Tag: para
 #: events.xml:183
 #, no-c-format
 msgid "Event binding types may be combined, for example:"
-msgstr ""
+msgstr "이벤트 바인딩 유형은 통합할 수 있습니다, 예: "
 
 #. Tag: programlisting
 #: events.xml:185
@@ -494,7 +493,7 @@ msgstr ""
 msgid ""
 "When this event occurs, all of the following observer methods will be "
 "notified:"
-msgstr ""
+msgstr "이러한 이벤트가 발생하면, 다음과 같은 옵저버 방식 모두가 통지되게 됩니다: "
 
 #. Tag: programlisting
 #: events.xml:189
@@ -530,7 +529,7 @@ msgstr ""
 #: events.xml:197
 #, no-c-format
 msgid "Transactional observers"
-msgstr ""
+msgstr "트랜잭션 옵저버 "
 
 #. Tag: para
 #: events.xml:199
@@ -557,7 +556,7 @@ msgstr ""
 #: events.xml:207
 #, no-c-format
 msgid "There are three kinds of transactional observers:"
-msgstr ""
+msgstr "세 가지 종류의 트랜잭션 옵저버가 있습니다:  "
 
 #. Tag: para
 #: events.xml:211
