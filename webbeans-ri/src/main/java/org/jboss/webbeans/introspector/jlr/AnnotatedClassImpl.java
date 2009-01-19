@@ -328,7 +328,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.methodsByAnnotatedParameters = new AnnotatedMethodMap();
       for (Class<?> c = clazz; c != Object.class && c != null; c = c.getSuperclass())
       {
-         for (Method method : clazz.getDeclaredMethods())
+         for (Method method : c.getDeclaredMethods())
          {
             if (!method.isAccessible())
             {
