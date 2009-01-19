@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.webbeans.BindingType;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
+import javax.webbeans.DeploymentType;
 import javax.webbeans.Destructor;
 import javax.webbeans.Disposes;
 import javax.webbeans.Initializer;
@@ -156,38 +157,68 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    @Override
    protected void initScopeType()
    {
-      Set<Annotation> scopeAnnotations = getAnnotatedItem().getMetaAnnotations(ScopeType.class);
-      if (scopeAnnotations.size() == 1)
+      for (AnnotatedClass<?> clazz = getAnnotatedItem(); clazz != null; clazz = clazz.getSuperclass())
       {
-         this.scopeType = scopeAnnotations.iterator().next().annotationType();
-         log.trace("Scope " + scopeType + " specified by annotation");
-         return;
-      }
-      else if (scopeAnnotations.size() > 1)
-      {
-         for (AnnotatedClass<?> clazz = getAnnotatedItem(); clazz != null; clazz = clazz.getSuperclass())
+         Set<Annotation> scopeTypes = clazz.getDeclaredMetaAnnotations(ScopeType.class);
+         scopeTypes = clazz.getDeclaredMetaAnnotations(ScopeType.class);
+         if (scopeTypes.size() == 1)
          {
-            scopeAnnotations = clazz.getDeclaredMetaAnnotations(ScopeType.class);
-            if (scopeAnnotations.size() == 1)
+            if (getAnnotatedItem().isAnnotationPresent(scopeTypes.iterator().next().annotationType()))
             {
-               this.scopeType = scopeAnnotations.iterator().next().annotationType();
+               this.scopeType = scopeTypes.iterator().next().annotationType();
                log.trace("Scope " + scopeType + " specified by annotation");
-               return;
             }
-            else if (scopeAnnotations.size() > 1)
-            {
-               throw new DefinitionException("At most one scope may be specified");
-            }
+            break;
          }
-         
+         else if (scopeTypes.size() > 1)
+         {
+            throw new DefinitionException("At most one scope may be specified");
+         }
       }
       
-      initScopeFromStereotype();
+      if (this.scopeType == null)
+      {
+         initScopeTypeFromStereotype();
+      }
       
       if (this.scopeType == null)
       {
          this.scopeType = Dependent.class;
          log.trace("Using default @Dependent scope");
+      }
+   }
+   
+   @Override
+   protected void initDeploymentType()
+   {
+      for (AnnotatedClass<?> clazz = getAnnotatedItem(); clazz != null; clazz = clazz.getSuperclass())
+      {
+         Set<Annotation> deploymentTypes = clazz.getDeclaredMetaAnnotations(DeploymentType.class);
+         if (deploymentTypes.size() == 1)
+         {
+            if (getAnnotatedItem().isAnnotationPresent(deploymentTypes.iterator().next().annotationType()))
+            {
+               this.deploymentType = deploymentTypes.iterator().next().annotationType();
+               log.trace("Deployment type " + deploymentType + " specified by annotation");
+            }
+            break;
+         }
+         else if (deploymentTypes.size() > 1)
+         {
+            throw new DefinitionException("At most one scope may be specified");
+         }
+      }
+
+      if (this.deploymentType == null)
+      {
+         initDeploymentTypeFromStereotype();
+      }
+
+      if (this.deploymentType == null)
+      {
+         this.deploymentType = getDefaultDeploymentType();
+         log.trace("Using default @Production deployment type");
+         return;
       }
    }
 

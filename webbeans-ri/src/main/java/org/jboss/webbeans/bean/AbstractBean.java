@@ -28,7 +28,6 @@ import java.util.Set;
 import javax.webbeans.BindingType;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
-import javax.webbeans.DeploymentType;
 import javax.webbeans.Event;
 import javax.webbeans.InjectionPoint;
 import javax.webbeans.Named;
@@ -180,20 +179,10 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    /**
     * Initializes the deployment types
     */
-   protected void initDeploymentType()
+   protected abstract void initDeploymentType();
+   
+   protected void initDeploymentTypeFromStereotype()
    {
-      Set<Annotation> deploymentTypes = getAnnotatedItem().getMetaAnnotations(DeploymentType.class);
-      if (deploymentTypes.size() > 1)
-      {
-         throw new DefinitionException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().toString());
-      }
-      if (deploymentTypes.size() == 1)
-      {
-         this.deploymentType = deploymentTypes.iterator().next().annotationType();
-         log.trace("Deployment type " + deploymentType + " specified by annotation");
-         return;
-      }
-
       AnnotationMap possibleDeploymentTypes = getMergedStereotypes().getPossibleDeploymentTypes();
       if (possibleDeploymentTypes.size() > 0)
       {
@@ -201,10 +190,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          log.trace("Deployment type " + deploymentType + " specified by stereotype");
          return;
       }
-
-      this.deploymentType = getDefaultDeploymentType();
-      log.trace("Using default @Production deployment type");
-      return;
    }
 
    /**
@@ -288,7 +273,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     */
    protected abstract void initScopeType();
    
-   protected boolean initScopeFromStereotype()
+   protected boolean initScopeTypeFromStereotype()
    {
       Set<Annotation> possibleScopeTypes = getMergedStereotypes().getPossibleScopeTypes();
       if (possibleScopeTypes.size() == 1)

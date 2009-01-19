@@ -25,6 +25,7 @@ import java.util.Set;
 
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
+import javax.webbeans.DeploymentType;
 import javax.webbeans.IllegalProductException;
 import javax.webbeans.Initializer;
 import javax.webbeans.Produces;
@@ -222,12 +223,37 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
          return;
       }
       
-      initScopeFromStereotype();
+      initScopeTypeFromStereotype();
       
       if (this.scopeType == null)
       {
          this.scopeType = Dependent.class;
          log.trace("Using default @Dependent scope");
+      }
+   }
+   
+   @Override
+   protected void initDeploymentType()
+   {
+      Set<Annotation> deploymentTypes = getAnnotatedItem().getMetaAnnotations(DeploymentType.class);
+      if (deploymentTypes.size() > 1)
+      {
+         throw new DefinitionException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().toString());
+      }
+      else if (deploymentTypes.size() == 1)
+      {
+         this.deploymentType = deploymentTypes.iterator().next().annotationType();
+         log.trace("Deployment type " + deploymentType + " specified by annotation");
+         return;
+      }
+
+      initDeploymentTypeFromStereotype();
+
+      if (this.deploymentType == null)
+      {
+         this.deploymentType = getDefaultDeploymentType();
+         log.trace("Using default @Production deployment type");
+         return;
       }
    }
 
