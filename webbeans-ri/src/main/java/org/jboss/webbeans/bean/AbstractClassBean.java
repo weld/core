@@ -34,6 +34,7 @@ import javax.webbeans.Production;
 import javax.webbeans.ScopeType;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -84,6 +85,28 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       checkBeanImplementation();
       // TODO Interceptors
       initInitializerMethods();
+   }
+   
+   /**
+    * Injects bound fields
+    * 
+    * @param instance The instance to inject into
+    */
+   protected void injectBoundFields(T instance)
+   {
+      InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
+      for (AnnotatedField<?> injectableField : getInjectableFields())
+      {
+         injectionPointProvider.pushInjectionPoint(injectableField);
+         try
+         {
+            injectableField.inject(instance, manager);
+         }
+         finally
+         {
+            injectionPointProvider.popInjectionPoint();
+         }
+      }
    }
 
    /**

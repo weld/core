@@ -268,28 +268,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    }
 
    /**
-    * Injects bound fields
-    * 
-    * @param instance The instance to inject into
-    */
-   protected void injectBoundFields(T instance)
-   {
-      InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
-      for (AnnotatedField<?> injectableField : getInjectableFields())
-      {
-         injectionPointProvider.pushInjectionPoint(injectableField);
-         try
-         {
-            injectableField.inject(instance, manager);
-         }
-         finally
-         {
-            injectionPointProvider.popInjectionPoint();
-         }
-      }
-   }
-
-   /**
     * Initializes the bean and its metadata
     */
    @Override

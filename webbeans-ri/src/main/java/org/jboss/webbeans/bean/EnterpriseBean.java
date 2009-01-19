@@ -44,7 +44,6 @@ import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
@@ -370,27 +369,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected void injectEjbAndCommonFields()
    {
       // TODO Support commons and EJB annotations
-   }
-
-   /**
-    * Injects bound fields
-    * 
-    * @param instance The bean instance
-    */
-   protected void injectBoundFields(T instance)
-   {
-      for (AnnotatedField<?> field : getInjectableFields())
-      {
-         try
-         {
-            manager.getInjectionPointProvider().pushInjectionPoint(field);
-            field.inject(instance, manager);
-         }
-         finally
-         {
-            manager.getInjectionPointProvider().popInjectionPoint();
-         }
-      }
    }
 
    /**

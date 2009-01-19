@@ -278,7 +278,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.metaAnnotatedFields = new AnnotatedFieldMap();
       for (Class<?> c = clazz; c != Object.class && c != null; c = c.getSuperclass())
       {
-         for (Field field : clazz.getDeclaredFields())
+         for (Field field : c.getDeclaredFields())
          {
             if (!field.isAccessible())
             {
