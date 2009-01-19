@@ -66,7 +66,7 @@ public class DeferredEventNotificationTest extends AbstractTest
       //annotations.put(Asynchronous.class, new AsynchronousAnnotationLiteral());
       //AnnotatedClass<Tuna> annotatedItem = new SimpleAnnotatedClass<Tuna>(Tuna.class, annotations);
       // TODO This should test a real class
-      tuna = SimpleBean.of(Tuna.class, manager);
+      tuna = createSimpleBean(Tuna.class);
       om = new AnnotatedMethodImpl<Object>(AnObserver.class.getMethod("observe", new Class[] { Event.class }), AnnotatedClassImpl.of(AnObserver.class));
 
       AnObserver observerInstance = new AnObserver();

@@ -1,6 +1,8 @@
 package org.jboss.webbeans.test.unit;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,8 +10,13 @@ import javax.webbeans.Production;
 import javax.webbeans.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
+import org.jboss.webbeans.bean.NewSimpleBean;
+import org.jboss.webbeans.bean.ProducerFieldBean;
+import org.jboss.webbeans.bean.ProducerMethodBean;
+import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.test.mock.MockBootstrap;
 import org.jboss.webbeans.test.mock.MockEjbDescriptor;
@@ -86,22 +93,42 @@ public class AbstractTest
       manager.getEjbDescriptorCache().add(MockEjbDescriptor.of(clazz));
       return NewEnterpriseBean.of(clazz, manager);
    }
+   
+   protected <T> NewSimpleBean<T> createNewSimpleBean(Class<T> clazz)
+   {
+      return NewSimpleBean.of(clazz, manager);
+   }
 
-   protected static void activateDependentContext()
+   protected <T> SimpleBean<T> createSimpleBean(Class<T> clazz)
+   {
+      return SimpleBean.of(clazz, manager);
+   }
+   
+   protected <T> ProducerMethodBean<T> createProducerMethod(Method method, AbstractClassBean<?> declaringBean)
+   {
+      return ProducerMethodBean.of(method, declaringBean, manager);
+   }
+   
+   protected <T> ProducerFieldBean<T> createProducerField(Field field, AbstractClassBean<?> declaringBean)
+   {
+      return ProducerFieldBean.of(field, declaringBean, manager);
+   }
+   
+   private static void activateDependentContext()
    {
       DependentContext.INSTANCE.setActive(true);
    }
    
-   protected static void deactivateDependentContext()
+   private static void deactivateDependentContext()
    {
       DependentContext.INSTANCE.setActive(false);
    }
    
-   protected ManagerImpl deploy(Class<?>... classes)
+   protected void deployBeans(Class<?>... classes)
    {
       MockBootstrap bootstrap = new MockBootstrap();
       bootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(classes));
       bootstrap.boot();
-      return bootstrap.getManager();
+      manager = bootstrap.getManager();
    }
 }

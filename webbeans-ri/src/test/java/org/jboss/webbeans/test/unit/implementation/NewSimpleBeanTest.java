@@ -16,9 +16,9 @@ public class NewSimpleBeanTest extends AbstractTest
    
    @BeforeMethod
    public void initNewBean() {
-      wrappedSimpleBean = SimpleBean.of(WrappedSimpleBean.class, manager);
+      wrappedSimpleBean = createSimpleBean(WrappedSimpleBean.class);
       manager.addBean(wrappedSimpleBean);
-      newSimpleBean = NewSimpleBean.of(WrappedSimpleBean.class, manager);
+      newSimpleBean = createNewSimpleBean(WrappedSimpleBean.class);
       manager.addBean(newSimpleBean);
    }
 
