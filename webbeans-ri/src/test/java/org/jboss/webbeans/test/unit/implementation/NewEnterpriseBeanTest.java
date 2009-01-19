@@ -18,10 +18,9 @@ public class NewEnterpriseBeanTest extends AbstractTest
    
    @BeforeMethod
    public void initNewBean() {
-      addToEjbCache(WrappedEnterpriseBean.class);
-      wrappedEnterpriseBean = EnterpriseBean.of(WrappedEnterpriseBean.class, manager);
+      wrappedEnterpriseBean = createEnterpriseBean(WrappedEnterpriseBean.class);
       manager.addBean(wrappedEnterpriseBean);
-      newEnterpriseBean = NewEnterpriseBean.of(WrappedEnterpriseBean.class, manager);
+      newEnterpriseBean = createNewEnterpriseBean(WrappedEnterpriseBean.class);
       manager.addBean(newEnterpriseBean);
    }
    
