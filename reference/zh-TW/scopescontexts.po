@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: scopescontexts\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 11:01+1000\n"
+"PO-Revision-Date: 2009-01-19 18:37+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: scopescontexts.xml:4
 #, no-c-format
 msgid "Scopes and contexts"
-msgstr ""
+msgstr "Scope 和 context"
 
 #. Tag: para
 #: scopescontexts.xml:6
@@ -37,7 +37,7 @@ msgstr ""
 #: scopescontexts.xml:14
 #, no-c-format
 msgid "When a new instance of any Web Bean with that scope is created"
-msgstr ""
+msgstr "任何含有該 scope 的 Web Bean 的新 instance 何時被建立"
 
 #. Tag: para
 #: scopescontexts.xml:17
@@ -61,13 +61,13 @@ msgid ""
 "<literal>CurrentUser</literal>. This instance will be automatically created "
 "the first time a <literal>CurrentUser</literal> is needed in that session, "
 "and automatically destroyed when the session ends."
-msgstr ""
+msgstr "比方說若我們有個 session scope 的 Web Bean <literal>CurrentUser</literal>，那麼所有在相同 <literal>HttpSession</literal> 的 context 中被調用的 Web Bean 都會看見相同的 <literal>CurrentUser</literal> 的 instance。當 <literal>CurrentUser</literal> 在該 session 中第一次被需要時，這個 instance 就會自動地被建立，並且在這個 session 結束時被自動地刪除掉。"
 
 #. Tag: title
 #: scopescontexts.xml:32
 #, no-c-format
 msgid "Scope types"
-msgstr ""
+msgstr "Scope type"
 
 #. Tag: para
 #: scopescontexts.xml:34
