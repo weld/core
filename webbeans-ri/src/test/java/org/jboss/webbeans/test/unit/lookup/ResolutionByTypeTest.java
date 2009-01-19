@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 public class ResolutionByTypeTest extends AbstractTest
 {
    
-   private AnnotatedClass<FishFarm> fishFarmClass = new AnnotatedClassImpl<FishFarm>(FishFarm.class);
+   private AnnotatedClass<FishFarm> fishFarmClass = AnnotatedClassImpl.of(FishFarm.class);
 
    @Test(groups="resolution")
    public void testAnnotatedField() throws Exception

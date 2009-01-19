@@ -21,17 +21,21 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.IllegalProductException;
 import javax.webbeans.Initializer;
 import javax.webbeans.Produces;
+import javax.webbeans.ScopeType;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.injection.InjectionPointImpl;
+import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
@@ -47,6 +51,8 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
 {
    // The declaring bean
    protected AbstractClassBean<?> declaringBean;
+   
+   private static final LogProvider log = Logging.getLogProvider(AbstractProducerBean.class);
 
    /**
     * Constructor
@@ -198,6 +204,30 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
          {
             // TODO: possible case?
          }
+      }
+   }
+   
+   @Override
+   protected void initScopeType()
+   {
+      Set<Annotation> scopeAnnotations = getAnnotatedItem().getMetaAnnotations(ScopeType.class);
+      if (scopeAnnotations.size() > 1)
+      {
+         throw new DefinitionException("At most one scope may be specified");
+      }
+      if (scopeAnnotations.size() == 1)
+      {
+         this.scopeType = scopeAnnotations.iterator().next().annotationType();
+         log.trace("Scope " + scopeType + " specified by annotation");
+         return;
+      }
+      
+      initScopeFromStereotype();
+      
+      if (this.scopeType == null)
+      {
+         this.scopeType = Dependent.class;
+         log.trace("Using default @Dependent scope");
       }
    }
 

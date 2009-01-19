@@ -108,9 +108,9 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
    public Set<AnnotatedMethod<?>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
 
    /**
-    * Gets the superclass
+    * Gets the superclass.
     * 
-    * @return The abstracted superclass
+    * @return The abstracted superclass, null if there is no superclass
     */
    public AnnotatedClass<?> getSuperclass();
 

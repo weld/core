@@ -192,7 +192,7 @@ public abstract class WebBeansBootstrap
    
    private <T> void createSimpleBean(Class<T> clazz, Set<AbstractBean<?, ?>> beans)
    {
-      AnnotatedClass<T> annotatedClass = new AnnotatedClassImpl<T>(clazz);
+      AnnotatedClass<T> annotatedClass = AnnotatedClassImpl.of(clazz);
       createBean(SimpleBean.of(annotatedClass, manager), annotatedClass, beans);
    }
 

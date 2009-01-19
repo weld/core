@@ -261,7 +261,7 @@ public class ManagerImpl implements Manager, Serializable
     */
    public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindings)
    {
-      return resolveByType(new AnnotatedClassImpl<T>(type, type, bindings), bindings);
+      return resolveByType(AnnotatedClassImpl.of(type, bindings), bindings);
    }
 
    /**
@@ -276,7 +276,7 @@ public class ManagerImpl implements Manager, Serializable
     */
    public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> type, Annotation... bindings)
    {
-      return resolveByType(new AnnotatedClassImpl<T>(type.getRawType(), type.getType(), bindings), bindings);
+      return resolveByType(AnnotatedClassImpl.of(type, bindings), bindings);
    }
 
    /**
@@ -564,7 +564,7 @@ public class ManagerImpl implements Manager, Serializable
     */
    public <T> T getInstanceByType(Class<T> type, Annotation... bindings)
    {
-      return getInstanceByType(new AnnotatedClassImpl<T>(type, type, bindings), bindings);
+      return getInstanceByType(AnnotatedClassImpl.of(type, bindings), bindings);
    }
 
    public <T> T getMostSpecializedInstance(Bean<T> bean, boolean create)
@@ -592,7 +592,7 @@ public class ManagerImpl implements Manager, Serializable
     */
    public <T> T getInstanceByType(TypeLiteral<T> type, Annotation... bindings)
    {
-      return getInstanceByType(new AnnotatedClassImpl<T>(type.getRawType(), type.getType(), bindings), bindings);
+      return getInstanceByType(AnnotatedClassImpl.of(type, bindings), bindings);
    }
 
    /**

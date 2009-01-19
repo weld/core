@@ -299,7 +299,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    
    public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
-      return Collections.unmodifiableSet(metaAnnotationMap.get(metaAnnotationType));
+      return Collections.unmodifiableSet(declaredMetaAnnotationMap.get(metaAnnotationType));
    }
 
    /**

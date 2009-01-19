@@ -23,12 +23,14 @@ import java.util.Set;
 
 import javax.webbeans.BindingType;
 import javax.webbeans.DefinitionException;
+import javax.webbeans.Dependent;
 import javax.webbeans.Destructor;
 import javax.webbeans.Disposes;
 import javax.webbeans.Initializer;
 import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 import javax.webbeans.Production;
+import javax.webbeans.ScopeType;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedClass;
@@ -148,6 +150,44 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          {
             initializerMethods.add(annotatedMethod);
          }
+      }
+   }
+   
+   @Override
+   protected void initScopeType()
+   {
+      Set<Annotation> scopeAnnotations = getAnnotatedItem().getMetaAnnotations(ScopeType.class);
+      if (scopeAnnotations.size() == 1)
+      {
+         this.scopeType = scopeAnnotations.iterator().next().annotationType();
+         log.trace("Scope " + scopeType + " specified by annotation");
+         return;
+      }
+      else if (scopeAnnotations.size() > 1)
+      {
+         for (AnnotatedClass<?> clazz = getAnnotatedItem(); clazz != null; clazz = clazz.getSuperclass())
+         {
+            scopeAnnotations = clazz.getDeclaredMetaAnnotations(ScopeType.class);
+            if (scopeAnnotations.size() == 1)
+            {
+               this.scopeType = scopeAnnotations.iterator().next().annotationType();
+               log.trace("Scope " + scopeType + " specified by annotation");
+               return;
+            }
+            else if (scopeAnnotations.size() > 1)
+            {
+               throw new DefinitionException("At most one scope may be specified");
+            }
+         }
+         
+      }
+      
+      initScopeFromStereotype();
+      
+      if (this.scopeType == null)
+      {
+         this.scopeType = Dependent.class;
+         log.trace("Using default @Dependent scope");
       }
    }
 

@@ -18,7 +18,7 @@ public class ClassAnnotatedItemTest
    @Test
    public void testDeclaredAnnotations()
    {
-      AnnotatedClass<Order> annotatedElement = new AnnotatedClassImpl<Order>(Order.class);
+      AnnotatedClass<Order> annotatedElement = AnnotatedClassImpl.of(Order.class);
       assert annotatedElement.getAnnotations().size() == 1;
       assert annotatedElement.getAnnotation(Production.class) != null;
       assert annotatedElement.getType().equals(Order.class);
@@ -27,7 +27,7 @@ public class ClassAnnotatedItemTest
    @Test
    public void testMetaAnnotations()
    {
-      AnnotatedClass<Order> annotatedElement = new AnnotatedClassImpl<Order>(Order.class);
+      AnnotatedClass<Order> annotatedElement = AnnotatedClassImpl.of(Order.class);
       Set<Annotation> annotations = annotatedElement.getMetaAnnotations(DeploymentType.class);
       assert annotations.size() == 1;
       Iterator<Annotation> it = annotations.iterator();
@@ -38,10 +38,10 @@ public class ClassAnnotatedItemTest
    @Test
    public void testEmpty()
    {
-      AnnotatedClass<Order> annotatedElement = new AnnotatedClassImpl<Order>(Order.class);
+      AnnotatedClass<Order> annotatedElement = AnnotatedClassImpl.of(Order.class);
       assert annotatedElement.getAnnotation(Stereotype.class) == null;
       assert annotatedElement.getMetaAnnotations(Stereotype.class).size() == 0;
-      AnnotatedClass<Antelope> classWithNoAnnotations = new AnnotatedClassImpl<Antelope>(Antelope.class);
+      AnnotatedClass<Antelope> classWithNoAnnotations = AnnotatedClassImpl.of(Antelope.class);
       assert classWithNoAnnotations.getAnnotations().size() == 0;
    }
    

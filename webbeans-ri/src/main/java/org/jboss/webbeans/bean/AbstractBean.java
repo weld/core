@@ -32,7 +32,6 @@ import javax.webbeans.DeploymentType;
 import javax.webbeans.Event;
 import javax.webbeans.InjectionPoint;
 import javax.webbeans.Named;
-import javax.webbeans.ScopeType;
 import javax.webbeans.Specializes;
 import javax.webbeans.Standard;
 import javax.webbeans.Stereotype;
@@ -287,33 +286,25 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    /**
     * Initializes the scope type
     */
-   protected void initScopeType()
+   protected abstract void initScopeType();
+   
+   protected boolean initScopeFromStereotype()
    {
-      Set<Annotation> scopeAnnotations = getAnnotatedItem().getMetaAnnotations(ScopeType.class);
-      if (scopeAnnotations.size() > 1)
-      {
-         throw new DefinitionException("At most one scope may be specified");
-      }
-      if (scopeAnnotations.size() == 1)
-      {
-         this.scopeType = scopeAnnotations.iterator().next().annotationType();
-         log.trace("Scope " + scopeType + " specified by annotation");
-         return;
-      }
-
       Set<Annotation> possibleScopeTypes = getMergedStereotypes().getPossibleScopeTypes();
       if (possibleScopeTypes.size() == 1)
       {
          this.scopeType = possibleScopeTypes.iterator().next().annotationType();
          log.trace("Scope " + scopeType + " specified by stereotype");
-         return;
+         return true;
       }
       else if (possibleScopeTypes.size() > 1)
       {
          throw new DefinitionException("All stereotypes must specify the same scope OR a scope must be specified on the bean");
       }
-      this.scopeType = Dependent.class;
-      log.trace("Using default @Dependent scope");
+      else
+      {
+         return false;
+      }
    }
 
    /**
