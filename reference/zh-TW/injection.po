@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-15 14:59+1000\n"
+"PO-Revision-Date: 2009-01-19 16:05+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -793,7 +793,7 @@ msgid ""
 "determined by the order in which they appear in <literal>web-beans.xml</"
 "literal>. In our example, <literal>@Mock</literal> appears later than "
 "<literal>@Production</literal> so it has a higher precedence."
-msgstr ""
+msgstr "這項問題的解決方式就是利用各個 deployment type 的不同<emphasis>優先權</emphasis>。Deployment type 的優先權是透過它們出現在 <literal>web-beans.xml</literal> 中的順序來決定的。在我們的範例中，<literal>@Mock</literal> 出現的順序在 <literal>@Production</literal> 之後，因此它會有較高的優先權。"
 
 #. Tag: para
 #: injection.xml:264
@@ -806,7 +806,7 @@ msgid ""
 "to inject. So, in our example, the Web Bean manager will inject "
 "<literal>MockPaymentProcessor</literal> when executing in our integration "
 "testing environment (which is exactly what we want)."
-msgstr ""
+msgstr "每當管理員發現了多於一個 Web Bean 可滿足由某個注入點所指定的合同（API 類型加上綁定標記）時，它會考量到 Web Bean 的相關優先權。若有一方的優先權較高，它便會選擇優先權較高的那個 Web Bean 來注入。因此，在我們的範例中，當 Web Bean 管理員執行於我們的整合測試環境中的時候（這正是我們想要的），它將會注入 <literal>MockPaymentProcessor</literal>。"
 
 #. Tag: para
 #: injection.xml:271
@@ -822,7 +822,7 @@ msgid ""
 "Beans to be enabled with a single line of XML. Meanwhile, a developer "
 "browsing the code can easily identify what deployment scenarios the Web Bean "
 "will be used in."
-msgstr ""
+msgstr "和現今多人使用的管理員架構相較之下，這個功能相當地有趣。各種「lightweight」的 container 都允許存在 classpath 中的 class 的條件性建置，不過要被建置的 class 必須要明確、各別地列在配置程式碼或是一些 XML 配置檔案中。Web Bean 不支援透過 XML 的 Web Bean 定義與配置，不過在一般情況下當不需要複雜的配置時，deployment type 允許一整組 Web Bean 能夠透過 XML 中的一個單獨行列來被啟用。其間，瀏覽程式碼的開發人員能夠輕易地分辨出 Web Bean 將會使用哪種建置方案（deployment scenario）。"
 
 #. Tag: title
 #: injection.xml:284
@@ -834,7 +834,7 @@ msgstr "範例 deployment type"
 #: injection.xml:286
 #, no-c-format
 msgid "Deployment types are useful for all kinds of things, here's some examples:"
-msgstr ""
+msgstr "Deployment type 針對於許多情況都相當便於使用，以下為一些範例："
 
 #. Tag: para
 #: injection.xml:290
@@ -864,19 +864,19 @@ msgstr "<literal>@SeamFramework</literal>、<literal>@Guice</literal> 可用於�
 msgid ""
 "<literal>@Standard</literal> for standard Web Beans defined by the Web Beans "
 "specification"
-msgstr ""
+msgstr "<literal>@Standard</literal> 可用於以 Web Bean 規格所定義的標準 Web Bean"
 
 #. Tag: para
 #: injection.xml:306
 #, no-c-format
 msgid "I'm sure you can think of more applications..."
-msgstr "我們相信您還能想到更多應用程式..."
+msgstr "我們相信您還能夠聯想到更多應用程式..."
 
 #. Tag: title
 #: injection.xml:313
 #, no-c-format
 msgid "Fixing unsatisfied dependencies"
-msgstr ""
+msgstr "修正相依性不足（unsatisfied dependencies）的問題"
 
 #. Tag: para
 #: injection.xml:315
@@ -886,7 +886,7 @@ msgid ""
 "annotations and and deployment types of all Web Beans that implement the API "
 "type of an injection point, the Web Bean manager is unable to identify "
 "exactly one Web Bean to inject."
-msgstr ""
+msgstr "就所有實做某個注入點的 API 類型的 Web Bean 綁定標記和 deployment type 來講，若 Web Bean 管理員無法辨識出正好一個需被注入的 Web Bean 為何，那麼 typesafe 解析演算法便會失敗。"
 
 #. Tag: para
 #: injection.xml:320
@@ -894,7 +894,7 @@ msgstr ""
 msgid ""
 "It's usually easy to fix an <literal>UnsatisfiedDependencyException</"
 "literal> or <literal>AmbiguousDependencyException</literal>."
-msgstr ""
+msgstr "要修正一個 <literal>UnsatisfiedDependencyException</literal> 或 <literal>AmbiguousDependencyException</literal> 通常相當容易。"
 
 #. Tag: para
 #: injection.xml:323
@@ -904,7 +904,7 @@ msgid ""
 "a Web Bean which implements the API type and has the binding types of the "
 "injection point&#151;or enable the deployment type of a Web Bean that "
 "already implements the API type and has the binding types."
-msgstr ""
+msgstr "若要修正一項 <literal>UnsatisfiedDependencyException</literal>，只要提供一個實做 API 類型並且擁有注入點的綁定類型的 Web Bean 即可&#151;或是啟用一個已實做 API 類型並且擁有綁定類型的 Web Bean 的 deployment type 即可。"
 
 #. Tag: para
 #: injection.xml:328
@@ -916,7 +916,7 @@ msgid ""
 "Bean manager can use deployment type precedence to choose between them. An "
 "<literal>AmbiguousDependencyException</literal> can only occur if two Web "
 "Beans share a binding type and have exactly the same deployment type."
-msgstr ""
+msgstr "若要修正一項 <literal>AmbiguousDependencyException</literal>，您可加入一個綁定類型來在兩個 API 類型的實做之間進行分辨，或是更改其中一個實做的 deployment type，這樣一來 Web Bean 管理員便可透過使用 deployment type 優先權來在它們之間作選擇。<literal>AmbiguousDependencyException</literal> 只會在有兩個 Web Bean 共享一個綁定類型並擁有相同 deployment type 的情況下才會發生。"
 
 #. Tag: para
 #: injection.xml:335
@@ -938,7 +938,7 @@ msgstr "客戶端代理伺服器（Client proxies）"
 msgid ""
 "Clients of an injected Web Bean do not usually hold a direct reference to a "
 "Web Bean instance."
-msgstr ""
+msgstr "一個已注入的 Web Bean 的客戶端通常不會持有一個 Web Bean instance 的直接參照。"
 
 #. Tag: para
 #: injection.xml:346
@@ -948,7 +948,7 @@ msgid ""
 "reference to a Web Bean bound to the request scope. The application scoped "
 "Web Bean is shared between many different requests. However, each request "
 "should see a different instance of the request scoped Web bean!"
-msgstr ""
+msgstr "想像一個綁定至應用程式 scope 的 Web Bean 持有一個綁定至請求 scope 的 Web Bean 的直接參照。這個應用程式 scope 的 Web Bean 會在許多不同的請求之間被共享。不過，各個請求都應要看見一個不同的請求 scope Web Bean 的 instance！"
 
 #. Tag: para
 #: injection.xml:351
@@ -959,7 +959,7 @@ msgid ""
 "the session context is serialized to disk in order to use memory more "
 "efficiently. However, the application scoped Web Bean instance should not be "
 "serialized along with the session scoped Web Bean!"
-msgstr ""
+msgstr "現在，請想像一個綁定至 session scope 的 Web Bean 持有一個綁定至應用程式 scope 的 Web Bean 的直接參照。有時，session context 會被序列化至磁碟中以便更有效率地使用記憶體。不過，應用程式 scope 的 Web Bean instance 不該和 session scope 的 Web Bean 一起被序列化！"
 
 #. Tag: para
 #: injection.xml:357
@@ -973,7 +973,7 @@ msgid ""
 "client proxy also allows Web Beans bound to contexts such as the session "
 "context to be serialized to disk without recursively serializing other "
 "injected Web Beans."
-msgstr ""
+msgstr "因此，除非有個 Web Bean 擁有預設的 <literal>@Dependent</literal> scope，否則 Web Bean 管理員便必須透過一個 proxy 物件來將所有注入的參照重新指向 Web Bean。這個 <emphasis>client proxy</emphasis> 負責確保收到 method 調用的 Web Bean instance 是個和目前 context 相聯的 instance。客戶端 proxy 亦可允許在不遞迴地序列化其它已注入的 Web Bean 的情況下也能讓綁定至 context（例如 session context）的 Web Bean 被序列化至磁碟。"
 
 #. Tag: para
 #: injection.xml:365
@@ -983,13 +983,13 @@ msgid ""
 "cannot be proxied by the Web Bean manager. Therefore, the Web Bean manager "
 "throws an <literal>UnproxyableDependencyException</literal> if the type of "
 "an injection point cannot be proxied."
-msgstr ""
+msgstr "不巧的是，礙於 Java 語言的限制，有些 Java 類型無法被 Web Bean 管理員代理（proxied）。因此，若某個注入點的 type 無法被代理的話，Web Bean 管理員便會回傳一個 <literal>UnproxyableDependencyException</literal>。"
 
 #. Tag: para
 #: injection.xml:370
 #, no-c-format
 msgid "The following Java types cannot be proxied by the Web Bean manager:"
-msgstr ""
+msgstr "下列 Java 類型無法被 Web Bean 管理員代理："
 
 #. Tag: para
 #: injection.xml:374
@@ -997,19 +997,19 @@ msgstr ""
 msgid ""
 "classes which are declared <literal>final</literal> or have a "
 "<literal>final</literal> method,"
-msgstr ""
+msgstr "所有被宣告 <literal>final</literal> 或是含有一個 <literal>final</literal> method 的 class、"
 
 #. Tag: para
 #: injection.xml:378
 #, no-c-format
 msgid "classes which have no non-private constructor with no parameters, and"
-msgstr ""
+msgstr "沒有非私密 constructor 的無參數 class，以及"
 
 #. Tag: para
 #: injection.xml:381
 #, no-c-format
 msgid "arrays and primitive types."
-msgstr ""
+msgstr "陣列（array）與基本型別（primitive type）。"
 
 #. Tag: para
 #: injection.xml:385
@@ -1019,13 +1019,13 @@ msgid ""
 "literal>. Simply add a constructor with no parameters to the injected class, "
 "introduce an interface, or change the scope of the injected Web Bean to "
 "<literal>@Dependent</literal>."
-msgstr ""
+msgstr "要修正 <literal>UnproxyableDependencyException</literal> 通常相當容易。只要將一個無參數的 constructor 附加至注入的 class、採用一個介面，或將已注入的 Web Bean 的 scope 更改為 <literal>@Dependent</literal> 即可。"
 
 #. Tag: title
 #: injection.xml:392
 #, no-c-format
 msgid "Obtaining a Web Bean by programatic lookup"
-msgstr ""
+msgstr "透過程式性的搜尋來取得一個 Web Bean"
 
 #. Tag: para
 #: injection.xml:394
@@ -1033,7 +1033,7 @@ msgstr ""
 msgid ""
 "The application may obtain an instance of the interface <literal>Manager</"
 "literal> by injection:"
-msgstr ""
+msgstr "應用程式可透過注入來取得 <literal>Manager</literal> 這個介面的一個 instance："
 
 #. Tag: programlisting
 #: injection.xml:397
@@ -1066,7 +1066,7 @@ msgid ""
 "Binding annotations may be specified by subclassing the helper class "
 "<literal>AnnotationLiteral</literal>, since it is otherwise difficult to "
 "instantiate an annotation type in Java."
-msgstr ""
+msgstr "綁定標記能被透過建立 helper class 的 subclass <literal>AnnotationLiteral</literal> 來指定，否則在 Java 中很難例示一個標記類型。"
 
 #. Tag: programlisting
 #: injection.xml:408
@@ -1156,7 +1156,7 @@ msgid ""
 "for injection of Java EE resources, EJBs and JPA persistence contexts, "
 "respectively. Simple Web Beans do not support the use of "
 "<literal>@PersistenceContext(type=EXTENDED)</literal>."
-msgstr ""
+msgstr "企業級和基本的 Web Bean 皆支援使用 <literal>@Resource</literal>、<literal>@EJB</literal> 和 <literal>@PersistenceContext</literal> 來相應地注入 Java EE 資源、EJB 和 JPA 的 persistence context。基本的 Web Bean 不支援使用 <literal>@PersistenceContext(type=EXTENDED)</literal>。"
 
 #. Tag: para
 #: injection.xml:434
@@ -1164,7 +1164,7 @@ msgstr ""
 msgid ""
 "The <literal>@PostConstruct</literal> callback always occurs after all "
 "dependencies have been injected."
-msgstr ""
+msgstr "<literal>@PostConstruct</literal> callback 一定會在所有相依性都被注入後才會發生。"
 
 #. Tag: title
 #: injection.xml:440
@@ -1180,7 +1180,7 @@ msgid ""
 "<literal>@Dependent</literal>&#151;that need to know something about the "
 "object or injection point into which they are injected in order to be able "
 "to do what they do. For example:"
-msgstr ""
+msgstr "有幾種特定相依物件&#151;含有 <literal>@Dependent</literal> 這個 scope 的 Web Bean&#151;需要知道有關於物件或是它們被注入的注入點相關資訊才能進行它們本應進行的工作。比方說："
 
 #. Tag: para
 #: injection.xml:448
@@ -1188,7 +1188,7 @@ msgstr ""
 msgid ""
 "The log category for a <literal>Logger</literal> depends upon the class of "
 "the object that owns it."
-msgstr ""
+msgstr "<literal>Logger</literal> 的 log category 取決於擁有它的物件的 class。"
 
 #. Tag: para
 #: injection.xml:452
@@ -1196,7 +1196,7 @@ msgstr ""
 msgid ""
 "Injection of a HTTP parameter or header value depends upon what parameter or "
 "header name was specified at the injection point."
-msgstr ""
+msgstr "HTTP 參數或是 header value 的注入取決於在注入點所指定的參數或標頭名稱。"
 
 #. Tag: para
 #: injection.xml:456
@@ -1204,7 +1204,7 @@ msgstr ""
 msgid ""
 "Injection of the result of an EL expression evaluation depends upon the "
 "expression that was specified at the injection point."
-msgstr ""
+msgstr "EL 運算式評估（expression evaluation）結果的注入取決於在注入點所指定的運算式。"
 
 #. Tag: para
 #: injection.xml:461
@@ -1213,7 +1213,7 @@ msgid ""
 "A Web Bean with scope <literal>@Dependent</literal> may inject an instance "
 "of <literal>InjectionPoint</literal> and access metadata relating to the "
 "injection point to which it belongs."
-msgstr ""
+msgstr "含有 <literal>@Dependent</literal> 這個 scope 的 Web Bean 能夠注入一個 <literal>InjectionPoint</literal> instance 並存取和它所屬的注入點相關的 metadata。"
 
 #. Tag: para
 #: injection.xml:465

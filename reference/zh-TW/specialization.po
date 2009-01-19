@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: specialization\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-18 16:31+0000\n"
-"PO-Revision-Date: 2009-01-15 12:18+1000\n"
+"PO-Revision-Date: 2009-01-19 18:30+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,17 +20,17 @@ msgstr ""
 #: specialization.xml:4
 #, no-c-format
 msgid "Specialization"
-msgstr ""
+msgstr "專門化"
 
 #. Tag: para
 #: specialization.xml:6
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "We've already seen how the Web Beans dependency injection model lets us "
 "<emphasis>override</emphasis> the implementation of an API at deployment "
 "time. For example, the following enterprise Web Bean provides an "
 "implementation of the API <literal>PaymentProcessor</literal> in production:"
-msgstr "依賴注入"
+msgstr "我們已經看過了 Web Bean 的依賴注入模型如何讓我們在建置時<emphasis>置換</emphasis>一個 API 的實做了。比方說，下列企業級的 Web Bean 在生產時提供了 <literal>PaymentProcessor</literal> 這個 API 的一個實做："
 
 #. Tag: programlisting
 #: specialization.xml:11
@@ -54,7 +54,7 @@ msgstr ""
 msgid ""
 "But in our staging environment, we override that implementation of "
 "<literal>PaymentProcessor</literal> with a different Web Bean:"
-msgstr ""
+msgstr "不過在我們的中繼環境（staging environment）中，我們利用了不同的 Web Bean 來置換了 <literal>PaymentProcessor</literal> 的實做："
 
 #. Tag: programlisting
 #: specialization.xml:16
@@ -82,7 +82,7 @@ msgid ""
 "type <literal>@Staging</literal> would have a higher priority than the "
 "default deployment type <literal>@Production</literal>, and therefore "
 "clients with the following injection point:"
-msgstr ""
+msgstr "我們嘗試要對 <literal>StagingCreditCardPaymentProcessor</literal> 進行的就是在系統的某個特定的 deployment 中完全地替換掉 <literal>AsyncPaymentProcessor</literal>。在該 deployment 中，<literal>@Staging</literal> 這個 deployment type 將會擁有比 <literal>@Production</literal> 這個預設 deployment type 還要高的優先權，因此含有下列注入點的客戶端："
 
 #. Tag: programlisting
 #: specialization.xml:24
@@ -96,13 +96,13 @@ msgstr "@CreditCard PaymentProcessor ccpp"
 msgid ""
 "Would receive an instance of <literal>StagingCreditCardPaymentProcessor</"
 "literal>."
-msgstr ""
+msgstr "將會收到 <literal>StagingCreditCardPaymentProcessor</literal> 的一個 instance。"
 
 #. Tag: para
 #: specialization.xml:28
 #, no-c-format
 msgid "Unfortunately, there are several traps we can easily fall into:"
-msgstr ""
+msgstr "不過我們有幾點需要小心："
 
 #. Tag: para
 #: specialization.xml:32
@@ -287,8 +287,7 @@ msgstr ""
 #. Tag: para
 #: specialization.xml:124
 #, no-c-format
-msgid ""
-"there is no other enabled Web Bean that also specializes the superclass."
+msgid "there is no other enabled Web Bean that also specializes the superclass."
 msgstr ""
 
 #. Tag: para
@@ -307,3 +306,4 @@ msgid ""
 "emphasis> be called in any deployment of the system where the Web Bean "
 "annotated <literal>@Specializes</literal> is deployed and enabled."
 msgstr ""
+

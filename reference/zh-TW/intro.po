@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-18 16:31+0000\n"
-"PO-Revision-Date: 2009-01-16 12:50+1000\n"
+"POT-Creation-Date: 2009-01-06 11:30+0000\n"
+"PO-Revision-Date: 2009-01-19 18:17+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -31,11 +31,7 @@ msgid ""
 "specification will make you jump through! The good news is that you've "
 "probably already written and used hundreds, perhaps thousands of Web Beans. "
 "You might not even remember the first Web Bean you wrote."
-msgstr ""
-"您是否已準備好開始編寫您的第一個 Web Bean 了呢？或是您針對於 Web Bean 本身的"
-"規格還是存有著一些疑問呢？不過好消息就是您從以前到現在可能早就已經編寫並使用"
-"了上百甚至是上千個 Web Bean 了。您可能根本已經不記得您所編寫的第一個 Web "
-"Bean 為何了。"
+msgstr "您是否已準備好開始編寫您的第一個 Web Bean 了呢？或是您針對於 Web Bean 本身的規格還是存有著一些疑問呢？不過好消息就是您從以前到現在可能早就已經編寫並使用了上百甚至是上千個 Web Bean 了。您可能根本已經不記得您所編寫的第一個 Web Bean 為何了。"
 
 #. Tag: title
 #: intro.xml:13
@@ -56,7 +52,7 @@ msgid ""
 "into other Web Beans, configuring them via the Web Beans XML configuration "
 "facility, even adding interceptors and decorators to them&#151;without "
 "touching your existing code."
-msgstr ""
+msgstr "我們能夠很明確地告訴您，在絕大部分的情況下，所有含有不接受參數的 constructor 的 java class 都是個 Web Bean。這包含了所有的 JavaBean。另外，所有 EJB 3-style 的 session bean 也都屬於 Web Bean。當然，您先前所編寫的 JavaBean 和 EJB 皆無法有效利用 Web Bean 規格所定義的新服務，不過您卻可將它們全部作為 Web Bean 來使用&#151;將它們注入其它 Web Bean 中，透過 Web Bean XML 配置功能來配置它們，甚至是加入攔截器（interceptor）與裝飾器（decorator）&#151;無須變動到您現有的程式碼。"
 
 #. Tag: para
 #: intro.xml:25
@@ -65,7 +61,7 @@ msgid ""
 "Suppose that we have two existing Java classes, that we've been using for "
 "years in various applications. The first class parses a string into a list "
 "of sentences:"
-msgstr ""
+msgstr "假設我們目前有兩個使用於各種應用程式中多年的 Java class。第一個 class 會將一個字串剖析入一列句子中："
 
 #. Tag: programlisting
 #: intro.xml:29
@@ -86,7 +82,7 @@ msgid ""
 "The second existing class is a stateless session bean front-end for an "
 "external system that is able to translate sentences from one language to "
 "another:"
-msgstr ""
+msgstr "第二個 class 則是個外部系統的無狀態 session bean 前端，並且它可將句子由一種語言翻譯成另一種語言："
 
 #. Tag: programlisting
 #: intro.xml:35
@@ -106,7 +102,7 @@ msgstr ""
 #: intro.xml:37
 #, no-c-format
 msgid "Where <literal>Translator</literal> is the local interface:"
-msgstr ""
+msgstr "<literal>Translator</literal> 為本地介面："
 
 #. Tag: programlisting
 #: intro.xml:39
@@ -128,7 +124,7 @@ msgstr ""
 msgid ""
 "Unfortunately, we don't have a preexisting class that translates whole text "
 "documents. So let's write a Web Bean that does this job:"
-msgstr ""
+msgstr "不巧的是，我們沒有一個可翻譯整個文字文件的現有 class。所以讓我們來編寫一個能夠完成這項工作的 Web Bean 吧："
 
 #. Tag: programlisting
 #: intro.xml:44
@@ -184,7 +180,7 @@ msgstr ""
 msgid ""
 "We may obtain an instance of <literal>TextTranslator</literal> by injecting "
 "it into a Web Bean, Servlet or EJB:"
-msgstr ""
+msgstr "我們能夠藉由將注入一個 <literal>TextTranslator</literal> 的 instance 注入 Web Bean、Servlet 或是 EJB 中來取得這個 instance："
 
 #. Tag: programlisting
 #: intro.xml:49
@@ -206,7 +202,7 @@ msgstr ""
 msgid ""
 "Alternatively, we may obtain an instance by directly calling a method of the "
 "Web Bean manager:"
-msgstr ""
+msgstr "另外，我們也可藉由直接調用 Web Bean 管理員的一個 method 來取得一個 instance："
 
 #. Tag: programlisting
 #: intro.xml:54
@@ -226,11 +222,11 @@ msgid ""
 "no parameters! Is it still a Web Bean? Well, a class that does not have a "
 "constructor with no parameters can still be a Web Bean if it has a "
 "constructor annotated <literal>@Initializer</literal>."
-msgstr ""
+msgstr "不過請稍等：<literal>TextTranslator</literal> 並沒有一個無參數的 constructor！這樣它還是個 Web Bean 嗎？一個沒有無參數 constructor 的 class 若有個被標記了 <literal>@Initializer</literal> 的 constructor 的話，它還是能夠是個 Web Bean。"
 
 #. Tag: para
 #: intro.xml:61
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "As you've guessed, the <literal>@Initializer</literal> annotation has "
 "something to do with dependency injection! <literal>@Initializer</literal> "
@@ -238,7 +234,7 @@ msgid ""
 "Bean manager to call that constructor or method when instantiating the Web "
 "Bean. The Web Bean manager will inject other Web Beans to the parameters of "
 "the constructor or method."
-msgstr "依賴注入"
+msgstr "就如您所猜測地，<literal>@Initializer</literal> 這個標記和依賴注入有關係！<literal>@Initializer</literal> 可套用至一個 Web Bean 的 constructor 或是 method 來指示 Web Bean 管理員在例示 Web Bean 時去調用該 constructor 或 method。Web Bean 管理員會將其它 Web Bean 注入至該 constructor 或 method 的參數中。"
 
 #. Tag: para
 #: intro.xml:68
@@ -252,19 +248,19 @@ msgid ""
 "<literal>UnsatisfiedDependencyException</literal>. If more than one "
 "implementation of <literal>Translator</literal> was available, the Web Bean "
 "manager would throw an <literal>AmbiguousDependencyException</literal>."
-msgstr ""
+msgstr "當系統初始化時，Web Bean 管理員必須驗證是否有正好一個滿足所有注入點的 Web Bean 存在。在我們的範例中，若沒有可用的 <literal>Translator</literal> 實做&#151;若 <literal>SentenceTranslator</literal> EJB 沒有被建置&#151;Web Bean 管理員便會回傳一個 <literal>UnsatisfiedDependencyException</literal>。若有超過一個可使用的 <literal>Translator</literal> 實做，那麼 Web Bean 管理員便會回傳一個 <literal>AmbiguousDependencyException</literal>。"
 
 #. Tag: title
 #: intro.xml:80
 #, no-c-format
 msgid "What is a Web Bean?"
-msgstr ""
+msgstr "Web Bean 是什麼？"
 
 #. Tag: para
 #: intro.xml:82
 #, no-c-format
 msgid "So what, <emphasis>exactly</emphasis>, is a Web Bean?"
-msgstr ""
+msgstr "所以 Web Bean <emphasis>到底</emphasis>是什麼？"
 
 #. Tag: para
 #: intro.xml:84
@@ -276,7 +272,7 @@ msgid ""
 "Beans are managed automatically by the Web Bean manager. Most Web Beans are "
 "<emphasis>stateful</emphasis> and <emphasis>contextual</emphasis>. The "
 "lifecycle of a Web Bean is always managed by the Web Bean manager."
-msgstr ""
+msgstr "Web Bean 是個包含了商業邏輯的應用程式 class。Web Bean 可由 Java 程式碼被直接地調用，或是它亦可透過 Unified EL 來引動。Web Bean 可存取交易性的資源。Web Bean 之間的相依性是透過 Web Bean 管理員來自動管理的。大部分的 Web Bean 都屬於 <emphasis>stateful（有狀態）</emphasis> 和 <emphasis>contextual（語意式）</emphasis> 的。Web Bean 的生命週期（lifecycle）總是透過 Web Bean 管理員來管理的。"
 
 #. Tag: para
 #: intro.xml:91
@@ -289,7 +285,7 @@ msgid ""
 "singleton beans), different clients of a Web Bean see the Web Bean in "
 "different states. The client-visible state depends upon which instance of "
 "the Web Bean the client has a reference to."
-msgstr ""
+msgstr "讓我們向後看，「contextual（語意式）」到底代表什麼意思？因為 Web Bean 能夠是有狀態的，而最重要的是我們有<emphasis>哪個</emphasis> bean instance。和無狀態的元件模型（例如無狀態的 session bean）或單元件模型（例如 servlet 或是單獨的 bean）不同的是，對於不同的 Web Bean 客戶端而言，它們會看見不同狀態的 Web Bean。客戶端可看見的狀態基於客戶端參照的是 Web Bean 的哪個 instance。"
 
 #. Tag: para
 #: intro.xml:98
@@ -299,24 +295,24 @@ msgid ""
 "emphasis> stateful session beans, the client does not control the lifecycle "
 "of the instance by explicitly creating and destroying it. Instead, the "
 "<emphasis>scope</emphasis> of the Web Bean determines:"
-msgstr ""
+msgstr "不過，就和無狀態或是單獨的模型一樣，並與有狀態的 session bean <emphasis>不同</emphasis>，客戶端無法藉由明確建立和刪除 instance 來控制 instance 的生命週期。反之，Web Bean 的 <emphasis>scope</emphasis> 可決定："
 
 #. Tag: para
 #: intro.xml:105
 #, no-c-format
 msgid "the lifecycle of each instance of the Web Bean and"
-msgstr ""
+msgstr "Web Bean 的各個 instance 的生命週期以及"
 
 #. Tag: para
 #: intro.xml:108
 #, no-c-format
-msgid ""
-"which clients share a reference to a particular instance of the Web Bean."
-msgstr ""
+msgid "which clients share a reference to a particular instance of the Web Bean."
+msgstr "哪些客戶端共享 Web Bean 的特定 instance 的參照。"
 
 #. Tag: para
 #: intro.xml:113
 #, no-c-format
+#, fuzzy
 msgid ""
 "For a given thread in a Web Beans application, there may be an "
 "<emphasis>active context</emphasis> associated with the scope of the Web "
@@ -324,7 +320,7 @@ msgid ""
 "is request scoped), or it may be shared with certain other threads (for "
 "example, if the Web Bean is session scoped) or even all other threads (if it "
 "is application scoped)."
-msgstr ""
+msgstr "Web Bean 應用程式中的某個執行緒"
 
 #. Tag: para
 #: intro.xml:119
@@ -333,7 +329,7 @@ msgid ""
 "Clients (for example, other Web Beans) executing in the same context will "
 "see the same instance of the Web Bean. But clients in a different context "
 "will see a different instance."
-msgstr ""
+msgstr "相同 context 的客戶端（例如其它 Web Bean）將會看見相同的 Web Bean instance。不過不同 context 的客戶端則會看見不同的 instance。"
 
 #. Tag: para
 #: intro.xml:123
@@ -345,19 +341,19 @@ msgid ""
 "even need to know what that lifecyle is.</emphasis> Web Beans interact by "
 "passing messages, and the Web Bean implementations define the lifecycle of "
 "their own state. The Web Beans are loosely coupled because:"
-msgstr ""
+msgstr "Contextual model 的其中一個主要優點就是它允許有狀態的 Web Bean 能被視為是一項服務！客戶端不需要擔心如何管理它所使用的 Web Bean 的生命週期，<emphasis>它甚至不需要知道這個生命週期為何。</emphasis>Web Bean 會透過傳送訊息來進行互動，並且 Web Bean 的實做也能定義它們自己的狀態的生命週期。Web Bean 為鬆散耦合（loosely coupled）的，因為："
 
 #. Tag: para
 #: intro.xml:132
 #, no-c-format
 msgid "they interact via well-defined public APIs"
-msgstr ""
+msgstr "它們透過了定義明確的公用 API 來進行互動"
 
 #. Tag: para
 #: intro.xml:135
 #, no-c-format
 msgid "their lifecycles are completely decoupled"
-msgstr ""
+msgstr "它們的生命週期已被完全地 decouple 了"
 
 #. Tag: para
 #: intro.xml:139
@@ -368,7 +364,7 @@ msgid ""
 "the other Web Bean implementation. In fact, Web Beans defines a "
 "sophisticated facility for overriding Web Bean implementations at deployment "
 "time, as we will see in <xref linkend=\"deploymenttypes\"/>."
-msgstr ""
+msgstr "我們能夠在不影響其它 Web Bean 實做的情況下將一個 Web Bean 取代為另一個實做相同 API 並有不同生命週期（不同 scope）的 Web Bean。事實上，Web Bean 可在建置時定義一項用來置換 Web Bean 實做的複雜功能，就如我們將在 <xref linkend=\"deploymenttypes\"/> 中所見。"
 
 #. Tag: para
 #: intro.xml:145
@@ -377,7 +373,7 @@ msgid ""
 "Note that not all clients of a Web Bean are Web Beans. Other objects such as "
 "Servlets or Message-Driven Beans&#151;which are by nature not injectable, "
 "contextual objects&#151;may also obtain references to Web Beans by injection."
-msgstr ""
+msgstr "請注意，並非所有 Web Bean 的客戶端都是 Web Bean。像是 Servlet 或訊息導向的 Bean 之類的其它物件&#151;無法被注入，並屬於 contextual object&#151;也能透過注入來取得 Web Bean 的參照。"
 
 #. Tag: para
 #: intro.xml:149
@@ -389,55 +385,55 @@ msgstr ""
 #: intro.xml:153
 #, no-c-format
 msgid "A Web Bean comprises:"
-msgstr ""
+msgstr "Web Bean 包含著："
 
 #. Tag: para
 #: intro.xml:156
 #, no-c-format
 msgid "A (nonempty) set of API types"
-msgstr ""
+msgstr "一組（非空的）API 類型（API type）"
 
 #. Tag: para
 #: intro.xml:157
 #, no-c-format
 msgid "A (nonempty) set of binding annotation types"
-msgstr ""
+msgstr "一組（非空的）綁定標記類型（binding annotation type）"
 
 #. Tag: para
 #: intro.xml:158
 #, no-c-format
 msgid "A scope"
-msgstr ""
+msgstr "一個 scope"
 
 #. Tag: para
 #: intro.xml:159
 #, no-c-format
 msgid "A deployment type"
-msgstr ""
+msgstr "一個建置類型（deployment type）"
 
 #. Tag: para
 #: intro.xml:160
 #, no-c-format
 msgid "Optionally, a Web Bean name"
-msgstr ""
+msgstr "亦可選擇性地包含著一組 Web Bean 名稱"
 
 #. Tag: para
 #: intro.xml:161
 #, no-c-format
 msgid "A set of interceptor binding types"
-msgstr ""
+msgstr "一組攔截器綁定類型（interceptor binding type）"
 
 #. Tag: para
 #: intro.xml:162
 #, no-c-format
 msgid "A Web Bean implementation"
-msgstr ""
+msgstr "一個 Web Bean 實做（Web Bean implementation）"
 
 #. Tag: para
 #: intro.xml:167
 #, no-c-format
 msgid "Let's see what some of these terms mean, to the Web Bean developer."
-msgstr ""
+msgstr "讓我們來看看這些術語對 Web Bean 開發人員來說代表什麼。"
 
 #. Tag: title
 #: intro.xml:170
@@ -447,24 +443,24 @@ msgstr "API 類型、綁定類型以及依賴注入"
 
 #. Tag: para
 #: intro.xml:172
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Web Beans usually acquire references to other Web Beans via dependency "
 "injection. Any injected attribute specifies a \"contract\" that must be "
 "satisfied by the Web Bean to be injected. The contract is:"
-msgstr "依賴注入"
+msgstr "Web Bean 通常會透過依賴注入（dependency injection）來取得其它 Web Bean 的參照。任何被注入的屬性都會指定一個「合同（contract）」，該合同必須被 Web Bean 滿足才可被注入。這個合同為："
 
 #. Tag: para
 #: intro.xml:177
 #, no-c-format
 msgid "an API type, together with"
-msgstr ""
+msgstr "一個 API 類型，以及"
 
 #. Tag: para
 #: intro.xml:178
 #, no-c-format
 msgid "a set of binding types."
-msgstr ""
+msgstr "一組綁定類型。"
 
 #. Tag: para
 #: intro.xml:181
@@ -475,7 +471,7 @@ msgid ""
 "bean-class local view). A binding type represents some client-visible "
 "semantic that is satisfied by some implementations of the API and not by "
 "others."
-msgstr ""
+msgstr "API 是個用戶定義的 class 或介面。（若 Web Bean 是個 EJB session bean 的話，那麼 API 類形便是 <literal>@Local</literal> 介面或是 bean-class 的 local view）。綁定類型代表一些客戶端可見的語意，這些語意可藉由一些 API 實做來滿足。"
 
 #. Tag: para
 #: intro.xml:186
@@ -485,7 +481,7 @@ msgid ""
 "themselves annotated <literal>@BindingType</literal>. For example, the "
 "following injection point has API type <literal>PaymentProcessor</literal> "
 "and binding type <literal>@CreditCard</literal>:"
-msgstr ""
+msgstr "綁定類型是透過用戶定義、本身已被標記為 <literal>@BindingType</literal> 的標記來表示的。比方說，以下注入點含有一個 <literal>PaymentProcessor</literal> API 類型以及 <literal>@CreditCard</literal> 綁定類型："
 
 #. Tag: programlisting
 #: intro.xml:191
@@ -499,7 +495,7 @@ msgstr "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
 msgid ""
 "If no binding type is explicitly specified at an injection point, the "
 "default binding type <literal>@Current</literal> is assumed."
-msgstr ""
+msgstr "若在注入點沒有綁定類型被明確指定的話，那麼預設的綁定類型 <literal>@Current</literal> 就會被假設。"
 
 #. Tag: para
 #: intro.xml:196
@@ -508,7 +504,7 @@ msgid ""
 "For each injection point, the Web Bean manager searches for a Web Bean which "
 "satisfies the contract (implements the API, and has all the binding types), "
 "and injects that Web Bean."
-msgstr ""
+msgstr "Web Bean 管理員會針對於各個注入點搜尋滿足合同（實做 API 並擁有所有綁定類型）的 Web Bean，然後將該 Web Bean 注入。"
 
 #. Tag: para
 #: intro.xml:200
@@ -517,7 +513,7 @@ msgid ""
 "The following Web Bean has the binding type <literal>@CreditCard</literal> "
 "and implements the API type <literal>PaymentProcessor</literal>. It could "
 "therefore be injected to the example injection point:"
-msgstr ""
+msgstr "下列 Web Bean 的綁定類型為 <literal>@CreditCard</literal> 並且實做了 <literal>PaymentProcessor</literal> 這個 API 類型。因此它可被注入至範例的注入點中："
 
 #. Tag: programlisting
 #: intro.xml:204
@@ -538,7 +534,7 @@ msgid ""
 "If a Web Bean does not explicitly specify a set of binding types, it has "
 "exactly one binding type: the default binding type <literal>@Current</"
 "literal>."
-msgstr ""
+msgstr "若 Web Bean 不明確指定一組綁定類型的話，它便會只有一個綁定類型：也就是預設的綁定類型 <literal>@Current</literal>。"
 
 #. Tag: para
 #: intro.xml:209
@@ -548,13 +544,13 @@ msgid ""
 "algorithm</emphasis> that helps the container decide what to do if there is "
 "more than one Web Bean that satisfies a particular contract. We'll get into "
 "the details in <xref linkend=\"injection\"/>."
-msgstr ""
+msgstr "Web Bean 會定義一個複雜不過不難理解的 <emphasis>resolution algorithm（解析運算法）</emphasis>，它可在有超過一個滿足特定合同的 Web Bean 存在的情況下協助 container 決定該怎麼作。我們將在 <xref linkend=\"injection\"/> 中詳細討論。"
 
 #. Tag: title
 #: intro.xml:217
 #, no-c-format
 msgid "Deployment types"
-msgstr ""
+msgstr "建置類型（Deployment type）"
 
 #. Tag: para
 #: intro.xml:219
@@ -567,7 +563,7 @@ msgid ""
 "apply the annotation to Web Beans which should be deployed in that scenario. "
 "A deployment type allows a whole set of Web Beans to be conditionally "
 "deployed, with a just single line of configuration."
-msgstr ""
+msgstr "<emphasis>Deployment type</emphasis> 可讓我們透過建置方案（deployment scenario）來為我們的 Web Bean 歸類。建置類型是個表示特定建置方案的標記，例如 <literal>@Mock</literal>、<literal>@Staging</literal> 或 <literal>@AustralianTaxLaw</literal>。我們會將標記套用至應透過該方案來建置的 Web Bean 中。建置類型能透過單行的配置來允許整組 Web Bean 被條件性地建置。"
 
 #. Tag: para
 #: intro.xml:226
@@ -577,7 +573,7 @@ msgid ""
 "literal>, in which case no deployment type need be explicitly specified. All "
 "three Web Bean in our example have the deployment type <literal>@Production</"
 "literal>."
-msgstr ""
+msgstr "許多 Web Bean 只使用預設的建置類型 <literal>@Production</literal>，在此情況下無須明確地指定建置類型。我們範例中的所有三個 Web Bean 都擁有 <literal>@Production</literal> 這個建置類型。"
 
 #. Tag: para
 #: intro.xml:230
@@ -585,7 +581,7 @@ msgstr ""
 msgid ""
 "In a testing environment, we might want to replace the "
 "<literal>SentenceTranslator</literal> Web Bean with a \"mock object\":"
-msgstr ""
+msgstr "在測試環境中，我們可能會希望將 <literal>SentenceTranslator</literal> 這個 Web Bean 替換為一個「mock 物件」："
 
 #. Tag: programlisting
 #: intro.xml:233
@@ -726,8 +722,7 @@ msgstr ""
 #. Tag: para
 #: intro.xml:284
 #, no-c-format
-msgid ""
-"It's even easier to just let the name be defaulted by the Web Bean manager:"
+msgid "It's even easier to just let the name be defaulted by the Web Bean manager:"
 msgstr ""
 
 #. Tag: programlisting
@@ -889,7 +884,8 @@ msgstr ""
 
 #. Tag: para
 #: intro.xml:360
-#, fuzzy, no-c-format
+#, no-c-format
+#, fuzzy
 msgid ""
 "The specification says that all EJB 3-style session and singleton beans are "
 "<emphasis>enterprise</emphasis> Web Beans. Message driven beans are not Web "
@@ -1078,8 +1074,7 @@ msgstr ""
 #. Tag: para
 #: intro.xml:437
 #, no-c-format
-msgid ""
-"The result of a producer method is injected just like any other Web Bean."
+msgid "The result of a producer method is injected just like any other Web Bean."
 msgstr ""
 
 #. Tag: programlisting
@@ -1166,3 +1161,4 @@ msgid ""
 "objects required to send messages to queues and topics. We'll discuss JMS "
 "endpoints in <xref linkend=\"jms\"/>."
 msgstr ""
+
