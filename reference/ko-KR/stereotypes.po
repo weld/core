@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: stereotypes\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-20 12:34+1000\n"
+"PO-Revision-Date: 2009-01-20 15:20+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,12 +17,13 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
 "\n"
+"\n"
 
 #. Tag: title
 #: stereotypes.xml:4
 #, no-c-format
 msgid "Stereotypes"
-msgstr "전형적인 역할 (Stereotypes) "
+msgstr "스테레오타입 (Stereotypes)  "
 
 #. Tag: para
 #: stereotypes.xml:6
@@ -33,49 +34,48 @@ msgstr "Web Beans 사양에 따라: "
 #. Tag: para
 #: stereotypes.xml:10
 #, no-c-format
-#, fuzzy
 msgid ""
 "In many systems, use of architectural patterns produces a set of recurring "
 "Web Bean roles. A stereotype allows a framework developer to identify such a "
 "role and declare some common metadata for Web Beans with that role in a "
 "central place."
-msgstr "여러 시스템에서, "
+msgstr "여러 시스템에서, 아키텍처 패턴을 사용하여 Web Bean 역할을 반복하는 모음을 생산합니다. 스테레오타입은 프레임워크 개발자가 이러한 역할을 인식하고 중앙 위치에서의 역할과 함께 Web Beans의 일반적인 메타데이터를 명시하게 합니다. "
 
 #. Tag: para
 #: stereotypes.xml:14
 #, no-c-format
 msgid "A stereotype encapsulates any combination of:"
-msgstr ""
+msgstr "스테레오타입은 다음의 조합을 캡슐화합니다:  "
 
 #. Tag: para
 #: stereotypes.xml:18
 #, no-c-format
 msgid "a default deployment type,"
-msgstr ""
+msgstr "기본값 배치 유형 "
 
 #. Tag: para
 #: stereotypes.xml:21
 #, no-c-format
 msgid "a default scope type,"
-msgstr ""
+msgstr "기본값 범위 유형 "
 
 #. Tag: para
 #: stereotypes.xml:24
 #, no-c-format
 msgid "a restriction upon the Web Bean scope,"
-msgstr ""
+msgstr "Web Bean 범위에서의 제한, "
 
 #. Tag: para
 #: stereotypes.xml:27
 #, no-c-format
 msgid "a requirement that the Web Bean implement or extend a certain type, and"
-msgstr ""
+msgstr "특정 유형을 Web Bean이 구현하거나 확장하기 위한 요구 사항 "
 
 #. Tag: para
 #: stereotypes.xml:30
 #, no-c-format
 msgid "a set of interceptor binding annotations."
-msgstr ""
+msgstr "인터셉터 바인딩 어노테이션 모음 "
 
 #. Tag: para
 #: stereotypes.xml:34
@@ -83,13 +83,13 @@ msgstr ""
 msgid ""
 "A stereotype may also specify that all Web Beans with the stereotype have "
 "defaulted Web Bean names."
-msgstr ""
+msgstr "스테레오타입은 스테레오타입이 있는 모든 Web Beans이 Web Bean 이름을 기본값으로 하도록 지정할 수 도 있습니다.  "
 
 #. Tag: para
 #: stereotypes.xml:37
 #, no-c-format
 msgid "A Web Bean may declare zero, one or multiple stereotypes."
-msgstr ""
+msgstr "Web Bean은 0 또는 하나 이상의 스테레오타입을 명시할 있습니다. "
 
 #. Tag: para
 #: stereotypes.xml:41
@@ -97,7 +97,7 @@ msgstr ""
 msgid ""
 "A stereotype is a Java annotation type. This stereotype identifies action "
 "classes in some MVC framework:"
-msgstr ""
+msgstr "스테레오타입은 Java 어노테이션 유형입니다. 이러한 스테레오타입은 일부 MVC 프레임워크에서 작업 클래스를 인식합니다:   "
 
 #. Tag: programlisting
 #: stereotypes.xml:44
@@ -117,7 +117,7 @@ msgstr ""
 #: stereotypes.xml:46
 #, no-c-format
 msgid "We use the stereotype by applying the annotation to a Web Bean."
-msgstr ""
+msgstr "Web Bean에 어노테이션을 적용하여 스테레오타입을 사용합니다.  "
 
 #. Tag: programlisting
 #: stereotypes.xml:48
@@ -133,7 +133,7 @@ msgstr ""
 #: stereotypes.xml:51
 #, no-c-format
 msgid "Default scope and deployment type for a stereotype"
-msgstr ""
+msgstr "스테레오타입에 대한 기본값 범위 및 배치 유형 "
 
 #. Tag: para
 #: stereotypes.xml:53
@@ -144,7 +144,7 @@ msgid ""
 "<literal>@WebTier</literal> identifies Web Beans that should only be "
 "deployed when the system executes as a web application, we might specify the "
 "following defaults for action classes:"
-msgstr ""
+msgstr "스테레오타입은 해당 스테레오타입과 함께 Web Beans의 기본값 범위 또는 기본값 배치 유형을 지정할 수 있습니다. 예를 들어, <literal>@WebTier</literal> 배치 유형이 시스템이 웹 애플리케이션으로 실행될 때만 Web Beans이 배치됨을 인식할 경우, 각각의 작업 클래스에 대해 다음과 같은 기본값을 지정할 수 있습니다: "
 
 #. Tag: programlisting
 #: stereotypes.xml:59
@@ -170,7 +170,7 @@ msgstr ""
 msgid ""
 "Of course, a particular action may still override these defaults if "
 "necessary:"
-msgstr ""
+msgstr "물론 특정 작업은 필요할 경우 이러한 기본값을 덮어쓰기할 수 있습니다:  "
 
 #. Tag: programlisting
 #: stereotypes.xml:64
@@ -186,13 +186,13 @@ msgstr ""
 #: stereotypes.xml:66
 #, no-c-format
 msgid "If we want to force all actions to a particular scope, we can do that too."
-msgstr ""
+msgstr "모든 작업을 특정 범위로 강제시키고자 할 경우, 강제시킬 수 있습니다.  "
 
 #. Tag: title
 #: stereotypes.xml:72
 #, no-c-format
 msgid "Restricting scope and type with a stereotype"
-msgstr ""
+msgstr "스테레오타입으로 범위 및 유형 제한 "
 
 #. Tag: para
 #: stereotypes.xml:74
@@ -201,7 +201,7 @@ msgid ""
 "Suppose that we wish to prevent actions from declaring certain scopes. Web "
 "Beans lets us explicitly specify the set of allowed scopes for Web Beans "
 "with a certain stereotype. For example:"
-msgstr ""
+msgstr "어떤 작업이 특정 범위를 명시하지 못하게 하길 원한다고 가정합니다. Web Beans는 특정 스테레오타입과 함께 Web Beans의 허용 범위 모음을 명시적으로 지정할 수 있게 합니다. 예:  "
 
 #. Tag: programlisting
 #: stereotypes.xml:78
@@ -228,7 +228,7 @@ msgid ""
 "If a particular action class attempts to specify a scope other than the Web "
 "Beans request scope, an exception will be thrown by the Web Bean manager at "
 "initialization time."
-msgstr ""
+msgstr "특정 작업 클래스가 Web Beans 요청 범위 외의 범위를 지정하려고 할 경우, 초기화시 예외 처리가 Web Bean 관리자에 의해 넘어가게 됩니다. "
 
 #. Tag: para
 #: stereotypes.xml:84
@@ -236,7 +236,7 @@ msgstr ""
 msgid ""
 "We can also force all Web Bean with a certain stereotype to implement an "
 "interface or extend a class:"
-msgstr ""
+msgstr "특정 스테레오타입과 함께 모든 Web Bean을 강제하여 인터페이스를 구현하거나 클래스를 확장할 수 있습니다:  "
 
 #. Tag: programlisting
 #: stereotypes.xml:87
@@ -264,12 +264,14 @@ msgid ""
 "<literal>AbstractAction</literal>, an exception will be thrown by the Web "
 "Bean manager at initialization time."
 msgstr ""
+"특정 작업 클래스가 <literal>AbstractAction</literal> 클래스를 확장하지 않을 경우, 초기화시 예외 처리가 Web "
+"Bean 관리자에 의해 넘어가게 됩니다. "
 
 #. Tag: title
 #: stereotypes.xml:96
 #, no-c-format
 msgid "Interceptor bindings for stereotypes"
-msgstr ""
+msgstr "스테레오타입 용 인터셉터 바인딩  "
 
 #. Tag: para
 #: stereotypes.xml:98
@@ -277,7 +279,7 @@ msgstr ""
 msgid ""
 "A stereotype may specify a set of interceptor bindings to be inherited by "
 "all Web Beans with that stereotype."
-msgstr ""
+msgstr "스테레오타입은 스테레오타입과 함께 모든 Web Beans에 의해 상속되기 위해 인터셉터 바인딩 모음을 지정할 수 있습니다.  "
 
 #. Tag: programlisting
 #: stereotypes.xml:101
@@ -307,7 +309,7 @@ msgstr ""
 msgid ""
 "This helps us get technical concerns even further away from the business "
 "code!"
-msgstr ""
+msgstr "이는 비지니스 코드에서 발생할 수 있는 기술적 문제를 발생하지 않게 합니다! "
 
 #. Tag: title
 #: stereotypes.xml:109
@@ -318,12 +320,13 @@ msgstr ""
 #. Tag: para
 #: stereotypes.xml:111
 #, no-c-format
+#, fuzzy
 msgid ""
 "Finally, we can specify that all Web Beans with a certain stereotype have a "
 "Web Bean name, defaulted by the Web Bean manager. Actions are often "
 "referenced in JSP pages, so they're a perfect use case for this feature. All "
 "we need to do is add an empty <literal>@Named</literal> annotation:"
-msgstr ""
+msgstr "마지막으로 특정 스테레오타입과 함께 모든 Web Beans가 Web Bean 이름을 갖도록 지정할 수 있습니다. "
 
 #. Tag: programlisting
 #: stereotypes.xml:116
@@ -355,13 +358,13 @@ msgstr ""
 msgid ""
 "Now, <literal>LoginAction</literal> will have the name <literal>loginAction</"
 "literal>."
-msgstr ""
+msgstr "이제 <literal>LoginAction</literal>은 <literal>loginAction</literal>이라는 이름을 갖게 됩니다. "
 
 #. Tag: title
 #: stereotypes.xml:124
 #, no-c-format
 msgid "Standard stereotypes"
-msgstr ""
+msgstr "표준 스테레오타입 "
 
 #. Tag: para
 #: stereotypes.xml:126
@@ -370,13 +373,13 @@ msgid ""
 "We've already met two standard stereotypes defined by the Web Beans "
 "specification: <literal>@Interceptor</literal> and <literal>@Decorator</"
 "literal>."
-msgstr ""
+msgstr "Web Beans 사양에 의해 정의된 두가지 표준 스테레오타입 <literal>@Interceptor</literal> 및 <literal>@Decorator</literal>를 살펴보았습니다.  "
 
 #. Tag: para
 #: stereotypes.xml:129
 #, no-c-format
 msgid "Web Beans defines one further standard stereotype:"
-msgstr ""
+msgstr "Web Beans는 하나 이상의 표준 스테레오타입을 정의합니다:  "
 
 #. Tag: programlisting
 #: stereotypes.xml:131
@@ -403,5 +406,5 @@ msgid ""
 "This stereotype is intended for use with JSF. Instead of using JSF managed "
 "beans, just annotate a Web Bean <literal>@Model</literal>, and use it "
 "directly in your JSF page."
-msgstr ""
+msgstr "이러한 스테레오타입은 JSF와 함께 사용하기 위한 것입니다. JSF 관리 beans을 사용하지 않고 Web Bean <literal>@Model</literal>을 어노테이션하여 이를 직접 JSF 페이지에서 사용합니다. "
 
