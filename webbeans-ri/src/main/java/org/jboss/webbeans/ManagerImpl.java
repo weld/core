@@ -761,6 +761,11 @@ public class ManagerImpl implements Manager, Serializable
    {
       return ejbResolver;
    }
+   
+   public ResourceLoader getResourceLoader()
+   {
+      return resourceLoader;
+   }
 
    /**
     * Accesses the factory used to create each instance of InjectionPoint that

@@ -171,7 +171,6 @@ public class MockBootstrap extends WebBeansBootstrap
       this.resourceLoader = new MockResourceLoader();
       this.mockNaming = new MockNaming();
       initManager(mockNaming, MOCK_EJB_RESOLVER, resourceLoader);
-      registerStandardBeans();
       setupContexts();
    }
    
@@ -181,11 +180,6 @@ public class MockBootstrap extends WebBeansBootstrap
       getManager().addContext(new MockSessionContext());
       getManager().addContext(new MockApplicationContext());
       getManager().addContext(new MockDependentContext());
-   }
-   
-   protected void registerStandardBeans()
-   {
-      getManager().setBeans(createStandardBeans());
    }
    
    public void setWebBeanDiscovery(WebBeanDiscovery webBeanDiscovery)
