@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-18 16:31+0000\n"
-"PO-Revision-Date: 2009-01-21 00:08+1000\n"
+"PO-Revision-Date: 2009-01-21 02:28+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 
@@ -186,13 +187,13 @@ msgstr ""
 #: ri.xml:88
 #, no-c-format
 msgid "Now, you're ready to deploy your first example!"
-msgstr "이제, 첫번째 예를 배포할 준비가 되었습니다!  "
+msgstr "이제, 첫번째 예제를 배포할 준비가 되었습니다!    "
 
 #. Tag: para
 #: ri.xml:93
 #, no-c-format
 msgid "The build scripts for the examples offer a number of targets, these are:"
-msgstr "예시 용 작성 스크립트는 여러 대상을 제공합니다. 이에는 다음과 같은 것이 있습니다:  "
+msgstr "예제 용 작성 스크립트는 여러 대상을 제공합니다. 이에는 다음과 같은 것이 있습니다:   "
 
 #. Tag: para
 #: ri.xml:99
@@ -206,7 +207,7 @@ msgstr "<literal>ant restart</literal> - exploded format으로 예제를 배포�
 msgid ""
 "<literal>ant explode</literal> - update an exploded example, without "
 "restarting the deployment"
-msgstr "<literal>ant explode</literal> - 배포 버전을 다시 시작하지 않고 exploded 예를 업데이트합니다  "
+msgstr "<literal>ant explode</literal> - 배포 버전을 다시 시작하지 않고 exploded 예제를 업데이트합니다   "
 
 #. Tag: para
 #: ri.xml:111
@@ -230,7 +231,7 @@ msgstr "<literal>ant clean</literal> - 예제를 지웁니다 "
 #: ri.xml:128
 #, no-c-format
 msgid "To deploy the numberguess example:"
-msgstr "numberguess 예를 배포하려면: "
+msgstr "numberguess 예제를 배포하려면:  "
 
 #. Tag: programlisting
 #: ri.xml:132
@@ -249,6 +250,8 @@ msgid ""
 "Wait for the application to deploy, and enjoy hours of fun at <ulink url="
 "\"http://localhost:8080/webbeans-numberguess\"></ulink>!"
 msgstr ""
+"애플리케이션이 배포되면 <ulink url="
+"\"http://localhost:8080/webbeans-numberguess\"></ulink>에서 살펴보시기 바랍니다! "
 
 #. Tag: para
 #: ri.xml:139
@@ -258,7 +261,7 @@ msgid ""
 "text into Latin. The numberguess example is a war example, and uses only "
 "simple beans; the translator example is an ear example, and includes "
 "enterprise beans, packaged in an EJB module. To try it out:"
-msgstr ""
+msgstr "Web Beans RI에는 텍스트를 라틴어로 번역하는 두 번째 예제가 있습니다. numberguess 예제는 war 예제로 단순한 beans 만을 사용합니다; 번역 예제는 ear 예제로 엔터프라이즈 beans에 포함되어 EJB 모듈에 패키지되어 있습니다. 이를 꺼내려면 다음을 실행합니다:    "
 
 #. Tag: programlisting
 #: ri.xml:146
@@ -277,12 +280,14 @@ msgid ""
 "Wait for the application to deploy, and visit <ulink url=\"http://"
 "localhost:8080/webbeans-translator\"></ulink>!"
 msgstr ""
+"애플리케이션이 배포되면 <ulink url=\"http://"
+"localhost:8080/webbeans-translator\"></ulink>에 가보십시오! "
 
 #. Tag: title
 #: ri.xml:154
 #, no-c-format
 msgid "The numberguess example"
-msgstr ""
+msgstr "numberguess 예제 "
 
 #. Tag: para
 #: ri.xml:156
@@ -291,7 +296,7 @@ msgid ""
 "In the numberguess application you get given 10 attempts to guess a number "
 "between 1 and 100. After each attempt, you will be told whether you are too "
 "high, or too low."
-msgstr ""
+msgstr "numberguess 애플리케이션에서 1에서 100사이의 숫자를 알아내기 위해 주어진 10 번을 시도하게 됩니다. 각각 시도한 후 숫자가 너무 높은지 또는 너무 낮은지를 알려주게 됩니다. "
 
 #. Tag: para
 #: ri.xml:162
@@ -300,7 +305,7 @@ msgid ""
 "The numberguess example is comprised of a number of Web Beans, configuration "
 "files, and Facelet JSF pages, packaged as a war. Let's start with the "
 "configuration files."
-msgstr ""
+msgstr "numberguess 예제는 여러 Web Beans, 설정 파일, Facelet JSF 페이지로 구성되어 있으며, war로 패키지되어 있습니다 설정 파일부터 시작합시다. "
 
 #. Tag: para
 #: ri.xml:168
@@ -310,7 +315,7 @@ msgid ""
 "</literal>, which is stored in <literal>WebContent</literal> in the source "
 "tree. First, we have <literal>faces-config.xml</literal>, in which we tell "
 "JSF to use Facelets:"
-msgstr ""
+msgstr "예제에 해당하는 모든 설정 파일은 <literal>WEB-INF/</literal>에 위치해 있으며, 이는 소스 트리에 있는 <literal>WebContent</literal>에 저장되어 있습니다. 먼저, <literal>faces-config.xml</literal>을 사용하여, Facelets를 사용할 JSF를 알려주게 됩니다:   "
 
 #. Tag: programlisting
 #: ri.xml:176
@@ -348,13 +353,13 @@ msgstr ""
 msgid ""
 "There is an empty <literal>web-beans.xml</literal> file, which marks this "
 "application as a Web Beans application."
-msgstr ""
+msgstr "여기에는 빈 <literal>web-beans.xml</literal> 파일이 있어, 이는 Web Beans 애플리케이션으로 애플리케이션을 표시합니다. "
 
 #. Tag: para
 #: ri.xml:183
 #, no-c-format
 msgid "Finally there is <literal>web.xml</literal>:"
-msgstr ""
+msgstr "마지막으로, <literal>web.xml</literal> 파일이 있습니다:  "
 
 #. Tag: section
 #: ri.xml:185
@@ -477,6 +482,122 @@ msgid ""
 "to an action method on the Web Bean. </para> </callout> </calloutlist> </"
 "programlistingco>"
 msgstr ""
+"<programlistingco> <areaspec> <area id=\"faces.servlet\" coords=\"12\"/> "
+"<area id=\"faces.servlet.mapping\" coords=\"18\"/> <area id=\"faces.default."
+"suffix\" coords=\"23\"/> <area id=\"session.timeout\" coords=\"28\"/> <area "
+"id=\"webbeans.listener\" coords=\"32\"/> </areaspec> <programlisting><![CDATA"
+"[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+"\n"
+"<web-app version=\"2.5\"\n"
+"    xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"    xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun."
+"com/xml/ns/javaee/web-app_2_5.xsd\">\n"
+"   \n"
+"   <display-name>Web Beans Numbergues example</display-name>\n"
+"\n"
+"   <!-- JSF -->\n"
+"\n"
+"   <servlet>\n"
+"      <servlet-name>Faces Servlet</servlet-name>\n"
+"      <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>\n"
+"      <load-on-startup>1</load-on-startup>\n"
+"   </servlet>\n"
+"\n"
+"   <servlet-mapping>\n"
+"      <servlet-name>Faces Servlet</servlet-name>\n"
+"      <url-pattern>*.jsf</url-pattern>\n"
+"   </servlet-mapping>\n"
+"   \n"
+"   <context-param>\n"
+"      <param-name>javax.faces.DEFAULT_SUFFIX</param-name>\n"
+"      <param-value>.xhtml</param-value>\n"
+"   </context-param>\n"
+"\n"
+"   <session-config>\n"
+"      <session-timeout>10</session-timeout>\n"
+"   </session-config>\n"
+"\n"
+"</web-app>]]></programlisting> <calloutlist> <callout arearefs=\"faces."
+"servlet\"> <para> Enable and load the JSF servlet </para> </callout> "
+"<callout arearefs=\"faces.servlet.mapping\"> <para> Configure requests to "
+"<literal>.jsf</literal> pages to be handled by JSF </para> </callout> "
+"<callout arearefs=\"faces.default.suffix\"> <para> Tell JSF that we will be "
+"giving our source files (facelets) an extension of <literal>.jsf</literal> </"
+"para> </callout> <callout arearefs=\"session.timeout\"> <para> Configure a "
+"session timeout of 10 minutes </para> </callout> </calloutlist> </"
+"programlistingco> <note> <para> Whilst this demo is a JSF demo, you can use "
+"the Web Beans RI with any Servlet based web framework. </para> </note> "
+"<para> Let's take a look at the Facelet view: </para> <programlistingco> "
+"<areaspec> <area id=\"template\" coords=\"8\"/> <area id=\"messages\" coords="
+"\"12\"/> <area id=\"instructions\" coords=\"19\"/> <area id=\"guess\" coords="
+"\"25\"/> <area id=\"validator\" coords=\"30\"/> <area id=\"submit\" coords="
+"\"33\"/> </areaspec> <programlisting><![CDATA[<!DOCTYPE html PUBLIC \"-//"
+"W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/"
+"xhtml1-transitional.dtd\">\n"
+"<html xmlns=\"http://www.w3.org/1999/xhtml\"\n"
+"    xmlns:ui=\"http://java.sun.com/jsf/facelets\"\n"
+"    xmlns:h=\"http://java.sun.com/jsf/html\"\n"
+"    xmlns:f=\"http://java.sun.com/jsf/core\"\n"
+"    xmlns:s=\"http://jboss.com/products/seam/taglib\">\n"
+"\n"
+"  <ui:composition template=\"template.xhtml\">\n"
+"    <ui:define name=\"content\">\n"
+"       <h1>Guess a number...</h1>\n"
+"       <h:form id=\"NumberGuessMain\">\n"
+"          <div style=\"color: red\">\n"
+"             <h:messages id=\"messages\" globalOnly=\"false\"/>\n"
+"             <h:outputText id=\"Higher\" value=\"Higher!\" rendered=\"#{game."
+"number gt game.guess and game.guess ne 0}\"/>\n"
+"             <h:outputText id=\"Lower\" value=\"Lower!\" rendered=\"#{game."
+"number lt game.guess and game.guess ne 0}\"/>\n"
+"          </div>\n"
+"   \n"
+"          <div>\n"
+"             I'm thinking of a number between #{game.smallest} and #{game."
+"biggest}.\n"
+"             You have #{game.remainingGuesses} guesses.\n"
+"          </div>\n"
+"     \n"
+"          <div>\n"
+"             Your guess: \n"
+"             <h:inputText id=\"inputGuess\" \n"
+"                          value=\"#{game.guess}\" \n"
+"                          required=\"true\" \n"
+"                          size=\"3\" \n"
+"                          disabled=\"#{game.number eq game.guess}\">\n"
+"                <f:validateLongRange maximum=\"#{game.biggest}\" \n"
+"                                     minimum=\"#{game.smallest}\"/>\n"
+"             </h:inputText>\n"
+"            <h:commandButton id=\"GuessButton\"  \n"
+"                             value=\"Guess\" \n"
+"                             action=\"#{game.check}\" \n"
+"                             disabled=\"#{game.number eq game.guess}\"/>\n"
+"          </div>\n"
+"          <div>\n"
+"            <h:commandButton id=\"RestartButton\" value=\"Reset\" action=\"#"
+"{game.reset}\" immediate=\"true\" />\n"
+"          </div>\n"
+"       </h:form>\n"
+"    </ui:define>\n"
+"  </ui:composition>\n"
+"</html>]]></programlisting> <calloutlist> <callout arearefs=\"template\"> "
+"<para> Facelets is a templating language for JSF, here we are wrapping our "
+"page in a template which defines the header. </para> </callout> <callout "
+"arearefs=\"messages\"> <para> There are a number of messages which can be "
+"sent to the user, \"Higher!\", \"Lower!\" and \"Correct!\" </para> </"
+"callout> <callout arearefs=\"instructions\"> <para> As the user guesses, the "
+"range of numbers they can guess gets smaller - this sentance changes to make "
+"sure they know what range to guess in. </para> </callout> <callout arearefs="
+"\"guess\"> <para> This input field is bound to a Web Bean, using the value "
+"expression. </para> </callout> <callout arearefs=\"validator\"> <para> A "
+"range validator is used to make sure the user doesn't accidentally input a "
+"number outside of the range in which they can guess - if the validator "
+"wasn't here, the user might use up a guess on an out of range number. </"
+"para> </callout> <callout arearefs=\"submit\"> <para> And, of course, there "
+"must be a way for the user to send their guess to the server. Here we bind "
+"to an action method on the Web Bean. </para> </callout> </calloutlist> </"
+"programlistingco>"
 
 #. Tag: para
 #: ri.xml:287
@@ -485,7 +606,7 @@ msgid ""
 "The example exists of 4 classes, the first two of which are binding types. "
 "First, there is the <literal>@Random</literal> binding type, used for "
 "injecting a random number:"
-msgstr ""
+msgstr "예제에는 4 개의 클래스가 존재합니다, 첫 번째 두 개는 바인딩 유형입니다. 먼저, 임의의 숫자를 삽입하기 위해 사용되는 <literal>@Random</literal> 바인딩 유형이 있습니다:      "
 
 #. Tag: programlisting
 #: ri.xml:293
@@ -509,7 +630,7 @@ msgstr ""
 msgid ""
 "There is also the <literal>@MaxNumber</literal> binding type, used for "
 "injecting the maximum number that can be injected:"
-msgstr ""
+msgstr "삽입될 수 있는 최대 번호 삽입하기 위해 사용되는 <literal>@MaxNumber</literal> 바인딩 유형도 있습니다:       "
 
 #. Tag: programlisting
 #: ri.xml:300
@@ -536,7 +657,7 @@ msgid ""
 "The <literal>Generator</literal> class is responsible for creating the "
 "random number, via a producer method. It also exposes the maximum possible "
 "number via a producer method:"
-msgstr ""
+msgstr "<literal>Generator</literal> 클래스는 생산자 방식을 통해 임의의 숫자를 생성해야 할 책임이 있습니다. 또한 이는 생산자 방식을 통하여 가능한 최대 숫자를 나타냅니다:  "
 
 #. Tag: programlisting
 #: ri.xml:308
@@ -596,7 +717,7 @@ msgstr ""
 msgid ""
 "You'll notice that the <literal>Generator</literal> is application scoped; "
 "therefore we don't get a different random each time."
-msgstr ""
+msgstr "<literal>Generator</literal>는 애플리케이션 범위로 되어 있음을 발견하실 것입니다; 따라서 매번 다른 임의 숫자를 갖지 않게 됩니다. "
 
 #. Tag: para
 #: ri.xml:315
@@ -604,7 +725,7 @@ msgstr ""
 msgid ""
 "The final Web Bean in the application is the session scoped <literal>Game</"
 "literal>."
-msgstr ""
+msgstr "애플리케이션에 있는 마지막 Web Bean은 <literal>Game</literal> 범위 세션입니다. "
 
 #. Tag: para
 #: ri.xml:320
@@ -819,7 +940,7 @@ msgstr ""
 #: ri.xml:332
 #, no-c-format
 msgid "The translator example"
-msgstr ""
+msgstr "번역 예제 "
 
 #. Tag: para
 #: ri.xml:334
@@ -827,7 +948,7 @@ msgstr ""
 msgid ""
 "The translator example will take any sentences you enter, and translate them "
 "to Latin."
-msgstr ""
+msgstr "번역 예제는 입력하신 아무 문장을 가져가 이를 라틴어로 번역합니다. "
 
 #. Tag: para
 #: ri.xml:339
@@ -843,7 +964,7 @@ msgstr ""
 msgid ""
 "EJB 3.1 and Jave EE 6 allow you to package EJBs in a war, which will make "
 "this structure much simpler!"
-msgstr ""
+msgstr "EJB 3.1 및 Jave EE 6는 EJB를 war로 패키지하게 하여, 이러한 문장을 보다 간단하게 만들게 됩니다! "
 
 #. Tag: para
 #: ri.xml:351
@@ -901,7 +1022,7 @@ msgstr ""
 msgid ""
 "If you aren't using Maven to generate these files, you would need "
 "<literal>META-INF/application.xml</literal>:"
-msgstr ""
+msgstr "Maven을 사용하여 이러한 파일을 생성할 경우, <literal>META-INF/application.xml</literal>이 필요합니다:  "
 
 #. Tag: programlisting
 #: ri.xml:370
