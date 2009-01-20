@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: stereotypes\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 11:13+1000\n"
+"PO-Revision-Date: 2009-01-20 12:34+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,28 +16,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 
 #. Tag: title
 #: stereotypes.xml:4
 #, no-c-format
 msgid "Stereotypes"
-msgstr ""
+msgstr "전형적인 역할 (Stereotypes) "
 
 #. Tag: para
 #: stereotypes.xml:6
 #, no-c-format
 msgid "According to the Web Beans specification:"
-msgstr ""
+msgstr "Web Beans 사양에 따라: "
 
 #. Tag: para
 #: stereotypes.xml:10
 #, no-c-format
+#, fuzzy
 msgid ""
 "In many systems, use of architectural patterns produces a set of recurring "
 "Web Bean roles. A stereotype allows a framework developer to identify such a "
 "role and declare some common metadata for Web Beans with that role in a "
 "central place."
-msgstr ""
+msgstr "여러 시스템에서, "
 
 #. Tag: para
 #: stereotypes.xml:14

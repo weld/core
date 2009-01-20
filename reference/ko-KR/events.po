@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-20 01:27+1000\n"
+"PO-Revision-Date: 2009-01-20 10:55+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -140,7 +142,7 @@ msgid ""
 "is interested in <emphasis>all</emphasis> events of a particular type. If it "
 "does specify event bindings, it is only interested in events which also have "
 "those event bindings."
-msgstr ""
+msgstr "옵저버 방식은 어떤 이벤트 바인딩도 지정할 필요가 없습니다&#151;이러한 경우 특정 유형의 <emphasis>모든</emphasis> 이벤트에 관심을 갖게 됩니다. 이벤트 바인딩을 지정하지 않을 경우, 이러한 이벤트 바인딩이 있는 이벤트에만 관심을 갖게 됩니다.  "
 
 #. Tag: para
 #: events.xml:53
@@ -540,7 +542,7 @@ msgid ""
 "For example, the following observer method needs to refresh a query result "
 "set that is cached in the application context, but only when transactions "
 "that update the <literal>Category</literal> tree succeed:"
-msgstr ""
+msgstr "트랜잭션 옵저버는 이벤크가 제기된 트랜잭션의 완료 단계 이전 또는 이후 동안 이벤트 통지를 받습니다. 예를 들어, 다음과 같은 옵저버 방식은 트랜잭션이 <literal>Category</literal> 크리를 성공적으로 업데이트했을 경우에만 애플리케이션 컨텍스트에서 캐시된 쿼리 결과 모음을 새로고침해야 합니다:  "
 
 #. Tag: programlisting
 #: events.xml:205
@@ -599,7 +601,7 @@ msgid ""
 "Transactional observers are very important in a stateful object model like "
 "Web Beans, because state is often held for longer than a single atomic "
 "transaction."
-msgstr ""
+msgstr "트랜잭션 옵저버는 Web Beans와 같은 상태 기반 객체 모델에서 아주 중요합니다. 이는 단일 원자성 트랜잭션보다 오래 지속되기 때문입니다.   "
 
 #. Tag: para
 #: events.xml:233
