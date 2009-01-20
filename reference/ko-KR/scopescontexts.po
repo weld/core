@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: scopescontexts\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 11:12+1000\n"
+"PO-Revision-Date: 2009-01-20 15:39+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,12 +16,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 
 #. Tag: title
 #: scopescontexts.xml:4
 #, no-c-format
 msgid "Scopes and contexts"
-msgstr ""
+msgstr "범위 및 컨텍스트 "
 
 #. Tag: para
 #: scopescontexts.xml:6
@@ -32,19 +33,19 @@ msgid ""
 "the Web Bean. The scope also determines which clients refer to which "
 "instances of the Web Bean. According to the Web Beans specification, a scope "
 "determines:"
-msgstr ""
+msgstr "지금까지 <emphasis>범위 유형 어노테이션</emphasis>의 여러 가지 예를 살펴보았습니다. Web Bean의 범위는 Web Bean 인스턴스의 수명주기를 결정합니다. 또한 범위는 어떤 클라이언트가 어떤 Web Bean 인스턴스를 참조하게 할 지를 결정합니다. Web Beans 사양에 따라 범위는 다음을 결정합니다: "
 
 #. Tag: para
 #: scopescontexts.xml:14
 #, no-c-format
 msgid "When a new instance of any Web Bean with that scope is created"
-msgstr ""
+msgstr "범위와 함께 Web Bean의 새로운 인스턴스가 생성될 시기 "
 
 #. Tag: para
 #: scopescontexts.xml:17
 #, no-c-format
 msgid "When an existing instance of any Web Bean with that scope is destroyed"
-msgstr ""
+msgstr "범위와 함께 Web Bean의 기존 인스턴스가 제거될 시기  "
 
 #. Tag: para
 #: scopescontexts.xml:20
