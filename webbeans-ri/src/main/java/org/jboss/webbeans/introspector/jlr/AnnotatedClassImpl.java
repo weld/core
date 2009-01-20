@@ -37,6 +37,7 @@ import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.ForwardingAnnotatedClass;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
@@ -52,8 +53,21 @@ import com.google.common.collect.ForwardingMap;
  * 
  * @param <T>
  */
-public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements AnnotatedClass<T>
+public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements AnnotatedClass<T>, WrappableAnnotatedClass<T>
 {
+   
+   abstract static class ForwardingWrappableAnnotatedClass<T> extends ForwardingAnnotatedClass<T> implements WrappableAnnotatedClass<T>
+   {
+      
+      @Override
+      protected abstract WrappableAnnotatedClass<T> delegate();
+      
+      
+      public AnnotationStore getAnnotationStore()
+      {
+         return delegate().getAnnotationStore();
+      }
+   }
    
    /**
     * A (annotation type -> set of field abstractions with annotation/meta
@@ -280,7 +294,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
 
    private AnnotatedClassImpl(Class<T> rawType, Type type, Annotation[] annotations, Annotation[] declaredAnnotations)
    {
-      super(buildAnnotationMap(annotations), buildAnnotationMap(declaredAnnotations), rawType);
+      super(AnnotationStore.of(annotations, declaredAnnotations), rawType);
       this.clazz = rawType;
       if (type instanceof ParameterizedType)
       {
@@ -373,7 +387,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
                method.setAccessible(true);
             }
             
-            AnnotatedMethod<?> annotatedMethod = new AnnotatedMethodImpl<Object>(method, this);
+            AnnotatedMethod<?> annotatedMethod = AnnotatedMethodImpl.of(method, this);
             this.methods.add(annotatedMethod);
             if (c == clazz)
             {
@@ -611,6 +625,21 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
       toString = "Annotated class " + Names.class2String(getDelegate());
       return toString;
+   }
+   
+   public AnnotatedClass<T> wrap(Set<Annotation> annotations)
+   {
+      final WrappableAnnotatedClass<T> delegate = this;
+      return new ForwardingWrappableAnnotatedClass<T>()
+      {
+
+         @Override
+         protected WrappableAnnotatedClass<T> delegate()
+         {
+            return delegate;
+         }
+         
+      };
    }
    
 }

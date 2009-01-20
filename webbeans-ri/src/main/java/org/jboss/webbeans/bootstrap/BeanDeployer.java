@@ -4,16 +4,16 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.webbeans.DefinitionException;
 import javax.webbeans.Fires;
 import javax.webbeans.Initializer;
-import javax.webbeans.Observer;
 import javax.webbeans.Observes;
 import javax.webbeans.Obtains;
 import javax.webbeans.Produces;
+import javax.webbeans.Realizes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractBean;
@@ -43,6 +43,8 @@ public class BeanDeployer
 {
    
    private static final LogProvider log = Logging.getLogProvider(BeanDeployer.class);
+   
+   private static final Set<Annotation> EMPTY_BINDINGS = Collections.emptySet();
    
    private final Set<AbstractBean<?, ?>> beans;
    private final ManagerImpl manager;
@@ -99,99 +101,89 @@ public class BeanDeployer
     * 
     * @param bean The bean representation
     */
-   protected void createBean(AbstractClassBean<?> bean, AnnotatedClass<?> annotatedClass)
+   protected void createBean(AbstractClassBean<?> bean, final AnnotatedClass<?> annotatedClass)
    {
       
       beans.add(bean);
       
       manager.getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
       
-      for (AnnotatedMethod<?> producerMethod : annotatedClass.getDeclaredAnnotatedMethods(Produces.class))
+      registerProducerMethods(bean, annotatedClass, EMPTY_BINDINGS);
+      registerProducerFields(bean, annotatedClass, EMPTY_BINDINGS);
+      registerObserverMethods(bean, annotatedClass);
+      registerFacades(bean.getAnnotatedInjectionPoints());
+      
+      if (annotatedClass.isAnnotationPresent(Realizes.class))
       {
-         ProducerMethodBean<?> producerMethodBean = ProducerMethodBean.of(producerMethod, bean, manager);
-         beans.add(producerMethodBean);
-         manager.getResolver().addInjectionPoints(producerMethodBean.getAnnotatedInjectionPoints());
-         registerEvents(producerMethodBean.getAnnotatedInjectionPoints(), beans);
-         log.info("Web Bean: " + producerMethodBean);
+         registerProducerMethods(bean, annotatedClass.getSuperclass(), bean.getBindings());
+         registerProducerFields(bean, annotatedClass.getSuperclass(), bean.getBindings());
       }
-      for (AnnotatedField<?> producerField : annotatedClass.getDeclaredAnnotatedFields(Produces.class))
-      {
-         ProducerFieldBean<?> producerFieldBean = ProducerFieldBean.of(producerField, bean, manager);
-         beans.add(producerFieldBean);
-         log.info("Web Bean: " + producerFieldBean);
-      }
-      for (AnnotatedItem<?, ?> injectionPoint : bean.getAnnotatedInjectionPoints())
-      {
-         if (injectionPoint.isAnnotationPresent(Fires.class))
-         {
-            registerEvent(injectionPoint, beans);
-         }
-         if (injectionPoint.isAnnotationPresent(Obtains.class))
-         {
-            // TODO FIx this
-            @SuppressWarnings("unchecked")
-            InstanceBean<Object, Field> instanceBean = InstanceBean.of((AnnotatedItem) injectionPoint, manager);
-            beans.add(instanceBean);
-            log.info("Web Bean: " + instanceBean);
-         }
-      }
-      for (AnnotatedMethod<?> observerMethod : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Observes.class))
-      {
-         ObserverImpl<?> observer = ObserverImpl.of(observerMethod, bean, manager);
-         if (observerMethod.getAnnotatedParameters(Observes.class).size() == 1)
-         {
-            registerObserver(observer, observerMethod.getAnnotatedParameters(Observes.class).get(0).getType(), observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingTypesAsArray());
-         }
-         else
-         {
-            throw new DefinitionException("Observer method can only have one parameter annotated @Observes " + observer);
-         }
-
-      }
+      
       log.info("Web Bean: " + bean);
    }
    
-
-   /**
-    * Registers an observer with the getManager()
-    * 
-    * @param observer The observer
-    * @param eventType The event type to observe
-    * @param bindings The binding types to observe on
-    */
-   private <T> void registerObserver(Observer<T> observer, Class<?> eventType, Annotation[] bindings)
+   private void registerProducerMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass, Set<Annotation> extraBindings)
    {
-      // TODO Fix this!
-      @SuppressWarnings("unchecked")
-      Class<T> clazz = (Class<T>) eventType;
-      manager.addObserver(observer, clazz, bindings);
+      for (AnnotatedMethod<?> method : annotatedClass.getDeclaredAnnotatedMethods(Produces.class))
+      {
+         ProducerMethodBean<?> bean = ProducerMethodBean.of(method.wrap(extraBindings), declaringBean, manager);
+         beans.add(bean);
+         manager.getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
+         registerFacades(bean.getAnnotatedInjectionPoints());
+         log.info("Web Bean: " + bean);
+      }
+   }
+   
+   private void registerProducerFields(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass, Set<Annotation> extraBindings)
+   {
+      for (AnnotatedField<?> field : annotatedClass.getDeclaredAnnotatedFields(Produces.class))
+      {
+         ProducerFieldBean<?> bean = ProducerFieldBean.of(field.wrap(extraBindings), declaringBean, manager);
+         beans.add(bean);
+         log.info("Web Bean: " + bean);
+      }
    }
 
-   /**
-    * Iterates through the injection points and creates and registers any Event
-    * observables specified with the @Observable annotation
-    * 
-    * @param injectionPoints A set of injection points to inspect
-    * @param beans A set of beans to add the Event beans to
-    */
-   private void registerEvents(Set<AnnotatedItem<?, ?>> injectionPoints, Set<AbstractBean<?, ?>> beans)
+   private void registerObserverMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
+   {
+      for (AnnotatedMethod<?> observerMethod : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Observes.class))
+      {
+         ObserverImpl<?> observer = ObserverImpl.of(observerMethod, declaringBean, manager);
+         manager.addObserver(observer);
+      }
+   }
+
+   private void registerFacades(Set<AnnotatedItem<?, ?>> injectionPoints)
    {
       for (AnnotatedItem<?, ?> injectionPoint : injectionPoints)
       {
-         registerEvent(injectionPoint, beans);
+         if (injectionPoint.isAnnotationPresent(Fires.class))
+         {
+             registerEvent(injectionPoint);
+         }
+         if (injectionPoint.isAnnotationPresent(Obtains.class))
+         {
+            registerInstance(injectionPoint);
+         }
       }
    }
 
-   private void registerEvent(AnnotatedItem<?, ?> injectionPoint, Set<AbstractBean<?, ?>> beans)
+   private void registerEvent(AnnotatedItem<?, ?> injectionPoint)
    {
-      if (injectionPoint.isAnnotationPresent(Fires.class))
-      {
-         // TODO Fix this!
-         @SuppressWarnings("unchecked")
-         EventBean<Object, Method> eventBean = EventBean.of((AnnotatedItem) injectionPoint, manager);
-         beans.add(eventBean);
-         log.info("Web Bean: " + eventBean);
-      }
+      // TODO Fix this!
+      @SuppressWarnings("unchecked")
+      EventBean<Object, Method> bean = EventBean.of((AnnotatedItem) injectionPoint, manager);
+      beans.add(bean);
+      log.info("Web Bean: " + bean);
+   }
+   
+   private void registerInstance(AnnotatedItem<?, ?> injectionPoint)
+   {
+      // TODO FIx this
+      @SuppressWarnings("unchecked")
+      InstanceBean<Object, Field> bean = InstanceBean.of((AnnotatedItem) injectionPoint, manager);
+      beans.add(bean);
+      log.info("Web Bean: " + bean);
    }
    
    /**

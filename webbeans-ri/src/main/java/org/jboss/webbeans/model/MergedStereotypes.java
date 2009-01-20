@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.webbeans.MetaDataCache;
-import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem.AnnotationMap;
+import org.jboss.webbeans.introspector.jlr.AnnotationStore.AnnotationMap;
 
 /**
  * Meta model for the merged stereotype for a bean

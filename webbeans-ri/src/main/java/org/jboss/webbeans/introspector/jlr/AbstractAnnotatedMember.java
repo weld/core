@@ -34,6 +34,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.introspector.AnnotatedMember;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.introspector.ForwardingAnnotatedMember;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
@@ -51,6 +52,12 @@ import com.google.common.collect.ForwardingMap;
  */
 public abstract class AbstractAnnotatedMember<T, S extends Member> extends AbstractAnnotatedItem<T, S> implements AnnotatedMember<T, S>
 {
+   
+   static abstract class WrappableForwardingAnnotatedMember<T, S extends Member> extends ForwardingAnnotatedMember<T, S> implements WrappableAnnotatedItem<T, S>
+   {
+      
+   }
+   
    /**
     * An annotation type -> list of annotations map
     */
@@ -107,9 +114,9 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
     * 
     * @param annotationMap The annotation map
     */
-   public AbstractAnnotatedMember(AnnotationMap annotationMap, AnnotationMap declaredAnnotationMap, Member member)
+   public AbstractAnnotatedMember(AnnotationStore annotatedItemHelper, Member member)
    {
-      super(annotationMap, declaredAnnotationMap);
+      super(annotatedItemHelper);
       name = member.getName();
       _public = Modifier.isPublic(member.getModifiers());
    }

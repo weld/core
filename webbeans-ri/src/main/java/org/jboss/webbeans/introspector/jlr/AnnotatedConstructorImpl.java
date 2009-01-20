@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.webbeans.ExecutionException;
 
@@ -31,6 +32,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
+import org.jboss.webbeans.introspector.ForwardingAnnotatedConstructor;
 import org.jboss.webbeans.util.Names;
 
 /**
@@ -42,8 +44,23 @@ import org.jboss.webbeans.util.Names;
  * 
  * @param <T>
  */
-public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Constructor<T>> implements AnnotatedConstructor<T>
+public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Constructor<T>> implements WrappableAnnotatedConstructor<T>
 {
+   
+   static abstract class ForwardingWrappableAnnotatedConstructor<T> extends ForwardingAnnotatedConstructor<T> implements WrappableAnnotatedConstructor<T>
+   {
+      
+      @Override
+      protected abstract WrappableAnnotatedConstructor<T> delegate();
+      
+      public AnnotationStore getAnnotationStore()
+      {
+         // TODO Auto-generated method stub
+         return null;
+      }
+      
+   }
+   
    // The type arguments
    private static final Type[] actualTypeArguments = new Type[0];
    // The underlying constructor
@@ -75,7 +92,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     */
    public AnnotatedConstructorImpl(Constructor<T> constructor, AnnotatedType<T> declaringClass)
    {
-      super(buildAnnotationMap(constructor), buildDeclaredAnnotationMap(constructor), constructor);
+      super(AnnotationStore.of(constructor), constructor);
       this.constructor = constructor;
       this.declaringClass = declaringClass;
 
@@ -267,6 +284,21 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
       }
       toString = "Annotated method " + Names.constructor2String(constructor);
       return toString;
+   }
+   
+   public WrappableAnnotatedConstructor<T> wrap(Set<Annotation> annotations)
+   {
+      final WrappableAnnotatedConstructor<T> delegate = this;
+      return new ForwardingWrappableAnnotatedConstructor<T>()
+      {
+
+         @Override
+         protected WrappableAnnotatedConstructor<T> delegate()
+         {
+            return delegate;
+         }
+         
+      };
    }
 
 }

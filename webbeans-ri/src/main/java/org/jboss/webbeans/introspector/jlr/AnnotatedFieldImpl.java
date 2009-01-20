@@ -17,14 +17,17 @@
 
 package org.jboss.webbeans.introspector.jlr;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Set;
 
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedType;
+import org.jboss.webbeans.introspector.ForwardingAnnotatedField;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
@@ -37,8 +40,22 @@ import org.jboss.webbeans.util.Reflections;
  * 
  * @param <T>
  */
-public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> implements AnnotatedField<T>
+public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> implements WrappableAnnotatedField<T>
 {
+   
+   static abstract class ForwardingWrappableAnnotatedField<T> extends ForwardingAnnotatedField<T> implements WrappableAnnotatedField<T>
+   {
+      
+      @Override
+      protected abstract WrappableAnnotatedField<T> delegate();
+      
+      public AnnotationStore getAnnotationStore()
+      {
+         return delegate().getAnnotationStore();
+      }
+      
+   }
+   
    // The actual type arguments
    private final Type[] actualTypeArguments;
    // The underlying field
@@ -60,7 +77,7 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
     */
    public AnnotatedFieldImpl(Field field, AnnotatedType<?> declaringClass)
    {
-      super(buildAnnotationMap(field), buildDeclaredAnnotationMap(field), field);
+      super(AnnotationStore.of(field), field);
       this.field = field;
       field.setAccessible(true);
       this.declaringClass = declaringClass;
@@ -185,6 +202,35 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
       }
       toString = "Annotated field " + Names.field2String(field);
       return toString;
+   }
+   
+   public AnnotatedField<T> wrap(Set<Annotation> annotations)
+   {
+      if (annotations.size() > 0)
+      {
+         final WrappableAnnotatedField<T> delegate = this;
+         final AnnotationStore annotationStore = AnnotationStore.wrap(getAnnotationStore(), annotations, annotations);
+         return new ForwardingWrappableAnnotatedField<T>()
+         {
+            
+            @Override
+            protected WrappableAnnotatedField<T> delegate()
+            {
+               return delegate;
+            }
+            
+            @Override
+            public AnnotationStore getAnnotationStore()
+            {
+               return annotationStore;
+            }
+            
+         };
+      }
+      else
+      {
+         return this;
+      }
    }
 
 }

@@ -19,12 +19,14 @@ package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Set;
 
 import javax.webbeans.BindingType;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.introspector.AnnotatedMember;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.introspector.ForwardingAnnotatedParameter;
 
 /**
  * Represents a parameter
@@ -35,8 +37,22 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
  * 
  * @param <T>
  */
-public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> implements AnnotatedParameter<T>
+public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> implements WrappableAnnotatedParameter<T>
 {
+   
+   static abstract class ForwardingWrappableAnnotatedParameter<T> extends ForwardingAnnotatedParameter<T> implements WrappableAnnotatedParameter<T>
+   {
+      
+      @Override
+      protected abstract WrappableAnnotatedParameter<T> delegate();
+      
+      public AnnotationStore getAnnotationStore()
+      {
+         return delegate().getAnnotationStore();
+      }
+      
+   }
+   
    // The type
    private final Class<T> type;
    // The actual type arguments
@@ -64,7 +80,7 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
     */
    public AnnotatedParameterImpl(Annotation[] annotations, Class<T> type, AnnotatedMember<?, ?> declaringMember)
    {
-      super(buildAnnotationMap(annotations));
+      super(AnnotationStore.of(annotations, annotations));
       this.type = type;
       this.declaringMember = declaringMember;
    }
@@ -186,6 +202,22 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
    public AnnotatedMember<?, ?> getDeclaringMember()
    {
       return declaringMember;
+   }
+   
+   public AnnotatedParameter<T> wrap(Set<Annotation> annotations)
+   {
+      final WrappableAnnotatedParameter<T> delegate = this;
+      
+      return new ForwardingWrappableAnnotatedParameter<T>()
+      {
+        
+         @Override
+         protected WrappableAnnotatedParameter<T> delegate()
+         {
+            return delegate;
+         }
+         
+      };
    }
 
 }

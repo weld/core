@@ -183,5 +183,7 @@ public interface AnnotatedItem<T, S>
     * @return The name
     */
    public String getName();
+   
+   public AnnotatedItem<T, S> wrap(Set<Annotation> annotations);
 
 }

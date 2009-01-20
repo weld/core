@@ -43,4 +43,6 @@ public interface AnnotatedAnnotation<T extends Annotation> extends AnnotatedType
     */
    public Set<AnnotatedMethod<?>> getAnnotatedMembers(Class<? extends Annotation> annotationType);
    
+   public AnnotatedAnnotation<T> wrap(Set<Annotation> annotations);
+   
 }

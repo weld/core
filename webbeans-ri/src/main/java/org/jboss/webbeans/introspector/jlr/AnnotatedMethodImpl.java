@@ -25,11 +25,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
+import org.jboss.webbeans.introspector.ForwardingAnnotatedMethod;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
@@ -42,9 +44,22 @@ import org.jboss.webbeans.util.Reflections;
  * 
  * @param <T>
  */
-public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>
+public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>, WrappableAnnotatedMethod<T>
 {
    
+   abstract static class ForwardingWrappableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> implements WrappableAnnotatedMethod<T>
+   {
+      
+      @Override
+      protected abstract WrappableAnnotatedMethod<T> delegate();
+      
+      public AnnotationStore getAnnotationStore()
+      {
+         return delegate().getAnnotationStore();
+      }
+      
+   }
+
    // The actual type arguments
    private final Type[] actualTypeArguments;
    // The underlying method
@@ -64,6 +79,27 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
 
    // Cached string representation
    private String toString;
+   
+   public static <T> AnnotatedMethodImpl<T> of(Method method, AnnotatedType<?> declaringClass)
+   {
+      return new AnnotatedMethodImpl<T>(method, declaringClass);
+   }
+   
+   public static <T> AnnotatedMethod<T> wrap(final AnnotatedMethod<T> annotatedMethod, final Set<Annotation> extraAnnotations)
+   {
+      return new ForwardingAnnotatedMethod<T>()
+      {
+
+         @Override
+         protected AnnotatedMethod<T> delegate()
+         {
+            return annotatedMethod;
+         }
+         
+        
+         
+      };
+   }
 
    /**
     * Constructor
@@ -75,9 +111,9 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
     * @param declaringClass The declaring class abstraction
     */
    @SuppressWarnings("unchecked")
-   public AnnotatedMethodImpl(Method method, AnnotatedType<?> declaringClass)
+   protected AnnotatedMethodImpl(Method method, AnnotatedType<?> declaringClass)
    {
-      super(buildAnnotationMap(method), buildDeclaredAnnotationMap(method), method);
+      super(AnnotationStore.of(method), method);
       this.method = method;
       this.declaringClass = declaringClass;
       if (method.getGenericReturnType() instanceof ParameterizedType)
@@ -321,5 +357,35 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       toString = "Annotated method " + Names.method2String(method);
       return toString;
    }
+   
+   public AnnotatedMethod<T> wrap(Set<Annotation> annotations)
+   {
+      if (annotations.size() > 0)
+      {
+         final WrappableAnnotatedMethod<T> delegate = this;
+         final AnnotationStore annotationStore = AnnotationStore.wrap(getAnnotationStore(), annotations, annotations);
+         return new ForwardingWrappableAnnotatedMethod<T>()
+         {
+   
+            @Override
+            protected WrappableAnnotatedMethod<T> delegate()
+            {
+               return delegate;
+            }
+            
+            @Override
+            public AnnotationStore getAnnotationStore()
+            {
+               return annotationStore;
+            }
+            
+         };
+      }
+      else
+      {
+         return this;
+      }
+   }
+      
 
 }

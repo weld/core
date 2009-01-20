@@ -11,16 +11,20 @@ import org.jboss.webbeans.test.mock.MockBootstrap;
 
 public class ManagersImpl implements Managers
 {
-
-   public Manager createManager()
+   
+   public Manager createManager(List<Class<? extends Annotation>> enabledDeploymentTypes)
    {
       new MockBootstrap();
+      if (enabledDeploymentTypes != null)
+      {
+         CurrentManager.rootManager().setEnabledDeploymentTypes(enabledDeploymentTypes);
+      }
       return CurrentManager.rootManager();
    }
-
-   public void setEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
+   
+   public Manager createManager()
    {
-      CurrentManager.rootManager().setEnabledDeploymentTypes(enabledDeploymentTypes);
+      return createManager(null);
    }
 
    public List<Class<? extends Annotation>> getEnabledDeploymentTypes()

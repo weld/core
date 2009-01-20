@@ -151,5 +151,7 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
    public boolean isNonStaticMemberClass();
    
    public boolean isParameterizedType();
+   
+   public AnnotatedClass<T> wrap(Set<Annotation> annotations);
 
 }

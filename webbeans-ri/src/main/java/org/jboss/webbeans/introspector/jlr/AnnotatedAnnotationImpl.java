@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.jboss.webbeans.introspector.AnnotatedAnnotation;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.ForwardingAnnotatedAnnotation;
 import org.jboss.webbeans.util.Strings;
 
 import com.google.common.collect.ForwardingMap;
@@ -41,9 +42,21 @@ import com.google.common.collect.ForwardingMap;
  * 
  * @param <T>
  */
-public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnotatedType<T> implements AnnotatedAnnotation<T>
+public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnotatedType<T> implements AnnotatedAnnotation<T>, WrappableAnnotatedAnnotation<T>
 {
 
+   abstract static class ForwardingWrappableAnnotatedAnnotation<T extends Annotation> extends ForwardingAnnotatedAnnotation<T> implements WrappableAnnotatedType<T>
+   {
+      
+      @Override
+      protected abstract WrappableAnnotatedAnnotation<T> delegate();
+      
+      public AnnotationStore getAnnotationStore()
+      {
+         return delegate().getAnnotationStore();
+      }
+   }
+   
    /**
     * A (annotation type -> set of method abstractions with annotation) map
     */
@@ -106,13 +119,13 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
     */
    public AnnotatedAnnotationImpl(Class<T> annotationType)
    {
-      super(buildAnnotationMap(annotationType), buildDeclaredAnnotationMap(annotationType), annotationType);
+      super(AnnotationStore.of(annotationType), annotationType);
       this.clazz = annotationType;
       members = new HashSet<AnnotatedMethod<?>>();
       annotatedMembers = new AnnotatedMemberMap();
       for (Method member : clazz.getDeclaredMethods())
       {
-         AnnotatedMethod<?> annotatedMethod = new AnnotatedMethodImpl<Object>(member, this);
+         AnnotatedMethod<?> annotatedMethod = AnnotatedMethodImpl.of(member, this);
          members.add(annotatedMethod);
          for (Annotation annotation : annotatedMethod.getAnnotations())
          {
@@ -191,6 +204,21 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
    public Class<T> getDelegate()
    {
       return clazz;
+   }
+
+   public AnnotatedAnnotation<T> wrap(Set<Annotation> annotations)
+   {
+      final WrappableAnnotatedAnnotation<T> delegate = this;
+      return new ForwardingWrappableAnnotatedAnnotation<T>()
+      {
+
+         @Override
+         protected WrappableAnnotatedAnnotation<T> delegate()
+         {
+            return delegate;
+         }
+         
+      };
    }
 
 }

@@ -16,7 +16,9 @@
  */
 package org.jboss.webbeans.introspector;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
+import java.util.Set;
 /**
  * AnnotedMember provides enhanced access to an annotated member 
  * 
@@ -27,5 +29,7 @@ public interface AnnotatedMember<T, S extends Member> extends AnnotatedItem<T, S
 {
    
    public S getMember();
+   
+   public AnnotatedMember<T, S> wrap(Set<Annotation> annotations);
    
 }

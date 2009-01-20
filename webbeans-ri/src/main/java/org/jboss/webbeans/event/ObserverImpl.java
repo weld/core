@@ -17,6 +17,7 @@
 
 package org.jboss.webbeans.event;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,11 +69,13 @@ public class ObserverImpl<T> implements Observer<T>
       NONE, BEFORE_COMPLETION, AFTER_COMPLETION, AFTER_FAILURE, AFTER_SUCCESS
    }   
    
-   private Bean<?> observerBean;
+   private final Bean<?> observerBean;
    private final AnnotatedMethod<?> observerMethod;
    private TransactionObservationPhase transactionObservationPhase;
-   private boolean conditional;
+   private final boolean conditional;
    private ManagerImpl manager;
+   private final Class<T> eventType;
+   private final Annotation[] bindings;
 
    /**
     * Creates an observer
@@ -95,14 +98,20 @@ public class ObserverImpl<T> implements Observer<T>
     * @param observerBean The observer bean
     * @param manager The Web Beans manager
     */
-   public ObserverImpl(final AnnotatedMethod<?> observer, final Bean<?> observerBean, final ManagerImpl manager)
+   protected ObserverImpl(final AnnotatedMethod<?> observer, final Bean<?> observerBean, final ManagerImpl manager)
    {
       this.manager = manager;
       this.observerBean = observerBean;
       this.observerMethod = observer;
-      validateObserverMethod();
+      checkObserverMethod();
+      
+      @SuppressWarnings("unchecked")
+      Class<T> c = (Class<T>) observerMethod.getAnnotatedParameters(Observes.class).get(0).getType();
+      this.eventType = c;
+      
+      this.bindings = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingTypesAsArray(); 
       initTransactionObservationPhase();
-      conditional = !observerMethod.getAnnotatedParameters(IfExists.class).isEmpty();
+      this.conditional = !observerMethod.getAnnotatedParameters(IfExists.class).isEmpty();
    }
 
    private void initTransactionObservationPhase()
@@ -141,13 +150,13 @@ public class ObserverImpl<T> implements Observer<T>
    /**
     * Performs validation of the observer method for compliance with the specifications.
     */
-   private void validateObserverMethod()
+   private void checkObserverMethod()
    {
       // Make sure exactly one and only one parameter is annotated with Observes
       List<AnnotatedParameter<?>> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
       if (eventObjects.size() > 1)
       {
-         throw new DefinitionException(this + " is invalid because it contains more than event parameter");
+         throw new DefinitionException(this + " is invalid because it contains more than event parameter annotated @Observes");
       }
       // Make sure the event object above is not parameterized with a type
       // variable or wildcard
@@ -302,6 +311,16 @@ public class ObserverImpl<T> implements Observer<T>
       builder.append("  Observer (Declaring) bean: " + observerBean);
       builder.append("  Observer method: " + observerMethod);
       return builder.toString();
+   }
+
+   public Class<T> getEventType()
+   {
+      return eventType;
+   }
+
+   public Annotation[] getBindingsAsArray()
+   {
+      return bindings;
    }
 
 }

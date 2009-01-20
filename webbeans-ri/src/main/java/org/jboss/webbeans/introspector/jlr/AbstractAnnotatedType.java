@@ -33,6 +33,7 @@ import org.jboss.webbeans.util.Reflections;
  */
 public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>>
 {
+   
    // The superclass abstraction of the type
    private final AnnotatedClass<?> superclass;
    // The name of the type
@@ -47,9 +48,9 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
     * 
     * @param annotationMap The annotation map
     */
-   public AbstractAnnotatedType(AnnotationMap annotationMap, AnnotationMap declaredAnnotationMap, Class<T> type)
+   public AbstractAnnotatedType(AnnotationStore annotatedItemHelper, Class<T> type)
    {
-      super(annotationMap, declaredAnnotationMap);
+      super(annotatedItemHelper);
       this.name = type.getName();
       if (type.getSuperclass() != null)
       {
@@ -60,11 +61,6 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
          this.superclass = null;
       }
       this._public = Modifier.isFinal(type.getModifiers());
-   }
-   
-   public AbstractAnnotatedType(AnnotationMap annotationMap, Class<T> type)
-   {
-      this(annotationMap, annotationMap, type);
    }
 
    /**

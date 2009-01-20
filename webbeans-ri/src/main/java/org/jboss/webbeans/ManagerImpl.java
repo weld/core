@@ -56,6 +56,7 @@ import org.jboss.webbeans.context.ContextMap;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.event.EventManager;
+import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -412,6 +413,12 @@ public class ManagerImpl implements Manager, Serializable
    public <T> Manager addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
       this.eventManager.addObserver(observer, eventType, bindings);
+      return this;
+   }
+   
+   public <T> Manager addObserver(ObserverImpl<T> observer)
+   {
+      addObserver(observer, observer.getEventType(), observer.getBindingsAsArray());
       return this;
    }
 

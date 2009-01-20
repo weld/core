@@ -200,6 +200,11 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
     * 
     * @return The annotated item
     */
-   public abstract AnnotatedItem<T, S> delegate();
+   protected abstract AnnotatedItem<T, S> delegate();
+   
+   public AnnotatedItem<T, S> wrap(Set<Annotation> annotations)
+   {
+      throw new UnsupportedOperationException();
+   }
 
 }

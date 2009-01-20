@@ -18,13 +18,10 @@
 package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.webbeans.BindingType;
@@ -33,10 +30,7 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
-import org.jboss.webbeans.util.Strings;
 import org.jboss.webbeans.util.Types;
-
-import com.google.common.collect.ForwardingMap;
 
 /**
  * Represents functionality common for all annotated items, mainly different
@@ -52,166 +46,24 @@ import com.google.common.collect.ForwardingMap;
  * 
  * @see org.jboss.webbeans.introspector.AnnotatedItem
  */
-public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
+public abstract class AbstractAnnotatedItem<T, S> implements WrappableAnnotatedItem<T, S>
 {
-
-   /**
-    * Represents a mapping from a annotation type to an annotation
-    * implementation
-    */
-   public static class AnnotationMap extends ForwardingMap<Class<? extends Annotation>, Annotation>
+   
+   interface WrappableAnnotatedItem<T, S> extends AnnotatedItem<T, S>
    {
-      private final Map<Class<? extends Annotation>, Annotation> delegate;
-
-      public AnnotationMap()
-      {
-         delegate = new HashMap<Class<? extends Annotation>, Annotation>();
-      }
-
-      @Override
-      protected Map<Class<? extends Annotation>, Annotation> delegate()
-      {
-         return delegate;
-      }
-
-      /**
-       * Gets a string representation of the Map
-       * 
-       * @return A string representation
-       */
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("AnnotationMap (annotation type -> annotation): ", delegate);
-      }
-
-   }
-
-   /**
-    * Represents a mapping from a annotation (meta-annotation) to a set of
-    * annotations
-    * 
-    */
-   private static class MetaAnnotationMap extends ForwardingMap<Class<? extends Annotation>, Set<Annotation>>
-   {
-      private final Map<Class<? extends Annotation>, Set<Annotation>> delegate;
-
-      public MetaAnnotationMap()
-      {
-         delegate = new HashMap<Class<? extends Annotation>, Set<Annotation>>();
-      }
-
-      @Override
-      protected Map<Class<? extends Annotation>, Set<Annotation>> delegate()
-      {
-         return delegate;
-      }
-
-      /**
-       * Gets the set of annotations matching the given annotation type
-       * 
-       * @param key The meta-annotation to match
-       * @returns The set of matching annotations containing this
-       *          meta-annotation
-       */
-      @Override
-      public Set<Annotation> get(Object key)
-      {
-         Set<Annotation> annotations = super.get(key);
-         return annotations != null ? annotations : new HashSet<Annotation>();
-      }
-
-      /**
-       * Adds an annotation under the meta-annotation type key
-       * 
-       * @param key The meta-annotation type
-       * @param value The annotation
-       */
-      public void put(Class<? extends Annotation> key, Annotation value)
-      {
-         Set<Annotation> annotations = super.get(key);
-         if (annotations == null)
-         {
-            annotations = new HashSet<Annotation>();
-            super.put(key, annotations);
-         }
-         annotations.add(value);
-      }
-
-      /**
-       * Gets a string representation of the Map
-       * 
-       * @return A string representation
-       */
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("MetaAnnotationMap (annotation type -> annotation set: ", delegate);
-      }
-
+      
+      AnnotationStore getAnnotationStore();
+      
    }
 
    // The array of default binding types
    private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentLiteral() };
    // The set of default binding types
    private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
-
+   
    // Cached string representation
    private String toString;
-
-   /**
-    * Static helper method for building annotation map from an annotated element
-    * 
-    * @param element The element to examine
-    * @return The annotation map
-    */
-   protected static AnnotationMap buildAnnotationMap(AnnotatedElement element)
-   {
-      return buildAnnotationMap(element.getAnnotations());
-   }
-   
-   /**
-    * Static helper method for building annotation map from an annotated element
-    * 
-    * @param element The element to examine
-    * @return The annotation map
-    */
-   protected static AnnotationMap buildDeclaredAnnotationMap(AnnotatedElement element)
-   {
-      return buildAnnotationMap(element.getDeclaredAnnotations());
-   }
-
-   /**
-    * Builds the annotation map (annotation type -> annotation)
-    * 
-    * @param annotations The array of annotations to map
-    * @return The annotation map
-    */
-   protected static AnnotationMap buildAnnotationMap(Annotation[] annotations)
-   {
-      AnnotationMap annotationMap = new AnnotationMap();
-      for (Annotation annotation : annotations)
-      {
-         annotationMap.put(annotation.annotationType(), annotation);
-      }
-      return annotationMap;
-   }
-   
-   // The annotation map (annotation type -> annotation) of the item
-   private final AnnotationMap annotationMap;
-   // The meta-annotation map (annotation type -> set of annotations containing
-   // meta-annotation) of the item
-   private final MetaAnnotationMap metaAnnotationMap;
-   // The set of all annotations on the item
-   private final Set<Annotation> annotationSet;
-   
-   // The annotation map (annotation type -> annotation) of the item
-   private final AnnotationMap declaredAnnotationMap;
-   // The meta-annotation map (annotation type -> set of annotations containing
-   // meta-annotation) of the item
-   private final MetaAnnotationMap declaredMetaAnnotationMap;
-   // The set of all annotations on the item
-   private final Set<Annotation> declaredAnnotationSet;
+   private final AnnotationStore annotationStore;
 
    /**
     * Constructor
@@ -222,52 +74,14 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * @param annotationMap A map of annotation to register
     * 
     */
-   public AbstractAnnotatedItem(AnnotationMap annotationMap, AnnotationMap declaredAnnotationMap)
+   public AbstractAnnotatedItem(AnnotationStore annotatedItemHelper)
    {
-      if (annotationMap == null)
-      {
-         throw new NullPointerException("annotationMap cannot be null");
-      }
-      this.annotationMap = annotationMap;
-      this.annotationSet = new HashSet<Annotation>();
-      this.metaAnnotationMap = new MetaAnnotationMap();
-      for (Annotation annotation : annotationMap.values())
-      {
-         for (Annotation metaAnnotation : annotation.annotationType().getAnnotations())
-         {
-            // Only map meta-annotations we are interested in
-            if (MAPPED_METAANNOTATIONS.contains(metaAnnotation.annotationType()))
-            {
-               metaAnnotationMap.put(metaAnnotation.annotationType(), annotation);
-            }
-         }
-         annotationSet.add(annotation);
-      }
-      
-      if (declaredAnnotationMap == null)
-      {
-         throw new NullPointerException("declaredAnnotationMap cannot be null");
-      }
-      this.declaredAnnotationMap = declaredAnnotationMap;
-      this.declaredAnnotationSet = new HashSet<Annotation>();
-      this.declaredMetaAnnotationMap = new MetaAnnotationMap();
-      for (Annotation annotation : declaredAnnotationMap.values())
-      {
-         for (Annotation metaAnnotation : annotation.annotationType().getAnnotations())
-         {
-            // Only map meta-annotations we are interested in
-            if (MAPPED_METAANNOTATIONS.contains(metaAnnotation.annotationType()))
-            {
-               declaredMetaAnnotationMap.put(metaAnnotation.annotationType(), annotation);
-            }
-         }
-         declaredAnnotationSet.add(annotation);
-      }
+      this.annotationStore = annotatedItemHelper;
    }
    
-   public AbstractAnnotatedItem(AnnotationMap annotationMap)
+   public AnnotationStore getAnnotationStore()
    {
-      this(annotationMap, annotationMap);
+      return annotationStore;
    }
 
    /**
@@ -280,7 +94,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)
    {
-      return annotationType.cast(annotationMap.get(annotationType));
+      return annotationType.cast(getAnnotationStore().getAnnotationMap().get(annotationType));
    }
 
    /**
@@ -294,12 +108,12 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
-      return Collections.unmodifiableSet(metaAnnotationMap.get(metaAnnotationType));
+      return Collections.unmodifiableSet(getAnnotationStore().getMetaAnnotationMap().get(metaAnnotationType));
    }
    
    public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
-      return Collections.unmodifiableSet(declaredMetaAnnotationMap.get(metaAnnotationType));
+      return Collections.unmodifiableSet(getAnnotationStore().getDeclaredMetaAnnotationMap().get(metaAnnotationType));
    }
 
    /**
@@ -330,7 +144,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    public Set<Annotation> getAnnotations()
    {
-      return Collections.unmodifiableSet(annotationSet);
+      return getAnnotationStore().getAnnotationSet();
    }
 
    /**
@@ -343,17 +157,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    public boolean isAnnotationPresent(Class<? extends Annotation> annotatedType)
    {
-      return annotationMap.containsKey(annotatedType);
-   }
-
-   /**
-    * Gets the annotation map
-    * 
-    * @return The annotation map
-    */
-   protected Map<Class<? extends Annotation>, Annotation> getAnnotationMap()
-   {
-      return Collections.unmodifiableMap(annotationMap);
+      return getAnnotationStore().getAnnotationMap().containsKey(annotatedType);
    }
 
    /**
