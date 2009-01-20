@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-19 18:17+1000\n"
+"PO-Revision-Date: 2009-01-20 17:26+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -312,7 +312,6 @@ msgstr "哪些客戶端共享 Web Bean 的特定 instance 的參照。"
 #. Tag: para
 #: intro.xml:113
 #, no-c-format
-#, fuzzy
 msgid ""
 "For a given thread in a Web Beans application, there may be an "
 "<emphasis>active context</emphasis> associated with the scope of the Web "
@@ -320,7 +319,7 @@ msgid ""
 "is request scoped), or it may be shared with certain other threads (for "
 "example, if the Web Bean is session scoped) or even all other threads (if it "
 "is application scoped)."
-msgstr "Web Bean 應用程式中的某個執行緒"
+msgstr "Web Bean 應用程式中的某個執行緒可能會有個和該 Web Bean 的 scope 關聯的 <emphasis>active context</emphasis>。這個 context 對於執行緒來說可能會是獨一無二的（例如，若 Web Bean 為 request scoped 的話），或是它亦有可能共享於其它特定執行緒之間（例如，若 Web Bean 為 session scoped 的話）或甚至是共享於所有其它執行緒之間（若它是 application scoped 的話）。"
 
 #. Tag: para
 #: intro.xml:119
@@ -379,7 +378,7 @@ msgstr "請注意，並非所有 Web Bean 的客戶端都是 Web Bean。像是 S
 #: intro.xml:149
 #, no-c-format
 msgid "Enough hand-waving. More formally, according to the spec:"
-msgstr ""
+msgstr "根據規格："
 
 #. Tag: para
 #: intro.xml:153
@@ -616,13 +615,13 @@ msgstr ""
 msgid ""
 "We'll talk more about this unique and powerful feature in <xref linkend="
 "\"deploymenttypes\"/>."
-msgstr ""
+msgstr "我們將在 <xref linkend=\"deploymenttypes\"/> 中更詳細地討論到這項獨特和強大的功能。"
 
 #. Tag: title
 #: intro.xml:246
 #, no-c-format
 msgid "Scope"
-msgstr ""
+msgstr "Scope"
 
 #. Tag: para
 #: intro.xml:248
@@ -641,7 +640,7 @@ msgstr ""
 msgid ""
 "For example, any web application may have <emphasis>session scoped</"
 "emphasis> Web Beans:"
-msgstr ""
+msgstr "比方說，任何網站應用程式都能夠有 <emphasis>session scoped</emphasis> 的 Web Bean："
 
 #. Tag: programlisting
 #: intro.xml:257
@@ -659,7 +658,7 @@ msgstr ""
 msgid ""
 "An instance of a session scoped Web Bean is bound to a user session and is "
 "shared by all requests that execute in the context of that session."
-msgstr ""
+msgstr "一個 session scoped 的 Web Bean 的 instance 會被綁定至一個用戶的 session，並且會被所有執行於該 session 的 context 中的請求共享。"
 
 #. Tag: para
 #: intro.xml:262
@@ -669,19 +668,19 @@ msgid ""
 "<emphasis>dependent pseudo-scope</emphasis>. Web Beans with this scope are "
 "pure dependent objects of the object into which they are injected, and their "
 "lifecycle is bound to the lifecycle of that object."
-msgstr ""
+msgstr "就預設值，Web Bean 屬於一個稱為 <emphasis>dependent pseudo-scope</emphasis> 的特殊 scope。含有這個 scope 的 Web Bean 純粹就是它們所被注入的物件的相依物件，並且它們的生命週期綁定至該物件的生命週期。"
 
 #. Tag: para
 #: intro.xml:267
 #, no-c-format
 msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\"/>."
-msgstr ""
+msgstr "我們將在 <xref linkend=\"scopescontexts\"/> 中詳細討論 scope。"
 
 #. Tag: title
 #: intro.xml:272
 #, no-c-format
 msgid "Web Bean names and Unified EL"
-msgstr ""
+msgstr "Web Bean 名稱和 Unified EL"
 
 #. Tag: para
 #: intro.xml:274
@@ -689,7 +688,7 @@ msgstr ""
 msgid ""
 "A Web Bean may have a <emphasis>name</emphasis>, allowing it to be used in "
 "Unified EL expressions. It's easy to specify the name of a Web Bean:"
-msgstr ""
+msgstr "Web Bean 能夠擁有一個<emphasis>名稱</emphasis>，這能允許它被使用於 Unified EL 表示式中。要指定 Web Bean 的名稱相當容易："
 
 #. Tag: programlisting
 #: intro.xml:278
@@ -705,7 +704,7 @@ msgstr ""
 #: intro.xml:280
 #, no-c-format
 msgid "Now we can easily use the Web Bean in any JSF or JSP page:"
-msgstr ""
+msgstr "現在我們能輕易地在任何 JSF 或 JSP 網頁中使用 Web Bean："
 
 #. Tag: programlisting
 #: intro.xml:282
@@ -723,7 +722,7 @@ msgstr ""
 #: intro.xml:284
 #, no-c-format
 msgid "It's even easier to just let the name be defaulted by the Web Bean manager:"
-msgstr ""
+msgstr "讓 Web Bean 管理員來預設這個名稱可能會更加容易："
 
 #. Tag: programlisting
 #: intro.xml:287
@@ -741,13 +740,13 @@ msgstr ""
 msgid ""
 "In this case, the name defaults to <literal>shoppingCart</literal>&#151;the "
 "unqualified class name, with the first character changed to lowercase."
-msgstr ""
+msgstr "在此情況下，名稱將被預設為 <literal>shoppingCart</literal>&#151;這是個不完整的 class 名稱，並且第一個字元已被改變為小寫。"
 
 #. Tag: title
 #: intro.xml:295
 #, no-c-format
 msgid "Interceptor binding types"
-msgstr ""
+msgstr "攔截器綁定類型"
 
 #. Tag: para
 #: intro.xml:297
@@ -757,7 +756,7 @@ msgid ""
 "for EJB beans, but also for plain Java classes. In addition, Web Beans "
 "provides a new approach to binding interceptors to EJB beans and other Web "
 "Beans."
-msgstr ""
+msgstr "Web Bean 支援 EJB 3 所定義的攔截器功能，不只是 EJB bean 支援，純 Java 的 class 也支援。另外，Web Bean 也提供了一個新的方法來將攔截器綁定至 EJB bean 和其它的 Web Bean。"
 
 #. Tag: para
 #: intro.xml:302
@@ -765,7 +764,7 @@ msgstr ""
 msgid ""
 "It remains possible to directly specify the interceptor class via use of the "
 "<literal>@Interceptors</literal> annotation:"
-msgstr ""
+msgstr "您也能直接地透過使用 <literal>@Interceptors</literal> 標記來指定攔截器（interceptor）class："
 
 #. Tag: programlisting
 #: intro.xml:305
@@ -785,7 +784,7 @@ msgstr ""
 msgid ""
 "However, it is more elegant, and better practice, to indirect the "
 "interceptor binding through an <emphasis>interceptor binding type</emphasis>:"
-msgstr ""
+msgstr "不過，透過 <emphasis>interceptor binding type（攔截器綁定類型）</emphasis>來將攔截器綁定重定向會是較好的作法："
 
 #. Tag: programlisting
 #: intro.xml:311
@@ -803,13 +802,13 @@ msgstr ""
 msgid ""
 "We'll discuss Web Beans interceptors and decorators in <xref linkend="
 "\"interceptors\"/> and <xref linkend=\"decorators\"/>."
-msgstr ""
+msgstr "我們將在 <xref linkend=\"interceptors\"/> 和 <xref linkend=\"decorators\"/> 中更詳細地討論 Web Bean 攔截器與裝飾器。"
 
 #. Tag: title
 #: intro.xml:321
 #, no-c-format
 msgid "What kinds of objects can be Web Beans?"
-msgstr ""
+msgstr "哪種物件屬於 Web Bean？"
 
 #. Tag: para
 #: intro.xml:323
@@ -817,13 +816,13 @@ msgstr ""
 msgid ""
 "We've already seen that JavaBeans, EJBs and some other Java classes can be "
 "Web Beans. But exactly what kinds of objects are Web Beans?"
-msgstr ""
+msgstr "我們已經看過 JavaBean、EJB 和一些其它的 Java class 都能屬於 Web Bean。不過 Web Bean 到底是哪種物件呢？"
 
 #. Tag: title
 #: intro.xml:327
 #, no-c-format
 msgid "Simple Web Beans"
-msgstr ""
+msgstr "基本的 Web Bean"
 
 #. Tag: para
 #: intro.xml:329
@@ -831,7 +830,7 @@ msgstr ""
 msgid ""
 "The Web Beans specification says that a concrete Java class is a "
 "<emphasis>simple</emphasis> Web Bean if:"
-msgstr ""
+msgstr "Web Bean 規格談到了一個具備下列條件的具體 Java class 就是個 <emphasis>simple（基本）</emphasis>Web Bean："
 
 #. Tag: para
 #: intro.xml:334
@@ -839,13 +838,13 @@ msgstr ""
 msgid ""
 "it is not an EE container-managed component, like an EJB, a Servlet or a JPA "
 "entity,"
-msgstr ""
+msgstr "它不像 EJB、Servlet 或 JPA 實體都是個 EE container 所管理的元件、"
 
 #. Tag: para
 #: intro.xml:338
 #, no-c-format
 msgid "it is not a non-static static inner class,"
-msgstr ""
+msgstr "它不是個非靜態的靜態內部類別（static inner class）、"
 
 #. Tag: para
 #: intro.xml:341
@@ -1032,7 +1031,7 @@ msgstr ""
 #: intro.xml:427
 #, no-c-format
 msgid "Producer methods"
-msgstr ""
+msgstr "Producer method"
 
 #. Tag: para
 #: intro.xml:429
@@ -1096,7 +1095,7 @@ msgstr ""
 #: intro.xml:445
 #, no-c-format
 msgid "Some producer methods return objects that require explicit destruction:"
-msgstr ""
+msgstr "有些 producer method 會回傳需要明確銷毀的物件："
 
 #. Tag: programlisting
 #: intro.xml:447
@@ -1116,7 +1115,7 @@ msgstr ""
 msgid ""
 "These producer methods may define matching <emphasis>disposal methods</"
 "emphasis>:"
-msgstr ""
+msgstr "這些 producer method 可定義符合的 <emphasis>disposal methods</emphasis>："
 
 #. Tag: programlisting
 #: intro.xml:451
@@ -1136,7 +1135,7 @@ msgstr ""
 msgid ""
 "This disposal method is called automatically by the Web Bean manager at the "
 "end of the request."
-msgstr ""
+msgstr "這個 disposal method 會在請求結束後自動地被 Web Bean 管理員調用。"
 
 #. Tag: para
 #: intro.xml:456
@@ -1144,13 +1143,13 @@ msgstr ""
 msgid ""
 "We'll talk much more about producer methods in <xref linkend="
 "\"producermethods\"/>."
-msgstr ""
+msgstr "我們將在 <xref linkend=\"producermethods\"/> 中詳細討論 producer method。"
 
 #. Tag: title
 #: intro.xml:461
 #, no-c-format
 msgid "JMS endpoints"
-msgstr ""
+msgstr "JMS 端點（endpoints）"
 
 #. Tag: para
 #: intro.xml:463
@@ -1160,5 +1159,5 @@ msgid ""
 "developer from the tedium of managing the lifecycles of all the various JMS "
 "objects required to send messages to queues and topics. We'll discuss JMS "
 "endpoints in <xref linkend=\"jms\"/>."
-msgstr ""
+msgstr "最後，JMS 佇列（queue）或主題（topic）都能是個 Web Bean。Web Bean 能讓開發人員省去管理所有傳送訊息至佇列和主題所需的不同 JMS 物件生命週期的麻煩。我們將在 <xref linkend=\"jms\"/> 中詳細討論 JMS 端點。"
 
