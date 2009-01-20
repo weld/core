@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: stereotypes\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-20 15:20+1000\n"
+"PO-Revision-Date: 2009-01-20 15:31+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -315,18 +315,17 @@ msgstr "이는 비지니스 코드에서 발생할 수 있는 기술적 문제�
 #: stereotypes.xml:109
 #, no-c-format
 msgid "Name defaulting with stereotypes"
-msgstr ""
+msgstr "스테레오타입과 함께 이름을 기본값으로 지정 "
 
 #. Tag: para
 #: stereotypes.xml:111
 #, no-c-format
-#, fuzzy
 msgid ""
 "Finally, we can specify that all Web Beans with a certain stereotype have a "
 "Web Bean name, defaulted by the Web Bean manager. Actions are often "
 "referenced in JSP pages, so they're a perfect use case for this feature. All "
 "we need to do is add an empty <literal>@Named</literal> annotation:"
-msgstr "마지막으로 특정 스테레오타입과 함께 모든 Web Beans가 Web Bean 이름을 갖도록 지정할 수 있습니다. "
+msgstr "마지막으로 특정 스테레오타입과 함께 모든 Web Beans가 Web Bean 관리자에 의해 기본값으된 Web Bean 이름을 갖도록 지정할 수 있습니다. 작업은 JSP 페이지에서 참조할 수 있어, 이러한 기능을 완벽하게 사용할 수 있는 경우라 할 수 있습니다. 필요한 작업은 빈 <literal>@Named</literal> 어노테이션을 추가하는 것입니다:  "
 
 #. Tag: programlisting
 #: stereotypes.xml:116
