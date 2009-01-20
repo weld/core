@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test.unit.implementation;
 
-import org.jboss.webbeans.tck.tests.AbstractTest;
+import org.jboss.webbeans.tck.AbstractTest;
 import org.testng.annotations.Test;
 
 public class RemoveMethodTests extends AbstractTest
