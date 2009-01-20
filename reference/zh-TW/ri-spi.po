@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-18 16:31+0000\n"
-"PO-Revision-Date: 2009-01-13 10:13+1000\n"
+"PO-Revision-Date: 2009-01-20 11:03+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -88,7 +88,7 @@ msgstr ""
 msgid ""
 "All interfaces in the SPI support the decorator pattern and provide a "
 "<literal>Forwarding</literal> class."
-msgstr ""
+msgstr "SPI 中所有的介面都支援裝飾器模式並提供了一個 <literal>Forwarding</literal> class。"
 
 #. Tag: title
 #: ri-spi.xml:48
@@ -98,7 +98,7 @@ msgstr "Web Bean 搜尋"
 
 #. Tag: programlisting
 #: ri-spi.xml:50
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[public interface WebBeanDiscovery {\n"
 "   /**\n"
@@ -133,13 +133,6 @@ msgstr ""
 "    * @return An iterable over the web-beans.xml files \n"
 "    */\n"
 "   public Iterable<URL> discoverWebBeansXml();\n"
-"   \n"
-"   /**\n"
-"    * Gets a descriptor for each EJB in the application\n"
-"    * \n"
-"    * @return The bean class to descriptor map \n"
-"    */\n"
-"   public Iterable<EjbDescriptor<?>> discoverEjbs();\n"
 "   \n"
 "}]]>"
 
@@ -156,16 +149,16 @@ msgstr ""
 
 #. Tag: para
 #: ri-spi.xml:58
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The Web Beans RI can be told to load your implementation of "
 "<literal>WebBeanDiscovery</literal> using the property <literal>org.jboss."
 "webbeans.bootstrap.spi.WebBeanDiscovery</literal> with the fully qualified "
 "class name as the value. For example:"
 msgstr ""
-"Web Beans RI 可被指定來透過使用 <literal>org.jboss.webbeans.bootstrap."
-"WebBeanDiscovery</literal> 這個內容以及完整的 class 名稱為值來載入您的 "
-"<literal>WebBeanDiscovery</literal> 實做。例如："
+"Web Beans RI 可被指定來透過使用 <literal>org.jboss."
+"webbeans.bootstrap.spi.WebBeanDiscovery</literal> 以及完整的 class 名稱為值來載入您 "
+"<literal>WebBeanDiscovery</literal> 的實做。例如："
 
 #. Tag: programlisting
 #: ri-spi.xml:65
@@ -183,14 +176,13 @@ msgstr ""
 msgid ""
 "If the Web Beans RI is being used in a servlet container, it expects a "
 "constructor of the form:"
-msgstr ""
+msgstr "若 Web Bean RI 被使用在一個 servlet container 中的話，它會預期一個含有下列格式的 constructor："
 
 #. Tag: programlisting
 #: ri-spi.xml:72
 #, no-c-format
-msgid ""
-"<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
-msgstr ""
+msgid "<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
+msgstr "<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
 
 #. Tag: para
 #: ri-spi.xml:74
@@ -198,13 +190,13 @@ msgstr ""
 msgid ""
 "The servlet context can be used to allow your implementation of "
 "<literal>WebBeanDiscovery</literal> to interact with the container."
-msgstr ""
+msgstr "servlet 的 context 可被用來允許您 <literal>WebBeanDiscovery</literal> 的實做來與 container 進行互動。"
 
 #. Tag: title
 #: ri-spi.xml:82
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "EJB Discovery"
-msgstr "Web Bean 搜尋"
+msgstr "EJB Discovery"
 
 #. Tag: para
 #: ri-spi.xml:84
@@ -236,10 +228,22 @@ msgid ""
 "   \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public interface EjbDiscovery\n"
+"{\n"
+"   public static final String PROPERTY_NAME = EjbDiscovery.class.getName();\n"
+"   \n"
+"   /**\n"
+"    * Gets a descriptor for each EJB in the application\n"
+"    * \n"
+"    * @return The bean class to descriptor map \n"
+"    */\n"
+"   public Iterable<EjbDescriptor<?>> discoverEjbs();\n"
+"   \n"
+"}]]>"
 
 #. Tag: programlisting
 #: ri-spi.xml:93
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[public interface EjbDescriptor<T> {\n"
 "   \n"
@@ -378,18 +382,12 @@ msgstr ""
 "    */\n"
 "   public String getEjbName();\n"
 "   \n"
-"   /**\n"
-"    * @return The JNDI string which can be used to lookup a proxy which \n"
-"    * implements all local business interfaces \n"
-"    * \n"
-"    */\n"
-"   public String getLocalJndiName();\n"
 "   \n"
 "}]]>"
 
 #. Tag: para
 #: ri-spi.xml:95
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The <literal>EjbDescriptor</literal> is fairly self-explanatory, and should "
 "return the relevant metadata as defined in the EJB specification. In "
@@ -397,39 +395,36 @@ msgid ""
 "<literal>BusinessInterfaceDescriptor</literal> which represents a local "
 "business interface (encapsulating the interface class and jndi name used to "
 "look up an instance of the EJB)."
-msgstr ""
-"描述 JavaDoc 的合同已足夠實做一個 EJBDescriptor。除了這兩個介面，還有個代表本"
-"地商業介面的 <literal>BusinessInterfaceDescriptor</literal>（包含了介面類別以"
-"及 jndi 名稱）。"
+msgstr "<literal>EjbDescriptor</literal> 本身已不解自明並且不需加以說明，它應會依照 EJB 規格中所定義地來回傳相關的 metadata。除了這兩個介面，還有個代表本地商業介面的 <literal>BusinessInterfaceDescriptor</literal>（包含了使用來查詢某個 EJB instance 的 interface class 以及 jndi 名稱）。"
 
 #. Tag: para
 #: ri-spi.xml:104
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The Web Beans RI can be told to load your implementation of "
 "<literal>EjbDiscovery</literal> using the property <literal>org.jboss."
 "webbeans.bootstrap.spi.EjbDiscovery</literal> with the fully qualified class "
 "name as the value. For example:"
 msgstr ""
-"Web Beans RI 可被指定來透過使用 <literal>org.jboss.webbeans.bootstrap."
-"WebBeanDiscovery</literal> 這個內容以及完整的 class 名稱為值來載入您的 "
-"<literal>WebBeanDiscovery</literal> 實做。例如："
+"Web Beans RI 可被指定來透過使用 <literal>org.jboss."
+"webbeans.bootstrap.spi.EjbDiscovery</literal> 以及完整的 class 名稱為值來載入您 "
+"<literal>EjbDiscovery</literal> 的實做。例如："
 
 #. Tag: programlisting
 #: ri-spi.xml:111
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "org.jboss.webbeans.bootstrap.spi.EjbDiscovery=org.jboss.webbeans.integration."
 "jbossas.EjbDiscoveryImpl"
 msgstr ""
-"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
-"integration.jbossas.WebBeanDiscoveryImpl"
+"org.jboss.webbeans.bootstrap.spi.EjbDiscovery=org.jboss.webbeans.integration."
+"jbossas.EjbDiscoveryImpl"
 
 #. Tag: programlisting
 #: ri-spi.xml:118
 #, no-c-format
 msgid "<![CDATA[public EjbDiscoveryImpl(ServletContext servletContext) {}]]>"
-msgstr ""
+msgstr "<![CDATA[public EjbDiscoveryImpl(ServletContext servletContext) {}]]>"
 
 #. Tag: para
 #: ri-spi.xml:120
@@ -437,7 +432,7 @@ msgstr ""
 msgid ""
 "The servlet context can be used to allow your implementation of "
 "<literal>EjbDiscovery</literal> to interact with the container."
-msgstr ""
+msgstr "servlet 的 context 可被用來允許您 <literal>EjbDiscovery</literal> 的實做來與 container 進行互動。"
 
 #. Tag: title
 #: ri-spi.xml:128
@@ -447,20 +442,17 @@ msgstr "JNDI"
 
 #. Tag: para
 #: ri-spi.xml:130
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The Web Beans RI implements JNDI binding and lookup according to standards, "
 "however you may want to alter the binding and lookup (for example in an "
 "environment where JNDI isn't available). To do this, implement <literal>org."
 "jboss.webbeans.spi.resources.NamingContext</literal>:"
-msgstr ""
-"Web Beans RI 會實做 JNDI 綁定並依照標準來進行搜尋，不過您可能在某些情況下會希"
-"望修改綁定和搜尋（例如在一個 JNDI 無法使用的環境下）。若要如此，請實做 "
-"<literal>org.jboss.webbeans.spi.resources.Naming</literal>："
+msgstr "Web Beans RI 會實做 JNDI 綁定並依照標準來進行搜尋，不過您可能在某些情況下會希望修改綁定和搜尋（比方說在一個 JNDI 無法使用的環境下）。若要如此，請實做 <literal>org.jboss.webbeans.spi.resources.NamingContext</literal>："
 
 #. Tag: programlisting
 #: ri-spi.xml:138
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[public interface NamingContext extends Serializable {\n"
 "   \n"
@@ -484,7 +476,7 @@ msgid ""
 "   \n"
 "}]]>"
 msgstr ""
-"<![CDATA[public interface Naming extends Serializable {\n"
+"<![CDATA[public interface NamingContext extends Serializable {\n"
 "   \n"
 "   /**\n"
 "    * Typed JNDI lookup\n"
@@ -499,10 +491,10 @@ msgstr ""
 "   /**\n"
 "    * Binds an item to JNDI\n"
 "    * \n"
-"    * @param key The key to bind under\n"
+"    * @param name The key to bind under\n"
 "    * @param value The item to bind\n"
 "    */\n"
-"   public void bind(String key, Object value);\n"
+"   public void bind(String name, Object value);\n"
 "   \n"
 "}]]>"
 
@@ -514,15 +506,15 @@ msgstr "並告訴 RI 去使用它："
 
 #. Tag: programlisting
 #: ri-spi.xml:144
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
-msgstr "org.jboss.webbeans.resources.spi.Naming=com.acme.MyNaming"
+msgstr "org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
 
 #. Tag: programlisting
 #: ri-spi.xml:151
 #, no-c-format
 msgid "<![CDATA[public MyNamingContext(ServletContext servletContext) {}]]>"
-msgstr ""
+msgstr "<![CDATA[public MyNamingContext(ServletContext servletContext) {}]]>"
 
 #. Tag: para
 #: ri-spi.xml:153
@@ -530,7 +522,7 @@ msgstr ""
 msgid ""
 "The servlet context can be used to allow your implementation of "
 "<literal>NamingContext</literal> to interact with the container."
-msgstr ""
+msgstr "servlet 的 context 可被用來允許您 <literal>NamingContext</literal> 的實做來與 container 進行互動。"
 
 #. Tag: title
 #: ri-spi.xml:161
@@ -621,14 +613,13 @@ msgstr ""
 #: ri-spi.xml:177
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
-msgstr ""
-"org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
+msgstr "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
 
 #. Tag: programlisting
 #: ri-spi.xml:184
 #, no-c-format
 msgid "<![CDATA[public MyResourceLoader(ServletContext servletContext) {}]]>"
-msgstr ""
+msgstr "<![CDATA[public MyResourceLoader(ServletContext servletContext) {}]]>"
 
 #. Tag: para
 #: ri-spi.xml:186
@@ -728,3 +719,4 @@ msgstr ""
 "若您要將 Web Bean 整合入一個支援應用程式建置的環境中，您就必須將 "
 "<literal>webbeans-ri.jar</literal> 插入應用程式隔離的 classholder 中。它無法"
 "藉由共享的 classloader 來被載入。"
+
