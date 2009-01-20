@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-18 16:31+0000\n"
-"PO-Revision-Date: 2009-01-19 22:26+1000\n"
+"PO-Revision-Date: 2009-01-20 22:51+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 
 #. Tag: title
@@ -33,6 +34,9 @@ msgid ""
 "download the latest developer release of Web Beans from the <ulink url="
 "\"http://seamframework.org/Download\">the downloads page</ulink>."
 msgstr ""
+"Web Beans 참조 구현 (Web Beans Reference Implementation)은 <ulink url="
+"\"http://seamframework.org/WebBeans\">Seam 프로젝트</ulink>에서 개발되고 있습니다. <ulink url="
+"\"http://seamframework.org/Download\">다운로드 페이지</ulink>에서 최신 개발자 릴리즈를 다운로드하실 수 있습니다.   "
 
 #. Tag: para
 #: ri.xml:13
@@ -42,13 +46,13 @@ msgid ""
 "<literal>webbeans-numberguess</literal>, a war example, containing only "
 "simple beans, and <literal>webbeans-translator</literal> an ear example, "
 "containing enterprise beans. To run the examples you'll need the following:"
-msgstr ""
+msgstr "Web Beans RI는 배포 가능한 두 가지 애플리케이션 예로 되어 있습니다: war 예에는 단순한 beans만이 들어 있는 <literal>webbeans-numberguess</literal>가 있고, ear 예에는 엔터프라이즈 beans가 들어 있는 <literal>webbeans-translator</literal>가 있습니다. 예를 실행하려면, 다음 사항이 필요합니다:  "
 
 #. Tag: para
 #: ri.xml:22
 #, no-c-format
 msgid "the latest release of the Web Beans RI,"
-msgstr ""
+msgstr "최신 Web Beans RI 릴리즈 "
 
 #. Tag: para
 #: ri.xml:25
@@ -70,6 +74,8 @@ msgid ""
 "need to download JBoss AS 5.0.0.GA from <ulink url=\"http://www.jboss.org/"
 "jbossas/downloads/\">jboss.org</ulink>, and unzip it. For example:"
 msgstr ""
+"현재, Web Beans RI는 JBoss Application Server 5에서만 실행됩니다. <ulink url=\"http://www.jboss.org/"
+"jbossas/downloads/\">jboss.org</ulink>에서 JBoss AS 5.0.0.GA를 다운로드하여 압축 풀기를 합니다. 예:   "
 
 #. Tag: programlisting
 #: ri.xml:39
@@ -88,6 +94,8 @@ msgid ""
 "Next, download the Web Beans RI from <ulink url=\"http://seamframework.org/"
 "Download\">seamframework.org</ulink>, and unzip it. For example"
 msgstr ""
+"다음으로 <ulink url=\"http://seamframework.org/"
+"Download\">seamframework.org</ulink>에서 Web Beans RI를 다운로드하여 압축 풀기를 합니다. 예: "
 
 #. Tag: programlisting
 #: ri.xml:47
@@ -107,6 +115,8 @@ msgid ""
 "as/build.properties</literal> and set the <literal>jboss.home</literal> "
 "property. For example:"
 msgstr ""
+"다음으로, JBoss가 위치해 있는 곳을 Web Beans에게 알려야 합니다. <literal>jboss-"
+"as/build.properties</literal>를 편집하고 <literal>jboss.home</literal> 속성을 설정합니다. 예: "
 
 #. Tag: programlisting
 #: ri.xml:56
@@ -121,7 +131,7 @@ msgid ""
 "As Web Beans is a new piece of software, you need to update JBoss AS to run "
 "the Web Beans RI. Future versions of JBoss AS will include these updates, "
 "and this step won't be necessary."
-msgstr ""
+msgstr "Web Beans는 새로운 소프트웨어이므로, Web Beans RI를 실행하기 위해 JBoss AS를 업데이트해야 합니다. 향후 JBoss AS 버전에는 이러한 업데이트가 포함되어 있으므로, 이러한 작업 단계는 필요하지 않게 됩니다.  "
 
 #. Tag: para
 #: ri.xml:65
