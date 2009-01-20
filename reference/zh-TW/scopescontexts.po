@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: scopescontexts\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-19 18:37+1000\n"
+"PO-Revision-Date: 2009-01-20 12:10+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: scopescontexts.xml:4
 #, no-c-format
 msgid "Scopes and contexts"
-msgstr "Scope 和 context"
+msgstr "Scope 與 context"
 
 #. Tag: para
 #: scopescontexts.xml:6
@@ -31,25 +31,25 @@ msgid ""
 "the Web Bean. The scope also determines which clients refer to which "
 "instances of the Web Bean. According to the Web Beans specification, a scope "
 "determines:"
-msgstr ""
+msgstr "到目前為止，我們已見過了一些 <emphasis>scope 類型標記（scope type annotations）</emphasis>的範例了。Web Bean 的 scope 可決定 Web Bean instance 的生命週期（lifecycle）。Scope 也能決定哪個客戶端參照哪個 Web Bean 的 instance。根據 Web Bean 規格，scope 可決定："
 
 #. Tag: para
 #: scopescontexts.xml:14
 #, no-c-format
 msgid "When a new instance of any Web Bean with that scope is created"
-msgstr "任何含有該 scope 的 Web Bean 的新 instance 何時被建立"
+msgstr "任何含有該 scope 的 Web Bean 的新 instance 應何時被建立"
 
 #. Tag: para
 #: scopescontexts.xml:17
 #, no-c-format
 msgid "When an existing instance of any Web Bean with that scope is destroyed"
-msgstr ""
+msgstr "任何含有該 scope 的 Web Bean 的現有 instance 應何時被刪除"
 
 #. Tag: para
 #: scopescontexts.xml:20
 #, no-c-format
 msgid "Which injected references refer to any instance of a Web Bean with that scope"
-msgstr ""
+msgstr "哪個被注入的參照代表含有該 scope 的 Web Bean 的任何 instance"
 
 #. Tag: para
 #: scopescontexts.xml:25
@@ -75,7 +75,7 @@ msgstr "Scope type"
 msgid ""
 "Web Beans features an <emphasis>extensible context model</emphasis>. It is "
 "possible to define new scopes by creating a new scope type annotation:"
-msgstr ""
+msgstr "Web Bean 含有著一個 <emphasis>extensible context model（可延伸的 context 模型）</emphasis>。您可藉由建立新的 scope 類型標記來定義新的 scope："
 
 #. Tag: programlisting
 #: scopescontexts.xml:37
@@ -99,7 +99,7 @@ msgid ""
 "useful, we will also need to define a <literal>Context</literal> object that "
 "implements the scope! Implementing a <literal>Context</literal> is usually a "
 "very technical task, intended for framework development only."
-msgstr ""
+msgstr "當然，那是這項工作中最簡單的部份。若要此 scope 類型能被有效使用，我們還需要定義一個能夠實做該 scope 的 <literal>Context</literal> 物件！實做一個 <literal>Context</literal> 通常是一項非常技術性的工作，這只應使用於架構開發（framework development）上。"
 
 #. Tag: para
 #: scopescontexts.xml:44
@@ -107,7 +107,7 @@ msgstr ""
 msgid ""
 "We can apply a scope type annotation to a Web Bean implementation class to "
 "specify the scope of the Web Bean:"
-msgstr ""
+msgstr "我們可套用一個 scope 類型標記至一個 Web Bean 實做 class 來指定 Web Bean 的 scope："
 
 #. Tag: programlisting
 #: scopescontexts.xml:47
@@ -123,19 +123,19 @@ msgstr ""
 #: scopescontexts.xml:58
 #, no-c-format
 msgid "Usually, you'll use one of Web Beans' built-in scopes."
-msgstr ""
+msgstr "您通常會使用到其中一個 Web Bean 的內建 scope。"
 
 #. Tag: title
 #: scopescontexts.xml:63
 #, no-c-format
 msgid "Built-in scopes"
-msgstr ""
+msgstr "內建 scope"
 
 #. Tag: para
 #: scopescontexts.xml:65
 #, no-c-format
 msgid "Web Beans defines four built-in scopes:"
-msgstr ""
+msgstr "Web Bean 定義了四個內建的 scope："
 
 #. Tag: literal
 #: scopescontexts.xml:69
@@ -165,7 +165,7 @@ msgstr "@ConversationScoped"
 #: scopescontexts.xml:82
 #, no-c-format
 msgid "For a web application that uses Web Beans:"
-msgstr ""
+msgstr "使用 Web Bean 的網站應用程式："
 
 #. Tag: para
 #: scopescontexts.xml:86
@@ -173,43 +173,43 @@ msgstr ""
 msgid ""
 "any servlet request has access to active request, session and application "
 "scopes, and, additionally"
-msgstr ""
+msgstr "任何 servlet 請求都可存取 active request、session 和應用程式 scope，另外"
 
 #. Tag: para
 #: scopescontexts.xml:90
 #, no-c-format
 msgid "any JSF request has access to an active conversation scope."
-msgstr ""
+msgstr "任何 JSF 請求也都能存取一個現行的 conversation scope。"
 
 #. Tag: para
 #: scopescontexts.xml:94
 #, no-c-format
 msgid "The request and application scopes are also active:"
-msgstr ""
+msgstr "請求和應用程式 scope 在下列情況中會是有效的："
 
 #. Tag: para
 #: scopescontexts.xml:98
 #, no-c-format
 msgid "during invocations of EJB remote methods,"
-msgstr ""
+msgstr "當調用 EJB 的遠端 method 時、"
 
 #. Tag: para
 #: scopescontexts.xml:101
 #, no-c-format
 msgid "during EJB timeouts,"
-msgstr ""
+msgstr "當 EJB 逾時時、"
 
 #. Tag: para
 #: scopescontexts.xml:104
 #, no-c-format
 msgid "during message delivery to a message-driven bean, and"
-msgstr ""
+msgstr "當訊息傳送給訊息導向的 bean 時，以及"
 
 #. Tag: para
 #: scopescontexts.xml:107
 #, no-c-format
 msgid "during web service invocations."
-msgstr ""
+msgstr "當進行網路服務調用時。"
 
 #. Tag: para
 #: scopescontexts.xml:111
@@ -218,7 +218,7 @@ msgid ""
 "If the application tries to invoke a Web Bean with a scope that does not "
 "have an active context, a <literal>ContextNotActiveException</literal> is "
 "thrown by the Web Bean manager at runtime."
-msgstr ""
+msgstr "若應用程式嘗試透過一個沒有有效 context 的 scope 來引動 Web Bean 的話，Web Bean 管理員便會在 runtime 時回傳一項 <literal>ContextNotActiveException</literal>。"
 
 #. Tag: para
 #: scopescontexts.xml:115
@@ -227,13 +227,13 @@ msgid ""
 "Three of the four built-in scopes should be extremely familiar to every Java "
 "EE developer, so let's not waste time discussing them here. One of the "
 "scopes, however, is new."
-msgstr ""
+msgstr "四個內建 scope 中有其中的三個對於所有 Java EE 開發人員來說應該都不陌生，所以我們將不花時間在此討論它們。不過在這之中有個 scope 則是新的。"
 
 #. Tag: title
 #: scopescontexts.xml:122
 #, no-c-format
 msgid "The conversation scope"
-msgstr ""
+msgstr "conversation scope"
 
 #. Tag: para
 #: scopescontexts.xml:124

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: specialization\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-18 16:31+0000\n"
-"PO-Revision-Date: 2009-01-19 18:30+1000\n"
+"PO-Revision-Date: 2009-01-20 11:42+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: specialization.xml:4
 #, no-c-format
 msgid "Specialization"
-msgstr "專門化"
+msgstr "專門化（Specialization）"
 
 #. Tag: para
 #: specialization.xml:6
@@ -30,7 +30,7 @@ msgid ""
 "<emphasis>override</emphasis> the implementation of an API at deployment "
 "time. For example, the following enterprise Web Bean provides an "
 "implementation of the API <literal>PaymentProcessor</literal> in production:"
-msgstr "我們已經看過了 Web Bean 的依賴注入模型如何讓我們在建置時<emphasis>置換</emphasis>一個 API 的實做了。比方說，下列企業級的 Web Bean 在生產時提供了 <literal>PaymentProcessor</literal> 這個 API 的一個實做："
+msgstr "我們已經看過了 Web Bean 的依賴注入模型如何讓我們在建置時<emphasis>置換（override）</emphasis>了一個 API 的實做。比方說，下列企業級的 Web Bean 在生產時提供了 <literal>PaymentProcessor</literal> 這個 API 的一個實做："
 
 #. Tag: programlisting
 #: specialization.xml:11
@@ -110,7 +110,7 @@ msgstr "不過我們有幾點需要小心："
 msgid ""
 "the higher-priority Web Bean may not implement all the API types of the Web "
 "Bean that it attempts to override,"
-msgstr ""
+msgstr "優先權較高的 Web Bean 無法實做它所嘗試置換的 Web Bean 的所有 API 類型、"
 
 #. Tag: para
 #: specialization.xml:36
@@ -118,7 +118,7 @@ msgstr ""
 msgid ""
 "the higher-priority Web Bean may not declare all the binding types of the "
 "Web Bean that it attempts to override,"
-msgstr ""
+msgstr "優先權較高的 Web Bean 無法宣告它所嘗試置換的 Web Bean 的所有綁定類型、"
 
 #. Tag: para
 #: specialization.xml:40
@@ -126,7 +126,7 @@ msgstr ""
 msgid ""
 "the higher-priority Web Bean might not have the same name as the Web Bean "
 "that it attempts to override, or"
-msgstr ""
+msgstr "優先權較高的 Web Bean 無法擁有與它所嘗試置換的 Web Bean 相同的名稱，或是"
 
 #. Tag: para
 #: specialization.xml:44
@@ -134,7 +134,7 @@ msgstr ""
 msgid ""
 "the Web Bean that it attempts to override might declare a producer method, "
 "disposal method or observer method."
-msgstr ""
+msgstr "它所嘗試置換的 Web Bean 可能能夠宣告一個 producer method、disposal method 或是 observer method。"
 
 #. Tag: para
 #: specialization.xml:49
@@ -143,7 +143,7 @@ msgid ""
 "In each of these cases, the Web Bean that we tried to override could still "
 "be called at runtime. Therefore, overriding is somewhat prone to developer "
 "error."
-msgstr ""
+msgstr "在各個情況下，我們所嘗試置換的 Web Bean 都還是可能在 runtime 時被調用。因此，置換可能會造成開發上的錯誤。"
 
 #. Tag: para
 #: specialization.xml:52
@@ -153,13 +153,13 @@ msgid ""
 "emphasis>, that helps the developer avoid these traps. Specialization looks "
 "a little esoteric at first, but it's easy to use in practice, and you'll "
 "really appreciate the extra security it provides."
-msgstr ""
+msgstr "Web Bean 提供了一項特殊的功能稱為 <emphasis>specialization</emphasis>，它可協助開發人員避免發生這些錯誤。Specialization 一開始看起來似乎有些難懂，不過實際上卻相當易於使用，並且您將會慶幸擁有它所提供的額外安全性。"
 
 #. Tag: title
 #: specialization.xml:58
 #, no-c-format
 msgid "Using specialization"
-msgstr ""
+msgstr "使用 specialization"
 
 #. Tag: para
 #: specialization.xml:60
@@ -167,13 +167,13 @@ msgstr ""
 msgid ""
 "Specialization is a feature that is specific to simple and enterprise Web "
 "Beans. To make use of specialization, the higher-priority Web Bean must:"
-msgstr ""
+msgstr "Specialization 是一項基於基本和企業級 Web Bean 的功能。若要有效使用 specialization，擁有較高優先權的 Web Bean 必須："
 
 #. Tag: para
 #: specialization.xml:65
 #, no-c-format
 msgid "be a direct subclass of the Web Bean it overrides, and"
-msgstr ""
+msgstr "是個它所置換的 Web Bean 的直接 subclass，並且"
 
 #. Tag: para
 #: specialization.xml:68
@@ -182,13 +182,13 @@ msgid ""
 "be a simple Web Bean if the Web Bean it overrides is a simple Web Bean or an "
 "enterprise Web Bean if the Web Bean it overrides is an enterprise Web Bean, "
 "and"
-msgstr ""
+msgstr "若它所置換的 Web Bean 是個基本的 Web Bean，它就必須是個基本 Web Bean，或是若它所置換的 Web Bean 是個企業級的 Web Bean，那它就必須是個企業級的 Web Bean，並且"
 
 #. Tag: para
 #: specialization.xml:73
 #, no-c-format
 msgid "be annotated <literal>@Specializes</literal>."
-msgstr ""
+msgstr "需被標記 <literal>@Specializes</literal>。"
 
 #. Tag: programlisting
 #: specialization.xml:77
@@ -212,19 +212,19 @@ msgstr ""
 msgid ""
 "We say that the higher-priority Web Bean <emphasis>specializes</emphasis> "
 "its superclass."
-msgstr ""
+msgstr "優先權較高的 Web Bean 會 <emphasis>specializes</emphasis> 它的 superclass。"
 
 #. Tag: title
 #: specialization.xml:85
 #, no-c-format
 msgid "Advantages of specialization"
-msgstr ""
+msgstr "Specializarion 的優點"
 
 #. Tag: para
 #: specialization.xml:87
 #, no-c-format
 msgid "When specialization is used:"
-msgstr ""
+msgstr "當使用了 specialization 時："
 
 #. Tag: para
 #: specialization.xml:91
@@ -232,7 +232,7 @@ msgstr ""
 msgid ""
 "the binding types of the superclass are automatically inherited by the Web "
 "Bean annotated <literal>@Specializes</literal>, and"
-msgstr ""
+msgstr "superclass 的綁定類型就會自動地被標記為 <literal>@Specializes</literal> 的 Web Bean 繼承，並且"
 
 #. Tag: para
 #: specialization.xml:95
@@ -240,7 +240,7 @@ msgstr ""
 msgid ""
 "the Web Bean name of the superclass is automatically inherited by the Web "
 "Bean annotated <literal>@Specializes</literal>, and"
-msgstr ""
+msgstr "superclass 的 Web Bean 名稱會自動地被標記為 <literal>@Specializes</literal> 的 Web Bean 繼承，並且"
 
 #. Tag: para
 #: specialization.xml:99
@@ -249,7 +249,7 @@ msgid ""
 "producer methods, disposal methods and observer methods declared by the "
 "superclass are called upon an instance of the Web Bean annotated "
 "<literal>@Specializes</literal>."
-msgstr ""
+msgstr "superclass 所宣告的 producer method、disposal method 以及 observer method 會被一個標記了 <literal>@Specializes</literal> 的 Web Bean instance 調用。"
 
 #. Tag: para
 #: specialization.xml:105
@@ -258,13 +258,13 @@ msgid ""
 "In our example, the binding type <literal>@CreditCard</literal> of "
 "<literal>CreditCardPaymentProcessor</literal> is inherited by "
 "<literal>StagingCreditCardPaymentProcessor</literal>."
-msgstr ""
+msgstr "在我們的範例中，<literal>CreditCardPaymentProcessor</literal> 的 <literal>@CreditCard</literal> 綁定類型會被 <literal>StagingCreditCardPaymentProcessor</literal> 繼承。"
 
 #. Tag: para
 #: specialization.xml:109
 #, no-c-format
 msgid "Furthermore, the Web Bean manager will validate that:"
-msgstr ""
+msgstr "另外，Web Bean 管理員會針對於以下情形進行驗證："
 
 #. Tag: para
 #: specialization.xml:113
@@ -273,7 +273,7 @@ msgid ""
 "all API types of the superclass are API types of the Web Bean annotated "
 "<literal>@Specializes</literal> (all local interfaces of the superclass "
 "enterprise bean are also local interfaces of the subclass),"
-msgstr ""
+msgstr "superclass 的所有 API 類型都會是標記為 <literal>@Specializes</literal> 的 Web Bean 的 API 類型（superclass enterprise bean 的所有本地介面也都屬於 subclass 的本地介面）、"
 
 #. Tag: para
 #: specialization.xml:119
@@ -282,13 +282,13 @@ msgid ""
 "the deployment type of the Web Bean annotated <literal>@Specializes</"
 "literal> has a higher precedence than the deployment type of the superclass, "
 "and"
-msgstr ""
+msgstr "標記為 <literal>@Specializes</literal> 的 Web Bean 的 deployment type 擁有比 superclass 的 deployment type 還要高的優先權，以及"
 
 #. Tag: para
 #: specialization.xml:124
 #, no-c-format
 msgid "there is no other enabled Web Bean that also specializes the superclass."
-msgstr ""
+msgstr "沒有其它已啟用的 Web Bean 會 specialize 該 superclass。"
 
 #. Tag: para
 #: specialization.xml:129
@@ -296,7 +296,7 @@ msgstr ""
 msgid ""
 "If any of these conditions are violated, the Web Bean manager throws an "
 "exception at initialization time."
-msgstr ""
+msgstr "若任何的這些條件被違反的話，Web Bean 管理員便會在初始化時回傳一個 exception。"
 
 #. Tag: para
 #: specialization.xml:132
@@ -305,5 +305,5 @@ msgid ""
 "Therefore, we can be certain that the superclass will <emphasis>never</"
 "emphasis> be called in any deployment of the system where the Web Bean "
 "annotated <literal>@Specializes</literal> is deployed and enabled."
-msgstr ""
+msgstr "因此，我們能夠確定當標記為 <literal>@Specializes</literal> 的 Web Bean 被建置並啟用的情況下，superclass <emphasis>絕不</emphasis>會在系統的任何 deployment 中被調用。"
 

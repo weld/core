@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-18 16:31+0000\n"
-"PO-Revision-Date: 2009-01-20 11:03+1000\n"
+"PO-Revision-Date: 2009-01-20 11:43+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -627,7 +627,7 @@ msgstr "<![CDATA[public MyResourceLoader(ServletContext servletContext) {}]]>"
 msgid ""
 "The servlet context can be used to allow your implementation of "
 "<literal>ResourceLoader</literal> to interact with the container."
-msgstr ""
+msgstr "servlet 的 context 可被用來允許您 <literal>ResourceLoader</literal> 的實做來與 container 進行互動。"
 
 #. Tag: title
 #: ri-spi.xml:196
