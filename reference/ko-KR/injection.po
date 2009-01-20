@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-20 01:43+1000\n"
+"PO-Revision-Date: 2009-01-20 16:47+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -176,7 +177,7 @@ msgid ""
 "Injected fields, however, <emphasis>must</emphasis> specify a binding type, "
 "even when the default binding type applies. If the field does not specify a "
 "binding type, it will not be injected."
-msgstr ""
+msgstr "기본값 바인딩 유형 <literal>@Current</literal>가 적용되었을 경우 생성자의 매개 변수 및 초기화 방식에서는 명시적으로 어노테이션할 필요가 없습니다. 하지만 삽입된 영역에는 <emphasis>반드시</emphasis> 바인딩 유형을 지정해야 하며, 언제 기본값 바인딩 유형을 적용할 지도 지정해야 합니다. 영역에 바인딩 유형이 지정되어 있지 않을 경우, 이는 삽입되지 않게 됩니다. "
 
 #. Tag: para
 #: injection.xml:51
@@ -225,7 +226,7 @@ msgstr ""
 msgid ""
 "The purpose of this algorithm is to allow multiple Web Beans to implement "
 "the same API type and either:"
-msgstr ""
+msgstr "이러한 알고리즘은 여러 Web Beans를 허용하여 동일한 API 유형을 구현하기 위한 것입니다: "
 
 #. Tag: para
 #: injection.xml:72
@@ -233,7 +234,7 @@ msgstr ""
 msgid ""
 "allow the client to select which implementation it requires using "
 "<emphasis>binding annotations</emphasis>,"
-msgstr ""
+msgstr "또는 클라이언트가 <emphasis>바인딩 어노테이션</emphasis>을 사용하여 필요한 구현 사항을 선택하게 합니다, "
 
 #. Tag: para
 #: injection.xml:77
