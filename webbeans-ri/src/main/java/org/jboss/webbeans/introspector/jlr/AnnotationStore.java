@@ -4,18 +4,30 @@ import static org.jboss.webbeans.introspector.AnnotatedItem.MAPPED_METAANNOTATIO
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.webbeans.BindingType;
+
+import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.util.Strings;
 
 import com.google.common.collect.ForwardingMap;
 
 public class AnnotationStore
 {
+
+   // The array of default binding types
+   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentLiteral() };
+   // The set of default binding types
+   private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
+   
+   private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
+   
    /**
     * Represents a mapping from a annotation type to an annotation
     * implementation
@@ -241,52 +253,63 @@ public class AnnotationStore
       }
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.introspector.jlr.AnnotationStore#getAnnotationMap()
-    */
-   public Map<Class<? extends Annotation>, Annotation> getAnnotationMap()
-   {
-      return Collections.unmodifiableMap(annotationMap);
-   }
-   
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.introspector.jlr.AnnotationStore#getAnnotationSet()
-    */
-   public Set<Annotation> getAnnotationSet()
+   public Set<Annotation> getAnnotations()
    {
       return Collections.unmodifiableSet(annotationSet);
    }
-   
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.introspector.jlr.AnnotationStore#getMetaAnnotationMap()
-    */
-   public Map<Class<? extends Annotation>, Set<Annotation>> getMetaAnnotationMap()
+
+   public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
-      return Collections.unmodifiableMap(metaAnnotationMap);
+      return Collections.unmodifiableSet(metaAnnotationMap.get(metaAnnotationType));
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.introspector.jlr.AnnotationStore#getDeclaredAnnotationMap()
-    */
-   public Map<Class<? extends Annotation>, Annotation> getDeclaredAnnotationMap()
+   public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
-      return Collections.unmodifiableMap(declaredAnnotationMap);
+      return Collections.unmodifiableSet(declaredMetaAnnotationMap.get(metaAnnotationType));
+   }
+
+   public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
+   {
+      return getMetaAnnotations(metaAnnotationType).toArray(EMPTY_ANNOTATION_ARRAY);
+   }
+
+   @Deprecated
+   public Set<Annotation> getBindingTypes()
+   {
+      if (getMetaAnnotations(BindingType.class).size() > 0)
+      {
+         return Collections.unmodifiableSet(getMetaAnnotations(BindingType.class));
+      }
+      else
+      {
+         return Collections.unmodifiableSet(DEFAULT_BINDING);
+      }
+   }
+
+   @Deprecated
+   public Annotation[] getBindingTypesAsArray()
+   {
+      return getBindingTypes().toArray(EMPTY_ANNOTATION_ARRAY);
+   }
+
+   public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)
+   {
+      return annotationType.cast(annotationMap.get(annotationType));
+   }
+
+   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
+   {
+      return annotationMap.containsKey(annotationType);
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.introspector.jlr.AnnotationStore#getDeclaredAnnotationSet()
-    */
-   public Set<Annotation> getDeclaredAnnotationSet()
+   public AnnotationMap getAnnotationMap()
    {
-      return Collections.unmodifiableSet(declaredAnnotationSet);
+      return annotationMap;
    }
    
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.introspector.jlr.AnnotationStore#getDeclaredMetaAnnotationMap()
-    */
-   public Map<Class<? extends Annotation>, Set<Annotation>> getDeclaredMetaAnnotationMap()
+   public AnnotationMap getDeclaredAnnotationMap()
    {
-      return Collections.unmodifiableMap(declaredMetaAnnotationMap);
+      return declaredAnnotationMap;
    }
    
 }

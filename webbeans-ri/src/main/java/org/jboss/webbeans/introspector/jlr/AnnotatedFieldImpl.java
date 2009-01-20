@@ -40,21 +40,8 @@ import org.jboss.webbeans.util.Reflections;
  * 
  * @param <T>
  */
-public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> implements WrappableAnnotatedField<T>
+public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> implements AnnotatedField<T>
 {
-   
-   static abstract class ForwardingWrappableAnnotatedField<T> extends ForwardingAnnotatedField<T> implements WrappableAnnotatedField<T>
-   {
-      
-      @Override
-      protected abstract WrappableAnnotatedField<T> delegate();
-      
-      public AnnotationStore getAnnotationStore()
-      {
-         return delegate().getAnnotationStore();
-      }
-      
-   }
    
    // The actual type arguments
    private final Type[] actualTypeArguments;
@@ -208,21 +195,59 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
    {
       if (annotations.size() > 0)
       {
-         final WrappableAnnotatedField<T> delegate = this;
+         final AnnotatedField<T> delegate = this;
          final AnnotationStore annotationStore = AnnotationStore.wrap(getAnnotationStore(), annotations, annotations);
-         return new ForwardingWrappableAnnotatedField<T>()
+         return new ForwardingAnnotatedField<T>()
          {
             
             @Override
-            protected WrappableAnnotatedField<T> delegate()
+            protected AnnotatedField<T> delegate()
             {
                return delegate;
             }
             
             @Override
-            public AnnotationStore getAnnotationStore()
+            public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)
             {
-               return annotationStore;
+               return annotationStore.getAnnotation(annotationType);
+            }
+            
+            @Override
+            public Set<Annotation> getAnnotations()
+            {
+               return annotationStore.getAnnotations();
+            }
+            
+            @Override
+            @Deprecated
+            public Set<Annotation> getBindingTypes()
+            {
+               return annotationStore.getBindingTypes();
+            }
+            
+            @Override
+            @Deprecated
+            public Annotation[] getBindingTypesAsArray()
+            {
+               return annotationStore.getBindingTypesAsArray();
+            }
+            
+            @Override
+            public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
+            {
+               return annotationStore.getDeclaredMetaAnnotations(metaAnnotationType);
+            }
+            
+            @Override
+            public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
+            {
+               return annotationStore.getMetaAnnotations(metaAnnotationType);
+            }
+            
+            @Override
+            public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
+            {
+               return annotationStore.getMetaAnnotationsAsArray(metaAnnotationType);
             }
             
          };

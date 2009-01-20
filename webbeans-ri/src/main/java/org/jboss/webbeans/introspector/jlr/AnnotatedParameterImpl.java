@@ -26,7 +26,6 @@ import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.introspector.AnnotatedMember;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.introspector.ForwardingAnnotatedParameter;
 
 /**
  * Represents a parameter
@@ -37,21 +36,8 @@ import org.jboss.webbeans.introspector.ForwardingAnnotatedParameter;
  * 
  * @param <T>
  */
-public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> implements WrappableAnnotatedParameter<T>
+public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> implements AnnotatedParameter<T>
 {
-   
-   static abstract class ForwardingWrappableAnnotatedParameter<T> extends ForwardingAnnotatedParameter<T> implements WrappableAnnotatedParameter<T>
-   {
-      
-      @Override
-      protected abstract WrappableAnnotatedParameter<T> delegate();
-      
-      public AnnotationStore getAnnotationStore()
-      {
-         return delegate().getAnnotationStore();
-      }
-      
-   }
    
    // The type
    private final Class<T> type;
@@ -206,18 +192,7 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
    
    public AnnotatedParameter<T> wrap(Set<Annotation> annotations)
    {
-      final WrappableAnnotatedParameter<T> delegate = this;
-      
-      return new ForwardingWrappableAnnotatedParameter<T>()
-      {
-        
-         @Override
-         protected WrappableAnnotatedParameter<T> delegate()
-         {
-            return delegate;
-         }
-         
-      };
+      throw new UnsupportedOperationException();
    }
 
 }

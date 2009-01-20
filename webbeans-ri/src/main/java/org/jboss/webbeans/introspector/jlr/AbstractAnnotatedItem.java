@@ -20,14 +20,9 @@ package org.jboss.webbeans.introspector.jlr;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
-import javax.webbeans.BindingType;
-
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Types;
@@ -46,7 +41,7 @@ import org.jboss.webbeans.util.Types;
  * 
  * @see org.jboss.webbeans.introspector.AnnotatedItem
  */
-public abstract class AbstractAnnotatedItem<T, S> implements WrappableAnnotatedItem<T, S>
+public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
 {
    
    interface WrappableAnnotatedItem<T, S> extends AnnotatedItem<T, S>
@@ -56,10 +51,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements WrappableAnnotatedI
       
    }
 
-   // The array of default binding types
-   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentLiteral() };
-   // The set of default binding types
-   private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
+   
    
    // Cached string representation
    private String toString;
@@ -84,67 +76,29 @@ public abstract class AbstractAnnotatedItem<T, S> implements WrappableAnnotatedI
       return annotationStore;
    }
 
-   /**
-    * Gets the annotation for a given annotation type.
-    * 
-    * @param annotationType the annotation type to match
-    * @return The annotation if found, null if no match was found
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedItem#getAnnotation(Class)
-    */
    public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)
    {
-      return annotationType.cast(getAnnotationStore().getAnnotationMap().get(annotationType));
+      return getAnnotationStore().getAnnotation(annotationType);
    }
 
-   /**
-    * Gets the set of annotations that contain a given annotation type
-    * 
-    * @param metaAnnotationType The meta-annotation type to match
-    * @return The set of annotations containing this meta-annotation. An empty
-    *         set is returned if no match is found.
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedItem#getMetaAnnotations(Class)
-    */
    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
-      return Collections.unmodifiableSet(getAnnotationStore().getMetaAnnotationMap().get(metaAnnotationType));
+      return getAnnotationStore().getMetaAnnotations(metaAnnotationType);
    }
    
    public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
-      return Collections.unmodifiableSet(getAnnotationStore().getDeclaredMetaAnnotationMap().get(metaAnnotationType));
+      return getAnnotationStore().getDeclaredMetaAnnotations(metaAnnotationType);
    }
 
-   /**
-    * Gets (as an array) the set of annotations that contain a given annotation
-    * type.
-    * 
-    * Populates the annotationArray if it was null
-    * 
-    * @param metaAnnotationType meta-annotation type to match
-    * @return The array of annotations to match. An empty array is returned if
-    *         no match is found.
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedItem#getMetaAnnotationsAsArray(Class)
-    */
    public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
    {
       return getMetaAnnotations(metaAnnotationType).toArray(new Annotation[0]);
    }
 
-   /**
-    * Gets all annotations on this item
-    * 
-    * Populates the annotationSet if it was empty
-    * 
-    * @return The set of annotations on this item.
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedItem#getAnnotations()
-    */
    public Set<Annotation> getAnnotations()
    {
-      return getAnnotationStore().getAnnotationSet();
+      return getAnnotationStore().getAnnotations();
    }
 
    /**
@@ -157,7 +111,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements WrappableAnnotatedI
     */
    public boolean isAnnotationPresent(Class<? extends Annotation> annotatedType)
    {
-      return getAnnotationStore().getAnnotationMap().containsKey(annotatedType);
+      return getAnnotationStore().isAnnotationPresent(annotatedType);
    }
 
    /**
@@ -258,26 +212,10 @@ public abstract class AbstractAnnotatedItem<T, S> implements WrappableAnnotatedI
       return toString;
    }
    
-   /**
-    * Gets the binding types of the item
-    * 
-    * Looks at the meta-annotations map for annotations with binding type
-    * meta-annotation. Returns default binding (current) if none specified.
-    * 
-    * @return A set of (binding type) annotations
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedItem#getBindingTypes()
-    */
+   @Deprecated
    public Set<Annotation> getBindingTypes()
    {
-      if (getMetaAnnotations(BindingType.class).size() > 0)
-      {
-         return Collections.unmodifiableSet(getMetaAnnotations(BindingType.class));
-      }
-      else
-      {
-         return Collections.unmodifiableSet(DEFAULT_BINDING);
-      }
+      return getAnnotationStore().getBindingTypes();
    }
 
    /**
@@ -290,16 +228,10 @@ public abstract class AbstractAnnotatedItem<T, S> implements WrappableAnnotatedI
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedItem#getBindingTypesAsArray()
     */
+   @Deprecated
    public Annotation[] getBindingTypesAsArray()
    {
-      if (getMetaAnnotationsAsArray(BindingType.class).length > 0)
-      {
-         return getMetaAnnotationsAsArray(BindingType.class);
-      }
-      else
-      {
-         return DEFAULT_BINDING_ARRAY;
-      }
+      return getAnnotationStore().getBindingTypesAsArray();
    }
 
    /**

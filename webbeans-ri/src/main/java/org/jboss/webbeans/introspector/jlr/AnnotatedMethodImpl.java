@@ -44,21 +44,8 @@ import org.jboss.webbeans.util.Reflections;
  * 
  * @param <T>
  */
-public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>, WrappableAnnotatedMethod<T>
+public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>
 {
-   
-   abstract static class ForwardingWrappableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> implements WrappableAnnotatedMethod<T>
-   {
-      
-      @Override
-      protected abstract WrappableAnnotatedMethod<T> delegate();
-      
-      public AnnotationStore getAnnotationStore()
-      {
-         return delegate().getAnnotationStore();
-      }
-      
-   }
 
    // The actual type arguments
    private final Type[] actualTypeArguments;
@@ -83,22 +70,6 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    public static <T> AnnotatedMethodImpl<T> of(Method method, AnnotatedType<?> declaringClass)
    {
       return new AnnotatedMethodImpl<T>(method, declaringClass);
-   }
-   
-   public static <T> AnnotatedMethod<T> wrap(final AnnotatedMethod<T> annotatedMethod, final Set<Annotation> extraAnnotations)
-   {
-      return new ForwardingAnnotatedMethod<T>()
-      {
-
-         @Override
-         protected AnnotatedMethod<T> delegate()
-         {
-            return annotatedMethod;
-         }
-         
-        
-         
-      };
    }
 
    /**
@@ -362,21 +333,59 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    {
       if (annotations.size() > 0)
       {
-         final WrappableAnnotatedMethod<T> delegate = this;
+         final AnnotatedMethod<T> delegate = this;
          final AnnotationStore annotationStore = AnnotationStore.wrap(getAnnotationStore(), annotations, annotations);
-         return new ForwardingWrappableAnnotatedMethod<T>()
+         return new ForwardingAnnotatedMethod<T>()
          {
    
             @Override
-            protected WrappableAnnotatedMethod<T> delegate()
+            protected AnnotatedMethod<T> delegate()
             {
                return delegate;
             }
             
             @Override
-            public AnnotationStore getAnnotationStore()
+            public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)
             {
-               return annotationStore;
+               return annotationStore.getAnnotation(annotationType);
+            }
+            
+            @Override
+            public Set<Annotation> getAnnotations()
+            {
+               return annotationStore.getAnnotations();
+            }
+            
+            @Override
+            @Deprecated
+            public Set<Annotation> getBindingTypes()
+            {
+               return annotationStore.getBindingTypes();
+            }
+            
+            @Override
+            @Deprecated
+            public Annotation[] getBindingTypesAsArray()
+            {
+               return annotationStore.getBindingTypesAsArray();
+            }
+            
+            @Override
+            public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
+            {
+               return annotationStore.getDeclaredMetaAnnotations(metaAnnotationType);
+            }
+            
+            @Override
+            public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
+            {
+               return annotationStore.getMetaAnnotations(metaAnnotationType);
+            }
+            
+            @Override
+            public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
+            {
+               return annotationStore.getMetaAnnotationsAsArray(metaAnnotationType);
             }
             
          };
