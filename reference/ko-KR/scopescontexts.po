@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: scopescontexts\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-20 15:39+1000\n"
+"PO-Revision-Date: 2009-01-20 15:43+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -69,7 +69,7 @@ msgstr ""
 #: scopescontexts.xml:32
 #, no-c-format
 msgid "Scope types"
-msgstr ""
+msgstr "범위 유형 "
 
 #. Tag: para
 #: scopescontexts.xml:34
@@ -131,13 +131,13 @@ msgstr ""
 #: scopescontexts.xml:63
 #, no-c-format
 msgid "Built-in scopes"
-msgstr ""
+msgstr "내장된 범위 "
 
 #. Tag: para
 #: scopescontexts.xml:65
 #, no-c-format
 msgid "Web Beans defines four built-in scopes:"
-msgstr ""
+msgstr "Web Beans는 네 가지 내장된 범위를 정의합니다:  "
 
 #. Tag: literal
 #: scopescontexts.xml:69
@@ -167,7 +167,7 @@ msgstr "@ConversationScoped"
 #: scopescontexts.xml:82
 #, no-c-format
 msgid "For a web application that uses Web Beans:"
-msgstr ""
+msgstr "Web Beans를 사용하는 웹 애플리케이션의 경우: "
 
 #. Tag: para
 #: scopescontexts.xml:86

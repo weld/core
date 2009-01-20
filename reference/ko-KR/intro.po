@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-08 16:36+1000\n"
+"PO-Revision-Date: 2009-01-20 15:59+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -184,7 +185,7 @@ msgstr ""
 msgid ""
 "We may obtain an instance of <literal>TextTranslator</literal> by injecting "
 "it into a Web Bean, Servlet or EJB:"
-msgstr ""
+msgstr "인스턴스를 Web Bean, Servlet 또는 EJB로 삽입하여 <literal>TextTranslator</literal> 인스턴스를 얻을 수 있습니다:  "
 
 #. Tag: programlisting
 #: intro.xml:49
@@ -206,7 +207,7 @@ msgstr ""
 msgid ""
 "Alternatively, we may obtain an instance by directly calling a method of the "
 "Web Bean manager:"
-msgstr ""
+msgstr "다른 방법으로 Web Beans 관리자 방식을 직접 호출하여 인스턴스를 획득할 수 있습니다: "
 
 #. Tag: programlisting
 #: intro.xml:54
@@ -305,7 +306,7 @@ msgstr ""
 #: intro.xml:105
 #, no-c-format
 msgid "the lifecycle of each instance of the Web Bean and"
-msgstr ""
+msgstr "각각의 Web Bean 인스턴스의 수명 주기 "
 
 #. Tag: para
 #: intro.xml:108
@@ -350,13 +351,13 @@ msgstr ""
 #: intro.xml:132
 #, no-c-format
 msgid "they interact via well-defined public APIs"
-msgstr ""
+msgstr "잘 정의된 공개 API를 통해 상호 작용합니다 "
 
 #. Tag: para
 #: intro.xml:135
 #, no-c-format
 msgid "their lifecycles are completely decoupled"
-msgstr ""
+msgstr "수명 주기는 완전하게 연결 해제됩니다  "
 
 #. Tag: para
 #: intro.xml:139
@@ -678,13 +679,13 @@ msgstr ""
 #: intro.xml:267
 #, no-c-format
 msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\"/>."
-msgstr ""
+msgstr "<xref linkend=\"scopescontexts\"/>에서 범위에 대해 보다 자세하게 다루겠습니다. "
 
 #. Tag: title
 #: intro.xml:272
 #, no-c-format
 msgid "Web Bean names and Unified EL"
-msgstr ""
+msgstr "Web Bean 이름 및 Unified EL "
 
 #. Tag: para
 #: intro.xml:274
@@ -708,7 +709,7 @@ msgstr ""
 #: intro.xml:280
 #, no-c-format
 msgid "Now we can easily use the Web Bean in any JSF or JSP page:"
-msgstr ""
+msgstr "이제 JSF 또는 JSP 페이지에서 쉽게 Web Bean을 사용할 수 있습니다:  "
 
 #. Tag: programlisting
 #: intro.xml:282
@@ -750,7 +751,7 @@ msgstr ""
 #: intro.xml:295
 #, no-c-format
 msgid "Interceptor binding types"
-msgstr ""
+msgstr "인터셉터 바인딩 유형 "
 
 #. Tag: para
 #: intro.xml:297
@@ -826,7 +827,7 @@ msgstr ""
 #: intro.xml:327
 #, no-c-format
 msgid "Simple Web Beans"
-msgstr ""
+msgstr "단순 Web Beans "
 
 #. Tag: para
 #: intro.xml:329
@@ -883,7 +884,7 @@ msgstr ""
 #: intro.xml:358
 #, no-c-format
 msgid "Enterprise Web Beans"
-msgstr ""
+msgstr "엔터프라이즈 Web Beans "
 
 #. Tag: para
 #: intro.xml:360
@@ -1034,7 +1035,7 @@ msgstr ""
 #: intro.xml:427
 #, no-c-format
 msgid "Producer methods"
-msgstr ""
+msgstr "생산자 방식 "
 
 #. Tag: para
 #: intro.xml:429
