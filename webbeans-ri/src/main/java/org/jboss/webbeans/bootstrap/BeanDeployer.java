@@ -68,12 +68,12 @@ public class BeanDeployer
       AnnotatedClass<?> annotatedClass = AnnotatedClassImpl.of(clazz);
       if (manager.getEjbDescriptorCache().containsKey(clazz))
       {
-         createBean(EnterpriseBean.of(annotatedClass, manager), annotatedClass, beans);
+         createBean(EnterpriseBean.of(annotatedClass, manager), annotatedClass);
          beans.add(NewEnterpriseBean.of(annotatedClass, manager));
       }
       else if (isTypeSimpleWebBean(clazz))
       {
-         createBean(SimpleBean.of(annotatedClass, manager), annotatedClass, beans);
+         createBean(SimpleBean.of(annotatedClass, manager), annotatedClass);
          beans.add(NewSimpleBean.of(annotatedClass, manager));
       }
    }
@@ -98,9 +98,8 @@ public class BeanDeployer
     * Also creates the implicit field- and method-level beans, if present
     * 
     * @param bean The bean representation
-    * @param beans The set of created beans
     */
-   protected void createBean(AbstractClassBean<?> bean, AnnotatedClass<?> annotatedClass, Set<AbstractBean<?, ?>> beans)
+   protected void createBean(AbstractClassBean<?> bean, AnnotatedClass<?> annotatedClass)
    {
       
       beans.add(bean);
