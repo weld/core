@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-18 16:31+0000\n"
-"PO-Revision-Date: 2009-01-20 22:51+1000\n"
+"PO-Revision-Date: 2009-01-21 00:08+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -46,7 +46,7 @@ msgid ""
 "<literal>webbeans-numberguess</literal>, a war example, containing only "
 "simple beans, and <literal>webbeans-translator</literal> an ear example, "
 "containing enterprise beans. To run the examples you'll need the following:"
-msgstr "Web Beans RI는 배포 가능한 두 가지 애플리케이션 예로 되어 있습니다: war 예에는 단순한 beans만이 들어 있는 <literal>webbeans-numberguess</literal>가 있고, ear 예에는 엔터프라이즈 beans가 들어 있는 <literal>webbeans-translator</literal>가 있습니다. 예를 실행하려면, 다음 사항이 필요합니다:  "
+msgstr "Web Beans RI는 배포 가능한 두 가지 애플리케이션 예로 되어 있습니다: war 예에는 단순한 beans 만이 들어 있는  <literal>webbeans-numberguess</literal>가 있고 ear 예에는 엔터프라이즈 beans가 들어 있는 <literal>webbeans-translator</literal>가 있습니다. 예를 실행하려면, 다음 사항이 필요합니다:       "
 
 #. Tag: para
 #: ri.xml:22
@@ -143,6 +143,8 @@ msgid ""
 "container and discover which EJBs are installed in your application. "
 "Secondly, an update to JBoss EJB3 is needed."
 msgstr ""
+"현재, 두 가지 사항을 업데이트해야 합니다. 처음으로, 새로운 개발자 <literal>webbeans.deployer</literal>가 추가되어야 합니다. 이는 JBoss AS에 Web "
+"Bean 아카이브 지원을 추가하고 Web Beans RI가 EJB3 컨테이너를 커리하고 애플리케이션에 어떤 EJB가 있는 지를 검색합니다. 두번째로 JBoss EJB3로 업데이트해야 합니다. "
 
 #. Tag: para
 #: ri.xml:74
@@ -150,7 +152,7 @@ msgstr ""
 msgid ""
 "To install the update, you'll need Ant 1.7.0 installed, and the "
 "<literal>ANT_HOME</literal> environment variable set. For example:"
-msgstr ""
+msgstr "업데이트를 설치하려면, Ant 1.7.0을 설치하고 <literal>ANT_HOME</literal> 환경 변수 모음을 설치합니다. 예:  "
 
 #. Tag: programlisting
 #: ri.xml:79
@@ -168,7 +170,7 @@ msgstr ""
 msgid ""
 "Then, you can install the update. The update script will use Maven to "
 "download the Web Beans and EJB3 automatically."
-msgstr ""
+msgstr "그 다음 업데이트를 설치하실 수 있습니다. 업데이트 스크립트는 Maven을 사용하여 Web Beans 및 EJB3를 자동으로 다운로드합니다. "
 
 #. Tag: programlisting
 #: ri.xml:86
@@ -184,19 +186,19 @@ msgstr ""
 #: ri.xml:88
 #, no-c-format
 msgid "Now, you're ready to deploy your first example!"
-msgstr ""
+msgstr "이제, 첫번째 예를 배포할 준비가 되었습니다!  "
 
 #. Tag: para
 #: ri.xml:93
 #, no-c-format
 msgid "The build scripts for the examples offer a number of targets, these are:"
-msgstr ""
+msgstr "예시 용 작성 스크립트는 여러 대상을 제공합니다. 이에는 다음과 같은 것이 있습니다:  "
 
 #. Tag: para
 #: ri.xml:99
 #, no-c-format
 msgid "<literal>ant restart</literal> - deploy the example in exploded format"
-msgstr ""
+msgstr "<literal>ant restart</literal> - exploded format으로 예제를 배포합니다  "
 
 #. Tag: para
 #: ri.xml:105
@@ -204,31 +206,31 @@ msgstr ""
 msgid ""
 "<literal>ant explode</literal> - update an exploded example, without "
 "restarting the deployment"
-msgstr ""
+msgstr "<literal>ant explode</literal> - 배포 버전을 다시 시작하지 않고 exploded 예를 업데이트합니다  "
 
 #. Tag: para
 #: ri.xml:111
 #, no-c-format
 msgid "<literal>ant deploy</literal> - deploy the example in compressed jar format"
-msgstr ""
+msgstr "<literal>ant deploy</literal> - 압축된 jar 포맷으로 예제를 배포합니다 "
 
 #. Tag: para
 #: ri.xml:116
 #, no-c-format
 msgid "<literal>ant undeploy</literal> - remove the example from the server"
-msgstr ""
+msgstr "<literal>ant undeploy</literal> - 서버에서 예제를 제거합니다 "
 
 #. Tag: para
 #: ri.xml:121
 #, no-c-format
 msgid "<literal>ant clean</literal> - clean the example"
-msgstr ""
+msgstr "<literal>ant clean</literal> - 예제를 지웁니다 "
 
 #. Tag: para
 #: ri.xml:128
 #, no-c-format
 msgid "To deploy the numberguess example:"
-msgstr ""
+msgstr "numberguess 예를 배포하려면: "
 
 #. Tag: programlisting
 #: ri.xml:132
