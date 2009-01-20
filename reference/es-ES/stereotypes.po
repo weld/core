@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: stereotypes\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-16 13:19+1000\n"
+"PO-Revision-Date: 2009-01-20 11:23+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -36,7 +36,7 @@ msgid ""
 "Web Bean roles. A stereotype allows a framework developer to identify such a "
 "role and declare some common metadata for Web Beans with that role in a "
 "central place."
-msgstr "En muchos sistemas, el uso de patrones arquitecturales produce una serie de roles de Web Beans recurrentes. Un estereotipo permite a un desarrollador de marco identificar dicho rol y declarar algunos metadatos comunes para Web Beans con ese rol en un lugar central."
+msgstr "En muchos sistemas, el uso de patrones arquitecturales produce una serie de roles de Web Beans recurrentes. Un estereotipo permite al desarrollador de marco identificar dicho rol y declarar algunos metadatos comunes para Web Beans con ese rol en un lugar central."
 
 #. Tag: para
 #: stereotypes.xml:14
@@ -94,7 +94,7 @@ msgstr "Un Web Bean puede declarar cero, uno o múltiples estereotipos."
 msgid ""
 "A stereotype is a Java annotation type. This stereotype identifies action "
 "classes in some MVC framework:"
-msgstr "Un estereotipo es un tipo de anotación Java. Dicho estereotipo identifica clases de acción en algunos marcos MVC:"
+msgstr "Un estereotipo es un tipo de anotación Java. Dicho estereotipo identifica clases de acción en algún marco MVC:"
 
 #. Tag: programlisting
 #: stereotypes.xml:44
@@ -141,7 +141,7 @@ msgid ""
 "<literal>@WebTier</literal> identifies Web Beans that should only be "
 "deployed when the system executes as a web application, we might specify the "
 "following defaults for action classes:"
-msgstr "Un estereotipo puede especificar un ámbito y /o tipo de despliegue predeterminados para Web Beans con ese estereotipo. Por ejemplo, si el tipo de despliegue <literal>@WebTier</literal> identifica Web Beans que sólo deben ser desplegados sólo cuando el sistema se ejecuta como una aplicación de red, podríamos especificar los siguientes valores por defecto para clases de acción:"
+msgstr "Un estereotipo puede especificar un ámbito y /o tipo de despliegue predeterminados para Web Beans con ese estereotipo. Por ejemplo, si el tipo de despliegue <literal>@WebTier</literal> identifica Web Beans que deben ser desplegados sólo cuando el sistema se ejecuta como una aplicación de red, podríamos especificar los siguientes valores por defecto para clases de acción:"
 
 #. Tag: programlisting
 #: stereotypes.xml:59
@@ -225,7 +225,7 @@ msgid ""
 "If a particular action class attempts to specify a scope other than the Web "
 "Beans request scope, an exception will be thrown by the Web Bean manager at "
 "initialization time."
-msgstr "Si una clase de acción determinada intenta especificar un ámbito diferente al ámbito de la petición de Web Beans, el administrador de Web Bean producirá una excepción en el momento de inicialización"
+msgstr "Si una clase de acción determinada intenta especificar un ámbito diferente al ámbito de la petición de Web Beans, el administrador de Web Bean producirá una excepción en el momento de inicialización."
 
 #. Tag: para
 #: stereotypes.xml:84
@@ -304,13 +304,13 @@ msgstr ""
 msgid ""
 "This helps us get technical concerns even further away from the business "
 "code!"
-msgstr "Esto nos ayuda a obtener cuestiones técnicas aún más allá del código de negocios!"
+msgstr "¡Esto nos ayuda a obtener cuestiones técnicas aún más allá del código de negocios!"
 
 #. Tag: title
 #: stereotypes.xml:109
 #, no-c-format
 msgid "Name defaulting with stereotypes"
-msgstr "Predeterminación de nombre con estereotipo"
+msgstr "Predeterminación de nombre con estereotipos"
 
 #. Tag: para
 #: stereotypes.xml:111

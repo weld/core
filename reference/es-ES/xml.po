@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-16 14:27+1000\n"
+"PO-Revision-Date: 2009-01-20 11:40+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -47,7 +47,7 @@ msgstr "cuando debe haber múltiples Web Beans con la misma clase de implementac
 #: xml.xml:20
 #, no-c-format
 msgid "In either of these cases, Web Beans gives us two options:"
-msgstr "En cualquiera de estos casos, Web Beans nos ofrece dos opciones:"
+msgstr "En estos casos, Web Beans nos ofrece dos opciones:"
 
 #. Tag: para
 #: xml.xml:23
@@ -98,7 +98,7 @@ msgid ""
 "namespace is formed by prepending <literal>urn:java:</literal> to the Java "
 "package name. For the package <literal>com.mydomain.myapp</literal>, the XML "
 "namespace is <literal>urn:java:com.mydomain.myapp</literal>."
-msgstr "Para cada paquete de Java, Web Beans define el espacio de nombre (namespace) de XML correspondiente. El el espacio de nombre se forma añadiendo <literal>urn:java:</literal> al nombre de paquete de Java. Para el paquete <literal>com.mydomain.myapp</literal>, el espacio de nombre de XML es <literal>urn:java:com.mydomain.myapp</literal>."
+msgstr "Para cada paquete de Java, Web Beans define el espacio de nombre de XML correspondiente. El espacio de nombre se forma añadiendo <literal>urn:java:</literal> al nombre de paquete de Java. Para el paquete <literal>com.mydomain.myapp</literal>, el espacio de nombre de XML es <literal>urn:java:com.mydomain.myapp</literal>."
 
 #. Tag: para
 #: xml.xml:47
@@ -109,7 +109,7 @@ msgid ""
 "name of the Java type. Fields and methods of the type are specified by child "
 "elements in the same namespace. If the type is an annotation, members are "
 "specified by attributes of the element."
-msgstr "Los tipos Java pertenecientes a un paquete se conocen mediante un elemento XML en el espacio de nombre correspondiente al paquete. El nombre del elemento es el nombre del tipo de Java y los métodos del tipo están especificados por elementos secundarios en el mismo espacio de nombre. Si el tipo es una anotación, los miembros están especificados por atributos del elemento."
+msgstr "Los tipos Java pertenecientes a un paquete se conocen por un elemento XML en el espacio de nombre correspondiente al paquete. El nombre del elemento es el nombre del tipo de Java y los métodos del tipo están especificados por elementos secundarios en el mismo espacio de nombre. Si el tipo es una anotación, los miembros son especificados por atributos del elemento."
 
 #. Tag: para
 #: xml.xml:53
@@ -117,7 +117,7 @@ msgstr "Los tipos Java pertenecientes a un paquete se conocen mediante un elemen
 msgid ""
 "For example, the element <literal>&lt;util:Date/&gt;</literal> in the "
 "following XML fragment refers to the class <literal>java.util.Date</literal>:"
-msgstr "Por ejemplo, el elemento <literal>&lt;util:Date/&gt;</literal> el siguiente fragmento XML se refiere a la clase <literal>java.util.Date</literal>:"
+msgstr "Por ejemplo, el elemento <literal>&lt;util:Date/&gt;</literal> en el siguiente fragmento XML se refiere a la clase <literal>java.util.Date</literal>:"
 
 #. Tag: programlisting
 #: xml.xml:56
@@ -270,7 +270,7 @@ msgstr ""
 msgid ""
 "Interceptors and decorators are just simple Web Beans, so they may be "
 "declared just like any other simple Web Bean:"
-msgstr "Los interceptores y decoradores son sólo Web Beans sencillos, por consiguiente pueden ser declarados como cualquier otro Web Bean sencillo:"
+msgstr "Los interceptores y decoradores son sólo Web Beans sencillos, por consiguiente, pueden ser declarados como cualquier otro Web Bean sencillo:"
 
 #. Tag: programlisting
 #: xml.xml:90
@@ -345,7 +345,7 @@ msgid ""
 "a set of initial field values. This Web Bean has a special, container-"
 "generated binding and is therefore injectable only to the specific injection "
 "point at which it is declared."
-msgstr "El elemento <literal>&lt;Name&gt;</literal> declara un Web Bean sencillo de ámbito <literal>@Dependent</literal> y clase <literal>Name</literal>, con una serie de valores de campo iniciales. Este Web Bean tiene un enlace de contenedor-generado y es por lo tanto inyectable únicamente en el punto de inyección en el cual es declarado."
+msgstr "El elemento <literal>&lt;Name&gt;</literal> declara un Web Bean sencillo de ámbito <literal>@Dependent</literal> y clase <literal>Name</literal>, con una serie de valores de campo iniciales. Este Web Bean tiene un enlace de contenedor-generado y es, por lo tanto, inyectable únicamente en el punto de inyección en el cual es declarado."
 
 #. Tag: para
 #: xml.xml:116
@@ -354,7 +354,7 @@ msgid ""
 "This simple but powerful feature allows the Web Beans XML format to be used "
 "to specify whole graphs of Java objects. It's not quite a full databinding "
 "solution, but it's close!"
-msgstr "Esta función simple pero poderosa permite al formato de XML de Web Beans pueda utilizarse para especificar gráficos completos de objetos Java. No es del todo una solución para enlazar datos, pero ¡está cerca!"
+msgstr "Esta función simple pero poderosa permite que el formato XML de Web Beans pueda utilizarse para especificar gráficos completos de objetos Java. No es del todo una solución para enlazar datos, pero ¡está cerca!"
 
 #. Tag: title
 #: xml.xml:123
@@ -370,7 +370,7 @@ msgid ""
 "developers, or who don't have access to our code, we need to provide a "
 "schema. There's nothing specific to Web Beans about writing or using the "
 "schema."
-msgstr "Si deseamos que nuestro formato de documento XML sea creado por personas que no son desarrolladores de Java, o que no tienen acceso a nuestro código, necesitamos proporcionar un esquema. No hay nada específico para Web Beans sobre escribir o utilizar el esquema."
+msgstr "Si deseamos que nuestro formato de documento XML sea creado por personas que no son desarrolladores de Java, o que no tienen acceso a nuestro código, necesitamos proporcionar un esquema. No hay nada específico de Web Beans sobre escribir o utilizar el esquema."
 
 #. Tag: programlisting
 #: xml.xml:130
@@ -411,5 +411,5 @@ msgid ""
 "Writing an XML schema is quite tedious. Therefore, the Web Beans RI project "
 "will provide a tool which automatically generates the XML schema from "
 "compiled Java code."
-msgstr "La escritura de un esquema XML es bastante tediosa. Por lo tanto, el proyecto IR de Web Beans proporcionará una herramienta que genere automáticamente el esquema de XML desde el código de Java compilado."
+msgstr "La escritura de un esquema XML es bastante tediosa. Por lo tanto, el proyecto de la IR de Web Beans proporcionará una herramienta que genere automáticamente el esquema de XML desde el código de Java compilado."
 

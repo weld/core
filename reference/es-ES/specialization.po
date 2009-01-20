@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: specialization\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-04 23:18+0000\n"
-"PO-Revision-Date: 2009-01-19 10:55+1000\n"
+"PO-Revision-Date: 2009-01-20 11:16+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: specialization.xml:4
 #, no-c-format
 msgid "Specialization"
-msgstr "Especialización"
+msgstr "Specialization"
 
 #. Tag: para
 #: specialization.xml:6
@@ -32,7 +32,7 @@ msgid ""
 "implementation of the API <literal>PaymentProcessor</literal> in production:"
 msgstr ""
 "Hemos visto cómo el modelo de inyección de dependencia de Web Beans nos permite "
-"<emphasis>omitir</emphasis> la implementación de un API en el momento del despliegue. Por ejemplo, la siguiente Web Bean empresarial provee una implementación del <literal>PaymentProcessor</literal> de API en producción:"
+"<emphasis>omitir</emphasis> la implementación de un API en el momento del despliegue. Por ejemplo, la siguiente Web Bean empresarial provee una implementación del <literal>Procesador de Pago</literal> de API en producción:"
 
 #. Tag: programlisting
 #: specialization.xml:11
@@ -126,7 +126,7 @@ msgstr "el Web Bean de prioridad más alta puede que no implemente todos los tip
 msgid ""
 "the higher-priority Web Bean may not declare all the binding types of the "
 "Web Bean that it attempts to override,"
-msgstr "el Web Bean de prioridad más alta puede que no declare todos los tipos de enlace del Web Bean que intenta omitir, "
+msgstr "el Web Bean de prioridad más alta puede que no declare todos los tipos de enlace del Web Bean que intenta omitir,"
 
 #. Tag: para
 #: specialization.xml:40
@@ -162,14 +162,14 @@ msgid ""
 "a little esoteric at first, but it's easy to use in practice, and you'll "
 "really appreciate the extra security it provides."
 msgstr ""
-"Web Beans ofrece una función especial, llamada <emphasis>specialization</"
+"Web Beans ofrece una función especial, llamada <emphasis>Specialization</"
 "emphasis>, la cual ayuda al desarrollador a evitar estas trampas. Specialization parece un poco esotérica al comienzo, pero es fácil de utilizar en la práctica y realmente apreciará la seguridad adicional que proporciona."
 
 #. Tag: title
 #: specialization.xml:58
 #, no-c-format
 msgid "Using specialization"
-msgstr "Uso de especialización"
+msgstr "Uso de Specialization"
 
 #. Tag: para
 #: specialization.xml:60
@@ -179,7 +179,7 @@ msgid ""
 "Beans. To make use of specialization, the higher-priority Web Bean must:"
 msgstr ""
 "Specialization es una función específica para Web "
-"Beans sencillos y empresariales. Para hacer uso de specialization, la Web Bean de prioridad más alta debe:"
+"Beans sencillos y empresariales. Para hacer uso de Specialization, la Web Bean de prioridad más alta debe:"
 
 #. Tag: para
 #: specialization.xml:65
@@ -230,13 +230,13 @@ msgstr "Decimos que el Web Bean de prioridad más alta<emphasis>especializa</emp
 #: specialization.xml:85
 #, no-c-format
 msgid "Advantages of specialization"
-msgstr "Ventajas de especialización"
+msgstr "Ventajas de Specialization"
 
 #. Tag: para
 #: specialization.xml:87
 #, no-c-format
 msgid "When specialization is used:"
-msgstr "Cuándo se utiliza especialización:"
+msgstr "Cuando se utiliza Specialization:"
 
 #. Tag: para
 #: specialization.xml:91

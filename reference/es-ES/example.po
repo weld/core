@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: example\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-04 23:18+0000\n"
-"PO-Revision-Date: 2009-01-19 14:08+1000\n"
+"PO-Revision-Date: 2009-01-20 10:54+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -67,7 +67,7 @@ msgstr ""
 #: example.xml:13
 #, no-c-format
 msgid "This Web Bean is bound to the login prompt in the following JSF form:"
-msgstr "Este Web Bean está vinculado al intérprete de comandos de inicio de sesión en la siguiente forma JSF:"
+msgstr "Este Web Bean está vinculado al intérprete de comandos de inicio de sesión en el siguiente formulario JSF:"
 
 #. Tag: programlisting
 #: example.xml:15
