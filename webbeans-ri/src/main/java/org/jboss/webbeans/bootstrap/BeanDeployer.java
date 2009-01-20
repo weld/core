@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.webbeans.BindingType;
 import javax.webbeans.Fires;
 import javax.webbeans.Initializer;
 import javax.webbeans.Observes;
@@ -115,18 +116,20 @@ public class BeanDeployer
       
       if (annotatedClass.isAnnotationPresent(Realizes.class))
       {
-         registerProducerMethods(bean, annotatedClass.getSuperclass(), bean.getBindings());
-         registerProducerFields(bean, annotatedClass.getSuperclass(), bean.getBindings());
+         Set<Annotation> extraAnnotations = new HashSet<Annotation>();
+         extraAnnotations.addAll(annotatedClass.getDeclaredMetaAnnotations(BindingType.class));
+         registerProducerMethods(bean, annotatedClass.getSuperclass(), extraAnnotations);
+         registerProducerFields(bean, annotatedClass.getSuperclass(), extraAnnotations);
       }
       
       log.info("Web Bean: " + bean);
    }
    
-   private void registerProducerMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass, Set<Annotation> extraBindings)
+   private void registerProducerMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass, Set<Annotation> extraAnnotations)
    {
       for (AnnotatedMethod<?> method : annotatedClass.getDeclaredAnnotatedMethods(Produces.class))
       {
-         ProducerMethodBean<?> bean = ProducerMethodBean.of(method.wrap(extraBindings), declaringBean, manager);
+         ProducerMethodBean<?> bean = ProducerMethodBean.of(method.wrap(extraAnnotations), declaringBean, manager);
          beans.add(bean);
          manager.getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
          registerFacades(bean.getAnnotatedInjectionPoints());
@@ -134,11 +137,11 @@ public class BeanDeployer
       }
    }
    
-   private void registerProducerFields(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass, Set<Annotation> extraBindings)
+   private void registerProducerFields(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass, Set<Annotation> extraAnnotations)
    {
       for (AnnotatedField<?> field : annotatedClass.getDeclaredAnnotatedFields(Produces.class))
       {
-         ProducerFieldBean<?> bean = ProducerFieldBean.of(field.wrap(extraBindings), declaringBean, manager);
+         ProducerFieldBean<?> bean = ProducerFieldBean.of(field.wrap(extraAnnotations), declaringBean, manager);
          beans.add(bean);
          log.info("Web Bean: " + bean);
       }
