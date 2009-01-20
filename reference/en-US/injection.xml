@@ -324,8 +324,8 @@ public class MockPaymentProcessor implements PaymentProcessor {
   <title>Deployment type precedence</title>
 
 <para>If you've been paying attention, you're probably wondering how the Web Bean 
-manager decides which implementation&#151;<literal>ExternalPaymentProcessor</literal> 
-or <literal>MockPaymentProcessor</literal>&#151;to choose. Consider what happens when 
+manager decides which implementation &#151; <literal>ExternalPaymentProcessor</literal> 
+or <literal>MockPaymentProcessor</literal> &#151; to choose. Consider what happens when 
 the manager encounters this injection point:</para>
 
 <programlisting role="JAVA"><![CDATA[@Current PaymentProcessor paymentProcessor]]></programlisting>
@@ -402,7 +402,7 @@ scenarios the Web Bean will be used in.</para>
   
   <para>To fix an <literal>UnsatisfiedDependencyException</literal>, simply provide 
   a Web Bean which implements the API type and has the binding types of the injection
-  point&#151;or enable the deployment type of a Web Bean that already implements the 
+  point &#151; or enable the deployment type of a Web Bean that already implements the 
   API type and has the binding types.</para>
   
   <para>To fix an <literal>AmbiguousDependencyException</literal>, introduce a 
@@ -489,7 +489,7 @@ scenarios the Web Bean will be used in.</para>
                                                new AnnotationLiteral<CreditCard>(){});]]></programlisting>
   
   <para>If the binding type has an annotation member, we can't use an anonymous subclass of 
-  <literal>AnnotationLiteral</literal>&#151;instead we'll need to create a named subclass:</para>
+  <literal>AnnotationLiteral</literal> &#151; instead we'll need to create a named subclass:</para>
   
 <programlisting role="JAVA"><![CDATA[abstract class CreditCardBinding 
     extends AnnotationLiteral<CreditCard> 
@@ -525,8 +525,8 @@ scenarios the Web Bean will be used in.</para>
 <section>
   <title>The <literal>InjectionPoint</literal> object</title>
   
-  <para>There are certain kinds of dependent objects&#151;Web Beans with scope 
-  <literal>@Dependent</literal>&#151;that need to know something about the object or injection 
+  <para>There are certain kinds of dependent objects &#151; Web Beans with scope 
+  <literal>@Dependent</literal> &#151; that need to know something about the object or injection 
   point into which they are injected in order to be able to do what they do. For example:</para>
   
   <itemizedlist>

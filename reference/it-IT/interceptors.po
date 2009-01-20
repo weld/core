@@ -502,8 +502,8 @@ msgstr "<![CDATA[public @interface Action extends Transactional, Secure { ... }]
 #. Tag: para
 #: interceptors.xml:181
 #, no-c-format
-msgid "Well, fortunately, Web Beans works around this missing feature of Java. We may annotate one interceptor binding type with other interceptor binding types. The interceptor bindings are transitive&#151;any Web Bean with the first interceptor binding inherits the interceptor bindings declared as meta-annotations."
-msgstr "Fortunatamente Web Beans provvede a questa mancanza di Java. E' possibile annotare un tipo di interceptor binding con altri tipi di interceptor binding. Gli interceptor binding sono transitivi&#151;qualsiasi Web Bean con il primo interceptor binding eredita gli interceptor binding dichiarati come meta-annotazioni."
+msgid "Well, fortunately, Web Beans works around this missing feature of Java. We may annotate one interceptor binding type with other interceptor binding types. The interceptor bindings are transitive &#151; any Web Bean with the first interceptor binding inherits the interceptor bindings declared as meta-annotations."
+msgstr "Fortunatamente Web Beans provvede a questa mancanza di Java. E' possibile annotare un tipo di interceptor binding con altri tipi di interceptor binding. Gli interceptor binding sono transitivi &#151; qualsiasi Web Bean con il primo interceptor binding eredita gli interceptor binding dichiarati come meta-annotazioni."
 
 #. Tag: programlisting
 #: interceptors.xml:186
@@ -574,8 +574,8 @@ msgstr "gli interceptor possono non essere facilmente disabilitati a deployment 
 #. Tag: para
 #: interceptors.xml:212
 #, no-c-format
-msgid "the interceptor ordering is non-global&#151;it is determined by the order in which interceptors are listed at the class level."
-msgstr "l'ordinamento degli interceptor è non-globale&#151;è determinata dall'ordine in cui gli interceptor sono elencati al livello di classe."
+msgid "the interceptor ordering is non-global &#151; it is determined by the order in which interceptors are listed at the class level."
+msgstr "l'ordinamento degli interceptor è non-globale &#151; è determinata dall'ordine in cui gli interceptor sono elencati al livello di classe."
 
 #. Tag: para
 #: interceptors.xml:217

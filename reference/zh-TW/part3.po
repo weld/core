@@ -31,10 +31,10 @@ msgstr "Web Bean 的第二個重點就是 <emphasis>strong typing（強類型）
 #, no-c-format
 msgid ""
 "You don't see string-based identifiers in Web Beans code, not because the "
-"framework is hiding them from you using clever defaulting rules&#151;so-"
-"called \"configuration by convention\"&#151;but because there are simply no "
+"framework is hiding them from you using clever defaulting rules &#151; so-"
+"called \"configuration by convention\" &#151; but because there are simply no "
 "strings there to begin with!"
-msgstr "您在 Web Bean 的程式碼中不會看見基於字串的識別符號，這不是因為 framework 透過使用預設的規則來將它隱藏起來&#151;又稱為「configuration by convention」&#151;而是因為一開始根本就沒有任何字串！"
+msgstr "您在 Web Bean 的程式碼中不會看見基於字串的識別符號，這不是因為 framework 透過使用預設的規則來將它隱藏起來 &#151; 又稱為「configuration by convention」 &#151; 而是因為一開始根本就沒有任何字串！"
 
 #. Tag: para
 #: part3.xml:15

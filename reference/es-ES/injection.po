@@ -766,13 +766,13 @@ msgstr "Prioridad de tipo de despliegue"
 #, no-c-format
 msgid ""
 "If you've been paying attention, you're probably wondering how the Web Bean "
-"manager decides which implementation&#151;<literal>ExternalPaymentProcessor</"
-"literal> or <literal>MockPaymentProcessor</literal>&#151;to choose. Consider "
+"manager decides which implementation &#151; <literal>ExternalPaymentProcessor</"
+"literal> or <literal>MockPaymentProcessor</literal> &#151; to choose. Consider "
 "what happens when the manager encounters this injection point:"
 msgstr ""
 "Si ha prestado atención, probablemente se estará preguntando cómo escoge Web Bean "
-"la aplicación&#151;<literal>ExternalPaymentProcessor</"
-"literal> o <literal>MockPaymentProcessor</literal>&#151;. Piense en lo que sucede cuando el administrador encuentra este punto de inyección:"
+"la aplicación &#151; <literal>ExternalPaymentProcessor</"
+"literal> o <literal>MockPaymentProcessor</literal> &#151; . Piense en lo que sucede cuando el administrador encuentra este punto de inyección:"
 
 #. Tag: programlisting
 #: injection.xml:251
@@ -917,9 +917,9 @@ msgstr ""
 msgid ""
 "To fix an <literal>UnsatisfiedDependencyException</literal>, simply provide "
 "a Web Bean which implements the API type and has the binding types of the "
-"injection point&#151;or enable the deployment type of a Web Bean that "
+"injection point &#151; or enable the deployment type of a Web Bean that "
 "already implements the API type and has the binding types."
-msgstr "Para corregir una <literal>UnsatisfiedDependencyException</literal>, basta con proporcionar un Web Bean que implemente el tipo API y tenga los tipos de enlace del punto de inyección&#151;o permita el tipo de despliegue de un Web Bean que ya implemente el tipo API y tenga los tipos de enlace."
+msgstr "Para corregir una <literal>UnsatisfiedDependencyException</literal>, basta con proporcionar un Web Bean que implemente el tipo API y tenga los tipos de enlace del punto de inyección &#151; o permita el tipo de despliegue de un Web Bean que ya implemente el tipo API y tenga los tipos de enlace."
 
 #. Tag: para
 #: injection.xml:328
@@ -1111,9 +1111,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If the binding type has an annotation member, we can't use an anonymous "
-"subclass of <literal>AnnotationLiteral</literal>&#151;instead we'll need to "
+"subclass of <literal>AnnotationLiteral</literal> &#151; instead we'll need to "
 "create a named subclass:"
-msgstr "Si el tipo de vinculación tiene un miembro de anotación, no podemos utilizar una subclase anónima de <literal>AnnotationLiteral</literal>&#151;en su lugar, necesitaremos crear una subclase llamada:"
+msgstr "Si el tipo de vinculación tiene un miembro de anotación, no podemos utilizar una subclase anónima de <literal>AnnotationLiteral</literal> &#151; en su lugar, necesitaremos crear una subclase llamada:"
 
 #. Tag: programlisting
 #: injection.xml:413
@@ -1210,11 +1210,11 @@ msgstr "El objeto <literal>InjectionPoint</literal>"
 #: injection.xml:442
 #, no-c-format
 msgid ""
-"There are certain kinds of dependent objects&#151;Web Beans with scope "
-"<literal>@Dependent</literal>&#151;that need to know something about the "
+"There are certain kinds of dependent objects &#151; Web Beans with scope "
+"<literal>@Dependent</literal> &#151; that need to know something about the "
 "object or injection point into which they are injected in order to be able "
 "to do what they do. For example:"
-msgstr "Hay algunas clases de objetos&#151;con ámbito <literal>@Dependent</literal>&#151;que necesitan saber algo acerca del objeto o punto de inyección dentro del cual son inyectados para poder hacer lo que hacen. Por ejemplo:"
+msgstr "Hay algunas clases de objetos &#151; con ámbito <literal>@Dependent</literal> &#151; que necesitan saber algo acerca del objeto o punto de inyección dentro del cual son inyectados para poder hacer lo que hacen. Por ejemplo:"
 
 #. Tag: para
 #: injection.xml:448

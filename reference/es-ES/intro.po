@@ -48,11 +48,11 @@ msgid ""
 "Furthermore, every EJB 3-style session bean is a Web Bean. Sure, the "
 "JavaBeans and EJBs you've been writing every day have not been able to take "
 "advantage of the new services defined by the Web Beans specification, but "
-"you'll be able to use every one of them as Web Beans&#151;injecting them "
+"you'll be able to use every one of them as Web Beans &#151; injecting them "
 "into other Web Beans, configuring them via the Web Beans XML configuration "
-"facility, even adding interceptors and decorators to them&#151;without "
+"facility, even adding interceptors and decorators to them &#151; without "
 "touching your existing code."
-msgstr "Con determinadas excepciones, muy especiales, toda clase de Java con un constructor que no acepte parámetros es un Web Bean. Esto incluye cada JavaBean. Además, cada sesión estilo EJB 3 es un Web Bean. Por supuesto, los JavaBeans y EJB que usted ha escrito a diario no han podido aprovechar los nuevos servicios definidos por la especificación de Web Beans, pero podrá utilizar cada uno de ellos como Web Beans&#151;inyectándolos en otros Web Beans, configurándolos a través de los servicios de configuración, incluso agregándoles interceptores y decoradores&#151;sin tocar su código existente."
+msgstr "Con determinadas excepciones, muy especiales, toda clase de Java con un constructor que no acepte parámetros es un Web Bean. Esto incluye cada JavaBean. Además, cada sesión estilo EJB 3 es un Web Bean. Por supuesto, los JavaBeans y EJB que usted ha escrito a diario no han podido aprovechar los nuevos servicios definidos por la especificación de Web Beans, pero podrá utilizar cada uno de ellos como Web Beans &#151; inyectándolos en otros Web Beans, configurándolos a través de los servicios de configuración, incluso agregándoles interceptores y decoradores &#151; sin tocar su código existente."
 
 #. Tag: para
 #: intro.xml:25
@@ -245,12 +245,12 @@ msgid ""
 "At system initialization time, the Web Bean manager must validate that "
 "exactly one Web Bean exists which satisfies each injection point. In our "
 "example, if no implementation of <literal>Translator</literal> "
-"available&#151;if the <literal>SentenceTranslator</literal> EJB was not "
-"deployed&#151;the Web Bean manager would throw an "
+"available &#151; if the <literal>SentenceTranslator</literal> EJB was not "
+"deployed &#151; the Web Bean manager would throw an "
 "<literal>UnsatisfiedDependencyException</literal>. If more than one "
 "implementation of <literal>Translator</literal> was available, the Web Bean "
 "manager would throw an <literal>AmbiguousDependencyException</literal>."
-msgstr "En el momento de inicialización, el administrador de Web Bean debe confirmar que exista exactamente un Web Bean que complete cada punto de inyección. En nuestro ejemplo, si no estaba disponible ninguna implementación de <literal>Translator</literal> &#151;si el EJB de <literal>SentenceTranslator</literal> no estaba desplegado&#151;el administrador de Web Bean produciría una <literal>UnsatisfiedDependencyException</literal>. Si más de una implementación de <literal>Translator</literal> estuviera disponible, el administrador de Web Bean produciría una <literal>AmbiguousDependencyException</literal>."
+msgstr "En el momento de inicialización, el administrador de Web Bean debe confirmar que exista exactamente un Web Bean que complete cada punto de inyección. En nuestro ejemplo, si no estaba disponible ninguna implementación de <literal>Translator</literal>  &#151; si el EJB de <literal>SentenceTranslator</literal> no estaba desplegado &#151; el administrador de Web Bean produciría una <literal>UnsatisfiedDependencyException</literal>. Si más de una implementación de <literal>Translator</literal> estuviera disponible, el administrador de Web Bean produciría una <literal>AmbiguousDependencyException</literal>."
 
 #. Tag: title
 #: intro.xml:80
@@ -382,11 +382,11 @@ msgstr "Podemos remplazar un Web Bean por un Web Bean diferente que implemente l
 #, no-c-format
 msgid ""
 "Note that not all clients of a Web Bean are Web Beans. Other objects such as "
-"Servlets or Message-Driven Beans&#151;which are by nature not injectable, "
-"contextual objects&#151;may also obtain references to Web Beans by injection."
+"Servlets or Message-Driven Beans &#151; which are by nature not injectable, "
+"contextual objects &#151; may also obtain references to Web Beans by injection."
 msgstr ""
 "Observe que todos los clientes de una Web Bean son Web Beans. Otros objetos tales como "
-"Servlets o Message-Driven Beans&#151;los cuales son por naturaleza no inyectables, objetos contextuales&#151;también pueden obtener referencias a Web Beans por inyección."
+"Servlets o Message-Driven Beans &#151; los cuales son por naturaleza no inyectables, objetos contextuales &#151; también pueden obtener referencias a Web Beans por inyección."
 
 #. Tag: para
 #: intro.xml:149
@@ -765,9 +765,9 @@ msgstr ""
 #: intro.xml:289
 #, no-c-format
 msgid ""
-"In this case, the name defaults to <literal>shoppingCart</literal>&#151;the "
+"In this case, the name defaults to <literal>shoppingCart</literal> &#151; the "
 "unqualified class name, with the first character changed to lowercase."
-msgstr "En este caso, el nombre predetermina al <literal>shoppingCart</literal>&#151;el nombre de clase no calificado, con el primer caracter cambiado a minúsculas."
+msgstr "En este caso, el nombre predetermina al <literal>shoppingCart</literal> &#151; el nombre de clase no calificado, con el primer caracter cambiado a minúsculas."
 
 #. Tag: title
 #: intro.xml:295
@@ -919,13 +919,13 @@ msgstr "Web Beans de empresa"
 msgid ""
 "The specification says that all EJB 3-style session and singleton beans are "
 "<emphasis>enterprise</emphasis> Web Beans. Message driven beans are not Web "
-"Beans&#151;since they are not intended to be injected into other "
-"objects&#151;but they can take advantage of most of the functionality of Web "
+"Beans &#151; since they are not intended to be injected into other "
+"objects &#151; but they can take advantage of most of the functionality of Web "
 "Beans, including dependency injection and interceptors."
 msgstr ""
 "La especificación dice que todos los beans de sesión estilo EJB 3- y singleton son "
 "<emphasis>empresariales</emphasis>. Los mensajes de beans no son Web "
-"Beans&#151;porque no están diseñados para ser inyectados en otros objetos&#151;pero pueden aprovechar la mayoría de las funcionalidades de los Web Beans, incluyendo la inyección de dependencia y los interceptores."
+"Beans &#151; porque no están diseñados para ser inyectados en otros objetos &#151; pero pueden aprovechar la mayoría de las funcionalidades de los Web Beans, incluyendo la inyección de dependencia y los interceptores."
 
 #. Tag: para
 #: intro.xml:366

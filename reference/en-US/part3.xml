@@ -8,8 +8,8 @@
   contained in typesafe Java constructs that may be validated by the compiler.</para>
   
   <para>You don't see string-based identifiers in Web Beans code, not because the 
-  framework is hiding them from you using clever defaulting rules&#151;so-called
-  "configuration by convention"&#151;but because there are simply no strings there 
+  framework is hiding them from you using clever defaulting rules &#151; so-called
+  "configuration by convention" &#151; but because there are simply no strings there 
   to begin with!</para>
 
   <para>The obvious benefit of this approach is that <emphasis>any</emphasis> IDE can 

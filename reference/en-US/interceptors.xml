@@ -232,7 +232,7 @@ public class ShoppingCart {
 
   <para>Well, fortunately, Web Beans works around this missing feature of Java.
   We may annotate one interceptor binding type with other interceptor binding
-  types. The interceptor bindings are transitive&#151;any Web Bean with the first
+  types. The interceptor bindings are transitive &#151; any Web Bean with the first
   interceptor binding inherits the interceptor bindings declared as meta-annotations.</para>
 
 <programlisting role="JAVA"><![CDATA[@Transactional @Secure
@@ -268,7 +268,7 @@ public class ShoppingCart {
       <para>interceptors may not be easily disabled at deployment time, and</para>
     </listitem>
     <listitem>
-      <para>the interceptor ordering is non-global&#151;it is determined 
+      <para>the interceptor ordering is non-global &#151; it is determined 
       by the order in which interceptors are listed at the class level.</para>
     </listitem>
   </itemizedlist>

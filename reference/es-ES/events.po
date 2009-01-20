@@ -133,11 +133,11 @@ msgstr ""
 #: events.xml:48
 #, no-c-format
 msgid ""
-"An observer method need not specify any event bindings&#151;in this case it "
+"An observer method need not specify any event bindings &#151; in this case it "
 "is interested in <emphasis>all</emphasis> events of a particular type. If it "
 "does specify event bindings, it is only interested in events which also have "
 "those event bindings."
-msgstr "Un método de observador no necesita especificar ningún enlace de evento &#151;en este caso está interesado en <emphasis>todos</emphasis> los eventos de un tipo determinado. Si no especifica enlaces de eventos, sólo está  interesado en eventos que también tienen esos enlaces de eventos."
+msgstr "Un método de observador no necesita especificar ningún enlace de evento  &#151; en este caso está interesado en <emphasis>todos</emphasis> los eventos de un tipo determinado. Si no especifica enlaces de eventos, sólo está  interesado en eventos que también tienen esos enlaces de eventos."
 
 #. Tag: para
 #: events.xml:53

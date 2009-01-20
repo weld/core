@@ -412,7 +412,7 @@ msgstr "Empaquetamiento y despliegue."
 #, no-c-format
 msgid ""
 "Web Beans doesn't define any special deployment archive. You can package Web "
-"Beans in JARs, EJB-JARs or WARs&#151;any deployment location in the "
+"Beans in JARs, EJB-JARs or WARs &#151; any deployment location in the "
 "application classpath. However, each archive that contains Web Beans must "
 "include a file named <literal>web-beans.xml</literal> in the <literal>META-"
 "INF</literal> or <literal>WEB-INF</literal> directory. The file may be "
@@ -420,7 +420,7 @@ msgid ""
 "xml</literal> file will not be available for use in the application."
 msgstr ""
 "Web Beans no define ningún despliegue especial de archivo. Se puede empaquetar Web "
-"Beans en JAR, EJB-JAR o WAR&#151;cualquier ubicación de despliegue en la aplicación classpath. No obstante, cada archivo que contiene Web Beans debe incluir un archivo llamado <literal>web-beans.xml</literal> en <literal>META-INF</literal> o en el directorio <literal>WEB-INF</literal>. El archivo puede estar vacío. Los Web Beans desplegados en archivos que no tienen un archivo <literal>web-beans."
+"Beans en JAR, EJB-JAR o WAR &#151; cualquier ubicación de despliegue en la aplicación classpath. No obstante, cada archivo que contiene Web Beans debe incluir un archivo llamado <literal>web-beans.xml</literal> en <literal>META-INF</literal> o en el directorio <literal>WEB-INF</literal>. El archivo puede estar vacío. Los Web Beans desplegados en archivos que no tienen un archivo <literal>web-beans."
 "xml</literal> no estarán disponibles para uso en la aplicación."
 
 #. Tag: para

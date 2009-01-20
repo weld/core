@@ -760,12 +760,12 @@ msgstr "Deployment type 優先權"
 #, no-c-format
 msgid ""
 "If you've been paying attention, you're probably wondering how the Web Bean "
-"manager decides which implementation&#151;<literal>ExternalPaymentProcessor</"
-"literal> or <literal>MockPaymentProcessor</literal>&#151;to choose. Consider "
+"manager decides which implementation &#151; <literal>ExternalPaymentProcessor</"
+"literal> or <literal>MockPaymentProcessor</literal> &#151; to choose. Consider "
 "what happens when the manager encounters this injection point:"
 msgstr ""
-"若您有在細心注意的話，您應該會疑惑 Web Bean 管理員如何決定哪個實做&#151;<literal>ExternalPaymentProcessor</"
-"literal> 和 <literal>MockPaymentProcessor</literal>&#151;中選擇哪一個。請思考當管理員遇上了這個注入點時會如何："
+"若您有在細心注意的話，您應該會疑惑 Web Bean 管理員如何決定哪個實做 &#151; <literal>ExternalPaymentProcessor</"
+"literal> 和 <literal>MockPaymentProcessor</literal> &#151; 中選擇哪一個。請思考當管理員遇上了這個注入點時會如何："
 
 #. Tag: programlisting
 #: injection.xml:251
@@ -902,9 +902,9 @@ msgstr "要修正一個 <literal>UnsatisfiedDependencyException</literal> 或 <l
 msgid ""
 "To fix an <literal>UnsatisfiedDependencyException</literal>, simply provide "
 "a Web Bean which implements the API type and has the binding types of the "
-"injection point&#151;or enable the deployment type of a Web Bean that "
+"injection point &#151; or enable the deployment type of a Web Bean that "
 "already implements the API type and has the binding types."
-msgstr "若要修正一項 <literal>UnsatisfiedDependencyException</literal>，只要提供一個實做 API 類型並且擁有注入點的綁定類型的 Web Bean 即可&#151;或是啟用一個已實做 API 類型並且擁有綁定類型的 Web Bean 的 deployment type 即可。"
+msgstr "若要修正一項 <literal>UnsatisfiedDependencyException</literal>，只要提供一個實做 API 類型並且擁有注入點的綁定類型的 Web Bean 即可 &#151; 或是啟用一個已實做 API 類型並且擁有綁定類型的 Web Bean 的 deployment type 即可。"
 
 #. Tag: para
 #: injection.xml:328
@@ -1087,9 +1087,9 @@ msgstr ""
 #, no-c-format
 msgid ""
 "If the binding type has an annotation member, we can't use an anonymous "
-"subclass of <literal>AnnotationLiteral</literal>&#151;instead we'll need to "
+"subclass of <literal>AnnotationLiteral</literal> &#151; instead we'll need to "
 "create a named subclass:"
-msgstr "若綁定類型有個標記成員，我們便無法使用 <literal>AnnotationLiteral</literal> 的一個匿名 subclass&#151;我們需要建立一個有命名的 subclass："
+msgstr "若綁定類型有個標記成員，我們便無法使用 <literal>AnnotationLiteral</literal> 的一個匿名 subclass &#151; 我們需要建立一個有命名的 subclass："
 
 #. Tag: programlisting
 #: injection.xml:413
@@ -1176,11 +1176,11 @@ msgstr "<literal>InjectionPoint</literal> 物件"
 #: injection.xml:442
 #, no-c-format
 msgid ""
-"There are certain kinds of dependent objects&#151;Web Beans with scope "
-"<literal>@Dependent</literal>&#151;that need to know something about the "
+"There are certain kinds of dependent objects &#151; Web Beans with scope "
+"<literal>@Dependent</literal> &#151; that need to know something about the "
 "object or injection point into which they are injected in order to be able "
 "to do what they do. For example:"
-msgstr "有幾種特定相依物件&#151;含有 <literal>@Dependent</literal> 這個 scope 的 Web Bean&#151;需要知道有關於物件或是它們被注入的注入點相關資訊才能進行它們本應進行的工作。比方說："
+msgstr "有幾種特定相依物件 &#151; 含有 <literal>@Dependent</literal> 這個 scope 的 Web Bean &#151; 需要知道有關於物件或是它們被注入的注入點相關資訊才能進行它們本應進行的工作。比方說："
 
 #. Tag: para
 #: injection.xml:448

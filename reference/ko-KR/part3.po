@@ -26,8 +26,8 @@ msgstr "Web Beans의 두번째 주요 기능은 <emphasis>강한 타이핑 (stro
 #. Tag: para
 #: part3.xml:10
 #, no-c-format
-msgid "You don't see string-based identifiers in Web Beans code, not because the framework is hiding them from you using clever defaulting rules&#151;so-called \"configuration by convention\"&#151;but because there are simply no strings there to begin with!"
-msgstr "Web Beans 코드에서 문자열 기반 식별자를 보실 수 없습니다. 그 이유는 프레임워크가 &#151;\"관례에 의한 설정\"이라고 부르는&#151; 기본값 규칙을 사용하여 이를 숨기려하기 때문이 아니라 시작할 수 있는 문자열이 없기 때문입니다! "
+msgid "You don't see string-based identifiers in Web Beans code, not because the framework is hiding them from you using clever defaulting rules &#151; so-called \"configuration by convention\" &#151; but because there are simply no strings there to begin with!"
+msgstr "Web Beans 코드에서 문자열 기반 식별자를 보실 수 없습니다. 그 이유는 프레임워크가  &#151; \"관례에 의한 설정\"이라고 부르는 &#151;  기본값 규칙을 사용하여 이를 숨기려하기 때문이 아니라 시작할 수 있는 문자열이 없기 때문입니다! "
 
 #. Tag: para
 #: part3.xml:15

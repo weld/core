@@ -48,7 +48,7 @@ public @interface Updated { ... }]]></programlisting>
 
 <programlisting role="JAVA"><![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document) { ... }]]></programlisting>
 
-  <para>An observer method need not specify any event bindings&#151;in this case it
+  <para>An observer method need not specify any event bindings &#151; in this case it
   is interested in <emphasis>all</emphasis> events of a particular type. If it does
   specify event bindings, it is only interested in events which also have those
   event bindings.</para>

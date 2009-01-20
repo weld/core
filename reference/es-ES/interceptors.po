@@ -568,10 +568,10 @@ msgstr "<![CDATA[public @interface Action extends Transactional, Secure { ... }]
 msgid ""
 "Well, fortunately, Web Beans works around this missing feature of Java. We "
 "may annotate one interceptor binding type with other interceptor binding "
-"types. The interceptor bindings are transitive&#151;any Web Bean with the "
+"types. The interceptor bindings are transitive &#151; any Web Bean with the "
 "first interceptor binding inherits the interceptor bindings declared as meta-"
 "annotations."
-msgstr "Bueno, afortunadamente, Web Beans funciona en torno a esta característica de Java. Podemos anotar un interceptor de tipo de enlace con otros tipos de interceptores de enlace. Los enlaces de interceptor son transitivos&#151;cualquier Web Bean con el primer enlace de interceptor hereda los enlaces de interceptor declarados como meta-anotaciones."
+msgstr "Bueno, afortunadamente, Web Beans funciona en torno a esta característica de Java. Podemos anotar un interceptor de tipo de enlace con otros tipos de interceptores de enlace. Los enlaces de interceptor son transitivos &#151; cualquier Web Bean con el primer enlace de interceptor hereda los enlaces de interceptor declarados como meta-anotaciones."
 
 #. Tag: programlisting
 #: interceptors.xml:186
@@ -655,9 +655,9 @@ msgstr "los interceptores no se pueden fácilmente inhabilitar en el momento del
 #: interceptors.xml:212
 #, no-c-format
 msgid ""
-"the interceptor ordering is non-global&#151;it is determined by the order in "
+"the interceptor ordering is non-global &#151; it is determined by the order in "
 "which interceptors are listed at the class level."
-msgstr "la orden del interceptor es no-global&#151;es determinada por la orden en que se listan los interceptores en el nivel de clase."
+msgstr "la orden del interceptor es no-global &#151; es determinada por la orden en que se listan los interceptores en el nivel de clase."
 
 #. Tag: para
 #: interceptors.xml:217

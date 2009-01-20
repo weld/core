@@ -566,10 +566,10 @@ msgstr "<![CDATA[public @interface Action extends Transactional, Secure { ... }]
 msgid ""
 "Well, fortunately, Web Beans works around this missing feature of Java. We "
 "may annotate one interceptor binding type with other interceptor binding "
-"types. The interceptor bindings are transitive&#151;any Web Bean with the "
+"types. The interceptor bindings are transitive &#151; any Web Bean with the "
 "first interceptor binding inherits the interceptor bindings declared as meta-"
 "annotations."
-msgstr "幸運的是，Web Bean 有方法來解決 Java 所缺少的這項功能上的問題。我們可利用其它攔截器綁定類型來標記某個攔截器綁定類型。攔截器綁定為可轉變的&#151;任何含有第一個攔截器綁定的 Web Bean 都會繼承宣告為 meta-annotation 的攔截器綁定。"
+msgstr "幸運的是，Web Bean 有方法來解決 Java 所缺少的這項功能上的問題。我們可利用其它攔截器綁定類型來標記某個攔截器綁定類型。攔截器綁定為可轉變的 &#151; 任何含有第一個攔截器綁定的 Web Bean 都會繼承宣告為 meta-annotation 的攔截器綁定。"
 
 #. Tag: programlisting
 #: interceptors.xml:186
@@ -650,9 +650,9 @@ msgstr "攔截器無法在進行建置時輕易地被停用，以及"
 #: interceptors.xml:212
 #, no-c-format
 msgid ""
-"the interceptor ordering is non-global&#151;it is determined by the order in "
+"the interceptor ordering is non-global &#151; it is determined by the order in "
 "which interceptors are listed at the class level."
-msgstr "攔截器的順序會是非全域性的&#151;會由攔截器被列於 class 層級的順序來取決。"
+msgstr "攔截器的順序會是非全域性的 &#151; 會由攔截器被列於 class 層級的順序來取決。"
 
 #. Tag: para
 #: interceptors.xml:217

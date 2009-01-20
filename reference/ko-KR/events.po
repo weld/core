@@ -138,11 +138,11 @@ msgstr ""
 #: events.xml:48
 #, no-c-format
 msgid ""
-"An observer method need not specify any event bindings&#151;in this case it "
+"An observer method need not specify any event bindings &#151; in this case it "
 "is interested in <emphasis>all</emphasis> events of a particular type. If it "
 "does specify event bindings, it is only interested in events which also have "
 "those event bindings."
-msgstr "옵저버 방식은 어떤 이벤트 바인딩도 지정할 필요가 없습니다&#151;이러한 경우 특정 유형의 <emphasis>모든</emphasis> 이벤트에 관심을 갖게 됩니다. 이벤트 바인딩을 지정하지 않을 경우, 이러한 이벤트 바인딩이 있는 이벤트에만 관심을 갖게 됩니다.  "
+msgstr "옵저버 방식은 어떤 이벤트 바인딩도 지정할 필요가 없습니다 &#151; 이러한 경우 특정 유형의 <emphasis>모든</emphasis> 이벤트에 관심을 갖게 됩니다. 이벤트 바인딩을 지정하지 않을 경우, 이러한 이벤트 바인딩이 있는 이벤트에만 관심을 갖게 됩니다.  "
 
 #. Tag: para
 #: events.xml:53

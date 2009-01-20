@@ -97,8 +97,8 @@ msgstr "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document doc
 #. Tag: para
 #: events.xml:48
 #, no-c-format
-msgid "An observer method need not specify any event bindings&#151;in this case it is interested in <emphasis>all</emphasis> events of a particular type. If it does specify event bindings, it is only interested in events which also have those event bindings."
-msgstr "Un metodo osservatore non ha bisogno di specificare alcun binding di evento&#151;in questo caso è interessato a <emphasis>tutti</emphasis> gli eventi di un particolare tipo. Se specifica dei binding di evento, è solamente interessato agli eventi che hanno anche gli stessi binding di evento."
+msgid "An observer method need not specify any event bindings &#151; in this case it is interested in <emphasis>all</emphasis> events of a particular type. If it does specify event bindings, it is only interested in events which also have those event bindings."
+msgstr "Un metodo osservatore non ha bisogno di specificare alcun binding di evento &#151; in questo caso è interessato a <emphasis>tutti</emphasis> gli eventi di un particolare tipo. Se specifica dei binding di evento, è solamente interessato agli eventi che hanno anche gli stessi binding di evento."
 
 #. Tag: para
 #: events.xml:53

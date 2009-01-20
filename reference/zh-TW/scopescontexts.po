@@ -461,9 +461,9 @@ msgid ""
 "The Web Bean manager is permitted to destroy a conversation and all state "
 "held in its context at any time in order to preserve resources. A Web Bean "
 "manager implementation will normally do this on the basis of some kind of "
-"timeout&#151;though this is not required by the Web Beans specification. The "
+"timeout &#151; though this is not required by the Web Beans specification. The "
 "timeout is the period of inactivity before the conversation is destroyed."
-msgstr "Web Bean 管理員能夠隨時隨地刪除它 context 中的 conversation 以及所有狀態以保留資源。一個 Web Bean 管理員實做一般會利用某種形式的 timeout 來這麼作&#151;儘管這在 Web Bean 規格中是非必要的。Timeout 代表 conversation 在被刪除之前所經過的休止狀態時間。"
+msgstr "Web Bean 管理員能夠隨時隨地刪除它 context 中的 conversation 以及所有狀態以保留資源。一個 Web Bean 管理員實做一般會利用某種形式的 timeout 來這麼作 &#151; 儘管這在 Web Bean 規格中是非必要的。Timeout 代表 conversation 在被刪除之前所經過的休止狀態時間。"
 
 #. Tag: para
 #: scopescontexts.xml:208

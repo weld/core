@@ -128,11 +128,11 @@ msgstr ""
 #: events.xml:48
 #, no-c-format
 msgid ""
-"An observer method need not specify any event bindings&#151;in this case it "
+"An observer method need not specify any event bindings &#151; in this case it "
 "is interested in <emphasis>all</emphasis> events of a particular type. If it "
 "does specify event bindings, it is only interested in events which also have "
 "those event bindings."
-msgstr "一個 observer method 不需要指定任何的事件綁定&#151;在此情況下它會專注於特定 type 的<emphasis>所有</emphasis>事件。若它指定了事件綁定的話，它就只會專注於也具有這些事件綁定的事件。"
+msgstr "一個 observer method 不需要指定任何的事件綁定 &#151; 在此情況下它會專注於特定 type 的<emphasis>所有</emphasis>事件。若它指定了事件綁定的話，它就只會專注於也具有這些事件綁定的事件。"
 
 #. Tag: para
 #: events.xml:53

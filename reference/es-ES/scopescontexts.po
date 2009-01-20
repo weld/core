@@ -473,9 +473,9 @@ msgid ""
 "The Web Bean manager is permitted to destroy a conversation and all state "
 "held in its context at any time in order to preserve resources. A Web Bean "
 "manager implementation will normally do this on the basis of some kind of "
-"timeout&#151;though this is not required by the Web Beans specification. The "
+"timeout &#151; though this is not required by the Web Beans specification. The "
 "timeout is the period of inactivity before the conversation is destroyed."
-msgstr "Con el fin de preservar recursos, el administrador de Web Bean puede destruir una conversación y todo el estado en su contexto en cualquier momento. Una implementación del administrador de Web Bean normalmente hace esto con base en alguna clase de pausa&#151;aunque la especificación de Web Beans no lo requiere. La pausa es el periodo de inactividad anterior a la destrucción de la conversación."
+msgstr "Con el fin de preservar recursos, el administrador de Web Bean puede destruir una conversación y todo el estado en su contexto en cualquier momento. Una implementación del administrador de Web Bean normalmente hace esto con base en alguna clase de pausa &#151; aunque la especificación de Web Beans no lo requiere. La pausa es el periodo de inactividad anterior a la destrucción de la conversación."
 
 #. Tag: para
 #: scopescontexts.xml:208

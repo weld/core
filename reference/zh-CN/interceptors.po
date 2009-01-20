@@ -486,7 +486,7 @@ msgstr ""
 msgid ""
 "Well, fortunately, Web Beans works around this missing feature of Java. We "
 "may annotate one interceptor binding type with other interceptor binding "
-"types. The interceptor bindings are transitive&#151;any Web Bean with the "
+"types. The interceptor bindings are transitive &#151; any Web Bean with the "
 "first interceptor binding inherits the interceptor bindings declared as meta-"
 "annotations."
 msgstr ""
@@ -560,7 +560,7 @@ msgstr ""
 #: interceptors.xml:212
 #, no-c-format
 msgid ""
-"the interceptor ordering is non-global&#151;it is determined by the order in "
+"the interceptor ordering is non-global &#151; it is determined by the order in "
 "which interceptors are listed at the class level."
 msgstr ""
 

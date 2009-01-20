@@ -170,7 +170,7 @@ public void sendMessage(String price) {
     <title>Packaging and deployment</title>
     
     <para>Web Beans doesn't define any special deployment archive. You can package
-    Web Beans in JARs, EJB-JARs or WARs&#151;any deployment location in the application 
+    Web Beans in JARs, EJB-JARs or WARs &#151; any deployment location in the application 
     classpath. However, each archive that contains Web Beans must include a file named 
     <literal>web-beans.xml</literal> in the <literal>META-INF</literal> or
     <literal>WEB-INF</literal> directory. The file may be empty. Web Beans deployed in 

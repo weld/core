@@ -117,7 +117,7 @@ msgstr ""
 #: events.xml:48
 #, no-c-format
 msgid ""
-"An observer method need not specify any event bindings&#151;in this case it "
+"An observer method need not specify any event bindings &#151; in this case it "
 "is interested in <emphasis>all</emphasis> events of a particular type. If it "
 "does specify event bindings, it is only interested in events which also have "
 "those event bindings."

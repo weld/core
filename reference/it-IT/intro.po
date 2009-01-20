@@ -35,8 +35,8 @@ msgstr "Il primo Web Bean"
 #. Tag: para
 #: intro.xml:15
 #, no-c-format
-msgid "With certain, very special exceptions, every Java class with a constructor that accepts no parameters is a Web Bean. That includes every JavaBean. Furthermore, every EJB 3-style session bean is a Web Bean. Sure, the JavaBeans and EJBs you've been writing every day have not been able to take advantage of the new services defined by the Web Beans specification, but you'll be able to use every one of them as Web Beans&#151;injecting them into other Web Beans, configuring them via the Web Beans XML configuration facility, even adding interceptors and decorators to them&#151;without touching your existing code."
-msgstr "Con alcune eccezioni molto particolari, ogni classe Java con un costruttore che non accetta parametri è un Web Bean. Questo include ogni JavaBean. Inoltre, ogni session bean di stile EJB3 è un Web Bean. Sicuramente i JavaBean e gli EJB3 che si sono sempre scritti non erano in grado di sfruttare i nuovi servizi definiti dalla specifica Web Beans, ma si sarà presto in grado di usare ciascuno di essi come Web Bean&#151;iniettandoli in altri Web Beans, configurandoli tramite strumenti di configurazione XML Web Bean, e perfino aggiungendo a loro interceptor e decoratori&#151;senza toccare il codice esistente."
+msgid "With certain, very special exceptions, every Java class with a constructor that accepts no parameters is a Web Bean. That includes every JavaBean. Furthermore, every EJB 3-style session bean is a Web Bean. Sure, the JavaBeans and EJBs you've been writing every day have not been able to take advantage of the new services defined by the Web Beans specification, but you'll be able to use every one of them as Web Beans &#151; injecting them into other Web Beans, configuring them via the Web Beans XML configuration facility, even adding interceptors and decorators to them &#151; without touching your existing code."
+msgstr "Con alcune eccezioni molto particolari, ogni classe Java con un costruttore che non accetta parametri è un Web Bean. Questo include ogni JavaBean. Inoltre, ogni session bean di stile EJB3 è un Web Bean. Sicuramente i JavaBean e gli EJB3 che si sono sempre scritti non erano in grado di sfruttare i nuovi servizi definiti dalla specifica Web Beans, ma si sarà presto in grado di usare ciascuno di essi come Web Bean &#151; iniettandoli in altri Web Beans, configurandoli tramite strumenti di configurazione XML Web Bean, e perfino aggiungendo a loro interceptor e decoratori &#151; senza toccare il codice esistente."
 
 #. Tag: para
 #: intro.xml:25
@@ -195,8 +195,8 @@ msgstr "Come hai indovinato, l'annotazione <literal>@Initializer</literal> ha qu
 #. Tag: para
 #: intro.xml:68
 #, no-c-format
-msgid "At system initialization time, the Web Bean manager must validate that exactly one Web Bean exists which satisfies each injection point. In our example, if no implementation of <literal>Translator</literal> available&#151;if the <literal>SentenceTranslator</literal> EJB was not deployed&#151;the Web Bean manager would throw an <literal>UnsatisfiedDependencyException</literal>. If more than one implementation of <literal>Translator</literal> was available, the Web Bean manager would throw an <literal>AmbiguousDependencyException</literal>."
-msgstr "In fase di inizializzazione del sistema, il manager Web Bean deve convalidare che esattamente un solo Web Bean esista e soddisfi ciascun punto di iniezione. Nell'esempio, se nessuna implementazione di <literal>Translator</literal> fosse disponibile&#151;se l'EJB <literal>SentenceTranslator</literal> non venisse deployato&#151;il manager Web Bean lancerebbe una <literal>UnsatisfiedDependencyException</literal>. Se più di un'implementazione di <literal>Translator</literal> fosse disponibile, il manager Web Bean lancerebbe una <literal>AmbiguousDependencyException</literal>."
+msgid "At system initialization time, the Web Bean manager must validate that exactly one Web Bean exists which satisfies each injection point. In our example, if no implementation of <literal>Translator</literal> available &#151; if the <literal>SentenceTranslator</literal> EJB was not deployed &#151; the Web Bean manager would throw an <literal>UnsatisfiedDependencyException</literal>. If more than one implementation of <literal>Translator</literal> was available, the Web Bean manager would throw an <literal>AmbiguousDependencyException</literal>."
+msgstr "In fase di inizializzazione del sistema, il manager Web Bean deve convalidare che esattamente un solo Web Bean esista e soddisfi ciascun punto di iniezione. Nell'esempio, se nessuna implementazione di <literal>Translator</literal> fosse disponibile &#151; se l'EJB <literal>SentenceTranslator</literal> non venisse deployato &#151; il manager Web Bean lancerebbe una <literal>UnsatisfiedDependencyException</literal>. Se più di un'implementazione di <literal>Translator</literal> fosse disponibile, il manager Web Bean lancerebbe una <literal>AmbiguousDependencyException</literal>."
 
 #. Tag: title
 #: intro.xml:80
@@ -279,8 +279,8 @@ msgstr "Si può sostituire un Web Bean con un diverso Web Bean che implementa la
 #. Tag: para
 #: intro.xml:145
 #, no-c-format
-msgid "Note that not all clients of a Web Bean are Web Beans. Other objects such as Servlets or Message-Driven Beans&#151;which are by nature not injectable, contextual objects&#151;may also obtain references to Web Beans by injection."
-msgstr "Si noti che non tutti i client dei un Web Bean sono Web Bean. Altri oggetti come Servlet o Message-Driven Beans&#151;che sono per natura non iniettabili, oggetti contestuali&#151;possono pure ottenere riferimenti a Web Bean tramite iniezione."
+msgid "Note that not all clients of a Web Bean are Web Beans. Other objects such as Servlets or Message-Driven Beans &#151; which are by nature not injectable, contextual objects &#151; may also obtain references to Web Beans by injection."
+msgstr "Si noti che non tutti i client dei un Web Bean sono Web Bean. Altri oggetti come Servlet o Message-Driven Beans &#151; che sono per natura non iniettabili, oggetti contestuali &#151; possono pure ottenere riferimenti a Web Bean tramite iniezione."
 
 # Tolto "Enough hand-waving."
 #. Tag: para
@@ -588,8 +588,8 @@ msgstr ""
 #. Tag: para
 #: intro.xml:289
 #, no-c-format
-msgid "In this case, the name defaults to <literal>shoppingCart</literal>&#151;the unqualified class name, with the first character changed to lowercase."
-msgstr "In questo caso il nome di default è <literal>shoppingCart</literal>&#151;il nome della classe non qualificata, con il primo carattere messo in minuscolo."
+msgid "In this case, the name defaults to <literal>shoppingCart</literal> &#151; the unqualified class name, with the first character changed to lowercase."
+msgstr "In questo caso il nome di default è <literal>shoppingCart</literal> &#151; il nome della classe non qualificata, con il primo carattere messo in minuscolo."
 
 #. Tag: title
 #: intro.xml:295
@@ -713,8 +713,8 @@ msgstr "Web Bean Enterprise"
 #. Tag: para
 #: intro.xml:360
 #, no-c-format
-msgid "The specification says that all EJB 3-style session and singleton beans are <emphasis>enterprise</emphasis> Web Beans. Message driven beans are not Web Beans&#151;since they are not intended to be injected into other objects&#151;but they can take advantage of most of the functionality of Web Beans, including dependency injection and interceptors."
-msgstr "La specifica dice che tutti i bean di sessione stile EJB3 e quelli singleton sono Web Bean <emphasis>enterprise</emphasis>. I bean message driven non sono Web Bean&#151;poiché non sono intesi per essere iniettati in altri oggetti&#151;ma possono sfruttare la maggior parte della funzionalità dei Web Bean, inclusi dependency injection e interceptor."
+msgid "The specification says that all EJB 3-style session and singleton beans are <emphasis>enterprise</emphasis> Web Beans. Message driven beans are not Web Beans &#151; since they are not intended to be injected into other objects &#151; but they can take advantage of most of the functionality of Web Beans, including dependency injection and interceptors."
+msgstr "La specifica dice che tutti i bean di sessione stile EJB3 e quelli singleton sono Web Bean <emphasis>enterprise</emphasis>. I bean message driven non sono Web Bean &#151; poiché non sono intesi per essere iniettati in altri oggetti &#151; ma possono sfruttare la maggior parte della funzionalità dei Web Bean, inclusi dependency injection e interceptor."
 
 # bean class local view = ?
 #. Tag: para

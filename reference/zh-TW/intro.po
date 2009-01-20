@@ -48,11 +48,11 @@ msgid ""
 "Furthermore, every EJB 3-style session bean is a Web Bean. Sure, the "
 "JavaBeans and EJBs you've been writing every day have not been able to take "
 "advantage of the new services defined by the Web Beans specification, but "
-"you'll be able to use every one of them as Web Beans&#151;injecting them "
+"you'll be able to use every one of them as Web Beans &#151; injecting them "
 "into other Web Beans, configuring them via the Web Beans XML configuration "
-"facility, even adding interceptors and decorators to them&#151;without "
+"facility, even adding interceptors and decorators to them &#151; without "
 "touching your existing code."
-msgstr "我們能夠很明確地告訴您，在絕大部分的情況下，所有含有不接受參數的 constructor 的 java class 都是個 Web Bean。這包含了所有的 JavaBean。另外，所有 EJB 3-style 的 session bean 也都屬於 Web Bean。當然，您先前所編寫的 JavaBean 和 EJB 皆無法有效利用 Web Bean 規格所定義的新服務，不過您卻可將它們全部作為 Web Bean 來使用&#151;將它們注入其它 Web Bean 中，透過 Web Bean XML 配置功能來配置它們，甚至是加入攔截器（interceptor）與裝飾器（decorator）&#151;無須變動到您現有的程式碼。"
+msgstr "我們能夠很明確地告訴您，在絕大部分的情況下，所有含有不接受參數的 constructor 的 java class 都是個 Web Bean。這包含了所有的 JavaBean。另外，所有 EJB 3-style 的 session bean 也都屬於 Web Bean。當然，您先前所編寫的 JavaBean 和 EJB 皆無法有效利用 Web Bean 規格所定義的新服務，不過您卻可將它們全部作為 Web Bean 來使用 &#151; 將它們注入其它 Web Bean 中，透過 Web Bean XML 配置功能來配置它們，甚至是加入攔截器（interceptor）與裝飾器（decorator） &#151; 無須變動到您現有的程式碼。"
 
 #. Tag: para
 #: intro.xml:25
@@ -243,12 +243,12 @@ msgid ""
 "At system initialization time, the Web Bean manager must validate that "
 "exactly one Web Bean exists which satisfies each injection point. In our "
 "example, if no implementation of <literal>Translator</literal> "
-"available&#151;if the <literal>SentenceTranslator</literal> EJB was not "
-"deployed&#151;the Web Bean manager would throw an "
+"available &#151; if the <literal>SentenceTranslator</literal> EJB was not "
+"deployed &#151; the Web Bean manager would throw an "
 "<literal>UnsatisfiedDependencyException</literal>. If more than one "
 "implementation of <literal>Translator</literal> was available, the Web Bean "
 "manager would throw an <literal>AmbiguousDependencyException</literal>."
-msgstr "當系統初始化時，Web Bean 管理員必須驗證是否有正好一個滿足所有注入點的 Web Bean 存在。在我們的範例中，若沒有可用的 <literal>Translator</literal> 實做&#151;若 <literal>SentenceTranslator</literal> EJB 沒有被建置&#151;Web Bean 管理員便會回傳一個 <literal>UnsatisfiedDependencyException</literal>。若有超過一個可使用的 <literal>Translator</literal> 實做，那麼 Web Bean 管理員便會回傳一個 <literal>AmbiguousDependencyException</literal>。"
+msgstr "當系統初始化時，Web Bean 管理員必須驗證是否有正好一個滿足所有注入點的 Web Bean 存在。在我們的範例中，若沒有可用的 <literal>Translator</literal> 實做 &#151; 若 <literal>SentenceTranslator</literal> EJB 沒有被建置 &#151; Web Bean 管理員便會回傳一個 <literal>UnsatisfiedDependencyException</literal>。若有超過一個可使用的 <literal>Translator</literal> 實做，那麼 Web Bean 管理員便會回傳一個 <literal>AmbiguousDependencyException</literal>。"
 
 #. Tag: title
 #: intro.xml:80
@@ -370,9 +370,9 @@ msgstr "我們能夠在不影響其它 Web Bean 實做的情況下將一個 Web 
 #, no-c-format
 msgid ""
 "Note that not all clients of a Web Bean are Web Beans. Other objects such as "
-"Servlets or Message-Driven Beans&#151;which are by nature not injectable, "
-"contextual objects&#151;may also obtain references to Web Beans by injection."
-msgstr "請注意，並非所有 Web Bean 的客戶端都是 Web Bean。像是 Servlet 或訊息導向的 Bean 之類的其它物件&#151;無法被注入，並屬於 contextual object&#151;也能透過注入來取得 Web Bean 的參照。"
+"Servlets or Message-Driven Beans &#151; which are by nature not injectable, "
+"contextual objects &#151; may also obtain references to Web Beans by injection."
+msgstr "請注意，並非所有 Web Bean 的客戶端都是 Web Bean。像是 Servlet 或訊息導向的 Bean 之類的其它物件 &#151; 無法被注入，並屬於 contextual object &#151; 也能透過注入來取得 Web Bean 的參照。"
 
 #. Tag: para
 #: intro.xml:149
@@ -738,9 +738,9 @@ msgstr ""
 #: intro.xml:289
 #, no-c-format
 msgid ""
-"In this case, the name defaults to <literal>shoppingCart</literal>&#151;the "
+"In this case, the name defaults to <literal>shoppingCart</literal> &#151; the "
 "unqualified class name, with the first character changed to lowercase."
-msgstr "在此情況下，名稱將被預設為 <literal>shoppingCart</literal>&#151;這是個不完整的 class 名稱，並且第一個字元已被改變為小寫。"
+msgstr "在此情況下，名稱將被預設為 <literal>shoppingCart</literal> &#151; 這是個不完整的 class 名稱，並且第一個字元已被改變為小寫。"
 
 #. Tag: title
 #: intro.xml:295
@@ -888,8 +888,8 @@ msgstr ""
 msgid ""
 "The specification says that all EJB 3-style session and singleton beans are "
 "<emphasis>enterprise</emphasis> Web Beans. Message driven beans are not Web "
-"Beans&#151;since they are not intended to be injected into other "
-"objects&#151;but they can take advantage of most of the functionality of Web "
+"Beans &#151; since they are not intended to be injected into other "
+"objects &#151; but they can take advantage of most of the functionality of Web "
 "Beans, including dependency injection and interceptors."
 msgstr "依賴注入"
 
