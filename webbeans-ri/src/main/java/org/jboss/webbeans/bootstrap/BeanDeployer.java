@@ -121,6 +121,7 @@ public class BeanDeployer
       {
          createRealizedProducerMethods(bean, annotatedClass);
          createRealizedProducerFields(bean, annotatedClass);
+         createRealizedObserverMethods(bean, annotatedClass);
       }
       
       log.info("Web Bean: " + bean);
@@ -179,11 +180,21 @@ public class BeanDeployer
 
    private void createObserverMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
    {
-      for (AnnotatedMethod<?> observerMethod : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Observes.class))
+      for (AnnotatedMethod<?> method : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Observes.class))
       {
-         ObserverImpl<?> observer = ObserverImpl.of(observerMethod, declaringBean, manager);
-         manager.addObserver(observer);
+         createObserverMethod(declaringBean, method);
       }
+   }
+   
+   private void createRealizedObserverMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> realizingClass)
+   {
+      createObserverMethods(declaringBean, realizingClass.getSuperclass());
+   }
+   
+   private void createObserverMethod(AbstractClassBean<?> declaringBean, AnnotatedMethod<?> method)
+   {
+      ObserverImpl<?> observer = ObserverImpl.of(method, declaringBean, manager);
+      manager.addObserver(observer);
    }
 
    private void createFacades(Set<AnnotatedItem<?, ?>> injectionPoints)
