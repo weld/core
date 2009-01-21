@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-22 01:13+1000\n"
+"PO-Revision-Date: 2009-01-22 02:45+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -349,7 +349,7 @@ msgstr ""
 msgid ""
 "A client Web Bean developer uses the binding annotation to specify exactly "
 "which Web Bean should be injected."
-msgstr ""
+msgstr "클라이언트 Web Bean 개발자는 바인딩 어노테이션을 사용하여 정확히 어떤 Web Bean이 삽입되어야 하는 지를 지정합니다. "
 
 #. Tag: para
 #: injection.xml:112
@@ -473,7 +473,7 @@ msgstr ""
 msgid ""
 "You can tell the Web Bean manager to ignore a member of a binding annotation "
 "type by annotating the member <literal>@NonBinding</literal>."
-msgstr ""
+msgstr "Web Bean 관리자에게 <literal>@NonBinding</literal> 멤버를 어노테이션하여 바인딩 어노테이션 유형 멤버를 무시하라고 말할 수 있습니다.  "
 
 #. Tag: title
 #: injection.xml:141
@@ -499,7 +499,7 @@ msgstr "<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>
 msgid ""
 "In this case, only a Web Bean which has <emphasis>both</emphasis> binding "
 "annotations would be eligible for injection."
-msgstr ""
+msgstr "이러한 경우, <emphasis>양쪽</emphasis> 바인딩 어노테이션을 갖는 Web Bean만 삽입될 수 있습니다. "
 
 #. Tag: title
 #: injection.xml:153
@@ -688,7 +688,7 @@ msgstr ""
 #: injection.xml:216
 #, no-c-format
 msgid "Enabling deployment types"
-msgstr ""
+msgstr "배치 유형 활성화   "
 
 #. Tag: para
 #: injection.xml:218
@@ -1268,7 +1268,7 @@ msgstr ""
 #: injection.xml:475
 #, no-c-format
 msgid "We can now write:"
-msgstr ""
+msgstr "이제 다음을 작성할 수 있습니다:  "
 
 #. Tag: programlisting
 #: injection.xml:477
@@ -1306,7 +1306,7 @@ msgstr ""
 #: injection.xml:484
 #, no-c-format
 msgid "We would use this binding type at injection points as follows:"
-msgstr ""
+msgstr "다음과 같이 삽입 지점에서 이러한 바인딩 유형을 사용할 수 있습니다:  "
 
 #. Tag: programlisting
 #: injection.xml:486
@@ -1322,7 +1322,7 @@ msgstr ""
 #: injection.xml:488
 #, no-c-format
 msgid "The following producer method does the work:"
-msgstr ""
+msgstr "다음의 생산자 방식은 다음과 같이 작업합니다:  "
 
 #. Tag: programlisting
 #: injection.xml:490
@@ -1355,7 +1355,7 @@ msgid ""
 "(Note that the <literal>value()</literal> member of the <literal>HttpParam</"
 "literal> annotation is ignored by the Web Bean manager since it is annotated "
 "<literal>@NonBinding.</literal>)"
-msgstr ""
+msgstr "<literal>HttpParam</literal> 어노테이션의 <literal>value()</literal> 멤버는<literal>@NonBinding.</literal>을 어노테이션하므로 Web Bean 관리자에 의해 무시됨에 유의하시기 바랍니다.   "
 
 #. Tag: para
 #: injection.xml:495
@@ -1363,7 +1363,7 @@ msgstr ""
 msgid ""
 "The Web Bean manager provides a built-in Web Bean that implements the "
 "<literal>InjectionPoint</literal> interface:"
-msgstr ""
+msgstr "Web Bean 관리자는 <literal>InjectionPoint</literal> 인터페이스를 구현하는 내장된 Web Bean을 제공합니다:  "
 
 #. Tag: programlisting
 #: injection.xml:498
