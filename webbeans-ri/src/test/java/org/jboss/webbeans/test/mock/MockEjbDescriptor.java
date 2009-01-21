@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.ejb.Local;
 import javax.ejb.MessageDriven;
 import javax.ejb.Remove;
 import javax.ejb.Singleton;
@@ -34,21 +35,24 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       this.localInterfaces = new ArrayList<BusinessInterfaceDescriptor<?>>();
       for (final Class<?> clazz : type.getInterfaces())
       {
-         localInterfaces.add(new BusinessInterfaceDescriptor<Object>()
+         if (clazz.isAnnotationPresent(Local.class))
          {
-
-            @SuppressWarnings("unchecked")
-            public Class<Object> getInterface()
+            localInterfaces.add(new BusinessInterfaceDescriptor<Object>()
             {
-               return (Class<Object>) clazz;
-            }
-
-            public String getJndiName()
-            {
-               return clazz.getSimpleName() + "/local";
-            }
-      
-         });
+   
+               @SuppressWarnings("unchecked")
+               public Class<Object> getInterface()
+               {
+                  return (Class<Object>) clazz;
+               }
+   
+               public String getJndiName()
+               {
+                  return clazz.getSimpleName() + "/local";
+               }
+         
+            });
+         }
       }
       // cope with EJB 3.1 style no-interface views
       if (localInterfaces.size() == 0)
