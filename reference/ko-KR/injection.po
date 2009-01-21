@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-20 16:47+1000\n"
+"PO-Revision-Date: 2009-01-22 01:13+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -258,7 +259,7 @@ msgstr ""
 #: injection.xml:88
 #, no-c-format
 msgid "Let's explore how the Web Beans manager determines a Web Bean to be injected."
-msgstr ""
+msgstr "Web Beans 관리자가 어떻게 Web Bean을 삽입할 지를 결정하는 방법에 대해 살펴봅시다. "
 
 #. Tag: title
 #: injection.xml:91

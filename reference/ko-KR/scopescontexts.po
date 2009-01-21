@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: scopescontexts\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-21 18:14+1000\n"
+"PO-Revision-Date: 2009-01-22 01:12+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -415,7 +415,6 @@ msgstr "컨버세이션 컨텍스트는 JSF faces 요청 (JSF 양식 제출)과 
 #. Tag: para
 #: scopescontexts.xml:179
 #, no-c-format
-#, fuzzy
 msgid ""
 "We can force the conversation to propagate with a non-faces request by "
 "including the unique identifier of the conversation as a request parameter. "
@@ -423,13 +422,13 @@ msgid ""
 "<literal>cid</literal> for this use. The unique identifier of the "
 "conversation may be obtained from the <literal>Conversation</literal> "
 "object, which has the Web Beans name <literal>conversation</literal>."
-msgstr "요청 매개 변수로서 컨버세이션의 고유 식별자를 포함하여 컨버세이션이 non-faces 요청과 함께 보급되도록 강제할 수 있습니다. Web Beans 사양은 "
+msgstr "요청 매개 변수로서 컨버세이션의 고유 식별자를 포함하여 컨버세이션이 non-faces 요청과 함께 보급되도록 강제할 수 있습니다. Web Beans 사양은 이를 사용하기 위해 <literal>cid</literal> 라는 요청 매개 변수를 가집니다. 컨버세이션의 고유 식별자는 <literal>Conversation</literal> 객체에서 획득할 수 있으며, <literal>conversation</literal>이라는 Web Beans 이름을 갖습니다.  "
 
 #. Tag: para
 #: scopescontexts.xml:186
 #, no-c-format
 msgid "Therefore, the following link propagates the conversation:"
-msgstr ""
+msgstr "따라서, 다음과 같은 링크가 컨버세이션을 보급합니다:  "
 
 #. Tag: programlisting
 #: scopescontexts.xml:188
@@ -444,13 +443,14 @@ msgstr ""
 #. Tag: para
 #: scopescontexts.xml:190
 #, no-c-format
+#, fuzzy
 msgid ""
 "The Web Bean manager is also required to propagate conversations across any "
 "redirect, even if the conversation is not marked long-running. This makes it "
 "very easy to implement the common POST-then-redirect pattern, without resort "
 "to fragile constructs such as a \"flash\" object. In this case, the Web Bean "
 "manager automatically adds a request parameter to the redirect URL."
-msgstr ""
+msgstr "Web Bean 관리자는 컨버세이션이 장기 실행으로 표시되어 있지 않아도, 리다이렉트를 통해 컨버세이션을 보급해야 합니다. 이는 일반적인 "
 
 #. Tag: title
 #: scopescontexts.xml:200
@@ -476,7 +476,7 @@ msgid ""
 "The <literal>Conversation</literal> object provides a method to set the "
 "timeout. This is a hint to the Web Bean manager, which is free to ignore the "
 "setting."
-msgstr ""
+msgstr "<literal>Conversation</literal> 객체는 시간 초과를 설정하기 위한 방식을 제공합니다. 이는 Web Bean 관리자에게 도움이 되며, 설정 사항을 무시하셔도 상관 없습니다. "
 
 #. Tag: programlisting
 #: scopescontexts.xml:212
@@ -488,7 +488,7 @@ msgstr "conversation.setTimeout(timeoutInMillis);"
 #: scopescontexts.xml:219
 #, no-c-format
 msgid "The dependent pseudo-scope"
-msgstr ""
+msgstr "dependent pseudo-scope "
 
 #. Tag: para
 #: scopescontexts.xml:221
@@ -497,13 +497,13 @@ msgid ""
 "In addition to the four built-in scopes, Web Beans features the so-called "
 "<emphasis>dependent pseudo-scope</emphasis>. This is the default scope for a "
 "Web Bean which does not explicitly declare a scope type."
-msgstr ""
+msgstr "네 가지 내장된 범위에 더하여, Web Beans는 <emphasis>dependent pseudo-scope</emphasis>라는 기능을 특징으로 합니다. 이는 범위 유형을 명시하지 않는 Web Bean에 대한 기본값 범위입니다. "
 
 #. Tag: para
 #: scopescontexts.xml:225
 #, no-c-format
 msgid "For example, this Web Bean has the scope type <literal>@Dependent</literal>:"
-msgstr ""
+msgstr "예를 들어, Web Bean에는 <literal>@Dependent</literal> 범위 유형이 있습니다:  "
 
 #. Tag: programlisting
 #: scopescontexts.xml:227
@@ -514,13 +514,14 @@ msgstr "<![CDATA[public class Calculator { ... }]]>"
 #. Tag: para
 #: scopescontexts.xml:229
 #, no-c-format
+#, fuzzy
 msgid ""
 "When an injection point of a Web Bean resolves to a dependent Web Bean, a "
 "new instance of the dependent Web Bean is created every time the first Web "
 "Bean is instantiated. Instances of dependent Web Beans are never shared "
 "between different Web Beans or different injection points. They are "
 "<emphasis>dependent objects</emphasis> of some other Web Bean instance."
-msgstr ""
+msgstr "Web Bean의 삽입 지점이 "
 
 #. Tag: para
 #: scopescontexts.xml:235
@@ -528,7 +529,7 @@ msgstr ""
 msgid ""
 "Dependent Web Bean instances are destroyed when the instance they depend "
 "upon is destroyed."
-msgstr ""
+msgstr "의존하는 인스턴스가 삭제되면 의존적 Web Bean 인스턴스가 삭제됩니다.   "
 
 #. Tag: para
 #: scopescontexts.xml:243
@@ -537,13 +538,13 @@ msgid ""
 "Web Beans makes it easy to obtain a dependent instance of a Java class or "
 "EJB bean, even if the class or EJB bean is already declared as a Web Bean "
 "with some other scope type."
-msgstr ""
+msgstr "클래스 또는 EJB bean이 일부 다른 범위 유형과 함께 Web Bean으로 명시되어 있어도, Web Beans는 Java 클래스 또는 EJB bean의 의존적 인스턴스를 쉽게 획득할 수 있게 합니다.   "
 
 #. Tag: title
 #: scopescontexts.xml:248
 #, no-c-format
 msgid "The <literal>@New</literal> annotation"
-msgstr ""
+msgstr "<literal>@New</literal> 어노테이션 "
 
 #. Tag: para
 #: scopescontexts.xml:250
@@ -552,7 +553,7 @@ msgid ""
 "The built-in <literal>@New</literal> binding annotation allows "
 "<emphasis>implicit</emphasis> definition of a dependent Web Bean at an "
 "injection point. Suppose we declare the following injected field:"
-msgstr ""
+msgstr "내장된 <literal>@New</literal> 바인딩 어노테이션은 삽입 지점에서 의존적 Web Bean의 <emphasis>암시적</emphasis> 정의를 허용합니다. 다음과 같은 삽입 영역을 명시한다고 가정합시다:  "
 
 #. Tag: programlisting
 #: scopescontexts.xml:254
@@ -568,7 +569,7 @@ msgid ""
 "<literal>@New</literal>, API type <literal>Calculator</literal>, "
 "implementation class <literal>Calculator</literal> and deployment type "
 "<literal>@Standard</literal> is implicitly defined."
-msgstr ""
+msgstr "<literal>@Dependent</literal> 범위, <literal>@New</literal> 바인딩 유형, <literal>Calculator</literal> API 유형, <literal>Calculator</literal> 구현 클래스, <literal>@Standard</literal> 배치 유형과 함께 Web Bean은 암시적으로 정의됩니다.  "
 
 #. Tag: para
 #: scopescontexts.xml:261
@@ -577,6 +578,8 @@ msgid ""
 "This is true even if <literal>Calculator</literal> is <emphasis>already</"
 "emphasis> declared with a different scope type, for example:"
 msgstr ""
+"<literal>Calculator</literal>가 다른 범위 유형과 함께 <emphasis>이미</"
+"emphasis> 명시되어 있어도 이는 사실입니다, 예:  "
 
 #. Tag: programlisting
 #: scopescontexts.xml:264
@@ -594,7 +597,7 @@ msgstr ""
 msgid ""
 "So the following injected attributes each get a different instance of "
 "<literal>Calculator</literal>:"
-msgstr ""
+msgstr "다음의 삽입 속성은 다른 <literal>Calculator</literal> 인스턴스를 갖습니다:  "
 
 #. Tag: programlisting
 #: scopescontexts.xml:269
@@ -622,7 +625,7 @@ msgid ""
 "of <literal>Calculator</literal> injected. The <literal>newCalculator</"
 "literal> field has a new instance of <literal>Calculator</literal> injected, "
 "with a lifecycle that is bound to the owning <literal>PaymentCalc</literal>."
-msgstr ""
+msgstr "<literal>calculator</literal> 영역에는 <literal>Calculator</literal>의 컨버세이션 범위 인스턴스가 삽입되어 있습니다. <literal>newCalculator</literal> 영역에는 <literal>PaymentCalc</literal> 소유로 바운딩된 수명 주기와 함께 <literal>Calculator</literal>의 새로운 인스턴스가 삽입되어 있습니다.  "
 
 #. Tag: para
 #: scopescontexts.xml:276
@@ -630,5 +633,5 @@ msgstr ""
 msgid ""
 "This feature is particularly useful with producer methods, as we'll see in "
 "the next chapter."
-msgstr ""
+msgstr "특히 이러한 기능은 다음 장에서 다루게 될 생산자 방식에서 유용합니다.  "
 
