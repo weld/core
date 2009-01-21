@@ -227,7 +227,7 @@ msgstr "Attendete che l'applicazione sia installata, e visitate l'indirizzo <uli
 #: ri.xml:154
 #, no-c-format
 msgid "The numberguess example"
-msgstr "L'esempio Indovina Numero"
+msgstr "Esempio Indovina Numero"
 
 #. Tag: para
 #: ri.xml:156
