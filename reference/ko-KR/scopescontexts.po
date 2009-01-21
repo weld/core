@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: scopescontexts\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-21 17:14+1000\n"
+"PO-Revision-Date: 2009-01-21 18:14+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -395,13 +395,13 @@ msgid ""
 "This Web Bean is able to control its own lifecycle through use of the "
 "<literal>Conversation</literal> API. But some other Web Beans have a "
 "lifecycle which depends completely upon another object."
-msgstr ""
+msgstr "Web Bean은 <literal>Conversation</literal> API를 사용하여 수명 주기를 제어할 수 있습니다. 하지만 일부 다른 Web Beans는 다른 객체에 완전히 의존하는 수명 주기를 갖습니다.  "
 
 #. Tag: title
 #: scopescontexts.xml:173
 #, no-c-format
 msgid "Conversation propagation"
-msgstr ""
+msgstr "컨버세이션 보급 "
 
 #. Tag: para
 #: scopescontexts.xml:175
@@ -410,11 +410,12 @@ msgid ""
 "The conversation context automatically propagates with any JSF faces request "
 "(JSF form submission). It does not automatically propagate with non-faces "
 "requests, for example, navigation via a link."
-msgstr ""
+msgstr "컨버세이션 컨텍스트는 JSF faces 요청 (JSF 양식 제출)과 함께 자동으로 보급됩니다. 예를 들어, 링크를 통한 네비게이션과 같이 이는 non-faces 요청과 함께 자동으로 보급되지 않습니다.  "
 
 #. Tag: para
 #: scopescontexts.xml:179
 #, no-c-format
+#, fuzzy
 msgid ""
 "We can force the conversation to propagate with a non-faces request by "
 "including the unique identifier of the conversation as a request parameter. "
@@ -422,7 +423,7 @@ msgid ""
 "<literal>cid</literal> for this use. The unique identifier of the "
 "conversation may be obtained from the <literal>Conversation</literal> "
 "object, which has the Web Beans name <literal>conversation</literal>."
-msgstr ""
+msgstr "요청 매개 변수로서 컨버세이션의 고유 식별자를 포함하여 컨버세이션이 non-faces 요청과 함께 보급되도록 강제할 수 있습니다. Web Beans 사양은 "
 
 #. Tag: para
 #: scopescontexts.xml:186
