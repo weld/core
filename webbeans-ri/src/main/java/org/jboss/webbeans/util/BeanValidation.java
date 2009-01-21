@@ -21,7 +21,9 @@ import java.util.List;
 import java.util.Set;
 
 import javax.webbeans.AmbiguousDependencyException;
+import javax.webbeans.DefinitionException;
 import javax.webbeans.InjectionPoint;
+import javax.webbeans.New;
 import javax.webbeans.NullableDependencyException;
 import javax.webbeans.UnproxyableDependencyException;
 import javax.webbeans.UnsatisfiedDependencyException;
@@ -54,6 +56,10 @@ public class BeanValidation
          for (InjectionPoint injectionPoint : bean.getInjectionPoints())
          {
             Class<?> type = (Class<?>) injectionPoint.getType();
+            if (injectionPoint.getAnnotation(New.class) != null && injectionPoint.getBindings().size() > 1)
+            {
+               throw new DefinitionException("The injection point " + injectionPoint + " is annotated with @New which cannot be combined with other binding types");
+            }
             Annotation[] bindingTypes = injectionPoint.getBindings().toArray(new Annotation[0]);
             Set<?> resolvedBeans = CurrentManager.rootManager().resolveByType(type, bindingTypes);
             if (resolvedBeans.isEmpty())
