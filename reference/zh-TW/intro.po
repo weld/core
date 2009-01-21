@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-20 17:26+1000\n"
+"PO-Revision-Date: 2009-01-21 12:44+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -607,7 +607,7 @@ msgid ""
 "We would enable the deployment type <literal>@Mock</literal> in our testing "
 "environment, to indicate that <literal>MockSentenceTranslator</literal> and "
 "any other Web Bean annotated <literal>@Mock</literal> should be used."
-msgstr ""
+msgstr "我們將在測試環境中啟用 <literal>@Mock</literal> 這個 deployment type 來表示 <literal>MockSentenceTranslator</literal> 以及任何其它被標記為 <literal>@Mock</literal> 的 Web Bean 都應該被使用。"
 
 #. Tag: para
 #: intro.xml:240
@@ -632,7 +632,7 @@ msgid ""
 "accommodating arbitrary scopes. However, certain important scopes are built-"
 "in to the specification, and provided by the Web Bean manager. A scope is "
 "represented by an annotation type."
-msgstr ""
+msgstr "<emphasis>Scope</emphasis> 定義了 Web Bean instance 的生命週期以及可見度。Web Bean 的 context model 可延伸、並能包容任意的 scope。不過，有些重要的特定 scope 則會被內建在 Web Bean 規格中，並透過 Web Bean 管理員來提供。Scope 是以一個標記類型來表示的。"
 
 #. Tag: para
 #: intro.xml:254
@@ -850,7 +850,7 @@ msgstr "它不是個非靜態的靜態內部類別（static inner class）、"
 #: intro.xml:341
 #, no-c-format
 msgid "it is not a parameterized type, and"
-msgstr ""
+msgstr "它不是個被參數化的類型，並且"
 
 #. Tag: para
 #: intro.xml:344
@@ -858,13 +858,13 @@ msgstr ""
 msgid ""
 "it has a constructor with no parameters, or a constructor annotated "
 "<literal>@Initializer</literal>."
-msgstr ""
+msgstr "它有個無參數的 constructor，或一個標記為 <literal>@Initializer</literal> 的 constructor。"
 
 #. Tag: para
 #: intro.xml:349
 #, no-c-format
 msgid "Thus, almost every JavaBean is a simple Web Bean."
-msgstr ""
+msgstr "因此，幾乎所有 JavaBean 都屬於基本的 Web Bean。"
 
 #. Tag: para
 #: intro.xml:351
@@ -873,25 +873,24 @@ msgid ""
 "Every interface implemented directly or indirectly by a simple Web Bean is "
 "an API type of the simple Web Bean. The class and its superclasses are also "
 "API types."
-msgstr ""
+msgstr "基本 Web Bean 所直接或間接實做的所有介面都屬於基本 Web Bean 的 API 類型。Class 和它的 superclass 也都屬於 API 類型。"
 
 #. Tag: title
 #: intro.xml:358
 #, no-c-format
 msgid "Enterprise Web Beans"
-msgstr ""
+msgstr "企業級的 Web Bean"
 
 #. Tag: para
 #: intro.xml:360
 #, no-c-format
-#, fuzzy
 msgid ""
 "The specification says that all EJB 3-style session and singleton beans are "
 "<emphasis>enterprise</emphasis> Web Beans. Message driven beans are not Web "
 "Beans &#151; since they are not intended to be injected into other "
 "objects &#151; but they can take advantage of most of the functionality of Web "
 "Beans, including dependency injection and interceptors."
-msgstr "依賴注入"
+msgstr "Web Bean 的規格顯示了所有 EJB 3 類型的 session 和 singleton 的 bean 都屬於<emphasis>企業級</emphasis>的 Web Bean。訊息導向的 bean 則不屬於 Web Bean &#151; 因為它們不會被注入其它的物件中 &#151; 不過它們能夠有效利用 Web Bean 大部分的功能，這包括依賴注入（dependency injection）以及攔截器（interceptor）。"
 
 #. Tag: para
 #: intro.xml:366
@@ -902,7 +901,7 @@ msgid ""
 "superinterfaces, is an API type of the enterprise Web Bean. If the EJB bean "
 "has a bean class local view, the bean class, and every one of its "
 "superclasses, is also an API type."
-msgstr ""
+msgstr "所有沒有 wildcard 類型參數或是類型變數的企業級 Web Bean 的本地介面以及它所有的 superinterface 都屬於企業級 Web Bean 的 API 類型。若 EJB bean 有個 bean class local view 的話，那麼這個 bean class 以及它所有的 superclass 也都會是個 API 類型。"
 
 #. Tag: para
 #: intro.xml:372
@@ -913,7 +912,7 @@ msgid ""
 "manager calls this method to destroy the stateful session bean instance at "
 "the end of its lifecycle. This method is called the <emphasis>destructor</"
 "emphasis> method of the enterprise Web Bean."
-msgstr ""
+msgstr "有狀態的 session bean 應宣告一個無參數的 remove method 或是一個標記為 <literal>@Destructor</literal> 的 remove method。Web Bean 管理員會調用這個 method 來在它的生命週期結束時刪除有狀態的 session bean instance。這個 method 亦稱為企業級 Web Bean 的 <emphasis>destructor</emphasis> method。"
 
 #. Tag: programlisting
 #: intro.xml:378
@@ -946,19 +945,19 @@ msgid ""
 "So when should we use an enterprise Web Bean instead of a simple Web Bean? "
 "Well, whenever we need the advanced enterprise services offered by EJB, such "
 "as:"
-msgstr ""
+msgstr "所以我們該何時使用企業級的 Web Bean 何時使用基本 Web Bean 呢？每當我們需要 EJB 所提供的進階企業級服務時，例如："
 
 #. Tag: para
 #: intro.xml:387
 #, no-c-format
 msgid "method-level transaction management and security,"
-msgstr ""
+msgstr "method 層級的交易管理與安全性、"
 
 #. Tag: para
 #: intro.xml:390
 #, no-c-format
 msgid "concurrency management,"
-msgstr ""
+msgstr "並行管理（concurrency management）、"
 
 #. Tag: para
 #: intro.xml:393
@@ -966,19 +965,19 @@ msgstr ""
 msgid ""
 "instance-level passivation for stateful session beans and instance-pooling "
 "for stateless session beans,"
-msgstr ""
+msgstr "有狀態的 session bean 的 instance 層級的 passivation 以及無狀態 session bean 的類別儲備（instance-pooling）、"
 
 #. Tag: para
 #: intro.xml:397
 #, no-c-format
 msgid "remote and web service invocation, and"
-msgstr ""
+msgstr "遠端和網站服務調用，以及"
 
 #. Tag: para
 #: intro.xml:400
 #, no-c-format
 msgid "timers and asynchronous methods,"
-msgstr ""
+msgstr "計時器與非同步的 method，"
 
 #. Tag: para
 #: intro.xml:404
@@ -986,7 +985,7 @@ msgstr ""
 msgid ""
 "we should use an enterprise Web Bean. When we don't need any of these "
 "things, a simple Web Bean will serve just fine."
-msgstr ""
+msgstr "當需要以上服務時我們便應使用企業級的 Web Bean。當我們不需要任何的這些服務時，使用基本的 Web Bean 即可。"
 
 #. Tag: para
 #: intro.xml:407
@@ -996,7 +995,7 @@ msgid ""
 "available for concurrent access. Therefore, the concurrency management "
 "provided by EJB 3.1 is especially useful. Most session and application "
 "scoped Web Beans should be EJBs."
-msgstr ""
+msgstr "許多 Web Bean（包括任何 session 或 application scoped 的 Web Bean）都能被並行存取（concurrent access）。因此，EJB 3.1 所提供的並行管理（concurrency management）特別地有幫助。大部分的 session 和 application scoped 的 Web Bean 都應屬於 EJB。"
 
 #. Tag: para
 #: intro.xml:412
@@ -1007,7 +1006,7 @@ msgid ""
 "by the EJB <literal>@Stateless</literal>/<literal>@Stateful</literal>/"
 "<literal>@Singleton</literal> model, with its support for passivation and "
 "instance pooling."
-msgstr ""
+msgstr "持有重量級資源之參照或持有許多內部狀態的 Web Bean 皆可受益于支援 passivation 和類別儲備的 EJB <literal>@Stateless</literal>/<literal>@Stateful</literal>/<literal>@Singleton</literal> 模型所定義並由進階 container 所管理的生命週期。"
 
 #. Tag: para
 #: intro.xml:417
@@ -1016,7 +1015,7 @@ msgid ""
 "Finally, it's usually obvious when method-level transaction management, "
 "method-level security, timers, remote methods or asynchronous methods are "
 "needed."
-msgstr ""
+msgstr "最後，一般來講，何時需要使用到 method 層級的交易性管理、method 層級的安全性、計時器、遠端 method 或是非同步的 method 其實都是非常顯而易見的。"
 
 #. Tag: para
 #: intro.xml:420
@@ -1025,7 +1024,7 @@ msgid ""
 "It's usually easy to start with simple Web Bean, and then turn it into an "
 "EJB, just by adding an annotation: <literal>@Stateless</literal>, "
 "<literal>@Stateful</literal> or <literal>@Singleton</literal>."
-msgstr ""
+msgstr "通常從基本的 Web Bean 開始會較容易，然後只要再透過附加一個 <literal>@Stateless</literal>、<literal>@Stateful</literal> 或是 <literal>@Singleton</literal> 標記來將它轉換為一個 EJB 即可。"
 
 #. Tag: title
 #: intro.xml:427
@@ -1042,7 +1041,7 @@ msgid ""
 "in the current context. A producer method lets the application take full "
 "control of the instantiation process, instead of leaving instantiation to "
 "the Web Bean manager. For example:"
-msgstr ""
+msgstr "<emphasis>producer method</emphasis> 是個當目前 context 中沒有 instance 時會被 Web Bean 管理員調用來取得 Web Bean instance 的一個 method。Producer method 能讓應用程式完全掌控例示（instantiation）的程序，而不是留給 Web Bean 管理員去進行。例如："
 
 #. Tag: programlisting
 #: intro.xml:435
@@ -1074,7 +1073,7 @@ msgstr ""
 #: intro.xml:437
 #, no-c-format
 msgid "The result of a producer method is injected just like any other Web Bean."
-msgstr ""
+msgstr "producer method 的結果會和其它任何 Web Bean 一樣地被注入。"
 
 #. Tag: programlisting
 #: intro.xml:439
@@ -1089,7 +1088,7 @@ msgid ""
 "The method return type and all interfaces it extends/implements directly or "
 "indirectly are API types of the producer method. If the return type is a "
 "class, all superclasses are also API types."
-msgstr ""
+msgstr "method 的回傳類型以及它所直接或間接延伸/實做的介面皆為 producer method 的 API 類型。若回傳的類型是個 class 的話，那麼所有的 superclass 也都會是 API 類型。"
 
 #. Tag: para
 #: intro.xml:445
