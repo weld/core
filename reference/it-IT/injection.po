@@ -479,7 +479,7 @@ msgstr ""
 #: injection.xml:162
 #, no-c-format
 msgid "The default binding type"
-msgstr "The tipo di binding predefinito"
+msgstr "Il tipo di binding predefinito"
 
 #. Tag: para
 #: injection.xml:164
@@ -936,7 +936,7 @@ msgstr ""
 #: injection.xml:419
 #, no-c-format
 msgid "Lifecycle callbacks, <literal>@Resource</literal>, <literal>@EJB</literal> and <literal>@PersistenceContext</literal>"
-msgstr "Lifecycle callbacks, <literal>@Resource</literal>, <literal>@EJB</literal> e <literal>@PersistenceContext</literal>"
+msgstr "Chiamare al ciclo di vita, <literal>@Resource</literal>, <literal>@EJB</literal> e <literal>@PersistenceContext</literal>"
 
 #. Tag: para
 #: injection.xml:422
