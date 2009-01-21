@@ -20,7 +20,6 @@ package org.jboss.webbeans.introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.webbeans.ManagerImpl;
 
@@ -65,7 +64,5 @@ public interface AnnotatedConstructor<T> extends AnnotatedMember<T, Constructor<
     * @return An abstraction of the declaring class
     */
    public AnnotatedType<T> getDeclaringClass();
-   
-   public AnnotatedConstructor<T> wrap(Set<Annotation> annotations);
 
 }

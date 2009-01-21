@@ -25,13 +25,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
-import org.jboss.webbeans.introspector.ForwardingAnnotatedMethod;
+import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
@@ -327,73 +326,6 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       }
       toString = "Annotated method " + Names.method2String(method);
       return toString;
-   }
-   
-   public AnnotatedMethod<T> wrap(Set<Annotation> annotations)
-   {
-      if (annotations.size() > 0)
-      {
-         final AnnotatedMethod<T> delegate = this;
-         final AnnotationStore annotationStore = AnnotationStore.wrap(getAnnotationStore(), annotations, annotations);
-         return new ForwardingAnnotatedMethod<T>()
-         {
-   
-            @Override
-            protected AnnotatedMethod<T> delegate()
-            {
-               return delegate;
-            }
-            
-            @Override
-            public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)
-            {
-               return annotationStore.getAnnotation(annotationType);
-            }
-            
-            @Override
-            public Set<Annotation> getAnnotations()
-            {
-               return annotationStore.getAnnotations();
-            }
-            
-            @Override
-            @Deprecated
-            public Set<Annotation> getBindingTypes()
-            {
-               return annotationStore.getBindingTypes();
-            }
-            
-            @Override
-            @Deprecated
-            public Annotation[] getBindingTypesAsArray()
-            {
-               return annotationStore.getBindingTypesAsArray();
-            }
-            
-            @Override
-            public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
-            {
-               return annotationStore.getDeclaredMetaAnnotations(metaAnnotationType);
-            }
-            
-            @Override
-            public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
-            {
-               return annotationStore.getMetaAnnotations(metaAnnotationType);
-            }
-            
-            @Override
-            public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
-            {
-               return annotationStore.getMetaAnnotationsAsArray(metaAnnotationType);
-            }
-            
-         };
-      }
-      else
-      {
-         return this;
-      }
    }
       
 

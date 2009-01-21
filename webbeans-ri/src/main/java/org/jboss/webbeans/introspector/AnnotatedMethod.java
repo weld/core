@@ -130,7 +130,5 @@ public interface AnnotatedMethod<T> extends AnnotatedMember<T, Method>
    public boolean isEquivalent(Method method);
 
    public Method getAnnotatedMethod();
-   
-   public AnnotatedMethod<T> wrap(Set<Annotation> annotations);
 
 }

@@ -17,9 +17,7 @@
 
 package org.jboss.webbeans.introspector;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.Set;
 
 import javax.webbeans.manager.Manager;
 
@@ -99,6 +97,4 @@ public interface AnnotatedField<T> extends AnnotatedMember<T, Field>
 
    public boolean isTransient();
 
-   public AnnotatedField<T> wrap(Set<Annotation> annotations);
-   
 }

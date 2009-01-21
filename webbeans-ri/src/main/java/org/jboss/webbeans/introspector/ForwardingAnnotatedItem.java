@@ -45,15 +45,15 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
     */
    public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)
    {
-      return delegate().getAnnotation(annotationType);
+      return getAnnotationStore().getAnnotation(annotationType);
    }
 
    /**
     * @see org.jboss.webbeans.introspector.AnnotatedItem
     */
-   public <A extends Annotation> Set<A> getAnnotations()
+   public Set<Annotation> getAnnotations()
    {
-      return delegate().getAnnotations();
+      return getAnnotationStore().getAnnotations();
    }
 
    /**
@@ -61,7 +61,7 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
     */
    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
-      return delegate().getMetaAnnotations(metaAnnotationType);
+      return getAnnotationStore().getMetaAnnotations(metaAnnotationType);
    }
 
    /**
@@ -69,23 +69,25 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
     */
    public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
    {
-      return delegate().getMetaAnnotationsAsArray(metaAnnotationType);
+      return getAnnotationStore().getMetaAnnotationsAsArray(metaAnnotationType);
    }
 
    /**
     * @see org.jboss.webbeans.introspector.AnnotatedItem
     */
+   @Deprecated
    public Set<Annotation> getBindingTypes()
    {
-      return delegate().getBindingTypes();
+      return getAnnotationStore().getBindingTypes();
    }
 
    /**
     * @see org.jboss.webbeans.introspector.AnnotatedItem
     */
+   @Deprecated
    public Annotation[] getBindingTypesAsArray()
    {
-      return delegate().getBindingTypesAsArray();
+      return getAnnotationStore().getBindingTypesAsArray();
    }
 
    /**
@@ -109,7 +111,7 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
     */
    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
    {
-      return delegate().isAnnotationPresent(annotationType);
+      return getAnnotationStore().isAnnotationPresent(annotationType);
    }
 
    /**
@@ -192,7 +194,7 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
    
    public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
-      return delegate().getDeclaredMetaAnnotations(metaAnnotationType);
+      return getAnnotationStore().getDeclaredMetaAnnotations(metaAnnotationType);
    }
 
    /**
@@ -202,9 +204,9 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
     */
    protected abstract AnnotatedItem<T, S> delegate();
    
-   public AnnotatedItem<T, S> wrap(Set<Annotation> annotations)
+   public AnnotationStore getAnnotationStore()
    {
-      throw new UnsupportedOperationException();
+      return delegate().getAnnotationStore();
    }
 
 }

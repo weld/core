@@ -1,4 +1,4 @@
-package org.jboss.webbeans.introspector.jlr;
+package org.jboss.webbeans.introspector;
 
 import static org.jboss.webbeans.introspector.AnnotatedItem.MAPPED_METAANNOTATIONS;
 
@@ -302,12 +302,12 @@ public class AnnotationStore
       return annotationMap.containsKey(annotationType);
    }
    
-   public AnnotationMap getAnnotationMap()
+   AnnotationMap getAnnotationMap()
    {
       return annotationMap;
    }
    
-   public AnnotationMap getDeclaredAnnotationMap()
+   AnnotationMap getDeclaredAnnotationMap()
    {
       return declaredAnnotationMap;
    }

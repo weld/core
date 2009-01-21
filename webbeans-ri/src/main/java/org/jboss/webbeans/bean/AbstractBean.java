@@ -39,7 +39,7 @@ import javax.webbeans.manager.Bean;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injection.InjectionPointImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.jlr.AnnotationStore.AnnotationMap;
+import org.jboss.webbeans.introspector.AnnotationStore.AnnotationMap;
 import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;

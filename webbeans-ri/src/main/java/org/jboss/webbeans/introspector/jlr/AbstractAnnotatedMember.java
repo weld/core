@@ -34,6 +34,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.introspector.AnnotatedMember;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedMember;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;

@@ -1,7 +1,5 @@
 package org.jboss.webbeans.introspector;
 
-import java.lang.annotation.Annotation;
-import java.util.Set;
 
 
 
@@ -19,12 +17,6 @@ public abstract class ForwardingAnnotatedType<T> extends ForwardingAnnotatedItem
    public boolean isEquivalent(Class<?> clazz)
    {
       return delegate().isEquivalent(clazz);
-   }
-   
-   @Override
-   public AnnotatedType<T> wrap(Set<Annotation> annotations)
-   {
-      throw new UnsupportedOperationException();
    }
    
 }

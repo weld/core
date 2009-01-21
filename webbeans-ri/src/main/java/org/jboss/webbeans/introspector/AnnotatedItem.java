@@ -184,6 +184,6 @@ public interface AnnotatedItem<T, S>
     */
    public String getName();
    
-   public AnnotatedItem<T, S> wrap(Set<Annotation> annotations);
+   public AnnotationStore getAnnotationStore();
 
 }

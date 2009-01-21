@@ -37,6 +37,7 @@ import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;

@@ -26,6 +26,7 @@ import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.introspector.AnnotatedMember;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.introspector.AnnotationStore;
 
 /**
  * Represents a parameter

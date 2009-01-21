@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.jboss.webbeans.introspector.AnnotatedAnnotation;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.util.Strings;
 
 import com.google.common.collect.ForwardingMap;

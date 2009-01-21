@@ -20,6 +20,7 @@ package org.jboss.webbeans.introspector.jlr;
 import java.lang.reflect.Modifier;
 
 import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.util.Reflections;
 
 /**

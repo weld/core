@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Types;

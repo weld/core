@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.webbeans.BindingType;
+import javax.webbeans.DeploymentType;
 import javax.webbeans.Fires;
 import javax.webbeans.Initializer;
 import javax.webbeans.Observes;
@@ -33,6 +34,8 @@ import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.WrappedAnnotatedField;
+import org.jboss.webbeans.introspector.WrappedAnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.jsf.JSFApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
@@ -109,45 +112,72 @@ public class BeanDeployer
       
       manager.getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
       
-      registerProducerMethods(bean, annotatedClass, EMPTY_BINDINGS);
-      registerProducerFields(bean, annotatedClass, EMPTY_BINDINGS);
-      registerObserverMethods(bean, annotatedClass);
-      registerFacades(bean.getAnnotatedInjectionPoints());
+      createProducerMethods(bean, annotatedClass);
+      createProducerFields(bean, annotatedClass);
+      createObserverMethods(bean, annotatedClass);
+      createFacades(bean.getAnnotatedInjectionPoints());
       
       if (annotatedClass.isAnnotationPresent(Realizes.class))
       {
-         Set<Annotation> extraAnnotations = new HashSet<Annotation>();
-         extraAnnotations.addAll(annotatedClass.getDeclaredMetaAnnotations(BindingType.class));
-         registerProducerMethods(bean, annotatedClass.getSuperclass(), extraAnnotations);
-         registerProducerFields(bean, annotatedClass.getSuperclass(), extraAnnotations);
+         createRealizedProducerMethods(bean, annotatedClass);
+         createRealizedProducerFields(bean, annotatedClass);
       }
       
       log.info("Web Bean: " + bean);
    }
    
-   private void registerProducerMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass, Set<Annotation> extraAnnotations)
+   private void createProducerMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
    {
       for (AnnotatedMethod<?> method : annotatedClass.getDeclaredAnnotatedMethods(Produces.class))
       {
-         ProducerMethodBean<?> bean = ProducerMethodBean.of(method.wrap(extraAnnotations), declaringBean, manager);
-         beans.add(bean);
-         manager.getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
-         registerFacades(bean.getAnnotatedInjectionPoints());
-         log.info("Web Bean: " + bean);
+         createProducerMethod(declaringBean, method);
+         
       }
    }
    
-   private void registerProducerFields(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass, Set<Annotation> extraAnnotations)
+   private void createProducerMethod(AbstractClassBean<?> declaringBean, AnnotatedMethod<?> annotatedMethod)
+   {
+      ProducerMethodBean<?> bean = ProducerMethodBean.of(annotatedMethod, declaringBean, manager);
+      beans.add(bean);
+      manager.getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
+      createFacades(bean.getAnnotatedInjectionPoints());
+      log.info("Web Bean: " + bean);
+   }
+   
+   private void createRealizedProducerMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> realizingClass)
+   {
+      AnnotatedClass<?> realizedClass = realizingClass.getSuperclass();
+      for (AnnotatedMethod<?> realizedMethod : realizedClass.getDeclaredAnnotatedMethods(Produces.class))
+      { 
+         createProducerMethod(declaringBean, realizeProducerMethod(realizedMethod, realizingClass));
+      }
+   }
+   
+   private void createRealizedProducerFields(AbstractClassBean<?> declaringBean, AnnotatedClass<?> realizingClass)
+   {
+      AnnotatedClass<?> realizedClass = realizingClass.getSuperclass();
+      for (final AnnotatedField<?> realizedField : realizedClass.getDeclaredAnnotatedFields(Produces.class))
+      { 
+         createProducerField(declaringBean, realizeProducerField(realizedField, realizingClass));
+      }
+   }
+   
+   private void createProducerField(AbstractClassBean<?> declaringBean, AnnotatedField<?> field)
+   {
+      ProducerFieldBean<?> bean = ProducerFieldBean.of(field, declaringBean, manager);
+      beans.add(bean);
+      log.info("Web Bean: " + bean);
+   }
+   
+   private void createProducerFields(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
    {
       for (AnnotatedField<?> field : annotatedClass.getDeclaredAnnotatedFields(Produces.class))
       {
-         ProducerFieldBean<?> bean = ProducerFieldBean.of(field.wrap(extraAnnotations), declaringBean, manager);
-         beans.add(bean);
-         log.info("Web Bean: " + bean);
+         createProducerField(declaringBean, field);
       }
    }
 
-   private void registerObserverMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
+   private void createObserverMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
    {
       for (AnnotatedMethod<?> observerMethod : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Observes.class))
       {
@@ -156,22 +186,22 @@ public class BeanDeployer
       }
    }
 
-   private void registerFacades(Set<AnnotatedItem<?, ?>> injectionPoints)
+   private void createFacades(Set<AnnotatedItem<?, ?>> injectionPoints)
    {
       for (AnnotatedItem<?, ?> injectionPoint : injectionPoints)
       {
          if (injectionPoint.isAnnotationPresent(Fires.class))
          {
-             registerEvent(injectionPoint);
+             createEvent(injectionPoint);
          }
          if (injectionPoint.isAnnotationPresent(Obtains.class))
          {
-            registerInstance(injectionPoint);
+            createInstance(injectionPoint);
          }
       }
    }
 
-   private void registerEvent(AnnotatedItem<?, ?> injectionPoint)
+   private void createEvent(AnnotatedItem<?, ?> injectionPoint)
    {
       // TODO Fix this!
       @SuppressWarnings("unchecked")
@@ -180,7 +210,7 @@ public class BeanDeployer
       log.info("Web Bean: " + bean);
    }
    
-   private void registerInstance(AnnotatedItem<?, ?> injectionPoint)
+   private void createInstance(AnnotatedItem<?, ?> injectionPoint)
    {
       // TODO FIx this
       @SuppressWarnings("unchecked")
@@ -223,4 +253,73 @@ public class BeanDeployer
          return false;
       }
    }
+   
+   private static <T> AnnotatedMethod<T> realizeProducerMethod(final AnnotatedMethod<T> method, final AnnotatedClass<?> realizingClass)
+   {
+      return new WrappedAnnotatedMethod<T>(method, realizingClass.getMetaAnnotations(BindingType.class))
+      {
+         
+         @Override
+         public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
+         {
+            if (metaAnnotationType.equals(DeploymentType.class))
+            {
+               return realizingClass.getMetaAnnotations(DeploymentType.class);
+            }
+            else
+            {
+               return super.getMetaAnnotations(metaAnnotationType);
+            }
+         }
+         
+         @Override
+         public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
+         {
+            if (metaAnnotationType.equals(DeploymentType.class))
+            {
+               return realizingClass.getDeclaredMetaAnnotations(DeploymentType.class);
+            }
+            else
+            {
+               return super.getDeclaredMetaAnnotations(metaAnnotationType);
+            }
+         }
+         
+      };
+   }
+   
+   private static <T> AnnotatedField<T> realizeProducerField(final AnnotatedField<T> field, final AnnotatedClass<?> realizingClass)
+   {
+      return new WrappedAnnotatedField<T>(field, realizingClass.getMetaAnnotations(BindingType.class))
+      {
+         
+         @Override
+         public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
+         {
+            if (metaAnnotationType.equals(DeploymentType.class))
+            {
+               return realizingClass.getMetaAnnotations(DeploymentType.class);
+            }
+            else
+            {
+               return super.getMetaAnnotations(metaAnnotationType);
+            }
+         }
+         
+         @Override
+         public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
+         {
+            if (metaAnnotationType.equals(DeploymentType.class))
+            {
+               return realizingClass.getDeclaredMetaAnnotations(DeploymentType.class);
+            }
+            else
+            {
+               return super.getDeclaredMetaAnnotations(metaAnnotationType);
+            }
+         }
+         
+      };
+   }
+   
 }
