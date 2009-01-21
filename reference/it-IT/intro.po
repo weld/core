@@ -244,7 +244,7 @@ msgstr "quali client condividono una referenza con una particolare istanza del W
 #: intro.xml:113
 #, no-c-format
 msgid "For a given thread in a Web Beans application, there may be an <emphasis>active context</emphasis> associated with the scope of the Web Bean. This context may be unique to the thread (for example, if the Web Bean is request scoped), or it may be shared with certain other threads (for example, if the Web Bean is session scoped) or even all other threads (if it is application scoped)."
-msgstr "Per un dato thread in un'applicazione Web Beans, ci può essere un <emphasis>contesto attivo</emphasis> associato allo scope del Web Bean. Questo contesto può essere univoco nel thread (per esempio, se il Web Bean è con scope di richesta), o può essere condiviso con alcuni altri thread (per esempio, se il Web Bean è con scope di sessione) od anche tutti gli altri thread (se è scope di applicazione). "
+msgstr "Per un dato thread in un'applicazione Web Beans, ci può essere un <emphasis>contesto attivo</emphasis> associato allo scope del Web Bean. Questo contesto può essere univoco nel thread (per esempio, se il Web Bean è con scope di richiesta), o può essere condiviso con alcuni altri thread (per esempio, se il Web Bean è con scope di sessione) od anche tutti gli altri thread (se è scope di applicazione). "
 
 #. Tag: para
 #: intro.xml:119
