@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-18 16:31+0000\n"
-"PO-Revision-Date: 2009-01-21 02:28+1000\n"
+"PO-Revision-Date: 2009-01-21 13:50+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -736,7 +738,7 @@ msgid ""
 "constructor injection to initialize the game with a random number. And of "
 "course, we need to tell the player when they've won, so we give feedback "
 "with a <literal>FacesMessage</literal>."
-msgstr ""
+msgstr "<literal>@Named</literal> 어노테이션이 사용되므로 JSF 페이지에서 EL을 통해 bean을 사용할 수 있음을 인지하실 것입니다. 마지막으로 생성자 삽입을 사용하여 임의의 숫자로 게임을 초기화합니다. 물론, 게임 플레이어에게 언제 게임에어 이겼는지를 알려주어야 하므로, <literal>FacesMessage</literal>로 피드백을 제공합니다.       "
 
 #. Tag: programlisting
 #: ri.xml:328
@@ -940,7 +942,7 @@ msgstr ""
 #: ri.xml:332
 #, no-c-format
 msgid "The translator example"
-msgstr "번역 예제 "
+msgstr "번역 예제  "
 
 #. Tag: para
 #: ri.xml:334
@@ -956,7 +958,7 @@ msgstr "번역 예제는 입력하신 아무 문장을 가져가 이를 라틴�
 msgid ""
 "The translator example is built as an ear, and contains EJBs. As a result, "
 "it's structure is more complex than the numberguess example."
-msgstr ""
+msgstr "번역 예제는 ear로 작성되며, EJB가 들어있게 됩니다. 따라서, 문장 구조가 numberguess 예보다 훨씬 복잡합니다.  "
 
 #. Tag: para
 #: ri.xml:345
@@ -973,7 +975,7 @@ msgid ""
 "First, let's take a look at the ear aggregator, which is located in "
 "<literal>webbeans-translator-ear</literal> module. Maven automatically "
 "generates the <literal>application.xml</literal> for us:"
-msgstr ""
+msgstr "먼저, <literal>webbeans-translator-ear</literal> 모듈에 있는 ear aggregator를 살펴봅시다. Maven은 자동으로 <literal>application.xml</literal>을 생성합니다:  "
 
 #. Tag: programlisting
 #: ri.xml:357
@@ -1015,6 +1017,9 @@ msgid ""
 "localhost:8080/webbeans-translator\">http://localhost:8080/webbeans-"
 "translator</ulink>)."
 msgstr ""
+"url (<ulink url=\"http://"
+"localhost:8080/webbeans-translator\">http://localhost:8080/webbeans-"
+"translator</ulink>)을 제공하는 컨텍스트 경로를 설정합니다.  "
 
 #. Tag: para
 #: ri.xml:365
@@ -1077,7 +1082,7 @@ msgid ""
 "Next, lets look at the war. Just as in the numberguess example, we have a "
 "<literal>faces-config.xml</literal> (to enabled Facelets) and a <literal>web."
 "xml</literal> (to enable JSF) in <literal>WebContent/WEB-INF</literal>."
-msgstr ""
+msgstr "다음으로, war를 살펴봅시다. numberguess 예제와 같이, <literal>WebContent/WEB-INF</literal>에 있는 <literal>faces-config.xml</literal> (Facelets를 활성화) 및 <literal>web.xml</literal> (JSF를 활성화)을 갖습니다. "
 
 #. Tag: para
 #: ri.xml:380
@@ -1086,7 +1091,7 @@ msgid ""
 "More intersting is the facelet used to translate text. Just as in the "
 "numberguess example we have a template, which surrounds the form (ommitted "
 "here for brevity):"
-msgstr ""
+msgstr "텍스트를 번역하데 facelet이 사용됩니다. numberguess 예제에서와 같이 양식으로된 템플릿이 있습니다 (간결하게 하기 위해 여기서는 생략됨): "
 
 #. Tag: programlisting
 #: ri.xml:386
@@ -1154,7 +1159,7 @@ msgstr ""
 msgid ""
 "The user can enter some text in the lefthand textarea, and hit the translate "
 "button to see the result to the right."
-msgstr ""
+msgstr "사용자는 왼쪽 텍스트 부분에 텍스트를 입력할 수 있으며, 번역하기 버튼을 누르면 오른쪽에 번역 결과가 나타나게 됩니다.   "
 
 #. Tag: para
 #: ri.xml:393
@@ -1164,7 +1169,7 @@ msgid ""
 "literal>. In <literal>src/main/resources/META-INF</literal> there is just an "
 "empty <literal>web-beans.xml</literal>, used to mark the archive as "
 "containing Web Beans."
-msgstr ""
+msgstr "마지막으로, ejb 모듈인 <literal>webbeans-translator-ejb</literal>를 살펴봅시다. <literal>src/main/resources/META-INF</literal>에는 Web Beans가 들어 있는 것으로 아카이브를 표시하기 위해 사용되는 빈 <literal>web-beans.xml</literal>이 있습니다. "
 
 #. Tag: para
 #: ri.xml:401
@@ -1177,6 +1182,9 @@ msgid ""
 "quite familiar with what a Web Bean looks like by now, so we'll just "
 "highlight the most interesting bits here."
 msgstr ""
+"가장 흥미로운 코드 부분은 마지막을 위해 남겨두겠습니다! 프로젝트에는 두 개의 단순한 beans인 <literal>SentenceParser</literal> 및 <literal>TextTranslator</"
+"literal>와 두 개의 엔터프라이즈 beans인 <literal>TranslatorControllerBean</"
+"literal> 및 <literal>SentenceTranslator</literal>가 있습니다. 이제 Web Bean에 관해 보다 많이 알고 계실 것이므로, 가장 중요한 부분만 여기서 다루겠습니다.  "
 
 #. Tag: para
 #: ri.xml:411
@@ -1185,7 +1193,7 @@ msgid ""
 "Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal> "
 "are dependent beans, and <literal>TextTranslator</literal> uses constructor "
 "initialization:"
-msgstr ""
+msgstr "<literal>SentenceParser</literal> 및 <literal>TextTranslator</literal>는 beans에 의존하며, <literal>TextTranslator</literal>는 생성자 초기화를 사용합니다: "
 
 #. Tag: programlisting
 #: ri.xml:417
@@ -1220,7 +1228,7 @@ msgid ""
 "<literal>TextTranslator</literal> is a stateless bean (with a local business "
 "interface), where the magic happens - of course, we couldn't develop a full "
 "translator, but we gave it a good go!"
-msgstr ""
+msgstr "<literal>TextTranslator</literal>는 무상태 세션빈으로 (로컬 비지니스 인터페이스와 함께), 완전한 번역기를 개발할 수는 없지만, 잘 작동하고 있습니다! "
 
 #. Tag: para
 #: ri.xml:425
@@ -1229,7 +1237,7 @@ msgid ""
 "Finally, there is UI orientated controller, that collects the text from the "
 "user, and dispatches it to the translator. This is a request scoped, named, "
 "stateful session bean, which injects the translator."
-msgstr ""
+msgstr "마지막으로, UI 기반 제어기가 있어, 이는 사용자로 부터 텍스트를 수집하여 번역기에 이를 보냅니다. 이는 요청 범위, 이름, 상태 유지 세션빈으로 번역기에 삽입되어 있습니다.  "
 
 #. Tag: programlisting
 #: ri.xml:431
@@ -1255,13 +1263,13 @@ msgstr ""
 #: ri.xml:433
 #, no-c-format
 msgid "The bean also has getters and setters for all the fields on the page."
-msgstr ""
+msgstr "bean은 페이지에 있는 모든 영역에 대해 getter 및 setter를 갖습니다. "
 
 #. Tag: para
 #: ri.xml:437
 #, no-c-format
 msgid "As this is a stateful session bean, we have to have a remove method:"
-msgstr ""
+msgstr "이는 상태 유지 세션 빈이므로, 제거 방식을 갖고 있어야 합니다:  "
 
 #. Tag: programlisting
 #: ri.xml:441
@@ -1285,7 +1293,7 @@ msgstr ""
 msgid ""
 "The Web Beans manager will call the remove method for you when the bean is "
 "destroyed; in this case at the end of the request."
-msgstr ""
+msgstr "Web Beans 관리자는 bean이 삭제될 때 제거 방식을 호출하게 됩니다; 이러한 경우 요청 마지막에 호출하게 됩니다. "
 
 #. Tag: para
 #: ri.xml:449
@@ -1296,6 +1304,9 @@ msgid ""
 "WebBeans/Development\">http://www.seamframework.org/WebBeans/Development</"
 "ulink>."
 msgstr ""
+"이제 Web Beans RI 예제의 짧은 여정을 마칩니다. RI에 관한 보다 자세한 내용은 <ulink url=\"http://www.seamframework.org/"
+"WebBeans/Development\">http://www.seamframework.org/WebBeans/Development</"
+"ulink>에서 살펴보시기 바랍니다.  "
 
 #. Tag: para
 #: ri.xml:455
@@ -1303,5 +1314,5 @@ msgstr ""
 msgid ""
 "We need help in all areas - bug fixing, writing new features, writing "
 "examples and translating this reference guide."
-msgstr ""
+msgstr "버그 수정, 새로운 기능 작성, 예세 작성, 참조 가이드 번역과 같이 모든 영역에서 도움이 필요합니다. "
 
