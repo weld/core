@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-22 02:45+1000\n"
+"PO-Revision-Date: 2009-01-22 13:18+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -220,6 +222,8 @@ msgid ""
 "<literal>UnsatisfiedDependencyException</literal> or "
 "<literal>AmbiguousDependencyException</literal>."
 msgstr ""
+"Web Beans 사양은 <emphasis>타입 안정적 해상도 알고리즘</emphasis>이라는 절차를 정의하여, Web Bean 관리자가 삽입 지점에 삽입하기 위해 Web Bean을 인식할 때 이를 따르게 됩니다. 이러한 알고르짐은 처음에는 복잡하게 보이지만, 일단 이를 이해하면, 이는 다소 직관적입니다. 타입 안정적 해상도는 시스템 초기화시에 실행되어, 관리자는 사용자에 과한 정보를 즉각적으로 알게되며 Web Bean의 의존성에 만족하지 않을 경우, <literal>UnsatisfiedDependencyException</literal> 또는 "
+"<literal>AmbiguousDependencyException</literal>을 넘기게 됩니다.  "
 
 #. Tag: para
 #: injection.xml:67
@@ -244,7 +248,7 @@ msgid ""
 "allow the application deployer to select which implementation is appropriate "
 "for a particular deployment, without changes to the client, by enabling or "
 "disabling <emphasis>deployment types</emphasis>, or"
-msgstr ""
+msgstr "애플리케이션 개발자가 클라이언트로 변경하지 않고 <emphasis>배치 유형</emphasis>을 활성화 또는 비활성화하여 특정 시스템에 어떤 구헌이 적합할 지를 선택하게 합니다.   "
 
 #. Tag: para
 #: injection.xml:82
@@ -253,7 +257,7 @@ msgid ""
 "allow one implementation of an API to override another implementation of the "
 "same API at deployment time, without changes to the client, using "
 "<emphasis>deployment type precedence</emphasis>."
-msgstr ""
+msgstr "하나의 API 구현이 클라이언트에 변경하지 않고 <emphasis>배치 유형 우선 순위</emphasis>를 사용하여 배치시 다른 동일한 API 구현을 덮어쓰기하게 합니다.  "
 
 #. Tag: para
 #: injection.xml:88
@@ -544,7 +548,7 @@ msgid ""
 "Web Beans defines a binding type <literal>@Current</literal> that is the "
 "default binding type for any injection point or Web Bean that does not "
 "explicitly specify a binding type."
-msgstr ""
+msgstr "Web Beans는 명확하게 바인딩 유형을 지정하지 않은 Web Bean이나 또는 삽입 지점에 대한 기본값 바인딩 유형인 <literal>@Current</literal> 바인딩 유형을 정의합니다.  "
 
 #. Tag: para
 #: injection.xml:168
@@ -552,7 +556,7 @@ msgstr ""
 msgid ""
 "There are two common circumstances in which it is necessary to explicitly "
 "specify <literal>@Current</literal>:"
-msgstr ""
+msgstr "<literal>@Current</literal>를 지정하기 위해 필요한 일반적인 환경이 두 가지 있습니다:      "
 
 #. Tag: para
 #: injection.xml:173
@@ -560,7 +564,7 @@ msgstr ""
 msgid ""
 "on a field, in order to declare it as an injected field with the default "
 "binding type, and"
-msgstr ""
+msgstr "기본값 바인딩 유형과 함께 삽입 영역으로 이를 명시하기 위한 영역에서 "
 
 #. Tag: para
 #: injection.xml:177
@@ -568,7 +572,7 @@ msgstr ""
 msgid ""
 "on a Web Bean which has another binding type in addition to the default "
 "binding type."
-msgstr ""
+msgstr "기본값 바인딩 유형에 더하여 다른 바인딩 유형을 갖는 Web Bean에서 "
 
 #. Tag: title
 #: injection.xml:187
@@ -583,7 +587,7 @@ msgid ""
 "All Web Beans have a <emphasis>deployment type</emphasis>. Each deployment "
 "type identifies a set of Web Beans that should be conditionally installed in "
 "some deployments of the system."
-msgstr ""
+msgstr "모든 Web Beans는 <emphasis>배치 유형</emphasis>을 갖습니다. 각각의 배치 유형은 시스템의 일부 배치에 조건부로 설치되어야 하는 Web Beans 모음을 인식합니다. "
 
 #. Tag: para
 #: injection.xml:193
@@ -592,7 +596,7 @@ msgid ""
 "For example, we could define a deployment type named <literal>@Mock</"
 "literal>, which would identify Web Beans that should only be installed when "
 "the system executes inside an integration testing environment:"
-msgstr ""
+msgstr "예를 들어, <literal>@Mock</literal>라는 배치 유형을 정의할 수 있으며, 이는 시스템이 통합적인 테스트 환경 내에서 실행될 때 설치되어야 하는 Web Beans를 인식합니다:  "
 
 #. Tag: programlisting
 #: injection.xml:197
@@ -614,7 +618,7 @@ msgstr ""
 msgid ""
 "Suppose we had some Web Bean that interacted with an external system to "
 "process payments:"
-msgstr ""
+msgstr "지불 절차를 처리하기 위한 외부적 시스템과 상호 작용하는 일부 Web Bean이 있다고 가정합시다:  "
 
 #. Tag: programlisting
 #: injection.xml:202
@@ -642,15 +646,16 @@ msgstr ""
 msgid ""
 "Since this Web Bean does not explicitly specify a deployment type, it has "
 "the default deployment type <literal>@Production</literal>."
-msgstr ""
+msgstr "이러한 Web Bean이 배치 유형을 명시적을 지정하지 않고 있으므로, 이는 기본값 배치 유형 <literal>@Production</literal>을 갖게 됩니다.  "
 
 #. Tag: para
 #: injection.xml:207
 #, no-c-format
+#, fuzzy
 msgid ""
 "For integration or unit testing, the external system is slow or unavailable. "
 "So we would create a mock object:"
-msgstr ""
+msgstr "통합 또는 단위 테스트를 위해 "
 
 #. Tag: programlisting
 #: injection.xml:210
