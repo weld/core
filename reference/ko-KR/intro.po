@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-20 15:59+1000\n"
+"PO-Revision-Date: 2009-01-23 02:15+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -66,7 +67,7 @@ msgid ""
 "Suppose that we have two existing Java classes, that we've been using for "
 "years in various applications. The first class parses a string into a list "
 "of sentences:"
-msgstr ""
+msgstr "다양한 애플리케이션에서 오랫동안 사용해 온 두 개의 Java 클래스를 갖고 있다고 가정합니다. 첫 번째 클래스는 문자열을 문장 목록으로 구문 분석합니다:  "
 
 #. Tag: programlisting
 #: intro.xml:29
@@ -87,7 +88,7 @@ msgid ""
 "The second existing class is a stateless session bean front-end for an "
 "external system that is able to translate sentences from one language to "
 "another:"
-msgstr ""
+msgstr "두 번째 클래스는 하나의 언어에서 다른 언어로 문장을 번역할 수 있는 외부 시스템에 대한 상태 유지 세션 빈 프론트엔드입니다:  "
 
 #. Tag: programlisting
 #: intro.xml:35
@@ -107,7 +108,7 @@ msgstr ""
 #: intro.xml:37
 #, no-c-format
 msgid "Where <literal>Translator</literal> is the local interface:"
-msgstr ""
+msgstr "여기서 <literal>Translator</literal>는 로컬 인터페이스입니다:  "
 
 #. Tag: programlisting
 #: intro.xml:39
@@ -129,7 +130,7 @@ msgstr ""
 msgid ""
 "Unfortunately, we don't have a preexisting class that translates whole text "
 "documents. So let's write a Web Bean that does this job:"
-msgstr ""
+msgstr "불행하게도 전체 텍스트 문서를 번역하는 기존 클래스가 없습니다. 따라서 이러한 작업을 실행하는 Web Bean을 작성합시다: "
 
 #. Tag: programlisting
 #: intro.xml:44
@@ -227,7 +228,7 @@ msgid ""
 "no parameters! Is it still a Web Bean? Well, a class that does not have a "
 "constructor with no parameters can still be a Web Bean if it has a "
 "constructor annotated <literal>@Initializer</literal>."
-msgstr ""
+msgstr "하지만 잠시 기다려주십시오: <literal>TextTranslator</literal>는 매개 변수 없는 생성자를 갖지 않습니다! 그래도 이것이 Web Bean입니까? 클래스가 <literal>@Initializer</literal>라고 어노테이션된 생성자를 갖고 있을 경우 매개 변수 없이 생성자를 갖지 않는 클래스는 Web Bean이 될 수 있습니다.  "
 
 #. Tag: para
 #: intro.xml:61
@@ -389,61 +390,61 @@ msgstr ""
 #: intro.xml:153
 #, no-c-format
 msgid "A Web Bean comprises:"
-msgstr ""
+msgstr "Web Bean은 다음과 같은 것으로 구성되어 있습니다: "
 
 #. Tag: para
 #: intro.xml:156
 #, no-c-format
 msgid "A (nonempty) set of API types"
-msgstr ""
+msgstr "(비어 있지 않은) API 유형 모음 "
 
 #. Tag: para
 #: intro.xml:157
 #, no-c-format
 msgid "A (nonempty) set of binding annotation types"
-msgstr ""
+msgstr "(비어 있지 않은) 바인딩 어노테이션 유형 모음 "
 
 #. Tag: para
 #: intro.xml:158
 #, no-c-format
 msgid "A scope"
-msgstr ""
+msgstr "범위 "
 
 #. Tag: para
 #: intro.xml:159
 #, no-c-format
 msgid "A deployment type"
-msgstr ""
+msgstr "배치 유형 "
 
 #. Tag: para
 #: intro.xml:160
 #, no-c-format
 msgid "Optionally, a Web Bean name"
-msgstr ""
+msgstr "Web Bean 이름 (옵션 사항) "
 
 #. Tag: para
 #: intro.xml:161
 #, no-c-format
 msgid "A set of interceptor binding types"
-msgstr ""
+msgstr "인터셉터 바인딩 유형 모음 "
 
 #. Tag: para
 #: intro.xml:162
 #, no-c-format
 msgid "A Web Bean implementation"
-msgstr ""
+msgstr "Web Bean 구현 "
 
 #. Tag: para
 #: intro.xml:167
 #, no-c-format
 msgid "Let's see what some of these terms mean, to the Web Bean developer."
-msgstr ""
+msgstr "이러한 용어가 Web Bean 개발자에게 무엇을 의미하는 살펴봅시다.  "
 
 #. Tag: title
 #: intro.xml:170
 #, no-c-format
 msgid "API types, binding types and dependency injection"
-msgstr ""
+msgstr "API 유형, 바인딩 유형 및 의존성 삽입 "
 
 #. Tag: para
 #: intro.xml:172
@@ -458,13 +459,13 @@ msgstr ""
 #: intro.xml:177
 #, no-c-format
 msgid "an API type, together with"
-msgstr ""
+msgstr "API 유형 "
 
 #. Tag: para
 #: intro.xml:178
 #, no-c-format
 msgid "a set of binding types."
-msgstr ""
+msgstr "바인딩 유형 모음 "
 
 #. Tag: para
 #: intro.xml:181
@@ -554,7 +555,7 @@ msgstr ""
 #: intro.xml:217
 #, no-c-format
 msgid "Deployment types"
-msgstr ""
+msgstr "배치 유형 "
 
 #. Tag: para
 #: intro.xml:219
@@ -620,13 +621,13 @@ msgstr ""
 msgid ""
 "We'll talk more about this unique and powerful feature in <xref linkend="
 "\"deploymenttypes\"/>."
-msgstr ""
+msgstr "<xref linkend=\"deploymenttypes\"/>에서 이러한 유일하고 강력한 기능에 관해 자세히 살펴 보겠습니다. "
 
 #. Tag: title
 #: intro.xml:246
 #, no-c-format
 msgid "Scope"
-msgstr ""
+msgstr "범위 "
 
 #. Tag: para
 #: intro.xml:248
