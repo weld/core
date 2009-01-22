@@ -3,12 +3,14 @@ package org.jboss.webbeans.test.tck;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
+import javax.el.ELContext;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.tck.api.Containers;
 import org.jboss.webbeans.test.mock.MockBootstrap;
 import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
+import org.jboss.webbeans.test.mock.el.EL;
 
 public class ContainersImpl implements Containers
 {
@@ -31,15 +33,17 @@ public class ContainersImpl implements Containers
       return deploy(null, classes);
    }
    
+   @SuppressWarnings("unchecked")
    public <T> T evaluateValueExpression(String expression, Class<T> expectedType)
    {
-      // TODO implement
-      throw new UnsupportedOperationException();
+      ELContext elContext = EL.createELContext();
+      return (T) EL.EXPRESSION_FACTORY.createValueExpression(elContext, expression, expectedType).getValue(elContext);
    }
  
-   public <T> T evaluateMethodExpression(String expression, Class<T> expectedType, Class<?>[] expectedParamTypes)
+   @SuppressWarnings("unchecked")
+   public <T> T evaluateMethodExpression(String expression, Class<T> expectedType, Class<?>[] expectedParamTypes, Object[] expectedParams)
    {
-      // TODO implement
-      throw new UnsupportedOperationException();
+      ELContext elContext = EL.createELContext();
+      return (T) EL.EXPRESSION_FACTORY.createMethodExpression(elContext, expression, expectedType, expectedParamTypes).invoke(elContext, expectedParams);
    }
 }
