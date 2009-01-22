@@ -23,13 +23,17 @@
       </repository>
    </repositories>
 
+   <properties>
+      <mpjdocbook.version>2.1.1</mpjdocbook.version>
+   </properties>
+
    <build>
       <defaultGoal>process-classes</defaultGoal>
       <plugins>
          <plugin>
             <groupId>org.jboss.maven.plugins</groupId>
             <artifactId>maven-jdocbook-plugin</artifactId>
-            
+            <version>${mpjdocbook.version}</version>
             <extensions>true</extensions>
             <dependencies>
                <dependency>
@@ -137,7 +141,7 @@
             <plugin>
                <groupId>org.jboss.maven.plugins</groupId>
                <artifactId>maven-jdocbook-plugin</artifactId>
-               <version>2.1.1</version>
+               <version>${mpjdocbook.version}</version>
             </plugin>
          </plugins>
       </pluginManagement>
@@ -195,14 +199,8 @@
 
          <!-- It is anticipated that ${maven.repository.root} be set in user's settings.xml -->
          <!-- todo : replace this with direct svn access once the svnkit providers are available -->
-         <id>repository.jboss.org</id>
-         <url>file://${maven.repository.root}</url>
       </repository>
       <snapshotRepository>
-         <id>snapshots.jboss.org</id>
-
-         <name>JBoss Snapshot Repository</name>
-         <url>dav:https://snapshots.jboss.org/maven2</url>
       </snapshotRepository>
    </distributionManagement>
    
