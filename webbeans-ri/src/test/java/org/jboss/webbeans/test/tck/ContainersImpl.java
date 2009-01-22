@@ -10,6 +10,8 @@ import org.jboss.webbeans.tck.api.Containers;
 import org.jboss.webbeans.test.mock.MockBootstrap;
 import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 public class ContainersImpl implements Containers
 {
    
@@ -29,5 +31,17 @@ public class ContainersImpl implements Containers
    public Manager deploy(java.lang.Class<?>... classes) 
    {
       return deploy(null, classes);
+   }
+   
+   public <T> T evaluateValueExpression(String expression, Class<T> expectedType)
+   {
+      // TODO implement
+      throw new NotImplementedException();
+   }
+ 
+   public <T> T evaluateMethodExpression(String expression, Class<T> expectedType, Class<?>[] expectedParamTypes)
+   {
+      // TODO implement
+      throw new NotImplementedException();
    }
 }
