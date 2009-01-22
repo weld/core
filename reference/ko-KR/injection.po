@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-22 13:18+1000\n"
+"PO-Revision-Date: 2009-01-22 16:41+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -651,11 +651,10 @@ msgstr "이러한 Web Bean이 배치 유형을 명시적을 지정하지 않고 
 #. Tag: para
 #: injection.xml:207
 #, no-c-format
-#, fuzzy
 msgid ""
 "For integration or unit testing, the external system is slow or unavailable. "
 "So we would create a mock object:"
-msgstr "통합 또는 단위 테스트를 위해 "
+msgstr "통합 또는 단위 테스트를 위해 외부적 시스템은 속도가 느리거나 또는 사용 불가능합니다. 따라서 모의 객체를 생성할 수 있습니다:  "
 
 #. Tag: programlisting
 #: injection.xml:210
@@ -687,7 +686,7 @@ msgstr ""
 msgid ""
 "But how does the Web Bean manager determine which implementation to use in a "
 "particular deployment?"
-msgstr ""
+msgstr "하지만 Web Bean 관리자가 특정 배치에 어떤 구현을 사용할 지를 어떻게 결정할까요?   "
 
 #. Tag: title
 #: injection.xml:216
@@ -705,6 +704,8 @@ msgid ""
 "can identify additional deployment types to be enabled in a particular "
 "deployment by listing them in <literal>web-beans.xml</literal>."
 msgstr ""
+"Web Beans는 두 개의 내장된 배치 유형을 정의합니다: <literal>@Production</"
+"literal> 및 <literal>@Standard</literal>. 시스템이 배치되면 기본값으로 내장된 배치 유형과 함께 Web Beans 만이 활성화됩니다. <literal>web-beans.xml</literal>에서 몰록을 나열하여 특정 배치에서 활성화될 추가 배치 유형을 인식할 수 있습니다.  "
 
 #. Tag: para
 #: injection.xml:224
@@ -712,7 +713,7 @@ msgstr ""
 msgid ""
 "Going back to our example, when we deploy our integration tests, we want all "
 "our <literal>@Mock</literal> objects to be installed:"
-msgstr ""
+msgstr "예제로 다시 돌아가서, 통합적 테스트를 배치할 때, 모든 <literal>@Mock</literal> 객체가 설치되기를 원합니다: "
 
 #. Tag: programlisting
 #: injection.xml:227
@@ -741,7 +742,7 @@ msgid ""
 "Now the Web Bean manager will identify and install all Web Beans annotated "
 "<literal>@Production</literal>, <literal>@Standard</literal> or "
 "<literal>@Mock</literal> at deployment time."
-msgstr ""
+msgstr "이제 Web Bean 관리자는 배치시 <literal>@Production</literal>, <literal>@Standard</literal>, <literal>@Mock</literal> 어노테이션된 모든 Web Beans를 인식 및 설치하게 됩니다.  "
 
 #. Tag: para
 #: injection.xml:233
@@ -750,7 +751,7 @@ msgid ""
 "The deployment type <literal>@Standard</literal> is used only for certain "
 "special Web Beans defined by the Web Beans specification. We can't use it "
 "for our own Web Beans, and we can't disable it."
-msgstr ""
+msgstr "<literal>@Standard</literal> 배치 유형은 Web Beans 사양에 의해 정의된 특정 Web Beans에서만 사용됩니다. 자체적 Web Beans에는 이를 사용할 수 없으며 이를 비활성화할 수 없습니다.  "
 
 #. Tag: para
 #: injection.xml:237
@@ -759,13 +760,13 @@ msgid ""
 "The deployment type <literal>@Production</literal> is the default deployment "
 "type for Web Beans which don't explicitly declare a deployment type, and may "
 "be disabled."
-msgstr ""
+msgstr "<literal>@Production</literal> 배치 유형은 배치 유형을 명시하지 않은 Web Beans에 대한 기본값 배치 유형으로 비활성화될 수 있습니다.  "
 
 #. Tag: title
 #: injection.xml:244
 #, no-c-format
 msgid "Deployment type precedence"
-msgstr ""
+msgstr "배치 유형 우선 순위 "
 
 #. Tag: para
 #: injection.xml:246
@@ -838,13 +839,13 @@ msgstr ""
 #: injection.xml:284
 #, no-c-format
 msgid "Example deployment types"
-msgstr ""
+msgstr "배치 유형 예시 "
 
 #. Tag: para
 #: injection.xml:286
 #, no-c-format
 msgid "Deployment types are useful for all kinds of things, here's some examples:"
-msgstr ""
+msgstr "배치 유형은 모든 종류가 유용합니다, 다음에는 일부 예시가 있습니다:       "
 
 #. Tag: para
 #: injection.xml:290
@@ -858,7 +859,7 @@ msgstr "테스트 용 <literal>@Mock</literal> 및 <literal>@Staging</literal> �
 #: injection.xml:294
 #, no-c-format
 msgid "<literal>@AustralianTaxLaw</literal> for site-specific Web Beans"
-msgstr ""
+msgstr "특정 사이트 Web Beans 용 <literal>@AustralianTaxLaw</literal>  "
 
 #. Tag: para
 #: injection.xml:297
@@ -866,7 +867,7 @@ msgstr ""
 msgid ""
 "<literal>@SeamFramework</literal>, <literal>@Guice</literal> for third-party "
 "frameworks which build on Web Beans"
-msgstr ""
+msgstr "Web Beans에서 작성되는 제삼자 프레임워크 용 <literal>@SeamFramework</literal>, <literal>@Guice</literal> "
 
 #. Tag: para
 #: injection.xml:301
@@ -874,19 +875,19 @@ msgstr ""
 msgid ""
 "<literal>@Standard</literal> for standard Web Beans defined by the Web Beans "
 "specification"
-msgstr ""
+msgstr "Web Beans 사양에 의해 정의된 표준 Web Beans 용 <literal>@Standard</literal> "
 
 #. Tag: para
 #: injection.xml:306
 #, no-c-format
 msgid "I'm sure you can think of more applications..."
-msgstr ""
+msgstr "더 많은 애플리케이션을 생각하실 수 있을 것입니다..."
 
 #. Tag: title
 #: injection.xml:313
 #, no-c-format
 msgid "Fixing unsatisfied dependencies"
-msgstr ""
+msgstr "불만족스러운 의존성 수정 "
 
 #. Tag: para
 #: injection.xml:315
@@ -904,7 +905,7 @@ msgstr ""
 msgid ""
 "It's usually easy to fix an <literal>UnsatisfiedDependencyException</"
 "literal> or <literal>AmbiguousDependencyException</literal>."
-msgstr ""
+msgstr "<literal>UnsatisfiedDependencyException</literal> 또는 <literal>AmbiguousDependencyException</literal>을 수정하기가 쉽습니다. "
 
 #. Tag: para
 #: injection.xml:323
@@ -914,7 +915,7 @@ msgid ""
 "a Web Bean which implements the API type and has the binding types of the "
 "injection point &#151; or enable the deployment type of a Web Bean that "
 "already implements the API type and has the binding types."
-msgstr ""
+msgstr "<literal>UnsatisfiedDependencyException</literal>을 수정하려면, API 유형을 구현하는 Web Bean을 제공하고 삽입 지점의 바인딩 유형을 갖거나 &#151; 또는 API 유형을 이미 구현하고 있는 Web Bean의 배치 유형을 활성화하고 바인딩 유형을 갖습니다.  "
 
 #. Tag: para
 #: injection.xml:328
@@ -927,6 +928,8 @@ msgid ""
 "<literal>AmbiguousDependencyException</literal> can only occur if two Web "
 "Beans share a binding type and have exactly the same deployment type."
 msgstr ""
+"<literal>AmbiguousDependencyException</literal>을 수정하려면, 두 개의 API 유형 구현 사이에서 구별하기 위해 바인딩 유형을 소개하거나 구현 중 하나의 배치 유형을 변경하여 Web Bean 관리자가 이들 사이에서 선택하기 위해 배치 유형 우선 순위를 사용할 수 있습니다. <literal>AmbiguousDependencyException</literal>은 두 개의 Web "
+"Beans가 바인딩 유형을 공유하여 동일한 배치 유형을 갖고 있을 때에만 발생할 수 있습니다.  "
 
 #. Tag: para
 #: injection.xml:335
@@ -934,13 +937,13 @@ msgstr ""
 msgid ""
 "There's one more issue you need to be aware of when using dependency "
 "injection in Web Beans."
-msgstr ""
+msgstr "Web Beans에서 의존성 삽입을 사용할 때 유의하셔야 할 사항이 한 가지 더 있습니다. "
 
 #. Tag: title
 #: injection.xml:341
 #, no-c-format
 msgid "Client proxies"
-msgstr ""
+msgstr "클라이언트 프록시 "
 
 #. Tag: para
 #: injection.xml:343
@@ -948,7 +951,7 @@ msgstr ""
 msgid ""
 "Clients of an injected Web Bean do not usually hold a direct reference to a "
 "Web Bean instance."
-msgstr ""
+msgstr "삽입된 Web Bean 클라이언트는 Web Bean 인스턴스에 직접적인 참조를 유지하지 않습니다. "
 
 #. Tag: para
 #: injection.xml:346
@@ -999,7 +1002,7 @@ msgstr ""
 #: injection.xml:370
 #, no-c-format
 msgid "The following Java types cannot be proxied by the Web Bean manager:"
-msgstr ""
+msgstr "다음과 같은 Java 유형은 Web Bean 관리자에 의해 프록시될 수 없습니다:  "
 
 #. Tag: para
 #: injection.xml:374
@@ -1007,13 +1010,13 @@ msgstr ""
 msgid ""
 "classes which are declared <literal>final</literal> or have a "
 "<literal>final</literal> method,"
-msgstr ""
+msgstr "<literal>final</literal>이라고 명시되어 있거나 또는 <literal>final</literal> 방식을 갖는 클래스, "
 
 #. Tag: para
 #: injection.xml:378
 #, no-c-format
 msgid "classes which have no non-private constructor with no parameters, and"
-msgstr ""
+msgstr "매개 변수 없는 비전용 생성자를 갖지 않는 클래스, "
 
 #. Tag: para
 #: injection.xml:381
