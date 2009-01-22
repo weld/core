@@ -20,6 +20,7 @@ package org.jboss.webbeans.introspector.jlr;
 import java.lang.reflect.Modifier;
 
 import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.util.Reflections;
 
@@ -32,13 +33,15 @@ import org.jboss.webbeans.util.Reflections;
  * 
  * @param <T>
  */
-public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>>
+public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, Class<T>> implements AnnotatedType<T>
 {
    
    // The superclass abstraction of the type
    private final AnnotatedClass<?> superclass;
    // The name of the type
    private final String name;
+   
+   private final String _simpleName;
    
    // Cached string representation
    private String toString;
@@ -53,6 +56,7 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
    {
       super(annotatedItemHelper);
       this.name = type.getName();
+      this._simpleName = type.getSimpleName();
       if (type.getSuperclass() != null)
       {
          this.superclass = AnnotatedClassImpl.of(type.getSuperclass());
@@ -134,6 +138,11 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
       }
       toString = "Abstract annotated type " + getName();
       return toString;
+   }
+   
+   public String getSimpleName()
+   {
+      return _simpleName;
    }
 
 }

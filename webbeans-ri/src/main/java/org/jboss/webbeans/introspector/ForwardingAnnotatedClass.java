@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 
-public abstract class ForwardingAnnotatedClass<T> extends ForwardingAnnotatedItem<T, Class<T>> implements AnnotatedClass<T>
+public abstract class ForwardingAnnotatedClass<T> extends ForwardingAnnotatedType<T> implements AnnotatedClass<T>
 {
 
    protected abstract AnnotatedClass<T> delegate();
@@ -83,16 +83,6 @@ public abstract class ForwardingAnnotatedClass<T> extends ForwardingAnnotatedIte
    public boolean isParameterizedType()
    {
       return delegate().isParameterizedType();
-   }
-
-   public boolean isEquivalent(Class<?> clazz)
-   {
-      return delegate().isEquivalent(clazz);
-   }
-   
-   public AnnotatedClass<T> wrap(Set<Annotation> annotations)
-   {
-      throw new UnsupportedOperationException();
    }
    
 }

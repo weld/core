@@ -12,10 +12,12 @@ import javax.webbeans.BindingType;
 import javax.webbeans.DeploymentType;
 import javax.webbeans.Fires;
 import javax.webbeans.Initializer;
+import javax.webbeans.Named;
 import javax.webbeans.Observes;
 import javax.webbeans.Obtains;
 import javax.webbeans.Produces;
 import javax.webbeans.Realizes;
+import javax.webbeans.Specializes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractBean;
@@ -34,6 +36,7 @@ import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.WrappedAnnotatedClass;
 import org.jboss.webbeans.introspector.WrappedAnnotatedField;
 import org.jboss.webbeans.introspector.WrappedAnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
@@ -72,6 +75,10 @@ public class BeanDeployer
    public void addClass(Class<?> clazz)
    {
       AnnotatedClass<?> annotatedClass = AnnotatedClassImpl.of(clazz);
+      if (annotatedClass.isAnnotationPresent(Specializes.class))
+      {
+         annotatedClass = specializeClass(annotatedClass);
+      }
       if (manager.getEjbDescriptorCache().containsKey(clazz))
       {
          createBean(EnterpriseBean.of(annotatedClass, manager), annotatedClass);
@@ -331,6 +338,15 @@ public class BeanDeployer
          }
          
       };
+   }
+   
+   private static <T> AnnotatedClass<T> specializeClass(final AnnotatedClass<T> clazz)
+   {
+      Set<Annotation> extraAnnotations = new HashSet<Annotation>();
+      extraAnnotations.addAll(clazz.getSuperclass().getDeclaredMetaAnnotations(BindingType.class));
+      extraAnnotations.add(clazz.getSuperclass().getAnnotation(Named.class));
+      Set<Annotation> extraDeclaredAnnotations = Collections.emptySet();
+      return new WrappedAnnotatedClass<T>(clazz, extraAnnotations, extraDeclaredAnnotations);
    }
    
 }

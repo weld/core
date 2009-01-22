@@ -31,7 +31,6 @@ import javax.webbeans.Dependent;
 import javax.webbeans.Event;
 import javax.webbeans.InjectionPoint;
 import javax.webbeans.Named;
-import javax.webbeans.Specializes;
 import javax.webbeans.Standard;
 import javax.webbeans.Stereotype;
 import javax.webbeans.manager.Bean;
@@ -157,14 +156,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    protected void initBindingTypes()
    {
       this.bindingTypes = new HashSet<Annotation>();
-      boolean specialization = getAnnotatedItem().isAnnotationPresent(Specializes.class);
       this.bindingTypes.addAll(getAnnotatedItem().getMetaAnnotations(BindingType.class));
-      if (specialization)
-      {
-         this.bindingTypes.addAll(getSpecializedType().getBindings());
-         log.trace("Using binding types " + bindingTypes + " specified by annotations and specialized supertype");
-      }
-      else if (bindingTypes.size() == 0)
+      if (bindingTypes.size() == 0)
       {
          log.trace("Adding default @Current binding type");
          this.bindingTypes.add(new CurrentLiteral());
@@ -205,13 +198,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    protected void initName()
    {
       boolean beanNameDefaulted = false;
-      boolean specialization = getAnnotatedItem().isAnnotationPresent(Specializes.class);
       if (getAnnotatedItem().isAnnotationPresent(Named.class))
       {
-         if (specialization)
-         {
-            throw new DefinitionException("Name specified for specialized bean");
-         }
          String javaName = getAnnotatedItem().getAnnotation(Named.class).value();
          if ("".equals(javaName))
          {
@@ -225,12 +213,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
             return;
          }
       }
-      else if (specialization)
-      {
-         this.name = getSpecializedType().getName();
-         log.trace("Using supertype name");
-         return;
-      }
+      
 
       if (beanNameDefaulted || getMergedStereotypes().isBeanNameDefaulted())
       {
@@ -455,16 +438,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    public Class<? extends Annotation> getScopeType()
    {
       return scopeType;
-   }
-
-   /**
-    * Gets the specializes type of the bean
-    * 
-    * @return The specialized type
-    */
-   protected AbstractBean<? extends T, E> getSpecializedType()
-   {
-      throw new UnsupportedOperationException();
    }
 
    /**

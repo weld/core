@@ -17,8 +17,6 @@
 
 package org.jboss.webbeans.introspector;
 
-import java.lang.annotation.Annotation;
-import java.util.Set;
 
 /**
  * AnnotatedType provides a uniform access to a type defined either in Java or
@@ -44,6 +42,6 @@ public interface AnnotatedType<T> extends AnnotatedItem<T, Class<T>>
     */
    public boolean isEquivalent(Class<?> clazz);
    
-   public AnnotatedType<T> wrap(Set<Annotation> annotations);
+   public String getSimpleName();
 
 }

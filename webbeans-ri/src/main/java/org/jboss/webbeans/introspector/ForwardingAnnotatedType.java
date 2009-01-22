@@ -19,4 +19,9 @@ public abstract class ForwardingAnnotatedType<T> extends ForwardingAnnotatedItem
       return delegate().isEquivalent(clazz);
    }
    
+   public String getSimpleName()
+   {
+      return delegate().getSimpleName();
+   }
+   
 }

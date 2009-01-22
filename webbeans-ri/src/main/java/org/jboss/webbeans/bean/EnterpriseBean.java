@@ -268,29 +268,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    }
 
    /**
-    * Gets the specializes type of the bean
-    * 
-    * @return The specialized type
-    */
-   @SuppressWarnings("unchecked")
-   @Override
-   protected AbstractBean<? extends T, Class<T>> getSpecializedType()
-   {
-      // TODO: lots of validation!
-      Class<?> superclass = getAnnotatedItem().getType().getSuperclass();
-      if (superclass != null)
-      {
-         // TODO look up this bean and do this via init
-         return (EnterpriseBean) EnterpriseBean.of(superclass, manager);
-      }
-      else
-      {
-         throw new RuntimeException();
-      }
-
-   }
-
-   /**
     * Validates the bean type
     */
    private void checkEnterpriseBeanTypeAllowed()

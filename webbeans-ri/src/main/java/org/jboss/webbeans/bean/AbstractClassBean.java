@@ -31,6 +31,7 @@ import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 import javax.webbeans.Production;
 import javax.webbeans.ScopeType;
+import javax.webbeans.Specializes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentInstancesStore;
@@ -289,9 +290,21 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    @Override
    protected String getDefaultName()
    {
-      String name = Strings.decapitalize(getType().getSimpleName());
+      String name = Strings.decapitalize(getSpecializedType().getSimpleName());
       log.trace("Default name of " + type + " is " + name);
       return name;
+   }
+   
+   private AnnotatedClass<?> getSpecializedType()
+   {
+      if (annotatedItem.isAnnotationPresent(Specializes.class))
+      {
+         return annotatedItem.getSuperclass();
+      }
+      else
+      {
+         return annotatedItem;
+      }
    }
 
    /**

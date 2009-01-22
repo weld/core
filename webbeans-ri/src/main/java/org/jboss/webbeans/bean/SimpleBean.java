@@ -436,27 +436,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    }
 
    /**
-    * Returns the specializes type of the bean
-    * 
-    * @return The specialized type
-    */
-   @SuppressWarnings("unchecked")
-   protected AbstractBean<? extends T, Class<T>> getSpecializedType()
-   {
-      // TODO lots of validation!
-      Class<?> superclass = getAnnotatedItem().getType().getSuperclass();
-      if (superclass != null)
-      {
-         // TODO look up this bean and do this via init
-         return (SimpleBean) SimpleBean.of(superclass, manager);
-      }
-      else
-      {
-         throw new RuntimeException();
-      }
-   }
-
-   /**
     * Returns the post-construct method
     * 
     * @return The post-construct method
