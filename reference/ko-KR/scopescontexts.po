@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: scopescontexts\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-22 01:12+1000\n"
+"PO-Revision-Date: 2009-01-22 12:18+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 
@@ -270,7 +271,7 @@ msgid ""
 "the user. The conversation context holds state associated with what the user "
 "is currently working on. If the user is doing multiple things at the same "
 "time, there are multiple conversations."
-msgstr ""
+msgstr "컨버세이션은 사용자 관점에서의 작업 단위, 작업 내용을 나타냅니다. 컨버세이션 컨텍스트는 현재 사용자가 작업하고 있는 것과 관련된 상태를 유지합니다. 사용자가 동시에 여러가지 작업을 실행하고 있을 경우, 여러 개의 컨버세이션이 있게 됩니다. "
 
 #. Tag: para
 #: scopescontexts.xml:143
@@ -443,14 +444,13 @@ msgstr ""
 #. Tag: para
 #: scopescontexts.xml:190
 #, no-c-format
-#, fuzzy
 msgid ""
 "The Web Bean manager is also required to propagate conversations across any "
 "redirect, even if the conversation is not marked long-running. This makes it "
 "very easy to implement the common POST-then-redirect pattern, without resort "
 "to fragile constructs such as a \"flash\" object. In this case, the Web Bean "
 "manager automatically adds a request parameter to the redirect URL."
-msgstr "Web Bean 관리자는 컨버세이션이 장기 실행으로 표시되어 있지 않아도, 리다이렉트를 통해 컨버세이션을 보급해야 합니다. 이는 일반적인 "
+msgstr "Web Bean 관리자는 컨버세이션이 장기 실행으로 표시되어 있지 않아도, 리다이렉트를 통해 컨버세이션을 보급해야 합니다. 이는 \"플래시\" 객체와 같은 깨지기 쉬운 구조에 의지하지 않고 일반적인 POST-then-redirect 패턴 쉽게 구현하게 합니다. 이러한 경우 Web Bean 관리자는 리다이렉트 URL에 요청 매개 변수를 자동으로 추가합니다.  "
 
 #. Tag: title
 #: scopescontexts.xml:200
@@ -467,7 +467,7 @@ msgid ""
 "manager implementation will normally do this on the basis of some kind of "
 "timeout &#151; though this is not required by the Web Beans specification. The "
 "timeout is the period of inactivity before the conversation is destroyed."
-msgstr ""
+msgstr "Web Bean 관리자에게는 리소스를 보관하기 위해 컨텍스트에 있는 모든 상태 및 컨버세이션을 삭제할 수 있는 권한이 있습니다. Web Bean 관리자 구현은 주로 시간 초과에 기반하여 이를 실행합니다 &#151; 이는 Web Beans 사양에 의해 요청되지 않습니다. 시간 초과는 컨버세이션이 삭제된 후 비활성화 기간을 말합니다.       "
 
 #. Tag: para
 #: scopescontexts.xml:208
@@ -514,14 +514,13 @@ msgstr "<![CDATA[public class Calculator { ... }]]>"
 #. Tag: para
 #: scopescontexts.xml:229
 #, no-c-format
-#, fuzzy
 msgid ""
 "When an injection point of a Web Bean resolves to a dependent Web Bean, a "
 "new instance of the dependent Web Bean is created every time the first Web "
 "Bean is instantiated. Instances of dependent Web Beans are never shared "
 "between different Web Beans or different injection points. They are "
 "<emphasis>dependent objects</emphasis> of some other Web Bean instance."
-msgstr "Web Bean의 삽입 지점이 "
+msgstr "Web Bean의 삽입 지점이 의존적 Web Bean을 해결할 때, 의존적 Web Bean의 새로운 인스턴스는 처음으로 Web Bean이 초기화될 때 마다 생성됩니다. 의존적 Web Beans의 인스턴스는 다른 Web Bean 사이에서나 또는 다른 삽입 지점 간에 공유되지 않습니다. 이는 일부 다른 Web Bean 인스턴스에 대해 <emphasis>의존적 객체</emphasis>입니다.  "
 
 #. Tag: para
 #: scopescontexts.xml:235
