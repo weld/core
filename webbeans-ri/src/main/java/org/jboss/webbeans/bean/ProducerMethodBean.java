@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 import javax.webbeans.DefinitionException;
-import javax.webbeans.Destructor;
 import javax.webbeans.Disposes;
 import javax.webbeans.Observes;
 
@@ -119,11 +118,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     */
    protected void checkProducerMethod()
    {
-      if (getAnnotatedItem().isAnnotationPresent(Destructor.class))
-      {
-         throw new DefinitionException("Producer method cannot be annotated @Destructor");
-      }
-      else if (getAnnotatedItem().getAnnotatedParameters(Observes.class).size() > 0)
+      if (getAnnotatedItem().getAnnotatedParameters(Observes.class).size() > 0)
       {
          throw new DefinitionException("Producer method cannot have parameter annotated @Observes");
       }

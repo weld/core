@@ -122,6 +122,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          try
          {
             instance = constructor.newInstance(manager);
+            injectionPointProvider.setCurrentInjectionInstance(instance);
             bindDecorators();
             bindInterceptors();
             injectEjbAndCommonFields(instance);
@@ -131,6 +132,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          }
          finally
          {
+            injectionPointProvider.clearCurrentInjectionInstance(instance);
             injectionPointProvider.popBean();
          }
          return instance;
@@ -153,6 +155,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          DependentContext.INSTANCE.setActive(true);
          callPreDestroy(instance);
+         dependentInstancesStore.destroyDependentInstances(instance);
       }
       catch (Exception e)
       {

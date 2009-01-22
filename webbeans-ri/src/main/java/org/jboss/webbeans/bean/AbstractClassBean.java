@@ -25,7 +25,6 @@ import javax.webbeans.BindingType;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.DeploymentType;
-import javax.webbeans.Destructor;
 import javax.webbeans.Disposes;
 import javax.webbeans.Initializer;
 import javax.webbeans.Observes;
@@ -34,6 +33,7 @@ import javax.webbeans.Production;
 import javax.webbeans.ScopeType;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -61,6 +61,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    private Set<AnnotatedField<?>> injectableFields;
    // The initializer methods
    private Set<AnnotatedMethod<?>> initializerMethods;
+   protected DependentInstancesStore dependentInstancesStore;
 
    /**
     * Constructor
@@ -72,6 +73,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       super(manager);
       this.annotatedItem = type;
+      dependentInstancesStore = new DependentInstancesStore();
    }
 
    /**
@@ -86,7 +88,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       // TODO Interceptors
       initInitializerMethods();
    }
-   
+
    /**
     * Injects bound fields
     * 
@@ -158,10 +160,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          {
             throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be annotated @Produces");
          }
-         else if (annotatedMethod.getAnnotation(Destructor.class) != null)
-         {
-            throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be annotated @Destructor");
-         }
          else if (annotatedMethod.getAnnotatedParameters(Disposes.class).size() > 0)
          {
             throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot have parameters annotated @Disposes");
@@ -176,7 +174,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          }
       }
    }
-   
+
    @Override
    protected void initScopeType()
    {
@@ -198,19 +196,19 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             throw new DefinitionException("At most one scope may be specified");
          }
       }
-      
+
       if (this.scopeType == null)
       {
          initScopeTypeFromStereotype();
       }
-      
+
       if (this.scopeType == null)
       {
          this.scopeType = Dependent.class;
          log.trace("Using default @Dependent scope");
       }
    }
-   
+
    @Override
    protected void initDeploymentType()
    {
@@ -336,6 +334,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    protected Class<? extends Annotation> getDefaultDeploymentType()
    {
       return Production.class;
+   }
+
+   public DependentInstancesStore getDependentInstancesStore()
+   {
+      return dependentInstancesStore;
    }
 
 }

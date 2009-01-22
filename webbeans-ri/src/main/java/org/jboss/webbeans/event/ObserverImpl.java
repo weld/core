@@ -29,7 +29,6 @@ import javax.webbeans.AfterTransactionFailure;
 import javax.webbeans.AfterTransactionSuccess;
 import javax.webbeans.BeforeTransactionCompletion;
 import javax.webbeans.DefinitionException;
-import javax.webbeans.Destructor;
 import javax.webbeans.Disposes;
 import javax.webbeans.ExecutionException;
 import javax.webbeans.IfExists;
@@ -183,10 +182,6 @@ public class ObserverImpl<T> implements Observer<T>
       if (this.observerMethod.isAnnotationPresent(Initializer.class))
       {
          throw new DefinitionException(this + " cannot be annotated with @Initializer");
-      }
-      if ( this.observerMethod.isAnnotationPresent(Destructor.class) )
-      {
-         throw new DefinitionException(this + " cannot be annotated with @Destructor");
       }
    }
 

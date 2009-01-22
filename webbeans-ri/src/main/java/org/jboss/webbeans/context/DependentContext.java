@@ -23,6 +23,10 @@ import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.Dependent;
 import javax.webbeans.manager.Contextual;
 
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.bean.AbstractClassBean;
+import org.jboss.webbeans.injection.InjectionPointProvider;
+
 /**
  * The dependent context
  * 
@@ -32,9 +36,9 @@ public class DependentContext extends AbstractContext
 {
 
    public static DependentContext INSTANCE = new DependentContext();
-   
+
    private ThreadLocal<AtomicInteger> reentrantActiveCount;
-   
+
    /**
     * Constructor
     */
@@ -55,8 +59,8 @@ public class DependentContext extends AbstractContext
    /**
     * Overridden method always creating a new instance
     * 
-    *  @param bean The bean to create
-    *  @param create Should a new one be created
+    * @param bean The bean to create
+    * @param create Should a new one be created
     */
    public <T> T get(Contextual<T> bean, boolean create)
    {
@@ -64,7 +68,14 @@ public class DependentContext extends AbstractContext
       {
          throw new ContextNotActiveException();
       }
-      return create == false ? null : bean.create();
+      T instance = create == false ? null : bean.create();
+      InjectionPointProvider injectionPointProvider = CurrentManager.rootManager().getInjectionPointProvider();
+      if (bean instanceof AbstractClassBean && injectionPointProvider.isInjecting())
+      {
+         DependentInstancesStore dependentInstancesStore = ((AbstractClassBean<?>) bean).getDependentInstancesStore();
+         dependentInstancesStore.addDependentInstance(injectionPointProvider.getCurrentInjectionInstance(), ContextualInstance.of(bean, instance));
+      }
+      return instance;
    }
 
    @Override
@@ -73,7 +84,7 @@ public class DependentContext extends AbstractContext
       String active = isActive() ? "Active " : "Inactive ";
       return active + "dependent context";
    }
-   
+
    @Override
    public void setActive(boolean active)
    {
@@ -92,5 +103,5 @@ public class DependentContext extends AbstractContext
          }
       }
    }
-   
+
 }

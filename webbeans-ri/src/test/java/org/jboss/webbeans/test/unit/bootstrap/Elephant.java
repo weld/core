@@ -2,7 +2,6 @@ package org.jboss.webbeans.test.unit.bootstrap;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.webbeans.Destructor;
 import javax.webbeans.Production;
 
 @Production
@@ -16,7 +15,7 @@ class Elephant
       
    }
    
-   @Remove @Destructor
+   @Remove
    public void remove2()
    {
       

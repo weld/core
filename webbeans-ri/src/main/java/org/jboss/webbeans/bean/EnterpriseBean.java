@@ -17,10 +17,8 @@
 
 package org.jboss.webbeans.bean;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashSet;
-import java.util.Set;
 
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
@@ -30,12 +28,7 @@ import javax.webbeans.CreationException;
 import javax.webbeans.Decorator;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
-import javax.webbeans.Destructor;
-import javax.webbeans.Disposes;
-import javax.webbeans.Initializer;
 import javax.webbeans.Interceptor;
-import javax.webbeans.Observes;
-import javax.webbeans.Produces;
 import javax.webbeans.Specializes;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -45,7 +38,6 @@ import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
