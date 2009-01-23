@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Disposes;
 import javax.webbeans.Observes;
+import javax.webbeans.Specializes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
@@ -213,10 +214,25 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    }
    
    @Override
+   protected void preCheckSpecialization()
+   {
+      // Need to do getDeclaredMethod!
+      if (declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod()) == null)
+      {
+         throw new DefinitionException("Specialized producer method does not override a method on the direct superclass");
+      }
+   }
+   
+   @Override
+   protected void initSpecialization()
+   {
+      this.specializedBean = ProducerMethodBean.of(declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod()), SimpleBean.of(declaringBean.getAnnotatedItem().getSuperclass(), manager), manager);
+   }
+   
+   @Override
    public boolean isSpecializing()
    {
-      // TODO Auto-generated method stub
-      return false;
+      return getAnnotatedItem().isAnnotationPresent(Specializes.class);
    }
 
 }

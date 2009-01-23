@@ -30,7 +30,6 @@ import javax.webbeans.Dependent;
 import javax.webbeans.ExecutionException;
 import javax.webbeans.Initializer;
 import javax.webbeans.InjectionPoint;
-import javax.webbeans.Specializes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
@@ -105,10 +104,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected SimpleBean(AnnotatedClass<T> type, ManagerImpl manager)
    {
       super(type, manager);
-      if (type.isAnnotationPresent(Specializes.class))
-      {
-         this.specializedBean = SimpleBean.of(type.getSuperclass(), manager);
-      }
       init();
    }
 
@@ -352,7 +347,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected void preCheckSpecialization()
    {
       super.preCheckSpecialization();
-      if (manager.getEjbDescriptorCache().containsKey(getSpecializedBean().getType()))
+      if (manager.getEjbDescriptorCache().containsKey(getAnnotatedItem().getSuperclass().getType()))
       {
          throw new DefinitionException("Simple bean must specialize a simple bean");
       }

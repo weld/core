@@ -29,7 +29,6 @@ import javax.webbeans.Decorator;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.Interceptor;
-import javax.webbeans.Specializes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
@@ -89,10 +88,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected EnterpriseBean(AnnotatedClass<T> type, ManagerImpl manager)
    {
       super(type, manager);
-      if (type.isAnnotationPresent(Specializes.class))
-      {
-         this.specializedBean = EnterpriseBean.of(type.getSuperclass(), manager);
-      }
       init();
    }
 

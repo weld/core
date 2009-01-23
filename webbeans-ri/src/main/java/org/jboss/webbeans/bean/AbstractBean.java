@@ -128,6 +128,12 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    protected void init()
    {
       mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class));
+      if (isSpecializing())
+      {
+         preCheckSpecialization();
+         initSpecialization();
+         postCheckSpecialization();
+      }
       initType();
       initPrimitive();
       log.debug("Building Web Bean bean metadata for " + getType());
@@ -139,12 +145,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       initTypes();
       initProxyable();
       checkRequiredTypesImplemented();
-      if (isSpecializing())
-      {
-         preCheckSpecialization();
-         initSpecialization();
-         postCheckSpecialization();
-      }
    }
 
    /**
