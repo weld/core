@@ -216,8 +216,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    @Override
    protected void preCheckSpecialization()
    {
-      // Need to do getDeclaredMethod!
-      if (declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod()) == null)
+      if (declaringBean.getAnnotatedItem().getSuperclass().getDeclaredMethod(getAnnotatedItem().getAnnotatedMethod()) == null)
       {
          throw new DefinitionException("Specialized producer method does not override a method on the direct superclass");
       }

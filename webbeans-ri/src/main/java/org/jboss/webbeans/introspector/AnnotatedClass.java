@@ -118,6 +118,8 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     */
    public AnnotatedMethod<?> getMethod(Method method);
    
+   public AnnotatedMethod<?> getDeclaredMethod(Method method);
+   
    /**
     * Gets all with parameters annotated with annotationType
     * 

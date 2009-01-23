@@ -598,6 +598,19 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       return null;
    }
    
+   public AnnotatedMethod<?> getDeclaredMethod(Method method)
+   {
+   // TODO Cache?
+      for (AnnotatedMethod<?> annotatedMethod : declaredMethods)
+      {
+         if (annotatedMethod.getName().equals(method.getName()) && Arrays.equals(annotatedMethod.getParameterTypesAsArray(), method.getParameterTypes()))
+         {
+            return annotatedMethod;
+         }
+      }
+      return null;
+   }
+   
    /**
     * Gets a string representation of the class
     * 

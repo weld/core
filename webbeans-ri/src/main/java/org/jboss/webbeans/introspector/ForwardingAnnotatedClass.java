@@ -85,4 +85,9 @@ public abstract class ForwardingAnnotatedClass<T> extends ForwardingAnnotatedTyp
       return delegate().isParameterizedType();
    }
    
+   public AnnotatedMethod<?> getDeclaredMethod(Method method)
+   {
+      return delegate().getDeclaredMethod(method);
+   }
+   
 }
