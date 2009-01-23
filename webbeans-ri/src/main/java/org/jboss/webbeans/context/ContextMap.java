@@ -18,6 +18,7 @@
 package org.jboss.webbeans.context;
 
 import java.lang.annotation.Annotation;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -63,7 +64,15 @@ public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, Lis
     */
    public List<Context> getContext(Class<? extends Annotation> scopeType)
    {
-      return getValue(scopeType);
+      List<Context> contexts = getValue(scopeType);
+      if (contexts == null)
+      {
+         return Collections.emptyList();
+      }
+      else
+      {
+         return contexts;
+      }
    }
 
    @Override
