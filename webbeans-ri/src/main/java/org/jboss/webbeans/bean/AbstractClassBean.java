@@ -350,5 +350,19 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       return dependentInstancesStore;
    }
+   
+   @Override
+   public boolean equals(Object other)
+   {
+      if (other instanceof AbstractClassBean)
+      {
+         AbstractClassBean<?> that = (AbstractClassBean<?>) other;
+         return super.equals(other) && that.getType().equals(this.getType());
+      }
+      else
+      {
+         return false;
+      }
+   }
 
 }

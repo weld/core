@@ -2,7 +2,7 @@ package org.jboss.webbeans.test.unit.implementation;
 
 import javassist.util.proxy.ProxyObject;
 
-import org.jboss.webbeans.tck.AbstractTest;
+import org.jboss.webbeans.test.unit.AbstractTest;
 import org.testng.annotations.Test;
 
 public class EnterpriseBeanProxyTest extends AbstractTest

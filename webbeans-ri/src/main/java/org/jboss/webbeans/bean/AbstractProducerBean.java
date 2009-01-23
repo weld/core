@@ -327,5 +327,19 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       buffer.append("   API types " + getTypes() + ", binding types " + getBindings() + "\n");
       return buffer.toString();
    }
+   
+   @Override
+   public boolean equals(Object other)
+   {
+      if (other instanceof AbstractProducerBean)
+      {
+         AbstractProducerBean that = (AbstractProducerBean) other;
+         return super.equals(other) && this.getDeclaringBean().equals(that.getDeclaringBean());
+      }
+      else
+      {
+         return false;
+      }
+   }
 
 }

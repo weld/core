@@ -546,11 +546,11 @@ public class ManagerImpl implements Manager, Serializable
       }
       else if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal())
       {
-         return (T) proxyPool.getClientProxy(bean, true);
+         return (T) proxyPool.getClientProxy(bean, create);
       }
       else
       {
-         return getContext(bean.getScopeType()).get(bean, true);
+         return getContext(bean.getScopeType()).get(bean, create);
       }
    }
 
