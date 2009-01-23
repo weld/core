@@ -18,14 +18,13 @@
 package org.jboss.webbeans.bean.proxy;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javassist.util.proxy.MethodHandler;
-
-import javax.webbeans.Dependent;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.EnterpriseBean;
@@ -44,6 +43,40 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
 {
    // The log provider
    private static final transient LogProvider log = Logging.getLogProvider(EnterpriseBeanProxyMethodHandler.class);
+   
+   private static final ThreadLocal<Set<Class<?>>> contextualInstance;
+   
+   static
+   {
+      contextualInstance = new ThreadLocal<Set<Class<?>>>()
+      {
+         
+         @Override
+         protected Set<Class<?>> initialValue()
+         {
+            return new HashSet<Class<?>>();
+         }
+         
+      };
+      
+   }
+   
+   public static boolean isContextualInstance(Class<?> beanClass)
+   {
+      return contextualInstance.get().contains(beanClass);
+   }
+   
+   private static void setContextualInstance(Class<?> beanClass, boolean accessing)
+   {
+      if (accessing)
+      {
+         contextualInstance.get().add(beanClass);
+      }
+      else
+      {
+         contextualInstance.get().remove(beanClass);
+      }
+   }
 
    // The container provided proxy that implements all interfaces
    private final Map<Class<?>, Object> proxiedInstances;
@@ -51,6 +84,7 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
    private boolean destroyed;
    private boolean canCallRemoveMethods;
    private final List<Method> removeMethods;
+   private final Class<?> beanClass;
 
    /**
     * Constructor
@@ -66,6 +100,7 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
       this.canCallRemoveMethods = bean.canCallRemoveMethods();
       this.removeMethods = bean.getEjbDescriptor().getRemoveMethods();
       this.destroyed = false;
+      this.beanClass = bean.getType();
       log.trace("Created enterprise bean proxy method handler for " + bean);
    }
 
@@ -101,7 +136,15 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
          {
             throw new IllegalStateException("Unable to establish jndi name to use to lookup EJB");
          }
-         proxiedInstance = CurrentManager.rootManager().getNaming().lookup(jndiName, businessInterface);
+         try
+         {
+            setContextualInstance(beanClass, true);
+            proxiedInstance = CurrentManager.rootManager().getNaming().lookup(jndiName, businessInterface);
+         }
+         finally
+         {
+            setContextualInstance(beanClass, false);
+         }
          proxiedInstances.put(businessInterface, proxiedInstance);
       }
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
@@ -116,8 +159,17 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
             throw new UnsupportedOperationException("Remove method can't be called directly on non-dependent scoped Enterprise Beans");
          }
       }
-      Object returnValue = Reflections.invokeAndWrap(proxiedMethod, proxiedInstance, args);
-      log.trace("Executed " + method + " on " + proxiedInstance + " with parameters " + args + " and got return value " + returnValue);
-      return returnValue;
+      try
+      {
+         setContextualInstance(beanClass, true);
+         Object returnValue = Reflections.invokeAndWrap(proxiedMethod, proxiedInstance, args);
+         log.trace("Executed " + method + " on " + proxiedInstance + " with parameters " + args + " and got return value " + returnValue);
+         return returnValue;
+      }
+      finally
+      {
+         setContextualInstance(beanClass, false);
+      }
+      
    }
 }

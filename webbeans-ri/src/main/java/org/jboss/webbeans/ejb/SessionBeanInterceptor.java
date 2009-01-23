@@ -20,10 +20,10 @@ package org.jboss.webbeans.ejb;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.interceptor.InvocationContext;
-import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
 
 /**
  * Interceptor for handling EJB post-construct tasks
@@ -76,17 +76,13 @@ public class SessionBeanInterceptor
     */
    private static <T> EnterpriseBean<T> getBean(Class<? extends T> beanClass)
    {
-      Bean<?> bean = CurrentManager.rootManager().getBeanMap().get(beanClass);
-      if (bean instanceof EnterpriseBean)
+      if (EnterpriseBeanProxyMethodHandler.isContextualInstance(beanClass))
       {
-         @SuppressWarnings("unchecked")
-         // TODO shift this into the map!
-         EnterpriseBean<T> enterpriseBean = (EnterpriseBean<T>) bean;
-         return enterpriseBean;
+         return (EnterpriseBean<T>) CurrentManager.rootManager().getEnterpriseBeanMap().get(beanClass);
       }
       else
       {
-         return null;
+         return (EnterpriseBean<T>) CurrentManager.rootManager().getNewEnterpriseBeanMap().get(beanClass);
       }
    }
 

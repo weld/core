@@ -52,6 +52,8 @@ import javax.webbeans.manager.Interceptor;
 import javax.webbeans.manager.Manager;
 
 import org.jboss.webbeans.bean.AbstractBean;
+import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.proxy.ProxyPool;
 import org.jboss.webbeans.context.ContextMap;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
@@ -103,7 +105,8 @@ public class ManagerImpl implements Manager, Serializable
    // The registered beans
    private transient List<Bean<?>> beans;
    // The registered beans, mapped by implementation class
-   private transient final Map<Class<?>, Bean<?>> beanMap;
+   private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeanMap;
+   private transient final Map<Class<?>, EnterpriseBean<?>> enterpriseBeanMap;
    // The registered decorators
    private transient final Set<Decorator> decorators;
    // The registered interceptors
@@ -133,7 +136,8 @@ public class ManagerImpl implements Manager, Serializable
       this.namingContext = namingContext;
       this.resourceLoader = resourceLoader;
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
-      this.beanMap = new ConcurrentHashMap<Class<?>, Bean<?>>();
+      this.newEnterpriseBeanMap = new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>();
+      this.enterpriseBeanMap = new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>();
       this.resolver = new Resolver(this);
       this.proxyPool = new ProxyPool();
       this.decorators = new HashSet<Decorator>();
@@ -328,6 +332,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param beans The set of beans to add
     * @return A reference to the manager
     */
+   // TODO Build maps in the deployer :-)
    public void setBeans(Set<AbstractBean<?, ?>> beans)
    {
       synchronized (beans)
@@ -335,7 +340,14 @@ public class ManagerImpl implements Manager, Serializable
          this.beans = new CopyOnWriteArrayList<Bean<?>>(beans);
          for (AbstractBean<?, ?> bean : beans)
          {
-            beanMap.put(bean.getType(), bean);
+            if (bean instanceof NewEnterpriseBean)
+            {
+               newEnterpriseBeanMap.put(bean.getType(), (EnterpriseBean<?>) bean);
+            }
+            else if (bean instanceof EnterpriseBean)
+            {
+               enterpriseBeanMap.put(bean.getType(), (EnterpriseBean<?>) bean);
+            }
          }
          resolver.clear();
       }
@@ -346,9 +358,14 @@ public class ManagerImpl implements Manager, Serializable
     * 
     * @return The bean map
     */
-   public Map<Class<?>, Bean<?>> getBeanMap()
+   public Map<Class<?>, EnterpriseBean<?>> getNewEnterpriseBeanMap()
    {
-      return beanMap;
+      return newEnterpriseBeanMap;
+   }
+   
+   public Map<Class<?>, EnterpriseBean<?>> getEnterpriseBeanMap()
+   {
+      return enterpriseBeanMap;
    }
 
    /**

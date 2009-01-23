@@ -51,7 +51,7 @@ public class SessionContext extends AbstractBeanMapContext
     * Gets the bean map
     * 
     * @returns The bean map
-    * @see org.jboss.webbeans.context.AbstractContext#getBeanMap()
+    * @see org.jboss.webbeans.context.AbstractContext#getNewEnterpriseBeanMap()
     */
    @Override
    public BeanMap getBeanMap()
