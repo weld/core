@@ -527,9 +527,22 @@ public class ManagerImpl implements Manager, Serializable
     */
    public <T> T getInstance(Bean<T> bean)
    {
+      return getInstance(bean, true);
+   }
+   
+   /**
+    * Returns an instance of a bean
+    * 
+    * @param bean The bean to instantiate
+    * @return An instance of the bean
+    * 
+    * @see javax.webbeans.manager.Manager#getInstance(javax.webbeans.manager.Bean)
+    */
+   public <T> T getInstance(Bean<T> bean, boolean create)
+   {
       if (specializedBeans.containsKey(bean))
       {
-         return getInstance((Bean<T>) specializedBeans.get(bean));
+         return getInstance((Bean<T>) specializedBeans.get(bean), create);
       }
       else if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal())
       {
@@ -582,18 +595,6 @@ public class ManagerImpl implements Manager, Serializable
       return getInstanceByType(AnnotatedClassImpl.of(type, bindings), bindings);
    }
 
-   public <T> T getMostSpecializedInstance(Bean<T> bean, boolean create)
-   {
-      // TODO Implement specialization
-      if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal())
-      {
-         return (T) proxyPool.getClientProxy(bean, create);
-      }
-      else
-      {
-         return getContext(bean.getScopeType()).get(bean, create);
-      }
-   }
 
    /**
     * Returns an instance by type literal and binding types

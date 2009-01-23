@@ -116,5 +116,11 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T>
    {
       return NEW_BINDING_SET;
    }
+   
+   @Override
+   public boolean isSpecializing()
+   {
+      return false;
+   }
 
 }

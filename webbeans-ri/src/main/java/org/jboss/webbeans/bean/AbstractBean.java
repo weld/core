@@ -31,6 +31,7 @@ import javax.webbeans.Dependent;
 import javax.webbeans.Event;
 import javax.webbeans.InjectionPoint;
 import javax.webbeans.Named;
+import javax.webbeans.Specializes;
 import javax.webbeans.Standard;
 import javax.webbeans.Stereotype;
 import javax.webbeans.manager.Bean;
@@ -410,8 +411,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    protected abstract String getDefaultName();
    
    public abstract AbstractBean<?, ?> getSpecializedBean();
-   
-   public abstract boolean isSpecializing();
 
    /**
     * Gets the deployment type of the bean
@@ -560,13 +559,19 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       return proxyable;
    }
    
+   public boolean isSpecializing()
+   {
+      return getAnnotatedItem().isAnnotationPresent(Specializes.class);
+   }
+   
    @Override
    public boolean equals(Object other)
    {
       if (other instanceof AbstractBean)
       {
          AbstractBean<?, ?> that = (AbstractBean<?, ?>) other;
-         return this.getTypes().equals(that.getTypes()) && this.getBindings().equals(that.getBindings());
+         boolean equal = this.getTypes().equals(that.getTypes()) && this.getBindings().equals(that.getBindings());
+         return equal;
       }
       else
       {

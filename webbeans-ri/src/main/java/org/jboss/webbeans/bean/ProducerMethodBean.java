@@ -24,7 +24,6 @@ import java.util.Set;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Disposes;
 import javax.webbeans.Observes;
-import javax.webbeans.Specializes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
@@ -226,12 +225,6 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    protected void initSpecialization()
    {
       this.specializedBean = ProducerMethodBean.of(declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod()), SimpleBean.of(declaringBean.getAnnotatedItem().getSuperclass(), manager), manager);
-   }
-   
-   @Override
-   public boolean isSpecializing()
-   {
-      return getAnnotatedItem().isAnnotationPresent(Specializes.class);
    }
 
 }

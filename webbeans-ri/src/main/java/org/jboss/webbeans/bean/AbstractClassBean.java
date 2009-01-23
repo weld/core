@@ -31,7 +31,6 @@ import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 import javax.webbeans.Production;
 import javax.webbeans.ScopeType;
-import javax.webbeans.Specializes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentInstancesStore;
@@ -279,12 +278,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       {
          throw new DefinitionException("Specializing bean must extend another bean");
       }
-   }
-   
-   @Override
-   public boolean isSpecializing()
-   {
-      return getAnnotatedItem().isAnnotationPresent(Specializes.class);
    }
 
    /**
