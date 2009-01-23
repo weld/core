@@ -21,9 +21,7 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Future;
 
-import javax.webbeans.ExecutionException;
 import javax.webbeans.manager.Context;
 
 import org.jboss.webbeans.util.ConcurrentCache;
@@ -46,34 +44,13 @@ public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, Lis
     */
    public AbstractContext getBuiltInContext(Class<? extends Annotation> scopeType)
    {
-      boolean interrupted = false;
-      try
+      if (getContext(scopeType) != null)
       {
-         while (true)
-         {
-            try
-            {
-               Future<List<Context>> future = getFuture(scopeType);
-               if (future == null)
-                  return null;
-               return (AbstractContext) future.get().iterator().next();
-            }
-            catch (InterruptedException e)
-            {
-               interrupted = true;
-            }
-            catch (java.util.concurrent.ExecutionException e)
-            {
-               rethrow(e);
-            }
-         }
+         return (AbstractContext) getContext(scopeType).get(0);
       }
-      finally
+      else
       {
-         if (interrupted)
-         {
-            Thread.currentThread().interrupt();
-         }
+         return null;
       }
    }
 
@@ -86,36 +63,7 @@ public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, Lis
     */
    public List<Context> getContext(Class<? extends Annotation> scopeType)
    {
-      boolean interrupted = false;
-      try
-      {
-         while (true)
-         {
-            try
-            {
-               if (getFuture(scopeType) == null)
-               {
-                  throw new ExecutionException("No scope registered for " + scopeType);
-               }
-               return getFuture(scopeType).get();
-            }
-            catch (InterruptedException e)
-            {
-               interrupted = true;
-            }
-            catch (java.util.concurrent.ExecutionException e)
-            {
-               rethrow(e);
-            }
-         }
-      }
-      finally
-      {
-         if (interrupted)
-         {
-            Thread.currentThread().interrupt();
-         }
-      }
+      return getValue(scopeType);
    }
 
    @Override
