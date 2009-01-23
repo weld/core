@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-23 12:18+1000\n"
+"PO-Revision-Date: 2009-01-23 13:45+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -581,7 +582,7 @@ msgid ""
 "literal>, in which case no deployment type need be explicitly specified. All "
 "three Web Bean in our example have the deployment type <literal>@Production</"
 "literal>."
-msgstr ""
+msgstr "다수의 Web Beans는 배기본값 배치 유형 <literal>@Production</literal>을 사용하므로, 이러한 경우 배치 유형을 명확하게 지정할 필요가 없습니다. 예에서 모든 Web Bean 트리는 <literal>@Production</literal> 배치 유형을 갖습니다. "
 
 #. Tag: para
 #: intro.xml:230
@@ -589,7 +590,7 @@ msgstr ""
 msgid ""
 "In a testing environment, we might want to replace the "
 "<literal>SentenceTranslator</literal> Web Bean with a \"mock object\":"
-msgstr ""
+msgstr "테스트 환경에서, <literal>SentenceTranslator</literal> Web Bean을 \"모의 객체\"로 교체하고자 합니다: "
 
 #. Tag: programlisting
 #: intro.xml:233
@@ -616,7 +617,7 @@ msgid ""
 "We would enable the deployment type <literal>@Mock</literal> in our testing "
 "environment, to indicate that <literal>MockSentenceTranslator</literal> and "
 "any other Web Bean annotated <literal>@Mock</literal> should be used."
-msgstr ""
+msgstr " <literal>MockSentenceTranslator</literal> 및 기타 다른 Web Bean 어노테이션 <literal>@Mock</literal>을 사용해야 함을 나타내기 위해 테스트 환경에서 <literal>@Mock</literal> 배치 유형을 활성화할 수 있습니다.   "
 
 #. Tag: para
 #: intro.xml:240
@@ -641,7 +642,7 @@ msgid ""
 "accommodating arbitrary scopes. However, certain important scopes are built-"
 "in to the specification, and provided by the Web Bean manager. A scope is "
 "represented by an annotation type."
-msgstr ""
+msgstr "<emphasis>범위</emphasis>는 Web Bean의 수명 주기및 인스턴스의 가시성을 정의합니다. Web Beans 컨텍스트 모델은 확장 가능하고, 임의의 범위를 수용합니다. 하지만, 특정 중요 범위는 사양으로 내장되어 있으며, Web Bean 관리자가 제공합니다. 범위는 어노테이션 유형에 의해 나타납니다.  "
 
 #. Tag: para
 #: intro.xml:254
@@ -667,17 +668,18 @@ msgstr ""
 msgid ""
 "An instance of a session scoped Web Bean is bound to a user session and is "
 "shared by all requests that execute in the context of that session."
-msgstr ""
+msgstr "세션 범위 Web Bean의 인스턴스는 사용자 세션으로 바운딩되어 세션 컨텍스트에서 실행되는 모든 요청에 의해 공유됩니다.  "
 
 #. Tag: para
 #: intro.xml:262
 #, no-c-format
+#, fuzzy
 msgid ""
 "By default, Web Beans belong to a special scope called the "
 "<emphasis>dependent pseudo-scope</emphasis>. Web Beans with this scope are "
 "pure dependent objects of the object into which they are injected, and their "
 "lifecycle is bound to the lifecycle of that object."
-msgstr ""
+msgstr "기본값으로, Web Beans는 <emphasis>dependent pseudo-scope</emphasis>라는 특정 범위에 속합니다. 이러한 범위를 갖는 Web Beans는 "
 
 #. Tag: para
 #: intro.xml:267
@@ -697,7 +699,7 @@ msgstr "Web Bean 이름 및 Unified EL "
 msgid ""
 "A Web Bean may have a <emphasis>name</emphasis>, allowing it to be used in "
 "Unified EL expressions. It's easy to specify the name of a Web Bean:"
-msgstr ""
+msgstr "Web Bean은 <emphasis>이름</emphasis>을 갖을 수 있으며, Unified EL 표현식에서 사용될 수 있습니다. Web Bean의 이름을 지정하는 것은 쉽습니다: "
 
 #. Tag: programlisting
 #: intro.xml:278
@@ -731,7 +733,7 @@ msgstr ""
 #: intro.xml:284
 #, no-c-format
 msgid "It's even easier to just let the name be defaulted by the Web Bean manager:"
-msgstr ""
+msgstr "Web Bean 관리자기 이름을 기본값으로 하게 하는 것이 보다 수월합니다:  "
 
 #. Tag: programlisting
 #: intro.xml:287
@@ -765,7 +767,7 @@ msgid ""
 "for EJB beans, but also for plain Java classes. In addition, Web Beans "
 "provides a new approach to binding interceptors to EJB beans and other Web "
 "Beans."
-msgstr ""
+msgstr "Web Beans는 EJB beans 뿐 만 아니라 일반 Java 클래스에 대해 EJB 3에 의해 정의된 인터셉터 기능을 지원합니다. 이에 더하여, Web Beans는 바인딩 인터셉터, EJB beans 및 기타 다른 Web Beans에 새로운 접근 방식을 제공합니다.  "
 
 #. Tag: para
 #: intro.xml:302
@@ -773,7 +775,7 @@ msgstr ""
 msgid ""
 "It remains possible to directly specify the interceptor class via use of the "
 "<literal>@Interceptors</literal> annotation:"
-msgstr ""
+msgstr "<literal>@Interceptors</literal> 어노테이션의 사용을 통해 인터셉터 클래스를 직접 지정할 수 있습니다: "
 
 #. Tag: programlisting
 #: intro.xml:305
@@ -811,13 +813,13 @@ msgstr ""
 msgid ""
 "We'll discuss Web Beans interceptors and decorators in <xref linkend="
 "\"interceptors\"/> and <xref linkend=\"decorators\"/>."
-msgstr ""
+msgstr "<xref linkend=\"interceptors\"/> 및 <xref linkend=\"decorators\"/>에서 Web Beans 인터셉터 및 데코레이터에 대해 설명하겠습니다.  "
 
 #. Tag: title
 #: intro.xml:321
 #, no-c-format
 msgid "What kinds of objects can be Web Beans?"
-msgstr ""
+msgstr "어떤 종류의 객체가 Web Beans가 될 수 있을까요? "
 
 #. Tag: para
 #: intro.xml:323
@@ -825,13 +827,13 @@ msgstr ""
 msgid ""
 "We've already seen that JavaBeans, EJBs and some other Java classes can be "
 "Web Beans. But exactly what kinds of objects are Web Beans?"
-msgstr ""
+msgstr "JavaBeans, EJB 및 기타 다른 Java 클래스가 Web Beans이 될 수 있음을 살펴보았습니다. 하지만, 정확히 어떤 종류의 객체가 Web Beans인가요? "
 
 #. Tag: title
 #: intro.xml:327
 #, no-c-format
 msgid "Simple Web Beans"
-msgstr "단순 Web Beans "
+msgstr "심플 Web Beans  "
 
 #. Tag: para
 #: intro.xml:329
@@ -867,13 +869,13 @@ msgstr "매개 변수화된 유형이 아닐 경우,  "
 msgid ""
 "it has a constructor with no parameters, or a constructor annotated "
 "<literal>@Initializer</literal>."
-msgstr ""
+msgstr "매개 변수 없는 생성자나 또는 <literal>@Initializer</literal> 어노테이션된 생성자를 갖을 경우, "
 
 #. Tag: para
 #: intro.xml:349
 #, no-c-format
 msgid "Thus, almost every JavaBean is a simple Web Bean."
-msgstr ""
+msgstr "따라서, 거의 모든 JavaBean은 심플 Web Bean이 됩니다.  "
 
 #. Tag: para
 #: intro.xml:351
@@ -960,13 +962,13 @@ msgstr ""
 #: intro.xml:387
 #, no-c-format
 msgid "method-level transaction management and security,"
-msgstr ""
+msgstr "메소드-수준 트랜젝션 관리 및 보안 "
 
 #. Tag: para
 #: intro.xml:390
 #, no-c-format
 msgid "concurrency management,"
-msgstr ""
+msgstr "동시성 관리 "
 
 #. Tag: para
 #: intro.xml:393
