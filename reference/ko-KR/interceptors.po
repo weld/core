@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: interceptors\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-19 01:00+1000\n"
+"PO-Revision-Date: 2009-01-23 11:10+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
 "\n"
 "\n"
 
@@ -220,7 +222,7 @@ msgstr ""
 msgid ""
 "All Web Beans interceptors are simple Web Beans, and can take advantage of "
 "dependency injection and contextual lifecycle management."
-msgstr "모든 Web Beans 인터셉터는 단순한 Web Beans으로, 의존성 삽입및 컨텍스트 수명 주기 관리의 장점을 취할 수 있습니다.  "
+msgstr "모든 Web Beans 인터셉터는 심플 Web Beans으로, 의존성 삽입및 컨텍스트 수명 주기 관리의 장점을 취할 수 있습니다.    "
 
 #. Tag: programlisting
 #: interceptors.xml:81
@@ -302,7 +304,7 @@ msgstr "이는 시스템에서 모든 인터셉터에 대한 전체적인 순서
 #: interceptors.xml:105
 #, no-c-format
 msgid "it lets us enable or disable interceptor classes at deployment time."
-msgstr "배포시 인터셉터 클래스를 활성화 또는 비활성화하게 합니다.  "
+msgstr "배치시 인터셉터 클래스를 활성화 또는 비활성화하게 합니다.    "
 
 #. Tag: para
 #: interceptors.xml:109
@@ -613,7 +615,7 @@ msgid ""
 "The <literal>@Interceptors</literal> annotation defined by the EJB "
 "specification is supported for both enterprise and simple Web Beans, for "
 "example:"
-msgstr "EJB 사양에 의해 정의된 <literal>@Interceptors</literal> 어노테이션은 엔터프라이즈 및 단순 Web Beans 모두를 지원합니다. 예: "
+msgstr "EJB 사양에 의해 정의된 <literal>@Interceptors</literal> 어노테이션은 엔터프라이즈 및 심플 Web Beans 모두를 지원합니다. 예:   "
 
 #. Tag: programlisting
 #: interceptors.xml:200

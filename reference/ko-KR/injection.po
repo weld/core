@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-23 00:09+1000\n"
+"PO-Revision-Date: 2009-01-23 11:09+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -705,7 +707,7 @@ msgid ""
 "deployment by listing them in <literal>web-beans.xml</literal>."
 msgstr ""
 "Web Beans는 두 개의 내장된 배치 유형을 정의합니다: <literal>@Production</"
-"literal> 및 <literal>@Standard</literal>. 시스템이 배치되면 기본값으로 내장된 배치 유형과 함께 Web Beans 만이 활성화됩니다. <literal>web-beans.xml</literal>에서 몰록을 나열하여 특정 배치에서 활성화될 추가 배치 유형을 인식할 수 있습니다.  "
+"literal> 및 <literal>@Standard</literal>. 시스템이 배치되면 기본값으로 내장된 배치 유형과 함께 Web Beans 만이 활성화됩니다. <literal>web-beans.xml</literal>에서 목록을 나열하여 특정 배치에서 활성화될 추가 배치 유형을 인식할 수 있습니다.    "
 
 #. Tag: para
 #: injection.xml:224
@@ -1163,8 +1165,8 @@ msgid ""
 "Simple Web Beans support only the <literal>@PostConstruct</literal> and "
 "<literal>@PreDestroy</literal> callbacks."
 msgstr ""
-"Simple Web Beans는 <literal>@PostConstruct</literal> 및 "
-"<literal>@PreDestroy</literal> 콜백 기능만을 지원합니다.  "
+"심플 Web Beans는 <literal>@PostConstruct</literal> 및 "
+"<literal>@PreDestroy</literal> 콜백 기능만을 지원합니다.    "
 
 #. Tag: para
 #: injection.xml:429
@@ -1175,7 +1177,7 @@ msgid ""
 "for injection of Java EE resources, EJBs and JPA persistence contexts, "
 "respectively. Simple Web Beans do not support the use of "
 "<literal>@PersistenceContext(type=EXTENDED)</literal>."
-msgstr "enterprise 및 simple Web Beans는 Java EE 리소스 삽입, EJB 및 JPA 영구적 컨텍스에 대해 <literal>@Resource</literal>, <literal>@EJB</literal> 및 <literal>@PersistenceContext</literal>의 사용을 각각 지원합니다. Simple Web Beans는 <literal>@PersistenceContext(type=EXTENDED)</literal>의 사용을 지원하지 않습니다.  "
+msgstr "엔터프라이즈 및 심플 Web Beans는 Java EE 리소스 삽입, EJB 및 JPA 영구적 컨텍스에 대해 <literal>@Resource</literal>, <literal>@EJB</literal> 및 <literal>@PersistenceContext</literal>의 사용을 각각 지원합니다. 심플 Web Beans는 <literal>@PersistenceContext(type=EXTENDED)</literal>의 사용을 지원하지 않습니다.    "
 
 #. Tag: para
 #: injection.xml:434

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: part2\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-12 17:53+1000\n"
+"PO-Revision-Date: 2009-01-23 11:18+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
 
 #. Tag: para
 #: part2.xml:5
@@ -29,7 +31,7 @@ msgstr "Web Beans의 첫번째 주요 기능은 <emphasis>느슨한 연결 (loos
 #: part2.xml:10
 #, no-c-format
 msgid "<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
-msgstr "<emphasis>배포 유형</emphasis>은 배포 시간 다형성을 활성화합니다  "
+msgstr "<emphasis>배치 유형</emphasis>은 배치 시간 다형성을 활성화합니다    "
 
 #. Tag: para
 #: part2.xml:14
@@ -53,7 +55,7 @@ msgid ""
 "client is no longer tightly bound to an implementation of an API, nor is it "
 "required to manage the lifecycle of the server object. This approach lets "
 "<emphasis>stateful objects interact as if they were services</emphasis>."
-msgstr "이러한 기술로 클라이언트 및 서버의 느슨한 연결을 활성화할 수 있습니다. 클라이언트는 더이상 API 구현으로 바운딩할 수 없으며, 서버 객체의 수명주기를 관리할 수 없습니다. 이러한 접근으로 <emphasis>상태 기반 객체가 서비스하는 것 처럼 상호 작용</emphasis>하게 합니다. "
+msgstr "이러한 기술로 클라이언트 및 서버의 느슨한 연결을 활성화할 수 있습니다. 클라이언트는 더이상 API 구현으로 바운딩할 수 없으며, 서버 객체의 수명주기를 관리할 수 없습니다. 이러한 접근으로 <emphasis>상태 유지 객체가 서비스하는 것 처럼 상호 작용</emphasis>하게 합니다.   "
 
 #. Tag: para
 #: part2.xml:28

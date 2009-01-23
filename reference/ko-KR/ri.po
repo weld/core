@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ri\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-18 16:31+0000\n"
-"PO-Revision-Date: 2009-01-21 13:50+1000\n"
+"PO-Revision-Date: 2009-01-23 11:14+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -49,7 +51,7 @@ msgid ""
 "<literal>webbeans-numberguess</literal>, a war example, containing only "
 "simple beans, and <literal>webbeans-translator</literal> an ear example, "
 "containing enterprise beans. To run the examples you'll need the following:"
-msgstr "Web Beans RI는 배포 가능한 두 가지 애플리케이션 예로 되어 있습니다: war 예에는 단순한 beans 만이 들어 있는  <literal>webbeans-numberguess</literal>가 있고 ear 예에는 엔터프라이즈 beans가 들어 있는 <literal>webbeans-translator</literal>가 있습니다. 예를 실행하려면, 다음 사항이 필요합니다:       "
+msgstr "Web Beans RI는 배치 가능한 두 가지 애플리케이션 예로 되어 있습니다: war 예에는 심플 beans 만이 들어 있는 <literal>webbeans-numberguess</literal>가 있고 ear 예에는 엔터프라이즈 beans가 들어 있는 <literal>webbeans-translator</literal>가 있습니다. 예를 실행하려면, 다음 사항이 필요합니다:           "
 
 #. Tag: para
 #: ri.xml:22
@@ -189,7 +191,7 @@ msgstr ""
 #: ri.xml:88
 #, no-c-format
 msgid "Now, you're ready to deploy your first example!"
-msgstr "이제, 첫번째 예제를 배포할 준비가 되었습니다!    "
+msgstr "이제, 첫번째 예제를 배치할 준비가 되었습니다!      "
 
 #. Tag: para
 #: ri.xml:93
@@ -201,7 +203,7 @@ msgstr "예제 용 작성 스크립트는 여러 대상을 제공합니다. 이�
 #: ri.xml:99
 #, no-c-format
 msgid "<literal>ant restart</literal> - deploy the example in exploded format"
-msgstr "<literal>ant restart</literal> - exploded format으로 예제를 배포합니다  "
+msgstr "<literal>ant restart</literal> - exploded 형식으로 예제를 배치합니다      "
 
 #. Tag: para
 #: ri.xml:105
@@ -209,13 +211,13 @@ msgstr "<literal>ant restart</literal> - exploded format으로 예제를 배포�
 msgid ""
 "<literal>ant explode</literal> - update an exploded example, without "
 "restarting the deployment"
-msgstr "<literal>ant explode</literal> - 배포 버전을 다시 시작하지 않고 exploded 예제를 업데이트합니다   "
+msgstr "<literal>ant explode</literal> - 배치 버전을 다시 시작하지 않고 exploded 예제를 업데이트합니다     "
 
 #. Tag: para
 #: ri.xml:111
 #, no-c-format
 msgid "<literal>ant deploy</literal> - deploy the example in compressed jar format"
-msgstr "<literal>ant deploy</literal> - 압축된 jar 포맷으로 예제를 배포합니다 "
+msgstr "<literal>ant deploy</literal> - 압축된 jar 포맷으로 예제를 배치합니다   "
 
 #. Tag: para
 #: ri.xml:116
@@ -233,7 +235,7 @@ msgstr "<literal>ant clean</literal> - 예제를 지웁니다 "
 #: ri.xml:128
 #, no-c-format
 msgid "To deploy the numberguess example:"
-msgstr "numberguess 예제를 배포하려면:  "
+msgstr "numberguess 예제를 배치하려면:    "
 
 #. Tag: programlisting
 #: ri.xml:132
@@ -252,8 +254,8 @@ msgid ""
 "Wait for the application to deploy, and enjoy hours of fun at <ulink url="
 "\"http://localhost:8080/webbeans-numberguess\"></ulink>!"
 msgstr ""
-"애플리케이션이 배포되면 <ulink url="
-"\"http://localhost:8080/webbeans-numberguess\"></ulink>에서 살펴보시기 바랍니다! "
+"애플리케이션이 배치되면 <ulink url="
+"\"http://localhost:8080/webbeans-numberguess\"></ulink>에서 살펴보시기 바랍니다!   "
 
 #. Tag: para
 #: ri.xml:139
@@ -263,7 +265,7 @@ msgid ""
 "text into Latin. The numberguess example is a war example, and uses only "
 "simple beans; the translator example is an ear example, and includes "
 "enterprise beans, packaged in an EJB module. To try it out:"
-msgstr "Web Beans RI에는 텍스트를 라틴어로 번역하는 두 번째 예제가 있습니다. numberguess 예제는 war 예제로 단순한 beans 만을 사용합니다; 번역 예제는 ear 예제로 엔터프라이즈 beans에 포함되어 EJB 모듈에 패키지되어 있습니다. 이를 꺼내려면 다음을 실행합니다:    "
+msgstr "Web Beans RI에는 텍스트를 라틴어로 번역하는 두 번째 예제가 있습니다. numberguess 예제는 war 예제로 심플 beans 만을 사용합니다; 번역 예제는 ear 예제로 엔터프라이즈 beans에 포함되어 EJB 모듈에 패키지되어 있습니다. 이를 꺼내려면 다음을 실행합니다:      "
 
 #. Tag: programlisting
 #: ri.xml:146
@@ -282,8 +284,8 @@ msgid ""
 "Wait for the application to deploy, and visit <ulink url=\"http://"
 "localhost:8080/webbeans-translator\"></ulink>!"
 msgstr ""
-"애플리케이션이 배포되면 <ulink url=\"http://"
-"localhost:8080/webbeans-translator\"></ulink>에 가보십시오! "
+"애플리케이션이 배치되면 <ulink url=\"http://"
+"localhost:8080/webbeans-translator\"></ulink>에 가보십시오!   "
 
 #. Tag: title
 #: ri.xml:154
@@ -1182,9 +1184,9 @@ msgid ""
 "quite familiar with what a Web Bean looks like by now, so we'll just "
 "highlight the most interesting bits here."
 msgstr ""
-"가장 흥미로운 코드 부분은 마지막을 위해 남겨두겠습니다! 프로젝트에는 두 개의 단순한 beans인 <literal>SentenceParser</literal> 및 <literal>TextTranslator</"
+"가장 흥미로운 코드 부분은 마지막을 위해 남겨두겠습니다! 프로젝트에는 두 개의 심플 beans인 <literal>SentenceParser</literal> 및 <literal>TextTranslator</"
 "literal>와 두 개의 엔터프라이즈 beans인 <literal>TranslatorControllerBean</"
-"literal> 및 <literal>SentenceTranslator</literal>가 있습니다. 이제 Web Bean에 관해 보다 많이 알고 계실 것이므로, 가장 중요한 부분만 여기서 다루겠습니다.  "
+"literal> 및 <literal>SentenceTranslator</literal>가 있습니다. 이제 Web Bean에 관해 보다 많이 알고 계실 것이므로, 가장 중요한 부분만 여기서 다루겠습니다.    "
 
 #. Tag: para
 #: ri.xml:411

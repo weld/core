@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-23 02:16+1000\n"
+"PO-Revision-Date: 2009-01-23 11:17+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -88,7 +90,7 @@ msgid ""
 "The second existing class is a stateless session bean front-end for an "
 "external system that is able to translate sentences from one language to "
 "another:"
-msgstr "두 번째 클래스는 하나의 언어에서 다른 언어로 문장을 번역할 수 있는 외부 시스템에 대한 상태 유지 세션 빈 프론트엔드입니다:  "
+msgstr "두 번째 클래스는 하나의 언어에서 다른 언어로 문장을 번역할 수 있는 외부 시스템에 대한 무상태 세션 빈 프론트엔드입니다:   "
 
 #. Tag: programlisting
 #: intro.xml:35
@@ -879,7 +881,7 @@ msgid ""
 "Every interface implemented directly or indirectly by a simple Web Bean is "
 "an API type of the simple Web Bean. The class and its superclasses are also "
 "API types."
-msgstr ""
+msgstr "심플 Web Bean에 의해 직접적 또는 간접적으로 구현되는 모든 인터페이스는 API 유형의 심플 Web Bean입니다. 클래스 및 상위클래스도 API 유형이 됩니다.  "
 
 #. Tag: title
 #: intro.xml:358
@@ -1094,13 +1096,13 @@ msgid ""
 "The method return type and all interfaces it extends/implements directly or "
 "indirectly are API types of the producer method. If the return type is a "
 "class, all superclasses are also API types."
-msgstr ""
+msgstr "방식 반환 유형 및 직접적이나 간접적으로 확장/구현하는 모든 인터페이스 API 유형의 생산자 방식입니다. 반환 유형이 클래스일 경우 모든 상위클래스도 API 유형이 됩니다.  "
 
 #. Tag: para
 #: intro.xml:445
 #, no-c-format
 msgid "Some producer methods return objects that require explicit destruction:"
-msgstr ""
+msgstr "일부 생산자 방식은 명시적 파괴를 요청하는 객체를 반환합니다:  "
 
 #. Tag: programlisting
 #: intro.xml:447
@@ -1120,7 +1122,7 @@ msgstr ""
 msgid ""
 "These producer methods may define matching <emphasis>disposal methods</"
 "emphasis>:"
-msgstr ""
+msgstr "이러한 생산자 방식은 <emphasis>폐지 방식</emphasis>과 일치하게 정의될 수 있습니다:  "
 
 #. Tag: programlisting
 #: intro.xml:451
@@ -1140,7 +1142,7 @@ msgstr ""
 msgid ""
 "This disposal method is called automatically by the Web Bean manager at the "
 "end of the request."
-msgstr ""
+msgstr "이러한 폐지 방식은 요청 마지막에 Web Bean 관리자에 의해 자동으로 호출됩니다.  "
 
 #. Tag: para
 #: intro.xml:456
@@ -1148,13 +1150,13 @@ msgstr ""
 msgid ""
 "We'll talk much more about producer methods in <xref linkend="
 "\"producermethods\"/>."
-msgstr ""
+msgstr "<xref linkend=\"producermethods\"/>에서 생산자 방식에 관해 보다 자세하게 다룹니다. "
 
 #. Tag: title
 #: intro.xml:461
 #, no-c-format
 msgid "JMS endpoints"
-msgstr ""
+msgstr "JMS 엔드포인트 "
 
 #. Tag: para
 #: intro.xml:463
@@ -1164,5 +1166,5 @@ msgid ""
 "developer from the tedium of managing the lifecycles of all the various JMS "
 "objects required to send messages to queues and topics. We'll discuss JMS "
 "endpoints in <xref linkend=\"jms\"/>."
-msgstr ""
+msgstr "마지막으로, JMS 큐 또는 토픽은 Web Bean이 될 수 있습니다. Web Beans는 큐 및 토픽에 메세지를 전달하기 위해 필요한 모든 다양한 JMS 객체의 수명주기 관리에 있어서 개발자에게  단조로움을 완화시킵니다. <xref linkend=\"jms\"/>에서 JMS 엔드포인트를 다루게 됩니다. "
 

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: decorators\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-15 22:48+1000\n"
+"PO-Revision-Date: 2009-01-23 11:19+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -91,7 +94,7 @@ msgstr "시스템에서 여러 다른 Web Beans는 <literal>Account</literal> �
 msgid ""
 "A decorator is a simple Web Bean that implements the type it decorates and "
 "is annotated <literal>@Decorator</literal>."
-msgstr "데코레이터는 단순한 Web Bean으로 유형을 구현하고 <literal>@Decorator</literal>를 어노테이션합니다.  "
+msgstr "데코레이터는 심플 Web Bean으로 유형을 구현하고 <literal>@Decorator</literal>를 어노테이션합니다.   "
 
 #. Tag: programlisting
 #: decorators.xml:35
@@ -152,7 +155,7 @@ msgid ""
 "Unlike other simple Web Beans, a decorator may be an abstract class. If "
 "there's nothing special the decorator needs to do for a particular method of "
 "the decorated interface, you don't need to implement that method."
-msgstr "기타 다른 간단한 Web Beans와 다르게, 데코레이터는 추상클래스일 수 도 있습니다. 데코레이터된 인터페이스의 특정 방식에 대해 데코레이터가 특별히 해야할 것이 없을 경우, 이 방식을 구현하실 필요가 없습니다.   "
+msgstr "기타 다른 심플 Web Beans와 다르게, 데코레이터는 추상클래스일 수 도 있습니다. 데코레이터된 인터페이스의 특정 방식에 대해 데코레이터가 특별히 해야할 것이 없을 경우, 이 방식을 구현하실 필요가 없습니다.     "
 
 #. Tag: title
 #: decorators.xml:43
@@ -214,7 +217,7 @@ msgstr "API 유형과 같은 위임 속성 유형 "
 #: decorators.xml:67
 #, no-c-format
 msgid "has all binding types that are declared by the delegate attribute."
-msgstr "위임 속성에 의해 나타난 모든 바인딩 유형 "
+msgstr "위임 속성에 의해 명시된 모든 바인딩 유형     "
 
 #. Tag: para
 #: decorators.xml:71
@@ -271,7 +274,7 @@ msgstr "이는 시스템에서 모든 데코레이터에 대한 전체적인 순
 #: decorators.xml:94
 #, no-c-format
 msgid "it lets us enable or disable decorator classes at deployment time."
-msgstr "배포시 데코레이터 클래스를 활성화 또는 비활성화하게 합니다. "
+msgstr "배치시 데코레이터 클래스를 활성화 또는 비활성화하게 합니다.   "
 
 #. Tag: para
 #: decorators.xml:98

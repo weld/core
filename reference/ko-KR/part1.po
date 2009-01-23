@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: part1\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-12 14:19+1000\n"
+"PO-Revision-Date: 2009-01-23 11:18+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
 "\n"
 
 #. Tag: para
@@ -42,8 +44,8 @@ msgid ""
 "an improved lifecycle for stateful components, bound to well-defined "
 "<emphasis>contexts</emphasis>,"
 msgstr ""
-"명확하게 정의된 <emphasis>컨텍스트</emphasis>에 바인딩된 상태 기반 구성 요소"
-"의 수명 주기 개선 "
+"명확하게 정의된 <emphasis>컨텍스트</emphasis>에 바인딩된 상태 유지 구성 요소"
+"의 수명 주기 개선   "
 
 #. Tag: para
 #: part1.xml:18
@@ -125,8 +127,8 @@ msgid ""
 "how can I add an indirection layer, so that the implementation of this "
 "object can vary at deployment time?"
 msgstr ""
-"어떻게 하면 우회 계층을 추가하여, 이러한 개체 구현을 배포시 다르게할 수 있을"
-"까요? "
+"어떻게 하면 우회 계층을 추가하여, 이러한 개체 구현을 배치시 다르게할 수 있을"
+"까요?   "
 
 #. Tag: para
 #: part1.xml:61
@@ -146,7 +148,7 @@ msgid ""
 "scenario, without affecting any client."
 msgstr ""
 "Web Bean은 의존하는 다른 Web Beans의 유형 및 시멘틱 만을 지정합니다. 이는 의존하는 다른 Web Bean 클라이언트 또는 스레딩 모델, 실제적인 수명 주기, 구체적 "
-"구현 방식을 인식할 필요가 없습니다. 더 나아가 이는 의존하는 스레팅 모델, 수명 주기, 구체적 구현 방식은 클라이언트에게 영향을 미치지 않고 운용 방식에 따라 달라질 수 있습니다.  "
+"구현 방식을 인식할 필요가 없습니다. 더 나아가 이는 의존하는 스레딩 모델, 수명 주기, 구체적 구현 방식은 클라이언트에게 영향을 미치지 않고 운용 방식에 따라 달라질 수 있습니다.   "
 
 #. Tag: para
 #: part1.xml:72
@@ -240,7 +242,7 @@ msgid ""
 "Seam, Guice and Spring. However, Web Beans has its own very distinct "
 "character: more typesafe than Seam, more stateful and less XML-centric than "
 "Spring, more web and enterprise-application capable than Guice."
-msgstr "Web Beans는 Seam, Guice, Spring을 포함하여 다수의 기존 Java 프레임워크에 의해 영향을 받았지만 Web Beans은 자체적으로 다음과 같은 고유한 기능을 소유하고 있습니다: Seam 보다 더 타입 안정적, 보다 더 상태 기반적, Spring 보다 덜 XML-중심, Guice 보다 더 웹 및 엔터프라이즈-애플리케이션 기능  "
+msgstr "Web Beans는 Seam, Guice, Spring을 포함하여 다수의 기존 Java 프레임워크에 의해 영향을 받았지만 Web Beans은 자체적으로 다음과 같은 고유한 기능을 소유하고 있습니다: Seam 보다 더 타입 안정적, 보다 더 상태 기반적, Spring 보다 덜 XML-중심, Guice 보다 더 웹 및 엔터프라이즈-애플리케이션 기능    "
 
 #. Tag: para
 #: part1.xml:125
