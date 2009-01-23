@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-23 13:45+1000\n"
+"PO-Revision-Date: 2009-01-23 14:09+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -976,7 +976,7 @@ msgstr "동시성 관리 "
 msgid ""
 "instance-level passivation for stateful session beans and instance-pooling "
 "for stateless session beans,"
-msgstr ""
+msgstr "상태 유지 세션 빈 용 인스턴스 레벨 수동화 및 무상태 세션 빈 용 인스턴스 풀링 "
 
 #. Tag: para
 #: intro.xml:397
@@ -1001,12 +1001,13 @@ msgstr "엔터프라이즈 Web Bean을 사용해야 합니다. 이러한 것이 
 #. Tag: para
 #: intro.xml:407
 #, no-c-format
+#, fuzzy
 msgid ""
 "Many Web Beans (including any session or application scoped Web Bean) are "
 "available for concurrent access. Therefore, the concurrency management "
 "provided by EJB 3.1 is especially useful. Most session and application "
 "scoped Web Beans should be EJBs."
-msgstr ""
+msgstr "다수의 Web Beans (세션 또는 애플리케이션 범위 Web Bean 포함)은 "
 
 #. Tag: para
 #: intro.xml:412
