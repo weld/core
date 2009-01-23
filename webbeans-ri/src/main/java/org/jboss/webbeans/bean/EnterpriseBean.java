@@ -18,7 +18,8 @@
 package org.jboss.webbeans.bean;
 
 import java.lang.reflect.Type;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
@@ -31,6 +32,7 @@ import javax.webbeans.Dependent;
 import javax.webbeans.Interceptor;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bean.proxy.EnterpiseBeanInstance;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
@@ -133,17 +135,19 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
    protected void initTypes()
    {
-      types = new HashSet<Type>();
+      types = new LinkedHashSet<Type>();
+      types.add(Object.class);
       for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces())
       {
          types.add(businessInterfaceDescriptor.getInterface());
       }
-      types.add(Object.class);
    }
 
    protected void initProxyClass()
    {
-      ProxyFactory proxyFactory = Proxies.getProxyFactory(getTypes());
+      Set<Type> types = new LinkedHashSet<Type>(getTypes());
+      types.add(EnterpiseBeanInstance.class);
+      ProxyFactory proxyFactory = Proxies.getProxyFactory(types);
 
       @SuppressWarnings("unchecked")
       Class<T> proxyClass = proxyFactory.createClass();
@@ -241,6 +245,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    @Override
    public void destroy(T instance)
    {
+      EnterpiseBeanInstance enterpiseBeanInstance = (EnterpiseBeanInstance) instance;
       Boolean isDestroyed = (Boolean) Reflections.invokeAndWrap("isDestroyed", null, instance, null);
       if (isDestroyed.booleanValue())
       {

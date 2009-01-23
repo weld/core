@@ -249,6 +249,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
 
    protected boolean injectionPointsAreSerializable()
    {
+      // TODO CACHE THIS!!!
       // TODO: a bit crude, don't check *all* injectionpoints, only those listed
       // in the spec for passivation checks
       for (AnnotatedItem<?, ?> injectionPoint : getAnnotatedInjectionPoints())

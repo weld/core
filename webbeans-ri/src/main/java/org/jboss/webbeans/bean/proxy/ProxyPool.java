@@ -19,7 +19,7 @@ package org.jboss.webbeans.bean.proxy;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -77,7 +77,7 @@ public class ProxyPool
       try
       {
          ClientProxyMethodHandler proxyMethodHandler = new ClientProxyMethodHandler(bean, beanIndex);
-         Set<Type> classes = new HashSet<Type>(bean.getTypes());
+         Set<Type> classes = new LinkedHashSet<Type>(bean.getTypes());
          classes.add(Serializable.class);
          ProxyFactory proxyFactory = Proxies.getProxyFactory(classes);
          proxyFactory.setHandler(proxyMethodHandler);

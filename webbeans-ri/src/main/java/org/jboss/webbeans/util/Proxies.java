@@ -17,8 +17,8 @@
 package org.jboss.webbeans.util;
 
 import java.lang.reflect.Type;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javassist.util.proxy.ProxyFactory;
@@ -46,8 +46,8 @@ public class Proxies
       private TypeInfo()
       {
          super();
-         this.interfaces = new HashSet<Class<?>>();
-         this.classes = new HashSet<Class<?>>();
+         this.interfaces = new LinkedHashSet<Class<?>>();
+         this.classes = new LinkedHashSet<Class<?>>();
       }
 
       public Class<?> getSuperClass()
