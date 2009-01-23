@@ -124,7 +124,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          try
          {
             instance = constructor.newInstance(manager);
-            injectionPointProvider.setCurrentInjectionInstance(instance);
+            DependentContext.INSTANCE.setCurrentInjectionInstance(instance);
             bindDecorators();
             bindInterceptors();
             injectEjbAndCommonFields(instance);
@@ -134,7 +134,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          }
          finally
          {
-            injectionPointProvider.clearCurrentInjectionInstance(instance);
+            DependentContext.INSTANCE.clearCurrentInjectionInstance(instance);
             injectionPointProvider.popBean();
          }
          return instance;
@@ -504,8 +504,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    @Override
    public boolean isSerializable()
    {
-      boolean dependent = Dependent.class.equals(getScopeType());
-      if (dependent)
+      if (isDependent())
       {
          return Reflections.isSerializable(getType());
       }

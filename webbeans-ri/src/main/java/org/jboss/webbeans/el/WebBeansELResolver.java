@@ -25,7 +25,6 @@ import javax.el.ELResolver;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.injection.InjectionPointProvider;
 
 public class WebBeansELResolver extends ELResolver
 {
@@ -67,11 +66,10 @@ public class WebBeansELResolver extends ELResolver
       {
          // TODO Any other way than creating a dummy parent to collect the created dependent objects under?
          Object dependentsCollector = new Object();
-         InjectionPointProvider injectionPointProvider = CurrentManager.rootManager().getInjectionPointProvider();
          try
          {
             DependentContext.INSTANCE.setActive(true);
-            injectionPointProvider.setCurrentInjectionInstance(dependentsCollector);
+            DependentContext.INSTANCE.setCurrentInjectionInstance(dependentsCollector);
             Object value = CurrentManager.rootManager().getInstanceByName(property.toString());
             if (value != null)
             {
@@ -81,7 +79,7 @@ public class WebBeansELResolver extends ELResolver
          }
          finally
          {
-            injectionPointProvider.clearCurrentInjectionInstance(dependentsCollector);
+            DependentContext.INSTANCE.clearCurrentInjectionInstance(dependentsCollector);
             DependentContext.INSTANCE.setActive(false);
          }
       }

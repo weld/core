@@ -29,6 +29,7 @@ import javax.webbeans.AfterTransactionFailure;
 import javax.webbeans.AfterTransactionSuccess;
 import javax.webbeans.BeforeTransactionCompletion;
 import javax.webbeans.DefinitionException;
+import javax.webbeans.Dependent;
 import javax.webbeans.Disposes;
 import javax.webbeans.ExecutionException;
 import javax.webbeans.IfExists;
@@ -38,9 +39,13 @@ import javax.webbeans.ObserverException;
 import javax.webbeans.Observes;
 import javax.webbeans.Produces;
 import javax.webbeans.manager.Bean;
+import javax.webbeans.manager.Contextual;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractClassBean;
+import org.jboss.webbeans.context.ContextualInstance;
+import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.transaction.UserTransaction;
@@ -62,12 +67,12 @@ public class ObserverImpl<T> implements Observer<T>
    /**
     * The known transactional phases a transactional event observer can be
     * interested in
-    */ 
+    */
    protected enum TransactionObservationPhase
    {
       NONE, BEFORE_COMPLETION, AFTER_COMPLETION, AFTER_FAILURE, AFTER_SUCCESS
-   }   
-   
+   }
+
    private final Bean<?> observerBean;
    private final AnnotatedMethod<?> observerMethod;
    private TransactionObservationPhase transactionObservationPhase;
@@ -103,12 +108,12 @@ public class ObserverImpl<T> implements Observer<T>
       this.observerBean = observerBean;
       this.observerMethod = observer;
       checkObserverMethod();
-      
+
       @SuppressWarnings("unchecked")
       Class<T> c = (Class<T>) observerMethod.getAnnotatedParameters(Observes.class).get(0).getType();
       this.eventType = c;
-      
-      this.bindings = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingTypesAsArray(); 
+
+      this.bindings = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingTypesAsArray();
       initTransactionObservationPhase();
       this.conditional = !observerMethod.getAnnotatedParameters(IfExists.class).isEmpty();
    }
@@ -147,7 +152,8 @@ public class ObserverImpl<T> implements Observer<T>
    }
 
    /**
-    * Performs validation of the observer method for compliance with the specifications.
+    * Performs validation of the observer method for compliance with the
+    * specifications.
     */
    private void checkObserverMethod()
    {
@@ -175,7 +181,7 @@ public class ObserverImpl<T> implements Observer<T>
       }
       // Check annotations on the method to make sure this is not a producer
       // method, initializer method, or destructor method.
-      if ( this.observerMethod.isAnnotationPresent(Produces.class) )
+      if (this.observerMethod.isAnnotationPresent(Produces.class))
       {
          throw new DefinitionException(this + " cannot be annotated with @Produces");
       }
@@ -187,35 +193,50 @@ public class ObserverImpl<T> implements Observer<T>
 
    public void notify(final T event)
    {
-      // Get the most specialized instance of the component
-      Object instance = manager.getInstance(observerBean, !isConditional());
-      if (instance != null)
+      Object instance = null;
+      Object dependentsCollector = new Object();
+      try
       {
-         try
+         if (Dependent.class.equals(observerBean.getScopeType()) && observerBean instanceof AbstractBean)
          {
-            if ( isTransactional() && isTransactionActive() )
+            DependentContext.INSTANCE.setCurrentInjectionInstance(dependentsCollector);
+         }
+         // Get the most specialized instance of the component
+         instance = manager.getInstance(observerBean, !isConditional());
+         if (instance == null)
+         {
+            return;
+         }
+         if (isTransactional() && isTransactionActive())
+         {
+            deferEvent(event);
+         }
+         else
+         {
+            observerMethod.invokeWithSpecialValue(instance, Observes.class, event, manager);
+         }
+      }
+      catch (ExecutionException e)
+      {
+         if ((e.getCause() != null) && (e.getCause() instanceof InvocationTargetException))
+         {
+            InvocationTargetException wrappedException = (InvocationTargetException) e.getCause();
+            if ((wrappedException.getCause() != null) && (RuntimeException.class.isAssignableFrom(wrappedException.getCause().getClass())))
             {
-               deferEvent(event);
+               throw (RuntimeException) wrappedException.getCause();
             }
             else
             {
-               observerMethod.invokeWithSpecialValue(instance, Observes.class, event, manager);
+               throw new ObserverException(wrappedException.getCause().getMessage(), wrappedException.getCause());
             }
          }
-         catch (ExecutionException e)
+      }
+      finally
+      {
+         if (Dependent.class.equals(observerBean.getScopeType()))
          {
-            if ((e.getCause() != null) && (e.getCause() instanceof InvocationTargetException))
-            {
-               InvocationTargetException wrappedException = (InvocationTargetException) e.getCause();
-               if ((wrappedException.getCause() != null) && (RuntimeException.class.isAssignableFrom(wrappedException.getCause().getClass())))
-               {
-                  throw (RuntimeException) wrappedException.getCause();
-               }
-               else
-               {
-                  throw new ObserverException(wrappedException.getCause().getMessage(), wrappedException.getCause());
-               }
-            }
+            ((AbstractBean<?, ?>) observerBean).getDependentInstancesStore().destroyDependentInstances(dependentsCollector);
+            DependentContext.INSTANCE.clearCurrentInjectionInstance(instance);
          }
       }
    }
@@ -230,7 +251,7 @@ public class ObserverImpl<T> implements Observer<T>
       UserTransaction userTransaction = manager.getInstanceByType(UserTransaction.class);
       try
       {
-         return userTransaction!=null && userTransaction.getStatus() == Status.STATUS_ACTIVE;
+         return userTransaction != null && userTransaction.getStatus() == Status.STATUS_ACTIVE;
       }
       catch (SystemException e)
       {
@@ -239,7 +260,8 @@ public class ObserverImpl<T> implements Observer<T>
    }
 
    /**
-    * Defers an event for processing in a later phase of the current transaction.
+    * Defers an event for processing in a later phase of the current
+    * transaction.
     * 
     * Gets the transaction listener, creates a deferred event representation and
     * registers the deferred event.
@@ -283,7 +305,7 @@ public class ObserverImpl<T> implements Observer<T>
    {
       return transactionObservationPhase.equals(currentPhase);
    }
-   
+
    @Override
    public String toString()
    {

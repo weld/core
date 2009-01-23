@@ -1,7 +1,5 @@
 package org.jboss.webbeans.context;
 
-import javax.webbeans.Dependent;
-import javax.webbeans.manager.Bean;
 import javax.webbeans.manager.Contextual;
 
 public class ContextualInstance<T>
@@ -25,13 +23,4 @@ public class ContextualInstance<T>
       contextual.destroy(instance);
    }
 
-   public boolean isDependent()
-   {
-      return contextual instanceof Bean && Dependent.class.equals(((Bean<T>)contextual).getScopeType());
-   }
-
-   public Object getInstance()
-   {
-      return instance;
-   }
 }

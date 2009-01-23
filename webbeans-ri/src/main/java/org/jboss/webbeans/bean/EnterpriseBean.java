@@ -309,6 +309,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       try
       {
          manager.getInjectionPointProvider().pushBean(this);
+         DependentContext.INSTANCE.setCurrentInjectionInstance(instance);
          DependentContext.INSTANCE.setActive(true);
          bindDecorators();
          bindInterceptors();
@@ -318,6 +319,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       finally
       {
+         DependentContext.INSTANCE.clearCurrentInjectionInstance(instance);
          manager.getInjectionPointProvider().popBean();
          DependentContext.INSTANCE.setActive(false);
       }
@@ -341,7 +343,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
    public boolean canCallRemoveMethods()
    {
-      return getEjbDescriptor().isStateful() && Dependent.class.equals(getScopeType());
+      return getEjbDescriptor().isStateful() && isDependent();
    }
    
    @Override

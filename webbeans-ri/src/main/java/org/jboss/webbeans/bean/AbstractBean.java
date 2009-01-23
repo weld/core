@@ -37,6 +37,7 @@ import javax.webbeans.Stereotype;
 import javax.webbeans.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.injection.InjectionPointImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotationStore.AnnotationMap;
@@ -62,6 +63,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(Event.class, ManagerImpl.class));
 
    private boolean proxyable;
+   protected DependentInstancesStore dependentInstancesStore;
 
    /**
     * Helper class for getting deployment type
@@ -121,6 +123,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       super(manager);
       this.manager = manager;
       annotatedInjectionPoints = new HashSet<AnnotatedItem<?, ?>>();
+      dependentInstancesStore = new DependentInstancesStore();
    }
 
    /**
@@ -184,7 +187,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * Initializes the deployment types
     */
    protected abstract void initDeploymentType();
-   
+
    protected void initDeploymentTypeFromStereotype()
    {
       AnnotationMap possibleDeploymentTypes = getMergedStereotypes().getPossibleDeploymentTypes();
@@ -229,14 +232,14 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          this.name = getSpecializedBean().getName();
          return;
       }
-
+      
       if (beanNameDefaulted || getMergedStereotypes().isBeanNameDefaulted())
       {
          this.name = getDefaultName();
          return;
       }
    }
-   
+
    protected void initProxyable()
    {
       proxyable = Beans.apiTypesAreProxyable(getTypes());
@@ -270,7 +273,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * Initializes the scope type
     */
    protected abstract void initScopeType();
-   
+
    protected boolean initScopeTypeFromStereotype()
    {
       Set<Annotation> possibleScopeTypes = getMergedStereotypes().getPossibleScopeTypes();
@@ -309,7 +312,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          throw new DefinitionException(getAnnotatedItem().getName() + " cannot have deployment type @Standard");
       }
    }
-   
+
    /**
     * Validates that the required types are implemented
     */
@@ -558,7 +561,16 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    {
       return proxyable;
    }
-   
+   public DependentInstancesStore getDependentInstancesStore()
+   {
+      return dependentInstancesStore;
+   }
+
+   public boolean isDependent()
+   {
+      return Dependent.class.equals(scopeType);
+   }
+
    public boolean isSpecializing()
    {
       return getAnnotatedItem().isAnnotationPresent(Specializes.class);

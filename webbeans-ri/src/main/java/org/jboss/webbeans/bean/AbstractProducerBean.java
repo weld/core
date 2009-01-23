@@ -53,7 +53,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
 {
    // The declaring bean
    protected AbstractClassBean<?> declaringBean;
-   
+
    private static final LogProvider log = Logging.getLogProvider(AbstractProducerBean.class);
 
    /**
@@ -162,8 +162,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
     */
    protected void checkReturnValue(T instance)
    {
-      boolean dependent = Dependent.class.equals(getScopeType());
-      if (instance == null && !dependent)
+      if (instance == null && !isDependent())
       {
          throw new IllegalProductException("Cannot return null from a non-dependent producer method");
       }
@@ -177,7 +176,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       {
          return;
       }
-      if (dependent && Beans.isPassivatingBean(injectionPoint.getBean()))
+      if (isDependent() && Beans.isPassivatingBean(injectionPoint.getBean()))
       {
          if (injectionPoint.isField())
          {
@@ -208,7 +207,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
          }
       }
    }
-   
+
    @Override
    protected void initScopeType()
    {
@@ -223,16 +222,16 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
          log.trace("Scope " + scopeType + " specified by annotation");
          return;
       }
-      
+
       initScopeTypeFromStereotype();
-      
+
       if (this.scopeType == null)
       {
          this.scopeType = Dependent.class;
          log.trace("Using default @Dependent scope");
       }
    }
-   
+
    @Override
    protected void initDeploymentType()
    {
@@ -276,8 +275,13 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
    @Override
    public T create()
    {
+      Object dependentCollector = new Object();
       try
       {
+         if (getDeclaringBean().isDependent())
+         {
+            DependentContext.INSTANCE.setCurrentInjectionInstance(dependentCollector);
+         }
          DependentContext.INSTANCE.setActive(true);
          T instance = produceInstance();
          checkReturnValue(instance);
@@ -285,6 +289,11 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       }
       finally
       {
+         if (getDeclaringBean().isDependent())
+         {
+            DependentContext.INSTANCE.clearCurrentInjectionInstance(dependentCollector);
+            dependentInstancesStore.destroyDependentInstances(dependentCollector);
+         }
          DependentContext.INSTANCE.setActive(false);
       }
    }

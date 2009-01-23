@@ -23,9 +23,7 @@ import javax.webbeans.ContextNotActiveException;
 import javax.webbeans.Dependent;
 import javax.webbeans.manager.Contextual;
 
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.AbstractClassBean;
-import org.jboss.webbeans.injection.InjectionPointProvider;
 
 /**
  * The dependent context
@@ -38,6 +36,8 @@ public class DependentContext extends AbstractContext
    public static DependentContext INSTANCE = new DependentContext();
 
    private ThreadLocal<AtomicInteger> reentrantActiveCount;
+   private ThreadLocal<Object> currentInjectionInstance;
+
 
    /**
     * Constructor
@@ -54,6 +54,7 @@ public class DependentContext extends AbstractContext
             return new AtomicInteger(0);
          }
       };
+      this.currentInjectionInstance = new ThreadLocal<Object>();
    }
 
    /**
@@ -69,11 +70,10 @@ public class DependentContext extends AbstractContext
          throw new ContextNotActiveException();
       }
       T instance = create == false ? null : bean.create();
-      InjectionPointProvider injectionPointProvider = CurrentManager.rootManager().getInjectionPointProvider();
-      if (bean instanceof AbstractClassBean && injectionPointProvider.isInjecting())
+      if (bean instanceof AbstractClassBean && (currentInjectionInstance.get() != null))
       {
          DependentInstancesStore dependentInstancesStore = ((AbstractClassBean<?>) bean).getDependentInstancesStore();
-         dependentInstancesStore.addDependentInstance(injectionPointProvider.getCurrentInjectionInstance(), ContextualInstance.of(bean, instance));
+         dependentInstancesStore.addDependentInstance(currentInjectionInstance.get(), ContextualInstance.of(bean, instance));
       }
       return instance;
    }
@@ -103,5 +103,21 @@ public class DependentContext extends AbstractContext
          }
       }
    }
+   
+   public void setCurrentInjectionInstance(Object currentInjectionInstance)
+   {
+      if (this.currentInjectionInstance.get() == null)
+      {
+         this.currentInjectionInstance.set(currentInjectionInstance);
+      }
+   }
 
+   public void clearCurrentInjectionInstance(Object instance)
+   {
+      if (this.currentInjectionInstance.get() == instance)
+      {
+         this.currentInjectionInstance.set(null);
+      }
+   }
+   
 }

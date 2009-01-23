@@ -36,29 +36,8 @@ public class InjectionPointProvider
    private final Stack<Bean<?>> beans = new Stack<Bean<?>>();
    // The stack of injection points
    private final Stack<InjectionPoint> injectionPoints = new Stack<InjectionPoint>();
-   private Object currentInjectionInstance;
 
-   public void setCurrentInjectionInstance(Object currentInjectionInstance)
-   {
-      if (this.currentInjectionInstance == null)
-      {
-         this.currentInjectionInstance = currentInjectionInstance;
-      }
-   }
-
-   public void clearCurrentInjectionInstance(Object instance)
-   {
-      if (this.currentInjectionInstance == instance)
-      {
-         this.currentInjectionInstance = null;
-      }
-   }
-
-   public Object getCurrentInjectionInstance()
-   {
-      return currentInjectionInstance;
-   }
-
+   
    /**
     * Pushes a bean to the stack
     * 
@@ -151,11 +130,6 @@ public class InjectionPointProvider
    public String toString()
    {
       return "InjectionPointProvider: Bean stack = " + beans.toString() + " InjectionPoint stack = " + injectionPoints.toString();
-   }
-
-   public boolean isInjecting()
-   {
-      return currentInjectionInstance != null;
    }
 
 }

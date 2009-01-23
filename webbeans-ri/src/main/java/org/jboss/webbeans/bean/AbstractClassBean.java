@@ -61,7 +61,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    private Set<AnnotatedField<?>> injectableFields;
    // The initializer methods
    private Set<AnnotatedMethod<?>> initializerMethods;
-   protected DependentInstancesStore dependentInstancesStore;
 
    /**
     * Constructor
@@ -73,7 +72,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       super(manager);
       this.annotatedItem = type;
-      this.dependentInstancesStore = new DependentInstancesStore();
    }
 
    /**
@@ -269,7 +267,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          throw new DefinitionException("Web Bean implementation class " + type + " cannot be declared abstract");
       }
    }
-   
+
    @Override
    protected void preCheckSpecialization()
    {
@@ -346,11 +344,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       return Production.class;
    }
 
-   public DependentInstancesStore getDependentInstancesStore()
-   {
-      return dependentInstancesStore;
-   }
-   
    @Override
    public boolean equals(Object other)
    {
