@@ -3,7 +3,7 @@ package org.jboss.webbeans.examples.translator;
 import java.util.Arrays;
 import java.util.List;
 
-public class SentenceParser 
+public class SentenceParser  
 { 
    
    public List<String> parse(String text) 

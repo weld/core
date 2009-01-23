@@ -1,8 +1,10 @@
 package org.jboss.webbeans.examples.translator;
 
+import java.io.Serializable;
+
 import javax.webbeans.Initializer;
 
-public class TextTranslator 
+public class TextTranslator implements Serializable
 { 
    private SentenceParser sentenceParser; 
    private Translator sentenceTranslator; 
