@@ -14,33 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.introspector;
-
+package org.jboss.webbeans.bean.proxy;
 
 /**
- * AnnotatedType provides a uniform access to a type defined either in Java or
- * XML
+ * Interface implemented by all enterprise bean proxies to determine if 
+ * the enterprise bean has already had a remove method called by the application
  * 
  * @author Pete Muir
- * @param <T>
+ *
  */
-public interface AnnotatedType<T> extends AnnotatedItem<T, Class<T>>
+public interface EnterpriseBeanInstance
 {
-
+   
    /**
-    * Gets the superclass of the type
+    * Indicated if a remove method has been invoked by the application
     * 
-    * @return The abstracted superclass
+    * @return True if invoked, false otherwise
     */
-   public AnnotatedType<?> getSuperclass();
+   public boolean isDestroyed();
    
-   /**
-    * Check if this is equivalent to a java class
-    * @param clazz The Java class
-    * @return true if equivalent
-    */
-   public boolean isEquivalent(Class<?> clazz);
-   
-   public String getSimpleName();
-
 }

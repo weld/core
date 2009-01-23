@@ -32,12 +32,11 @@ import org.jboss.webbeans.bean.AbstractClassBean;
  */
 public class DependentContext extends AbstractContext
 {
-
    public static DependentContext INSTANCE = new DependentContext();
 
    private ThreadLocal<AtomicInteger> reentrantActiveCount;
+   // Key to collect instances under in DependentInstacesStore
    private ThreadLocal<Object> currentInjectionInstance;
-
 
    /**
     * Constructor
@@ -103,15 +102,28 @@ public class DependentContext extends AbstractContext
          }
       }
    }
-   
-   public void setCurrentInjectionInstance(Object currentInjectionInstance)
+
+   /**
+    * Sets the current injection instance. If there is already an instance
+    * registered, nothing is done.
+    * 
+    * @param instance The current injection instance to register
+    *           dependent objects under
+    */
+   public void setCurrentInjectionInstance(Object instance)
    {
       if (this.currentInjectionInstance.get() == null)
       {
-         this.currentInjectionInstance.set(currentInjectionInstance);
+         this.currentInjectionInstance.set(instance);
       }
    }
 
+   /**
+    * Clears the current injection instance. Can only be done by passing in the instance
+    * of the current instance.
+    * 
+    * @param instance The instance to free
+    */
    public void clearCurrentInjectionInstance(Object instance)
    {
       if (this.currentInjectionInstance.get() == instance)
@@ -119,5 +131,5 @@ public class DependentContext extends AbstractContext
          this.currentInjectionInstance.set(null);
       }
    }
-   
+
 }

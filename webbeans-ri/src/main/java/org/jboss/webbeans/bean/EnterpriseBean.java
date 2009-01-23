@@ -32,7 +32,7 @@ import javax.webbeans.Dependent;
 import javax.webbeans.Interceptor;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bean.proxy.EnterpiseBeanInstance;
+import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
@@ -43,7 +43,6 @@ import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Proxies;
-import org.jboss.webbeans.util.Reflections;
 
 /**
  * An enterprise bean representation
@@ -60,7 +59,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    private InternalEjbDescriptor<T> ejbDescriptor;
 
    private Class<T> proxyClass;
-   
+
    private EnterpriseBean<?> specializedBean;
 
    /**
@@ -146,7 +145,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected void initProxyClass()
    {
       Set<Type> types = new LinkedHashSet<Type>(getTypes());
-      types.add(EnterpiseBeanInstance.class);
+      types.add(EnterpriseBeanInstance.class);
       ProxyFactory proxyFactory = Proxies.getProxyFactory(types);
 
       @SuppressWarnings("unchecked")
@@ -197,7 +196,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
       }
    }
-   
+
    @Override
    protected void initSpecialization()
    {
@@ -245,9 +244,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    @Override
    public void destroy(T instance)
    {
-      EnterpiseBeanInstance enterpiseBeanInstance = (EnterpiseBeanInstance) instance;
-      Boolean isDestroyed = (Boolean) Reflections.invokeAndWrap("isDestroyed", null, instance, null);
-      if (isDestroyed.booleanValue())
+      EnterpriseBeanInstance enterpiseBeanInstance = (EnterpriseBeanInstance) instance;
+      if (enterpiseBeanInstance.isDestroyed())
       {
          return;
       }
@@ -350,7 +348,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       return getEjbDescriptor().isStateful() && isDependent();
    }
-   
+
    @Override
    public AbstractBean<?, ?> getSpecializedBean()
    {

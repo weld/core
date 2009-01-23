@@ -1,5 +1,3 @@
-package org.jboss.webbeans.util;
-
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2008, Red Hat Middleware LLC, and individual contributors
@@ -16,6 +14,8 @@ package org.jboss.webbeans.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.jboss.webbeans.util;
 
 import java.lang.annotation.Annotation;
 

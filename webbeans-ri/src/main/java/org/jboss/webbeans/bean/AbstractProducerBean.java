@@ -362,7 +362,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
    {
       if (other instanceof AbstractProducerBean)
       {
-         AbstractProducerBean that = (AbstractProducerBean) other;
+         AbstractProducerBean<?, ?> that = (AbstractProducerBean<?, ?>) other;
          return super.equals(other) && this.getDeclaringBean().equals(that.getDeclaringBean());
       }
       else

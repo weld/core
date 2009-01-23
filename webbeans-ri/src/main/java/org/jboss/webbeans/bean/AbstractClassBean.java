@@ -33,7 +33,6 @@ import javax.webbeans.Production;
 import javax.webbeans.ScopeType;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
