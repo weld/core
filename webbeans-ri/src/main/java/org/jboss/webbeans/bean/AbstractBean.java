@@ -132,16 +132,17 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    protected void init()
    {
       mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class));
+      initBindingTypes();
       if (isSpecializing())
       {
          preCheckSpecialization();
          initSpecialization();
          postSpecialization();
       }
+      initDefaultBindings();
       initType();
       initPrimitive();
       log.debug("Building Web Bean bean metadata for " + getType());
-      initBindingTypes();
       initName();
       initDeploymentType();
       checkDeploymentType();
@@ -167,10 +168,10 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    {
       this.bindingTypes = new HashSet<Annotation>();
       this.bindingTypes.addAll(getAnnotatedItem().getMetaAnnotations(BindingType.class));
-      if (isSpecializing())
-      {
-         this.bindingTypes.addAll(getSpecializedBean().getBindings());
-      }
+   }
+   
+   protected void initDefaultBindings()
+   {
       if (bindingTypes.size() == 0)
       {
          log.trace("Adding default @Current binding type");
@@ -180,7 +181,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       {
          log.trace("Using binding types " + bindingTypes + " specified by annotations");
       }
-      return;
    }
 
    /**
@@ -226,11 +226,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
             this.name = javaName;
             return;
          }
-      }
-      else if (isSpecializing())
-      {
-         this.name = getSpecializedBean().getName();
-         return;
       }
       
       if (beanNameDefaulted || getMergedStereotypes().isBeanNameDefaulted())
@@ -334,8 +329,12 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       {
          throw new DefinitionException("Cannot put name on specializing and specialized class");
       }
-      // register the specialized bean
-      // TODO not sure this quite right
+      this.bindingTypes.addAll(getSpecializedBean().getBindings());
+      if (isSpecializing() && getSpecializedBean().getAnnotatedItem().isAnnotationPresent(Named.class))
+      {
+         this.name = getSpecializedBean().getName();
+         return;
+      }
       manager.getSpecializedBeans().put(getSpecializedBean(), this);
    }
    
