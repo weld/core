@@ -111,6 +111,14 @@ public interface AnnotatedItem<T, S>
     * @return True if present, false if not
     */
    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType);
+   
+   /**
+    * Indicates if an annotation type specified is present
+    * 
+    * @param annotationType The annotation to match
+    * @return True if present, false if not
+    */
+   public boolean isDeclaredAnnotationPresent(Class<? extends Annotation> annotationType);
 
    /**
     * Gets the type of the element

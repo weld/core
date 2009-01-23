@@ -208,5 +208,10 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
    {
       return delegate().getAnnotationStore();
    }
+   
+   public boolean isDeclaredAnnotationPresent(Class<? extends Annotation> annotationType)
+   {
+      return delegate().isDeclaredAnnotationPresent(annotationType);
+   }
 
 }

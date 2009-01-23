@@ -30,6 +30,7 @@ import javax.webbeans.Dependent;
 import javax.webbeans.ExecutionException;
 import javax.webbeans.Initializer;
 import javax.webbeans.InjectionPoint;
+import javax.webbeans.Specializes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
@@ -66,6 +67,8 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    private AnnotatedMethod<?> postConstruct;
    // The pre-destroy method
    private AnnotatedMethod<?> preDestroy;
+   
+   private SimpleBean<?> specializedBean;
 
    /**
     * Creates a simple, annotation defined Web Bean
@@ -102,6 +105,10 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected SimpleBean(AnnotatedClass<T> type, ManagerImpl manager)
    {
       super(type, manager);
+      if (type.isAnnotationPresent(Specializes.class))
+      {
+         this.specializedBean = SimpleBean.of(type.getSuperclass(), manager);
+      }
       init();
    }
 
@@ -340,6 +347,22 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          }
       }
    }
+   
+   @Override
+   protected void preCheckSpecialization()
+   {
+      super.preCheckSpecialization();
+      if (manager.getEjbDescriptorCache().containsKey(getSpecializedBean().getType()))
+      {
+         throw new DefinitionException("Simple bean must specialize a simple bean");
+      }
+   }
+   
+   @Override
+   protected void initSpecialization()
+   {
+      this.specializedBean = SimpleBean.of(getAnnotatedItem().getSuperclass(), manager);
+   }
 
    /**
     * Initializes the constructor
@@ -495,6 +518,12 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          return injectionPointsAreSerializable();
       }
+   }
+   
+   @Override
+   public SimpleBean<?> getSpecializedBean()
+   {
+      return specializedBean;
    }
 
 }

@@ -12,12 +12,10 @@ import javax.webbeans.BindingType;
 import javax.webbeans.DeploymentType;
 import javax.webbeans.Fires;
 import javax.webbeans.Initializer;
-import javax.webbeans.Named;
 import javax.webbeans.Observes;
 import javax.webbeans.Obtains;
 import javax.webbeans.Produces;
 import javax.webbeans.Realizes;
-import javax.webbeans.Specializes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractBean;
@@ -36,7 +34,6 @@ import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.WrappedAnnotatedClass;
 import org.jboss.webbeans.introspector.WrappedAnnotatedField;
 import org.jboss.webbeans.introspector.WrappedAnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
@@ -54,41 +51,25 @@ public class BeanDeployer
    private static final Set<Annotation> EMPTY_BINDINGS = Collections.emptySet();
    
    private final Set<AbstractBean<?, ?>> beans;
+   private final Set<AnnotatedClass<?>> deferredClasses;
    private final ManagerImpl manager;
    
    public BeanDeployer(ManagerImpl manager)
    {
-      this.beans = new HashSet<AbstractBean<?,?>>();
       this.manager = manager;
+      this.beans = new HashSet<AbstractBean<?,?>>();
+      this.deferredClasses = new HashSet<AnnotatedClass<?>>();
    }
+  
    
    public void addBean(AbstractBean<?, ?> bean)
    {
       this.beans.add(bean);
    }
    
-   public void addBeans(Set<AbstractBean<?, ?>> beans)
-   {
-      this.beans.addAll(beans);
-   }
-   
    public void addClass(Class<?> clazz)
    {
-      AnnotatedClass<?> annotatedClass = AnnotatedClassImpl.of(clazz);
-      if (annotatedClass.isAnnotationPresent(Specializes.class))
-      {
-         annotatedClass = specializeClass(annotatedClass);
-      }
-      if (manager.getEjbDescriptorCache().containsKey(clazz))
-      {
-         createBean(EnterpriseBean.of(annotatedClass, manager), annotatedClass);
-         beans.add(NewEnterpriseBean.of(annotatedClass, manager));
-      }
-      else if (isTypeSimpleWebBean(clazz))
-      {
-         createBean(SimpleBean.of(annotatedClass, manager), annotatedClass);
-         beans.add(NewSimpleBean.of(annotatedClass, manager));
-      }
+      deferredClasses.add(AnnotatedClassImpl.of(clazz));
    }
    
    public void addClasses(Iterable<Class<?>> classes)
@@ -101,6 +82,17 @@ public class BeanDeployer
    
    public void deploy()
    {
+      for (AnnotatedClass<?> clazz : deferredClasses)
+      {
+         if (manager.getEjbDescriptorCache().containsKey(clazz.getType()))
+         {
+            createEnterpriseBean(clazz);
+         }
+         else if (isTypeSimpleWebBean(clazz.getType()))
+         {
+            createSimpleBean(clazz);
+         }
+      }
       manager.setBeans(beans);
    }
    
@@ -202,6 +194,20 @@ public class BeanDeployer
    {
       ObserverImpl<?> observer = ObserverImpl.of(method, declaringBean, manager);
       manager.addObserver(observer);
+   }
+   
+   private void createSimpleBean(AnnotatedClass<?> annotatedClass)
+   {
+      SimpleBean<?> bean = SimpleBean.of(annotatedClass, manager);
+      createBean(bean, annotatedClass);
+      beans.add(NewSimpleBean.of(annotatedClass, manager));
+   }
+   
+   private void createEnterpriseBean(AnnotatedClass<?> annotatedClass)
+   {
+      EnterpriseBean<?> bean = EnterpriseBean.of(annotatedClass, manager);
+      createBean(bean, annotatedClass);
+      beans.add(NewEnterpriseBean.of(annotatedClass, manager));
    }
 
    private void createFacades(Set<AnnotatedItem<?, ?>> injectionPoints)
@@ -338,15 +344,6 @@ public class BeanDeployer
          }
          
       };
-   }
-   
-   private static <T> AnnotatedClass<T> specializeClass(final AnnotatedClass<T> clazz)
-   {
-      Set<Annotation> extraAnnotations = new HashSet<Annotation>();
-      extraAnnotations.addAll(clazz.getSuperclass().getDeclaredMetaAnnotations(BindingType.class));
-      extraAnnotations.add(clazz.getSuperclass().getAnnotation(Named.class));
-      Set<Annotation> extraDeclaredAnnotations = Collections.emptySet();
-      return new WrappedAnnotatedClass<T>(clazz, extraAnnotations, extraDeclaredAnnotations);
    }
    
 }

@@ -18,13 +18,13 @@ public class ContainersImpl implements Containers
    public Manager deploy(List<Class<? extends Annotation>> enabledDeploymentTypes, Class<?>... classes)
    {
       MockBootstrap bootstrap = new MockBootstrap();
-      bootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(classes));
-      bootstrap.boot();
       ManagerImpl manager = bootstrap.getManager();
       if (enabledDeploymentTypes != null)
       {
          manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
       }
+      bootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(classes));
+      bootstrap.boot();
       return manager;
    }
    

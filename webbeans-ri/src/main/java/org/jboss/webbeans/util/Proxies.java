@@ -23,9 +23,7 @@ import java.util.Set;
 
 import javassist.util.proxy.ProxyFactory;
 
-import javax.webbeans.manager.Bean;
 
-import org.jboss.webbeans.bean.AbstractBean;
 
 /**
  * Utilties for working with Javassist proxies
@@ -165,47 +163,6 @@ public class Proxies
       {
          return true;
       }
-   }
-
-   /**
-    * Indicates if a bean is proxyable
-    * 
-    * @param bean The bean to test
-    * @return True if proxyable, false otherwise
-    */
-   public static boolean isBeanProxyable(Bean<?> bean)
-   {
-      if (bean instanceof AbstractBean)
-      {
-         return ((AbstractBean<?, ?>) bean).isProxyable();
-      }
-      else
-      {
-         return apiTypesAreProxyable(bean.getTypes());
-      }
-   }
-
-   /**
-    * Indicates if a set of types are all proxyable
-    * 
-    * @param types The types to test
-    * @return True if proxyable, false otherwise
-    */
-   public static boolean apiTypesAreProxyable(Set<Type> types)
-   {
-      for (Type apiType : types)
-      {
-         if (Object.class.equals(apiType))
-         {
-            continue;
-         }
-         boolean isClass = !((Class<?>) apiType).isInterface();
-         if (isClass && !isClassProxyable((Class<?>) apiType))
-         {
-            return false;
-         }
-      }
-      return true;
    }
 
 }

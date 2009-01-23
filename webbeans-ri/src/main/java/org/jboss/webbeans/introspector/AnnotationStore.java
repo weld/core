@@ -302,6 +302,11 @@ public class AnnotationStore
       return annotationMap.containsKey(annotationType);
    }
    
+   public boolean isDeclaredAnnotationPresent(Class<? extends Annotation> annotationType)
+   {
+      return declaredAnnotationMap.containsKey(annotationType);
+   }
+   
    AnnotationMap getAnnotationMap()
    {
       return annotationMap;

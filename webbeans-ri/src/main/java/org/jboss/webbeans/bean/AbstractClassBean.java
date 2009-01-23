@@ -70,11 +70,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * @param type The type
     * @param manager The Web Beans manager
     */
-   public AbstractClassBean(AnnotatedClass<T> type, ManagerImpl manager)
+   protected AbstractClassBean(AnnotatedClass<T> type, ManagerImpl manager)
    {
       super(manager);
       this.annotatedItem = type;
-      dependentInstancesStore = new DependentInstancesStore();
+      this.dependentInstancesStore = new DependentInstancesStore();
    }
 
    /**
@@ -270,6 +270,22 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          throw new DefinitionException("Web Bean implementation class " + type + " cannot be declared abstract");
       }
    }
+   
+   @Override
+   protected void preCheckSpecialization()
+   {
+      super.preCheckSpecialization();
+      if (getAnnotatedItem().getSuperclass() == null || getAnnotatedItem().getSuperclass().getType().equals(Object.class))
+      {
+         throw new DefinitionException("Specializing bean must extend another bean");
+      }
+   }
+   
+   @Override
+   public boolean isSpecializing()
+   {
+      return getAnnotatedItem().isAnnotationPresent(Specializes.class);
+   }
 
    /**
     * Gets the annotated item
@@ -290,21 +306,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    @Override
    protected String getDefaultName()
    {
-      String name = Strings.decapitalize(getSpecializedType().getSimpleName());
+      String name = Strings.decapitalize(getAnnotatedItem().getSimpleName());
       log.trace("Default name of " + type + " is " + name);
       return name;
-   }
-   
-   private AnnotatedClass<?> getSpecializedType()
-   {
-      if (annotatedItem.isAnnotationPresent(Specializes.class))
-      {
-         return annotatedItem.getSuperclass();
-      }
-      else
-      {
-         return annotatedItem;
-      }
    }
 
    /**

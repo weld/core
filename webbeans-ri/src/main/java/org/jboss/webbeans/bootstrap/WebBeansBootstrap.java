@@ -19,6 +19,7 @@ package org.jboss.webbeans.bootstrap;
 
 import java.util.Collections;
 
+import org.jboss.webbeans.BeanValidator;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.SimpleBean;
@@ -34,7 +35,6 @@ import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.transaction.Transaction;
-import org.jboss.webbeans.util.BeanValidation;
 
 /**
  * Common bootstrapping functionality that is run at application startup and
@@ -155,7 +155,7 @@ public abstract class WebBeansBootstrap
          getManager().fireEvent(getManager(), new InitializedLiteral());
          log.info("Web Beans initialized. Validating beans.");
          getManager().getResolver().resolveInjectionPoints();
-         BeanValidation.validate(getManager().getBeans());
+         new BeanValidator(manager).validate(manager.getBeans());
          getManager().fireEvent(getManager(), new DeployedLiteral());
       }
    }

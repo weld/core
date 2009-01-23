@@ -45,6 +45,8 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    private AnnotatedMethod<T> method;
 
    private AnnotatedMethod<?> disposalMethod;
+   
+   private ProducerMethodBean<?> specializedBean;
 
    /**
     * Creates a producer method Web Bean
@@ -63,14 +65,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       return of(AnnotatedMethodImpl.<T>of(method, declaringBean.getAnnotatedItem()), declaringBean, manager);
    }
-
-   /**
-    * Constructor
-    * 
-    * @param method The producer method abstraction
-    * @param declaringBean The declaring bean
-    * @param manager The Web Beans manager
-    */
+   
    protected ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       super(declaringBean, manager);
@@ -209,6 +204,19 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          return injectionPointsAreSerializable();
       }
       return true;
+   }
+   
+   @Override
+   public AbstractBean<?, ?> getSpecializedBean()
+   {
+      return specializedBean;
+   }
+   
+   @Override
+   public boolean isSpecializing()
+   {
+      // TODO Auto-generated method stub
+      return false;
    }
 
 }

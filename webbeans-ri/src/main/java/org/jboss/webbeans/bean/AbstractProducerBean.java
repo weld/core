@@ -37,6 +37,7 @@ import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.injection.InjectionPointImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
@@ -176,7 +177,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       {
          return;
       }
-      if (dependent && Reflections.isPassivatingBean(injectionPoint.getBean()))
+      if (dependent && Beans.isPassivatingBean(injectionPoint.getBean()))
       {
          if (injectionPoint.isField())
          {

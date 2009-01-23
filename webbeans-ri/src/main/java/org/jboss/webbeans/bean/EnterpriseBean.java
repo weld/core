@@ -59,6 +59,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    private InternalEjbDescriptor<T> ejbDescriptor;
 
    private Class<T> proxyClass;
+   
+   private EnterpriseBean<?> specializedBean;
 
    /**
     * Creates a simple, annotation defined Enterprise Web Bean
@@ -87,6 +89,10 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected EnterpriseBean(AnnotatedClass<T> type, ManagerImpl manager)
    {
       super(type, manager);
+      if (type.isAnnotationPresent(Specializes.class))
+      {
+         this.specializedBean = EnterpriseBean.of(type.getSuperclass(), manager);
+      }
       init();
    }
 
@@ -119,7 +125,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       checkEnterpriseBeanTypeAllowed();
       checkEnterpriseScopeAllowed();
       checkConflictingRoles();
-      checkSpecialization();
    }
 
    /**
@@ -185,17 +190,19 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    /**
     * Validates specialization
     */
-   private void checkSpecialization()
+   protected void preCheckSpecialization()
    {
-      if (!getType().isAnnotationPresent(Specializes.class))
-      {
-         return;
-      }
-      // TODO Should also check the bean type it does contain!
-      if (!manager.getEjbDescriptorCache().containsKey(getType().getSuperclass()))
+      super.preCheckSpecialization();
+      if (!manager.getEjbDescriptorCache().containsKey(getAnnotatedItem().getSuperclass().getType()))
       {
          throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
       }
+   }
+   
+   @Override
+   protected void initSpecialization()
+   {
+      this.specializedBean = EnterpriseBean.of(getAnnotatedItem().getSuperclass(), manager);
    }
 
    /**
@@ -340,6 +347,12 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    public boolean canCallRemoveMethods()
    {
       return getEjbDescriptor().isStateful() && Dependent.class.equals(getScopeType());
+   }
+   
+   @Override
+   public AbstractBean<?, ?> getSpecializedBean()
+   {
+      return specializedBean;
    }
 
 }

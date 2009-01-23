@@ -159,5 +159,17 @@ public abstract class AbstractFacadeBean<T, S, P> extends AbstractBean<T, S>
    {
       return "FacadeBean " + getName() + " for " + annotatedItem;
    }
+   
+   @Override
+   public AbstractBean<?, ?> getSpecializedBean()
+   {
+      return null;
+   }
+   
+   @Override
+   public boolean isSpecializing()
+   {
+      return false;
+   }
 
 }

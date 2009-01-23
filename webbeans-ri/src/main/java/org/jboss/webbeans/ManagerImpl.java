@@ -64,7 +64,7 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
-import org.jboss.webbeans.util.Proxies;
+import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -623,7 +623,7 @@ public class ManagerImpl implements Manager, Serializable
       }      
       Bean<T> bean = beans.iterator().next();
       boolean normalScoped = MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal();
-      if (normalScoped && !Proxies.isBeanProxyable(bean))
+      if (normalScoped && !Beans.isBeanProxyable(bean))
       {
          throw new UnproxyableDependencyException("Normal scoped bean " + bean + " is not proxyable");
       }

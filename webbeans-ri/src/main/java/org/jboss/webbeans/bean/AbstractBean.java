@@ -43,7 +43,7 @@ import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.model.MergedStereotypes;
-import org.jboss.webbeans.util.Proxies;
+import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -139,6 +139,12 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       initTypes();
       initProxyable();
       checkRequiredTypesImplemented();
+      if (isSpecializing())
+      {
+         preCheckSpecialization();
+         initSpecialization();
+         postCheckSpecialization();
+      }
    }
 
    /**
@@ -157,6 +163,10 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    {
       this.bindingTypes = new HashSet<Annotation>();
       this.bindingTypes.addAll(getAnnotatedItem().getMetaAnnotations(BindingType.class));
+      if (isSpecializing())
+      {
+         this.bindingTypes.addAll(getSpecializedBean().getBindings());
+      }
       if (bindingTypes.size() == 0)
       {
          log.trace("Adding default @Current binding type");
@@ -213,7 +223,11 @@ public abstract class AbstractBean<T, E> extends Bean<T>
             return;
          }
       }
-      
+      else if (isSpecializing())
+      {
+         this.name = getSpecializedBean().getName();
+         return;
+      }
 
       if (beanNameDefaulted || getMergedStereotypes().isBeanNameDefaulted())
       {
@@ -224,7 +238,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    
    protected void initProxyable()
    {
-      proxyable = Proxies.apiTypesAreProxyable(getTypes());
+      proxyable = Beans.apiTypesAreProxyable(getTypes());
    }
 
    /**
@@ -309,6 +323,24 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          }
       }
    }
+   
+   protected void postCheckSpecialization()
+   {
+      if (getAnnotatedItem().isAnnotationPresent(Named.class) && getSpecializedBean().getAnnotatedItem().isAnnotationPresent(Named.class))
+      {
+         throw new DefinitionException("Cannot put name on specializing and specialized class");
+      }
+   }
+   
+   protected void preCheckSpecialization()
+   {
+      
+   }
+   
+   protected void initSpecialization()
+   {
+      
+   }
 
    /**
     * Binds the decorators to the proxy
@@ -373,6 +405,10 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * @return The default name
     */
    protected abstract String getDefaultName();
+   
+   public abstract AbstractBean<?, ?> getSpecializedBean();
+   
+   public abstract boolean isSpecializing();
 
    /**
     * Gets the deployment type of the bean
@@ -519,5 +555,19 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    public boolean isProxyable()
    {
       return proxyable;
+   }
+   
+   @Override
+   public boolean equals(Object other)
+   {
+      if (other instanceof AbstractBean)
+      {
+         AbstractBean<?, ?> that = (AbstractBean<?, ?>) other;
+         return this.getTypes().equals(that.getTypes()) && this.getBindings().equals(that.getBindings());
+      }
+      else
+      {
+         return false;
+      }
    }
 }

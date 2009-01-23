@@ -128,5 +128,17 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
       buffer.append("   API types " + getTypes() + ", binding types " + getBindings() + "\n");
       return buffer.toString();
    }
+   
+   @Override
+   public AbstractBean<?, ?> getSpecializedBean()
+   {
+      return null;
+   }
+   
+   @Override
+   public boolean isSpecializing()
+   {
+      return false;
+   }
 
 }

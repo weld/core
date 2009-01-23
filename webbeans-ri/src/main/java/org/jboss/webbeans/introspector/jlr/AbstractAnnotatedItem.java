@@ -248,5 +248,10 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    }
 
    public abstract S getDelegate();
+   
+   public boolean isDeclaredAnnotationPresent(Class<? extends Annotation> annotationType)
+   {
+      return getAnnotationStore().isDeclaredAnnotationPresent(annotationType);
+   }
 
 }
