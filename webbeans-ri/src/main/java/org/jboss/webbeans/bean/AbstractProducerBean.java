@@ -19,6 +19,7 @@ package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
@@ -119,6 +120,25 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       {
          throw new RuntimeException(" Cannot cast producer type " + getAnnotatedItem().getType() + " to bean type " + (getDeclaredBeanType() == null ? " unknown " : getDeclaredBeanType()), e);
       }
+   }
+   
+   /**
+    * Gets the declared bean type
+    * 
+    * @return The bean type
+    */
+   protected Type getDeclaredBeanType()
+   {
+      Type type = getClass();
+      if (type instanceof ParameterizedType)
+      {
+         ParameterizedType parameterizedType = (ParameterizedType) type;
+         if (parameterizedType.getActualTypeArguments().length == 1)
+         {
+            return parameterizedType.getActualTypeArguments()[0];
+         }
+      }
+      return null;
    }
 
    /**

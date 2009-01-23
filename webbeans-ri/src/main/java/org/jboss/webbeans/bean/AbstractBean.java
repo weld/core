@@ -18,7 +18,6 @@
 package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -381,28 +380,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    public Set<Annotation> getBindings()
    {
       return bindingTypes;
-   }
-
-   /**
-    * Gets the declared bean type
-    * 
-    * @return The bean type
-    */
-   protected Type getDeclaredBeanType()
-   {
-      if (declaredBeanType == null)
-      {
-         Type type = getClass();
-         if (type instanceof ParameterizedType)
-         {
-            ParameterizedType parameterizedType = (ParameterizedType) type;
-            if (parameterizedType.getActualTypeArguments().length == 1)
-            {
-               declaredBeanType = parameterizedType.getActualTypeArguments()[0];
-            }
-         }
-      }
-      return declaredBeanType;
    }
 
    /**
