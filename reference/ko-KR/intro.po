@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-23 14:52+1000\n"
+"PO-Revision-Date: 2009-01-23 16:23+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -35,14 +36,13 @@ msgstr "Web Beans로 시작하기 "
 #. Tag: para
 #: intro.xml:6
 #, no-c-format
-#, fuzzy
 msgid ""
 "So you're already keen to get started writing your first Web Bean? Or "
 "perhaps you're skeptical, wondering what kinds of hoops the Web Beans "
 "specification will make you jump through! The good news is that you've "
 "probably already written and used hundreds, perhaps thousands of Web Beans. "
 "You might not even remember the first Web Bean you wrote."
-msgstr "첫 번째 Web Bean 작성을 시작해 보시겠습니까? "
+msgstr "첫 번째 Web Bean 작성을 시작해 보시겠습니까? 혹은 어떤 종류의 Web Beans 사양으로 도약하게 될 지를 의아해 하거나 의심하고 계실 수 도 있겠군요! 한 가지 좋은 정보는 여러분은 이미 수백개의 혹은 수천개의 Web Beans을 이미 작성 및 사용하고 계셨다는 것입니다. 아마 여러분은 처음으로 작성하신 Web Beans를 기억하지 못하고 계실 수 도 있습니다. "
 
 #. Tag: title
 #: intro.xml:13
@@ -63,7 +63,7 @@ msgid ""
 "into other Web Beans, configuring them via the Web Beans XML configuration "
 "facility, even adding interceptors and decorators to them &#151; without "
 "touching your existing code."
-msgstr ""
+msgstr "특정한 예외 상항에서 매개 변수가 없는 것을 허용하는 생성자와 함께하는 모든 Java 클래스는 Web Bean입니다. 이에는 모든 JavaBean이 포함됩니다. 이에 더하여 모든 EJB 3-스타일 세션 빈도 Web Bean입니다. 물론 매일 작성하셨던 JavaBeans 및 EJB는 Web Beans 사양에 의해 정의된 새로운 서비스의 장점을 취할 수 없지만, Web Beans으로서 기존 코드를 변경하지 않고 이 모든 것을 사용하실 수 있습니다 &#151; 기타 다른 Web Beans로의 삽입, Web Beans XML 설정 기능을 통한 설정, 인터셉터 및 데코레이터 추가 등&#151   "
 
 #. Tag: para
 #: intro.xml:25
@@ -252,7 +252,6 @@ msgstr ""
 #. Tag: para
 #: intro.xml:68
 #, no-c-format
-#, fuzzy
 msgid ""
 "At system initialization time, the Web Bean manager must validate that "
 "exactly one Web Bean exists which satisfies each injection point. In our "
@@ -262,7 +261,7 @@ msgid ""
 "<literal>UnsatisfiedDependencyException</literal>. If more than one "
 "implementation of <literal>Translator</literal> was available, the Web Bean "
 "manager would throw an <literal>AmbiguousDependencyException</literal>."
-msgstr "시스템 초기화시 Web Bean 관리자는 "
+msgstr "시스템 초기화시 Web Bean 관리자는 각각의 삽입 지점을 만족시키는 하나의 Web Bean이 존재하도록 이를 유효화해야 합니다. 예에서 사용 가능한 <literal>Translator</literal> 구현이 없을 경우 &#151; <literal>SentenceTranslator</literal> EJB가 배치되지 않는 다면 &#151; Web Bean 관리자는 <literal>UnsatisfiedDependencyException</literal>을 넘기게 됩니다. 하나 이상의 <literal>Translator</literal>를 구현할 수 있을 경우, Web Bean 관리자는 <literal>AmbiguousDependencyException</literal>을 넘기게 됩니다.  "
 
 #. Tag: title
 #: intro.xml:80
@@ -299,7 +298,7 @@ msgid ""
 "singleton beans), different clients of a Web Bean see the Web Bean in "
 "different states. The client-visible state depends upon which instance of "
 "the Web Bean the client has a reference to."
-msgstr ""
+msgstr "두 번째 내용으로 돌아가 봅시다. \"컨텍스트화\"된다는 의미는 정확하게 무엇입니까? Web Beans가 상태 유지 세션 빈이면, 보유하고 있는것이 <emphasis>어떤</emphasis> 빈 인스턴스인가가 문제입니다. 무상태 구성 요소 모델 이나 (예: 무상태 세션 빈) 또는 singleton 구성요소 모델 (예: ervlets 또는 singleton 빈)과는 다르게 Web Bean의 다른 클라이언트는 다른 상태에 있는 Web Bean을 보게 됩니다. 클라이언트-가시성 상태는 클라이언트가 참조하고 있는 Web Bean의 인스턴스가 무엇인가에 의존합니다. "
 
 #. Tag: para
 #: intro.xml:98
@@ -310,6 +309,8 @@ msgid ""
 "of the instance by explicitly creating and destroying it. Instead, the "
 "<emphasis>scope</emphasis> of the Web Bean determines:"
 msgstr ""
+"하지만, 무상태 또는 싱글턴 모델과 같으나 상태 유지 세션 빈 과는 <emphasis>다르게</"
+"emphasis>, 클라이언트는 인스턴스의 수명 주기를 명시적으로 생성 또는 파괴하여 제어하지 못합니다. 대신, Web Bean의 <emphasis>범위는</emphasis> 다음 사항을 결정합니다:  "
 
 #. Tag: para
 #: intro.xml:105
@@ -321,7 +322,7 @@ msgstr "각각의 Web Bean 인스턴스의 수명 주기 "
 #: intro.xml:108
 #, no-c-format
 msgid "which clients share a reference to a particular instance of the Web Bean."
-msgstr ""
+msgstr "어떤 클라이언트가 특정 Web Bean 인스턴스의 참조를 공유할 것인지 "
 
 #. Tag: para
 #: intro.xml:113
@@ -333,7 +334,7 @@ msgid ""
 "is request scoped), or it may be shared with certain other threads (for "
 "example, if the Web Bean is session scoped) or even all other threads (if it "
 "is application scoped)."
-msgstr ""
+msgstr "Web Beans 애플리케이션에 있는 주어진 스레드의 경우, Web Bean 범위와 관련된 <emphasis>활성 컨텍스트</emphasis>가 있을 수 있습니다. 이러한 컨텍스트는 스레드에서 유일하거나 (예: 요청 범위일 경우) 또는 특정한 다른 스레드와 공유될 수 있거나 (예: Web Bean이 세션 범위일 경우) 또는 기타 다른 모든 스레드일 수 있습니다 (Web Bean이 애플리케이션 범위일 경우). "
 
 #. Tag: para
 #: intro.xml:119
@@ -342,7 +343,7 @@ msgid ""
 "Clients (for example, other Web Beans) executing in the same context will "
 "see the same instance of the Web Bean. But clients in a different context "
 "will see a different instance."
-msgstr ""
+msgstr "동일한 컨텍스트에서 실행되는 클라이언트 (예: 기타 다른 Web Bean)는 동일한 Web Bean의 인스턴스를 보게 됩니다. 하지만 다른 컨텍스트에서 실행되는 클라이언트는 다른 인스턴스를 보게 됩니다. "
 
 #. Tag: para
 #: intro.xml:123
@@ -354,19 +355,19 @@ msgid ""
 "even need to know what that lifecyle is.</emphasis> Web Beans interact by "
 "passing messages, and the Web Bean implementations define the lifecycle of "
 "their own state. The Web Beans are loosely coupled because:"
-msgstr ""
+msgstr "컨텍스트 모델의 큰 장점 중 하나는 상태 유지 Web Beans가 서비스처럼 다루어지게 하는 것입니다! 클라이언트는 사용되는 Web Bean의 수명 주기 관리 자체를 고려하거나, 또는 <emphasis>수명 주기가 무엇인지를 알 필요가 없습니다.</emphasis> Web Beans는 메세지를 전달하여 상호작용하고 Web Bean 구현은 자신의 상태에 따른 수명 주기를 정의합니다. Web Beans는 다음과 같은 이유로 느슨하게 연결되어 있습니다:  "
 
 #. Tag: para
 #: intro.xml:132
 #, no-c-format
 msgid "they interact via well-defined public APIs"
-msgstr "잘 정의된 공개 API를 통해 상호 작용합니다 "
+msgstr "잘 정의된 공개 API를 통해 상호 작용하므로 "
 
 #. Tag: para
 #: intro.xml:135
 #, no-c-format
 msgid "their lifecycles are completely decoupled"
-msgstr "수명 주기는 완전하게 연결 해제됩니다  "
+msgstr "수명 주기는 완전하게 연결 해제되므로 "
 
 #. Tag: para
 #: intro.xml:139
@@ -377,7 +378,7 @@ msgid ""
 "the other Web Bean implementation. In fact, Web Beans defines a "
 "sophisticated facility for overriding Web Bean implementations at deployment "
 "time, as we will see in <xref linkend=\"deploymenttypes\"/>."
-msgstr ""
+msgstr "하나의 Web Bean을 동일한 API를 구현하고 다른 Web Bean 구현에 영향을 미치지 않고 다른 수명 주기 (다른 범위)를 갖는 다른 Web Bean으로 대체할 수 있습니다. 사실, <xref linkend=\"deploymenttypes\"/>에서 살펴보실 수 있듯이 Web Beans는 배치시 Web Bean 구현을 덮어쓰기하기 위한 정교한 기능을 정의합니다.   "
 
 #. Tag: para
 #: intro.xml:145
@@ -386,13 +387,13 @@ msgid ""
 "Note that not all clients of a Web Bean are Web Beans. Other objects such as "
 "Servlets or Message-Driven Beans &#151; which are by nature not injectable, "
 "contextual objects &#151; may also obtain references to Web Beans by injection."
-msgstr ""
+msgstr "모든 Web Bean 클라이언트가 Web Beans가 될 수 없음에 유의합니다. Servlets 또는 Message-Driven Beans와 같은 &#151; 본래 삽입 가능한 컨텍스트 객체가 아닌 &#151; 객체는 삽입에 의해 Web Beans에 참조를 획득할 수 있습니다. "
 
 #. Tag: para
 #: intro.xml:149
 #, no-c-format
 msgid "Enough hand-waving. More formally, according to the spec:"
-msgstr ""
+msgstr "보다 공식적으로 spec에 따르면: "
 
 #. Tag: para
 #: intro.xml:153
@@ -461,7 +462,7 @@ msgid ""
 "Web Beans usually acquire references to other Web Beans via dependency "
 "injection. Any injected attribute specifies a \"contract\" that must be "
 "satisfied by the Web Bean to be injected. The contract is:"
-msgstr ""
+msgstr "주로 Web Beans는 의존성 삽입을 통해 다른 Web Beans에 참조를 획득합니다. 삽입된 속성은 삽입될 Web Bean을 만족시키는 \"계약\"을 지정합니다. 계약에는 다음과 같은 내용을 지정합니다: "
 
 #. Tag: para
 #: intro.xml:177
@@ -484,7 +485,7 @@ msgid ""
 "bean-class local view). A binding type represents some client-visible "
 "semantic that is satisfied by some implementations of the API and not by "
 "others."
-msgstr ""
+msgstr "API는 사용자 정의 클래스 또는 인터페이스입니다. (Web Bean이 EJB 세션 빈일 경우, API 유형은 <literal>@Local</literal> 인터페이스이거나 또는 bean-class 로컬 보기입니다.) 바인딩 유형은 클라이언트-가시성 시멘틱을 나타내는 것으로 API의 일부 구현에 의해 만족됩니다. "
 
 #. Tag: para
 #: intro.xml:186
@@ -494,7 +495,7 @@ msgid ""
 "themselves annotated <literal>@BindingType</literal>. For example, the "
 "following injection point has API type <literal>PaymentProcessor</literal> "
 "and binding type <literal>@CreditCard</literal>:"
-msgstr ""
+msgstr "바인딩 유형은 <literal>@BindingType</literal>으로 어노테이션된 사용자 정의 어노테이션에 의해 나타납니다. 예를 들어, 다음과 같은 삽입 지점은 <literal>PaymentProcessor</literal> API 유형 및 <literal>@CreditCard</literal> 바인딩 유형을 갖습니다:  "
 
 #. Tag: programlisting
 #: intro.xml:191
@@ -508,7 +509,7 @@ msgstr "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
 msgid ""
 "If no binding type is explicitly specified at an injection point, the "
 "default binding type <literal>@Current</literal> is assumed."
-msgstr ""
+msgstr "바인딩 유형이 삽입 지점에 명확하게 지정되어 있지 않을 경우, 기본값 바인딩 유형<literal>@Current</literal>가 사용됩니다.  "
 
 #. Tag: para
 #: intro.xml:196
