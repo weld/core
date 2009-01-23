@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-23 16:23+1000\n"
+"PO-Revision-Date: 2009-01-23 17:28+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -518,7 +519,7 @@ msgid ""
 "For each injection point, the Web Bean manager searches for a Web Bean which "
 "satisfies the contract (implements the API, and has all the binding types), "
 "and injects that Web Bean."
-msgstr ""
+msgstr "각각의 삽입 지점의 경우, Web Bean 관리자는 계약을 만족시키는 (API를 구현하고 모든 바인딩 유형을 갖는) Web Bean을 검색하여 이를 삽입합니다. "
 
 #. Tag: para
 #: intro.xml:200
@@ -527,7 +528,7 @@ msgid ""
 "The following Web Bean has the binding type <literal>@CreditCard</literal> "
 "and implements the API type <literal>PaymentProcessor</literal>. It could "
 "therefore be injected to the example injection point:"
-msgstr ""
+msgstr "다음과 같은 Web Bean은 <literal>@CreditCard</literal> 바인딩 유형을 갖고 <literal>PaymentProcessor</literal> API 유형을 구현합니다. 따라서 이는 예시 삽입 지점에 삽입될 수 있습니다:        "
 
 #. Tag: programlisting
 #: intro.xml:204
@@ -548,7 +549,7 @@ msgid ""
 "If a Web Bean does not explicitly specify a set of binding types, it has "
 "exactly one binding type: the default binding type <literal>@Current</"
 "literal>."
-msgstr ""
+msgstr "Web Bean이 바인딩 유형 모음을 명확히 지정하지 않을 경우, 이는 기본값 바인딩 유형인 <literal>@Current</literal>라는 하나의 바인딩 유형을 갖습니다. "
 
 #. Tag: para
 #: intro.xml:209
@@ -558,7 +559,7 @@ msgid ""
 "algorithm</emphasis> that helps the container decide what to do if there is "
 "more than one Web Bean that satisfies a particular contract. We'll get into "
 "the details in <xref linkend=\"injection\"/>."
-msgstr ""
+msgstr "Web Beans는 정교하지만 직관적인 <emphasis>해상도 알고리즘</emphasis>을 정의하여 특정 계약을 만족시키는 하나 이상의 Web Bean이 있을 경우 컨테이너가 무엇을 해야할 지를 결정하는 것을 돕습니다. 보다 자세한 내용은 <xref linkend=\"injection\"/>에서 다루겠습니다. "
 
 #. Tag: title
 #: intro.xml:217
@@ -577,7 +578,7 @@ msgid ""
 "apply the annotation to Web Beans which should be deployed in that scenario. "
 "A deployment type allows a whole set of Web Beans to be conditionally "
 "deployed, with a just single line of configuration."
-msgstr ""
+msgstr "<emphasis>배치 유형</emphasis>은 배치 시나리오에 의해 Web Beans을 구분하게 합니다. 배치 유형은 특정 배치 시나리오를 나타네는 어노테이션으로, 예를 들어 <literal>@Mock</literal>, <literal>@Staging</literal>, <literal>@AustralianTaxLaw</literal>가 있습니다. 시나리오에 배치되어야 할 Web Beans에 어노테이션을 적용합니다. 배치 유형은 단일 설정행을 사용하여 전체 Web Beans 모음이 상황에 따라 배치되게 합니다.  "
 
 #. Tag: para
 #: intro.xml:226
@@ -678,13 +679,12 @@ msgstr "세션 범위 Web Bean의 인스턴스는 사용자 세션으로 바운�
 #. Tag: para
 #: intro.xml:262
 #, no-c-format
-#, fuzzy
 msgid ""
 "By default, Web Beans belong to a special scope called the "
 "<emphasis>dependent pseudo-scope</emphasis>. Web Beans with this scope are "
 "pure dependent objects of the object into which they are injected, and their "
 "lifecycle is bound to the lifecycle of that object."
-msgstr "기본값으로, Web Beans는 <emphasis>dependent pseudo-scope</emphasis>라는 특정 범위에 속합니다. 이러한 범위를 갖는 Web Beans는 "
+msgstr "기본값으로, Web Beans는 <emphasis>dependent pseudo-scope</emphasis>라는 특정 범위에 속합니다. 이러한 범위를 갖는 Web Beans는 삽입되어야할 객체의 순수한 의존적 객체이며 수명주기는 객체의 수명주기로 바운딩됩니다. "
 
 #. Tag: para
 #: intro.xml:267
@@ -756,7 +756,7 @@ msgstr ""
 msgid ""
 "In this case, the name defaults to <literal>shoppingCart</literal> &#151; the "
 "unqualified class name, with the first character changed to lowercase."
-msgstr ""
+msgstr "이러한 경우, 이름 기본값은 <literal>shoppingCart</literal>가 됩니다 &#151; 첫번째 문자가 소문자로 된 수식어가 붙지않는 클래스 이름. "
 
 #. Tag: title
 #: intro.xml:295
@@ -800,7 +800,7 @@ msgstr ""
 msgid ""
 "However, it is more elegant, and better practice, to indirect the "
 "interceptor binding through an <emphasis>interceptor binding type</emphasis>:"
-msgstr ""
+msgstr "하지만, <emphasis>인터셉터 바인딩 유형</emphasis>을 통해 인터셉터 바인딩을 돌려 놓는 것이 보다 좋습니다:    "
 
 #. Tag: programlisting
 #: intro.xml:311
@@ -907,6 +907,8 @@ msgid ""
 "objects &#151; but they can take advantage of most of the functionality of Web "
 "Beans, including dependency injection and interceptors."
 msgstr ""
+"사양에서는 모든 EJB 3 스타일 세션 및 singleton beans가 EJB 3 <emphasis>엔터프라이즈</emphasis> Web Beans라고 말합니다. Message driven beans는 Web "
+"Beans이 아닙니다 &#151; 다른 객체에 삽입되도록 되어있지 않기 때문 &#151; 하지만 이는 의존성 삽입 및 인터셉터를 포함한 대부분의 Web Beans 기능의 장점을 취할 수 있습니다. "
 
 #. Tag: para
 #: intro.xml:366
@@ -917,7 +919,7 @@ msgid ""
 "superinterfaces, is an API type of the enterprise Web Bean. If the EJB bean "
 "has a bean class local view, the bean class, and every one of its "
 "superclasses, is also an API type."
-msgstr ""
+msgstr "와일드카드 유형 매개 변수 또는 유형 변수를 갖지 않는 엔터프라이즈 Web Bean의 모든 로컬 인터페이스 및 이의 상위인터페이스는 엔터프라이즈 Web Bean의 API 유형입니다. EJB bean이 bean 클래스 로컬 보기를 갖고 있을 경우 bean 클래스 및 이의 모든 상위 클래스도 API 유형입니다. "
 
 #. Tag: para
 #: intro.xml:372
@@ -928,7 +930,7 @@ msgid ""
 "manager calls this method to destroy the stateful session bean instance at "
 "the end of its lifecycle. This method is called the <emphasis>destructor</"
 "emphasis> method of the enterprise Web Bean."
-msgstr ""
+msgstr "상태유지 세션 빈은 매개 변수가 없는 제거 방식이나 <literal>@Destructor</literal>로 어노테이션된 삭제 방식을 명시해야 합니다. Web Bean 관리자는 수명 주기의 마지막에 상태 유지 세션 빈 인스턴스를 파괴하기 위해 이러한 방식을 호출합니다. 이러한 방식은 엔터프라이즈 Web Bean의 <emphasis>파괴자</emphasis> 방식이라고 합니다.   "
 
 #. Tag: programlisting
 #: intro.xml:378
@@ -961,7 +963,7 @@ msgid ""
 "So when should we use an enterprise Web Bean instead of a simple Web Bean? "
 "Well, whenever we need the advanced enterprise services offered by EJB, such "
 "as:"
-msgstr ""
+msgstr "그러면 언제 심플 Web Bean 대신 엔터프라이즈 Web Bean을 사용해야 할까요? 다음과 같이 EJB에 의해 제공되는 고급 엔터프라이즈 서비스가 필요할 때 마다 사용하면 됩니다: "
 
 #. Tag: para
 #: intro.xml:387
@@ -1023,6 +1025,8 @@ msgid ""
 "<literal>@Singleton</literal> model, with its support for passivation and "
 "instance pooling."
 msgstr ""
+"Web Beans는 중량의 리소스에 참조를 보유하고 있거나 EJB <literal>@Stateless</literal>/<literal>@Stateful</literal>/"
+"<literal>@Singleton</literal> 모델에 의해 정의된 고급 컨테이너 관리 수명주기로 부터의 내부적 상태 장점을 수동화 및 인스턴스 풀링 지원과 함께 보유하고 있어야 합니다.    "
 
 #. Tag: para
 #: intro.xml:417

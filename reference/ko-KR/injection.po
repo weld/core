@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-23 11:09+1000\n"
+"PO-Revision-Date: 2009-01-23 17:29+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -894,13 +896,12 @@ msgstr "불만족스러운 의존성 수정 "
 #. Tag: para
 #: injection.xml:315
 #, no-c-format
-#, fuzzy
 msgid ""
 "The typesafe resolution algorithm fails when, after considering the binding "
 "annotations and and deployment types of all Web Beans that implement the API "
 "type of an injection point, the Web Bean manager is unable to identify "
 "exactly one Web Bean to inject."
-msgstr "타입 안정적 해상도 알고리즘은 "
+msgstr "바인딩 어노테이션 및 삽입 지점의 API 유형을 구현하는 모든 Web Beans의 배치 유형을 고려한 후, Web Bean 관리자는 삽입할 하나의 Web Bean을 인식하지 못할 경우 타입 안정적 해상도 알고리즘은 실패하게 됩니다.     "
 
 #. Tag: para
 #: injection.xml:320
@@ -964,7 +965,7 @@ msgid ""
 "reference to a Web Bean bound to the request scope. The application scoped "
 "Web Bean is shared between many different requests. However, each request "
 "should see a different instance of the request scoped Web bean!"
-msgstr ""
+msgstr "요청 범위로 바운딩된 Web Bean으로의 직접 참조를 보유하고 있는 애플리케이션 범위에 바운딩된 Web Bean을 가정해 봅시다. 애플리케이션 범위에 바운딩된 Web Bean은 다른 많은 요청 사이에서 공유됩니다. 하지만, 각각의 요청은 요청 범위로 바운딩된 Web Bean의 다른 인스턴스를 확인해야 합니다! "
 
 #. Tag: para
 #: injection.xml:351
@@ -975,11 +976,12 @@ msgid ""
 "the session context is serialized to disk in order to use memory more "
 "efficiently. However, the application scoped Web Bean instance should not be "
 "serialized along with the session scoped Web Bean!"
-msgstr ""
+msgstr "이제 애플리케이션 범위로 바운딩된 Web Bean으로의 직접 참조를 보유하고 있는 세션 범위에 바운딩된 Web Bean을 가정해 봅시다. 때때로 세션 컨텍스트는 메모리를 보다 효과적으로 사용하기 위해 디스크 순서대로 나열됩니다. 하지만, 애플리케이션 범위로 바운딩된 Web Bean 인스턴스는 세션 범위로 바운딩된 Web Bean과 함께 나열되어서는 안됩니다! "
 
 #. Tag: para
 #: injection.xml:357
 #, no-c-format
+#, fuzzy
 msgid ""
 "Therefore, unless a Web Bean has the default scope <literal>@Dependent</"
 "literal>, the Web Bean manager must indirect all injected references to the "
@@ -989,7 +991,7 @@ msgid ""
 "client proxy also allows Web Beans bound to contexts such as the session "
 "context to be serialized to disk without recursively serializing other "
 "injected Web Beans."
-msgstr ""
+msgstr "따라서, Web Bean은 기본값 범위 <literal>@Dependent</literal>를 갖지 않는 한, Web Bean 관리자는 프록시 객체를 통해 삽입된 모든 참조를 Web Bean으로 돌려 놓아야 합니다. 이러한 <emphasis>클라이언트 프록시</emphasis>는 "
 
 #. Tag: para
 #: injection.xml:365
