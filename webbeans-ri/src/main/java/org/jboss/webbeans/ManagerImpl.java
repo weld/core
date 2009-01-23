@@ -25,6 +25,7 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -118,6 +119,8 @@ public class ManagerImpl implements Manager, Serializable
 
    // The Naming (JNDI) access
    private transient final NamingContext namingContext;
+   
+   private final Map<Bean<?>, Bean<?>> specializedBeans;
 
    /**
     * Create a new manager
@@ -139,6 +142,7 @@ public class ManagerImpl implements Manager, Serializable
       this.eventManager = new EventManager();
       this.ejbDescriptorCache = new EjbDescriptorCache();
       this.injectionPointProvider = new InjectionPointProvider();
+      this.specializedBeans = new HashMap<Bean<?>, Bean<?>>();
 
       List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       defaultEnabledDeploymentTypes.add(0, Standard.class);
@@ -523,7 +527,11 @@ public class ManagerImpl implements Manager, Serializable
     */
    public <T> T getInstance(Bean<T> bean)
    {
-      if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal())
+      if (specializedBeans.containsKey(bean))
+      {
+         return getInstance((Bean<T>) specializedBeans.get(bean));
+      }
+      else if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal())
       {
          return (T) proxyPool.getClientProxy(bean, true);
       }
@@ -783,6 +791,16 @@ public class ManagerImpl implements Manager, Serializable
    public InjectionPointProvider getInjectionPointProvider()
    {
       return injectionPointProvider;
+   }
+   
+   /**
+    * 
+    * @return
+    */
+   public Map<Bean<?>, Bean<?>> getSpecializedBeans()
+   {
+      // TODO make this unmodifiable after deploy!
+      return specializedBeans;
    }
 
    // Serialization

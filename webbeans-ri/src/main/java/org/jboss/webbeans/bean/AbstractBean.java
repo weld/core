@@ -132,7 +132,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       {
          preCheckSpecialization();
          initSpecialization();
-         postCheckSpecialization();
+         postSpecialization();
       }
       initType();
       initPrimitive();
@@ -324,12 +324,15 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       }
    }
    
-   protected void postCheckSpecialization()
+   protected void postSpecialization()
    {
       if (getAnnotatedItem().isAnnotationPresent(Named.class) && getSpecializedBean().getAnnotatedItem().isAnnotationPresent(Named.class))
       {
          throw new DefinitionException("Cannot put name on specializing and specialized class");
       }
+      // register the specialized bean
+      // TODO not sure this quite right
+      manager.getSpecializedBeans().put(getSpecializedBean(), this);
    }
    
    protected void preCheckSpecialization()
@@ -570,4 +573,14 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          return false;
       }
    }
+   
+   @Override
+   public int hashCode()
+   {
+      int result = 17;
+      result = 31 * result + getTypes().hashCode();
+      result = 31 * result + getBindings().hashCode();
+      return result;
+   }
+   
 }
