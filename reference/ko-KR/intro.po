@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-23 11:17+1000\n"
+"PO-Revision-Date: 2009-01-23 12:18+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -838,7 +839,7 @@ msgstr "단순 Web Beans "
 msgid ""
 "The Web Beans specification says that a concrete Java class is a "
 "<emphasis>simple</emphasis> Web Bean if:"
-msgstr ""
+msgstr "Web Beans 사양은 다음과 같을 경우 구체적 Java 클래스가 <emphasis>심플</emphasis> Web Bean이라고 말합니다:  "
 
 #. Tag: para
 #: intro.xml:334
@@ -846,19 +847,19 @@ msgstr ""
 msgid ""
 "it is not an EE container-managed component, like an EJB, a Servlet or a JPA "
 "entity,"
-msgstr ""
+msgstr "EJB, Servlet 또는 JPA 엔티티와 같이 EE 컨테이너 관리 기반 구성요소가 아닐 경우, "
 
 #. Tag: para
 #: intro.xml:338
 #, no-c-format
 msgid "it is not a non-static static inner class,"
-msgstr ""
+msgstr "비-정적인 내부 클래스가 아닐 경우, "
 
 #. Tag: para
 #: intro.xml:341
 #, no-c-format
 msgid "it is not a parameterized type, and"
-msgstr ""
+msgstr "매개 변수화된 유형이 아닐 경우,  "
 
 #. Tag: para
 #: intro.xml:344
@@ -979,13 +980,13 @@ msgstr ""
 #: intro.xml:397
 #, no-c-format
 msgid "remote and web service invocation, and"
-msgstr ""
+msgstr "원격 및 웹 서비스 호출 "
 
 #. Tag: para
 #: intro.xml:400
 #, no-c-format
 msgid "timers and asynchronous methods,"
-msgstr ""
+msgstr "타이머 및 비동기 방식 "
 
 #. Tag: para
 #: intro.xml:404
@@ -993,7 +994,7 @@ msgstr ""
 msgid ""
 "we should use an enterprise Web Bean. When we don't need any of these "
 "things, a simple Web Bean will serve just fine."
-msgstr ""
+msgstr "엔터프라이즈 Web Bean을 사용해야 합니다. 이러한 것이 전혀 필요하지 않을 경우, 심플 Web Bean도 잘 실행될 것입니다.  "
 
 #. Tag: para
 #: intro.xml:407
@@ -1023,7 +1024,7 @@ msgid ""
 "Finally, it's usually obvious when method-level transaction management, "
 "method-level security, timers, remote methods or asynchronous methods are "
 "needed."
-msgstr ""
+msgstr "마지막으로, 메서드-수준 트랜젝션 관리, 메서드-수준 보안, 타이머, 원격 방식 또는 비동기 방식은 명백하게 필요합니다. "
 
 #. Tag: para
 #: intro.xml:420
@@ -1033,6 +1034,8 @@ msgid ""
 "EJB, just by adding an annotation: <literal>@Stateless</literal>, "
 "<literal>@Stateful</literal> or <literal>@Singleton</literal>."
 msgstr ""
+"심플 Web Bean으로 시작하고, <literal>@Stateless</literal>, "
+"<literal>@Stateful</literal>, <literal>@Singleton</literal> 어노테이션을 추가하여 EJB로 변환합니다. "
 
 #. Tag: title
 #: intro.xml:427
@@ -1049,7 +1052,7 @@ msgid ""
 "in the current context. A producer method lets the application take full "
 "control of the instantiation process, instead of leaving instantiation to "
 "the Web Bean manager. For example:"
-msgstr ""
+msgstr "<emphasis>생산자 방식</emphasis>은 현재 컨텍스트에 인스턴스가 존재하지 않을 때 Web Bean의 인스턴스를 획득하기 위해 Web Bean 관리자에 의해 호출되는 방식입니다. 생산자 방식은 인스턴스를 Web Bean 관리자가 관리하게 두지 않고 애플리케이션이 인스턴스 절차를 완전히 제어하게 합니다. 예:  "
 
 #. Tag: programlisting
 #: intro.xml:435
@@ -1081,7 +1084,7 @@ msgstr ""
 #: intro.xml:437
 #, no-c-format
 msgid "The result of a producer method is injected just like any other Web Bean."
-msgstr ""
+msgstr "생산자 방식 결과는 기타 다른 Web Bean과 같이 삽입됩니다.  "
 
 #. Tag: programlisting
 #: intro.xml:439
