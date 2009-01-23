@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-23 14:09+1000\n"
+"PO-Revision-Date: 2009-01-23 14:52+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -35,13 +35,14 @@ msgstr "Web Beans로 시작하기 "
 #. Tag: para
 #: intro.xml:6
 #, no-c-format
+#, fuzzy
 msgid ""
 "So you're already keen to get started writing your first Web Bean? Or "
 "perhaps you're skeptical, wondering what kinds of hoops the Web Beans "
 "specification will make you jump through! The good news is that you've "
 "probably already written and used hundreds, perhaps thousands of Web Beans. "
 "You might not even remember the first Web Bean you wrote."
-msgstr ""
+msgstr "첫 번째 Web Bean 작성을 시작해 보시겠습니까? "
 
 #. Tag: title
 #: intro.xml:13
@@ -245,10 +246,13 @@ msgid ""
 "Bean. The Web Bean manager will inject other Web Beans to the parameters of "
 "the constructor or method."
 msgstr ""
+"예상하셨듯이, <literal>@Initializer</literal> 어노테이션은 의존성 삽입을 사용하여 실행하기 위한 무엇인가를 갖고 있습니다! <literal>@Initializer</literal>는 생성자 또는 Web Bean 방식에 적용될 수 있으며, Web Bean을 인스턴스화할 때 Web Bean 관리자에게 생성자 또는 Web Bean 방식을 호출할 것을 지시합니다. Web Bean 관리자는 기타 다른 Web "
+"Beans를 생성자 또는 방식의 매개 변수에 삽입하게 됩니다.  "
 
 #. Tag: para
 #: intro.xml:68
 #, no-c-format
+#, fuzzy
 msgid ""
 "At system initialization time, the Web Bean manager must validate that "
 "exactly one Web Bean exists which satisfies each injection point. In our "
@@ -258,7 +262,7 @@ msgid ""
 "<literal>UnsatisfiedDependencyException</literal>. If more than one "
 "implementation of <literal>Translator</literal> was available, the Web Bean "
 "manager would throw an <literal>AmbiguousDependencyException</literal>."
-msgstr ""
+msgstr "시스템 초기화시 Web Bean 관리자는 "
 
 #. Tag: title
 #: intro.xml:80
@@ -1001,13 +1005,12 @@ msgstr "엔터프라이즈 Web Bean을 사용해야 합니다. 이러한 것이 
 #. Tag: para
 #: intro.xml:407
 #, no-c-format
-#, fuzzy
 msgid ""
 "Many Web Beans (including any session or application scoped Web Bean) are "
 "available for concurrent access. Therefore, the concurrency management "
 "provided by EJB 3.1 is especially useful. Most session and application "
 "scoped Web Beans should be EJBs."
-msgstr "다수의 Web Beans (세션 또는 애플리케이션 범위 Web Bean 포함)은 "
+msgstr "다수의 Web Beans (세션 또는 애플리케이션 범위 Web Bean 포함)은 동시 액세스에서 사용 가능합니다. 따라서, EJB 3.1에 의해 제공되는 동시성 관리는 아주 유용합니다. 대부분의 세션 및 애플리케이션 범위 Web Beans는 EJB이어야 합니다. "
 
 #. Tag: para
 #: intro.xml:412
