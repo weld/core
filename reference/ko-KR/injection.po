@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-23 17:29+1000\n"
+"PO-Revision-Date: 2009-01-23 17:37+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -981,7 +981,6 @@ msgstr "이제 애플리케이션 범위로 바운딩된 Web Bean으로의 직�
 #. Tag: para
 #: injection.xml:357
 #, no-c-format
-#, fuzzy
 msgid ""
 "Therefore, unless a Web Bean has the default scope <literal>@Dependent</"
 "literal>, the Web Bean manager must indirect all injected references to the "
@@ -991,7 +990,7 @@ msgid ""
 "client proxy also allows Web Beans bound to contexts such as the session "
 "context to be serialized to disk without recursively serializing other "
 "injected Web Beans."
-msgstr "따라서, Web Bean은 기본값 범위 <literal>@Dependent</literal>를 갖지 않는 한, Web Bean 관리자는 프록시 객체를 통해 삽입된 모든 참조를 Web Bean으로 돌려 놓아야 합니다. 이러한 <emphasis>클라이언트 프록시</emphasis>는 "
+msgstr "따라서, Web Bean은 기본값 범위 <literal>@Dependent</literal>를 갖지 않는 한, Web Bean 관리자는 프록시 객체를 통해 삽입된 모든 참조를 Web Bean으로 돌려 놓아야 합니다. 이러한 <emphasis>클라이언트 프록시</emphasis>는 방식 호출을 받는 Web Bean 인스턴스가 현재 컨텍스트와 관련된 인스턴스임을 확인해야 할 책임이 있습니다. 또한 클라이언트 프록시는 Web Beans가 삽입된 다른 Web Beans를 귀납적으로 나열하지 않고 디스크 순서대로 나열한 세션 컨텍스트와 같은 컨텍스트로 바운딩되게 합니다. "
 
 #. Tag: para
 #: injection.xml:365
