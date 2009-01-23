@@ -160,7 +160,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       {
          if (!(type instanceof Class))
          {
-            throw new DefinitionException("Producer type cannot be parameterized with type parameter or wildcard");
+            throw new DefinitionException("Producer type cannot be parameterized with type parameter or wildcard:\n" + this.getAnnotatedItem());
          }
       }
    }
