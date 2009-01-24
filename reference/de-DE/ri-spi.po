@@ -1,17 +1,19 @@
+# translation of ri-spi.po to
 # Language de-DE translations for Introduction_to_Web_Beans package.
 # Automatically generated, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-18 16:31+0000\n"
-"PO-Revision-Date: 2009-01-10 14:18+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-24 15:37+1100\n"
+"Last-Translator: \n"
+"Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: ri-spi.xml:4
@@ -102,6 +104,23 @@ msgid ""
 "   \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public interface WebBeanDiscovery {\n"
+"   /**\n"
+"    * Gets list of all classes in classpath archives with web-beans.xml "
+"files\n"
+"    * \n"
+"    * @return An iterable over the classes \n"
+"    */\n"
+"   public Iterable<Class<?>> discoverWebBeanClasses();\n"
+"   \n"
+"   /**\n"
+"    * Gets a list of all web-beans.xml files in the app classpath\n"
+"    * \n"
+"    * @return An iterable over the web-beans.xml files \n"
+"    */\n"
+"   public Iterable<URL> discoverWebBeansXml();\n"
+"   \n"
+"}]]>"
 
 #. Tag: para
 #: ri-spi.xml:52
@@ -129,6 +148,8 @@ msgid ""
 "org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
 "integration.jbossas.WebBeanDiscoveryImpl"
 msgstr ""
+"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
+"integration.jbossas.WebBeanDiscoveryImpl"
 
 #. Tag: para
 #: ri-spi.xml:67 ri-spi.xml:113 ri-spi.xml:146 ri-spi.xml:179
@@ -141,9 +162,8 @@ msgstr ""
 #. Tag: programlisting
 #: ri-spi.xml:72
 #, no-c-format
-msgid ""
-"<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
-msgstr ""
+msgid "<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
+msgstr "<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
 
 #. Tag: para
 #: ri-spi.xml:74
@@ -157,7 +177,7 @@ msgstr ""
 #: ri-spi.xml:82
 #, no-c-format
 msgid "EJB Discovery"
-msgstr ""
+msgstr "EJB Discovery"
 
 #. Tag: para
 #: ri-spi.xml:84
@@ -186,6 +206,18 @@ msgid ""
 "   \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public interface EjbDiscovery\n"
+"{\n"
+"   public static final String PROPERTY_NAME = EjbDiscovery.class.getName();\n"
+"   \n"
+"   /**\n"
+"    * Gets a descriptor for each EJB in the application\n"
+"    * \n"
+"    * @return The bean class to descriptor map \n"
+"    */\n"
+"   public Iterable<EjbDescriptor<?>> discoverEjbs();\n"
+"   \n"
+"}]]>"
 
 #. Tag: programlisting
 #: ri-spi.xml:93
@@ -261,6 +293,75 @@ msgid ""
 "   \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public interface EjbDescriptor<T> {\n"
+"   \n"
+"   /**\n"
+"    * Gets the EJB type\n"
+"    * \n"
+"    * @return The EJB Bean class\n"
+"    */\n"
+"   public Class<T> getType();\n"
+"\n"
+"   /**\n"
+"    * Gets the local business interfaces of the EJB\n"
+"    * \n"
+"    * @return An iterator over the local business interfaces\n"
+"    */\n"
+"   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces"
+"();\n"
+"   \n"
+"   /**\n"
+"    * Gets the remote business interfaces of the EJB\n"
+"    * \n"
+"    * @return An iterator over the remote business interfaces\n"
+"    */\n"
+"   public Iterable<BusinessInterfaceDescriptor<?>> "
+"getRemoteBusinessInterfaces();\n"
+"   \n"
+"   /**\n"
+"    * Get the remove methods of the EJB\n"
+"    * \n"
+"    * @return An iterator over the remove methods\n"
+"    */\n"
+"   public Iterable<Method> getRemoveMethods();\n"
+"\n"
+"   /**\n"
+"    * Indicates if the bean is stateless\n"
+"    * \n"
+"    * @return True if stateless, false otherwise\n"
+"    */\n"
+"   public boolean isStateless();\n"
+"\n"
+"   /**\n"
+"    * Indicates if the bean is a EJB 3.1 Singleton\n"
+"    * \n"
+"    * @return True if the bean is a singleton, false otherwise\n"
+"    */\n"
+"   public boolean isSingleton();\n"
+"\n"
+"   /**\n"
+"    * Indicates if the EJB is stateful\n"
+"    * \n"
+"    * @return True if the bean is stateful, false otherwise\n"
+"    */\n"
+"   public boolean isStateful();\n"
+"\n"
+"   /**\n"
+"    * Indicates if the EJB is and MDB\n"
+"    * \n"
+"    * @return True if the bean is an MDB, false otherwise\n"
+"    */\n"
+"   public boolean isMessageDriven();\n"
+"\n"
+"   /**\n"
+"    * Gets the EJB name\n"
+"    * \n"
+"    * @return The name\n"
+"    */\n"
+"   public String getEjbName();\n"
+"   \n"
+"   \n"
+"}]]>"
 
 #. Tag: para
 #: ri-spi.xml:95
@@ -291,12 +392,14 @@ msgid ""
 "org.jboss.webbeans.bootstrap.spi.EjbDiscovery=org.jboss.webbeans.integration."
 "jbossas.EjbDiscoveryImpl"
 msgstr ""
+"org.jboss.webbeans.bootstrap.spi.EjbDiscovery=org.jboss.webbeans.integration."
+"jbossas.EjbDiscoveryImpl"
 
 #. Tag: programlisting
 #: ri-spi.xml:118
 #, no-c-format
 msgid "<![CDATA[public EjbDiscoveryImpl(ServletContext servletContext) {}]]>"
-msgstr ""
+msgstr "<![CDATA[public EjbDiscoveryImpl(ServletContext servletContext) {}]]>"
 
 #. Tag: para
 #: ri-spi.xml:120
@@ -310,7 +413,7 @@ msgstr ""
 #: ri-spi.xml:128
 #, no-c-format
 msgid "JNDI"
-msgstr ""
+msgstr "JNDI"
 
 #. Tag: para
 #: ri-spi.xml:130
@@ -348,6 +451,27 @@ msgid ""
 "   \n"
 "}]]>"
 msgstr ""
+"<![CDATA[public interface NamingContext extends Serializable {\n"
+"   \n"
+"   /**\n"
+"    * Typed JNDI lookup\n"
+"    * \n"
+"    * @param <T> The type\n"
+"    * @param name The JNDI name\n"
+"    * @param expectedType The expected type\n"
+"    * @return The object\n"
+"    */\n"
+"   public <T> T lookup(String name, Class<? extends T> expectedType);\n"
+"\n"
+"   /**\n"
+"    * Binds an item to JNDI\n"
+"    * \n"
+"    * @param name The key to bind under\n"
+"    * @param value The item to bind\n"
+"    */\n"
+"   public void bind(String name, Object value);\n"
+"   \n"
+"}]]>"
 
 #. Tag: para
 #: ri-spi.xml:140 ri-spi.xml:173
@@ -359,13 +483,13 @@ msgstr ""
 #: ri-spi.xml:144
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
-msgstr ""
+msgstr "org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
 
 #. Tag: programlisting
 #: ri-spi.xml:151
 #, no-c-format
 msgid "<![CDATA[public MyNamingContext(ServletContext servletContext) {}]]>"
-msgstr ""
+msgstr "<![CDATA[public MyNamingContext(ServletContext servletContext) {}]]>"
 
 #. Tag: para
 #: ri-spi.xml:153
@@ -426,18 +550,47 @@ msgid ""
 "}\n"
 "         ]]>"
 msgstr ""
+"<![CDATA[\n"
+"         public interface ResourceLoader {\n"
+"    \n"
+"   /**\n"
+"    * Creates a class from a given FQCN\n"
+"    * \n"
+"    * @param name The name of the clsas\n"
+"    * @return The class\n"
+"    */\n"
+"   public Class<?> classForName(String name);\n"
+"   \n"
+"   /**\n"
+"    * Gets a resource as a URL by name\n"
+"    * \n"
+"    * @param name The name of the resource\n"
+"    * @return An URL to the resource\n"
+"    */\n"
+"   public URL getResource(String name);\n"
+"   \n"
+"   /**\n"
+"    * Gets resources as URLs by name\n"
+"    * \n"
+"    * @param name The name of the resource\n"
+"    * @return An iterable reference to the URLS\n"
+"    */\n"
+"   public Iterable<URL> getResources(String name);\n"
+"   \n"
+"}\n"
+"         ]]>"
 
 #. Tag: programlisting
 #: ri-spi.xml:177
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
-msgstr ""
+msgstr "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
 
 #. Tag: programlisting
 #: ri-spi.xml:184
 #, no-c-format
 msgid "<![CDATA[public MyResourceLoader(ServletContext servletContext) {}]]>"
-msgstr ""
+msgstr "<![CDATA[public MyResourceLoader(ServletContext servletContext) {}]]>"
 
 #. Tag: para
 #: ri-spi.xml:186
@@ -514,7 +667,7 @@ msgstr ""
 #: ri-spi.xml:249
 #, no-c-format
 msgid "The <literal>webbeans-ri.jar</literal>"
-msgstr ""
+msgstr "Die <literal>webbeans-ri.jar</literal>"
 
 #. Tag: para
 #: ri-spi.xml:253
@@ -525,3 +678,4 @@ msgid ""
 "literal> into the applications isolated classloader. It cannot be loaded "
 "from a shared classloader."
 msgstr ""
+
