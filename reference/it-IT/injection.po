@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2009-01-20 21:28+0100\n"
+"POT-Creation-Date: 2009-01-24 18:19+0000\n"
+"PO-Revision-Date: 2009-01-24 19:22+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -672,8 +672,8 @@ msgstr "Precedenza del tipo di deploy"
 #. Tag: para
 #: injection.xml:246
 #, no-c-format
-msgid "If you've been paying attention, you're probably wondering how the Web Bean manager decides which implementation&#151;<literal>ExternalPaymentProcessor</literal> or <literal>MockPaymentProcessor</literal>&#151;to choose. Consider what happens when the manager encounters this injection point:"
-msgstr "Se avete prestato attenzione, vi state probabilmente chiedendo come il manager Web Bean decida quale implementazione &#151; <literal>ExternalPaymentProcessor</literal> o <literal>MockPaymentProcessor</literal> &#151; scegliere. Si consideri cosa succede quando il manager incontra questo punto di iniezione:"
+msgid "If you've been paying attention, you're probably wondering how the Web Bean manager decides which implementation &#151; <literal>ExternalPaymentProcessor</literal> or <literal>MockPaymentProcessor</literal> &#151; to choose. Consider what happens when the manager encounters this injection point:"
+msgstr "Se avete prestato attenzione, vi state probabilmente chiedendo come il manager Web Bean decida quale implementazione scegliere &#151; <literal>ExternalPaymentProcessor</literal> o <literal>MockPaymentProcessor</literal> &#151; Si consideri cosa succede quando il manager incontra questo punto di iniezione:"
 
 #. Tag: programlisting
 #: injection.xml:251
@@ -770,8 +770,8 @@ msgstr "Di solito è semplice porre rimedio a un'eccezione <literal>UnsatisfiedD
 #. Tag: para
 #: injection.xml:323
 #, no-c-format
-msgid "To fix an <literal>UnsatisfiedDependencyException</literal>, simply provide a Web Bean which implements the API type and has the binding types of the injection point&#151;or enable the deployment type of a Web Bean that already implements the API type and has the binding types."
-msgstr "Per rimediare ad una <literal>UnsatisfiedDependencyException</literal>, si deve semplicemente fornire un Web Bean che implementi il tipo dell'API in uso e abbia gli stessi tipi di binding del punto di iniezione#151;o si deve abilitare il tipo di deploy di un Web Bean  che già implementa il tipo dell'API in uso e possiede i tipi di binding in esame."
+msgid "To fix an <literal>UnsatisfiedDependencyException</literal>, simply provide a Web Bean which implements the API type and has the binding types of the injection point &#151; or enable the deployment type of a Web Bean that already implements the API type and has the binding types."
+msgstr "Per rimediare ad una <literal>UnsatisfiedDependencyException</literal>, si deve semplicemente fornire un Web Bean che implementi il tipo dell'API in uso e abbia gli stessi tipi di binding del punto di iniezione #151; o si deve abilitare il tipo di deploy di un Web Bean  che già implementa il tipo dell'API in uso e possiede i tipi di binding in esame."
 
 # tipo di binding o binding type (qui e altrove)?
 #. Tag: para
@@ -903,8 +903,8 @@ msgstr ""
 #. Tag: para
 #: injection.xml:410
 #, no-c-format
-msgid "If the binding type has an annotation member, we can't use an anonymous subclass of <literal>AnnotationLiteral</literal>&#151;instead we'll need to create a named subclass:"
-msgstr "Se il tipo di binding ha un membro annotazione, non è possibile utilizzare una sottoclasse anonima di <literal>AnnotationLiteral</literal>&#151;sarà invece necessario creare una sottoclasse non anonima:"
+msgid "If the binding type has an annotation member, we can't use an anonymous subclass of <literal>AnnotationLiteral</literal> &#151; instead we'll need to create a named subclass:"
+msgstr "Se il tipo di binding ha un membro annotazione, non è possibile utilizzare una sottoclasse anonima di <literal>AnnotationLiteral</literal> &#151; sarà invece necessario creare una sottoclasse non anonima:"
 
 #. Tag: programlisting
 #: injection.xml:413
@@ -972,8 +972,8 @@ msgstr "L'oggetto <literal>InjectionPoint</literal>"
 #. Tag: para
 #: injection.xml:442
 #, no-c-format
-msgid "There are certain kinds of dependent objects&#151;Web Beans with scope <literal>@Dependent</literal>&#151;that need to know something about the object or injection point into which they are injected in order to be able to do what they do. For example:"
-msgstr "Certi tipi di oggetti dipendenti&#151;Web Bean con scope <literal>@Dependent</literal>&#151;hanno bisogno di avere informazioni riguardo l'oggetto o il punto in cui sono iniettati per fare quello che devono. Per esempio:"
+msgid "There are certain kinds of dependent objects &#151; Web Beans with scope <literal>@Dependent</literal> &#151; that need to know something about the object or injection point into which they are injected in order to be able to do what they do. For example:"
+msgstr "Certi tipi di oggetti dipendenti &#151; Web Bean con scope <literal>@Dependent</literal> &#151; hanno bisogno di avere informazioni riguardo l'oggetto o il punto in cui sono iniettati per fare quello che devono. Per esempio:"
 
 #. Tag: para
 #: injection.xml:448
