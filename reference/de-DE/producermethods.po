@@ -1,17 +1,19 @@
+# translation of producermethods.po to
 # Language de-DE translations for Introduction_to_Web_Beans package.
 # Automatically generated, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: producermethods\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-10 14:18+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-24 15:33+1100\n"
+"Last-Translator: \n"
+"Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: producermethods.xml:5
@@ -118,6 +120,10 @@ msgid ""
 "    ...\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Produces @Preferred @SessionScoped\n"
+"public PaymentStrategy getPaymentStrategy() {\n"
+"    ...\n"
+"}]]>"
 
 #. Tag: para
 #: producermethods.xml:80
@@ -169,6 +175,17 @@ msgid ""
 "    } \n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Produces @Preferred @SessionScoped\n"
+"public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy ccps,\n"
+"                                          ChequePaymentStrategy cps,\n"
+"                                          PayPalPaymentStrategy ppps) {\n"
+"    switch (paymentStrategy) {\n"
+"        case CREDIT_CARD: return ccps;\n"
+"        case CHEQUE: return cps;\n"
+"        case PAYPAL: return ppps;\n"
+"        default: return null;\n"
+"    } \n"
+"}]]>"
 
 #. Tag: para
 #: producermethods.xml:99
@@ -233,6 +250,19 @@ msgid ""
 "    } \n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Produces @Preferred @SessionScoped\n"
+"public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy "
+"ccps,\n"
+"                                          @New ChequePaymentStrategy cps,\n"
+"                                          @New PayPalPaymentStrategy ppps) "
+"{\n"
+"    switch (paymentStrategy) {\n"
+"        case CREDIT_CARD: return ccps;\n"
+"        case CHEQUE: return cps;\n"
+"        case PAYPAL: return ppps;\n"
+"        default: return null;\n"
+"    } \n"
+"}]]>"
 
 #. Tag: para
 #: producermethods.xml:125
@@ -245,3 +275,4 @@ msgid ""
 "<literal>Preferences</literal> object is destroyed, at the end of the "
 "session."
 msgstr ""
+
