@@ -1,17 +1,19 @@
+# translation of ee.po to
 # Language de-DE translations for Introduction_to_Web_Beans package.
 # Automatically generated, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: ee\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-10 14:18+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-24 15:24+1100\n"
+"Last-Translator: \n"
+"Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: ee.xml:4
@@ -60,6 +62,15 @@ msgid ""
 "    \n"
 "}]]>"
 msgstr ""
+"<![CDATA[@Transactional @Interceptor\n"
+"public class TransactionInterceptor {\n"
+"\n"
+"    @Resource Transaction transaction;\n"
+"\n"
+"    @AroundInvoke public Object manageTransaction(InvocationContext ctx) "
+"{ ... }\n"
+"    \n"
+"}]]>"
 
 #. Tag: programlisting
 #: ee.xml:21
@@ -75,6 +86,15 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[@SessionScoped\n"
+"public class Login {\n"
+"\n"
+"    @Current Credentials credentials;\n"
+"    @PersistenceContext EntityManager userDatabase;\n"
+"    \n"
+"    ...\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: ee.xml:23
@@ -134,6 +154,27 @@ msgid ""
 "            \n"
 "}"
 msgstr ""
+"public class Login extends HttpServlet {\n"
+"\n"
+"    @Current Credentials credentials;\n"
+"    @Current Login login;\n"
+"\n"
+"    @Override\n"
+"    public void service(HttpServletRequest request, HttpServletResponse "
+"response)\n"
+"        throws ServletException, IOException {\n"
+"        credentials.setUsername( request.getAttribute(\"username\") ):\n"
+"        credentials.setPassword( request.getAttribute(\"password\") ):\n"
+"        login.login();\n"
+"        if ( login.isLoggedIn() ) {\n"
+"            response.sendRedirect(\"/home.jsp\");\n"
+"        }\n"
+"        else {\n"
+"            response.sendRedirect(\"/loginError.jsp\");\n"
+"        }\n"
+"    }\n"
+"            \n"
+"}"
 
 #. Tag: para
 #: ee.xml:42
@@ -164,8 +205,7 @@ msgstr ""
 #. Tag: para
 #: ee.xml:57
 #, no-c-format
-msgid ""
-"You can even use Web Beans interceptor bindings for Message-Driven Beans."
+msgid "You can even use Web Beans interceptor bindings for Message-Driven Beans."
 msgstr ""
 
 #. Tag: programlisting
@@ -184,6 +224,17 @@ msgid ""
 "            \n"
 "}"
 msgstr ""
+"@Transactional @MessageDriven\n"
+"public class ProcessOrder implements MessageListener {\n"
+"\n"
+"    @Current Inventory inventory;\n"
+"    @PersistenceContext EntityManager em;\n"
+"\n"
+"    public void onMessage(Message message) {\n"
+"        ...\n"
+"    }\n"
+"            \n"
+"}"
 
 #. Tag: para
 #: ee.xml:61
@@ -242,6 +293,12 @@ msgid ""
 "    <myapp:OrderProcessor/>    \n"
 "</Queue>]]>"
 msgstr ""
+"<![CDATA[<Queue>\n"
+"    <destination>java:comp/env/jms/OrderQueue</destination>\n"
+"    <connectionFactory>java:comp/env/jms/QueueConnectionFactory</"
+"connectionFactory>\n"
+"    <myapp:OrderProcessor/>    \n"
+"</Queue>]]>"
 
 #. Tag: programlisting
 #: ee.xml:88
@@ -254,6 +311,12 @@ msgid ""
 "    <myapp:StockPrices/>    \n"
 "</Topic>]]>"
 msgstr ""
+"<![CDATA[<Topic>\n"
+"    <destination>java:comp/env/jms/StockPrices</destination>\n"
+"    <connectionFactory>java:comp/env/jms/TopicConnectionFactory</"
+"connectionFactory>\n"
+"    <myapp:StockPrices/>    \n"
+"</Topic>]]>"
 
 #. Tag: para
 #: ee.xml:90
@@ -279,6 +342,14 @@ msgid ""
 "    orderSender.send(msg);\n"
 "}"
 msgstr ""
+"@OrderProcessor QueueSender orderSender;\n"
+"@OrderProcessor QueueSession orderSession;\n"
+"\n"
+"public void sendMessage() {\n"
+"    MapMessage msg = orderSession.createMapMessage();\n"
+"    ...\n"
+"    orderSender.send(msg);\n"
+"}"
 
 #. Tag: programlisting
 #: ee.xml:98
@@ -291,6 +362,12 @@ msgid ""
 "    pricePublisher.send( priceSession.createTextMessage(price) );\n"
 "}"
 msgstr ""
+"@StockPrices TopicPublisher pricePublisher;\n"
+"@StockPrices TopicSession priceSession;\n"
+"\n"
+"public void sendMessage(String price) {\n"
+"    pricePublisher.send( priceSession.createTextMessage(price) );\n"
+"}"
 
 #. Tag: para
 #: ee.xml:100
@@ -327,3 +404,4 @@ msgid ""
 "EJBs may be deployed for execution by the embeddable EJB Lite container. "
 "Again, each location must contain a <literal>web-beans.xml</literal> file."
 msgstr ""
+
