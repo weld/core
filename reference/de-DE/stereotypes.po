@@ -1,17 +1,19 @@
+# translation of stereotypes.po to
 # Language de-DE translations for Introduction_to_Web_Beans package.
 # Automatically generated, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: stereotypes\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-10 14:18+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-24 15:40+1100\n"
+"Last-Translator: \n"
+"Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: stereotypes.xml:4
@@ -102,6 +104,10 @@ msgid ""
 "@Stereotype\n"
 "public @interface Action {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@Stereotype\n"
+"public @interface Action {}]]>"
 
 #. Tag: para
 #: stereotypes.xml:46
@@ -116,6 +122,8 @@ msgid ""
 "<![CDATA[@Action \n"
 "public class LoginAction { ... }]]>"
 msgstr ""
+"<![CDATA[@Action \n"
+"public class LoginAction { ... }]]>"
 
 #. Tag: title
 #: stereotypes.xml:51
@@ -145,6 +153,12 @@ msgid ""
 "@Stereotype\n"
 "public @interface Action {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@RequestScoped\n"
+"@WebTier\n"
+"@Stereotype\n"
+"public @interface Action {}]]>"
 
 #. Tag: para
 #: stereotypes.xml:61
@@ -161,12 +175,13 @@ msgid ""
 "<![CDATA[@Dependent @Mock @Action \n"
 "public class MockLoginAction { ... }]]>"
 msgstr ""
+"<![CDATA[@Dependent @Mock @Action \n"
+"public class MockLoginAction { ... }]]>"
 
 #. Tag: para
 #: stereotypes.xml:66
 #, no-c-format
-msgid ""
-"If we want to force all actions to a particular scope, we can do that too."
+msgid "If we want to force all actions to a particular scope, we can do that too."
 msgstr ""
 
 #. Tag: title
@@ -195,6 +210,12 @@ msgid ""
 "@Stereotype(supportedScopes=RequestScoped.class)\n"
 "public @interface Action {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@RequestScoped\n"
+"@WebTier\n"
+"@Stereotype(supportedScopes=RequestScoped.class)\n"
+"public @interface Action {}]]>"
 
 #. Tag: para
 #: stereotypes.xml:80
@@ -224,6 +245,12 @@ msgid ""
 "@Stereotype(requiredTypes=AbstractAction.class)\n"
 "public @interface Action {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@RequestScoped\n"
+"@WebTier\n"
+"@Stereotype(requiredTypes=AbstractAction.class)\n"
+"public @interface Action {}]]>"
 
 #. Tag: para
 #: stereotypes.xml:89
@@ -261,6 +288,14 @@ msgid ""
 "@Stereotype\n"
 "public @interface Action {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@RequestScoped\n"
+"@Transactional(requiresNew=true)\n"
+"@Secure\n"
+"@WebTier\n"
+"@Stereotype\n"
+"public @interface Action {}]]>"
 
 #. Tag: para
 #: stereotypes.xml:103
@@ -300,6 +335,15 @@ msgid ""
 "@Stereotype\n"
 "public @interface Action {}]]>"
 msgstr ""
+"<![CDATA[@Retention(RUNTIME)\n"
+"@Target(TYPE)\n"
+"@RequestScoped\n"
+"@Transactional(requiresNew=true)\n"
+"@Secure\n"
+"@Named\n"
+"@WebTier\n"
+"@Stereotype\n"
+"public @interface Action {}]]>"
 
 #. Tag: para
 #: stereotypes.xml:118
@@ -341,6 +385,12 @@ msgid ""
 "@Retention(RUNTIME) \n"
 "public @interface Model {} ]]>"
 msgstr ""
+"<![CDATA[@Named \n"
+"@RequestScoped \n"
+"@Stereotype \n"
+"@Target({TYPE, METHOD}) \n"
+"@Retention(RUNTIME) \n"
+"public @interface Model {} ]]>"
 
 #. Tag: para
 #: stereotypes.xml:133
@@ -350,3 +400,4 @@ msgid ""
 "beans, just annotate a Web Bean <literal>@Model</literal>, and use it "
 "directly in your JSF page."
 msgstr ""
+
