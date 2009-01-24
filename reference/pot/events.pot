@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-18 16:31+0000\n"
+"POT-Creation-Date: 2009-01-24 18:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -118,10 +118,10 @@ msgstr ""
 #: events.xml:48
 #, no-c-format
 msgid ""
-"An observer method need not specify any event bindings&#151;in this case it "
-"is interested in <emphasis>all</emphasis> events of a particular type. If it "
-"does specify event bindings, it is only interested in events which also have "
-"those event bindings."
+"An observer method need not specify any event bindings &#151; in this case "
+"it is interested in <emphasis>all</emphasis> events of a particular type. If "
+"it does specify event bindings, it is only interested in events which also "
+"have those event bindings."
 msgstr ""
 
 #. Tag: para
