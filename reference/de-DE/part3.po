@@ -1,17 +1,19 @@
+# translation of part3.po to
 # Language de-DE translations for Introduction_to_Web_Beans package.
 # Automatically generated, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: part3\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-10 14:18+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-24 15:30+1100\n"
+"Last-Translator: \n"
+"Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: para
 #: part3.xml:5
@@ -57,25 +59,25 @@ msgstr ""
 #: part3.xml:26
 #, no-c-format
 msgid "<literal>@Asynchronous</literal>,"
-msgstr ""
+msgstr "<literal>@Asynchronous</literal>,"
 
 #. Tag: para
 #: part3.xml:29
 #, no-c-format
 msgid "<literal>@Mock</literal>,"
-msgstr ""
+msgstr "<literal>@Mock</literal>,"
 
 #. Tag: para
 #: part3.xml:32
 #, no-c-format
 msgid "<literal>@Secure</literal> or"
-msgstr ""
+msgstr "<literal>@Secure</literal> oder"
 
 #. Tag: para
 #: part3.xml:35
 #, no-c-format
 msgid "<literal>@Updated</literal>,"
-msgstr ""
+msgstr "<literal>@Updated</literal>,"
 
 #. Tag: para
 #: part3.xml:39
@@ -87,25 +89,25 @@ msgstr ""
 #: part3.xml:43
 #, no-c-format
 msgid "<literal>asyncPaymentProcessor</literal>,"
-msgstr ""
+msgstr "<literal>asyncPaymentProcessor</literal>,"
 
 #. Tag: para
 #: part3.xml:46
 #, no-c-format
 msgid "<literal>mockPaymentProcessor</literal>,"
-msgstr ""
+msgstr "<literal>mockPaymentProcessor</literal>,"
 
 #. Tag: para
 #: part3.xml:49
 #, no-c-format
 msgid "<literal>SecurityInterceptor</literal> or"
-msgstr ""
+msgstr "<literal>SecurityInterceptor</literal> oder"
 
 #. Tag: para
 #: part3.xml:52
 #, no-c-format
 msgid "<literal>DocumentUpdatedEvent</literal>."
-msgstr ""
+msgstr "<literal>DocumentUpdatedEvent</literal>."
 
 #. Tag: para
 #: part3.xml:56
@@ -148,3 +150,4 @@ msgid ""
 "emphasis> to use these features, but if you use them wisely, you'll come to "
 "appreciate their power."
 msgstr ""
+
