@@ -272,7 +272,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       if (this.deploymentType == null)
       {
          this.deploymentType = getDefaultDeploymentType();
-         log.trace("Using default @Production deployment type");
+         log.trace("Using default " + this.deploymentType + " deployment type");
          return;
       }
    }

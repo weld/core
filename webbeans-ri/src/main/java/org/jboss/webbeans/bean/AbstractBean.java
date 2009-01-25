@@ -109,8 +109,6 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    private boolean primitive;
    // The Web Beans manager
    protected ManagerImpl manager;
-   // Cached values
-   private Type declaredBeanType;
 
    /**
     * Constructor
