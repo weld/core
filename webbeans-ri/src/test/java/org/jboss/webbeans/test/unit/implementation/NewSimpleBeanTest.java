@@ -49,8 +49,8 @@ public class NewSimpleBeanTest extends AbstractTest
    @Test(groups = { "new" })
    public void testNewBeanHasSameInjectedFieldsAsWrappedBean()
    {
-      Set<AnnotatedItem<?, ?>> wrappedBeanInjectionPoints = wrappedSimpleBean.getAnnotatedInjectionPoints();
-      Set<AnnotatedItem<?, ?>> newBeanInjectionPoints = newSimpleBean.getAnnotatedInjectionPoints();
+      Set<? extends AnnotatedItem<?, ?>> wrappedBeanInjectionPoints = wrappedSimpleBean.getInjectionPoints();
+      Set<? extends AnnotatedItem<?, ?>> newBeanInjectionPoints = newSimpleBean.getInjectionPoints();
       assert wrappedBeanInjectionPoints.equals(newBeanInjectionPoints);
    }
    

@@ -298,7 +298,7 @@ public class ManagerImpl implements Manager, Serializable
     */
    public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
-      for (Annotation annotation : element.getAnnotations())
+      for (Annotation annotation : element.getAnnotationsAsSet())
       {
          if (!MetaDataCache.instance().getBindingTypeModel(annotation.annotationType()).isValid())
          {

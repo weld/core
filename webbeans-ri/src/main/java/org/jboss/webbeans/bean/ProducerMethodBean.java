@@ -27,6 +27,7 @@ import javax.inject.Disposes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
+import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
@@ -97,14 +98,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       for (AnnotatedParameter<?> parameter : method.getParameters())
       {
-         annotatedInjectionPoints.add(parameter);
-      }
-      if (disposalMethod != null)
-      {
-         for (AnnotatedParameter<?> injectable : disposalMethod.getParameters())
-         {
-            annotatedInjectionPoints.add(injectable);
-         }
+         injectionPoints.add(ParameterInjectionPoint.of(this, parameter));
       }
    }
 

@@ -19,7 +19,7 @@ public class ClassAnnotatedItemTest
    public void testDeclaredAnnotations()
    {
       AnnotatedClass<Order> annotatedElement = AnnotatedClassImpl.of(Order.class);
-      assert annotatedElement.getAnnotations().size() == 1;
+      assert annotatedElement.getAnnotationsAsSet().size() == 1;
       assert annotatedElement.getAnnotation(Production.class) != null;
       assert annotatedElement.getType().equals(Order.class);
    }
@@ -42,7 +42,7 @@ public class ClassAnnotatedItemTest
       assert annotatedElement.getAnnotation(Stereotype.class) == null;
       assert annotatedElement.getMetaAnnotations(Stereotype.class).size() == 0;
       AnnotatedClass<Antelope> classWithNoAnnotations = AnnotatedClassImpl.of(Antelope.class);
-      assert classWithNoAnnotations.getAnnotations().size() == 0;
+      assert classWithNoAnnotations.getAnnotationsAsSet().size() == 0;
    }
    
 }

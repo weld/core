@@ -22,7 +22,7 @@ import java.util.Stack;
 import javax.inject.manager.Bean;
 import javax.inject.manager.InjectionPoint;
 
-import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
 
 /**
  * Provides injection point metadata
@@ -65,9 +65,24 @@ public class InjectionPointProvider
     * 
     * @param injectionPoint The injection point to push
     */
-   public void pushInjectionPoint(AnnotatedItem<?, ?> injectionPoint)
+   public void pushInjectionPoint(AnnotatedInjectionPoint<?, ?> injectionPoint)
    {
-      injectionPoints.push(InjectionPointImpl.of(injectionPoint, getCurrentBean()));
+      injectionPoints.push(injectionPoint);
+      if (beans.size() != injectionPoints.size())
+      {
+         throw new IllegalStateException("Number of beans on stack is inconsistent with number of injection points: " + this);
+      }
+   }
+   
+   /**
+    * Pushes an injection point to the stack
+    * 
+    * @param injectionPoint The injection point to push
+    */
+   // TODO Not sure if this is right, we should be able to push the current bean in somehow
+   public void pushInjectionPoint(AnnotatedParameter<?> parameter)
+   {
+      injectionPoints.push(ParameterInjectionPoint.of(getCurrentBean(), parameter));
       if (beans.size() != injectionPoints.size())
       {
          throw new IllegalStateException("Number of beans on stack is inconsistent with number of injection points: " + this);

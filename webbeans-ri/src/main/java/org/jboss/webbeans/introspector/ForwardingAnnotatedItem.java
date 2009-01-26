@@ -43,7 +43,7 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
    /**
     * @see org.jboss.webbeans.introspector.AnnotatedItem
     */
-   public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)
+   public <A extends Annotation> A getAnnotation(Class<A> annotationType)
    {
       return getAnnotationStore().getAnnotation(annotationType);
    }
@@ -51,7 +51,7 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
    /**
     * @see org.jboss.webbeans.introspector.AnnotatedItem
     */
-   public Set<Annotation> getAnnotations()
+   public Set<Annotation> getAnnotationsAsSet()
    {
       return getAnnotationStore().getAnnotations();
    }

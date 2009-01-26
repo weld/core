@@ -115,7 +115,7 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
       {
          AnnotatedMethod<?> annotatedMethod = AnnotatedMethodImpl.of(member, this);
          members.add(annotatedMethod);
-         for (Annotation annotation : annotatedMethod.getAnnotations())
+         for (Annotation annotation : annotatedMethod.getAnnotationsAsSet())
          {
             annotatedMembers.put(annotation.annotationType(), annotatedMethod);
          }

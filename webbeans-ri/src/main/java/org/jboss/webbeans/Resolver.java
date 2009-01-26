@@ -119,7 +119,7 @@ public class Resolver
     * 
     * @param elements The injection points to add
     */
-   public void addInjectionPoints(Collection<AnnotatedItem<?, ?>> elements)
+   public void addInjectionPoints(Collection<? extends AnnotatedItem<?, ?>> elements)
    {
       injectionPoints.addAll(elements);
    }

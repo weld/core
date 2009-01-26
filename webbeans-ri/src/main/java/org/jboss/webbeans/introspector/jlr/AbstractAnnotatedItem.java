@@ -77,7 +77,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return annotationStore;
    }
 
-   public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)
+   public <A extends Annotation> A getAnnotation(Class<A> annotationType)
    {
       return getAnnotationStore().getAnnotation(annotationType);
    }
@@ -97,7 +97,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return getMetaAnnotations(metaAnnotationType).toArray(new Annotation[0]);
    }
 
-   public Set<Annotation> getAnnotations()
+   public Set<Annotation> getAnnotationsAsSet()
    {
       return getAnnotationStore().getAnnotations();
    }
@@ -127,7 +127,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       if (other instanceof AnnotatedItem)
       {
          AnnotatedItem<?, ?> that = (AnnotatedItem<?, ?>) other;
-         return this.getAnnotations().equals(that.getAnnotations()) && this.getType().equals(that.getType());
+         return this.getAnnotationsAsSet().equals(that.getAnnotationsAsSet()) && this.getType().equals(that.getType());
       }
       return false;
    }

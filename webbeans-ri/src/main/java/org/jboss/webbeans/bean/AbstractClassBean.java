@@ -33,6 +33,7 @@ import javax.inject.Produces;
 import javax.inject.Production;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -57,7 +58,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    // The item representation
    protected AnnotatedClass<T> annotatedItem;
    // The injectable fields
-   private Set<AnnotatedField<?>> injectableFields;
+   private Set<FieldInjectionPoint<?>> injectableFields;
    // The initializer methods
    private Set<AnnotatedMethod<?>> initializerMethods;
 
@@ -94,7 +95,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    protected void injectBoundFields(T instance)
    {
       InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
-      for (AnnotatedField<?> injectableField : getInjectableFields())
+      for (FieldInjectionPoint<?> injectableField : getInjectableFields())
       {
          injectionPointProvider.pushInjectionPoint(injectableField);
          try
@@ -122,7 +123,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initInjectionPoints()
    {
-      injectableFields = new HashSet<AnnotatedField<?>>();
+      injectableFields = new HashSet<FieldInjectionPoint<?>>();
       for (AnnotatedField<?> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
       {
          if (!annotatedField.isAnnotationPresent(Produces.class))
@@ -135,8 +136,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             {
                throw new DefinitionException("Don't place binding annotations on final fields " + annotatedField);
             }
-            injectableFields.add(annotatedField);
-            super.annotatedInjectionPoints.add(annotatedField);
+            FieldInjectionPoint<?> fieldInjectionPoint = FieldInjectionPoint.of(this, annotatedField);
+            injectableFields.add(fieldInjectionPoint);
+            super.injectionPoints.add(fieldInjectionPoint);
          }
       }
    }
@@ -306,7 +308,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * 
     * @return The set of injectable fields
     */
-   public Set<AnnotatedField<?>> getInjectableFields()
+   public Set<FieldInjectionPoint<?>> getInjectableFields()
    {
       return injectableFields;
    }

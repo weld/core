@@ -67,7 +67,7 @@ public abstract class WebBeansBootstrap
       @Override
       protected void initInjectionPoints()
       {
-         annotatedInjectionPoints = Collections.emptySet();
+         injectionPoints = Collections.emptySet();
       }
 
       @Override

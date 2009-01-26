@@ -314,7 +314,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
             {
                this.declaredFields.add(annotatedField);
             }
-            for (Annotation annotation : annotatedField.getAnnotations())
+            for (Annotation annotation : annotatedField.getAnnotationsAsSet())
             {
                this.annotatedFields.put(annotation.annotationType(), annotatedField);
                if (c == clazz)
@@ -349,7 +349,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
          this.constructors.add(annotatedConstructor);
          this.constructorsByArgumentMap.put(Arrays.asList(constructor.getParameterTypes()), annotatedConstructor);
          
-         for (Annotation annotation : annotatedConstructor.getAnnotations())
+         for (Annotation annotation : annotatedConstructor.getAnnotationsAsSet())
          {
             if (!annotatedConstructors.containsKey(annotation.annotationType()))
             {
@@ -380,7 +380,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
             {
                this.declaredMethods.add(annotatedMethod);
             }
-            for (Annotation annotation : annotatedMethod.getAnnotations())
+            for (Annotation annotation : annotatedMethod.getAnnotationsAsSet())
             {
                annotatedMethods.put(annotation.annotationType(), annotatedMethod);
                if (c == clazz)

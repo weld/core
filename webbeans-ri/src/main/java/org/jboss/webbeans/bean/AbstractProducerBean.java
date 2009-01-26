@@ -18,6 +18,8 @@
 package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -31,11 +33,11 @@ import javax.inject.DeploymentType;
 import javax.inject.IllegalProductException;
 import javax.inject.Initializer;
 import javax.inject.Produces;
+import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.injection.InjectionPointImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Beans;
@@ -191,21 +193,21 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       {
          throw new IllegalProductException("Producers cannot declare passivating scope and return a non-serializable class");
       }
-      InjectionPointImpl injectionPoint = (InjectionPointImpl) manager.getInjectionPointProvider().getCurrentInjectionPoint();
+      InjectionPoint injectionPoint = manager.getInjectionPointProvider().getCurrentInjectionPoint();
       if (injectionPoint == null)
       {
          return;
       }
       if (isDependent() && Beans.isPassivatingBean(injectionPoint.getBean()))
       {
-         if (injectionPoint.isField())
+         if (injectionPoint.getMember() instanceof Field)
          {
             if (!Reflections.isTransient(injectionPoint.getMember()))
             {
                throw new IllegalProductException("Dependent scoped producers cannot produce non-serializable instances for injection into non-transient fields of passivating beans");
             }
          }
-         else if (injectionPoint.isMethod())
+         else if (injectionPoint.getMember() instanceof Method)
          {
             Method method = (Method) injectionPoint.getMember();
             if (method.isAnnotationPresent(Initializer.class))
@@ -217,7 +219,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
                throw new IllegalProductException("Dependent scoped producers cannot produce non-serializable instances for injection into parameters of producer methods declaring passivating scope");
             }
          }
-         else if (injectionPoint.isConstructor())
+         else if (injectionPoint.getMember() instanceof Constructor)
          {
             throw new IllegalProductException("Dependent scoped producers cannot produce non-serializable instances for injection into parameters of constructors of beans declaring passivating scope");
          }

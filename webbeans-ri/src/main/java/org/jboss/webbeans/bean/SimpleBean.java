@@ -18,6 +18,7 @@
 package org.jboss.webbeans.bean;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -25,17 +26,18 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.context.Dependent;
 import javax.inject.DefinitionException;
-import javax.inject.ExecutionException;
 import javax.inject.Initializer;
-import javax.inject.manager.InjectionPoint;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.injection.InjectionPointImpl;
+import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
+import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.injection.InjectionPointProvider;
+import org.jboss.webbeans.injection.MethodInjectionPoint;
+import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -66,6 +68,10 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    private AnnotatedMethod<?> postConstruct;
    // The pre-destroy method
    private AnnotatedMethod<?> preDestroy;
+   
+   private Set<AnnotatedInjectionPoint<?, ?>> ejbInjectionPoints;
+   private Set<AnnotatedInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
+   private Set<AnnotatedInjectionPoint<?, ?>> resourceInjectionPoints;
    
    private SimpleBean<?> specializedBean;
 
@@ -225,49 +231,74 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          initializer.invoke(instance, manager);
       }
    }
+   
+   protected void initEjbInjectionPoints()
+   {
+      this.ejbInjectionPoints = new HashSet<AnnotatedInjectionPoint<?,?>>();
+      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getEJBAnnotation()))
+      {
+         this.ejbInjectionPoints.add(FieldInjectionPoint.of(this, field));
+      }
+      
+      for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getEjbResolver().getEJBAnnotation()))
+      {
+         this.ejbInjectionPoints.add(MethodInjectionPoint.of(this, method));
+      }
+   }
+   
+   protected void initPersistenceUnitInjectionPoints()
+   {
+      this.persistenceUnitInjectionPoints = new HashSet<AnnotatedInjectionPoint<?,?>>();
+      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getPersistenceContextAnnotation()))
+      {
+         if (field.getAnnotation(PersistenceContext.class).type().equals(PersistenceContextType.EXTENDED))
+         {
+            throw new DefinitionException("Cannot inject an extended persistence context into " + field);
+         }
+         this.persistenceUnitInjectionPoints.add(FieldInjectionPoint.of(this, field));
+      }
+      
+      for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getEjbResolver().getPersistenceContextAnnotation()))
+      {
+         if (method.getAnnotation(PersistenceContext.class).type().equals(PersistenceContextType.EXTENDED))
+         {
+            throw new DefinitionException("Cannot inject an extended persistence context into " + method);
+         }
+         this.persistenceUnitInjectionPoints.add(MethodInjectionPoint.of(this, method));
+      }
+   }
+   
+   protected void initResourceInjectionPoints()
+   {
+      this.resourceInjectionPoints = new HashSet<AnnotatedInjectionPoint<?,?>>();
+      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getResourceAnnotation()))
+      {
+         this.resourceInjectionPoints.add(FieldInjectionPoint.of(this, field));
+      }
+   }
 
    /**
     * Injects EJBs and common fields
     */
    protected void injectEjbAndCommonFields(T beanInstance)
    {
-      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getEJBAnnotation()))
+      
+      for (AnnotatedInjectionPoint<?, ?> injectionPoint : ejbInjectionPoints)
       {
-         InjectionPoint injectionPoint = InjectionPointImpl.of(field, this);
          Object ejbInstance = manager.getEjbResolver().resolveEjb(injectionPoint, manager.getNaming());
-         field.inject(beanInstance, ejbInstance);
+         injectionPoint.inject(beanInstance, ejbInstance);
       }
 
-      for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getEjbResolver().getEJBAnnotation()))
+      for (AnnotatedInjectionPoint<?, ?> injectionPoint : persistenceUnitInjectionPoints)
       {
-         InjectionPoint injectionPoint = InjectionPointImpl.of(method, this);
-         Object ejbInstance = manager.getEjbResolver().resolveEjb(injectionPoint, manager.getNaming());
-         method.invoke(beanInstance, ejbInstance);
-      }
-
-      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getPersistenceContextAnnotation()))
-      {
-         if (field.getAnnotation(PersistenceContext.class).type().equals(PersistenceContextType.EXTENDED))
-         {
-            throw new ExecutionException("Cannot inject an extended persistence context into " + field);
-         }
-         InjectionPoint injectionPoint = InjectionPointImpl.of(field, this);
          Object puInstance = manager.getEjbResolver().resolvePersistenceContext(injectionPoint, manager.getNaming());
-         field.inject(beanInstance, puInstance);
+         injectionPoint.inject(beanInstance, puInstance);
       }
 
-      for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getEjbResolver().getPersistenceContextAnnotation()))
+      for (AnnotatedInjectionPoint<?, ?> injectionPoint : resourceInjectionPoints)
       {
-         InjectionPoint injectionPoint = InjectionPointImpl.of(method, this);
-         Object puInstance = manager.getEjbResolver().resolvePersistenceContext(injectionPoint, manager.getNaming());
-         method.invoke(beanInstance, puInstance);
-      }
-
-      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getResourceAnnotation()))
-      {
-         InjectionPoint injectionPoint = InjectionPointImpl.of(field, this);
          Object resourceInstance = manager.getEjbResolver().resolveResource(injectionPoint, manager.getNaming());
-         field.inject(beanInstance, resourceInstance);
+         injectionPoint.inject(beanInstance, resourceInstance);
       }
 
    }
@@ -284,6 +315,9 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       initInjectionPoints();
       initPostConstruct();
       initPreDestroy();
+      initEjbInjectionPoints();
+      initPersistenceUnitInjectionPoints();
+      initResourceInjectionPoints();
       // TODO Interceptors
    }
 
@@ -296,13 +330,13 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       super.initInjectionPoints();
       for (AnnotatedParameter<?> parameter : constructor.getParameters())
       {
-         annotatedInjectionPoints.add(parameter);
+         injectionPoints.add(ParameterInjectionPoint.of(this, parameter));
       }
       for (AnnotatedMethod<?> initializer : getInitializerMethods())
       {
          for (AnnotatedParameter<?> parameter : initializer.getParameters())
          {
-            annotatedInjectionPoints.add(parameter);
+            injectionPoints.add(ParameterInjectionPoint.of(this, parameter));
          }
       }
    }

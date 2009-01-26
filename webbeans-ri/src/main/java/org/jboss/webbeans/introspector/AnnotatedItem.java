@@ -48,7 +48,7 @@ public interface AnnotatedItem<T, S>
     * @return A set of annotations. Returns an empty set if there are no
     *         matches.
     */
-   public <A extends Annotation> Set<A> getAnnotations();
+   public <A extends Annotation> Set<A> getAnnotationsAsSet();
 
    /**
     * Gets all annotations which are annotated with the given meta annotation
@@ -102,7 +102,7 @@ public interface AnnotatedItem<T, S>
     * @param annotationType The annotation to match
     * @return An annotation if found, null if the annotation wasn't present.
     */
-   public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType);
+   public <A extends Annotation> A getAnnotation(Class<A> annotationType);
 
    /**
     * Indicates if an annotation type specified is present

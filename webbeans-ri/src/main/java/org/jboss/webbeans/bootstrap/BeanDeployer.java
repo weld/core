@@ -109,12 +109,12 @@ public class BeanDeployer
       
       beans.add(bean);
       
-      manager.getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
+      manager.getResolver().addInjectionPoints(bean.getInjectionPoints());
       
       createProducerMethods(bean, annotatedClass);
       createProducerFields(bean, annotatedClass);
       createObserverMethods(bean, annotatedClass);
-      createFacades(bean.getAnnotatedInjectionPoints());
+      createFacades(bean.getInjectionPoints());
       
       if (annotatedClass.isAnnotationPresent(Realizes.class))
       {
@@ -139,8 +139,8 @@ public class BeanDeployer
    {
       ProducerMethodBean<?> bean = ProducerMethodBean.of(annotatedMethod, declaringBean, manager);
       beans.add(bean);
-      manager.getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
-      createFacades(bean.getAnnotatedInjectionPoints());
+      manager.getResolver().addInjectionPoints(bean.getInjectionPoints());
+      createFacades(bean.getInjectionPoints());
       log.info("Web Bean: " + bean);
    }
    
@@ -210,7 +210,7 @@ public class BeanDeployer
       beans.add(NewEnterpriseBean.of(annotatedClass, manager));
    }
 
-   private void createFacades(Set<AnnotatedItem<?, ?>> injectionPoints)
+   private void createFacades(Set<? extends AnnotatedItem<?, ?>> injectionPoints)
    {
       for (AnnotatedItem<?, ?> injectionPoint : injectionPoints)
       {

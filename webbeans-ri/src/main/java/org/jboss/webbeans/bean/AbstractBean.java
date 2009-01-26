@@ -33,11 +33,10 @@ import javax.inject.DefinitionException;
 import javax.inject.Specializes;
 import javax.inject.Standard;
 import javax.inject.manager.Bean;
-import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentInstancesStore;
-import org.jboss.webbeans.injection.InjectionPointImpl;
+import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotationStore.AnnotationMap;
 import org.jboss.webbeans.literal.CurrentLiteral;
@@ -104,7 +103,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    // The API types
    protected Set<Type> types;
    // The injection points
-   protected Set<AnnotatedItem<?, ?>> annotatedInjectionPoints;
+   protected Set<AnnotatedInjectionPoint<?, ?>> injectionPoints;
    // If the type a primitive?
    private boolean primitive;
    // The Web Beans manager
@@ -119,7 +118,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    {
       super(manager);
       this.manager = manager;
-      annotatedInjectionPoints = new HashSet<AnnotatedItem<?, ?>>();
+      injectionPoints = new HashSet<AnnotatedInjectionPoint<?,?>>();
       dependentInstancesStore = new DependentInstancesStore();
    }
 
@@ -254,7 +253,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       // TODO CACHE THIS!!!
       // TODO: a bit crude, don't check *all* injectionpoints, only those listed
       // in the spec for passivation checks
-      for (AnnotatedItem<?, ?> injectionPoint : getAnnotatedInjectionPoints())
+      for (AnnotatedItem<?, ?> injectionPoint : getInjectionPoints())
       {
          Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
          Bean<?> resolvedBean = manager.resolveByType(injectionPoint.getType(), bindings).iterator().next();
@@ -408,24 +407,9 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       return deploymentType;
    }
 
-   /**
-    * Gets the injection points of the bean
-    * 
-    * @return The set of injection points
-    */
-   public Set<AnnotatedItem<?, ?>> getAnnotatedInjectionPoints()
+   public Set<AnnotatedInjectionPoint<?, ?>> getInjectionPoints()
    {
-      return annotatedInjectionPoints;
-   }
-
-   public Set<InjectionPoint> getInjectionPoints()
-   {
-      Set<InjectionPoint> injectionsPoints = new HashSet<InjectionPoint>();
-      for (AnnotatedItem<?, ?> annotatedInjectionPoint : annotatedInjectionPoints)
-      {
-         injectionsPoints.add(InjectionPointImpl.of(annotatedInjectionPoint, this));
-      }
-      return injectionsPoints;
+      return injectionPoints;
    }
 
    /**
