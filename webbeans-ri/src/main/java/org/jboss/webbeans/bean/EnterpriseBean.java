@@ -27,10 +27,10 @@ import javassist.util.proxy.ProxyObject;
 import javax.context.ApplicationScoped;
 import javax.context.Dependent;
 import javax.decorator.Decorator;
+import javax.event.Observes;
 import javax.inject.CreationException;
 import javax.inject.DefinitionException;
 import javax.interceptor.Interceptor;
-import javax.webbeans.Observes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
