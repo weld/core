@@ -52,8 +52,8 @@ import org.jboss.webbeans.util.Reflections;
  * 
  * @author Pete Muir
  * 
- * @param <T>
- * @param <E>
+ * @param <T> the type of bean
+ * @param <E> the Class<?> of the bean type
  */
 public abstract class AbstractBean<T, E> extends Bean<T>
 {
@@ -139,7 +139,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       initDefaultBindings();
       initType();
       initPrimitive();
-      log.debug("Building Web Bean bean metadata for " + getType());
+      if (log.isDebugEnabled())
+         log.debug("Building Web Bean bean metadata for " + getType());
       initName();
       initDeploymentType();
       checkDeploymentType();
@@ -176,7 +177,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       }
       else
       {
-         log.trace("Using binding types " + bindingTypes + " specified by annotations");
+         if (log.isTraceEnabled())
+            log.trace("Using binding types " + bindingTypes + " specified by annotations");
       }
    }
 
@@ -191,7 +193,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       if (possibleDeploymentTypes.size() > 0)
       {
          this.deploymentType = getDeploymentType(manager.getEnabledDeploymentTypes(), possibleDeploymentTypes);
-         log.trace("Deployment type " + deploymentType + " specified by stereotype");
+         if (log.isTraceEnabled())
+            log.trace("Deployment type " + deploymentType + " specified by stereotype");
          return;
       }
    }
@@ -219,7 +222,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
          }
          else
          {
-            log.trace("Using name " + javaName + " specified by annotations");
+            if (log.isTraceEnabled())
+               log.trace("Using name " + javaName + " specified by annotations");
             this.name = javaName;
             return;
          }
@@ -273,7 +277,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       if (possibleScopeTypes.size() == 1)
       {
          this.scopeType = possibleScopeTypes.iterator().next().annotationType();
-         log.trace("Scope " + scopeType + " specified by stereotype");
+         if (log.isTraceEnabled())
+            log.trace("Scope " + scopeType + " specified by stereotype");
          return true;
       }
       else if (possibleScopeTypes.size() > 1)
@@ -313,7 +318,8 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    {
       for (Class<?> requiredType : getMergedStereotypes().getRequiredTypes())
       {
-         log.trace("Checking if required type " + requiredType + " is implemented");
+         if (log.isTraceEnabled())
+            log.trace("Checking if required type " + requiredType + " is implemented");
          if (!requiredType.isAssignableFrom(type))
          {
             throw new DefinitionException("Required type " + requiredType + " isn't implemented on " + type);

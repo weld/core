@@ -30,6 +30,7 @@ import javax.webbeans.Decorator;
 import javax.webbeans.DefinitionException;
 import javax.webbeans.Dependent;
 import javax.webbeans.Interceptor;
+import javax.webbeans.Observes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
@@ -49,7 +50,7 @@ import org.jboss.webbeans.util.Proxies;
  * 
  * @author Pete Muir
  * 
- * @param <T>
+ * @param <T> The type (class) of the bean
  */
 public class EnterpriseBean<T> extends AbstractClassBean<T>
 {
@@ -121,6 +122,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       checkEnterpriseBeanTypeAllowed();
       checkEnterpriseScopeAllowed();
       checkConflictingRoles();
+      checkObserverMethods();
    }
 
    /**
@@ -216,6 +218,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          DependentContext.INSTANCE.setActive(true);
          T instance = proxyClass.newInstance();
          ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler(this, ejbDescriptor.getRemoveMethods()));
+         if (log.isTraceEnabled())
+            log.trace("Enterprise bean instance created for bean " + this);
          return instance;
       }
       catch (InstantiationException e)
@@ -355,4 +359,21 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       return specializedBean;
    }
 
+   /**
+    * If there are any observer methods, they must be static or business
+    * methods.
+    */
+   protected void checkObserverMethods()
+   {
+      for (AnnotatedMethod<?> method : this.annotatedItem.getDeclaredMethodsWithAnnotatedParameters(Observes.class))
+      {
+         if (!method.isStatic())
+         {
+            if (!this.getTypes().contains(method.getMember().getDeclaringClass()))
+            {
+               throw new DefinitionException("Observer method must be static or business method: " + method);
+            }
+         }
+      }
+   }
 }
