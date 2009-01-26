@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Named;
+import javax.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.webbeans.Current;
-import javax.webbeans.Named;
-import javax.webbeans.Produces;
-import javax.webbeans.SessionScoped;
+import javax.inject.Current;
+import javax.inject.Produces;
 
 @SessionScoped @Named
 public class Login implements Serializable {

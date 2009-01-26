@@ -3,14 +3,14 @@ package org.jboss.webbeans.examples.numberguess;
 
 import java.io.Serializable;
 
+import javax.annotation.Named;
 import javax.annotation.PostConstruct;
+import javax.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.webbeans.AnnotationLiteral;
-import javax.webbeans.Current;
-import javax.webbeans.Named;
-import javax.webbeans.SessionScoped;
-import javax.webbeans.manager.Manager;
+import javax.inject.AnnotationLiteral;
+import javax.inject.Current;
+import javax.inject.manager.Manager;
 
 @Named
 @SessionScoped

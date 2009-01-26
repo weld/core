@@ -2,8 +2,8 @@ package org.jboss.webbeans.examples.login;
 
 import java.io.Serializable;
 
-import javax.webbeans.Named;
-import javax.webbeans.RequestScoped;
+import javax.annotation.Named;
+import javax.context.RequestScoped;
 
 @RequestScoped @Named
 public class Credentials implements Serializable {

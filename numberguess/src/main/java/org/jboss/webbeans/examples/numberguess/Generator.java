@@ -3,8 +3,8 @@ package org.jboss.webbeans.examples.numberguess;
 
 import java.io.Serializable;
 
-import javax.webbeans.ApplicationScoped;
-import javax.webbeans.Produces;
+import javax.context.ApplicationScoped;
+import javax.inject.Produces;
 
 @ApplicationScoped
 public class Generator implements Serializable 
