@@ -18,6 +18,7 @@
 package org.jboss.webbeans.bean;
 
 
+import javax.context.CreationalContext;
 import javax.inject.Instance;
 
 import org.jboss.webbeans.InstanceImpl;
@@ -65,8 +66,7 @@ public class InstanceBean<T, S> extends AbstractFacadeBean<Instance<T>, S, T>
     * 
     * @return The implementation
     */
-   @Override
-   public Instance<T> create()
+   public Instance<T> create(CreationalContext<Instance<T>> creationalContext)
    {
       try
       {
@@ -79,7 +79,6 @@ public class InstanceBean<T, S> extends AbstractFacadeBean<Instance<T>, S, T>
       }
    }
    
-   @Override
    public void destroy(Instance<T> instance)
    {
       try

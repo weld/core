@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.context.ContextNotActiveException;
 import javax.context.Contextual;
+import javax.context.CreationalContext;
 import javax.context.Dependent;
 
 import org.jboss.webbeans.bean.AbstractClassBean;
@@ -59,22 +60,34 @@ public class DependentContext extends AbstractContext
    /**
     * Overridden method always creating a new instance
     * 
-    * @param bean The bean to create
+    * @param contextual The bean to create
     * @param create Should a new one be created
     */
-   public <T> T get(Contextual<T> bean, boolean create)
+   public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext)
    {
       if (!isActive())
       {
          throw new ContextNotActiveException();
       }
-      T instance = create == false ? null : bean.create();
-      if (bean instanceof AbstractClassBean && (currentInjectionInstance.get() != null))
+      if (creationalContext != null)
       {
-         DependentInstancesStore dependentInstancesStore = ((AbstractClassBean<?>) bean).getDependentInstancesStore();
-         dependentInstancesStore.addDependentInstance(currentInjectionInstance.get(), ContextualInstance.of(bean, instance));
+         T instance = contextual.create(creationalContext);
+         if (contextual instanceof AbstractClassBean && (currentInjectionInstance.get() != null))
+         {
+            DependentInstancesStore dependentInstancesStore = ((AbstractClassBean<?>) contextual).getDependentInstancesStore();
+            dependentInstancesStore.addDependentInstance(currentInjectionInstance.get(), ContextualInstance.of(contextual, instance));
+         }
+         return instance;
       }
-      return instance;
+      else
+      {
+         return null;
+      }
+   }
+   
+   public <T> T get(Contextual<T> contextual)
+   {
+      return get(contextual, null);
    }
 
    @Override

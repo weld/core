@@ -26,6 +26,7 @@ import javax.context.Context;
 import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
@@ -88,11 +89,16 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
       {
          bean = CurrentManager.rootManager().getBeans().get(beanIndex);
       }
-      Context context = CurrentManager.rootManager().getContext(bean.getScopeType());
-      Object proxiedInstance = context.get(bean, true);
+      Object proxiedInstance = getProxiedInstance(bean); 
       Object returnValue = Reflections.lookupMethod(proxiedMethod, proxiedInstance).invoke(proxiedInstance, args);
       log.trace("Executed method " + proxiedMethod + " on " + proxiedInstance + " with parameters " + args + " and got return value " + returnValue);
       return returnValue;
+   }
+   
+   private <T> T getProxiedInstance(Bean<T> bean)
+   {
+      Context context = CurrentManager.rootManager().getContext(bean.getScopeType());
+      return context.get(bean, CreationalContextImpl.<T>newInstance());
    }
 
    /**

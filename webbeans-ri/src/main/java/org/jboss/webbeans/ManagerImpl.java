@@ -35,6 +35,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.context.Context;
 import javax.context.ContextNotActiveException;
+import javax.context.CreationalContext;
 import javax.event.Observer;
 import javax.inject.AmbiguousDependencyException;
 import javax.inject.BindingType;
@@ -47,6 +48,7 @@ import javax.inject.UnproxyableDependencyException;
 import javax.inject.UnsatisfiedDependencyException;
 import javax.inject.manager.Bean;
 import javax.inject.manager.Decorator;
+import javax.inject.manager.InjectionPoint;
 import javax.inject.manager.InterceptionType;
 import javax.inject.manager.Interceptor;
 import javax.inject.manager.Manager;
@@ -56,10 +58,12 @@ import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.proxy.ProxyPool;
 import org.jboss.webbeans.context.ContextMap;
+import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.ObserverImpl;
+import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -84,6 +88,8 @@ public class ManagerImpl implements Manager, Serializable
 {
 
    private static final long serialVersionUID = 3021562879133838561L;
+   
+   private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 
    // The JNDI key to place the manager under
    public static final String JNDI_KEY = "java:comp/Manager";
@@ -567,8 +573,24 @@ public class ManagerImpl implements Manager, Serializable
       }
       else
       {
-         return getContext(bean.getScopeType()).get(bean, create);
+         return getContext(bean.getScopeType()).get(bean, new CreationalContextImpl<T>());
       }
+   }
+   
+   public <T> T getInstanceToInject(InjectionPoint injectionPoint)
+   {
+      throw new UnsupportedOperationException();
+   }
+   
+   public <T> T getInstanceToInject(InjectionPoint injectionPoint, CreationalContext<?> creationalContext)
+   {
+      throw new UnsupportedOperationException();
+   }
+   
+   public <T> T getInstanceToInject(AnnotatedInjectionPoint<T, ?> injectionPoint, CreationalContext<?> creationalContext)
+   {
+      Bean<T> bean = getBeanByType(injectionPoint, injectionPoint.getBindings().toArray(EMPTY_ANNOTATION_ARRAY));
+      return getInstance(bean);
    }
 
    /**
@@ -638,6 +660,11 @@ public class ManagerImpl implements Manager, Serializable
     */
    public <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
+      return getInstance(getBeanByType(element, bindings));
+   }
+   
+   public <T> Bean<T> getBeanByType(AnnotatedItem<T, ?> element, Annotation... bindings)
+   {
       Set<Bean<T>> beans = resolveByType(element, bindings);
       if (beans.size() == 0)
       {
@@ -653,7 +680,7 @@ public class ManagerImpl implements Manager, Serializable
       {
          throw new UnproxyableDependencyException("Normal scoped bean " + bean + " is not proxyable");
       }
-      return getInstance(bean);
+      return bean;
    }
 
    /**

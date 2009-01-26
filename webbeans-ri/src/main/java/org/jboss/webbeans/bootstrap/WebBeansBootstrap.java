@@ -19,6 +19,8 @@ package org.jboss.webbeans.bootstrap;
 
 import java.util.Collections;
 
+import javax.context.CreationalContext;
+
 import org.jboss.webbeans.BeanValidator;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
@@ -70,8 +72,7 @@ public abstract class WebBeansBootstrap
          injectionPoints = Collections.emptySet();
       }
 
-      @Override
-      public ManagerImpl create()
+      public ManagerImpl create(CreationalContext<ManagerImpl> creationalContext)
       {
          return manager;
       }

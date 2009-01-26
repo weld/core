@@ -20,6 +20,7 @@ package org.jboss.webbeans.bean;
 
 import java.lang.reflect.Type;
 
+import javax.context.CreationalContext;
 import javax.event.Event;
 import javax.inject.DefinitionException;
 
@@ -116,8 +117,7 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
     * 
     * @return an event instance
     */
-   @Override
-   public Event<T> create()
+   public Event<T> create(CreationalContext<Event<T>> creationalContext)
    {
       try
       {
@@ -144,7 +144,6 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
       }
    }
    
-   @Override
    public void destroy(Event<T> instance)
    {
       try

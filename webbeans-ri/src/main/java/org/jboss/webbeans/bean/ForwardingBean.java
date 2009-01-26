@@ -21,6 +21,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
+import javax.context.CreationalContext;
 import javax.inject.manager.Bean;
 import javax.inject.manager.Manager;
 
@@ -49,10 +50,9 @@ public abstract class ForwardingBean<T> extends Bean<T>
     * 
     * @return an instance of the delegate
     */
-   @Override
-   public T create()
+   public T create(CreationalContext<T> creationalContext)
    {
-      return delegate().create();
+      return delegate().create(creationalContext);
    }
 
    /**
@@ -60,7 +60,6 @@ public abstract class ForwardingBean<T> extends Bean<T>
     * 
     * @param instance The instance to destroy
     */
-   @Override
    public void destroy(T instance)
    {
       delegate().destroy(instance);

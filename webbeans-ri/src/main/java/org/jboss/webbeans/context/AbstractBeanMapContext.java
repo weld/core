@@ -21,6 +21,7 @@ import java.lang.annotation.Annotation;
 
 import javax.context.ContextNotActiveException;
 import javax.context.Contextual;
+import javax.context.CreationalContext;
 import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.context.beanmap.BeanMap;
@@ -58,24 +59,32 @@ public abstract class AbstractBeanMapContext extends AbstractContext
     * 
     * @see javax.context.Context#get(Bean, boolean)
     */
-   public <T> T get(Contextual<T> bean, boolean create)
+   public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext)
    {
       if (!isActive())
       {
          throw new ContextNotActiveException();
       }
-      T instance = getBeanMap().get(bean);
+      T instance = getBeanMap().get(contextual);
       if (instance != null)
       {
          return instance;
       }
-      if (!create)
+      else if (creationalContext != null)
+      {
+         instance = contextual.create(creationalContext);
+         getBeanMap().put(contextual, instance);
+         return instance;
+      }
+      else
       {
          return null;
       }
-      instance = bean.create();
-      getBeanMap().put(bean, instance);
-      return instance;
+   }
+   
+   public <T> T get(Contextual<T> contextual)
+   {
+      return get(contextual, null);
    }
 
    /**

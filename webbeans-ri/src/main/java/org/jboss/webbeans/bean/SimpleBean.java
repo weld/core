@@ -24,6 +24,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.context.CreationalContext;
 import javax.context.Dependent;
 import javax.inject.DefinitionException;
 import javax.inject.Initializer;
@@ -118,8 +119,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * 
     * @return The instance
     */
-   @Override
-   public T create()
+   public T create(CreationalContext<T> creationalContext)
    {
       try
       {
@@ -156,7 +156,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * 
     * @param instance The instance
     */
-   @Override
    public void destroy(T instance)
    {
       try

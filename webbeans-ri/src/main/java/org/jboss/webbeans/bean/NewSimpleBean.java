@@ -26,7 +26,6 @@ import javax.context.Dependent;
 import javax.inject.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.literal.NewLiteral;
@@ -73,30 +72,6 @@ public class NewSimpleBean<T> extends SimpleBean<T>
    protected NewSimpleBean(AnnotatedClass<T> type, ManagerImpl manager)
    {
       super(type, manager);
-   }
-
-   /**
-    * Creates a new instance
-    */
-   @Override
-   public T create()
-   {
-      try
-      {
-         DependentContext.INSTANCE.setActive(true);
-         T instance = getConstructor().newInstance(manager);
-         bindDecorators();
-         bindInterceptors();
-         injectEjbAndCommonFields(instance);
-         injectBoundFields(instance);
-         callInitializers(instance);
-         callPostConstruct(instance);
-         return instance;
-      }
-      finally
-      {
-         DependentContext.INSTANCE.setActive(false);
-      }
    }
 
    /**

@@ -32,7 +32,9 @@ public interface Context
 
    public Class<? extends Annotation> getScopeType();
 
-   public <T> T get(Contextual<T> bean, boolean create);
+   public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext);
+   
+   public <T> T get(Contextual<T> contextual);
 
    boolean isActive();
 

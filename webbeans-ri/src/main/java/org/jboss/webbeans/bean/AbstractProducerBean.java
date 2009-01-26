@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.context.CreationalContext;
 import javax.context.Dependent;
 import javax.context.ScopeType;
 import javax.inject.DefinitionException;
@@ -294,8 +295,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
     * 
     * @returns The instance
     */
-   @Override
-   public T create()
+   public T create(CreationalContext<T> creationalContext)
    {
       Object dependentCollector = new Object();
       try
@@ -320,7 +320,6 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       }
    }
 
-   @Override
    public void destroy(T instance)
    {
       try

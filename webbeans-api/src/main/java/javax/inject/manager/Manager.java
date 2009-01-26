@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.context.Context;
+import javax.context.CreationalContext;
 import javax.event.Observer;
 import javax.inject.TypeLiteral;
 
@@ -50,6 +51,10 @@ public interface Manager
    public Object getInstanceByName(String name);
 
    public <T> T getInstance(Bean<T> bean);
+   
+   public <T> T getInstanceToInject(InjectionPoint injectionPoint, CreationalContext<?> creationalContext);
+   
+   public <T> T getInstanceToInject(InjectionPoint injectionPoint);
 
    public void fireEvent(Object event, Annotation... bindings);
 

@@ -25,6 +25,7 @@ import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
 import javax.context.ApplicationScoped;
+import javax.context.CreationalContext;
 import javax.context.Dependent;
 import javax.decorator.Decorator;
 import javax.event.Observes;
@@ -210,8 +211,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * 
     * @return The instance
     */
-   @Override
-   public T create()
+   public T create(CreationalContext<T> creationalContext)
    {
       try
       {
@@ -245,7 +245,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * 
     * @param instance The instance
     */
-   @Override
    public void destroy(T instance)
    {
       EnterpriseBeanInstance enterpiseBeanInstance = (EnterpriseBeanInstance) instance;

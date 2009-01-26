@@ -25,7 +25,7 @@ package javax.context;
  */
 public interface Contextual<T>
 {
-   public T create();
+   public T create(CreationalContext<T> creationalContext);
 
    public void destroy(T instance);
 }

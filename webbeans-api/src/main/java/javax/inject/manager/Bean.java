@@ -45,10 +45,6 @@ public abstract class Bean<T> implements Contextual<T>
       return manager;
    }
 
-   public abstract T create();
-
-   public abstract void destroy(T instance);
-
    public abstract Set<Type> getTypes();
 
    public abstract Set<Annotation> getBindings();

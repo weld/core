@@ -17,6 +17,8 @@
 
 package org.jboss.webbeans.bean;
 
+import javax.context.CreationalContext;
+
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 
@@ -49,14 +51,12 @@ public class InjectionPointBean<T, S> extends AbstractFacadeBean<T, S, Object>
       super(field, manager);
    }
 
-   @Override
-   public T create()
+   public T create(CreationalContext<T> creationalContext)
    {
       // TODO Why do we need to cast here?
       return getType().cast(manager.getInjectionPointProvider().getPreviousInjectionPoint());
    }
 
-   @Override
    public void destroy(T instance)
    {
       // The instance is always in the Dependent context and can be garbage
