@@ -52,7 +52,7 @@ import org.jboss.webbeans.util.Reflections;
  * 
  * @author Pete Muir
  * 
- * @param <T>
+ * @param <T> The type (class) of the bean
  */
 public class SimpleBean<T> extends AbstractClassBean<T>
 {

@@ -22,8 +22,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import javax.context.Dependent;
 import javax.inject.AmbiguousDependencyException;
 import javax.inject.DefinitionException;
+import javax.inject.IllegalProductException;
 import javax.inject.InconsistentSpecializationException;
 import javax.inject.New;
 import javax.inject.NullableDependencyException;
@@ -34,8 +36,10 @@ import javax.inject.manager.Bean;
 import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.bean.AbstractBean;
+import org.jboss.webbeans.bean.AbstractProducerBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
+import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.ListComparator;
 import org.jboss.webbeans.util.Proxies;
@@ -45,13 +49,13 @@ import org.jboss.webbeans.util.Reflections;
  * Checks a list of beans for DeploymentExceptions and their subclasses
  * 
  * @author Nicklas Karlsson
- *
+ * 
  */
 public class BeanValidator
 {
-   
+
    private final ManagerImpl manager;
-   
+
    public BeanValidator(ManagerImpl manager)
    {
       this.manager = manager;
@@ -62,6 +66,7 @@ public class BeanValidator
     * 
     * @param beans The beans to validate
     */
+   @SuppressWarnings("unchecked")
    public void validate(List<Bean<?>> beans)
    {
       final List<Bean<?>> specializedBeans = new ArrayList<Bean<?>>();
@@ -95,6 +100,17 @@ public class BeanValidator
                {
                   throw new NullableDependencyException("The injection point " + injectionPoint + " has nullable dependencies");
                }
+               if (bean instanceof ProducerMethodBean)
+               {
+                  if (resolvedBean instanceof AbstractProducerBean)
+                  {
+                     AbstractProducerBean producerBean = (AbstractProducerBean) resolvedBean;
+                     if (producerBean.getScopeType().equals(Dependent.class) && !Reflections.isSerializable(producerBean.getType()))
+                     {
+                        throw new IllegalProductException("Cannot inject @Depedent non-serializable type into " + injectionPoint);
+                     }
+                  }
+               }
             }
             else
             {
@@ -116,7 +132,7 @@ public class BeanValidator
                }
                specializedBeans.add(abstractBean.getSpecializedBean());
             }
-         } 
+         }
          if (Beans.isPassivatingBean(bean) && !bean.isSerializable())
          {
             throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scopes but has non-serializable dependencies");
@@ -129,12 +145,11 @@ public class BeanValidator
       }
 
    }
-   
+
    private boolean hasHigherPrecedence(Class<? extends Annotation> deploymentType, Class<? extends Annotation> otherDeploymentType)
    {
       Comparator<Class<? extends Annotation>> comparator = new ListComparator<Class<? extends Annotation>>(manager.getEnabledDeploymentTypes());
       return comparator.compare(deploymentType, otherDeploymentType) > 0;
    }
-
 
 }
