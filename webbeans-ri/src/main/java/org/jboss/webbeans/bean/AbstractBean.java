@@ -248,9 +248,9 @@ public abstract class AbstractBean<T, E> extends Bean<T>
       this.primitive = Reflections.isPrimitive(getType());
    }
 
-   protected boolean injectionPointsAreSerializable()
+   protected boolean checkInjectionPointsAreSerializable()
    {
-      // TODO CACHE THIS!!!
+      // TODO CACHE THIS and rebuild on addBean
       // TODO: a bit crude, don't check *all* injectionpoints, only those listed
       // in the spec for passivation checks
       for (AnnotatedItem<?, ?> injectionPoint : getInjectionPoints())

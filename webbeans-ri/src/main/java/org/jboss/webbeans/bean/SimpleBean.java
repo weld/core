@@ -544,7 +544,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       }
       else
       {
-         return injectionPointsAreSerializable();
+         return checkInjectionPointsAreSerializable();
       }
    }
    

@@ -195,7 +195,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       boolean passivatingScoped = MetaDataCache.instance().getScopeModel(scopeType).isPassivating();
       if (passivatingScoped)
       {
-         return injectionPointsAreSerializable();
+         return checkInjectionPointsAreSerializable();
       }
       return true;
    }
