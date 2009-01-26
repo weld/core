@@ -67,10 +67,10 @@ public class BeanValidator
     * @param beans The beans to validate
     */
    @SuppressWarnings("unchecked")
-   public void validate(List<Bean<?>> beans)
+   public void validate()
    {
       final List<Bean<?>> specializedBeans = new ArrayList<Bean<?>>();
-      for (Bean<?> bean : beans)
+      for (Bean<?> bean : manager.getBeans())
       {
          for (InjectionPoint injectionPoint : bean.getInjectionPoints())
          {

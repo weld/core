@@ -155,7 +155,7 @@ public abstract class WebBeansBootstrap
          getManager().fireEvent(getManager(), new InitializedLiteral());
          log.info("Web Beans initialized. Validating beans.");
          getManager().getResolver().resolveInjectionPoints();
-         new BeanValidator(manager).validate(manager.getBeans());
+         new BeanValidator(manager).validate();
          getManager().fireEvent(getManager(), new DeployedLiteral());
       }
    }
