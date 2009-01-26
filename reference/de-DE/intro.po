@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-19 09:14+1100\n"
+"PO-Revision-Date: 2009-01-27 07:18+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -303,6 +303,11 @@ msgid ""
 "different states. The client-visible state depends upon which instance of "
 "the Web Bean the client has a reference to."
 msgstr ""
+"Erinnern wir uns. Was genau bedeutet es, \"kontextuell\" zu sein? Da "
+"Web Beans \"stateful\" sein können, ist es relevant <emphasis>welche</emphasis> Bean-Instanz ich besitze. Anders als ein Komponentenmodell, das \"stateless\" ist (etwas \"stateless\" "
+"Session Beans) oder ein Singleton Komponentenmodell (wie Servlets oder "
+"Singleton Beans), sehen verschiedene Clients eines Web Beans das Web Bean in "
+"unterschiedlichen Stati. Der Client-sichtbare Status ist abhängig davon, auf welche Instanz des Web Beans der Client verweist (eine Referenz besitzt)."
 
 #. Tag: para
 #: intro.xml:98
@@ -337,6 +342,10 @@ msgid ""
 "example, if the Web Bean is session scoped) or even all other threads (if it "
 "is application scoped)."
 msgstr ""
+"Für einen bestimmten Thread in einer Web Beans Anwendung kann ein "
+"<emphasis>aktiver Kontext</emphasis> mit dem Geltungsbereich des Web "
+"Beans assoziiert sein. Dieser Kontext kann eindeutig für den Thread sein (etwa wenn für die Web Bean "
+"Anfrage ein Geltungsbereich gilt) oder aber kann mit anderen Threads (etwa wenn für die Web Bean ein Session-Geltungsbereich gilt) oder gar allen Threads (falls ein Anwendungs-Geltungsbereich gilt) geteilt werden."
 
 #. Tag: para
 #: intro.xml:119
@@ -380,7 +389,7 @@ msgid ""
 "the other Web Bean implementation. In fact, Web Beans defines a "
 "sophisticated facility for overriding Web Bean implementations at deployment "
 "time, as we will see in <xref linkend=\"deploymenttypes\"/>."
-msgstr ""
+msgstr "Wir können ein Web Bean durch ein anderes Web Bean ersetzen, das dasselbe API und einen anderen Lebenszyklus (einen anderen Geltungsbereich) besitzt, ohne dass die übrige Web Bean Implementierung hiervon betroffen ist. Genau genommen definieren Web Beans eine raffinierte Einrichtung zur Außerkraftsetzung von Web Bean Implementierungen zum Zeitpunkt des Deployment wie wir in <xref linkend=\"deploymenttypes\"/> noch sehen werden."
 
 #. Tag: para
 #: intro.xml:145
@@ -395,7 +404,7 @@ msgstr ""
 #: intro.xml:149
 #, no-c-format
 msgid "Enough hand-waving. More formally, according to the spec:"
-msgstr ""
+msgstr "Formeller gilt, gemäß der Spezifikation:"
 
 #. Tag: para
 #: intro.xml:153
@@ -598,6 +607,8 @@ msgid ""
 "In a testing environment, we might want to replace the "
 "<literal>SentenceTranslator</literal> Web Bean with a \"mock object\":"
 msgstr ""
+"In einer Testumgebung können wir das "
+"<literal>SentenceTranslator</literal> Web Bean durch ein \"mock object\" ersetzen:"
 
 #. Tag: programlisting
 #: intro.xml:233
@@ -824,6 +835,8 @@ msgid ""
 "We'll discuss Web Beans interceptors and decorators in <xref linkend="
 "\"interceptors\"/> and <xref linkend=\"decorators\"/>."
 msgstr ""
+"Wir gehen in <xref linkend="
+"\"interceptors\"/> and <xref linkend=\"decorators\"/> näher auf Web Beans Interzeptoren und Dekoratoren ein."
 
 #. Tag: title
 #: intro.xml:321
