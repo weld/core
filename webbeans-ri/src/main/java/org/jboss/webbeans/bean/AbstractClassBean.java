@@ -95,7 +95,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    protected void injectBoundFields(T instance)
    {
       InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
-      for (FieldInjectionPoint<?> injectableField : getInjectableFields())
+      for (FieldInjectionPoint<?> injectableField : injectableFields)
       {
          injectionPointProvider.pushInjectionPoint(injectableField);
          try
@@ -301,16 +301,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       String name = Strings.decapitalize(getAnnotatedItem().getSimpleName());
       log.trace("Default name of " + type + " is " + name);
       return name;
-   }
-
-   /**
-    * Gets the injectable fields
-    * 
-    * @return The set of injectable fields
-    */
-   public Set<FieldInjectionPoint<?>> getInjectableFields()
-   {
-      return injectableFields;
    }
 
    /**
