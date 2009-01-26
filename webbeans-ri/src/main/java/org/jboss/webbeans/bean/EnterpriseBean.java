@@ -24,12 +24,12 @@ import java.util.Set;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
-import javax.webbeans.ApplicationScoped;
-import javax.webbeans.CreationException;
-import javax.webbeans.Decorator;
-import javax.webbeans.DefinitionException;
-import javax.webbeans.Dependent;
-import javax.webbeans.Interceptor;
+import javax.context.ApplicationScoped;
+import javax.context.Dependent;
+import javax.decorator.Decorator;
+import javax.inject.CreationException;
+import javax.inject.DefinitionException;
+import javax.interceptor.Interceptor;
 import javax.webbeans.Observes;
 
 import org.jboss.webbeans.ManagerImpl;

@@ -3,7 +3,7 @@ package org.jboss.webbeans.test.tck;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import javax.webbeans.manager.Bean;
+import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.AbstractClassBean;

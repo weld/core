@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.webbeans.Observer;
+import javax.event.Observer;
 
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.util.Reflections;

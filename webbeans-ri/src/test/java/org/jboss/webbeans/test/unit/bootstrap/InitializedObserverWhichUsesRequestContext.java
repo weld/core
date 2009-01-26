@@ -1,9 +1,9 @@
 package org.jboss.webbeans.test.unit.bootstrap;
 
-import javax.webbeans.Current;
-import javax.webbeans.Observes;
-import javax.webbeans.manager.Initialized;
-import javax.webbeans.manager.Manager;
+import javax.event.Observes;
+import javax.inject.Current;
+import javax.inject.manager.Initialized;
+import javax.inject.manager.Manager;
 
 class InitializedObserverWhichUsesRequestContext
 {

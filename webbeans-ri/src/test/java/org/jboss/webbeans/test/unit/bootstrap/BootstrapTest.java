@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.webbeans.manager.Bean;
+import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.EnterpriseBean;

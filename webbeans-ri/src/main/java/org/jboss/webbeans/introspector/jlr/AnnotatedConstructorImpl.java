@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import javax.webbeans.ExecutionException;
+import javax.inject.ExecutionException;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;

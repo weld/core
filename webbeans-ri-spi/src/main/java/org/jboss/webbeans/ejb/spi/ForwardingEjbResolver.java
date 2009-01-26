@@ -2,7 +2,7 @@ package org.jboss.webbeans.ejb.spi;
 
 import java.lang.annotation.Annotation;
 
-import javax.webbeans.InjectionPoint;
+import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.resources.spi.NamingContext;
 

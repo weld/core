@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.webbeans.manager.Context;
+import javax.context.Context;
 
 import org.jboss.webbeans.util.ConcurrentCache;
 

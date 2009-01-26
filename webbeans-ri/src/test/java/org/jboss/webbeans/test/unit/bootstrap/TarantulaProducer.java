@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test.unit.bootstrap;
 
-import javax.webbeans.Produces;
+import javax.inject.Produces;
 
 public class TarantulaProducer
 {

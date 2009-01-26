@@ -17,7 +17,7 @@
 
 package org.jboss.webbeans.context;
 
-import javax.webbeans.ConversationScoped;
+import javax.context.ConversationScoped;
 
 /**
  * The conversation context

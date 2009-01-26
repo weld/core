@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.unit.lookup;
 
-import javax.webbeans.Production;
-import javax.webbeans.RequestScoped;
+import javax.context.RequestScoped;
+import javax.inject.Production;
 
 @Production
 @RequestScoped

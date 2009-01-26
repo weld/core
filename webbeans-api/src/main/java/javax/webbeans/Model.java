@@ -8,6 +8,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import javax.annotation.Named;
+import javax.annotation.Stereotype;
+import javax.context.RequestScoped;
+
 /**
  * A stereotype for MVC model objects
  * 

@@ -20,7 +20,7 @@ package org.jboss.webbeans.introspector;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
-import javax.webbeans.manager.Manager;
+import javax.inject.manager.Manager;
 
 
 /**

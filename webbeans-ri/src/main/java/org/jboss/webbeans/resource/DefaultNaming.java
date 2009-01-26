@@ -17,9 +17,9 @@
 
 package org.jboss.webbeans.resource;
 
+import javax.inject.ExecutionException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.webbeans.ExecutionException;
 
 /**
  * The default naming provider

@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.examples;
 
-import javax.webbeans.ApplicationScoped;
-import javax.webbeans.Produces;
+import javax.context.ApplicationScoped;
+import javax.inject.Produces;
 
 @ApplicationScoped
 public class Generator {

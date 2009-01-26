@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test.unit.bootstrap;
 
-import javax.webbeans.ApplicationScoped;
+import javax.context.ApplicationScoped;
 
 @ApplicationScoped
 class LadybirdSpider extends Spider

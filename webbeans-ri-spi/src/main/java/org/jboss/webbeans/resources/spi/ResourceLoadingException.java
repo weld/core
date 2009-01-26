@@ -3,7 +3,7 @@
  */
 package org.jboss.webbeans.resources.spi;
 
-import javax.webbeans.ExecutionException;
+import javax.inject.ExecutionException;
 
 /**
  * Exception thrown when errors occur while loading resource

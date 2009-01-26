@@ -21,8 +21,8 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.webbeans.DuplicateBindingTypeException;
-import javax.webbeans.manager.Manager;
+import javax.inject.DuplicateBindingTypeException;
+import javax.inject.manager.Manager;
 
 import org.jboss.webbeans.util.Reflections;
 

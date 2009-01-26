@@ -26,9 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.webbeans.BindingType;
-import javax.webbeans.Produces;
-import javax.webbeans.manager.Manager;
+import javax.inject.BindingType;
+import javax.inject.Produces;
+import javax.inject.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injection.InjectionPointProvider;

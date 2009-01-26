@@ -22,16 +22,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import javax.webbeans.AmbiguousDependencyException;
-import javax.webbeans.DefinitionException;
-import javax.webbeans.InconsistentSpecializationException;
-import javax.webbeans.InjectionPoint;
-import javax.webbeans.New;
-import javax.webbeans.NullableDependencyException;
-import javax.webbeans.UnproxyableDependencyException;
-import javax.webbeans.UnsatisfiedDependencyException;
-import javax.webbeans.UnserializableDependencyException;
-import javax.webbeans.manager.Bean;
+import javax.inject.AmbiguousDependencyException;
+import javax.inject.DefinitionException;
+import javax.inject.InconsistentSpecializationException;
+import javax.inject.New;
+import javax.inject.NullableDependencyException;
+import javax.inject.UnproxyableDependencyException;
+import javax.inject.UnsatisfiedDependencyException;
+import javax.inject.UnserializableDependencyException;
+import javax.inject.manager.Bean;
+import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;

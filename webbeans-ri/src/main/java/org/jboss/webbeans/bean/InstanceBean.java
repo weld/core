@@ -18,7 +18,7 @@
 package org.jboss.webbeans.bean;
 
 
-import javax.webbeans.Instance;
+import javax.inject.Instance;
 
 import org.jboss.webbeans.InstanceImpl;
 import org.jboss.webbeans.ManagerImpl;

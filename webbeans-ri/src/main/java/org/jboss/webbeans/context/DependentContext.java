@@ -19,9 +19,9 @@ package org.jboss.webbeans.context;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.webbeans.ContextNotActiveException;
-import javax.webbeans.Dependent;
-import javax.webbeans.manager.Contextual;
+import javax.context.ContextNotActiveException;
+import javax.context.Contextual;
+import javax.context.Dependent;
 
 import org.jboss.webbeans.bean.AbstractClassBean;
 

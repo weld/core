@@ -23,10 +23,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.webbeans.BindingType;
-import javax.webbeans.DeploymentType;
-import javax.webbeans.ScopeType;
-import javax.webbeans.Stereotype;
+import javax.annotation.Stereotype;
+import javax.context.ScopeType;
+import javax.inject.BindingType;
+import javax.inject.DeploymentType;
 
 /**
  * AnnotatedItem provides a uniform access to the annotations on an annotated

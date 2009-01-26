@@ -22,9 +22,9 @@ import static org.jboss.webbeans.event.ObserverImpl.TransactionObservationPhase.
 import static org.jboss.webbeans.event.ObserverImpl.TransactionObservationPhase.AFTER_SUCCESS;
 import static org.jboss.webbeans.event.ObserverImpl.TransactionObservationPhase.BEFORE_COMPLETION;
 
+import javax.event.Observer;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
-import javax.webbeans.Observer;
 
 /**
  * A synchronization object which will deliver the event to the observer after

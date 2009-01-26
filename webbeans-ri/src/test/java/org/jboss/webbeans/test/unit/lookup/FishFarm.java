@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.unit.lookup;
 
-import javax.webbeans.Current;
-import javax.webbeans.Production;
+import javax.inject.Current;
+import javax.inject.Production;
 
 @Production
 class FishFarm

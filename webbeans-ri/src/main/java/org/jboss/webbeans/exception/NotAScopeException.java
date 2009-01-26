@@ -17,7 +17,7 @@
 
 package org.jboss.webbeans.exception;
 
-import javax.webbeans.DefinitionException;
+import javax.inject.DefinitionException;
 
 /**
  * Exception for incorrect scope usage

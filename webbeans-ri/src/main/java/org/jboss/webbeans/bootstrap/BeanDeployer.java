@@ -8,14 +8,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.webbeans.BindingType;
-import javax.webbeans.DeploymentType;
-import javax.webbeans.Fires;
-import javax.webbeans.Initializer;
-import javax.webbeans.Observes;
-import javax.webbeans.Obtains;
-import javax.webbeans.Produces;
-import javax.webbeans.Realizes;
+import javax.event.Fires;
+import javax.event.Observes;
+import javax.inject.BindingType;
+import javax.inject.DeploymentType;
+import javax.inject.Initializer;
+import javax.inject.Obtains;
+import javax.inject.Produces;
+import javax.inject.Realizes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractBean;

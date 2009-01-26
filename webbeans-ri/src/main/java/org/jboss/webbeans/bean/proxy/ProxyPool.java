@@ -25,8 +25,8 @@ import java.util.concurrent.Callable;
 
 import javassist.util.proxy.ProxyFactory;
 
-import javax.webbeans.DefinitionException;
-import javax.webbeans.manager.Bean;
+import javax.inject.DefinitionException;
+import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.util.ConcurrentCache;

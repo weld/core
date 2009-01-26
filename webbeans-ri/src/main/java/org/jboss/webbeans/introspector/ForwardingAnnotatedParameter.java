@@ -19,7 +19,7 @@ package org.jboss.webbeans.introspector;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
-import javax.webbeans.manager.Manager;
+import javax.inject.manager.Manager;
 
 public abstract class ForwardingAnnotatedParameter<T> extends ForwardingAnnotatedItem<T, Object> implements AnnotatedParameter<T>
 {

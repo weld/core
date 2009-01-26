@@ -24,13 +24,13 @@ import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.webbeans.DefinitionException;
-import javax.webbeans.Dependent;
-import javax.webbeans.DeploymentType;
-import javax.webbeans.IllegalProductException;
-import javax.webbeans.Initializer;
-import javax.webbeans.Produces;
-import javax.webbeans.ScopeType;
+import javax.context.Dependent;
+import javax.context.ScopeType;
+import javax.inject.DefinitionException;
+import javax.inject.DeploymentType;
+import javax.inject.IllegalProductException;
+import javax.inject.Initializer;
+import javax.inject.Produces;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;

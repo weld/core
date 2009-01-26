@@ -19,9 +19,9 @@ package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
 
-import javax.webbeans.Dependent;
-import javax.webbeans.Production;
-import javax.webbeans.Standard;
+import javax.context.Dependent;
+import javax.inject.Production;
+import javax.inject.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;

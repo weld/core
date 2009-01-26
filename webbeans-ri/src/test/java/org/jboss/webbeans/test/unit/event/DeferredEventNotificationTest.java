@@ -4,8 +4,8 @@ import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.webbeans.Observes;
-import javax.webbeans.Standard;
+import javax.event.Observes;
+import javax.inject.Standard;
 
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.introspector.AnnotatedMethod;

@@ -22,10 +22,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.webbeans.Event;
-import javax.webbeans.Fires;
-import javax.webbeans.Observer;
-import javax.webbeans.manager.Manager;
+import javax.event.Event;
+import javax.event.Fires;
+import javax.event.Observer;
+import javax.inject.manager.Manager;
 
 import org.jboss.webbeans.FacadeImpl;
 import org.jboss.webbeans.util.Strings;
@@ -36,7 +36,7 @@ import org.jboss.webbeans.util.Strings;
  * @author David Allen
  * 
  * @param <T> The type of event being wrapped
- * @see javax.webbeans.Event
+ * @see javax.event.Event
  */
 public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
 {

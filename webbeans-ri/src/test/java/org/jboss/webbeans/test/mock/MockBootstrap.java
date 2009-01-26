@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.inject.manager.InjectionPoint;
 import javax.naming.Context;
 import javax.persistence.PersistenceContext;
 import javax.transaction.HeuristicMixedException;
@@ -13,7 +14,6 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
-import javax.webbeans.InjectionPoint;
 
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;

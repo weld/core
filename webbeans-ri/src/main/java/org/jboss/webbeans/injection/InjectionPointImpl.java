@@ -25,11 +25,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.webbeans.Dependent;
-import javax.webbeans.Initializer;
-import javax.webbeans.InjectionPoint;
-import javax.webbeans.Standard;
-import javax.webbeans.manager.Bean;
+import javax.context.Dependent;
+import javax.inject.Initializer;
+import javax.inject.Standard;
+import javax.inject.manager.Bean;
+import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMember;
@@ -119,7 +119,7 @@ public class InjectionPointImpl implements InjectionPoint
     * 
     * @param annotationType The meta-annotation to match
     * @return The found annotation
-    * @see javax.webbeans.InjectionPoint#getAnnotation(Class)
+    * @see javax.inject.manager.InjectionPoint#getAnnotation(Class)
     */
    public <T extends Annotation> T getAnnotation(Class<T> annotationType)
    {
@@ -130,7 +130,7 @@ public class InjectionPointImpl implements InjectionPoint
     * Gets the array of annotations on the injection point
     * 
     * @return The annotations
-    * @see javax.webbeans.InjectionPoint#getAnnotations()
+    * @see javax.inject.manager.InjectionPoint#getAnnotations()
     */
    public Annotation[] getAnnotations()
    {
@@ -141,7 +141,7 @@ public class InjectionPointImpl implements InjectionPoint
     * Gets the containing bean
     * 
     * @return The bean
-    * @see javax.webbeans.InjectionPoint#getBean()
+    * @see javax.inject.manager.InjectionPoint#getBean()
     */
    public Bean<?> getBean()
    {
@@ -152,7 +152,7 @@ public class InjectionPointImpl implements InjectionPoint
     * Gets the bindings of the injection point
     * 
     * @return The bindings
-    * @see javax.webbeans.InjectionPoint#getBindings()
+    * @see javax.inject.manager.InjectionPoint#getBindings()
     */
    public Set<Annotation> getBindings()
    {
@@ -163,7 +163,7 @@ public class InjectionPointImpl implements InjectionPoint
     * Gets the member of the injection
     * 
     * @return The underlying member
-    * @see javax.webbeans.InjectionPoint#getMember()
+    * @see javax.inject.manager.InjectionPoint#getMember()
     */
    public Member getMember()
    {
@@ -185,7 +185,7 @@ public class InjectionPointImpl implements InjectionPoint
     * Gets the type of the injection point
     * 
     * @return The type
-    * @see javax.webbeans.InjectionPoint#getType
+    * @see javax.inject.manager.InjectionPoint#getType
     */
    public Type getType()
    {
@@ -197,7 +197,7 @@ public class InjectionPointImpl implements InjectionPoint
     *
     * @param annotationType The annotation type to match
     * @return True if present, false otherwise
-    * @see javax.webbeans.InjectionPoint#isAnnotationPresent(Class)
+    * @see javax.inject.manager.InjectionPoint#isAnnotationPresent(Class)
     */
    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
    {

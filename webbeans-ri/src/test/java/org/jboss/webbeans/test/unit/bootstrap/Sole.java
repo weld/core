@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.unit.bootstrap;
 
-import javax.webbeans.Named;
-import javax.webbeans.Production;
+import javax.annotation.Named;
+import javax.inject.Production;
 
 @Production
 @Whitefish

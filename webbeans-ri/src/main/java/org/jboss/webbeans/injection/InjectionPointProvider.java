@@ -19,8 +19,8 @@ package org.jboss.webbeans.injection;
 
 import java.util.Stack;
 
-import javax.webbeans.InjectionPoint;
-import javax.webbeans.manager.Bean;
+import javax.inject.manager.Bean;
+import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.introspector.AnnotatedItem;
 

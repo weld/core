@@ -4,9 +4,9 @@ import java.lang.annotation.Annotation;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.webbeans.DeploymentType;
-import javax.webbeans.Production;
-import javax.webbeans.Stereotype;
+import javax.annotation.Stereotype;
+import javax.inject.DeploymentType;
+import javax.inject.Production;
 
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;

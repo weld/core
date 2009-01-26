@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.webbeans.manager.Bean;
-import javax.webbeans.manager.Contextual;
+import javax.context.Contextual;
+import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;

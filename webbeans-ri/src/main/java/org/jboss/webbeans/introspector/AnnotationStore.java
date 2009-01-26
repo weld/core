@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.webbeans.BindingType;
+import javax.inject.BindingType;
 
 import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.util.Strings;

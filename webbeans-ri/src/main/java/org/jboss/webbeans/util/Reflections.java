@@ -34,8 +34,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.webbeans.BindingType;
-import javax.webbeans.ExecutionException;
+import javax.inject.BindingType;
+import javax.inject.ExecutionException;
 
 
 /**

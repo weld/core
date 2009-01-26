@@ -6,8 +6,8 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.webbeans.Production;
-import javax.webbeans.Standard;
+import javax.inject.Production;
+import javax.inject.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;

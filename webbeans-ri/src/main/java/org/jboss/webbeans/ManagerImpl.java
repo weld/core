@@ -33,23 +33,23 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.webbeans.AmbiguousDependencyException;
-import javax.webbeans.BindingType;
-import javax.webbeans.ContextNotActiveException;
-import javax.webbeans.DeploymentException;
-import javax.webbeans.DuplicateBindingTypeException;
-import javax.webbeans.Observer;
-import javax.webbeans.Production;
-import javax.webbeans.Standard;
-import javax.webbeans.TypeLiteral;
-import javax.webbeans.UnproxyableDependencyException;
-import javax.webbeans.UnsatisfiedDependencyException;
-import javax.webbeans.manager.Bean;
-import javax.webbeans.manager.Context;
-import javax.webbeans.manager.Decorator;
-import javax.webbeans.manager.InterceptionType;
-import javax.webbeans.manager.Interceptor;
-import javax.webbeans.manager.Manager;
+import javax.context.Context;
+import javax.context.ContextNotActiveException;
+import javax.event.Observer;
+import javax.inject.AmbiguousDependencyException;
+import javax.inject.BindingType;
+import javax.inject.DeploymentException;
+import javax.inject.DuplicateBindingTypeException;
+import javax.inject.Production;
+import javax.inject.Standard;
+import javax.inject.TypeLiteral;
+import javax.inject.UnproxyableDependencyException;
+import javax.inject.UnsatisfiedDependencyException;
+import javax.inject.manager.Bean;
+import javax.inject.manager.Decorator;
+import javax.inject.manager.InterceptionType;
+import javax.inject.manager.Interceptor;
+import javax.inject.manager.Manager;
 
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
@@ -175,7 +175,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param bean The bean to register
     * @return A reference to manager
     * 
-    * @see javax.webbeans.manager.Manager#addBean(javax.webbeans.manager.Bean)
+    * @see javax.inject.manager.Manager#addBean(javax.inject.manager.Bean)
     */
    public Manager addBean(Bean<?> bean)
    {
@@ -209,7 +209,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param bindings The binding types to match
     * @return The set of matching observers
     * 
-    * @see javax.webbeans.manager.Manager#resolveObservers(java.lang.Object,
+    * @see javax.inject.manager.Manager#resolveObservers(java.lang.Object,
     *      java.lang.annotation.Annotation[])
     */
    @SuppressWarnings("unchecked")
@@ -265,7 +265,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param bindingTypes The binding types to match
     * @return The set of matching beans
     * 
-    * @see javax.webbeans.manager.Manager#resolveByType(java.lang.Class,
+    * @see javax.inject.manager.Manager#resolveByType(java.lang.Class,
     *      java.lang.annotation.Annotation[])
     */
    public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindings)
@@ -280,7 +280,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param bindingTypes The binding types to match
     * @return The set of matching beans
     * 
-    * @see javax.webbeans.manager.Manager#resolveByType(javax.webbeans.TypeLiteral,
+    * @see javax.inject.manager.Manager#resolveByType(javax.inject.TypeLiteral,
     *      java.lang.annotation.Annotation[])
     */
    public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> type, Annotation... bindings)
@@ -384,7 +384,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param context The context to add
     * @return A reference to the manager
     * 
-    * @see javax.webbeans.manager.Manager#addContext(javax.webbeans.manager.Context)
+    * @see javax.inject.manager.Manager#addContext(javax.context.Context)
     */
    public Manager addContext(Context context)
    {
@@ -398,7 +398,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param decorator The decorator to register
     * @return A reference to the manager
     * 
-    * @see javax.webbeans.manager.Manager#addDecorator(javax.webbeans.manager.Decorator)
+    * @see javax.inject.manager.Manager#addDecorator(javax.inject.manager.Decorator)
     */
    public Manager addDecorator(Decorator decorator)
    {
@@ -412,7 +412,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param interceptor The interceptor to register
     * @return A reference to the manager
     * 
-    * @see javax.webbeans.manager.Manager#addInterceptor(javax.webbeans.manager.Interceptor)
+    * @see javax.inject.manager.Manager#addInterceptor(javax.inject.manager.Interceptor)
     */
    public Manager addInterceptor(Interceptor interceptor)
    {
@@ -428,7 +428,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param bindings The bindings to match
     * @return A reference to the manager
     * 
-    * @see javax.webbeans.manager.Manager#addObserver(javax.webbeans.Observer,
+    * @see javax.inject.manager.Manager#addObserver(javax.event.Observer,
     *      java.lang.Class, java.lang.annotation.Annotation[])
     */
    public <T> Manager addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
@@ -451,8 +451,8 @@ public class ManagerImpl implements Manager, Serializable
     * @param bindings The bindings to match
     * @return A reference to the manager
     * 
-    * @see javax.webbeans.manager.Manager#addObserver(javax.webbeans.Observer,
-    *      javax.webbeans.TypeLiteral, java.lang.annotation.Annotation[])
+    * @see javax.inject.manager.Manager#addObserver(javax.event.Observer,
+    *      javax.inject.TypeLiteral, java.lang.annotation.Annotation[])
     */
    public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
@@ -466,7 +466,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param event The event object to pass along
     * @param bindings The binding types to match
     * 
-    * @see javax.webbeans.manager.Manager#fireEvent(java.lang.Object,
+    * @see javax.inject.manager.Manager#fireEvent(java.lang.Object,
     *      java.lang.annotation.Annotation[])
     */
    public void fireEvent(Object event, Annotation... bindings)
@@ -500,7 +500,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param scopeType The scope to match
     * @return A single active context of the given scope
     * 
-    * @see javax.webbeans.manager.Manager#getContext(java.lang.Class)
+    * @see javax.inject.manager.Manager#getContext(java.lang.Class)
     */
    public Context getContext(Class<? extends Annotation> scopeType)
    {
@@ -540,7 +540,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param bean The bean to instantiate
     * @return An instance of the bean
     * 
-    * @see javax.webbeans.manager.Manager#getInstance(javax.webbeans.manager.Bean)
+    * @see javax.inject.manager.Manager#getInstance(javax.inject.manager.Bean)
     */
    public <T> T getInstance(Bean<T> bean)
    {
@@ -553,7 +553,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param bean The bean to instantiate
     * @return An instance of the bean
     * 
-    * @see javax.webbeans.manager.Manager#getInstance(javax.webbeans.manager.Bean)
+    * @see javax.inject.manager.Manager#getInstance(javax.inject.manager.Bean)
     */
    public <T> T getInstance(Bean<T> bean, boolean create)
    {
@@ -578,7 +578,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param name The name to match
     * @return An instance of the bean
     * 
-    * @see javax.webbeans.manager.Manager#getInstanceByName(java.lang.String)
+    * @see javax.inject.manager.Manager#getInstanceByName(java.lang.String)
     */
    public Object getInstanceByName(String name)
    {
@@ -604,7 +604,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param bindingTypes The binding types to match
     * @return An instance of the bean
     * 
-    * @see javax.webbeans.manager.Manager#getInstanceByType(java.lang.Class,
+    * @see javax.inject.manager.Manager#getInstanceByType(java.lang.Class,
     *      java.lang.annotation.Annotation[])
     */
    public <T> T getInstanceByType(Class<T> type, Annotation... bindings)
@@ -620,7 +620,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param bindingTypes The binding types to match
     * @return An instance of the bean
     * 
-    * @see javax.webbeans.manager.Manager#getInstanceByType(javax.webbeans.TypeLiteral,
+    * @see javax.inject.manager.Manager#getInstanceByType(javax.inject.TypeLiteral,
     *      java.lang.annotation.Annotation[])
     */
    public <T> T getInstanceByType(TypeLiteral<T> type, Annotation... bindings)
@@ -664,7 +664,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param bindings the binding types to match
     * @return A reference to the manager
     * 
-    * @see javax.webbeans.manager.Manager#removeObserver(javax.webbeans.Observer,
+    * @see javax.inject.manager.Manager#removeObserver(javax.event.Observer,
     *      java.lang.Class, java.lang.annotation.Annotation[])
     */
    public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
@@ -681,8 +681,8 @@ public class ManagerImpl implements Manager, Serializable
     * @param bindings the binding types to match
     * @return A reference to the manager
     * 
-    * @see javax.webbeans.manager.Manager#removeObserver(javax.webbeans.Observer,
-    *      javax.webbeans.TypeLiteral, java.lang.annotation.Annotation[])
+    * @see javax.inject.manager.Manager#removeObserver(javax.event.Observer,
+    *      javax.inject.TypeLiteral, java.lang.annotation.Annotation[])
     */
    public <T> Manager removeObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
@@ -696,7 +696,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param The name to match
     * @return The set of matching beans
     * 
-    * @see javax.webbeans.manager.Manager#resolveByName(java.lang.String)
+    * @see javax.inject.manager.Manager#resolveByName(java.lang.String)
     */
    public Set<Bean<?>> resolveByName(String name)
    {
@@ -710,7 +710,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param bindingTypes The binding types to match
     * @return A list of matching decorators
     * 
-    * @see javax.webbeans.manager.Manager#resolveDecorators(java.util.Set,
+    * @see javax.inject.manager.Manager#resolveDecorators(java.util.Set,
     *      java.lang.annotation.Annotation[])
     */
    public List<Decorator> resolveDecorators(Set<Type> types, Annotation... bindings)
@@ -726,7 +726,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param interceptorBindings The binding types to match
     * @return A list of matching interceptors
     * 
-    * @see javax.webbeans.manager.Manager#resolveInterceptors(javax.webbeans.manager.InterceptionType,
+    * @see javax.inject.manager.Manager#resolveInterceptors(javax.inject.manager.InterceptionType,
     *      java.lang.annotation.Annotation[])
     */
    public List<Interceptor> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings)

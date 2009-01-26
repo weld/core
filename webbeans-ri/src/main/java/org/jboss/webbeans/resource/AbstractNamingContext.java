@@ -20,9 +20,9 @@ package org.jboss.webbeans.resource;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.ExecutionException;
 import javax.naming.Context;
 import javax.naming.NamingException;
-import javax.webbeans.ExecutionException;
 
 import org.jboss.webbeans.resources.spi.NamingContext;
 

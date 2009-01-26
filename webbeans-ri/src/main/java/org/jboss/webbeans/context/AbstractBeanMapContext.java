@@ -19,9 +19,9 @@ package org.jboss.webbeans.context;
 
 import java.lang.annotation.Annotation;
 
-import javax.webbeans.ContextNotActiveException;
-import javax.webbeans.manager.Bean;
-import javax.webbeans.manager.Contextual;
+import javax.context.ContextNotActiveException;
+import javax.context.Contextual;
+import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.context.beanmap.BeanMap;
 
@@ -56,7 +56,7 @@ public abstract class AbstractBeanMapContext extends AbstractContext
     * @return An instance of the bean
     * @throws ContextNotActiveException if the context is not active
     * 
-    * @see javax.webbeans.manager.Context#get(Bean, boolean)
+    * @see javax.context.Context#get(Bean, boolean)
     */
    public <T> T get(Contextual<T> bean, boolean create)
    {

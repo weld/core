@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import javax.webbeans.manager.Manager;
+import javax.inject.manager.Manager;
 
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedType;

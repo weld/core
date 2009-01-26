@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test.unit.bootstrap;
 
-import javax.webbeans.RequestScoped;
+import javax.context.RequestScoped;
 
 @RequestScoped
 class Tuna

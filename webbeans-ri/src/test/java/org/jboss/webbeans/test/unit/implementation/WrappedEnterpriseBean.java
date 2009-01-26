@@ -1,9 +1,9 @@
 package org.jboss.webbeans.test.unit.implementation;
 
+import javax.annotation.Named;
+import javax.context.SessionScoped;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.webbeans.Named;
-import javax.webbeans.SessionScoped;
 
 @SessionScoped
 @Stateful

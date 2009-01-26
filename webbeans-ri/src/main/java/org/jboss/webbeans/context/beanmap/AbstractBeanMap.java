@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import javax.webbeans.manager.Contextual;
+import javax.context.Contextual;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.log.LogProvider;

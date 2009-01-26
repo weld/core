@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test.examples;
 
-import javax.webbeans.Initializer;
+import javax.inject.Initializer;
 
 public class TextTranslator { 
    private SentenceParser sentenceParser; 

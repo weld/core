@@ -16,8 +16,8 @@
  */
 package org.jboss.webbeans.transaction;
 
-import javax.webbeans.Current;
-import javax.webbeans.Produces;
+import javax.inject.Current;
+import javax.inject.Produces;
 
 import org.jboss.webbeans.ManagerImpl;
 

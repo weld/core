@@ -23,13 +23,13 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.context.Dependent;
+import javax.inject.DefinitionException;
+import javax.inject.ExecutionException;
+import javax.inject.Initializer;
+import javax.inject.manager.InjectionPoint;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
-import javax.webbeans.DefinitionException;
-import javax.webbeans.Dependent;
-import javax.webbeans.ExecutionException;
-import javax.webbeans.Initializer;
-import javax.webbeans.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;

@@ -22,13 +22,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.webbeans.BindingType;
-import javax.webbeans.DefinitionException;
-import javax.webbeans.DeploymentType;
-import javax.webbeans.InterceptorBindingType;
-import javax.webbeans.Named;
-import javax.webbeans.ScopeType;
-import javax.webbeans.Stereotype;
+import javax.annotation.Named;
+import javax.annotation.Stereotype;
+import javax.context.ScopeType;
+import javax.inject.BindingType;
+import javax.inject.DefinitionException;
+import javax.inject.DeploymentType;
+import javax.interceptor.InterceptorBindingType;
 
 /**
  * A meta model for a stereotype, allows us to cache a stereotype and to

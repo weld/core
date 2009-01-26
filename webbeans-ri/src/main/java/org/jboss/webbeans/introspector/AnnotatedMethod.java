@@ -24,14 +24,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.webbeans.AfterTransactionCompletion;
-import javax.webbeans.AfterTransactionFailure;
-import javax.webbeans.AfterTransactionSuccess;
-import javax.webbeans.BeforeTransactionCompletion;
-import javax.webbeans.Disposes;
-import javax.webbeans.Fires;
-import javax.webbeans.IfExists;
-import javax.webbeans.Observes;
+import javax.event.AfterTransactionCompletion;
+import javax.event.AfterTransactionFailure;
+import javax.event.AfterTransactionSuccess;
+import javax.event.BeforeTransactionCompletion;
+import javax.event.Fires;
+import javax.event.IfExists;
+import javax.event.Observes;
+import javax.inject.Disposes;
 
 import org.jboss.webbeans.ManagerImpl;
 

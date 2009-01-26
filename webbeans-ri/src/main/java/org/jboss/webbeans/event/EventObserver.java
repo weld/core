@@ -21,9 +21,9 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.webbeans.Current;
-import javax.webbeans.DuplicateBindingTypeException;
-import javax.webbeans.Observer;
+import javax.event.Observer;
+import javax.inject.Current;
+import javax.inject.DuplicateBindingTypeException;
 
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.util.Reflections;

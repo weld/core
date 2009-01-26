@@ -17,8 +17,8 @@
 
 package org.jboss.webbeans.literal;
 
-import javax.webbeans.AnnotationLiteral;
-import javax.webbeans.manager.Initialized;
+import javax.inject.AnnotationLiteral;
+import javax.inject.manager.Initialized;
 
 /**
  * Annotation literal for @Initialized

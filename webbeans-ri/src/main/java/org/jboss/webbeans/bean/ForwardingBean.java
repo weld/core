@@ -21,8 +21,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.webbeans.manager.Bean;
-import javax.webbeans.manager.Manager;
+import javax.inject.manager.Bean;
+import javax.inject.manager.Manager;
 
 /**
  * A delegating bean

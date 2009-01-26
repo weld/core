@@ -9,7 +9,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.webbeans.BindingType;
+import javax.inject.BindingType;
 
 @Target( { TYPE, METHOD, PARAMETER })
 @Retention(RUNTIME)

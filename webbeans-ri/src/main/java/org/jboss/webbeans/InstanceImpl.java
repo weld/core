@@ -21,8 +21,8 @@ import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.webbeans.Instance;
-import javax.webbeans.manager.Manager;
+import javax.inject.Instance;
+import javax.inject.manager.Manager;
 
 /**
  * Helper implementation for Instance for getting instances
@@ -52,8 +52,8 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
     * @param bindingTypes The binding types
     * @return The instance
     * 
-    * @see javax.webbeans.Instance#get(Annotation...)
-    * @see javax.webbeans.manager.Manager#getInstanceByType(Class, Annotation...)
+    * @see javax.inject.Instance#get(Annotation...)
+    * @see javax.inject.manager.Manager#getInstanceByType(Class, Annotation...)
     */
    public T get(Annotation... bindingTypes) 
    {

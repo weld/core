@@ -2,7 +2,7 @@ package org.jboss.webbeans.test.unit.definition;
 
 import java.util.Arrays;
 
-import javax.webbeans.RequestScoped;
+import javax.context.RequestScoped;
 
 import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.test.unit.AbstractTest;

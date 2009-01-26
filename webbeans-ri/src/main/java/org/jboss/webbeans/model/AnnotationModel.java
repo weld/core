@@ -19,7 +19,7 @@ package org.jboss.webbeans.model;
 
 import java.lang.annotation.Annotation;
 
-import javax.webbeans.DefinitionException;
+import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.introspector.AnnotatedAnnotation;
 import org.jboss.webbeans.introspector.jlr.AnnotatedAnnotationImpl;

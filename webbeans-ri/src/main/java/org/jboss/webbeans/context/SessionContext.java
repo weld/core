@@ -17,7 +17,7 @@
 
 package org.jboss.webbeans.context;
 
-import javax.webbeans.SessionScoped;
+import javax.context.SessionScoped;
 
 import org.jboss.webbeans.context.beanmap.BeanMap;
 import org.jboss.webbeans.log.LogProvider;

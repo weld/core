@@ -3,7 +3,7 @@ package org.jboss.webbeans.test.tck;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-import javax.webbeans.manager.Manager;
+import javax.inject.manager.Manager;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.tck.api.Managers;

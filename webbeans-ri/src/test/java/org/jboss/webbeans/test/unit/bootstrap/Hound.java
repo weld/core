@@ -1,8 +1,8 @@
 package org.jboss.webbeans.test.unit.bootstrap;
 
+import javax.annotation.Named;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.webbeans.Named;
 
 @Stateful
 @Tame

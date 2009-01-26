@@ -17,7 +17,7 @@
 
 package org.jboss.webbeans.context.beanmap;
 
-import javax.webbeans.manager.Contextual;
+import javax.context.Contextual;
 
 
 /**

@@ -21,9 +21,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import javax.webbeans.DefinitionException;
-import javax.webbeans.Disposes;
-import javax.webbeans.Observes;
+import javax.event.Observes;
+import javax.inject.DefinitionException;
+import javax.inject.Disposes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;

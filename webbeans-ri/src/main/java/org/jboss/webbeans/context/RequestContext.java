@@ -17,7 +17,7 @@
 
 package org.jboss.webbeans.context;
 
-import javax.webbeans.RequestScoped;
+import javax.context.RequestScoped;
 
 /**
  * The request context

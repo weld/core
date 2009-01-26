@@ -20,9 +20,9 @@ package org.jboss.webbeans.model;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
-import javax.webbeans.BindingType;
-import javax.webbeans.DefinitionException;
-import javax.webbeans.NonBinding;
+import javax.annotation.NonBinding;
+import javax.inject.BindingType;
+import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.util.Reflections;

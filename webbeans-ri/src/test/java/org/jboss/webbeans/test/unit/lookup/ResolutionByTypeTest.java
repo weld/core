@@ -2,7 +2,7 @@ package org.jboss.webbeans.test.unit.lookup;
 
 import java.util.Set;
 
-import javax.webbeans.manager.Bean;
+import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.introspector.AnnotatedClass;

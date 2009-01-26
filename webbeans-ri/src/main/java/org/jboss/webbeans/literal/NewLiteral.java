@@ -17,8 +17,8 @@
 
 package org.jboss.webbeans.literal;
 
-import javax.webbeans.AnnotationLiteral;
-import javax.webbeans.New;
+import javax.inject.AnnotationLiteral;
+import javax.inject.New;
 
 /**
  * Annotation literal for @Current

@@ -3,8 +3,8 @@ package org.jboss.webbeans.test.examples;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import javax.webbeans.Production;
-import javax.webbeans.Standard;
+import javax.inject.Production;
+import javax.inject.Standard;
 
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;

@@ -22,8 +22,8 @@ import java.lang.reflect.Method;
 
 import javassist.util.proxy.MethodHandler;
 
-import javax.webbeans.manager.Bean;
-import javax.webbeans.manager.Context;
+import javax.context.Context;
+import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.log.LogProvider;

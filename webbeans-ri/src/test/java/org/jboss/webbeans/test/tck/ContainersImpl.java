@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 
 import javax.el.ELContext;
-import javax.webbeans.manager.Manager;
+import javax.inject.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.tck.api.Containers;

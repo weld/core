@@ -22,8 +22,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.webbeans.Dependent;
-import javax.webbeans.Standard;
+import javax.context.Dependent;
+import javax.inject.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentContext;

@@ -19,7 +19,7 @@ package org.jboss.webbeans.util;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.webbeans.manager.Bean;
+import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.bean.AbstractBean;

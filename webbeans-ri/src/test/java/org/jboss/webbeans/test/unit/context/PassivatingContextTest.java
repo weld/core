@@ -1,9 +1,9 @@
 package org.jboss.webbeans.test.unit.context;
 
-import javax.webbeans.ApplicationScoped;
-import javax.webbeans.ConversationScoped;
-import javax.webbeans.RequestScoped;
-import javax.webbeans.SessionScoped;
+import javax.context.ApplicationScoped;
+import javax.context.ConversationScoped;
+import javax.context.RequestScoped;
+import javax.context.SessionScoped;
 
 import org.jboss.webbeans.MetaDataCache;
 import org.testng.annotations.Test;

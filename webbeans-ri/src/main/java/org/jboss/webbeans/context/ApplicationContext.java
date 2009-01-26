@@ -19,7 +19,7 @@ package org.jboss.webbeans.context;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.webbeans.ApplicationScoped;
+import javax.context.ApplicationScoped;
 
 import org.jboss.webbeans.context.beanmap.BeanMap;
 

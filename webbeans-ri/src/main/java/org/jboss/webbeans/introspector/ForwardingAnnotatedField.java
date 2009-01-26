@@ -20,7 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Set;
 
-import javax.webbeans.manager.Manager;
+import javax.inject.manager.Manager;
 
 public abstract class ForwardingAnnotatedField<T> extends ForwardingAnnotatedMember<T, Field> implements AnnotatedField<T>
 {

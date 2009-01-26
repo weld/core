@@ -19,7 +19,7 @@ package org.jboss.webbeans.model;
 
 import java.lang.annotation.Annotation;
 
-import javax.webbeans.ScopeType;
+import javax.context.ScopeType;
 
 /**
  * 

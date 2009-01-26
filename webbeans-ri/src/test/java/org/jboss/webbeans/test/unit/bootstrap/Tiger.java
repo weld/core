@@ -2,7 +2,7 @@ package org.jboss.webbeans.test.unit.bootstrap;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.webbeans.Production;
+import javax.inject.Production;
 
 @Production
 @Stateful

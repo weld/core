@@ -20,7 +20,7 @@ package org.jboss.webbeans.bootstrap;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.webbeans.ExecutionException;
+import javax.inject.ExecutionException;
 
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;

@@ -20,8 +20,8 @@ package org.jboss.webbeans.bean;
 
 import java.lang.reflect.Type;
 
-import javax.webbeans.DefinitionException;
-import javax.webbeans.Event;
+import javax.event.Event;
+import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentContext;

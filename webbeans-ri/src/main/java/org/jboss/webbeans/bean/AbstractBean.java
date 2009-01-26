@@ -24,16 +24,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.webbeans.BindingType;
-import javax.webbeans.DefinitionException;
-import javax.webbeans.Dependent;
-import javax.webbeans.Event;
-import javax.webbeans.InjectionPoint;
-import javax.webbeans.Named;
-import javax.webbeans.Specializes;
-import javax.webbeans.Standard;
-import javax.webbeans.Stereotype;
-import javax.webbeans.manager.Bean;
+import javax.annotation.Named;
+import javax.annotation.Stereotype;
+import javax.context.Dependent;
+import javax.event.Event;
+import javax.inject.BindingType;
+import javax.inject.DefinitionException;
+import javax.inject.Specializes;
+import javax.inject.Standard;
+import javax.inject.manager.Bean;
+import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentInstancesStore;
@@ -380,7 +380,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * 
     * @return The set of binding types
     * 
-    * @see javax.webbeans.manager.Bean#getBindings()
+    * @see javax.inject.manager.Bean#getBindings()
     */
    public Set<Annotation> getBindings()
    {
@@ -401,7 +401,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * 
     * @return The deployment type
     * 
-    * @see javax.webbeans.manager.Bean#getDeploymentType()
+    * @see javax.inject.manager.Bean#getDeploymentType()
     */
    public Class<? extends Annotation> getDeploymentType()
    {
@@ -443,7 +443,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * 
     * @return The name
     * 
-    * @see javax.webbeans.manager.Bean#getName()
+    * @see javax.inject.manager.Bean#getName()
     */
    public String getName()
    {
@@ -455,7 +455,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * 
     * @return The scope type
     * 
-    * @see javax.webbeans.manager.Bean#getScopeType()
+    * @see javax.inject.manager.Bean#getScopeType()
     */
    public Class<? extends Annotation> getScopeType()
    {
@@ -477,7 +477,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * 
     * @return The set of API types
     * 
-    * @see javax.webbeans.manager.Bean#getTypes()
+    * @see javax.inject.manager.Bean#getTypes()
     */
    @Override
    public Set<Type> getTypes()
@@ -502,7 +502,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * 
     * @return True if nullable, false otherwise
     * 
-    * @see javax.webbeans.manager.Bean#isNullable()
+    * @see javax.inject.manager.Bean#isNullable()
     */
    @Override
    public boolean isNullable()

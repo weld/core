@@ -28,12 +28,12 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 
-import javax.webbeans.InjectionPoint;
-import javax.webbeans.TypeLiteral;
-import javax.webbeans.manager.Bean;
-import javax.webbeans.manager.Decorator;
-import javax.webbeans.manager.InterceptionType;
-import javax.webbeans.manager.Interceptor;
+import javax.inject.TypeLiteral;
+import javax.inject.manager.Bean;
+import javax.inject.manager.Decorator;
+import javax.inject.manager.InjectionPoint;
+import javax.inject.manager.InterceptionType;
+import javax.inject.manager.Interceptor;
 
 import org.jboss.webbeans.bean.InjectionPointBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;

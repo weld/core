@@ -21,16 +21,16 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.webbeans.BindingType;
-import javax.webbeans.DefinitionException;
-import javax.webbeans.Dependent;
-import javax.webbeans.DeploymentType;
-import javax.webbeans.Disposes;
-import javax.webbeans.Initializer;
-import javax.webbeans.Observes;
-import javax.webbeans.Produces;
-import javax.webbeans.Production;
-import javax.webbeans.ScopeType;
+import javax.context.Dependent;
+import javax.context.ScopeType;
+import javax.event.Observes;
+import javax.inject.BindingType;
+import javax.inject.DefinitionException;
+import javax.inject.DeploymentType;
+import javax.inject.Disposes;
+import javax.inject.Initializer;
+import javax.inject.Produces;
+import javax.inject.Production;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injection.InjectionPointProvider;

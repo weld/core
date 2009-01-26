@@ -8,7 +8,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.webbeans.DeploymentType;
+import javax.inject.DeploymentType;
 
 @Target( { TYPE, METHOD })
 @Retention(RUNTIME)

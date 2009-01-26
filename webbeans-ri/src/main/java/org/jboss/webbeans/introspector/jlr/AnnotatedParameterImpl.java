@@ -21,8 +21,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.webbeans.BindingType;
-import javax.webbeans.manager.Manager;
+import javax.inject.BindingType;
+import javax.inject.manager.Manager;
 
 import org.jboss.webbeans.introspector.AnnotatedMember;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
