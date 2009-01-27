@@ -24,7 +24,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that an observer method is a transactional observer.
+ * Specifies that an observer method is an after transaction completion 
+ * observer.
  * 
  * @author Gavin King
  * 

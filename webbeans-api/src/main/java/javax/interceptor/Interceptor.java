@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 import javax.annotation.Stereotype;
 
 /**
- * Specifies that a class is a Web Beans interceptor.
+ * Specifies that a class is an interceptor.
  * 
  * @author Gavin King
  * 

@@ -1,7 +1,7 @@
 package javax.event;
 
 /**
- * The contract between the Web Bean manager and a Web Beans observer object.
+ * The contract between the manager and an observer object.
  * This interface should not be called directly by the application.
  * 
  * @author Gavin King

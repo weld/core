@@ -800,13 +800,13 @@ public class ManagerImpl implements Manager, Serializable
       return this;
    }
 
-   public Manager createChildManager()
+   public Manager createActivity()
    {
       // TODO Implement hierarchical managers
       return this;
    }
 
-   public Manager setCurrent()
+   public Manager setCurrent(Class<? extends Annotation> scopeType)
    {
       // TODO Implement hierarchical managers
       return this;

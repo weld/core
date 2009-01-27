@@ -17,8 +17,8 @@
 
 package javax.inject;
 
-import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
@@ -27,8 +27,7 @@ import java.lang.annotation.Target;
 
 /**
  * 
- * Specifies that a method of a Web Bean implementation class is a producer
- * method.
+ * Specifies that a method of a bean is a producer method.
  * 
  * @author Gavin King
  * @author Pete Muir

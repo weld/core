@@ -17,9 +17,13 @@
 package javax.inject;
 
 /**
+ * Thrown if a producer method returns a null value or a producer field contains
+ * a null value, and the scope of the method or field is not @Dependent
  */
 public class IllegalProductException extends ExecutionException
 {
+
+   private static final long serialVersionUID = -6280627846071966243L;
 
    public IllegalProductException()
    {

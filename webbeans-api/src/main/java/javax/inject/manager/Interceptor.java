@@ -21,16 +21,44 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+/**
+ * The contract between the manager and a interceptor.
+ * 
+ * This interface should not be called directly by the application.
+ * 
+ * @author Pete Muir
+ * 
+ */
 public abstract class Interceptor extends Bean<Object>
 {
-
+   
+   /**
+    * Create an interceptor bean
+    * 
+    * @param manager
+    *           the manager to create the interceptor for
+    */
    protected Interceptor(Manager manager)
    {
       super(manager);
    }
-
+   
+   /**
+    * The interceptor bindings used to bind an interceptor to a bean
+    * 
+    * @return the interceptor bindings
+    */
    public abstract Set<Annotation> getInterceptorBindingTypes();
-
+   
+   /**
+    * The interceptor method for the specified lifecycle callback or business
+    * method
+    * 
+    * @param type
+    *           the interception type
+    * @return the method, or null if the interceptor does not intercept
+    *         lifecycle callbacks or business methods
+    */
    public abstract Method getMethod(InterceptionType type);
-
+   
 }

@@ -17,7 +17,37 @@
 
 package javax.inject.manager;
 
+/**
+ * Identifies the kind of lifecycle callback or business method
+ * 
+ * @author Pete Muir
+ *
+ */
 public enum InterceptionType
 {
-   AROUND_INVOKE, POST_CONSTRUCT, PRE_DESTROY, PRE_PASSIVATE, POST_ACTIVATE
+   
+   /**
+    * Intercepts method invocation
+    */
+   AROUND_INVOKE, 
+   
+   /**
+    * Intercepts bean construction
+    */
+   POST_CONSTRUCT, 
+   
+   /**
+    * Intercepts bean destruction
+    */
+   PRE_DESTROY, 
+   
+   /**
+    * Intercepts bean passivation
+    */
+   PRE_PASSIVATE, 
+   
+   /**
+    * Intercepts bean activation
+    */
+   POST_ACTIVATE
 }

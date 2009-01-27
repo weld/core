@@ -19,11 +19,14 @@
 package javax.inject;
 
 /**
+ * Thrown if an exception occurs during execution
  * 
  * @author Pete Muir
  */
 public class ExecutionException extends RuntimeException
 {
+
+   private static final long serialVersionUID = -4418792077313780514L;
 
    public ExecutionException()
    {

@@ -30,7 +30,6 @@ import java.lang.annotation.Target;
  * @author Gavin King
  * @author Pete Muir
  */
-
 @Target(FIELD)
 @Retention(RUNTIME)
 @Documented

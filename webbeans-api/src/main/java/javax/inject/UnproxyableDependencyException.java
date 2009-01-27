@@ -19,11 +19,15 @@
 package javax.inject;
 
 /**
+ * Thrown if a bean has normal scope and the type cannot be proxied by the 
+ * container
  * 
  * @author Pete Muir
  */
 public class UnproxyableDependencyException extends DeploymentException
 {
+
+   private static final long serialVersionUID = 1667539354548135465L;
 
    public UnproxyableDependencyException()
    {

@@ -27,14 +27,26 @@ import java.lang.annotation.Annotation;
  * @author Pete Muir
  * 
  * @param <T>
-*            the type of the event object
+ *            the type of the event object
  */
 
 public interface Event<T>
 {
 
+   /**
+    * Fire an event
+    * 
+    * @param event the event type
+    * @param bindings the event bindings
+    */
    public void fire(T event, Annotation... bindings);
    
+   /**
+    * Register an observer for a specific type
+    * 
+    * @param observer the observer to register
+    * @param bindings the bindings to observe the event for
+    */
    public void observe(Observer<T> observer, Annotation... bindings);
    
 }

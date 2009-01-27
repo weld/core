@@ -27,12 +27,11 @@ import java.lang.annotation.Target;
 import javax.annotation.Stereotype;
 
 /**
- * Specifies that a class is a Web Beans decorator.
+ * Specifies that a class is a decorator.
  * 
  * @author Gavin King
  * @author Pete Muir
  */
-
 @Target(TYPE)
 @Retention(RUNTIME)
 @Documented

@@ -19,11 +19,17 @@
 package javax.inject;
 
 /**
+ * Thrown if a simple bean is dependent scoped and injected into a stateful 
+ * session bean, into a non-transient field, bean constructor parameter or 
+ * initializer method parameter of a bean which declares a passivating scope, or
+ * into a parameter of a producer method which declares a passivating scope
  * 
  * @author Pete Muir
  */
 public class UnserializableDependencyException extends DeploymentException
 {
+
+   private static final long serialVersionUID = -6287506607413810688L;
 
    public UnserializableDependencyException()
    {

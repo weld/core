@@ -17,15 +17,6 @@
 
 package javax.inject;
 
-/**
- * Supports inline instantiation of annotation types.
- * 
- * @author Pete Muir
- * @author Gavin King
- * 
- *  @param <T>
- *            the annotation type
- */
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -33,6 +24,15 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 
+/**
+ * Supports inline instantiation of annotation type instances.
+ * 
+ * @author Pete Muir
+ * @author Gavin King
+ * 
+ *  @param <T>
+ *            the annotation type
+ */
 public abstract class AnnotationLiteral<T extends Annotation> implements
       Annotation
 {
@@ -91,11 +91,21 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
       return null;
    }
 
+   /**
+    * {@inheritDoc}
+    * 
+    * @return {@inheritDoc}
+    */
    public Class<? extends Annotation> annotationType()
    {
       return annotationType;
    }
 
+   /**
+    * {@inheritDoc}
+    * 
+    * @return {@inheritDoc}
+    */
    @Override
    public String toString()
    {
@@ -112,6 +122,12 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
      return string + ")";
    }
    
+   /**
+    * {@inheritDoc}
+    * 
+    * @param other {@inheritDoc}
+    * @return {@inheritDoc}
+    */
    @Override
    public boolean equals(Object other)
    {
@@ -136,10 +152,10 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
    }
    
    @Override
-   /*
-    * The hash code of a primitive value v is equal to WrapperType.valueOf(v).hashCode(), where WrapperType is the wrapper type corresponding to the primitive type of v (Byte, Character, Double, Float, Integer, Long, Short, or Boolean).
-    * The hash code of a string, enum, class, or annotation member-value I v is computed as by calling v.hashCode(). (In the case of annotation member values, this is a recursive definition.)
-    * The hash code of an array member-value is computed by calling the appropriate overloading of Arrays.hashCode on the value. (There is one overloading for each primitive type, and one for object reference types.)
+   /**
+    * {@inheritDoc}
+    * 
+    * @return {@inheritDoc}
     */
    public int hashCode()
    {

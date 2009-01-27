@@ -28,7 +28,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that a Web Bean is session scoped.
+ * Specifies that a bean is session scoped.
  * 
  * @author Gavin King
  * @author Pete Muir

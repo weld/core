@@ -19,11 +19,15 @@
 package javax.inject;
 
 /**
+ * Thrown if an injection point of primitive type resolves to a bean which may
+ * be null
  * 
  * @author Pete Muir
  */
 public class NullableDependencyException extends DeploymentException
 {
+
+   private static final long serialVersionUID = 6877485218767005761L;
 
    public NullableDependencyException()
    {

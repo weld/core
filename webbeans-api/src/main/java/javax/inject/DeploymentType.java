@@ -25,7 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that an annotation type is a Web Beans deployment type.
+ * Specifies that an annotation type is a deployment type.
  * 
  * @author Gavin King
  * @author Pete Muir

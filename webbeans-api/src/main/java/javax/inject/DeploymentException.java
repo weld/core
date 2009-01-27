@@ -18,11 +18,14 @@
 package javax.inject;
 
 /**
+ * Thrown if an error occurs during bean deployment
  * 
  * @author Pete Muir
  */
 public class DeploymentException extends RuntimeException
 {
+
+   private static final long serialVersionUID = -332013557319725211L;
 
    public DeploymentException()
    {

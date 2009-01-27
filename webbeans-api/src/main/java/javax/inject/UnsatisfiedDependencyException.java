@@ -19,11 +19,14 @@
 package javax.inject;
 
 /**
+ * Thrown if no beans can be resolved
  * 
  * @author Pete Muir
  */
 public class UnsatisfiedDependencyException extends DeploymentException
 {
+
+   private static final long serialVersionUID = 5350603312442756709L;
 
    public UnsatisfiedDependencyException()
    {

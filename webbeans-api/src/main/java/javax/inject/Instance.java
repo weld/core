@@ -21,7 +21,7 @@ import java.lang.annotation.Annotation;
 
 
 /**
- * An interface for looking up web beans of a particular type.
+ * An interface for looking up beans of a particular type.
  * 
  * @author Gavin King
  * 
@@ -32,13 +32,13 @@ import java.lang.annotation.Annotation;
 public interface Instance<T>
 {
    /**
-    * Get an instance of a Web Bean of the specified type.
+    * Get an instance of a bean of the specified type.
     * 
     * Additional binding annotations may be specified at the injection point.
     * 
     * @param bindings
     *           Additional binding types
-    * @return an instance of a Web Bean of the specified type
+    * @return an instance of a bean of the specified type
     * @throws DuplicateBindingTypeException
     *            if two instances of the same binding type are passed
     * @throws IllegalArgumentException

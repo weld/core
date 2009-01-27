@@ -28,10 +28,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that a Web Bean is application scoped.
+ * Specifies that a bean is application scoped.
  * 
  * @author Gavin King
- * 
  * @author Pete Muir
  */
 

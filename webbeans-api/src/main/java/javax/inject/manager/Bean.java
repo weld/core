@@ -24,41 +24,91 @@ import java.util.Set;
 import javax.context.Contextual;
 
 /**
- * The contract between the Web Bean manager and a Web Bean. This interface
+ * The contract between the manager and a bean. This interface
  * should not be called directly by the application.
  * 
  * @author Gavin King
  * 
- * @param <T> an API type of the Web Bean
+ * @param <T> an API type of the bean
  */
 public abstract class Bean<T> implements Contextual<T>
 {
    private final Manager manager;
 
+   /**
+    * Create an instance of a bean
+    * 
+    * @param manager
+    */
    protected Bean(Manager manager)
    {
       this.manager = manager;
    }
 
+   /**
+    * Get the manager used to create this bean
+    * 
+    * @return an instance of the manager
+    */
    protected Manager getManager()
    {
       return manager;
    }
 
+   /**
+    * The client-visible types of a bean
+    * 
+    * @return the bean types
+    */
    public abstract Set<Type> getTypes();
 
+   /**
+    * The bindings of a bean
+    * 
+    * @return the bindings
+    */
    public abstract Set<Annotation> getBindings();
 
+   /**
+    * The scope of a bean
+    * 
+    * @return the scope
+    */
    public abstract Class<? extends Annotation> getScopeType();
 
+   /**
+    * The deployment type of a bean
+    * 
+    * @return the deployment type
+    */
    public abstract Class<? extends Annotation> getDeploymentType();
 
+   /**
+    * The name of a bean
+    * 
+    * @return the name
+    */
    public abstract String getName();
 
+   /**
+    * The serializability of a bean
+    * 
+    * @return true if the bean is serializable
+    */
    public abstract boolean isSerializable();
 
+   /**
+    * The nullability of a bean
+    * 
+    * @return true if the bean is nullable
+    */
    public abstract boolean isNullable();
 
+   /**
+    * The injection points of a bean
+    * 
+    * @return the injection points of a bean
+    */
    public abstract Set<? extends InjectionPoint> getInjectionPoints();
 
 }

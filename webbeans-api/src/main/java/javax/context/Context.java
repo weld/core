@@ -20,7 +20,7 @@ package javax.context;
 import java.lang.annotation.Annotation;
 
 /**
- * The contract between the Web Bean manager and a Web Beans context object.
+ * The contract between the manager and a contextual object.
  * This interface should not be called directly by the application.
  * 
  * @author Gavin King
@@ -30,12 +30,44 @@ import java.lang.annotation.Annotation;
 public interface Context
 {
 
+   /**
+    * The scope which this context implements
+    * 
+    * @return the scope
+    */
    public Class<? extends Annotation> getScopeType();
 
+   /**
+    * Return an existing instance of a contextual type or create a new instance
+    * of a contextual type
+    * 
+    * @param <T> the type of contextual type
+    * @param contextual the contextual type
+    * @param creationalContext the creational context in which incompletely
+    *                          initialized may be placed
+    * @return the contextual instance, or null if no creational context is given
+    *         and an instance does not exist in the context
+    * @throws ContextNotActiveException if the context is not active
+    */
    public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext);
    
+   /**
+    * Return an existing instance of a contextual type or create a new instance
+    * of a contextual type
+    * 
+    * @param <T> the type of the contextual type
+    * @param contextual the contextual type
+    * @return the contextual instance, or null if an instance does not exist in
+    *         the context
+    * @throws ContextNotActiveException if the context is not active  
+    */
    public <T> T get(Contextual<T> contextual);
 
+   /**
+    * The context is only active at certain points in the application lifecycle
+    * 
+    * @return true if the context is active
+    */
    boolean isActive();
 
 }

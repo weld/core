@@ -18,11 +18,14 @@
 package javax.inject;
 
 /**
+ * Thrown if the definition of a bean is incorrect
  * 
  * @author Pete Muir
  */
 public class DefinitionException extends RuntimeException
 {
+
+   private static final long serialVersionUID = 8014646336322875707L;
 
    public DefinitionException()
    {

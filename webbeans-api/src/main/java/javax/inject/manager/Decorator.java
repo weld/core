@@ -20,18 +20,48 @@ package javax.inject.manager;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
+/**
+ * The Bean object for a a decorator
+ * 
+ * This interface should not be called directly by the application.
+ * 
+ * @author Pete Muir
+ *
+ */
 public abstract class Decorator extends Bean<Object>
 {
 
+   /**
+    * Create an interceptor bean
+    * 
+    * @param manager
+    *           the manager to create the interceptor for
+    */
    protected Decorator(Manager manager)
    {
       super(manager);
    }
 
+   /**
+    * Obtains the type of the decorated bean
+    * 
+    * @return
+    */
    public abstract Class<?> getDelegateType();
 
+   /**
+    * Obtains the bindings of the decorated bean
+    * 
+    * @return
+    */
    public abstract Set<Annotation> getDelegateBindings();
 
+   /**
+    * Injects the delegate
+    * 
+    * @param instance the instance to inject the delegate into
+    * @param delegate the delegate to inject
+    */
    public abstract void setDelegate(Object instance, Object delegate);
 
 }

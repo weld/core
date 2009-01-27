@@ -27,7 +27,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies the name of a Web Bean.
+ * Specifies the name of a bean.
  * 
  * @author Gavin King
  * @author Pete Muir
@@ -42,9 +42,16 @@ public @interface Named
    /**
     * If no name is explicitly specified, the default name is used.
     * 
-    * @return the component name
+    * For simple beans and session beans the default name is the unqualified 
+    * class name of the bean class, after converting the first character to 
+    * lower case. 
+    * 
+    * For producer methods the default name is the method name, unless the 
+    * method follows the JavaBeans property getter naming convention, in which 
+    * case the default name is the JavaBeans property name. 
+    * 
+    * @return the bean name
     */
-
    public String value() default "";
 
 }

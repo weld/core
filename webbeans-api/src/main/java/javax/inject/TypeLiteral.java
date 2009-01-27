@@ -50,11 +50,21 @@ public abstract class TypeLiteral<T>
       }
    }
 
+   /**
+    * Get the actual type represented by type literal
+    * 
+    * @return
+    */
    public final Type getType() 
    {
       return actualType;
    }
 
+   /**
+    * Get the raw type represented by the type literal
+    * 
+    * @return
+    */
    @SuppressWarnings("unchecked")
    public final Class<T> getRawType() {
       Type type = getType();

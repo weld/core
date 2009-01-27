@@ -27,8 +27,10 @@ import java.lang.annotation.Target;
 import javax.inject.BindingType;
 
 /**
- * Event binding type for the event that is raised by the Web Bean manager when
+ * Event binding type for the event that is raised by the manager when
  * it has completed discovery and bean creation
+ * 
+ * @author Pete Muir
  */
 @BindingType
 @Retention(RUNTIME)

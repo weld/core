@@ -25,6 +25,8 @@ package javax.inject;
 public class InconsistentSpecializationException extends DeploymentException
 {
 
+   private static final long serialVersionUID = 4359656880524913555L;
+
    public InconsistentSpecializationException()
    {
       super();

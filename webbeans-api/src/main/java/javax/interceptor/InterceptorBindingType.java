@@ -25,8 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that an annotation type is a Web Beans
- * interceptor binding type.
+ * Specifies that an annotation type is an interceptor binding type.
  * 
  * @author Gavin King 
  * @author Pete Muir

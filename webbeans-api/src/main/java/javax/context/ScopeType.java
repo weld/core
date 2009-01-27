@@ -25,7 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that an annotation type is a Web Beans scope type.
+ * Specifies that an annotation type is a scope type.
  * 
  * @author Gavin King
  * @author Pete Muir
@@ -43,7 +43,7 @@ public @interface ScopeType
    boolean normal() default true;
 
    /**
-    * @return true if this is a passivating scope (Web Beans with this scope
+    * @return true if this is a passivating scope (beans with this scope
     *         type must be serializable)
     */
    boolean passivating() default false;

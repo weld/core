@@ -20,12 +20,16 @@ package javax.event;
 import javax.inject.ExecutionException;
 
 /**
+ * Wraps any checked exceptions which occur during the notification of an
+ * observer
  * 
  * @author Pete Muir
  */
 
 public class ObserverException extends ExecutionException
 {
+
+   private static final long serialVersionUID = -801836224808304381L;
 
    public ObserverException()
    {

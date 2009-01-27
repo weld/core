@@ -27,8 +27,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Deployment type for standard components defined by the Web Beans
- * specification.
+ * Deployment type for standard components defined by the JSR-299 specification.
  * 
  * @author Gavin King
  * @author Pete Muir

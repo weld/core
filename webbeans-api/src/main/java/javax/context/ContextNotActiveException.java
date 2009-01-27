@@ -33,6 +33,8 @@ import javax.inject.ExecutionException;
 public class ContextNotActiveException extends ExecutionException
 {
    
+   private static final long serialVersionUID = -3599813072560026919L;
+
    public ContextNotActiveException()
    {
       super();

@@ -18,12 +18,14 @@
 package javax.inject;
 
 /**
+ * Wraps any checked exceptions which occur during creation of an bean
  * 
  * @author Pete Muir
  */
-
 public class CreationException extends ExecutionException
 {
+
+   private static final long serialVersionUID = 1002854668862145298L;
 
    public CreationException()
    {

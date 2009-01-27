@@ -26,7 +26,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that an annotation type is a Web Beans stereotype.
+ * Specifies that an annotation type is a stereotype.
  * 
  * @author Pete Muir
  * @author Gavin King
@@ -38,8 +38,18 @@ import java.lang.annotation.Target;
 public @interface Stereotype
 {
 
+   /**
+    * Restrict the scope of the stereotyped bean
+    * 
+    * @return the allowed scopes
+    */
    public Class<? extends Annotation>[] supportedScopes() default {};
    
+   /**
+    * Require that stereotype beans have certain API types 
+    * 
+    * @return the required types
+    */
    public Class<?>[] requiredTypes() default {};
    
 }
