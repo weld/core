@@ -2,6 +2,10 @@
 
 <bookinfo>
   <title>Introduction to Web Beans</title>
+  <productname>master</productname>
+  <productnumber>4.3</productnumber>
+  <edition>4.3</edition>
+  <pubsnumber>1</pubsnumber>
   <subtitle>The new Java standard for dependency injection and contextual state management</subtitle>
 
   <xi:include href="Author_Group.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />

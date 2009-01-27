@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: part1\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-23 11:18+1000\n"
+"PO-Revision-Date: 2009-01-27 10:42+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -69,9 +70,7 @@ msgid ""
 "components, along with a new kind of interceptor, called a "
 "<emphasis>decorator</emphasis>, that is more appropriate for use in solving "
 "business problems."
-msgstr ""
-"<emphasis>데코레이터 (decorator)</emphasis>라고 불리는 새로운 종류의 인터셉터와 함께 <emphasis>인터셉터</emphasis>를 구성요소에 바인딩하기 위한 개선된 접근으로, "
-"비지니스 문제 해결을 위해 보다 적절하게 사용됩니다. "
+msgstr "<emphasis>데코레이터 (decorator)</emphasis> 라는 새로운 종류의 인터셉터와 함께 <emphasis>인터셉터</emphasis>를 구성요소에 바인딩하기 위해 개선된 접근으로, 비지니스 문제 해결을 위해 보다 적절하게 사용  "
 
 #. Tag: para
 #: part1.xml:32
@@ -126,9 +125,7 @@ msgstr "직접 사용하지 않을 경우 참조 사항을 어디에 보관해�
 msgid ""
 "how can I add an indirection layer, so that the implementation of this "
 "object can vary at deployment time?"
-msgstr ""
-"어떻게 하면 우회 계층을 추가하여, 이러한 개체 구현을 배치시 다르게할 수 있을"
-"까요?   "
+msgstr "어떻게 하면 우회 계층을 추가하여, 배치시 이러한 개체 구현을 다르게 할 수 있을까요?     "
 
 #. Tag: para
 #: part1.xml:61
@@ -148,7 +145,7 @@ msgid ""
 "scenario, without affecting any client."
 msgstr ""
 "Web Bean은 의존하는 다른 Web Beans의 유형 및 시멘틱 만을 지정합니다. 이는 의존하는 다른 Web Bean 클라이언트 또는 스레딩 모델, 실제적인 수명 주기, 구체적 "
-"구현 방식을 인식할 필요가 없습니다. 더 나아가 이는 의존하는 스레딩 모델, 수명 주기, 구체적 구현 방식은 클라이언트에게 영향을 미치지 않고 운용 방식에 따라 달라질 수 있습니다.   "
+"구현 방식을 인식할 필요가 없습니다. 더 나아가 의존하는 Web Bean의 스레딩 모델, 수명 주기, 구체적 구현 방식은 클라이언트에게 영향을 미치지 않고 운용 방식에 따라 달라질 수 있습니다.        "
 
 #. Tag: para
 #: part1.xml:72
@@ -164,7 +161,7 @@ msgstr "이벤트, 인터셉터 및 데코레이터는 이러한 모델에 내�
 msgid ""
 "<emphasis>event notifications</emphasis> decouple event producers from event "
 "consumers,"
-msgstr "<emphasis>이벤트 통지</emphasis>는 이벤트 소비자로 부터 이벤트 생산자를 연결 해제합니다  "
+msgstr "<emphasis>이벤트 통지</emphasis>는 이벤트 소비자로부터 이벤트 생산자를 연결 해제합니다  "
 
 #. Tag: para
 #: part1.xml:81
@@ -172,7 +169,7 @@ msgstr "<emphasis>이벤트 통지</emphasis>는 이벤트 소비자로 부터 �
 msgid ""
 "<emphasis>interceptors</emphasis> decouple technical concerns from business "
 "logic, and"
-msgstr "<emphasis>인터셉터</emphasis>는 비지니스 로직으로 부터의 기술적 문제를 연결 해제합니다  "
+msgstr "<emphasis>인터셉터</emphasis>는 비지니스 로직으로 부터의 기술적 문제를 연결 해제합니다   "
 
 #. Tag: para
 #: part1.xml:85
@@ -194,9 +191,7 @@ msgid ""
 "together with a new pattern, called <emphasis>binding annotations</"
 "emphasis>, to wire together Web Beans, their dependencies, their "
 "interceptors and decorators and their event consumers."
-msgstr ""
-"가장 중요하게 Web Beans은 이러한 모든 기능은 <emphasis>타입 안정적 (typesafe)</emphasis> 방식으로 제공합니다. Web Beans는 협력적 객체를 갖추기 위한 방법을 결정하기 위해 문자열 기반의 식별자를 사용하지 않습니다. XML은 옵션으로 남아있어도 거의 사용되지 않습니다. 대신 Web Beans는 <emphasis>binding annotations</"
-"emphasis>이라는 새로운 패턴과 함께 Java 객체 모델에서 이미 사용 가능한 타이핑 정보를 사용하여 Web Beans 및 Web Beans의 의존성, 인터셉터, 데코레이터 및 이벤트 소비자를 함께 묶습니다. "
+msgstr "가장 중요하게 Web Beans는 이러한 모든 기능을 <emphasis>타입 안정적 (typesafe)</emphasis> 방식으로 제공합니다. Web Beans는 협력적 객체를 갖추기 위한 방법을 결정하기 위해 문자열 기반의 식별자를 사용하지 않습니다. XML은 옵션으로 남아있어도 거의 사용되지 않습니다. 대신 Web Beans는 <emphasis>바인딩 어노테이션 (binding annotations)</emphasis>이라는 새로운 패턴과 함께 Java 객체 모델에서 이미 사용 가능한 타이핑 정보를 사용하여 Web Beans 및 Web Beans의 의존성, 인터셉터, 데코레이터 및 이벤트 소비자를 함께 묶습니다.     "
 
 #. Tag: para
 #: part1.xml:100
@@ -232,7 +227,7 @@ msgid ""
 "of components defined by future Java EE specifications or by non-standard "
 "frameworks may be cleanly integrated with Web Beans, take advantage of the "
 "Web Beans services, and interact with any other kind of Web Bean."
-msgstr "Web Beans는 통합 지점을 제공하여 차후 Java EE 사양이나 또는 비표준 프레임워크에 의해 지정된 다른 종류의 구성요소가 Web Beans과 통합되어 Web Beans 서비스의 장점을 취하고 다른 종류의 Web Bean과 상호 작용합니다.  "
+msgstr "Web Beans는 통합 지점을 제공하여 차후 Java EE 사양이나 또는 비표준 프레임워크에 의해 지정된 다른 종류의 구성 요소가 Web Beans과 통합되어 Web Beans 서비스의 장점을 취하고 다른 종류의 Web Bean과 상호 작용합니다.        "
 
 #. Tag: para
 #: part1.xml:120
@@ -242,7 +237,7 @@ msgid ""
 "Seam, Guice and Spring. However, Web Beans has its own very distinct "
 "character: more typesafe than Seam, more stateful and less XML-centric than "
 "Spring, more web and enterprise-application capable than Guice."
-msgstr "Web Beans는 Seam, Guice, Spring을 포함하여 다수의 기존 Java 프레임워크에 의해 영향을 받았지만 Web Beans은 자체적으로 다음과 같은 고유한 기능을 소유하고 있습니다: Seam 보다 더 타입 안정적, 보다 더 상태 기반적, Spring 보다 덜 XML-중심, Guice 보다 더 웹 및 엔터프라이즈-애플리케이션 기능    "
+msgstr "Web Beans는 Seam, Guice, Spring을 포함하여 다수의 기존 Java 프레임워크에 의해 영향을 받았지만 Web Beans은 자체적으로 다음과 같은 고유한 기능을 소유하고 있습니다: Seam 보다 더 타입 안정적, 보다 더 상태 기반적, Spring 보다 덜 XML-중심, Guice 보다 더 웹 및 엔터프라이즈-애플리케이션 사용 가능   "
 
 #. Tag: para
 #: part1.xml:125
