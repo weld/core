@@ -1,23 +1,25 @@
+# translation of Book_Info.po to
 # Language de-DE translations for Introduction_to_Web_Beans package.
 # Automatically generated, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: Book_Info\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-10 14:18+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-28 06:53+1100\n"
+"Last-Translator: \n"
+"Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: Book_Info.xml:4
 #, no-c-format
 msgid "Introduction to Web Beans"
-msgstr ""
+msgstr "Einführung in Web Beans"
 
 #. Tag: subtitle
 #: Book_Info.xml:5
@@ -25,4 +27,5 @@ msgstr ""
 msgid ""
 "The new Java standard for dependency injection and contextual state "
 "management"
-msgstr ""
+msgstr "Der neue Java Standard für \"Dependency-Injection\" und kontextuellem Status-Management"
+
