@@ -1,0 +1,1 @@
+package org.jboss.webbeans.test.unit.lookup.circular;import javax.inject.Current;import javax.inject.Produces;class DependentSelfConsumingDependentProducer{   @Current Violation violation;      @Produces   public Violation produceViolation() {      return new Violation();   }      public void ping() {         }} 

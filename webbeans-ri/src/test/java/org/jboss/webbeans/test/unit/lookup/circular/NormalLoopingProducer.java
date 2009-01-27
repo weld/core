@@ -1,0 +1,1 @@
+package org.jboss.webbeans.test.unit.lookup.circular;import javax.context.ApplicationScoped;import javax.inject.Produces;@ApplicationScopedclass NormalLoopingProducer{      @Produces @ApplicationScoped   public Violation produceViolation(Violation violation) {      return new Violation();   }} 

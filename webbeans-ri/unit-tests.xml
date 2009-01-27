@@ -40,6 +40,7 @@
          <package name="org.jboss.webbeans.test.unit.event" />
          <package name="org.jboss.webbeans.test.unit.implementation" />
          <package name="org.jboss.webbeans.test.unit.lookup" />
+         <package name="org.jboss.webbeans.test.unit.lookup.circular" />
       </packages>
    </test>
    
