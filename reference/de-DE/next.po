@@ -1,23 +1,25 @@
+# translation of next.po to
 # Language de-DE translations for Introduction_to_Web_Beans package.
 # Automatically generated, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: next\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-10 14:18+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-01-28 06:27+1100\n"
+"Last-Translator: \n"
+"Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: next.xml:4
 #, no-c-format
 msgid "Next steps"
-msgstr ""
+msgstr "Die nächsten Schritte"
 
 #. Tag: para
 #: next.xml:6
@@ -25,7 +27,7 @@ msgstr ""
 msgid ""
 "Because Web Beans is so new, there's not yet a lot of information available "
 "online."
-msgstr ""
+msgstr "Da Web Beans so neu sind, existieren noch nicht so viele Informationen online."
 
 #. Tag: para
 #: next.xml:9
@@ -36,7 +38,7 @@ msgid ""
 "the length of this article, and almost as readable. But, of course, it "
 "covers many details that we've skipped over. The spec is available from "
 "<literal>http://jcp.org/en/jsr/detail?id=299</literal>."
-msgstr ""
+msgstr "Natürlich ist die Web Beans Spezifikation die beste Quelle für weitere Information zu Web Beans. Die Spezifikation umfasst rund 100 Seiten, ist also nur etwa doppelt so lang wie dieser Artikel, aber nahezu so einfach verständlich wie dieser. Sie enthält aber zahlreiche Einzelheiten, auf die hier nicht eingegangen wird. Die Spezifikation ist unter <literal>http://jcp.org/en/jsr/detail?id=299</literal> verfügbar."
 
 #. Tag: para
 #: next.xml:15
@@ -47,3 +49,7 @@ msgid ""
 "Beans spec lead blog at <literal>http://in.relation.to</literal>. This "
 "article is substantially based upon a series of blog entries published there."
 msgstr ""
+"Die Web Beans Referenzimplementierung wird unter <literal>http://"
+"seamframework.org/WebBeans</literal> entwickelt. Das RI Entwicklungsteam und die Web "
+"Beans Spezifikation führen unter <literal>http://in.relation.to</literal> einen Blog. Dieser Artikel basiert im Wesentlichen auf eine dort veröffentlichte Reihe von Blog-Einträgen."
+
