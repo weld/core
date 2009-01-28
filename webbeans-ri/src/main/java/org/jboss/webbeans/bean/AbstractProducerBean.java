@@ -37,6 +37,7 @@ import javax.inject.Produces;
 import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -285,8 +286,20 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
     * 
     * @return The receiver
     */
-   protected Object getReceiver()
+   protected Object getReceiver(CreationalContext<?> creationalContext)
    {
+      // This is a bit dangerous, as it means that producer methods can end of 
+      // executing on partially constructed instances. Also, it's not required
+      // by the spec...
+      if (creationalContext instanceof CreationalContextImpl)
+      {
+         CreationalContextImpl<?> creationalContextImpl = (CreationalContextImpl<?>) creationalContext;
+         if (creationalContextImpl.containsIncompleteInstance(getDeclaringBean()))
+         {
+            log.warn("Executing producer method on incomplete declaring bean due to circular injection");
+            return creationalContextImpl.getIncompleteInstance(getDeclaringBean());
+         }
+      }
       return getAnnotatedItem().isStatic() ? null : manager.getInstance(getDeclaringBean());
    }
 

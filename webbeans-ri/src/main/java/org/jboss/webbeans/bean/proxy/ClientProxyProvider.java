@@ -39,7 +39,7 @@ import org.jboss.webbeans.util.Proxies;
  * 
  * @see org.jboss.webbeans.bean.proxy.ProxyMethodHandler
  */
-public class ProxyPool
+public class ClientProxyProvider
 {
    private static final long serialVersionUID = 9029999149357529341L;
 
@@ -53,7 +53,7 @@ public class ProxyPool
    /**
     * Constructor
     */
-   public ProxyPool()
+   public ClientProxyProvider()
    {
       this.pool = new ConcurrentCache<Bean<? extends Object>, Object>();
    }
@@ -110,29 +110,22 @@ public class ProxyPool
     * @return the client proxy for the bean
     */
    @SuppressWarnings("unchecked")
-   public <T> T getClientProxy(final Bean<T> bean, boolean create)
+   public <T> T getClientProxy(final Bean<T> bean)
    {
-      if (create)
+      return pool.putIfAbsent(bean, new Callable<T>()
       {
-         return pool.putIfAbsent(bean, new Callable<T>()
+
+         public T call() throws Exception
          {
-
-            public T call() throws Exception
+            int beanIndex = CurrentManager.rootManager().getBeans().indexOf(bean);
+            if (beanIndex < 0)
             {
-               int beanIndex = CurrentManager.rootManager().getBeans().indexOf(bean);
-               if (beanIndex < 0)
-               {
-                  throw new DefinitionException(bean + " is not known to the manager");
-               }
-               return createClientProxy(bean, beanIndex);
+               throw new DefinitionException(bean + " is not known to the manager");
             }
+            return createClientProxy(bean, beanIndex);
+         }
 
-         });
-      }
-      else
-      {
-         return (T)pool.getValue(bean);
-      }
+      });
    }
 
    /**

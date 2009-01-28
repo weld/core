@@ -56,7 +56,7 @@ import javax.inject.manager.Manager;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.bean.proxy.ProxyPool;
+import org.jboss.webbeans.bean.proxy.ClientProxyProvider;
 import org.jboss.webbeans.context.ContextMap;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
@@ -107,7 +107,7 @@ public class ManagerImpl implements Manager, Serializable
    // The registered contexts
    private transient final ContextMap contextMap;
    // The client proxy pool
-   private transient final ProxyPool proxyPool;
+   private transient final ClientProxyProvider clientProxyProvider;
    // The registered beans
    private transient List<Bean<?>> beans;
    // The registered beans, mapped by implementation class
@@ -145,7 +145,7 @@ public class ManagerImpl implements Manager, Serializable
       this.newEnterpriseBeanMap = new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>();
       this.enterpriseBeanMap = new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>();
       this.resolver = new Resolver(this);
-      this.proxyPool = new ProxyPool();
+      this.clientProxyProvider = new ClientProxyProvider();
       this.decorators = new HashSet<Decorator>();
       this.interceptors = new HashSet<Interceptor>();
       this.contextMap = new ContextMap();
@@ -580,7 +580,14 @@ public class ManagerImpl implements Manager, Serializable
       }
       else if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal())
       {
-         return (T) proxyPool.getClientProxy(bean, creationalContext != null);
+         if (creationalContext != null || (creationalContext == null && getContext(bean.getScopeType()).get(bean) != null))
+         {
+            return (T) clientProxyProvider.getClientProxy(bean);
+         }
+         else
+         {
+               return null;
+         }
       }
       else
       {

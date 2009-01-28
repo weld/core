@@ -38,7 +38,7 @@ import org.jboss.webbeans.util.Reflections;
  * 
  * @author Nicklas Karlsson
  * 
- * @see org.jboss.webbeans.bean.proxy.ProxyPool
+ * @see org.jboss.webbeans.bean.proxy.ClientProxyProvider
  */
 public class ClientProxyMethodHandler implements MethodHandler, Serializable
 {
@@ -49,6 +49,8 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
    private transient Bean<?> bean;
    // The bean index in the manager
    private int beanIndex;
+   
+   private static final ThreadLocal<CreationalContextImpl<?>> currentCreationalContext  = new ThreadLocal<CreationalContextImpl<?>>();
 
    /**
     * Constructor
@@ -97,8 +99,28 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
    
    private <T> T getProxiedInstance(Bean<T> bean)
    {
-      Context context = CurrentManager.rootManager().getContext(bean.getScopeType());
-      return context.get(bean, new CreationalContextImpl<T>(bean));
+      CreationalContextImpl<T> creationalContext;
+      if (currentCreationalContext.get() == null)
+      {
+         creationalContext = new CreationalContextImpl<T>(bean);
+         currentCreationalContext.set(creationalContext);
+      }
+      else
+      {
+         creationalContext = currentCreationalContext.get().getCreationalContext(bean);
+      }
+      try
+      {
+         Context context = CurrentManager.rootManager().getContext(bean.getScopeType());
+         return context.get(bean, creationalContext);
+      }
+      finally
+      {
+         if (creationalContext.isOuter())
+         {
+            currentCreationalContext.remove();
+         }
+      }
    }
 
    /**

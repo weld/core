@@ -82,7 +82,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
    @Override
    protected T produceInstance(CreationalContext<T> creationalContext)
    {
-      return field.get(getReceiver());
+      return field.get(getReceiver(creationalContext));
    }
 
 

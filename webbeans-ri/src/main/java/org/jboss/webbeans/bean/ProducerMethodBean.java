@@ -78,7 +78,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
 
    protected T produceInstance(CreationalContext<T> creationalContext)
    {
-      return method.invoke(getReceiver(), manager, creationalContext);
+      return method.invoke(getReceiver(creationalContext), manager, creationalContext);
    }
 
    /**

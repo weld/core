@@ -11,17 +11,20 @@ public class CreationalContextImpl<T> implements CreationalContext<T>
    
    private final Map<Bean<?>, Object> incompleteInstances;
    private final Bean<T> bean;
+   private final boolean outer;
    
    public CreationalContextImpl(Bean<T> bean)
    {
       this.incompleteInstances = new HashMap<Bean<?>, Object>();
       this.bean = bean;
+      this.outer = true;
    }
    
    private CreationalContextImpl(Bean<T> bean, Map<Bean<?>, Object> incompleteInstances)
    {
       this.incompleteInstances = incompleteInstances;
       this.bean = bean;
+      this.outer = false;
    }
    
    public void push(T incompleteInstance)
@@ -42,6 +45,11 @@ public class CreationalContextImpl<T> implements CreationalContext<T>
    public boolean containsIncompleteInstance(Bean<?> bean)
    {
       return incompleteInstances.containsKey(bean);
+   }
+   
+   public boolean isOuter()
+   {
+      return outer;
    }
    
 }

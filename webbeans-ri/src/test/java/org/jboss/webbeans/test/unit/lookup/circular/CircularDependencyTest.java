@@ -7,7 +7,7 @@ public class CircularDependencyTest extends AbstractTest
 {
   
    
-   @Test(groups="broken", timeOut=1000)
+   @Test
    public void testCircularInjectionOnTwoNormalBeans() throws Exception
    {
       deployBeans(Pig.class, Food.class);
@@ -73,7 +73,7 @@ public class CircularDependencyTest extends AbstractTest
       }.run();
    }
    
-   @Test(groups="broken", timeOut=1000)
+   @Test(timeOut=1000)
    public void testDependentProducerMethodDeclaredOnDependentBeanWhichInjectsProducedBean() throws Exception
    {
       deployBeans(DependentSelfConsumingDependentProducer.class);
