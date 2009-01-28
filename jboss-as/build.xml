@@ -51,6 +51,7 @@
 		<copy todir="target/webbeans.deployer/META-INF">
 			<fileset dir="${basedir}/resources">
 				<include name="webbeans-deployers-jboss-beans.xml"/>
+				<include name="webbeans-ejb-jboss-beans.xml"/>
 				<include name="jboss-structure.xml"/>
 			</fileset>
 		</copy>
@@ -61,7 +62,6 @@
          <fileset dir="target/webbeans.deployer">
             <include name="webbeans-ri.jar" />
             <include name="webbeans-ri-int-jbossas.jar" />
-         	<include name="webbeans-ri-int-jboss-ejb.jar" />
             <include name="webbeans-api.jar" />
             <include name="webbeans-ri-spi.jar" />
          </fileset>
@@ -71,6 +71,7 @@
 			<fileset dir="target/webbeans.deployer">
 				<include name="**/*.xml" />
 				<include name="webbeans-ri-int-microcontainer.jar" />
+		                <include name="webbeans-ri-int-jboss-ejb.jar" />
 				<include name="google*.jar" />
 			</fileset>
 		</copy>
