@@ -20,8 +20,8 @@ package javax.context;
 import javax.inject.CreationException;
 
 /**
- * The contract between a context and a contextual type
- * This interface should not be implemented directly by the application.
+ * The contract between a context and a contextual type This interface should
+ * not be implemented directly by the application.
  * 
  * @author Nicklas Karlsson
  * @author Pete Muir
@@ -31,17 +31,20 @@ public interface Contextual<T>
    /**
     * Create a new instance of the contextual type
     * 
-    * @param creationalContext the creational context in which incompletely
-    *                          initialized contexts may be placed
+    * @param creationalContext
+    *           the creational context in which incompletely initialized
+    *           contexts may be placed
     * @return the contextual instance
-    * @throws CreationException if a checked exception occurs whilst creating
-    *                           the instance
+    * @throws CreationException
+    *            if a checked exception occurs whilst creating the instance
     */
    public T create(CreationalContext<T> creationalContext);
-
+   
    /**
     * Destroys an instance of the contexual type
-    * @param instance the insance to destroy
+    * 
+    * @param instance
+    *           the insance to destroy
     */
    public void destroy(T instance);
 }
