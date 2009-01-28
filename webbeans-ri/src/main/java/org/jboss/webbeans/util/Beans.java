@@ -21,9 +21,9 @@ import java.util.Set;
 
 import javax.inject.manager.Bean;
 
-import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.metadata.MetaDataCache;
 
 /**
  * Helper class for bean inspection

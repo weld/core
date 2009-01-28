@@ -27,12 +27,12 @@ import javax.inject.DefinitionException;
 import javax.inject.Disposes;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
+import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.util.Names;
 
 /**

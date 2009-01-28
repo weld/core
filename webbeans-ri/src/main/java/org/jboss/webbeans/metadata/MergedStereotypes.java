@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.model;
+package org.jboss.webbeans.metadata;
 
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.introspector.AnnotationStore.AnnotationMap;
 
 /**

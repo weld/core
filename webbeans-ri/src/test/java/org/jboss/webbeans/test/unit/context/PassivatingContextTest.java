@@ -5,7 +5,7 @@ import javax.context.ConversationScoped;
 import javax.context.RequestScoped;
 import javax.context.SessionScoped;
 
-import org.jboss.webbeans.MetaDataCache;
+import org.jboss.webbeans.metadata.MetaDataCache;
 import org.testng.annotations.Test;
 
 public class PassivatingContextTest extends org.jboss.webbeans.test.unit.AbstractTest

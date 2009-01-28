@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.model;
+package org.jboss.webbeans.metadata;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;

@@ -25,7 +25,7 @@ import javax.event.Observer;
 import javax.inject.Current;
 import javax.inject.DuplicateBindingTypeException;
 
-import org.jboss.webbeans.MetaDataCache;
+import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 

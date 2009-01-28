@@ -15,14 +15,11 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans;
+package org.jboss.webbeans.metadata;
 
 import java.lang.annotation.Annotation;
 import java.util.concurrent.Callable;
 
-import org.jboss.webbeans.model.BindingTypeModel;
-import org.jboss.webbeans.model.ScopeModel;
-import org.jboss.webbeans.model.StereotypeModel;
 import org.jboss.webbeans.util.ConcurrentCache;
 
 /**

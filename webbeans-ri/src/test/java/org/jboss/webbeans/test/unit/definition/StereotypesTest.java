@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import javax.context.RequestScoped;
 
-import org.jboss.webbeans.model.StereotypeModel;
+import org.jboss.webbeans.metadata.StereotypeModel;
 import org.jboss.webbeans.test.unit.AbstractTest;
 import org.testng.annotations.Test;
 

@@ -42,7 +42,7 @@ import org.jboss.webbeans.introspector.AnnotationStore.AnnotationMap;
 import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.model.MergedStereotypes;
+import org.jboss.webbeans.metadata.MergedStereotypes;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Reflections;
 
