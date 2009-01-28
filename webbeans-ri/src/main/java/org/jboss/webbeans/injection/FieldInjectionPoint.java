@@ -4,8 +4,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Set;
 
+import javax.context.CreationalContext;
 import javax.inject.manager.Bean;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedField;
 
@@ -47,6 +49,11 @@ public class FieldInjectionPoint<T> extends ForwardingAnnotatedField<T> implemen
    public Set<Annotation> getBindings()
    {
       return delegate().getAnnotationStore().getBindingTypes();
-   }   
-      
+   }
+
+   public void inject(Object declaringInstance, ManagerImpl manager, CreationalContext<?> creationalContext)
+   {
+      delegate().inject(declaringInstance, manager.getInstanceToInject(this, creationalContext));
+   }
+
 }

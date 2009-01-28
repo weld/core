@@ -6,8 +6,14 @@ import javax.inject.Initializer;
 @ApplicationScoped
 class Space
 {
+   
+   public Space()
+   {
+      // TODO Auto-generated constructor stub
+   }
+   
    @Initializer
-   public Space(Fish fish)
+   public Space(Planet planet)
    {
    }
    

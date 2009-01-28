@@ -126,15 +126,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       checkObserverMethods();
    }
 
-   /**
-    * Initializes the injection points
-    */
-   @Override
-   protected void initInjectionPoints()
-   {
-      super.initInjectionPoints();
-   }
-
    protected void initTypes()
    {
       types = new LinkedHashSet<Type>();
@@ -217,6 +208,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          DependentContext.INSTANCE.setActive(true);
          T instance = proxyClass.newInstance();
+         creationalContext.push(instance);
          ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler(this, ejbDescriptor.getRemoveMethods()));
          if (log.isTraceEnabled())
             log.trace("Enterprise bean instance created for bean " + this);
@@ -254,18 +246,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
    }
 
-   /**
-    * Calls all initializers of the bean
-    * 
-    * @param instance The bean instance
-    */
-   protected void callInitializers(T instance)
-   {
-      for (AnnotatedMethod<?> initializer : getInitializerMethods())
-      {
-         initializer.invoke(manager, instance);
-      }
-   }
+
 
    /**
     * Injects EJBs and common fields
@@ -314,19 +295,23 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       try
       {
-         manager.getInjectionPointProvider().pushBean(this);
+         CreationalContext<T> creationalContext = new CreationalContext<T>() 
+         { 
+            
+            public void push(T incompleteInstance) {};
+            
+         };
          DependentContext.INSTANCE.setCurrentInjectionInstance(instance);
          DependentContext.INSTANCE.setActive(true);
          bindDecorators();
          bindInterceptors();
          injectEjbAndCommonFields();
-         injectBoundFields(instance);
-         callInitializers(instance);
+         injectBoundFields(instance, creationalContext);
+         callInitializers(instance, creationalContext);
       }
       finally
       {
          DependentContext.INSTANCE.clearCurrentInjectionInstance(instance);
-         manager.getInjectionPointProvider().popBean();
          DependentContext.INSTANCE.setActive(false);
       }
 

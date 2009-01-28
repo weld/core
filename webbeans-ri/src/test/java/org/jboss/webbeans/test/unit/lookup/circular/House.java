@@ -7,9 +7,20 @@ import javax.inject.Initializer;
 class House
 {
    
-   @Initializer
-   public House(House farm)
+   public House()
    {
+      // TODO Auto-generated constructor stub
+   }
+   
+   @Initializer
+   public House(House house)
+   {
+      house.ping();
+   }
+   
+   private void ping()
+   {
+      
    }
    
 }

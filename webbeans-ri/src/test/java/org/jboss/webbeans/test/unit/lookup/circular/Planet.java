@@ -5,12 +5,12 @@ import javax.inject.Initializer;
 class Planet
 {
    
-   private Water water;
+   private Space space;
    
    @Initializer
-   public Planet(Water water)
+   public Planet(Space space)
    {
-      this.water = water;
+      this.space = space;
    }
    
 }

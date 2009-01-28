@@ -44,6 +44,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.transaction.UserTransaction;
@@ -72,7 +73,7 @@ public class ObserverImpl<T> implements Observer<T>
    }
 
    private final Bean<?> observerBean;
-   private final AnnotatedMethod<?> observerMethod;
+   private final MethodInjectionPoint<?> observerMethod;
    private TransactionObservationPhase transactionObservationPhase;
    private final boolean conditional;
    private ManagerImpl manager;
@@ -104,7 +105,7 @@ public class ObserverImpl<T> implements Observer<T>
    {
       this.manager = manager;
       this.observerBean = observerBean;
-      this.observerMethod = observer;
+      this.observerMethod = MethodInjectionPoint.of(observerBean, observer);
       checkObserverMethod();
 
       @SuppressWarnings("unchecked")
@@ -200,7 +201,7 @@ public class ObserverImpl<T> implements Observer<T>
             DependentContext.INSTANCE.setCurrentInjectionInstance(dependentsCollector);
          }
          // Get the most specialized instance of the component
-         instance = manager.getInstance(observerBean, !isConditional());
+         instance = getInstance(observerBean);
          if (instance == null)
          {
             return;
@@ -211,7 +212,7 @@ public class ObserverImpl<T> implements Observer<T>
          }
          else
          {
-            observerMethod.invokeWithSpecialValue(instance, Observes.class, event, manager);
+            observerMethod.invokeWithSpecialValue(instance, Observes.class, event, manager, null);
          }
       }
       catch (ExecutionException e)
@@ -237,6 +238,11 @@ public class ObserverImpl<T> implements Observer<T>
             DependentContext.INSTANCE.clearCurrentInjectionInstance(instance);
          }
       }
+   }
+   
+   private <B> B getInstance(Bean<B> observerBean)
+   {
+      return manager.getInstance(observerBean, !isConditional());
    }
 
    /**

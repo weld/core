@@ -39,14 +39,6 @@ public interface AnnotatedField<T> extends AnnotatedMember<T, Field>
    public Field getAnnotatedField();
    
    /**
-    * Injects into the field using the value provided by the manager.
-    * 
-    * @param declaringInstance The instance to inject into
-    * @param manager The Web Beans manager
-    */
-   public void inject(Object declaringInstance, Manager manager);
-   
-   /**
     * Injects an instance
     * 
     * 
@@ -66,18 +58,6 @@ public interface AnnotatedField<T> extends AnnotatedMember<T, Field>
     * @param value The value to inject
     */
    public void injectIntoInstance(Object declaringInstance, Object value);
-   
-   /**
-    * Injects an instance
-    * 
-    * Unlike {@link #inject(Object, Manager)} the field injected into is 
-    * discovered from the declaring instance. This is slower, but safe to use
-    * with proxies.
-    * 
-    * @param declaringInstance The instance to inject
-    * @param manager The Web Beans manager
-    */
-   public void injectIntoInstance(Object declaringInstance, Manager manager);
    
    public T get(Object instance);
    

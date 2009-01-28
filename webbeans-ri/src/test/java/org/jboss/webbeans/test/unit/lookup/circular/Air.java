@@ -6,8 +6,14 @@ import javax.inject.Initializer;
 @ApplicationScoped
 class Air
 {
+   
+   public Air()
+   {
+   
+   }
+   
    @Initializer
-   public Air(Fish fish)
+   public Air(Bird bird)
    {
    }
    

@@ -49,7 +49,7 @@ public abstract class ForwardingAnnotatedMethod<T> extends ForwardingAnnotatedMe
       return delegate().getParameterTypesAsArray();
    }
 
-   public List<AnnotatedParameter<?>> getParameters()
+   public List<? extends AnnotatedParameter<?>> getParameters()
    {
       return delegate().getParameters();
    }
@@ -69,14 +69,9 @@ public abstract class ForwardingAnnotatedMethod<T> extends ForwardingAnnotatedMe
       return delegate().invoke(instance, parameters);
    }
 
-   public T invokeOnInstance(Object instance, ManagerImpl manager)
+   public T invokeOnInstance(Object instance, Object... parameters)
    {
-      return delegate().invokeOnInstance(instance, manager);
-   }
-
-   public T invokeWithSpecialValue(Object instance, Class<? extends Annotation> specialParam, Object specialVal, ManagerImpl manager)
-   {
-      return delegate().invokeWithSpecialValue(instance, specialParam, specialVal, manager);
+      return delegate().invokeOnInstance(instance, parameters);
    }
 
    public boolean isEquivalent(Method method)

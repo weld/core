@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
@@ -231,56 +230,19 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       return this.getDeclaringClass().isEquivalent(method.getDeclaringClass()) && this.getName().equals(method.getName()) && Arrays.equals(this.getParameterTypesAsArray(), method.getParameterTypes());
    }
 
-   /**
-    * Gets the hash code (of the delegate)
-    * 
-    * @return The hash code
-    */
    @Override
    public int hashCode()
    {
       return getDelegate().hashCode();
    }
-
-   /**
-    * Invokes the method on an instance with current parameters from manager
-    * 
-    * @param instance The instance to invoke on
-    * @param manager The Web Beans manager
-    * @return The return value of the invocation 
-    * @see org.jboss.webbeans.introspector.AnnotatedMethod#invoke(ManagerImpl,
-    *      Object)
-    */
-   public T invoke(Object instance, ManagerImpl manager)
-   {
-      @SuppressWarnings("unchecked")
-      T result = (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, manager));
-      return result;
-   }
    
-   public T invokeOnInstance(Object instance, ManagerImpl manager)
+   public T invokeOnInstance(Object instance, Object...parameters)
    {
       @SuppressWarnings("unchecked")
-      T result = (T) Reflections.invokeAndWrap(getName(), getParameterTypesAsArray(), instance, getParameterValues(parameters, manager));
+      T result = (T) Reflections.invokeAndWrap(getName(), getParameterTypesAsArray(), instance, parameters);
       return result;
    }
 
-   public T invokeWithSpecialValue(Object instance, Class<? extends Annotation> specialParam, Object specialVal, ManagerImpl manager)
-   {
-      @SuppressWarnings("unchecked")
-      T result = (T) Reflections.invokeAndWrap(getDelegate(), instance, getParameterValues(parameters, specialVal, specialParam, manager));
-      return result;
-   }
-
-   /**
-    * Invokes the method on an instance with given parameters
-    * 
-    * @param instance The instance to invoke on
-    * @param parameters The parameters
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedMethod#invoke(Object,
-    *      Object...)
-    */
    public T invoke(Object instance, Object... parameters)
    {
       @SuppressWarnings("unchecked")
@@ -324,7 +286,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       {
          return toString;
       }
-      toString = "Annotated method " + Names.method2String(method);
+      toString = "Annotated method " + Names.methodToString(method);
       return toString;
    }
       

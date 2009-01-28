@@ -35,6 +35,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
+import org.jboss.webbeans.injection.ConstructorInjectionPoint;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
@@ -64,7 +65,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    // Empty list representing no-args
    private static List<Class<?>> NO_ARGUMENTS = Collections.emptyList();
    // The constructor
-   private AnnotatedConstructor<T> constructor;
+   private ConstructorInjectionPoint<T> constructor;
    // The post-construct method
    private AnnotatedMethod<?> postConstruct;
    // The pre-destroy method
@@ -125,23 +126,22 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          DependentContext.INSTANCE.setActive(true);
          InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
-         injectionPointProvider.pushBean(this);
          T instance = null;
          try
          {
-            instance = constructor.newInstance(manager);
+            instance = constructor.newInstance(manager, creationalContext);
+            creationalContext.push(instance);
             DependentContext.INSTANCE.setCurrentInjectionInstance(instance);
             bindDecorators();
             bindInterceptors();
             injectEjbAndCommonFields(instance);
-            injectBoundFields(instance);
-            callInitializers(instance);
+            injectBoundFields(instance, creationalContext);
+            callInitializers(instance, creationalContext);
             callPostConstruct(instance);
          }
          finally
          {
             DependentContext.INSTANCE.clearCurrentInjectionInstance(instance);
-            injectionPointProvider.popBean();
          }
          return instance;
       }
@@ -187,7 +187,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          try
          {
             // note: RI supports injection into @PreDestroy
-            preDestroy.invoke(instance, manager);
+            preDestroy.invoke(instance);
          }
          catch (Exception e)
          {
@@ -208,26 +208,12 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          try
          {
-            // note: RI supports injection into @PostConstruct
-            postConstruct.invoke(instance, manager);
+            postConstruct.invoke(instance);
          }
          catch (Exception e)
          {
             throw new RuntimeException("Unable to invoke " + postConstruct + " on " + instance, e);
          }
-      }
-   }
-
-   /**
-    * Calls any initializers
-    * 
-    * @param instance The instance to invoke the initializers on
-    */
-   protected void callInitializers(T instance)
-   {
-      for (AnnotatedMethod<?> initializer : getInitializerMethods())
-      {
-         initializer.invoke(instance, manager);
       }
    }
    
@@ -331,13 +317,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          injectionPoints.add(ParameterInjectionPoint.of(this, parameter));
       }
-      for (AnnotatedMethod<?> initializer : getInitializerMethods())
-      {
-         for (AnnotatedParameter<?> parameter : initializer.getParameters())
-         {
-            injectionPoints.add(ParameterInjectionPoint.of(this, parameter));
-         }
-      }
    }
 
    /**
@@ -408,7 +387,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       }
       else if (initializerAnnotatedConstructors.size() == 1)
       {
-         this.constructor = initializerAnnotatedConstructors.iterator().next();
+         this.constructor = ConstructorInjectionPoint.of(this, initializerAnnotatedConstructors.iterator().next());
          log.trace("Exactly one constructor (" + constructor + ") annotated with @Initializer defined, using it as the bean constructor for " + getType());
          return;
       }
@@ -416,7 +395,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       if (getAnnotatedItem().getConstructor(NO_ARGUMENTS) != null)
       {
 
-         this.constructor = getAnnotatedItem().getConstructor(NO_ARGUMENTS);
+         this.constructor = ConstructorInjectionPoint.of(this, getAnnotatedItem().getConstructor(NO_ARGUMENTS));
          log.trace("Exactly one constructor (" + constructor + ") defined, using it as the bean constructor for " + getType());
          return;
       }
@@ -515,7 +494,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    public String toString()
    {
       StringBuilder buffer = new StringBuilder();
-      buffer.append("Annotated " + Names.scopeTypeToString(getScopeType()));
+      buffer.append(Names.scopeTypeToString(getScopeType()));
       if (getName() == null)
       {
          buffer.append("unnamed simple bean");
@@ -524,8 +503,8 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          buffer.append("simple bean '" + getName() + "'");
       }
-      buffer.append(" [" + getType().getName() + "]\n");
-      buffer.append("   API types " + getTypes() + ", binding types " + getBindings() + "\n");
+      buffer.append(" ").append(getType().getName()).append(", ");
+      buffer.append(" API types = ").append(Names.typesToString(getTypes())).append(", binding types = " + Names.annotationsToString(getBindings()));
       return buffer.toString();
    }
 

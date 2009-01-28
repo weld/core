@@ -19,10 +19,7 @@ package org.jboss.webbeans.injection;
 
 import java.util.Stack;
 
-import javax.inject.manager.Bean;
 import javax.inject.manager.InjectionPoint;
-
-import org.jboss.webbeans.introspector.AnnotatedParameter;
 
 /**
  * Provides injection point metadata
@@ -32,33 +29,8 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
  */
 public class InjectionPointProvider
 {
-   // The stack of beans
-   private final Stack<Bean<?>> beans = new Stack<Bean<?>>();
    // The stack of injection points
    private final Stack<InjectionPoint> injectionPoints = new Stack<InjectionPoint>();
-
-   
-   /**
-    * Pushes a bean to the stack
-    * 
-    * @param currentBean The bean to push
-    */
-   public void pushBean(Bean<?> currentBean)
-   {
-      beans.push(currentBean);
-   }
-
-   /**
-    * Pops a bean from the stack
-    */
-   public void popBean()
-   {
-      if (beans.isEmpty())
-      {
-         return;
-      }
-      beans.pop();
-   }
 
    /**
     * Pushes an injection point to the stack
@@ -68,25 +40,6 @@ public class InjectionPointProvider
    public void pushInjectionPoint(AnnotatedInjectionPoint<?, ?> injectionPoint)
    {
       injectionPoints.push(injectionPoint);
-      if (beans.size() != injectionPoints.size())
-      {
-         throw new IllegalStateException("Number of beans on stack is inconsistent with number of injection points: " + this);
-      }
-   }
-   
-   /**
-    * Pushes an injection point to the stack
-    * 
-    * @param injectionPoint The injection point to push
-    */
-   // TODO Not sure if this is right, we should be able to push the current bean in somehow
-   public void pushInjectionPoint(AnnotatedParameter<?> parameter)
-   {
-      injectionPoints.push(ParameterInjectionPoint.of(getCurrentBean(), parameter));
-      if (beans.size() != injectionPoints.size())
-      {
-         throw new IllegalStateException("Number of beans on stack is inconsistent with number of injection points: " + this);
-      }
    }
 
    /**
@@ -121,30 +74,10 @@ public class InjectionPointProvider
       return injectionPoints.size() < 2 ? null : injectionPoints.elementAt(injectionPoints.size() - 2);
    }
 
-   /**
-    * Gets the current bean
-    * 
-    * @return The current bean or null if there is none on the stack
-    */
-   protected Bean<?> getCurrentBean()
-   {
-      return beans.isEmpty() ? null : beans.peek();
-   }
-
-   /**
-    * Gets the previous bean
-    * 
-    * @return The previous bean or null if there is none on the stack
-    */
-   protected Bean<?> getPreviousBean()
-   {
-      return beans.size() < 2 ? null : beans.elementAt(beans.size() - 2);
-   }
-
    @Override
    public String toString()
    {
-      return "InjectionPointProvider: Bean stack = " + beans.toString() + " InjectionPoint stack = " + injectionPoints.toString();
+      return "InjectionPoint stack = " + injectionPoints.toString();
    }
 
 }

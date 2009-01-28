@@ -21,8 +21,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.jboss.webbeans.ManagerImpl;
-
 /**
  * Represents a Class Constructor
  * 
@@ -38,7 +36,7 @@ public interface AnnotatedConstructor<T> extends AnnotatedMember<T, Constructor<
     * @return A set of abstracted parameters. Returns an empty set if there are
     *         no parameters
     */
-   public List<AnnotatedParameter<?>> getParameters();
+   public List<? extends AnnotatedParameter<?>> getParameters();
 
    /**
     * Gets all parameters to the constructor which are annotated with
@@ -53,10 +51,9 @@ public interface AnnotatedConstructor<T> extends AnnotatedMember<T, Constructor<
    /**
     * Creates a new instance of the class, using this constructor
     * 
-    * @param manager The Web Beans manager
     * @return The created instance
     */
-   public T newInstance(ManagerImpl manager);
+   public T newInstance(Object... parameters);
 
    /**
     * Gets the declaring class of the annotation

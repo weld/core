@@ -1,7 +1,7 @@
 package org.jboss.webbeans.injection;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
 import java.util.AbstractList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,11 +12,11 @@ import javax.inject.Produces;
 import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.introspector.ForwardingAnnotatedMethod;
+import org.jboss.webbeans.introspector.ForwardingAnnotatedConstructor;
 
-public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implements AnnotatedInjectionPoint<T, Method>
+public class ConstructorInjectionPoint<T> extends ForwardingAnnotatedConstructor<T> implements AnnotatedInjectionPoint<T, Constructor<T>>
 {
    
    private abstract class ForwardingParameterInjectionPointList extends AbstractList<ParameterInjectionPoint<?>>
@@ -43,23 +43,23 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
    
    private final Bean<?> declaringBean;
-   private final AnnotatedMethod<T> method;
+   private final AnnotatedConstructor<T> constructor;
 
-   public static <T> MethodInjectionPoint<T> of(Bean<?> declaringBean, AnnotatedMethod<T> method)
+   public static <T> ConstructorInjectionPoint<T> of(Bean<?> declaringBean, AnnotatedConstructor<T> constructor)
    {
-      return new MethodInjectionPoint<T>(declaringBean, method);
+      return new ConstructorInjectionPoint<T>(declaringBean, constructor);
    }
    
-   protected MethodInjectionPoint(Bean<?> declaringBean, AnnotatedMethod<T> method)
+   protected ConstructorInjectionPoint(Bean<?> declaringBean, AnnotatedConstructor<T> constructor)
    {
       this.declaringBean = declaringBean;
-      this.method = method;
+      this.constructor = constructor;
    }
    
    @Override
-   protected AnnotatedMethod<T> delegate()
+   protected AnnotatedConstructor<T> delegate()
    {
-      return method;
+      return constructor;
    }
 
    public Annotation[] getAnnotations()
@@ -77,14 +77,9 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
       return delegate().getBindingTypes();
    }
    
-   public T invoke(Object declaringInstance, ManagerImpl manager, CreationalContext<?> creationalContext)
+   public T newInstance(ManagerImpl manager, CreationalContext<?> creationalContext)
    {
-      return delegate().invoke(declaringInstance, getParameterValues(getParameters(), null, null, manager, creationalContext));
-   }
-   
-   public T invokeWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, ManagerImpl manager, CreationalContext<?> creationalContext)
-   {
-      return delegate().invoke(declaringInstance, getParameterValues(getParameters(), annotatedParameter, parameter, manager, creationalContext));
+      return delegate().newInstance(getParameterValues(getParameters(), null, null, manager, creationalContext));
    }
    
    @Override
@@ -111,7 +106,7 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
    
    public void inject(Object declaringInstance, Object value)
    {
-      delegate().invoke(declaringInstance, value);
+      throw new UnsupportedOperationException();
    }
 
    /**
@@ -122,7 +117,7 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
     * @param manager The Web Beans manager
     * @return The object array of looked up values
     */
-   protected Object[] getParameterValues(List<ParameterInjectionPoint<?>> parameters, Class<? extends Annotation> specialParam, Object specialVal, ManagerImpl manager, CreationalContext<?> creationalContext)
+   protected Object[] getParameterValues(List<ParameterInjectionPoint<?>> parameters, Object specialVal, Class<? extends Annotation> specialParam, ManagerImpl manager, CreationalContext<?> creationalContext)
    {
       Object[] parameterValues = new Object[parameters.size()];
       boolean producerMethod = this.isAnnotationPresent(Produces.class);
@@ -156,5 +151,5 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
       }
       return parameterValues;
    }
-   
+
 }

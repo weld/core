@@ -33,8 +33,6 @@ import javax.event.IfExists;
 import javax.event.Observes;
 import javax.inject.Disposes;
 
-import org.jboss.webbeans.ManagerImpl;
-
 /**
  * AnnotatedType provides a uniform access to the annotations on an annotated
  * class defined either in Java or XML
@@ -53,7 +51,7 @@ public interface AnnotatedMethod<T> extends AnnotatedMember<T, Method>
     * @return A list of parameters. Returns an empty list if no parameters are
     *         present.
     */
-   public List<AnnotatedParameter<?>> getParameters();
+   public List<? extends AnnotatedParameter<?>> getParameters();
 
    /**
     * Gets the list of annotated parameters for a given annotation
@@ -73,10 +71,10 @@ public interface AnnotatedMethod<T> extends AnnotatedMember<T, Method>
     * Invokes the method
     * 
     * @param instance The instance to invoke
-    * @param manager The Web Beans manager
+    * @param parameters The method parameters
     * @return A reference to the instance
     */
-   public T invoke(Object instance, ManagerImpl manager);
+   public T invoke(Object instance, Object... parameters);
    
    /**
     * Invokes the method on the class of the passed instance, not the declaring 
@@ -86,26 +84,7 @@ public interface AnnotatedMethod<T> extends AnnotatedMember<T, Method>
     * @param manager The Web Beans manager
     * @return A reference to the instance
     */
-   public T invokeOnInstance(Object instance, ManagerImpl manager);
-
-   /**
-    * Invokes the observer method
-    * 
-    * @param instance The instance to invoke
-    * @param event the event object
-    * @param manager The Web Beans manager
-    * @return A reference to the instance
-    */
-   public T invokeWithSpecialValue(Object instance, Class<? extends Annotation> specialParam, Object specialVal, ManagerImpl manager);
-
-   /**
-    * Invokes the method
-    * 
-    * @param instance The instance to invoke
-    * @param parameters The method parameters
-    * @return A reference to the instance
-    */
-   public T invoke(Object instance, Object... parameters);
+   public T invokeOnInstance(Object instance, Object... parameters);
 
    /**
     * Gets the declaring class

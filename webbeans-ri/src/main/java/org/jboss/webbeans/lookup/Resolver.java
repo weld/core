@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans;
+package org.jboss.webbeans.lookup;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -35,6 +35,8 @@ import javax.inject.manager.InjectionPoint;
 import javax.inject.manager.InterceptionType;
 import javax.inject.manager.Interceptor;
 
+import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.MetaDataCache;
 import org.jboss.webbeans.bean.InjectionPointBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedItem;

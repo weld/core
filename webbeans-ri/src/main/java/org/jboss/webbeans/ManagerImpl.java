@@ -63,12 +63,12 @@ import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.ObserverImpl;
-import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
+import org.jboss.webbeans.lookup.Resolver;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.util.Beans;
@@ -129,7 +129,9 @@ public class ManagerImpl implements Manager, Serializable
    // The Naming (JNDI) access
    private transient final NamingContext namingContext;
    
-   private final Map<Bean<?>, Bean<?>> specializedBeans;
+   private final transient Map<Bean<?>, Bean<?>> specializedBeans;
+   
+   private final transient ThreadLocal<Map<Bean<?>, ?>> incompleteInstances;
 
    /**
     * Create a new manager
@@ -153,7 +155,16 @@ public class ManagerImpl implements Manager, Serializable
       this.ejbDescriptorCache = new EjbDescriptorCache();
       this.injectionPointProvider = new InjectionPointProvider();
       this.specializedBeans = new HashMap<Bean<?>, Bean<?>>();
-
+      this.incompleteInstances = new ThreadLocal<Map<Bean<?>,?>>()
+      {
+        
+         @Override
+         protected Map<Bean<?>, ?> initialValue()
+         {
+            return new HashMap<Bean<?>, Object>();
+         }
+         
+      };
       List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       defaultEnabledDeploymentTypes.add(0, Standard.class);
       defaultEnabledDeploymentTypes.add(1, Production.class);
@@ -553,6 +564,18 @@ public class ManagerImpl implements Manager, Serializable
       return getInstance(bean, true);
    }
    
+   public <T> T getInstance(Bean<T> bean, boolean create)
+   {
+      if (create)
+      {
+         return getInstance(bean, new CreationalContextImpl<T>(bean));
+      }
+      else
+      {
+         return getInstance(bean, null);
+      }
+   }
+   
    /**
     * Returns an instance of a bean
     * 
@@ -561,36 +584,51 @@ public class ManagerImpl implements Manager, Serializable
     * 
     * @see javax.inject.manager.Manager#getInstance(javax.inject.manager.Bean)
     */
-   public <T> T getInstance(Bean<T> bean, boolean create)
+   private <T> T getInstance(Bean<T> bean, CreationalContextImpl<T> creationalContext)
    {
       if (specializedBeans.containsKey(bean))
       {
-         return getInstance((Bean<T>) specializedBeans.get(bean), create);
+         return getInstance((Bean<T>) specializedBeans.get(bean), creationalContext);
       }
       else if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal())
       {
-         return (T) proxyPool.getClientProxy(bean, create);
+         return (T) proxyPool.getClientProxy(bean, creationalContext != null);
       }
       else
       {
-         return getContext(bean.getScopeType()).get(bean, new CreationalContextImpl<T>());
+         return getContext(bean.getScopeType()).get(bean, creationalContext);
       }
    }
    
    public <T> T getInstanceToInject(InjectionPoint injectionPoint)
    {
-      throw new UnsupportedOperationException();
+      return getInstanceToInject(AnnotatedClassImpl.of((Class<T>) injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0])), null);
    }
    
    public <T> T getInstanceToInject(InjectionPoint injectionPoint, CreationalContext<?> creationalContext)
    {
-      throw new UnsupportedOperationException();
+      return getInstanceToInject(AnnotatedClassImpl.of((Class<T>) injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0])), creationalContext);
    }
    
-   public <T> T getInstanceToInject(AnnotatedInjectionPoint<T, ?> injectionPoint, CreationalContext<?> creationalContext)
+   private <T> T getInstanceToInject(AnnotatedItem<T, ?> element, CreationalContext<?> creationalContext)
    {
-      Bean<T> bean = getBeanByType(injectionPoint, injectionPoint.getBindings().toArray(EMPTY_ANNOTATION_ARRAY));
-      return getInstance(bean);
+      Bean<T> bean = getBeanByType(element, element.getBindingTypesAsArray());
+      if (creationalContext instanceof CreationalContextImpl)
+      {
+         CreationalContextImpl<?> ctx = (CreationalContextImpl<?>) creationalContext;
+         if (ctx.containsIncompleteInstance(bean))
+         {
+            return ctx.getIncompleteInstance(bean);
+         }
+         else
+         {
+            return getInstance(bean, ctx.getCreationalContext(bean));
+         }
+      }
+      else
+      {
+         return getInstance(bean);
+      }
    }
 
    /**
@@ -658,7 +696,7 @@ public class ManagerImpl implements Manager, Serializable
     * @param bindingTypes The binding types to match
     * @return An instance of the bean
     */
-   public <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindings)
+   private <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
       return getInstance(getBeanByType(element, bindings));
    }

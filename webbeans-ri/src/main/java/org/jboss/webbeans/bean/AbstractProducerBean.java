@@ -305,7 +305,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
             DependentContext.INSTANCE.setCurrentInjectionInstance(dependentCollector);
          }
          DependentContext.INSTANCE.setActive(true);
-         T instance = produceInstance();
+         T instance = produceInstance(creationalContext);
          checkReturnValue(instance);
          return instance;
       }
@@ -333,7 +333,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       }
    }
 
-   protected abstract T produceInstance();
+   protected abstract T produceInstance(CreationalContext<T> creationalContext);
 
    /**
     * Gets a string representation

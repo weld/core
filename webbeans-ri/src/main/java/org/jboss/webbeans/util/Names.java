@@ -22,9 +22,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,9 +52,16 @@ public class Names
       String scopeName = scopeType.getSimpleName();
       Matcher matcher = CAPITAL_LETTERS.matcher(scopeName);
       StringBuilder result = new StringBuilder();
+      int i = 0;
       while (matcher.find())
       {
-         result.append(matcher.group().toLowerCase() + " ");
+         String name = matcher.group();
+         if (i > 0)
+         {
+            name = name.toLowerCase();
+         }
+         result.append(name).append(" ");
+         i++;
       }
       return result.toString();
    }
@@ -80,7 +89,7 @@ public class Names
     * @param delimiter The delimeter
     * @return The string representation
     */
-   private static String list2String(List<String> list, String delimiter)
+   private static String listToString(List<String> list, String delimiter)
    {
       StringBuilder buffer = new StringBuilder();
       for (String item : list)
@@ -157,7 +166,7 @@ public class Names
     * @param annotations The annotations
     * @return The string representation
     */
-   public static String annotations2String(Annotation[] annotations)
+   private static String annotationsToString(Annotation[] annotations)
    {
       StringBuilder buffer = new StringBuilder();
       for (Annotation annotation : annotations)
@@ -174,13 +183,13 @@ public class Names
     * @param field The field
     * @return The string representation
     */
-   public static String field2String(Field field)
+   public static String fieldToString(Field field)
    {
       if (!field.isAccessible())
       {
          field.setAccessible(true);
       }
-      return "  Field " + annotations2String(field.getAnnotations()) + list2String(parseModifiers(field.getModifiers()), " ") + field.getName() + ";\n";
+      return "  Field " + annotationsToString(field.getAnnotations()) + listToString(parseModifiers(field.getModifiers()), " ") + field.getName();
    }
 
    /**
@@ -189,13 +198,13 @@ public class Names
     * @param method The method
     * @return The string representation
     */
-   public static String method2String(Method method)
+   public static String methodToString(Method method)
    {
       if (!method.isAccessible())
       {
          method.setAccessible(true);
       }
-      return "  Method " + method.getReturnType().getSimpleName() + " " + annotations2String(method.getAnnotations()) + list2String(parseModifiers(method.getModifiers()), " ") + method.getName() + "(" + parameters2String(method.getParameterTypes(), method.getParameterAnnotations(), false) + ");\n";
+      return "  Method " + method.getReturnType().getSimpleName() + " " + annotationsToString(method.getAnnotations()) + listToString(parseModifiers(method.getModifiers()), " ") + method.getName() + "(" + parametersToString(method.getParameterTypes(), method.getParameterAnnotations(), false) + ");\n";
    }
 
    /**
@@ -204,9 +213,9 @@ public class Names
     * @param annotation The annotation
     * @return The string representation
     */
-   public static String annotation2String(Annotation annotation)
+   public static String annotationToString(Annotation annotation)
    {
-      return "Annotation " + annotations2String(annotation.annotationType().getAnnotations()) + annotation.annotationType().getSimpleName();
+      return "Annotation " + annotationsToString(annotation.annotationType().getAnnotations()) + annotation.annotationType().getSimpleName();
    }
 
    /**
@@ -215,9 +224,9 @@ public class Names
     * @param constructor The method
     * @return The string representation
     */
-   public static String constructor2String(Constructor<?> constructor)
+   public static String constructorToString(Constructor<?> constructor)
    {
-      return "  Constructor " + annotations2String(constructor.getAnnotations()) + list2String(parseModifiers(constructor.getModifiers()), " ") + constructor.getDeclaringClass().getSimpleName() + "(" + parameters2String(constructor.getParameterTypes(), constructor.getParameterAnnotations(), true) + ");\n";
+      return "  Constructor " + annotationsToString(constructor.getAnnotations()) + listToString(parseModifiers(constructor.getModifiers()), " ") + constructor.getDeclaringClass().getSimpleName() + "(" + parametersToString(constructor.getParameterTypes(), constructor.getParameterAnnotations(), true) + ");\n";
    }
 
    /**
@@ -228,7 +237,7 @@ public class Names
     * @param annotations The annotation map
     * @return The string representation
     */
-   private static String parameters2String(Class<?>[] parameterTypes, Annotation[][] annotations, boolean constructor)
+   private static String parametersToString(Class<?>[] parameterTypes, Annotation[][] annotations, boolean constructor)
    {
       StringBuilder buffer = new StringBuilder();
       int start = constructor ? 1 : 0;
@@ -238,7 +247,7 @@ public class Names
          {
             buffer.append(", ");
          }
-         buffer.append(annotations2String(annotations[i]) + type2String(parameterTypes[i]));
+         buffer.append(annotationsToString(annotations[i]) + typeToString(parameterTypes[i]));
       }
       return buffer.toString();
    }
@@ -249,9 +258,9 @@ public class Names
     * @param clazz The type
     * @return The string representation
     */
-   public static String type2String(Class<?> clazz)
+   private static String typeToString(Class<?> clazz)
    {
-      return annotations2String(clazz.getAnnotations()) + clazz.getName();
+      return annotationsToString(clazz.getAnnotations()) + clazz.getSimpleName();
    }
 
    /**
@@ -260,22 +269,65 @@ public class Names
     * @param clazz The class
     * @return The string representation
     */
-   public static String class2String(Class<?> clazz)
+   public static String classToString(Class<?> clazz)
    {
       StringBuilder buffer = new StringBuilder();
-      buffer.append("Class " + type2String(clazz) + "\n");
+      buffer.append("Class " + typeToString(clazz) + "\n");
       for (Field field : clazz.getFields())
       {
-         buffer.append(field2String(field));
+         buffer.append(fieldToString(field));
       }
       for (Constructor<?> constructor : clazz.getConstructors())
       {
-         buffer.append(constructor2String(constructor));
+         buffer.append(constructorToString(constructor));
       }
       for (Method method : clazz.getMethods())
       {
-         buffer.append(method2String(method));
+         buffer.append(methodToString(method));
       }
+      return buffer.toString();
+   }
+   
+   public static String typesToString(Set<Type> types)
+   {
+      StringBuilder buffer = new StringBuilder();
+      int i = 0;
+      buffer.append("[");
+      for (Type type : types)
+      {
+         if (i > 0)
+         {
+            buffer.append(", ");
+         }
+         if (type instanceof Class<?>)
+         {
+            buffer.append(((Class<?>) type).getSimpleName());
+         }
+         else
+         {
+            buffer.append(type.toString());
+         }
+         i++;
+      }
+      buffer.append("]");
+      return buffer.toString();
+   }
+   
+   public static String annotationsToString(Set<Annotation> annotations)
+   {
+      StringBuilder buffer = new StringBuilder();
+      int i = 0;
+      buffer.append("[");
+      for (Annotation annotation : annotations)
+      {
+         if (i > 0)
+         {
+            buffer.append(", ");
+         }
+         buffer.append("@").append(annotation.annotationType().getSimpleName());
+         i++;
+      }
+      buffer.append("]");
       return buffer.toString();
    }
 

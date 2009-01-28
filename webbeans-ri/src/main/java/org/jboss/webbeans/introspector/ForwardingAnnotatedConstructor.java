@@ -21,8 +21,6 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.webbeans.ManagerImpl;
-
 public abstract class ForwardingAnnotatedConstructor<T> extends ForwardingAnnotatedMember<T, Constructor<T>> implements AnnotatedConstructor<T>
 {
 
@@ -39,14 +37,14 @@ public abstract class ForwardingAnnotatedConstructor<T> extends ForwardingAnnota
       return delegate().getDeclaringClass();
    }
 
-   public List<AnnotatedParameter<?>> getParameters()
+   public List<? extends AnnotatedParameter<?>> getParameters()
    {
       return delegate().getParameters();
    }
 
-   public T newInstance(ManagerImpl manager)
+   public T newInstance(Object... parameters)
    {
-      return delegate().newInstance(manager);
+      return delegate().newInstance(parameters);
    }
 
    public AnnotatedConstructor<T> wrap(Set<Annotation> annotations)

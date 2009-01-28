@@ -21,12 +21,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import javax.context.CreationalContext;
 import javax.event.Observes;
 import javax.inject.DefinitionException;
 import javax.inject.Disposes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
+import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
@@ -43,7 +45,7 @@ import org.jboss.webbeans.util.Names;
 public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
 {
    // The underlying method
-   private AnnotatedMethod<T> method;
+   private MethodInjectionPoint<T> method;
 
    private AnnotatedMethod<?> disposalMethod;
    
@@ -70,13 +72,13 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    protected ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       super(declaringBean, manager);
-      this.method = method;
+      this.method = MethodInjectionPoint.of(this, method);
       init();
    }
 
-   public T produceInstance()
+   protected T produceInstance(CreationalContext<T> creationalContext)
    {
-      return method.invoke(getReceiver(), manager);
+      return method.invoke(getReceiver(), manager, creationalContext);
    }
 
    /**

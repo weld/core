@@ -21,6 +21,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.context.CreationalContext;
 import javax.context.Dependent;
 import javax.context.ScopeType;
 import javax.event.Observes;
@@ -35,9 +36,12 @@ import javax.inject.Production;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.injection.InjectionPointProvider;
+import org.jboss.webbeans.injection.MethodInjectionPoint;
+import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
@@ -60,7 +64,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    // The injectable fields
    private Set<FieldInjectionPoint<?>> injectableFields;
    // The initializer methods
-   private Set<AnnotatedMethod<?>> initializerMethods;
+   private Set<MethodInjectionPoint<?>> initializerMethods;
 
    /**
     * Constructor
@@ -92,7 +96,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * 
     * @param instance The instance to inject into
     */
-   protected void injectBoundFields(T instance)
+   protected void injectBoundFields(T instance, CreationalContext<T> creationalContext)
    {
       InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
       for (FieldInjectionPoint<?> injectableField : injectableFields)
@@ -100,12 +104,25 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          injectionPointProvider.pushInjectionPoint(injectableField);
          try
          {
-            injectableField.inject(instance, manager);
+            injectableField.inject(instance, manager, creationalContext);
          }
          finally
          {
             injectionPointProvider.popInjectionPoint();
          }
+      }
+   }
+   
+   /**
+    * Calls all initializers of the bean
+    * 
+    * @param instance The bean instance
+    */
+   protected void callInitializers(T instance, CreationalContext<T> creationalContext)
+   {
+      for (MethodInjectionPoint<?> initializer : getInitializerMethods())
+      {
+         initializer.invoke(instance, manager, creationalContext);
       }
    }
 
@@ -141,6 +158,13 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             super.injectionPoints.add(fieldInjectionPoint);
          }
       }
+      for (AnnotatedMethod<?> initializer : getInitializerMethods())
+      {
+         for (AnnotatedParameter<?> parameter : initializer.getParameters())
+         {
+            injectionPoints.add(ParameterInjectionPoint.of(this, parameter));
+         }
+      }
    }
 
    /**
@@ -148,28 +172,28 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initInitializerMethods()
    {
-      initializerMethods = new HashSet<AnnotatedMethod<?>>();
-      for (AnnotatedMethod<?> annotatedMethod : annotatedItem.getAnnotatedMethods(Initializer.class))
+      initializerMethods = new HashSet<MethodInjectionPoint<?>>();
+      for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(Initializer.class))
       {
-         if (annotatedMethod.isStatic())
+         if (method.isStatic())
          {
-            throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be static");
+            throw new DefinitionException("Initializer method " + method.toString() + " cannot be static");
          }
-         else if (annotatedMethod.getAnnotation(Produces.class) != null)
+         else if (method.getAnnotation(Produces.class) != null)
          {
-            throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be annotated @Produces");
+            throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Produces");
          }
-         else if (annotatedMethod.getAnnotatedParameters(Disposes.class).size() > 0)
+         else if (method.getAnnotatedParameters(Disposes.class).size() > 0)
          {
-            throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot have parameters annotated @Disposes");
+            throw new DefinitionException("Initializer method " + method.toString() + " cannot have parameters annotated @Disposes");
          }
-         else if (annotatedMethod.getAnnotatedParameters(Observes.class).size() > 0)
+         else if (method.getAnnotatedParameters(Observes.class).size() > 0)
          {
-            throw new DefinitionException("Initializer method " + annotatedMethod.toString() + " cannot be annotated @Observes");
+            throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Observes");
          }
          else
          {
-            initializerMethods.add(annotatedMethod);
+            initializerMethods.add(MethodInjectionPoint.of(this, method));
          }
       }
    }
@@ -308,7 +332,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * 
     * @return The set of annotated methods
     */
-   public Set<AnnotatedMethod<?>> getInitializerMethods()
+   public Set<? extends MethodInjectionPoint<?>> getInitializerMethods()
    {
       return initializerMethods;
    }

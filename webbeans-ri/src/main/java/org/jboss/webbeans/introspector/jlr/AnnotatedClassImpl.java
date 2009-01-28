@@ -623,7 +623,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       {
          return toString;
       }
-      toString = "Annotated class " + Names.class2String(getDelegate());
+      toString = "Annotated class " + Names.classToString(getDelegate());
       return toString;
    }
    

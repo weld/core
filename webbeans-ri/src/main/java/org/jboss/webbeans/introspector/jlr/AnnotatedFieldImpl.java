@@ -21,8 +21,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import javax.inject.manager.Manager;
-
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.AnnotationStore;
@@ -114,24 +112,6 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
    {
       return actualTypeArguments;
    }
-
-   /**
-    * Gets the current value and injects this instance into an instance
-    * 
-    * @param instance The instance to inject into
-    * @param manager The Web Beans manager
-    * @see org.jboss.webbeans.introspector.AnnotatedField#inject(Object,
-    *      Manager)
-    */
-   public void inject(Object instance, Manager manager)
-   {
-      Reflections.setAndWrap(getDelegate(), instance, getValue(manager));
-   }
-   
-   public void injectIntoInstance(Object instance, Manager manager)
-   {
-      Reflections.setAndWrap(getName(), instance, getValue(manager));
-   }
    
    public void inject(Object instance, Object value)
    {
@@ -185,7 +165,7 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
       {
          return toString;
       }
-      toString = "Annotated field " + Names.field2String(field);
+      toString = "Annotated field " + Names.fieldToString(field);
       return toString;
    }
 

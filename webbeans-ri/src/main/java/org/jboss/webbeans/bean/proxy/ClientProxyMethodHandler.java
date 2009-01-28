@@ -98,7 +98,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
    private <T> T getProxiedInstance(Bean<T> bean)
    {
       Context context = CurrentManager.rootManager().getContext(bean.getScopeType());
-      return context.get(bean, CreationalContextImpl.<T>newInstance());
+      return context.get(bean, new CreationalContextImpl<T>(bean));
    }
 
    /**

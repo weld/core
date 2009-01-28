@@ -7,12 +7,17 @@ import javax.inject.Initializer;
 class Bird
 {
    
-   private Water water;
+   private Air air;
+   
+   public Bird()
+   {
+      
+   }
    
    @Initializer
-   public Bird(Water water)
+   public Bird(Air air)
    {
-      this.water = water;
+      this.air = air;
    }
    
 }

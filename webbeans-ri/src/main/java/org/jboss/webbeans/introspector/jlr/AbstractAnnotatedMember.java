@@ -22,16 +22,12 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.BindingType;
-import javax.inject.Produces;
 import javax.inject.manager.Manager;
 
-import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.introspector.AnnotatedMember;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotationStore;
@@ -198,62 +194,6 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    public S getMember()
    {
       return getDelegate();
-   }
-
-   /**
-    * Helper method for getting the current parameter values from a list of
-    * annotated parameters.
-    * 
-    * @param parameters The list of annotated parameter to look up
-    * @param manager The Web Beans manager
-    * @return The object array of looked up values
-    */
-   protected Object[] getParameterValues(List<AnnotatedParameter<?>> parameters, ManagerImpl manager)
-   {
-      return getParameterValues(parameters, null, null, manager);
-   }
-
-   /**
-    * Helper method for getting the current parameter values from a list of
-    * annotated parameters.
-    * 
-    * @param parameters The list of annotated parameter to look up
-    * @param manager The Web Beans manager
-    * @return The object array of looked up values
-    */
-   protected Object[] getParameterValues(List<AnnotatedParameter<?>> parameters, Object specialVal, Class<? extends Annotation> specialParam, ManagerImpl manager)
-   {
-      Object[] parameterValues = new Object[parameters.size()];
-      boolean producerMethod = this.isAnnotationPresent(Produces.class);
-      InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
-      Iterator<AnnotatedParameter<?>> iterator = parameters.iterator();
-      for (int i = 0; i < parameterValues.length; i++)
-      {
-         AnnotatedParameter<?> param = iterator.next();
-         if (specialParam != null && param.isAnnotationPresent(specialParam))
-         {
-            parameterValues[i] = specialVal;
-         }
-         else
-         {
-            if (!producerMethod)
-            {
-               injectionPointProvider.pushInjectionPoint(param);
-            }
-            try
-            {
-               parameterValues[i] = param.getValue(manager);
-            }
-            finally
-            {
-               if (!producerMethod)
-               {
-                  injectionPointProvider.popInjectionPoint();
-               }
-            }
-         }
-      }
-      return parameterValues;
    }
 
 }

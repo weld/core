@@ -4,9 +4,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.Set;
 
+import javax.context.CreationalContext;
 import javax.inject.manager.Bean;
-import javax.inject.manager.Manager;
 
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedParameter;
 
@@ -55,14 +56,14 @@ public class ParameterInjectionPoint<T> extends ForwardingAnnotatedParameter<T> 
       return delegate().getDeclaringMember().getMember();
    }
    
-   public void inject(Object declaringInstance, Manager manager)
+   public void inject(Object declaringInstance, Object value)
    {
       throw new UnsupportedOperationException();
    }
    
-   public void inject(Object declaringInstance, Object value)
+   public T getValueToInject(ManagerImpl manager, CreationalContext<?> creationalContext)
    {
-      throw new UnsupportedOperationException();
+      return manager.<T>getInstanceToInject(this, creationalContext);
    }
 
 }

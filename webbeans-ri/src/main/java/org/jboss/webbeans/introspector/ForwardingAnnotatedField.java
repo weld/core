@@ -20,8 +20,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Set;
 
-import javax.inject.manager.Manager;
-
 public abstract class ForwardingAnnotatedField<T> extends ForwardingAnnotatedMember<T, Field> implements AnnotatedField<T>
 {
 
@@ -48,11 +46,6 @@ public abstract class ForwardingAnnotatedField<T> extends ForwardingAnnotatedMem
       return delegate().getPropertyName();
    }
 
-   public void inject(Object declaringInstance, Manager manager)
-   {
-      delegate().inject(declaringInstance, manager);
-   }
-
    public void inject(Object declaringInstance, Object value)
    {
       delegate().inject(declaringInstance, value);
@@ -61,11 +54,6 @@ public abstract class ForwardingAnnotatedField<T> extends ForwardingAnnotatedMem
    public void injectIntoInstance(Object declaringInstance, Object value)
    {
       delegate().injectIntoInstance(declaringInstance, value);
-   }
-
-   public void injectIntoInstance(Object declaringInstance, Manager manager)
-   {
-      delegate().injectIntoInstance(declaringInstance, manager);
    }
 
    public boolean isTransient()
