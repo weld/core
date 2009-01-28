@@ -16,7 +16,7 @@ public class CircularDependencyTest extends AbstractTest
       assert Food.success;
    }
    
-   @Test
+   @Test(timeOut=1000)
    public void testCircularInjectionOnOneNormalAndOneDependentBean() throws Exception
    {
       deployBeans(Car.class, Petrol.class);
@@ -35,7 +35,7 @@ public class CircularDependencyTest extends AbstractTest
       
    }
    
-   @Test
+   @Test(timeOut=1000)
    public void testCircularInjectionOnOneDependentAndOneNormalBean() throws Exception
    {
       deployBeans(Car.class, Petrol.class);
@@ -89,7 +89,7 @@ public class CircularDependencyTest extends AbstractTest
       }.run();
    }
    
-   @Test
+   @Test(timeOut=1000)
    public void testNormalProducerMethodDeclaredOnNormalBeanWhichInjectsProducedBean() throws Exception
    {
       deployBeans(NormalSelfConsumingNormalProducer.class);
@@ -105,7 +105,7 @@ public class CircularDependencyTest extends AbstractTest
       }.run();
    }
    
-   @Test
+   @Test(timeOut=1000)
    public void testNormalProducerMethodDeclaredOnDependentBeanWhichInjectsProducedBean() throws Exception
    {
       deployBeans(DependentSelfConsumingNormalProducer.class);
@@ -121,7 +121,7 @@ public class CircularDependencyTest extends AbstractTest
       }.run();
    }
    
-   @Test
+   @Test(timeOut=1000)
    public void testDependentProducerMethodDeclaredOnNormalBeanWhichInjectsProducedBean() throws Exception
    {
       deployBeans(NormalSelfConsumingDependentProducer.class);
@@ -137,7 +137,7 @@ public class CircularDependencyTest extends AbstractTest
       }.run();
    }
    
-   @Test
+   @Test(timeOut=1000)
    public void testNormalSelfConsumingProducer() throws Exception
    {
       deployBeans(NormalLoopingProducer.class);

@@ -53,9 +53,9 @@ import javax.inject.manager.InterceptionType;
 import javax.inject.manager.Interceptor;
 import javax.inject.manager.Manager;
 
-import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
+import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.proxy.ProxyPool;
 import org.jboss.webbeans.context.ContextMap;
 import org.jboss.webbeans.context.CreationalContextImpl;
@@ -63,7 +63,6 @@ import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.ObserverImpl;
-import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -83,7 +82,6 @@ import org.jboss.webbeans.util.Reflections;
  * @author Pete Muir
  * 
  */
-@Standard
 public class ManagerImpl implements Manager, Serializable
 {
 
@@ -98,8 +96,9 @@ public class ManagerImpl implements Manager, Serializable
    private transient List<Class<? extends Annotation>> enabledDeploymentTypes;
    // The Web Beans event manager
    private transient final EventManager eventManager;
+   
    // An injection point metadata beans factory
-   private transient final InjectionPointProvider injectionPointProvider;
+   private transient final ThreadLocal<InjectionPoint> currentInjectionPoint;
 
    // The bean resolver
    private transient final Resolver resolver;
@@ -130,8 +129,6 @@ public class ManagerImpl implements Manager, Serializable
    private transient final NamingContext namingContext;
    
    private final transient Map<Bean<?>, Bean<?>> specializedBeans;
-   
-   private final transient ThreadLocal<Map<Bean<?>, ?>> incompleteInstances;
 
    /**
     * Create a new manager
@@ -153,18 +150,8 @@ public class ManagerImpl implements Manager, Serializable
       this.contextMap = new ContextMap();
       this.eventManager = new EventManager();
       this.ejbDescriptorCache = new EjbDescriptorCache();
-      this.injectionPointProvider = new InjectionPointProvider();
+      this.currentInjectionPoint = new ThreadLocal<InjectionPoint>();
       this.specializedBeans = new HashMap<Bean<?>, Bean<?>>();
-      this.incompleteInstances = new ThreadLocal<Map<Bean<?>,?>>()
-      {
-        
-         @Override
-         protected Map<Bean<?>, ?> initialValue()
-         {
-            return new HashMap<Bean<?>, Object>();
-         }
-         
-      };
       List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       defaultEnabledDeploymentTypes.add(0, Standard.class);
       defaultEnabledDeploymentTypes.add(1, Production.class);
@@ -350,12 +337,12 @@ public class ManagerImpl implements Manager, Serializable
     * @return A reference to the manager
     */
    // TODO Build maps in the deployer :-)
-   public void setBeans(Set<AbstractBean<?, ?>> beans)
+   public void setBeans(Set<RIBean<?>> beans)
    {
       synchronized (beans)
       {
          this.beans = new CopyOnWriteArrayList<Bean<?>>(beans);
-         for (AbstractBean<?, ?> bean : beans)
+         for (RIBean<?> bean : beans)
          {
             if (bean instanceof NewEnterpriseBean)
             {
@@ -602,34 +589,46 @@ public class ManagerImpl implements Manager, Serializable
    
    public <T> T getInstanceToInject(InjectionPoint injectionPoint)
    {
-      return getInstanceToInject(AnnotatedClassImpl.of((Class<T>) injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0])), null);
+      return this.<T>getInstanceToInject(injectionPoint, null);
    }
    
    public <T> T getInstanceToInject(InjectionPoint injectionPoint, CreationalContext<?> creationalContext)
    {
-      return getInstanceToInject(AnnotatedClassImpl.of((Class<T>) injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0])), creationalContext);
-   }
-   
-   private <T> T getInstanceToInject(AnnotatedItem<T, ?> element, CreationalContext<?> creationalContext)
-   {
-      Bean<T> bean = getBeanByType(element, element.getBindingTypesAsArray());
-      if (creationalContext instanceof CreationalContextImpl)
+      boolean registerInjectionPoint = !injectionPoint.getType().equals(InjectionPoint.class);
+      try
       {
-         CreationalContextImpl<?> ctx = (CreationalContextImpl<?>) creationalContext;
-         if (ctx.containsIncompleteInstance(bean))
+         if (registerInjectionPoint)
          {
-            return ctx.getIncompleteInstance(bean);
+            currentInjectionPoint.set(injectionPoint);
+         }
+         AnnotatedItem<T, ?> element = AnnotatedClassImpl.of((Class<T>) injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]));
+         Bean<T> bean = getBeanByType(element, element.getBindingTypesAsArray());
+         if (creationalContext instanceof CreationalContextImpl)
+         {
+            CreationalContextImpl<?> ctx = (CreationalContextImpl<?>) creationalContext;
+            if (ctx.containsIncompleteInstance(bean))
+            {
+               return ctx.getIncompleteInstance(bean);
+            }
+            else
+            {
+               return getInstance(bean, ctx.getCreationalContext(bean));
+            }
          }
          else
          {
-            return getInstance(bean, ctx.getCreationalContext(bean));
+            return getInstance(bean);
          }
       }
-      else
+      finally
       {
-         return getInstance(bean);
+         if (registerInjectionPoint)
+         {
+            currentInjectionPoint.remove();
+         }
       }
    }
+
 
    /**
     * Gets an instance by name, returning null if none is found and throwing an
@@ -871,9 +870,9 @@ public class ManagerImpl implements Manager, Serializable
     * 
     * @return the factory
     */
-   public InjectionPointProvider getInjectionPointProvider()
+   public InjectionPoint getInjectionPoint()
    {
-      return injectionPointProvider;
+      return currentInjectionPoint.get();
    }
    
    /**

@@ -35,11 +35,11 @@ import javax.inject.UnserializableDependencyException;
 import javax.inject.manager.Bean;
 import javax.inject.manager.InjectionPoint;
 
-import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractProducerBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
+import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.ListComparator;
 import org.jboss.webbeans.util.Proxies;
@@ -117,9 +117,9 @@ public class BeanValidator
                throw new UnsupportedOperationException("Not yet implemented");
             }
          }
-         if (bean instanceof AbstractBean && !(bean instanceof NewSimpleBean) && !(bean instanceof NewEnterpriseBean))
+         if (bean instanceof RIBean && !(bean instanceof NewSimpleBean) && !(bean instanceof NewEnterpriseBean))
          {
-            AbstractBean<?, ?> abstractBean = (AbstractBean<?, ?>) bean;
+            RIBean<?> abstractBean = (RIBean<?>) bean;
             if (abstractBean.isSpecializing())
             {
                if (!hasHigherPrecedence(bean.getDeploymentType(), abstractBean.getSpecializedBean().getDeploymentType()))

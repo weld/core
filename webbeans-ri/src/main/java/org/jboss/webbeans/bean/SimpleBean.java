@@ -37,7 +37,6 @@ import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 import org.jboss.webbeans.injection.ConstructorInjectionPoint;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
-import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedClass;
@@ -125,7 +124,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       try
       {
          DependentContext.INSTANCE.setActive(true);
-         InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
          T instance = null;
          try
          {

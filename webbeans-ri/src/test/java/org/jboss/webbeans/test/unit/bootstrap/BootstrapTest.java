@@ -6,9 +6,9 @@ import java.util.Map;
 
 import javax.inject.manager.Bean;
 
-import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
+import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.mock.MockBootstrap;
 import org.jboss.webbeans.test.unit.AbstractTest;
@@ -24,9 +24,9 @@ public class BootstrapTest extends AbstractTest
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : beans)
       {
-         if (bean instanceof AbstractBean)
+         if (bean instanceof RIBean)
          {
-            classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+            classes.put(((RIBean<?>) bean).getType(), bean);
          }
       }
       assert classes.containsKey(Tuna.class);
@@ -40,9 +40,9 @@ public class BootstrapTest extends AbstractTest
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : beans)
       {
-         if (bean instanceof AbstractBean)
+         if (bean instanceof RIBean)
          {
-            classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+            classes.put(((RIBean<?>) bean).getType(), bean);
          }
       }
       assert classes.containsKey(Hound.class);
@@ -56,9 +56,9 @@ public class BootstrapTest extends AbstractTest
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : beans)
       {
-         if (bean instanceof AbstractBean)
+         if (bean instanceof RIBean)
          {
-            classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+            classes.put(((RIBean<?>) bean).getType(), bean);
          }
       }
       assert classes.containsKey(Tuna.class);
@@ -80,9 +80,9 @@ public class BootstrapTest extends AbstractTest
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : beans)
       {
-         if (bean instanceof AbstractBean)
+         if (bean instanceof RIBean)
          {
-            classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+            classes.put(((RIBean<?>) bean).getType(), bean);
          }
       }
       assert classes.containsKey(TarantulaProducer.class);
@@ -100,9 +100,9 @@ public class BootstrapTest extends AbstractTest
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : beans)
       {
-         if (bean instanceof AbstractBean)
+         if (bean instanceof RIBean)
          {
-            classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+            classes.put(((RIBean<?>) bean).getType(), bean);
          }
       }
       assert classes.containsKey(Hound.class);
@@ -124,9 +124,9 @@ public class BootstrapTest extends AbstractTest
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : beans)
       {
-         if (bean instanceof AbstractBean)
+         if (bean instanceof RIBean)
          {
-            classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+            classes.put(((RIBean<?>) bean).getType(), bean);
          }
       }
       assert classes.containsKey(Hound.class);
@@ -155,9 +155,9 @@ public class BootstrapTest extends AbstractTest
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {
-         if (bean instanceof AbstractBean)
+         if (bean instanceof RIBean)
          {
-            classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+            classes.put(((RIBean<?>) bean).getType(), bean);
          }
       }
       assert classes.containsKey(TarantulaProducer.class);
@@ -175,9 +175,9 @@ public class BootstrapTest extends AbstractTest
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {
-         if (bean instanceof AbstractBean)
+         if (bean instanceof RIBean)
          {
-            classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+            classes.put(((RIBean<?>) bean).getType(), bean);
          }
       }
       assert classes.containsKey(Hound.class);
@@ -215,9 +215,9 @@ public class BootstrapTest extends AbstractTest
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {
-         if (bean instanceof AbstractBean)
+         if (bean instanceof RIBean)
          {
-            classes.put(((AbstractBean<?, ?>) bean).getType(), bean);
+            classes.put(((RIBean<?>) bean).getType(), bean);
          }
       }
       assert classes.containsKey(Hound.class);

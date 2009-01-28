@@ -22,8 +22,8 @@ import java.util.Set;
 import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.MetaDataCache;
-import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.bean.RIBean;
 
 /**
  * Helper class for bean inspection
@@ -60,9 +60,9 @@ public class Beans
     */
    public static boolean isBeanProxyable(Bean<?> bean)
    {
-      if (bean instanceof AbstractBean)
+      if (bean instanceof RIBean)
       {
-         return ((AbstractBean<?, ?>) bean).isProxyable();
+         return ((RIBean<?>) bean).isProxyable();
       }
       else
       {

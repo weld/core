@@ -31,13 +31,11 @@ import java.util.concurrent.Callable;
 import javax.inject.TypeLiteral;
 import javax.inject.manager.Bean;
 import javax.inject.manager.Decorator;
-import javax.inject.manager.InjectionPoint;
 import javax.inject.manager.InterceptionType;
 import javax.inject.manager.Interceptor;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.MetaDataCache;
-import org.jboss.webbeans.bean.InjectionPointBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedItem;
 import org.jboss.webbeans.model.BindingTypeModel;
@@ -200,15 +198,7 @@ public class Resolver
          }
 
       };
-
-      if (InjectionPoint.class.isAssignableFrom(element.getType()))
-      {
-         beans.add(InjectionPointBean.of(key, manager));
-      }
-      else
-      {
-         beans = registerInjectionPoint(element);
-      }
+      beans = registerInjectionPoint(element);
       return Collections.unmodifiableSet(beans);
    }
 

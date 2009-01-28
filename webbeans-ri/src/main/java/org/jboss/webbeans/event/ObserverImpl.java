@@ -43,6 +43,7 @@ import javax.transaction.SystemException;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractClassBean;
+import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -196,7 +197,7 @@ public class ObserverImpl<T> implements Observer<T>
       Object dependentsCollector = new Object();
       try
       {
-         if (Dependent.class.equals(observerBean.getScopeType()) && observerBean instanceof AbstractBean)
+         if (Dependent.class.equals(observerBean.getScopeType()) && observerBean instanceof RIBean)
          {
             DependentContext.INSTANCE.setCurrentInjectionInstance(dependentsCollector);
          }

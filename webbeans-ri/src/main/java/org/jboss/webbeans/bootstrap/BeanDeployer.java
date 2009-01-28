@@ -18,7 +18,6 @@ import javax.inject.Produces;
 import javax.inject.Realizes;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bean.AbstractBean;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.EventBean;
@@ -27,6 +26,7 @@ import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
+import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.event.ObserverImpl;
@@ -50,19 +50,19 @@ public class BeanDeployer
    
    private static final Set<Annotation> EMPTY_BINDINGS = Collections.emptySet();
    
-   private final Set<AbstractBean<?, ?>> beans;
+   private final Set<RIBean<?>> beans;
    private final Set<AnnotatedClass<?>> deferredClasses;
    private final ManagerImpl manager;
    
    public BeanDeployer(ManagerImpl manager)
    {
       this.manager = manager;
-      this.beans = new HashSet<AbstractBean<?,?>>();
+      this.beans = new HashSet<RIBean<?>>();
       this.deferredClasses = new HashSet<AnnotatedClass<?>>();
    }
   
    
-   public void addBean(AbstractBean<?, ?> bean)
+   public void addBean(RIBean<?> bean)
    {
       this.beans.add(bean);
    }

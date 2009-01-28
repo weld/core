@@ -17,19 +17,16 @@
 
 package org.jboss.webbeans.bootstrap;
 
-import java.util.Collections;
 
-import javax.context.CreationalContext;
 
 import org.jboss.webbeans.BeanValidator;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bean.SimpleBean;
+import org.jboss.webbeans.bean.standard.InjectionPointBean;
+import org.jboss.webbeans.bean.standard.ManagerBean;
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.literal.DeployedLiteral;
 import org.jboss.webbeans.literal.InitializedLiteral;
 import org.jboss.webbeans.log.LogProvider;
@@ -47,38 +44,6 @@ import org.jboss.webbeans.transaction.Transaction;
 public abstract class WebBeansBootstrap
 {
   
-   private static class ManagerBean extends SimpleBean<ManagerImpl>
-   {
-      
-      public static final SimpleBean<ManagerImpl> of(ManagerImpl manager)
-      {
-         return new ManagerBean(AnnotatedClassImpl.of(ManagerImpl.class), manager);
-      }
-      
-      protected ManagerBean(AnnotatedClass<ManagerImpl> type, ManagerImpl manager)
-      {
-         super(type, manager);
-      }
-      
-      @Override
-      protected void initConstructor()
-      {
-         // No - op, no constructor needed
-      }
-
-      @Override
-      protected void initInjectionPoints()
-      {
-         injectionPoints = Collections.emptySet();
-      }
-
-      public ManagerImpl create(CreationalContext<ManagerImpl> creationalContext)
-      {
-         return manager;
-      }
-      
-   }
-   
    // The log provider
    private static LogProvider log = Logging.getLogProvider(WebBeansBootstrap.class);
 
@@ -130,6 +95,7 @@ public abstract class WebBeansBootstrap
       BeanDeployer beanDeployer = new BeanDeployer(manager);
       beanDeployer.addClasses(classes);
       beanDeployer.addBean(ManagerBean.of(manager));
+      beanDeployer.addBean(InjectionPointBean.of(manager));
       beanDeployer.addClass(Transaction.class);
       beanDeployer.deploy();
    }

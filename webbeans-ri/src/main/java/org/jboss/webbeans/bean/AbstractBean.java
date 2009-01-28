@@ -54,7 +54,7 @@ import org.jboss.webbeans.util.Reflections;
  * @param <T> the type of bean
  * @param <E> the Class<?> of the bean type
  */
-public abstract class AbstractBean<T, E> extends Bean<T>
+public abstract class AbstractBean<T, E> extends RIBean<T>
 {
 
    @SuppressWarnings("unchecked")
@@ -417,7 +417,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
     * 
     * @return The set of merged stereotypes
     */
-   public MergedStereotypes<T, E> getMergedStereotypes()
+   protected MergedStereotypes<T, E> getMergedStereotypes()
    {
       return mergedStereotypes;
    }
@@ -542,6 +542,7 @@ public abstract class AbstractBean<T, E> extends Bean<T>
    }
    
    @Override
+   // TODO Fix this!!!
    public boolean equals(Object other)
    {
       if (other instanceof AbstractBean)

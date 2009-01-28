@@ -194,7 +194,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       {
          throw new IllegalProductException("Producers cannot declare passivating scope and return a non-serializable class");
       }
-      InjectionPoint injectionPoint = manager.getInjectionPointProvider().getCurrentInjectionPoint();
+      InjectionPoint injectionPoint = manager.getInjectionPoint();
       if (injectionPoint == null)
       {
          return;

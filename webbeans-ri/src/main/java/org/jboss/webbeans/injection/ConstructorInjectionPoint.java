@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.context.CreationalContext;
-import javax.inject.Produces;
 import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -120,8 +119,6 @@ public class ConstructorInjectionPoint<T> extends ForwardingAnnotatedConstructor
    protected Object[] getParameterValues(List<ParameterInjectionPoint<?>> parameters, Object specialVal, Class<? extends Annotation> specialParam, ManagerImpl manager, CreationalContext<?> creationalContext)
    {
       Object[] parameterValues = new Object[parameters.size()];
-      boolean producerMethod = this.isAnnotationPresent(Produces.class);
-      InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
       Iterator<ParameterInjectionPoint<?>> iterator = parameters.iterator();
       for (int i = 0; i < parameterValues.length; i++)
       {
@@ -132,21 +129,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingAnnotatedConstructor
          }
          else
          {
-            if (!producerMethod)
-            {
-               injectionPointProvider.pushInjectionPoint(param);
-            }
-            try
-            {
-               parameterValues[i] = param.getValueToInject(manager, creationalContext);
-            }
-            finally
-            {
-               if (!producerMethod)
-               {
-                  injectionPointProvider.popInjectionPoint();
-               }
-            }
+            parameterValues[i] = param.getValueToInject(manager, creationalContext);
          }
       }
       return parameterValues;

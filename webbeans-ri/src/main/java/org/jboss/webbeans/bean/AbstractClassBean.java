@@ -35,7 +35,6 @@ import javax.inject.Production;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
-import org.jboss.webbeans.injection.InjectionPointProvider;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedClass;
@@ -98,18 +97,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void injectBoundFields(T instance, CreationalContext<T> creationalContext)
    {
-      InjectionPointProvider injectionPointProvider = manager.getInjectionPointProvider();
       for (FieldInjectionPoint<?> injectableField : injectableFields)
       {
-         injectionPointProvider.pushInjectionPoint(injectableField);
-         try
-         {
-            injectableField.inject(instance, manager, creationalContext);
-         }
-         finally
-         {
-            injectionPointProvider.popInjectionPoint();
-         }
+         injectableField.inject(instance, manager, creationalContext);
       }
    }
    
