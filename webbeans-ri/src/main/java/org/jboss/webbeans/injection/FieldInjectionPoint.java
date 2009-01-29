@@ -1,5 +1,7 @@
 package org.jboss.webbeans.injection;
 
+import static org.jboss.webbeans.injection.Exceptions.rethrowException;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Set;
@@ -53,7 +55,34 @@ public class FieldInjectionPoint<T> extends ForwardingAnnotatedField<T> implemen
 
    public void inject(Object declaringInstance, ManagerImpl manager, CreationalContext<?> creationalContext)
    {
-      delegate().inject(declaringInstance, manager.getInstanceToInject(this, creationalContext));
+      try
+      {
+         delegate().set(declaringInstance, manager.getInstanceToInject(this, creationalContext));
+      }
+      catch (IllegalArgumentException e)
+      {
+         rethrowException(e);
+      }
+      catch (IllegalAccessException e)
+      {
+         rethrowException(e);
+      }
+   }
+   
+   public void inject(Object declaringInstance, Object value)
+   {
+      try
+      {
+         delegate().set(declaringInstance, value);
+      }
+      catch (IllegalArgumentException e)
+      {
+         rethrowException(e);
+      }
+      catch (IllegalAccessException e)
+      {
+         rethrowException(e);
+      }
    }
 
 }

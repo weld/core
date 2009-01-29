@@ -18,6 +18,7 @@
 package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -74,7 +75,7 @@ public interface AnnotatedMethod<T> extends AnnotatedMember<T, Method>
     * @param parameters The method parameters
     * @return A reference to the instance
     */
-   public T invoke(Object instance, Object... parameters);
+   public T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
    
    /**
     * Invokes the method on the class of the passed instance, not the declaring 
@@ -84,7 +85,7 @@ public interface AnnotatedMethod<T> extends AnnotatedMember<T, Method>
     * @param manager The Web Beans manager
     * @return A reference to the instance
     */
-   public T invokeOnInstance(Object instance, Object... parameters);
+   public T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException;
 
    /**
     * Gets the declaring class

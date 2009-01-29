@@ -45,19 +45,19 @@ public interface AnnotatedField<T> extends AnnotatedMember<T, Field>
     * @param declaringInstance The instance to inject into
     * @param value The value to inject
     */
-   public void inject(Object declaringInstance, Object value);
+   public void set(Object declaringInstance, Object value) throws IllegalArgumentException, IllegalAccessException;
    
    /**
     * Injects into the field using the value provided by the manager
     * 
-    * Unlike {@link #inject(Object, Manager)} the field injected into is 
+    * Unlike {@link #set(Object, Manager)} the field injected into is 
     * discovered from the declaring instance. This is slower, but safe to use
     * with proxies.
     * 
     * @param declaringInstance The instance to inject into
     * @param value The value to inject
     */
-   public void injectIntoInstance(Object declaringInstance, Object value);
+   public void setOnInstance(Object declaringInstance, Object value) throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException;
    
    public T get(Object instance);
    

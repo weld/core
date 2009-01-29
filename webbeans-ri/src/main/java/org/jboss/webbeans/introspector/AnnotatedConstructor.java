@@ -19,6 +19,7 @@ package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -53,7 +54,7 @@ public interface AnnotatedConstructor<T> extends AnnotatedMember<T, Constructor<
     * 
     * @return The created instance
     */
-   public T newInstance(Object... parameters);
+   public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
 
    /**
     * Gets the declaring class of the annotation

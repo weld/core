@@ -113,14 +113,14 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
       return actualTypeArguments;
    }
    
-   public void inject(Object instance, Object value)
+   public void set(Object instance, Object value) throws IllegalArgumentException, IllegalAccessException
    {
-      Reflections.setAndWrap(getDelegate(), instance, value);
+      field.set(instance, value);
    }
    
-   public void injectIntoInstance(Object instance, Object value)
+   public void setOnInstance(Object instance, Object value) throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException
    {
-      Reflections.setAndWrap(getName(), instance, value);
+      instance.getClass().getField(getName()).set(instance, value);
    }
 
    @SuppressWarnings("unchecked")

@@ -46,14 +46,14 @@ public abstract class ForwardingAnnotatedField<T> extends ForwardingAnnotatedMem
       return delegate().getPropertyName();
    }
 
-   public void inject(Object declaringInstance, Object value)
+   public void set(Object declaringInstance, Object value) throws IllegalArgumentException, IllegalAccessException
    {
-      delegate().inject(declaringInstance, value);
+      delegate().set(declaringInstance, value);
    }
 
-   public void injectIntoInstance(Object declaringInstance, Object value)
+   public void setOnInstance(Object declaringInstance, Object value) throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException
    {
-      delegate().injectIntoInstance(declaringInstance, value);
+      delegate().setOnInstance(declaringInstance, value);
    }
 
    public boolean isTransient()

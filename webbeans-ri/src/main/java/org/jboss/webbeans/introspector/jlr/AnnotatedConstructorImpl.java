@@ -26,8 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.ExecutionException;
-
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
@@ -189,31 +187,16 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     * 
     * @param manager The Web Beans manager
     * @return An instance
+    * @throws InvocationTargetException 
+    * @throws IllegalAccessException 
+    * @throws InstantiationException 
+    * @throws IllegalArgumentException 
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedConstructor#newInstance(ManagerImpl)
     */
-   public T newInstance(Object... parameters)
+   public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
    {
-      try
-      {
-         return getDelegate().newInstance(parameters);
-      }
-      catch (IllegalArgumentException e)
-      {
-         throw new ExecutionException("Error instantiating " + toString, e);
-      }
-      catch (InstantiationException e)
-      {
-         throw new ExecutionException("Error instantiating " + toString, e);
-      }
-      catch (IllegalAccessException e)
-      {
-         throw new ExecutionException("Error instantiating " + toString, e);
-      }
-      catch (InvocationTargetException e)
-      {
-         throw new ExecutionException("Error instantiating " + toString, e);
-      }
+      return getDelegate().newInstance(parameters);
    }
 
    /**

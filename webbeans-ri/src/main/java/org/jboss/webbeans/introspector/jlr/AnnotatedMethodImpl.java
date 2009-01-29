@@ -18,6 +18,7 @@
 package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -84,6 +85,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    {
       super(AnnotationStore.of(method), method);
       this.method = method;
+      this.method.setAccessible(true);
       this.declaringClass = declaringClass;
       if (method.getGenericReturnType() instanceof ParameterizedType)
       {
@@ -236,17 +238,17 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       return getDelegate().hashCode();
    }
    
-   public T invokeOnInstance(Object instance, Object...parameters)
+   public T invokeOnInstance(Object instance, Object...parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
    {
       @SuppressWarnings("unchecked")
-      T result = (T) Reflections.invokeAndWrap(getName(), getParameterTypesAsArray(), instance, parameters);
+      T result = (T) instance.getClass().getMethod(getName(), getParameterTypesAsArray()).invoke(instance, parameters);
       return result;
    }
 
-   public T invoke(Object instance, Object... parameters)
+   public T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
    {
       @SuppressWarnings("unchecked")
-      T result = (T) Reflections.invokeAndWrap(getDelegate(), instance, parameters);
+      T result = (T) method.invoke(instance, parameters);
       return result;
    }
 

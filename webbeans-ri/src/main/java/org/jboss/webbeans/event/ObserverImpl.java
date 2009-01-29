@@ -18,7 +18,6 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +32,6 @@ import javax.event.ObserverException;
 import javax.event.Observes;
 import javax.inject.DefinitionException;
 import javax.inject.Disposes;
-import javax.inject.ExecutionException;
 import javax.inject.Initializer;
 import javax.inject.Produces;
 import javax.inject.manager.Bean;
@@ -213,22 +211,7 @@ public class ObserverImpl<T> implements Observer<T>
          }
          else
          {
-            observerMethod.invokeWithSpecialValue(instance, Observes.class, event, manager, null);
-         }
-      }
-      catch (ExecutionException e)
-      {
-         if ((e.getCause() != null) && (e.getCause() instanceof InvocationTargetException))
-         {
-            InvocationTargetException wrappedException = (InvocationTargetException) e.getCause();
-            if ((wrappedException.getCause() != null) && (RuntimeException.class.isAssignableFrom(wrappedException.getCause().getClass())))
-            {
-               throw (RuntimeException) wrappedException.getCause();
-            }
-            else
-            {
-               throw new ObserverException(wrappedException.getCause().getMessage(), wrappedException.getCause());
-            }
+            observerMethod.invokeWithSpecialValue(instance, Observes.class, event, manager, null, ObserverException.class);
          }
       }
       finally

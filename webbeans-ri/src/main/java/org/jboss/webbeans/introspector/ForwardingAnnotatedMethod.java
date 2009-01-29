@@ -17,11 +17,10 @@
 package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
-
-import org.jboss.webbeans.ManagerImpl;
 
 public abstract class ForwardingAnnotatedMethod<T> extends ForwardingAnnotatedMember<T, Method> implements AnnotatedMethod<T>
 {
@@ -59,17 +58,12 @@ public abstract class ForwardingAnnotatedMethod<T> extends ForwardingAnnotatedMe
       return delegate().getPropertyName();
    }
 
-   public T invoke(Object instance, ManagerImpl manager)
-   {
-      return delegate().invoke(instance, manager);
-   }
-
-   public T invoke(Object instance, Object... parameters)
+   public T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
    {
       return delegate().invoke(instance, parameters);
    }
 
-   public T invokeOnInstance(Object instance, Object... parameters)
+   public T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
    {
       return delegate().invokeOnInstance(instance, parameters);
    }

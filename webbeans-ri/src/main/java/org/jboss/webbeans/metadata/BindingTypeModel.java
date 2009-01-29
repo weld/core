@@ -18,11 +18,13 @@
 package org.jboss.webbeans.metadata;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 import javax.annotation.NonBinding;
 import javax.inject.BindingType;
 import javax.inject.DefinitionException;
+import javax.inject.ExecutionException;
 
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.util.Reflections;
@@ -130,12 +132,28 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
          {
             if (!nonBindingTypes.contains(annotatedMethod))
             {
-               Object thisValue = annotatedMethod.invoke(instance);
-               Object thatValue = annotatedMethod.invoke(other);
-               if (!thisValue.equals(thatValue))
+               try
                {
-                  return false;
+                  Object thisValue = annotatedMethod.invoke(instance);
+                  Object thatValue = annotatedMethod.invoke(other);
+                  if (!thisValue.equals(thatValue))
+                  {
+                     return false;
+                  }
                }
+               catch (IllegalArgumentException e)
+               {
+                  throw new ExecutionException(e);
+               }
+               catch (IllegalAccessException e)
+               {
+                  throw new ExecutionException(e);
+               }
+               catch (InvocationTargetException e)
+               {
+                  throw new ExecutionException(e);
+               }
+              
             }
          }
          return true;

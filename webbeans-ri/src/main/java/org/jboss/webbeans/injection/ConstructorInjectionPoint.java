@@ -1,7 +1,10 @@
 package org.jboss.webbeans.injection;
 
+import static org.jboss.webbeans.injection.Exceptions.rethrowException;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.AbstractList;
 import java.util.Iterator;
 import java.util.List;
@@ -78,7 +81,27 @@ public class ConstructorInjectionPoint<T> extends ForwardingAnnotatedConstructor
    
    public T newInstance(ManagerImpl manager, CreationalContext<?> creationalContext)
    {
-      return delegate().newInstance(getParameterValues(getParameters(), null, null, manager, creationalContext));
+      try
+      {
+         return delegate().newInstance(getParameterValues(getParameters(), null, null, manager, creationalContext));
+      }
+      catch (IllegalArgumentException e)
+      {
+         rethrowException(e);
+      }
+      catch (InstantiationException e)
+      {
+         rethrowException(e);
+      }
+      catch (IllegalAccessException e)
+      {
+         rethrowException(e);
+      }
+      catch (InvocationTargetException e)
+      {
+         rethrowException(e);
+      }
+      return null;
    }
    
    @Override

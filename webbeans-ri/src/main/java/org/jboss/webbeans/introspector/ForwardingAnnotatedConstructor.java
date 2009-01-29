@@ -18,6 +18,7 @@ package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Set;
 
@@ -42,7 +43,7 @@ public abstract class ForwardingAnnotatedConstructor<T> extends ForwardingAnnota
       return delegate().getParameters();
    }
 
-   public T newInstance(Object... parameters)
+   public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
    {
       return delegate().newInstance(parameters);
    }

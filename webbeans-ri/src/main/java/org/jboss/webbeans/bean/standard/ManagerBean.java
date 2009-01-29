@@ -50,4 +50,10 @@ public class ManagerBean extends AbstractStandardBean<ManagerImpl>
       // No-op
    }
    
+   @Override
+   public boolean isSerializable()
+   {
+      return true;
+   }
+   
 }

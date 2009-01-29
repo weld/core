@@ -1,6 +1,9 @@
 package org.jboss.webbeans.injection;
 
+import static org.jboss.webbeans.injection.Exceptions.rethrowException;
+
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.AbstractList;
 import java.util.Iterator;
@@ -78,12 +81,44 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
    
    public T invoke(Object declaringInstance, ManagerImpl manager, CreationalContext<?> creationalContext)
    {
-      return delegate().invoke(declaringInstance, getParameterValues(getParameters(), null, null, manager, creationalContext));
+      try
+      {
+         return delegate().invoke(declaringInstance, getParameterValues(getParameters(), null, null, manager, creationalContext));
+      }
+      catch (IllegalArgumentException e)
+      {
+         rethrowException(e);
+      }
+      catch (IllegalAccessException e)
+      {
+         rethrowException(e);
+      }
+      catch (InvocationTargetException e)
+      {
+         rethrowException(e);
+      }
+      return null;
    }
    
-   public T invokeWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, ManagerImpl manager, CreationalContext<?> creationalContext)
+   public T invokeWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, ManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow)
    {
-      return delegate().invoke(declaringInstance, getParameterValues(getParameters(), annotatedParameter, parameter, manager, creationalContext));
+      try
+      {
+         return delegate().invoke(declaringInstance, getParameterValues(getParameters(), annotatedParameter, parameter, manager, creationalContext));
+      }
+      catch (IllegalArgumentException e)
+      {
+         rethrowException(e, exceptionTypeToThrow);
+      }
+      catch (IllegalAccessException e)
+      {
+         rethrowException(e, exceptionTypeToThrow);
+      }
+      catch (InvocationTargetException e)
+      {
+         rethrowException(e, exceptionTypeToThrow);
+      }
+      return null;
    }
    
    @Override
@@ -110,7 +145,22 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
    
    public void inject(Object declaringInstance, Object value)
    {
-      delegate().invoke(declaringInstance, value);
+      try
+      {
+         delegate().invoke(declaringInstance, value);
+      }
+      catch (IllegalArgumentException e)
+      {
+         rethrowException(e);
+      }
+      catch (IllegalAccessException e)
+      {
+         rethrowException(e);
+      }
+      catch (InvocationTargetException e)
+      {
+         rethrowException(e);
+      }
    }
 
    /**
