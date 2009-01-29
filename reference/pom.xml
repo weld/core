@@ -198,17 +198,5 @@
       <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/doc</connection>
       <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/doc</developerConnection>
       <url>http://fisheye.jboss.org/browse/WebBeans/doc</url>
-   </scm>
-
-   <distributionManagement>
-      <repository>
-         <!-- Copy the dist to the local checkout of the JBoss maven2 repo ${maven.repository.root} -->
-
-         <!-- It is anticipated that ${maven.repository.root} be set in user's settings.xml -->
-         <!-- todo : replace this with direct svn access once the svnkit providers are available -->
-      </repository>
-      <snapshotRepository>
-      </snapshotRepository>
-   </distributionManagement>
-   
+   </scm>   
 </project>
