@@ -44,6 +44,15 @@
          </plugins>
          
       </pluginManagement>
+      <plugins>
+         <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-release-plugin</artifactId>
+           <configuration>
+             <tagBase>https://svn.jboss.org/repos/webbeans/examples/tags</tagBase>
+           </configuration>
+         </plugin>
+      </plugins>
    </build>
 
 </project>
