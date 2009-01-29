@@ -365,7 +365,7 @@ msgstr "un tipo di API, assieme a"
 #: intro.xml:178
 #, no-c-format
 msgid "a set of binding types."
-msgstr "un set di tipi di binding."
+msgstr "un set di tipi di binding"
 
 # client-visible semantic  =?
 #. Tag: para

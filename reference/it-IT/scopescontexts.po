@@ -155,7 +155,7 @@ msgstr "qualsiasi richiesta servlet ha accesso a scope attivi di richiesta, sess
 #: scopescontexts.xml:90
 #, no-c-format
 msgid "any JSF request has access to an active conversation scope."
-msgstr "qualsiasi richiesta JSF ha accesso allo scope attivo di conversazione."
+msgstr "qualsiasi richiesta JSF ha accesso allo scope attivo di conversazione"
 
 #. Tag: para
 #: scopescontexts.xml:94
@@ -221,7 +221,7 @@ msgstr "è demarcato esplicitamente dall'applicazione, e"
 #: scopescontexts.xml:133
 #, no-c-format
 msgid "holds state associated with a particular web browser tab in a JSF application."
-msgstr "mantiene lo stato associato ad un particolare tab del browser in un'applicazione JSF."
+msgstr "mantiene lo stato associato ad un particolare tab del browser in un'applicazione JSF"
 
 #. Tag: para
 #: scopescontexts.xml:138
