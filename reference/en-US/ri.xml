@@ -137,6 +137,18 @@ $ ant update</programlisting>
 ant deploy</programlisting>
 
    <para>
+      Start JBoss AS:
+   </para>
+   
+   <programlisting>$ /Application/jboss-5.0.0.GA/bin/run.sh</programlisting>
+   
+   <tip>
+      <para>
+         If you use Windows, use the <literal>run.bat</literal>script.
+      </para>
+   </tip>
+
+   <para>
       Wait for the application to deploy, and enjoy hours of fun at
       <ulink url="http://localhost:8080/webbeans-numberguess" />!
    </para>
