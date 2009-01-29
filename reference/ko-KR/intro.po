@@ -64,7 +64,7 @@ msgid ""
 "into other Web Beans, configuring them via the Web Beans XML configuration "
 "facility, even adding interceptors and decorators to them &#151; without "
 "touching your existing code."
-msgstr "특정한 예외 상항에서 매개 변수가 없는 것을 허용하는 생성자와 함께하는 모든 Java 클래스는 Web Bean입니다. 이에는 모든 JavaBean이 포함됩니다. 이에 더하여 모든 EJB 3-스타일 세션 빈도 Web Bean입니다. 물론 매일 작성하셨던 JavaBeans 및 EJB는 Web Beans 사양에 의해 정의된 새로운 서비스의 장점을 취할 수 없지만, Web Beans으로서 기존 코드를 변경하지 않고 이 모든 것을 사용하실 수 있습니다 &#151; 기타 다른 Web Beans로의 삽입, Web Beans XML 설정 기능을 통한 설정, 인터셉터 및 데코레이터 추가 등&#151   "
+msgstr "특정한 예외 상항에서 매개 변수가 없는 것을 허용하는 생성자와 함께하는 모든 Java 클래스는 Web Bean입니다. 이에는 모든 JavaBean이 포함됩니다. 이에 더하여 모든 EJB 3-스타일 세션 빈도 Web Bean입니다. 물론 매일 작성하셨던 JavaBeans 및 EJB는 Web Beans 사양에 의해 정의된 새로운 서비스의 장점을 취할 수 없지만, Web Beans으로서 기존 코드를 변경하지 않고 이 모든 것을 사용하실 수 있습니다 &#151; 기타 다른 Web Beans로의 삽입, Web Beans XML 설정 기능을 통한 설정, 인터셉터 및 데코레이터 추가 등&#151;   "
 
 #. Tag: para
 #: intro.xml:25
