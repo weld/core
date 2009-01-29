@@ -73,12 +73,12 @@
 
    <modules>
       <module>webbeans-api</module>
-<!--      <module>webbeans-ri</module>-->
+      <module>webbeans-ri</module>
       <module>webbeans-ri-spi</module>
    </modules>
    
    <properties>
-      <webbeans.tck.version>1.0.0-SNAPSHOT</webbeans.tck.version>
+      <webbeans.tck.version>1.0.0.ALPHA1</webbeans.tck.version>
       <webbeans.ri.version>1.0.0.ALPHA2</webbeans.ri.version>
    </properties>
    
