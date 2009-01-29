@@ -5,8 +5,14 @@
 -->
 <deployment xmlns="urn:jboss:bean-deployer:2.0">
 
-  <beanfactory name="JBossEjbResolver" class="org.jboss.webbeans.integration.ejb.JBossEjbResolver"/>
+  <beanfactory name="JBossEjbResolver" class="org.jboss.webbeans.integration.ejb.JBossEjbResolver">
+     <property name="controller"><inject bean="jboss.kernel:service=KernelController" /></property>     
+     <property name="resolver"><inject /></property>
+     <property name="persistenceUnitDependencyResolver"><inject bean="PersistenceUnitDependencyResolver" /></property>
+  </beanfactory>
   
-  <beanfactory name="JBossEjbDiscovery" class="org.jboss.webbeans.integration.ejb.JBossEjbDiscovery"/>
+  <beanfactory name="JBossEjbDiscovery" class="org.jboss.webbeans.integration.ejb.JBossEjbDiscovery">
+     <property name="resolver"><inject /></property>
+  </beanfactory>
 
 </deployment>
