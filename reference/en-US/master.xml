@@ -6,6 +6,18 @@
 
 	 <xi:include href="Book_Info.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
     
+    <preface>
+      <title>Note</title>
+      <para>
+         JSR-299 has recently changed it's name from "Web Beans" to "Java
+         Contexts and Dependency Injection". The reference guide still refers
+         to JSR-299 as "Web Beans" and the JSR-299 Reference Implementation as
+         the "Web Beans RI". Other documentation, blogs, forum posts etc. may
+         use the new nomenclature, including the new name for the JSR-299
+         Reference Implementation - "Web Beans".
+      </para>
+    </preface>
+    
     <toc/>
     
     <part>
