@@ -4,7 +4,9 @@
 	
 	<property name="maven.dir" location="${wbexamples.dir}/lib/maven" />
 	
+	<property file="${wbexamples.dir}/../jboss-as/local.build.properties"/>
 	<property file="${wbexamples.dir}/build.properties"/>
+	<property file="${wbexamples.dir}/../jboss-as/build.properties"/>
 	
 	<property name="final.url" value="http://localhost:8080/${example.name}" />
 	
