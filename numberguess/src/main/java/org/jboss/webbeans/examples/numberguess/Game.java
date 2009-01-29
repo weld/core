@@ -22,7 +22,7 @@ public class Game implements Serializable
    private int smallest;
    
    @MaxNumber
-   private transient int maxNumber;
+   private int maxNumber;
    
    private int biggest;
    private int remainingGuesses;

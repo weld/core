@@ -1,4 +1,4 @@
-The Web Beans RI currently comes with a two examples, webbeans-numberguess (a 
+Web Beans currently comes with a two examples, webbeans-numberguess (a 
 war example) and webbeans-translator (an EJB example). Before running the 
 examples, you'll need to ensure your server supports Web Beans.
 
