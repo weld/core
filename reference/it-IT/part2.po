@@ -36,7 +36,7 @@ msgstr "i <emphasis>metodi produttori</emphasis> rendono possibile il polimorfis
 #: part2.xml:18
 #, no-c-format
 msgid "<emphasis>contextual lifecycle management</emphasis> decouples Web Bean lifecycles."
-msgstr "<emphasis>la gestione contestuale del ciclo di vita</emphasis> disaccoppia i cicli di vita dei Web Bean."
+msgstr "<emphasis>la gestione contestuale del ciclo di vita</emphasis> disaccoppia i cicli di vita dei Web Bean"
 
 #. Tag: para
 #: part2.xml:23
@@ -74,7 +74,7 @@ msgstr "i <emphasis>decoratori</emphasis> possono essere usati per disaccoppiare
 #: part2.xml:47
 #, no-c-format
 msgid "<emphasis>event notifications</emphasis> decouple event producers from event consumers."
-msgstr "le <emphasis>notifiche degli eventi</emphasis> disaccoppiano i produttori di eventi dai consumatori."
+msgstr "le <emphasis>notifiche degli eventi</emphasis> disaccoppiano i produttori di eventi dai consumatori"
 
 #. Tag: para
 #: part2.xml:52

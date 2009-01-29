@@ -54,7 +54,7 @@ msgstr "intercettazione del metodo di business, e"
 #: interceptors.xml:29
 #, no-c-format
 msgid "lifecycle callback interception."
-msgstr "intercettazione della chiamata del ciclo di vita."
+msgstr "intercettazione della chiamata del ciclo di vita"
 
 #. Tag: para
 #: interceptors.xml:33
@@ -265,7 +265,7 @@ msgstr "Ci consente di specificare un ordinamento totale per tutti gli intercept
 #: interceptors.xml:105
 #, no-c-format
 msgid "it lets us enable or disable interceptor classes at deployment time."
-msgstr "consente di abilitare o disabilitare le classi di interceptor a deployment time."
+msgstr "consente di abilitare o disabilitare le classi di interceptor a deployment time"
 
 #. Tag: para
 #: interceptors.xml:109

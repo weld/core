@@ -71,7 +71,7 @@ msgstr ""
 "        } \n"
 "    }\n"
 "    \n"
-"}]]></programlisting> <para>Si consideri un punto di iniezione:</para> <programlisting role=\"JAVA\"><![CDATA[@Preferred PaymentStrategy paymentStrat;]]></programlisting> <para>Questo punto di iniezione ha lo stesso tipo e annotazioni di binding del metodo produttore, e quindi risolve i metodi produttori usando le regole di iniezione dei Web Beans. Il metodo produttore verrà chiamato dal manager Web Bean per ottenere un'istanza per per servire questo punto di iniezione.</para>"
+"}]]></programlisting> <para>Si consideri un punto di iniezione:</para> <programlisting role=\"JAVA\"><![CDATA[@Preferred PaymentStrategy paymentStrat;]]></programlisting> <para>Questo punto di iniezione ha lo stesso tipo e annotazioni di binding del metodo produttore, e quindi risolve i metodi produttori usando le regole di iniezione dei Web Beans. Il metodo produttore verrà chiamato dal manager Web Bean per ottenere un'istanza per servire questo punto di iniezione.</para>"
 
 #. Tag: title
 #: producermethods.xml:68
@@ -219,5 +219,5 @@ msgstr ""
 #: producermethods.xml:125
 #, no-c-format
 msgid "Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be created, passed to the producer method, returned by the producer method and finally bound to the session context. The dependent object won't be destroyed until the <literal>Preferences</literal> object is destroyed, at the end of the session."
-msgstr "Quindi verrebbe creata una nuova istanza <emphasis>dipendente</emphasis> di <literal>CreditCardPaymentStrategy</literal>, passata al metodo produttore, ritornata al metodo produttore ed infine associata al contesto di sessione. L'oggetto dipendente non verrebbe distrutto finché l'oggetto <literal>Preferences</literal> non venga distrutto, cioè a fine sessione."
+msgstr "Quindi verrebbe creata una nuova istanza <emphasis>dipendente</emphasis> di <literal>CreditCardPaymentStrategy</literal>, passata al metodo produttore, ritornata al metodo produttore ed infine associata al contesto di sessione. L'oggetto dipendente non verrebbe distrutto finché l'oggetto <literal>Preferences</literal> non viene distrutto, cioè a fine sessione."
 
