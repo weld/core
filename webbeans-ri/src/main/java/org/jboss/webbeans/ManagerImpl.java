@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -227,6 +228,11 @@ public class ManagerImpl implements Manager, Serializable
          {
             throw new IllegalArgumentException("Not a binding type " + annotation);
          }
+      }
+      HashSet<Annotation> bindingAnnotations = new HashSet<Annotation>(Arrays.asList(bindings));
+      if (bindingAnnotations.size() < bindings.length)
+      {
+         throw new DuplicateBindingTypeException("Duplicate binding types: " + bindings);
       }
       for (Type type : element.getActualTypeArguments())
       {
