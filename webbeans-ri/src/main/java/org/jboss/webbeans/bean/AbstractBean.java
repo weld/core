@@ -17,6 +17,7 @@
 
 package org.jboss.webbeans.bean;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -109,6 +110,8 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    // The Web Beans manager
    protected ManagerImpl manager;
 
+   protected boolean _serializable;
+
    /**
     * Constructor
     * 
@@ -145,6 +148,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       checkDeploymentType();
       initScopeType();
       initTypes();
+      initSerializable();
       initProxyable();
       checkRequiredTypesImplemented();
    }
@@ -507,8 +511,12 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    @Override
    public boolean isSerializable()
    {
-      // TODO: OK?
-      return true;
+      return _serializable;
+   }
+   
+   protected void initSerializable()
+   {
+      _serializable = isPrimitive() || getTypes().contains(Serializable.class);
    }
 
    /**

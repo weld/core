@@ -204,7 +204,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       {
          if (injectionPoint.getMember() instanceof Field)
          {
-            if (!Reflections.isTransient(injectionPoint.getMember()) || !isSerializable())
+            if (!Reflections.isTransient(injectionPoint.getMember()) && !Reflections.isSerializable(instance.getClass()))
             {
                throw new IllegalProductException("Dependent scoped producers cannot produce non-serializable instances for injection into non-transient fields of passivating beans\n\nProducer: " + this.toString() + "\nInjection Point: " + injectionPoint.toString());
             }
@@ -279,6 +279,12 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
          log.trace("Using default " + this.deploymentType + " deployment type");
          return;
       }
+   }
+   
+   @Override
+   protected void initSerializable()
+   {
+      _serializable = true;
    }
 
    /**

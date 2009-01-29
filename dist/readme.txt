@@ -1,14 +1,14 @@
-Web Beans RI
+Web Beans
 ------------
 
-Web Beans (JSR-299) is a new Java standard for dependency injection and 
-contextual lifecycle management.
+Java Contexts and Dependency Injection (JSR-299) is a new Java standard for 
+dependency injection and contextual lifecycle management. Web Beans is the
+reference implementation of JSR-299.
 
 This distribution, as a whole, is licensed under the terms of the FSF Lesser Gnu 
 Public License (see lgpl.txt). Parts of it are licensed under the Apache Public
-License (see apl.txt). In particular, the Web Beans API and the Web Beans RI 
-runtimes are licensed under the APL. At least these parts are licensed under the 
-APL:
+License (see apl.txt). In particular, the API and the Web Beans runtime are 
+licensed under the APL. At least these parts are licensed under the APL:
 
 * src/webbeans-ri/main/**/*
 * src/webbeans-api/main/**/*
@@ -20,12 +20,12 @@ APL:
 This distribution consists of:
 
 doc/
-   -- The Web Beans Reference guide, take a look at doc/en/html/index.html for
-      getting started using Web Beans and the Web Beans RI
+   -- The Reference guide, take a look at doc/en/html/index.html for getting 
+      started using Web Beans and the facilities offered by JSR-299. 
  
 examples/
-   -- The Web Beans RI examples, the examples are described in more detail in 
-      the reference guide 
+   -- The Web Beans examples, the examples are described in more detail in the 
+      reference guide 
    
 jboss-as/
    -- Installer for JBoss AS, change into this directory, and run ant update
@@ -35,9 +35,8 @@ lib/
    -- Libraries for building the examples
    
 lib/webbeans
-   -- The Web Beans RI and API jars, for use outside of JBoss AS
+   -- The Web Beans and API jars, for use outside of JBoss AS
    
 src/
-   -- The sources of the Web Beans RI, including src/webbeans-api, 
-      src/webbeans-ri and src/reference. To build the sources, just type mvn in
-      the subdirectory.
+   -- The sources of Web Beans, including src/webbeans-api, src/webbeans-ri and 
+      src/reference. To build the sources, just type mvn in the subdirectory.

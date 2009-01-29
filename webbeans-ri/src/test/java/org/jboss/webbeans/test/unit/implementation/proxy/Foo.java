@@ -1,0 +1,1 @@
+package org.jboss.webbeans.test.unit.implementation.proxy;import java.io.Serializable;import javax.annotation.Named;import javax.context.RequestScoped;@Named@RequestScopedclass Foo implements Serializable{      public String getMsg()   {      return "Hi";   }   }

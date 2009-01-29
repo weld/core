@@ -555,7 +555,7 @@ public class Reflections
 
    public static boolean isSerializable(Class<?> clazz)
    {
-      return getTypeHierachy(clazz).contains(Serializable.class);
+      return getTypeHierachy(clazz).contains(Serializable.class) || clazz.isPrimitive();
    }
 
 }

@@ -39,6 +39,8 @@
          <package name="org.jboss.webbeans.test.unit.definition" />
          <package name="org.jboss.webbeans.test.unit.event" />
          <package name="org.jboss.webbeans.test.unit.implementation" />
+         <package name="org.jboss.webbeans.test.unit.implementation.proxy" />
+         <package name="org.jboss.webbeans.test.unit.implementation.exceptions" />
          <package name="org.jboss.webbeans.test.unit.lookup" />
          <package name="org.jboss.webbeans.test.unit.lookup.circular" />
       </packages>
