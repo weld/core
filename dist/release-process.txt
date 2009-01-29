@@ -2,7 +2,9 @@ Release process for Web Beans RI
 --------------------------------
 
 * Run the testsuite and examples
+* Alter the RI POM to exclude the RI
 * Tag using mvn release:prepare in the ri/trunk checkout
+* Checkout the newly released APIs, and install them locally
 * Tag docs using mvn release:prepare in the doc/trunk/reference checkout
 * Tag examples using mvn release:prepare in the examples/trunk checkout
 * Check the tags

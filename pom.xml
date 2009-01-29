@@ -79,6 +79,7 @@
    
    <properties>
       <webbeans.tck.version>1.0.0-SNAPSHOT</webbeans.tck.version>
+      <webbeans.ri.version>1.0.0.ALPHA2</webbeans.ri.version>
    </properties>
    
    <dependencyManagement>
@@ -228,20 +229,19 @@
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>webbeans-api</artifactId>
-
-            <version>${project.version}</version>
+            <version>${webbeans.ri.version}</version>
          </dependency>
          
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>webbeans-ri</artifactId>
-            <version>${project.version}</version>
+            <version>${webbeans.ri.version}</version>
          </dependency>
 
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>webbeans-ri-spi</artifactId>
-            <version>${project.version}</version>
+            <version>${webbeans.ri.version}</version>
          </dependency>
          
          <dependency>
