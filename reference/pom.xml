@@ -4,7 +4,7 @@
 
    <groupId>org.jboss.webbeans.reference-guide</groupId>
    <artifactId>webbeans-reference-guide</artifactId>
-   <version>1.0.0-SNAPSHOT</version>
+   <version>1.0.0.ALPHA2</version>
    <packaging>jdocbook</packaging>
    <name>Web Beans Reference Guide</name>
 
@@ -195,8 +195,8 @@
 
    <scm>
 
-      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/doc</connection>
-      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/doc</developerConnection>
-      <url>http://fisheye.jboss.org/browse/WebBeans/doc</url>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/doc/tags/webbeans-reference-guide-1.0.0.ALPHA2</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/doc/tags/webbeans-reference-guide-1.0.0.ALPHA2</developerConnection>
+      <url>http://fisheye.jboss.org/browse/WebBeans/doc/tags/webbeans-reference-guide-1.0.0.ALPHA2</url>
    </scm>   
 </project>
