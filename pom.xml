@@ -79,7 +79,7 @@
    
    <properties>
       <webbeans.tck.version>1.0.0-SNAPSHOT</webbeans.tck.version>
-      <webbeans.ri.version>1.0.0-SNAPSHOT</webbeans.ri.version>
+      <webbeans.ri.version>1.0.0.ALPHA2</webbeans.ri.version>
    </properties>
    
    <dependencyManagement>
@@ -299,15 +299,6 @@
                   </configuration>
                </execution>
             </executions>
-         </plugin>
-         <plugin>
-           <groupId>org.apache.maven.plugins</groupId>
-           <artifactId>maven-release-plugin</artifactId>
-           <version>2.0-beta-8</version>
-           <configuration>
-             <tagBase>https://svn.jboss.org/repos/webbeans/ri/tags</tagBase>
-             <autoVersionSubmodules>true</autoVersionSubmodules>
-           </configuration>
          </plugin>
       </plugins>
 
