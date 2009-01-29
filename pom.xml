@@ -56,5 +56,12 @@
       </plugins>
    </build>
 
+   <scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/examples</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/examples</developerConnection>
+      <url>http://fisheye.jboss.org/browse/WebBeans/examples</url>
+   </scm>
+
+
 </project>
 
