@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-01-23 17:28+1000\n"
+"PO-Revision-Date: 2009-01-29 14:49+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -43,7 +44,7 @@ msgid ""
 "specification will make you jump through! The good news is that you've "
 "probably already written and used hundreds, perhaps thousands of Web Beans. "
 "You might not even remember the first Web Bean you wrote."
-msgstr "첫 번째 Web Bean 작성을 시작해 보시겠습니까? 혹은 어떤 종류의 Web Beans 사양으로 도약하게 될 지를 의아해 하거나 의심하고 계실 수 도 있겠군요! 한 가지 좋은 정보는 여러분은 이미 수백개의 혹은 수천개의 Web Beans을 이미 작성 및 사용하고 계셨다는 것입니다. 아마 여러분은 처음으로 작성하신 Web Beans를 기억하지 못하고 계실 수 도 있습니다. "
+msgstr "첫 번째 Web Bean 작성을 시작해 보시겠습니까? 혹은 어떤 종류의 Web Beans 사양을 통해 도약하게 될 지를 의아해 하거나 의심하고 계실 수 도 있겠군요! 한 가지 좋은 정보는 여러분은 이미 수백개의 혹은 수천개의 Web Beans을 이미 작성 및 사용하고 계셨다는 것입니다. 아마 여러분은 처음으로 작성하신 Web Beans를 기억하지 못하고 계실 수 도 있습니다.  "
 
 #. Tag: title
 #: intro.xml:13
@@ -64,7 +65,7 @@ msgid ""
 "into other Web Beans, configuring them via the Web Beans XML configuration "
 "facility, even adding interceptors and decorators to them &#151; without "
 "touching your existing code."
-msgstr "특정한 예외 상항에서 매개 변수가 없는 것을 허용하는 생성자와 함께하는 모든 Java 클래스는 Web Bean입니다. 이에는 모든 JavaBean이 포함됩니다. 이에 더하여 모든 EJB 3-스타일 세션 빈도 Web Bean입니다. 물론 매일 작성하셨던 JavaBeans 및 EJB는 Web Beans 사양에 의해 정의된 새로운 서비스의 장점을 취할 수 없지만, Web Beans으로서 기존 코드를 변경하지 않고 이 모든 것을 사용하실 수 있습니다 &#151; 기타 다른 Web Beans로의 삽입, Web Beans XML 설정 기능을 통한 설정, 인터셉터 및 데코레이터 추가 등&#151;   "
+msgstr "특정한 예외 상항에서 매개 변수가 없는 것을 허용하는 생성자와 함께하는 모든 Java 클래스는 Web Bean으로 이에는 모든 JavaBean이 포함됩니다. 이에 더하여 모든 EJB 3-스타일 세션 빈도 Web Bean입니다. 물론 매일 작성하셨던 JavaBeans 및 EJB는 Web Beans 사양에 의해 정의된 새로운 서비스의 장점을 취할 수 없지만, Web Beans으로서 기존 코드를 변경하지 않고 이 모든 것을 사용하실 수 있습니다 &#151; 기타 다른 Web Beans로의 삽입, Web Beans XML 설정 기능을 통한 설정, 인터셉터 및 데코레이터 추가 등&#151;    "
 
 #. Tag: para
 #: intro.xml:25
@@ -73,7 +74,7 @@ msgid ""
 "Suppose that we have two existing Java classes, that we've been using for "
 "years in various applications. The first class parses a string into a list "
 "of sentences:"
-msgstr "다양한 애플리케이션에서 오랫동안 사용해 온 두 개의 Java 클래스를 갖고 있다고 가정합니다. 첫 번째 클래스는 문자열을 문장 목록으로 구문 분석합니다:  "
+msgstr "다양한 애플리케이션에서 오랫동안 사용해 온 두 개의 Java 클래스를 갖고 있다고 가정합시다. 첫 번째 클래스는 문자열을 문장 목록으로 구문 분석합니다:    "
 
 #. Tag: programlisting
 #: intro.xml:29
@@ -136,7 +137,7 @@ msgstr ""
 msgid ""
 "Unfortunately, we don't have a preexisting class that translates whole text "
 "documents. So let's write a Web Bean that does this job:"
-msgstr "불행하게도 전체 텍스트 문서를 번역하는 기존 클래스가 없습니다. 따라서 이러한 작업을 실행하는 Web Bean을 작성합시다: "
+msgstr "불행하게도 전체 텍스트 문서를 번역하는 기존 클래스가 없으므로, 이러한 작업을 실행하는 Web Bean을 작성합시다:  "
 
 #. Tag: programlisting
 #: intro.xml:44
