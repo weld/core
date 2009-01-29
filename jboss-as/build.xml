@@ -62,7 +62,6 @@
          <fileset dir="target/webbeans.deployer">
             <include name="webbeans-ri.jar" />
             <include name="webbeans-ri-int-jbossas.jar" />
-            <include name="webbeans-api.jar" />
          </fileset>
       </copy>
 
@@ -72,6 +71,7 @@
 				<include name="webbeans-ri-int-microcontainer.jar" />
 		      <include name="webbeans-ri-int-jboss-ejb.jar" />
 		      <include name="webbeans-ri-spi.jar" />
+            <include name="webbeans-api.jar" />
 				<include name="google*.jar" />
 			</fileset>
 		</copy>
