@@ -46,7 +46,7 @@ $ unzip ~/jboss-5.0.0.GA.zip]]></programlisting>
    </para>
    
    <programlisting><![CDATA[$ cd ~/
-$ unzip ~/webbeans-1.0.0.ALPHA1.zip]]></programlisting>
+$ unzip ~/webbeans-$VERSION.zip]]></programlisting>
 
    
    <para>
@@ -86,7 +86,7 @@ $ export ANT_HOME=~/apache-ant-1.7.0</programlisting>
       download the Web Beans and EJB3 automatically.
    </para>
    
-   <programlisting>$ cd webbeans-1.0.0.ALPHA1/jboss-as
+   <programlisting>$ cd webbeans-$VERSION/jboss-as
 $ ant update</programlisting>
 
    <para>
