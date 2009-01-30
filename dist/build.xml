@@ -23,6 +23,7 @@
 		
 		<maven target="clean" basedir="${wbri.dir}" />
 		<maven target="clean" basedir="${refdoc.dir}" />
+		<maven target="clean" basedir="${examples.dir}" />
 		<delete dir="${wbri.dir}/jboss-as/target" />
 		<delete dir="${wbri.dir}/webbeans-ri/test-output" />
 		<delete dir="${wbri.dir}/webbeans-ri/ObjectStore" />
@@ -73,11 +74,11 @@
 		<mkdir dir="${dist.doc.dir}" />
 		<copy todir="${dist.doc.dir}">
 			<fileset dir="${refdoc.dir}/target/docbook/publish">
-				<include name="en-US"/>
-				<include name="ko-KR"/>
-			   <include name="es-ES"/>
-				<include name="it-IT"/>
-				<include name="zh-TW"/>
+				<include name="en-US/**/*"/>
+				<include name="ko-KR/**/*"/>
+			   <include name="es-ES/**/*"/>
+				<include name="it-IT/**/*"/>
+				<include name="zh-TW/**/*"/>
 			</fileset>
 		</copy>
 		<maven target="clean" basedir="${refdoc.dir}" />

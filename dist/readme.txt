@@ -20,7 +20,7 @@ licensed under the APL. At least these parts are licensed under the APL:
 This distribution consists of:
 
 doc/
-   -- The Reference guide, take a look at doc/en/html/index.html for getting 
+   -- The Reference guide, take a look at doc/en-US/html/index.html for getting 
       started using Web Beans and the facilities offered by JSR-299. 
  
 examples/

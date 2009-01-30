@@ -310,6 +310,7 @@
            </configuration>
          </plugin>
       </plugins>
+      <defaultGoal>package</defaultGoal>
 
       <pluginManagement>
          <plugins>
