@@ -78,7 +78,7 @@
    </modules>
    
    <properties>
-      <webbeans.tck.version>1.0.0.ALPHA1</webbeans.tck.version>
+      <webbeans.tck.version>1.0.0-SNAPSHOT</webbeans.tck.version>
       <webbeans.ri.version>1.0.0-SNAPSHOT</webbeans.ri.version>
    </properties>
    
