@@ -77,7 +77,8 @@
             fully qualified class name as the value. For example:
           </para>
           
-          <programlisting>org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans.integration.jbossas.WebBeanDiscoveryImpl</programlisting>
+          <programlisting>org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery= \ 
+   org.jboss.webbeans.integration.jbossas.WebBeanDiscoveryImpl</programlisting>
           
           <para>
              If the Web Beans RI is being used in a servlet container, it
@@ -200,7 +201,8 @@
             fully qualified class name as the value. For example:
           </para>
           
-          <programlisting>org.jboss.webbeans.bootstrap.spi.EjbDiscovery=org.jboss.webbeans.integration.jbossas.EjbDiscoveryImpl</programlisting>
+          <programlisting>org.jboss.webbeans.bootstrap.spi.EjbDiscovery= \
+   org.jboss.webbeans.integration.jbossas.EjbDiscoveryImpl</programlisting>
           
           <para>
              If the Web Beans RI is being used in a servlet container, it
