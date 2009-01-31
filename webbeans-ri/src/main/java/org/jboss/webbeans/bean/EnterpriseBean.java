@@ -246,16 +246,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
    }
 
-
-
-   /**
-    * Injects EJBs and common fields
-    */
-   protected void injectEjbAndCommonFields()
-   {
-      // TODO Support commons and EJB annotations
-   }
-
    /**
     * Validates the bean type
     */
@@ -305,7 +295,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          DependentContext.INSTANCE.setActive(true);
          bindDecorators();
          bindInterceptors();
-         injectEjbAndCommonFields();
          injectBoundFields(instance, creationalContext);
          callInitializers(instance, creationalContext);
       }

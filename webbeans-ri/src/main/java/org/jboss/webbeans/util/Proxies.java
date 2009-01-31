@@ -98,7 +98,10 @@ public class Proxies
                classes.add(clazz);
             }
          }
-         // TODO what about non-Class types
+         else
+         {
+            throw new IllegalArgumentException("Cannot proxy non-Class Type " + type);
+         }
       }
 
       public static TypeInfo ofTypes(Set<Type> types)

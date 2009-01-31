@@ -120,7 +120,6 @@ public class ManagerImpl implements Manager, Serializable
    private transient final Set<Interceptor> interceptors;
 
    // The EJB resolver provided by the container
-   // TODO This can't be transient!
    private transient final EjbResolver ejbResolver;
 
    private transient final EjbDescriptorCache ejbDescriptorCache;
