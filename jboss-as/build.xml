@@ -20,59 +20,28 @@
 		<fail unless="jboss.home" message="Please pass in -Djboss.home=..."/>
 
 		<delete dir="${jboss.home}/server/default/deployers/webbeans.deployer" failonerror="false" />
-		<delete dir="target/webbeans.deployer" failonerror="false"/>
+		<delete dir="target" failonerror="false"/>
 		
-		<mkdir dir="target/webbeans.deployer"/>
-
-		<artifact:dependencies filesetId="jboss5.deployer.fileset" versionsId="jboss5.deployer.versions">
-			<dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-microcontainer" version="${webbeans-ri-int.version}"/>
-			<dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-jbossas" version="${webbeans-ri-int.version}"/>
-			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-ri" version="${webbeans-ri.version}"/>
-			<remoteRepository id="snapshots.jboss.org" url="http://snapshots.jboss.org/maven2">
-				 <snapshots updatePolicy="always" />
-			</remoteRepository>
-			<remoteRepository id="repository.jboss.org" url="http://repository.jboss.org/maven2" />
-		</artifact:dependencies>
-
-		<artifact:dependencies filesetId="google.collections.fileset">
-			<dependency groupId="com.google.collections" artifactId="google-collections" version="0.8"/>
-		</artifact:dependencies>
-
-		<copy todir="target/webbeans.deployer">
-			<fileset refid="jboss5.deployer.fileset"/>
+		<artifact:dependencies filesetId="webbeans.deployer.fileset" versionsId="webbeans.deployer.versions">
+         <dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-deployer" version="${webbeans-ri-int.version}" type="zip"/>
+         <remoteRepository id="repository.jboss.org" url="http://repository.jboss.org/maven2" />
+			<remoteRepository id="snapshots.jboss.org" url="http://snapshots.jboss.org/maven2" />
+      </artifact:dependencies>
+		
+		<mkdir dir="target" />
+		<copy todir="target">
+		   <fileset refid="webbeans.deployer.fileset"/>
 			<chainedmapper>
-			   <mapper classpathref="maven-ant-tasks.classpath" classname="org.apache.maven.artifact.ant.VersionMapper" from="${jboss5.deployer.versions}" to="flatten" />
-			   <flattenmapper />
-			</chainedmapper>
-		</copy>
-
-		<mkdir dir="target/webbeans.deployer/META-INF" />
-
-		<copy todir="target/webbeans.deployer/META-INF">
-			<fileset dir="${basedir}/resources">
-				<include name="webbeans-deployers-jboss-beans.xml"/>
-				<include name="webbeans-ejb-jboss-beans.xml"/>
-				<include name="jboss-structure.xml"/>
-			</fileset>
+            <flattenmapper />
+            <mapper classpathref="maven-ant-tasks.classpath" classname="org.apache.maven.artifact.ant.VersionMapper" from="${webbeans.deployer.versions}" to="flatten" />
+         </chainedmapper>
 		</copy>
 		
-		<mkdir dir="${jboss.home}/server/default/deployers/webbeans.deployer/lib-int" />
-		
-		<copy todir="${jboss.home}/server/default/deployers/webbeans.deployer/lib-int">
-         <fileset dir="target/webbeans.deployer">
-            <include name="webbeans-ri.jar" />
-            <include name="webbeans-ri-int-jbossas.jar" />
-         </fileset>
-      </copy>
+		<unzip dest="target" src="target/webbeans-ri-int-deployer.zip" />
 
 		<copy todir="${jboss.home}/server/default/deployers/webbeans.deployer">
 			<fileset dir="target/webbeans.deployer">
-				<include name="**/*.xml" />
-				<include name="webbeans-ri-int-microcontainer.jar" />
-		      <include name="webbeans-ri-int-jboss-ejb.jar" />
-		      <include name="webbeans-ri-spi.jar" />
-            <include name="webbeans-api.jar" />
-				<include name="google*.jar" />
+				<include name="**/*" />
 			</fileset>
 		</copy>
 
