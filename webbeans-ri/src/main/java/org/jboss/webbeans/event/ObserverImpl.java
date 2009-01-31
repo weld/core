@@ -111,7 +111,7 @@ public class ObserverImpl<T> implements Observer<T>
       Class<T> c = (Class<T>) observerMethod.getAnnotatedParameters(Observes.class).get(0).getType();
       this.eventType = c;
 
-      this.bindings = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingTypesAsArray();
+      this.bindings = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingsAsArray();
       initTransactionObservationPhase();
       this.conditional = !observerMethod.getAnnotatedParameters(IfExists.class).isEmpty();
    }

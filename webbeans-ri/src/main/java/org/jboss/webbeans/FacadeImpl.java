@@ -36,7 +36,7 @@ import org.jboss.webbeans.util.Reflections;
 public abstract class FacadeImpl<T>
 {
    // The binding types the helper operates on
-   protected final Set<? extends Annotation> bindingTypes;
+   protected final Set<? extends Annotation> bindings;
    // The Web Beans manager
    protected final Manager manager;
    // The type of the operation
@@ -47,13 +47,13 @@ public abstract class FacadeImpl<T>
     * 
     * @param type The event type
     * @param manager The Web Beans manager
-    * @param bindingTypes The binding types
+    * @param bindings The binding types
     */
-   protected FacadeImpl(Class<T> type, Manager manager, Annotation... bindingTypes)
+   protected FacadeImpl(Class<T> type, Manager manager, Annotation... bindings)
    {
       this.manager = manager;
       this.type = type;
-      this.bindingTypes = mergeBindingTypes(new HashSet<Annotation>(), bindingTypes);
+      this.bindings = mergeBindings(new HashSet<Annotation>(), bindings);
    }
 
    /**
@@ -65,15 +65,15 @@ public abstract class FacadeImpl<T>
     * @param newBindings New bindings
     * @return The union of the bindings
     */
-   protected Set<Annotation> mergeBindingTypes(Set<? extends Annotation> currentBindings, Annotation... newBindings)
+   protected Set<Annotation> mergeBindings(Set<? extends Annotation> currentBindings, Annotation... newBindings)
    {
       Set<Annotation> result = new HashSet<Annotation>();
       result.addAll(currentBindings);
       for (Annotation newAnnotation : newBindings)
       {
-         if (!Reflections.isBindingType(newAnnotation))
+         if (!Reflections.isBindings(newAnnotation))
          {
-            throw new IllegalArgumentException(newAnnotation + " is not a binding type for " + this);
+            throw new IllegalArgumentException(newAnnotation + " is not a binding for " + this);
          }
          if (result.contains(newAnnotation))
          {
@@ -97,13 +97,13 @@ public abstract class FacadeImpl<T>
    /**
     * Merges the binding this helper operates upon with the parameters
     * 
-    * @param bindingTypes The bindings to merge
+    * @param bindings The bindings to merge
     * 
     * @return The union of the binding types
     */
-   protected Annotation[] mergeBindings(Annotation... newBindingTypes)
+   protected Annotation[] mergeBindings(Annotation... newBindings)
    {
-      return mergeBindingTypes(bindingTypes, newBindingTypes).toArray(new Annotation[0]);
+      return mergeBindings(bindings, newBindings).toArray(new Annotation[0]);
    }
 
    /**

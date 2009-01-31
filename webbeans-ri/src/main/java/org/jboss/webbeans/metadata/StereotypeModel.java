@@ -66,16 +66,16 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
       initSupportedScopes();
       initRequiredTypes();
       initInterceptorBindings();
-      checkBindingTypes();
+      checkBindings();
    }
 
    /**
     * Validates the binding types
     */
-   private void checkBindingTypes()
+   private void checkBindings()
    {
-      Set<Annotation> bindingTypes = getAnnotatedAnnotation().getMetaAnnotations(BindingType.class);
-      if (bindingTypes.size() > 0)
+      Set<Annotation> bindings = getAnnotatedAnnotation().getMetaAnnotations(BindingType.class);
+      if (bindings.size() > 0)
       {
          throw new DefinitionException("Cannot declare binding types on a stereotype " + getAnnotatedAnnotation());
       }

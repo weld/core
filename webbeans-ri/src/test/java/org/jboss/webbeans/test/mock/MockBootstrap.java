@@ -152,7 +152,6 @@ public class MockBootstrap extends WebBeansBootstrap
 
       public Object resolveResource(InjectionPoint injectionPoint, NamingContext namingContext)
       {
-         // TODO Auto-generated method stub
          return null;
       }
 

@@ -76,7 +76,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingAnnotatedConstructor
 
    public Set<Annotation> getBindings()
    {
-      return delegate().getBindingTypes();
+      return delegate().getBindings();
    }
    
    public T newInstance(ManagerImpl manager, CreationalContext<?> creationalContext)

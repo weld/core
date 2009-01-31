@@ -50,7 +50,7 @@ public class FieldInjectionPoint<T> extends ForwardingAnnotatedField<T> implemen
 
    public Set<Annotation> getBindings()
    {
-      return delegate().getAnnotationStore().getBindingTypes();
+      return delegate().getAnnotationStore().getBindings();
    }
 
    public void inject(Object declaringInstance, ManagerImpl manager, CreationalContext<?> creationalContext)

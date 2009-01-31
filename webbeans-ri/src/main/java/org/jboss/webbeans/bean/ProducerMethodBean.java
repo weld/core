@@ -209,7 +209,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    }
    
    @Override
-   protected void preCheckSpecialization()
+   protected void preSpecialize()
    {
       if (declaringBean.getAnnotatedItem().getSuperclass().getDeclaredMethod(getAnnotatedItem().getAnnotatedMethod()) == null)
       {
@@ -218,7 +218,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    }
    
    @Override
-   protected void initSpecialization()
+   protected void specialize()
    {
       this.specializedBean = ProducerMethodBean.of(declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod()), SimpleBean.of(declaringBean.getAnnotatedItem().getSuperclass(), manager), manager);
    }

@@ -71,7 +71,7 @@ public class InstanceBean<T, S> extends AbstractFacadeBean<Instance<T>, S, T>
       try
       {
          DependentContext.INSTANCE.setActive(true);
-         return new InstanceImpl<T>(getTypeParameter(), manager, getBindingTypesArray());
+         return new InstanceImpl<T>(getTypeParameter(), manager, getAnnotatedItem().getBindingsAsArray());
       }
       finally
       {

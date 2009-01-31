@@ -23,13 +23,13 @@ public class ResolutionByTypeTest extends AbstractTest
    {
       AnnotatedField<Tuna> tuna = new AnnotatedFieldImpl<Tuna>(FishFarm.class.getDeclaredField("tuna"), fishFarmClass);
       assert tuna.getType().isAssignableFrom(Tuna.class);
-      assert tuna.getBindingTypes().size() == 1;
-      assert tuna.getBindingTypes().contains(new CurrentLiteral());
+      assert tuna.getBindings().size() == 1;
+      assert tuna.getBindings().contains(new CurrentLiteral());
       assert tuna.getType().isAssignableFrom(Tuna.class);
    }
    
    @Test
-   public void testOneBindingType() throws Exception
+   public void testOneBinding() throws Exception
    {
       AnnotatedField<ScottishFish> whiteScottishFishField = new AnnotatedFieldImpl<ScottishFish>(FishFarm.class.getDeclaredField("whiteScottishFish"), fishFarmClass);
       Bean<Cod> codBean = SimpleBean.of(Cod.class, manager);
@@ -45,7 +45,7 @@ public class ResolutionByTypeTest extends AbstractTest
    }
    
    @Test
-   public void testABindingType() throws Exception
+   public void testABinding() throws Exception
    {
       AnnotatedField<Animal> whiteChunkyFishField = new AnnotatedFieldImpl<Animal>(FishFarm.class.getDeclaredField("realChunkyWhiteFish"), fishFarmClass);
       

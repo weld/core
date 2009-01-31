@@ -69,7 +69,7 @@ public class Resolver
          if (other instanceof AnnotatedItem)
          {
             AnnotatedItem<?, ?> that = (AnnotatedItem<?, ?>) other;
-            return delegate().isAssignableFrom(that) && that.getBindingTypes().equals(this.getBindingTypes());
+            return delegate().isAssignableFrom(that) && that.getBindings().equals(this.getBindings());
          }
          else
          {
@@ -290,7 +290,7 @@ public class Resolver
       Set<Bean<T>> resolvedBeans = new HashSet<Bean<T>>();
       for (Bean<?> bean : beans)
       {
-         if (element.isAssignableFrom(bean.getTypes()) && containsAllBindingBindingTypes(element, bean.getBindings()))
+         if (element.isAssignableFrom(bean.getTypes()) && containsAllBindings(element, bean.getBindings()))
          {
             @SuppressWarnings("unchecked")
             Bean<T> b = (Bean<T>) bean;
@@ -304,20 +304,20 @@ public class Resolver
     * Checks if binding criteria fulfill all binding types
     * 
     * @param element The binding criteria to check
-    * @param bindingTypes The binding types to check
+    * @param bindings The binding types to check
     * @return True if all matches, false otherwise
     */
-   private boolean containsAllBindingBindingTypes(AnnotatedItem<?, ?> element, Set<Annotation> bindingTypes)
+   private boolean containsAllBindings(AnnotatedItem<?, ?> element, Set<Annotation> bindings)
    {
-      for (Annotation bindingType : element.getBindingTypes())
+      for (Annotation binding : element.getBindings())
       {
-         BindingTypeModel<?> bindingTypeModel = MetaDataCache.instance().getBindingTypeModel(bindingType.annotationType());
-         if (bindingTypeModel.getNonBindingTypes().size() > 0)
+         BindingTypeModel<?> bindingType = MetaDataCache.instance().getBindingTypeModel(binding.annotationType());
+         if (bindingType.getNonBindingTypes().size() > 0)
          {
             boolean matchFound = false;
-            for (Annotation otherBindingType : bindingTypes)
+            for (Annotation otherBinding : bindings)
             {
-               if (bindingTypeModel.isEqual(bindingType, otherBindingType))
+               if (bindingType.isEqual(binding, otherBinding))
                {
                   matchFound = true;
                }
@@ -327,7 +327,7 @@ public class Resolver
                return false;
             }
          }
-         else if (!bindingTypes.contains(bindingType))
+         else if (!bindings.contains(binding))
          {
             return false;
          }
@@ -339,10 +339,10 @@ public class Resolver
     * Resolves decorators according to binding criteria
     * 
     * @param types The set of API types to match
-    * @param bindingTypes The binding types to match
+    * @param bindings The binding types to match
     * @return The set of matching decorators
     */
-   public List<Decorator> resolveDecorators(Set<Type> types, Annotation[] bindingTypes)
+   public List<Decorator> resolveDecorators(Set<Type> types, Annotation[] bindings)
    {
       // TODO Implement decorators
       return Collections.emptyList();
@@ -352,7 +352,7 @@ public class Resolver
     * Resolves interceptors according to binding criteria
     * 
     * @param types The set of API types to match
-    * @param bindingTypes The binding types to match
+    * @param bindings The binding types to match
     * @return The set of matching interceptors
     */
    public List<Interceptor> resolveInterceptors(InterceptionType type, Annotation[] interceptorBindings)

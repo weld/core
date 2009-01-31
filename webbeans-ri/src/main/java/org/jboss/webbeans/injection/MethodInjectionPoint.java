@@ -76,7 +76,7 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
 
    public Set<Annotation> getBindings()
    {
-      return delegate().getBindingTypes();
+      return delegate().getBindings();
    }
    
    public T invoke(Object declaringInstance, ManagerImpl manager, CreationalContext<?> creationalContext)

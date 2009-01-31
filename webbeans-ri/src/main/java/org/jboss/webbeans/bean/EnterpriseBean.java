@@ -182,9 +182,9 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    /**
     * Validates specialization
     */
-   protected void preCheckSpecialization()
+   protected void preSpecialize()
    {
-      super.preCheckSpecialization();
+      super.preSpecialize();
       if (!manager.getEjbDescriptorCache().containsKey(getAnnotatedItem().getSuperclass().getType()))
       {
          throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
@@ -192,7 +192,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    }
 
    @Override
-   protected void initSpecialization()
+   protected void specialize()
    {
       this.specializedBean = EnterpriseBean.of(getAnnotatedItem().getSuperclass(), manager);
    }

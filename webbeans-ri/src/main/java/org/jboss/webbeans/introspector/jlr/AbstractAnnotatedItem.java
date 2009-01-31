@@ -214,9 +214,9 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    }
    
    @Deprecated
-   public Set<Annotation> getBindingTypes()
+   public Set<Annotation> getBindings()
    {
-      return getAnnotationStore().getBindingTypes();
+      return getAnnotationStore().getBindings();
    }
 
    /**
@@ -227,12 +227,12 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * 
     * @return An array of (binding type) annotations
     * 
-    * @see org.jboss.webbeans.introspector.AnnotatedItem#getBindingTypesAsArray()
+    * @see org.jboss.webbeans.introspector.AnnotatedItem#getBindingsAsArray()
     */
    @Deprecated
-   public Annotation[] getBindingTypesAsArray()
+   public Annotation[] getBindingsAsArray()
    {
-      return getAnnotationStore().getBindingTypesAsArray();
+      return getAnnotationStore().getBindingsAsArray();
    }
 
    /**

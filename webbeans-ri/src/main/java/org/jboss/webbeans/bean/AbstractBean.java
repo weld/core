@@ -90,7 +90,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    // Logger
    private LogProvider log = Logging.getLogProvider(AbstractBean.class);
    // The binding types
-   private Set<Annotation> bindingTypes;
+   private Set<Annotation> bindings;
    // The name
    protected String name;
    // The scope type
@@ -131,12 +131,12 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    protected void init()
    {
       mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class));
-      initBindingTypes();
+      initBindings();
       if (isSpecializing())
       {
-         preCheckSpecialization();
-         initSpecialization();
-         postSpecialization();
+         preSpecialize();
+         specialize();
+         postSpecialize();
       }
       initDefaultBindings();
       initType();
@@ -165,23 +165,23 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    /**
     * Initializes the binding types
     */
-   protected void initBindingTypes()
+   protected void initBindings()
    {
-      this.bindingTypes = new HashSet<Annotation>();
-      this.bindingTypes.addAll(getAnnotatedItem().getMetaAnnotations(BindingType.class));
+      this.bindings = new HashSet<Annotation>();
+      this.bindings.addAll(getAnnotatedItem().getMetaAnnotations(BindingType.class));
    }
    
    protected void initDefaultBindings()
    {
-      if (bindingTypes.size() == 0)
+      if (bindings.size() == 0)
       {
          log.trace("Adding default @Current binding type");
-         this.bindingTypes.add(new CurrentLiteral());
+         this.bindings.add(new CurrentLiteral());
       }
       else
       {
          if (log.isTraceEnabled())
-            log.trace("Using binding types " + bindingTypes + " specified by annotations");
+            log.trace("Using binding types " + bindings + " specified by annotations");
       }
    }
 
@@ -330,13 +330,13 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       }
    }
    
-   protected void postSpecialization()
+   protected void postSpecialize()
    {
       if (getAnnotatedItem().isAnnotationPresent(Named.class) && getSpecializedBean().getAnnotatedItem().isAnnotationPresent(Named.class))
       {
          throw new DefinitionException("Cannot put name on specializing and specialized class");
       }
-      this.bindingTypes.addAll(getSpecializedBean().getBindings());
+      this.bindings.addAll(getSpecializedBean().getBindings());
       if (isSpecializing() && getSpecializedBean().getAnnotatedItem().isAnnotationPresent(Named.class))
       {
          this.name = getSpecializedBean().getName();
@@ -345,12 +345,12 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       manager.getSpecializedBeans().put(getSpecializedBean(), this);
    }
    
-   protected void preCheckSpecialization()
+   protected void preSpecialize()
    {
       
    }
    
-   protected void initSpecialization()
+   protected void specialize()
    {
       
    }
@@ -387,7 +387,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     */
    public Set<Annotation> getBindings()
    {
-      return bindingTypes;
+      return bindings;
    }
 
    /**

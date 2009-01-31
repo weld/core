@@ -39,25 +39,25 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
     * 
     * @param type The obtainable type
     * @param manager The Web Beans manager
-    * @param bindingTypes The binding types
+    * @param bindings The binding types
     */
-   public InstanceImpl(Class<T> type, Manager manager, Annotation... bindingTypes)
+   public InstanceImpl(Class<T> type, Manager manager, Annotation... bindings)
    {
-      super(type, manager, bindingTypes);
+      super(type, manager, bindings);
    }
 
    /**
     * Gets an instance with the matching binding types
     * 
-    * @param bindingTypes The binding types
+    * @param bindings The binding types
     * @return The instance
     * 
     * @see javax.inject.Instance#get(Annotation...)
     * @see javax.inject.manager.Manager#getInstanceByType(Class, Annotation...)
     */
-   public T get(Annotation... bindingTypes) 
+   public T get(Annotation... bindings) 
    {
-      return manager.getInstanceByType(type, mergeBindings(bindingTypes));
+      return manager.getInstanceByType(type, mergeBindings(bindings));
    }
 
    /**
@@ -68,7 +68,7 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
    @Override
    public String toString()
    {
-      return "Obtainable instance for type " + type + " and binding types " + bindingTypes;
+      return "Obtainable instance for type " + type + " and binding types " + bindings;
    }
 
    /**

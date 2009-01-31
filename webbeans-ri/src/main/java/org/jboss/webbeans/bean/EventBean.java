@@ -136,7 +136,7 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
          @SuppressWarnings("unchecked")
          Class<T> eventType = (Class<T>) clazz;
          
-         return new EventImpl<T>(eventType, manager, getBindingTypesArray());
+         return new EventImpl<T>(eventType, manager, getAnnotatedItem().getBindingsAsArray());
       }
       finally
       {

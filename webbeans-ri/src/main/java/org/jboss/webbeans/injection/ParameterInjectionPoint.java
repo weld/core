@@ -48,7 +48,7 @@ public class ParameterInjectionPoint<T> extends ForwardingAnnotatedParameter<T> 
 
    public Set<Annotation> getBindings()
    {
-      return delegate().getBindingTypes();
+      return delegate().getBindings();
    }
 
    public Member getMember()

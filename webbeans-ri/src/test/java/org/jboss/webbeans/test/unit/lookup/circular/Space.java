@@ -7,10 +7,8 @@ import javax.inject.Initializer;
 class Space
 {
    
-   public Space()
-   {
-      // TODO Auto-generated constructor stub
-   }
+   // For serialization
+   public Space() {}
    
    @Initializer
    public Space(Planet planet)

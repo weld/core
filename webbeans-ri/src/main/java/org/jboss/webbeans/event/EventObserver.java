@@ -75,7 +75,7 @@ public class EventObserver<T>
    {
       for (Annotation annotation : bindingAnnotations)
       {
-         if (!Reflections.isBindingType(annotation))
+         if (!Reflections.isBindings(annotation))
          {
             throw new IllegalArgumentException(annotation + " is not a binding type for " + this);
          }

@@ -274,7 +274,7 @@ public class AnnotationStore
    }
 
    @Deprecated
-   public Set<Annotation> getBindingTypes()
+   public Set<Annotation> getBindings()
    {
       if (getMetaAnnotations(BindingType.class).size() > 0)
       {
@@ -287,9 +287,9 @@ public class AnnotationStore
    }
 
    @Deprecated
-   public Annotation[] getBindingTypesAsArray()
+   public Annotation[] getBindingsAsArray()
    {
-      return getBindingTypes().toArray(EMPTY_ANNOTATION_ARRAY);
+      return getBindings().toArray(EMPTY_ANNOTATION_ARRAY);
    }
 
    public <A extends Annotation> A getAnnotation(Class<? extends A> annotationType)

@@ -48,33 +48,33 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
     * 
     * @param eventType The event type
     * @param manager The Web Beans manager
-    * @param bindingTypes The binding types
+    * @param bindings The binding types
     */
-   public EventImpl(Class<T> eventType, Manager manager, Annotation... bindingTypes)
+   public EventImpl(Class<T> eventType, Manager manager, Annotation... bindings)
    {
-      super(eventType, manager, bindingTypes);
+      super(eventType, manager, bindings);
    }
 
    /**
     * Fires an event
     * 
     * @param event The event object
-    * @param bindingTypes Additional binding types
+    * @param bindings Additional binding types
     */
-   public void fire(T event, Annotation... bindingTypes)
+   public void fire(T event, Annotation... bindings)
    {
-      manager.fireEvent(event, mergeBindings(bindingTypes));
+      manager.fireEvent(event, mergeBindings(bindings));
    }
 
    /**
     * Registers an observer
     * 
     * @param observer
-    * @param bindingTypes Additional binding types
+    * @param bindings Additional binding types
     */
-   public void observe(Observer<T> observer, Annotation... bindingTypes)
+   public void observe(Observer<T> observer, Annotation... bindings)
    {
-      manager.addObserver(observer, type, mergeBindings(bindingTypes));
+      manager.addObserver(observer, type, mergeBindings(bindings));
    }
 
    @Override
@@ -83,7 +83,7 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
       StringBuilder buffer = new StringBuilder();
       buffer.append("Observable Event:\n");
       buffer.append("  Event Type: " + type.getName() + "\n");
-      buffer.append(Strings.collectionToString("  Event Bindings: ", bindingTypes));
+      buffer.append(Strings.collectionToString("  Event Bindings: ", bindings));
       return buffer.toString();
    }
 

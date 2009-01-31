@@ -79,18 +79,18 @@ public class WrappedAnnotatedClass<T> extends ForwardingAnnotatedClass<T>
     * @see org.jboss.webbeans.introspector.AnnotatedItem
     */
    @Deprecated
-   public Set<Annotation> getBindingTypes()
+   public Set<Annotation> getBindings()
    {
-      return getAnnotationStore().getBindingTypes();
+      return getAnnotationStore().getBindings();
    }
 
    /**
     * @see org.jboss.webbeans.introspector.AnnotatedItem
     */
    @Deprecated
-   public Annotation[] getBindingTypesAsArray()
+   public Annotation[] getBindingsAsArray()
    {
-      return getAnnotationStore().getBindingTypesAsArray();
+      return getAnnotationStore().getBindingsAsArray();
    }
    
    /**

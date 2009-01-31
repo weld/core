@@ -69,9 +69,8 @@ public class InjectionPointBean extends AbstractStandardBean<InjectionPoint>
       return getManager().getInjectionPoint();
    }
    
-   public void destroy(InjectionPoint instance)
+   public void destroy(InjectionPoint instance) 
    {
-      // TODO Auto-generated method stub
       
    }
 

@@ -86,7 +86,7 @@ public interface AnnotatedItem<T, S>
     * @returns A set of binding types present on the type. Returns an empty set
     *          if there are no matches.
     */
-   public Set<Annotation> getBindingTypes();
+   public Set<Annotation> getBindings();
 
    /**
     * Gets the binding types for this element
@@ -94,7 +94,7 @@ public interface AnnotatedItem<T, S>
     * @returns An array of binding types present on the type. Returns an empty
     *          array if there are no matches.
     */
-   public Annotation[] getBindingTypesAsArray();
+   public Annotation[] getBindingsAsArray();
 
    /**
     * Gets an annotation for the annotation type specified.

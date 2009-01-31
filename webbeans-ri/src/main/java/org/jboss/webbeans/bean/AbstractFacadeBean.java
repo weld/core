@@ -53,16 +53,6 @@ public abstract class AbstractFacadeBean<T, S, P> extends AbstractBean<T, S>
       init();
    }
 
-   /*
-    * Gets the binding type as an array
-    * 
-    * @return The binding types
-    */
-   protected Annotation[] getBindingTypesArray()
-   {
-      return annotatedItem.getBindingTypesAsArray();
-   }
-
    /**
     * Gets the type paramater of the facade
     * 

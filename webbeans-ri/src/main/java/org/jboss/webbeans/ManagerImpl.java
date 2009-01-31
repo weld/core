@@ -199,7 +199,7 @@ public class ManagerImpl implements Manager, Serializable
     * use.
     * 
     * @param apiType The API type to match
-    * @param bindingTypes The binding types to match
+    * @param bindings The binding types to match
     * @return The set of matching disposal methods
     */
    public <T> Set<AnnotatedMethod<?>> resolveDisposalMethods(Class<T> apiType, Annotation... bindings)
@@ -273,7 +273,7 @@ public class ManagerImpl implements Manager, Serializable
     * Resolves beans by API type and binding types
     * 
     * @param type The API type to match
-    * @param bindingTypes The binding types to match
+    * @param bindings The binding types to match
     * @return The set of matching beans
     * 
     * @see javax.inject.manager.Manager#resolveByType(java.lang.Class,
@@ -288,7 +288,7 @@ public class ManagerImpl implements Manager, Serializable
     * Resolves beans by API type literal and binding types
     * 
     * @param type The API type literal to match
-    * @param bindingTypes The binding types to match
+    * @param bindings The binding types to match
     * @return The set of matching beans
     * 
     * @see javax.inject.manager.Manager#resolveByType(javax.inject.TypeLiteral,
@@ -304,7 +304,7 @@ public class ManagerImpl implements Manager, Serializable
     * perform the resolution. For internal use.
     * 
     * @param element The item to resolve
-    * @param bindingTypes The binding types to match
+    * @param bindings The binding types to match
     * @return The set of matching beans
     */
    public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, Annotation... bindings)
@@ -491,7 +491,7 @@ public class ManagerImpl implements Manager, Serializable
       // Also check that the binding types are truly binding types
       for (Annotation binding : bindings)
       {
-         if (!Reflections.isBindingType(binding))
+         if (!Reflections.isBindings(binding))
          {
             throw new IllegalArgumentException("Event type " + event.getClass().getName() + " cannot be fired with non-binding type " + binding.getClass().getName() + " specified");
          }
@@ -616,7 +616,7 @@ public class ManagerImpl implements Manager, Serializable
             currentInjectionPoint.set(injectionPoint);
          }
          AnnotatedItem<T, ?> element = AnnotatedClassImpl.of((Class<T>) injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]));
-         Bean<T> bean = getBeanByType(element, element.getBindingTypesAsArray());
+         Bean<T> bean = getBeanByType(element, element.getBindingsAsArray());
          if (creationalContext instanceof CreationalContextImpl)
          {
             CreationalContextImpl<?> ctx = (CreationalContextImpl<?>) creationalContext;
@@ -674,7 +674,7 @@ public class ManagerImpl implements Manager, Serializable
     * Returns an instance by API type and binding types
     * 
     * @param type The API type to match
-    * @param bindingTypes The binding types to match
+    * @param bindings The binding types to match
     * @return An instance of the bean
     * 
     * @see javax.inject.manager.Manager#getInstanceByType(java.lang.Class,
@@ -690,7 +690,7 @@ public class ManagerImpl implements Manager, Serializable
     * Returns an instance by type literal and binding types
     * 
     * @param type The type to match
-    * @param bindingTypes The binding types to match
+    * @param bindings The binding types to match
     * @return An instance of the bean
     * 
     * @see javax.inject.manager.Manager#getInstanceByType(javax.inject.TypeLiteral,
@@ -706,7 +706,7 @@ public class ManagerImpl implements Manager, Serializable
     * and return
     * 
     * @param element The annotated item to match
-    * @param bindingTypes The binding types to match
+    * @param bindings The binding types to match
     * @return An instance of the bean
     */
    private <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindings)
@@ -785,7 +785,7 @@ public class ManagerImpl implements Manager, Serializable
     * Resolves a list of decorators based on API types and binding types Os
     * 
     * @param types The set of API types to match
-    * @param bindingTypes The binding types to match
+    * @param bindings The binding types to match
     * @return A list of matching decorators
     * 
     * @see javax.inject.manager.Manager#resolveDecorators(java.util.Set,

@@ -7,10 +7,8 @@ import javax.inject.Initializer;
 class House
 {
    
-   public House()
-   {
-      // TODO Auto-generated constructor stub
-   }
+   // For serialization
+   public House() {}
    
    @Initializer
    public House(House house)

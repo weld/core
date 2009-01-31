@@ -76,18 +76,18 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
     * @see org.jboss.webbeans.introspector.AnnotatedItem
     */
    @Deprecated
-   public Set<Annotation> getBindingTypes()
+   public Set<Annotation> getBindings()
    {
-      return delegate().getBindingTypes();
+      return delegate().getBindings();
    }
 
    /**
     * @see org.jboss.webbeans.introspector.AnnotatedItem
     */
    @Deprecated
-   public Annotation[] getBindingTypesAsArray()
+   public Annotation[] getBindingsAsArray()
    {
-      return delegate().getBindingTypesAsArray();
+      return delegate().getBindingsAsArray();
    }
    
    /**
