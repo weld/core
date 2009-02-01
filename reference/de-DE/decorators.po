@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: decorators\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-24 15:20+1100\n"
+"PO-Revision-Date: 2009-02-01 22:04+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: decorators.xml:4
 #, no-c-format
 msgid "Decorators"
-msgstr ""
+msgstr "Dekoratoren"
 
 #. Tag: para
 #: decorators.xml:6
@@ -50,7 +50,7 @@ msgstr ""
 #: decorators.xml:22
 #, no-c-format
 msgid "Suppose we have an interface that represents accounts:"
-msgstr ""
+msgstr "Nehmen wir an, wir besitzen ein Konten repräsentierendes Interface:"
 
 #. Tag: programlisting
 #: decorators.xml:24
@@ -79,6 +79,8 @@ msgid ""
 "any kind of account, large transactions must be recorded by the system in a "
 "special log. This is a perfect job for a decorator."
 msgstr ""
+"Mehrere verschiedene Web Beans in unserem System implementieren das <literal>Account</"
+"literal>-Interface. Es existiert allerdings eine gängige legale Voraussetzung die besagt, dass für jede Art von Konto, große Transaktionen vom System in einem besonderen Protokoll gespeichert werden müssen. Dies ist die perfekte Aufgabe für einen Dekorator."
 
 #. Tag: para
 #: decorators.xml:32
@@ -86,7 +88,7 @@ msgstr ""
 msgid ""
 "A decorator is a simple Web Bean that implements the type it decorates and "
 "is annotated <literal>@Decorator</literal>."
-msgstr ""
+msgstr "Ein Dekorator ist ein einfaches Web Bean, das den Typ das es dekoriert implementiert und <literal>@Decorator</literal> annotiert ist."
 
 #. Tag: programlisting
 #: decorators.xml:35
@@ -147,13 +149,13 @@ msgid ""
 "Unlike other simple Web Beans, a decorator may be an abstract class. If "
 "there's nothing special the decorator needs to do for a particular method of "
 "the decorated interface, you don't need to implement that method."
-msgstr ""
+msgstr "Anders als andere einfache Web Beans, kann ein Dekorator eine abstrakte Klasse sein. Falls es nichts besonderes ist, dass der Dekorator für eine bestimmte Methode des dekorierten Interface tun muss, so brauchen Sie diese Methode nicht zu implementieren."
 
 #. Tag: title
 #: decorators.xml:43
 #, no-c-format
 msgid "Delegate attributes"
-msgstr ""
+msgstr "\"Delegate\" Attribute"
 
 #. Tag: para
 #: decorators.xml:45
@@ -164,6 +166,9 @@ msgid ""
 "decorator is bound to. The delegate attribute type must implement or extend "
 "all interfaces implemented by the decorator."
 msgstr ""
+"Alle Dekoratoren besitzen ein <emphasis>\"Delegate\" Attribut</emphasis>. Typ und "
+"Binding-Typen des \"Delegate\" Attribut bestimmen, an welche Web Beans der "
+"Dekorator gebunden wird. Der Typ des \"Delegate\" Attributs muss alle vom Dekorator implementierten Interfaces implementieren oder erweitern."
 
 #. Tag: para
 #: decorators.xml:50
