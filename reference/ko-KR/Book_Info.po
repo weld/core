@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Book_Info\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-06 11:30+0000\n"
+"POT-Creation-Date: 2009-02-01 21:16+0000\n"
 "PO-Revision-Date: 2009-01-08 16:25+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -15,21 +15,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
+"\n"
 "\n"
 "\n"
 
 #. Tag: title
 #: Book_Info.xml:4
 #, no-c-format
-msgid "Introduction to Web Beans"
-msgstr "Web Beans 소개 "
+msgid "Web Beans: Java Contexts and Dependency Injection"
+msgstr ""
 
 #. Tag: subtitle
 #: Book_Info.xml:5
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The new Java standard for dependency injection and contextual state "
-"management"
+"The new standard for dependency injection and contextual state management"
 msgstr "의존성 주입 및 컨텍스트 상태 관리에 대한 새로운 Java 표준  "
 
+#~ msgid "Introduction to Web Beans"
+#~ msgstr "Web Beans 소개 "

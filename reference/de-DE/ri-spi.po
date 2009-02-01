@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-18 16:31+0000\n"
+"POT-Creation-Date: 2009-02-01 21:16+0000\n"
 "PO-Revision-Date: 2009-01-24 15:37+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -143,10 +143,10 @@ msgstr ""
 
 #. Tag: programlisting
 #: ri-spi.xml:65
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
-"integration.jbossas.WebBeanDiscoveryImpl"
+"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery= \\ \n"
+"   org.jboss.webbeans.integration.jbossas.WebBeanDiscoveryImpl"
 msgstr ""
 "org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
 "integration.jbossas.WebBeanDiscoveryImpl"
@@ -162,8 +162,10 @@ msgstr ""
 #. Tag: programlisting
 #: ri-spi.xml:72
 #, no-c-format
-msgid "<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
-msgstr "<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
+msgid ""
+"<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
+msgstr ""
+"<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
 
 #. Tag: para
 #: ri-spi.xml:74
@@ -387,10 +389,10 @@ msgstr ""
 
 #. Tag: programlisting
 #: ri-spi.xml:111
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"org.jboss.webbeans.bootstrap.spi.EjbDiscovery=org.jboss.webbeans.integration."
-"jbossas.EjbDiscoveryImpl"
+"org.jboss.webbeans.bootstrap.spi.EjbDiscovery= \\\n"
+"   org.jboss.webbeans.integration.jbossas.EjbDiscoveryImpl"
 msgstr ""
 "org.jboss.webbeans.bootstrap.spi.EjbDiscovery=org.jboss.webbeans.integration."
 "jbossas.EjbDiscoveryImpl"
@@ -483,7 +485,8 @@ msgstr ""
 #: ri-spi.xml:144
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
-msgstr "org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
+msgstr ""
+"org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
 
 #. Tag: programlisting
 #: ri-spi.xml:151
@@ -584,7 +587,8 @@ msgstr ""
 #: ri-spi.xml:177
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
-msgstr "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
+msgstr ""
+"org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
 
 #. Tag: programlisting
 #: ri-spi.xml:184
@@ -678,4 +682,3 @@ msgid ""
 "literal> into the applications isolated classloader. It cannot be loaded "
 "from a shared classloader."
 msgstr ""
-

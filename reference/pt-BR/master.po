@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-06 11:30+0000\n"
+"POT-Creation-Date: 2009-02-01 21:16+0000\n"
 "PO-Revision-Date: 2009-01-06 11:30+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -14,25 +14,43 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
-#: master.xml:12
+#: master.xml:10
+#, no-c-format
+msgid "Note"
+msgstr ""
+
+#. Tag: para
+#: master.xml:11
+#, no-c-format
+msgid ""
+"JSR-299 has recently changed it's name from \"Web Beans\" to \"Java Contexts "
+"and Dependency Injection\". The reference guide still refers to JSR-299 as "
+"\"Web Beans\" and the JSR-299 Reference Implementation as the \"Web Beans RI"
+"\". Other documentation, blogs, forum posts etc. may use the new "
+"nomenclature, including the new name for the JSR-299 Reference "
+"Implementation - \"Web Beans\"."
+msgstr ""
+
+#. Tag: title
+#: master.xml:24
 #, no-c-format
 msgid "Using contextual objects"
 msgstr ""
 
 #. Tag: title
-#: master.xml:25
+#: master.xml:37
 #, no-c-format
 msgid "Developing loosely-coupled code"
 msgstr ""
 
 #. Tag: title
-#: master.xml:35
+#: master.xml:47
 #, no-c-format
 msgid "Making the most of strong typing"
 msgstr ""
 
 #. Tag: title
-#: master.xml:46
+#: master.xml:58
 #, no-c-format
 msgid "Web Beans and the Java EE ecosystem"
 msgstr ""

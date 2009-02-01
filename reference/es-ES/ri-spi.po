@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-18 16:31+0000\n"
+"POT-Creation-Date: 2009-02-01 21:16+0000\n"
 "PO-Revision-Date: 2009-01-20 10:15+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
@@ -81,8 +81,8 @@ msgid ""
 "interface; all property values are the fully qualified class name of the "
 "implementation class."
 msgstr ""
-"Se puede especificar la implementación de un SPI ya sea como una propiedad del "
-"sistema, o en un archivo de propiedades <literal>META-INF/web-beans-ri."
+"Se puede especificar la implementación de un SPI ya sea como una propiedad "
+"del sistema, o en un archivo de propiedades <literal>META-INF/web-beans-ri."
 "properties</literal>. Todos los nombres de propiedad son el nombre completo "
 "de clase de la interfaz implementada; todos los valores de propiedad son el "
 "nombre completo de clase calificado de la clase de implementación."
@@ -93,7 +93,9 @@ msgstr ""
 msgid ""
 "All interfaces in the SPI support the decorator pattern and provide a "
 "<literal>Forwarding</literal> class."
-msgstr "Todas las interfaces en el patrón decorador SPI soportan y proporcionan una clase <literal>Forwarding</literal>."
+msgstr ""
+"Todas las interfaces en el patrón decorador SPI soportan y proporcionan una "
+"clase <literal>Forwarding</literal>."
 
 #. Tag: title
 #: ri-spi.xml:48
@@ -149,9 +151,9 @@ msgid ""
 "is self-explanatory (the algorithm is described in Section 11.1 of the JSR-"
 "299 specification, and isn't repeated here)."
 msgstr ""
-"El descubirmiento de clases de Web Bean y de archivos <literal>web-bean."
-"xml</literal> es autoexplicativo (el algoritmo está descrito en la sección "
-"11.1 de la especificación JSR299 y no se repite aquí)."
+"El descubirmiento de clases de Web Bean y de archivos <literal>web-bean.xml</"
+"literal> es autoexplicativo (el algoritmo está descrito en la sección 11.1 "
+"de la especificación JSR299 y no se repite aquí)."
 
 #. Tag: para
 #: ri-spi.xml:58
@@ -169,10 +171,10 @@ msgstr ""
 
 #. Tag: programlisting
 #: ri-spi.xml:65
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
-"integration.jbossas.WebBeanDiscoveryImpl"
+"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery= \\ \n"
+"   org.jboss.webbeans.integration.jbossas.WebBeanDiscoveryImpl"
 msgstr ""
 "org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
 "integration.jbossas.WebBeanDiscoveryImpl"
@@ -183,13 +185,17 @@ msgstr ""
 msgid ""
 "If the Web Beans RI is being used in a servlet container, it expects a "
 "constructor of the form:"
-msgstr "Si la IR de Web Beans se utiliza en un contenedor de Servlet, se espera un constructor de la forma:"
+msgstr ""
+"Si la IR de Web Beans se utiliza en un contenedor de Servlet, se espera un "
+"constructor de la forma:"
 
 #. Tag: programlisting
 #: ri-spi.xml:72
 #, no-c-format
-msgid "<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
-msgstr "<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
+msgid ""
+"<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
+msgstr ""
+"<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
 
 #. Tag: para
 #: ri-spi.xml:74
@@ -198,8 +204,8 @@ msgid ""
 "The servlet context can be used to allow your implementation of "
 "<literal>WebBeanDiscovery</literal> to interact with the container."
 msgstr ""
-"El contexto de servlet se puede utilizar para permitir que la implementación de "
-"<literal>WebBeanDiscovery</literal> interactúe con el contenedor."
+"El contexto de servlet se puede utilizar para permitir que la implementación "
+"de <literal>WebBeanDiscovery</literal> interactúe con el contenedor."
 
 #. Tag: title
 #: ri-spi.xml:82
@@ -216,10 +222,10 @@ msgid ""
 "literal>. For each EJB in the application an EJBDescriptor should be "
 "discovered:"
 msgstr ""
-"La IR de Web Beans también delega el descubrimiento de bean "
-"EJB3 al contenedor para no tener que examinar las anotaciones EJB3 o analizar <literal>ejb-"
-"jar.xml</literal>. Para cada EJB en la aplicación se debe descubrir un "
-"EJBDescriptor:"
+"La IR de Web Beans también delega el descubrimiento de bean EJB3 al "
+"contenedor para no tener que examinar las anotaciones EJB3 o analizar "
+"<literal>ejb-jar.xml</literal>. Para cada EJB en la aplicación se debe "
+"descubrir un EJBDescriptor:"
 
 #. Tag: programlisting
 #: ri-spi.xml:91
@@ -406,8 +412,12 @@ msgid ""
 "business interface (encapsulating the interface class and jndi name used to "
 "look up an instance of the EJB)."
 msgstr ""
-"El <literal>EjbDescriptor</literal> es bastante auto explicativo y debería devolver los metadatos pertinentes como se define en la especificación de EJB. Además de estas dos interfaces, está <literal>BusinessInterfaceDescriptor</literal>, la cual representa una interfaz de negocios local (encapsulando la "
-"clase de interfaz y el nombre de jndi a la búsqueda de una instancia del EJB)."
+"El <literal>EjbDescriptor</literal> es bastante auto explicativo y debería "
+"devolver los metadatos pertinentes como se define en la especificación de "
+"EJB. Además de estas dos interfaces, está "
+"<literal>BusinessInterfaceDescriptor</literal>, la cual representa una "
+"interfaz de negocios local (encapsulando la clase de interfaz y el nombre de "
+"jndi a la búsqueda de una instancia del EJB)."
 
 #. Tag: para
 #: ri-spi.xml:104
@@ -425,10 +435,10 @@ msgstr ""
 
 #. Tag: programlisting
 #: ri-spi.xml:111
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"org.jboss.webbeans.bootstrap.spi.EjbDiscovery=org.jboss.webbeans.integration."
-"jbossas.EjbDiscoveryImpl"
+"org.jboss.webbeans.bootstrap.spi.EjbDiscovery= \\\n"
+"   org.jboss.webbeans.integration.jbossas.EjbDiscoveryImpl"
 msgstr ""
 "org.jboss.webbeans.bootstrap.spi.EjbDiscovery=org.jboss.webbeans.integration."
 "jbossas.EjbDiscoveryImpl"
@@ -446,8 +456,8 @@ msgid ""
 "The servlet context can be used to allow your implementation of "
 "<literal>EjbDiscovery</literal> to interact with the container."
 msgstr ""
-"El contexto de Servlet se puede utilizar para permitir que la implementación de "
-"<literal>EjbDiscovery</literal> interactúe con el contenedor."
+"El contexto de Servlet se puede utilizar para permitir que la implementación "
+"de <literal>EjbDiscovery</literal> interactúe con el contenedor."
 
 #. Tag: title
 #: ri-spi.xml:128
@@ -465,10 +475,9 @@ msgid ""
 "jboss.webbeans.spi.resources.NamingContext</literal>:"
 msgstr ""
 "La IR de Web Beans implementa el enlace JNDI y la búsqueda según los "
-"estándares, sin embargo si desea puede alterar el enlace y la "
-"búsqueda (Por ejemplo en un entorno donde JNDI no está disponible). Para "
-"este fin, implemente <literal>org.jboss.webbeans.spi.resources.NamingContext</"
-"literal>:"
+"estándares, sin embargo si desea puede alterar el enlace y la búsqueda (Por "
+"ejemplo en un entorno donde JNDI no está disponible). Para este fin, "
+"implemente <literal>org.jboss.webbeans.spi.resources.NamingContext</literal>:"
 
 #. Tag: programlisting
 #: ri-spi.xml:138
@@ -528,7 +537,8 @@ msgstr "y le pide a la IR que lo utilice:"
 #: ri-spi.xml:144
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
-msgstr "org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
+msgstr ""
+"org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
 
 #. Tag: programlisting
 #: ri-spi.xml:151
@@ -542,7 +552,9 @@ msgstr "<![CDATA[public MyNamingContext(ServletContext servletContext) {}]]>"
 msgid ""
 "The servlet context can be used to allow your implementation of "
 "<literal>NamingContext</literal> to interact with the container."
-msgstr "El contexto de Servlet se puede utilizar para permitir que la implementación de <literal>NamingContext</literal> interactúe con el contenedor."
+msgstr ""
+"El contexto de Servlet se puede utilizar para permitir que la implementación "
+"de <literal>NamingContext</literal> interactúe con el contenedor."
 
 #. Tag: title
 #: ri-spi.xml:161
@@ -563,8 +575,8 @@ msgstr ""
 "La IR de Web Beans necesita cargar clases y recursos desde el classpath en "
 "varios momentos. Por defecto, se cargan desde el mismo classloader utilizado "
 "para cargar la IR, sin embargo, puede no ser lo apropiado para algunos "
-"entornos. Si este es el caso, implemente <literal>org.jboss.webbeans."
-"spi.ResourceLoader</literal>:"
+"entornos. Si este es el caso, implemente <literal>org.jboss.webbeans.spi."
+"ResourceLoader</literal>:"
 
 #. Tag: programlisting
 #: ri-spi.xml:171
@@ -634,7 +646,8 @@ msgstr ""
 #: ri-spi.xml:177
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
-msgstr "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
+msgstr ""
+"org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
 
 #. Tag: programlisting
 #: ri-spi.xml:184
@@ -649,8 +662,8 @@ msgid ""
 "The servlet context can be used to allow your implementation of "
 "<literal>ResourceLoader</literal> to interact with the container."
 msgstr ""
-"El contexto de Servlet puede utilizarse para permitir que la implementación de "
-"<literal>ResourceLoader</literal> interactúe con el contenedor."
+"El contexto de Servlet puede utilizarse para permitir que la implementación "
+"de <literal>ResourceLoader</literal> interactúe con el contenedor."
 
 #. Tag: title
 #: ri-spi.xml:196
@@ -666,7 +679,8 @@ msgid ""
 "container for correct functioning that fall outside implementation of APIs"
 msgstr ""
 "Hay una serie de requisitos que la IR de Web Beans ubica en el contenedor "
-"para el funcionamiento correcto que está fuera de la implementación de las API."
+"para el funcionamiento correcto que está fuera de la implementación de las "
+"API."
 
 #. Tag: term
 #: ri-spi.xml:206
@@ -684,7 +698,9 @@ msgid ""
 "application."
 msgstr ""
 "Si se está integrando la IR de Web Beans dentro de un entorno que admite "
-"despliegue de varias aplicaciones, debe habilitar el aislamiento de classloader para cada aplicación de Web Beans, de forma automática o a través de la configuración del usuario."
+"despliegue de varias aplicaciones, debe habilitar el aislamiento de "
+"classloader para cada aplicación de Web Beans, de forma automática o a "
+"través de la configuración del usuario."
 
 #. Tag: term
 #: ri-spi.xml:219
@@ -701,10 +717,10 @@ msgid ""
 "Servlet listener, either automatically, or through user configuration, for "
 "each Web Beans application which uses Servlet."
 msgstr ""
-"Si usted está integrando el Web Beans en un entorno de Servlet debe registrar "
-"<literal>org.jboss.webbeans.servlet.WebBeansListener</literal> como "
-"oyente de Servlet, ya sea automáticamente o a través de la configuración de "
-"usuario, para cada aplicación Web Beans que utiliza Servlet."
+"Si usted está integrando el Web Beans en un entorno de Servlet debe "
+"registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> "
+"como oyente de Servlet, ya sea automáticamente o a través de la "
+"configuración de usuario, para cada aplicación Web Beans que utiliza Servlet."
 
 #. Tag: term
 #: ri-spi.xml:234
@@ -724,9 +740,9 @@ msgid ""
 msgstr ""
 "Si está integrando los Web Beans en un entorno EJB debe registrar "
 "<literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> como un "
-"interceptor EJB para todos los EJB en la aplicación, "
-"automáticamente o a través de la configuración de usuario, para cada "
-"aplicación que utilice Web Beans empresariales."
+"interceptor EJB para todos los EJB en la aplicación, automáticamente o a "
+"través de la configuración de usuario, para cada aplicación que utilice Web "
+"Beans empresariales."
 
 #. Tag: term
 #: ri-spi.xml:249
@@ -747,4 +763,3 @@ msgstr ""
 "de aplicaciones, debe insertar el <literal>webbeans-ri.jar</literal> dentro "
 "de las aplicaciones del classloader aislado. No se puede cargar desde el "
 "classloader compartido."
-

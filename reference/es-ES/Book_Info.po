@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Book_Info\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-04 23:18+0000\n"
+"POT-Creation-Date: 2009-02-01 21:16+0000\n"
 "PO-Revision-Date: 2009-01-08 10:39+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
@@ -19,14 +19,17 @@ msgstr ""
 #. Tag: title
 #: Book_Info.xml:4
 #, no-c-format
-msgid "Introduction to Web Beans"
-msgstr "Introducción a Web Beans"
+msgid "Web Beans: Java Contexts and Dependency Injection"
+msgstr ""
 
 #. Tag: subtitle
 #: Book_Info.xml:5
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The new Java standard for dependency injection and contextual state "
-"management"
-msgstr "El nuevo estándar de Java para inyección de dependencia y manejo de estado contextual"
+"The new standard for dependency injection and contextual state management"
+msgstr ""
+"El nuevo estándar de Java para inyección de dependencia y manejo de estado "
+"contextual"
 
+#~ msgid "Introduction to Web Beans"
+#~ msgstr "Introducción a Web Beans"

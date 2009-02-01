@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-18 16:31+0000\n"
+"POT-Creation-Date: 2009-02-01 21:16+0000\n"
 "PO-Revision-Date: 2009-01-06 11:30+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -87,7 +87,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "<![CDATA[$ cd ~/\n"
-"$ unzip ~/webbeans-1.0.0.ALPHA1.zip]]>"
+"$ unzip ~/webbeans-$VERSION.zip]]>"
 msgstr ""
 
 #. Tag: para
@@ -153,7 +153,7 @@ msgstr ""
 #: ri.xml:86
 #, no-c-format
 msgid ""
-"$ cd webbeans-1.0.0.ALPHA1/jboss-as\n"
+"$ cd webbeans-$VERSION/jboss-as\n"
 "$ ant update"
 msgstr ""
 
@@ -220,13 +220,31 @@ msgstr ""
 #. Tag: para
 #: ri.xml:134
 #, no-c-format
+msgid "Start JBoss AS:"
+msgstr ""
+
+#. Tag: programlisting
+#: ri.xml:138
+#, no-c-format
+msgid "$ /Application/jboss-5.0.0.GA/bin/run.sh"
+msgstr ""
+
+#. Tag: para
+#: ri.xml:141
+#, no-c-format
+msgid "If you use Windows, use the <literal>run.bat</literal>script."
+msgstr ""
+
+#. Tag: para
+#: ri.xml:146
+#, no-c-format
 msgid ""
 "Wait for the application to deploy, and enjoy hours of fun at <ulink url="
 "\"http://localhost:8080/webbeans-numberguess\"></ulink>!"
 msgstr ""
 
 #. Tag: para
-#: ri.xml:139
+#: ri.xml:151
 #, no-c-format
 msgid ""
 "The Web Beans RI includes a second simple example that will translate your "
@@ -236,7 +254,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:146
+#: ri.xml:158
 #, no-c-format
 msgid ""
 "$ cd examples/translator\n"
@@ -244,7 +262,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:148
+#: ri.xml:160
 #, no-c-format
 msgid ""
 "Wait for the application to deploy, and visit <ulink url=\"http://"
@@ -252,13 +270,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri.xml:154
+#: ri.xml:166
 #, no-c-format
 msgid "The numberguess example"
 msgstr ""
 
 #. Tag: para
-#: ri.xml:156
+#: ri.xml:168
 #, no-c-format
 msgid ""
 "In the numberguess application you get given 10 attempts to guess a number "
@@ -267,7 +285,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:162
+#: ri.xml:174
 #, no-c-format
 msgid ""
 "The numberguess example is comprised of a number of Web Beans, configuration "
@@ -276,7 +294,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:168
+#: ri.xml:180
 #, no-c-format
 msgid ""
 "All the configuration files for this example are located in <literal>WEB-INF/"
@@ -286,7 +304,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:176
+#: ri.xml:188
 #, no-c-format
 msgid ""
 "<![CDATA[<?xml version='1.0' encoding='UTF-8'?>\n"
@@ -304,7 +322,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:178
+#: ri.xml:190
 #, no-c-format
 msgid ""
 "There is an empty <literal>web-beans.xml</literal> file, which marks this "
@@ -312,13 +330,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:183
+#: ri.xml:195
 #, no-c-format
 msgid "Finally there is <literal>web.xml</literal>:"
 msgstr ""
 
 #. Tag: section
-#: ri.xml:185
+#: ri.xml:197
 #, no-c-format
 msgid ""
 "<programlistingco> <areaspec> <area id=\"faces.servlet\" coords=\"12\"/> "
@@ -440,7 +458,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:287
+#: ri.xml:299
 #, no-c-format
 msgid ""
 "The example exists of 4 classes, the first two of which are binding types. "
@@ -449,7 +467,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:293
+#: ri.xml:305
 #, no-c-format
 msgid ""
 "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
@@ -460,7 +478,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:295
+#: ri.xml:307
 #, no-c-format
 msgid ""
 "There is also the <literal>@MaxNumber</literal> binding type, used for "
@@ -468,7 +486,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:300
+#: ri.xml:312
 #, no-c-format
 msgid ""
 "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
@@ -480,7 +498,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:302
+#: ri.xml:314
 #, no-c-format
 msgid ""
 "The <literal>Generator</literal> class is responsible for creating the "
@@ -489,7 +507,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:308
+#: ri.xml:320
 #, no-c-format
 msgid ""
 "<![CDATA[@ApplicationScoped\n"
@@ -518,7 +536,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:310
+#: ri.xml:322
 #, no-c-format
 msgid ""
 "You'll notice that the <literal>Generator</literal> is application scoped; "
@@ -526,7 +544,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:315
+#: ri.xml:327
 #, no-c-format
 msgid ""
 "The final Web Bean in the application is the session scoped <literal>Game</"
@@ -534,7 +552,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:320
+#: ri.xml:332
 #, no-c-format
 msgid ""
 "You'll note that we've used the <literal>@Named</literal> annotation, so "
@@ -545,7 +563,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:328
+#: ri.xml:340
 #, no-c-format
 msgid ""
 "<![CDATA[package org.jboss.webbeans.examples.numberguess;\n"
@@ -647,13 +665,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri.xml:332
+#: ri.xml:344
 #, no-c-format
 msgid "The translator example"
 msgstr ""
 
 #. Tag: para
-#: ri.xml:334
+#: ri.xml:346
 #, no-c-format
 msgid ""
 "The translator example will take any sentences you enter, and translate them "
@@ -661,7 +679,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:339
+#: ri.xml:351
 #, no-c-format
 msgid ""
 "The translator example is built as an ear, and contains EJBs. As a result, "
@@ -669,7 +687,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:345
+#: ri.xml:357
 #, no-c-format
 msgid ""
 "EJB 3.1 and Jave EE 6 allow you to package EJBs in a war, which will make "
@@ -677,7 +695,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:351
+#: ri.xml:363
 #, no-c-format
 msgid ""
 "First, let's take a look at the ear aggregator, which is located in "
@@ -686,7 +704,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:357
+#: ri.xml:369
 #, no-c-format
 msgid ""
 "<![CDATA[<plugin>\n"
@@ -705,7 +723,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:359
+#: ri.xml:371
 #, no-c-format
 msgid ""
 "Here we set the context path, which gives us a nice url (<ulink url=\"http://"
@@ -714,7 +732,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:365
+#: ri.xml:377
 #, no-c-format
 msgid ""
 "If you aren't using Maven to generate these files, you would need "
@@ -722,7 +740,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:370
+#: ri.xml:382
 #, no-c-format
 msgid ""
 "<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -748,7 +766,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:373
+#: ri.xml:385
 #, no-c-format
 msgid ""
 "Next, lets look at the war. Just as in the numberguess example, we have a "
@@ -757,7 +775,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:380
+#: ri.xml:392
 #, no-c-format
 msgid ""
 "More intersting is the facelet used to translate text. Just as in the "
@@ -766,7 +784,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:386
+#: ri.xml:398
 #, no-c-format
 msgid ""
 "<![CDATA[<h:form id=\"NumberGuessMain\">\n"
@@ -799,7 +817,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:388
+#: ri.xml:400
 #, no-c-format
 msgid ""
 "The user can enter some text in the lefthand textarea, and hit the translate "
@@ -807,7 +825,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:393
+#: ri.xml:405
 #, no-c-format
 msgid ""
 "Finally, let's look at the ejb module, <literal>webbeans-translator-ejb</"
@@ -817,7 +835,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:401
+#: ri.xml:413
 #, no-c-format
 msgid ""
 "We've saved the most interesting bit to last, the code! The project has two "
@@ -829,7 +847,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:411
+#: ri.xml:423
 #, no-c-format
 msgid ""
 "Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal> "
@@ -838,7 +856,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:417
+#: ri.xml:429
 #, no-c-format
 msgid ""
 "<![CDATA[public class TextTranslator { \n"
@@ -854,7 +872,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:419
+#: ri.xml:431
 #, no-c-format
 msgid ""
 "<literal>TextTranslator</literal> is a stateless bean (with a local business "
@@ -863,7 +881,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:425
+#: ri.xml:437
 #, no-c-format
 msgid ""
 "Finally, there is UI orientated controller, that collects the text from the "
@@ -872,7 +890,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:431
+#: ri.xml:443
 #, no-c-format
 msgid ""
 "<![CDATA[@Stateful\n"
@@ -885,19 +903,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:433
+#: ri.xml:445
 #, no-c-format
 msgid "The bean also has getters and setters for all the fields on the page."
 msgstr ""
 
 #. Tag: para
-#: ri.xml:437
+#: ri.xml:449
 #, no-c-format
 msgid "As this is a stateful session bean, we have to have a remove method:"
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:441
+#: ri.xml:453
 #, no-c-format
 msgid ""
 "<![CDATA[   @Remove\n"
@@ -908,7 +926,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:443
+#: ri.xml:455
 #, no-c-format
 msgid ""
 "The Web Beans manager will call the remove method for you when the bean is "
@@ -916,7 +934,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:449
+#: ri.xml:461
 #, no-c-format
 msgid ""
 "That concludes our short tour of the Web Beans RI examples. For more on the "
@@ -926,7 +944,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:455
+#: ri.xml:467
 #, no-c-format
 msgid ""
 "We need help in all areas - bug fixing, writing new features, writing "

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-24 18:19+0000\n"
+"POT-Creation-Date: 2009-02-01 21:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -127,8 +127,8 @@ msgstr ""
 #: ri-spi.xml:65
 #, no-c-format
 msgid ""
-"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
-"integration.jbossas.WebBeanDiscoveryImpl"
+"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery= \\ \n"
+"   org.jboss.webbeans.integration.jbossas.WebBeanDiscoveryImpl"
 msgstr ""
 
 #. Tag: para
@@ -289,8 +289,8 @@ msgstr ""
 #: ri-spi.xml:111
 #, no-c-format
 msgid ""
-"org.jboss.webbeans.bootstrap.spi.EjbDiscovery=org.jboss.webbeans.integration."
-"jbossas.EjbDiscoveryImpl"
+"org.jboss.webbeans.bootstrap.spi.EjbDiscovery= \\\n"
+"   org.jboss.webbeans.integration.jbossas.EjbDiscoveryImpl"
 msgstr ""
 
 #. Tag: programlisting

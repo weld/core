@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Author_Group\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-06 11:30+0000\n"
+"POT-Creation-Date: 2009-02-01 21:16+0000\n"
 "PO-Revision-Date: 2009-01-08 10:32+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -15,7 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
+"\n"
 "\n"
 
 #. Tag: author
@@ -26,10 +27,10 @@ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
 
 #. Tag: affiliation
 #: Author_Group.xml:7
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"<jobtitle>Web Beans (JSR-299) specification lead</jobtitle> <orgname>Red Hat "
-"Middleware LLC</orgname>"
+"<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat Middleware "
+"LLC</orgname>"
 msgstr ""
 "<jobtitle>Web Beans (JSR-299) specification lead</jobtitle> <orgname>Red Hat "
 "Middleware LLC</orgname>"
@@ -42,9 +43,9 @@ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
 
 #. Tag: affiliation
 #: Author_Group.xml:15
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"<jobtitle>Web Beans (JSR-299) Reference Implementation lead </jobtitle> "
+"<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> "
 "<orgname>Red Hat Middleware LLC</orgname>"
 msgstr ""
 "<jobtitle>Web Beans (JSR-299) Reference Implementation lead </jobtitle> "
@@ -57,14 +58,55 @@ msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
 msgstr "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
 
 #. Tag: contrib
-#: Author_Group.xml:24 Author_Group.xml:29
+#: Author_Group.xml:24 Author_Group.xml:53
 #, no-c-format
 msgid "Italian Translation"
 msgstr "이탈리아어 번역 "
 
 #. Tag: othercredit
 #: Author_Group.xml:26
+#, fuzzy, no-c-format
+msgid "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
+msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
+
+#. Tag: contrib
+#: Author_Group.xml:29
+#, fuzzy, no-c-format
+msgid "Spanish Translation"
+msgstr "이탈리아어 번역 "
+
+#. Tag: orgname
+#: Author_Group.xml:31 Author_Group.xml:39 Author_Group.xml:47
+#, no-c-format
+msgid "Red Hat Middleware LLC"
+msgstr ""
+
+#. Tag: othercredit
+#: Author_Group.xml:34
+#, fuzzy, no-c-format
+msgid "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
+msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
+
+#. Tag: contrib
+#: Author_Group.xml:37
+#, fuzzy, no-c-format
+msgid "Korean Translation"
+msgstr "이탈리아어 번역 "
+
+#. Tag: othercredit
+#: Author_Group.xml:42
+#, fuzzy, no-c-format
+msgid "<firstname>Terry</firstname> <surname>Chuang</surname>"
+msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
+
+#. Tag: contrib
+#: Author_Group.xml:45
+#, fuzzy, no-c-format
+msgid "Traditional Chinese Translation"
+msgstr "이탈리아어 번역 "
+
+#. Tag: othercredit
+#: Author_Group.xml:50
 #, no-c-format
 msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
 msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
-

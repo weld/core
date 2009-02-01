@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-18 16:31+0000\n"
+"POT-Creation-Date: 2009-02-01 21:16+0000\n"
 "PO-Revision-Date: 2009-01-19 13:32+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -15,7 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -98,7 +99,9 @@ msgstr ""
 msgid ""
 "All interfaces in the SPI support the decorator pattern and provide a "
 "<literal>Forwarding</literal> class."
-msgstr "SPI에 있는 모든 인터페이스는 데코레이터 패턴을 지원하고 <literal>Forwarding</literal> 클래스를 제공합니다.  "
+msgstr ""
+"SPI에 있는 모든 인터페이스는 데코레이터 패턴을 지원하고 <literal>Forwarding</"
+"literal> 클래스를 제공합니다.  "
 
 #. Tag: title
 #: ri-spi.xml:48
@@ -173,10 +176,10 @@ msgstr ""
 
 #. Tag: programlisting
 #: ri-spi.xml:65
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
-"integration.jbossas.WebBeanDiscoveryImpl"
+"org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery= \\ \n"
+"   org.jboss.webbeans.integration.jbossas.WebBeanDiscoveryImpl"
 msgstr ""
 "org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans."
 "integration.jbossas.WebBeanDiscoveryImpl"
@@ -187,13 +190,17 @@ msgstr ""
 msgid ""
 "If the Web Beans RI is being used in a servlet container, it expects a "
 "constructor of the form:"
-msgstr "Web Beans RI가 servlet 컨테이너에서 사용될 경우, 이는 생성자 형식을 요청하게 됩니다: "
+msgstr ""
+"Web Beans RI가 servlet 컨테이너에서 사용될 경우, 이는 생성자 형식을 요청하게 "
+"됩니다: "
 
 #. Tag: programlisting
 #: ri-spi.xml:72
 #, no-c-format
-msgid "<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
-msgstr "<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
+msgid ""
+"<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
+msgstr ""
+"<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
 
 #. Tag: para
 #: ri-spi.xml:74
@@ -201,7 +208,9 @@ msgstr "<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]
 msgid ""
 "The servlet context can be used to allow your implementation of "
 "<literal>WebBeanDiscovery</literal> to interact with the container."
-msgstr "servlet 컨텍스트는 <literal>WebBeanDiscovery</literal> 구현을 허용하기 위해 사용되어 컨테이너와 상호작용할 수 있습니다.  "
+msgstr ""
+"servlet 컨텍스트는 <literal>WebBeanDiscovery</literal> 구현을 허용하기 위해 "
+"사용되어 컨테이너와 상호작용할 수 있습니다.  "
 
 #. Tag: title
 #: ri-spi.xml:82
@@ -407,9 +416,11 @@ msgid ""
 "business interface (encapsulating the interface class and jndi name used to "
 "look up an instance of the EJB)."
 msgstr ""
-"<literal>EjbDescriptor</literal>는 쉽게 알 수 있어야 하며 EJB 사양에 정의되어 있음으로 관련된 메타데이터를 반환해야 합니다. 이러한 두 가지 "
-"인터페이스에 더하여, 로컬 비지니스 인터페이스를 나타내는 "
-"<literal>BusinessInterfaceDescriptor</literal>가 있습니다. (EJB 인스턴스를 검색하는데 사용되는 인터페이스 클래스 및 jndi 이름을 캡슐화)  "
+"<literal>EjbDescriptor</literal>는 쉽게 알 수 있어야 하며 EJB 사양에 정의되"
+"어 있음으로 관련된 메타데이터를 반환해야 합니다. 이러한 두 가지 인터페이스에 "
+"더하여, 로컬 비지니스 인터페이스를 나타내는 "
+"<literal>BusinessInterfaceDescriptor</literal>가 있습니다. (EJB 인스턴스를 검"
+"색하는데 사용되는 인터페이스 클래스 및 jndi 이름을 캡슐화)  "
 
 #. Tag: para
 #: ri-spi.xml:104
@@ -426,10 +437,10 @@ msgstr ""
 
 #. Tag: programlisting
 #: ri-spi.xml:111
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"org.jboss.webbeans.bootstrap.spi.EjbDiscovery=org.jboss.webbeans.integration."
-"jbossas.EjbDiscoveryImpl"
+"org.jboss.webbeans.bootstrap.spi.EjbDiscovery= \\\n"
+"   org.jboss.webbeans.integration.jbossas.EjbDiscoveryImpl"
 msgstr ""
 "org.jboss.webbeans.bootstrap.spi.EjbDiscovery=org.jboss.webbeans.integration."
 "jbossas.EjbDiscoveryImpl"
@@ -446,7 +457,9 @@ msgstr "<![CDATA[public EjbDiscoveryImpl(ServletContext servletContext) {}]]>"
 msgid ""
 "The servlet context can be used to allow your implementation of "
 "<literal>EjbDiscovery</literal> to interact with the container."
-msgstr "servlet 컨텍스트는 <literal>EjbDiscovery</literal> 구현을 허용하기 위해 사용되어 컨테이너와 상호작용할 수 있습니다.  "
+msgstr ""
+"servlet 컨텍스트는 <literal>EjbDiscovery</literal> 구현을 허용하기 위해 사용"
+"되어 컨테이너와 상호작용할 수 있습니다.  "
 
 #. Tag: title
 #: ri-spi.xml:128
@@ -465,8 +478,8 @@ msgid ""
 msgstr ""
 "Web Beans RI는 기준에 따라 JNDI 바인딩 및 lookup을 구현하지만, 바인딩 및 "
 "lookup을 변경하고자 하실 수 있습니다 (예를 들어 JNDI를 사용할 수 없는 환경에"
-"서). 이를 위해 <literal>org.jboss.webbeans.spi.resources.NamingContext</literal>를"
-"구현합니다:       "
+"서). 이를 위해 <literal>org.jboss.webbeans.spi.resources.NamingContext</"
+"literal>를구현합니다:       "
 
 #. Tag: programlisting
 #: ri-spi.xml:138
@@ -526,7 +539,8 @@ msgstr "RI에게 사용할 것을 알립니다: "
 #: ri-spi.xml:144
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
-msgstr "org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
+msgstr ""
+"org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
 
 #. Tag: programlisting
 #: ri-spi.xml:151
@@ -540,7 +554,9 @@ msgstr "<![CDATA[public MyNamingContext(ServletContext servletContext) {}]]>"
 msgid ""
 "The servlet context can be used to allow your implementation of "
 "<literal>NamingContext</literal> to interact with the container."
-msgstr "servlet 컨텍스트는 <literal>NamingContext</literal> 구현을 허용하기 위해 사용되어 컨테이너와 상호 작용할 수 있습니다.      "
+msgstr ""
+"servlet 컨텍스트는 <literal>NamingContext</literal> 구현을 허용하기 위해 사용"
+"되어 컨테이너와 상호 작용할 수 있습니다.      "
 
 #. Tag: title
 #: ri-spi.xml:161
@@ -631,7 +647,8 @@ msgstr ""
 #: ri-spi.xml:177
 #, no-c-format
 msgid "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
-msgstr "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
+msgstr ""
+"org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
 
 #. Tag: programlisting
 #: ri-spi.xml:184
@@ -645,7 +662,9 @@ msgstr "<![CDATA[public MyResourceLoader(ServletContext servletContext) {}]]>"
 msgid ""
 "The servlet context can be used to allow your implementation of "
 "<literal>ResourceLoader</literal> to interact with the container."
-msgstr "servlet 컨텍스트는 <literal>ResourceLoader</literal> 구현을 허용하기 위해 사용되어 컨테이너와 상호작용할 수 있습니다.   "
+msgstr ""
+"servlet 컨텍스트는 <literal>ResourceLoader</literal> 구현을 허용하기 위해 사"
+"용되어 컨테이너와 상호작용할 수 있습니다.   "
 
 #. Tag: title
 #: ri-spi.xml:196
@@ -741,4 +760,3 @@ msgstr ""
 "Web Beans를 애플리케이션 운용을 지원하는 환경으로 통합하고자 할 경우, "
 "<literal>webbeans-ri.jar</literal>를 애플리케이션 분리 classloader로 삽입해"
 "야 합니다. 이는 공유 classloader에서 불러올 수 없습니다.  "
-
