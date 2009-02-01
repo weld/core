@@ -9,7 +9,7 @@
     <preface>
       <title>Note</title>
       <para>
-         JSR-299 has recently changed it's name from "Web Beans" to "Java
+         JSR-299 has recently changed its name from "Web Beans" to "Java
          Contexts and Dependency Injection". The reference guide still refers
          to JSR-299 as "Web Beans" and the JSR-299 Reference Implementation as
          the "Web Beans RI". Other documentation, blogs, forum posts etc. may
