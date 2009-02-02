@@ -73,7 +73,10 @@ public abstract class AbstractBeanMapContext extends AbstractContext
       else if (creationalContext != null)
       {
          instance = contextual.create(creationalContext);
-         getBeanMap().put(contextual, instance);
+         if (instance != null)
+         {
+            getBeanMap().put(contextual, instance);
+         }
          return instance;
       }
       else
@@ -81,7 +84,7 @@ public abstract class AbstractBeanMapContext extends AbstractContext
          return null;
       }
    }
-   
+
    public <T> T get(Contextual<T> contextual)
    {
       return get(contextual, null);
