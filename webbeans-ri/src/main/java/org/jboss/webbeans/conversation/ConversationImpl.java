@@ -92,6 +92,6 @@ public class ConversationImpl implements Conversation
 
    public void setLongRunning(boolean longRunning)
    {
-      this.longRunning = true;
+      this.longRunning = longRunning;
    }
 }

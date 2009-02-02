@@ -20,4 +20,5 @@ public interface ConversationManager
 {
    public abstract void beginConversation(String cid);
    public abstract void endConversation();
+   public abstract void destroyAllConversations();
 }

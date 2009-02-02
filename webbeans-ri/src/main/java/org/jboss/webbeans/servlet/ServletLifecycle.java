@@ -18,7 +18,6 @@
 package org.jboss.webbeans.servlet;
 
 import javax.context.Conversation;
-import javax.inject.Current;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -84,6 +83,8 @@ public class ServletLifecycle
       SessionContext.INSTANCE.setBeanMap(new SessionBeanMap(session));
       SessionContext.INSTANCE.destroy();
       SessionContext.INSTANCE.setBeanMap(null);
+      ConversationManager conversationManager = CurrentManager.rootManager().getInstanceByType(ConversationManager.class);
+      conversationManager.destroyAllConversations();
    }
 
    /**

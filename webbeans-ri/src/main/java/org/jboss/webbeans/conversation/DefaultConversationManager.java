@@ -118,11 +118,24 @@ public class DefaultConversationManager implements ConversationManager, Serializ
       public void run()
       {
          log.trace("Conversation " + cid + " timed out and was terminated");
-         ConversationContext terminationContext = new ConversationContext();
-         terminationContext.setBeanMap(new ConversationBeanMap(session, cid));
-         terminationContext.destroy();
-         longRunningConversations.remove(cid);
+         destroyConversation(cid, session);
       }
+   }
+   
+   public void destroyAllConversations()
+   {
+      for (Map.Entry<String, Future<?>> entry : longRunningConversations.entrySet()) {
+         entry.getValue().cancel(false);
+         destroyConversation(entry.getKey(), session);
+      }
+   }
+
+   private void destroyConversation(String cid, HttpSession session)
+   {
+      ConversationContext terminationContext = new ConversationContext();
+      terminationContext.setBeanMap(new ConversationBeanMap(session, cid));
+      terminationContext.destroy();
+      longRunningConversations.remove(cid);
    }
 
 }
