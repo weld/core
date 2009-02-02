@@ -28,10 +28,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.inject.BindingType;
@@ -166,17 +163,6 @@ public class Reflections
    }
 
    /**
-    * Checks if class is a static inner one
-    * 
-    * @param clazz Class to check
-    * @return True if static, false otherwise
-    */
-   public static boolean isStaticInnerClass(Class<?> clazz)
-   {
-      return clazz.isMemberClass() && isStatic(clazz);
-   }
-
-   /**
     * Checks if class is a non-static inner one
     * 
     * @param clazz Class to Check
@@ -209,161 +195,6 @@ public class Reflections
       {
          throw new RuntimeException("Error accessing constructor (with parameters " + parameterTypes + ") of " + clazz, e);
       }
-   }
-
-   /**
-    * Gets all methods with a given annotation
-    * 
-    * @param clazz The class the examine
-    * @param annotationType The annotation type to search for
-    * @return A list of matching methods. An empty list is returned if no
-    *         matches are found
-    */
-   public static List<Method> getMethods(Class<?> clazz, Class<? extends Annotation> annotationType)
-   {
-      List<Method> methods = new ArrayList<Method>();
-      for (Method method : clazz.getMethods())
-      {
-         if (method.isAnnotationPresent(annotationType))
-         {
-            methods.add(method);
-         }
-      }
-      return methods;
-   }
-
-   /**
-    * Gets all constructors with a given annotation
-    * 
-    * @param <T> The type of the class
-    * @param clazz The class
-    * @param annotationType The annotation type
-    * @return A list of matching constructors. An empty list is returned if no
-    *         matches are found
-    */
-   public static <T> List<Constructor<T>> getAnnotatedConstructors(Class<? extends T> clazz, Class<? extends Annotation> annotationType)
-   {
-      List<Constructor<T>> constructors = new ArrayList<Constructor<T>>();
-      for (Constructor<?> constructor : clazz.getConstructors())
-      {
-         if (constructor.isAnnotationPresent(annotationType))
-         {
-            @SuppressWarnings("unchecked")
-            Constructor<T> c = (Constructor<T>) constructor;
-            constructors.add(c);
-         }
-      }
-      return constructors;
-   }
-
-   /**
-    * Gets constructors with a given annotated parameter
-    * 
-    * @param <T> The type
-    * @param clazz The class
-    * @param parameterAnnotationType The parameter annotation type
-    * @return A list of matching constructors. An empty list is returned if no
-    *         matches are found
-    */
-   public static <T> List<Constructor<T>> getConstructorsForAnnotatedParameter(Class<? extends T> clazz, Class<? extends Annotation> parameterAnnotationType)
-   {
-      List<Constructor<T>> constructors = new ArrayList<Constructor<T>>();
-      for (Constructor<?> constructor : clazz.getConstructors())
-      {
-         for (Annotation[] annotations : constructor.getParameterAnnotations())
-         {
-            for (Annotation annotation : annotations)
-            {
-               if (annotation.annotationType().equals(parameterAnnotationType))
-               {
-                  @SuppressWarnings("unchecked")
-                  Constructor<T> c = (Constructor<T>) constructor;
-                  constructors.add(c);
-               }
-            }
-         }
-      }
-      return constructors;
-   }
-
-   /**
-    * Gets constructors with a given meta-annotated parameter
-    * 
-    * @param <T> The type
-    * @param clazz The class
-    * @param metaAnnotationType The parameter meta-annotation type
-    * @return A list of matching constructors. An empty list is returned if no
-    *         matches are found
-    */
-   public static <T> List<Constructor<T>> getConstructorsForMetaAnnotatedParameter(Class<? extends T> clazz, Class<? extends Annotation> metaAnnotationType)
-   {
-      List<Constructor<T>> constructors = new ArrayList<Constructor<T>>();
-      for (Constructor<?> constructor : clazz.getConstructors())
-      {
-         for (Annotation[] annotations : constructor.getParameterAnnotations())
-         {
-            for (Annotation annotation : annotations)
-            {
-               if (annotation.annotationType().isAnnotationPresent(metaAnnotationType))
-               {
-                  @SuppressWarnings("unchecked")
-                  Constructor<T> c = (Constructor<T>) constructor;
-                  constructors.add(c);
-               }
-            }
-         }
-      }
-      return constructors;
-   }
-
-   /**
-    * Checks if all annotations types are in a given set of annotations
-    * 
-    * @param annotations The annotation set
-    * @param annotationTypes The annotation types to match
-    * @return True if match, false otherwise
-    */
-   public static boolean annotationTypeSetMatches(Set<Class<? extends Annotation>> annotations, Class<? extends Annotation>... annotationTypes)
-   {
-      List<Class<? extends Annotation>> annotationTypeList = new ArrayList<Class<? extends Annotation>>();
-      annotationTypeList.addAll(Arrays.asList(annotationTypes));
-      for (Class<? extends Annotation> annotation : annotations)
-      {
-         if (annotationTypeList.contains(annotation))
-         {
-            annotationTypeList.remove(annotation);
-         }
-         else
-         {
-            return false;
-         }
-      }
-      return annotationTypeList.size() == 0;
-   }
-
-   /**
-    * Checks if all annotations are in a given set of annotations
-    * 
-    * @param annotations The annotation set
-    * @param annotationTypes The annotations to match
-    * @return True if match, false otherwise
-    */
-   public static boolean annotationSetMatches(Set<Annotation> annotations, Class<? extends Annotation>... annotationTypes)
-   {
-      List<Class<? extends Annotation>> annotationTypeList = new ArrayList<Class<? extends Annotation>>();
-      annotationTypeList.addAll(Arrays.asList(annotationTypes));
-      for (Annotation annotation : annotations)
-      {
-         if (annotationTypeList.contains(annotation.annotationType()))
-         {
-            annotationTypeList.remove(annotation.annotationType());
-         }
-         else
-         {
-            return false;
-         }
-      }
-      return annotationTypeList.size() == 0;
    }
 
    /**
@@ -544,7 +375,7 @@ public class Reflections
     * @return true only if the annotation is really a binding type
     */
    @Deprecated
-   // TODO Move this method
+   // TODO Replace usage of this with metadatacache
    public static boolean isBindings(Annotation binding)
    {
       boolean isBindingAnnotation = false;

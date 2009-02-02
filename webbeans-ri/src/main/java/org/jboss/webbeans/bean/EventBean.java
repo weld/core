@@ -131,8 +131,7 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
          {
             clazz = Class.class.cast(getAnnotatedItem().getActualTypeArguments()[0]);         
          }
-         // TODO should be able to move this up into annotated item?!
-         
+         // TODO should be able to move this up into annotated item?!     
          @SuppressWarnings("unchecked")
          Class<T> eventType = (Class<T>) clazz;
          
@@ -146,15 +145,14 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
    
    public void destroy(Event<T> instance)
    {
-      try
+      /*try
       {
          DependentContext.INSTANCE.setActive(true);
-         // TODO Implement any EventBean destruction needed
       }
       finally
       {
          DependentContext.INSTANCE.setActive(false);
-      }
+      }*/
    }
    
    /**

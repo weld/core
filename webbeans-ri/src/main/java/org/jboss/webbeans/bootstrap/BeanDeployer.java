@@ -2,9 +2,7 @@ package org.jboss.webbeans.bootstrap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,8 +45,6 @@ public class BeanDeployer
 {
    
    private static final LogProvider log = Logging.getLogProvider(BeanDeployer.class);
-   
-   private static final Set<Annotation> EMPTY_BINDINGS = Collections.emptySet();
    
    private final Set<RIBean<?>> beans;
    private final Set<AnnotatedClass<?>> deferredClasses;
@@ -238,7 +234,7 @@ public class BeanDeployer
    {
       // TODO FIx this
       @SuppressWarnings("unchecked")
-      InstanceBean<Object, Field> bean = InstanceBean.of((AnnotatedItem) injectionPoint, manager);
+      InstanceBean<Object, ?> bean = InstanceBean.of((AnnotatedItem) injectionPoint, manager);
       beans.add(bean);
       log.info("Web Bean: " + bean);
    }

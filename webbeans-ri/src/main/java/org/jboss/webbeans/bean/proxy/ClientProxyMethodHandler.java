@@ -86,7 +86,6 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
     */
    public Object invoke(Object self, Method proxiedMethod, Method proceed, Object[] args) throws Throwable
    {
-      // TODO account for child managers
       if (bean == null)
       {
          bean = CurrentManager.rootManager().getBeans().get(beanIndex);

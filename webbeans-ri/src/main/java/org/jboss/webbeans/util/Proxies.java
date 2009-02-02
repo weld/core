@@ -89,8 +89,6 @@ public class Proxies
             {
                interfaces.add(clazz);
             }
-            // TODO Check the class type much more carefully, many things need
-            // excluding!
             else
             {
                classes.add(clazz);

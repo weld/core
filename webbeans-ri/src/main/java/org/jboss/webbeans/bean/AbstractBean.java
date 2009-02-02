@@ -353,22 +353,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    }
 
    /**
-    * Binds the decorators to the proxy
-    */
-   protected void bindDecorators()
-   {
-      // TODO Implement decorators
-   }
-
-   /**
-    * Binds the interceptors to the proxy
-    */
-   protected void bindInterceptors()
-   {
-      // TODO Implement interceptors
-   }
-
-   /**
     * Returns the annotated time the bean represents
     * 
     * @return The annotated item

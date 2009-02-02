@@ -81,15 +81,14 @@ public class InstanceBean<T, S> extends AbstractFacadeBean<Instance<T>, S, T>
    
    public void destroy(Instance<T> instance)
    {
-      try
+      /*try
       {
          DependentContext.INSTANCE.setActive(true);
-         // TODO Implement any cleanup needed
       }
       finally
       {
          DependentContext.INSTANCE.setActive(false);
-      }
+      }*/
    }
 
 }

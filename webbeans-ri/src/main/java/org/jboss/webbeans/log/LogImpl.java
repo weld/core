@@ -169,17 +169,11 @@ class LogImpl implements Log, Externalizable
 
    private Object interpolate(Object object, Object... params)
    {
-      if (object instanceof String)
+      if (params.length > 0)
       {
-         return object;
-         // TODO: interpolation
-         // return Interpolator.instance().interpolate( (String) object, params
-         // );
+         throw new UnsupportedOperationException("Parameter interpolation not supported");
       }
-      else
-      {
-         return object;
-      }
+      return object;
    }
 
    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException

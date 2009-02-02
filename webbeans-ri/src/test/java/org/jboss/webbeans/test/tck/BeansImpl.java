@@ -24,6 +24,7 @@ import org.jboss.webbeans.util.Reflections;
  * @author David Allen
  * 
  */
+@Deprecated
 public class BeansImpl implements Beans
 {
 

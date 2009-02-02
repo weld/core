@@ -131,8 +131,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
             instance = constructor.newInstance(manager, creationalContext);
             creationalContext.push(instance);
             DependentContext.INSTANCE.startCollecting(instance);
-            bindDecorators();
-            bindInterceptors();
             injectEjbAndCommonFields(instance);
             injectBoundFields(instance, creationalContext);
             callInitializers(instance, creationalContext);
@@ -302,7 +300,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       initEjbInjectionPoints();
       initPersistenceUnitInjectionPoints();
       initResourceInjectionPoints();
-      // TODO Interceptors
    }
 
    /**

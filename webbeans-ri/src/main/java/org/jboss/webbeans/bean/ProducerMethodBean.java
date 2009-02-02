@@ -89,7 +89,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       super.init();
       checkProducerMethod();
-      initDisposalMethod();
+      //initDisposalMethod();
       initInjectionPoints();
    }
 

@@ -18,7 +18,6 @@
 package org.jboss.webbeans.injection;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -30,9 +29,6 @@ import java.util.concurrent.Callable;
 
 import javax.inject.TypeLiteral;
 import javax.inject.manager.Bean;
-import javax.inject.manager.Decorator;
-import javax.inject.manager.InterceptionType;
-import javax.inject.manager.Interceptor;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -333,32 +329,6 @@ public class Resolver
          }
       }
       return true;
-   }
-
-   /**
-    * Resolves decorators according to binding criteria
-    * 
-    * @param types The set of API types to match
-    * @param bindings The binding types to match
-    * @return The set of matching decorators
-    */
-   public List<Decorator> resolveDecorators(Set<Type> types, Annotation[] bindings)
-   {
-      // TODO Implement decorators
-      return Collections.emptyList();
-   }
-
-   /**
-    * Resolves interceptors according to binding criteria
-    * 
-    * @param types The set of API types to match
-    * @param bindings The binding types to match
-    * @return The set of matching interceptors
-    */
-   public List<Interceptor> resolveInterceptors(InterceptionType type, Annotation[] interceptorBindings)
-   {
-      // TODO Implement interceptors
-      return null;
    }
 
    /**

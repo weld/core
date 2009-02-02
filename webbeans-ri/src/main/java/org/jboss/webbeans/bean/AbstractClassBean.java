@@ -86,7 +86,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       super.init();
       checkScopeAllowed();
       checkBeanImplementation();
-      // TODO Interceptors
       initInitializerMethods();
    }
 

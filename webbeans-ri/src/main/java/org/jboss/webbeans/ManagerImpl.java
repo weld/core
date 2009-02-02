@@ -203,7 +203,6 @@ public class ManagerImpl implements Manager, Serializable
     */
    public <T> Set<AnnotatedMethod<?>> resolveDisposalMethods(Class<T> apiType, Annotation... bindings)
    {
-      // TODO Implement disposal methods
       return Collections.emptySet();
    }
 
@@ -792,7 +791,7 @@ public class ManagerImpl implements Manager, Serializable
     */
    public List<Decorator> resolveDecorators(Set<Type> types, Annotation... bindings)
    {
-      return resolver.resolveDecorators(types, bindings);
+      throw new UnsupportedOperationException();
    }
 
    /**
@@ -808,7 +807,7 @@ public class ManagerImpl implements Manager, Serializable
     */
    public List<Interceptor> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings)
    {
-      return resolver.resolveInterceptors(type, interceptorBindings);
+      throw new UnsupportedOperationException();
    }
 
    /**
@@ -846,20 +845,17 @@ public class ManagerImpl implements Manager, Serializable
 
    public Manager parse(InputStream xmlStream)
    {
-      // TODO Implement XML parsing
-      return this;
+      throw new UnsupportedOperationException();
    }
 
    public Manager createActivity()
    {
-      // TODO Implement hierarchical managers
-      return this;
+      throw new UnsupportedOperationException();
    }
 
    public Manager setCurrent(Class<? extends Annotation> scopeType)
    {
-      // TODO Implement hierarchical managers
-      return this;
+      throw new UnsupportedOperationException();
    }
 
    public NamingContext getNaming()

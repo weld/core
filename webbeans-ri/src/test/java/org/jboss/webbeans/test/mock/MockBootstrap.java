@@ -135,13 +135,11 @@ public class MockBootstrap extends WebBeansBootstrap
 
       public Object resolveEjb(InjectionPoint injectionPoint, NamingContext namingContext)
       {
-         // TODO Implement EJB resolution for Unit tests
          return null;
       }
 
       public Object resolvePersistenceContext(InjectionPoint injectionPoint, NamingContext namingContext)
       {
-         // TODO Implement PU resolution for Unit tests
          return null;
       }
 

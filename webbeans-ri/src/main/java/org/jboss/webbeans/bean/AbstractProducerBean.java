@@ -226,10 +226,6 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
          {
             throw new IllegalProductException("Dependent scoped producers cannot produce non-serializable instances for injection into parameters of constructors of beans declaring passivating scope");
          }
-         else
-         {
-            // TODO: possible case?
-         }
       }
    }
 
@@ -342,15 +338,14 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
 
    public void destroy(T instance)
    {
-      try
+      /*try
       {
          DependentContext.INSTANCE.setActive(true);
-         // TODO Implement any cleanup needed
       }
       finally
       {
          DependentContext.INSTANCE.setActive(false);
-      }
+      }*/
    }
 
    protected abstract T produceInstance(CreationalContext<T> creationalContext);

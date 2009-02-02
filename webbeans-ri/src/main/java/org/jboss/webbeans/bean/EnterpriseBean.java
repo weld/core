@@ -293,8 +293,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          };
          DependentContext.INSTANCE.startCollecting(instance);
          DependentContext.INSTANCE.setActive(true);
-         bindDecorators();
-         bindInterceptors();
          injectBoundFields(instance, creationalContext);
          callInitializers(instance, creationalContext);
       }
