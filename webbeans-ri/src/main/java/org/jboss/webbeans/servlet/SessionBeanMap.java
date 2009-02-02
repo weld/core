@@ -14,14 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.webbeans.servlet;
 
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpSession;
 
-import org.jboss.webbeans.context.ApplicationContext;
+import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.beanmap.AbstractBeanMap;
 
 /**
@@ -53,7 +52,7 @@ public class SessionBeanMap extends AbstractBeanMap
    @Override
    protected String getKeyPrefix()
    {
-      return ApplicationContext.class.getName();
+      return SessionContext.class.getName();
    }
 
    /**

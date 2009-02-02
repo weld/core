@@ -244,7 +244,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    public boolean isProxyable()
    {
-      return Proxies.isClassProxyable(getType());
+      return Proxies.isTypeProxyable(getType());
    }
 
    public abstract S getDelegate();

@@ -33,6 +33,7 @@ import javax.persistence.PersistenceContextType;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 import org.jboss.webbeans.injection.ConstructorInjectionPoint;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
@@ -129,7 +130,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          {
             instance = constructor.newInstance(manager, creationalContext);
             creationalContext.push(instance);
-            DependentContext.INSTANCE.setCurrentInjectionInstance(instance);
+            DependentContext.INSTANCE.startCollecting(instance);
             bindDecorators();
             bindInterceptors();
             injectEjbAndCommonFields(instance);
@@ -139,7 +140,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          }
          finally
          {
-            DependentContext.INSTANCE.clearCurrentInjectionInstance(instance);
+            DependentContext.INSTANCE.stopCollecting(instance);
          }
          return instance;
       }
@@ -160,7 +161,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          DependentContext.INSTANCE.setActive(true);
          callPreDestroy(instance);
-         dependentInstancesStore.destroyDependentInstances(instance);
+         DependentInstancesStore.instance().destroyDependentInstances(instance);
       }
       catch (Exception e)
       {

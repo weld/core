@@ -291,7 +291,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
             public void push(T incompleteInstance) {};
             
          };
-         DependentContext.INSTANCE.setCurrentInjectionInstance(instance);
+         DependentContext.INSTANCE.startCollecting(instance);
          DependentContext.INSTANCE.setActive(true);
          bindDecorators();
          bindInterceptors();
@@ -300,7 +300,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       finally
       {
-         DependentContext.INSTANCE.clearCurrentInjectionInstance(instance);
+         DependentContext.INSTANCE.stopCollecting(instance);
          DependentContext.INSTANCE.setActive(false);
       }
 

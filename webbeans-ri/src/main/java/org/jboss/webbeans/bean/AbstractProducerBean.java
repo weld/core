@@ -39,6 +39,7 @@ import javax.inject.manager.InjectionPoint;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.MetaDataCache;
@@ -321,7 +322,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       {
          if (getDeclaringBean().isDependent())
          {
-            DependentContext.INSTANCE.setCurrentInjectionInstance(dependentCollector);
+            DependentContext.INSTANCE.startCollecting(dependentCollector);
          }
          DependentContext.INSTANCE.setActive(true);
          T instance = produceInstance(creationalContext);
@@ -332,8 +333,8 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       {
          if (getDeclaringBean().isDependent())
          {
-            DependentContext.INSTANCE.clearCurrentInjectionInstance(dependentCollector);
-            dependentInstancesStore.destroyDependentInstances(dependentCollector);
+            DependentContext.INSTANCE.stopCollecting(dependentCollector);
+            DependentInstancesStore.instance().destroyDependentInstances(dependentCollector);
          }
          DependentContext.INSTANCE.setActive(false);
       }

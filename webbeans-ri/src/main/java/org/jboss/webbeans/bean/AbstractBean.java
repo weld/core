@@ -36,7 +36,6 @@ import javax.inject.Standard;
 import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotationStore.AnnotationMap;
@@ -62,7 +61,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(Event.class, ManagerImpl.class));
 
    private boolean proxyable;
-   protected DependentInstancesStore dependentInstancesStore;
 
    /**
     * Helper class for getting deployment type
@@ -122,7 +120,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       super(manager);
       this.manager = manager;
       injectionPoints = new HashSet<AnnotatedInjectionPoint<?,?>>();
-      dependentInstancesStore = new DependentInstancesStore();
    }
 
    /**
@@ -533,10 +530,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    public boolean isProxyable()
    {
       return proxyable;
-   }
-   public DependentInstancesStore getDependentInstancesStore()
-   {
-      return dependentInstancesStore;
    }
 
    public boolean isDependent()

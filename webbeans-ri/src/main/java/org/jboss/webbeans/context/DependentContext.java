@@ -24,8 +24,6 @@ import javax.context.Contextual;
 import javax.context.CreationalContext;
 import javax.context.Dependent;
 
-import org.jboss.webbeans.bean.AbstractClassBean;
-
 /**
  * The dependent context
  * 
@@ -37,7 +35,7 @@ public class DependentContext extends AbstractContext
 
    private ThreadLocal<AtomicInteger> reentrantActiveCount;
    // Key to collect instances under in DependentInstacesStore
-   private ThreadLocal<Object> currentInjectionInstance;
+   private ThreadLocal<Object> dependentsKey;
 
    /**
     * Constructor
@@ -54,7 +52,7 @@ public class DependentContext extends AbstractContext
             return new AtomicInteger(0);
          }
       };
-      this.currentInjectionInstance = new ThreadLocal<Object>();
+      this.dependentsKey = new ThreadLocal<Object>();
    }
 
    /**
@@ -72,10 +70,9 @@ public class DependentContext extends AbstractContext
       if (creationalContext != null)
       {
          T instance = contextual.create(creationalContext);
-         if (contextual instanceof AbstractClassBean && (currentInjectionInstance.get() != null))
+         if (dependentsKey.get() != null)
          {
-            DependentInstancesStore dependentInstancesStore = ((AbstractClassBean<?>) contextual).getDependentInstancesStore();
-            dependentInstancesStore.addDependentInstance(currentInjectionInstance.get(), ContextualInstance.of(contextual, instance));
+            DependentInstancesStore.instance().addDependentInstance(dependentsKey.get(), ContextualInstance.of(contextual, instance));
          }
          return instance;
       }
@@ -120,14 +117,14 @@ public class DependentContext extends AbstractContext
     * Sets the current injection instance. If there is already an instance
     * registered, nothing is done.
     * 
-    * @param instance The current injection instance to register
+    * @param dependentsKey The current injection instance to register
     *           dependent objects under
     */
-   public void setCurrentInjectionInstance(Object instance)
+   public void startCollecting(Object dependentsKey)
    {
-      if (this.currentInjectionInstance.get() == null)
+      if (this.dependentsKey.get() == null)
       {
-         this.currentInjectionInstance.set(instance);
+         this.dependentsKey.set(dependentsKey);
       }
    }
 
@@ -135,13 +132,13 @@ public class DependentContext extends AbstractContext
     * Clears the current injection instance. Can only be done by passing in the instance
     * of the current instance.
     * 
-    * @param instance The instance to free
+    * @param dependentsKey The instance to free
     */
-   public void clearCurrentInjectionInstance(Object instance)
+   public void stopCollecting(Object dependentsKey)
    {
-      if (this.currentInjectionInstance.get() == instance)
+      if (this.dependentsKey.get() == dependentsKey)
       {
-         this.currentInjectionInstance.set(null);
+         this.dependentsKey.set(null);
       }
    }
 

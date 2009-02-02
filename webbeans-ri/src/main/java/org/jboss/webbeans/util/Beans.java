@@ -84,8 +84,7 @@ public class Beans
          {
             continue;
          }
-         boolean isClass = !((Class<?>) apiType).isInterface();
-         if (isClass && !Proxies.isClassProxyable((Class<?>) apiType))
+         if (!Proxies.isTypeProxyable(apiType))
          {
             return false;
          }

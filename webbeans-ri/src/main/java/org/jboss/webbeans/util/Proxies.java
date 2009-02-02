@@ -23,14 +23,12 @@ import java.util.Set;
 
 import javassist.util.proxy.ProxyFactory;
 
-
-
 /**
  * Utilties for working with Javassist proxies
  * 
  * @author Nicklas Karlsson
  * @author Pete Muir
- *
+ * 
  */
 public class Proxies
 {
@@ -139,14 +137,19 @@ public class Proxies
    }
 
    /**
-    * Inidicates if a class is proxyable
+    * Indicates if a class is proxyable
     * 
-    * @param clazz The class to test
+    * @param type The class to test
     * @return True if proxyable, false otherwise
     */
-   public static boolean isClassProxyable(Class<?> clazz)
+   public static boolean isTypeProxyable(Type type)
    {
-      if (Reflections.getConstructor(clazz) == null)
+      Class<?> clazz = (Class<?>) type;
+      if (clazz.isInterface())
+      {
+         return true;
+      }
+      else if (Reflections.getConstructor(clazz) == null)
       {
          return false;
       }

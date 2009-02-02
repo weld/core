@@ -26,6 +26,7 @@ import org.jboss.webbeans.bootstrap.SimpleResourceLoader;
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.ApplicationContext;
+import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
@@ -73,6 +74,7 @@ public class ServletBootstrap extends PropertiesBasedBootstrap
       getManager().addContext(RequestContext.INSTANCE);
       getManager().addContext(SessionContext.INSTANCE);
       getManager().addContext(ApplicationContext.INSTANCE);
+      getManager().addContext(ConversationContext.INSTANCE);
       ApplicationContext.INSTANCE.setBeanMap(new ApplicationBeanMap(servletContext));
    }
 

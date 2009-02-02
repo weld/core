@@ -65,11 +65,12 @@ public class WebBeansELResolver extends ELResolver
       if (base == null && property != null)
       {
          // TODO Any other way than creating a dummy parent to collect the created dependent objects under?
+         // TODO temp disabled
          Object dependentsCollector = new Object();
          try
          {
             DependentContext.INSTANCE.setActive(true);
-            DependentContext.INSTANCE.setCurrentInjectionInstance(dependentsCollector);
+            DependentContext.INSTANCE.startCollecting(dependentsCollector);
             Object value = CurrentManager.rootManager().getInstanceByName(property.toString());
             if (value != null)
             {
@@ -79,7 +80,7 @@ public class WebBeansELResolver extends ELResolver
          }
          finally
          {
-            DependentContext.INSTANCE.clearCurrentInjectionInstance(dependentsCollector);
+            DependentContext.INSTANCE.stopCollecting(dependentsCollector);
             DependentContext.INSTANCE.setActive(false);
          }
       }

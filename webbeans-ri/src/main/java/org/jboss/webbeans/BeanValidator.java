@@ -93,7 +93,7 @@ public class BeanValidator
                   throw new AmbiguousDependencyException("The injection point " + injectionPoint + " has ambiguos dependencies for type " + type + " and binding types " + bindings + " in " + bean);
                }
                Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
-               if (MetaDataCache.instance().getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isClassProxyable(type))
+               if (MetaDataCache.instance().getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(type))
                {
                   throw new UnproxyableDependencyException("The injection point " + injectionPoint + " has non-proxyable dependencies");
                }

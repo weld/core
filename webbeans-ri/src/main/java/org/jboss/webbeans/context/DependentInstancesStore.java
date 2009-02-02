@@ -28,15 +28,27 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class DependentInstancesStore
 {
+   private static DependentInstancesStore instance;
+
    // A object -> List of contextual instances mapping
    private Map<Object, List<ContextualInstance<?>>> dependentInstances;
 
    /**
     * Creates a new DependentInstancesStore
     */
-   public DependentInstancesStore()
+   protected DependentInstancesStore()
    {
       dependentInstances = new ConcurrentHashMap<Object, List<ContextualInstance<?>>>();
+   }
+
+   static
+   {
+      instance = new DependentInstancesStore();
+   }
+
+   public static DependentInstancesStore instance()
+   {
+      return instance;
    }
 
    /**
