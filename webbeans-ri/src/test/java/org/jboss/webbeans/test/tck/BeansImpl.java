@@ -12,7 +12,7 @@ import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
-import org.jboss.webbeans.tck.api.Beans;
+import org.jboss.webbeans.tck.spi.Beans;
 import org.jboss.webbeans.test.mock.MockEjbDescriptor;
 import org.jboss.webbeans.util.Reflections;
 

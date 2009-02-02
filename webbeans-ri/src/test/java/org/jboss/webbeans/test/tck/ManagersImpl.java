@@ -6,7 +6,7 @@ import java.util.List;
 import javax.inject.manager.Manager;
 
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.tck.api.Managers;
+import org.jboss.webbeans.tck.spi.Managers;
 import org.jboss.webbeans.test.mock.MockBootstrap;
 
 public class ManagersImpl implements Managers

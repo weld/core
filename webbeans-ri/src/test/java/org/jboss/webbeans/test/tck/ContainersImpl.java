@@ -2,17 +2,18 @@ package org.jboss.webbeans.test.tck;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.jar.JarInputStream;
 
 import javax.el.ELContext;
 import javax.inject.manager.Manager;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.tck.api.Containers;
+import org.jboss.webbeans.tck.spi.StandaloneContainers;
 import org.jboss.webbeans.test.mock.MockBootstrap;
 import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
 import org.jboss.webbeans.test.mock.el.EL;
 
-public class ContainersImpl implements Containers
+public class ContainersImpl implements StandaloneContainers
 {
    
    public Manager deploy(List<Class<? extends Annotation>> enabledDeploymentTypes, Class<?>... classes)
@@ -31,6 +32,16 @@ public class ContainersImpl implements Containers
    public Manager deploy(java.lang.Class<?>... classes) 
    {
       return deploy(null, classes);
+   }
+   
+   public Manager deploy(JarInputStream archive)
+   {
+      throw new UnsupportedOperationException();
+   }
+   
+   public Manager deploy(List<Class<? extends Annotation>> enabledDeploymentTypes, JarInputStream archive)
+   {
+      throw new UnsupportedOperationException();
    }
    
    @SuppressWarnings("unchecked")
