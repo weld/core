@@ -18,13 +18,18 @@
 package org.jboss.webbeans.conversation;
 
 import javax.context.Conversation;
+import javax.context.RequestScoped;
 
+@RequestScoped
 public class ConversationImpl implements Conversation
 {
    private String cid;
    private boolean longRunning;
    private long timeoutInMilliseconds;
 
+   public ConversationImpl() {
+   }
+   
    protected ConversationImpl(String cid, long timeoutInMilliseconds)
    {
       this.timeoutInMilliseconds = timeoutInMilliseconds;
@@ -83,5 +88,10 @@ public class ConversationImpl implements Conversation
    public String toString()
    {
       return "ID: " + cid + ", long-running: " + longRunning + ", timeout: " + timeoutInMilliseconds;
+   }
+
+   public void setLongRunning(boolean longRunning)
+   {
+      this.longRunning = true;
    }
 }
