@@ -45,13 +45,13 @@ public class DefaultConversationManager implements ConversationManager, Serializ
    @Current
    private Conversation currentConversation;
 
-   private Map<String, Future<?>> longRunningConversations;
+   private Map<String, ConversationEntry> longRunningConversations;
    private HttpSession session;
 
    protected DefaultConversationManager()
    {
       log.trace("Created " + getClass());
-      longRunningConversations = new ConcurrentHashMap<String, Future<?>>();
+      longRunningConversations = new ConcurrentHashMap<String, ConversationEntry>();
       session = null;
    }
 
@@ -80,7 +80,7 @@ public class DefaultConversationManager implements ConversationManager, Serializ
          log.info("Could not restore long-running conversation " + cid);
          return;
       }
-      if (!longRunningConversations.remove(cid).cancel(false))
+      if (!longRunningConversations.remove(cid).cancelTermination())
       {
          log.info("Failed to cancel termination of conversation " + cid);
       }
@@ -96,7 +96,9 @@ public class DefaultConversationManager implements ConversationManager, Serializ
       {
          Runnable terminationTask = new TerminationTask(currentConversation.getId());
          Future<?> terminationHandle = conversationTerminator.scheduleForTermination(terminationTask);
-         longRunningConversations.put(currentConversation.getId(), terminationHandle);
+         String cid = currentConversation.getId();
+         ConversationEntry conversationEntry = ConversationEntry.of(cid, terminationHandle);
+         longRunningConversations.put(cid, conversationEntry);
          log.trace("Scheduling " + currentConversation + " for termination");
       }
       else
@@ -118,24 +120,18 @@ public class DefaultConversationManager implements ConversationManager, Serializ
       public void run()
       {
          log.trace("Conversation " + cid + " timed out and was terminated");
-         destroyConversation(cid, session);
-      }
-   }
-   
-   public void destroyAllConversations()
-   {
-      for (Map.Entry<String, Future<?>> entry : longRunningConversations.entrySet()) {
-         entry.getValue().cancel(false);
-         destroyConversation(entry.getKey(), session);
+         longRunningConversations.get(cid).destroy(session);
       }
    }
 
-   private void destroyConversation(String cid, HttpSession session)
+   public void destroyAllConversations()
    {
-      ConversationContext terminationContext = new ConversationContext();
-      terminationContext.setBeanMap(new ConversationBeanMap(session, cid));
-      terminationContext.destroy();
-      longRunningConversations.remove(cid);
+      for (ConversationEntry conversationEntry : longRunningConversations.values())
+      {
+         conversationEntry.cancelTermination();
+         conversationEntry.destroy(session);
+      }
+      longRunningConversations.clear();
    }
 
 }
