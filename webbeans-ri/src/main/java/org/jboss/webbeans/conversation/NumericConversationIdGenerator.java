@@ -21,11 +21,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.context.ApplicationScoped;
 
+/**
+ * A ConversationIdGenerator implementation using running numerical values
+ *  
+ * @author Nicklas Karlsson
+ *
+ */
 @ApplicationScoped
 public class NumericConversationIdGenerator implements ConversationIdGenerator, Serializable
 {
+   // The next conversation ID
    private AtomicInteger id;
 
+   /**
+    * Creates a new conversation ID generator
+    */
    public NumericConversationIdGenerator()
    {
       id = new AtomicInteger(1);

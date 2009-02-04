@@ -24,19 +24,20 @@ import java.util.concurrent.TimeUnit;
 
 import javax.context.SessionScoped;
 
+/**
+ * A ConversationTerminator implementation using Java SE scheduling
+ *   
+ * @author Nicklas Karlsson
+ * @see org.jboss.webbeans.conversation.ConversationTerminator
+ */
 @SessionScoped
 public class JavaSEConversationTerminator implements ConversationTerminator, Serializable
 {
    private ScheduledExecutorService terminator = Executors.newScheduledThreadPool(1);
 
-   public Future<?> scheduleForTermination(Runnable terminationTask)
+   public Future<?> scheduleForTermination(Runnable terminationTask, long timeoutInMilliseconds)
    {
-      return terminator.schedule(terminationTask, getTimeout(), TimeUnit.MILLISECONDS);
-   }
-
-   public long getTimeout()
-   {
-      return 10 * 60 * 1000;
+      return terminator.schedule(terminationTask, timeoutInMilliseconds, TimeUnit.MILLISECONDS);
    }
 
 }

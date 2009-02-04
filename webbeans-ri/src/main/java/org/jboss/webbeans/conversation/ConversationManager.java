@@ -16,9 +16,43 @@
  */
 package org.jboss.webbeans.conversation;
 
+/**
+ * A conversation manager responsible for starting, resuming and ending conversations
+ * 
+ * @author Nicklas Karlsson
+ * @see org.jboss.webbeans.conversation.ConversationManager
+ */
 public interface ConversationManager
 {
+   /**
+    * Begins a conversation
+    * 
+    * @param cid The incoming conversation ID. Can be null in cases of transient conversations
+    */
    public abstract void beginConversation(String cid);
+   
+   /**
+    * Ends the current conversation
+    */
    public abstract void endConversation();
+   
+   /**
+    * Destroys all long-running conversations
+    */
    public abstract void destroyAllConversations();
+   
+   /**
+    * Gets The inactivity timeout
+    * 
+    * @return The timeout in milliseconds
+    */
+   public abstract long getInactivityTimeoutInMilliseconds();
+   
+   /**
+    * Gets The concurrent access timeout
+    * 
+    * @return The timeout in milliseconds
+    */
+   public abstract long getConcurrentAccessTimeoutInMilliseconds();
+   
 }

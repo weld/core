@@ -18,8 +18,21 @@ package org.jboss.webbeans.conversation;
 
 import java.util.concurrent.Future;
 
+/**
+ * A conversation terminator for scheduling inactivity timeout destructions
+ * 
+ * @author Nicklas Karlsson
+ *
+ */
 public interface ConversationTerminator
 {
-   public abstract Future<?> scheduleForTermination(Runnable task);
-   public abstract long getTimeout();
+   /**
+    * Schedules a termination
+    * 
+    * @param terminationTask The termination task to run
+    * @param timeoutInMilliseconds The timeout in milliseconds
+    * 
+    * @return A handle for manipulating the task later on
+    */
+   public abstract Future<?> scheduleForTermination(Runnable terminationTask, long timeoutInMilliseconds);
 }

@@ -36,6 +36,7 @@ import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.webbeans.servlet.SessionManager;
 import org.jboss.webbeans.transaction.Transaction;
 
 /**
@@ -103,6 +104,7 @@ public abstract class WebBeansBootstrap
       beanDeployer.addClass(DefaultConversationManager.class);
       beanDeployer.addClass(JavaSEConversationTerminator.class);
       beanDeployer.addClass(NumericConversationIdGenerator.class);
+      beanDeployer.addClass(SessionManager.class);
       beanDeployer.deploy();
    }
 

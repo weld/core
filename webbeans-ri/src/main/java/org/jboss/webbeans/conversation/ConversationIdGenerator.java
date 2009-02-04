@@ -16,7 +16,17 @@
  */
 package org.jboss.webbeans.conversation;
 
+/**
+ * Generates conversation ID:s for the conversation manager
+ * 
+ * @author Nicklas Karlsson
+ * @see org.jboss.webbeans.conversation.ConversationManager#beginConversation(String)
+ */
 public interface ConversationIdGenerator
 {
+   /**
+    * Gets the next ID for a new conversation
+    * @return The ID
+    */
    public abstract String nextId();
 }

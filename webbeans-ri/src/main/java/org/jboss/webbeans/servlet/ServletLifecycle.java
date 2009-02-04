@@ -29,7 +29,6 @@ import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.conversation.ConversationManager;
-import org.jboss.webbeans.conversation.DefaultConversationManager;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -96,6 +95,7 @@ public class ServletLifecycle
     */
    public static void beginRequest(HttpServletRequest request)
    {
+      CurrentManager.rootManager().getInstanceByType(SessionManager.class).setSession(request.getSession());
       SessionContext.INSTANCE.setBeanMap(new SessionBeanMap(request.getSession()));
       beginConversation(request);
       DependentContext.INSTANCE.setActive(true);
@@ -104,10 +104,6 @@ public class ServletLifecycle
    private static void beginConversation(HttpServletRequest request)
    {
       ConversationManager conversationManager = CurrentManager.rootManager().getInstanceByType(ConversationManager.class);
-      if (conversationManager instanceof DefaultConversationManager)
-      {
-         ((DefaultConversationManager) conversationManager).setSession(request.getSession());
-      }
       conversationManager.beginConversation(request.getParameter("cid"));
       Conversation conversation = CurrentManager.rootManager().getInstanceByType(Conversation.class);
       ConversationContext.INSTANCE.setBeanMap(new ConversationBeanMap(request.getSession(), conversation.getId()));
@@ -125,6 +121,7 @@ public class ServletLifecycle
       SessionContext.INSTANCE.setBeanMap(null);
       endConversation();
       ConversationContext.INSTANCE.setBeanMap(null);
+      CurrentManager.rootManager().getInstanceByType(SessionManager.class).setSession(null);      
    }
 
    private static void endConversation()
