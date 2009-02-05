@@ -109,6 +109,5 @@ public class ContextMap extends ForwardingMap<Class<? extends Annotation>, List<
    {
       return "ContextMap holding " + delegate().size() + " contexts: " + delegate().keySet();
    }
-   
 
 }
