@@ -25,34 +25,21 @@ package org.jboss.webbeans.conversation;
 public interface ConversationManager
 {
    /**
-    * Begins a conversation
+    * Begins or restores a conversation
     * 
     * @param cid The incoming conversation ID. Can be null in cases of transient conversations
     */
-   public abstract void beginConversation(String cid);
+   public abstract void beginOrRestoreConversation(String cid);
    
    /**
-    * Ends the current conversation
+    * Cleans up the current conversation, destroying transient conversation and handling 
+    * long-running conversations
     */
-   public abstract void endConversation();
+   public abstract void cleanupConversation();
    
    /**
     * Destroys all long-running conversations
     */
    public abstract void destroyAllConversations();
-   
-   /**
-    * Gets The inactivity timeout
-    * 
-    * @return The timeout in milliseconds
-    */
-   public abstract long getInactivityTimeoutInMilliseconds();
-   
-   /**
-    * Gets The concurrent access timeout
-    * 
-    * @return The timeout in milliseconds
-    */
-   public abstract long getConcurrentAccessTimeoutInMilliseconds();
    
 }

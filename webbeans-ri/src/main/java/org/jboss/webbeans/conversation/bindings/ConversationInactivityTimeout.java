@@ -14,36 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.conversation;
+package org.jboss.webbeans.conversation.bindings;
 
-import java.io.Serializable;
-import java.util.concurrent.atomic.AtomicInteger;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import javax.context.SessionScoped;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import javax.inject.BindingType;
 
 /**
- * A ConversationIdGenerator implementation using running numerical values
+ * The conversation context inactivity timeout
  *  
  * @author Nicklas Karlsson
- *
  */
-@SessionScoped
-public class NumericConversationIdGenerator implements ConversationIdGenerator, Serializable
+@Target( { TYPE, METHOD, PARAMETER, FIELD })
+@Retention(RUNTIME)
+@Documented
+@BindingType
+public @interface ConversationInactivityTimeout
 {
-   // The next conversation ID
-   private AtomicInteger id;
-
-   /**
-    * Creates a new conversation ID generator
-    */
-   public NumericConversationIdGenerator()
-   {
-      id = new AtomicInteger(1);
-   }
-
-   public String nextId()
-   {
-      return String.valueOf(id.getAndIncrement());
-   }
-
 }

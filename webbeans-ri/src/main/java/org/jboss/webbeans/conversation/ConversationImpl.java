@@ -20,6 +20,9 @@ package org.jboss.webbeans.conversation;
 import javax.annotation.Named;
 import javax.context.Conversation;
 import javax.context.RequestScoped;
+import javax.inject.Initializer;
+
+import org.jboss.webbeans.conversation.bindings.ConversationInactivityTimeout;
 
 /**
  * The current conversation implementation
@@ -39,27 +42,23 @@ public class ConversationImpl implements Conversation
    private long timeoutInMilliseconds;
 
    /**
-    * Creates a new conversation 
-    * 
-    * @param cid The conversation ID
-    * @param timeoutInMilliseconds The inactivity timeout in milliseconds
+    * Creates a new conversation
     */
-   protected ConversationImpl(String cid, long timeoutInMilliseconds)
+   public ConversationImpl()
    {
-      this.timeoutInMilliseconds = timeoutInMilliseconds;
-      this.cid = cid;
    }
-
+   
    /**
-    * Factory method
+    * Initializes a new conversation 
     * 
-    * @param cid The conversation ID
+    * @param conversationIdGenerator The conversation ID generator
     * @param timeoutInMilliseconds The inactivity timeout in milliseconds
-    * @return A new conversation
     */
-   public static ConversationImpl of(String cid, long timeoutInMilliseconds)
+   @Initializer
+   public void init(ConversationIdGenerator conversationIdGenerator, @ConversationInactivityTimeout long timeoutInMilliseconds)
    {
-      return new ConversationImpl(cid, timeoutInMilliseconds);
+      this.cid = conversationIdGenerator.nextId();
+      this.timeoutInMilliseconds = timeoutInMilliseconds;
    }
 
    public void begin()
@@ -105,7 +104,7 @@ public class ConversationImpl implements Conversation
     * @param longRunning The new long-running status
     * @param timeout The new inactivity timeout in milliseconds 
     */
-   public void become(String cid, boolean longRunning, long timeoutInMilliseconds)
+   public void switchTo(String cid, boolean longRunning, long timeoutInMilliseconds)
    {
       this.cid = cid;
       this.longRunning = longRunning;

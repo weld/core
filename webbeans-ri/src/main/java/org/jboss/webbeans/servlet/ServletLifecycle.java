@@ -104,7 +104,7 @@ public class ServletLifecycle
    private static void beginConversation(HttpServletRequest request)
    {
       ConversationManager conversationManager = CurrentManager.rootManager().getInstanceByType(ConversationManager.class);
-      conversationManager.beginConversation(request.getParameter("cid"));
+      conversationManager.beginOrRestoreConversation(request.getParameter("cid"));
       Conversation conversation = CurrentManager.rootManager().getInstanceByType(Conversation.class);
       ConversationContext.INSTANCE.setBeanMap(new ConversationBeanMap(request.getSession(), conversation.getId()));
    }
@@ -119,15 +119,9 @@ public class ServletLifecycle
       DependentContext.INSTANCE.setActive(false);
       RequestContext.INSTANCE.destroy();
       SessionContext.INSTANCE.setBeanMap(null);
-      endConversation();
+      CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
       ConversationContext.INSTANCE.setBeanMap(null);
       CurrentManager.rootManager().getInstanceByType(SessionManager.class).setSession(null);      
-   }
-
-   private static void endConversation()
-   {
-      ConversationManager conversationManager = CurrentManager.rootManager().getInstanceByType(ConversationManager.class);
-      conversationManager.endConversation();
    }
 
 }

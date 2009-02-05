@@ -21,8 +21,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
-import javax.context.Conversation;
-import javax.context.RequestScoped;
 import javax.context.SessionScoped;
 import javax.inject.Current;
 import javax.inject.Produces;
@@ -30,6 +28,8 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.context.ConversationContext;
+import org.jboss.webbeans.conversation.bindings.ConversationConcurrentAccessTimeout;
+import org.jboss.webbeans.conversation.bindings.ConversationInactivityTimeout;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -44,21 +44,25 @@ public class DefaultConversationManager implements ConversationManager, Serializ
 {
    private static LogProvider log = Logging.getLogProvider(WebBeansBootstrap.class);
 
-   // The conversation id generator
-   @Current
-   private ConversationIdGenerator conversationIdGenerator;
-
    // The conversation terminator
    @Current
    private ConversationTerminator conversationTerminator;
 
    // The current conversation
    @Current
-   private Conversation currentConversation;
+   private ConversationImpl currentConversation;
 
    // The current HTTP session
    @Current
    private HttpSession session;
+   
+   // The conversation timeout in milliseconds waiting for access to a blocked conversation 
+   @ConversationConcurrentAccessTimeout
+   private long concurrentAccessTimeout;
+   
+   // The conversation inactivity timeout in milliseconds
+   @ConversationInactivityTimeout
+   private long inactivityTimeout;
 
    // A map of current active long-running conversation entries
    private Map<String, ConversationEntry> longRunningConversations;
@@ -71,22 +75,22 @@ public class DefaultConversationManager implements ConversationManager, Serializ
       log.trace("Created " + getClass());
       longRunningConversations = new ConcurrentHashMap<String, ConversationEntry>();
    }
-
-   /**
-    * Producer method for transient conversations
-    * 
-    * @return A new transient conversation
-    */
+   
    @Produces
-   @RequestScoped
-   public Conversation produceNewTransientConversation()
+   @ConversationInactivityTimeout
+   public long getConversationTimeoutInMilliseconds()
    {
-      Conversation conversation = ConversationImpl.of(conversationIdGenerator.nextId(), getInactivityTimeoutInMilliseconds());
-      log.trace("Produced a new conversation: " + conversation);
-      return conversation;
+      return 10 * 60 * 1000;
    }
 
-   public void beginConversation(String cid)
+   @Produces
+   @ConversationConcurrentAccessTimeout
+   public long getConversationConcurrentAccessTimeout()
+   {
+      return 1 * 1000;
+   }
+   
+   public void beginOrRestoreConversation(String cid)
    {
       if (cid == null)
       {
@@ -106,9 +110,9 @@ public class DefaultConversationManager implements ConversationManager, Serializ
       // if we fail
       try
       {
-         if (!longRunningConversations.get(cid).lock(getConcurrentAccessTimeoutInMilliseconds()))
+         if (!longRunningConversations.get(cid).lock(concurrentAccessTimeout))
          {
-            log.info("Could not acquire conversation lock in " + getConcurrentAccessTimeoutInMilliseconds() + "ms, giving up");
+            log.info("Could not acquire conversation lock in " + concurrentAccessTimeout + "ms, giving up");
             return;
          }
       }
@@ -128,11 +132,11 @@ public class DefaultConversationManager implements ConversationManager, Serializ
       {
          // If all goes well, set the identity of the current conversation to
          // match the fetched long-running one
-         ((ConversationImpl) currentConversation).become(cid, true, getInactivityTimeoutInMilliseconds());
+         currentConversation.switchTo(cid, true, inactivityTimeout);
       }
    }
 
-   public void endConversation()
+   public void cleanupConversation()
    {
       String cid = currentConversation.getId();
       if (currentConversation.isLongRunning())
@@ -175,7 +179,7 @@ public class DefaultConversationManager implements ConversationManager, Serializ
    private Future<?> scheduleForTermination(String cid)
    {
       Runnable terminationTask = new TerminationTask(cid);
-      return conversationTerminator.scheduleForTermination(terminationTask, getInactivityTimeoutInMilliseconds());
+      return conversationTerminator.scheduleForTermination(terminationTask, inactivityTimeout);
    }
 
    /**
@@ -216,16 +220,6 @@ public class DefaultConversationManager implements ConversationManager, Serializ
          conversationEntry.destroy(session);
       }
       longRunningConversations.clear();
-   }
-
-   public long getConcurrentAccessTimeoutInMilliseconds()
-   {
-      return 1000;
-   }
-
-   public long getInactivityTimeoutInMilliseconds()
-   {
-      return 10 * 60 * 1000;
    }
 
 }

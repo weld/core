@@ -20,7 +20,7 @@ package org.jboss.webbeans.conversation;
  * Generates conversation ID:s for the conversation manager
  * 
  * @author Nicklas Karlsson
- * @see org.jboss.webbeans.conversation.ConversationManager#beginConversation(String)
+ * @see org.jboss.webbeans.conversation.ConversationManager#beginOrRestoreConversation(String)
  */
 public interface ConversationIdGenerator
 {
