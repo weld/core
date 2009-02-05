@@ -27,7 +27,7 @@ import org.jboss.webbeans.bean.standard.ManagerBean;
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.conversation.ConversationImpl;
-import org.jboss.webbeans.conversation.DefaultConversationManager;
+import org.jboss.webbeans.conversation.ServletConversationManager;
 import org.jboss.webbeans.conversation.JavaSEConversationTerminator;
 import org.jboss.webbeans.conversation.NumericConversationIdGenerator;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
@@ -103,7 +103,7 @@ public abstract class WebBeansBootstrap
       beanDeployer.addBean(InjectionPointBean.of(manager));
       beanDeployer.addClass(Transaction.class);
       beanDeployer.addClass(ConversationImpl.class);
-      beanDeployer.addClass(DefaultConversationManager.class);
+      beanDeployer.addClass(ServletConversationManager.class);
       beanDeployer.addClass(JavaSEConversationTerminator.class);
       beanDeployer.addClass(NumericConversationIdGenerator.class);
       beanDeployer.addClass(SessionManager.class);

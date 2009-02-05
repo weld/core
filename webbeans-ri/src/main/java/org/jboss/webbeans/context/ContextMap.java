@@ -20,12 +20,13 @@ package org.jboss.webbeans.context;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.context.Context;
 
-import org.jboss.webbeans.util.ConcurrentCache;
+import com.google.common.collect.ForwardingMap;
 
 /**
  * A map from a scope to a list of contexts
@@ -34,9 +35,14 @@ import org.jboss.webbeans.util.ConcurrentCache;
  * @author Pete Muir
  * 
  */
-public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, List<Context>>
+public class ContextMap extends ForwardingMap<Class<? extends Annotation>, List<Context>>
 {
+   private Map<Class<? extends Annotation>, List<Context>> delegate;
 
+   public ContextMap() {
+      delegate = new ConcurrentHashMap<Class<? extends Annotation>, List<Context>>();
+   }
+   
    /**
     * Gets the dependent context
     * 
@@ -64,7 +70,7 @@ public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, Lis
     */
    public List<Context> getContext(Class<? extends Annotation> scopeType)
    {
-      List<Context> contexts = getValue(scopeType);
+      List<Context> contexts = get(scopeType);
       if (contexts == null)
       {
          return Collections.emptyList();
@@ -73,12 +79,6 @@ public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, Lis
       {
          return contexts;
       }
-   }
-
-   @Override
-   public String toString()
-   {
-      return "ContextMap holding " + delegate().size() + " contexts: " + delegate().keySet();
    }
 
    /**
@@ -90,16 +90,25 @@ public class ContextMap extends ConcurrentCache<Class<? extends Annotation>, Lis
     */
    public void add(Context context)
    {
-      List<Context> contexts = putIfAbsent(context.getScopeType(), new Callable<List<Context>>()
-      {
-
-         public List<Context> call() throws Exception
-         {
-            return new CopyOnWriteArrayList<Context>();
-         }
-
-      });
+      List<Context> contexts = get(context.getScopeType());
+      if (contexts == null) {
+         contexts = new CopyOnWriteArrayList<Context>();
+         put(context.getScopeType(), contexts);
+      }
       contexts.add(context);
    }
+
+   @Override
+   protected Map<Class<? extends Annotation>, List<Context>> delegate()
+   {
+      return delegate;
+   }
+
+   @Override
+   public String toString()
+   {
+      return "ContextMap holding " + delegate().size() + " contexts: " + delegate().keySet();
+   }
+   
 
 }

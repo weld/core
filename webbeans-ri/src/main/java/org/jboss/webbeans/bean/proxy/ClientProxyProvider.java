@@ -109,7 +109,7 @@ public class ClientProxyProvider
     *           not already exist
     * @return the client proxy for the bean
     */
-   @SuppressWarnings("unchecked")
+   // TODO: What is this create parameter? Something obsolete?
    public <T> T getClientProxy(final Bean<T> bean)
    {
       return pool.putIfAbsent(bean, new Callable<T>()

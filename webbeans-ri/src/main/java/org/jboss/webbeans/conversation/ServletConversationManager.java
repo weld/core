@@ -40,7 +40,7 @@ import org.jboss.webbeans.log.Logging;
  * 
  */
 @SessionScoped
-public class DefaultConversationManager implements ConversationManager, Serializable
+public class ServletConversationManager implements ConversationManager, Serializable
 {
    private static LogProvider log = Logging.getLogProvider(WebBeansBootstrap.class);
 
@@ -70,7 +70,7 @@ public class DefaultConversationManager implements ConversationManager, Serializ
    /**
     * Creates a new conversation manager
     */
-   public DefaultConversationManager()
+   public ServletConversationManager()
    {
       log.trace("Created " + getClass());
       longRunningConversations = new ConcurrentHashMap<String, ConversationEntry>();
@@ -94,20 +94,20 @@ public class DefaultConversationManager implements ConversationManager, Serializ
    {
       if (cid == null)
       {
-         // No incoming conversation ID, nothing to do here, Conversation
-         // factory will produce new transient conversation
+         // No incoming conversation ID, nothing to do here, continue with
+         // a transient conversation
          return;
       }
       if (!longRunningConversations.containsKey(cid))
       {
          // We got an incoming conversation ID but it was not in the map of
-         // known ones, nothing to do, factory to the rescue
+         // known ones, nothing to do. Log and return to continue with a 
+         // transient conversation
          log.info("Could not restore long-running conversation " + cid);
          return;
       }
-      // Try to get a lock to the requested conversation, return and fall back
-      // to new transient conversation from factory
-      // if we fail
+      // Try to get a lock to the requested conversation, log and return to
+      // continue with a transient conversation if we fail
       try
       {
          if (!longRunningConversations.get(cid).lock(concurrentAccessTimeout))
@@ -121,8 +121,8 @@ public class DefaultConversationManager implements ConversationManager, Serializ
          log.info("Interrupted while trying to acquire lock");
          return;
       }
-      // If we can't cancel the termination, release the lock, return and fall
-      // back to new transient conversation from factory
+      // If we can't cancel the termination, release the lock, return and continue
+      // with a transient conversation
       if (!longRunningConversations.get(cid).cancelTermination())
       {
          longRunningConversations.get(cid).unlock();
@@ -176,6 +176,12 @@ public class DefaultConversationManager implements ConversationManager, Serializ
       }
    }
 
+   /**
+    * Creates a termination task for and schedules it
+    * 
+    * @param cid The id of the conversation to terminate
+    * @return The asynchronous job handle
+    */
    private Future<?> scheduleForTermination(String cid)
    {
       Runnable terminationTask = new TerminationTask(cid);
