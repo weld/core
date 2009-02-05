@@ -1,5 +1,6 @@
 package org.jboss.webbeans.test.tck;
 
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.jar.JarInputStream;
@@ -34,7 +35,7 @@ public class ContainersImpl implements StandaloneContainers
       return deploy(null, classes);
    }
    
-   public Manager deploy(JarInputStream archive)
+   public Manager deploy(InputStream archive)
    {
       throw new UnsupportedOperationException();
    }
