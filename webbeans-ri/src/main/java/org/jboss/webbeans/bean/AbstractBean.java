@@ -37,12 +37,15 @@ import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
+import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotationStore.AnnotationMap;
 import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.MergedStereotypes;
+import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Reflections;
 
@@ -119,7 +122,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    {
       super(manager);
       this.manager = manager;
-      injectionPoints = new HashSet<AnnotatedInjectionPoint<?,?>>();
+      injectionPoints = new HashSet<AnnotatedInjectionPoint<?, ?>>();
    }
 
    /**
@@ -167,7 +170,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       this.bindings = new HashSet<Annotation>();
       this.bindings.addAll(getAnnotatedItem().getMetaAnnotations(BindingType.class));
    }
-   
+
    protected void initDefaultBindings()
    {
       if (bindings.size() == 0)
@@ -228,7 +231,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
             return;
          }
       }
-      
+
       if (beanNameDefaulted || getMergedStereotypes().isBeanNameDefaulted())
       {
          this.name = getDefaultName();
@@ -258,9 +261,12 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       {
          Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
          Bean<?> resolvedBean = manager.resolveByType(injectionPoint.getType(), bindings).iterator().next();
-         if (Dependent.class.equals(resolvedBean.getScopeType()) && !resolvedBean.isSerializable())
+         if (MetaDataCache.instance().getScopeModel(this.getScopeType()).isPassivating())
          {
-            return false;
+            if (Dependent.class.equals(resolvedBean.getScopeType()) && !resolvedBean.isSerializable() && (((injectionPoint instanceof AnnotatedField) && !((AnnotatedField<?>) injectionPoint).isTransient()) || (injectionPoint instanceof AnnotatedParameter)) )
+            {
+               return false;
+            }
          }
       }
       return true;
@@ -326,7 +332,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
          }
       }
    }
-   
+
    protected void postSpecialize()
    {
       if (getAnnotatedItem().isAnnotationPresent(Named.class) && getSpecializedBean().getAnnotatedItem().isAnnotationPresent(Named.class))
@@ -341,15 +347,15 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       }
       manager.getSpecializedBeans().put(getSpecializedBean(), this);
    }
-   
+
    protected void preSpecialize()
    {
-      
+
    }
-   
+
    protected void specialize()
    {
-      
+
    }
 
    /**
@@ -377,7 +383,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * @return The default name
     */
    protected abstract String getDefaultName();
-   
+
    public abstract AbstractBean<?, ?> getSpecializedBean();
 
    /**
@@ -494,7 +500,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    {
       return _serializable;
    }
-   
+
    protected void initSerializable()
    {
       _serializable = isPrimitive() || getTypes().contains(Serializable.class);
@@ -525,7 +531,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    {
       return getAnnotatedItem().isAnnotationPresent(Specializes.class);
    }
-   
+
    @Override
    // TODO Fix this!!!
    public boolean equals(Object other)
@@ -541,7 +547,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
          return false;
       }
    }
-   
+
    @Override
    public int hashCode()
    {
@@ -550,5 +556,5 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       result = 31 * result + getBindings().hashCode();
       return result;
    }
-   
+
 }

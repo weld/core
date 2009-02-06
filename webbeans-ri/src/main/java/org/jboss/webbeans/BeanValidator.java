@@ -40,6 +40,8 @@ import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.ListComparator;
@@ -107,6 +109,21 @@ public class BeanValidator
                   {
                      AbstractProducerBean producerBean = (AbstractProducerBean) resolvedBean;
                      if (producerBean.getScopeType().equals(Dependent.class) && !Reflections.isSerializable(producerBean.getType()))
+                     {
+                        throw new IllegalProductException("Cannot inject @Depedent non-serializable type into " + injectionPoint);
+                     }
+                  }
+               }
+               if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isPassivating())
+               {
+                  if (resolvedBean instanceof AbstractProducerBean)
+                  {
+                     AbstractProducerBean producerBean = (AbstractProducerBean) resolvedBean;
+                     if ((injectionPoint instanceof AnnotatedField) && ((AnnotatedField<?>) injectionPoint).isTransient())
+                     {
+                        injectionPoint.getBean();
+                     }
+                     else if (producerBean.getScopeType().equals(Dependent.class) && !Reflections.isSerializable(producerBean.getType()))
                      {
                         throw new IllegalProductException("Cannot inject @Depedent non-serializable type into " + injectionPoint);
                      }
