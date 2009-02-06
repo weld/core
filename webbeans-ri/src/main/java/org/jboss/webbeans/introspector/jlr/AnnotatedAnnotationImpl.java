@@ -97,6 +97,11 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
 
    // Cached string representation
    private String toString;
+   
+   public static <A extends Annotation> AnnotatedAnnotation<A> of(Class<A> annotationType)
+   {
+      return new AnnotatedAnnotationImpl<A>(annotationType);
+   }
 
    /**
     * Constructor

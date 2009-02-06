@@ -91,6 +91,8 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     *         an empty set if there are no matches
     */
    public AnnotatedConstructor<T> getConstructor(List<Class<?>> arguments);
+   
+   public AnnotatedConstructor<T> getConstructor(Class<?>... arguments);
 
    /**
     * Gets all methods annotated with annotationType
@@ -153,5 +155,7 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
    public boolean isNonStaticMemberClass();
    
    public boolean isParameterizedType();
+   
+   public boolean isAbstract();
 
 }

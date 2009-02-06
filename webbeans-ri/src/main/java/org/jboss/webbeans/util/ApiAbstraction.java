@@ -19,6 +19,10 @@ package org.jboss.webbeans.util;
 
 import java.lang.annotation.Annotation;
 
+import org.jboss.webbeans.introspector.AnnotatedAnnotation;
+import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.jlr.AnnotatedAnnotationImpl;
+import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceLoadingException;
 
@@ -29,6 +33,10 @@ import org.jboss.webbeans.resources.spi.ResourceLoadingException;
  */
 public class ApiAbstraction
 {
+   
+   private static final AnnotatedAnnotation<DummyAnnotation> DUMMY_ANNOTATION = AnnotatedAnnotationImpl.of(DummyAnnotation.class);
+   
+   private static final AnnotatedClass<Dummy> DUMMY_CLASS = AnnotatedClassImpl.of(Dummy.class);
    
    private ResourceLoader resourceLoader;
 
@@ -65,15 +73,15 @@ public class ApiAbstraction
     *         not found
     */
    @SuppressWarnings("unchecked")
-   protected Class<? extends Annotation> annotationTypeForName(String name)
+   protected AnnotatedAnnotation<?> annotationTypeForName(String name)
    {
       try
       {
-         return (Class<? extends Annotation>) resourceLoader.classForName(name);
+         return AnnotatedAnnotationImpl.of((Class<? extends Annotation>) resourceLoader.classForName(name));
       }
       catch (ResourceLoadingException cnfe)
       {
-         return DummyAnnotation.class;
+         return DUMMY_ANNOTATION;
       }
    }
 
@@ -85,15 +93,15 @@ public class ApiAbstraction
     *         found.
     */
    @SuppressWarnings("unchecked")
-   protected Class<?> classForName(String name)
+   protected AnnotatedClass<?> classForName(String name)
    {
       try
       {
-         return (Class<? extends Annotation>) resourceLoader.classForName(name);
+         return AnnotatedClassImpl.of(resourceLoader.classForName(name));
       }
       catch (ResourceLoadingException cnfe)
       {
-         return Dummy.class;
+         return DUMMY_CLASS;
       }
    }
 

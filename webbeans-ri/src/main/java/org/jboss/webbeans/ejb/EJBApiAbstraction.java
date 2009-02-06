@@ -17,6 +17,7 @@
 
 package org.jboss.webbeans.ejb;
 
+import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.util.ApiAbstraction;
 
@@ -34,6 +35,6 @@ public class EJBApiAbstraction extends ApiAbstraction
       ENTERPRISE_BEAN_CLASS = classForName("javax.ejb.EnterpriseBean");
    }
 
-   public final Class<?> ENTERPRISE_BEAN_CLASS;
+   public final AnnotatedClass<?> ENTERPRISE_BEAN_CLASS;
 
 }

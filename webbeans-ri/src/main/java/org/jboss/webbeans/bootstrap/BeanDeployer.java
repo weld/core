@@ -1,7 +1,6 @@
 package org.jboss.webbeans.bootstrap;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,7 +38,6 @@ import org.jboss.webbeans.jsf.JSFApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
-import org.jboss.webbeans.util.Reflections;
 
 public class BeanDeployer
 {
@@ -65,7 +63,10 @@ public class BeanDeployer
    
    public void addClass(Class<?> clazz)
    {
-      deferredClasses.add(AnnotatedClassImpl.of(clazz));
+      if (!clazz.isAnnotation())
+      {
+         deferredClasses.add(AnnotatedClassImpl.of(clazz));
+      }
    }
    
    public void addClasses(Iterable<Class<?>> classes)
@@ -84,7 +85,7 @@ public class BeanDeployer
          {
             createEnterpriseBean(clazz);
          }
-         else if (isTypeSimpleWebBean(clazz.getType()))
+         else if (isTypeSimpleWebBean(clazz))
          {
             createSimpleBean(clazz);
          }
@@ -245,33 +246,20 @@ public class BeanDeployer
     * @param type The type to inspect
     * @return True if simple Web Bean, false otherwise
     */
-   private boolean isTypeSimpleWebBean(Class<?> type)
+   private boolean isTypeSimpleWebBean(AnnotatedClass<?> clazz)
    {
       EJBApiAbstraction ejbApiAbstraction = new EJBApiAbstraction(manager.getResourceLoader());
       JSFApiAbstraction jsfApiAbstraction = new JSFApiAbstraction(manager.getResourceLoader());
       ServletApiAbstraction servletApiAbstraction = new ServletApiAbstraction(manager.getResourceLoader());
       // TODO: check 3.2.1 for more rules!!!!!!
-      return !type.isAnnotation() && !Reflections.isAbstract(type) && !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(type) && !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(type) && !servletApiAbstraction.SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(type) && !servletApiAbstraction.HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(type) && !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(type) && !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(type) && !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(type) && hasSimpleWebBeanConstructor(type);
+      return !clazz.isAbstract() && !clazz.isParameterizedType() && !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(clazz) && !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(clazz) && !servletApiAbstraction.SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(clazz) && !servletApiAbstraction.HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(clazz) && !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(clazz) && !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(clazz) && !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(clazz) && hasSimpleWebBeanConstructor(clazz);
    }
    
 
 
-   private static boolean hasSimpleWebBeanConstructor(Class<?> type)
+   private static boolean hasSimpleWebBeanConstructor(AnnotatedClass<?> type)
    {
-      try
-      {
-         type.getDeclaredConstructor();
-         return true;
-      }
-      catch (NoSuchMethodException nsme)
-      {
-         for (Constructor<?> c : type.getDeclaredConstructors())
-         {
-            if (c.isAnnotationPresent(Initializer.class))
-               return true;
-         }
-         return false;
-      }
+      return type.getConstructor() != null || type.getAnnotatedConstructors(Initializer.class).size() > 0; 
    }
    
    private static <T> AnnotatedMethod<T> realizeProducerMethod(final AnnotatedMethod<T> method, final AnnotatedClass<?> realizingClass)

@@ -45,6 +45,11 @@ public abstract class ForwardingAnnotatedClass<T> extends ForwardingAnnotatedTyp
    {
       return delegate().getConstructor(arguments);
    }
+   
+   public AnnotatedConstructor<T> getConstructor(Class<?>... arguments) 
+   {
+      return delegate().getConstructor(arguments);
+   }
 
    public Set<AnnotatedConstructor<T>> getConstructors()
    {
@@ -99,6 +104,11 @@ public abstract class ForwardingAnnotatedClass<T> extends ForwardingAnnotatedTyp
    public boolean isParameterizedType()
    {
       return delegate().isParameterizedType();
+   }
+   
+   public boolean isAbstract()
+   {
+      return delegate().isAbstract();
    }
    
    public AnnotatedMethod<?> getDeclaredMethod(Method method)

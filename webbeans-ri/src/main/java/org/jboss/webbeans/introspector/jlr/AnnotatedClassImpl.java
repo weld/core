@@ -259,6 +259,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    
    private final boolean _nonStaticMemberClass;
    private final boolean _parameterizedType;
+   private final boolean _abstract;
    
    public static <T> AnnotatedClass<T> of(Class<T> clazz)
    {
@@ -300,6 +301,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.declaredMetaAnnotatedFields = new AnnotatedFieldMap();
       this._nonStaticMemberClass = Reflections.isNonMemberInnerClass(rawType);
       this._parameterizedType = Reflections.isParameterizedType(rawType);
+      this._abstract = Reflections.isAbstract(rawType);
       for (Class<?> c = clazz; c != Object.class && c != null; c = c.getSuperclass())
       {
          for (Field field : c.getDeclaredFields())
@@ -510,6 +512,11 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       return _parameterizedType;
    }
    
+   public boolean isAbstract()
+   {
+      return _abstract;
+   }
+   
    /**
     * Gets the actual type arguments
     * 
@@ -573,6 +580,11 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    public AnnotatedConstructor<T> getConstructor(List<Class<?>> arguments)
    {
       return constructorsByArgumentMap.get(arguments);
+   }
+   
+   public AnnotatedConstructor<T> getConstructor(Class<?>... arguments) 
+   {
+      return getConstructor(Arrays.asList(arguments));
    }
    
    public Set<AnnotatedMethod<?>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
