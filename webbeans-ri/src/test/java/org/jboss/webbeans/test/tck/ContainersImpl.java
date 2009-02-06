@@ -3,7 +3,6 @@ package org.jboss.webbeans.test.tck;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.jar.JarInputStream;
 
 import javax.el.ELContext;
 import javax.inject.manager.Manager;
@@ -40,7 +39,7 @@ public class ContainersImpl implements StandaloneContainers
       throw new UnsupportedOperationException();
    }
    
-   public Manager deploy(List<Class<? extends Annotation>> enabledDeploymentTypes, JarInputStream archive)
+   public Manager deploy(List<Class<? extends Annotation>> enabledDeploymentTypes, InputStream archive)
    {
       throw new UnsupportedOperationException();
    }
