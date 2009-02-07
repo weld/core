@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <artifactId>parent</artifactId>
+      <groupId>org.jboss.webbeans</groupId>
+      <version>1.0.0-SNAPSHOT</version>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.webbeans</groupId>
+   <artifactId>porting-package</artifactId>
+   <name>Web Beans Porting Package for JSR-299 TCK</name>
+   <dependencies>
+
+      <dependency>
+         <groupId>org.jboss.webbeans</groupId>
+         <artifactId>webbeans-api</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.webbeans</groupId>
+         <artifactId>webbeans-ri</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.webbeans.tck</groupId>
+         <artifactId>webbeans-tck-api</artifactId>
+      </dependency>
+      
+   </dependencies>
+
+</project>

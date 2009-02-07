@@ -75,6 +75,7 @@
       <module>webbeans-api</module>
       <module>webbeans-ri</module>
       <module>webbeans-ri-spi</module>
+      <module>porting-package</module>
    </modules>
    
    <properties>

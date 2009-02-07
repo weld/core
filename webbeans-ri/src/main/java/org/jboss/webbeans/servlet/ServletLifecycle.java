@@ -116,12 +116,12 @@ public class ServletLifecycle
     */
    public static void endRequest(HttpServletRequest request)
    {
+      CurrentManager.rootManager().getInstanceByType(SessionManager.class).setSession(null);
+      CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
       DependentContext.INSTANCE.setActive(false);
       RequestContext.INSTANCE.destroy();
       SessionContext.INSTANCE.setBeanMap(null);
-      CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
       ConversationContext.INSTANCE.setBeanMap(null);
-      CurrentManager.rootManager().getInstanceByType(SessionManager.class).setSession(null);      
    }
 
 }

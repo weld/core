@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.tck;
+package org.jboss.webbeans.porting;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

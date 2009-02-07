@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.mock.context;
+package org.jboss.webbeans.mock.context;
 
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.beanmap.SimpleBeanMap;

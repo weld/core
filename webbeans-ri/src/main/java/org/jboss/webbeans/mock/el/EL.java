@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.mock.el;
+package org.jboss.webbeans.mock.el;
 
 import javax.el.ArrayELResolver;
 import javax.el.BeanELResolver;

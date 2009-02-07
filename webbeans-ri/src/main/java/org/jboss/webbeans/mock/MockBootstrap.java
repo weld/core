@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.mock;
+package org.jboss.webbeans.mock;
 
 import java.lang.annotation.Annotation;
 
@@ -19,13 +19,13 @@ import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
+import org.jboss.webbeans.mock.context.MockApplicationContext;
+import org.jboss.webbeans.mock.context.MockDependentContext;
+import org.jboss.webbeans.mock.context.MockRequestContext;
+import org.jboss.webbeans.mock.context.MockSessionContext;
 import org.jboss.webbeans.resource.AbstractNamingContext;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
-import org.jboss.webbeans.test.mock.context.MockApplicationContext;
-import org.jboss.webbeans.test.mock.context.MockDependentContext;
-import org.jboss.webbeans.test.mock.context.MockRequestContext;
-import org.jboss.webbeans.test.mock.context.MockSessionContext;
 
 public class MockBootstrap extends WebBeansBootstrap
 { 

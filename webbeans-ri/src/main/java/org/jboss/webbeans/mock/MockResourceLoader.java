@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.mock;
+package org.jboss.webbeans.mock;
 
 import java.io.IOException;
 import java.net.URL;

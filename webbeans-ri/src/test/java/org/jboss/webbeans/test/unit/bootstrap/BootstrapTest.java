@@ -10,7 +10,7 @@ import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.test.mock.MockBootstrap;
+import org.jboss.webbeans.mock.MockBootstrap;
 import org.jboss.webbeans.test.unit.AbstractTest;
 import org.testng.annotations.Test;
 

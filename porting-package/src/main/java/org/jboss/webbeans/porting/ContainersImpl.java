@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.tck;
+package org.jboss.webbeans.porting;
 
 import java.io.InputStream;
 import java.lang.annotation.Annotation;

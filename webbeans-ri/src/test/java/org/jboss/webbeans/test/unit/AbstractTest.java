@@ -18,9 +18,9 @@ import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.test.mock.MockBootstrap;
-import org.jboss.webbeans.test.mock.MockEjbDescriptor;
-import org.jboss.webbeans.test.mock.MockWebBeanDiscovery;
+import org.jboss.webbeans.mock.MockBootstrap;
+import org.jboss.webbeans.mock.MockEjbDescriptor;
+import org.jboss.webbeans.mock.MockWebBeanDiscovery;
 import org.testng.annotations.BeforeMethod;
 
 public class AbstractTest
