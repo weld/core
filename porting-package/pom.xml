@@ -6,7 +6,7 @@
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.webbeans</groupId>
-   <artifactId>porting-package</artifactId>
+   <artifactId>webbeans-porting-package</artifactId>
    <name>Web Beans Porting Package for JSR-299 TCK</name>
    <dependencies>
 
@@ -23,6 +23,10 @@
       <dependency>
          <groupId>org.jboss.webbeans.tck</groupId>
          <artifactId>webbeans-tck-api</artifactId>
+      </dependency>
+      <dependency>
+      	<groupId>javax.el</groupId>
+      	<artifactId>el-api</artifactId>
       </dependency>
       
    </dependencies>

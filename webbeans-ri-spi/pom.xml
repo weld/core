@@ -7,7 +7,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.webbeans</groupId>
    <artifactId>webbeans-ri-spi</artifactId>
-   <name>Web Beans RI Service Provider Interfaces</name>
+   <name>Web Beans Service Provider Interfaces</name>
    <dependencies>
 
       <dependency>

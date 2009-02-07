@@ -7,7 +7,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.webbeans</groupId>
    <artifactId>webbeans-ri</artifactId>
-   <name>Web Beans core</name>
+   <name>Web Beans Core</name>
    <dependencies>
 
       <dependency>
@@ -28,30 +28,35 @@
       </dependency>
       
       <dependency>
-         <groupId>org.jboss.webbeans.tck</groupId>
-         <artifactId>webbeans-tck-api</artifactId>
-         <scope>test</scope>
-      </dependency>
-      
-      <dependency>
-         <groupId>org.jboss.webbeans.tck</groupId>
-         <artifactId>webbeans-tck-impl</artifactId>
-         <scope>test</scope>
-      </dependency>
-      
-      <dependency>
          <groupId>org.jboss.ejb3</groupId>
          <artifactId>jboss-ejb3-api</artifactId>
+         <optional>true</optional>
+         <exclusions>
+            <exclusion>
+               <artifactId>jboss-jaxrpc</artifactId>
+               <groupId>jbossws</groupId>
+            </exclusion>
+            <exclusion>
+               <artifactId>jboss-transaction-api</artifactId>
+               <groupId>org.jboss.javaee</groupId>
+            </exclusion>
+            <exclusion>
+               <artifactId>jboss-jaxrpc</artifactId>
+               <groupId>jboss.jbossws</groupId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <dependency>
          <groupId>javax.servlet</groupId>
          <artifactId>servlet-api</artifactId>
+         <optional>true</optional>
       </dependency>
 
       <dependency>
          <groupId>javax.transaction</groupId>
          <artifactId>jta</artifactId>
+         <optional>true</optional>
       </dependency>
       
       <dependency>
@@ -79,16 +84,19 @@
       <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-api</artifactId>
+         <optional>true</optional>
       </dependency>
       
       <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-ri</artifactId>
+         <optional>true</optional>
       </dependency>
       
       <dependency>
          <groupId>javax.faces</groupId>
          <artifactId>jsf-api</artifactId>
+         <optional>true</optional>
       </dependency>
       
       <dependency>
@@ -103,36 +111,10 @@
    	<plugins>
    	   <plugin>
    	      <groupId>org.apache.maven.plugins</groupId>
-   	      <artifactId>maven-dependency-plugin</artifactId>
-   	      <executions>
-   	         <execution>
-   	            <id>copy</id>
-   	            <phase>generate-test-sources</phase>
-   	            <goals>
-   	               <goal>copy</goal>
-   	            </goals>
-   	            <configuration>
-   	               <artifactItems>
-   	                  <artifactItem>
-   	                     <groupId>org.jboss.webbeans.tck</groupId>
-   	                     <artifactId>webbeans-tck-impl</artifactId>
-   	                     <version>${webbeans.tck.version}</version>
-   	                     <type>xml</type>
-                           <classifier>suite</classifier>
-   	                     <overWrite>true</overWrite>
-   	                  </artifactItem>
-   	               </artifactItems>
-   	            </configuration>
-   	         </execution>
-   	      </executions>
-   	   </plugin>
-   	   <plugin>
-   	      <groupId>org.apache.maven.plugins</groupId>
    	      <artifactId>maven-surefire-plugin</artifactId>
    	      <configuration>
    	         <suiteXmlFiles>
-                  <suiteXmlFile>unit-tests.xml,</suiteXmlFile>
-                  <suiteXmlFile>${project.build.directory}/dependency/webbeans-tck-impl-${webbeans.tck.version}-suite.xml</suiteXmlFile>
+                  <suiteXmlFile>unit-tests.xml</suiteXmlFile>
    	         </suiteXmlFiles>
    	      </configuration>
    	   </plugin>

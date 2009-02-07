@@ -6,9 +6,10 @@
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.webbeans</groupId>
-   <artifactId>jboss-tck-runner</artifactId>
+   <artifactId>webbeans-jboss-tck-runner</artifactId>
    <name>JSR-299 TCK runner for JBoss AS</name>
    <description>Aggregates dependencies and run's the JSR-299 TCK on JBoss AS</description>
+   
    <dependencies>
 
       <dependency>
@@ -19,13 +20,88 @@
       <dependency>
          <groupId>org.jboss.webbeans</groupId>
          <artifactId>webbeans-ri</artifactId>
+         <scope>test</scope>
       </dependency>
 
       <dependency>
+         <groupId>org.jboss.webbeans</groupId>
+         <artifactId>webbeans-porting-package</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.testng</groupId>
+         <artifactId>testng</artifactId>
+         <scope>test</scope>
+         <classifier>jdk15</classifier>
+      </dependency>
+      
+      <dependency>
          <groupId>org.jboss.webbeans.tck</groupId>
-         <artifactId>webbeans-tck-api</artifactId>
+         <artifactId>webbeans-tck-impl</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+      	<groupId>javax.el</groupId>
+      	<artifactId>el-ri</artifactId>
+      	<scope>test</scope>
       </dependency>
       
    </dependencies>
+   
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>copy</id>
+                  <phase>generate-test-sources</phase>
+                  <goals>
+                     <goal>copy</goal>
+                  </goals>
+                  <configuration>
+                     <artifactItems>
+                        <artifactItem>
+                           <groupId>org.jboss.webbeans.tck</groupId>
+                           <artifactId>webbeans-tck-impl</artifactId>
+                           <version>${webbeans.tck.version}</version>
+                           <type>xml</type>
+                           <classifier>suite</classifier>
+                           <overWrite>true</overWrite>
+                        </artifactItem>
+                     </artifactItems>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <suiteXmlFiles>
+                  <suiteXmlFile>${project.build.directory}/dependency/webbeans-tck-impl-${webbeans.tck.version}-suite.xml</suiteXmlFile>
+               </suiteXmlFiles>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>generate-test-report</id>
+                  <phase>test</phase>
+                  <goals>
+                     <goal>report-only</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <outputDirectory>${project.build.directory}/surefire-reports</outputDirectory>
+               <outputName>test-report</outputName>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
 
 </project>
