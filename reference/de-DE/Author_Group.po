@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Author_Group\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-02-01 21:16+0000\n"
-"PO-Revision-Date: 2009-01-28 06:56+1100\n"
+"PO-Revision-Date: 2009-02-07 14:52+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,12 +23,12 @@ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
 
 #. Tag: affiliation
 #: Author_Group.xml:7
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat Middleware "
 "LLC</orgname>"
 msgstr ""
-"<jobtitle>Web Beans (JSR-299) Spezifikations-Lead</jobtitle> <orgname>Red "
+"<jobtitle>JSR-299 Spezifikations-Lead</jobtitle> <orgname>Red "
 "Hat Middleware LLC</orgname>"
 
 #. Tag: author
@@ -39,12 +39,12 @@ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
 
 #. Tag: affiliation
 #: Author_Group.xml:15
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> "
 "<orgname>Red Hat Middleware LLC</orgname>"
 msgstr ""
-"<jobtitle>Web Beans (JSR-299) Referenz Implementations-Lead </jobtitle> "
+"<jobtitle>Web Beans (JSR-299 Referenz Implementation)-Lead </jobtitle> "
 "<orgname>Red Hat Middleware LLC</orgname>"
 
 #. Tag: othercredit
@@ -61,48 +61,49 @@ msgstr "Italienische Übersetzung"
 
 #. Tag: othercredit
 #: Author_Group.xml:26
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
-msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
+msgstr "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
 
 #. Tag: contrib
 #: Author_Group.xml:29
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Spanish Translation"
-msgstr "Italienische Übersetzung"
+msgstr "Spanische Übersetzung"
 
 #. Tag: orgname
 #: Author_Group.xml:31 Author_Group.xml:39 Author_Group.xml:47
 #, no-c-format
 msgid "Red Hat Middleware LLC"
-msgstr ""
+msgstr "Red Hat Middleware LLC"
 
 #. Tag: othercredit
 #: Author_Group.xml:34
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
-msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
+msgstr "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
 
 #. Tag: contrib
 #: Author_Group.xml:37
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Korean Translation"
-msgstr "Italienische Übersetzung"
+msgstr "Koreanische Übersetzung"
 
 #. Tag: othercredit
 #: Author_Group.xml:42
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<firstname>Terry</firstname> <surname>Chuang</surname>"
-msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
+msgstr "<firstname>Terry</firstname> <surname>Chuang</surname>"
 
 #. Tag: contrib
 #: Author_Group.xml:45
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Traditional Chinese Translation"
-msgstr "Italienische Übersetzung"
+msgstr "Chinesische Übersetzung (traditionell)"
 
 #. Tag: othercredit
 #: Author_Group.xml:50
 #, no-c-format
 msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
 msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
+
