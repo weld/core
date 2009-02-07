@@ -40,11 +40,6 @@
          <artifactId>webbeans-tck-impl</artifactId>
          <scope>test</scope>
       </dependency>
-      <dependency>
-      	<groupId>javax.el</groupId>
-      	<artifactId>el-ri</artifactId>
-      	<scope>test</scope>
-      </dependency>
       
    </dependencies>
    
