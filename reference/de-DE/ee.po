@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: ee\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-24 15:24+1100\n"
+"PO-Revision-Date: 2009-02-07 20:02+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: ee.xml:4
 #, no-c-format
 msgid "Java EE integration"
-msgstr ""
+msgstr "Java EE Integration"
 
 #. Tag: para
 #: ee.xml:6
@@ -31,12 +31,14 @@ msgid ""
 "into some objects, such as Servlets and Message-Driven Beans, which are not "
 "Web Beans."
 msgstr ""
+"Web Beans sind voll in die Java EE Umgebung integriert. Web Beans besitzen Zugriff auf Java EE Resourcen und JPA Persistenzkontexte. Sie können in Unified EL Ausdrücken in JSF- und JSP-Seiten verwendet werden. Sie können sogar in einige Objekte eingespeist werden, etwa Servlets and Message-Driven Beans, die keine "
+"Web Beans sind."
 
 #. Tag: title
 #: ee.xml:12
 #, no-c-format
 msgid "Injecting Java EE resources into a Web Bean"
-msgstr ""
+msgstr "Einspeisung von Java EE Ressourcen in ein Web Bean"
 
 #. Tag: para
 #: ee.xml:14
@@ -47,6 +49,8 @@ msgid ""
 "<literal>@PersistenceContext</literal>. We've already seen a couple of "
 "examples of this, though we didn't pay much attention at the time:"
 msgstr ""
+"Alle einfachen wie auch Enterprise Web Beans können die Java EE \"Dependency\"-Einspeisung mittels <literal>@Resource</literal>, <literal>@EJB</literal> und "
+"<literal>@PersistenceContext</literal> verwenden. Wir haben bereits einige Beispiele hierfür gesehen, obwohl wir diesen zum damaligen Zeitpunkt nicht viel Beachtung geschenkt haben:"
 
 #. Tag: programlisting
 #: ee.xml:19
@@ -105,6 +109,10 @@ msgid ""
 "Beans. The <literal>@PostConstruct</literal> method is called after "
 "<emphasis>all</emphasis> injection has been performed."
 msgstr ""
+"Die Java EE <literal>@PostConstruct</literal> und <literal>@PreDestroy</"
+"literal> Callbacks werden ebenfalls für alle einfachen wie auch Enterprise Web "
+"Beans unterstützt. Die <literal>@PostConstruct</literal>-Methode wird nach Durchführung "
+"<emphasis>aller</emphasis> Einspeisungen aufgerufen."
 
 #. Tag: para
 #: ee.xml:28
@@ -113,12 +121,14 @@ msgid ""
 "There is one restriction to be aware of here: <literal>@PersistenceContext"
 "(type=EXTENDED)</literal> is not supported for simple Web Beans."
 msgstr ""
+"Es gilt eine Einschränkung hier: <literal>@PersistenceContext"
+"(type=EXTENDED)</literal> wird nicht für einfache Web Beans unterstützt."
 
 #. Tag: title
 #: ee.xml:35
 #, no-c-format
 msgid "Calling a Web Bean from a Servlet"
-msgstr ""
+msgstr "Aufruf eines Web Bean von einem Servlet"
 
 #. Tag: para
 #: ee.xml:37
@@ -127,6 +137,8 @@ msgid ""
 "It's easy to use a Web Bean from a Servlet in Java EE 6. Simply inject the "
 "Web Bean using Web Beans field or initializer method injection."
 msgstr ""
+"In Java EE 6 ist die Verwendung eines Web Beans von einem Servlet ganz einfach. Speisen Sie einfach das "
+"Web Bean mittels Web Beans Field oder Initialisierungsmethodeneinspeisung (sog. \"Initializer Method Injection\") ein."
 
 #. Tag: programlisting
 #: ee.xml:40
@@ -183,13 +195,13 @@ msgid ""
 "The Web Beans client proxy takes care of routing method invocations from the "
 "Servlet to the correct instances of <literal>Credentials</literal> and "
 "<literal>Login</literal> for the current request and HTTP session."
-msgstr ""
+msgstr "Der Web Beans Client Proxy kümmert sich um Aufrufe der Routing-Methode vom Servlet, um die Instanzen von <literal>Credentials</literal> und <literal>Login</literal> für die aktuelle Anfrage und HTTP-Session zu korrigieren."
 
 #. Tag: title
 #: ee.xml:49
 #, no-c-format
 msgid "Calling a Web Bean from a Message-Driven Bean"
-msgstr ""
+msgstr "Aufruf eines Web Beans von einem Message-Driven Bean"
 
 #. Tag: para
 #: ee.xml:51
@@ -200,13 +212,13 @@ msgid ""
 "lookup, or injection using <literal>@EJB</literal>, for example. In "
 "particular, you can use Web Beans injection in Message-Driven Beans, which "
 "are not considered Web Beans because you can't inject them."
-msgstr ""
+msgstr "Einspeisung von Web Beans gilt für alle EJBs, selbst wenn sie nicht der Steuerung des Web Bean Manager s unterliegen (wenn sie etwa durch direkten JNDI-Lookup oder Einspeisung mittels <literal>@EJB</literal> erworben wurden). Insbesondere Web Beans Einspeisung in Message-Driven Beans, die nicht als Web Beans angesehen werden, da sie nicht eingespeist werden können."
 
 #. Tag: para
 #: ee.xml:57
 #, no-c-format
 msgid "You can even use Web Beans interceptor bindings for Message-Driven Beans."
-msgstr ""
+msgstr "Sie können sogar Web Beans Interzeptor-Bindings für Message-Driven Beans."
 
 #. Tag: programlisting
 #: ee.xml:59
@@ -245,18 +257,20 @@ msgid ""
 "message is delivered to a Message-Driven Bean. Only <literal>@RequestScoped</"
 "literal> and <literal>@ApplicationScoped</literal> Web Beans are available."
 msgstr ""
+"Daher ist der Empfang von Nachrichten in einer Web Beans Umgebung sehr einfach. Seien Sie sich aber dessen bewusst, dass bei Lieferung einer Nachricht an ein Message-Driven Bean keine Session oder Konversationskontext verfügbar ist. Es sind nur <literal>@RequestScoped</"
+"literal> und <literal>@ApplicationScoped</literal> Web Beans verfügbar."
 
 #. Tag: para
 #: ee.xml:66
 #, no-c-format
 msgid "It's also easy to send messages using Web Beans."
-msgstr ""
+msgstr "Es ist ebenfalls ganz einfach mittels Web Beans Nachrichten zu versenden."
 
 #. Tag: title
 #: ee.xml:71
 #, no-c-format
 msgid "JMS endpoints"
-msgstr ""
+msgstr "JMS Endpunkte"
 
 #. Tag: para
 #: ee.xml:73
@@ -272,6 +286,13 @@ msgid ""
 "literal>. Each of these objects has its own lifecycle and threading model "
 "that we need to worry about."
 msgstr ""
+"Das Versenden von Nachrichten unter Verwendung von JMS kann aufgrund der Anzahl verschiedener Objekte mit denen Sie zu tun haben recht komplex sein. Für Warteschlangen haben wir <literal>Queue</"
+"literal>, <literal>QueueConnectionFactory</literal>, "
+"<literal>QueueConnection</literal>, <literal>QueueSession</literal> und "
+"<literal>QueueSender</literal>. Für Topics haben wir <literal>Topic</literal>, "
+"<literal>TopicConnectionFactory</literal>, <literal>TopicConnection</"
+"literal>, <literal>TopicSession</literal> und <literal>TopicPublisher</"
+"literal>. Jedes dieser Objekte besitzt einen eigenen Lebenszyklus und ein eigenes Threading-Modell, das unsere Aufmerksamkeit erfordert."
 
 #. Tag: para
 #: ee.xml:82
