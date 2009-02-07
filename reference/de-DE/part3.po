@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: part3\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-24 15:30+1100\n"
+"PO-Revision-Date: 2009-02-07 15:34+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -24,6 +24,9 @@ msgid ""
 "Bean, and the information about event consumers for an event producer, is "
 "contained in typesafe Java constructs that may be validated by the compiler."
 msgstr ""
+"Das zweite wichtige Thema von Web Beans ist <emphasis>starke Typisierung</emphasis> (sog. \"strong Typing\"). "
+"Die Informationen zu Abhängigkeiten, Interzeptoren und Dekoratoren eines Web "
+"Beans und die Informationen zu Ereigniskonsumenten (Event Consumers) für einen Ereignis-Producer sind in typensicheren Java-Konstrukten enthalten, die vom Kompilierer (Compiler) validiert werden können."
 
 #. Tag: para
 #: part3.xml:10
@@ -33,7 +36,7 @@ msgid ""
 "framework is hiding them from you using clever defaulting rules &#151; so-"
 "called \"configuration by convention\" &#151; but because there are simply no "
 "strings there to begin with!"
-msgstr ""
+msgstr "Sie sehen keine String-basierten Bezeichner in Web Beans Code; dies ist nicht der Fall weil das Framework diese unter Verwendung irgendwelcher Defaulting-Regeln &#151 vor Ihnen verbirgt; sogenannte \"Konfiguration nach Konvention\" &#151; sondern weil einfach keine Strings existieren!"
 
 #. Tag: para
 #: part3.xml:15
@@ -46,6 +49,9 @@ msgid ""
 "interceptors via annotations instead of names, you have an opportunity to "
 "lift the semantic level of your code."
 msgstr ""
+"Der offensichtliche Vorteil dieser Vorgehensweise ist, dass <emphasis>jede</emphasis> IDE "
+"Auto-Completion, Validierung und Refaktorierung ohne die Notwendigkeit spezieller Tools bereitstellen kann. Es existiert jedoch noch ein weiterer, nicht sofort ersichtlicher Vorteil. "
+"Es stellt sich nämlich heraus, dass Sie - wenn Sie über die Identifizierung von Objekten, Ereignissen oder Interzeptoren via Annotationen statt Namen nachdenken - Sie Gelegenheit haben, die semantische Ebene Ihres Code anzuheben."
 
 #. Tag: para
 #: part3.xml:21
@@ -53,7 +59,7 @@ msgstr ""
 msgid ""
 "Web Beans encourages you develop annotations that model concepts, for "
 "example,"
-msgstr ""
+msgstr "Web Beans soll dazu ermutigen Annotationen zu entwickeln, die Konzepte formen, etwa "
 
 #. Tag: para
 #: part3.xml:26
@@ -83,7 +89,7 @@ msgstr "<literal>@Updated</literal>,"
 #: part3.xml:39
 #, no-c-format
 msgid "instead of using compound names like"
-msgstr ""
+msgstr "statt Namen wie Assoziationsbegriffe wie "
 
 #. Tag: para
 #: part3.xml:43
@@ -107,7 +113,7 @@ msgstr "<literal>SecurityInterceptor</literal> oder"
 #: part3.xml:52
 #, no-c-format
 msgid "<literal>DocumentUpdatedEvent</literal>."
-msgstr "<literal>DocumentUpdatedEvent</literal>."
+msgstr "<literal>DocumentUpdatedEvent</literal> zu verwenden."
 
 #. Tag: para
 #: part3.xml:56
@@ -117,7 +123,7 @@ msgid ""
 "disparate parts of the system. They help us categorize and understand our "
 "code. They help us deal with common concerns in a common way. They make our "
 "code more literate and more understandable."
-msgstr ""
+msgstr "Die Annotationen sind wiederverwendbar. Sie helfen bei der Beschreibung gängiger Eigenschaften verschiedener Teile des Systems. Sie helfen uns bei der Kategorisierung und dem Verständnis unseres Codes. Sie helfen uns dabei auf gängige Weise mit gängigen Problemen umzugehen. Sie machen unseren Code leichter lesbar und einfacher zu verstehen."
 
 #. Tag: para
 #: part3.xml:61
@@ -128,7 +134,7 @@ msgid ""
 "architecture. It encapsulates various properties of the role, including "
 "scope, interceptor bindings, deployment type, etc, into a single reusable "
 "package."
-msgstr ""
+msgstr "Web Beans <emphasis>Stereotypen</emphasis> erweitern diese Idee um einen Schritt. Ein Stereotyp formt eine gängige <emphasis>Rolle</emphasis> in Ihrer Anwendungsarchitektur. Es enthält verschiedene Eigenschaften der Rolle, einschließlich deren Geltungsbereich, Interzeptorbindungen, Deployment-Typ usw. in einem einzelnen, wiederverwendbaren Paket."
 
 #. Tag: para
 #: part3.xml:66
@@ -139,6 +145,8 @@ msgid ""
 "attributes that appear in XML. This approach turns out to make the XML more "
 "literate, just like annotations made our Java code more literate."
 msgstr ""
+"Sogar Web Beans XML Metadaten sind stark typisiert! Es gibt keinen Kompilierer für XML, "
+"daher nutzen Web Beans XML-Schemas zur Validierung der in XML vorkommenden Java-Typen und Attribute. Diese Vorgehensweise führt zur besseren Lesbarkeit der XML, ebenso wie Annotationen unseren Java Code einfacher lesbar machten."
 
 #. Tag: para
 #: part3.xml:71
@@ -149,5 +157,5 @@ msgid ""
 "more understandable. Most of the time you don't ever really <emphasis>need</"
 "emphasis> to use these features, but if you use them wisely, you'll come to "
 "appreciate their power."
-msgstr ""
+msgstr "Wir können jetzt einige fortgeschrittenere Features von Web Beans kennenlernen. Vergessen Sie nicht, dass diese Features unseren Code sowohl einfacher zu validieren als auch leserlicher machen sollen. Meist werden Sie diese Features nicht verwenden <emphasis>müssen</emphasis>, wenn Sie dies aber auf kluge Weise tun, so werden Sie deren Vorteile schnell zu schätzen wissen."
 
