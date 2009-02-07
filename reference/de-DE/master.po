@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-02-01 21:16+0000\n"
+"POT-Creation-Date: 2009-02-07 18:51+0000\n"
 "PO-Revision-Date: 2009-02-07 14:59+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -23,9 +23,9 @@ msgstr "Hinweis"
 
 #. Tag: para
 #: master.xml:11
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"JSR-299 has recently changed it's name from \"Web Beans\" to \"Java Contexts "
+"JSR-299 has recently changed its name from \"Web Beans\" to \"Java Contexts "
 "and Dependency Injection\". The reference guide still refers to JSR-299 as "
 "\"Web Beans\" and the JSR-299 Reference Implementation as the \"Web Beans RI"
 "\". Other documentation, blogs, forum posts etc. may use the new "
@@ -33,9 +33,11 @@ msgid ""
 "Implementation - \"Web Beans\"."
 msgstr ""
 "Der Name von JSR-299 wurde vor kurzem von \"Web Beans\" zu \"Java Kontexte "
-"und Dependency-Einspeisung\" geändert. Dieses Handbuch bezieht sich nach wie vor auf JSR-299 als "
-"\"Web Beans\" und die JSR-299 Referenzimplementierung als \"Web Beans RI"
-"\". Andere Dokumentation wie Blogs, Postings in Foren usw. verwenden möglicherweise bereits die neue Namensgebung, darunter den neuen Namen für die JSR-299 Referenzimplementierung - \"Web Beans\"."
+"und Dependency-Einspeisung\" geändert. Dieses Handbuch bezieht sich nach wie "
+"vor auf JSR-299 als \"Web Beans\" und die JSR-299 Referenzimplementierung "
+"als \"Web Beans RI\". Andere Dokumentation wie Blogs, Postings in Foren usw. "
+"verwenden möglicherweise bereits die neue Namensgebung, darunter den neuen "
+"Namen für die JSR-299 Referenzimplementierung - \"Web Beans\"."
 
 #. Tag: title
 #: master.xml:24
@@ -60,4 +62,3 @@ msgstr "Das meiste aus starkem Tippen machen "
 #, no-c-format
 msgid "Web Beans and the Java EE ecosystem"
 msgstr "Web Beans und das Java EE-Ökosystem"
-

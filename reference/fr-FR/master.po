@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-02-01 21:16+0000\n"
+"POT-Creation-Date: 2009-02-07 18:51+0000\n"
 "PO-Revision-Date: 2009-02-05 00:03+0100\n"
 "Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
 "Language-Team: none\n"
@@ -21,9 +21,21 @@ msgstr "Note"
 
 #. Tag: para
 #: master.xml:11
-#, no-c-format
-msgid "JSR-299 has recently changed it's name from \"Web Beans\" to \"Java Contexts and Dependency Injection\". The reference guide still refers to JSR-299 as \"Web Beans\" and the JSR-299 Reference Implementation as the \"Web Beans RI\". Other documentation, blogs, forum posts etc. may use the new nomenclature, including the new name for the JSR-299 Reference Implementation - \"Web Beans\"."
-msgstr "La JSR-299 a récemment été renommée de \"Web Beans\" vers \"Java Contexts and Dependency Injection\". Ce guide de référence réfère toujours la JSR-299 comme \"Web Beans\" et l'implémentation de référence de la JSR-299 comme \"Web Beans RI\". D'autres documentations, blogs, articles de forums etc. peuvent utiliser la nouvelle nomenclature, y compris le nouveau nom pour l'implémentation de référence de la JSR-299 - \"Web Beans\"."
+#, fuzzy, no-c-format
+msgid ""
+"JSR-299 has recently changed its name from \"Web Beans\" to \"Java Contexts "
+"and Dependency Injection\". The reference guide still refers to JSR-299 as "
+"\"Web Beans\" and the JSR-299 Reference Implementation as the \"Web Beans RI"
+"\". Other documentation, blogs, forum posts etc. may use the new "
+"nomenclature, including the new name for the JSR-299 Reference "
+"Implementation - \"Web Beans\"."
+msgstr ""
+"La JSR-299 a récemment été renommée de \"Web Beans\" vers \"Java Contexts "
+"and Dependency Injection\". Ce guide de référence réfère toujours la JSR-299 "
+"comme \"Web Beans\" et l'implémentation de référence de la JSR-299 comme "
+"\"Web Beans RI\". D'autres documentations, blogs, articles de forums etc. "
+"peuvent utiliser la nouvelle nomenclature, y compris le nouveau nom pour "
+"l'implémentation de référence de la JSR-299 - \"Web Beans\"."
 
 #. Tag: title
 #: master.xml:24
@@ -48,4 +60,3 @@ msgstr "Tirer meilleur parti du typage fort"
 #, no-c-format
 msgid "Web Beans and the Java EE ecosystem"
 msgstr "Web Beans et l'écosystème Java EE"
-
