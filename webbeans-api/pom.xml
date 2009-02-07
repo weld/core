@@ -10,7 +10,7 @@
 	<groupId>org.jboss.webbeans</groupId>
 	<artifactId>webbeans-api</artifactId>
 	<packaging>jar</packaging>
-	<name>Web Beans API</name>
+	<name>JSR-299 API</name>
 	<url>http://www.seamframework.org/WebBeans</url>
 
 
