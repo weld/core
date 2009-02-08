@@ -1,4 +1,4 @@
-package org.jboss.webbeans.porting;
+package org.jboss.webbeans.tck;
 
 import java.lang.annotation.Annotation;
 import java.util.List;

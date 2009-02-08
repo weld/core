@@ -1,4 +1,4 @@
-package org.jboss.webbeans.porting;
+package org.jboss.webbeans.tck;
 
 import javax.el.ELContext;
 

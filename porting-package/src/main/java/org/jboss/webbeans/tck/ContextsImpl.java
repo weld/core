@@ -1,4 +1,4 @@
-package org.jboss.webbeans.porting;
+package org.jboss.webbeans.tck;
 
 import org.jboss.jsr299.tck.spi.Contexts;
 import org.jboss.webbeans.context.AbstractBeanMapContext;
