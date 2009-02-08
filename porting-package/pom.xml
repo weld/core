@@ -21,8 +21,8 @@
       </dependency>
 
       <dependency>
-         <groupId>org.jboss.webbeans.tck</groupId>
-         <artifactId>webbeans-tck-api</artifactId>
+         <groupId>org.jboss.jsr299.tck</groupId>
+         <artifactId>jsr299-tck-api</artifactId>
       </dependency>
       <dependency>
       	<groupId>javax.el</groupId>

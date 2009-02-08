@@ -80,7 +80,7 @@
    </modules>
    
    <properties>
-      <webbeans.tck.version>1.0.0-SNAPSHOT</webbeans.tck.version>
+      <jsr299.tck.version>1.0.0-SNAPSHOT</jsr299.tck.version>
       <webbeans.ri.version>1.0.0-SNAPSHOT</webbeans.ri.version>
    </properties>
    
@@ -253,15 +253,15 @@
          </dependency>
          
          <dependency>
-            <groupId>org.jboss.webbeans.tck</groupId>
-            <artifactId>webbeans-tck-api</artifactId>
-            <version>${webbeans.tck.version}</version>
+            <groupId>org.jboss.jsr299.tck</groupId>
+            <artifactId>jsr299-tck-api</artifactId>
+            <version>${jsr299.tck.version}</version>
          </dependency>
          
          <dependency>
-            <groupId>org.jboss.webbeans.tck</groupId>
-            <artifactId>webbeans-tck-impl</artifactId>
-            <version>${webbeans.tck.version}</version>
+            <groupId>org.jboss.jsr299.tck</groupId>
+            <artifactId>jsr299-tck-impl</artifactId>
+            <version>${jsr299.tck.version}</version>
          </dependency>
 
       </dependencies>
