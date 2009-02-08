@@ -1,10 +1,10 @@
 package org.jboss.webbeans.porting;
 
+import org.jboss.jsr299.tck.spi.Contexts;
 import org.jboss.webbeans.context.AbstractBeanMapContext;
 import org.jboss.webbeans.context.AbstractContext;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.RequestContext;
-import org.jboss.webbeans.tck.spi.Contexts;
 
 public class ContextsImpl implements Contexts<AbstractContext>
 {

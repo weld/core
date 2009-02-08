@@ -4,7 +4,7 @@ import javax.el.ELContext;
 
 import org.jboss.webbeans.mock.el.EL;
 
-public class ELImpl implements org.jboss.webbeans.tck.spi.EL
+public class ELImpl implements org.jboss.jsr299.tck.spi.EL
 {
    
    

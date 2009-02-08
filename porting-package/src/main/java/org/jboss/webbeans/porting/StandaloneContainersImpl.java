@@ -5,10 +5,10 @@ import java.util.List;
 
 import javax.inject.manager.Manager;
 
+import org.jboss.jsr299.tck.spi.StandaloneContainers;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.mock.MockBootstrap;
 import org.jboss.webbeans.mock.MockWebBeanDiscovery;
-import org.jboss.webbeans.tck.spi.StandaloneContainers;
 
 public class StandaloneContainersImpl implements StandaloneContainers
 {

@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.inject.manager.Manager;
 
+import org.jboss.jsr299.tck.spi.Managers;
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.tck.spi.Managers;
 
 public class ManagersImpl implements Managers
 {

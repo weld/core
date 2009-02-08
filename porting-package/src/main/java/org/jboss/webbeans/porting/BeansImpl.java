@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 
 import javax.inject.manager.Bean;
 
+import org.jboss.jsr299.tck.spi.Beans;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
@@ -13,7 +14,6 @@ import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.mock.MockEjbDescriptor;
-import org.jboss.webbeans.tck.spi.Beans;
 import org.jboss.webbeans.util.Reflections;
 
 /**
