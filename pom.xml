@@ -5,7 +5,7 @@
    <packaging>pom</packaging>
    <version>1.0.0-SNAPSHOT</version>
 
-   <name>Web Beans</name>
+   <name>Web Beans, the reference implmentation of JSR-299</name>
    <url>http://www.seamframework.org/WebBeans</url>
 
    <description>
@@ -76,6 +76,7 @@
       <module>webbeans-ri</module>
       <module>webbeans-ri-spi</module>
       <module>porting-package</module>
+      <module>jboss-tck-runner</module>
    </modules>
    
    <properties>
@@ -242,6 +243,12 @@
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>webbeans-ri-spi</artifactId>
+            <version>${webbeans.ri.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.webbeans</groupId>
+            <artifactId>webbeans-porting-package</artifactId>
             <version>${webbeans.ri.version}</version>
          </dependency>
          
