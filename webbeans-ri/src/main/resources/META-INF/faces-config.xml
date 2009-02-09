@@ -7,5 +7,8 @@
    <application>
       <el-resolver>org.jboss.webbeans.el.WebBeansELResolver</el-resolver>
    </application>
-  
+	<lifecycle>
+		<phase-listener>org.jboss.webbeans.jsf.WebBeansPhaseListener</phase-listener>
+	</lifecycle>
+	  
 </faces-config>

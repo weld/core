@@ -30,7 +30,7 @@ import org.jboss.webbeans.context.beanmap.AbstractBeanMap;
  * 
  * @see org.jboss.webbeans.context.ApplicationContext
  */
-public class SessionBeanMap extends AbstractBeanMap
+public class HttpSessionBeanMap extends AbstractBeanMap
 {
    // The HTTP session context to use as backing map
    private HttpSession session;
@@ -40,7 +40,7 @@ public class SessionBeanMap extends AbstractBeanMap
     * 
     * @param session The HTTP session
     */
-   public SessionBeanMap(HttpSession session)
+   public HttpSessionBeanMap(HttpSession session)
    {
       super();
       this.session = session;

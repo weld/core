@@ -27,13 +27,14 @@ import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.servlet.ApplicationBeanMap;
+import org.jboss.webbeans.util.EnumerationIterable;
 import org.jboss.webbeans.util.Names;
 
 /**
  * Provides common BeanMap operations
  * 
  * @author Nicklas Karlsson
- *
+ * 
  */
 public abstract class AbstractBeanMap implements BeanMap
 {
@@ -75,12 +76,9 @@ public abstract class AbstractBeanMap implements BeanMap
     */
    public void clear()
    {
-      Enumeration<String> names = getAttributeNames();
-      while (names.hasMoreElements())
+      for (String name : getFilteredAttributeNames())
       {
-         String name = (String) names.nextElement();
          removeAttribute(name);
-         log.trace("Cleared " + name);
       }
       log.trace("Bean Map cleared");
    }
@@ -93,18 +91,31 @@ public abstract class AbstractBeanMap implements BeanMap
    public Iterable<Contextual<? extends Object>> keySet()
    {
       List<Contextual<?>> beans = new ArrayList<Contextual<?>>();
-      Enumeration<String> names = getAttributeNames();
-      while (names.hasMoreElements())
+      for (String name : getFilteredAttributeNames())
       {
-         String name = (String) names.nextElement();
-         if (name.startsWith(getKeyPrefix()))
-         {
-            String id = name.substring(getKeyPrefix().length() + 1);
-            Contextual<?> bean = CurrentManager.rootManager().getBeans().get(Integer.parseInt(id));
-            beans.add(bean);
-         }
+         String id = name.substring(getKeyPrefix().length() + 1);
+         Contextual<?> bean = CurrentManager.rootManager().getBeans().get(Integer.parseInt(id));
+         beans.add(bean);
       }
       return beans;
+   }
+
+   /**
+    * Gets the list of attribute names that is held by the bean map
+    * 
+    * @return The list of attribute names
+    */
+   private List<String> getFilteredAttributeNames()
+   {
+      List<String> attributeNames = new ArrayList<String>();
+      for (String attributeName : new EnumerationIterable<String>(getAttributeNames()))
+      {
+         if (attributeName.startsWith(getKeyPrefix()))
+         {
+            attributeNames.add(attributeName);
+         }
+      }
+      return attributeNames;
    }
 
    /**
@@ -137,9 +148,9 @@ public abstract class AbstractBeanMap implements BeanMap
    protected abstract void removeAttribute(String key);
 
    /**
-    * Gets an enumeration of the beans present in the underlying storage
+    * Gets an enumeration of the attribute names present in the underlying storage
     * 
-    * @return The current beans
+    * @return The attribute names
     */
    protected abstract Enumeration<String> getAttributeNames();
 

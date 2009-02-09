@@ -17,8 +17,6 @@
 
 package org.jboss.webbeans.bootstrap;
 
-
-
 import org.jboss.webbeans.BeanValidator;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
@@ -37,7 +35,7 @@ import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
-import org.jboss.webbeans.servlet.SessionManager;
+import org.jboss.webbeans.servlet.HttpSessionManager;
 import org.jboss.webbeans.transaction.Transaction;
 
 /**
@@ -106,7 +104,7 @@ public abstract class WebBeansBootstrap
       beanDeployer.addClass(ServletConversationManager.class);
       beanDeployer.addClass(JavaSEConversationTerminator.class);
       beanDeployer.addClass(NumericConversationIdGenerator.class);
-      beanDeployer.addClass(SessionManager.class);
+      beanDeployer.addClass(HttpSessionManager.class);
       beanDeployer.deploy();
    }
 

@@ -51,6 +51,7 @@ public class ServletLifecycle
     */
    public static void beginApplication(ServletContext servletContext)
    {
+      log.trace("Application is starting up");
       new ServletBootstrap(servletContext).boot();
    }
 
@@ -59,6 +60,7 @@ public class ServletLifecycle
     */
    public static void endApplication()
    {
+      log.trace("Application is shutting down");
       ApplicationContext.INSTANCE.destroy();
       ApplicationContext.INSTANCE.setBeanMap(null);
    }
@@ -70,6 +72,7 @@ public class ServletLifecycle
     */
    public static void beginSession(HttpSession session)
    {
+      log.trace("Starting session " + session.getId());
    }
 
    /**
@@ -79,7 +82,8 @@ public class ServletLifecycle
     */
    public static void endSession(HttpSession session)
    {
-      SessionContext.INSTANCE.setBeanMap(new SessionBeanMap(session));
+      log.trace("Ending session " + session.getId());
+      SessionContext.INSTANCE.setBeanMap(new HttpSessionBeanMap(session));
       SessionContext.INSTANCE.destroy();
       SessionContext.INSTANCE.setBeanMap(null);
       ConversationManager conversationManager = CurrentManager.rootManager().getInstanceByType(ConversationManager.class);
@@ -95,8 +99,9 @@ public class ServletLifecycle
     */
    public static void beginRequest(HttpServletRequest request)
    {
-      CurrentManager.rootManager().getInstanceByType(SessionManager.class).setSession(request.getSession());
-      SessionContext.INSTANCE.setBeanMap(new SessionBeanMap(request.getSession()));
+      log.trace("Processing HTTP request " + request.getRequestURI() + " begins");
+      CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(request.getSession());
+      SessionContext.INSTANCE.setBeanMap(new HttpSessionBeanMap(request.getSession()));
       beginConversation(request);
       DependentContext.INSTANCE.setActive(true);
    }
@@ -116,7 +121,8 @@ public class ServletLifecycle
     */
    public static void endRequest(HttpServletRequest request)
    {
-      CurrentManager.rootManager().getInstanceByType(SessionManager.class).setSession(null);
+      log.trace("Processing HTTP request " + request.getRequestURI() + " ends");
+      CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(null);
       CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
       DependentContext.INSTANCE.setActive(false);
       RequestContext.INSTANCE.destroy();

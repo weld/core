@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.context.ConversationContext;
 
-public class ConversationBeanMap extends SessionBeanMap
+public class ConversationBeanMap extends HttpSessionBeanMap
 {
    private String cid;
 

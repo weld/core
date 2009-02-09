@@ -5,7 +5,7 @@ import javax.inject.Produces;
 import javax.servlet.http.HttpSession;
 
 @RequestScoped
-public class SessionManager
+public class HttpSessionManager
 {
    private HttpSession session;
 
