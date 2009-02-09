@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-02-09 22:13+1100\n"
+"PO-Revision-Date: 2009-02-10 07:17+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -144,7 +144,7 @@ msgstr "Eine Observer-Methode muss keine Ereignis-Bindings &#151; festlegen, in 
 msgid ""
 "The observer method may have additional parameters, which are injected "
 "according to the usual Web Beans method parameter injection semantics:"
-msgstr ""
+msgstr "Die Observer-Methode kann zusätzliche Parameter besitzen, die gemäß der üblichen Einspeisungssemantik Web Beans Methodenparameter eingespeist werden:"
 
 #. Tag: programlisting
 #: events.xml:56
@@ -160,7 +160,7 @@ msgstr ""
 #: events.xml:61
 #, no-c-format
 msgid "Event producers"
-msgstr ""
+msgstr "Ereignis-Producer"
 
 #. Tag: para
 #: events.xml:63
@@ -168,7 +168,7 @@ msgstr ""
 msgid ""
 "The event producer may obtain an <emphasis>event notifier</emphasis> object "
 "by injection:"
-msgstr ""
+msgstr "Der Ereignis-Producer kann ein <emphasis>Ereignisbenachrichtigungs</emphasis>-Objekt durch Einspeisung erhalten:"
 
 #. Tag: programlisting
 #: events.xml:66
@@ -185,6 +185,9 @@ msgid ""
 "<literal>@Standard</literal>, with an implementation provided by the Web "
 "Bean manager."
 msgstr ""
+"Die <literal>@Observable</literal>-Annotation definiert implizit ein Web Bean "
+"mit Geltungsbereich <literal>@Dependent</literal> und Deployment-Typ "
+"<literal>@Standard</literal> mit einer durch den Web Bean Manager bereitgestellten Implementierung."
 
 #. Tag: para
 #: events.xml:72
@@ -193,7 +196,7 @@ msgid ""
 "A producer raises events by calling the <literal>fire()</literal> method of "
 "the <literal>Event</literal> interface, passing an <emphasis>event object</"
 "emphasis>:"
-msgstr ""
+msgstr "Ein Producer bringt durch Aufruf der <literal>fire()</literal>-Methode des <literal>Event</literal>-Interface Ereignisse auf, wobei ein <emphasis>Ereignisobjekt</emphasis> weitergegeben wird:"
 
 #. Tag: programlisting
 #: events.xml:75
@@ -208,19 +211,19 @@ msgid ""
 "An event object may be an instance of any Java class that has no type "
 "variables or wildcard type parameters. The event will be delivered to every "
 "observer method that:"
-msgstr ""
+msgstr "Ein Ereignis-Objekt kann eine Instanz einer beliebigen Java-Klasse sein, die keine Typ-Variablen oder Platzhalter-Typenparameter besitzt. Das Ereignis wird an jede Observer-Methode geliefert, die:"
 
 #. Tag: para
 #: events.xml:83 events.xml:107 events.xml:126
 #, no-c-format
 msgid "has an event parameter to which the event object is assignable, and"
-msgstr ""
+msgstr "einen Ereignisparameter besitzt, dem das Ereignisobjekt zugeschrieben werden kann und "
 
 #. Tag: para
 #: events.xml:86
 #, no-c-format
 msgid "specifies no event bindings."
-msgstr ""
+msgstr "keine Ereignis-Bindings festlegt."
 
 #. Tag: para
 #: events.xml:90
@@ -230,7 +233,7 @@ msgid ""
 "event object as the value of the event parameter. If any observer method "
 "throws an exception, the Web Bean manager stops calling observer methods, "
 "and the exception is rethrown by the <literal>fire()</literal> method."
-msgstr ""
+msgstr "Der Web Bean Manager ruft einfach alle Observer-Methoden auf und gibt das Ereignis-Objekt als den Wert des Ereignisparameters weiter. Meldet eine Observer-Methode eine Ausnahme, so stoppt der Web Bean Manager den Aufruf von Observer-Methoden und die Ausnahme wird durch die <literal>fire()</literal>-Methode erneut gemeldet."
 
 #. Tag: para
 #: events.xml:95
@@ -238,7 +241,7 @@ msgstr ""
 msgid ""
 "To specify a \"selector\", the event producer may pass an instance of the "
 "event binding type to the <literal>fire()</literal> method:"
-msgstr ""
+msgstr "Um einen \"Selektor\" festzulegen kann der Ereignis-Producer eine Instanz des Ereignis-Binding-Typs an die <literal>fire()</literal>-Methode weitergeben:"
 
 #. Tag: programlisting
 #: events.xml:98
@@ -257,13 +260,13 @@ msgid ""
 "The helper class <literal>AnnotationLiteral</literal> makes it possible to "
 "instantiate binding types inline, since this is otherwise difficult to do in "
 "Java."
-msgstr ""
+msgstr "Die Helferklasse <literal>AnnotationLiteral</literal> ermöglicht die Instanziierung der Binding-Typen inline, da es andernfalls schwierig ist, die in Java zu tun."
 
 #. Tag: para
 #: events.xml:103
 #, no-c-format
 msgid "The event will be delivered to every observer method that:"
-msgstr ""
+msgstr "Das Ereignis wird an jede Observer-Methode geliefert, die:"
 
 #. Tag: para
 #: events.xml:110
@@ -272,6 +275,8 @@ msgid ""
 "does not specify any event binding <emphasis>except</emphasis> for the event "
 "bindings passed to <literal>fire()</literal>."
 msgstr ""
+"kein Ereignis-Binding festlegt <emphasis>außer</emphasis> für die an "
+"<literal>fire()</literal> weitergegebenen Ereignis-Bindings."
 
 #. Tag: para
 #: events.xml:115
@@ -279,7 +284,7 @@ msgstr ""
 msgid ""
 "Alternatively, event bindings may be specified by annotating the event "
 "notifier injection point:"
-msgstr ""
+msgstr "Alternativ können Ereignis-Bindings durch Festlegen des Einspeisungspunkts der Ereignisbenachrichtigung festgelegt werden:"
 
 #. Tag: programlisting
 #: events.xml:118
