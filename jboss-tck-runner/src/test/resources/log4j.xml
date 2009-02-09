@@ -44,7 +44,7 @@
     <!-- ############### Web Beans logging ################### -->
 
     <category name="org.jboss.webbeans">
-        <priority value="INFO"/>
+        <priority value="ERROR"/>
     </category>
     
     <root>
