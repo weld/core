@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: ee\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-02-07 20:02+1100\n"
+"PO-Revision-Date: 2009-02-09 20:55+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -301,7 +301,7 @@ msgid ""
 "Web Beans takes care of all this for us. All we need to do is declare the "
 "queue or topic in <literal>web-beans.xml</literal>, specifying an associated "
 "binding type and connection factory."
-msgstr ""
+msgstr "Web Beans übernehmen all das für uns. Das Einzige, was wir tun müssen ist unsere Warteschlange oder unser Topic in <literal>web-beans.xml</literal> zu deklarieren und einen assoziierten Binding-Typ und eine Connection-Factory festzulegen."
 
 #. Tag: programlisting
 #: ee.xml:86
@@ -349,6 +349,11 @@ msgid ""
 "<literal>TopicConnection</literal>, <literal>TopicSession</literal> or "
 "<literal>TopicPublisher</literal> for a topic."
 msgstr ""
+"Jetzt können wir einfach <literal>Queue</literal>, "
+"<literal>QueueConnection</literal>, <literal>QueueSession</literal> oder "
+"<literal>QueueSender</literal> für eine Warteschlange oder aber <literal>Topic</literal>, "
+"<literal>TopicConnection</literal>, <literal>TopicSession</literal> oder "
+"<literal>TopicPublisher</literal> für ein Topic einspeisen."
 
 #. Tag: programlisting
 #: ee.xml:96
@@ -396,13 +401,13 @@ msgstr ""
 msgid ""
 "The lifecycle of the injected JMS objects is completely controlled by the "
 "Web Bean manager."
-msgstr ""
+msgstr "Der Lebenszyklus der eingespeisten JMS-Objekte wird komplett durch den Web Bean Manager gesteuert."
 
 #. Tag: title
 #: ee.xml:106
 #, no-c-format
 msgid "Packaging and deployment"
-msgstr ""
+msgstr "Packen und Deployment"
 
 #. Tag: para
 #: ee.xml:108
@@ -416,6 +421,10 @@ msgid ""
 "empty. Web Beans deployed in archives that do not have a <literal>web-beans."
 "xml</literal> file will not be available for use in the application."
 msgstr ""
+"Web Beans definiert kein spezielles Deployment-Archiv. Sie können Web "
+"Beans in JARs, EJB-JARs oder WARs &#151; verpacken, jedem Deployment Speicherort im Klassenpfad der Anwendung. Allerdings muss jedes Web Beans enthaltene Archiv eine Datei namens <literal>web-beans.xml</literal> im <literal>META-"
+"INF</literal> oder <literal>WEB-INF</literal>-Verzeichnis enthalten. Die Datei kann leer sein. Web Beans die in Archiven deployt werden, die keine <literal>web-beans."
+"xml</literal>-Datei enthalten, sind nicht für die Verwendung in der Anwendung verfügbar."
 
 #. Tag: para
 #: ee.xml:116
@@ -425,4 +434,7 @@ msgid ""
 "EJBs may be deployed for execution by the embeddable EJB Lite container. "
 "Again, each location must contain a <literal>web-beans.xml</literal> file."
 msgstr ""
+"Für die Java SE Ausführung können Web Beans an einem beliebigen Speicherort deployt werden, in welchem "
+"EJBs zur Ausführung durch den einbettbaren EJB Lite Container deployt werden können. "
+"Auch hier muss jeder Speicherort eine <literal>web-beans.xml</literal>-Datei enthalten."
 
