@@ -1,12 +1,14 @@
 package org.jboss.webbeans.tck;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.manager.Manager;
 
 import org.jboss.jsr299.tck.spi.Managers;
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.WebBeans;
 
 public class ManagersImpl implements Managers
 {
@@ -23,7 +25,9 @@ public class ManagersImpl implements Managers
 
    public List<Class<? extends Annotation>> getEnabledDeploymentTypes()
    {
-      return CurrentManager.rootManager().getEnabledDeploymentTypes();
+      List<Class<? extends Annotation>> deploymentTypes = new ArrayList<Class<? extends Annotation>>(CurrentManager.rootManager().getEnabledDeploymentTypes());
+      deploymentTypes.remove(WebBeans.class);
+      return deploymentTypes;
    }
    
 }

@@ -173,6 +173,14 @@ public class ManagerImpl implements Manager, Serializable
          throw new DeploymentException("@Standard must be the lowest precedence deployment type");
       }
    }
+   
+   protected void addWebBeansDeploymentTypes()
+   {
+      if (!this.enabledDeploymentTypes.contains(WebBeans.class))
+      {
+         this.enabledDeploymentTypes.add(1, WebBeans.class);
+      }
+   }
 
    /**
     * Registers a bean with the manager
@@ -263,8 +271,9 @@ public class ManagerImpl implements Manager, Serializable
     */
    public void setEnabledDeploymentTypes(List<Class<? extends Annotation>> enabledDeploymentTypes)
    {
-      this.enabledDeploymentTypes = enabledDeploymentTypes;
+      this.enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>(enabledDeploymentTypes);
       checkEnabledDeploymentTypes();
+      addWebBeansDeploymentTypes();
    }
 
    /**

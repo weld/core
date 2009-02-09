@@ -26,6 +26,7 @@ import javax.inject.Current;
 import javax.inject.Produces;
 import javax.servlet.http.HttpSession;
 
+import org.jboss.webbeans.WebBeans;
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.conversation.bindings.ConversationConcurrentAccessTimeout;
@@ -40,6 +41,7 @@ import org.jboss.webbeans.log.Logging;
  * 
  */
 @SessionScoped
+@WebBeans
 public class ServletConversationManager implements ConversationManager, Serializable
 {
    private static LogProvider log = Logging.getLogProvider(WebBeansBootstrap.class);
@@ -78,6 +80,7 @@ public class ServletConversationManager implements ConversationManager, Serializ
    
    @Produces
    @ConversationInactivityTimeout
+   @WebBeans
    public long getConversationTimeoutInMilliseconds()
    {
       return 10 * 60 * 1000;
@@ -85,6 +88,7 @@ public class ServletConversationManager implements ConversationManager, Serializ
 
    @Produces
    @ConversationConcurrentAccessTimeout
+   @WebBeans
    public long getConversationConcurrentAccessTimeout()
    {
       return 1 * 1000;
