@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-24 15:19+1100\n"
+"PO-Revision-Date: 2009-02-09 22:13+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -31,6 +31,8 @@ msgid ""
 "Bean manager. This basic schema might sound like the familiar observer/"
 "observable pattern, but there are a couple of twists:"
 msgstr ""
+"Die Web Beans Ereignisbenachrichtigungs-Facility gestattet es Web Beans auf eine völlig abgekoppelte "
+"Weise zu interagieren. Ereignis <emphasis>Producer</emphasis> bringen Ereignisse auf, die dann vom Web Bean Manager an Ereignis <emphasis>Observer</emphasis> geliefert werden. Dieses schlichte Schema klingt zwar etwas nach dem bekannten Observer/observierbar Muster, aber es gibt ein paar Überraschungen:"
 
 #. Tag: para
 #: events.xml:14
@@ -38,7 +40,7 @@ msgstr ""
 msgid ""
 "not only are event producers decoupled from observers; observers are "
 "completely decoupled from producers,"
-msgstr ""
+msgstr "nicht nur sind Ereignis-Producer von Observern abgekoppelt, Observer sind auch komplett von Producern abgekoppelt, "
 
 #. Tag: para
 #: events.xml:18
@@ -46,7 +48,7 @@ msgstr ""
 msgid ""
 "observers can specify a combination of \"selectors\" to narrow the set of "
 "event notifications they will receive, and"
-msgstr ""
+msgstr "Observer können eine Kombination von \"Selektoren\" festlegen, um den Satz von Ereignisbenachrichtigungen einzugrenzen, die sie erhalten und "
 
 #. Tag: para
 #: events.xml:22
@@ -54,13 +56,13 @@ msgstr ""
 msgid ""
 "observers can be notified immediately, or can specify that delivery of the "
 "event should be delayed until the end of the current transaction"
-msgstr ""
+msgstr "Observer können sofort benachrichtigt werden oder sie können festlegen, dass die Lieferung des Ereignisses bis zum Abschluss der aktuellen Transaktion verschoben wird "
 
 #. Tag: title
 #: events.xml:28
 #, no-c-format
 msgid "Event observers"
-msgstr ""
+msgstr "Ereignis-Observer"
 
 #. Tag: para
 #: events.xml:30
@@ -68,7 +70,7 @@ msgstr ""
 msgid ""
 "An <emphasis>observer method</emphasis> is a method of a Web Bean with a "
 "parameter annotated <literal>@Observes</literal>."
-msgstr ""
+msgstr "Eine <emphasis>Observer-Methode</emphasis> ist eine Methode eines Web Beans mit einem Parameter, der <literal>@Observes</literal> annotiert ist."
 
 #. Tag: programlisting
 #: events.xml:33
@@ -90,6 +92,9 @@ msgid ""
 "instances of Web Beans binding types. When a binding type is used as an "
 "event selector, it is called an <emphasis>event binding type</emphasis>."
 msgstr ""
+"Der annotierte Parameter heißt <emphasis>Ereignisparameter</emphasis>. "
+"Der Typ des Ereignisparameter ist der beobachtete <emphasis>Ereignistyp</"
+"emphasis>. Observer-Methoden können auch \"Selektoren\" festlegen, die nur Instanzen von von Web Beans Binding-Typen sind. Wird ein Binding-Typ als Ereignis-Selektor verwendet, so wird dies als <emphasis>Ereignis Binding-Typ</emphasis>."
 
 #. Tag: programlisting
 #: events.xml:41
@@ -111,7 +116,7 @@ msgstr ""
 msgid ""
 "We specify the event bindings of the observer method by annotating the event "
 "parameter:"
-msgstr ""
+msgstr "Wir legen die Ereignis-Bindings der Observer-Methode durch Annotation des Ereignisparameters fest:"
 
 #. Tag: programlisting
 #: events.xml:46 events.xml:190
@@ -131,7 +136,7 @@ msgid ""
 "is interested in <emphasis>all</emphasis> events of a particular type. If it "
 "does specify event bindings, it is only interested in events which also have "
 "those event bindings."
-msgstr ""
+msgstr "Eine Observer-Methode muss keine Ereignis-Bindings &#151; festlegen, in diesem Fall interessiert sie sich für <emphasis>alle</emphasis> Ereignisse eines bestimmten Typs. Legt sie Ereignis-Bindings fest, so interessiert sie sich nur für Ereignisse, die diese Ereignis-Bindings besitzen."
 
 #. Tag: para
 #: events.xml:53
