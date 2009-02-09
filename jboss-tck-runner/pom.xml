@@ -20,7 +20,6 @@
       <dependency>
          <groupId>org.jboss.webbeans</groupId>
          <artifactId>webbeans-ri</artifactId>
-         <scope>test</scope>
       </dependency>
 
       <dependency>
@@ -50,14 +49,38 @@
    
    <profiles>
       <profile>
-         <id>integration-tests</id>
+         <id>incontainer</id>
          <activation>
             <property>
-               <name>integration</name>
+               <name>incontainer</name>
             </property>
          </activation>
          <build>
             <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-dependency-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>copy</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                           <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                           <stripVersion>true</stripVersion>
+                           <artifactItems>
+                              <artifactItem>
+                                 <groupId>org.jboss.webbeans</groupId>
+                                 <artifactId>webbeans-porting-package</artifactId>
+                                 <overWrite>true</overWrite>
+                                 <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
+                              </artifactItem>
+                           </artifactItems>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
                <plugin>
                  <groupId>org.apache.maven.plugins</groupId>
                  <artifactId>maven-antrun-plugin</artifactId>
@@ -69,6 +92,11 @@
                        <tasks>
                          <java classname="org.jboss.jsr299.tck.api.TCK" classpathref="maven.test.classpath" failonerror="true" fork="true">
                             <jvmarg line="-DrunSuite=true"/>
+                            <jvmarg line="-Dorg.jboss.jsr299.tck.standalone=false"/>
+                            <jvmarg line="-DjbossHome=/Applications/jboss-5.0.0.GA"/>
+                            <jvmarg line="-Dorg.jboss.jsr299.tck.deploymentDelay=8000"/>
+                            <jvmarg line="-DdumpConfiguration=true" />
+                            <jvmarg line="-Dorg.jboss.jsr299.tck.libraryDirectory=${project.build.directory}/dependency/lib"/>
                          </java>
                        </tasks>
                      </configuration>
