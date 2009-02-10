@@ -21,6 +21,11 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.context.ConversationContext;
 
+/**
+ * A HTTP session backed bean map for the conversational scope
+ * 
+ * @author Nicklas Karlsson
+ */
 public class ConversationBeanMap extends HttpSessionBeanMap
 {
    private String cid;

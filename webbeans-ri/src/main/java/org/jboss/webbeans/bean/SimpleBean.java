@@ -339,7 +339,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected void checkBeanImplementation()
    {
       super.checkBeanImplementation();
-      if (!scopeType.equals(Dependent.class))
+      if (!isDependent())
       {
          for (AnnotatedField<?> field : getAnnotatedItem().getFields())
          {

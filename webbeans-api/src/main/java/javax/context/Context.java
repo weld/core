@@ -44,7 +44,7 @@ public interface Context
     * @param <T> the type of contextual type
     * @param contextual the contextual type
     * @param creationalContext the creational context in which incompletely
-    *                          initialized may be placed
+    *                          initialized instances may be placed
     * @return the contextual instance, or null if no creational context is given
     *         and an instance does not exist in the context
     * @throws ContextNotActiveException if the context is not active

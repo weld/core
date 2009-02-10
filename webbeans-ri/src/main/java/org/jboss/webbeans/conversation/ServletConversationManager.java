@@ -45,6 +45,9 @@ import org.jboss.webbeans.log.Logging;
 public class ServletConversationManager implements ConversationManager, Serializable
 {
    private static LogProvider log = Logging.getLogProvider(WebBeansBootstrap.class);
+   
+   private static final long CONVERSATION_TIMEOUT_IN_MS = 10 * 60 * 1000;
+   private static final long CONVERSATION_CONCURRENT_ACCESS_TIMEOUT_IN_MS = 1 * 1000;
 
    // The conversation terminator
    @Current
@@ -83,7 +86,7 @@ public class ServletConversationManager implements ConversationManager, Serializ
    @WebBeans
    public long getConversationTimeoutInMilliseconds()
    {
-      return 10 * 60 * 1000;
+      return CONVERSATION_TIMEOUT_IN_MS;
    }
 
    @Produces
@@ -91,7 +94,7 @@ public class ServletConversationManager implements ConversationManager, Serializ
    @WebBeans
    public long getConversationConcurrentAccessTimeout()
    {
-      return 1 * 1000;
+      return CONVERSATION_CONCURRENT_ACCESS_TIMEOUT_IN_MS;
    }
    
    public void beginOrRestoreConversation(String cid)
@@ -116,13 +119,13 @@ public class ServletConversationManager implements ConversationManager, Serializ
       {
          if (!longRunningConversations.get(cid).lock(concurrentAccessTimeout))
          {
-            log.info("Could not acquire conversation lock in " + concurrentAccessTimeout + "ms, giving up");
+            log.debug("Could not acquire conversation lock in " + concurrentAccessTimeout + "ms, giving up");
             return;
          }
       }
       catch (InterruptedException e)
       {
-         log.info("Interrupted while trying to acquire lock");
+         log.debug("Interrupted while trying to acquire lock");
          return;
       }
       // If we can't cancel the termination, release the lock, return and continue
@@ -130,13 +133,15 @@ public class ServletConversationManager implements ConversationManager, Serializ
       if (!longRunningConversations.get(cid).cancelTermination())
       {
          longRunningConversations.get(cid).unlock();
-         log.info("Failed to cancel termination of conversation " + cid);
+         log.debug("Failed to cancel termination of conversation " + cid);
       }
       else
       {
          // If all goes well, set the identity of the current conversation to
          // match the fetched long-running one
+         String oldConversation = currentConversation.toString();
          currentConversation.switchTo(cid, true, inactivityTimeout);
+         log.trace("Conversation switched from " + oldConversation + " to " + currentConversation);
       }
    }
 
@@ -218,13 +223,14 @@ public class ServletConversationManager implements ConversationManager, Serializ
        */
       public void run()
       {
-         log.trace("Conversation " + cid + " timed out and was terminated");
+         log.trace("Conversation " + cid + " timed out and was destroyed");
          longRunningConversations.remove(cid).destroy(session);
       }
    }
 
    public void destroyAllConversations()
    {
+      log.trace("Destroying " + longRunningConversations.size() + " long-running conversations in session " + session.getId());
       for (ConversationEntry conversationEntry : longRunningConversations.values())
       {
          conversationEntry.destroy(session);

@@ -36,11 +36,11 @@ import org.jboss.webbeans.WebBeans;
 @WebBeans
 public class JavaSEConversationTerminator implements ConversationTerminator, Serializable
 {
-   private ScheduledExecutorService terminator = Executors.newScheduledThreadPool(1);
+   private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
    public Future<?> scheduleForTermination(Runnable terminationTask, long timeoutInMilliseconds)
    {
-      return terminator.schedule(terminationTask, timeoutInMilliseconds, TimeUnit.MILLISECONDS);
+      return executor.schedule(terminationTask, timeoutInMilliseconds, TimeUnit.MILLISECONDS);
    }
 
 }

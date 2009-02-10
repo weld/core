@@ -849,6 +849,7 @@ public class ManagerImpl implements Manager, Serializable
       buffer.append("Registered beans: " + getBeans().size() + "\n");
       buffer.append("Registered decorators: " + decorators.size() + "\n");
       buffer.append("Registered interceptors: " + interceptors.size() + "\n");
+      buffer.append("Specialized beans: " + specializedBeans.size() + "\n");
       return buffer.toString();
    }
 

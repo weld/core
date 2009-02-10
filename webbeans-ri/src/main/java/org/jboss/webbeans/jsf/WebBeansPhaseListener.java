@@ -25,27 +25,29 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.conversation.ConversationManager;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.servlet.ServletLifecycle;
 
 /**
- * A phase listener for propagating conversation id over postbacks through a hidden component
- *  
+ * A phase listener for propagating conversation id over postbacks through a
+ * hidden component
+ * 
  * @author Nicklas Karlsson
- *
+ * 
  */
 public class WebBeansPhaseListener implements PhaseListener
 {
    // The ID/name of the conversation-propagating component
-   private static final String CONVERSATION_PROPAGATION_COMPONENT = "jboss_org_webbeans_conversation_propagation";
+   private static final String CONVERSATION_PROPAGATION_COMPONENT = "webbeans_conversation_propagation";
 
    private static LogProvider log = Logging.getLogProvider(ServletLifecycle.class);
 
    /**
     * Indicates if we are in a JSF postback or not
-    *  
+    * 
     * @return True if postback, false otherwise
     */
    private boolean isPostback()
@@ -69,6 +71,10 @@ public class WebBeansPhaseListener implements PhaseListener
             conversationManager.beginOrRestoreConversation(cid);
          }
       }
+      else if (phaseEvent.getPhaseId().equals(PhaseId.RENDER_RESPONSE))
+      {
+         ConversationContext.INSTANCE.setActive(false);
+      }
    }
 
    public void beforePhase(PhaseEvent phaseEvent)
@@ -78,7 +84,8 @@ public class WebBeansPhaseListener implements PhaseListener
          // If we are rendering the response from a postback
          log.trace("Processing after RENDER_RESPONSE phase");
          Conversation conversation = CurrentManager.rootManager().getInstanceByType(Conversation.class);
-         // If we are in a long-running conversation, create or update the conversation id
+         // If we are in a long-running conversation, create or update the
+         // conversation id
          // in the propagation component in the view root
          if (conversation.isLongRunning())
          {
@@ -91,6 +98,10 @@ public class WebBeansPhaseListener implements PhaseListener
             log.trace("Removing propagation for " + conversation);
             removePropagationComponent(phaseEvent.getFacesContext().getViewRoot());
          }
+      }
+      else if (phaseEvent.getPhaseId().equals(PhaseId.APPLY_REQUEST_VALUES))
+      {
+         ConversationContext.INSTANCE.setActive(true);
       }
    }
 

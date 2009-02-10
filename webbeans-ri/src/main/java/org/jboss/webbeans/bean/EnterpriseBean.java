@@ -169,11 +169,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     */
    protected void checkEnterpriseScopeAllowed()
    {
-      if (ejbDescriptor.isStateless() && !getScopeType().equals(Dependent.class))
+      if (ejbDescriptor.isStateless() && !isDependent())
       {
          throw new DefinitionException("Scope " + getScopeType() + " is not allowed on stateless enterpise beans for " + getType() + ". Only @Dependent is allowed on stateless enterprise beans");
       }
-      if (ejbDescriptor.isSingleton() && (!(getScopeType().equals(Dependent.class) || getScopeType().equals(ApplicationScoped.class))))
+      if (ejbDescriptor.isSingleton() && (!isDependent() || getScopeType().equals(ApplicationScoped.class)))
       {
          throw new DefinitionException("Scope " + getScopeType() + " is not allowed on singleton enterpise beans for " + getType() + ". Only @Dependent or @ApplicationScoped is allowed on singleton enterprise beans");
       }

@@ -108,7 +108,7 @@ public class BeanValidator
                   if (resolvedBean instanceof AbstractProducerBean)
                   {
                      AbstractProducerBean producerBean = (AbstractProducerBean) resolvedBean;
-                     if (producerBean.getScopeType().equals(Dependent.class) && !Reflections.isSerializable(producerBean.getType()))
+                     if (producerBean.isDependent() && !Reflections.isSerializable(producerBean.getType()))
                      {
                         throw new IllegalProductException("Cannot inject @Depedent non-serializable type into " + injectionPoint);
                      }
@@ -123,7 +123,7 @@ public class BeanValidator
                      {
                         injectionPoint.getBean();
                      }
-                     else if (producerBean.getScopeType().equals(Dependent.class) && !Reflections.isSerializable(producerBean.getType()))
+                     else if (producerBean.isDependent() && !Reflections.isSerializable(producerBean.getType()))
                      {
                         throw new IllegalProductException("Cannot inject @Depedent non-serializable type into " + injectionPoint);
                      }
