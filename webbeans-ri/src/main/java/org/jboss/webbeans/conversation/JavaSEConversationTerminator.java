@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.context.SessionScoped;
 
-import org.jboss.webbeans.WebBeans;
+import org.jboss.webbeans.WebBean;
 
 /**
  * A ConversationTerminator implementation using Java SE scheduling
@@ -33,7 +33,7 @@ import org.jboss.webbeans.WebBeans;
  * @see org.jboss.webbeans.conversation.ConversationTerminator
  */
 @SessionScoped
-@WebBeans
+@WebBean
 public class JavaSEConversationTerminator implements ConversationTerminator, Serializable
 {
    private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);

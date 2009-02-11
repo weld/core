@@ -176,9 +176,9 @@ public class ManagerImpl implements Manager, Serializable
    
    protected void addWebBeansDeploymentTypes()
    {
-      if (!this.enabledDeploymentTypes.contains(WebBeans.class))
+      if (!this.enabledDeploymentTypes.contains(WebBean.class))
       {
-         this.enabledDeploymentTypes.add(1, WebBeans.class);
+         this.enabledDeploymentTypes.add(1, WebBean.class);
       }
    }
 

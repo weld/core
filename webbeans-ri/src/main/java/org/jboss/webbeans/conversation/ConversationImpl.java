@@ -22,7 +22,7 @@ import javax.context.Conversation;
 import javax.context.RequestScoped;
 import javax.inject.Initializer;
 
-import org.jboss.webbeans.WebBeans;
+import org.jboss.webbeans.WebBean;
 import org.jboss.webbeans.conversation.bindings.ConversationInactivityTimeout;
 
 /**
@@ -33,7 +33,7 @@ import org.jboss.webbeans.conversation.bindings.ConversationInactivityTimeout;
  */
 @RequestScoped
 @Named("conversation")
-@WebBeans
+@WebBean
 public class ConversationImpl implements Conversation
 {
    // The conversation ID

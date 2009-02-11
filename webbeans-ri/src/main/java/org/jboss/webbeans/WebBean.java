@@ -20,7 +20,7 @@ import javax.inject.DeploymentType;
 @Retention(RUNTIME)
 @Documented
 @DeploymentType
-public @interface WebBeans
+public @interface WebBean
 {
 
 }

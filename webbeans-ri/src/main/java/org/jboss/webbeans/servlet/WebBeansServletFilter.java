@@ -35,11 +35,44 @@ import org.jboss.webbeans.CurrentManager;
  * Filter for handling conversation propagation over redirects
  * 
  * @author Nicklas Karlsson
- *
+ * 
  */
 // TODO: Quick and dirty, not for actual usage yet ;-)
 public class WebBeansServletFilter implements Filter
 {
+
+   private class RedirectUrl
+   {
+      private String URL;
+      private FacesContext context;
+
+      public RedirectUrl(String URL)
+      {
+         this.URL = URL;
+         context = FacesContext.getCurrentInstance();
+      }
+
+      public RedirectUrl appendCid(String cid)
+      {
+         return new RedirectUrl(URL + (URL.indexOf("?") > 0 ? "&" : "?") + "cid=" + cid);
+      }
+
+      public RedirectUrl getRedirectView()
+      {
+         String requestPath = context.getExternalContext().getRequestContextPath();
+         return new RedirectUrl(URL.substring(URL.indexOf(requestPath) + requestPath.length()));         
+      }
+
+      public RedirectUrl getActionUrl()
+      {
+         return new RedirectUrl(context.getApplication().getViewHandler().getActionURL(context, URL));
+      }
+
+      public String encode()
+      {
+         return context.getExternalContext().encodeActionURL(URL);
+      }
+   }
 
    public void destroy()
    {
@@ -55,17 +88,14 @@ public class WebBeansServletFilter implements Filter
       return new HttpServletResponseWrapper(response)
       {
          @Override
-         public void sendRedirect(String location) throws IOException
+         public void sendRedirect(String path) throws IOException
          {
-            FacesContext context = FacesContext.getCurrentInstance();
             Conversation conversation = CurrentManager.rootManager().getInstanceByType(Conversation.class);
             if (conversation.isLongRunning())
             {
-               location = context.getApplication().getViewHandler().getActionURL(context, location);
-               String appendedConversation = "?cid=" + conversation.getId();
-               location = context.getExternalContext().encodeActionURL(location + appendedConversation);
+               path = new RedirectUrl(path).getRedirectView().getActionUrl().appendCid(conversation.getId()).encode();
             }
-            super.sendRedirect(location);
+            super.sendRedirect(path);
          }
       };
    }
