@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2008-12-19 20:26+0000\n"
-"PO-Revision-Date: 2008-12-20 13:48+0100\n"
+"PO-Revision-Date: 2009-02-11 21:50+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Decoratori"
 #: decorators.xml:6
 #, no-c-format
 msgid "Interceptors are a powerful way to capture and separate concerns which are <emphasis>orthogonal</emphasis> to the type system. Any interceptor is able to intercept invocations of any Java type. This makes them perfect for solving technical concerns such as transaction management and security. However, by nature, interceptors are unaware of the actual semantics of the events they intercept. Thus, interceptors aren't an appropriate tool for separating business-related concerns."
-msgstr "Gli interceptor sono un potente modo per catturare e separare i concern (N.d.T. un concern è un particulare concetto o area di interesse) che sono <emphasis>orthogonal</emphasis> al sistema tipo. Qualsiasi interceptor è capace di intercettare le invocazioni di qualsiasi tipo Java. Questo li rende perfetti per risolvere concern tecnici quali gestione delle transazioni e la sicurezza. Comunque, per natura, gli interceptor non sono consapevoli dell'attuale semantica degli eventi che intercettano. Quindi gli interceptor non sono il giusto strumento per separare i concern di tipo business."
+msgstr "Gli interceptor sono un potente modo per catturare e separare i concern (N.d.T. un concern è un particolare concetto o area di interesse) che sono <emphasis>ortogonali</emphasis> al sistema tipo. Qualsiasi interceptor è capace di intercettare le invocazioni di qualsiasi tipo Java. Questo li rende perfetti per risolvere concern tecnici quali gestione delle transazioni e la sicurezza. Comunque, per natura, gli interceptor non sono consapevoli dell'attuale semantica degli eventi che intercettano. Quindi gli interceptor non sono il giusto strumento per separare i concern di tipo business."
 
 # ...concerns that cut across many disparate types = ?
 #. Tag: para
