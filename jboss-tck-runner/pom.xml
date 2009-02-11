@@ -82,6 +82,33 @@
                   </executions>
                </plugin>
                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <suiteXmlFiles>
+                        <suiteXmlFile>incontainer-tests.xml</suiteXmlFile>
+                     </suiteXmlFiles>
+                     <systemProperties>
+                        <property>
+                           <name>org.jboss.jsr299.tck.standalone</name>
+                           <value>false</value>
+                        </property>
+                        <property>
+                           <name>jbossHome</name>
+                           <value>/Applications/jboss-5.0.0.GA</value>
+                        </property>
+                        <property>
+                           <name>org.jboss.jsr299.tck.libraryDirectory</name>
+                           <value>${project.build.directory}/dependency/lib</value>
+                        </property>
+                        <property>
+                           <name>org.jboss.jsr299.tck.testClass</name>
+                           <value>org.jboss.jsr299.tck.unit.definition.bean.BeanDefinitionTest</value>
+                        </property>
+                     </systemProperties>
+                  </configuration>
+               </plugin>
+               <plugin>
                  <groupId>org.apache.maven.plugins</groupId>
                  <artifactId>maven-antrun-plugin</artifactId>
                  <executions>
@@ -90,14 +117,14 @@
                      <phase>test</phase>
                      <configuration>
                        <tasks>
-                         <java classname="org.jboss.jsr299.tck.api.TCK" classpathref="maven.test.classpath" failonerror="true" fork="true">
+                         <!-- <java classname="org.jboss.jsr299.tck.api.TCK" classpathref="maven.test.classpath" failonerror="true" fork="true">
                             <jvmarg line="-DrunSuite=true"/>
                             <jvmarg line="-Dorg.jboss.jsr299.tck.standalone=false"/>
                             <jvmarg line="-DjbossHome=/Applications/jboss-5.0.0.GA"/>
-                            <jvmarg line="-Dorg.jboss.jsr299.tck.deploymentDelay=8000"/>
+                            <jvmarg line="-Dorg.jboss.jsr299.tck.testClass=org.jboss.jsr299.tck.unit.definition.bean.BeanDefinitionTest" />
                             <jvmarg line="-DdumpConfiguration=true" />
                             <jvmarg line="-Dorg.jboss.jsr299.tck.libraryDirectory=${project.build.directory}/dependency/lib"/>
-                         </java>
+                         </java>-->
                        </tasks>
                      </configuration>
                      <goals>

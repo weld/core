@@ -25,6 +25,12 @@
          <artifactId>testng</artifactId>
          <scope>test</scope>
          <classifier>jdk15</classifier>
+         <exclusions>
+         	<exclusion>
+         		<artifactId>junit</artifactId>
+         		<groupId>junit</groupId>
+         	</exclusion>
+         </exclusions>
       </dependency>
       
       <dependency>
