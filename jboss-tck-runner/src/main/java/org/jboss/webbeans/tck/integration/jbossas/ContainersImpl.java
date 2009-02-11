@@ -114,7 +114,7 @@ public class ContainersImpl implements Containers, Configurable
       File file = new File(deployDir, name);
       if (file.exists())
       {
-         //file.delete();
+         file.delete();
       }
       Thread.sleep(1000);
    }

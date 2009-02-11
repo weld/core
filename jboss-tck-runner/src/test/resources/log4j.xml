@@ -47,6 +47,10 @@
         <priority value="ERROR"/>
     </category>
     
+    <category name="org.jboss.jsr299">
+        <priority value="INFO"/>
+    </category>
+    
     <root>
         <priority value="INFO"/>
         <appender-ref ref="CONSOLE"/>
