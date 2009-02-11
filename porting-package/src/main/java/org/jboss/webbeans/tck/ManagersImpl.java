@@ -8,7 +8,7 @@ import javax.inject.manager.Manager;
 
 import org.jboss.jsr299.tck.spi.Managers;
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.WebBeans;
+import org.jboss.webbeans.WebBean;
 
 public class ManagersImpl implements Managers
 {
@@ -26,7 +26,7 @@ public class ManagersImpl implements Managers
    public List<Class<? extends Annotation>> getEnabledDeploymentTypes()
    {
       List<Class<? extends Annotation>> deploymentTypes = new ArrayList<Class<? extends Annotation>>(CurrentManager.rootManager().getEnabledDeploymentTypes());
-      deploymentTypes.remove(WebBeans.class);
+      deploymentTypes.remove(WebBean.class);
       return deploymentTypes;
    }
    
