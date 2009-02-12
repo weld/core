@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-02-10 07:17+1100\n"
+"PO-Revision-Date: 2009-02-13 08:17+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -299,7 +299,7 @@ msgid ""
 "Then every event fired via this instance of <literal>Event</literal> has the "
 "annotated event binding. The event will be delivered to every observer "
 "method that:"
-msgstr ""
+msgstr "Dann besitzt jedes über diese Instanz abgegebene Ereignis das <literal>Event</literal> annotierte Ereignis-Binding. Das Ereignis wird an jede Observer-Methode geliefert, die: "
 
 #. Tag: para
 #: events.xml:129
@@ -308,13 +308,13 @@ msgid ""
 "does not specify any event binding <emphasis>except</emphasis> for the event "
 "bindings passed to <literal>fire()</literal> or the annotated event bindings "
 "of the event notifier injection point."
-msgstr ""
+msgstr "Kein Ereignis-Binding festlegt <emphasis>außer</emphasis> für die an <literal>fire()</literal> oder die annotierten Ereignis-Bindings des Einspeisungspunkts für Ereignisbenachrichtigungen weitergegebenen."
 
 #. Tag: title
 #: events.xml:138
 #, no-c-format
 msgid "Registering observers dynamically"
-msgstr ""
+msgstr "Dynamische Registrierung von Observern"
 
 #. Tag: para
 #: events.xml:140
@@ -324,7 +324,7 @@ msgid ""
 "may implement the <literal>Observer</literal> interface and register an "
 "instance with an event notifier by calling the <literal>observe()</literal> "
 "method."
-msgstr ""
+msgstr "Es ist oft hilfreich, einen Ereignis-Observer dynamisch zu registrieren. Die Anwendung kann das <literal>Observer</literal>-Interface implementieren und eine Instanz mit einer Ereignisbenachrichtigung registrieren, indem die <literal>observe()</literal>-Methode aufgerufen wird."
 
 #. Tag: programlisting
 #: events.xml:144
@@ -344,6 +344,8 @@ msgid ""
 "or by passing event binding type instances to the <literal>observe()</"
 "literal> method:"
 msgstr ""
+"Typen von Ereignis-Bindings können durch den Einspeisungspunkt für Ereignisbenachrichtigungen oder Weitergabe von Instanzen von Typen von Ereignis-Bindings an die <literal>observe()</"
+"literal>-Methode festgelegt werden:"
 
 #. Tag: programlisting
 #: events.xml:149
@@ -363,13 +365,13 @@ msgstr ""
 #: events.xml:154
 #, no-c-format
 msgid "Event bindings with members"
-msgstr ""
+msgstr "Ereignis-Bindings mit Mitgliedern"
 
 #. Tag: para
 #: events.xml:156
 #, no-c-format
 msgid "An event binding type may have annotation members:"
-msgstr ""
+msgstr "Ein Ereignis-Binding-Typ kann Annotationsmitglieder besitzen:"
 
 #. Tag: programlisting
 #: events.xml:158
@@ -393,7 +395,7 @@ msgstr ""
 #: events.xml:160
 #, no-c-format
 msgid "The member value is used to narrow the messages delivered to the observer:"
-msgstr ""
+msgstr "Der Mitgliederwert dient der Eingrenzung von an den Observer gelieferten Nachrichten: "
 
 #. Tag: programlisting
 #: events.xml:162
@@ -411,7 +413,7 @@ msgstr ""
 msgid ""
 "Event binding type members may be specified statically by the event "
 "producer, via annotations at the event notifier injection point:"
-msgstr ""
+msgstr "Typenmitglieder von Ereignis-Bindings können durch den Ereignis-Producer statisch festgelegt werden - dies erfolgt über Annotationen am Einspeisungspunkt der Ereignisbenachrichtigungen:"
 
 #. Tag: programlisting
 #: events.xml:167
@@ -426,7 +428,7 @@ msgid ""
 "Alternatively, the value of the event binding type member may be determined "
 "dynamically by the event producer. We start by writing an abstract subclass "
 "of <literal>AnnotationLiteral</literal>:"
-msgstr ""
+msgstr "Alternativ kann der Wert des Typenmitglieds des Ereignis-Bindings dynamisch durch den Ereignis-Producer bestimmt werden. Wir beginnen durch Schreiben einer abstrakten Unterklasse von <literal>AnnotationLiteral</literal>:"
 
 #. Tag: programlisting
 #: events.xml:172
@@ -446,7 +448,7 @@ msgstr ""
 msgid ""
 "The event producer passes an instance of this class to <literal>fire()</"
 "literal>:"
-msgstr ""
+msgstr "Der Ereignis-Producer gibt eine Instanz dieser Klasse an <literal>fire()</literal> weiter:"
 
 #. Tag: programlisting
 #: events.xml:176
@@ -462,13 +464,13 @@ msgstr ""
 #: events.xml:181
 #, no-c-format
 msgid "Multiple event bindings"
-msgstr ""
+msgstr "Multiple Ereignis-Bindings"
 
 #. Tag: para
 #: events.xml:183
 #, no-c-format
 msgid "Event binding types may be combined, for example:"
-msgstr ""
+msgstr "Typen von Ereignis-Bindings können kombiniert werden, zum Beispiel:"
 
 #. Tag: programlisting
 #: events.xml:185
@@ -490,7 +492,7 @@ msgstr ""
 msgid ""
 "When this event occurs, all of the following observer methods will be "
 "notified:"
-msgstr ""
+msgstr "Findet dieses Ereignis statt, so werden alle folgenden Observer-Methoden benachrichtigt:"
 
 #. Tag: programlisting
 #: events.xml:189
@@ -526,7 +528,7 @@ msgstr ""
 #: events.xml:197
 #, no-c-format
 msgid "Transactional observers"
-msgstr ""
+msgstr "Transaktionale Observer"
 
 #. Tag: para
 #: events.xml:199
@@ -537,7 +539,7 @@ msgid ""
 "For example, the following observer method needs to refresh a query result "
 "set that is cached in the application context, but only when transactions "
 "that update the <literal>Category</literal> tree succeed:"
-msgstr ""
+msgstr "Transaktionale Observers erhalten ihre Ereignisbenachrichtigungen vor oder nach der Abschlussphase der Transaktion während derer das Ereignis aufgegekommen ist. Zum Beispiel muss die folgende Observer-Methode einen Satz von Abfrageergebnissen neu laden, der im Applikationskontext gecacht ist, jedoch nur dann, wenn die den  <literal>Category</literal>-Baum aktualisierenden Transaktionen erfolgreich sind: "
 
 #. Tag: programlisting
 #: events.xml:205
@@ -553,7 +555,7 @@ msgstr ""
 #: events.xml:207
 #, no-c-format
 msgid "There are three kinds of transactional observers:"
-msgstr ""
+msgstr "Es gibt drei Arten von transaktionalen Observern:"
 
 #. Tag: para
 #: events.xml:211
@@ -562,7 +564,7 @@ msgid ""
 "<literal>@AfterTransactionSuccess</literal> observers are called during the "
 "after completion phase of the transaction, but only if the transaction "
 "completes successfully"
-msgstr ""
+msgstr "<literal>@AfterTransactionSuccess</literal>-Observers werden während der Abschlussphase der Transaktion aufgerufen, jedoch nur bei erfolgreichem Abschluss der Transaktion"
 
 #. Tag: para
 #: events.xml:216
@@ -571,7 +573,7 @@ msgid ""
 "<literal>@AfterTransactionFailure</literal> observers are called during the "
 "after completion phase of the transaction, but only if the transaction fails "
 "to complete successfully"
-msgstr ""
+msgstr "<literal>@AfterTransactionFailure</literal>-Observer werden während der Abschlussphase der Transaktion aufgerufen, jedoch nur, wenn der erfolgreiche Abschluss der Transaktion fehlschlägt"
 
 #. Tag: para
 #: events.xml:221
@@ -579,7 +581,7 @@ msgstr ""
 msgid ""
 "<literal>@AfterTransactionCompletion</literal> observers are called during "
 "the after completion phase of the transaction"
-msgstr ""
+msgstr "<literal>@AfterTransactionCompletion</literal>-Observer werden während der Nach-Abschlussphase der Transaktion aufgerufen "
 
 #. Tag: para
 #: events.xml:225
@@ -587,7 +589,7 @@ msgstr ""
 msgid ""
 "<literal>@BeforeTransactionCompletion</literal> observers are called during "
 "the before completion phase of the transaction"
-msgstr ""
+msgstr "<literal>@BeforeTransactionCompletion</literal>-Observer werden während der Vor-Abschlussphase der Transaktion aufgerufen"
 
 #. Tag: para
 #: events.xml:230
@@ -597,12 +599,14 @@ msgid ""
 "Web Beans, because state is often held for longer than a single atomic "
 "transaction."
 msgstr ""
+"Transaktional Observer sind in einem \"stateful\" Objektmodell wie "
+"Web Beans sehr wichtig, da der Status oft länger bestehen bleibt als eine einzelne atomare Transaktion."
 
 #. Tag: para
 #: events.xml:233
 #, no-c-format
 msgid "Imagine that we have cached a JPA query result set in the application scope:"
-msgstr ""
+msgstr "Stellen wir uns vor, wir besitzen einen gecachten Satz von JPA-Abfrageergebnissen im Geltungsbereich der Anwendung:"
 
 #. Tag: programlisting
 #: events.xml:235
@@ -654,7 +658,7 @@ msgid ""
 "this occurs, we need to refresh the <literal>Product</literal> catalog. But "
 "we should wait until <emphasis>after</emphasis> the transaction completes "
 "successfully before performing this refresh!"
-msgstr ""
+msgstr "Von Zeit zu Zeit wird ein <literal>Product</literal> erstellt oder gelöscht. Ist dies der Fall, so müssen wir den <literal>Product</literal>-Katalog neu laden. Wir sollten damit aber bis <emphasis>nach</emphasis> dem erfolgreichen Abschluss der Transaktion warten!"
 
 #. Tag: para
 #: events.xml:242
@@ -662,7 +666,7 @@ msgstr ""
 msgid ""
 "The Web Bean that creates and deletes <literal>Product</literal>s could "
 "raise events, for example:"
-msgstr ""
+msgstr "Das Web Bean, das <literal>Product</literal>s erstellt oder löscht könnte Ereignisse aufrufen, zum Beispiel:"
 
 #. Tag: programlisting
 #: events.xml:245
@@ -714,7 +718,7 @@ msgstr ""
 msgid ""
 "And now <literal>Catalog</literal> can observe the events after successful "
 "completion of the transaction:"
-msgstr ""
+msgstr "Und jetzt kann <literal>Catalog</literal> die Ereignisse nach erfolgreichem Abschluss der Transaktion beobachten:"
 
 #. Tag: programlisting
 #: events.xml:250
