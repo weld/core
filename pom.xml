@@ -92,6 +92,12 @@
             <artifactId>testng</artifactId>
             <version>5.8</version>
             <classifier>jdk15</classifier>
+            <exclusions>
+               <exclusion>
+                  <groupId>junit</groupId>
+                  <artifactId>junit</artifactId>
+               </exclusion>
+            </exclusions>
          </dependency>
 
          <dependency>
@@ -263,7 +269,54 @@
             <artifactId>jsr299-tck-impl</artifactId>
             <version>${jsr299.tck.version}</version>
          </dependency>
-
+         
+         <dependency>
+            <groupId>org.jboss.test</groupId>
+            <artifactId>jboss-test</artifactId>
+            <version>1.1.3.GA</version>
+            <exclusions>
+               <exclusion>
+                  <groupId>org.apache.ant</groupId>
+                  <artifactId>ant</artifactId>
+               </exclusion>
+               <exclusion>
+                  <groupId>org.apache.ant</groupId>
+                  <artifactId>ant-junit</artifactId>
+               </exclusion>
+               <exclusion>
+                  <groupId>jboss.profiler.jvmti</groupId>
+                  <artifactId>jboss-profiler-jvmti</artifactId>
+               </exclusion>
+               <exclusion>
+                  <groupId>org.jboss.jbossas</groupId>
+                  <artifactId>jboss-server-manager</artifactId>
+               </exclusion>
+               <exclusion>
+                  <groupId>junit</groupId>
+                  <artifactId>junit</artifactId>
+               </exclusion>
+               <exclusion>
+                  <groupId>apache-log4j</groupId>
+                  <artifactId>log4j</artifactId>
+               </exclusion>
+               <exclusion>
+                  <groupId>org.jboss.logging</groupId>
+                  <artifactId>jboss-logging-log4j</artifactId>
+               </exclusion>
+               <exclusion>
+                  <groupId>org.jboss</groupId>
+                  <artifactId>jboss-common-core</artifactId>
+               </exclusion>
+            </exclusions>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.jbossas</groupId>
+            <artifactId>jboss-as-client</artifactId>
+            <version>5.0.0.GA</version>
+            <type>pom</type>
+         </dependency>
+         
       </dependencies>
    </dependencyManagement>
 
