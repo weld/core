@@ -84,10 +84,10 @@ public class ServletLifecycle
    {
       log.trace("Ending session " + session.getId());
       SessionContext.INSTANCE.setBeanMap(new HttpSessionBeanMap(session));
-      SessionContext.INSTANCE.destroy();
-      SessionContext.INSTANCE.setBeanMap(null);
       ConversationManager conversationManager = CurrentManager.rootManager().getInstanceByType(ConversationManager.class);
       conversationManager.destroyAllConversations();
+      SessionContext.INSTANCE.destroy();
+      SessionContext.INSTANCE.setBeanMap(null);
    }
 
    /**

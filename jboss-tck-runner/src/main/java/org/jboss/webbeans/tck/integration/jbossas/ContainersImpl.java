@@ -79,7 +79,7 @@ public class ContainersImpl implements Containers, Configurable
    
    
    
-   public void deploy(InputStream archive, String name) throws Exception
+   public void deploy(InputStream archive, String name) throws IOException
    {
       if (!validated)
       {
@@ -109,14 +109,22 @@ public class ContainersImpl implements Containers, Configurable
      }
    }
    
-   public void undeploy(String name) throws Exception
+   public void undeploy(String name) throws IOException
    {
       File file = new File(deployDir, name);
       if (file.exists())
       {
          file.delete();
       }
-      Thread.sleep(1000);
+      try
+      {
+         // Give the app a chance to undeploy
+         Thread.sleep(1000);
+      }
+      catch (InterruptedException e)
+      {
+         Thread.currentThread().interrupt();
+      }
    }
    
 }
