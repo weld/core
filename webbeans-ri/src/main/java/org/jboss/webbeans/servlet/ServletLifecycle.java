@@ -18,11 +18,13 @@
 package org.jboss.webbeans.servlet;
 
 import javax.context.Conversation;
+import javax.context.SessionScoped;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.context.AbstractBeanMapContext;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.context.DependentContext;
@@ -84,6 +86,7 @@ public class ServletLifecycle
    {
       log.trace("Ending session " + session.getId());
       SessionContext.INSTANCE.setBeanMap(new HttpSessionBeanMap(session));
+      CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
       ConversationManager conversationManager = CurrentManager.rootManager().getInstanceByType(ConversationManager.class);
       conversationManager.destroyAllConversations();
       SessionContext.INSTANCE.destroy();
