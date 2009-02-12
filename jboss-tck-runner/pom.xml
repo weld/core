@@ -80,7 +80,7 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
                <suiteXmlFiles>
-                  <suiteXmlFile>${project.build.directory}/dependency/jsr299-tck-impl-${jsr299.tck.version}-suite.xml</suiteXmlFile>
+                  <suiteXmlFile>${project.build.directory}/dependency/jsr299-tck-impl-suite.xml</suiteXmlFile>
                </suiteXmlFiles>
             </configuration>
          </plugin>
@@ -119,7 +119,7 @@
                   <artifactId>maven-surefire-plugin</artifactId>
                   <configuration>
                      <suiteXmlFiles>
-                        <suiteXmlFile>${project.build.directory}/dependency/jsr299-tck-impl-${jsr299.tck.version}-suite.xml</suiteXmlFile>
+                        <suiteXmlFile>${project.build.directory}/dependency/jsr299-tck-impl-suite.xml</suiteXmlFile>
                      </suiteXmlFiles>
                      <systemProperties>
                         <property>
