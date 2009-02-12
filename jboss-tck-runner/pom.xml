@@ -28,6 +28,11 @@
       </dependency>
       
       <dependency>
+         <groupId>org.jboss.test</groupId>
+         <artifactId>jboss-test</artifactId>
+      </dependency>
+      
+      <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
          <scope>test</scope>
@@ -39,6 +44,14 @@
          <artifactId>jsr299-tck-impl</artifactId>
          <scope>test</scope>
       </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.jbossas</groupId>
+         <artifactId>jboss-as-client</artifactId>
+         <scope>test</scope>
+         <type>pom</type>
+      </dependency>
+      
       
    </dependencies>
    

@@ -14,6 +14,11 @@
     <category name="org.jboss">
         <priority value="ERROR"/>
     </category>
+    
+    <category name="org.jboss.test">
+        <priority value="ERROR"/>
+    </category>
+    
     <category name="com.arjuna">
         <priority value="ERROR"/>
     </category>
@@ -44,11 +49,11 @@
     <!-- ############### Web Beans logging ################### -->
 
     <category name="org.jboss.webbeans">
-        <priority value="ERROR"/>
+        <priority value="WARN"/>
     </category>
     
     <category name="org.jboss.jsr299">
-        <priority value="INFO"/>
+        <priority value="WARN"/>
     </category>
     
     <root>
