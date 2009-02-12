@@ -1,23 +1,25 @@
+# translation of extend.po to
 # Language de-DE translations for Introduction_to_Web_Beans package.
 # Automatically generated, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
+"Project-Id-Version: extend\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-10 14:18+0000\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2009-02-13 08:58+1100\n"
+"Last-Translator: \n"
+"Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
 #: extend.xml:4
 #, no-c-format
 msgid "Extending Web Beans"
-msgstr ""
+msgstr "Erweiterung von Web Beans"
 
 #. Tag: para
 #: extend.xml:6
@@ -34,7 +36,7 @@ msgstr ""
 #: extend.xml:14
 #, no-c-format
 msgid "integration with Business Process Management engines,"
-msgstr ""
+msgstr "Integration mit Business Process Management Engines,"
 
 #. Tag: para
 #: extend.xml:17
@@ -42,13 +44,13 @@ msgstr ""
 msgid ""
 "integration with third-party frameworks such as Spring, Seam, GWT or Wicket, "
 "and"
-msgstr ""
+msgstr "Integration mit den Frameworks Dritter, wie etwa Spring, Seam, GWT oder Wicket und"
 
 #. Tag: para
 #: extend.xml:21
 #, no-c-format
 msgid "new technology based upon the Web Beans programming model."
-msgstr ""
+msgstr "neue, auf dem Web Beans Programmiermodell basierende Technologie."
 
 #. Tag: para
 #: extend.xml:25
@@ -56,13 +58,13 @@ msgstr ""
 msgid ""
 "The nerve center for extending Web Beans is the <literal>Manager</literal> "
 "object."
-msgstr ""
+msgstr "Der zentrale Kern zur Erweiterung von Web Beans ist das <literal>Manager</literal>-Objekt."
 
 #. Tag: title
 #: extend.xml:29
 #, no-c-format
 msgid "The <literal>Manager</literal> object"
-msgstr ""
+msgstr "Das <literal>Manager</literal>-Objekt"
 
 #. Tag: para
 #: extend.xml:31
@@ -71,6 +73,8 @@ msgid ""
 "The <literal>Manager</literal> interface lets us register and obtain Web "
 "Beans, interceptors, decorators, observers and contexts programatically."
 msgstr ""
+"Das <literal>Manager</literal>-Interface die programmatische Registrierung und den Erhalt von Web "
+"Beans, Interzeptoren, Dekoratoren, Observern und Kontexten."
 
 #. Tag: programlisting
 #: extend.xml:34
@@ -133,24 +137,80 @@ msgid ""
 "\n"
 "}]]>"
 msgstr ""
+"<![CDATA[public interface Manager\n"
+"{\n"
+"\n"
+"   public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... "
+"bindings);\n"
+"\n"
+"   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,\n"
+"         Annotation... bindings);\n"
+"\n"
+"   public <T> T getInstanceByType(Class<T> type, Annotation... bindings);\n"
+"\n"
+"   public <T> T getInstanceByType(TypeLiteral<T> type,\n"
+"         Annotation... bindings);\n"
+"\n"
+"   public Set<Bean<?>> resolveByName(String name);\n"
+"\n"
+"   public Object getInstanceByName(String name);\n"
+"\n"
+"   public <T> T getInstance(Bean<T> bean);\n"
+"\n"
+"   public void fireEvent(Object event, Annotation... bindings);\n"
+"\n"
+"   public Context getContext(Class<? extends Annotation> scopeType);\n"
+"\n"
+"   public Manager addContext(Context context);\n"
+"\n"
+"   public Manager addBean(Bean<?> bean);\n"
+"\n"
+"   public Manager addInterceptor(Interceptor interceptor);\n"
+"\n"
+"   public Manager addDecorator(Decorator decorator);\n"
+"\n"
+"   public <T> Manager addObserver(Observer<T> observer, Class<T> eventType,\n"
+"         Annotation... bindings);\n"
+"\n"
+"   public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> "
+"eventType,\n"
+"         Annotation... bindings);\n"
+"\n"
+"   public <T> Manager removeObserver(Observer<T> observer, Class<T> "
+"eventType,\n"
+"         Annotation... bindings);\n"
+"\n"
+"   public <T> Manager removeObserver(Observer<T> observer,\n"
+"         TypeLiteral<T> eventType, Annotation... bindings);\n"
+"\n"
+"   public <T> Set<Observer<T>> resolveObservers(T event, Annotation... "
+"bindings);\n"
+"\n"
+"   public List<Interceptor> resolveInterceptors(InterceptionType type,\n"
+"         Annotation... interceptorBindings);\n"
+"\n"
+"   public List<Decorator> resolveDecorators(Set<Class<?>> types,\n"
+"         Annotation... bindings);\n"
+"\n"
+"}]]>"
 
 #. Tag: para
 #: extend.xml:36
 #, no-c-format
 msgid "We can obtain an instance of <literal>Manager</literal> via injection:"
-msgstr ""
+msgstr "Wir können eine Instanz von <literal>Manager</literal> via Einspeisung erhalten:"
 
 #. Tag: programlisting
 #: extend.xml:38
 #, no-c-format
 msgid "@Current Manager manager"
-msgstr ""
+msgstr "@Current Manager Manager"
 
 #. Tag: title
 #: extend.xml:43
 #, no-c-format
 msgid "The <literal>Bean</literal> class"
-msgstr ""
+msgstr "Die <literal>Bean</literal>-Klasse"
 
 #. Tag: para
 #: extend.xml:45
@@ -160,6 +220,9 @@ msgid ""
 "There is an instance of <literal>Bean</literal> registered with the "
 "<literal>Manager</literal> object for every Web Bean in the application."
 msgstr ""
+"Instanzen der abstrakten Klasse <literal>Bean</literal> repräsentieren Web Beans. "
+"Für jedes Web Bean in der Anwendung wird eine Instanz von <literal>Bean</literal> mit dem "
+"<literal>Manager</literal>-Objekt registriert."
 
 #. Tag: programlisting
 #: extend.xml:50
@@ -191,6 +254,31 @@ msgid ""
 "    \n"
 "}"
 msgstr ""
+"public abstract class Bean&lt;T&gt; {\n"
+"    \n"
+"    private final Manager manager;\n"
+"    \n"
+"    protected Bean(Manager manager) {\n"
+"        this.manager=manager;\n"
+"    }\n"
+"    \n"
+"    protected Manager getManager() {\n"
+"        return manager;\n"
+"    }\n"
+"    \n"
+"    public abstract Set&lt;Class&gt; getTypes();\n"
+"    public abstract Set&lt;Annotation&gt; getBindingTypes();\n"
+"    public abstract Class&lt;? extends Annotation&gt; getScopeType();\n"
+"    public abstract Class&lt;? extends Annotation&gt; getDeploymentType(); \n"
+"    public abstract String getName();\n"
+"    \n"
+"    public abstract boolean isSerializable();\n"
+"    public abstract boolean isNullable();\n"
+"\n"
+"    public abstract T create();\n"
+"    public abstract void destroy(T instance);\n"
+"    \n"
+"}"
 
 #. Tag: para
 #: extend.xml:52
@@ -211,13 +299,13 @@ msgid ""
 "There are two subclasses of <literal>Bean</literal> defined by the Web Beans "
 "specification: <literal>Interceptor</literal> and <literal>Decorator</"
 "literal>."
-msgstr ""
+msgstr "Durch die Web Beans Spezifikation werden zwei Unterklassen von <literal>Bean</literal> definiert: <literal>Interceptor</literal> und <literal>Decorator</literal>."
 
 #. Tag: title
 #: extend.xml:67
 #, no-c-format
 msgid "The <literal>Context</literal> interface"
-msgstr ""
+msgstr "Das <literal>Context</literal>-Interface"
 
 #. Tag: para
 #: extend.xml:69
@@ -225,7 +313,7 @@ msgstr ""
 msgid ""
 "The <literal>Context</literal> interface supports addition of new scopes to "
 "Web Beans, or extension of the built-in scopes to new environments."
-msgstr ""
+msgstr "Das <literal>Context</literal>-Interface unterstützt die Hinzufügung neuer Geltungsbereiche zu Web Beans oder die Erweiterung eingebauter Geltungsbereiche zu neuen Umgebungen."
 
 #. Tag: programlisting
 #: extend.xml:72
@@ -241,6 +329,15 @@ msgid ""
 "    \n"
 "}"
 msgstr ""
+"public interface Context {\n"
+"    \n"
+"    public Class&lt;? extends Annotation&gt; getScopeType();\n"
+"    \n"
+"    public &lt;T&gt; T get(Bean&lt;T&gt; bean, boolean create);\n"
+"    \n"
+"    boolean isActive();\n"
+"    \n"
+"}"
 
 #. Tag: para
 #: extend.xml:74
@@ -249,4 +346,5 @@ msgid ""
 "For example, we might implement <literal>Context</literal> to add a business "
 "process scope to Web Beans, or to add support for the conversation scope to "
 "an application that uses Wicket."
-msgstr ""
+msgstr "Wir könnten zum Beispiel <literal>Context</literal> implementieren, um den Geltungsbereich eines Business Prozesses zu Web Beans oder Support für den Konversationsgeltungsbereich einer Wickets verwendenen Anwendung hinzuzufügen."
+
