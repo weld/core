@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: extend\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-02-13 08:58+1100\n"
+"PO-Revision-Date: 2009-02-14 06:59+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgid ""
 "SPIs for the use of developers of portable extensions to Web Beans. For "
 "example, the following kinds of extensions were envisaged by the designers "
 "of Web Beans:"
-msgstr ""
+msgstr "Web Beans sind als Plattform für Frameworks, Erweiterungen und Integration mit anderer Technologie vorgesehen. Web Beans bieten daher einen Satz von SPIs für den Gebrauch durch Entwickler übertragbarer Erweiterungen zu Web Beans. Die folgenden Arten von Erweiterungen zum Beispiel wurden von den Designern von Web Beans vorgesehen:"
 
 #. Tag: para
 #: extend.xml:14
@@ -290,7 +290,7 @@ msgid ""
 "specification (simple and enterprise Web Beans, producer methods and JMS "
 "endpoints). For example, we could use the <literal>Bean</literal> class to "
 "allow objects managed by another framework to be injected into Web Beans."
-msgstr ""
+msgstr "Es ist möglich, die <literal>Bean</literal>-Klasse zu erweitern und Instanzen durch Aufruf von <literal>Manager.addBean()</literal> zu registrieren, um Support für neue Arten von Web Beans zu bieten, neben denen, die durch die Web Beans Spezifikation definiert sind (einfache und Enterprise Web Beans, Producer Methoden und JMS Endpunkte). Zum Beispiel könnten wir die <literal>Bean</literal>-Klasse verwenden, um zu ermöglichen, dass durch ein anderes Framework gemanagte Objekte in Web Beans eingespeist werden."
 
 #. Tag: para
 #: extend.xml:60
