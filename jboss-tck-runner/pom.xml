@@ -140,8 +140,8 @@
                            <value>false</value>
                         </property>
                         <property>
-                           <name>jbossHome</name>
-                           <value>/Applications/jboss-5.0.0.GA</value>
+                           <name>jboss-as.dir</name>
+                           <value>../jboss-as</value>
                         </property>
                         <property>
                            <name>org.jboss.jsr299.tck.libraryDirectory</name>

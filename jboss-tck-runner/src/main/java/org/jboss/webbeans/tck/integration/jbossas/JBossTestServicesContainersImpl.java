@@ -26,10 +26,6 @@ public class JBossTestServicesContainersImpl extends AbstractContainersImpl
    
    public void deploy(InputStream archiveStream, String name) throws Exception
    {
-      if (!validated)
-      {
-         validate();
-      }
       File archive = new File(tmpdir, name);
       archive.deleteOnExit();
       copy(archiveStream, archive);

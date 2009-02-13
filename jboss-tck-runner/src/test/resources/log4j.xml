@@ -52,8 +52,12 @@
         <priority value="WARN"/>
     </category>
     
+    <category name="org.jboss.webbeans.tck">
+        <priority value="INFO"/>
+    </category>
+    
     <category name="org.jboss.jsr299">
-        <priority value="WARN"/>
+        <priority value="INFO"/>
     </category>
     
     <root>
