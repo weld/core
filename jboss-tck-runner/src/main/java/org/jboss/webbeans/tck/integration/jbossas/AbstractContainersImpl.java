@@ -30,6 +30,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
    public static final String JBOSS_HOME_PROPERTY_NAME = "jboss.home";
    public static final String JBOSS_AS_DIR_PROPERTY_NAME = "jboss-as.dir";
    public static final String JBOSS_BOOT_TIMEOUT_PROPERTY_NAME = "jboss.boot.timeout";
+   public static final String FORCE_RESTART_PROPERTY_NAME = "jboss.force.restart";
    
    private static Logger log = Logger.getLogger(AbstractContainersImpl.class);
    
@@ -63,7 +64,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
       this.jbossHttpUrl = "http://" + configuration.getHost() + "/";
    }
 
-   protected boolean checkJBossUp()
+   protected boolean isJBossUp()
    {
       // Check that JBoss is up!
       try
@@ -117,7 +118,22 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
          log.info("JBoss Home set to " + jbossHome);
       }
       this.bootTimeout = Long.getLong(JBOSS_BOOT_TIMEOUT_PROPERTY_NAME, 120000);
-      if (!checkJBossUp())
+      if (Boolean.getBoolean(FORCE_RESTART_PROPERTY_NAME))
+      {
+         if (isJBossUp())
+         {
+            shutDownJBoss();
+            try
+            {
+               Thread.sleep(10000);
+            }
+            catch (InterruptedException e)
+            {
+               Thread.currentThread().interrupt();
+            }
+         }
+      }
+      if (!isJBossUp())
       {
          jbossWasStarted = true;
          launch(jbossHome, "run", "");
@@ -127,7 +143,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
          boolean interrupted = false;
          while (timeoutTime > System.currentTimeMillis())
          {
-            if (checkJBossUp()) 
+            if (isJBossUp()) 
             {
                log.info("Started JBoss AS");
                return;
@@ -164,6 +180,13 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
          launch(jbossHome, "shutdown", "-S");
          log.info("Shut down JBoss AS");
       }
+   }
+   
+   private void shutDownJBoss() throws IOException
+   {
+      log.info("Shutting down JBoss AS");
+      launch(jbossHome, "shutdown", "-S");
+      log.info("Shut down JBoss AS");
    }
    
    private static void launch(String jbossHome, String scriptFileName, String params) throws IOException
