@@ -101,7 +101,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
                System.getProperties().load(new FileReader(buildProperties));
             }
             File localBuildProperties = new File(jbossAsDir, "local.build.properties");
-            if (buildProperties.exists())
+            if (localBuildProperties.exists())
             {
                System.getProperties().load(new FileReader(localBuildProperties));
             }
