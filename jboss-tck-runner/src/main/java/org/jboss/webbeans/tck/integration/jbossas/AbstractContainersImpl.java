@@ -1,9 +1,7 @@
 package org.jboss.webbeans.tck.integration.jbossas;
 
-import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -36,10 +34,10 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
    private static Logger log = Logger.getLogger(AbstractContainersImpl.class);
    
    private Configuration configuration;
-   protected final String jbossHome;
+   protected String jbossHome;
    private String jbossHttpUrl;
    private boolean jbossWasStarted;
-   private final long bootTimeout;
+   private long bootTimeout;
 
    protected static void copy(InputStream inputStream, File file) throws IOException
    {
@@ -57,38 +55,6 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
      {
          os.close();
      }
-   }
-
-
-   public AbstractContainersImpl() throws FileNotFoundException, IOException
-   {
-      if (System.getProperty(JBOSS_AS_DIR_PROPERTY_NAME) != null)
-      {
-         File jbossAsDir = new File(System.getProperty(JBOSS_AS_DIR_PROPERTY_NAME));
-         if (jbossAsDir.isDirectory())
-         {
-            File buildProperties = new File(jbossAsDir, "build.properties");
-            if (buildProperties.exists())
-            {
-               System.getProperties().load(new FileReader(buildProperties));
-            }
-            File localBuildProperties = new File(jbossAsDir, "local.build.properties");
-            if (buildProperties.exists())
-            {
-               System.getProperties().load(new FileReader(localBuildProperties));
-            }
-         }            
-      }
-      jbossHome = System.getProperty(JBOSS_HOME_PROPERTY_NAME);
-      if (jbossHome == null)
-      {
-         throw new IllegalArgumentException("-D" + JBOSS_HOME_PROPERTY_NAME + " must be set");
-      }
-      else
-      {
-         log.info("JBoss Home set to " + jbossHome);
-      }
-      this.bootTimeout = Long.getLong(JBOSS_BOOT_TIMEOUT_PROPERTY_NAME, 60000);
    }   
    
    public void setConfiguration(Configuration configuration)
@@ -124,6 +90,33 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
    
    public void setup() throws IOException
    {
+      if (System.getProperty(JBOSS_AS_DIR_PROPERTY_NAME) != null)
+      {
+         File jbossAsDir = new File(System.getProperty(JBOSS_AS_DIR_PROPERTY_NAME));
+         if (jbossAsDir.isDirectory())
+         {
+            File buildProperties = new File(jbossAsDir, "build.properties");
+            if (buildProperties.exists())
+            {
+               System.getProperties().load(new FileReader(buildProperties));
+            }
+            File localBuildProperties = new File(jbossAsDir, "local.build.properties");
+            if (buildProperties.exists())
+            {
+               System.getProperties().load(new FileReader(localBuildProperties));
+            }
+         }            
+      }
+      jbossHome = System.getProperty(JBOSS_HOME_PROPERTY_NAME);
+      if (jbossHome == null)
+      {
+         throw new IllegalArgumentException("-D" + JBOSS_HOME_PROPERTY_NAME + " must be set");
+      }
+      else
+      {
+         log.info("JBoss Home set to " + jbossHome);
+      }
+      this.bootTimeout = Long.getLong(JBOSS_BOOT_TIMEOUT_PROPERTY_NAME, 60000);
       if (!checkJBossUp())
       {
          jbossWasStarted = true;
@@ -141,7 +134,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
             }
             try
             {
-               Thread.sleep(1000);
+               Thread.sleep(500);
             }
             catch (InterruptedException e)
             {
@@ -152,6 +145,10 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
          {
             Thread.currentThread().interrupt();
          }
+      }
+      else
+      {
+         return;
       }
       // After trying to start automatically, try the connection again
       if (!checkJBossUp())
@@ -164,7 +161,9 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
    {
       if (jbossWasStarted)
       {
+         log.info("Shutting down JBoss AS");
          launch(jbossHome, "shutdown", "-S");
+         log.info("Shut down JBoss AS");
       }
    }
    
@@ -204,7 +203,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
           {
              try 
              {
-                DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("/tmp/jboss.log")));
+                DataOutputStream out = new DataOutputStream(new FileOutputStream("/tmp/jboss.log"));
                 int c;
                 while((c = is.read()) != -1) 
                 {
