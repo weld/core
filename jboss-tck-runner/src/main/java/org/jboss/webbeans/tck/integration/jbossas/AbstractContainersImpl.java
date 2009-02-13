@@ -148,15 +148,11 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
          // If we got this far something went wrong
          log.warn("Unable to connect to JBoss after " + bootTimeout + "ms, giving up!");
          launch(jbossHome, "shutdown", "-S");
+         throw new IllegalStateException("Error connecting to JBoss AS at " + jbossHttpUrl);
       }
       else
       {
          return;
-      }
-      // After trying to start automatically, try the connection again
-      if (!checkJBossUp())
-      {
-         throw new IllegalStateException("Error connecting to JBoss AS at " + jbossHttpUrl);
       }
    }
    
