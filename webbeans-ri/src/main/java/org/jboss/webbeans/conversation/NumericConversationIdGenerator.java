@@ -22,6 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.context.SessionScoped;
 
 import org.jboss.webbeans.WebBean;
+import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Logging;
 
 /**
  * A ConversationIdGenerator implementation using running numerical values
@@ -33,6 +35,7 @@ import org.jboss.webbeans.WebBean;
 @WebBean
 public class NumericConversationIdGenerator implements ConversationIdGenerator, Serializable
 {
+   private static LogProvider log = Logging.getLogProvider(NumericConversationIdGenerator.class);
    // The next conversation ID
    private AtomicInteger id;
 
@@ -46,7 +49,9 @@ public class NumericConversationIdGenerator implements ConversationIdGenerator, 
 
    public String nextId()
    {
-      return String.valueOf(id.getAndIncrement());
+      int nextId = id.getAndIncrement();
+      log.trace("Generated new conversation id " + nextId);
+      return String.valueOf(nextId);
    }
 
 }

@@ -23,6 +23,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.context.ConversationContext;
+import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.servlet.ConversationBeanMap;
 
 /**
@@ -32,6 +34,8 @@ import org.jboss.webbeans.servlet.ConversationBeanMap;
  */
 public class ConversationEntry
 {
+   private static LogProvider log = Logging.getLogProvider(ConversationEntry.class);
+
    // The conversation ID
    private String cid;
    // The handle to the asynchronous timeout task
@@ -50,6 +54,7 @@ public class ConversationEntry
       this.cid = cid;
       this.terminationHandle = terminationHandle;
       this.concurrencyLock = new ReentrantLock();
+      log.trace("Created new conversation entry for conversation " + cid);
    }
 
    /**
@@ -71,16 +76,26 @@ public class ConversationEntry
     */
    public boolean cancelTermination()
    {
-      return terminationHandle.cancel(false);
+      boolean success = terminationHandle.cancel(false);
+      if (success)
+      {
+         log.trace("Termination of conversation " + cid + " cancelled");
+      }
+      else
+      {
+         log.warn("Failed to cancel termination of conversation " + cid);
+      }
+      return success;
    }
 
    /**
-    * Destroys the conversation and it's associated conversational context 
+    * Destroys the conversation and it's associated conversational context
     * 
     * @param session The HTTP session for the backing context beanmap
     */
    public void destroy(HttpSession session)
    {
+      log.trace("Destroying conversation " + cid);
       if (!terminationHandle.isCancelled())
       {
          cancelTermination();
@@ -91,7 +106,7 @@ public class ConversationEntry
    }
 
    /**
-    * Attempts to lock the conversation for exclusive usage 
+    * Attempts to lock the conversation for exclusive usage
     * 
     * @param timeoutInMilliseconds The time in milliseconds to wait on the lock
     * @return True if lock was successful, false otherwise
@@ -99,24 +114,43 @@ public class ConversationEntry
     */
    public boolean lock(long timeoutInMilliseconds) throws InterruptedException
    {
-      return concurrencyLock.tryLock(timeoutInMilliseconds, TimeUnit.MILLISECONDS);
+      boolean success = concurrencyLock.tryLock(timeoutInMilliseconds, TimeUnit.MILLISECONDS);
+      if (success)
+      {
+         log.trace("Conversation " + cid + " locked");
+      }
+      else
+      {
+         log.warn("Failed to lock conversation " + cid + " in " + timeoutInMilliseconds + "ms");
+      }
+      return success;
    }
 
    /**
     * Attempts to unlock the conversation
     */
-   public void unlock()
+   public boolean unlock()
    {
-      concurrencyLock.unlock();
+      if (concurrencyLock.isHeldByCurrentThread())
+      {
+         log.debug("Unlocked conversation " + cid);
+         concurrencyLock.unlock();
+      }
+      else
+      {
+         log.warn("Unlock attempt by non-owner on conversation " + cid);
+      }
+      return !concurrencyLock.isLocked();
    }
 
    /**
-    * Re-schedules timeout termination 
+    * Re-schedules timeout termination
     * 
     * @param terminationHandle The fresh timeout termination handle
     */
    public void reScheduleTermination(Future<?> terminationHandle)
    {
+      log.trace("Conversation " + cid + " re-scheduled for termination");
       this.terminationHandle = terminationHandle;
    }
 

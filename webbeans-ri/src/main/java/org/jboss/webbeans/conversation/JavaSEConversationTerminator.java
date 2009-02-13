@@ -25,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 import javax.context.SessionScoped;
 
 import org.jboss.webbeans.WebBean;
+import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Logging;
 
 /**
  * A ConversationTerminator implementation using Java SE scheduling
@@ -36,10 +38,13 @@ import org.jboss.webbeans.WebBean;
 @WebBean
 public class JavaSEConversationTerminator implements ConversationTerminator, Serializable
 {
+   private static LogProvider log = Logging.getLogProvider(JavaSEConversationTerminator.class);
+
    private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
    public Future<?> scheduleForTermination(Runnable terminationTask, long timeoutInMilliseconds)
    {
+      log.trace("Recieved a termination task to be run in " + timeoutInMilliseconds + "ms");
       return executor.schedule(terminationTask, timeoutInMilliseconds, TimeUnit.MILLISECONDS);
    }
 
