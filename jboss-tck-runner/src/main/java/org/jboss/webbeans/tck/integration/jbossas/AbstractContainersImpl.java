@@ -145,6 +145,9 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
          {
             Thread.currentThread().interrupt();
          }
+         // If we got this far something went wrong
+         log.warn("Unable to connect to JBoss after " + bootTimeout + "ms, giving up!");
+         launch(jbossHome, "shutdown", "-S");
       }
       else
       {
