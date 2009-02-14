@@ -134,12 +134,6 @@
                      <suiteXmlFiles>
                         <suiteXmlFile>${project.build.directory}/dependency/jsr299-tck-impl-suite.xml</suiteXmlFile>
                      </suiteXmlFiles>
-                     <properties>
-                        <property>
-                           <name>listener</name>
-                           <value>org.jboss.jsr299.tck.impl.testng.AlwaysRunAnnotationTransformer</value>
-                        </property>
-                     </properties>
                      <systemProperties>
                         <property>
                            <name>org.jboss.jsr299.tck.standalone</name>
