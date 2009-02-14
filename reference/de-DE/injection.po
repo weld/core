@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-24 15:14+1100\n"
+"PO-Revision-Date: 2009-02-14 13:09+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,13 +25,13 @@ msgstr "Dependency-Einspeisung"
 #: injection.xml:6
 #, no-c-format
 msgid "Web Beans supports three primary mechanisms for dependency injection:"
-msgstr ""
+msgstr "Web Beans unterstützt drei primäre Mechanismen für \"Dependency\"-Einspeisung:"
 
 #. Tag: para
 #: injection.xml:8
 #, no-c-format
 msgid "Constructor parameter injection:"
-msgstr ""
+msgstr "Konstruktorparameter-Einspeisung:"
 
 #. Tag: programlisting
 #: injection.xml:10
@@ -95,7 +95,7 @@ msgstr ""
 #: injection.xml:16
 #, no-c-format
 msgid "And direct field injection:"
-msgstr ""
+msgstr "Und direkte Feldeinspeisung:"
 
 #. Tag: programlisting
 #: injection.xml:18
@@ -119,7 +119,7 @@ msgstr ""
 msgid ""
 "Dependency injection always occurs when the Web Bean instance is first "
 "instantiated."
-msgstr ""
+msgstr "Dependency-Einspeisung findet stets bei der ersten Instantiierung der Web Bean Instanz statt."
 
 #. Tag: para
 #: injection.xml:25
@@ -127,7 +127,7 @@ msgstr ""
 msgid ""
 "First, the Web Bean manager calls the Web Bean constructor, to obtain an "
 "instance of the Web Bean."
-msgstr ""
+msgstr "Zuerst ruft der Web Bean Manager den Web Bean Konstruktor auf, um eine Instanz des Web Beans zu erhalten."
 
 #. Tag: para
 #: injection.xml:29
@@ -135,13 +135,13 @@ msgstr ""
 msgid ""
 "Next, the Web Bean manager initializes the values of all injected fields of "
 "the Web Bean."
-msgstr ""
+msgstr "Als nächstes initialisiert der Web Bean Manager die Werte aller eingespeisten Felder des Web Beans."
 
 #. Tag: para
 #: injection.xml:33
 #, no-c-format
 msgid "Next, the Web Bean manager calls all initializer methods of Web Bean."
-msgstr ""
+msgstr "Anschließend ruft der Web Bean Manager alle Initialisierermethoden des Web Beans auf."
 
 #. Tag: para
 #: injection.xml:37
@@ -149,7 +149,7 @@ msgstr ""
 msgid ""
 "Finally, the <literal>@PostConstruct</literal> method of the Web Bean, if "
 "any, is called."
-msgstr ""
+msgstr "Zuletzt wird die <literal>@PostConstruct</literal>-Methode des Web Bean, falls vorhanden, aufgerufen."
 
 #. Tag: para
 #: injection.xml:42
@@ -158,6 +158,8 @@ msgid ""
 "Constructor parameter injection is not supported for EJB beans, since the "
 "EJB is instantiated by the EJB container, not the Web Bean manager."
 msgstr ""
+"Die Einspeisung von Konstruktorparametern wird für EJB-Beans nicht unterstützt, da das "
+"EJB durch den EJB-Container und nicht den Web Bean Manager instantiiert wird."
 
 #. Tag: para
 #: injection.xml:45
@@ -169,12 +171,14 @@ msgid ""
 "even when the default binding type applies. If the field does not specify a "
 "binding type, it will not be injected."
 msgstr ""
+"Parameter von Konstruktoren und Initialisierermethoden müssen nicht explizit annotiert werden, wenn der standardmäßige Binding-Typ <literal>@Current</literal> gilt."
+"Eingespeiste Felder jedoch <emphasis>müssen</emphasis> einen Binding-Typ festlegen, selbst wenn der standardmäßige Binding-Typ gilt. Legt das Feld keinen standardmäßige Binding-Typ fest, so wird es nicht eingespeist."
 
 #. Tag: para
 #: injection.xml:51
 #, no-c-format
 msgid "Producer methods also support parameter injection:"
-msgstr ""
+msgstr "Producer-Methoden unterstützen Parametereinspeisung ebenfalls:"
 
 #. Tag: programlisting
 #: injection.xml:53
@@ -195,6 +199,8 @@ msgid ""
 "Finally, observer methods (which we'll meet in <xref linkend=\"events\"/>), "
 "disposal methods and destructor methods all support parameter injection."
 msgstr ""
+"Observer-Methoden (auf die wir in <xref linkend=\"events\"/> näher eingehen), "
+"\"Disposal\"-Methoden und \"Destructor\"-Methoden unterstützen allesamt die Parametereinspeisung."
 
 #. Tag: para
 #: injection.xml:58
@@ -217,7 +223,7 @@ msgstr ""
 msgid ""
 "The purpose of this algorithm is to allow multiple Web Beans to implement "
 "the same API type and either:"
-msgstr ""
+msgstr "Der Zweck dieses Algorithmus ist es, mehreren Web Beans die Einspeisung desselben API-Typs zu gestatten und entweder:"
 
 #. Tag: para
 #: injection.xml:72
@@ -225,7 +231,7 @@ msgstr ""
 msgid ""
 "allow the client to select which implementation it requires using "
 "<emphasis>binding annotations</emphasis>,"
-msgstr ""
+msgstr "Dem Client mittels <emphasis>Binding-Annotationen</emphasis> zu gestatten auszuwählen, welche Implemetierung er benötigt, "
 
 #. Tag: para
 #: injection.xml:77
@@ -234,7 +240,7 @@ msgid ""
 "allow the application deployer to select which implementation is appropriate "
 "for a particular deployment, without changes to the client, by enabling or "
 "disabling <emphasis>deployment types</emphasis>, or"
-msgstr ""
+msgstr "Dem Anwendungs-Deployer durch Aktivierung oder Deaktivierung von <emphasis>Deployment-Typen</emphasis> gestatten auszuwählen, welche Implementierung die passende für eine bestimmte Umgebung ist, ohne dass es zu Änderungen am Client kommt oder "
 
 #. Tag: para
 #: injection.xml:82
@@ -244,18 +250,20 @@ msgid ""
 "same API at deployment time, without changes to the client, using "
 "<emphasis>deployment type precedence</emphasis>."
 msgstr ""
+"Einer Implementierung eines API mittels <emphasis>Deployment-Typ Präzedenz</emphasis> (\"Deployment Type Precedence\") gestatten, zum Deployment-Zeitpunkt eine andere Implementerung desselben API außer Kraft zu setzen, ohne dass dies zu Änderungen am Client führt."
+"."
 
 #. Tag: para
 #: injection.xml:88
 #, no-c-format
 msgid "Let's explore how the Web Beans manager determines a Web Bean to be injected."
-msgstr ""
+msgstr "Schauen wir uns jetzt näher an, wie der Web Beans Manager ein einzuspeisendes Web Bean bestimmt."
 
 #. Tag: title
 #: injection.xml:91
 #, no-c-format
 msgid "Binding annotations"
-msgstr ""
+msgstr "Binding-Annotationen"
 
 #. Tag: para
 #: injection.xml:93
@@ -265,7 +273,7 @@ msgid ""
 "injection point can specify exactly which Web Bean should be injected using "
 "a binding annotation. For example, there might be two implementations of "
 "<literal>PaymentProcessor</literal>:"
-msgstr ""
+msgstr "Falls mehr als ein Web Bean existiert, das einen bestimmten API-Typ implementiert, so kann der Einspeisungspunkt genau festlegen welches Web Bean eingespeist wird mittels Binding-Annotation. Zum Beispiel können zwei Implementierungen von <literal>PaymentProcessor</literal> vorhanden sein:"
 
 #. Tag: programlisting
 #: injection.xml:98
@@ -301,7 +309,7 @@ msgstr ""
 msgid ""
 "Where <literal>@PayByCheque</literal> and <literal>@PayByCreditCard</"
 "literal> are binding annotations:"
-msgstr ""
+msgstr "Wo <literal>@PayByCheque</literal> und <literal>@PayByCreditCard</literal> Binding-Annotationen sind:"
 
 #. Tag: programlisting
 #: injection.xml:105
@@ -337,13 +345,13 @@ msgstr ""
 msgid ""
 "A client Web Bean developer uses the binding annotation to specify exactly "
 "which Web Bean should be injected."
-msgstr ""
+msgstr "Ein Client Web Bean Entwickler verwendet die Binding-Annotation um genau festzulegen, welches Web Bean eingespeist werden sollte."
 
 #. Tag: para
 #: injection.xml:112
 #, no-c-format
 msgid "Using field injection:"
-msgstr ""
+msgstr "Verwendung der Feldeinspeisung:"
 
 #. Tag: programlisting
 #: injection.xml:114
@@ -359,7 +367,7 @@ msgstr ""
 #: injection.xml:116
 #, no-c-format
 msgid "Using initializer method injection:"
-msgstr ""
+msgstr "Verwendung der Initialisierermethoden-Einspeisung:"
 
 #. Tag: programlisting
 #: injection.xml:118
@@ -387,7 +395,7 @@ msgstr ""
 #: injection.xml:120
 #, no-c-format
 msgid "Or using constructor injection:"
-msgstr ""
+msgstr "Oder Verwendung der Konstruktoreinspeisung:"
 
 #. Tag: programlisting
 #: injection.xml:122
@@ -413,13 +421,13 @@ msgstr ""
 #: injection.xml:125
 #, no-c-format
 msgid "Binding annotations with members"
-msgstr ""
+msgstr "Binding-Annotationen mit Mitgliedern"
 
 #. Tag: para
 #: injection.xml:127
 #, no-c-format
 msgid "Binding annotations may have members:"
-msgstr ""
+msgstr "Binding-Annotationen können Mitglieder besitzen:"
 
 #. Tag: programlisting
 #: injection.xml:129
@@ -443,7 +451,7 @@ msgstr ""
 #: injection.xml:131
 #, no-c-format
 msgid "In which case, the member value is significant:"
-msgstr ""
+msgstr "Wobei in diesem Fall der Mitgliederwert von Bedeutung ist:"
 
 #. Tag: programlisting
 #: injection.xml:133
@@ -461,19 +469,19 @@ msgstr ""
 msgid ""
 "You can tell the Web Bean manager to ignore a member of a binding annotation "
 "type by annotating the member <literal>@NonBinding</literal>."
-msgstr ""
+msgstr "Sie können den Web Bean Manager anweisen, ein Mitglied eines Binding-Annotationstyps zu ignorieren, indem Sie das Mitglied mit <literal>@NonBinding</literal> annotieren."
 
 #. Tag: title
 #: injection.xml:141
 #, no-c-format
 msgid "Combinations of binding annnotations"
-msgstr ""
+msgstr "Kombinationen von Binding-Annnotationen"
 
 #. Tag: para
 #: injection.xml:143
 #, no-c-format
 msgid "An injection point may even specify multiple binding annotations:"
-msgstr ""
+msgstr "Ein Einspeisungspunkt kann sogar mehrere Binding-Annotationen festlegen:"
 
 #. Tag: programlisting
 #: injection.xml:145
@@ -487,19 +495,19 @@ msgstr "<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>
 msgid ""
 "In this case, only a Web Bean which has <emphasis>both</emphasis> binding "
 "annotations would be eligible for injection."
-msgstr ""
+msgstr "In diesem Fall würde nur ein Web Bean mit <emphasis>beiden</emphasis> Binding-Annotationen eingespeist."
 
 #. Tag: title
 #: injection.xml:153
 #, no-c-format
 msgid "Binding annotations and producer methods"
-msgstr ""
+msgstr "Binding-Annotationen und Producer-Methoden"
 
 #. Tag: para
 #: injection.xml:155
 #, no-c-format
 msgid "Even producer methods may specify binding annotations:"
-msgstr ""
+msgstr "Sogar Producer-Methoden können Binding-Annotationen festlegen:"
 
 #. Tag: programlisting
 #: injection.xml:157
@@ -523,7 +531,7 @@ msgstr ""
 #: injection.xml:162
 #, no-c-format
 msgid "The default binding type"
-msgstr ""
+msgstr "Der standardmäßige Binding-Typ"
 
 #. Tag: para
 #: injection.xml:164
@@ -532,7 +540,7 @@ msgid ""
 "Web Beans defines a binding type <literal>@Current</literal> that is the "
 "default binding type for any injection point or Web Bean that does not "
 "explicitly specify a binding type."
-msgstr ""
+msgstr "Web Beans definiert einen Binding-Typ <literal>@Current</literal>, der der standardmäßige Binding-Typ für jeden Einspeisungspunkt oder Web Bean ist, der nicht explizit einen  Binding-Typ festlegt."
 
 #. Tag: para
 #: injection.xml:168
@@ -540,7 +548,7 @@ msgstr ""
 msgid ""
 "There are two common circumstances in which it is necessary to explicitly "
 "specify <literal>@Current</literal>:"
-msgstr ""
+msgstr "Es existieren zwei gängige Umstände, bei denen es notwendig ist, <literal>@Current</literal> festzulegen:"
 
 #. Tag: para
 #: injection.xml:173
@@ -548,7 +556,7 @@ msgstr ""
 msgid ""
 "on a field, in order to declare it as an injected field with the default "
 "binding type, and"
-msgstr ""
+msgstr "An einem Feld, um es als eingespeistes Feld zu deklarieren mit dem standardmäßigen Binding-Typ und "
 
 #. Tag: para
 #: injection.xml:177
@@ -556,7 +564,7 @@ msgstr ""
 msgid ""
 "on a Web Bean which has another binding type in addition to the default "
 "binding type."
-msgstr ""
+msgstr "an einem Web Bean, das neben dem standardmäßigen Binding-Type einen weiteren Binding-Typ besitzt."
 
 #. Tag: title
 #: injection.xml:187
@@ -571,7 +579,7 @@ msgid ""
 "All Web Beans have a <emphasis>deployment type</emphasis>. Each deployment "
 "type identifies a set of Web Beans that should be conditionally installed in "
 "some deployments of the system."
-msgstr ""
+msgstr "Alle Web Beans besitzen einen <emphasis>Deployment-Typ</emphasis>. Jeder Deployment-Typ identifiziert einen Satz von Web Beans mit Vorbehalt in einigen Deployments des Systems installiert werden sollten."
 
 #. Tag: para
 #: injection.xml:193
@@ -580,7 +588,7 @@ msgid ""
 "For example, we could define a deployment type named <literal>@Mock</"
 "literal>, which would identify Web Beans that should only be installed when "
 "the system executes inside an integration testing environment:"
-msgstr ""
+msgstr "Zum Beispiel könnten wir einen Deployment-Typ namens <literal>@Mock</literal> definieren, der Web Beans identifiziert, die nur installiert werden sollen, wenn das System innerhalb einer Integrationstestumgebung ausgeführt wird:"
 
 #. Tag: programlisting
 #: injection.xml:197
@@ -602,7 +610,7 @@ msgstr ""
 msgid ""
 "Suppose we had some Web Bean that interacted with an external system to "
 "process payments:"
-msgstr ""
+msgstr "Nehmen wir an, wir hätten ein Web Bean, das mit einem externen System interagiert, um Zahlungen zu bearbeiten:"
 
 #. Tag: programlisting
 #: injection.xml:202
@@ -630,7 +638,7 @@ msgstr ""
 msgid ""
 "Since this Web Bean does not explicitly specify a deployment type, it has "
 "the default deployment type <literal>@Production</literal>."
-msgstr ""
+msgstr "Da dieses Web Bean nicht explizit einen Deployment-Typ festlegt gilt der standardmäßige Deployment-Typ <literal>@Production</literal>."
 
 #. Tag: para
 #: injection.xml:207
@@ -638,7 +646,7 @@ msgstr ""
 msgid ""
 "For integration or unit testing, the external system is slow or unavailable. "
 "So we would create a mock object:"
-msgstr ""
+msgstr "Für Integration oder das Testen von Einheiten ist das externe System langsam oder nicht verfügbar. Daher würden wir ein \"Mock\"-Objekt erstellen:"
 
 #. Tag: programlisting
 #: injection.xml:210
@@ -670,13 +678,13 @@ msgstr ""
 msgid ""
 "But how does the Web Bean manager determine which implementation to use in a "
 "particular deployment?"
-msgstr ""
+msgstr "Wie aber bestimmt der Web Bean Manager, welche Implementierung in einem bestimmten Deployment verwendet werden soll?"
 
 #. Tag: title
 #: injection.xml:216
 #, no-c-format
 msgid "Enabling deployment types"
-msgstr ""
+msgstr "Aktivierung von Deployment-Typen"
 
 #. Tag: para
 #: injection.xml:218
@@ -688,6 +696,8 @@ msgid ""
 "can identify additional deployment types to be enabled in a particular "
 "deployment by listing them in <literal>web-beans.xml</literal>."
 msgstr ""
+"Web Beans definieren zwei eingebaute Deployment-Typen: <literal>@Production</"
+"literal> und <literal>@Standard</literal>. Standardmäßig sind nur Web Beans mit den eingebauten Deployment-Typen bei Deployment des Systems aktiviert. Wir können weitere Deployment-Typen identifizieren, die bei einem bestimmten Deployment aktiviert werden sollen, indem wir diese in <literal>web-beans.xml</literal> aufführen."
 
 #. Tag: para
 #: injection.xml:224
@@ -695,7 +705,7 @@ msgstr ""
 msgid ""
 "Going back to our example, when we deploy our integration tests, we want all "
 "our <literal>@Mock</literal> objects to be installed:"
-msgstr ""
+msgstr "Kehren wir zu unserem Beispiel zurück, wenn wir Integrationsstests deployen und wir möchten, dass alle unsere <literal>@Mock</literal>-Objekte installiert werden:"
 
 #. Tag: programlisting
 #: injection.xml:227
@@ -724,7 +734,7 @@ msgid ""
 "Now the Web Bean manager will identify and install all Web Beans annotated "
 "<literal>@Production</literal>, <literal>@Standard</literal> or "
 "<literal>@Mock</literal> at deployment time."
-msgstr ""
+msgstr "Jetzt identifiziert und installiert der Web Bean Manager alle mit <literal>@Production</literal>, <literal>@Standard</literal> oder <literal>@Mock</literal> annotierten Web Beans zum Zeitpunkt des Deployments."
 
 #. Tag: para
 #: injection.xml:233
@@ -734,6 +744,8 @@ msgid ""
 "special Web Beans defined by the Web Beans specification. We can't use it "
 "for our own Web Beans, and we can't disable it."
 msgstr ""
+"Der Deployment-Typ <literal>@Standard</literal> wird nur für bestimmte, spezielle "
+"durch die Web Beans Spezifikation definierte Web Beans verwendet. Wir können ihn nicht für unsere eigenen Web Beans benutzen und wir können ihn nicht deaktivieren."
 
 #. Tag: para
 #: injection.xml:237
@@ -742,13 +754,13 @@ msgid ""
 "The deployment type <literal>@Production</literal> is the default deployment "
 "type for Web Beans which don't explicitly declare a deployment type, and may "
 "be disabled."
-msgstr ""
+msgstr "Der Deployment-Typ <literal>@Production</literal> ist der standardmäßige Deployment-Typ für Web Beans, die keinen expliziten Deployment-Typ festlegen oder deaktiviert sind."
 
 #. Tag: title
 #: injection.xml:244
 #, no-c-format
 msgid "Deployment type precedence"
-msgstr ""
+msgstr "Deployment-Typ Präzedenz"
 
 #. Tag: para
 #: injection.xml:246
@@ -759,6 +771,9 @@ msgid ""
 "literal> or <literal>MockPaymentProcessor</literal> &#151; to choose. Consider "
 "what happens when the manager encounters this injection point:"
 msgstr ""
+"Wenn Sie aufgepasst haben, fragen Sie sich jetzt wahrscheinlich, wie der Web Bean "
+"Manager entscheidet, welche Implementierung &#151; <literal>ExternalPaymentProcessor</"
+"literal> oder <literal>MockPaymentProcessor</literal> &#151; er wählt. Überlegen Sie sich, was passiert, wenn der Manager auf diesen Einspeisungspunkt trifft:"
 
 #. Tag: programlisting
 #: injection.xml:251
@@ -775,7 +790,7 @@ msgid ""
 "disambiguate, since binding annotations are hard-coded into the source at "
 "the injection point, and we want the manager to be able to decide at "
 "deployment time!"
-msgstr ""
+msgstr "Es gibt jetzt zwei Web Beans, die den <literal>PaymentProcessor</literal>-Vertrag erfüllen. Natürlich können wir keine Binding-Annotation zur eindeutig Machung verwenden, da Binding-Annotationen in die Quelle am Einspeisungspunkt hardcodiert und wir wollen, dass der Manager zum Deployment-Zeotpunkt entscheiden können soll!"
 
 #. Tag: para
 #: injection.xml:258
@@ -786,7 +801,7 @@ msgid ""
 "determined by the order in which they appear in <literal>web-beans.xml</"
 "literal>. In our example, <literal>@Mock</literal> appears later than "
 "<literal>@Production</literal> so it has a higher precedence."
-msgstr ""
+msgstr "Die Lösung dieses Problems ist, dass jeder Deployment-Typ eine andere <emphasis>Präzendenz</emphasis> besitzt. Die Präzendenz der Deployment-Typen wird durch die Reihenfolge, in der sie in <literal>web-beans.xml</literal> erscheinen, festgelegt. In unserem Beispiel erscheint <literal>@Mock</literal> später als <literal>@Production</literal>, so dass es eine höhere Präzendenz besitzt."
 
 #. Tag: para
 #: injection.xml:264
@@ -827,7 +842,7 @@ msgstr "Beispiel Deployment-Typen"
 #: injection.xml:286
 #, no-c-format
 msgid "Deployment types are useful for all kinds of things, here's some examples:"
-msgstr ""
+msgstr "Deployment-Typen sind hilfreich für allerlei Dinge, hier sind ein paar Beispiele: "
 
 #. Tag: para
 #: injection.xml:290
@@ -835,13 +850,13 @@ msgstr ""
 msgid ""
 "<literal>@Mock</literal> and <literal>@Staging</literal> deployment types "
 "for testing"
-msgstr ""
+msgstr "<literal>@Mock</literal> und <literal>@Staging</literal> Deployment-Typen zu Testzwecken "
 
 #. Tag: para
 #: injection.xml:294
 #, no-c-format
 msgid "<literal>@AustralianTaxLaw</literal> for site-specific Web Beans"
-msgstr ""
+msgstr "<literal>@AustralianTaxLaw</literal> für site-spezifische Web Beans"
 
 #. Tag: para
 #: injection.xml:297
@@ -849,7 +864,7 @@ msgstr ""
 msgid ""
 "<literal>@SeamFramework</literal>, <literal>@Guice</literal> for third-party "
 "frameworks which build on Web Beans"
-msgstr ""
+msgstr "<literal>@SeamFramework</literal>, <literal>@Guice</literal> für Frameworks Dritter, die auf Web Beans bauen"
 
 #. Tag: para
 #: injection.xml:301
@@ -857,13 +872,13 @@ msgstr ""
 msgid ""
 "<literal>@Standard</literal> for standard Web Beans defined by the Web Beans "
 "specification"
-msgstr ""
+msgstr "<literal>@Standard</literal> für standardmäßige, durch die Web Beans Spezifikation definierte Web Beans "
 
 #. Tag: para
 #: injection.xml:306
 #, no-c-format
 msgid "I'm sure you can think of more applications..."
-msgstr ""
+msgstr "Ihnen fallen sicher noch andere Anwendungen ein..."
 
 #. Tag: title
 #: injection.xml:313
@@ -888,6 +903,8 @@ msgid ""
 "It's usually easy to fix an <literal>UnsatisfiedDependencyException</"
 "literal> or <literal>AmbiguousDependencyException</literal>."
 msgstr ""
+"Es ist in der Regel einfach, Probleme mit einer <literal>UnsatisfiedDependencyException</"
+"literal> oder <literal>AmbiguousDependencyException</literal> zu beheben."
 
 #. Tag: para
 #: injection.xml:323
@@ -897,7 +914,7 @@ msgid ""
 "a Web Bean which implements the API type and has the binding types of the "
 "injection point &#151; or enable the deployment type of a Web Bean that "
 "already implements the API type and has the binding types."
-msgstr ""
+msgstr "Um eine <literal>UnsatisfiedDependencyException</literal> zu beheben, stellen Sie einfach ein Web Bean bereit, das den API-Typ implementiert und die Binding-Typen des Einspeisungspunkts besitzt&#151; oder aktivieren Sie den Deployment-Typ eines Web Beans, das den API-Typ bereits implementiert und die Binding-Typen besitzt."
 
 #. Tag: para
 #: injection.xml:328
@@ -917,13 +934,13 @@ msgstr ""
 msgid ""
 "There's one more issue you need to be aware of when using dependency "
 "injection in Web Beans."
-msgstr ""
+msgstr "Es gibt eine weitere Sache, derer man sich bei der Verwendung von \"Dependency\"-Einspeisung in Web Beans gewahr sein sollte."
 
 #. Tag: title
 #: injection.xml:341
 #, no-c-format
 msgid "Client proxies"
-msgstr ""
+msgstr "Client-Proxies"
 
 #. Tag: para
 #: injection.xml:343
@@ -932,6 +949,8 @@ msgid ""
 "Clients of an injected Web Bean do not usually hold a direct reference to a "
 "Web Bean instance."
 msgstr ""
+"Clients eines eingespeisten Web Beans enthalten in der Regel keinen direkten Verweis an eine "
+"Web Bean Instanz."
 
 #. Tag: para
 #: injection.xml:346
@@ -982,7 +1001,7 @@ msgstr ""
 #: injection.xml:370
 #, no-c-format
 msgid "The following Java types cannot be proxied by the Web Bean manager:"
-msgstr ""
+msgstr "Die folgenden Java-Typen können nicht durch den Web Bean Manager geproxiet werden:"
 
 #. Tag: para
 #: injection.xml:374
@@ -990,19 +1009,19 @@ msgstr ""
 msgid ""
 "classes which are declared <literal>final</literal> or have a "
 "<literal>final</literal> method,"
-msgstr ""
+msgstr "Als <literal>final</literal> deklarierte Klassen oder die eine <literal>final</literal>-Methode besitzen,"
 
 #. Tag: para
 #: injection.xml:378
 #, no-c-format
 msgid "classes which have no non-private constructor with no parameters, and"
-msgstr ""
+msgstr "Klassen, die keinen nicht-privaten Konstruktor ohne Parameter besitzen sowie "
 
 #. Tag: para
 #: injection.xml:381
 #, no-c-format
 msgid "arrays and primitive types."
-msgstr ""
+msgstr "Arrays und primitive Typen."
 
 #. Tag: para
 #: injection.xml:385
@@ -1013,12 +1032,16 @@ msgid ""
 "introduce an interface, or change the scope of the injected Web Bean to "
 "<literal>@Dependent</literal>."
 msgstr ""
+"Es ist in der Regel ganz leicht eine <literal>UnproxyableDependencyException</"
+"literal> zu beheben. Fügen Sie der eingespeisten Klasse einfach einen Konstruktor ohne Parameters hinzu, "
+"führen Sie ein Interface ein oder ändern Sie den Gelstungsbereich des eingespeisten Web Bean zu "
+"<literal>@Dependent</literal>."
 
 #. Tag: title
 #: injection.xml:392
 #, no-c-format
 msgid "Obtaining a Web Bean by programatic lookup"
-msgstr ""
+msgstr "Erhalt eines Web Beans durch programmatsichen \"Lookup\""
 
 #. Tag: para
 #: injection.xml:394
@@ -1026,7 +1049,7 @@ msgstr ""
 msgid ""
 "The application may obtain an instance of the interface <literal>Manager</"
 "literal> by injection:"
-msgstr ""
+msgstr "Die Anwendung kann durch Einspeisung eine Instanz des Interface <literal>Manager</literal> erhalten:"
 
 #. Tag: programlisting
 #: injection.xml:397
@@ -1040,7 +1063,7 @@ msgstr "<![CDATA[@Current Manager manager;]]>"
 msgid ""
 "The <literal>Manager</literal> object provides a set of methods for "
 "obtaining a Web Bean instance programatically."
-msgstr ""
+msgstr "Das <literal>Manager</literal>-Objekt liefert einen Satz von Methoden zum programmatischen Erhalt einer Web Bean Instanz."
 
 #. Tag: programlisting
 #: injection.xml:402
@@ -1059,7 +1082,7 @@ msgid ""
 "Binding annotations may be specified by subclassing the helper class "
 "<literal>AnnotationLiteral</literal>, since it is otherwise difficult to "
 "instantiate an annotation type in Java."
-msgstr ""
+msgstr "Binding-Annotationen können durch Subklassifizierung der Helferklasse <literal>AnnotationLiteral</literal> festgelegt werden, da es ansonsten schwierig ist, einen Annotationstyp in Java zu instantiieren."
 
 #. Tag: programlisting
 #: injection.xml:408
@@ -1082,7 +1105,7 @@ msgid ""
 "If the binding type has an annotation member, we can't use an anonymous "
 "subclass of <literal>AnnotationLiteral</literal> &#151; instead we'll need to "
 "create a named subclass:"
-msgstr ""
+msgstr "Besitzt der Binding-Typ ein Annotationsmitglied, so können wir keine anonyme Unterklasse von <literal>AnnotationLiteral</literal> &#151; verwenden - stattdessen werden wir eine benannte Unterklasse erstellen müssen:"
 
 #. Tag: programlisting
 #: injection.xml:413
@@ -1121,6 +1144,8 @@ msgid ""
 "Lifecycle callbacks, <literal>@Resource</literal>, <literal>@EJB</literal> "
 "and <literal>@PersistenceContext</literal>"
 msgstr ""
+"Lebenszyklus-Callbacks, <literal>@Resource</literal>, <literal>@EJB</literal> "
+"und <literal>@PersistenceContext</literal>"
 
 #. Tag: para
 #: injection.xml:422
