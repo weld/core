@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: intro\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-27 07:18+1100\n"
+"PO-Revision-Date: 2009-02-15 20:40+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -520,7 +520,7 @@ msgstr "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
 msgid ""
 "If no binding type is explicitly specified at an injection point, the "
 "default binding type <literal>@Current</literal> is assumed."
-msgstr ""
+msgstr "Wird an einem Einspeisungspunkt kein Binding-Typ explizit festgelegt, so wird vom standardmäßigen Binding-Typ <literal>@Current</literal> ausgegangen."
 
 #. Tag: para
 #: intro.xml:196
@@ -754,7 +754,7 @@ msgstr ""
 #: intro.xml:284
 #, no-c-format
 msgid "It's even easier to just let the name be defaulted by the Web Bean manager:"
-msgstr ""
+msgstr "Es ist sogar noch einfacher den Name vom Web Bean Manager standardisieren zu lassen:"
 
 #. Tag: programlisting
 #: intro.xml:287
@@ -769,10 +769,13 @@ msgstr ""
 #. Tag: para
 #: intro.xml:289
 #, no-c-format
+#, fuzzy
 msgid ""
 "In this case, the name defaults to <literal>shoppingCart</literal> &#151; the "
 "unqualified class name, with the first character changed to lowercase."
 msgstr ""
+"In diesem Fall wird der Name standardmäßig zu <literal>shoppingCart</literal> &#151; dem nicht vollständigen Klassennamen  "
+"unqualified class name, with the first character changed to lowercase."
 
 #. Tag: title
 #: intro.xml:295
