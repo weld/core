@@ -1,6 +1,7 @@
 package org.jboss.webbeans.bootstrap;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
@@ -100,50 +101,64 @@ public class BeansXmlParser
       List<DeployElement> deployElements = new ArrayList<DeployElement>(); 
       for (URL url : beansXml)
       {
-         Document document;
+         InputStream is;
+         boolean fileHasContents;
          try
          {
-            document = documentBuilder.parse(url.openStream());
-            document.normalize();
-         }
-         catch (SAXException e)
-         {
-            throw new DeploymentException("Error parsing beans.xml " + url.toString());
+            is = url.openStream();
+            fileHasContents = is.available() > 0;
          }
          catch (IOException e)
          {
-            throw new DeploymentException("Error loading beans.xml " + url.toString());
+            throw new DeploymentException("Error loading beans.xml " + url.toString(), e);
          }
-         Element beans = document.getDocumentElement();
-         Map<String, String> namespaces = new HashMap<String, String>();
-         for (int i = 0; i < beans.getAttributes().getLength(); i++)
+         if (fileHasContents)
          {
-            Node child = beans.getAttributes().item(i);
-            if (child instanceof Attr)
+            Document document;
+            try
             {
-               Attr attr = (Attr) child;
-               if (attr.getName().startsWith("xmlns"))
+               document = documentBuilder.parse(is);
+               document.normalize();
+            }
+            catch (SAXException e)
+            {
+               throw new DeploymentException("Error parsing beans.xml " + url.toString(), e);
+            }
+            catch (IOException e)
+            {
+               throw new DeploymentException("Error loading beans.xml " + url.toString(), e);
+            }
+            Element beans = document.getDocumentElement();
+            Map<String, String> namespaces = new HashMap<String, String>();
+            for (int i = 0; i < beans.getAttributes().getLength(); i++)
+            {
+               Node child = beans.getAttributes().item(i);
+               if (child instanceof Attr)
                {
-                  String namespacePrefix;
-                  if (attr.getName().length() == 5)
+                  Attr attr = (Attr) child;
+                  if (attr.getName().startsWith("xmlns"))
                   {
-                     namespacePrefix = "";
+                     String namespacePrefix;
+                     if (attr.getName().length() == 5)
+                     {
+                        namespacePrefix = "";
+                     }
+                     else
+                     {
+                        namespacePrefix = attr.getName().substring(6);
+                     }
+                     
+                     String namespace = attr.getValue();
+                     namespaces.put(namespacePrefix, namespace);
                   }
-                  else
-                  {
-                     namespacePrefix = attr.getName().substring(6);
-                  }
-                  
-                  String namespace = attr.getValue();
-                  namespaces.put(namespacePrefix, namespace);
                }
             }
-         }
-         for (Node child : new NodeListIterable(beans.getChildNodes()))
-         {
-            if (child instanceof Element && "Deploy".equals(child.getNodeName()))
+            for (Node child : new NodeListIterable(beans.getChildNodes()))
             {
-               deployElements.add(new DeployElement(url, (Element) child, namespaces));
+               if (child instanceof Element && "Deploy".equals(child.getNodeName()))
+               {
+                  deployElements.add(new DeployElement(url, (Element) child, namespaces));
+               }
             }
          }
       }
