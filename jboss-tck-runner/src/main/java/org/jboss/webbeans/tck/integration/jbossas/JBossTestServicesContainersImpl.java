@@ -51,15 +51,6 @@ public class JBossTestServicesContainersImpl extends AbstractContainersImpl
       {
          throw new DeploymentException("Error deploying " + name, e);
       }
-      try
-      {
-         // Give the app a chance to undeploy
-         Thread.sleep(1000);
-      }
-      catch (InterruptedException e)
-      {
-         Thread.currentThread().interrupt();
-      }
    }
    
    private String getTmpArchiveName(String name)

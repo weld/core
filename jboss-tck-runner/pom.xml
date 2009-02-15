@@ -119,10 +119,10 @@
    
    <profiles>
       <profile>
-         <id>incontainer</id>
+         <id>incontainer-debug</id>
          <activation>
             <property>
-               <name>incontainer</name>
+               <name>incontainer-debug</name>
             </property>
          </activation>
          <build>
@@ -158,10 +158,10 @@
          </build>
       </profile>
       <profile>
-         <id>incontainer-restart</id>
+         <id>incontainer</id>
          <activation>
             <property>
-               <name>incontainer-restart</name>
+               <name>incontainer</name>
             </property>
          </activation>
          <build>

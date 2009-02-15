@@ -115,13 +115,14 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
       }
       else
       {
-         log.info("JBoss Home set to " + jbossHome);
+         log.info("Using JBoss instance in " + jbossHome + " at URL " + configuration.getHost());
       }
       this.bootTimeout = Long.getLong(JBOSS_BOOT_TIMEOUT_PROPERTY_NAME, 120000);
       if (Boolean.getBoolean(FORCE_RESTART_PROPERTY_NAME))
       {
          if (isJBossUp())
          {
+            log.info("Shutting down JBoss instance as in force-restart mode");
             shutDownJBoss();
             try
             {
@@ -137,7 +138,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
       {
          jbossWasStarted = true;
          launch(jbossHome, "run", "");
-         log.info("Starting JBoss AS");
+         log.info("Starting JBoss instance");
          // Wait for JBoss to come up
          long timeoutTime = System.currentTimeMillis() + bootTimeout;
          boolean interrupted = false;
@@ -145,12 +146,12 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
          {
             if (isJBossUp()) 
             {
-               log.info("Started JBoss AS");
+               log.info("Started JBoss instance");
                return;
             }
             try
             {
-               Thread.sleep(500);
+               Thread.sleep(200);
             }
             catch (InterruptedException e)
             {
@@ -162,9 +163,9 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
             Thread.currentThread().interrupt();
          }
          // If we got this far something went wrong
-         log.warn("Unable to connect to JBoss after " + bootTimeout + "ms, giving up!");
+         log.warn("Unable to connect to JBoss instance after " + bootTimeout + "ms, giving up!");
          launch(jbossHome, "shutdown", "-S");
-         throw new IllegalStateException("Error connecting to JBoss AS at " + jbossHttpUrl);
+         throw new IllegalStateException("Error connecting to JBoss instance");
       }
       else
       {
@@ -176,15 +177,13 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
    {
       if (jbossWasStarted)
       {
-         log.info("Shutting down JBoss AS");
-         launch(jbossHome, "shutdown", "-S");
-         log.info("Shut down JBoss AS");
+         log.info("Shutting down JBoss instance");
+         shutDownJBoss();
       }
    }
    
    private void shutDownJBoss() throws IOException
    {
-      log.info("Shutting down JBoss AS");
       launch(jbossHome, "shutdown", "-S");
       log.info("Shut down JBoss AS");
    }
