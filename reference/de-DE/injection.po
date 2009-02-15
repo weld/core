@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-02-14 13:09+1100\n"
+"PO-Revision-Date: 2009-02-15 15:56+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -216,6 +216,9 @@ msgid ""
 "<literal>UnsatisfiedDependencyException</literal> or "
 "<literal>AmbiguousDependencyException</literal>."
 msgstr ""
+"Die Web Beans Spezifikation definiert eine Prozedur namens <emphasis>typesicherer Auflösungsalgorithmus</emphasis> (sog. typesafe resolution algorithm), den der Web Bean "
+"Manager bei der Identifizierung des an einem Einspeisungspunkt einzuspeisenden Web Beans folgt. Dieser  Algorithmus sieht auf den ersten Blick recht komplex aus, ist es aber nach kurzer Eingewöhnung nicht. Typensichere Auflösung wird zum Initialisierungszeitpunkt des Systems durchgeführt, was bedeutet, dass der Manager den Benutzer sofort darüber informiert, falls die Abhängigkeiten eines Web Beans nicht erfüllt werden können - dies erfolgt durch Meldung von <literal>UnsatisfiedDependencyException</literal> oder "
+"<literal>AmbiguousDependencyException</literal>."
 
 #. Tag: para
 #: injection.xml:67
@@ -814,7 +817,7 @@ msgid ""
 "to inject. So, in our example, the Web Bean manager will inject "
 "<literal>MockPaymentProcessor</literal> when executing in our integration "
 "testing environment (which is exactly what we want)."
-msgstr ""
+msgstr "Findet der Manager mehr als ein Web Bean, das den von einem Einspeisungspunkt festgelegten Vertrag erfüllt (API-Typ plus Binding-Annotationen), so gilt die relative Präzedenz der Web Beans. Besitzt eines eine höhere Präzedenz als andere, so wird es für die Einspeisung gewählt. In unserem Beispiel speist der Web Bean Manager also <literal>MockPaymentProcessor</literal> bei der Ausführung unserer Integrationstestumgebung aus (und das ist es auch, was wir möchten)."
 
 #. Tag: para
 #: injection.xml:271
@@ -831,6 +834,8 @@ msgid ""
 "browsing the code can easily identify what deployment scenarios the Web Bean "
 "will be used in."
 msgstr ""
+"Es ist interessant dies mit den heutzutage beliebten Manager Architekturen zu vergleichen. Verschiedene \"leichtgewichtige\" Container gestatten uns auch das bedingte Deployment von im Klassenpfad existierenden Klassen, aber Klassen, die deployt werden sollen müssen explizit, individuell im Konfigurationscode oder einer XML-Konfigurationsdatei aufgeführt sein. Web Beans unterstützt die Web Bean "
+"Definition und Konfiguration via XML, aber im gängigen Fall, in dem keine komplexe Konfiguration erforderlich ist, gestatten Deployment-Types die Aktivierung eines gesamten Satzes von Web Beans mittels einer einzigen XML-Zeile. Währenddessen kann ein den Code durchsehender Entwickler leicht einsehen, in welchen Deployment-Szenarien das Web Bean eingesetzt wird."
 
 #. Tag: title
 #: injection.xml:284
@@ -884,7 +889,7 @@ msgstr "Ihnen fallen sicher noch andere Anwendungen ein..."
 #: injection.xml:313
 #, no-c-format
 msgid "Fixing unsatisfied dependencies"
-msgstr ""
+msgstr "Unbefriedigende Abhängigkeiten beheben"
 
 #. Tag: para
 #: injection.xml:315
@@ -894,7 +899,7 @@ msgid ""
 "annotations and and deployment types of all Web Beans that implement the API "
 "type of an injection point, the Web Bean manager is unable to identify "
 "exactly one Web Bean to inject."
-msgstr ""
+msgstr "Der typensichere Auflösungsalgorithmus schlägt fehl, wenn - nach Betrachtung der Binding-Annotationen und der Deployment-Typen aller den API-Typ implementierender Web Beans eines Einspeisungspunktes - der Web Bean Manager nicht dazu in der Lage ist, ein einzuspeisendes Web Bean zu identifizieren."
 
 #. Tag: para
 #: injection.xml:320
@@ -926,7 +931,7 @@ msgid ""
 "Bean manager can use deployment type precedence to choose between them. An "
 "<literal>AmbiguousDependencyException</literal> can only occur if two Web "
 "Beans share a binding type and have exactly the same deployment type."
-msgstr ""
+msgstr "Um eine <literal>AmbiguousDependencyException</literal> zu beheben, führen Sie einen Binding-Typ ein, um zwischen den beiden Implementierungen des API-Typs zu unterscheiden oder ändern Sie den Deployment-Typ einer der Implementierungen damit der Web Bean Manager Deployment-Typ Präzedenz zur Auswahl zwischen den beiden verwenden kann. Eine <literal>AmbiguousDependencyException</literal> kann nur vorkommen, wenn zwei Web Beans sich einen Binding-Typ teilen und genau denselben Deployment-Typ besitzen."
 
 #. Tag: para
 #: injection.xml:335
@@ -960,7 +965,7 @@ msgid ""
 "reference to a Web Bean bound to the request scope. The application scoped "
 "Web Bean is shared between many different requests. However, each request "
 "should see a different instance of the request scoped Web bean!"
-msgstr ""
+msgstr "Stellen wir uns vor, ein an den Geltungsbereich der Anwendung gebundenes Web Bean hielte einen direkten Verweis auf ein an den Geltungsbereich der Anfrage gebundenes Web Bean. Das an den Geltungsbereich der Anwendung gebundene Web Bean wird von vielen verschiedenen Anfragen geteilt. Jedoch sollte jede Anfrage eine andere Instanz des an den Geltungsbereich der Anfrage gebundenen Web Beans sehen!"
 
 #. Tag: para
 #: injection.xml:351
@@ -971,7 +976,7 @@ msgid ""
 "the session context is serialized to disk in order to use memory more "
 "efficiently. However, the application scoped Web Bean instance should not be "
 "serialized along with the session scoped Web Bean!"
-msgstr ""
+msgstr "Stellen Sie sich nun vor das an den Geltungsbereich der Session gebundene Web Bean hielte einen direkten Verweis auf ein an den Geltungsbereich der Anwendung gebundenes Web Bean. FVon Zeit zu Zeit wird der Session Kontext auf Disk serialisiert, um den Speicher effizienter zu nutzen. Die durch den Geltungsbereich der Anwendung begrenzte Instanz des Web Beans sollte jedoch nicht mit dem durch den Geltungsbereich der Session begrenzetn Web Bean serialisiert werden!"
 
 #. Tag: para
 #: injection.xml:357
@@ -986,6 +991,10 @@ msgid ""
 "context to be serialized to disk without recursively serializing other "
 "injected Web Beans."
 msgstr ""
+"Daher muss der Web Bean Manageralle eingespeisten Verweise auf das Web Bean durch ein Proxy-Objekt einleiten, wenn das Web Bean nicht den Standard-Geltungsbereich <literal>@Dependent</"
+"literal> besitzt. Dieser <emphasis>Client-Proxy</emphasis> ist verantwortlich dafür sicher zu stellen, dass die einen Methodenaufruf erhaltende Web Bean Instanz, die mit dem aktuellen Kontext assoziierte ist. Der "
+"Client-Proxy gestattet außerdem die Serialisierung auf Disk von an Kontexte gebundenen Web Beans, ohne dass"
+"rekursiv andere eingespeiste Web Beans serialisiert werden."
 
 #. Tag: para
 #: injection.xml:365
@@ -995,7 +1004,7 @@ msgid ""
 "cannot be proxied by the Web Bean manager. Therefore, the Web Bean manager "
 "throws an <literal>UnproxyableDependencyException</literal> if the type of "
 "an injection point cannot be proxied."
-msgstr ""
+msgstr "Leider können aufgrund von Einschränkungen von Java einige Java-Typen nicht vom Web Bean Manager geproxiet werden. Daher meldet der Web Bean Manager eine <literal>UnproxyableDependencyException</literal>, wenn der Typ eines Einspeisungspunkts nicht geproxiet werden kann."
 
 #. Tag: para
 #: injection.xml:370
@@ -1155,7 +1164,7 @@ msgid ""
 "specification: <literal>@PostConstruct</literal>, <literal>@PreDestroy</"
 "literal>, <literal>@PrePassivate</literal> and <literal>@PostActivate</"
 "literal>."
-msgstr ""
+msgstr "Enterprise Web Beans unterstützen alle durch die EJB-Spezifikation definierten Lebenszyklus-Callbacks: <literal>@PostConstruct</literal>, <literal>@PreDestroy</literal>, <literal>@PrePassivate</literal> und <literal>@PostActivate</literal>."
 
 #. Tag: para
 #: injection.xml:426
@@ -1164,6 +1173,8 @@ msgid ""
 "Simple Web Beans support only the <literal>@PostConstruct</literal> and "
 "<literal>@PreDestroy</literal> callbacks."
 msgstr ""
+"Einfache Web Beans unterstützen nur die <literal>@PostConstruct</literal> und "
+"<literal>@PreDestroy</literal> Callbacks."
 
 #. Tag: para
 #: injection.xml:429
@@ -1175,6 +1186,9 @@ msgid ""
 "respectively. Simple Web Beans do not support the use of "
 "<literal>@PersistenceContext(type=EXTENDED)</literal>."
 msgstr ""
+"Sowohl Enterprise als auch einfache Web Beans unterstützen den Gebrauch von <literal>@Resource</"
+"literal>, <literal>@EJB</literal> und <literal>@PersistenceContext</literal> "
+"zur Einspeisung von Java EE Ressourcen bzw. EJBs und JPA-Persistenzkontexten. Einfache Web Beans unterstützen den Gebrauch von <literal>@PersistenceContext(type=EXTENDED)</literal> nicht."
 
 #. Tag: para
 #: injection.xml:434
@@ -1182,13 +1196,13 @@ msgstr ""
 msgid ""
 "The <literal>@PostConstruct</literal> callback always occurs after all "
 "dependencies have been injected."
-msgstr ""
+msgstr "Der <literal>@PostConstruct</literal>-Callback erfolgt immer, nachdem alle Abhängigkeiten eingespeist wurden."
 
 #. Tag: title
 #: injection.xml:440
 #, no-c-format
 msgid "The <literal>InjectionPoint</literal> object"
-msgstr ""
+msgstr "Das <literal>InjectionPoint</literal>-Objekt"
 
 #. Tag: para
 #: injection.xml:442
@@ -1199,6 +1213,8 @@ msgid ""
 "object or injection point into which they are injected in order to be able "
 "to do what they do. For example:"
 msgstr ""
+"Es gibt bestimmte Arten abhängiger Objekte &#151; Web Beans mit Geltungsbereich "
+"<literal>@Dependent</literal> &#151; die etwas über das Objekt oder den Einspeisungspunkt in die sie eingespeist werden wissen müssen, um ihre Aufgabe zu erledigen. Zum Beispiel: "
 
 #. Tag: para
 #: injection.xml:448
@@ -1206,7 +1222,7 @@ msgstr ""
 msgid ""
 "The log category for a <literal>Logger</literal> depends upon the class of "
 "the object that owns it."
-msgstr ""
+msgstr "Die Protokollkategorie für einen <literal>Logger</literal> hängt von der Klasse des sie besitzenden Objekts ab."
 
 #. Tag: para
 #: injection.xml:452
@@ -1214,7 +1230,7 @@ msgstr ""
 msgid ""
 "Injection of a HTTP parameter or header value depends upon what parameter or "
 "header name was specified at the injection point."
-msgstr ""
+msgstr "Die Einspeisung eines HTTP-Parameters oder Header-Werts hängt davon ab, welcher Parameter oder Header-Name am Einspeisungspunkt festgelegt wurde."
 
 #. Tag: para
 #: injection.xml:456
@@ -1222,7 +1238,7 @@ msgstr ""
 msgid ""
 "Injection of the result of an EL expression evaluation depends upon the "
 "expression that was specified at the injection point."
-msgstr ""
+msgstr "Einspeisung als Ergebnis der Evaluierung eines EL-Ausdrucks hängt von vom am Einspeisungspunkt festgelegten Ausdruck ab."
 
 #. Tag: para
 #: injection.xml:461
@@ -1231,7 +1247,7 @@ msgid ""
 "A Web Bean with scope <literal>@Dependent</literal> may inject an instance "
 "of <literal>InjectionPoint</literal> and access metadata relating to the "
 "injection point to which it belongs."
-msgstr ""
+msgstr "Ein Web Bean mit Geltungsbereich <literal>@Dependent</literal> kann eine Instanz von <literal>InjectionPoint</literal> einspeisen und auf Metadaten zugreifen, die mit dem zugehörigen Einspeisungspunkt zu tun haben."
 
 #. Tag: para
 #: injection.xml:465
@@ -1239,7 +1255,7 @@ msgstr ""
 msgid ""
 "Let's look at an example. The following code is verbose, and vulnerable to "
 "refactoring problems:"
-msgstr ""
+msgstr "Sehen wir uns ein Beispiel an. Der folgende Code ist umfangreich und empfänglich für Refaktorierungsprobleme:"
 
 #. Tag: programlisting
 #: injection.xml:468
@@ -1254,6 +1270,8 @@ msgid ""
 "This clever little producer method lets you inject a JDK <literal>Logger</"
 "literal> without explicitly specifying the log category:"
 msgstr ""
+"Diese schlaue kleine Producer-Methode gestattet die Einspeisung eines JDK <literal>Logger</"
+"literal>, ohne dass explizit eine Protokollkategorie festgelegt werden müsste:"
 
 #. Tag: programlisting
 #: injection.xml:473
@@ -1295,7 +1313,7 @@ msgstr "<![CDATA[@Current Logger log;]]>"
 msgid ""
 "Not convinced? Then here's a second example. To inject HTTP parameters, we "
 "need to define a binding type:"
-msgstr ""
+msgstr "Sie sind noch nicht ganz überzeugt? Dann sehen Sie sich ein weiteres Beispiel an. Zur Einspeisung von HTTP-Parametern müssen wir einen Binding-Typ festlegen:"
 
 #. Tag: programlisting
 #: injection.xml:482
@@ -1319,7 +1337,7 @@ msgstr ""
 #: injection.xml:484
 #, no-c-format
 msgid "We would use this binding type at injection points as follows:"
-msgstr ""
+msgstr "Wir würden diesen Binding-Typ an Einspeisungspunkten wie folgt verwenden:"
 
 #. Tag: programlisting
 #: injection.xml:486
@@ -1369,6 +1387,8 @@ msgid ""
 "literal> annotation is ignored by the Web Bean manager since it is annotated "
 "<literal>@NonBinding.</literal>)"
 msgstr ""
+"(Beachten Sie, dass das <literal>value()</literal>-Mitglied der <literal>HttpParam</"
+"literal>-Annotation vom Web Bean Manager wird, da es mit <literal>@NonBinding.</literal> annotiert ist)"
 
 #. Tag: para
 #: injection.xml:495
@@ -1376,7 +1396,7 @@ msgstr ""
 msgid ""
 "The Web Bean manager provides a built-in Web Bean that implements the "
 "<literal>InjectionPoint</literal> interface:"
-msgstr ""
+msgstr "Der Web Bean Manager liefert ein eingebautes Web Bean, das das <literal>InjectionPoint</literal>-Interface implementiert:"
 
 #. Tag: programlisting
 #: injection.xml:498
