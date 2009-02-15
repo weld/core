@@ -1,0 +1,6 @@
+<Beans xmlns="urn:java:ee"> 
+   <Deploy>
+      <Standard />
+      <Production />
+   </Deploy>
+</Beans>

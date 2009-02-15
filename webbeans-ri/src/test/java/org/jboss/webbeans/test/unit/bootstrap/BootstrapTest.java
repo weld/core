@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Production;
+import javax.inject.Standard;
 import javax.inject.manager.Bean;
 
+import org.jboss.webbeans.WebBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
@@ -16,6 +19,19 @@ import org.testng.annotations.Test;
 
 public class BootstrapTest extends AbstractTest
 {
+   
+   @Test
+   public void testDeploymentTypesLoadedFromBeansXml()
+   {
+      discovery.setWebBeansXmlFiles(getResources("test-beans.xml"));
+      deployBeans();
+      assert manager.getEnabledDeploymentTypes().size() == 4;
+      assert manager.getEnabledDeploymentTypes().get(0).equals(Standard.class);
+      assert manager.getEnabledDeploymentTypes().get(1).equals(WebBean.class);
+      assert manager.getEnabledDeploymentTypes().get(2).equals(Production.class);
+      assert manager.getEnabledDeploymentTypes().get(3).equals(AnotherDeploymentType.class);
+   }
+   
    @Test(groups="bootstrap")
    public void testSingleSimpleBean()
    {

@@ -1,6 +1,7 @@
 package org.jboss.webbeans.tck;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.manager.Manager;
@@ -24,7 +25,9 @@ public class StandaloneContainersImpl implements StandaloneContainers
          {
             manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
          }
-         bootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(classes));
+         MockWebBeanDiscovery discovery = new MockWebBeanDiscovery();
+         discovery.setWebBeanClasses(Arrays.asList(classes));
+         bootstrap.setWebBeanDiscovery(discovery);
          bootstrap.boot();
          return manager;
       }

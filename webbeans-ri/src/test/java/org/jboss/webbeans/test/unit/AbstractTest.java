@@ -1,8 +1,10 @@
 package org.jboss.webbeans.test.unit;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +23,7 @@ import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.mock.MockBootstrap;
 import org.jboss.webbeans.mock.MockEjbDescriptor;
 import org.jboss.webbeans.mock.MockWebBeanDiscovery;
+import org.jboss.webbeans.util.EnumerationIterable;
 import org.testng.annotations.BeforeMethod;
 
 public class AbstractTest
@@ -59,16 +62,18 @@ public class AbstractTest
    protected static final int BUILT_IN_BEANS = 3;
    
    protected ManagerImpl manager;
-   protected MockBootstrap webBeansBootstrap;
+   protected MockBootstrap bootstrap;
+   protected MockWebBeanDiscovery discovery;
 
    public static boolean visited = false;
 
    @BeforeMethod
    public void before() throws Exception
    {
-      webBeansBootstrap = new MockBootstrap();
-      manager = webBeansBootstrap.getManager();
-      manager.setEnabledDeploymentTypes(getEnabledDeploymentTypes());
+      bootstrap = new MockBootstrap();
+      manager = bootstrap.getManager();
+      this.discovery = new MockWebBeanDiscovery();
+      bootstrap.setWebBeanDiscovery(discovery);
    }
 
    protected List<Class<? extends Annotation>> getEnabledDeploymentTypes()
@@ -126,9 +131,29 @@ public class AbstractTest
    
    protected void deployBeans(Class<?>... classes)
    {
-      MockBootstrap bootstrap = new MockBootstrap();
-      bootstrap.setWebBeanDiscovery(new MockWebBeanDiscovery(classes));
+      discovery.setWebBeanClasses(Arrays.asList(classes));
       bootstrap.boot();
       manager = bootstrap.getManager();
+   }
+   
+   
+   protected Iterable<URL> getResources(String name)
+   {
+      if (name.startsWith("/"))
+      {
+         name = name.substring(1);
+      }
+      else
+      {
+         name = getClass().getPackage().getName().replace(".", "/") + "/" + name;
+      }
+      try
+      {
+         return new EnumerationIterable<URL>(getClass().getClassLoader().getResources(name));
+      }
+      catch (IOException e)
+      {
+         throw new RuntimeException("Error loading resource from classloader" + name, e);
+      }
    }
 }

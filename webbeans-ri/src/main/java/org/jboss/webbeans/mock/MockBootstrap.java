@@ -198,10 +198,6 @@ public class MockBootstrap extends WebBeansBootstrap
    public void setWebBeanDiscovery(WebBeanDiscovery webBeanDiscovery)
    {
       this.webBeanDiscovery = webBeanDiscovery;
-      if (webBeanDiscovery != null)
-      {
-         this.ejbDiscovery = new MockEjbDiscovery(webBeanDiscovery.discoverWebBeanClasses());
-      }
    }
    
    @Override
@@ -224,7 +220,7 @@ public class MockBootstrap extends WebBeansBootstrap
    @Override
    protected EjbDiscovery getEjbDiscovery()
    {
-      return ejbDiscovery;
+      return new MockEjbDiscovery(webBeanDiscovery.discoverWebBeanClasses());
    }
    
 }

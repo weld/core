@@ -17,6 +17,9 @@
 
 package org.jboss.webbeans.bootstrap;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
+
 import org.jboss.webbeans.BeanValidator;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
@@ -25,9 +28,9 @@ import org.jboss.webbeans.bean.standard.ManagerBean;
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.conversation.ConversationImpl;
-import org.jboss.webbeans.conversation.ServletConversationManager;
 import org.jboss.webbeans.conversation.JavaSEConversationTerminator;
 import org.jboss.webbeans.conversation.NumericConversationIdGenerator;
+import org.jboss.webbeans.conversation.ServletConversationManager;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.literal.DeployedLiteral;
 import org.jboss.webbeans.literal.InitializedLiteral;
@@ -126,6 +129,13 @@ public abstract class WebBeansBootstrap
          // Must populate EJB cache first, as we need it to detect whether a
          // bean is an EJB!
          getManager().getEjbDescriptorCache().addAll(getEjbDiscovery().discoverEjbs());
+         BeansXmlParser parser = new BeansXmlParser(getResourceLoader(), getWebBeanDiscovery().discoverWebBeansXml());
+         parser.parse();
+         List<Class<? extends Annotation>> enabledDeploymentTypes = parser.getEnabledDeploymentTypes();
+         if (enabledDeploymentTypes != null)
+         {
+            getManager().setEnabledDeploymentTypes(enabledDeploymentTypes);
+         }
          registerBeans(getWebBeanDiscovery().discoverWebBeanClasses());
          getManager().fireEvent(getManager(), new InitializedLiteral());
          log.info("Web Beans initialized. Validating beans.");

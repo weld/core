@@ -42,13 +42,13 @@ public abstract class AbstractEjbEmbeddableTest extends AbstractTest
    public void before() throws Exception
    {
       super.before();
-      webBeansBootstrap.getNaming().setContext(new InitialContext());
+      bootstrap.getNaming().setContext(new InitialContext());
    }
    
    @AfterMethod
    public void after() throws Exception
    {
-      webBeansBootstrap.getNaming().setContext(null);
+      bootstrap.getNaming().setContext(null);
    }
    
    
@@ -66,7 +66,7 @@ public abstract class AbstractEjbEmbeddableTest extends AbstractTest
    
    public Context getContext()
    {
-      return webBeansBootstrap.getNaming().getContext();
+      return bootstrap.getNaming().getContext();
    }
    
 }

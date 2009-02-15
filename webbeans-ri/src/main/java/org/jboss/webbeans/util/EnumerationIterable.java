@@ -17,8 +17,11 @@
 
 package org.jboss.webbeans.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * An Enumeration -> Iteratble adaptor
@@ -28,8 +31,8 @@ import java.util.Iterator;
  */
 public class EnumerationIterable<T> implements Iterable<T>
 {
-   // The enumeration-iteartor
-   private EnumerationIterator<T> iterator;
+   // The enumeration as a list
+   private final List<T> list = new ArrayList<T>();
    
    /**
     * Constructor
@@ -38,7 +41,10 @@ public class EnumerationIterable<T> implements Iterable<T>
     */
    public EnumerationIterable(Enumeration<T> enumeration)
    {
-      this.iterator = new EnumerationIterator<T>(enumeration);
+      while (enumeration.hasMoreElements())
+      {
+         list.add(enumeration.nextElement());
+      }
    }
    
    /**
@@ -48,7 +54,7 @@ public class EnumerationIterable<T> implements Iterable<T>
     */
    public Iterator<T> iterator()
    {
-      return iterator;
+      return Collections.unmodifiableList(list).iterator();
    }
    
 }
