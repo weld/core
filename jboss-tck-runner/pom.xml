@@ -149,7 +149,7 @@
                         </property>
                         <property>
                            <name>org.jboss.jsr299.tck.libraryDirectory</name>
-                           <value>${project.build.directory}/dependency/lib</value>
+                           <value>target/dependency/lib</value>
                         </property>
                      </systemProperties>
                   </configuration>
@@ -188,7 +188,7 @@
                         </property>
                         <property>
                            <name>org.jboss.jsr299.tck.libraryDirectory</name>
-                           <value>${project.build.directory}/dependency/lib</value>
+                           <value>target/dependency/lib</value>
                         </property>
                      </systemProperties>
                   </configuration>
