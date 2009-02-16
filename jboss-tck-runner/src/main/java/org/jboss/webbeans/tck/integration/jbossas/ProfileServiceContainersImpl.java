@@ -42,7 +42,14 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
    public void setup() throws IOException
    {
       super.setup();
-      
+      try 
+      {
+		 initDeploymentManager();
+	  }
+      catch (Exception e) 
+	  {
+	     throw new IOException(e);
+	  }
    }
    
    public void deploy(InputStream archiveStream, String name) throws DeploymentException, IOException
