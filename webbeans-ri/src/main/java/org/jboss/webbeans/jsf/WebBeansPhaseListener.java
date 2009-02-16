@@ -20,12 +20,15 @@ import javax.context.Conversation;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
+import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.conversation.ConversationManager;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.servlet.ConversationBeanMap;
+import org.jboss.webbeans.servlet.HttpSessionManager;
 
 /**
  * A phase listener for propagating conversation id over postbacks through a
@@ -36,11 +39,14 @@ import org.jboss.webbeans.log.Logging;
  */
 public class WebBeansPhaseListener implements PhaseListener
 {
-   // The ID/name of the conversation-propagating component
-   private static final String CONVERSATION_PROPAGATION_COMPONENT = "webbeans_conversation_propagation";
-
+   // The logging provider
    private static LogProvider log = Logging.getLogProvider(WebBeansPhaseListener.class);
 
+   /**
+    * Run before a given phase
+    * 
+    * @param phaseEvent The phase event
+    */
    public void beforePhase(PhaseEvent phaseEvent)
    {
       if (phaseEvent.getPhaseId().equals(PhaseId.RENDER_RESPONSE))
@@ -51,30 +57,39 @@ public class WebBeansPhaseListener implements PhaseListener
       {
          beforeApplyRequestValues();
       }
-   }   
+   }
 
+   /**
+    * Run before the response is rendered
+    */
    private void beforeRenderReponse()
    {
-      if (JSFHelper.isPostback())
+      log.trace("In before render response phase");
+      Conversation conversation = CurrentManager.rootManager().getInstanceByType(Conversation.class);
+      if (conversation.isLongRunning())
       {
-         Conversation conversation = CurrentManager.rootManager().getInstanceByType(Conversation.class);
-         if (conversation.isLongRunning())
-         {
-            JSFHelper.createOrUpdatePropagationComponent(conversation.getId());
-         }
-         else
-         {
-            JSFHelper.removePropagationComponent();
-         }
-
+         JSFHelper.createOrUpdatePropagationComponent(conversation.getId());
+      }
+      else
+      {
+         JSFHelper.removePropagationComponent();
       }
    }
-   
+
+   /**
+    * Run before request values are applied
+    */
    private void beforeApplyRequestValues()
    {
+      log.trace("In before apply values phase");
       ConversationContext.INSTANCE.setActive(true);
-   }   
-   
+   }
+
+   /**
+    * Run after a given phase
+    * 
+    * @param phaseEvent The phase event
+    */
    public void afterPhase(PhaseEvent phaseEvent)
    {
       if (phaseEvent.getPhaseId().equals(PhaseId.RESTORE_VIEW))
@@ -85,18 +100,28 @@ public class WebBeansPhaseListener implements PhaseListener
       {
          afterRenderResponse();
       }
-   }   
-   
-   private void afterRestoreView()
-   {
-      if (JSFHelper.isPostback())
-      {
-         CurrentManager.rootManager().getInstanceByType(ConversationManager.class).beginOrRestoreConversation(JSFHelper.getConversationId());
-      }
    }
 
+   /**
+    * Run after the view is restored
+    */
+   private void afterRestoreView()
+   {
+      log.trace("In after restore view phase");
+      HttpSession session = JSFHelper.getHttpSession();
+      CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
+      CurrentManager.rootManager().getInstanceByType(ConversationManager.class).beginOrRestoreConversation(JSFHelper.getConversationId());
+      String cid = CurrentManager.rootManager().getInstanceByType(Conversation.class).getId();
+      ConversationContext.INSTANCE.setBeanMap(new ConversationBeanMap(session, cid));
+   }
+
+   /**
+    * Run after the response is rendered
+    */
    private void afterRenderResponse()
    {
+      log.trace("In after render reponse phase");
+      CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
       ConversationContext.INSTANCE.setActive(false);
    }
 

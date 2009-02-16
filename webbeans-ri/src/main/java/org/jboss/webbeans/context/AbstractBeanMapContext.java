@@ -25,6 +25,9 @@ import javax.context.CreationalContext;
 import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.context.beanmap.BeanMap;
+import org.jboss.webbeans.jsf.JSFHelper;
+import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Logging;
 
 /**
  * Base for the Context implementations. Delegates calls to the abstract
@@ -39,6 +42,8 @@ import org.jboss.webbeans.context.beanmap.BeanMap;
  */
 public abstract class AbstractBeanMapContext extends AbstractContext
 {
+   private static LogProvider log = Logging.getLogProvider(AbstractBeanMapContext.class);
+
    /**
     * Constructor
     * 
@@ -98,6 +103,7 @@ public abstract class AbstractBeanMapContext extends AbstractContext
     */
    private <T> void destroy(Contextual<T> bean)
    {
+      log.trace("Destroying " + bean);
       bean.destroy(getBeanMap().get(bean));
    }
 
@@ -106,6 +112,7 @@ public abstract class AbstractBeanMapContext extends AbstractContext
     */
    public void destroy()
    {
+      log.trace("Destroying context");
       for (Contextual<? extends Object> bean : getBeanMap().keySet())
       {
          destroy(bean);

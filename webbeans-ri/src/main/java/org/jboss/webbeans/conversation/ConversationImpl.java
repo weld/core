@@ -24,6 +24,8 @@ import javax.inject.Initializer;
 
 import org.jboss.webbeans.WebBean;
 import org.jboss.webbeans.conversation.bindings.ConversationInactivityTimeout;
+import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Logging;
 
 /**
  * The current conversation implementation
@@ -36,6 +38,9 @@ import org.jboss.webbeans.conversation.bindings.ConversationInactivityTimeout;
 @WebBean
 public class ConversationImpl implements Conversation
 {
+   
+   private static LogProvider log = Logging.getLogProvider(ConversationImpl.class);
+
    // The conversation ID
    private String cid;
    // Is the conversation long-running?
@@ -61,21 +66,24 @@ public class ConversationImpl implements Conversation
    {
       this.cid = conversationIdGenerator.nextId();
       this.timeoutInMilliseconds = timeoutInMilliseconds;
+      log.debug("Created a new conversation " + this);
    }
 
    public void begin()
    {
+      log.debug("Promoted conversation " + cid + " to long-running");
       longRunning = true;
    }
 
    public void begin(String id)
    {
-      longRunning = true;
       cid = id;
+      begin();
    }
 
    public void end()
    {
+      log.debug("Demoted conversation " + cid + " to transient");
       longRunning = false;
    }
 
@@ -96,6 +104,7 @@ public class ConversationImpl implements Conversation
 
    public void setTimeout(long timeout)
    {
+      log.debug("Set timeout of conversation " + cid + " to " + timeout);
       this.timeoutInMilliseconds = timeout;
    }
 
@@ -108,9 +117,11 @@ public class ConversationImpl implements Conversation
     */
    public void switchTo(String cid, boolean longRunning, long timeoutInMilliseconds)
    {
+      log.debug("Switched conversation from " + this);
       this.cid = cid;
       this.longRunning = longRunning;
       this.timeoutInMilliseconds = timeoutInMilliseconds;
+      log.debug("to " + this);
    }
 
    @Override
@@ -121,6 +132,7 @@ public class ConversationImpl implements Conversation
 
    public void setLongRunning(boolean longRunning)
    {
+      log.debug("Set conversation " + cid + " to long-running: " + longRunning);
       this.longRunning = longRunning;
    }
 }

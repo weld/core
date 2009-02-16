@@ -103,6 +103,7 @@ public class ConversationEntry
       ConversationContext terminationContext = new ConversationContext();
       terminationContext.setBeanMap(new ConversationBeanMap(session, cid));
       terminationContext.destroy();
+      log.trace("Conversation " + cid + " destroyed");
    }
 
    /**
@@ -133,7 +134,7 @@ public class ConversationEntry
    {
       if (concurrencyLock.isHeldByCurrentThread())
       {
-         log.debug("Unlocked conversation " + cid);
+         log.trace("Unlocked conversation " + cid);
          concurrencyLock.unlock();
       }
       else

@@ -101,18 +101,8 @@ public class ServletLifecycle
    public static void beginRequest(HttpServletRequest request)
    {
       log.trace("Processing HTTP request " + request.getRequestURI() + " begins");
-      CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(request.getSession());
       SessionContext.INSTANCE.setBeanMap(new HttpSessionBeanMap(request.getSession()));
-      beginConversation(request);
       DependentContext.INSTANCE.setActive(true);
-   }
-
-   private static void beginConversation(HttpServletRequest request)
-   {
-      ConversationManager conversationManager = CurrentManager.rootManager().getInstanceByType(ConversationManager.class);
-      conversationManager.beginOrRestoreConversation(request.getParameter("cid"));
-      Conversation conversation = CurrentManager.rootManager().getInstanceByType(Conversation.class);
-      ConversationContext.INSTANCE.setBeanMap(new ConversationBeanMap(request.getSession(), conversation.getId()));
    }
 
    /**
@@ -123,12 +113,9 @@ public class ServletLifecycle
    public static void endRequest(HttpServletRequest request)
    {
       log.trace("Processing HTTP request " + request.getRequestURI() + " ends");
-      CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(null);
-      CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
       DependentContext.INSTANCE.setActive(false);
       RequestContext.INSTANCE.destroy();
       SessionContext.INSTANCE.setBeanMap(null);
-      ConversationContext.INSTANCE.setBeanMap(null);
    }
 
 }

@@ -39,7 +39,7 @@ import org.jboss.webbeans.util.Names;
 public abstract class AbstractBeanMap implements BeanMap
 {
    // The log provider
-   private static LogProvider log = Logging.getLogProvider(ApplicationBeanMap.class);
+   private static LogProvider log = Logging.getLogProvider(AbstractBeanMap.class);
 
    /**
     * Gets a bean from the map
@@ -108,8 +108,10 @@ public abstract class AbstractBeanMap implements BeanMap
    private List<String> getFilteredAttributeNames()
    {
       List<String> attributeNames = new ArrayList<String>();
-      for (String attributeName : new EnumerationIterable<String>(getAttributeNames()))
+      Enumeration<String> e = getAttributeNames();
+      while (e.hasMoreElements())
       {
+         String attributeName = e.nextElement();
          if (attributeName.startsWith(getKeyPrefix()))
          {
             attributeNames.add(attributeName);
@@ -148,7 +150,8 @@ public abstract class AbstractBeanMap implements BeanMap
    protected abstract void removeAttribute(String key);
 
    /**
-    * Gets an enumeration of the attribute names present in the underlying storage
+    * Gets an enumeration of the attribute names present in the underlying
+    * storage
     * 
     * @return The attribute names
     */

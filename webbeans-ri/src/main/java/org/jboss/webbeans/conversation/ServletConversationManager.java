@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
 import javax.context.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Current;
 import javax.inject.Produces;
 import javax.servlet.http.HttpSession;
@@ -46,9 +47,9 @@ public class ServletConversationManager implements ConversationManager, Serializ
 {
    private static LogProvider log = Logging.getLogProvider(ServletConversationManager.class);
 
-   // FIXME short temp
-   private static final long CONVERSATION_TIMEOUT_IN_MS = 10 * 30 * 1000;
+   private static final long CONVERSATION_TIMEOUT_IN_MS = 10 * 60 * 1000;
    private static final long CONVERSATION_CONCURRENT_ACCESS_TIMEOUT_IN_MS = 1 * 1000;
+   private static final String CONVERSATION_ID_NAME = "cid";
 
    // The conversation terminator
    @Current
@@ -106,7 +107,8 @@ public class ServletConversationManager implements ConversationManager, Serializ
    @WebBean
    public static String getConversationIdName()
    {
-      return "cid";
+      log.trace("Produced conversation id name " + CONVERSATION_ID_NAME);
+      return CONVERSATION_ID_NAME;
    }
 
    public void beginOrRestoreConversation(String cid)
@@ -158,9 +160,11 @@ public class ServletConversationManager implements ConversationManager, Serializ
       }
    }
 
+   // TODO: check that stuff gets terminated when you flip between several long-running conversations
    public void cleanupConversation()
    {
       String cid = currentConversation.getId();
+      log.trace("Cleaning up conversations for cid " + cid);
       if (currentConversation.isLongRunning())
       {
          Future<?> terminationHandle = scheduleForTermination(cid);
@@ -180,7 +184,7 @@ public class ServletConversationManager implements ConversationManager, Serializ
             ConversationEntry conversationEntry = ConversationEntry.of(cid, terminationHandle);
             longRunningConversations.put(cid, conversationEntry);
          }
-         log.trace("Scheduled " + currentConversation + " for termination");
+         log.trace("Scheduled " + currentConversation + " for termination, there are now " + longRunningConversations.size() + " long-running conversations");
       }
       else
       {
@@ -205,7 +209,7 @@ public class ServletConversationManager implements ConversationManager, Serializ
     */
    private Future<?> scheduleForTermination(String cid)
    {
-      Runnable terminationTask = new TerminationTask(cid);
+      Runnable terminationTask = new TerminationTask(cid, (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true));
       return conversationTerminator.scheduleForTermination(terminationTask, inactivityTimeout);
    }
 
@@ -219,15 +223,17 @@ public class ServletConversationManager implements ConversationManager, Serializ
    {
       // The conversation ID to terminate
       private String cid;
+      private HttpSession session;
 
       /**
        * Creates a new termination task
        * 
        * @param cid The conversation ID
        */
-      public TerminationTask(String cid)
+      public TerminationTask(String cid, HttpSession session)
       {
          this.cid = cid;
+         this.session = session;
       }
 
       /**
@@ -235,14 +241,15 @@ public class ServletConversationManager implements ConversationManager, Serializ
        */
       public void run()
       {
-         log.trace("Conversation " + cid + " timed out. Destroying it");
+         log.debug("Conversation " + cid + " timed out. Destroying it");
          longRunningConversations.remove(cid).destroy(session);
+         log.trace("There are now " + longRunningConversations.size() + " long-running conversations");
       }
    }
 
    public void destroyAllConversations()
    {
-      log.trace("Destroying " + longRunningConversations.size() + " long-running conversations in session " + session.getId());
+      log.debug("Destroying " + longRunningConversations.size() + " long-running conversations in session " + session.getId());
       for (ConversationEntry conversationEntry : longRunningConversations.values())
       {
          conversationEntry.destroy(session);
