@@ -1,10 +1,8 @@
 package org.jboss.webbeans.tck;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
+import java.net.URL;
 import java.util.List;
-
-import javax.inject.manager.Manager;
 
 import org.jboss.jsr299.tck.api.DeploymentException;
 import org.jboss.jsr299.tck.spi.StandaloneContainers;
@@ -15,7 +13,12 @@ import org.jboss.webbeans.mock.MockWebBeanDiscovery;
 public class StandaloneContainersImpl implements StandaloneContainers
 {
    
-   public Manager deploy(List<Class<? extends Annotation>> enabledDeploymentTypes, Class<?>... classes) throws DeploymentException
+   public void deploy(List<Class<? extends Annotation>> enabledDeploymentTypes, Iterable<Class<?>> classes) throws DeploymentException
+   {
+      deploy(enabledDeploymentTypes, classes, null);
+   }
+   
+   public void deploy(List<Class<? extends Annotation>> enabledDeploymentTypes, Iterable<Class<?>> classes, Iterable<URL> beansXml) throws DeploymentException
    {
       try
       {
@@ -26,10 +29,13 @@ public class StandaloneContainersImpl implements StandaloneContainers
             manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
          }
          MockWebBeanDiscovery discovery = new MockWebBeanDiscovery();
-         discovery.setWebBeanClasses(Arrays.asList(classes));
+         discovery.setWebBeanClasses(classes);
+         if (beansXml != null)
+         {
+            discovery.setWebBeansXmlFiles(beansXml);
+         }
          bootstrap.setWebBeanDiscovery(discovery);
          bootstrap.boot();
-         return manager;
       }
       catch (Exception e) 
       {
@@ -37,9 +43,14 @@ public class StandaloneContainersImpl implements StandaloneContainers
       }
    }
    
-   public Manager deploy(java.lang.Class<?>... classes) throws DeploymentException
+   public void deploy(Iterable<Class<?>> classes) throws DeploymentException
    {
-      return deploy(null, classes);
+      deploy(null, classes, null);
+   }
+   
+   public void deploy(Iterable<Class<?>> classes, Iterable<URL> beansXml) throws DeploymentException
+   {
+      deploy(null, classes, beansXml);
    }
    
 }
