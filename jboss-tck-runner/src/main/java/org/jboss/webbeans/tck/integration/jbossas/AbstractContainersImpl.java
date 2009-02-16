@@ -216,7 +216,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
           String command[] = {
                 "sh",
                 "-c",
-                "cd " + jbossHome + "/bin; JAVA_OPTS=" + JAVA_OPTS + " ./" + scriptFileName + ".sh " + params
+                "cd /D " + jbossHome + "/bin;set JAVA_OPTS=" + JAVA_OPTS + " ./" + scriptFileName + ".sh " + params
                 };
           p = runtime.exec(command);
       }
@@ -232,7 +232,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
           {
              try 
              {
-                DataOutputStream out = new DataOutputStream(new FileOutputStream("/tmp/jboss.log"));
+                DataOutputStream out = new DataOutputStream(new FileOutputStream(System.getProperty("java.io.tmpdir") + "jboss.log"));
                 int c;
                 while((c = is.read()) != -1) 
                 {
