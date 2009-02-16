@@ -31,18 +31,20 @@ import org.jboss.webbeans.log.Logging;
  * The current conversation implementation
  * 
  * @author Nicklas Karlsson
- * @see javax.context.Conversation 
+ * @see javax.context.Conversation
  */
 @RequestScoped
 @Named("conversation")
 @WebBean
 public class ConversationImpl implements Conversation
 {
-   
+
    private static LogProvider log = Logging.getLogProvider(ConversationImpl.class);
 
    // The conversation ID
    private String cid;
+   // The original conversation ID (if any)
+   private String originalCid;
    // Is the conversation long-running?
    private boolean longRunning;
    // The inactivity timeout in milliseconds
@@ -54,9 +56,9 @@ public class ConversationImpl implements Conversation
    public ConversationImpl()
    {
    }
-   
+
    /**
-    * Initializes a new conversation 
+    * Initializes a new conversation
     * 
     * @param conversationIdGenerator The conversation ID generator
     * @param timeoutInMilliseconds The inactivity timeout in milliseconds
@@ -77,6 +79,10 @@ public class ConversationImpl implements Conversation
 
    public void begin(String id)
    {
+      if (originalCid == null)
+      {
+         originalCid = cid;
+      }
       cid = id;
       begin();
    }
@@ -113,7 +119,7 @@ public class ConversationImpl implements Conversation
     * 
     * @param cid The new conversation ID
     * @param longRunning The new long-running status
-    * @param timeout The new inactivity timeout in milliseconds 
+    * @param timeout The new inactivity timeout in milliseconds
     */
    public void switchTo(String cid, boolean longRunning, long timeoutInMilliseconds)
    {
@@ -134,5 +140,10 @@ public class ConversationImpl implements Conversation
    {
       log.debug("Set conversation " + cid + " to long-running: " + longRunning);
       this.longRunning = longRunning;
+   }
+
+   public String getOriginalCid()
+   {
+      return originalCid;
    }
 }

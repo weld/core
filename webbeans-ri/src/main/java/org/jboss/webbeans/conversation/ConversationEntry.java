@@ -95,7 +95,7 @@ public class ConversationEntry
     */
    public void destroy(HttpSession session)
    {
-      log.trace("Destroying conversation " + cid);
+      log.debug("Destroying conversation " + cid);
       if (!terminationHandle.isCancelled())
       {
          cancelTermination();

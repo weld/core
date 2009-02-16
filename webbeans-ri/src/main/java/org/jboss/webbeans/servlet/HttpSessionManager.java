@@ -20,7 +20,7 @@ public class HttpSessionManager
    @Produces
    @RequestScoped
    @WebBean
-   HttpSession produceSession()
+   public HttpSession getSession()
    {
       return session;
    }

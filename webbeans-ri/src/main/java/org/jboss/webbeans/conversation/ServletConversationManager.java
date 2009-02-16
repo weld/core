@@ -22,11 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
 import javax.context.SessionScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Current;
 import javax.inject.Produces;
 import javax.servlet.http.HttpSession;
 
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.WebBean;
 import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.conversation.bindings.ConversationConcurrentAccessTimeout;
@@ -34,6 +34,7 @@ import org.jboss.webbeans.conversation.bindings.ConversationIdName;
 import org.jboss.webbeans.conversation.bindings.ConversationInactivityTimeout;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.servlet.HttpSessionManager;
 
 /**
  * The default conversation manager
@@ -58,10 +59,6 @@ public class ServletConversationManager implements ConversationManager, Serializ
    // The current conversation
    @Current
    private ConversationImpl currentConversation;
-
-   // The current HTTP session
-   @Current
-   private HttpSession session;
 
    // The conversation timeout in milliseconds waiting for access to a blocked
    // conversation
@@ -160,7 +157,8 @@ public class ServletConversationManager implements ConversationManager, Serializ
       }
    }
 
-   // TODO: check that stuff gets terminated when you flip between several long-running conversations
+   // TODO: check that stuff gets terminated when you flip between several
+   // long-running conversations
    public void cleanupConversation()
    {
       String cid = currentConversation.getId();
@@ -199,6 +197,15 @@ public class ServletConversationManager implements ConversationManager, Serializ
          }
          ConversationContext.INSTANCE.destroy();
       }
+      // If Conversation.begin(String) is called, it might be that the
+      // conversation will be switched. We need to unlock this original 
+      // conversation and re-schedule it for termination
+      String originalCid = currentConversation.getOriginalCid();
+      if (originalCid != null && longRunningConversations.containsKey(originalCid))
+      {
+         longRunningConversations.get(originalCid).unlock();
+         longRunningConversations.get(originalCid).reScheduleTermination(scheduleForTermination(originalCid));
+      }
    }
 
    /**
@@ -209,7 +216,8 @@ public class ServletConversationManager implements ConversationManager, Serializ
     */
    private Future<?> scheduleForTermination(String cid)
    {
-      Runnable terminationTask = new TerminationTask(cid, (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true));
+      HttpSession session = CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).getSession();
+      Runnable terminationTask = new TerminationTask(cid, session);
       return conversationTerminator.scheduleForTermination(terminationTask, inactivityTimeout);
    }
 
@@ -249,6 +257,7 @@ public class ServletConversationManager implements ConversationManager, Serializ
 
    public void destroyAllConversations()
    {
+      HttpSession session = CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).getSession();
       log.debug("Destroying " + longRunningConversations.size() + " long-running conversations in session " + session.getId());
       for (ConversationEntry conversationEntry : longRunningConversations.values())
       {
