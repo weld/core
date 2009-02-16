@@ -25,9 +25,10 @@ import org.jboss.jsr299.tck.spi.Containers;
 public abstract class AbstractContainersImpl implements Configurable, Containers
 {
    
-   public static String JAVA_OPTS = "\"-Xms128m -Xmx512m -XX:MaxPermSize=256m -Dorg.jboss.resolver.warning=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000 -ea\"";
+   public static String JAVA_OPTS = "-ea";
    
    public static final String JBOSS_HOME_PROPERTY_NAME = "jboss.home";
+   public static final String JAVA_OPTS_PROPERTY_NAME = "java.opts";
    public static final String JBOSS_AS_DIR_PROPERTY_NAME = "jboss-as.dir";
    public static final String JBOSS_BOOT_TIMEOUT_PROPERTY_NAME = "jboss.boot.timeout";
    public static final String FORCE_RESTART_PROPERTY_NAME = "jboss.force.restart";
@@ -39,6 +40,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
    private String jbossHttpUrl;
    private boolean jbossWasStarted;
    private long bootTimeout;
+   private String javaOpts;
 
    protected static void copy(InputStream inputStream, File file) throws IOException
    {
@@ -109,6 +111,12 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
          }            
       }
       jbossHome = System.getProperty(JBOSS_HOME_PROPERTY_NAME);
+      javaOpts = System.getProperty(JAVA_OPTS_PROPERTY_NAME);
+      if (javaOpts == null)
+      {
+         javaOpts = "";
+      }
+      javaOpts = "\"" + javaOpts + JAVA_OPTS + "\"";
       if (jbossHome == null)
       {
          throw new IllegalArgumentException("-D" + JBOSS_HOME_PROPERTY_NAME + " must be set");
