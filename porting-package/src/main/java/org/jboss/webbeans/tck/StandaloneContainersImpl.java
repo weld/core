@@ -52,5 +52,21 @@ public class StandaloneContainersImpl implements StandaloneContainers
    {
       deploy(null, classes, beansXml);
    }
+
+   public void cleanup()
+   {
+      // TODO Auto-generated method stub
+      
+   }
+   
+   public void setup()
+   {
+      // No-op
+   }
+
+   public void undeploy()
+   {
+      // No-op
+   }
    
 }

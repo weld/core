@@ -41,7 +41,7 @@ public class JBossTestServicesContainersImpl extends AbstractContainersImpl
       } 
    }
    
-   public void undeploy(String name) throws DeploymentException, IOException
+   public void undeploy(String name) throws IOException
    {
       try
       {
@@ -49,7 +49,7 @@ public class JBossTestServicesContainersImpl extends AbstractContainersImpl
       }
       catch (Exception e)
       {
-         throw new DeploymentException("Error deploying " + name, e);
+         throw new IOException("Error undeploying " + name, e);
       }
    }
    

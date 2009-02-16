@@ -81,7 +81,7 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
       }
    }
    
-   public void undeploy(String name) throws DeploymentException, IOException
+   public void undeploy(String name) throws IOException
    {
       try
       {
