@@ -125,7 +125,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
       {
          log.info("Using JBoss instance in " + jbossHome + " at URL " + configuration.getHost());
       }
-      this.bootTimeout = Long.getLong(JBOSS_BOOT_TIMEOUT_PROPERTY_NAME, 120000);
+      this.bootTimeout = Long.getLong(JBOSS_BOOT_TIMEOUT_PROPERTY_NAME, 240000);
       if (Boolean.getBoolean(FORCE_RESTART_PROPERTY_NAME))
       {
          if (isJBossUp())
