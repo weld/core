@@ -1,6 +1,8 @@
-package org.jboss.webbeans.bootstrap.spi;
+package org.jboss.webbeans.bootstrap.spi.helpers;
 
 import java.net.URL;
+
+import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 
 /**
  * An implementation of {@link WebBeanDiscovery} which forwards all its method 

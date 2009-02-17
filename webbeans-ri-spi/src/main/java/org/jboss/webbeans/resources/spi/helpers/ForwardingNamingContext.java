@@ -1,4 +1,6 @@
-package org.jboss.webbeans.resources.spi;
+package org.jboss.webbeans.resources.spi.helpers;
+
+import org.jboss.webbeans.resources.spi.NamingContext;
 
 
 /**

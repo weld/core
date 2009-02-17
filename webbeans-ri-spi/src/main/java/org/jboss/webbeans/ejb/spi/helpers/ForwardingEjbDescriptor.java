@@ -1,6 +1,9 @@
-package org.jboss.webbeans.ejb.spi;
+package org.jboss.webbeans.ejb.spi.helpers;
 
 import java.lang.reflect.Method;
+
+import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
+import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
 
 /**

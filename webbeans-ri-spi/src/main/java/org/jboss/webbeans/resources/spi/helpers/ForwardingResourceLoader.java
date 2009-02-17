@@ -1,6 +1,8 @@
-package org.jboss.webbeans.resources.spi;
+package org.jboss.webbeans.resources.spi.helpers;
 
 import java.net.URL;
+
+import org.jboss.webbeans.resources.spi.ResourceLoader;
 
 /**
  * An implementation of {@link ResourceLoader} which forwards all its method calls

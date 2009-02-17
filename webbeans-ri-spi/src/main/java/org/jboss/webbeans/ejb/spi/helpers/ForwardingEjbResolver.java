@@ -1,9 +1,10 @@
-package org.jboss.webbeans.ejb.spi;
+package org.jboss.webbeans.ejb.spi.helpers;
 
 import java.lang.annotation.Annotation;
 
 import javax.inject.manager.InjectionPoint;
 
+import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.resources.spi.NamingContext;
 
 /**

@@ -1,5 +1,6 @@
-package org.jboss.webbeans.bootstrap.spi;
+package org.jboss.webbeans.bootstrap.spi.helpers;
 
+import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
 /**

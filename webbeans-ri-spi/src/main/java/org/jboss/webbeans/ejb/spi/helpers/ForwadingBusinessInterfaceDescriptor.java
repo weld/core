@@ -1,4 +1,6 @@
-package org.jboss.webbeans.ejb.spi;
+package org.jboss.webbeans.ejb.spi.helpers;
+
+import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 
 
 /**
