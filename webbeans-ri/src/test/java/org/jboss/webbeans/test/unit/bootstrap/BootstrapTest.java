@@ -13,7 +13,7 @@ import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.mock.MockBootstrap;
+import org.jboss.webbeans.mock.MockLifecycle;
 import org.jboss.webbeans.test.unit.AbstractTest;
 import org.testng.annotations.Test;
 
@@ -218,9 +218,8 @@ public class BootstrapTest extends AbstractTest
    @Test(groups="bootstrap", expectedExceptions=IllegalStateException.class)
    public void testDiscoverFails()
    {
-      MockBootstrap bootstrap = new MockBootstrap();
-      bootstrap.setWebBeanDiscovery(null);
-      bootstrap.boot();
+      MockLifecycle lifecycle = new MockLifecycle(null);
+      lifecycle.beginApplication();
    }
    
    @Test(groups="bootstrap")

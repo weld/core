@@ -15,18 +15,20 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.resource;
+package org.jboss.webbeans.resources;
 
 import javax.inject.ExecutionException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import org.jboss.webbeans.resources.spi.helpers.AbstractNamingContext;
 
 /**
  * The default naming provider
  * 
  * @author Pete Muir
  */
-public class DefaultNaming extends AbstractNamingContext
+public class DefaultNamingContext extends AbstractNamingContext
 {
    private static final long serialVersionUID = 1L;
    // The initial lookup context
@@ -35,7 +37,7 @@ public class DefaultNaming extends AbstractNamingContext
    /**
     * Constructor
     */
-   public DefaultNaming()
+   public DefaultNamingContext()
    {
       try
       {

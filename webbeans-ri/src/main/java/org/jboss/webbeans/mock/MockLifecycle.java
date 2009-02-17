@@ -1,0 +1,79 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jboss.webbeans.mock;
+
+
+
+import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
+import org.jboss.webbeans.ejb.spi.EjbResolver;
+import org.jboss.webbeans.mock.context.MockApplicationContext;
+import org.jboss.webbeans.mock.context.MockDependentContext;
+import org.jboss.webbeans.mock.context.MockRequestContext;
+import org.jboss.webbeans.mock.context.MockSessionContext;
+import org.jboss.webbeans.resources.spi.ResourceLoader;
+
+public class MockLifecycle
+{ 
+   
+   private static final EjbResolver MOCK_EJB_RESOLVER = new MockEjBResolver();
+   private static final ResourceLoader MOCK_RESOURCE_LOADER = new MockResourceLoader();
+   
+   private final WebBeansBootstrap bootstrap;
+   private final MockWebBeanDiscovery webBeanDiscovery;
+   
+   public MockLifecycle()
+   {
+      this(new MockWebBeanDiscovery());
+   }
+   
+   public MockLifecycle(MockWebBeanDiscovery mockWebBeanDiscovery)
+   {
+      this.webBeanDiscovery = mockWebBeanDiscovery;
+      if (webBeanDiscovery == null)
+      {
+         throw new IllegalStateException("No WebBeanDiscovery is available");
+      }
+      bootstrap = new WebBeansBootstrap();
+      bootstrap.setNamingContext(new MockNamingContext(null));
+      bootstrap.setEjbResolver(MOCK_EJB_RESOLVER);
+      bootstrap.setResourceLoader(MOCK_RESOURCE_LOADER);
+      bootstrap.setWebBeanDiscovery(webBeanDiscovery);
+      bootstrap.initialize();
+      
+      bootstrap.getManager().addContext(new MockRequestContext());
+      bootstrap.getManager().addContext(new MockSessionContext());
+      bootstrap.getManager().addContext(new MockApplicationContext());
+      bootstrap.getManager().addContext(new MockDependentContext());
+   }
+   
+   public MockWebBeanDiscovery getWebBeanDiscovery()
+   {
+      return webBeanDiscovery;
+   }
+   
+   public WebBeansBootstrap getBootstrap()
+   {
+      return bootstrap;
+   }
+   
+   public void beginApplication()
+   {
+      bootstrap.setEjbDiscovery(new MockEjbDiscovery(webBeanDiscovery.discoverWebBeanClasses()));
+      bootstrap.boot();
+   }
+   
+}

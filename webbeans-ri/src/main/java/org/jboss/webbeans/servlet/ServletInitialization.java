@@ -21,8 +21,9 @@ import java.lang.reflect.Constructor;
 
 import javax.servlet.ServletContext;
 
-import org.jboss.webbeans.bootstrap.PropertiesBasedBootstrap;
-import org.jboss.webbeans.bootstrap.SimpleResourceLoader;
+import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bootstrap.PropertiesBasedInitialization;
+import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.ApplicationContext;
@@ -31,7 +32,8 @@ import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
-import org.jboss.webbeans.resource.DefaultNaming;
+import org.jboss.webbeans.resources.DefaultNamingContext;
+import org.jboss.webbeans.resources.DefaultResourceLoader;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.util.DeploymentProperties;
@@ -41,64 +43,59 @@ import org.jboss.webbeans.util.DeploymentProperties;
  * 
  * @author Pete Muir
  */
-public class ServletBootstrap extends PropertiesBasedBootstrap
+public class ServletInitialization extends PropertiesBasedInitialization
 {
-   
-   // The resource loader
-   private final ResourceLoader resourceLoader;
-   // The discover implementation
-   private final WebBeanDiscovery webBeanDiscovery;
-   
-   private final EjbDiscovery ejbDiscovery;
    
    // The deployment properties
    private final DeploymentProperties deploymentProperties;
+   private final ResourceLoader resourceLoader;
    
-   public ServletBootstrap(ServletContext servletContext)
+   private final WebBeansBootstrap bootstrap;
+   
+   public ServletInitialization(ServletContext servletContext)
    {
+       bootstrap = new WebBeansBootstrap();
       
-      // Create a simpple resource loader based for initial loading 
-      ResourceLoader temporaryResourceLoader = new SimpleResourceLoader();
+      // Create a simple resource loader based for initial loading 
+      ResourceLoader temporaryResourceLoader = new DefaultResourceLoader();
       this.deploymentProperties = new DeploymentProperties(temporaryResourceLoader);
-      
       this.resourceLoader = createResourceLoader(servletContext, temporaryResourceLoader);
       
-      // Now safe to initialize the manager
-      initManager(servletContext);
+      bootstrap.setResourceLoader(resourceLoader);
+      bootstrap.setNamingContext(createNaming(servletContext));
+      bootstrap.setEjbResolver(createEjbResolver(servletContext));
+      bootstrap.setEjbDiscovery(createEjbDiscovery(servletContext));
+      bootstrap.setWebBeanDiscovery(createWebBeanDiscovery(servletContext));
       
-      this.webBeanDiscovery = createWebBeanDiscovery(servletContext);
-      this.ejbDiscovery = createEjbDiscovery(servletContext);
+      bootstrap.initialize();
+      
+      ManagerImpl manager = bootstrap.getManager();
       
       // Register the contexts for the Servlet environment
-      getManager().addContext(DependentContext.INSTANCE);
-      getManager().addContext(RequestContext.INSTANCE);
-      getManager().addContext(SessionContext.INSTANCE);
-      getManager().addContext(ApplicationContext.INSTANCE);
-      getManager().addContext(ConversationContext.INSTANCE);
+      manager.addContext(DependentContext.INSTANCE);
+      manager.addContext(RequestContext.INSTANCE);
+      manager.addContext(SessionContext.INSTANCE);
+      manager.addContext(ApplicationContext.INSTANCE);
+      manager.addContext(ConversationContext.INSTANCE);
       ApplicationContext.INSTANCE.setBeanMap(new ApplicationBeanMap(servletContext));
-   }
-
-   private void initManager(ServletContext servletContext)
-   {
-      initManager(createNaming(servletContext), createEjbResolver(servletContext), getResourceLoader());
    }
    
    protected NamingContext createNaming(ServletContext servletContext)
    {
-      Constructor<? extends NamingContext> namingConstructor = getClassConstructor(getDeploymentProperties(), getResourceLoader(), NamingContext.PROPERTY_NAME, NamingContext.class, ServletContext.class);
+      Constructor<? extends NamingContext> namingConstructor = getClassConstructor(deploymentProperties, resourceLoader, NamingContext.PROPERTY_NAME, NamingContext.class, ServletContext.class);
       if (namingConstructor != null)
       {
          return newInstance(namingConstructor, servletContext);
       }
       else
       {
-         return new DefaultNaming();
+         return new DefaultNamingContext();
       }
    }
    
    protected EjbResolver createEjbResolver(ServletContext servletContext)
    {
-      Constructor<? extends EjbResolver> constructor = getClassConstructor(getDeploymentProperties(), getResourceLoader(), EjbResolver.PROPERTY_NAME, EjbResolver.class, ServletContext.class);
+      Constructor<? extends EjbResolver> constructor = getClassConstructor(deploymentProperties, resourceLoader, EjbResolver.PROPERTY_NAME, EjbResolver.class, ServletContext.class);
       if (constructor != null)
       {
          return newInstance(constructor, servletContext);
@@ -111,7 +108,7 @@ public class ServletBootstrap extends PropertiesBasedBootstrap
    
    protected EjbDiscovery createEjbDiscovery(ServletContext servletContext)
    {
-      Constructor<? extends EjbDiscovery> constructor = getClassConstructor(getDeploymentProperties(), getResourceLoader(), EjbDiscovery.PROPERTY_NAME, EjbDiscovery.class, ServletContext.class);
+      Constructor<? extends EjbDiscovery> constructor = getClassConstructor(deploymentProperties, resourceLoader, EjbDiscovery.PROPERTY_NAME, EjbDiscovery.class, ServletContext.class);
       if (constructor != null)
       {
          return newInstance(constructor, servletContext);
@@ -136,42 +133,23 @@ public class ServletBootstrap extends PropertiesBasedBootstrap
       }
    }
    
-   protected ResourceLoader createResourceLoader(ServletContext servletContext, ResourceLoader resourceLoader)
+   protected ResourceLoader createResourceLoader(ServletContext servletContext, ResourceLoader defaultResourceLoader)
    {
       // Attempt to create a plugin resource loader
-      Constructor<? extends ResourceLoader> resourceLoaderConstructor = getClassConstructor(deploymentProperties, resourceLoader, ResourceLoader.PROPERTY_NAME, ResourceLoader.class, ServletContext.class);
+      Constructor<? extends ResourceLoader> resourceLoaderConstructor = getClassConstructor(deploymentProperties, defaultResourceLoader, ResourceLoader.PROPERTY_NAME, ResourceLoader.class, ServletContext.class);
       if (resourceLoaderConstructor != null)
       {
          return newInstance(resourceLoaderConstructor, servletContext);
       }
       else
       {
-         return resourceLoader;
+         return defaultResourceLoader;
       }
    }
-
-   @Override
-   protected DeploymentProperties getDeploymentProperties()
-   {
-      return deploymentProperties;
-   }
-
-   @Override
-   public ResourceLoader getResourceLoader()
-   {
-      return resourceLoader;
-   }
-
-   @Override
-   protected WebBeanDiscovery getWebBeanDiscovery()
-   {
-      return webBeanDiscovery;
-   }
-
-   @Override
-   protected EjbDiscovery getEjbDiscovery()
-   {
-      return ejbDiscovery;
-   }
    
+   public void boot()
+   {
+      bootstrap.boot();
+   }
+
 }

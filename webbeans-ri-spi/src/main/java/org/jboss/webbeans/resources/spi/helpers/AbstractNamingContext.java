@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.resource;
+package org.jboss.webbeans.resources.spi.helpers;
 
 import java.util.ArrayList;
 import java.util.List;

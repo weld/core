@@ -25,7 +25,7 @@ import javax.inject.ExecutionException;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
-import org.jboss.webbeans.servlet.ServletBootstrap;
+import org.jboss.webbeans.servlet.ServletInitialization;
 import org.jboss.webbeans.util.DeploymentProperties;
 import org.jboss.webbeans.util.Reflections;
 
@@ -36,11 +36,11 @@ import org.jboss.webbeans.util.Reflections;
  * @author Pete Muir
  *
  */
-public abstract class PropertiesBasedBootstrap extends WebBeansBootstrap
+public abstract class PropertiesBasedInitialization
 {
 
    // The log provider
-   private static final LogProvider log = Logging.getLogProvider(ServletBootstrap.class);
+   private static final LogProvider log = Logging.getLogProvider(ServletInitialization.class);
    
    /**
     * Returns any class constructor from the merged list defined by the 
@@ -98,14 +98,5 @@ public abstract class PropertiesBasedBootstrap extends WebBeansBootstrap
          throw new ExecutionException("Error instantiating " + constructor, e);
       }
    }
-   
-   /**
-    * Gets the deployment properties
-    * 
-    * @return The deployment properties
-    * 
-    * @see org.jboss.webbeans.util.DeploymentProperties
-    */
-   protected abstract DeploymentProperties getDeploymentProperties();
    
 }

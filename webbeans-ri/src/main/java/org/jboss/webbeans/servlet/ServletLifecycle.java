@@ -17,14 +17,12 @@
 
 package org.jboss.webbeans.servlet;
 
-import javax.context.Conversation;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.ApplicationContext;
-import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
@@ -40,6 +38,14 @@ import org.jboss.webbeans.log.Logging;
  */
 public class ServletLifecycle
 {
+   
+   private static final ServletLifecycle lifecycle = new ServletLifecycle();
+   
+   public static ServletLifecycle instance()
+   {
+      return lifecycle;
+   }
+   
    private static LogProvider log = Logging.getLogProvider(ServletLifecycle.class);
 
    /**
@@ -49,16 +55,16 @@ public class ServletLifecycle
     * 
     * @param context The servlet context
     */
-   public static void beginApplication(ServletContext servletContext)
+   public void beginApplication(ServletContext servletContext)
    {
       log.trace("Application is starting up");
-      new ServletBootstrap(servletContext).boot();
+      new ServletInitialization(servletContext).boot();
    }
 
    /**
     * Ends the application
     */
-   public static void endApplication()
+   public void endApplication()
    {
       log.trace("Application is shutting down");
       ApplicationContext.INSTANCE.destroy();
@@ -70,7 +76,7 @@ public class ServletLifecycle
     * 
     * @param session The HTTP session
     */
-   public static void beginSession(HttpSession session)
+   public void beginSession(HttpSession session)
    {
       log.trace("Starting session " + session.getId());
    }
@@ -80,7 +86,7 @@ public class ServletLifecycle
     * 
     * @param session The HTTP session
     */
-   public static void endSession(HttpSession session)
+   public void endSession(HttpSession session)
    {
       log.trace("Ending session " + session.getId());
       SessionContext.INSTANCE.setBeanMap(new HttpSessionBeanMap(session));
@@ -98,7 +104,7 @@ public class ServletLifecycle
     * 
     * @param request The request
     */
-   public static void beginRequest(HttpServletRequest request)
+   public void beginRequest(HttpServletRequest request)
    {
       log.trace("Processing HTTP request " + request.getRequestURI() + " begins");
       SessionContext.INSTANCE.setBeanMap(new HttpSessionBeanMap(request.getSession()));
@@ -110,7 +116,7 @@ public class ServletLifecycle
     * 
     * @param request The request
     */
-   public static void endRequest(HttpServletRequest request)
+   public void endRequest(HttpServletRequest request)
    {
       log.trace("Processing HTTP request " + request.getRequestURI() + " ends");
       DependentContext.INSTANCE.setActive(false);

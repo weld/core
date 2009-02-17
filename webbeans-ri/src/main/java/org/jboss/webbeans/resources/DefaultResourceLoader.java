@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bootstrap;
+package org.jboss.webbeans.resources;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,13 +26,13 @@ import org.jboss.webbeans.util.EnumerationIterable;
 /**
  * A simple resource loader.
  * 
- * Uses {@link SimpleResourceLoader}'s classloader if the Thread Context 
+ * Uses {@link DefaultResourceLoader}'s classloader if the Thread Context 
  * Classloader isn't available
  * 
  * @author Pete Muir
  *
  */
-public class SimpleResourceLoader implements ResourceLoader
+public class DefaultResourceLoader implements ResourceLoader
 {
    
    public Class<?> classForName(String name)

@@ -7,7 +7,7 @@ import java.util.List;
 import org.jboss.jsr299.tck.api.DeploymentException;
 import org.jboss.jsr299.tck.spi.StandaloneContainers;
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.mock.MockBootstrap;
+import org.jboss.webbeans.mock.MockLifecycle;
 import org.jboss.webbeans.mock.MockWebBeanDiscovery;
 
 public class StandaloneContainersImpl implements StandaloneContainers
@@ -22,20 +22,19 @@ public class StandaloneContainersImpl implements StandaloneContainers
    {
       try
       {
-         MockBootstrap bootstrap = new MockBootstrap();
-         ManagerImpl manager = bootstrap.getManager();
+         MockLifecycle lifecycle = new MockLifecycle();
+         ManagerImpl manager = lifecycle.getBootstrap().getManager();
          if (enabledDeploymentTypes != null)
          {
             manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
          }
-         MockWebBeanDiscovery discovery = new MockWebBeanDiscovery();
+         MockWebBeanDiscovery discovery = lifecycle.getWebBeanDiscovery();
          discovery.setWebBeanClasses(classes);
          if (beansXml != null)
          {
             discovery.setWebBeansXmlFiles(beansXml);
          }
-         bootstrap.setWebBeanDiscovery(discovery);
-         bootstrap.boot();
+         lifecycle.beginApplication();
       }
       catch (Exception e) 
       {

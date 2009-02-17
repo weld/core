@@ -20,8 +20,8 @@ import org.jboss.webbeans.bean.ProducerFieldBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.mock.MockBootstrap;
 import org.jboss.webbeans.mock.MockEjbDescriptor;
+import org.jboss.webbeans.mock.MockLifecycle;
 import org.jboss.webbeans.mock.MockWebBeanDiscovery;
 import org.jboss.webbeans.util.EnumerationIterable;
 import org.testng.annotations.BeforeMethod;
@@ -62,7 +62,7 @@ public class AbstractTest
    protected static final int BUILT_IN_BEANS = 3;
    
    protected ManagerImpl manager;
-   protected MockBootstrap bootstrap;
+   protected MockLifecycle lifecycle;
    protected MockWebBeanDiscovery discovery;
 
    public static boolean visited = false;
@@ -70,10 +70,9 @@ public class AbstractTest
    @BeforeMethod
    public void before() throws Exception
    {
-      bootstrap = new MockBootstrap();
-      manager = bootstrap.getManager();
-      this.discovery = new MockWebBeanDiscovery();
-      bootstrap.setWebBeanDiscovery(discovery);
+      lifecycle = new MockLifecycle();
+      this.discovery = lifecycle.getWebBeanDiscovery();
+      this.manager = lifecycle.getBootstrap().getManager();
    }
 
    protected List<Class<? extends Annotation>> getEnabledDeploymentTypes()
@@ -132,8 +131,7 @@ public class AbstractTest
    protected void deployBeans(Class<?>... classes)
    {
       discovery.setWebBeanClasses(Arrays.asList(classes));
-      bootstrap.boot();
-      manager = bootstrap.getManager();
+      lifecycle.beginApplication();
    }
    
    

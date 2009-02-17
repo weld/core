@@ -45,7 +45,7 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
     */
    public void contextInitialized(ServletContextEvent event) 
    {
-      ServletLifecycle.beginApplication(event.getServletContext());
+      ServletLifecycle.instance().beginApplication(event.getServletContext());
    }
 
    /**
@@ -55,7 +55,7 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
     */
    public void sessionCreated(HttpSessionEvent event) 
    {
-      ServletLifecycle.beginSession(event.getSession());
+      ServletLifecycle.instance().beginSession(event.getSession());
    }
 
    /**
@@ -65,7 +65,7 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
     */
    public void sessionDestroyed(HttpSessionEvent event) 
    {
-      ServletLifecycle.endSession(event.getSession());
+      ServletLifecycle.instance().endSession(event.getSession());
    }
 
    /**
@@ -75,7 +75,7 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
     */
    public void contextDestroyed(ServletContextEvent event) 
    {
-      ServletLifecycle.endApplication();
+      ServletLifecycle.instance().endApplication();
    }
 
    /**
@@ -87,7 +87,7 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
    {
       if (event.getServletRequest() instanceof HttpServletRequest)
       {
-         ServletLifecycle.endRequest((HttpServletRequest) event.getServletRequest());
+         ServletLifecycle.instance().endRequest((HttpServletRequest) event.getServletRequest());
       }
       else
       {
@@ -104,7 +104,7 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
    {
       if (event.getServletRequest() instanceof HttpServletRequest)
       {
-         ServletLifecycle.beginRequest((HttpServletRequest) event.getServletRequest());
+         ServletLifecycle.instance().beginRequest((HttpServletRequest) event.getServletRequest());
       }
       else
       {

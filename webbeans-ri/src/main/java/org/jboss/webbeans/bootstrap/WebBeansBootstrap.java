@@ -25,19 +25,18 @@ import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.standard.InjectionPointBean;
 import org.jboss.webbeans.bean.standard.ManagerBean;
-import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
-import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.bootstrap.api.Bootstrap;
+import org.jboss.webbeans.bootstrap.api.helpers.AbstractBootstrap;
 import org.jboss.webbeans.conversation.ConversationImpl;
 import org.jboss.webbeans.conversation.JavaSEConversationTerminator;
 import org.jboss.webbeans.conversation.NumericConversationIdGenerator;
 import org.jboss.webbeans.conversation.ServletConversationManager;
-import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.literal.DeployedLiteral;
 import org.jboss.webbeans.literal.InitializedLiteral;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.resources.spi.NamingContext;
-import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.webbeans.resources.DefaultNamingContext;
+import org.jboss.webbeans.resources.DefaultResourceLoader;
 import org.jboss.webbeans.servlet.HttpSessionManager;
 import org.jboss.webbeans.transaction.Transaction;
 
@@ -47,7 +46,7 @@ import org.jboss.webbeans.transaction.Transaction;
  * 
  * @author Pete Muir
  */
-public abstract class WebBeansBootstrap
+public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
 {
   
    // The log provider
@@ -55,39 +54,34 @@ public abstract class WebBeansBootstrap
 
    // The Web Beans manager
    private ManagerImpl manager;
-
-   protected void initManager(NamingContext namingContext, EjbResolver ejbResolver, ResourceLoader resourceLoader)
+   public WebBeansBootstrap()
    {
-      this.manager = new ManagerImpl(namingContext, ejbResolver, resourceLoader);
-      manager.getNaming().bind(ManagerImpl.JNDI_KEY, getManager());
-      CurrentManager.setRootManager(manager);
+      setResourceLoader(new DefaultResourceLoader());
+      setNamingContext(new DefaultNamingContext());
    }
 
+   public void initialize()
+   {
+      if (getResourceLoader() == null)
+      {
+         throw new IllegalStateException("ResourceLoader not set");
+      }
+      if (getNamingContext() == null)
+      {
+         throw new IllegalStateException("NamingContext is not set");
+      }
+      if (getEjbResolver() == null)
+      {
+         throw new IllegalStateException("EjbResolver is not set");
+      }
+      this.manager = new ManagerImpl(getNamingContext(), getEjbResolver(), getResourceLoader());
+      getManager().getNaming().bind(ManagerImpl.JNDI_KEY, getManager());
+      CurrentManager.setRootManager(manager);
+   }
+   
    public ManagerImpl getManager()
    {
       return manager;
-   }
-
-   protected abstract WebBeanDiscovery getWebBeanDiscovery();
-   
-   protected abstract EjbDiscovery getEjbDiscovery();
-
-   public abstract ResourceLoader getResourceLoader();
-
-   protected void validateBootstrap()
-   {
-      if (getManager() == null)
-      {
-         throw new IllegalStateException("getManager() is not set on bootstrap");
-      }
-      if (getWebBeanDiscovery() == null)
-      {
-         throw new IllegalStateException("WebBeanDiscovery plugin not set on bootstrap");
-      }
-      if (getResourceLoader() == null)
-      {
-         throw new IllegalStateException("ResourceLoader plugin not set on bootstrap");
-      }
    }
 
    /**
@@ -110,38 +104,44 @@ public abstract class WebBeansBootstrap
       beanDeployer.addClass(HttpSessionManager.class);
       beanDeployer.deploy();
    }
-
-
-   /**
-    * Starts the boot process.
-    * 
-    * Discovers the beans and registers them with the getManager(). Also
-    * resolves the injection points.
-    * 
-    * @param webBeanDiscovery The discovery implementation
-    */
+   
    public void boot()
    {
       synchronized (this)
       {
          log.info("Starting Web Beans RI " + getVersion());
-         validateBootstrap();
+         if (manager == null)
+         {
+            throw new IllegalStateException("Manager has not been initialized");
+         }
+         if (getWebBeanDiscovery() == null)
+         {
+            throw new IllegalStateException("WebBeanDiscovery not set");
+         }
+         if (getEjbDiscovery() == null)
+         {
+            throw new IllegalStateException("EjbDiscovery is not set");
+         }
+         if (getResourceLoader() == null)
+         {
+            throw new IllegalStateException("ResourceLoader not set");
+         }
          // Must populate EJB cache first, as we need it to detect whether a
          // bean is an EJB!
-         getManager().getEjbDescriptorCache().addAll(getEjbDiscovery().discoverEjbs());
+         manager.getEjbDescriptorCache().addAll(getEjbDiscovery().discoverEjbs());
          BeansXmlParser parser = new BeansXmlParser(getResourceLoader(), getWebBeanDiscovery().discoverWebBeansXml());
          parser.parse();
          List<Class<? extends Annotation>> enabledDeploymentTypes = parser.getEnabledDeploymentTypes();
          if (enabledDeploymentTypes != null)
          {
-            getManager().setEnabledDeploymentTypes(enabledDeploymentTypes);
+            manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
          }
          registerBeans(getWebBeanDiscovery().discoverWebBeanClasses());
-         getManager().fireEvent(getManager(), new InitializedLiteral());
+         manager.fireEvent(manager, new InitializedLiteral());
          log.info("Web Beans initialized. Validating beans.");
-         getManager().getResolver().resolveInjectionPoints();
+         manager.getResolver().resolveInjectionPoints();
          new BeanValidator(manager).validate();
-         getManager().fireEvent(getManager(), new DeployedLiteral());
+         manager.fireEvent(manager, new DeployedLiteral());
       }
    }
 

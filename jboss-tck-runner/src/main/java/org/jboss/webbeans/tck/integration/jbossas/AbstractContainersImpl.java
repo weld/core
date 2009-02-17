@@ -25,7 +25,7 @@ import org.jboss.jsr299.tck.spi.Containers;
 public abstract class AbstractContainersImpl implements Configurable, Containers
 {
    
-   public static String JAVA_OPTS = "-ea";
+   public static String JAVA_OPTS = " -ea";
    
    public static final String JBOSS_HOME_PROPERTY_NAME = "jboss.home";
    public static final String JAVA_OPTS_PROPERTY_NAME = "java.opts";
@@ -145,7 +145,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
       if (!isJBossUp())
       {
          jbossWasStarted = true;
-         launch(jbossHome, "run", "");
+         launch("run", "");
          log.info("Starting JBoss instance");
          // Wait for JBoss to come up
          long timeoutTime = System.currentTimeMillis() + bootTimeout;
@@ -172,7 +172,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
          }
          // If we got this far something went wrong
          log.warn("Unable to connect to JBoss instance after " + bootTimeout + "ms, giving up!");
-         launch(jbossHome, "shutdown", "-S");
+         launch("shutdown", "-S");
          throw new IllegalStateException("Error connecting to JBoss instance");
       }
       else
@@ -192,11 +192,11 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
    
    private void shutDownJBoss() throws IOException
    {
-      launch(jbossHome, "shutdown", "-S");
+      launch("shutdown", "-S");
       log.info("Shut down JBoss AS");
    }
    
-   private static void launch(String jbossHome, String scriptFileName, String params) throws IOException
+   private void launch(String scriptFileName, String params) throws IOException
    {
       String osName = System.getProperty("os.name");
       Runtime runtime = Runtime.getRuntime();
@@ -207,7 +207,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
           String command[] = {
                 "cmd.exe",
                 "/C",
-                "set JAVA_OPTS=" + JAVA_OPTS + " & cd " + jbossHome + "\\bin & " + scriptFileName + ".bat " + params
+                "set JAVA_OPTS=" + javaOpts + " & cd /D " + jbossHome + "\\bin & " + scriptFileName + ".bat " + params
           };
           p = runtime.exec(command);
       }
@@ -216,7 +216,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
           String command[] = {
                 "sh",
                 "-c",
-                "cd /D " + jbossHome + "/bin;set JAVA_OPTS=" + JAVA_OPTS + " ./" + scriptFileName + ".sh " + params
+                "cd " + jbossHome + "/bin;JAVA_OPTS=" + javaOpts + " ./" + scriptFileName + ".sh " + params
                 };
           p = runtime.exec(command);
       }
@@ -232,7 +232,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
           {
              try 
              {
-                DataOutputStream out = new DataOutputStream(new FileOutputStream(System.getProperty("java.io.tmpdir") + "jboss.log"));
+                DataOutputStream out = new DataOutputStream(new FileOutputStream(System.getProperty("java.io.tmpdir") + File.separator + "jboss.log"));
                 int c;
                 while((c = is.read()) != -1) 
                 {
