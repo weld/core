@@ -54,6 +54,10 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
    
    public void deploy(InputStream archiveStream, String name) throws DeploymentException, IOException
    {
+      if (deploymentManager == null)
+      {
+         throw new IllegalStateException("setup() has not been called!");
+      }
       Exception failure = null;
       try
       {
