@@ -3,6 +3,7 @@ package org.jboss.webbeans.test.unit.xml;
 import java.net.URL;
 import java.util.Iterator;
 
+import javax.inject.DeploymentException;
 import javax.inject.Production;
 import javax.inject.Standard;
 
@@ -47,6 +48,17 @@ public class BeansXmlParserTest extends AbstractTest
       assert parser.getEnabledDeploymentTypes().get(0).equals(Standard.class);
       assert parser.getEnabledDeploymentTypes().get(1).equals(Production.class);
       assert parser.getEnabledDeploymentTypes().get(2).equals(AnotherDeploymentType.class);
+   }
+   
+   /**
+    * Test case for WBRI-21.
+    */
+   @Test(expectedExceptions=DeploymentException.class)
+   public void testDuplicateDeployElement()
+   {
+      Iterable<URL> urls = getResources("duplicate-deployments-beans.xml");
+      BeansXmlParser parser = new BeansXmlParser(RESOURCE_LOADER, urls);
+      parser.parse();
    }
    
 }
