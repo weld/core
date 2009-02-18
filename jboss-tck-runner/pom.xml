@@ -150,6 +150,10 @@
                            <name>org.jboss.jsr299.tck.libraryDirectory</name>
                            <value>target/dependency/lib</value>
                         </property>
+                        <property>
+                           <name>org.jboss.jsr299.tck.runIntegrationTests</name>
+                           <value>true</value>
+                        </property>
                      </systemProperties>
                   </configuration>
                </plugin>
@@ -183,6 +187,10 @@
                         </property>
                         <property>
                            <name>jboss.force.restart</name>
+                           <value>true</value>
+                        </property>
+                        <property>
+                           <name>org.jboss.jsr299.tck.runIntegrationTests</name>
                            <value>true</value>
                         </property>
                         <property>
