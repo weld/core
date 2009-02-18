@@ -19,7 +19,6 @@ package org.jboss.webbeans.context;
 
 import javax.context.SessionScoped;
 
-import org.jboss.webbeans.context.beanmap.BeanMap;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -28,14 +27,17 @@ import org.jboss.webbeans.log.Logging;
  * 
  * @author Nicklas Karlsson
  */
-public class SessionContext extends AbstractBeanMapContext
+public class SessionContext extends AbstractThreadLocalMapContext
 {
    private static LogProvider log = Logging.getLogProvider(SessionContext.class);
 
-   public static SessionContext INSTANCE = new SessionContext();
-
-   // The beans
-   private ThreadLocal<BeanMap> beanMap;
+   public static SessionContext INSTANCE;
+   
+   public static SessionContext create()
+   {
+      INSTANCE = new SessionContext();
+      return INSTANCE;
+   }
 
    /**
     * Constructor
@@ -44,29 +46,6 @@ public class SessionContext extends AbstractBeanMapContext
    {
       super(SessionScoped.class);
       log.trace("Created session context");
-      this.beanMap = new ThreadLocal<BeanMap>();
-   }
-
-   /**
-    * Gets the bean map
-    * 
-    * @returns The bean map
-    * @see org.jboss.webbeans.context.AbstractContext#getNewEnterpriseBeanMap()
-    */
-   @Override
-   public BeanMap getBeanMap()
-   {
-      return beanMap.get();
-   }
-
-   /**
-    * Sets the bean map
-    * 
-    * @param beanMap The bean map
-    */
-   public void setBeanMap(BeanMap beanMap)
-   {
-      this.beanMap.set(beanMap);
    }
 
    @Override

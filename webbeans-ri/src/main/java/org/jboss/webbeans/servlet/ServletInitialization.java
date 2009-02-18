@@ -21,16 +21,10 @@ import java.lang.reflect.Constructor;
 
 import javax.servlet.ServletContext;
 
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.PropertiesBasedInitialization;
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
-import org.jboss.webbeans.context.ApplicationContext;
-import org.jboss.webbeans.context.ConversationContext;
-import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.context.RequestContext;
-import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.resources.DefaultNamingContext;
 import org.jboss.webbeans.resources.DefaultResourceLoader;
@@ -66,18 +60,6 @@ public class ServletInitialization extends PropertiesBasedInitialization
       bootstrap.setEjbResolver(createEjbResolver(servletContext));
       bootstrap.setEjbDiscovery(createEjbDiscovery(servletContext));
       bootstrap.setWebBeanDiscovery(createWebBeanDiscovery(servletContext));
-      
-      bootstrap.initialize();
-      
-      ManagerImpl manager = bootstrap.getManager();
-      
-      // Register the contexts for the Servlet environment
-      manager.addContext(DependentContext.INSTANCE);
-      manager.addContext(RequestContext.INSTANCE);
-      manager.addContext(SessionContext.INSTANCE);
-      manager.addContext(ApplicationContext.INSTANCE);
-      manager.addContext(ConversationContext.INSTANCE);
-      ApplicationContext.INSTANCE.setBeanMap(new ApplicationBeanMap(servletContext));
    }
    
    protected NamingContext createNaming(ServletContext servletContext)
@@ -147,9 +129,16 @@ public class ServletInitialization extends PropertiesBasedInitialization
       }
    }
    
-   public void boot()
+   public ServletInitialization initialize()
+   {
+      bootstrap.initialize();      
+      return this;
+   }
+   
+   public ServletInitialization start()
    {
       bootstrap.boot();
+      return this;
    }
 
 }

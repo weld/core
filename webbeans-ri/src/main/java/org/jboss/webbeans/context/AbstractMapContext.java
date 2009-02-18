@@ -40,16 +40,16 @@ import org.jboss.webbeans.log.Logging;
  * @see org.jboss.webbeans.contexts.SharedContext
  * @see org.jboss.webbeans.context.BasicContext
  */
-public abstract class AbstractBeanMapContext extends AbstractContext
+public abstract class AbstractMapContext extends AbstractContext
 {
-   private static LogProvider log = Logging.getLogProvider(AbstractBeanMapContext.class);
+   private static LogProvider log = Logging.getLogProvider(AbstractMapContext.class);
 
    /**
     * Constructor
     * 
     * @param scopeType The scope type
     */
-   public AbstractBeanMapContext(Class<? extends Annotation> scopeType)
+   public AbstractMapContext(Class<? extends Annotation> scopeType)
    {
       super(scopeType);
    }

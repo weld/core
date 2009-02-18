@@ -37,7 +37,15 @@ import javax.servlet.http.HttpSessionListener;
  */
 public class WebBeansListener implements ServletContextListener, HttpSessionListener, ServletRequestListener
 {
+   
+   private final ServletLifecycle lifecycle;
 
+   public WebBeansListener()
+   {
+      lifecycle = ServletLifecycle.instance();
+      lifecycle.initialize();
+   }
+   
    /**
     * Called when the context is initialized (application started)
     * 
@@ -45,7 +53,8 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
     */
    public void contextInitialized(ServletContextEvent event) 
    {
-      ServletLifecycle.instance().beginApplication(event.getServletContext());
+      
+      lifecycle.beginApplication(event.getServletContext());
    }
 
    /**
@@ -55,7 +64,7 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
     */
    public void sessionCreated(HttpSessionEvent event) 
    {
-      ServletLifecycle.instance().beginSession(event.getSession());
+      lifecycle.beginSession(event.getSession());
    }
 
    /**
@@ -65,7 +74,7 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
     */
    public void sessionDestroyed(HttpSessionEvent event) 
    {
-      ServletLifecycle.instance().endSession(event.getSession());
+      lifecycle.endSession(event.getSession());
    }
 
    /**
@@ -75,7 +84,7 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
     */
    public void contextDestroyed(ServletContextEvent event) 
    {
-      ServletLifecycle.instance().endApplication();
+      lifecycle.endApplication(event.getServletContext());
    }
 
    /**
@@ -87,7 +96,7 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
    {
       if (event.getServletRequest() instanceof HttpServletRequest)
       {
-         ServletLifecycle.instance().endRequest((HttpServletRequest) event.getServletRequest());
+         lifecycle.endRequest((HttpServletRequest) event.getServletRequest());
       }
       else
       {
@@ -104,7 +113,7 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
    {
       if (event.getServletRequest() instanceof HttpServletRequest)
       {
-         ServletLifecycle.instance().beginRequest((HttpServletRequest) event.getServletRequest());
+         lifecycle.beginRequest((HttpServletRequest) event.getServletRequest());
       }
       else
       {

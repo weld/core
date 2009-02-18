@@ -24,10 +24,16 @@ import javax.context.RequestScoped;
  * 
  * @author Nicklas Karlsson
  */
-public class RequestContext extends BasicContext
+public class RequestContext extends AbstractThreadLocalMapContext
 {
 	
-   public static RequestContext INSTANCE = new RequestContext();
+   public static RequestContext INSTANCE;
+   
+   public static RequestContext create()
+   {
+      INSTANCE = new RequestContext();
+      return INSTANCE;
+   }
 
    /**
     * Constructor

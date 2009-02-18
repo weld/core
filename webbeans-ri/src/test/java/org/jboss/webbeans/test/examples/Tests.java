@@ -1,13 +1,10 @@
 package org.jboss.webbeans.test.examples;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import javax.inject.Production;
 import javax.inject.Standard;
 
-import org.jboss.webbeans.bean.ProducerMethodBean;
-import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.test.unit.AbstractTest;
 import org.testng.annotations.Test;
 
@@ -38,22 +35,14 @@ public class Tests extends AbstractTest
 
    private void setupGameGenerator() throws NoSuchMethodException
    {
-      SimpleBean<Game> gameBean = createSimpleBean(Game.class);
-      SimpleBean<Generator> generatorBean = createSimpleBean(Generator.class);
-      Method method = Generator.class.getDeclaredMethod("next");
-      method.setAccessible(true);
-      ProducerMethodBean<Integer> nextBean = createProducerMethod(method, generatorBean);
-        
-      manager.addBean(gameBean);
-      manager.addBean(generatorBean);
-      manager.addBean(nextBean);
+      deployBeans(Game.class, Generator.class);
    }
    
    @Test
    public void testMockSentenceTranslator() throws Exception {
-      setupTextTranslator();
       
       manager.setEnabledDeploymentTypes(Arrays.asList(Standard.class, Production.class, Mock.class));
+      setupTextTranslator();
       
       new RunInDependentContext()
       {
@@ -95,15 +84,7 @@ public class Tests extends AbstractTest
    
    private void setupTextTranslator()
    {
-      SimpleBean<SentenceParser> spBean = createSimpleBean(SentenceParser.class);
-      SimpleBean<SentenceTranslator> stBean = createSimpleBean(SentenceTranslator.class);
-      SimpleBean<MockSentenceTranslator> mstBean = createSimpleBean(MockSentenceTranslator.class);
-      SimpleBean<TextTranslator> ttBean = createSimpleBean(TextTranslator.class);
-      
-      manager.addBean(spBean);
-      manager.addBean(stBean);
-      manager.addBean(mstBean);
-      manager.addBean(ttBean);
+      deployBeans(SentenceParser.class, SentenceTranslator.class, MockSentenceTranslator.class, TextTranslator.class);
    }
    
 }

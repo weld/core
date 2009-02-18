@@ -218,6 +218,7 @@ public class BootstrapTest extends AbstractTest
    @Test(groups="bootstrap", expectedExceptions=IllegalStateException.class)
    public void testDiscoverFails()
    {
+      deployBeans();
       MockLifecycle lifecycle = new MockLifecycle(null);
       lifecycle.beginApplication();
    }
@@ -269,10 +270,12 @@ public class BootstrapTest extends AbstractTest
       deployBeans(InitializedObserverWhichUsesRequestContext.class, Tuna.class);
    }
    
-   @Test(groups={"bootstrap", "broken"})
+   @Test(groups={"bootstrap"})
    public void testApplicationContextActiveDuringInitializtionEvent()
    {
-      deployBeans(InitializedObserverWhichUsesApplicationContext.class, LadybirdSpider.class);
+      Cow.mooed = false;
+      deployBeans(InitializedObserverWhichUsesApplicationContext.class, Cow.class);
+      assert Cow.mooed;
    }
    
 }

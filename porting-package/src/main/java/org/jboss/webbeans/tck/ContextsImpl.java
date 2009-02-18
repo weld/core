@@ -1,7 +1,7 @@
 package org.jboss.webbeans.tck;
 
 import org.jboss.jsr299.tck.spi.Contexts;
-import org.jboss.webbeans.context.AbstractBeanMapContext;
+import org.jboss.webbeans.context.AbstractMapContext;
 import org.jboss.webbeans.context.AbstractContext;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.RequestContext;
@@ -31,9 +31,9 @@ public class ContextsImpl implements Contexts<AbstractContext>
    
    public void destroyContext(AbstractContext context)
    {
-      if (context instanceof AbstractBeanMapContext)
+      if (context instanceof AbstractMapContext)
       {
-         ((AbstractBeanMapContext) context).destroy();
+         ((AbstractMapContext) context).destroy();
       }
       else
       {

@@ -19,14 +19,13 @@ package org.jboss.webbeans.mock;
 
 
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
+import org.jboss.webbeans.context.beanmap.BeanMap;
+import org.jboss.webbeans.context.beanmap.SimpleBeanMap;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
-import org.jboss.webbeans.mock.context.MockApplicationContext;
-import org.jboss.webbeans.mock.context.MockDependentContext;
-import org.jboss.webbeans.mock.context.MockRequestContext;
-import org.jboss.webbeans.mock.context.MockSessionContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.webbeans.servlet.AbstractLifecycle;
 
-public class MockLifecycle
+public class MockLifecycle extends AbstractLifecycle
 { 
    
    private static final EjbResolver MOCK_EJB_RESOLVER = new MockEjBResolver();
@@ -34,6 +33,9 @@ public class MockLifecycle
    
    private final WebBeansBootstrap bootstrap;
    private final MockWebBeanDiscovery webBeanDiscovery;
+   private BeanMap applicationBeanMap = new SimpleBeanMap();
+   private BeanMap sessionBeanMap = new SimpleBeanMap();
+   private BeanMap requestBeanMap = new SimpleBeanMap();
    
    public MockLifecycle()
    {
@@ -52,12 +54,13 @@ public class MockLifecycle
       bootstrap.setEjbResolver(MOCK_EJB_RESOLVER);
       bootstrap.setResourceLoader(MOCK_RESOURCE_LOADER);
       bootstrap.setWebBeanDiscovery(webBeanDiscovery);
+   }
+   
+   @Override
+   public void initialize()
+   {
       bootstrap.initialize();
-      
-      bootstrap.getManager().addContext(new MockRequestContext());
-      bootstrap.getManager().addContext(new MockSessionContext());
-      bootstrap.getManager().addContext(new MockApplicationContext());
-      bootstrap.getManager().addContext(new MockDependentContext());
+      super.initialize();
    }
    
    public MockWebBeanDiscovery getWebBeanDiscovery()
@@ -72,8 +75,43 @@ public class MockLifecycle
    
    public void beginApplication()
    {
+      super.beginApplication("Mock", applicationBeanMap);
+      BeanMap requestBeanMap = new SimpleBeanMap();
+      super.beginDeploy(requestBeanMap);
       bootstrap.setEjbDiscovery(new MockEjbDiscovery(webBeanDiscovery.discoverWebBeanClasses()));
       bootstrap.boot();
+      super.endDeploy(requestBeanMap);
+   }
+   
+   public void resetContexts()
+   {
+      
+   }
+   
+   public void endApplication()
+   {
+      super.endApplication("Mock", applicationBeanMap);
+   }
+   
+   public void beginRequest()
+   {
+      super.beginRequest("Mock", requestBeanMap);
+   }
+   
+   public void endRequest()
+   {
+      super.endRequest("Mock", requestBeanMap);
+   }
+   
+   public void beginSession()
+   {
+      super.beginSession("Mock", sessionBeanMap);
+   }
+   
+   public void endSession()
+   {
+      // TODO Conversation handling breaks this :-(
+      //super.endSession("Mock", sessionBeanMap);
    }
    
 }

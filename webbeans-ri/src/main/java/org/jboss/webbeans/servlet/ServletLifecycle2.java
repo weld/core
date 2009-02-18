@@ -25,39 +25,28 @@ import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.beanmap.BeanMap;
 import org.jboss.webbeans.context.beanmap.SimpleBeanMap;
-import org.jboss.webbeans.log.LogProvider;
-import org.jboss.webbeans.log.Logging;
 
 /**
- * Implementation of the Web Beans lifecycle that can react to servlet events
+ * Implementation of the Web Beans lifecycle that can react to servlet events.
  * 
- * This implementation boots the Web Beans container.
+ * This implementation does not boot the Web Beans container.
  * 
  * @author Pete Muir
  * @author Nicklas Karlsson
  */
-@Deprecated
-public class ServletLifecycle extends AbstractLifecycle
+public class ServletLifecycle2 extends AbstractLifecycle
 {
    
-   public static final String REQUEST_ATTRIBUTE_NAME = ServletLifecycle.class.getName() + ".requestBeanMap";
+   public static final String REQUEST_ATTRIBUTE_NAME = ServletLifecycle2.class.getName() + ".requestBeanMap";
+   
+   public static ServletLifecycle2 instance()
+   {
+      return (ServletLifecycle2) AbstractLifecycle.instance();
+   }
    
    static
    {
-      AbstractLifecycle.setInstance(new ServletLifecycle());
-   }
-   
-   public static ServletLifecycle instance()
-   {
-      return (ServletLifecycle) AbstractLifecycle.instance();
-   }
-   
-   private static LogProvider log = Logging.getLogProvider(ServletLifecycle.class);
-   
-   @Override
-   public void initialize()
-   {
-      // No-op, we'll do the init ourselves!
+      AbstractLifecycle.setInstance(new ServletLifecycle2());
    }
 
    /**
@@ -69,13 +58,7 @@ public class ServletLifecycle extends AbstractLifecycle
     */
    public void beginApplication(ServletContext servletContext)
    {
-      ServletInitialization servletInitialization = new ServletInitialization(servletContext).initialize();
-      super.initialize();
       super.beginApplication(servletContext.getServletContextName(), new ApplicationBeanMap(servletContext));
-      BeanMap requestBeanMap = new SimpleBeanMap();
-      super.beginDeploy(requestBeanMap);
-      servletInitialization.start();
-      super.endDeploy(requestBeanMap);
    }
 
    /**

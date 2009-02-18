@@ -19,7 +19,6 @@ package org.jboss.webbeans.context;
 
 import javax.context.ConversationScoped;
 
-import org.jboss.webbeans.context.beanmap.BeanMap;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -28,13 +27,17 @@ import org.jboss.webbeans.log.Logging;
  * 
  * @author Nicklas Karlsson
  */
-public class ConversationContext extends AbstractBeanMapContext
+public class ConversationContext extends AbstractThreadLocalMapContext
 {
    private static LogProvider log = Logging.getLogProvider(ConversationContext.class);
 
-   public static ConversationContext INSTANCE = new ConversationContext();
-
-   private ThreadLocal<BeanMap> beanMap;
+   public static ConversationContext INSTANCE;
+   
+   public static ConversationContext create()
+   {
+      INSTANCE = new ConversationContext();
+      return INSTANCE;
+   }
 
    /**
     * Constructor
@@ -43,18 +46,6 @@ public class ConversationContext extends AbstractBeanMapContext
    {
       super(ConversationScoped.class);
       log.trace("Created conversation context");
-      this.beanMap = new ThreadLocal<BeanMap>();
-   }
-
-   @Override
-   protected BeanMap getBeanMap()
-   {
-      return beanMap.get();
-   }
-
-   public void setBeanMap(BeanMap beanMap)
-   {
-      this.beanMap.set(beanMap);
    }
 
    @Override

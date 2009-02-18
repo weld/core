@@ -31,7 +31,13 @@ import javax.context.Dependent;
  */
 public class DependentContext extends AbstractContext
 {
-   public static DependentContext INSTANCE = new DependentContext();
+   public static DependentContext INSTANCE;
+   
+   public static DependentContext create()
+   {
+      INSTANCE = new DependentContext();
+      return INSTANCE;
+   }
 
    private ThreadLocal<AtomicInteger> reentrantActiveCount;
    // Key to collect instances under in DependentInstacesStore

@@ -30,10 +30,16 @@ import org.jboss.webbeans.context.beanmap.BeanMap;
  * 
  * @see org.jboss.webbeans.context.ApplicationContext
  */
-public class ApplicationContext extends AbstractBeanMapContext
+public class ApplicationContext extends AbstractMapContext
 {
 
-   public static ApplicationContext INSTANCE = new ApplicationContext();
+   public static ApplicationContext INSTANCE;
+   
+   public static ApplicationContext create()
+   {
+      INSTANCE = new ApplicationContext();
+      return INSTANCE;
+   }
 
    // The beans
    private BeanMap beanMap;
@@ -46,7 +52,7 @@ public class ApplicationContext extends AbstractBeanMapContext
    protected ApplicationContext()
    {
       super(ApplicationScoped.class);
-      this.active = new AtomicBoolean(true);
+      this.active = new AtomicBoolean(false);
    }
 
    /**

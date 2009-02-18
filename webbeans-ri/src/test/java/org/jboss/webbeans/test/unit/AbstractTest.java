@@ -24,6 +24,7 @@ import org.jboss.webbeans.mock.MockEjbDescriptor;
 import org.jboss.webbeans.mock.MockLifecycle;
 import org.jboss.webbeans.mock.MockWebBeanDiscovery;
 import org.jboss.webbeans.util.EnumerationIterable;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 public class AbstractTest
@@ -71,9 +72,22 @@ public class AbstractTest
    public void before() throws Exception
    {
       lifecycle = new MockLifecycle();
+      lifecycle.initialize();
       this.discovery = lifecycle.getWebBeanDiscovery();
       this.manager = lifecycle.getBootstrap().getManager();
+      lifecycle.beginApplication();
+      lifecycle.beginSession();
+      lifecycle.beginRequest();
    }
+   
+   @AfterMethod
+   public void after() throws Exception
+   {
+      lifecycle.endRequest();
+      lifecycle.endSession();
+      lifecycle.endApplication();
+   }
+   
 
    protected List<Class<? extends Annotation>> getEnabledDeploymentTypes()
    {
@@ -132,6 +146,8 @@ public class AbstractTest
    {
       discovery.setWebBeanClasses(Arrays.asList(classes));
       lifecycle.beginApplication();
+      lifecycle.beginSession();
+      lifecycle.beginRequest();
    }
    
    

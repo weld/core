@@ -8,11 +8,11 @@ import javax.inject.manager.Manager;
 class InitializedObserverWhichUsesApplicationContext
 {
    
-   @Current LadybirdSpider spider;
+   @Current Cow cow;
    
    public void observeInitialized(@Observes @Initialized Manager manager)
    {
-      spider.spinWeb();
+      cow.moo();
    }
    
 }
