@@ -130,10 +130,10 @@ public class ServletLifecycle extends AbstractLifecycle
     */
    public void beginRequest(HttpServletRequest request)
    {
-      restoreSessionContext(request.getSession());
       BeanMap beanMap = new SimpleBeanMap();
       request.setAttribute(REQUEST_ATTRIBUTE_NAME, beanMap);
       super.beginRequest(request.getRequestURI(), beanMap);
+      restoreSessionContext(request.getSession());
    }
 
    /**
