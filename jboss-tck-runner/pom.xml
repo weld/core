@@ -211,27 +211,34 @@
          <build>
             <plugins>
                <plugin>
-                 <groupId>org.apache.maven.plugins</groupId>
-                 <artifactId>maven-antrun-plugin</artifactId>
-                 <executions>
-                   <execution>
-                     <id>package</id>
-                     <phase>package</phase>
-                     <configuration>
-                       <tasks>
-                         <java classname="org.jboss.jsr299.tck.api.TCK" classpathref="maven.compile.classpath" failonerror="true" fork="true">
-                            <jvmarg line="-DdumpArtifacts=true"/>
-                            <jvmarg line="-Dorg.jboss.jsr299.tck.outputDirectory=target/jsr299-artifacts" />
-                            <jvmarg line="-Dorg.jboss.jsr299.tck.libraryDirectory=target/dependency/lib" />
-                         </java>
-                         <echo>Dumped artifacts to ${basedir}/target/jsr299-artifacts</echo>
-                       </tasks>
-                     </configuration>
-                     <goals>
-                       <goal>run</goal>
-                     </goals>
-                   </execution>
-                 </executions>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>exec-maven-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>generate-jsr-299-artifacts</id>
+                        <phase>generate-test-sources</phase> 
+                        <goals>
+                        <goal>java</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <configuration>
+                     <mainClass>org.jboss.jsr299.tck.api.TCK</mainClass>
+                     <systemProperties>
+                        <systemProperty>
+                           <key>dumpArtifacts</key>
+                           <value>true</value>
+                        </systemProperty>
+                        <systemProperty>
+                           <key>org.jboss.jsr299.tck.outputDirectory</key>
+                           <value>target/jsr299-artifacts</value>
+                        </systemProperty>
+                        <systemProperty>
+                           <key>org.jboss.jsr299.tck.libraryDirectory</key>
+                           <value>target/dependency/lib</value>
+                        </systemProperty>
+                     </systemProperties>
+                  </configuration>
                </plugin>
             </plugins>
          </build>
