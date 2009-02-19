@@ -17,7 +17,9 @@
 
 package org.jboss.webbeans.bean;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -26,7 +28,6 @@ import javassist.util.proxy.ProxyObject;
 
 import javax.context.ApplicationScoped;
 import javax.context.CreationalContext;
-import javax.context.Dependent;
 import javax.decorator.Decorator;
 import javax.event.Observes;
 import javax.inject.CreationException;
@@ -340,11 +341,31 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          if (!method.isStatic())
          {
-            if (!this.getTypes().contains(method.getMember().getDeclaringClass()))
+            if (!isMethodExistsOnTypes(method))
             {
-               throw new DefinitionException("Observer method must be static or business method: " + method);
+               throw new DefinitionException("Observer method must be static or business method: " + method + " on " + getAnnotatedItem());
             }
          }
       }
    }
+   
+   // TODO must be a nicer way to do this!
+   public boolean isMethodExistsOnTypes(AnnotatedMethod<?> method)
+   {
+      for (Type type : getTypes())
+      {
+         if (type instanceof Class)
+         {
+            for (Method m : ((Class<?>) type).getMethods())
+            {
+               if (method.getName().equals(m.getName()) && Arrays.equals(method.getParameterTypesAsArray(), m.getParameterTypes()))
+               {
+                  return true;
+               }
+            }
+         }
+      }
+      return false;
+   }
 }
+

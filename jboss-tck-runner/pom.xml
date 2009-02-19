@@ -35,14 +35,12 @@
       <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
-         <scope>test</scope>
          <classifier>jdk15</classifier>
       </dependency>
       
       <dependency>
          <groupId>org.jboss.jsr299.tck</groupId>
          <artifactId>jsr299-tck-impl</artifactId>
-         <scope>test</scope>
       </dependency>
       
       <dependency>
@@ -199,6 +197,41 @@
                         </property>
                      </systemProperties>
                   </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+      <profile>
+         <id>write-artifacts-to-disk</id>
+         <activation>
+            <property>
+               <name>dumpArtifacts</name>
+            </property>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-antrun-plugin</artifactId>
+                 <executions>
+                   <execution>
+                     <id>package</id>
+                     <phase>package</phase>
+                     <configuration>
+                       <tasks>
+                         <java classname="org.jboss.jsr299.tck.api.TCK" classpathref="maven.compile.classpath" failonerror="true" fork="true">
+                            <jvmarg line="-DdumpArtifacts=true"/>
+                            <jvmarg line="-Dorg.jboss.jsr299.tck.outputDirectory=target/jsr299-artifacts" />
+                            <jvmarg line="-Dorg.jboss.jsr299.tck.libraryDirectory=target/dependency/lib" />
+                         </java>
+                         <echo>Dumped artifacts to ${basedir}/target/jsr299-artifacts</echo>
+                       </tasks>
+                     </configuration>
+                     <goals>
+                       <goal>run</goal>
+                     </goals>
+                   </execution>
+                 </executions>
                </plugin>
             </plugins>
          </build>
