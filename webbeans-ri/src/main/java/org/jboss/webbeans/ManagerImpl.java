@@ -64,6 +64,7 @@ import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.ObserverImpl;
+import org.jboss.webbeans.injection.ResolvableAnnotatedClass;
 import org.jboss.webbeans.injection.Resolver;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -288,7 +289,7 @@ public class ManagerImpl implements Manager, Serializable
     */
    public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindings)
    {
-      return resolveByType(AnnotatedClassImpl.of(type, bindings), bindings);
+      return resolveByType(ResolvableAnnotatedClass.of(type, bindings), bindings);
    }
 
    /**
@@ -303,7 +304,7 @@ public class ManagerImpl implements Manager, Serializable
     */
    public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> type, Annotation... bindings)
    {
-      return resolveByType(AnnotatedClassImpl.of(type, bindings), bindings);
+      return resolveByType(ResolvableAnnotatedClass.of(type, bindings), bindings);
    }
 
    /**
@@ -622,7 +623,7 @@ public class ManagerImpl implements Manager, Serializable
          {
             currentInjectionPoint.set(injectionPoint);
          }
-         AnnotatedItem<T, ?> element = AnnotatedClassImpl.of((Class<T>) injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]));
+         AnnotatedItem<T, ?> element = ResolvableAnnotatedClass.of((Class<T>) injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]));
          Bean<T> bean = getBeanByType(element, element.getBindingsAsArray());
          if (creationalContext instanceof CreationalContextImpl)
          {
@@ -689,7 +690,7 @@ public class ManagerImpl implements Manager, Serializable
     */
    public <T> T getInstanceByType(Class<T> type, Annotation... bindings)
    {
-      return getInstanceByType(AnnotatedClassImpl.of(type, bindings), bindings);
+      return getInstanceByType(ResolvableAnnotatedClass.of(type, bindings), bindings);
    }
 
 
@@ -705,7 +706,7 @@ public class ManagerImpl implements Manager, Serializable
     */
    public <T> T getInstanceByType(TypeLiteral<T> type, Annotation... bindings)
    {
-      return getInstanceByType(AnnotatedClassImpl.of(type, bindings), bindings);
+      return getInstanceByType(ResolvableAnnotatedClass.of(type, bindings), bindings);
    }
 
    /**

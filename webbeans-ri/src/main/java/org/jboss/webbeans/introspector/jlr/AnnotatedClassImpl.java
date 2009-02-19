@@ -31,8 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.inject.TypeLiteral;
-
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -264,20 +262,6 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    public static <T> AnnotatedClass<T> of(Class<T> clazz)
    {
       return new AnnotatedClassImpl<T>(clazz, clazz, clazz.getAnnotations(), clazz.getDeclaredAnnotations());
-   }
-   
-   // TODO Introduce a lightweight implementation for resolution
-   @Deprecated
-   public static <T> AnnotatedClassImpl<T> of(TypeLiteral<T> typeLiteral, Annotation[] annotations)
-   {
-      return new AnnotatedClassImpl<T>(typeLiteral.getRawType(), typeLiteral.getType(), annotations, annotations);
-   }
-   
-   // TODO Introduce a lightweight implementation for resolution
-   @Deprecated
-   public static <T> AnnotatedClassImpl<T> of(Class<T> clazz, Annotation[] annotations)
-   {
-      return new AnnotatedClassImpl<T>(clazz, clazz, annotations, annotations);
    }
 
    private AnnotatedClassImpl(Class<T> rawType, Type type, Annotation[] annotations, Annotation[] declaredAnnotations)
