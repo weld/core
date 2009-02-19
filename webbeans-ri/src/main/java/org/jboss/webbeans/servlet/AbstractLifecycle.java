@@ -39,6 +39,10 @@ public abstract class AbstractLifecycle
    protected void initialize()
    {
       ManagerImpl manager = CurrentManager.rootManager();
+      if (manager == null)
+      {
+         throw new IllegalStateException("Manager has not been initialized, check that Bootstrap.initialize() has run");
+      }
       manager.addContext(DependentContext.create());
       manager.addContext(RequestContext.create());
       manager.addContext(SessionContext.create());
