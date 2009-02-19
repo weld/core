@@ -40,12 +40,12 @@ public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<
       if (type instanceof ParameterizedType)
       {
          this.actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
-         this._string = rawType.toString() + "<" + Arrays.asList(actualTypeArguments).toString() + ">";
+         this._string = rawType.toString() + "<" + Arrays.asList(actualTypeArguments).toString() + ">; binding types  " + annotations;
       }
       else
       {
          this.actualTypeArguments = new Type[0];
-         this._string = rawType.toString();
+         this._string = rawType.toString() +"; binding types  " + annotations;
       }
    }
 

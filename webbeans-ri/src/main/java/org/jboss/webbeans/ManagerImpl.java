@@ -337,7 +337,7 @@ public class ManagerImpl implements Manager, Serializable
       }
       if (bindings.length > element.getMetaAnnotations(BindingType.class).size())
       {
-         throw new DuplicateBindingTypeException(element.toString());
+         throw new DuplicateBindingTypeException("Duplicate bindings type passed " + element.toString());
       }
       return resolver.get(element);
    }
