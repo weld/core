@@ -8,7 +8,7 @@ import javax.inject.Standard;
 import org.jboss.webbeans.test.unit.AbstractTest;
 import org.testng.annotations.Test;
 
-public class Tests extends AbstractTest
+public class ExampleTest extends AbstractTest
 {
    @Test
    public void testGameGenerator() throws Exception {

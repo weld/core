@@ -158,8 +158,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     */
    protected void initTypes()
    {
-      types = new HashSet<Type>();
-      Reflections.getTypeHierachy(getType(), types);
+      types = new Reflections.HierarchyDiscovery<Type>(getAnnotatedItem().getUnderlyingType()).getFlattenedTypes();
    }
 
    /**

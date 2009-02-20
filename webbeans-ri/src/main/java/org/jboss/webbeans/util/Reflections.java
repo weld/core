@@ -43,6 +43,66 @@ import javax.inject.ExecutionException;
  */
 public class Reflections
 {
+   
+   public static class HierarchyDiscovery<T extends Type>
+   {
+      
+      private final T type;
+     
+      private Set<T> types;
+      
+      public HierarchyDiscovery(T type)
+      {
+         this.type = type;
+      }
+      
+      protected void add(T type)
+      {
+         types.add(type);
+      }
+      
+      public Set<T> getFlattenedTypes()
+      {
+         if (types == null)
+         {
+            this.types = new HashSet<T>();
+            discoverTypes(type);
+         }
+         return types;
+      }
+      
+      
+      private void discoverTypes(T type)
+      {
+         if (type != null)
+         {
+            add(type);
+            if (type instanceof Class)
+            {
+               discoverFromClass((Class<?>) type);
+            }
+            else if (type instanceof ParameterizedType)
+            {
+               Type rawType = ((ParameterizedType) type).getRawType();
+               if (rawType instanceof Class)
+               {
+                  discoverFromClass((Class<?>) rawType);
+               }
+            }
+         }
+      }
+      
+      @SuppressWarnings("unchecked")
+      private void discoverFromClass(Class<?> clazz)
+      {
+         discoverTypes((T) clazz.getSuperclass());
+         for (Class<?> c : clazz.getInterfaces())
+         {
+            discoverTypes((T) c);
+         }
+      }
+      
+   }
 
    /**
     * Gets the property name from a getter method
@@ -336,35 +396,16 @@ public class Reflections
     * reached. For each steps, adds all interfaces of the class to the set.
     * Since the data structure is a set, duplications are eliminated
     * 
+    * 
+    * @deprecated see {@link HierarchyDiscovery} 
     * @param clazz The class to examine
     * @return The set of classes and interfaces in the hierarchy
     * @see #getTypeHierachy(Class, Set)
     */
+   @Deprecated
    public static Set<Class<?>> getTypeHierachy(Class<?> clazz)
    {
-      Set<Class<?>> classes = new HashSet<Class<?>>();
-      getTypeHierachy(clazz, classes);
-      return classes;
-   }
-
-   /**
-    * Gets the flattened type hierarchy for a class, including all super classes
-    * and the entire interface type hierarchy
-    * 
-    * @param clazz the class to examine
-    * @param classes the set of types
-    */
-   public static void getTypeHierachy(Class<?> clazz, Set<? super Class<?>> classes)
-   {
-      if (clazz != null)
-      {
-         classes.add(clazz);
-         getTypeHierachy(clazz.getSuperclass(), classes);
-         for (Class<?> c : clazz.getInterfaces())
-         {
-            getTypeHierachy(c, classes);
-         }
-      }
+      return new HierarchyDiscovery<Class<?>>(clazz).getFlattenedTypes();
    }
 
    /**

@@ -126,6 +126,8 @@ public interface AnnotatedItem<T, S>
     * @return The type of the element
     */
    public Class<T> getType();
+   
+   public Type getUnderlyingType();
 
    /**
     * Extends Java Class assignability such that actual type parameters are also

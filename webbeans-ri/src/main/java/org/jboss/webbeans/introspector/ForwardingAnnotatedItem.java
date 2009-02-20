@@ -118,6 +118,11 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
    {
       return delegate().getType();
    }
+   
+   public Type getUnderlyingType()
+   {
+      return delegate().getUnderlyingType();
+   }
 
    /**
     * @see org.jboss.webbeans.introspector.AnnotatedItem

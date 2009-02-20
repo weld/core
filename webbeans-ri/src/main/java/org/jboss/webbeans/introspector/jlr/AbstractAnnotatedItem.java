@@ -18,6 +18,7 @@
 package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Set;
@@ -52,7 +53,10 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       
    }
 
-   
+   public Type getUnderlyingType()
+   {
+      return getType();
+   }
    
    // Cached string representation
    private String toString;
@@ -166,9 +170,16 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
                return true;
             }
          }
-         else
+         else if (type instanceof ParameterizedType)
          {
-            
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            if (parameterizedType.getRawType() instanceof Class)
+            {
+               if (isAssignableFrom((Class<?>) parameterizedType.getRawType(), parameterizedType.getActualTypeArguments()))
+               {
+                  return true;
+               }
+            }
          }
       }
       return false;

@@ -48,6 +48,8 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
 
    // The actual type arguments
    private final Type[] actualTypeArguments;
+   private final Type underlyingType;
+   private final Class<T> type;
    // The underlying method
    private final Method method;
 
@@ -87,12 +89,15 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       this.method = method;
       this.method.setAccessible(true);
       this.declaringClass = declaringClass;
+      this.type = (Class<T>) method.getReturnType();
       if (method.getGenericReturnType() instanceof ParameterizedType)
       {
-         this.actualTypeArguments = ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments();
+         this.underlyingType = method.getGenericReturnType();
+         this.actualTypeArguments = ((ParameterizedType) underlyingType).getActualTypeArguments();
       }
       else
       {
+         this.underlyingType = type;
          this.actualTypeArguments = new Type[0];
       }
 
@@ -132,58 +137,33 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       }
    }
 
-   /**
-    * Gets the annotated method
-    * 
-    * @return The method
-    */
    public Method getAnnotatedMethod()
    {
       return method;
    }
 
-   /**
-    * Gets the delegate
-    * 
-    * @return The delegate
-    */
    public Method getDelegate()
    {
       return method;
    }
 
-   /**
-    * Gets the type of the method
-    * 
-    * @return The return type of the method
-    */
    @SuppressWarnings("unchecked")
    public Class<T> getType()
    {
-      return (Class<T>) method.getReturnType();
+      return type;
+   }
+   
+   @Override
+   public Type getUnderlyingType()
+   {
+      return underlyingType;
    }
 
-   /**
-    * Gets the actual type arguments
-    * 
-    * @return The actual type arguments
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedMethod#getActualTypeArguments()
-    */
    public Type[] getActualTypeArguments()
    {
       return actualTypeArguments;
    }
 
-   /**
-    * Gets the annotated parameters
-    * 
-    * If the parameters are null, they are initialized first
-    * 
-    * @return The annotated parameters
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedMethod#getParameters()
-    */
    public List<AnnotatedParameter<?>> getParameters()
    {
       return Collections.unmodifiableList(parameters);
@@ -194,25 +174,11 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       return method.getParameterTypes();
    }
 
-   /**
-    * Gets the parameter abstractions with a given annotation type
-    * 
-    * If the parameter abstractions are null, they are initialized first
-    * 
-    * @param annotationType The annotation type to match
-    * @return The list of abstracted parameters with given annotation type
-    *         present. An empty list is returned if there are no matches
-    */
    public List<AnnotatedParameter<?>> getAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableList(annotatedParameters.get(annotationType));
    }
 
-   /**
-    * Compares two annotated methods (delegates)
-    * 
-    * @return True if equals, false otherwise
-    */
    @Override
    public boolean equals(Object other)
    {
@@ -252,35 +218,16 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       return result;
    }
 
-   /**
-    * Gets the name of the property
-    * 
-    * @return The name
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedMethod#getPropertyName()
-    */
    public String getPropertyName()
    {
       return propertyName;
    }
 
-   /**
-    * Gets the declaring class
-    * 
-    * @return The declaring class
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedMethod#getDeclaringClass()
-    */
    public AnnotatedType<?> getDeclaringClass()
    {
       return declaringClass;
    }
 
-   /**
-    * Gets a string representation of the method
-    * 
-    * @return A string representation
-    */
    @Override
    public String toString()
    {

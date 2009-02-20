@@ -116,10 +116,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
    {
       try
       {
-         if (getAnnotatedItem() != null)
-         {
-            this.type = getAnnotatedItem().getType();
-         }
+         this.type = getAnnotatedItem().getType();
       }
       catch (ClassCastException e)
       {

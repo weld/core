@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans.util;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -142,7 +143,23 @@ public class Proxies
     */
    public static boolean isTypeProxyable(Type type)
    {
-      Class<?> clazz = (Class<?>) type;
+      if (type instanceof Class)
+      {
+         return isClassProxyable((Class<?>) type);
+      }
+      else if (type instanceof ParameterizedType)
+      {
+         Type rawType = ((ParameterizedType) type).getRawType();
+         if (rawType instanceof Class)
+         {
+            return isClassProxyable((Class<?>) rawType);
+         }
+      }
+      return false;
+   }
+      
+   private static boolean isClassProxyable(Class<?> clazz)
+   {
       if (clazz.isInterface())
       {
          return true;
