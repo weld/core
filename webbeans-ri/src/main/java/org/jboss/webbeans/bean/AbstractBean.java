@@ -523,7 +523,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
 
    public boolean isDependent()
    {
-      return Dependent.class.equals(scopeType);
+      return Dependent.class.equals(getScopeType());
    }
 
    public boolean isSpecializing()

@@ -121,8 +121,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       super.init();
       initProxyClass();
       initInjectionPoints();
-      checkEnterpriseBeanTypeAllowed();
-      checkEnterpriseScopeAllowed();
+      checkEJBTypeAllowed();
       checkConflictingRoles();
       checkObserverMethods();
    }
@@ -168,13 +167,15 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * Check that the scope type is allowed by the stereotypes on the bean and
     * the bean type
     */
-   protected void checkEnterpriseScopeAllowed()
+   @Override
+   protected void checkScopeAllowed()
    {
+      super.checkScopeAllowed();
       if (ejbDescriptor.isStateless() && !isDependent())
       {
          throw new DefinitionException("Scope " + getScopeType() + " is not allowed on stateless enterpise beans for " + getType() + ". Only @Dependent is allowed on stateless enterprise beans");
       }
-      if (ejbDescriptor.isSingleton() && (!isDependent() || getScopeType().equals(ApplicationScoped.class)))
+      if (ejbDescriptor.isSingleton() && !(isDependent() || getScopeType().equals(ApplicationScoped.class)))
       {
          throw new DefinitionException("Scope " + getScopeType() + " is not allowed on singleton enterpise beans for " + getType() + ". Only @Dependent or @ApplicationScoped is allowed on singleton enterprise beans");
       }
@@ -250,7 +251,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    /**
     * Validates the bean type
     */
-   private void checkEnterpriseBeanTypeAllowed()
+   private void checkEJBTypeAllowed()
    {
       if (ejbDescriptor.isMessageDriven())
       {
