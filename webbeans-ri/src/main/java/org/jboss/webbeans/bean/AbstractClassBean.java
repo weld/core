@@ -205,7 +205,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          }
          else if (scopeTypes.size() > 1)
          {
-            throw new DefinitionException("At most one scope may be specified");
+            throw new DefinitionException("At most one scope may be specified on " + getAnnotatedItem());
          }
       }
 

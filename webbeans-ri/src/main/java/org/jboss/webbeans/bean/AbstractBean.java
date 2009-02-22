@@ -288,7 +288,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       }
       else if (possibleScopeTypes.size() > 1)
       {
-         throw new DefinitionException("All stereotypes must specify the same scope OR a scope must be specified on the bean");
+         throw new DefinitionException("All stereotypes must specify the same scope OR a scope must be specified on " + getAnnotatedItem());
       }
       else
       {

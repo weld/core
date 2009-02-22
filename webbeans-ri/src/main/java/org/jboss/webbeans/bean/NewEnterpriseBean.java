@@ -122,5 +122,11 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T>
    {
       return false;
    }
+   
+   @Override
+   protected void checkScopeAllowed()
+   {
+      // No-op
+   }
 
 }
