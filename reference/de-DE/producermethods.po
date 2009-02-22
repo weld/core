@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: producermethods\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-24 15:33+1100\n"
+"PO-Revision-Date: 2009-02-22 21:46+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: producermethods.xml:5
 #, no-c-format
 msgid "Producer methods"
-msgstr ""
+msgstr "Producer-Methoden"
 
 #. Tag: para
 #: producermethods.xml:7
@@ -36,7 +36,7 @@ msgstr ""
 #: producermethods.xml:12
 #, no-c-format
 msgid "According to the spec:"
-msgstr ""
+msgstr "Gemäß der Spezifikation:"
 
 #. Tag: chapter
 #: producermethods.xml:12
@@ -90,11 +90,12 @@ msgstr ""
 #: producermethods.xml:68
 #, no-c-format
 msgid "Scope of a producer method"
-msgstr ""
+msgstr "Geltungsbereich einer Producer-Methode"
 
 #. Tag: para
 #: producermethods.xml:70
 #, no-c-format
+#, fuzzy
 msgid ""
 "The scope of the producer method defaults to <literal>@Dependent</literal>, "
 "and so it will be called <emphasis>every time</emphasis> the Web Bean "
@@ -102,6 +103,10 @@ msgid ""
 "producer method. Thus, there could be multiple instances of the "
 "<literal>PaymentStrategy</literal> object for each user session."
 msgstr ""
+"Der Geltungsbereich der Producer-Methode ist standardmäßig <literal>@Dependent</literal>, "
+"und daher wird sie <emphasis>jedes Mal</emphasis> aufgerufen, wenn der Web Bean "
+"Manager eine Einspeisung in dieses oder ein anderes in diese Producer-Methode auflösendes Feld vornimmt. Thus, there could be multiple instances of the "
+"<literal>PaymentStrategy</literal> object for each user session."
 
 #. Tag: para
 #: producermethods.xml:75
@@ -109,7 +114,7 @@ msgstr ""
 msgid ""
 "To change this behavior, we can add a <literal>@SessionScoped</literal> "
 "annotation to the method."
-msgstr ""
+msgstr "Um dieses Verhalten zu ändern, können wir der Methode eine <literal>@SessionScoped</literal>-Annotation hinzufügen."
 
 #. Tag: programlisting
 #: producermethods.xml:78
@@ -132,13 +137,13 @@ msgid ""
 "Now, when the producer method is called, the returned "
 "<literal>PaymentStrategy</literal> will be bound to the session context. The "
 "producer method won't be called again in the same session."
-msgstr ""
+msgstr "Wird jetzt die Producer-Methode aufgerufen, so wird die wiedergegebene <literal>PaymentStrategy</literal> an den Session-Kontext gebunden. Die Producer-Methode wird in drselben Session nicht mehr aufgerufen."
 
 #. Tag: title
 #: producermethods.xml:87
 #, no-c-format
 msgid "Injection into producer methods"
-msgstr ""
+msgstr "Einspeisung in Producer-Methoden"
 
 #. Tag: para
 #: producermethods.xml:89
@@ -150,6 +155,9 @@ msgid ""
 "application can't take advantage of dependency injection and don't have "
 "interceptors."
 msgstr ""
+"Es gibt ein potenzielles Problem mit dem Code oben. Die Implementierungen von "
+"<literal>CreditCardPaymentStrategy</literal> werden unter Verwendung des Java "
+"<literal>new</literal> Operators instantiiert. Direkt durch die Anwendung instantiierte Objekte können die Dependency-Einspeisung nicht nutzen und besitzen keine Interzeptoren."
 
 #. Tag: para
 #: producermethods.xml:94
@@ -157,7 +165,7 @@ msgstr ""
 msgid ""
 "If this isn't what we want we can use dependency injection into the producer "
 "method to obtain Web Bean instances:"
-msgstr ""
+msgstr "Falls dies nicht das ist was wir wünschen, so können wir Dependency-Einspeisung in die Producer-Methode verwenden, um Web Bean Instanzen zu erhalten: "
 
 #. Tag: programlisting
 #: producermethods.xml:97
@@ -200,6 +208,8 @@ msgid ""
 "emphasis> be detected by the Web Bean manager, so please take extra care "
 "when returning Web Bean instances from producer methods!"
 msgstr ""
+"Aber Moment mal, was wenn <literal>CreditCardPaymentStrategy</literal> ein anfragenbegrenztes Web Bean ist? Dann hat die Producer-Methode die Wirkung, dass Sie die aktuelle anfragenbegrenzte Instanz in den Geltungsbereich der Session \"befördert\". Das ist mit ziemlicher Sicherheit ein Fehler! Das anfragenbegrenzte Objekt wird vom Web Bean Manager gelöscht ehe die Session endet, aber der Verweis auf das Objekt bleibt im Geltungsbereich der Session \"hängen\" in the session scope. Dieser Fehler wird <emphasis>nicht</"
+"emphasis> vom Web Bean Manager aufgespürt, daher seien Sie besonders vorsichtig wenn Sie Web Bean Instanzen von Producer-Methoden wiedergeben!"
 
 #. Tag: para
 #: producermethods.xml:107
@@ -211,6 +221,8 @@ msgid ""
 "better option would be to change the scope of the producer method to "
 "<literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
 msgstr ""
+"Es existieren mindestens drei Arten, wie dieser Fehler behoben werden kann. Wir könnten den Geltungsbereich der <literal>CreditCardPaymentStrategy</literal>-Implementierung ändern, aber das würde auch andere Clients dieses Web Beans betreffen. Eine bessere Option wäre es, den Geltungsbereich der Producer-Methode auf "
+"<literal>@Dependent</literal> oder <literal>@RequestScoped</literal> zu ändern."
 
 #. Tag: para
 #: producermethods.xml:113
@@ -218,19 +230,19 @@ msgstr ""
 msgid ""
 "But a more common solution is to use the special <literal>@New</literal> "
 "binding annotation."
-msgstr ""
+msgstr "Eine gängigere Lösung ist es jedoch, die spezielle <literal>@New</literal> Binding-Annotation zu verwenden."
 
 #. Tag: title
 #: producermethods.xml:119
 #, no-c-format
 msgid "Use of <literal>@New</literal> with producer methods"
-msgstr ""
+msgstr "Verwendung von <literal>@New</literal> mit Producer-Methoden"
 
 #. Tag: para
 #: producermethods.xml:121
 #, no-c-format
 msgid "Consider the following producer method:"
-msgstr ""
+msgstr "Sehen Sie sich folgende Producer-Methode an:"
 
 #. Tag: programlisting
 #: producermethods.xml:123
@@ -274,5 +286,5 @@ msgid ""
 "session context. The dependent object won't be destroyed until the "
 "<literal>Preferences</literal> object is destroyed, at the end of the "
 "session."
-msgstr ""
+msgstr "Dann wird eine neue <emphasis>abhängige</emphasis> Instanz von <literal>CreditCardPaymentStrategy</literal> erstellt, an die Producer-Methode weitergegeben, von der Producer-Methode wiedergegeben und schließlich an den Session-Kontext gebunden. Das abhängige Objekt wird nicht gelöscht bis das <literal>Preferences</literal>-Objekt gelöscht wird, meist am Ende der Session."
 
