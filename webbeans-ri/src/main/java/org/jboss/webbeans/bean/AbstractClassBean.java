@@ -166,19 +166,19 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       {
          if (method.isStatic())
          {
-            throw new DefinitionException("Initializer method " + method.toString() + " cannot be static");
+            throw new DefinitionException("Initializer method " + method.toString() + " cannot be static on " + getAnnotatedItem());
          }
          else if (method.getAnnotation(Produces.class) != null)
          {
-            throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Produces");
+            throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Produces on " + getAnnotatedItem());
          }
          else if (method.getAnnotatedParameters(Disposes.class).size() > 0)
          {
-            throw new DefinitionException("Initializer method " + method.toString() + " cannot have parameters annotated @Disposes");
+            throw new DefinitionException("Initializer method " + method.toString() + " cannot have parameters annotated @Disposes on " + getAnnotatedItem());
          }
          else if (method.getAnnotatedParameters(Observes.class).size() > 0)
          {
-            throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Observes");
+            throw new DefinitionException("Initializer method " + method.toString() + " cannot be annotated @Observes on " + getAnnotatedItem());
          }
          else
          {
