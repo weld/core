@@ -493,7 +493,7 @@
                            <requirePluginVersions>
                               <unCheckedPlugins>
                                  <unCheckedPlugin>org.apache.maven.plugins:maven-eclipse-plugin</unCheckedPlugin>
-                              </unCheckedPlugin
+                              </unCheckedPlugins>
                            </requirePluginVersions>
                         </rules>
                      </configuration>
