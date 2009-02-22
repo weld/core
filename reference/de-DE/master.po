@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: master\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-02-07 18:51+0000\n"
-"PO-Revision-Date: 2009-02-07 14:59+1100\n"
+"PO-Revision-Date: 2009-02-22 13:55+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Hinweis"
 
 #. Tag: para
 #: master.xml:11
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "JSR-299 has recently changed its name from \"Web Beans\" to \"Java Contexts "
 "and Dependency Injection\". The reference guide still refers to JSR-299 as "
@@ -62,3 +62,4 @@ msgstr "Das meiste aus starkem Tippen machen "
 #, no-c-format
 msgid "Web Beans and the Java EE ecosystem"
 msgstr "Web Beans und das Java EE-Ökosystem"
+
