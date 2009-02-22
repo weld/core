@@ -336,7 +336,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    {
       if (getAnnotatedItem().isAnnotationPresent(Named.class) && getSpecializedBean().getAnnotatedItem().isAnnotationPresent(Named.class))
       {
-         throw new DefinitionException("Cannot put name on specializing and specialized class");
+         throw new DefinitionException("Cannot put name on specializing and specialized class " + getAnnotatedItem());
       }
       this.bindings.addAll(getSpecializedBean().getBindings());
       if (isSpecializing() && getSpecializedBean().getAnnotatedItem().isAnnotationPresent(Named.class))
