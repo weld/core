@@ -235,7 +235,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       {
          return toString;
       }
-      toString = "Annotated method " + Names.methodToString(method);
+      toString = "Annotated method on class " + getDeclaringClass().getName() + Names.methodToString(method);
       return toString;
    }
       

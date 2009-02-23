@@ -36,7 +36,7 @@ import org.jboss.webbeans.util.Names;
  * 
  * @author David Allen
  * 
- * @param <T>
+ * @param <T> The actual type of the event object
  * @param <S>
  */
 public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
@@ -86,7 +86,7 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
    {
       if (!this.getAnnotatedItem().getType().equals(Event.class))
       {
-         throw new DefinitionException("Observable field/parameter is not of type Event<T>: " + this.getAnnotatedItem());
+         throw new DefinitionException("Event field/parameter is not of type Event<T>: " + this.getAnnotatedItem());
       }
       
    }
@@ -164,17 +164,11 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
    public String toString()
    {
       StringBuilder buffer = new StringBuilder();
-      buffer.append("Annotated " + Names.scopeTypeToString(getScopeType()));
-      if (getName() == null)
-      {
-         buffer.append(" unnamed event bean");
-      }
-      else
-      {
-         buffer.append(" enterprise bean '" + getName() + "'");
-      }
-      buffer.append(" [" + getType().getName() + "]\n");
-      buffer.append("   API types " + getTypes() + ", binding types " + getBindings() + "\n");
+      buffer.append(Names.scopeTypeToString(getScopeType()));
+      buffer.append("Event bean ");
+      buffer.append(getType().getName() + "\n");
+      buffer.append(" API types = ").append(Names.typesToString(getTypes())).append(", binding types = " + Names.annotationsToString(getBindings()));
+      buffer.append("\n");
       return buffer.toString();
    } 
 

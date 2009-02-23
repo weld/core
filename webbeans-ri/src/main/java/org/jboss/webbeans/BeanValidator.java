@@ -90,7 +90,7 @@ public class BeanValidator
                }
                if (resolvedBeans.size() > 1)
                {
-                  throw new AmbiguousDependencyException("The injection point " + injectionPoint + " has ambiguos dependencies for type " + type + " and binding types " + bindings + " in " + bean);
+                  throw new AmbiguousDependencyException("The injection point " + injectionPoint + " has ambiguous dependencies for type " + type + " and binding types " + bindings + " in " + bean);
                }
                Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
                if (MetaDataCache.instance().getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(type))
@@ -140,11 +140,11 @@ public class BeanValidator
             {
                if (!hasHigherPrecedence(bean.getDeploymentType(), abstractBean.getSpecializedBean().getDeploymentType()))
                {
-                  throw new InconsistentSpecializationException("Specializing bean must have a higher precedence deployment type than the specialized bean");
+                  throw new InconsistentSpecializationException("Specializing bean must have a higher precedence deployment type than the specialized bean: " + bean);
                }
                if (specializedBeans.contains(abstractBean.getSpecializedBean()))
                {
-                  throw new InconsistentSpecializationException("Two beans cannot specialize the same bean");
+                  throw new InconsistentSpecializationException("Two beans cannot specialize the same bean: " + bean);
                }
                specializedBeans.add(abstractBean.getSpecializedBean());
             }

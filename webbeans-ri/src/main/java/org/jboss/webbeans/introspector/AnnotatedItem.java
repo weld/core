@@ -85,6 +85,7 @@ public interface AnnotatedItem<T, S>
     * 
     * @returns A set of binding types present on the type. Returns an empty set
     *          if there are no matches.
+    * @deprecated This reflection type should not know about JSR-299 binding types
     */
    public Set<Annotation> getBindings();
 
@@ -93,6 +94,7 @@ public interface AnnotatedItem<T, S>
     * 
     * @returns An array of binding types present on the type. Returns an empty
     *          array if there are no matches.
+    * @deprecated This reflection type should not know about JSR-299 binding types
     */
    public Annotation[] getBindingsAsArray();
 

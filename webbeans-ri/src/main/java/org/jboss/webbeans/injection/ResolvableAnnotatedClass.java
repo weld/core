@@ -4,11 +4,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.HashSet;
 
 import javax.inject.TypeLiteral;
 
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem;
+import org.jboss.webbeans.util.Names;
 
 /**
  * Extension of an element which bases equality not only on type, but also on
@@ -40,12 +42,12 @@ public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<
       if (type instanceof ParameterizedType)
       {
          this.actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
-         this._string = rawType.toString() + "<" + Arrays.asList(actualTypeArguments).toString() + ">; binding types  " + annotations;
+         this._string = rawType.toString() + "<" + Arrays.asList(actualTypeArguments).toString() + ">; binding types = " + Names.annotationsToString(new HashSet<Annotation>(Arrays.asList(annotations)));
       }
       else
       {
          this.actualTypeArguments = new Type[0];
-         this._string = rawType.toString() +"; binding types  " + annotations;
+         this._string = rawType.toString() +"; binding types = " + Names.annotationsToString(new HashSet<Annotation>(Arrays.asList(annotations)));
       }
    }
 
