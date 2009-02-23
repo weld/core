@@ -116,14 +116,14 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
       {
          javaOpts = "";
       }
-      javaOpts = "\"" + javaOpts + JAVA_OPTS + "\"";
+      javaOpts = javaOpts + JAVA_OPTS;
       if (jbossHome == null)
       {
          throw new IllegalArgumentException("-D" + JBOSS_HOME_PROPERTY_NAME + " must be set");
       }
       else
       {
-    	 jbossHome = System.getProperty(JBOSS_HOME_PROPERTY_NAME);
+    	   jbossHome = System.getProperty(JBOSS_HOME_PROPERTY_NAME);
          File jbossHomeFile = new File(jbossHome);
          jbossHome = jbossHomeFile.getPath();
          log.info("Using JBoss instance in " + jbossHome + " at URL " + configuration.getHost());
@@ -219,7 +219,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
           String command[] = {
                 "sh",
                 "-c",
-                "cd " + jbossHome + "/bin;JAVA_OPTS=" + javaOpts + " ./" + scriptFileName + ".sh " + params
+                "cd " + jbossHome + "/bin;JAVA_OPTS=\"" + javaOpts + "\" ./" + scriptFileName + ".sh " + params
                 };
           p = runtime.exec(command);
       }
