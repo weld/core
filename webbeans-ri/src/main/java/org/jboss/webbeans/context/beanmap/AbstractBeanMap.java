@@ -24,6 +24,7 @@ import java.util.List;
 import javax.context.Contextual;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.EnumerationIterable;
@@ -35,7 +36,7 @@ import org.jboss.webbeans.util.Names;
  * @author Nicklas Karlsson
  * 
  */
-public abstract class AbstractBeanMap implements BeanMap
+public abstract class AbstractBeanMap implements BeanStore
 {
    // The log provider
    private static LogProvider log = Logging.getLogProvider(AbstractBeanMap.class);
@@ -87,7 +88,7 @@ public abstract class AbstractBeanMap implements BeanMap
     * 
     * @return The beans
     */
-   public Iterable<Contextual<? extends Object>> getContents()
+   public Iterable<Contextual<? extends Object>> getBeans()
    {
       List<Contextual<?>> contextuals = new ArrayList<Contextual<?>>();
       BeanMapAdaptor adaptor = getBeanMapAdaptor();
@@ -175,6 +176,6 @@ public abstract class AbstractBeanMap implements BeanMap
    @Override
    public String toString()
    {
-      return "holding " + Names.count(getContents()) + " instances";
+      return "holding " + Names.count(getBeans()) + " instances";
    }
 }

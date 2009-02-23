@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.context.ApplicationScoped;
 
-import org.jboss.webbeans.context.beanmap.BeanMap;
+import org.jboss.webbeans.context.api.BeanStore;
 
 /**
  * The Application context
@@ -42,7 +42,7 @@ public class ApplicationContext extends AbstractMapContext
    }
 
    // The beans
-   private BeanMap beanMap;
+   private BeanStore beanStore;
    // Is the context active?
    private AtomicBoolean active;
 
@@ -61,9 +61,9 @@ public class ApplicationContext extends AbstractMapContext
     * @return The bean map
     */
    @Override
-   public BeanMap getBeanMap()
+   public BeanStore getBeanMap()
    {
-      return this.beanMap;
+      return this.beanStore;
    }
 
    /**
@@ -71,9 +71,9 @@ public class ApplicationContext extends AbstractMapContext
     * 
     * @param applicationBeanMap The bean map
     */
-   public void setBeanMap(BeanMap applicationBeanMap)
+   public void setBeanMap(BeanStore applicationBeanMap)
    {
-      this.beanMap = applicationBeanMap;
+      this.beanStore = applicationBeanMap;
    }
 
    /**

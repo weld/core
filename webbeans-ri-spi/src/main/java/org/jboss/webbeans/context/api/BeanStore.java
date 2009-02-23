@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.context.beanmap;
+package org.jboss.webbeans.context.api;
 
 import javax.context.Contextual;
 
@@ -29,7 +29,7 @@ import javax.context.Contextual;
  * @see org.jboss.webbeans.context.beanmap.SimpleBeanMap
  * @see org.jboss.webbeans.servlet.HttpSessionBeanMap
  */
-public interface BeanMap
+public interface BeanStore
 {
    /**
     * Gets an instance of a bean from the storage.
@@ -57,7 +57,7 @@ public interface BeanMap
     * 
     * @return An Iterable over the keys in the storage
     */
-   public abstract Iterable<Contextual<? extends Object>> getContents();
+   public abstract Iterable<Contextual<? extends Object>> getBeans();
 
    /**
     * Adds a bean instance to the storage

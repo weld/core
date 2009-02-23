@@ -2,17 +2,17 @@ package org.jboss.webbeans.context;
 
 import java.lang.annotation.Annotation;
 
-import org.jboss.webbeans.context.beanmap.BeanMap;
+import org.jboss.webbeans.context.api.BeanStore;
 
 public abstract class AbstractThreadLocalMapContext extends AbstractMapContext
 {
    
-   private final ThreadLocal<BeanMap> beanMap;
+   private final ThreadLocal<BeanStore> beanStore;
 
    public AbstractThreadLocalMapContext(Class<? extends Annotation> scopeType)
    {
       super(scopeType);
-      this.beanMap = new ThreadLocal<BeanMap>();
+      this.beanStore = new ThreadLocal<BeanStore>();
    }
 
    /**
@@ -22,19 +22,19 @@ public abstract class AbstractThreadLocalMapContext extends AbstractMapContext
     * @see org.jboss.webbeans.context.AbstractContext#getNewEnterpriseBeanMap()
     */
    @Override
-   public BeanMap getBeanMap()
+   public BeanStore getBeanMap()
    {
-      return beanMap.get();
+      return beanStore.get();
    }
 
    /**
     * Sets the bean map
     * 
-    * @param beanMap The bean map
+    * @param beanStore The bean map
     */
-   public void setBeanMap(BeanMap beanMap)
+   public void setBeanMap(BeanStore beanStore)
    {
-      this.beanMap.set(beanMap);
+      this.beanStore.set(beanStore);
    }
    
 }

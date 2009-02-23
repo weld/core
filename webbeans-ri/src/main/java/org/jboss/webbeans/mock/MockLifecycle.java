@@ -19,7 +19,7 @@ package org.jboss.webbeans.mock;
 
 
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
-import org.jboss.webbeans.context.beanmap.BeanMap;
+import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.beanmap.SimpleBeanMap;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
@@ -33,9 +33,9 @@ public class MockLifecycle extends AbstractLifecycle
    
    private final WebBeansBootstrap bootstrap;
    private final MockWebBeanDiscovery webBeanDiscovery;
-   private BeanMap applicationBeanMap = new SimpleBeanMap();
-   private BeanMap sessionBeanMap = new SimpleBeanMap();
-   private BeanMap requestBeanMap = new SimpleBeanMap();
+   private BeanStore applicationBeanMap = new SimpleBeanMap();
+   private BeanStore sessionBeanMap = new SimpleBeanMap();
+   private BeanStore requestBeanMap = new SimpleBeanMap();
    
    public MockLifecycle()
    {
@@ -76,7 +76,7 @@ public class MockLifecycle extends AbstractLifecycle
    public void beginApplication()
    {
       super.beginApplication("Mock", applicationBeanMap);
-      BeanMap requestBeanMap = new SimpleBeanMap();
+      BeanStore requestBeanMap = new SimpleBeanMap();
       super.beginDeploy(requestBeanMap);
       bootstrap.setEjbDiscovery(new MockEjbDiscovery(webBeanDiscovery.discoverWebBeanClasses()));
       bootstrap.boot();

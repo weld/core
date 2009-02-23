@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.SessionContext;
-import org.jboss.webbeans.context.beanmap.BeanMap;
+import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.beanmap.SimpleBeanMap;
 
 /**
@@ -96,9 +96,9 @@ public class ServletLifecycle2 extends AbstractLifecycle
     * @param session
     * @return
     */
-   protected BeanMap restoreSessionContext(HttpSession session)
+   protected BeanStore restoreSessionContext(HttpSession session)
    {
-      BeanMap sessionBeanMap = new HttpSessionBeanMap(session);
+      BeanStore sessionBeanMap = new HttpSessionBeanMap(session);
       SessionContext.INSTANCE.setBeanMap(sessionBeanMap);
       CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
       return sessionBeanMap;
@@ -114,9 +114,9 @@ public class ServletLifecycle2 extends AbstractLifecycle
    public void beginRequest(HttpServletRequest request)
    {
       restoreSessionContext(request.getSession());
-      BeanMap beanMap = new SimpleBeanMap();
-      request.setAttribute(REQUEST_ATTRIBUTE_NAME, beanMap);
-      super.beginRequest(request.getRequestURI(), beanMap);
+      BeanStore beanStore = new SimpleBeanMap();
+      request.setAttribute(REQUEST_ATTRIBUTE_NAME, beanStore);
+      super.beginRequest(request.getRequestURI(), beanStore);
    }
 
    /**
@@ -126,9 +126,9 @@ public class ServletLifecycle2 extends AbstractLifecycle
     */
    public void endRequest(HttpServletRequest request)
    {
-      BeanMap beanMap = (BeanMap) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
+      BeanStore beanStore = (BeanStore) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
       request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
-      super.endRequest(request.getRequestURI(), beanMap);
+      super.endRequest(request.getRequestURI(), beanStore);
       SessionContext.INSTANCE.setBeanMap(null);
    }
 

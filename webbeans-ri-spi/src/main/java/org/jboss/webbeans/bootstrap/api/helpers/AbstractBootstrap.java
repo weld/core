@@ -3,6 +3,7 @@ package org.jboss.webbeans.bootstrap.api.helpers;
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
@@ -15,6 +16,7 @@ public abstract class AbstractBootstrap implements Bootstrap
    private NamingContext namingContext;
    private EjbResolver ejbResolver;
    private EjbDiscovery ejbDiscovery;
+   private BeanStore applicationContext;
 
    public void setEjbDiscovery(EjbDiscovery ejbDiscovery)
    {
@@ -64,6 +66,16 @@ public abstract class AbstractBootstrap implements Bootstrap
    public EjbDiscovery getEjbDiscovery()
    {
       return ejbDiscovery;
+   }
+   
+   public BeanStore getApplicationContext()
+   {
+      return applicationContext;
+   }
+   
+   public void setApplicationContext(BeanStore applicationContext)
+   {
+      this.applicationContext = applicationContext;      
    }
    
 }

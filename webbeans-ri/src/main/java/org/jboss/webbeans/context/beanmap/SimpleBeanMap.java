@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.context.Contextual;
 import javax.inject.manager.Bean;
 
+import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -34,7 +35,7 @@ import com.google.common.collect.ForwardingMap;
  * 
  * @author Nicklas Karlsson
  */
-public class SimpleBeanMap extends ForwardingMap<Contextual<? extends Object>, Object> implements BeanMap
+public class SimpleBeanMap extends ForwardingMap<Contextual<? extends Object>, Object> implements BeanStore
 {
    private static LogProvider log = Logging.getLogProvider(SimpleBeanMap.class);
    
@@ -55,7 +56,7 @@ public class SimpleBeanMap extends ForwardingMap<Contextual<? extends Object>, O
     * @param The bean to look for
     * @return An instance, if found
     * 
-    * @see org.jboss.webbeans.context.beanmap.BeanMap#get(Bean)
+    * @see org.jboss.webbeans.context.api.BeanStore#get(Bean)
     */
    public <T extends Object> T get(Contextual<? extends T> bean)
    {
@@ -82,7 +83,7 @@ public class SimpleBeanMap extends ForwardingMap<Contextual<? extends Object>, O
     * @param bean the bean to remove
     * @return The instance removed
     *
-    * @see org.jboss.webbeans.context.beanmap.BeanMap#remove(Bean)
+    * @see org.jboss.webbeans.context.api.BeanStore#remove(Bean)
     */
    public <T extends Object> T remove(Contextual<? extends T> bean)
    {
@@ -95,7 +96,7 @@ public class SimpleBeanMap extends ForwardingMap<Contextual<? extends Object>, O
    /**
     * Clears the map
     * 
-    * @see org.jboss.webbeans.context.beanmap.BeanMap#clear()
+    * @see org.jboss.webbeans.context.api.BeanStore#clear()
     */
    public void clear()
    {
@@ -108,9 +109,9 @@ public class SimpleBeanMap extends ForwardingMap<Contextual<? extends Object>, O
     * 
     * @return The beans present
     * 
-    * @see org.jboss.webbeans.context.beanmap.BeanMap#getContents()
+    * @see org.jboss.webbeans.context.api.BeanStore#getBeans()
     */
-   public Set<Contextual<? extends Object>> getContents()
+   public Set<Contextual<? extends Object>> getBeans()
    {
       return delegate.keySet();
    }
@@ -121,7 +122,7 @@ public class SimpleBeanMap extends ForwardingMap<Contextual<? extends Object>, O
     * @param bean The bean
     * @param instance the instance
     * 
-    * @see org.jboss.webbeans.context.beanmap.BeanMap#put(Bean, Object)
+    * @see org.jboss.webbeans.context.api.BeanStore#put(Bean, Object)
     */
    public <T> void put(Contextual<? extends T> bean, T instance)
    {
