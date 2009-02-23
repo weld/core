@@ -22,6 +22,8 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.beanmap.AbstractBeanMap;
+import org.jboss.webbeans.context.beanmap.BeanMapAdaptor;
+import org.jboss.webbeans.context.beanmap.SimpleBeanMapAdaptor;
 
 /**
  * A BeanMap that uses a HTTP session as backing map
@@ -44,15 +46,6 @@ public class HttpSessionBeanMap extends AbstractBeanMap
    {
       super();
       this.session = session;
-   }
-
-   /**
-    * @see org.jboss.webbeans.context.beanmap.AbstractBeanMap#getKeyPrefix()
-    */
-   @Override
-   protected String getKeyPrefix()
-   {
-      return SessionContext.class.getName();
    }
 
    /**
@@ -90,6 +83,12 @@ public class HttpSessionBeanMap extends AbstractBeanMap
    protected void setAttribute(String key, Object instance)
    {
       session.setAttribute(key, instance);
+   }
+
+   @Override
+   protected BeanMapAdaptor getBeanMapAdaptor()
+   {
+      return new SimpleBeanMapAdaptor(SessionContext.class.getName());
    }
 
 }

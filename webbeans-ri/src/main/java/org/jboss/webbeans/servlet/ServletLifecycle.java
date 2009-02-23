@@ -39,21 +39,21 @@ import org.jboss.webbeans.log.Logging;
 @Deprecated
 public class ServletLifecycle extends AbstractLifecycle
 {
-   
+
    public static final String REQUEST_ATTRIBUTE_NAME = ServletLifecycle.class.getName() + ".requestBeanMap";
-   
+
    static
    {
       AbstractLifecycle.setInstance(new ServletLifecycle());
    }
-   
+
    public static ServletLifecycle instance()
    {
       return (ServletLifecycle) AbstractLifecycle.instance();
    }
-   
+
    private static LogProvider log = Logging.getLogProvider(ServletLifecycle.class);
-   
+
    @Override
    public void initialize()
    {
@@ -105,9 +105,9 @@ public class ServletLifecycle extends AbstractLifecycle
    {
       super.endSession(session.getId(), restoreSessionContext(session));
    }
-   
+
    /**
-    * Restore the session from the underlying session object. Also allow the 
+    * Restore the session from the underlying session object. Also allow the
     * session to be injected by the Session manager
     * 
     * @param session
@@ -120,7 +120,7 @@ public class ServletLifecycle extends AbstractLifecycle
       CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
       return sessionBeanMap;
    }
-   
+
    /**
     * Begins a HTTP request
     * 
@@ -147,6 +147,28 @@ public class ServletLifecycle extends AbstractLifecycle
       request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
       super.endRequest(request.getRequestURI(), beanMap);
       SessionContext.INSTANCE.setBeanMap(null);
+   }
+
+   /**
+    * Restores a conversation
+    * 
+    * @param session The HTTP session
+    * @param cid The conversation to resume
+    */
+   public void restoreConversation(HttpSession session, String cid)
+   {
+      super.restoreConversation(session.getId() + "[" + cid + "]", new ConversationBeanMap(session, cid));
+   }
+
+   /**
+    * Destroys a conversation
+    * 
+    * @param session The HTTP session
+    * @param cid The conversation to destroy
+    */
+   public void destroyConversation(HttpSession session, String cid)
+   {
+      super.destroyConversation(session.getId() + "[" + cid + "]", new ConversationBeanMap(session, cid));
    }
 
 }

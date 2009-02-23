@@ -14,34 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.webbeans.context.beanmap;
 
-package org.jboss.webbeans.servlet;
+import javax.context.Contextual;
 
-import javax.servlet.http.HttpSession;
-
-import org.jboss.webbeans.context.ConversationContext;
-import org.jboss.webbeans.context.beanmap.BeanMapAdaptor;
-import org.jboss.webbeans.context.beanmap.SimpleBeanMapAdaptor;
+import org.jboss.webbeans.CurrentManager;
 
 /**
- * A HTTP session backed bean map for the conversational scope
+ * Simple prefix-based implementation of a bean map adaptor
  * 
  * @author Nicklas Karlsson
  */
-public class ConversationBeanMap extends HttpSessionBeanMap
+public class SimpleBeanMapAdaptor implements BeanMapAdaptor
 {
-   private String cid;
+   public String prefix;
 
-   public ConversationBeanMap(HttpSession session, String cid)
+   public SimpleBeanMapAdaptor(String prefix)
    {
-      super(session);
-      this.cid = cid;
+      this.prefix = prefix;
    }
 
-   @Override
-   protected BeanMapAdaptor getBeanMapAdaptor()
+   public boolean acceptKey(String key)
    {
-      return new SimpleBeanMapAdaptor(ConversationContext.class.getName() + "[" + cid + "]");
+      return key.startsWith(prefix);
+   }
+
+   public int getBeanIndexFromKey(String key)
+   {
+      return Integer.parseInt(key.substring(prefix.length() + 1));
+   }
+
+   public String getContextualKey(Contextual<?> contextual)
+   {
+      return prefix + "#" + CurrentManager.rootManager().getBeans().indexOf(contextual);
    }
 
 }

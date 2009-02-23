@@ -53,11 +53,11 @@ public interface BeanMap
    public abstract void clear();
 
    /**
-    * Returns an Iterable over the current keys in the storage
+    * Returns an Iterable over the current contents in the storage
     * 
     * @return An Iterable over the keys in the storage
     */
-   public abstract Iterable<Contextual<? extends Object>> keySet();
+   public abstract Iterable<Contextual<? extends Object>> getContents();
 
    /**
     * Adds a bean instance to the storage

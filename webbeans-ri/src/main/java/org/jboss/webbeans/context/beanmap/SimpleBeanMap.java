@@ -108,9 +108,9 @@ public class SimpleBeanMap extends ForwardingMap<Contextual<? extends Object>, O
     * 
     * @return The beans present
     * 
-    * @see org.jboss.webbeans.context.beanmap.BeanMap#keySet()
+    * @see org.jboss.webbeans.context.beanmap.BeanMap#getContents()
     */
-   public Set<Contextual<? extends Object>> keySet()
+   public Set<Contextual<? extends Object>> getContents()
    {
       return delegate.keySet();
    }

@@ -26,7 +26,6 @@ import javax.context.Contextual;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.servlet.ApplicationBeanMap;
 import org.jboss.webbeans.util.EnumerationIterable;
 import org.jboss.webbeans.util.Names;
 
@@ -44,13 +43,13 @@ public abstract class AbstractBeanMap implements BeanMap
    /**
     * Gets a bean from the map
     * 
-    * @param bean The bean to get
+    * @param contextual The bean to get
     * @return The instance
     */
    @SuppressWarnings("unchecked")
-   public <T> T get(Contextual<? extends T> bean)
+   public <T> T get(Contextual<? extends T> contextual)
    {
-      String key = getBeanKey(bean);
+      String key = getBeanMapAdaptor().getContextualKey(contextual);
       T instance = (T) getAttribute(key);
       log.trace("Looked for " + key + " and got " + instance);
       return instance;
@@ -59,13 +58,13 @@ public abstract class AbstractBeanMap implements BeanMap
    /**
     * Removes an instance from the map
     * 
-    * @param bean The bean of the instance to remove
+    * @param contextual The bean of the instance to remove
     * @return The removed instance
     */
-   public <T> T remove(Contextual<? extends T> bean)
+   public <T> T remove(Contextual<? extends T> contextual)
    {
-      T instance = get(bean);
-      String key = getBeanKey(bean);
+      T instance = get(contextual);
+      String key = getBeanMapAdaptor().getContextualKey(contextual);
       removeAttribute(key);
       log.trace("Removed bean under key " + key);
       return instance;
@@ -76,9 +75,9 @@ public abstract class AbstractBeanMap implements BeanMap
     */
    public void clear()
    {
-      for (String name : getFilteredAttributeNames())
+      for (String attributeName : getFilteredAttributeNames())
       {
-         removeAttribute(name);
+         removeAttribute(attributeName);
       }
       log.trace("Bean Map cleared");
    }
@@ -88,16 +87,17 @@ public abstract class AbstractBeanMap implements BeanMap
     * 
     * @return The beans
     */
-   public Iterable<Contextual<? extends Object>> keySet()
+   public Iterable<Contextual<? extends Object>> getContents()
    {
-      List<Contextual<?>> beans = new ArrayList<Contextual<?>>();
-      for (String name : getFilteredAttributeNames())
+      List<Contextual<?>> contextuals = new ArrayList<Contextual<?>>();
+      BeanMapAdaptor adaptor = getBeanMapAdaptor();
+      for (String attributeName : getFilteredAttributeNames())
       {
-         String id = name.substring(getKeyPrefix().length() + 1);
-         Contextual<?> bean = CurrentManager.rootManager().getBeans().get(Integer.parseInt(id));
-         beans.add(bean);
+         int beanIndex = adaptor.getBeanIndexFromKey(attributeName);
+         Contextual<?> contextual = CurrentManager.rootManager().getBeans().get(beanIndex);
+         contextuals.add(contextual);
       }
-      return beans;
+      return contextuals;
    }
 
    /**
@@ -108,11 +108,10 @@ public abstract class AbstractBeanMap implements BeanMap
    private List<String> getFilteredAttributeNames()
    {
       List<String> attributeNames = new ArrayList<String>();
-      Enumeration<String> e = getAttributeNames();
-      while (e.hasMoreElements())
+      BeanMapAdaptor adaptor = getBeanMapAdaptor();
+      for (String attributeName : new EnumerationIterable<String>(getAttributeNames()))
       {
-         String attributeName = e.nextElement();
-         if (attributeName.startsWith(getKeyPrefix()))
+         if (adaptor.acceptKey(attributeName))
          {
             attributeNames.add(attributeName);
          }
@@ -129,7 +128,7 @@ public abstract class AbstractBeanMap implements BeanMap
     */
    public <T> void put(Contextual<? extends T> bean, T instance)
    {
-      String key = getBeanKey(bean);
+      String key = getBeanMapAdaptor().getContextualKey(bean);
       setAttribute(key, instance);
       log.trace("Added bean " + bean + " under key " + key);
    }
@@ -166,27 +165,16 @@ public abstract class AbstractBeanMap implements BeanMap
    protected abstract void setAttribute(String key, Object instance);
 
    /**
-    * Gets a key prefix that should be prefixed to names
+    * Gets an adaptor for handling keys in a bean map
     * 
-    * @return The prefix
+    * @return The filter
     */
-   protected abstract String getKeyPrefix();
+   protected abstract BeanMapAdaptor getBeanMapAdaptor();
 
-   /**
-    * Returns a map key to a bean. Uses a known prefix and appends the index of
-    * the Bean in the Manager bean list.
-    * 
-    * @param bean The bean to generate a key for.
-    * @return A unique key;
-    */
-   protected String getBeanKey(Contextual<?> bean)
-   {
-      return getKeyPrefix() + "#" + CurrentManager.rootManager().getBeans().indexOf(bean);
-   }
 
    @Override
    public String toString()
    {
-      return "holding " + Names.count(keySet()) + " instances under the key prefix " + getKeyPrefix();
+      return "holding " + Names.count(getContents()) + " instances";
    }
 }

@@ -23,6 +23,8 @@ import javax.servlet.ServletContext;
 
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.beanmap.AbstractBeanMap;
+import org.jboss.webbeans.context.beanmap.BeanMapAdaptor;
+import org.jboss.webbeans.context.beanmap.SimpleBeanMapAdaptor;
 
 /**
  * A BeanMap that uses a servlet context as backing map
@@ -37,7 +39,7 @@ public class ApplicationBeanMap extends AbstractBeanMap
    private ServletContext context;
 
    /**
-    * Constructor 
+    * Constructor
     * 
     * @param context The servlet context instance
     */
@@ -45,15 +47,6 @@ public class ApplicationBeanMap extends AbstractBeanMap
    {
       super();
       this.context = context;
-   }
-
-   /**
-    * @see org.jboss.webbeans.context.beanmap.AbstractBeanMap#getKeyPrefix()
-    */
-   @Override
-   protected String getKeyPrefix()
-   {
-      return ApplicationContext.class.getName();
    }
 
    /**
@@ -91,6 +84,12 @@ public class ApplicationBeanMap extends AbstractBeanMap
    protected void setAttribute(String key, Object instance)
    {
       context.setAttribute(key, instance);
+   }
+
+   @Override
+   protected BeanMapAdaptor getBeanMapAdaptor()
+   {
+      return new SimpleBeanMapAdaptor(ApplicationContext.class.getName());
    }
 
 }

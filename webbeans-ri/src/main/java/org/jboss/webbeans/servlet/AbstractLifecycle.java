@@ -17,23 +17,23 @@ import org.jboss.webbeans.log.Logging;
  * and destroying all the built in contexts
  * 
  * @author Pete Muir
- *
+ * 
  */
 public abstract class AbstractLifecycle
 {
-   
-   private static AbstractLifecycle instance; 
-   
+
+   private static AbstractLifecycle instance;
+
    public static AbstractLifecycle instance()
    {
       return instance;
    }
-   
+
    protected static void setInstance(AbstractLifecycle instance)
    {
       AbstractLifecycle.instance = instance;
    }
-   
+
    private static LogProvider log = Logging.getLogProvider(AbstractLifecycle.class);
 
    protected void initialize()
@@ -49,21 +49,21 @@ public abstract class AbstractLifecycle
       manager.addContext(ApplicationContext.create());
       manager.addContext(ConversationContext.create());
    }
-   
+
    protected void beginApplication(String id, BeanMap applicationBeanMap)
    {
       log.trace("Starting application " + id);
       ApplicationContext.INSTANCE.setBeanMap(applicationBeanMap);
       ApplicationContext.INSTANCE.setActive(true);
-      
+
    }
-   
+
    protected void beginDeploy(BeanMap requestBeanMap)
    {
       RequestContext.INSTANCE.setBeanMap(requestBeanMap);
       RequestContext.INSTANCE.setActive(true);
    }
-   
+
    protected void endDeploy(BeanMap requestBeanMap)
    {
       RequestContext.INSTANCE.setBeanMap(null);
@@ -77,7 +77,7 @@ public abstract class AbstractLifecycle
       ApplicationContext.INSTANCE.setActive(false);
       ApplicationContext.INSTANCE.setBeanMap(null);
    }
-   
+
    protected void beginSession(String id, BeanMap sessionBeanMap)
    {
       log.trace("Starting session " + id);
@@ -102,7 +102,7 @@ public abstract class AbstractLifecycle
       RequestContext.INSTANCE.setActive(true);
       DependentContext.INSTANCE.setActive(true);
    }
-   
+
    public void endRequest(String id, BeanMap requestBeanMap)
    {
       log.trace("Ending request " + id);
@@ -111,5 +111,20 @@ public abstract class AbstractLifecycle
       RequestContext.INSTANCE.destroy();
       RequestContext.INSTANCE.setActive(false);
    }
-     
+
+   protected void restoreConversation(String id, BeanMap conversationBeanMap)
+   {
+      log.trace("Starting conversation " + id);
+      ConversationContext.INSTANCE.setBeanMap(conversationBeanMap);
+      ConversationContext.INSTANCE.setActive(true);
+   }
+
+   protected void destroyConversation(String id, ConversationBeanMap conversationBeanMap)
+   {
+      log.trace("Ending conversation " + id);
+      ConversationContext destructionContext = new ConversationContext();
+      destructionContext.setBeanMap(conversationBeanMap);
+      destructionContext.destroy();
+   }
+
 }

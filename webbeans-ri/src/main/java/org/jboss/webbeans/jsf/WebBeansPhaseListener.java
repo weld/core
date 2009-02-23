@@ -29,6 +29,7 @@ import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.servlet.ConversationBeanMap;
 import org.jboss.webbeans.servlet.HttpSessionManager;
+import org.jboss.webbeans.servlet.ServletLifecycle;
 
 /**
  * A phase listener for propagating conversation id over postbacks through a
@@ -112,7 +113,7 @@ public class WebBeansPhaseListener implements PhaseListener
       CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
       CurrentManager.rootManager().getInstanceByType(ConversationManager.class).beginOrRestoreConversation(JSFHelper.getConversationId());
       String cid = CurrentManager.rootManager().getInstanceByType(Conversation.class).getId();
-      ConversationContext.INSTANCE.setBeanMap(new ConversationBeanMap(session, cid));
+      ServletLifecycle.instance().restoreConversation(session, cid);
    }
 
    /**

@@ -16,10 +16,15 @@
  */
 package org.jboss.webbeans.jsf;
 
+import java.io.IOException;
+
 import javax.faces.component.html.HtmlInputHidden;
 import javax.faces.context.FacesContext;
+import javax.inject.AnnotationLiteral;
 import javax.servlet.http.HttpSession;
 
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.conversation.bindings.ConversationIdName;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -27,14 +32,13 @@ import org.jboss.webbeans.log.Logging;
  * Helper class for JSF related operations
  * 
  * @author Nicklas Karlsson
- *
+ * 
  */
 public class JSFHelper
 {
    private static LogProvider log = Logging.getLogProvider(JSFHelper.class);
 
    private static final String CONVERSATION_PROPAGATION_COMPONENT_ID = "webbeans_conversation_propagation";
-   private static final String CONVERSATION_ID_NAME = "cid";
 
    /**
     * Gets a FacesContext instance
@@ -70,7 +74,8 @@ public class JSFHelper
    }
 
    /**
-    * Creates and/or updates the conversation propagation component in the UI view root
+    * Creates and/or updates the conversation propagation component in the UI
+    * view root
     * 
     * @param cid The conversation id to propagate
     */
@@ -105,15 +110,17 @@ public class JSFHelper
     */
    public static String getConversationIdFromRequest()
    {
-      String cid = context().getExternalContext().getRequestParameterMap().get(CONVERSATION_ID_NAME);
+      String cidName = CurrentManager.rootManager().getInstanceByType(String.class, new AnnotationLiteral<ConversationIdName>(){});
+      String cid = context().getExternalContext().getRequestParameterMap().get(cidName);
       log.trace("Got cid " + cid + " from request");
       return cid;
    }
 
    /**
     * Gets the propagated conversation id from the propagation component
-    *  
+    * 
     * @return The conversation id (or null if not found)
+    * @throws IOException
     */
    public static String getConversationIdFromPropagationComponent()
    {
@@ -130,7 +137,7 @@ public class JSFHelper
    /**
     * Gets the propagated conversation id
     * 
-    * @return The conversatio nid (or null if not found)
+    * @return The conversation id (or null if not found)
     */
    public static String getConversationId()
    {

@@ -14,34 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.webbeans.mock;
 
-package org.jboss.webbeans.servlet;
-
-import javax.servlet.http.HttpSession;
-
-import org.jboss.webbeans.context.ConversationContext;
-import org.jboss.webbeans.context.beanmap.BeanMapAdaptor;
-import org.jboss.webbeans.context.beanmap.SimpleBeanMapAdaptor;
+import org.jboss.webbeans.conversation.ServletConversationManager;
 
 /**
- * A HTTP session backed bean map for the conversational scope
+ * Mock of a conversation manager without servlet dependencies
  * 
  * @author Nicklas Karlsson
+ *
  */
-public class ConversationBeanMap extends HttpSessionBeanMap
+// TODO dummy
+public class MockConversationManager extends ServletConversationManager
 {
-   private String cid;
-
-   public ConversationBeanMap(HttpSession session, String cid)
-   {
-      super(session);
-      this.cid = cid;
-   }
-
-   @Override
-   protected BeanMapAdaptor getBeanMapAdaptor()
-   {
-      return new SimpleBeanMapAdaptor(ConversationContext.class.getName() + "[" + cid + "]");
-   }
 
 }

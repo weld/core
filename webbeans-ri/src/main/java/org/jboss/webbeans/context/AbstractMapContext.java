@@ -25,7 +25,6 @@ import javax.context.CreationalContext;
 import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.context.beanmap.BeanMap;
-import org.jboss.webbeans.jsf.JSFHelper;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -113,7 +112,7 @@ public abstract class AbstractMapContext extends AbstractContext
    public void destroy()
    {
       log.trace("Destroying context");
-      for (Contextual<? extends Object> bean : getBeanMap().keySet())
+      for (Contextual<? extends Object> bean : getBeanMap().getContents())
       {
          destroy(bean);
       }

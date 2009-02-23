@@ -22,7 +22,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import javax.context.Dependent;
 import javax.inject.AmbiguousDependencyException;
 import javax.inject.DefinitionException;
 import javax.inject.IllegalProductException;
@@ -41,7 +40,6 @@ import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.introspector.AnnotatedField;
-import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.ListComparator;

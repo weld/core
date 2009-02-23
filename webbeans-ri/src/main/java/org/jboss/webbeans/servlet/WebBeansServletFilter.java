@@ -80,6 +80,7 @@ public class WebBeansServletFilter implements Filter
 
    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
    {
+      System.out.println("!!!");
       chain.doFilter(request, wrapResponse((HttpServletResponse) response));
    }
 
