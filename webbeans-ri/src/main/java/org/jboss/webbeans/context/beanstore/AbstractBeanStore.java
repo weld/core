@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.context.beanmap;
+package org.jboss.webbeans.context.beanstore;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -31,15 +31,15 @@ import org.jboss.webbeans.util.EnumerationIterable;
 import org.jboss.webbeans.util.Names;
 
 /**
- * Provides common BeanMap operations
+ * Provides common BeanStore operations
  * 
  * @author Nicklas Karlsson
  * 
  */
-public abstract class AbstractBeanMap implements BeanStore
+public abstract class AbstractBeanStore implements BeanStore
 {
    // The log provider
-   private static LogProvider log = Logging.getLogProvider(AbstractBeanMap.class);
+   private static LogProvider log = Logging.getLogProvider(AbstractBeanStore.class);
 
    /**
     * Gets a bean from the map
@@ -50,7 +50,7 @@ public abstract class AbstractBeanMap implements BeanStore
    @SuppressWarnings("unchecked")
    public <T> T get(Contextual<? extends T> contextual)
    {
-      String key = getBeanMapAdaptor().getContextualKey(contextual);
+      String key = getBeanNamingScheme().getContextualKey(contextual);
       T instance = (T) getAttribute(key);
       log.trace("Looked for " + key + " and got " + instance);
       return instance;
@@ -65,7 +65,7 @@ public abstract class AbstractBeanMap implements BeanStore
    public <T> T remove(Contextual<? extends T> contextual)
    {
       T instance = get(contextual);
-      String key = getBeanMapAdaptor().getContextualKey(contextual);
+      String key = getBeanNamingScheme().getContextualKey(contextual);
       removeAttribute(key);
       log.trace("Removed bean under key " + key);
       return instance;
@@ -91,10 +91,10 @@ public abstract class AbstractBeanMap implements BeanStore
    public Iterable<Contextual<? extends Object>> getBeans()
    {
       List<Contextual<?>> contextuals = new ArrayList<Contextual<?>>();
-      BeanMapAdaptor adaptor = getBeanMapAdaptor();
+      BeanStoreNamingScheme namingScheme = getBeanNamingScheme();
       for (String attributeName : getFilteredAttributeNames())
       {
-         int beanIndex = adaptor.getBeanIndexFromKey(attributeName);
+         int beanIndex = namingScheme.getBeanIndexFromKey(attributeName);
          Contextual<?> contextual = CurrentManager.rootManager().getBeans().get(beanIndex);
          contextuals.add(contextual);
       }
@@ -109,10 +109,10 @@ public abstract class AbstractBeanMap implements BeanStore
    private List<String> getFilteredAttributeNames()
    {
       List<String> attributeNames = new ArrayList<String>();
-      BeanMapAdaptor adaptor = getBeanMapAdaptor();
+      BeanStoreNamingScheme namingScheme = getBeanNamingScheme();
       for (String attributeName : new EnumerationIterable<String>(getAttributeNames()))
       {
-         if (adaptor.acceptKey(attributeName))
+         if (namingScheme.acceptKey(attributeName))
          {
             attributeNames.add(attributeName);
          }
@@ -129,7 +129,7 @@ public abstract class AbstractBeanMap implements BeanStore
     */
    public <T> void put(Contextual<? extends T> bean, T instance)
    {
-      String key = getBeanMapAdaptor().getContextualKey(bean);
+      String key = getBeanNamingScheme().getContextualKey(bean);
       setAttribute(key, instance);
       log.trace("Added bean " + bean + " under key " + key);
    }
@@ -166,11 +166,11 @@ public abstract class AbstractBeanMap implements BeanStore
    protected abstract void setAttribute(String key, Object instance);
 
    /**
-    * Gets an adaptor for handling keys in a bean map
+    * Gets an naming scheme for handling keys in a bean map
     * 
-    * @return The filter
+    * @return The naming scheme
     */
-   protected abstract BeanMapAdaptor getBeanMapAdaptor();
+   protected abstract BeanStoreNamingScheme getBeanNamingScheme();
 
 
    @Override

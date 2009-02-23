@@ -14,39 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.context.beanmap;
 
-import javax.context.Contextual;
+package org.jboss.webbeans.servlet;
+
+import javax.servlet.http.HttpSession;
+
+import org.jboss.webbeans.context.ConversationContext;
+import org.jboss.webbeans.context.beanstore.BeanStoreNamingScheme;
+import org.jboss.webbeans.context.beanstore.PrefixBeanStoreNamingScheme;
 
 /**
- * Interface against a BeanMap to handle different naming schemes
+ * A HTTP session backed bean map for the conversational scope
  * 
  * @author Nicklas Karlsson
- *
  */
-public interface BeanMapAdaptor
+public class ConversationBeanStore extends HttpSessionBeanStore
 {
-   /**
-    * Checks if a key is handled by the bean map
-    * 
-    * @param key The key to match
-    * @return True if match, false otherwise
-    */
-   public abstract boolean acceptKey(String key);
-   
-   /**
-    * Gets a bean map key for a contextual
-    * 
-    * @param contextual The contextual to make the key for
-    * @return A map key
-    */
-   public abstract String getContextualKey(Contextual<?> contextual);
-   
-   /**
-    * Gets a bean index key from a key
-    * 
-    * @param key The key to parse
-    * @return The bean index
-    */
-   public abstract int getBeanIndexFromKey(String key);
+   private String cid;
+
+   public ConversationBeanStore(HttpSession session, String cid)
+   {
+      super(session);
+      this.cid = cid;
+   }
+
+   @Override
+   protected BeanStoreNamingScheme getBeanNamingScheme()
+   {
+      return new PrefixBeanStoreNamingScheme(ConversationContext.class.getName() + "[" + cid + "]", "#");
+   }
+
 }

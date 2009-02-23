@@ -25,7 +25,7 @@ import javax.servlet.http.HttpSession;
 import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.servlet.ConversationBeanMap;
+import org.jboss.webbeans.servlet.ConversationBeanStore;
 import org.jboss.webbeans.servlet.ServletLifecycle;
 
 /**
@@ -92,7 +92,7 @@ public class ConversationEntry
    /**
     * Destroys the conversation and it's associated conversational context
     * 
-    * @param session The HTTP session for the backing context beanmap
+    * @param session The HTTP session for the backing context bean store
     */
    public void destroy(HttpSession session)
    {

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.context.beanmap;
+package org.jboss.webbeans.context.beanstore;
 
 import java.util.Map;
 import java.util.Set;
@@ -31,13 +31,13 @@ import org.jboss.webbeans.log.Logging;
 import com.google.common.collect.ForwardingMap;
 
 /**
- * A BeanMap that uses a simple forwarding HashMap as backing map
+ * A BeanStore that uses a simple forwarding HashMap as backing storage
  * 
  * @author Nicklas Karlsson
  */
-public class SimpleBeanMap extends ForwardingMap<Contextual<? extends Object>, Object> implements BeanStore
+public class SimpleBeanStore extends ForwardingMap<Contextual<? extends Object>, Object> implements BeanStore
 {
-   private static LogProvider log = Logging.getLogProvider(SimpleBeanMap.class);
+   private static LogProvider log = Logging.getLogProvider(SimpleBeanStore.class);
    
    // The backing map
    protected Map<Contextual<? extends Object>, Object> delegate;
@@ -45,7 +45,7 @@ public class SimpleBeanMap extends ForwardingMap<Contextual<? extends Object>, O
    /**
     * Constructor
     */
-   public SimpleBeanMap()
+   public SimpleBeanStore()
    {
       delegate = new ConcurrentHashMap<Contextual<? extends Object>, Object>();
    }

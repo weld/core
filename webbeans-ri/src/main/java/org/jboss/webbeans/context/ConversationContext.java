@@ -52,8 +52,8 @@ public class ConversationContext extends AbstractThreadLocalMapContext
    public String toString()
    {
       String active = isActive() ? "Active " : "Inactive ";
-      String beanMapInfo = getBeanMap() == null ? "" : getBeanMap().toString();
-      return active + "conversation context " + beanMapInfo;
+      String beanStoreInfo = getBeanStorage() == null ? "" : getBeanStorage().toString();
+      return active + "conversation context " + beanStoreInfo;
    }
 
 }

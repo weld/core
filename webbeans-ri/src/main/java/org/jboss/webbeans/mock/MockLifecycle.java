@@ -20,7 +20,7 @@ package org.jboss.webbeans.mock;
 
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.context.beanmap.SimpleBeanMap;
+import org.jboss.webbeans.context.beanstore.SimpleBeanStore;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.AbstractLifecycle;
@@ -33,9 +33,9 @@ public class MockLifecycle extends AbstractLifecycle
    
    private final WebBeansBootstrap bootstrap;
    private final MockWebBeanDiscovery webBeanDiscovery;
-   private BeanStore applicationBeanMap = new SimpleBeanMap();
-   private BeanStore sessionBeanMap = new SimpleBeanMap();
-   private BeanStore requestBeanMap = new SimpleBeanMap();
+   private BeanStore applicationBeanStore = new SimpleBeanStore();
+   private BeanStore sessionBeanStore = new SimpleBeanStore();
+   private BeanStore requestBeanStore = new SimpleBeanStore();
    
    public MockLifecycle()
    {
@@ -75,12 +75,12 @@ public class MockLifecycle extends AbstractLifecycle
    
    public void beginApplication()
    {
-      super.beginApplication("Mock", applicationBeanMap);
-      BeanStore requestBeanMap = new SimpleBeanMap();
-      super.beginDeploy(requestBeanMap);
+      super.beginApplication("Mock", applicationBeanStore);
+      BeanStore requestBeanStore = new SimpleBeanStore();
+      super.beginDeploy(requestBeanStore);
       bootstrap.setEjbDiscovery(new MockEjbDiscovery(webBeanDiscovery.discoverWebBeanClasses()));
       bootstrap.boot();
-      super.endDeploy(requestBeanMap);
+      super.endDeploy(requestBeanStore);
    }
    
    public void resetContexts()
@@ -90,28 +90,28 @@ public class MockLifecycle extends AbstractLifecycle
    
    public void endApplication()
    {
-      super.endApplication("Mock", applicationBeanMap);
+      super.endApplication("Mock", applicationBeanStore);
    }
    
    public void beginRequest()
    {
-      super.beginRequest("Mock", requestBeanMap);
+      super.beginRequest("Mock", requestBeanStore);
    }
    
    public void endRequest()
    {
-      super.endRequest("Mock", requestBeanMap);
+      super.endRequest("Mock", requestBeanStore);
    }
    
    public void beginSession()
    {
-      super.beginSession("Mock", sessionBeanMap);
+      super.beginSession("Mock", sessionBeanStore);
    }
    
    public void endSession()
    {
       // TODO Conversation handling breaks this :-(
-      //super.endSession("Mock", sessionBeanMap);
+      //super.endSession("Mock", sessionBeanStore);
    }
    
 }

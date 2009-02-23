@@ -30,7 +30,7 @@ import org.jboss.webbeans.log.Logging;
 
 /**
  * Base for the Context implementations. Delegates calls to the abstract
- * getBeanMap and getActive to allow for different implementations (storage
+ * getBeanStorage and getActive to allow for different implementations (storage
  * types and ThreadLocal vs. shared)
  * 
  * @author Nicklas Karlsson
@@ -69,7 +69,7 @@ public abstract class AbstractMapContext extends AbstractContext
       {
          throw new ContextNotActiveException();
       }
-      T instance = getBeanMap().get(contextual);
+      T instance = getBeanStorage().get(contextual);
       if (instance != null)
       {
          return instance;
@@ -79,7 +79,7 @@ public abstract class AbstractMapContext extends AbstractContext
          instance = contextual.create(creationalContext);
          if (instance != null)
          {
-            getBeanMap().put(contextual, instance);
+            getBeanStorage().put(contextual, instance);
          }
          return instance;
       }
@@ -103,7 +103,7 @@ public abstract class AbstractMapContext extends AbstractContext
    private <T> void destroy(Contextual<T> bean)
    {
       log.trace("Destroying " + bean);
-      bean.destroy(getBeanMap().get(bean));
+      bean.destroy(getBeanStorage().get(bean));
    }
 
    /**
@@ -112,11 +112,11 @@ public abstract class AbstractMapContext extends AbstractContext
    public void destroy()
    {
       log.trace("Destroying context");
-      for (Contextual<? extends Object> bean : getBeanMap().getBeans())
+      for (Contextual<? extends Object> bean : getBeanStorage().getBeans())
       {
          destroy(bean);
       }
-      getBeanMap().clear();
+      getBeanStorage().clear();
    }
 
    /**
@@ -124,6 +124,6 @@ public abstract class AbstractMapContext extends AbstractContext
     * 
     * @return The actual bean map
     */
-   protected abstract BeanStore getBeanMap();
+   protected abstract BeanStore getBeanStorage();
 
 }

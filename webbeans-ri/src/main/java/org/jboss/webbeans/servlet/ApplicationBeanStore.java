@@ -22,18 +22,18 @@ import java.util.Enumeration;
 import javax.servlet.ServletContext;
 
 import org.jboss.webbeans.context.ApplicationContext;
-import org.jboss.webbeans.context.beanmap.AbstractBeanMap;
-import org.jboss.webbeans.context.beanmap.BeanMapAdaptor;
-import org.jboss.webbeans.context.beanmap.SimpleBeanMapAdaptor;
+import org.jboss.webbeans.context.beanstore.AbstractBeanStore;
+import org.jboss.webbeans.context.beanstore.BeanStoreNamingScheme;
+import org.jboss.webbeans.context.beanstore.PrefixBeanStoreNamingScheme;
 
 /**
- * A BeanMap that uses a servlet context as backing map
+ * A BeanStore that uses a servlet context as backing storage
  * 
  * @author Nicklas Karlsson
  * 
  * @see org.jboss.webbeans.context.ApplicationContext
  */
-public class ApplicationBeanMap extends AbstractBeanMap
+public class ApplicationBeanStore extends AbstractBeanStore
 {
    // The servlet context to use as backing map
    private ServletContext context;
@@ -43,14 +43,14 @@ public class ApplicationBeanMap extends AbstractBeanMap
     * 
     * @param context The servlet context instance
     */
-   public ApplicationBeanMap(ServletContext context)
+   public ApplicationBeanStore(ServletContext context)
    {
       super();
       this.context = context;
    }
 
    /**
-    * @see org.jboss.webbeans.context.beanmap.AbstractBeanMap#getAttribute()
+    * @see org.jboss.webbeans.context.beanstore.AbstractBeanStore#getAttribute()
     */
    @Override
    protected Object getAttribute(String key)
@@ -59,7 +59,7 @@ public class ApplicationBeanMap extends AbstractBeanMap
    }
 
    /**
-    * @see org.jboss.webbeans.context.beanmap.AbstractBeanMap#getAttributeNames()
+    * @see org.jboss.webbeans.context.beanstore.AbstractBeanStore#getAttributeNames()
     */
    @SuppressWarnings("unchecked")
    @Override
@@ -69,7 +69,7 @@ public class ApplicationBeanMap extends AbstractBeanMap
    }
 
    /**
-    * @see org.jboss.webbeans.context.beanmap.AbstractBeanMap#removeAttributes()
+    * @see org.jboss.webbeans.context.beanstore.AbstractBeanStore#removeAttributes()
     */
    @Override
    protected void removeAttribute(String key)
@@ -78,7 +78,7 @@ public class ApplicationBeanMap extends AbstractBeanMap
    }
 
    /**
-    * @see org.jboss.webbeans.context.beanmap.AbstractBeanMap#setAttribute()
+    * @see org.jboss.webbeans.context.beanstore.AbstractBeanStore#setAttribute()
     */
    @Override
    protected void setAttribute(String key, Object instance)
@@ -87,9 +87,9 @@ public class ApplicationBeanMap extends AbstractBeanMap
    }
 
    @Override
-   protected BeanMapAdaptor getBeanMapAdaptor()
+   protected BeanStoreNamingScheme getBeanNamingScheme()
    {
-      return new SimpleBeanMapAdaptor(ApplicationContext.class.getName());
+      return new PrefixBeanStoreNamingScheme(ApplicationContext.class.getName(), "#");
    }
 
 }

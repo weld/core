@@ -19,10 +19,9 @@ public abstract class AbstractThreadLocalMapContext extends AbstractMapContext
     * Gets the bean map
     * 
     * @returns The bean map
-    * @see org.jboss.webbeans.context.AbstractContext#getNewEnterpriseBeanMap()
     */
    @Override
-   public BeanStore getBeanMap()
+   public BeanStore getBeanStorage()
    {
       return beanStore.get();
    }
@@ -32,7 +31,7 @@ public abstract class AbstractThreadLocalMapContext extends AbstractMapContext
     * 
     * @param beanStore The bean map
     */
-   public void setBeanMap(BeanStore beanStore)
+   public void setBeanStore(BeanStore beanStore)
    {
       this.beanStore.set(beanStore);
    }

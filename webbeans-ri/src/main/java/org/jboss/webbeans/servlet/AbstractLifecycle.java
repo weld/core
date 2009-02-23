@@ -50,80 +50,80 @@ public abstract class AbstractLifecycle
       manager.addContext(ConversationContext.create());
    }
 
-   protected void beginApplication(String id, BeanStore applicationBeanMap)
+   protected void beginApplication(String id, BeanStore applicationBeanStore)
    {
       log.trace("Starting application " + id);
-      ApplicationContext.INSTANCE.setBeanMap(applicationBeanMap);
+      ApplicationContext.INSTANCE.setBeanStore(applicationBeanStore);
       ApplicationContext.INSTANCE.setActive(true);
 
    }
 
-   protected void beginDeploy(BeanStore requestBeanMap)
+   protected void beginDeploy(BeanStore requestBeanStore)
    {
-      RequestContext.INSTANCE.setBeanMap(requestBeanMap);
+      RequestContext.INSTANCE.setBeanStore(requestBeanStore);
       RequestContext.INSTANCE.setActive(true);
    }
 
-   protected void endDeploy(BeanStore requestBeanMap)
+   protected void endDeploy(BeanStore requestBeanStore)
    {
-      RequestContext.INSTANCE.setBeanMap(null);
+      RequestContext.INSTANCE.setBeanStore(null);
       RequestContext.INSTANCE.setActive(false);
    }
 
-   protected void endApplication(String id, BeanStore applicationBeanMap)
+   protected void endApplication(String id, BeanStore applicationBeanStore)
    {
       log.trace("Ending application " + id);
       ApplicationContext.INSTANCE.destroy();
       ApplicationContext.INSTANCE.setActive(false);
-      ApplicationContext.INSTANCE.setBeanMap(null);
+      ApplicationContext.INSTANCE.setBeanStore(null);
    }
 
-   protected void beginSession(String id, BeanStore sessionBeanMap)
+   protected void beginSession(String id, BeanStore sessionBeanStore)
    {
       log.trace("Starting session " + id);
-      SessionContext.INSTANCE.setBeanMap(sessionBeanMap);
+      SessionContext.INSTANCE.setBeanStore(sessionBeanStore);
       SessionContext.INSTANCE.setActive(true);
    }
 
-   protected void endSession(String id, BeanStore sessionBeanMap)
+   protected void endSession(String id, BeanStore sessionBeanStore)
    {
       log.trace("Ending session " + id);
       ConversationManager conversationManager = CurrentManager.rootManager().getInstanceByType(ConversationManager.class);
       conversationManager.destroyAllConversations();
       SessionContext.INSTANCE.destroy();
-      SessionContext.INSTANCE.setBeanMap(null);
+      SessionContext.INSTANCE.setBeanStore(null);
       SessionContext.INSTANCE.setActive(false);
    }
 
-   public void beginRequest(String id, BeanStore requestBeanMap)
+   public void beginRequest(String id, BeanStore requestBeanStore)
    {
       log.trace("Starting request " + id);
-      RequestContext.INSTANCE.setBeanMap(requestBeanMap);
+      RequestContext.INSTANCE.setBeanStore(requestBeanStore);
       RequestContext.INSTANCE.setActive(true);
       DependentContext.INSTANCE.setActive(true);
    }
 
-   public void endRequest(String id, BeanStore requestBeanMap)
+   public void endRequest(String id, BeanStore requestBeanStore)
    {
       log.trace("Ending request " + id);
-      RequestContext.INSTANCE.setBeanMap(requestBeanMap);
+      RequestContext.INSTANCE.setBeanStore(requestBeanStore);
       DependentContext.INSTANCE.setActive(false);
       RequestContext.INSTANCE.destroy();
       RequestContext.INSTANCE.setActive(false);
    }
 
-   protected void restoreConversation(String id, BeanStore conversationBeanMap)
+   protected void restoreConversation(String id, BeanStore conversationBeanStore)
    {
       log.trace("Starting conversation " + id);
-      ConversationContext.INSTANCE.setBeanMap(conversationBeanMap);
+      ConversationContext.INSTANCE.setBeanStore(conversationBeanStore);
       ConversationContext.INSTANCE.setActive(true);
    }
 
-   protected void destroyConversation(String id, ConversationBeanMap conversationBeanMap)
+   protected void destroyConversation(String id, ConversationBeanStore conversationBeanStore)
    {
       log.trace("Ending conversation " + id);
       ConversationContext destructionContext = new ConversationContext();
-      destructionContext.setBeanMap(conversationBeanMap);
+      destructionContext.setBeanStore(conversationBeanStore);
       destructionContext.destroy();
    }
 

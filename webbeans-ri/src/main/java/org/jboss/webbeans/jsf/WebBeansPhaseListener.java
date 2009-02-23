@@ -27,7 +27,7 @@ import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.conversation.ConversationManager;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.servlet.ConversationBeanMap;
+import org.jboss.webbeans.servlet.ConversationBeanStore;
 import org.jboss.webbeans.servlet.HttpSessionManager;
 import org.jboss.webbeans.servlet.ServletLifecycle;
 

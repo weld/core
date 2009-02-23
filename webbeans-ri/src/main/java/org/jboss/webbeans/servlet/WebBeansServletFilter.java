@@ -54,18 +54,21 @@ public class WebBeansServletFilter implements Filter
 
       public RedirectUrl appendCid(String cid)
       {
-         return new RedirectUrl(URL + (URL.indexOf("?") > 0 ? "&" : "?") + "cid=" + cid);
+         URL = URL + (URL.indexOf("?") > 0 ? "&" : "?") + "cid=" + cid;
+         return this;
       }
 
       public RedirectUrl getRedirectView()
       {
          String requestPath = context.getExternalContext().getRequestContextPath();
-         return new RedirectUrl(URL.substring(URL.indexOf(requestPath) + requestPath.length()));         
+         URL = URL.substring(URL.indexOf(requestPath) + requestPath.length());
+         return this;
       }
 
       public RedirectUrl getActionUrl()
       {
-         return new RedirectUrl(context.getApplication().getViewHandler().getActionURL(context, URL));
+         URL = context.getApplication().getViewHandler().getActionURL(context, URL);
+         return this;
       }
 
       public String encode()
@@ -80,7 +83,6 @@ public class WebBeansServletFilter implements Filter
 
    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
    {
-      System.out.println("!!!");
       chain.doFilter(request, wrapResponse((HttpServletResponse) response));
    }
 

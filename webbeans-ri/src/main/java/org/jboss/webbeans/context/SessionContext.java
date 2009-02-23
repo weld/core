@@ -52,8 +52,8 @@ public class SessionContext extends AbstractThreadLocalMapContext
    public String toString()
    {
       String active = isActive() ? "Active " : "Inactive ";
-      String beanMapInfo = getBeanMap() == null ? "" : getBeanMap().toString();
-      return active + "session context " + beanMapInfo;
+      String beanStoreInfo = getBeanStorage() == null ? "" : getBeanStorage().toString();
+      return active + "session context " + beanStoreInfo;
    }
 
 }

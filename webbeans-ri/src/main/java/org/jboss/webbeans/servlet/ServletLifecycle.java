@@ -24,7 +24,7 @@ import javax.servlet.http.HttpSession;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.context.beanmap.SimpleBeanMap;
+import org.jboss.webbeans.context.beanstore.SimpleBeanStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -40,7 +40,7 @@ import org.jboss.webbeans.log.Logging;
 public class ServletLifecycle extends AbstractLifecycle
 {
 
-   public static final String REQUEST_ATTRIBUTE_NAME = ServletLifecycle.class.getName() + ".requestBeanMap";
+   public static final String REQUEST_ATTRIBUTE_NAME = ServletLifecycle.class.getName() + ".requestBeanStore";
 
    static
    {
@@ -71,11 +71,11 @@ public class ServletLifecycle extends AbstractLifecycle
    {
       ServletInitialization servletInitialization = new ServletInitialization(servletContext).initialize();
       super.initialize();
-      super.beginApplication(servletContext.getServletContextName(), new ApplicationBeanMap(servletContext));
-      BeanStore requestBeanMap = new SimpleBeanMap();
-      super.beginDeploy(requestBeanMap);
+      super.beginApplication(servletContext.getServletContextName(), new ApplicationBeanStore(servletContext));
+      BeanStore requestBeanStore = new SimpleBeanStore();
+      super.beginDeploy(requestBeanStore);
       servletInitialization.start();
-      super.endDeploy(requestBeanMap);
+      super.endDeploy(requestBeanStore);
    }
 
    /**
@@ -83,7 +83,7 @@ public class ServletLifecycle extends AbstractLifecycle
     */
    public void endApplication(ServletContext servletContext)
    {
-      super.endApplication(servletContext.getServletContextName(), new ApplicationBeanMap(servletContext));
+      super.endApplication(servletContext.getServletContextName(), new ApplicationBeanStore(servletContext));
    }
 
    /**
@@ -115,10 +115,10 @@ public class ServletLifecycle extends AbstractLifecycle
     */
    protected BeanStore restoreSessionContext(HttpSession session)
    {
-      BeanStore sessionBeanMap = new HttpSessionBeanMap(session);
-      SessionContext.INSTANCE.setBeanMap(sessionBeanMap);
+      BeanStore sessionBeanStore = new HttpSessionBeanStore(session);
+      SessionContext.INSTANCE.setBeanStore(sessionBeanStore);
       CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
-      return sessionBeanMap;
+      return sessionBeanStore;
    }
 
    /**
@@ -130,7 +130,7 @@ public class ServletLifecycle extends AbstractLifecycle
     */
    public void beginRequest(HttpServletRequest request)
    {
-      BeanStore beanStore = new SimpleBeanMap();
+      BeanStore beanStore = new SimpleBeanStore();
       request.setAttribute(REQUEST_ATTRIBUTE_NAME, beanStore);
       super.beginRequest(request.getRequestURI(), beanStore);
       restoreSessionContext(request.getSession());
@@ -146,7 +146,7 @@ public class ServletLifecycle extends AbstractLifecycle
       BeanStore beanStore = (BeanStore) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
       request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
       super.endRequest(request.getRequestURI(), beanStore);
-      SessionContext.INSTANCE.setBeanMap(null);
+      SessionContext.INSTANCE.setBeanStore(null);
    }
 
    /**
@@ -157,7 +157,7 @@ public class ServletLifecycle extends AbstractLifecycle
     */
    public void restoreConversation(HttpSession session, String cid)
    {
-      super.restoreConversation(session.getId() + "[" + cid + "]", new ConversationBeanMap(session, cid));
+      super.restoreConversation(session.getId() + "[" + cid + "]", new ConversationBeanStore(session, cid));
    }
 
    /**
@@ -168,7 +168,7 @@ public class ServletLifecycle extends AbstractLifecycle
     */
    public void destroyConversation(HttpSession session, String cid)
    {
-      super.destroyConversation(session.getId() + "[" + cid + "]", new ConversationBeanMap(session, cid));
+      super.destroyConversation(session.getId() + "[" + cid + "]", new ConversationBeanStore(session, cid));
    }
 
 }

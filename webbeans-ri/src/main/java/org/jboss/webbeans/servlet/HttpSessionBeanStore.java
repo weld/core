@@ -21,18 +21,18 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.context.SessionContext;
-import org.jboss.webbeans.context.beanmap.AbstractBeanMap;
-import org.jboss.webbeans.context.beanmap.BeanMapAdaptor;
-import org.jboss.webbeans.context.beanmap.SimpleBeanMapAdaptor;
+import org.jboss.webbeans.context.beanstore.AbstractBeanStore;
+import org.jboss.webbeans.context.beanstore.BeanStoreNamingScheme;
+import org.jboss.webbeans.context.beanstore.PrefixBeanStoreNamingScheme;
 
 /**
- * A BeanMap that uses a HTTP session as backing map
+ * A BeanStore that uses a HTTP session as backing storage
  * 
  * @author Nicklas Karlsson
  * 
  * @see org.jboss.webbeans.context.ApplicationContext
  */
-public class HttpSessionBeanMap extends AbstractBeanMap
+public class HttpSessionBeanStore extends AbstractBeanStore
 {
    // The HTTP session context to use as backing map
    private HttpSession session;
@@ -42,14 +42,14 @@ public class HttpSessionBeanMap extends AbstractBeanMap
     * 
     * @param session The HTTP session
     */
-   public HttpSessionBeanMap(HttpSession session)
+   public HttpSessionBeanStore(HttpSession session)
    {
       super();
       this.session = session;
    }
 
    /**
-    * @see org.jboss.webbeans.context.beanmap.AbstractBeanMap#getAttribute()
+    * @see org.jboss.webbeans.context.beanstore.AbstractBeanStore#getAttribute()
     */
    @Override
    protected Object getAttribute(String key)
@@ -58,7 +58,7 @@ public class HttpSessionBeanMap extends AbstractBeanMap
    }
 
    /**
-    * @see org.jboss.webbeans.context.beanmap.AbstractBeanMap#getAttributeNames()
+    * @see org.jboss.webbeans.context.beanstore.AbstractBeanStore#getAttributeNames()
     */
    @SuppressWarnings("unchecked")
    @Override
@@ -68,7 +68,7 @@ public class HttpSessionBeanMap extends AbstractBeanMap
    }
 
    /**
-    * @see org.jboss.webbeans.context.beanmap.AbstractBeanMap#removeAttributes()
+    * @see org.jboss.webbeans.context.beanstore.AbstractBeanStore#removeAttributes()
     */
    @Override
    protected void removeAttribute(String key)
@@ -77,7 +77,7 @@ public class HttpSessionBeanMap extends AbstractBeanMap
    }
 
    /**
-    * @see org.jboss.webbeans.context.beanmap.AbstractBeanMap#setAttribute()
+    * @see org.jboss.webbeans.context.beanstore.AbstractBeanStore#setAttribute()
     */
    @Override
    protected void setAttribute(String key, Object instance)
@@ -86,9 +86,9 @@ public class HttpSessionBeanMap extends AbstractBeanMap
    }
 
    @Override
-   protected BeanMapAdaptor getBeanMapAdaptor()
+   protected BeanStoreNamingScheme getBeanNamingScheme()
    {
-      return new SimpleBeanMapAdaptor(SessionContext.class.getName());
+      return new PrefixBeanStoreNamingScheme(SessionContext.class.getName(), "#");
    }
 
 }

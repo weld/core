@@ -14,39 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.context.beanmap;
+package org.jboss.webbeans.context.beanstore;
 
 import javax.context.Contextual;
 
-import org.jboss.webbeans.CurrentManager;
-
 /**
- * Simple prefix-based implementation of a bean map adaptor
+ * Interface against a BeanStore to handle different naming schemes
  * 
  * @author Nicklas Karlsson
+ *
  */
-public class SimpleBeanMapAdaptor implements BeanMapAdaptor
+public interface BeanStoreNamingScheme
 {
-   public String prefix;
-
-   public SimpleBeanMapAdaptor(String prefix)
-   {
-      this.prefix = prefix;
-   }
-
-   public boolean acceptKey(String key)
-   {
-      return key.startsWith(prefix);
-   }
-
-   public int getBeanIndexFromKey(String key)
-   {
-      return Integer.parseInt(key.substring(prefix.length() + 1));
-   }
-
-   public String getContextualKey(Contextual<?> contextual)
-   {
-      return prefix + "#" + CurrentManager.rootManager().getBeans().indexOf(contextual);
-   }
-
+   /**
+    * Checks if a key is handled by the bean map
+    * 
+    * @param key The key to match
+    * @return True if match, false otherwise
+    */
+   public abstract boolean acceptKey(String key);
+   
+   /**
+    * Gets a bean map key for a contextual
+    * 
+    * @param contextual The contextual to make the key for
+    * @return A map key
+    */
+   public abstract String getContextualKey(Contextual<?> contextual);
+   
+   /**
+    * Gets a bean index key from a key
+    * 
+    * @param key The key to parse
+    * @return The bean index
+    */
+   public abstract int getBeanIndexFromKey(String key);
 }
