@@ -123,6 +123,9 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
       }
       else
       {
+    	 jbossHome = System.getProperty(JBOSS_HOME_PROPERTY_NAME);
+         File jbossHomeFile = new File(jbossHome);
+         jbossHome = jbossHomeFile.getPath();
          log.info("Using JBoss instance in " + jbossHome + " at URL " + configuration.getHost());
       }
       this.bootTimeout = Long.getLong(JBOSS_BOOT_TIMEOUT_PROPERTY_NAME, 240000);
