@@ -2,6 +2,7 @@ package org.jboss.webbeans.tck.integration.jbossas;
 
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -184,6 +185,11 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
       }
    }
    
+   public String getJbossHome() 
+   {
+      return jbossHome;
+   }
+   
    public void cleanup() throws IOException
    {
       if (jbossWasStarted)
@@ -227,7 +233,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
       dump(p.getInputStream());
    }
 
-   protected static void dump(final InputStream is) 
+   protected void dump(final InputStream is) 
    {
       new Thread(new Runnable() 
       {
@@ -235,7 +241,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
           {
              try 
              {
-                DataOutputStream out = new DataOutputStream(new FileOutputStream(System.getProperty("java.io.tmpdir") + File.separator + "jboss.log"));
+                DataOutputStream out = new DataOutputStream(new FileOutputStream(configuration.getOutputDirectory() + File.separator + "jboss.log"));
                 int c;
                 while((c = is.read()) != -1) 
                 {

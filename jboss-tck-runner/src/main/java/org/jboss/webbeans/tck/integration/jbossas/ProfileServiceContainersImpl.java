@@ -3,6 +3,8 @@ package org.jboss.webbeans.tck.integration.jbossas;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.naming.InitialContext;
 
@@ -22,6 +24,8 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
    
    private Logger log = Logger.getLogger(ProfileServiceContainersImpl.class);
    
+   private final List<String> failedUndeployments;
+   
    private DeploymentManager deploymentManager;
    private JBossTestServices testServices;
    private final File tmpdir;
@@ -35,6 +39,7 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
       tmpdir = new File(System.getProperty("java.io.tmpdir"), "org.jboss.webbeans.tck.integration.jbossas");
       tmpdir.mkdir();
       tmpdir.deleteOnExit();
+      this.failedUndeployments = new ArrayList<String>();
    }
    
    
@@ -89,8 +94,15 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
    {
       try
       {
-         deploymentManager.stop(DeploymentPhase.APPLICATION, name).run();
-         deploymentManager.undeploy(DeploymentPhase.APPLICATION, name).run();
+         DeploymentProgress stopProgress = deploymentManager.stop(DeploymentPhase.APPLICATION, name);
+         stopProgress.run();
+         
+         DeploymentProgress undeployProgress = deploymentManager.undeploy(DeploymentPhase.APPLICATION, name);
+         undeployProgress.run();
+         if (undeployProgress.getDeploymentStatus().isFailed())
+         {
+        	 failedUndeployments.add(name);
+         }
       }
       catch (Exception e)
       {
@@ -112,6 +124,33 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
       deploymentManager.loadProfile(defaultKey, false);
       // Init the VFS to setup the vfs* protocol handlers
       VFS.init();
+   }
+   
+   @Override
+   public void cleanup() throws IOException 
+   {
+	  super.cleanup();
+	  List<String> remainingDeployments = new ArrayList<String>();
+	  for (String name : failedUndeployments)
+	  {
+		  try
+		  {
+			  DeploymentProgress undeployProgress = deploymentManager.undeploy(DeploymentPhase.APPLICATION, name);
+		      undeployProgress.run();
+		      if (undeployProgress.getDeploymentStatus().isFailed())
+		      {
+		    	  remainingDeployments.add(name);
+		      }
+		  }
+		  catch (Exception e) 
+		  {
+			  throw new IOException(e);
+		  }
+	   }
+	  if (remainingDeployments.size() > 0)
+	  {
+		  //log.error("Failed to undeploy these artifacts: " + remainingDeployments);
+	  }
    }
    
 }

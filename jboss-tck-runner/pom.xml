@@ -195,6 +195,10 @@
                            <name>org.jboss.jsr299.tck.libraryDirectory</name>
                            <value>target/dependency/lib</value>
                         </property>
+                        <property>
+                           <name>org.jboss.jsr299.tck.outputDirectory</name>
+                           <value>target</value>
+                        </property>
                      </systemProperties>
                   </configuration>
                </plugin>
