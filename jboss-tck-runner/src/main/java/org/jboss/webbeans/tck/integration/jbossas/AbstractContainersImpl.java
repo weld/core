@@ -2,7 +2,6 @@ package org.jboss.webbeans.tck.integration.jbossas;
 
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.jboss.jsr299.tck.api.Configurable;
 import org.jboss.jsr299.tck.api.Configuration;
 import org.jboss.jsr299.tck.spi.Containers;
+import org.jboss.webbeans.tck.integration.jbossas.util.DeploymentProperties;
 
 /**
  * 
@@ -36,12 +36,19 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
    
    private static Logger log = Logger.getLogger(AbstractContainersImpl.class);
    
+   private final DeploymentProperties properties;
+   
    private Configuration configuration;
    protected String jbossHome;
    private String jbossHttpUrl;
    private boolean jbossWasStarted;
    private long bootTimeout;
    private String javaOpts;
+   
+   public AbstractContainersImpl()
+   {
+      this.properties = new DeploymentProperties();
+   }
 
    protected static void copy(InputStream inputStream, File file) throws IOException
    {
@@ -94,9 +101,10 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
    
    public void setup() throws IOException
    {
-      if (System.getProperty(JBOSS_AS_DIR_PROPERTY_NAME) != null)
+      String jbossAsPath = properties.getStringValue(JBOSS_AS_DIR_PROPERTY_NAME, "../jboss-as", false);
+      if (jbossAsPath != null)
       {
-         File jbossAsDir = new File(System.getProperty(JBOSS_AS_DIR_PROPERTY_NAME));
+         File jbossAsDir = new File(jbossAsPath);
          if (jbossAsDir.isDirectory())
          {
             File buildProperties = new File(jbossAsDir, "build.properties");
@@ -111,26 +119,14 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
             }
          }            
       }
-      jbossHome = System.getProperty(JBOSS_HOME_PROPERTY_NAME);
-      javaOpts = System.getProperty(JAVA_OPTS_PROPERTY_NAME);
-      if (javaOpts == null)
-      {
-         javaOpts = "";
-      }
+      jbossHome = properties.getStringValue(JBOSS_HOME_PROPERTY_NAME, null, true);
+      javaOpts = properties.getStringValue(JAVA_OPTS_PROPERTY_NAME, "", false);
       javaOpts = javaOpts + JAVA_OPTS;
-      if (jbossHome == null)
-      {
-         throw new IllegalArgumentException("-D" + JBOSS_HOME_PROPERTY_NAME + " must be set");
-      }
-      else
-      {
-    	   jbossHome = System.getProperty(JBOSS_HOME_PROPERTY_NAME);
-         File jbossHomeFile = new File(jbossHome);
-         jbossHome = jbossHomeFile.getPath();
-         log.info("Using JBoss instance in " + jbossHome + " at URL " + configuration.getHost());
-      }
-      this.bootTimeout = Long.getLong(JBOSS_BOOT_TIMEOUT_PROPERTY_NAME, 240000);
-      if (Boolean.getBoolean(FORCE_RESTART_PROPERTY_NAME))
+      File jbossHomeFile = new File(jbossHome);
+      jbossHome = jbossHomeFile.getPath();
+      log.info("Using JBoss instance in " + jbossHome + " at URL " + configuration.getHost());
+      this.bootTimeout = properties.getLongValue(JBOSS_BOOT_TIMEOUT_PROPERTY_NAME, 240000, false);
+      if (properties.getBooleanValue(FORCE_RESTART_PROPERTY_NAME, false, false))
       {
          if (isJBossUp())
          {
