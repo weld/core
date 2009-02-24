@@ -24,7 +24,6 @@ import java.util.Set;
 
 import javax.inject.AmbiguousDependencyException;
 import javax.inject.DefinitionException;
-import javax.inject.IllegalProductException;
 import javax.inject.InconsistentSpecializationException;
 import javax.inject.New;
 import javax.inject.NullableDependencyException;
@@ -34,11 +33,9 @@ import javax.inject.UnserializableDependencyException;
 import javax.inject.manager.Bean;
 import javax.inject.manager.InjectionPoint;
 
-import org.jboss.webbeans.bean.AbstractProducerBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.ListComparator;
@@ -100,21 +97,6 @@ public class BeanValidator
                if (Reflections.isPrimitive((Class<?>) injectionPoint.getType()) && resolvedBean.isNullable())
                {
                   throw new NullableDependencyException("The injection point " + injectionPoint + " has nullable dependencies");
-               }
-               if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isPassivating())
-               {
-                  if (resolvedBean instanceof AbstractProducerBean)
-                  {
-                     AbstractProducerBean producerBean = (AbstractProducerBean) resolvedBean;
-                     if ((injectionPoint instanceof AnnotatedField) && ((AnnotatedField<?>) injectionPoint).isTransient())
-                     {
-                        injectionPoint.getBean();
-                     }
-                     else if (producerBean.isDependent() && !Reflections.isSerializable(producerBean.getType()))
-                     {
-                        throw new IllegalProductException("Cannot inject @Depedent non-serializable type into " + injectionPoint);
-                     }
-                  }
                }
             }
             else

@@ -212,16 +212,16 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
             Method method = (Method) injectionPoint.getMember();
             if (method.isAnnotationPresent(Initializer.class))
             {
-               throw new IllegalProductException("Dependent scoped producers cannot produce non-serializable instances for injection into parameters of intializers of beans declaring passivating scope");
+               throw new IllegalProductException("Dependent scoped producers cannot produce non-serializable instances for injection into parameters of intializers of beans declaring passivating scope. Bean " + toString() + " being injected into " + injectionPoint.toString());
             }
             if (method.isAnnotationPresent(Produces.class))
             {
-               throw new IllegalProductException("Dependent scoped producers cannot produce non-serializable instances for injection into parameters of producer methods declaring passivating scope");
+               throw new IllegalProductException("Dependent scoped producers cannot produce non-serializable instances for injection into parameters of producer methods declaring passivating scope. Bean " + toString() + " being injected into " + injectionPoint.toString());
             }
          }
          else if (injectionPoint.getMember() instanceof Constructor)
          {
-            throw new IllegalProductException("Dependent scoped producers cannot produce non-serializable instances for injection into parameters of constructors of beans declaring passivating scope");
+            throw new IllegalProductException("Dependent scoped producers cannot produce non-serializable instances for injection into parameters of constructors of beans declaring passivating scope. Bean " + toString() + " being injected into " + injectionPoint.toString());
          }
       }
    }
