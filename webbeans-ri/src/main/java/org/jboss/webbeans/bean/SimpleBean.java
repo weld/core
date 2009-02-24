@@ -321,16 +321,16 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       if (getAnnotatedItem().isNonStaticMemberClass())
       {
-         throw new DefinitionException("Simple Web Bean " + type + " cannot be a non-static inner class");
+         throw new DefinitionException("Simple bean " + type + " cannot be a non-static inner class");
       }
       if (getAnnotatedItem().isParameterizedType())
       {
-         throw new DefinitionException("Simple Web Bean " + type + " cannot be a parameterized type");
+         throw new DefinitionException("Simple bean " + type + " cannot be a parameterized type");
       }
       boolean passivating = MetaDataCache.instance().getScopeModel(scopeType).isPassivating();
       if (passivating && !Reflections.isSerializable(type))
       {
-         throw new DefinitionException("Simple Web Beans declaring a passivating scope must have a serializable implementation class");
+         throw new DefinitionException("Simple bean declaring a passivating scope must have a serializable implementation class " + toString());
       }
    }
    
