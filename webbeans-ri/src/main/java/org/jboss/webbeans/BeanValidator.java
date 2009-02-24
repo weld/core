@@ -18,7 +18,9 @@ package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +45,7 @@ import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.ListComparator;
+import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 
@@ -86,11 +89,11 @@ public class BeanValidator
                Set<?> resolvedBeans = manager.resolveByType(type, bindings);
                if (resolvedBeans.isEmpty())
                {
-                  throw new UnsatisfiedDependencyException("The injection point " + injectionPoint + " in " + bean + " has unsatisfied dependencies");
+                  throw new UnsatisfiedDependencyException("The injection point " + injectionPoint + " with binding types "  + Names.annotationsToString(injectionPoint.getBindings()) + " in " + bean + " has unsatisfied dependencies with binding types ");
                }
                if (resolvedBeans.size() > 1)
                {
-                  throw new AmbiguousDependencyException("The injection point " + injectionPoint + " in " + bean + " has ambiguous dependencies");
+                  throw new AmbiguousDependencyException("The injection point " + injectionPoint + " with binding types " + Names.annotationsToString(injectionPoint.getBindings()) + " in " + bean + " has ambiguous dependencies");
                }
                Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
                if (MetaDataCache.instance().getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(type))

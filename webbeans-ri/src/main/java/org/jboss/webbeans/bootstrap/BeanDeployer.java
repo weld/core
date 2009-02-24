@@ -47,6 +47,7 @@ public class BeanDeployer
    private final Set<RIBean<?>> beans;
    private final Set<AnnotatedClass<?>> deferredClasses;
    private final ManagerImpl manager;
+   private EventBean<Object, Method> eventBean;
    
    public BeanDeployer(ManagerImpl manager)
    {
@@ -224,11 +225,19 @@ public class BeanDeployer
 
    private void createEvent(AnnotatedItem<?, ?> injectionPoint)
    {
-      // TODO Fix this!
-      @SuppressWarnings("unchecked")
-      EventBean<Object, Method> bean = EventBean.of((AnnotatedItem) injectionPoint, manager);
-      beans.add(bean);
-      log.info("Web Bean: " + bean);
+      if (eventBean == null)
+      {
+         // TODO Fix this!
+         @SuppressWarnings("unchecked")
+         EventBean<Object, Method> bean = EventBean.of((AnnotatedItem) injectionPoint, manager);
+         beans.add(bean);
+         log.info("Web Bean: " + bean);
+         eventBean = bean;
+      }
+      else
+      {
+         eventBean.addBindings(injectionPoint.getBindings());
+      }
    }
    
    private void createInstance(AnnotatedItem<?, ?> injectionPoint)

@@ -18,11 +18,15 @@
 package org.jboss.webbeans.bean;
 
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Set;
 
 import javax.context.CreationalContext;
 import javax.event.Event;
 import javax.inject.DefinitionException;
+import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
@@ -122,20 +126,21 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
       try
       {
          DependentContext.INSTANCE.setActive(true);
-         Class<?> clazz;
-         if (this.getAnnotatedItem() instanceof AnnotatedParameter)
+         //TODO Fix to use IP's manager rather than this bean's
+         InjectionPoint injectionPoint = this.getManager().getInjectionPoint();
+         Class<?> clazz = Object.class;
+         Type genericType = injectionPoint.getType().getClass().getGenericSuperclass();
+         if (genericType instanceof ParameterizedType )
          {
-            clazz = Object.class;
-         } 
-         else
-         {
-            clazz = Class.class.cast(getAnnotatedItem().getActualTypeArguments()[0]);         
+            ParameterizedType type = (ParameterizedType) genericType;
+            clazz = Class.class.cast(type.getActualTypeArguments()[0]);  
          }
+                
          // TODO should be able to move this up into annotated item?!     
          @SuppressWarnings("unchecked")
          Class<T> eventType = (Class<T>) clazz;
          
-         return new EventImpl<T>(eventType, manager, getAnnotatedItem().getBindingsAsArray());
+         return new EventImpl<T>(eventType, manager, injectionPoint.getBindings().toArray(new Annotation[0]));
       }
       finally
       {
@@ -156,6 +161,17 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
    }
    
    /**
+    * Adds additional bindings to this bean.  All bindings must be
+    * finalized before the bean is registered with the manager.
+    * 
+    * @param additionalBindings A set of additional bindings
+    */
+   public void addBindings(Set<Annotation> additionalBindings)
+   {
+      this.bindings.addAll(additionalBindings);
+   }
+   
+   /**
     * Returns a string representation
     * 
     * @return The string representation
@@ -170,6 +186,6 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
       buffer.append(" API types = ").append(Names.typesToString(getTypes())).append(", binding types = " + Names.annotationsToString(getBindings()));
       buffer.append("\n");
       return buffer.toString();
-   } 
+   }
 
 }

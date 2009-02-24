@@ -91,7 +91,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    // Logger
    private LogProvider log = Logging.getLogProvider(AbstractBean.class);
    // The binding types
-   private Set<Annotation> bindings;
+   protected Set<Annotation> bindings;
    // The name
    protected String name;
    // The scope type
