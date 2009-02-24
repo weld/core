@@ -13,7 +13,7 @@
 		<delete dir="target" failonerror="false"/>
 	</target>
 
-	<target name="update" depends="install-jboss-ejb3-update, install-webbeans.deployer" description="Update JBoss 5 for the Web Beans RI" />
+	<target name="update" depends="install-webbeans.deployer" description="Update JBoss 5 for the Web Beans RI" />
 		
 	<target name="install-webbeans.deployer">
 
