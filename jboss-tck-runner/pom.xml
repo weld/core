@@ -75,11 +75,10 @@
                            <overWrite>true</overWrite>
                         </artifactItem>
                         <artifactItem>
-                           <groupId>org.jboss.jsr299.tck</groupId>
-                           <artifactId>jsr299-tck-impl</artifactId>
-                           <type>xml</type>
-                           <classifier>suite</classifier>
+                           <groupId>org.jboss.webbeans</groupId>
+                           <artifactId>webbeans-porting-package</artifactId>
                            <overWrite>true</overWrite>
+                           <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                         </artifactItem>
                         <artifactItem>
                            <groupId>javax.el</groupId>
