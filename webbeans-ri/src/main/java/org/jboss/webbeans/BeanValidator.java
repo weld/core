@@ -86,11 +86,11 @@ public class BeanValidator
                Set<?> resolvedBeans = manager.resolveByType(type, bindings);
                if (resolvedBeans.isEmpty())
                {
-                  throw new UnsatisfiedDependencyException("The injection point " + injectionPoint + " has unsatisfied dependencies for type " + type + " and binding types " + bindings + " in " + bean);
+                  throw new UnsatisfiedDependencyException("The injection point " + injectionPoint + " in " + bean + " has unsatisfied dependencies");
                }
                if (resolvedBeans.size() > 1)
                {
-                  throw new AmbiguousDependencyException("The injection point " + injectionPoint + " has ambiguous dependencies for type " + type + " and binding types " + bindings + " in " + bean);
+                  throw new AmbiguousDependencyException("The injection point " + injectionPoint + " in " + bean + " has ambiguous dependencies");
                }
                Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
                if (MetaDataCache.instance().getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(type))
