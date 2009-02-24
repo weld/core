@@ -18,9 +18,7 @@ package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,7 +37,6 @@ import javax.inject.manager.InjectionPoint;
 import org.jboss.webbeans.bean.AbstractProducerBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
-import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.metadata.MetaDataCache;
@@ -103,17 +100,6 @@ public class BeanValidator
                if (Reflections.isPrimitive((Class<?>) injectionPoint.getType()) && resolvedBean.isNullable())
                {
                   throw new NullableDependencyException("The injection point " + injectionPoint + " has nullable dependencies");
-               }
-               if (bean instanceof ProducerMethodBean)
-               {
-                  if (resolvedBean instanceof AbstractProducerBean)
-                  {
-                     AbstractProducerBean producerBean = (AbstractProducerBean) resolvedBean;
-                     if (producerBean.isDependent() && !Reflections.isSerializable(producerBean.getType()))
-                     {
-                        throw new IllegalProductException("Cannot inject @Depedent non-serializable type into " + injectionPoint);
-                     }
-                  }
                }
                if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isPassivating())
                {
