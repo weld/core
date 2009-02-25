@@ -20,7 +20,7 @@ package org.jboss.webbeans.mock;
 
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.context.beanstore.ConcurrentHashMapBeanStore;
+import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.AbstractLifecycle;

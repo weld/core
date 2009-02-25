@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.context.beanstore;
+package org.jboss.webbeans.context.api.helpers;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,9 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.context.Contextual;
 
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.context.api.helpers.AbstractMapBackedBeanStore;
-import org.jboss.webbeans.log.LogProvider;
-import org.jboss.webbeans.log.Logging;
 
 /**
  * A BeanStore that uses a HashMap as backing storage
@@ -34,7 +31,6 @@ import org.jboss.webbeans.log.Logging;
  */
 public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore implements BeanStore
 {
-   private static LogProvider log = Logging.getLogProvider(ConcurrentHashMapBeanStore.class);
    
    // The backing map
    protected Map<Contextual<? extends Object>, Object> delegate;

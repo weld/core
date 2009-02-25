@@ -24,7 +24,7 @@ import javax.servlet.http.HttpSession;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.context.beanstore.ConcurrentHashMapBeanStore;
+import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
 
 /**
  * Implementation of the Web Beans lifecycle that can react to servlet events.
