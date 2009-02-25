@@ -22,7 +22,6 @@ import javax.context.Dependent;
 import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 
 /**
@@ -33,13 +32,11 @@ import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 public abstract class RIBean<T> extends Bean<T>
 {
    private final ManagerImpl manager;
-   protected final DependentInstancesStore dependentInstancesStore;
 
    protected RIBean(ManagerImpl manager)
    {
       super(manager);
       this.manager = manager;
-      this.dependentInstancesStore = new DependentInstancesStore();
    }
 
    @Override
