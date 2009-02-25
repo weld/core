@@ -24,7 +24,7 @@ import javax.servlet.http.HttpSession;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.context.beanstore.SimpleBeanStore;
+import org.jboss.webbeans.context.beanstore.ConcurrentHashMapBeanStore;
 
 /**
  * Implementation of the Web Beans lifecycle that can react to servlet events.
@@ -114,7 +114,7 @@ public class ServletLifecycle2 extends AbstractLifecycle
    public void beginRequest(HttpServletRequest request)
    {
       restoreSessionContext(request.getSession());
-      BeanStore beanStore = new SimpleBeanStore();
+      BeanStore beanStore = new ConcurrentHashMapBeanStore();
       request.setAttribute(REQUEST_ATTRIBUTE_NAME, beanStore);
       super.beginRequest(request.getRequestURI(), beanStore);
    }

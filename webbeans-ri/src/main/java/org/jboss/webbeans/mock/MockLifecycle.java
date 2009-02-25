@@ -20,7 +20,7 @@ package org.jboss.webbeans.mock;
 
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.context.beanstore.SimpleBeanStore;
+import org.jboss.webbeans.context.beanstore.ConcurrentHashMapBeanStore;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.AbstractLifecycle;
@@ -33,9 +33,9 @@ public class MockLifecycle extends AbstractLifecycle
    
    private final WebBeansBootstrap bootstrap;
    private final MockWebBeanDiscovery webBeanDiscovery;
-   private BeanStore applicationBeanStore = new SimpleBeanStore();
-   private BeanStore sessionBeanStore = new SimpleBeanStore();
-   private BeanStore requestBeanStore = new SimpleBeanStore();
+   private BeanStore applicationBeanStore = new ConcurrentHashMapBeanStore();
+   private BeanStore sessionBeanStore = new ConcurrentHashMapBeanStore();
+   private BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
    
    public MockLifecycle()
    {
@@ -76,7 +76,7 @@ public class MockLifecycle extends AbstractLifecycle
    public void beginApplication()
    {
       super.beginApplication("Mock", applicationBeanStore);
-      BeanStore requestBeanStore = new SimpleBeanStore();
+      BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
       super.beginDeploy(requestBeanStore);
       bootstrap.setEjbDiscovery(new MockEjbDiscovery(webBeanDiscovery.discoverWebBeanClasses()));
       bootstrap.boot();

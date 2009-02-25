@@ -21,7 +21,7 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.context.SessionContext;
-import org.jboss.webbeans.context.beanstore.AbstractBeanStore;
+import org.jboss.webbeans.context.beanstore.AbstractAttributeBackedBeanStore;
 import org.jboss.webbeans.context.beanstore.BeanStoreNamingScheme;
 import org.jboss.webbeans.context.beanstore.PrefixBeanStoreNamingScheme;
 
@@ -32,7 +32,7 @@ import org.jboss.webbeans.context.beanstore.PrefixBeanStoreNamingScheme;
  * 
  * @see org.jboss.webbeans.context.ApplicationContext
  */
-public class HttpSessionBeanStore extends AbstractBeanStore
+public class HttpSessionBeanStore extends AbstractAttributeBackedBeanStore
 {
    // The HTTP session context to use as backing map
    private HttpSession session;
@@ -49,7 +49,7 @@ public class HttpSessionBeanStore extends AbstractBeanStore
    }
 
    /**
-    * @see org.jboss.webbeans.context.beanstore.AbstractBeanStore#getAttribute()
+    * @see org.jboss.webbeans.context.beanstore.AbstractAttributeBackedBeanStore#getAttribute()
     */
    @Override
    protected Object getAttribute(String key)
@@ -58,7 +58,7 @@ public class HttpSessionBeanStore extends AbstractBeanStore
    }
 
    /**
-    * @see org.jboss.webbeans.context.beanstore.AbstractBeanStore#getAttributeNames()
+    * @see org.jboss.webbeans.context.beanstore.AbstractAttributeBackedBeanStore#getAttributeNames()
     */
    @SuppressWarnings("unchecked")
    @Override
@@ -68,7 +68,7 @@ public class HttpSessionBeanStore extends AbstractBeanStore
    }
 
    /**
-    * @see org.jboss.webbeans.context.beanstore.AbstractBeanStore#removeAttributes()
+    * @see org.jboss.webbeans.context.beanstore.AbstractAttributeBackedBeanStore#removeAttributes()
     */
    @Override
    protected void removeAttribute(String key)
@@ -77,7 +77,7 @@ public class HttpSessionBeanStore extends AbstractBeanStore
    }
 
    /**
-    * @see org.jboss.webbeans.context.beanstore.AbstractBeanStore#setAttribute()
+    * @see org.jboss.webbeans.context.beanstore.AbstractAttributeBackedBeanStore#setAttribute()
     */
    @Override
    protected void setAttribute(String key, Object instance)

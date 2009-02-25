@@ -24,7 +24,7 @@ import javax.servlet.http.HttpSession;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.context.beanstore.SimpleBeanStore;
+import org.jboss.webbeans.context.beanstore.ConcurrentHashMapBeanStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -72,7 +72,7 @@ public class ServletLifecycle extends AbstractLifecycle
       ServletInitialization servletInitialization = new ServletInitialization(servletContext).initialize();
       super.initialize();
       super.beginApplication(servletContext.getServletContextName(), new ApplicationBeanStore(servletContext));
-      BeanStore requestBeanStore = new SimpleBeanStore();
+      BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
       super.beginDeploy(requestBeanStore);
       servletInitialization.start();
       super.endDeploy(requestBeanStore);
@@ -103,7 +103,7 @@ public class ServletLifecycle extends AbstractLifecycle
     */
    public void endSession(HttpSession session)
    {
-      BeanStore mockRequest = new SimpleBeanStore();
+      BeanStore mockRequest = new ConcurrentHashMapBeanStore();
       super.beginRequest("endSession-" + session.getId(), mockRequest);
       super.endSession(session.getId(), restoreSessionContext(session));
       super.endRequest("endSession-" + session.getId(), mockRequest);
@@ -133,7 +133,7 @@ public class ServletLifecycle extends AbstractLifecycle
     */
    public void beginRequest(HttpServletRequest request)
    {
-      BeanStore beanStore = new SimpleBeanStore();
+      BeanStore beanStore = new ConcurrentHashMapBeanStore();
       request.setAttribute(REQUEST_ATTRIBUTE_NAME, beanStore);
       super.beginRequest(request.getRequestURI(), beanStore);
       restoreSessionContext(request.getSession());

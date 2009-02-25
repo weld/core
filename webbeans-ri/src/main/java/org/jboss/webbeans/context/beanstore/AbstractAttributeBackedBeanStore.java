@@ -36,10 +36,10 @@ import org.jboss.webbeans.util.Names;
  * @author Nicklas Karlsson
  * 
  */
-public abstract class AbstractBeanStore implements BeanStore
+public abstract class AbstractAttributeBackedBeanStore implements BeanStore
 {
    // The log provider
-   private static LogProvider log = Logging.getLogProvider(AbstractBeanStore.class);
+   private static LogProvider log = Logging.getLogProvider(AbstractAttributeBackedBeanStore.class);
 
    /**
     * Gets a bean from the store
