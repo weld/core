@@ -19,7 +19,6 @@ public class HttpSessionManager
 
    @Produces
    @RequestScoped
-   @WebBean
    public HttpSession getSession()
    {
       return session;

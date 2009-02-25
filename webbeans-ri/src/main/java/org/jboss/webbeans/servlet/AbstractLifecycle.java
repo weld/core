@@ -88,6 +88,7 @@ public abstract class AbstractLifecycle
    protected void endSession(String id, BeanStore sessionBeanStore)
    {
       log.trace("Ending session " + id);
+      SessionContext.INSTANCE.setActive(true);
       ConversationManager conversationManager = CurrentManager.rootManager().getInstanceByType(ConversationManager.class);
       conversationManager.destroyAllConversations();
       SessionContext.INSTANCE.destroy();

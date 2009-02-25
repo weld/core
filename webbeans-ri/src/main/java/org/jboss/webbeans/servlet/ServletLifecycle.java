@@ -103,7 +103,10 @@ public class ServletLifecycle extends AbstractLifecycle
     */
    public void endSession(HttpSession session)
    {
+      BeanStore mockRequest = new SimpleBeanStore();
+      super.beginRequest("endSession-" + session.getId(), mockRequest);
       super.endSession(session.getId(), restoreSessionContext(session));
+      super.endRequest("endSession-" + session.getId(), mockRequest);
    }
 
    /**
