@@ -6,7 +6,9 @@ import java.util.Set;
 import javax.context.Contextual;
 import javax.inject.manager.Bean;
 
-public abstract class AbstractMapBackedBeanStore
+import org.jboss.webbeans.context.api.BeanStore;
+
+public abstract class AbstractMapBackedBeanStore implements BeanStore
 {
    
    public AbstractMapBackedBeanStore()

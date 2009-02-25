@@ -22,14 +22,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.context.Contextual;
 
-import org.jboss.webbeans.context.api.BeanStore;
-
 /**
  * A BeanStore that uses a HashMap as backing storage
  * 
  * @author Nicklas Karlsson
  */
-public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore implements BeanStore
+public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore
 {
    
    // The backing map
