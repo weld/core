@@ -21,16 +21,16 @@ import org.jboss.virtual.VFS;
 
 public class ProfileServiceContainersImpl extends AbstractContainersImpl
 {
-   
+
    private Logger log = Logger.getLogger(ProfileServiceContainersImpl.class);
-   
+
    private final List<String> failedUndeployments;
-   
+
    private DeploymentManager deploymentManager;
    private JBossTestServices testServices;
    private final File tmpdir;
-   
-   
+
+
    public ProfileServiceContainersImpl() throws Exception
    {
       this.testServices = new JBossTestServices(JBossTestServicesContainersImpl.class);
@@ -41,22 +41,24 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
       tmpdir.deleteOnExit();
       this.failedUndeployments = new ArrayList<String>();
    }
-   
-   
+
+
    @Override
    public void setup() throws IOException
    {
       super.setup();
-      try 
+      try
       {
 		 initDeploymentManager();
 	  }
-      catch (Exception e) 
+      catch (Exception e)
 	  {
-	     throw new IOException(e);
+		 IOException ioe = new IOException();
+		 ioe.initCause(e);
+	     throw ioe;
 	  }
    }
-   
+
    public void deploy(InputStream archiveStream, String name) throws DeploymentException, IOException
    {
       if (deploymentManager == null)
@@ -80,23 +82,25 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
             undeploy(name);
          }
       }
-      catch (Exception e) 
+      catch (Exception e)
       {
-         throw new IOException(e);
+		 IOException ioe = new IOException();
+		 ioe.initCause(e);
+	     throw ioe;
       }
       if (failure != null)
       {
          throw new DeploymentException(failure);
       }
    }
-   
+
    public void undeploy(String name) throws IOException
    {
       try
       {
          DeploymentProgress stopProgress = deploymentManager.stop(DeploymentPhase.APPLICATION, name);
          stopProgress.run();
-         
+
          DeploymentProgress undeployProgress = deploymentManager.undeploy(DeploymentPhase.APPLICATION, name);
          undeployProgress.run();
          if (undeployProgress.getDeploymentStatus().isFailed())
@@ -106,10 +110,12 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
       }
       catch (Exception e)
       {
-         throw new IOException(e);
+		 IOException ioe = new IOException();
+		 ioe.initCause(e);
+	     throw ioe;
       }
    }
-   
+
    /**
     * Obtain the Deployment Manager
     * @throws Exception
@@ -125,9 +131,9 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
       // Init the VFS to setup the vfs* protocol handlers
       VFS.init();
    }
-   
+
    @Override
-   public void cleanup() throws IOException 
+   public void cleanup() throws IOException
    {
 	  super.cleanup();
 	  List<String> remainingDeployments = new ArrayList<String>();
@@ -142,9 +148,11 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
 		    	  remainingDeployments.add(name);
 		      }
 		  }
-		  catch (Exception e) 
+		  catch (Exception e)
 		  {
-			  throw new IOException(e);
+			 IOException ioe = new IOException();
+			 ioe.initCause(e);
+		     throw ioe;
 		  }
 	   }
 	  if (remainingDeployments.size() > 0)
@@ -152,5 +160,5 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
 		  //log.error("Failed to undeploy these artifacts: " + remainingDeployments);
 	  }
    }
-   
+
 }

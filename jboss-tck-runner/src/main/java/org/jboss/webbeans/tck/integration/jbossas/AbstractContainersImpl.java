@@ -2,6 +2,7 @@ package org.jboss.webbeans.tck.integration.jbossas;
 
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,33 +19,33 @@ import org.jboss.jsr299.tck.spi.Containers;
 import org.jboss.webbeans.tck.integration.jbossas.util.DeploymentProperties;
 
 /**
- * 
+ *
  * @author jeffgenender
  * @author Pete Muir
  *
  */
 public abstract class AbstractContainersImpl implements Configurable, Containers
 {
-   
+
    public static String JAVA_OPTS = " -ea";
-   
+
    public static final String JBOSS_HOME_PROPERTY_NAME = "jboss.home";
    public static final String JAVA_OPTS_PROPERTY_NAME = "java.opts";
    public static final String JBOSS_AS_DIR_PROPERTY_NAME = "jboss-as.dir";
    public static final String JBOSS_BOOT_TIMEOUT_PROPERTY_NAME = "jboss.boot.timeout";
    public static final String FORCE_RESTART_PROPERTY_NAME = "jboss.force.restart";
-   
+
    private static Logger log = Logger.getLogger(AbstractContainersImpl.class);
-   
+
    private final DeploymentProperties properties;
-   
+
    private Configuration configuration;
    protected String jbossHome;
    private String jbossHttpUrl;
    private boolean jbossWasStarted;
    private long bootTimeout;
    private String javaOpts;
-   
+
    public AbstractContainersImpl()
    {
       this.properties = new DeploymentProperties();
@@ -53,21 +54,21 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
    protected static void copy(InputStream inputStream, File file) throws IOException
    {
       OutputStream os = new FileOutputStream(file);
-      try 
+      try
       {
          byte[] buf = new byte[1024];
          int i = 0;
-         while ((i = inputStream.read(buf)) != -1) 
+         while ((i = inputStream.read(buf)) != -1)
          {
              os.write(buf, 0, i);
          }
-     } 
-     finally 
+     }
+     finally
      {
          os.close();
      }
-   }   
-   
+   }
+
    public void setConfiguration(Configuration configuration)
    {
       this.configuration = configuration;
@@ -91,14 +92,14 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
             return false;
          }
       }
-      catch (Exception e) 
+      catch (Exception e)
       {
          return false;
       }
       log.info("Successfully connected to JBoss AS at " + jbossHttpUrl);
       return true;
    }
-   
+
    public void setup() throws IOException
    {
       String jbossAsPath = properties.getStringValue(JBOSS_AS_DIR_PROPERTY_NAME, "../jboss-as", false);
@@ -110,14 +111,14 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
             File buildProperties = new File(jbossAsDir, "build.properties");
             if (buildProperties.exists())
             {
-               System.getProperties().load(new FileReader(buildProperties));
+               loadProperties(buildProperties);
             }
             File localBuildProperties = new File(jbossAsDir, "local.build.properties");
             if (localBuildProperties.exists())
             {
-               System.getProperties().load(new FileReader(localBuildProperties));
+               loadProperties(localBuildProperties);
             }
-         }            
+         }
       }
       jbossHome = properties.getStringValue(JBOSS_HOME_PROPERTY_NAME, null, true);
       javaOpts = properties.getStringValue(JAVA_OPTS_PROPERTY_NAME, "", false);
@@ -152,7 +153,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
          boolean interrupted = false;
          while (timeoutTime > System.currentTimeMillis())
          {
-            if (isJBossUp()) 
+            if (isJBossUp())
             {
                log.info("Started JBoss instance");
                return;
@@ -180,12 +181,25 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
          return;
       }
    }
-   
-   public String getJbossHome() 
+
+   protected void loadProperties(File file) throws IOException
+   {
+	   InputStream is = new FileInputStream(file);
+	   try
+	   {
+			System.getProperties().load(is);
+	   }
+	   finally
+	   {
+		   is.close();
+	   }
+   }
+
+   public String getJbossHome()
    {
       return jbossHome;
    }
-   
+
    public void cleanup() throws IOException
    {
       if (jbossWasStarted)
@@ -194,20 +208,20 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
          shutDownJBoss();
       }
    }
-   
+
    private void shutDownJBoss() throws IOException
    {
       launch("shutdown", "-S");
       log.info("Shut down JBoss AS");
    }
-   
+
    private void launch(String scriptFileName, String params) throws IOException
    {
       String osName = System.getProperty("os.name");
       Runtime runtime = Runtime.getRuntime();
 
       Process p = null;
-      if (osName.startsWith("Windows")) 
+      if (osName.startsWith("Windows"))
       {
           String command[] = {
                 "cmd.exe",
@@ -216,7 +230,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
           };
           p = runtime.exec(command);
       }
-      else 
+      else
       {
           String command[] = {
                 "sh",
@@ -229,24 +243,24 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
       dump(p.getInputStream());
    }
 
-   protected void dump(final InputStream is) 
+   protected void dump(final InputStream is)
    {
-      new Thread(new Runnable() 
+      new Thread(new Runnable()
       {
-          public void run() 
+          public void run()
           {
-             try 
+             try
              {
                 DataOutputStream out = new DataOutputStream(new FileOutputStream(configuration.getOutputDirectory() + File.separator + "jboss.log"));
                 int c;
-                while((c = is.read()) != -1) 
+                while((c = is.read()) != -1)
                 {
                    out.writeByte(c);
                 }
                 is.close();
                 out.close();
              }
-             catch(IOException e) 
+             catch(IOException e)
              {
                 System.err.println("Error Writing/Reading Streams.");
              }
@@ -254,5 +268,5 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
       }).start();
    }
 
-   
+
 }

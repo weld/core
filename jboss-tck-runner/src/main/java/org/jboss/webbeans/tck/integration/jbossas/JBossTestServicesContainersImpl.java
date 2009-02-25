@@ -10,12 +10,12 @@ import org.jboss.test.JBossTestServices;
 
 public class JBossTestServicesContainersImpl extends AbstractContainersImpl
 {
-   
+
    private Logger log = Logger.getLogger(JBossTestServicesContainersImpl.class);
-   
+
    private final JBossTestServices testServices;
    private final File tmpdir;
-   
+
    public JBossTestServicesContainersImpl() throws Exception
    {
       this.testServices = new JBossTestServices(JBossTestServicesContainersImpl.class);
@@ -25,7 +25,7 @@ public class JBossTestServicesContainersImpl extends AbstractContainersImpl
       tmpdir.mkdir();
       tmpdir.deleteOnExit();
    }
-   
+
    public void deploy(InputStream archiveStream, String name) throws DeploymentException, IOException
    {
       File archive = new File(tmpdir, name);
@@ -38,9 +38,9 @@ public class JBossTestServicesContainersImpl extends AbstractContainersImpl
       catch (Exception e)
       {
          throw new DeploymentException("Error deploying " + name, e);
-      } 
+      }
    }
-   
+
    public void undeploy(String name) throws IOException
    {
       try
@@ -49,14 +49,16 @@ public class JBossTestServicesContainersImpl extends AbstractContainersImpl
       }
       catch (Exception e)
       {
-         throw new IOException("Error undeploying " + name, e);
+		 IOException ioe = new IOException("Error undeploying " + name);
+		 ioe.initCause(e);
+	     throw ioe;
       }
    }
-   
+
    private String getTmpArchiveName(String name)
    {
       File file = new File(tmpdir, name);
       return file.toURI().toString();
    }
-   
+
 }
