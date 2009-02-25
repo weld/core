@@ -21,6 +21,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Logging;
+
 /**
  * A store for dependent instances created under a given key
  * 
@@ -28,27 +31,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class DependentInstancesStore
 {
-   private static DependentInstancesStore instance;
-
+   private static LogProvider log = Logging.getLogProvider(DependentInstancesStore.class);
+   
    // A object -> List of contextual instances mapping
    private Map<Object, List<ContextualInstance<?>>> dependentInstances;
 
    /**
     * Creates a new DependentInstancesStore
     */
-   protected DependentInstancesStore()
+   public DependentInstancesStore()
    {
       dependentInstances = new ConcurrentHashMap<Object, List<ContextualInstance<?>>>();
-   }
-
-   static
-   {
-      instance = new DependentInstancesStore();
-   }
-
-   public static DependentInstancesStore instance()
-   {
-      return instance;
    }
 
    /**
@@ -65,17 +58,19 @@ public class DependentInstancesStore
          instances = new CopyOnWriteArrayList<ContextualInstance<?>>();
          dependentInstances.put(key, instances);
       }
+      log.trace("Registered dependent instance " + contextualInstance + " under key " + key);
       instances.add(contextualInstance);
    }
 
    /**
     * Destroys all dependent objects associated with a particular key and remove
-    * that key from the map
+    * that key from the store
     * 
     * @param key The key to remove
     */
    public void destroyDependentInstances(Object key)
    {
+      log.trace("Destroying dependent instances under key " + key);
       if (!dependentInstances.containsKey(key))
       {
          return;
@@ -86,4 +81,5 @@ public class DependentInstancesStore
       }
       dependentInstances.remove(key);
    }
+
 }

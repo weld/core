@@ -24,7 +24,7 @@ import org.jboss.webbeans.context.beanstore.BeanStoreNamingScheme;
 import org.jboss.webbeans.context.beanstore.PrefixBeanStoreNamingScheme;
 
 /**
- * A HTTP session backed bean map for the conversational scope
+ * A HTTP session backed bean store for the conversational scope
  * 
  * @author Nicklas Karlsson
  */
@@ -39,7 +39,7 @@ public class ConversationBeanStore extends HttpSessionBeanStore
    }
 
    @Override
-   protected BeanStoreNamingScheme getBeanNamingScheme()
+   protected BeanStoreNamingScheme getNamingScheme()
    {
       return new PrefixBeanStoreNamingScheme(ConversationContext.class.getName() + "[" + cid + "]", "#");
    }

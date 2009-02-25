@@ -56,20 +56,20 @@ public class ApplicationContext extends AbstractMapContext
    }
 
    /**
-    * Gets the bean map
+    * Gets the bean store
     * 
-    * @return The bean map
+    * @return The bean store
     */
    @Override
-   public BeanStore getBeanStorage()
+   public BeanStore getBeanStore()
    {
       return this.beanStore;
    }
 
    /**
-    * Sets the bean map
+    * Sets the bean store
     * 
-    * @param applicationBeanStore The bean map
+    * @param applicationBeanStore The bean store
     */
    public void setBeanStore(BeanStore applicationBeanStore)
    {
@@ -102,7 +102,7 @@ public class ApplicationContext extends AbstractMapContext
    public String toString()
    {
       String active = isActive() ? "Active " : "Inactive ";
-      String beanStoreInfo = getBeanStorage() == null ? "" : getBeanStorage().toString();
+      String beanStoreInfo = getBeanStore() == null ? "" : getBeanStore().toString();
       return active + "application context " + beanStoreInfo;
    }
 

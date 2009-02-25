@@ -25,7 +25,14 @@ import javax.el.ELResolver;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.context.DependentInstancesStore;
+import org.jboss.webbeans.context.DependentStorageRequest;
 
+/**
+ * An EL-resolver against the named beans
+ *  
+ * @author Pete Muir
+ */
 public class WebBeansELResolver extends ELResolver
 {
 
@@ -64,13 +71,11 @@ public class WebBeansELResolver extends ELResolver
    {
       if (base == null && property != null)
       {
-         // TODO Any other way than creating a dummy parent to collect the created dependent objects under?
-         // TODO temp disabled
-         Object dependentsCollector = new Object();
+         DependentStorageRequest dependentStorageRequest = DependentStorageRequest.of(new DependentInstancesStore(), new Object());
          try
          {
             DependentContext.INSTANCE.setActive(true);
-            DependentContext.INSTANCE.startCollecting(dependentsCollector);
+            DependentContext.INSTANCE.startCollectingDependents(dependentStorageRequest);
             Object value = CurrentManager.rootManager().getInstanceByName(property.toString());
             if (value != null)
             {
@@ -80,7 +85,9 @@ public class WebBeansELResolver extends ELResolver
          }
          finally
          {
-            DependentContext.INSTANCE.stopCollecting(dependentsCollector);
+            DependentContext.INSTANCE.stopCollectingDependents(dependentStorageRequest);
+            // TODO kinky
+            dependentStorageRequest.getDependentInstancesStore().destroyDependentInstances(dependentStorageRequest.getKey());
             DependentContext.INSTANCE.setActive(false);
          }
       }
@@ -108,3 +115,4 @@ public class WebBeansELResolver extends ELResolver
    }
 
 }
+

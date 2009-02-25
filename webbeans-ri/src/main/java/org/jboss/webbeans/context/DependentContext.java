@@ -32,7 +32,7 @@ import javax.context.Dependent;
 public class DependentContext extends AbstractContext
 {
    public static DependentContext INSTANCE;
-   
+
    public static DependentContext create()
    {
       INSTANCE = new DependentContext();
@@ -40,8 +40,8 @@ public class DependentContext extends AbstractContext
    }
 
    private ThreadLocal<AtomicInteger> reentrantActiveCount;
-   // Key to collect instances under in DependentInstacesStore
-   private ThreadLocal<Object> dependentsKey;
+   // A (possible null) request to store dependents created
+   private ThreadLocal<DependentStorageRequest> dependentStorageRequest;
 
    /**
     * Constructor
@@ -58,7 +58,7 @@ public class DependentContext extends AbstractContext
             return new AtomicInteger(0);
          }
       };
-      this.dependentsKey = new ThreadLocal<Object>();
+      this.dependentStorageRequest = new ThreadLocal<DependentStorageRequest>();
    }
 
    /**
@@ -76,9 +76,9 @@ public class DependentContext extends AbstractContext
       if (creationalContext != null)
       {
          T instance = contextual.create(creationalContext);
-         if (dependentsKey.get() != null)
+         if (dependentStorageRequest.get() != null)
          {
-            DependentInstancesStore.instance().addDependentInstance(dependentsKey.get(), ContextualInstance.of(contextual, instance));
+            dependentStorageRequest.get().getDependentInstancesStore().addDependentInstance(dependentStorageRequest.get().getKey(), ContextualInstance.of(contextual, instance));
          }
          return instance;
       }
@@ -87,7 +87,7 @@ public class DependentContext extends AbstractContext
          return null;
       }
    }
-   
+
    public <T> T get(Contextual<T> contextual)
    {
       return get(contextual, null);
@@ -120,31 +120,34 @@ public class DependentContext extends AbstractContext
    }
 
    /**
-    * Sets the current injection instance. If there is already an instance
-    * registered, nothing is done.
+    * Starts collecting dependent instances created by placing in the dependent
+    * instances store specified in the request. The request is only honored if
+    * there are no current request present.
     * 
-    * @param dependentsKey The current injection instance to register
-    *           dependent objects under
+    * @param dependentStorageRequest The storage request
     */
-   public void startCollecting(Object dependentsKey)
+   public void startCollectingDependents(DependentStorageRequest dependentStorageRequest)
    {
-      if (this.dependentsKey.get() == null)
+      if (this.dependentStorageRequest.get() == null)
       {
-         this.dependentsKey.set(dependentsKey);
+         this.dependentStorageRequest.set(dependentStorageRequest);
       }
    }
 
    /**
-    * Clears the current injection instance. Can only be done by passing in the instance
-    * of the current instance.
+    * Stops collecting dependent instances created. The request is only honored
+    * if the request passed is the same that was used for starting the
+    * collection
     * 
-    * @param dependentsKey The instance to free
+    * @param dependentStorageRequest The storage request
     */
-   public void stopCollecting(Object dependentsKey)
+   public void stopCollectingDependents(DependentStorageRequest dependentStorageRequest)
    {
-      if (this.dependentsKey.get() == dependentsKey)
+      // Could also be null if we hit the finally block before the collection
+      // has started
+      if (this.dependentStorageRequest.get() != null && this.dependentStorageRequest.get().equals(dependentStorageRequest))
       {
-         this.dependentsKey.set(null);
+         this.dependentStorageRequest.set(null);
       }
    }
 

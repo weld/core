@@ -43,6 +43,7 @@ import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentInstancesStore;
+import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
@@ -192,12 +193,12 @@ public class ObserverImpl<T> implements Observer<T>
    public void notify(final T event)
    {
       Object instance = null;
-      Object dependentsCollector = new Object();
+      DependentStorageRequest dependentStorageRequest = DependentStorageRequest.of(new DependentInstancesStore(), new Object());
       try
       {
          if (Dependent.class.equals(observerBean.getScopeType()) && observerBean instanceof RIBean)
          {
-            DependentContext.INSTANCE.startCollecting(dependentsCollector);
+            DependentContext.INSTANCE.startCollectingDependents(dependentStorageRequest);
          }
          // Get the most specialized instance of the component
          instance = getInstance(observerBean);
@@ -218,8 +219,8 @@ public class ObserverImpl<T> implements Observer<T>
       {
          if (Dependent.class.equals(observerBean.getScopeType()))
          {
-            DependentInstancesStore.instance().destroyDependentInstances(dependentsCollector);
-            DependentContext.INSTANCE.stopCollecting(instance);
+            DependentContext.INSTANCE.stopCollectingDependents(dependentStorageRequest);
+            dependentStorageRequest.getDependentInstancesStore().destroyDependentInstances(dependentStorageRequest.getKey());
          }
       }
    }

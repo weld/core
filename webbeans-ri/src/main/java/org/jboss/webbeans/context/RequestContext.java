@@ -47,7 +47,7 @@ public class RequestContext extends AbstractThreadLocalMapContext
    public String toString()
    {
       String active = isActive() ? "Active " : "Inactive ";
-      String beanStoreInfo = getBeanStorage() == null ? "" : getBeanStorage().toString();
+      String beanStoreInfo = getBeanStore() == null ? "" : getBeanStore().toString();
       return active + "request context " + beanStoreInfo; 
    }
 

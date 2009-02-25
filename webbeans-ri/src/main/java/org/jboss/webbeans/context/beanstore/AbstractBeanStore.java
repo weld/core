@@ -42,7 +42,7 @@ public abstract class AbstractBeanStore implements BeanStore
    private static LogProvider log = Logging.getLogProvider(AbstractBeanStore.class);
 
    /**
-    * Gets a bean from the map
+    * Gets a bean from the store
     * 
     * @param contextual The bean to get
     * @return The instance
@@ -50,14 +50,14 @@ public abstract class AbstractBeanStore implements BeanStore
    @SuppressWarnings("unchecked")
    public <T> T get(Contextual<? extends T> contextual)
    {
-      String key = getBeanNamingScheme().getContextualKey(contextual);
+      String key = getNamingScheme().getContextualKey(contextual);
       T instance = (T) getAttribute(key);
       log.trace("Looked for " + key + " and got " + instance);
       return instance;
    }
 
    /**
-    * Removes an instance from the map
+    * Removes an instance from the store
     * 
     * @param contextual The bean of the instance to remove
     * @return The removed instance
@@ -65,14 +65,14 @@ public abstract class AbstractBeanStore implements BeanStore
    public <T> T remove(Contextual<? extends T> contextual)
    {
       T instance = get(contextual);
-      String key = getBeanNamingScheme().getContextualKey(contextual);
+      String key = getNamingScheme().getContextualKey(contextual);
       removeAttribute(key);
       log.trace("Removed bean under key " + key);
       return instance;
    }
 
    /**
-    * Clears the bean map
+    * Clears the bean store
     */
    public void clear()
    {
@@ -80,18 +80,18 @@ public abstract class AbstractBeanStore implements BeanStore
       {
          removeAttribute(attributeName);
       }
-      log.trace("Bean Map cleared");
+      log.trace("Bean store cleared");
    }
 
    /**
-    * Returns the beans present in the map
+    * Returns the beans present in the store
     * 
     * @return The beans
     */
    public Iterable<Contextual<? extends Object>> getBeans()
    {
       List<Contextual<?>> contextuals = new ArrayList<Contextual<?>>();
-      BeanStoreNamingScheme namingScheme = getBeanNamingScheme();
+      BeanStoreNamingScheme namingScheme = getNamingScheme();
       for (String attributeName : getFilteredAttributeNames())
       {
          int beanIndex = namingScheme.getBeanIndexFromKey(attributeName);
@@ -102,14 +102,14 @@ public abstract class AbstractBeanStore implements BeanStore
    }
 
    /**
-    * Gets the list of attribute names that is held by the bean map
+    * Gets the list of attribute names that is held by the bean store
     * 
     * @return The list of attribute names
     */
    private List<String> getFilteredAttributeNames()
    {
       List<String> attributeNames = new ArrayList<String>();
-      BeanStoreNamingScheme namingScheme = getBeanNamingScheme();
+      BeanStoreNamingScheme namingScheme = getNamingScheme();
       for (String attributeName : new EnumerationIterable<String>(getAttributeNames()))
       {
          if (namingScheme.acceptKey(attributeName))
@@ -121,7 +121,7 @@ public abstract class AbstractBeanStore implements BeanStore
    }
 
    /**
-    * Puts an instance of a bean in the map
+    * Puts an instance of a bean in the store
     * 
     * @param bean The key bean
     * @param instance The instance
@@ -129,7 +129,7 @@ public abstract class AbstractBeanStore implements BeanStore
     */
    public <T> void put(Contextual<? extends T> bean, T instance)
    {
-      String key = getBeanNamingScheme().getContextualKey(bean);
+      String key = getNamingScheme().getContextualKey(bean);
       setAttribute(key, instance);
       log.trace("Added bean " + bean + " under key " + key);
    }
@@ -166,11 +166,11 @@ public abstract class AbstractBeanStore implements BeanStore
    protected abstract void setAttribute(String key, Object instance);
 
    /**
-    * Gets an naming scheme for handling keys in a bean map
+    * Gets an naming scheme for handling keys in a bean store
     * 
     * @return The naming scheme
     */
-   protected abstract BeanStoreNamingScheme getBeanNamingScheme();
+   protected abstract BeanStoreNamingScheme getNamingScheme();
 
 
    @Override

@@ -87,7 +87,7 @@ public class ApplicationBeanStore extends AbstractBeanStore
    }
 
    @Override
-   protected BeanStoreNamingScheme getBeanNamingScheme()
+   protected BeanStoreNamingScheme getNamingScheme()
    {
       return new PrefixBeanStoreNamingScheme(ApplicationContext.class.getName(), "#");
    }

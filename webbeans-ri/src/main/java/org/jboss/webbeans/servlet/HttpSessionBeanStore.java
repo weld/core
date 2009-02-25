@@ -86,7 +86,7 @@ public class HttpSessionBeanStore extends AbstractBeanStore
    }
 
    @Override
-   protected BeanStoreNamingScheme getBeanNamingScheme()
+   protected BeanStoreNamingScheme getNamingScheme()
    {
       return new PrefixBeanStoreNamingScheme(SessionContext.class.getName(), "#");
    }

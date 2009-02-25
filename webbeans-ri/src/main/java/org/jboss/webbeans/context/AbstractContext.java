@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.webbeans.context;
 
 import java.lang.annotation.Annotation;
@@ -26,7 +25,7 @@ import javax.context.Context;
  * 
  * @author Nicklas Karlsson
  * @author Pete Muir
- *
+ * 
  */
 public abstract class AbstractContext implements Context
 {
@@ -49,7 +48,7 @@ public abstract class AbstractContext implements Context
          protected Boolean initialValue()
          {
             return Boolean.FALSE;
-         } 
+         }
       };
    }
 

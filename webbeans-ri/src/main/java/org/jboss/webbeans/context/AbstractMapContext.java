@@ -69,7 +69,7 @@ public abstract class AbstractMapContext extends AbstractContext
       {
          throw new ContextNotActiveException();
       }
-      T instance = getBeanStorage().get(contextual);
+      T instance = getBeanStore().get(contextual);
       if (instance != null)
       {
          return instance;
@@ -79,7 +79,7 @@ public abstract class AbstractMapContext extends AbstractContext
          instance = contextual.create(creationalContext);
          if (instance != null)
          {
-            getBeanStorage().put(contextual, instance);
+            getBeanStore().put(contextual, instance);
          }
          return instance;
       }
@@ -103,7 +103,7 @@ public abstract class AbstractMapContext extends AbstractContext
    private <T> void destroy(Contextual<T> bean)
    {
       log.trace("Destroying " + bean);
-      bean.destroy(getBeanStorage().get(bean));
+      bean.destroy(getBeanStore().get(bean));
    }
 
    /**
@@ -112,18 +112,18 @@ public abstract class AbstractMapContext extends AbstractContext
    public void destroy()
    {
       log.trace("Destroying context");
-      for (Contextual<? extends Object> bean : getBeanStorage().getBeans())
+      for (Contextual<? extends Object> bean : getBeanStore().getBeans())
       {
          destroy(bean);
       }
-      getBeanStorage().clear();
+      getBeanStore().clear();
    }
 
    /**
-    * A method that should return the actual bean map implementation
+    * A method that returns the actual bean store implementation
     * 
-    * @return The actual bean map
+    * @return The bean store
     */
-   protected abstract BeanStore getBeanStorage();
+   protected abstract BeanStore getBeanStore();
 
 }

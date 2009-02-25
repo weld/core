@@ -21,7 +21,7 @@ import javax.context.Contextual;
 import org.jboss.webbeans.CurrentManager;
 
 /**
- * Simple prefix-based implementation of a bean map naming scheme
+ * Simple prefix-based implementation of a bean store naming scheme
  * 
  * @author Nicklas Karlsson
  */

@@ -48,7 +48,7 @@ public class AnnotationStore
       }
 
       /**
-       * Gets a string representation of the Map
+       * Gets a string representation of the map
        * 
        * @return A string representation
        */
@@ -112,7 +112,7 @@ public class AnnotationStore
       }
 
       /**
-       * Gets a string representation of the Map
+       * Gets a string representation of the map
        * 
        * @return A string representation
        */

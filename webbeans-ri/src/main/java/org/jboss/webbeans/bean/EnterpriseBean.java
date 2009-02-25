@@ -38,6 +38,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.introspector.AnnotatedClass;
@@ -285,6 +286,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
    public void postConstruct(T instance)
    {
+      DependentStorageRequest dependentStorageRequest = DependentStorageRequest.of(dependentInstancesStore, instance);
       try
       {
          CreationalContext<T> creationalContext = new CreationalContext<T>() 
@@ -293,14 +295,14 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
             public void push(T incompleteInstance) {};
             
          };
-         DependentContext.INSTANCE.startCollecting(instance);
+         DependentContext.INSTANCE.startCollectingDependents(dependentStorageRequest);
          DependentContext.INSTANCE.setActive(true);
          injectBoundFields(instance, creationalContext);
          callInitializers(instance, creationalContext);
       }
       finally
       {
-         DependentContext.INSTANCE.stopCollecting(instance);
+         DependentContext.INSTANCE.stopCollectingDependents(dependentStorageRequest);
          DependentContext.INSTANCE.setActive(false);
       }
 
@@ -308,6 +310,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
    public void preDestroy(T instance)
    {
+      dependentInstancesStore.destroyDependentInstances(instance);
    }
 
    @Override

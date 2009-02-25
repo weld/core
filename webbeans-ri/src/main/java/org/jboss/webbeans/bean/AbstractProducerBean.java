@@ -39,7 +39,7 @@ import javax.inject.manager.InjectionPoint;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.context.DependentInstancesStore;
+import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.MetaDataCache;
@@ -123,7 +123,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
          throw new RuntimeException(" Cannot cast producer type " + getAnnotatedItem().getType() + " to bean type " + (getDeclaredBeanType() == null ? " unknown " : getDeclaredBeanType()), e);
       }
    }
-   
+
    /**
     * Gets the declared bean type
     * 
@@ -274,7 +274,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
          return;
       }
    }
-   
+
    @Override
    protected void initSerializable()
    {
@@ -288,7 +288,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
     */
    protected Object getReceiver(CreationalContext<?> creationalContext)
    {
-      // This is a bit dangerous, as it means that producer methods can end of 
+      // This is a bit dangerous, as it means that producer methods can end of
       // executing on partially constructed instances. Also, it's not required
       // by the spec...
       if (creationalContext instanceof CreationalContextImpl)
@@ -310,12 +310,12 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
     */
    public T create(CreationalContext<T> creationalContext)
    {
-      Object dependentCollector = new Object();
+      DependentStorageRequest dependentStorageRequest = DependentStorageRequest.of(dependentInstancesStore, new Object());
       try
       {
          if (getDeclaringBean().isDependent())
          {
-            DependentContext.INSTANCE.startCollecting(dependentCollector);
+            DependentContext.INSTANCE.startCollectingDependents(dependentStorageRequest);
          }
          DependentContext.INSTANCE.setActive(true);
          T instance = produceInstance(creationalContext);
@@ -326,8 +326,8 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       {
          if (getDeclaringBean().isDependent())
          {
-            DependentContext.INSTANCE.stopCollecting(dependentCollector);
-            DependentInstancesStore.instance().destroyDependentInstances(dependentCollector);
+            DependentContext.INSTANCE.stopCollectingDependents(dependentStorageRequest);
+            dependentInstancesStore.destroyDependentInstances(dependentStorageRequest.getKey());
          }
          DependentContext.INSTANCE.setActive(false);
       }
@@ -335,14 +335,10 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
 
    public void destroy(T instance)
    {
-      /*try
-      {
-         DependentContext.INSTANCE.setActive(true);
-      }
-      finally
-      {
-         DependentContext.INSTANCE.setActive(false);
-      }*/
+      /*
+       * try { DependentContext.INSTANCE.setActive(true); } finally {
+       * DependentContext.INSTANCE.setActive(false); }
+       */
    }
 
    protected abstract T produceInstance(CreationalContext<T> creationalContext);
@@ -369,7 +365,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       buffer.append("   API types " + getTypes() + ", binding types " + getBindings() + "\n");
       return buffer.toString();
    }
-   
+
    @Override
    public boolean equals(Object other)
    {

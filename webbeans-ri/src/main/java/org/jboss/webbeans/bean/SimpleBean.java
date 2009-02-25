@@ -32,7 +32,7 @@ import javax.persistence.PersistenceContextType;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.context.DependentInstancesStore;
+import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 import org.jboss.webbeans.injection.ConstructorInjectionPoint;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
@@ -69,11 +69,11 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    private AnnotatedMethod<?> postConstruct;
    // The pre-destroy method
    private AnnotatedMethod<?> preDestroy;
-   
+
    private Set<AnnotatedInjectionPoint<?, ?>> ejbInjectionPoints;
    private Set<AnnotatedInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
    private Set<AnnotatedInjectionPoint<?, ?>> resourceInjectionPoints;
-   
+
    private SimpleBean<?> specializedBean;
 
    /**
@@ -125,11 +125,13 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          DependentContext.INSTANCE.setActive(true);
          T instance = null;
+         DependentStorageRequest dependentStorageRequest = null;
          try
          {
             instance = constructor.newInstance(manager, creationalContext);
             creationalContext.push(instance);
-            DependentContext.INSTANCE.startCollecting(instance);
+            dependentStorageRequest = DependentStorageRequest.of(dependentInstancesStore, instance);
+            DependentContext.INSTANCE.startCollectingDependents(dependentStorageRequest);
             injectEjbAndCommonFields(instance);
             injectBoundFields(instance, creationalContext);
             callInitializers(instance, creationalContext);
@@ -137,7 +139,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          }
          finally
          {
-            DependentContext.INSTANCE.stopCollecting(instance);
+            DependentContext.INSTANCE.stopCollectingDependents(dependentStorageRequest);
          }
          return instance;
       }
@@ -158,7 +160,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          DependentContext.INSTANCE.setActive(true);
          callPreDestroy(instance);
-         DependentInstancesStore.instance().destroyDependentInstances(instance);
+         dependentInstancesStore.destroyDependentInstances(instance);
       }
       catch (Exception e)
       {
@@ -212,24 +214,24 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          }
       }
    }
-   
+
    protected void initEjbInjectionPoints()
    {
-      this.ejbInjectionPoints = new HashSet<AnnotatedInjectionPoint<?,?>>();
+      this.ejbInjectionPoints = new HashSet<AnnotatedInjectionPoint<?, ?>>();
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getEJBAnnotation()))
       {
          this.ejbInjectionPoints.add(FieldInjectionPoint.of(this, field));
       }
-      
+
       for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getEjbResolver().getEJBAnnotation()))
       {
          this.ejbInjectionPoints.add(MethodInjectionPoint.of(this, method));
       }
    }
-   
+
    protected void initPersistenceUnitInjectionPoints()
    {
-      this.persistenceUnitInjectionPoints = new HashSet<AnnotatedInjectionPoint<?,?>>();
+      this.persistenceUnitInjectionPoints = new HashSet<AnnotatedInjectionPoint<?, ?>>();
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getPersistenceContextAnnotation()))
       {
          if (field.getAnnotation(PersistenceContext.class).type().equals(PersistenceContextType.EXTENDED))
@@ -238,7 +240,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          }
          this.persistenceUnitInjectionPoints.add(FieldInjectionPoint.of(this, field));
       }
-      
+
       for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getEjbResolver().getPersistenceContextAnnotation()))
       {
          if (method.getAnnotation(PersistenceContext.class).type().equals(PersistenceContextType.EXTENDED))
@@ -248,10 +250,10 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          this.persistenceUnitInjectionPoints.add(MethodInjectionPoint.of(this, method));
       }
    }
-   
+
    protected void initResourceInjectionPoints()
    {
-      this.resourceInjectionPoints = new HashSet<AnnotatedInjectionPoint<?,?>>();
+      this.resourceInjectionPoints = new HashSet<AnnotatedInjectionPoint<?, ?>>();
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getEjbResolver().getResourceAnnotation()))
       {
          this.resourceInjectionPoints.add(FieldInjectionPoint.of(this, field));
@@ -263,7 +265,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void injectEjbAndCommonFields(T beanInstance)
    {
-      
+
       for (AnnotatedInjectionPoint<?, ?> injectionPoint : ejbInjectionPoints)
       {
          Object ejbInstance = manager.getEjbResolver().resolveEjb(injectionPoint, manager.getNaming());
@@ -333,7 +335,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          throw new DefinitionException("Simple bean declaring a passivating scope must have a serializable implementation class " + toString());
       }
    }
-   
+
    @Override
    protected void checkBeanImplementation()
    {
@@ -349,7 +351,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          }
       }
    }
-   
+
    @Override
    protected void preSpecialize()
    {
@@ -359,7 +361,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          throw new DefinitionException("Simple bean must specialize a simple bean");
       }
    }
-   
+
    @Override
    protected void specialize()
    {
@@ -440,7 +442,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          return;
       }
    }
-   
+
    /**
     * Initializes the bean type
     */
@@ -520,7 +522,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          return checkInjectionPointsAreSerializable();
       }
    }
-   
+
    @Override
    public SimpleBean<?> getSpecializedBean()
    {

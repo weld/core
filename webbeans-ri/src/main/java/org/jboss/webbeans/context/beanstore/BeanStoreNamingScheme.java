@@ -27,7 +27,7 @@ import javax.context.Contextual;
 public interface BeanStoreNamingScheme
 {
    /**
-    * Checks if a key is handled by the bean map
+    * Checks if a key is handled by the bean store
     * 
     * @param key The key to match
     * @return True if match, false otherwise
@@ -35,7 +35,7 @@ public interface BeanStoreNamingScheme
    public abstract boolean acceptKey(String key);
    
    /**
-    * Gets a bean map key for a contextual
+    * Gets a bean store key for a contextual
     * 
     * @param contextual The contextual to make the key for
     * @return A map key

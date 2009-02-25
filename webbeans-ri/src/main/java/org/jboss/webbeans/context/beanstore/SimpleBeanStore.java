@@ -51,7 +51,7 @@ public class SimpleBeanStore extends ForwardingMap<Contextual<? extends Object>,
    }
 
    /**
-    * Gets an instance from the map
+    * Gets an instance from the store
     * 
     * @param The bean to look for
     * @return An instance, if found
@@ -62,12 +62,12 @@ public class SimpleBeanStore extends ForwardingMap<Contextual<? extends Object>,
    {
       @SuppressWarnings("unchecked")
       T instance = (T) super.get(bean);
-      log.trace("Searched bean map for " + bean + " and got " + instance);
+      log.trace("Searched bean store for " + bean + " and got " + instance);
       return instance;
    }
 
    /**
-    * Gets the delegate for the map
+    * Gets the delegate for the store
     * 
     * @return The delegate
     */
@@ -78,7 +78,7 @@ public class SimpleBeanStore extends ForwardingMap<Contextual<? extends Object>,
    }
 
    /**
-    * Removed a instance from the map
+    * Removed a instance from the store
     * 
     * @param bean the bean to remove
     * @return The instance removed
@@ -89,23 +89,23 @@ public class SimpleBeanStore extends ForwardingMap<Contextual<? extends Object>,
    {
       @SuppressWarnings("unchecked")
       T instance = (T) super.remove(bean);
-      log.trace("Removed instace " + instance + " for bean " + bean + " from the bean map");
+      log.trace("Removed instace " + instance + " for bean " + bean + " from the bean store");
       return instance;
    }
 
    /**
-    * Clears the map
+    * Clears the store
     * 
     * @see org.jboss.webbeans.context.api.BeanStore#clear()
     */
    public void clear()
    {
       delegate.clear();
-      log.trace("Bean map cleared");
+      log.trace("Bean store cleared");
    }
 
    /**
-    * Returns the beans contained in the map
+    * Returns the beans contained in the store
     * 
     * @return The beans present
     * 
@@ -117,7 +117,7 @@ public class SimpleBeanStore extends ForwardingMap<Contextual<? extends Object>,
    }
 
    /**
-    * Puts a bean instance under the bean key in the map
+    * Puts a bean instance under the bean key in the store
     * 
     * @param bean The bean
     * @param instance the instance
@@ -127,7 +127,7 @@ public class SimpleBeanStore extends ForwardingMap<Contextual<? extends Object>,
    public <T> void put(Contextual<? extends T> bean, T instance)
    {
       delegate.put(bean, instance);
-      log.trace("Stored instance " + instance + " for bean " + bean + " in bean map");
+      log.trace("Stored instance " + instance + " for bean " + bean + " in bean store");
    }
 
    @Override
