@@ -288,7 +288,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       super.preSpecialize();
       if (getAnnotatedItem().getSuperclass() == null || getAnnotatedItem().getSuperclass().getType().equals(Object.class))
       {
-         throw new DefinitionException("Specializing bean must extend another bean");
+         throw new DefinitionException("Specializing bean must extend another bean " + toString());
       }
    }
 

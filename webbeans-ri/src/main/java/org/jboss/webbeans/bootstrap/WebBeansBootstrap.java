@@ -136,6 +136,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          {
             manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
          }
+         log.info("Deployment types: " + manager.getEnabledDeploymentTypes());
          registerBeans(getWebBeanDiscovery().discoverWebBeanClasses());
          manager.fireEvent(manager, new InitializedLiteral());
          log.info("Web Beans initialized. Validating beans.");
