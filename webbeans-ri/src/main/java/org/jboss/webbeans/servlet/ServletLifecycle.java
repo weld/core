@@ -54,12 +54,6 @@ public class ServletLifecycle extends AbstractLifecycle
 
    private static LogProvider log = Logging.getLogProvider(ServletLifecycle.class);
 
-   @Override
-   public void initialize()
-   {
-      // No-op, we'll do the init ourselves!
-   }
-
    /**
     * Starts the application
     * 
@@ -69,13 +63,13 @@ public class ServletLifecycle extends AbstractLifecycle
     */
    public void beginApplication(ServletContext servletContext)
    {
-      ServletInitialization servletInitialization = new ServletInitialization(servletContext).initialize();
+      /*ServletInitialization servletInitialization = new ServletInitialization(servletContext).initialize();
       super.initialize();
       super.beginApplication(servletContext.getServletContextName(), new ApplicationBeanStore(servletContext));
       BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
       super.beginDeploy(requestBeanStore);
       servletInitialization.start();
-      super.endDeploy(requestBeanStore);
+      super.endDeploy(requestBeanStore);*/
    }
 
    /**
@@ -83,7 +77,7 @@ public class ServletLifecycle extends AbstractLifecycle
     */
    public void endApplication(ServletContext servletContext)
    {
-      super.endApplication(servletContext.getServletContextName(), new ApplicationBeanStore(servletContext));
+      //super.endApplication(servletContext.getServletContextName(), new ApplicationBeanStore(servletContext));
    }
 
    /**

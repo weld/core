@@ -72,7 +72,6 @@ public class AbstractTest
    public void before() throws Exception
    {
       lifecycle = new MockLifecycle();
-      lifecycle.initialize();
       this.discovery = lifecycle.getWebBeanDiscovery();
       this.manager = lifecycle.getBootstrap().getManager();
       lifecycle.beginApplication();

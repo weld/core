@@ -27,6 +27,13 @@ import org.jboss.webbeans.bean.standard.InjectionPointBean;
 import org.jboss.webbeans.bean.standard.ManagerBean;
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
 import org.jboss.webbeans.bootstrap.api.helpers.AbstractBootstrap;
+import org.jboss.webbeans.context.ApplicationContext;
+import org.jboss.webbeans.context.ConversationContext;
+import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.context.RequestContext;
+import org.jboss.webbeans.context.SessionContext;
+import org.jboss.webbeans.context.api.BeanStore;
+import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.webbeans.conversation.ConversationImpl;
 import org.jboss.webbeans.conversation.JavaSEConversationTerminator;
 import org.jboss.webbeans.conversation.NumericConversationIdGenerator;
@@ -77,6 +84,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       this.manager = new ManagerImpl(getNamingContext(), getEjbResolver(), getResourceLoader());
       getManager().getNaming().bind(ManagerImpl.JNDI_KEY, getManager());
       CurrentManager.setRootManager(manager);
+      initializeContexts();
    }
    
    public ManagerImpl getManager()
@@ -126,6 +134,13 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          {
             throw new IllegalStateException("ResourceLoader not set");
          }
+         if (getApplicationContext() == null)
+         {
+            throw new IllegalStateException("No application context BeanStore set");
+         }
+         beginApplication(getApplicationContext());
+         BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
+         beginDeploy(requestBeanStore);
          // Must populate EJB cache first, as we need it to detect whether a
          // bean is an EJB!
          manager.getEjbDescriptorCache().addAll(getEjbDiscovery().discoverEjbs());
@@ -143,6 +158,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          manager.getResolver().resolveInjectionPoints();
          new BeanValidator(manager).validate();
          manager.fireEvent(manager, new DeployedLiteral());
+         endDeploy(requestBeanStore);
       }
    }
 
@@ -155,6 +171,43 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    {
       Package pkg = WebBeansBootstrap.class.getPackage();
       return pkg != null ? pkg.getImplementationVersion() : null;
+   }
+   
+   protected void initializeContexts()
+   {
+      manager.addContext(DependentContext.create());
+      manager.addContext(RequestContext.create());
+      manager.addContext(SessionContext.create());
+      manager.addContext(ApplicationContext.create());
+      manager.addContext(ConversationContext.create());
+   }
+
+   protected void beginApplication(BeanStore applicationBeanStore)
+   {
+      log.trace("Starting application");
+      ApplicationContext.INSTANCE.setBeanStore(applicationBeanStore);
+      ApplicationContext.INSTANCE.setActive(true);
+
+   }
+
+   protected void beginDeploy(BeanStore requestBeanStore)
+   {
+      RequestContext.INSTANCE.setBeanStore(requestBeanStore);
+      RequestContext.INSTANCE.setActive(true);
+   }
+
+   protected void endDeploy(BeanStore requestBeanStore)
+   {
+      RequestContext.INSTANCE.setBeanStore(null);
+      RequestContext.INSTANCE.setActive(false);
+   }
+
+   protected void endApplication(BeanStore applicationBeanStore)
+   {
+      log.trace("Ending application");
+      ApplicationContext.INSTANCE.destroy();
+      ApplicationContext.INSTANCE.setActive(false);
+      ApplicationContext.INSTANCE.setBeanStore(null);
    }
 
 }

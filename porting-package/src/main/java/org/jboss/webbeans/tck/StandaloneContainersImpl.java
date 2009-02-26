@@ -26,7 +26,6 @@ public class StandaloneContainersImpl implements StandaloneContainers
       this.lifecycle = new MockLifecycle();
       try
       {
-         lifecycle.initialize();  
          ManagerImpl manager = lifecycle.getBootstrap().getManager();
          if (enabledDeploymentTypes != null)
          {

@@ -54,13 +54,8 @@ public class MockLifecycle extends AbstractLifecycle
       bootstrap.setEjbResolver(MOCK_EJB_RESOLVER);
       bootstrap.setResourceLoader(MOCK_RESOURCE_LOADER);
       bootstrap.setWebBeanDiscovery(webBeanDiscovery);
-   }
-   
-   @Override
-   public void initialize()
-   {
+      bootstrap.setApplicationContext(applicationBeanStore);
       bootstrap.initialize();
-      super.initialize();
    }
    
    public MockWebBeanDiscovery getWebBeanDiscovery()
@@ -75,22 +70,18 @@ public class MockLifecycle extends AbstractLifecycle
    
    public void beginApplication()
    {
-      super.beginApplication("Mock", applicationBeanStore);
-      BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
-      super.beginDeploy(requestBeanStore);
       bootstrap.setEjbDiscovery(new MockEjbDiscovery(webBeanDiscovery.discoverWebBeanClasses()));
       bootstrap.boot();
-      super.endDeploy(requestBeanStore);
+   }
+   
+   public void endApplication()
+   {
+      
    }
    
    public void resetContexts()
    {
       
-   }
-   
-   public void endApplication()
-   {
-      super.endApplication("Mock", applicationBeanStore);
    }
    
    public void beginRequest()

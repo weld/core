@@ -43,7 +43,6 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
    public WebBeansListener()
    {
       lifecycle = ServletLifecycle.instance();
-      lifecycle.initialize();
    }
    
    /**
