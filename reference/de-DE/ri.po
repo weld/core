@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: ri\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-02-01 21:16+0000\n"
-"PO-Revision-Date: 2009-01-24 15:35+1100\n"
+"PO-Revision-Date: 2009-02-26 22:18+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: ri.xml:4
 #, no-c-format
 msgid "The Web Beans Reference Implementation"
-msgstr ""
+msgstr "Die Web Beans Referenzimplementierung"
 
 #. Tag: para
 #: ri.xml:6
@@ -30,6 +30,9 @@ msgid ""
 "download the latest developer release of Web Beans from the <ulink url="
 "\"http://seamframework.org/Download\">the downloads page</ulink>."
 msgstr ""
+"Die Web Beans Referenzimplementierung wird unter <ulink url="
+"\"http://seamframework.org/WebBeans\">das Seam Projekt</ulink> entwickelt. Sie können die aktuellste Entwickler-Release von Web Beans von der <ulink url="
+"\"http://seamframework.org/Download\">Downloads Seite</ulink> herunterladen."
 
 #. Tag: para
 #: ri.xml:13
@@ -40,12 +43,15 @@ msgid ""
 "simple beans, and <literal>webbeans-translator</literal> an ear example, "
 "containing enterprise beans. To run the examples you'll need the following:"
 msgstr ""
+"Die Web Beans RI kommt mit zwei deploybaren Beispielanwendungen: "
+"<literal>webbeans-numberguess</literal>, ein war-Beispiel, das nur einfache Beans enthält und <literal>webbeans-translator</literal>, ein ear-Beispiel, das"
+"Enterprise Beans enthält. Um Beispiele auszuführen benötigen Sie folgendes:"
 
 #. Tag: para
 #: ri.xml:22
 #, no-c-format
 msgid "the latest release of the Web Beans RI,"
-msgstr ""
+msgstr "die aktuellste Release der Web Beans RI,"
 
 #. Tag: para
 #: ri.xml:25
@@ -67,6 +73,8 @@ msgid ""
 "need to download JBoss AS 5.0.0.GA from <ulink url=\"http://www.jboss.org/"
 "jbossas/downloads/\">jboss.org</ulink>, and unzip it. For example:"
 msgstr ""
+"Momentan läuft die Web Beans RI nur auf JBoss Application Server 5. Sie werden JBoss AS 5.0.0.GA unter <ulink url=\"http://www.jboss.org/"
+"jbossas/downloads/\">jboss.org</ulink> herunterladen und es unzippen müssen. Zum Beispiel:"
 
 #. Tag: programlisting
 #: ri.xml:39
@@ -85,16 +93,18 @@ msgid ""
 "Next, download the Web Beans RI from <ulink url=\"http://seamframework.org/"
 "Download\">seamframework.org</ulink>, and unzip it. For example"
 msgstr ""
+"Anschließend laden Sie die Web Beans RI unter <ulink url=\"http://seamframework.org/"
+"Download\">seamframework.org</ulink> herunter und entzippen diese. Zum Beispiel "
 
 #. Tag: programlisting
 #: ri.xml:47
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "<![CDATA[$ cd ~/\n"
 "$ unzip ~/webbeans-$VERSION.zip]]>"
 msgstr ""
 "<![CDATA[$ cd ~/\n"
-"$ unzip ~/webbeans-1.0.0.ALPHA1.zip]]>"
+"$ unzip ~/webbeans-$VERSION.zip]]>"
 
 #. Tag: para
 #: ri.xml:50
@@ -104,6 +114,8 @@ msgid ""
 "as/build.properties</literal> and set the <literal>jboss.home</literal> "
 "property. For example:"
 msgstr ""
+"Als nächstes müssen wir Web Beans mitteilen, wo JBoss sich befindet. Editieren Sie <literal>jboss-"
+"as/build.properties</literal> und setzen Sie die <literal>jboss.home</literal>-Property. Zum Beispiel:"
 
 #. Tag: programlisting
 #: ri.xml:56
@@ -119,6 +131,8 @@ msgid ""
 "the Web Beans RI. Future versions of JBoss AS will include these updates, "
 "and this step won't be necessary."
 msgstr ""
+"Da es sich bei Web Beans um ein neues Stück Software handelt, müssen Sie JBoss AS aktualisieren, um die Web Beans RI auszuführen. Zukünftige Versionen von JBoss AS werden diese Updates enthalten, "
+"und dieser Schritt wird sich erübrigen."
 
 #. Tag: para
 #: ri.xml:65
@@ -130,6 +144,11 @@ msgid ""
 "container and discover which EJBs are installed in your application. "
 "Secondly, an update to JBoss EJB3 is needed."
 msgstr ""
+"Derzeit sind zwei Updates nötig. Zuerst wird ein neuer Deployer "
+"<literal>webbeans.deployer</literal> hinzugefügt. Dies fügt Supports für Web "
+"Bean Archive zu JBoss AS hinzu und gestattet der Web Beans RI beim EJB3 "
+"Container anzufragen und festzustellen, welche EJBs in Ihrer Anwendung installiert sind. "
+"Desweiteren wird ein Update zu JBoss EJB3 benötigt."
 
 #. Tag: para
 #: ri.xml:74
@@ -159,12 +178,12 @@ msgstr ""
 
 #. Tag: programlisting
 #: ri.xml:86
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "$ cd webbeans-$VERSION/jboss-as\n"
 "$ ant update"
 msgstr ""
-"$ cd webbeans-1.0.0.ALPHA1/jboss-as\n"
+"$ cd webbeans-$VERSION/jboss-as\n"
 "$ ant update"
 
 #. Tag: para
@@ -176,8 +195,7 @@ msgstr ""
 #. Tag: para
 #: ri.xml:93
 #, no-c-format
-msgid ""
-"The build scripts for the examples offer a number of targets, these are:"
+msgid "The build scripts for the examples offer a number of targets, these are:"
 msgstr ""
 
 #. Tag: para
@@ -197,8 +215,7 @@ msgstr ""
 #. Tag: para
 #: ri.xml:111
 #, no-c-format
-msgid ""
-"<literal>ant deploy</literal> - deploy the example in compressed jar format"
+msgid "<literal>ant deploy</literal> - deploy the example in compressed jar format"
 msgstr ""
 
 #. Tag: para
@@ -237,9 +254,9 @@ msgstr ""
 
 #. Tag: programlisting
 #: ri.xml:138
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "$ /Application/jboss-5.0.0.GA/bin/run.sh"
-msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
+msgstr "$ /Application/jboss-5.0.0.GA/bin/run.sh"
 
 #. Tag: para
 #: ri.xml:141
@@ -1304,3 +1321,4 @@ msgid ""
 "We need help in all areas - bug fixing, writing new features, writing "
 "examples and translating this reference guide."
 msgstr ""
+
