@@ -537,7 +537,7 @@ public class ManagerImpl implements Manager, Serializable
       }
       if (activeContexts.size() > 1)
       {
-         throw new IllegalArgumentException("More than one context active for scope type " + scopeType.getName());
+         throw new IllegalStateException("More than one context active for scope type " + scopeType.getName());
       }
       return activeContexts.iterator().next();
    }
