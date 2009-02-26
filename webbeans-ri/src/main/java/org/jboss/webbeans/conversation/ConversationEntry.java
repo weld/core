@@ -26,7 +26,6 @@ import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.servlet.ConversationBeanStore;
-import org.jboss.webbeans.servlet.ServletLifecycle;
 
 /**
  * Represents a long-running conversation entry
@@ -101,7 +100,9 @@ public class ConversationEntry
       {
          cancelTermination();
       }
-      ServletLifecycle.instance().destroyConversation(session, cid);
+      ConversationContext terminationContext = new ConversationContext();
+      terminationContext.setBeanStore(new ConversationBeanStore(session, cid));
+      terminationContext.destroy();
       log.trace("Conversation " + cid + " destroyed");
    }
 

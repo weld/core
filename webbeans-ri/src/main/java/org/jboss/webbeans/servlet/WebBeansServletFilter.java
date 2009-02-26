@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import javax.context.Conversation;
 import javax.faces.context.FacesContext;
+import javax.inject.AnnotationLiteral;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -30,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.conversation.bindings.ConversationIdName;
 
 /**
  * Filter for handling conversation propagation over redirects
@@ -37,35 +39,51 @@ import org.jboss.webbeans.CurrentManager;
  * @author Nicklas Karlsson
  * 
  */
-// TODO: Quick and dirty, not for actual usage yet ;-)
 public class WebBeansServletFilter implements Filter
 {
 
-   private class RedirectUrl
+   /**
+    * Helper class for handling URLs
+    * 
+    * @author Nicklas Karlsson
+    */
+   private class UrlTransformer
    {
       private String URL;
       private FacesContext context;
 
-      public RedirectUrl(String URL)
+      private boolean isUrlAbsolute()
+      {
+         // TODO: any API call to do this?
+         return URL.startsWith("http://") || URL.startsWith("https://");
+      }
+
+      public UrlTransformer(String URL)
       {
          this.URL = URL;
          context = FacesContext.getCurrentInstance();
       }
 
-      public RedirectUrl appendCid(String cid)
+      public UrlTransformer appendConversation(String cid)
       {
-         URL = URL + (URL.indexOf("?") > 0 ? "&" : "?") + "cid=" + cid;
+         String cidName = CurrentManager.rootManager().getInstanceByType(String.class, new AnnotationLiteral<ConversationIdName>()
+         {
+         });
+         URL = URL + (URL.indexOf("?") > 0 ? "&" : "?") + cidName + "=" + cid;
          return this;
       }
 
-      public RedirectUrl getRedirectView()
+      public UrlTransformer getRedirectView()
       {
-         String requestPath = context.getExternalContext().getRequestContextPath();
-         URL = URL.substring(URL.indexOf(requestPath) + requestPath.length());
+         if (isUrlAbsolute())
+         {
+            String requestPath = context.getExternalContext().getRequestContextPath();
+            URL = URL.substring(URL.indexOf(requestPath) + requestPath.length());
+         }
          return this;
       }
 
-      public RedirectUrl getActionUrl()
+      public UrlTransformer getActionUrl()
       {
          URL = context.getApplication().getViewHandler().getActionURL(context, URL);
          return this;
@@ -96,7 +114,7 @@ public class WebBeansServletFilter implements Filter
             Conversation conversation = CurrentManager.rootManager().getInstanceByType(Conversation.class);
             if (conversation.isLongRunning())
             {
-               path = new RedirectUrl(path).getRedirectView().getActionUrl().appendCid(conversation.getId()).encode();
+               path = new UrlTransformer(path).getRedirectView().getActionUrl().appendConversation(conversation.getId()).encode();
             }
             super.sendRedirect(path);
          }

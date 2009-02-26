@@ -29,7 +29,6 @@ import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.servlet.ConversationBeanStore;
 import org.jboss.webbeans.servlet.HttpSessionManager;
-import org.jboss.webbeans.servlet.ServletLifecycle;
 
 /**
  * A phase listener for propagating conversation id over postbacks through a
@@ -69,11 +68,11 @@ public class WebBeansPhaseListener implements PhaseListener
       Conversation conversation = CurrentManager.rootManager().getInstanceByType(Conversation.class);
       if (conversation.isLongRunning())
       {
-         JSFHelper.createOrUpdatePropagationComponent(conversation.getId());
+         PhaseHelper.createOrUpdatePropagationComponent(conversation.getId());
       }
       else
       {
-         JSFHelper.removePropagationComponent();
+         PhaseHelper.removePropagationComponent();
       }
    }
 
@@ -109,11 +108,11 @@ public class WebBeansPhaseListener implements PhaseListener
    private void afterRestoreView()
    {
       log.trace("In after restore view phase");
-      HttpSession session = JSFHelper.getHttpSession();
+      HttpSession session = PhaseHelper.getHttpSession();
       CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
-      CurrentManager.rootManager().getInstanceByType(ConversationManager.class).beginOrRestoreConversation(JSFHelper.getConversationId());
+      CurrentManager.rootManager().getInstanceByType(ConversationManager.class).beginOrRestoreConversation(PhaseHelper.getConversationId());
       String cid = CurrentManager.rootManager().getInstanceByType(Conversation.class).getId();
-      ServletLifecycle.instance().restoreConversation(session, cid);
+      ConversationContext.INSTANCE.setBeanStore(new ConversationBeanStore(session, cid));
    }
 
    /**

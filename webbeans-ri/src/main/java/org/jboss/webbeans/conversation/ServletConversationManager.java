@@ -28,13 +28,13 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.WebBean;
+import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.conversation.bindings.ConversationConcurrentAccessTimeout;
 import org.jboss.webbeans.conversation.bindings.ConversationIdName;
 import org.jboss.webbeans.conversation.bindings.ConversationInactivityTimeout;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.servlet.HttpSessionManager;
-import org.jboss.webbeans.servlet.ServletLifecycle;
 
 /**
  * The default conversation manager
@@ -195,8 +195,7 @@ public class ServletConversationManager implements ConversationManager, Serializ
             longRunningConversations.get(cid).cancelTermination();
             longRunningConversations.get(cid).unlock();
          }
-         HttpSession session = CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).getSession();
-         ServletLifecycle.instance().destroyConversation(session, cid);
+         ConversationContext.INSTANCE.destroy();
       }
       // If Conversation.begin(String) is called, it might be that the
       // conversation will be switched. We need to unlock this original 

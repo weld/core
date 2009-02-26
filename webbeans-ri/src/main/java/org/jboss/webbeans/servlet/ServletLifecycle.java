@@ -152,26 +152,4 @@ public class ServletLifecycle extends AbstractLifecycle
       SessionContext.INSTANCE.setBeanStore(null);
    }
 
-   /**
-    * Restores a conversation
-    * 
-    * @param session The HTTP session
-    * @param cid The conversation to resume
-    */
-   public void restoreConversation(HttpSession session, String cid)
-   {
-      super.restoreConversation(session.getId() + "[" + cid + "]", new ConversationBeanStore(session, cid));
-   }
-
-   /**
-    * Destroys a conversation
-    * 
-    * @param session The HTTP session
-    * @param cid The conversation to destroy
-    */
-   public void destroyConversation(HttpSession session, String cid)
-   {
-      super.destroyConversation(session.getId() + "[" + cid + "]", new ConversationBeanStore(session, cid));
-   }
-
 }

@@ -34,9 +34,9 @@ import org.jboss.webbeans.log.Logging;
  * @author Nicklas Karlsson
  * 
  */
-public class JSFHelper
+public class PhaseHelper
 {
-   private static LogProvider log = Logging.getLogProvider(JSFHelper.class);
+   private static LogProvider log = Logging.getLogProvider(PhaseHelper.class);
 
    private static final String CONVERSATION_PROPAGATION_COMPONENT_ID = "webbeans_conversation_propagation";
 
