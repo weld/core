@@ -17,7 +17,6 @@
 
 package org.jboss.webbeans.servlet;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -36,7 +35,6 @@ import org.jboss.webbeans.log.Logging;
  * @author Pete Muir
  * @author Nicklas Karlsson
  */
-@Deprecated
 public class ServletLifecycle extends AbstractLifecycle
 {
 
@@ -53,32 +51,6 @@ public class ServletLifecycle extends AbstractLifecycle
    }
 
    private static LogProvider log = Logging.getLogProvider(ServletLifecycle.class);
-
-   /**
-    * Starts the application
-    * 
-    * Runs the bootstrapper for bean discover and initialization
-    * 
-    * @param context The servlet context
-    */
-   public void beginApplication(ServletContext servletContext)
-   {
-      /*ServletInitialization servletInitialization = new ServletInitialization(servletContext).initialize();
-      super.initialize();
-      super.beginApplication(servletContext.getServletContextName(), new ApplicationBeanStore(servletContext));
-      BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
-      super.beginDeploy(requestBeanStore);
-      servletInitialization.start();
-      super.endDeploy(requestBeanStore);*/
-   }
-
-   /**
-    * Ends the application
-    */
-   public void endApplication(ServletContext servletContext)
-   {
-      //super.endApplication(servletContext.getServletContextName(), new ApplicationBeanStore(servletContext));
-   }
 
    /**
     * Begins a session

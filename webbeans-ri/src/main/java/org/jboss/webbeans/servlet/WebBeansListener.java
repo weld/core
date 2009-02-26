@@ -17,8 +17,6 @@
 
 package org.jboss.webbeans.servlet;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +33,7 @@ import javax.servlet.http.HttpSessionListener;
  * @author Nicklas Karlsson
  *
  */
-public class WebBeansListener implements ServletContextListener, HttpSessionListener, ServletRequestListener
+public class WebBeansListener implements HttpSessionListener, ServletRequestListener
 {
    
    private final ServletLifecycle lifecycle;
@@ -43,17 +41,6 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
    public WebBeansListener()
    {
       lifecycle = ServletLifecycle.instance();
-   }
-   
-   /**
-    * Called when the context is initialized (application started)
-    * 
-    * @param event The context event
-    */
-   public void contextInitialized(ServletContextEvent event) 
-   {
-      
-      lifecycle.beginApplication(event.getServletContext());
    }
 
    /**
@@ -74,16 +61,6 @@ public class WebBeansListener implements ServletContextListener, HttpSessionList
    public void sessionDestroyed(HttpSessionEvent event) 
    {
       lifecycle.endSession(event.getSession());
-   }
-
-   /**
-    * Called when the context is destroyed (application scoped)
-    * 
-    * @param event The context event
-    */
-   public void contextDestroyed(ServletContextEvent event) 
-   {
-      lifecycle.endApplication(event.getServletContext());
    }
 
    /**
