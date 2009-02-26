@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.naming.InitialContext;
 
 import org.apache.log4j.Logger;
+import org.jboss.deployers.client.spi.IncompleteDeploymentException;
 import org.jboss.deployers.spi.management.deploy.DeploymentManager;
 import org.jboss.deployers.spi.management.deploy.DeploymentProgress;
 import org.jboss.deployers.spi.management.deploy.DeploymentStatus;
@@ -84,12 +86,23 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
       }
       catch (Exception e)
       {
-		 IOException ioe = new IOException();
-		 ioe.initCause(e);
-	     throw ioe;
+		   IOException ioe = new IOException();
+		   ioe.initCause(e);
+	      throw ioe;
       }
       if (failure != null)
       {
+         if (failure.getCause() instanceof IncompleteDeploymentException)
+         {
+            IncompleteDeploymentException incompleteDeploymentException = (IncompleteDeploymentException) failure.getCause();
+            for (Entry<String, Throwable> entry : incompleteDeploymentException.getIncompleteDeployments().getContextsInError().entrySet())
+            {
+               if (entry.getKey().endsWith(name + "/_WebBeansBootstrap"))
+               {
+                  throw new DeploymentException(entry.getValue());
+               }
+            }
+         }
          throw new DeploymentException(failure);
       }
    }
