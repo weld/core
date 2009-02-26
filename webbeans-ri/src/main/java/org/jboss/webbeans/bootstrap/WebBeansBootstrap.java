@@ -209,5 +209,10 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       ApplicationContext.INSTANCE.setActive(false);
       ApplicationContext.INSTANCE.setBeanStore(null);
    }
+   
+   public void shutdown()
+   {
+      endApplication(getApplicationContext());
+   }
 
 }

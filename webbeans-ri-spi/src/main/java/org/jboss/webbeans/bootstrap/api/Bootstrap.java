@@ -85,4 +85,10 @@ public interface Bootstrap
     */
    public void boot();
    
+   /**
+    * Causes the container to clean up and shutdown
+    * 
+    */
+   public void shutdown();
+   
 }
