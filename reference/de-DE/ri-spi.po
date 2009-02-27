@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-02-01 21:16+0000\n"
-"PO-Revision-Date: 2009-02-27 16:49+1100\n"
+"PO-Revision-Date: 2009-02-27 22:29+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -637,10 +637,11 @@ msgstr "Der Vertrag mit dem Container"
 #. Tag: para
 #: ri-spi.xml:198
 #, no-c-format
+#, fuzzy
 msgid ""
 "There are a number of requirements that the Web Beans RI places on the "
 "container for correct functioning that fall outside implementation of APIs"
-msgstr ""
+msgstr "Es gibt eine Reihe von Voraussetzungen, die Web Beans RI dem Container für das korrekte Funktionieren von Implementierungen auferlegen, die  fall outside implementation of APIs"
 
 #. Tag: term
 #: ri-spi.xml:206
