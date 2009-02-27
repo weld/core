@@ -98,6 +98,10 @@ public class BeanValidator
                {
                   throw new NullableDependencyException("The injection point " + injectionPoint + " has nullable dependencies");
                }
+               if (Beans.isPassivatingBean(bean) && !resolvedBean.isSerializable())
+               {
+                  throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scopes but has non-serializable dependencies");
+               }
             }
             else
             {
@@ -119,10 +123,6 @@ public class BeanValidator
                }
                specializedBeans.add(abstractBean.getSpecializedBean());
             }
-         }
-         if (Beans.isPassivatingBean(bean) && !bean.isSerializable())
-         {
-            throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scopes but has non-serializable dependencies");
          }
          boolean normalScoped = MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal();
          if (normalScoped && !Beans.isBeanProxyable(bean))
