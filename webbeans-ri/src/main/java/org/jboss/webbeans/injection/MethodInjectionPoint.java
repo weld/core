@@ -33,6 +33,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedMethod;
+import org.jboss.webbeans.util.Reflections;
 
 public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implements AnnotatedInjectionPoint<T, Method>
 {
@@ -116,11 +117,20 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
       return null;
    }
    
+   @SuppressWarnings("unchecked")
    public T invokeWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, ManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow)
    {
       try
       {
-         return delegate().invoke(declaringInstance, getParameterValues(getParameters(), annotatedParameter, parameter, manager, creationalContext));
+         if (delegate().getDeclaringClass().getType().equals(declaringInstance.getClass()))
+         {
+            return delegate().invoke(declaringInstance, getParameterValues(getParameters(), annotatedParameter, parameter, manager, creationalContext));
+         }
+         else
+         {
+            Method proxiedMethod = Reflections.lookupMethod(delegate().getAnnotatedMethod(), declaringInstance);
+            return (T) proxiedMethod.invoke(declaringInstance, getParameterValues(getParameters(), annotatedParameter, parameter, manager, creationalContext));
+         }
       }
       catch (IllegalArgumentException e)
       {

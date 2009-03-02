@@ -57,42 +57,42 @@ class Exceptions
    
    public static void rethrowException(IllegalArgumentException e)
    {
-       rethrowException(e.getCause());
+       rethrowException(e.getCause() != null ? e.getCause() : e);
    }
    
    public static void rethrowException(IllegalArgumentException e, Class<? extends RuntimeException> exceptionToThrow)
    {
-       rethrowException(e.getCause(), exceptionToThrow);
+       rethrowException(e.getCause() != null ? e.getCause() : e, exceptionToThrow);
    }
    
    public static void rethrowException(InstantiationException e, Class<? extends RuntimeException> exceptionToThrow)
    {
-       rethrowException(e.getCause(), exceptionToThrow);
+       rethrowException(e.getCause() != null ? e.getCause() : e, exceptionToThrow);
    }
    
    public static void rethrowException(InstantiationException e)
    {
-       rethrowException(e.getCause());
+       rethrowException(e.getCause() != null ? e.getCause() : e);
    }
    
    public static void rethrowException(IllegalAccessException e)
    {
-       rethrowException(e.getCause());
+       rethrowException(e.getCause() != null ? e.getCause() : e);
    }
    
    public static void rethrowException(IllegalAccessException e, Class<? extends RuntimeException> exceptionToThrow)
    {
-       rethrowException(e.getCause(), exceptionToThrow);
+       rethrowException(e.getCause() != null ? e.getCause() : e, exceptionToThrow);
    }
    
    public static void rethrowException(InvocationTargetException e, Class<? extends RuntimeException> exceptionToThrow)
    {
-       rethrowException(e.getCause(), exceptionToThrow);
+       rethrowException(e.getCause() != null ? e.getCause() : e, exceptionToThrow);
    }
    
    public static void rethrowException(InvocationTargetException e)
    {
-       rethrowException(e.getCause());
+       rethrowException(e.getCause() != null ? e.getCause() : e);
    }
    
 }
