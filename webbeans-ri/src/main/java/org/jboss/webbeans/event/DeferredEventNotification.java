@@ -44,7 +44,6 @@ public class DeferredEventNotification<T> implements Runnable
       this.event = event;
    }
 
-   @Override
    public void run()
    {
       observer.notify(event);

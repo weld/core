@@ -33,7 +33,6 @@ public class MockTransactionServices implements TransactionServices
    /* (non-Javadoc)
     * @see org.jboss.webbeans.transaction.spi.TransactionServices#executeAfterTransactionCompletion(java.lang.Runnable)
     */
-   @Override
    public void executeAfterTransactionCompletion(Runnable task)
    {
    }
@@ -41,7 +40,6 @@ public class MockTransactionServices implements TransactionServices
    /* (non-Javadoc)
     * @see org.jboss.webbeans.transaction.spi.TransactionServices#executeAfterTransactionCompletion(java.lang.Runnable, org.jboss.webbeans.transaction.spi.TransactionServices.Status)
     */
-   @Override
    public void executeAfterTransactionCompletion(Runnable task, Status desiredStatus)
    {
    }
@@ -49,7 +47,6 @@ public class MockTransactionServices implements TransactionServices
    /* (non-Javadoc)
     * @see org.jboss.webbeans.transaction.spi.TransactionServices#executeBeforeTransactionCompletion(java.lang.Runnable)
     */
-   @Override
    public void executeBeforeTransactionCompletion(Runnable task)
    {
    }
@@ -57,7 +54,6 @@ public class MockTransactionServices implements TransactionServices
    /* (non-Javadoc)
     * @see org.jboss.webbeans.transaction.spi.TransactionServices#isTransactionActive()
     */
-   @Override
    public boolean isTransactionActive()
    {
       return false;
