@@ -17,26 +17,18 @@
 
 package org.jboss.webbeans.event;
 
-import static org.jboss.webbeans.event.ObserverImpl.TransactionObservationPhase.AFTER_COMPLETION;
-import static org.jboss.webbeans.event.ObserverImpl.TransactionObservationPhase.AFTER_FAILURE;
-import static org.jboss.webbeans.event.ObserverImpl.TransactionObservationPhase.AFTER_SUCCESS;
-import static org.jboss.webbeans.event.ObserverImpl.TransactionObservationPhase.BEFORE_COMPLETION;
-
 import javax.event.Observer;
-import javax.transaction.Status;
-import javax.transaction.Synchronization;
 
 /**
- * A synchronization object which will deliver the event to the observer after
- * the JTA transaction currently in effect is committed.
+ * A task that will notify the observer of a specific event at some
+ * future time.
  * 
  * @author David Allen
- * @see javax.transaction.Synchronization
  */
-public class DeferredEventNotification<T> implements Synchronization
+public class DeferredEventNotification<T> implements Runnable
 {
    // The observer
-   private ObserverImpl<T> observer;
+   private Observer<T> observer;
    // The event object
    private T event;
 
@@ -48,53 +40,13 @@ public class DeferredEventNotification<T> implements Synchronization
     */
    public DeferredEventNotification(T event, Observer<T> observer)
    {
-      this.observer = (ObserverImpl<T>) observer;
+      this.observer = observer;
       this.event = event;
    }
 
-   /**
-    * Called after completion of a transaction
-    * 
-    * Checks if the observer is interested in this particular transaction phase
-    * and if so, notifies the observer.
-    * 
-    * @param status The status of the transaction
-    * @see javax.transaction.Status
-    */
-   public void afterCompletion(int status)
+   @Override
+   public void run()
    {
-      if (observer.isInterestedInTransactionPhase(AFTER_COMPLETION))
-      {
-         observer.notify(event);
-      }
-      switch (status)
-      {
-      case Status.STATUS_COMMITTED:
-         if (observer.isInterestedInTransactionPhase(AFTER_SUCCESS))
-         {
-            observer.notify();
-         }
-         break;
-      case Status.STATUS_ROLLEDBACK:
-         if (observer.isInterestedInTransactionPhase(AFTER_FAILURE))
-         {
-            observer.notify();
-         }
-         break;
-      }
-   }
-
-   /**
-    * Called before completion of a transaction
-    * 
-    * Checks if the observer is interested in this particular transaction phase
-    * and if so, notifies the observer.
-    */
-   public void beforeCompletion()
-   {
-      if (observer.isInterestedInTransactionPhase(BEFORE_COMPLETION))
-      {
-         observer.notify(event);
-      }
+      observer.notify(event);
    }
 }

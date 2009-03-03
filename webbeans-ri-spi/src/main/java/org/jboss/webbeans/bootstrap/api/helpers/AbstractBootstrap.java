@@ -7,6 +7,7 @@ import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.webbeans.transaction.spi.TransactionServices;
 
 public abstract class AbstractBootstrap implements Bootstrap
 {
@@ -17,6 +18,7 @@ public abstract class AbstractBootstrap implements Bootstrap
    private EjbResolver ejbResolver;
    private EjbDiscovery ejbDiscovery;
    private BeanStore applicationContext;
+   private TransactionServices transactionServices;
 
    public void setEjbDiscovery(EjbDiscovery ejbDiscovery)
    {
@@ -42,6 +44,11 @@ public abstract class AbstractBootstrap implements Bootstrap
    {
       this.webBeanDiscovery = webBeanDiscovery;
    }
+   
+   public void setTransactionServices(TransactionServices transactionServices)
+   {
+      this.transactionServices = transactionServices;
+   }
 
    public WebBeanDiscovery getWebBeanDiscovery()
    {
@@ -66,6 +73,11 @@ public abstract class AbstractBootstrap implements Bootstrap
    public EjbDiscovery getEjbDiscovery()
    {
       return ejbDiscovery;
+   }
+   
+   public TransactionServices getTransactionServices()
+   {
+      return transactionServices;
    }
    
    public BeanStore getApplicationContext()

@@ -48,6 +48,7 @@ import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.transaction.UserTransaction;
+import org.jboss.webbeans.transaction.spi.TransactionServices;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -63,35 +64,12 @@ import org.jboss.webbeans.util.Reflections;
  */
 public class ObserverImpl<T> implements Observer<T>
 {
-   /**
-    * The known transactional phases a transactional event observer can be
-    * interested in
-    */
-   protected enum TransactionObservationPhase
-   {
-      NONE, BEFORE_COMPLETION, AFTER_COMPLETION, AFTER_FAILURE, AFTER_SUCCESS
-   }
-
-   private final Bean<?> observerBean;
-   private final MethodInjectionPoint<?> observerMethod;
-   private TransactionObservationPhase transactionObservationPhase;
+   protected final Bean<?> observerBean;
+   protected final MethodInjectionPoint<?> observerMethod;
    private final boolean conditional;
-   private ManagerImpl manager;
+   protected ManagerImpl manager;
    private final Class<T> eventType;
    private final Annotation[] bindings;
-
-   /**
-    * Creates an observer
-    * 
-    * @param method The observer method abstraction
-    * @param declaringBean The declaring bean
-    * @param manager The Web Beans manager
-    * @return An observer implementation built from the method abstraction
-    */
-   public static <T> ObserverImpl<T> of(AnnotatedMethod<?> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
-   {
-      return new ObserverImpl<T>(method, declaringBean, manager);
-   }
 
    /**
     * Creates an Observer which describes and encapsulates an observer method
@@ -113,41 +91,17 @@ public class ObserverImpl<T> implements Observer<T>
       this.eventType = c;
 
       this.bindings = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingsAsArray();
-      initTransactionObservationPhase();
       this.conditional = !observerMethod.getAnnotatedParameters(IfExists.class).isEmpty();
+      init();
    }
 
-   private void initTransactionObservationPhase()
+   /**
+    * Completes initialization of the observer and allows derived types to
+    * override behavior.
+    */
+   protected void init()
    {
-      List<TransactionObservationPhase> observationPhases = new ArrayList<TransactionObservationPhase>();
-      if (!observerMethod.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty())
-      {
-         observationPhases.add(TransactionObservationPhase.BEFORE_COMPLETION);
-      }
-      if (!observerMethod.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty())
-      {
-         observationPhases.add(TransactionObservationPhase.AFTER_COMPLETION);
-      }
-      if (!observerMethod.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty())
-      {
-         observationPhases.add(TransactionObservationPhase.AFTER_FAILURE);
-      }
-      if (!observerMethod.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty())
-      {
-         observationPhases.add(TransactionObservationPhase.AFTER_SUCCESS);
-      }
-      if (observationPhases.size() > 1)
-      {
-         throw new DefinitionException("Transactional observers can only observe on a single phase");
-      }
-      else if (observationPhases.size() == 1)
-      {
-         transactionObservationPhase = observationPhases.iterator().next();
-      }
-      else
-      {
-         transactionObservationPhase = TransactionObservationPhase.NONE;
-      }
+
    }
 
    /**
@@ -192,6 +146,16 @@ public class ObserverImpl<T> implements Observer<T>
 
    public void notify(final T event)
    {
+      sendEvent(event);
+   }
+
+   /**
+    * Invokes the observer method immediately passing the event.
+    * 
+    * @param event The event to notify observer with
+    */
+   protected void sendEvent(final T event)
+   {
       Object instance = null;
       DependentStorageRequest dependentStorageRequest = DependentStorageRequest.of(new DependentInstancesStore(), new Object());
       try
@@ -206,14 +170,7 @@ public class ObserverImpl<T> implements Observer<T>
          {
             return;
          }
-         if (isTransactional() && isTransactionActive())
-         {
-            deferEvent(event);
-         }
-         else
-         {
-            observerMethod.invokeWithSpecialValue(instance, Observes.class, event, manager, null, ObserverException.class);
-         }
+         observerMethod.invokeWithSpecialValue(instance, Observes.class, event, manager, null, ObserverException.class);
       }
       finally
       {
@@ -224,54 +181,10 @@ public class ObserverImpl<T> implements Observer<T>
          }
       }
    }
-   
+
    private <B> B getInstance(Bean<B> observerBean)
    {
       return manager.getInstance(observerBean, !isConditional());
-   }
-
-   /**
-    * Checks if there is currently a transaction active
-    * 
-    * @return True if there is one, false otherwise
-    */
-   private boolean isTransactionActive()
-   {
-      UserTransaction userTransaction = manager.getInstanceByType(UserTransaction.class);
-      try
-      {
-         return userTransaction != null && userTransaction.getStatus() == Status.STATUS_ACTIVE;
-      }
-      catch (SystemException e)
-      {
-         return false;
-      }
-   }
-
-   /**
-    * Defers an event for processing in a later phase of the current
-    * transaction.
-    * 
-    * Gets the transaction listener, creates a deferred event representation and
-    * registers the deferred event.
-    * 
-    * @param event The event type
-    */
-   private void deferEvent(T event)
-   {
-      UserTransaction userTransaction = manager.getInstanceByType(UserTransaction.class);
-      DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, this);
-      userTransaction.registerSynchronization(deferredEvent);
-   }
-
-   /**
-    * Indicates if the observer is transactional
-    * 
-    * @return True if transactional, false otherwise
-    */
-   public boolean isTransactional()
-   {
-      return !TransactionObservationPhase.NONE.equals(transactionObservationPhase);
    }
 
    /**
@@ -284,22 +197,11 @@ public class ObserverImpl<T> implements Observer<T>
       return conditional;
    }
 
-   /**
-    * Checks if the observer is interested in a particular transactional phase
-    * 
-    * @param currentPhase The phase to check
-    * @return True if interested, false otherwise
-    */
-   public boolean isInterestedInTransactionPhase(TransactionObservationPhase currentPhase)
-   {
-      return transactionObservationPhase.equals(currentPhase);
-   }
-
    @Override
    public String toString()
    {
       StringBuilder builder = new StringBuilder();
-      builder.append("Observer Implentation: \n");
+      builder.append("Observer Implementation: \n");
       builder.append("  Observer (Declaring) bean: " + observerBean);
       builder.append("  Observer method: " + observerMethod);
       return builder.toString();

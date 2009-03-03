@@ -26,6 +26,7 @@ import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
+import org.jboss.webbeans.event.ObserverFactory;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -190,7 +191,7 @@ public class BeanDeployer
    
    private void createObserverMethod(AbstractClassBean<?> declaringBean, AnnotatedMethod<?> method)
    {
-      ObserverImpl<?> observer = ObserverImpl.of(method, declaringBean, manager);
+      ObserverImpl<?> observer = ObserverFactory.create(method, declaringBean, manager);
       manager.addObserver(observer);
    }
    

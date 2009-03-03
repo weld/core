@@ -24,12 +24,14 @@ import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.AbstractLifecycle;
+import org.jboss.webbeans.transaction.spi.TransactionServices;
 
 public class MockLifecycle extends AbstractLifecycle
 { 
    
    private static final EjbResolver MOCK_EJB_RESOLVER = new MockEjBResolver();
    private static final ResourceLoader MOCK_RESOURCE_LOADER = new MockResourceLoader();
+   private static final TransactionServices MOCK_TRANSACTION_SERVICES = new MockTransactionServices();
    
    private final WebBeansBootstrap bootstrap;
    private final MockWebBeanDiscovery webBeanDiscovery;
@@ -55,6 +57,7 @@ public class MockLifecycle extends AbstractLifecycle
       bootstrap.setResourceLoader(MOCK_RESOURCE_LOADER);
       bootstrap.setWebBeanDiscovery(webBeanDiscovery);
       bootstrap.setApplicationContext(applicationBeanStore);
+      bootstrap.setTransactionServices(MOCK_TRANSACTION_SERVICES);
       bootstrap.initialize();
    }
    

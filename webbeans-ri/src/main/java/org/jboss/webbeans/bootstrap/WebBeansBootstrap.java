@@ -81,7 +81,11 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       {
          throw new IllegalStateException("EjbResolver is not set");
       }
-      this.manager = new ManagerImpl(getNamingContext(), getEjbResolver(), getResourceLoader());
+      if (getTransactionServices() == null)
+      {
+         throw new IllegalStateException("TransactionServices is not set");
+      }
+      this.manager = new ManagerImpl(getNamingContext(), getEjbResolver(), getResourceLoader(), getTransactionServices());
       getManager().getNaming().bind(ManagerImpl.JNDI_KEY, getManager());
       CurrentManager.setRootManager(manager);
       initializeContexts();

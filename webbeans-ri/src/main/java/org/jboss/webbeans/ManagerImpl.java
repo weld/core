@@ -73,6 +73,7 @@ import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.webbeans.transaction.spi.TransactionServices;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Reflections;
 
@@ -126,6 +127,9 @@ public class ManagerImpl implements Manager, Serializable
    private transient final EjbDescriptorCache ejbDescriptorCache;
 
    private transient final ResourceLoader resourceLoader;
+   
+   // The transaction management related services provided by the container
+   private transient final TransactionServices transactionServices;
 
    // The Naming (JNDI) access
    private transient final NamingContext namingContext;
@@ -137,11 +141,12 @@ public class ManagerImpl implements Manager, Serializable
     * 
     * @param ejbResolver the ejbResolver to use
     */
-   public ManagerImpl(NamingContext namingContext, EjbResolver ejbResolver, ResourceLoader resourceLoader)
+   public ManagerImpl(NamingContext namingContext, EjbResolver ejbResolver, ResourceLoader resourceLoader, TransactionServices transactionServices)
    {
       this.ejbResolver = ejbResolver;
       this.namingContext = namingContext;
       this.resourceLoader = resourceLoader;
+      this.transactionServices = transactionServices;
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
       this.newEnterpriseBeanMap = new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>();
       this.enterpriseBeanMap = new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>();
@@ -882,6 +887,11 @@ public class ManagerImpl implements Manager, Serializable
    public ResourceLoader getResourceLoader()
    {
       return resourceLoader;
+   }
+
+   public TransactionServices getTransactionServices()
+   {
+      return transactionServices;
    }
 
    /**

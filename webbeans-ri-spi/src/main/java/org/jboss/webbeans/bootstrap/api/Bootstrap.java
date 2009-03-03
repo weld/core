@@ -8,6 +8,7 @@ import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.webbeans.transaction.spi.TransactionServices;
 
 /**
  * Bootstrap API for Web Beans.
@@ -58,6 +59,13 @@ public interface Bootstrap
    public void setResourceLoader(ResourceLoader resourceLoader);
    
    public void setApplicationContext(BeanStore beanStore);
+   
+   /**
+    * Set the transaction services provider to use.
+    * 
+    * @param transactionServices An implementation of TransactionService
+    */
+   public void setTransactionServices(TransactionServices transactionServices);
    
    /**
     * Initialize the bootstrap:
