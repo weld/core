@@ -17,15 +17,19 @@
 
 package org.jboss.webbeans.event;
 
+import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.log.Log;
+import org.jboss.webbeans.log.Logging;
 
 /**
- * A task that will notify the observer of a specific event at some
- * future time.
+ * A task that will notify the observer of a specific event at some future time.
  * 
  * @author David Allen
  */
 public class DeferredEventNotification<T> implements Runnable
 {
+   private static Log log = Logging.getLog(DeferredEventNotification.class);
+   
    // The observer
    private ObserverImpl<T> observer;
    // The event object
@@ -45,6 +49,18 @@ public class DeferredEventNotification<T> implements Runnable
 
    public void run()
    {
-      observer.sendEvent(event);
+      DependentContext.INSTANCE.setActive(true);
+      try
+      {
+         observer.sendEvent(event);
+      }
+      catch (RuntimeException e)
+      {
+         log.error("Failure while notifying an observer of an event", e);
+      }
+      finally
+      {
+         DependentContext.INSTANCE.setActive(false);
+      }
    }
 }
