@@ -170,7 +170,8 @@ public class ObserverImpl<T> implements Observer<T>
          {
             return;
          }
-         observerMethod.invokeWithSpecialValue(instance, Observes.class, event, manager, null, ObserverException.class);
+         // As we are working with the contextual instance, we may not have the actual object, but a container proxy (e.g. EJB)
+         observerMethod.invokeOnInstanceWithSpecialValue(instance, Observes.class, event, manager, null, ObserverException.class);
       }
       finally
       {

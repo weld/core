@@ -90,6 +90,16 @@ class Exceptions
        rethrowException(e.getCause() != null ? e.getCause() : e, exceptionToThrow);
    }
    
+   public static void rethrowException(SecurityException e, Class<? extends RuntimeException> exceptionToThrow)
+   {
+       rethrowException(e.getCause() != null ? e.getCause() : e, exceptionToThrow);
+   }
+   
+   public static void rethrowException(NoSuchMethodException e, Class<? extends RuntimeException> exceptionToThrow)
+   {
+       rethrowException(e.getCause() != null ? e.getCause() : e, exceptionToThrow);
+   }
+   
    public static void rethrowException(InvocationTargetException e)
    {
        rethrowException(e.getCause() != null ? e.getCause() : e);

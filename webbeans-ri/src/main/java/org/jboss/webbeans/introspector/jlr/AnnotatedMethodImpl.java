@@ -206,8 +206,10 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    
    public T invokeOnInstance(Object instance, Object...parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
    {
+      Method method = instance.getClass().getMethod(getName(), getParameterTypesAsArray());
+      method.setAccessible(true);
       @SuppressWarnings("unchecked")
-      T result = (T) instance.getClass().getMethod(getName(), getParameterTypesAsArray()).invoke(instance, parameters);
+      T result = (T) method.invoke(instance, parameters);
       return result;
    }
 

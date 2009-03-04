@@ -26,6 +26,7 @@ import javax.context.Dependent;
 import javax.context.ScopeType;
 import javax.event.Observes;
 import javax.inject.BindingType;
+import javax.inject.CreationException;
 import javax.inject.DefinitionException;
 import javax.inject.DeploymentType;
 import javax.inject.Disposes;
@@ -111,7 +112,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       for (MethodInjectionPoint<?> initializer : getInitializerMethods())
       {
-         initializer.invoke(instance, manager, creationalContext);
+         initializer.invoke(instance, manager, creationalContext, CreationException.class);
       }
    }
 

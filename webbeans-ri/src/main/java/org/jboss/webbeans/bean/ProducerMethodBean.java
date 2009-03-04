@@ -23,6 +23,7 @@ import java.util.Set;
 
 import javax.context.CreationalContext;
 import javax.event.Observes;
+import javax.inject.CreationException;
 import javax.inject.DefinitionException;
 import javax.inject.Disposes;
 
@@ -78,7 +79,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
 
    protected T produceInstance(CreationalContext<T> creationalContext)
    {
-      return method.invoke(getReceiver(creationalContext), manager, creationalContext);
+      return method.invoke(getReceiver(creationalContext), manager, creationalContext, CreationException.class);
    }
 
    /**

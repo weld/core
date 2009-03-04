@@ -33,7 +33,6 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedMethod;
-import org.jboss.webbeans.util.Reflections;
 
 public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implements AnnotatedInjectionPoint<T, Method>
 {
@@ -96,7 +95,7 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
       return delegate().getBindings();
    }
    
-   public T invoke(Object declaringInstance, ManagerImpl manager, CreationalContext<?> creationalContext)
+   public T invoke(Object declaringInstance, ManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow)
    {
       try
       {
@@ -104,15 +103,15 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
       }
       catch (IllegalArgumentException e)
       {
-         rethrowException(e);
+         rethrowException(e, exceptionTypeToThrow);
       }
       catch (IllegalAccessException e)
       {
-         rethrowException(e);
+         rethrowException(e, exceptionTypeToThrow);
       }
       catch (InvocationTargetException e)
       {
-         rethrowException(e);
+         rethrowException(e, exceptionTypeToThrow);
       }
       return null;
    }
@@ -122,15 +121,7 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
    {
       try
       {
-         if (delegate().getDeclaringClass().getType().equals(declaringInstance.getClass()))
-         {
-            return delegate().invoke(declaringInstance, getParameterValues(getParameters(), annotatedParameter, parameter, manager, creationalContext));
-         }
-         else
-         {
-            Method proxiedMethod = Reflections.lookupMethod(delegate().getAnnotatedMethod(), declaringInstance);
-            return (T) proxiedMethod.invoke(declaringInstance, getParameterValues(getParameters(), annotatedParameter, parameter, manager, creationalContext));
-         }
+         return invoke(declaringInstance, getParameterValues(getParameters(), annotatedParameter, parameter, manager, creationalContext), exceptionTypeToThrow);
       }
       catch (IllegalArgumentException e)
       {
@@ -141,6 +132,65 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
          rethrowException(e, exceptionTypeToThrow);
       }
       catch (InvocationTargetException e)
+      {
+         rethrowException(e, exceptionTypeToThrow);
+      }
+      return null;
+   }
+   
+   public T invokeOnInstance(Object declaringInstance, ManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow)
+   {
+      try
+      {
+         return delegate().invokeOnInstance(declaringInstance, getParameterValues(getParameters(), null, null, manager, creationalContext));
+      }
+      catch (IllegalArgumentException e)
+      {
+         rethrowException(e);
+      }
+      catch (IllegalAccessException e)
+      {
+         rethrowException(e);
+      }
+      catch (InvocationTargetException e)
+      {
+         rethrowException(e);
+      }
+      catch (SecurityException e)
+      {
+         rethrowException(e, exceptionTypeToThrow);
+      }
+      catch (NoSuchMethodException e)
+      {
+         rethrowException(e, exceptionTypeToThrow);
+      }
+      return null;
+   }
+   
+   @SuppressWarnings("unchecked")
+   public T invokeOnInstanceWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, ManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow)
+   {
+      try
+      {
+         return invokeOnInstance(declaringInstance, getParameterValues(getParameters(), annotatedParameter, parameter, manager, creationalContext));
+      }
+      catch (IllegalArgumentException e)
+      {
+         rethrowException(e, exceptionTypeToThrow);
+      }
+      catch (SecurityException e)
+      {
+         rethrowException(e, exceptionTypeToThrow);
+      }
+      catch (IllegalAccessException e)
+      {
+         rethrowException(e, exceptionTypeToThrow);
+      }
+      catch (InvocationTargetException e)
+      {
+         rethrowException(e, exceptionTypeToThrow);
+      }
+      catch (NoSuchMethodException e)
       {
          rethrowException(e, exceptionTypeToThrow);
       }
