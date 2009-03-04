@@ -18,14 +18,10 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.context.Dependent;
-import javax.event.AfterTransactionCompletion;
-import javax.event.AfterTransactionFailure;
-import javax.event.AfterTransactionSuccess;
-import javax.event.BeforeTransactionCompletion;
+import javax.event.Asynchronously;
 import javax.event.IfExists;
 import javax.event.Observer;
 import javax.event.ObserverException;
@@ -35,11 +31,8 @@ import javax.inject.Disposes;
 import javax.inject.Initializer;
 import javax.inject.Produces;
 import javax.inject.manager.Bean;
-import javax.transaction.Status;
-import javax.transaction.SystemException;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentInstancesStore;
@@ -47,8 +40,6 @@ import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.transaction.UserTransaction;
-import org.jboss.webbeans.transaction.spi.TransactionServices;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -67,6 +58,7 @@ public class ObserverImpl<T> implements Observer<T>
    protected final Bean<?> observerBean;
    protected final MethodInjectionPoint<?> observerMethod;
    private final boolean conditional;
+   private final boolean asynchronous;
    protected ManagerImpl manager;
    private final Class<T> eventType;
    private final Annotation[] bindings;
@@ -92,6 +84,7 @@ public class ObserverImpl<T> implements Observer<T>
 
       this.bindings = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingsAsArray();
       this.conditional = !observerMethod.getAnnotatedParameters(IfExists.class).isEmpty();
+      this.asynchronous = !observerMethod.getAnnotatedParameters(Asynchronously.class).isEmpty();
       init();
    }
 
@@ -146,7 +139,14 @@ public class ObserverImpl<T> implements Observer<T>
 
    public void notify(final T event)
    {
-      sendEvent(event);
+      if (this.asynchronous)
+      {
+         sendEventAsynchronously(event);
+      }
+      else
+      {
+         sendEvent(event);
+      }
    }
 
    /**
@@ -182,6 +182,16 @@ public class ObserverImpl<T> implements Observer<T>
       }
    }
 
+   /**
+    * Queues the event for later execution 
+    * @param event
+    */
+   protected void sendEventAsynchronously(final T event)
+   {
+      DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, this);
+      manager.getTaskExecutor().execute(deferredEvent);
+   }
+   
    private <B> B getInstance(Bean<B> observerBean)
    {
       return manager.getInstance(observerBean, !isConditional());

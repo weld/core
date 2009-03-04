@@ -17,7 +17,6 @@
 
 package org.jboss.webbeans.event;
 
-import javax.event.Observer;
 
 /**
  * A task that will notify the observer of a specific event at some
@@ -28,7 +27,7 @@ import javax.event.Observer;
 public class DeferredEventNotification<T> implements Runnable
 {
    // The observer
-   private Observer<T> observer;
+   private ObserverImpl<T> observer;
    // The event object
    private T event;
 
@@ -38,7 +37,7 @@ public class DeferredEventNotification<T> implements Runnable
     * @param observer The observer to be notified
     * @param event The event being fired
     */
-   public DeferredEventNotification(T event, Observer<T> observer)
+   public DeferredEventNotification(T event, ObserverImpl<T> observer)
    {
       this.observer = observer;
       this.event = event;
@@ -46,6 +45,6 @@ public class DeferredEventNotification<T> implements Runnable
 
    public void run()
    {
-      observer.notify(event);
+      observer.sendEvent(event);
    }
 }

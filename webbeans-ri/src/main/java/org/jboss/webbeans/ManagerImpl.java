@@ -33,6 +33,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.context.Context;
 import javax.context.ContextNotActiveException;
@@ -91,8 +94,6 @@ public class ManagerImpl implements Manager, Serializable
 
    private static final long serialVersionUID = 3021562879133838561L;
    
-   private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
-
    // The JNDI key to place the manager under
    public static final String JNDI_KEY = "java:comp/Manager";
 
@@ -100,6 +101,9 @@ public class ManagerImpl implements Manager, Serializable
    private transient List<Class<? extends Annotation>> enabledDeploymentTypes;
    // The Web Beans event manager
    private transient final EventManager eventManager;
+   
+   // An executor service for asynchronous tasks
+   private transient final ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
    
    // An injection point metadata beans factory
    private transient final ThreadLocal<InjectionPoint> currentInjectionPoint;
@@ -591,6 +595,7 @@ public class ManagerImpl implements Manager, Serializable
     * 
     * @see javax.inject.manager.Manager#getInstance(javax.inject.manager.Bean)
     */
+   @SuppressWarnings("unchecked")
    private <T> T getInstance(Bean<T> bean, CreationalContextImpl<T> creationalContext)
    {
       if (specializedBeans.containsKey(bean))
@@ -619,6 +624,7 @@ public class ManagerImpl implements Manager, Serializable
       return this.<T>getInstanceToInject(injectionPoint, null);
    }
    
+   @SuppressWarnings("unchecked")
    public <T> T getInstanceToInject(InjectionPoint injectionPoint, CreationalContext<?> creationalContext)
    {
       boolean registerInjectionPoint = !injectionPoint.getType().equals(InjectionPoint.class);
@@ -889,6 +895,12 @@ public class ManagerImpl implements Manager, Serializable
       return resourceLoader;
    }
 
+   /**
+    * Provides access to the transaction services provided by the container
+    * or application server.
+    * 
+    * @return a TransactionServices provider per the SPI
+    */
    public TransactionServices getTransactionServices()
    {
       return transactionServices;
@@ -920,6 +932,38 @@ public class ManagerImpl implements Manager, Serializable
    protected Object readResolve()
    {
       return CurrentManager.rootManager();
+   }
+
+   /**
+    * Provides access to the executor service used for asynchronous tasks.
+    * 
+    * @return the ExecutorService for this manager
+    */
+   public ExecutorService getTaskExecutor()
+   {
+      return taskExecutor;
+   }
+
+   @Override
+   protected void finalize() throws Throwable
+   {
+      taskExecutor.shutdown();
+      try {
+         // Wait a while for existing tasks to terminate
+         if (!taskExecutor.awaitTermination(60, TimeUnit.SECONDS)) {
+            taskExecutor.shutdownNow(); // Cancel currently executing tasks
+           // Wait a while for tasks to respond to being cancelled
+           if (!taskExecutor.awaitTermination(60, TimeUnit.SECONDS))
+           {
+              // Log the error here
+           }
+         }
+       } catch (InterruptedException ie) {
+         // (Re-)Cancel if current thread also interrupted
+          taskExecutor.shutdownNow();
+         // Preserve interrupt status
+         Thread.currentThread().interrupt();
+       }
    }
 
 }

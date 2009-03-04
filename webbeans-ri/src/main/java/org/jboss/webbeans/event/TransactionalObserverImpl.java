@@ -76,7 +76,6 @@ public class TransactionalObserverImpl<T> extends ObserverImpl<T>
    }
 
    private TransactionObservationPhase transactionObservationPhase;
-   private boolean deferred = false;
 
    /**
     * Tests an observer method to see if it is transactional.
@@ -115,7 +114,7 @@ public class TransactionalObserverImpl<T> extends ObserverImpl<T>
    @Override
    public void notify(T event)
    {
-      if (!deferred && manager.getTransactionServices().isTransactionActive())
+      if (manager.getTransactionServices().isTransactionActive())
       {
          deferEvent(event);
       }
@@ -168,7 +167,6 @@ public class TransactionalObserverImpl<T> extends ObserverImpl<T>
    {
       DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, this);
       transactionObservationPhase.registerTask(manager.getTransactionServices(), deferredEvent);
-      deferred = true;
    }
 
 }
