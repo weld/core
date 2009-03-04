@@ -217,6 +217,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    public void shutdown()
    {
       endApplication(getApplicationContext());
+      manager.cleanup();
    }
 
 }

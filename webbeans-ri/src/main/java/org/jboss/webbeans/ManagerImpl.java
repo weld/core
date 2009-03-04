@@ -944,8 +944,19 @@ public class ManagerImpl implements Manager, Serializable
       return taskExecutor;
    }
 
-   @Override
-   protected void finalize() throws Throwable
+   /**
+    * Cleans up resources held by the manager prior to shutting down
+    * a VM.
+    */
+   public void cleanup()
+   {
+      shutdownExecutors();
+   }
+   
+   /**
+    * Shuts down any executor services in the manager.
+    */
+   protected void shutdownExecutors()
    {
       taskExecutor.shutdown();
       try {
@@ -963,7 +974,7 @@ public class ManagerImpl implements Manager, Serializable
           taskExecutor.shutdownNow();
          // Preserve interrupt status
          Thread.currentThread().interrupt();
-       }
+       }      
    }
 
 }
