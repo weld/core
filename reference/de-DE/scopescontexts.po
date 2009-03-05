@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: scopescontexts\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-24 15:38+1100\n"
+"PO-Revision-Date: 2009-03-05 15:57+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: scopescontexts.xml:4
 #, no-c-format
 msgid "Scopes and contexts"
-msgstr ""
+msgstr "Geltungsbereiche und Kontexte"
 
 #. Tag: para
 #: scopescontexts.xml:6
@@ -31,24 +31,26 @@ msgid ""
 "instances of the Web Bean. According to the Web Beans specification, a scope "
 "determines:"
 msgstr ""
+"Bis jetzt haben wir ein paar Beispiele von <emphasis>Geltungsbereichtyp-Annotationen</"
+"emphasis> gesehen. Der Geltungsbereich eines Web Beans bestimmt den Lebenszyklus der Instanzen des Web Beans. Der Geltungsbereich bestimmt auch, welche Clients sich auf welche Instanzen des Web Beans beziehen. Gemäß der Web Beans Spezifikation bestimmt ein Geltungsbereich:"
 
 #. Tag: para
 #: scopescontexts.xml:14
 #, no-c-format
 msgid "When a new instance of any Web Bean with that scope is created"
-msgstr ""
+msgstr "Wann eine neue Instanz eines beliebigen Web Beans mit diesem Geltungsbereich erstellt wird"
 
 #. Tag: para
 #: scopescontexts.xml:17
 #, no-c-format
 msgid "When an existing instance of any Web Bean with that scope is destroyed"
-msgstr ""
+msgstr "Wenn eine bestehende Instanz eines beliebigen Web Beans mit diesem Geltungsbereich gelöscht wird"
 
 #. Tag: para
 #: scopescontexts.xml:20
 #, no-c-format
 msgid "Which injected references refer to any instance of a Web Bean with that scope"
-msgstr ""
+msgstr "Welche eingespeisten Referenzen auf eine beliebige Instanz eines Web Beans mit diesem Geltungsbereich verweisen"
 
 #. Tag: para
 #: scopescontexts.xml:25
@@ -61,12 +63,16 @@ msgid ""
 "the first time a <literal>CurrentUser</literal> is needed in that session, "
 "and automatically destroyed when the session ends."
 msgstr ""
+"Wenn wir etwa ein session-begrenztes Web Bean <literal>CurrentUser</"
+"literal> haben, so sehen alle Web Beans, die im Kontext derselben "
+"<literal>HttpSession</literal> aufgerufen werden, dieselbe Instanz von "
+"<literal>CurrentUser</literal>. Diese Instanz wird automatisch erstellt, wenn <literal>CurrentUser</literal> erstmals in dieser Session benötigt wird und automatisch gelöscht, wenn die Session endet."
 
 #. Tag: title
 #: scopescontexts.xml:32
 #, no-c-format
 msgid "Scope types"
-msgstr ""
+msgstr "Typen von Geltungsbereichen"
 
 #. Tag: para
 #: scopescontexts.xml:34
@@ -74,7 +80,7 @@ msgstr ""
 msgid ""
 "Web Beans features an <emphasis>extensible context model</emphasis>. It is "
 "possible to define new scopes by creating a new scope type annotation:"
-msgstr ""
+msgstr "Web Beans besitzen ein <emphasis>erweiterbares Kontextmodell</emphasis>. Es ist möglich, neue Geltungsbereiche zu definieren, indem man eine neue Annotation für einen Geltungsbereich-Typ erstellt:"
 
 #. Tag: programlisting
 #: scopescontexts.xml:37
@@ -98,7 +104,7 @@ msgid ""
 "useful, we will also need to define a <literal>Context</literal> object that "
 "implements the scope! Implementing a <literal>Context</literal> is usually a "
 "very technical task, intended for framework development only."
-msgstr ""
+msgstr "Natürlich ist dies der einfache Teil des Jobs. Damit dieser Typ von Geltungsbereich von Nutzen ist, müssen wir außerdem ein <literal>Context</literal>-Objekt definieren, das den Geltungsbereich implementiert! Die Implementierung eines <literal>Context</literal> ist in der Regel ein sehr technisches Unterfangen, das nur für Framework-Entwicklung vorgesehen ist."
 
 #. Tag: para
 #: scopescontexts.xml:44
@@ -106,7 +112,7 @@ msgstr ""
 msgid ""
 "We can apply a scope type annotation to a Web Bean implementation class to "
 "specify the scope of the Web Bean:"
-msgstr ""
+msgstr "Wir können eine Annotation eines Geltungsbereich-Typs an einer Web Bean Implementierungsklasse anwenden, um den Geltungsbereich des Web Beans festzulegen:"
 
 #. Tag: programlisting
 #: scopescontexts.xml:47
@@ -122,19 +128,19 @@ msgstr ""
 #: scopescontexts.xml:58
 #, no-c-format
 msgid "Usually, you'll use one of Web Beans' built-in scopes."
-msgstr ""
+msgstr "In der Regel verwenden Sie einen der eingebauten Geltungsbereiche der Web Beans."
 
 #. Tag: title
 #: scopescontexts.xml:63
 #, no-c-format
 msgid "Built-in scopes"
-msgstr ""
+msgstr "Eingebaute Geltungsbereiche"
 
 #. Tag: para
 #: scopescontexts.xml:65
 #, no-c-format
 msgid "Web Beans defines four built-in scopes:"
-msgstr ""
+msgstr "Web Beans definiert vier eingebaute Geltungsbereiche:"
 
 #. Tag: literal
 #: scopescontexts.xml:69
@@ -164,15 +170,18 @@ msgstr "@ConversationScoped"
 #: scopescontexts.xml:82
 #, no-c-format
 msgid "For a web application that uses Web Beans:"
-msgstr ""
+msgstr "Für eine Web Beans verwendende Webanwendung:"
 
 #. Tag: para
 #: scopescontexts.xml:86
 #, no-c-format
+#, fuzzy
 msgid ""
 "any servlet request has access to active request, session and application "
 "scopes, and, additionally"
 msgstr ""
+"Jede Servlet-Anfrage hat Zugriff auf die aktuelle Anfrage, Session und Geltungsbereiche der Anwendung und zusätzlichhas access to active request, session and application "
+"scopes, and, additionally"
 
 #. Tag: para
 #: scopescontexts.xml:90
