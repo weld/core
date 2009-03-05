@@ -343,7 +343,7 @@
          
          <para>
             To perform injection on a servlet call 
-            <literal>WebBeansManager.injectIntoServlet()</literal>. The manager
+            <literal>WebBeansManager.injectServlet()</literal>. The manager
             can be obtained from <literal>Bootstrap.getManager()</literal>.
          </para>
          
