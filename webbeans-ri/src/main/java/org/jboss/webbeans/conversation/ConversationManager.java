@@ -16,6 +16,10 @@
  */
 package org.jboss.webbeans.conversation;
 
+import java.util.Set;
+
+import javax.context.Conversation;
+
 /**
  * A conversation manager responsible for starting, resuming and ending conversations
  * 
@@ -41,5 +45,12 @@ public interface ConversationManager
     * Destroys all long-running conversations
     */
    public abstract void destroyAllConversations();
+   
+   /**
+    * Gets the currently managed long-running conversations
+    * 
+    * @return the conversations
+    */
+   public abstract Set<Conversation> getLongRunningConversations();
    
 }

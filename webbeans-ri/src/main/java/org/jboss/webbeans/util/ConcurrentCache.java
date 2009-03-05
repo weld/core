@@ -142,7 +142,6 @@ public class ConcurrentCache<K, V> extends ForwardingMap<K, Future<V>>
             {
                rethrow(e);
             }
-            ;
          }
       }
       finally

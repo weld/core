@@ -80,7 +80,7 @@ public class ServletLifecycle extends AbstractLifecycle
     * session to be injected by the Session manager
     * 
     * @param session
-    * @return
+    * @return the session bean store
     */
    protected BeanStore restoreSessionContext(HttpSession session)
    {

@@ -47,8 +47,8 @@ public class ConversationImpl implements Conversation
    private String originalCid;
    // Is the conversation long-running?
    private boolean longRunning;
-   // The inactivity timeout in milliseconds
-   private long timeoutInMilliseconds;
+   // The timeout in milliseconds
+   private long timeout;
 
    /**
     * Creates a new conversation
@@ -58,16 +58,28 @@ public class ConversationImpl implements Conversation
    }
 
    /**
+    * Creates a new conversation from an existing one.
+    *  
+    * @param conversation The old conversation
+    */
+   public ConversationImpl(ConversationImpl conversation)
+   {
+      this.cid = conversation.getId();
+      this.longRunning = conversation.isLongRunning();
+      this.timeout = conversation.getTimeout();
+   }
+
+   /**
     * Initializes a new conversation
     * 
     * @param conversationIdGenerator The conversation ID generator
-    * @param timeoutInMilliseconds The inactivity timeout in milliseconds
     */
    @Initializer
-   public void init(ConversationIdGenerator conversationIdGenerator, @ConversationInactivityTimeout long timeoutInMilliseconds)
+   public void init(ConversationIdGenerator conversationIdGenerator, @ConversationInactivityTimeout long timeout)
    {
       this.cid = conversationIdGenerator.nextId();
-      this.timeoutInMilliseconds = timeoutInMilliseconds;
+      this.timeout = timeout;
+      this.longRunning = false;
       log.debug("Created a new conversation " + this);
    }
 
@@ -100,7 +112,7 @@ public class ConversationImpl implements Conversation
 
    public long getTimeout()
    {
-      return timeoutInMilliseconds;
+      return timeout;
    }
 
    public boolean isLongRunning()
@@ -110,30 +122,28 @@ public class ConversationImpl implements Conversation
 
    public void setTimeout(long timeout)
    {
-      log.debug("Set timeout of conversation " + cid + " to " + timeout);
-      this.timeoutInMilliseconds = timeout;
+      this.timeout = timeout;
    }
 
    /**
     * Assumes the identity of another conversation
     * 
-    * @param cid The new conversation ID
-    * @param longRunning The new long-running status
-    * @param timeout The new inactivity timeout in milliseconds
+    * @param conversation The new conversation identity
+    * 
     */
-   public void switchTo(String cid, boolean longRunning, long timeoutInMilliseconds)
+   public void switchTo(Conversation conversation)
    {
       log.debug("Switched conversation from " + this);
-      this.cid = cid;
-      this.longRunning = longRunning;
-      this.timeoutInMilliseconds = timeoutInMilliseconds;
-      log.debug("to " + this);
+      cid = conversation.getId();
+      longRunning = conversation.isLongRunning();
+      timeout = conversation.getTimeout();
+      log.debug(" to " + this);
    }
 
    @Override
    public String toString()
    {
-      return "ID: " + cid + ", long-running: " + longRunning + ", timeout: " + timeoutInMilliseconds;
+      return "ID: " + cid + ", long-running: " + longRunning + ", timeout: " + timeout;
    }
 
    public void setLongRunning(boolean longRunning)
@@ -142,6 +152,11 @@ public class ConversationImpl implements Conversation
       this.longRunning = longRunning;
    }
 
+   /**
+    * Gets the original ID of the conversation
+    * 
+    * @return The id
+    */
    public String getOriginalCid()
    {
       return originalCid;

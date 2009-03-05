@@ -22,7 +22,6 @@ import java.lang.annotation.Annotation;
 import javax.context.ContextNotActiveException;
 import javax.context.Contextual;
 import javax.context.CreationalContext;
-import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.log.LogProvider;

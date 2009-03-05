@@ -36,8 +36,8 @@ public class ConversationEntry
 {
    private static LogProvider log = Logging.getLogProvider(ConversationEntry.class);
 
-   // The conversation ID
-   private String cid;
+   // The conversation
+   private ConversationImpl conversation;
    // The handle to the asynchronous timeout task
    private Future<?> terminationHandle;
    // The lock for concurrent access prevention
@@ -49,12 +49,13 @@ public class ConversationEntry
     * @param cid The conversation ID
     * @param terminationHandle The timeout termination handle
     */
-   protected ConversationEntry(String cid, Future<?> terminationHandle)
+   protected ConversationEntry(ConversationImpl conversation, Future<?> terminationHandle)
    {
-      this.cid = cid;
+      // conversation is a proxy so we need to make a "real" instance
+      this.conversation = new ConversationImpl(conversation);
       this.terminationHandle = terminationHandle;
       this.concurrencyLock = new ReentrantLock();
-      log.trace("Created new conversation entry for conversation " + cid);
+      log.trace("Created new conversation entry for conversation " + conversation);
    }
 
    /**
@@ -64,9 +65,9 @@ public class ConversationEntry
     * @param terminationHandle The timeout termination handle
     * @return A new conversation entry
     */
-   public static ConversationEntry of(String cid, Future<?> terminationHandle)
+   public static ConversationEntry of(ConversationImpl conversation, Future<?> terminationHandle)
    {
-      return new ConversationEntry(cid, terminationHandle);
+      return new ConversationEntry(conversation, terminationHandle);
    }
 
    /**
@@ -79,11 +80,11 @@ public class ConversationEntry
       boolean success = terminationHandle.cancel(false);
       if (success)
       {
-         log.trace("Termination of conversation " + cid + " cancelled");
+         log.trace("Termination of conversation " + conversation + " cancelled");
       }
       else
       {
-         log.warn("Failed to cancel termination of conversation " + cid);
+         log.warn("Failed to cancel termination of conversation " + conversation);
       }
       return success;
    }
@@ -95,51 +96,53 @@ public class ConversationEntry
     */
    public void destroy(HttpSession session)
    {
-      log.debug("Destroying conversation " + cid);
+      log.debug("Destroying conversation " + conversation);
       if (!terminationHandle.isCancelled())
       {
          cancelTermination();
       }
       ConversationContext terminationContext = new ConversationContext();
-      terminationContext.setBeanStore(new ConversationBeanStore(session, cid));
+      terminationContext.setBeanStore(new ConversationBeanStore(session, conversation.getId()));
       terminationContext.destroy();
-      log.trace("Conversation " + cid + " destroyed");
+      log.trace("Conversation " + conversation + " destroyed");
    }
 
    /**
     * Attempts to lock the conversation for exclusive usage
     * 
-    * @param timeoutInMilliseconds The time in milliseconds to wait on the lock
+    * @param timeout The time in milliseconds to wait on the lock
     * @return True if lock was successful, false otherwise
     * @throws InterruptedException If the lock operation was unsuccessful
     */
-   public boolean lock(long timeoutInMilliseconds) throws InterruptedException
+   public boolean lock(long timeout) throws InterruptedException
    {
-      boolean success = concurrencyLock.tryLock(timeoutInMilliseconds, TimeUnit.MILLISECONDS);
+      boolean success = concurrencyLock.tryLock(timeout, TimeUnit.MILLISECONDS);
       if (success)
       {
-         log.trace("Conversation " + cid + " locked");
+         log.trace("Conversation " + conversation + " locked");
       }
       else
       {
-         log.warn("Failed to lock conversation " + cid + " in " + timeoutInMilliseconds + "ms");
+         log.warn("Failed to lock conversation " + conversation + " in " + timeout + "ms");
       }
       return success;
    }
 
    /**
     * Attempts to unlock the conversation
+    * 
+    * @return true if the unlock was successful, false otherwise
     */
    public boolean unlock()
    {
       if (concurrencyLock.isHeldByCurrentThread())
       {
-         log.trace("Unlocked conversation " + cid);
          concurrencyLock.unlock();
+         log.trace("Unlocked conversation " + conversation);
       }
       else
       {
-         log.warn("Unlock attempt by non-owner on conversation " + cid);
+         log.warn("Unlock attempt by non-owner on conversation " + conversation);
       }
       return !concurrencyLock.isLocked();
    }
@@ -151,8 +154,12 @@ public class ConversationEntry
     */
    public void reScheduleTermination(Future<?> terminationHandle)
    {
-      log.trace("Conversation " + cid + " re-scheduled for termination");
       this.terminationHandle = terminationHandle;
+      log.trace("Conversation " + conversation + " re-scheduled for termination");
    }
 
+   public ConversationImpl getConversation()
+   {
+      return conversation;
+   }
 }

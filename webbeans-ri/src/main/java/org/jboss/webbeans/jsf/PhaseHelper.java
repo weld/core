@@ -16,8 +16,6 @@
  */
 package org.jboss.webbeans.jsf;
 
-import java.io.IOException;
-
 import javax.faces.component.html.HtmlInputHidden;
 import javax.faces.context.FacesContext;
 import javax.inject.AnnotationLiteral;
@@ -120,7 +118,6 @@ public class PhaseHelper
     * Gets the propagated conversation id from the propagation component
     * 
     * @return The conversation id (or null if not found)
-    * @throws IOException
     */
    public static String getConversationIdFromPropagationComponent()
    {
