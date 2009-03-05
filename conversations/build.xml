@@ -1,0 +1,7 @@
+<project basedir="." name="Conversations Example Build" default="restart">
+	
+	<property name="example.name" value="webbeans-conversations" />
+
+	<import file="../build.xml" />
+	
+</project>

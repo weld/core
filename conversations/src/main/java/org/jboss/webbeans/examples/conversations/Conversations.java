@@ -1,4 +1,4 @@
-package org.jboss.webbeans.examples.numberguess;
+package org.jboss.webbeans.examples.conversations;
 
 import java.util.ArrayList;
 import java.util.List;
