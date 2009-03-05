@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: specialization\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-24 15:39+1100\n"
+"PO-Revision-Date: 2009-03-05 18:10+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: specialization.xml:4
 #, no-c-format
 msgid "Specialization"
-msgstr ""
+msgstr "Spezialisierung"
 
 #. Tag: para
 #: specialization.xml:6
@@ -96,12 +96,14 @@ msgid ""
 "Would receive an instance of <literal>StagingCreditCardPaymentProcessor</"
 "literal>."
 msgstr ""
+"Wir würden eine Instanz von <literal>StagingCreditCardPaymentProcessor</"
+"literal> erhalten."
 
 #. Tag: para
 #: specialization.xml:28
 #, no-c-format
 msgid "Unfortunately, there are several traps we can easily fall into:"
-msgstr ""
+msgstr "Leider könnten wir in gleich mehrere Fallen tappen:"
 
 #. Tag: para
 #: specialization.xml:32
@@ -158,7 +160,7 @@ msgstr ""
 #: specialization.xml:58
 #, no-c-format
 msgid "Using specialization"
-msgstr ""
+msgstr "Verwendung von Spezialisierung"
 
 #. Tag: para
 #: specialization.xml:60
@@ -187,7 +189,7 @@ msgstr ""
 #: specialization.xml:73
 #, no-c-format
 msgid "be annotated <literal>@Specializes</literal>."
-msgstr ""
+msgstr "<literal>@Specializes</literal> annotiert sein."
 
 #. Tag: programlisting
 #: specialization.xml:77
@@ -217,13 +219,13 @@ msgstr ""
 #: specialization.xml:85
 #, no-c-format
 msgid "Advantages of specialization"
-msgstr ""
+msgstr "Vorteile von Spezialisierung"
 
 #. Tag: para
 #: specialization.xml:87
 #, no-c-format
 msgid "When specialization is used:"
-msgstr ""
+msgstr "Wann Spezialisierung eingesetzt wird:"
 
 #. Tag: para
 #: specialization.xml:91
@@ -249,6 +251,8 @@ msgid ""
 "superclass are called upon an instance of the Web Bean annotated "
 "<literal>@Specializes</literal>."
 msgstr ""
+"Durch die Superklasse deklarierte Producer-Methoden, Bereinigungsmethoden und Observer-Methoden "
+"werden durch eine Instanz des mit <literal>@Specializes</literal> annotierten Web Beans aufgerufen."
 
 #. Tag: para
 #: specialization.xml:105
@@ -258,12 +262,15 @@ msgid ""
 "<literal>CreditCardPaymentProcessor</literal> is inherited by "
 "<literal>StagingCreditCardPaymentProcessor</literal>."
 msgstr ""
+"In unserem Beispiel wird der Binding-Typ <literal>@CreditCard</literal> von "
+"<literal>CreditCardPaymentProcessor</literal> von "
+"<literal>StagingCreditCardPaymentProcessor</literal> geerbt."
 
 #. Tag: para
 #: specialization.xml:109
 #, no-c-format
 msgid "Furthermore, the Web Bean manager will validate that:"
-msgstr ""
+msgstr "Desweiteren validiert der Web Bean Manager dies:"
 
 #. Tag: para
 #: specialization.xml:113
@@ -273,6 +280,8 @@ msgid ""
 "<literal>@Specializes</literal> (all local interfaces of the superclass "
 "enterprise bean are also local interfaces of the subclass),"
 msgstr ""
+"alle API-Typen der Superklasse sind API-Typen des mit <literal>@Specializes</literal> annotierten Web Beans "
+"(alle lokalen Interfaces der Superklasse Enterprise Bean sind auch lokale Interfaces der Subklasse),"
 
 #. Tag: para
 #: specialization.xml:119
@@ -282,12 +291,15 @@ msgid ""
 "literal> has a higher precedence than the deployment type of the superclass, "
 "and"
 msgstr ""
+"der Deployment-Typ des mit <literal>@Specializes</"
+"literal> annotierten Web Bean besitzt Vorrang vor dem Deployment-Typ der Superklasse "
+"und "
 
 #. Tag: para
 #: specialization.xml:124
 #, no-c-format
 msgid "there is no other enabled Web Bean that also specializes the superclass."
-msgstr ""
+msgstr "es existiert keun weiteres aktiviertes Web Bean, das ebenfalls die Superklasse spezialisiert."
 
 #. Tag: para
 #: specialization.xml:129
@@ -295,7 +307,7 @@ msgstr ""
 msgid ""
 "If any of these conditions are violated, the Web Bean manager throws an "
 "exception at initialization time."
-msgstr ""
+msgstr "Wird eine dieser Bedingungen verletzt, so meldet der Web Bean Manager zum Zeitpunkt der Initialisierung eine Ausnahme."
 
 #. Tag: para
 #: specialization.xml:132
@@ -305,4 +317,6 @@ msgid ""
 "emphasis> be called in any deployment of the system where the Web Bean "
 "annotated <literal>@Specializes</literal> is deployed and enabled."
 msgstr ""
+"Wir können daher sicher sein, dass die Superklasse <emphasis>nie</"
+"emphasis> bei einem Deployment des Systems bei dem das mit <literal>@Specializes</literal> annotierte Web Bean deployt und aktiviert wird, aufgerufen wird."
 
