@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+  <ui:composition template="template.xhtml">
+    <ui:define name="content">
+    	<h:form>
+    		<h:panelGrid columns="1">
+				<h:outputText value="Long-running: #{conversations.conversationList}"/>
+	    		<h:outputText value="Current: #{conversation}"/>
+	    		<h:panelGroup>
+    				<h:commandButton action="#{conversation.begin}" value="begin"/>
+    				<h:commandButton action="#{conversations.noop}" value="noop"/>
+    				<h:commandButton action="#{conversation.end}" value="end"/>
+    				<h:commandButton action="#{conversations.abandon}" value="abandon"/>
+    			</h:panelGroup>
+    			<h:inputText value="#{conversations.cid}"/>
+    			<h:commandButton action="#{conversations.switchConversation}" value="switch"/>
+    		</h:panelGrid>
+		</h:form>
+    </ui:define>
+  </ui:composition>
+</html>
