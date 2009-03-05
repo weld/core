@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-02-28 13:48+0000\n"
-"PO-Revision-Date: 2009-03-04 18:20+1100\n"
+"PO-Revision-Date: 2009-03-05 14:40+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -673,6 +673,8 @@ msgid ""
 "Servlet listener, either automatically, or through user configuration, for "
 "each Web Beans application which uses Servlet."
 msgstr ""
+"Falls Sie Web Beans in eine Servlet Umgebung integrieren, müssen Sie <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> als einen "
+"Servlet-Listener registrieren, entweder automatisch oder aber durch Benutzerkonfiguration. Dies muss für jede Servlet benutzende Web Beans Applikation erfolgen."
 
 #. Tag: term
 #: ri-spi.xml:230
@@ -690,6 +692,8 @@ msgid ""
 "through user configuration, for each Web Beans application which uses "
 "enterprise beans."
 msgstr ""
+"Falls Sie Web Beans in eine EJB Umgebung integrieren, müssen Sie <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> als einen "
+"EJB-Interzeptor für alle EJBs in der Applikation registrieren, entweder automatisch oder aber durch Benutzerkonfiguration. Dies muss für jede Enterprise Beans benutzende Web Beans Applikation erfolgen."
 
 #. Tag: term
 #: ri-spi.xml:245
@@ -706,4 +710,6 @@ msgid ""
 "literal> into the applications isolated classloader. It cannot be loaded "
 "from a shared classloader."
 msgstr ""
+"Falls Sie Web Beans in eine Umgebung integrieren, die das Deployment von Anwendungen unterstützt, so müssen Sie die <literal>webbeans-ri.jar</"
+"literal> in den isolierten Klassenlader der Anwendungen einfügen. Das Laden kann nicht aus einem geteilten Klassenlader erfolgen."
 
