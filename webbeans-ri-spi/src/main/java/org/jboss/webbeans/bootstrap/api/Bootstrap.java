@@ -1,11 +1,10 @@
 package org.jboss.webbeans.bootstrap.api;
 
-import javax.inject.manager.Manager;
-
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.ejb.spi.EjbResolver;
+import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
@@ -76,12 +75,12 @@ public interface Bootstrap
    public void initialize();
    
    /**
-    * Get the manager being used for bootstrap.
+    * Get the manager used for this application.
     * 
     * @return the manager. Unless {@link #initialize()} has been called, this
     *         method will return null.
     */
-   public Manager getManager();
+   public WebBeansManager getManager();
    
    /**
     * Starts the boot process.

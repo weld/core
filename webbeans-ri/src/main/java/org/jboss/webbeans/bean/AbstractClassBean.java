@@ -25,7 +25,6 @@ import javax.context.CreationalContext;
 import javax.context.Dependent;
 import javax.context.ScopeType;
 import javax.event.Observes;
-import javax.inject.BindingType;
 import javax.inject.CreationException;
 import javax.inject.DefinitionException;
 import javax.inject.DeploymentType;
@@ -39,11 +38,11 @@ import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
@@ -130,24 +129,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     */
    protected void initInjectionPoints()
    {
-      injectableFields = new HashSet<FieldInjectionPoint<?>>();
-      for (AnnotatedField<?> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
-      {
-         if (!annotatedField.isAnnotationPresent(Produces.class))
-         {
-            if (annotatedField.isStatic())
-            {
-               throw new DefinitionException("Don't place binding annotations on static fields " + annotatedField);
-            }
-            if (annotatedField.isFinal())
-            {
-               throw new DefinitionException("Don't place binding annotations on final fields " + annotatedField);
-            }
-            FieldInjectionPoint<?> fieldInjectionPoint = FieldInjectionPoint.of(this, annotatedField);
-            injectableFields.add(fieldInjectionPoint);
-            super.injectionPoints.add(fieldInjectionPoint);
-         }
-      }
+      injectableFields = new HashSet<FieldInjectionPoint<?>>(Beans.getFieldInjectionPoints(annotatedItem, this));
+      super.injectionPoints.addAll(injectableFields);
       for (AnnotatedMethod<?> initializer : getInitializerMethods())
       {
          for (AnnotatedParameter<?> parameter : initializer.getParameters())

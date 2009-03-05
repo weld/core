@@ -17,12 +17,19 @@
 package org.jboss.webbeans.util;
 
 import java.lang.reflect.Type;
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.inject.BindingType;
+import javax.inject.DefinitionException;
+import javax.inject.Produces;
 import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.injection.FieldInjectionPoint;
+import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.metadata.MetaDataCache;
 
 /**
@@ -90,6 +97,28 @@ public class Beans
          }
       }
       return true;
+   }
+   
+   public static Set<FieldInjectionPoint<?>> getFieldInjectionPoints(AnnotatedClass<?> annotatedItem, Bean<?> declaringBean)
+   {
+      Set<FieldInjectionPoint<?>> injectableFields = new HashSet<FieldInjectionPoint<?>>();
+      for (AnnotatedField<?> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
+      {
+         if (!annotatedField.isAnnotationPresent(Produces.class))
+         {
+            if (annotatedField.isStatic())
+            {
+               throw new DefinitionException("Don't place binding annotations on static fields " + annotatedField);
+            }
+            if (annotatedField.isFinal())
+            {
+               throw new DefinitionException("Don't place binding annotations on final fields " + annotatedField);
+            }
+            FieldInjectionPoint<?> fieldInjectionPoint = FieldInjectionPoint.of(declaringBean, annotatedField);
+            injectableFields.add(fieldInjectionPoint);
+         }
+      }
+      return injectableFields;
    }
    
 }

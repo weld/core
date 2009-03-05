@@ -1,6 +1,9 @@
 package org.jboss.webbeans.injection;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -33,6 +36,22 @@ public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<
    public static <T> ResolvableAnnotatedClass<T> of(Class<T> clazz, Annotation[] annotations)
    {
       return new ResolvableAnnotatedClass<T>(clazz, clazz, annotations);
+   }
+   
+   public static <T> ResolvableAnnotatedClass<T> of(Member member, Annotation[] annotations)
+   {
+      if (member instanceof Field)
+      {
+         return new ResolvableAnnotatedClass<T>((Class<T>) ((Field) member).getType(), ((Field) member).getGenericType(), annotations);
+      }
+      else if (member instanceof Method)
+      {
+         return new ResolvableAnnotatedClass<T>((Class<T>) ((Method) member).getReturnType(), ((Method) member).getGenericReturnType(), annotations);
+      }
+      else
+      {
+         throw new IllegalStateException();
+      }
    }
    
    private ResolvableAnnotatedClass(Class<T> rawType, Type type, Annotation[] annotations)

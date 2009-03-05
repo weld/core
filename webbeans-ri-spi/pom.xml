@@ -38,6 +38,12 @@
          <groupId>com.google.collections</groupId>
          <artifactId>google-collections</artifactId>
       </dependency>
+      
+      <dependency>
+         <groupId>javax.servlet</groupId>
+         <artifactId>servlet-api</artifactId>
+         <optional>true</optional>
+      </dependency>
 
    </dependencies>
 

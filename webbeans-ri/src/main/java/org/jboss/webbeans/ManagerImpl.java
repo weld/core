@@ -56,6 +56,7 @@ import javax.inject.manager.InjectionPoint;
 import javax.inject.manager.InterceptionType;
 import javax.inject.manager.Interceptor;
 import javax.inject.manager.Manager;
+import javax.servlet.Servlet;
 
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
@@ -69,10 +70,13 @@ import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.ResolvableAnnotatedClass;
 import org.jboss.webbeans.injection.Resolver;
+import org.jboss.webbeans.injection.ServletInjector;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
+import org.jboss.webbeans.literal.NewLiteral;
+import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
@@ -89,8 +93,10 @@ import org.jboss.webbeans.util.Reflections;
  * @author Pete Muir
  * 
  */
-public class ManagerImpl implements Manager, Serializable
+public class ManagerImpl implements WebBeansManager, Serializable
 {
+   
+   private static final Annotation[] NEW_BINDING_ARRAY = {new NewLiteral()}; 
 
    private static final long serialVersionUID = 3021562879133838561L;
    
@@ -139,6 +145,8 @@ public class ManagerImpl implements Manager, Serializable
    private transient final NamingContext namingContext;
    
    private final transient Map<Bean<?>, Bean<?>> specializedBeans;
+   
+   private final transient ServletInjector servletInjector;
 
    /**
     * Create a new manager
@@ -163,6 +171,7 @@ public class ManagerImpl implements Manager, Serializable
       this.ejbDescriptorCache = new EjbDescriptorCache();
       this.currentInjectionPoint = new ThreadLocal<InjectionPoint>();
       this.specializedBeans = new HashMap<Bean<?>, Bean<?>>();
+      this.servletInjector = new ServletInjector(this);
       List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       defaultEnabledDeploymentTypes.add(0, Standard.class);
       defaultEnabledDeploymentTypes.add(1, Production.class);
@@ -622,6 +631,11 @@ public class ManagerImpl implements Manager, Serializable
    public <T> T getInstanceToInject(InjectionPoint injectionPoint)
    {
       return this.<T>getInstanceToInject(injectionPoint, null);
+   }
+   
+   public void injectIntoServlet(Servlet servlet) 
+   {
+      servletInjector.inject(servlet);
    }
    
    @SuppressWarnings("unchecked")
