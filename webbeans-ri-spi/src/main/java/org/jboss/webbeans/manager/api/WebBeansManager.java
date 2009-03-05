@@ -36,6 +36,6 @@ public interface WebBeansManager extends Manager
     * @param servlet
     *           the servlet instance to inject
     */
-   public void injectIntoServlet(Servlet servlet);
+   public void injectServlet(Servlet servlet);
    
 }

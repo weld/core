@@ -633,7 +633,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return this.<T>getInstanceToInject(injectionPoint, null);
    }
    
-   public void injectIntoServlet(Servlet servlet) 
+   public void injectServlet(Servlet servlet) 
    {
       servletInjector.inject(servlet);
    }
