@@ -325,6 +325,29 @@
          ]]></programlisting>
 
        </section>
+       
+       <section>
+         <title>Servlet injection</title>
+         
+         <para>
+            Java EE / Servlet does not provide any hooks which can be used to 
+            provide injection into Servlets, so Web Beans provides an API to 
+            allow the container to request JSR-299 injection for a Servlet.
+         </para>
+         
+         <para>
+            To be compliant with JSR-299, the container should request servlet
+            injection for each newly instantiated servlet after the constructor
+            returns and before the servlet is placed into service.
+         </para>
+         
+         <para>
+            To perform injection on a servlet call 
+            <literal>WebBeansManager.injectIntoServlet()</literal>. The manager
+            can be obtained from <literal>Bootstrap.getManager()</literal>.
+         </para>
+         
+       </section>
    
     </section>
     
