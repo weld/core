@@ -9,7 +9,7 @@
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.webbeans</groupId>
-   <artifactId>webbeans-ri-distribution</artifactId>
+   <artifactId>webbeans-distribution</artifactId>
    <packaging>zip</packaging>
    <name>Web Beans Distribution</name>
    

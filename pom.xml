@@ -236,19 +236,19 @@
 
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
-            <artifactId>webbeans-api</artifactId>
+            <artifactId>jsr299-api</artifactId>
             <version>${webbeans.version}</version>
          </dependency>
          
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
-            <artifactId>webbeans-ri</artifactId>
+            <artifactId>webbeans-core</artifactId>
             <version>${webbeans.version}</version>
          </dependency>
 
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
-            <artifactId>webbeans-ri-spi</artifactId>
+            <artifactId>webbeans-spi</artifactId>
             <version>${webbeans.version}</version>
          </dependency>
          

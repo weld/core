@@ -10,12 +10,12 @@ Public License (see lgpl.txt). Parts of it are licensed under the Apache Public
 License (see apl.txt). In particular, the API and the Web Beans runtime are 
 licensed under the APL. At least these parts are licensed under the APL:
 
-* src/webbeans-ri/main/**/*
-* src/webbeans-api/main/**/*
-* src/webbeans-ri-spi/main/**/*
-* lib/webbeans/webbeans-ri.jar
-* lib/webbeans/webbeans-api.jar
-* lib/webbeans/webbeans-ri-spi.jar
+* src/impl/main/**/*
+* src/api/main/**/*
+* src/spi/main/**/*
+* lib/webbeans/webbeans-core.jar
+* lib/webbeans/jsr299-api.jar
+* lib/webbeans/webbeans-spi.jar
 
 This distribution consists of:
 
@@ -38,5 +38,5 @@ lib/webbeans
    -- The Web Beans and API jars, for use outside of JBoss AS
    
 src/
-   -- The sources of Web Beans, including src/webbeans-api, src/webbeans-ri and 
+   -- The sources of Web Beans, including src/api, src/impl and 
       src/reference. To build the sources, just type mvn in the subdirectory.

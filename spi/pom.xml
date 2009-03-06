@@ -6,13 +6,13 @@
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.webbeans</groupId>
-   <artifactId>webbeans-ri-spi</artifactId>
+   <artifactId>webbeans-spi</artifactId>
    <name>Web Beans Service Provider Interfaces</name>
    <dependencies>
 
       <dependency>
          <groupId>org.jboss.webbeans</groupId>
-         <artifactId>webbeans-api</artifactId>
+         <artifactId>jsr299-api</artifactId>
       </dependency>
       
       <dependency>

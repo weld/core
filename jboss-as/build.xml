@@ -24,7 +24,7 @@
 		
 		<artifact:dependencies filesetId="webbeans.deployer.fileset" versionsId="webbeans.deployer.versions">
          <dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-deployer" version="${webbeans-ri-int.version}" type="zip"/>
-	      <dependency groupId="org.jboss.webbeans" artifactId="webbeans-ri" version="${webbeans-ri.version}" />
+	      <dependency groupId="org.jboss.webbeans" artifactId="webbeans-core" version="${webbeans.version}" />
          <remoteRepository id="repository.jboss.org" url="http://repository.jboss.org/maven2" />
 			<remoteRepository id="snapshots.jboss.org" url="http://snapshots.jboss.org/maven2" />
       </artifact:dependencies>
@@ -48,7 +48,7 @@
 		
 		<copy todir="${jboss.home}/server/default/deployers/webbeans.deployer/lib-int/" overwrite="true">
          <fileset dir="target">
-            <include name="webbeans-ri.jar" />
+            <include name="webbeans-core.jar" />
          </fileset>
       </copy>
 

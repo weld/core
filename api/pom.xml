@@ -8,7 +8,7 @@
 	</parent>
 
 	<groupId>org.jboss.webbeans</groupId>
-	<artifactId>webbeans-api</artifactId>
+	<artifactId>jsr299-api</artifactId>
 	<packaging>jar</packaging>
 	<name>JSR-299 API</name>
 	<url>http://www.seamframework.org/WebBeans</url>

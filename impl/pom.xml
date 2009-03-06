@@ -6,18 +6,18 @@
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.webbeans</groupId>
-   <artifactId>webbeans-ri</artifactId>
+   <artifactId>webbeans-core</artifactId>
    <name>Web Beans Core</name>
    <dependencies>
 
       <dependency>
          <groupId>org.jboss.webbeans</groupId>
-         <artifactId>webbeans-api</artifactId>
+         <artifactId>jsr299-api</artifactId>
       </dependency>
       
       <dependency>
          <groupId>org.jboss.webbeans</groupId>
-         <artifactId>webbeans-ri-spi</artifactId>
+         <artifactId>webbeans-spi</artifactId>
       </dependency>
 
       <dependency>

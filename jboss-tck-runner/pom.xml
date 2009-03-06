@@ -14,12 +14,12 @@
 
       <dependency>
          <groupId>org.jboss.webbeans</groupId>
-         <artifactId>webbeans-api</artifactId>
+         <artifactId>jsr299-api</artifactId>
       </dependency>
       
       <dependency>
          <groupId>org.jboss.webbeans</groupId>
-         <artifactId>webbeans-ri</artifactId>
+         <artifactId>webbeans-core</artifactId>
       </dependency>
 
       <dependency>

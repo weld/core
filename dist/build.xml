@@ -86,9 +86,9 @@
 		
 		<maven target="javadoc:jar install" basedir="${wbri.dir}" />
 		<artifact:dependencies filesetId="webbeans.fileset" versionsId="webbeans.versions" sourcesfilesetid="webbeans.sources.fileset" javadocfilesetid="webbeans.javadocs.fileset">
-		   <dependency groupId="org.jboss.webbeans" artifactId="webbeans-ri" version="${version}"/>
-			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-ri-spi" version="${version}"/>
-		   <dependency groupId="org.jboss.webbeans" artifactId="webbeans-api" version="${version}"/>
+		   <dependency groupId="org.jboss.webbeans" artifactId="webbeans-core" version="${version}"/>
+			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-spi" version="${version}"/>
+		   <dependency groupId="org.jboss.webbeans" artifactId="jsr299-api" version="${version}"/>
 		   <remoteRepository id="repository.jboss.org" url="http://repository.jboss.org/maven2" />
 		</artifact:dependencies>
 		
@@ -107,7 +107,7 @@
 		<mkdir dir="${dist.apidocs.dir}"/>
 		<unzip dest="${dist.apidocs.dir}">
 		   <fileset dir="target">
-		      <include name="webbeans-api-javadoc.jar"/>
+		      <include name="jsr299-api-javadoc.jar"/>
 		   </fileset>
 		</unzip>
 		
