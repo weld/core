@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-01-24 15:41+1100\n"
+"PO-Revision-Date: 2009-03-06 17:56+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: xml.xml:4
 #, no-c-format
 msgid "Defining Web Beans using XML"
-msgstr ""
+msgstr "Definition von Web Beans unter Verwendung von XML"
 
 #. Tag: para
 #: xml.xml:6
@@ -28,37 +28,37 @@ msgid ""
 "So far, we've seen plenty of examples of Web Beans declared using "
 "annotations. However, there are a couple of occasions when we can't use "
 "annotations to define the Web Bean:"
-msgstr ""
+msgstr "Bis jetzt haben wir viele Beispiele von unter Verwendung von Annotationen deklarierten Web Beans gesehen. Es gibt jedoch ein paar Fälle, in denen keine Annotationen zur Definition des Web Beans verwendet werden können:"
 
 #. Tag: para
 #: xml.xml:12
 #, no-c-format
 msgid "when the implementation class comes from some preexisting library, or"
-msgstr ""
+msgstr "Wenn die Implementierungsklasse von einer bereits bestehenden Bibliothek stammt oder "
 
 #. Tag: para
 #: xml.xml:15
 #, no-c-format
 msgid "when there should be multiple Web Beans with the same implementation class."
-msgstr ""
+msgstr "wenn mehrere Web Beans mit derselben Implementierungsklasse existieren sollten."
 
 #. Tag: para
 #: xml.xml:20
 #, no-c-format
 msgid "In either of these cases, Web Beans gives us two options:"
-msgstr ""
+msgstr "In jedem dieser Fälle bieten uns Web Beans zwei Optionen:"
 
 #. Tag: para
 #: xml.xml:23
 #, no-c-format
 msgid "write a producer method, or"
-msgstr ""
+msgstr "das Schreiben einer Producer-Methode oder "
 
 #. Tag: para
 #: xml.xml:24
 #, no-c-format
 msgid "declare the Web Bean using XML."
-msgstr ""
+msgstr "das Deklarieren des Web Beans mittels XML."
 
 #. Tag: para
 #: xml.xml:27
@@ -71,6 +71,9 @@ msgid ""
 "Web Beans lets you use the class or member name as the name of the XML "
 "element."
 msgstr ""
+"Viele Frameworks verwenden XML zur Bereitstellung von Metadaten, die sich auf Java-Klassen beziehen. "
+"Web Beans jedoch verwenden eine sehr unterschiedliche Herangehensweise bei der Festlegung von Namen von Java-Klassen, Feldern oder Methoden als andere Frameworks. Statt dem Schreiben von Klassen- und Mitglieder-Namen als String-Werte von XML-Elementen und Attributen, gestatten "
+"Web Beans die Verwendung des Klassen- und Mitglieder-Namens als Name des XML-Elements."
 
 #. Tag: para
 #: xml.xml:33
@@ -82,12 +85,14 @@ msgid ""
 "integrated development environment could perform the same validation without "
 "the need for the explicit intermediate generation step."
 msgstr ""
+"Der Vorteil bei dieser Vorgehensweise ist, dass Sie ein XML-Schema schreiben können, dass Rechtschreibfehler in Ihrem XML-Dokument verhindert. Es ist sogar möglich, dass ein Tool "
+"das XML-Schema automatisch aus dem kompilierten Java-Code generiert. Oder eine integrierte Entwicklungsumgebung könnte dieselbe Validierung durchführen, ohne dass der explizite Generierungsschritt notwendig wäre."
 
 #. Tag: title
 #: xml.xml:40
 #, no-c-format
 msgid "Declaring Web Bean classes"
-msgstr ""
+msgstr "Deklaration von Web Bean Klassen"
 
 #. Tag: para
 #: xml.xml:42
@@ -98,6 +103,8 @@ msgid ""
 "package name. For the package <literal>com.mydomain.myapp</literal>, the XML "
 "namespace is <literal>urn:java:com.mydomain.myapp</literal>."
 msgstr ""
+"Für jedes Java-Paket definieren Web Beans einen entsprechenden XML-Namespace. Der "
+"Namespace wird durch Voranstellen von <literal>urn:java:</literal> vor den Java-Paketnamen gebildet. Für das Paket <literal>com.mydomain.myapp</literal> ist der XML-Namespace <literal>urn:java:com.mydomain.myapp</literal>."
 
 #. Tag: para
 #: xml.xml:47
@@ -108,7 +115,7 @@ msgid ""
 "name of the Java type. Fields and methods of the type are specified by child "
 "elements in the same namespace. If the type is an annotation, members are "
 "specified by attributes of the element."
-msgstr ""
+msgstr "Auf Java-Typen, die zu einem Paket gehören, wird verwiesen, indem ein XML-Element in dem dem Paket entsprechenden Namespace verwendet wird. Derr Name des Elements ist der Name des Java-Typs. Felder und Methoden des Typs werden durch untergeordnete Elemente in demselben Namespace festgelegt. Handelt es sich bei dem Typ um eine Annotation, so werden Mitglieder durch Attribute des Elements festgelegt."
 
 #. Tag: para
 #: xml.xml:53
@@ -116,7 +123,7 @@ msgstr ""
 msgid ""
 "For example, the element <literal>&lt;util:Date/&gt;</literal> in the "
 "following XML fragment refers to the class <literal>java.util.Date</literal>:"
-msgstr ""
+msgstr "Zum Beispiel bezieht sich das Element <literal>&lt;util:Date/&gt;</literal> im folgenden XML-Fragment auf die Klasse <literal>java.util.Date</literal>:"
 
 #. Tag: programlisting
 #: xml.xml:56
@@ -143,7 +150,7 @@ msgid ""
 "And this is all the code we need to declare that <literal>Date</literal> is "
 "a simple Web Bean! An instance of <literal>Date</literal> may now be "
 "injected by any other Web Bean:"
-msgstr ""
+msgstr "Und das ist alles an Code was wir benötigen, um zu deklarieren dass es sich bei <literal>Date</literal> um ein einfaches Web Bean handelt! Eine Instanz von <literal>Date</literal> kann jetzt in ein beliebiges anderes Web Bean eingespeist werden:"
 
 #. Tag: programlisting
 #: xml.xml:62
@@ -155,7 +162,7 @@ msgstr "<![CDATA[@Current Date date]]>"
 #: xml.xml:67
 #, no-c-format
 msgid "Declaring Web Bean metadata"
-msgstr ""
+msgstr "Deklaration von Web Bean Metadaten"
 
 #. Tag: para
 #: xml.xml:69
@@ -163,7 +170,7 @@ msgstr ""
 msgid ""
 "We can declare the scope, deployment type and interceptor binding types "
 "using direct child elements of the Web Bean declaration:"
-msgstr ""
+msgstr "Wir können Geltungsbereich, Deployment-Typ und Interzeptor Binding-Typen deklarieren, indem wir direkte untergeordnete Elemente der Web Bean Dellaration verwenden:"
 
 #. Tag: programlisting
 #: xml.xml:72
@@ -185,7 +192,7 @@ msgstr ""
 #: xml.xml:74
 #, no-c-format
 msgid "We use exactly the same approach to specify names and binding type:"
-msgstr ""
+msgstr "Wir verwenden exakt dieselbe Vorgehensweise, um Namen und Binding-Typ festzulegen:"
 
 #. Tag: programlisting
 #: xml.xml:76
@@ -229,7 +236,7 @@ msgstr ""
 msgid ""
 "Where <literal>@Login</literal> and <literal>@SystemStart</literal> are "
 "binding annotations types."
-msgstr ""
+msgstr "Wobei <literal>@Login</literal> und <literal>@SystemStart</literal> Binding Annotationstypen sind."
 
 #. Tag: programlisting
 #: xml.xml:81
@@ -247,7 +254,7 @@ msgstr ""
 #: xml.xml:83
 #, no-c-format
 msgid "As usual, a Web Bean may support multiple binding types:"
-msgstr ""
+msgstr "Wie gewöhnlich kann ein Web Bean mehrere Binding-Typen unterstützen:"
 
 #. Tag: programlisting
 #: xml.xml:85
@@ -269,7 +276,7 @@ msgstr ""
 msgid ""
 "Interceptors and decorators are just simple Web Beans, so they may be "
 "declared just like any other simple Web Bean:"
-msgstr ""
+msgstr "Interzeptoren und Dekoratoren sind nur einfache Web Beans und können daher wie jedes andere einfache Web Bean deklariert werden:"
 
 #. Tag: programlisting
 #: xml.xml:90
@@ -289,7 +296,7 @@ msgstr ""
 #: xml.xml:95
 #, no-c-format
 msgid "Declaring Web Bean members"
-msgstr ""
+msgstr "Deklaration von Web Bean Mitgliedern"
 
 #. Tag: para
 #: xml.xml:97
@@ -301,13 +308,13 @@ msgstr "TODO!"
 #: xml.xml:104
 #, no-c-format
 msgid "Declaring inline Web Beans"
-msgstr ""
+msgstr "Deklaration von inline Web Beans"
 
 #. Tag: para
 #: xml.xml:106
 #, no-c-format
 msgid "Web Beans lets us define a Web Bean at an injection point. For example:"
-msgstr ""
+msgstr "Web Beans lassen uns ein Web Bean an einem Einspeisungspunkt definieren. Zum Beispiel:"
 
 #. Tag: programlisting
 #: xml.xml:108
@@ -344,7 +351,7 @@ msgid ""
 "a set of initial field values. This Web Bean has a special, container-"
 "generated binding and is therefore injectable only to the specific injection "
 "point at which it is declared."
-msgstr ""
+msgstr "Das <literal>&lt;Name&gt;</literal>-Element deklariert ein einfaches Web Bean von Geltungsbereich <literal>@Dependent</literal> und Klasse <literal>Name</literal> mit einem Satz anfänglicher Feldwerte. Dieses Web Bean besitzt ein spezielles, Container-generiertes Binding und ist daher nur an dem spezifischen Einspeisungspunkt einspeisbar, an dem es deklariert wird."
 
 #. Tag: para
 #: xml.xml:116
@@ -353,13 +360,13 @@ msgid ""
 "This simple but powerful feature allows the Web Beans XML format to be used "
 "to specify whole graphs of Java objects. It's not quite a full databinding "
 "solution, but it's close!"
-msgstr ""
+msgstr "Dieses einfache aber leistungsfähige Feature gestattet die Verwendung des Web Beans XML-Formats zur Festlegung ganzer Diagramme von Java-Objekten. Es ist noch keine volndige datenbindende Lösung, aber ganz nah dran!"
 
 #. Tag: title
 #: xml.xml:123
 #, no-c-format
 msgid "Using a schema"
-msgstr ""
+msgstr "Verwendung eines Schemas"
 
 #. Tag: para
 #: xml.xml:125
@@ -369,7 +376,7 @@ msgid ""
 "developers, or who don't have access to our code, we need to provide a "
 "schema. There's nothing specific to Web Beans about writing or using the "
 "schema."
-msgstr ""
+msgstr "Wenn Personen, die keine Java-Entwickler sind, Autoren unseres XML-Dokumentformats sein sollen oder diese keinen Zugriff auf unseren Code haben, so müssen wir ein Schema bereitstellen. Es gibt nichts, was hinsichtlich des Schreibens oder der Verwendung des Schemas spezifisch für Web Beans ist."
 
 #. Tag: programlisting
 #: xml.xml:130
@@ -410,5 +417,5 @@ msgid ""
 "Writing an XML schema is quite tedious. Therefore, the Web Beans RI project "
 "will provide a tool which automatically generates the XML schema from "
 "compiled Java code."
-msgstr ""
+msgstr "Das Schreiben eines XML-Schemas ist recht mühselig. Daher liefert das Web Beans RI Projekt ein Tool, das automatisch das XML-Schema aus kompiliertem Java-Code generiert."
 
