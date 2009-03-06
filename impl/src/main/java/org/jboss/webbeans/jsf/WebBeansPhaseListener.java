@@ -53,10 +53,6 @@ public class WebBeansPhaseListener implements PhaseListener
       {
          beforeRenderReponse();
       }
-      else if (phaseEvent.getPhaseId().equals(PhaseId.APPLY_REQUEST_VALUES))
-      {
-         beforeApplyRequestValues();
-      }
    }
 
    /**
@@ -74,15 +70,6 @@ public class WebBeansPhaseListener implements PhaseListener
       {
          PhaseHelper.removePropagationComponent();
       }
-   }
-
-   /**
-    * Run before request values are applied
-    */
-   private void beforeApplyRequestValues()
-   {
-      log.trace("In before apply values phase");
-      ConversationContext.INSTANCE.setActive(true);
    }
 
    /**
@@ -113,6 +100,7 @@ public class WebBeansPhaseListener implements PhaseListener
       CurrentManager.rootManager().getInstanceByType(ConversationManager.class).beginOrRestoreConversation(PhaseHelper.getConversationId());
       String cid = CurrentManager.rootManager().getInstanceByType(Conversation.class).getId();
       ConversationContext.INSTANCE.setBeanStore(new ConversationBeanStore(session, cid));
+      ConversationContext.INSTANCE.setActive(true);
    }
 
    /**

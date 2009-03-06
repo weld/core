@@ -122,7 +122,7 @@ public class ServletConversationManager implements ConversationManager, Serializ
          // We got an incoming conversation ID but it was not in the map of
          // known ones, nothing to do. Log and return to continue with a
          // transient conversation
-         log.info("Could not restore long-running conversation " + cid);
+         log.warn("Could not restore long-running conversation " + cid);
          return;
       }
       ConversationEntry resumedConversationEntry = longRunningConversations.get(cid);
