@@ -29,8 +29,8 @@ import javax.inject.DefinitionException;
 import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.util.ConcurrentCache;
 import org.jboss.webbeans.util.Proxies;
+import org.jboss.webbeans.util.collections.ConcurrentCache;
 
 /**
  * A proxy pool for holding scope adaptors (client proxies)

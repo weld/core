@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.util;
+package org.jboss.webbeans.util.collections;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -24,7 +24,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
-import com.google.common.collect.ForwardingMap;
 
 /**
  * Represents a thread safe map

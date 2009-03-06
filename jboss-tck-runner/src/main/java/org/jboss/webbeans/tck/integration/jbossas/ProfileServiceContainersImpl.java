@@ -18,7 +18,6 @@ import org.jboss.jsr299.tck.api.DeploymentException;
 import org.jboss.managed.api.ManagedDeployment.DeploymentPhase;
 import org.jboss.profileservice.spi.ProfileKey;
 import org.jboss.profileservice.spi.ProfileService;
-import org.jboss.test.JBossTestServices;
 import org.jboss.virtual.VFS;
 
 public class ProfileServiceContainersImpl extends AbstractContainersImpl
@@ -29,15 +28,11 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
    private final List<String> failedUndeployments;
 
    private DeploymentManager deploymentManager;
-   private JBossTestServices testServices;
    private final File tmpdir;
 
 
    public ProfileServiceContainersImpl() throws Exception
    {
-      this.testServices = new JBossTestServices(JBossTestServicesContainersImpl.class);
-      this.testServices.setUpLogging();
-      this.testServices.init();
       tmpdir = new File(System.getProperty("java.io.tmpdir"), "org.jboss.webbeans.tck.integration.jbossas");
       tmpdir.mkdir();
       tmpdir.deleteOnExit();
@@ -136,7 +131,7 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
    protected void initDeploymentManager() throws Exception
    {
       String profileName = "default";
-      InitialContext ctx = testServices.getInitialContext();
+      InitialContext ctx = new InitialContext();
       ProfileService ps = (ProfileService) ctx.lookup("ProfileService");
       deploymentManager = ps.getDeploymentManager();
       ProfileKey defaultKey = new ProfileKey(profileName);

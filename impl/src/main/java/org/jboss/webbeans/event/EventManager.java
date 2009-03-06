@@ -30,8 +30,7 @@ import javax.event.Observer;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
-
-import com.google.common.collect.ForwardingMap;
+import org.jboss.webbeans.util.collections.ForwardingMap;
 
 /**
  * The event bus is where observers are registered and events are fired.

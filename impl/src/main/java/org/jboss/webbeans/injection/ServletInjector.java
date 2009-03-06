@@ -8,7 +8,7 @@ import javax.servlet.Servlet;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.util.Beans;
-import org.jboss.webbeans.util.ConcurrentCache;
+import org.jboss.webbeans.util.collections.ConcurrentCache;
 
 public class ServletInjector
 {

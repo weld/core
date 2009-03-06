@@ -28,11 +28,6 @@
       </dependency>
       
       <dependency>
-         <groupId>org.jboss.test</groupId>
-         <artifactId>jboss-test</artifactId>
-      </dependency>
-      
-      <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
          <classifier>jdk15</classifier>
@@ -43,12 +38,41 @@
          <artifactId>jsr299-tck-impl</artifactId>
       </dependency>
       
+<!--      <dependency>-->
+<!--         <groupId>org.jboss.naming</groupId>-->
+<!--         <artifactId>jnp-client</artifactId>-->
+<!--         <scope>runtime</scope>-->
+<!--      </dependency>-->
+<!--      -->
+<!--      <dependency>-->
+<!--         <groupId>org.jboss.aspects</groupId>-->
+<!--         <artifactId>jboss-security-aspects</artifactId>-->
+<!--         <scope>runtime</scope>-->
+<!--      </dependency>-->
+<!--      -->
+<!--      <dependency>-->
+<!--         <groupId>org.jboss.aspects</groupId>-->
+<!--         <artifactId>jboss-remoting-aspects</artifactId>-->
+<!--         <scope>runtime</scope>-->
+<!--      </dependency>-->
+<!--      -->
+<!--      <dependency>-->
+<!--         <groupId>oswego-concurrent</groupId>-->
+<!--         <artifactId>concurrent</artifactId>-->
+<!--         <scope>runtime</scope>-->
+<!--      </dependency>-->
+<!---->
+      <dependency>
+         <groupId>org.jboss.integration</groupId>
+         <artifactId>jboss-profileservice-spi</artifactId>
+      </dependency>
+      
       <dependency>
          <groupId>org.jboss.jbossas</groupId>
          <artifactId>jboss-as-client</artifactId>
          <type>pom</type>
+         <scope>runtime</scope>
       </dependency>
-      
       
    </dependencies>
    

@@ -35,8 +35,8 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedItem;
 import org.jboss.webbeans.metadata.BindingTypeModel;
 import org.jboss.webbeans.metadata.MetaDataCache;
-import org.jboss.webbeans.util.ConcurrentCache;
 import org.jboss.webbeans.util.ListComparator;
+import org.jboss.webbeans.util.collections.ConcurrentCache;
 
 /**
  * Implementation of Web Beans type safe and name based bean resolution

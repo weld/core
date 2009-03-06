@@ -34,8 +34,7 @@ import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedMember;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
-
-import com.google.common.collect.ForwardingMap;
+import org.jboss.webbeans.util.collections.ForwardingMap;
 
 /**
  * Represents an abstract annotated memeber (field, method or constructor)

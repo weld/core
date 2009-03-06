@@ -15,8 +15,7 @@ import javax.inject.BindingType;
 
 import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.util.Strings;
-
-import com.google.common.collect.ForwardingMap;
+import org.jboss.webbeans.util.collections.ForwardingMap;
 
 public class AnnotationStore
 {

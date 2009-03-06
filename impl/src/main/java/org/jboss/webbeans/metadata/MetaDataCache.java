@@ -20,7 +20,7 @@ package org.jboss.webbeans.metadata;
 import java.lang.annotation.Annotation;
 import java.util.concurrent.Callable;
 
-import org.jboss.webbeans.util.ConcurrentCache;
+import org.jboss.webbeans.util.collections.ConcurrentCache;
 
 /**
  * Metadata singleton for holding EJB metadata, scope models etc.

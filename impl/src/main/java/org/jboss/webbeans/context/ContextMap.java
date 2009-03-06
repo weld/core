@@ -26,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.context.Context;
 
-import com.google.common.collect.ForwardingMap;
+import org.jboss.webbeans.util.collections.ForwardingMap;
 
 /**
  * A map from a scope to a list of contexts

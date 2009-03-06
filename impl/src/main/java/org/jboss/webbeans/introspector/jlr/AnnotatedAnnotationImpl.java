@@ -30,8 +30,7 @@ import org.jboss.webbeans.introspector.AnnotatedAnnotation;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.util.Strings;
-
-import com.google.common.collect.ForwardingMap;
+import org.jboss.webbeans.util.collections.ForwardingMap;
 
 /**
  * Represents an annotated annotation
