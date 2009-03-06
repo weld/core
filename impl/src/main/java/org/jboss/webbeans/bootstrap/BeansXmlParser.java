@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.DefinitionException;
 import javax.inject.DeploymentException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -174,7 +175,7 @@ public class BeansXmlParser
          {
             if (child instanceof Element)
             {
-               String className = getAsClassName(child.getNodeName(), deployElement.getNamespaces());
+               String className = getAsClassName(child.getNodeName(), deployElement.getNamespaces(), deployElement.getFile());
                if (className != null)
                {
                   enabledDeploymentTypes.add(resourceLoader.classForName(className).asSubclass(Annotation.class));
@@ -184,7 +185,7 @@ public class BeansXmlParser
       }
    }
    
-   private static String getAsClassName(String nodeName, Map<String, String> namespaces)
+   private static String getAsClassName(String nodeName, Map<String, String> namespaces, URL file)
    {
       String namespacePrefix;
       String simpleClassName;
@@ -199,6 +200,10 @@ public class BeansXmlParser
          simpleClassName = nodeName;
       }
       String namespace = namespaces.get(namespacePrefix);
+      if (namespace == null)
+      {
+         throw new DefinitionException("Prefix " + namespacePrefix + " has no namespace mapped in " + file.getPath());
+      }
       String packageName;
       if (namespace.startsWith("urn:java:ee"))
       {
