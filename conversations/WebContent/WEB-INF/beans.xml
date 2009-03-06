@@ -1,0 +1,7 @@
+<Beans xmlns="urn:java:ee" xmlns:conversations="urn:java:org.jboss.webbeans.examples.conversations">
+	<Deploy>
+		<Standard />
+		<Production />
+		<conversations:Example />
+	</Deploy>
+</Beans>

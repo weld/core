@@ -12,9 +12,11 @@ import javax.inject.Produces;
 
 import java.io.Serializable;
 
+import org.jboss.webbeans.WebBean;
 import org.jboss.webbeans.conversation.ConversationIdGenerator;
 import org.jboss.webbeans.conversation.ConversationManager;
 import org.jboss.webbeans.conversation.bindings.ConversationInactivityTimeout;
+
 
 @SessionScoped
 @Named("conversations")
@@ -28,6 +30,14 @@ public class Conversations implements Serializable {
    public Conversations() 
    {
    }
+   
+   @Produces
+   @ConversationInactivityTimeout
+   @Example
+   public static long getConversationTimeoutInMilliseconds()
+   {
+      return 10000;
+   }   
    
    public void abandon() 
    {
