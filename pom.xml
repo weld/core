@@ -72,16 +72,16 @@
    </pluginRepositories>
 
    <modules>
-      <module>webbeans-api</module>
-      <module>webbeans-ri</module>
-      <module>webbeans-ri-spi</module>
+      <module>api</module>
+      <module>impl</module>
+      <module>spi</module>
       <module>porting-package</module>
       <module>jboss-tck-runner</module>
    </modules>
    
    <properties>
       <jsr299.tck.version>1.0.0-SNAPSHOT</jsr299.tck.version>
-      <webbeans.ri.version>1.0.0-SNAPSHOT</webbeans.ri.version>
+      <webbeans.version>1.0.0-SNAPSHOT</webbeans.version>
    </properties>
    
    <dependencyManagement>
@@ -237,25 +237,25 @@
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>webbeans-api</artifactId>
-            <version>${webbeans.ri.version}</version>
+            <version>${webbeans.version}</version>
          </dependency>
          
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>webbeans-ri</artifactId>
-            <version>${webbeans.ri.version}</version>
+            <version>${webbeans.version}</version>
          </dependency>
 
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>webbeans-ri-spi</artifactId>
-            <version>${webbeans.ri.version}</version>
+            <version>${webbeans.version}</version>
          </dependency>
          
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>webbeans-porting-package</artifactId>
-            <version>${webbeans.ri.version}</version>
+            <version>${webbeans.version}</version>
          </dependency>
          
          <dependency>
