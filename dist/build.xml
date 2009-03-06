@@ -26,8 +26,8 @@
 		<maven target="clean" basedir="${refdoc.dir}" />
 		<maven target="clean" basedir="${examples.dir}" />
 		<delete dir="${wbri.dir}/jboss-as/target" />
-		<delete dir="${wbri.dir}/webbeans-ri/test-output" />
-		<delete dir="${wbri.dir}/webbeans-ri/ObjectStore" />
+		<delete dir="${wbri.dir}/impl/test-output" />
+		<delete dir="${wbri.dir}/impl/ObjectStore" />
 		<delete dir="${dist.dir}" failonerror="false"/>
 		<mkdir dir="${dist.dir}"/>
 		
@@ -35,9 +35,9 @@
 		      
       <copy todir="${dist.src.dir}">
          <fileset dir="${wbri.dir}">
-            <include name="webbeans-ri/**" />
-         	<include name="webbeans-ri-spi/**" />
-         	<include name="webbeans-api/**" />
+            <include name="impl/**" />
+         	<include name="spi/**" />
+         	<include name="api/**" />
          	<include name="pom.xml" />
          	<exclude name="**/.settings/**" />
          	<exclude name="**/.classpath" />
