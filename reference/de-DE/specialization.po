@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: specialization\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-10 14:18+0000\n"
-"PO-Revision-Date: 2009-03-05 18:10+1100\n"
+"PO-Revision-Date: 2009-03-06 15:52+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: specialization.xml:4
 #, no-c-format
 msgid "Specialization"
-msgstr "Spezialisierung"
+msgstr "Specialization (Spezialisierung)"
 
 #. Tag: para
 #: specialization.xml:6
@@ -30,6 +30,10 @@ msgid ""
 "time. For example, the following enterprise Web Bean provides an "
 "implementation of the API <literal>PaymentProcessor</literal> in production:"
 msgstr ""
+"Wir haben bereits gesehen, wie das Web Beans Modell zur Dependency Einspeisung uns die "
+"<emphasis>Außerkraftsetzung</emphasis> der Implementierung eines API zum Zeitpunkt des Deployment "
+"gestattet. Das folgende Enterprise Web Bean zum Beispiel liefert eine "
+"Implementierung der API <literal>PaymentProcessor</literal> in Production:"
 
 #. Tag: programlisting
 #: specialization.xml:11
@@ -54,6 +58,8 @@ msgid ""
 "But in our staging environment, we override that implementation of "
 "<literal>PaymentProcessor</literal> with a different Web Bean:"
 msgstr ""
+"Aber in unserer Staging-Umgebung setzen wir diese Implementierung von "
+"<literal>PaymentProcessor</literal> mit einem anderen Web Bean außer Kraft:"
 
 #. Tag: programlisting
 #: specialization.xml:16
@@ -82,6 +88,8 @@ msgid ""
 "default deployment type <literal>@Production</literal>, and therefore "
 "clients with the following injection point:"
 msgstr ""
+"Wir haben bei <literal>StagingCreditCardPaymentProcessor</"
+"literal> versucht, <literal>AsyncPaymentProcessor</literal> in einem bestimmten Deployment des Systems komplett zu ersetzen. In diesem Deployment, hätte der Deployment Typ <literal>@Staging</literal> eine höhere Priorität als der standardmäßige Deployment Typ <literal>@Production</literal> und daher Clients mit dem folgenden Einspeisungspunkt:"
 
 #. Tag: programlisting
 #: specialization.xml:24
@@ -112,6 +120,8 @@ msgid ""
 "the higher-priority Web Bean may not implement all the API types of the Web "
 "Bean that it attempts to override,"
 msgstr ""
+"Das Web Bean mit der höheren Priorität implementiert möglicherweise nicht alle API-Typen des Web "
+"Beans, das es außer Kraft zu setzen versucht, "
 
 #. Tag: para
 #: specialization.xml:36
@@ -119,7 +129,7 @@ msgstr ""
 msgid ""
 "the higher-priority Web Bean may not declare all the binding types of the "
 "Web Bean that it attempts to override,"
-msgstr ""
+msgstr "Das Web Bean mit der höheren Priorität deklariert möglicherweise nicht alle Binding-Typen des Web Beans, das es außer Kraft zu setzen versucht, "
 
 #. Tag: para
 #: specialization.xml:40
@@ -127,7 +137,7 @@ msgstr ""
 msgid ""
 "the higher-priority Web Bean might not have the same name as the Web Bean "
 "that it attempts to override, or"
-msgstr ""
+msgstr "Das Web Bean mit der höheren Priorität besitzt möglicherweise nicht denselben Namen wie das Web Bean, das es außer Kraft zu setzen versucht oder "
 
 #. Tag: para
 #: specialization.xml:44
@@ -136,6 +146,8 @@ msgid ""
 "the Web Bean that it attempts to override might declare a producer method, "
 "disposal method or observer method."
 msgstr ""
+"das Web Bean, das es außer Kraft zu setzen versucht deklariert möglicherweise eine Producer Methode, "
+"eine Bereinigungsmethode odereine Observer Methode."
 
 #. Tag: para
 #: specialization.xml:49
@@ -144,7 +156,7 @@ msgid ""
 "In each of these cases, the Web Bean that we tried to override could still "
 "be called at runtime. Therefore, overriding is somewhat prone to developer "
 "error."
-msgstr ""
+msgstr "In allen diesen Fällen kann das Web Bean, das wir außer Kraft zu setzen versucht haben, nach wie vor zur Runtime aufgerufen werden. Daher ist Außerkraftsetzung anfällig für Entwicklerfehler."
 
 #. Tag: para
 #: specialization.xml:52
@@ -155,6 +167,8 @@ msgid ""
 "a little esoteric at first, but it's easy to use in practice, and you'll "
 "really appreciate the extra security it provides."
 msgstr ""
+"Web Beans bieten ein spezielles Feature namens <emphasis>Specialization</"
+"emphasis> (Spezialisierung), das dem Entwickler hilft, diese Stolperfallen zu umgehen. Specialization wirkt auf den ersten Blick etwas ungewöhnlich, ist aber in der Praxis einfach zu verwenden und Sie werden die zusätzliche Sicherheit, die es bietet bald schätzen."
 
 #. Tag: title
 #: specialization.xml:58
@@ -169,12 +183,14 @@ msgid ""
 "Specialization is a feature that is specific to simple and enterprise Web "
 "Beans. To make use of specialization, the higher-priority Web Bean must:"
 msgstr ""
+"Specialization ist ein Feature das spezifisch für einfache und Enterprise Web "
+"Beans ist. Um Specialization zu nutzen, muss ein Web Bean mit höherer Priorität:"
 
 #. Tag: para
 #: specialization.xml:65
 #, no-c-format
 msgid "be a direct subclass of the Web Bean it overrides, and"
-msgstr ""
+msgstr "eine direkt Subklasse des Web Beans sein, das es außer Kraft setzt und "
 
 #. Tag: para
 #: specialization.xml:68
@@ -183,7 +199,7 @@ msgid ""
 "be a simple Web Bean if the Web Bean it overrides is a simple Web Bean or an "
 "enterprise Web Bean if the Web Bean it overrides is an enterprise Web Bean, "
 "and"
-msgstr ""
+msgstr "ein einfaches Web Bean sein, falls das Web Bean, das es außer Kraft setzt ein einfaches Web Bean ist oder ein Enterprise Web Bean sein, falls das Web Bean, das es außer Kraft setzt ein Enterprise Web Bean ist und "
 
 #. Tag: para
 #: specialization.xml:73
@@ -213,7 +229,7 @@ msgstr ""
 msgid ""
 "We say that the higher-priority Web Bean <emphasis>specializes</emphasis> "
 "its superclass."
-msgstr ""
+msgstr "Wir sprechen davon, dass das Web Bean mit höherer Priorität seine Superklasse <emphasis>spezialisiert</emphasis>."
 
 #. Tag: title
 #: specialization.xml:85
@@ -233,7 +249,7 @@ msgstr "Wann Spezialisierung eingesetzt wird:"
 msgid ""
 "the binding types of the superclass are automatically inherited by the Web "
 "Bean annotated <literal>@Specializes</literal>, and"
-msgstr ""
+msgstr "DIe Binding-Typen der Superklasse werden automatisch durch das mit <literal>@Specializes</literal> annotierte Web Bean geerbt und "
 
 #. Tag: para
 #: specialization.xml:95
@@ -241,7 +257,7 @@ msgstr ""
 msgid ""
 "the Web Bean name of the superclass is automatically inherited by the Web "
 "Bean annotated <literal>@Specializes</literal>, and"
-msgstr ""
+msgstr "der Web Bean Name der Superklasse wird automatisch automatisch durch das mit <literal>@Specializes</literal> annotierte Web Bean geerbt und "
 
 #. Tag: para
 #: specialization.xml:99
@@ -251,7 +267,7 @@ msgid ""
 "superclass are called upon an instance of the Web Bean annotated "
 "<literal>@Specializes</literal>."
 msgstr ""
-"Durch die Superklasse deklarierte Producer-Methoden, Bereinigungsmethoden und Observer-Methoden "
+"durch die Superklasse deklarierte Producer-Methoden, Bereinigungsmethoden und Observer-Methoden "
 "werden durch eine Instanz des mit <literal>@Specializes</literal> annotierten Web Beans aufgerufen."
 
 #. Tag: para
