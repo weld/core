@@ -8,6 +8,7 @@
     <ui:define name="content">
     	<h:form>
     		<h:panelGrid columns="1">
+    			<h:inputText value="#{data.data}" />
 				<h:outputText value="Long-running: #{conversations.conversationList}"/>
 	    		<h:outputText value="Current: #{conversation}"/>
 	    		<h:panelGroup>
@@ -15,7 +16,7 @@
     				<h:commandButton action="#{conversations.noop}" value="noop"/>
     				<h:commandButton action="#{conversation.end}" value="end"/>
     				<h:commandButton action="#{conversations.abandon}" value="abandon"/>
-    				<h:commandButton action="#{conversations.longop}" value="longop"/>
+    				<h:commandButton action="#{data.longop}" value="longop"/>
     			</h:panelGroup>
     			<h:inputText value="#{conversations.cid}"/>
     			<h:commandButton action="#{conversations.switchConversation}" value="switch"/>

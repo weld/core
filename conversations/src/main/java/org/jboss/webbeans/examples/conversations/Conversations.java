@@ -63,17 +63,6 @@ public class Conversations implements Serializable {
       return longRunningConversations;
    }
 
-   public void longop() {
-      try 
-      {
-         Thread.sleep(5000);
-      } 
-      catch (InterruptedException e) 
-      {
-         // non-issue
-      }
-   }
-   
    public void switchConversation() 
    {
       conversation.begin(cid);
