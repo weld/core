@@ -59,7 +59,6 @@ public class ServletLifecycle extends AbstractLifecycle
     */
    public void beginSession(HttpSession session)
    {
-      super.beginSession(session.getId(), null);
    }
 
    /**
@@ -85,7 +84,7 @@ public class ServletLifecycle extends AbstractLifecycle
    protected BeanStore restoreSessionContext(HttpSession session)
    {
       BeanStore sessionBeanStore = new HttpSessionBeanStore(session);
-      SessionContext.INSTANCE.setBeanStore(sessionBeanStore);
+      super.restoreSession(session.getId(), sessionBeanStore);
       CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
       return sessionBeanStore;
    }

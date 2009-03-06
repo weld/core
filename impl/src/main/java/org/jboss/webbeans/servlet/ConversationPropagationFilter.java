@@ -39,7 +39,7 @@ import org.jboss.webbeans.conversation.bindings.ConversationIdName;
  * @author Nicklas Karlsson
  * 
  */
-public class WebBeansServletFilter implements Filter
+public class ConversationPropagationFilter implements Filter
 {
 
    /**

@@ -99,7 +99,7 @@ public class MockLifecycle extends AbstractLifecycle
    
    public void beginSession()
    {
-      super.beginSession("Mock", sessionBeanStore);
+      super.restoreSession("Mock", sessionBeanStore);
    }
    
    public void endSession()

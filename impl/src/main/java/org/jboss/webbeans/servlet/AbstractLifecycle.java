@@ -34,9 +34,9 @@ public abstract class AbstractLifecycle
 
    private static LogProvider log = Logging.getLogProvider(AbstractLifecycle.class);
 
-   protected void beginSession(String id, BeanStore sessionBeanStore)
+   protected void restoreSession(String id, BeanStore sessionBeanStore)
    {
-      log.trace("Starting session " + id);
+      log.trace("Restoring session " + id);
       SessionContext.INSTANCE.setBeanStore(sessionBeanStore);
       SessionContext.INSTANCE.setActive(true);
    }
