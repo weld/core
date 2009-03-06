@@ -77,6 +77,10 @@ public class ConversationEntry
     */
    public boolean cancelTermination()
    {
+      if (terminationHandle.isCancelled())
+      {
+         return true;
+      }
       boolean success = terminationHandle.cancel(false);
       if (success)
       {
@@ -135,6 +139,10 @@ public class ConversationEntry
     */
    public boolean unlock()
    {
+      if (!concurrencyLock.isLocked())
+      {
+         return true;
+      }
       if (concurrencyLock.isHeldByCurrentThread())
       {
          concurrencyLock.unlock();

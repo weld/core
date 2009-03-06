@@ -172,10 +172,10 @@ public class ServletConversationManager implements ConversationManager, Serializ
          // canceled in the
          // beginConversation) or the case where we have a completely new
          // long-running conversation.
-         if (longRunningConversations.containsKey(currentConversation.getId()))
+         if (longRunningConversations.containsKey(cid))
          {
-            longRunningConversations.get(currentConversation.getId()).unlock();
-            longRunningConversations.get(currentConversation.getId()).reScheduleTermination(terminationHandle);
+            longRunningConversations.get(cid).unlock();
+            longRunningConversations.get(cid).reScheduleTermination(terminationHandle);
          }
          else
          {
