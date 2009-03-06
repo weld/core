@@ -20,6 +20,7 @@
       <module>numberguess</module>
       <module>translator</module>
       <module>login</module>
+      <module>conversations</module>
    </modules>
 
    <build>

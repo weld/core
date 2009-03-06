@@ -33,13 +33,13 @@
       
       <dependency>
          <groupId>org.jboss.webbeans</groupId>
-         <artifactId>webbeans-api</artifactId>
+         <artifactId>jsr299-api</artifactId>
          <scope>provided</scope>
       </dependency>
 
       <dependency>
          <groupId>org.jboss.webbeans</groupId>
-         <artifactId>webbeans-ri</artifactId>
+         <artifactId>webbeans-core</artifactId>
          <scope>provided</scope>
       </dependency>
       
@@ -75,6 +75,7 @@
             </exclusion>
          </exclusions>
       </dependency>
+      
       <dependency>
       	<groupId>javax.annotation</groupId>
       	<artifactId>jsr250-api</artifactId>

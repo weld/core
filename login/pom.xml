@@ -33,7 +33,7 @@
       
       <dependency>
          <groupId>org.jboss.webbeans</groupId>
-         <artifactId>webbeans-api</artifactId>
+         <artifactId>jsr299-api</artifactId>
          <scope>provided</scope>
       </dependency>
       
