@@ -180,6 +180,16 @@
             in use for each resolution request.
          </para>
          
+<!--         <para>-->
+<!--            JSR-299 also requires that when the <literal>Bean.destroy()</literal>-->
+<!--            is called on a session bean that the container removes the stateful-->
+<!--            session bean. As there is no specified way of doing this, the-->
+<!--            <literal>EjbResolver.removeEjb()</literal> method is used by Web -->
+<!--            Beans to request the EJB container remove a stateful session bean.-->
+<!--            Web Beans assumes that the EJB container will invoke any-->
+<!--            <literal>@PreDestroy</literal> lifecycle callbacks.-->
+<!--         </para>-->
+         
        </section>
        
        <section>
@@ -402,6 +412,13 @@
                   automatically, or through user configuration, for each Web 
                   Beans application which uses enterprise beans.
                </para>
+               
+               <important>
+                  <para>
+                     You must register the <literal>SessionBeanInterceptor</literal>
+                     as the inner most interceptor in the stack for all EJBs. 
+                  </para>
+               </important>
             </listitem>
          </varlistentry>
          <varlistentry>
