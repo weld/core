@@ -235,17 +235,20 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
    }
 
-   /**
-    * Destroys an instance of the bean
-    * 
-    * @param instance The instance
-    */
    public void destroy(T instance)
    {
+      if (instance == null)
+      {
+         throw new IllegalArgumentException("instance to destroy cannot be null");
+      }
       EnterpriseBeanInstance enterpiseBeanInstance = (EnterpriseBeanInstance) instance;
       if (enterpiseBeanInstance.isDestroyed())
       {
          return;
+      }
+      else
+      {
+         // TODO getManager().getEjbResolver().removeEjb(enterpiseBeanInstance.getUnproxiedInstances());
       }
    }
 

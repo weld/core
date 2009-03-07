@@ -4,6 +4,7 @@
 package org.jboss.webbeans.mock;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -43,5 +44,10 @@ final class MockEjBResolver implements EjbResolver
    public Object resolveResource(InjectionPoint injectionPoint, NamingContext namingContext)
    {
       return null;
+   }
+   
+   public void removeEjb(Collection<Object> instance)
+   {
+      // No-op
    }
 }

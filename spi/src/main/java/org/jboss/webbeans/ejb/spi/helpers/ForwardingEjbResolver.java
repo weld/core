@@ -51,6 +51,11 @@ public abstract class ForwardingEjbResolver implements EjbResolver
    {
       return delegate().resolveResource(injectionPoint, namingContext);
    }
+//   
+//   public void removeEjb(Collection<Object> instance)
+//   {
+//      delegate().removeEjb(instance);
+//   }
    
    @Override
    public boolean equals(Object obj)

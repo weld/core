@@ -10,6 +10,8 @@ import org.jboss.webbeans.resources.spi.NamingContext;
  * A container should implement this interface to allow the Web Beans RI to
  * resolve EJBs, Resources and JPA persistence units
  * 
+ * TODO This probably needs renaming to EjbLifecycle
+ * 
  * @author Pete Muir
  * 
  */
@@ -21,10 +23,11 @@ public interface EjbResolver
    /**
     * Resolve the value for the given @EJB injection point
     * 
-    * @param injectionPoint the injection point metadata
+    * @param injectionPoint
+    *           the injection point metadata
     * @return an instance of the EJB
     * @throws IllegalArgumentException
-    *            if the injection point is not annotated with @EJB, or, if the 
+    *            if the injection point is not annotated with @EJB, or, if the
     *            injection point is a method that doesn't follow JavaBean
     *            conventions
     * @throws IllegalStateException
@@ -32,16 +35,25 @@ public interface EjbResolver
     */
    public Object resolveEjb(InjectionPoint injectionPoint, NamingContext namingContext);
    
+//   /**
+//    * Request the EJB container remove an EJB
+//    * 
+//    * @param instances all objects retrieved from the container for this EJB
+//    */
+//   public void removeEjb(Collection<Object> instances);
+   
    /**
     * Resolve the value for the given @PersistenceContext injection point
     * 
-    * @param injectionPoint the injection point metadata
-    * @param namingContext the pluggable Web Beans JNDI lookup facility
+    * @param injectionPoint
+    *           the injection point metadata
+    * @param namingContext
+    *           the pluggable Web Beans JNDI lookup facility
     * @return an instance of the persistence unit
     * @throws IllegalArgumentException
-    *            if the injection point is not annotated with 
-    *            @PersistenceContext, or, if the injection point is a method 
-    *            that doesn't follow JavaBean conventions
+    *            if the injection point is not annotated with
+    * @PersistenceContext, or, if the injection point is a method that doesn't
+    *                      follow JavaBean conventions
     * @throws IllegalStateException
     *            if no suitable persistence units can be resolved for injection
     */
@@ -50,12 +62,14 @@ public interface EjbResolver
    /**
     * Resolve the value for the given @Resource injection point
     * 
-    * @param injectionPoint the injection point metadata
-    * @param namingContext the pluggable Web Beans JNDI lookup facility
+    * @param injectionPoint
+    *           the injection point metadata
+    * @param namingContext
+    *           the pluggable Web Beans JNDI lookup facility
     * @return an instance of the resource
     * @throws IllegalArgumentException
-    *            if the injection point is not annotated with @Resource, or, if 
-    *            the injection point is a method that doesn't follow JavaBean 
+    *            if the injection point is not annotated with @Resource, or, if
+    *            the injection point is a method that doesn't follow JavaBean
     *            conventions
     * @throws IllegalStateException
     *            if no resource can be resolved for injection
@@ -82,6 +96,5 @@ public interface EjbResolver
     * @return the annotation which defines a @Resource injection point
     */
    public Class<? extends Annotation> getResourceAnnotation();
-   
    
 }
