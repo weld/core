@@ -28,5 +28,16 @@
    <session-config>
       <session-timeout>10</session-timeout>
    </session-config>
+   
+   <filter>
+      <filter-name>Web Beans Conversation Propagation Filter</filter-name>
+      <filter-class>org.jboss.webbeans.servlet.ConversationPropagationFilter</filter-class>
+   </filter>
+   
+   <filter-mapping>
+      <filter-name>Web Beans Conversation Propagation Filter</filter-name>
+      <servlet-name>Faces Servlet</servlet-name>
+      <url-pattern>*.jsf</url-pattern>
+   </filter-mapping>
 
 </web-app>

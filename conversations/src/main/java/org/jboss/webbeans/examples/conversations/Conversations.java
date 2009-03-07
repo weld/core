@@ -1,5 +1,6 @@
 package org.jboss.webbeans.examples.conversations;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +11,6 @@ import javax.faces.model.SelectItem;
 import javax.inject.Current;
 import javax.inject.Produces;
 
-import java.io.Serializable;
-
-import org.jboss.webbeans.WebBean;
 import org.jboss.webbeans.conversation.ConversationIdGenerator;
 import org.jboss.webbeans.conversation.ConversationManager;
 import org.jboss.webbeans.conversation.bindings.ConversationInactivityTimeout;
@@ -38,14 +36,31 @@ public class Conversations implements Serializable {
    {
       return 10000;
    }   
-   
-   public void abandon() 
+
+   public String end()
    {
-      conversation.begin(id.nextId());
+      conversation.end();
+      return "home";
+   }
+   
+   public void begin()
+   {
+      conversation.begin();
+   }
+   
+   public String beginAndRedirect()
+   {
+      conversation.begin();
+      return "home";
    }
    
    public void noop()
    {   
+   }
+   
+   public String noopAndRedirect()
+   {   
+      return "home";
    }
    
    public Iterable<Conversation> getConversationList() 

@@ -12,9 +12,11 @@
 				<h:outputText value="Long-running: #{conversations.conversationList}"/>
 	    		<h:outputText value="Current: #{conversation}"/>
 	    		<h:panelGroup>
-    				<h:commandButton action="#{conversation.begin}" value="begin"/>
+    				<h:commandButton action="#{conversations.begin}" value="begin"/>
+    				<h:commandButton action="#{conversations.beginAndRedirect}" value="beginAndRedirect"/>
     				<h:commandButton action="#{conversations.noop}" value="noop"/>
-    				<h:commandButton action="#{conversation.end}" value="end"/>
+    				<h:commandButton action="#{conversations.noopAndRedirect}" value="noopAndRedirect"/>
+    				<h:commandButton action="#{conversations.end}" value="end"/>
     			   <h:outputLink value="#{facesContext.externalContext.requestContextPath}/home.jsf">Abandon</h:outputLink>
     				<h:commandButton action="#{data.longop}" value="longop"/>
     			</h:panelGroup>
