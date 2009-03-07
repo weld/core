@@ -2,9 +2,12 @@ package org.jboss.webbeans.test.unit.implementation;
 
 import java.util.Set;
 
+import javax.inject.New;
+
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.literal.NewLiteral;
 import org.jboss.webbeans.test.unit.AbstractTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -14,12 +17,19 @@ public class NewSimpleBeanTest extends AbstractTest
    private SimpleBean<WrappedSimpleBean> wrappedSimpleBean;
    private NewSimpleBean<WrappedSimpleBean> newSimpleBean;
    
+   private static final New NEW_LITERAL = new NewLiteral();
+   
    @BeforeMethod
    public void initNewBean() {
-      wrappedSimpleBean = createSimpleBean(WrappedSimpleBean.class);
-      manager.addBean(wrappedSimpleBean);
-      newSimpleBean = createNewSimpleBean(WrappedSimpleBean.class);
-      manager.addBean(newSimpleBean);
+      deployBeans(WrappedSimpleBean.class);
+      
+      assert manager.resolveByType(WrappedSimpleBean.class).size() == 1;
+      assert manager.resolveByType(WrappedSimpleBean.class).iterator().next() instanceof SimpleBean;
+      wrappedSimpleBean = (SimpleBean<WrappedSimpleBean>) manager.resolveByType(WrappedSimpleBean.class).iterator().next();
+      
+      assert manager.resolveByType(WrappedSimpleBean.class, NEW_LITERAL).size() == 1;
+      assert manager.resolveByType(WrappedSimpleBean.class, NEW_LITERAL).iterator().next() instanceof NewSimpleBean;
+      newSimpleBean = (NewSimpleBean<WrappedSimpleBean>) manager.resolveByType(WrappedSimpleBean.class, NEW_LITERAL).iterator().next();
    }
 
    @Test(groups = { "new" })

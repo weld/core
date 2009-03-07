@@ -23,7 +23,6 @@ import javax.context.CreationalContext;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
-import org.jboss.webbeans.introspector.jlr.AnnotatedFieldImpl;
 import org.jboss.webbeans.util.Names;
 
 /**
@@ -49,19 +48,6 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
    public static <T> ProducerFieldBean<T> of(AnnotatedField<T> field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       return new ProducerFieldBean<T>(field, declaringBean, manager);
-   }
-   
-   /**
-    * Creates a producer field Web Bean
-    * 
-    * @param field The underlying method abstraction
-    * @param declaringBean The declaring bean abstraction
-    * @param manager the current manager
-    * @return A producer Web Bean
-    */
-   public static <T> ProducerFieldBean<T> of(Field field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
-   {
-      return new ProducerFieldBean<T>(new AnnotatedFieldImpl<T>(field, declaringBean.getAnnotatedItem()), declaringBean, manager);
    }
 
    /**

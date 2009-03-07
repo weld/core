@@ -84,6 +84,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * @param manager the current manager
     * @return A Web Bean
     */
+   @Deprecated
    public static <T> SimpleBean<T> of(Class<T> clazz, ManagerImpl manager)
    {
       return of(AnnotatedClassImpl.of(clazz), manager);

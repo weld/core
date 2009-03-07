@@ -32,7 +32,6 @@ import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
 import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.util.Names;
 
@@ -63,11 +62,6 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    public static <T> ProducerMethodBean<T> of(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       return new ProducerMethodBean<T>(method, declaringBean, manager);
-   }
-
-   public static <T> ProducerMethodBean<T> of(Method method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
-   {
-      return of(AnnotatedMethodImpl.<T>of(method, declaringBean.getAnnotatedItem()), declaringBean, manager);
    }
    
    protected ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)

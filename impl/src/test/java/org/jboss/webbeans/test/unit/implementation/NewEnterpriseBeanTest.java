@@ -3,9 +3,12 @@ package org.jboss.webbeans.test.unit.implementation;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
+import javax.inject.New;
+
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.literal.NewLiteral;
 import org.jboss.webbeans.test.unit.AbstractTest;
 import org.jboss.webbeans.util.Proxies.TypeInfo;
 import org.testng.annotations.BeforeMethod;
@@ -13,15 +16,24 @@ import org.testng.annotations.Test;
 
 public class NewEnterpriseBeanTest extends AbstractTest
 {
+   
+   private static final New NEW_LITERAL = new NewLiteral();
+   
    private EnterpriseBean<WrappedEnterpriseBean> wrappedEnterpriseBean;
    private NewEnterpriseBean<WrappedEnterpriseBean> newEnterpriseBean;
    
    @BeforeMethod
    public void initNewBean() {
-      wrappedEnterpriseBean = createEnterpriseBean(WrappedEnterpriseBean.class);
-      manager.addBean(wrappedEnterpriseBean);
-      newEnterpriseBean = createNewEnterpriseBean(WrappedEnterpriseBean.class);
-      manager.addBean(newEnterpriseBean);
+      deployBeans(WrappedEnterpriseBean.class);
+      
+      assert manager.resolveByType(WrappedEnterpriseBean.class).size() == 1;
+      assert manager.resolveByType(WrappedEnterpriseBean.class).iterator().next() instanceof EnterpriseBean;
+      wrappedEnterpriseBean = (EnterpriseBean<WrappedEnterpriseBean>) manager.resolveByType(WrappedEnterpriseBean.class).iterator().next();
+      
+      assert manager.resolveByType(WrappedEnterpriseBean.class, NEW_LITERAL).size() == 1;
+      assert manager.resolveByType(WrappedEnterpriseBean.class, NEW_LITERAL).iterator().next() instanceof NewEnterpriseBean;
+      newEnterpriseBean = (NewEnterpriseBean<WrappedEnterpriseBean>) manager.resolveByType(WrappedEnterpriseBean.class, NEW_LITERAL).iterator().next();
+      
    }
    
    @Test(groups = { "new", "broken" })

@@ -27,8 +27,6 @@ import javax.context.CreationalContext;
 import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.literal.CurrentLiteral;
 
 /**
@@ -56,10 +54,10 @@ public class InjectionPointBean extends AbstractStandardBean<InjectionPoint>
     */
    public static InjectionPointBean of(ManagerImpl manager)
    {
-      return new InjectionPointBean(AnnotatedClassImpl.of(InjectionPoint.class), manager);
+      return new InjectionPointBean(manager);
    }
 
-   protected InjectionPointBean(AnnotatedClass<InjectionPoint> clazz, ManagerImpl manager)
+   protected InjectionPointBean(ManagerImpl manager)
    {
       super(manager);
    }

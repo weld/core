@@ -43,7 +43,6 @@ import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Proxies;
@@ -74,11 +73,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * @param manager the current manager
     * @return An Enterprise Web Bean
     */
-   public static <T> EnterpriseBean<T> of(Class<T> clazz, ManagerImpl manager)
-   {
-      return of(AnnotatedClassImpl.of(clazz), manager);
-   }
-
    public static <T> EnterpriseBean<T> of(AnnotatedClass<T> clazz, ManagerImpl manager)
    {
       return new EnterpriseBean<T>(clazz, manager);

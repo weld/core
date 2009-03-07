@@ -26,7 +26,6 @@ import javax.inject.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.literal.NewLiteral;
 
 /**
@@ -48,18 +47,6 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T>
    public static <T> NewEnterpriseBean<T> of(AnnotatedClass<T> clazz, ManagerImpl manager)
    {
       return new NewEnterpriseBean<T>(clazz, manager);
-   }
-
-   /**
-    * Creates an instance of a NewEnterpriseBean from a class
-    * 
-    * @param clazz The class
-    * @param manager The Web Beans manager
-    * @return a new NewEnterpriseBean instance
-    */
-   public static <T> NewEnterpriseBean<T> of(Class<T> clazz, ManagerImpl manager)
-   {
-      return of(AnnotatedClassImpl.of(clazz), manager);
    }
 
    /**
