@@ -63,7 +63,7 @@ public class Game implements Serializable
       return remainingGuesses;
    }
    
-   public String check()
+   public String check() throws InterruptedException
    {
       if (guess>number)
       {
