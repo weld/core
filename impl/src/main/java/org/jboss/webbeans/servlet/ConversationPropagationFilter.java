@@ -79,6 +79,14 @@ public class ConversationPropagationFilter implements Filter
          {
             String requestPath = context.getExternalContext().getRequestContextPath();
             URL = URL.substring(URL.indexOf(requestPath) + requestPath.length());
+         } 
+         else 
+         {
+            int lastSlash = URL.lastIndexOf("/");
+            if (lastSlash > 0) 
+            {
+               URL = URL.substring(lastSlash);
+            }
          }
          return this;
       }
