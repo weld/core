@@ -386,7 +386,7 @@
          </varlistentry>
          <varlistentry>
             <term>
-               Servlet listener
+               Servlet listener and filters
             </term>
             <listitem>
                <para>
@@ -396,6 +396,16 @@
                   as a Servlet listener, either automatically, or through user
                   configuration, for each Web Beans application which uses 
                   Servlet.
+               </para>
+               
+               <para>
+                  If you are integrating the Web Beans into a JSF environment 
+                  you must register 
+                  <literal>org.jboss.webbeans.servlet.ConversationPropagationFilter</literal>
+                  as a Servlet listener, either automatically, or through user
+                  configuration, for each Web Beans application which uses 
+                  JSF. This filter can be registered for all Servlet deployment
+                  safely.
                </para>
             </listitem>
          </varlistentry>
