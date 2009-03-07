@@ -112,8 +112,8 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
       {
          buffer.append("simple producer field bean '" + getName() + "'");
       }
-      buffer.append(" [" + getType().getName() + "]\n");
-      buffer.append("   API types " + getTypes() + ", binding types " + getBindings() + "\n");
+      buffer.append(" [" + getType().getName() + "] ");
+      buffer.append("API types " + getTypes() + ", binding types " + getBindings());
       return buffer.toString();
    }
    

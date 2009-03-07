@@ -50,7 +50,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>
    
    public <S> CreationalContextImpl<S> getCreationalContext(Bean<S> bean)
    {
-      return new CreationalContextImpl<S>(bean, incompleteInstances);
+      return new CreationalContextImpl<S>(bean, new HashMap<Bean<?>, Object>(incompleteInstances));
    }
    
    public <S> S getIncompleteInstance(Bean<S> bean)

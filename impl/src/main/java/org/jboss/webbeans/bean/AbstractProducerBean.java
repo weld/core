@@ -20,6 +20,7 @@ package org.jboss.webbeans.bean;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -296,7 +297,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
          CreationalContextImpl<?> creationalContextImpl = (CreationalContextImpl<?>) creationalContext;
          if (creationalContextImpl.containsIncompleteInstance(getDeclaringBean()))
          {
-            log.warn("Executing producer method on incomplete declaring bean due to circular injection");
+            log.warn("Executing producer field or method " + getAnnotatedItem() + " on incomplete declaring bean " + getDeclaringBean() + " due to circular injection");
             return creationalContextImpl.getIncompleteInstance(getDeclaringBean());
          }
       }
@@ -361,8 +362,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       {
          buffer.append("simple producer bean '" + getName() + "'");
       }
-      buffer.append(" [" + getType().getName() + "]\n");
-      buffer.append("   API types " + getTypes() + ", binding types " + getBindings() + "\n");
+      buffer.append(" [" + getType().getName() + "] API types " + getTypes() + ", binding types " + getBindings());
       return buffer.toString();
    }
 

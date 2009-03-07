@@ -181,8 +181,8 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       {
          buffer.append("simple producer method bean '" + getName() + "'");
       }
-      buffer.append(" [" + getType().getName() + "]\n");
-      buffer.append("   API types " + getTypes() + ", binding types " + getBindings() + "\n");
+      buffer.append(" [" + getType().getName() + "] ");
+      buffer.append("API types " + getTypes() + ", binding types " + getBindings());
       return buffer.toString();
    }
 

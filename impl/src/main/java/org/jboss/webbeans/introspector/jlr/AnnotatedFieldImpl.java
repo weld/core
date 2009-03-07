@@ -169,4 +169,25 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
       return toString;
    }
 
+   @Override
+   public boolean equals(Object other)
+   {
+      if (other instanceof AnnotatedField)
+      {
+         AnnotatedField<?> that = (AnnotatedField<?>) other;
+         return this.getDeclaringClass().equals(that.getDeclaringClass()) && this.getName().equals(that.getName());
+      }
+      else
+      {
+         return false;
+      }
+   }
+
+
+   @Override
+   public int hashCode()
+   {
+      return getDelegate().hashCode();
+   }
+      
 }

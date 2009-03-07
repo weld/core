@@ -182,9 +182,8 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
       StringBuilder buffer = new StringBuilder();
       buffer.append(Names.scopeTypeToString(getScopeType()));
       buffer.append("Event bean ");
-      buffer.append(getType().getName() + "\n");
+      buffer.append(getType().getName());
       buffer.append(" API types = ").append(Names.typesToString(getTypes())).append(", binding types = " + Names.annotationsToString(getBindings()));
-      buffer.append("\n");
       return buffer.toString();
    }
 

@@ -276,8 +276,8 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          buffer.append(" enterprise bean '" + getName() + "'");
       }
-      buffer.append(" [" + getType().getName() + "]\n");
-      buffer.append("   API types " + getTypes() + ", binding types " + getBindings() + "\n");
+      buffer.append(" [" + getType().getName() + "] ");
+      buffer.append("API types " + getTypes() + ", binding types " + getBindings());
       return buffer.toString();
    }
 

@@ -31,9 +31,9 @@ import org.jboss.webbeans.introspector.ForwardingAnnotatedField;
 
 public class FieldInjectionPoint<T> extends ForwardingAnnotatedField<T> implements AnnotatedInjectionPoint<T, Field>
 {
-   
+
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
-   
+
    private final Bean<?> declaringBean;
    private final AnnotatedField<T> field;
 
@@ -41,7 +41,7 @@ public class FieldInjectionPoint<T> extends ForwardingAnnotatedField<T> implemen
    {
       return new FieldInjectionPoint<T>(declaringBean, field);
    }
-   
+
    protected FieldInjectionPoint(Bean<?> declaringBean, AnnotatedField<T> field)
    {
       this.declaringBean = declaringBean;
@@ -84,7 +84,7 @@ public class FieldInjectionPoint<T> extends ForwardingAnnotatedField<T> implemen
          rethrowException(e);
       }
    }
-   
+
    public void inject(Object declaringInstance, Object value)
    {
       try
