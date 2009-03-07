@@ -15,7 +15,7 @@
     				<h:commandButton action="#{conversation.begin}" value="begin"/>
     				<h:commandButton action="#{conversations.noop}" value="noop"/>
     				<h:commandButton action="#{conversation.end}" value="end"/>
-    				<h:commandButton action="#{conversations.abandon}" value="abandon"/>
+    			   <h:outputLink value="#{facesContext.externalContext.requestContextPath}/home.jsf">Abandon</h:outputLink>
     				<h:commandButton action="#{data.longop}" value="longop"/>
     			</h:panelGroup>
     			<h:inputText value="#{conversations.cid}"/>
