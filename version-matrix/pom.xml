@@ -426,5 +426,11 @@
          <url>dav:https://snapshots.jboss.org/maven2</url>
       </snapshotRepository>
    </distributionManagement>
+   
+   <scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri</developerConnection>
+      <url>http://fisheye.jboss.org/browse/WebBeans/ri</url>
+   </scm>
 
 </project>
