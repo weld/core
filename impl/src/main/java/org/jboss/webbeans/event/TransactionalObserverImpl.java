@@ -27,6 +27,7 @@ import javax.event.Asynchronously;
 import javax.event.BeforeTransactionCompletion;
 import javax.inject.DefinitionException;
 import javax.inject.manager.Bean;
+import javax.transaction.Synchronization;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -36,7 +37,7 @@ import org.jboss.webbeans.transaction.spi.TransactionServices;
  * @author David Allen
  * 
  */
-public class TransactionalObserverImpl<T> extends ObserverImpl<T>
+class TransactionalObserverImpl<T> extends ObserverImpl<T>
 {
    /**
     * The known transactional phases a transactional event observer can be
@@ -44,36 +45,7 @@ public class TransactionalObserverImpl<T> extends ObserverImpl<T>
     */
    protected enum TransactionObservationPhase
    {
-      BEFORE_COMPLETION
-      {
-         void registerTask(TransactionServices transactionServices, Runnable task)
-         {
-            transactionServices.executeBeforeTransactionCompletion(task);
-         }
-      },
-      AFTER_COMPLETION
-      {
-         void registerTask(TransactionServices transactionServices, Runnable task)
-         {
-            transactionServices.executeAfterTransactionCompletion(task);
-         }
-      },
-      AFTER_FAILURE
-      {
-         void registerTask(TransactionServices transactionServices, Runnable task)
-         {
-            transactionServices.executeAfterTransactionCompletion(task, TransactionServices.Status.SUCCESS);
-         }
-      },
-      AFTER_SUCCESS
-      {
-         void registerTask(TransactionServices transactionServices, Runnable task)
-         {
-            transactionServices.executeAfterTransactionCompletion(task, TransactionServices.Status.FAILURE);
-         }
-      };
-
-      abstract void registerTask(TransactionServices transactionServices, Runnable task);
+      BEFORE_COMPLETION, AFTER_COMPLETION, AFTER_FAILURE, AFTER_SUCCESS
    }
 
    private TransactionObservationPhase transactionObservationPhase;
@@ -87,7 +59,7 @@ public class TransactionalObserverImpl<T> extends ObserverImpl<T>
    public static boolean isObserverMethodTransactional(AnnotatedMethod<?> observer)
    {
       boolean transactional = true;
-      if ((observer.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty()) || (observer.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty()) || (observer.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty()) || (observer.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty()))
+      if ((observer.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty()) && (observer.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty()) && (observer.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty()) && (observer.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty()))
       {
          transactional = false;
       }
@@ -175,7 +147,24 @@ public class TransactionalObserverImpl<T> extends ObserverImpl<T>
       {
          deferredEvent = new AsynchronousTransactionalEventNotification<T>(event, this);
       }
-      transactionObservationPhase.registerTask(manager.getTransactionServices(), deferredEvent);
+      Synchronization synchronization = null;
+      if (transactionObservationPhase.equals(TransactionObservationPhase.BEFORE_COMPLETION))
+      {
+         synchronization = new TransactionSynchronizedRunnable(deferredEvent, true);
+      }
+      else if (transactionObservationPhase.equals(TransactionObservationPhase.AFTER_COMPLETION))
+      {
+         synchronization = new TransactionSynchronizedRunnable(deferredEvent, false);
+      }
+      else if (transactionObservationPhase.equals(TransactionObservationPhase.AFTER_SUCCESS))
+      {
+         synchronization = new TransactionSynchronizedRunnable(deferredEvent, TransactionServices.Status.SUCCESS);
+      }
+      else if (transactionObservationPhase.equals(TransactionObservationPhase.AFTER_FAILURE))
+      {
+         synchronization = new TransactionSynchronizedRunnable(deferredEvent, TransactionServices.Status.FAILURE);
+      }
+      manager.getTransactionServices().registerSynchronization(synchronization);
    }
 
 }

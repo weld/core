@@ -17,6 +17,8 @@
 
 package org.jboss.webbeans.mock;
 
+import javax.transaction.Synchronization;
+
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 
 /**
@@ -31,32 +33,18 @@ public class MockTransactionServices implements TransactionServices
 {
 
    /* (non-Javadoc)
-    * @see org.jboss.webbeans.transaction.spi.TransactionServices#executeAfterTransactionCompletion(java.lang.Runnable)
-    */
-   public void executeAfterTransactionCompletion(Runnable task)
-   {
-   }
-
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.transaction.spi.TransactionServices#executeAfterTransactionCompletion(java.lang.Runnable, org.jboss.webbeans.transaction.spi.TransactionServices.Status)
-    */
-   public void executeAfterTransactionCompletion(Runnable task, Status desiredStatus)
-   {
-   }
-
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.transaction.spi.TransactionServices#executeBeforeTransactionCompletion(java.lang.Runnable)
-    */
-   public void executeBeforeTransactionCompletion(Runnable task)
-   {
-   }
-
-   /* (non-Javadoc)
     * @see org.jboss.webbeans.transaction.spi.TransactionServices#isTransactionActive()
     */
    public boolean isTransactionActive()
    {
       return false;
+   }
+
+   @Override
+   public void registerSynchronization(Synchronization synchronizedObserver)
+   {
+      // TODO Auto-generated method stub
+      
    }
 
 }
