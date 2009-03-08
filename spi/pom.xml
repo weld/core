@@ -39,6 +39,10 @@
          <artifactId>servlet-api</artifactId>
          <optional>true</optional>
       </dependency>
+      <dependency>
+      	<groupId>javax.transaction</groupId>
+      	<artifactId>jta</artifactId>
+      </dependency>
 
    </dependencies>
 

@@ -1,5 +1,7 @@
 package org.jboss.webbeans.transaction.spi;
 
+import javax.transaction.Synchronization;
+
 /**
  * <p>
  * The container must implement the services related to transactional behavior
@@ -11,7 +13,7 @@ package org.jboss.webbeans.transaction.spi;
  * observer methods which are activated based on the phase and status of a
  * currently active transaction. In order to use these abilities, the container
  * must provide these intermediary services which in turn may interact with an
- * application server and JTA or any other type of transaction service provider.
+ * application server and JTA.
  * </p>
  * 
  * @author David Allen
@@ -20,7 +22,8 @@ package org.jboss.webbeans.transaction.spi;
 public interface TransactionServices
 {
    /**
-    * Possible status conditions for a transaction.
+    * Possible status conditions for a transaction. This can be used by SPI
+    * providers to keep track for which status an observer is used.
     */
    public static enum Status
    {
@@ -28,30 +31,14 @@ public interface TransactionServices
    }
 
    /**
-    * Registers a task to be executed immediately before the current transaction
-    * is committed or rolled back.
+    * Registers a synchronization object with the currently executing
+    * transaction.
     * 
-    * @param task The Runnable that will be executed
+    * @see javax.transaction.Synchronization
+    * @param synchronizedObserver
     */
-   public void executeBeforeTransactionCompletion(Runnable task);
+   public void registerSynchronization(Synchronization synchronizedObserver);
 
-   /**
-    * Registers a task to be executed immediately after the current transaction
-    * is committed or rolled back.
-    * 
-    * @param task The Runnable that will be executed
-    */
-   public void executeAfterTransactionCompletion(Runnable task);
-
-   /**
-    * Registers a task to be executed immediately after the current transaction
-    * is committed or rolled back, but only one depending on the status
-    * provided.
-    * 
-    * @param task The Runnable that will be executed
-    */
-   public void executeAfterTransactionCompletion(Runnable task, Status desiredStatus);
-   
    /**
     * Queries the status of the current execution to see if a transaction is
     * currently active.

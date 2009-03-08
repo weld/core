@@ -40,7 +40,6 @@ public class MockTransactionServices implements TransactionServices
       return false;
    }
 
-   @Override
    public void registerSynchronization(Synchronization synchronizedObserver)
    {
       // TODO Auto-generated method stub
