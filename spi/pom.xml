@@ -7,7 +7,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.webbeans</groupId>
    <artifactId>webbeans-spi</artifactId>
-   <version>1.0.0.BETA1</version>
+   <version>1.0.0-SNAPSHOT</version>
    <name>Web Beans Service Provider Interfaces</name>
    <dependencies>
 
@@ -50,11 +50,4 @@
    <build>
    	<defaultGoal>install</defaultGoal>
    </build>
-
-
-  <scm>
-    <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/webbeans-spi-1.0.0.BETA1</connection>
-    <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/tags/webbeans-spi-1.0.0.BETA1</developerConnection>
-    <url>http://fisheye.jboss.org/browse/WebBeans/ri/webbeans-spi-1.0.0.BETA1</url>
-  </scm>
 </project>
