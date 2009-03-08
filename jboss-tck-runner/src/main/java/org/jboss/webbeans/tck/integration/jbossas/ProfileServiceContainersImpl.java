@@ -29,6 +29,7 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
 
    private DeploymentManager deploymentManager;
    private final File tmpdir;
+   private int deploymentCounter = 0;
 
 
    public ProfileServiceContainersImpl() throws Exception
@@ -76,7 +77,7 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
          if (status.isFailed())
          {
             failure = status.getFailure();
-            undeploy(name);
+            doUndeploy(name);
          }
       }
       catch (Exception e)
@@ -102,7 +103,7 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
       }
    }
 
-   public void undeploy(String name) throws IOException
+   private void doUndeploy(String name) throws IOException
    {
       try
       {
@@ -113,14 +114,54 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
          undeployProgress.run();
          if (undeployProgress.getDeploymentStatus().isFailed())
          {
-        	 failedUndeployments.add(name);
+          failedUndeployments.add(name);
+         }
+         else
+         {
+            deploymentCounter++;
          }
       }
       catch (Exception e)
       {
-		 IOException ioe = new IOException();
-		 ioe.initCause(e);
-	     throw ioe;
+         IOException ioe = new IOException();
+         ioe.initCause(e);
+         throw ioe;
+      }
+   }
+   
+   public void undeploy(String name) throws IOException
+   {
+      try
+      {
+         doUndeploy(name);         
+      }
+      finally
+      {
+         if (deploymentCounter >= maxDeployments)
+         {
+            deploymentCounter = 0;
+            // Let everything stablise
+            removeFailedUnDeployments();
+            try
+            {
+               Thread.sleep(5000);
+            }
+            catch (InterruptedException e)
+            {
+               Thread.currentThread().interrupt();
+            }
+            restartJboss();
+            try
+            {
+               initDeploymentManager();
+            }
+            catch (Exception e) 
+            {
+               IOException ioe = new IOException();
+               ioe.initCause(e);
+               throw ioe;
+            }
+         }
       }
    }
 
@@ -143,30 +184,36 @@ public class ProfileServiceContainersImpl extends AbstractContainersImpl
    @Override
    public void cleanup() throws IOException
    {
+     removeFailedUnDeployments();
 	  super.cleanup();
-	  List<String> remainingDeployments = new ArrayList<String>();
-	  for (String name : failedUndeployments)
-	  {
-		  try
-		  {
-			  DeploymentProgress undeployProgress = deploymentManager.undeploy(DeploymentPhase.APPLICATION, name);
-		      undeployProgress.run();
-		      if (undeployProgress.getDeploymentStatus().isFailed())
-		      {
-		    	  remainingDeployments.add(name);
-		      }
-		  }
-		  catch (Exception e)
-		  {
-			 IOException ioe = new IOException();
-			 ioe.initCause(e);
-		     throw ioe;
-		  }
-	   }
-	  if (remainingDeployments.size() > 0)
-	  {
-		  //log.error("Failed to undeploy these artifacts: " + remainingDeployments);
-	  }
+   }
+   
+   private void removeFailedUnDeployments() throws IOException
+   {
+      List<String> remainingDeployments = new ArrayList<String>();
+      for (String name : failedUndeployments)
+      {
+         try
+         {
+            DeploymentProgress undeployProgress = deploymentManager.undeploy(DeploymentPhase.APPLICATION, name);
+             undeployProgress.run();
+             if (undeployProgress.getDeploymentStatus().isFailed())
+             {
+               remainingDeployments.add(name);
+             }
+         }
+         catch (Exception e)
+         {
+           IOException ioe = new IOException();
+           ioe.initCause(e);
+            throw ioe;
+         }
+       }
+      if (remainingDeployments.size() > 0)
+      {
+         //log.error("Failed to undeploy these artifacts: " + remainingDeployments);
+      }
+      failedUndeployments.clear();
    }
 
 }

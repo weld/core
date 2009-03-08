@@ -172,7 +172,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    public String toString()
    {
       StringBuilder buffer = new StringBuilder();
-      buffer.append("Annotated " + Names.scopeTypeToString(getScopeType()));
+      buffer.append(Names.scopeTypeToString(getScopeType()));
       if (getName() == null)
       {
          buffer.append("unnamed producer method bean");

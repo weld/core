@@ -4,7 +4,6 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,6 +33,8 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
    public static final String JBOSS_AS_DIR_PROPERTY_NAME = "jboss-as.dir";
    public static final String JBOSS_BOOT_TIMEOUT_PROPERTY_NAME = "jboss.boot.timeout";
    public static final String FORCE_RESTART_PROPERTY_NAME = "jboss.force.restart";
+   public static final String MAX_DEPLOYMENTS_PROPERTY_NAME = "jboss.deployments.restart";
+   public static final String SHUTDOWN_DELAY_PROPERTY_NAME = "jboss.shutdown.delay";
 
    private static Logger log = Logger.getLogger(AbstractContainersImpl.class);
 
@@ -45,6 +46,12 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
    private boolean jbossWasStarted;
    private long bootTimeout;
    private String javaOpts;
+
+   private boolean forceRestart;
+
+   protected int maxDeployments;
+
+   private int jbossShutdownDelay;
 
    public AbstractContainersImpl()
    {
@@ -127,7 +134,15 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
       jbossHome = jbossHomeFile.getPath();
       log.info("Using JBoss instance in " + jbossHome + " at URL " + configuration.getHost());
       this.bootTimeout = properties.getLongValue(JBOSS_BOOT_TIMEOUT_PROPERTY_NAME, 240000, false);
-      if (properties.getBooleanValue(FORCE_RESTART_PROPERTY_NAME, false, false))
+      this.forceRestart = properties.getBooleanValue(FORCE_RESTART_PROPERTY_NAME, false, false);
+      this.maxDeployments = properties.getIntValue(MAX_DEPLOYMENTS_PROPERTY_NAME, 25, false);
+      this.jbossShutdownDelay = properties.getIntValue(SHUTDOWN_DELAY_PROPERTY_NAME, 15000, false); 
+      restartJboss();
+   }
+   
+   protected void restartJboss() throws IOException
+   {
+      if (forceRestart)
       {
          if (isJBossUp())
          {
@@ -135,7 +150,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
             shutDownJBoss();
             try
             {
-               Thread.sleep(10000);
+               Thread.sleep(jbossShutdownDelay);
             }
             catch (InterruptedException e)
             {
@@ -175,10 +190,6 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
          log.warn("Unable to connect to JBoss instance after " + bootTimeout + "ms, giving up!");
          launch("shutdown", "-S");
          throw new IllegalStateException("Error connecting to JBoss instance");
-      }
-      else
-      {
-         return;
       }
    }
 

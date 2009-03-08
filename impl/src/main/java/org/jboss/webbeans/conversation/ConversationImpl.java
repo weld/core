@@ -21,8 +21,8 @@ import javax.annotation.Named;
 import javax.context.Conversation;
 import javax.context.RequestScoped;
 import javax.inject.Initializer;
+import javax.inject.Standard;
 
-import org.jboss.webbeans.WebBean;
 import org.jboss.webbeans.conversation.bindings.ConversationInactivityTimeout;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -35,7 +35,7 @@ import org.jboss.webbeans.log.Logging;
  */
 @RequestScoped
 @Named("conversation")
-@WebBean
+@Standard
 public class ConversationImpl implements Conversation
 {
 
