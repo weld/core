@@ -23,6 +23,7 @@ import java.util.List;
 import javax.event.AfterTransactionCompletion;
 import javax.event.AfterTransactionFailure;
 import javax.event.AfterTransactionSuccess;
+import javax.event.Asynchronously;
 import javax.event.BeforeTransactionCompletion;
 import javax.inject.DefinitionException;
 import javax.inject.manager.Bean;
@@ -85,10 +86,10 @@ public class TransactionalObserverImpl<T> extends ObserverImpl<T>
     */
    public static boolean isObserverMethodTransactional(AnnotatedMethod<?> observer)
    {
-      boolean transactional = false;
-      if ((!observer.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty()) || (!observer.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty()) || (!observer.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty()) || (!observer.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty()))
+      boolean transactional = true;
+      if ((observer.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty()) || (observer.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty()) || (observer.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty()) || (observer.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty()))
       {
-         transactional = true;
+         transactional = false;
       }
       return transactional;
    }
@@ -165,7 +166,15 @@ public class TransactionalObserverImpl<T> extends ObserverImpl<T>
     */
    private void deferEvent(T event)
    {
-      DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, this);
+      DeferredEventNotification<T> deferredEvent = null;
+      if (this.observerMethod.getAnnotatedParameters(Asynchronously.class).isEmpty())
+      {
+         deferredEvent = new DeferredEventNotification<T>(event, this);
+      }
+      else
+      {
+         deferredEvent = new AsynchronousTransactionalEventNotification<T>(event, this);
+      }
       transactionObservationPhase.registerTask(manager.getTransactionServices(), deferredEvent);
    }
 

@@ -22,42 +22,31 @@ import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 
 /**
- * A task that will notify the observer of a specific event at some future time.
- * 
  * @author David Allen
+ *
  */
-public class DeferredEventNotification<T> implements Runnable
+public class AsynchronousTransactionalEventNotification<T> extends DeferredEventNotification<T>
 {
    private static Log log = Logging.getLog(DeferredEventNotification.class);
-   
-   // The observer
-   protected ObserverImpl<T> observer;
-   // The event object
-   protected T event;
 
-   /**
-    * Creates a new deferred event notifier.
-    * 
-    * @param observer The observer to be notified
-    * @param event The event being fired
-    */
-   public DeferredEventNotification(T event, ObserverImpl<T> observer)
+   public AsynchronousTransactionalEventNotification(T event, ObserverImpl<T> observer)
    {
-      this.observer = observer;
-      this.event = event;
+      super(event, observer);
    }
 
+   @Override
    public void run()
    {
+      // Let the event be deferred again as just an asynchronous event
       DependentContext.INSTANCE.setActive(true);
       try
       {
-         log.debug("Sending event [" + event + "] directly to observer " + observer);
-         observer.sendEvent(event);
+         log.trace("Sending event [" + event + "] asynchronously to transaction observer " + observer);
+         observer.sendEventAsynchronously(event);
       }
       catch (Exception e)
       {
-         log.error("Failure while notifying an observer of event [" + event + "]", e);
+         log.error("Failure while queuing observer for event [" + event + "]", e);
       }
       finally
       {
@@ -65,9 +54,4 @@ public class DeferredEventNotification<T> implements Runnable
       }
    }
 
-   @Override
-   public String toString()
-   {
-      return "Deferred event [" + event + "] for [" + observer + "]";
-   }
 }

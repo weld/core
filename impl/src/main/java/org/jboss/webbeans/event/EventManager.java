@@ -28,6 +28,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.event.Observer;
 
 import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.log.Log;
+import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 import org.jboss.webbeans.util.collections.ForwardingMap;
@@ -40,7 +42,8 @@ import org.jboss.webbeans.util.collections.ForwardingMap;
  */
 public class EventManager
 {
-
+   private static Log log = Logging.getLog(EventManager.class);
+   
    /**
     * An event type -> observer list map
     */
@@ -142,6 +145,7 @@ public class EventManager
    {
       EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, bindings);
       registeredObservers.put(eventType, eventObserver);
+      log.debug("Added observer " + observer + " observing event type " + eventType);
    }
 
    /**
@@ -160,11 +164,13 @@ public class EventManager
       {
          for (EventObserver<?> observer : registeredObservers.get(clazz))
          {
+            log.debug("Checking observer " + observer + " to see if it is interested in event [" + event + "]");
             if (observer.isObserverInterested(bindings))
             {
                @SuppressWarnings("unchecked")
                Observer<T> o = (Observer<T>) observer.getObserver();
                interestedObservers.add(o);
+               log.debug("Added observer " + observer + " for event [" + event + "]");
             }
          }
       }
