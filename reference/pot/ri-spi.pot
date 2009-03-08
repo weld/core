@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-02-28 13:48+0000\n"
+"POT-Creation-Date: 2009-03-08 15:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -245,13 +245,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:94
+#: ri-spi.xml:104
 #, no-c-format
 msgid "The application context"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:96
+#: ri-spi.xml:106
 #, no-c-format
 msgid ""
 "Web Beans expects the Application Server or other container to provide the "
@@ -262,13 +262,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:109
+#: ri-spi.xml:119
 #, no-c-format
 msgid "Bootstrap and shutdown"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:110
+#: ri-spi.xml:120
 #, no-c-format
 msgid ""
 "The <literal>org.jboss.webbeans.bootstrap.api.Bootstrap</literal> interface "
@@ -279,7 +279,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:119
+#: ri-spi.xml:129
 #, no-c-format
 msgid ""
 "The bootstrap is split into phases, bootstrap initialization and bootstrap. "
@@ -290,7 +290,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:127
+#: ri-spi.xml:137
 #, no-c-format
 msgid ""
 "To initialize the bootstrap you call <literal>Bootstrap.initialize()</"
@@ -302,7 +302,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:137
+#: ri-spi.xml:147
 #, no-c-format
 msgid ""
 "Having called <literal>initialize()</literal>, the <literal>Manager</"
@@ -311,7 +311,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:143
+#: ri-spi.xml:153
 #, no-c-format
 msgid ""
 "To boot the container you call <literal>Bootstrap.boot()</literal>. Before "
@@ -321,7 +321,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:151
+#: ri-spi.xml:161
 #, no-c-format
 msgid ""
 "To shutdown the container you call <literal>Bootstrap.shutdown()</literal>. "
@@ -329,13 +329,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:160
+#: ri-spi.xml:170
 #, no-c-format
 msgid "JNDI"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:162
+#: ri-spi.xml:172
 #, no-c-format
 msgid ""
 "The Web Beans RI implements JNDI binding and lookup according to standards, "
@@ -345,7 +345,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri-spi.xml:170
+#: ri-spi.xml:180
 #, no-c-format
 msgid ""
 "<![CDATA[public interface NamingContext extends Serializable {\n"
@@ -372,13 +372,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:175
+#: ri-spi.xml:185
 #, no-c-format
 msgid "Resource loading"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:177
+#: ri-spi.xml:187
 #, no-c-format
 msgid ""
 "The Web Beans RI needs to load classes and resources from the classpath at "
@@ -389,7 +389,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri-spi.xml:185
+#: ri-spi.xml:195
 #, no-c-format
 msgid ""
 "<![CDATA[\n"
@@ -424,13 +424,46 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:192
+#: ri-spi.xml:200
+#, no-c-format
+msgid "Servlet injection"
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:202
+#, no-c-format
+msgid ""
+"Java EE / Servlet does not provide any hooks which can be used to provide "
+"injection into Servlets, so Web Beans provides an API to allow the container "
+"to request JSR-299 injection for a Servlet."
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:208
+#, no-c-format
+msgid ""
+"To be compliant with JSR-299, the container should request servlet injection "
+"for each newly instantiated servlet after the constructor returns and before "
+"the servlet is placed into service."
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:214
+#, no-c-format
+msgid ""
+"To perform injection on a servlet call <literal>WebBeansManager.injectServlet"
+"()</literal>. The manager can be obtained from <literal>Bootstrap.getManager"
+"()</literal>."
+msgstr ""
+
+#. Tag: title
+#: ri-spi.xml:225
 #, no-c-format
 msgid "The contract with the container"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:194
+#: ri-spi.xml:227
 #, no-c-format
 msgid ""
 "There are a number of requirements that the Web Beans RI places on the "
@@ -438,13 +471,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: ri-spi.xml:202
+#: ri-spi.xml:235
 #, no-c-format
 msgid "Classloader isolation"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:206
+#: ri-spi.xml:239
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans RI into an environment that supports "
@@ -454,13 +487,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: ri-spi.xml:215
+#: ri-spi.xml:248
 #, no-c-format
-msgid "Servlet listener"
+msgid "Servlet listener and filters"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:219
+#: ri-spi.xml:252
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans into a Servlet environment you must "
@@ -469,14 +502,25 @@ msgid ""
 "each Web Beans application which uses Servlet."
 msgstr ""
 
+#. Tag: para
+#: ri-spi.xml:261
+#, no-c-format
+msgid ""
+"If you are integrating the Web Beans into a JSF environment you must "
+"register <literal>org.jboss.webbeans.servlet.ConversationPropagationFilter</"
+"literal> as a Servlet listener, either automatically, or through user "
+"configuration, for each Web Beans application which uses JSF. This filter "
+"can be registered for all Servlet deployment safely."
+msgstr ""
+
 #. Tag: term
-#: ri-spi.xml:230
+#: ri-spi.xml:273
 #, no-c-format
 msgid "Session Bean Interceptor"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:234
+#: ri-spi.xml:277
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans into an EJB environment you must "
@@ -486,14 +530,22 @@ msgid ""
 "enterprise beans."
 msgstr ""
 
+#. Tag: para
+#: ri-spi.xml:287
+#, no-c-format
+msgid ""
+"You must register the <literal>SessionBeanInterceptor</literal> as the inner "
+"most interceptor in the stack for all EJBs."
+msgstr ""
+
 #. Tag: term
-#: ri-spi.xml:245
+#: ri-spi.xml:295
 #, no-c-format
 msgid "The <literal>webbeans-ri.jar</literal>"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:249
+#: ri-spi.xml:299
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans into an environment that supports "
