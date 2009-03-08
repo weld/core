@@ -192,6 +192,66 @@
          
        </section>
        
+      <section>
+         <title>Transaction Services</title>
+         
+         <para>
+            The Web Beans RI must delegate JTA activities to the container.
+            The SPI provides a couple hooks to easily achieve this with the
+            <literal>TransactionServices</literal> interface.
+         </para>
+         
+         <programlisting role="JAVA"><![CDATA[public interface TransactionServices
+{
+   /**
+    * Possible status conditions for a transaction. This can be used by SPI
+    * providers to keep track for which status an observer is used.
+    */
+   public static enum Status
+   {
+      ALL, SUCCESS, FAILURE
+   }
+
+   /**
+    * Registers a synchronization object with the currently executing
+    * transaction.
+    * 
+    * @see javax.transaction.Synchronization
+    * @param synchronizedObserver
+    */
+   public void registerSynchronization(Synchronization synchronizedObserver);
+
+   /**
+    * Queries the status of the current execution to see if a transaction is
+    * currently active.
+    * 
+    * @return true if a transaction is active
+    */
+   public boolean isTransactionActive();
+}]]></programlisting>
+         
+      <para>
+        The enumeration <literal>Status</literal> is a convenience for implementors
+        to be able to keep track of whether a synchronization is supposed to notify
+        an observer only when the transaction is successful, or after a failure, or
+        regardless of the status of the transaction.
+      </para>
+      
+      <para>
+      	Any <literal>javax.transaction.Synchronization</literal> implementation
+      	may be passed to the <literal>registerSynchronization()</literal> method
+      	and the SPI implementation should immediately register the synchronization
+      	with the JTA transaction manager used for the EJBs.
+      </para>
+      
+      <para>
+      	To make it easier to determine whether or not a transaction is currently
+      	active for the requesting thread, the <literal>isTransactionActive()</literal>
+      	method can be used.  The SPI implementation should query the same
+      	JTA transaction manager used for the EJBs.
+      </para>
+    </section>
+    
        <section>
          <title>The application context</title>
          
