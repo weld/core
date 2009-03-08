@@ -3,7 +3,7 @@
    <groupId>org.jboss.webbeans</groupId>
    <artifactId>webbeans-version-matrix</artifactId>
    <packaging>pom</packaging>
-   <version>1.0.0.BETA1</version>
+   <version>1.0.0-SNAPSHOTß</version>
 
    <name>Web Beans Version Matrix</name>
    <url>http://www.seamframework.org/WebBeans</url>
