@@ -19,10 +19,6 @@
    <name>Web Beans, the reference implmentation of JSR-299</name>
    <url>http://www.seamframework.org/WebBeans</url>
 
-   <description>
-      The reference implementation of JSR 299: Web Beans
-   </description>
-
    <developers>
       <developer>
          <name>Pete Muir</name>
