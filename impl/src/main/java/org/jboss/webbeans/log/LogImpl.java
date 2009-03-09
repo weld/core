@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.text.MessageFormat;
 
 /**
  * 
@@ -167,13 +168,14 @@ class LogImpl implements Log, Externalizable
       }
    }
 
-   private Object interpolate(Object object, Object... params)
+   private Object interpolate(Object message, Object... params)
    {
+      Object interpolatedMessage = message;
       if (params.length > 0)
       {
-         throw new UnsupportedOperationException("Parameter interpolation not supported");
+         interpolatedMessage = MessageFormat.format(message.toString(), params);
       }
-      return object;
+      return interpolatedMessage;
    }
 
    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException

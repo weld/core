@@ -32,9 +32,6 @@ import org.jboss.webbeans.transaction.spi.TransactionServices;
 public class MockTransactionServices implements TransactionServices
 {
 
-   /* (non-Javadoc)
-    * @see org.jboss.webbeans.transaction.spi.TransactionServices#isTransactionActive()
-    */
    public boolean isTransactionActive()
    {
       return false;
@@ -42,8 +39,6 @@ public class MockTransactionServices implements TransactionServices
 
    public void registerSynchronization(Synchronization synchronizedObserver)
    {
-      // TODO Auto-generated method stub
-      
    }
 
 }
