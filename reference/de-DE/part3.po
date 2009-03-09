@@ -36,7 +36,7 @@ msgid ""
 "framework is hiding them from you using clever defaulting rules &#151; so-"
 "called \"configuration by convention\" &#151; but because there are simply no "
 "strings there to begin with!"
-msgstr "Sie sehen keine String-basierten Bezeichner in Web Beans Code; dies ist nicht der Fall weil das Framework diese unter Verwendung irgendwelcher Defaulting-Regeln &#151 vor Ihnen verbirgt; sogenannte \"Konfiguration nach Konvention\" &#151; sondern weil einfach keine Strings existieren!"
+msgstr "Sie sehen keine String-basierten Bezeichner in Web Beans Code; dies ist nicht der Fall weil das Framework diese unter Verwendung irgendwelcher Defaulting-Regeln &#151; vor Ihnen verbirgt; sogenannte \"Konfiguration nach Konvention\" &#151; sondern weil einfach keine Strings existieren!"
 
 #. Tag: para
 #: part3.xml:15
