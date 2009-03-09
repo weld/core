@@ -75,7 +75,7 @@
            <artifactId>maven-release-plugin</artifactId>
            <version>2.0-beta-8</version>
            <configuration>
-             <tagBase>https://svn.jboss.org/repos/webbeans/ri/tags</tagBase>
+             <tagBase>https://svn.jboss.org/repos/webbeans/examples/tags</tagBase>
              <autoVersionSubmodules>true</autoVersionSubmodules>
            </configuration>
          </plugin>
