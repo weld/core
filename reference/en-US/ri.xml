@@ -31,13 +31,13 @@
    
    <para>
       Currently, the Web Beans RI only runs on JBoss Application Server 5. 
-      You'll need to download JBoss AS 5.0.0.GA from 
+      You'll need to download JBoss AS 5.0.1.GA from 
       <ulink url="http://www.jboss.org/jbossas/downloads/">jboss.org</ulink>,
       and unzip it. For example:
    </para>
    
    <programlisting><![CDATA[$ cd /Applications
-$ unzip ~/jboss-5.0.0.GA.zip]]></programlisting>
+$ unzip ~/jboss-5.0.1.GA.zip]]></programlisting>
 
    <para>
       Next, download the Web Beans RI from 
@@ -55,26 +55,24 @@ $ unzip ~/webbeans-$VERSION.zip]]></programlisting>
       <literal>jboss.home</literal> property. For example:
    </para>
    
-   <programlisting>jboss.home=/Applications/jboss-5.0.0.GA</programlisting>
-
-   <para>
-      As Web Beans is a new piece of software, you need to update JBoss AS to 
-      run the Web Beans RI. Future versions of JBoss AS will include these
-      updates, and this step won't be necessary.
-   </para>
+   <programlisting>jboss.home=/Applications/jboss-5.0.1.GA</programlisting>
    
    <note>
       <para>
-         Currently, two updates are needed. Firstly, a new deployer,
-         <literal>webbeans.deployer</literal> is added. This adds supports for
+         A new deployer,
+         <literal>webbeans.deployer</literal> is added to JBoss AS. This adds supports for
          Web Bean archives to JBoss AS, and allows the Web Beans RI to query the
          EJB3 container and discover which EJBs are installed in your 
-         application. Secondly, an update to JBoss EJB3 is needed.
+         application.
+      </para>
+      
+      <para>
+         Web Beans is bundled with JBoss AS 5.1 and above.
       </para>
    </note>
    
    <para>
-      To install the update, you'll need Ant 1.7.0 installed, and the 
+      To install Web Beans, you'll need Ant 1.7.0 installed, and the 
       <literal>ANT_HOME</literal> environment variable set. For example:
    </para>
    
@@ -83,7 +81,7 @@ $ export ANT_HOME=~/apache-ant-1.7.0</programlisting>
 
    <para>
       Then, you can install the update. The update script will use Maven to
-      download the Web Beans and EJB3 automatically.
+      download Web Beans automatically.
    </para>
    
    <programlisting>$ cd webbeans-$VERSION/jboss-as
@@ -626,7 +624,7 @@ public class Game
       
       <para>
          Next, lets look at the war. Just as in the numberguess example, we have
-         a <literal>faces-config.xml</literal> (to enabled Facelets) and a 
+         a <literal>faces-config.xml</literal> (to enable Facelets) and a 
          <literal>web.xml</literal> (to enable JSF) in 
          <literal>WebContent/WEB-INF</literal>.
       </para>
@@ -743,8 +741,8 @@ public class TranslatorControllerBean implements TranslatorController
    </section>
    
    <para>
-      That concludes our short tour of the Web Beans RI examples. For more on 
-      the RI, or to help out, please visit 
+      That concludes our short tour of the Web Beans examples. For more on Web 
+      Beans , or to help out, please visit 
       <ulink url="http://www.seamframework.org/WebBeans/Development">http://www.seamframework.org/WebBeans/Development</ulink>.
    </para>
    

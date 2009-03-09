@@ -16,6 +16,12 @@
          use the new nomenclature, including the new name for the JSR-299
          Reference Implementation - "Web Beans".
       </para>
+      
+      <para>
+         You'll also find that some of the more recent functionality to be
+         specified is missing (such as producer fields, realization, 
+         asynchronous events, XML mapping of EE resources).
+      </para>
     </preface>
     
     <toc/>
