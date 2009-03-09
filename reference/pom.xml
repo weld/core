@@ -75,6 +75,8 @@
                  <translation>es-ES</translation>
                  <translation>ko-KR</translation>
                  <translation>de-DE</translation>
+                 <translation>de-DE</translation>
+                 <translation>pt-BR</translation>
                </translations>
                <imageResource>
                   <directory>${pom.basedir}/en-US</directory>
