@@ -34,7 +34,7 @@ import org.jboss.webbeans.log.Logging;
  * @see javax.context.Conversation
  */
 @RequestScoped
-@Named("conversation")
+@Named("javax.webbeans.conversation")
 @Standard
 public class ConversationImpl implements Conversation
 {
@@ -73,6 +73,7 @@ public class ConversationImpl implements Conversation
     * Initializes a new conversation
     * 
     * @param conversationIdGenerator The conversation ID generator
+    * @param timeout The conversation inactivity timeout
     */
    @Initializer
    public void init(ConversationIdGenerator conversationIdGenerator, @ConversationInactivityTimeout long timeout)
@@ -91,6 +92,8 @@ public class ConversationImpl implements Conversation
 
    public void begin(String id)
    {
+      // Store away the (first) change to the conversation ID. If the original conversation was long-running,
+      // we might have to place it back for termination once the request is over.
       if (originalCid == null)
       {
          originalCid = cid;
@@ -128,7 +131,7 @@ public class ConversationImpl implements Conversation
    /**
     * Assumes the identity of another conversation
     * 
-    * @param conversation The new conversation identity
+    * @param conversation The new conversation
     * 
     */
    public void switchTo(Conversation conversation)
@@ -143,7 +146,7 @@ public class ConversationImpl implements Conversation
    @Override
    public String toString()
    {
-      return "ID: " + cid + ", long-running: " + longRunning + ", timeout: " + timeout;
+      return "ID: " + cid + ", long-running: " + longRunning + ", timeout: " + timeout + "ms";
    }
 
    public void setLongRunning(boolean longRunning)

@@ -64,11 +64,11 @@ public class WebBeansPhaseListener implements PhaseListener
       Conversation conversation = CurrentManager.rootManager().getInstanceByType(Conversation.class);
       if (conversation.isLongRunning())
       {
-         PhaseHelper.createOrUpdatePropagationComponent(conversation.getId());
+         PhaseHelper.propagateConversation(conversation.getId());
       }
       else
       {
-         PhaseHelper.removePropagationComponent();
+         PhaseHelper.stopConversationPropagation();
       }
    }
 

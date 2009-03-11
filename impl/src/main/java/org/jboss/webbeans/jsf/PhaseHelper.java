@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans.jsf;
 
-import javax.faces.component.html.HtmlInputHidden;
 import javax.faces.context.FacesContext;
 import javax.inject.AnnotationLiteral;
 import javax.servlet.http.HttpSession;
@@ -36,7 +35,7 @@ public class PhaseHelper
 {
    private static LogProvider log = Logging.getLogProvider(PhaseHelper.class);
 
-   private static final String CONVERSATION_PROPAGATION_COMPONENT_ID = "webbeans_conversation_propagation";
+   private static final String CONVERSATION_PROPAGATION_KEY = "webbeans_conversation_propagationz";
 
    /**
     * Gets a FacesContext instance
@@ -59,46 +58,15 @@ public class PhaseHelper
    }
 
    /**
-    * Removes the conversation propagation component from the ui view root
-    */
-   public static void removePropagationComponent()
-   {
-      log.debug("Removed propagation component");
-      HtmlInputHidden propagationComponent = getPropagationComponent();
-      if (propagationComponent != null)
-      {
-         context().getViewRoot().getChildren().remove(propagationComponent);
-      }
-   }
-
-   /**
     * Creates and/or updates the conversation propagation component in the UI
     * view root
     * 
     * @param cid The conversation id to propagate
     */
-   public static void createOrUpdatePropagationComponent(String cid)
+   public static void propagateConversation(String cid)
    {
-      HtmlInputHidden propagationComponent = getPropagationComponent();
-      if (propagationComponent == null)
-      {
-         log.trace("Created propagation component");
-         propagationComponent = (HtmlInputHidden) context().getApplication().createComponent(HtmlInputHidden.COMPONENT_TYPE);
-         propagationComponent.setId(CONVERSATION_PROPAGATION_COMPONENT_ID);
-         context().getViewRoot().getChildren().add(propagationComponent);
-      }
+      context().getViewRoot().getAttributes().put(CONVERSATION_PROPAGATION_KEY, cid);
       log.debug("Updated propagation component with cid " + cid);
-      propagationComponent.setValue(cid);
-   }
-
-   /**
-    * Gets the propagation component from the UI view root
-    * 
-    * @return The component (or null if not found)
-    */
-   private static HtmlInputHidden getPropagationComponent()
-   {
-      return (HtmlInputHidden) context().getViewRoot().findComponent(CONVERSATION_PROPAGATION_COMPONENT_ID);
    }
 
    /**
@@ -115,18 +83,13 @@ public class PhaseHelper
    }
 
    /**
-    * Gets the propagated conversation id from the propagation component
+    * Gets the propagated conversation id from the view root attribute map
     * 
     * @return The conversation id (or null if not found)
     */
-   public static String getConversationIdFromPropagationComponent()
+   public static String getConversationIdFromViewRoot()
    {
-      String cid = null;
-      HtmlInputHidden propagationComponent = getPropagationComponent();
-      if (propagationComponent != null)
-      {
-         cid = propagationComponent.getValue().toString();
-      }
+      String cid = (String) context().getViewRoot().getAttributes().get(CONVERSATION_PROPAGATION_KEY);
       log.trace("Got cid " + cid + " from propagation component");
       return cid;
    }
@@ -141,7 +104,7 @@ public class PhaseHelper
       String cid = null;
       if (isPostback())
       {
-         cid = getConversationIdFromPropagationComponent();
+         cid = getConversationIdFromViewRoot();
       }
       else
       {
@@ -159,6 +122,14 @@ public class PhaseHelper
    public static HttpSession getHttpSession()
    {
       return (HttpSession) context().getExternalContext().getSession(true);
+   }
+
+   /**
+    * Stops conversation propagation through the view root
+    */
+   public static void stopConversationPropagation()
+   {
+      context().getViewRoot().getAttributes().remove(CONVERSATION_PROPAGATION_KEY);
    }
 
 }
