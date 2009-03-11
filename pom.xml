@@ -9,16 +9,6 @@
    <name>Web Beans Build Aggregator</name>
    <url>http://www.seamframework.org/WebBeans</url>
 
-   <modules>
-      <module>version-matrix</module>
-      <module>parent</module>
-      <module>api</module>
-      <module>spi</module>
-      <module>impl</module>
-      <module>porting-package</module>
-      <module>jboss-tck-runner</module>
-   </modules>
-
    <scm>
       <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri</connection>
       <developerConnection>
@@ -64,6 +54,21 @@
             <module>parent</module>
             <module>api</module>
             <module>spi</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>default</id>
+         <activation>
+            <activeByDefault>true</activeByDefault>
+         </activation>
+         <modules>
+            <module>version-matrix</module>
+            <module>parent</module>
+            <module>api</module>
+            <module>spi</module>
+            <module>impl</module>
+            <module>porting-package</module>
+            <module>jboss-tck-runner</module>
          </modules>
       </profile>
    </profiles>
