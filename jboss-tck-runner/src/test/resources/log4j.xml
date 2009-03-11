@@ -8,6 +8,10 @@
             <!-- The default pattern: Date Priority [Category] Message\n -->
             <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c{6}] %m%n"/>
         </layout>
+        <filter class="org.apache.log4j.varia.StringMatchFilter">
+        	<param name="AcceptOnMatch" value="false" />
+        	<param name="StringToMatch" value="Failure while notifying an observer of event [a]" />
+        </filter>
     </appender>
 
     <!-- ############### Embedded EJB3 #################  -->
