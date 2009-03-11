@@ -14,10 +14,10 @@ import org.jboss.deployers.client.spi.IncompleteDeploymentException;
 import org.jboss.deployers.spi.management.deploy.DeploymentManager;
 import org.jboss.deployers.spi.management.deploy.DeploymentProgress;
 import org.jboss.deployers.spi.management.deploy.DeploymentStatus;
-import org.jboss.jsr299.tck.api.DeploymentException;
 import org.jboss.managed.api.ManagedDeployment.DeploymentPhase;
 import org.jboss.profileservice.spi.ProfileKey;
 import org.jboss.profileservice.spi.ProfileService;
+import org.jboss.testharness.api.DeploymentException;
 import org.jboss.virtual.VFS;
 
 public class ProfileServiceContainersImpl extends AbstractContainersImpl

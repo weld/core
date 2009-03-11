@@ -12,9 +12,9 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import org.apache.log4j.Logger;
-import org.jboss.jsr299.tck.api.Configurable;
-import org.jboss.jsr299.tck.api.Configuration;
-import org.jboss.jsr299.tck.spi.Containers;
+import org.jboss.testharness.api.Configurable;
+import org.jboss.testharness.api.Configuration;
+import org.jboss.testharness.spi.Containers;
 import org.jboss.webbeans.tck.integration.jbossas.util.DeploymentProperties;
 
 /**

@@ -4,8 +4,8 @@ import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.List;
 
-import org.jboss.jsr299.tck.api.DeploymentException;
-import org.jboss.jsr299.tck.spi.StandaloneContainers;
+import org.jboss.testharness.api.DeploymentException;
+import org.jboss.testharness.spi.StandaloneContainers;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.mock.MockLifecycle;

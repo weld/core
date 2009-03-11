@@ -1,8 +1,8 @@
 package org.jboss.webbeans.tck;
 
 import org.jboss.jsr299.tck.spi.Contexts;
-import org.jboss.webbeans.context.AbstractMapContext;
 import org.jboss.webbeans.context.AbstractContext;
+import org.jboss.webbeans.context.AbstractMapContext;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.RequestContext;
 
