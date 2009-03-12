@@ -116,6 +116,7 @@
 	   <copy todir="${dist.wb.lib.dir}">
          <fileset dir="target">
             <include name="webbeans-*.jar" />
+         	<include name="jsr299-api.jar" />
             <include name="google-collections.jar" />
          </fileset>
       </copy>
