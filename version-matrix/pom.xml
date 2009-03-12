@@ -231,6 +231,12 @@
             <version>${jsr299.tck.version}</version>
          </dependency>
          
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+         </dependency>
+         
 <!--         <dependency>-->
 <!--            <groupId>org.jboss.naming</groupId>-->
 <!--            <artifactId>jnp-client</artifactId>-->
