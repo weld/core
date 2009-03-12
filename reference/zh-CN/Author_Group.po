@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-02-01 21:16+0000\n"
-"PO-Revision-Date: 2009-02-04 15:30+0800\n"
+"PO-Revision-Date: 2009-03-12 11:59+0800\n"
 "Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -48,7 +48,7 @@ msgstr "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
 #: Author_Group.xml:53
 #, no-c-format
 msgid "Italian Translation"
-msgstr "意大利文翻译"
+msgstr "意大利语翻译"
 
 #. Tag: othercredit
 #: Author_Group.xml:26
