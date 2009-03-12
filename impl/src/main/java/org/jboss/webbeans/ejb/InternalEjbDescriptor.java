@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +54,11 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> impleme
       // Internally, Object.class is added to the type hierachy of an
       // EnterpriseBean, so we need to represent that here. We can just use any
       // of the local business interfaces
-      localBusinessInterfacesJndiNames.put(Object.class, ejbDescriptor.getLocalBusinessInterfaces().iterator().next().getJndiName());
+      Iterator<BusinessInterfaceDescriptor<?>> it = ejbDescriptor.getLocalBusinessInterfaces().iterator();
+      if (it.hasNext())
+      {
+         localBusinessInterfacesJndiNames.put(Object.class, it.next().getJndiName());
+      }
       removeMethods = new ArrayList<Method>();
       for (Method removeMethod : ejbDescriptor.getRemoveMethods())
       {
