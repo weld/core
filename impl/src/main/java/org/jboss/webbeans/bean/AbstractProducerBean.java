@@ -20,7 +20,6 @@ package org.jboss.webbeans.bean;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -94,14 +93,18 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
    {
       if (getType().isArray() || getType().isPrimitive())
       {
+         Set<Type> types = new HashSet<Type>();
          types = new HashSet<Type>();
          types.add(getType());
          types.add(Object.class);
+         super.types = types;
       }
       else if (getType().isInterface())
       {
-         super.initTypes();
+         Set<Type> types = new HashSet<Type>();
          types.add(Object.class);
+         types.addAll(getAnnotatedItem().getFlattenedTypeHierarchy());
+         super.types = types;
       }
       else
       {

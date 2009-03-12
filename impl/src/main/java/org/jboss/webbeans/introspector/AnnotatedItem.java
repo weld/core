@@ -105,6 +105,8 @@ public interface AnnotatedItem<T, S>
     * @return An annotation if found, null if the annotation wasn't present.
     */
    public <A extends Annotation> A getAnnotation(Class<A> annotationType);
+   
+   public Set<? extends Type> getFlattenedTypeHierarchy();
 
    /**
     * Indicates if an annotation type specified is present
@@ -149,7 +151,7 @@ public interface AnnotatedItem<T, S>
     * @param types The set of types to match
     * @return True if assignable, false otherwise.
     */
-   public boolean isAssignableFrom(Set<Type> types);
+   public boolean isAssignableFrom(Set<? extends Type> types);
 
    /**
     * Gets the actual type arguments for any parameterized types that this

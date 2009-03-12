@@ -20,6 +20,7 @@ package org.jboss.webbeans.bean;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -123,12 +124,14 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
 
    protected void initTypes()
    {
+      Set<Type> types = new HashSet<Type>();
       types = new LinkedHashSet<Type>();
       types.add(Object.class);
       for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces())
       {
          types.add(businessInterfaceDescriptor.getInterface());
       }
+      super.types = types;
    }
 
    protected void initProxyClass()

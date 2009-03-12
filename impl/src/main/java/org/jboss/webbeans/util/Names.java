@@ -288,7 +288,7 @@ public class Names
       return buffer.toString();
    }
    
-   public static String typesToString(Set<Type> types)
+   public static String typesToString(Set<? extends Type> types)
    {
       StringBuilder buffer = new StringBuilder();
       int i = 0;

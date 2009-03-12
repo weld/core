@@ -60,7 +60,7 @@ public abstract class Bean<T> implements Contextual<T>
     * 
     * @return the bean types
     */
-   public abstract Set<Type> getTypes();
+   public abstract Set<? extends Type> getTypes();
 
    /**
     * The bindings of a bean

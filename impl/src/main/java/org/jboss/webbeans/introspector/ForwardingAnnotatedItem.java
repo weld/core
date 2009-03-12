@@ -135,7 +135,7 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
    /**
     * @see org.jboss.webbeans.introspector.AnnotatedItem
     */
-   public boolean isAssignableFrom(Set<Type> types)
+   public boolean isAssignableFrom(Set<? extends Type> types)
    {
       return delegate().isAssignableFrom(types);
    }
@@ -217,6 +217,11 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
    public boolean isDeclaredAnnotationPresent(Class<? extends Annotation> annotationType)
    {
       return delegate().isDeclaredAnnotationPresent(annotationType);
+   }
+   
+   public Set<? extends Type> getFlattenedTypeHierarchy()
+   {
+      return delegate().getFlattenedTypeHierarchy();
    }
 
 }

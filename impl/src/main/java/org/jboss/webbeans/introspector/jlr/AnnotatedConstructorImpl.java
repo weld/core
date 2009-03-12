@@ -77,7 +77,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     */
    public AnnotatedConstructorImpl(Constructor<T> constructor, AnnotatedType<T> declaringClass)
    {
-      super(AnnotationStore.of(constructor), constructor);
+      super(AnnotationStore.of(constructor), constructor, constructor.getDeclaringClass());
       this.constructor = constructor;
       this.declaringClass = declaringClass;
 
@@ -128,16 +128,6 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
    public Constructor<T> getDelegate()
    {
       return constructor;
-   }
-
-   /**
-    * Gets the type of the constructor
-    * 
-    * @return The type of the constructor
-    */
-   public Class<T> getType()
-   {
-      return constructor.getDeclaringClass();
    }
 
    /**

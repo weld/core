@@ -54,7 +54,7 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
     */
    public AbstractAnnotatedType(AnnotationStore annotatedItemHelper, Class<T> type)
    {
-      super(annotatedItemHelper);
+      super(annotatedItemHelper, type);
       this.name = type.getName();
       this._simpleName = type.getSimpleName();
       if (type.getSuperclass() != null)

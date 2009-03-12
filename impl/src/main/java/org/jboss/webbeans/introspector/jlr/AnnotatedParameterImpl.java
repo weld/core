@@ -67,7 +67,7 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
     */
    public AnnotatedParameterImpl(Annotation[] annotations, Class<T> type, AnnotatedMember<?, ?> declaringMember)
    {
-      super(AnnotationStore.of(annotations, annotations));
+      super(AnnotationStore.of(annotations, annotations), type);
       this.type = type;
       this.declaringMember = declaringMember;
    }
@@ -94,18 +94,6 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
    public Object getDelegate()
    {
       return null;
-   }
-
-   /**
-    * Gets the type of the parameter
-    * 
-    * @return The type
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedItem#getType()
-    */
-   public Class<T> getType()
-   {
-      return type;
    }
 
    /**
@@ -195,5 +183,5 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
    {
       throw new UnsupportedOperationException();
    }
-
+   
 }

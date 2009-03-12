@@ -257,6 +257,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    private final boolean _nonStaticMemberClass;
    private final boolean _parameterizedType;
    private final boolean _abstract;
+
    
    public static <T> AnnotatedClass<T> of(Class<T> clazz)
    {
@@ -473,16 +474,6 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    public Set<AnnotatedField<?>> getAnnotatedFields(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(annotatedFields.get(annotationType));
-   }
-   
-   /**
-    * Gets the type of the class
-    * 
-    * @return The type
-    */
-   public Class<T> getType()
-   {
-      return clazz;
    }
    
    public boolean isNonStaticMemberClass()

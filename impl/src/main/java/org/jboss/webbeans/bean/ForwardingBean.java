@@ -115,7 +115,7 @@ public abstract class ForwardingBean<T> extends Bean<T>
     * @return The API types
     */
    @Override
-   public Set<Type> getTypes()
+   public Set<? extends Type> getTypes()
    {
       return delegate().getTypes();
    }

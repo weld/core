@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans.util;
 
-import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -73,32 +72,10 @@ public class Beans
       }
       else
       {
-         return Beans.apiTypesAreProxyable(bean.getTypes());
+         return Proxies.isTypesProxyable(bean.getTypes());
       }
    }
 
-   /**
-    * Indicates if a set of types are all proxyable
-    * 
-    * @param types The types to test
-    * @return True if proxyable, false otherwise
-    */
-   public static boolean apiTypesAreProxyable(Set<Type> types)
-   {
-      for (Type apiType : types)
-      {
-         if (Object.class.equals(apiType))
-         {
-            continue;
-         }
-         if (!Proxies.isTypeProxyable(apiType))
-         {
-            return false;
-         }
-      }
-      return true;
-   }
-   
    public static Set<FieldInjectionPoint<?>> getFieldInjectionPoints(AnnotatedClass<?> annotatedItem, Bean<?> declaringBean)
    {
       Set<FieldInjectionPoint<?>> injectableFields = new HashSet<FieldInjectionPoint<?>>();

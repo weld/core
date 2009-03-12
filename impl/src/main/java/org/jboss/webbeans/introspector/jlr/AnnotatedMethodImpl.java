@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
@@ -68,6 +69,8 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    // Cached string representation
    private String toString;
    
+   private final Set<? extends Type> flattenedTypes;
+   
    public static <T> AnnotatedMethodImpl<T> of(Method method, AnnotatedType<?> declaringClass)
    {
       return new AnnotatedMethodImpl<T>(method, declaringClass);
@@ -85,7 +88,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    @SuppressWarnings("unchecked")
    protected AnnotatedMethodImpl(Method method, AnnotatedType<?> declaringClass)
    {
-      super(AnnotationStore.of(method), method);
+      super(AnnotationStore.of(method), method, (Class<T>) method.getReturnType());
       this.method = method;
       this.method.setAccessible(true);
       this.declaringClass = declaringClass;
@@ -93,11 +96,13 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       if (method.getGenericReturnType() instanceof ParameterizedType)
       {
          this.underlyingType = method.getGenericReturnType();
+         this.flattenedTypes = new Reflections.HierarchyDiscovery<Type>(underlyingType).getFlattenedTypes();
          this.actualTypeArguments = ((ParameterizedType) underlyingType).getActualTypeArguments();
       }
       else
       {
          this.underlyingType = type;
+         this.flattenedTypes = super.getFlattenedTypeHierarchy();
          this.actualTypeArguments = new Type[0];
       }
 
@@ -123,7 +128,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
             Class<? extends Object> clazz = method.getParameterTypes()[i];
             AnnotatedParameter<Object> parameter = new AnnotatedParameterImpl<Object>(new Annotation[0], (Class<Object>) clazz, this);
             this.parameters.add(parameter);
-         }
+         }  
       }
 
       String propertyName = Reflections.getPropertyName(getDelegate());
@@ -145,12 +150,6 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    public Method getDelegate()
    {
       return method;
-   }
-
-   @SuppressWarnings("unchecked")
-   public Class<T> getType()
-   {
-      return type;
    }
    
    @Override
@@ -240,6 +239,11 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       toString = "Annotated method on class " + getDeclaringClass().getName() + Names.methodToString(method);
       return toString;
    }
-      
-
+   
+   @Override
+   public Set<? extends Type> getFlattenedTypeHierarchy()
+   {
+      return flattenedTypes;
+   }
+   
 }

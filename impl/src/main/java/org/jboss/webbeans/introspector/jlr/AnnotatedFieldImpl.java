@@ -60,7 +60,7 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
     */
    public AnnotatedFieldImpl(Field field, AnnotatedType<?> declaringClass)
    {
-      super(AnnotationStore.of(field), field);
+      super(AnnotationStore.of(field), field, (Class<T>) field.getType());
       this.field = field;
       field.setAccessible(true);
       this.declaringClass = declaringClass;
@@ -88,17 +88,6 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
    public Field getDelegate()
    {
       return field;
-   }
-
-   /**
-    * Gets the type
-    * 
-    * @return The type
-    */
-   @SuppressWarnings("unchecked")
-   public Class<T> getType()
-   {
-      return (Class<T>) field.getType();
    }
 
    /**
@@ -189,5 +178,5 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
    {
       return getDelegate().hashCode();
    }
-      
+   
 }

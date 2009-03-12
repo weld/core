@@ -8,6 +8,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.TypeLiteral;
 
@@ -108,6 +109,17 @@ public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<
    }
 
    public boolean isStatic()
+   {
+      throw new UnsupportedOperationException();
+   }
+   
+   public Set<? extends Type> getFlattenedTypeHierarchy()
+   {
+      throw new UnsupportedOperationException();
+   }
+   
+   @Override
+   public boolean isProxyable()
    {
       throw new UnsupportedOperationException();
    }

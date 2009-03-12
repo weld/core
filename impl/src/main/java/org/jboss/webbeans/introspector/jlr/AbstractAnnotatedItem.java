@@ -61,6 +61,9 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    // Cached string representation
    private String toString;
    private final AnnotationStore annotationStore;
+   private final Class<T> type;
+   private final Set<? extends Type> flattenedTypes;
+   private final boolean proxyable;
 
    /**
     * Constructor
@@ -71,9 +74,20 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * @param annotationMap A map of annotation to register
     * 
     */
+   public AbstractAnnotatedItem(AnnotationStore annotatedItemHelper, Class<T> type)
+   {
+      this.annotationStore = annotatedItemHelper;
+      this.type = type;
+      this.flattenedTypes = new Reflections.HierarchyDiscovery<Type>(type).getFlattenedTypes();
+      this.proxyable = Proxies.isTypesProxyable(flattenedTypes);
+   }
+   
    public AbstractAnnotatedItem(AnnotationStore annotatedItemHelper)
    {
       this.annotationStore = annotatedItemHelper;
+      this.type = null;
+      this.flattenedTypes = null;
+      this.proxyable = false;
    }
    
    public AnnotationStore getAnnotationStore()
@@ -158,7 +172,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * 
     * @see org.jboss.webbeans.introspector.AnnotatedItem#isAssignableFrom(Set)
     */
-   public boolean isAssignableFrom(Set<Type> types)
+   public boolean isAssignableFrom(Set<? extends Type> types)
    {
       for (Type type : types)
       {
@@ -255,7 +269,17 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    public boolean isProxyable()
    {
-      return Proxies.isTypeProxyable(getType());
+      return proxyable;
+   }
+   
+   public Class<T> getType()
+   {
+      return type;
+   }
+   
+   public Set<? extends Type> getFlattenedTypeHierarchy()
+   {
+      return flattenedTypes;
    }
 
    public abstract S getDelegate();

@@ -48,7 +48,6 @@ import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.MergedStereotypes;
 import org.jboss.webbeans.metadata.MetaDataCache;
-import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -107,7 +106,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    // The type
    protected Class<T> type;
    // The API types
-   protected Set<Type> types;
+   protected Set<? extends Type> types;
    // The injection points
    protected Set<AnnotatedInjectionPoint<?, ?>> injectionPoints;
    // If the type a primitive?
@@ -163,7 +162,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     */
    protected void initTypes()
    {
-      types = new Reflections.HierarchyDiscovery<Type>(getAnnotatedItem().getUnderlyingType()).getFlattenedTypes();
+      types = getAnnotatedItem().getFlattenedTypeHierarchy();
    }
 
    /**
@@ -245,7 +244,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
 
    protected void initProxyable()
    {
-      proxyable = Beans.apiTypesAreProxyable(getTypes());
+      proxyable = getAnnotatedItem().isProxyable();
    }
 
    /**
@@ -459,7 +458,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * @see javax.inject.manager.Bean#getTypes()
     */
    @Override
-   public Set<Type> getTypes()
+   public Set<? extends Type> getTypes()
    {
       return types;
    }

@@ -153,16 +153,6 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
    }
 
    /**
-    * Gets the type of the annotation
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedAnnotation#getType()
-    */
-   public Class<T> getType()
-   {
-      return clazz;
-   }
-
-   /**
     * Returns the annotated members with a given annotation type
     * 
     * If the annotated members are null, they are initialized first.
@@ -202,5 +192,4 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
    {
       throw new UnsupportedOperationException();
    }
-
 }

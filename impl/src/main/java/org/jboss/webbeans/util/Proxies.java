@@ -101,7 +101,7 @@ public class Proxies
          }
       }
 
-      public static TypeInfo ofTypes(Set<Type> types)
+      public static TypeInfo ofTypes(Set<? extends Type> types)
       {
          TypeInfo typeInfo = new TypeInfo();
          for (Type type : types)
@@ -157,6 +157,29 @@ public class Proxies
       }
       return false;
    }
+   
+
+   /**
+    * Indicates if a set of types are all proxyable
+    * 
+    * @param types The types to test
+    * @return True if proxyable, false otherwise
+    */
+   public static boolean isTypesProxyable(Iterable<? extends Type> types)
+   {
+      for (Type apiType : types)
+      {
+         if (Object.class.equals(apiType))
+         {
+            continue;
+         }
+         if (!isTypeProxyable(apiType))
+         {
+            return false;
+         }
+      }
+      return true;
+   }
       
    private static boolean isClassProxyable(Class<?> clazz)
    {
@@ -185,5 +208,6 @@ public class Proxies
          return true;
       }
    }
+
 
 }

@@ -110,9 +110,9 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
     * 
     * @param annotationMap The annotation map
     */
-   public AbstractAnnotatedMember(AnnotationStore annotatedItemHelper, Member member)
+   public AbstractAnnotatedMember(AnnotationStore annotatedItemHelper, Member member, Class<T> type)
    {
-      super(annotatedItemHelper);
+      super(annotatedItemHelper, type);
       name = member.getName();
       _public = Modifier.isPublic(member.getModifiers());
    }
