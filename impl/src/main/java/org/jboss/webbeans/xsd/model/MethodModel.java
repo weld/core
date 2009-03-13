@@ -6,7 +6,7 @@ import java.util.List;
 public class MethodModel extends NamedModel
 {
    private String returnType;
-   private List<ParameterFieldModel> parameters = new ArrayList<ParameterFieldModel>();
+   private List<ParameterModel> parameters = new ArrayList<ParameterModel>();
 
    public MethodModel(String name, String returnType)
    {
@@ -14,12 +14,12 @@ public class MethodModel extends NamedModel
       this.returnType = returnType;
    }
 
-   public void addParameter(ParameterFieldModel parameter)
+   public void addParameter(ParameterModel parameter)
    {
       parameters.add(parameter);
    }
 
-   public List<ParameterFieldModel> getParameters()
+   public List<ParameterModel> getParameters()
    {
       return parameters;
    }
@@ -27,6 +27,19 @@ public class MethodModel extends NamedModel
    public String getReturnType()
    {
       return returnType;
+   }
+
+   @Override
+   public boolean equals(Object other)
+   {
+      MethodModel otherModel = (MethodModel) other;
+      return name.equals(otherModel.getName()) && returnType.equals(otherModel.getReturnType()) && parameters.equals(otherModel.getParameters());
+   }
+
+   @Override
+   public int hashCode()
+   {
+      return name.hashCode() + returnType.hashCode() + parameters.hashCode();
    }
 
 }

@@ -7,8 +7,9 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 
 import org.jboss.webbeans.xsd.model.ClassModel;
+import org.jboss.webbeans.xsd.model.FieldModel;
 import org.jboss.webbeans.xsd.model.MethodModel;
-import org.jboss.webbeans.xsd.model.ParameterFieldModel;
+import org.jboss.webbeans.xsd.model.ParameterModel;
 
 public class DataSetter
 {
@@ -33,7 +34,7 @@ public class DataSetter
       }
       String name = element.getSimpleName().toString();
       String type = element.asType().toString();
-      classModel.addField(new ParameterFieldModel(name, type));
+      classModel.addField(new FieldModel(name, type));
    }
 
    public static void populateMethodModel(ClassModel classModel, Element element)
@@ -52,7 +53,7 @@ public class DataSetter
       {
          String paramName = parameterElement.getSimpleName().toString();
          String paramType = parameterElement.asType().toString();
-         ParameterFieldModel parameter = new ParameterFieldModel(paramName, paramType);
+         ParameterModel parameter = new ParameterModel(paramName, paramType);
          method.addParameter(parameter);
       }
       if ("<init>".equals(name))
@@ -63,12 +64,6 @@ public class DataSetter
       {
          classModel.addMethod(method);
       }
-   }
-
-   public static String getSimpleNameFromQualifiedName(String qualifiedName)
-   {
-      int lastDot = qualifiedName.lastIndexOf(".");
-      return lastDot < 0 ? qualifiedName : qualifiedName.substring(lastDot);
    }
 
 }
