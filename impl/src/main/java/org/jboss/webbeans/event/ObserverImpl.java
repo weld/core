@@ -123,7 +123,7 @@ public class ObserverImpl<T> implements Observer<T>
       List<AnnotatedParameter<?>> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
       if (disposeParams.size() > 0)
       {
-         throw new DefinitionException(this + " cannot have any parameters annotated with @Dispose");
+         throw new DefinitionException(this + " cannot have any parameters annotated with @Disposes");
       }
       // Check annotations on the method to make sure this is not a producer
       // method, initializer method, or destructor method.
