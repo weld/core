@@ -17,6 +17,7 @@ import org.jboss.webbeans.util.EnumerationIterable;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 
 public abstract class AbstractWebBeansTest extends AbstractTest
 {
@@ -58,9 +59,15 @@ public abstract class AbstractWebBeansTest extends AbstractTest
    public static boolean visited = false;
    
    @Override
+   @BeforeSuite
    public void beforeSuite(ITestContext context) throws Exception
    {
-      getCurrentConfiguration().setStandaloneContainers(new StandaloneContainersImpl());
+      if (!isInContainer())
+      {
+         getCurrentConfiguration().setStandaloneContainers(new StandaloneContainersImpl());
+         getCurrentConfiguration().getExtraPackages().add(AbstractWebBeansTest.class.getPackage().getName());
+      }
+      super.beforeSuite(context);
    }
 
    @BeforeMethod
