@@ -899,12 +899,12 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return namingContext;
    }
 
-   public EjbResolver getEjbResolver()
+   public final EjbResolver getEjbResolver()
    {
       return ejbResolver;
    }
    
-   public ResourceLoader getResourceLoader()
+   public final ResourceLoader getResourceLoader()
    {
       return resourceLoader;
    }
@@ -915,7 +915,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * 
     * @return a TransactionServices provider per the SPI
     */
-   public TransactionServices getTransactionServices()
+   public final TransactionServices getTransactionServices()
    {
       return transactionServices;
    }

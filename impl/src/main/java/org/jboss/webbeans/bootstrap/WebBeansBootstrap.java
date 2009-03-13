@@ -83,7 +83,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       }
       if (getTransactionServices() == null)
       {
-         throw new IllegalStateException("TransactionServices is not set");
+         log.info("Transactional services not available.  Transactional observers will be invoked synchronously.");
       }
       this.manager = new ManagerImpl(getNamingContext(), getEjbResolver(), getResourceLoader(), getTransactionServices());
       getManager().getNaming().bind(ManagerImpl.JNDI_KEY, getManager());
