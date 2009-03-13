@@ -8,7 +8,7 @@ import javax.ejb.Stateful;
 @SessionScoped
 @Stateful
 @Named("John")
-class WrappedEnterpriseBean
+class WrappedEnterpriseBean implements WrappedEnterpriseBeanLocal
 {
    @Remove
    public void bye() {

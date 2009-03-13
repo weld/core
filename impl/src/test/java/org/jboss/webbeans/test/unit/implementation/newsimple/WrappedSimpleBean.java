@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.unit.implementation;
+package org.jboss.webbeans.test.unit.implementation.newsimple;
 
 import java.io.Serializable;
 

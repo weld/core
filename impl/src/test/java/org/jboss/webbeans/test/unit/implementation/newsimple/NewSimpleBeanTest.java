@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.unit.implementation;
+package org.jboss.webbeans.test.unit.implementation.newsimple;
 
 import java.util.Set;
 
@@ -10,7 +10,6 @@ import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.literal.NewLiteral;
 import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -21,7 +20,6 @@ public class NewSimpleBeanTest extends AbstractWebBeansTest
    
    private static final New NEW_LITERAL = new NewLiteral();
    
-   @BeforeMethod
    public void initNewBean() {
       
       assert manager.resolveByType(WrappedSimpleBean.class).size() == 1;
@@ -36,30 +34,35 @@ public class NewSimpleBeanTest extends AbstractWebBeansTest
    @Test(groups = { "new" })
    public void testNewBeanHasImplementationClassOfInjectionPointType()
    {
+      initNewBean();
       assert newSimpleBean.getType().equals(WrappedSimpleBean.class);
    }
 
    @Test(groups = { "new" })
    public void testNewBeanIsSimpleWebBeanIfParameterTypeIsSimpleWebBean()
    {
+      initNewBean();
       assert newSimpleBean.getType().equals(wrappedSimpleBean.getType());
    }
 
    @Test(groups = { "new" })
    public void testNewBeanHasSameConstructorAsWrappedBean()
    {
+      initNewBean();
       assert wrappedSimpleBean.getConstructor().equals(newSimpleBean.getConstructor());
    }
 
    @Test(groups = { "new" })
    public void testNewBeanHasSameInitializerMethodsAsWrappedBean()
    {
+      initNewBean();
       assert newSimpleBean.getInitializerMethods().equals(wrappedSimpleBean.getInitializerMethods());
    }
 
    @Test(groups = { "new" })
    public void testNewBeanHasSameInjectedFieldsAsWrappedBean()
    {
+      initNewBean();
       Set<? extends AnnotatedItem<?, ?>> wrappedBeanInjectionPoints = wrappedSimpleBean.getInjectionPoints();
       Set<? extends AnnotatedItem<?, ?>> newBeanInjectionPoints = newSimpleBean.getInjectionPoints();
       assert wrappedBeanInjectionPoints.equals(newBeanInjectionPoints);

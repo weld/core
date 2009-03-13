@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.unit.implementation;
+package org.jboss.webbeans.test.unit.implementation.proxy.enterprise;
 
 import javassist.util.proxy.ProxyObject;
 
@@ -25,9 +25,9 @@ public class EnterpriseBeanProxyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            Object mouse = manager.getInstanceByType(Mouse.class);
+            Object mouse = manager.getInstanceByType(MouseLocal.class);
             assert mouse instanceof ProxyObject;
-            assert mouse instanceof Mouse;
+            assert mouse instanceof MouseLocal;
          }
          
       }.run();
