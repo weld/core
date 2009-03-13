@@ -35,6 +35,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
    public static final String FORCE_RESTART_PROPERTY_NAME = "jboss.force.restart";
    public static final String MAX_DEPLOYMENTS_PROPERTY_NAME = "jboss.deployments.restart";
    public static final String SHUTDOWN_DELAY_PROPERTY_NAME = "jboss.shutdown.delay";
+   public static final String JBOSS_BIND_ADDRESS_PROPERTY_NAME = "jboss.bind.address";
 
    private static Logger log = Logger.getLogger(AbstractContainersImpl.class);
 
@@ -52,6 +53,8 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
    protected int maxDeployments;
 
    private int jbossShutdownDelay;
+
+   private String jbossBindAddress;
 
    public AbstractContainersImpl()
    {
@@ -79,7 +82,6 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
    public void setConfiguration(Configuration configuration)
    {
       this.configuration = configuration;
-      this.jbossHttpUrl = "http://" + configuration.getHost() + "/";
    }
 
    protected boolean isJBossUp()
@@ -128,11 +130,14 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
          }
       }
       jbossHome = properties.getStringValue(JBOSS_HOME_PROPERTY_NAME, null, true);
+      jbossBindAddress = properties.getStringValue(JBOSS_BIND_ADDRESS_PROPERTY_NAME, "localhost", false);
+      configuration.setHost(jbossBindAddress + ":8080");
+      this.jbossHttpUrl = "http://" + configuration.getHost() + "/";
       javaOpts = properties.getStringValue(JAVA_OPTS_PROPERTY_NAME, "", false);
       javaOpts = javaOpts + JAVA_OPTS;
       File jbossHomeFile = new File(jbossHome);
       jbossHome = jbossHomeFile.getPath();
-      log.info("Using JBoss instance in " + jbossHome + " at URL " + configuration.getHost());
+      log.info("Using JBoss instance in " + jbossHome + " at URL " + jbossHttpUrl);
       this.bootTimeout = properties.getLongValue(JBOSS_BOOT_TIMEOUT_PROPERTY_NAME, 240000, false);
       this.forceRestart = properties.getBooleanValue(FORCE_RESTART_PROPERTY_NAME, false, false);
       this.maxDeployments = properties.getIntValue(MAX_DEPLOYMENTS_PROPERTY_NAME, 25, false);
@@ -161,7 +166,7 @@ public abstract class AbstractContainersImpl implements Configurable, Containers
       if (!isJBossUp())
       {
          jbossWasStarted = true;
-         launch("run", "");
+         launch("run", "--host=" + jbossBindAddress);
          log.info("Starting JBoss instance");
          // Wait for JBoss to come up
          long timeoutTime = System.currentTimeMillis() + bootTimeout;
