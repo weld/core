@@ -1,18 +1,14 @@
 package org.jboss.webbeans.test.examples;
 
-import java.util.Arrays;
-
-import javax.inject.Production;
-import javax.inject.Standard;
-
-import org.jboss.webbeans.test.unit.AbstractTest;
+import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
-public class ExampleTest extends AbstractTest
+@Artifact
+public class ExampleTest extends AbstractWebBeansTest
 {
    @Test
    public void testGameGenerator() throws Exception {
-     setupGameGenerator();
      
      new RunInDependentContext()
      {
@@ -33,33 +29,8 @@ public class ExampleTest extends AbstractTest
      }.run();
    }
 
-   private void setupGameGenerator() throws NoSuchMethodException
-   {
-      deployBeans(Game.class, Generator.class);
-   }
-   
-   @Test
-   public void testMockSentenceTranslator() throws Exception {
-      
-      manager.setEnabledDeploymentTypes(Arrays.asList(Standard.class, Production.class, Mock.class));
-      setupTextTranslator();
-      
-      new RunInDependentContext()
-      {
-         
-         @Override
-         protected void execute() throws Exception
-         {
-            TextTranslator tt2 = manager.getInstanceByType(TextTranslator.class);
-            assert "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.".equals( tt2.translate("Hello world. How's tricks?") );
-         }
-         
-      }.run();  
-   }
-
    @Test
    public void testSentenceTranslator() throws Exception {
-      setupTextTranslator();
       
       new RunInDependentContext()
       {
@@ -80,11 +51,6 @@ public class ExampleTest extends AbstractTest
          }
          
       }.run();
-   }
-   
-   private void setupTextTranslator()
-   {
-      deployBeans(SentenceParser.class, SentenceTranslator.class, MockSentenceTranslator.class, TextTranslator.class);
    }
    
 }

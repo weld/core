@@ -4,11 +4,13 @@ import java.util.Arrays;
 
 import javax.context.RequestScoped;
 
+import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.metadata.StereotypeModel;
-import org.jboss.webbeans.test.unit.AbstractTest;
+import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
-public class StereotypesTest extends AbstractTest
+@Artifact
+public class StereotypesTest extends AbstractWebBeansTest
 {
 	
    @Test

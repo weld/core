@@ -8,11 +8,13 @@ import javax.inject.manager.Manager;
 class InitializedObserverWhichUsesRequestContext
 {
    
+   public static String name;
+   
    @Current Tuna tuna;
    
    public void observeInitialized(@Observes @Initialized Manager manager)
    {
-      tuna.getName();
+      name = tuna.getName();
    }
    
 }

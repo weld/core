@@ -8,11 +8,14 @@ import javax.annotation.Stereotype;
 import javax.inject.DeploymentType;
 import javax.inject.Production;
 
+import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
+import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
-public class ClassAnnotatedItemTest
+@Artifact
+public class ClassAnnotatedItemTest extends AbstractWebBeansTest
 {
    
    @Test

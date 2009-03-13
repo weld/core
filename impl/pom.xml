@@ -111,6 +111,12 @@
          <optional>true</optional>
       </dependency>
       
+      <dependency>
+         <groupId>org.jboss.test-harness</groupId>
+         <artifactId>jboss-test-harness</artifactId>
+         <scope>test</scope>
+      </dependency>
+      
    </dependencies>
 
    <build>

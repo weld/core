@@ -7,13 +7,15 @@ import javax.inject.DeploymentException;
 import javax.inject.Production;
 import javax.inject.Standard;
 
+import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.bootstrap.BeansXmlParser;
 import org.jboss.webbeans.mock.MockResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
-import org.jboss.webbeans.test.unit.AbstractTest;
+import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
-public class BeansXmlParserTest extends AbstractTest
+@Artifact
+public class BeansXmlParserTest extends AbstractWebBeansTest
 {
    
    private static final ResourceLoader RESOURCE_LOADER = new MockResourceLoader(); 

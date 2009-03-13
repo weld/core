@@ -1,1 +1,1 @@
-package org.jboss.webbeans.test.unit.lookup.circular;import javax.inject.Produces;class DependentLoopingProducer{      @Produces   public Violation produceViolation(Violation violation) {      return new Violation();   }} 
+package org.jboss.webbeans.test.unit.lookup.circular;import javax.inject.Produces;class DependentLoopingProducer{      @Produces @DependentLooping   public Violation produceViolation(@DependentLooping Violation violation) {      return new Violation();   }} 

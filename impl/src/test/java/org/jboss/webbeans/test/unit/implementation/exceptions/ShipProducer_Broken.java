@@ -5,7 +5,7 @@ import javax.inject.Produces;
 public class ShipProducer_Broken
 {
    
-   @Produces
+   @Produces @Large
    public Ship produceShip() throws FooException
    {
       throw new FooException();

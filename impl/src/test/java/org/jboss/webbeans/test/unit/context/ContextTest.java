@@ -1,9 +1,13 @@
 package org.jboss.webbeans.test.unit.context;
 
-import org.jboss.webbeans.test.unit.AbstractTest;
+import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.testharness.impl.packaging.IntegrationTest;
+import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
-public class ContextTest extends AbstractTest
+@Artifact
+@IntegrationTest
+public class ContextTest extends AbstractWebBeansTest
 {
    // WBRI-155
    @Test(groups="stub")

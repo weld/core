@@ -4,15 +4,17 @@ import java.util.Set;
 
 import javax.inject.New;
 
+import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.literal.NewLiteral;
-import org.jboss.webbeans.test.unit.AbstractTest;
+import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class NewSimpleBeanTest extends AbstractTest
+@Artifact
+public class NewSimpleBeanTest extends AbstractWebBeansTest
 {
    private SimpleBean<WrappedSimpleBean> wrappedSimpleBean;
    private NewSimpleBean<WrappedSimpleBean> newSimpleBean;
@@ -21,7 +23,6 @@ public class NewSimpleBeanTest extends AbstractTest
    
    @BeforeMethod
    public void initNewBean() {
-      deployBeans(WrappedSimpleBean.class);
       
       assert manager.resolveByType(WrappedSimpleBean.class).size() == 1;
       assert manager.resolveByType(WrappedSimpleBean.class).iterator().next() instanceof SimpleBean;

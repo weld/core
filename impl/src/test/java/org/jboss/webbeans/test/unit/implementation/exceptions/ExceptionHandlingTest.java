@@ -1,17 +1,19 @@
 package org.jboss.webbeans.test.unit.implementation.exceptions;
 
+import javax.inject.AnnotationLiteral;
 import javax.inject.CreationException;
 
-import org.jboss.webbeans.test.unit.AbstractTest;
+import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
-public class ExceptionHandlingTest extends AbstractTest
+@Artifact
+public class ExceptionHandlingTest extends AbstractWebBeansTest
 {
 
    @Test(expectedExceptions=FooException.class)
    public void testCreationExceptionWrapsRealExceptionForSimpleBean() throws Exception
    {
-      deployBeans(Lorry_Broken.class);
       new RunInDependentContext()
       {
          
@@ -38,7 +40,6 @@ public class ExceptionHandlingTest extends AbstractTest
    @Test(expectedExceptions=FooException.class)
    public void testCreationExceptionWrapsRealExceptionForProducerBean() throws Exception
    {
-      deployBeans(ShipProducer_Broken.class);
       new RunInDependentContext()
       {
          
@@ -47,7 +48,7 @@ public class ExceptionHandlingTest extends AbstractTest
          {
             try
             {
-               manager.getInstanceByType(Ship.class);
+               manager.getInstanceByType(Ship.class, new AnnotationLiteral<Large>() {});
             }
             catch (Exception e) 
             {

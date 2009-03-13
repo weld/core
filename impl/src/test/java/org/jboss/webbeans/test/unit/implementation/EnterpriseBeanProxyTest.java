@@ -2,10 +2,15 @@ package org.jboss.webbeans.test.unit.implementation;
 
 import javassist.util.proxy.ProxyObject;
 
-import org.jboss.webbeans.test.unit.AbstractTest;
+import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.testharness.impl.packaging.Packaging;
+import org.jboss.testharness.impl.packaging.PackagingType;
+import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
-public class EnterpriseBeanProxyTest extends AbstractTest
+@Artifact
+@Packaging(PackagingType.EAR)
+public class EnterpriseBeanProxyTest extends AbstractWebBeansTest
 {
    
    /**
@@ -14,7 +19,6 @@ public class EnterpriseBeanProxyTest extends AbstractTest
    @Test
    public void testNoInterfaceView() throws Exception
    {
-      deployBeans(Mouse.class);
       new RunInDependentContext()
       {
          

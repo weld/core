@@ -1,16 +1,18 @@
 package org.jboss.webbeans.test.unit.lookup.circular;
 
-import org.jboss.webbeans.test.unit.AbstractTest;
+import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
-public class CircularDependencyTest extends AbstractTest
+@Artifact
+public class CircularDependencyTest extends AbstractWebBeansTest
 {
   
    
    @Test
    public void testCircularInjectionOnTwoNormalBeans() throws Exception
    {
-      deployBeans(Pig.class, Food.class);
+      //deployBeans(Pig.class, Food.class);
       manager.getInstanceByType(Pig.class).getName();
       assert Pig.success;
       assert Food.success;
@@ -19,7 +21,7 @@ public class CircularDependencyTest extends AbstractTest
    @Test(timeOut=1000)
    public void testCircularInjectionOnOneNormalAndOneDependentBean() throws Exception
    {
-      deployBeans(Car.class, Petrol.class);
+      //deployBeans(Car.class, Petrol.class);
       new RunInDependentContext()
       {
 
@@ -38,7 +40,7 @@ public class CircularDependencyTest extends AbstractTest
    @Test(timeOut=1000)
    public void testCircularInjectionOnOneDependentAndOneNormalBean() throws Exception
    {
-      deployBeans(Car.class, Petrol.class);
+      //deployBeans(Car.class, Petrol.class);
       new RunInDependentContext()
       {
 
@@ -58,7 +60,7 @@ public class CircularDependencyTest extends AbstractTest
    @Test(timeOut=1000)
    public void testCircularInjectionOnTwoSimpleDependentBeans() throws Exception
    {
-      deployBeans(Foo.class, Bar.class);
+      //deployBeans(Foo.class, Bar.class);
       new RunInDependentContext()
       {
        
@@ -76,7 +78,7 @@ public class CircularDependencyTest extends AbstractTest
    @Test(timeOut=1000)
    public void testDependentProducerMethodDeclaredOnDependentBeanWhichInjectsProducedBean() throws Exception
    {
-      deployBeans(DependentSelfConsumingDependentProducer.class);
+      //deployBeans(DependentSelfConsumingDependentProducer.class);
       new RunInDependentContext()
       {
        
@@ -92,7 +94,7 @@ public class CircularDependencyTest extends AbstractTest
    @Test(timeOut=1000)
    public void testNormalProducerMethodDeclaredOnNormalBeanWhichInjectsProducedBean() throws Exception
    {
-      deployBeans(NormalSelfConsumingNormalProducer.class);
+      //deployBeans(NormalSelfConsumingNormalProducer.class);
       new RunInDependentContext()
       {
        
@@ -108,7 +110,7 @@ public class CircularDependencyTest extends AbstractTest
    @Test(timeOut=1000)
    public void testNormalProducerMethodDeclaredOnDependentBeanWhichInjectsProducedBean() throws Exception
    {
-      deployBeans(DependentSelfConsumingNormalProducer.class);
+      //deployBeans(DependentSelfConsumingNormalProducer.class);
       new RunInDependentContext()
       {
        
@@ -124,7 +126,7 @@ public class CircularDependencyTest extends AbstractTest
    @Test(timeOut=1000)
    public void testDependentProducerMethodDeclaredOnNormalBeanWhichInjectsProducedBean() throws Exception
    {
-      deployBeans(NormalSelfConsumingDependentProducer.class);
+      //deployBeans(NormalSelfConsumingDependentProducer.class);
       new RunInDependentContext()
       {
        
@@ -140,7 +142,7 @@ public class CircularDependencyTest extends AbstractTest
    @Test(timeOut=1000)
    public void testNormalSelfConsumingProducer() throws Exception
    {
-      deployBeans(NormalLoopingProducer.class);
+      //deployBeans(NormalLoopingProducer.class);
       new RunInDependentContext()
       {
        
@@ -156,7 +158,7 @@ public class CircularDependencyTest extends AbstractTest
    @Test(groups="broken", timeOut=1000)
    public void testDependentSelfConsumingProducer() throws Exception
    {
-      deployBeans(DependentLoopingProducer.class);
+      //deployBeans(DependentLoopingProducer.class);
       new RunInDependentContext()
       {
        
@@ -172,7 +174,7 @@ public class CircularDependencyTest extends AbstractTest
    @Test(groups="broken", timeOut=1000)
    public void testDependentCircularConstructors() throws Exception
    {
-      deployBeans(Water.class, Fish.class);
+      //deployBeans(Water.class, Fish.class);
       new RunInDependentContext()
       {
        
@@ -188,7 +190,7 @@ public class CircularDependencyTest extends AbstractTest
    @Test(timeOut=1000)
    public void testNormalCircularConstructors() throws Exception
    {
-      deployBeans(Bird.class, Air.class);
+      //deployBeans(Bird.class, Air.class);
       new RunInDependentContext()
       {
        
@@ -204,7 +206,7 @@ public class CircularDependencyTest extends AbstractTest
    @Test(timeOut=1000)
    public void testNormalAndDependentCircularConstructors() throws Exception
    {
-      deployBeans(Space.class, Planet.class);
+      //deployBeans(Space.class, Planet.class);
       new RunInDependentContext()
       {
        
@@ -220,7 +222,7 @@ public class CircularDependencyTest extends AbstractTest
    @Test(groups="broken", timeOut=1000)
    public void testSelfConsumingConstructorsOnDependentBean() throws Exception
    {
-      deployBeans(Farm.class);
+      //deployBeans(Farm.class);
       new RunInDependentContext()
       {
        
@@ -236,7 +238,7 @@ public class CircularDependencyTest extends AbstractTest
    @Test(timeOut=1000)
    public void testSelfConsumingConstructorsOnNormalBean() throws Exception
    {
-      deployBeans(House.class);
+      //deployBeans(House.class);
       new RunInDependentContext()
       {
        

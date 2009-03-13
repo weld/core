@@ -5,16 +5,21 @@ import java.util.Set;
 
 import javax.inject.New;
 
+import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.testharness.impl.packaging.Packaging;
+import org.jboss.testharness.impl.packaging.PackagingType;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.literal.NewLiteral;
-import org.jboss.webbeans.test.unit.AbstractTest;
+import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
 import org.jboss.webbeans.util.Proxies.TypeInfo;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class NewEnterpriseBeanTest extends AbstractTest
+@Artifact
+@Packaging(PackagingType.EAR)
+public class NewEnterpriseBeanTest extends AbstractWebBeansTest
 {
    
    private static final New NEW_LITERAL = new NewLiteral();
@@ -24,7 +29,6 @@ public class NewEnterpriseBeanTest extends AbstractTest
    
    @BeforeMethod
    public void initNewBean() {
-      deployBeans(WrappedEnterpriseBean.class);
       
       assert manager.resolveByType(WrappedEnterpriseBean.class).size() == 1;
       assert manager.resolveByType(WrappedEnterpriseBean.class).iterator().next() instanceof EnterpriseBean;
