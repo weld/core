@@ -1,4 +1,4 @@
-package org.jboss.webbeans.xsd;
+package org.jboss.webbeans.xsd.helpers;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;

@@ -37,9 +37,9 @@ public class ClassModel extends NamedModel
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Name: " + name + "\n");
-      buffer.append("Constructors: " + constructors + "\n");
-      buffer.append("Methods: " + methods + "\n");
-      buffer.append("Fields: " + fields + "\n");
+      buffer.append("Constructors: " + getMergedConstructors() + "\n");
+      buffer.append("Methods: " + getMergedMethods() + "\n");
+      buffer.append("Fields: " + getMergedFields() + "\n");
       return buffer.toString();
    }
 

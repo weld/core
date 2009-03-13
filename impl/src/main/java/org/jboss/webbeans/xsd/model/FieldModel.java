@@ -28,4 +28,10 @@ public class FieldModel extends NamedModel
       return name.hashCode() + type.hashCode();
    }
 
+   @Override
+   public String toString()
+   {
+      return type + " " + name;
+   }
+
 }

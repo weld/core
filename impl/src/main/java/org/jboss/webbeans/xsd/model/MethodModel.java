@@ -41,5 +41,11 @@ public class MethodModel extends NamedModel
    {
       return name.hashCode() + returnType.hashCode() + parameters.hashCode();
    }
+   
+   @Override
+   public String toString()
+   {
+      return returnType + " " + name + "(" + (parameters.isEmpty() ? "" : parameters) + ")";
+   }
 
 }
