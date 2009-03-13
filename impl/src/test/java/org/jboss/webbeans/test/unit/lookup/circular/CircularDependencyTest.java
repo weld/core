@@ -18,7 +18,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
       assert Food.success;
    }
    
-   @Test(timeOut=1000)
+   @Test
    public void testCircularInjectionOnOneNormalAndOneDependentBean() throws Exception
    {
       //deployBeans(Car.class, Petrol.class);
@@ -37,7 +37,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
       
    }
    
-   @Test(timeOut=1000)
+   @Test
    public void testCircularInjectionOnOneDependentAndOneNormalBean() throws Exception
    {
       //deployBeans(Car.class, Petrol.class);
@@ -57,7 +57,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
    }
    
    
-   @Test(timeOut=1000)
+   @Test
    public void testCircularInjectionOnTwoSimpleDependentBeans() throws Exception
    {
       //deployBeans(Foo.class, Bar.class);
@@ -75,7 +75,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
       }.run();
    }
    
-   @Test(timeOut=1000)
+   @Test
    public void testDependentProducerMethodDeclaredOnDependentBeanWhichInjectsProducedBean() throws Exception
    {
       //deployBeans(DependentSelfConsumingDependentProducer.class);
@@ -91,7 +91,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
       }.run();
    }
    
-   @Test(timeOut=1000)
+   @Test
    public void testNormalProducerMethodDeclaredOnNormalBeanWhichInjectsProducedBean() throws Exception
    {
       //deployBeans(NormalSelfConsumingNormalProducer.class);
@@ -107,7 +107,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
       }.run();
    }
    
-   @Test(timeOut=1000)
+   @Test
    public void testNormalProducerMethodDeclaredOnDependentBeanWhichInjectsProducedBean() throws Exception
    {
       //deployBeans(DependentSelfConsumingNormalProducer.class);
@@ -123,7 +123,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
       }.run();
    }
    
-   @Test(timeOut=1000)
+   @Test
    public void testDependentProducerMethodDeclaredOnNormalBeanWhichInjectsProducedBean() throws Exception
    {
       //deployBeans(NormalSelfConsumingDependentProducer.class);
@@ -139,7 +139,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
       }.run();
    }
    
-   @Test(timeOut=1000)
+   @Test
    public void testNormalSelfConsumingProducer() throws Exception
    {
       //deployBeans(NormalLoopingProducer.class);
@@ -187,7 +187,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
       }.run();
    }
    
-   @Test(timeOut=1000)
+   @Test
    public void testNormalCircularConstructors() throws Exception
    {
       //deployBeans(Bird.class, Air.class);
@@ -203,7 +203,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
       }.run();
    }
    
-   @Test(timeOut=1000)
+   @Test
    public void testNormalAndDependentCircularConstructors() throws Exception
    {
       //deployBeans(Space.class, Planet.class);
@@ -235,7 +235,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
       }.run();
    }
    
-   @Test(timeOut=1000)
+   @Test
    public void testSelfConsumingConstructorsOnNormalBean() throws Exception
    {
       //deployBeans(House.class);
