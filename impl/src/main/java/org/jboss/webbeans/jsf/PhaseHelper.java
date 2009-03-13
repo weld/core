@@ -35,7 +35,7 @@ public class PhaseHelper
 {
    private static LogProvider log = Logging.getLogProvider(PhaseHelper.class);
 
-   private static final String CONVERSATION_PROPAGATION_KEY = "webbeans_conversation_propagationz";
+   private static final String CONVERSATION_PROPAGATION_KEY = "webbeans_conversation_propagation";
 
    /**
     * Gets a FacesContext instance

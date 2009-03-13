@@ -89,6 +89,11 @@
       </dependency>
 
       <dependency>
+         <groupId>dom4j</groupId>
+         <artifactId>dom4j</artifactId>
+      </dependency>
+
+      <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-api</artifactId>
          <optional>true</optional>
