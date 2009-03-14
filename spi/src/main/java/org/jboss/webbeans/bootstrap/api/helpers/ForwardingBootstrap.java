@@ -4,7 +4,7 @@ import org.jboss.webbeans.bootstrap.api.Bootstrap;
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.ejb.spi.EjbResolver;
+import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
@@ -39,9 +39,9 @@ public abstract class ForwardingBootstrap implements Bootstrap
       delegate().setEjbDiscovery(ejbDiscovery);
    }
    
-   public void setEjbResolver(EjbResolver ejbResolver)
+   public void setEjbServices(EjbServices ejbServices)
    {
-      delegate().setEjbResolver(ejbResolver);
+      delegate().setEjbServices(ejbServices);
    }
    
    public void setNamingContext(NamingContext namingContext)

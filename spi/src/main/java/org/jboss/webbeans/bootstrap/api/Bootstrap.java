@@ -3,7 +3,7 @@ package org.jboss.webbeans.bootstrap.api;
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.ejb.spi.EjbResolver;
+import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
@@ -33,11 +33,11 @@ public interface Bootstrap
    public void setEjbDiscovery(EjbDiscovery ejbDiscovery);
    
    /**
-    * Set the EjbResolver to use
+    * Set the EjbServices to use
     * 
-    * @param ejbResolver
+    * @param ejbServices
     */
-   public void setEjbResolver(EjbResolver ejbResolver);
+   public void setEjbServices(EjbServices ejbServices);
    
    /**
     * Set the NamingContext to use.

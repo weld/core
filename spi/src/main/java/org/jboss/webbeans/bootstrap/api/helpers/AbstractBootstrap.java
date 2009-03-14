@@ -4,7 +4,7 @@ import org.jboss.webbeans.bootstrap.api.Bootstrap;
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.ejb.spi.EjbResolver;
+import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
@@ -15,7 +15,7 @@ public abstract class AbstractBootstrap implements Bootstrap
    private WebBeanDiscovery webBeanDiscovery;
    private ResourceLoader resourceLoader;
    private NamingContext namingContext;
-   private EjbResolver ejbResolver;
+   private EjbServices ejbServices;
    private EjbDiscovery ejbDiscovery;
    private BeanStore applicationContext;
    private TransactionServices transactionServices;
@@ -25,9 +25,9 @@ public abstract class AbstractBootstrap implements Bootstrap
       this.ejbDiscovery = ejbDiscovery;
    }
 
-   public void setEjbResolver(EjbResolver ejbResolver)
+   public void setEjbServices(EjbServices ejbServices)
    {
-      this.ejbResolver = ejbResolver;
+      this.ejbServices = ejbServices;
    }
 
    public void setNamingContext(NamingContext namingContext)
@@ -65,9 +65,9 @@ public abstract class AbstractBootstrap implements Bootstrap
       return namingContext;
    }
 
-   public EjbResolver getEjbResolver()
+   public EjbServices getEjbServices()
    {
-      return ejbResolver;
+      return ejbServices;
    }
 
    public EjbDiscovery getEjbDiscovery()

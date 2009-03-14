@@ -4,23 +4,25 @@ import java.lang.annotation.Annotation;
 
 import javax.inject.manager.InjectionPoint;
 
-import org.jboss.webbeans.ejb.spi.EjbResolver;
+import org.jboss.webbeans.ejb.api.EjbReference;
+import org.jboss.webbeans.ejb.spi.EjbDescriptor;
+import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.resources.spi.NamingContext;
 
 /**
- * An implementation of {@link EjbResolver} which forwards all its method calls
- * to another {@link EjbResolver}}. Subclasses should override one or more 
- * methods to modify the behavior of the backing {@link EjbResolver} as desired
+ * An implementation of {@link EjbServices} which forwards all its method calls
+ * to another {@link EjbServices}}. Subclasses should override one or more 
+ * methods to modify the behavior of the backing {@link EjbServices} as desired
  * per the <a
  * href="http://en.wikipedia.org/wiki/Decorator_pattern">decorator pattern</a>.
  * 
  * @author Pete Muir
  *
  */
-public abstract class ForwardingEjbResolver implements EjbResolver
+public abstract class ForwardingEjbServices implements EjbServices
 {
    
-   public abstract EjbResolver delegate();
+   public abstract EjbServices delegate();
    
    public Class<? extends Annotation> getEJBAnnotation()
    {
@@ -40,6 +42,11 @@ public abstract class ForwardingEjbResolver implements EjbResolver
    public Object resolveEjb(InjectionPoint injectionPoint, NamingContext namingContext)
    {
       return delegate().resolveEjb(injectionPoint, namingContext);
+   }
+   
+   public <T> EjbReference<T> resolveEJB(EjbDescriptor<T> ejbDescriptor, NamingContext namingContext)
+   {
+      return delegate().resolveEJB(ejbDescriptor, namingContext);
    }
    
    public Object resolvePersistenceContext(InjectionPoint injectionPoint, NamingContext namingContext)

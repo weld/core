@@ -204,6 +204,7 @@ public class BeanDeployer
    
    private void createEnterpriseBean(AnnotatedClass<?> annotatedClass)
    {
+      // TODO Don't create enterprise bean if it has no local interfaces!
       EnterpriseBean<?> bean = EnterpriseBean.of(annotatedClass, manager);
       createBean(bean, annotatedClass);
       beans.add(NewEnterpriseBean.of(annotatedClass, manager));

@@ -18,16 +18,11 @@
 package org.jboss.webbeans.bean.proxy;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javassist.util.proxy.MethodHandler;
 
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.ejb.api.EjbReference;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
@@ -44,48 +39,27 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
    // The log provider
    private static final transient LogProvider log = Logging.getLogProvider(EnterpriseBeanProxyMethodHandler.class);
    
-   private static final ThreadLocal<Set<Class<?>>> contextualInstance;
+   private static final ThreadLocal<EnterpriseBean<?>> enterpriseBean;
    
    static
    {
-      contextualInstance = new ThreadLocal<Set<Class<?>>>()
-      {
-         
-         @Override
-         protected Set<Class<?>> initialValue()
-         {
-            return new HashSet<Class<?>>();
-         }
-         
-      };
+      enterpriseBean = new ThreadLocal<EnterpriseBean<?>>();
       
    }
    
-   // TODO Surely we can do this better!
-   public static boolean isContextualInstance(Class<?> beanClass)
+   public static EnterpriseBean<?> getEnterpriseBean()
    {
-      return contextualInstance.get().contains(beanClass);
+      return enterpriseBean.get();
    }
    
-   private static void setContextualInstance(Class<?> beanClass, boolean accessing)
+   private static void setEnterpriseBean(EnterpriseBean<?> bean)
    {
-      if (accessing)
-      {
-         contextualInstance.get().add(beanClass);
-      }
-      else
-      {
-         contextualInstance.get().remove(beanClass);
-      }
+      enterpriseBean.set(bean);
    }
 
-   // The container provided proxy that implements all interfaces
-   private final Map<Class<?>, Object> proxiedInstances;
-   private final Map<Class<?>, String> jndiNames;
+   private final EjbReference<?> reference; 
+   private final Class<?> objectInterface;
    private boolean destroyed;
-   private boolean canCallRemoveMethods;
-   private final List<Method> removeMethods;
-   private final Class<?> beanClass;
 
    /**
     * Constructor
@@ -94,14 +68,20 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
     * 
     * @param proxy The generic proxy
     */
-   public EnterpriseBeanProxyMethodHandler(EnterpriseBean<?> bean, Iterable<Method> removeMethods)
+   public EnterpriseBeanProxyMethodHandler(EnterpriseBean<?> bean)
    {
-      this.proxiedInstances = new HashMap<Class<?>, Object>();
-      this.jndiNames = bean.getEjbDescriptor().getLocalBusinessInterfacesJndiNames();
-      this.canCallRemoveMethods = bean.canCallRemoveMethods();
-      this.removeMethods = bean.getEjbDescriptor().getRemoveMethods();
+      this.reference = bean.createReference();
       this.destroyed = false;
-      this.beanClass = bean.getType();
+      this.objectInterface = bean.getEjbDescriptor().getObjectInterface();
+      try
+      {
+         setEnterpriseBean(bean);
+         reference.create();
+      }
+      finally
+      {
+         setEnterpriseBean(null);
+      }
       log.trace("Created enterprise bean proxy method handler for " + bean);
    }
 
@@ -124,6 +104,7 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
     */
    public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
+      // EnterpriseBeanInstance methods
       if ("isDestroyed".equals(method.getName()))
       {
          return destroyed;
@@ -147,38 +128,18 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
       }
       
       Class<?> businessInterface = method.getDeclaringClass();
-      Object proxiedInstance = proxiedInstances.get(businessInterface);
-      if (proxiedInstance == null)
+      if (businessInterface.equals(Object.class))
       {
-         String jndiName = jndiNames.get(businessInterface);
-         if (jndiName == null)
-         {
-            throw new IllegalStateException("Unable to establish jndi name to use to lookup EJB");
-         }
-         try
-         {
-            setContextualInstance(beanClass, true);
-            proxiedInstance = CurrentManager.rootManager().getNaming().lookup(jndiName, businessInterface);
-         }
-         finally
-         {
-            setContextualInstance(beanClass, false);
-         }
-         proxiedInstances.put(businessInterface, proxiedInstance);
+         businessInterface = objectInterface;
       }
+      Object proxiedInstance = reference.get(businessInterface);
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
-      try
-      {
-         setContextualInstance(beanClass, true);
-         Object returnValue = Reflections.invokeAndWrap(proxiedMethod, proxiedInstance, args);
-         log.trace("Executed " + method + " on " + proxiedInstance + " with parameters " + args + " and got return value " + returnValue);
-         return returnValue;
-      }
-      finally
-      {
-         setContextualInstance(beanClass, false);
-      }
+      Object returnValue = Reflections.invokeAndWrap(proxiedMethod, proxiedInstance, args);
+      log.trace("Executed " + method + " on " + proxiedInstance + " with parameters " + args + " and got return value " + returnValue);
+      return returnValue;
       
    }
+   
+
    
 }

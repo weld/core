@@ -77,15 +77,15 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       {
          throw new IllegalStateException("NamingContext is not set");
       }
-      if (getEjbResolver() == null)
+      if (getEjbServices() == null)
       {
-         throw new IllegalStateException("EjbResolver is not set");
+         throw new IllegalStateException("EjbServices is not set");
       }
       if (getTransactionServices() == null)
       {
          log.info("Transactional services not available.  Transactional observers will be invoked synchronously.");
       }
-      this.manager = new ManagerImpl(getNamingContext(), getEjbResolver(), getResourceLoader(), getTransactionServices());
+      this.manager = new ManagerImpl(getNamingContext(), getEjbServices(), getResourceLoader(), getTransactionServices());
       getManager().getNaming().bind(ManagerImpl.JNDI_KEY, getManager());
       CurrentManager.setRootManager(manager);
       initializeContexts();

@@ -25,6 +25,8 @@ import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
+import org.jboss.webbeans.log.Log;
+import org.jboss.webbeans.log.Logging;
 
 /**
  * Interceptor for handling EJB post-construct tasks
@@ -33,6 +35,13 @@ import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
  */
 public class SessionBeanInterceptor
 {
+   
+   private transient Log log = Logging.getLog(SessionBeanInterceptor.class);
+   
+   // TODO make Bean serializable
+   private transient EnterpriseBean<Object> bean;
+   private boolean contextual;
+   
    /**
     * Gets the underlying target and calls the post-construct method
     * 
@@ -43,11 +52,8 @@ public class SessionBeanInterceptor
    public void postConstruct(InvocationContext invocationContext) throws Exception
    {
       Object target = invocationContext.getTarget();
-      EnterpriseBean<Object> enterpriseBean = getBean(target.getClass());
-      if (enterpriseBean != null)
-      {
-         enterpriseBean.postConstruct(target);
-      }
+      initBean(target.getClass());
+      bean.postConstruct(target);
       invocationContext.proceed();
    }
 
@@ -61,12 +67,15 @@ public class SessionBeanInterceptor
    public void preDestroy(InvocationContext invocationContext) throws Exception
    {
       Object target = invocationContext.getTarget();
-      EnterpriseBean<Object> enterpriseBean = getBean(target.getClass());
-      if (enterpriseBean != null)
+      if (bean == null)
       {
-         enterpriseBean.preDestroy(target);
+         log.warn("Support for destroying passivated EJBs not yet implemented");
       }
-      getEnterpriseBeanInstance(enterpriseBean).setDestroyed(true);
+      bean.preDestroy(target);
+      if (contextual)
+      {
+         getEnterpriseBeanInstance(bean).setDestroyed(true);
+      }
       invocationContext.proceed();
    }
 
@@ -76,18 +85,18 @@ public class SessionBeanInterceptor
     * @param invocationContext The invocation context
     * @return The found bean or null if the bean was not an enterprise bean
     */
-   private static <T> EnterpriseBean<T> getBean(Class<? extends T> beanClass)
+   private void initBean(Class<? extends Object> beanClass)
    {
-      if (EnterpriseBeanProxyMethodHandler.isContextualInstance(beanClass))
+      EnterpriseBean<Object> bean = (EnterpriseBean<Object>) EnterpriseBeanProxyMethodHandler.getEnterpriseBean();
+      if (bean != null && bean.getType().equals(beanClass))
       {
-         // Access all non-new enterprise beans. 
-         // TODO Deal with XML defined enterprise beans!
-         return (EnterpriseBean<T>) CurrentManager.rootManager().getEnterpriseBeanMap().get(beanClass);
+         this.bean = bean;
+         this.contextual = true;
       }
       else
       {
-         // Access all @New enterprise beans
-         return (EnterpriseBean<T>) CurrentManager.rootManager().getNewEnterpriseBeanMap().get(beanClass);
+         this.bean = (EnterpriseBean<Object>) CurrentManager.rootManager().getNewEnterpriseBeanMap().get(beanClass);
+         this.contextual = false;
       }
    }
    
@@ -105,3 +114,5 @@ public class SessionBeanInterceptor
    }
 
 }
+
+   

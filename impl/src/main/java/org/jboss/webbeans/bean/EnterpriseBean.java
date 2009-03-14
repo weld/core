@@ -35,12 +35,14 @@ import javax.inject.CreationException;
 import javax.inject.DefinitionException;
 import javax.interceptor.Interceptor;
 
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
+import org.jboss.webbeans.ejb.api.EjbReference;
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -209,7 +211,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          DependentContext.INSTANCE.setActive(true);
          T instance = proxyClass.newInstance();
          creationalContext.push(instance);
-         ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler(this, ejbDescriptor.getRemoveMethods()));
+         ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler(this));
          if (log.isTraceEnabled())
             log.trace("Enterprise bean instance created for bean " + this);
          return instance;
@@ -375,5 +377,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       return false;
    }
+   
+   public EjbReference<T> createReference()
+   {
+      return getManager().getEjbServices().resolveEJB(getEjbDescriptor(), CurrentManager.rootManager().getNaming());
+   }
+   
 }
 

@@ -65,7 +65,7 @@ import org.jboss.webbeans.bean.proxy.ClientProxyProvider;
 import org.jboss.webbeans.context.ContextMap;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
-import org.jboss.webbeans.ejb.spi.EjbResolver;
+import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.ResolvableAnnotatedClass;
@@ -125,14 +125,13 @@ public class ManagerImpl implements WebBeansManager, Serializable
    private transient List<Bean<?>> beans;
    // The registered beans, mapped by implementation class
    private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeanMap;
-   private transient final Map<Class<?>, EnterpriseBean<?>> enterpriseBeanMap;
    // The registered decorators
    private transient final Set<Decorator> decorators;
    // The registered interceptors
    private transient final Set<Interceptor> interceptors;
 
    // The EJB resolver provided by the container
-   private transient final EjbResolver ejbResolver;
+   private transient final EjbServices ejbServices;
 
    private transient final EjbDescriptorCache ejbDescriptorCache;
 
@@ -151,17 +150,16 @@ public class ManagerImpl implements WebBeansManager, Serializable
    /**
     * Create a new manager
     * 
-    * @param ejbResolver the ejbResolver to use
+    * @param ejbServices the ejbResolver to use
     */
-   public ManagerImpl(NamingContext namingContext, EjbResolver ejbResolver, ResourceLoader resourceLoader, TransactionServices transactionServices)
+   public ManagerImpl(NamingContext namingContext, EjbServices ejbServices, ResourceLoader resourceLoader, TransactionServices transactionServices)
    {
-      this.ejbResolver = ejbResolver;
+      this.ejbServices = ejbServices;
       this.namingContext = namingContext;
       this.resourceLoader = resourceLoader;
       this.transactionServices = transactionServices;
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
       this.newEnterpriseBeanMap = new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>();
-      this.enterpriseBeanMap = new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>();
       this.resolver = new Resolver(this);
       this.clientProxyProvider = new ClientProxyProvider();
       this.decorators = new HashSet<Decorator>();
@@ -381,10 +379,6 @@ public class ManagerImpl implements WebBeansManager, Serializable
             {
                newEnterpriseBeanMap.put(bean.getType(), (EnterpriseBean<?>) bean);
             }
-            else if (bean instanceof EnterpriseBean)
-            {
-               enterpriseBeanMap.put(bean.getType(), (EnterpriseBean<?>) bean);
-            }
          }
          resolver.clear();
       }
@@ -398,11 +392,6 @@ public class ManagerImpl implements WebBeansManager, Serializable
    public Map<Class<?>, EnterpriseBean<?>> getNewEnterpriseBeanMap()
    {
       return newEnterpriseBeanMap;
-   }
-   
-   public Map<Class<?>, EnterpriseBean<?>> getEnterpriseBeanMap()
-   {
-      return enterpriseBeanMap;
    }
 
    /**
@@ -899,9 +888,9 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return namingContext;
    }
 
-   public final EjbResolver getEjbResolver()
+   public final EjbServices getEjbServices()
    {
-      return ejbResolver;
+      return ejbServices;
    }
    
    public final ResourceLoader getResourceLoader()

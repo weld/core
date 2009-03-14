@@ -11,10 +11,12 @@ import javax.ejb.EJB;
 import javax.inject.manager.InjectionPoint;
 import javax.persistence.PersistenceContext;
 
-import org.jboss.webbeans.ejb.spi.EjbResolver;
+import org.jboss.webbeans.ejb.api.EjbReference;
+import org.jboss.webbeans.ejb.spi.EjbDescriptor;
+import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.resources.spi.NamingContext;
 
-final class MockEjBResolver implements EjbResolver
+final class MockEjBServices implements EjbServices
 {
    public Class<? extends Annotation> getEJBAnnotation()
    {
@@ -49,5 +51,28 @@ final class MockEjBResolver implements EjbResolver
    public void removeEjb(Collection<Object> instance)
    {
       // No-op
+   }
+
+   public <T> EjbReference<T> resolveEJB(EjbDescriptor<T> ejbDescriptor, NamingContext naming)
+   {
+      return new EjbReference<T>()
+      {
+
+         public <S> S get(Class<S> businessInterfaceType)
+         {
+            return null;
+         }
+
+         public void remove()
+         {
+            // No-op
+         }
+         
+         public void create()
+         {
+            // No-op
+         }
+         
+      };
    }
 }

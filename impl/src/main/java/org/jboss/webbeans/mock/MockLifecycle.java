@@ -21,7 +21,7 @@ package org.jboss.webbeans.mock;
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
-import org.jboss.webbeans.ejb.spi.EjbResolver;
+import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.AbstractLifecycle;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
@@ -29,7 +29,7 @@ import org.jboss.webbeans.transaction.spi.TransactionServices;
 public class MockLifecycle extends AbstractLifecycle
 { 
    
-   private static final EjbResolver MOCK_EJB_RESOLVER = new MockEjBResolver();
+   private static final EjbServices MOCK_EJB_RESOLVER = new MockEjBServices();
    private static final ResourceLoader MOCK_RESOURCE_LOADER = new MockResourceLoader();
    private static final TransactionServices MOCK_TRANSACTION_SERVICES = new MockTransactionServices();
    
@@ -53,7 +53,7 @@ public class MockLifecycle extends AbstractLifecycle
       }
       bootstrap = new WebBeansBootstrap();
       bootstrap.setNamingContext(new MockNamingContext(null));
-      bootstrap.setEjbResolver(MOCK_EJB_RESOLVER);
+      bootstrap.setEjbServices(MOCK_EJB_RESOLVER);
       bootstrap.setResourceLoader(MOCK_RESOURCE_LOADER);
       bootstrap.setWebBeanDiscovery(webBeanDiscovery);
       bootstrap.setApplicationContext(applicationBeanStore);
