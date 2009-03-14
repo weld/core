@@ -238,6 +238,10 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          throw new IllegalArgumentException("instance to destroy cannot be null");
       }
+      if (!(instance instanceof EnterpriseBeanInstance))
+      {
+         throw new IllegalArgumentException("Cannot destroy session bean instance not created by the container");
+      }
       EnterpriseBeanInstance enterpiseBeanInstance = (EnterpriseBeanInstance) instance;
       if (enterpiseBeanInstance.isDestroyed())
       {

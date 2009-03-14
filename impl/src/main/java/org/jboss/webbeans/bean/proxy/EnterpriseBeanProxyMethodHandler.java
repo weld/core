@@ -61,6 +61,7 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
       
    }
    
+   // TODO Surely we can do this better!
    public static boolean isContextualInstance(Class<?> beanClass)
    {
       return contextualInstance.get().contains(beanClass);
@@ -127,6 +128,24 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
       {
          return destroyed;
       }
+      else if ("setDestroyed".equals(method.getName()))
+      {
+         if (args.length != 1)
+         {
+            throw new IllegalArgumentException("enterpriseBeanInstance.setDestroyed() called with >1 argument");
+         }
+         if (!args[0].getClass().equals(boolean.class))
+         {
+            throw new IllegalArgumentException("enterpriseBeanInstance.setDestroyed() called with non-boolean argument");
+         }
+         destroyed = ((Boolean) args[0]).booleanValue();
+      }
+      
+      if (destroyed)
+      {
+         return null;
+      }
+      
       Class<?> businessInterface = method.getDeclaringClass();
       Object proxiedInstance = proxiedInstances.get(businessInterface);
       if (proxiedInstance == null)
@@ -148,17 +167,6 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
          proxiedInstances.put(businessInterface, proxiedInstance);
       }
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
-      if (removeMethods.contains(proxiedMethod))
-      {
-         if (canCallRemoveMethods)
-         {
-            destroyed = true;
-         }
-         else
-         {
-            throw new UnsupportedOperationException("Remove method can't be called directly on non-dependent scoped Enterprise Beans");
-         }
-      }
       try
       {
          setContextualInstance(beanClass, true);
@@ -172,4 +180,5 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
       }
       
    }
+   
 }

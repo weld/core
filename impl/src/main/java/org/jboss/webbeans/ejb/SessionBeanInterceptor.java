@@ -23,6 +23,7 @@ import javax.interceptor.InvocationContext;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bean.EnterpriseBean;
+import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
 
 /**
@@ -65,6 +66,7 @@ public class SessionBeanInterceptor
       {
          enterpriseBean.preDestroy(target);
       }
+      getEnterpriseBeanInstance(enterpriseBean).setDestroyed(true);
       invocationContext.proceed();
    }
 
@@ -78,11 +80,27 @@ public class SessionBeanInterceptor
    {
       if (EnterpriseBeanProxyMethodHandler.isContextualInstance(beanClass))
       {
+         // Access all non-new enterprise beans. 
+         // TODO Deal with XML defined enterprise beans!
          return (EnterpriseBean<T>) CurrentManager.rootManager().getEnterpriseBeanMap().get(beanClass);
       }
       else
       {
+         // Access all @New enterprise beans
          return (EnterpriseBean<T>) CurrentManager.rootManager().getNewEnterpriseBeanMap().get(beanClass);
+      }
+   }
+   
+   private static <T> EnterpriseBeanInstance getEnterpriseBeanInstance(EnterpriseBean<T> bean)
+   {
+      T instance = CurrentManager.rootManager().getContext(bean.getScopeType()).get(bean);
+      if (instance instanceof EnterpriseBeanInstance)
+      {
+         return (EnterpriseBeanInstance) instance;
+      }
+      else
+      {
+         throw new IllegalStateException("Contextual instance not an session bean created by the container");
       }
    }
 

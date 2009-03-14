@@ -16,11 +16,9 @@
  */
 package org.jboss.webbeans.bean.proxy;
 
-import java.util.Collection;
 
 /**
- * Interface implemented by all enterprise bean proxies to determine if 
- * the enterprise bean has already had a remove method called by the application
+ * Interface implemented by all enterprise bean proxies to query/control the proxy
  * 
  * @author Pete Muir
  *
@@ -35,10 +33,6 @@ public interface EnterpriseBeanInstance
     */
    public boolean isDestroyed();
    
-   /**
-    * The unproxied version of this object
-    * @return
-    */
-   public Collection<Object> getUnproxiedInstances();
+   public void setDestroyed(boolean destroyed);
    
 }
