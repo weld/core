@@ -10,11 +10,11 @@ import org.testng.annotations.Test;
 public class ContextTest extends AbstractWebBeansTest
 {
    // WBRI-155
-   @Test(groups="stub")
+   @Test(description="WBRI155", groups="stub")
    public void testSessionContextActiveForMultipleSimultaneousThreads()
    {
+      // TODO impl
       assert false;
-      // TODO Implement this test
    }
    
 }

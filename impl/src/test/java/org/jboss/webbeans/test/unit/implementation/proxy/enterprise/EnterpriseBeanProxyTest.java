@@ -16,7 +16,7 @@ public class EnterpriseBeanProxyTest extends AbstractWebBeansTest
    /**
     * <a href="https://jira.jboss.org/jira/browse/WBRI-109">WBRI-109</a>
     */
-   @Test
+   @Test(description="WBRI-109")
    public void testNoInterfaceView() throws Exception
    {
       new RunInDependentContext()

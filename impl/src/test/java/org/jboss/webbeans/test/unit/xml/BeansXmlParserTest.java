@@ -62,7 +62,7 @@ public class BeansXmlParserTest extends AbstractWebBeansTest
    /**
     * Test case for WBRI-21.
     */
-   @Test(expectedExceptions=DeploymentException.class)
+   @Test(expectedExceptions=DeploymentException.class, description="WBRI-21")
    public void testDuplicateDeployElement()
    {
       Iterable<URL> urls = getResources("duplicate-deployments-beans.xml");
