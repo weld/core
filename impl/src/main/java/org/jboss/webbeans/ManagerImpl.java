@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
@@ -112,7 +113,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
    private transient final ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
    
    // An injection point metadata beans factory
-   private transient final ThreadLocal<InjectionPoint> currentInjectionPoint;
+   private transient final ThreadLocal<Stack<InjectionPoint>> currentInjectionPoint;
 
    // The bean resolver
    private transient final Resolver resolver;
@@ -167,7 +168,14 @@ public class ManagerImpl implements WebBeansManager, Serializable
       this.contextMap = new ContextMap();
       this.eventManager = new EventManager();
       this.ejbDescriptorCache = new EjbDescriptorCache();
-      this.currentInjectionPoint = new ThreadLocal<InjectionPoint>();
+      this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>()
+      {
+         @Override
+         protected Stack<InjectionPoint> initialValue()
+         {
+            return new Stack<InjectionPoint>();
+         }
+      };
       this.specializedBeans = new HashMap<Bean<?>, Bean<?>>();
       this.servletInjector = new ServletInjector(this);
       List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
@@ -635,7 +643,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       {
          if (registerInjectionPoint)
          {
-            currentInjectionPoint.set(injectionPoint);
+            currentInjectionPoint.get().push(injectionPoint);
          }
          AnnotatedItem<T, ?> element = ResolvableAnnotatedClass.of((Class<T>) injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]));
          Bean<T> bean = getBeanByType(element, element.getBindingsAsArray());
@@ -660,7 +668,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       {
          if (registerInjectionPoint)
          {
-            currentInjectionPoint.remove();
+            currentInjectionPoint.get().pop();
          }
       }
    }
@@ -917,7 +925,14 @@ public class ManagerImpl implements WebBeansManager, Serializable
     */
    public InjectionPoint getInjectionPoint()
    {
-      return currentInjectionPoint.get();
+      if (!currentInjectionPoint.get().empty())
+      {
+         return currentInjectionPoint.get().peek();
+      }
+      else
+      {
+         return null;
+      }
    }
    
    /**
