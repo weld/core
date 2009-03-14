@@ -19,7 +19,8 @@ package org.jboss.webbeans.ejb.api;
 import java.io.Serializable;
 
 /**
- * A serializable reference to an EJB
+ * A serializable reference to an EJB. For an SFSB the same state must be 
+ * returned for each call to {@link #get(Class)}
  * 
  * @author Pete Muir
  * @param <T>
@@ -52,7 +53,6 @@ public interface EjbReference<T> extends Serializable
    
    /**
     * Request that the SFSB backing this reference is instantiated, and any
-    * 
     * @PostConstruct lifecycle callbacks are executed
     * 
     * @throws UnsupportedOperationException
