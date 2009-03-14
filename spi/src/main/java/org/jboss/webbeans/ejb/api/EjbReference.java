@@ -55,8 +55,6 @@ public interface EjbReference<T> extends Serializable
     * Request that the SFSB backing this reference is instantiated, and any
     * @PostConstruct lifecycle callbacks are executed
     * 
-    * @throws UnsupportedOperationException
-    *            if the reference is backed by an SLSB
     */
    public void create();
    
