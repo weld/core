@@ -20,158 +20,110 @@ package org.jboss.webbeans.xsd.helpers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
-import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Filer;
 import javax.tools.StandardLocation;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
-import org.dom4j.Namespace;
 import org.dom4j.Node;
-import org.dom4j.QName;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.jboss.webbeans.xsd.PackageInfo;
 import org.jboss.webbeans.xsd.model.ClassModel;
-import org.xml.sax.SAXException;
 
 /**
  * Helper for XSD related operations
  * 
  * @author Nicklas Karlsson
- *
+ * 
  */
 public class XSDHelper
 {
-   // The annotation processing environment
-   private ProcessingEnvironment processingEnvironment;
+   public static final Set<String> URN_JAVA_EE = new HashSet<String>(Arrays.asList("java.lang", "java.util", "javax.annotation", "javax.inject", "javax.context", "javax.interceptor", "javax.decorator", "javax.event", "javax.ejb", "javax.persistence", "javax.xml.ws", "javax.jms", "javax.sql"));
+
+   // The filed of the annotation processing environment
+   private Filer filer;
    // The cache of already processed classes
    private Map<String, ClassModel> classModelCache = new HashMap<String, ClassModel>();
    // The XSD documents of the affected packages
-   private Map<String, Document> packageXSDs = new HashMap<String, Document>();
+   private Map<String, PackageInfo> packageInfoMap = new HashMap<String, PackageInfo>();
 
    /**
     * Creates a new helper
     * 
-    * @param processingEnvironment The processing environment
+    * @param filer The filer of the processing environment
     */
-   public XSDHelper(ProcessingEnvironment processingEnvironment)
+   public XSDHelper(Filer filer)
    {
-      this.processingEnvironment = processingEnvironment;
+      this.filer = filer;
    }
 
    /**
-    * Updates the XSD for the affected packages
+    * Reads package info
     * 
-    * @param classModels The list of class models in the batch
+    * @param packageName The package name 
+    * @return The package info of the package
+    * @throws DocumentException If the schema could not be parsed
+    * @throws IOException If the schema could not be read
     */
-   public void updatePackageXSDs(List<ClassModel> classModels)
+   private PackageInfo readPackageInfo(String packageName) throws DocumentException, IOException
    {
-      for (ClassModel classModel : classModels)
-      {
-         Document packageXSD = getPackageXSD(classModel.getPackage());
-         updateClass(packageXSD, classModel);
-      }
+      PackageInfo packageInfo = new PackageInfo(packageName);
+      packageInfo.setNamespaces(readNamespaces(packageName));
+      Document schema = readSchema(packageName);
+      packageInfo.setSchema(schema != null ? schema : createSchema(packageName));
+      return packageInfo;
    }
 
    /**
-    * Writes the XSD documents back to disk
-    */
-   public void flushPackageXSDs()
-   {
-      for (Entry<String, Document> entry : packageXSDs.entrySet())
-      {
-         try
-         {
-            writePackageXSD(entry.getKey(), entry.getValue());
-         }
-         catch (IOException e)
-         {
-            throw new RuntimeException("Could not flush XSD for " + entry.getKey());
-         }
-         catch (SAXException e)
-         {
-            throw new RuntimeException("Could not parse XSD when flushing for " + entry.getKey());
-         }
-      }
-   }
-
-   /**
-    * Gets the XSD document for a package
+    * Reads the namespaces for a package
     * 
-    * @param packageName The package name of the XSD
+    * @param packageName The name of the package
+    * @return The namespaces
+    */
+   private List<String> readNamespaces(String packageName)
+   {
+      // TODO dummy
+      return new ArrayList<String>();
+   }
+
+   /**
+    * Creates a new schema document
+    * 
+    * @param packageName The package name of the schema
     * @return The document
     */
-   private Document getPackageXSD(String packageName)
+   private Document createSchema(String packageName)
    {
-      // Tries to get the document from the cache
-      Document packageXSD = packageXSDs.get(packageName);
-      if (packageXSD == null)
-      {
-         // If this is the first modification to a package
-         try
-         {
-            // Read it from disk
-            packageXSD = readPackageXSD(packageName);
-         }
-         catch (IOException e)
-         {
-            throw new RuntimeException("Could not read schema for package " + packageName);
-         }
-         catch (DocumentException e)
-         {
-            throw new RuntimeException("Could not parse schema for package " + packageName);
-         }
-         // If it was not on disk
-         if (packageXSD == null)
-         {
-            // Create a new document
-            packageXSD = createPackageXSD(packageName);
-         }
-         // And cache it
-         packageXSDs.put(packageName, packageXSD);
-      }
+      Document packageXSD = DocumentHelper.createDocument();
+      packageXSD.addElement("Package");
       return packageXSD;
    }
 
    /**
-    * Updates a package XSD with XSD from a file model
-    * 
-    * @param packageXSD The package XSD
-    * @param classModel The class model
-    */
-   private void updateClass(Document packageXSD, ClassModel classModel)
-   {
-      Node oldClassModel = packageXSD.selectSingleNode("//" + classModel.getSimpleName());
-      if (oldClassModel != null)
-      {
-         // Remove the old class definition
-         packageXSD.getRootElement().remove(oldClassModel);
-      }
-      // Create a new one
-      packageXSD.getRootElement().addElement(classModel.getSimpleName());
-   }
-
-   /**
-    * Read the package XSD for a package
+    * Reads a schema for a package
     * 
     * @param packageName The package name
-    * 
-    * @return The document
-    * @throws IOException If a file could not be read
-    * @throws DocumentException If a document could not be parsed
+    * @return The schema document
+    * @throws DocumentException If the document could not be parsed
+    * @throws IOException If the document could not be read
     */
-   private Document readPackageXSD(String packageName) throws IOException, DocumentException
+   private Document readSchema(String packageName) throws DocumentException, IOException
    {
       InputStream in = null;
       try
       {
-         in = processingEnvironment.getFiler().getResource(StandardLocation.CLASS_OUTPUT, packageName, "schema.xsd").openInputStream();
+         in = filer.getResource(StandardLocation.CLASS_OUTPUT, packageName, "schema.xsd").openInputStream();
          return new SAXReader().read(in);
       }
       catch (IOException e)
@@ -188,17 +140,118 @@ public class XSDHelper
    }
 
    /**
-    * Creates a new XSD document for a package
+    * Writes package info to the disk
     * 
-    * @param packageName The name of the package
-    * @return The document
+    * @param packageInfo The package info to store
     */
-   private Document createPackageXSD(String packageName)
+   private void writePackageInfo(PackageInfo packageInfo)
    {
-      Document packageXSD = DocumentHelper.createDocument();
+      try
+      {
+         writeSchema(packageInfo.getPackageName(), packageInfo.getSchema());
+      }
+      catch (IOException e)
+      {
+         throw new RuntimeException("Could not write schema for " + packageInfo.getPackageName());
+      }
+      writeNamespaces(packageInfo.getPackageName(), packageInfo.getNamespaces());
+   }
 
-      packageXSD.addElement(new QName("Package", new Namespace(getShortName(packageName), "urn:java:" + packageName)));
-      return packageXSD;
+   /**
+    * Writes the namespaces to disk
+    * 
+    * @param packageName The package name
+    * @param namespaces The namespaces
+    */
+   private void writeNamespaces(String packageName, List<String> namespaces)
+   {
+      // TODO dummy
+   }
+
+   /**
+    * Writes a schema to disk
+    * 
+    * @param packageName The package name
+    * @param schema The schema
+    * @throws IOException If the file could not be written 
+    */
+   private void writeSchema(String packageName, Document schema) throws IOException
+   {
+      OutputStream out = null;
+      try
+      {
+         OutputFormat format = OutputFormat.createPrettyPrint();
+         out = filer.createResource(StandardLocation.CLASS_OUTPUT, packageName, "schema.xsd").openOutputStream();
+         XMLWriter writer = new XMLWriter(out, format);
+         writer.write(schema);
+         writer.flush();
+         writer.close();
+      }
+      finally
+      {
+         if (out != null)
+         {
+            out.close();
+         }
+      }
+   }
+
+   /**
+    * Updates the schemas for the affected packages
+    * 
+    * @param classModels The list of class models in the batch
+    */
+   public void updateSchemas(List<ClassModel> classModels)
+   {
+      for (ClassModel classModel : classModels)
+      {
+         String packageName = classModel.getPackage();
+         PackageInfo packageInfo = packageInfoMap.get(packageName);
+         if (packageInfo == null) {
+            try
+            {
+               packageInfo = readPackageInfo(packageName);
+            }
+            catch (DocumentException e)
+            {
+               throw new RuntimeException("Could not parse schema for package " + packageName);
+            }
+            catch (IOException e)
+            {
+               throw new RuntimeException("Could not read schema for package " + packageName);
+            }
+            packageInfoMap.put(packageName, packageInfo);
+         }
+         updateClassInSchema(classModel, packageInfo.getSchema());
+      }
+   }
+
+   /**
+    * Writes the schemas back to disk
+    */
+   public void writeSchemas()
+   {
+      for (PackageInfo packageInfo : packageInfoMap.values()) {
+         writePackageInfo(packageInfo);
+      }
+   }
+
+   /**
+    * Updates a schema with XSD from a file model
+    * 
+    * @param schema The schema
+    * @param classModel The class model
+    */
+   private void updateClassInSchema(ClassModel classModel, Document schema)
+   {
+      Node oldClassModel = schema.selectSingleNode("//" + classModel.getSimpleName());
+      if (oldClassModel != null)
+      {
+         // Remove the old class definition
+         schema.getRootElement().remove(oldClassModel);
+      }
+      // Create a new one
+      schema.getRootElement().addElement(classModel.getSimpleName());
    }
 
    /**
@@ -214,36 +267,7 @@ public class XSDHelper
    }
 
    /**
-    * Writes a package XSD back to disk
-    * 
-    * @param packageName The name of the package
-    * @param packageXSD The document
-    * @throws IOException If the file could not be written
-    * @throws SAXException If the document was badly formatted
-    */
-   private void writePackageXSD(String packageName, Document packageXSD) throws IOException, SAXException
-   {
-      OutputStream out = null;
-      try
-      {
-         OutputFormat format = OutputFormat.createPrettyPrint();
-         out = processingEnvironment.getFiler().createResource(StandardLocation.CLASS_OUTPUT, packageName, "schema.xsd").openOutputStream();
-         XMLWriter writer = new XMLWriter(out, format);
-         writer.write(packageXSD);
-         writer.flush();
-         writer.close();
-      }
-      finally
-      {
-         if (out != null)
-         {
-            out.close();
-         }
-      }
-   }
-
-   /**
-    * Gets a cached class model 
+    * Gets a cached class model
     * 
     * @param FQN The FQN of the class
     * @return The class model (or null if not cached)

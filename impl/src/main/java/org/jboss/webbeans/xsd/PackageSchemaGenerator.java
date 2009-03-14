@@ -42,7 +42,7 @@ import org.jboss.webbeans.xsd.model.ClassModel;
  * that have had their files compiled.
  * 
  * @author Nicklas Karlsson
- *
+ * 
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 @SupportedAnnotationTypes("*")
@@ -55,25 +55,25 @@ public class PackageSchemaGenerator extends AbstractProcessor
    public synchronized void init(ProcessingEnvironment processingEnv)
    {
       super.init(processingEnv);
-      helper = new XSDHelper(processingEnv);
+      helper = new XSDHelper(processingEnv.getFiler());
    }
 
    @Override
    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
    {
       List<ClassModel> workingSet = new ArrayList<ClassModel>();
-      // Iterates over the classes compiled, creates a model of the classes and add them
-      // to a working set
+      // Iterates over the classes compiled, creates a model of the classes and
+      // add them to a working set
       for (Element element : roundEnv.getRootElements())
       {
          workingSet.add(inspectClass(element));
       }
       if (!roundEnv.processingOver())
       {
-         // Update the packge XSDs for the files changed
-         helper.updatePackageXSDs(workingSet);
+         // Update the package XSDs for the files changed
+         helper.updateSchemas(workingSet);
          // And flush the changes to disk
-         helper.flushPackageXSDs();
+         helper.writeSchemas();
       }
       return false;
    }
@@ -95,7 +95,8 @@ public class PackageSchemaGenerator extends AbstractProcessor
          inspectClass(((DeclaredType) typeElement.getSuperclass()).asElement());
       }
 
-      // Gets the parent from the cache. We know it's there since we has scanned the 
+      // Gets the parent from the cache. We know it's there since we has scanned
+      // the
       // hierarchy already
       ClassModel parent = helper.getCachedClassModel(typeElement.getSuperclass().toString());
       // Populate the class level info (name, parent etc)

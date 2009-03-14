@@ -26,7 +26,7 @@ import java.util.Set;
  * A model of a class
  * 
  * @author Nicklas Karlsson
- *
+ * 
  */
 public class ClassModel extends NamedModel
 {
@@ -131,8 +131,8 @@ public class ClassModel extends NamedModel
    }
 
    /**
-    * Gets the merged hierarchy of available constructors. Returns the constructors
-    * of this class since constructors aren't inherited
+    * Gets the merged hierarchy of available constructors. Returns the
+    * constructors of this class since constructors aren't inherited
     * 
     * @return The set of constructors available
     */
@@ -193,7 +193,31 @@ public class ClassModel extends NamedModel
          currentParent = currentParent.getParent();
       }
       return mergedMethods;
+   }
 
+   public Set<String> getReferencedTypes()
+   {
+      Set<String> types = new HashSet<String>();
+      for (FieldModel field : getMergedFields())
+      {
+         types.add(field.getType());
+      }
+      for (MethodModel method : getMergedMethods())
+      {
+         types.add(method.getReturnType());
+         for (ParameterModel parameter : method.getParameters())
+         {
+            types.add(parameter.getType());
+         }
+      }
+      for (MethodModel constructor : getMergedConstructors())
+      {
+         for (ParameterModel parameter : constructor.getParameters())
+         {
+            types.add(parameter.getType());
+         }
+      }
+      return types;
    }
 
 }
