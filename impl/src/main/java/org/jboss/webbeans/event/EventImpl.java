@@ -17,6 +17,7 @@
 
 package org.jboss.webbeans.event;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -38,8 +39,11 @@ import org.jboss.webbeans.util.Strings;
  * @param <T> The type of event being wrapped
  * @see javax.event.Event
  */
-public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
+public class EventImpl<T> extends FacadeImpl<T> implements Event<T>, Serializable
 {
+   
+   private static final long serialVersionUID = 8130060821283091287L;
+   
    @SuppressWarnings("unchecked")
    private static final Set<Class<? extends Annotation>> FILTERED_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Fires.class));
 
