@@ -295,16 +295,23 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       // This is a bit dangerous, as it means that producer methods can end of
       // executing on partially constructed instances. Also, it's not required
       // by the spec...
-      if (creationalContext instanceof CreationalContextImpl)
+      if (getAnnotatedItem().isStatic())
       {
-         CreationalContextImpl<?> creationalContextImpl = (CreationalContextImpl<?>) creationalContext;
-         if (creationalContextImpl.containsIncompleteInstance(getDeclaringBean()))
-         {
-            log.warn("Executing producer field or method " + getAnnotatedItem() + " on incomplete declaring bean " + getDeclaringBean() + " due to circular injection");
-            return creationalContextImpl.getIncompleteInstance(getDeclaringBean());
-         }
+         return null;
       }
-      return getAnnotatedItem().isStatic() ? null : manager.getInstance(getDeclaringBean());
+      else
+      {
+         if (creationalContext instanceof CreationalContextImpl)
+         {
+            CreationalContextImpl<?> creationalContextImpl = (CreationalContextImpl<?>) creationalContext;
+            if (creationalContextImpl.containsIncompleteInstance(getDeclaringBean()))
+            {
+               log.warn("Executing producer field or method " + getAnnotatedItem() + " on incomplete declaring bean " + getDeclaringBean() + " due to circular injection");
+               return creationalContextImpl.getIncompleteInstance(getDeclaringBean());
+            }
+         }
+         return manager.getInstance(getDeclaringBean());
+      }
    }
 
    /**
