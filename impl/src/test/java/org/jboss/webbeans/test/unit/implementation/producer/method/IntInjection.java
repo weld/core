@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.unit.implementation.producer;
+package org.jboss.webbeans.test.unit.implementation.producer.method;
 
 import javax.inject.Initializer;
 
