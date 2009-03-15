@@ -21,6 +21,7 @@ import java.lang.annotation.Annotation;
 
 import javax.inject.manager.InjectionPoint;
 
+import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.ejb.api.EjbReference;
 import org.jboss.webbeans.resources.spi.NamingContext;
 
@@ -31,7 +32,7 @@ import org.jboss.webbeans.resources.spi.NamingContext;
  * @author Pete Muir
  * 
  */
-public interface EjbServices
+public interface EjbServices extends Service
 {
    
    public static final String PROPERTY_NAME = EjbServices.class.getName();

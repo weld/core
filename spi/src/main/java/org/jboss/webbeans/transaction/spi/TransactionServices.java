@@ -2,6 +2,8 @@ package org.jboss.webbeans.transaction.spi;
 
 import javax.transaction.Synchronization;
 
+import org.jboss.webbeans.bootstrap.api.Service;
+
 /**
  * <p>
  * The container must implement the services related to transactional behavior
@@ -19,7 +21,7 @@ import javax.transaction.Synchronization;
  * @author David Allen
  * 
  */
-public interface TransactionServices
+public interface TransactionServices extends Service
 {
    /**
     * Possible status conditions for a transaction. This can be used by SPI

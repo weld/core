@@ -1,3 +1,19 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,  
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jboss.webbeans.bootstrap.api;
 
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
@@ -23,6 +39,7 @@ public interface Bootstrap
     * 
     * @param webBeanDiscovery
     */
+   @Deprecated
    public void setWebBeanDiscovery(WebBeanDiscovery webBeanDiscovery);
    
    /**
@@ -30,6 +47,7 @@ public interface Bootstrap
     * 
     * @param ejbDiscovery
     */
+   @Deprecated
    public void setEjbDiscovery(EjbDiscovery ejbDiscovery);
    
    /**
@@ -37,6 +55,7 @@ public interface Bootstrap
     * 
     * @param ejbServices
     */
+   @Deprecated
    public void setEjbServices(EjbServices ejbServices);
    
    /**
@@ -47,6 +66,7 @@ public interface Bootstrap
     * 
     * @param namingContext
     */
+   @Deprecated
    public void setNamingContext(NamingContext namingContext);
    
    /**
@@ -55,8 +75,14 @@ public interface Bootstrap
     * 
     * @param resourceLoader
     */
+   @Deprecated
    public void setResourceLoader(ResourceLoader resourceLoader);
    
+   /**
+    * Set the bean store to use as backing for the application context
+    * 
+    * @param beanStore the bean store to use
+    */
    public void setApplicationContext(BeanStore beanStore);
    
    /**
@@ -64,13 +90,25 @@ public interface Bootstrap
     * 
     * @param transactionServices An implementation of TransactionService
     */
+   @Deprecated
    public void setTransactionServices(TransactionServices transactionServices);
+   
+   /**
+    * Set the environment in use, by default {@link Environments.EE}
+    * 
+    * @param environment the environment to use
+    */
+   public void setEnvironment(Environment environment);
    
    /**
     * Initialize the bootstrap:
     * <ul>
-    *   <li>Create the manager and bind it to JNDI</li>
+    * <li>Create the manager and bind it to JNDI</li>
     * </ul>
+    * 
+    * @throws IllegalStateException
+    *            if not all the services required for the given environment are
+    *            available
     */
    public void initialize();
    
@@ -86,8 +124,9 @@ public interface Bootstrap
     * Starts the boot process.
     * 
     * Discovers the beans and registers them with the getManager(). Also
-    * resolves the injection points. Before running {@link #boot()} the contexts
-    * should be available
+    * resolves the injection points. Before running {@link #boot()} 
+    * {@link #initialize()} must have been called and the contexts should be 
+    * available
     * 
     */
    public void boot();

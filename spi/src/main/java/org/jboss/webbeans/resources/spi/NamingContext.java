@@ -17,7 +17,17 @@
 
 package org.jboss.webbeans.resources.spi;
 
-public interface NamingContext
+import org.jboss.webbeans.bootstrap.api.Service;
+
+/**
+ * JNDI operations for Web Beans, by default a read-write spec compliant 
+ * implementation will be used. If you wish to substitute, for example, a read-
+ * only implementation, you may
+ * 
+ * @author Pete Muir
+ *
+ */
+public interface NamingContext extends Service
 {
    
    public static final String PROPERTY_NAME = NamingContext.class.getName();

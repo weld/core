@@ -38,6 +38,7 @@ import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.jsf.JSFApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 
 public class BeanDeployer
@@ -259,9 +260,10 @@ public class BeanDeployer
     */
    private boolean isTypeSimpleWebBean(AnnotatedClass<?> clazz)
    {
-      EJBApiAbstraction ejbApiAbstraction = new EJBApiAbstraction(manager.getResourceLoader());
-      JSFApiAbstraction jsfApiAbstraction = new JSFApiAbstraction(manager.getResourceLoader());
-      ServletApiAbstraction servletApiAbstraction = new ServletApiAbstraction(manager.getResourceLoader());
+      ResourceLoader resourceLoader = manager.getServices().get(ResourceLoader.class);
+      EJBApiAbstraction ejbApiAbstraction = new EJBApiAbstraction(resourceLoader);
+      JSFApiAbstraction jsfApiAbstraction = new JSFApiAbstraction(resourceLoader);
+      ServletApiAbstraction servletApiAbstraction = new ServletApiAbstraction(resourceLoader);
       // TODO: check 3.2.1 for more rules!!!!!!
       return !clazz.isAbstract() && !clazz.isParameterizedType() && !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(clazz) && !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(clazz) && !servletApiAbstraction.SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(clazz) && !servletApiAbstraction.HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(clazz) && !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(clazz) && !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(clazz) && !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(clazz) && hasSimpleWebBeanConstructor(clazz);
    }

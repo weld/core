@@ -38,14 +38,17 @@ import org.jboss.webbeans.conversation.ConversationImpl;
 import org.jboss.webbeans.conversation.JavaSEConversationTerminator;
 import org.jboss.webbeans.conversation.NumericConversationIdGenerator;
 import org.jboss.webbeans.conversation.ServletConversationManager;
+import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.literal.DeployedLiteral;
 import org.jboss.webbeans.literal.InitializedLiteral;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.DefaultNamingContext;
 import org.jboss.webbeans.resources.DefaultResourceLoader;
+import org.jboss.webbeans.resources.spi.NamingContext;
+import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.HttpSessionManager;
-import org.jboss.webbeans.transaction.Transaction;
+import org.jboss.webbeans.transaction.spi.TransactionServices;
 
 /**
  * Common bootstrapping functionality that is run at application startup and
@@ -63,30 +66,24 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    private ManagerImpl manager;
    public WebBeansBootstrap()
    {
-      setResourceLoader(new DefaultResourceLoader());
-      setNamingContext(new DefaultNamingContext());
+      // initialize default services
+      getServices().add(ResourceLoader.class, new DefaultResourceLoader());
+      getServices().add(NamingContext.class, new DefaultNamingContext());
    }
 
    public void initialize()
    {
-      if (getResourceLoader() == null)
-      {
-         throw new IllegalStateException("ResourceLoader not set");
-      }
-      if (getNamingContext() == null)
-      {
-         throw new IllegalStateException("NamingContext is not set");
-      }
-      if (getEjbServices() == null)
-      {
-         throw new IllegalStateException("EjbServices is not set");
-      }
-      if (getTransactionServices() == null)
+      verify();
+      if (!getServices().contains(TransactionServices.class))
       {
          log.info("Transactional services not available.  Transactional observers will be invoked synchronously.");
       }
-      this.manager = new ManagerImpl(getNamingContext(), getEjbServices(), getResourceLoader(), getTransactionServices());
-      getManager().getNaming().bind(ManagerImpl.JNDI_KEY, getManager());
+      if (!getServices().contains(EjbServices.class))
+      {
+         log.info("EJB services not available. Session beans, injection into non-contextual EJBs, injection of @Resource, @PersistenceContext and @EJB in simple beans, injection of Java EE resources and JMS resources will not be available.");
+      }
+      this.manager = new ManagerImpl(getServices());
+      getServices().get(NamingContext.class).bind(ManagerImpl.JNDI_KEY, getManager());
       CurrentManager.setRootManager(manager);
       initializeContexts();
    }
@@ -108,7 +105,6 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       beanDeployer.addClasses(classes);
       beanDeployer.addBean(ManagerBean.of(manager));
       beanDeployer.addBean(InjectionPointBean.of(manager));
-      beanDeployer.addClass(Transaction.class);
       beanDeployer.addClass(ConversationImpl.class);
       beanDeployer.addClass(ServletConversationManager.class);
       beanDeployer.addClass(JavaSEConversationTerminator.class);

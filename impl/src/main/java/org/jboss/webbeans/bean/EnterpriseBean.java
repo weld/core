@@ -44,10 +44,12 @@ import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.ejb.api.EjbReference;
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
+import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.util.Proxies;
 
 /**
@@ -380,7 +382,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    
    public EjbReference<T> createReference()
    {
-      return getManager().getEjbServices().resolveEJB(getEjbDescriptor(), CurrentManager.rootManager().getNaming());
+      return manager.getServices().get(EjbServices.class).resolveEJB(getEjbDescriptor(), CurrentManager.rootManager().getServices().get(NamingContext.class));
    }
    
 }

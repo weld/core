@@ -4,6 +4,7 @@ import org.jboss.jsr299.tck.spi.Beans;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
+import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -88,7 +89,7 @@ public class BeansImpl implements Beans
          }
          if (jndiName == null)
             throw new NullPointerException("No JNDI name found for interface " + localInterface.getName() + " on bean " + beanType.getName());
-         enterpriseBean = CurrentManager.rootManager().getNaming().lookup(jndiName, localInterface);
+         enterpriseBean = CurrentManager.rootManager().getServices().get(NamingContext.class).lookup(jndiName, localInterface);
       }      
       return enterpriseBean;
    }

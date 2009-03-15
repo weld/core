@@ -14,30 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.transaction;
+package org.jboss.webbeans.bootstrap.api;
 
-import javax.inject.Current;
-import javax.inject.Produces;
-
-import org.jboss.webbeans.ManagerImpl;
+import java.util.Set;
 
 /**
- * Transaction manager component
- * 
+ * Represents an environment. Used to control which services Web Beans will require
+ * in order to boot
  * @author Pete Muir
  *
  */
-public class Transaction
+public interface Environment
 {
  
-   public static final String USER_TRANSACTION_JNDI_NAME = "java:comp/UserTransaction";
-   
-   @Current ManagerImpl manager;
-   
-   @Produces
-   public UserTransaction getCurrentTransaction()
-   {
-      return new UTTransaction(manager.getNaming().lookup(USER_TRANSACTION_JNDI_NAME, javax.transaction.UserTransaction.class));
-   }
+   /**
+    * The services to require for this environment
+    * 
+    * @return the services to require
+    */
+   public Set<Class<? extends Service>> getRequiredServices();
    
 }

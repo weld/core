@@ -27,25 +27,26 @@ import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 
 import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
+import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
 public class MockEjbDiscovery implements EjbDiscovery
 {
    
-   private final List<EjbDescriptor<?>> ejbs;
+   private final WebBeanDiscovery webBeanDiscovery;
 
-   public MockEjbDiscovery(Iterable<Class<?>> allClasses)
+   public MockEjbDiscovery(WebBeanDiscovery webBeanDiscovery)
    {
-      
-      this.ejbs = new ArrayList<EjbDescriptor<?>>();
-      for (Class<?> ejbClass : discoverEjbs(allClasses))
-      {
-         this.ejbs.add(MockEjbDescriptor.of(ejbClass));
-      }
+      this.webBeanDiscovery = webBeanDiscovery;
    }
 
    public Iterable<EjbDescriptor<?>> discoverEjbs()
    {
+      List<EjbDescriptor<?>> ejbs = new ArrayList<EjbDescriptor<?>>();
+      for (Class<?> ejbClass : discoverEjbs(webBeanDiscovery.discoverWebBeanClasses()))
+      {
+         ejbs.add(MockEjbDescriptor.of(ejbClass));
+      }
       return ejbs;
    }
    

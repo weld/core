@@ -63,10 +63,10 @@ import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.proxy.ClientProxyProvider;
+import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.context.ContextMap;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
-import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.ResolvableAnnotatedClass;
@@ -79,9 +79,6 @@ import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.literal.NewLiteral;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.metadata.MetaDataCache;
-import org.jboss.webbeans.resources.spi.NamingContext;
-import org.jboss.webbeans.resources.spi.ResourceLoader;
-import org.jboss.webbeans.transaction.spi.TransactionServices;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Reflections;
 
@@ -132,17 +129,9 @@ public class ManagerImpl implements WebBeansManager, Serializable
    private transient final Set<Interceptor> interceptors;
 
    // The EJB resolver provided by the container
-   private transient final EjbServices ejbServices;
+   private transient final ServiceRegistry serviceRegistry;
 
    private transient final EjbDescriptorCache ejbDescriptorCache;
-
-   private transient final ResourceLoader resourceLoader;
-   
-   // The transaction management related services provided by the container
-   private transient final TransactionServices transactionServices;
-
-   // The Naming (JNDI) access
-   private transient final NamingContext namingContext;
    
    private final transient Map<Bean<?>, Bean<?>> specializedBeans;
    
@@ -153,12 +142,9 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * 
     * @param ejbServices the ejbResolver to use
     */
-   public ManagerImpl(NamingContext namingContext, EjbServices ejbServices, ResourceLoader resourceLoader, TransactionServices transactionServices)
+   public ManagerImpl(ServiceRegistry serviceRegistry)
    {
-      this.ejbServices = ejbServices;
-      this.namingContext = namingContext;
-      this.resourceLoader = resourceLoader;
-      this.transactionServices = transactionServices;
+      this.serviceRegistry = serviceRegistry;
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
       this.newEnterpriseBeanMap = new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>();
       this.resolver = new Resolver(this);
@@ -891,30 +877,9 @@ public class ManagerImpl implements WebBeansManager, Serializable
       throw new UnsupportedOperationException();
    }
 
-   public NamingContext getNaming()
+   public ServiceRegistry getServices()
    {
-      return namingContext;
-   }
-
-   public final EjbServices getEjbServices()
-   {
-      return ejbServices;
-   }
-   
-   public final ResourceLoader getResourceLoader()
-   {
-      return resourceLoader;
-   }
-
-   /**
-    * Provides access to the transaction services provided by the container
-    * or application server.
-    * 
-    * @return a TransactionServices provider per the SPI
-    */
-   public final TransactionServices getTransactionServices()
-   {
-      return transactionServices;
+      return serviceRegistry;
    }
 
    /**

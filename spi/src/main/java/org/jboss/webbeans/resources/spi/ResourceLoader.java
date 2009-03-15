@@ -19,13 +19,17 @@ package org.jboss.webbeans.resources.spi;
 
 import java.net.URL;
 
+import org.jboss.webbeans.bootstrap.api.Service;
+
 /**
- * Resource loading/class creation abstraction
+ * Resource loading/class creation services for Web Beans. By default an
+ * implementation which uses the Thread Context ClassLoader if available, 
+ * otherwise the classloading of the implementation is used 
  * 
  * @author Pete Muir
  *
  */
-public interface ResourceLoader
+public interface ResourceLoader extends Service
 {
    // Name of the resource loader
    public static final String PROPERTY_NAME = ResourceLoader.class.getName();

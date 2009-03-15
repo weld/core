@@ -14,30 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.jboss.webbeans.bootstrap.spi;
-
-import org.jboss.webbeans.bootstrap.api.Service;
-import org.jboss.webbeans.ejb.spi.EjbDescriptor;
-
-
+package org.jboss.webbeans.bootstrap.api;
 
 /**
- * A container should implement this interface to allow the Web Beans RI to
- * discover the EJBs the application contains
- * 
+ * Marks a Service which is used by Web Beans to interact with it's environment
  * @author Pete Muir
  *
  */
-public interface EjbDiscovery extends Service
+public interface Service
 {
-   public static final String PROPERTY_NAME = EjbDiscovery.class.getName();
-   
-   /**
-    * Gets a descriptor for each EJB in the application
-    * 
-    * @return The bean class to descriptor map 
-    */
-   public Iterable<EjbDescriptor<?>> discoverEjbs();
    
 }

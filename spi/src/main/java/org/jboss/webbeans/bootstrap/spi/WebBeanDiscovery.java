@@ -19,6 +19,8 @@ package org.jboss.webbeans.bootstrap.spi;
 
 import java.net.URL;
 
+import org.jboss.webbeans.bootstrap.api.Service;
+
 /**
  * A container should implement this interface to allow the Web Beans RI to
  * discover the Web Beans to deploy
@@ -26,7 +28,7 @@ import java.net.URL;
  * @author Pete Muir
  *
  */
-public interface WebBeanDiscovery
+public interface WebBeanDiscovery extends Service
 {
    public static final String PROPERTY_NAME = WebBeanDiscovery.class.getName();
    

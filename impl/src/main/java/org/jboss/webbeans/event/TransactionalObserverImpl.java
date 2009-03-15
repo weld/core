@@ -87,7 +87,7 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
    @Override
    public void notify(T event)
    {
-      if ((manager.getTransactionServices() != null)  && (manager.getTransactionServices().isTransactionActive()))
+      if ((manager.getServices().get(TransactionServices.class) != null)  && (manager.getServices().get(TransactionServices.class).isTransactionActive()))
       {
          deferEvent(event);
       }
@@ -164,7 +164,7 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
       {
          synchronization = new TransactionSynchronizedRunnable(deferredEvent, TransactionServices.Status.FAILURE);
       }
-      manager.getTransactionServices().registerSynchronization(synchronization);
+      manager.getServices().get(TransactionServices.class).registerSynchronization(synchronization);
    }
 
 }

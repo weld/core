@@ -19,9 +19,12 @@ package org.jboss.webbeans.mock;
 
 
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
+import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
+import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.webbeans.ejb.spi.EjbServices;
+import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.AbstractLifecycle;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
@@ -35,9 +38,9 @@ public class MockLifecycle extends AbstractLifecycle
    
    private final WebBeansBootstrap bootstrap;
    private final MockWebBeanDiscovery webBeanDiscovery;
-   private BeanStore applicationBeanStore = new ConcurrentHashMapBeanStore();
-   private BeanStore sessionBeanStore = new ConcurrentHashMapBeanStore();
-   private BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
+   private final BeanStore applicationBeanStore = new ConcurrentHashMapBeanStore();
+   private final BeanStore sessionBeanStore = new ConcurrentHashMapBeanStore();
+   private final BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
    
    public MockLifecycle()
    {
@@ -52,12 +55,13 @@ public class MockLifecycle extends AbstractLifecycle
          throw new IllegalStateException("No WebBeanDiscovery is available");
       }
       bootstrap = new WebBeansBootstrap();
-      bootstrap.setNamingContext(new MockNamingContext(null));
-      bootstrap.setEjbServices(MOCK_EJB_RESOLVER);
-      bootstrap.setResourceLoader(MOCK_RESOURCE_LOADER);
-      bootstrap.setWebBeanDiscovery(webBeanDiscovery);
+      bootstrap.getServices().add(NamingContext.class, new MockNamingContext(null));
+      bootstrap.getServices().add(EjbServices.class, MOCK_EJB_RESOLVER);
+      bootstrap.getServices().add(ResourceLoader.class, MOCK_RESOURCE_LOADER);
+      bootstrap.getServices().add(WebBeanDiscovery.class, webBeanDiscovery);
       bootstrap.setApplicationContext(applicationBeanStore);
-      bootstrap.setTransactionServices(MOCK_TRANSACTION_SERVICES);
+      bootstrap.getServices().add(TransactionServices.class, MOCK_TRANSACTION_SERVICES);
+      bootstrap.getServices().add(EjbDiscovery.class, new MockEjbDiscovery(webBeanDiscovery));
       bootstrap.initialize();
    }
    
@@ -73,7 +77,6 @@ public class MockLifecycle extends AbstractLifecycle
    
    public void beginApplication()
    {
-      bootstrap.setEjbDiscovery(new MockEjbDiscovery(webBeanDiscovery.discoverWebBeanClasses()));
       bootstrap.boot();
    }
    
