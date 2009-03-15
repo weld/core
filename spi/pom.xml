@@ -38,6 +38,7 @@
       <dependency>
       	<groupId>javax.transaction</groupId>
       	<artifactId>jta</artifactId>
+         <optional>true</optional>
       </dependency>
 
    </dependencies>
