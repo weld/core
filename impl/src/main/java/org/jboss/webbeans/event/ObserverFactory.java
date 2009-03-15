@@ -20,6 +20,7 @@ package org.jboss.webbeans.event;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.transaction.spi.TransactionServices;
 
 /**
  * Basic factory class that produces implicit observers for observer methods.
@@ -40,7 +41,7 @@ public class ObserverFactory
    public static <T> ObserverImpl<T> create(AnnotatedMethod<?> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
    {
       ObserverImpl<T> result = null;
-      if (TransactionalObserverImpl.isObserverMethodTransactional(method))
+      if (manager.getServices().contains(TransactionServices.class) && TransactionalObserverImpl.isObserverMethodTransactional(method))
       {
          result = new TransactionalObserverImpl<T>(method, declaringBean, manager);
       }
