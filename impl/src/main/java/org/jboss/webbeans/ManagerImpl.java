@@ -68,9 +68,9 @@ import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.ObserverImpl;
+import org.jboss.webbeans.injection.NonContextualInjector;
 import org.jboss.webbeans.injection.ResolvableAnnotatedClass;
 import org.jboss.webbeans.injection.Resolver;
-import org.jboss.webbeans.injection.NonContextualInjector;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -122,6 +122,9 @@ public class ManagerImpl implements WebBeansManager, Serializable
    private transient List<Bean<?>> beans;
    // The registered beans, mapped by implementation class
    private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeanMap;
+   
+   private transient final Map<String, RIBean<?>> riBeans;
+   
    // The registered decorators
    private transient final Set<Decorator> decorators;
    // The registered interceptors
@@ -146,6 +149,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       this.serviceRegistry = serviceRegistry;
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
       this.newEnterpriseBeanMap = new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>();
+      this.riBeans = new ConcurrentHashMap<String, RIBean<?>>();
       this.resolver = new Resolver(this);
       this.clientProxyProvider = new ClientProxyProvider();
       this.decorators = new HashSet<Decorator>();
@@ -372,6 +376,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
             {
                newEnterpriseBeanMap.put(bean.getType(), (EnterpriseBean<?>) bean);
             }
+            riBeans.put(bean.getId(), bean);
          }
          resolver.clear();
       }
@@ -395,6 +400,11 @@ public class ManagerImpl implements WebBeansManager, Serializable
    public List<Bean<?>> getBeans()
    {
       return Collections.unmodifiableList(beans);
+   }
+   
+   public Map<String, RIBean<?>> getRiBeans()
+   {
+      return Collections.unmodifiableMap(riBeans);
    }
 
    /**

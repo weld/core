@@ -17,6 +17,10 @@
 
 package org.jboss.webbeans.ejb;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.interceptor.InvocationContext;
@@ -33,13 +37,13 @@ import org.jboss.webbeans.log.Logging;
  * 
  * @author Pete Muir
  */
-public class SessionBeanInterceptor
+public class SessionBeanInterceptor implements Serializable
 {
    
    private transient Log log = Logging.getLog(SessionBeanInterceptor.class);
    
-   // TODO make Bean serializable
    private transient EnterpriseBean<Object> bean;
+   private String beanId;
    private boolean contextual;
    
    /**
@@ -98,6 +102,7 @@ public class SessionBeanInterceptor
          this.bean = (EnterpriseBean<Object>) CurrentManager.rootManager().getNewEnterpriseBeanMap().get(beanClass);
          this.contextual = false;
       }
+      this.beanId = this.bean.getId();
    }
    
    private static <T> EnterpriseBeanInstance getEnterpriseBeanInstance(EnterpriseBean<T> bean)
@@ -111,6 +116,20 @@ public class SessionBeanInterceptor
       {
          throw new IllegalStateException("Contextual instance not an session bean created by the container");
       }
+   }
+   
+   private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException
+   {
+      ois.defaultReadObject();
+      if (beanId != null)
+      {
+         bean = (EnterpriseBean<Object>) CurrentManager.rootManager().getRiBeans().get(beanId);
+      }
+   }
+   
+   protected EnterpriseBean<Object> getBean()
+   {
+      return bean;
    }
 
 }

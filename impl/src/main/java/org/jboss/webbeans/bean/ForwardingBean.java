@@ -23,6 +23,7 @@ import java.util.Set;
 
 import javax.context.CreationalContext;
 import javax.inject.manager.Bean;
+import javax.inject.manager.InjectionPoint;
 import javax.inject.manager.Manager;
 
 /**
@@ -140,6 +141,12 @@ public abstract class ForwardingBean<T> extends Bean<T>
    public boolean isSerializable()
    {
       return delegate().isSerializable();
+   }
+   
+   @Override
+   public Set<? extends InjectionPoint> getInjectionPoints()
+   {
+      return delegate().getInjectionPoints();
    }
 
    /**

@@ -16,7 +16,9 @@
  */
 package org.jboss.webbeans.bean;
 
+import java.io.Serializable;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.context.Dependent;
 import javax.inject.manager.Bean;
@@ -29,14 +31,21 @@ import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
  *  
  * @author Pete Muir
  */
-public abstract class RIBean<T> extends Bean<T>
+public abstract class RIBean<T> extends Bean<T> implements Serializable
 {
+   
+   private static final AtomicInteger idGenerator = new AtomicInteger();
+   
    private final ManagerImpl manager;
+   
+   private final String id;
 
    protected RIBean(ManagerImpl manager)
    {
       super(manager);
       this.manager = manager;
+      // TODO better ID strategy (human readable)
+      this.id = getClass().getName() + "-" + idGenerator.getAndIncrement();
    }
 
    @Override
@@ -61,5 +70,10 @@ public abstract class RIBean<T> extends Bean<T>
    public abstract Set<AnnotatedInjectionPoint<?, ?>> getInjectionPoints();
 
    public abstract RIBean<?> getSpecializedBean();
+   
+   public String getId()
+   {
+      return id;
+   }
 
 }
