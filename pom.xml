@@ -67,7 +67,6 @@
             <module>api</module>
             <module>spi</module>
             <module>impl</module>
-            <module>xsd</module>
             <module>porting-package</module>
             <module>jboss-tck-runner</module>
          </modules>
