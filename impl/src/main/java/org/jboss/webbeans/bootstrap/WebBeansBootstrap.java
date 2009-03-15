@@ -26,6 +26,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.standard.InjectionPointBean;
 import org.jboss.webbeans.bean.standard.ManagerBean;
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
+import org.jboss.webbeans.bootstrap.api.Environments;
 import org.jboss.webbeans.bootstrap.api.helpers.AbstractBootstrap;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.ApplicationContext;
@@ -106,11 +107,14 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       beanDeployer.addClasses(classes);
       beanDeployer.addBean(ManagerBean.of(manager));
       beanDeployer.addBean(InjectionPointBean.of(manager));
-      beanDeployer.addClass(ConversationImpl.class);
-      beanDeployer.addClass(ServletConversationManager.class);
-      beanDeployer.addClass(JavaSEConversationTerminator.class);
-      beanDeployer.addClass(NumericConversationIdGenerator.class);
-      beanDeployer.addClass(HttpSessionManager.class);
+      if (!getEnvironment().equals(Environments.SE))
+      {
+         beanDeployer.addClass(ConversationImpl.class);
+         beanDeployer.addClass(ServletConversationManager.class);
+         beanDeployer.addClass(JavaSEConversationTerminator.class);
+         beanDeployer.addClass(NumericConversationIdGenerator.class);
+         beanDeployer.addClass(HttpSessionManager.class);
+      }
       beanDeployer.deploy();
    }
    
