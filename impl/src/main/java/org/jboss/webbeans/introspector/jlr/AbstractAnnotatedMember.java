@@ -159,7 +159,7 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
     */
    public T getValue(Manager manager)
    {
-      return manager.getInstanceByType(getType(), getMetaAnnotationsAsArray(BindingType.class));
+      return manager.getInstanceByType(getRawType(), getMetaAnnotationsAsArray(BindingType.class));
    }
 
    /**

@@ -114,14 +114,14 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
    /**
     * @see org.jboss.webbeans.introspector.AnnotatedItem
     */
-   public Class<T> getType()
+   public Class<T> getRawType()
    {
-      return delegate().getType();
+      return delegate().getRawType();
    }
    
-   public Type getUnderlyingType()
+   public Type getType()
    {
-      return delegate().getUnderlyingType();
+      return delegate().getType();
    }
 
    /**
@@ -222,6 +222,11 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
    public Set<? extends Type> getFlattenedTypeHierarchy()
    {
       return delegate().getFlattenedTypeHierarchy();
+   }
+   
+   public boolean isParameterizedType()
+   {
+      return delegate().isParameterizedType();
    }
 
 }

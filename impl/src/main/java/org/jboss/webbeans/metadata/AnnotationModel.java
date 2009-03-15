@@ -61,9 +61,9 @@ public abstract class AnnotationModel<T extends Annotation>
     */
    protected void initType()
    {
-      if (!Annotation.class.isAssignableFrom(getType()))
+      if (!Annotation.class.isAssignableFrom(getRawType()))
       {
-         throw new DefinitionException(getMetaAnnotation().toString() + " can only be applied to an annotation, it was applied to " + getType());
+         throw new DefinitionException(getMetaAnnotation().toString() + " can only be applied to an annotation, it was applied to " + getRawType());
       }
    }
 
@@ -80,9 +80,9 @@ public abstract class AnnotationModel<T extends Annotation>
     * 
     * @return The type
     */
-   public Class<T> getType()
+   public Class<T> getRawType()
    {
-      return annotatedAnnotation.getType();
+      return annotatedAnnotation.getRawType();
    }
 
    /**
@@ -120,7 +120,7 @@ public abstract class AnnotationModel<T extends Annotation>
    @Override
    public String toString()
    {
-     return (isValid() ? "Valid" : "Invalid") + " annotation model for " + getType();
+     return (isValid() ? "Valid" : "Invalid") + " annotation model for " + getRawType();
    }
    
 }

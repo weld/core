@@ -120,11 +120,11 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
    {
       try
       {
-         this.type = getAnnotatedItem().getType();
+         this.type = getAnnotatedItem().getRawType();
       }
       catch (ClassCastException e)
       {
-         throw new RuntimeException(" Cannot cast producer type " + getAnnotatedItem().getType() + " to bean type " + (getDeclaredBeanType() == null ? " unknown " : getDeclaredBeanType()), e);
+         throw new RuntimeException(" Cannot cast producer type " + getAnnotatedItem().getRawType() + " to bean type " + (getDeclaredBeanType() == null ? " unknown " : getDeclaredBeanType()), e);
       }
    }
 

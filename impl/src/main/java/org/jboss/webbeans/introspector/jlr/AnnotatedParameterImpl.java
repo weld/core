@@ -65,7 +65,7 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
     * @param annotations The annotations array
     * @param type The type of the parameter
     */
-   public AnnotatedParameterImpl(Annotation[] annotations, Class<T> type, AnnotatedMember<?, ?> declaringMember)
+   private AnnotatedParameterImpl(Annotation[] annotations, Class<T> type, AnnotatedMember<?, ?> declaringMember)
    {
       super(AnnotationStore.of(annotations, annotations), type);
       this.type = type;
@@ -135,7 +135,7 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
     */
    public T getValue(Manager manager)
    {
-      return manager.getInstanceByType(getType(), getMetaAnnotationsAsArray(BindingType.class));
+      return manager.getInstanceByType(getRawType(), getMetaAnnotationsAsArray(BindingType.class));
    }
 
    /**
@@ -166,7 +166,7 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
             buffer.append("static ");
          if (_final)
             buffer.append("final ");
-         buffer.append(getType().getName());
+         buffer.append(getRawType().getName());
          buffer.append(" for operation ");
          buffer.append(getDeclaringMember().toString());
          toString = buffer.toString();

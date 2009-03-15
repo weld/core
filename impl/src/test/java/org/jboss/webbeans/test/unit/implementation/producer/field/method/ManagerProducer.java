@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.unit.implementation.producer.method;
+package org.jboss.webbeans.test.unit.implementation.producer.field.method;
 
 import javax.inject.Current;
 import javax.inject.Produces;

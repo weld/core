@@ -62,7 +62,7 @@ public abstract class AbstractFacadeBean<T, S, P> extends AbstractBean<T, S>
    @SuppressWarnings("unchecked")
    protected Class<P> getTypeParameter()
    {
-      return (Class<P>) annotatedItem.getType().getTypeParameters()[0].getClass();
+      return (Class<P>) annotatedItem.getActualTypeArguments()[0].getClass();
    }
 
    /**
@@ -121,7 +121,7 @@ public abstract class AbstractFacadeBean<T, S, P> extends AbstractBean<T, S>
       {
          if (getAnnotatedItem() != null)
          {
-            this.type = getAnnotatedItem().getType();
+            this.type = getAnnotatedItem().getRawType();
          }
       }
       catch (ClassCastException e)

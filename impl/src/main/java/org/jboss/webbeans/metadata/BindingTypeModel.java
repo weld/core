@@ -69,7 +69,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
    {
       for (AnnotatedMethod<?> annotatedMethod : getAnnotatedAnnotation().getMembers())
       {
-         if ((Reflections.isArrayType(annotatedMethod.getType()) || Annotation.class.isAssignableFrom(annotatedMethod.getType())) && !nonBindingTypes.contains(annotatedMethod))
+         if ((Reflections.isArrayType(annotatedMethod.getRawType()) || Annotation.class.isAssignableFrom(annotatedMethod.getRawType())) && !nonBindingTypes.contains(annotatedMethod))
          {
             throw new DefinitionException("Member of array type or annotation type must be annotated @NonBinding " + annotatedMethod);
          }
@@ -126,7 +126,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
     */
    public boolean isEqual(Annotation instance, Annotation other)
    {
-      if (instance.annotationType().equals(getType()) && other.annotationType().equals(getType()))
+      if (instance.annotationType().equals(getRawType()) && other.annotationType().equals(getRawType()))
       {
          for (AnnotatedMethod<?> annotatedMethod : getAnnotatedAnnotation().getMembers())
          {
@@ -169,7 +169,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
    @Override
    public String toString()
    {
-     return (isValid() ? "Valid" : "Invalid") + " binding type model for " + getType() + " with non-binding types " + getNonBindingTypes();
+     return (isValid() ? "Valid" : "Invalid") + " binding type model for " + getRawType() + " with non-binding types " + getNonBindingTypes();
    }
 
 }

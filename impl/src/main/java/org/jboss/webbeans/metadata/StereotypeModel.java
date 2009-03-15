@@ -230,7 +230,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    @Deprecated
    public Class<? extends Annotation> getStereotypeClass()
    {
-      return getType();
+      return getRawType();
    }
 
    /**

@@ -93,9 +93,15 @@ public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<
       throw new UnsupportedOperationException();
    }
 
-   public Class<T> getType()
+   public Class<T> getRawType()
    {
       return rawType;
+   }
+   
+   @Override
+   public Type getType()
+   {
+      return getRawType();
    }
 
    public boolean isFinal()

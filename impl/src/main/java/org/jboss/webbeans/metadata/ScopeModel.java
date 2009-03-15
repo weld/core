@@ -82,7 +82,7 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
       String valid = isValid() ? "Valid " : "Invalid";
       String normal = isNormal() ? "normal " : "non-normal ";
       String passivating = isPassivating() ? "passivating " : "pon-passivating ";
-      return valid + normal + passivating + " scope model for " + getType();
+      return valid + normal + passivating + " scope model for " + getRawType();
    }
 
 }

@@ -260,10 +260,10 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       // TODO CACHE THIS and rebuild on addBean
       // TODO: a bit crude, don't check *all* injectionpoints, only those listed
       // in the spec for passivation checks
-      for (AnnotatedItem<?, ?> injectionPoint : getInjectionPoints())
+      for (AnnotatedInjectionPoint<?, ?> injectionPoint : getInjectionPoints())
       {
          Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
-         Bean<?> resolvedBean = manager.resolveByType(injectionPoint.getType(), bindings).iterator().next();
+         Bean<?> resolvedBean = manager.resolveByType(injectionPoint.getRawType(), bindings).iterator().next();
          if (MetaDataCache.instance().getScopeModel(this.getScopeType()).isPassivating())
          {
             if (Dependent.class.equals(resolvedBean.getScopeType()) && !resolvedBean.isSerializable() && (((injectionPoint instanceof AnnotatedField) && !((AnnotatedField<?>) injectionPoint).isTransient()) || (injectionPoint instanceof AnnotatedParameter)) )
@@ -314,7 +314,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       {
          throw new DefinitionException("type: " + getType() + " must specify a deployment type");
       }
-      else if (deploymentType.equals(Standard.class) && !STANDARD_WEB_BEAN_CLASSES.contains(getAnnotatedItem().getType()))
+      else if (deploymentType.equals(Standard.class) && !STANDARD_WEB_BEAN_CLASSES.contains(getAnnotatedItem().getRawType()))
       {
          throw new DefinitionException(getAnnotatedItem().getName() + " cannot have deployment type @Standard");
       }

@@ -53,17 +53,18 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       
    }
 
-   public Type getUnderlyingType()
+   public Type getType()
    {
-      return getType();
+      return getRawType();
    }
    
    // Cached string representation
    private String toString;
    private final AnnotationStore annotationStore;
-   private final Class<T> type;
+   private final Class<T> rawType;
    private final Set<? extends Type> flattenedTypes;
    private final boolean proxyable;
+   private final boolean _parameterizedType;
 
    /**
     * Constructor
@@ -74,18 +75,20 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * @param annotationMap A map of annotation to register
     * 
     */
-   public AbstractAnnotatedItem(AnnotationStore annotatedItemHelper, Class<T> type)
+   public AbstractAnnotatedItem(AnnotationStore annotatedItemHelper, Class<T> rawType)
    {
       this.annotationStore = annotatedItemHelper;
-      this.type = type;
-      this.flattenedTypes = new Reflections.HierarchyDiscovery<Type>(type).getFlattenedTypes();
+      this.rawType = rawType;
+      this._parameterizedType = Reflections.isParameterizedType(rawType);
+      this.flattenedTypes = new Reflections.HierarchyDiscovery<Type>(rawType).getFlattenedTypes();
       this.proxyable = Proxies.isTypesProxyable(flattenedTypes);
    }
    
    public AbstractAnnotatedItem(AnnotationStore annotatedItemHelper)
    {
       this.annotationStore = annotatedItemHelper;
-      this.type = null;
+      this.rawType = null;
+      this._parameterizedType = false;
       this.flattenedTypes = null;
       this.proxyable = false;
    }
@@ -145,7 +148,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       if (other instanceof AnnotatedItem)
       {
          AnnotatedItem<?, ?> that = (AnnotatedItem<?, ?>) other;
-         return this.getAnnotationsAsSet().equals(that.getAnnotationsAsSet()) && this.getType().equals(that.getType());
+         return this.getAnnotationsAsSet().equals(that.getAnnotationsAsSet()) && this.getRawType().equals(that.getRawType());
       }
       return false;
    }
@@ -161,7 +164,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    public boolean isAssignableFrom(AnnotatedItem<?, ?> that)
    {
-      return isAssignableFrom(that.getType(), that.getActualTypeArguments());
+      return isAssignableFrom(that.getRawType(), that.getActualTypeArguments());
    }
 
    /**
@@ -208,7 +211,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     */
    private boolean isAssignableFrom(Class<?> type, Type[] actualTypeArguments)
    {
-      return Types.boxedType(getType()).isAssignableFrom(Types.boxedType(type)) && Arrays.equals(getActualTypeArguments(), actualTypeArguments);
+      return Types.boxedType(getRawType()).isAssignableFrom(Types.boxedType(type)) && Arrays.equals(getActualTypeArguments(), actualTypeArguments);
    }
 
    /**
@@ -219,7 +222,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    @Override
    public int hashCode()
    {
-      return getType().hashCode();
+      return getRawType().hashCode();
    }
 
    /**
@@ -272,9 +275,9 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return proxyable;
    }
    
-   public Class<T> getType()
+   public Class<T> getRawType()
    {
-      return type;
+      return rawType;
    }
    
    public Set<? extends Type> getFlattenedTypeHierarchy()
@@ -287,6 +290,11 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    public boolean isDeclaredAnnotationPresent(Class<? extends Annotation> annotationType)
    {
       return getAnnotationStore().isDeclaredAnnotationPresent(annotationType);
+   }
+   
+   public boolean isParameterizedType()
+   {
+      return _parameterizedType;
    }
 
 }

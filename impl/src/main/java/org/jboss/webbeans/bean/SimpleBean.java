@@ -365,7 +365,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected void preSpecialize()
    {
       super.preSpecialize();
-      if (manager.getEjbDescriptorCache().containsKey(getAnnotatedItem().getSuperclass().getType()))
+      if (manager.getEjbDescriptorCache().containsKey(getAnnotatedItem().getSuperclass().getRawType()))
       {
          throw new DefinitionException("Simple bean must specialize a simple bean");
       }
@@ -458,7 +458,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected void initType()
    {
       log.trace("Bean type specified in Java");
-      this.type = getAnnotatedItem().getType();
+      this.type = getAnnotatedItem().getRawType();
    }
 
    /**

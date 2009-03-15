@@ -255,7 +255,6 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    private String toString;
    
    private final boolean _nonStaticMemberClass;
-   private final boolean _parameterizedType;
    private final boolean _abstract;
 
    
@@ -284,7 +283,6 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.declaredAnnotatedFields = new AnnotatedFieldMap();
       this.declaredMetaAnnotatedFields = new AnnotatedFieldMap();
       this._nonStaticMemberClass = Reflections.isNonMemberInnerClass(rawType);
-      this._parameterizedType = Reflections.isParameterizedType(rawType);
       this._abstract = Reflections.isAbstract(rawType);
       for (Class<?> c = clazz; c != Object.class && c != null; c = c.getSuperclass())
       {
@@ -481,11 +479,6 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       return _nonStaticMemberClass;
    }
    
-   public boolean isParameterizedType()
-   {
-      return _parameterizedType;
-   }
-   
    public boolean isAbstract()
    {
       return _abstract;
@@ -611,11 +604,6 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
       toString = "Annotated class " + Names.classToString(getDelegate());
       return toString;
-   }
-   
-   public AnnotatedClass<T> wrap(Set<Annotation> annotations)
-   {
-      throw new UnsupportedOperationException();
    }
    
 }

@@ -88,7 +88,7 @@ public class EventBean<T, S> extends AbstractFacadeBean<Event<T>, S, T>
     */
    private void validateInjectionPoint()
    {
-      if (!this.getAnnotatedItem().getType().equals(Event.class))
+      if (!this.getAnnotatedItem().getRawType().equals(Event.class))
       {
          throw new DefinitionException("Event field/parameter is not of type Event<T>: " + this.getAnnotatedItem());
       }

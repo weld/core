@@ -189,7 +189,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected void preSpecialize()
    {
       super.preSpecialize();
-      if (!manager.getEjbDescriptorCache().containsKey(getAnnotatedItem().getSuperclass().getType()))
+      if (!manager.getEjbDescriptorCache().containsKey(getAnnotatedItem().getSuperclass().getRawType()))
       {
          throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
       }

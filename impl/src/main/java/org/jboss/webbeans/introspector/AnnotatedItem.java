@@ -129,9 +129,9 @@ public interface AnnotatedItem<T, S>
     * 
     * @return The type of the element
     */
-   public Class<T> getType();
+   public Class<T> getRawType();
    
-   public Type getUnderlyingType();
+   public Type getType();
 
    /**
     * Extends Java Class assignability such that actual type parameters are also
@@ -199,5 +199,7 @@ public interface AnnotatedItem<T, S>
    public String getName();
    
    public AnnotationStore getAnnotationStore();
+   
+   public boolean isParameterizedType();
 
 }

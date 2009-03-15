@@ -84,7 +84,7 @@ public class BeanDeployer
    {
       for (AnnotatedClass<?> clazz : deferredClasses)
       {
-         if (manager.getEjbDescriptorCache().containsKey(clazz.getType()))
+         if (manager.getEjbDescriptorCache().containsKey(clazz.getRawType()))
          {
             createEnterpriseBean(clazz);
          }

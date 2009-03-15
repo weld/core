@@ -121,7 +121,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    protected void initType()
    {
       log.trace("Bean type specified in Java");
-      this.type = getAnnotatedItem().getType();
+      this.type = getAnnotatedItem().getRawType();
    }
 
    /**
@@ -270,7 +270,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    protected void preSpecialize()
    {
       super.preSpecialize();
-      if (getAnnotatedItem().getSuperclass() == null || getAnnotatedItem().getSuperclass().getType().equals(Object.class))
+      if (getAnnotatedItem().getSuperclass() == null || getAnnotatedItem().getSuperclass().getRawType().equals(Object.class))
       {
          throw new DefinitionException("Specializing bean must extend another bean " + toString());
       }

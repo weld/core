@@ -40,7 +40,6 @@ import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.util.Reflections;
 
 /**
  * <p>
@@ -79,7 +78,7 @@ public class ObserverImpl<T> implements Observer<T>
       checkObserverMethod();
 
       @SuppressWarnings("unchecked")
-      Class<T> c = (Class<T>) observerMethod.getAnnotatedParameters(Observes.class).get(0).getType();
+      Class<T> c = (Class<T>) observerMethod.getAnnotatedParameters(Observes.class).get(0).getRawType();
       this.eventType = c;
 
       this.bindings = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingsAsArray();
@@ -114,7 +113,7 @@ public class ObserverImpl<T> implements Observer<T>
       if (eventObjects.size() > 0)
       {
          AnnotatedParameter<?> eventParam = eventObjects.iterator().next();
-         if (Reflections.isParameterizedType(eventParam.getType()))
+         if (eventParam.isParameterizedType())
          {
             throw new DefinitionException(this + " cannot observe parameterized event types");
          }
