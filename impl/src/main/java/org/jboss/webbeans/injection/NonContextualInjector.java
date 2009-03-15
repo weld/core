@@ -8,13 +8,13 @@ import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.collections.ConcurrentCache;
 
-public class ServletInjector
+public class NonContextualInjector
 {
    
    private final ConcurrentCache<Class<?>, Set<FieldInjectionPoint<?>>> instances;
    private final ManagerImpl manager;
 
-   public ServletInjector(ManagerImpl manager)
+   public NonContextualInjector(ManagerImpl manager)
    {
       this.manager = manager;
       this.instances = new ConcurrentCache<Class<?>, Set<FieldInjectionPoint<?>>>();

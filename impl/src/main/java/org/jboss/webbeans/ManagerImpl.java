@@ -70,7 +70,7 @@ import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.ResolvableAnnotatedClass;
 import org.jboss.webbeans.injection.Resolver;
-import org.jboss.webbeans.injection.ServletInjector;
+import org.jboss.webbeans.injection.NonContextualInjector;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -134,7 +134,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
    
    private final transient Map<Bean<?>, Bean<?>> specializedBeans;
    
-   private final transient ServletInjector servletInjector;
+   private final transient NonContextualInjector nonContextualInjector;
 
    /**
     * Create a new manager
@@ -162,7 +162,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
          }
       };
       this.specializedBeans = new HashMap<Bean<?>, Bean<?>>();
-      this.servletInjector = new ServletInjector(this);
+      this.nonContextualInjector = new NonContextualInjector(this);
       List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       defaultEnabledDeploymentTypes.add(0, Standard.class);
       defaultEnabledDeploymentTypes.add(1, Production.class);
@@ -617,7 +617,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
    
    public void injectNonContextualInstance(Object instance) 
    {
-      servletInjector.inject(instance);
+      nonContextualInjector.inject(instance);
    }
    
    @SuppressWarnings("unchecked")
