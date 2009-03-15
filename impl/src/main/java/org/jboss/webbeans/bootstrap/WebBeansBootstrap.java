@@ -27,6 +27,7 @@ import org.jboss.webbeans.bean.standard.InjectionPointBean;
 import org.jboss.webbeans.bean.standard.ManagerBean;
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
 import org.jboss.webbeans.bootstrap.api.helpers.AbstractBootstrap;
+import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.context.DependentContext;
@@ -80,7 +81,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       }
       if (!getServices().contains(EjbServices.class))
       {
-         log.info("EJB services not available. Session beans, injection into non-contextual EJBs, injection of @Resource, @PersistenceContext and @EJB in simple beans, injection of Java EE resources and JMS resources will not be available.");
+         log.info("EJB services not available. Session beans will be simple beans, injection into non-contextual EJBs, injection of @Resource, @PersistenceContext and @EJB in simple beans, injection of Java EE resources and JMS resources will not be available.");
       }
       this.manager = new ManagerImpl(getServices());
       getServices().get(NamingContext.class).bind(ManagerImpl.JNDI_KEY, getManager());
@@ -122,18 +123,6 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          {
             throw new IllegalStateException("Manager has not been initialized");
          }
-         if (getWebBeanDiscovery() == null)
-         {
-            throw new IllegalStateException("WebBeanDiscovery not set");
-         }
-         if (getEjbDiscovery() == null)
-         {
-            throw new IllegalStateException("EjbDiscovery is not set");
-         }
-         if (getResourceLoader() == null)
-         {
-            throw new IllegalStateException("ResourceLoader not set");
-         }
          if (getApplicationContext() == null)
          {
             throw new IllegalStateException("No application context BeanStore set");
@@ -141,10 +130,13 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          beginApplication(getApplicationContext());
          BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
          beginDeploy(requestBeanStore);
-         // Must populate EJB cache first, as we need it to detect whether a
-         // bean is an EJB!
-         manager.getEjbDescriptorCache().addAll(getEjbDiscovery().discoverEjbs());
-         BeansXmlParser parser = new BeansXmlParser(getResourceLoader(), getWebBeanDiscovery().discoverWebBeansXml());
+         if (getServices().contains(EjbServices.class))
+         {
+            // Must populate EJB cache first, as we need it to detect whether a
+            // bean is an EJB!
+            manager.getEjbDescriptorCache().addAll(getServices().get(EjbServices.class).discoverEjbs());
+         }
+         BeansXmlParser parser = new BeansXmlParser(getServices().get(ResourceLoader.class), getServices().get(WebBeanDiscovery.class).discoverWebBeansXml());
          parser.parse();
          List<Class<? extends Annotation>> enabledDeploymentTypes = parser.getEnabledDeploymentTypes();
          if (enabledDeploymentTypes != null)
@@ -152,7 +144,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
             manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
          }
          log.info("Deployment types: " + manager.getEnabledDeploymentTypes());
-         registerBeans(getWebBeanDiscovery().discoverWebBeanClasses());
+         registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses());
          manager.fireEvent(manager, new InitializedLiteral());
          log.info("Web Beans initialized. Validating beans.");
          manager.getResolver().resolveInjectionPoints();

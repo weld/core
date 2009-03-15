@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans.bootstrap.api;
 
-import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.ejb.spi.EjbServices;
@@ -41,14 +40,6 @@ public interface Bootstrap
     */
    @Deprecated
    public void setWebBeanDiscovery(WebBeanDiscovery webBeanDiscovery);
-   
-   /**
-    * Set the EjbDiscovery to use
-    * 
-    * @param ejbDiscovery
-    */
-   @Deprecated
-   public void setEjbDiscovery(EjbDiscovery ejbDiscovery);
    
    /**
     * Set the EjbServices to use
@@ -136,5 +127,12 @@ public interface Bootstrap
     * 
     */
    public void shutdown();
+   
+   /**
+    * Get the services available to this bootstrap
+    * 
+    * @return the services availabel
+    */
+   public ServiceRegistry getServices();
    
 }

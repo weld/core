@@ -268,26 +268,28 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void injectEjbAndCommonFields(T beanInstance)
    {
-      NamingContext namingContext = manager.getServices().get(NamingContext.class);
-      EjbServices ejbServices = manager.getServices().get(EjbServices.class);
-      for (AnnotatedInjectionPoint<?, ?> injectionPoint : ejbInjectionPoints)
+      if (getManager().getServices().contains(EjbServices.class))
       {
-         Object ejbInstance = ejbServices.resolveEjb(injectionPoint, namingContext);
-         injectionPoint.inject(beanInstance, ejbInstance);
+         EjbServices ejbServices = manager.getServices().get(EjbServices.class);
+         NamingContext namingContext = manager.getServices().get(NamingContext.class);
+         for (AnnotatedInjectionPoint<?, ?> injectionPoint : ejbInjectionPoints)
+         {
+            Object ejbInstance = ejbServices.resolveEjb(injectionPoint, namingContext);
+            injectionPoint.inject(beanInstance, ejbInstance);
+         }
+   
+         for (AnnotatedInjectionPoint<?, ?> injectionPoint : persistenceUnitInjectionPoints)
+         {
+            Object puInstance = ejbServices.resolvePersistenceContext(injectionPoint, namingContext);
+            injectionPoint.inject(beanInstance, puInstance);
+         }
+   
+         for (AnnotatedInjectionPoint<?, ?> injectionPoint : resourceInjectionPoints)
+         {
+            Object resourceInstance = ejbServices.resolveResource(injectionPoint, namingContext);
+            injectionPoint.inject(beanInstance, resourceInstance);
+         }
       }
-
-      for (AnnotatedInjectionPoint<?, ?> injectionPoint : persistenceUnitInjectionPoints)
-      {
-         Object puInstance = ejbServices.resolvePersistenceContext(injectionPoint, namingContext);
-         injectionPoint.inject(beanInstance, puInstance);
-      }
-
-      for (AnnotatedInjectionPoint<?, ?> injectionPoint : resourceInjectionPoints)
-      {
-         Object resourceInstance = ejbServices.resolveResource(injectionPoint, namingContext);
-         injectionPoint.inject(beanInstance, resourceInstance);
-      }
-
    }
 
    /**
@@ -302,9 +304,12 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       initInjectionPoints();
       initPostConstruct();
       initPreDestroy();
-      initEjbInjectionPoints();
-      initPersistenceUnitInjectionPoints();
-      initResourceInjectionPoints();
+      if (getManager().getServices().contains(EjbServices.class))
+      {
+         initEjbInjectionPoints();
+         initPersistenceUnitInjectionPoints();
+         initResourceInjectionPoints();
+      }
    }
 
    /**

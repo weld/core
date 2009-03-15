@@ -22,7 +22,6 @@ import org.jboss.webbeans.bootstrap.api.Bootstrap;
 import org.jboss.webbeans.bootstrap.api.Environment;
 import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
-import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.ejb.spi.EjbServices;
@@ -48,12 +47,6 @@ public abstract class AbstractBootstrap implements Bootstrap
    public AbstractBootstrap()
    {
       this.serviceRegistry = new ServiceRegistry();
-   }
-
-   @Deprecated
-   public void setEjbDiscovery(EjbDiscovery ejbDiscovery)
-   {
-      getServices().add(EjbDiscovery.class, ejbDiscovery);
    }
 
    @Deprecated
@@ -86,6 +79,7 @@ public abstract class AbstractBootstrap implements Bootstrap
       getServices().add(TransactionServices.class, transactionServices);
    }
 
+   @Deprecated
    public WebBeanDiscovery getWebBeanDiscovery()
    {
       return getServices().get(WebBeanDiscovery.class);
@@ -107,12 +101,6 @@ public abstract class AbstractBootstrap implements Bootstrap
    public EjbServices getEjbServices()
    {
       return getServices().get(EjbServices.class);
-   }
-
-   @Deprecated
-   public EjbDiscovery getEjbDiscovery()
-   {
-      return getServices().get(EjbDiscovery.class);
    }
    
    @Deprecated

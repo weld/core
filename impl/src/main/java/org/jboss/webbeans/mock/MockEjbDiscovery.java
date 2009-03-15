@@ -26,11 +26,10 @@ import javax.ejb.Singleton;
 import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 
-import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 
-public class MockEjbDiscovery implements EjbDiscovery
+public class MockEjbDiscovery
 {
    
    private final WebBeanDiscovery webBeanDiscovery;

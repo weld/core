@@ -58,11 +58,11 @@ public abstract class ForwardingEjbServices implements EjbServices
    {
       return delegate().resolveResource(injectionPoint, namingContext);
    }
-//   
-//   public void removeEjb(Collection<Object> instance)
-//   {
-//      delegate().removeEjb(instance);
-//   }
+
+   public Iterable<EjbDescriptor<?>> discoverEjbs()
+   {
+      return delegate().discoverEjbs();
+   }
    
    @Override
    public boolean equals(Object obj)

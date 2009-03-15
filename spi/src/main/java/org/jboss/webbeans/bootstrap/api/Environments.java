@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.resources.spi.NamingContext;
@@ -39,12 +38,12 @@ public enum Environments implements Environment
    /**
     * Java EE5 or Java EE6
     */
-   EE(WebBeanDiscovery.class, EjbDiscovery.class, EjbServices.class, TransactionServices.class, NamingContext.class, ResourceLoader.class),
+   EE(WebBeanDiscovery.class, EjbServices.class, TransactionServices.class, NamingContext.class, ResourceLoader.class),
    
    /**
     * Java EE6 Web Profile
     */
-   EE_WEB_PROFILE(WebBeanDiscovery.class, EjbDiscovery.class, EjbServices.class, TransactionServices.class, NamingContext.class, ResourceLoader.class),
+   EE_WEB_PROFILE(WebBeanDiscovery.class, EjbServices.class, TransactionServices.class, NamingContext.class, ResourceLoader.class),
    
    /**
     * Servlet container such as Tomcat

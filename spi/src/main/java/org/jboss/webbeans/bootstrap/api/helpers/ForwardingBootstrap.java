@@ -17,7 +17,6 @@
 package org.jboss.webbeans.bootstrap.api.helpers;
 
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
-import org.jboss.webbeans.bootstrap.spi.EjbDiscovery;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.ejb.spi.EjbServices;
@@ -53,12 +52,6 @@ public abstract class ForwardingBootstrap implements Bootstrap
    public void setApplicationContext(BeanStore beanStore)
    {
       delegate().setApplicationContext(beanStore);
-   }
-   
-   @Deprecated
-   public void setEjbDiscovery(EjbDiscovery ejbDiscovery)
-   {
-      delegate().setEjbDiscovery(ejbDiscovery);
    }
    
    @Deprecated

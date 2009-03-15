@@ -97,6 +97,13 @@ public interface EjbServices extends Service
    public <T> EjbReference<T> resolveEJB(EjbDescriptor<T> ejbDescriptor, NamingContext namingContext);
    
    /**
+    * Gets a descriptor for each EJB in the application
+    * 
+    * @return The bean class to descriptor map 
+    */
+   public Iterable<EjbDescriptor<?>> discoverEjbs();
+   
+   /**
     * Get the annotation which defines an @EJB injection point
     * 
     * @return the annotation which defines an @EJB injection point

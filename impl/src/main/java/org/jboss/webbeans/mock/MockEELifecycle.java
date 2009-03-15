@@ -14,30 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.webbeans.mock;
 
-package org.jboss.webbeans.bootstrap.spi;
+import org.jboss.webbeans.bootstrap.api.Environments;
+import org.jboss.webbeans.ejb.spi.EjbServices;
+import org.jboss.webbeans.transaction.spi.TransactionServices;
 
-import org.jboss.webbeans.bootstrap.api.Service;
-import org.jboss.webbeans.ejb.spi.EjbDescriptor;
-
-
-
-/**
- * A container should implement this interface to allow the Web Beans RI to
- * discover the EJBs the application contains
- * 
- * @author Pete Muir
- *
- */
-public interface EjbDiscovery extends Service
+public class MockEELifecycle extends MockServletLifecycle
 {
-   public static final String PROPERTY_NAME = EjbDiscovery.class.getName();
    
-   /**
-    * Gets a descriptor for each EJB in the application
-    * 
-    * @return The bean class to descriptor map 
-    */
-   public Iterable<EjbDescriptor<?>> discoverEjbs();
+   private static final TransactionServices MOCK_TRANSACTION_SERVICES = new MockTransactionServices();
+
+   public MockEELifecycle()
+   {
+      super();
+      getBootstrap().getServices().add(TransactionServices.class, MOCK_TRANSACTION_SERVICES);
+      getBootstrap().getServices().add(EjbServices.class, new MockEjBServices(getWebBeanDiscovery()));
+      getBootstrap().setEnvironment(Environments.EE);
+   }
+   
+  
    
 }

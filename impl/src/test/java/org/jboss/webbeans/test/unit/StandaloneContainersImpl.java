@@ -5,17 +5,33 @@ import java.net.URL;
 import org.jboss.testharness.api.DeploymentException;
 import org.jboss.testharness.spi.StandaloneContainers;
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.mock.MockLifecycle;
+import org.jboss.webbeans.mock.MockEELifecycle;
+import org.jboss.webbeans.mock.MockServletLifecycle;
 import org.jboss.webbeans.mock.MockWebBeanDiscovery;
 
 public class StandaloneContainersImpl implements StandaloneContainers
 {
    
-   private MockLifecycle lifecycle;
+   // TODO this is a hack ;-)
+   public static Class<? extends MockServletLifecycle> lifecycleClass = MockEELifecycle.class;
+   
+   private MockServletLifecycle lifecycle;
    
    public void deploy(Iterable<Class<?>> classes, Iterable<URL> beansXml) throws DeploymentException
    {
-      this.lifecycle = new MockLifecycle();
+      try
+      {
+         this.lifecycle = lifecycleClass.newInstance();
+      }
+      catch (InstantiationException e1)
+      {
+         throw new DeploymentException("Error instantiating lifeycle", e1);
+      }
+      catch (IllegalAccessException e1)
+      {
+         throw new DeploymentException("Error instantiating lifeycle", e1);
+      }
+      lifecycle.initialize();
       try
       {
          MockWebBeanDiscovery discovery = lifecycle.getWebBeanDiscovery();

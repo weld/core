@@ -8,13 +8,13 @@ import org.jboss.testharness.api.DeploymentException;
 import org.jboss.testharness.spi.StandaloneContainers;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.mock.MockLifecycle;
+import org.jboss.webbeans.mock.MockEELifecycle;
 import org.jboss.webbeans.mock.MockWebBeanDiscovery;
 
 public class StandaloneContainersImpl implements StandaloneContainers
 {
    
-   private MockLifecycle lifecycle;
+   private MockEELifecycle lifecycle;
    
    public void deploy(List<Class<? extends Annotation>> enabledDeploymentTypes, Iterable<Class<?>> classes) throws DeploymentException
    {
@@ -23,7 +23,8 @@ public class StandaloneContainersImpl implements StandaloneContainers
    
    public void deploy(List<Class<? extends Annotation>> enabledDeploymentTypes, Iterable<Class<?>> classes, Iterable<URL> beansXml) throws DeploymentException
    {
-      this.lifecycle = new MockLifecycle();
+      this.lifecycle = new MockEELifecycle();
+      lifecycle.initialize();
       try
       {
          ManagerImpl manager = lifecycle.getBootstrap().getManager();
