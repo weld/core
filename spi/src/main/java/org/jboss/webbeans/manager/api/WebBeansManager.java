@@ -18,7 +18,6 @@
 package org.jboss.webbeans.manager.api;
 
 import javax.inject.manager.Manager;
-import javax.servlet.Servlet;
 
 /**
  * Functionality provided by the Web Beans Manager over and above the JSR-299
@@ -31,11 +30,11 @@ public interface WebBeansManager extends Manager
 {
    
    /**
-    * Perform JSR-299 dependency injection on a servlet
+    * Perform JSR-299 dependency injection into a non-contextual instance
     * 
-    * @param servlet
-    *           the servlet instance to inject
+    * @param instance
+    *           the instance to inject
     */
-   public void injectServlet(Servlet servlet);
+   public void injectNonContextualInstance(Object instance);
    
 }

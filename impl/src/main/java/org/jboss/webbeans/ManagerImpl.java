@@ -57,7 +57,6 @@ import javax.inject.manager.InjectionPoint;
 import javax.inject.manager.InterceptionType;
 import javax.inject.manager.Interceptor;
 import javax.inject.manager.Manager;
-import javax.servlet.Servlet;
 
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
@@ -616,9 +615,9 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return this.<T>getInstanceToInject(injectionPoint, null);
    }
    
-   public void injectServlet(Servlet servlet) 
+   public void injectNonContextualInstance(Object instance) 
    {
-      servletInjector.inject(servlet);
+      servletInjector.inject(instance);
    }
    
    @SuppressWarnings("unchecked")
