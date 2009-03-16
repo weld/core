@@ -41,6 +41,26 @@
          <scope>test</scope>
       </dependency>
       
+      <dependency>
+         <groupId>org.jboss.ejb3</groupId>
+         <artifactId>jboss-ejb3-api</artifactId>
+         <optional>true</optional>
+         <exclusions>
+            <exclusion>
+               <artifactId>jboss-jaxrpc</artifactId>
+               <groupId>jbossws</groupId>
+            </exclusion>
+            <exclusion>
+               <artifactId>jboss-transaction-api</artifactId>
+               <groupId>org.jboss.javaee</groupId>
+            </exclusion>
+            <exclusion>
+               <artifactId>jboss-jaxrpc</artifactId>
+               <groupId>jboss.jbossws</groupId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      
    </dependencies>
 
    <build>
