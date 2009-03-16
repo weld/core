@@ -12,8 +12,8 @@ import javax.inject.Current;
 import javax.inject.Produces;
 
 import org.jboss.webbeans.conversation.ConversationIdGenerator;
+import org.jboss.webbeans.conversation.ConversationInactivityTimeout;
 import org.jboss.webbeans.conversation.ConversationManager;
-import org.jboss.webbeans.conversation.bindings.ConversationInactivityTimeout;
 
 
 @SessionScoped

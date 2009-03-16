@@ -39,7 +39,13 @@
 
       <dependency>
          <groupId>org.jboss.webbeans</groupId>
-         <artifactId>webbeans-core</artifactId>
+         <artifactId>webbeans-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.webbeans</groupId>
+         <artifactId>webbeans-logging</artifactId>
          <scope>provided</scope>
       </dependency>
       
