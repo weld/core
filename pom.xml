@@ -54,6 +54,7 @@
             <module>parent</module>
             <module>api</module>
             <module>spi</module>
+            <module>core-api</module>
          </modules>
       </profile>
       <profile>
@@ -66,6 +67,7 @@
             <module>parent</module>
             <module>api</module>
             <module>spi</module>
+            <module>core-api</module>
             <module>impl</module>
             <module>porting-package</module>
             <module>jboss-tck-runner</module>

@@ -23,7 +23,6 @@ import javax.context.RequestScoped;
 import javax.inject.Initializer;
 import javax.inject.Standard;
 
-import org.jboss.webbeans.conversation.bindings.ConversationInactivityTimeout;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 

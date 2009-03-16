@@ -21,7 +21,7 @@ import javax.inject.AnnotationLiteral;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.conversation.bindings.ConversationIdName;
+import org.jboss.webbeans.conversation.ConversationIdName;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 

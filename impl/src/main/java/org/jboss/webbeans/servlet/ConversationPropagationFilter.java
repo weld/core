@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.conversation.bindings.ConversationIdName;
+import org.jboss.webbeans.conversation.ConversationIdName;
 
 /**
  * Filter for handling conversation propagation over redirects
