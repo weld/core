@@ -37,6 +37,16 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     * @return A set of abstracted fields
     */
    public Set<AnnotatedField<?>> getFields();
+   
+   /**
+    * Get a field by name
+    * 
+    * @param <F> the expected type of the field
+    * @param fieldName the field name
+    * @param expectedType the expected type of the field
+    * @return the field
+    */
+   public <F> AnnotatedField<F> getDeclaredField(String fieldName, AnnotatedClass<F> expectedType);
 
    /**
     * Gets all fields which are annotated with the given annotation type on this
@@ -84,15 +94,19 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
    public Set<AnnotatedConstructor<T>> getConstructors();
 
    /**
-    * Gets the constructor with arguments given
+    * Gets the no-args constructor
     * 
-    * @param arguments The list of arguments to match
-    * @return A set of abstracted constructors with the given arguments. Returns
-    *         an empty set if there are no matches
+    * @return The no-args constructor, or null if not defined
     */
-   public AnnotatedConstructor<T> getConstructor(List<Class<?>> arguments);
+   public AnnotatedConstructor<T> getNoArgsConstructor();
    
-   public AnnotatedConstructor<T> getConstructor(Class<?>... arguments);
+   /**
+    * Get the constructor which matches the argument list provided
+    * 
+    * @param parameterTypes the parameters of the constructor
+    * @return the matching constructor, or null if not defined
+    */
+   public AnnotatedConstructor<T> getDeclaredConstructor(List<AnnotatedClass<?>> parameterTypes);
 
    /**
     * Gets all methods annotated with annotationType
@@ -117,9 +131,25 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     * 
     * @param methodDescriptor
     * @return
+    * 
+    * TODO Replace with AnnotatedMethod variant
     */
+   @Deprecated
    public AnnotatedMethod<?> getMethod(Method method);
    
+   /**
+    * Get a method by name
+    * 
+    * @param <M> the expected return type
+    * @param methodName the name of the method
+    * @param expectedReturnType the expected return type
+    * @param parameterTypes the parameter types of the method
+    * @return the method, or null if it doesn't exist
+    */
+   public <M> AnnotatedMethod<M> getDeclaredMethod(String methodName, AnnotatedClass<M> expectedReturnType, AnnotatedClass<?>... parameterTypes);
+   
+   // TODO Replace with AnnotatedMethod variant
+   @Deprecated
    public AnnotatedMethod<?> getDeclaredMethod(Method method);
    
    /**

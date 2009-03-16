@@ -52,6 +52,8 @@ import org.jboss.webbeans.util.collections.ForwardingMap;
 public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements AnnotatedClass<T>
 {
    
+   private static List<Class<?>> NO_ARGUMENTS = Collections.emptyList();
+   
    /**
     * A (annotation type -> set of field abstractions with annotation/meta
     * annotation) map
@@ -409,6 +411,11 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       return Collections.unmodifiableSet(declaredFields);
    }
    
+   public <F> AnnotatedField<F> getDeclaredField(String fieldName, AnnotatedClass<F> expectedType)
+   {
+      throw new UnsupportedOperationException();
+   }
+   
    public Set<AnnotatedField<?>> getDeclaredAnnotatedFields(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(declaredAnnotatedFields.get(annotationType));
@@ -424,6 +431,11 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    public Set<AnnotatedConstructor<T>> getConstructors()
    {
       return Collections.unmodifiableSet(constructors);
+   }
+   
+   public AnnotatedConstructor<T> getDeclaredConstructor(List<AnnotatedClass<?>> parameterTypes)
+   {
+      throw new UnsupportedOperationException();
    }
    
    /**
@@ -507,24 +519,9 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       return Collections.unmodifiableSet(annotatedConstructors.get(annotationType));
    }
    
-   /**
-    * Gets a constructor with given arguments
-    * 
-    * @param arguments
-    *           The arguments to match
-    * @return A constructor which takes given arguments. Null is returned if
-    *         there are no matches.
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedClass#getConstructor(List)
-    */
-   public AnnotatedConstructor<T> getConstructor(List<Class<?>> arguments)
+   public AnnotatedConstructor<T> getNoArgsConstructor()
    {
-      return constructorsByArgumentMap.get(arguments);
-   }
-   
-   public AnnotatedConstructor<T> getConstructor(Class<?>... arguments) 
-   {
-      return getConstructor(Arrays.asList(arguments));
+      return constructorsByArgumentMap.get(NO_ARGUMENTS);
    }
    
    public Set<AnnotatedMethod<?>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
@@ -561,6 +558,11 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
          }
       }
       return null;
+   }
+   
+   public <M> AnnotatedMethod<M> getDeclaredMethod(String methodName, AnnotatedClass<M> expectedReturnType, AnnotatedClass<?>... parameterTypes)
+   {
+      throw new UnsupportedOperationException();
    }
    
    /**

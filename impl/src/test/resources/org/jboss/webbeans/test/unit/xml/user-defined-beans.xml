@@ -1,8 +1,19 @@
-<Beans xmlns="urn:java:ee"
-       xmlns:test="urn:java:org.jboss.webbeans.test.unit.xml"> 
-   <Deploy>
-      <Standard />
-      <Production />
-      <test:AnotherDeploymentType />
-   </Deploy>
+<Beans xmlns="urn:java:ee" xmlns:myapp="urn:java:org.jboss.webbeans.test.unit.xml.beans"
+	xmlns:test="urn:java:org.jboss.webbeans.test.unit.xml">
+	<Deploy>
+		<Standard />
+		<Production />
+		<test:AnotherDeploymentType />
+	</Deploy>
+	<myapp:Order>
+		<ConversationScoped />
+		<myapp:PaymentProcessor>
+			<myapp:Asynchronous />
+		</myapp:PaymentProcessor>
+		<myapp:User />
+	</myapp:Order>
+	<myapp:Login>
+		<ConversationScoped />
+		<BindingType />
+	</myapp:Login>
 </Beans>

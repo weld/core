@@ -41,14 +41,9 @@ public abstract class ForwardingAnnotatedClass<T> extends ForwardingAnnotatedTyp
       return delegate().getAnnotatedMethods(annotationType);
    }
 
-   public AnnotatedConstructor<T> getConstructor(List<Class<?>> arguments)
+   public AnnotatedConstructor<T> getNoArgsConstructor()
    {
-      return delegate().getConstructor(arguments);
-   }
-   
-   public AnnotatedConstructor<T> getConstructor(Class<?>... arguments) 
-   {
-      return delegate().getConstructor(arguments);
+      return delegate().getNoArgsConstructor();
    }
 
    public Set<AnnotatedConstructor<T>> getConstructors()
@@ -81,6 +76,7 @@ public abstract class ForwardingAnnotatedClass<T> extends ForwardingAnnotatedTyp
       return delegate().getMetaAnnotatedFields(metaAnnotationType);
    }
 
+   @Deprecated
    public AnnotatedMethod<?> getMethod(Method method)
    {
       return delegate().getMethod(method);
@@ -111,9 +107,25 @@ public abstract class ForwardingAnnotatedClass<T> extends ForwardingAnnotatedTyp
       return delegate().isAbstract();
    }
    
+   @Deprecated
    public AnnotatedMethod<?> getDeclaredMethod(Method method)
    {
       return delegate().getDeclaredMethod(method);
+   }
+   
+   public <F> AnnotatedField<F> getDeclaredField(String fieldName, AnnotatedClass<F> expectedType)
+   {
+      return delegate().getDeclaredField(fieldName, expectedType);
+   }
+   
+   public <M> AnnotatedMethod<M> getDeclaredMethod(String methodName, AnnotatedClass<M> expectedReturnType, AnnotatedClass<?>... parameterTypes) 
+   {
+      return delegate().getDeclaredMethod(methodName, expectedReturnType, parameterTypes);
+   }
+   
+   public AnnotatedConstructor<T> getDeclaredConstructor(List<AnnotatedClass<?>> parameterTypes)
+   {
+      return delegate().getDeclaredConstructor(parameterTypes);
    }
    
 }

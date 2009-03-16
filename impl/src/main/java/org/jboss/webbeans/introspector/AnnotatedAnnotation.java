@@ -43,4 +43,12 @@ public interface AnnotatedAnnotation<T extends Annotation> extends AnnotatedType
     */
    public Set<AnnotatedMethod<?>> getAnnotatedMembers(Class<? extends Annotation> annotationType);
    
+   /**
+    * Get an annotation member by name
+    * 
+    * @param memberName
+    * @return
+    */
+   public <A> AnnotatedMethod<A> getMember(String memberName, AnnotatedClass<A> expectedType);
+   
 }

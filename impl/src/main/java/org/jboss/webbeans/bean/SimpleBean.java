@@ -17,9 +17,7 @@
 
 package org.jboss.webbeans.bean;
 
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -63,8 +61,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
 {
    // Logger
    private static LogProvider log = Logging.getLogProvider(SimpleBean.class);
-   // Empty list representing no-args
-   private static List<Class<?>> NO_ARGUMENTS = Collections.emptyList();
+
    // The constructor
    private ConstructorInjectionPoint<T> constructor;
    // The post-construct method
@@ -398,10 +395,10 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          return;
       }
 
-      if (getAnnotatedItem().getConstructor(NO_ARGUMENTS) != null)
+      if (getAnnotatedItem().getNoArgsConstructor() != null)
       {
 
-         this.constructor = ConstructorInjectionPoint.of(this, getAnnotatedItem().getConstructor(NO_ARGUMENTS));
+         this.constructor = ConstructorInjectionPoint.of(this, getAnnotatedItem().getNoArgsConstructor());
          log.trace("Exactly one constructor (" + constructor + ") defined, using it as the bean constructor for " + getType());
          return;
       }

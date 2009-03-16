@@ -2,7 +2,9 @@ package org.jboss.webbeans.bootstrap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.event.Fires;
@@ -43,6 +45,9 @@ import org.jboss.webbeans.servlet.ServletApiAbstraction;
 
 public class BeanDeployer
 {
+   
+   // Empty list representing no-args
+   private static List<Class<?>> NO_ARGUMENTS = Collections.emptyList();
    
    private static final LogProvider log = Logging.getLogProvider(BeanDeployer.class);
    
@@ -272,7 +277,7 @@ public class BeanDeployer
 
    private static boolean hasSimpleWebBeanConstructor(AnnotatedClass<?> type)
    {
-      return type.getConstructor() != null || type.getAnnotatedConstructors(Initializer.class).size() > 0; 
+      return type.getNoArgsConstructor() != null || type.getAnnotatedConstructors(Initializer.class).size() > 0; 
    }
    
    private static <T> AnnotatedMethod<T> realizeProducerMethod(final AnnotatedMethod<T> method, final AnnotatedClass<?> realizingClass)

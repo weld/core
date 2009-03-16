@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.webbeans.introspector.AnnotatedAnnotation;
+import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.util.Strings;
@@ -92,6 +93,8 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
    private final Class<T> clazz;
    // The set of abstracted members
    private final Set<AnnotatedMethod<?>> members;
+   
+   private final Map<String, AnnotatedMethod<?>> namedMembers;
 
    // Cached string representation
    private String toString;
@@ -114,6 +117,7 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
       this.clazz = annotationType;
       members = new HashSet<AnnotatedMethod<?>>();
       annotatedMembers = new AnnotatedMemberMap();
+      this.namedMembers = new HashMap<String, AnnotatedMethod<?>>();
       for (Method member : clazz.getDeclaredMethods())
       {
          AnnotatedMethod<?> annotatedMethod = AnnotatedMethodImpl.of(member, this);
@@ -122,6 +126,7 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
          {
             annotatedMembers.put(annotation.annotationType(), annotatedMethod);
          }
+         namedMembers.put(annotatedMethod.getName(), annotatedMethod);
       }
    }
 
@@ -153,6 +158,11 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
    public Set<AnnotatedMethod<?>> getAnnotatedMembers(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(annotatedMembers.get(annotationType));
+   }
+   
+   public <A> AnnotatedMethod<A> getMember(String memberName, AnnotatedClass<A> expectedType)
+   {
+      return (AnnotatedMethod<A>) namedMembers.get(memberName);
    }
    
    /**
