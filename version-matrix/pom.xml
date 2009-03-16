@@ -226,6 +226,12 @@
          </dependency>
          
          <dependency>
+            <groupId>org.jboss.webbeans</groupId>
+            <artifactId>webbeans-logging</artifactId>
+            <version>${webbeans.version}</version>
+         </dependency>
+
+         <dependency>
             <groupId>org.jboss.jsr299.tck</groupId>
             <artifactId>jsr299-tck-api</artifactId>
             <version>${jsr299.tck.version}</version>
