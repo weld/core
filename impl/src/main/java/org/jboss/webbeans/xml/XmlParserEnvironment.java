@@ -4,7 +4,6 @@ import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.webbeans.introspector.AnnotatedAnnotation;
 import org.jboss.webbeans.introspector.AnnotatedClass;
@@ -17,11 +16,11 @@ public class XmlParserEnvironment
    
    private final List<AnnotatedClass<?>> classes;
    private final List<AnnotatedAnnotation<?>> annotations;
-   private final Set<URL> webBeansXml;
+   private final Iterable<URL> webBeansXml;
    private final List<AnnotatedAnnotation<?>> enabledDeploymentTypes;
    private final ResourceLoader resourceLoader;
    
-   public XmlParserEnvironment(ResourceLoader resourceLoader, Set<URL> webBeansXml)
+   public XmlParserEnvironment(ResourceLoader resourceLoader, Iterable<URL> webBeansXml)
    {
       this.classes = new ArrayList<AnnotatedClass<?>>();
       this.annotations = new ArrayList<AnnotatedAnnotation<?>>();
@@ -30,7 +29,7 @@ public class XmlParserEnvironment
       this.resourceLoader = resourceLoader;
    }
    
-   public Set<URL> getWebBeansXml()
+   public Iterable<URL> getWebBeansXml()
    {
       return webBeansXml;
    }
