@@ -69,6 +69,7 @@
             <module>spi</module>
             <module>core-api</module>
             <module>impl</module>
+            <module>tests</module>
             <module>porting-package</module>
             <module>jboss-tck-runner</module>
          </modules>
