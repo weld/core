@@ -24,13 +24,13 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.AnnotationStore;
+import org.jboss.webbeans.introspector.ConstructorSignature;
 import org.jboss.webbeans.util.Names;
 
 /**
@@ -55,6 +55,8 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
 
    // The declaring class abstraction
    private final AnnotatedType<T> declaringClass;
+   
+   private final ConstructorSignature signature;
 
    // Cached string representation
    private String toString;
@@ -80,6 +82,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
 
       this.parameters = new ArrayList<AnnotatedParameter<?>>();
       annotatedParameters = new AnnotatedParameterMap();
+      
       for (int i = 0; i < constructor.getParameterTypes().length; i++)
       {
          if (constructor.getParameterAnnotations()[i].length > 0)
@@ -107,6 +110,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
             }
          }
       }
+      this.signature = new ConstructorSignatureImpl(this);
    }
 
    /**
@@ -233,9 +237,9 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
       return toString;
    }
    
-   public AnnotatedConstructor<T> wrap(Set<Annotation> annotations)
+   public ConstructorSignature getSignature()
    {
-      throw new UnsupportedOperationException();
+      return signature;
    }
 
 }

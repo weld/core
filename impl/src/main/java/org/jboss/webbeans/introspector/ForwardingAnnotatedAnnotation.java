@@ -35,9 +35,4 @@ public abstract class ForwardingAnnotatedAnnotation<T extends Annotation> extend
       return delegate().getMembers();
    }
    
-   public AnnotatedAnnotation<T> wrap(Set<Annotation> annotations)
-   {
-      throw new UnsupportedOperationException();
-   }
-   
 }

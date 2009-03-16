@@ -62,5 +62,7 @@ public interface AnnotatedConstructor<T> extends AnnotatedMember<T, Constructor<
     * @return An abstraction of the declaring class
     */
    public AnnotatedType<T> getDeclaringClass();
+   
+   public ConstructorSignature getSignature();
 
 }

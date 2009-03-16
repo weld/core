@@ -35,6 +35,8 @@ import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotationStore;
+import org.jboss.webbeans.introspector.ConstructorSignature;
+import org.jboss.webbeans.introspector.MethodSignature;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
@@ -212,6 +214,8 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
    }
    
+
+   
    // The set of abstracted fields
    private final Set<AnnotatedField<?>> fields;
    // The map from annotation type to abstracted field with annotation
@@ -221,6 +225,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    
 // The set of abstracted fields
    private final Set<AnnotatedField<?>> declaredFields;
+   private final Map<String, AnnotatedField<?>> declaredFieldsByName;
    // The map from annotation type to abstracted field with annotation
    private final AnnotatedFieldMap declaredAnnotatedFields;
    // The map from annotation type to abstracted field with meta-annotation
@@ -228,6 +233,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    
    // The set of abstracted methods
    private final Set<AnnotatedMethod<?>> methods;
+   private final Map<MethodSignature, AnnotatedMethod<?>> declaredMethodsBySignature;
    // The map from annotation type to abstracted method with annotation
    private final AnnotatedMethodMap annotatedMethods;
    // The map from annotation type to method with a parameter with annotation
@@ -242,6 +248,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    
    // The set of abstracted constructors
    private final Set<AnnotatedConstructor<T>> constructors;
+   private final Map<ConstructorSignature, AnnotatedConstructor<?>> declaredConstructorsBySignature;
    // The map from annotation type to abstracted constructor with annotation
    private final AnnotatedConstructorMap annotatedConstructors;
    // The map from class list to abstracted constructor
@@ -267,6 +274,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.annotatedFields = new AnnotatedFieldMap();
       this.metaAnnotatedFields = new AnnotatedFieldMap();
       this.declaredFields = new HashSet<AnnotatedField<?>>();
+      this.declaredFieldsByName = new HashMap<String, AnnotatedField<?>>();
       this.declaredAnnotatedFields = new AnnotatedFieldMap();
       this.declaredMetaAnnotatedFields = new AnnotatedFieldMap();
       this._nonStaticMemberClass = Reflections.isNonMemberInnerClass(rawType);
@@ -284,6 +292,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
             if (c == rawType)
             {
                this.declaredFields.add(annotatedField);
+               this.declaredFieldsByName.put(annotatedField.getName(), annotatedField);
             }
             for (Annotation annotation : annotatedField.getAnnotationsAsSet())
             {
@@ -308,6 +317,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.constructors = new HashSet<AnnotatedConstructor<T>>();
       this.constructorsByArgumentMap = new ConstructorsByArgumentMap();
       this.annotatedConstructors = new AnnotatedConstructorMap();
+      this.declaredConstructorsBySignature = new HashMap<ConstructorSignature, AnnotatedConstructor<?>>();
       for (Constructor<?> constructor : rawType.getDeclaredConstructors())
       {
          @SuppressWarnings("unchecked")
@@ -319,6 +329,8 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
          }
          this.constructors.add(annotatedConstructor);
          this.constructorsByArgumentMap.put(Arrays.asList(constructor.getParameterTypes()), annotatedConstructor);
+         
+         this.declaredConstructorsBySignature.put(annotatedConstructor.getSignature(), annotatedConstructor);
          
          for (Annotation annotation : annotatedConstructor.getAnnotationsAsSet())
          {
@@ -336,6 +348,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.declaredMethods = new HashSet<AnnotatedMethod<?>>();
       this.declaredAnnotatedMethods = new AnnotatedMethodMap();
       this.declaredMethodsByAnnotatedParameters = new AnnotatedMethodMap();
+      this.declaredMethodsBySignature = new HashMap<MethodSignature, AnnotatedMethod<?>>();
       for (Class<?> c = rawType; c != Object.class && c != null; c = c.getSuperclass())
       {
          for (Method method : c.getDeclaredMethods())
@@ -350,6 +363,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
             if (c == rawType)
             {
                this.declaredMethods.add(annotatedMethod);
+               this.declaredMethodsBySignature.put(annotatedMethod.getSignature(), annotatedMethod);
             }
             for (Annotation annotation : annotatedMethod.getAnnotationsAsSet())
             {
@@ -413,7 +427,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    
    public <F> AnnotatedField<F> getDeclaredField(String fieldName, AnnotatedClass<F> expectedType)
    {
-      throw new UnsupportedOperationException();
+      return (AnnotatedField<F>) declaredFieldsByName.get(fieldName);
    }
    
    public Set<AnnotatedField<?>> getDeclaredAnnotatedFields(Class<? extends Annotation> annotationType)
@@ -433,9 +447,9 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       return Collections.unmodifiableSet(constructors);
    }
    
-   public AnnotatedConstructor<T> getDeclaredConstructor(List<AnnotatedClass<?>> parameterTypes)
+   public AnnotatedConstructor<T> getDeclaredConstructor(ConstructorSignature signature)
    {
-      throw new UnsupportedOperationException();
+      return (AnnotatedConstructor<T>) declaredConstructorsBySignature.get(signature);
    }
    
    /**
@@ -560,9 +574,10 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       return null;
    }
    
-   public <M> AnnotatedMethod<M> getDeclaredMethod(String methodName, AnnotatedClass<M> expectedReturnType, AnnotatedClass<?>... parameterTypes)
+   @SuppressWarnings("unchecked")
+   public <M> AnnotatedMethod<M> getDeclaredMethod(MethodSignature signature, AnnotatedClass<M> expectedReturnType)
    {
-      throw new UnsupportedOperationException();
+      return (AnnotatedMethod<M>) declaredMethodsBySignature.get(signature);
    }
    
    /**
@@ -579,6 +594,18 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
       toString = "Annotated class " + Names.classToString(getDelegate());
       return toString;
+   }
+   
+   @SuppressWarnings("unchecked")
+   public <U> AnnotatedClass<? extends U> asSubclass(AnnotatedClass<U> clazz)
+   {
+      return (AnnotatedClass<? extends U>) this;
+   }
+   
+   @SuppressWarnings("unchecked")
+   public T cast(Object object)
+   {
+      return (T) object;
    }
    
 }

@@ -1,16 +1,24 @@
-package org.jboss.webbeans.test.unit.xml;
+package org.jboss.webbeans.test.unit.xml.parser;
 
 import java.lang.reflect.AnnotatedElement;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.testharness.impl.packaging.Classes;
+import org.jboss.testharness.impl.packaging.Resource;
+import org.jboss.testharness.impl.packaging.Resources;
 import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
 import org.jboss.webbeans.test.unit.xml.beans.Order;
 import org.jboss.webbeans.util.xml.XmlParserImpl;
 import org.testng.annotations.Test;
 
-
+@Artifact
+@Resources({
+   @Resource(source="/org/jboss/webbeans/test/unit/xml/user-defined-beans.xml", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/user-defined-beans.xml" )
+})
+@Classes({Order.class})
 public class XmlParserImplTest extends AbstractWebBeansTest
 {
    @Test

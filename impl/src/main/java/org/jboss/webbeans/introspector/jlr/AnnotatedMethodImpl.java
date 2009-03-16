@@ -30,6 +30,7 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.AnnotationStore;
+import org.jboss.webbeans.introspector.MethodSignature;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
@@ -63,6 +64,8 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    // Cached string representation
    private String toString;
    
+   private final MethodSignature signature;
+   
    public static <T> AnnotatedMethodImpl<T> of(Method method, AnnotatedType<?> declaringClass)
    {
       return new AnnotatedMethodImpl<T>(method, declaringClass);
@@ -86,6 +89,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       this.declaringClass = declaringClass;
       this.parameters = new ArrayList<AnnotatedParameter<?>>();
       this.annotatedParameters = new AnnotatedParameterMap();
+      
       for (int i = 0; i < method.getParameterTypes().length; i++)
       {
          if (method.getParameterAnnotations()[i].length > 0)
@@ -120,6 +124,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       {
          this.propertyName = propertyName;
       }
+      this.signature = new MethodSignatureImpl(this);
    }
 
    public Method getAnnotatedMethod()
@@ -207,6 +212,11 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       }
       toString = "Annotated method on class " + getDeclaringClass().getName() + Names.methodToString(method);
       return toString;
+   }
+   
+   public MethodSignature getSignature()
+   {
+      return signature;
    }
    
 }

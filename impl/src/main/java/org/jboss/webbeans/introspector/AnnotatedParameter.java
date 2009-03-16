@@ -17,9 +17,6 @@
 
 package org.jboss.webbeans.introspector;
 
-import java.lang.annotation.Annotation;
-import java.util.Set;
-
 import javax.inject.manager.Manager;
 
 
@@ -42,5 +39,4 @@ public interface AnnotatedParameter<T> extends AnnotatedItem<T, Object>
    
    public AnnotatedMember<?, ?> getDeclaringMember();
    
-   public AnnotatedParameter<T> wrap(Set<Annotation> annotations);
 }

@@ -111,5 +111,7 @@ public interface AnnotatedMethod<T> extends AnnotatedMember<T, Method>
    public boolean isEquivalent(Method method);
 
    public Method getAnnotatedMethod();
+   
+   public MethodSignature getSignature();
 
 }

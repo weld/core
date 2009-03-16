@@ -20,7 +20,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Set;
 
 public abstract class ForwardingAnnotatedMethod<T> extends ForwardingAnnotatedMember<T, Method> implements AnnotatedMethod<T>
 {
@@ -73,9 +72,9 @@ public abstract class ForwardingAnnotatedMethod<T> extends ForwardingAnnotatedMe
       return delegate().isEquivalent(method);
    }
    
-   public AnnotatedMethod<T> wrap(Set<Annotation> annotations)
+   public MethodSignature getSignature()
    {
-      throw new UnsupportedOperationException();
+      return delegate().getSignature();
    }
    
 }

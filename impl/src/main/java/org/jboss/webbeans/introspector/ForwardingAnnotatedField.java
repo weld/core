@@ -16,9 +16,7 @@
  */
 package org.jboss.webbeans.introspector;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.Set;
 
 public abstract class ForwardingAnnotatedField<T> extends ForwardingAnnotatedMember<T, Field> implements AnnotatedField<T>
 {
@@ -59,12 +57,6 @@ public abstract class ForwardingAnnotatedField<T> extends ForwardingAnnotatedMem
    public boolean isTransient()
    {
       return delegate().isTransient();
-   }
-
-   public AnnotatedField<T> wrap(Set<Annotation> annotations)
-   {
-      throw new UnsupportedOperationException();
-   }
-   
+   }  
       
 }

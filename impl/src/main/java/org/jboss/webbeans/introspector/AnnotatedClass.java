@@ -19,7 +19,6 @@ package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -106,7 +105,7 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     * @param parameterTypes the parameters of the constructor
     * @return the matching constructor, or null if not defined
     */
-   public AnnotatedConstructor<T> getDeclaredConstructor(List<AnnotatedClass<?>> parameterTypes);
+   public AnnotatedConstructor<T> getDeclaredConstructor(ConstructorSignature signature);
 
    /**
     * Gets all methods annotated with annotationType
@@ -141,12 +140,11 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
     * Get a method by name
     * 
     * @param <M> the expected return type
-    * @param methodName the name of the method
+    * @param signature the name of the method
     * @param expectedReturnType the expected return type
-    * @param parameterTypes the parameter types of the method
     * @return the method, or null if it doesn't exist
     */
-   public <M> AnnotatedMethod<M> getDeclaredMethod(String methodName, AnnotatedClass<M> expectedReturnType, AnnotatedClass<?>... parameterTypes);
+   public <M> AnnotatedMethod<M> getDeclaredMethod(MethodSignature signature, AnnotatedClass<M> expectedReturnType);
    
    // TODO Replace with AnnotatedMethod variant
    @Deprecated
@@ -187,5 +185,9 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
    public boolean isParameterizedType();
    
    public boolean isAbstract();
+   
+   public <S> S cast(Object object);
+   
+   public <U> AnnotatedClass<? extends U> asSubclass(AnnotatedClass<U> clazz);
 
 }

@@ -18,7 +18,6 @@ package org.jboss.webbeans.introspector;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Set;
 
 public abstract class ForwardingAnnotatedClass<T> extends ForwardingAnnotatedType<T> implements AnnotatedClass<T>
@@ -118,14 +117,26 @@ public abstract class ForwardingAnnotatedClass<T> extends ForwardingAnnotatedTyp
       return delegate().getDeclaredField(fieldName, expectedType);
    }
    
-   public <M> AnnotatedMethod<M> getDeclaredMethod(String methodName, AnnotatedClass<M> expectedReturnType, AnnotatedClass<?>... parameterTypes) 
+   public <M> AnnotatedMethod<M> getDeclaredMethod(MethodSignature signature, AnnotatedClass<M> expectedReturnType) 
    {
-      return delegate().getDeclaredMethod(methodName, expectedReturnType, parameterTypes);
+      return delegate().getDeclaredMethod(signature, expectedReturnType);
    }
    
-   public AnnotatedConstructor<T> getDeclaredConstructor(List<AnnotatedClass<?>> parameterTypes)
+   public AnnotatedConstructor<T> getDeclaredConstructor(ConstructorSignature signature)
    {
-      return delegate().getDeclaredConstructor(parameterTypes);
+      return delegate().getDeclaredConstructor(signature);
    }
+   
+   public <U> AnnotatedClass<? extends U> asSubclass(AnnotatedClass<U> clazz)
+   {
+      return delegate().asSubclass(clazz);
+   }
+   
+   public <S> S cast(Object object)
+   {
+      return delegate().<S>cast(object);
+   }
+   
+   
    
 }
