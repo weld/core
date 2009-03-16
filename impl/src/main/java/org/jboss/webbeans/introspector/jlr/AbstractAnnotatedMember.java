@@ -20,6 +20,7 @@ package org.jboss.webbeans.introspector.jlr;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,9 +111,9 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
     * 
     * @param annotationMap The annotation map
     */
-   public AbstractAnnotatedMember(AnnotationStore annotatedItemHelper, Member member, Class<T> type)
+   protected AbstractAnnotatedMember(AnnotationStore annotatedItemHelper, Member member, Class<T> rawType, Type type)
    {
-      super(annotatedItemHelper, type);
+      super(annotatedItemHelper, rawType, type);
       name = member.getName();
       _public = Modifier.isPublic(member.getModifiers());
    }

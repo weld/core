@@ -45,9 +45,6 @@ import org.jboss.webbeans.util.Names;
 public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Constructor<T>> implements AnnotatedConstructor<T>
 {
    
-   
-   // The type arguments
-   private static final Type[] actualTypeArguments = new Type[0];
    // The underlying constructor
    private final Constructor<T> constructor;
 
@@ -77,7 +74,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     */
    public AnnotatedConstructorImpl(Constructor<T> constructor, AnnotatedType<T> declaringClass)
    {
-      super(AnnotationStore.of(constructor), constructor, constructor.getDeclaringClass());
+      super(AnnotationStore.of(constructor), constructor, constructor.getDeclaringClass(), constructor.getDeclaringClass());
       this.constructor = constructor;
       this.declaringClass = declaringClass;
 
@@ -88,7 +85,8 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
          if (constructor.getParameterAnnotations()[i].length > 0)
          {
             Class<?> clazz = constructor.getParameterTypes()[i];
-            AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(constructor.getParameterAnnotations()[i], clazz, this);
+            Type type = constructor.getGenericParameterTypes()[i];
+            AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(constructor.getParameterAnnotations()[i], clazz, type, this);
             parameters.add(parameter);
 
             for (Annotation annotation : parameter.getAnnotationsAsSet())
@@ -99,7 +97,8 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
          else
          {
             Class<?> clazz = constructor.getParameterTypes()[i];
-            AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(new Annotation[0], clazz, this);
+            Type type = constructor.getGenericParameterTypes()[i];
+            AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(new Annotation[0], clazz, type, this);
             parameters.add(parameter);
 
             for (Annotation annotation : parameter.getAnnotationsAsSet())
@@ -128,18 +127,6 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
    public Constructor<T> getDelegate()
    {
       return constructor;
-   }
-
-   /**
-    * Gets the actual type arguments
-    * 
-    * @return The type arguments
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedConstructor#getActualTypeArguments()
-    */
-   public Type[] getActualTypeArguments()
-   {
-      return actualTypeArguments;
    }
 
    /**

@@ -36,6 +36,8 @@ import javax.inject.manager.InjectionPoint;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.injection.ResolvableAnnotatedClass;
+import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.ListComparator;
@@ -72,40 +74,33 @@ public class BeanValidator
       {
          for (InjectionPoint injectionPoint : bean.getInjectionPoints())
          {
-            if (injectionPoint.getType() instanceof Class)
+            if (injectionPoint.getAnnotation(New.class) != null && injectionPoint.getBindings().size() > 1)
             {
-               Class<?> type = (Class<?>) injectionPoint.getType();
-               if (injectionPoint.getAnnotation(New.class) != null && injectionPoint.getBindings().size() > 1)
-               {
-                  throw new DefinitionException("The injection point " + injectionPoint + " is annotated with @New which cannot be combined with other binding types");
-               }
-               Annotation[] bindings = injectionPoint.getBindings().toArray(new Annotation[0]);
-               Set<?> resolvedBeans = manager.resolveByType(type, bindings);
-               if (resolvedBeans.isEmpty())
-               {
-                  throw new UnsatisfiedDependencyException("The injection point " + injectionPoint + " with binding types "  + Names.annotationsToString(injectionPoint.getBindings()) + " in " + bean + " has unsatisfied dependencies with binding types ");
-               }
-               if (resolvedBeans.size() > 1)
-               {
-                  throw new AmbiguousDependencyException("The injection point " + injectionPoint + " with binding types " + Names.annotationsToString(injectionPoint.getBindings()) + " in " + bean + " has ambiguous dependencies");
-               }
-               Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
-               if (MetaDataCache.instance().getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(type))
-               {
-                  throw new UnproxyableDependencyException("The injection point " + injectionPoint + " has non-proxyable dependencies");
-               }
-               if (Reflections.isPrimitive((Class<?>) injectionPoint.getType()) && resolvedBean.isNullable())
-               {
-                  throw new NullableDependencyException("The injection point " + injectionPoint + " has nullable dependencies");
-               }
-               if (Beans.isPassivatingBean(bean) && !resolvedBean.isSerializable())
-               {
-                  throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scopes but has non-serializable dependencies");
-               }
+               throw new DefinitionException("The injection point " + injectionPoint + " is annotated with @New which cannot be combined with other binding types");
             }
-            else
+            Annotation[] bindings = injectionPoint.getBindings().toArray(new Annotation[0]);
+            AnnotatedItem<?, ?> annotatedItem = ResolvableAnnotatedClass.of(injectionPoint.getType(), bindings);
+            Set<?> resolvedBeans = manager.resolveByType(annotatedItem, bindings);
+            if (resolvedBeans.isEmpty())
             {
-               throw new UnsupportedOperationException("Not yet implemented");
+               throw new UnsatisfiedDependencyException("The injection point " + injectionPoint + " with binding types "  + Names.annotationsToString(injectionPoint.getBindings()) + " in " + bean + " has unsatisfied dependencies with binding types ");
+            }
+            if (resolvedBeans.size() > 1)
+            {
+               throw new AmbiguousDependencyException("The injection point " + injectionPoint + " with binding types " + Names.annotationsToString(injectionPoint.getBindings()) + " in " + bean + " has ambiguous dependencies");
+            }
+            Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
+            if (MetaDataCache.instance().getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType()))
+            {
+               throw new UnproxyableDependencyException("The injection point " + injectionPoint + " has non-proxyable dependencies");
+            }
+            if (Reflections.isPrimitive(annotatedItem.getRawType()) && resolvedBean.isNullable())
+            {
+               throw new NullableDependencyException("The injection point " + injectionPoint + " has nullable dependencies");
+            }
+            if (Beans.isPassivatingBean(bean) && !resolvedBean.isSerializable())
+            {
+               throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scopes but has non-serializable dependencies");
             }
          }
          if (bean instanceof RIBean && !(bean instanceof NewSimpleBean) && !(bean instanceof NewEnterpriseBean))

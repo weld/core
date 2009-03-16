@@ -21,7 +21,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
@@ -211,11 +210,6 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
    }
    
-   // The implementing class
-   private final Class<T> clazz;
-   // The type arguments
-   private final Type[] actualTypeArguments;
-   
    // The set of abstracted fields
    private final Set<AnnotatedField<?>> fields;
    // The map from annotation type to abstracted field with annotation
@@ -265,16 +259,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
 
    private AnnotatedClassImpl(Class<T> rawType, Type type, Annotation[] annotations, Annotation[] declaredAnnotations)
    {
-      super(AnnotationStore.of(annotations, declaredAnnotations), rawType);
-      this.clazz = rawType;
-      if (type instanceof ParameterizedType)
-      {
-         actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
-      }
-      else
-      {
-         actualTypeArguments = new Type[0];
-      }
+      super(AnnotationStore.of(annotations, declaredAnnotations), rawType, type);
       
       this.fields = new HashSet<AnnotatedField<?>>();
       this.annotatedFields = new AnnotatedFieldMap();
@@ -284,7 +269,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.declaredMetaAnnotatedFields = new AnnotatedFieldMap();
       this._nonStaticMemberClass = Reflections.isNonMemberInnerClass(rawType);
       this._abstract = Reflections.isAbstract(rawType);
-      for (Class<?> c = clazz; c != Object.class && c != null; c = c.getSuperclass())
+      for (Class<?> c = rawType; c != Object.class && c != null; c = c.getSuperclass())
       {
          for (Field field : c.getDeclaredFields())
          {
@@ -294,21 +279,21 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
             }
             AnnotatedField<?> annotatedField = new AnnotatedFieldImpl<Object>(field, this);
             this.fields.add(annotatedField);
-            if (c == clazz)
+            if (c == rawType)
             {
                this.declaredFields.add(annotatedField);
             }
             for (Annotation annotation : annotatedField.getAnnotationsAsSet())
             {
                this.annotatedFields.put(annotation.annotationType(), annotatedField);
-               if (c == clazz)
+               if (c == rawType)
                {
                   this.declaredAnnotatedFields.put(annotation.annotationType(), annotatedField);
                }
                for (Annotation metaAnnotation : annotation.annotationType().getAnnotations())
                {
                   this.metaAnnotatedFields.put(metaAnnotation.annotationType(), annotatedField);
-                  if (c == clazz)
+                  if (c == rawType)
                   {
                      this.declaredMetaAnnotatedFields.put(metaAnnotation.annotationType(), annotatedField);
                   }
@@ -321,7 +306,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.constructors = new HashSet<AnnotatedConstructor<T>>();
       this.constructorsByArgumentMap = new ConstructorsByArgumentMap();
       this.annotatedConstructors = new AnnotatedConstructorMap();
-      for (Constructor<?> constructor : clazz.getDeclaredConstructors())
+      for (Constructor<?> constructor : rawType.getDeclaredConstructors())
       {
          @SuppressWarnings("unchecked")
          Constructor<T> c = (Constructor<T>) constructor;
@@ -349,7 +334,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.declaredMethods = new HashSet<AnnotatedMethod<?>>();
       this.declaredAnnotatedMethods = new AnnotatedMethodMap();
       this.declaredMethodsByAnnotatedParameters = new AnnotatedMethodMap();
-      for (Class<?> c = clazz; c != Object.class && c != null; c = c.getSuperclass())
+      for (Class<?> c = rawType; c != Object.class && c != null; c = c.getSuperclass())
       {
          for (Method method : c.getDeclaredMethods())
          {
@@ -360,14 +345,14 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
             
             AnnotatedMethod<?> annotatedMethod = AnnotatedMethodImpl.of(method, this);
             this.methods.add(annotatedMethod);
-            if (c == clazz)
+            if (c == rawType)
             {
                this.declaredMethods.add(annotatedMethod);
             }
             for (Annotation annotation : annotatedMethod.getAnnotationsAsSet())
             {
                annotatedMethods.put(annotation.annotationType(), annotatedMethod);
-               if (c == clazz)
+               if (c == rawType)
                {
                   this.declaredAnnotatedMethods.put(annotation.annotationType(), annotatedMethod);
                }
@@ -377,7 +362,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
                if (annotatedMethod.getAnnotatedParameters(annotationType).size() > 0)
                {
                   methodsByAnnotatedParameters.put(annotationType, annotatedMethod);
-                  if (c == clazz)
+                  if (c == rawType)
                   {
                      this.declaredMethodsByAnnotatedParameters.put(annotationType, annotatedMethod);
                   }
@@ -394,7 +379,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     */
    public Class<? extends T> getAnnotatedClass()
    {
-      return clazz;
+      return getRawType();
    }
    
    /**
@@ -404,7 +389,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
     */
    public Class<T> getDelegate()
    {
-      return clazz;
+      return getRawType();
    }
    
    /**
@@ -482,18 +467,6 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    public boolean isAbstract()
    {
       return _abstract;
-   }
-   
-   /**
-    * Gets the actual type arguments
-    * 
-    * @return The type arguments
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedClass#getActualTypeArguments()
-    */
-   public Type[] getActualTypeArguments()
-   {
-      return actualTypeArguments;
    }
    
    /**

@@ -350,7 +350,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       }
       if (bindings.length > element.getMetaAnnotations(BindingType.class).size())
       {
-         throw new DuplicateBindingTypeException("Duplicate bindings type passed " + element.toString());
+         throw new DuplicateBindingTypeException("Duplicate bindings (" + Arrays.asList(bindings) + ") type passed " + element.toString());
       }
       return resolver.get(element);
    }
@@ -640,7 +640,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
          {
             currentInjectionPoint.get().push(injectionPoint);
          }
-         AnnotatedItem<T, ?> element = ResolvableAnnotatedClass.of((Class<T>) injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]));
+         AnnotatedItem<T, ?> element = ResolvableAnnotatedClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]));
          Bean<T> bean = getBeanByType(element, element.getBindingsAsArray());
          if (creationalContext instanceof CreationalContextImpl)
          {

@@ -68,6 +68,10 @@ public class Types
          {
             return Double.class;
          }
+         else if (type.equals(Void.TYPE))
+         {
+            return Void.class;
+         }
          else
          {
             throw new IllegalStateException("Some weird type!!!");

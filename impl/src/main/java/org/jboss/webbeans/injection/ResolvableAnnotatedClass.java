@@ -39,6 +39,22 @@ public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<
       return new ResolvableAnnotatedClass<T>(clazz, clazz, annotations);
    }
    
+   public static <T> ResolvableAnnotatedClass<T> of(Type type, Annotation[] annotations)
+   {
+      if (type instanceof Class)
+      {
+         return new ResolvableAnnotatedClass<T>((Class<T>) type, type, annotations);
+      }
+      else if (type instanceof ParameterizedType)
+      {
+         return new ResolvableAnnotatedClass<T>((Class<T>) ((ParameterizedType) type).getRawType(), type, annotations);
+      }
+      else 
+      {
+         throw new UnsupportedOperationException("Cannot create annotated item of " + type);
+      }
+   }
+   
    public static <T> ResolvableAnnotatedClass<T> of(Member member, Annotation[] annotations)
    {
       if (member instanceof Field)

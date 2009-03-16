@@ -20,13 +20,11 @@ package org.jboss.webbeans.introspector.jlr;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
@@ -47,10 +45,6 @@ import org.jboss.webbeans.util.Reflections;
 public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> implements AnnotatedMethod<T>
 {
 
-   // The actual type arguments
-   private final Type[] actualTypeArguments;
-   private final Type underlyingType;
-   private final Class<T> type;
    // The underlying method
    private final Method method;
 
@@ -69,8 +63,6 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    // Cached string representation
    private String toString;
    
-   private final Set<? extends Type> flattenedTypes;
-   
    public static <T> AnnotatedMethodImpl<T> of(Method method, AnnotatedType<?> declaringClass)
    {
       return new AnnotatedMethodImpl<T>(method, declaringClass);
@@ -88,24 +80,10 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    @SuppressWarnings("unchecked")
    protected AnnotatedMethodImpl(Method method, AnnotatedType<?> declaringClass)
    {
-      super(AnnotationStore.of(method), method, (Class<T>) method.getReturnType());
+      super(AnnotationStore.of(method), method, (Class<T>) method.getReturnType(), method.getGenericReturnType());
       this.method = method;
       this.method.setAccessible(true);
       this.declaringClass = declaringClass;
-      this.type = (Class<T>) method.getReturnType();
-      if (method.getGenericReturnType() instanceof ParameterizedType)
-      {
-         this.underlyingType = method.getGenericReturnType();
-         this.flattenedTypes = new Reflections.HierarchyDiscovery<Type>(underlyingType).getFlattenedTypes();
-         this.actualTypeArguments = ((ParameterizedType) underlyingType).getActualTypeArguments();
-      }
-      else
-      {
-         this.underlyingType = type;
-         this.flattenedTypes = super.getFlattenedTypeHierarchy();
-         this.actualTypeArguments = new Type[0];
-      }
-
       this.parameters = new ArrayList<AnnotatedParameter<?>>();
       this.annotatedParameters = new AnnotatedParameterMap();
       for (int i = 0; i < method.getParameterTypes().length; i++)
@@ -113,7 +91,8 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
          if (method.getParameterAnnotations()[i].length > 0)
          {
             Class<? extends Object> clazz = method.getParameterTypes()[i];
-            AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(method.getParameterAnnotations()[i], (Class<Object>) clazz, this);
+            Type type = method.getGenericParameterTypes()[i];
+            AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(method.getParameterAnnotations()[i], (Class<Object>) clazz, type, this);
             this.parameters.add(parameter);
             for (Annotation annotation : parameter.getAnnotationsAsSet())
             {
@@ -126,7 +105,8 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
          else
          {
             Class<? extends Object> clazz = method.getParameterTypes()[i];
-            AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(new Annotation[0], (Class<Object>) clazz, this);
+            Type type = method.getGenericParameterTypes()[i];
+            AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(new Annotation[0], (Class<Object>) clazz, type, this);
             this.parameters.add(parameter);
          }  
       }
@@ -150,17 +130,6 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    public Method getDelegate()
    {
       return method;
-   }
-   
-   @Override
-   public Type getType()
-   {
-      return underlyingType;
-   }
-
-   public Type[] getActualTypeArguments()
-   {
-      return actualTypeArguments;
    }
 
    public List<AnnotatedParameter<?>> getParameters()
@@ -238,12 +207,6 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       }
       toString = "Annotated method on class " + getDeclaringClass().getName() + Names.methodToString(method);
       return toString;
-   }
-   
-   @Override
-   public Set<? extends Type> getFlattenedTypeHierarchy()
-   {
-      return flattenedTypes;
    }
    
 }

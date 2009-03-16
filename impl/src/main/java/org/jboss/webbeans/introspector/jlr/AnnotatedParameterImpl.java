@@ -40,10 +40,6 @@ import org.jboss.webbeans.introspector.AnnotationStore;
 public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> implements AnnotatedParameter<T>
 {
    
-   // The type
-   private final Class<T> type;
-   // The actual type arguments
-   private final Type[] actualTypeArguments = new Type[0];
    // The final state
    private final boolean _final = false;
    // The static state
@@ -54,9 +50,9 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
    // Cached string representation
    private String toString;
    
-   public static <T> AnnotatedParameter<T> of(Annotation[] annotations, Class<T> clazz, AnnotatedMember<?, ?> declaringMember)
+   public static <T> AnnotatedParameter<T> of(Annotation[] annotations, Class<T> rawType, Type type, AnnotatedMember<?, ?> declaringMember)
    {
-      return new AnnotatedParameterImpl<T>(annotations, clazz, declaringMember);
+      return new AnnotatedParameterImpl<T>(annotations, rawType, type, declaringMember);
    }
 
    /**
@@ -65,23 +61,10 @@ public class AnnotatedParameterImpl<T> extends AbstractAnnotatedItem<T, Object> 
     * @param annotations The annotations array
     * @param type The type of the parameter
     */
-   private AnnotatedParameterImpl(Annotation[] annotations, Class<T> type, AnnotatedMember<?, ?> declaringMember)
+   protected AnnotatedParameterImpl(Annotation[] annotations, Class<T> rawType, Type type, AnnotatedMember<?, ?> declaringMember)
    {
-      super(AnnotationStore.of(annotations, annotations), type);
-      this.type = type;
+      super(AnnotationStore.of(annotations, annotations), rawType, type);
       this.declaringMember = declaringMember;
-   }
-
-   /**
-    * Gets the actual type arguments
-    * 
-    * @return The type arguments
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedItem#getActualTypeArguments()
-    */
-   public Type[] getActualTypeArguments()
-   {
-      return actualTypeArguments;
    }
 
    /**

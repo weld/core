@@ -19,7 +19,6 @@ package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -111,7 +110,7 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
     */
    public AnnotatedAnnotationImpl(Class<T> annotationType)
    {
-      super(AnnotationStore.of(annotationType), annotationType);
+      super(AnnotationStore.of(annotationType), annotationType, annotationType);
       this.clazz = annotationType;
       members = new HashSet<AnnotatedMethod<?>>();
       annotatedMembers = new AnnotatedMemberMap();
@@ -124,18 +123,6 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
             annotatedMembers.put(annotation.annotationType(), annotatedMethod);
          }
       }
-   }
-
-   /**
-    * Gets the actual type arguments
-    * 
-    * @return The type arguments
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedAnnotation#getActualTypeArguments()
-    */
-   public Type[] getActualTypeArguments()
-   {
-      return new Type[0];
    }
 
    /**

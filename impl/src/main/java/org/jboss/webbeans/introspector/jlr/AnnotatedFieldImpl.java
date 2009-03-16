@@ -18,8 +18,6 @@
 package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedType;
@@ -39,8 +37,6 @@ import org.jboss.webbeans.util.Reflections;
 public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> implements AnnotatedField<T>
 {
    
-   // The actual type arguments
-   private final Type[] actualTypeArguments;
    // The underlying field
    private final Field field;
    // The abstraction of the declaring class
@@ -60,19 +56,10 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
     */
    public AnnotatedFieldImpl(Field field, AnnotatedType<?> declaringClass)
    {
-      super(AnnotationStore.of(field), field, (Class<T>) field.getType());
+      super(AnnotationStore.of(field), field, (Class<T>) field.getType(), field.getGenericType());
       this.field = field;
       field.setAccessible(true);
       this.declaringClass = declaringClass;
-      if (field.getGenericType() instanceof ParameterizedType)
-      {
-         ParameterizedType type = (ParameterizedType) field.getGenericType();
-         actualTypeArguments = type.getActualTypeArguments();
-      }
-      else
-      {
-         actualTypeArguments = new Type[0];
-      }
    }
 
    /**
@@ -88,18 +75,6 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
    public Field getDelegate()
    {
       return field;
-   }
-
-   /**
-    * Gets the actual type arguments
-    * 
-    * @return The type arguments
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedField#getActualTypeArguments()
-    */
-   public Type[] getActualTypeArguments()
-   {
-      return actualTypeArguments;
    }
    
    public void set(Object instance, Object value) throws IllegalArgumentException, IllegalAccessException

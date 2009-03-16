@@ -52,16 +52,13 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       AnnotationStore getAnnotationStore();
       
    }
-
-   public Type getType()
-   {
-      return getRawType();
-   }
    
    // Cached string representation
    private String toString;
    private final AnnotationStore annotationStore;
    private final Class<T> rawType;
+   private final Type[] actualTypeArguments; 
+   private final Type type;
    private final Set<? extends Type> flattenedTypes;
    private final boolean proxyable;
    private final boolean _parameterizedType;
@@ -75,12 +72,21 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
     * @param annotationMap A map of annotation to register
     * 
     */
-   public AbstractAnnotatedItem(AnnotationStore annotatedItemHelper, Class<T> rawType)
+   public AbstractAnnotatedItem(AnnotationStore annotatedItemHelper, Class<T> rawType, Type type)
    {
       this.annotationStore = annotatedItemHelper;
       this.rawType = rawType;
+      this.type = type;
+      if (type instanceof ParameterizedType)
+      {
+         this.actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
+      }
+      else
+      {
+         this.actualTypeArguments = new Type[0];
+      }
       this._parameterizedType = Reflections.isParameterizedType(rawType);
-      this.flattenedTypes = new Reflections.HierarchyDiscovery<Type>(rawType).getFlattenedTypes();
+      this.flattenedTypes = new Reflections.HierarchyDiscovery<Type>(type).getFlattenedTypes();
       this.proxyable = Proxies.isTypesProxyable(flattenedTypes);
    }
    
@@ -88,6 +94,8 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    {
       this.annotationStore = annotatedItemHelper;
       this.rawType = null;
+      this.type = null;
+      this.actualTypeArguments = new Type[0];
       this._parameterizedType = false;
       this.flattenedTypes = null;
       this.proxyable = false;
@@ -278,6 +286,16 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    public Class<T> getRawType()
    {
       return rawType;
+   }
+   
+   public Type getType()
+   {
+      return type;
+   }
+   
+   public Type[] getActualTypeArguments()
+   {
+      return actualTypeArguments;
    }
    
    public Set<? extends Type> getFlattenedTypeHierarchy()

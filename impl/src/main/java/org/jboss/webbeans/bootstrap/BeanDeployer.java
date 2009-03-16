@@ -66,7 +66,7 @@ public class BeanDeployer
    
    public void addClass(Class<?> clazz)
    {
-      if (!clazz.isAnnotation())
+      if (!clazz.isAnnotation() && !clazz.isEnum())
       {
          deferredClasses.add(AnnotatedClassImpl.of(clazz));
       }
