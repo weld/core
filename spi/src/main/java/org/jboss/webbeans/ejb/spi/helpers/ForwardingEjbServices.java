@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 
 import javax.inject.manager.InjectionPoint;
 
-import org.jboss.webbeans.ejb.api.EjbReference;
+import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.resources.spi.NamingContext;
@@ -44,7 +44,7 @@ public abstract class ForwardingEjbServices implements EjbServices
       return delegate().resolveEjb(injectionPoint, namingContext);
    }
    
-   public <T> EjbReference<T> resolveEJB(EjbDescriptor<T> ejbDescriptor, NamingContext namingContext)
+   public SessionObjectReference resolveEJB(EjbDescriptor<?> ejbDescriptor, NamingContext namingContext)
    {
       return delegate().resolveEJB(ejbDescriptor, namingContext);
    }

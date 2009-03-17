@@ -12,7 +12,7 @@ import javax.inject.manager.InjectionPoint;
 import javax.persistence.PersistenceContext;
 
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
-import org.jboss.webbeans.ejb.api.EjbReference;
+import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.resources.spi.NamingContext;
@@ -67,24 +67,21 @@ public class MockEjBServices implements EjbServices
       return ejbDiscovery.discoverEjbs();
    }
 
-   public <T> EjbReference<T> resolveEJB(EjbDescriptor<T> ejbDescriptor, NamingContext naming)
+   public SessionObjectReference resolveEJB(EjbDescriptor<?> ejbDescriptor, NamingContext naming)
    {
-      return new EjbReference<T>()
+      return new SessionObjectReference()
       {
 
-         public <S> S get(Class<S> businessInterfaceType)
+         public <S> S getReference(Class<S> businessInterfaceType)
          {
+            // TODO Auto-generated method stub
             return null;
          }
 
          public void remove()
          {
-            // No-op
-         }
-         
-         public void create()
-         {
-            // No-op
+            // TODO Auto-generated method stub
+            
          }
          
       };

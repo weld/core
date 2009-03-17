@@ -42,7 +42,7 @@ import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
-import org.jboss.webbeans.ejb.api.EjbReference;
+import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.introspector.AnnotatedClass;
@@ -380,7 +380,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       return false;
    }
    
-   public EjbReference<T> createReference()
+   public SessionObjectReference createReference()
    {
       return manager.getServices().get(EjbServices.class).resolveEJB(getEjbDescriptor(), CurrentManager.rootManager().getServices().get(NamingContext.class));
    }

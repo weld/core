@@ -22,7 +22,7 @@ import java.lang.annotation.Annotation;
 import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.bootstrap.api.Service;
-import org.jboss.webbeans.ejb.api.EjbReference;
+import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.resources.spi.NamingContext;
 
 /**
@@ -87,14 +87,15 @@ public interface EjbServices extends Service
    public Object resolveResource(InjectionPoint injectionPoint, NamingContext namingContext);
   
    /**
-    * Request an EJB instance from the container
+    * Request a reference to an EJB session object from the container. If the
+    * EJB being resolved is a stateful session bean, the container should ensure
+    * the session bean is created before this method returns.
     * 
-    * @param <T> the type of the bean class
     * @param ejbDescriptor the ejb to resolve
     * @param namingContext the pluggable Web Beans JNDI lookup facility
-    * @return a reference to the EJB
+    * @return a reference to the session object
     */
-   public <T> EjbReference<T> resolveEJB(EjbDescriptor<T> ejbDescriptor, NamingContext namingContext);
+   public SessionObjectReference resolveEJB(EjbDescriptor<?> ejbDescriptor, NamingContext namingContext);
    
    /**
     * Gets a descriptor for each EJB in the application

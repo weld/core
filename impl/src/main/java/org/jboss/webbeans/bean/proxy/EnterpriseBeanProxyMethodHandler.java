@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import javassist.util.proxy.MethodHandler;
 
 import org.jboss.webbeans.bean.EnterpriseBean;
-import org.jboss.webbeans.ejb.api.EjbReference;
+import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
@@ -57,7 +57,7 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
       enterpriseBean.set(bean);
    }
 
-   private final EjbReference<?> reference; 
+   private final SessionObjectReference reference; 
    private final Class<?> objectInterface;
    private boolean destroyed;
 
@@ -70,13 +70,12 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
     */
    public EnterpriseBeanProxyMethodHandler(EnterpriseBean<?> bean)
    {
-      this.reference = bean.createReference();
       this.destroyed = false;
       this.objectInterface = bean.getEjbDescriptor().getObjectInterface();
       try
       {
          setEnterpriseBean(bean);
-         reference.create();
+         this.reference = bean.createReference();
       }
       finally
       {
@@ -132,7 +131,7 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
       {
          businessInterface = objectInterface;
       }
-      Object proxiedInstance = reference.get(businessInterface);
+      Object proxiedInstance = reference.getReference(businessInterface);
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
       Object returnValue = Reflections.invokeAndWrap(proxiedMethod, proxiedInstance, args);
       log.trace("Executed " + method + " on " + proxiedInstance + " with parameters " + args + " and got return value " + returnValue);

@@ -19,43 +19,36 @@ package org.jboss.webbeans.ejb.api;
 import java.io.Serializable;
 
 /**
- * A serializable reference to an EJB. For an SFSB the same state must be 
- * returned for each call to {@link #get(Class)}
+ * A serializable reference to a session object in the EJB container
  * 
  * @author Pete Muir
- * @param <T>
- *           The EJB bean class
  */
-public interface EjbReference<T> extends Serializable
+public interface SessionObjectReference extends Serializable
 {
    
    /**
-    * Get the reference to the EJB for the given business interfaces
-    * 
-    * The reference may be lazily instantiated; if Web Beans wishes to eagerly
-    * instantiated the bean it will call {@link #create()}.
+    * Get the reference from the EJB container to the session object for the 
+    * given business interface
     * 
     * @param <S>
     *           the type of the business interface
     * @param businessInterfaceType
     *           the type of the business interface
     * @return a reference
+    * 
+    * @throws IllegalStateException
+    *           if the session object has already been removed
     */
-   public <S> S get(Class<S> businessInterfaceType);
+   public <S> S getReference(Class<S> businessInterfaceType);
    
    /**
-    * Request the SFSB backing this reference is removed
+    * Request the EJB container remove the stateful session object
     * 
     * @throws UnsupportedOperationException
-    *            if the reference is backed by an SLSB
+    *            if the reference is not backed by a stateful session object
+    * @throws IllegalStateException
+    *            if the session object has already been removed           
     */
    public void remove();
-   
-   /**
-    * Request that the SFSB backing this reference is instantiated, and any
-    * @PostConstruct lifecycle callbacks are executed
-    * 
-    */
-   public void create();
    
 }
