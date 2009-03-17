@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-08 15:53+0000\n"
-"PO-Revision-Date: 2009-03-08 17:04+0100\n"
+"POT-Creation-Date: 2009-03-17 20:14+0000\n"
+"PO-Revision-Date: 2009-03-17 21:22+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -302,71 +302,163 @@ msgstr "La risoluzione di <literal>@EJB</literal>, <literal>@PersistenceContext<
 #. Tag: title
 #: ri-spi.xml:104
 #, no-c-format
+msgid "Transaction Services"
+msgstr "Servizi di transazione"
+
+#. Tag: para
+#: ri-spi.xml:106
+#, no-c-format
+msgid "The Web Beans RI must delegate JTA activities to the container. The SPI provides a couple hooks to easily achieve this with the <literal>TransactionServices</literal> interface."
+msgstr "Web Beans RI deve delegare le attività JTA al container. SPI fornisce un paio di modi per ottenere ciò tramite l'interfaccia <literal>TransactionServices</literal>."
+
+#. Tag: programlisting
+#: ri-spi.xml:112
+#, no-c-format
+msgid ""
+"<![CDATA[public interface TransactionServices\n"
+"{\n"
+"   /**\n"
+"    * Possible status conditions for a transaction. This can be used by SPI\n"
+"    * providers to keep track for which status an observer is used.\n"
+"    */\n"
+"   public static enum Status\n"
+"   {\n"
+"      ALL, SUCCESS, FAILURE\n"
+"   }\n"
+"\n"
+"   /**\n"
+"    * Registers a synchronization object with the currently executing\n"
+"    * transaction.\n"
+"    * \n"
+"    * @see javax.transaction.Synchronization\n"
+"    * @param synchronizedObserver\n"
+"    */\n"
+"   public void registerSynchronization(Synchronization synchronizedObserver);\n"
+"\n"
+"   /**\n"
+"    * Queries the status of the current execution to see if a transaction is\n"
+"    * currently active.\n"
+"    * \n"
+"    * @return true if a transaction is active\n"
+"    */\n"
+"   public boolean isTransactionActive();\n"
+"}]]>"
+msgstr ""
+"<![CDATA[public interface TransactionServices\n"
+"{\n"
+"   /**\n"
+"    * Possible status conditions for a transaction. This can be used by SPI\n"
+"    * providers to keep track for which status an observer is used.\n"
+"    */\n"
+"   public static enum Status\n"
+"   {\n"
+"      ALL, SUCCESS, FAILURE\n"
+"   }\n"
+"\n"
+"   /**\n"
+"    * Registers a synchronization object with the currently executing\n"
+"    * transaction.\n"
+"    * \n"
+"    * @see javax.transaction.Synchronization\n"
+"    * @param synchronizedObserver\n"
+"    */\n"
+"   public void registerSynchronization(Synchronization synchronizedObserver);\n"
+"\n"
+"   /**\n"
+"    * Queries the status of the current execution to see if a transaction is\n"
+"    * currently active.\n"
+"    * \n"
+"    * @return true if a transaction is active\n"
+"    */\n"
+"   public boolean isTransactionActive();\n"
+"}]]>"
+
+#. Tag: para
+#: ri-spi.xml:114
+#, no-c-format
+msgid "The enumeration <literal>Status</literal> is a convenience for implementors to be able to keep track of whether a synchronization is supposed to notify an observer only when the transaction is successful, or after a failure, or regardless of the status of the transaction."
+msgstr "La enumeration <literal>Status</literal> serve agli implementatori per poter essere in grado di tracciare se una sincronizzazione deve notificare un osservatore solo quando la transazione ha avuto successo, o dopo un errore, o indipendentemente dallo stato della transazione."
+
+#. Tag: para
+#: ri-spi.xml:121
+#, no-c-format
+msgid "Any <literal>javax.transaction.Synchronization</literal> implementation may be passed to the <literal>registerSynchronization()</literal> method and the SPI implementation should immediately register the synchronization with the JTA transaction manager used for the EJBs."
+msgstr "Qualsiasi implementazione di <literal>javax.transaction.Synchronization</literal> può essere passata al metodo <literal>registerSynchronization()</literal> e l'implementazione SPI deve immediatamente registrare la sincronizzazione con il gestore della transazione JTA usato per EJB."
+
+#. Tag: para
+#: ri-spi.xml:128
+#, no-c-format
+msgid "To make it easier to determine whether or not a transaction is currently active for the requesting thread, the <literal>isTransactionActive()</literal> method can be used. The SPI implementation should query the same JTA transaction manager used for the EJBs."
+msgstr "Per facilitare la determinazione se o no una transazione è attualmente attiva per il thread di richiesta, può essere usato il metodo <literal>isTransactionActive()</literal>. L'implementazione SPI deve interrogare lo stesso gestore della transazione JTA usato per EJB."
+
+#. Tag: title
+#: ri-spi.xml:137
+#, no-c-format
 msgid "The application context"
 msgstr "Il contesto applicazione"
 
 #. Tag: para
-#: ri-spi.xml:106
+#: ri-spi.xml:139
 #, no-c-format
 msgid "Web Beans expects the Application Server or other container to provide the storage for each application's context. The <literal>org.jboss.webbeans.context.api.BeanStore</literal> should be implemented to provide an application scoped storage. You may find <literal>org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore</literal> useful."
 msgstr "Web Beans si aspetta che l'Application Server od un altro container fornisca la memorizzazione per ogni contesto applicazione. <literal>org.jboss.webbeans.context.api.BeanStore</literal> dovrebbe essere implementato per fornire uno storage con scope applicazione. Si può trovare molto utile <literal>org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore</literal>."
 
 #. Tag: title
-#: ri-spi.xml:119
+#: ri-spi.xml:152
 #, no-c-format
 msgid "Bootstrap and shutdown"
 msgstr "Bootstrap e spegnimento"
 
 #. Tag: para
-#: ri-spi.xml:120
+#: ri-spi.xml:153
 #, no-c-format
 msgid "The <literal>org.jboss.webbeans.bootstrap.api.Bootstrap</literal> interface defines the bootstrap for Web Beans. To boot Web Beans, you must obtain an instance of <literal>org.jboss.webbeans.bootstrap.WebBeansBootstrap</literal> (which implements <literal>Boostrap</literal>), tell it about the SPIs in use, and then request the container start."
 msgstr "L'interfaccia <literal>org.jboss.webbeans.bootstrap.api.Bootstrap</literal> definisce il bootstrap per Web Beans. Per avviare Web Beans occorre ottenere un'istanza di <literal>org.jboss.webbeans.bootstrap.WebBeansBootstrap</literal> (che implementa <literal>Boostrap</literal>), e comunicare le SPI in uso, e poi chiedere che il container venga avviato."
 
 #. Tag: para
-#: ri-spi.xml:129
+#: ri-spi.xml:162
 #, no-c-format
 msgid "The bootstrap is split into phases, bootstrap initialization and bootstrap. Initialization will create a manager, and add the standard (specification defined) contexts. Bootstrap will discover EJBs, classes and XML; add beans defined using annotations; add beans defined using XML; and validate all beans."
 msgstr "Il bootstrap è suddiviso in due fasi, inizializzazione del bootstrap e bootstrap. L'inizializzazione creerà un manager, e aggiungerà i contesti standard (definiti dalla specifica). Bootstrap scoprirà EJB, classi e XML; aggiungerà i bean definiti con le annotazioni; aggiungerà i bean definiti con XML; e validerà tutti i bean."
 
 #. Tag: para
-#: ri-spi.xml:137
+#: ri-spi.xml:170
 #, no-c-format
 msgid "To initialize the bootstrap you call <literal>Bootstrap.initialize()</literal>. Before calling <literal>initialize()</literal> you must have called <literal>Bootstrap.setEjbResolver()</literal>. If you are not using the built in <literal>DefaultNamingContext</literal> or the built in <literal>DefaultResourceLoader</literal> you must set these before calling <literal>initialize()</literal>."
 msgstr "Per inizializzare il bootstrap si chiama <literal>Bootstrap.initialize()</literal>. Prima della chiamata di <literal>initialize()</literal> occorre aver chiamato <literal>Bootstrap.setEjbResolver()</literal>. Se non si usa il <literal>DefaultNamingContext</literal> o <literal>DefaultResourceLoader</literal> predefiniti, occorre impostare questi prima di chiamare <literal>initialize()</literal>."
 
 #. Tag: para
-#: ri-spi.xml:147
+#: ri-spi.xml:180
 #, no-c-format
 msgid "Having called <literal>initialize()</literal>, the <literal>Manager</literal> can be obtained by calling <literal>Bootstrap.getManager()</literal>."
 msgstr "Dopo aver chiamato <literal>initialize()</literal>, il <literal>Manager</literal> può essere ottenuto chiamando <literal>Bootstrap.getManager()</literal>."
 
 #. Tag: para
-#: ri-spi.xml:153
+#: ri-spi.xml:186
 #, no-c-format
 msgid "To boot the container you call <literal>Bootstrap.boot()</literal>. Before calling <literal>boot()</literal> you must have called <literal>Bootstrap.setWebBeanDiscovery()</literal>, <literal>Bootstrap.setEjbDiscovery()</literal> and <literal>Bootstrap.setApplicationContext()</literal>."
 msgstr "Per avviare il container si chiama <literal>Bootstrap.boot()</literal>. Prima di chiamare <literal>boot()</literal> occorre aver chiamato <literal>Bootstrap.setWebBeanDiscovery()</literal>, <literal>Bootstrap.setEjbDiscovery()</literal> e <literal>Bootstrap.setApplicationContext()</literal>."
 
 #. Tag: para
-#: ri-spi.xml:161
+#: ri-spi.xml:194
 #, no-c-format
 msgid "To shutdown the container you call <literal>Bootstrap.shutdown()</literal>. This allows the container to perform any cleanup operations needed."
 msgstr "Per spegnere il container si chiama <literal>Bootstrap.shutdown()</literal>. Questo consente al container di eseguire ogni pulizia necessaria delle operazioni."
 
 #. Tag: title
-#: ri-spi.xml:170
+#: ri-spi.xml:203
 #, no-c-format
 msgid "JNDI"
 msgstr "JNDI"
 
 #. Tag: para
-#: ri-spi.xml:172
+#: ri-spi.xml:205
 #, no-c-format
 msgid "The Web Beans RI implements JNDI binding and lookup according to standards, however you may want to alter the binding and lookup (for example in an environment where JNDI isn't available). To do this, implement <literal>org.jboss.webbeans.resources.spi.NamingContext</literal>:"
 msgstr "Web Beans RI implementa la ricerca e l'associazione JNDI secondo gli standard, ma può capitare di dover modificare la ricerca e l'associazione (per esempio in un ambiente dove JNDI non è disponibile). Per fare questo occorre implementare <literal>org.jboss.webbeans.resources.spi.NamingContext</literal>:"
 
 #. Tag: programlisting
-#: ri-spi.xml:180
+#: ri-spi.xml:213
 #, no-c-format
 msgid ""
 "<![CDATA[public interface NamingContext extends Serializable {\n"
@@ -414,19 +506,19 @@ msgstr ""
 "}]]>"
 
 #. Tag: title
-#: ri-spi.xml:185
+#: ri-spi.xml:218
 #, no-c-format
 msgid "Resource loading"
 msgstr "Caricamento risorse"
 
 #. Tag: para
-#: ri-spi.xml:187
+#: ri-spi.xml:220
 #, no-c-format
 msgid "The Web Beans RI needs to load classes and resources from the classpath at various times. By default, they are loaded from the same classloader that was used to load the RI, however this may not be correct for some environments. If this is case, you can implement <literal>org.jboss.webbeans.spi.ResourceLoader</literal>:"
 msgstr "Web Beans RI deve caricare le classi e le risorse dal classpath in vari momenti. Di default vengono caricati dallo stesso classloader usato per caricare RI, comunque questo potrebbe non essere corretto in alcuni ambienti. Se è questo il caso si può implementare  <literal>org.jboss.webbeans.spi.ResourceLoader</literal>:"
 
 #. Tag: programlisting
-#: ri-spi.xml:195
+#: ri-spi.xml:228
 #, no-c-format
 msgid ""
 "<![CDATA[\n"
@@ -490,97 +582,97 @@ msgstr ""
 "         ]]>"
 
 #. Tag: title
-#: ri-spi.xml:200
+#: ri-spi.xml:233
 #, no-c-format
 msgid "Servlet injection"
 msgstr "Iniezione dei servlet"
 
 #. Tag: para
-#: ri-spi.xml:202
+#: ri-spi.xml:235
 #, no-c-format
 msgid "Java EE / Servlet does not provide any hooks which can be used to provide injection into Servlets, so Web Beans provides an API to allow the container to request JSR-299 injection for a Servlet."
 msgstr "Java EE / Servlet non fornisce alcun hook da usare per fornire l'iniezione nei Servlet, quindi Web Beans fornisce un'API per consentire al container di richiedere l'iniezione JSR-299 per un Servlet."
 
 #. Tag: para
-#: ri-spi.xml:208
+#: ri-spi.xml:241
 #, no-c-format
 msgid "To be compliant with JSR-299, the container should request servlet injection for each newly instantiated servlet after the constructor returns and before the servlet is placed into service."
 msgstr "Per soddisfare la JSR-299 il container deve richiedere l'iniezione servlet per ogni nuovo servlet istanziato dopo che il costruttore ritorni e prima che il servlet sia messo in servizio."
 
 #. Tag: para
-#: ri-spi.xml:214
+#: ri-spi.xml:247
 #, no-c-format
 msgid "To perform injection on a servlet call <literal>WebBeansManager.injectServlet()</literal>. The manager can be obtained from <literal>Bootstrap.getManager()</literal>."
 msgstr "Per eseguire l'iniezione su un servlet si chiami <literal>WebBeansManager.injectServlet()</literal>. Il manager può essere ottenuto da <literal>Bootstrap.getManager()</literal>."
 
 #. Tag: title
-#: ri-spi.xml:225
+#: ri-spi.xml:258
 #, no-c-format
 msgid "The contract with the container"
 msgstr "Il contratto con il container"
 
 #. Tag: para
-#: ri-spi.xml:227
+#: ri-spi.xml:260
 #, no-c-format
 msgid "There are a number of requirements that the Web Beans RI places on the container for correct functioning that fall outside implementation of APIs"
 msgstr "Per il corretto funzionamento al di fuori dell'implementazione delle API, ci sono un numero di requisiti che Web Beans RI pone nel container."
 
 #. Tag: term
-#: ri-spi.xml:235
+#: ri-spi.xml:268
 #, no-c-format
 msgid "Classloader isolation"
 msgstr "Isolamento del classloader"
 
 #. Tag: para
-#: ri-spi.xml:239
+#: ri-spi.xml:272
 #, no-c-format
 msgid "If you are integrating the Web Beans RI into an environment that supports deployment of multiple applications, you must enable, automatically, or through user configuation, classloader isolation for each Web Beans application."
 msgstr "Se si integra Web Beans in un ambiente che supporta il deploy di applicazioni, occorre abilitare, automaticamente o attraverso la configurazione utente, l'isolamento del classloader per ogni applicazione Web Beans."
 
 #. Tag: term
-#: ri-spi.xml:248
+#: ri-spi.xml:281
 #, no-c-format
 msgid "Servlet listener and filters"
 msgstr "Servlet listener e filtri"
 
 #. Tag: para
-#: ri-spi.xml:252
+#: ri-spi.xml:285
 #, no-c-format
 msgid "If you are integrating the Web Beans into a Servlet environment you must register <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> as a Servlet listener, either automatically, or through user configuration, for each Web Beans application which uses Servlet."
 msgstr "Se si integra Web Beans in un ambiente Servlet occorre registrare <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> come Servlet listener, o automaticamente, o attraverso una configurazione utente, per ciascuna applicazione Web Beans che usa Servlet."
 
 #. Tag: para
-#: ri-spi.xml:261
+#: ri-spi.xml:294
 #, no-c-format
 msgid "If you are integrating the Web Beans into a JSF environment you must register <literal>org.jboss.webbeans.servlet.ConversationPropagationFilter</literal> as a Servlet listener, either automatically, or through user configuration, for each Web Beans application which uses JSF. This filter can be registered for all Servlet deployment safely."
 msgstr "Se si integra Web Beans in un ambiente Servlet occorre registrare <literal>org.jboss.webbeans.servlet.ConversationPropagationFilter</literal> come Servlet listener, o automaticamente, o attraverso una configurazione utente, per ciascuna applicazione Web Beans che usa JSF. Questo filtro può venir registrato in modo sicuro per tutti i deploy dei servlet."
 
 #. Tag: term
-#: ri-spi.xml:273
+#: ri-spi.xml:306
 #, no-c-format
 msgid "Session Bean Interceptor"
 msgstr "Session Bean Interceptor"
 
 #. Tag: para
-#: ri-spi.xml:277
+#: ri-spi.xml:310
 #, no-c-format
 msgid "If you are integrating the Web Beans into an EJB environment you must register <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> as a EJB interceptor for all EJBs in the application, either automatically, or through user configuration, for each Web Beans application which uses enterprise beans."
 msgstr "Se si integra Web Beans in un ambiente EJB occorre registrare <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> come interceptor EJB per ogni EJB dell'applicazione, o automaticamente o attraverso una configurazione utente, per ciascuna applicazione Web Beans che utilizza bean enterprise."
 
 #. Tag: para
-#: ri-spi.xml:287
+#: ri-spi.xml:320
 #, no-c-format
 msgid "You must register the <literal>SessionBeanInterceptor</literal> as the inner most interceptor in the stack for all EJBs."
 msgstr "Occorre registrare il <literal>SessionBeanInterceptor</literal> come interceptor più interno allo stack per tutti gli EJB."
 
 #. Tag: term
-#: ri-spi.xml:295
+#: ri-spi.xml:328
 #, no-c-format
 msgid "The <literal>webbeans-ri.jar</literal>"
 msgstr "<literal>webbeans-ri.jar</literal>"
 
 #. Tag: para
-#: ri-spi.xml:299
+#: ri-spi.xml:332
 #, no-c-format
 msgid "If you are integrating the Web Beans into an environment that supports deployment of applications, you must insert the <literal>webbeans-ri.jar</literal> into the applications isolated classloader. It cannot be loaded from a shared classloader."
 msgstr "Se si integra Web Beans in un ambiente che supporta il deploy di applicazioni, occorre inserire <literal>webbeans-ri.jar</literal> nel classloader isolato delle applicazioni. Non può essere caricato da un classloader condiviso."

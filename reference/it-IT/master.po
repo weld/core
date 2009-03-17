@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-02-07 18:51+0000\n"
-"PO-Revision-Date: 2009-02-07 19:57+0100\n"
+"POT-Creation-Date: 2009-03-17 20:14+0000\n"
+"PO-Revision-Date: 2009-03-17 21:29+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -25,26 +25,32 @@ msgstr "Nota"
 msgid "JSR-299 has recently changed its name from \"Web Beans\" to \"Java Contexts and Dependency Injection\". The reference guide still refers to JSR-299 as \"Web Beans\" and the JSR-299 Reference Implementation as the \"Web Beans RI\". Other documentation, blogs, forum posts etc. may use the new nomenclature, including the new name for the JSR-299 Reference Implementation - \"Web Beans\"."
 msgstr "JSR-299 ha recentemente cambiato il suo nome da \"Web Beans\" a \"Contesti Java e Dependency Injection\". La guida fa comunque riferimento alla JSR-299 come \"Web Beans\" e alla JSR-299 Reference Implementation come \"Web Beans RI\". Altre documentazioni, blogs, forum, ecc. potrebbero usare la nuova nomenclatura, includendo il nuovo nome per la JSR-299 Reference Implementation - \"Web Beans\"."
 
+#. Tag: para
+#: master.xml:20
+#, no-c-format
+msgid "You'll also find that some of the more recent functionality to be specified is missing (such as producer fields, realization, asynchronous events, XML mapping of EE resources)."
+msgstr "Si vedrà che alcune delle più recenti funzionalità da specificare mancano (come campi produttori, realizzazione, eventi asincroni, mappatura XML delle risorse EE)."
+
 #. Tag: title
-#: master.xml:24
+#: master.xml:30
 #, no-c-format
 msgid "Using contextual objects"
 msgstr "Usare gli oggetti contestuali"
 
 #. Tag: title
-#: master.xml:37
+#: master.xml:43
 #, no-c-format
 msgid "Developing loosely-coupled code"
 msgstr "Sviluppare codice debolmente-accoppiato"
 
 #. Tag: title
-#: master.xml:47
+#: master.xml:53
 #, no-c-format
 msgid "Making the most of strong typing"
 msgstr "Realizzare una tipizzazione più forte"
 
 #. Tag: title
-#: master.xml:58
+#: master.xml:64
 #, no-c-format
 msgid "Web Beans and the Java EE ecosystem"
 msgstr "Web Beans e l'ecosistema Java EE"

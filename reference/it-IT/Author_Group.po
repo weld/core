@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-02-01 21:16+0000\n"
-"PO-Revision-Date: 2009-02-04 18:19+0100\n"
+"POT-Creation-Date: 2009-03-17 20:14+0000\n"
+"PO-Revision-Date: 2009-03-17 21:16+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -99,4 +99,22 @@ msgstr "Traduzione cinese (tradizionale)"
 #, no-c-format
 msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
 msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
+
+#. Tag: othercredit
+#: Author_Group.xml:55
+#, no-c-format
+msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
+msgstr "<firstname>Sean</firstname> <surname>Wu</surname>"
+
+#. Tag: contrib
+#: Author_Group.xml:58
+#, no-c-format
+msgid "Simplified Chinese Translation"
+msgstr "Traduzione cinese semplificato"
+
+#. Tag: orgname
+#: Author_Group.xml:60
+#, no-c-format
+msgid "Kava Community"
+msgstr "Kava Community"
 
