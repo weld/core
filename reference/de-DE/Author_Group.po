@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Author_Group\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-02-01 21:16+0000\n"
+"POT-Creation-Date: 2009-03-17 20:14+0000\n"
 "PO-Revision-Date: 2009-02-07 14:52+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -28,8 +28,8 @@ msgid ""
 "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat Middleware "
 "LLC</orgname>"
 msgstr ""
-"<jobtitle>JSR-299 Spezifikations-Lead</jobtitle> <orgname>Red "
-"Hat Middleware LLC</orgname>"
+"<jobtitle>JSR-299 Spezifikations-Lead</jobtitle> <orgname>Red Hat Middleware "
+"LLC</orgname>"
 
 #. Tag: author
 #: Author_Group.xml:12
@@ -107,3 +107,20 @@ msgstr "Chinesische Übersetzung (traditionell)"
 msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
 msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
 
+#. Tag: othercredit
+#: Author_Group.xml:55
+#, fuzzy, no-c-format
+msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
+msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
+
+#. Tag: contrib
+#: Author_Group.xml:58
+#, fuzzy, no-c-format
+msgid "Simplified Chinese Translation"
+msgstr "Chinesische Übersetzung (traditionell)"
+
+#. Tag: orgname
+#: Author_Group.xml:60
+#, no-c-format
+msgid "Kava Community"
+msgstr ""

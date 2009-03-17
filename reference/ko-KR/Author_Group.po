@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Author_Group\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-02-01 21:16+0000\n"
+"POT-Creation-Date: 2009-03-17 20:14+0000\n"
 "PO-Revision-Date: 2009-01-08 10:32+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -110,3 +110,21 @@ msgstr "이탈리아어 번역 "
 #, no-c-format
 msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
 msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
+
+#. Tag: othercredit
+#: Author_Group.xml:55
+#, fuzzy, no-c-format
+msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
+msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
+
+#. Tag: contrib
+#: Author_Group.xml:58
+#, fuzzy, no-c-format
+msgid "Simplified Chinese Translation"
+msgstr "이탈리아어 번역 "
+
+#. Tag: orgname
+#: Author_Group.xml:60
+#, no-c-format
+msgid "Kava Community"
+msgstr ""

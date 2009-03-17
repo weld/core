@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-08 15:53+0000\n"
+"POT-Creation-Date: 2009-03-17 20:14+0000\n"
 "PO-Revision-Date: 2008-12-20 22:07+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -246,11 +246,92 @@ msgstr ""
 #. Tag: title
 #: ri-spi.xml:104
 #, no-c-format
-msgid "The application context"
+msgid "Transaction Services"
 msgstr ""
 
 #. Tag: para
 #: ri-spi.xml:106
+#, no-c-format
+msgid ""
+"The Web Beans RI must delegate JTA activities to the container. The SPI "
+"provides a couple hooks to easily achieve this with the "
+"<literal>TransactionServices</literal> interface."
+msgstr ""
+
+#. Tag: programlisting
+#: ri-spi.xml:112
+#, no-c-format
+msgid ""
+"<![CDATA[public interface TransactionServices\n"
+"{\n"
+"   /**\n"
+"    * Possible status conditions for a transaction. This can be used by SPI\n"
+"    * providers to keep track for which status an observer is used.\n"
+"    */\n"
+"   public static enum Status\n"
+"   {\n"
+"      ALL, SUCCESS, FAILURE\n"
+"   }\n"
+"\n"
+"   /**\n"
+"    * Registers a synchronization object with the currently executing\n"
+"    * transaction.\n"
+"    * \n"
+"    * @see javax.transaction.Synchronization\n"
+"    * @param synchronizedObserver\n"
+"    */\n"
+"   public void registerSynchronization(Synchronization "
+"synchronizedObserver);\n"
+"\n"
+"   /**\n"
+"    * Queries the status of the current execution to see if a transaction "
+"is\n"
+"    * currently active.\n"
+"    * \n"
+"    * @return true if a transaction is active\n"
+"    */\n"
+"   public boolean isTransactionActive();\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:114
+#, no-c-format
+msgid ""
+"The enumeration <literal>Status</literal> is a convenience for implementors "
+"to be able to keep track of whether a synchronization is supposed to notify "
+"an observer only when the transaction is successful, or after a failure, or "
+"regardless of the status of the transaction."
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:121
+#, no-c-format
+msgid ""
+"Any <literal>javax.transaction.Synchronization</literal> implementation may "
+"be passed to the <literal>registerSynchronization()</literal> method and the "
+"SPI implementation should immediately register the synchronization with the "
+"JTA transaction manager used for the EJBs."
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:128
+#, no-c-format
+msgid ""
+"To make it easier to determine whether or not a transaction is currently "
+"active for the requesting thread, the <literal>isTransactionActive()</"
+"literal> method can be used. The SPI implementation should query the same "
+"JTA transaction manager used for the EJBs."
+msgstr ""
+
+#. Tag: title
+#: ri-spi.xml:137
+#, no-c-format
+msgid "The application context"
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:139
 #, no-c-format
 msgid ""
 "Web Beans expects the Application Server or other container to provide the "
@@ -261,13 +342,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:119
+#: ri-spi.xml:152
 #, no-c-format
 msgid "Bootstrap and shutdown"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:120
+#: ri-spi.xml:153
 #, no-c-format
 msgid ""
 "The <literal>org.jboss.webbeans.bootstrap.api.Bootstrap</literal> interface "
@@ -278,7 +359,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:129
+#: ri-spi.xml:162
 #, no-c-format
 msgid ""
 "The bootstrap is split into phases, bootstrap initialization and bootstrap. "
@@ -289,7 +370,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:137
+#: ri-spi.xml:170
 #, no-c-format
 msgid ""
 "To initialize the bootstrap you call <literal>Bootstrap.initialize()</"
@@ -301,7 +382,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:147
+#: ri-spi.xml:180
 #, no-c-format
 msgid ""
 "Having called <literal>initialize()</literal>, the <literal>Manager</"
@@ -310,7 +391,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:153
+#: ri-spi.xml:186
 #, no-c-format
 msgid ""
 "To boot the container you call <literal>Bootstrap.boot()</literal>. Before "
@@ -320,7 +401,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:161
+#: ri-spi.xml:194
 #, no-c-format
 msgid ""
 "To shutdown the container you call <literal>Bootstrap.shutdown()</literal>. "
@@ -328,13 +409,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:170
+#: ri-spi.xml:203
 #, no-c-format
 msgid "JNDI"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:172
+#: ri-spi.xml:205
 #, no-c-format
 msgid ""
 "The Web Beans RI implements JNDI binding and lookup according to standards, "
@@ -344,7 +425,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri-spi.xml:180
+#: ri-spi.xml:213
 #, no-c-format
 msgid ""
 "<![CDATA[public interface NamingContext extends Serializable {\n"
@@ -371,13 +452,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:185
+#: ri-spi.xml:218
 #, no-c-format
 msgid "Resource loading"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:187
+#: ri-spi.xml:220
 #, no-c-format
 msgid ""
 "The Web Beans RI needs to load classes and resources from the classpath at "
@@ -388,7 +469,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri-spi.xml:195
+#: ri-spi.xml:228
 #, no-c-format
 msgid ""
 "<![CDATA[\n"
@@ -423,13 +504,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:200
+#: ri-spi.xml:233
 #, no-c-format
 msgid "Servlet injection"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:202
+#: ri-spi.xml:235
 #, no-c-format
 msgid ""
 "Java EE / Servlet does not provide any hooks which can be used to provide "
@@ -438,7 +519,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:208
+#: ri-spi.xml:241
 #, no-c-format
 msgid ""
 "To be compliant with JSR-299, the container should request servlet injection "
@@ -447,7 +528,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:214
+#: ri-spi.xml:247
 #, no-c-format
 msgid ""
 "To perform injection on a servlet call <literal>WebBeansManager.injectServlet"
@@ -456,13 +537,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:225
+#: ri-spi.xml:258
 #, no-c-format
 msgid "The contract with the container"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:227
+#: ri-spi.xml:260
 #, no-c-format
 msgid ""
 "There are a number of requirements that the Web Beans RI places on the "
@@ -470,13 +551,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: ri-spi.xml:235
+#: ri-spi.xml:268
 #, no-c-format
 msgid "Classloader isolation"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:239
+#: ri-spi.xml:272
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans RI into an environment that supports "
@@ -486,13 +567,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: ri-spi.xml:248
+#: ri-spi.xml:281
 #, no-c-format
 msgid "Servlet listener and filters"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:252
+#: ri-spi.xml:285
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans into a Servlet environment you must "
@@ -502,7 +583,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:261
+#: ri-spi.xml:294
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans into a JSF environment you must "
@@ -513,13 +594,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: ri-spi.xml:273
+#: ri-spi.xml:306
 #, no-c-format
 msgid "Session Bean Interceptor"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:277
+#: ri-spi.xml:310
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans into an EJB environment you must "
@@ -530,7 +611,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:287
+#: ri-spi.xml:320
 #, no-c-format
 msgid ""
 "You must register the <literal>SessionBeanInterceptor</literal> as the inner "
@@ -538,13 +619,13 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: ri-spi.xml:295
+#: ri-spi.xml:328
 #, no-c-format
 msgid "The <literal>webbeans-ri.jar</literal>"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:299
+#: ri-spi.xml:332
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans into an environment that supports "

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-08 15:53+0000\n"
+"POT-Creation-Date: 2009-03-17 20:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -100,4 +100,22 @@ msgstr ""
 #: Author_Group.xml:50
 #, no-c-format
 msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
+msgstr ""
+
+#. Tag: othercredit
+#: Author_Group.xml:55
+#, no-c-format
+msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
+msgstr ""
+
+#. Tag: contrib
+#: Author_Group.xml:58
+#, no-c-format
+msgid "Simplified Chinese Translation"
+msgstr ""
+
+#. Tag: orgname
+#: Author_Group.xml:60
+#, no-c-format
+msgid "Kava Community"
 msgstr ""

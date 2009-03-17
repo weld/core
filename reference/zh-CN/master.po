@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-02-07 18:51+0000\n"
+"POT-Creation-Date: 2009-03-17 20:14+0000\n"
 "PO-Revision-Date: 2009-03-13 14:08+0800\n"
 "Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
@@ -22,30 +22,47 @@ msgstr "注释"
 #. Tag: para
 #: master.xml:11
 #, no-c-format
-msgid "JSR-299 has recently changed its name from \"Web Beans\" to \"Java Contexts and Dependency Injection\". The reference guide still refers to JSR-299 as \"Web Beans\" and the JSR-299 Reference Implementation as the \"Web Beans RI\". Other documentation, blogs, forum posts etc. may use the new nomenclature, including the new name for the JSR-299 Reference Implementation - \"Web Beans\"."
-msgstr "JSR-299最近将名字从\"Web Beans\"改为\"Java上下文和依赖注入\"。参考指南仍然使用\"Web Beans\"名称，参考实现仍然使用\"Web Beans RI\"名称。其他的文档，博客，论坛帖子等等可能使用新的命名，包括新的JSR-299参考实现的名字- \"Web Beans\"。"
+msgid ""
+"JSR-299 has recently changed its name from \"Web Beans\" to \"Java Contexts "
+"and Dependency Injection\". The reference guide still refers to JSR-299 as "
+"\"Web Beans\" and the JSR-299 Reference Implementation as the \"Web Beans RI"
+"\". Other documentation, blogs, forum posts etc. may use the new "
+"nomenclature, including the new name for the JSR-299 Reference "
+"Implementation - \"Web Beans\"."
+msgstr ""
+"JSR-299最近将名字从\"Web Beans\"改为\"Java上下文和依赖注入\"。参考指南仍然使"
+"用\"Web Beans\"名称，参考实现仍然使用\"Web Beans RI\"名称。其他的文档，博客，"
+"论坛帖子等等可能使用新的命名，包括新的JSR-299参考实现的名字- \"Web Beans\"。"
+
+#. Tag: para
+#: master.xml:20
+#, no-c-format
+msgid ""
+"You'll also find that some of the more recent functionality to be specified "
+"is missing (such as producer fields, realization, asynchronous events, XML "
+"mapping of EE resources)."
+msgstr ""
 
 #. Tag: title
-#: master.xml:24
+#: master.xml:30
 #, no-c-format
 msgid "Using contextual objects"
 msgstr "使用具备上下文的对象"
 
 #. Tag: title
-#: master.xml:37
+#: master.xml:43
 #, no-c-format
 msgid "Developing loosely-coupled code"
 msgstr "开发松耦合的代码"
 
 #. Tag: title
-#: master.xml:47
+#: master.xml:53
 #, no-c-format
 msgid "Making the most of strong typing"
 msgstr "最大程度地使用强类型"
 
 #. Tag: title
-#: master.xml:58
+#: master.xml:64
 #, no-c-format
 msgid "Web Beans and the Java EE ecosystem"
 msgstr "Web Beans和Java EE生态系统"
-

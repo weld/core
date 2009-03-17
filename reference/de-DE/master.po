@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-02-07 18:51+0000\n"
+"POT-Creation-Date: 2009-03-17 20:14+0000\n"
 "PO-Revision-Date: 2009-02-22 13:55+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -39,27 +39,35 @@ msgstr ""
 "verwenden möglicherweise bereits die neue Namensgebung, darunter den neuen "
 "Namen für die JSR-299 Referenzimplementierung - \"Web Beans\"."
 
+#. Tag: para
+#: master.xml:20
+#, no-c-format
+msgid ""
+"You'll also find that some of the more recent functionality to be specified "
+"is missing (such as producer fields, realization, asynchronous events, XML "
+"mapping of EE resources)."
+msgstr ""
+
 #. Tag: title
-#: master.xml:24
+#: master.xml:30
 #, no-c-format
 msgid "Using contextual objects"
 msgstr "Verwendung kontextueller Objekte"
 
 #. Tag: title
-#: master.xml:37
+#: master.xml:43
 #, no-c-format
 msgid "Developing loosely-coupled code"
 msgstr "Entwicklung lose gepaarten Codes"
 
 #. Tag: title
-#: master.xml:47
+#: master.xml:53
 #, no-c-format
 msgid "Making the most of strong typing"
 msgstr "Das meiste aus starkem Tippen machen "
 
 #. Tag: title
-#: master.xml:58
+#: master.xml:64
 #, no-c-format
 msgid "Web Beans and the Java EE ecosystem"
 msgstr "Web Beans und das Java EE-Ökosystem"
-

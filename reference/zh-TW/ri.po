@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ri\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-02-01 21:16+0000\n"
+"POT-Creation-Date: 2009-03-17 20:14+0000\n"
 "PO-Revision-Date: 2009-01-19 18:21+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -58,8 +58,8 @@ msgstr "最新版本的 Web Beans RI、"
 
 #. Tag: para
 #: ri.xml:25
-#, no-c-format
-msgid "JBoss AS 5.0.0.GA, and"
+#, fuzzy, no-c-format
+msgid "JBoss AS 5.0.1.GA, and"
 msgstr "JBoss AS 5.0.0.GA，以及"
 
 #. Tag: para
@@ -70,10 +70,10 @@ msgstr "Ant 1.7.0。"
 
 #. Tag: para
 #: ri.xml:32
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "Currently, the Web Beans RI only runs on JBoss Application Server 5. You'll "
-"need to download JBoss AS 5.0.0.GA from <ulink url=\"http://www.jboss.org/"
+"need to download JBoss AS 5.0.1.GA from <ulink url=\"http://www.jboss.org/"
 "jbossas/downloads/\">jboss.org</ulink>, and unzip it. For example:"
 msgstr ""
 "目前，Web Beans RI 只能在 JBoss Application Server 5 上執行。您將需要由 "
@@ -82,10 +82,10 @@ msgstr ""
 
 #. Tag: programlisting
 #: ri.xml:39
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[$ cd /Applications\n"
-"$ unzip ~/jboss-5.0.0.GA.zip]]>"
+"$ unzip ~/jboss-5.0.1.GA.zip]]>"
 msgstr ""
 "<![CDATA[$ cd /Applications\n"
 "$ unzip ~/jboss-5.0.0.GA.zip]]>"
@@ -124,30 +124,18 @@ msgstr ""
 
 #. Tag: programlisting
 #: ri.xml:56
-#, no-c-format
-msgid "jboss.home=/Applications/jboss-5.0.0.GA"
+#, fuzzy, no-c-format
+msgid "jboss.home=/Applications/jboss-5.0.1.GA"
 msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
 
 #. Tag: para
-#: ri.xml:58
-#, no-c-format
+#: ri.xml:59
+#, fuzzy, no-c-format
 msgid ""
-"As Web Beans is a new piece of software, you need to update JBoss AS to run "
-"the Web Beans RI. Future versions of JBoss AS will include these updates, "
-"and this step won't be necessary."
-msgstr ""
-"因為 Web Bean 是個新的軟體，您需要更新 JBoss AS 才可執行 Web Bean RI。未來版"
-"本的 JBoss AS 將會包含這些更新，因此這個步驟將可被忽略。"
-
-#. Tag: para
-#: ri.xml:65
-#, no-c-format
-msgid ""
-"Currently, two updates are needed. Firstly, a new deployer, "
-"<literal>webbeans.deployer</literal> is added. This adds supports for Web "
-"Bean archives to JBoss AS, and allows the Web Beans RI to query the EJB3 "
-"container and discover which EJBs are installed in your application. "
-"Secondly, an update to JBoss EJB3 is needed."
+"A new deployer, <literal>webbeans.deployer</literal> is added to JBoss AS. "
+"This adds supports for Web Bean archives to JBoss AS, and allows the Web "
+"Beans RI to query the EJB3 container and discover which EJBs are installed "
+"in your application."
 msgstr ""
 "目前您需要兩個更新。首先一個新的建置器 <literal>webbeans.deployer</literal> "
 "被新增了。這可為 JBoss AS 提供 Web Bean archive，並能讓 Web Bean RI 查詢 "
@@ -155,17 +143,23 @@ msgstr ""
 "EJB3 的更新。"
 
 #. Tag: para
-#: ri.xml:74
+#: ri.xml:67
 #, no-c-format
+msgid "Web Beans is bundled with JBoss AS 5.1 and above."
+msgstr ""
+
+#. Tag: para
+#: ri.xml:72
+#, fuzzy, no-c-format
 msgid ""
-"To install the update, you'll need Ant 1.7.0 installed, and the "
+"To install Web Beans, you'll need Ant 1.7.0 installed, and the "
 "<literal>ANT_HOME</literal> environment variable set. For example:"
 msgstr ""
 "若要安裝更新，您將需要先安裝 Ant 1.7.0，並設置 <literal>ANT_HOME</literal> 環"
 "境變數。例如："
 
 #. Tag: programlisting
-#: ri.xml:79
+#: ri.xml:77
 #, no-c-format
 msgid ""
 "$ unzip apache-ant-1.7.0.zip\n"
@@ -175,17 +169,17 @@ msgstr ""
 "$ export ANT_HOME=~/apache-ant-1.7.0"
 
 #. Tag: para
-#: ri.xml:81
-#, no-c-format
+#: ri.xml:79
+#, fuzzy, no-c-format
 msgid ""
 "Then, you can install the update. The update script will use Maven to "
-"download the Web Beans and EJB3 automatically."
+"download Web Beans automatically."
 msgstr ""
 "接下來，您便可安裝更新。更新 script 將會使用 Maven 來自動地下載 Web Bean 以"
 "及 EJB3。"
 
 #. Tag: programlisting
-#: ri.xml:86
+#: ri.xml:84
 #, fuzzy, no-c-format
 msgid ""
 "$ cd webbeans-$VERSION/jboss-as\n"
@@ -195,26 +189,26 @@ msgstr ""
 "$ ant update"
 
 #. Tag: para
-#: ri.xml:88
+#: ri.xml:86
 #, no-c-format
 msgid "Now, you're ready to deploy your first example!"
 msgstr "現在，您已準備好建置您的第一個範例！"
 
 #. Tag: para
-#: ri.xml:93
+#: ri.xml:91
 #, no-c-format
 msgid ""
 "The build scripts for the examples offer a number of targets, these are:"
 msgstr "這些範例的建置 script 提供了一些目標，它們包含了："
 
 #. Tag: para
-#: ri.xml:99
+#: ri.xml:97
 #, no-c-format
 msgid "<literal>ant restart</literal> - deploy the example in exploded format"
 msgstr "<literal>ant restart</literal> - 以分解的格式來建置範例"
 
 #. Tag: para
-#: ri.xml:105
+#: ri.xml:103
 #, no-c-format
 msgid ""
 "<literal>ant explode</literal> - update an exploded example, without "
@@ -223,32 +217,32 @@ msgstr ""
 "<literal>ant explode</literal> - 在不重新建置的情況下更新一個已分解的範例"
 
 #. Tag: para
-#: ri.xml:111
+#: ri.xml:109
 #, no-c-format
 msgid ""
 "<literal>ant deploy</literal> - deploy the example in compressed jar format"
 msgstr "<literal>ant deploy</literal> - 以 jar 格式來建置範例"
 
 #. Tag: para
-#: ri.xml:116
+#: ri.xml:114
 #, no-c-format
 msgid "<literal>ant undeploy</literal> - remove the example from the server"
 msgstr "<literal>ant undeploy</literal> - 將範例由伺服器中移除"
 
 #. Tag: para
-#: ri.xml:121
+#: ri.xml:119
 #, no-c-format
 msgid "<literal>ant clean</literal> - clean the example"
 msgstr "<literal>ant clean</literal> - 清除範例"
 
 #. Tag: para
-#: ri.xml:128
+#: ri.xml:126
 #, no-c-format
 msgid "To deploy the numberguess example:"
 msgstr "若要建置 numberguess 範例："
 
 #. Tag: programlisting
-#: ri.xml:132
+#: ri.xml:130
 #, no-c-format
 msgid ""
 "$ cd examples/numberguess\n"
@@ -258,25 +252,25 @@ msgstr ""
 "ant deploy"
 
 #. Tag: para
-#: ri.xml:134
+#: ri.xml:132
 #, no-c-format
 msgid "Start JBoss AS:"
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:138
+#: ri.xml:136
 #, fuzzy, no-c-format
 msgid "$ /Application/jboss-5.0.0.GA/bin/run.sh"
 msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
 
 #. Tag: para
-#: ri.xml:141
+#: ri.xml:139
 #, no-c-format
 msgid "If you use Windows, use the <literal>run.bat</literal>script."
 msgstr ""
 
 #. Tag: para
-#: ri.xml:146
+#: ri.xml:144
 #, no-c-format
 msgid ""
 "Wait for the application to deploy, and enjoy hours of fun at <ulink url="
@@ -286,7 +280,7 @@ msgstr ""
 "numberguess\"></ulink> 花上幾個小時！"
 
 #. Tag: para
-#: ri.xml:151
+#: ri.xml:149
 #, no-c-format
 msgid ""
 "The Web Beans RI includes a second simple example that will translate your "
@@ -299,7 +293,7 @@ msgstr ""
 "企業級的 bean，封裝於一個 EJB 模組中。若要嘗試："
 
 #. Tag: programlisting
-#: ri.xml:158
+#: ri.xml:156
 #, no-c-format
 msgid ""
 "$ cd examples/translator\n"
@@ -309,7 +303,7 @@ msgstr ""
 "ant deploy"
 
 #. Tag: para
-#: ri.xml:160
+#: ri.xml:158
 #, no-c-format
 msgid ""
 "Wait for the application to deploy, and visit <ulink url=\"http://"
@@ -319,13 +313,13 @@ msgstr ""
 "translator\"></ulink>！"
 
 #. Tag: title
-#: ri.xml:166
+#: ri.xml:164
 #, no-c-format
 msgid "The numberguess example"
 msgstr "numberguess 範例"
 
 #. Tag: para
-#: ri.xml:168
+#: ri.xml:166
 #, no-c-format
 msgid ""
 "In the numberguess application you get given 10 attempts to guess a number "
@@ -336,7 +330,7 @@ msgstr ""
 "碼。每當猜過一遍，系統便會告知您您所輸入的數字是否太大或太小。"
 
 #. Tag: para
-#: ri.xml:174
+#: ri.xml:172
 #, no-c-format
 msgid ""
 "The numberguess example is comprised of a number of Web Beans, configuration "
@@ -347,7 +341,7 @@ msgstr ""
 "並且封裝為 war。讓我們先從配置檔案開始。"
 
 #. Tag: para
-#: ri.xml:180
+#: ri.xml:178
 #, no-c-format
 msgid ""
 "All the configuration files for this example are located in <literal>WEB-INF/"
@@ -360,7 +354,7 @@ msgstr ""
 "用 Facelet 的 <literal>faces-config.xml</literal>："
 
 #. Tag: programlisting
-#: ri.xml:188
+#: ri.xml:186
 #, no-c-format
 msgid ""
 "<![CDATA[<?xml version='1.0' encoding='UTF-8'?>\n"
@@ -390,7 +384,7 @@ msgstr ""
 "</faces-config>]]>"
 
 #. Tag: para
-#: ri.xml:190
+#: ri.xml:188
 #, no-c-format
 msgid ""
 "There is an empty <literal>web-beans.xml</literal> file, which marks this "
@@ -400,13 +394,13 @@ msgstr ""
 "Web Bean 應用程式。"
 
 #. Tag: para
-#: ri.xml:195
+#: ri.xml:193
 #, no-c-format
 msgid "Finally there is <literal>web.xml</literal>:"
 msgstr "最後為 <literal>web.xml</literal>："
 
 #. Tag: section
-#: ri.xml:197
+#: ri.xml:195
 #, no-c-format
 msgid ""
 "<programlistingco> <areaspec> <area id=\"faces.servlet\" coords=\"12\"/> "
@@ -644,7 +638,7 @@ msgstr ""
 "programlistingco>"
 
 #. Tag: para
-#: ri.xml:299
+#: ri.xml:297
 #, no-c-format
 msgid ""
 "The example exists of 4 classes, the first two of which are binding types. "
@@ -655,7 +649,7 @@ msgstr ""
 "<literal>@Random</literal> 綁定類型："
 
 #. Tag: programlisting
-#: ri.xml:305
+#: ri.xml:303
 #, no-c-format
 msgid ""
 "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
@@ -671,7 +665,7 @@ msgstr ""
 "public @interface Random {}]]>"
 
 #. Tag: para
-#: ri.xml:307
+#: ri.xml:305
 #, no-c-format
 msgid ""
 "There is also the <literal>@MaxNumber</literal> binding type, used for "
@@ -680,7 +674,7 @@ msgstr ""
 "還有個用來注入可注入之最大號碼的 <literal>@MaxNumber</literal> 綁定類型："
 
 #. Tag: programlisting
-#: ri.xml:312
+#: ri.xml:310
 #, no-c-format
 msgid ""
 "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
@@ -698,7 +692,7 @@ msgstr ""
 "]]>"
 
 #. Tag: para
-#: ri.xml:314
+#: ri.xml:312
 #, no-c-format
 msgid ""
 "The <literal>Generator</literal> class is responsible for creating the "
@@ -709,7 +703,7 @@ msgstr ""
 "過一個產生器的方式來顯示最大的可能號碼："
 
 #. Tag: programlisting
-#: ri.xml:320
+#: ri.xml:318
 #, no-c-format
 msgid ""
 "<![CDATA[@ApplicationScoped\n"
@@ -761,7 +755,7 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: ri.xml:322
+#: ri.xml:320
 #, no-c-format
 msgid ""
 "You'll notice that the <literal>Generator</literal> is application scoped; "
@@ -771,7 +765,7 @@ msgstr ""
 "會每次都一定能得到不同的亂數號碼。"
 
 #. Tag: para
-#: ri.xml:327
+#: ri.xml:325
 #, no-c-format
 msgid ""
 "The final Web Bean in the application is the session scoped <literal>Game</"
@@ -779,7 +773,7 @@ msgid ""
 msgstr "應用程式中最後的 Web Bean 為 session 導向的 <literal>Game</literal>。"
 
 #. Tag: para
-#: ri.xml:332
+#: ri.xml:330
 #, no-c-format
 msgid ""
 "You'll note that we've used the <literal>@Named</literal> annotation, so "
@@ -794,7 +788,7 @@ msgstr ""
 "<literal>FacesMessage</literal> 來給予回應。"
 
 #. Tag: programlisting
-#: ri.xml:340
+#: ri.xml:338
 #, no-c-format
 msgid ""
 "<![CDATA[package org.jboss.webbeans.examples.numberguess;\n"
@@ -992,13 +986,13 @@ msgstr ""
 "}]]>"
 
 #. Tag: title
-#: ri.xml:344
+#: ri.xml:342
 #, no-c-format
 msgid "The translator example"
 msgstr "轉譯器範例"
 
 #. Tag: para
-#: ri.xml:346
+#: ri.xml:344
 #, no-c-format
 msgid ""
 "The translator example will take any sentences you enter, and translate them "
@@ -1006,7 +1000,7 @@ msgid ""
 msgstr "轉譯器範例能接受您所輸入的任何句子，然後將它們翻譯成拉丁文。"
 
 #. Tag: para
-#: ri.xml:351
+#: ri.xml:349
 #, no-c-format
 msgid ""
 "The translator example is built as an ear, and contains EJBs. As a result, "
@@ -1016,7 +1010,7 @@ msgstr ""
 "例要複雜得多。"
 
 #. Tag: para
-#: ri.xml:357
+#: ri.xml:355
 #, no-c-format
 msgid ""
 "EJB 3.1 and Jave EE 6 allow you to package EJBs in a war, which will make "
@@ -1025,7 +1019,7 @@ msgstr ""
 "EJB 3.1 和 Jave EE 6 能讓您將 EJB 封裝為 war，並使得該結構變得更為簡樸！"
 
 #. Tag: para
-#: ri.xml:363
+#: ri.xml:361
 #, no-c-format
 msgid ""
 "First, let's take a look at the ear aggregator, which is located in "
@@ -1037,7 +1031,7 @@ msgstr ""
 "literal>："
 
 #. Tag: programlisting
-#: ri.xml:369
+#: ri.xml:367
 #, no-c-format
 msgid ""
 "<![CDATA[<plugin>\n"
@@ -1069,7 +1063,7 @@ msgstr ""
 "</plugin>]]>"
 
 #. Tag: para
-#: ri.xml:371
+#: ri.xml:369
 #, no-c-format
 msgid ""
 "Here we set the context path, which gives us a nice url (<ulink url=\"http://"
@@ -1081,7 +1075,7 @@ msgstr ""
 "translator</ulink>）。"
 
 #. Tag: para
-#: ri.xml:377
+#: ri.xml:375
 #, no-c-format
 msgid ""
 "If you aren't using Maven to generate these files, you would need "
@@ -1091,7 +1085,7 @@ msgstr ""
 "xml</literal>："
 
 #. Tag: programlisting
-#: ri.xml:382
+#: ri.xml:380
 #, no-c-format
 msgid ""
 "<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1137,11 +1131,11 @@ msgstr ""
 "</application>]]>"
 
 #. Tag: para
-#: ri.xml:385
-#, no-c-format
+#: ri.xml:383
+#, fuzzy, no-c-format
 msgid ""
 "Next, lets look at the war. Just as in the numberguess example, we have a "
-"<literal>faces-config.xml</literal> (to enabled Facelets) and a <literal>web."
+"<literal>faces-config.xml</literal> (to enable Facelets) and a <literal>web."
 "xml</literal> (to enable JSF) in <literal>WebContent/WEB-INF</literal>."
 msgstr ""
 "接下來，讓我們看一下 war。就和 numberguess 範例中一樣，我們在 "
@@ -1150,7 +1144,7 @@ msgstr ""
 "JSF）。"
 
 #. Tag: para
-#: ri.xml:392
+#: ri.xml:390
 #, no-c-format
 msgid ""
 "More intersting is the facelet used to translate text. Just as in the "
@@ -1161,7 +1155,7 @@ msgstr ""
 "個圍繞著 form 的頁面格式（在此將省略不提）："
 
 #. Tag: programlisting
-#: ri.xml:398
+#: ri.xml:396
 #, no-c-format
 msgid ""
 "<![CDATA[<h:form id=\"NumberGuessMain\">\n"
@@ -1221,7 +1215,7 @@ msgstr ""
 "</h:form>]]>"
 
 #. Tag: para
-#: ri.xml:400
+#: ri.xml:398
 #, no-c-format
 msgid ""
 "The user can enter some text in the lefthand textarea, and hit the translate "
@@ -1231,7 +1225,7 @@ msgstr ""
 "看結果。"
 
 #. Tag: para
-#: ri.xml:405
+#: ri.xml:403
 #, no-c-format
 msgid ""
 "Finally, let's look at the ejb module, <literal>webbeans-translator-ejb</"
@@ -1244,7 +1238,7 @@ msgstr ""
 "為包含著 Web Bean 的空 <literal>web-beans.xml</literal>。"
 
 #. Tag: para
-#: ri.xml:413
+#: ri.xml:411
 #, no-c-format
 msgid ""
 "We've saved the most interesting bit to last, the code! The project has two "
@@ -1261,7 +1255,7 @@ msgstr ""
 "如何了，因此我們在此將只著重於其它較有趣的部份。"
 
 #. Tag: para
-#: ri.xml:423
+#: ri.xml:421
 #, no-c-format
 msgid ""
 "Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal> "
@@ -1273,7 +1267,7 @@ msgstr ""
 "始化："
 
 #. Tag: programlisting
-#: ri.xml:429
+#: ri.xml:427
 #, no-c-format
 msgid ""
 "<![CDATA[public class TextTranslator { \n"
@@ -1299,7 +1293,7 @@ msgstr ""
 "      this.sentenceTranslator = sentenceTranslator;]]>"
 
 #. Tag: para
-#: ri.xml:431
+#: ri.xml:429
 #, no-c-format
 msgid ""
 "<literal>TextTranslator</literal> is a stateless bean (with a local business "
@@ -1310,7 +1304,7 @@ msgstr ""
 "面）- 當然，我們無法開發一個完整的轉譯器。"
 
 #. Tag: para
-#: ri.xml:437
+#: ri.xml:435
 #, no-c-format
 msgid ""
 "Finally, there is UI orientated controller, that collects the text from the "
@@ -1321,7 +1315,7 @@ msgstr ""
 "請求導向、被命名，而有狀態的 session bean，並且會注入轉譯器。"
 
 #. Tag: programlisting
-#: ri.xml:443
+#: ri.xml:441
 #, no-c-format
 msgid ""
 "<![CDATA[@Stateful\n"
@@ -1341,13 +1335,13 @@ msgstr ""
 "   @Current TextTranslator translator;]]>"
 
 #. Tag: para
-#: ri.xml:445
+#: ri.xml:443
 #, no-c-format
 msgid "The bean also has getters and setters for all the fields on the page."
 msgstr "這個 bean 針對於頁面上所有欄位都有 getter 與 setter。"
 
 #. Tag: para
-#: ri.xml:449
+#: ri.xml:447
 #, no-c-format
 msgid "As this is a stateful session bean, we have to have a remove method:"
 msgstr ""
@@ -1355,7 +1349,7 @@ msgstr ""
 "method："
 
 #. Tag: programlisting
-#: ri.xml:453
+#: ri.xml:451
 #, no-c-format
 msgid ""
 "<![CDATA[   @Remove\n"
@@ -1371,7 +1365,7 @@ msgstr ""
 "   }]]>"
 
 #. Tag: para
-#: ri.xml:455
+#: ri.xml:453
 #, no-c-format
 msgid ""
 "The Web Beans manager will call the remove method for you when the bean is "
@@ -1381,20 +1375,20 @@ msgstr ""
 "請求結束之後。"
 
 #. Tag: para
-#: ri.xml:461
-#, no-c-format
+#: ri.xml:459
+#, fuzzy, no-c-format
 msgid ""
-"That concludes our short tour of the Web Beans RI examples. For more on the "
-"RI, or to help out, please visit <ulink url=\"http://www.seamframework.org/"
-"WebBeans/Development\">http://www.seamframework.org/WebBeans/Development</"
-"ulink>."
+"That concludes our short tour of the Web Beans examples. For more on Web "
+"Beans , or to help out, please visit <ulink url=\"http://www.seamframework."
+"org/WebBeans/Development\">http://www.seamframework.org/WebBeans/"
+"Development</ulink>."
 msgstr ""
 "這結束了我們簡短的 Web Bean RI 範例。如欲取得更多有關於 RI 的相關資訊，或是提"
 "供相關協助，請參閱 <ulink url=\"http://www.seamframework.org/WebBeans/"
 "Development\">http://www.seamframework.org/WebBeans/Development</ulink>。"
 
 #. Tag: para
-#: ri.xml:467
+#: ri.xml:465
 #, no-c-format
 msgid ""
 "We need help in all areas - bug fixing, writing new features, writing "
@@ -1402,3 +1396,11 @@ msgid ""
 msgstr ""
 "我們在所有層面都需要協助 - 錯誤修正、編寫新功能、編寫範例，以及翻譯此參照指"
 "南。"
+
+#~ msgid ""
+#~ "As Web Beans is a new piece of software, you need to update JBoss AS to "
+#~ "run the Web Beans RI. Future versions of JBoss AS will include these "
+#~ "updates, and this step won't be necessary."
+#~ msgstr ""
+#~ "因為 Web Bean 是個新的軟體，您需要更新 JBoss AS 才可執行 Web Bean RI。未來"
+#~ "版本的 JBoss AS 將會包含這些更新，因此這個步驟將可被忽略。"

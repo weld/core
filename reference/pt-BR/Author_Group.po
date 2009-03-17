@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-02-01 21:16+0000\n"
+"POT-Creation-Date: 2009-03-17 20:14+0000\n"
 "PO-Revision-Date: 2009-02-28 15:09-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
@@ -22,8 +22,12 @@ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
 #. Tag: affiliation
 #: Author_Group.xml:7
 #, no-c-format
-msgid "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
-msgstr "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
+msgid ""
+"<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat Middleware "
+"LLC</orgname>"
+msgstr ""
+"<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat Middleware "
+"LLC</orgname>"
 
 #. Tag: author
 #: Author_Group.xml:12
@@ -34,8 +38,12 @@ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
 #. Tag: affiliation
 #: Author_Group.xml:15
 #, no-c-format
-msgid "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
-msgstr "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
+msgid ""
+"<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> "
+"<orgname>Red Hat Middleware LLC</orgname>"
+msgstr ""
+"<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> "
+"<orgname>Red Hat Middleware LLC</orgname>"
 
 #. Tag: othercredit
 #: Author_Group.xml:21
@@ -44,8 +52,7 @@ msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
 msgstr "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
 
 #. Tag: contrib
-#: Author_Group.xml:24
-#: Author_Group.xml:53
+#: Author_Group.xml:24 Author_Group.xml:53
 #, no-c-format
 msgid "Italian Translation"
 msgstr "Italian Translation"
@@ -63,9 +70,7 @@ msgid "Spanish Translation"
 msgstr "Spanish Translation"
 
 #. Tag: orgname
-#: Author_Group.xml:31
-#: Author_Group.xml:39
-#: Author_Group.xml:47
+#: Author_Group.xml:31 Author_Group.xml:39 Author_Group.xml:47
 #, no-c-format
 msgid "Red Hat Middleware LLC"
 msgstr "Red Hat Middleware LLC"
@@ -100,3 +105,20 @@ msgstr "Traditional Chinese Translation"
 msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
 msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
 
+#. Tag: othercredit
+#: Author_Group.xml:55
+#, fuzzy, no-c-format
+msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
+msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
+
+#. Tag: contrib
+#: Author_Group.xml:58
+#, fuzzy, no-c-format
+msgid "Simplified Chinese Translation"
+msgstr "Traditional Chinese Translation"
+
+#. Tag: orgname
+#: Author_Group.xml:60
+#, no-c-format
+msgid "Kava Community"
+msgstr ""
