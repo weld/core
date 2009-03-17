@@ -1,6 +1,5 @@
 package org.jboss.webbeans.util.xml;
 
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,104 +10,129 @@ import java.util.Set;
 import javax.inject.DefinitionException;
 
 import org.dom4j.Element;
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
+import org.jboss.webbeans.resources.DefaultResourceLoader;
+import org.jboss.webbeans.resources.spi.ResourceLoader;
 
 public class ParseXmlHelper
 {
-   private static List<ClassReceiver> receivers;
+   private static List<AnnotatedItemReceiver> receivers;
+   
+   private static ResourceLoader resourceLoader;
 
    static
    {
       receivers = initializeReceivers();
+      resourceLoader = new DefaultResourceLoader();
    }
 
-   public static Set<AnnotatedElement> getBeanClasses(List<Element> beans)
+   public static Set<AnnotatedItem<?, ?>> getBeanItems(List<Element> beans)
    {
-      Set<AnnotatedElement> result = new HashSet<AnnotatedElement>();
+      Set<AnnotatedItem<?, ?>> result = new HashSet<AnnotatedItem<?, ?>>();
 
       for (Element bean : beans)
-         result.add(reciveBeanClass(bean));
+         result.add(reciveBeanItem(bean));
 
       return result;
    }
 
-   private static AnnotatedElement reciveBeanClass(Element element)
+   private static AnnotatedItem<?, ?> reciveBeanItem(Element element)
    {
-      for (ClassReceiver receiver : receivers)
+      for (AnnotatedItemReceiver receiver : receivers)
       {
          if (receiver.accept(element))
          {
-            return receiver.reciveClass(element);
+            return receiver.reciveAnnotatedItem(element);
          }
       }
 
       throw new DefinitionException("definition of a bean " + element.getName() + " is incorrect");
    }
 
-   private static List<ClassReceiver> initializeReceivers()
+   private static List<AnnotatedItemReceiver> initializeReceivers()
    {
-      List<ClassReceiver> receivers = new ArrayList<ClassReceiver>();
+      List<AnnotatedItemReceiver> receivers = new ArrayList<AnnotatedItemReceiver>();
 
-      ClassReceiver jmsResourceClassReceiver = new ClassReceiver()
+      AnnotatedItemReceiver jmsResourceReceiver = new AnnotatedItemReceiver()
       {
          public boolean accept(Element element)
          {
             return isJMSResource(element);
          }
 
-         public AnnotatedElement reciveClass(Element element)
+         public AnnotatedItem<?, ?> reciveAnnotatedItem(Element element)
          {
-            return reciveJMSResourceClass(element);
+            return reciveJMSResourceItem(element);
          }
 
       };
-      ClassReceiver resourceClassReceiver = new ClassReceiver()
+      AnnotatedItemReceiver resourceReceiver = new AnnotatedItemReceiver()
       {
          public boolean accept(Element element)
          {
             return isResource(element);
          }
 
-         public AnnotatedElement reciveClass(Element element)
+         public AnnotatedItem<?, ?> reciveAnnotatedItem(Element element)
          {
-            return reciveResourceClass(element);
+            return reciveResourceItem(element);
          }
 
       };
-      ClassReceiver sessionBeanClassReceiver = new ClassReceiver()
+      AnnotatedItemReceiver sessionBeanReceiver = new AnnotatedItemReceiver()
       {
          public boolean accept(Element element)
          {
             return isSessionBean(element);
          }
 
-         public AnnotatedElement reciveClass(Element element)
+         public AnnotatedItem<?, ?> reciveAnnotatedItem(Element element)
          {
-            return reciveSessionBeanClass(element);
+            return reciveSessionBeanItem(element);
          }
 
       };
-      ClassReceiver simpleBeanClassReceiver = new ClassReceiver()
+      AnnotatedItemReceiver simpleBeanReceiver = new AnnotatedItemReceiver()
       {
          public boolean accept(Element element)
          {
             return isSimpleBean(element);
          }
 
-         public AnnotatedElement reciveClass(Element element)
+         public AnnotatedItem<?, ?> reciveAnnotatedItem(Element element)
          {
-            return reciveSimpleBeanClass(element);
+            return reciveSimpleBeanItem(element);
          }
 
       };
-
-      receivers.add(jmsResourceClassReceiver);
-      receivers.add(resourceClassReceiver);
-      receivers.add(sessionBeanClassReceiver);
-      receivers.add(simpleBeanClassReceiver);
+      
+      //order of elements is important
+      receivers.add(jmsResourceReceiver);
+      receivers.add(resourceReceiver);
+      receivers.add(sessionBeanReceiver);
+      receivers.add(simpleBeanReceiver);
 
       return receivers;
    }
+   
+   private static boolean isJMSResource(Element element)
+   {
+      if (element.getNamespace().getURI().equalsIgnoreCase(XmlConstants.JAVA_EE_NAMESPACE) && 
+            (element.getName().equalsIgnoreCase(XmlConstants.TOPIC) || 
+                  element.getName().equalsIgnoreCase(XmlConstants.QUEUE)))
+         return true;
+      return false;
+   }
 
+   private static AnnotatedItem<?, ?> reciveJMSResourceItem(Element element)
+   {
+      // TODO:
+      return null;
+   }
+   
    private static boolean isResource(Element element)
    {
       Iterator<?> elIterator = element.elementIterator();
@@ -126,27 +150,27 @@ public class ParseXmlHelper
       return false;
    }
 
-   private static AnnotatedElement reciveResourceClass(Element element)
+   private static AnnotatedItem<?, ?> reciveResourceItem(Element element)
    {
       // TODO:
       return null;
    }
-
-   private static boolean isJMSResource(Element element)
+   
+   private static boolean isSessionBean(Element element)
    {
-      if (element.getNamespace().getURI().equalsIgnoreCase(XmlConstants.JAVA_EE_NAMESPACE) && 
-            (element.getName().equalsIgnoreCase(XmlConstants.TOPIC) || 
-                  element.getName().equalsIgnoreCase(XmlConstants.QUEUE)))
+      ManagerImpl manager = CurrentManager.rootManager();
+      if (manager.getEjbDescriptorCache().containsKey(element.getName()) ||
+            element.attribute(XmlConstants.EJB_NAME) != null)
          return true;
       return false;
    }
 
-   private static AnnotatedElement reciveJMSResourceClass(Element element)
+   private static AnnotatedItem<?, ?> reciveSessionBeanItem(Element element)
    {
       // TODO:
       return null;
    }
-
+   
    private static boolean isSimpleBean(Element element)
    {
       Class<?> beanClass = loadClass(element);
@@ -158,11 +182,11 @@ public class ParseXmlHelper
       return false;
    }
 
-   private static AnnotatedElement reciveSimpleBeanClass(Element element)
+   private static AnnotatedItem<?, ?> reciveSimpleBeanItem(Element element)
    {
       Class<?> beanClass = loadClass(element);
 
-      if (beanClass.isMemberClass())
+      if (!Modifier.isStatic(beanClass.getModifiers()) && beanClass.isMemberClass())
          throw new DefinitionException("class " + beanClass + " is a non-static inner class");
 
       // if (beanClass.getTypeParameters().length > 0)
@@ -175,19 +199,7 @@ public class ParseXmlHelper
       // throw new DefinitionException("class " + beanClass +
       // " is an abstract and not Decorator");
 
-      return beanClass;
-   }
-
-   private static boolean isSessionBean(Element element)
-   {
-      // TODO:
-      return false;
-   }
-
-   private static AnnotatedElement reciveSessionBeanClass(Element element)
-   {
-      // TODO:
-      return null;
+      return AnnotatedClassImpl.of(beanClass);
    }
 
    private static Class<?> loadClass(Element element)
@@ -195,15 +207,6 @@ public class ParseXmlHelper
       String beanUri = element.getNamespace().getURI();
       String packageName = beanUri.replaceFirst(XmlConstants.URN_PREFIX, "");
       String classPath = packageName + "." + element.getName();
-
-      try
-      {
-         return Class.forName(classPath);
-      }
-      catch (ClassNotFoundException e)
-      {
-         throw new DefinitionException("class " + classPath + " not found");
-      }
-
+      return resourceLoader.classForName(classPath);
    }
 }

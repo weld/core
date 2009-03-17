@@ -15,15 +15,16 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.jboss.webbeans.introspector.AnnotatedItem;
 
 public class XmlParserImpl // implements XmlParser
 {
 
    private static Logger log = Logger.getLogger(XmlParserImpl.class);
    
-   public Set<AnnotatedElement> parse(Set<URL> xmls)
+   public Set<AnnotatedItem<?, ?>> parse(Set<URL> xmls)
    {
-      Set<AnnotatedElement> result = new HashSet<AnnotatedElement>();
+      Set<AnnotatedItem<?, ?>> result = new HashSet<AnnotatedItem<?, ?>>();
 
       for (URL url : xmls)
       {
@@ -35,7 +36,7 @@ public class XmlParserImpl // implements XmlParser
             SAXReader reader = new SAXReader();
             Document document = reader.read(xmlStream);
             List<Element> beanElements = findBeans(document);
-            result.addAll(ParseXmlHelper.getBeanClasses(beanElements));
+            result.addAll(ParseXmlHelper.getBeanItems(beanElements));
          }
          catch (IOException e)
          {

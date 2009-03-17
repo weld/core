@@ -24,6 +24,8 @@ public class XmlConstants
    
    public static final String EJB = "EJB";
    
+   public static final String EJB_NAME = "ejbName";
+   
    public static final String WEB_SERVICE_REF = "WebServiceRef";
    
    public static final String TOPIC = "Topic";
