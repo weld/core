@@ -17,6 +17,7 @@
 
 package org.jboss.webbeans.context.api.helpers;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,8 +28,10 @@ import javax.context.Contextual;
  * 
  * @author Nicklas Karlsson
  */
-public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore
+public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore implements Serializable
 {
+   
+   private static final long serialVersionUID = 4770689245633688471L;
    
    // The backing map
    protected Map<Contextual<? extends Object>, Object> delegate;
