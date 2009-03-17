@@ -17,7 +17,6 @@
 
 package org.jboss.webbeans.bean.standard;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -27,7 +26,6 @@ import javax.context.CreationalContext;
 import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.literal.CurrentLiteral;
 
 /**
  * Bean for InjectionPoint metadata
@@ -38,9 +36,8 @@ import org.jboss.webbeans.literal.CurrentLiteral;
 public class InjectionPointBean extends AbstractStandardBean<InjectionPoint>
 {
    
-   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentLiteral() };
-   private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
-   private static final Set<Type> TYPES = new HashSet<Type>(Arrays.asList(InjectionPoint.class));
+   private static final long      serialVersionUID = -5040637694853267743L;
+   private static final Set<Type> TYPES            = new HashSet<Type>(Arrays.asList(new Type[] { InjectionPoint.class }));
 
    /**
     * Creates an InjectionPoint Web Bean for the injection of the containing bean owning
