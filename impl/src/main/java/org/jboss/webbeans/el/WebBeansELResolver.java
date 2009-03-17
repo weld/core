@@ -23,11 +23,6 @@ import java.util.Iterator;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 
-import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.context.DependentInstancesStore;
-import org.jboss.webbeans.context.DependentStorageRequest;
-
 /**
  * An EL-resolver against the named beans
  *  
@@ -36,6 +31,8 @@ import org.jboss.webbeans.context.DependentStorageRequest;
 public class WebBeansELResolver extends ELResolver
 {
 
+   private static final Namespace ROOT = new Namespace(null);
+   
    /**
     * @see javax.el.ELResolver#getCommonPropertyType(ELContext, Object)
     */
@@ -69,32 +66,18 @@ public class WebBeansELResolver extends ELResolver
    @Override
    public Object getValue(ELContext context, Object base, Object property)
    {
-      if (base == null && property != null)
+      if (property != null)
       {
-         DependentStorageRequest dependentStorageRequest = DependentStorageRequest.of(new DependentInstancesStore(), new Object());
-         try
+         if (base == null) 
          {
-            DependentContext.INSTANCE.setActive(true);
-            DependentContext.INSTANCE.startCollectingDependents(dependentStorageRequest);
-            Object value = CurrentManager.rootManager().getInstanceByName(property.toString());
-            if (value != null)
-            {
-               context.setPropertyResolved(true);
-            }
-            return value;
+            return new NamespacedResolver(context, ROOT, property.toString()).run().getValue();
          }
-         finally
+         else if (base instanceof Namespace) 
          {
-            DependentContext.INSTANCE.stopCollectingDependents(dependentStorageRequest);
-            // TODO kinky
-            dependentStorageRequest.getDependentInstancesStore().destroyDependentInstances(dependentStorageRequest.getKey());
-            DependentContext.INSTANCE.setActive(false);
+            return new NamespacedResolver(context, (Namespace) base, property.toString()).run().getValue();
          }
       }
-      else
-      {
-         return null;
-      }
+      return null;
    }
 
    /**

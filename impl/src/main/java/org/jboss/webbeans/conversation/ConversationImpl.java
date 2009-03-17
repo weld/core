@@ -33,7 +33,7 @@ import org.jboss.webbeans.log.Logging;
  * @see javax.context.Conversation
  */
 @RequestScoped
-@Named("javax.webbeans.conversation")
+@Named("javax.context.conversation")
 @Standard
 public class ConversationImpl implements Conversation
 {
