@@ -122,6 +122,12 @@
          </dependency>
 
          <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms</artifactId>
+            <version>1.1</version>
+         </dependency>
+
+         <dependency>
             <groupId>javax.el</groupId>
             <artifactId>el-api</artifactId>
             <version>1.2</version>

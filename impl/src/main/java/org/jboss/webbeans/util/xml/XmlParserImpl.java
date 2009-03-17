@@ -2,7 +2,6 @@ package org.jboss.webbeans.util.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.AnnotatedElement;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -69,7 +68,7 @@ public class XmlParserImpl // implements XmlParser
 
    private boolean checkElementName(Element element)
    {
-      if (element.getNamespace().getURI().equalsIgnoreCase(XmlConstants.JAVA_EE_NAMESPACE) && 
+      if (ParseXmlHelper.isJavaEeNamespace(element) && 
             (element.getName().equalsIgnoreCase(XmlConstants.DEPLOY) || 
                   element.getName().equalsIgnoreCase(XmlConstants.INTERCEPTORS) || 
                   element.getName().equalsIgnoreCase(XmlConstants.DECORATORS)))
@@ -83,7 +82,7 @@ public class XmlParserImpl // implements XmlParser
       while (elIterator.hasNext())
       {
          Element child = (Element) elIterator.next();
-         if (child.getNamespace().getURI().equalsIgnoreCase(XmlConstants.JAVA_EE_NAMESPACE) && 
+         if (ParseXmlHelper.isJavaEeNamespace(child) && 
                (child.getName().equalsIgnoreCase(XmlConstants.BINDING_TYPE) || 
                      child.getName().equalsIgnoreCase(XmlConstants.INTERCEPTOR_BINDING_TYPE) || 
                      child.getName().equalsIgnoreCase(XmlConstants.STEREOTYPE)))

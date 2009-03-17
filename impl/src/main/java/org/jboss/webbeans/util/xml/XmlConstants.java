@@ -33,4 +33,8 @@ public class XmlConstants
    public static final String QUEUE = "Queue";
    
    public static final String URN_PREFIX = "urn:java:";
+   
+   public static final String NAME = "name";
+   
+   public static final String MAPPED_NAME = "mappedName";
 }

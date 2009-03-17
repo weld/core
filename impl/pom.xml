@@ -90,6 +90,11 @@
          <groupId>dom4j</groupId>
          <artifactId>dom4j</artifactId>
       </dependency>
+      
+      <dependency>
+         <groupId>javax.jms</groupId>
+         <artifactId>jms</artifactId>
+      </dependency>
 
       <dependency>
          <groupId>javax.el</groupId>

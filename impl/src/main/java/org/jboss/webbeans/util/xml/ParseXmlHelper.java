@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Set;
 
 import javax.inject.DefinitionException;
+import javax.jms.JMSException;
+import javax.jms.Queue;
+import javax.jms.Topic;
 
 import org.dom4j.Element;
 import org.jboss.webbeans.CurrentManager;
@@ -34,18 +37,18 @@ public class ParseXmlHelper
       Set<AnnotatedItem<?, ?>> result = new HashSet<AnnotatedItem<?, ?>>();
 
       for (Element bean : beans)
-         result.add(reciveBeanItem(bean));
+         result.add(receiveBeanItem(bean));
 
       return result;
    }
 
-   private static AnnotatedItem<?, ?> reciveBeanItem(Element element)
+   private static AnnotatedItem<?, ?> receiveBeanItem(Element element)
    {
       for (AnnotatedItemReceiver receiver : receivers)
       {
          if (receiver.accept(element))
          {
-            return receiver.reciveAnnotatedItem(element);
+            return receiver.receiveAnnotatedItem(element);
          }
       }
 
@@ -63,9 +66,9 @@ public class ParseXmlHelper
             return isJMSResource(element);
          }
 
-         public AnnotatedItem<?, ?> reciveAnnotatedItem(Element element)
+         public AnnotatedItem<?, ?> receiveAnnotatedItem(Element element)
          {
-            return reciveJMSResourceItem(element);
+            return receiveJMSResourceItem(element);
          }
 
       };
@@ -76,9 +79,9 @@ public class ParseXmlHelper
             return isResource(element);
          }
 
-         public AnnotatedItem<?, ?> reciveAnnotatedItem(Element element)
+         public AnnotatedItem<?, ?> receiveAnnotatedItem(Element element)
          {
-            return reciveResourceItem(element);
+            return receiveResourceItem(element);
          }
 
       };
@@ -89,9 +92,9 @@ public class ParseXmlHelper
             return isSessionBean(element);
          }
 
-         public AnnotatedItem<?, ?> reciveAnnotatedItem(Element element)
+         public AnnotatedItem<?, ?> receiveAnnotatedItem(Element element)
          {
-            return reciveSessionBeanItem(element);
+            return receiveSessionBeanItem(element);
          }
 
       };
@@ -102,9 +105,9 @@ public class ParseXmlHelper
             return isSimpleBean(element);
          }
 
-         public AnnotatedItem<?, ?> reciveAnnotatedItem(Element element)
+         public AnnotatedItem<?, ?> receiveAnnotatedItem(Element element)
          {
-            return reciveSimpleBeanItem(element);
+            return receiveSimpleBeanItem(element);
          }
 
       };
@@ -120,17 +123,39 @@ public class ParseXmlHelper
    
    private static boolean isJMSResource(Element element)
    {
-      if (element.getNamespace().getURI().equalsIgnoreCase(XmlConstants.JAVA_EE_NAMESPACE) && 
+      if (isJavaEeNamespace(element) && 
             (element.getName().equalsIgnoreCase(XmlConstants.TOPIC) || 
                   element.getName().equalsIgnoreCase(XmlConstants.QUEUE)))
          return true;
       return false;
    }
 
-   private static AnnotatedItem<?, ?> reciveJMSResourceItem(Element element)
+   private static AnnotatedItem<?, ?> receiveJMSResourceItem(Element element)
    {
-      // TODO:
-      return null;
+      final Element jmsElement = element;
+      
+      if(jmsElement.getName().equalsIgnoreCase(XmlConstants.QUEUE))
+      {
+         Queue queue = new Queue()
+         {
+            public String getQueueName() throws JMSException
+            {
+               return getJmsResourceName(jmsElement);
+            }
+         };
+         
+         return AnnotatedClassImpl.of(queue.getClass());
+      }
+                  
+      Topic topic = new Topic()
+      {
+         public String getTopicName() throws JMSException
+         {
+            return getJmsResourceName(jmsElement);
+         }         
+      };
+      
+      return AnnotatedClassImpl.of(topic.getClass());
    }
    
    private static boolean isResource(Element element)
@@ -139,7 +164,7 @@ public class ParseXmlHelper
       while (elIterator.hasNext())
       {
          Element child = (Element) elIterator.next();
-         if (child.getNamespace().getURI().equalsIgnoreCase(XmlConstants.JAVA_EE_NAMESPACE) && 
+         if (isJavaEeNamespace(child) && 
                (child.getName().equalsIgnoreCase(XmlConstants.RESOURCE) || 
                      child.getName().equalsIgnoreCase(XmlConstants.PERSISTENCE_CONTEXT) || 
                      child.getName().equalsIgnoreCase(XmlConstants.PERSISTENCE_UNIT) || 
@@ -150,7 +175,7 @@ public class ParseXmlHelper
       return false;
    }
 
-   private static AnnotatedItem<?, ?> reciveResourceItem(Element element)
+   private static AnnotatedItem<?, ?> receiveResourceItem(Element element)
    {
       // TODO:
       return null;
@@ -165,7 +190,7 @@ public class ParseXmlHelper
       return false;
    }
 
-   private static AnnotatedItem<?, ?> reciveSessionBeanItem(Element element)
+   private static AnnotatedItem<?, ?> receiveSessionBeanItem(Element element)
    {
       // TODO:
       return null;
@@ -182,11 +207,12 @@ public class ParseXmlHelper
       return false;
    }
 
-   private static AnnotatedItem<?, ?> reciveSimpleBeanItem(Element element)
+   private static AnnotatedItem<?, ?> receiveSimpleBeanItem(Element element)
    {
       Class<?> beanClass = loadClass(element);
 
-      if (!Modifier.isStatic(beanClass.getModifiers()) && beanClass.isMemberClass())
+      if (!Modifier.isStatic(beanClass.getModifiers()) && 
+            beanClass.isMemberClass())
          throw new DefinitionException("class " + beanClass + " is a non-static inner class");
 
       // if (beanClass.getTypeParameters().length > 0)
@@ -208,5 +234,35 @@ public class ParseXmlHelper
       String packageName = beanUri.replaceFirst(XmlConstants.URN_PREFIX, "");
       String classPath = packageName + "." + element.getName();
       return resourceLoader.classForName(classPath);
+   }
+   
+   private static String getJmsResourceName(Element element)
+   {
+      Iterator<?> elIterator = element.elementIterator();
+      while (elIterator.hasNext())
+      {
+         Element child = (Element) elIterator.next();
+         if (isJavaEeNamespace(child) && 
+               child.getName().equalsIgnoreCase(XmlConstants.RESOURCE))
+         {
+            Iterator<?> chIterator = child.elementIterator();
+            while(chIterator.hasNext())
+            {
+               Element chChild = (Element) chIterator.next();
+               if (isJavaEeNamespace(chChild) && 
+                     (chChild.getName().equalsIgnoreCase(XmlConstants.NAME) || 
+                           chChild.getName().equalsIgnoreCase(XmlConstants.MAPPED_NAME)))
+               {
+                  return chChild.getName();
+               }
+            }
+         }         
+      }
+      throw new DefinitionException("Incorrect JMSResource declaration for " + element.getName());
+   }
+   
+   public static boolean isJavaEeNamespace(Element element)
+   {
+      return element.getNamespace().getURI().equalsIgnoreCase(XmlConstants.JAVA_EE_NAMESPACE);
    }
 }

@@ -8,5 +8,5 @@ public interface AnnotatedItemReceiver
 {
    boolean accept(Element element);
 
-   AnnotatedItem<?, ?> reciveAnnotatedItem(Element element);
+   AnnotatedItem<?, ?> receiveAnnotatedItem(Element element);
 }
