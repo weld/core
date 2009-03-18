@@ -95,6 +95,10 @@ public class Proxies
                classes.add(clazz);
             }
          }
+         else if (type instanceof ParameterizedType)
+         {
+            add(((ParameterizedType)type).getRawType());
+         }
          else
          {
             throw new IllegalArgumentException("Cannot proxy non-Class Type " + type);
