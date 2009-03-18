@@ -36,7 +36,7 @@ public interface SessionObjectReference extends Serializable
     *           the type of the business interface
     * @return a reference
     * 
-    * @throws IllegalArgumentException
+    * @throws IllegalStateException
     *           if the business interface is not a local business interface of 
     *           the session bean
     * @throws NoSuchEJBException
