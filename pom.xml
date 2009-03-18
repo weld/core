@@ -68,6 +68,7 @@
             <module>api</module>
             <module>spi</module>
             <module>core-api</module>
+            <module>logging</module>
             <module>impl</module>
             <module>tests</module>
             <module>porting-package</module>

@@ -81,33 +81,23 @@
       </dependency>
 
       <dependency>
-         <groupId>log4j</groupId>
-         <artifactId>log4j</artifactId>
-         <optional>true</optional>
-      </dependency>
-
-      <dependency>
          <groupId>dom4j</groupId>
          <artifactId>dom4j</artifactId>
       </dependency>
-      
       <dependency>
          <groupId>javax.jms</groupId>
          <artifactId>jms</artifactId>
       </dependency>
-
       <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-api</artifactId>
          <optional>true</optional>
       </dependency>
-      
       <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-ri</artifactId>
          <optional>true</optional>
       </dependency>
-      
       <dependency>
          <groupId>javax.faces</groupId>
          <artifactId>jsf-api</artifactId>
