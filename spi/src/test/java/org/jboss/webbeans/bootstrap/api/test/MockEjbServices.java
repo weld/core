@@ -7,7 +7,6 @@ import javax.inject.manager.InjectionPoint;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
-import org.jboss.webbeans.resources.spi.NamingContext;
 
 public class MockEjbServices implements EjbServices
 {
@@ -36,25 +35,25 @@ public class MockEjbServices implements EjbServices
       return null;
    }
    
-   public SessionObjectReference resolveEJB(EjbDescriptor<?> ejbDescriptor, NamingContext namingContext)
+   public SessionObjectReference resolveEjb(EjbDescriptor<?> ejbDescriptor)
    {
       // TODO Auto-generated method stub
       return null;
    }
    
-   public Object resolveEjb(InjectionPoint injectionPoint, NamingContext namingContext)
+   public Object resolveEjb(InjectionPoint injectionPoint)
    {
       // TODO Auto-generated method stub
       return null;
    }
    
-   public Object resolvePersistenceContext(InjectionPoint injectionPoint, NamingContext namingContext)
+   public Object resolvePersistenceContext(InjectionPoint injectionPoint)
    {
       // TODO Auto-generated method stub
       return null;
    }
    
-   public Object resolveResource(InjectionPoint injectionPoint, NamingContext namingContext)
+   public Object resolveResource(InjectionPoint injectionPoint)
    {
       // TODO Auto-generated method stub
       return null;

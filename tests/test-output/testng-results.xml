@@ -1,0 +1,39 @@
+<testng-results>
+  <reporter-output>
+  </reporter-output>
+  <suite name="webbeans-core-tests">
+    <groups>
+    </groups>
+    <test name="org.jboss.webbeans.test.examples.ExampleTest">
+      <class name="org.jboss.webbeans.test.examples.ExampleTest">
+        <test-method status="PASS" signature="beforeSuite(org.testng.ITestContext)" name="beforeSuite" is-config="true" duration-ms="39" started-at="2009-03-18T00:53:36Z" finished-at="2009-03-18T00:53:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[org.testng.TestRunner@76307efc]]>
+              </value>
+            </param>
+          </params>
+        </test-method>
+        <test-method status="PASS" signature="before()" name="before" is-config="true" duration-ms="0" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
+        </test-method>
+        <test-method status="PASS" signature="afterClass()" name="afterClass" is-config="true" duration-ms="1" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
+        </test-method>
+        <test-method status="PASS" signature="testGameGenerator()" name="testGameGenerator" duration-ms="49" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
+        </test-method>
+        <test-method status="PASS" signature="after()" name="after" is-config="true" duration-ms="0" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
+        </test-method>
+        <test-method status="PASS" signature="testSentenceTranslator()" name="testSentenceTranslator" duration-ms="6" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
+        </test-method>
+        <test-method status="PASS" signature="before()" name="before" is-config="true" duration-ms="0" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
+        </test-method>
+        <test-method status="PASS" signature="beforeClass()" name="beforeClass" is-config="true" duration-ms="672" started-at="2009-03-18T00:53:36Z" finished-at="2009-03-18T00:53:37Z">
+        </test-method>
+        <test-method status="PASS" signature="after()" name="after" is-config="true" duration-ms="1" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
+        </test-method>
+        <test-method status="PASS" signature="afterSuite()" name="afterSuite" is-config="true" duration-ms="1" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
+        </test-method>
+      </class>
+    </test>
+  </suite>
+</testng-results>

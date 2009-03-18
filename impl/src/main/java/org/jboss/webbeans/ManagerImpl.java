@@ -131,7 +131,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
    private transient final Set<Interceptor> interceptors;
 
    // The EJB resolver provided by the container
-   private transient final ServiceRegistry serviceRegistry;
+   private transient final ServiceRegistry simpleServiceRegistry;
 
    private transient final EjbDescriptorCache ejbDescriptorCache;
    
@@ -144,9 +144,9 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * 
     * @param ejbServices the ejbResolver to use
     */
-   public ManagerImpl(ServiceRegistry serviceRegistry)
+   public ManagerImpl(ServiceRegistry simpleServiceRegistry)
    {
-      this.serviceRegistry = serviceRegistry;
+      this.simpleServiceRegistry = simpleServiceRegistry;
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
       this.newEnterpriseBeanMap = new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>();
       this.riBeans = new ConcurrentHashMap<String, RIBean<?>>();
@@ -888,7 +888,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
 
    public ServiceRegistry getServices()
    {
-      return serviceRegistry;
+      return simpleServiceRegistry;
    }
 
    /**

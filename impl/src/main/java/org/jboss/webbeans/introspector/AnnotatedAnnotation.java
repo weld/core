@@ -51,4 +51,6 @@ public interface AnnotatedAnnotation<T extends Annotation> extends AnnotatedType
     */
    public <A> AnnotatedMethod<A> getMember(String memberName, AnnotatedClass<A> expectedType);
    
+   public Class<T> getRawType();
+   
 }

@@ -19,10 +19,6 @@ package org.jboss.webbeans.util;
 
 import java.lang.annotation.Annotation;
 
-import org.jboss.webbeans.introspector.AnnotatedAnnotation;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.jlr.AnnotatedAnnotationImpl;
-import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceLoadingException;
 
@@ -34,9 +30,10 @@ import org.jboss.webbeans.resources.spi.ResourceLoadingException;
 public class ApiAbstraction
 {
    
-   private static final AnnotatedAnnotation<DummyAnnotation> DUMMY_ANNOTATION = AnnotatedAnnotationImpl.of(DummyAnnotation.class);
+   private static final Class<DummyAnnotation> DUMMY_ANNOTATION = DummyAnnotation.class;
    
-   private static final AnnotatedClass<Dummy> DUMMY_CLASS = AnnotatedClassImpl.of(Dummy.class);
+   private static final Class<Dummy> DUMMY_CLASS = Dummy.class;
+   private static final Class<Object> OBJECT_CLASS = Object.class;
    
    private ResourceLoader resourceLoader;
 
@@ -73,11 +70,11 @@ public class ApiAbstraction
     *         not found
     */
    @SuppressWarnings("unchecked")
-   protected AnnotatedAnnotation<?> annotationTypeForName(String name)
+   protected Class<? extends Annotation> annotationTypeForName(String name)
    {
       try
       {
-         return AnnotatedAnnotationImpl.of((Class<? extends Annotation>) resourceLoader.classForName(name));
+         return (Class<? extends Annotation>) resourceLoader.classForName(name);
       }
       catch (ResourceLoadingException cnfe)
       {
@@ -93,15 +90,35 @@ public class ApiAbstraction
     *         found.
     */
    @SuppressWarnings("unchecked")
-   protected AnnotatedClass<?> classForName(String name)
+   protected Class<?> classForName(String name)
    {
       try
       {
-         return AnnotatedClassImpl.of(resourceLoader.classForName(name));
+         return resourceLoader.classForName(name);
       }
       catch (ResourceLoadingException cnfe)
       {
          return DUMMY_CLASS;
+      }
+   }
+   
+   protected Object enumValue(Class<?> clazz, String memberName)
+   {
+      if (!clazz.isEnum())
+      {
+         throw new IllegalArgumentException(clazz + " is not an enum!");
+      }
+      try
+      {
+         return clazz.getField(memberName);
+      }
+      catch (SecurityException e)
+      {
+         return null;
+      }
+      catch (NoSuchFieldException e)
+      {
+         return null;
       }
    }
 

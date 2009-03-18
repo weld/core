@@ -35,7 +35,6 @@ import javax.inject.CreationException;
 import javax.inject.DefinitionException;
 import javax.interceptor.Interceptor;
 
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
@@ -49,7 +48,6 @@ import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.util.Proxies;
 
 /**
@@ -382,7 +380,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    
    public SessionObjectReference createReference()
    {
-      return manager.getServices().get(EjbServices.class).resolveEJB(getEjbDescriptor(), CurrentManager.rootManager().getServices().get(NamingContext.class));
+      return manager.getServices().get(EjbServices.class).resolveEjb(getEjbDescriptor());
    }
    
 }

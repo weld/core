@@ -325,6 +325,27 @@ public class Reflections
          throw new ExecutionException("Error invoking method " + method.getName() + " on " + method.getDeclaringClass(), e);
       }
    }
+   
+   public static Object invokeAndWrap(String methodName, Object instance, Object... parameters)
+   {
+      Class<?>[] parameterTypes = new Class<?>[parameters.length];
+      for (int i = 0; i < parameters.length; i++)
+      {
+         parameterTypes[i] = parameters[i].getClass();
+      }
+      try
+      {
+         return invokeAndWrap(instance.getClass().getMethod(methodName, parameterTypes), instance, parameters);
+      }
+      catch (SecurityException e)
+      {
+         throw new ExecutionException("Error invoking method " + methodName + " on " + instance.getClass(), e);
+      }
+      catch (NoSuchMethodException e)
+      {
+         throw new ExecutionException("Error invoking method " + methodName + " on " + instance.getClass(), e);
+      }
+   }
 
    /**
     * Gets value of a field and wraps exceptions
@@ -346,6 +367,22 @@ public class Reflections
       catch (IllegalAccessException e)
       {
          throw new ExecutionException("Error getting field " + field.getName() + " on " + field.getDeclaringClass(), e);
+      }
+   }
+   
+   public static Object getAndWrap(String fieldName, Object target)
+   {
+      try
+      {
+         return getAndWrap(target.getClass().getField(fieldName), target);
+      }
+      catch (SecurityException e)
+      {
+         throw new ExecutionException("Error getting field " + fieldName + " on " + target.getClass(), e);
+      }
+      catch (NoSuchFieldException e)
+      {
+         throw new ExecutionException("Error getting field " + fieldName + " on " + target.getClass(), e);
       }
    }
 

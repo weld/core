@@ -17,6 +17,7 @@
 
 package org.jboss.webbeans.bean;
 
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,12 +26,11 @@ import javax.annotation.PreDestroy;
 import javax.context.CreationalContext;
 import javax.inject.DefinitionException;
 import javax.inject.Initializer;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentStorageRequest;
+import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 import org.jboss.webbeans.injection.ConstructorInjectionPoint;
@@ -217,13 +217,14 @@ public class SimpleBean<T> extends AbstractClassBean<T>
 
    protected void initEjbInjectionPoints()
    {
+      Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
       this.ejbInjectionPoints = new HashSet<AnnotatedInjectionPoint<?, ?>>();
-      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getServices().get(EjbServices.class).getEJBAnnotation()))
+      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(ejbAnnotationType))
       {
          this.ejbInjectionPoints.add(FieldInjectionPoint.of(this, field));
       }
 
-      for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getServices().get(EjbServices.class).getEJBAnnotation()))
+      for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(ejbAnnotationType))
       {
          this.ejbInjectionPoints.add(MethodInjectionPoint.of(this, method));
       }
@@ -232,18 +233,21 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected void initPersistenceUnitInjectionPoints()
    {
       this.persistenceUnitInjectionPoints = new HashSet<AnnotatedInjectionPoint<?, ?>>();
-      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getServices().get(EjbServices.class).getPersistenceContextAnnotation()))
+      Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(EJBApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
+      Object extendedPersistenceContextEnum = manager.getServices().get(EJBApiAbstraction.class).EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE;
+      
+      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(persistenceContextAnnotationType))
       {
-         if (field.getAnnotation(PersistenceContext.class).type().equals(PersistenceContextType.EXTENDED))
+         if (extendedPersistenceContextEnum.equals(Reflections.invokeAndWrap("type", field.getAnnotation(persistenceContextAnnotationType))))
          {
             throw new DefinitionException("Cannot inject an extended persistence context into " + field);
          }
          this.persistenceUnitInjectionPoints.add(FieldInjectionPoint.of(this, field));
       }
 
-      for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(manager.getServices().get(EjbServices.class).getPersistenceContextAnnotation()))
+      for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(persistenceContextAnnotationType))
       {
-         if (method.getAnnotation(PersistenceContext.class).type().equals(PersistenceContextType.EXTENDED))
+         if (extendedPersistenceContextEnum.equals(Reflections.invokeAndWrap("type", method.getAnnotation(persistenceContextAnnotationType))))
          {
             throw new DefinitionException("Cannot inject an extended persistence context into " + method);
          }
@@ -253,8 +257,9 @@ public class SimpleBean<T> extends AbstractClassBean<T>
 
    protected void initResourceInjectionPoints()
    {
+      Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
       this.resourceInjectionPoints = new HashSet<AnnotatedInjectionPoint<?, ?>>();
-      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(manager.getServices().get(EjbServices.class).getResourceAnnotation()))
+      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(resourceAnnotationType))
       {
          this.resourceInjectionPoints.add(FieldInjectionPoint.of(this, field));
       }
@@ -271,19 +276,19 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          NamingContext namingContext = manager.getServices().get(NamingContext.class);
          for (AnnotatedInjectionPoint<?, ?> injectionPoint : ejbInjectionPoints)
          {
-            Object ejbInstance = ejbServices.resolveEjb(injectionPoint, namingContext);
+            Object ejbInstance = ejbServices.resolveEjb(injectionPoint);
             injectionPoint.inject(beanInstance, ejbInstance);
          }
    
          for (AnnotatedInjectionPoint<?, ?> injectionPoint : persistenceUnitInjectionPoints)
          {
-            Object puInstance = ejbServices.resolvePersistenceContext(injectionPoint, namingContext);
+            Object puInstance = ejbServices.resolvePersistenceContext(injectionPoint);
             injectionPoint.inject(beanInstance, puInstance);
          }
    
          for (AnnotatedInjectionPoint<?, ?> injectionPoint : resourceInjectionPoints)
          {
-            Object resourceInstance = ejbServices.resolveResource(injectionPoint, namingContext);
+            Object resourceInstance = ejbServices.resolveResource(injectionPoint);
             injectionPoint.inject(beanInstance, resourceInstance);
          }
       }

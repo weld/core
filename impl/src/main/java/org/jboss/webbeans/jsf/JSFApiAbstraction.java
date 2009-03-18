@@ -17,7 +17,7 @@
 
 package org.jboss.webbeans.jsf;
 
-import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.util.ApiAbstraction;
 
@@ -27,11 +27,11 @@ import org.jboss.webbeans.util.ApiAbstraction;
  * @author Pete Muir
  * 
  */
-public class JSFApiAbstraction extends ApiAbstraction
+public class JSFApiAbstraction extends ApiAbstraction implements Service
 {
 
    // An UI component
-   public final AnnotatedClass<?> UICOMPONENT_CLASS;
+   public final Class<?> UICOMPONENT_CLASS;
    
    public JSFApiAbstraction(ResourceLoader resourceLoader)
    {

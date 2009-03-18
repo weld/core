@@ -15,7 +15,6 @@ import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
-import org.jboss.webbeans.resources.spi.NamingContext;
 
 public class MockEjBServices implements EjbServices
 {
@@ -37,12 +36,12 @@ public class MockEjBServices implements EjbServices
       return PersistenceContext.class;
    }
    
-   public Object resolveEjb(InjectionPoint injectionPoint, NamingContext namingContext)
+   public Object resolveEjb(InjectionPoint injectionPoint)
    {
       return null;
    }
    
-   public Object resolvePersistenceContext(InjectionPoint injectionPoint, NamingContext namingContext)
+   public Object resolvePersistenceContext(InjectionPoint injectionPoint)
    {
       return null;
    }
@@ -52,7 +51,7 @@ public class MockEjBServices implements EjbServices
       return Resource.class;
    }
    
-   public Object resolveResource(InjectionPoint injectionPoint, NamingContext namingContext)
+   public Object resolveResource(InjectionPoint injectionPoint)
    {
       return null;
    }
@@ -67,12 +66,12 @@ public class MockEjBServices implements EjbServices
       return ejbDiscovery.discoverEjbs();
    }
 
-   public SessionObjectReference resolveEJB(EjbDescriptor<?> ejbDescriptor, NamingContext naming)
+   public SessionObjectReference resolveEjb(EjbDescriptor<?> ejbDescriptor)
    {
       return new SessionObjectReference()
       {
 
-         public <S> S getReference(Class<S> businessInterfaceType)
+         public <S> S getBusinessObject(Class<S> businessInterfaceType)
          {
             // TODO Auto-generated method stub
             return null;

@@ -186,6 +186,8 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
    
    public boolean isAbstract();
    
+   public boolean isEnum();
+   
    public <S> S cast(Object object);
    
    public <U> AnnotatedClass<? extends U> asSubclass(AnnotatedClass<U> clazz);

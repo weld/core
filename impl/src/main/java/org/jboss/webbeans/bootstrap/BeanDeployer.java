@@ -40,8 +40,8 @@ import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.jsf.JSFApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
+import org.jboss.webbeans.util.Reflections;
 
 public class BeanDeployer
 {
@@ -265,12 +265,12 @@ public class BeanDeployer
     */
    private boolean isTypeSimpleWebBean(AnnotatedClass<?> clazz)
    {
-      ResourceLoader resourceLoader = manager.getServices().get(ResourceLoader.class);
-      EJBApiAbstraction ejbApiAbstraction = new EJBApiAbstraction(resourceLoader);
-      JSFApiAbstraction jsfApiAbstraction = new JSFApiAbstraction(resourceLoader);
-      ServletApiAbstraction servletApiAbstraction = new ServletApiAbstraction(resourceLoader);
+      Class<?> rawType = clazz.getRawType();
+      EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);
+      JSFApiAbstraction jsfApiAbstraction = manager.getServices().get(JSFApiAbstraction.class);
+      ServletApiAbstraction servletApiAbstraction = manager.getServices().get(ServletApiAbstraction.class);
       // TODO: check 3.2.1 for more rules!!!!!!
-      return !clazz.isAbstract() && !clazz.isParameterizedType() && !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(clazz) && !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(clazz) && !servletApiAbstraction.SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(clazz) && !servletApiAbstraction.HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(clazz) && !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(clazz) && !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(clazz) && !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(clazz) && hasSimpleWebBeanConstructor(clazz);
+      return !Reflections.isAbstract(rawType) && !Reflections.isParameterizedType(rawType) && !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(rawType) && !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(rawType) && !servletApiAbstraction.SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(rawType) && !servletApiAbstraction.HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(rawType) && !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(rawType) && !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(rawType) && !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(rawType) && hasSimpleWebBeanConstructor(clazz);
    }
    
 

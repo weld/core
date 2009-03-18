@@ -17,7 +17,9 @@
 
 package org.jboss.webbeans.ejb;
 
-import org.jboss.webbeans.introspector.AnnotatedClass;
+import java.lang.annotation.Annotation;
+
+import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.util.ApiAbstraction;
 
@@ -26,15 +28,25 @@ import org.jboss.webbeans.util.ApiAbstraction;
  * 
  * @author Pete Muir
  */
-public class EJBApiAbstraction extends ApiAbstraction
+public class EJBApiAbstraction extends ApiAbstraction implements Service
 {
    
    public EJBApiAbstraction(ResourceLoader resourceLoader)
    {
       super(resourceLoader);
       ENTERPRISE_BEAN_CLASS = classForName("javax.ejb.EnterpriseBean");
+      PERSISTENCE_CONTEXT_ANNOTATION_CLASS = annotationTypeForName("javax.persistence.PersistenceContext");
+      EJB_ANNOTATION_CLASS = annotationTypeForName("javax.ejb.EJB");
+      RESOURCE_ANNOTATION_CLASS = annotationTypeForName("javax.annotation.Resource");
+      PERSISTENCE_CONTEXT_TYPE_CLASS = classForName("javax.persistence.PersistenceContextType");
+      EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE = enumValue(PERSISTENCE_CONTEXT_TYPE_CLASS, "EXTENDED");
    }
 
-   public final AnnotatedClass<?> ENTERPRISE_BEAN_CLASS;
-
+   public final Class<?> PERSISTENCE_CONTEXT_TYPE_CLASS;
+   public final Class<?> ENTERPRISE_BEAN_CLASS;
+   public final Class<? extends Annotation> PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
+   public final Class<? extends Annotation> EJB_ANNOTATION_CLASS;
+   public final Class<? extends Annotation> RESOURCE_ANNOTATION_CLASS;
+   public final Object EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE;
+   
 }

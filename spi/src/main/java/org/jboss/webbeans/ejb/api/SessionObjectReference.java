@@ -36,17 +36,20 @@ public interface SessionObjectReference extends Serializable
     *           the type of the business interface
     * @return a reference
     * 
-    * @throws IllegalStateException
+    * @throws IllegalArgumentException
+    *           if the business interface is not a local business interface of 
+    *           the session bean
+    * @throws NoSuchEJBException
     *           if the session object has already been removed
     */
-   public <S> S getReference(Class<S> businessInterfaceType);
+   public <S> S getBusinessObject(Class<S> businessInterfaceType);
    
    /**
     * Request the EJB container remove the stateful session object
     * 
     * @throws UnsupportedOperationException
     *            if the reference is not backed by a stateful session object
-    * @throws IllegalStateException
+    * @throws NoSuchEJBException
     *            if the session object has already been removed           
     */
    public void remove();

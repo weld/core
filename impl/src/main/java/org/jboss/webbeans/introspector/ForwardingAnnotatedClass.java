@@ -106,6 +106,11 @@ public abstract class ForwardingAnnotatedClass<T> extends ForwardingAnnotatedTyp
       return delegate().isAbstract();
    }
    
+   public boolean isEnum()
+   {
+      return delegate().isEnum();
+   }
+   
    @Deprecated
    public AnnotatedMethod<?> getDeclaredMethod(Method method)
    {

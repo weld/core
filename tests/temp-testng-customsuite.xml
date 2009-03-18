@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="webbeans-core-tests">
+  <test verbose="2" name="org.jboss.webbeans.test.examples.ExampleTest" annotations="JDK">
+    <classes>
+      <class name="org.jboss.webbeans.test.examples.ExampleTest"/>
+    </classes>
+  </test>
+</suite>

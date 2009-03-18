@@ -39,14 +39,14 @@ import org.jboss.webbeans.transaction.spi.TransactionServices;
  */
 public abstract class AbstractBootstrap implements Bootstrap
 {
-   private final ServiceRegistry serviceRegistry;
+   private final ServiceRegistry simpleServiceRegistry;
    private Environment environment = EE;
    
    private BeanStore applicationContext;
    
    public AbstractBootstrap()
    {
-      this.serviceRegistry = new ServiceRegistry();
+      this.simpleServiceRegistry = new SimpleServiceRegistry();
    }
 
    @Deprecated
@@ -142,7 +142,7 @@ public abstract class AbstractBootstrap implements Bootstrap
    
    public ServiceRegistry getServices()
    {
-      return serviceRegistry;
+      return simpleServiceRegistry;
    }
    
 }

@@ -17,7 +17,7 @@
 
 package org.jboss.webbeans.servlet;
 
-import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.util.ApiAbstraction;
 
@@ -26,14 +26,14 @@ import org.jboss.webbeans.util.ApiAbstraction;
  * 
  * @author Pete Muir
  */
-public class ServletApiAbstraction extends ApiAbstraction
+public class ServletApiAbstraction extends ApiAbstraction implements Service
 {
    
-   public final AnnotatedClass<?> SERVLET_CLASS;
-   public final AnnotatedClass<?> FILTER_CLASS;
-   public final AnnotatedClass<?> SERVLET_CONTEXT_LISTENER_CLASS;
-   public final AnnotatedClass<?> HTTP_SESSION_LISTENER_CLASS;
-   public final AnnotatedClass<?> SERVLET_REQUEST_LISTENER_CLASS;
+   public final Class<?> SERVLET_CLASS;
+   public final Class<?> FILTER_CLASS;
+   public final Class<?> SERVLET_CONTEXT_LISTENER_CLASS;
+   public final Class<?> HTTP_SESSION_LISTENER_CLASS;
+   public final Class<?> SERVLET_REQUEST_LISTENER_CLASS;
 
    /**
     * Constructor

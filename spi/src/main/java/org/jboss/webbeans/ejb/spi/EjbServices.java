@@ -17,13 +17,10 @@
 
 package org.jboss.webbeans.ejb.spi;
 
-import java.lang.annotation.Annotation;
-
 import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
-import org.jboss.webbeans.resources.spi.NamingContext;
 
 /**
  * A container should implement this interface to allow the Web Beans RI to
@@ -34,8 +31,6 @@ import org.jboss.webbeans.resources.spi.NamingContext;
  */
 public interface EjbServices extends Service
 {
-   
-   public static final String PROPERTY_NAME = EjbServices.class.getName();
    
    /**
     * Resolve the value for the given @EJB injection point
@@ -50,15 +45,13 @@ public interface EjbServices extends Service
     * @throws IllegalStateException
     *            if no EJBs can be resolved for injection
     */
-   public Object resolveEjb(InjectionPoint injectionPoint, NamingContext namingContext);
+   public Object resolveEjb(InjectionPoint injectionPoint);
    
    /**
     * Resolve the value for the given @PersistenceContext injection point
     * 
     * @param injectionPoint
     *           the injection point metadata
-    * @param namingContext
-    *           the pluggable Web Beans JNDI lookup facility
     * @return an instance of the persistence unit
     * @throws IllegalArgumentException
     *            if the injection point is not annotated with
@@ -67,15 +60,13 @@ public interface EjbServices extends Service
     * @throws IllegalStateException
     *            if no suitable persistence units can be resolved for injection
     */
-   public Object resolvePersistenceContext(InjectionPoint injectionPoint, NamingContext namingContext);
+   public Object resolvePersistenceContext(InjectionPoint injectionPoint);
    
    /**
     * Resolve the value for the given @Resource injection point
     * 
     * @param injectionPoint
     *           the injection point metadata
-    * @param namingContext
-    *           the pluggable Web Beans JNDI lookup facility
     * @return an instance of the resource
     * @throws IllegalArgumentException
     *            if the injection point is not annotated with @Resource, or, if
@@ -84,7 +75,7 @@ public interface EjbServices extends Service
     * @throws IllegalStateException
     *            if no resource can be resolved for injection
     */
-   public Object resolveResource(InjectionPoint injectionPoint, NamingContext namingContext);
+   public Object resolveResource(InjectionPoint injectionPoint);
   
    /**
     * Request a reference to an EJB session object from the container. If the
@@ -92,10 +83,9 @@ public interface EjbServices extends Service
     * the session bean is created before this method returns.
     * 
     * @param ejbDescriptor the ejb to resolve
-    * @param namingContext the pluggable Web Beans JNDI lookup facility
     * @return a reference to the session object
     */
-   public SessionObjectReference resolveEJB(EjbDescriptor<?> ejbDescriptor, NamingContext namingContext);
+   public SessionObjectReference resolveEjb(EjbDescriptor<?> ejbDescriptor);
    
    /**
     * Gets a descriptor for each EJB in the application
@@ -103,26 +93,5 @@ public interface EjbServices extends Service
     * @return The bean class to descriptor map 
     */
    public Iterable<EjbDescriptor<?>> discoverEjbs();
-   
-   /**
-    * Get the annotation which defines an @EJB injection point
-    * 
-    * @return the annotation which defines an @EJB injection point
-    */
-   public Class<? extends Annotation> getEJBAnnotation();
-   
-   /**
-    * Get the annotation which defines a @PersistenceContext injection point
-    * 
-    * @return the annotation which defines a @PersistenceContext injection point
-    */
-   public Class<? extends Annotation> getPersistenceContextAnnotation();
-   
-   /**
-    * Get the annotation which defines a @Resource injection point
-    * 
-    * @return the annotation which defines a @Resource injection point
-    */
-   public Class<? extends Annotation> getResourceAnnotation();
    
 }

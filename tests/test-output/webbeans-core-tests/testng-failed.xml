@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="5" skipfailedinvocationCounts="false" verbose="1" name="Failed suite [webbeans-core-tests]" junit="false" annotations="JDK">
+  <test name="org.jboss.webbeans.test.examples.ExampleTest(failed)" junit="false" annotations="JDK">
+    <classes>
+      <class name="org.jboss.webbeans.test.examples.ExampleTest">
+        <methods>
+          <include name="afterClass"/>
+          <include name="testSentenceTranslator"/>
+          <include name="beforeClass"/>
+          <include name="afterSuite"/>
+          <include name="testGameGenerator"/>
+          <include name="beforeSuite"/>
+        </methods>
+      </class>
+    </classes>
+  </test>
+</suite>

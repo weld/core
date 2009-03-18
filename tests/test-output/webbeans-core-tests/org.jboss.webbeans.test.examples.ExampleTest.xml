@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.jboss.webbeans.test.examples.ExampleTest" failures="0" tests="2" time="0.744" errors="0">
+  <properties/>
+  <testcase name="testSentenceTranslator" time="0.0060" classname="org.jboss.webbeans.test.examples.ExampleTest"/>
+  <testcase name="testGameGenerator" time="0.049" classname="org.jboss.webbeans.test.examples.ExampleTest"/>
+</testsuite>

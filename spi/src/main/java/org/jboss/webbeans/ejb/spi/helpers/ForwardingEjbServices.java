@@ -1,13 +1,10 @@
 package org.jboss.webbeans.ejb.spi.helpers;
 
-import java.lang.annotation.Annotation;
-
 import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
-import org.jboss.webbeans.resources.spi.NamingContext;
 
 /**
  * An implementation of {@link EjbServices} which forwards all its method calls
@@ -24,39 +21,24 @@ public abstract class ForwardingEjbServices implements EjbServices
    
    public abstract EjbServices delegate();
    
-   public Class<? extends Annotation> getEJBAnnotation()
+   public Object resolveEjb(InjectionPoint injectionPoint)
    {
-      return delegate().getEJBAnnotation();
+      return delegate().resolveEjb(injectionPoint);
    }
    
-   public Class<? extends Annotation> getPersistenceContextAnnotation()
+   public SessionObjectReference resolveEjb(EjbDescriptor<?> ejbDescriptor)
    {
-      return delegate().getPersistenceContextAnnotation();
+      return delegate().resolveEjb(ejbDescriptor);
    }
    
-   public Class<? extends Annotation> getResourceAnnotation()
+   public Object resolvePersistenceContext(InjectionPoint injectionPoint)
    {
-      return delegate().getResourceAnnotation();
+      return delegate().resolvePersistenceContext(injectionPoint);
    }
    
-   public Object resolveEjb(InjectionPoint injectionPoint, NamingContext namingContext)
+   public Object resolveResource(InjectionPoint injectionPoint)
    {
-      return delegate().resolveEjb(injectionPoint, namingContext);
-   }
-   
-   public SessionObjectReference resolveEJB(EjbDescriptor<?> ejbDescriptor, NamingContext namingContext)
-   {
-      return delegate().resolveEJB(ejbDescriptor, namingContext);
-   }
-   
-   public Object resolvePersistenceContext(InjectionPoint injectionPoint, NamingContext namingContext)
-   {
-      return delegate().resolvePersistenceContext(injectionPoint, namingContext);
-   }
-   
-   public Object resolveResource(InjectionPoint injectionPoint, NamingContext namingContext)
-   {
-      return delegate().resolveResource(injectionPoint, namingContext);
+      return delegate().resolveResource(injectionPoint);
    }
 
    public Iterable<EjbDescriptor<?>> discoverEjbs()

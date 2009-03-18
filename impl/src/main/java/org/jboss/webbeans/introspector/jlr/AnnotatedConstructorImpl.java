@@ -100,7 +100,15 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
          else
          {
             Class<?> clazz = constructor.getParameterTypes()[i];
-            Type type = constructor.getGenericParameterTypes()[i];
+            Type type;
+            if (constructor.getGenericParameterTypes().length > i)
+            {
+               type = constructor.getGenericParameterTypes()[i];
+            }
+            else
+            {
+               type = clazz;
+            }
             AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(new Annotation[0], clazz, type, this);
             parameters.add(parameter);
 

@@ -131,7 +131,7 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
       {
          businessInterface = objectInterface;
       }
-      Object proxiedInstance = reference.getReference(businessInterface);
+      Object proxiedInstance = reference.getBusinessObject(businessInterface);
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
       Object returnValue = Reflections.invokeAndWrap(proxiedMethod, proxiedInstance, args);
       log.trace("Executed " + method + " on " + proxiedInstance + " with parameters " + args + " and got return value " + returnValue);

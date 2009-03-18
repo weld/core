@@ -259,6 +259,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    
    private final boolean _nonStaticMemberClass;
    private final boolean _abstract;
+   private final boolean _enum;
 
    
    public static <T> AnnotatedClass<T> of(Class<T> clazz)
@@ -279,6 +280,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.declaredMetaAnnotatedFields = new AnnotatedFieldMap();
       this._nonStaticMemberClass = Reflections.isNonMemberInnerClass(rawType);
       this._abstract = Reflections.isAbstract(rawType);
+      this._enum = rawType.isEnum();
       for (Class<?> c = rawType; c != Object.class && c != null; c = c.getSuperclass())
       {
          for (Field field : c.getDeclaredFields())
@@ -493,6 +495,11 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    public boolean isAbstract()
    {
       return _abstract;
+   }
+   
+   public boolean isEnum()
+   {
+      return _enum;
    }
    
    /**
