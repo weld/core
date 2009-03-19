@@ -50,8 +50,15 @@ public class ApiAbstraction
    public interface Dummy
    {
    }
-   
 
+   /**
+    * "Not found" enumeration value.
+    */
+   public enum DummyEnum
+   {
+       DUMMY_VALUE
+   }
+   
    /**
     * Constructor
     * 
