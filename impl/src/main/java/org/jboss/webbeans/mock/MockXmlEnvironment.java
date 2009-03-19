@@ -19,18 +19,9 @@ public class MockXmlEnvironment extends XmlEnvironment
       services.add(ResourceLoader.class, new DefaultResourceLoader());
    }
    
-   private final Iterable<URL> beansXmlUrls;
-   
    public MockXmlEnvironment(Iterable<URL> beansXmlUrls)
    {
-      super(services);
-      this.beansXmlUrls = beansXmlUrls;
-   }
-   
-   @Override
-   public Iterable<URL> getBeansXmlUrls()
-   {
-      return beansXmlUrls;
+      super(services, beansXmlUrls);
    }
    
 }

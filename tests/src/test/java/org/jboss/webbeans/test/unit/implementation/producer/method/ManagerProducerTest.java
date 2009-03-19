@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.unit.implementation.producer.field.method;
+package org.jboss.webbeans.test.unit.implementation.producer.method;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.test.unit.AbstractWebBeansTest;

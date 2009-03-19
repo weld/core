@@ -148,6 +148,7 @@ public class XmlParser
       return true;
    }
 
+
    private boolean checkBeanElementChildrenNames(Element element)
    {
       Iterator<?> elIterator = element.elementIterator();
@@ -164,6 +165,7 @@ public class XmlParser
    }
    
    @SuppressWarnings("unchecked")
+   // TODO Make this object orientated
    private List<Class<? extends Annotation>> obtainDeploymentTypes(Element element, int counter)
    {
       if (counter > 1)

@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.unit.xml;
+package org.jboss.webbeans.test.unit.xml.deploy;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;

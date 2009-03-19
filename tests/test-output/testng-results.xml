@@ -3,35 +3,32 @@
   </reporter-output>
   <suite name="webbeans-core-tests">
     <groups>
+      <group name="incontainer-broken">
+        <method signature="org.jboss.webbeans.test.unit.bootstrap.environments.ServletEnvironmentTest.testProducerMethodBean()" name="testProducerMethodBean" class="org.jboss.webbeans.test.unit.bootstrap.environments.ServletEnvironmentTest"/>
+      </group>
     </groups>
-    <test name="org.jboss.webbeans.test.examples.ExampleTest">
-      <class name="org.jboss.webbeans.test.examples.ExampleTest">
-        <test-method status="PASS" signature="beforeSuite(org.testng.ITestContext)" name="beforeSuite" is-config="true" duration-ms="39" started-at="2009-03-18T00:53:36Z" finished-at="2009-03-18T00:53:36Z">
+    <test name="org.jboss.webbeans.test.unit.bootstrap.environments.ServletEnvironmentTest">
+      <class name="org.jboss.webbeans.test.unit.bootstrap.environments.ServletEnvironmentTest">
+        <test-method status="PASS" signature="afterSuite()" name="afterSuite" is-config="true" duration-ms="0" started-at="2009-03-19T15:42:56Z" finished-at="2009-03-19T15:42:56Z">
+        </test-method>
+        <test-method status="PASS" signature="after()" name="after" is-config="true" duration-ms="0" started-at="2009-03-19T15:42:56Z" finished-at="2009-03-19T15:42:56Z">
+        </test-method>
+        <test-method status="PASS" signature="beforeSuite(org.testng.ITestContext)" name="beforeSuite" is-config="true" duration-ms="72" started-at="2009-03-19T15:42:55Z" finished-at="2009-03-19T15:42:55Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[org.testng.TestRunner@76307efc]]>
+                <![CDATA[org.testng.TestRunner@64cd046]]>
               </value>
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="before()" name="before" is-config="true" duration-ms="0" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
+        <test-method status="PASS" signature="beforeClass()" name="beforeClass" is-config="true" duration-ms="681" started-at="2009-03-19T15:42:55Z" finished-at="2009-03-19T15:42:56Z">
         </test-method>
-        <test-method status="PASS" signature="afterClass()" name="afterClass" is-config="true" duration-ms="1" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
+        <test-method status="PASS" signature="before()" name="before" is-config="true" duration-ms="0" started-at="2009-03-19T15:42:56Z" finished-at="2009-03-19T15:42:56Z">
         </test-method>
-        <test-method status="PASS" signature="testGameGenerator()" name="testGameGenerator" duration-ms="49" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
+        <test-method status="PASS" signature="testProducerMethodBean()" name="testProducerMethodBean" duration-ms="11" started-at="2009-03-19T15:42:56Z" finished-at="2009-03-19T15:42:56Z">
         </test-method>
-        <test-method status="PASS" signature="after()" name="after" is-config="true" duration-ms="0" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
-        </test-method>
-        <test-method status="PASS" signature="testSentenceTranslator()" name="testSentenceTranslator" duration-ms="6" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
-        </test-method>
-        <test-method status="PASS" signature="before()" name="before" is-config="true" duration-ms="0" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
-        </test-method>
-        <test-method status="PASS" signature="beforeClass()" name="beforeClass" is-config="true" duration-ms="672" started-at="2009-03-18T00:53:36Z" finished-at="2009-03-18T00:53:37Z">
-        </test-method>
-        <test-method status="PASS" signature="after()" name="after" is-config="true" duration-ms="1" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
-        </test-method>
-        <test-method status="PASS" signature="afterSuite()" name="afterSuite" is-config="true" duration-ms="1" started-at="2009-03-18T00:53:37Z" finished-at="2009-03-18T00:53:37Z">
+        <test-method status="PASS" signature="afterClass()" name="afterClass" is-config="true" duration-ms="0" started-at="2009-03-19T15:42:56Z" finished-at="2009-03-19T15:42:56Z">
         </test-method>
       </class>
     </test>

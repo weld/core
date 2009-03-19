@@ -32,18 +32,32 @@
             <exclude name="broken" />
          </run>
       </groups>
-      <packages>
+      <packages >
          <package name="org.jboss.webbeans.test.examples" />
          <package name="org.jboss.webbeans.test.unit.bootstrap" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap.environments" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap.environments.multipleEnterprise" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap.environments.multipleEnterpriseAndSimple" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap.environments.multipleSimple" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap.environments.singleEnterprise" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap.environments.singleProducerMethod" />
+         \<package name="org.jboss.webbeans.test.unit.bootstrap.environments.singleSimple" />
          <package name="org.jboss.webbeans.test.unit.context" />
          <package name="org.jboss.webbeans.test.unit.definition" />
          <package name="org.jboss.webbeans.test.unit.event" />
          <package name="org.jboss.webbeans.test.unit.implementation" />
+         <package name="org.jboss.webbeans.test.unit.implementation.annotatedItem" />
+         <package name="org.jboss.webbeans.test.unit.implementation.enterpise" />
+         <package name="org.jboss.webbeans.test.unit.implementation.enterprise.sbi" />
+         <package name="org.jboss.webbeans.test.unit.implementation.newsimple" />
+         <package name="org.jboss.webbeans.test.unit.implementation.producer.field" />
+         <package name="org.jboss.webbeans.test.unit.implementation.producer.method" />
          <package name="org.jboss.webbeans.test.unit.implementation.proxy" />
-         <package name="org.jboss.webbeans.test.unit.implementation.exceptions" />
+         <package name="org.jboss.webbeans.test.unit.implementation.proxy.enterprise" />
          <package name="org.jboss.webbeans.test.unit.lookup" />
          <package name="org.jboss.webbeans.test.unit.lookup.circular" />
-         <package name="org.jboss.webbeans.test.unit.xml" />
+         <package name="org.jboss.webbeans.test.unit.xml.deploy" />
+         <package name="org.jboss.webbeans.test.unit.xml.parser" />
       </packages>
    </test>
    

@@ -24,11 +24,16 @@ public class XmlEnvironment
    
    public XmlEnvironment(ServiceRegistry serviceRegistry)
    {
+      this(serviceRegistry, serviceRegistry.get(WebBeanDiscovery.class).discoverWebBeansXml());
+   }
+   
+   protected XmlEnvironment(ServiceRegistry serviceRegistry, Iterable<URL> beanXmlUrls)
+   {
       this.classes = new ArrayList<AnnotatedClass<?>>();
       this.annotations = new ArrayList<AnnotatedAnnotation<?>>();
       this.enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       this.serviceRegistry = serviceRegistry;
-      this.beansXmlUrls = serviceRegistry.get(WebBeanDiscovery.class).discoverWebBeansXml();
+      this.beansXmlUrls = beanXmlUrls;
    }
    
    public List<AnnotatedClass<?>> getClasses()

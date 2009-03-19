@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="webbeans-core-tests">
+  <test verbose="2" name="org.jboss.webbeans.test.unit.bootstrap.environments.ServletEnvironmentTest" annotations="JDK">
+    <classes>
+      <class name="org.jboss.webbeans.test.unit.bootstrap.environments.ServletEnvironmentTest">
+        <methods>
+          <include name="testProducerMethodBean"/>
+        </methods>
+      </class>
+    </classes>
+  </test>
+</suite>

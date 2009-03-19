@@ -1,5 +1,5 @@
 <Beans xmlns="urn:java:ee" xmlns:myapp="urn:java:org.jboss.webbeans.test.unit.xml.beans"
-	xmlns:test="urn:java:org.jboss.webbeans.test.unit.xml">
+	xmlns:test="urn:java:org.jboss.webbeans.test.unit.xml.deploy">
 	<Deploy>
 		<Standard />
 		<Production />

@@ -1,15 +1,16 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite thread-count="5" skipfailedinvocationCounts="false" verbose="1" name="Failed suite [webbeans-core-tests]" junit="false" annotations="JDK">
-  <test name="org.jboss.webbeans.test.examples.ExampleTest(failed)" junit="false" annotations="JDK">
+  <test name="org.jboss.webbeans.test.unit.bootstrap.environments.ServletEnvironmentTest(failed)" junit="false" annotations="JDK">
     <classes>
-      <class name="org.jboss.webbeans.test.examples.ExampleTest">
+      <class name="org.jboss.webbeans.test.unit.bootstrap.environments.ServletEnvironmentTest">
         <methods>
-          <include name="afterClass"/>
-          <include name="testSentenceTranslator"/>
-          <include name="beforeClass"/>
           <include name="afterSuite"/>
-          <include name="testGameGenerator"/>
+          <include name="before"/>
+          <include name="after"/>
+          <include name="testProducerMethodBean"/>
           <include name="beforeSuite"/>
+          <include name="afterClass"/>
+          <include name="beforeClass"/>
         </methods>
       </class>
     </classes>
