@@ -228,7 +228,7 @@ public class ParseXmlHelper
       return AnnotatedClassImpl.of(beanClass);
    }
 
-   private static Class<?> loadClass(Element element)
+   public static Class<?> loadClass(Element element)
    {
       String beanUri = element.getNamespace().getURI();
       String packageName = beanUri.replaceFirst(XmlConstants.URN_PREFIX, "");

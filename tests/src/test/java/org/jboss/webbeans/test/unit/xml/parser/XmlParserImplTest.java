@@ -34,11 +34,11 @@ public class XmlParserImplTest extends AbstractWebBeansTest
       Iterable<URL> urls = getResources("user-defined-beans.xml");
 
       for (URL url : urls)
-         xmls.add(url);
-
+         xmls.add(url);      
+      
       XmlParserImpl parser = new XmlParserImpl();
-      Set<AnnotatedItem<?, ?>> aSet = parser.parse(xmls);
-
+      Set<AnnotatedItem<?, ?>> aSet = parser.parseForBeans(xmls);      
+      
       for (AnnotatedItem<?, ?> aElement : aSet)
       {
          assert aElement.equals(aClass);

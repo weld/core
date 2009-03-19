@@ -1,5 +1,33 @@
 package org.jboss.webbeans.util.xml;
 
+enum JavaEePackage
+{
+   JAVA_LANG("java.lang"),
+   JAVA_UTIL("java.util"),
+   JAVAX_ANNOTATION("javax.annotation"),
+   JAVAX_INJECT("javax.inject"),
+   JAVAX_CONTEXT("javax.context"),
+   JAVAX_INTERCEPTOR("javax.interceptor"),
+   JAVAX_DECORATOR("javax.decorator"),
+   JAVAX_EVENT("javax.event"),
+   JAVAX_EJB("javax.ejb"),
+   JAVAX_PERSISTENCE("javax.persistence"),
+   JAVAX_XML_WS("javax.xml.ws"),
+   JAVAX_JMS("javax.jms"),
+   JAVAX_SQL("javax.sql");
+   
+   private String packageName;
+
+   JavaEePackage(String name) {
+      packageName = name;
+   }
+
+   @Override
+   public String toString() {
+       return packageName;
+   }
+}
+
 public class XmlConstants
 {
    public static final String JAVA_EE_NAMESPACE = "urn:java:ee";
@@ -37,4 +65,6 @@ public class XmlConstants
    public static final String NAME = "name";
    
    public static final String MAPPED_NAME = "mappedName";
+   
+   public static final String STANDARD = "Standard";
 }
