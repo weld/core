@@ -87,6 +87,7 @@
       <dependency>
          <groupId>javax.jms</groupId>
          <artifactId>jms</artifactId>
+         <optional>true</optional>
       </dependency>
       <dependency>
          <groupId>javax.el</groupId>

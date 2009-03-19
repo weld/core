@@ -5,33 +5,30 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
+import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.introspector.AnnotatedAnnotation;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.jlr.AnnotatedAnnotationImpl;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 
-public class XmlParserEnvironment
+public class XmlEnvironmentImpl implements XmlEnvironment
 {
    
    private final List<AnnotatedClass<?>> classes;
    private final List<AnnotatedAnnotation<?>> annotations;
-   private final Iterable<URL> webBeansXml;
-   private final List<AnnotatedAnnotation<?>> enabledDeploymentTypes;
-   private final ResourceLoader resourceLoader;
+   private final ServiceRegistry serviceRegistry;
+   private final List<Class<? extends Annotation>> enabledDeploymentTypes;
+   private final Iterable<URL> beansXmlUrls;
    
-   public XmlParserEnvironment(ResourceLoader resourceLoader, Iterable<URL> webBeansXml)
+   public XmlEnvironmentImpl(ServiceRegistry serviceRegistry)
    {
       this.classes = new ArrayList<AnnotatedClass<?>>();
       this.annotations = new ArrayList<AnnotatedAnnotation<?>>();
-      this.enabledDeploymentTypes = new ArrayList<AnnotatedAnnotation<?>>();
-      this.webBeansXml = webBeansXml;
-      this.resourceLoader = resourceLoader;
-   }
-   
-   public Iterable<URL> getWebBeansXml()
-   {
-      return webBeansXml;
+      this.enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
+      this.serviceRegistry = serviceRegistry;
+      this.beansXmlUrls = serviceRegistry.get(WebBeanDiscovery.class).discoverWebBeansXml();
    }
    
    public List<AnnotatedClass<?>> getClasses()
@@ -44,17 +41,22 @@ public class XmlParserEnvironment
       return annotations;
    }
    
+   public Iterable<URL> getBeansXmlUrls()
+   {
+      return beansXmlUrls;
+   }
+   
    public <T> AnnotatedClass<? extends T> loadClass(String className, Class<T> expectedType)
    {
-      return AnnotatedClassImpl.of(resourceLoader.classForName(className).asSubclass(expectedType));
+      return AnnotatedClassImpl.of(serviceRegistry.get(ResourceLoader.class).classForName(className).asSubclass(expectedType));
    }
    
    public <T extends Annotation> AnnotatedAnnotation<? extends T> loadAnnotation(String className, Class<T> expectedType)
    {
-      return AnnotatedAnnotationImpl.of(resourceLoader.classForName(className).asSubclass(expectedType));
+      return AnnotatedAnnotationImpl.of(serviceRegistry.get(ResourceLoader.class).classForName(className).asSubclass(expectedType));
    }
-   
-   public List<AnnotatedAnnotation<?>> getEnabledDeploymentTypes()
+
+   public List<Class<? extends Annotation>> getEnabledDeploymentTypes()
    {
       return enabledDeploymentTypes;
    }

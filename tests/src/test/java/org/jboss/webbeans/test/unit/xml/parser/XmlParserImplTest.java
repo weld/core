@@ -10,11 +10,11 @@ import org.jboss.testharness.impl.packaging.Resource;
 import org.jboss.testharness.impl.packaging.Resources;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.resources.DefaultResourceLoader;
+import org.jboss.webbeans.mock.MockXmlEnvironment;
 import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
 import org.jboss.webbeans.test.unit.xml.beans.Order;
 import org.jboss.webbeans.util.xml.XmlParserImpl;
-import org.jboss.webbeans.xml.XmlParserEnvironment;
+import org.jboss.webbeans.xml.XmlEnvironmentImpl;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -27,7 +27,7 @@ public class XmlParserImplTest extends AbstractWebBeansTest
    @Test
    public void testParse()
    {
-      XmlParserEnvironment parserEnv = new XmlParserEnvironment(new DefaultResourceLoader(), getResources("beans.xml"));
+      XmlEnvironmentImpl parserEnv = new MockXmlEnvironment(getResources("beans.xml"));
       AnnotatedClass<?> aClass = parserEnv.loadClass("org.jboss.webbeans.test.unit.xml.beans.Order", Order.class);
 
       Set<URL> xmls = new HashSet<URL>();
@@ -36,15 +36,15 @@ public class XmlParserImplTest extends AbstractWebBeansTest
       for (URL url : urls)
          xmls.add(url);      
       
-      XmlParserImpl parser = new XmlParserImpl();
-      Set<AnnotatedItem<?, ?>> aSet = parser.parseForBeans(xmls);      
+      XmlParserImpl parser = new XmlParserImpl(parserEnv);
+      parser.parse();      
       
-      for (AnnotatedItem<?, ?> aElement : aSet)
+      for (AnnotatedItem<?, ?> aElement : parserEnv.getClasses())
       {
          assert aElement.equals(aClass);
       }
 
-      assert aSet.size() == 1;
+      assert parserEnv.getClasses().size() == 1;
    }
 }
 

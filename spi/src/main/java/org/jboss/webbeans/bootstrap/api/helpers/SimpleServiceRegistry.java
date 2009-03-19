@@ -28,7 +28,7 @@ import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
  * @author Pete Muir
  *
  */
-class SimpleServiceRegistry implements ServiceRegistry
+public class SimpleServiceRegistry implements ServiceRegistry
 {
    
    private final Map<Class<? extends Service>, Service> services;

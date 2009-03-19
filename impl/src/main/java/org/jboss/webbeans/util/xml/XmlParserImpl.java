@@ -13,66 +13,72 @@ import java.util.Set;
 import javax.inject.DefinitionException;
 import javax.inject.DeploymentException;
 import javax.inject.DeploymentType;
-import javax.inject.Production;
-import javax.inject.Standard;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
-import org.dom4j.QName;
 import org.dom4j.io.SAXReader;
-import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.xml.XmlEnvironment;
 
-public class XmlParserImpl // implements XmlParser
+public class XmlParserImpl
 {
    private static Log log = Logging.getLog(XmlParserImpl.class);
-         
-   public Set<AnnotatedItem<?, ?>> parseForBeans(Set<URL> xmls)
+   
+   private final XmlEnvironment environment;
+   
+   public XmlParserImpl(XmlEnvironment environment)
    {
-      Set<AnnotatedItem<?, ?>> result = new HashSet<AnnotatedItem<?, ?>>();
-
-      for (URL url : xmls)
-      {
-         Document document = createDocument(url);         
-         List<Element> beanElements = findBeans(document);
-         result.addAll(ParseXmlHelper.getBeanItems(beanElements));         
-      }
-      return result;
+      this.environment = environment;
    }
    
-   public void parseForDeploy(Set<URL> xmls)
+   public void parse()
    {
-      List<Class<? extends Annotation>> deploymentClasses = new ArrayList<Class<? extends Annotation>>();
-      int counter = 0;
-            
-      for (URL url : xmls)
+      // TODO extremely inefficient, no need to make dom4j parse each beans.xml multiple times, do as one parse over each document
+      parseForBeans();
+      parseForDeploy();
+   }
+         
+   private void parseForBeans()
+   {
+
+      for (URL url : environment.getBeansXmlUrls())
       {
          Document document = createDocument(url);
-         Element root = document.getRootElement();         
-         
-         Iterator<?> elIterator = root.elementIterator();
-         while (elIterator.hasNext())
+         if (document != null)
          {
-            Element element = (Element) elIterator.next();
-            if (ParseXmlHelper.isJavaEeNamespace(element) && 
-                  element.getName().equalsIgnoreCase(XmlConstants.DEPLOY))
-               deploymentClasses.addAll(obtainDeploymentTypes(element, counter++));
-         }        
+            List<Element> beanElements = findBeans(document);
+            // TODO Only pass in classes here
+            //environment.getClasses().addAll(ParseXmlHelper.getBeanItems(beanElements));
+         }
       }
       
-      if(deploymentClasses.size() == 0)
+   }
+   
+   private void parseForDeploy()
+   {
+      int counter = 0;
+            
+      for (URL url : environment.getBeansXmlUrls())
       {
-         deploymentClasses.add(Standard.class);
-         deploymentClasses.add(Production.class);
+         Document document = createDocument(url);
+         if (document != null)
+         {
+            Element root = document.getRootElement();         
+            
+            Iterator<?> elIterator = root.elementIterator();
+            while (elIterator.hasNext())
+            {
+               Element element = (Element) elIterator.next();
+               if (ParseXmlHelper.isJavaEeNamespace(element) && 
+                     element.getName().equalsIgnoreCase(XmlConstants.DEPLOY))
+                  environment.getEnabledDeploymentTypes().addAll(obtainDeploymentTypes(element, counter++));
+            }        
+         }
       }
-
-      ManagerImpl manager = CurrentManager.rootManager();
-      manager.setEnabledDeploymentTypes(deploymentClasses);
+      
    }
    
    @SuppressWarnings("unchecked")
@@ -92,6 +98,10 @@ public class XmlParserImpl // implements XmlParser
          InputStream xmlStream;
 
          xmlStream = url.openStream();
+         if (xmlStream.available() == 0)
+         {
+            return null;
+         }
          SAXReader reader = new SAXReader();
          Document document = reader.read(xmlStream);
          checkNamespaces(document);
@@ -169,10 +179,6 @@ public class XmlParserImpl // implements XmlParser
       String standardPrefix = "";
       String standardUri = XmlConstants.JAVA_EE_NAMESPACE;
       Namespace standardNamespace = new Namespace(standardPrefix, standardUri);
-      QName qName = new QName(standardName, standardNamespace);
-      Element standardElement = element.element(qName);      
-      if (standardElement == null)
-         throw new DeploymentException("The @Standard deployment type must be declared");
       
       List<Class<? extends Annotation>> deploymentClasses = new ArrayList<Class<? extends Annotation>>();
       List<Element> children = element.elements();
