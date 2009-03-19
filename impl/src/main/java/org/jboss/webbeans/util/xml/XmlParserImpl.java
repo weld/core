@@ -16,7 +16,6 @@ import javax.inject.DeploymentType;
 import javax.inject.Production;
 import javax.inject.Standard;
 
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -26,10 +25,12 @@ import org.dom4j.io.SAXReader;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.log.Log;
+import org.jboss.webbeans.log.Logging;
 
 public class XmlParserImpl // implements XmlParser
 {
-   private static Logger log = Logger.getLogger(XmlParserImpl.class);
+   private static Log log = Logging.getLog(XmlParserImpl.class);
          
    public Set<AnnotatedItem<?, ?>> parseForBeans(Set<URL> xmls)
    {
