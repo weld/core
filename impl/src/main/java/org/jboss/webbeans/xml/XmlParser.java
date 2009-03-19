@@ -1,4 +1,4 @@
-package org.jboss.webbeans.util.xml;
+package org.jboss.webbeans.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,15 +21,14 @@ import org.dom4j.Namespace;
 import org.dom4j.io.SAXReader;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.xml.XmlEnvironment;
 
-public class XmlParserImpl
+public class XmlParser
 {
-   private static Log log = Logging.getLog(XmlParserImpl.class);
+   private static Log log = Logging.getLog(XmlParser.class);
    
    private final XmlEnvironment environment;
    
-   public XmlParserImpl(XmlEnvironment environment)
+   public XmlParser(XmlEnvironment environment)
    {
       this.environment = environment;
    }

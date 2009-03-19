@@ -6,9 +6,9 @@ import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.webbeans.resources.DefaultResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
-import org.jboss.webbeans.xml.XmlEnvironmentImpl;
+import org.jboss.webbeans.xml.XmlEnvironment;
 
-public class MockXmlEnvironment extends XmlEnvironmentImpl
+public class MockXmlEnvironment extends XmlEnvironment
 {
 
    private static final ServiceRegistry services;

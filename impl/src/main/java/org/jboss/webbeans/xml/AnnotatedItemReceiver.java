@@ -1,4 +1,4 @@
-package org.jboss.webbeans.util.xml;
+package org.jboss.webbeans.xml;
 
 
 import org.dom4j.Element;

@@ -55,9 +55,9 @@ import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.HttpSessionManager;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
-import org.jboss.webbeans.util.xml.XmlParserImpl;
 import org.jboss.webbeans.xml.XmlEnvironment;
-import org.jboss.webbeans.xml.XmlEnvironmentImpl;
+import org.jboss.webbeans.xml.XmlEnvironment;
+import org.jboss.webbeans.xml.XmlParser;
 
 /**
  * Common bootstrapping functionality that is run at application startup and
@@ -156,8 +156,8 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
             // bean is an EJB!
             manager.getEjbDescriptorCache().addAll(getServices().get(EjbServices.class).discoverEjbs());
          }
-         XmlEnvironment xmlEnvironmentImpl = new XmlEnvironmentImpl(getServices());
-         XmlParserImpl parser = new XmlParserImpl(xmlEnvironmentImpl);
+         XmlEnvironment xmlEnvironmentImpl = new XmlEnvironment(getServices());
+         XmlParser parser = new XmlParser(xmlEnvironmentImpl);
          parser.parse();
          List<Class<? extends Annotation>> enabledDeploymentTypes = xmlEnvironmentImpl.getEnabledDeploymentTypes();
          if (enabledDeploymentTypes.size() > 0)

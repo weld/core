@@ -13,8 +13,8 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.mock.MockXmlEnvironment;
 import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
 import org.jboss.webbeans.test.unit.xml.beans.Order;
-import org.jboss.webbeans.util.xml.XmlParserImpl;
-import org.jboss.webbeans.xml.XmlEnvironmentImpl;
+import org.jboss.webbeans.xml.XmlEnvironment;
+import org.jboss.webbeans.xml.XmlParser;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -27,7 +27,7 @@ public class XmlParserImplTest extends AbstractWebBeansTest
    @Test
    public void testParse()
    {
-      XmlEnvironmentImpl parserEnv = new MockXmlEnvironment(getResources("beans.xml"));
+      XmlEnvironment parserEnv = new MockXmlEnvironment(getResources("beans.xml"));
       AnnotatedClass<?> aClass = parserEnv.loadClass("org.jboss.webbeans.test.unit.xml.beans.Order", Order.class);
 
       Set<URL> xmls = new HashSet<URL>();
@@ -36,7 +36,7 @@ public class XmlParserImplTest extends AbstractWebBeansTest
       for (URL url : urls)
          xmls.add(url);      
       
-      XmlParserImpl parser = new XmlParserImpl(parserEnv);
+      XmlParser parser = new XmlParser(parserEnv);
       parser.parse();      
       
       for (AnnotatedItem<?, ?> aElement : parserEnv.getClasses())
