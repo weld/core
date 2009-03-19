@@ -43,59 +43,38 @@ public class WrappedAnnotatedClass<T> extends ForwardingAnnotatedClass<T>
       return annotationStore;
    }
    
-   /**
-    * @see org.jboss.webbeans.introspector.AnnotatedItem
-    */
    public <A extends Annotation> A getAnnotation(Class<A> annotationType)
    {
       return getAnnotationStore().getAnnotation(annotationType);
    }
 
-   /**
-    * @see org.jboss.webbeans.introspector.AnnotatedItem
-    */
    public Set<Annotation> getAnnotationsAsSet()
    {
       return getAnnotationStore().getAnnotations();
    }
 
-   /**
-    * @see org.jboss.webbeans.introspector.AnnotatedItem
-    */
    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
       return getAnnotationStore().getMetaAnnotations(metaAnnotationType);
    }
 
-   /**
-    * @see org.jboss.webbeans.introspector.AnnotatedItem
-    */
    public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
    {
       return getAnnotationStore().getMetaAnnotationsAsArray(metaAnnotationType);
    }
 
-   /**
-    * @see org.jboss.webbeans.introspector.AnnotatedItem
-    */
    @Deprecated
    public Set<Annotation> getBindings()
    {
       return getAnnotationStore().getBindings();
    }
 
-   /**
-    * @see org.jboss.webbeans.introspector.AnnotatedItem
-    */
    @Deprecated
    public Annotation[] getBindingsAsArray()
    {
       return getAnnotationStore().getBindingsAsArray();
    }
    
-   /**
-    * @see org.jboss.webbeans.introspector.AnnotatedItem
-    */
    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
    {
       return getAnnotationStore().isAnnotationPresent(annotationType);
