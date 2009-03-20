@@ -9,7 +9,6 @@ import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.introspector.AnnotatedAnnotation;
 import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.jlr.AnnotatedAnnotationImpl;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 
@@ -56,9 +55,9 @@ public class XmlEnvironment
       return AnnotatedClassImpl.of(serviceRegistry.get(ResourceLoader.class).classForName(className).asSubclass(expectedType));
    }
    
-   public <T extends Annotation> AnnotatedAnnotation<? extends T> loadAnnotation(String className, Class<T> expectedType)
+   public <T extends Annotation> Class<? extends T> loadAnnotation(String className, Class<T> expectedType)
    {
-      return AnnotatedAnnotationImpl.of(serviceRegistry.get(ResourceLoader.class).classForName(className).asSubclass(expectedType));
+      return serviceRegistry.get(ResourceLoader.class).classForName(className).asSubclass(expectedType);
    }
 
    public List<Class<? extends Annotation>> getEnabledDeploymentTypes()
