@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.webbeans.injection;
+package org.jboss.webbeans.injection.resolution;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
@@ -31,8 +31,9 @@ import javax.inject.TypeLiteral;
 import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bean.standard.EventBean;
+import org.jboss.webbeans.bean.standard.InstanceBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.ForwardingAnnotatedItem;
 import org.jboss.webbeans.metadata.BindingTypeModel;
 import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.util.ListComparator;
@@ -51,42 +52,6 @@ public class Resolver
    private static final Class<Set<Bean<Object>>> BEAN_SET_GENERIFIED_WITH_OBJECT = new TypeLiteral<Set<Bean<Object>>>(){}.getRawType();
    private static final Class<Set<Bean<?>>> BEAN_SET_GENERIFIED_WITH_WILDCARD = new TypeLiteral<Set<Bean<?>>>(){}.getRawType();
    
-   /**
-    * Extension of an element which bases equality not only on type, but also on
-    * binding type
-    */
-   private abstract class ResolvableAnnotatedItem<T, S> extends ForwardingAnnotatedItem<T, S>
-   {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public boolean equals(Object other)
-      {
-         if (other instanceof AnnotatedItem)
-         {
-            AnnotatedItem<?, ?> that = (AnnotatedItem<?, ?>) other;
-            return delegate().isAssignableFrom(that) && that.getBindings().equals(this.getBindings());
-         }
-         else
-         {
-            return false;
-         }
-      }
-
-      @Override
-      public int hashCode()
-      {
-         return delegate().hashCode();
-      }
-
-      @Override
-      public String toString()
-      {
-         return "Resolvable annotated item for " + delegate();
-      }
-
-   }
-
    // The resolved injection points
    private ConcurrentCache<ResolvableAnnotatedItem<?, ?>, Set<Bean<?>>> resolvedInjectionPoints;
    // The registerd injection points
@@ -95,6 +60,7 @@ public class Resolver
    private ConcurrentCache<String, Set<Bean<?>>> resolvedNames;
    // The Web Beans manager
    private ManagerImpl manager;
+   private final Set<AnnotatedItemTransformer> transformers;
 
    /**
     * Constructor
@@ -106,6 +72,9 @@ public class Resolver
       this.injectionPoints = new HashSet<AnnotatedItem<?, ?>>();
       this.resolvedInjectionPoints = new ConcurrentCache<ResolvableAnnotatedItem<?, ?>, Set<Bean<?>>>();
       this.resolvedNames = new ConcurrentCache<String, Set<Bean<?>>>();
+      this.transformers = new HashSet<AnnotatedItemTransformer>();
+      transformers.add(EventBean.TRANSFORMER);
+      transformers.add(InstanceBean.TRANSFORMER);
       this.manager = manager;
    }
 
@@ -182,20 +151,28 @@ public class Resolver
     */
    public <T, S> Set<Bean<T>> get(final AnnotatedItem<T, S> key)
    {
-      Set<Bean<T>> beans = new HashSet<Bean<T>>();
-
-      final ResolvableAnnotatedItem<T, S> element = new ResolvableAnnotatedItem<T, S>()
+      final AnnotatedItem<T, S> transformedElement = transformElement(key);
+      
+      Set<Bean<T>> beans = registerInjectionPoint(new ResolvableAnnotatedItem<T, S>()
       {
 
          @Override
          public AnnotatedItem<T, S> delegate()
          {
-            return key;
+            return transformedElement;
          }
 
-      };
-      beans = registerInjectionPoint(element);
+      });
       return Collections.unmodifiableSet(beans);
+   }
+   
+   private <T, S> AnnotatedItem<T, S> transformElement(AnnotatedItem<T, S> element)
+   {
+      for (AnnotatedItemTransformer transformer : transformers)
+      {
+         element = transformer.transform(element);
+      }
+      return element;
    }
 
    /**

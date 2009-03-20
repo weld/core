@@ -17,16 +17,23 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import javax.event.Event;
+import javax.event.Fires;
 import javax.inject.AmbiguousDependencyException;
 import javax.inject.DefinitionException;
 import javax.inject.InconsistentSpecializationException;
+import javax.inject.Instance;
 import javax.inject.New;
 import javax.inject.NullableDependencyException;
+import javax.inject.Obtains;
 import javax.inject.UnproxyableDependencyException;
 import javax.inject.UnsatisfiedDependencyException;
 import javax.inject.UnserializableDependencyException;
@@ -36,7 +43,7 @@ import javax.inject.manager.InjectionPoint;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.injection.ResolvableAnnotatedClass;
+import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.util.Beans;
@@ -78,9 +85,11 @@ public class BeanValidator
             {
                throw new DefinitionException("The injection point " + injectionPoint + " is annotated with @New which cannot be combined with other binding types");
             }
+            checkFacadeInjectionPoint(injectionPoint, Obtains.class, Instance.class);
+            checkFacadeInjectionPoint(injectionPoint, Fires.class, Event.class);
             Annotation[] bindings = injectionPoint.getBindings().toArray(new Annotation[0]);
             AnnotatedItem<?, ?> annotatedItem = ResolvableAnnotatedClass.of(injectionPoint.getType(), bindings);
-            Set<?> resolvedBeans = manager.resolveByType(annotatedItem, bindings);
+            Set<?> resolvedBeans = manager.resolveByType(annotatedItem, injectionPoint, bindings);
             if (resolvedBeans.isEmpty())
             {
                throw new UnsatisfiedDependencyException("The injection point " + injectionPoint + " with binding types "  + Names.annotationsToString(injectionPoint.getBindings()) + " in " + bean + " has unsatisfied dependencies with binding types ");
@@ -132,6 +141,34 @@ public class BeanValidator
    {
       Comparator<Class<? extends Annotation>> comparator = new ListComparator<Class<? extends Annotation>>(manager.getEnabledDeploymentTypes());
       return comparator.compare(deploymentType, otherDeploymentType) > 0;
+   }
+   
+   private void checkFacadeInjectionPoint(InjectionPoint injectionPoint, Class<? extends Annotation> annotationType, Class<?> type)
+   {
+      if (injectionPoint.isAnnotationPresent(annotationType))
+      {
+         if (injectionPoint.getType() instanceof ParameterizedType)
+         {
+            ParameterizedType parameterizedType = (ParameterizedType) injectionPoint.getType();
+            if (!type.isAssignableFrom((Class<?>) parameterizedType.getRawType()))
+            {
+               throw new DefinitionException("An injection point annotated " + annotationType + " must have type " + type + " " + injectionPoint);
+            }
+            if (parameterizedType.getActualTypeArguments()[0] instanceof TypeVariable)
+            {
+               throw new DefinitionException("An injection point annotated " + annotationType + " cannot have a type variable type parameter " + injectionPoint);
+            }
+            if (parameterizedType.getActualTypeArguments()[0] instanceof WildcardType)
+            {
+               throw new DefinitionException("An injection point annotated " + annotationType + " cannot have a wildcard type parameter " + injectionPoint);
+            }
+         }
+         else
+         {
+            throw new DefinitionException("An injection point annotated " + annotationType + " must have a type parameter " + injectionPoint);
+         }
+      }
+      
    }
 
 }

@@ -1,26 +1,21 @@
 package org.jboss.webbeans.bootstrap;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.event.Fires;
 import javax.event.Observes;
 import javax.inject.BindingType;
 import javax.inject.DeploymentType;
 import javax.inject.Initializer;
-import javax.inject.Obtains;
 import javax.inject.Produces;
 import javax.inject.Realizes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
-import org.jboss.webbeans.bean.EventBean;
-import org.jboss.webbeans.bean.InstanceBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.ProducerFieldBean;
@@ -32,7 +27,6 @@ import org.jboss.webbeans.event.ObserverFactory;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
-import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.WrappedAnnotatedField;
 import org.jboss.webbeans.introspector.WrappedAnnotatedMethod;
@@ -54,7 +48,6 @@ public class BeanDeployer
    private final Set<RIBean<?>> beans;
    private final Set<AnnotatedClass<?>> deferredClasses;
    private final ManagerImpl manager;
-   private EventBean<Object, Method> eventBean;
    
    public BeanDeployer(ManagerImpl manager)
    {
@@ -119,7 +112,6 @@ public class BeanDeployer
       createProducerMethods(bean, annotatedClass);
       createProducerFields(bean, annotatedClass);
       createObserverMethods(bean, annotatedClass);
-      createFacades(bean.getInjectionPoints());
       
       if (annotatedClass.isAnnotationPresent(Realizes.class))
       {
@@ -145,7 +137,6 @@ public class BeanDeployer
       ProducerMethodBean<?> bean = ProducerMethodBean.of(annotatedMethod, declaringBean, manager);
       beans.add(bean);
       manager.getResolver().addInjectionPoints(bean.getInjectionPoints());
-      createFacades(bean.getInjectionPoints());
       log.info("Web Bean: " + bean);
    }
    
@@ -214,47 +205,6 @@ public class BeanDeployer
       EnterpriseBean<?> bean = EnterpriseBean.of(annotatedClass, manager);
       createBean(bean, annotatedClass);
       beans.add(NewEnterpriseBean.of(annotatedClass, manager));
-   }
-
-   private void createFacades(Set<? extends AnnotatedItem<?, ?>> injectionPoints)
-   {
-      for (AnnotatedItem<?, ?> injectionPoint : injectionPoints)
-      {
-         if (injectionPoint.isAnnotationPresent(Fires.class))
-         {
-             createEvent(injectionPoint);
-         }
-         if (injectionPoint.isAnnotationPresent(Obtains.class))
-         {
-            createInstance(injectionPoint);
-         }
-      }
-   }
-
-   private void createEvent(AnnotatedItem<?, ?> injectionPoint)
-   {
-      if (eventBean == null)
-      {
-         // TODO Fix this!
-         @SuppressWarnings("unchecked")
-         EventBean<Object, Method> bean = EventBean.of((AnnotatedItem) injectionPoint, manager);
-         beans.add(bean);
-         log.info("Web Bean: " + bean);
-         eventBean = bean;
-      }
-      else
-      {
-         eventBean.addBindings(injectionPoint.getBindings());
-      }
-   }
-   
-   private void createInstance(AnnotatedItem<?, ?> injectionPoint)
-   {
-      // TODO FIx this
-      @SuppressWarnings("unchecked")
-      InstanceBean<Object, ?> bean = InstanceBean.of((AnnotatedItem) injectionPoint, manager);
-      beans.add(bean);
-      log.info("Web Bean: " + bean);
    }
    
    /**

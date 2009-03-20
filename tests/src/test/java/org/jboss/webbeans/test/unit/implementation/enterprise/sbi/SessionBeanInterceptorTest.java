@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 public class SessionBeanInterceptorTest extends AbstractWebBeansTest
 {
    
-   @Test
+   @Test(groups="incontainer-broken")
    public void testSerializeSessionBeanInterceptor() throws Exception
    {
       Bean<?> foobean =  manager.getNewEnterpriseBeanMap().get(Foo.class);

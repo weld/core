@@ -1,5 +1,6 @@
 package org.jboss.webbeans.test.unit.bootstrap.environments;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,37 +8,43 @@ import java.util.Map;
 import javax.inject.AnnotationLiteral;
 import javax.inject.manager.Bean;
 
-import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.mock.MockEELifecycle;
 import org.jboss.webbeans.mock.MockServletLifecycle;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
-import org.jboss.webbeans.test.unit.StandaloneContainersImpl;
+import org.jboss.webbeans.mock.MockWebBeanDiscovery;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-// TODO shouldn't extend AbstractWebBeansTest
-
-@Artifact
-public class ServletEnvironmentTest extends AbstractWebBeansTest
+public class ServletEnvironmentTest
 {
    
+   private MockServletLifecycle lifecycle;
+   private ManagerImpl manager;
+   
    @BeforeClass
-   @Override
    public void beforeClass() throws Throwable
    {
-      StandaloneContainersImpl.lifecycleClass = MockServletLifecycle.class;
-      super.beforeClass();
+      lifecycle = new MockServletLifecycle(); 
+      lifecycle.initialize();
+      MockWebBeanDiscovery discovery = lifecycle.getWebBeanDiscovery();
+      discovery.setWebBeanClasses(Arrays.asList(Animal.class, DeadlyAnimal.class, DeadlySpider.class, DeadlyAnimal.class, Hound.class, HoundLocal.class, Salmon.class, ScottishFish.class, SeaBass.class, Sole.class, Spider.class, Tarantula.class, TarantulaProducer.class, Tuna.class));
+      lifecycle.beginApplication();
+      lifecycle.beginSession();
+      lifecycle.beginRequest();
+      manager = CurrentManager.rootManager();
    }
    
-   @Override
    @AfterClass(alwaysRun=true)
    public void afterClass() throws Exception
    {
-      StandaloneContainersImpl.lifecycleClass = MockEELifecycle.class;
-      super.afterClass();
+      lifecycle.endRequest();
+      lifecycle.endSession();
+      lifecycle.endApplication();
+      CurrentManager.setRootManager(null);
+      lifecycle = null;
    }
    
    @Test(groups="incontainer-broken")

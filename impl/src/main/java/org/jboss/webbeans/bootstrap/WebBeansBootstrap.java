@@ -23,7 +23,9 @@ import java.util.List;
 import org.jboss.webbeans.BeanValidator;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bean.standard.EventBean;
 import org.jboss.webbeans.bean.standard.InjectionPointBean;
+import org.jboss.webbeans.bean.standard.InstanceBean;
 import org.jboss.webbeans.bean.standard.ManagerBean;
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
 import org.jboss.webbeans.bootstrap.api.Environments;
@@ -55,7 +57,6 @@ import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.HttpSessionManager;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
-import org.jboss.webbeans.xml.XmlEnvironment;
 import org.jboss.webbeans.xml.XmlEnvironment;
 import org.jboss.webbeans.xml.XmlParser;
 
@@ -123,6 +124,8 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       beanDeployer.addClasses(classes);
       beanDeployer.addBean(ManagerBean.of(manager));
       beanDeployer.addBean(InjectionPointBean.of(manager));
+      beanDeployer.addBean(EventBean.of(manager));
+      beanDeployer.addBean(InstanceBean.of(manager));
       if (!getEnvironment().equals(Environments.SE))
       {
          beanDeployer.addClass(ConversationImpl.class);

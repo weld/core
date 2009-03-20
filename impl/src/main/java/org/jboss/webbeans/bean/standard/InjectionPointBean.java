@@ -36,8 +36,7 @@ import org.jboss.webbeans.ManagerImpl;
 public class InjectionPointBean extends AbstractStandardBean<InjectionPoint>
 {
    
-   private static final long      serialVersionUID = -5040637694853267743L;
-   private static final Set<Type> TYPES            = new HashSet<Type>(Arrays.asList(new Type[] { InjectionPoint.class }));
+   private static final Set<Type> TYPES = new HashSet<Type>(Arrays.asList(new Type[] { InjectionPoint.class }));
 
    /**
     * Creates an InjectionPoint Web Bean for the injection of the containing bean owning

@@ -24,7 +24,7 @@ import java.util.Set;
 import javax.inject.DuplicateBindingTypeException;
 import javax.inject.manager.Manager;
 
-import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.metadata.MetaDataCache;
 
 /**
  * Common implementation for binding-type-based helpers
@@ -35,6 +35,9 @@ import org.jboss.webbeans.util.Reflections;
  */
 public abstract class FacadeImpl<T>
 {
+   
+   private static final Annotation[] EMPTY_BINDINGS = new Annotation[0];
+   
    // The binding types the helper operates on
    protected final Set<? extends Annotation> bindings;
    // The Web Beans manager
@@ -49,61 +52,11 @@ public abstract class FacadeImpl<T>
     * @param manager The Web Beans manager
     * @param bindings The binding types
     */
-   protected FacadeImpl(Class<T> type, Manager manager, Annotation... bindings)
+   protected FacadeImpl(Class<T> type, Manager manager, Set<? extends Annotation> bindings)
    {
       this.manager = manager;
       this.type = type;
-      this.bindings = mergeBindings(new HashSet<Annotation>(), bindings);
-   }
-
-   /**
-    * Merges and validates the current and new bindings
-    * 
-    * Checks with an abstract method for annotations to exclude
-    * 
-    * @param currentBindings Existing bindings
-    * @param newBindings New bindings
-    * @return The union of the bindings
-    */
-   protected Set<Annotation> mergeBindings(Set<? extends Annotation> currentBindings, Annotation... newBindings)
-   {
-      Set<Annotation> result = new HashSet<Annotation>();
-      result.addAll(currentBindings);
-      for (Annotation newAnnotation : newBindings)
-      {
-         if (!Reflections.isBindings(newAnnotation))
-         {
-            throw new IllegalArgumentException(newAnnotation + " is not a binding for " + this);
-         }
-         if (result.contains(newAnnotation))
-         {
-            throw new DuplicateBindingTypeException(newAnnotation + " is already present in the bindings list for " + this);
-         }
-         if (!getFilteredAnnotations().contains(newAnnotation.annotationType()))
-         {
-            result.add(newAnnotation);
-         }
-      }
-      return result;
-   }
-
-   /**
-    * Gets a set of annotation classes to ignore
-    * 
-    * @return A set of annotation classes to ignore
-    */
-   protected abstract Set<Class<? extends Annotation>> getFilteredAnnotations();
-
-   /**
-    * Merges the binding this helper operates upon with the parameters
-    * 
-    * @param bindings The bindings to merge
-    * 
-    * @return The union of the binding types
-    */
-   protected Annotation[] mergeBindings(Annotation... newBindings)
-   {
-      return mergeBindings(bindings, newBindings).toArray(new Annotation[0]);
+      this.bindings = bindings;
    }
 
    /**
@@ -115,6 +68,24 @@ public abstract class FacadeImpl<T>
    public String toString()
    {
       return "Abstract facade implmentation";
+   }
+   
+   protected Annotation[] mergeInBindings(Annotation... newBindings)
+   {
+      Set<Annotation> result = new HashSet<Annotation>();
+      result.addAll(bindings);
+      for (Annotation newAnnotation : newBindings)
+      {
+         if (!MetaDataCache.instance().getBindingTypeModel(newAnnotation.annotationType()).isValid())
+         {
+            throw new IllegalArgumentException(newAnnotation + " is not a binding for " + this);
+         }
+         if (result.contains(newAnnotation))
+         {
+            throw new DuplicateBindingTypeException(newAnnotation + " is already present in the bindings list for " + this);
+         }
+      }
+      return result.toArray(EMPTY_BINDINGS);
    }
 
 }

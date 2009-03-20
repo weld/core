@@ -46,7 +46,6 @@ import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.MetaDataCache;
-import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
@@ -273,7 +272,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       if (getManager().getServices().contains(EjbServices.class))
       {
          EjbServices ejbServices = manager.getServices().get(EjbServices.class);
-         NamingContext namingContext = manager.getServices().get(NamingContext.class);
          for (AnnotatedInjectionPoint<?, ?> injectionPoint : ejbInjectionPoints)
          {
             Object ejbInstance = ejbServices.resolveEjb(injectionPoint);

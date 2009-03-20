@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans.bean;
 
-import java.io.Serializable;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -31,7 +30,7 @@ import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
  *  
  * @author Pete Muir
  */
-public abstract class RIBean<T> extends Bean<T> implements Serializable
+public abstract class RIBean<T> extends Bean<T>
 {
    
    private static final AtomicInteger idGenerator = new AtomicInteger();

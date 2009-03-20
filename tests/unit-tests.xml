@@ -3,6 +3,14 @@
 <suite name="Web Beans RI" verbose="1"  >
 
    <test name="Web Beans RI">
+      <method-selectors>
+         <method-selector>
+            <selector-class name="org.jboss.testharness.impl.testng.DisableIntegrationTestsMethodSelector" />
+         </method-selector>
+         <method-selector>
+            <selector-class name="org.jboss.testharness.impl.testng.ExcludeIncontainerUnderInvestigationMethodSelector" />
+         </method-selector>
+      </method-selectors>
       <groups>
          <run>
 <!--          
@@ -32,7 +40,7 @@
             <exclude name="broken" />
          </run>
       </groups>
-      <packages >
+      <packages>
          <package name="org.jboss.webbeans.test.examples" />
          <package name="org.jboss.webbeans.test.unit.bootstrap" />
          <package name="org.jboss.webbeans.test.unit.bootstrap.environments" />
@@ -41,7 +49,7 @@
          <package name="org.jboss.webbeans.test.unit.bootstrap.environments.multipleSimple" />
          <package name="org.jboss.webbeans.test.unit.bootstrap.environments.singleEnterprise" />
          <package name="org.jboss.webbeans.test.unit.bootstrap.environments.singleProducerMethod" />
-         \<package name="org.jboss.webbeans.test.unit.bootstrap.environments.singleSimple" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap.environments.singleSimple" />
          <package name="org.jboss.webbeans.test.unit.context" />
          <package name="org.jboss.webbeans.test.unit.definition" />
          <package name="org.jboss.webbeans.test.unit.event" />

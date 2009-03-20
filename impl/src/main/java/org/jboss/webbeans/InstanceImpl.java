@@ -18,7 +18,6 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
 import java.util.Set;
 
 import javax.inject.Instance;
@@ -34,6 +33,13 @@ import javax.inject.manager.Manager;
  */
 public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
 {
+   
+
+   public static <I> Instance<I> of(Class<I> clazz, ManagerImpl manager, Set<Annotation> annotations)
+   {
+      return new InstanceImpl<I>(clazz, manager, annotations);
+   }
+   
    /**
     * Constructor
     * 
@@ -41,7 +47,7 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
     * @param manager The Web Beans manager
     * @param bindings The binding types
     */
-   public InstanceImpl(Class<T> type, Manager manager, Annotation... bindings)
+   private InstanceImpl(Class<T> type, Manager manager, Set<Annotation> bindings)
    {
       super(type, manager, bindings);
    }
@@ -57,7 +63,7 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
     */
    public T get(Annotation... bindings) 
    {
-      return manager.getInstanceByType(type, mergeBindings(bindings));
+      return manager.getInstanceByType(type, mergeInBindings(bindings));
    }
 
    /**
@@ -69,21 +75,6 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
    public String toString()
    {
       return "Obtainable instance for type " + type + " and binding types " + bindings;
-   }
-
-   /**
-    * Filters annotations from the binding type or parameter lists
-    * 
-    * This implementation filters no annotations
-    * 
-    * @return A set of annotations to filter
-    * 
-    * @see org.jboss.webbeans.FacadeImpl#getFilteredAnnotations
-    */
-   @Override
-   protected Set<Class<? extends Annotation>> getFilteredAnnotations()
-   {
-      return Collections.emptySet();
    }
 
 }

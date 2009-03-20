@@ -47,6 +47,12 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>, Serializabl
    @SuppressWarnings("unchecked")
    private static final Set<Class<? extends Annotation>> FILTERED_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Fires.class));
 
+   public static <E> Event<E> of(Class<E> eventType, Manager manager, Set<Annotation> bindings)
+   {
+      return new EventImpl<E>(eventType, manager, bindings);
+   }
+   
+   
    /**
     * Constructor
     * 
@@ -54,7 +60,7 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>, Serializabl
     * @param manager The Web Beans manager
     * @param bindings The binding types
     */
-   public EventImpl(Class<T> eventType, Manager manager, Annotation... bindings)
+   public EventImpl(Class<T> eventType, Manager manager, Set<Annotation> bindings)
    {
       super(eventType, manager, bindings);
    }
@@ -67,7 +73,7 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>, Serializabl
     */
    public void fire(T event, Annotation... bindings)
    {
-      manager.fireEvent(event, mergeBindings(bindings));
+      manager.fireEvent(event, mergeInBindings(bindings));
    }
 
    /**
@@ -78,7 +84,7 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>, Serializabl
     */
    public void observe(Observer<T> observer, Annotation... bindings)
    {
-      manager.addObserver(observer, type, mergeBindings(bindings));
+      manager.addObserver(observer, type, mergeInBindings(bindings));
    }
 
    @Override
@@ -89,15 +95,6 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>, Serializabl
       buffer.append("  Event Type: " + type.getName() + "\n");
       buffer.append(Strings.collectionToString("  Event Bindings: ", bindings));
       return buffer.toString();
-   }
-
-   /**
-    * @see org.jboss.webbeans.FacadeImpl#getFilteredAnnotations
-    */
-   @Override
-   protected Set<Class<? extends Annotation>> getFilteredAnnotations()
-   {
-      return FILTERED_ANNOTATIONS;
    }
 
 }

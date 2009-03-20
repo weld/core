@@ -1,4 +1,4 @@
-package org.jboss.webbeans.injection;
+package org.jboss.webbeans.injection.resolution;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -16,10 +16,6 @@ import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem;
 import org.jboss.webbeans.util.Names;
 
-/**
- * Extension of an element which bases equality not only on type, but also on
- * binding type
- */
 public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<T>>
 {
    
