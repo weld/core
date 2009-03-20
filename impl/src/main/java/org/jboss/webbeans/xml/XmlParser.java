@@ -13,14 +13,11 @@ import java.util.Set;
 import javax.inject.DefinitionException;
 import javax.inject.DeploymentException;
 import javax.inject.DeploymentType;
-import javax.inject.Production;
-import javax.inject.Standard;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
-import org.dom4j.QName;
 import org.dom4j.io.SAXReader;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
@@ -31,6 +28,8 @@ public class XmlParser
    
    private final XmlEnvironment environment;
    
+   private boolean haveAnyDeployElement = false;
+   
    public XmlParser(XmlEnvironment environment)
    {
       this.environment = environment;
@@ -38,59 +37,37 @@ public class XmlParser
    
    public void parse()
    {
-      // TODO extremely inefficient, no need to make dom4j parse each beans.xml multiple times, do as one parse over each document
-      parseForBeans();
-      parseForDeploy();
+      for (URL url : environment.getBeansXmlUrls())
+      {
+         Document document = createDocument(url);
+         if (document != null)
+         {
+            parseForBeans(document);
+            parseForDeploy(document);
+         }
+      }
    }
          
-   private void parseForBeans()
+   private void parseForBeans(Document document)
    {
-
-      for (URL url : environment.getBeansXmlUrls())
-      {
-         Document document = createDocument(url);
-         if (document != null)
-         {
-            List<Element> beanElements = findBeans(document);
-            // TODO Only pass in classes here
-            //environment.getClasses().addAll(ParseXmlHelper.getBeanItems(beanElements));
-         }
-      }
-      
+      List<Element> beanElements = findBeans(document);
+      // TODO Only pass in classes here
+      //environment.getClasses().addAll(ParseXmlHelper.getBeanItems(beanElements));
    }
    
-   private void parseForDeploy()
+   private void parseForDeploy(Document document)
    {
-
-//      List<Class<? extends Annotation>> deploymentClasses = new ArrayList<Class<? extends Annotation>>();
-
-      int counter = 0;
+      
+      Element root = document.getRootElement();         
             
-      for (URL url : environment.getBeansXmlUrls())
+      Iterator<?> elIterator = root.elementIterator();
+      while (elIterator.hasNext())
       {
-         Document document = createDocument(url);
-         if (document != null)
-         {
-            Element root = document.getRootElement();         
-            
-            Iterator<?> elIterator = root.elementIterator();
-            while (elIterator.hasNext())
-            {
-               Element element = (Element) elIterator.next();
-               if (ParseXmlHelper.isJavaEeNamespace(element) && 
-                     element.getName().equalsIgnoreCase(XmlConstants.DEPLOY))
-                  environment.getEnabledDeploymentTypes().addAll(obtainDeploymentTypes(element, counter++));
-//                  deploymentClasses.addAll(obtainDeploymentTypes(element, counter++));
-            }        
-         }
+         Element element = (Element) elIterator.next();
+         if (ParseXmlHelper.isJavaEeNamespace(element) && 
+               element.getName().equalsIgnoreCase(XmlConstants.DEPLOY))
+            environment.getEnabledDeploymentTypes().addAll(obtainDeploymentTypes(element));
       }
-//      if(deploymentClasses.size() == 0)
-//      {
-//         deploymentClasses.add(Standard.class);
-//         deploymentClasses.add(Production.class);
-//      }
-//      
-//      environment.getEnabledDeploymentTypes().addAll(deploymentClasses);
    }
    
    @SuppressWarnings("unchecked")
@@ -179,9 +156,9 @@ public class XmlParser
    
    @SuppressWarnings("unchecked")
    // TODO Make this object orientated
-   private List<Class<? extends Annotation>> obtainDeploymentTypes(Element element, int counter)
+   private List<Class<? extends Annotation>> obtainDeploymentTypes(Element element)
    {
-      if (counter > 1)
+      if (haveAnyDeployElement)
          throw new DefinitionException("<Deploy> element is specified more than once");
 
       List<Element> deployElements = element.elements();
@@ -213,6 +190,7 @@ public class XmlParser
                   
          deploymentClasses.add(deploymentClass.asSubclass(Annotation.class));
       }
+      haveAnyDeployElement = true;
       return deploymentClasses;
    }
 }
