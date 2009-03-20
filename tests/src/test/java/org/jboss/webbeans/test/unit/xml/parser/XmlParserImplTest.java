@@ -1,6 +1,5 @@
 package org.jboss.webbeans.test.unit.xml.parser;
 
-import java.io.File;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
@@ -20,7 +19,6 @@ import org.jboss.webbeans.test.unit.xml.beans.TestDeploymentType;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlEnvironment;
 import org.jboss.webbeans.xml.XmlParser;
-import org.testng.annotations.Test;
 
 @Artifact
 @Resources({
@@ -57,8 +55,8 @@ public class XmlParserImplTest extends AbstractWebBeansTest
    {      
       String urn = "urn:java:org.jboss.webbeans.test.unit.xml.parser";
       
-      File f = ParseXmlHelper.loadNamespaceFile(urn);
-      List<String> packages = ParseXmlHelper.parseNamespaceFile(f);
+      URL url = ParseXmlHelper.loadNamespaceFile(urn);
+      List<String> packages = ParseXmlHelper.parseNamespaceFile(url);
       assert packages.size() == 2;
    }
    
