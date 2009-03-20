@@ -62,7 +62,7 @@ public class XmlParser
    private void parseForDeploy()
    {
 
-      List<Class<? extends Annotation>> deploymentClasses = new ArrayList<Class<? extends Annotation>>();
+//      List<Class<? extends Annotation>> deploymentClasses = new ArrayList<Class<? extends Annotation>>();
 
       int counter = 0;
             
@@ -79,17 +79,18 @@ public class XmlParser
                Element element = (Element) elIterator.next();
                if (ParseXmlHelper.isJavaEeNamespace(element) && 
                      element.getName().equalsIgnoreCase(XmlConstants.DEPLOY))
-                  deploymentClasses.addAll(obtainDeploymentTypes(element, counter++));
+                  environment.getEnabledDeploymentTypes().addAll(obtainDeploymentTypes(element, counter++));
+//                  deploymentClasses.addAll(obtainDeploymentTypes(element, counter++));
             }        
          }
       }
-      if(deploymentClasses.size() == 0)
-      {
-         deploymentClasses.add(Standard.class);
-         deploymentClasses.add(Production.class);
-      }
-      
-      environment.getEnabledDeploymentTypes().addAll(deploymentClasses);
+//      if(deploymentClasses.size() == 0)
+//      {
+//         deploymentClasses.add(Standard.class);
+//         deploymentClasses.add(Production.class);
+//      }
+//      
+//      environment.getEnabledDeploymentTypes().addAll(deploymentClasses);
    }
    
    @SuppressWarnings("unchecked")
@@ -188,14 +189,14 @@ public class XmlParser
       if(deployElements.size() - deployElementsSet.size() != 0)
          throw new DefinitionException("The same deployment type is declared more than once");
             
-      String standardName = XmlConstants.STANDARD;
-      String standardPrefix = "";
-      String standardUri = XmlConstants.JAVA_EE_NAMESPACE;
-      Namespace standardNamespace = new Namespace(standardPrefix, standardUri);
-      QName qName = new QName(standardName, standardNamespace);
-      Element standardElement = element.element(qName);      
-      if (standardElement == null)
-         throw new DeploymentException("The @Standard deployment type must be declared");      
+//      String standardName = XmlConstants.STANDARD;
+//      String standardPrefix = "";
+//      String standardUri = XmlConstants.JAVA_EE_NAMESPACE;
+//      Namespace standardNamespace = new Namespace(standardPrefix, standardUri);
+//      QName qName = new QName(standardName, standardNamespace);
+//      Element standardElement = element.element(qName);      
+//      if (standardElement == null)
+//         throw new DeploymentException("The @Standard deployment type must be declared");      
       
       List<Class<? extends Annotation>> deploymentClasses = new ArrayList<Class<? extends Annotation>>();
       List<Element> children = element.elements();
