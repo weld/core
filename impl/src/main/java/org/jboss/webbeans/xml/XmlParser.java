@@ -13,11 +13,14 @@ import java.util.Set;
 import javax.inject.DefinitionException;
 import javax.inject.DeploymentException;
 import javax.inject.DeploymentType;
+import javax.inject.Production;
+import javax.inject.Standard;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
+import org.dom4j.QName;
 import org.dom4j.io.SAXReader;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
@@ -58,6 +61,9 @@ public class XmlParser
    
    private void parseForDeploy()
    {
+
+      List<Class<? extends Annotation>> deploymentClasses = new ArrayList<Class<? extends Annotation>>();
+
       int counter = 0;
             
       for (URL url : environment.getBeansXmlUrls())
@@ -73,11 +79,17 @@ public class XmlParser
                Element element = (Element) elIterator.next();
                if (ParseXmlHelper.isJavaEeNamespace(element) && 
                      element.getName().equalsIgnoreCase(XmlConstants.DEPLOY))
-                  environment.getEnabledDeploymentTypes().addAll(obtainDeploymentTypes(element, counter++));
+                  deploymentClasses.addAll(obtainDeploymentTypes(element, counter++));
             }        
          }
       }
+      if(deploymentClasses.size() == 0)
+      {
+         deploymentClasses.add(Standard.class);
+         deploymentClasses.add(Production.class);
+      }
       
+      environment.getEnabledDeploymentTypes().addAll(deploymentClasses);
    }
    
    @SuppressWarnings("unchecked")
@@ -180,17 +192,17 @@ public class XmlParser
       String standardPrefix = "";
       String standardUri = XmlConstants.JAVA_EE_NAMESPACE;
       Namespace standardNamespace = new Namespace(standardPrefix, standardUri);
+      QName qName = new QName(standardName, standardNamespace);
+      Element standardElement = element.element(qName);      
+      if (standardElement == null)
+         throw new DeploymentException("The @Standard deployment type must be declared");      
       
       List<Class<? extends Annotation>> deploymentClasses = new ArrayList<Class<? extends Annotation>>();
       List<Element> children = element.elements();
       for (Element child : children)
       {
-         Class<?> deploymentClass;
-         
-         if (ParseXmlHelper.isJavaEeNamespace(child))
-            deploymentClass = loadJavaEeDeploymentType(child);
-         else
-            deploymentClass = ParseXmlHelper.loadClass(child);
+         String urn = child.getNamespace().getURI();
+         Class<?> deploymentClass = ParseXmlHelper.loadClassByURN(urn, child.getName());
          
          if(!deploymentClass.isAnnotation())
             throw new DeploymentException("<Deploy> child " + element.getName() + " must be a Java annotation type");
@@ -201,20 +213,5 @@ public class XmlParser
          deploymentClasses.add(deploymentClass.asSubclass(Annotation.class));
       }
       return deploymentClasses;
-   }
-   
-   private Class<?> loadJavaEeDeploymentType(Element element)
-   {
-      for(JavaEePackage possiblePackage : JavaEePackage.values())
-      {
-         String className = possiblePackage + "." + element.getName();
-         try
-         {
-            return Class.forName(className);
-         }
-         catch (ClassNotFoundException e)
-         {}
-      }
-      throw new DefinitionException("Could not find " + element.getName() + "in the Java EE namespace");
    }
 }

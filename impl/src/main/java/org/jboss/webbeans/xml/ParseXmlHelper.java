@@ -1,10 +1,14 @@
 package org.jboss.webbeans.xml;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.inject.DefinitionException;
@@ -17,19 +21,14 @@ import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
-import org.jboss.webbeans.resources.DefaultResourceLoader;
-import org.jboss.webbeans.resources.spi.ResourceLoader;
 
 public class ParseXmlHelper
 {
    private static List<AnnotatedItemReceiver> receivers;
-   
-   private static ResourceLoader resourceLoader;
 
    static
    {
       receivers = initializeReceivers();
-      resourceLoader = new DefaultResourceLoader();
    }
 
    public static Set<AnnotatedItem<?, ?>> getBeanItems(List<Element> beans)
@@ -198,7 +197,8 @@ public class ParseXmlHelper
    
    private static boolean isSimpleBean(Element element)
    {
-      Class<?> beanClass = loadClass(element);
+      String urn = element.getNamespace().getURI();
+      Class<?> beanClass = loadClassByURN(urn, element.getName());
 
       if (!Modifier.isAbstract(beanClass.getModifiers()) && 
             beanClass.getTypeParameters().length == 0)
@@ -209,7 +209,8 @@ public class ParseXmlHelper
 
    private static AnnotatedItem<?, ?> receiveSimpleBeanItem(Element element)
    {
-      Class<?> beanClass = loadClass(element);
+      String urn = element.getNamespace().getURI();
+      Class<?> beanClass = loadClassByURN(urn, element.getName());
 
       if (!Modifier.isStatic(beanClass.getModifiers()) && 
             beanClass.isMemberClass())
@@ -226,14 +227,6 @@ public class ParseXmlHelper
       // " is an abstract and not Decorator");
 
       return AnnotatedClassImpl.of(beanClass);
-   }
-
-   public static Class<?> loadClass(Element element)
-   {
-      String beanUri = element.getNamespace().getURI();
-      String packageName = beanUri.replaceFirst(XmlConstants.URN_PREFIX, "");
-      String classPath = packageName + "." + element.getName();
-      return resourceLoader.classForName(classPath);
    }
    
    private static String getJmsResourceName(Element element)
@@ -264,5 +257,77 @@ public class ParseXmlHelper
    public static boolean isJavaEeNamespace(Element element)
    {
       return element.getNamespace().getURI().equalsIgnoreCase(XmlConstants.JAVA_EE_NAMESPACE);
+   }
+   
+   public static Class<?> loadClassByURN(String urn, String className)
+   {
+      List<Class<?>> classes = new ArrayList<Class<?>>();
+      List<String> packages = new ArrayList<String>();
+      File namespaceFile = loadNamespaceFile(urn);
+      
+      if(namespaceFile == null)
+         packages.add(urn.replaceFirst(XmlConstants.URN_PREFIX, ""));
+      
+      else
+         packages.addAll(parseNamespaceFile(namespaceFile));
+      
+      for(String possiblePackage : packages)
+      {
+         String classPath = possiblePackage + "." + className;
+         try
+         {
+            classes.add(Class.forName(classPath));
+         }
+         catch (ClassNotFoundException e)
+         {}
+      }
+      
+      if(classes.size() == 0)
+         throw new DefinitionException("Could not find '" + className + "'according to specified URN '" + urn + "'");
+      
+      if(classes.size() == 1)
+         return classes.get(0);
+      
+      throw new DefinitionException("There are multiple packages containing a Java type with the same name '" + className + "'");
+   }
+   
+   public static File loadNamespaceFile(String urn)
+   {
+      char separator = '/';
+      String packageName = urn.replaceFirst(XmlConstants.URN_PREFIX, "");
+      String path = packageName.replace('.', separator);
+      String filePath = separator + path + separator + XmlConstants.NAMESPACE_FILE_NAME;
+      URL fileUrl = ParseXmlHelper.class.getResource(filePath);
+      
+      if(fileUrl == null)
+         return null;
+      
+      File f = new File(fileUrl.getPath());
+      
+      return f;
+   }
+   
+   public static List<String> parseNamespaceFile(File namespaceFile)
+   {
+      try
+      {
+         List<String> packages = new ArrayList<String>();
+         Scanner fileScanner = new Scanner(namespaceFile);
+         while (fileScanner.hasNextLine() )
+         {
+            String line = fileScanner.nextLine();
+            Scanner lineScanner = new Scanner(line);
+            lineScanner.useDelimiter(XmlConstants.NAMESPACE_FILE_DELIMETER);
+            while(lineScanner.hasNext())
+            {
+               packages.add(lineScanner.next());
+            }
+         }
+         return packages;
+      }
+      catch (FileNotFoundException e)
+      {
+         throw new DefinitionException("Could not find " + namespaceFile.getAbsolutePath());
+      }
    }
 }
