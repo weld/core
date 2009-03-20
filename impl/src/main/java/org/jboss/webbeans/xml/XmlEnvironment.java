@@ -65,4 +65,13 @@ public class XmlEnvironment
       return enabledDeploymentTypes;
    }
    
+   public URL loadNamespaceFile(String namespace)
+   {
+      char separator = '/';
+      String packageName = namespace.replaceFirst(XmlConstants.URN_PREFIX, "");
+      String path = packageName.replace('.', separator);
+      String filePath = separator + path + separator + XmlConstants.NAMESPACE_FILE_NAME;
+      return serviceRegistry.get(ResourceLoader.class).getResource(filePath);
+   }
+   
 }

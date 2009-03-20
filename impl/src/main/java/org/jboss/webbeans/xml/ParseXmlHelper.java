@@ -1,7 +1,6 @@
 package org.jboss.webbeans.xml;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
@@ -259,11 +258,14 @@ public class ParseXmlHelper
       return element.getNamespace().getURI().equalsIgnoreCase(XmlConstants.JAVA_EE_NAMESPACE);
    }
    
+   // TODO you can't reparse all files every time you want to load a class. Switch to an OO design and cache
+   // TODO Don't do your own classloading, use xml env
+   // TODO Don't load Class, use AnnotatedClass
    public static Class<?> loadClassByURN(String urn, String className)
    {
       List<Class<?>> classes = new ArrayList<Class<?>>();
       List<String> packages = new ArrayList<String>();
-      File namespaceFile = loadNamespaceFile(urn);
+      URL namespaceFile = loadNamespaceFile(urn);
       
       if(namespaceFile == null)
          packages.add(urn.replaceFirst(XmlConstants.URN_PREFIX, ""));
@@ -291,43 +293,38 @@ public class ParseXmlHelper
       throw new DefinitionException("There are multiple packages containing a Java type with the same name '" + className + "'");
    }
    
-   public static File loadNamespaceFile(String urn)
+   public static URL loadNamespaceFile(String urn)
    {
       char separator = '/';
       String packageName = urn.replaceFirst(XmlConstants.URN_PREFIX, "");
       String path = packageName.replace('.', separator);
       String filePath = separator + path + separator + XmlConstants.NAMESPACE_FILE_NAME;
-      URL fileUrl = ParseXmlHelper.class.getResource(filePath);
-      
-      if(fileUrl == null)
-         return null;
-      
-      File f = new File(fileUrl.getPath());
-      
-      return f;
+      return ParseXmlHelper.class.getResource(filePath);
    }
    
-   public static List<String> parseNamespaceFile(File namespaceFile)
+   public static List<String> parseNamespaceFile(URL namespaceFile)
    {
-      try
-      {
          List<String> packages = new ArrayList<String>();
-         Scanner fileScanner = new Scanner(namespaceFile);
-         while (fileScanner.hasNextLine() )
+         Scanner fileScanner;
+         try
          {
-            String line = fileScanner.nextLine();
-            Scanner lineScanner = new Scanner(line);
-            lineScanner.useDelimiter(XmlConstants.NAMESPACE_FILE_DELIMETER);
-            while(lineScanner.hasNext())
+            fileScanner = new Scanner(namespaceFile.openStream());
+            while (fileScanner.hasNextLine() )
             {
-               packages.add(lineScanner.next());
+               String line = fileScanner.nextLine();
+               Scanner lineScanner = new Scanner(line);
+               lineScanner.useDelimiter(XmlConstants.NAMESPACE_FILE_DELIMETER);
+               while(lineScanner.hasNext())
+               {
+                  packages.add(lineScanner.next());
+               }
             }
+            return packages;
          }
-         return packages;
-      }
-      catch (FileNotFoundException e)
-      {
-         throw new DefinitionException("Could not find " + namespaceFile.getAbsolutePath());
-      }
+         catch (IOException e)
+         {
+            throw new RuntimeException("Error opening " + namespaceFile.toString());
+         }
+         
    }
 }
