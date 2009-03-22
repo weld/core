@@ -134,6 +134,7 @@ public class DeployerOrderingTest extends AbstractWebBeansTest
          }
          i++;
       }
+      assert indexOfProducer > indexOfProducerDeclaringBean;
    }
       
    @Test(groups="bootstrap")
