@@ -64,6 +64,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    private Set<FieldInjectionPoint<?>> injectableFields;
    // The initializer methods
    private Set<MethodInjectionPoint<?>> initializerMethods;
+   private Set<String> dependencies;
 
    /**
     * Constructor
@@ -122,6 +123,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       log.trace("Bean type specified in Java");
       this.type = getAnnotatedItem().getRawType();
+      this.dependencies = new HashSet<String>();
+      for (Class<?> clazz = type.getSuperclass(); clazz != Object.class; clazz = clazz.getSuperclass())
+      {
+         dependencies.add(clazz.getName());
+      }
    }
 
    /**
@@ -308,6 +314,12 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    public Set<? extends MethodInjectionPoint<?>> getInitializerMethods()
    {
       return initializerMethods;
+   }
+   
+   // TODO maybe a better way to expose this?
+   public Set<String> getSuperclasses()
+   {
+      return dependencies;
    }
 
    /**

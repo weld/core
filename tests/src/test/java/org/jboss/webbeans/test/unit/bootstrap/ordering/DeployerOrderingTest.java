@@ -3,6 +3,8 @@ package org.jboss.webbeans.test.unit.bootstrap.ordering;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.inject.AnnotationLiteral;
+
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Classes;
 import org.jboss.testharness.impl.packaging.Packaging;
@@ -110,4 +112,59 @@ public class DeployerOrderingTest extends AbstractWebBeansTest
       }
    }
    
+   @Test(groups="bootstrap")
+   public void testProducerMethodAfterDeclaringBean()
+   {
+      BeanDeployer beanDeployer = new BeanDeployer(manager);
+      beanDeployer.addClasses(Arrays.asList(TarantulaProducer.class, Tuna.class));
+      beanDeployer.createBeans();
+      int indexOfProducerDeclaringBean = 0;
+      int indexOfProducer = 0;
+      int i = 0;
+      assert beanDeployer.getBeans().size() == 5;
+      for (RIBean<?> bean : beanDeployer.getBeans())
+      {
+         if (bean.getType().equals(TarantulaProducer.class))
+         {
+            indexOfProducerDeclaringBean = i; 
+         }
+         if (bean.getType().equals(Tarantula.class) && bean.getBindings().contains(new AnnotationLiteral<Tame>() {}))
+         {
+            indexOfProducer = i;
+         }
+         i++;
+      }
+   }
+      
+   @Test(groups="bootstrap")
+   public void testClassHierarchies()
+   {
+      BeanDeployer beanDeployer = new BeanDeployer(manager);
+      beanDeployer.addClasses(Arrays.asList(Spider.class, Tarantula.class, DefangedTarantula.class, Tuna.class));
+      beanDeployer.createBeans();
+      assert beanDeployer.getBeans().size() == 8;
+      int indexOfSpider = 0;
+      int indexOfTarantula = 0;
+      int indexOfDefangedTarantula = 0;
+      int i = 0;
+      for (RIBean<?> bean : beanDeployer.getBeans())
+      {
+         if (bean.getType().equals(Spider.class))
+         {
+            indexOfSpider = i; 
+         }
+         if (bean.getType().equals(Tarantula.class))
+         {
+            indexOfTarantula = i;
+         }
+         if (bean.getType().equals(DefangedTarantula.class))
+         {
+            indexOfDefangedTarantula = i;
+         }
+         i++;
+      }
+      assert indexOfDefangedTarantula > indexOfTarantula;
+      assert indexOfTarantula > indexOfSpider;
+   }
+
 }

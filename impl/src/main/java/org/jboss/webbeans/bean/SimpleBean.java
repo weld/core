@@ -453,15 +453,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    }
 
    /**
-    * Initializes the bean type
-    */
-   protected void initType()
-   {
-      log.trace("Bean type specified in Java");
-      this.type = getAnnotatedItem().getRawType();
-   }
-
-   /**
     * Returns the constructor
     * 
     * @return The constructor

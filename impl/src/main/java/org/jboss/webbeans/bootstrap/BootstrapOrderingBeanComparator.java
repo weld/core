@@ -25,7 +25,38 @@ public class BootstrapOrderingBeanComparator implements Comparator<RIBean<?>>
       {
          return o1.getId().compareTo(o2.getId());
       }
-      else if (o1.getType().getName().startsWith("org.jboss.webbeans") && !o2.getType().getName().startsWith("org.jboss.webbeans"))
+      
+      if (o1 instanceof AbstractClassBean && o2 instanceof AbstractClassBean)
+      {
+         AbstractClassBean<?> b1 = (AbstractClassBean<?>) o1;
+         AbstractClassBean<?> b2 = (AbstractClassBean<?>) o2;
+         if (b1.getSuperclasses().contains(b2.getType().getName()))
+         {
+            // Place o1 after it's superclass
+            return 1;
+         }
+         else if (b2.getSuperclasses().contains(b1.getType().getName()))
+         {
+            // Place o1 before it's subclass o2
+            return -1;
+         }
+      }
+      else if (o2 instanceof AbstractProducerBean)
+      {
+         // Producer beans are always initialized after class beans
+         return -1;
+      }
+      
+      if (o1 instanceof AbstractProducerBean)
+      {
+         AbstractProducerBean<?, ?> b1 = (AbstractProducerBean<?, ?>) o1;
+         if (o2 instanceof AbstractClassBean && b1.getDeclaringBean().equals(o2))
+         {
+            return 1;
+         }
+      }
+      
+      if (o1.getType().getName().startsWith("org.jboss.webbeans") && !o2.getType().getName().startsWith("org.jboss.webbeans"))
       {
          return -1;
       }
@@ -33,92 +64,17 @@ public class BootstrapOrderingBeanComparator implements Comparator<RIBean<?>>
       {
          return 1;
       }
-      else if (o1 instanceof AbstractClassBean)
+      
+      if (!(o1 instanceof NewBean) && o2 instanceof NewBean)
       {
-         AbstractClassBean<?> b1 = (AbstractClassBean<?>) o1;
-         if (o2 instanceof NewBean && !(o1 instanceof NewBean))
-         {
-            // Always initialize new beans after class beans
-            return -1;
-         }
-         else if (o1 instanceof NewBean && o2 instanceof AbstractClassBean && !(o2 instanceof NewBean))
-         {
-            // Always initialize new beans after class beans
-            return 1;
-         }
-         else if (o1 instanceof NewBean && !(o2 instanceof NewBean))
-         {
-            // Always initialize new class beans after class beans but before other beans
-            return -1;
-         }
-         else if (o1 instanceof NewBean && o2 instanceof NewBean)
-         {
-            return o1.getId().compareTo(o2.getId());
-         }
-         else if (o2 instanceof AbstractClassBean)
-         {
-            AbstractClassBean<?> b2 = (AbstractClassBean<?>) o2;
-            if (o1.getTypes().contains(b2.getType()))
-            {
-               return 1;
-            }
-            else if (b2.getTypes().contains(b1.getType()))
-            {
-               return -1;
-            }
-            else
-            {
-               return o1.getId().compareTo(o2.getId());
-            }
-         }
-         else if (o2 instanceof AbstractProducerBean)
-         {
-            // Producer beans are always initialized after class beans
-            return -1;
-         }
-         else
-         {
-            // Ordering doesn't matter
-            return o1.getId().compareTo(o2.getId());
-         }
+         return -1;
       }
-      else if (o1 instanceof AbstractProducerBean)
+      else if (o1 instanceof NewBean && !(o2 instanceof NewBean))
       {
-         AbstractProducerBean<?, ?> b1 = (AbstractProducerBean<?, ?>) o1;
-         if (o2 instanceof NewBean)
-         {
-            // Always initialize producers beans after new beans
-            return 1;
-         }
-         else if (o2 instanceof AbstractClassBean)
-         {
-            if (b1.getDeclaringBean().equals(o2))
-            {
-               return 1;
-            }
-            else
-            {
-               return o1.getId().compareTo(o2.getId());
-            }
-         }
-         else
-         {
-            // Ordering doesn't matter
-            return o1.getId().compareTo(o2.getId());
-         }
+         return 1;
       }
-      else
-      {
-         if (o2 instanceof AbstractClassBean || o2 instanceof AbstractProducerBean)
-         {
-            // Initialize undefined ordering after defined ordering
-            return 1;
-         }
-         else
-         {
-            return o1.getId().compareTo(o2.getId());
-         }
-      }
+      
+      return o1.getId().compareTo(o2.getId());
    }
    
 }
