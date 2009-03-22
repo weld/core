@@ -33,7 +33,7 @@ import org.jboss.webbeans.literal.NewLiteral;
  * 
  * @author Nicklas Karlsson
  */
-public class NewEnterpriseBean<T> extends EnterpriseBean<T>
+public class NewEnterpriseBean<T> extends EnterpriseBean<T> implements NewBean
 {
    private static Set<Annotation> NEW_BINDING_SET = new HashSet<Annotation>(Arrays.asList(new NewLiteral()));
 

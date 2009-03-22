@@ -34,7 +34,7 @@ import org.jboss.webbeans.literal.NewLiteral;
  * 
  * @author Nicklas Karlsson 
  */
-public class NewSimpleBean<T> extends SimpleBean<T>
+public class NewSimpleBean<T> extends SimpleBean<T> implements NewBean
 {
    private static Set<Annotation> NEW_BINDING_SET = new HashSet<Annotation>(Arrays.asList(new NewLiteral()));
 
