@@ -66,4 +66,10 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
       return FILTERED_ANNOTATION_TYPES;
    }
    
+   @Override
+   public String toString()
+   {
+      return "Built-in implicit javax.inject.Instance bean";
+   }
+   
 }

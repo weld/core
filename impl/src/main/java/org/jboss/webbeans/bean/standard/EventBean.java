@@ -48,8 +48,6 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
    {
       return DEFAULT_TYPES;
    }
-
-
    
    @Override
    public Set<Annotation> getBindings()
@@ -67,6 +65,12 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
    protected Set<Class<? extends Annotation>> getFilteredAnnotationTypes()
    {
       return FILTERED_ANNOTATION_TYPES;
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "Built-in implicit javax.event.Event bean";
    }
    
 }

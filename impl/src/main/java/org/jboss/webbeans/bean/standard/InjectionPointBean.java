@@ -80,4 +80,10 @@ public class InjectionPointBean extends AbstractStandardBean<InjectionPoint>
       return TYPES;
    }
    
+   @Override
+   public String toString()
+   {
+      return "Built-in javax.inject.manager.InjectionPoint bean";
+   }
+   
 }

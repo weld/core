@@ -56,4 +56,11 @@ public class ManagerBean extends AbstractStandardBean<ManagerImpl>
       return true;
    }
    
+   @Override
+   public String toString()
+   {
+      return "Built-in javax.inject.manager.Manager bean";
+   }
+   
+   
 }

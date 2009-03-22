@@ -3,6 +3,7 @@ package org.jboss.webbeans.bootstrap;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.event.Observes;
 import javax.inject.BindingType;
@@ -47,33 +48,35 @@ public class BeanDeployer
    public BeanDeployer(ManagerImpl manager)
    {
       this.manager = manager;
-      this.beans = new HashSet<RIBean<?>>();
+      this.beans = new TreeSet<RIBean<?>>(new BootstrapOrderingBeanComparator());
       this.classes = new HashSet<AnnotatedClass<?>>();
    }
-  
    
-   public void addBean(RIBean<?> bean)
+   public BeanDeployer addBean(RIBean<?> bean)
    {
       this.beans.add(bean);
+      return this;
    }
    
-   public void addClass(Class<?> clazz)
+   public BeanDeployer addClass(Class<?> clazz)
    {
       if (!clazz.isAnnotation() && !clazz.isEnum())
       {
          classes.add(AnnotatedClassImpl.of(clazz));
       }
+      return this;
    }
    
-   public void addClasses(Iterable<Class<?>> classes)
+   public BeanDeployer addClasses(Iterable<Class<?>> classes)
    {
       for (Class<?> clazz : classes)
       {
          addClass(clazz);
       }
+      return this;
    }
    
-   public void deploy()
+   public BeanDeployer createBeans()
    {
       for (AnnotatedClass<?> clazz : classes)
       {
@@ -86,7 +89,27 @@ public class BeanDeployer
             createSimpleBean(clazz);
          }
       }
+      return this;
+   }
+   
+   public BeanDeployer deploy()
+   {
+      printBeans();
       manager.setBeans(beans);
+      return this;
+   }
+   
+   public Set<RIBean<?>> getBeans()
+   {
+      return beans;
+   }
+   
+   protected void printBeans()
+   {
+      for (RIBean<?> bean : beans)
+      {
+         log.info("Bean: " + bean);
+      }
    }
    
    /**
@@ -95,7 +118,8 @@ public class BeanDeployer
     * 
     * Also creates the implicit field- and method-level beans, if present
     * 
-    * @param bean The bean representation
+    * @param bean
+    *           The bean representation
     */
    protected void createBean(AbstractClassBean<?> bean, final AnnotatedClass<?> annotatedClass)
    {
@@ -114,8 +138,6 @@ public class BeanDeployer
          createRealizedProducerFields(bean, annotatedClass);
          createRealizedObserverMethods(bean, annotatedClass);
       }
-      
-      log.info("Web Bean: " + bean);
    }
    
    private void createProducerMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
@@ -132,14 +154,13 @@ public class BeanDeployer
       ProducerMethodBean<?> bean = ProducerMethodBean.of(annotatedMethod, declaringBean, manager);
       beans.add(bean);
       manager.getResolver().addInjectionPoints(bean.getInjectionPoints());
-      log.info("Web Bean: " + bean);
    }
    
    private void createRealizedProducerMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> realizingClass)
    {
       AnnotatedClass<?> realizedClass = realizingClass.getSuperclass();
       for (AnnotatedMethod<?> realizedMethod : realizedClass.getDeclaredAnnotatedMethods(Produces.class))
-      { 
+      {
          createProducerMethod(declaringBean, realizeProducerMethod(realizedMethod, realizingClass));
       }
    }
@@ -148,7 +169,7 @@ public class BeanDeployer
    {
       AnnotatedClass<?> realizedClass = realizingClass.getSuperclass();
       for (final AnnotatedField<?> realizedField : realizedClass.getDeclaredAnnotatedFields(Produces.class))
-      { 
+      {
          createProducerField(declaringBean, realizeProducerField(realizedField, realizingClass));
       }
    }
@@ -157,7 +178,6 @@ public class BeanDeployer
    {
       ProducerFieldBean<?> bean = ProducerFieldBean.of(field, declaringBean, manager);
       beans.add(bean);
-      log.info("Web Bean: " + bean);
    }
    
    private void createProducerFields(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
@@ -167,7 +187,7 @@ public class BeanDeployer
          createProducerField(declaringBean, field);
       }
    }
-
+   
    private void createObserverMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
    {
       for (AnnotatedMethod<?> method : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Observes.class))
@@ -205,7 +225,8 @@ public class BeanDeployer
    /**
     * Indicates if the type is a simple Web Bean
     * 
-    * @param type The type to inspect
+    * @param type
+    *           The type to inspect
     * @return True if simple Web Bean, false otherwise
     */
    private boolean isTypeSimpleWebBean(AnnotatedClass<?> clazz)
@@ -218,11 +239,9 @@ public class BeanDeployer
       return !Reflections.isAbstract(rawType) && !Reflections.isParameterizedType(rawType) && !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(rawType) && !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(rawType) && !servletApiAbstraction.SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(rawType) && !servletApiAbstraction.HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(rawType) && !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(rawType) && !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(rawType) && !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(rawType) && hasSimpleWebBeanConstructor(clazz);
    }
    
-
-
    private static boolean hasSimpleWebBeanConstructor(AnnotatedClass<?> type)
    {
-      return type.getNoArgsConstructor() != null || type.getAnnotatedConstructors(Initializer.class).size() > 0; 
+      return type.getNoArgsConstructor() != null || type.getAnnotatedConstructors(Initializer.class).size() > 0;
    }
    
    private static <T> AnnotatedMethod<T> realizeProducerMethod(final AnnotatedMethod<T> method, final AnnotatedClass<?> realizingClass)

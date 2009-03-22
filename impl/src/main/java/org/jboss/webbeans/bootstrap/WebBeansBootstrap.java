@@ -134,7 +134,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          beanDeployer.addClass(NumericConversationIdGenerator.class);
          beanDeployer.addClass(HttpSessionManager.class);
       }
-      beanDeployer.deploy();
+      beanDeployer.createBeans().deploy();
    }
    
    public void boot()

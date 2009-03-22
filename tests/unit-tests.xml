@@ -43,6 +43,7 @@
       <packages>
          <package name="org.jboss.webbeans.test.examples" />
          <package name="org.jboss.webbeans.test.unit.bootstrap" />
+         <package name="org.jboss.webbeans.test.unit.bootstrap.ordering" />
          <package name="org.jboss.webbeans.test.unit.bootstrap.environments" />
          <package name="org.jboss.webbeans.test.unit.bootstrap.environments.multipleEnterprise" />
          <package name="org.jboss.webbeans.test.unit.bootstrap.environments.multipleEnterpriseAndSimple" />
