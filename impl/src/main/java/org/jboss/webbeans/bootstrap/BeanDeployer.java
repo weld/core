@@ -1,9 +1,7 @@
 package org.jboss.webbeans.bootstrap;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.event.Observes;
@@ -40,20 +38,17 @@ import org.jboss.webbeans.util.Reflections;
 public class BeanDeployer
 {
    
-   // Empty list representing no-args
-   private static List<Class<?>> NO_ARGUMENTS = Collections.emptyList();
-   
    private static final LogProvider log = Logging.getLogProvider(BeanDeployer.class);
    
    private final Set<RIBean<?>> beans;
-   private final Set<AnnotatedClass<?>> deferredClasses;
+   private final Set<AnnotatedClass<?>> classes;
    private final ManagerImpl manager;
    
    public BeanDeployer(ManagerImpl manager)
    {
       this.manager = manager;
       this.beans = new HashSet<RIBean<?>>();
-      this.deferredClasses = new HashSet<AnnotatedClass<?>>();
+      this.classes = new HashSet<AnnotatedClass<?>>();
    }
   
    
@@ -66,7 +61,7 @@ public class BeanDeployer
    {
       if (!clazz.isAnnotation() && !clazz.isEnum())
       {
-         deferredClasses.add(AnnotatedClassImpl.of(clazz));
+         classes.add(AnnotatedClassImpl.of(clazz));
       }
    }
    
@@ -80,7 +75,7 @@ public class BeanDeployer
    
    public void deploy()
    {
-      for (AnnotatedClass<?> clazz : deferredClasses)
+      for (AnnotatedClass<?> clazz : classes)
       {
          if (manager.getEjbDescriptorCache().containsKey(clazz.getRawType()))
          {
