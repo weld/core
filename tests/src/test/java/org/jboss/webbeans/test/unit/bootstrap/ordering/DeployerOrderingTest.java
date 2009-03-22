@@ -3,12 +3,8 @@ package org.jboss.webbeans.test.unit.bootstrap.ordering;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javax.inject.AnnotationLiteral;
-
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.Classes;
-import org.jboss.testharness.impl.packaging.Packaging;
-import org.jboss.testharness.impl.packaging.PackagingType;
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewBean;
 import org.jboss.webbeans.bean.RIBean;
@@ -19,17 +15,43 @@ import org.jboss.webbeans.bean.standard.InjectionPointBean;
 import org.jboss.webbeans.bean.standard.InstanceBean;
 import org.jboss.webbeans.bean.standard.ManagerBean;
 import org.jboss.webbeans.bootstrap.BeanDeployer;
+import org.jboss.webbeans.literal.NewLiteral;
 import org.jboss.webbeans.mock.MockEjbDescriptor;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.mock.MockServletLifecycle;
+import org.jboss.webbeans.mock.MockWebBeanDiscovery;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.acme.RoadRunner;
 
-@Artifact
-@Packaging(PackagingType.EAR)
-@Classes(packages="com.acme")
-public class DeployerOrderingTest extends AbstractWebBeansTest
+public class DeployerOrderingTest
 {
+   
+   private MockServletLifecycle lifecycle;
+   private ManagerImpl manager;
+   
+   @BeforeClass
+   public void beforeClass() throws Throwable
+   {
+      lifecycle = new MockServletLifecycle(); 
+      lifecycle.initialize();
+      MockWebBeanDiscovery discovery = lifecycle.getWebBeanDiscovery();
+      lifecycle.beginApplication();
+      lifecycle.beginSession();
+      lifecycle.beginRequest();
+      manager = CurrentManager.rootManager();
+   }
+   
+   @AfterClass(alwaysRun=true)
+   public void afterClass() throws Exception
+   {
+      lifecycle.endRequest();
+      lifecycle.endSession();
+      lifecycle.endApplication();
+      CurrentManager.setRootManager(null);
+      lifecycle = null;
+   }
    
    @Test(groups="bootstrap")
    public void testNewSimpleBeansAfterNonNew()
@@ -124,11 +146,11 @@ public class DeployerOrderingTest extends AbstractWebBeansTest
       assert beanDeployer.getBeans().size() == 5;
       for (RIBean<?> bean : beanDeployer.getBeans())
       {
-         if (bean.getType().equals(TarantulaProducer.class))
+         if (bean.getType().equals(TarantulaProducer.class) && !bean.getBindings().contains(new NewLiteral()))
          {
             indexOfProducerDeclaringBean = i; 
          }
-         if (bean.getType().equals(Tarantula.class) && bean.getBindings().contains(new AnnotationLiteral<Tame>() {}))
+         if (bean.getType().equals(Tarantula.class) && !bean.getBindings().contains(new NewLiteral()))
          {
             indexOfProducer = i;
          }

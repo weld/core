@@ -21,6 +21,12 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
    {
       super(manager);
    }
+   
+   @Override
+   public void initialize()
+   {
+      // No-op
+   }
 
    private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentLiteral() };
    private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));

@@ -132,10 +132,9 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    /**
     * Initializes the bean and its metadata
     */
-   protected void init()
+   public void initialize()
    {
       mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class));
-      initBindings();
       if (isSpecializing())
       {
          preSpecialize();
@@ -143,7 +142,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
          postSpecialize();
       }
       initDefaultBindings();
-      initType();
       initPrimitive();
       if (log.isDebugEnabled())
          log.debug("Building Web Bean bean metadata for " + getType());
@@ -151,7 +149,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       initDeploymentType();
       checkDeploymentType();
       initScopeType();
-      initTypes();
       initSerializable();
       initProxyable();
       checkRequiredTypesImplemented();
@@ -299,12 +296,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
          return false;
       }
    }
-
-   /**
-    * Initializes the type of the bean
-    */
-   protected abstract void initType();
-
+   
    /**
     * Validates the deployment type
     */

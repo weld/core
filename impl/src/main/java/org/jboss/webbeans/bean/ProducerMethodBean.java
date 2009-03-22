@@ -68,7 +68,9 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       super(declaringBean, manager);
       this.method = MethodInjectionPoint.of(this, method);
-      init();
+      initType();
+      initTypes();
+      initBindings();
    }
 
    protected T produceInstance(CreationalContext<T> creationalContext)
@@ -80,9 +82,9 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     * Initializes the bean and its metadata
     */
    @Override
-   protected void init()
+   public void initialize()
    {
-      super.init();
+      super.initialize();
       checkProducerMethod();
       //initDisposalMethod();
       initInjectionPoints();
@@ -215,7 +217,10 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    @Override
    protected void specialize()
    {
-      this.specializedBean = ProducerMethodBean.of(declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod()), SimpleBean.of(declaringBean.getAnnotatedItem().getSuperclass(), manager), manager);
+      SimpleBean<?> superClassBean = SimpleBean.of(declaringBean.getAnnotatedItem().getSuperclass(), manager);
+      superClassBean.initialize();
+      this.specializedBean = ProducerMethodBean.of(declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod()), superClassBean, manager);
+      this.specializedBean.initialize();
    }
 
 }

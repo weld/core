@@ -90,15 +90,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected EnterpriseBean(AnnotatedClass<T> type, ManagerImpl manager)
    {
       super(type, manager);
-      init();
-   }
-
-   /**
-    * Initializes the bean and its metadata
-    */
-   @Override
-   protected void init()
-   {
       initType();
       Iterable<InternalEjbDescriptor<T>> ejbDescriptors = manager.getEjbDescriptorCache().get(getType());
       if (ejbDescriptors == null)
@@ -116,7 +107,17 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
             throw new RuntimeException("TODO Multiple EJBs have the same bean class! " + getType());
          }
       }
-      super.init();
+      initTypes();
+      initBindings();
+   }
+
+   /**
+    * Initializes the bean and its metadata
+    */
+   @Override
+   public void initialize()
+   {
+      super.initialize();
       initProxyClass();
       initInjectionPoints();
       checkEJBTypeAllowed();
@@ -197,6 +198,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    protected void specialize()
    {
       this.specializedBean = EnterpriseBean.of(getAnnotatedItem().getSuperclass(), manager);
+      this.specializedBean.initialize();
    }
 
    /**

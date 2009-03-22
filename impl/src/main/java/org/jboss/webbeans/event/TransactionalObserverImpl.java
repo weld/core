@@ -79,8 +79,9 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
    }
 
    @Override
-   protected void init()
+   public void initialize()
    {
+      super.initialize();
       initTransactionObservationPhase();
    }
 

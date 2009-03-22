@@ -82,9 +82,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * Initializes the bean and its metadata
     */
    @Override
-   protected void init()
+   public void initialize()
    {
-      super.init();
+      super.initialize();
       checkScopeAllowed();
       checkBeanImplementation();
       initInitializerMethods();

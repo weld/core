@@ -115,7 +115,6 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
    /**
     * Initializes the type
     */
-   @Override
    protected void initType()
    {
       try
@@ -175,9 +174,9 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
     * Initializes the bean and its metadata
     */
    @Override
-   protected void init()
+   public void initialize()
    {
-      super.init();
+      super.initialize();
       checkProducerReturnType();
    }
 

@@ -54,6 +54,8 @@ public abstract class RIBean<T> extends Bean<T>
    }
 
    public abstract Class<T> getType();
+   
+   public abstract void initialize();
 
    public abstract boolean isSpecializing();
 

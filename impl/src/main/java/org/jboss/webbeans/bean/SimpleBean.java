@@ -42,7 +42,6 @@ import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.MetaDataCache;
@@ -82,20 +81,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * @param manager the current manager
     * @return A Web Bean
     */
-   @Deprecated
-   public static <T> SimpleBean<T> of(Class<T> clazz, ManagerImpl manager)
-   {
-      return of(AnnotatedClassImpl.of(clazz), manager);
-   }
-
-   /**
-    * Creates a simple, annotation defined Web Bean
-    * 
-    * @param <T> The type
-    * @param clazz The class
-    * @param manager the current manager
-    * @return A Web Bean
-    */
    public static <T> SimpleBean<T> of(AnnotatedClass<T> clazz, ManagerImpl manager)
    {
       return new SimpleBean<T>(clazz, manager);
@@ -110,7 +95,9 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected SimpleBean(AnnotatedClass<T> type, ManagerImpl manager)
    {
       super(type, manager);
-      init();
+      initType();
+      initTypes();
+      initBindings();
    }
 
    /**
@@ -296,9 +283,9 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * Initializes the bean and its metadata
     */
    @Override
-   protected void init()
+   public void initialize()
    {
-      super.init();
+      super.initialize();
       initConstructor();
       checkType();
       initInjectionPoints();
@@ -375,6 +362,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected void specialize()
    {
       this.specializedBean = SimpleBean.of(getAnnotatedItem().getSuperclass(), manager);
+      this.specializedBean.initialize();
    }
 
    /**

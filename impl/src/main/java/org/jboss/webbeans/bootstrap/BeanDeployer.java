@@ -42,6 +42,7 @@ public class BeanDeployer
    private static final LogProvider log = Logging.getLogProvider(BeanDeployer.class);
    
    private final Set<RIBean<?>> beans;
+   private final Set<ObserverImpl<?>> observers;
    private final Set<AnnotatedClass<?>> classes;
    private final ManagerImpl manager;
    
@@ -50,6 +51,7 @@ public class BeanDeployer
       this.manager = manager;
       this.beans = new TreeSet<RIBean<?>>(new BootstrapOrderingBeanComparator());
       this.classes = new HashSet<AnnotatedClass<?>>();
+      this.observers = new HashSet<ObserverImpl<?>>();
    }
    
    public BeanDeployer addBean(RIBean<?> bean)
@@ -94,8 +96,18 @@ public class BeanDeployer
    
    public BeanDeployer deploy()
    {
-      printBeans();
+      for (RIBean<?> bean : beans)
+      {
+         bean.initialize();
+         log.info("Bean: " + bean);
+      }
       manager.setBeans(beans);
+      for (ObserverImpl<?> observer : observers)
+      {
+         observer.initialize();
+         log.info("Observer : " + observer);
+         manager.addObserver(observer);
+      }
       return this;
    }
    
@@ -106,10 +118,7 @@ public class BeanDeployer
    
    protected void printBeans()
    {
-      for (RIBean<?> bean : beans)
-      {
-         log.info("Bean: " + bean);
-      }
+      
    }
    
    /**
@@ -204,7 +213,7 @@ public class BeanDeployer
    private void createObserverMethod(AbstractClassBean<?> declaringBean, AnnotatedMethod<?> method)
    {
       ObserverImpl<?> observer = ObserverFactory.create(method, declaringBean, manager);
-      manager.addObserver(observer);
+      observers.add(observer);
    }
    
    private void createSimpleBean(AnnotatedClass<?> annotatedClass)

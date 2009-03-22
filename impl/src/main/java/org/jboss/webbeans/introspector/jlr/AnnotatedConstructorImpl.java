@@ -74,7 +74,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     * @param constructor The constructor method
     * @param declaringClass The declaring class
     */
-   public AnnotatedConstructorImpl(Constructor<T> constructor, AnnotatedType<T> declaringClass)
+   protected AnnotatedConstructorImpl(Constructor<T> constructor, AnnotatedType<T> declaringClass)
    {
       super(AnnotationStore.of(constructor), constructor, constructor.getDeclaringClass(), constructor.getDeclaringClass());
       this.constructor = constructor;

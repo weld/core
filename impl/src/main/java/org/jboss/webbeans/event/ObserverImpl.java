@@ -75,7 +75,7 @@ public class ObserverImpl<T> implements Observer<T>
       this.manager = manager;
       this.observerBean = observerBean;
       this.observerMethod = MethodInjectionPoint.of(observerBean, observer);
-      checkObserverMethod();
+      
 
       @SuppressWarnings("unchecked")
       Class<T> c = (Class<T>) observerMethod.getAnnotatedParameters(Observes.class).get(0).getRawType();
@@ -84,17 +84,18 @@ public class ObserverImpl<T> implements Observer<T>
       this.bindings = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingsAsArray();
       this.conditional = !observerMethod.getAnnotatedParameters(IfExists.class).isEmpty();
       this.asynchronous = !observerMethod.getAnnotatedParameters(Asynchronously.class).isEmpty();
-      init();
    }
-
+   
    /**
     * Completes initialization of the observer and allows derived types to
     * override behavior.
     */
-   protected void init()
+   public void initialize()
    {
-
+      checkObserverMethod();
    }
+
+
 
    /**
     * Performs validation of the observer method for compliance with the

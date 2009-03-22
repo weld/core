@@ -61,7 +61,9 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
    {
       super(declaringBean, manager);
       this.field = field;
-      init();
+      initType();
+      initTypes();
+      initBindings();
    }
 
 

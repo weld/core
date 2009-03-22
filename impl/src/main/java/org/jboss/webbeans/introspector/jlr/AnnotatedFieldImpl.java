@@ -54,7 +54,7 @@ public class AnnotatedFieldImpl<T> extends AbstractAnnotatedMember<T, Field> imp
     * @param field The actual field
     * @param declaringClass The abstraction of the declaring class
     */
-   public AnnotatedFieldImpl(Field field, AnnotatedType<?> declaringClass)
+   protected AnnotatedFieldImpl(Field field, AnnotatedType<?> declaringClass)
    {
       super(AnnotationStore.of(field), field, (Class<T>) field.getType(), field.getGenericType());
       this.field = field;
