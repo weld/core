@@ -26,6 +26,7 @@ import org.jboss.webbeans.event.ObserverFactory;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.WrappedAnnotatedField;
 import org.jboss.webbeans.introspector.WrappedAnnotatedMethod;
@@ -41,22 +42,26 @@ public class BeanDeployer
    
    private static final LogProvider log = Logging.getLogProvider(BeanDeployer.class);
    
-   private final Set<RIBean<?>> beans;
-   private final Set<ObserverImpl<?>> observers;
+   private final BeanDeployerEnvironment beanDeployerEnvironment;
    private final Set<AnnotatedClass<?>> classes;
    private final ManagerImpl manager;
    
    public BeanDeployer(ManagerImpl manager)
    {
       this.manager = manager;
-      this.beans = new TreeSet<RIBean<?>>(new BootstrapOrderingBeanComparator());
+      this.beanDeployerEnvironment = new BeanDeployerEnvironment();
       this.classes = new HashSet<AnnotatedClass<?>>();
-      this.observers = new HashSet<ObserverImpl<?>>();
    }
    
-   public BeanDeployer addBean(RIBean<?> bean)
+   public <T> BeanDeployer addBean(AnnotatedItem<T, ?> item, RIBean<T> bean)
    {
-      this.beans.add(bean);
+      this.beanDeployerEnvironment.addBean(item, bean);
+      return this;
+   }
+   
+   public <T> BeanDeployer addBean(RIBean<T> bean)
+   {
+      this.beanDeployerEnvironment.addBean(null, bean);
       return this;
    }
    
@@ -96,13 +101,15 @@ public class BeanDeployer
    
    public BeanDeployer deploy()
    {
+      Set<RIBean<?>> beans = new TreeSet<RIBean<?>>(new BootstrapOrderingBeanComparator());
+      beans.addAll(beanDeployerEnvironment.getBeans());
       for (RIBean<?> bean : beans)
       {
          bean.initialize();
          log.info("Bean: " + bean);
       }
       manager.setBeans(beans);
-      for (ObserverImpl<?> observer : observers)
+      for (ObserverImpl<?> observer : beanDeployerEnvironment.getObservers())
       {
          observer.initialize();
          log.info("Observer : " + observer);
@@ -110,15 +117,10 @@ public class BeanDeployer
       }
       return this;
    }
-   
-   public Set<RIBean<?>> getBeans()
+
+   public BeanDeployerEnvironment getBeanDeployerEnvironment()
    {
-      return beans;
-   }
-   
-   protected void printBeans()
-   {
-      
+      return beanDeployerEnvironment;
    }
    
    /**
@@ -130,10 +132,10 @@ public class BeanDeployer
     * @param bean
     *           The bean representation
     */
-   protected void createBean(AbstractClassBean<?> bean, final AnnotatedClass<?> annotatedClass)
+   protected <T> void createBean(AbstractClassBean<T> bean, final AnnotatedClass<T> annotatedClass)
    {
       
-      beans.add(bean);
+      addBean(annotatedClass, bean);
       
       manager.getResolver().addInjectionPoints(bean.getInjectionPoints());
       
@@ -158,10 +160,10 @@ public class BeanDeployer
       }
    }
    
-   private void createProducerMethod(AbstractClassBean<?> declaringBean, AnnotatedMethod<?> annotatedMethod)
+   private <T> void createProducerMethod(AbstractClassBean<?> declaringBean, AnnotatedMethod<T> annotatedMethod)
    {
-      ProducerMethodBean<?> bean = ProducerMethodBean.of(annotatedMethod, declaringBean, manager);
-      beans.add(bean);
+      ProducerMethodBean<T> bean = ProducerMethodBean.of(annotatedMethod, declaringBean, manager);
+      addBean(annotatedMethod, bean);
       manager.getResolver().addInjectionPoints(bean.getInjectionPoints());
    }
    
@@ -183,10 +185,10 @@ public class BeanDeployer
       }
    }
    
-   private void createProducerField(AbstractClassBean<?> declaringBean, AnnotatedField<?> field)
+   private <T> void createProducerField(AbstractClassBean<?> declaringBean, AnnotatedField<T> field)
    {
-      ProducerFieldBean<?> bean = ProducerFieldBean.of(field, declaringBean, manager);
-      beans.add(bean);
+      ProducerFieldBean<T> bean = ProducerFieldBean.of(field, declaringBean, manager);
+      addBean(field, bean);
    }
    
    private void createProducerFields(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
@@ -213,22 +215,22 @@ public class BeanDeployer
    private void createObserverMethod(AbstractClassBean<?> declaringBean, AnnotatedMethod<?> method)
    {
       ObserverImpl<?> observer = ObserverFactory.create(method, declaringBean, manager);
-      observers.add(observer);
+      beanDeployerEnvironment.getObservers().add(observer);
    }
    
-   private void createSimpleBean(AnnotatedClass<?> annotatedClass)
+   private <T> void createSimpleBean(AnnotatedClass<T> annotatedClass)
    {
-      SimpleBean<?> bean = SimpleBean.of(annotatedClass, manager);
+      SimpleBean<T> bean = SimpleBean.of(annotatedClass, manager);
       createBean(bean, annotatedClass);
-      beans.add(NewSimpleBean.of(annotatedClass, manager));
+      addBean(NewSimpleBean.of(annotatedClass, manager));
    }
    
-   private void createEnterpriseBean(AnnotatedClass<?> annotatedClass)
+   private <T> void createEnterpriseBean(AnnotatedClass<T> annotatedClass)
    {
       // TODO Don't create enterprise bean if it has no local interfaces!
-      EnterpriseBean<?> bean = EnterpriseBean.of(annotatedClass, manager);
+      EnterpriseBean<T> bean = EnterpriseBean.of(annotatedClass, manager);
       createBean(bean, annotatedClass);
-      beans.add(NewEnterpriseBean.of(annotatedClass, manager));
+      addBean(NewEnterpriseBean.of(annotatedClass, manager));
    }
    
    /**
