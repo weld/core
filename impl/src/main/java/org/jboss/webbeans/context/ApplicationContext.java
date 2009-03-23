@@ -106,4 +106,10 @@ public class ApplicationContext extends AbstractMapContext
       return active + "application context " + beanStoreInfo;
    }
 
+   @Override
+   protected boolean isCreationLockRequired()
+   {
+      return true;
+   }
+
 }

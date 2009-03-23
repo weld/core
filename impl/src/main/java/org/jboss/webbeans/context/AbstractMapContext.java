@@ -18,6 +18,7 @@
 package org.jboss.webbeans.context;
 
 import java.lang.annotation.Annotation;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.context.ContextNotActiveException;
 import javax.context.Contextual;
@@ -43,6 +44,8 @@ public abstract class AbstractMapContext extends AbstractContext
 {
    private static LogProvider log = Logging.getLogProvider(AbstractMapContext.class);
 
+   private static ReentrantLock creationLock = new ReentrantLock();
+   
    /**
     * Constructor
     * 
@@ -76,12 +79,32 @@ public abstract class AbstractMapContext extends AbstractContext
       }
       else if (creationalContext != null)
       {
-         instance = contextual.create(creationalContext);
-         if (instance != null)
+         boolean needCreationLock = isCreationLockRequired();
+         try
          {
-            getBeanStore().put(contextual, instance);
+            if(needCreationLock)
+            {
+               creationLock.lock();
+               instance = getBeanStore().get(contextual);
+               if (instance != null)
+               {
+                  return instance;
+               }
+            }
+            instance = contextual.create(creationalContext);
+            if (instance != null)
+            {
+               getBeanStore().put(contextual, instance);
+            }
+            return instance;
          }
-         return instance;
+         finally
+         {
+            if (needCreationLock)
+            {
+               creationLock.unlock();
+            }
+         }
       }
       else
       {
@@ -125,5 +148,11 @@ public abstract class AbstractMapContext extends AbstractContext
     * @return The bean store
     */
    protected abstract BeanStore getBeanStore();
+   
+   /**
+    * If Context need to inhibit concurrent instance creation then true, else false.  
+    * @return need lock
+    */
+   protected abstract boolean isCreationLockRequired();
 
 }

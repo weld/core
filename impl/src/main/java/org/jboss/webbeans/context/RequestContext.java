@@ -51,4 +51,10 @@ public class RequestContext extends AbstractThreadLocalMapContext
       return active + "request context " + beanStoreInfo; 
    }
 
+   @Override
+   protected boolean isCreationLockRequired()
+   {
+      return false;
+   }
+   
 }

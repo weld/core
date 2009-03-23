@@ -56,4 +56,9 @@ public abstract class AbstractThreadLocalMapContext extends AbstractMapContext
       this.beanStore.set(beanStore);
    }
    
+   protected boolean isCreationLockRequired()
+   {
+      return true;
+   }
+   
 }
