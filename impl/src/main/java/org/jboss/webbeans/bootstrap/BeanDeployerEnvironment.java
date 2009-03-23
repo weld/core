@@ -26,11 +26,13 @@ public class BeanDeployerEnvironment
    private final Map<AnnotatedMethod<?>, ProducerMethodBean<?>> methodBeanMap; 
    private final Set<RIBean<?>> beans;
    private final Set<ObserverImpl<?>> observers;
-   
+   private final Set<AnnotatedMethod<?>> disposalMethods; 
+    
    public BeanDeployerEnvironment()
    {
       this.classBeanMap = new HashMap<AnnotatedClass<?>, AbstractClassBean<?>>();
       this.methodBeanMap = new HashMap<AnnotatedMethod<?>, ProducerMethodBean<?>>();
+      this.disposalMethods = new HashSet<AnnotatedMethod<?>>();
       this.beans = new HashSet<RIBean<?>>();
       this.observers = new HashSet<ObserverImpl<?>>();
    }
@@ -68,6 +70,11 @@ public class BeanDeployerEnvironment
    public Set<ObserverImpl<?>> getObservers()
    {
       return observers;
+   }
+   
+   public Set<AnnotatedMethod<?>> getDisposalMethods()
+   {
+      return disposalMethods;
    }
    
 }

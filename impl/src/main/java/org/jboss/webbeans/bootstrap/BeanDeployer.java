@@ -135,6 +135,7 @@ public class BeanDeployer
       createProducerMethods(bean, annotatedClass);
       createProducerFields(bean, annotatedClass);
       createObserverMethods(bean, annotatedClass);
+      createDisposalMethods(bean, annotatedClass);
       
       if (annotatedClass.isAnnotationPresent(Realizes.class))
       {
@@ -151,6 +152,11 @@ public class BeanDeployer
          createProducerMethod(declaringBean, method);
          
       }
+   }
+   
+   private void createDisposalMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
+   {
+      
    }
    
    private <T> void createProducerMethod(AbstractClassBean<?> declaringBean, AnnotatedMethod<T> annotatedMethod)

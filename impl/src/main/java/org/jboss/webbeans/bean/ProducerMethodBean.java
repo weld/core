@@ -128,7 +128,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    /**
     * Initializes the remove method
     */
-   protected void initDisposalMethod()
+   protected void initDisposalMethod(BeanDeployerEnvironment environment)
    {
       Set<AnnotatedMethod<?>> disposalMethods = manager.resolveDisposalMethods(getType(), getBindings().toArray(new Annotation[0]));
       if (disposalMethods.size() == 1)
