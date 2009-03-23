@@ -15,24 +15,10 @@ public class BootstrapOrderingBeanComparator implements Comparator<RIBean<?>>
    {
       if (o1 instanceof AbstractClassBean && o2 instanceof AbstractProducerBean)
       {
-//         AbstractProducerBean<?, ?> b2 = (AbstractProducerBean<?, ?>) o2;
-//         System.out.println("  declaring bean " + b2.getDeclaringBean().getType());
-//         if (b2.getDeclaringBean().equals(o1))
-//         {
-//            System.out.println("  class " + o1.getType() + " < producer " + o2.getType());
-//            return -1;
-//         }
          return -1;
       }
       else if (o1 instanceof AbstractProducerBean && o2 instanceof AbstractClassBean)
       {
-//         AbstractProducerBean<?, ?> b1 = (AbstractProducerBean<?, ?>) o1;
-//         System.out.println("  declaring bean " + b1.getDeclaringBean().getType());
-//         if (b1.getDeclaringBean().equals(o2))
-//         {
-//            System.out.println("  class " + o2.getType() + " < producer " + o1.getType());
-//            return 1;
-//         }
          return 1;
       }
       
@@ -48,6 +34,20 @@ public class BootstrapOrderingBeanComparator implements Comparator<RIBean<?>>
          else if (b2.getSuperclasses().contains(b1.getType().getName()))
          {
             // Place o1 before it's subclass o2
+            return -1;
+         }
+      }
+      
+      if (o1 instanceof AbstractProducerBean && o2 instanceof AbstractProducerBean)
+      {
+         AbstractProducerBean<?, ?> b1 = (AbstractProducerBean<?, ?>) o1;
+         AbstractProducerBean<?, ?> b2 = (AbstractProducerBean<?, ?>) o2;
+         if (b1.getDeclaringBean().getSuperclasses().contains(b2.getDeclaringBean().getType().getName()))
+         {
+            return 1;
+         }
+         else if (b2.getDeclaringBean().getSuperclasses().contains(b1.getDeclaringBean().getType().getName()))
+         {
             return -1;
          }
       }

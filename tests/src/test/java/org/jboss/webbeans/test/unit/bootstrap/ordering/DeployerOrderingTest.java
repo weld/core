@@ -3,6 +3,8 @@ package org.jboss.webbeans.test.unit.bootstrap.ordering;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.inject.AnnotationLiteral;
+
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.EnterpriseBean;
@@ -188,6 +190,44 @@ public class DeployerOrderingTest
       }
       assert indexOfDefangedTarantula > indexOfTarantula;
       assert indexOfTarantula > indexOfSpider;
+   }
+   
+   @Test(groups="bootstrap")
+   public void testClassHierarchiesForMethods()
+   {
+      BeanDeployer beanDeployer = new BeanDeployer(manager);
+      beanDeployer.addClasses(Arrays.asList(Shop.class, JewelryShop.class, Tuna.class));
+      beanDeployer.createBeans();
+      assert beanDeployer.getBeans().size() == 8;
+      int indexOfShop = 0;
+      int indexOfJewelryShop = 0;
+      int indexOfExpensiveGift = 0;
+      int indexOfNecklace = 0;
+      int i = 0;
+      for (RIBean<?> bean : beanDeployer.getBeans())
+      {
+         if (bean.getType().equals(Shop.class) && !bean.getBindings().contains(new NewLiteral()))
+         {
+            indexOfShop = i;
+         }
+         if (bean.getType().equals(JewelryShop.class) && !bean.getBindings().contains(new NewLiteral()))
+         {
+            indexOfJewelryShop = i;
+         }
+         if (bean.getType().equals(Product.class) && bean.getBindings().contains(new AnnotationLiteral<Sparkly>() {}))
+         {
+            indexOfNecklace = i;
+         }
+         if (bean.getType().equals(Product.class) && !bean.getBindings().contains(new AnnotationLiteral<Sparkly>() {}))
+         {
+            indexOfExpensiveGift = i;
+         }
+         i++;
+      }
+      assert indexOfJewelryShop > indexOfShop;
+      assert indexOfExpensiveGift > indexOfShop;
+      assert indexOfNecklace > indexOfJewelryShop;
+      assert indexOfNecklace > indexOfExpensiveGift;
    }
 
 }
