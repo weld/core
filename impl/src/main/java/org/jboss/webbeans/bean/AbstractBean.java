@@ -36,6 +36,7 @@ import javax.inject.Standard;
 import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.conversation.ConversationImpl;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
@@ -132,13 +133,13 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    /**
     * Initializes the bean and its metadata
     */
-   public void initialize()
+   public void initialize(BeanDeployerEnvironment environment)
    {
       mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class));
       if (isSpecializing())
       {
          preSpecialize();
-         specialize();
+         specialize(environment);
          postSpecialize();
       }
       initDefaultBindings();
@@ -348,7 +349,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
 
    }
 
-   protected void specialize()
+   protected void specialize(BeanDeployerEnvironment environment)
    {
 
    }

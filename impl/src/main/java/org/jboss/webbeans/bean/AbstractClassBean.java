@@ -34,6 +34,7 @@ import javax.inject.Produces;
 import javax.inject.Production;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
@@ -82,9 +83,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * Initializes the bean and its metadata
     */
    @Override
-   public void initialize()
+   public void initialize(BeanDeployerEnvironment environment)
    {
-      super.initialize();
+      super.initialize(environment);
       checkScopeAllowed();
       checkBeanImplementation();
       initInitializerMethods();
@@ -288,7 +289,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * @return The annotated item
     */
    @Override
-   protected AnnotatedClass<T> getAnnotatedItem()
+   public AnnotatedClass<T> getAnnotatedItem()
    {
       return annotatedItem;
    }

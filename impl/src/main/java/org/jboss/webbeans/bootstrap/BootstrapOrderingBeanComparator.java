@@ -36,6 +36,14 @@ public class BootstrapOrderingBeanComparator implements Comparator<RIBean<?>>
             // Place o1 before it's subclass o2
             return -1;
          }
+         else if (!(o1 instanceof NewBean) && o2 instanceof NewBean)
+         {
+            return -1;
+         }
+         else if (o1 instanceof NewBean && !(o2 instanceof NewBean))
+         {
+            return 1;
+         }
       }
       
       if (o1 instanceof AbstractProducerBean && o2 instanceof AbstractProducerBean)
@@ -65,23 +73,16 @@ public class BootstrapOrderingBeanComparator implements Comparator<RIBean<?>>
          return o1.getId().compareTo(o2.getId());
       }
       
-      if (o1.getType().getName().startsWith("org.jboss.webbeans") && !o2.getType().getName().startsWith("org.jboss.webbeans"))
-      {
-         return -1;
-      }
-      else if (!o1.getType().getName().startsWith("org.jboss.webbeans") && o2.getType().getName().startsWith("org.jboss.webbeans"))
-      {
-         return 1;
-      }
+//      if (o1.getType().getName().startsWith("org.jboss.webbeans") && !o2.getType().getName().startsWith("org.jboss.webbeans"))
+//      {
+//         return -1;
+//      }
+//      else if (!o1.getType().getName().startsWith("org.jboss.webbeans") && o2.getType().getName().startsWith("org.jboss.webbeans"))
+//      {
+//         return 1;
+//      }
       
-      if (!(o1 instanceof NewBean) && o2 instanceof NewBean)
-      {
-         return -1;
-      }
-      else if (o1 instanceof NewBean && !(o2 instanceof NewBean))
-      {
-         return 1;
-      }
+
       
       return o1.getId().compareTo(o2.getId());
    }

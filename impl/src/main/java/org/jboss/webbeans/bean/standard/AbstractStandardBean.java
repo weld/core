@@ -11,6 +11,7 @@ import javax.inject.Standard;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 import org.jboss.webbeans.literal.CurrentLiteral;
 
@@ -23,7 +24,7 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
    }
    
    @Override
-   public void initialize()
+   public void initialize(BeanDeployerEnvironment environment)
    {
       // No-op
    }

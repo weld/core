@@ -1,57 +1,68 @@
 package org.jboss.webbeans.bootstrap;
 
 import java.lang.annotation.Annotation;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
+import org.jboss.webbeans.bean.AbstractClassBean;
+import org.jboss.webbeans.bean.NewBean;
+import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
+import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.AnnotatedMethod;
 
 public class BeanDeployerEnvironment
 {
    
    private static final AnnotatedItem<?, ?> OTHER_BEANS_ANNOTATED_ITEM = ResolvableAnnotatedClass.of(BeanDeployerEnvironment.class, new Annotation[0]);
    
-   private final Map<AnnotatedItem<?, ?>, Set<RIBean<?>>> beanMap;
+   private final Map<AnnotatedClass<?>, AbstractClassBean<?>> classBeanMap;
+   private final Map<AnnotatedMethod<?>, ProducerMethodBean<?>> methodBeanMap; 
+   private final Set<RIBean<?>> beans;
    private final Set<ObserverImpl<?>> observers;
    
    public BeanDeployerEnvironment()
    {
-      this.beanMap = new HashMap<AnnotatedItem<?,?>, Set<RIBean<?>>>();
+      this.classBeanMap = new HashMap<AnnotatedClass<?>, AbstractClassBean<?>>();
+      this.methodBeanMap = new HashMap<AnnotatedMethod<?>, ProducerMethodBean<?>>();
+      this.beans = new HashSet<RIBean<?>>();
       this.observers = new HashSet<ObserverImpl<?>>();
    }
    
-   public Map<AnnotatedItem<?, ?>, Set<RIBean<?>>> getBeanMap()
+   public Map<AnnotatedClass<?>, AbstractClassBean<?>> getClassBeanMap()
    {
-      return beanMap;
+      return Collections.unmodifiableMap(classBeanMap);
    }
    
-   public void addBean(AnnotatedItem<?, ?> key, RIBean<?> value)
+   public Map<AnnotatedMethod<?>, ProducerMethodBean<?>> getMethodBeanMap()
    {
-      if (key == null)
+      return Collections.unmodifiableMap(methodBeanMap);
+   }
+   
+   public void addBean(RIBean<?> value)
+   {
+      if (value instanceof AbstractClassBean && !(value instanceof NewBean))
       {
-         key = OTHER_BEANS_ANNOTATED_ITEM;
+         AbstractClassBean<?> bean = (AbstractClassBean<?>) value;
+         classBeanMap.put(bean.getAnnotatedItem(), bean);
       }
-      if (!beanMap.containsKey(key))
+      else if (value instanceof ProducerMethodBean)
       {
-         beanMap.put(key, new HashSet<RIBean<?>>());
+         ProducerMethodBean<?> bean = (ProducerMethodBean<?>) value;
+         methodBeanMap.put(bean.getAnnotatedItem(), bean);
       }
-      beanMap.get(key).add(value);
+      beans.add(value);
    }
    
    public Set<RIBean<?>> getBeans()
    {
-      Set<RIBean<?>> beans = new HashSet<RIBean<?>>();
-      for (Entry<AnnotatedItem<?, ?>, Set<RIBean<?>>> entry : beanMap.entrySet())
-      {
-         beans.addAll(entry.getValue());
-      }
-      return beans;
+      return Collections.unmodifiableSet(beans);
    }
    
    public Set<ObserverImpl<?>> getObservers()

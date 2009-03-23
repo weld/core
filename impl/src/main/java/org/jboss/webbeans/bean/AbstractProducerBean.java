@@ -37,6 +37,7 @@ import javax.inject.Produces;
 import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentStorageRequest;
@@ -174,9 +175,9 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
     * Initializes the bean and its metadata
     */
    @Override
-   public void initialize()
+   public void initialize(BeanDeployerEnvironment environment)
    {
-      super.initialize();
+      super.initialize(environment);
       checkProducerReturnType();
    }
 

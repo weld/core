@@ -28,6 +28,7 @@ import javax.inject.DefinitionException;
 import javax.inject.Initializer;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
@@ -283,9 +284,9 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * Initializes the bean and its metadata
     */
    @Override
-   public void initialize()
+   public void initialize(BeanDeployerEnvironment environment)
    {
-      super.initialize();
+      super.initialize(environment);
       initConstructor();
       checkType();
       initInjectionPoints();
@@ -359,10 +360,20 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    }
 
    @Override
-   protected void specialize()
+   protected void specialize(BeanDeployerEnvironment environment)
    {
-      this.specializedBean = SimpleBean.of(getAnnotatedItem().getSuperclass(), manager);
-      this.specializedBean.initialize();
+      if (!environment.getClassBeanMap().containsKey(getAnnotatedItem().getSuperclass()))
+      {
+         throw new IllegalStateException(toString() + " does not specialize a bean");
+      }
+      else if (!(environment.getClassBeanMap().get(getAnnotatedItem().getSuperclass()) instanceof SimpleBean))
+      {
+         throw new IllegalStateException(toString() + " doesn't have a simple bean as a superclass " + environment.getClassBeanMap().get(getAnnotatedItem().getSuperclass()));
+      }
+      else
+      {
+         this.specializedBean = (SimpleBean<?>) environment.getClassBeanMap().get(getAnnotatedItem().getSuperclass()); 
+      }
    }
 
    /**

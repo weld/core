@@ -38,6 +38,7 @@ import javax.interceptor.Interceptor;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
+import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
@@ -115,9 +116,9 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * Initializes the bean and its metadata
     */
    @Override
-   public void initialize()
+   public void initialize(BeanDeployerEnvironment environment)
    {
-      super.initialize();
+      super.initialize(environment);
       initProxyClass();
       initInjectionPoints();
       checkEJBTypeAllowed();
@@ -195,10 +196,20 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    }
 
    @Override
-   protected void specialize()
+   protected void specialize(BeanDeployerEnvironment environment)
    {
-      this.specializedBean = EnterpriseBean.of(getAnnotatedItem().getSuperclass(), manager);
-      this.specializedBean.initialize();
+      if (!environment.getClassBeanMap().containsKey(getAnnotatedItem().getSuperclass()))
+      {
+         throw new IllegalStateException(toString() + " does not specialize a bean");
+      }
+      else if (!(environment.getClassBeanMap().get(getAnnotatedItem().getSuperclass()) instanceof EnterpriseBean))
+      {
+         throw new IllegalStateException(toString() + " doesn't have a session bean as a superclass " + environment.getClassBeanMap().get(getAnnotatedItem().getSuperclass()));
+      }
+      else
+      {
+         this.specializedBean = (EnterpriseBean<?>) environment.getClassBeanMap().get(getAnnotatedItem().getSuperclass()); 
+      }
    }
 
    /**

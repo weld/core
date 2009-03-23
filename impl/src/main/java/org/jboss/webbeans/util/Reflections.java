@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -391,15 +392,52 @@ public class Reflections
     * 
     * @param method The method to look for
     * @param instance The instance to start from
-    * @return The method found, or an NoSuchMethodException if it is not found
+    * @return The method found
+    * @throws IllegalArgumentException if the method is not found
     */
    public static Method lookupMethod(Method method, Object instance)
    {
-      for (Class<? extends Object> clazz = instance.getClass(); clazz != null; clazz = clazz.getSuperclass())
+      try
       {
+         return lookupMethod(method.getName(), method.getParameterTypes(), instance);
+      }
+      catch (NoSuchMethodException e) 
+      {
+         throw new IllegalArgumentException(e);
+      }
+   }
+   
+   /**
+    * Looks up a method in the type hierarchy of an instance
+    * 
+    * @param method The method to look for
+    * @param instance The instance to start from
+    * @return the method
+    * @throws NoSuchMethodException if the method is not found
+    */
+   public static Method lookupMethod(String methodName, Class<?>[] parameterTypes, Object instance) throws NoSuchMethodException
+   {
+      return lookupMethod(methodName, parameterTypes, instance.getClass());
+   }
+   
+   private static Method lookupMethod(String methodName, Class<?>[] parameterTypes, Class<?> c) throws NoSuchMethodException
+   {
+      for (Class<? extends Object> clazz = c; clazz != null; clazz = clazz.getSuperclass())
+      {
+         for (Class<?> intf : clazz.getInterfaces())
+         {
+            try
+            {
+               return lookupMethod(methodName, parameterTypes, intf);
+            }
+            catch (NoSuchMethodException e) 
+            {
+               // Expected
+            }
+         }
          try
          {
-            Method targetMethod = clazz.getDeclaredMethod(method.getName(), method.getParameterTypes());
+            Method targetMethod = clazz.getDeclaredMethod(methodName, parameterTypes);
             if (!targetMethod.isAccessible())
             {
                targetMethod.setAccessible(true);
@@ -411,8 +449,10 @@ public class Reflections
             // Expected, nothing to see here.
          }
       }
-      throw new IllegalArgumentException("Method " + method.getName() + " not implemented by instance");
+      throw new NoSuchMethodException("Method " + methodName + Arrays.asList(parameterTypes).toString().replace("[", "(").replace("]", ")") + " not implemented by instance " + c.getName());
    }
+   
+   
 
    /**
     * Indicates if an instance is a Javassist proxy

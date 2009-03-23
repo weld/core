@@ -28,6 +28,7 @@ import javax.inject.DefinitionException;
 import javax.inject.Disposes;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -75,16 +76,24 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
 
    protected T produceInstance(CreationalContext<T> creationalContext)
    {
-      return method.invoke(getReceiver(creationalContext), manager, creationalContext, CreationException.class);
+      Object receiver = getReceiver(creationalContext);
+      if (receiver != null)
+      {
+         return method.invokeOnInstance(receiver, manager, creationalContext, CreationException.class);
+      }
+      else
+      {
+         return method.invoke(receiver, manager, creationalContext, CreationException.class);
+      }
    }
 
    /**
     * Initializes the bean and its metadata
     */
    @Override
-   public void initialize()
+   public void initialize(BeanDeployerEnvironment environment)
    {
-      super.initialize();
+      super.initialize(environment);
       checkProducerMethod();
       //initDisposalMethod();
       initInjectionPoints();
@@ -139,7 +148,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     * @return The annotated item
     */
    @Override
-   protected AnnotatedMethod<T> getAnnotatedItem()
+   public AnnotatedMethod<T> getAnnotatedItem()
    {
       return method;
    }
@@ -215,12 +224,14 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    }
    
    @Override
-   protected void specialize()
+   protected void specialize(BeanDeployerEnvironment environment)
    {
-      SimpleBean<?> superClassBean = SimpleBean.of(declaringBean.getAnnotatedItem().getSuperclass(), manager);
-      superClassBean.initialize();
-      this.specializedBean = ProducerMethodBean.of(declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod()), superClassBean, manager);
-      this.specializedBean.initialize();
+      AnnotatedMethod<?> superClassMethod = declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod());
+      if (!environment.getMethodBeanMap().containsKey(superClassMethod))
+      {
+         throw new IllegalStateException(toString() + " does not specialize a bean");
+      }
+      this.specializedBean = environment.getMethodBeanMap().get(superClassMethod);
    }
 
 }

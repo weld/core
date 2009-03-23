@@ -23,6 +23,7 @@ import javax.context.Dependent;
 import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 
 /**
@@ -55,7 +56,7 @@ public abstract class RIBean<T> extends Bean<T>
 
    public abstract Class<T> getType();
    
-   public abstract void initialize();
+   public abstract void initialize(BeanDeployerEnvironment environment);
 
    public abstract boolean isSpecializing();
 

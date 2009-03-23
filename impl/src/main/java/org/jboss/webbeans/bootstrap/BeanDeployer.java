@@ -26,7 +26,6 @@ import org.jboss.webbeans.event.ObserverFactory;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
-import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.WrappedAnnotatedField;
 import org.jboss.webbeans.introspector.WrappedAnnotatedMethod;
@@ -53,15 +52,9 @@ public class BeanDeployer
       this.classes = new HashSet<AnnotatedClass<?>>();
    }
    
-   public <T> BeanDeployer addBean(AnnotatedItem<T, ?> item, RIBean<T> bean)
-   {
-      this.beanDeployerEnvironment.addBean(item, bean);
-      return this;
-   }
-   
    public <T> BeanDeployer addBean(RIBean<T> bean)
    {
-      this.beanDeployerEnvironment.addBean(null, bean);
+      this.beanDeployerEnvironment.addBean(bean);
       return this;
    }
    
@@ -105,7 +98,7 @@ public class BeanDeployer
       beans.addAll(beanDeployerEnvironment.getBeans());
       for (RIBean<?> bean : beans)
       {
-         bean.initialize();
+         bean.initialize(beanDeployerEnvironment);
          log.info("Bean: " + bean);
       }
       manager.setBeans(beans);
@@ -135,7 +128,7 @@ public class BeanDeployer
    protected <T> void createBean(AbstractClassBean<T> bean, final AnnotatedClass<T> annotatedClass)
    {
       
-      addBean(annotatedClass, bean);
+      addBean(bean);
       
       manager.getResolver().addInjectionPoints(bean.getInjectionPoints());
       
@@ -163,7 +156,7 @@ public class BeanDeployer
    private <T> void createProducerMethod(AbstractClassBean<?> declaringBean, AnnotatedMethod<T> annotatedMethod)
    {
       ProducerMethodBean<T> bean = ProducerMethodBean.of(annotatedMethod, declaringBean, manager);
-      addBean(annotatedMethod, bean);
+      addBean(bean);
       manager.getResolver().addInjectionPoints(bean.getInjectionPoints());
    }
    
@@ -188,7 +181,7 @@ public class BeanDeployer
    private <T> void createProducerField(AbstractClassBean<?> declaringBean, AnnotatedField<T> field)
    {
       ProducerFieldBean<T> bean = ProducerFieldBean.of(field, declaringBean, manager);
-      addBean(field, bean);
+      addBean(bean);
    }
    
    private void createProducerFields(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
