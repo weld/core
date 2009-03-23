@@ -95,7 +95,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
    private static final long serialVersionUID = 3021562879133838561L;
    
    // The JNDI key to place the manager under
-   public static final String JNDI_KEY = "java:comp/Manager";
+   public static final String JNDI_KEY = "java:app/Manager";
    
    // The enabled deployment types from web-beans.xml
    private transient List<Class<? extends Annotation>> enabledDeploymentTypes;

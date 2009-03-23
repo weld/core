@@ -20,6 +20,9 @@ package org.jboss.webbeans.bootstrap;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
+import javax.inject.ExecutionException;
+import javax.inject.manager.Manager;
+
 import org.jboss.webbeans.BeanValidator;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
@@ -48,7 +51,7 @@ import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.jsf.JSFApiAbstraction;
 import org.jboss.webbeans.literal.DeployedLiteral;
 import org.jboss.webbeans.literal.InitializedLiteral;
-import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.resources.DefaultNamingContext;
 import org.jboss.webbeans.resources.DefaultResourceLoader;
@@ -70,7 +73,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
 {
   
    // The log provider
-   private static LogProvider log = Logging.getLogProvider(WebBeansBootstrap.class);
+   private static Log log = Logging.getLog(WebBeansBootstrap.class);
 
    // The Web Beans manager
    private ManagerImpl manager;
@@ -94,7 +97,14 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       }
       addImplementationServices();
       this.manager = new ManagerImpl(ServiceRegistries.unmodifiableServiceRegistry(getServices()));
-      getServices().get(NamingContext.class).bind(ManagerImpl.JNDI_KEY, getManager());
+      try
+      {
+         getServices().get(NamingContext.class).lookup(ManagerImpl.JNDI_KEY, Manager.class);
+      }
+      catch (ExecutionException e)
+      {
+         getServices().get(NamingContext.class).bind(ManagerImpl.JNDI_KEY, getManager());
+      }
       CurrentManager.setRootManager(manager);
       initializeContexts();
    }
@@ -230,6 +240,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    {
       endApplication(getApplicationContext());
       manager.cleanup();
+      getServices().get(NamingContext.class).unbind(ManagerImpl.JNDI_KEY);
    }
 
 }
