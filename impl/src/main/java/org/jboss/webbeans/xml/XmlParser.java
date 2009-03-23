@@ -21,6 +21,7 @@ import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
 import org.dom4j.io.SAXReader;
+import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 
@@ -54,9 +55,16 @@ public class XmlParser
          
    private void parseForBeans(Document document)
    {
-      List<Element> beanElements = findBeans(document);
-      // TODO Only pass in classes here
-      //environment.getClasses().addAll(ParseXmlHelper.getBeanItems(beanElements));
+      List<AnnotatedClass<?>> beanClasses = new ArrayList<AnnotatedClass<?>>();
+      
+      List<Element> beanElements = findBeans(document);      
+      for (Element beanElement : beanElements)
+      {
+         AnnotatedClass<?> beanClass = ParseXmlHelper.loadElementClass(beanElement, Object.class, environment, packagesMap);
+         beanClasses.add(beanClass);
+      }
+      
+      environment.getClasses().addAll(beanClasses);
    }
    
    private void parseForDeploy(Document document)
@@ -173,12 +181,12 @@ public class XmlParser
       List<Element> children = element.elements();
       for (Element child : children)
       {         
-         Class<? extends Annotation> deploymentClass = ParseXmlHelper.loadElementClass(child, Annotation.class, environment, packagesMap);
+         AnnotatedClass<? extends Annotation> deploymentClass = ParseXmlHelper.loadElementClass(child, Annotation.class, environment, packagesMap);
          
 //         if(deploymentClass.getAnnotation(DeploymentType.class) == null)
 //            throw new DefinitionException("<Deploy> child <" + element.getName() + "> must be a deployment type");
                   
-         deploymentClasses.add(deploymentClass);
+         deploymentClasses.add(deploymentClass.getRawType());
       }
       haveAnyDeployElement = true;
       return deploymentClasses;
