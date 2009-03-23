@@ -72,18 +72,8 @@ public class XmlParser
                element.getName().equalsIgnoreCase(XmlConstants.DEPLOY))
             environment.getEnabledDeploymentTypes().addAll(obtainDeploymentTypes(element));
       }
-   }
-   
-   @SuppressWarnings("unchecked")
-   public boolean checkNamespaces(Document document)
-   {
-      //TODO: not finished
-      Element root = document.getRootElement();
-      List<Namespace> declaredNamespaces = root.declaredNamespaces();
-            
-      return true;
-   }
-   
+   }   
+      
    private Document createDocument(URL url)
    {
       try
@@ -97,7 +87,6 @@ public class XmlParser
          }
          SAXReader reader = new SAXReader();
          Document document = reader.read(xmlStream);
-         checkNamespaces(document);
          fullFillPackagesMap(document);
          return document;
       }
