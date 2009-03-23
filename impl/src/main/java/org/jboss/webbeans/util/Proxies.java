@@ -76,7 +76,11 @@ public class Proxies
       public ProxyFactory createProxyFactory()
       {
          ProxyFactory proxyFactory = new ProxyFactory();
-         proxyFactory.setSuperclass(getSuperClass());
+         Class<?> superClass = getSuperClass();
+         if(superClass != Object.class)
+         {
+            proxyFactory.setSuperclass(superClass);
+         }
          proxyFactory.setInterfaces(getInterfaces());
          return proxyFactory;
       }
