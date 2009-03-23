@@ -33,6 +33,10 @@ public class XmlConstants
    public static final String QUEUE = "Queue";
 
    public static final String URN_PREFIX = "urn:java:";
+   
+   public static final String HTTP_PREFIX = "http://";
+   
+   public static final String SCHEMA_LOCATION = "schemaLocation";
 
    public static final String NAME = "name";
 
@@ -41,6 +45,8 @@ public class XmlConstants
    public static final String STANDARD = "Standard";
 
    public static final String NAMESPACE_FILE_NAME = "namespace";
+   
+   public static final String SCHEMA_FILE_NAME = "schema.xsd";
    
    public static final String NAMESPACE_FILE_DELIMETER = " ";
 }

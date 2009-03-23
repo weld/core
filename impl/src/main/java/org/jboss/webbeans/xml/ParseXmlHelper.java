@@ -307,14 +307,23 @@ public class ParseXmlHelper
          String attrPrefix = attribute.getNamespacePrefix();         
          String attrData = attribute.getStringValue();
          
+         String urn = "";
          for(String attrVal : attrData.split(" "))
          {
             if(attrVal.startsWith(XmlConstants.URN_PREFIX))
             {
-               URL namespaceFile = loadNamespaceFile(attrVal);
+               urn = attrVal;
+               URL namespaceFile = loadFile(urn, XmlConstants.NAMESPACE_FILE_NAME);
                if(namespaceFile == null)
-                  throw new DefinitionException("Could not find 'namespace' file according to specified URN '" + attrVal + "'");
+                  throw new DefinitionException("Could not find '" + XmlConstants.NAMESPACE_FILE_NAME + "' file according to specified URN '" + urn + "'");
                packagesSet.addAll(parseNamespaceFile(namespaceFile));
+            }
+            if(attribute.getName().equalsIgnoreCase(XmlConstants.SCHEMA_LOCATION) && 
+                  attrVal.startsWith(XmlConstants.HTTP_PREFIX) && urn.trim().length() > 0)
+            {
+               URL schemaFile = loadFile(urn, XmlConstants.SCHEMA_FILE_NAME);
+               if(schemaFile == null)
+                  throw new DefinitionException("Could not find '" + XmlConstants.SCHEMA_FILE_NAME + "' file according to specified URN '" + urn + "'");
             }
          }
          
@@ -334,7 +343,7 @@ public class ParseXmlHelper
          {
             Set<String> packagesSet = new HashSet<String>();
             
-            URL namespaceFile = loadNamespaceFile(uri);
+            URL namespaceFile = loadFile(uri, XmlConstants.NAMESPACE_FILE_NAME);
             if(namespaceFile != null)
             {
                packagesSet.addAll(parseNamespaceFile(namespaceFile));
@@ -350,12 +359,12 @@ public class ParseXmlHelper
       }
    }
    
-   private static URL loadNamespaceFile(String urn)
+   private static URL loadFile(String urn, String fileName)
    {
       char separator = '/';
       String packageName = urn.replaceFirst(XmlConstants.URN_PREFIX, "");
       String path = packageName.replace('.', separator);
-      String filePath = separator + path + separator + XmlConstants.NAMESPACE_FILE_NAME;
+      String filePath = separator + path + separator + fileName;
       URL namespaceFile = ParseXmlHelper.class.getResource(filePath);      
       return namespaceFile;
    }
