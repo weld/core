@@ -1,10 +1,22 @@
 package org.jboss.webbeans.test.unit.xml.parser;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.DeploymentException;
+
+import org.dom4j.Attribute;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.Namespace;
+import org.dom4j.io.SAXReader;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Classes;
 import org.jboss.testharness.impl.packaging.Resource;
@@ -17,8 +29,10 @@ import org.jboss.webbeans.test.unit.xml.beans.Order;
 import org.jboss.webbeans.test.unit.xml.beans.TestBean;
 import org.jboss.webbeans.test.unit.xml.beans.TestDeploymentType;
 import org.jboss.webbeans.xml.ParseXmlHelper;
+import org.jboss.webbeans.xml.XmlConstants;
 import org.jboss.webbeans.xml.XmlEnvironment;
 import org.jboss.webbeans.xml.XmlParser;
+import org.testng.annotations.Test;
 
 @Artifact
 @Resources({
@@ -49,36 +63,15 @@ public class XmlParserImplTest extends AbstractWebBeansTest
 
       assert parserEnv.getClasses().size() == 1;
    }
-   
-   //@Test
-   public void testParceNamespaceFile()
-   {      
-      String urn = "urn:java:org.jboss.webbeans.test.unit.xml.parser";
-      
-      URL url = ParseXmlHelper.loadNamespaceFile(urn);
-      List<String> packages = ParseXmlHelper.parseNamespaceFile(url);
-      assert packages.size() == 2;
-   }
-   
-   //@Test
-   public void testLoadClassByURN()
-   {      
-      String urn = "urn:java:org.jboss.webbeans.test.unit.xml.parser";
-      String beanName = "TestBean";
-      String deploymentTypeName = "TestDeploymentType";
-      
-      Class<?> beanClass = ParseXmlHelper.loadClassByURN(urn, beanName);
-      Class<?> deploymentTypeClass = ParseXmlHelper.loadClassByURN(urn, deploymentTypeName);
-      
-      assert beanClass.equals(TestBean.class);
-      assert deploymentTypeClass.equals(TestDeploymentType.class);
-   }
 }
 
 	/*
-	<Beans xmlns="urn:java:ee" xmlns:myapp="urn:java:org.jboss.webbeans.test.unit.xml.parser"
-	xmlns:test="urn:java:org.jboss.webbeans.test.unit.xml">
-	<Deploy>
+<Beans xmlns="urn:java:ee" xmlns:myapp="urn:java:org.jboss.webbeans.test.unit.xml.beans"
+       xmlns:test="urn:java:org.jboss.webbeans.test.unit.xml.parser"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="urn:java:ee http://java.sun.com/jee/ee/schema-1.0.xsd
+                           urn:java:com.mydomain.myapp http://mydomain.com/myapp/schema-1.2.xsd">
+   <Deploy>
 		<Standard />
 		<Production />
 		<test:AnotherDeploymentType />
@@ -94,5 +87,5 @@ public class XmlParserImplTest extends AbstractWebBeansTest
 		<ConversationScoped />
 		<BindingType />
 	</myapp:Login>
-	</Beans>
+</Beans>
 	*/

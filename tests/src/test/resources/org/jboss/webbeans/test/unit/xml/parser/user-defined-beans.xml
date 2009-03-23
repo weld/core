@@ -1,17 +1,20 @@
 <Beans xmlns="urn:java:ee" xmlns:myapp="urn:java:org.jboss.webbeans.test.unit.xml.beans"
-	xmlns:test="urn:java:org.jboss.webbeans.test.unit.xml.parser">
+	xmlns:test="urn:java:org.jboss.webbeans.test.unit.xml.parser"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:java:ee http://java.sun.com/jee/ee/schema-1.0.xsd
+						urn:java:org.jboss.webbeans.test.unit.xml.parser http://mydomain.com/myapp/schema-1.2.xsd">
 	<Deploy>
 		<Standard />
 		<Production />
-		<test:AnotherDeploymentType />
+		<myapp:AnotherDeploymentType />
 	</Deploy>
-	<myapp:Order>
+	<xsi:Order>
 		<ConversationScoped />
 		<myapp:PaymentProcessor>
-			<myapp:Asynchronous />
+			<test:Asynchronous />
 		</myapp:PaymentProcessor>
 		<myapp:User />
-	</myapp:Order>
+	</xsi:Order>
 	<myapp:Login>
 		<ConversationScoped />
 		<BindingType />

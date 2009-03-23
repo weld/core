@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -15,11 +16,14 @@ import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.Topic;
 
+import org.dom4j.Attribute;
 import org.dom4j.Element;
+import org.dom4j.Namespace;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
+import org.jboss.webbeans.resources.spi.ResourceLoadingException;
 
 public class ParseXmlHelper
 {
@@ -196,8 +200,9 @@ public class ParseXmlHelper
    
    private static boolean isSimpleBean(Element element)
    {
+      //TODO
       String urn = element.getNamespace().getURI();
-      Class<?> beanClass = loadClassByURN(urn, element.getName());
+      Class<?> beanClass = null;//loadElementClass(urn, element.getName());
 
       if (!Modifier.isAbstract(beanClass.getModifiers()) && 
             beanClass.getTypeParameters().length == 0)
@@ -208,8 +213,9 @@ public class ParseXmlHelper
 
    private static AnnotatedItem<?, ?> receiveSimpleBeanItem(Element element)
    {
+      //TODO
       String urn = element.getNamespace().getURI();
-      Class<?> beanClass = loadClassByURN(urn, element.getName());
+      Class<?> beanClass = null;//loadElementClass(urn, element.getName());
 
       if (!Modifier.isStatic(beanClass.getModifiers()) && 
             beanClass.isMemberClass())
@@ -258,73 +264,140 @@ public class ParseXmlHelper
       return element.getNamespace().getURI().equalsIgnoreCase(XmlConstants.JAVA_EE_NAMESPACE);
    }
    
-   // TODO you can't reparse all files every time you want to load a class. Switch to an OO design and cache
-   // TODO Don't do your own classloading, use xml env
-   // TODO Don't load Class, use AnnotatedClass
-   public static Class<?> loadClassByURN(String urn, String className)
+   public static <T> Class<? extends T> loadElementClass(Element element, Class<T> expectedType, XmlEnvironment environment, Map<String, Set<String>> packagesMap)
    {
-      List<Class<?>> classes = new ArrayList<Class<?>>();
-      List<String> packages = new ArrayList<String>();
-      URL namespaceFile = loadNamespaceFile(urn);
+      List<Class<? extends T>> classesList = new ArrayList<Class<? extends T>>();
+      String className = element.getName();
+      String prefix = element.getNamespacePrefix();
       
-      if(namespaceFile == null)
-         packages.add(urn.replaceFirst(XmlConstants.URN_PREFIX, ""));
-      
-      else
-         packages.addAll(parseNamespaceFile(namespaceFile));
-      
-      for(String possiblePackage : packages)
+      for(Map.Entry<String, Set<String>> packagesEntry : packagesMap.entrySet())
       {
-         String classPath = possiblePackage + "." + className;
-         try
+         if(prefix.equalsIgnoreCase(packagesEntry.getKey()))
          {
-            classes.add(Class.forName(classPath));
+            Set<String> packages = packagesEntry.getValue();
+            for(String packageName : packages)
+            {
+               String classPath = packageName + "." + element.getName();
+               try
+               {
+                  Class<? extends T> classType = environment.loadClass(classPath, expectedType).getRawType();
+                  classesList.add(classType);
+               }
+               catch(ResourceLoadingException e){}
+            }
          }
-         catch (ClassNotFoundException e)
-         {}
       }
       
-      if(classes.size() == 0)
-         throw new DefinitionException("Could not find '" + className + "'according to specified URN '" + urn + "'");
+      if(classesList.size() == 0)
+         throw new DefinitionException("Could not find '" + className + "'");
       
-      if(classes.size() == 1)
-         return classes.get(0);
+      if(classesList.size() == 1)
+         return classesList.get(0);
       
       throw new DefinitionException("There are multiple packages containing a Java type with the same name '" + className + "'");
    }
    
-   public static URL loadNamespaceFile(String urn)
+   public static void checkRootAttributes(Element root, Map<String, Set<String>> packagesMap)
+   {
+      Iterator<?> rootAttrIterator = root.attributeIterator();
+      while(rootAttrIterator.hasNext())
+      {
+         Set<String> packagesSet = new HashSet<String>();
+         Attribute attribute = (Attribute)rootAttrIterator.next();
+         String attrPrefix = attribute.getNamespacePrefix();         
+         String attrData = attribute.getStringValue();
+         
+         for(String attrVal : attrData.split(" "))
+         {
+            if(attrVal.startsWith(XmlConstants.URN_PREFIX))
+            {
+               URL namespaceFile = loadNamespaceFile(attrVal);
+               if(namespaceFile == null)
+                  throw new DefinitionException("Could not find 'namespace' file according to specified URN '" + attrVal + "'");
+               packagesSet.addAll(parseNamespaceFile(namespaceFile));
+            }
+         }
+         
+         addElementToPackagesMap(packagesMap, attrPrefix, packagesSet);
+      }
+   }
+   
+   public static void checkRootDeclaredNamespaces(Element root, Map<String, Set<String>> packagesMap)
+   {
+      Iterator<?> namespacesIterator = root.declaredNamespaces().iterator();
+      while(namespacesIterator.hasNext())
+      {
+         Namespace namespace = (Namespace)namespacesIterator.next();
+         String prefix = namespace.getPrefix();
+         String uri = namespace.getURI();
+         if(uri.startsWith(XmlConstants.URN_PREFIX))
+         {
+            Set<String> packagesSet = new HashSet<String>();
+            
+            URL namespaceFile = loadNamespaceFile(uri);
+            if(namespaceFile != null)
+            {
+               packagesSet.addAll(parseNamespaceFile(namespaceFile));
+            }
+            else
+            {
+               String packageName = uri.replaceFirst(XmlConstants.URN_PREFIX, "");
+               packagesSet.add(packageName);
+            }            
+            
+            addElementToPackagesMap(packagesMap, prefix, packagesSet);
+         }
+      }
+   }
+   
+   private static URL loadNamespaceFile(String urn)
    {
       char separator = '/';
       String packageName = urn.replaceFirst(XmlConstants.URN_PREFIX, "");
       String path = packageName.replace('.', separator);
       String filePath = separator + path + separator + XmlConstants.NAMESPACE_FILE_NAME;
-      return ParseXmlHelper.class.getResource(filePath);
+      URL namespaceFile = ParseXmlHelper.class.getResource(filePath);      
+      return namespaceFile;
    }
    
-   public static List<String> parseNamespaceFile(URL namespaceFile)
+   private static Set<String> parseNamespaceFile(URL namespaceFile)
    {
-         List<String> packages = new ArrayList<String>();
-         Scanner fileScanner;
-         try
+      Set<String> packages = new HashSet<String>();
+      Scanner fileScanner;
+      try
+      {
+         fileScanner = new Scanner(namespaceFile.openStream());
+         while (fileScanner.hasNextLine() )
          {
-            fileScanner = new Scanner(namespaceFile.openStream());
-            while (fileScanner.hasNextLine() )
+            String line = fileScanner.nextLine();
+            Scanner lineScanner = new Scanner(line);
+            lineScanner.useDelimiter(XmlConstants.NAMESPACE_FILE_DELIMETER);
+            while(lineScanner.hasNext())
             {
-               String line = fileScanner.nextLine();
-               Scanner lineScanner = new Scanner(line);
-               lineScanner.useDelimiter(XmlConstants.NAMESPACE_FILE_DELIMETER);
-               while(lineScanner.hasNext())
-               {
-                  packages.add(lineScanner.next());
-               }
+               packages.add(lineScanner.next());
             }
-            return packages;
+            lineScanner.close();
          }
-         catch (IOException e)
-         {
-            throw new RuntimeException("Error opening " + namespaceFile.toString());
-         }
-         
+         fileScanner.close();
+         return packages;
+      }
+      catch (IOException e)
+      {
+         throw new RuntimeException("Error opening " + namespaceFile.toString());
+      }         
+   }
+   
+   private static void addElementToPackagesMap(Map<String, Set<String>> packagesMap, String prefix, Set<String> packagesSet)
+   {
+      if(packagesMap.containsKey(prefix))
+      {
+         Set<String> packages = packagesMap.get(prefix);
+         packages.addAll(packagesSet);
+         packagesMap.put(prefix, packages);
+      }
+      else
+      {
+         packagesMap.put(prefix, packagesSet);
+      }
    }
 }

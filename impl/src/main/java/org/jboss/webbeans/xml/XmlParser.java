@@ -5,19 +5,21 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.DefinitionException;
 import javax.inject.DeploymentException;
-import javax.inject.DeploymentType;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
+import org.dom4j.QName;
 import org.dom4j.io.SAXReader;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
@@ -29,6 +31,8 @@ public class XmlParser
    private final XmlEnvironment environment;
    
    private boolean haveAnyDeployElement = false;
+   
+   private Map<String, Set<String>> packagesMap = new HashMap<String, Set<String>>();
    
    public XmlParser(XmlEnvironment environment)
    {
@@ -94,6 +98,7 @@ public class XmlParser
          SAXReader reader = new SAXReader();
          Document document = reader.read(xmlStream);
          checkNamespaces(document);
+         fullFillPackagesMap(document);
          return document;
       }
       catch (IOException e)
@@ -166,31 +171,34 @@ public class XmlParser
       if(deployElements.size() - deployElementsSet.size() != 0)
          throw new DefinitionException("The same deployment type is declared more than once");
             
-//      String standardName = XmlConstants.STANDARD;
-//      String standardPrefix = "";
-//      String standardUri = XmlConstants.JAVA_EE_NAMESPACE;
-//      Namespace standardNamespace = new Namespace(standardPrefix, standardUri);
-//      QName qName = new QName(standardName, standardNamespace);
-//      Element standardElement = element.element(qName);      
-//      if (standardElement == null)
-//         throw new DeploymentException("The @Standard deployment type must be declared");      
+      String standardName = XmlConstants.STANDARD;
+      String standardPrefix = "";
+      String standardUri = XmlConstants.JAVA_EE_NAMESPACE;
+      Namespace standardNamespace = new Namespace(standardPrefix, standardUri);
+      QName qName = new QName(standardName, standardNamespace);
+      Element standardElement = element.element(qName);      
+      if (standardElement == null)
+         throw new DeploymentException("The @Standard deployment type must be declared");      
       
       List<Class<? extends Annotation>> deploymentClasses = new ArrayList<Class<? extends Annotation>>();
       List<Element> children = element.elements();
       for (Element child : children)
-      {
-         String urn = child.getNamespace().getURI();
-         Class<?> deploymentClass = ParseXmlHelper.loadClassByURN(urn, child.getName());
+      {         
+         Class<? extends Annotation> deploymentClass = ParseXmlHelper.loadElementClass(child, Annotation.class, environment, packagesMap);
          
-         if(!deploymentClass.isAnnotation())
-            throw new DeploymentException("<Deploy> child " + element.getName() + " must be a Java annotation type");
-         
-         if(deploymentClass.getAnnotation(DeploymentType.class) == null)
-            throw new DefinitionException("<Deploy> child " + element.getName() + " must be a deployment type");
+//         if(deploymentClass.getAnnotation(DeploymentType.class) == null)
+//            throw new DefinitionException("<Deploy> child <" + element.getName() + "> must be a deployment type");
                   
-         deploymentClasses.add(deploymentClass.asSubclass(Annotation.class));
+         deploymentClasses.add(deploymentClass);
       }
       haveAnyDeployElement = true;
       return deploymentClasses;
+   }
+   
+   private void fullFillPackagesMap(Document document)
+   {
+      Element root = document.getRootElement();      
+      ParseXmlHelper.checkRootAttributes(root, packagesMap);
+      ParseXmlHelper.checkRootDeclaredNamespaces(root, packagesMap);
    }
 }
