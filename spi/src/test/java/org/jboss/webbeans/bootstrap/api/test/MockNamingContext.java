@@ -16,5 +16,11 @@ public class MockNamingContext implements NamingContext
       // TODO Auto-generated method stub
       return null;
    }
+
+   public void unbind(String key)
+   {
+      // TODO Auto-generated method stub
+      
+   }
    
 }

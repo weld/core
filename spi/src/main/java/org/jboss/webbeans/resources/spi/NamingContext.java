@@ -50,4 +50,10 @@ public interface NamingContext extends Service
     */
    public void bind(String name, Object value);
    
+   /**
+    * Unbinds an entry from JNDI.
+    * 
+    * @param key The key of the object in JNDI to unbind
+    */
+   public void unbind(String key);
 }

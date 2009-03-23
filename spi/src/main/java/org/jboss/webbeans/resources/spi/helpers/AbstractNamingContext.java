@@ -49,15 +49,41 @@ public abstract class AbstractNamingContext implements NamingContext
       {
          List<String> parts = splitIntoContexts(key);
          Context context = getContext();
+         Context nextContext = null;
          for (int i = 0; i < parts.size() - 1; i++)
          {
-            context = (Context) context.lookup(parts.get(i));
+            try
+            {
+               nextContext = (Context) context.lookup(parts.get(i));
+            }
+            catch (NamingException e)
+            {
+               nextContext = context.createSubcontext(parts.get(i));
+            }
+            context = nextContext;
          }
          context.bind(parts.get(parts.size() - 1), value);
       }
       catch (NamingException e)
       {
          throw new ExecutionException("Cannot bind " + value + " to " + key, e);
+      }
+   }
+
+   /**
+    * Unbinds an entry from JNDI.
+    * 
+    * @param key The key of the object in JNDI to unbind
+    */
+   public void unbind(String key)
+   {
+      try
+      {
+         getContext().unbind(key);
+      }
+      catch (NamingException e)
+      {
+         throw new ExecutionException("Cannot unbind " + key, e);
       }
    }
 
