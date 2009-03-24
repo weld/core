@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import javax.context.Dependent;
 import javax.event.Event;
 import javax.event.Fires;
 import javax.inject.AmbiguousDependencyException;
@@ -107,7 +108,7 @@ public class BeanValidator
             {
                throw new NullableDependencyException("The injection point " + injectionPoint + " has nullable dependencies");
             }
-            if (Beans.isPassivatingBean(bean) && !resolvedBean.isSerializable())
+            if (Beans.isPassivatingBean(bean) && !resolvedBean.isSerializable() && resolvedBean.getScopeType().equals(Dependent.class))
             {
                throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scopes but has non-serializable dependencies");
             }

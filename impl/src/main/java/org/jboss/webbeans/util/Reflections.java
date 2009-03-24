@@ -556,26 +556,6 @@ public class Reflections
    }
 
    /**
-    * Gets the type hierarchy for a class
-    * 
-    * A recursive function that adds the class to the set of type and then calls
-    * itself with the suprerclass as paramater until the top of the hierarchy is
-    * reached. For each steps, adds all interfaces of the class to the set.
-    * Since the data structure is a set, duplications are eliminated
-    * 
-    * 
-    * @deprecated see {@link HierarchyDiscovery} 
-    * @param clazz The class to examine
-    * @return The set of classes and interfaces in the hierarchy
-    * @see #getTypeHierachy(Class, Set)
-    */
-   @Deprecated
-   public static Set<Class<?>> getTypeHierachy(Class<?> clazz)
-   {
-      return new HierarchyDiscovery<Class<?>>(clazz).getFlattenedTypes();
-   }
-
-   /**
     * Checks the bindingType to make sure the annotation was declared properly
     * as a binding type (annotated with @BindingType).
     * 
@@ -596,7 +576,7 @@ public class Reflections
 
    public static boolean isSerializable(Class<?> clazz)
    {
-      return getTypeHierachy(clazz).contains(Serializable.class) || clazz.isPrimitive();
+      return clazz.isPrimitive() || Serializable.class.isAssignableFrom(clazz);
    }
 
 }

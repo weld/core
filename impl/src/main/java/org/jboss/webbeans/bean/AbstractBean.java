@@ -17,7 +17,6 @@
 
 package org.jboss.webbeans.bean;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -260,16 +259,14 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       this.primitive = Reflections.isPrimitive(getType());
    }
 
-   protected boolean checkInjectionPointsAreSerializable()
+   private boolean checkInjectionPointsAreSerializable()
    {
-      // TODO CACHE THIS and rebuild on addBean
-      // TODO: a bit crude, don't check *all* injectionpoints, only those listed
-      // in the spec for passivation checks
+      boolean passivating = MetaDataCache.instance().getScopeModel(this.getScopeType()).isPassivating();
       for (AnnotatedInjectionPoint<?, ?> injectionPoint : getInjectionPoints())
       {
          Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
          Bean<?> resolvedBean = manager.resolveByType(injectionPoint.getRawType(), bindings).iterator().next();
-         if (MetaDataCache.instance().getScopeModel(this.getScopeType()).isPassivating())
+         if (passivating)
          {
             if (Dependent.class.equals(resolvedBean.getScopeType()) && !resolvedBean.isSerializable() && (((injectionPoint instanceof AnnotatedField) && !((AnnotatedField<?>) injectionPoint).isTransient()) || (injectionPoint instanceof AnnotatedParameter)) )
             {
@@ -501,12 +498,12 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    @Override
    public boolean isSerializable()
    {
-      return _serializable;
+      return _serializable && checkInjectionPointsAreSerializable();
    }
 
    protected void initSerializable()
    {
-      _serializable = isPrimitive() || getTypes().contains(Serializable.class);
+      _serializable = Reflections.isSerializable(type);
    }
 
    /**

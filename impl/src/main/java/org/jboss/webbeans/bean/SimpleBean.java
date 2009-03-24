@@ -330,7 +330,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          throw new DefinitionException("Simple bean " + type + " cannot be a parameterized type");
       }
       boolean passivating = MetaDataCache.instance().getScopeModel(scopeType).isPassivating();
-      if (passivating && !Reflections.isSerializable(type))
+      if (passivating && !_serializable)
       {
          throw new DefinitionException("Simple bean declaring a passivating scope must have a serializable implementation class " + toString());
       }
@@ -507,24 +507,6 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       buffer.append(" ").append(getType().getName()).append(", ");
       buffer.append(" API types = ").append(Names.typesToString(getTypes())).append(", binding types = " + Names.annotationsToString(getBindings()));
       return buffer.toString();
-   }
-
-   /**
-    * Indicates if the bean is serializable
-    * 
-    * @return true If serializable, false otherwise
-    */
-   @Override
-   public boolean isSerializable()
-   {
-      if (isDependent())
-      {
-         return Reflections.isSerializable(getType());
-      }
-      else
-      {
-         return checkInjectionPointsAreSerializable();
-      }
    }
 
    @Override

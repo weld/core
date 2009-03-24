@@ -34,7 +34,6 @@ import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.util.Names;
 
 /**
@@ -228,18 +227,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       buffer.append("API types " + getTypes() + ", binding types " + getBindings());
       return buffer.toString();
    }
-   
-   @Override
-   public boolean isSerializable()
-   {
-      boolean passivatingScoped = MetaDataCache.instance().getScopeModel(scopeType).isPassivating();
-      if (passivatingScoped)
-      {
-         return checkInjectionPointsAreSerializable();
-      }
-      return true;
-   }
-   
+
    @Override
    public AbstractBean<?, ?> getSpecializedBean()
    {

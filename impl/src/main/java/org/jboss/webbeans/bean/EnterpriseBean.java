@@ -337,9 +337,9 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    }
 
    @Override
-   public boolean isSerializable()
+   protected void initSerializable()
    {
-      return checkInjectionPointsAreSerializable();
+      super._serializable = true;
    }
 
    public InternalEjbDescriptor<T> getEjbDescriptor()
