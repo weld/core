@@ -74,4 +74,13 @@ public class XmlEnvironment
       return serviceRegistry.get(ResourceLoader.class).getResource(filePath);
    }
    
+   public URL loadFileByUrn(String urn, String fileName)
+   {
+      char separator = '/';
+      String packageName = urn.replaceFirst(XmlConstants.URN_PREFIX, "");
+      String path = packageName.replace('.', separator);
+      String filePath = separator + path + separator + fileName;
+      return serviceRegistry.get(ResourceLoader.class).getResource(filePath);
+   }
+   
 }

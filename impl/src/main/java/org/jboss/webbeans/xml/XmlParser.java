@@ -14,7 +14,6 @@ import java.util.Set;
 
 import javax.inject.DefinitionException;
 import javax.inject.DeploymentException;
-import javax.inject.manager.Bean;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -219,7 +218,7 @@ public class XmlParser
    private void fullFillPackagesMap(Document document)
    {
       Element root = document.getRootElement();      
-      ParseXmlHelper.checkRootAttributes(root, packagesMap);
-      ParseXmlHelper.checkRootDeclaredNamespaces(root, packagesMap);
+      ParseXmlHelper.checkRootAttributes(root, packagesMap, environment);
+      ParseXmlHelper.checkRootDeclaredNamespaces(root, packagesMap, environment);
    }
 }

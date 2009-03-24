@@ -66,7 +66,7 @@ public class ParseXmlHelper
    {
    }
 
-   public static void checkRootAttributes(Element root, Map<String, Set<String>> packagesMap)
+   public static void checkRootAttributes(Element root, Map<String, Set<String>> packagesMap, XmlEnvironment environment)
    {
       Iterator<?> rootAttrIterator = root.attributeIterator();
       while (rootAttrIterator.hasNext())
@@ -82,14 +82,14 @@ public class ParseXmlHelper
             if (attrVal.startsWith(XmlConstants.URN_PREFIX))
             {
                urn = attrVal;
-               URL namespaceFile = loadFile(urn, XmlConstants.NAMESPACE_FILE_NAME);
+               URL namespaceFile = environment.loadFileByUrn(urn, XmlConstants.NAMESPACE_FILE_NAME);
                if (namespaceFile == null)
                   throw new DefinitionException("Could not find '" + XmlConstants.NAMESPACE_FILE_NAME + "' file according to specified URN '" + urn + "'");
                packagesSet.addAll(parseNamespaceFile(namespaceFile));
             }
             if (attribute.getName().equalsIgnoreCase(XmlConstants.SCHEMA_LOCATION) && attrVal.startsWith(XmlConstants.HTTP_PREFIX) && urn.trim().length() > 0)
             {
-               URL schemaFile = loadFile(urn, XmlConstants.SCHEMA_FILE_NAME);
+               URL schemaFile = environment.loadFileByUrn(urn, XmlConstants.SCHEMA_FILE_NAME);
                if (schemaFile == null)
                   throw new DefinitionException("Could not find '" + XmlConstants.SCHEMA_FILE_NAME + "' file according to specified URN '" + urn + "'");
             }
@@ -99,7 +99,7 @@ public class ParseXmlHelper
       }
    }
 
-   public static void checkRootDeclaredNamespaces(Element root, Map<String, Set<String>> packagesMap)
+   public static void checkRootDeclaredNamespaces(Element root, Map<String, Set<String>> packagesMap, XmlEnvironment environment)
    {
       Iterator<?> namespacesIterator = root.declaredNamespaces().iterator();
       while (namespacesIterator.hasNext())
@@ -111,7 +111,7 @@ public class ParseXmlHelper
          {
             Set<String> packagesSet = new HashSet<String>();
 
-            URL namespaceFile = loadFile(uri, XmlConstants.NAMESPACE_FILE_NAME);
+            URL namespaceFile = environment.loadFileByUrn(uri, XmlConstants.NAMESPACE_FILE_NAME);
             if (namespaceFile != null)
             {
                packagesSet.addAll(parseNamespaceFile(namespaceFile));
@@ -164,16 +164,6 @@ public class ParseXmlHelper
    {
       //TODO
       return false;
-   }
-
-   private static URL loadFile(String urn, String fileName)
-   {
-      char separator = '/';
-      String packageName = urn.replaceFirst(XmlConstants.URN_PREFIX, "");
-      String path = packageName.replace('.', separator);
-      String filePath = separator + path + separator + fileName;
-      URL namespaceFile = ParseXmlHelper.class.getResource(filePath);
-      return namespaceFile;
    }
 
    private static Set<String> parseNamespaceFile(URL namespaceFile)
