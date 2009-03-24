@@ -175,12 +175,12 @@ public class XmlParser
       List<Element> children = element.elements();
       for (Element child : children)
       {         
-         AnnotatedClass<? extends Annotation> deploymentClass = ParseXmlHelper.loadElementClass(child, Annotation.class, environment, packagesMap);
+         Class<? extends Annotation> deploymentClass = ParseXmlHelper.loadAnnotationClass(child, Annotation.class, environment, packagesMap);
          
 //         if(deploymentClass.getAnnotation(DeploymentType.class) == null)
 //            throw new DefinitionException("<Deploy> child <" + element.getName() + "> must be a deployment type");
                   
-         deploymentClasses.add(deploymentClass.getRawType());
+         deploymentClasses.add(deploymentClass);
       }
       haveAnyDeployElement = true;
       return deploymentClasses;

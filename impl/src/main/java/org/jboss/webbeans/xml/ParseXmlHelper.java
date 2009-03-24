@@ -1,6 +1,7 @@
 package org.jboss.webbeans.xml;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,6 +46,40 @@ public class ParseXmlHelper
                {
                   AnnotatedClass<? extends T> classType = environment.loadClass(classPath, expectedType);
                   classesList.add(classType);
+               }
+               catch (ResourceLoadingException e)
+               {
+               }
+            }
+         }
+      }
+
+      if (classesList.size() == 0)
+         throw new DefinitionException("Could not find '" + className + "'");
+
+      if (classesList.size() == 1)
+         return classesList.get(0);
+
+      throw new DefinitionException("There are multiple packages containing a Java type with the same name '" + className + "'");
+   }
+   
+   public static <T extends Annotation> Class<? extends T> loadAnnotationClass(Element element, Class<T> expectedType, XmlEnvironment environment, Map<String, Set<String>> packagesMap)
+   {
+      List<Class<? extends T>> classesList = new ArrayList<Class<? extends T>>();
+      String className = element.getName();
+      String prefix = element.getNamespacePrefix();
+
+      for (Map.Entry<String, Set<String>> packagesEntry : packagesMap.entrySet())
+      {
+         if (prefix.equalsIgnoreCase(packagesEntry.getKey()))
+         {
+            Set<String> packages = packagesEntry.getValue();
+            for (String packageName : packages)
+            {
+               String classPath = packageName + "." + element.getName();
+               try
+               {
+                  classesList.add(environment.loadAnnotation(classPath, expectedType));
                }
                catch (ResourceLoadingException e)
                {
