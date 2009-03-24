@@ -7,8 +7,12 @@ public class XmlConstants
    public static final String DEPLOY = "Deploy";
 
    public static final String INTERCEPTORS = "Interceptors";
+   
+   public static final String INTERCEPTOR = "Interceptor";
 
    public static final String DECORATORS = "Decorators";
+   
+   public static final String DECORATOR = "Decorator";
 
    public static final String BINDING_TYPE = "BindingType";
 

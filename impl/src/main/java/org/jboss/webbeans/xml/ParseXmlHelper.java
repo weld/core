@@ -2,6 +2,7 @@ package org.jboss.webbeans.xml;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,6 +20,10 @@ import org.dom4j.Namespace;
 import org.dom4j.QName;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.MethodSignature;
+import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
+import org.jboss.webbeans.introspector.jlr.MethodSignatureImpl;
 import org.jboss.webbeans.resources.spi.ResourceLoadingException;
 
 public class ParseXmlHelper
@@ -83,13 +88,18 @@ public class ParseXmlHelper
                }
                catch (ResourceLoadingException e)
                {
+                  //work with this when 'classesList.size() == 0'
+               }
+               catch (ClassCastException e)
+               {
+                  throw new DefinitionException("<Deploy> child <" + element.getName() + "> must be a Java annotation type");
                }
             }
          }
       }
 
       if (classesList.size() == 0)
-         throw new DefinitionException("Could not find '" + className + "'");
+         throw new DefinitionException("Could not find '" + className + "' for bean <");
 
       if (classesList.size() == 1)
          return classesList.get(0);
@@ -197,7 +207,7 @@ public class ParseXmlHelper
    
    public static boolean isMethod(Element element, AnnotatedClass<?> beanClass, AnnotatedClass<?> expectedType)
    {
-      //TODO
+      //TODO      
       return false;
    }
 
@@ -241,14 +251,4 @@ public class ParseXmlHelper
          packagesMap.put(prefix, packagesSet);
       }
    }
-   
-   /*private static URL loadFile(String urn, String fileName)
-   {
-      char separator = '/';
-      String packageName = urn.replaceFirst(XmlConstants.URN_PREFIX, "");
-      String path = packageName.replace('.', separator);
-      String filePath = separator + path + separator + fileName;
-      URL namespaceFile = ParseXmlHelper.class.getResource(filePath);
-      return namespaceFile;
-   }*/
 }

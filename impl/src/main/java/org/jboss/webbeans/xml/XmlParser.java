@@ -14,6 +14,7 @@ import java.util.Set;
 
 import javax.inject.DefinitionException;
 import javax.inject.DeploymentException;
+import javax.inject.DeploymentType;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -177,8 +178,8 @@ public class XmlParser
       {         
          Class<? extends Annotation> deploymentClass = ParseXmlHelper.loadAnnotationClass(child, Annotation.class, environment, packagesMap);
          
-//         if(deploymentClass.getAnnotation(DeploymentType.class) == null)
-//            throw new DefinitionException("<Deploy> child <" + element.getName() + "> must be a deployment type");
+         if(!deploymentClass.isAnnotationPresent(DeploymentType.class))
+            throw new DefinitionException("<Deploy> child <" + child.getName() + "> must be a deployment type");
                   
          deploymentClasses.add(deploymentClass);
       }
@@ -187,7 +188,7 @@ public class XmlParser
    }
    
    public void checkProduces(Element beanElement, AnnotatedClass<?> beanClass)
-   {
+   {//TODO
       Iterator<?> childIterator = beanElement.elementIterator();
       while(childIterator.hasNext())
       {
@@ -211,7 +212,7 @@ public class XmlParser
          if(ParseXmlHelper.isMethod(producesElement, beanClass, beanClass))
          {}
          
-         throw new DefinitionException("A producer doesn't declared in class file as method or field");
+//         throw new DefinitionException("A producer doesn't declared in class file as method or field");
       }                  
    }
    
