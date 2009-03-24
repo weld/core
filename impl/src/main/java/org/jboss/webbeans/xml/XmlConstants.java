@@ -49,4 +49,6 @@ public class XmlConstants
    public static final String SCHEMA_FILE_NAME = "schema.xsd";
    
    public static final String NAMESPACE_FILE_DELIMETER = " ";
+   
+   public static final String PRODUCES = "Produces";
 }

@@ -14,12 +14,11 @@ import java.util.Set;
 
 import javax.inject.DefinitionException;
 import javax.inject.DeploymentException;
+import javax.inject.manager.Bean;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
-import org.dom4j.Namespace;
-import org.dom4j.QName;
 import org.dom4j.io.SAXReader;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.log.Log;
@@ -61,6 +60,7 @@ public class XmlParser
       for (Element beanElement : beanElements)
       {
          AnnotatedClass<?> beanClass = ParseXmlHelper.loadElementClass(beanElement, Object.class, environment, packagesMap);
+         checkProduces(beanElement, beanClass);
          beanClasses.add(beanClass);
       }
       
@@ -168,13 +168,8 @@ public class XmlParser
       if(deployElements.size() - deployElementsSet.size() != 0)
          throw new DefinitionException("The same deployment type is declared more than once");
             
-      String standardName = XmlConstants.STANDARD;
-      String standardPrefix = "";
-      String standardUri = XmlConstants.JAVA_EE_NAMESPACE;
-      Namespace standardNamespace = new Namespace(standardPrefix, standardUri);
-      QName qName = new QName(standardName, standardNamespace);
-      Element standardElement = element.element(qName);      
-      if (standardElement == null)
+      List<Element> standardElements = ParseXmlHelper.findElementsInEeNamespace(element, XmlConstants.STANDARD);
+      if (standardElements.size() == 0)
          throw new DeploymentException("The @Standard deployment type must be declared");      
       
       List<Class<? extends Annotation>> deploymentClasses = new ArrayList<Class<? extends Annotation>>();
@@ -190,6 +185,35 @@ public class XmlParser
       }
       haveAnyDeployElement = true;
       return deploymentClasses;
+   }
+   
+   public void checkProduces(Element beanElement, AnnotatedClass<?> beanClass)
+   {
+      Iterator<?> childIterator = beanElement.elementIterator();
+      while(childIterator.hasNext())
+      {
+         Element beanChild = (Element)childIterator.next();  
+         List<Element> producesElements = ParseXmlHelper.findElementsInEeNamespace(beanChild, XmlConstants.PRODUCES);
+         
+         if(producesElements.size() == 0)
+            continue;
+         
+         if(producesElements.size() > 1)
+            throw new DefinitionException("There is more than one child <Produces> element for <" + beanChild.getName()  + "> element");
+         
+         Element producesElement = producesElements.get(0);
+         
+         if(ParseXmlHelper.isField(producesElement, beanClass, beanClass))
+         {
+            if(beanChild.elements().size() > 1)
+               throw new DefinitionException("There is more than one direct child element for producer field <" + beanChild.getName() + ">");
+         }
+         
+         if(ParseXmlHelper.isMethod(producesElement, beanClass, beanClass))
+         {}
+         
+         throw new DefinitionException("A producer doesn't declared in class file as method or field");
+      }                  
    }
    
    private void fullFillPackagesMap(Document document)
