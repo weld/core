@@ -11,9 +11,8 @@ public class MockExampleTest extends AbstractWebBeansTest
 {
    
    @Test
-   public void testMockSentenceTranslator() throws Exception {
-      
-      //manager.setEnabledDeploymentTypes(Arrays.asList(Standard.class, Production.class, Mock.class));
+   public void testMockSentenceTranslator() throws Exception 
+   {   
       
       new RunInDependentContext()
       {
