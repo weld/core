@@ -71,10 +71,8 @@ import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.NonContextualInjector;
 import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
 import org.jboss.webbeans.injection.resolution.Resolver;
-import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.util.Beans;
@@ -244,7 +242,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
    @SuppressWarnings("unchecked")
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
    {
-      AnnotatedClass<T> element = AnnotatedClassImpl.of((Class<T>) event.getClass());
+      Class<?> clazz = event.getClass();
       for (Annotation annotation : bindings)
       {
          if (!MetaDataCache.instance().getBindingTypeModel(annotation.annotationType()).isValid())
@@ -257,15 +255,15 @@ public class ManagerImpl implements WebBeansManager, Serializable
       {
          throw new DuplicateBindingTypeException("Duplicate binding types: " + bindings);
       }
-      for (Type type : element.getActualTypeArguments())
+      for (Type type : Reflections.getActualTypeArguments(clazz))
       {
          if (type instanceof WildcardType)
          {
-            throw new IllegalArgumentException("Cannot resolve an event type parameterized with a wildcard " + element);
+            throw new IllegalArgumentException("Cannot resolve an event type parameterized with a wildcard " + clazz);
          }
          if (type instanceof TypeVariable)
          {
-            throw new IllegalArgumentException("Cannot resolve an event type parameterized with a type parameter " + element);
+            throw new IllegalArgumentException("Cannot resolve an event type parameterized with a type parameter " + clazz);
          }
       }
       return eventManager.getObservers(event, bindings);
