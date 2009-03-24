@@ -101,9 +101,12 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       this.manager = new ManagerImpl(ServiceRegistries.unmodifiableServiceRegistry(getServices()));
       try
       {
-         getServices().get(NamingContext.class).lookup(ManagerImpl.JNDI_KEY, Manager.class);
+         getServices().get(NamingContext.class).unbind(ManagerImpl.JNDI_KEY);
       }
       catch (ExecutionException e)
+      {
+      }
+      finally
       {
          getServices().get(NamingContext.class).bind(ManagerImpl.JNDI_KEY, getManager());
       }

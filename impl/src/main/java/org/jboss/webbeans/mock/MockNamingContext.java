@@ -32,6 +32,14 @@ public class MockNamingContext extends AbstractNamingContext
       }
    }
 
+   public void unbind(String key)
+   {
+      if (context != null)
+      {
+         super.unbind(key);
+      }
+   }
+
    public <T> T lookup(String name, Class<? extends T> expectedType)
    {
       if (context != null)
