@@ -18,6 +18,7 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +31,8 @@ import javax.event.Observer;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
+import org.jboss.webbeans.util.Reflections.HierarchyDiscovery;
 import org.jboss.webbeans.util.collections.ForwardingMap;
 
 /**
@@ -47,18 +48,18 @@ public class EventManager
    /**
     * An event type -> observer list map
     */
-   private class RegisteredObserversMap extends ForwardingMap<Class<?>, List<EventObserver<?>>>
+   private class RegisteredObserversMap extends ForwardingMap<Type, List<EventObserver<?>>>
    {
 
       // The map delegate
-      private ConcurrentHashMap<Class<?>, List<EventObserver<?>>> delegate;
+      private ConcurrentHashMap<Type, List<EventObserver<?>>> delegate;
 
       /**
        * Constructor. Initializes the delegate
        */
       public RegisteredObserversMap()
       {
-         delegate = new ConcurrentHashMap<Class<?>, List<EventObserver<?>>>();
+         delegate = new ConcurrentHashMap<Type, List<EventObserver<?>>>();
       }
 
       /**
@@ -67,7 +68,7 @@ public class EventManager
        * @return The delegate
        */
       @Override
-      protected Map<Class<?>, List<EventObserver<?>>> delegate()
+      protected Map<Type, List<EventObserver<?>>> delegate()
       {
          return delegate;
       }
@@ -160,9 +161,10 @@ public class EventManager
    public <T> Set<Observer<T>> getObservers(T event, Annotation... bindings)
    {
       Set<Observer<T>> interestedObservers = new HashSet<Observer<T>>();
-      for (Class<?> clazz : Reflections.getTypeHierachy(event.getClass()))
+      Set<Type> types = new HierarchyDiscovery<Type>(event.getClass()).getFlattenedTypes();
+      for (Type type : types)
       {
-         for (EventObserver<?> observer : registeredObservers.get(clazz))
+         for (EventObserver<?> observer : registeredObservers.get(type))
          {
             log.debug("Checking observer " + observer + " to see if it is interested in event [" + event + "]");
             if (observer.isObserverInterested(bindings))

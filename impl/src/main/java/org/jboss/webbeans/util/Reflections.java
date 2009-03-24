@@ -28,12 +28,15 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.BindingType;
 import javax.inject.ExecutionException;
+
+import org.jboss.webbeans.util.reflection.ParameterizedTypeImpl;
 
 
 /**
@@ -96,11 +99,98 @@ public class Reflections
       @SuppressWarnings("unchecked")
       private void discoverFromClass(Class<?> clazz)
       {
-         discoverTypes((T) clazz.getSuperclass());
-         for (Class<?> c : clazz.getInterfaces())
+         discoverTypes((T) resolveType(type, clazz.getGenericSuperclass()));
+         for (Type c : clazz.getGenericInterfaces())
          {
-            discoverTypes((T) c);
+            discoverTypes((T) resolveType(type, c));
          }
+      }
+      
+      /**
+       * Gets the actual types by resolving TypeParameters.
+       * 
+       * @param beanType
+       * @param type
+       * @return actual type
+       */
+      private Type resolveType(Type beanType, Type type)
+      {
+         if (type instanceof ParameterizedType)
+         {
+            if (beanType instanceof ParameterizedType)
+            {
+               return resolveParameterizedType((ParameterizedType) beanType, (ParameterizedType) type);
+            }
+            if (beanType instanceof Class)
+            {
+               return resolveType(((Class<?>) beanType).getGenericSuperclass(), (ParameterizedType) type);
+            }
+         }
+
+         if (type instanceof TypeVariable)
+         {
+            if (beanType instanceof ParameterizedType)
+            {
+               return resolveTypeParameter((ParameterizedType) beanType, (TypeVariable<?>) type);
+            }
+            if (beanType instanceof Class)
+            {
+               return resolveType(((Class<?>) beanType).getGenericSuperclass(), (TypeVariable<?>) type);
+            }
+         }
+         return type;
+      }
+      
+      private Type resolveParameterizedType(ParameterizedType beanType, ParameterizedType parameterizedType)
+      {
+         Type rawType = parameterizedType.getRawType();
+         Type[] actualTypes = parameterizedType.getActualTypeArguments();
+
+         Type resolvedRawType = resolveType(beanType, rawType);
+         Type[] resolvedActualTypes = new Type[actualTypes.length];
+
+         for (int i = 0; i < actualTypes.length; i++)
+         {
+            resolvedActualTypes[i] = resolveType(beanType, actualTypes[i]);
+         }
+         // reconstruct ParameterizedType by types resolved TypeVariable.
+         return new ParameterizedTypeImpl(resolvedRawType, resolvedActualTypes, parameterizedType.getOwnerType());
+      }
+
+      private Type resolveTypeParameter(ParameterizedType beanType, TypeVariable<?> typeVariable)
+      {
+         // step1. raw type
+         Class<?> actualType = (Class<?>) beanType.getRawType();
+         TypeVariable<?>[] typeVariables = actualType.getTypeParameters();
+         Type[] actualTypes = beanType.getActualTypeArguments();
+         for (int i = 0; i < typeVariables.length; i++)
+         {
+            if (typeVariables[i].equals(typeVariable))
+            {
+               return resolveType(type, actualTypes[i]);
+            }
+         }
+         
+         // step2. generic super class
+         Type genericSuperType = actualType.getGenericSuperclass();
+         Type type = resolveType(genericSuperType, typeVariable);
+         if (!(type instanceof TypeVariable<?>))
+         {
+            return type;
+         }
+         
+         // step3. generic interfaces
+         for (Type interfaceType : actualType.getGenericInterfaces())
+         {
+            Type resolvedType = resolveType(interfaceType, typeVariable);
+            if (!(resolvedType instanceof TypeVariable<?>))
+            {
+               return resolvedType;
+            }
+         }
+         
+         // don't resolve type variable
+         return typeVariable;
       }
       
    }
