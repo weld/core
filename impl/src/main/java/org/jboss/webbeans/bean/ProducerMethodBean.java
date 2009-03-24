@@ -19,6 +19,7 @@ package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.context.CreationalContext;
@@ -128,6 +129,31 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       else if (getAnnotatedItem().getAnnotatedParameters(Disposes.class).size() > 0)
       {
          throw new DefinitionException("Producer method cannot have parameter annotated @Disposes");
+      }
+      else if (declaringBean instanceof EnterpriseBean)
+      {
+         boolean methodDeclaredOnTypes = false;
+         // TODO use annotated item?
+         for (Type type : declaringBean.getTypes())
+         {
+            if (type instanceof Class)
+            {
+               Class<?> clazz = (Class<?>) type;
+               try
+               {
+                  clazz.getDeclaredMethod(getAnnotatedItem().getName(), getAnnotatedItem().getParameterTypesAsArray());
+                  methodDeclaredOnTypes = true;
+               }
+               catch (NoSuchMethodException nsme) 
+               {
+                  // No - op
+               }
+            }
+         }
+         if (!methodDeclaredOnTypes)
+         {
+            throw new DefinitionException("Producer method " + toString() + " must be declared on a business interface of " + declaringBean);
+         }
       }
    }
    
