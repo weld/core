@@ -118,12 +118,15 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    @Override
    public void initialize(BeanDeployerEnvironment environment)
    {
-      super.initialize(environment);
-      initProxyClass();
-      initInjectionPoints();
-      checkEJBTypeAllowed();
-      checkConflictingRoles();
-      checkObserverMethods();
+      if (!isInitialized())
+      {
+         super.initialize(environment);
+         initProxyClass();
+         initInjectionPoints();
+         checkEJBTypeAllowed();
+         checkConflictingRoles();
+         checkObserverMethods();
+      }
    }
 
    protected void initTypes()
@@ -198,17 +201,18 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    @Override
    protected void specialize(BeanDeployerEnvironment environment)
    {
-      if (!environment.getClassBeanMap().containsKey(getAnnotatedItem().getSuperclass()))
+      if (environment.getClassBean(getAnnotatedItem().getSuperclass()) == null)
       {
          throw new IllegalStateException(toString() + " does not specialize a bean");
       }
-      else if (!(environment.getClassBeanMap().get(getAnnotatedItem().getSuperclass()) instanceof EnterpriseBean))
+      AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getSuperclass());
+      if (!(specializedBean instanceof EnterpriseBean))
       {
-         throw new IllegalStateException(toString() + " doesn't have a session bean as a superclass " + environment.getClassBeanMap().get(getAnnotatedItem().getSuperclass()));
+         throw new IllegalStateException(toString() + " doesn't have a session bean as a superclass " + specializedBean);
       }
       else
       {
-         this.specializedBean = (EnterpriseBean<?>) environment.getClassBeanMap().get(getAnnotatedItem().getSuperclass()); 
+         this.specializedBean = (EnterpriseBean<?>) specializedBean; 
       }
    }
 

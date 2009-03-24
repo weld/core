@@ -28,4 +28,11 @@ public interface AnnotatedMember<T, S extends Member> extends AnnotatedItem<T, S
    
    public S getMember();
    
+   /**
+    * Gets an abstraction of the declaring class
+    * 
+    * @return The declaring class
+    */
+   public AnnotatedType<?> getDeclaringClass();
+   
 }

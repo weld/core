@@ -20,6 +20,7 @@ package org.jboss.webbeans.bean;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -41,6 +42,7 @@ import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentStorageRequest;
+import org.jboss.webbeans.introspector.AnnotatedMember;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.MetaDataCache;
@@ -56,7 +58,7 @@ import org.jboss.webbeans.util.Reflections;
  * @param <T>
  * @param <S>
  */
-public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
+public abstract class AbstractProducerBean<T, S extends Member> extends AbstractBean<T, S>
 {
    // The declaring bean
    protected AbstractClassBean<?> declaringBean;
@@ -74,6 +76,8 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       super(manager);
       this.declaringBean = declaringBean;
    }
+   
+   protected abstract AnnotatedMember<T, S> getAnnotatedItem();
 
    /**
     * Gets the deployment types
@@ -177,6 +181,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
    @Override
    public void initialize(BeanDeployerEnvironment environment)
    {
+      declaringBean.initialize(environment);
       super.initialize(environment);
       checkProducerReturnType();
    }
@@ -382,7 +387,7 @@ public abstract class AbstractProducerBean<T, S> extends AbstractBean<T, S>
       if (other instanceof AbstractProducerBean)
       {
          AbstractProducerBean<?, ?> that = (AbstractProducerBean<?, ?>) other;
-         return super.equals(other) && this.getDeclaringBean().equals(that.getDeclaringBean());
+         return super.equals(other) && this.getAnnotatedItem().getDeclaringClass().equals(that.getAnnotatedItem().getDeclaringClass());
       }
       else
       {

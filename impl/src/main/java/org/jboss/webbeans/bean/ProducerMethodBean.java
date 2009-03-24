@@ -47,17 +47,20 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
 {
    // The underlying method
    private MethodInjectionPoint<T> method;
-
+   
    private AnnotatedMethod<?> disposalMethod;
    
    private ProducerMethodBean<?> specializedBean;
-
+   
    /**
     * Creates a producer method Web Bean
     * 
-    * @param method The underlying method abstraction
-    * @param declaringBean The declaring bean abstraction
-    * @param manager the current manager
+    * @param method
+    *           The underlying method abstraction
+    * @param declaringBean
+    *           The declaring bean abstraction
+    * @param manager
+    *           the current manager
     * @return A producer Web Bean
     */
    public static <T> ProducerMethodBean<T> of(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
@@ -73,7 +76,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       initTypes();
       initBindings();
    }
-
+   
    protected T produceInstance(CreationalContext<T> creationalContext)
    {
       Object receiver = getReceiver(creationalContext);
@@ -86,19 +89,22 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          return method.invoke(receiver, manager, creationalContext, CreationException.class);
       }
    }
-
+   
    /**
     * Initializes the bean and its metadata
     */
    @Override
    public void initialize(BeanDeployerEnvironment environment)
    {
-      super.initialize(environment);
-      checkProducerMethod();
-      //initDisposalMethod();
-      initInjectionPoints();
+      if (!isInitialized())
+      {
+         super.initialize(environment);
+         checkProducerMethod();
+         // initDisposalMethod();
+         initInjectionPoints();
+      }
    }
-
+   
    /**
     * Initializes the injection points
     */
@@ -109,7 +115,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          injectionPoints.add(ParameterInjectionPoint.of(this, parameter));
       }
    }
-
+   
    /**
     * Validates the producer method
     */
@@ -124,7 +130,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          throw new DefinitionException("Producer method cannot have parameter annotated @Disposes");
       }
    }
-
+   
    /**
     * Initializes the remove method
     */
@@ -141,7 +147,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          throw new DefinitionException("Cannot declare multiple disposal methods for this producer method");
       }
    }
-
+   
    /**
     * Gets the annotated item representing the method
     * 
@@ -152,7 +158,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       return method;
    }
-
+   
    /**
     * Returns the default name
     * 
@@ -163,7 +169,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       return method.getPropertyName();
    }
-
+   
    /**
     * Returns the disposal method
     * 
@@ -173,7 +179,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       return disposalMethod;
    }
-
+   
    /**
     * Gets a string representation
     * 
@@ -196,7 +202,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       buffer.append("API types " + getTypes() + ", binding types " + getBindings());
       return buffer.toString();
    }
-
+   
    @Override
    public boolean isSerializable()
    {
@@ -227,11 +233,11 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    protected void specialize(BeanDeployerEnvironment environment)
    {
       AnnotatedMethod<?> superClassMethod = declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod());
-      if (!environment.getMethodBeanMap().containsKey(superClassMethod))
+      if (environment.getProducerMethod(superClassMethod) == null)
       {
          throw new IllegalStateException(toString() + " does not specialize a bean");
       }
-      this.specializedBean = environment.getMethodBeanMap().get(superClassMethod);
+      this.specializedBean = environment.getProducerMethod(superClassMethod);
    }
-
+   
 }

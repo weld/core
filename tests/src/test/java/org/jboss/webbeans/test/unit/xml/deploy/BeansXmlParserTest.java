@@ -7,6 +7,7 @@ import javax.inject.Production;
 import javax.inject.Standard;
 
 import org.jboss.testharness.impl.packaging.Artifact;
+import org.jboss.testharness.impl.packaging.Classes;
 import org.jboss.testharness.impl.packaging.Resource;
 import org.jboss.testharness.impl.packaging.Resources;
 import org.jboss.webbeans.mock.MockResourceLoader;
@@ -23,6 +24,7 @@ import org.testng.annotations.Test;
    @Resource(destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/deploy/duplicate-deployments-beans.xml", source="/org/jboss/webbeans/test/unit/xml/deploy/duplicate-deployments-beans.xml"),
    @Resource(destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/deploy/user-defined-beans.xml", source="/org/jboss/webbeans/test/unit/xml/deploy/user-defined-beans.xml")
 })
+@Classes(packages="org.jboss.webbeans.test.unit.xml.beans")
 public class BeansXmlParserTest extends AbstractWebBeansTest
 {
    

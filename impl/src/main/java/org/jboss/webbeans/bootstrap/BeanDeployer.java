@@ -1,9 +1,9 @@
 package org.jboss.webbeans.bootstrap;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.event.Observes;
 import javax.inject.BindingType;
@@ -76,6 +76,12 @@ public class BeanDeployer
       return this;
    }
    
+   public BeanDeployer addClasses(Collection<AnnotatedClass<?>> classes)
+   {
+      classes.addAll(classes);
+      return this;
+   }
+   
    public BeanDeployer createBeans()
    {
       for (AnnotatedClass<?> clazz : classes)
@@ -94,8 +100,7 @@ public class BeanDeployer
    
    public BeanDeployer deploy()
    {
-      Set<RIBean<?>> beans = new TreeSet<RIBean<?>>(new BootstrapOrderingBeanComparator());
-      beans.addAll(beanDeployerEnvironment.getBeans());
+      Set<RIBean<?>> beans = beanDeployerEnvironment.getBeans();
       for (RIBean<?> bean : beans)
       {
          bean.initialize(beanDeployerEnvironment);

@@ -116,6 +116,13 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    protected ManagerImpl manager;
 
    protected boolean _serializable;
+   
+   private boolean initialized;
+   
+   protected boolean isInitialized()
+   {
+      return initialized;
+   }
 
    /**
     * Constructor

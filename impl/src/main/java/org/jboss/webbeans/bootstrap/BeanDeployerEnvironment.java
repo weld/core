@@ -37,18 +37,37 @@ public class BeanDeployerEnvironment
       this.observers = new HashSet<ObserverImpl<?>>();
    }
    
-   public Map<AnnotatedClass<?>, AbstractClassBean<?>> getClassBeanMap()
+   public ProducerMethodBean<?> getProducerMethod(AnnotatedMethod<?> method)
    {
-      return Collections.unmodifiableMap(classBeanMap);
+      if (!methodBeanMap.containsKey(method))
+      {
+         return null;
+      }
+      else
+      {
+         ProducerMethodBean<?> bean = methodBeanMap.get(method);
+         bean.initialize(this);
+         return bean;
+      }
    }
    
-   public Map<AnnotatedMethod<?>, ProducerMethodBean<?>> getMethodBeanMap()
+   public AbstractClassBean<?> getClassBean(AnnotatedClass<?> clazz)
    {
-      return Collections.unmodifiableMap(methodBeanMap);
+      if (!classBeanMap.containsKey(clazz))
+      {
+         return null;
+      }
+      else
+      {
+         AbstractClassBean<?> bean = classBeanMap.get(clazz);
+         bean.initialize(this);
+         return bean;
+      }
    }
    
    public void addBean(RIBean<?> value)
    {
+      
       if (value instanceof AbstractClassBean && !(value instanceof NewBean))
       {
          AbstractClassBean<?> bean = (AbstractClassBean<?>) value;

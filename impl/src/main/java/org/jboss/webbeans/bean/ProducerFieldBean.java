@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import javax.context.CreationalContext;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.util.Names;
 
@@ -64,6 +65,15 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
       initType();
       initTypes();
       initBindings();
+   }
+   
+   @Override
+   public void initialize(BeanDeployerEnvironment environment)
+   {
+      if (!isInitialized())
+      {
+         super.initialize(environment);
+      }
    }
 
 

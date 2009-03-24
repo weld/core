@@ -18,6 +18,7 @@
 package org.jboss.webbeans.bootstrap;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.List;
 
 import javax.inject.ExecutionException;
@@ -48,6 +49,7 @@ import org.jboss.webbeans.conversation.NumericConversationIdGenerator;
 import org.jboss.webbeans.conversation.ServletConversationManager;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.spi.EjbServices;
+import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.jsf.JSFApiAbstraction;
 import org.jboss.webbeans.literal.DeployedLiteral;
 import org.jboss.webbeans.literal.InitializedLiteral;
@@ -128,10 +130,11 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
     * 
     * @param classes The classes to register as Web Beans
     */
-   protected void registerBeans(Iterable<Class<?>> classes)
+   protected void registerBeans(Iterable<Class<?>> classes, Collection<AnnotatedClass<?>> xmlClasses)
    {
       BeanDeployer beanDeployer = new BeanDeployer(manager);
       beanDeployer.addClasses(classes);
+      beanDeployer.addClasses(xmlClasses);
       beanDeployer.addBean(ManagerBean.of(manager));
       beanDeployer.addBean(InjectionPointBean.of(manager));
       beanDeployer.addBean(EventBean.of(manager));
@@ -178,7 +181,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
             manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
          }
          log.info("Deployment types: " + manager.getEnabledDeploymentTypes());
-         registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses());
+         registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses(), xmlEnvironmentImpl.getClasses());
          manager.fireEvent(manager, new InitializedLiteral());
          log.info("Web Beans initialized. Validating beans.");
          manager.getResolver().resolveInjectionPoints();

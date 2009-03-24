@@ -286,17 +286,20 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    @Override
    public void initialize(BeanDeployerEnvironment environment)
    {
-      super.initialize(environment);
-      initConstructor();
-      checkType();
-      initInjectionPoints();
-      initPostConstruct();
-      initPreDestroy();
-      if (getManager().getServices().contains(EjbServices.class))
+      if (!isInitialized())
       {
-         initEjbInjectionPoints();
-         initPersistenceUnitInjectionPoints();
-         initResourceInjectionPoints();
+         super.initialize(environment);
+         initConstructor();
+         checkType();
+         initInjectionPoints();
+         initPostConstruct();
+         initPreDestroy();
+         if (getManager().getServices().contains(EjbServices.class))
+         {
+            initEjbInjectionPoints();
+            initPersistenceUnitInjectionPoints();
+            initResourceInjectionPoints();
+         }
       }
    }
 
@@ -362,19 +365,21 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    @Override
    protected void specialize(BeanDeployerEnvironment environment)
    {
-      if (!environment.getClassBeanMap().containsKey(getAnnotatedItem().getSuperclass()))
+      if (environment.getClassBean(getAnnotatedItem().getSuperclass()) == null)
       {
          throw new IllegalStateException(toString() + " does not specialize a bean");
       }
-      else if (!(environment.getClassBeanMap().get(getAnnotatedItem().getSuperclass()) instanceof SimpleBean))
+      AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getSuperclass());
+      if (!(specializedBean instanceof SimpleBean))
       {
-         throw new IllegalStateException(toString() + " doesn't have a simple bean as a superclass " + environment.getClassBeanMap().get(getAnnotatedItem().getSuperclass()));
+         throw new IllegalStateException(toString() + " doesn't have a simple bean as a superclass " + specializedBean);
       }
       else
       {
-         this.specializedBean = (SimpleBean<?>) environment.getClassBeanMap().get(getAnnotatedItem().getSuperclass()); 
+         this.specializedBean = (SimpleBean<?>) specializedBean;
       }
    }
+
 
    /**
     * Initializes the constructor
