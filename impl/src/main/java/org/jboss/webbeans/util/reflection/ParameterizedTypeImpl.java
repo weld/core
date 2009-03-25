@@ -35,42 +35,28 @@ public class ParameterizedTypeImpl implements ParameterizedType
    @Override
    public int hashCode()
    {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + Arrays.hashCode(actualTypeArguments);
-      result = prime * result + ((ownerType == null) ? 0 : ownerType.hashCode());
-      result = prime * result + ((rawType == null) ? 0 : rawType.hashCode());
-      return result;
+      return Arrays.hashCode(actualTypeArguments) ^ (ownerType == null ? 0 : ownerType.hashCode()) ^ (rawType == null ? 0 : rawType.hashCode());
    }
 
    @Override
    public boolean equals(Object obj)
    {
       if (this == obj)
+      {
          return true;
-      if (obj == null)
+      }
+      else if (obj instanceof ParameterizedType)
+      {
+         ParameterizedType that = (ParameterizedType) obj;
+         Type thatOwnerType = that.getOwnerType();
+         Type thatRawType = that.getRawType();
+         return (ownerType == null ? thatOwnerType == null : ownerType.equals(thatOwnerType)) && (rawType == null ? thatRawType == null : rawType.equals(thatRawType)) && Arrays.equals(actualTypeArguments, that.getActualTypeArguments());
+      }
+      else
+      {
          return false;
-      if (!(obj instanceof ParameterizedType))
-         return false;
+      }
       
-      final ParameterizedType other = (ParameterizedType) obj;
-      if (!Arrays.equals(actualTypeArguments, other.getActualTypeArguments()))
-         return false;
-      if (ownerType == null)
-      {
-         if (other.getOwnerType() != null)
-            return false;
-      }
-      else if (!ownerType.equals(other.getOwnerType()))
-         return false;
-      if (rawType == null)
-      {
-         if (other.getRawType() != null)
-            return false;
-      }
-      else if (!rawType.equals(other.getRawType()))
-         return false;
-      return true;
    }
 
    public String toString()

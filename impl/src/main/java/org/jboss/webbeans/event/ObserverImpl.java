@@ -18,6 +18,9 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.List;
 
 import javax.context.Dependent;
@@ -59,7 +62,7 @@ public class ObserverImpl<T> implements Observer<T>
    private final boolean conditional;
    private final boolean asynchronous;
    protected ManagerImpl manager;
-   private final Class<T> eventType;
+   private final Type eventType;
    private final Annotation[] bindings;
 
    /**
@@ -75,11 +78,7 @@ public class ObserverImpl<T> implements Observer<T>
       this.manager = manager;
       this.observerBean = observerBean;
       this.observerMethod = MethodInjectionPoint.of(observerBean, observer);
-      
-
-      @SuppressWarnings("unchecked")
-      Class<T> c = (Class<T>) observerMethod.getAnnotatedParameters(Observes.class).get(0).getRawType();
-      this.eventType = c;
+      this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getType();
 
       this.bindings = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingsAsArray();
       this.conditional = !observerMethod.getAnnotatedParameters(IfExists.class).isEmpty();
@@ -116,7 +115,17 @@ public class ObserverImpl<T> implements Observer<T>
          AnnotatedParameter<?> eventParam = eventObjects.iterator().next();
          if (eventParam.isParameterizedType())
          {
-            throw new DefinitionException(this + " cannot observe parameterized event types");
+            for (Type type : eventParam.getActualTypeArguments())
+            {
+               if (type instanceof TypeVariable)
+               {
+                  throw new DefinitionException("Cannot use a type variable " + type + " in an parameterized type " + toString());
+               }
+               else if (type instanceof WildcardType)
+               {
+                  throw new DefinitionException("Cannot use a wildcard variable " + type + " in an parameterized type " + toString());
+               }
+            }
          }
       }
       // Check for parameters annotated with @Disposes
@@ -218,7 +227,7 @@ public class ObserverImpl<T> implements Observer<T>
       return builder.toString();
    }
 
-   public Class<T> getEventType()
+   public Type getEventType()
    {
       return eventType;
    }

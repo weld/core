@@ -96,7 +96,7 @@ public class EventManager
        * @param eventType The event type
        * @param observer The observer to add
        */
-      public void put(Class<?> eventType, EventObserver<?> observer)
+      public void put(Type eventType, EventObserver<?> observer)
       {
          List<EventObserver<?>> observers = super.get(eventType);
          if (observers == null)
@@ -142,7 +142,7 @@ public class EventManager
     * @param eventType The event type the observer is interested in
     * @param bindings The bindings the observer wants to filter on
     */
-   public <T> void addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
+   public <T> void addObserver(Observer<T> observer, Type eventType, Annotation... bindings)
    {
       EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, bindings);
       registeredObservers.put(eventType, eventObserver);
@@ -161,7 +161,7 @@ public class EventManager
    public <T> Set<Observer<T>> getObservers(T event, Annotation... bindings)
    {
       Set<Observer<T>> interestedObservers = new HashSet<Observer<T>>();
-      Set<Type> types = new HierarchyDiscovery<Type>(event.getClass()).getFlattenedTypes();
+      Set<Type> types = new HierarchyDiscovery(event.getClass()).getFlattenedTypes();
       for (Type type : types)
       {
          for (EventObserver<?> observer : registeredObservers.get(type))

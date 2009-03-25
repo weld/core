@@ -18,6 +18,7 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +46,7 @@ import org.jboss.webbeans.util.Strings;
 public class EventObserver<T>
 {
 
-   private final Class<T> eventType;
+   private final Type eventType;
    private final List<Annotation> eventBindings;
    private final Observer<T> observer;
 
@@ -56,7 +57,7 @@ public class EventObserver<T>
     * @param eventType The class of event being observed
     * @param eventBindings The array of annotation event bindings, if any
     */
-   public EventObserver(final Observer<T> observer, final Class<T> eventType, final Annotation... eventBindings)
+   public EventObserver(final Observer<T> observer, final Type eventType, final Annotation... eventBindings)
    {
       this.observer = observer;
       this.eventType = eventType;
@@ -93,7 +94,7 @@ public class EventObserver<T>
    /**
     * @return the eventType
     */
-   public final Class<T> getEventType()
+   public final Type getEventType()
    {
       return eventType;
    }
@@ -191,7 +192,7 @@ public class EventObserver<T>
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Event Observer:\n");
-      buffer.append("  Event Type: " + eventType.getName() + "\n");
+      buffer.append("  Event Type: " + eventType + "\n");
       buffer.append(Strings.collectionToString("  Event Bindings: ", eventBindings));
       buffer.append("  Observer: " + observer);
       return buffer.toString();

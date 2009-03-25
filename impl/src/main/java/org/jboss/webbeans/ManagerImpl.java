@@ -255,6 +255,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       {
          throw new DuplicateBindingTypeException("Duplicate binding types: " + bindings);
       }
+      Type t = new Reflections.HierarchyDiscovery(clazz).getResolvedType();
       for (Type type : Reflections.getActualTypeArguments(clazz))
       {
          if (type instanceof WildcardType)
@@ -502,7 +503,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
    
    public <T> Manager addObserver(ObserverImpl<T> observer)
    {
-      addObserver(observer, observer.getEventType(), observer.getBindingsAsArray());
+      this.eventManager.addObserver(observer, observer.getEventType(), observer.getBindingsAsArray());
       return this;
    }
    
@@ -522,7 +523,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
     */
    public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
-      eventManager.addObserver(observer, eventType.getRawType(), bindings);
+      eventManager.addObserver(observer, eventType.getType(), bindings);
       return this;
    }
    

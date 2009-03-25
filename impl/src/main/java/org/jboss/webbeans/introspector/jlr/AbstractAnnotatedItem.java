@@ -86,7 +86,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
          this.actualTypeArguments = new Type[0];
       }
       this._parameterizedType = Reflections.isParameterizedType(rawType);
-      this.flattenedTypes = new Reflections.HierarchyDiscovery<Type>(type).getFlattenedTypes();
+      this.flattenedTypes = new Reflections.HierarchyDiscovery(type).getFlattenedTypes();
       this.proxyable = Proxies.isTypesProxyable(flattenedTypes);
    }
    

@@ -48,35 +48,39 @@ import org.jboss.webbeans.util.reflection.ParameterizedTypeImpl;
 public class Reflections
 {
    
-   public static class HierarchyDiscovery<T extends Type>
+   public static class HierarchyDiscovery
    {
       
-      private final T type;
+      private final Type type;
      
-      private Set<T> types;
+      private Set<Type> types;
       
-      public HierarchyDiscovery(T type)
+      public HierarchyDiscovery(Type type)
       {
          this.type = type;
       }
       
-      protected void add(T type)
+      protected void add(Type type)
       {
          types.add(type);
       }
       
-      public Set<T> getFlattenedTypes()
+      public Set<Type> getFlattenedTypes()
       {
          if (types == null)
          {
-            this.types = new HashSet<T>();
+            this.types = new HashSet<Type>();
             discoverTypes(type);
          }
          return types;
       }
       
+      public Type getResolvedType()
+      {
+         return resolveType(type, type);
+      }
       
-      private void discoverTypes(T type)
+      private void discoverTypes(Type type)
       {
          if (type != null)
          {
@@ -99,10 +103,10 @@ public class Reflections
       @SuppressWarnings("unchecked")
       private void discoverFromClass(Class<?> clazz)
       {
-         discoverTypes((T) resolveType(type, clazz.getGenericSuperclass()));
+         discoverTypes(resolveType(type, clazz.getGenericSuperclass()));
          for (Type c : clazz.getGenericInterfaces())
          {
-            discoverTypes((T) resolveType(type, c));
+            discoverTypes(resolveType(type, c));
          }
       }
       
