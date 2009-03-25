@@ -49,11 +49,6 @@ public abstract class ForwardingAnnotatedField<T> extends ForwardingAnnotatedMem
       delegate().set(declaringInstance, value);
    }
 
-   public void setOnInstance(Object declaringInstance, Object value) throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException
-   {
-      delegate().setOnInstance(declaringInstance, value);
-   }
-
    public boolean isTransient()
    {
       return delegate().isTransient();

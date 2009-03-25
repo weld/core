@@ -154,8 +154,7 @@ public class BeanDeployer
    {
       for (AnnotatedMethod<?> method : annotatedClass.getDeclaredAnnotatedMethods(Produces.class))
       {
-         createProducerMethod(declaringBean, method);
-         
+         createProducerMethod(declaringBean, method);         
       }
    }
    
