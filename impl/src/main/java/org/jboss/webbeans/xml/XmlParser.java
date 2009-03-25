@@ -3,6 +3,7 @@ package org.jboss.webbeans.xml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Named;
+import javax.annotation.Stereotype;
+import javax.context.ScopeType;
 import javax.inject.DefinitionException;
 import javax.inject.DeploymentException;
 import javax.inject.DeploymentType;
@@ -21,14 +25,22 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.xml.check.BeanChildrenChecker;
+import org.jboss.webbeans.xml.check.JmsResourceChildrenChecker;
+import org.jboss.webbeans.xml.check.ResourceChildrenChecker;
+import org.jboss.webbeans.xml.check.SessionBeanChildrenChecker;
+import org.jboss.webbeans.xml.check.SimpleBeanChildrenChecker;
 
 public class XmlParser
 {
    private static Log log = Logging.getLog(XmlParser.class);
    
    private final XmlEnvironment environment;
+   
+   private List<BeanChildrenChecker> childrenCheckers = new ArrayList<BeanChildrenChecker>();
    
    private boolean haveAnyDeployElement = false;
    
@@ -37,6 +49,10 @@ public class XmlParser
    public XmlParser(XmlEnvironment environment)
    {
       this.environment = environment;
+      this.childrenCheckers.add(new JmsResourceChildrenChecker());
+      this.childrenCheckers.add(new ResourceChildrenChecker());
+      this.childrenCheckers.add(new SessionBeanChildrenChecker());
+      this.childrenCheckers.add(new SimpleBeanChildrenChecker());
    }
    
    public void parse()
@@ -61,6 +77,7 @@ public class XmlParser
       {
          AnnotatedClass<?> beanClass = ParseXmlHelper.loadElementClass(beanElement, Object.class, environment, packagesMap);
          checkProduces(beanElement, beanClass);
+         checkBeanChildren(beanElement, beanClass);
          beanClasses.add(beanClass);
       }
       
@@ -187,12 +204,26 @@ public class XmlParser
       return deploymentClasses;
    }
    
-   public void checkProduces(Element beanElement, AnnotatedClass<?> beanClass)
-   {//TODO
-      Iterator<?> childIterator = beanElement.elementIterator();
-      while(childIterator.hasNext())
+   private void checkBeanChildren(Element beanElement, AnnotatedClass<?> beanClass)
+   {
+      for (BeanChildrenChecker childrenChecker : childrenCheckers)
       {
-         Element beanChild = (Element)childIterator.next();  
+         if (childrenChecker.accept(beanElement, beanClass))
+         {
+            childrenChecker.checkChildren(beanElement);
+            return;
+         }
+      }
+
+      throw new DefinitionException("Definition of a bean " + beanElement.getName() + " is incorrect");
+   }
+   
+   private void checkProduces(Element beanElement, AnnotatedClass<?> beanClass)
+   {
+      Iterator<?> beanIterator = beanElement.elementIterator();
+      while(beanIterator.hasNext())
+      {
+         Element beanChild = (Element)beanIterator.next();  
          List<Element> producesElements = ParseXmlHelper.findElementsInEeNamespace(beanChild, XmlConstants.PRODUCES);
          
          if(producesElements.size() == 0)
@@ -201,18 +232,93 @@ public class XmlParser
          if(producesElements.size() > 1)
             throw new DefinitionException("There is more than one child <Produces> element for <" + beanChild.getName()  + "> element");
          
-         Element producesElement = producesElements.get(0);
+         List<AnnotatedClass<?>> producesChildTypes = new ArrayList<AnnotatedClass<?>>();
          
-         if(ParseXmlHelper.isField(producesElement, beanClass, beanClass))
+         Element producesElement = producesElements.get(0);
+         Iterator<?> producesIt = producesElement.elementIterator();
+         while(producesIt.hasNext())
+         {
+            Element producesChild = (Element)producesIt.next();
+            AnnotatedClass<?> producesChildClass = ParseXmlHelper.loadElementClass(producesChild, Object.class, environment, packagesMap);
+            Class<?> producesChildType = producesChildClass.getRawType();
+            boolean isJavaClass = !producesChildType.isEnum() && !producesChildType.isPrimitive() && !producesChildType.isInterface();
+            boolean isInterface = producesChildType.isInterface() && !producesChildType.isAnnotation();
+            if(isJavaClass || isInterface)
+            {
+               producesChildTypes.add(producesChildClass);
+               continue;
+            }
+            if(producesChildType.isAnnotation())
+            {
+               if(producesChildClass.isAnnotationPresent(DeploymentType.class) || 
+                     producesChildClass.isAnnotationPresent(ScopeType.class) || 
+                     producesChildClass.isAnnotationPresent(Stereotype.class) ||
+                     producesChildClass.isAnnotationPresent(Named.class))
+                  continue;
+                                             
+               throw new DefinitionException("<" + producesChild.getName() + "> direct child of <Produces> element for <" + beanChild.getName() 
+                     + "> in bean" + beanElement.getName() + "must be DeploymentType or ScopeType or Stereotype or Named");
+            }
+            throw new DefinitionException("Only Java class, interface type and Java annotation type can be " +
+            		"direct child of <Produces> element for <" + beanChild.getName() + "> in bean" + beanElement.getName() + 
+            		". Element <" + producesChild.getName() + "> is incorrect");
+         }
+         
+         if(producesChildTypes.size() != 1)
+            throw new DefinitionException("More than one or no one child element of <Produces> element for <" + beanChild.getName() + 
+                  "> in bean" + beanElement.getName() + " represents a Java class or interface type");
+         
+         AnnotatedClass<?> expectedType = producesChildTypes.get(0);
+                  
+         Method beanMethod = null;         
+         AnnotatedField<?> beanField = beanClass.getDeclaredField(beanChild.getName(), expectedType);
+
+         try
+         {
+            List<Class<?>> paramClassesList = new ArrayList<Class<?>>();
+            Iterator<?> beanChildIt = beanChild.elementIterator();
+            while(beanChildIt.hasNext())
+            {
+               Element methodChild = (Element)beanChildIt.next();
+               if(methodChild.getName().equalsIgnoreCase(XmlConstants.PRODUCES))
+                  continue;
+               paramClassesList.add(ParseXmlHelper.loadElementClass(methodChild, Object.class, environment, packagesMap).getRawType());
+            }
+            Class<?>[] paramClasses = (Class<?>[])paramClassesList.toArray(new Class[0]);
+            beanMethod = beanClass.getRawType().getDeclaredMethod(beanChild.getName(), paramClasses);
+         }
+         catch (SecurityException e)
+         {}
+         catch (NoSuchMethodException e)
+         {}
+         
+         if(beanField != null && beanMethod != null)
+            throw new DefinitionException("Class '" + beanClass.getName() + "' has produser field and method with the same name '" + 
+                  beanField.getName() + "'");
+         
+         if(beanField != null)
          {
             if(beanChild.elements().size() > 1)
                throw new DefinitionException("There is more than one direct child element for producer field <" + beanChild.getName() + ">");
+            continue;
          }
          
-         if(ParseXmlHelper.isMethod(producesElement, beanClass, beanClass))
-         {}
+         if(beanMethod != null)
+         {
+            Iterator<?> beanChildIt = producesElement.elementIterator();
+            while(beanChildIt.hasNext())
+            {
+               Element element = (Element)beanChildIt.next();
+               if(!element.getName().equalsIgnoreCase(XmlConstants.PRODUCES) && 
+                     ParseXmlHelper.findElementsInEeNamespace(beanChild, XmlConstants.INTERCEPTOR).size() == 0)
+                  throw new DefinitionException("Only Produces and interceptor binding types can be direct childs of a producer " +
+                  		"method '" + beanChild.getName() + "' declaration in bean '" + beanElement.getName() + "'");
+            }
+            continue;
+         }
          
-//         throw new DefinitionException("A producer doesn't declared in class file as method or field");
+         throw new DefinitionException("A producer '" + beanChild.getName() + "' doesn't declared in '" + beanElement.getName() + 
+               "' class file as method or field");
       }                  
    }
    

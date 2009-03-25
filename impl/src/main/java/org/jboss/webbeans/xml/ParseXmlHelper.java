@@ -2,7 +2,6 @@ package org.jboss.webbeans.xml;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,11 +18,6 @@ import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
 import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.AnnotatedField;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.MethodSignature;
-import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
-import org.jboss.webbeans.introspector.jlr.MethodSignatureImpl;
 import org.jboss.webbeans.resources.spi.ResourceLoadingException;
 
 public class ParseXmlHelper
@@ -193,22 +187,6 @@ public class ParseXmlHelper
       }
       
       return elements;
-   }
-   
-   public static boolean isField(Element element, AnnotatedClass<?> beanClass, AnnotatedClass<?> expectedType)
-   {
-      //TODO
-      String fieldName = element.getParent().getName();
-      AnnotatedField<?> beanField = beanClass.getDeclaredField(fieldName, expectedType);
-      if(beanField != null)
-         return true;
-      return false;
-   }
-   
-   public static boolean isMethod(Element element, AnnotatedClass<?> beanClass, AnnotatedClass<?> expectedType)
-   {
-      //TODO      
-      return false;
    }
 
    private static Set<String> parseNamespaceFile(URL namespaceFile)
