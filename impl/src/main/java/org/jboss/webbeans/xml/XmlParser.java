@@ -28,11 +28,12 @@ import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.xml.check.BeanChildrenChecker;
-import org.jboss.webbeans.xml.check.JmsResourceChildrenChecker;
-import org.jboss.webbeans.xml.check.ResourceChildrenChecker;
-import org.jboss.webbeans.xml.check.SessionBeanChildrenChecker;
-import org.jboss.webbeans.xml.check.SimpleBeanChildrenChecker;
+import org.jboss.webbeans.xml.check.BeanType;
+import org.jboss.webbeans.xml.check.BeanTypeObtainer;
+import org.jboss.webbeans.xml.check.JmsResourceTypeObtainer;
+import org.jboss.webbeans.xml.check.ResourceTypeObtainer;
+import org.jboss.webbeans.xml.check.SessionBeanTypeObtainer;
+import org.jboss.webbeans.xml.check.SimpleBeanTypeObtainer;
 
 public class XmlParser
 {
@@ -40,7 +41,7 @@ public class XmlParser
    
    private final XmlEnvironment environment;
    
-   private List<BeanChildrenChecker> childrenCheckers = new ArrayList<BeanChildrenChecker>();
+   private List<BeanTypeObtainer> beanTypeObtainers = new ArrayList<BeanTypeObtainer>();
    
    private boolean haveAnyDeployElement = false;
    
@@ -49,10 +50,10 @@ public class XmlParser
    public XmlParser(XmlEnvironment environment)
    {
       this.environment = environment;
-      this.childrenCheckers.add(new JmsResourceChildrenChecker());
-      this.childrenCheckers.add(new ResourceChildrenChecker());
-      this.childrenCheckers.add(new SessionBeanChildrenChecker());
-      this.childrenCheckers.add(new SimpleBeanChildrenChecker());
+      this.beanTypeObtainers.add(new JmsResourceTypeObtainer());
+      this.beanTypeObtainers.add(new ResourceTypeObtainer());
+      this.beanTypeObtainers.add(new SessionBeanTypeObtainer());
+      this.beanTypeObtainers.add(new SimpleBeanTypeObtainer());
    }
    
    public void parse()
@@ -76,8 +77,8 @@ public class XmlParser
       for (Element beanElement : beanElements)
       {
          AnnotatedClass<?> beanClass = ParseXmlHelper.loadElementClass(beanElement, Object.class, environment, packagesMap);
+         checkBeanElement(beanElement, beanClass);
          checkProduces(beanElement, beanClass);
-         checkBeanChildren(beanElement, beanClass);
          beanClasses.add(beanClass);
       }
       
@@ -204,18 +205,19 @@ public class XmlParser
       return deploymentClasses;
    }
    
-   private void checkBeanChildren(Element beanElement, AnnotatedClass<?> beanClass)
-   {
-      for (BeanChildrenChecker childrenChecker : childrenCheckers)
+   private void checkBeanElement(Element beanElement, AnnotatedClass<?> beanClass)
+   {//TODO: not finished
+      BeanType beanType = BeanType.SIMPLE_BEAN;
+      for(BeanTypeObtainer beanTypeObtainer : beanTypeObtainers)
       {
-         if (childrenChecker.accept(beanElement, beanClass))
+         if(beanTypeObtainer.accept(beanElement, beanClass))
          {
-            childrenChecker.checkChildren(beanElement);
-            return;
+            beanType = beanTypeObtainer.obtainType(beanElement, beanClass);
+            break;
          }
       }
-
-      throw new DefinitionException("Definition of a bean " + beanElement.getName() + " is incorrect");
+      
+      
    }
    
    private void checkProduces(Element beanElement, AnnotatedClass<?> beanClass)

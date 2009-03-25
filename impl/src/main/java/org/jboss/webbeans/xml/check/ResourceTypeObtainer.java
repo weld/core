@@ -7,17 +7,17 @@ import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
 
-public class ResourceChildrenChecker implements BeanChildrenChecker
+public class ResourceTypeObtainer implements BeanTypeObtainer
 {
 
-   public boolean accept(Element element, AnnotatedClass<?> beanClass)
+   public boolean accept(Element beanElement, AnnotatedClass<?> beanClass)
    {
-      if (ParseXmlHelper.isJavaEeNamespace(element) && 
-            (element.getName().equalsIgnoreCase(XmlConstants.TOPIC) || 
-                  element.getName().equalsIgnoreCase(XmlConstants.QUEUE)))
+      if (ParseXmlHelper.isJavaEeNamespace(beanElement) && 
+            (beanElement.getName().equalsIgnoreCase(XmlConstants.TOPIC) || 
+                  beanElement.getName().equalsIgnoreCase(XmlConstants.QUEUE)))
          return false;
       
-      Iterator<?> elIterator = element.elementIterator();
+      Iterator<?> elIterator = beanElement.elementIterator();
       while (elIterator.hasNext())
       {
          Element child = (Element) elIterator.next();
@@ -32,10 +32,8 @@ public class ResourceChildrenChecker implements BeanChildrenChecker
       return false;
    }
 
-   public void checkChildren(Element element)
+   public BeanType obtainType(Element beanElement, AnnotatedClass<?> beanClass)
    {
-      // TODO Auto-generated method stub
-
+      return BeanType.RESOURCE;
    }
-
 }
