@@ -1,4 +1,4 @@
-package org.jboss.webbeans.xml.check;
+package org.jboss.webbeans.xml.checker.bean.ext;
 
 import java.util.Iterator;
 
@@ -6,9 +6,14 @@ import org.dom4j.Element;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
+import org.jboss.webbeans.xml.checker.beanchildren.BeanChildrenChecker;
 
-public class ResourceTypeObtainer implements BeanTypeObtainer
+public class ResourceElementChecker extends NotSimpleBeanElementChecker
 {
+   public ResourceElementChecker(BeanChildrenChecker childrenChecker)
+   {
+      super(childrenChecker);
+   }
 
    public boolean accept(Element beanElement, AnnotatedClass<?> beanClass)
    {
@@ -30,10 +35,5 @@ public class ResourceTypeObtainer implements BeanTypeObtainer
             return true;
       }
       return false;
-   }
-
-   public BeanType obtainType(Element beanElement, AnnotatedClass<?> beanClass)
-   {
-      return BeanType.RESOURCE;
    }
 }

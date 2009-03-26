@@ -28,12 +28,13 @@ import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.xml.check.BeanType;
-import org.jboss.webbeans.xml.check.BeanTypeObtainer;
-import org.jboss.webbeans.xml.check.JmsResourceTypeObtainer;
-import org.jboss.webbeans.xml.check.ResourceTypeObtainer;
-import org.jboss.webbeans.xml.check.SessionBeanTypeObtainer;
-import org.jboss.webbeans.xml.check.SimpleBeanTypeObtainer;
+import org.jboss.webbeans.xml.checker.bean.BeanElementChecker;
+import org.jboss.webbeans.xml.checker.bean.ext.JmsResourceElementChecker;
+import org.jboss.webbeans.xml.checker.bean.ext.ResourceElementChecker;
+import org.jboss.webbeans.xml.checker.bean.ext.SessionBeanElementChecker;
+import org.jboss.webbeans.xml.checker.bean.ext.SimpleBeanElementChecker;
+import org.jboss.webbeans.xml.checker.beanchildren.ext.NotSimpleBeanChildrenChecker;
+import org.jboss.webbeans.xml.checker.beanchildren.ext.SimpleBeanChildrenChecker;
 
 public class XmlParser
 {
@@ -41,7 +42,7 @@ public class XmlParser
    
    private final XmlEnvironment environment;
    
-   private List<BeanTypeObtainer> beanTypeObtainers = new ArrayList<BeanTypeObtainer>();
+   private List<BeanElementChecker> beanElementCheckers = new ArrayList<BeanElementChecker>();
    
    private boolean haveAnyDeployElement = false;
    
@@ -49,11 +50,7 @@ public class XmlParser
    
    public XmlParser(XmlEnvironment environment)
    {
-      this.environment = environment;
-      this.beanTypeObtainers.add(new JmsResourceTypeObtainer());
-      this.beanTypeObtainers.add(new ResourceTypeObtainer());
-      this.beanTypeObtainers.add(new SessionBeanTypeObtainer());
-      this.beanTypeObtainers.add(new SimpleBeanTypeObtainer());
+      this.environment = environment;      
    }
    
    public void parse()
@@ -206,22 +203,29 @@ public class XmlParser
    }
    
    private void checkBeanElement(Element beanElement, AnnotatedClass<?> beanClass)
-   {//TODO: not finished
-      BeanType beanType = BeanType.SIMPLE_BEAN;
-      for(BeanTypeObtainer beanTypeObtainer : beanTypeObtainers)
+   {
+      beanElementCheckers.add(new JmsResourceElementChecker(new NotSimpleBeanChildrenChecker(environment, packagesMap)));
+      beanElementCheckers.add(new ResourceElementChecker(new NotSimpleBeanChildrenChecker(environment, packagesMap)));
+      beanElementCheckers.add(new SessionBeanElementChecker(new NotSimpleBeanChildrenChecker(environment, packagesMap)));
+      beanElementCheckers.add(new SimpleBeanElementChecker(new SimpleBeanChildrenChecker(environment, packagesMap)));
+      
+      boolean isValidType = false;
+      for(BeanElementChecker beanElementChecker : beanElementCheckers)
       {
-         if(beanTypeObtainer.accept(beanElement, beanClass))
+         if(beanElementChecker.accept(beanElement, beanClass))
          {
-            beanType = beanTypeObtainer.obtainType(beanElement, beanClass);
+            beanElementChecker.checkBeanElement(beanElement, beanClass);
+            isValidType = true;
             break;
          }
       }
       
-      
+      if(!isValidType)
+         throw new DefinitionException("Can't determine type of bean element <" + beanElement.getName() + ">");
    }
    
    private void checkProduces(Element beanElement, AnnotatedClass<?> beanClass)
-   {
+   {//TODO: will refactor
       Iterator<?> beanIterator = beanElement.elementIterator();
       while(beanIterator.hasNext())
       {

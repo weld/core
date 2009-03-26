@@ -101,10 +101,6 @@ public class ParseXmlHelper
       throw new DefinitionException("There are multiple packages containing a Java type with the same name '" + className + "'");
    }
 
-   public static void checkProduces(Element element, AnnotatedClass<?> beanClass)
-   {
-   }
-
    public static void checkRootAttributes(Element root, Map<String, Set<String>> packagesMap, XmlEnvironment environment)
    {
       Iterator<?> rootAttrIterator = root.attributeIterator();

@@ -1,4 +1,4 @@
-package org.jboss.webbeans.xml.check;
+package org.jboss.webbeans.xml.checker.bean.ext;
 
 import javax.decorator.Decorator;
 import javax.inject.DefinitionException;
@@ -10,9 +10,15 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
+import org.jboss.webbeans.xml.checker.bean.impl.BeanElementCheckerImpl;
+import org.jboss.webbeans.xml.checker.beanchildren.BeanChildrenChecker;
 
-public class SimpleBeanTypeObtainer implements BeanTypeObtainer
+public class SimpleBeanElementChecker extends BeanElementCheckerImpl
 {
+   public SimpleBeanElementChecker(BeanChildrenChecker childrenChecker)
+   {
+      super(childrenChecker);
+   }
 
    public boolean accept(Element beanElement, AnnotatedClass<?> beanClass)
    {
@@ -26,7 +32,7 @@ public class SimpleBeanTypeObtainer implements BeanTypeObtainer
       return false;
    }
 
-   public BeanType obtainType(Element beanElement, AnnotatedClass<?> beanClass)
+   public void checkElementDeclaration(Element beanElement, AnnotatedClass<?> beanClass)
    {
       if(beanClass.isNonStaticMemberClass())
          throw new DefinitionException("Bean class '" + beanClass.getName() + "' of a simple bean <" + beanElement.getName() + 
@@ -34,14 +40,12 @@ public class SimpleBeanTypeObtainer implements BeanTypeObtainer
       
       if(beanClass.getRawType().isAnnotationPresent(Interceptor.class) && 
             ParseXmlHelper.findElementsInEeNamespace(beanElement, XmlConstants.INTERCEPTOR).size() != 1)
-         throw new DefinitionException("a simple bean defined in XML as <" + beanElement.getName() +  "> has a bean class '" + 
+         throw new DefinitionException("A simple bean defined in XML as <" + beanElement.getName() +  "> has a bean class '" + 
                beanClass.getName() + "' annotated @Interceptor and is not declared as an interceptor in XML");
       
       if(beanClass.getRawType().isAnnotationPresent(Decorator.class) && 
             ParseXmlHelper.findElementsInEeNamespace(beanElement, XmlConstants.DECORATOR).size() != 1)
-         throw new DefinitionException("a simple bean defined in XML as <" + beanElement.getName() +  "> has a bean class '" + 
-               beanClass.getName() + "' annotated @Decorator and is not declared as an interceptor in XML");
-      
-      return BeanType.SIMPLE_BEAN;
+         throw new DefinitionException("A simple bean defined in XML as <" + beanElement.getName() +  "> has a bean class '" + 
+               beanClass.getName() + "' annotated @Decorator and is not declared as an decorator in XML");
    }
 }
