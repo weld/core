@@ -3,13 +3,9 @@
  */
 package org.jboss.webbeans.mock;
 
-import java.lang.annotation.Annotation;
 import java.util.Collection;
 
-import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.inject.manager.InjectionPoint;
-import javax.persistence.PersistenceContext;
 
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
@@ -26,29 +22,9 @@ public class MockEjBServices implements EjbServices
       this.ejbDiscovery = new MockEjbDiscovery(webBeanDiscovery);
    }
    
-   public Class<? extends Annotation> getEJBAnnotation()
-   {
-      return EJB.class;
-   }
-   
-   public Class<? extends Annotation> getPersistenceContextAnnotation()
-   {
-      return PersistenceContext.class;
-   }
-   
    public Object resolveEjb(InjectionPoint injectionPoint)
    {
       return null;
-   }
-   
-   public Object resolvePersistenceContext(InjectionPoint injectionPoint)
-   {
-      return null;
-   }
-   
-   public Class<? extends Annotation> getResourceAnnotation()
-   {
-      return Resource.class;
    }
    
    public Object resolveResource(InjectionPoint injectionPoint)

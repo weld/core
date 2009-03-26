@@ -24,7 +24,7 @@ import org.jboss.webbeans.ejb.api.SessionObjectReference;
 
 /**
  * A container should implement this interface to allow the Web Beans RI to
- * resolve EJBs, Resources and JPA persistence units
+ * resolve EJBs, Resources and JPA persistence units and discover EJBs
  * 
  * @author Pete Muir
  * 
@@ -46,21 +46,6 @@ public interface EjbServices extends Service
     *            if no EJBs can be resolved for injection
     */
    public Object resolveEjb(InjectionPoint injectionPoint);
-   
-   /**
-    * Resolve the value for the given @PersistenceContext injection point
-    * 
-    * @param injectionPoint
-    *           the injection point metadata
-    * @return an instance of the persistence unit
-    * @throws IllegalArgumentException
-    *            if the injection point is not annotated with
-    * @PersistenceContext, or, if the injection point is a method that doesn't
-    *                      follow JavaBean conventions
-    * @throws IllegalStateException
-    *            if no suitable persistence units can be resolved for injection
-    */
-   public Object resolvePersistenceContext(InjectionPoint injectionPoint);
    
    /**
     * Resolve the value for the given @Resource injection point
@@ -90,7 +75,7 @@ public interface EjbServices extends Service
    /**
     * Gets a descriptor for each EJB in the application
     * 
-    * @return The bean class to descriptor map 
+    * @return the EJB descriptors
     */
    public Iterable<EjbDescriptor<?>> discoverEjbs();
    

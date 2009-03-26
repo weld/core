@@ -17,12 +17,8 @@
 package org.jboss.webbeans.bootstrap.api.helpers;
 
 import org.jboss.webbeans.bootstrap.api.Bootstrap;
-import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.manager.api.WebBeansManager;
-import org.jboss.webbeans.resources.spi.NamingContext;
-import org.jboss.webbeans.resources.spi.ResourceLoader;
 
 /**
  * Implementation of {@link Bootstrap} which supports the decorator pattern
@@ -52,30 +48,6 @@ public abstract class ForwardingBootstrap implements Bootstrap
    public void setApplicationContext(BeanStore beanStore)
    {
       delegate().setApplicationContext(beanStore);
-   }
-   
-   @Deprecated
-   public void setEjbServices(EjbServices ejbServices)
-   {
-      delegate().setEjbServices(ejbServices);
-   }
-   
-   @Deprecated
-   public void setNamingContext(NamingContext namingContext)
-   {
-      delegate().setNamingContext(namingContext);
-   }
-   
-   @Deprecated
-   public void setResourceLoader(ResourceLoader resourceLoader)
-   {
-      delegate().setResourceLoader(resourceLoader);
-   }
-   
-   @Deprecated
-   public void setWebBeanDiscovery(WebBeanDiscovery webBeanDiscovery)
-   {
-      delegate().setWebBeanDiscovery(webBeanDiscovery);
    }
    
    public void shutdown()

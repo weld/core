@@ -43,6 +43,7 @@ import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.jpa.spi.JpaServices;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.MetaDataCache;
@@ -260,6 +261,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       if (getManager().getServices().contains(EjbServices.class))
       {
          EjbServices ejbServices = manager.getServices().get(EjbServices.class);
+         JpaServices jpaServices = manager.getServices().get(JpaServices.class);
          for (AnnotatedInjectionPoint<?, ?> injectionPoint : ejbInjectionPoints)
          {
             Object ejbInstance = ejbServices.resolveEjb(injectionPoint);
@@ -268,7 +270,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    
          for (AnnotatedInjectionPoint<?, ?> injectionPoint : persistenceUnitInjectionPoints)
          {
-            Object puInstance = ejbServices.resolvePersistenceContext(injectionPoint);
+            Object puInstance = jpaServices.resolvePersistenceContext(injectionPoint);
             injectionPoint.inject(beanInstance, puInstance);
          }
    

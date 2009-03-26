@@ -1,7 +1,5 @@
 package org.jboss.webbeans.bootstrap.api.test;
 
-import java.lang.annotation.Annotation;
-
 import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
@@ -17,24 +15,6 @@ public class MockEjbServices implements EjbServices
       return null;
    }
    
-   public Class<? extends Annotation> getEJBAnnotation()
-   {
-      // TODO Auto-generated method stub
-      return null;
-   }
-   
-   public Class<? extends Annotation> getPersistenceContextAnnotation()
-   {
-      // TODO Auto-generated method stub
-      return null;
-   }
-   
-   public Class<? extends Annotation> getResourceAnnotation()
-   {
-      // TODO Auto-generated method stub
-      return null;
-   }
-   
    public SessionObjectReference resolveEjb(EjbDescriptor<?> ejbDescriptor)
    {
       // TODO Auto-generated method stub
@@ -42,12 +22,6 @@ public class MockEjbServices implements EjbServices
    }
    
    public Object resolveEjb(InjectionPoint injectionPoint)
-   {
-      // TODO Auto-generated method stub
-      return null;
-   }
-   
-   public Object resolvePersistenceContext(InjectionPoint injectionPoint)
    {
       // TODO Auto-generated method stub
       return null;

@@ -16,13 +16,8 @@
  */
 package org.jboss.webbeans.bootstrap.api;
 
-import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.api.BeanStore;
-import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.manager.api.WebBeansManager;
-import org.jboss.webbeans.resources.spi.NamingContext;
-import org.jboss.webbeans.resources.spi.ResourceLoader;
-import org.jboss.webbeans.transaction.spi.TransactionServices;
 
 /**
  * Bootstrap API for Web Beans.
@@ -34,56 +29,12 @@ public interface Bootstrap
 {
    
    /**
-    * Set the Web Bean Discovery to use
-    * 
-    * @param webBeanDiscovery
-    */
-   @Deprecated
-   public void setWebBeanDiscovery(WebBeanDiscovery webBeanDiscovery);
-   
-   /**
-    * Set the EjbServices to use
-    * 
-    * @param ejbServices
-    */
-   @Deprecated
-   public void setEjbServices(EjbServices ejbServices);
-   
-   /**
-    * Set the NamingContext to use.
-    * 
-    * By default @{link org.jboss.webbeans.resources.DefaultNamingContext} will 
-    * be used
-    * 
-    * @param namingContext
-    */
-   @Deprecated
-   public void setNamingContext(NamingContext namingContext);
-   
-   /**
-    * Set the ResourceLoader to use. By default @{link
-    * org.jboss.webbeans.resources.DefaultResourceLoader} will be used
-    * 
-    * @param resourceLoader
-    */
-   @Deprecated
-   public void setResourceLoader(ResourceLoader resourceLoader);
-   
-   /**
     * Set the bean store to use as backing for the application context
     * 
     * @param beanStore the bean store to use
     */
    public void setApplicationContext(BeanStore beanStore);
-   
-   /**
-    * Set the transaction services provider to use.
-    * 
-    * @param transactionServices An implementation of TransactionService
-    */
-   @Deprecated
-   public void setTransactionServices(TransactionServices transactionServices);
-   
+
    /**
     * Set the environment in use, by default {@link Environments.EE}
     * 
@@ -131,7 +82,7 @@ public interface Bootstrap
    /**
     * Get the services available to this bootstrap
     * 
-    * @return the services availabel
+    * @return the services available
     */
    public ServiceRegistry getServices();
    
