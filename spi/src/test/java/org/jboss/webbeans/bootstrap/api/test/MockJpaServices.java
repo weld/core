@@ -1,5 +1,7 @@
 package org.jboss.webbeans.bootstrap.api.test;
 
+import java.util.Collection;
+
 import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.jpa.spi.JpaServices;
@@ -7,7 +9,7 @@ import org.jboss.webbeans.jpa.spi.JpaServices;
 public class MockJpaServices implements JpaServices
 {
    
-   public Iterable<Class<?>> discoverEntities()
+   public Collection<Class<?>> discoverEntities()
    {
       // TODO Auto-generated method stub
       return null;

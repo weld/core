@@ -16,6 +16,8 @@
  */
 package org.jboss.webbeans.jpa.spi;
 
+import java.util.Collection;
+
 import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.bootstrap.api.Service;
@@ -35,7 +37,7 @@ public interface JpaServices extends Service
     * 
     * @return the entity classes 
     */
-   public Iterable<Class<?>> discoverEntities();
+   public Collection<Class<?>> discoverEntities();
    
    /**
     * Resolve the value for the given @PersistenceContext injection point

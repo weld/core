@@ -16,6 +16,8 @@
  */
 package org.jboss.webbeans.jpa.spi.helpers;
 
+import java.util.Collection;
+
 import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.jpa.spi.JpaServices;
@@ -35,7 +37,7 @@ public abstract class ForwardingJpaServices implements JpaServices
    
    protected abstract JpaServices delegate();
    
-   public Iterable<Class<?>> discoverEntities()
+   public Collection<Class<?>> discoverEntities()
    {
       return delegate().discoverEntities();
    }

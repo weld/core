@@ -3,6 +3,7 @@
  */
 package org.jboss.webbeans.mock;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class MockJpaServices implements JpaServices
       return null;
    }
    
-   public Iterable<Class<?>> discoverEntities()
+   public Collection<Class<?>> discoverEntities()
    {
       Set<Class<?>> classes = new HashSet<Class<?>>();
       for (Class<?> clazz : webBeanDiscovery.discoverWebBeanClasses())

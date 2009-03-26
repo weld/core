@@ -30,6 +30,7 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.WrappedAnnotatedField;
 import org.jboss.webbeans.introspector.WrappedAnnotatedMethod;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
+import org.jboss.webbeans.jpa.spi.JpaServices;
 import org.jboss.webbeans.jsf.JSFApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -250,7 +251,17 @@ public class BeanDeployer
       JSFApiAbstraction jsfApiAbstraction = manager.getServices().get(JSFApiAbstraction.class);
       ServletApiAbstraction servletApiAbstraction = manager.getServices().get(ServletApiAbstraction.class);
       // TODO: check 3.2.1 for more rules!!!!!!
-      return !Reflections.isAbstract(rawType) && !Reflections.isParameterizedType(rawType) && !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(rawType) && !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(rawType) && !servletApiAbstraction.SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(rawType) && !servletApiAbstraction.HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(rawType) && !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(rawType) && !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(rawType) && !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(rawType) && hasSimpleWebBeanConstructor(clazz);
+      return !Reflections.isAbstract(rawType) && 
+             !Reflections.isParameterizedType(rawType) && 
+             !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(rawType) && 
+             !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(rawType) && 
+             !servletApiAbstraction.SERVLET_CONTEXT_LISTENER_CLASS.isAssignableFrom(rawType) && 
+             !servletApiAbstraction.HTTP_SESSION_LISTENER_CLASS.isAssignableFrom(rawType) && 
+             !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(rawType) && 
+             !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(rawType) && 
+             !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(rawType) && 
+             hasSimpleWebBeanConstructor(clazz)
+             && !manager.getServices().get(JpaServices.class).discoverEntities().contains(clazz.getRawType());
    }
    
    private static boolean hasSimpleWebBeanConstructor(AnnotatedClass<?> type)
