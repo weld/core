@@ -18,6 +18,7 @@ package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
@@ -85,6 +86,21 @@ public class BeanValidator
             if (injectionPoint.getAnnotation(New.class) != null && injectionPoint.getBindings().size() > 1)
             {
                throw new DefinitionException("The injection point " + injectionPoint + " is annotated with @New which cannot be combined with other binding types");
+            }
+            if (injectionPoint.getType() instanceof ParameterizedType)
+            {
+               ParameterizedType parameterizedType = (ParameterizedType) injectionPoint.getType();
+               for (Type type : parameterizedType.getActualTypeArguments())
+               {
+                  if (type instanceof TypeVariable)
+                  {
+                     throw new DefinitionException("Injection point cannot have a type variable type parameter " + injectionPoint);
+                  }
+                  if (type instanceof WildcardType)
+                  {
+                     throw new DefinitionException("Injection point cannot have a wildcard type parameter " + injectionPoint);
+                  }
+               }
             }
             checkFacadeInjectionPoint(injectionPoint, Obtains.class, Instance.class);
             checkFacadeInjectionPoint(injectionPoint, Fires.class, Event.class);
