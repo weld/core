@@ -46,6 +46,7 @@
    
    <modules>
       <module>numberguess</module>
+      <module>jsf2</module>
       <module>translator</module>
       <module>login</module>
       <module>conversations</module>
