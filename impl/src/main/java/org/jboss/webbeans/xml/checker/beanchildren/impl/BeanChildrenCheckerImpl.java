@@ -1,6 +1,8 @@
 package org.jboss.webbeans.xml.checker.beanchildren.impl;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,6 +43,8 @@ public abstract class BeanChildrenCheckerImpl implements BeanChildrenChecker
    protected boolean haveBeanInterceptorDeclaration = false;
    
    protected boolean haveBeanDecoratorDeclaration = false;
+   
+   protected List<AnnotatedClass<?>> constructorParameters = new ArrayList<AnnotatedClass<?>>();
          
    public abstract void checkForInterceptorChild(Element beanElement);
    
@@ -49,6 +53,8 @@ public abstract class BeanChildrenCheckerImpl implements BeanChildrenChecker
    public abstract void checkChildForInterceptorType(Element beanElement);
    
    public abstract void checkChildForDecoratorType(Element beanElement);
+   
+   public abstract void checkForConstructor(Element beanElement, AnnotatedClass<?> beanClass);
    
    public BeanChildrenCheckerImpl(XmlEnvironment environment, Map<String, Set<String>> packagesMap)
    {
@@ -70,11 +76,12 @@ public abstract class BeanChildrenCheckerImpl implements BeanChildrenChecker
       while(beanIterator.hasNext())
       {
          Element beanChildElement = (Element)beanIterator.next();
-         checkBeanChild(beanChildElement);
+         checkBeanChild(beanChildElement, beanClass);
       }
+      checkForConstructor(beanElement, beanClass);
    }
    
-   private void checkBeanChild(Element beanChildElement)
+   private void checkBeanChild(Element beanChildElement, AnnotatedClass<?> beanClass)
    {
       //TODO: not finished
       try
@@ -91,7 +98,8 @@ public abstract class BeanChildrenCheckerImpl implements BeanChildrenChecker
          }
          if(isJavaClass || isInterface)
          {
-            //TODO: bean child element declaring a parameter of the bean constructor
+            //bean child element declaring a parameter of the bean constructor
+            constructorParameters.add(beanChildClass);
             return;
          }
          throw new DefinitionException(new DefinitionException(beanChildElement.getName() + " can't be interpreted as a Java class or interface or Java Annotation type"));
@@ -108,7 +116,8 @@ public abstract class BeanChildrenCheckerImpl implements BeanChildrenChecker
          Namespace beanChildNamespace = beanChildElement.getNamespace();
          if(beanChildNamespace.equals(beanNamespace))
          {
-            //TODO: bean child element declaring a method or field of the bean.
+            //bean child element declaring a method or field of the bean.
+            checkFieldOrMethodChild(beanChildElement, beanClass);
             return;
          }
          throw new DefinitionException("Can't determine type of element <" + beanChildElement.getName() + "> in bean '" + 
@@ -155,5 +164,9 @@ public abstract class BeanChildrenCheckerImpl implements BeanChildrenChecker
       throw new DefinitionException("Can't determine annotation type of <" + beanChildElement.getName() + "> element in bean '" + 
             beanChildElement.getParent().getName() + "'");
    }
-
+   
+   private void checkFieldOrMethodChild(Element beanChildElement, AnnotatedClass<?> beanClass)
+   {
+      //TODO: not finished
+   }
 }

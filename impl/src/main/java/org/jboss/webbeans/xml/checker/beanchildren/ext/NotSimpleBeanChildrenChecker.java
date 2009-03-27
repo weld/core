@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.inject.DefinitionException;
 
 import org.dom4j.Element;
+import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
 import org.jboss.webbeans.xml.XmlEnvironment;
@@ -42,5 +43,10 @@ public class NotSimpleBeanChildrenChecker extends BeanChildrenCheckerImpl
    {
       throw new DefinitionException("Declaration of not a simple bean '" + beanChildElement.getParent().getName() + 
          "' contains a child <" + beanChildElement.getName() + "> which type is javax.decorator.Decorator");
+   }
+   
+   public void checkForConstructor(Element beanElement, AnnotatedClass<?> beanClass)
+   {
+      //There is nothing to validate
    }
 }

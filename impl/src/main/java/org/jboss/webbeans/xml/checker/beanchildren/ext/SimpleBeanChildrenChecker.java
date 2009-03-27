@@ -1,11 +1,16 @@
 package org.jboss.webbeans.xml.checker.beanchildren.ext;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.inject.DefinitionException;
 
 import org.dom4j.Element;
+import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.AnnotatedConstructor;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
 import org.jboss.webbeans.xml.XmlEnvironment;
@@ -46,5 +51,43 @@ public class SimpleBeanChildrenChecker extends BeanChildrenCheckerImpl
          throw new DefinitionException("There is second element of decorator type <" + beanChildElement.getName() + 
                "> in bean '" + beanChildElement.getParent().getName() + "'");
          haveBeanDecoratorDeclaration = true;
+   }
+   
+   public void checkForConstructor(Element beanElement, AnnotatedClass<?> beanClass)
+   {
+      if(constructorParameters.size() == 0)
+         return;
+      
+      List<AnnotatedConstructor<?>> matchableConstructors = new ArrayList<AnnotatedConstructor<?>>(); 
+      
+      for(AnnotatedConstructor<?> constructor : beanClass.getConstructors())
+      {
+         List<? extends AnnotatedParameter<?>>  parameters = constructor.getParameters();
+         
+         if(parameters.size() != constructorParameters.size())
+            continue;
+         
+         boolean isMacthable = true;
+         
+         for(int i = 0; i < parameters.size(); i++)
+         {
+            if(!parameters.get(i).isAssignableFrom(constructorParameters.get(i)))
+            {
+               isMacthable = false;
+               break;
+            }            
+         }
+         
+         if(isMacthable)
+            matchableConstructors.add(constructor);
+      }
+      
+      if(matchableConstructors.size() == 0)
+         throw new DefinitionException("There is no constructor of the simple bean '" + beanElement.getName() + 
+               "' with the same number and types of parameters as declared");
+      
+      if(matchableConstructors.size() > 1)
+         throw new DefinitionException("There is more than one constructor of the simple bean '" + beanElement.getName() + 
+               "' with the same number and types of parameters as declared");
    }
 }
