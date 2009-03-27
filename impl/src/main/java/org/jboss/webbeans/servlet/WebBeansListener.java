@@ -18,10 +18,10 @@
 package org.jboss.webbeans.servlet;
 
 import javax.servlet.ServletRequestEvent;
-import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
+
+import org.jboss.webbeans.servlet.api.helpers.AbstractServletListener;
 
 /**
  * The Web Beans listener
@@ -33,7 +33,7 @@ import javax.servlet.http.HttpSessionListener;
  * @author Nicklas Karlsson
  *
  */
-public class WebBeansListener implements HttpSessionListener, ServletRequestListener
+public class WebBeansListener extends AbstractServletListener
 {
    
    private final ServletLifecycle lifecycle;
@@ -48,6 +48,7 @@ public class WebBeansListener implements HttpSessionListener, ServletRequestList
     * 
     * @param event The session event
     */
+   @Override
    public void sessionCreated(HttpSessionEvent event) 
    {
       lifecycle.beginSession(event.getSession());
@@ -58,6 +59,7 @@ public class WebBeansListener implements HttpSessionListener, ServletRequestList
     * 
     * @param event The session event
     */
+   @Override
    public void sessionDestroyed(HttpSessionEvent event) 
    {
       lifecycle.endSession(event.getSession());
@@ -68,6 +70,7 @@ public class WebBeansListener implements HttpSessionListener, ServletRequestList
     * 
     * @param event The request event
     */
+   @Override
    public void requestDestroyed(ServletRequestEvent event)
    {
       if (event.getServletRequest() instanceof HttpServletRequest)
@@ -85,6 +88,7 @@ public class WebBeansListener implements HttpSessionListener, ServletRequestList
     * 
     * @param event The request event
     */
+   @Override
    public void requestInitialized(ServletRequestEvent event)
    {
       if (event.getServletRequest() instanceof HttpServletRequest)

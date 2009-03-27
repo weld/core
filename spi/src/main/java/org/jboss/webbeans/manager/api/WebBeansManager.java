@@ -17,6 +17,8 @@
 
 package org.jboss.webbeans.manager.api;
 
+import java.io.Serializable;
+
 import javax.inject.manager.Manager;
 
 /**
@@ -26,7 +28,7 @@ import javax.inject.manager.Manager;
  * @author Pete Muir
  *
  */
-public interface WebBeansManager extends Manager
+public interface WebBeansManager extends Manager, Serializable
 {
    
    /**
@@ -36,5 +38,7 @@ public interface WebBeansManager extends Manager
     *           the instance to inject
     */
    public void injectNonContextualInstance(Object instance);
+   
+   public void shutdown();
    
 }

@@ -63,6 +63,7 @@ import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.proxy.ClientProxyProvider;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
+import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.ContextMap;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
@@ -73,8 +74,11 @@ import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
 import org.jboss.webbeans.injection.resolution.Resolver;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.log.Log;
+import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.metadata.MetaDataCache;
+import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Reflections;
 
@@ -89,6 +93,8 @@ import org.jboss.webbeans.util.Reflections;
  */
 public class ManagerImpl implements WebBeansManager, Serializable
 {
+   
+   private static final Log log = Logging.getLog(ManagerImpl.class);
    
    private static final long serialVersionUID = 3021562879133838561L;
    
@@ -996,12 +1002,14 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return taskExecutor;
    }
    
-   /**
-    * Cleans up resources held by the manager prior to shutting down a VM.
-    */
-   public void cleanup()
+   public void shutdown()
    {
+      log.trace("Ending application");
       shutdownExecutors();
+      ApplicationContext.INSTANCE.destroy();
+      ApplicationContext.INSTANCE.setActive(false);
+      ApplicationContext.INSTANCE.setBeanStore(null);
+      getServices().get(NamingContext.class).unbind(ManagerImpl.JNDI_KEY);
    }
    
    /**

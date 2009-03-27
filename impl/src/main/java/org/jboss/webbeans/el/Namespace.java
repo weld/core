@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A namespace for Seam component names. 
+ * A namespace for bean names
  * 
  * @author Gavin King
  *

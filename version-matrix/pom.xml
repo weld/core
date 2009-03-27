@@ -49,6 +49,7 @@
    <properties>
       <jsr299.tck.version>1.0.0-SNAPSHOT</jsr299.tck.version>
       <webbeans.version>1.0.0-SNAPSHOT</webbeans.version>
+      <webbeans.tomcat.version>1.0.0-SNAPSHOT</webbeans.tomcat.version>
    </properties>
    
    <dependencyManagement>
@@ -142,7 +143,13 @@
          <dependency>
             <groupId>javax.faces</groupId>
             <artifactId>jsf-api</artifactId>
-            <version>1.2_10</version>
+            <version>1.2_12</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-impl</artifactId>
+            <version>1.2_12</version>
          </dependency>
          
          <dependency>
@@ -248,6 +255,18 @@
             <artifactId>webbeans-logging</artifactId>
             <version>${webbeans.version}</version>
          </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.webbeans.tomcat</groupId>
+            <artifactId>webbeans-tomcat-int</artifactId>
+            <version>${webbeans.tomcat.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.webbeans.tomcat</groupId>
+            <artifactId>webbeans-tomcat</artifactId>
+            <version>${webbeans.tomcat.version}</version>
+         </dependency>
 
          <dependency>
             <groupId>org.jboss.jsr299.tck</groupId>
@@ -260,6 +279,8 @@
             <artifactId>jsr299-tck-impl</artifactId>
             <version>${jsr299.tck.version}</version>
          </dependency>
+         
+         
          
          <dependency>
             <groupId>org.jboss.test-harness</groupId>
@@ -454,6 +475,11 @@
                      </configuration>
                   </execution>
                </executions>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-shade-plugin</artifactId>
+               <version>1.2</version>
             </plugin>
          </plugins>
       </pluginManagement>

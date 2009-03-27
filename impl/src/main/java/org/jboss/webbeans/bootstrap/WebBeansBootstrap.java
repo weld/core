@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.inject.ExecutionException;
-import javax.inject.manager.Manager;
 
 import org.jboss.webbeans.BeanValidator;
 import org.jboss.webbeans.CurrentManager;
@@ -233,20 +232,10 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       RequestContext.INSTANCE.setBeanStore(null);
       RequestContext.INSTANCE.setActive(false);
    }
-
-   protected void endApplication(BeanStore applicationBeanStore)
-   {
-      log.trace("Ending application");
-      ApplicationContext.INSTANCE.destroy();
-      ApplicationContext.INSTANCE.setActive(false);
-      ApplicationContext.INSTANCE.setBeanStore(null);
-   }
    
    public void shutdown()
    {
-      endApplication(getApplicationContext());
-      manager.cleanup();
-      getServices().get(NamingContext.class).unbind(ManagerImpl.JNDI_KEY);
+      manager.shutdown();
    }
 
 }
