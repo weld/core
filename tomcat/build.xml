@@ -1,4 +1,4 @@
-<project basedir="." name="Numberguess Example Build" default="restart">
+<project basedir="." name="Numberguess Example Build" default="tomcat.restart">
 	
 	<property name="example.name" value="webbeans-numberguess" />
 
