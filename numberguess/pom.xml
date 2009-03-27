@@ -46,6 +46,7 @@
       <dependency>
         <groupId>com.sun.facelets</groupId>
         <artifactId>jsf-facelets</artifactId>
+        <scope>runtime</scope>
       </dependency>
       
       <!-- <dependency>
@@ -72,6 +73,7 @@
       <dependency>
       	<groupId>javax.annotation</groupId>
       	<artifactId>jsr250-api</artifactId>
+         <scope>provided</scope>
       </dependency>
       
    </dependencies>
