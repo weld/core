@@ -261,7 +261,7 @@ public class BeanDeployer
              !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(rawType) && 
              !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(rawType) && 
              hasSimpleWebBeanConstructor(clazz)
-             && !manager.getServices().get(JpaServices.class).discoverEntities().contains(clazz.getRawType());
+             && manager.getServices().contains(JpaServices.class) ? !manager.getServices().get(JpaServices.class).discoverEntities().contains(clazz.getRawType()) : true;
    }
    
    private static boolean hasSimpleWebBeanConstructor(AnnotatedClass<?> type)
