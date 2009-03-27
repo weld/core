@@ -98,10 +98,13 @@ public class ServletLifecycle extends AbstractLifecycle
     */
    public void beginRequest(HttpServletRequest request)
    {
-      BeanStore beanStore = new ConcurrentHashMapBeanStore();
-      request.setAttribute(REQUEST_ATTRIBUTE_NAME, beanStore);
-      super.beginRequest(request.getRequestURI(), beanStore);
-      restoreSessionContext(request.getSession());
+      if (request.getAttribute(REQUEST_ATTRIBUTE_NAME) == null)
+      {
+         BeanStore beanStore = new ConcurrentHashMapBeanStore();
+         request.setAttribute(REQUEST_ATTRIBUTE_NAME, beanStore);
+         super.beginRequest(request.getRequestURI(), beanStore);
+         restoreSessionContext(request.getSession());
+      }
    }
 
    /**
@@ -111,13 +114,17 @@ public class ServletLifecycle extends AbstractLifecycle
     */
    public void endRequest(HttpServletRequest request)
    {
-      BeanStore beanStore = (BeanStore) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
-      if (beanStore == null)
+      if (request.getAttribute(REQUEST_ATTRIBUTE_NAME) != null)
       {
-         throw new IllegalStateException("Cannot obtain request scoped beans from the request");
+         BeanStore beanStore = (BeanStore) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
+         if (beanStore == null)
+         {
+            throw new IllegalStateException("Cannot obtain request scoped beans from the request");
+         }
+         super.endRequest(request.getRequestURI(), beanStore);
+         request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
+         SessionContext.INSTANCE.setBeanStore(null);
       }
-      super.endRequest(request.getRequestURI(), beanStore);
-      SessionContext.INSTANCE.setBeanStore(null);
    }
 
 }
