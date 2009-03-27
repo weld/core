@@ -62,9 +62,9 @@
          </para>
          
       </section>
-      
-      <section>
-         <title>EJB Discovery</title>
+       
+       <section>
+         <title>EJB services</title>
          
          <para>
             The Web Beans RI also delegates EJB3 bean discovery to the container
@@ -73,18 +73,15 @@
             EJBDescriptor should be discovered:
          </para>
          
-         <programlisting role="JAVA"><![CDATA[public interface EjbDiscovery
+         <programlisting role="JAVA"><![CDATA[public interface EjbServices
 {
-   public static final String PROPERTY_NAME = EjbDiscovery.class.getName();
    
    /**
     * Gets a descriptor for each EJB in the application
     * 
     * @return The bean class to descriptor map 
     */
-   public Iterable<EjbDescriptor<?>> discoverEjbs();
-   
-}]]></programlisting>
+   public Iterable<EjbDescriptor<?>> discoverEjbs();]]></programlisting>
          
          <programlisting role="JAVA"><![CDATA[public interface EjbDescriptor<T> {
    
@@ -162,18 +159,12 @@
              local business interface (encapsulating the interface class and 
              jndi name used to look up an instance of the EJB).
           </para>
-       
-       </section>
-       
-       <section>
-         <title><literal>@EJB</literal>, <literal>@PersistenceContext</literal> and <literal>@Resource</literal> resolution</title>
          
          <para>
-            The resolution of <literal>@EJB</literal>, 
-            <literal>@PersistenceContext</literal> and 
+            The resolution of <literal>@EJB</literal> and
             <literal>@Resource</literal> is delegated to the container. You must
             provide an implementation of 
-            <literal>org.jboss.webbeans.ejb.spi.EjbResolver</literal> which 
+            <literal>org.jboss.webbeans.ejb.spi.EjbServices</literal> which 
             provides these operations. Web Beans passes in the 
             <literal>javax.inject.manager.InjectionPoint</literal> the 
             resolution is for, as well as the <literal>NamingContext</literal> 
@@ -190,7 +181,23 @@
 <!--            <literal>@PreDestroy</literal> lifecycle callbacks.-->
 <!--         </para>-->
          
-       </section>
+      </section>
+       
+      <section>
+         <title>JPA services</title>
+         
+         <para>
+            Just as resolution of <literal>@EJB</literal> is delegated to the
+            container, so is resolution of 
+            <literal>@PersistenceContext</literal>.
+         </para>
+         
+         <para>
+             OPEN ISSUE: Web Beans also requires the container to provide a list
+             of entities in the deployment, so that they aren't discovered as
+             simple beans.
+         </para>
+      </section>
        
       <section>
          <title>Transaction Services</title>
@@ -280,20 +287,27 @@
          
          <para>
             The bootstrap is split into phases, bootstrap initialization and 
-            bootstrap. Initialization will create a manager, and add the 
+            boot and shutdown. Initialization will create a manager, and add the 
             standard (specification defined) contexts. Bootstrap will discover
             EJBs, classes and XML; add beans defined using annotations; add
             beans defined using XML; and validate all beans.
          </para>
          
          <para>
+            The bootstrap supports multiple environments. Different environments
+            require different services to be present (for example servlet 
+            doesn't require transaction, EJB or JPA services). By default an
+            EE environment is assumed, but you can adjust the environment by 
+            calling <literal>bootstrap.setEnvironment()</literal>.
+         </para>
+         
+         <para>
             To initialize the bootstrap you call 
             <literal>Bootstrap.initialize()</literal>. Before calling 
-            <literal>initialize()</literal> you must have called 
-            <literal>Bootstrap.setEjbResolver()</literal>. If you are not using 
-            the built in <literal>DefaultNamingContext</literal> or the built in
-            <literal>DefaultResourceLoader</literal> you must set these before
-            calling <literal>initialize()</literal>.
+            <literal>initialize()</literal>, you must register any services
+            required by your environment. You can do this by calling
+            <literal>bootstrap.getServices().add(JpaServices.class, new MyJpaServices())</literal>.
+            You must also provide the application context bean store.
          </para>
          
          <para>
@@ -304,10 +318,6 @@
          
          <para>
             To boot the container you call <literal>Bootstrap.boot()</literal>.
-            Before calling <literal>boot()</literal> you must have called 
-            <literal>Bootstrap.setWebBeanDiscovery()</literal>, 
-            <literal>Bootstrap.setEjbDiscovery()</literal> and 
-            <literal>Bootstrap.setApplicationContext()</literal>. 
          </para>
          
          <para>
@@ -493,13 +503,13 @@
          </varlistentry>
          <varlistentry>
             <term>
-               The <literal>webbeans-ri.jar</literal>
+               The <literal>webbeans-core.jar</literal>
             </term>
             <listitem>
                <para>
                   If you are integrating the Web Beans into an environment that
                   supports deployment of applications, you must insert the
-                  <literal>webbeans-ri.jar</literal> into the applications
+                  <literal>webbeans-core.jar</literal> into the applications
                   isolated classloader. It cannot be loaded from a shared 
                   classloader.
                </para>
