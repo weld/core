@@ -29,8 +29,8 @@ import org.jboss.webbeans.log.Logging;
 
 /**
  * Implementation of the Web Beans lifecycle that can react to servlet events
- * 
- * This implementation boots the Web Beans container.
+ * and drives the Session, Conversation and Request (for Servlet requests)
+ * lifecycle
  * 
  * @author Pete Muir
  * @author Nicklas Karlsson
