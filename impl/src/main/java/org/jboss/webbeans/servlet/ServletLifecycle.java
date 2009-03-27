@@ -112,7 +112,6 @@ public class ServletLifecycle extends AbstractLifecycle
    public void endRequest(HttpServletRequest request)
    {
       BeanStore beanStore = (BeanStore) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
-      request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
       super.endRequest(request.getRequestURI(), beanStore);
       SessionContext.INSTANCE.setBeanStore(null);
    }
