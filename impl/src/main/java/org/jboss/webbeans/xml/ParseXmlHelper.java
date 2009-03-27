@@ -54,7 +54,7 @@ public class ParseXmlHelper
       }
 
       if (classesList.size() == 0)
-         throw new DefinitionException("Could not find '" + className + "'");
+         throw new DefinitionException("Could not find '" + className + "'", new DefinitionException(className + " not a Java type"));
 
       if (classesList.size() == 1)
          return classesList.get(0);

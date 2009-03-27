@@ -94,10 +94,15 @@ public abstract class BeanChildrenCheckerImpl implements BeanChildrenChecker
             //TODO: bean child element declaring a parameter of the bean constructor
             return;
          }
-         throw new DefinitionException();//bean child element can't be interpreted as a Java class or interface or Java Annotation type
+         throw new DefinitionException(new DefinitionException(beanChildElement.getName() + " can't be interpreted as a Java class or interface or Java Annotation type"));
       }
       catch(DefinitionException e)
       {
+         if(!(e.getCause() instanceof DefinitionException))
+         {
+            throw new DefinitionException(e);
+         }
+         
          Element beanElement = beanChildElement.getParent();
          Namespace beanNamespace = beanElement.getNamespace();
          Namespace beanChildNamespace = beanChildElement.getNamespace();
