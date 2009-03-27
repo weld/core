@@ -112,6 +112,10 @@ public class ServletLifecycle extends AbstractLifecycle
    public void endRequest(HttpServletRequest request)
    {
       BeanStore beanStore = (BeanStore) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
+      if (beanStore == null)
+      {
+         throw new IllegalStateException("Cannot obtain request scoped beans from the request");
+      }
       super.endRequest(request.getRequestURI(), beanStore);
       SessionContext.INSTANCE.setBeanStore(null);
    }
