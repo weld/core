@@ -18,6 +18,10 @@
 			<orgname>Red Hat Middleware LLC</orgname>
 		</affiliation>
 	</author>
+   <author>
+      <firstname>David</firstname>
+      <surname>Allen</surname>
+   </author>
 	<othercredit>
 		<firstname>Nicola</firstname>
 		<surname>Benaglia</surname>

@@ -69,8 +69,20 @@
       <xi:include href="extend.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       
     </part>
-
+    
     <xi:include href="next.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+    
+    <part>
+      <title>Web Beans Reference</title>
+      
+      <xi:include href="part5.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      
+      <xi:include href="environments.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="extensions.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      
+    </part>
+
+    
     <xi:include href="ri-spi.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
     
 </book>

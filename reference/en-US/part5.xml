@@ -1,0 +1,23 @@
+<!DOCTYPE partintro PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+
+<partintro>
+
+   <para>
+      Web Beans is the reference implementation of JSR-299, and is used by JBoss
+      AS and Glassfish to provide JSR-299 services for Java Enterprise Edition
+      applications. Web Beans also goes beyond the environments and APIs defined
+      by the JSR-299 specification and provides support for a number of other
+      environments (such as a servlet container such as Tomcat, or Java SE) and
+      additional APIs and modules (such as logging, XSD generation for the 
+      JSR-299 XML deployment descriptors).  
+   </para>
+   
+   <para>
+      If you want to get started quickly using Web Beans with JBoss AS or Tomcat
+      and experiment with one of the examples, take a look at <xref linkend="ri"/>.
+      Otherwise read on for a exhaustive discussion of using Web Beans in all
+      the environments and application servers it supports, as well the Web Beans
+      extensions.
+   </para>
+  
+</partintro>

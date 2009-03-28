@@ -1,170 +1,263 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 
 <chapter id="ri">
-   <title>The Web Beans Reference Implementation</title>
+   <title>Web Beans, the Reference Implementation of JSR-299</title>
 
    <para>
-     The Web Beans Reference Implementation is being developed at
+     The Web Beans is being developed at
      <ulink url="http://seamframework.org/WebBeans">the Seam project</ulink>.
      You can download the latest developer release of Web Beans from the
      <ulink url="http://seamframework.org/Download">the downloads page</ulink>.
    </para> 
 
     <para>
-      The Web Beans RI comes with a two deployable example applications:
+      Web Beans comes with a two deployable example applications:
       <literal>webbeans-numberguess</literal>, a war example, containing only
       simple beans, and <literal>webbeans-translator</literal> an ear example,
-      containing enterprise beans. To run the examples you'll need the following:
+      containing enterprise beans. There are also two variations on the 
+      numberguess example, the tomcat example (suitable for deployment to 
+      Tomcat) and the jsf2 example, which you can use if you are running JSF2.
+      To run the examples you'll need the following:
    </para>
    
    <itemizedlist>
      <listitem>
-       <para>the latest release of the Web Beans RI,</para>
+       <para>the latest release of Web Beans,</para>
      </listitem>
      <listitem>
-       <para>JBoss AS 5.0.1.GA, and</para>
+       <para>JBoss AS 5.0.1.GA, or</para>
+     </listitem>
+     <listitem>
+       <para>Apache Tomcat 6.0.x, and</para>
      </listitem>
      <listitem>
        <para>Ant 1.7.0.</para>
      </listitem>
    </itemizedlist>
    
-   <para>
-      Currently, the Web Beans RI only runs on JBoss Application Server 5. 
-      You'll need to download JBoss AS 5.0.1.GA from 
-      <ulink url="http://www.jboss.org/jbossas/downloads/">jboss.org</ulink>,
-      and unzip it. For example:
-   </para>
+   <section>
+      <title>Using JBoss AS 5</title>
    
-   <programlisting><![CDATA[$ cd /Applications
+      <para> 
+         You'll need to download JBoss AS 5.0.1.GA from 
+         <ulink url="http://www.jboss.org/jbossas/downloads/">jboss.org</ulink>,
+         and unzip it. For example:
+      </para>
+      
+      <programlisting><![CDATA[$ cd /Applications
 $ unzip ~/jboss-5.0.1.GA.zip]]></programlisting>
 
-   <para>
-      Next, download the Web Beans RI from 
-      <ulink url="http://seamframework.org/Download">seamframework.org</ulink>,
-      and unzip it. For example
-   </para>
-   
-   <programlisting><![CDATA[$ cd ~/
+      <para>
+         Next, download Web Beans from 
+         <ulink url="http://seamframework.org/Download">seamframework.org</ulink>,
+         and unzip it. For example
+      </para>
+      
+      <programlisting><![CDATA[$ cd ~/
 $ unzip ~/webbeans-$VERSION.zip]]></programlisting>
 
    
-   <para>
-      Next, we need to tell Web Beans where JBoss is located. Edit
-      <literal>jboss-as/build.properties</literal> and set the
-      <literal>jboss.home</literal> property. For example:
-   </para>
-   
-   <programlisting>jboss.home=/Applications/jboss-5.0.1.GA</programlisting>
-   
-   <note>
       <para>
-         A new deployer,
-         <literal>webbeans.deployer</literal> is added to JBoss AS. This adds supports for
-         Web Bean archives to JBoss AS, and allows the Web Beans RI to query the
-         EJB3 container and discover which EJBs are installed in your 
-         application.
+         Next, we need to tell Web Beans where JBoss is located. Edit
+         <literal>jboss-as/build.properties</literal> and set the
+         <literal>jboss.home</literal> property. For example:
+      </para>
+      
+      <programlisting>jboss.home=/Applications/jboss-5.0.1.GA</programlisting>
+      
+      <para>
+         To install Web Beans, you'll need Ant 1.7.0 installed, and the 
+         <literal>ANT_HOME</literal> environment variable set. For example:
+      </para>
+      
+         <programlisting>$ unzip apache-ant-1.7.0.zip
+$ export ANT_HOME=~/apache-ant-1.7.0</programlisting>
+
+      <para>
+         Then, you can install the update. The update script will use Maven to
+         download Web Beans automatically.
+      </para>
+      
+      <programlisting>$ cd webbeans-$VERSION/jboss-as
+$ ant update</programlisting>
+
+      <para>
+         Now, you're ready to deploy your first example!
+      </para>
+      
+      <tip>
+         <para>
+            The build scripts for the examples offer a number of targets for 
+            JBoss AS, these are:
+         </para>
+         <itemizedlist>
+            <listitem>
+               <para>
+                  <literal>ant restart</literal> - deploy the example in exploded 
+                  format
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  <literal>ant explode</literal> - update an exploded example, without
+                  restarting the deployment
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  <literal>ant deploy</literal> - deploy the example in compressed jar format
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  <literal>ant undeploy</literal> - remove the example from the server
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  <literal>ant clean</literal> - clean the example
+              </para>
+            </listitem>
+         </itemizedlist>
+      </tip>
+   
+      <para>
+         To deploy the numberguess example:
+      </para>
+   
+      <programlisting>$ cd examples/numberguess
+ant deploy</programlisting>
+
+      <para>
+         Start JBoss AS:
+      </para>
+      
+      <programlisting>$ /Application/jboss-5.0.0.GA/bin/run.sh</programlisting>
+      
+      <tip>
+         <para>
+            If you use Windows, use the <literal>run.bat</literal>script.
+         </para>
+      </tip>
+   
+      <para>
+         Wait for the application to deploy, and enjoy hours of fun at
+         <ulink url="http://localhost:8080/webbeans-numberguess" />!
       </para>
       
       <para>
-         Web Beans is bundled with JBoss AS 5.1 and above.
+         Web Beans includes a second simple example that will translate your text
+         into Latin. The numberguess example is a war example, and uses only simple
+         beans; the translator example is an ear example, and includes enterprise
+         beans, packaged in an EJB module. To try it out:
       </para>
-   </note>
    
-   <para>
-      To install Web Beans, you'll need Ant 1.7.0 installed, and the 
-      <literal>ANT_HOME</literal> environment variable set. For example:
-   </para>
-   
-      <programlisting>$ unzip apache-ant-1.7.0.zip
-$ export ANT_HOME=~/apache-ant-1.7.0</programlisting>
-
-   <para>
-      Then, you can install the update. The update script will use Maven to
-      download Web Beans automatically.
-   </para>
-   
-   <programlisting>$ cd webbeans-$VERSION/jboss-as
-$ ant update</programlisting>
-
-   <para>
-      Now, you're ready to deploy your first example!
-   </para>
-   
-   <tip>
-      <para>
-         The build scripts for the examples offer a number of targets, these 
-         are:
-      </para>
-      <itemizedlist>
-         <listitem>
-            <para>
-               <literal>ant restart</literal> - deploy the example in exploded 
-               format
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               <literal>ant explode</literal> - update an exploded example, without
-               restarting the deployment
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               <literal>ant deploy</literal> - deploy the example in compressed jar format
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               <literal>ant undeploy</literal> - remove the example from the server
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               <literal>ant clean</literal> - clean the example
-           </para>
-         </listitem>
-      </itemizedlist>
-   </tip>
-
-   <para>
-      To deploy the numberguess example:
-   </para>
-
-   <programlisting>$ cd examples/numberguess
+      <programlisting>$ cd examples/translator
 ant deploy</programlisting>
-
-   <para>
-      Start JBoss AS:
-   </para>
    
-   <programlisting>$ /Application/jboss-5.0.0.GA/bin/run.sh</programlisting>
-   
-   <tip>
       <para>
-         If you use Windows, use the <literal>run.bat</literal>script.
+         Wait for the application to deploy, and visit
+         <ulink url="http://localhost:8080/webbeans-translator" />!
       </para>
-   </tip>
-
-   <para>
-      Wait for the application to deploy, and enjoy hours of fun at
-      <ulink url="http://localhost:8080/webbeans-numberguess" />!
-   </para>
+      
+   </section>
    
-   <para>
-      The Web Beans RI includes a second simple example that will translate your text
-      into Latin. The numberguess example is a war example, and uses only simple
-      beans; the translator example is an ear example, and includes enterprise
-      beans, packaged in an EJB module. To try it out:
-   </para>
+   <section>
+      <title>Using Apache Tomcat 6.0</title>
+      
+      <para> 
+         You'll need to download Tomcat 6.0.18 or later from 
+         <ulink url="http://tomcat.apache.org/download-60.cgi">tomcat.apache.org</ulink>,
+         and unzip it. For example:
+      </para>
+      
+      <programlisting><![CDATA[$ cd /Applications
+$ unzip ~/apache-tomcat-6.0.18.zip]]></programlisting>
 
-   <programlisting>$ cd examples/translator
-ant deploy</programlisting>
+      <para>
+         Next, download Web Beans from 
+         <ulink url="http://seamframework.org/Download">seamframework.org</ulink>,
+         and unzip it. For example
+      </para>
+      
+      <programlisting><![CDATA[$ cd ~/
+$ unzip ~/webbeans-$VERSION.zip]]></programlisting>
 
-   <para>
-      Wait for the application to deploy, and visit
-      <ulink url="http://localhost:8080/webbeans-translator" />!
-   </para>
+      <para>
+         Next, we need to tell Web Beans where Tomcat is located. Edit
+         <literal>jboss-as/build.properties</literal> and set the
+         <literal>tomcat.home</literal> property. For example:
+      </para>
+      
+      <programlisting>tomcat.home=/Applications/apache-tomcat-6.0.18</programlisting>
+
+      <tip>
+         <para>
+            The build scripts for the examples offer a number of targets for 
+            Tomcat, these are:
+         </para>
+         <itemizedlist>
+            <listitem>
+               <para>
+                  <literal>ant tomcat.restart</literal> - deploy the example in exploded 
+                  format
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  <literal>ant tomcat.explode</literal> - update an exploded example, without
+                  restarting the deployment
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  <literal>ant tomcat.deploy</literal> - deploy the example in compressed jar format
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  <literal>ant tomcat.undeploy</literal> - remove the example from the server
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  <literal>ant tomcat.clean</literal> - clean the example
+              </para>
+            </listitem>
+         </itemizedlist>
+      </tip>
+      
+      <para>
+         To deploy the numberguess example for tomcat:
+      </para>
+   
+      <programlisting>$ cd examples/tomcat
+ant tomcat.deploy</programlisting>
+
+      <para>
+         Start Tomcat:
+      </para>
+      
+      <programlisting>$ /Applications/apache-tomcat-6.0.18/bin/startup.sh</programlisting>
+      
+      <tip>
+         <para>
+            If you use Windows, use the <literal>startup.bat</literal>script.
+         </para>
+      </tip>
+   
+      <para>
+         Wait for the application to deploy, and enjoy hours of fun at
+         <ulink url="http://localhost:8080/webbeans-numberguess" />!
+      </para>
+
+   </section>
+   
+   <section>
+      <title>Using GlassFish</title>
+      
+      <para>TODO</para>
+   </section>
    
    <section>
       <title>The numberguess example</title>
@@ -278,8 +371,8 @@ ant deploy</programlisting>
       
       <note>
          <para>
-            Whilst this demo is a JSF demo, you can use the Web Beans RI with 
-            any Servlet based web framework.
+            Whilst this demo is a JSF demo, you can use Web Beans with any 
+            Servlet based web framework.
          </para>
       </note>
       
@@ -549,6 +642,37 @@ public class Game
    }
    
 }]]></programlisting>
+
+      <section>
+         <title>The numberguess example for Tomcat</title>
+         
+         <para>
+            The numberguess for Tomcat differs in a couple of ways. Firstly, 
+            Web Beans should be deployed as a Web Application library in
+            <literal>WEB-INF/lib</literal>. For your convenience we provide a
+            single jar suitable for running Web Beans on Tomcat 
+            <literal>webbeans-tomcat.jar</literal>.
+         </para>
+         
+         <tip>
+            <para>
+               Of course, you must also include JSF and EL, as well common 
+               annotations (<literal>jsr250-api.jar</literal>) which a JEE server
+               includes by default.
+            </para>
+         </tip>
+         
+         <para>
+            Secondly, we need to explicitly specify the Tomcat servlet listener
+            (used to boot Web Beans, and control it's interaction with requests)
+            in <literal>web.xml</literal>:
+         </para>
+         
+         <programlisting><![CDATA[<listener>
+   <listener-class>org.jboss.webbeans.environment.tomcat.Listener</listener-class>
+</listener>]]></programlisting>
+         
+      </section>
    </section>
    
    <section>

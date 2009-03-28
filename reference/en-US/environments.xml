@@ -1,0 +1,168 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
+
+<chapter id="environments">
+   <title>Application Servers and environments supported by Web Beans</title>
+
+   <section>
+      <title>Using Web Beans with JBoss AS</title>
+      
+      <para>
+         No special configuration of your application, beyond adding either
+         <literal>META-INF/beans.xml</literal> or 
+         <literal>WEB-INF/beans.xml</literal> is needed.
+      </para>
+      
+      <para>
+         If you are using JBoss AS 5.0.1.GA then you'll need to install Web 
+         Beans as an extra. First we need to tell Web Beans where JBoss is located. Edit
+         <literal>jboss-as/build.properties</literal> and set the
+         <literal>jboss.home</literal> property. For example:
+      </para>
+      
+      <programlisting>jboss.home=/Applications/jboss-5.0.1.GA</programlisting>
+      
+      <para>
+         Now we can install Web Beans:
+      </para>
+      
+      <programlisting>$ cd webbeans-$VERSION/jboss-as
+$ ant update</programlisting>
+
+      <note>
+         <para>
+            A new deployer,
+            <literal>webbeans.deployer</literal> is added to JBoss AS. This adds supports for
+            JSR-299 deployments to JBoss AS, and allows Web Beans to query the
+            EJB3 container and discover which EJBs are installed in your 
+            application.
+         </para>
+      </note>
+      
+      <para>
+         Web Beans is built into all releases of JBoss AS from 5.1 onwards.
+      </para>
+
+   </section>
+   
+   <section>
+      <title>Glassfish</title>
+      
+      <para>TODO</para>
+   </section>
+   
+   <section>
+      <title>Tomcat</title>
+      
+      <para>Web Beans can be used in Tomcat 6.0.</para>
+      
+      <note>
+         <para>
+            Web Beans doesn't support deploying session beans, injection using
+            <literal>@EJB</literal>, <literal>@Resource</literal>, or 
+            <literal>@PersistenceContext</literal> or using transactional events
+            on Tomcat.
+         </para>
+      </note>
+      
+      <para>
+         Web Beans should be used as a web application library in Tomcat. You 
+         should place <literal>webbeans-tomcat.jar</literal> in
+         <literal>WEB-INF/lib</literal>. <literal>webbeans-tomcat.jar</literal>
+         is an "uber-jar" provided for your convenience. Instead, you could use
+         it's component jars: 
+      </para>
+      
+      <itemizedlist>
+         <listitem>
+            <para>
+               <literal>jsr299-api.jar</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>webbeans-api.jar</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>webbeans-spi.jar</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>webbeans-core.jar</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>webbeans-logging.jar</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>webbeans-tomcat-int.jar</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>javassist.jar</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>dom4j.jar</literal>
+            </para>
+         </listitem>
+      </itemizedlist>
+      
+      <para>
+         You also need to explicitly specify the Tomcat servlet listener (used to
+         boot Web Beans, and control it's interaction with requests) in 
+         <literal>web.xml</literal>:
+      </para>
+         
+      <programlisting><![CDATA[<listener>
+   <listener-class>org.jboss.webbeans.environment.tomcat.Listener</listener-class>
+</listener>]]></programlisting>
+
+      <para>
+         Tomcat has a read-only JNDI, so Web Beans can't automatically bind the
+         Manager. To bind the Manager into JNDI, you should add the following to
+         your <literal>META-INF/context.xml</literal>:
+      </para>
+      
+      <programlisting><![CDATA[<Resource name="app/Manager" 
+          auth="Container"
+          type="javax.inject.manager.Manager"
+          factory="org.jboss.webbeans.resources.ManagerObjectFactory"/>
+]]></programlisting>
+
+      <para>
+         and make it available to your deployment by adding this to 
+         <literal>web.xml</literal>:
+      </para>
+      
+      <programlisting><![CDATA[<resource-env-ref>
+  <resource-env-ref-name>
+    app/Manager
+  </resource-env-ref-name>
+  <resource-env-ref-type>
+    javax.inject.manager.Manager
+  </resource-env-ref-type>
+</resource-env-ref>]]></programlisting>
+
+      <para>
+         Tomcat doesn't only allows you to bind entries to
+         <literal>java:comp/env</literal>, so the Manager will be available at
+         <literal>java:comp/env/app/Manager</literal>
+      </para>
+
+   </section>
+   
+   <section>
+      <title>Java SE</title>
+      
+      <para>TODO</para>
+   </section>
+
+</chapter>
