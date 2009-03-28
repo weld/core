@@ -7,6 +7,8 @@ import javax.annotation.Named;
 import javax.annotation.PostConstruct;
 import javax.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.inject.AnnotationLiteral;
 import javax.inject.Current;
@@ -91,4 +93,16 @@ public class Game implements Serializable
       this.number = manager.getInstanceByType(Integer.class, new AnnotationLiteral<Random>(){});
    }
    
+   public void validateNumberRange(FacesContext context,  UIComponent toValidate, Object value)
+   {
+      int input = (Integer) value;
+
+      if (input < smallest || input > biggest) 
+	   {
+         ((UIInput)toValidate).setValid(false);
+
+         FacesMessage message = new FacesMessage("Invalid guess");
+         context.addMessage(toValidate.getClientId(context), message);
+      }
+   }
 }

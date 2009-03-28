@@ -20,9 +20,9 @@
      
           <div>
              Your guess: 
-             <h:inputText id="inputGuess" value="#{game.guess}" required="true" size="3" disabled="#{game.number eq game.guess}">
-                <f:validateLongRange maximum="#{game.biggest}" minimum="#{game.smallest}"/>
-             </h:inputText>
+             <h:inputText id="inputGuess" value="#{game.guess}" required="true" size="3" disabled="#{game.number eq game.guess}" 
+			              validator="#{game.validateNumberRange}">
+			 </h:inputText>
             <h:commandButton id="GuessButton" value="Guess" action="#{game.check}" disabled="#{game.number eq game.guess}"/>
           </div>
           <div>
