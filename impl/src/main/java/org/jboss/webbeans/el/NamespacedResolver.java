@@ -51,7 +51,7 @@ class NamespacedResolver
       }
       catch (Exception e)
       {
-         throw new ExecutionException("Error resolving EL " + property);
+         throw new ExecutionException("Error resolving EL " + property, e);
       }
       
       if (!context.isPropertyResolved())
