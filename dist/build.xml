@@ -13,8 +13,8 @@
 	<property name="dist.wb.lib.dir" value="${dist.dir}/lib/webbeans" />
 	<property name="dist.doc.dir" value="${dist.dir}/doc" />
 	<property name="dist.apidocs.dir" value="${dist.dir}/doc/apidocs" />
-	<property name="dist.src.dir" value="${dist.dir}/src" />
-	<property name="dist.src.doc.dir" value="${dist.src.dir}/reference" />
+	
+	<property file="versions.properties" />
 	
 	<target name="dist" description="Build the distribution">
 		
@@ -30,29 +30,6 @@
 		<delete dir="${wbri.dir}/impl/ObjectStore" />
 		<delete dir="${dist.dir}" failonerror="false"/>
 		<mkdir dir="${dist.dir}"/>
-		
-		<mkdir dir="${dist.src.dir}" />
-		      
-      <copy todir="${dist.src.dir}">
-         <fileset dir="${wbri.dir}">
-            <include name="impl/**" />
-         	<include name="spi/**" />
-         	<include name="api/**" />
-         	<include name="pom.xml" />
-         	<exclude name="**/.settings/**" />
-         	<exclude name="**/.classpath" />
-         	<exclude name="**/.project" />
-         </fileset>
-      </copy>
-		
-		<copy todir="${dist.src.doc.dir}">
-			<fileset dir="${refdoc.dir}">
-				<exclude name="**/.settings/**" />
-            <exclude name="**/.classpath" />
-            <exclude name="**/.project" />
-				<exclude name="**/*.pdf" />
-			</fileset>
-      </copy>
 
 		<copy todir="${dist.dir}">
          <fileset dir="${wbri.dir}">
@@ -85,9 +62,12 @@
 		<maven target="clean" basedir="${refdoc.dir}" />
 		
 		<maven target="javadoc:jar install" basedir="${wbri.dir}" />
+		
 		<artifact:dependencies filesetId="webbeans.fileset" versionsId="webbeans.versions" sourcesfilesetid="webbeans.sources.fileset" javadocfilesetid="webbeans.javadocs.fileset">
 		   <dependency groupId="org.jboss.webbeans" artifactId="webbeans-core" version="${version}"/>
 			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-spi" version="${version}"/>
+			<dependency groupId="org.jboss.webbeans.tomcat" artifactId="webbeans-tomcat" version="${webbeans.tomcat.version}"/>
+			<dependency groupId="org.jboss.webbeans.tomcat" artifactId="webbeans-tomcat-int" version="${webbeans.tomcat.version}"/>
 		   <dependency groupId="org.jboss.webbeans" artifactId="jsr299-api" version="${version}"/>
 		   <remoteRepository id="repository.jboss.org" url="http://repository.jboss.org/maven2" />
 		</artifact:dependencies>
@@ -108,6 +88,7 @@
 		<unzip dest="${dist.apidocs.dir}">
 		   <fileset dir="target">
 		      <include name="jsr299-api-javadoc.jar"/>
+		   	<include name="webbeans-api-javadoc.jar"/>
 		   </fileset>
 		</unzip>
 		
@@ -116,8 +97,7 @@
 	   <copy todir="${dist.wb.lib.dir}">
          <fileset dir="target">
             <include name="webbeans-*.jar" />
-         	<include name="jsr299-api.jar" />
-            <include name="google-collections.jar" />
+         	<include name="jsr299-api*.jar" />
          </fileset>
       </copy>
 		<delete dir="target" failonerror="false"/>
