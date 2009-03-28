@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-17 20:14+0000\n"
+"POT-Creation-Date: 2009-03-28 17:09+0000\n"
 "PO-Revision-Date: 2009-02-28 15:04-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
@@ -62,4 +62,10 @@ msgstr "Obtendo o máximo da tipificação forte (strong typing)"
 #: master.xml:64
 #, no-c-format
 msgid "Web Beans and the Java EE ecosystem"
+msgstr ""
+
+#. Tag: title
+#: master.xml:76
+#, no-c-format
+msgid "Web Beans Reference"
 msgstr ""

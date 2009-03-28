@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ri\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-17 20:14+0000\n"
+"POT-Creation-Date: 2009-03-28 17:09+0000\n"
 "PO-Revision-Date: 2009-01-23 11:14+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -27,18 +27,18 @@ msgstr ""
 
 #. Tag: title
 #: ri.xml:4
-#, no-c-format
-msgid "The Web Beans Reference Implementation"
+#, fuzzy, no-c-format
+msgid "Web Beans, the Reference Implementation of JSR-299"
 msgstr "Web Beans 참조 구현 "
 
 #. Tag: para
 #: ri.xml:6
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The Web Beans Reference Implementation is being developed at <ulink url="
-"\"http://seamframework.org/WebBeans\">the Seam project</ulink>. You can "
-"download the latest developer release of Web Beans from the <ulink url="
-"\"http://seamframework.org/Download\">the downloads page</ulink>."
+"The Web Beans is being developed at <ulink url=\"http://seamframework.org/"
+"WebBeans\">the Seam project</ulink>. You can download the latest developer "
+"release of Web Beans from the <ulink url=\"http://seamframework.org/Download"
+"\">the downloads page</ulink>."
 msgstr ""
 "Web Beans 참조 구현 (Web Beans Reference Implementation)은 <ulink url="
 "\"http://seamframework.org/WebBeans\">Seam 프로젝트</ulink>에서 개발되고 있습"
@@ -47,12 +47,15 @@ msgstr ""
 
 #. Tag: para
 #: ri.xml:13
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The Web Beans RI comes with a two deployable example applications: "
+"Web Beans comes with a two deployable example applications: "
 "<literal>webbeans-numberguess</literal>, a war example, containing only "
 "simple beans, and <literal>webbeans-translator</literal> an ear example, "
-"containing enterprise beans. To run the examples you'll need the following:"
+"containing enterprise beans. There are also two variations on the "
+"numberguess example, the tomcat example (suitable for deployment to Tomcat) "
+"and the jsf2 example, which you can use if you are running JSF2. To run the "
+"examples you'll need the following:"
 msgstr ""
 "Web Beans RI는 배치 가능한 두 가지 애플리케이션 예로 되어 있습니다: war 예에"
 "는 심플 beans 만이 들어 있는 <literal>webbeans-numberguess</literal>가 있고 "
@@ -60,37 +63,48 @@ msgstr ""
 "literal>가 있습니다. 예를 실행하려면, 다음 사항이 필요합니다:           "
 
 #. Tag: para
-#: ri.xml:22
-#, no-c-format
-msgid "the latest release of the Web Beans RI,"
+#: ri.xml:25
+#, fuzzy, no-c-format
+msgid "the latest release of Web Beans,"
 msgstr "최신 Web Beans RI 릴리즈 "
 
 #. Tag: para
-#: ri.xml:25
+#: ri.xml:28
 #, fuzzy, no-c-format
-msgid "JBoss AS 5.0.1.GA, and"
+msgid "JBoss AS 5.0.1.GA, or"
 msgstr "JBoss AS 5.0.0.GA, 및 "
 
 #. Tag: para
-#: ri.xml:28
+#: ri.xml:31
+#, no-c-format
+msgid "Apache Tomcat 6.0.x, and"
+msgstr ""
+
+#. Tag: para
+#: ri.xml:34
 #, no-c-format
 msgid "Ant 1.7.0."
 msgstr "Ant 1.7.0."
 
+#. Tag: title
+#: ri.xml:39
+#, no-c-format
+msgid "Using JBoss AS 5"
+msgstr ""
+
 #. Tag: para
-#: ri.xml:32
+#: ri.xml:41
 #, fuzzy, no-c-format
 msgid ""
-"Currently, the Web Beans RI only runs on JBoss Application Server 5. You'll "
-"need to download JBoss AS 5.0.1.GA from <ulink url=\"http://www.jboss.org/"
-"jbossas/downloads/\">jboss.org</ulink>, and unzip it. For example:"
+"You'll need to download JBoss AS 5.0.1.GA from <ulink url=\"http://www.jboss."
+"org/jbossas/downloads/\">jboss.org</ulink>, and unzip it. For example:"
 msgstr ""
 "현재, Web Beans RI는 JBoss Application Server 5에서만 실행됩니다. <ulink url="
 "\"http://www.jboss.org/jbossas/downloads/\">jboss.org</ulink>에서 JBoss AS "
 "5.0.0.GA를 다운로드하여 압축 풀기를 합니다. 예:   "
 
 #. Tag: programlisting
-#: ri.xml:39
+#: ri.xml:47
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[$ cd /Applications\n"
@@ -100,17 +114,17 @@ msgstr ""
 "$ unzip ~/jboss-5.0.0.GA.zip]]>"
 
 #. Tag: para
-#: ri.xml:41
-#, no-c-format
+#: ri.xml:49 ri.xml:170
+#, fuzzy, no-c-format
 msgid ""
-"Next, download the Web Beans RI from <ulink url=\"http://seamframework.org/"
-"Download\">seamframework.org</ulink>, and unzip it. For example"
+"Next, download Web Beans from <ulink url=\"http://seamframework.org/Download"
+"\">seamframework.org</ulink>, and unzip it. For example"
 msgstr ""
 "다음으로 <ulink url=\"http://seamframework.org/Download\">seamframework.org</"
 "ulink>에서 Web Beans RI를 다운로드하여 압축 풀기를 합니다. 예: "
 
 #. Tag: programlisting
-#: ri.xml:47
+#: ri.xml:55 ri.xml:176
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[$ cd ~/\n"
@@ -120,7 +134,7 @@ msgstr ""
 "$ unzip ~/webbeans-1.0.0.ALPHA1.zip]]>"
 
 #. Tag: para
-#: ri.xml:50
+#: ri.xml:58
 #, no-c-format
 msgid ""
 "Next, we need to tell Web Beans where JBoss is located. Edit <literal>jboss-"
@@ -132,34 +146,13 @@ msgstr ""
 "literal> 속성을 설정합니다. 예: "
 
 #. Tag: programlisting
-#: ri.xml:56
+#: ri.xml:64
 #, fuzzy, no-c-format
 msgid "jboss.home=/Applications/jboss-5.0.1.GA"
 msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
 
 #. Tag: para
-#: ri.xml:59
-#, fuzzy, no-c-format
-msgid ""
-"A new deployer, <literal>webbeans.deployer</literal> is added to JBoss AS. "
-"This adds supports for Web Bean archives to JBoss AS, and allows the Web "
-"Beans RI to query the EJB3 container and discover which EJBs are installed "
-"in your application."
-msgstr ""
-"현재, 두 가지 사항을 업데이트해야 합니다. 처음으로, 새로운 개발자 "
-"<literal>webbeans.deployer</literal>가 추가되어야 합니다. 이는 JBoss AS에 "
-"Web Bean 아카이브 지원을 추가하고 Web Beans RI가 EJB3 컨테이너를 커리하고 애"
-"플리케이션에 어떤 EJB가 있는 지를 검색합니다. 두번째로 JBoss EJB3로 업데이트"
-"해야 합니다. "
-
-#. Tag: para
-#: ri.xml:67
-#, no-c-format
-msgid "Web Beans is bundled with JBoss AS 5.1 and above."
-msgstr ""
-
-#. Tag: para
-#: ri.xml:72
+#: ri.xml:66
 #, fuzzy, no-c-format
 msgid ""
 "To install Web Beans, you'll need Ant 1.7.0 installed, and the "
@@ -169,7 +162,7 @@ msgstr ""
 "변수 모음을 설치합니다. 예:  "
 
 #. Tag: programlisting
-#: ri.xml:77
+#: ri.xml:71
 #, no-c-format
 msgid ""
 "$ unzip apache-ant-1.7.0.zip\n"
@@ -179,7 +172,7 @@ msgstr ""
 "$ export ANT_HOME=~/apache-ant-1.7.0"
 
 #. Tag: para
-#: ri.xml:79
+#: ri.xml:73
 #, fuzzy, no-c-format
 msgid ""
 "Then, you can install the update. The update script will use Maven to "
@@ -189,7 +182,7 @@ msgstr ""
 "여 Web Beans 및 EJB3를 자동으로 다운로드합니다. "
 
 #. Tag: programlisting
-#: ri.xml:84
+#: ri.xml:78
 #, fuzzy, no-c-format
 msgid ""
 "$ cd webbeans-$VERSION/jboss-as\n"
@@ -199,29 +192,30 @@ msgstr ""
 "$ ant update"
 
 #. Tag: para
-#: ri.xml:86
+#: ri.xml:80
 #, no-c-format
 msgid "Now, you're ready to deploy your first example!"
 msgstr "이제, 첫번째 예제를 배치할 준비가 되었습니다!      "
 
 #. Tag: para
-#: ri.xml:91
-#, no-c-format
+#: ri.xml:85
+#, fuzzy, no-c-format
 msgid ""
-"The build scripts for the examples offer a number of targets, these are:"
+"The build scripts for the examples offer a number of targets for JBoss AS, "
+"these are:"
 msgstr ""
 "예제 용 작성 스크립트는 여러 대상을 제공합니다. 이에는 다음과 같은 것이 있습"
 "니다:   "
 
 #. Tag: para
-#: ri.xml:97
+#: ri.xml:91
 #, no-c-format
 msgid "<literal>ant restart</literal> - deploy the example in exploded format"
 msgstr ""
 "<literal>ant restart</literal> - exploded 형식으로 예제를 배치합니다      "
 
 #. Tag: para
-#: ri.xml:103
+#: ri.xml:97
 #, no-c-format
 msgid ""
 "<literal>ant explode</literal> - update an exploded example, without "
@@ -231,7 +225,7 @@ msgstr ""
 "를 업데이트합니다     "
 
 #. Tag: para
-#: ri.xml:109
+#: ri.xml:103
 #, no-c-format
 msgid ""
 "<literal>ant deploy</literal> - deploy the example in compressed jar format"
@@ -239,25 +233,25 @@ msgstr ""
 "<literal>ant deploy</literal> - 압축된 jar 포맷으로 예제를 배치합니다   "
 
 #. Tag: para
-#: ri.xml:114
+#: ri.xml:108
 #, no-c-format
 msgid "<literal>ant undeploy</literal> - remove the example from the server"
 msgstr "<literal>ant undeploy</literal> - 서버에서 예제를 제거합니다 "
 
 #. Tag: para
-#: ri.xml:119
+#: ri.xml:113
 #, no-c-format
 msgid "<literal>ant clean</literal> - clean the example"
 msgstr "<literal>ant clean</literal> - 예제를 지웁니다 "
 
 #. Tag: para
-#: ri.xml:126
+#: ri.xml:120
 #, no-c-format
 msgid "To deploy the numberguess example:"
 msgstr "numberguess 예제를 배치하려면:    "
 
 #. Tag: programlisting
-#: ri.xml:130
+#: ri.xml:124
 #, no-c-format
 msgid ""
 "$ cd examples/numberguess\n"
@@ -267,25 +261,25 @@ msgstr ""
 "ant deploy"
 
 #. Tag: para
-#: ri.xml:132
+#: ri.xml:126
 #, no-c-format
 msgid "Start JBoss AS:"
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:136
+#: ri.xml:130
 #, fuzzy, no-c-format
 msgid "$ /Application/jboss-5.0.0.GA/bin/run.sh"
 msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
 
 #. Tag: para
-#: ri.xml:139
+#: ri.xml:133
 #, no-c-format
 msgid "If you use Windows, use the <literal>run.bat</literal>script."
 msgstr ""
 
 #. Tag: para
-#: ri.xml:144
+#: ri.xml:138 ri.xml:240
 #, no-c-format
 msgid ""
 "Wait for the application to deploy, and enjoy hours of fun at <ulink url="
@@ -295,13 +289,13 @@ msgstr ""
 "numberguess\"></ulink>에서 살펴보시기 바랍니다!   "
 
 #. Tag: para
-#: ri.xml:149
-#, no-c-format
+#: ri.xml:143
+#, fuzzy, no-c-format
 msgid ""
-"The Web Beans RI includes a second simple example that will translate your "
-"text into Latin. The numberguess example is a war example, and uses only "
-"simple beans; the translator example is an ear example, and includes "
-"enterprise beans, packaged in an EJB module. To try it out:"
+"Web Beans includes a second simple example that will translate your text "
+"into Latin. The numberguess example is a war example, and uses only simple "
+"beans; the translator example is an ear example, and includes enterprise "
+"beans, packaged in an EJB module. To try it out:"
 msgstr ""
 "Web Beans RI에는 텍스트를 라틴어로 번역하는 두 번째 예제가 있습니다. "
 "numberguess 예제는 war 예제로 심플 beans 만을 사용합니다; 번역 예제는 ear 예"
@@ -309,7 +303,7 @@ msgstr ""
 "려면 다음을 실행합니다:      "
 
 #. Tag: programlisting
-#: ri.xml:156
+#: ri.xml:150
 #, no-c-format
 msgid ""
 "$ cd examples/translator\n"
@@ -319,7 +313,7 @@ msgstr ""
 "ant deploy"
 
 #. Tag: para
-#: ri.xml:158
+#: ri.xml:152
 #, no-c-format
 msgid ""
 "Wait for the application to deploy, and visit <ulink url=\"http://"
@@ -329,13 +323,154 @@ msgstr ""
 "translator\"></ulink>에 가보십시오!   "
 
 #. Tag: title
-#: ri.xml:164
+#: ri.xml:160
+#, no-c-format
+msgid "Using Apache Tomcat 6.0"
+msgstr ""
+
+#. Tag: para
+#: ri.xml:162
+#, fuzzy, no-c-format
+msgid ""
+"You'll need to download Tomcat 6.0.18 or later from <ulink url=\"http://"
+"tomcat.apache.org/download-60.cgi\">tomcat.apache.org</ulink>, and unzip it. "
+"For example:"
+msgstr ""
+"다음으로 <ulink url=\"http://seamframework.org/Download\">seamframework.org</"
+"ulink>에서 Web Beans RI를 다운로드하여 압축 풀기를 합니다. 예: "
+
+#. Tag: programlisting
+#: ri.xml:168
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[$ cd /Applications\n"
+"$ unzip ~/apache-tomcat-6.0.18.zip]]>"
+msgstr ""
+"<![CDATA[$ cd /Applications\n"
+"$ unzip ~/jboss-5.0.0.GA.zip]]>"
+
+#. Tag: para
+#: ri.xml:178
+#, fuzzy, no-c-format
+msgid ""
+"Next, we need to tell Web Beans where Tomcat is located. Edit <literal>jboss-"
+"as/build.properties</literal> and set the <literal>tomcat.home</literal> "
+"property. For example:"
+msgstr ""
+"다음으로, JBoss가 위치해 있는 곳을 Web Beans에게 알려야 합니다. "
+"<literal>jboss-as/build.properties</literal>를 편집하고 <literal>jboss.home</"
+"literal> 속성을 설정합니다. 예: "
+
+#. Tag: programlisting
+#: ri.xml:184
+#, fuzzy, no-c-format
+msgid "tomcat.home=/Applications/apache-tomcat-6.0.18"
+msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
+
+#. Tag: para
+#: ri.xml:187
+#, fuzzy, no-c-format
+msgid ""
+"The build scripts for the examples offer a number of targets for Tomcat, "
+"these are:"
+msgstr ""
+"예제 용 작성 스크립트는 여러 대상을 제공합니다. 이에는 다음과 같은 것이 있습"
+"니다:   "
+
+#. Tag: para
+#: ri.xml:193
+#, fuzzy, no-c-format
+msgid ""
+"<literal>ant tomcat.restart</literal> - deploy the example in exploded format"
+msgstr ""
+"<literal>ant restart</literal> - exploded 형식으로 예제를 배치합니다      "
+
+#. Tag: para
+#: ri.xml:199
+#, fuzzy, no-c-format
+msgid ""
+"<literal>ant tomcat.explode</literal> - update an exploded example, without "
+"restarting the deployment"
+msgstr ""
+"<literal>ant explode</literal> - 배치 버전을 다시 시작하지 않고 exploded 예제"
+"를 업데이트합니다     "
+
+#. Tag: para
+#: ri.xml:205
+#, fuzzy, no-c-format
+msgid ""
+"<literal>ant tomcat.deploy</literal> - deploy the example in compressed jar "
+"format"
+msgstr ""
+"<literal>ant deploy</literal> - 압축된 jar 포맷으로 예제를 배치합니다   "
+
+#. Tag: para
+#: ri.xml:210
+#, fuzzy, no-c-format
+msgid ""
+"<literal>ant tomcat.undeploy</literal> - remove the example from the server"
+msgstr "<literal>ant undeploy</literal> - 서버에서 예제를 제거합니다 "
+
+#. Tag: para
+#: ri.xml:215
+#, fuzzy, no-c-format
+msgid "<literal>ant tomcat.clean</literal> - clean the example"
+msgstr "<literal>ant clean</literal> - 예제를 지웁니다 "
+
+#. Tag: para
+#: ri.xml:222
+#, fuzzy, no-c-format
+msgid "To deploy the numberguess example for tomcat:"
+msgstr "numberguess 예제를 배치하려면:    "
+
+#. Tag: programlisting
+#: ri.xml:226
+#, fuzzy, no-c-format
+msgid ""
+"$ cd examples/tomcat\n"
+"ant tomcat.deploy"
+msgstr ""
+"$ cd examples/translator\n"
+"ant deploy"
+
+#. Tag: para
+#: ri.xml:228
+#, no-c-format
+msgid "Start Tomcat:"
+msgstr ""
+
+#. Tag: programlisting
+#: ri.xml:232
+#, fuzzy, no-c-format
+msgid "$ /Applications/apache-tomcat-6.0.18/bin/startup.sh"
+msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
+
+#. Tag: para
+#: ri.xml:235
+#, no-c-format
+msgid "If you use Windows, use the <literal>startup.bat</literal>script."
+msgstr ""
+
+#. Tag: title
+#: ri.xml:248
+#, no-c-format
+msgid "Using GlassFish"
+msgstr ""
+
+#. Tag: para
+#: ri.xml:250
+#, no-c-format
+msgid "TODO"
+msgstr ""
+
+#. Tag: title
+#: ri.xml:254
 #, no-c-format
 msgid "The numberguess example"
 msgstr "numberguess 예제 "
 
 #. Tag: para
-#: ri.xml:166
+#: ri.xml:256
 #, no-c-format
 msgid ""
 "In the numberguess application you get given 10 attempts to guess a number "
@@ -347,7 +482,7 @@ msgstr ""
 "려주게 됩니다. "
 
 #. Tag: para
-#: ri.xml:172
+#: ri.xml:262
 #, no-c-format
 msgid ""
 "The numberguess example is comprised of a number of Web Beans, configuration "
@@ -358,7 +493,7 @@ msgstr ""
 "있으며, war로 패키지되어 있습니다 설정 파일부터 시작합시다. "
 
 #. Tag: para
-#: ri.xml:178
+#: ri.xml:268
 #, no-c-format
 msgid ""
 "All the configuration files for this example are located in <literal>WEB-INF/"
@@ -372,7 +507,7 @@ msgstr ""
 "를 알려주게 됩니다:   "
 
 #. Tag: programlisting
-#: ri.xml:186
+#: ri.xml:276
 #, no-c-format
 msgid ""
 "<![CDATA[<?xml version='1.0' encoding='UTF-8'?>\n"
@@ -402,7 +537,7 @@ msgstr ""
 "</faces-config>]]>"
 
 #. Tag: para
-#: ri.xml:188
+#: ri.xml:278
 #, no-c-format
 msgid ""
 "There is an empty <literal>web-beans.xml</literal> file, which marks this "
@@ -412,14 +547,14 @@ msgstr ""
 "리케이션으로 애플리케이션을 표시합니다. "
 
 #. Tag: para
-#: ri.xml:193
+#: ri.xml:283
 #, no-c-format
 msgid "Finally there is <literal>web.xml</literal>:"
 msgstr "마지막으로, <literal>web.xml</literal> 파일이 있습니다:  "
 
 #. Tag: section
-#: ri.xml:195
-#, no-c-format
+#: ri.xml:285
+#, fuzzy, no-c-format
 msgid ""
 "<programlistingco> <areaspec> <area id=\"faces.servlet\" coords=\"12\"/> "
 "<area id=\"faces.servlet.mapping\" coords=\"18\"/> <area id=\"faces.default."
@@ -466,14 +601,14 @@ msgid ""
 "para> </callout> <callout arearefs=\"session.timeout\"> <para> Configure a "
 "session timeout of 10 minutes </para> </callout> </calloutlist> </"
 "programlistingco> <note> <para> Whilst this demo is a JSF demo, you can use "
-"the Web Beans RI with any Servlet based web framework. </para> </note> "
-"<para> Let's take a look at the Facelet view: </para> <programlistingco> "
-"<areaspec> <area id=\"template\" coords=\"8\"/> <area id=\"messages\" coords="
-"\"12\"/> <area id=\"instructions\" coords=\"19\"/> <area id=\"guess\" coords="
-"\"25\"/> <area id=\"validator\" coords=\"30\"/> <area id=\"submit\" coords="
-"\"33\"/> </areaspec> <programlisting><![CDATA[<!DOCTYPE html PUBLIC \"-//"
-"W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/"
-"xhtml1-transitional.dtd\">\n"
+"Web Beans with any Servlet based web framework. </para> </note> <para> Let's "
+"take a look at the Facelet view: </para> <programlistingco> <areaspec> <area "
+"id=\"template\" coords=\"8\"/> <area id=\"messages\" coords=\"12\"/> <area "
+"id=\"instructions\" coords=\"19\"/> <area id=\"guess\" coords=\"25\"/> <area "
+"id=\"validator\" coords=\"30\"/> <area id=\"submit\" coords=\"33\"/> </"
+"areaspec> <programlisting><![CDATA[<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML "
+"1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional."
+"dtd\">\n"
 "<html xmlns=\"http://www.w3.org/1999/xhtml\"\n"
 "    xmlns:ui=\"http://java.sun.com/jsf/facelets\"\n"
 "    xmlns:h=\"http://java.sun.com/jsf/html\"\n"
@@ -656,7 +791,7 @@ msgstr ""
 "programlistingco>"
 
 #. Tag: para
-#: ri.xml:297
+#: ri.xml:387
 #, no-c-format
 msgid ""
 "The example exists of 4 classes, the first two of which are binding types. "
@@ -668,7 +803,7 @@ msgstr ""
 "형이 있습니다:      "
 
 #. Tag: programlisting
-#: ri.xml:303
+#: ri.xml:393
 #, no-c-format
 msgid ""
 "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
@@ -684,7 +819,7 @@ msgstr ""
 "public @interface Random {}]]>"
 
 #. Tag: para
-#: ri.xml:305
+#: ri.xml:395
 #, no-c-format
 msgid ""
 "There is also the <literal>@MaxNumber</literal> binding type, used for "
@@ -694,7 +829,7 @@ msgstr ""
 "literal> 바인딩 유형도 있습니다:       "
 
 #. Tag: programlisting
-#: ri.xml:310
+#: ri.xml:400
 #, no-c-format
 msgid ""
 "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
@@ -712,7 +847,7 @@ msgstr ""
 "]]>"
 
 #. Tag: para
-#: ri.xml:312
+#: ri.xml:402
 #, no-c-format
 msgid ""
 "The <literal>Generator</literal> class is responsible for creating the "
@@ -724,7 +859,7 @@ msgstr ""
 "냅니다:  "
 
 #. Tag: programlisting
-#: ri.xml:318
+#: ri.xml:408
 #, no-c-format
 msgid ""
 "<![CDATA[@ApplicationScoped\n"
@@ -776,7 +911,7 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: ri.xml:320
+#: ri.xml:410
 #, no-c-format
 msgid ""
 "You'll notice that the <literal>Generator</literal> is application scoped; "
@@ -786,7 +921,7 @@ msgstr ""
 "니다; 따라서 매번 다른 임의 숫자를 갖지 않게 됩니다. "
 
 #. Tag: para
-#: ri.xml:325
+#: ri.xml:415
 #, no-c-format
 msgid ""
 "The final Web Bean in the application is the session scoped <literal>Game</"
@@ -796,7 +931,7 @@ msgstr ""
 "다. "
 
 #. Tag: para
-#: ri.xml:330
+#: ri.xml:420
 #, no-c-format
 msgid ""
 "You'll note that we've used the <literal>@Named</literal> annotation, so "
@@ -812,7 +947,7 @@ msgstr ""
 "다.       "
 
 #. Tag: programlisting
-#: ri.xml:338
+#: ri.xml:428
 #, no-c-format
 msgid ""
 "<![CDATA[package org.jboss.webbeans.examples.numberguess;\n"
@@ -1010,13 +1145,56 @@ msgstr ""
 "}]]>"
 
 #. Tag: title
-#: ri.xml:342
+#: ri.xml:431
+#, fuzzy, no-c-format
+msgid "The numberguess example for Tomcat"
+msgstr "numberguess 예제 "
+
+#. Tag: para
+#: ri.xml:433
+#, no-c-format
+msgid ""
+"The numberguess for Tomcat differs in a couple of ways. Firstly, Web Beans "
+"should be deployed as a Web Application library in <literal>WEB-INF/lib</"
+"literal>. For your convenience we provide a single jar suitable for running "
+"Web Beans on Tomcat <literal>webbeans-tomcat.jar</literal>."
+msgstr ""
+
+#. Tag: para
+#: ri.xml:442
+#, no-c-format
+msgid ""
+"Of course, you must also include JSF and EL, as well common annotations "
+"(<literal>jsr250-api.jar</literal>) which a JEE server includes by default."
+msgstr ""
+
+#. Tag: para
+#: ri.xml:449
+#, no-c-format
+msgid ""
+"Secondly, we need to explicitly specify the Tomcat servlet listener (used to "
+"boot Web Beans, and control it's interaction with requests) in <literal>web."
+"xml</literal>:"
+msgstr ""
+
+#. Tag: programlisting
+#: ri.xml:455
+#, no-c-format
+msgid ""
+"<![CDATA[<listener>\n"
+"   <listener-class>org.jboss.webbeans.environment.tomcat.Listener</listener-"
+"class>\n"
+"</listener>]]>"
+msgstr ""
+
+#. Tag: title
+#: ri.xml:461
 #, no-c-format
 msgid "The translator example"
 msgstr "번역 예제  "
 
 #. Tag: para
-#: ri.xml:344
+#: ri.xml:463
 #, no-c-format
 msgid ""
 "The translator example will take any sentences you enter, and translate them "
@@ -1024,7 +1202,7 @@ msgid ""
 msgstr "번역 예제는 입력하신 아무 문장을 가져가 이를 라틴어로 번역합니다. "
 
 #. Tag: para
-#: ri.xml:349
+#: ri.xml:468
 #, no-c-format
 msgid ""
 "The translator example is built as an ear, and contains EJBs. As a result, "
@@ -1034,7 +1212,7 @@ msgstr ""
 "numberguess 예보다 훨씬 복잡합니다.  "
 
 #. Tag: para
-#: ri.xml:355
+#: ri.xml:474
 #, no-c-format
 msgid ""
 "EJB 3.1 and Jave EE 6 allow you to package EJBs in a war, which will make "
@@ -1044,7 +1222,7 @@ msgstr ""
 "게 만들게 됩니다! "
 
 #. Tag: para
-#: ri.xml:361
+#: ri.xml:480
 #, no-c-format
 msgid ""
 "First, let's take a look at the ear aggregator, which is located in "
@@ -1056,7 +1234,7 @@ msgstr ""
 "다:  "
 
 #. Tag: programlisting
-#: ri.xml:367
+#: ri.xml:486
 #, no-c-format
 msgid ""
 "<![CDATA[<plugin>\n"
@@ -1088,7 +1266,7 @@ msgstr ""
 "</plugin>]]>"
 
 #. Tag: para
-#: ri.xml:369
+#: ri.xml:488
 #, no-c-format
 msgid ""
 "Here we set the context path, which gives us a nice url (<ulink url=\"http://"
@@ -1100,7 +1278,7 @@ msgstr ""
 "니다.  "
 
 #. Tag: para
-#: ri.xml:375
+#: ri.xml:494
 #, no-c-format
 msgid ""
 "If you aren't using Maven to generate these files, you would need "
@@ -1110,7 +1288,7 @@ msgstr ""
 "xml</literal>이 필요합니다:  "
 
 #. Tag: programlisting
-#: ri.xml:380
+#: ri.xml:499
 #, no-c-format
 msgid ""
 "<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1156,7 +1334,7 @@ msgstr ""
 "</application>]]>"
 
 #. Tag: para
-#: ri.xml:383
+#: ri.xml:502
 #, fuzzy, no-c-format
 msgid ""
 "Next, lets look at the war. Just as in the numberguess example, we have a "
@@ -1168,7 +1346,7 @@ msgstr ""
 "및 <literal>web.xml</literal> (JSF를 활성화)을 갖습니다. "
 
 #. Tag: para
-#: ri.xml:390
+#: ri.xml:509
 #, no-c-format
 msgid ""
 "More intersting is the facelet used to translate text. Just as in the "
@@ -1179,7 +1357,7 @@ msgstr ""
 "된 템플릿이 있습니다 (간결하게 하기 위해 여기서는 생략됨): "
 
 #. Tag: programlisting
-#: ri.xml:396
+#: ri.xml:515
 #, no-c-format
 msgid ""
 "<![CDATA[<h:form id=\"NumberGuessMain\">\n"
@@ -1239,7 +1417,7 @@ msgstr ""
 "</h:form>]]>"
 
 #. Tag: para
-#: ri.xml:398
+#: ri.xml:517
 #, no-c-format
 msgid ""
 "The user can enter some text in the lefthand textarea, and hit the translate "
@@ -1249,7 +1427,7 @@ msgstr ""
 "면 오른쪽에 번역 결과가 나타나게 됩니다.   "
 
 #. Tag: para
-#: ri.xml:403
+#: ri.xml:522
 #, no-c-format
 msgid ""
 "Finally, let's look at the ejb module, <literal>webbeans-translator-ejb</"
@@ -1263,7 +1441,7 @@ msgstr ""
 "이 있습니다. "
 
 #. Tag: para
-#: ri.xml:411
+#: ri.xml:530
 #, no-c-format
 msgid ""
 "We've saved the most interesting bit to last, the code! The project has two "
@@ -1281,7 +1459,7 @@ msgstr ""
 "다.    "
 
 #. Tag: para
-#: ri.xml:421
+#: ri.xml:540
 #, no-c-format
 msgid ""
 "Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal> "
@@ -1293,7 +1471,7 @@ msgstr ""
 "니다: "
 
 #. Tag: programlisting
-#: ri.xml:427
+#: ri.xml:546
 #, no-c-format
 msgid ""
 "<![CDATA[public class TextTranslator { \n"
@@ -1319,7 +1497,7 @@ msgstr ""
 "      this.sentenceTranslator = sentenceTranslator;]]>"
 
 #. Tag: para
-#: ri.xml:429
+#: ri.xml:548
 #, no-c-format
 msgid ""
 "<literal>TextTranslator</literal> is a stateless bean (with a local business "
@@ -1330,7 +1508,7 @@ msgstr ""
 "스와 함께), 완전한 번역기를 개발할 수는 없지만, 잘 작동하고 있습니다! "
 
 #. Tag: para
-#: ri.xml:435
+#: ri.xml:554
 #, no-c-format
 msgid ""
 "Finally, there is UI orientated controller, that collects the text from the "
@@ -1342,7 +1520,7 @@ msgstr ""
 "되어 있습니다.  "
 
 #. Tag: programlisting
-#: ri.xml:441
+#: ri.xml:560
 #, no-c-format
 msgid ""
 "<![CDATA[@Stateful\n"
@@ -1362,19 +1540,19 @@ msgstr ""
 "   @Current TextTranslator translator;]]>"
 
 #. Tag: para
-#: ri.xml:443
+#: ri.xml:562
 #, no-c-format
 msgid "The bean also has getters and setters for all the fields on the page."
 msgstr "bean은 페이지에 있는 모든 영역에 대해 getter 및 setter를 갖습니다. "
 
 #. Tag: para
-#: ri.xml:447
+#: ri.xml:566
 #, no-c-format
 msgid "As this is a stateful session bean, we have to have a remove method:"
 msgstr "이는 상태 유지 세션 빈이므로, 제거 방식을 갖고 있어야 합니다:  "
 
 #. Tag: programlisting
-#: ri.xml:451
+#: ri.xml:570
 #, no-c-format
 msgid ""
 "<![CDATA[   @Remove\n"
@@ -1390,7 +1568,7 @@ msgstr ""
 "   }]]>"
 
 #. Tag: para
-#: ri.xml:453
+#: ri.xml:572
 #, no-c-format
 msgid ""
 "The Web Beans manager will call the remove method for you when the bean is "
@@ -1400,7 +1578,7 @@ msgstr ""
 "요청 마지막에 호출하게 됩니다. "
 
 #. Tag: para
-#: ri.xml:459
+#: ri.xml:578
 #, fuzzy, no-c-format
 msgid ""
 "That concludes our short tour of the Web Beans examples. For more on Web "
@@ -1413,7 +1591,7 @@ msgstr ""
 "seamframework.org/WebBeans/Development</ulink>에서 살펴보시기 바랍니다.  "
 
 #. Tag: para
-#: ri.xml:465
+#: ri.xml:584
 #, no-c-format
 msgid ""
 "We need help in all areas - bug fixing, writing new features, writing "
@@ -1421,6 +1599,19 @@ msgid ""
 msgstr ""
 "버그 수정, 새로운 기능 작성, 예세 작성, 참조 가이드 번역과 같이 모든 영역에"
 "서 도움이 필요합니다. "
+
+#, fuzzy
+#~ msgid ""
+#~ "A new deployer, <literal>webbeans.deployer</literal> is added to JBoss "
+#~ "AS. This adds supports for Web Bean archives to JBoss AS, and allows the "
+#~ "Web Beans RI to query the EJB3 container and discover which EJBs are "
+#~ "installed in your application."
+#~ msgstr ""
+#~ "현재, 두 가지 사항을 업데이트해야 합니다. 처음으로, 새로운 개발자 "
+#~ "<literal>webbeans.deployer</literal>가 추가되어야 합니다. 이는 JBoss AS에 "
+#~ "Web Bean 아카이브 지원을 추가하고 Web Beans RI가 EJB3 컨테이너를 커리하고 "
+#~ "애플리케이션에 어떤 EJB가 있는 지를 검색합니다. 두번째로 JBoss EJB3로 업데"
+#~ "이트해야 합니다. "
 
 #~ msgid ""
 #~ "As Web Beans is a new piece of software, you need to update JBoss AS to "

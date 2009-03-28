@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ri\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-17 20:14+0000\n"
+"POT-Creation-Date: 2009-03-28 17:09+0000\n"
 "PO-Revision-Date: 2009-02-27 15:36+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -17,18 +17,18 @@ msgstr ""
 
 #. Tag: title
 #: ri.xml:4
-#, no-c-format
-msgid "The Web Beans Reference Implementation"
+#, fuzzy, no-c-format
+msgid "Web Beans, the Reference Implementation of JSR-299"
 msgstr "Die Web Beans Referenzimplementierung"
 
 #. Tag: para
 #: ri.xml:6
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The Web Beans Reference Implementation is being developed at <ulink url="
-"\"http://seamframework.org/WebBeans\">the Seam project</ulink>. You can "
-"download the latest developer release of Web Beans from the <ulink url="
-"\"http://seamframework.org/Download\">the downloads page</ulink>."
+"The Web Beans is being developed at <ulink url=\"http://seamframework.org/"
+"WebBeans\">the Seam project</ulink>. You can download the latest developer "
+"release of Web Beans from the <ulink url=\"http://seamframework.org/Download"
+"\">the downloads page</ulink>."
 msgstr ""
 "Die Web Beans Referenzimplementierung wird unter <ulink url=\"http://"
 "seamframework.org/WebBeans\">das Seam Projekt</ulink> entwickelt. Sie können "
@@ -37,12 +37,15 @@ msgstr ""
 
 #. Tag: para
 #: ri.xml:13
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The Web Beans RI comes with a two deployable example applications: "
+"Web Beans comes with a two deployable example applications: "
 "<literal>webbeans-numberguess</literal>, a war example, containing only "
 "simple beans, and <literal>webbeans-translator</literal> an ear example, "
-"containing enterprise beans. To run the examples you'll need the following:"
+"containing enterprise beans. There are also two variations on the "
+"numberguess example, the tomcat example (suitable for deployment to Tomcat) "
+"and the jsf2 example, which you can use if you are running JSF2. To run the "
+"examples you'll need the following:"
 msgstr ""
 "Die Web Beans RI kommt mit zwei deploybaren Beispielanwendungen: "
 "<literal>webbeans-numberguess</literal>, ein war-Beispiel, das nur einfache "
@@ -51,30 +54,41 @@ msgstr ""
 "folgendes:"
 
 #. Tag: para
-#: ri.xml:22
-#, no-c-format
-msgid "the latest release of the Web Beans RI,"
+#: ri.xml:25
+#, fuzzy, no-c-format
+msgid "the latest release of Web Beans,"
 msgstr "die aktuellste Release der Web Beans RI,"
 
 #. Tag: para
-#: ri.xml:25
+#: ri.xml:28
 #, fuzzy, no-c-format
-msgid "JBoss AS 5.0.1.GA, and"
+msgid "JBoss AS 5.0.1.GA, or"
 msgstr "JBoss AS 5.0.0.GA und"
 
 #. Tag: para
-#: ri.xml:28
+#: ri.xml:31
+#, no-c-format
+msgid "Apache Tomcat 6.0.x, and"
+msgstr ""
+
+#. Tag: para
+#: ri.xml:34
 #, no-c-format
 msgid "Ant 1.7.0."
 msgstr "Ant 1.7.0."
 
+#. Tag: title
+#: ri.xml:39
+#, no-c-format
+msgid "Using JBoss AS 5"
+msgstr ""
+
 #. Tag: para
-#: ri.xml:32
+#: ri.xml:41
 #, fuzzy, no-c-format
 msgid ""
-"Currently, the Web Beans RI only runs on JBoss Application Server 5. You'll "
-"need to download JBoss AS 5.0.1.GA from <ulink url=\"http://www.jboss.org/"
-"jbossas/downloads/\">jboss.org</ulink>, and unzip it. For example:"
+"You'll need to download JBoss AS 5.0.1.GA from <ulink url=\"http://www.jboss."
+"org/jbossas/downloads/\">jboss.org</ulink>, and unzip it. For example:"
 msgstr ""
 "Momentan läuft die Web Beans RI nur auf JBoss Application Server 5. Sie "
 "werden JBoss AS 5.0.0.GA unter <ulink url=\"http://www.jboss.org/jbossas/"
@@ -82,7 +96,7 @@ msgstr ""
 "Beispiel:"
 
 #. Tag: programlisting
-#: ri.xml:39
+#: ri.xml:47
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[$ cd /Applications\n"
@@ -92,18 +106,18 @@ msgstr ""
 "$ unzip ~/jboss-5.0.0.GA.zip]]>"
 
 #. Tag: para
-#: ri.xml:41
-#, no-c-format
+#: ri.xml:49 ri.xml:170
+#, fuzzy, no-c-format
 msgid ""
-"Next, download the Web Beans RI from <ulink url=\"http://seamframework.org/"
-"Download\">seamframework.org</ulink>, and unzip it. For example"
+"Next, download Web Beans from <ulink url=\"http://seamframework.org/Download"
+"\">seamframework.org</ulink>, and unzip it. For example"
 msgstr ""
 "Anschließend laden Sie die Web Beans RI unter <ulink url=\"http://"
 "seamframework.org/Download\">seamframework.org</ulink> herunter und "
 "entzippen diese. Zum Beispiel "
 
 #. Tag: programlisting
-#: ri.xml:47
+#: ri.xml:55 ri.xml:176
 #, no-c-format
 msgid ""
 "<![CDATA[$ cd ~/\n"
@@ -113,7 +127,7 @@ msgstr ""
 "$ unzip ~/webbeans-$VERSION.zip]]>"
 
 #. Tag: para
-#: ri.xml:50
+#: ri.xml:58
 #, no-c-format
 msgid ""
 "Next, we need to tell Web Beans where JBoss is located. Edit <literal>jboss-"
@@ -125,34 +139,13 @@ msgstr ""
 "die <literal>jboss.home</literal>-Property. Zum Beispiel:"
 
 #. Tag: programlisting
-#: ri.xml:56
+#: ri.xml:64
 #, fuzzy, no-c-format
 msgid "jboss.home=/Applications/jboss-5.0.1.GA"
 msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
 
 #. Tag: para
-#: ri.xml:59
-#, fuzzy, no-c-format
-msgid ""
-"A new deployer, <literal>webbeans.deployer</literal> is added to JBoss AS. "
-"This adds supports for Web Bean archives to JBoss AS, and allows the Web "
-"Beans RI to query the EJB3 container and discover which EJBs are installed "
-"in your application."
-msgstr ""
-"Derzeit sind zwei Updates nötig. Zuerst wird ein neuer Deployer "
-"<literal>webbeans.deployer</literal> hinzugefügt. Dies fügt Supports für Web "
-"Bean Archive zu JBoss AS hinzu und gestattet der Web Beans RI beim EJB3 "
-"Container anzufragen und festzustellen, welche EJBs in Ihrer Anwendung "
-"installiert sind. Desweiteren wird ein Update zu JBoss EJB3 benötigt."
-
-#. Tag: para
-#: ri.xml:67
-#, no-c-format
-msgid "Web Beans is bundled with JBoss AS 5.1 and above."
-msgstr ""
-
-#. Tag: para
-#: ri.xml:72
+#: ri.xml:66
 #, fuzzy, no-c-format
 msgid ""
 "To install Web Beans, you'll need Ant 1.7.0 installed, and the "
@@ -162,7 +155,7 @@ msgstr ""
 "<literal>ANT_HOME</literal> Umgebungsvariable gesetzt sein. Zum Beispiel:"
 
 #. Tag: programlisting
-#: ri.xml:77
+#: ri.xml:71
 #, no-c-format
 msgid ""
 "$ unzip apache-ant-1.7.0.zip\n"
@@ -172,7 +165,7 @@ msgstr ""
 "$ export ANT_HOME=~/apache-ant-1.7.0"
 
 #. Tag: para
-#: ri.xml:79
+#: ri.xml:73
 #, fuzzy, no-c-format
 msgid ""
 "Then, you can install the update. The update script will use Maven to "
@@ -182,7 +175,7 @@ msgstr ""
 "um die Web Beans und EJB3 automatisch herunterzuladen."
 
 #. Tag: programlisting
-#: ri.xml:84
+#: ri.xml:78
 #, no-c-format
 msgid ""
 "$ cd webbeans-$VERSION/jboss-as\n"
@@ -192,21 +185,22 @@ msgstr ""
 "$ ant update"
 
 #. Tag: para
-#: ri.xml:86
+#: ri.xml:80
 #, no-c-format
 msgid "Now, you're ready to deploy your first example!"
 msgstr "Jetzt können Sie Ihr erstes Beispiel deployen!"
 
 #. Tag: para
-#: ri.xml:91
-#, no-c-format
+#: ri.xml:85
+#, fuzzy, no-c-format
 msgid ""
-"The build scripts for the examples offer a number of targets, these are:"
+"The build scripts for the examples offer a number of targets for JBoss AS, "
+"these are:"
 msgstr ""
 "Die Build-Skripte für die Beispiele bieten zahlreiche Ziele, diese sind:"
 
 #. Tag: para
-#: ri.xml:97
+#: ri.xml:91
 #, no-c-format
 msgid "<literal>ant restart</literal> - deploy the example in exploded format"
 msgstr ""
@@ -214,7 +208,7 @@ msgstr ""
 "Format"
 
 #. Tag: para
-#: ri.xml:103
+#: ri.xml:97
 #, no-c-format
 msgid ""
 "<literal>ant explode</literal> - update an exploded example, without "
@@ -224,7 +218,7 @@ msgstr ""
 "Beispiels ohne Neustart des Deployments"
 
 #. Tag: para
-#: ri.xml:109
+#: ri.xml:103
 #, no-c-format
 msgid ""
 "<literal>ant deploy</literal> - deploy the example in compressed jar format"
@@ -233,25 +227,25 @@ msgstr ""
 "jar-Format"
 
 #. Tag: para
-#: ri.xml:114
+#: ri.xml:108
 #, no-c-format
 msgid "<literal>ant undeploy</literal> - remove the example from the server"
 msgstr "<literal>ant undeploy</literal> - das Beispiel vom Server entfernen"
 
 #. Tag: para
-#: ri.xml:119
+#: ri.xml:113
 #, no-c-format
 msgid "<literal>ant clean</literal> - clean the example"
 msgstr "<literal>ant clean</literal> - Das Beispiel bereinigen"
 
 #. Tag: para
-#: ri.xml:126
+#: ri.xml:120
 #, no-c-format
 msgid "To deploy the numberguess example:"
 msgstr "Um das numberguess Beispiel zu deployen:"
 
 #. Tag: programlisting
-#: ri.xml:130
+#: ri.xml:124
 #, no-c-format
 msgid ""
 "$ cd examples/numberguess\n"
@@ -261,19 +255,19 @@ msgstr ""
 "ant deploy"
 
 #. Tag: para
-#: ri.xml:132
+#: ri.xml:126
 #, no-c-format
 msgid "Start JBoss AS:"
 msgstr "JBoss AS starten:"
 
 #. Tag: programlisting
-#: ri.xml:136
+#: ri.xml:130
 #, no-c-format
 msgid "$ /Application/jboss-5.0.0.GA/bin/run.sh"
 msgstr "$ /Application/jboss-5.0.0.GA/bin/run.sh"
 
 #. Tag: para
-#: ri.xml:139
+#: ri.xml:133
 #, no-c-format
 msgid "If you use Windows, use the <literal>run.bat</literal>script."
 msgstr ""
@@ -281,7 +275,7 @@ msgstr ""
 "Skript."
 
 #. Tag: para
-#: ri.xml:144
+#: ri.xml:138 ri.xml:240
 #, no-c-format
 msgid ""
 "Wait for the application to deploy, and enjoy hours of fun at <ulink url="
@@ -291,13 +285,13 @@ msgstr ""
 "url=\"http://localhost:8080/webbeans-numberguess\"></ulink>!"
 
 #. Tag: para
-#: ri.xml:149
-#, no-c-format
+#: ri.xml:143
+#, fuzzy, no-c-format
 msgid ""
-"The Web Beans RI includes a second simple example that will translate your "
-"text into Latin. The numberguess example is a war example, and uses only "
-"simple beans; the translator example is an ear example, and includes "
-"enterprise beans, packaged in an EJB module. To try it out:"
+"Web Beans includes a second simple example that will translate your text "
+"into Latin. The numberguess example is a war example, and uses only simple "
+"beans; the translator example is an ear example, and includes enterprise "
+"beans, packaged in an EJB module. To try it out:"
 msgstr ""
 "Die Web Beans RI enthält ein zweites einfaches Beispiel, das Ihren Text ins "
 "Lateinische übersetzt. Beim numberguess Beispiel handelt es sich um ein war-"
@@ -306,7 +300,7 @@ msgstr ""
 "enthält . Um dies auszuprobieren:"
 
 #. Tag: programlisting
-#: ri.xml:156
+#: ri.xml:150
 #, no-c-format
 msgid ""
 "$ cd examples/translator\n"
@@ -316,7 +310,7 @@ msgstr ""
 "ant deploy"
 
 #. Tag: para
-#: ri.xml:158
+#: ri.xml:152
 #, no-c-format
 msgid ""
 "Wait for the application to deploy, and visit <ulink url=\"http://"
@@ -326,13 +320,158 @@ msgstr ""
 "\"http://localhost:8080/webbeans-translator\"></ulink>!"
 
 #. Tag: title
-#: ri.xml:164
+#: ri.xml:160
+#, no-c-format
+msgid "Using Apache Tomcat 6.0"
+msgstr ""
+
+#. Tag: para
+#: ri.xml:162
+#, fuzzy, no-c-format
+msgid ""
+"You'll need to download Tomcat 6.0.18 or later from <ulink url=\"http://"
+"tomcat.apache.org/download-60.cgi\">tomcat.apache.org</ulink>, and unzip it. "
+"For example:"
+msgstr ""
+"Anschließend laden Sie die Web Beans RI unter <ulink url=\"http://"
+"seamframework.org/Download\">seamframework.org</ulink> herunter und "
+"entzippen diese. Zum Beispiel "
+
+#. Tag: programlisting
+#: ri.xml:168
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[$ cd /Applications\n"
+"$ unzip ~/apache-tomcat-6.0.18.zip]]>"
+msgstr ""
+"<![CDATA[$ cd /Applications\n"
+"$ unzip ~/jboss-5.0.0.GA.zip]]>"
+
+#. Tag: para
+#: ri.xml:178
+#, fuzzy, no-c-format
+msgid ""
+"Next, we need to tell Web Beans where Tomcat is located. Edit <literal>jboss-"
+"as/build.properties</literal> and set the <literal>tomcat.home</literal> "
+"property. For example:"
+msgstr ""
+"Als nächstes müssen wir Web Beans mitteilen, wo JBoss sich befindet. "
+"Editieren Sie <literal>jboss-as/build.properties</literal> und setzen Sie "
+"die <literal>jboss.home</literal>-Property. Zum Beispiel:"
+
+#. Tag: programlisting
+#: ri.xml:184
+#, fuzzy, no-c-format
+msgid "tomcat.home=/Applications/apache-tomcat-6.0.18"
+msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
+
+#. Tag: para
+#: ri.xml:187
+#, fuzzy, no-c-format
+msgid ""
+"The build scripts for the examples offer a number of targets for Tomcat, "
+"these are:"
+msgstr ""
+"Die Build-Skripte für die Beispiele bieten zahlreiche Ziele, diese sind:"
+
+#. Tag: para
+#: ri.xml:193
+#, fuzzy, no-c-format
+msgid ""
+"<literal>ant tomcat.restart</literal> - deploy the example in exploded format"
+msgstr ""
+"<literal>ant restart</literal> - Deployment des Beispiels in ausgeklapptem "
+"Format"
+
+#. Tag: para
+#: ri.xml:199
+#, fuzzy, no-c-format
+msgid ""
+"<literal>ant tomcat.explode</literal> - update an exploded example, without "
+"restarting the deployment"
+msgstr ""
+"<literal>ant explode</literal> - Aktualisierung eines ausgeklappten "
+"Beispiels ohne Neustart des Deployments"
+
+#. Tag: para
+#: ri.xml:205
+#, fuzzy, no-c-format
+msgid ""
+"<literal>ant tomcat.deploy</literal> - deploy the example in compressed jar "
+"format"
+msgstr ""
+"<literal>ant deploy</literal> - Deployment des Beispiels in komprimiertem "
+"jar-Format"
+
+#. Tag: para
+#: ri.xml:210
+#, fuzzy, no-c-format
+msgid ""
+"<literal>ant tomcat.undeploy</literal> - remove the example from the server"
+msgstr "<literal>ant undeploy</literal> - das Beispiel vom Server entfernen"
+
+#. Tag: para
+#: ri.xml:215
+#, fuzzy, no-c-format
+msgid "<literal>ant tomcat.clean</literal> - clean the example"
+msgstr "<literal>ant clean</literal> - Das Beispiel bereinigen"
+
+#. Tag: para
+#: ri.xml:222
+#, fuzzy, no-c-format
+msgid "To deploy the numberguess example for tomcat:"
+msgstr "Um das numberguess Beispiel zu deployen:"
+
+#. Tag: programlisting
+#: ri.xml:226
+#, fuzzy, no-c-format
+msgid ""
+"$ cd examples/tomcat\n"
+"ant tomcat.deploy"
+msgstr ""
+"$ cd examples/translator\n"
+"ant deploy"
+
+#. Tag: para
+#: ri.xml:228
+#, no-c-format
+msgid "Start Tomcat:"
+msgstr ""
+
+#. Tag: programlisting
+#: ri.xml:232
+#, fuzzy, no-c-format
+msgid "$ /Applications/apache-tomcat-6.0.18/bin/startup.sh"
+msgstr "$ /Application/jboss-5.0.0.GA/bin/run.sh"
+
+#. Tag: para
+#: ri.xml:235
+#, fuzzy, no-c-format
+msgid "If you use Windows, use the <literal>startup.bat</literal>script."
+msgstr ""
+"Falls Sie Windows verwenden, verwenden Sie das <literal>run.bat</literal>-"
+"Skript."
+
+#. Tag: title
+#: ri.xml:248
+#, no-c-format
+msgid "Using GlassFish"
+msgstr ""
+
+#. Tag: para
+#: ri.xml:250
+#, no-c-format
+msgid "TODO"
+msgstr ""
+
+#. Tag: title
+#: ri.xml:254
 #, no-c-format
 msgid "The numberguess example"
 msgstr "Das numberguess-Beispiel"
 
 #. Tag: para
-#: ri.xml:166
+#: ri.xml:256
 #, no-c-format
 msgid ""
 "In the numberguess application you get given 10 attempts to guess a number "
@@ -344,7 +483,7 @@ msgstr ""
 "oder zu niedrig liegen."
 
 #. Tag: para
-#: ri.xml:172
+#: ri.xml:262
 #, no-c-format
 msgid ""
 "The numberguess example is comprised of a number of Web Beans, configuration "
@@ -356,7 +495,7 @@ msgstr ""
 "sind. Fangen wir mit den Konfigurationsdateien an."
 
 #. Tag: para
-#: ri.xml:178
+#: ri.xml:268
 #, no-c-format
 msgid ""
 "All the configuration files for this example are located in <literal>WEB-INF/"
@@ -370,7 +509,7 @@ msgstr ""
 "dem wir JSF anweisen, Facelets zu verwenden:"
 
 #. Tag: programlisting
-#: ri.xml:186
+#: ri.xml:276
 #, no-c-format
 msgid ""
 "<![CDATA[<?xml version='1.0' encoding='UTF-8'?>\n"
@@ -400,7 +539,7 @@ msgstr ""
 "</faces-config>]]>"
 
 #. Tag: para
-#: ri.xml:188
+#: ri.xml:278
 #, no-c-format
 msgid ""
 "There is an empty <literal>web-beans.xml</literal> file, which marks this "
@@ -410,14 +549,14 @@ msgstr ""
 "Anwendung als Web Beans Applikation kennzeichnet."
 
 #. Tag: para
-#: ri.xml:193
+#: ri.xml:283
 #, no-c-format
 msgid "Finally there is <literal>web.xml</literal>:"
 msgstr "Und schließlich gibt es noch <literal>web.xml</literal>:"
 
 #. Tag: section
-#: ri.xml:195
-#, no-c-format
+#: ri.xml:285
+#, fuzzy, no-c-format
 msgid ""
 "<programlistingco> <areaspec> <area id=\"faces.servlet\" coords=\"12\"/> "
 "<area id=\"faces.servlet.mapping\" coords=\"18\"/> <area id=\"faces.default."
@@ -464,14 +603,14 @@ msgid ""
 "para> </callout> <callout arearefs=\"session.timeout\"> <para> Configure a "
 "session timeout of 10 minutes </para> </callout> </calloutlist> </"
 "programlistingco> <note> <para> Whilst this demo is a JSF demo, you can use "
-"the Web Beans RI with any Servlet based web framework. </para> </note> "
-"<para> Let's take a look at the Facelet view: </para> <programlistingco> "
-"<areaspec> <area id=\"template\" coords=\"8\"/> <area id=\"messages\" coords="
-"\"12\"/> <area id=\"instructions\" coords=\"19\"/> <area id=\"guess\" coords="
-"\"25\"/> <area id=\"validator\" coords=\"30\"/> <area id=\"submit\" coords="
-"\"33\"/> </areaspec> <programlisting><![CDATA[<!DOCTYPE html PUBLIC \"-//"
-"W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/"
-"xhtml1-transitional.dtd\">\n"
+"Web Beans with any Servlet based web framework. </para> </note> <para> Let's "
+"take a look at the Facelet view: </para> <programlistingco> <areaspec> <area "
+"id=\"template\" coords=\"8\"/> <area id=\"messages\" coords=\"12\"/> <area "
+"id=\"instructions\" coords=\"19\"/> <area id=\"guess\" coords=\"25\"/> <area "
+"id=\"validator\" coords=\"30\"/> <area id=\"submit\" coords=\"33\"/> </"
+"areaspec> <programlisting><![CDATA[<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML "
+"1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional."
+"dtd\">\n"
 "<html xmlns=\"http://www.w3.org/1999/xhtml\"\n"
 "    xmlns:ui=\"http://java.sun.com/jsf/facelets\"\n"
 "    xmlns:h=\"http://java.sun.com/jsf/html\"\n"
@@ -654,7 +793,7 @@ msgstr ""
 "programlistingco>"
 
 #. Tag: para
-#: ri.xml:297
+#: ri.xml:387
 #, no-c-format
 msgid ""
 "The example exists of 4 classes, the first two of which are binding types. "
@@ -666,7 +805,7 @@ msgstr ""
 "Einspeisung einer zufälligen Zahl dient:"
 
 #. Tag: programlisting
-#: ri.xml:303
+#: ri.xml:393
 #, no-c-format
 msgid ""
 "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
@@ -682,7 +821,7 @@ msgstr ""
 "public @interface Random {}]]>"
 
 #. Tag: para
-#: ri.xml:305
+#: ri.xml:395
 #, no-c-format
 msgid ""
 "There is also the <literal>@MaxNumber</literal> binding type, used for "
@@ -692,7 +831,7 @@ msgstr ""
 "Einspeisung der maximalen Zahl, die eingespeist werden kann, verwendet wird:"
 
 #. Tag: programlisting
-#: ri.xml:310
+#: ri.xml:400
 #, no-c-format
 msgid ""
 "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
@@ -710,7 +849,7 @@ msgstr ""
 "]]>"
 
 #. Tag: para
-#: ri.xml:312
+#: ri.xml:402
 #, no-c-format
 msgid ""
 "The <literal>Generator</literal> class is responsible for creating the "
@@ -722,7 +861,7 @@ msgstr ""
 "die mögliche Maximalzahl via einer maximum Producer-Methode offen:"
 
 #. Tag: programlisting
-#: ri.xml:318
+#: ri.xml:408
 #, no-c-format
 msgid ""
 "<![CDATA[@ApplicationScoped\n"
@@ -774,7 +913,7 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: ri.xml:320
+#: ri.xml:410
 #, no-c-format
 msgid ""
 "You'll notice that the <literal>Generator</literal> is application scoped; "
@@ -785,7 +924,7 @@ msgstr ""
 "Zufallsergebnis."
 
 #. Tag: para
-#: ri.xml:325
+#: ri.xml:415
 #, no-c-format
 msgid ""
 "The final Web Bean in the application is the session scoped <literal>Game</"
@@ -795,7 +934,7 @@ msgstr ""
 "literal>."
 
 #. Tag: para
-#: ri.xml:330
+#: ri.xml:420
 #, no-c-format
 msgid ""
 "You'll note that we've used the <literal>@Named</literal> annotation, so "
@@ -812,7 +951,7 @@ msgstr ""
 "<literal>FacesMessage</literal>."
 
 #. Tag: programlisting
-#: ri.xml:338
+#: ri.xml:428
 #, no-c-format
 msgid ""
 "<![CDATA[package org.jboss.webbeans.examples.numberguess;\n"
@@ -1010,13 +1149,56 @@ msgstr ""
 "}]]>"
 
 #. Tag: title
-#: ri.xml:342
+#: ri.xml:431
+#, fuzzy, no-c-format
+msgid "The numberguess example for Tomcat"
+msgstr "Das numberguess-Beispiel"
+
+#. Tag: para
+#: ri.xml:433
+#, no-c-format
+msgid ""
+"The numberguess for Tomcat differs in a couple of ways. Firstly, Web Beans "
+"should be deployed as a Web Application library in <literal>WEB-INF/lib</"
+"literal>. For your convenience we provide a single jar suitable for running "
+"Web Beans on Tomcat <literal>webbeans-tomcat.jar</literal>."
+msgstr ""
+
+#. Tag: para
+#: ri.xml:442
+#, no-c-format
+msgid ""
+"Of course, you must also include JSF and EL, as well common annotations "
+"(<literal>jsr250-api.jar</literal>) which a JEE server includes by default."
+msgstr ""
+
+#. Tag: para
+#: ri.xml:449
+#, no-c-format
+msgid ""
+"Secondly, we need to explicitly specify the Tomcat servlet listener (used to "
+"boot Web Beans, and control it's interaction with requests) in <literal>web."
+"xml</literal>:"
+msgstr ""
+
+#. Tag: programlisting
+#: ri.xml:455
+#, no-c-format
+msgid ""
+"<![CDATA[<listener>\n"
+"   <listener-class>org.jboss.webbeans.environment.tomcat.Listener</listener-"
+"class>\n"
+"</listener>]]>"
+msgstr ""
+
+#. Tag: title
+#: ri.xml:461
 #, no-c-format
 msgid "The translator example"
 msgstr "Das translator-Beispiel"
 
 #. Tag: para
-#: ri.xml:344
+#: ri.xml:463
 #, no-c-format
 msgid ""
 "The translator example will take any sentences you enter, and translate them "
@@ -1026,7 +1208,7 @@ msgstr ""
 "Lateinische übersetzt."
 
 #. Tag: para
-#: ri.xml:349
+#: ri.xml:468
 #, no-c-format
 msgid ""
 "The translator example is built as an ear, and contains EJBs. As a result, "
@@ -1036,7 +1218,7 @@ msgstr ""
 "Struktur komplexer als die desnumberguess-Beispiels."
 
 #. Tag: para
-#: ri.xml:355
+#: ri.xml:474
 #, no-c-format
 msgid ""
 "EJB 3.1 and Jave EE 6 allow you to package EJBs in a war, which will make "
@@ -1046,7 +1228,7 @@ msgstr ""
 "wodurch diese Struktur wesentlich einfacher wird!"
 
 #. Tag: para
-#: ri.xml:361
+#: ri.xml:480
 #, no-c-format
 msgid ""
 "First, let's take a look at the ear aggregator, which is located in "
@@ -1058,7 +1240,7 @@ msgstr ""
 "automatisch die <literal>application.xml</literal> für uns:"
 
 #. Tag: programlisting
-#: ri.xml:367
+#: ri.xml:486
 #, no-c-format
 msgid ""
 "<![CDATA[<plugin>\n"
@@ -1090,7 +1272,7 @@ msgstr ""
 "</plugin>]]>"
 
 #. Tag: para
-#: ri.xml:369
+#: ri.xml:488
 #, no-c-format
 msgid ""
 "Here we set the context path, which gives us a nice url (<ulink url=\"http://"
@@ -1102,7 +1284,7 @@ msgstr ""
 "translator</ulink>)."
 
 #. Tag: para
-#: ri.xml:375
+#: ri.xml:494
 #, no-c-format
 msgid ""
 "If you aren't using Maven to generate these files, you would need "
@@ -1112,7 +1294,7 @@ msgstr ""
 "benötigen Sie <literal>META-INF/application.xml</literal>:"
 
 #. Tag: programlisting
-#: ri.xml:380
+#: ri.xml:499
 #, no-c-format
 msgid ""
 "<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1158,7 +1340,7 @@ msgstr ""
 "</application>]]>"
 
 #. Tag: para
-#: ri.xml:383
+#: ri.xml:502
 #, fuzzy, no-c-format
 msgid ""
 "Next, lets look at the war. Just as in the numberguess example, we have a "
@@ -1171,7 +1353,7 @@ msgstr ""
 "<literal>WebContent/WEB-INF</literal>."
 
 #. Tag: para
-#: ri.xml:390
+#: ri.xml:509
 #, no-c-format
 msgid ""
 "More intersting is the facelet used to translate text. Just as in the "
@@ -1183,7 +1365,7 @@ msgstr ""
 "(hier der Kürze wegen weggelassen):"
 
 #. Tag: programlisting
-#: ri.xml:396
+#: ri.xml:515
 #, no-c-format
 msgid ""
 "<![CDATA[<h:form id=\"NumberGuessMain\">\n"
@@ -1243,7 +1425,7 @@ msgstr ""
 "</h:form>]]>"
 
 #. Tag: para
-#: ri.xml:398
+#: ri.xml:517
 #, no-c-format
 msgid ""
 "The user can enter some text in the lefthand textarea, and hit the translate "
@@ -1254,7 +1436,7 @@ msgstr ""
 "Ergebnis zu sehen."
 
 #. Tag: para
-#: ri.xml:403
+#: ri.xml:522
 #, no-c-format
 msgid ""
 "Finally, let's look at the ejb module, <literal>webbeans-translator-ejb</"
@@ -1268,7 +1450,7 @@ msgstr ""
 "das Archiv als Web Beans enthaltend zu markieren."
 
 #. Tag: para
-#: ri.xml:411
+#: ri.xml:530
 #, no-c-format
 msgid ""
 "We've saved the most interesting bit to last, the code! The project has two "
@@ -1286,7 +1468,7 @@ msgstr ""
 "Bean aussehen, daher gehen wir hier nur auf die interessantesten Aspekte ein."
 
 #. Tag: para
-#: ri.xml:421
+#: ri.xml:540
 #, no-c-format
 msgid ""
 "Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal> "
@@ -1298,7 +1480,7 @@ msgstr ""
 "<literal>TextTranslator</literal> verwendet Konstruktor-Initialisierung :"
 
 #. Tag: programlisting
-#: ri.xml:427
+#: ri.xml:546
 #, no-c-format
 msgid ""
 "<![CDATA[public class TextTranslator { \n"
@@ -1324,7 +1506,7 @@ msgstr ""
 "      this.sentenceTranslator = sentenceTranslator;]]>"
 
 #. Tag: para
-#: ri.xml:429
+#: ri.xml:548
 #, no-c-format
 msgid ""
 "<literal>TextTranslator</literal> is a stateless bean (with a local business "
@@ -1336,7 +1518,7 @@ msgstr ""
 "kompletten Übersetzer entwickeln,, aber wir haben uns Mühe gegeben!"
 
 #. Tag: para
-#: ri.xml:435
+#: ri.xml:554
 #, no-c-format
 msgid ""
 "Finally, there is UI orientated controller, that collects the text from the "
@@ -1349,7 +1531,7 @@ msgstr ""
 "das den translator einspeist."
 
 #. Tag: programlisting
-#: ri.xml:441
+#: ri.xml:560
 #, no-c-format
 msgid ""
 "<![CDATA[@Stateful\n"
@@ -1369,13 +1551,13 @@ msgstr ""
 "   @Current TextTranslator translator;]]>"
 
 #. Tag: para
-#: ri.xml:443
+#: ri.xml:562
 #, no-c-format
 msgid "The bean also has getters and setters for all the fields on the page."
 msgstr "Das Bean besitzt auch Getter und Setter für alle Felder auf der Seite."
 
 #. Tag: para
-#: ri.xml:447
+#: ri.xml:566
 #, no-c-format
 msgid "As this is a stateful session bean, we have to have a remove method:"
 msgstr ""
@@ -1383,7 +1565,7 @@ msgstr ""
 "Methode besitzen:"
 
 #. Tag: programlisting
-#: ri.xml:451
+#: ri.xml:570
 #, no-c-format
 msgid ""
 "<![CDATA[   @Remove\n"
@@ -1399,7 +1581,7 @@ msgstr ""
 "   }]]>"
 
 #. Tag: para
-#: ri.xml:453
+#: ri.xml:572
 #, no-c-format
 msgid ""
 "The Web Beans manager will call the remove method for you when the bean is "
@@ -1409,7 +1591,7 @@ msgstr ""
 "gelöscht wird, in diesem Fall am Ende der Anfrage."
 
 #. Tag: para
-#: ri.xml:459
+#: ri.xml:578
 #, fuzzy, no-c-format
 msgid ""
 "That concludes our short tour of the Web Beans examples. For more on Web "
@@ -1423,7 +1605,7 @@ msgstr ""
 "Development\">http://www.seamframework.org/WebBeans/Development</ulink>."
 
 #. Tag: para
-#: ri.xml:465
+#: ri.xml:584
 #, no-c-format
 msgid ""
 "We need help in all areas - bug fixing, writing new features, writing "
@@ -1432,6 +1614,20 @@ msgstr ""
 "Wir brauche Unterstützung auf allen Gebieten - Fehlerbehebung, Schreiben "
 "neuer Features, Schreiben neuer Beispiele und bei der Übersetzung dieses "
 "Referenzhandbuchs."
+
+#, fuzzy
+#~ msgid ""
+#~ "A new deployer, <literal>webbeans.deployer</literal> is added to JBoss "
+#~ "AS. This adds supports for Web Bean archives to JBoss AS, and allows the "
+#~ "Web Beans RI to query the EJB3 container and discover which EJBs are "
+#~ "installed in your application."
+#~ msgstr ""
+#~ "Derzeit sind zwei Updates nötig. Zuerst wird ein neuer Deployer "
+#~ "<literal>webbeans.deployer</literal> hinzugefügt. Dies fügt Supports für "
+#~ "Web Bean Archive zu JBoss AS hinzu und gestattet der Web Beans RI beim "
+#~ "EJB3 Container anzufragen und festzustellen, welche EJBs in Ihrer "
+#~ "Anwendung installiert sind. Desweiteren wird ein Update zu JBoss EJB3 "
+#~ "benötigt."
 
 #~ msgid ""
 #~ "As Web Beans is a new piece of software, you need to update JBoss AS to "

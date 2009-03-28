@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Author_Group\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-17 20:14+0000\n"
+"POT-Creation-Date: 2009-03-28 17:09+0000\n"
 "PO-Revision-Date: 2009-01-14 09:26+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
@@ -48,80 +48,86 @@ msgstr ""
 "<jobtitle>Guía de Referencia de Aplicación de Web Beans (JSR-299)</jobtitle> "
 "<orgname>Red Hat Middleware LLC</orgname>"
 
-#. Tag: othercredit
+#. Tag: author
 #: Author_Group.xml:21
+#, fuzzy, no-c-format
+msgid "<firstname>David</firstname> <surname>Allen</surname>"
+msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
+
+#. Tag: othercredit
+#: Author_Group.xml:25
 #, no-c-format
 msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
 msgstr "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
 
 #. Tag: contrib
-#: Author_Group.xml:24 Author_Group.xml:53
+#: Author_Group.xml:28 Author_Group.xml:57
 #, no-c-format
 msgid "Italian Translation"
 msgstr "Traducción en italiano"
 
 #. Tag: othercredit
-#: Author_Group.xml:26
+#: Author_Group.xml:30
 #, fuzzy, no-c-format
 msgid "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
 msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
 
 #. Tag: contrib
-#: Author_Group.xml:29
+#: Author_Group.xml:33
 #, fuzzy, no-c-format
 msgid "Spanish Translation"
 msgstr "Traducción en italiano"
 
 #. Tag: orgname
-#: Author_Group.xml:31 Author_Group.xml:39 Author_Group.xml:47
+#: Author_Group.xml:35 Author_Group.xml:43 Author_Group.xml:51
 #, no-c-format
 msgid "Red Hat Middleware LLC"
 msgstr ""
 
 #. Tag: othercredit
-#: Author_Group.xml:34
+#: Author_Group.xml:38
 #, fuzzy, no-c-format
 msgid "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
 msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
 
 #. Tag: contrib
-#: Author_Group.xml:37
+#: Author_Group.xml:41
 #, fuzzy, no-c-format
 msgid "Korean Translation"
 msgstr "Traducción en italiano"
 
 #. Tag: othercredit
-#: Author_Group.xml:42
+#: Author_Group.xml:46
 #, fuzzy, no-c-format
 msgid "<firstname>Terry</firstname> <surname>Chuang</surname>"
 msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
 
 #. Tag: contrib
-#: Author_Group.xml:45
+#: Author_Group.xml:49
 #, fuzzy, no-c-format
 msgid "Traditional Chinese Translation"
 msgstr "Traducción en italiano"
 
 #. Tag: othercredit
-#: Author_Group.xml:50
+#: Author_Group.xml:54
 #, no-c-format
 msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
 msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
 
 #. Tag: othercredit
-#: Author_Group.xml:55
+#: Author_Group.xml:59
 #, fuzzy, no-c-format
 msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
 msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
 
 #. Tag: contrib
-#: Author_Group.xml:58
+#: Author_Group.xml:62
 #, fuzzy, no-c-format
 msgid "Simplified Chinese Translation"
 msgstr "Traducción en italiano"
 
 #. Tag: orgname
-#: Author_Group.xml:60
+#: Author_Group.xml:64
 #, no-c-format
 msgid "Kava Community"
 msgstr ""

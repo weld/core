@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-17 20:14+0000\n"
+"POT-Creation-Date: 2009-03-28 17:09+0000\n"
 "PO-Revision-Date: 2009-01-20 10:15+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
@@ -142,8 +142,8 @@ msgstr ""
 #. Tag: title
 #: ri-spi.xml:52
 #, no-c-format
-msgid "EJB Discovery"
-msgstr "EJB Discovery"
+msgid "EJB services"
+msgstr ""
 
 #. Tag: para
 #: ri-spi.xml:54
@@ -161,20 +161,17 @@ msgstr ""
 
 #. Tag: programlisting
 #: ri-spi.xml:61
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"<![CDATA[public interface EjbDiscovery\n"
+"<![CDATA[public interface EjbServices\n"
 "{\n"
-"   public static final String PROPERTY_NAME = EjbDiscovery.class.getName();\n"
 "   \n"
 "   /**\n"
 "    * Gets a descriptor for each EJB in the application\n"
 "    * \n"
 "    * @return The bean class to descriptor map \n"
 "    */\n"
-"   public Iterable<EjbDescriptor<?>> discoverEjbs();\n"
-"   \n"
-"}]]>"
+"   public Iterable<EjbDescriptor<?>> discoverEjbs();]]>"
 msgstr ""
 "<![CDATA[public interface EjbDiscovery\n"
 "{\n"
@@ -351,35 +348,48 @@ msgstr ""
 "interfaz de negocios local (encapsulando la clase de interfaz y el nombre de "
 "jndi a la búsqueda de una instancia del EJB)."
 
-#. Tag: title
-#: ri-spi.xml:77
+#. Tag: para
+#: ri-spi.xml:74
 #, no-c-format
 msgid ""
-"<literal>@EJB</literal>, <literal>@PersistenceContext</literal> and "
-"<literal>@Resource</literal> resolution"
+"The resolution of <literal>@EJB</literal> and <literal>@Resource</literal> "
+"is delegated to the container. You must provide an implementation of "
+"<literal>org.jboss.webbeans.ejb.spi.EjbServices</literal> which provides "
+"these operations. Web Beans passes in the <literal>javax.inject.manager."
+"InjectionPoint</literal> the resolution is for, as well as the "
+"<literal>NamingContext</literal> in use for each resolution request."
+msgstr ""
+
+#. Tag: title
+#: ri-spi.xml:98
+#, no-c-format
+msgid "JPA services"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:79
+#: ri-spi.xml:100
 #, no-c-format
 msgid ""
-"The resolution of <literal>@EJB</literal>, <literal>@PersistenceContext</"
-"literal> and <literal>@Resource</literal> is delegated to the container. You "
-"must provide an implementation of <literal>org.jboss.webbeans.ejb.spi."
-"EjbResolver</literal> which provides these operations. Web Beans passes in "
-"the <literal>javax.inject.manager.InjectionPoint</literal> the resolution is "
-"for, as well as the <literal>NamingContext</literal> in use for each "
-"resolution request."
+"Just as resolution of <literal>@EJB</literal> is delegated to the container, "
+"so is resolution of <literal>@PersistenceContext</literal>."
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:106
+#, no-c-format
+msgid ""
+"OPEN ISSUE: Web Beans also requires the container to provide a list of "
+"entities in the deployment, so that they aren't discovered as simple beans."
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:104
+#: ri-spi.xml:114
 #, no-c-format
 msgid "Transaction Services"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:106
+#: ri-spi.xml:116
 #, no-c-format
 msgid ""
 "The Web Beans RI must delegate JTA activities to the container. The SPI "
@@ -388,7 +398,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: ri-spi.xml:112
+#: ri-spi.xml:122
 #, no-c-format
 msgid ""
 "<![CDATA[public interface TransactionServices\n"
@@ -424,7 +434,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:114
+#: ri-spi.xml:124
 #, no-c-format
 msgid ""
 "The enumeration <literal>Status</literal> is a convenience for implementors "
@@ -434,7 +444,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:121
+#: ri-spi.xml:131
 #, no-c-format
 msgid ""
 "Any <literal>javax.transaction.Synchronization</literal> implementation may "
@@ -444,7 +454,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:128
+#: ri-spi.xml:138
 #, no-c-format
 msgid ""
 "To make it easier to determine whether or not a transaction is currently "
@@ -454,13 +464,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:137
+#: ri-spi.xml:147
 #, no-c-format
 msgid "The application context"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:139
+#: ri-spi.xml:149
 #, no-c-format
 msgid ""
 "Web Beans expects the Application Server or other container to provide the "
@@ -471,13 +481,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:152
+#: ri-spi.xml:162
 #, no-c-format
 msgid "Bootstrap and shutdown"
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:153
+#: ri-spi.xml:163
 #, no-c-format
 msgid ""
 "The <literal>org.jboss.webbeans.bootstrap.api.Bootstrap</literal> interface "
@@ -488,30 +498,40 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:162
+#: ri-spi.xml:172
 #, no-c-format
 msgid ""
-"The bootstrap is split into phases, bootstrap initialization and bootstrap. "
-"Initialization will create a manager, and add the standard (specification "
-"defined) contexts. Bootstrap will discover EJBs, classes and XML; add beans "
-"defined using annotations; add beans defined using XML; and validate all "
-"beans."
-msgstr ""
-
-#. Tag: para
-#: ri-spi.xml:170
-#, no-c-format
-msgid ""
-"To initialize the bootstrap you call <literal>Bootstrap.initialize()</"
-"literal>. Before calling <literal>initialize()</literal> you must have "
-"called <literal>Bootstrap.setEjbResolver()</literal>. If you are not using "
-"the built in <literal>DefaultNamingContext</literal> or the built in "
-"<literal>DefaultResourceLoader</literal> you must set these before calling "
-"<literal>initialize()</literal>."
+"The bootstrap is split into phases, bootstrap initialization and boot and "
+"shutdown. Initialization will create a manager, and add the standard "
+"(specification defined) contexts. Bootstrap will discover EJBs, classes and "
+"XML; add beans defined using annotations; add beans defined using XML; and "
+"validate all beans."
 msgstr ""
 
 #. Tag: para
 #: ri-spi.xml:180
+#, no-c-format
+msgid ""
+"The bootstrap supports multiple environments. Different environments require "
+"different services to be present (for example servlet doesn't require "
+"transaction, EJB or JPA services). By default an EE environment is assumed, "
+"but you can adjust the environment by calling <literal>bootstrap."
+"setEnvironment()</literal>."
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:188
+#, no-c-format
+msgid ""
+"To initialize the bootstrap you call <literal>Bootstrap.initialize()</"
+"literal>. Before calling <literal>initialize()</literal>, you must register "
+"any services required by your environment. You can do this by calling "
+"<literal>bootstrap.getServices().add(JpaServices.class, new MyJpaServices())"
+"</literal>. You must also provide the application context bean store."
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:197
 #, no-c-format
 msgid ""
 "Having called <literal>initialize()</literal>, the <literal>Manager</"
@@ -520,17 +540,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:186
+#: ri-spi.xml:203
 #, no-c-format
-msgid ""
-"To boot the container you call <literal>Bootstrap.boot()</literal>. Before "
-"calling <literal>boot()</literal> you must have called <literal>Bootstrap."
-"setWebBeanDiscovery()</literal>, <literal>Bootstrap.setEjbDiscovery()</"
-"literal> and <literal>Bootstrap.setApplicationContext()</literal>."
+msgid "To boot the container you call <literal>Bootstrap.boot()</literal>."
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:194
+#: ri-spi.xml:207
 #, no-c-format
 msgid ""
 "To shutdown the container you call <literal>Bootstrap.shutdown()</literal>. "
@@ -538,13 +554,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:203
+#: ri-spi.xml:216
 #, no-c-format
 msgid "JNDI"
 msgstr "JNDI"
 
 #. Tag: para
-#: ri-spi.xml:205
+#: ri-spi.xml:218
 #, fuzzy, no-c-format
 msgid ""
 "The Web Beans RI implements JNDI binding and lookup according to standards, "
@@ -558,7 +574,7 @@ msgstr ""
 "implemente <literal>org.jboss.webbeans.spi.resources.NamingContext</literal>:"
 
 #. Tag: programlisting
-#: ri-spi.xml:213
+#: ri-spi.xml:226
 #, no-c-format
 msgid ""
 "<![CDATA[public interface NamingContext extends Serializable {\n"
@@ -606,13 +622,13 @@ msgstr ""
 "}]]>"
 
 #. Tag: title
-#: ri-spi.xml:218
+#: ri-spi.xml:231
 #, no-c-format
 msgid "Resource loading"
 msgstr "Carga de recurso"
 
 #. Tag: para
-#: ri-spi.xml:220
+#: ri-spi.xml:233
 #, no-c-format
 msgid ""
 "The Web Beans RI needs to load classes and resources from the classpath at "
@@ -628,7 +644,7 @@ msgstr ""
 "ResourceLoader</literal>:"
 
 #. Tag: programlisting
-#: ri-spi.xml:228
+#: ri-spi.xml:241
 #, no-c-format
 msgid ""
 "<![CDATA[\n"
@@ -692,13 +708,13 @@ msgstr ""
 "         ]]>"
 
 #. Tag: title
-#: ri-spi.xml:233
+#: ri-spi.xml:246
 #, fuzzy, no-c-format
 msgid "Servlet injection"
 msgstr "Oyente de Servlet"
 
 #. Tag: para
-#: ri-spi.xml:235
+#: ri-spi.xml:248
 #, no-c-format
 msgid ""
 "Java EE / Servlet does not provide any hooks which can be used to provide "
@@ -707,7 +723,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:241
+#: ri-spi.xml:254
 #, no-c-format
 msgid ""
 "To be compliant with JSR-299, the container should request servlet injection "
@@ -716,7 +732,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:247
+#: ri-spi.xml:260
 #, no-c-format
 msgid ""
 "To perform injection on a servlet call <literal>WebBeansManager.injectServlet"
@@ -725,13 +741,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: ri-spi.xml:258
+#: ri-spi.xml:271
 #, no-c-format
 msgid "The contract with the container"
 msgstr "El contrato con el contenedor"
 
 #. Tag: para
-#: ri-spi.xml:260
+#: ri-spi.xml:273
 #, no-c-format
 msgid ""
 "There are a number of requirements that the Web Beans RI places on the "
@@ -742,13 +758,13 @@ msgstr ""
 "API."
 
 #. Tag: term
-#: ri-spi.xml:268
+#: ri-spi.xml:281
 #, no-c-format
 msgid "Classloader isolation"
 msgstr "Aislamiento de classloader"
 
 #. Tag: para
-#: ri-spi.xml:272
+#: ri-spi.xml:285
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans RI into an environment that supports "
@@ -762,13 +778,13 @@ msgstr ""
 "través de la configuración del usuario."
 
 #. Tag: term
-#: ri-spi.xml:281
+#: ri-spi.xml:294
 #, fuzzy, no-c-format
 msgid "Servlet listener and filters"
 msgstr "Oyente de Servlet"
 
 #. Tag: para
-#: ri-spi.xml:285
+#: ri-spi.xml:298
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans into a Servlet environment you must "
@@ -782,7 +798,7 @@ msgstr ""
 "configuración de usuario, para cada aplicación Web Beans que utiliza Servlet."
 
 #. Tag: para
-#: ri-spi.xml:294
+#: ri-spi.xml:307
 #, fuzzy, no-c-format
 msgid ""
 "If you are integrating the Web Beans into a JSF environment you must "
@@ -797,13 +813,13 @@ msgstr ""
 "configuración de usuario, para cada aplicación Web Beans que utiliza Servlet."
 
 #. Tag: term
-#: ri-spi.xml:306
+#: ri-spi.xml:319
 #, no-c-format
 msgid "Session Bean Interceptor"
 msgstr "Intercepción de sesión de Bean"
 
 #. Tag: para
-#: ri-spi.xml:310
+#: ri-spi.xml:323
 #, no-c-format
 msgid ""
 "If you are integrating the Web Beans into an EJB environment you must "
@@ -819,7 +835,7 @@ msgstr ""
 "Beans empresariales."
 
 #. Tag: para
-#: ri-spi.xml:320
+#: ri-spi.xml:333
 #, no-c-format
 msgid ""
 "You must register the <literal>SessionBeanInterceptor</literal> as the inner "
@@ -827,17 +843,17 @@ msgid ""
 msgstr ""
 
 #. Tag: term
-#: ri-spi.xml:328
-#, no-c-format
-msgid "The <literal>webbeans-ri.jar</literal>"
+#: ri-spi.xml:341
+#, fuzzy, no-c-format
+msgid "The <literal>webbeans-core.jar</literal>"
 msgstr "El <literal>webbeans-ri.jar</literal>"
 
 #. Tag: para
-#: ri-spi.xml:332
-#, no-c-format
+#: ri-spi.xml:345
+#, fuzzy, no-c-format
 msgid ""
 "If you are integrating the Web Beans into an environment that supports "
-"deployment of applications, you must insert the <literal>webbeans-ri.jar</"
+"deployment of applications, you must insert the <literal>webbeans-core.jar</"
 "literal> into the applications isolated classloader. It cannot be loaded "
 "from a shared classloader."
 msgstr ""
@@ -845,6 +861,9 @@ msgstr ""
 "de aplicaciones, debe insertar el <literal>webbeans-ri.jar</literal> dentro "
 "de las aplicaciones del classloader aislado. No se puede cargar desde el "
 "classloader compartido."
+
+#~ msgid "EJB Discovery"
+#~ msgstr "EJB Discovery"
 
 #~ msgid ""
 #~ "You can specify the implementation of an SPI either as a system property, "

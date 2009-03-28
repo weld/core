@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-17 20:14+0000\n"
+"POT-Creation-Date: 2009-03-28 17:09+0000\n"
 "PO-Revision-Date: 2008-12-19 20:26+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -62,4 +62,10 @@ msgstr ""
 #: master.xml:64
 #, no-c-format
 msgid "Web Beans and the Java EE ecosystem"
+msgstr ""
+
+#. Tag: title
+#: master.xml:76
+#, no-c-format
+msgid "Web Beans Reference"
 msgstr ""

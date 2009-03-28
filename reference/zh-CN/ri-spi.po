@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-17 20:14+0000\n"
+"POT-Creation-Date: 2009-03-28 17:09+0000\n"
 "PO-Revision-Date: 2009-03-27 13:50+0800\n"
 "Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
@@ -22,14 +22,29 @@ msgstr "将Web Bean参考实现整合到其他环境中"
 #. Tag: para
 #: ri-spi.xml:6
 #, no-c-format
-msgid "Currently the Web Beans RI only runs in JBoss AS 5; integrating the RI into other EE environments (for example another application server like Glassfish), into a servlet container (like Tomcat), or with an Embedded EJB3.1 implementation is fairly easy. In this Appendix we will briefly discuss the steps needed."
-msgstr "目前，Web Bean的参考实现只能运行在JBoss AS5中；将参考实现整合到其他EE环境中（例如像Glassfish的其他的应用服务器）以及一个Servlet容器（像Tomcat）中或者一个内嵌的EJB3.1实现中相当容易。在附录中我们将简要的讨论所需的步骤。"
+msgid ""
+"Currently the Web Beans RI only runs in JBoss AS 5; integrating the RI into "
+"other EE environments (for example another application server like "
+"Glassfish), into a servlet container (like Tomcat), or with an Embedded "
+"EJB3.1 implementation is fairly easy. In this Appendix we will briefly "
+"discuss the steps needed."
+msgstr ""
+"目前，Web Bean的参考实现只能运行在JBoss AS5中；将参考实现整合到其他EE环境中"
+"（例如像Glassfish的其他的应用服务器）以及一个Servlet容器（像Tomcat）中或者一"
+"个内嵌的EJB3.1实现中相当容易。在附录中我们将简要的讨论所需的步骤。"
 
 #. Tag: para
 #: ri-spi.xml:15
 #, no-c-format
-msgid "It should be possible to run Web Beans in an SE environment, but you'll to do more work, adding your own contexts and lifecycle. The Web Beans RI currently doesn't expose lifecycle extension points, so you would have to code directly against Web Beans RI classes."
-msgstr "Web Bean可以在SE环境中运行，但是你需要做更多的工作，添加你自己的上下文和生命周期。Web Bean参考实现目前没有暴露生命周期扩展点，所以你不得不直接编写Web Bean参考实现的类。"
+msgid ""
+"It should be possible to run Web Beans in an SE environment, but you'll to "
+"do more work, adding your own contexts and lifecycle. The Web Beans RI "
+"currently doesn't expose lifecycle extension points, so you would have to "
+"code directly against Web Beans RI classes."
+msgstr ""
+"Web Bean可以在SE环境中运行，但是你需要做更多的工作，添加你自己的上下文和生命"
+"周期。Web Bean参考实现目前没有暴露生命周期扩展点，所以你不得不直接编写Web "
+"Bean参考实现的类。"
 
 #. Tag: title
 #: ri-spi.xml:24
@@ -40,14 +55,24 @@ msgstr "Web Bean的参考实现SPI"
 #. Tag: para
 #: ri-spi.xml:26
 #, no-c-format
-msgid "The Web Beans SPI is located in <literal>webbeans-ri-spi</literal> module, and packaged as <literal>webbeans-ri-spi.jar</literal>. Some SPIs are optional, if you need to override the default behavior, others are required."
-msgstr "Web Bean的SPI位于<literal>webbeans-ri-spi</literal>模块中，打包为<literal>webbeans-ri-spi.jar</literal>。一些SPI是可选的，如果你需要覆盖默认行为，你需要其他的SPI。"
+msgid ""
+"The Web Beans SPI is located in <literal>webbeans-ri-spi</literal> module, "
+"and packaged as <literal>webbeans-ri-spi.jar</literal>. Some SPIs are "
+"optional, if you need to override the default behavior, others are required."
+msgstr ""
+"Web Bean的SPI位于<literal>webbeans-ri-spi</literal>模块中，打包为"
+"<literal>webbeans-ri-spi.jar</literal>。一些SPI是可选的，如果你需要覆盖默认行"
+"为，你需要其他的SPI。"
 
 #. Tag: para
 #: ri-spi.xml:33
 #, no-c-format
-msgid "All interfaces in the SPI support the decorator pattern and provide a <literal>Forwarding</literal> class."
-msgstr "所有的SPI接口都支持装饰器模式，并且提供一个 <literal>Forwarding</literal> 类。"
+msgid ""
+"All interfaces in the SPI support the decorator pattern and provide a "
+"<literal>Forwarding</literal> class."
+msgstr ""
+"所有的SPI接口都支持装饰器模式，并且提供一个 <literal>Forwarding</literal> "
+"类。"
 
 #. Tag: title
 #: ri-spi.xml:39
@@ -61,7 +86,8 @@ msgstr "Web Bean的发现"
 msgid ""
 "<![CDATA[public interface WebBeanDiscovery {\n"
 "   /**\n"
-"    * Gets list of all classes in classpath archives with web-beans.xml files\n"
+"    * Gets list of all classes in classpath archives with web-beans.xml "
+"files\n"
 "    * \n"
 "    * @return An iterable over the classes \n"
 "    */\n"
@@ -78,7 +104,8 @@ msgid ""
 msgstr ""
 "<![CDATA[public interface WebBeanDiscovery {\n"
 "   /**\n"
-"    * Gets list of all classes in classpath archives with web-beans.xml files\n"
+"    * Gets list of all classes in classpath archives with web-beans.xml "
+"files\n"
 "    * \n"
 "    * @return An iterable over the classes \n"
 "    */\n"
@@ -96,37 +123,46 @@ msgstr ""
 #. Tag: para
 #: ri-spi.xml:43
 #, no-c-format
-msgid "The discovery of Web Bean classes and <literal>web-bean.xml</literal> files is self-explanatory (the algorithm is described in Section 11.1 of the JSR-299 specification, and isn't repeated here)."
-msgstr "Web Bean类的发现和 <literal>web-bean.xml</literal> 配置文件的都是自解释性的（算法在JSR-299规范中已经描述了，这里就不再重复）"
+msgid ""
+"The discovery of Web Bean classes and <literal>web-bean.xml</literal> files "
+"is self-explanatory (the algorithm is described in Section 11.1 of the JSR-"
+"299 specification, and isn't repeated here)."
+msgstr ""
+"Web Bean类的发现和 <literal>web-bean.xml</literal> 配置文件的都是自解释性的"
+"（算法在JSR-299规范中已经描述了，这里就不再重复）"
 
 #. Tag: title
 #: ri-spi.xml:52
 #, no-c-format
-msgid "EJB Discovery"
-msgstr "EJB发现"
+msgid "EJB services"
+msgstr ""
 
 #. Tag: para
 #: ri-spi.xml:54
 #, no-c-format
-msgid "The Web Beans RI also delegates EJB3 bean discovery to the container so that it doesn't have to scan for EJB3 annotations or parse <literal>ejb-jar.xml</literal>. For each EJB in the application an EJBDescriptor should be discovered:"
-msgstr "Web Bean参考实现也将EJB3 Bean的发现委托给容器，以便它不用再扫描EJB3注释和解析 <literal>ejb-jar.xml</literal> 文件。对于应用中的每个EJB都应发现一个EJBDescriptor："
+msgid ""
+"The Web Beans RI also delegates EJB3 bean discovery to the container so that "
+"it doesn't have to scan for EJB3 annotations or parse <literal>ejb-jar.xml</"
+"literal>. For each EJB in the application an EJBDescriptor should be "
+"discovered:"
+msgstr ""
+"Web Bean参考实现也将EJB3 Bean的发现委托给容器，以便它不用再扫描EJB3注释和解"
+"析 <literal>ejb-jar.xml</literal> 文件。对于应用中的每个EJB都应发现一个"
+"EJBDescriptor："
 
 #. Tag: programlisting
 #: ri-spi.xml:61
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"<![CDATA[public interface EjbDiscovery\n"
+"<![CDATA[public interface EjbServices\n"
 "{\n"
-"   public static final String PROPERTY_NAME = EjbDiscovery.class.getName();\n"
 "   \n"
 "   /**\n"
 "    * Gets a descriptor for each EJB in the application\n"
 "    * \n"
 "    * @return The bean class to descriptor map \n"
 "    */\n"
-"   public Iterable<EjbDescriptor<?>> discoverEjbs();\n"
-"   \n"
-"}]]>"
+"   public Iterable<EjbDescriptor<?>> discoverEjbs();]]>"
 msgstr ""
 "<![CDATA[public interface EjbDiscovery\n"
 "{\n"
@@ -159,14 +195,16 @@ msgid ""
 "    * \n"
 "    * @return An iterator over the local business interfaces\n"
 "    */\n"
-"   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces();\n"
+"   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces"
+"();\n"
 "   \n"
 "   /**\n"
 "    * Gets the remote business interfaces of the EJB\n"
 "    * \n"
 "    * @return An iterator over the remote business interfaces\n"
 "    */\n"
-"   public Iterable<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces();\n"
+"   public Iterable<BusinessInterfaceDescriptor<?>> "
+"getRemoteBusinessInterfaces();\n"
 "   \n"
 "   /**\n"
 "    * Get the remove methods of the EJB\n"
@@ -227,14 +265,16 @@ msgstr ""
 "    * \n"
 "    * @return An iterator over the local business interfaces\n"
 "    */\n"
-"   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces();\n"
+"   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces"
+"();\n"
 "   \n"
 "   /**\n"
 "    * Gets the remote business interfaces of the EJB\n"
 "    * \n"
 "    * @return An iterator over the remote business interfaces\n"
 "    */\n"
-"   public Iterable<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces();\n"
+"   public Iterable<BusinessInterfaceDescriptor<?>> "
+"getRemoteBusinessInterfaces();\n"
 "   \n"
 "   /**\n"
 "    * Get the remove methods of the EJB\n"
@@ -284,35 +324,77 @@ msgstr ""
 #. Tag: para
 #: ri-spi.xml:65
 #, no-c-format
-msgid "The <literal>EjbDescriptor</literal> is fairly self-explanatory, and should return the relevant metadata as defined in the EJB specification. In addition to these two interfaces, there is <literal>BusinessInterfaceDescriptor</literal> which represents a local business interface (encapsulating the interface class and jndi name used to look up an instance of the EJB)."
-msgstr " <literal>EjbDescriptor</literal> 具有相当的自解释性，应该返回EJB规范中定义的相关元数据。除了这两个接口，还有一个表示本地业务接口的  <literal>BusinessInterfaceDescriptor</literal> （封装了接口类和用于查询EJB实例的jndi名字）"
-
-#. Tag: title
-#: ri-spi.xml:77
-#, no-c-format
-msgid "<literal>@EJB</literal>, <literal>@PersistenceContext</literal> and <literal>@Resource</literal> resolution"
-msgstr "<literal>@EJB</literal>, <literal>@PersistenceContext</literal> 和 <literal>@Resource</literal> 的解析"
+msgid ""
+"The <literal>EjbDescriptor</literal> is fairly self-explanatory, and should "
+"return the relevant metadata as defined in the EJB specification. In "
+"addition to these two interfaces, there is "
+"<literal>BusinessInterfaceDescriptor</literal> which represents a local "
+"business interface (encapsulating the interface class and jndi name used to "
+"look up an instance of the EJB)."
+msgstr ""
+" <literal>EjbDescriptor</literal> 具有相当的自解释性，应该返回EJB规范中定义的"
+"相关元数据。除了这两个接口，还有一个表示本地业务接口的  "
+"<literal>BusinessInterfaceDescriptor</literal> （封装了接口类和用于查询EJB实"
+"例的jndi名字）"
 
 #. Tag: para
-#: ri-spi.xml:79
-#, no-c-format
-msgid "The resolution of <literal>@EJB</literal>, <literal>@PersistenceContext</literal> and <literal>@Resource</literal> is delegated to the container. You must provide an implementation of <literal>org.jboss.webbeans.ejb.spi.EjbResolver</literal> which provides these operations. Web Beans passes in the <literal>javax.inject.manager.InjectionPoint</literal> the resolution is for, as well as the <literal>NamingContext</literal> in use for each resolution request."
-msgstr "<literal>@EJB</literal>, <literal>@PersistenceContext</literal> 和 <literal>@Resource</literal> 的解析被委托给容器。你必须提供一个 <literal>org.jboss.webbeans.ejb.spi.EjbResolver</literal> 实现来完成这些工作。每次解析请求到来时，Web Beans都将 <literal>javax.inject.manager.InjectionPoint</literal> 以及 <literal>NamingContext</literal> 传递进来以便解析。"
+#: ri-spi.xml:74
+#, fuzzy, no-c-format
+msgid ""
+"The resolution of <literal>@EJB</literal> and <literal>@Resource</literal> "
+"is delegated to the container. You must provide an implementation of "
+"<literal>org.jboss.webbeans.ejb.spi.EjbServices</literal> which provides "
+"these operations. Web Beans passes in the <literal>javax.inject.manager."
+"InjectionPoint</literal> the resolution is for, as well as the "
+"<literal>NamingContext</literal> in use for each resolution request."
+msgstr ""
+"<literal>@EJB</literal>, <literal>@PersistenceContext</literal> 和 "
+"<literal>@Resource</literal> 的解析被委托给容器。你必须提供一个 <literal>org."
+"jboss.webbeans.ejb.spi.EjbResolver</literal> 实现来完成这些工作。每次解析请求"
+"到来时，Web Beans都将 <literal>javax.inject.manager.InjectionPoint</literal> "
+"以及 <literal>NamingContext</literal> 传递进来以便解析。"
 
 #. Tag: title
-#: ri-spi.xml:104
+#: ri-spi.xml:98
+#, no-c-format
+msgid "JPA services"
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:100
+#, no-c-format
+msgid ""
+"Just as resolution of <literal>@EJB</literal> is delegated to the container, "
+"so is resolution of <literal>@PersistenceContext</literal>."
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:106
+#, no-c-format
+msgid ""
+"OPEN ISSUE: Web Beans also requires the container to provide a list of "
+"entities in the deployment, so that they aren't discovered as simple beans."
+msgstr ""
+
+#. Tag: title
+#: ri-spi.xml:114
 #, no-c-format
 msgid "Transaction Services"
 msgstr "事务服务"
 
 #. Tag: para
-#: ri-spi.xml:106
+#: ri-spi.xml:116
 #, no-c-format
-msgid "The Web Beans RI must delegate JTA activities to the container. The SPI provides a couple hooks to easily achieve this with the <literal>TransactionServices</literal> interface."
-msgstr "Web Bean RI必须将JTA活动委托给容器。SPI提供者提供一些钩子(hooks)结合<literal>TransactionServices</literal> 接口来轻松完成这个任务。"
+msgid ""
+"The Web Beans RI must delegate JTA activities to the container. The SPI "
+"provides a couple hooks to easily achieve this with the "
+"<literal>TransactionServices</literal> interface."
+msgstr ""
+"Web Bean RI必须将JTA活动委托给容器。SPI提供者提供一些钩子(hooks)结合"
+"<literal>TransactionServices</literal> 接口来轻松完成这个任务。"
 
 #. Tag: programlisting
-#: ri-spi.xml:112
+#: ri-spi.xml:122
 #, no-c-format
 msgid ""
 "<![CDATA[public interface TransactionServices\n"
@@ -333,10 +415,12 @@ msgid ""
 "    * @see javax.transaction.Synchronization\n"
 "    * @param synchronizedObserver\n"
 "    */\n"
-"   public void registerSynchronization(Synchronization synchronizedObserver);\n"
+"   public void registerSynchronization(Synchronization "
+"synchronizedObserver);\n"
 "\n"
 "   /**\n"
-"    * Queries the status of the current execution to see if a transaction is\n"
+"    * Queries the status of the current execution to see if a transaction "
+"is\n"
 "    * currently active.\n"
 "    * \n"
 "    * @return true if a transaction is active\n"
@@ -362,10 +446,12 @@ msgstr ""
 "    * @see javax.transaction.Synchronization\n"
 "    * @param synchronizedObserver\n"
 "    */\n"
-"   public void registerSynchronization(Synchronization synchronizedObserver);\n"
+"   public void registerSynchronization(Synchronization "
+"synchronizedObserver);\n"
 "\n"
 "   /**\n"
-"    * Queries the status of the current execution to see if a transaction is\n"
+"    * Queries the status of the current execution to see if a transaction "
+"is\n"
 "    * currently active.\n"
 "    * \n"
 "    * @return true if a transaction is active\n"
@@ -374,91 +460,175 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: ri-spi.xml:114
+#: ri-spi.xml:124
 #, no-c-format
-msgid "The enumeration <literal>Status</literal> is a convenience for implementors to be able to keep track of whether a synchronization is supposed to notify an observer only when the transaction is successful, or after a failure, or regardless of the status of the transaction."
-msgstr "枚举 <literal>Status</literal> 对实现者来说是一个很方便的工具，可以追踪在事务成功或者失败或者无论事务成功还是失败的情况下，是否应该将一个同步通知给观察者。"
+msgid ""
+"The enumeration <literal>Status</literal> is a convenience for implementors "
+"to be able to keep track of whether a synchronization is supposed to notify "
+"an observer only when the transaction is successful, or after a failure, or "
+"regardless of the status of the transaction."
+msgstr ""
+"枚举 <literal>Status</literal> 对实现者来说是一个很方便的工具，可以追踪在事务"
+"成功或者失败或者无论事务成功还是失败的情况下，是否应该将一个同步通知给观察"
+"者。"
 
 #. Tag: para
-#: ri-spi.xml:121
+#: ri-spi.xml:131
 #, no-c-format
-msgid "Any <literal>javax.transaction.Synchronization</literal> implementation may be passed to the <literal>registerSynchronization()</literal> method and the SPI implementation should immediately register the synchronization with the JTA transaction manager used for the EJBs."
-msgstr "任何 <literal>javax.transaction.Synchronization</literal> 实现必须传递给 <literal>registerSynchronization()</literal> 方法，SPI实现应该立刻将同步注册到EJB使用的JTA事务管理器。"
+msgid ""
+"Any <literal>javax.transaction.Synchronization</literal> implementation may "
+"be passed to the <literal>registerSynchronization()</literal> method and the "
+"SPI implementation should immediately register the synchronization with the "
+"JTA transaction manager used for the EJBs."
+msgstr ""
+"任何 <literal>javax.transaction.Synchronization</literal> 实现必须传递给 "
+"<literal>registerSynchronization()</literal> 方法，SPI实现应该立刻将同步注册"
+"到EJB使用的JTA事务管理器。"
 
 #. Tag: para
-#: ri-spi.xml:128
+#: ri-spi.xml:138
 #, no-c-format
-msgid "To make it easier to determine whether or not a transaction is currently active for the requesting thread, the <literal>isTransactionActive()</literal> method can be used. The SPI implementation should query the same JTA transaction manager used for the EJBs."
-msgstr "为了更容易的决定对于请求线程来说一个事务在当前是否是活动的，我们可以使用<literal>isTransactionActive()</literal> 方法。SPI实现应该查询EJB使用的同一个JTA事务管理器。"
+msgid ""
+"To make it easier to determine whether or not a transaction is currently "
+"active for the requesting thread, the <literal>isTransactionActive()</"
+"literal> method can be used. The SPI implementation should query the same "
+"JTA transaction manager used for the EJBs."
+msgstr ""
+"为了更容易的决定对于请求线程来说一个事务在当前是否是活动的，我们可以使用"
+"<literal>isTransactionActive()</literal> 方法。SPI实现应该查询EJB使用的同一个"
+"JTA事务管理器。"
 
 #. Tag: title
-#: ri-spi.xml:137
+#: ri-spi.xml:147
 #, no-c-format
 msgid "The application context"
 msgstr "应用上下文"
 
 #. Tag: para
-#: ri-spi.xml:139
+#: ri-spi.xml:149
 #, no-c-format
-msgid "Web Beans expects the Application Server or other container to provide the storage for each application's context. The <literal>org.jboss.webbeans.context.api.BeanStore</literal> should be implemented to provide an application scoped storage. You may find <literal>org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore</literal> useful."
-msgstr "Web Bean期望应用服务器或者其他容器能够提供每个应用上下文的存储。<literal>org.jboss.webbeans.context.api.BeanStore</literal> 应该被实现以便提供一个应用范围的存储。你也许会发现 <literal>org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore</literal> 非常有用。"
+msgid ""
+"Web Beans expects the Application Server or other container to provide the "
+"storage for each application's context. The <literal>org.jboss.webbeans."
+"context.api.BeanStore</literal> should be implemented to provide an "
+"application scoped storage. You may find <literal>org.jboss.webbeans.context."
+"api.helpers.ConcurrentHashMapBeanStore</literal> useful."
+msgstr ""
+"Web Bean期望应用服务器或者其他容器能够提供每个应用上下文的存储。<literal>org."
+"jboss.webbeans.context.api.BeanStore</literal> 应该被实现以便提供一个应用范围"
+"的存储。你也许会发现 <literal>org.jboss.webbeans.context.api.helpers."
+"ConcurrentHashMapBeanStore</literal> 非常有用。"
 
 #. Tag: title
-#: ri-spi.xml:152
+#: ri-spi.xml:162
 #, no-c-format
 msgid "Bootstrap and shutdown"
 msgstr "自举和停止"
 
 #. Tag: para
-#: ri-spi.xml:153
+#: ri-spi.xml:163
 #, no-c-format
-msgid "The <literal>org.jboss.webbeans.bootstrap.api.Bootstrap</literal> interface defines the bootstrap for Web Beans. To boot Web Beans, you must obtain an instance of <literal>org.jboss.webbeans.bootstrap.WebBeansBootstrap</literal> (which implements <literal>Boostrap</literal>), tell it about the SPIs in use, and then request the container start."
-msgstr " <literal>org.jboss.webbeans.bootstrap.api.Bootstrap</literal> 接口定义了Web Bean的自举机制。为了启动Web Beans，你必须获得一个<literal>org.jboss.webbeans.bootstrap.WebBeansBootstrap</literal> 实例（它实现了<literal>Boostrap</literal>） ，告诉它使用的SPI，然后请求容器启动。 "
+msgid ""
+"The <literal>org.jboss.webbeans.bootstrap.api.Bootstrap</literal> interface "
+"defines the bootstrap for Web Beans. To boot Web Beans, you must obtain an "
+"instance of <literal>org.jboss.webbeans.bootstrap.WebBeansBootstrap</"
+"literal> (which implements <literal>Boostrap</literal>), tell it about the "
+"SPIs in use, and then request the container start."
+msgstr ""
+" <literal>org.jboss.webbeans.bootstrap.api.Bootstrap</literal> 接口定义了Web "
+"Bean的自举机制。为了启动Web Beans，你必须获得一个<literal>org.jboss.webbeans."
+"bootstrap.WebBeansBootstrap</literal> 实例（它实现了<literal>Boostrap</"
+"literal>） ，告诉它使用的SPI，然后请求容器启动。 "
 
 #. Tag: para
-#: ri-spi.xml:162
-#, no-c-format
-msgid "The bootstrap is split into phases, bootstrap initialization and bootstrap. Initialization will create a manager, and add the standard (specification defined) contexts. Bootstrap will discover EJBs, classes and XML; add beans defined using annotations; add beans defined using XML; and validate all beans."
-msgstr "自举可以划分为阶段，自举初始化和自举。初始化将创建一个管理器，添加标准（规范定义的）的上下文。自举将发现EJB，类和XML；添加注释定义的Bean；添加XML定义的Bean；和验证所有的Bean。"
-
-#. Tag: para
-#: ri-spi.xml:170
-#, no-c-format
-msgid "To initialize the bootstrap you call <literal>Bootstrap.initialize()</literal>. Before calling <literal>initialize()</literal> you must have called <literal>Bootstrap.setEjbResolver()</literal>. If you are not using the built in <literal>DefaultNamingContext</literal> or the built in <literal>DefaultResourceLoader</literal> you must set these before calling <literal>initialize()</literal>."
-msgstr "为了初始化自举，你需要调用 <literal>Bootstrap.initialize()</literal> 。在调用 <literal>initialize()</literal> 之前你必须调用 <literal>Bootstrap.setEjbResolver()</literal> 。如果你没有使用内置的<literal>DefaultNamingContext</literal>或者<literal>DefaultResourceLoader</literal>，你必须在调用<literal>initialize()</literal>之前设置它们。"
+#: ri-spi.xml:172
+#, fuzzy, no-c-format
+msgid ""
+"The bootstrap is split into phases, bootstrap initialization and boot and "
+"shutdown. Initialization will create a manager, and add the standard "
+"(specification defined) contexts. Bootstrap will discover EJBs, classes and "
+"XML; add beans defined using annotations; add beans defined using XML; and "
+"validate all beans."
+msgstr ""
+"自举可以划分为阶段，自举初始化和自举。初始化将创建一个管理器，添加标准（规范"
+"定义的）的上下文。自举将发现EJB，类和XML；添加注释定义的Bean；添加XML定义的"
+"Bean；和验证所有的Bean。"
 
 #. Tag: para
 #: ri-spi.xml:180
 #, no-c-format
-msgid "Having called <literal>initialize()</literal>, the <literal>Manager</literal> can be obtained by calling <literal>Bootstrap.getManager()</literal>."
-msgstr "调用<literal>initialize()</literal>后，我们能够通过<literal>Bootstrap.getManager()</literal>来获得<literal>管理器</literal>。"
+msgid ""
+"The bootstrap supports multiple environments. Different environments require "
+"different services to be present (for example servlet doesn't require "
+"transaction, EJB or JPA services). By default an EE environment is assumed, "
+"but you can adjust the environment by calling <literal>bootstrap."
+"setEnvironment()</literal>."
+msgstr ""
 
 #. Tag: para
-#: ri-spi.xml:186
-#, no-c-format
-msgid "To boot the container you call <literal>Bootstrap.boot()</literal>. Before calling <literal>boot()</literal> you must have called <literal>Bootstrap.setWebBeanDiscovery()</literal>, <literal>Bootstrap.setEjbDiscovery()</literal> and <literal>Bootstrap.setApplicationContext()</literal>."
-msgstr "启动容器你需要调用 <literal>Bootstrap.boot()</literal> 。在调用<literal>boot()</literal>之前，你必须调用<literal>Bootstrap.setWebBeanDiscovery()</literal>, <literal>Bootstrap.setEjbDiscovery()</literal> 和 <literal>Bootstrap.setApplicationContext()</literal>。"
+#: ri-spi.xml:188
+#, fuzzy, no-c-format
+msgid ""
+"To initialize the bootstrap you call <literal>Bootstrap.initialize()</"
+"literal>. Before calling <literal>initialize()</literal>, you must register "
+"any services required by your environment. You can do this by calling "
+"<literal>bootstrap.getServices().add(JpaServices.class, new MyJpaServices())"
+"</literal>. You must also provide the application context bean store."
+msgstr ""
+"为了初始化自举，你需要调用 <literal>Bootstrap.initialize()</literal> 。在调"
+"用 <literal>initialize()</literal> 之前你必须调用 <literal>Bootstrap."
+"setEjbResolver()</literal> 。如果你没有使用内置的"
+"<literal>DefaultNamingContext</literal>或者<literal>DefaultResourceLoader</"
+"literal>，你必须在调用<literal>initialize()</literal>之前设置它们。"
 
 #. Tag: para
-#: ri-spi.xml:194
+#: ri-spi.xml:197
 #, no-c-format
-msgid "To shutdown the container you call <literal>Bootstrap.shutdown()</literal>. This allows the container to perform any cleanup operations needed."
-msgstr "要关闭容器，你需要调用 <literal>Bootstrap.shutdown()</literal>。这将让容器执行一些必要的清洁工作。"
+msgid ""
+"Having called <literal>initialize()</literal>, the <literal>Manager</"
+"literal> can be obtained by calling <literal>Bootstrap.getManager()</"
+"literal>."
+msgstr ""
+"调用<literal>initialize()</literal>后，我们能够通过<literal>Bootstrap."
+"getManager()</literal>来获得<literal>管理器</literal>。"
+
+#. Tag: para
+#: ri-spi.xml:203
+#, no-c-format
+msgid "To boot the container you call <literal>Bootstrap.boot()</literal>."
+msgstr ""
+
+#. Tag: para
+#: ri-spi.xml:207
+#, no-c-format
+msgid ""
+"To shutdown the container you call <literal>Bootstrap.shutdown()</literal>. "
+"This allows the container to perform any cleanup operations needed."
+msgstr ""
+"要关闭容器，你需要调用 <literal>Bootstrap.shutdown()</literal>。这将让容器执"
+"行一些必要的清洁工作。"
 
 #. Tag: title
-#: ri-spi.xml:203
+#: ri-spi.xml:216
 #, no-c-format
 msgid "JNDI"
 msgstr "JNDI"
 
 #. Tag: para
-#: ri-spi.xml:205
+#: ri-spi.xml:218
 #, no-c-format
-msgid "The Web Beans RI implements JNDI binding and lookup according to standards, however you may want to alter the binding and lookup (for example in an environment where JNDI isn't available). To do this, implement <literal>org.jboss.webbeans.resources.spi.NamingContext</literal>:"
-msgstr " Web Beans 参考实现实现了JNDI 的绑定和根据标准来查询，然而你可能想要改变这些绑定和查询（例如在一个没有JNDI的环境中）。你可以通过实现 <literal>org.jboss.webbeans.resources.spi.NamingContext</literal>来完成这个工作："
+msgid ""
+"The Web Beans RI implements JNDI binding and lookup according to standards, "
+"however you may want to alter the binding and lookup (for example in an "
+"environment where JNDI isn't available). To do this, implement <literal>org."
+"jboss.webbeans.resources.spi.NamingContext</literal>:"
+msgstr ""
+" Web Beans 参考实现实现了JNDI 的绑定和根据标准来查询，然而你可能想要改变这些"
+"绑定和查询（例如在一个没有JNDI的环境中）。你可以通过实现 <literal>org.jboss."
+"webbeans.resources.spi.NamingContext</literal>来完成这个工作："
 
 #. Tag: programlisting
-#: ri-spi.xml:213
+#: ri-spi.xml:226
 #, no-c-format
 msgid ""
 "<![CDATA[public interface NamingContext extends Serializable {\n"
@@ -506,19 +676,27 @@ msgstr ""
 "}]]>"
 
 #. Tag: title
-#: ri-spi.xml:218
+#: ri-spi.xml:231
 #, no-c-format
 msgid "Resource loading"
 msgstr "资源加载"
 
 #. Tag: para
-#: ri-spi.xml:220
+#: ri-spi.xml:233
 #, no-c-format
-msgid "The Web Beans RI needs to load classes and resources from the classpath at various times. By default, they are loaded from the same classloader that was used to load the RI, however this may not be correct for some environments. If this is case, you can implement <literal>org.jboss.webbeans.spi.ResourceLoader</literal>:"
-msgstr "Web Beans参考实现需要在不同时间从类路径上加载类和资源。默认情况下，它们使用加载参考实现的类加载器加载，但是这在一些环境中可能是不适合的。如果出现这种情况的话，你可以实现<literal>org.jboss.webbeans.spi.ResourceLoader</literal> ："
+msgid ""
+"The Web Beans RI needs to load classes and resources from the classpath at "
+"various times. By default, they are loaded from the same classloader that "
+"was used to load the RI, however this may not be correct for some "
+"environments. If this is case, you can implement <literal>org.jboss.webbeans."
+"spi.ResourceLoader</literal>:"
+msgstr ""
+"Web Beans参考实现需要在不同时间从类路径上加载类和资源。默认情况下，它们使用加"
+"载参考实现的类加载器加载，但是这在一些环境中可能是不适合的。如果出现这种情况"
+"的话，你可以实现<literal>org.jboss.webbeans.spi.ResourceLoader</literal> ："
 
 #. Tag: programlisting
-#: ri-spi.xml:228
+#: ri-spi.xml:241
 #, no-c-format
 msgid ""
 "<![CDATA[\n"
@@ -582,101 +760,179 @@ msgstr ""
 "         ]]>"
 
 #. Tag: title
-#: ri-spi.xml:233
+#: ri-spi.xml:246
 #, no-c-format
 msgid "Servlet injection"
 msgstr "Servlet 注入"
 
 #. Tag: para
-#: ri-spi.xml:235
+#: ri-spi.xml:248
 #, no-c-format
-msgid "Java EE / Servlet does not provide any hooks which can be used to provide injection into Servlets, so Web Beans provides an API to allow the container to request JSR-299 injection for a Servlet."
-msgstr "Java EE/Servlet并不没有提供任何钩子来支持向Servlet注入，所以Web Bean提供了一个接口来允许容器为一个Servlet请求JSR-299的注入。"
+msgid ""
+"Java EE / Servlet does not provide any hooks which can be used to provide "
+"injection into Servlets, so Web Beans provides an API to allow the container "
+"to request JSR-299 injection for a Servlet."
+msgstr ""
+"Java EE/Servlet并不没有提供任何钩子来支持向Servlet注入，所以Web Bean提供了一"
+"个接口来允许容器为一个Servlet请求JSR-299的注入。"
 
 #. Tag: para
-#: ri-spi.xml:241
+#: ri-spi.xml:254
 #, no-c-format
-msgid "To be compliant with JSR-299, the container should request servlet injection for each newly instantiated servlet after the constructor returns and before the servlet is placed into service."
-msgstr "为了和JSR-299兼容，容器应该在构造器返回之后，在Servlet被放到服务中之前，为每个新实例化的Servlet请求Servlet注入。"
+msgid ""
+"To be compliant with JSR-299, the container should request servlet injection "
+"for each newly instantiated servlet after the constructor returns and before "
+"the servlet is placed into service."
+msgstr ""
+"为了和JSR-299兼容，容器应该在构造器返回之后，在Servlet被放到服务中之前，为每"
+"个新实例化的Servlet请求Servlet注入。"
 
 #. Tag: para
-#: ri-spi.xml:247
+#: ri-spi.xml:260
 #, no-c-format
-msgid "To perform injection on a servlet call <literal>WebBeansManager.injectServlet()</literal>. The manager can be obtained from <literal>Bootstrap.getManager()</literal>."
-msgstr "执行Servlet注入时需要调用 <literal>WebBeansManager.injectServlet()</literal>。你可以通过 <literal>Bootstrap.getManager()</literal>来获得管理器。"
+msgid ""
+"To perform injection on a servlet call <literal>WebBeansManager.injectServlet"
+"()</literal>. The manager can be obtained from <literal>Bootstrap.getManager"
+"()</literal>."
+msgstr ""
+"执行Servlet注入时需要调用 <literal>WebBeansManager.injectServlet()</"
+"literal>。你可以通过 <literal>Bootstrap.getManager()</literal>来获得管理器。"
 
 #. Tag: title
-#: ri-spi.xml:258
+#: ri-spi.xml:271
 #, no-c-format
 msgid "The contract with the container"
 msgstr "容器的合约"
 
 #. Tag: para
-#: ri-spi.xml:260
+#: ri-spi.xml:273
 #, no-c-format
-msgid "There are a number of requirements that the Web Beans RI places on the container for correct functioning that fall outside implementation of APIs"
+msgid ""
+"There are a number of requirements that the Web Beans RI places on the "
+"container for correct functioning that fall outside implementation of APIs"
 msgstr "为了接口实现之外的正确的功能，Web Beans参考实现对容器有大量的要求。"
 
 #. Tag: term
-#: ri-spi.xml:268
+#: ri-spi.xml:281
 #, no-c-format
 msgid "Classloader isolation"
 msgstr "类加载器隔离"
 
 #. Tag: para
-#: ri-spi.xml:272
+#: ri-spi.xml:285
 #, no-c-format
-msgid "If you are integrating the Web Beans RI into an environment that supports deployment of multiple applications, you must enable, automatically, or through user configuation, classloader isolation for each Web Beans application."
-msgstr "如果你将一个Web Bean参考实现整合到一个支持多应用部署的环境中，你需要以用户配置或者自动化方式为每个Web Bean应用激活类加载器隔离。"
+msgid ""
+"If you are integrating the Web Beans RI into an environment that supports "
+"deployment of multiple applications, you must enable, automatically, or "
+"through user configuation, classloader isolation for each Web Beans "
+"application."
+msgstr ""
+"如果你将一个Web Bean参考实现整合到一个支持多应用部署的环境中，你需要以用户配"
+"置或者自动化方式为每个Web Bean应用激活类加载器隔离。"
 
 #. Tag: term
-#: ri-spi.xml:281
+#: ri-spi.xml:294
 #, no-c-format
 msgid "Servlet listener and filters"
 msgstr "Servlet监听器和过滤器"
 
 #. Tag: para
-#: ri-spi.xml:285
+#: ri-spi.xml:298
 #, no-c-format
-msgid "If you are integrating the Web Beans into a Servlet environment you must register <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> as a Servlet listener, either automatically, or through user configuration, for each Web Beans application which uses Servlet."
-msgstr "如果你将Web Bean整合到一个Servlet环境中，对每个使用Servlet的 Web Bean应用，你需要以用户配置或者自动化形式将 <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> 注册为一个Servlet监听器。"
+msgid ""
+"If you are integrating the Web Beans into a Servlet environment you must "
+"register <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> as a "
+"Servlet listener, either automatically, or through user configuration, for "
+"each Web Beans application which uses Servlet."
+msgstr ""
+"如果你将Web Bean整合到一个Servlet环境中，对每个使用Servlet的 Web Bean应用，你"
+"需要以用户配置或者自动化形式将 <literal>org.jboss.webbeans.servlet."
+"WebBeansListener</literal> 注册为一个Servlet监听器。"
 
 #. Tag: para
-#: ri-spi.xml:294
+#: ri-spi.xml:307
 #, no-c-format
-msgid "If you are integrating the Web Beans into a JSF environment you must register <literal>org.jboss.webbeans.servlet.ConversationPropagationFilter</literal> as a Servlet listener, either automatically, or through user configuration, for each Web Beans application which uses JSF. This filter can be registered for all Servlet deployment safely."
-msgstr "如果你将Web Bean整合到一个JSF环境中，对每个使用JSF的 Web Bean应用，你需要以用户配置或者自动化形式将 <literal>org.jboss.webbeans.servlet.ConversationPropagationFilter</literal> 注册为一个Servlet监听器。这个过滤器可以安全地向所有Servlet部署注册。"
+msgid ""
+"If you are integrating the Web Beans into a JSF environment you must "
+"register <literal>org.jboss.webbeans.servlet.ConversationPropagationFilter</"
+"literal> as a Servlet listener, either automatically, or through user "
+"configuration, for each Web Beans application which uses JSF. This filter "
+"can be registered for all Servlet deployment safely."
+msgstr ""
+"如果你将Web Bean整合到一个JSF环境中，对每个使用JSF的 Web Bean应用，你需要以用"
+"户配置或者自动化形式将 <literal>org.jboss.webbeans.servlet."
+"ConversationPropagationFilter</literal> 注册为一个Servlet监听器。这个过滤器可"
+"以安全地向所有Servlet部署注册。"
 
 #. Tag: term
-#: ri-spi.xml:306
+#: ri-spi.xml:319
 #, no-c-format
 msgid "Session Bean Interceptor"
 msgstr "会话Bean拦截器"
 
 #. Tag: para
-#: ri-spi.xml:310
+#: ri-spi.xml:323
 #, no-c-format
-msgid "If you are integrating the Web Beans into an EJB environment you must register <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> as a EJB interceptor for all EJBs in the application, either automatically, or through user configuration, for each Web Beans application which uses enterprise beans."
-msgstr "如果你将Web Beans整合到EJB环境中，对每个使用企业级Bean的Web Bean应用，你需要以用户配置或者自动化形式将 <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> 注册为应用中所有EJB的EJB拦截器。"
+msgid ""
+"If you are integrating the Web Beans into an EJB environment you must "
+"register <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> as "
+"a EJB interceptor for all EJBs in the application, either automatically, or "
+"through user configuration, for each Web Beans application which uses "
+"enterprise beans."
+msgstr ""
+"如果你将Web Beans整合到EJB环境中，对每个使用企业级Bean的Web Bean应用，你需要"
+"以用户配置或者自动化形式将 <literal>org.jboss.webbeans.ejb."
+"SessionBeanInterceptor</literal> 注册为应用中所有EJB的EJB拦截器。"
 
 #. Tag: para
-#: ri-spi.xml:320
+#: ri-spi.xml:333
 #, no-c-format
-msgid "You must register the <literal>SessionBeanInterceptor</literal> as the inner most interceptor in the stack for all EJBs."
-msgstr "你必须为所有的EJB在栈中将<literal>SessionBeanInterceptor</literal> 注册为一个最内部的拦截器。"
+msgid ""
+"You must register the <literal>SessionBeanInterceptor</literal> as the inner "
+"most interceptor in the stack for all EJBs."
+msgstr ""
+"你必须为所有的EJB在栈中将<literal>SessionBeanInterceptor</literal> 注册为一个"
+"最内部的拦截器。"
 
 #. Tag: term
-#: ri-spi.xml:328
-#, no-c-format
-msgid "The <literal>webbeans-ri.jar</literal>"
+#: ri-spi.xml:341
+#, fuzzy, no-c-format
+msgid "The <literal>webbeans-core.jar</literal>"
 msgstr "<literal>webbeans-ri.jar</literal>"
 
 #. Tag: para
-#: ri-spi.xml:332
-#, no-c-format
-msgid "If you are integrating the Web Beans into an environment that supports deployment of applications, you must insert the <literal>webbeans-ri.jar</literal> into the applications isolated classloader. It cannot be loaded from a shared classloader."
-msgstr "如果你将Web Bean整合到一个支持应用部署的环境中，你必须将<literal>webbeans-ri.jar</literal> 插入到应用隔离的类加载器中。它不能被一个共享的类加载器加载。"
+#: ri-spi.xml:345
+#, fuzzy, no-c-format
+msgid ""
+"If you are integrating the Web Beans into an environment that supports "
+"deployment of applications, you must insert the <literal>webbeans-core.jar</"
+"literal> into the applications isolated classloader. It cannot be loaded "
+"from a shared classloader."
+msgstr ""
+"如果你将Web Bean整合到一个支持应用部署的环境中，你必须将<literal>webbeans-ri."
+"jar</literal> 插入到应用隔离的类加载器中。它不能被一个共享的类加载器加载。"
+
+#~ msgid "EJB Discovery"
+#~ msgstr "EJB发现"
+
+#~ msgid ""
+#~ "<literal>@EJB</literal>, <literal>@PersistenceContext</literal> and "
+#~ "<literal>@Resource</literal> resolution"
+#~ msgstr ""
+#~ "<literal>@EJB</literal>, <literal>@PersistenceContext</literal> 和 "
+#~ "<literal>@Resource</literal> 的解析"
+
+#~ msgid ""
+#~ "To boot the container you call <literal>Bootstrap.boot()</literal>. "
+#~ "Before calling <literal>boot()</literal> you must have called "
+#~ "<literal>Bootstrap.setWebBeanDiscovery()</literal>, <literal>Bootstrap."
+#~ "setEjbDiscovery()</literal> and <literal>Bootstrap.setApplicationContext()"
+#~ "</literal>."
+#~ msgstr ""
+#~ "启动容器你需要调用 <literal>Bootstrap.boot()</literal> 。在调用"
+#~ "<literal>boot()</literal>之前，你必须调用<literal>Bootstrap."
+#~ "setWebBeanDiscovery()</literal>, <literal>Bootstrap.setEjbDiscovery()</"
+#~ "literal> 和 <literal>Bootstrap.setApplicationContext()</literal>。"
 
 #~ msgid "Currently, the only SPI to implement is the bootstrap spi:"
 #~ msgstr "目前，只有bootstrap SPI可以实现："
-

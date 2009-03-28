@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-17 20:14+0000\n"
+"POT-Creation-Date: 2009-03-28 17:09+0000\n"
 "PO-Revision-Date: 2009-01-09 10:27+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -70,3 +70,9 @@ msgstr "가장 강한 타이핑 (strong typing) 사용 "
 #, no-c-format
 msgid "Web Beans and the Java EE ecosystem"
 msgstr "Web Beans 및 Java EE 에코시스템 "
+
+#. Tag: title
+#: master.xml:76
+#, no-c-format
+msgid "Web Beans Reference"
+msgstr ""
