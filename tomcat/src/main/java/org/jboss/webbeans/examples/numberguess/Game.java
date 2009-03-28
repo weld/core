@@ -13,6 +13,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.AnnotationLiteral;
 import javax.inject.Current;
 import javax.inject.manager.Manager;
+import javax.naming.NamingException;
 
 @Named
 @SessionScoped
@@ -31,9 +32,7 @@ public class Game implements Serializable
    
    @Current Manager manager;
    
-   public Game()
-   {
-   }
+   public Game() throws NamingException {}
 
    public int getNumber()
    {

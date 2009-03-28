@@ -40,7 +40,6 @@
       <dependency>
          <groupId>javax.faces</groupId>
          <artifactId>jsf-api</artifactId>
-         <scope>runtime</scope>
       </dependency>
       
       <dependency>
