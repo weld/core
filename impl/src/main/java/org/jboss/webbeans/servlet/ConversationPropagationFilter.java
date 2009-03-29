@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.conversation.ConversationIdName;
+import org.jboss.webbeans.conversation.ConversationManager;
 
 /**
  * Filter for handling conversation propagation over redirects
@@ -123,6 +124,7 @@ public class ConversationPropagationFilter implements Filter
             if (conversation.isLongRunning())
             {
                path = new UrlTransformer(path).getRedirectView().getActionUrl().appendConversation(conversation.getId()).encode();
+               CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
             }
             super.sendRedirect(path);
          }

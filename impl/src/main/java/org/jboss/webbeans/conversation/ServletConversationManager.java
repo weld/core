@@ -47,6 +47,8 @@ import org.jboss.webbeans.servlet.HttpSessionManager;
 @WebBean
 public class ServletConversationManager implements ConversationManager, Serializable
 {
+   private static final long serialVersionUID = 889078932817674680L;
+
    private static LogProvider log = Logging.getLogProvider(ServletConversationManager.class);
 
    private static final long CONVERSATION_TIMEOUT_IN_MS = 10 * 60 * 1000;
@@ -169,10 +171,11 @@ public class ServletConversationManager implements ConversationManager, Serializ
          // canceled in the
          // beginConversation) or the case where we have a completely new
          // long-running conversation.
-         if (longRunningConversations.containsKey(cid))
+         ConversationEntry longRunningConversation = longRunningConversations.get(cid);
+         if (longRunningConversation != null)
          {
-            longRunningConversations.get(cid).unlock();
-            longRunningConversations.get(cid).reScheduleTermination(terminationHandle);
+            longRunningConversation.unlock();
+            longRunningConversation.reScheduleTermination(terminationHandle);
          }
          else
          {
@@ -187,29 +190,25 @@ public class ServletConversationManager implements ConversationManager, Serializ
          // conversation that has been so from the start or it can be a
          // long-running conversation that has been demoted during the request
          log.trace("Destroying transient conversation " + currentConversation);
-         if (longRunningConversations.containsKey(cid))
+         ConversationEntry longRunningConversation = longRunningConversations.remove(cid);
+         if (longRunningConversation != null)
          {
-            ConversationEntry removedConversationEntry = longRunningConversations.remove(cid);
-            if (removedConversationEntry != null)
-            {
-               removedConversationEntry.cancelTermination();
-               removedConversationEntry.unlock();
-            }
-            else
-            {
-               log.debug("Failed to remove long-running conversation " + cid + " from list");
-            }
+            longRunningConversation.cancelTermination();
+            longRunningConversation.unlock();
          }
          ConversationContext.INSTANCE.destroy();
       }
-      // If the conversation has been switched from one long running-conversation to another with 
-      // Conversation.begin(String), we need to unlock the original conversation and re-schedule 
+      // If the conversation has been switched from one long
+      // running-conversation to another with
+      // Conversation.begin(String), we need to unlock the original conversation
+      // and re-schedule
       // it for termination
       String originalCid = currentConversation.getOriginalCid();
-      if (originalCid != null && longRunningConversations.containsKey(originalCid))
+      ConversationEntry longRunningConversation = originalCid == null ? null : longRunningConversations.get(originalCid);
+      if (longRunningConversation != null)
       {
-         longRunningConversations.get(originalCid).unlock();
-         longRunningConversations.get(originalCid).reScheduleTermination(scheduleForTermination(originalCid, currentConversation.getTimeout()));
+         longRunningConversation.unlock();
+         longRunningConversation.reScheduleTermination(scheduleForTermination(originalCid, currentConversation.getTimeout()));
       }
    }
 

@@ -87,6 +87,20 @@ public class WebBeansPhaseListener implements PhaseListener
       {
          afterRenderResponse();
       }
+      
+      if(phaseEvent.getFacesContext().getResponseComplete())
+      {
+         afterResponseComplete();
+      }      
+   }
+
+   /**
+    * Run after the response is complete
+    */
+   private void afterResponseComplete()
+   {
+      log.trace("Post-response complete");
+      CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
    }
 
    /**
