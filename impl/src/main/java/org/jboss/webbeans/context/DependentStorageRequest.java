@@ -76,6 +76,9 @@ public class DependentStorageRequest
    @Override
    public boolean equals(Object other)
    {
+      if (!(other instanceof DependentStorageRequest)) {
+         return false;
+      }
       DependentStorageRequest otherRequest = (DependentStorageRequest) other;
       if (dependentInstancesStore != otherRequest.getDependentInstancesStore())
       {
