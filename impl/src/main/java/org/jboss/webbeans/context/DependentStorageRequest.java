@@ -25,9 +25,9 @@ package org.jboss.webbeans.context;
 public class DependentStorageRequest
 {
    // The dependent instances store to target
-   private DependentInstancesStore dependentInstancesStore;
+   private final DependentInstancesStore dependentInstancesStore;
    // The key in the store
-   private Object key;
+   private final Object key;
 
    /**
     * Create a new DependentStoreKey
@@ -76,19 +76,22 @@ public class DependentStorageRequest
    @Override
    public boolean equals(Object other)
    {
-      if (other == null) {
-         return false;
+      if (other instanceof DependentStorageRequest)
+      {
+         DependentStorageRequest that = (DependentStorageRequest) other;
+         if (this.getDependentInstancesStore().equals(that.getDependentInstancesStore()) && this.getKey().equals(that.getKey()))
+         {
+            return true;
+         }
+         else
+         {
+            return false;
+         }
       }
-      DependentStorageRequest otherRequest = (DependentStorageRequest) other;
-      if (dependentInstancesStore != otherRequest.getDependentInstancesStore())
+      else
       {
          return false;
       }
-      if (!key.equals(otherRequest.getKey()))
-      {
-         return false;
-      }
-      return true;
    }
 
 }
