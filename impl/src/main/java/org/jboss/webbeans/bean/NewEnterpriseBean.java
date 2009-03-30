@@ -24,7 +24,7 @@ import java.util.Set;
 import javax.context.Dependent;
 import javax.inject.Standard;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.literal.NewLiteral;
 
@@ -44,7 +44,7 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T> implements NewBean
     * @param manager The Web Beans manager
     * @return a new NewEnterpriseBean instance
     */
-   public static <T> NewEnterpriseBean<T> of(AnnotatedClass<T> clazz, ManagerImpl manager)
+   public static <T> NewEnterpriseBean<T> of(AnnotatedClass<T> clazz, RootManager manager)
    {
       return new NewEnterpriseBean<T>(clazz, manager);
    }
@@ -55,7 +55,7 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T> implements NewBean
     * @param type An annotated class
     * @param manager The Web Beans manager
     */
-   protected NewEnterpriseBean(AnnotatedClass<T> type, ManagerImpl manager)
+   protected NewEnterpriseBean(AnnotatedClass<T> type, RootManager manager)
    {
       super(type, manager);
    }

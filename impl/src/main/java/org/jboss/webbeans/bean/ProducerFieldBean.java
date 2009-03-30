@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
 
 import javax.context.CreationalContext;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.util.Names;
@@ -47,7 +47,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
     * @param manager the current manager
     * @return A producer Web Bean
     */
-   public static <T> ProducerFieldBean<T> of(AnnotatedField<T> field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   public static <T> ProducerFieldBean<T> of(AnnotatedField<T> field, AbstractClassBean<?> declaringBean, RootManager manager)
    {
       return new ProducerFieldBean<T>(field, declaringBean, manager);
    }
@@ -59,7 +59,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
     * @param declaringBean The declaring bean
     * @param manager The Web Beans manager
     */
-   protected ProducerFieldBean(AnnotatedField<T> field, AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   protected ProducerFieldBean(AnnotatedField<T> field, AbstractClassBean<?> declaringBean, RootManager manager)
    {
       super(declaringBean, manager);
       this.field = field;

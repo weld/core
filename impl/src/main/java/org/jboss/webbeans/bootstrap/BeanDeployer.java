@@ -12,7 +12,7 @@ import javax.inject.Initializer;
 import javax.inject.Produces;
 import javax.inject.Realizes;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
@@ -44,9 +44,9 @@ public class BeanDeployer
    
    private final BeanDeployerEnvironment beanDeployerEnvironment;
    private final Set<AnnotatedClass<?>> classes;
-   private final ManagerImpl manager;
+   private final RootManager manager;
    
-   public BeanDeployer(ManagerImpl manager)
+   public BeanDeployer(RootManager manager)
    {
       this.manager = manager;
       this.beanDeployerEnvironment = new BeanDeployerEnvironment();

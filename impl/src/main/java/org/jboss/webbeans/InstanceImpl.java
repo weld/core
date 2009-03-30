@@ -35,7 +35,7 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
 {
    
 
-   public static <I> Instance<I> of(Class<I> clazz, ManagerImpl manager, Set<Annotation> annotations)
+   public static <I> Instance<I> of(Class<I> clazz, RootManager manager, Set<Annotation> annotations)
    {
       return new InstanceImpl<I>(clazz, manager, annotations);
    }

@@ -26,14 +26,14 @@ package org.jboss.webbeans;
 public class CurrentManager 
 {
    // The root manager instance
-   protected static ManagerImpl rootManager;
+   protected static RootManager rootManager;
 
    /**
     * Gets the root manager
     * 
     * @return The root manager
     */
-   public static ManagerImpl rootManager()
+   public static RootManager rootManager()
    {
       return rootManager;
    }
@@ -43,7 +43,7 @@ public class CurrentManager
     * 
     * @param rootManager The root manager
     */
-   public static void setRootManager(ManagerImpl rootManager) 
+   public static void setRootManager(RootManager rootManager) 
    {
       CurrentManager.rootManager = rootManager;
    }

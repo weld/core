@@ -27,7 +27,7 @@ import javax.context.CreationalContext;
 import javax.inject.DefinitionException;
 import javax.inject.Initializer;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentStorageRequest;
@@ -83,7 +83,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * @param manager the current manager
     * @return A Web Bean
     */
-   public static <T> SimpleBean<T> of(AnnotatedClass<T> clazz, ManagerImpl manager)
+   public static <T> SimpleBean<T> of(AnnotatedClass<T> clazz, RootManager manager)
    {
       return new SimpleBean<T>(clazz, manager);
    }
@@ -94,7 +94,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   protected SimpleBean(AnnotatedClass<T> type, ManagerImpl manager)
+   protected SimpleBean(AnnotatedClass<T> type, RootManager manager)
    {
       super(type, manager);
       initType();

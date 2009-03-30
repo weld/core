@@ -11,7 +11,7 @@ import javax.inject.Standard;
 
 import org.jboss.testharness.AbstractTest;
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.util.EnumerationIterable;
 import org.testng.ITestContext;
@@ -54,7 +54,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
    
    protected static final int BUILT_IN_BEANS = 3;
    
-   protected ManagerImpl manager;
+   protected RootManager manager;
 
    public static boolean visited = false;
    

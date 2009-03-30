@@ -25,7 +25,7 @@ import java.util.Set;
 import javax.context.CreationalContext;
 import javax.inject.manager.Bean;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedField;
 
@@ -69,7 +69,7 @@ public class FieldInjectionPoint<T> extends ForwardingAnnotatedField<T> implemen
       return delegate().getAnnotationStore().getBindings();
    }
 
-   public void inject(Object declaringInstance, ManagerImpl manager, CreationalContext<?> creationalContext)
+   public void inject(Object declaringInstance, RootManager manager, CreationalContext<?> creationalContext)
    {
       try
       {

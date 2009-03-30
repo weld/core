@@ -28,7 +28,7 @@ import javax.inject.CreationException;
 import javax.inject.DefinitionException;
 import javax.inject.Disposes;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
@@ -65,12 +65,12 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     *           the current manager
     * @return A producer Web Bean
     */
-   public static <T> ProducerMethodBean<T> of(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   public static <T> ProducerMethodBean<T> of(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, RootManager manager)
    {
       return new ProducerMethodBean<T>(method, declaringBean, manager);
    }
    
-   protected ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   protected ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, RootManager manager)
    {
       super(declaringBean, manager);
       this.method = MethodInjectionPoint.of(this, method);

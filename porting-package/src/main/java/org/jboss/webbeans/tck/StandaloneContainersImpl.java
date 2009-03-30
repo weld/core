@@ -7,7 +7,7 @@ import java.util.List;
 import org.jboss.testharness.api.DeploymentException;
 import org.jboss.testharness.spi.StandaloneContainers;
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.mock.MockEELifecycle;
 import org.jboss.webbeans.mock.MockWebBeanDiscovery;
 
@@ -27,7 +27,7 @@ public class StandaloneContainersImpl implements StandaloneContainers
       lifecycle.initialize();
       try
       {
-         ManagerImpl manager = lifecycle.getBootstrap().getManager();
+         RootManager manager = lifecycle.getBootstrap().getManager();
          if (enabledDeploymentTypes != null)
          {
             manager.setEnabledDeploymentTypes(enabledDeploymentTypes);

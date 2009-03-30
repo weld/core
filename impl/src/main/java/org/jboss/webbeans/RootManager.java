@@ -91,10 +91,10 @@ import org.jboss.webbeans.util.Reflections;
  * @author Pete Muir
  * 
  */
-public class ManagerImpl implements WebBeansManager, Serializable
+public class RootManager implements WebBeansManager, Serializable
 {
    
-   private static final Log log = Logging.getLog(ManagerImpl.class);
+   private static final Log log = Logging.getLog(RootManager.class);
    
    private static final long serialVersionUID = 3021562879133838561L;
    
@@ -146,7 +146,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * @param ejbServices
     *           the ejbResolver to use
     */
-   public ManagerImpl(ServiceRegistry simpleServiceRegistry)
+   public RootManager(ServiceRegistry simpleServiceRegistry)
    {
       this.simpleServiceRegistry = simpleServiceRegistry;
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
@@ -944,7 +944,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
    
    public Manager createActivity()
    {
-      throw new UnsupportedOperationException();
+      return new ChildManager(this);
    }
    
    public Manager setCurrent(Class<? extends Annotation> scopeType)
@@ -1009,7 +1009,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       ApplicationContext.INSTANCE.destroy();
       ApplicationContext.INSTANCE.setActive(false);
       ApplicationContext.INSTANCE.setBeanStore(null);
-      getServices().get(NamingContext.class).unbind(ManagerImpl.JNDI_KEY);
+      getServices().get(NamingContext.class).unbind(RootManager.JNDI_KEY);
    }
    
    /**

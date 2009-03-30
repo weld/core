@@ -9,7 +9,7 @@ import java.util.Set;
 import javax.context.Dependent;
 import javax.inject.Standard;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
@@ -23,7 +23,7 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
    
    private final String id;
    
-   protected AbstractStandardBean(ManagerImpl manager)
+   protected AbstractStandardBean(RootManager manager)
    {
       super(manager);
       this.id = getClass().getSimpleName();

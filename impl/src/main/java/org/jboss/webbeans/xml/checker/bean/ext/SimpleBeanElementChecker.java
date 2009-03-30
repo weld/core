@@ -6,7 +6,7 @@ import javax.interceptor.Interceptor;
 
 import org.dom4j.Element;
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
@@ -22,7 +22,7 @@ public class SimpleBeanElementChecker extends BeanElementCheckerImpl
 
    public boolean accept(Element beanElement, AnnotatedClass<?> beanClass)
    {
-      ManagerImpl manager = CurrentManager.rootManager();
+      RootManager manager = CurrentManager.rootManager();
       boolean isSessionBean = manager.getEjbDescriptorCache().containsKey(beanElement.getName()) || 
                                           beanElement.attribute(XmlConstants.EJB_NAME) != null;
       
