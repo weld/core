@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-02-07 18:51+0000\n"
-"PO-Revision-Date: 2009-03-13 14:09+0800\n"
+"PO-Revision-Date: 2009-03-30 09:14+0800\n"
 "Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +33,7 @@ msgstr "你的第一个Web Bean"
 
 #. Tag: para
 #: intro.xml:15
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "With certain, very special exceptions, every Java class with a constructor that accepts no parameters is a Web Bean. That includes every JavaBean. Furthermore, every EJB 3-style session bean is a Web Bean. Sure, the JavaBeans and EJBs you've been writing every day have not been able to take advantage of the new services defined by the Web Beans specification, but you'll be able to use every one of them as Web Beans &#151; injecting them into other Web Beans, configuring them via the Web Beans XML configuration facility, even adding interceptors and decorators to them &#151; without touching your existing code."
 msgstr "除非特殊情况，每个具有一个非参构造器的Java类都可以是一个Web Bean。这包括了每个JavaBean, 并且每个EJB3的会话Bean都是一个Web Bean。当然，你每天已经写过的JavaBean和EJB无法使用Web Beans规范定义的新服务，但是你能够通过Web Beans的XML配置将这些组件配置为Web Bean，然后将其注入到其他Web Bean中。你甚至可以不用修改已有代码就可以为其添加拦截器和装饰器。"
 
@@ -193,7 +193,7 @@ msgstr "就像你猜到的一样， <literal>@Initializer</literal>注释和依�
 
 #. Tag: para
 #: intro.xml:68
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "At system initialization time, the Web Bean manager must validate that exactly one Web Bean exists which satisfies each injection point. In our example, if no implementation of <literal>Translator</literal> available &#151; if the <literal>SentenceTranslator</literal> EJB was not deployed &#151; the Web Bean manager would throw an <literal>UnsatisfiedDependencyException</literal>. If more than one implementation of <literal>Translator</literal> was available, the Web Bean manager would throw an <literal>AmbiguousDependencyException</literal>."
 msgstr "在系统初始化的时候，Web Bean管理器必须验证只存在一个Web Bean能够满足每个注入点。在我们的例子中，如果没有<literal>Translator</literal>实现&#151;如果<literal>SentenceTranslator</literal> EJB没有被部署&#151;Web Bean管理器将会抛出一个<literal>UnsatisfiedDependencyException</literal>异常。如果多于一个<literal>Translator</literal>实现，Web Bean管理器将会抛出一个<literal>AmbiguousDependencyException</literal>异常。"
 
@@ -277,7 +277,7 @@ msgstr "我们能够使用一个实现相同接口，具有不同生命周期（
 
 #. Tag: para
 #: intro.xml:145
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Note that not all clients of a Web Bean are Web Beans. Other objects such as Servlets or Message-Driven Beans &#151; which are by nature not injectable, contextual objects &#151; may also obtain references to Web Beans by injection."
 msgstr "需要注意的是并非所有的Web Bean的客户端都是Web Bean。其他对象诸如Servlet或者消息驱动Bean#151;天生不可注入的, 具备上下文的对象&#151;也可以通过注入获得Web Bean的引用。"
 
@@ -583,7 +583,7 @@ msgstr ""
 
 #. Tag: para
 #: intro.xml:289
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "In this case, the name defaults to <literal>shoppingCart</literal> &#151; the unqualified class name, with the first character changed to lowercase."
 msgstr "在这种情况下，Web Bean的名字默认为<literal>shoppingCart</literal>&#151;非完整的类名，首字母改为小写"
 
@@ -707,7 +707,7 @@ msgstr "企业级Web Bean"
 
 #. Tag: para
 #: intro.xml:360
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The specification says that all EJB 3-style session and singleton beans are <emphasis>enterprise</emphasis> Web Beans. Message driven beans are not Web Beans &#151; since they are not intended to be injected into other objects &#151; but they can take advantage of most of the functionality of Web Beans, including dependency injection and interceptors."
 msgstr "规范指出所有EJB3类型的会话Bean或者单例Bean都是<emphasis>企业级</emphasis>Web Bean。消息驱动Bean不是Web Beans&#151;因为它们不能被注入到其他对象中#151;但是它们可以使用大部分Web Bean的功能，包括依赖注入和拦截器。"
 
