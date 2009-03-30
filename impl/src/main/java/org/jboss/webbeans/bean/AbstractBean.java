@@ -532,29 +532,5 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       return getAnnotatedItem().isAnnotationPresent(Specializes.class);
    }
 
-   @Override
-   // TODO Fix this!!!
-   public boolean equals(Object other)
-   {
-      if (other instanceof AbstractBean)
-      {
-         AbstractBean<?, ?> that = (AbstractBean<?, ?>) other;
-         boolean equal = this.getTypes().equals(that.getTypes()) && this.getBindings().equals(that.getBindings());
-         return equal;
-      }
-      else
-      {
-         return false;
-      }
-   }
-
-   @Override
-   public int hashCode()
-   {
-      int result = 17;
-      result = 31 * result + getTypes().hashCode();
-      result = 31 * result + getBindings().hashCode();
-      return result;
-   }
 
 }

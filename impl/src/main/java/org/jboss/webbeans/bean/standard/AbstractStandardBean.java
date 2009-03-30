@@ -18,9 +18,15 @@ import org.jboss.webbeans.literal.CurrentLiteral;
 public abstract class AbstractStandardBean<T> extends RIBean<T>
 {
    
+   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentLiteral() };
+   private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
+   
+   private final String id;
+   
    protected AbstractStandardBean(ManagerImpl manager)
    {
       super(manager);
+      this.id = getClass().getSimpleName();
    }
    
    @Override
@@ -29,8 +35,7 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
       // No-op
    }
 
-   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentLiteral() };
-   private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
+   
    
    @Override
    public Set<Annotation> getBindings()
@@ -96,6 +101,12 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
    public boolean isProxyable()
    {
       return false;
+   }
+   
+   @Override
+   public String getId()
+   {
+      return id;
    }
    
 }

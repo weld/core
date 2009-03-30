@@ -37,6 +37,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
 {
    // The underlying field
    private AnnotatedField<T> field;
+   private final String id;
    
    /**
     * Creates a producer field Web Bean
@@ -65,6 +66,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
       initType();
       initTypes();
       initBindings();
+      this.id = createId("ProducerField-" + declaringBean.getType().getName() + "-"+ field.getName());
    }
    
    @Override
@@ -139,6 +141,12 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
    public boolean isSpecializing()
    {
       return false;
+   }
+   
+   @Override
+   public String getId()
+   {
+      return id;
    }
 
 }

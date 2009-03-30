@@ -51,6 +51,8 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    private AnnotatedMethod<?> disposalMethod;
    
    private ProducerMethodBean<?> specializedBean;
+
+   private final String id;
    
    /**
     * Creates a producer method Web Bean
@@ -75,6 +77,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       initType();
       initTypes();
       initBindings();
+      this.id = createId("ProducerField-" + declaringBean.getType().getName() + "-"+ method.getSignature().toString());
    }
    
    protected T produceInstance(CreationalContext<T> creationalContext)
@@ -252,6 +255,12 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          throw new IllegalStateException(toString() + " does not specialize a bean");
       }
       this.specializedBean = environment.getProducerMethod(superClassMethod);
+   }
+   
+   @Override
+   public String getId()
+   {
+      return id;
    }
    
 }

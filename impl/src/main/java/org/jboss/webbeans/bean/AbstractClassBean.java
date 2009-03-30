@@ -66,6 +66,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    // The initializer methods
    private Set<MethodInjectionPoint<?>> initializerMethods;
    private Set<String> dependencies;
+   
+   private final String id;
 
    /**
     * Constructor
@@ -77,6 +79,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       super(manager);
       this.annotatedItem = type;
+      this.id = createId(getClass().getSimpleName() + "-" + type.getName());
    }
 
    /**
@@ -344,19 +347,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       return Production.class;
    }
-
+   
    @Override
-   public boolean equals(Object other)
+   public String getId()
    {
-      if (other instanceof AbstractClassBean)
-      {
-         AbstractClassBean<?> that = (AbstractClassBean<?>) other;
-         return super.equals(other) && that.getType().equals(this.getType());
-      }
-      else
-      {
-         return false;
-      }
+      return id;
    }
 
 }

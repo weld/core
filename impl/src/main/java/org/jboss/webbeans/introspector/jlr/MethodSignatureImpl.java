@@ -55,4 +55,10 @@ public class MethodSignatureImpl implements MethodSignature
       return parameterTypes;
    }
    
+   @Override
+   public String toString()
+   {
+      return getMethodName() + Arrays.asList(getParameterTypes()).toString().replace('[', '(').replace(']', ')');
+   }
+   
 }

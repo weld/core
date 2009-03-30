@@ -17,6 +17,8 @@
 package org.jboss.webbeans.bean;
 
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.context.Dependent;
@@ -34,18 +36,21 @@ import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 public abstract class RIBean<T> extends Bean<T>
 {
    
-   private static final AtomicInteger idGenerator = new AtomicInteger();
+   private static final ConcurrentMap<String, AtomicInteger> ids = new ConcurrentHashMap<String, AtomicInteger>();
    
    private final ManagerImpl manager;
-   
-   private final String id;
 
    protected RIBean(ManagerImpl manager)
    {
       super(manager);
       this.manager = manager;
       // TODO better ID strategy (human readable)
-      this.id = getClass().getName() + "-" + idGenerator.getAndIncrement();
+   }
+   
+   protected static String createId(String prefix)
+   {
+      AtomicInteger i = ids.putIfAbsent(prefix, new AtomicInteger());
+      return prefix + "-" + i;
    }
 
    @Override
@@ -73,9 +78,26 @@ public abstract class RIBean<T> extends Bean<T>
 
    public abstract RIBean<?> getSpecializedBean();
    
-   public String getId()
+   public abstract String getId();
+   
+   @Override
+   public boolean equals(Object obj)
    {
-      return id;
+      if (obj instanceof RIBean)
+      {
+         RIBean<?> that = (RIBean<?>) obj;
+         return this.getId().equals(that.getId());
+      }
+      else
+      {
+         return false;
+      }
+   }
+   
+   @Override
+   public int hashCode()
+   {
+      return getId().hashCode();
    }
 
 }
