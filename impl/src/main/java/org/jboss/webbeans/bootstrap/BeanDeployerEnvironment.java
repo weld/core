@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.webbeans.bean.AbstractClassBean;
+import org.jboss.webbeans.bean.DisposalMethodBean;
 import org.jboss.webbeans.bean.NewBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
@@ -19,24 +20,26 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 
 public class BeanDeployerEnvironment
 {
-   
+
    private static final AnnotatedItem<?, ?> OTHER_BEANS_ANNOTATED_ITEM = ResolvableAnnotatedClass.of(BeanDeployerEnvironment.class, new Annotation[0]);
-   
+
    private final Map<AnnotatedClass<?>, AbstractClassBean<?>> classBeanMap;
-   private final Map<AnnotatedMethod<?>, ProducerMethodBean<?>> methodBeanMap; 
+   private final Map<AnnotatedMethod<?>, ProducerMethodBean<?>> methodBeanMap;
    private final Set<RIBean<?>> beans;
    private final Set<ObserverImpl<?>> observers;
-   private final Set<AnnotatedMethod<?>> disposalMethods; 
-    
+   private final Set<DisposalMethodBean<?>> allDisposalBeans;
+   private final Set<DisposalMethodBean<?>> resolvedDisposalBeans;
+
    public BeanDeployerEnvironment()
    {
       this.classBeanMap = new HashMap<AnnotatedClass<?>, AbstractClassBean<?>>();
       this.methodBeanMap = new HashMap<AnnotatedMethod<?>, ProducerMethodBean<?>>();
-      this.disposalMethods = new HashSet<AnnotatedMethod<?>>();
+      this.allDisposalBeans = new HashSet<DisposalMethodBean<?>>();
+      this.resolvedDisposalBeans = new HashSet<DisposalMethodBean<?>>();
       this.beans = new HashSet<RIBean<?>>();
       this.observers = new HashSet<ObserverImpl<?>>();
    }
-   
+
    public ProducerMethodBean<?> getProducerMethod(AnnotatedMethod<?> method)
    {
       if (!methodBeanMap.containsKey(method))
@@ -50,7 +53,7 @@ public class BeanDeployerEnvironment
          return bean;
       }
    }
-   
+
    public AbstractClassBean<?> getClassBean(AnnotatedClass<?> clazz)
    {
       if (!classBeanMap.containsKey(clazz))
@@ -64,10 +67,10 @@ public class BeanDeployerEnvironment
          return bean;
       }
    }
-   
+
    public void addBean(RIBean<?> value)
    {
-      
+
       if (value instanceof AbstractClassBean && !(value instanceof NewBean))
       {
          AbstractClassBean<?> bean = (AbstractClassBean<?>) value;
@@ -80,20 +83,35 @@ public class BeanDeployerEnvironment
       }
       beans.add(value);
    }
-   
+
    public Set<RIBean<?>> getBeans()
    {
       return Collections.unmodifiableSet(beans);
    }
-   
+
    public Set<ObserverImpl<?>> getObservers()
    {
       return observers;
    }
-   
-   public Set<AnnotatedMethod<?>> getDisposalMethods()
+
+   public Set<DisposalMethodBean<?>> getAllDisposalBeans()
    {
-      return disposalMethods;
+      return allDisposalBeans;
    }
-   
+
+   public void addAllDisposalBean(DisposalMethodBean<?> disposalBean)
+   {
+      allDisposalBeans.add(disposalBean);
+   }
+
+   public void addResolvedDisposalBean(DisposalMethodBean<?> disposalBean)
+   {
+      resolvedDisposalBeans.add(disposalBean);
+   }
+
+   public Set<DisposalMethodBean<?>> getResolvedDisposalBeans()
+   {
+      return resolvedDisposalBeans;
+   }
+
 }

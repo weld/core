@@ -58,6 +58,7 @@ import javax.inject.manager.InterceptionType;
 import javax.inject.manager.Interceptor;
 import javax.inject.manager.Manager;
 
+import org.jboss.webbeans.bean.DisposalMethodBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
@@ -228,9 +229,9 @@ public class RootManager implements WebBeansManager, Serializable
     *           The binding types to match
     * @return The set of matching disposal methods
     */
-   public <T> Set<AnnotatedMethod<?>> resolveDisposalMethods(Class<T> apiType, Annotation... bindings)
+   public <T> Set<Bean<T>> resolveDisposalBeans(Class<T> apiType, Annotation... bindings)
    {
-      return Collections.emptySet();
+      return resolveByType(apiType, bindings);
    }
    
    /**

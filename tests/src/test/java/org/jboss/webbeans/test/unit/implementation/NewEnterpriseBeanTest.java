@@ -74,7 +74,7 @@ public class NewEnterpriseBeanTest extends AbstractWebBeansTest
    {
       initNewBean();
       Class<?> type = TypeInfo.ofTypes(newEnterpriseBean.getTypes()).getSuperClass();
-      assert manager.resolveDisposalMethods(type, newEnterpriseBean.getBindings().toArray(new Annotation[0])).isEmpty();
+      assert manager.resolveDisposalBeans(type, newEnterpriseBean.getBindings().toArray(new Annotation[0])).isEmpty();
    }   
    
 }

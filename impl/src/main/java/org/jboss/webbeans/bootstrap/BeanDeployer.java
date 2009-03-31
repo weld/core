@@ -11,9 +11,11 @@ import javax.inject.DeploymentType;
 import javax.inject.Initializer;
 import javax.inject.Produces;
 import javax.inject.Realizes;
+import javax.inject.UnsatisfiedDependencyException;
 
 import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.bean.AbstractClassBean;
+import org.jboss.webbeans.bean.DisposalMethodBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
@@ -114,9 +116,28 @@ public class BeanDeployer
          log.info("Observer : " + observer);
          manager.addObserver(observer);
       }
+      
+      // TODO: move to boot
+      checkDisposalMethods();
+      
       return this;
    }
 
+   
+   private void checkDisposalMethods() {
+	      Set<DisposalMethodBean<?>> all = new HashSet<DisposalMethodBean<?>>(beanDeployerEnvironment.getAllDisposalBeans()); 
+	      Set<DisposalMethodBean<?>> resolved = new HashSet<DisposalMethodBean<?>>(beanDeployerEnvironment.getResolvedDisposalBeans()); 
+	      if(resolved.contains(all)) {
+	         StringBuffer buff = new StringBuffer();
+	         buff.append("The following Disposal methods where not resolved\n");
+	         all.removeAll(resolved);
+	         for(DisposalMethodBean<?> bean: all) {
+	            buff.append(bean.toString());
+	         }
+	         throw new UnsatisfiedDependencyException(buff.toString());
+	      }
+	   }   
+   
    public BeanDeployerEnvironment getBeanDeployerEnvironment()
    {
       return beanDeployerEnvironment;

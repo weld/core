@@ -27,6 +27,7 @@ import javax.event.Observes;
 import javax.inject.CreationException;
 import javax.inject.DefinitionException;
 import javax.inject.Disposes;
+import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
@@ -47,29 +48,26 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
 {
    // The underlying method
    private MethodInjectionPoint<T> method;
-   
-   private AnnotatedMethod<?> disposalMethod;
-   
+
+   private DisposalMethodBean<?> disposalMethodBean;
+
    private ProducerMethodBean<?> specializedBean;
 
    private final String id;
-   
+
    /**
     * Creates a producer method Web Bean
     * 
-    * @param method
-    *           The underlying method abstraction
-    * @param declaringBean
-    *           The declaring bean abstraction
-    * @param manager
-    *           the current manager
+    * @param method The underlying method abstraction
+    * @param declaringBean The declaring bean abstraction
+    * @param manager the current manager
     * @return A producer Web Bean
     */
    public static <T> ProducerMethodBean<T> of(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, RootManager manager)
    {
       return new ProducerMethodBean<T>(method, declaringBean, manager);
    }
-   
+
    protected ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, RootManager manager)
    {
       super(declaringBean, manager);
@@ -77,9 +75,9 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       initType();
       initTypes();
       initBindings();
-      this.id = createId("ProducerField-" + declaringBean.getType().getName() + "-"+ method.getSignature().toString());
+      this.id = createId("ProducerField-" + declaringBean.getType().getName() + "-" + method.getSignature().toString());
    }
-   
+
    protected T produceInstance(CreationalContext<T> creationalContext)
    {
       Object receiver = getReceiver(creationalContext);
@@ -92,7 +90,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          return method.invoke(receiver, manager, creationalContext, CreationException.class);
       }
    }
-   
+
    /**
     * Initializes the bean and its metadata
     */
@@ -107,7 +105,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          initInjectionPoints();
       }
    }
-   
+
    /**
     * Initializes the injection points
     */
@@ -118,7 +116,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          injectionPoints.add(ParameterInjectionPoint.of(this, parameter));
       }
    }
-   
+
    /**
     * Validates the producer method
     */
@@ -146,7 +144,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
                   clazz.getDeclaredMethod(getAnnotatedItem().getName(), getAnnotatedItem().getParameterTypesAsArray());
                   methodDeclaredOnTypes = true;
                }
-               catch (NoSuchMethodException nsme) 
+               catch (NoSuchMethodException nsme)
                {
                   // No - op
                }
@@ -158,24 +156,36 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          }
       }
    }
-   
+
    /**
     * Initializes the remove method
     */
    protected void initDisposalMethod(BeanDeployerEnvironment environment)
    {
-      Set<AnnotatedMethod<?>> disposalMethods = manager.resolveDisposalMethods(getType(), getBindings().toArray(new Annotation[0]));
-      if (disposalMethods.size() == 1)
+      Set<Bean<T>> disposalBeans = manager.resolveDisposalBeans(getType(), bindings.toArray(new Annotation[0]));
+
+      if (disposalBeans.size() == 1)
       {
-         this.disposalMethod = disposalMethods.iterator().next();
+         this.disposalMethodBean = (DisposalMethodBean<?>) disposalBeans.iterator().next();
+         environment.addResolvedDisposalBean(disposalMethodBean);
       }
-      else if (disposalMethods.size() > 1)
+      else if (disposalBeans.size() > 1)
       {
          // TODO List out found disposal methods
          throw new DefinitionException("Cannot declare multiple disposal methods for this producer method");
       }
    }
-   
+
+   @Override
+   public void destroy(T instance)
+   {
+      // Delegate destruction to disposal method
+      if (disposalMethodBean != null)
+         disposalMethodBean.invokeDisposeMethod(instance);
+
+      super.destroy(instance);
+   }
+
    /**
     * Gets the annotated item representing the method
     * 
@@ -186,7 +196,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       return method;
    }
-   
+
    /**
     * Returns the default name
     * 
@@ -197,17 +207,17 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       return method.getPropertyName();
    }
-   
+
    /**
     * Returns the disposal method
     * 
     * @return The method representation
     */
-   public AnnotatedMethod<?> getDisposalMethod()
+   public DisposalMethodBean<?> getDisposalMethod()
    {
-      return disposalMethod;
+      return disposalMethodBean;
    }
-   
+
    /**
     * Gets a string representation
     * 
@@ -236,7 +246,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    {
       return specializedBean;
    }
-   
+
    @Override
    protected void preSpecialize()
    {
@@ -245,7 +255,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          throw new DefinitionException("Specialized producer method does not override a method on the direct superclass");
       }
    }
-   
+
    @Override
    protected void specialize(BeanDeployerEnvironment environment)
    {
@@ -256,11 +266,11 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       }
       this.specializedBean = environment.getProducerMethod(superClassMethod);
    }
-   
+
    @Override
    public String getId()
    {
       return id;
    }
-   
+
 }
