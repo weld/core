@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.event.Observes;
 import javax.inject.BindingType;
 import javax.inject.DeploymentType;
+import javax.inject.Disposes;
 import javax.inject.Initializer;
 import javax.inject.Produces;
 import javax.inject.Realizes;
@@ -126,8 +127,8 @@ public class BeanDeployer
    
    private void checkDisposalMethods() {
 	      Set<DisposalMethodBean<?>> all = new HashSet<DisposalMethodBean<?>>(beanDeployerEnvironment.getAllDisposalBeans()); 
-	      Set<DisposalMethodBean<?>> resolved = new HashSet<DisposalMethodBean<?>>(beanDeployerEnvironment.getResolvedDisposalBeans()); 
-	      if(resolved.containsAll(all)) {
+	      Set<DisposalMethodBean<?>> resolved = new HashSet<DisposalMethodBean<?>>(beanDeployerEnvironment.getResolvedDisposalBeans());
+	      if(all.size()>0 && !resolved.containsAll(all)) {
 	         StringBuffer buff = new StringBuffer();
 	         buff.append("The following Disposal methods where not resolved\n");
 	         all.removeAll(resolved);
@@ -182,7 +183,13 @@ public class BeanDeployer
    
    private void createDisposalMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
    {
-      
+      for (AnnotatedMethod<?> method : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Disposes.class))
+      {
+         DisposalMethodBean<?> disposalBean = DisposalMethodBean.of(manager, method, declaringBean);
+         beanDeployerEnvironment.addAllDisposalBean(disposalBean);
+         manager.getResolver().addInjectionPoints(disposalBean.getInjectionPoints());
+         manager.addBean(disposalBean);
+      }
    }
    
    private <T> void createProducerMethod(AbstractClassBean<?> declaringBean, AnnotatedMethod<T> annotatedMethod)

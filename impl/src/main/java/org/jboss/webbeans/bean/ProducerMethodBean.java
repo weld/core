@@ -101,7 +101,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       {
          super.initialize(environment);
          checkProducerMethod();
-         // initDisposalMethod();
+         initDisposalMethod(environment);
          initInjectionPoints();
       }
    }
