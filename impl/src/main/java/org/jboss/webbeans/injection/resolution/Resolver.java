@@ -284,7 +284,7 @@ public class Resolver
    {
       for (Annotation binding : element.getBindings())
       {
-         BindingTypeModel<?> bindingType = MetaDataCache.instance().getBindingTypeModel(binding.annotationType());
+         BindingTypeModel<?> bindingType = manager.getServices().get(MetaDataCache.class).getBindingTypeModel(binding.annotationType());
          if (bindingType.getNonBindingTypes().size() > 0)
          {
             boolean matchFound = false;

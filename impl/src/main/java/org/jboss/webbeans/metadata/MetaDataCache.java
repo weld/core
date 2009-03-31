@@ -20,6 +20,7 @@ package org.jboss.webbeans.metadata;
 import java.lang.annotation.Annotation;
 import java.util.concurrent.Callable;
 
+import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.util.collections.ConcurrentCache;
 
 /**
@@ -28,25 +29,8 @@ import org.jboss.webbeans.util.collections.ConcurrentCache;
  * @author Pete Muir
  * 
  */
-public class MetaDataCache
+public class MetaDataCache implements Service
 {
-   // The singleton instance
-   private static MetaDataCache instance;
-
-   /**
-    * Gets the singleton
-    * 
-    * @return The instance
-    */
-   public static MetaDataCache instance()
-   {
-      return instance;
-   }
-
-   static
-   {
-      instance = new MetaDataCache();
-   }
 
    // The stereotype models
    private ConcurrentCache<Class<? extends Annotation>, StereotypeModel<?>> stereotypes = new ConcurrentCache<Class<? extends Annotation>, StereotypeModel<?>>();

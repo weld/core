@@ -28,6 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.event.Observer;
 
+import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
@@ -125,14 +126,16 @@ public class EventManager
 
    // The map of registered observers for a give
    private final RegisteredObserversMap registeredObservers;
+   private final RootManager manager;
 
 
    /**
     * Initializes a new instance of the EventManager.
     */
-   public EventManager()
+   public EventManager(RootManager manager)
    {
       registeredObservers = new RegisteredObserversMap();
+      this.manager = manager;
    }
 
    /**
@@ -144,7 +147,7 @@ public class EventManager
     */
    public <T> void addObserver(Observer<T> observer, Type eventType, Annotation... bindings)
    {
-      EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, bindings);
+      EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, manager, bindings);
       registeredObservers.put(eventType, eventObserver);
       log.debug("Added observer " + observer + " observing event type " + eventType);
    }
@@ -213,7 +216,7 @@ public class EventManager
    public <T> void removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
       List<EventObserver<?>> observers = registeredObservers.get(eventType);
-      EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, bindings);
+      EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, manager, bindings);
       observers.remove(eventObserver);
    }
 

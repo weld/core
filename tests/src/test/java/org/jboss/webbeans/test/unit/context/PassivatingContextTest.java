@@ -20,7 +20,7 @@ public class PassivatingContextTest extends org.jboss.webbeans.test.unit.Abstrac
    @Test(groups = { "contexts", "passivation" })
    public void testIsSessionScopePassivating()
    {
-      assert MetaDataCache.instance().getScopeModel(SessionScoped.class).isPassivating();
+      assert manager.getServices().get(MetaDataCache.class).getScopeModel(SessionScoped.class).isPassivating();
    }
 
    /**
@@ -30,7 +30,7 @@ public class PassivatingContextTest extends org.jboss.webbeans.test.unit.Abstrac
    @Test(groups = { "contexts", "passivation" })
    public void testIsConversationScopePassivating()
    {
-      assert MetaDataCache.instance().getScopeModel(ConversationScoped.class).isPassivating();
+      assert manager.getServices().get(MetaDataCache.class).getScopeModel(ConversationScoped.class).isPassivating();
    }
 
    /**
@@ -40,7 +40,7 @@ public class PassivatingContextTest extends org.jboss.webbeans.test.unit.Abstrac
    @Test(groups = { "contexts", "passivation" })
    public void testIsApplicationScopeNonPassivating()
    {
-      assert !MetaDataCache.instance().getScopeModel(ApplicationScoped.class).isPassivating();
+      assert !manager.getServices().get(MetaDataCache.class).getScopeModel(ApplicationScoped.class).isPassivating();
    }
 
    /**
@@ -50,7 +50,7 @@ public class PassivatingContextTest extends org.jboss.webbeans.test.unit.Abstrac
    @Test(groups = { "contexts", "passivation" })
    public void testIsRequestScopeNonPassivating()
    {
-      assert !MetaDataCache.instance().getScopeModel(RequestScoped.class).isPassivating();
+      assert !manager.getServices().get(MetaDataCache.class).getScopeModel(RequestScoped.class).isPassivating();
    }
    
 }

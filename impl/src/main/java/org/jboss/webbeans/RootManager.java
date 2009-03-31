@@ -133,7 +133,7 @@ public class RootManager implements WebBeansManager, Serializable
    private transient final Set<Interceptor> interceptors;
 
    // The EJB resolver provided by the container
-   private transient final ServiceRegistry simpleServiceRegistry;
+   private transient final ServiceRegistry services;
 
    private transient final EjbDescriptorCache ejbDescriptorCache;
 
@@ -148,7 +148,7 @@ public class RootManager implements WebBeansManager, Serializable
     */
    public RootManager(ServiceRegistry simpleServiceRegistry)
    {
-      this.simpleServiceRegistry = simpleServiceRegistry;
+      this.services = simpleServiceRegistry;
       this.beans = new CopyOnWriteArrayList<Bean<?>>();
       this.newEnterpriseBeanMap = new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>();
       this.riBeans = new ConcurrentHashMap<String, RIBean<?>>();
@@ -157,7 +157,7 @@ public class RootManager implements WebBeansManager, Serializable
       this.decorators = new HashSet<Decorator>();
       this.interceptors = new HashSet<Interceptor>();
       this.contextMap = new ContextMap();
-      this.eventManager = new EventManager();
+      this.eventManager = new EventManager(this);
       this.ejbDescriptorCache = new EjbDescriptorCache();
       this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>()
       {
@@ -252,7 +252,7 @@ public class RootManager implements WebBeansManager, Serializable
       Class<?> clazz = event.getClass();
       for (Annotation annotation : bindings)
       {
-         if (!MetaDataCache.instance().getBindingTypeModel(annotation.annotationType()).isValid())
+         if (!getServices().get(MetaDataCache.class).getBindingTypeModel(annotation.annotationType()).isValid())
          {
             throw new IllegalArgumentException("Not a binding type " + annotation);
          }
@@ -361,7 +361,7 @@ public class RootManager implements WebBeansManager, Serializable
    {
       for (Annotation annotation : element.getAnnotationsAsSet())
       {
-         if (!MetaDataCache.instance().getBindingTypeModel(annotation.annotationType()).isValid())
+         if (!getServices().get(MetaDataCache.class).getBindingTypeModel(annotation.annotationType()).isValid())
          {
             throw new IllegalArgumentException("Not a binding type " + annotation);
          }
@@ -632,7 +632,7 @@ public class RootManager implements WebBeansManager, Serializable
       {
          return getInstance((Bean<T>) specializedBeans.get(bean), creationalContext);
       }
-      else if (MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal())
+      else if (getServices().get(MetaDataCache.class).getScopeModel(bean.getScopeType()).isNormal())
       {
          if (creationalContext != null || (creationalContext == null && getContext(bean.getScopeType()).get(bean) != null))
          {
@@ -778,7 +778,7 @@ public class RootManager implements WebBeansManager, Serializable
          throw new AmbiguousDependencyException(element + "Resolved multiple Web Beans");
       }
       Bean<T> bean = beans.iterator().next();
-      boolean normalScoped = MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal();
+      boolean normalScoped = getServices().get(MetaDataCache.class).getScopeModel(bean.getScopeType()).isNormal();
       if (normalScoped && !Beans.isBeanProxyable(bean))
       {
          throw new UnproxyableDependencyException("Normal scoped bean " + bean + " is not proxyable");
@@ -915,7 +915,7 @@ public class RootManager implements WebBeansManager, Serializable
 
    public ServiceRegistry getServices()
    {
-      return simpleServiceRegistry;
+      return services;
    }
 
    /**

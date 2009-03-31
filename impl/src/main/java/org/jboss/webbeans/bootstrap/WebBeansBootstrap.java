@@ -54,6 +54,7 @@ import org.jboss.webbeans.literal.DeployedLiteral;
 import org.jboss.webbeans.literal.InitializedLiteral;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.resources.DefaultNamingContext;
 import org.jboss.webbeans.resources.DefaultResourceLoader;
 import org.jboss.webbeans.resources.spi.NamingContext;
@@ -119,6 +120,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       getServices().add(EJBApiAbstraction.class, new EJBApiAbstraction(resourceLoader));
       getServices().add(JSFApiAbstraction.class, new JSFApiAbstraction(resourceLoader));
       getServices().add(ServletApiAbstraction.class, new ServletApiAbstraction(resourceLoader));
+      getServices().add(MetaDataCache.class, new MetaDataCache());
    }
    
    public RootManager getManager()

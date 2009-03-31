@@ -116,7 +116,7 @@ public class BeanValidator
                throw new AmbiguousDependencyException("The injection point " + injectionPoint + " with binding types " + Names.annotationsToString(injectionPoint.getBindings()) + " in " + bean + " has ambiguous dependencies");
             }
             Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
-            if (MetaDataCache.instance().getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType()))
+            if (manager.getServices().get(MetaDataCache.class).getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType()))
             {
                throw new UnproxyableDependencyException("The injection point " + injectionPoint + " has non-proxyable dependencies");
             }
@@ -124,7 +124,7 @@ public class BeanValidator
             {
                throw new NullableDependencyException("The injection point " + injectionPoint + " has nullable dependencies");
             }
-            if (Beans.isPassivatingBean(bean) && !resolvedBean.isSerializable() && resolvedBean.getScopeType().equals(Dependent.class))
+            if (Beans.isPassivatingBean(bean, manager) && !resolvedBean.isSerializable() && resolvedBean.getScopeType().equals(Dependent.class))
             {
                throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scopes but has non-serializable dependencies");
             }
@@ -145,7 +145,7 @@ public class BeanValidator
                specializedBeans.add(abstractBean.getSpecializedBean());
             }
          }
-         boolean normalScoped = MetaDataCache.instance().getScopeModel(bean.getScopeType()).isNormal();
+         boolean normalScoped = manager.getServices().get(MetaDataCache.class).getScopeModel(bean.getScopeType()).isNormal();
          if (normalScoped && !Beans.isBeanProxyable(bean))
          {
             throw new UnproxyableDependencyException("Normal scoped bean " + bean + " is not proxyable");

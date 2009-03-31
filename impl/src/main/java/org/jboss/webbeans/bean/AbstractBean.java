@@ -141,7 +141,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     */
    public void initialize(BeanDeployerEnvironment environment)
    {
-      mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class));
+      mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class), manager);
       if (isSpecializing())
       {
          preSpecialize();
@@ -261,7 +261,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
 
    private boolean checkInjectionPointsAreSerializable()
    {
-      boolean passivating = MetaDataCache.instance().getScopeModel(this.getScopeType()).isPassivating();
+      boolean passivating = manager.getServices().get(MetaDataCache.class).getScopeModel(this.getScopeType()).isPassivating();
       for (AnnotatedInjectionPoint<?, ?> injectionPoint : getInjectionPoints())
       {
          Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);

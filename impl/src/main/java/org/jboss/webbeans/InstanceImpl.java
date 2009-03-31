@@ -47,7 +47,7 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
     * @param manager The Web Beans manager
     * @param bindings The binding types
     */
-   private InstanceImpl(Class<T> type, Manager manager, Set<Annotation> bindings)
+   private InstanceImpl(Class<T> type, RootManager manager, Set<Annotation> bindings)
    {
       super(type, manager, bindings);
    }

@@ -41,7 +41,7 @@ public abstract class FacadeImpl<T>
    // The binding types the helper operates on
    protected final Set<? extends Annotation> bindings;
    // The Web Beans manager
-   protected final Manager manager;
+   protected final RootManager manager;
    // The type of the operation
    protected final Class<T> type;
 
@@ -52,7 +52,7 @@ public abstract class FacadeImpl<T>
     * @param manager The Web Beans manager
     * @param bindings The binding types
     */
-   protected FacadeImpl(Class<T> type, Manager manager, Set<? extends Annotation> bindings)
+   protected FacadeImpl(Class<T> type, RootManager manager, Set<? extends Annotation> bindings)
    {
       this.manager = manager;
       this.type = type;
@@ -76,7 +76,7 @@ public abstract class FacadeImpl<T>
       result.addAll(bindings);
       for (Annotation newAnnotation : newBindings)
       {
-         if (!MetaDataCache.instance().getBindingTypeModel(newAnnotation.annotationType()).isValid())
+         if (!manager.getServices().get(MetaDataCache.class).getBindingTypeModel(newAnnotation.annotationType()).isValid())
          {
             throw new IllegalArgumentException(newAnnotation + " is not a binding for " + this);
          }

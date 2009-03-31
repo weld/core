@@ -197,7 +197,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       {
          throw new IllegalProductException("Cannot return null from a non-dependent producer method");
       }
-      boolean passivating = MetaDataCache.instance().getScopeModel(getScopeType()).isPassivating();
+      boolean passivating = manager.getServices().get(MetaDataCache.class).getScopeModel(getScopeType()).isPassivating();
       if (passivating && !Reflections.isSerializable(instance.getClass()))
       {
          throw new IllegalProductException("Producers cannot declare passivating scope and return a non-serializable class");
@@ -207,7 +207,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       {
          return;
       }
-      if (isDependent() && Beans.isPassivatingBean(injectionPoint.getBean()))
+      if (isDependent() && Beans.isPassivatingBean(injectionPoint.getBean(), manager))
       {
          if (injectionPoint.getMember() instanceof Field)
          {

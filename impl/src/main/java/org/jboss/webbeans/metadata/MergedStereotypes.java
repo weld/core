@@ -21,6 +21,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.introspector.AnnotationStore.AnnotationMap;
 
 /**
@@ -31,27 +32,30 @@ import org.jboss.webbeans.introspector.AnnotationStore.AnnotationMap;
 public class MergedStereotypes<T, E>
 {
    // The possible deployment types
-   private AnnotationMap possibleDeploymentTypes;
+   private final AnnotationMap possibleDeploymentTypes;
    // The possible scope types
-   private Set<Annotation> possibleScopeTypes;
+   private final Set<Annotation> possibleScopeTypes;
    // Is the bean name defaulted?
    private boolean beanNameDefaulted;
    // The required types
-   private Set<Class<?>> requiredTypes;
+   private final Set<Class<?>> requiredTypes;
    // The supported scopes
-   private Set<Class<? extends Annotation>> supportedScopes;
+   private final Set<Class<? extends Annotation>> supportedScopes;
+   
+   private final RootManager manager;
    
    /**
     * Constructor
     * 
     * @param stereotypeAnnotations The stereotypes to merge
     */
-   public MergedStereotypes(Set<Annotation> stereotypeAnnotations)
+   public MergedStereotypes(Set<Annotation> stereotypeAnnotations, RootManager manager)
    {
-      possibleDeploymentTypes = new AnnotationMap();
-      possibleScopeTypes = new HashSet<Annotation>();
-      requiredTypes = new HashSet<Class<?>>();
-      supportedScopes = new HashSet<Class<? extends Annotation>>();
+      this.possibleDeploymentTypes = new AnnotationMap();
+      this.possibleScopeTypes = new HashSet<Annotation>();
+      this.requiredTypes = new HashSet<Class<?>>();
+      this.supportedScopes = new HashSet<Class<? extends Annotation>>();
+      this.manager = manager;
       merge(stereotypeAnnotations);
    }
 
@@ -65,7 +69,7 @@ public class MergedStereotypes<T, E>
       for (Annotation stereotypeAnnotation : stereotypeAnnotations)
       {
          // Retrieve and merge all metadata from stereotypes
-         StereotypeModel<?> stereotype = MetaDataCache.instance().getStereotype(stereotypeAnnotation.annotationType());
+         StereotypeModel<?> stereotype = manager.getServices().get(MetaDataCache.class).getStereotype(stereotypeAnnotation.annotationType());
          if (stereotype == null)
          {
             throw new IllegalStateException("Stereotype " + stereotypeAnnotation + " not registered with container");

@@ -24,6 +24,7 @@ import javax.inject.DefinitionException;
 import javax.inject.Produces;
 import javax.inject.manager.Bean;
 
+import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
@@ -46,7 +47,7 @@ public class Beans
     * @param bean The bean to inspect
     * @return True if passivating, false otherwise
     */
-   public static boolean isPassivatingBean(Bean<?> bean)
+   public static boolean isPassivatingBean(Bean<?> bean, RootManager manager)
    {
       if (bean instanceof EnterpriseBean)
       {
@@ -54,7 +55,7 @@ public class Beans
       }
       else
       {
-         return MetaDataCache.instance().getScopeModel(bean.getScopeType()).isPassivating();
+         return manager.getServices().get(MetaDataCache.class).getScopeModel(bean.getScopeType()).isPassivating();
       }
    }
 

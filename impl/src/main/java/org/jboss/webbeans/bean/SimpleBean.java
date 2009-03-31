@@ -331,7 +331,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       {
          throw new DefinitionException("Simple bean " + type + " cannot be a parameterized type");
       }
-      boolean passivating = MetaDataCache.instance().getScopeModel(scopeType).isPassivating();
+      boolean passivating = manager.getServices().get(MetaDataCache.class).getScopeModel(scopeType).isPassivating();
       if (passivating && !_serializable)
       {
          throw new DefinitionException("Simple bean declaring a passivating scope must have a serializable implementation class " + toString());
