@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-03-28 17:09+0000\n"
-"PO-Revision-Date: 2009-03-30 21:57+0100\n"
+"PO-Revision-Date: 2009-03-31 10:37+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -17,25 +17,25 @@ msgstr ""
 #: environments.xml:4
 #, no-c-format
 msgid "Application Servers and environments supported by Web Beans"
-msgstr ""
+msgstr "Application Server ed ambienti supportati da Web Beans"
 
 #. Tag: title
 #: environments.xml:7
 #, no-c-format
 msgid "Using Web Beans with JBoss AS"
-msgstr ""
+msgstr "Usare Web Beans con JBoss AS"
 
 #. Tag: para
 #: environments.xml:9
 #, no-c-format
 msgid "No special configuration of your application, beyond adding either <literal>META-INF/beans.xml</literal> or <literal>WEB-INF/beans.xml</literal> is needed."
-msgstr ""
+msgstr "Non occorre alcuna configurazione speciale dell'applicazione oltre all'aggiunta di <literal>META-INF/beans.xml</literal> o <literal>WEB-INF/beans.xml</literal>."
 
 #. Tag: para
 #: environments.xml:15
 #, no-c-format
 msgid "If you are using JBoss AS 5.0.1.GA then you'll need to install Web Beans as an extra. First we need to tell Web Beans where JBoss is located. Edit <literal>jboss-as/build.properties</literal> and set the <literal>jboss.home</literal> property. For example:"
-msgstr ""
+msgstr "Se si usa JBoss AS 5.0.1.GA allora occorre installare Web Beans come extra. Innanzitutto occorre dire a Web Beans dove si trova JBoss. Modificare <literal>jboss-as/build.properties</literal> ed impostare la proprietà <literal>jboss.home</literal>. Per esempio:"
 
 #. Tag: programlisting
 #: environments.xml:22
@@ -47,7 +47,7 @@ msgstr "jboss.home=/Applications/jboss-5.0.1.GA"
 #: environments.xml:24
 #, no-c-format
 msgid "Now we can install Web Beans:"
-msgstr ""
+msgstr "Ora installiamo Web Beans:"
 
 #. Tag: programlisting
 #: environments.xml:28
@@ -63,13 +63,13 @@ msgstr ""
 #: environments.xml:31
 #, no-c-format
 msgid "A new deployer, <literal>webbeans.deployer</literal> is added to JBoss AS. This adds supports for JSR-299 deployments to JBoss AS, and allows Web Beans to query the EJB3 container and discover which EJBs are installed in your application."
-msgstr ""
+msgstr "Un nuovo deploer - <literal>webbeans.deployer</literal> - viene aggiunto a JBoss AS. Questo aggiunge a JBoss AS il supporto ai deploy JSR-299, e consente a Web Beans di interrogare il container EJB3 per scoprire quali EJB sono installati nell'applicazione."
 
 #. Tag: para
 #: environments.xml:40
 #, no-c-format
 msgid "Web Beans is built into all releases of JBoss AS from 5.1 onwards."
-msgstr ""
+msgstr "Web Beans è incluso in tutte le release di JBoss AS da 5.1 in avanti."
 
 #. Tag: title
 #: environments.xml:47
@@ -94,19 +94,19 @@ msgstr "Tomcat"
 #: environments.xml:55
 #, no-c-format
 msgid "Web Beans can be used in Tomcat 6.0."
-msgstr ""
+msgstr "Web Beans può essere usato in Tomcat 6.0."
 
 #. Tag: para
 #: environments.xml:58
 #, no-c-format
 msgid "Web Beans doesn't support deploying session beans, injection using <literal>@EJB</literal>, <literal>@Resource</literal>, or <literal>@PersistenceContext</literal> or using transactional events on Tomcat."
-msgstr ""
+msgstr "Web Beans non supporta il deploy di bean di sessione, dell'injection tramite <literal>@EJB</literal>, <literal>@Resource</literal> o <literal>@PersistenceContext</literal> o usando gli eventi transazionali su Tomcat."
 
 #. Tag: para
 #: environments.xml:66
 #, no-c-format
 msgid "Web Beans should be used as a web application library in Tomcat. You should place <literal>webbeans-tomcat.jar</literal> in <literal>WEB-INF/lib</literal>. <literal>webbeans-tomcat.jar</literal> is an \"uber-jar\" provided for your convenience. Instead, you could use it's component jars:"
-msgstr ""
+msgstr "Web Beans dovrebbe essere usato come libreria web application in Tomcat. Occorre mettere <literal>webbeans-tomcat.jar</literal> in <literal>WEB-INF/lib</literal>. <literal>webbeans-tomcat.jar</literal> è un \"uber-jar\" fornito per comodità. Invece si possono usare i suoi componenti jar:"
 
 #. Tag: literal
 #: environments.xml:77
@@ -160,7 +160,7 @@ msgstr "dom4j.jar"
 #: environments.xml:117
 #, no-c-format
 msgid "You also need to explicitly specify the Tomcat servlet listener (used to boot Web Beans, and control it's interaction with requests) in <literal>web.xml</literal>:"
-msgstr ""
+msgstr "Occorre inoltre specificare esplicitamente il servlet listener in Tomcat (usato per avviare Web Beans, e controllare le sue interazioni con le richieste) in <literal>web.xml</literal>:"
 
 #. Tag: programlisting
 #: environments.xml:123
@@ -178,7 +178,7 @@ msgstr ""
 #: environments.xml:125
 #, no-c-format
 msgid "Tomcat has a read-only JNDI, so Web Beans can't automatically bind the Manager. To bind the Manager into JNDI, you should add the following to your <literal>META-INF/context.xml</literal>:"
-msgstr ""
+msgstr "Tomcat ha un JNDI read-only, e quindi Web Beans non può automaticamente associare il Manager. Per associare il Manager a JNDI occorre aggiungere a <literal>META-INF/context.xml</literal>:"
 
 #. Tag: programlisting
 #: environments.xml:131
@@ -200,7 +200,7 @@ msgstr ""
 #: environments.xml:133
 #, no-c-format
 msgid "and make it available to your deployment by adding this to <literal>web.xml</literal>:"
-msgstr ""
+msgstr "e renderlo disponibile nel proprio deploy aggiungendo questo a <literal>web.xml</literal>:"
 
 #. Tag: programlisting
 #: environments.xml:138
@@ -228,7 +228,7 @@ msgstr ""
 #: environments.xml:140
 #, no-c-format
 msgid "Tomcat doesn't only allows you to bind entries to <literal>java:comp/env</literal>, so the Manager will be available at <literal>java:comp/env/app/Manager</literal>"
-msgstr ""
+msgstr "Tomcat non consente di associare le entry a <literal>java:comp/env</literal>, e quindi il Manager sarà disponibile in <literal>java:comp/env/app/Manager</literal>"
 
 #. Tag: title
 #: environments.xml:149

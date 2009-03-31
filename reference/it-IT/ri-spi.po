@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-03-28 17:09+0000\n"
-"PO-Revision-Date: 2009-03-30 21:47+0100\n"
+"PO-Revision-Date: 2009-03-31 10:55+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -293,17 +293,18 @@ msgstr "La risoluzione di <literal>@EJB</literal> e <literal>@Resource</literal>
 msgid "JPA services"
 msgstr "Servizi JPA"
 
+# rivedere la frase.
 #. Tag: para
 #: ri-spi.xml:100
 #, no-c-format
 msgid "Just as resolution of <literal>@EJB</literal> is delegated to the container, so is resolution of <literal>@PersistenceContext</literal>."
-msgstr ""
+msgstr "Solo come risoluzione di <literal>@EJB</literal> è delegata al container, e quindi è la risoluzione di <literal>@PersistenceContext</literal>."
 
 #. Tag: para
 #: ri-spi.xml:106
 #, no-c-format
 msgid "OPEN ISSUE: Web Beans also requires the container to provide a list of entities in the deployment, so that they aren't discovered as simple beans."
-msgstr ""
+msgstr "PROBLEMA APERTO: Web Beans richiede anche che il container fornisca una lista di entity nel deploy, cosicché non siano rilevati come semplici bean."
 
 #. Tag: title
 #: ri-spi.xml:114
@@ -431,7 +432,7 @@ msgstr "Il bootstrap è suddiviso in più fasi, inizializzazione del bootstrap, 
 #: ri-spi.xml:180
 #, no-c-format
 msgid "The bootstrap supports multiple environments. Different environments require different services to be present (for example servlet doesn't require transaction, EJB or JPA services). By default an EE environment is assumed, but you can adjust the environment by calling <literal>bootstrap.setEnvironment()</literal>."
-msgstr ""
+msgstr "Il bootstrap supporta più ambienti. Diversi ambienti richiedono diversi servizi presenti (per esempio servlet non richiede i servizi di transazione, EJB o JPA). Di default viene assunto un ambiente EE, ma si può impostare un ambiente chiamando <literal>bootstrap.setEnvironment()</literal>."
 
 #. Tag: para
 #: ri-spi.xml:188

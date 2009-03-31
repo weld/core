@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-03-28 17:09+0000\n"
-"PO-Revision-Date: 2009-03-30 21:48+0100\n"
+"PO-Revision-Date: 2009-03-31 10:58+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -15,27 +15,27 @@ msgstr ""
 
 #. Tag: title
 #: ri.xml:4
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Web Beans, the Reference Implementation of JSR-299"
-msgstr "Implementazione di riferimento di Web Beans"
+msgstr "Implementazione di riferimento di Web Beans JSR-299"
 
 #. Tag: para
 #: ri.xml:6
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The Web Beans is being developed at <ulink url=\"http://seamframework.org/WebBeans\">the Seam project</ulink>. You can download the latest developer release of Web Beans from the <ulink url=\"http://seamframework.org/Download\">the downloads page</ulink>."
-msgstr "La Web Beans Reference Implementation viene sviluppata all'indirizzo <ulink url=\"http://seamframework.org/WebBeans\">the Seam project</ulink>. Si può scaricare l'ultima release di Web Beans dalla <ulink url=\"http://seamframework.org/Download\">pagina di download</ulink>."
+msgstr "Web Beans viene sviluppato all'indirizzo <ulink url=\"http://seamframework.org/WebBeans\">the Seam project</ulink>. Si può scaricare l'ultima release di Web Beans dalla <ulink url=\"http://seamframework.org/Download\">pagina di download</ulink>."
 
 #. Tag: para
 #: ri.xml:13
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Web Beans comes with a two deployable example applications: <literal>webbeans-numberguess</literal>, a war example, containing only simple beans, and <literal>webbeans-translator</literal> an ear example, containing enterprise beans. There are also two variations on the numberguess example, the tomcat example (suitable for deployment to Tomcat) and the jsf2 example, which you can use if you are running JSF2. To run the examples you'll need the following:"
-msgstr "La Web Beans RI (Reference Implementation)  viene distribuita con due applicazioni deployabili d'esempio, <literal>webbeans-numberguess</literal>, un esempio in formato war, che contiene solo bean semplici, e <literal>webbeans-translator</literal>, un esempio in formato ear, che contiene bean enterprise. Per eseguire gli esempi occorre fare le seguenti cose:"
+msgstr "Web Beans viene distribuito con due applicazioni deployabili d'esempio, <literal>webbeans-numberguess</literal>, un esempio in formato war, che contiene solo bean semplici, e <literal>webbeans-translator</literal>, un esempio in formato ear, che contiene bean enterprise. Ci sono anche due varianti dell'esempio Indovina Numero, per Tomcat e con jsf2, che può essere usato con JSF2. Per eseguire gli esempi occorre fare le seguenti cose:"
 
 #. Tag: para
 #: ri.xml:25
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "the latest release of Web Beans,"
-msgstr "l'ultima release di Web Beans RI,"
+msgstr "l'ultima release di Web Beans,"
 
 #. Tag: para
 #: ri.xml:28
@@ -63,9 +63,9 @@ msgstr "Usare JBoss AS 5"
 
 #. Tag: para
 #: ri.xml:41
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "You'll need to download JBoss AS 5.0.1.GA from <ulink url=\"http://www.jboss.org/jbossas/downloads/\">jboss.org</ulink>, and unzip it. For example:"
-msgstr "Attualmente, la RI di Web Beans può essere eseguita solo sull'Application Server 5 di JBoss. Occorre scaricare JBoss AS 5.0.1.GA da <ulink url=\"http://www.jboss.org/jbossas/downloads/\">jboss.org</ulink>, e scompattarlo. Per esempio:"
+msgstr "Occorre scaricare JBoss AS 5.0.1.GA da <ulink url=\"http://www.jboss.org/jbossas/downloads/\">jboss.org</ulink>, e scompattarlo. Per esempio:"
 
 #. Tag: programlisting
 #: ri.xml:47
@@ -80,9 +80,9 @@ msgstr ""
 #. Tag: para
 #: ri.xml:49
 #: ri.xml:170
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Next, download Web Beans from <ulink url=\"http://seamframework.org/Download\">seamframework.org</ulink>, and unzip it. For example"
-msgstr "Scaricare Web Beans RI da <ulink url=\"http://seamframework.org/Download\">seamframework.org</ulink>, e scompattarla. Per esempio"
+msgstr "Scaricare Web Beans da <ulink url=\"http://seamframework.org/Download\">seamframework.org</ulink>, e scompattarlo. Per esempio"
 
 #. Tag: programlisting
 #: ri.xml:55
@@ -147,9 +147,9 @@ msgstr "Ora, siete pronti a fare il deploy del primo esempio!"
 
 #. Tag: para
 #: ri.xml:85
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The build scripts for the examples offer a number of targets for JBoss AS, these are:"
-msgstr "Gli script di build degli esempio offrono una quantità di target, cioè:"
+msgstr "Gli script di build degli esempio offrono una quantità di target per JBoss AS, quali:"
 
 #. Tag: para
 #: ri.xml:91
@@ -224,9 +224,9 @@ msgstr "Attendete che l'applicazione sia installata, e godetevi ore di divertime
 
 #. Tag: para
 #: ri.xml:143
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Web Beans includes a second simple example that will translate your text into Latin. The numberguess example is a war example, and uses only simple beans; the translator example is an ear example, and includes enterprise beans, packaged in an EJB module. To try it out:"
-msgstr "La RI di Web Beans include un secondo semplice esempio che tradurrà i vostri testi in Latino. L'esempio Indovina Numero è in formato war, e usa soltanto bean semplici; l'esempio col traduttore è in formato ear, e include dei bean enterprise, assemblati in un modulo EJB. Per provarlo:"
+msgstr "Web Beans include un secondo semplice esempio che tradurrà i vostri testi in Latino. L'esempio Indovina Numero è in formato war, e usa soltanto bean semplici; l'esempio col traduttore è in formato ear, e include dei bean enterprise, assemblati in un modulo EJB. Per provarlo:"
 
 #. Tag: programlisting
 #: ri.xml:150
@@ -252,9 +252,9 @@ msgstr "Usare Apache Tomcat 6.0"
 
 #. Tag: para
 #: ri.xml:162
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "You'll need to download Tomcat 6.0.18 or later from <ulink url=\"http://tomcat.apache.org/download-60.cgi\">tomcat.apache.org</ulink>, and unzip it. For example:"
-msgstr "Scaricare Web Beans RI da <ulink url=\"http://seamframework.org/Download\">seamframework.org</ulink>, e scompattarla. Per esempio"
+msgstr "Scaricare Tomcat 6.0.18 o successivo da <ulink url=\"http://tomcat.apache.org/download-60.cgi\">tomcat.apache.org</ulink>, e scompattarlo. Per esempio"
 
 #. Tag: programlisting
 #: ri.xml:168
@@ -268,9 +268,9 @@ msgstr ""
 
 #. Tag: para
 #: ri.xml:178
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Next, we need to tell Web Beans where Tomcat is located. Edit <literal>jboss-as/build.properties</literal> and set the <literal>tomcat.home</literal> property. For example:"
-msgstr "Quindi, occorre indicare a Web Beans dove è stato installato JBoss. Modificate il file <literal>jboss-as/build.properties</literal> e valorizzate la proprietà <literal>jboss.home</literal>. Per esempio:"
+msgstr "Quindi, occorre indicare a Web Beans dove è stato installato Tomcat. Modificate il file <literal>jboss-as/build.properties</literal> e valorizzate la proprietà <literal>tomcat.home</literal>. Per esempio:"
 
 #. Tag: programlisting
 #: ri.xml:184
@@ -280,45 +280,45 @@ msgstr "tomcat.home=/Applications/apache-tomcat-6.0.18"
 
 #. Tag: para
 #: ri.xml:187
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The build scripts for the examples offer a number of targets for Tomcat, these are:"
-msgstr "Gli script di build degli esempio offrono una quantità di target, cioè:"
+msgstr "Gli script di build degli esempi offrono una quantità di target per Tomcat, quali:"
 
 #. Tag: para
 #: ri.xml:193
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<literal>ant tomcat.restart</literal> - deploy the example in exploded format"
-msgstr "<literal>ant restart</literal> - fa il deploy dell'esempio in formato esploso"
+msgstr "<literal>ant tomcat.restart</literal> - esegue il deploy dell'esempio in formato esploso"
 
 #. Tag: para
 #: ri.xml:199
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<literal>ant tomcat.explode</literal> - update an exploded example, without restarting the deployment"
-msgstr "<literal>ant explode</literal> - aggiorna un esempio in formato esploso, senza riavviare il deploy"
+msgstr "<literal>ant tomcat.explode</literal> - aggiorna un esempio in formato esploso, senza riavviare il deploy"
 
 #. Tag: para
 #: ri.xml:205
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<literal>ant tomcat.deploy</literal> - deploy the example in compressed jar format"
-msgstr "<literal>ant deploy</literal> - fa il deploy dell'esempio in formato jar compresso"
+msgstr "<literal>ant tomcat.deploy</literal> - esegue il deploy dell'esempio in formato jar compresso"
 
 #. Tag: para
 #: ri.xml:210
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<literal>ant tomcat.undeploy</literal> - remove the example from the server"
-msgstr "<literal>ant undeploy</literal> - rimuove l'esempio dal server"
+msgstr "<literal>ant tomcat.undeploy</literal> - rimuove l'esempio dal server"
 
 #. Tag: para
 #: ri.xml:215
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<literal>ant tomcat.clean</literal> - clean the example"
-msgstr "<literal>ant clean</literal> - ripulisce l'esempio"
+msgstr "<literal>ant tomcat.clean</literal> - ripulisce l'esempio"
 
 #. Tag: para
 #: ri.xml:222
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "To deploy the numberguess example for tomcat:"
-msgstr "Per fare il deploy dell'esempio Indovina Numero:"
+msgstr "Per eseguire il deploy dell'esempio Indovina Numero per tomcat:"
 
 #. Tag: programlisting
 #: ri.xml:226
@@ -904,19 +904,19 @@ msgstr "Esempio Indovina Numero per Tomcat"
 #: ri.xml:433
 #, no-c-format
 msgid "The numberguess for Tomcat differs in a couple of ways. Firstly, Web Beans should be deployed as a Web Application library in <literal>WEB-INF/lib</literal>. For your convenience we provide a single jar suitable for running Web Beans on Tomcat <literal>webbeans-tomcat.jar</literal>."
-msgstr ""
+msgstr "L'Indovina Numero di Tomcat differisce in un paio di punti. Innanzitutto Web Beans dovrebbe essere deployato come libreria Web Application in <literal>WEB-INF/lib</literal>. Per comodità viene fornito un singolo jar <literal>webbeans-tomcat.jar</literal> adatto per Web Beans in Tomcat."
 
 #. Tag: para
 #: ri.xml:442
 #, no-c-format
 msgid "Of course, you must also include JSF and EL, as well common annotations (<literal>jsr250-api.jar</literal>) which a JEE server includes by default."
-msgstr ""
+msgstr "Certamente occorre anche includere JSF e EL, e le annotazioni comuni (<literal>jsr250-api.jar</literal>) che un server JEE include di default."
 
 #. Tag: para
 #: ri.xml:449
 #, no-c-format
 msgid "Secondly, we need to explicitly specify the Tomcat servlet listener (used to boot Web Beans, and control it's interaction with requests) in <literal>web.xml</literal>:"
-msgstr ""
+msgstr "In secondo luogo, occorre specificare esplicitamente il servlet listener di Tomcat (usato per avviare Web Beans, e controllare la sua interazione con le richieste) in <literal>web.xml</literal>:"
 
 #. Tag: programlisting
 #: ri.xml:455
