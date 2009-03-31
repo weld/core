@@ -127,7 +127,7 @@ public class BeanDeployer
    private void checkDisposalMethods() {
 	      Set<DisposalMethodBean<?>> all = new HashSet<DisposalMethodBean<?>>(beanDeployerEnvironment.getAllDisposalBeans()); 
 	      Set<DisposalMethodBean<?>> resolved = new HashSet<DisposalMethodBean<?>>(beanDeployerEnvironment.getResolvedDisposalBeans()); 
-	      if(resolved.contains(all)) {
+	      if(resolved.containsAll(all)) {
 	         StringBuffer buff = new StringBuffer();
 	         buff.append("The following Disposal methods where not resolved\n");
 	         all.removeAll(resolved);

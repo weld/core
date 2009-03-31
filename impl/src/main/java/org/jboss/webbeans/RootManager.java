@@ -94,28 +94,28 @@ import org.jboss.webbeans.util.Reflections;
  */
 public class RootManager implements WebBeansManager, Serializable
 {
-   
+
    private static final Log log = Logging.getLog(RootManager.class);
-   
+
    private static final long serialVersionUID = 3021562879133838561L;
-   
+
    // The JNDI key to place the manager under
    public static final String JNDI_KEY = "java:app/Manager";
-   
+
    // The enabled deployment types from web-beans.xml
    private transient List<Class<? extends Annotation>> enabledDeploymentTypes;
    // The Web Beans event manager
    private transient final EventManager eventManager;
-   
+
    // An executor service for asynchronous tasks
    private transient final ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
-   
+
    // An injection point metadata beans factory
    private transient final ThreadLocal<Stack<InjectionPoint>> currentInjectionPoint;
-   
+
    // The bean resolver
    private transient final Resolver resolver;
-   
+
    // The registered contexts
    private transient final ContextMap contextMap;
    // The client proxy pool
@@ -124,28 +124,27 @@ public class RootManager implements WebBeansManager, Serializable
    private transient List<Bean<?>> beans;
    // The registered beans, mapped by implementation class
    private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeanMap;
-   
+
    private transient final Map<String, RIBean<?>> riBeans;
-   
+
    // The registered decorators
    private transient final Set<Decorator> decorators;
    // The registered interceptors
    private transient final Set<Interceptor> interceptors;
-   
+
    // The EJB resolver provided by the container
    private transient final ServiceRegistry simpleServiceRegistry;
-   
+
    private transient final EjbDescriptorCache ejbDescriptorCache;
-   
+
    private final transient Map<Bean<?>, Bean<?>> specializedBeans;
-   
+
    private final transient NonContextualInjector nonContextualInjector;
-   
+
    /**
     * Create a new manager
     * 
-    * @param ejbServices
-    *           the ejbResolver to use
+    * @param ejbServices the ejbResolver to use
     */
    public RootManager(ServiceRegistry simpleServiceRegistry)
    {
@@ -175,13 +174,13 @@ public class RootManager implements WebBeansManager, Serializable
       defaultEnabledDeploymentTypes.add(1, Production.class);
       setEnabledDeploymentTypes(defaultEnabledDeploymentTypes);
    }
-   
+
    /**
     * Set up the enabled deployment types, if none are specified by the user,
     * the default @Production and @Standard are used. For internal use.
     * 
-    * @param enabledDeploymentTypes
-    *           The enabled deployment types from web-beans.xml
+    * @param enabledDeploymentTypes The enabled deployment types from
+    *           web-beans.xml
     */
    protected void checkEnabledDeploymentTypes()
    {
@@ -190,7 +189,7 @@ public class RootManager implements WebBeansManager, Serializable
          throw new DeploymentException("@Standard must be the lowest precedence deployment type");
       }
    }
-   
+
    protected void addWebBeansDeploymentTypes()
    {
       if (!this.enabledDeploymentTypes.contains(WebBean.class))
@@ -198,12 +197,11 @@ public class RootManager implements WebBeansManager, Serializable
          this.enabledDeploymentTypes.add(1, WebBean.class);
       }
    }
-   
+
    /**
     * Registers a bean with the manager
     * 
-    * @param bean
-    *           The bean to register
+    * @param bean The bean to register
     * @return A reference to manager
     * 
     * @see javax.inject.manager.Manager#addBean(javax.inject.manager.Bean)
@@ -218,29 +216,31 @@ public class RootManager implements WebBeansManager, Serializable
       beans.add(bean);
       return this;
    }
-   
+
    /**
     * Resolve the disposal method for the given producer method. For internal
     * use.
     * 
-    * @param apiType
-    *           The API type to match
-    * @param bindings
-    *           The binding types to match
+    * @param apiType The API type to match
+    * @param bindings The binding types to match
     * @return The set of matching disposal methods
     */
-   public <T> Set<Bean<T>> resolveDisposalBeans(Class<T> apiType, Annotation... bindings)
+   public <T> Set<DisposalMethodBean<T>> resolveDisposalBeans(Class<T> apiType, Annotation... bindings)
    {
-      return resolveByType(apiType, bindings);
+      // Correct?
+      Set<Bean<T>> beans = resolveByType(apiType, bindings);
+      Set<DisposalMethodBean<T>> disposalBeans = new HashSet<DisposalMethodBean<T>>();
+      for (Bean<T> bean : beans)
+         if (bean instanceof DisposalMethodBean)
+            disposalBeans.add((DisposalMethodBean<T>) bean);
+      return disposalBeans;
    }
-   
+
    /**
     * Resolves observers for given event and bindings
     * 
-    * @param event
-    *           The event to match
-    * @param bindings
-    *           The binding types to match
+    * @param event The event to match
+    * @param bindings The binding types to match
     * @return The set of matching observers
     * 
     * @see javax.inject.manager.Manager#resolveObservers(java.lang.Object,
@@ -276,7 +276,7 @@ public class RootManager implements WebBeansManager, Serializable
       }
       return eventManager.getObservers(event, bindings);
    }
-   
+
    /**
     * A strongly ordered, unmodifiable list of enabled deployment types
     * 
@@ -286,7 +286,7 @@ public class RootManager implements WebBeansManager, Serializable
    {
       return Collections.unmodifiableList(enabledDeploymentTypes);
    }
-   
+
    /**
     * Set the enabled deployment types
     * 
@@ -298,14 +298,12 @@ public class RootManager implements WebBeansManager, Serializable
       checkEnabledDeploymentTypes();
       addWebBeansDeploymentTypes();
    }
-   
+
    /**
     * Resolves beans by API type and binding types
     * 
-    * @param type
-    *           The API type to match
-    * @param bindings
-    *           The binding types to match
+    * @param type The API type to match
+    * @param bindings The binding types to match
     * @return The set of matching beans
     * 
     * @see javax.inject.manager.Manager#resolveByType(java.lang.Class,
@@ -315,14 +313,12 @@ public class RootManager implements WebBeansManager, Serializable
    {
       return resolveByType(ResolvableAnnotatedClass.of(type, bindings), bindings);
    }
-   
+
    /**
     * Resolves beans by API type literal and binding types
     * 
-    * @param type
-    *           The API type literal to match
-    * @param bindings
-    *           The binding types to match
+    * @param type The API type literal to match
+    * @param bindings The binding types to match
     * @return The set of matching beans
     * 
     * @see javax.inject.manager.Manager#resolveByType(javax.inject.TypeLiteral,
@@ -332,7 +328,7 @@ public class RootManager implements WebBeansManager, Serializable
    {
       return resolveByType(ResolvableAnnotatedClass.of(type, bindings), bindings);
    }
-   
+
    public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, InjectionPoint injectionPoint, Annotation... bindings)
    {
       boolean registerInjectionPoint = !injectionPoint.getType().equals(InjectionPoint.class);
@@ -352,15 +348,13 @@ public class RootManager implements WebBeansManager, Serializable
          }
       }
    }
-   
+
    /**
     * Check the resolution request is valid, and then ask the resolver to
     * perform the resolution. For internal use.
     * 
-    * @param element
-    *           The item to resolve
-    * @param bindings
-    *           The binding types to match
+    * @param element The item to resolve
+    * @param bindings The binding types to match
     * @return The set of matching beans
     */
    public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, Annotation... bindings)
@@ -389,15 +383,14 @@ public class RootManager implements WebBeansManager, Serializable
       }
       return resolver.get(element);
    }
-   
+
    /**
     * Wraps a collection of beans into a thread safe list. Since this overwrites
     * any existing list of beans in the manager, this should only be done on
     * startup and other controlled situations. Also maps the beans by
     * implementation class. For internal use.
     * 
-    * @param beans
-    *           The set of beans to add
+    * @param beans The set of beans to add
     * @return A reference to the manager
     */
    // TODO Build maps in the deployer :-)
@@ -417,7 +410,7 @@ public class RootManager implements WebBeansManager, Serializable
          resolver.clear();
       }
    }
-   
+
    /**
     * Gets the class-mapped beans. For internal use.
     * 
@@ -427,7 +420,7 @@ public class RootManager implements WebBeansManager, Serializable
    {
       return newEnterpriseBeanMap;
    }
-   
+
    /**
     * The beans registered with the Web Bean manager. For internal use
     * 
@@ -437,17 +430,16 @@ public class RootManager implements WebBeansManager, Serializable
    {
       return Collections.unmodifiableList(beans);
    }
-   
+
    public Map<String, RIBean<?>> getRiBeans()
    {
       return Collections.unmodifiableMap(riBeans);
    }
-   
+
    /**
     * Registers a context with the manager
     * 
-    * @param context
-    *           The context to add
+    * @param context The context to add
     * @return A reference to the manager
     * 
     * @see javax.inject.manager.Manager#addContext(javax.context.Context)
@@ -457,12 +449,11 @@ public class RootManager implements WebBeansManager, Serializable
       contextMap.add(context);
       return this;
    }
-   
+
    /**
     * Registers a decorator with the manager
     * 
-    * @param decorator
-    *           The decorator to register
+    * @param decorator The decorator to register
     * @return A reference to the manager
     * 
     * @see javax.inject.manager.Manager#addDecorator(javax.inject.manager.Decorator)
@@ -472,12 +463,11 @@ public class RootManager implements WebBeansManager, Serializable
       decorators.add(decorator);
       return this;
    }
-   
+
    /**
     * Registers an interceptor with the manager
     * 
-    * @param interceptor
-    *           The interceptor to register
+    * @param interceptor The interceptor to register
     * @return A reference to the manager
     * 
     * @see javax.inject.manager.Manager#addInterceptor(javax.inject.manager.Interceptor)
@@ -487,16 +477,13 @@ public class RootManager implements WebBeansManager, Serializable
       interceptors.add(interceptor);
       return this;
    }
-   
+
    /**
     * Registers an observer for a given event type and binding types
     * 
-    * @param observer
-    *           The observer to register
-    * @param eventType
-    *           The event type to match
-    * @param bindings
-    *           The bindings to match
+    * @param observer The observer to register
+    * @param eventType The event type to match
+    * @param bindings The bindings to match
     * @return A reference to the manager
     * 
     * @see javax.inject.manager.Manager#addObserver(javax.event.Observer,
@@ -507,22 +494,19 @@ public class RootManager implements WebBeansManager, Serializable
       this.eventManager.addObserver(observer, eventType, bindings);
       return this;
    }
-   
+
    public <T> Manager addObserver(ObserverImpl<T> observer)
    {
       this.eventManager.addObserver(observer, observer.getEventType(), observer.getBindingsAsArray());
       return this;
    }
-   
+
    /**
     * Registers an observer for a given event type literal and binding types
     * 
-    * @param observer
-    *           The observer to register
-    * @param eventType
-    *           The event type literal to match
-    * @param bindings
-    *           The bindings to match
+    * @param observer The observer to register
+    * @param eventType The event type literal to match
+    * @param bindings The bindings to match
     * @return A reference to the manager
     * 
     * @see javax.inject.manager.Manager#addObserver(javax.event.Observer,
@@ -533,14 +517,12 @@ public class RootManager implements WebBeansManager, Serializable
       eventManager.addObserver(observer, eventType.getType(), bindings);
       return this;
    }
-   
+
    /**
     * Fires an event object with given event object for given bindings
     * 
-    * @param event
-    *           The event object to pass along
-    * @param bindings
-    *           The binding types to match
+    * @param event The event object to pass along
+    * @param bindings The binding types to match
     * 
     * @see javax.inject.manager.Manager#fireEvent(java.lang.Object,
     *      java.lang.annotation.Annotation[])
@@ -561,20 +543,19 @@ public class RootManager implements WebBeansManager, Serializable
             throw new IllegalArgumentException("Event type " + event.getClass().getName() + " cannot be fired with non-binding type " + binding.getClass().getName() + " specified");
          }
       }
-      
+
       // Get the observers for this event. Although resolveObservers is
       // parameterized, this method is not, so we have to use
       // Observer<Object> for observers.
       Set<Observer<Object>> observers = resolveObservers(event, bindings);
       eventManager.notifyObservers(observers, event);
    }
-   
+
    /**
     * Gets an active context of the given scope. Throws an exception if there
     * are no active contexts found or if there are too many matches
     * 
-    * @param scopeType
-    *           The scope to match
+    * @param scopeType The scope to match
     * @return A single active context of the given scope
     * 
     * @see javax.inject.manager.Manager#getContext(java.lang.Class)
@@ -599,24 +580,22 @@ public class RootManager implements WebBeansManager, Serializable
       }
       return activeContexts.iterator().next();
    }
-   
+
    /**
     * Direct access to built in contexts. For internal use.
     * 
-    * @param scopeType
-    *           The scope type of the context
+    * @param scopeType The scope type of the context
     * @return The context
     */
    public Context getBuiltInContext(Class<? extends Annotation> scopeType)
    {
       return contextMap.getBuiltInContext(scopeType);
    }
-   
+
    /**
     * Returns an instance of a bean
     * 
-    * @param bean
-    *           The bean to instantiate
+    * @param bean The bean to instantiate
     * @return An instance of the bean
     * 
     * @see javax.inject.manager.Manager#getInstance(javax.inject.manager.Bean)
@@ -625,7 +604,7 @@ public class RootManager implements WebBeansManager, Serializable
    {
       return getInstance(bean, true);
    }
-   
+
    public <T> T getInstance(Bean<T> bean, boolean create)
    {
       if (create)
@@ -637,12 +616,11 @@ public class RootManager implements WebBeansManager, Serializable
          return getInstance(bean, null);
       }
    }
-   
+
    /**
     * Returns an instance of a bean
     * 
-    * @param bean
-    *           The bean to instantiate
+    * @param bean The bean to instantiate
     * @return An instance of the bean
     * 
     * @see javax.inject.manager.Manager#getInstance(javax.inject.manager.Bean)
@@ -670,17 +648,17 @@ public class RootManager implements WebBeansManager, Serializable
          return getContext(bean.getScopeType()).get(bean, creationalContext);
       }
    }
-   
+
    public <T> T getInstanceToInject(InjectionPoint injectionPoint)
    {
       return this.<T> getInstanceToInject(injectionPoint, null);
    }
-   
+
    public void injectNonContextualInstance(Object instance)
    {
       nonContextualInjector.inject(instance);
    }
-   
+
    @SuppressWarnings("unchecked")
    public <T> T getInstanceToInject(InjectionPoint injectionPoint, CreationalContext<?> creationalContext)
    {
@@ -718,13 +696,12 @@ public class RootManager implements WebBeansManager, Serializable
          }
       }
    }
-   
+
    /**
     * Gets an instance by name, returning null if none is found and throwing an
     * exception if too many beans match
     * 
-    * @param name
-    *           The name to match
+    * @param name The name to match
     * @return An instance of the bean
     * 
     * @see javax.inject.manager.Manager#getInstanceByName(java.lang.String)
@@ -745,14 +722,12 @@ public class RootManager implements WebBeansManager, Serializable
          return getInstance(beans.iterator().next());
       }
    }
-   
+
    /**
     * Returns an instance by API type and binding types
     * 
-    * @param type
-    *           The API type to match
-    * @param bindings
-    *           The binding types to match
+    * @param type The API type to match
+    * @param bindings The binding types to match
     * @return An instance of the bean
     * 
     * @see javax.inject.manager.Manager#getInstanceByType(java.lang.Class,
@@ -762,14 +737,12 @@ public class RootManager implements WebBeansManager, Serializable
    {
       return getInstanceByType(ResolvableAnnotatedClass.of(type, bindings), bindings);
    }
-   
+
    /**
     * Returns an instance by type literal and binding types
     * 
-    * @param type
-    *           The type to match
-    * @param bindings
-    *           The binding types to match
+    * @param type The type to match
+    * @param bindings The binding types to match
     * @return An instance of the bean
     * 
     * @see javax.inject.manager.Manager#getInstanceByType(javax.inject.TypeLiteral,
@@ -779,22 +752,20 @@ public class RootManager implements WebBeansManager, Serializable
    {
       return getInstanceByType(ResolvableAnnotatedClass.of(type, bindings), bindings);
    }
-   
+
    /**
     * Resolve an instance, verify that the resolved bean can be instantiated,
     * and return
     * 
-    * @param element
-    *           The annotated item to match
-    * @param bindings
-    *           The binding types to match
+    * @param element The annotated item to match
+    * @param bindings The binding types to match
     * @return An instance of the bean
     */
    private <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
       return getInstance(getBeanByType(element, bindings));
    }
-   
+
    public <T> Bean<T> getBeanByType(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
       Set<Bean<T>> beans = resolveByType(element, bindings);
@@ -814,16 +785,13 @@ public class RootManager implements WebBeansManager, Serializable
       }
       return bean;
    }
-   
+
    /**
     * Removes an observer
     * 
-    * @param observer
-    *           The observer to remove
-    * @param eventType
-    *           The event type to match
-    * @param bindings
-    *           the binding types to match
+    * @param observer The observer to remove
+    * @param eventType The event type to match
+    * @param bindings the binding types to match
     * @return A reference to the manager
     * 
     * @see javax.inject.manager.Manager#removeObserver(javax.event.Observer,
@@ -834,16 +802,13 @@ public class RootManager implements WebBeansManager, Serializable
       this.eventManager.removeObserver(observer, eventType, bindings);
       return this;
    }
-   
+
    /**
     * Removes an observer
     * 
-    * @param observer
-    *           The observer to remove
-    * @param eventType
-    *           The event type to match
-    * @param bindings
-    *           the binding types to match
+    * @param observer The observer to remove
+    * @param eventType The event type to match
+    * @param bindings the binding types to match
     * @return A reference to the manager
     * 
     * @see javax.inject.manager.Manager#removeObserver(javax.event.Observer,
@@ -854,12 +819,11 @@ public class RootManager implements WebBeansManager, Serializable
       this.eventManager.removeObserver(observer, eventType.getRawType(), bindings);
       return this;
    }
-   
+
    /**
     * Resolves a set of beans based on their name
     * 
-    * @param The
-    *           name to match
+    * @param The name to match
     * @return The set of matching beans
     * 
     * @see javax.inject.manager.Manager#resolveByName(java.lang.String)
@@ -868,14 +832,12 @@ public class RootManager implements WebBeansManager, Serializable
    {
       return resolver.get(name);
    }
-   
+
    /**
     * Resolves a list of decorators based on API types and binding types Os
     * 
-    * @param types
-    *           The set of API types to match
-    * @param bindings
-    *           The binding types to match
+    * @param types The set of API types to match
+    * @param bindings The binding types to match
     * @return A list of matching decorators
     * 
     * @see javax.inject.manager.Manager#resolveDecorators(java.util.Set,
@@ -885,15 +847,13 @@ public class RootManager implements WebBeansManager, Serializable
    {
       throw new UnsupportedOperationException();
    }
-   
+
    /**
     * Resolves a list of interceptors based on interception type and interceptor
     * bindings
     * 
-    * @param type
-    *           The interception type to resolve
-    * @param interceptorBindings
-    *           The binding types to match
+    * @param type The interception type to resolve
+    * @param interceptorBindings The binding types to match
     * @return A list of matching interceptors
     * 
     * @see javax.inject.manager.Manager#resolveInterceptors(javax.inject.manager.InterceptionType,
@@ -903,7 +863,7 @@ public class RootManager implements WebBeansManager, Serializable
    {
       throw new UnsupportedOperationException();
    }
-   
+
    /**
     * Get the web bean resolver. For internal use
     * 
@@ -913,12 +873,12 @@ public class RootManager implements WebBeansManager, Serializable
    {
       return resolver;
    }
-   
+
    public EjbDescriptorCache getEjbDescriptorCache()
    {
       return ejbDescriptorCache;
    }
-   
+
    /**
     * Gets a string representation
     * 
@@ -937,27 +897,27 @@ public class RootManager implements WebBeansManager, Serializable
       buffer.append("Specialized beans: " + specializedBeans.size() + "\n");
       return buffer.toString();
    }
-   
+
    public Manager parse(InputStream xmlStream)
    {
       throw new UnsupportedOperationException();
    }
-   
+
    public Manager createActivity()
    {
       return new ChildManager(this);
    }
-   
+
    public Manager setCurrent(Class<? extends Annotation> scopeType)
    {
       throw new UnsupportedOperationException();
    }
-   
+
    public ServiceRegistry getServices()
    {
       return simpleServiceRegistry;
    }
-   
+
    /**
     * Accesses the factory used to create each instance of InjectionPoint that
     * is injected into web beans.
@@ -975,7 +935,7 @@ public class RootManager implements WebBeansManager, Serializable
          return null;
       }
    }
-   
+
    /**
     * 
     * @return
@@ -985,14 +945,14 @@ public class RootManager implements WebBeansManager, Serializable
       // TODO make this unmodifiable after deploy!
       return specializedBeans;
    }
-   
+
    // Serialization
-   
+
    protected Object readResolve()
    {
       return CurrentManager.rootManager();
    }
-   
+
    /**
     * Provides access to the executor service used for asynchronous tasks.
     * 
@@ -1002,7 +962,7 @@ public class RootManager implements WebBeansManager, Serializable
    {
       return taskExecutor;
    }
-   
+
    public void shutdown()
    {
       log.trace("Ending application");
@@ -1012,7 +972,7 @@ public class RootManager implements WebBeansManager, Serializable
       ApplicationContext.INSTANCE.setBeanStore(null);
       getServices().get(NamingContext.class).unbind(RootManager.JNDI_KEY);
    }
-   
+
    /**
     * Shuts down any executor services in the manager.
     */
@@ -1040,5 +1000,5 @@ public class RootManager implements WebBeansManager, Serializable
          Thread.currentThread().interrupt();
       }
    }
-   
+
 }
