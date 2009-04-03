@@ -46,14 +46,6 @@ public class NewEnterpriseBeanTest extends AbstractWebBeansTest
    }
 
    @Test(groups = { "new" })
-   public void testNewBeanIsEnterpriseWebBeanIfParameterTypeIsEnterpriseWebBean()
-   {
-      initNewBean();
-      assert wrappedEnterpriseBean.getType().equals(newEnterpriseBean.getType());
-      assert manager.getEjbDescriptorCache().containsKey(newEnterpriseBean.getType());
-   }
-
-   @Test(groups = { "new" })
    public void testNewBeanHasSameInitializerMethodsAsWrappedBean()
    {
       initNewBean();

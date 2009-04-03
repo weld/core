@@ -17,6 +17,7 @@
 
 package org.jboss.webbeans.bean;
 
+import java.beans.BeanDescriptor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -41,6 +42,7 @@ import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentStorageRequest;
+import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
@@ -77,9 +79,9 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * @param manager the current manager
     * @return An Enterprise Web Bean
     */
-   public static <T> EnterpriseBean<T> of(AnnotatedClass<T> clazz, RootManager manager)
+   public static <T> EnterpriseBean<T> of(AnnotatedClass<T> clazz, RootManager manager, BeanDeployerEnvironment environment)
    {
-      return new EnterpriseBean<T>(clazz, manager);
+      return new EnterpriseBean<T>(clazz, manager, environment);
    }
 
    /**
@@ -88,11 +90,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   protected EnterpriseBean(AnnotatedClass<T> type, RootManager manager)
+   protected EnterpriseBean(AnnotatedClass<T> type, RootManager manager, BeanDeployerEnvironment environment)
    {
       super(type, manager);
       initType();
-      Iterable<InternalEjbDescriptor<T>> ejbDescriptors = manager.getEjbDescriptorCache().get(getType());
+      Iterable<InternalEjbDescriptor<T>> ejbDescriptors = environment.getEjbDescriptors().get(getType());
       if (ejbDescriptors == null)
       {
          throw new DefinitionException("Not an EJB " + toString());
@@ -189,10 +191,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    /**
     * Validates specialization
     */
-   protected void preSpecialize()
+   @Override
+   protected void preSpecialize(BeanDeployerEnvironment environment)
    {
-      super.preSpecialize();
-      if (!manager.getEjbDescriptorCache().containsKey(getAnnotatedItem().getSuperclass().getRawType()))
+      super.preSpecialize(environment);
+      if (!environment.getEjbDescriptors().containsKey(getAnnotatedItem().getSuperclass().getRawType()))
       {
          throw new DefinitionException("Annotation defined specializing EJB must have EJB superclass");
       }

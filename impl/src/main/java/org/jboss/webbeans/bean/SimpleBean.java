@@ -355,10 +355,10 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    }
 
    @Override
-   protected void preSpecialize()
+   protected void preSpecialize(BeanDeployerEnvironment environment)
    {
-      super.preSpecialize();
-      if (manager.getEjbDescriptorCache().containsKey(getAnnotatedItem().getSuperclass().getRawType()))
+      super.preSpecialize(environment);
+      if (environment.getEjbDescriptors().containsKey(getAnnotatedItem().getSuperclass().getRawType()))
       {
          throw new DefinitionException("Simple bean must specialize a simple bean");
       }

@@ -7,9 +7,11 @@ import java.util.List;
 
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.introspector.AnnotatedAnnotation;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
+import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 
 public class XmlEnvironment
@@ -20,19 +22,21 @@ public class XmlEnvironment
    private final ServiceRegistry serviceRegistry;
    private final List<Class<? extends Annotation>> enabledDeploymentTypes;
    private final Iterable<URL> beansXmlUrls;
+   private final EjbDescriptorCache ejbDescriptors;
    
-   public XmlEnvironment(ServiceRegistry serviceRegistry)
+   public XmlEnvironment(ServiceRegistry serviceRegistry, EjbDescriptorCache ejbDescriptors)
    {
-      this(serviceRegistry, serviceRegistry.get(WebBeanDiscovery.class).discoverWebBeansXml());
+      this(serviceRegistry, serviceRegistry.get(WebBeanDiscovery.class).discoverWebBeansXml(), ejbDescriptors);
    }
    
-   protected XmlEnvironment(ServiceRegistry serviceRegistry, Iterable<URL> beanXmlUrls)
+   protected XmlEnvironment(ServiceRegistry serviceRegistry, Iterable<URL> beanXmlUrls, EjbDescriptorCache ejbDescriptors)
    {
       this.classes = new ArrayList<AnnotatedClass<?>>();
       this.annotations = new ArrayList<AnnotatedAnnotation<?>>();
       this.enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       this.serviceRegistry = serviceRegistry;
       this.beansXmlUrls = beanXmlUrls;
+      this.ejbDescriptors = ejbDescriptors;
    }
    
    public List<AnnotatedClass<?>> getClasses()
@@ -52,7 +56,7 @@ public class XmlEnvironment
    
    public <T> AnnotatedClass<? extends T> loadClass(String className, Class<T> expectedType)
    {
-      return AnnotatedClassImpl.of(serviceRegistry.get(ResourceLoader.class).classForName(className).asSubclass(expectedType));
+      return serviceRegistry.get(ClassTransformer.class).classForName((serviceRegistry.get(ResourceLoader.class).classForName(className).asSubclass(expectedType)));
    }
    
    public <T extends Annotation> Class<? extends T> loadAnnotation(String className, Class<T> expectedType)
@@ -63,6 +67,11 @@ public class XmlEnvironment
    public List<Class<? extends Annotation>> getEnabledDeploymentTypes()
    {
       return enabledDeploymentTypes;
+   }
+   
+   public EjbDescriptorCache getEjbDescriptors() 
+   {
+      return ejbDescriptors;
    }
    
    public URL loadFileByUrn(String urn, String fileName)

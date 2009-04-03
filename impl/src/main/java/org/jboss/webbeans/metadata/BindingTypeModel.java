@@ -27,6 +27,7 @@ import javax.inject.DefinitionException;
 import javax.inject.ExecutionException;
 
 import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -46,9 +47,9 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
     * 
     * @param type The type
     */
-   public BindingTypeModel(Class<T> type)
+   public BindingTypeModel(Class<T> type, ClassTransformer transformer)
    {
-      super(type);
+      super(type, transformer);
    }
 
    /**

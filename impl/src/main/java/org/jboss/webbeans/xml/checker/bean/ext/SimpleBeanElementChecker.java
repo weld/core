@@ -7,6 +7,7 @@ import javax.interceptor.Interceptor;
 import org.dom4j.Element;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
@@ -15,19 +16,24 @@ import org.jboss.webbeans.xml.checker.beanchildren.BeanChildrenChecker;
 
 public class SimpleBeanElementChecker extends BeanElementCheckerImpl
 {
-   public SimpleBeanElementChecker(BeanChildrenChecker childrenChecker)
+
+   private final EjbDescriptorCache ejbDescriptors;
+	
+   public SimpleBeanElementChecker(BeanChildrenChecker childrenChecker, EjbDescriptorCache ejbDescriptors)
    {
       super(childrenChecker);
+      this.ejbDescriptors = ejbDescriptors;
    }
 
    public boolean accept(Element beanElement, AnnotatedClass<?> beanClass)
    {
-      RootManager manager = CurrentManager.rootManager();
-      boolean isSessionBean = manager.getEjbDescriptorCache().containsKey(beanElement.getName()) || 
+      boolean isSessionBean = ejbDescriptors.containsKey(beanElement.getName()) || 
                                           beanElement.attribute(XmlConstants.EJB_NAME) != null;
       
       if (!beanClass.isAbstract() && !isSessionBean && !beanClass.isParameterizedType())
+      {
          return true;
+      }
 
       return false;
    }

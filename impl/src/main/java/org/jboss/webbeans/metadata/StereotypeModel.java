@@ -30,6 +30,8 @@ import javax.inject.DefinitionException;
 import javax.inject.DeploymentType;
 import javax.interceptor.InterceptorBindingType;
 
+import org.jboss.webbeans.resources.ClassTransformer;
+
 /**
  * A meta model for a stereotype, allows us to cache a stereotype and to
  * validate it
@@ -57,9 +59,9 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
     * 
     * @param sterotype The stereotype
     */
-   public StereotypeModel(Class<T> sterotype)
+   public StereotypeModel(Class<T> sterotype, ClassTransformer transformer)
    {
-      super(sterotype);
+      super(sterotype, transformer);
       initDefaultDeploymentType();
       initDefaultScopeType();
       initBeanNameDefaulted();

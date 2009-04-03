@@ -17,10 +17,9 @@
 
 package org.jboss.webbeans.ejb;
 
-import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
@@ -31,22 +30,21 @@ import org.jboss.webbeans.ejb.spi.EjbDescriptor;
  * @author Pete Muir
  * 
  */
-public class EjbDescriptorCache implements Serializable
+public class EjbDescriptorCache
 {
-   private static final long serialVersionUID = 1L;
 
    // EJB name -> EJB descriptor map
-   private ConcurrentMap<String, InternalEjbDescriptor<?>> ejbsByName;
+   private Map<String, InternalEjbDescriptor<?>> ejbsByName;
    // EJB implementation class -> EJB descriptors map
-   private ConcurrentMap<Class<?>, Set<InternalEjbDescriptor<?>>> ejbsByBeanClass;
+   private Map<Class<?>, Set<InternalEjbDescriptor<?>>> ejbsByBeanClass;
 
    /**
     * Constructor
     */
    public EjbDescriptorCache()
    {
-      this.ejbsByName = new ConcurrentHashMap<String, InternalEjbDescriptor<?>>();
-      this.ejbsByBeanClass = new ConcurrentHashMap<Class<?>, Set<InternalEjbDescriptor<?>>>();
+      this.ejbsByName = new HashMap<String, InternalEjbDescriptor<?>>();
+      this.ejbsByBeanClass = new HashMap<Class<?>, Set<InternalEjbDescriptor<?>>>();
    }
 
    /**
@@ -81,7 +79,10 @@ public class EjbDescriptorCache implements Serializable
    {
       InternalEjbDescriptor<T> internalEjbDescriptor = new InternalEjbDescriptor<T>(ejbDescriptor);
       ejbsByName.put(ejbDescriptor.getEjbName(), internalEjbDescriptor);
-      ejbsByBeanClass.putIfAbsent(ejbDescriptor.getType(), new CopyOnWriteArraySet<InternalEjbDescriptor<?>>());
+      if (!ejbsByBeanClass.containsKey(ejbDescriptor.getType()))
+      {
+         ejbsByBeanClass.put(ejbDescriptor.getType(), new CopyOnWriteArraySet<InternalEjbDescriptor<?>>());  
+      }
       ejbsByBeanClass.get(ejbDescriptor.getType()).add(internalEjbDescriptor);
    }
 

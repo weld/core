@@ -104,6 +104,7 @@ public class RootManager implements WebBeansManager, Serializable
 
    // The enabled deployment types from web-beans.xml
    private transient List<Class<? extends Annotation>> enabledDeploymentTypes;
+   
    // The Web Beans event manager
    private transient final EventManager eventManager;
 
@@ -118,24 +119,19 @@ public class RootManager implements WebBeansManager, Serializable
 
    // The registered contexts
    private transient final ContextMap contextMap;
+   
    // The client proxy pool
    private transient final ClientProxyProvider clientProxyProvider;
+   
    // The registered beans
    private transient List<Bean<?>> beans;
+   
    // The registered beans, mapped by implementation class
    private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeanMap;
 
    private transient final Map<String, RIBean<?>> riBeans;
-
-   // The registered decorators
-   private transient final Set<Decorator> decorators;
-   // The registered interceptors
-   private transient final Set<Interceptor> interceptors;
-
-   // The EJB resolver provided by the container
+   
    private transient final ServiceRegistry services;
-
-   private transient final EjbDescriptorCache ejbDescriptorCache;
 
    private final transient Map<Bean<?>, Bean<?>> specializedBeans;
 
@@ -154,11 +150,8 @@ public class RootManager implements WebBeansManager, Serializable
       this.riBeans = new ConcurrentHashMap<String, RIBean<?>>();
       this.resolver = new Resolver(this);
       this.clientProxyProvider = new ClientProxyProvider();
-      this.decorators = new HashSet<Decorator>();
-      this.interceptors = new HashSet<Interceptor>();
       this.contextMap = new ContextMap();
       this.eventManager = new EventManager(this);
-      this.ejbDescriptorCache = new EjbDescriptorCache();
       this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>()
       {
          @Override
@@ -460,8 +453,7 @@ public class RootManager implements WebBeansManager, Serializable
     */
    public Manager addDecorator(Decorator decorator)
    {
-      decorators.add(decorator);
-      return this;
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
    /**
@@ -474,8 +466,7 @@ public class RootManager implements WebBeansManager, Serializable
     */
    public Manager addInterceptor(Interceptor interceptor)
    {
-      interceptors.add(interceptor);
-      return this;
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
    /**
@@ -874,11 +865,6 @@ public class RootManager implements WebBeansManager, Serializable
       return resolver;
    }
 
-   public EjbDescriptorCache getEjbDescriptorCache()
-   {
-      return ejbDescriptorCache;
-   }
-
    /**
     * Gets a string representation
     * 
@@ -892,8 +878,6 @@ public class RootManager implements WebBeansManager, Serializable
       buffer.append("Enabled deployment types: " + getEnabledDeploymentTypes() + "\n");
       buffer.append("Registered contexts: " + contextMap.keySet() + "\n");
       buffer.append("Registered beans: " + getBeans().size() + "\n");
-      buffer.append("Registered decorators: " + decorators.size() + "\n");
-      buffer.append("Registered interceptors: " + interceptors.size() + "\n");
       buffer.append("Specialized beans: " + specializedBeans.size() + "\n");
       return buffer.toString();
    }

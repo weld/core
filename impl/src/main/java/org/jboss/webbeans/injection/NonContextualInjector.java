@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 
 import org.jboss.webbeans.RootManager;
 import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
+import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.collections.ConcurrentCache;
 
@@ -27,7 +28,7 @@ public class NonContextualInjector
          
          public Set<FieldInjectionPoint<?>> call() throws Exception
          {
-            return Beans.getFieldInjectionPoints(AnnotatedClassImpl.of(instance.getClass()), null);
+            return Beans.getFieldInjectionPoints(manager.getServices().get(ClassTransformer.class).classForName(instance.getClass()), null);
          }
          
       }

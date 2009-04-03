@@ -10,6 +10,7 @@ import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Classes;
 import org.jboss.testharness.impl.packaging.Resource;
 import org.jboss.testharness.impl.packaging.Resources;
+import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.mock.MockResourceLoader;
 import org.jboss.webbeans.mock.MockXmlEnvironment;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
@@ -28,8 +29,6 @@ import org.testng.annotations.Test;
 public class BeansXmlParserTest extends AbstractWebBeansTest
 {
    
-   private static final ResourceLoader RESOURCE_LOADER = new MockResourceLoader(); 
-   
    // Quick unit tests for the parser
    @Test
    public void testDefaultDeploymentTypes()
@@ -43,7 +42,7 @@ public class BeansXmlParserTest extends AbstractWebBeansTest
          it.next();
       }
       assert i == 1;
-      XmlEnvironment environment = new MockXmlEnvironment(urls);
+      XmlEnvironment environment = new MockXmlEnvironment(urls, new EjbDescriptorCache());
       XmlParser parser = new XmlParser(environment);
       parser.parse();
       
@@ -56,7 +55,7 @@ public class BeansXmlParserTest extends AbstractWebBeansTest
    public void testUserDefinedDeploymentType()
    {
       Iterable<URL> urls = getResources("user-defined-beans.xml");
-      XmlEnvironment environment = new MockXmlEnvironment(urls);
+      XmlEnvironment environment = new MockXmlEnvironment(urls, new EjbDescriptorCache());
       XmlParser parser = new XmlParser(environment);
       parser.parse();
       assert environment.getEnabledDeploymentTypes().size() == 3;
@@ -72,7 +71,7 @@ public class BeansXmlParserTest extends AbstractWebBeansTest
    public void testDuplicateDeployElement()
    {
       Iterable<URL> urls = getResources("duplicate-deployments-beans.xml");
-      XmlEnvironment environment = new MockXmlEnvironment(urls);
+      XmlEnvironment environment = new MockXmlEnvironment(urls, new EjbDescriptorCache());
       XmlParser parser = new XmlParser(environment);
       parser.parse();
    }

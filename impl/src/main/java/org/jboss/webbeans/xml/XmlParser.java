@@ -206,8 +206,8 @@ public class XmlParser
    {
       beanElementCheckers.add(new JmsResourceElementChecker(new NotSimpleBeanChildrenChecker(environment, packagesMap)));
       beanElementCheckers.add(new ResourceElementChecker(new NotSimpleBeanChildrenChecker(environment, packagesMap)));
-      beanElementCheckers.add(new SessionBeanElementChecker(new NotSimpleBeanChildrenChecker(environment, packagesMap)));
-      beanElementCheckers.add(new SimpleBeanElementChecker(new SimpleBeanChildrenChecker(environment, packagesMap)));
+      beanElementCheckers.add(new SessionBeanElementChecker(new NotSimpleBeanChildrenChecker(environment, packagesMap), environment.getEjbDescriptors()));
+      beanElementCheckers.add(new SimpleBeanElementChecker(new SimpleBeanChildrenChecker(environment, packagesMap), environment.getEjbDescriptors()));
       
       boolean isValidType = false;
       for(BeanElementChecker beanElementChecker : beanElementCheckers)

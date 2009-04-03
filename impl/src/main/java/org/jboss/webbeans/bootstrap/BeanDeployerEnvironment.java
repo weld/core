@@ -12,6 +12,7 @@ import org.jboss.webbeans.bean.DisposalMethodBean;
 import org.jboss.webbeans.bean.NewBean;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedClass;
@@ -29,8 +30,9 @@ public class BeanDeployerEnvironment
    private final Set<ObserverImpl<?>> observers;
    private final Set<DisposalMethodBean<?>> allDisposalBeans;
    private final Set<DisposalMethodBean<?>> resolvedDisposalBeans;
+   private final EjbDescriptorCache ejbDescriptors;
 
-   public BeanDeployerEnvironment()
+   public BeanDeployerEnvironment(EjbDescriptorCache ejbDescriptors)
    {
       this.classBeanMap = new HashMap<AnnotatedClass<?>, AbstractClassBean<?>>();
       this.methodBeanMap = new HashMap<AnnotatedMethod<?>, ProducerMethodBean<?>>();
@@ -38,6 +40,7 @@ public class BeanDeployerEnvironment
       this.resolvedDisposalBeans = new HashSet<DisposalMethodBean<?>>();
       this.beans = new HashSet<RIBean<?>>();
       this.observers = new HashSet<ObserverImpl<?>>();
+      this.ejbDescriptors = ejbDescriptors;
    }
 
    public ProducerMethodBean<?> getProducerMethod(AnnotatedMethod<?> method)
@@ -112,6 +115,11 @@ public class BeanDeployerEnvironment
    public Set<DisposalMethodBean<?>> getResolvedDisposalBeans()
    {
       return resolvedDisposalBeans;
+   }
+   
+   public EjbDescriptorCache getEjbDescriptors() 
+   {
+	  return ejbDescriptors;
    }
 
 }

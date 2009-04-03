@@ -29,6 +29,7 @@ import org.jboss.webbeans.introspector.AnnotatedAnnotation;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotationStore;
+import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Strings;
 import org.jboss.webbeans.util.collections.ForwardingMap;
 
@@ -99,9 +100,9 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
    // Cached string representation
    private String toString;
    
-   public static <A extends Annotation> AnnotatedAnnotation<A> of(Class<A> annotationType)
+   public static <A extends Annotation> AnnotatedAnnotation<A> of(Class<A> annotationType, ClassTransformer classTransformer)
    {
-      return new AnnotatedAnnotationImpl<A>(annotationType);
+      return new AnnotatedAnnotationImpl<A>(annotationType, classTransformer);
    }
 
    /**
@@ -111,9 +112,9 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
     * 
     * @param annotationType The annotation type
     */
-   public AnnotatedAnnotationImpl(Class<T> annotationType)
+   protected AnnotatedAnnotationImpl(Class<T> annotationType, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(annotationType), annotationType, annotationType);
+      super(AnnotationStore.of(annotationType), annotationType, annotationType, classTransformer);
       this.clazz = annotationType;
       members = new HashSet<AnnotatedMethod<?>>();
       annotatedMembers = new AnnotatedMemberMap();

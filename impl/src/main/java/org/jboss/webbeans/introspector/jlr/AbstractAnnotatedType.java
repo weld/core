@@ -23,6 +23,7 @@ import java.lang.reflect.Type;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.AnnotationStore;
+import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -53,14 +54,14 @@ public abstract class AbstractAnnotatedType<T> extends AbstractAnnotatedItem<T, 
     * 
     * @param annotationMap The annotation map
     */
-   public AbstractAnnotatedType(AnnotationStore annotatedItemHelper, Class<T> rawType, Type type)
+   public AbstractAnnotatedType(AnnotationStore annotatedItemHelper, Class<T> rawType, Type type, ClassTransformer classTransformer)
    {
       super(annotatedItemHelper, rawType, type);
       this.name = rawType.getName();
       this._simpleName = rawType.getSimpleName();
       if (rawType.getSuperclass() != null)
       {
-         this.superclass = AnnotatedClassImpl.of(rawType.getSuperclass());
+         this.superclass = classTransformer.classForName(rawType.getSuperclass());
       }
       else
       {

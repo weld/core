@@ -23,6 +23,7 @@ import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.introspector.AnnotatedAnnotation;
 import org.jboss.webbeans.introspector.jlr.AnnotatedAnnotationImpl;
+import org.jboss.webbeans.resources.ClassTransformer;
 
 /**
  * Abstract representation of an annotation model
@@ -41,9 +42,9 @@ public abstract class AnnotationModel<T extends Annotation>
     * 
     * @param type The annotation type
     */
-   public AnnotationModel(Class<T> type)
+   public AnnotationModel(Class<T> type, ClassTransformer transformer)
    {
-      this.annotatedAnnotation = new AnnotatedAnnotationImpl<T>(type);
+      this.annotatedAnnotation = transformer.classForName(type);
       init();
    }
 

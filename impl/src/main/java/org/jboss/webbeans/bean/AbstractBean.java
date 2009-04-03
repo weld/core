@@ -144,7 +144,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class), manager);
       if (isSpecializing())
       {
-         preSpecialize();
+         preSpecialize(environment);
          specialize(environment);
          postSpecialize();
       }
@@ -348,7 +348,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       manager.getSpecializedBeans().put(getSpecializedBean(), this);
    }
 
-   protected void preSpecialize()
+   protected void preSpecialize(BeanDeployerEnvironment environment)
    {
 
    }

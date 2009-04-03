@@ -21,6 +21,7 @@ import java.lang.annotation.Annotation;
 import java.util.concurrent.Callable;
 
 import org.jboss.webbeans.bootstrap.api.Service;
+import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.collections.ConcurrentCache;
 
 /**
@@ -38,6 +39,13 @@ public class MetaDataCache implements Service
    private ConcurrentCache<Class<? extends Annotation>, ScopeModel<?>> scopes = new ConcurrentCache<Class<? extends Annotation>, ScopeModel<?>>();
    // The binding type models
    private ConcurrentCache<Class<? extends Annotation>, BindingTypeModel<?>> bindingTypes = new ConcurrentCache<Class<? extends Annotation>, BindingTypeModel<?>>();
+   
+   private final ClassTransformer classTransformer;
+
+   public MetaDataCache(ClassTransformer classTransformer)
+   {
+      this.classTransformer = classTransformer;
+   }
 
    /**
     * Gets a stereotype model
@@ -55,7 +63,7 @@ public class MetaDataCache implements Service
 
          public StereotypeModel<T> call() throws Exception
          {
-            return new StereotypeModel<T>(stereotype);
+            return new StereotypeModel<T>(stereotype, classTransformer);
          }
       });
    }
@@ -76,7 +84,7 @@ public class MetaDataCache implements Service
 
          public ScopeModel<T> call() throws Exception
          {
-            return new ScopeModel<T>(scopeType);
+            return new ScopeModel<T>(scopeType, classTransformer);
          }
 
       });
@@ -98,7 +106,7 @@ public class MetaDataCache implements Service
 
          public BindingTypeModel<T> call() throws Exception
          {
-            return new BindingTypeModel<T>(bindingType);
+            return new BindingTypeModel<T>(bindingType, classTransformer);
          }
 
       });

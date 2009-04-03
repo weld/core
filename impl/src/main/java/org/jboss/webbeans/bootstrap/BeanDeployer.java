@@ -25,6 +25,7 @@ import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
+import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.event.ObserverFactory;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.introspector.AnnotatedClass;
@@ -37,6 +38,8 @@ import org.jboss.webbeans.jpa.spi.JpaServices;
 import org.jboss.webbeans.jsf.JSFApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.resources.ClassTransformer;
+import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.util.Reflections;
 
@@ -45,20 +48,23 @@ public class BeanDeployer
    
    private static final LogProvider log = Logging.getLogProvider(BeanDeployer.class);
    
-   private final BeanDeployerEnvironment beanDeployerEnvironment;
+   private final BeanDeployerEnvironment environment;
    private final Set<AnnotatedClass<?>> classes;
    private final RootManager manager;
+   private final ClassTransformer classTransformer;
    
-   public BeanDeployer(RootManager manager)
+   
+   public BeanDeployer(RootManager manager, EjbDescriptorCache ejbDescriptors)
    {
       this.manager = manager;
-      this.beanDeployerEnvironment = new BeanDeployerEnvironment();
+      this.environment = new BeanDeployerEnvironment(ejbDescriptors);
       this.classes = new HashSet<AnnotatedClass<?>>();
+      this.classTransformer = new ClassTransformer();
    }
    
    public <T> BeanDeployer addBean(RIBean<T> bean)
    {
-      this.beanDeployerEnvironment.addBean(bean);
+      this.environment.addBean(bean);
       return this;
    }
    
@@ -66,7 +72,7 @@ public class BeanDeployer
    {
       if (!clazz.isAnnotation() && !clazz.isEnum())
       {
-         classes.add(AnnotatedClassImpl.of(clazz));
+         classes.add(classTransformer.classForName(clazz));
       }
       return this;
    }
@@ -90,7 +96,7 @@ public class BeanDeployer
    {
       for (AnnotatedClass<?> clazz : classes)
       {
-         if (manager.getEjbDescriptorCache().containsKey(clazz.getRawType()))
+         if (environment.getEjbDescriptors().containsKey(clazz.getRawType()))
          {
             createEnterpriseBean(clazz);
          }
@@ -104,14 +110,14 @@ public class BeanDeployer
    
    public BeanDeployer deploy()
    {
-      Set<RIBean<?>> beans = beanDeployerEnvironment.getBeans();
+      Set<RIBean<?>> beans = environment.getBeans();
       for (RIBean<?> bean : beans)
       {
-         bean.initialize(beanDeployerEnvironment);
+         bean.initialize(environment);
          log.info("Bean: " + bean);
       }
       manager.setBeans(beans);
-      for (ObserverImpl<?> observer : beanDeployerEnvironment.getObservers())
+      for (ObserverImpl<?> observer : environment.getObservers())
       {
          observer.initialize();
          log.info("Observer : " + observer);
@@ -126,8 +132,8 @@ public class BeanDeployer
 
    
    private void checkDisposalMethods() {
-	      Set<DisposalMethodBean<?>> all = new HashSet<DisposalMethodBean<?>>(beanDeployerEnvironment.getAllDisposalBeans()); 
-	      Set<DisposalMethodBean<?>> resolved = new HashSet<DisposalMethodBean<?>>(beanDeployerEnvironment.getResolvedDisposalBeans());
+	      Set<DisposalMethodBean<?>> all = new HashSet<DisposalMethodBean<?>>(environment.getAllDisposalBeans()); 
+	      Set<DisposalMethodBean<?>> resolved = new HashSet<DisposalMethodBean<?>>(environment.getResolvedDisposalBeans());
 	      if(all.size()>0 && !resolved.containsAll(all)) {
 	         StringBuffer buff = new StringBuffer();
 	         buff.append("The following Disposal methods where not resolved\n");
@@ -141,7 +147,7 @@ public class BeanDeployer
    
    public BeanDeployerEnvironment getBeanDeployerEnvironment()
    {
-      return beanDeployerEnvironment;
+      return environment;
    }
    
    /**
@@ -186,7 +192,7 @@ public class BeanDeployer
       for (AnnotatedMethod<?> method : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Disposes.class))
       {
          DisposalMethodBean<?> disposalBean = DisposalMethodBean.of(manager, method, declaringBean);
-         beanDeployerEnvironment.addAllDisposalBean(disposalBean);
+         environment.addAllDisposalBean(disposalBean);
          manager.getResolver().addInjectionPoints(disposalBean.getInjectionPoints());
          manager.addBean(disposalBean);
       }
@@ -247,7 +253,7 @@ public class BeanDeployer
    private void createObserverMethod(AbstractClassBean<?> declaringBean, AnnotatedMethod<?> method)
    {
       ObserverImpl<?> observer = ObserverFactory.create(method, declaringBean, manager);
-      beanDeployerEnvironment.getObservers().add(observer);
+      environment.getObservers().add(observer);
    }
    
    private <T> void createSimpleBean(AnnotatedClass<T> annotatedClass)
@@ -260,9 +266,9 @@ public class BeanDeployer
    private <T> void createEnterpriseBean(AnnotatedClass<T> annotatedClass)
    {
       // TODO Don't create enterprise bean if it has no local interfaces!
-      EnterpriseBean<T> bean = EnterpriseBean.of(annotatedClass, manager);
+      EnterpriseBean<T> bean = EnterpriseBean.of(annotatedClass, manager, environment);
       createBean(bean, annotatedClass);
-      addBean(NewEnterpriseBean.of(annotatedClass, manager));
+      addBean(NewEnterpriseBean.of(annotatedClass, manager, environment));
    }
    
    /**

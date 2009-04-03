@@ -37,6 +37,7 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.ConstructorSignature;
 import org.jboss.webbeans.introspector.MethodSignature;
+import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
@@ -262,14 +263,14 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    private final boolean _enum;
 
    
-   public static <T> AnnotatedClass<T> of(Class<T> clazz)
+   public static <T> AnnotatedClass<T> of(Class<T> clazz, ClassTransformer classTransformer)
    {
-      return new AnnotatedClassImpl<T>(clazz, clazz, clazz.getAnnotations(), clazz.getDeclaredAnnotations());
+      return new AnnotatedClassImpl<T>(clazz, clazz, clazz.getAnnotations(), clazz.getDeclaredAnnotations(), classTransformer);
    }
 
-   private AnnotatedClassImpl(Class<T> rawType, Type type, Annotation[] annotations, Annotation[] declaredAnnotations)
+   private AnnotatedClassImpl(Class<T> rawType, Type type, Annotation[] annotations, Annotation[] declaredAnnotations, ClassTransformer classTransformer)
    {
-      super(AnnotationStore.of(annotations, declaredAnnotations), rawType, type);
+      super(AnnotationStore.of(annotations, declaredAnnotations), rawType, type, classTransformer);
       
       this.fields = new HashSet<AnnotatedField<?>>();
       this.annotatedFields = new AnnotatedFieldMap();

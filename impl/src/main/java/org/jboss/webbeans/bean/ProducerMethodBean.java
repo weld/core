@@ -248,7 +248,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    }
 
    @Override
-   protected void preSpecialize()
+   protected void preSpecialize(BeanDeployerEnvironment environment)
    {
       if (declaringBean.getAnnotatedItem().getSuperclass().getDeclaredMethod(getAnnotatedItem().getAnnotatedMethod()) == null)
       {

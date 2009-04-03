@@ -21,6 +21,7 @@ import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Classes;
 import org.jboss.testharness.impl.packaging.Resource;
 import org.jboss.testharness.impl.packaging.Resources;
+import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.mock.MockXmlEnvironment;
@@ -44,7 +45,7 @@ public class XmlParserImplTest extends AbstractWebBeansTest
    //@Test
    public void testParse()
    {
-      XmlEnvironment parserEnv = new MockXmlEnvironment(getResources("beans.xml"));
+      XmlEnvironment parserEnv = new MockXmlEnvironment(getResources("beans.xml"), new EjbDescriptorCache());
       AnnotatedClass<?> aClass = parserEnv.loadClass("org.jboss.webbeans.test.unit.xml.beans.Order", Order.class);
 
       Set<URL> xmls = new HashSet<URL>();

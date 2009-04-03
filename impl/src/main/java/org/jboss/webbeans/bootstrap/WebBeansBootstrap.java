@@ -47,6 +47,7 @@ import org.jboss.webbeans.conversation.JavaSEConversationTerminator;
 import org.jboss.webbeans.conversation.NumericConversationIdGenerator;
 import org.jboss.webbeans.conversation.ServletConversationManager;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
+import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.jsf.JSFApiAbstraction;
@@ -55,6 +56,7 @@ import org.jboss.webbeans.literal.InitializedLiteral;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.MetaDataCache;
+import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.resources.DefaultNamingContext;
 import org.jboss.webbeans.resources.DefaultResourceLoader;
 import org.jboss.webbeans.resources.spi.NamingContext;
@@ -120,7 +122,12 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       getServices().add(EJBApiAbstraction.class, new EJBApiAbstraction(resourceLoader));
       getServices().add(JSFApiAbstraction.class, new JSFApiAbstraction(resourceLoader));
       getServices().add(ServletApiAbstraction.class, new ServletApiAbstraction(resourceLoader));
-      getServices().add(MetaDataCache.class, new MetaDataCache());
+      // Temporary workaround to provide context for building annotated class
+      // TODO expose AnnotatedClass on SPI and allow container to provide impl of this via ResourceLoader
+      getServices().add(ClassTransformer.class, new ClassTransformer());
+      getServices().add(MetaDataCache.class, new MetaDataCache(getServices().get(ClassTransformer.class)));
+      
+      
    }
    
    public RootManager getManager()
@@ -134,9 +141,9 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
     * 
     * @param classes The classes to register as Web Beans
     */
-   protected void registerBeans(Iterable<Class<?>> classes, Collection<AnnotatedClass<?>> xmlClasses)
+   protected void registerBeans(Iterable<Class<?>> classes, Collection<AnnotatedClass<?>> xmlClasses, EjbDescriptorCache ejbDescriptors)
    {
-      BeanDeployer beanDeployer = new BeanDeployer(manager);
+      BeanDeployer beanDeployer = new BeanDeployer(manager, ejbDescriptors);
       beanDeployer.addClasses(classes);
       beanDeployer.addClasses(xmlClasses);
       beanDeployer.addBean(ManagerBean.of(manager));
@@ -170,22 +177,25 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          beginApplication(getApplicationContext());
          BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
          beginDeploy(requestBeanStore);
+         EjbDescriptorCache ejbDescriptors = new EjbDescriptorCache();
          if (getServices().contains(EjbServices.class))
          {
             // Must populate EJB cache first, as we need it to detect whether a
             // bean is an EJB!
-            manager.getEjbDescriptorCache().addAll(getServices().get(EjbServices.class).discoverEjbs());
+            ejbDescriptors.addAll(getServices().get(EjbServices.class).discoverEjbs());
          }
-         XmlEnvironment xmlEnvironmentImpl = new XmlEnvironment(getServices());
+         
+         XmlEnvironment xmlEnvironmentImpl = new XmlEnvironment(getServices(), ejbDescriptors);
          XmlParser parser = new XmlParser(xmlEnvironmentImpl);
          parser.parse();
+          
          List<Class<? extends Annotation>> enabledDeploymentTypes = xmlEnvironmentImpl.getEnabledDeploymentTypes();
          if (enabledDeploymentTypes.size() > 0)
          {
             manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
          }
          log.info("Deployment types: " + manager.getEnabledDeploymentTypes());
-         registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses(), xmlEnvironmentImpl.getClasses());
+         registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses(), xmlEnvironmentImpl.getClasses(), ejbDescriptors);
          manager.fireEvent(manager, new InitializedLiteral());
          log.info("Web Beans initialized. Validating beans.");
          manager.getResolver().resolveInjectionPoints();

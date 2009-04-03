@@ -21,6 +21,8 @@ import java.lang.annotation.Annotation;
 
 import javax.context.ScopeType;
 
+import org.jboss.webbeans.resources.ClassTransformer;
+
 /**
  * 
  * Model of a scope
@@ -35,9 +37,9 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
     * 
     * @param scope The scope type
     */
-   public ScopeModel(Class<T> scope)
+   public ScopeModel(Class<T> scope, ClassTransformer classTransformer)
    {
-      super(scope);
+      super(scope, classTransformer);
    }
 
    /**
