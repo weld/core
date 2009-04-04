@@ -30,7 +30,7 @@ import java.util.concurrent.Callable;
 import javax.inject.TypeLiteral;
 import javax.inject.manager.Bean;
 
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.standard.EventBean;
 import org.jboss.webbeans.bean.standard.InstanceBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -59,25 +59,23 @@ public class Resolver
    // The resolved names
    private ConcurrentCache<String, Set<Bean<?>>> resolvedNames;
    // The Web Beans manager
-   private RootManager manager;
+   private final ManagerImpl manager;
    private final Set<AnnotatedItemTransformer> transformers;
 
    /**
     * Constructor
     * 
-    * @param manager The Web Beans manager
     */
-   public Resolver(RootManager manager)
+   public Resolver(ManagerImpl manager)
    {
+      this.manager = manager;
       this.injectionPoints = new HashSet<AnnotatedItem<?, ?>>();
       this.resolvedInjectionPoints = new ConcurrentCache<ResolvableAnnotatedItem<?, ?>, Set<Bean<?>>>();
       this.resolvedNames = new ConcurrentCache<String, Set<Bean<?>>>();
       this.transformers = new HashSet<AnnotatedItemTransformer>();
       transformers.add(EventBean.TRANSFORMER);
       transformers.add(InstanceBean.TRANSFORMER);
-      this.manager = manager;
    }
-
    /**
     * Add multiple injection points for later resolving using
     * {@link #registerInjectionPoint(AnnotatedItem)}. Useful during bootstrap.

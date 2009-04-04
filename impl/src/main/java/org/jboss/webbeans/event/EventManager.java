@@ -28,7 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.event.Observer;
 
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
@@ -126,13 +126,13 @@ public class EventManager
 
    // The map of registered observers for a give
    private final RegisteredObserversMap registeredObservers;
-   private final RootManager manager;
+   private final ManagerImpl manager;
 
 
    /**
     * Initializes a new instance of the EventManager.
     */
-   public EventManager(RootManager manager)
+   public EventManager(ManagerImpl manager)
    {
       registeredObservers = new RegisteredObserversMap();
       this.manager = manager;

@@ -63,9 +63,9 @@ import org.jboss.webbeans.util.Reflections;
 public class BeanValidator
 {
 
-   private final RootManager manager;
+   private final ManagerImpl manager;
 
-   public BeanValidator(RootManager manager)
+   public BeanValidator(ManagerImpl manager)
    {
       this.manager = manager;
    }

@@ -11,7 +11,7 @@ import javax.event.Fires;
 import javax.inject.Obtains;
 import javax.inject.TypeLiteral;
 
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.injection.resolution.AnnotatedItemTransformer;
 import org.jboss.webbeans.literal.FiresLiteral;
@@ -27,12 +27,12 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
    private static final Set<Class<? extends Annotation>> FILTERED_ANNOTATION_TYPES = new HashSet<Class<? extends Annotation>>(Arrays.asList(Obtains.class));
    
    
-   public static AbstractFacadeBean<Event<?>> of(RootManager manager)
+   public static AbstractFacadeBean<Event<?>> of(ManagerImpl manager)
    {
       return new EventBean(manager);
    }
    
-   protected EventBean(RootManager manager)
+   protected EventBean(ManagerImpl manager)
    {
       super(manager);
    }

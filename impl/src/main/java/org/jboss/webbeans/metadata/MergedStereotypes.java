@@ -21,7 +21,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotationStore.AnnotationMap;
 
 /**
@@ -42,14 +42,14 @@ public class MergedStereotypes<T, E>
    // The supported scopes
    private final Set<Class<? extends Annotation>> supportedScopes;
    
-   private final RootManager manager;
+   private final ManagerImpl manager;
    
    /**
     * Constructor
     * 
     * @param stereotypeAnnotations The stereotypes to merge
     */
-   public MergedStereotypes(Set<Annotation> stereotypeAnnotations, RootManager manager)
+   public MergedStereotypes(Set<Annotation> stereotypeAnnotations, ManagerImpl manager)
    {
       this.possibleDeploymentTypes = new AnnotationMap();
       this.possibleScopeTypes = new HashSet<Annotation>();

@@ -2,6 +2,7 @@ package org.jboss.webbeans.el;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * A namespace for bean names
@@ -13,12 +14,37 @@ public class Namespace
 {
    private final String qualifiedName;
    private final String name;
-   private final Map<String, Namespace> children = new HashMap<String, Namespace>();
+   private final Map<String, Namespace> children;
    
-   public Namespace(String name, String qualifiedName) 
+   /**
+    * Create a new namespace hierarchy, creating copies of all children as
+    * children of this node
+    *
+    * @param namespace
+    */
+   public Namespace(Namespace namespace)
+   {
+      this(namespace.getName(), namespace.getQualifiedName());
+      for (Entry<String, Namespace> entry : namespace.getChildren().entrySet())
+      {
+         children.put(entry.getKey(), new Namespace(entry.getValue()));
+      }
+   }
+   
+   /**
+    * Create a new, root, namespace
+    * 
+    */
+   public Namespace()
+   {
+      this(null, null);
+   }
+   
+   protected Namespace(String name, String qualifiedName) 
    {
       this.name = name;
       this.qualifiedName = qualifiedName;
+      this.children  = new HashMap<String, Namespace>();
    }
    
    public Namespace putIfAbsent(String key)
@@ -45,6 +71,16 @@ public class Namespace
    public String getQualifiedName()
    {
       return qualifiedName;
+   }
+   
+   protected Map<String, Namespace> getChildren()
+   {
+      return children;
+   }
+   
+   protected String getName()
+   {
+      return name;
    }
    
    public String qualifyName(String suffix)

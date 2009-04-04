@@ -9,7 +9,7 @@ import javax.inject.AnnotationLiteral;
 import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.mock.MockServletLifecycle;
@@ -22,7 +22,7 @@ public class ServletEnvironmentTest
 {
    
    private MockServletLifecycle lifecycle;
-   private RootManager manager;
+   private ManagerImpl manager;
    
    @BeforeClass
    public void beforeClass() throws Throwable

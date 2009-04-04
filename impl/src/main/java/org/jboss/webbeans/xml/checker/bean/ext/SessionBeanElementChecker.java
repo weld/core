@@ -2,7 +2,7 @@ package org.jboss.webbeans.xml.checker.bean.ext;
 
 import org.dom4j.Element;
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.xml.XmlConstants;

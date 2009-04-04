@@ -67,6 +67,7 @@ import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.ContextMap;
 import org.jboss.webbeans.context.CreationalContextImpl;
+import org.jboss.webbeans.el.Namespace;
 import org.jboss.webbeans.el.NamespaceManager;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.ObserverImpl;
@@ -92,10 +93,13 @@ import org.jboss.webbeans.util.Reflections;
  * @author Pete Muir
  * 
  */
-public class RootManager implements WebBeansManager, Serializable
+public class ManagerImpl implements WebBeansManager, Serializable
 {
 
-   private static final Log log = Logging.getLog(RootManager.class);
+   
+   
+   
+   private static final Log log = Logging.getLog(ManagerImpl.class);
 
    private static final long serialVersionUID = 3021562879133838561L;
 
@@ -118,7 +122,7 @@ public class RootManager implements WebBeansManager, Serializable
    private transient final Resolver resolver;
 
    // The registered contexts
-   private transient final ContextMap contextMap;
+   private transient final ContextMap contexts;
    
    // The client proxy pool
    private transient final ClientProxyProvider clientProxyProvider;
@@ -127,7 +131,7 @@ public class RootManager implements WebBeansManager, Serializable
    private transient List<Bean<?>> beans;
    
    // The registered beans, mapped by implementation class
-   private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeanMap;
+   private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans;
 
    private transient final Map<String, RIBean<?>> riBeans;
    
@@ -138,22 +142,88 @@ public class RootManager implements WebBeansManager, Serializable
    private final transient NonContextualInjector nonContextualInjector;
    
    private final transient NamespaceManager namespaceManager;
+   
+   /**
+    * Create a new, root, manager
+    * 
+    * @param serviceRegistry
+    * @return
+    */
+   public static ManagerImpl newRootManager(ServiceRegistry serviceRegistry)
+   {
+      List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
+      defaultEnabledDeploymentTypes.add(0, Standard.class);
+      defaultEnabledDeploymentTypes.add(1, Production.class);
+      
+      return new ManagerImpl(
+            serviceRegistry, 
+            new CopyOnWriteArrayList<Bean<?>>(), 
+            new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>(),
+            new ConcurrentHashMap<String, RIBean<?>>(), 
+            new ClientProxyProvider(), 
+            new ContextMap(), 
+            new HashMap<Bean<?>, Bean<?>>(),
+            new NamespaceManager(new Namespace()),
+            defaultEnabledDeploymentTypes);
+   }
+   
+   /**
+    * Create a new child manager
+    * 
+    * @param parentManager
+    * @return
+    */
+   public static ManagerImpl newChildManager(ManagerImpl parentManager)
+   {
+      List<Bean<?>> beans = new CopyOnWriteArrayList<Bean<?>>();
+      beans.addAll(parentManager.getBeans());
+      
+      NamespaceManager namespaceManager = new NamespaceManager(new Namespace(parentManager.getNamespaceManager().getRoot()));
+      
+      return new ManagerImpl(
+            parentManager.getServices(),
+            beans, 
+            parentManager.getNewEnterpriseBeanMap(), 
+            parentManager.getRiBeans(), 
+            parentManager.getClientProxyProvider(),
+            parentManager.getContexts(),
+            parentManager.getSpecializedBeans(),
+            namespaceManager,
+            parentManager.getEnabledDeploymentTypes());
+   }
 
    /**
     * Create a new manager
     * 
     * @param ejbServices the ejbResolver to use
     */
-   public RootManager(ServiceRegistry simpleServiceRegistry)
+   private ManagerImpl(
+         ServiceRegistry serviceRegistry, 
+         List<Bean<?>> beans, 
+         Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, 
+         Map<String, RIBean<?>> riBeans,
+         ClientProxyProvider clientProxyProvider,
+         ContextMap contexts,
+         Map<Bean<?>, Bean<?>> specializedBeans,
+         NamespaceManager namespaceManager,
+         List<Class<? extends Annotation>> enabledDeploymentTypes
+         )
    {
-      this.services = simpleServiceRegistry;
-      this.beans = new CopyOnWriteArrayList<Bean<?>>();
-      this.newEnterpriseBeanMap = new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>();
-      this.riBeans = new ConcurrentHashMap<String, RIBean<?>>();
+      this.services = serviceRegistry;
+      this.beans = beans;
+      this.newEnterpriseBeans = newEnterpriseBeans;
+      this.riBeans = riBeans;
+      
+      this.clientProxyProvider = clientProxyProvider;
+      this.contexts = contexts;
+      this.specializedBeans = specializedBeans;
+      
+      this.namespaceManager = namespaceManager;
+      setEnabledDeploymentTypes(enabledDeploymentTypes);
+      
       this.resolver = new Resolver(this);
-      this.clientProxyProvider = new ClientProxyProvider();
-      this.contextMap = new ContextMap();
       this.eventManager = new EventManager(this);
+      this.nonContextualInjector = new NonContextualInjector(this);
       this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>()
       {
          @Override
@@ -162,13 +232,6 @@ public class RootManager implements WebBeansManager, Serializable
             return new Stack<InjectionPoint>();
          }
       };
-      this.specializedBeans = new HashMap<Bean<?>, Bean<?>>();
-      this.nonContextualInjector = new NonContextualInjector(this);
-      this.namespaceManager = new NamespaceManager();
-      List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
-      defaultEnabledDeploymentTypes.add(0, Standard.class);
-      defaultEnabledDeploymentTypes.add(1, Production.class);
-      setEnabledDeploymentTypes(defaultEnabledDeploymentTypes);
    }
 
    /**
@@ -400,7 +463,7 @@ public class RootManager implements WebBeansManager, Serializable
          {
             if (bean instanceof NewEnterpriseBean)
             {
-               newEnterpriseBeanMap.put(bean.getType(), (EnterpriseBean<?>) bean);
+               newEnterpriseBeans.put(bean.getType(), (EnterpriseBean<?>) bean);
             }
             riBeans.put(bean.getId(), bean);
             namespaceManager.register(bean);
@@ -416,7 +479,7 @@ public class RootManager implements WebBeansManager, Serializable
     */
    public Map<Class<?>, EnterpriseBean<?>> getNewEnterpriseBeanMap()
    {
-      return newEnterpriseBeanMap;
+      return newEnterpriseBeans;
    }
 
    /**
@@ -444,7 +507,7 @@ public class RootManager implements WebBeansManager, Serializable
     */
    public Manager addContext(Context context)
    {
-      contextMap.add(context);
+      contexts.add(context);
       return this;
    }
 
@@ -559,7 +622,7 @@ public class RootManager implements WebBeansManager, Serializable
    public Context getContext(Class<? extends Annotation> scopeType)
    {
       List<Context> activeContexts = new ArrayList<Context>();
-      for (Context context : contextMap.getContext(scopeType))
+      for (Context context : contexts.getContext(scopeType))
       {
          if (context.isActive())
          {
@@ -585,7 +648,7 @@ public class RootManager implements WebBeansManager, Serializable
     */
    public Context getBuiltInContext(Class<? extends Annotation> scopeType)
    {
-      return contextMap.getBuiltInContext(scopeType);
+      return contexts.getBuiltInContext(scopeType);
    }
 
    /**
@@ -890,7 +953,7 @@ public class RootManager implements WebBeansManager, Serializable
       StringBuilder buffer = new StringBuilder();
       buffer.append("Manager\n");
       buffer.append("Enabled deployment types: " + getEnabledDeploymentTypes() + "\n");
-      buffer.append("Registered contexts: " + contextMap.keySet() + "\n");
+      buffer.append("Registered contexts: " + contexts.keySet() + "\n");
       buffer.append("Registered beans: " + getBeans().size() + "\n");
       buffer.append("Specialized beans: " + specializedBeans.size() + "\n");
       return buffer.toString();
@@ -903,7 +966,7 @@ public class RootManager implements WebBeansManager, Serializable
 
    public Manager createActivity()
    {
-      return new ChildManager(this);
+      return newChildManager(this);
    }
 
    public Manager setCurrent(Class<? extends Annotation> scopeType)
@@ -968,7 +1031,7 @@ public class RootManager implements WebBeansManager, Serializable
       ApplicationContext.INSTANCE.destroy();
       ApplicationContext.INSTANCE.setActive(false);
       ApplicationContext.INSTANCE.setBeanStore(null);
-      getServices().get(NamingContext.class).unbind(RootManager.JNDI_KEY);
+      getServices().get(NamingContext.class).unbind(ManagerImpl.JNDI_KEY);
    }
 
    /**
@@ -997,6 +1060,16 @@ public class RootManager implements WebBeansManager, Serializable
          // Preserve interrupt status
          Thread.currentThread().interrupt();
       }
+   }
+   
+   protected ClientProxyProvider getClientProxyProvider()
+   {
+      return clientProxyProvider;
+   }
+   
+   protected ContextMap getContexts()
+   {
+      return contexts;
    }
 
 }

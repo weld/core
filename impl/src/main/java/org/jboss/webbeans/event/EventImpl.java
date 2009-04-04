@@ -25,7 +25,7 @@ import javax.event.Event;
 import javax.event.Observer;
 
 import org.jboss.webbeans.FacadeImpl;
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.util.Strings;
 
 /**
@@ -41,7 +41,7 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>, Serializabl
    
    private static final long serialVersionUID = 8130060821283091287L;
    
-   public static <E> Event<E> of(Class<E> eventType, RootManager manager, Set<Annotation> bindings)
+   public static <E> Event<E> of(Class<E> eventType, ManagerImpl manager, Set<Annotation> bindings)
    {
       return new EventImpl<E>(eventType, manager, bindings);
    }
@@ -54,7 +54,7 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>, Serializabl
     * @param manager The Web Beans manager
     * @param bindings The binding types
     */
-   public EventImpl(Class<T> eventType, RootManager manager, Set<Annotation> bindings)
+   public EventImpl(Class<T> eventType, ManagerImpl manager, Set<Annotation> bindings)
    {
       super(eventType, manager, bindings);
    }

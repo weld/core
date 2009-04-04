@@ -14,7 +14,7 @@ import javax.inject.Produces;
 import javax.inject.Realizes;
 import javax.inject.UnsatisfiedDependencyException;
 
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.DisposalMethodBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
@@ -50,11 +50,11 @@ public class BeanDeployer
    
    private final BeanDeployerEnvironment environment;
    private final Set<AnnotatedClass<?>> classes;
-   private final RootManager manager;
+   private final ManagerImpl manager;
    private final ClassTransformer classTransformer;
    
    
-   public BeanDeployer(RootManager manager, EjbDescriptorCache ejbDescriptors)
+   public BeanDeployer(ManagerImpl manager, EjbDescriptorCache ejbDescriptors)
    {
       this.manager = manager;
       this.environment = new BeanDeployerEnvironment(ejbDescriptors);

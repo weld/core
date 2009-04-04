@@ -9,13 +9,13 @@ import java.util.Set;
 import javax.context.CreationalContext;
 import javax.inject.manager.InjectionPoint;
 
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
 
 public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
 {
 
-   protected AbstractFacadeBean(RootManager manager)
+   protected AbstractFacadeBean(ManagerImpl manager)
    {
       super(manager);
    }

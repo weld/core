@@ -17,7 +17,7 @@ import javax.inject.Produces;
 import javax.inject.manager.Bean;
 import javax.inject.manager.InjectionPoint;
 
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
@@ -29,7 +29,7 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
 public class DisposalMethodBean<T> extends AbstractBean<T, Method>
 {
 
-   protected DisposalMethodBean(RootManager manager, AnnotatedMethod<T> disposalMethod, Bean<?> declaringBean)
+   protected DisposalMethodBean(ManagerImpl manager, AnnotatedMethod<T> disposalMethod, Bean<?> declaringBean)
    {
       super(manager);
       this.disposalMethod = disposalMethod;
@@ -62,7 +62,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       this.type = (Class<T>) disposalMethod.getAnnotatedParameters(Disposes.class).get(0).getRawType();
    }
 
-   public static <T> DisposalMethodBean<T> of(RootManager manager, AnnotatedMethod<T> disposalMethod, Bean<?> declaringBean)
+   public static <T> DisposalMethodBean<T> of(ManagerImpl manager, AnnotatedMethod<T> disposalMethod, Bean<?> declaringBean)
    {
       return new DisposalMethodBean<T>(manager, disposalMethod, declaringBean);
    }

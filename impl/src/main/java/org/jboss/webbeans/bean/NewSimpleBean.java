@@ -25,7 +25,7 @@ import java.util.Set;
 import javax.context.Dependent;
 import javax.inject.Standard;
 
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.literal.NewLiteral;
 
@@ -45,7 +45,7 @@ public class NewSimpleBean<T> extends SimpleBean<T> implements NewBean
     * @param manager The Web Beans manager
     * @return a new NewSimpleBean instance
     */
-   public static <T> NewSimpleBean<T> of(AnnotatedClass<T> clazz, RootManager manager)
+   public static <T> NewSimpleBean<T> of(AnnotatedClass<T> clazz, ManagerImpl manager)
    {
       return new NewSimpleBean<T>(clazz, manager);
    }
@@ -56,7 +56,7 @@ public class NewSimpleBean<T> extends SimpleBean<T> implements NewBean
     * @param type An annotated class
     * @param manager The Web Beans manager
     */
-   protected NewSimpleBean(AnnotatedClass<T> type, RootManager manager)
+   protected NewSimpleBean(AnnotatedClass<T> type, ManagerImpl manager)
    {
       super(type, manager);
    }

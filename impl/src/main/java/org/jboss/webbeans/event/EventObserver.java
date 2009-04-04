@@ -26,7 +26,7 @@ import javax.event.Observer;
 import javax.inject.Current;
 import javax.inject.DuplicateBindingTypeException;
 
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
@@ -50,7 +50,7 @@ public class EventObserver<T>
    private final Type eventType;
    private final List<Annotation> eventBindings;
    private final Observer<T> observer;
-   private final RootManager manager;
+   private final ManagerImpl manager;
 
    /**
     * Constructs a new wrapper for an observer.
@@ -59,7 +59,7 @@ public class EventObserver<T>
     * @param eventType The class of event being observed
     * @param eventBindings The array of annotation event bindings, if any
     */
-   public EventObserver(final Observer<T> observer, final Type eventType, RootManager manager, final Annotation... eventBindings)
+   public EventObserver(final Observer<T> observer, final Type eventType, ManagerImpl manager, final Annotation... eventBindings)
    {
       this.observer = observer;
       this.eventType = eventType;

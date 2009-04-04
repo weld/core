@@ -25,7 +25,7 @@ import javax.inject.ExecutionException;
 
 import org.jboss.webbeans.BeanValidator;
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.standard.EventBean;
 import org.jboss.webbeans.bean.standard.InjectionPointBean;
 import org.jboss.webbeans.bean.standard.InstanceBean;
@@ -80,7 +80,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    private static Log log = Logging.getLog(WebBeansBootstrap.class);
 
    // The Web Beans manager
-   private RootManager manager;
+   private ManagerImpl manager;
    public WebBeansBootstrap()
    {
       // initialize default services
@@ -100,17 +100,17 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          log.info("EJB services not available. Session beans will be simple beans, injection into non-contextual EJBs, injection of @Resource, @PersistenceContext and @EJB in simple beans, injection of Java EE resources and JMS resources will not be available.");
       }
       addImplementationServices();
-      this.manager = new RootManager(ServiceRegistries.unmodifiableServiceRegistry(getServices()));
+      this.manager = ManagerImpl.newRootManager(ServiceRegistries.unmodifiableServiceRegistry(getServices()));
       try
       {
-         getServices().get(NamingContext.class).unbind(RootManager.JNDI_KEY);
+         getServices().get(NamingContext.class).unbind(ManagerImpl.JNDI_KEY);
       }
       catch (ExecutionException e)
       {
       }
       finally
       {
-         getServices().get(NamingContext.class).bind(RootManager.JNDI_KEY, getManager());
+         getServices().get(NamingContext.class).bind(ManagerImpl.JNDI_KEY, getManager());
       }
       CurrentManager.setRootManager(manager);
       initializeContexts();
@@ -130,7 +130,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       
    }
    
-   public RootManager getManager()
+   public ManagerImpl getManager()
    {
       return manager;
    }

@@ -34,7 +34,7 @@ import javax.inject.Specializes;
 import javax.inject.Standard;
 import javax.inject.manager.Bean;
 
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.conversation.ConversationImpl;
@@ -62,7 +62,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
 {
 
    @SuppressWarnings("unchecked")
-   private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(Event.class, RootManager.class, ConversationImpl.class));
+   private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(Event.class, ManagerImpl.class, ConversationImpl.class));
 
    private boolean proxyable;
    
@@ -112,7 +112,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    // If the type a primitive?
    private boolean primitive;
    // The Web Beans manager
-   protected RootManager manager;
+   protected ManagerImpl manager;
 
    protected boolean _serializable;
    
@@ -128,7 +128,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @param manager The Web Beans manager
     */
-   public AbstractBean(RootManager manager)
+   public AbstractBean(ManagerImpl manager)
    {
       super(manager);
       this.manager = manager;

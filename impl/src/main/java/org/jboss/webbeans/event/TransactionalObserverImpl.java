@@ -29,7 +29,7 @@ import javax.inject.DefinitionException;
 import javax.inject.manager.Bean;
 import javax.transaction.Synchronization;
 
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 
@@ -73,7 +73,7 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
     * @param observerBean The bean declaring the observer method
     * @param manager The JCDI manager in use
     */
-   protected TransactionalObserverImpl(AnnotatedMethod<?> observer, Bean<?> observerBean, RootManager manager)
+   protected TransactionalObserverImpl(AnnotatedMethod<?> observer, Bean<?> observerBean, ManagerImpl manager)
    {
       super(observer, observerBean, manager);
    }

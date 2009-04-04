@@ -7,11 +7,11 @@ public class NamespaceManager
    
    private final Namespace root;
    
-   public NamespaceManager()
+   public NamespaceManager(Namespace root)
    {
-      root = new Namespace(null, null);
+      this.root = root;
    }
-   
+
    public void register(Bean<?> bean)
    {
       if (bean.getName() != null && bean.getName().indexOf('.') > 0)

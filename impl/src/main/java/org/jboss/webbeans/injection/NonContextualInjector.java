@@ -3,8 +3,7 @@ package org.jboss.webbeans.injection;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import org.jboss.webbeans.RootManager;
-import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.collections.ConcurrentCache;
@@ -13,12 +12,12 @@ public class NonContextualInjector
 {
    
    private final ConcurrentCache<Class<?>, Set<FieldInjectionPoint<?>>> instances;
-   private final RootManager manager;
+   private final ManagerImpl manager;
 
-   public NonContextualInjector(RootManager manager)
+   public NonContextualInjector(ManagerImpl manager)
    {
-      this.manager = manager;
       this.instances = new ConcurrentCache<Class<?>, Set<FieldInjectionPoint<?>>>();
+      this.manager = manager;
    }   
    
    public void inject(final Object instance)

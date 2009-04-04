@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.context.Dependent;
 import javax.inject.manager.Bean;
 
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 
@@ -38,9 +38,9 @@ public abstract class RIBean<T> extends Bean<T>
    
    private static final ConcurrentMap<String, AtomicInteger> ids = new ConcurrentHashMap<String, AtomicInteger>();
    
-   private final RootManager manager;
+   private final ManagerImpl manager;
 
-   protected RIBean(RootManager manager)
+   protected RIBean(ManagerImpl manager)
    {
       super(manager);
       this.manager = manager;
@@ -54,7 +54,7 @@ public abstract class RIBean<T> extends Bean<T>
    }
 
    @Override
-   protected RootManager getManager()
+   protected ManagerImpl getManager()
    {
       return manager;
    }

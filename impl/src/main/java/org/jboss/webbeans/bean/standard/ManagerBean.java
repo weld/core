@@ -11,32 +11,32 @@ import java.util.Set;
 import javax.context.CreationalContext;
 import javax.inject.manager.Manager;
 
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 
-public class ManagerBean extends AbstractStandardBean<RootManager>
+public class ManagerBean extends AbstractStandardBean<ManagerImpl>
 {
    
-   private static final Set<Type> TYPES = new HashSet<Type>(Arrays.asList(RootManager.class, Manager.class));
+   private static final Set<Type> TYPES = new HashSet<Type>(Arrays.asList(ManagerImpl.class, Manager.class));
    
-   public static final ManagerBean of(RootManager manager)
+   public static final ManagerBean of(ManagerImpl manager)
    {
       return new ManagerBean(manager);
    }
    
-   protected ManagerBean(RootManager manager)
+   protected ManagerBean(ManagerImpl manager)
    {
       super(manager);
    }
 
-   public RootManager create(CreationalContext<RootManager> creationalContext)
+   public ManagerImpl create(CreationalContext<ManagerImpl> creationalContext)
    {
       return getManager();
    }
 
    @Override
-   public Class<RootManager> getType()
+   public Class<ManagerImpl> getType()
    {
-      return RootManager.class;
+      return ManagerImpl.class;
    }
 
    @Override
@@ -45,7 +45,7 @@ public class ManagerBean extends AbstractStandardBean<RootManager>
       return TYPES;
    }
 
-   public void destroy(RootManager instance)
+   public void destroy(ManagerImpl instance)
    {
       // No-op
    }

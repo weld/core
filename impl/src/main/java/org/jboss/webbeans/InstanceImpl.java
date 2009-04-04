@@ -35,7 +35,7 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
 {
    
 
-   public static <I> Instance<I> of(Class<I> clazz, RootManager manager, Set<Annotation> annotations)
+   public static <I> Instance<I> of(Class<I> clazz, ManagerImpl manager, Set<Annotation> annotations)
    {
       return new InstanceImpl<I>(clazz, manager, annotations);
    }
@@ -47,7 +47,7 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
     * @param manager The Web Beans manager
     * @param bindings The binding types
     */
-   private InstanceImpl(Class<T> type, RootManager manager, Set<Annotation> bindings)
+   private InstanceImpl(Class<T> type, ManagerImpl manager, Set<Annotation> bindings)
    {
       super(type, manager, bindings);
    }

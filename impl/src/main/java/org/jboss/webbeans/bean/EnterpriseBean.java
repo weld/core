@@ -36,7 +36,7 @@ import javax.inject.CreationException;
 import javax.inject.DefinitionException;
 import javax.interceptor.Interceptor;
 
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
@@ -79,7 +79,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * @param manager the current manager
     * @return An Enterprise Web Bean
     */
-   public static <T> EnterpriseBean<T> of(AnnotatedClass<T> clazz, RootManager manager, BeanDeployerEnvironment environment)
+   public static <T> EnterpriseBean<T> of(AnnotatedClass<T> clazz, ManagerImpl manager, BeanDeployerEnvironment environment)
    {
       return new EnterpriseBean<T>(clazz, manager, environment);
    }
@@ -90,7 +90,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   protected EnterpriseBean(AnnotatedClass<T> type, RootManager manager, BeanDeployerEnvironment environment)
+   protected EnterpriseBean(AnnotatedClass<T> type, ManagerImpl manager, BeanDeployerEnvironment environment)
    {
       super(type, manager);
       initType();

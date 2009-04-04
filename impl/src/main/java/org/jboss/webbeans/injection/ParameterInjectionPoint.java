@@ -23,7 +23,7 @@ import java.util.Set;
 import javax.context.CreationalContext;
 import javax.inject.manager.Bean;
 
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedParameter;
 
@@ -77,7 +77,7 @@ public class ParameterInjectionPoint<T> extends ForwardingAnnotatedParameter<T> 
       throw new UnsupportedOperationException();
    }
    
-   public T getValueToInject(RootManager manager, CreationalContext<?> creationalContext)
+   public T getValueToInject(ManagerImpl manager, CreationalContext<?> creationalContext)
    {
       return manager.<T>getInstanceToInject(this, creationalContext);
    }

@@ -11,7 +11,7 @@ import javax.inject.Obtains;
 import javax.inject.TypeLiteral;
 
 import org.jboss.webbeans.InstanceImpl;
-import org.jboss.webbeans.RootManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.injection.resolution.AnnotatedItemTransformer;
 import org.jboss.webbeans.literal.ObtainsLiteral;
 
@@ -26,12 +26,12 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    public static final AnnotatedItemTransformer TRANSFORMER = new FacadeBeanAnnotatedItemTransformer(TYPE, OBTAINS);
    
    
-   public static AbstractFacadeBean<Instance<?>> of(RootManager manager)
+   public static AbstractFacadeBean<Instance<?>> of(ManagerImpl manager)
    {
       return new InstanceBean(manager);
    }
    
-   protected InstanceBean(RootManager manager)
+   protected InstanceBean(ManagerImpl manager)
    {
       super(manager);
    }
