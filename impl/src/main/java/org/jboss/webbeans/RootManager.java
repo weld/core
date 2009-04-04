@@ -67,6 +67,7 @@ import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.ContextMap;
 import org.jboss.webbeans.context.CreationalContextImpl;
+import org.jboss.webbeans.el.NamespaceManager;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.NonContextualInjector;
@@ -135,6 +136,8 @@ public class RootManager implements WebBeansManager, Serializable
    private final transient Map<Bean<?>, Bean<?>> specializedBeans;
 
    private final transient NonContextualInjector nonContextualInjector;
+   
+   private final transient NamespaceManager namespaceManager;
 
    /**
     * Create a new manager
@@ -161,6 +164,7 @@ public class RootManager implements WebBeansManager, Serializable
       };
       this.specializedBeans = new HashMap<Bean<?>, Bean<?>>();
       this.nonContextualInjector = new NonContextualInjector(this);
+      this.namespaceManager = new NamespaceManager();
       List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       defaultEnabledDeploymentTypes.add(0, Standard.class);
       defaultEnabledDeploymentTypes.add(1, Production.class);
@@ -206,6 +210,7 @@ public class RootManager implements WebBeansManager, Serializable
       }
       resolver.clear();
       beans.add(bean);
+      namespaceManager.register(bean);
       return this;
    }
 
@@ -398,6 +403,7 @@ public class RootManager implements WebBeansManager, Serializable
                newEnterpriseBeanMap.put(bean.getType(), (EnterpriseBean<?>) bean);
             }
             riBeans.put(bean.getId(), bean);
+            namespaceManager.register(bean);
          }
          resolver.clear();
       }
@@ -866,6 +872,11 @@ public class RootManager implements WebBeansManager, Serializable
    public Resolver getResolver()
    {
       return resolver;
+   }
+   
+   public NamespaceManager getNamespaceManager()
+   {
+      return namespaceManager;
    }
 
    /**

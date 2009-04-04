@@ -11,29 +11,45 @@ import java.util.Map;
  */
 public class Namespace
 {
+   private final String qualifiedName;
+   private final String name;
+   private final Map<String, Namespace> children = new HashMap<String, Namespace>();
    
-   private String name;
-   private Map<String, Namespace> children = new HashMap<String, Namespace>();
-   
-   public Namespace(String name) 
+   public Namespace(String name, String qualifiedName) 
    {
       this.name = name;
+      this.qualifiedName = qualifiedName;
    }
    
-   public Namespace getChild(String key)
+   public Namespace putIfAbsent(String key)
    {
       Namespace result = children.get(key);
       if (result==null)
       {
-         result = new Namespace( getQualifiedName(key) + '.' );
-         children.put(name, result);
+         result = new Namespace( key, qualifyName(key) );
+         children.put(key, result);
       }
       return result;
    }
-
-   public String getQualifiedName(String key)
+   
+   public Namespace get(String key)
    {
-      return name==null ? key : name + key;
+      return children.get(key);
+   }
+   
+   public boolean contains(String key)
+   {
+      return children.containsKey(key);
+   }
+
+   public String getQualifiedName()
+   {
+      return qualifiedName;
+   }
+   
+   public String qualifyName(String suffix)
+   {
+      return qualifiedName == null ? suffix : qualifiedName + "." + suffix;
    }
    
    @Override
@@ -45,15 +61,14 @@ public class Namespace
    @Override
    public boolean equals(Object other)
    {
-      if ( !(other instanceof Namespace) )
+      if (other instanceof Namespace)
       {
-         return false;
+         Namespace that = (Namespace) other;
+         return this.getQualifiedName().equals(that.getQualifiedName());
       }
       else
       {
-         Namespace ns = (Namespace) other;
-         return this.name==ns.name || 
-               ( this.name!=null && this.name.equals(ns.name) );
+         return false;
       }
    }
    

@@ -22,6 +22,9 @@ import java.util.Iterator;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
+import javax.inject.ExecutionException;
+
+import org.jboss.webbeans.CurrentManager;
 
 /**
  * An EL-resolver against the named beans
@@ -30,9 +33,24 @@ import javax.el.ELResolver;
  */
 public class WebBeansELResolver extends ELResolver
 {
-
-   private static final Namespace ROOT = new Namespace(null);
    
+   private static final class ValueHolder<T>
+   {
+      
+      private T value;
+      
+      public T getValue()
+      {
+         return value;
+      }
+      
+      public void setValue(T value)
+      {
+         this.value = value;
+      }
+      
+   }
+      
    /**
     * @see javax.el.ELResolver#getCommonPropertyType(ELContext, Object)
     */
@@ -68,13 +86,59 @@ public class WebBeansELResolver extends ELResolver
    {
       if (property != null)
       {
+         String propertyString = property.toString();
+         Namespace namespace = null;
          if (base == null) 
          {
-            return new NamespacedResolver(context, ROOT, property.toString()).run().getValue();
+            if (CurrentManager.rootManager().getNamespaceManager().getRoot().contains(propertyString))
+            {
+               context.setPropertyResolved(true);
+               return CurrentManager.rootManager().getNamespaceManager().getRoot().get(propertyString);
+            }
          }
-         else if (base instanceof Namespace) 
+         else if (base instanceof Namespace)
          {
-            return new NamespacedResolver(context, (Namespace) base, property.toString()).run().getValue();
+            namespace = (Namespace) base;
+            // We're definitely the responsible party
+            context.setPropertyResolved(true);
+            if (namespace.contains(propertyString))
+            {
+               // There is a child namespace
+               return namespace.get(propertyString);
+            }
+         }
+         final String name;
+         if (namespace != null)
+         {
+            // Try looking in the manager for a bean
+            name = namespace.qualifyName(propertyString);
+         }
+         else
+         {
+            name = propertyString;
+         }
+         final ValueHolder<Object> holder = new ValueHolder<Object>();
+         try
+         {
+            new RunInDependentContext()
+            {
+
+               @Override
+               protected void execute() throws Exception
+               {
+                  holder.setValue(CurrentManager.rootManager().getInstanceByName(name));
+               }
+               
+            }.run();
+         }
+         catch (Exception e)
+         {
+            throw new ExecutionException("Error resolving property " + propertyString + " against base " + base, e);
+         }
+         if (holder.getValue() != null)
+         {
+            context.setPropertyResolved(true);
+            return holder.getValue();
          }
       }
       return null;

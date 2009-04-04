@@ -42,6 +42,16 @@
       </dependency>
       
       <dependency>
+         <groupId>javax.el</groupId>
+         <artifactId>el-api</artifactId>
+      </dependency>
+      
+          <dependency>
+         <groupId>javax.el</groupId>
+         <artifactId>el-ri</artifactId>
+      </dependency>
+      
+      <dependency>
          <groupId>org.jboss.ejb3</groupId>
          <artifactId>jboss-ejb3-api</artifactId>
          <optional>true</optional>
