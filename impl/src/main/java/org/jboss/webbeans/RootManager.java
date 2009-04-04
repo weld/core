@@ -67,20 +67,19 @@ import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.ContextMap;
 import org.jboss.webbeans.context.CreationalContextImpl;
-import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.NonContextualInjector;
 import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
 import org.jboss.webbeans.injection.resolution.Resolver;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.util.Beans;
+import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 
 /**
@@ -661,22 +660,26 @@ public class RootManager implements WebBeansManager, Serializable
             currentInjectionPoint.get().push(injectionPoint);
          }
          AnnotatedItem<T, ?> element = ResolvableAnnotatedClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]));
-         Bean<T> bean = getBeanByType(element, element.getBindingsAsArray());
+         Bean<T> resolvedBean = getBeanByType(element, element.getBindingsAsArray());
+         if (getServices().get(MetaDataCache.class).getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType()))
+         {
+            throw new UnproxyableDependencyException("Attempting to inject an unproxyable normal scoped bean " + resolvedBean + " into " + injectionPoint);
+         }
          if (creationalContext instanceof CreationalContextImpl)
          {
             CreationalContextImpl<?> ctx = (CreationalContextImpl<?>) creationalContext;
-            if (ctx.containsIncompleteInstance(bean))
+            if (ctx.containsIncompleteInstance(resolvedBean))
             {
-               return ctx.getIncompleteInstance(bean);
+               return ctx.getIncompleteInstance(resolvedBean);
             }
             else
             {
-               return getInstance(bean, ctx.getCreationalContext(bean));
+               return getInstance(resolvedBean, ctx.getCreationalContext(resolvedBean));
             }
          }
          else
          {
-            return getInstance(bean);
+            return getInstance(resolvedBean);
          }
       }
       finally

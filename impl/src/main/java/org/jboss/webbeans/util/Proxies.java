@@ -16,6 +16,8 @@
  */
 package org.jboss.webbeans.util;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Iterator;
@@ -195,25 +197,33 @@ public class Proxies
       {
          return true;
       }
-      else if (Reflections.getConstructor(clazz) == null)
-      {
-         return false;
-      }
-      else if (Reflections.isTypeOrAnyMethodFinal(clazz))
-      {
-         return false;
-      }
-      else if (Reflections.isPrimitive(clazz))
-      {
-         return false;
-      }
-      else if (Reflections.isArrayType(clazz))
-      {
-         return false;
-      }
       else
       {
-         return true;
+         Constructor<?> constructor = Reflections.getDeclaredConstructor(clazz);
+         if (constructor == null)
+         {
+            return false;
+         }
+         else if (Modifier.isPrivate(constructor.getModifiers()))
+         {
+            return false;
+         }
+         else if (Reflections.isTypeOrAnyMethodFinal(clazz))
+         {
+            return false;
+         }
+         else if (Reflections.isPrimitive(clazz))
+         {
+            return false;
+         }
+         else if (Reflections.isArrayType(clazz))
+         {
+            return false;
+         }
+         else
+         {
+            return true;
+         }
       }
    }
 

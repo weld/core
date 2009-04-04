@@ -336,7 +336,7 @@ public class Reflections
     * @param parameterTypes The parameter types
     * @return The matching constructor. Null is returned if none is found
     */
-   public static <T> Constructor<T> getConstructor(Class<T> clazz, Class<?>... parameterTypes)
+   public static <T> Constructor<T> getDeclaredConstructor(Class<T> clazz, Class<?>... parameterTypes)
    {
       try
       {
