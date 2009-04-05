@@ -20,8 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A concurrent multimap, in which the multi-values are stored with Set 
- * semantics for {@link #put(Object, Object)} operations
+ * A concurrent multimap, in which the multi-values are stored in a Set
  * 
  * @author Pete Muir
  *

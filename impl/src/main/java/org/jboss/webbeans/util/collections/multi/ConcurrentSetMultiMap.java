@@ -16,18 +16,17 @@
  */
 package org.jboss.webbeans.util.collections.multi;
 
+import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jboss.webbeans.util.collections.ConcurrentCollection;
-
 /**
- * A concurrent multimap, in which the multi-values are stored with Set 
- * semantics for {@link #put(Object, Object)} operations
+ * A concurrent multimap, in which the multi-values are stored in a concurrent 
+ * Set
  * 
  * @author Pete Muir
  *
  */
-public interface ConcurrentSetMultiMap<K, V> extends ConcurrentMap<K, ConcurrentCollection<V>>
+public interface ConcurrentSetMultiMap<K, V> extends ConcurrentMap<K, Set<V>>
 {
   
    /**

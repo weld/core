@@ -15,37 +15,38 @@ package org.jboss.webbeans.util.collections.multi;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.jboss.webbeans.util.collections.ConcurrentCollection;
-import org.jboss.webbeans.util.collections.ConcurrentList;
 import org.jboss.webbeans.util.collections.ForwardingConcurrentMap;
 
 /**
  * An concurrent multimap which is internally backed by a a ConcurrentHashMap 
- * and a CopyOnWriteArrayList
+ * and a CopyOnWriteArraySet
  * 
  * @author Pete Muir
  */
-public class ConcurrentSetHashMultiMap<K, V> extends ForwardingConcurrentMap<K, ConcurrentCollection<V>> implements ConcurrentSetMultiMap<K, V>
+public class ConcurrentSetHashMultiMap<K, V> extends ForwardingConcurrentMap<K, Set<V>> implements ConcurrentSetMultiMap<K, V>
 {
    
-   private final ConcurrentCollection<V> EMPTY_COLLECTION = ConcurrentList.emptyList();
+   private final Set<V> EMPTY_COLLECTION = Collections.emptySet();
 
    // The map delegate
-   private ConcurrentMap<K, ConcurrentCollection<V>> delegate;
+   private ConcurrentMap<K, Set<V>> delegate;
 
    /**
     * Constructor.
     */
    public ConcurrentSetHashMultiMap()
    {
-      delegate = new ConcurrentHashMap<K, ConcurrentCollection<V>>();
+      delegate = new ConcurrentHashMap<K, Set<V>>();
    }
 
    @Override
-   protected ConcurrentMap<K, ConcurrentCollection<V>> delegate()
+   protected ConcurrentMap<K, Set<V>> delegate()
    {
       return delegate;
    }
@@ -59,16 +60,16 @@ public class ConcurrentSetHashMultiMap<K, V> extends ForwardingConcurrentMap<K, 
     *         matches.
     */
    @Override
-   public ConcurrentCollection<V> get(Object key)
+   public Set<V> get(Object key)
    {
-      ConcurrentCollection<V> values = super.get(key);
+      Set<V> values = super.get(key);
       return values != null ? values : EMPTY_COLLECTION;
    }
 
    public void put(K key, V value)
    {
-      delegate().putIfAbsent(key, new ConcurrentList<V>());
-      get(key).addIfAbsent(value);
+      delegate().putIfAbsent(key, new CopyOnWriteArraySet<V>());
+      get(key).add(value);
    }
 
 }
