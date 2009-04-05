@@ -18,11 +18,12 @@
 package org.jboss.webbeans.metadata;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.introspector.AnnotationStore.AnnotationMap;
 
 /**
  * Meta model for the merged stereotype for a bean
@@ -32,7 +33,7 @@ import org.jboss.webbeans.introspector.AnnotationStore.AnnotationMap;
 public class MergedStereotypes<T, E>
 {
    // The possible deployment types
-   private final AnnotationMap possibleDeploymentTypes;
+   private final Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes;
    // The possible scope types
    private final Set<Annotation> possibleScopeTypes;
    // Is the bean name defaulted?
@@ -51,7 +52,7 @@ public class MergedStereotypes<T, E>
     */
    public MergedStereotypes(Set<Annotation> stereotypeAnnotations, ManagerImpl manager)
    {
-      this.possibleDeploymentTypes = new AnnotationMap();
+      this.possibleDeploymentTypes = new HashMap<Class<? extends Annotation>, Annotation>();
       this.possibleScopeTypes = new HashSet<Annotation>();
       this.requiredTypes = new HashSet<Class<?>>();
       this.supportedScopes = new HashSet<Class<? extends Annotation>>();
@@ -96,7 +97,7 @@ public class MergedStereotypes<T, E>
     * 
     * @return The deployment types
     */
-   public AnnotationMap getPossibleDeploymentTypes()
+   public Map<Class<? extends Annotation>, Annotation> getPossibleDeploymentTypes()
    {
       return possibleDeploymentTypes;
    }

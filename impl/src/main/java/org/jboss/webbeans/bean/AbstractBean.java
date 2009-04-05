@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Named;
@@ -42,7 +43,6 @@ import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.introspector.AnnotationStore.AnnotationMap;
 import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -79,7 +79,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * @param possibleDeploymentTypes The possible deployment types
     * @return The deployment type
     */
-   public static Class<? extends Annotation> getDeploymentType(List<Class<? extends Annotation>> enabledDeploymentTypes, AnnotationMap possibleDeploymentTypes)
+   public static Class<? extends Annotation> getDeploymentType(List<Class<? extends Annotation>> enabledDeploymentTypes, Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes)
    {
       for (int i = (enabledDeploymentTypes.size() - 1); i > 0; i--)
       {
@@ -199,7 +199,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
 
    protected void initDeploymentTypeFromStereotype()
    {
-      AnnotationMap possibleDeploymentTypes = getMergedStereotypes().getPossibleDeploymentTypes();
+      Map<Class<? extends Annotation>, Annotation> possibleDeploymentTypes = getMergedStereotypes().getPossibleDeploymentTypes();
       if (possibleDeploymentTypes.size() > 0)
       {
          this.deploymentType = getDeploymentType(manager.getEnabledDeploymentTypes(), possibleDeploymentTypes);
