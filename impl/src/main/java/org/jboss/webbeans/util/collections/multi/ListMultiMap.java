@@ -35,4 +35,12 @@ public interface ListMultiMap<K, V> extends Map<K, List<V>>
     */
    public void put(K key, V value);
    
+   /**
+    * Put all the data in the map into this map, copying each multi-value, not
+    * just attaching the existing multi-value
+    * 
+    * @param map the map to copy
+    */
+   public void deepPutAll(Map<? extends K, ? extends List<V>> map);
+   
 }

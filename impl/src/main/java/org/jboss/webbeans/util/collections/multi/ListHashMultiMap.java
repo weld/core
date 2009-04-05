@@ -50,6 +50,14 @@ public class ListHashMultiMap<K, V> extends ForwardingMap<K, List<V>> implements
    {
       return delegate;
    }
+   
+   public void deepPutAll(Map<? extends K, ? extends List<V>> map)
+   {
+      for (Entry<? extends K, ? extends List<V>> entry : map.entrySet())
+      {
+         put(entry.getKey(), new ArrayList<V>(entry.getValue()));
+      }
+   }
 
    /**
     * Gets the list of values for a given key

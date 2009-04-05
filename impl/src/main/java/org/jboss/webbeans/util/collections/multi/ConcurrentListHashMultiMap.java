@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans.util.collections.multi;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -48,6 +49,14 @@ public class ConcurrentListHashMultiMap<K, V> extends ForwardingConcurrentMap<K,
    protected ConcurrentMap<K, ConcurrentList<V>> delegate()
    {
       return delegate;
+   }
+   
+   public void deepPutAll(Map<? extends K, ? extends ConcurrentList<V>> map)
+   {
+      for (Entry<? extends K, ? extends ConcurrentList<V>> entry : map.entrySet())
+      {
+         put(entry.getKey(), new ConcurrentList<V>(entry.getValue()));
+      }
    }
 
    /**

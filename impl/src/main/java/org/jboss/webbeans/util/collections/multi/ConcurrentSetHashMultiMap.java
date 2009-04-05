@@ -16,6 +16,7 @@ package org.jboss.webbeans.util.collections.multi;
  * limitations under the License.
  */
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -43,6 +44,14 @@ public class ConcurrentSetHashMultiMap<K, V> extends ForwardingConcurrentMap<K, 
    public ConcurrentSetHashMultiMap()
    {
       delegate = new ConcurrentHashMap<K, Set<V>>();
+   }
+   
+   public void deepPutAll(Map<? extends K, ? extends Set<V>> map)
+   {
+      for (Entry<? extends K, ? extends Set<V>> entry : map.entrySet())
+      {
+         put(entry.getKey(), new CopyOnWriteArraySet<V>(entry.getValue()));
+      }
    }
 
    @Override

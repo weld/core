@@ -188,7 +188,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       beans.addAll(parentManager.getBeans());
       
       ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers = new ConcurrentSetHashMultiMap<Type, EventObserver<?>>();
-      registeredObservers.putAll(parentManager.getRegisteredObservers());
+      registeredObservers.deepPutAll(parentManager.getRegisteredObservers());
       Namespace rootNamespace = new Namespace(parentManager.getRootNamespace());
       
       return new ManagerImpl(

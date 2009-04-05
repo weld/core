@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans.util.collections.multi;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.webbeans.util.collections.ConcurrentList;
@@ -36,5 +37,13 @@ public interface ConcurrentListMultiMap<K, V> extends ConcurrentMap<K, Concurren
     * @param value the value to add
     */
    public void put(K key, V value);
+   
+   /**
+    * Put all the data in the map into this map, copying each multi-value, not
+    * just attaching the existing multi-value
+    * 
+    * @param map the map to copy
+    */
+   public void deepPutAll(Map<? extends K, ? extends ConcurrentList<V>> map);
    
 }

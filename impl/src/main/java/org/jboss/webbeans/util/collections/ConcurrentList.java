@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans.util.collections;
 
+import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -38,5 +39,22 @@ public class ConcurrentList<E> extends CopyOnWriteArrayList<E> implements Concur
    }
    
    private static final long serialVersionUID = -7489797765014324457L;
+
+   public ConcurrentList()
+   {
+      super();
+   }
+
+   public ConcurrentList(Collection<? extends E> collection)
+   {
+      super(collection);
+   }
+
+   public ConcurrentList(E[] array)
+   {
+      super(array);
+   }
+   
+   
    
 }
