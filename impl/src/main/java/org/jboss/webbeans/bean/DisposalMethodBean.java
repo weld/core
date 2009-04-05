@@ -14,7 +14,6 @@ import javax.inject.DefinitionException;
 import javax.inject.Disposes;
 import javax.inject.Initializer;
 import javax.inject.Produces;
-import javax.inject.manager.Bean;
 import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -22,7 +21,6 @@ import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
-import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 
@@ -38,8 +36,8 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       initInjectionPoints();
       initType();
       initTypes();
-      this.id = createId("DisposalMethod-" + declaringBean.getName() + "-"+ disposalMethod.getSignature().toString());
-      
+      this.id = createId("DisposalMethod-" + declaringBean.getName() + "-" + disposalMethod.getSignature().toString());
+
    }
 
    protected AbstractClassBean<?> declaringBean;
@@ -53,10 +51,11 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       this.type = (Class<T>) disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getRawType();
    }
 
-   public AnnotatedMethod<T> getAnnotatedItem() {
-	   return disposalMethodInjectionPoint;
+   public AnnotatedMethod<T> getAnnotatedItem()
+   {
+      return disposalMethodInjectionPoint;
    }
-   
+
    public static <T> DisposalMethodBean<T> of(ManagerImpl manager, AnnotatedMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
    {
       return new DisposalMethodBean<T>(manager, disposalMethod, declaringBean);
@@ -93,6 +92,20 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    public Class<? extends Annotation> getDeploymentType()
    {
       return declaringBean.getDeploymentType();
+   }
+
+   /**
+    * Initializes the API types
+    */
+   @Override
+   protected void initTypes()
+   {
+      Set<Type> types = new HashSet<Type>();
+      types = new HashSet<Type>();
+      types.addAll(disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getFlattenedTypeHierarchy());
+      types.add(getType());
+      types.add(Object.class);
+      super.types = types;
    }
 
    public Set<AnnotatedInjectionPoint<?, ?>> getInjectionPoints()
@@ -143,7 +156,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
 
    public void invokeDisposeMethod(Object instance)
    {
-	   
+
       List<Object> parameters = new LinkedList<Object>();
 
       parameters.add(instance);
@@ -158,11 +171,11 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
 
       try
       {
-    	  disposalMethodInjectionPoint.invoke(beanInstance, parameters.toArray());
+         disposalMethodInjectionPoint.invoke(beanInstance, parameters.toArray());
       }
       catch (Exception e)
       {
-         // TODO: 
+         // TODO:
       }
 
    }
@@ -234,8 +247,8 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
          throw new IllegalStateException(toString() + " does not specialize a bean");
       }
       this.specializedBean = environment.getProducerMethod(superClassMethod);
-   }   
-   
+   }
+
    @Override
    public Class<T> getType()
    {
