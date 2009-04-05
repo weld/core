@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-03-28 17:09+0000\n"
-"PO-Revision-Date: 2009-03-28 17:09+0000\n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2009-04-05 19:06-0300\n"
+"Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,23 +16,12 @@ msgstr ""
 #. Tag: para
 #: part5.xml:5
 #, no-c-format
-msgid ""
-"Web Beans is the reference implementation of JSR-299, and is used by JBoss "
-"AS and Glassfish to provide JSR-299 services for Java Enterprise Edition "
-"applications. Web Beans also goes beyond the environments and APIs defined "
-"by the JSR-299 specification and provides support for a number of other "
-"environments (such as a servlet container such as Tomcat, or Java SE) and "
-"additional APIs and modules (such as logging, XSD generation for the JSR-299 "
-"XML deployment descriptors)."
-msgstr ""
+msgid "Web Beans is the reference implementation of JSR-299, and is used by JBoss AS and Glassfish to provide JSR-299 services for Java Enterprise Edition applications. Web Beans also goes beyond the environments and APIs defined by the JSR-299 specification and provides support for a number of other environments (such as a servlet container such as Tomcat, or Java SE) and additional APIs and modules (such as logging, XSD generation for the JSR-299 XML deployment descriptors)."
+msgstr "Web Beans é a implementação de referência da JSR-299, e é utilizada pelo JBoss AS e pelo Glassfish para provêr serviços JSR-299 para aplicações Java Enterprise Edition. Web Beans vai além dos ambientes e APIs definidos pela especificação JSR-299 e fornece suporte a uma série de outros ambientes (tais como um servlet container como o Tomcat, ou o Java SE) e APIs e módulos adicionais (como logging, geração de XSD para os descritores de implantação XML da JSR-299)."
 
 #. Tag: para
 #: part5.xml:15
 #, no-c-format
-msgid ""
-"If you want to get started quickly using Web Beans with JBoss AS or Tomcat "
-"and experiment with one of the examples, take a look at <xref linkend=\"ri\"/"
-">. Otherwise read on for a exhaustive discussion of using Web Beans in all "
-"the environments and application servers it supports, as well the Web Beans "
-"extensions."
-msgstr ""
+msgid "If you want to get started quickly using Web Beans with JBoss AS or Tomcat and experiment with one of the examples, take a look at <xref linkend=\"ri\"/>. Otherwise read on for a exhaustive discussion of using Web Beans in all the environments and application servers it supports, as well the Web Beans extensions."
+msgstr "Se pretende começar a utilizar rapidamente a Web Beans com o JBoss AS ou com o Tomcat, e experimentar um dos exemplos, dê uma olhada em <xref linkend=\"ri\"/>. De qualquer maneira, continue lendo para uma discussão exaustiva da utilização da Web Beans em todos os ambientes e servidores de aplicações suportados, bem como as extensões da Web Beans ."
+

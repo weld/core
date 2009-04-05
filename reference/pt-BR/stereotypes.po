@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-02-28 15:05-0300\n"
+"PO-Revision-Date: 2009-04-05 19:03-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 #: stereotypes.xml:4
 #, no-c-format
 msgid "Stereotypes"
-msgstr "Steriotipos"
+msgstr "Estereótipos"
 
 #. Tag: para
 #: stereotypes.xml:6
@@ -29,7 +29,7 @@ msgstr "De acordo com a especificação Web Beans:"
 #: stereotypes.xml:10
 #, no-c-format
 msgid "In many systems, use of architectural patterns produces a set of recurring Web Bean roles. A stereotype allows a framework developer to identify such a role and declare some common metadata for Web Beans with that role in a central place."
-msgstr "Em muitos sistemas, a utilização de padrões arquiteturais produz um conjunto de recorrentes papéis Web Bean. Um estereótipo permite que um desenvolvedor de framwework identificar esse papel e declarar alguns metadados comums para Web Beans com esse papel em um local centralizado."
+msgstr "Em muitos sistemas, a utilização de padrões arquiteturais produz um conjunto de papéis Web Bean recorrentes. Um estereótipo permite a um desenvolvedor de framwework identificar esse papel e declarar alguns metadados comums para Web Beans com esse papel em um local centralizado."
 
 #. Tag: para
 #: stereotypes.xml:14
@@ -41,13 +41,13 @@ msgstr "Um estereótipo encapsula qualquer combinação de:"
 #: stereotypes.xml:18
 #, no-c-format
 msgid "a default deployment type,"
-msgstr "um tipo padrão de implantação (deployment type), "
+msgstr "um tipo padrão de implantação, "
 
 #. Tag: para
 #: stereotypes.xml:21
 #, no-c-format
 msgid "a default scope type,"
-msgstr "um tipo de scopo padrão,"
+msgstr "um tipo de escopo padrão,"
 
 #. Tag: para
 #: stereotypes.xml:24
@@ -65,13 +65,13 @@ msgstr "uma exigência de que o Web Bean implemente ou estenda um certo tipo, e"
 #: stereotypes.xml:30
 #, no-c-format
 msgid "a set of interceptor binding annotations."
-msgstr "um conjunto de anotações para ligação de interceptadores "
+msgstr "um conjunto de anotações para binding de interceptadores "
 
 #. Tag: para
 #: stereotypes.xml:34
 #, no-c-format
 msgid "A stereotype may also specify that all Web Beans with the stereotype have defaulted Web Bean names."
-msgstr "Um estereótipo também pode especificar que todos os Web Beans com o estereótipo têm um nome de Web Bean padrão."
+msgstr "Um estereótipo também pode especificar que todos os Web Beans com o estereótipo têm um nome Web Bean padrão."
 
 #. Tag: para
 #: stereotypes.xml:37
@@ -83,7 +83,7 @@ msgstr "Um Web Bean pode declarar zero, um ou vários estereótipos."
 #: stereotypes.xml:41
 #, no-c-format
 msgid "A stereotype is a Java annotation type. This stereotype identifies action classes in some MVC framework:"
-msgstr "Um estereótipo é um tipo de anotação Java. Este estereótipo identifica as classes de ação em algum frameworks MVC:"
+msgstr "Um estereótipo é um tipo de anotação Java. Este estereótipo identifica classes de ação em algum framework MVC:"
 
 #. Tag: programlisting
 #: stereotypes.xml:44
@@ -103,7 +103,7 @@ msgstr ""
 #: stereotypes.xml:46
 #, no-c-format
 msgid "We use the stereotype by applying the annotation to a Web Bean."
-msgstr "Nós utilizamos o esteriótipo aplicando a anotoção ao Web Bean."
+msgstr "Nós utilizamos o esteriótipo aplicando a anotação ao Web Bean."
 
 #. Tag: programlisting
 #: stereotypes.xml:48
@@ -119,13 +119,13 @@ msgstr ""
 #: stereotypes.xml:51
 #, no-c-format
 msgid "Default scope and deployment type for a stereotype"
-msgstr "Scopo padrão e "
+msgstr "Escopo padrão e o tipo de implantação para um estereótipo"
 
 #. Tag: para
 #: stereotypes.xml:53
 #, no-c-format
 msgid "A stereotype may specify a default scope and/or default deployment type for Web Beans with that stereotype. For example, if the deployment type <literal>@WebTier</literal> identifies Web Beans that should only be deployed when the system executes as a web application, we might specify the following defaults for action classes:"
-msgstr "Um estereotipo pode especificar um escopo padrão e/ou um tipo padrão de implantação (deployment type) para Web Beans com esse estereótipo. Por exemplo, se o tipo de implantação (deployment type)  <literal>@WebTier</literal> identifica Web Beans que só deverão ser implantados quando o sistema executa como uma aplicação web, podemos especificar os seguintes padrões de classes de ação :"
+msgstr "Um estereótipo pode especificar um escopo padrão e/ou um tipo padrão de implantação para Web Beans com esse estereótipo. Por exemplo, o tipo de implantação <literal>@WebTier</literal> identifica Web Beans que só deverão ser implantados quando o sistema executa como uma aplicação web, podemos especificar os seguintes padrões para classes de ação :"
 
 #. Tag: programlisting
 #: stereotypes.xml:59
@@ -171,7 +171,7 @@ msgstr "Se nós quisermos forçar todas as ações para um escopo particular, n�
 #: stereotypes.xml:72
 #, no-c-format
 msgid "Restricting scope and type with a stereotype"
-msgstr "Restringindo escopo e tipo com um esteriótipo"
+msgstr "Restringindo o escopo e o tipo com um estereótipo"
 
 #. Tag: para
 #: stereotypes.xml:74
@@ -201,13 +201,13 @@ msgstr ""
 #: stereotypes.xml:80
 #, no-c-format
 msgid "If a particular action class attempts to specify a scope other than the Web Beans request scope, an exception will be thrown by the Web Bean manager at initialization time."
-msgstr "Se uma determinada classe de ação tenta especificar um escopo diferente do escopo de requisição (request scope) do Web Beans, uma exceção será lançada pelo gereneciador do Web Bean em tempo de inicialização."
+msgstr "Se uma determinada classe de ação tenta especificar um escopo diferente do escopo de requisição da Web Beans, uma exceção será lançada pelo gerenciador do Web Bean em tempo de inicialização."
 
 #. Tag: para
 #: stereotypes.xml:84
 #, no-c-format
 msgid "We can also force all Web Bean with a certain stereotype to implement an interface or extend a class:"
-msgstr "Nós também podemos forçar todos os Web Bean com um certo estereótipo implementar uma interface ou estender uma classe:"
+msgstr "Nós também podemos forçar todos os Web Beans com um certo estereótipo implementar uma interface ou estender uma classe:"
 
 #. Tag: programlisting
 #: stereotypes.xml:87
@@ -231,19 +231,19 @@ msgstr ""
 #: stereotypes.xml:89
 #, no-c-format
 msgid "If a particular action class does not extend the class <literal>AbstractAction</literal>, an exception will be thrown by the Web Bean manager at initialization time."
-msgstr "Se uma determinada classe de ação não estende a classe <literal>AbstractAction</literal>, uma exceção será lançada pelo gerenciador do Web Bean em tempo de inicialização."
+msgstr "Se uma determinada classe de ação não estender a classe <literal>AbstractAction</literal>, uma exceção será lançada pelo gerenciador do Web Bean em tempo de inicialização."
 
 #. Tag: title
 #: stereotypes.xml:96
 #, no-c-format
 msgid "Interceptor bindings for stereotypes"
-msgstr "Interceptor bindings de estereótipos"
+msgstr "Bindings de interceptadores para estereótipos"
 
 #. Tag: para
 #: stereotypes.xml:98
 #, no-c-format
 msgid "A stereotype may specify a set of interceptor bindings to be inherited by all Web Beans with that stereotype."
-msgstr "Um esteriótipo pode especificar um conjunto de interceptadores de ligação (interceptor bindings) a ser herdado por todos os Web Beans com esse estereótipo."
+msgstr "Um esteriótipo pode especificar um conjunto de interceptadores de bindings a serem herdados por todos os Web Beans com esse estereótipo."
 
 #. Tag: programlisting
 #: stereotypes.xml:101
@@ -271,7 +271,7 @@ msgstr ""
 #: stereotypes.xml:103
 #, no-c-format
 msgid "This helps us get technical concerns even further away from the business code!"
-msgstr "Isso nos ajuda a manter as preocupações técnicas (technical concerns) ainda mais longe do código de negócios!"
+msgstr "Isso nos ajuda a manter as detalhes técnicos ainda mais longe do código de negócios!"
 
 #. Tag: title
 #: stereotypes.xml:109
@@ -283,7 +283,7 @@ msgstr "Padronização de nomes com estereótipos"
 #: stereotypes.xml:111
 #, no-c-format
 msgid "Finally, we can specify that all Web Beans with a certain stereotype have a Web Bean name, defaulted by the Web Bean manager. Actions are often referenced in JSP pages, so they're a perfect use case for this feature. All we need to do is add an empty <literal>@Named</literal> annotation:"
-msgstr "Por último, é possível especificar que todos os Web Beans com um certo estereótipo tem um nome Web Bean, padronizado pelo gerenciador do Web Bean. As ações são muitas vezes referenciadas em páginas JSP, por isso eles são um caso de utilização perfeito deste recurso. Tudo o que precisamos fazer é adicionar uma anotação <literal>@Nome</literal> vazia:	"
+msgstr "Por último, é possível especificar que todos os Web Beans com um certo estereótipo tem um nome Web Bean padronizado pelo gerenciador do Web Bean. As ações são muitas vezes referenciadas em páginas JSP, por isso elas são um caso de utilização perfeito deste recurso. Tudo o que precisamos fazer é adicionar uma anotação <literal>@Nome</literal> vazia:	"
 
 #. Tag: programlisting
 #: stereotypes.xml:116
@@ -325,7 +325,7 @@ msgstr "Estereótipos padrões"
 #: stereotypes.xml:126
 #, no-c-format
 msgid "We've already met two standard stereotypes defined by the Web Beans specification: <literal>@Interceptor</literal> and <literal>@Decorator</literal>."
-msgstr "Já conhecemos dois estereótipos padrões definidos pela especificação de Web Beans : <literal>@Interceptor</literal> e <literal>@Decorator</literal>."
+msgstr "Já conhecemos dois estereótipos padrões definidos pela especificação de Web Beans: <literal>@Interceptor</literal> e <literal>@Decorator</literal>."
 
 #. Tag: para
 #: stereotypes.xml:129
@@ -355,5 +355,5 @@ msgstr ""
 #: stereotypes.xml:133
 #, no-c-format
 msgid "This stereotype is intended for use with JSF. Instead of using JSF managed beans, just annotate a Web Bean <literal>@Model</literal>, and use it directly in your JSF page."
-msgstr "Este estereótipo é destinado para uso com o JSF. Em vez de utilizar JSF managed beans, basta anotar um Web Bean com <literal>@Model</literal>, e utilizá-lo diretamente na sua página JSF."
+msgstr "Esse estereótipo é destinado ao uso com o JSF. Em vez de utilizar JSF managed beans, basta anotar um Web Bean com <literal>@Model</literal>, e utilizá-lo diretamente em sua página JSF."
 

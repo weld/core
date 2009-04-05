@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-02-28 15:09-0300\n"
+"PO-Revision-Date: 2009-04-05 11:48-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -17,25 +17,25 @@ msgstr ""
 #: interceptors.xml:4
 #, no-c-format
 msgid "Interceptors"
-msgstr ""
+msgstr "Interceptadores"
 
 #. Tag: para
 #: interceptors.xml:6
 #, no-c-format
 msgid "Web Beans re-uses the basic interceptor architecture of EJB 3.0, extending the functionality in two directions:"
-msgstr ""
+msgstr "Web Beans re utiliza a arquitetura básica do interceptor de EJB 3.0, que extende a funcionalidade em duas direções:"
 
 #. Tag: para
 #: interceptors.xml:11
 #, no-c-format
 msgid "Any Web Bean may have interceptors, not just session beans."
-msgstr ""
+msgstr "Qualquer Web Bean pode ter interceptores, não apenas session beans."
 
 #. Tag: para
 #: interceptors.xml:14
 #, no-c-format
 msgid "Web Beans features a more sophisticated annotation-based approach to binding interceptors to Web Beans."
-msgstr ""
+msgstr "Web Beans possui uma abordagem mais sofisticadas baseada em anotações para associar interceptores aos Web Beans."
 
 #. Tag: para
 #: interceptors.xml:22
@@ -53,7 +53,7 @@ msgstr "interceptação de métodos de negócios, e"
 #: interceptors.xml:29
 #, no-c-format
 msgid "lifecycle callback interception."
-msgstr ""
+msgstr "interceptadores de chamadas de ciclo de vida"
 
 #. Tag: para
 #: interceptors.xml:33
@@ -101,7 +101,7 @@ msgstr ""
 #: interceptors.xml:49
 #, no-c-format
 msgid "Interceptor bindings"
-msgstr ""
+msgstr "Bindings de interceptadores"
 
 #. Tag: para
 #: interceptors.xml:51
@@ -227,7 +227,7 @@ msgstr "Habiliatando interceptadores (interceptors)"
 #: interceptors.xml:90
 #, no-c-format
 msgid "Finally, we need to <emphasis>enable</emphasis> our interceptor in <literal>web-beans.xml</literal>."
-msgstr ""
+msgstr "Finalmente, temos que <emphasis>ativar</emphasis> nossos interceptadores no <literal>web-beans.xml</literal>."
 
 #. Tag: programlisting
 #: interceptors.xml:93
@@ -257,7 +257,7 @@ msgstr "Bem, a declaração XML resolve dois problemas:"
 #: interceptors.xml:101
 #, no-c-format
 msgid "it enables us to specify a total ordering for all the interceptors in our system, ensuring deterministic behavior, and"
-msgstr ""
+msgstr "o que nos permite especificar totalmente a ordem para todos os interceptores em nosso sistema, garantindo um comportamento determinístico, e"
 
 #. Tag: para
 #: interceptors.xml:105
@@ -301,7 +301,7 @@ msgstr ""
 #: interceptors.xml:121
 #, no-c-format
 msgid "Suppose we want to add some extra information to our <literal>@Transactional</literal> annotation:"
-msgstr ""
+msgstr "Suponhamos que queremos acrescentar algumas informações adicionais para o nossa anotação <literal>@Transactional</literal>: "
 
 #. Tag: programlisting
 #: interceptors.xml:124

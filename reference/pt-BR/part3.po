@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-02-28 15:08-0300\n"
+"PO-Revision-Date: 2009-04-05 20:07-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -17,19 +17,19 @@ msgstr ""
 #: part3.xml:5
 #, no-c-format
 msgid "The second major theme of Web Beans is <emphasis>strong typing</emphasis>. The information about the dependencies, interceptors and decorators of a Web Bean, and the information about event consumers for an event producer, is contained in typesafe Java constructs that may be validated by the compiler."
-msgstr ""
+msgstr "O segundo grande tema da Web Beans é a <emphasis>tipificação forte</emphasis>. As informações sobre as dependências, interceptores e decoradores de um Web Bean, e as informações sobre os consumidores de eventos para um produtor de evento, estão contidas em construtores Java typesafe, que podem ser validadas pelo compilador."
 
 #. Tag: para
 #: part3.xml:10
 #, no-c-format
 msgid "You don't see string-based identifiers in Web Beans code, not because the framework is hiding them from you using clever defaulting rules &#151; so-called \"configuration by convention\" &#151; but because there are simply no strings there to begin with!"
-msgstr ""
+msgstr "Você não vê identificadores baseados em strings no código Web Beans, não porque o framework está escondendo-os de você utilizando padrões de regras inteligentes &#151; o chamado \"configuração por convenção\" -, mas porque simplesmente não existem strings ali!"
 
 #. Tag: para
 #: part3.xml:15
 #, no-c-format
 msgid "The obvious benefit of this approach is that <emphasis>any</emphasis> IDE can provide autocompletion, validation and refactoring without the need for special tooling. But there is a second, less-immediately-obvious, benefit. It turns out that when you start thinking of identifying objects, events or interceptors via annotations instead of names, you have an opportunity to lift the semantic level of your code."
-msgstr ""
+msgstr "A óbvia vantagem desta abordagem é que <emphasis>qualquer</emphasis> IDE pode fornecer auto completion, validação e refactoring sem necessidade de ferramentas especiais. Mas há um segundo, menos imediatamente óbvio, benefício. Acontece que quando você começar a pensar na identificação de objetos, eventos ou interceptores através de anotações em vez de nomes, você tem uma oportunidade para aumentar o nível semântico do seu código."
 
 #. Tag: para
 #: part3.xml:21
@@ -53,7 +53,7 @@ msgstr "<literal>@Mock</literal>,"
 #: part3.xml:32
 #, no-c-format
 msgid "<literal>@Secure</literal> or"
-msgstr "<literal>@Secure</literal> or"
+msgstr "<literal>@Secure</literal> ou"
 
 #. Tag: para
 #: part3.xml:35
@@ -83,7 +83,7 @@ msgstr "<literal>mockPaymentProcessor</literal>,"
 #: part3.xml:49
 #, no-c-format
 msgid "<literal>SecurityInterceptor</literal> or"
-msgstr "<literal>SecurityInterceptor</literal> or"
+msgstr "<literal>SecurityInterceptor</literal> ou"
 
 #. Tag: para
 #: part3.xml:52
@@ -95,23 +95,23 @@ msgstr "<literal>DocumentUpdatedEvent</literal>."
 #: part3.xml:56
 #, no-c-format
 msgid "The annotations are reusable. They help describe common qualities of disparate parts of the system. They help us categorize and understand our code. They help us deal with common concerns in a common way. They make our code more literate and more understandable."
-msgstr ""
+msgstr "As anotações são reutilizáveis. Elas ajudam a descrever qualidades comuns de partes direntes do sistema. Elas nos ajudam a categorizar e entender o nosso código. Elas nos ajudam a lidar com questões comuns de uma maneira comum. Elas tornam o nosso código mais legível e mais compreensível."
 
 #. Tag: para
 #: part3.xml:61
 #, no-c-format
 msgid "Web Beans <emphasis>stereotypes</emphasis> take this idea a step further. A stereotype models a common <emphasis>role</emphasis> in your application architecture. It encapsulates various properties of the role, including scope, interceptor bindings, deployment type, etc, into a single reusable package."
-msgstr ""
+msgstr "<emphasis>Estereótipos</emphasis> Web Beans levam essa idéia um pouco mais longe. Um estereótipo modela um <emphasis>papel</emphasis> comum na sua arquitetura da aplicação. Eles incorporam várias propriedades do papel, incluindo o escopo, bindings de interceptadores, tipos de implantação, etc, em um único pacote reutilizável."
 
 #. Tag: para
 #: part3.xml:66
 #, no-c-format
 msgid "Even Web Beans XML metadata is strongly typed! There's no compiler for XML, so Web Beans takes advantage of XML schemas to validate the Java types and attributes that appear in XML. This approach turns out to make the XML more literate, just like annotations made our Java code more literate."
-msgstr "Mesmo os metadados da Web Beans é fortemente tipado (strongly typed)! Não há um compilador para XML, então a Web Beans tira proveito de esquemas XML (XML schemas) para validar os tipos Java e os atributos que aparecem em XML. Esta abordagem acaba por tornar o XML mais legível, assim como anotações deixam nosso código Java mais legível."
+msgstr "Mesmo os metadados da Web Beans são fortemente tipados! Não há um compilador para XML, então a Web Beans tira proveito de esquemas XML para validar os tipos Java e os atributos que aparecem em XML. Esta abordagem acaba por tornar o XML mais legível, assim como anotações deixam nosso código Java mais legível."
 
 #. Tag: para
 #: part3.xml:71
 #, no-c-format
 msgid "We're now ready to meet some more advanced features of Web Beans. Bear in mind that these features exist to make our code both easier to validate and more understandable. Most of the time you don't ever really <emphasis>need</emphasis> to use these features, but if you use them wisely, you'll come to appreciate their power."
-msgstr "Nós agora estamos prontos para verificar mais algumas funcionalidades avançadas da Web Beans. Tenha em mente que essas funcionalidades existema para tornar nosso código fácil para validar e ao mesmo tempo mais facil de entender. Na maioria das vezes você nem <emphasis>precisa</emphasis> se preocupar em utilizar essas funcionalidades, mas se são fáceis de usar, você irá apreciar seu poder."
+msgstr "Nós agora estamos prontos para verificar mais algumas funcionalidades avançadas da Web Beans. Tenha em mente que essas funcionalidades existem para tornar nosso código fácil para validar e ao mesmo tempo mais fácil de entender. Na maioria das vezes você nem <emphasis>precisa</emphasis> se preocupar em utilizar essas funcionalidades, mas se são fáceis de usar, você irá apreciar seu poder."
 

@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-02-28 15:10-0300\n"
+"PO-Revision-Date: 2009-04-05 08:28-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Especialização"
 #: specialization.xml:6
 #, no-c-format
 msgid "We've already seen how the Web Beans dependency injection model lets us <emphasis>override</emphasis> the implementation of an API at deployment time. For example, the following enterprise Web Bean provides an implementation of the API <literal>PaymentProcessor</literal> in production:"
-msgstr ""
+msgstr "Nós já vimos a forma como o modelo de injeção de dependências da Web Beans permite  <emphasis>sobrescrever</emphasis> a implementação da API em tempo de implantação. Por exemplo, o seguinte Bean Web corporativo fornece uma implementação da API <literal>PaymentProcessor</literal> em produção:"
 
 #. Tag: programlisting
 #: specialization.xml:11
@@ -85,7 +85,7 @@ msgstr "Pode receber uma instância de <literal>StagingCreditCardPaymentProcesso
 #: specialization.xml:28
 #, no-c-format
 msgid "Unfortunately, there are several traps we can easily fall into:"
-msgstr "Infelizmente, existem várias armadilhas que podemos facilmente cair:"
+msgstr "Infelizmente, existem várias armadilhas que facilmente podemos cair:"
 
 #. Tag: para
 #: specialization.xml:32
@@ -115,7 +115,7 @@ msgstr ""
 #: specialization.xml:49
 #, no-c-format
 msgid "In each of these cases, the Web Bean that we tried to override could still be called at runtime. Therefore, overriding is somewhat prone to developer error."
-msgstr ""
+msgstr "Em cada um destes casos, o Web Bean que tentamos sobrescrever ainda podia ser chamado em tempo de execução. Portanto, a sobrescrita é algo propensa a erros de desenvolvimento."
 
 #. Tag: para
 #: specialization.xml:52
@@ -139,7 +139,7 @@ msgstr ""
 #: specialization.xml:65
 #, no-c-format
 msgid "be a direct subclass of the Web Bean it overrides, and"
-msgstr ""
+msgstr "ser uma subclasse direta do Web Bean que sobrescreve, e"
 
 #. Tag: para
 #: specialization.xml:68

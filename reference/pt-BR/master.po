@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-03-28 17:09+0000\n"
-"PO-Revision-Date: 2009-02-28 15:04-0300\n"
+"PO-Revision-Date: 2009-04-05 18:20-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -22,50 +22,42 @@ msgstr "Nota"
 #. Tag: para
 #: master.xml:11
 #, no-c-format
-msgid ""
-"JSR-299 has recently changed its name from \"Web Beans\" to \"Java Contexts "
-"and Dependency Injection\". The reference guide still refers to JSR-299 as "
-"\"Web Beans\" and the JSR-299 Reference Implementation as the \"Web Beans RI"
-"\". Other documentation, blogs, forum posts etc. may use the new "
-"nomenclature, including the new name for the JSR-299 Reference "
-"Implementation - \"Web Beans\"."
-msgstr ""
+msgid "JSR-299 has recently changed its name from \"Web Beans\" to \"Java Contexts and Dependency Injection\". The reference guide still refers to JSR-299 as \"Web Beans\" and the JSR-299 Reference Implementation as the \"Web Beans RI\". Other documentation, blogs, forum posts etc. may use the new nomenclature, including the new name for the JSR-299 Reference Implementation - \"Web Beans\"."
+msgstr "A JSR-299 mudou recentemente seu nome de \"Web Beans\" para \"Contextos Java e Injeção de Dependência\". O guia de referência ainda se refere a JSR-299 como \"Web Beans\" e a Implementação de Referência da JSR-299 como \"Web Beans RI\". Outra documentação, blogs, fóruns etc. podem utilizar a nova nomenclatura, incluindo o novo nome para a Implementação de Referência da JSR-299 - \"Web Beans\"."
 
 #. Tag: para
 #: master.xml:20
 #, no-c-format
-msgid ""
-"You'll also find that some of the more recent functionality to be specified "
-"is missing (such as producer fields, realization, asynchronous events, XML "
-"mapping of EE resources)."
-msgstr ""
+msgid "You'll also find that some of the more recent functionality to be specified is missing (such as producer fields, realization, asynchronous events, XML mapping of EE resources)."
+msgstr "Você também vai descobrir que algumas das mais recentes funcionalidades não estão implementadas (como campos produtores, realização, eventos assíncronos, mapeamento XML dos recursos EE)."
 
 #. Tag: title
 #: master.xml:30
 #, no-c-format
 msgid "Using contextual objects"
-msgstr ""
+msgstr "Utilizando objetos contextuais"
 
 #. Tag: title
 #: master.xml:43
 #, no-c-format
 msgid "Developing loosely-coupled code"
-msgstr ""
+msgstr "Desenvolvendo código fracamente acoplado"
 
 #. Tag: title
 #: master.xml:53
 #, no-c-format
 msgid "Making the most of strong typing"
-msgstr "Obtendo o máximo da tipificação forte (strong typing)"
+msgstr "Obtendo o máximo da tipificação forte"
 
 #. Tag: title
 #: master.xml:64
 #, no-c-format
 msgid "Web Beans and the Java EE ecosystem"
-msgstr ""
+msgstr "Web Beans e o ecossistema Java EE"
 
 #. Tag: title
 #: master.xml:76
 #, no-c-format
 msgid "Web Beans Reference"
-msgstr ""
+msgstr "Referência à Web Beans"
+

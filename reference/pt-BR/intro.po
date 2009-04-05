@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-02-28 15:10-0300\n"
+"PO-Revision-Date: 2009-04-04 21:55-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Introdução a Web Beans"
 #: intro.xml:6
 #, no-c-format
 msgid "So you're already keen to get started writing your first Web Bean? Or perhaps you're skeptical, wondering what kinds of hoops the Web Beans specification will make you jump through! The good news is that you've probably already written and used hundreds, perhaps thousands of Web Beans. You might not even remember the first Web Bean you wrote."
-msgstr "Então você já está interessado em começar a escrever o seu primeiro Web Bean? Ou talvez você é cético, imaginando que tipos de hoops a especificação Web Beans fará com que você saltar passar! A boa notícia é que você provavelmente já escreveu e utilizou centenas, talvez milhares de Web Beans. Você pode até não se lembrar do primeiro Web Bean que você escreveu."
+msgstr "Então você está interessado em começar a escrever o seu primeiro Web Bean? Ou talvez você é cético, imaginando que tipos de hoops a especificação Web Beans fará com que você passe! A boa notícia é que você provavelmente já escreveu e utilizou centenas, talvez milhares de Web Beans. Você pode até não se lembrar do primeiro Web Bean que escreveu."
 
 #. Tag: title
 #: intro.xml:13
@@ -151,7 +151,7 @@ msgstr ""
 #: intro.xml:46
 #, no-c-format
 msgid "We may obtain an instance of <literal>TextTranslator</literal> by injecting it into a Web Bean, Servlet or EJB:"
-msgstr ""
+msgstr "Podemos obter uma instância de <literal>TextTranslator</literal> injetando-a em um Web Bean, Servlet ou EJB:"
 
 #. Tag: programlisting
 #: intro.xml:49
@@ -303,7 +303,7 @@ msgstr "Um conjunto (não vazio) de tipos de API (API types)"
 #: intro.xml:157
 #, no-c-format
 msgid "A (nonempty) set of binding annotation types"
-msgstr ""
+msgstr "Um conjunto (não vazio) de tipos de anotações de binding "
 
 #. Tag: para
 #: intro.xml:158
@@ -327,7 +327,7 @@ msgstr "Opcionalmente, um nome Web Bean"
 #: intro.xml:161
 #, no-c-format
 msgid "A set of interceptor binding types"
-msgstr ""
+msgstr "Um conjunto de tipos de interceptor binding"
 
 #. Tag: para
 #: intro.xml:162
@@ -345,7 +345,7 @@ msgstr "Vamos ver o que alguns destes termos significam, para o desenvolvedor We
 #: intro.xml:170
 #, no-c-format
 msgid "API types, binding types and dependency injection"
-msgstr ""
+msgstr "Tipos de API, tipos de binding e injeção de dependências "
 
 #. Tag: para
 #: intro.xml:172
@@ -361,9 +361,9 @@ msgstr "um tipo de API, juntamente com"
 
 #. Tag: para
 #: intro.xml:178
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "a set of binding types."
-msgstr "os tipos têm de corresponder\n"
+msgstr "um conjunto de tipos de binding"
 
 #. Tag: para
 #: intro.xml:181
@@ -523,7 +523,7 @@ msgstr "Por padrão, os Web Beans pertencem a um escopo especial chamado de <emp
 #: intro.xml:267
 #, no-c-format
 msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\"/>."
-msgstr "Falaremos mais sobre escopos em <xref linkend=\"scopescontexts\"/>."
+msgstr "Falaremos mais sobre escopos no <xref linkend=\"scopescontexts\"/>."
 
 #. Tag: title
 #: intro.xml:272
@@ -535,7 +535,7 @@ msgstr "Nomes Web Beans e Unified EL"
 #: intro.xml:274
 #, no-c-format
 msgid "A Web Bean may have a <emphasis>name</emphasis>, allowing it to be used in Unified EL expressions. It's easy to specify the name of a Web Bean:"
-msgstr ""
+msgstr "Um Web Bean pode ter um <emphasis>name</emphasis>, que lhe permite ser utilizado em expressões da Unified EL. É fácil especificar o nome de um Web Bean:"
 
 #. Tag: programlisting
 #: intro.xml:278
@@ -551,7 +551,7 @@ msgstr ""
 #: intro.xml:280
 #, no-c-format
 msgid "Now we can easily use the Web Bean in any JSF or JSP page:"
-msgstr "Agora podemos facilmente utilizar o Web Bean em qualquer página JSF ou JSP:"
+msgstr "Agora, podemos facilmente utilizar o Web Bean em qualquer página JSF ou JSP:"
 
 #. Tag: programlisting
 #: intro.xml:282
@@ -569,7 +569,7 @@ msgstr ""
 #: intro.xml:284
 #, no-c-format
 msgid "It's even easier to just let the name be defaulted by the Web Bean manager:"
-msgstr ""
+msgstr "É ainda mais fácil, deixar o nome ser atribuído pelo gerenciador do Web Bean:"
 
 #. Tag: programlisting
 #: intro.xml:287
@@ -585,13 +585,13 @@ msgstr ""
 #: intro.xml:289
 #, no-c-format
 msgid "In this case, the name defaults to <literal>shoppingCart</literal> &#151; the unqualified class name, with the first character changed to lowercase."
-msgstr "Neste caso, o nome padrão para <literal>shoppingCart</literal> &#151; o nome da classe (unqualified class name), com o primeiro caractere alterado para minúsculas."
+msgstr "Neste caso, o nome fica <literal>shoppingCart</literal> &#151; o nome da classe não qualificado (unqualified class name), com o primeiro caractere alterado para minúsculas."
 
 #. Tag: title
 #: intro.xml:295
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Interceptor binding types"
-msgstr "os tipos têm de corresponder\n"
+msgstr "Tipos de interceptor binding"
 
 #. Tag: para
 #: intro.xml:297
@@ -621,7 +621,7 @@ msgstr ""
 #: intro.xml:307
 #, no-c-format
 msgid "However, it is more elegant, and better practice, to indirect the interceptor binding through an <emphasis>interceptor binding type</emphasis>:"
-msgstr "No entanto, é mais elegante, e uma melhor prática, o interceptador "
+msgstr "No entanto, é mais elegante, e uma melhor prática, indirecionar o binding do interceptador através de um <emphasis>interceptor binding type</emphasis>:"
 
 #. Tag: programlisting
 #: intro.xml:311
@@ -667,7 +667,7 @@ msgstr "A especificação de Web Beans diz que uma classe Java concreta é um We
 #: intro.xml:334
 #, no-c-format
 msgid "it is not an EE container-managed component, like an EJB, a Servlet or a JPA entity,"
-msgstr ""
+msgstr "não é um componente gerenciado pelo container, como um EJB, um Servlet ou uma entidade da JPA,"
 
 #. Tag: para
 #: intro.xml:338
@@ -677,15 +677,15 @@ msgstr ""
 
 #. Tag: para
 #: intro.xml:341
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "it is not a parameterized type, and"
-msgstr "tipo do índice de uma matriz não pode ser %s porque ele não é uma matriz"
+msgstr "não é um tipo parametrizado, e"
 
 #. Tag: para
 #: intro.xml:344
 #, no-c-format
 msgid "it has a constructor with no parameters, or a constructor annotated <literal>@Initializer</literal>."
-msgstr ""
+msgstr "que tem um construtor sem parâmetros, ou um construtor anotado com <literal>@Initializer</literal>."
 
 #. Tag: para
 #: intro.xml:349
@@ -855,7 +855,7 @@ msgstr ""
 #: intro.xml:437
 #, no-c-format
 msgid "The result of a producer method is injected just like any other Web Bean."
-msgstr ""
+msgstr "O resultado do método produtor é injetado como qualquer outro Web Bean."
 
 #. Tag: programlisting
 #: intro.xml:439
@@ -873,7 +873,7 @@ msgstr ""
 #: intro.xml:445
 #, no-c-format
 msgid "Some producer methods return objects that require explicit destruction:"
-msgstr ""
+msgstr "Alguns métodos produtores retornam objetos que exigem destruição explícita :"
 
 #. Tag: programlisting
 #: intro.xml:447
@@ -891,7 +891,7 @@ msgstr ""
 #: intro.xml:449
 #, no-c-format
 msgid "These producer methods may define matching <emphasis>disposal methods</emphasis>:"
-msgstr ""
+msgstr "Estes métodos produtores podem definir <emphasis>métodos eliminação (disposal methods)</emphasis>:"
 
 #. Tag: programlisting
 #: intro.xml:451
@@ -909,13 +909,13 @@ msgstr ""
 #: intro.xml:453
 #, no-c-format
 msgid "This disposal method is called automatically by the Web Bean manager at the end of the request."
-msgstr ""
+msgstr "Este método de eliminação (disposal method) é chamado automaticamente pelo gerenciador do Web Bean no final da requisição."
 
 #. Tag: para
 #: intro.xml:456
 #, no-c-format
 msgid "We'll talk much more about producer methods in <xref linkend=\"producermethods\"/>."
-msgstr ""
+msgstr "Falaremos mais sobre métodos produtores no <xref linkend=\"producermethods\"/>."
 
 #. Tag: title
 #: intro.xml:461

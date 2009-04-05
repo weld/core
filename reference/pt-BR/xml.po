@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-02-28 15:10-0300\n"
+"PO-Revision-Date: 2009-04-04 17:48-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 #: xml.xml:4
 #, no-c-format
 msgid "Defining Web Beans using XML"
-msgstr "Definindo Web Beans usando XML"
+msgstr "Definindo Web Beans utilizando XML"
 
 #. Tag: para
 #: xml.xml:6
@@ -77,7 +77,7 @@ msgstr "Declarando classes Web Beans"
 #: xml.xml:42
 #, no-c-format
 msgid "For each Java package, Web Beans defines a corresponding XML namespace. The namespace is formed by prepending <literal>urn:java:</literal> to the Java package name. For the package <literal>com.mydomain.myapp</literal>, the XML namespace is <literal>urn:java:com.mydomain.myapp</literal>."
-msgstr "Para cada pacote Java, Web Beans define um namespace XML correspondente. O nome é formado por prepending <literal>urn:java:</literal> para o nome do pacote Java. Para o pacote <literal>com.mydomain.myapp</literal>, o namespace XML é <literal>urn:java:com.mydomain.myapp</literal>."
+msgstr "Para cada pacote Java, Web Beans define um namespace XML correspondente. O nome é formado precedendo <literal>urn:java:</literal> ao nome do pacote Java. Para o pacote <literal>com.mydomain.myapp</literal>, o namespace XML é <literal>urn:java:com.mydomain.myapp</literal>."
 
 #. Tag: para
 #: xml.xml:47
@@ -89,7 +89,7 @@ msgstr "Tipos Java pertencentes a um pacote são referenciados à utilizar um el
 #: xml.xml:53
 #, no-c-format
 msgid "For example, the element <literal>&lt;util:Date/&gt;</literal> in the following XML fragment refers to the class <literal>java.util.Date</literal>:"
-msgstr "Por exemplo, o elemento <literal>&lt;util:Date/&gt;</literal> no seguinte fraguimento XML refere-se a classe <literal>java.util.Date</literal>:"
+msgstr "Por exemplo, o elemento <literal>&lt;util:Date/&gt;</literal> no seguinte fragmento XML refere-se a classe <literal>java.util.Date</literal>:"
 
 #. Tag: programlisting
 #: xml.xml:56
@@ -303,7 +303,7 @@ msgstr ""
 #: xml.xml:110
 #, no-c-format
 msgid "The <literal>&lt;Name&gt;</literal> element declares a simple Web Bean of scope <literal>@Dependent</literal> and class <literal>Name</literal>, with a set of initial field values. This Web Bean has a special, container-generated binding and is therefore injectable only to the specific injection point at which it is declared."
-msgstr "O elemnto <literal>&lt;Name&gt;</literal> declara um Web Bean simples de escopo <literal>@Dependent</literal> e classe <literal>Name</literal>, com um conjunto inicial de valores para os campos. Esse Web Bean possui a special, container-generated binding and is therefore injectable only to the specific injection point at which it is declared."
+msgstr "O elemento <literal>&lt;Name&gt;</literal> declara um Web Bean simples de escopo <literal>@Dependent</literal> e classe <literal>Name</literal>, com um conjunto inicial de valores para os campos. Esse Web Bean possui a especial, container-generated binding and is therefore injectable only to the specific injection point at which it is declared."
 
 #. Tag: para
 #: xml.xml:116
