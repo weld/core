@@ -32,6 +32,8 @@ import org.jboss.webbeans.introspector.AnnotatedType;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.ConstructorSignature;
 import org.jboss.webbeans.util.Names;
+import org.jboss.webbeans.util.collections.multi.ListHashMultiMap;
+import org.jboss.webbeans.util.collections.multi.ListMultiMap;
 
 /**
  * Represents an annotated constructor
@@ -51,7 +53,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
    // The list of parameter abstractions
    private final List<AnnotatedParameter<?>> parameters;
    // The mapping of annotation -> parameter abstraction
-   private final AnnotatedParameterMap annotatedParameters;
+   private final ListMultiMap<Class<? extends Annotation>, AnnotatedParameter<?>> annotatedParameters;
 
    // The declaring class abstraction
    private final AnnotatedType<T> declaringClass;
@@ -81,7 +83,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
       this.declaringClass = declaringClass;
 
       this.parameters = new ArrayList<AnnotatedParameter<?>>();
-      annotatedParameters = new AnnotatedParameterMap();
+      annotatedParameters = new ListHashMultiMap<Class<? extends Annotation>, AnnotatedParameter<?>>();
       
       for (int i = 0; i < constructor.getParameterTypes().length; i++)
       {

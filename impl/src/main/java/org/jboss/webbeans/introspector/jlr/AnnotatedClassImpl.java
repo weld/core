@@ -40,8 +40,8 @@ import org.jboss.webbeans.introspector.MethodSignature;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
-import org.jboss.webbeans.util.Strings;
-import org.jboss.webbeans.util.collections.ForwardingMap;
+import org.jboss.webbeans.util.collections.multi.SetHashMultiMap;
+import org.jboss.webbeans.util.collections.multi.SetMultiMap;
 
 /**
  * Represents an annotated class
@@ -57,203 +57,43 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    
    private static List<Class<?>> NO_ARGUMENTS = Collections.emptyList();
    
-   /**
-    * A (annotation type -> set of field abstractions with annotation/meta
-    * annotation) map
-    */
-   private static class AnnotatedFieldMap extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedField<?>>>
-   {
-      private Map<Class<? extends Annotation>, Set<AnnotatedField<?>>> delegate;
-      
-      public AnnotatedFieldMap()
-      {
-         delegate = new HashMap<Class<? extends Annotation>, Set<AnnotatedField<?>>>();
-      }
-      
-      @Override
-      protected Map<Class<? extends Annotation>, Set<AnnotatedField<?>>> delegate()
-      {
-         return delegate;
-      }
-      
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("AnnotatedFieldMap (annotation type -> field abstraction set): ", delegate);
-      }
-      
-      @Override
-      public Set<AnnotatedField<?>> get(Object key)
-      {
-         Set<AnnotatedField<?>> fields = super.get(key);
-         return fields != null ? fields : new HashSet<AnnotatedField<?>>();
-      }
-      
-      public void put(Class<? extends Annotation> key, AnnotatedField<?> value)
-      {
-         Set<AnnotatedField<?>> fields = super.get(key);
-         if (fields == null)
-         {
-            fields = new HashSet<AnnotatedField<?>>();
-            super.put(key, fields);
-         }
-         fields.add(value);
-      }
-      
-   }
-   
-   /**
-    * A (annotation type -> set of method abstractions with annotation) map
-    */
-   private class AnnotatedMethodMap extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedMethod<?>>>
-   {
-      private Map<Class<? extends Annotation>, Set<AnnotatedMethod<?>>> delegate;
-      
-      public AnnotatedMethodMap()
-      {
-         delegate = new HashMap<Class<? extends Annotation>, Set<AnnotatedMethod<?>>>();
-      }
-      
-      @Override
-      protected Map<Class<? extends Annotation>, Set<AnnotatedMethod<?>>> delegate()
-      {
-         return delegate;
-      }
-      
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("AnnotatedMethodMap (annotation type -> method abstraction set): ", delegate);
-      }
-      
-      @Override
-      public Set<AnnotatedMethod<?>> get(Object key)
-      {
-         Set<AnnotatedMethod<?>> methods = super.get(key);
-         return methods != null ? methods : new HashSet<AnnotatedMethod<?>>();
-      }
-      
-      public void put(Class<? extends Annotation> key, AnnotatedMethod<?> value)
-      {
-         Set<AnnotatedMethod<?>> methods = super.get(key);
-         if (methods == null)
-         {
-            methods = new HashSet<AnnotatedMethod<?>>();
-            super.put(key, methods);
-         }
-         methods.add(value);
-      }
-      
-   }
-   
-   /**
-    * A (annotation type -> set of constructor abstractions with annotation) map
-    */
-   private class AnnotatedConstructorMap extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedConstructor<T>>>
-   {
-      private Map<Class<? extends Annotation>, Set<AnnotatedConstructor<T>>> delegate;
-      
-      public AnnotatedConstructorMap()
-      {
-         delegate = new HashMap<Class<? extends Annotation>, Set<AnnotatedConstructor<T>>>();
-      }
-      
-      @Override
-      protected Map<Class<? extends Annotation>, Set<AnnotatedConstructor<T>>> delegate()
-      {
-         return delegate;
-      }
-      
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("AnnotatedConstructorMap (annotation type -> constructor abstraction set): ", delegate);
-      }
-      
-      @Override
-      public Set<AnnotatedConstructor<T>> get(Object key)
-      {
-         Set<AnnotatedConstructor<T>> constructors = super.get(key);
-         return constructors != null ? constructors : new HashSet<AnnotatedConstructor<T>>();
-      }
-      
-      public void add(Class<? extends Annotation> key, AnnotatedConstructor<T> value)
-      {
-         Set<AnnotatedConstructor<T>> constructors = super.get(key);
-         if (constructors == null)
-         {
-            constructors = new HashSet<AnnotatedConstructor<T>>();
-            super.put(key, constructors);
-         }
-         constructors.add(value);
-      }
-   }
-   
-   /**
-    * A (class list -> set of constructor abstractions with matching parameters)
-    * map
-    */
-   private class ConstructorsByArgumentMap extends ForwardingMap<List<Class<?>>, AnnotatedConstructor<T>>
-   {
-      private Map<List<Class<?>>, AnnotatedConstructor<T>> delegate;
-      
-      public ConstructorsByArgumentMap()
-      {
-         delegate = new HashMap<List<Class<?>>, AnnotatedConstructor<T>>();
-      }
-      
-      @Override
-      protected Map<List<Class<?>>, AnnotatedConstructor<T>> delegate()
-      {
-         return delegate;
-      }
-      
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("Annotation type -> constructor by arguments mappings: ", delegate);
-      }
-   }
-   
-
-   
    // The set of abstracted fields
    private final Set<AnnotatedField<?>> fields;
    // The map from annotation type to abstracted field with annotation
-   private final AnnotatedFieldMap annotatedFields;
+   private final SetMultiMap<Class<? extends Annotation>, AnnotatedField<?>> annotatedFields;
    // The map from annotation type to abstracted field with meta-annotation
-   private final AnnotatedFieldMap metaAnnotatedFields;
+   private final SetMultiMap<Class<? extends Annotation>, AnnotatedField<?>> metaAnnotatedFields;
    
 // The set of abstracted fields
    private final Set<AnnotatedField<?>> declaredFields;
    private final Map<String, AnnotatedField<?>> declaredFieldsByName;
    // The map from annotation type to abstracted field with annotation
-   private final AnnotatedFieldMap declaredAnnotatedFields;
+   private final SetMultiMap<Class<? extends Annotation>, AnnotatedField<?>> declaredAnnotatedFields;
    // The map from annotation type to abstracted field with meta-annotation
-   private final AnnotatedFieldMap declaredMetaAnnotatedFields;
+   private final SetMultiMap<Class<? extends Annotation>, AnnotatedField<?>> declaredMetaAnnotatedFields;
    
    // The set of abstracted methods
    private final Set<AnnotatedMethod<?>> methods;
    private final Map<MethodSignature, AnnotatedMethod<?>> declaredMethodsBySignature;
    // The map from annotation type to abstracted method with annotation
-   private final AnnotatedMethodMap annotatedMethods;
+   private final SetMultiMap<Class<? extends Annotation>, AnnotatedMethod<?>> annotatedMethods;
    // The map from annotation type to method with a parameter with annotation
-   private final AnnotatedMethodMap methodsByAnnotatedParameters;
+   private final SetMultiMap<Class<? extends Annotation>, AnnotatedMethod<?>> methodsByAnnotatedParameters;
    
 // The set of abstracted methods
    private final Set<AnnotatedMethod<?>> declaredMethods;
    // The map from annotation type to abstracted method with annotation
-   private final AnnotatedMethodMap declaredAnnotatedMethods;
+   private final SetMultiMap<Class<? extends Annotation>, AnnotatedMethod<?>> declaredAnnotatedMethods;
    // The map from annotation type to method with a parameter with annotation
-   private final AnnotatedMethodMap declaredMethodsByAnnotatedParameters;
+   private final SetMultiMap<Class<? extends Annotation>, AnnotatedMethod<?>> declaredMethodsByAnnotatedParameters;
    
    // The set of abstracted constructors
    private final Set<AnnotatedConstructor<T>> constructors;
    private final Map<ConstructorSignature, AnnotatedConstructor<?>> declaredConstructorsBySignature;
    // The map from annotation type to abstracted constructor with annotation
-   private final AnnotatedConstructorMap annotatedConstructors;
+   private final SetMultiMap<Class<? extends Annotation>, AnnotatedConstructor<T>> annotatedConstructors;
    // The map from class list to abstracted constructor
-   private final ConstructorsByArgumentMap constructorsByArgumentMap;
+   private final Map<List<Class<?>>, AnnotatedConstructor<T>> constructorsByArgumentMap;
    
    // Cached string representation
    private String toString;
@@ -273,12 +113,12 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       super(AnnotationStore.of(annotations, declaredAnnotations), rawType, type, classTransformer);
       
       this.fields = new HashSet<AnnotatedField<?>>();
-      this.annotatedFields = new AnnotatedFieldMap();
-      this.metaAnnotatedFields = new AnnotatedFieldMap();
+      this.annotatedFields = new SetHashMultiMap<Class<? extends Annotation>, AnnotatedField<?>>();
+      this.metaAnnotatedFields = new SetHashMultiMap<Class<? extends Annotation>, AnnotatedField<?>>();
       this.declaredFields = new HashSet<AnnotatedField<?>>();
       this.declaredFieldsByName = new HashMap<String, AnnotatedField<?>>();
-      this.declaredAnnotatedFields = new AnnotatedFieldMap();
-      this.declaredMetaAnnotatedFields = new AnnotatedFieldMap();
+      this.declaredAnnotatedFields = new SetHashMultiMap<Class<? extends Annotation>, AnnotatedField<?>>();
+      this.declaredMetaAnnotatedFields = new SetHashMultiMap<Class<? extends Annotation>, AnnotatedField<?>>();
       this._nonStaticMemberClass = Reflections.isNonMemberInnerClass(rawType);
       this._abstract = Reflections.isAbstract(rawType);
       this._enum = rawType.isEnum();
@@ -318,8 +158,8 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
       
       this.constructors = new HashSet<AnnotatedConstructor<T>>();
-      this.constructorsByArgumentMap = new ConstructorsByArgumentMap();
-      this.annotatedConstructors = new AnnotatedConstructorMap();
+      this.constructorsByArgumentMap = new HashMap<List<Class<?>>, AnnotatedConstructor<T>>();
+      this.annotatedConstructors = new SetHashMultiMap<Class<? extends Annotation>, AnnotatedConstructor<T>>();
       this.declaredConstructorsBySignature = new HashMap<ConstructorSignature, AnnotatedConstructor<?>>();
       for (Constructor<?> constructor : rawType.getDeclaredConstructors())
       {
@@ -346,11 +186,11 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       }
       
       this.methods = new HashSet<AnnotatedMethod<?>>();
-      this.annotatedMethods = new AnnotatedMethodMap();
-      this.methodsByAnnotatedParameters = new AnnotatedMethodMap();
+      this.annotatedMethods = new SetHashMultiMap<Class<? extends Annotation>, AnnotatedMethod<?>>();
+      this.methodsByAnnotatedParameters = new SetHashMultiMap<Class<? extends Annotation>, AnnotatedMethod<?>>();
       this.declaredMethods = new HashSet<AnnotatedMethod<?>>();
-      this.declaredAnnotatedMethods = new AnnotatedMethodMap();
-      this.declaredMethodsByAnnotatedParameters = new AnnotatedMethodMap();
+      this.declaredAnnotatedMethods = new SetHashMultiMap<Class<? extends Annotation>, AnnotatedMethod<?>>();
+      this.declaredMethodsByAnnotatedParameters = new SetHashMultiMap<Class<? extends Annotation>, AnnotatedMethod<?>>();
       this.declaredMethodsBySignature = new HashMap<MethodSignature, AnnotatedMethod<?>>();
       for (Class<?> c = rawType; c != Object.class && c != null; c = c.getSuperclass())
       {

@@ -12,6 +12,12 @@ import org.jboss.webbeans.injection.resolution.AnnotatedItemTransformer;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedItem;
 
+/**
+ * AnnotatedItem transformer which can be used for FacadeBeans
+ * 
+ * @author Pete Muir
+ *
+ */
 public class FacadeBeanAnnotatedItemTransformer implements AnnotatedItemTransformer
 {
    

@@ -33,6 +33,8 @@ import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.MethodSignature;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.collections.multi.ListHashMultiMap;
+import org.jboss.webbeans.util.collections.multi.ListMultiMap;
 
 /**
  * Represents an annotated method
@@ -53,7 +55,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
    private final List<AnnotatedParameter<?>> parameters;
    // A mapping from annotation type to parameter abstraction with that
    // annotation present
-   private final AnnotatedParameterMap annotatedParameters;
+   private final ListMultiMap<Class<? extends Annotation>, AnnotatedParameter<?>> annotatedParameters;
 
    // The property name
    private final String propertyName;
@@ -88,7 +90,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
       this.method.setAccessible(true);
       this.declaringClass = declaringClass;
       this.parameters = new ArrayList<AnnotatedParameter<?>>();
-      this.annotatedParameters = new AnnotatedParameterMap();
+      this.annotatedParameters = new ListHashMultiMap<Class<? extends Annotation>, AnnotatedParameter<?>>();
       
       for (int i = 0; i < method.getParameterTypes().length; i++)
       {

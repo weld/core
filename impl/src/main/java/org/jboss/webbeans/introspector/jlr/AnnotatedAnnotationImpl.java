@@ -30,8 +30,8 @@ import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.resources.ClassTransformer;
-import org.jboss.webbeans.util.Strings;
-import org.jboss.webbeans.util.collections.ForwardingMap;
+import org.jboss.webbeans.util.collections.multi.SetHashMultiMap;
+import org.jboss.webbeans.util.collections.multi.SetMultiMap;
 
 /**
  * Represents an annotated annotation
@@ -44,52 +44,9 @@ import org.jboss.webbeans.util.collections.ForwardingMap;
  */
 public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnotatedType<T> implements AnnotatedAnnotation<T>
 {
-   
-   /**
-    * A (annotation type -> set of method abstractions with annotation) map
-    */
-   private class AnnotatedMemberMap extends ForwardingMap<Class<? extends Annotation>, Set<AnnotatedMethod<?>>>
-   {
-      private Map<Class<? extends Annotation>, Set<AnnotatedMethod<?>>> delegate;
-
-      public AnnotatedMemberMap()
-      {
-         delegate = new HashMap<Class<? extends Annotation>, Set<AnnotatedMethod<?>>>();
-      }
-
-      @Override
-      protected Map<Class<? extends Annotation>, Set<AnnotatedMethod<?>>> delegate()
-      {
-         return delegate;
-      }
-
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("AnnotatedMemberMap (annotation type -> set of member abstractions: ", delegate);
-      }
-
-      @Override
-      public Set<AnnotatedMethod<?>> get(Object key)
-      {
-         Set<AnnotatedMethod<?>> methods = super.get(key);
-         return methods != null ? methods : new HashSet<AnnotatedMethod<?>>();
-      }
-
-      public void put(Class<? extends Annotation> key, AnnotatedMethod<?> value)
-      {
-         Set<AnnotatedMethod<?>> members = super.get(key);
-         if (members == null)
-         {
-            members = new HashSet<AnnotatedMethod<?>>();
-            super.put(key, members);
-         }
-         members.add(value);
-      }
-   }
 
    // The annotated members map (annotation -> member with annotation)
-   private final AnnotatedMemberMap annotatedMembers;
+   private final SetMultiMap<Class<? extends Annotation>, AnnotatedMethod<?>> annotatedMembers;
    // The implementation class of the annotation
    private final Class<T> clazz;
    // The set of abstracted members
@@ -117,7 +74,7 @@ public class AnnotatedAnnotationImpl<T extends Annotation> extends AbstractAnnot
       super(AnnotationStore.of(annotationType), annotationType, annotationType, classTransformer);
       this.clazz = annotationType;
       members = new HashSet<AnnotatedMethod<?>>();
-      annotatedMembers = new AnnotatedMemberMap();
+      annotatedMembers = new SetHashMultiMap<Class<? extends Annotation>, AnnotatedMethod<?>>();
       this.namedMembers = new HashMap<String, AnnotatedMethod<?>>();
       for (Method member : clazz.getDeclaredMethods())
       {

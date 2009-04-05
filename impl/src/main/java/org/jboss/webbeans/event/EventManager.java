@@ -19,12 +19,9 @@ package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.event.Observer;
 
@@ -32,9 +29,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.util.Strings;
 import org.jboss.webbeans.util.Reflections.HierarchyDiscovery;
-import org.jboss.webbeans.util.collections.ForwardingMap;
 
 /**
  * The event bus is where observers are registered and events are fired.
@@ -46,86 +41,6 @@ public class EventManager
 {
    private static Log log = Logging.getLog(EventManager.class);
    
-   /**
-    * An event type -> observer list map
-    */
-   private class RegisteredObserversMap extends ForwardingMap<Type, List<EventObserver<?>>>
-   {
-
-      // The map delegate
-      private ConcurrentHashMap<Type, List<EventObserver<?>>> delegate;
-
-      /**
-       * Constructor. Initializes the delegate
-       */
-      public RegisteredObserversMap()
-      {
-         delegate = new ConcurrentHashMap<Type, List<EventObserver<?>>>();
-      }
-
-      /**
-       * Returns the delegate for the ForwardingMap
-       * 
-       * @return The delegate
-       */
-      @Override
-      protected Map<Type, List<EventObserver<?>>> delegate()
-      {
-         return delegate;
-      }
-
-      /**
-       * Gets the list of observers for a given event type
-       * 
-       * @param eventType The event type
-       * @return The list of interested observers. An empty list is returned if
-       *         there are no matches.
-       */
-      @Override
-      public CopyOnWriteArrayList<EventObserver<?>> get(Object eventType)
-      {
-         CopyOnWriteArrayList<EventObserver<?>> observers = (CopyOnWriteArrayList<EventObserver<?>>) super.get(eventType);
-         return observers != null ? observers : new CopyOnWriteArrayList<EventObserver<?>>();
-      }
-
-      /**
-       * Adds an observer for a given event type
-       * 
-       * Implicitly creates a new list if there is none for the event type. Only adds the observer if
-       * it is not already present
-       * 
-       * @param eventType The event type
-       * @param observer The observer to add
-       */
-      public void put(Type eventType, EventObserver<?> observer)
-      {
-         List<EventObserver<?>> observers = super.get(eventType);
-         if (observers == null)
-         {
-            observers = new CopyOnWriteArrayList<EventObserver<?>>();
-            super.put(eventType, observers);
-         }
-         if (!observers.contains(observer))
-         {
-            observers.add(observer);
-         }
-      }
-
-      /**
-       * Gets a string representation of the map
-       * 
-       * @return A string representation
-       */
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("RegisteredObserversMap (event type -> observers list): ", delegate);
-      }
-
-   }
-
-   // The map of registered observers for a give
-   private final RegisteredObserversMap registeredObservers;
    private final ManagerImpl manager;
 
 
@@ -134,7 +49,6 @@ public class EventManager
     */
    public EventManager(ManagerImpl manager)
    {
-      registeredObservers = new RegisteredObserversMap();
       this.manager = manager;
    }
 
@@ -148,7 +62,7 @@ public class EventManager
    public <T> void addObserver(Observer<T> observer, Type eventType, Annotation... bindings)
    {
       EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, manager, bindings);
-      registeredObservers.put(eventType, eventObserver);
+      manager.getRegisteredObservers().put(eventType, eventObserver);
       log.debug("Added observer " + observer + " observing event type " + eventType);
    }
 
@@ -167,7 +81,7 @@ public class EventManager
       Set<Type> types = new HierarchyDiscovery(event.getClass()).getFlattenedTypes();
       for (Type type : types)
       {
-         for (EventObserver<?> observer : registeredObservers.get(type))
+         for (EventObserver<?> observer : manager.getRegisteredObservers().get(type))
          {
             log.debug("Checking observer " + observer + " to see if it is interested in event [" + event + "]");
             if (observer.isObserverInterested(bindings))
@@ -215,7 +129,7 @@ public class EventManager
     */
    public <T> void removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
-      List<EventObserver<?>> observers = registeredObservers.get(eventType);
+      Collection<EventObserver<?>> observers = manager.getRegisteredObservers().get(eventType);
       EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, manager, bindings);
       observers.remove(eventObserver);
    }
@@ -225,7 +139,7 @@ public class EventManager
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Event manager\n");
-      buffer.append(registeredObservers.toString());
+      buffer.append(manager.getRegisteredObservers().toString());
       return buffer.toString();
    }
 

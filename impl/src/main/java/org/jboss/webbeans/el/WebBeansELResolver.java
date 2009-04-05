@@ -90,10 +90,10 @@ public class WebBeansELResolver extends ELResolver
          Namespace namespace = null;
          if (base == null) 
          {
-            if (CurrentManager.rootManager().getNamespaceManager().getRoot().contains(propertyString))
+            if (CurrentManager.rootManager().getRootNamespace().contains(propertyString))
             {
                context.setPropertyResolved(true);
-               return CurrentManager.rootManager().getNamespaceManager().getRoot().get(propertyString);
+               return CurrentManager.rootManager().getRootNamespace().get(propertyString);
             }
          }
          else if (base instanceof Namespace)

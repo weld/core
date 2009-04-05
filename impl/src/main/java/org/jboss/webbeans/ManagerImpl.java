@@ -65,11 +65,10 @@ import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.proxy.ClientProxyProvider;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.context.ApplicationContext;
-import org.jboss.webbeans.context.ContextMap;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.el.Namespace;
-import org.jboss.webbeans.el.NamespaceManager;
 import org.jboss.webbeans.event.EventManager;
+import org.jboss.webbeans.event.EventObserver;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.NonContextualInjector;
 import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
@@ -83,6 +82,10 @@ import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.collections.multi.ConcurrentSetHashMultiMap;
+import org.jboss.webbeans.util.collections.multi.ConcurrentListHashMultiMap;
+import org.jboss.webbeans.util.collections.multi.ConcurrentListMultiMap;
+import org.jboss.webbeans.util.collections.multi.ConcurrentSetMultiMap;
 
 /**
  * Implementation of the Web Beans Manager.
@@ -95,9 +98,6 @@ import org.jboss.webbeans.util.Reflections;
  */
 public class ManagerImpl implements WebBeansManager, Serializable
 {
-
-   
-   
    
    private static final Log log = Logging.getLog(ManagerImpl.class);
 
@@ -105,43 +105,44 @@ public class ManagerImpl implements WebBeansManager, Serializable
 
    // The JNDI key to place the manager under
    public static final String JNDI_KEY = "java:app/Manager";
-
-   // The enabled deployment types from web-beans.xml
-   private transient List<Class<? extends Annotation>> enabledDeploymentTypes;
    
-   // The Web Beans event manager
-   private transient final EventManager eventManager;
-
-   // An executor service for asynchronous tasks
+   /*
+    * Application scoped services
+    * ****************************
+    */  
    private transient final ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
-
-   // An injection point metadata beans factory
-   private transient final ThreadLocal<Stack<InjectionPoint>> currentInjectionPoint;
-
-   // The bean resolver
-   private transient final Resolver resolver;
-
-   // The registered contexts
-   private transient final ContextMap contexts;
-   
-   // The client proxy pool
-   private transient final ClientProxyProvider clientProxyProvider;
-   
-   // The registered beans
-   private transient List<Bean<?>> beans;
-   
-   // The registered beans, mapped by implementation class
-   private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans;
-
-   private transient final Map<String, RIBean<?>> riBeans;
-   
    private transient final ServiceRegistry services;
-
+   
+   /*
+    * Application scoped data structures
+    * ***********************************
+    */
+   private transient List<Class<? extends Annotation>> enabledDeploymentTypes;
+   private transient final ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts;
+   private transient final ClientProxyProvider clientProxyProvider;
+   private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans;
+   private transient final Map<String, RIBean<?>> riBeans;
    private final transient Map<Bean<?>, Bean<?>> specializedBeans;
-
+   
+   
+   /*
+    * Activity scoped services
+    * *************************
+    */  
+   private transient final EventManager eventManager;
+   private transient final Resolver resolver;
    private final transient NonContextualInjector nonContextualInjector;
    
-   private final transient NamespaceManager namespaceManager;
+   
+   /*
+    * Activity scoped data structures
+    * ********************************
+    */
+   private transient final ThreadLocal<Stack<InjectionPoint>> currentInjectionPoint;
+   private transient List<Bean<?>> beans;
+   private final transient Namespace rootNamespace;
+   private final ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers;
+   
    
    /**
     * Create a new, root, manager
@@ -158,12 +159,14 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return new ManagerImpl(
             serviceRegistry, 
             new CopyOnWriteArrayList<Bean<?>>(), 
+            new ConcurrentSetHashMultiMap<Type, EventObserver<?>>(),
+            new Namespace(),
             new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>(),
             new ConcurrentHashMap<String, RIBean<?>>(), 
             new ClientProxyProvider(), 
-            new ContextMap(), 
+            new ConcurrentListHashMultiMap<Class<? extends Annotation>, Context>(),
             new HashMap<Bean<?>, Bean<?>>(),
-            new NamespaceManager(new Namespace()),
+            
             defaultEnabledDeploymentTypes);
    }
    
@@ -178,17 +181,20 @@ public class ManagerImpl implements WebBeansManager, Serializable
       List<Bean<?>> beans = new CopyOnWriteArrayList<Bean<?>>();
       beans.addAll(parentManager.getBeans());
       
-      NamespaceManager namespaceManager = new NamespaceManager(new Namespace(parentManager.getNamespaceManager().getRoot()));
+      ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers = new ConcurrentSetHashMultiMap<Type, EventObserver<?>>();
+      registeredObservers.putAll(parentManager.getRegisteredObservers());
+      Namespace rootNamespace = new Namespace(parentManager.getRootNamespace());
       
       return new ManagerImpl(
             parentManager.getServices(),
-            beans, 
+            beans,
+            registeredObservers,
+            rootNamespace,
             parentManager.getNewEnterpriseBeanMap(), 
-            parentManager.getRiBeans(), 
+            parentManager.getRiBeans(),
             parentManager.getClientProxyProvider(),
             parentManager.getContexts(),
             parentManager.getSpecializedBeans(),
-            namespaceManager,
             parentManager.getEnabledDeploymentTypes());
    }
 
@@ -199,13 +205,14 @@ public class ManagerImpl implements WebBeansManager, Serializable
     */
    private ManagerImpl(
          ServiceRegistry serviceRegistry, 
-         List<Bean<?>> beans, 
+         List<Bean<?>> beans,
+         ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers,
+         Namespace rootNamespace,
          Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, 
          Map<String, RIBean<?>> riBeans,
          ClientProxyProvider clientProxyProvider,
-         ContextMap contexts,
+         ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts,
          Map<Bean<?>, Bean<?>> specializedBeans,
-         NamespaceManager namespaceManager,
          List<Class<? extends Annotation>> enabledDeploymentTypes
          )
    {
@@ -213,13 +220,12 @@ public class ManagerImpl implements WebBeansManager, Serializable
       this.beans = beans;
       this.newEnterpriseBeans = newEnterpriseBeans;
       this.riBeans = riBeans;
-      
       this.clientProxyProvider = clientProxyProvider;
       this.contexts = contexts;
       this.specializedBeans = specializedBeans;
-      
-      this.namespaceManager = namespaceManager;
+      this.registeredObservers = registeredObservers;
       setEnabledDeploymentTypes(enabledDeploymentTypes);
+      this.rootNamespace = rootNamespace;
       
       this.resolver = new Resolver(this);
       this.eventManager = new EventManager(this);
@@ -273,7 +279,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       }
       resolver.clear();
       beans.add(bean);
-      namespaceManager.register(bean);
+      registerBeanNamespace(bean);
       return this;
    }
 
@@ -466,9 +472,23 @@ public class ManagerImpl implements WebBeansManager, Serializable
                newEnterpriseBeans.put(bean.getType(), (EnterpriseBean<?>) bean);
             }
             riBeans.put(bean.getId(), bean);
-            namespaceManager.register(bean);
+            registerBeanNamespace(bean);
          }
          resolver.clear();
+      }
+   }
+   
+   protected void registerBeanNamespace(Bean<?> bean)
+   {
+      if (bean.getName() != null && bean.getName().indexOf('.') > 0)
+      {
+         String name = bean.getName().substring(0, bean.getName().lastIndexOf('.'));
+         String[] hierarchy = name.split("\\.");
+         Namespace namespace = getRootNamespace();
+         for (String s : hierarchy)
+         {
+            namespace = namespace.putIfAbsent(s);
+         }
       }
    }
 
@@ -507,7 +527,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
     */
    public Manager addContext(Context context)
    {
-      contexts.add(context);
+      contexts.put(context.getScopeType(), context);
       return this;
    }
 
@@ -622,7 +642,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
    public Context getContext(Class<? extends Annotation> scopeType)
    {
       List<Context> activeContexts = new ArrayList<Context>();
-      for (Context context : contexts.getContext(scopeType))
+      for (Context context : contexts.get(scopeType))
       {
          if (context.isActive())
          {
@@ -638,17 +658,6 @@ public class ManagerImpl implements WebBeansManager, Serializable
          throw new IllegalStateException("More than one context active for scope type " + scopeType.getName());
       }
       return activeContexts.iterator().next();
-   }
-
-   /**
-    * Direct access to built in contexts. For internal use.
-    * 
-    * @param scopeType The scope type of the context
-    * @return The context
-    */
-   public Context getBuiltInContext(Class<? extends Annotation> scopeType)
-   {
-      return contexts.getBuiltInContext(scopeType);
    }
 
    /**
@@ -936,11 +945,6 @@ public class ManagerImpl implements WebBeansManager, Serializable
    {
       return resolver;
    }
-   
-   public NamespaceManager getNamespaceManager()
-   {
-      return namespaceManager;
-   }
 
    /**
     * Gets a string representation
@@ -1067,9 +1071,19 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return clientProxyProvider;
    }
    
-   protected ContextMap getContexts()
+   protected ConcurrentListMultiMap<Class<? extends Annotation>, Context> getContexts()
    {
       return contexts;
+   }
+   
+   public ConcurrentSetMultiMap<Type, EventObserver<?>> getRegisteredObservers()
+   {
+      return registeredObservers;
+   }
+   
+   public Namespace getRootNamespace()
+   {
+      return rootNamespace;
    }
 
 }

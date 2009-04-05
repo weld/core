@@ -17,25 +17,17 @@
 
 package org.jboss.webbeans.introspector.jlr;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.inject.BindingType;
 import javax.inject.manager.Manager;
 
 import org.jboss.webbeans.introspector.AnnotatedMember;
-import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedMember;
 import org.jboss.webbeans.util.Reflections;
-import org.jboss.webbeans.util.Strings;
-import org.jboss.webbeans.util.collections.ForwardingMap;
 
 /**
  * Represents an abstract annotated memeber (field, method or constructor)
@@ -53,49 +45,6 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
    static abstract class WrappableForwardingAnnotatedMember<T, S extends Member> extends ForwardingAnnotatedMember<T, S> implements WrappableAnnotatedItem<T, S>
    {
       
-   }
-   
-   /**
-    * An annotation type -> list of annotations map
-    */
-   protected class AnnotatedParameterMap extends ForwardingMap<Class<? extends Annotation>, List<AnnotatedParameter<?>>>
-   {
-      private Map<Class<? extends Annotation>, List<AnnotatedParameter<?>>> delegate;
-
-      public AnnotatedParameterMap()
-      {
-         delegate = new HashMap<Class<? extends Annotation>, List<AnnotatedParameter<?>>>();
-      }
-
-      @Override
-      protected Map<Class<? extends Annotation>, List<AnnotatedParameter<?>>> delegate()
-      {
-         return delegate;
-      }
-
-      public void put(Class<? extends Annotation> key, AnnotatedParameter<?> value)
-      {
-         List<AnnotatedParameter<?>> parameters = super.get(key);
-         if (parameters == null)
-         {
-            parameters = new ArrayList<AnnotatedParameter<?>>();
-            super.put(key, parameters);
-         }
-         parameters.add(value);
-      }
-
-      @Override
-      public String toString()
-      {
-         return Strings.mapToString("AnnotatedParameterMap (annotation type -> parameter abstraction list): ", delegate);
-      }
-
-      @Override
-      public List<AnnotatedParameter<?>> get(Object key)
-      {
-         List<AnnotatedParameter<?>> parameters = super.get(key);
-         return parameters != null ? parameters : new ArrayList<AnnotatedParameter<?>>();
-      }
    }
 
    // The name of the member
