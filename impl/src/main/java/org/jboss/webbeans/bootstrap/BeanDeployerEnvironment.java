@@ -25,7 +25,8 @@ public class BeanDeployerEnvironment
    private static final AnnotatedItem<?, ?> OTHER_BEANS_ANNOTATED_ITEM = ResolvableAnnotatedClass.of(BeanDeployerEnvironment.class, new Annotation[0]);
 
    private final Map<AnnotatedClass<?>, AbstractClassBean<?>> classBeanMap;
-   private final Map<AnnotatedMethod<?>, ProducerMethodBean<?>> methodBeanMap;
+   private final Map<AnnotatedMethod<?>, ProducerMethodBean<?>> producerMethodBeanMap;
+   private final Map<AnnotatedMethod<?>, DisposalMethodBean<?>> disposalMethodBeanMap;
    private final Set<RIBean<?>> beans;
    private final Set<ObserverImpl<?>> observers;
    private final Set<DisposalMethodBean<?>> allDisposalBeans;
@@ -35,7 +36,8 @@ public class BeanDeployerEnvironment
    public BeanDeployerEnvironment(EjbDescriptorCache ejbDescriptors)
    {
       this.classBeanMap = new HashMap<AnnotatedClass<?>, AbstractClassBean<?>>();
-      this.methodBeanMap = new HashMap<AnnotatedMethod<?>, ProducerMethodBean<?>>();
+      this.producerMethodBeanMap = new HashMap<AnnotatedMethod<?>, ProducerMethodBean<?>>();
+      this.disposalMethodBeanMap = new HashMap<AnnotatedMethod<?>, DisposalMethodBean<?>>();
       this.allDisposalBeans = new HashSet<DisposalMethodBean<?>>();
       this.resolvedDisposalBeans = new HashSet<DisposalMethodBean<?>>();
       this.beans = new HashSet<RIBean<?>>();
@@ -45,13 +47,13 @@ public class BeanDeployerEnvironment
 
    public ProducerMethodBean<?> getProducerMethod(AnnotatedMethod<?> method)
    {
-      if (!methodBeanMap.containsKey(method))
+      if (!producerMethodBeanMap.containsKey(method))
       {
          return null;
       }
       else
       {
-         ProducerMethodBean<?> bean = methodBeanMap.get(method);
+         ProducerMethodBean<?> bean = producerMethodBeanMap.get(method);
          bean.initialize(this);
          return bean;
       }
@@ -81,8 +83,11 @@ public class BeanDeployerEnvironment
       }
       else if (value instanceof ProducerMethodBean)
       {
-         ProducerMethodBean<?> bean = (ProducerMethodBean<?>) value;
-         methodBeanMap.put(bean.getAnnotatedItem(), bean);
+          ProducerMethodBean<?> bean = (ProducerMethodBean<?>) value;
+          producerMethodBeanMap.put(bean.getAnnotatedItem(), bean);
+      } else if (value instanceof DisposalMethodBean) {
+    	  DisposalMethodBean<?> bean = (DisposalMethodBean<?>) value;
+    	  disposalMethodBeanMap.put(bean.getAnnotatedItem(), bean);
       }
       beans.add(value);
    }

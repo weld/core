@@ -29,10 +29,10 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
 public class DisposalMethodBean<T> extends AbstractBean<T, Method>
 {
 
-   protected DisposalMethodBean(ManagerImpl manager, AnnotatedMethod<T> disposalMethod, Bean<?> declaringBean)
+   protected DisposalMethodBean(ManagerImpl manager, AnnotatedMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
    {
       super(manager);
-      this.disposalMethod = disposalMethod;
+      this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
       this.declaringBean = declaringBean;
       checkDisposalMethod();
       initInjectionPoints();
@@ -42,27 +42,22 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       
    }
 
-   protected Bean<?> declaringBean;
-   protected AnnotatedMethod<T> disposalMethod;
+   protected AbstractClassBean<?> declaringBean;
+   private ProducerMethodBean<?> specializedBean;
+   protected MethodInjectionPoint<T> disposalMethodInjectionPoint;
    protected Set<AnnotatedInjectionPoint<?, ?>> disposalInjectionPoints;
    private String id;
 
-   @Override
-   protected void initTypes()
-   {
-      Set<Type> types = new HashSet<Type>();
-      types = new HashSet<Type>();
-      types.add(getType());
-      types.add(Object.class); // FODO: Maybe not?
-      super.types = types;
-   }
-
    protected void initType()
    {
-      this.type = (Class<T>) disposalMethod.getAnnotatedParameters(Disposes.class).get(0).getRawType();
+      this.type = (Class<T>) disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getRawType();
    }
 
-   public static <T> DisposalMethodBean<T> of(ManagerImpl manager, AnnotatedMethod<T> disposalMethod, Bean<?> declaringBean)
+   public AnnotatedMethod<T> getAnnotatedItem() {
+	   return disposalMethodInjectionPoint;
+   }
+   
+   public static <T> DisposalMethodBean<T> of(ManagerImpl manager, AnnotatedMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
    {
       return new DisposalMethodBean<T>(manager, disposalMethod, declaringBean);
    }
@@ -71,7 +66,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    {
       disposalInjectionPoints = new HashSet<AnnotatedInjectionPoint<?, ?>>();
 
-      List<? extends AnnotatedParameter<?>> disposalMethodParameters = disposalMethod.getParameters();
+      List<? extends AnnotatedParameter<?>> disposalMethodParameters = disposalMethodInjectionPoint.getParameters();
 
       // First one must be @Disposes, if more, register injectionpoints
       if (disposalMethodParameters.size() > 1)
@@ -83,7 +78,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
          }
       }
 
-      injectionPoints.add(MethodInjectionPoint.of(declaringBean, disposalMethod));
+      injectionPoints.add(MethodInjectionPoint.of(declaringBean, disposalMethodInjectionPoint));
 
    }
 
@@ -91,7 +86,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    public Set<Annotation> getBindings()
    {
       // At least 1 parameter exists, already checked in constructor
-      return disposalMethod.getParameters().get(0).getBindings();
+      return disposalMethodInjectionPoint.getParameters().get(0).getBindings();
    }
 
    @Override
@@ -108,7 +103,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    @Override
    public String getName()
    {
-      return disposalMethod.getPropertyName();
+      return disposalMethodInjectionPoint.getPropertyName();
    }
 
    @Override
@@ -126,7 +121,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    @Override
    public String toString()
    {
-      return disposalMethod.toString();
+      return disposalMethodInjectionPoint.toString();
    }
 
    @Override
@@ -148,6 +143,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
 
    public void invokeDisposeMethod(Object instance)
    {
+	   
       List<Object> parameters = new LinkedList<Object>();
 
       parameters.add(instance);
@@ -158,11 +154,11 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
          parameters.add(injectionObject);
       }
 
-      Object beanInstance = disposalMethod.isStatic() ? declaringBean : getManager().getInstance(declaringBean);
+      Object beanInstance = disposalMethodInjectionPoint.isStatic() ? declaringBean : getManager().getInstance(declaringBean);
 
       try
       {
-         disposalMethod.invoke(beanInstance, parameters.toArray());
+    	  disposalMethodInjectionPoint.invoke(beanInstance, parameters.toArray());
       }
       catch (Exception e)
       {
@@ -173,25 +169,25 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
 
    private void checkDisposalMethod()
    {
-      if (!disposalMethod.getParameters().get(0).isAnnotationPresent(Disposes.class))
+      if (!disposalMethodInjectionPoint.getParameters().get(0).isAnnotationPresent(Disposes.class))
       {
-         throw new DefinitionException(disposalMethod.toString() + " doesn't have @Dispose as first parameter");
+         throw new DefinitionException(disposalMethodInjectionPoint.toString() + " doesn't have @Dispose as first parameter");
       }
-      if (disposalMethod.getAnnotatedParameters(Disposes.class).size() > 1)
+      if (disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).size() > 1)
       {
-         throw new DefinitionException(disposalMethod.toString() + " has more than one @Dispose parameters");
+         throw new DefinitionException(disposalMethodInjectionPoint.toString() + " has more than one @Dispose parameters");
       }
-      if (disposalMethod.getAnnotatedParameters(Observes.class).size() > 0)
+      if (disposalMethodInjectionPoint.getAnnotatedParameters(Observes.class).size() > 0)
       {
-         throw new DefinitionException("@Observes is not allowed on disposal method, see " + disposalMethod.toString());
+         throw new DefinitionException("@Observes is not allowed on disposal method, see " + disposalMethodInjectionPoint.toString());
       }
-      if (disposalMethod.getAnnotation(Initializer.class) != null)
+      if (disposalMethodInjectionPoint.getAnnotation(Initializer.class) != null)
       {
-         throw new DefinitionException("@Intitializer is not allowed on a disposal method, see " + disposalMethod.toString());
+         throw new DefinitionException("@Intitializer is not allowed on a disposal method, see " + disposalMethodInjectionPoint.toString());
       }
-      if (disposalMethod.getAnnotation(Produces.class) != null)
+      if (disposalMethodInjectionPoint.getAnnotation(Produces.class) != null)
       {
-         throw new DefinitionException("@Produces is not allowed on a disposal method, see " + disposalMethod.toString());
+         throw new DefinitionException("@Produces is not allowed on a disposal method, see " + disposalMethodInjectionPoint.toString());
       }
       if (declaringBean instanceof EnterpriseBean)
       {
@@ -204,7 +200,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
                Class<?> clazz = (Class<?>) type;
                try
                {
-                  clazz.getDeclaredMethod(disposalMethod.getName(), disposalMethod.getParameterTypesAsArray());
+                  clazz.getDeclaredMethod(disposalMethodInjectionPoint.getName(), disposalMethodInjectionPoint.getParameterTypesAsArray());
                   methodDeclaredOnTypes = true;
                }
                catch (NoSuchMethodException nsme)
@@ -220,6 +216,26 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       }
    }
 
+   @Override
+   protected void preSpecialize(BeanDeployerEnvironment environment)
+   {
+      if (declaringBean.getAnnotatedItem().getSuperclass().getDeclaredMethod(getAnnotatedItem().getAnnotatedMethod()) == null)
+      {
+         throw new DefinitionException("Specialized disposal method does not override a method on the direct superclass");
+      }
+   }
+
+   @Override
+   protected void specialize(BeanDeployerEnvironment environment)
+   {
+      AnnotatedMethod<?> superClassMethod = declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod());
+      if (environment.getProducerMethod(superClassMethod) == null)
+      {
+         throw new IllegalStateException(toString() + " does not specialize a bean");
+      }
+      this.specializedBean = environment.getProducerMethod(superClassMethod);
+   }   
+   
    @Override
    public Class<T> getType()
    {
@@ -251,12 +267,6 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    }
 
    @Override
-   protected AnnotatedItem<T, Method> getAnnotatedItem()
-   {
-      return disposalMethod;
-   }
-
-   @Override
    protected Class<? extends Annotation> getDefaultDeploymentType()
    {
       return declaringBean.getDeploymentType();
@@ -265,7 +275,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    @Override
    protected String getDefaultName()
    {
-      return disposalMethod.getPropertyName();
+      return disposalMethodInjectionPoint.getPropertyName();
    }
 
    @Override
