@@ -28,7 +28,7 @@ import javassist.util.proxy.ProxyFactory;
 import javax.inject.DefinitionException;
 import javax.inject.manager.Bean;
 
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.collections.ConcurrentCache;
 
@@ -71,12 +71,12 @@ public class ClientProxyProvider
     * @throws InstantiationException When the proxy couldn't be created
     * @throws IllegalAccessException When the proxy couldn't be created
     */
-   private static <T> T createClientProxy(Bean<T> bean, int beanIndex) throws RuntimeException
+   private static <T> T createClientProxy(Bean<T> bean, ManagerImpl manager, int beanIndex) throws RuntimeException
    {
       
       try
       {
-         ClientProxyMethodHandler proxyMethodHandler = new ClientProxyMethodHandler(bean, beanIndex);
+         ClientProxyMethodHandler proxyMethodHandler = new ClientProxyMethodHandler(bean, manager, beanIndex);
          Set<Type> classes = new LinkedHashSet<Type>(bean.getTypes());
          classes.add(Serializable.class);
          ProxyFactory proxyFactory = Proxies.getProxyFactory(classes);
@@ -110,19 +110,19 @@ public class ClientProxyProvider
     * @return the client proxy for the bean
     */
    // TODO: What is this create parameter? Something obsolete?
-   public <T> T getClientProxy(final Bean<T> bean)
+   public <T> T getClientProxy(final ManagerImpl manager, final Bean<T> bean)
    {
       return pool.putIfAbsent(bean, new Callable<T>()
       {
 
          public T call() throws Exception
          {
-            int beanIndex = CurrentManager.rootManager().getBeans().indexOf(bean);
+            int beanIndex = manager.getBeans().indexOf(bean);
             if (beanIndex < 0)
             {
                throw new DefinitionException(bean + " is not known to the manager");
             }
-            return createClientProxy(bean, beanIndex);
+            return createClientProxy(bean, manager, beanIndex);
          }
 
       });

@@ -25,7 +25,7 @@ import javassist.util.proxy.MethodHandler;
 import javax.context.Context;
 import javax.inject.manager.Bean;
 
-import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -48,7 +48,9 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
    // The bean
    private transient Bean<?> bean;
    // The bean index in the manager
-   private int beanIndex;
+   private final int beanIndex;
+   
+   private final ManagerImpl manager; 
    
    private static final ThreadLocal<CreationalContextImpl<?>> currentCreationalContext  = new ThreadLocal<CreationalContextImpl<?>>();
 
@@ -58,10 +60,11 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
     * @param bean The bean to proxy
     * @param beanIndex The index to the bean in the manager bean list
     */
-   public ClientProxyMethodHandler(Bean<?> bean, int beanIndex)
+   public ClientProxyMethodHandler(Bean<?> bean, ManagerImpl manager, int beanIndex)
    {
       this.bean = bean;
       this.beanIndex = beanIndex;
+      this.manager = manager;
       log.trace("Created method handler for bean " + bean + " indexed as " + beanIndex);
    }
 
@@ -88,7 +91,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
    {
       if (bean == null)
       {
-         bean = CurrentManager.rootManager().getBeans().get(beanIndex);
+         bean = manager.getBeans().get(beanIndex);
       }
       Object proxiedInstance = getProxiedInstance(bean); 
       Object returnValue = Reflections.lookupMethod(proxiedMethod, proxiedInstance).invoke(proxiedInstance, args);
@@ -110,7 +113,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
       }
       try
       {
-         Context context = CurrentManager.rootManager().getContext(bean.getScopeType());
+         Context context = manager.getContext(bean.getScopeType());
          return context.get(bean, creationalContext);
       }
       finally

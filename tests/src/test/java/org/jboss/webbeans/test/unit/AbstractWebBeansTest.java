@@ -1,6 +1,10 @@
 package org.jboss.webbeans.test.unit;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.Arrays;
@@ -112,6 +116,20 @@ public abstract class AbstractWebBeansTest extends AbstractTest
       {
          throw new RuntimeException("Error loading resource from classloader" + name, e);
       }
+   }
+   
+   protected byte[] serialize(Object instance) throws IOException
+   {
+      ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+      ObjectOutputStream out = new ObjectOutputStream(bytes);
+      out.writeObject(instance);
+      return bytes.toByteArray();
+   }
+
+   protected Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException
+   {
+      ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
+      return in.readObject();
    }
    
 }

@@ -17,6 +17,9 @@
 
 package org.jboss.webbeans;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 
 /**
  * Access point for getting/setting current Managager 
@@ -25,8 +28,11 @@ package org.jboss.webbeans;
  */
 public class CurrentManager 
 {
+   
    // The root manager instance
-   protected static ManagerImpl managerImpl;
+   private static Integer rootManagerId;
+   
+   private final static Map<Integer, ManagerImpl> managers = new ConcurrentHashMap<Integer, ManagerImpl>();
 
    /**
     * Gets the root manager
@@ -35,7 +41,7 @@ public class CurrentManager
     */
    public static ManagerImpl rootManager()
    {
-      return managerImpl;
+      return managers.get(rootManagerId);
    }
    
    /**
@@ -45,7 +51,26 @@ public class CurrentManager
     */
    public static void setRootManager(ManagerImpl managerImpl) 
    {
-      CurrentManager.managerImpl = managerImpl;
+      if (managerImpl == null)
+      {
+         rootManagerId = null;
+      }
+      else
+      {
+         rootManagerId = add(managerImpl);
+      }
+   }
+   
+   public static ManagerImpl get(Integer key)
+   {
+      return managers.get(key);
+   }
+   
+   public static Integer add(ManagerImpl manager)
+   {
+      Integer id = manager.getId();
+      managers.put(id, manager);
+      return id;
    }
    
 }

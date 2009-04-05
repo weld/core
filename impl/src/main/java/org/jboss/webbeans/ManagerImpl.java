@@ -34,9 +34,11 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.context.Context;
 import javax.context.ContextNotActiveException;
@@ -82,9 +84,9 @@ import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
-import org.jboss.webbeans.util.collections.multi.ConcurrentSetHashMultiMap;
 import org.jboss.webbeans.util.collections.multi.ConcurrentListHashMultiMap;
 import org.jboss.webbeans.util.collections.multi.ConcurrentListMultiMap;
+import org.jboss.webbeans.util.collections.multi.ConcurrentSetHashMultiMap;
 import org.jboss.webbeans.util.collections.multi.ConcurrentSetMultiMap;
 
 /**
@@ -123,6 +125,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
    private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans;
    private transient final Map<String, RIBean<?>> riBeans;
    private final transient Map<Bean<?>, Bean<?>> specializedBeans;
+   private final transient AtomicInteger ids;
    
    
    /*
@@ -141,7 +144,9 @@ public class ManagerImpl implements WebBeansManager, Serializable
    private transient final ThreadLocal<Stack<InjectionPoint>> currentInjectionPoint;
    private transient List<Bean<?>> beans;
    private final transient Namespace rootNamespace;
-   private final ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers;
+   private final transient ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers;
+   private final transient Set<ManagerImpl> childActivities;
+   private final Integer id;
    
    
    /**
@@ -166,8 +171,9 @@ public class ManagerImpl implements WebBeansManager, Serializable
             new ClientProxyProvider(), 
             new ConcurrentListHashMultiMap<Class<? extends Annotation>, Context>(),
             new HashMap<Bean<?>, Bean<?>>(),
-            
-            defaultEnabledDeploymentTypes);
+            defaultEnabledDeploymentTypes,
+            new AtomicInteger()
+            );
    }
    
    /**
@@ -195,7 +201,9 @@ public class ManagerImpl implements WebBeansManager, Serializable
             parentManager.getClientProxyProvider(),
             parentManager.getContexts(),
             parentManager.getSpecializedBeans(),
-            parentManager.getEnabledDeploymentTypes());
+            parentManager.getEnabledDeploymentTypes(),
+            parentManager.getIds()
+            );
    }
 
    /**
@@ -213,7 +221,8 @@ public class ManagerImpl implements WebBeansManager, Serializable
          ClientProxyProvider clientProxyProvider,
          ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts,
          Map<Bean<?>, Bean<?>> specializedBeans,
-         List<Class<? extends Annotation>> enabledDeploymentTypes
+         List<Class<? extends Annotation>> enabledDeploymentTypes,
+         AtomicInteger ids
          )
    {
       this.services = serviceRegistry;
@@ -226,10 +235,13 @@ public class ManagerImpl implements WebBeansManager, Serializable
       this.registeredObservers = registeredObservers;
       setEnabledDeploymentTypes(enabledDeploymentTypes);
       this.rootNamespace = rootNamespace;
+      this.ids = ids;
+      this.id = ids.incrementAndGet();
       
       this.resolver = new Resolver(this);
       this.eventManager = new EventManager(this);
       this.nonContextualInjector = new NonContextualInjector(this);
+      this.childActivities = new CopyOnWriteArraySet<ManagerImpl>();
       this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>()
       {
          @Override
@@ -280,6 +292,10 @@ public class ManagerImpl implements WebBeansManager, Serializable
       resolver.clear();
       beans.add(bean);
       registerBeanNamespace(bean);
+      for (ManagerImpl childActivity : childActivities)
+      {
+         childActivity.addBean(bean);
+      }
       return this;
    }
 
@@ -557,43 +573,44 @@ public class ManagerImpl implements WebBeansManager, Serializable
       throw new UnsupportedOperationException("Not yet implemented");
    }
 
-   /**
-    * Registers an observer for a given event type and binding types
-    * 
-    * @param observer The observer to register
-    * @param eventType The event type to match
-    * @param bindings The bindings to match
-    * @return A reference to the manager
-    * 
-    * @see javax.inject.manager.Manager#addObserver(javax.event.Observer,
-    *      java.lang.Class, java.lang.annotation.Annotation[])
-    */
    public <T> Manager addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
-      this.eventManager.addObserver(observer, eventType, bindings);
-      return this;
-   }
-
-   public <T> Manager addObserver(ObserverImpl<T> observer)
-   {
-      this.eventManager.addObserver(observer, observer.getEventType(), observer.getBindingsAsArray());
-      return this;
+      return _addObserver(observer, eventType, bindings);
    }
 
    /**
-    * Registers an observer for a given event type literal and binding types
+    * Shortcut to register an ObserverImpl
     * 
-    * @param observer The observer to register
-    * @param eventType The event type literal to match
-    * @param bindings The bindings to match
-    * @return A reference to the manager
-    * 
-    * @see javax.inject.manager.Manager#addObserver(javax.event.Observer,
-    *      javax.inject.TypeLiteral, java.lang.annotation.Annotation[])
+    * @param <T>
+    * @param observer
+    * @return
     */
+   public <T> Manager addObserver(ObserverImpl<T> observer)
+   {
+      return _addObserver(observer, observer.getEventType(), observer.getBindingsAsArray());
+   }
+
    public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
-      eventManager.addObserver(observer, eventType.getType(), bindings);
+      return _addObserver(observer, eventType.getType(), bindings);
+   }
+   
+   /**
+    * Does the actual observer registration
+    *  
+    * @param <T>
+    * @param observer
+    * @param eventType
+    * @param bindings
+    * @return
+    */
+   protected <T> Manager _addObserver(Observer<T> observer, Type eventType, Annotation... bindings)
+   {
+      this.eventManager.addObserver(observer, eventType, bindings);
+      for (ManagerImpl childActivity : childActivities)
+      {
+         childActivity._addObserver(observer, eventType, bindings);
+      }
       return this;
    }
 
@@ -704,7 +721,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       {
          if (creationalContext != null || (creationalContext == null && getContext(bean.getScopeType()).get(bean) != null))
          {
-            return (T) clientProxyProvider.getClientProxy(bean);
+            return (T) clientProxyProvider.getClientProxy(this, bean);
          }
          else
          {
@@ -968,9 +985,12 @@ public class ManagerImpl implements WebBeansManager, Serializable
       throw new UnsupportedOperationException();
    }
 
-   public Manager createActivity()
+   public ManagerImpl createActivity()
    {
-      return newChildManager(this);
+      ManagerImpl childActivity = newChildManager(this);
+      childActivities.add(childActivity);
+      CurrentManager.add(childActivity);
+      return childActivity;
    }
 
    public Manager setCurrent(Class<? extends Annotation> scopeType)
@@ -1015,7 +1035,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
 
    protected Object readResolve()
    {
-      return CurrentManager.rootManager();
+      return CurrentManager.get(id);
    }
 
    /**
@@ -1074,6 +1094,16 @@ public class ManagerImpl implements WebBeansManager, Serializable
    protected ConcurrentListMultiMap<Class<? extends Annotation>, Context> getContexts()
    {
       return contexts;
+   }
+   
+   protected AtomicInteger getIds()
+   {
+      return ids;
+   }
+   
+   public Integer getId()
+   {
+      return id;
    }
    
    public ConcurrentSetMultiMap<Type, EventObserver<?>> getRegisteredObservers()
