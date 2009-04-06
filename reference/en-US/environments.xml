@@ -51,14 +51,14 @@ $ ant update</programlisting>
    </section>
    
    <section>
-      <title>Tomcat</title>
+      <title>Tomcat (or any plain Servlet container)</title>
       
       <para>Web Beans can be used in Tomcat 6.0.</para>
       
       <note>
          <para>
             Web Beans doesn't support deploying session beans, injection using
-            <literal>@EJB</literal>, <literal>@Resource</literal>, or 
+            <literal>@EJB</literal>, or 
             <literal>@PersistenceContext</literal> or using transactional events
             on Tomcat.
          </para>
@@ -122,7 +122,7 @@ $ ant update</programlisting>
       </para>
          
       <programlisting><![CDATA[<listener>
-   <listener-class>org.jboss.webbeans.environment.tomcat.Listener</listener-class>
+   <listener-class>org.jboss.webbeans.environment.servlet.Listener</listener-class>
 </listener>]]></programlisting>
 
       <para>
