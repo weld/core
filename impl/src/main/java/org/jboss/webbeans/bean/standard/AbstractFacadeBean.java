@@ -11,9 +11,13 @@ import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.log.Log;
+import org.jboss.webbeans.log.Logging;
 
 public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
 {
+   
+   private static final Log log = Logging.getLog(AbstractFacadeBean.class);
 
    protected AbstractFacadeBean(ManagerImpl manager)
    {
@@ -25,16 +29,22 @@ public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
       try
       {
          DependentContext.INSTANCE.setActive(true);
-         //TODO Fix to use IP's manager rather than this bean's
          InjectionPoint injectionPoint = this.getManager().getInjectionPoint();
-         Type genericType = injectionPoint.getType();
-         if (genericType instanceof ParameterizedType )
+         if (injectionPoint != null)
          {
-            Type type = ((ParameterizedType) genericType).getActualTypeArguments()[0];
-            if (type instanceof Class)
+            Type genericType = injectionPoint.getType();
+            if (genericType instanceof ParameterizedType )
             {
-               Class<?> clazz = Class.class.cast(type);
-               return newInstance(clazz, fixBindings(injectionPoint.getBindings()));
+               Type type = ((ParameterizedType) genericType).getActualTypeArguments()[0];
+               if (type instanceof Class)
+               {
+                  Class<?> clazz = Class.class.cast(type);
+                  return newInstance(clazz, fixBindings(injectionPoint.getBindings()));
+               }
+               else
+               {
+                  throw new IllegalStateException("Must have concrete type argument " + injectionPoint);
+               }
             }
             else
             {
@@ -43,9 +53,9 @@ public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
          }
          else
          {
-            throw new IllegalStateException("Must have concrete type argument " + injectionPoint);
+            log.warn("Dynamic lookup of " + toString() + " is not supported");
+            return null;
          }
-         
       }
       finally
       {
