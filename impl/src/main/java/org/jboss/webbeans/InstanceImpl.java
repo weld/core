@@ -18,10 +18,12 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.inject.Instance;
-import javax.inject.manager.Manager;
+
+import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
 
 /**
  * Helper implementation for Instance for getting instances
@@ -35,9 +37,9 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
 {
    
 
-   public static <I> Instance<I> of(Class<I> clazz, ManagerImpl manager, Set<Annotation> annotations)
+   public static <I> Instance<I> of(Type type, ManagerImpl manager, Set<Annotation> annotations)
    {
-      return new InstanceImpl<I>(clazz, manager, annotations);
+      return new InstanceImpl<I>(type, manager, annotations);
    }
    
    /**
@@ -47,7 +49,7 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
     * @param manager The Web Beans manager
     * @param bindings The binding types
     */
-   private InstanceImpl(Class<T> type, ManagerImpl manager, Set<Annotation> bindings)
+   private InstanceImpl(Type type, ManagerImpl manager, Set<Annotation> bindings)
    {
       super(type, manager, bindings);
    }
@@ -63,7 +65,8 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
     */
    public T get(Annotation... bindings) 
    {
-      return getManager().getInstanceByType(type, mergeInBindings(bindings));
+      Annotation[] annotations = mergeInBindings(bindings);
+      return getManager().getInstanceByType(ResolvableAnnotatedClass.<T>of(type, annotations), annotations);
    }
 
    /**

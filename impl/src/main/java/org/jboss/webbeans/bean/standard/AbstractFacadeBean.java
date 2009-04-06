@@ -36,15 +36,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
             if (genericType instanceof ParameterizedType )
             {
                Type type = ((ParameterizedType) genericType).getActualTypeArguments()[0];
-               if (type instanceof Class)
-               {
-                  Class<?> clazz = Class.class.cast(type);
-                  return newInstance(clazz, fixBindings(injectionPoint.getBindings()));
-               }
-               else
-               {
-                  throw new IllegalStateException("Must have concrete type argument " + injectionPoint);
-               }
+               return newInstance(type, fixBindings(injectionPoint.getBindings()));
             }
             else
             {
@@ -97,6 +89,6 @@ public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
     */
    protected abstract Set<Class<? extends Annotation>> getFilteredAnnotationTypes();
    
-   protected abstract T newInstance(Class<?> clazz, Set<Annotation> annotations);
+   protected abstract T newInstance(Type type, Set<Annotation> annotations);
    
 }

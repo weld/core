@@ -626,7 +626,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
 
    public <T> Manager addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
    {
-      return _addObserver(observer, eventType, bindings);
+      return addObserverByType(observer, eventType, bindings);
    }
 
    /**
@@ -638,12 +638,12 @@ public class ManagerImpl implements WebBeansManager, Serializable
     */
    public <T> Manager addObserver(ObserverImpl<T> observer)
    {
-      return _addObserver(observer, observer.getEventType(), observer.getBindingsAsArray());
+      return addObserverByType(observer, observer.getEventType(), observer.getBindingsAsArray());
    }
 
    public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
    {
-      return _addObserver(observer, eventType.getType(), bindings);
+      return addObserverByType(observer, eventType.getType(), bindings);
    }
    
    /**
@@ -655,12 +655,12 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * @param bindings
     * @return
     */
-   protected <T> Manager _addObserver(Observer<T> observer, Type eventType, Annotation... bindings)
+   public <T> Manager addObserverByType(Observer<T> observer, Type eventType, Annotation... bindings)
    {
       this.eventManager.addObserver(observer, eventType, bindings);
       for (ManagerImpl childActivity : childActivities)
       {
-         childActivity._addObserver(observer, eventType, bindings);
+         childActivity.addObserverByType(observer, eventType, bindings);
       }
       return this;
    }
@@ -901,7 +901,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * @param bindings The binding types to match
     * @return An instance of the bean
     */
-   private <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindings)
+   public <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
       return getInstance(getBeanByType(element, bindings));
    }

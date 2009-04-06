@@ -64,4 +64,18 @@ public class ParameterizedProducerTest extends AbstractWebBeansTest
       assert item.getSetterInjection().size() == 4;
 
    }
+   
+   @Test
+   public void testInstanceList()
+   {
+        ListInstance listInstance = manager.getInstanceByType(ListInstance.class);
+        assert listInstance.get().size() == 3;
+   }
+   
+   @Test
+   public void testTypeParameterInstance()
+   {
+        ListStringInstance listInstance = manager.getInstanceByType(ListStringInstance.class);
+        assert listInstance.get().size() == 2;
+   }
 }

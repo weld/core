@@ -56,9 +56,9 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
    }
 
    @Override
-   protected Event<?> newInstance(Class<?> clazz, Set<Annotation> annotations)
+   protected Event<?> newInstance(Type type, Set<Annotation> annotations)
    {
-      return EventImpl.of(clazz, getManager(), annotations);
+      return EventImpl.of(type, getManager(), annotations);
    }
 
    @Override

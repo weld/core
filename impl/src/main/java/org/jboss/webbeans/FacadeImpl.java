@@ -18,6 +18,7 @@
 package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,7 +43,7 @@ public abstract class FacadeImpl<T>
    // The Web Beans manager
    private final ManagerImpl manager;
    // The type of the operation
-   protected final Class<T> type;
+   protected final Type type;
 
    /**
     * Constructor
@@ -51,7 +52,7 @@ public abstract class FacadeImpl<T>
     * @param manager The Web Beans manager
     * @param bindings The binding types
     */
-   protected FacadeImpl(Class<T> type, ManagerImpl manager, Set<? extends Annotation> bindings)
+   protected FacadeImpl(Type type, ManagerImpl manager, Set<? extends Annotation> bindings)
    {
       this.manager = manager;
       this.type = type;

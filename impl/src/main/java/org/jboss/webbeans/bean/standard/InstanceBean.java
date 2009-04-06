@@ -55,9 +55,9 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    }
 
    @Override
-   protected Instance<?> newInstance(Class<?> clazz, Set<Annotation> annotations)
+   protected Instance<?> newInstance(Type type, Set<Annotation> annotations)
    {
-      return InstanceImpl.of(clazz, getManager(), annotations);
+      return InstanceImpl.of(type, getManager(), annotations);
    }
 
    @Override
