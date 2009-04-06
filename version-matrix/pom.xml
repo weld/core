@@ -257,6 +257,12 @@
          </dependency>
          
          <dependency>
+            <groupId>org.jboss.webbeans</groupId>
+            <artifactId>webbeans-core-test</artifactId>
+            <version>${webbeans.version}</version>
+         </dependency>
+         
+         <dependency>
             <groupId>org.jboss.webbeans.tomcat</groupId>
             <artifactId>webbeans-tomcat-int</artifactId>
             <version>${webbeans.tomcat.version}</version>

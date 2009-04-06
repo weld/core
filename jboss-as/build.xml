@@ -23,7 +23,7 @@
 		<delete dir="target" failonerror="false" />
 
 		<artifact:dependencies filesetId="webbeans.deployer.fileset" versionsId="webbeans.deployer.versions" >
-			<dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-ri-int-deployer" version="${webbeans-ri-int.version}" type="zip" />
+			<dependency groupId="org.jboss.webbeans.integration" artifactId="webbeans-jboss-int-deployer" version="${webbeans-ri-int.version}" type="zip" />
 			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-core" version="${webbeans.version}" />
 			<remoteRepository id="repository.jboss.org" url="http://repository.jboss.org/maven2" />
 			<remoteRepository id="snapshots.jboss.org" url="http://snapshots.jboss.org/maven2" />
@@ -38,7 +38,7 @@
 			</chainedmapper>
 		</copy>
 
-		<unzip dest="target" src="target/dependency/lib/webbeans-ri-int-deployer.zip" />
+		<unzip dest="target" src="target/dependency/lib/webbeans-jboss-int-deployer.zip" />
 		
       <copy todir="target/webbeans.deployer/lib-int/" overwrite="true">
          <fileset dir="target/dependency/lib">
