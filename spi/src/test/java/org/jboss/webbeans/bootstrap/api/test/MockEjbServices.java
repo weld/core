@@ -11,25 +11,16 @@ public class MockEjbServices implements EjbServices
    
    public Iterable<EjbDescriptor<?>> discoverEjbs()
    {
-      // TODO Auto-generated method stub
       return null;
    }
    
    public SessionObjectReference resolveEjb(EjbDescriptor<?> ejbDescriptor)
    {
-      // TODO Auto-generated method stub
       return null;
    }
    
    public Object resolveEjb(InjectionPoint injectionPoint)
    {
-      // TODO Auto-generated method stub
-      return null;
-   }
-   
-   public Object resolveResource(InjectionPoint injectionPoint)
-   {
-      // TODO Auto-generated method stub
       return null;
    }
    

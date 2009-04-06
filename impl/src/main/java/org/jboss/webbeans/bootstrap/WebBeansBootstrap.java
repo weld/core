@@ -52,6 +52,7 @@ import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.jpa.spi.JpaServices;
 import org.jboss.webbeans.jsf.JSFApiAbstraction;
 import org.jboss.webbeans.literal.DeployedLiteral;
 import org.jboss.webbeans.literal.InitializedLiteral;
@@ -64,6 +65,7 @@ import org.jboss.webbeans.resources.DefaultResourceLoader;
 import org.jboss.webbeans.resources.ManagerObjectFactory;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.webbeans.resources.spi.ResourceServices;
 import org.jboss.webbeans.servlet.HttpSessionManager;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
@@ -100,7 +102,15 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       }
       if (!getServices().contains(EjbServices.class))
       {
-         log.info("EJB services not available. Session beans will be simple beans, injection into non-contextual EJBs, injection of @Resource, @PersistenceContext and @EJB in simple beans, injection of Java EE resources and JMS resources will not be available.");
+         log.info("EJB services not available. Session beans will be simple beans, injection into non-contextual EJBs, injection of @EJB in simple beans, injection of Java EE resources and JMS resources will not be available.");
+      }
+      if (!getServices().contains(JpaServices.class))
+      {
+         log.info("JPA services not available. Injection of @PersistenceContext will not occur. Entity beans will be discovered as simple beans.");
+      }
+      if (!getServices().contains(ResourceServices.class))
+      {
+         log.info("@Resource injection not available.");
       }
       addImplementationServices();
       this.manager = ManagerImpl.newRootManager(ServiceRegistries.unmodifiableServiceRegistry(getServices()));

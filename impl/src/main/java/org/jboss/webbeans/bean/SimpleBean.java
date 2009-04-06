@@ -47,6 +47,7 @@ import org.jboss.webbeans.jpa.spi.JpaServices;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.MetaDataCache;
+import org.jboss.webbeans.resources.spi.ResourceServices;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
@@ -258,25 +259,33 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void injectEjbAndCommonFields(T beanInstance)
    {
-      if (getManager().getServices().contains(EjbServices.class))
+      EjbServices ejbServices = manager.getServices().get(EjbServices.class);
+      JpaServices jpaServices = manager.getServices().get(JpaServices.class);
+      ResourceServices resourceServices = manager.getServices().get(ResourceServices.class);
+      
+      if (ejbServices != null)
       {
-         EjbServices ejbServices = manager.getServices().get(EjbServices.class);
-         JpaServices jpaServices = manager.getServices().get(JpaServices.class);
          for (AnnotatedInjectionPoint<?, ?> injectionPoint : ejbInjectionPoints)
          {
             Object ejbInstance = ejbServices.resolveEjb(injectionPoint);
             injectionPoint.inject(beanInstance, ejbInstance);
          }
-   
+      }
+
+      if (jpaServices != null)
+      {
          for (AnnotatedInjectionPoint<?, ?> injectionPoint : persistenceUnitInjectionPoints)
          {
             Object puInstance = jpaServices.resolvePersistenceContext(injectionPoint);
             injectionPoint.inject(beanInstance, puInstance);
          }
-   
+      }
+
+      if (resourceServices != null)
+      {
          for (AnnotatedInjectionPoint<?, ?> injectionPoint : resourceInjectionPoints)
          {
-            Object resourceInstance = ejbServices.resolveResource(injectionPoint);
+            Object resourceInstance = resourceServices.resolveResource(injectionPoint);
             injectionPoint.inject(beanInstance, resourceInstance);
          }
       }

@@ -3,6 +3,7 @@
  */
 package org.jboss.webbeans.mock;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 
 import javax.inject.manager.InjectionPoint;
@@ -23,11 +24,6 @@ public class MockEjBServices implements EjbServices
    }
    
    public Object resolveEjb(InjectionPoint injectionPoint)
-   {
-      return null;
-   }
-   
-   public Object resolveResource(InjectionPoint injectionPoint)
    {
       return null;
    }
@@ -57,6 +53,12 @@ public class MockEjBServices implements EjbServices
          {
             // TODO Auto-generated method stub
             
+         }
+         
+         public Object getFieldValue(Field field)
+         {
+            // TODO Auto-generated method stub
+            return null;
          }
          
       };

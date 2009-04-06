@@ -46,11 +46,6 @@ public abstract class ForwardingEjbServices implements EjbServices
    {
       return delegate().resolveEjb(ejbDescriptor);
    }
-   
-   public Object resolveResource(InjectionPoint injectionPoint)
-   {
-      return delegate().resolveResource(injectionPoint);
-   }
 
    public Iterable<EjbDescriptor<?>> discoverEjbs()
    {

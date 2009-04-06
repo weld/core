@@ -7,19 +7,15 @@ public class MockNamingContext implements NamingContext
    
    public void bind(String name, Object value)
    {
-      // TODO Auto-generated method stub
-      
    }
    
    public <T> T lookup(String name, Class<? extends T> expectedType)
    {
-      // TODO Auto-generated method stub
       return null;
    }
 
    public void unbind(String key)
    {
-      // TODO Auto-generated method stub
       
    }
    

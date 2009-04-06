@@ -10,6 +10,7 @@ import org.jboss.webbeans.jpa.spi.JpaServices;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.webbeans.resources.spi.ResourceServices;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 
 /**
@@ -46,6 +47,16 @@ public class BootstrapBean implements Bootstrap
    public JpaServices getJpaServices()
    {
       return bootstrap.getServices().get(JpaServices.class);
+   }
+   
+   public ResourceServices getResourceServices()
+   {
+      return bootstrap.getServices().get(ResourceServices.class);
+   }
+   
+   public void setResourceServices(ResourceServices resourceServices)
+   {
+      bootstrap.getServices().add(ResourceServices.class, resourceServices);
    }
 
    public void setWebBeanDiscovery(WebBeanDiscovery webBeanDiscovery)

@@ -11,13 +11,11 @@ public class MockJpaServices implements JpaServices
    
    public Collection<Class<?>> discoverEntities()
    {
-      // TODO Auto-generated method stub
       return null;
    }
    
    public Object resolvePersistenceContext(InjectionPoint injectionPoint)
    {
-      // TODO Auto-generated method stub
       return null;
    }
    

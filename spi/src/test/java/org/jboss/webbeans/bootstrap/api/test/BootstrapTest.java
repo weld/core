@@ -8,6 +8,7 @@ import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.jpa.spi.JpaServices;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
+import org.jboss.webbeans.resources.spi.ResourceServices;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 import org.testng.annotations.Test;
 
@@ -36,6 +37,7 @@ public class BootstrapTest
       bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
       bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
+      bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
       bootstrap.initialize();
    }
    
@@ -50,6 +52,7 @@ public class BootstrapTest
       bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
       bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
+      bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
       bootstrap.initialize();
    }
    
@@ -65,6 +68,7 @@ public class BootstrapTest
       bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
+      bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
       bootstrap.initialize();
    }
    
@@ -80,6 +84,7 @@ public class BootstrapTest
       bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
+      bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
       bootstrap.initialize();
    }
    
@@ -94,6 +99,22 @@ public class BootstrapTest
       bootstrap.getServices().add(EjbServices.class, new MockEjbServices()); 
       bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());
       bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
+      bootstrap.getServices().add(ResourceServices.class, new MockResourceServices());
+      bootstrap.initialize();
+   }
+   
+   @Test(expectedExceptions=IllegalStateException.class)
+   public void testMissingResourceServices()
+   {
+      AbstractBootstrap bootstrap = new MockBootstrap();
+      bootstrap.setEnvironment(Environments.EE);
+      bootstrap.getServices().add(NamingContext.class, new MockNamingContext());
+      bootstrap.getServices().add(ResourceLoader.class, new MockResourceLoader());
+      bootstrap.setApplicationContext(new ConcurrentHashMapBeanStore());
+      bootstrap.getServices().add(EjbServices.class, new MockEjbServices()); 
+      bootstrap.getServices().add(WebBeanDiscovery.class, new MockWebBeanDiscovery());
+      bootstrap.getServices().add(JpaServices.class, new MockJpaServices());
+      bootstrap.getServices().add(TransactionServices.class, new MockTransactionServices());
       bootstrap.initialize();
    }
    

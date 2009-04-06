@@ -9,19 +9,16 @@ public class MockResourceLoader implements ResourceLoader
    
    public Class<?> classForName(String name)
    {
-      // TODO Auto-generated method stub
       return null;
    }
    
    public URL getResource(String name)
    {
-      // TODO Auto-generated method stub
       return null;
    }
    
    public Iterable<URL> getResources(String name)
    {
-      // TODO Auto-generated method stub
       return null;
    }
    

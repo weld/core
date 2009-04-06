@@ -8,13 +8,11 @@ public class MockBootstrap extends AbstractBootstrap
    
    public void boot()
    {
-      // TODO Auto-generated method stub
       
    }
    
    public WebBeansManager getManager()
    {
-      // TODO Auto-generated method stub
       return null;
    }
    
@@ -25,8 +23,6 @@ public class MockBootstrap extends AbstractBootstrap
    
    public void shutdown()
    {
-      // TODO Auto-generated method stub
-      
    }
    
 }

@@ -16,27 +16,20 @@
  */
 package org.jboss.webbeans.mock;
 
-import org.jboss.webbeans.bootstrap.api.Environments;
-import org.jboss.webbeans.ejb.spi.EjbServices;
-import org.jboss.webbeans.jpa.spi.JpaServices;
+import javax.inject.manager.InjectionPoint;
+
 import org.jboss.webbeans.resources.spi.ResourceServices;
-import org.jboss.webbeans.transaction.spi.TransactionServices;
 
-public class MockEELifecycle extends MockServletLifecycle
+/**
+ * @author Pete Muir
+ *
+ */
+public class MockResourceServices implements ResourceServices
 {
-   
-   private static final TransactionServices MOCK_TRANSACTION_SERVICES = new MockTransactionServices();
 
-   public MockEELifecycle()
+   public Object resolveResource(InjectionPoint injectionPoint)
    {
-      super();
-      getBootstrap().getServices().add(TransactionServices.class, MOCK_TRANSACTION_SERVICES);
-      getBootstrap().getServices().add(EjbServices.class, new MockEjBServices(getWebBeanDiscovery()));
-      getBootstrap().getServices().add(JpaServices.class, new MockJpaServices(getWebBeanDiscovery()));
-      getBootstrap().getServices().add(ResourceServices.class, new MockResourceServices());
-      getBootstrap().setEnvironment(Environments.EE);
+      return null;
    }
-   
-  
    
 }

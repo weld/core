@@ -9,13 +9,11 @@ public class MockWebBeanDiscovery implements WebBeanDiscovery
    
    public Iterable<Class<?>> discoverWebBeanClasses()
    {
-      // TODO Auto-generated method stub
       return null;
    }
    
    public Iterable<URL> discoverWebBeansXml()
    {
-      // TODO Auto-generated method stub
       return null;
    }
    
