@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.DuplicateBindingTypeException;
-import javax.inject.manager.Manager;
 
 import org.jboss.webbeans.metadata.MetaDataCache;
 
@@ -41,7 +40,7 @@ public abstract class FacadeImpl<T>
    // The binding types the helper operates on
    protected final Set<? extends Annotation> bindings;
    // The Web Beans manager
-   protected final ManagerImpl manager;
+   private final ManagerImpl manager;
    // The type of the operation
    protected final Class<T> type;
 
@@ -76,7 +75,7 @@ public abstract class FacadeImpl<T>
       result.addAll(bindings);
       for (Annotation newAnnotation : newBindings)
       {
-         if (!manager.getServices().get(MetaDataCache.class).getBindingTypeModel(newAnnotation.annotationType()).isValid())
+         if (!getManager().getServices().get(MetaDataCache.class).getBindingTypeModel(newAnnotation.annotationType()).isValid())
          {
             throw new IllegalArgumentException(newAnnotation + " is not a binding for " + this);
          }
@@ -86,6 +85,11 @@ public abstract class FacadeImpl<T>
          }
       }
       return result.toArray(EMPTY_BINDINGS);
+   }
+
+   protected ManagerImpl getManager()
+   {
+      return manager.getCurrent();
    }
 
 }

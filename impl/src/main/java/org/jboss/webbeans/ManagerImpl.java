@@ -101,6 +101,54 @@ import org.jboss.webbeans.util.collections.multi.ConcurrentSetMultiMap;
 public class ManagerImpl implements WebBeansManager, Serializable
 {
    
+   private static class CurrentActivity
+   {
+      
+      private final Context context;
+      private final ManagerImpl manager;      
+      
+      public CurrentActivity(Context context, ManagerImpl manager)
+      {
+         this.context = context;
+         this.manager = manager;
+      }
+
+      public Context getContext()
+      {
+         return context;
+      }
+      
+      public ManagerImpl getManager()
+      {
+         return manager;
+      }
+      
+      @Override
+      public boolean equals(Object obj)
+      {
+         if (obj instanceof CurrentActivity)
+         {
+            return this.getContext().equals(((CurrentActivity) obj).getContext());
+         }
+         else
+         {
+            return false;
+         }
+      }
+      
+      @Override
+      public int hashCode()
+      {
+         return getContext().hashCode();
+      }
+      
+      @Override
+      public String toString()
+      {
+         return getContext() + " -> " + getManager();
+      }
+   }
+   
    private static final Log log = Logging.getLog(ManagerImpl.class);
 
    private static final long serialVersionUID = 3021562879133838561L;
@@ -121,12 +169,12 @@ public class ManagerImpl implements WebBeansManager, Serializable
     */
    private transient List<Class<? extends Annotation>> enabledDeploymentTypes;
    private transient final ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts;
+   private final transient Set<CurrentActivity> currentActivities;
    private transient final ClientProxyProvider clientProxyProvider;
    private transient final Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans;
    private transient final Map<String, RIBean<?>> riBeans;
    private final transient Map<Bean<?>, Bean<?>> specializedBeans;
    private final transient AtomicInteger ids;
-   
    
    /*
     * Activity scoped services
@@ -134,8 +182,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
     */  
    private transient final EventManager eventManager;
    private transient final Resolver resolver;
-   private final transient NonContextualInjector nonContextualInjector;
-   
+   private final transient NonContextualInjector nonContextualInjector;   
    
    /*
     * Activity scoped data structures
@@ -170,6 +217,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
             new ConcurrentHashMap<String, RIBean<?>>(), 
             new ClientProxyProvider(), 
             new ConcurrentListHashMultiMap<Class<? extends Annotation>, Context>(),
+            new CopyOnWriteArraySet<CurrentActivity>(),
             new HashMap<Bean<?>, Bean<?>>(),
             defaultEnabledDeploymentTypes,
             new AtomicInteger()
@@ -200,6 +248,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
             parentManager.getRiBeans(),
             parentManager.getClientProxyProvider(),
             parentManager.getContexts(),
+            parentManager.getCurrentActivities(),
             parentManager.getSpecializedBeans(),
             parentManager.getEnabledDeploymentTypes(),
             parentManager.getIds()
@@ -220,6 +269,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
          Map<String, RIBean<?>> riBeans,
          ClientProxyProvider clientProxyProvider,
          ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts,
+         Set<CurrentActivity> currentActivities,
          Map<Bean<?>, Bean<?>> specializedBeans,
          List<Class<? extends Annotation>> enabledDeploymentTypes,
          AtomicInteger ids
@@ -231,6 +281,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       this.riBeans = riBeans;
       this.clientProxyProvider = clientProxyProvider;
       this.contexts = contexts;
+      this.currentActivities = currentActivities;
       this.specializedBeans = specializedBeans;
       this.registeredObservers = registeredObservers;
       setEnabledDeploymentTypes(enabledDeploymentTypes);
@@ -993,9 +1044,35 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return childActivity;
    }
 
-   public Manager setCurrent(Class<? extends Annotation> scopeType)
+   public ManagerImpl setCurrent(Class<? extends Annotation> scopeType)
    {
-      throw new UnsupportedOperationException();
+      if (!getServices().get(MetaDataCache.class).getScopeModel(scopeType).isNormal())
+      {
+         throw new IllegalArgumentException("Scope must be a normal scope type " + scopeType);
+      }
+      currentActivities.add(new CurrentActivity(getContext(scopeType), this));
+      return this;
+   }
+   
+   public ManagerImpl getCurrent()
+   {
+      List<CurrentActivity> activeCurrentActivities = new ArrayList<CurrentActivity>();
+      for (CurrentActivity currentActivity : currentActivities)
+      {
+         if (currentActivity.getContext().isActive())
+         {
+            activeCurrentActivities.add(currentActivity);
+         }
+      }
+      if (activeCurrentActivities.size() == 0)
+      {
+         return CurrentManager.rootManager();
+      } 
+      else if (activeCurrentActivities.size() == 1)
+      {
+         return activeCurrentActivities.get(0).getManager();
+      }
+      throw new IllegalStateException("More than one current activity for an active context " + currentActivities);
    }
 
    public ServiceRegistry getServices()
@@ -1099,6 +1176,11 @@ public class ManagerImpl implements WebBeansManager, Serializable
    protected AtomicInteger getIds()
    {
       return ids;
+   }
+   
+   protected Set<CurrentActivity> getCurrentActivities()
+   {
+      return currentActivities;
    }
    
    public Integer getId()

@@ -30,7 +30,7 @@ public class ManagerBean extends AbstractStandardBean<ManagerImpl>
 
    public ManagerImpl create(CreationalContext<ManagerImpl> creationalContext)
    {
-      return getManager();
+      return getManager().getCurrent();
    }
 
    @Override

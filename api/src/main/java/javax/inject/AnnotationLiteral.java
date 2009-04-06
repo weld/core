@@ -91,21 +91,11 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
       return null;
    }
 
-   /**
-    * {@inheritDoc}
-    * 
-    * @return {@inheritDoc}
-    */
    public Class<? extends Annotation> annotationType()
    {
       return annotationType;
    }
 
-   /**
-    * {@inheritDoc}
-    * 
-    * @return {@inheritDoc}
-    */
    @Override
    public String toString()
    {
@@ -122,12 +112,6 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
      return string + ")";
    }
    
-   /**
-    * {@inheritDoc}
-    * 
-    * @param other {@inheritDoc}
-    * @return {@inheritDoc}
-    */
    @Override
    public boolean equals(Object other)
    {
@@ -152,11 +136,6 @@ public abstract class AnnotationLiteral<T extends Annotation> implements
    }
    
    @Override
-   /**
-    * {@inheritDoc}
-    * 
-    * @return {@inheritDoc}
-    */
    public int hashCode()
    {
       int hashCode = 0;

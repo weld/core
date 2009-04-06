@@ -63,7 +63,7 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
     */
    public T get(Annotation... bindings) 
    {
-      return manager.getInstanceByType(type, mergeInBindings(bindings));
+      return getManager().getInstanceByType(type, mergeInBindings(bindings));
    }
 
    /**

@@ -67,7 +67,7 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>, Serializabl
     */
    public void fire(T event, Annotation... bindings)
    {
-      manager.fireEvent(event, mergeInBindings(bindings));
+      getManager().fireEvent(event, mergeInBindings(bindings));
    }
 
    /**
@@ -78,7 +78,7 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>, Serializabl
     */
    public void observe(Observer<T> observer, Annotation... bindings)
    {
-      manager.addObserver(observer, type, mergeInBindings(bindings));
+      getManager().addObserver(observer, type, mergeInBindings(bindings));
    }
 
    @Override

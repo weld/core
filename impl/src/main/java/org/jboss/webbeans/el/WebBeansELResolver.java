@@ -25,6 +25,7 @@ import javax.el.ELResolver;
 import javax.inject.ExecutionException;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.ManagerImpl;
 
 /**
  * An EL-resolver against the named beans
@@ -86,14 +87,15 @@ public class WebBeansELResolver extends ELResolver
    {
       if (property != null)
       {
+         final ManagerImpl manager = CurrentManager.rootManager().getCurrent();
          String propertyString = property.toString();
          Namespace namespace = null;
          if (base == null) 
          {
-            if (CurrentManager.rootManager().getRootNamespace().contains(propertyString))
+            if (manager.getRootNamespace().contains(propertyString))
             {
                context.setPropertyResolved(true);
-               return CurrentManager.rootManager().getRootNamespace().get(propertyString);
+               return manager.getRootNamespace().get(propertyString);
             }
          }
          else if (base instanceof Namespace)
@@ -126,7 +128,7 @@ public class WebBeansELResolver extends ELResolver
                @Override
                protected void execute() throws Exception
                {
-                  holder.setValue(CurrentManager.rootManager().getInstanceByName(name));
+                  holder.setValue(manager.getInstanceByName(name));
                }
                
             }.run();
