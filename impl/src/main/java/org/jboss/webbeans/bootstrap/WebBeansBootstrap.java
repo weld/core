@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.inject.ExecutionException;
+import javax.inject.manager.Manager;
+import javax.naming.Reference;
 
 import org.jboss.webbeans.BeanValidator;
 import org.jboss.webbeans.CurrentManager;
@@ -59,6 +61,7 @@ import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.resources.DefaultNamingContext;
 import org.jboss.webbeans.resources.DefaultResourceLoader;
+import org.jboss.webbeans.resources.ManagerObjectFactory;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.HttpSessionManager;
@@ -101,17 +104,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       }
       addImplementationServices();
       this.manager = ManagerImpl.newRootManager(ServiceRegistries.unmodifiableServiceRegistry(getServices()));
-      try
-      {
-         getServices().get(NamingContext.class).unbind(ManagerImpl.JNDI_KEY);
-      }
-      catch (ExecutionException e)
-      {
-      }
-      finally
-      {
-         getServices().get(NamingContext.class).bind(ManagerImpl.JNDI_KEY, getManager());
-      }
+      bindManagerIntoJndi();
       CurrentManager.setRootManager(manager);
       initializeContexts();
    }
@@ -126,8 +119,20 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       // TODO expose AnnotatedClass on SPI and allow container to provide impl of this via ResourceLoader
       getServices().add(ClassTransformer.class, new ClassTransformer());
       getServices().add(MetaDataCache.class, new MetaDataCache(getServices().get(ClassTransformer.class)));
-      
-      
+   }
+   
+   private void bindManagerIntoJndi()
+   {
+      try
+      {
+         getServices().get(NamingContext.class).unbind(ManagerImpl.JNDI_KEY);
+      }
+      catch (ExecutionException e) {}
+      finally
+      {
+         Reference managerReference = new Reference(Manager.class.getName(), ManagerObjectFactory.class.getName(), null);
+         getServices().get(NamingContext.class).bind(ManagerImpl.JNDI_KEY, managerReference);
+      }
    }
    
    public ManagerImpl getManager()
