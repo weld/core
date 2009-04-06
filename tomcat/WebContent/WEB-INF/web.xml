@@ -30,7 +30,7 @@
    </session-config>
    
    <listener>
-      <listener-class>org.jboss.webbeans.environment.tomcat.Listener</listener-class>
+      <listener-class>org.jboss.webbeans.environment.servlet.Listener</listener-class>
    </listener>
 
    <resource-env-ref>
