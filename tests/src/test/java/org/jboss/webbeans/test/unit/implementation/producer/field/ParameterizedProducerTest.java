@@ -6,7 +6,7 @@ import java.util.List;
 import javax.inject.TypeLiteral;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -16,11 +16,11 @@ public class ParameterizedProducerTest extends AbstractWebBeansTest
    @Test
    public void testParameterizedListInjection()
    {
-      assert manager.getInstanceByType(new TypeLiteral<List<String>>()
+      assert getCurrentManager().getInstanceByType(new TypeLiteral<List<String>>()
       {
       }).size() == 2;
 
-      ParameterizedListInjection item = manager.getInstanceByType(ParameterizedListInjection.class);
+      ParameterizedListInjection item = getCurrentManager().getInstanceByType(ParameterizedListInjection.class);
       assert item.getFieldInjection().size() == 2;
       assert item.getValue().size() == 2;
       assert item.getSetterInjection().size() == 2;
@@ -30,11 +30,11 @@ public class ParameterizedProducerTest extends AbstractWebBeansTest
    @Test
    public void testParameterizedCollectionInjection()
    {
-      assert manager.getInstanceByType(new TypeLiteral<Collection<String>>()
+      assert getCurrentManager().getInstanceByType(new TypeLiteral<Collection<String>>()
       {
       }).size() == 2;
 
-      ParameterizedCollectionInjection item = manager.getInstanceByType(ParameterizedCollectionInjection.class);
+      ParameterizedCollectionInjection item = getCurrentManager().getInstanceByType(ParameterizedCollectionInjection.class);
       assert item.getFieldInjection().size() == 2;
       assert item.getValue().size() == 2;
       assert item.getSetterInjection().size() == 2;
@@ -44,9 +44,9 @@ public class ParameterizedProducerTest extends AbstractWebBeansTest
    @Test
    public void testNoParameterizedCollectionInjection()
    {
-      assert manager.getInstanceByType(Collection.class).size() == 3;
+      assert getCurrentManager().getInstanceByType(Collection.class).size() == 3;
 
-      NoParameterizedCollectionInjection item = manager.getInstanceByType(NoParameterizedCollectionInjection.class);
+      NoParameterizedCollectionInjection item = getCurrentManager().getInstanceByType(NoParameterizedCollectionInjection.class);
       assert item.getFieldInjection().size() == 3;
       assert item.getValue().size() == 3;
       assert item.getSetterInjection().size() == 3;
@@ -56,9 +56,9 @@ public class ParameterizedProducerTest extends AbstractWebBeansTest
    @Test
    public void testIntegerCollectionInjection()
    {
-      assert manager.getInstanceByType(new TypeLiteral<Collection<Integer>>(){}).size() == 4;
+      assert getCurrentManager().getInstanceByType(new TypeLiteral<Collection<Integer>>(){}).size() == 4;
 
-      IntegerCollectionInjection item = manager.getInstanceByType(IntegerCollectionInjection.class);
+      IntegerCollectionInjection item = getCurrentManager().getInstanceByType(IntegerCollectionInjection.class);
       assert item.getFieldInjection().size() == 4;
       assert item.getValue().size() == 4;
       assert item.getSetterInjection().size() == 4;
@@ -68,14 +68,14 @@ public class ParameterizedProducerTest extends AbstractWebBeansTest
    @Test
    public void testInstanceList()
    {
-        ListInstance listInstance = manager.getInstanceByType(ListInstance.class);
+        ListInstance listInstance = getCurrentManager().getInstanceByType(ListInstance.class);
         assert listInstance.get().size() == 3;
    }
    
    @Test
    public void testTypeParameterInstance()
    {
-        ListStringInstance listInstance = manager.getInstanceByType(ListStringInstance.class);
+        ListStringInstance listInstance = getCurrentManager().getInstanceByType(ListStringInstance.class);
         assert listInstance.get().size() == 2;
    }
 }

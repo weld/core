@@ -4,7 +4,7 @@ import javax.inject.AnnotationLiteral;
 import javax.inject.CreationException;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -22,7 +22,7 @@ public class ExceptionHandlingTest extends AbstractWebBeansTest
          {
             try
             {
-               manager.getInstanceByType(Lorry_Broken.class);
+               getCurrentManager().getInstanceByType(Lorry_Broken.class);
             }
             catch (Exception e) 
             {
@@ -48,7 +48,7 @@ public class ExceptionHandlingTest extends AbstractWebBeansTest
          {
             try
             {
-               manager.getInstanceByType(Ship.class, new AnnotationLiteral<Large>() {});
+               getCurrentManager().getInstanceByType(Ship.class, new AnnotationLiteral<Large>() {});
             }
             catch (Exception e) 
             {

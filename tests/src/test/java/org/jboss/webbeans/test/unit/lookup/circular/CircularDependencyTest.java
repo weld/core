@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.unit.lookup.circular;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -13,7 +13,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
    public void testCircularInjectionOnTwoNormalBeans() throws Exception
    {
       //deployBeans(Pig.class, Food.class);
-      manager.getInstanceByType(Pig.class).getName();
+      getCurrentManager().getInstanceByType(Pig.class).getName();
       assert Pig.success;
       assert Food.success;
    }
@@ -28,7 +28,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            manager.getInstanceByType(Car.class).getName();
+            getCurrentManager().getInstanceByType(Car.class).getName();
             assert Petrol.success;
             assert Car.success;
          }
@@ -47,7 +47,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            manager.getInstanceByType(Petrol.class).getName();
+            getCurrentManager().getInstanceByType(Petrol.class).getName();
             assert Petrol.success;
             assert Car.success;
          }
@@ -67,7 +67,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            manager.getInstanceByType(Foo.class).getName();
+            getCurrentManager().getInstanceByType(Foo.class).getName();
             assert Foo.success;
             assert Bar.success;
          }
@@ -85,7 +85,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            manager.getInstanceByType(DependentSelfConsumingDependentProducer.class).ping();
+            getCurrentManager().getInstanceByType(DependentSelfConsumingDependentProducer.class).ping();
          }
          
       }.run();
@@ -101,7 +101,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            manager.getInstanceByType(NormalSelfConsumingNormalProducer.class).ping();
+            getCurrentManager().getInstanceByType(NormalSelfConsumingNormalProducer.class).ping();
          }
          
       }.run();
@@ -117,7 +117,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            manager.getInstanceByType(DependentSelfConsumingNormalProducer.class).ping();
+            getCurrentManager().getInstanceByType(DependentSelfConsumingNormalProducer.class).ping();
          }
          
       }.run();
@@ -133,7 +133,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            manager.getInstanceByType(NormalSelfConsumingDependentProducer.class).ping();
+            getCurrentManager().getInstanceByType(NormalSelfConsumingDependentProducer.class).ping();
          }
          
       }.run();
@@ -149,7 +149,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            manager.getInstanceByType(Violation.class).ping();
+            getCurrentManager().getInstanceByType(Violation.class).ping();
          }
          
       }.run();
@@ -165,7 +165,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            manager.getInstanceByType(Violation.class).ping();
+            getCurrentManager().getInstanceByType(Violation.class).ping();
          }
          
       }.run();
@@ -181,7 +181,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            manager.getInstanceByType(Fish.class);
+            getCurrentManager().getInstanceByType(Fish.class);
          }
          
       }.run();
@@ -197,7 +197,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            manager.getInstanceByType(Bird.class);
+            getCurrentManager().getInstanceByType(Bird.class);
          }
          
       }.run();
@@ -213,7 +213,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            manager.getInstanceByType(Planet.class);
+            getCurrentManager().getInstanceByType(Planet.class);
          }
          
       }.run();
@@ -229,7 +229,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            manager.getInstanceByType(Farm.class);
+            getCurrentManager().getInstanceByType(Farm.class);
          }
          
       }.run();
@@ -245,7 +245,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            manager.getInstanceByType(House.class);
+            getCurrentManager().getInstanceByType(House.class);
          }
          
       }.run();

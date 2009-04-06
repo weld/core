@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.unit;
+package org.jboss.webbeans.test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -58,7 +58,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
    
    protected static final int BUILT_IN_BEANS = 3;
    
-   protected ManagerImpl manager;
+   private ManagerImpl manager;
 
    public static boolean visited = false;
    
@@ -83,7 +83,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
    @AfterMethod
    public void after() throws Exception
    {
-      manager = null;
+      this.manager = null;
    }
    
 
@@ -130,6 +130,11 @@ public abstract class AbstractWebBeansTest extends AbstractTest
    {
       ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
       return in.readObject();
+   }
+
+   protected ManagerImpl getCurrentManager()
+   {
+      return manager;
    }
    
 }

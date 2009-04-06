@@ -9,7 +9,7 @@ import java.io.ObjectOutputStream;
 import javax.inject.manager.Bean;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -19,7 +19,7 @@ public class SessionBeanInterceptorTest extends AbstractWebBeansTest
    @Test(groups="incontainer-broken")
    public void testSerializeSessionBeanInterceptor() throws Exception
    {
-      Bean<?> foobean =  manager.getNewEnterpriseBeanMap().get(Foo.class);
+      Bean<?> foobean =  getCurrentManager().getNewEnterpriseBeanMap().get(Foo.class);
       assert foobean != null;
       MockSessionBeanInterceptor interceptor = new MockSessionBeanInterceptor();
       interceptor.postConstruct(new MockInvocationContext());

@@ -14,7 +14,7 @@ import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.mock.MockResourceLoader;
 import org.jboss.webbeans.mock.MockXmlEnvironment;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.jboss.webbeans.xml.XmlEnvironment;
 import org.jboss.webbeans.xml.XmlParser;
 import org.testng.annotations.Test;

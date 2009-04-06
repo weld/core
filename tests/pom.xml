@@ -6,7 +6,7 @@
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.webbeans</groupId>
-   <artifactId>webbeans-core-tests</artifactId>
+   <artifactId>webbeans-core-test</artifactId>
    <version>1.0.0-SNAPSHOT</version>
    <name>Web Beans Core Tests</name>
    <dependencies>
@@ -15,11 +15,15 @@
          <groupId>org.jboss.webbeans</groupId>
          <artifactId>webbeans-core</artifactId>
       </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.webbeans</groupId>
+         <artifactId>webbeans-spi</artifactId>
+      </dependency>
 
       <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
-         <scope>test</scope>
          <classifier>jdk15</classifier>
          <exclusions>
          	<exclusion>
@@ -32,7 +36,6 @@
       <dependency>
          <groupId>org.jboss.test-harness</groupId>
          <artifactId>jboss-test-harness</artifactId>
-         <scope>test</scope>
       </dependency>
       
       <dependency>
@@ -44,16 +47,19 @@
       <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-api</artifactId>
+         <scope>test</scope>
       </dependency>
       
-          <dependency>
+       <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-ri</artifactId>
+         <scope>test</scope>
       </dependency>
       
       <dependency>
          <groupId>org.jboss.ejb3</groupId>
          <artifactId>jboss-ejb3-api</artifactId>
+         <scope>test</scope>
          <optional>true</optional>
          <exclusions>
             <exclusion>

@@ -12,7 +12,7 @@ import org.jboss.testharness.impl.packaging.PackagingType;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -23,7 +23,7 @@ public class BootstrapTest extends AbstractWebBeansTest
    @Test(groups="bootstrap")
    public void testMultipleEnterpriseAndSimpleBean()
    {
-      List<Bean<?>> beans = manager.getBeans();
+      List<Bean<?>> beans = getCurrentManager().getBeans();
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : beans)
       {

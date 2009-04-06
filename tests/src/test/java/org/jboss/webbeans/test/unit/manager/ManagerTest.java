@@ -17,7 +17,7 @@ import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.literal.CurrentLiteral;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -113,18 +113,18 @@ public class ManagerTest extends AbstractWebBeansTest
    @Test
    public void testRootManagerSerializability() throws Exception
    {
-      Integer rootManagerId = manager.getId();
-      ManagerImpl deserializedRootManager = (ManagerImpl) deserialize(serialize(manager));
+      Integer rootManagerId = getCurrentManager().getId();
+      ManagerImpl deserializedRootManager = (ManagerImpl) deserialize(serialize(getCurrentManager()));
       assert deserializedRootManager.getId().equals(rootManagerId);
-      assert manager.resolveByType(Foo.class).size() == 1;
+      assert getCurrentManager().resolveByType(Foo.class).size() == 1;
       assert deserializedRootManager.resolveByType(Foo.class).size() == 1;
-      assert manager.resolveByType(Foo.class).iterator().next().equals(deserializedRootManager.resolveByType(Foo.class).iterator().next());
+      assert getCurrentManager().resolveByType(Foo.class).iterator().next().equals(deserializedRootManager.resolveByType(Foo.class).iterator().next());
    }
    
    @Test
    public void testChildManagerSerializability() throws Exception
    {
-      ManagerImpl childManager = manager.createActivity();
+      ManagerImpl childManager = getCurrentManager().createActivity();
       Bean<?> dummyBean = new DummyBean(childManager);
       childManager.addBean(dummyBean);
       Integer childManagerId = childManager.getId();

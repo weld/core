@@ -12,7 +12,7 @@ import org.jboss.testharness.impl.packaging.PackagingType;
 import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -24,7 +24,7 @@ public class BootstrapTest extends AbstractWebBeansTest
    public void testProducerMethodBean()
    {
       //deployBeans(TarantulaProducer.class);
-      List<Bean<?>> beans = manager.getBeans();
+      List<Bean<?>> beans = getCurrentManager().getBeans();
       Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
       for (Bean<?> bean : beans)
       {

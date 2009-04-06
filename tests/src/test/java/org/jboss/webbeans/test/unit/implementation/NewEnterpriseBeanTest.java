@@ -12,7 +12,7 @@ import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.literal.NewLiteral;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.jboss.webbeans.util.Proxies.TypeInfo;
 import org.testng.annotations.Test;
 
@@ -28,13 +28,13 @@ public class NewEnterpriseBeanTest extends AbstractWebBeansTest
    
    public void initNewBean() {
       
-      assert manager.resolveByType(WrappedEnterpriseBeanLocal.class).size() == 1;
-      assert manager.resolveByType(WrappedEnterpriseBeanLocal.class).iterator().next() instanceof EnterpriseBean;
-      wrappedEnterpriseBean = (EnterpriseBean<WrappedEnterpriseBeanLocal>) manager.resolveByType(WrappedEnterpriseBeanLocal.class).iterator().next();
+      assert getCurrentManager().resolveByType(WrappedEnterpriseBeanLocal.class).size() == 1;
+      assert getCurrentManager().resolveByType(WrappedEnterpriseBeanLocal.class).iterator().next() instanceof EnterpriseBean;
+      wrappedEnterpriseBean = (EnterpriseBean<WrappedEnterpriseBeanLocal>) getCurrentManager().resolveByType(WrappedEnterpriseBeanLocal.class).iterator().next();
       
-      assert manager.resolveByType(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).size() == 1;
-      assert manager.resolveByType(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next() instanceof NewEnterpriseBean;
-      newEnterpriseBean = (NewEnterpriseBean<WrappedEnterpriseBeanLocal>) manager.resolveByType(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next();
+      assert getCurrentManager().resolveByType(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).size() == 1;
+      assert getCurrentManager().resolveByType(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next() instanceof NewEnterpriseBean;
+      newEnterpriseBean = (NewEnterpriseBean<WrappedEnterpriseBeanLocal>) getCurrentManager().resolveByType(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next();
       
    }
    
@@ -66,7 +66,7 @@ public class NewEnterpriseBeanTest extends AbstractWebBeansTest
    {
       initNewBean();
       Class<?> type = TypeInfo.ofTypes(newEnterpriseBean.getTypes()).getSuperClass();
-      assert manager.resolveDisposalBeans(type, newEnterpriseBean.getBindings().toArray(new Annotation[0])).isEmpty();
+      assert getCurrentManager().resolveDisposalBeans(type, newEnterpriseBean.getBindings().toArray(new Annotation[0])).isEmpty();
    }   
    
 }

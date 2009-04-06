@@ -25,7 +25,7 @@ import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.mock.MockXmlEnvironment;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.jboss.webbeans.test.unit.xml.beans.Order;
 import org.jboss.webbeans.test.unit.xml.beans.TestBean;
 import org.jboss.webbeans.test.unit.xml.beans.TestDeploymentType;

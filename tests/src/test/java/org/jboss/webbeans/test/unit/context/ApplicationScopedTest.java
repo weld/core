@@ -3,7 +3,7 @@ package org.jboss.webbeans.test.unit.context;
 import java.util.concurrent.CountDownLatch;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -22,7 +22,7 @@ public class ApplicationScopedTest extends AbstractWebBeansTest
             {
                try
                {
-                  manager.getInstanceByType(ApplictionScopedObject.class).increment();
+                  getCurrentManager().getInstanceByType(ApplictionScopedObject.class).increment();
                }
                finally
                {
@@ -32,7 +32,7 @@ public class ApplicationScopedTest extends AbstractWebBeansTest
          }).start();
       }
       latch.await();
-      int value = manager.getInstanceByType(ApplictionScopedObject.class).getValue();
+      int value = getCurrentManager().getInstanceByType(ApplictionScopedObject.class).getValue();
       System.out.println(value);
       assert value == 10;
    }

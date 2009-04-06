@@ -8,7 +8,7 @@ import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
 import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
 import org.jboss.webbeans.WebBean;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -20,11 +20,11 @@ public class XmlBootstrapTest extends AbstractWebBeansTest
    @Test
    public void testDeploymentTypesLoadedFromBeansXml()
    {
-      assert manager.getEnabledDeploymentTypes().size() == 4;
-      assert manager.getEnabledDeploymentTypes().get(0).equals(Standard.class);
-      assert manager.getEnabledDeploymentTypes().get(1).equals(WebBean.class);
-      assert manager.getEnabledDeploymentTypes().get(2).equals(Production.class);
-      assert manager.getEnabledDeploymentTypes().get(3).equals(AnotherDeploymentType.class);
+      assert getCurrentManager().getEnabledDeploymentTypes().size() == 4;
+      assert getCurrentManager().getEnabledDeploymentTypes().get(0).equals(Standard.class);
+      assert getCurrentManager().getEnabledDeploymentTypes().get(1).equals(WebBean.class);
+      assert getCurrentManager().getEnabledDeploymentTypes().get(2).equals(Production.class);
+      assert getCurrentManager().getEnabledDeploymentTypes().get(3).equals(AnotherDeploymentType.class);
    }
    
 }

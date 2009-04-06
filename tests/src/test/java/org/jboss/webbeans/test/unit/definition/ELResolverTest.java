@@ -4,7 +4,7 @@ import javax.el.ELContext;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.mock.el.EL;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
 @Artifact

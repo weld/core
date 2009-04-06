@@ -5,7 +5,7 @@ import javassist.util.proxy.ProxyObject;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.testharness.impl.packaging.PackagingType;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -25,7 +25,7 @@ public class EnterpriseBeanProxyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            Object mouse = manager.getInstanceByType(MouseLocal.class);
+            Object mouse = getCurrentManager().getInstanceByType(MouseLocal.class);
             assert mouse instanceof ProxyObject;
             assert mouse instanceof MouseLocal;
          }

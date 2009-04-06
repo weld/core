@@ -9,7 +9,7 @@ import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.SimpleBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.literal.NewLiteral;
-import org.jboss.webbeans.test.unit.AbstractWebBeansTest;
+import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -22,13 +22,13 @@ public class NewSimpleBeanTest extends AbstractWebBeansTest
    
    public void initNewBean() {
       
-      assert manager.resolveByType(WrappedSimpleBean.class).size() == 1;
-      assert manager.resolveByType(WrappedSimpleBean.class).iterator().next() instanceof SimpleBean;
-      wrappedSimpleBean = (SimpleBean<WrappedSimpleBean>) manager.resolveByType(WrappedSimpleBean.class).iterator().next();
+      assert getCurrentManager().resolveByType(WrappedSimpleBean.class).size() == 1;
+      assert getCurrentManager().resolveByType(WrappedSimpleBean.class).iterator().next() instanceof SimpleBean;
+      wrappedSimpleBean = (SimpleBean<WrappedSimpleBean>) getCurrentManager().resolveByType(WrappedSimpleBean.class).iterator().next();
       
-      assert manager.resolveByType(WrappedSimpleBean.class, NEW_LITERAL).size() == 1;
-      assert manager.resolveByType(WrappedSimpleBean.class, NEW_LITERAL).iterator().next() instanceof NewSimpleBean;
-      newSimpleBean = (NewSimpleBean<WrappedSimpleBean>) manager.resolveByType(WrappedSimpleBean.class, NEW_LITERAL).iterator().next();
+      assert getCurrentManager().resolveByType(WrappedSimpleBean.class, NEW_LITERAL).size() == 1;
+      assert getCurrentManager().resolveByType(WrappedSimpleBean.class, NEW_LITERAL).iterator().next() instanceof NewSimpleBean;
+      newSimpleBean = (NewSimpleBean<WrappedSimpleBean>) getCurrentManager().resolveByType(WrappedSimpleBean.class, NEW_LITERAL).iterator().next();
    }
 
    @Test(groups = { "new" })
