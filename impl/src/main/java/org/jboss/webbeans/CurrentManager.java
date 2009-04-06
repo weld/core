@@ -41,7 +41,14 @@ public class CurrentManager
     */
    public static ManagerImpl rootManager()
    {
-      return managers.get(rootManagerId);
+      if (rootManagerId == null)
+      {
+         return null;
+      }
+      else
+      {
+         return managers.get(rootManagerId);
+      }
    }
    
    /**
