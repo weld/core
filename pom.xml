@@ -47,6 +47,7 @@
    <modules>
       <module>numberguess</module>
       <module>jsf2</module>
+      <module>tomcat</module>
       <module>translator</module>
       <module>login</module>
       <module>conversations</module>

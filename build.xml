@@ -39,10 +39,22 @@
 		</copy>
 	</target>
 	
+   <target name="tomcat.explode" depends="package">
+      <mkdir dir="${tomcat.home}/webapps/${example.name}"/>
+      <copy todir="${tomcat.home}/webapps/${example.name}">
+         <fileset dir="${artifact.dir}" />
+      </copy>
+   </target>
+	
 	<target name="deploy" depends="package">
 		<copy todir="${jboss.home}/server/default/deploy/" file="${artifact.target.dir}/${example.name}.${type}"/>
 		<echo message="The app can be accessed at ${final.url}" />
 	</target>
+	
+   <target name="tomcat.deploy" depends="package">
+      <copy todir="${tomcat.home}/webapps/" file="${artifact.target.dir}/${example.name}.${type}"/>
+      <echo message="The app can be accessed at ${final.url}" />
+   </target>
 	
 	<target name="clean">
 		<maven target="clean" basedir="${basedir}"/>
@@ -51,6 +63,10 @@
 	<target name="restart.war" depends="explode" if="war">
 		<touch file="${jboss.home}/server/default/deploy/${example.name}.war/WEB-INF/web.xml" />
 	</target>
+	
+	<target name="tomcat.restart" depends="tomcat.explode" if="war">
+      <touch file="${tomcat.home}/webapps/${example.name}/WEB-INF/web.xml" />
+   </target>
 	
 	<target name="restart.ear" depends="explode" if="ear">
       <touch file="${jboss.home}/server/default/deploy/${example.name}.ear/META-INF/application.xml" />
@@ -64,6 +80,11 @@
 		<delete dir="${jboss.home}/server/default/deploy/${example.name}.${type}" failonerror="false" />
       <delete file="${jboss.home}/server/default/deploy/${example.name}.${type}" failonerror="false" />
 	</target>
+	
+   <target name="tomcat.undeploy">
+      <delete dir="${tomcat.home}/webapps/${example.name}" failonerror="false" />
+      <delete file="${tomcat.home}/webapps/${example.name}" failonerror="false" />
+   </target>
 	
   <macrodef name="maven">
       <attribute name="target" />
