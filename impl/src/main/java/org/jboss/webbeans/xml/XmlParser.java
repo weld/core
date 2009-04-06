@@ -19,6 +19,7 @@ import javax.context.ScopeType;
 import javax.inject.DefinitionException;
 import javax.inject.DeploymentException;
 import javax.inject.DeploymentType;
+import javax.interceptor.InterceptorBindingType;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -60,10 +61,49 @@ public class XmlParser
          Document document = createDocument(url);
          if (document != null)
          {
+            parseForAnnotationTypes(document);
             parseForBeans(document);
             parseForDeploy(document);
          }
       }
+   }
+   
+   private void parseForAnnotationTypes(Document document)
+   {
+      Element root = document.getRootElement();         
+      
+      List<Class<? extends Annotation>> bindingTypes = new ArrayList<Class<? extends Annotation>>();
+      List<Class<? extends Annotation>> interceptorBindingTypes = new ArrayList<Class<? extends Annotation>>();
+      List<Class<? extends Annotation>> stereotypes = new ArrayList<Class<? extends Annotation>>();
+      
+      Iterator<?> elIterator = root.elementIterator();
+      while (elIterator.hasNext())
+      {
+         Element element = (Element) elIterator.next();
+         boolean isBindingType = ParseXmlHelper.findElementsInEeNamespace(element, XmlConstants.BINDING_TYPE).size() > 0;
+         boolean isInterceptorBindingType = ParseXmlHelper.findElementsInEeNamespace(element, XmlConstants.INTERCEPTOR_BINDING_TYPE).size() > 0;
+         boolean isStereotype = ParseXmlHelper.findElementsInEeNamespace(element, XmlConstants.STEREOTYPE).size() > 0;
+         
+         if(isBindingType || isInterceptorBindingType || isStereotype)
+         {
+            Class<? extends Annotation> annotationType = ParseXmlHelper.loadAnnotationClass(element, Annotation.class, environment, packagesMap);
+            if(isBindingType)
+               bindingTypes.add(annotationType);
+            if(isInterceptorBindingType)
+            {
+               interceptorBindingTypes.add(annotationType);
+               checkForInterceptorBindingTypeChildren(element);
+            }
+            if(isStereotype)
+            {
+               stereotypes.add(annotationType);
+               checkForStereotypeChildren(element);
+            }
+         }
+      }
+      ParseXmlHelper.checkForUniqueElements(bindingTypes);
+      ParseXmlHelper.checkForUniqueElements(interceptorBindingTypes);
+      ParseXmlHelper.checkForUniqueElements(stereotypes);
    }
          
    private void parseForBeans(Document document)
@@ -83,8 +123,7 @@ public class XmlParser
    }
    
    private void parseForDeploy(Document document)
-   {
-      
+   {      
       Element root = document.getRootElement();         
             
       Iterator<?> elIterator = root.elementIterator();
@@ -124,6 +163,38 @@ public class XmlParser
          String message = "Error during the processing of a DOM4J document for " + url;
          log.debug(message, e);
          throw new DeploymentException(message, e);
+      }
+   }
+   
+   private void checkForInterceptorBindingTypeChildren(Element element)
+   {
+      Iterator<?> elIterator = element.elementIterator();
+      while (elIterator.hasNext())
+      {
+         Element child = (Element)elIterator.next();
+         Class<? extends Annotation> clazz = ParseXmlHelper.loadAnnotationClass(child, Annotation.class, environment, packagesMap);
+         if(!clazz.isAnnotationPresent(InterceptorBindingType.class))
+            throw new DefinitionException("Direct child <" + child.getName() + "> of interceptor binding type <" + element.getName() + 
+                  "> declaration must be interceptor binding type");
+         
+      }
+   }
+   
+   private void checkForStereotypeChildren(Element stereotypeElement)
+   {
+      Iterator<?> elIterator = stereotypeElement.elementIterator();
+      while (elIterator.hasNext())
+      {
+         Element stereotypeChild = (Element)elIterator.next();
+         Class<? extends Annotation> stereotypeClass = ParseXmlHelper.loadAnnotationClass(stereotypeChild, Annotation.class, environment, packagesMap);
+         if(stereotypeClass.isAnnotationPresent(ScopeType.class) || 
+               stereotypeClass.isAnnotationPresent(DeploymentType.class) || 
+               stereotypeClass.isAnnotationPresent(InterceptorBindingType.class) || 
+               stereotypeClass.isAnnotationPresent(Named.class))
+            return;
+         throw new DefinitionException("Direct child <" + stereotypeChild.getName() + "> of stereotype <" + stereotypeElement.getName() + 
+               "> declaration must be scope type, or deployment type, or interceptor binding type, or javax.annotation.Named");
+         
       }
    }
 

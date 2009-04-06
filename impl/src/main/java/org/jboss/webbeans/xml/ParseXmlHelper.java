@@ -86,14 +86,14 @@ public class ParseXmlHelper
                }
                catch (ClassCastException e)
                {
-                  throw new DefinitionException("<Deploy> child <" + element.getName() + "> must be a Java annotation type");
+                  throw new DefinitionException("<" + element.getName() + "> must be a Java annotation type");
                }
             }
          }
       }
 
       if (classesList.size() == 0)
-         throw new DefinitionException("Could not find '" + className + "' for bean <");
+         throw new DefinitionException("Could not find '" + className + "'");
 
       if (classesList.size() == 1)
          return classesList.get(0);
@@ -224,5 +224,12 @@ public class ParseXmlHelper
       {
          packagesMap.put(prefix, packagesSet);
       }
+   }
+   
+   public static void checkForUniqueElements(List<Class<? extends Annotation>> list){
+      Set<Class<? extends Annotation>> set = new HashSet<Class<? extends Annotation>>(list);
+      if(list.size() != set.size())
+         throw new DefinitionException("A certain annotation type is declared more than once as a binding type, " +
+         		"interceptor binding type or stereotype using XML");
    }
 }
