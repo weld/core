@@ -24,8 +24,8 @@
       <title>The Web Beans RI SPI</title>
       
       <para>
-         The Web Beans SPI is located in <literal>webbeans-ri-spi</literal>
-         module, and packaged as <literal>webbeans-ri-spi.jar</literal>. Some
+         The Web Beans SPI is located in <literal>webbeans-spi</literal>
+         module, and packaged as <literal>webbeans-spi.jar</literal>. Some
          SPIs are optional, if you need to override the default behavior, 
          others are required.
       </para>
