@@ -156,13 +156,13 @@ public class XmlParser
       {
          String message = "Can not open stream for " + url;
          log.debug(message, e);
-         throw new DeploymentException(message, e);
+         throw new DefinitionException(message, e);
       }
       catch (DocumentException e)
       {
          String message = "Error during the processing of a DOM4J document for " + url;
          log.debug(message, e);
-         throw new DeploymentException(message, e);
+         throw new DefinitionException(message, e);
       }
    }
    

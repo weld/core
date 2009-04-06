@@ -55,4 +55,6 @@ public class XmlConstants
    public static final String NAMESPACE_FILE_DELIMETER = " ";
    
    public static final String PRODUCES = "Produces";
+   
+   public static final String VALUE = "value";
 }

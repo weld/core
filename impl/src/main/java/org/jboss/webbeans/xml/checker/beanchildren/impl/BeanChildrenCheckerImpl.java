@@ -1,6 +1,8 @@
 package org.jboss.webbeans.xml.checker.beanchildren.impl;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ import javax.inject.DeploymentType;
 import javax.inject.Realizes;
 import javax.inject.Specializes;
 import javax.interceptor.Interceptor;
+import javax.interceptor.InterceptorBindingType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 import javax.xml.ws.WebServiceRef;
@@ -25,6 +28,7 @@ import javax.xml.ws.WebServiceRef;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
 import org.jboss.webbeans.xml.XmlEnvironment;
@@ -35,6 +39,10 @@ public abstract class BeanChildrenCheckerImpl implements BeanChildrenChecker
    private final XmlEnvironment environment;
    
    private final Map<String, Set<String>> packagesMap;
+   
+   private Set<AnnotatedField<?>> beanFields;
+   
+   private List<Method> beanMethods; 
    
    private boolean haveBeanDeploymentTypeDeclaration = false;
    
@@ -64,6 +72,9 @@ public abstract class BeanChildrenCheckerImpl implements BeanChildrenChecker
    
    public void checkChildren(Element beanElement, AnnotatedClass<?> beanClass)
    {
+      beanFields = beanClass.getFields();
+      beanMethods = Arrays.asList(beanClass.getRawType().getDeclaredMethods());
+      
       checkForInterceptorChild(beanElement);
       checkForDecoratorChild(beanElement);
       
@@ -83,7 +94,6 @@ public abstract class BeanChildrenCheckerImpl implements BeanChildrenChecker
    
    private void checkBeanChild(Element beanChildElement, AnnotatedClass<?> beanClass)
    {
-      //TODO: not finished
       try
       {
          AnnotatedClass<?> beanChildClass = ParseXmlHelper.loadElementClass(beanChildElement, Object.class, environment, packagesMap);
@@ -153,12 +163,12 @@ public abstract class BeanChildrenCheckerImpl implements BeanChildrenChecker
          checkChildForDecoratorType(beanChildElement);
          return;
       }
-      //TODO: add interceptor binding type
-      if(beanChildClass.isAnnotationPresent(BindingType.class) || beanChildClass.isAnnotationPresent(Stereotype.class) || 
-            beanChildClass.isAnnotationPresent(Named.class) || beanChildClass.isAnnotationPresent(Specializes.class) ||  
-            beanChildClass.isAnnotationPresent(Realizes.class) || beanChildClass.isAnnotationPresent(Resource.class) || 
-            beanChildClass.isAnnotationPresent(EJB.class) || beanChildClass.isAnnotationPresent(WebServiceRef.class) || 
-            beanChildClass.isAnnotationPresent(PersistenceContext.class) || beanChildClass.isAnnotationPresent(PersistenceUnit.class))
+      if(beanChildClass.isAnnotationPresent(BindingType.class) || beanChildClass.isAnnotationPresent(InterceptorBindingType.class) || 
+            beanChildClass.isAnnotationPresent(Stereotype.class) || beanChildClass.isAnnotationPresent(Named.class) || 
+            beanChildClass.isAnnotationPresent(Specializes.class) || beanChildClass.isAnnotationPresent(Realizes.class) || 
+            beanChildClass.isAnnotationPresent(Resource.class) || beanChildClass.isAnnotationPresent(EJB.class) || 
+            beanChildClass.isAnnotationPresent(WebServiceRef.class) || beanChildClass.isAnnotationPresent(PersistenceContext.class) || 
+            beanChildClass.isAnnotationPresent(PersistenceUnit.class))
          return;
       
       throw new DefinitionException("Can't determine annotation type of <" + beanChildElement.getName() + "> element in bean '" + 
@@ -166,6 +176,58 @@ public abstract class BeanChildrenCheckerImpl implements BeanChildrenChecker
    }
    
    private void checkFieldOrMethodChild(Element beanChildElement, AnnotatedClass<?> beanClass)
+   {  //TODO: not finished    
+      boolean isField = false;
+      boolean isMethod = false;
+      
+      for(AnnotatedField<?> field : beanFields)
+      {
+         if(beanChildElement.getName().equalsIgnoreCase(field.getName()))
+         {
+            if(isField)
+               throw new DefinitionException("Bean class '" + beanClass.getName() + "' does not have exactly one field " +
+               		"with the specified name '" + beanChildElement.getName() + "'");
+            isField = true;
+         }
+      }
+      
+      for(Method method : beanMethods)
+      {
+         if(beanChildElement.getName().equalsIgnoreCase(method.getName()))
+            isMethod = true;
+      }
+      
+      if(isField && isMethod)
+         throw new DefinitionException("The name of the child element <" + beanChildElement.getName() + 
+               "> matches the name of both a method and a field of the bean class '" + beanClass.getName() + "'");
+      
+      if(isField)
+         checkFieldChild(beanChildElement, beanClass);
+      
+      if(isMethod)
+         checkMethodChild(beanChildElement, beanClass);
+   }
+   
+   private void checkFieldChild(Element beanChildElement, AnnotatedClass<?> beanClass)
+   {//TODO: not finished
+      Element elementParent = beanChildElement.getParent();
+      String elementName = beanChildElement.getName();
+      String elementPrefix = beanChildElement.getNamespacePrefix();
+      String elementUri = beanChildElement.getNamespaceURI();
+      
+      if(ParseXmlHelper.findElements(elementParent, elementName, elementPrefix, elementUri).size() > 1)
+         throw new DefinitionException("More than one child element of a bean '" + elementParent.getName() + 
+               "' declaration represents the same field'" + elementName + "'");
+      
+      if(beanChildElement.elements().size() > 1 && 
+            beanChildElement.elements().size() != ParseXmlHelper.findElementsInEeNamespace(beanChildElement, XmlConstants.VALUE).size())
+         throw new DefinitionException("Declaration of a field '" + beanChildElement.getName() + "' has more than one direct child element, " +
+         		"and at least one of these elements is something other than a <value> element in the Java EE namespace");
+      
+      
+   }
+   
+   private void checkMethodChild(Element beanChildElement, AnnotatedClass<?> beanClass)
    {
       //TODO: not finished
    }
