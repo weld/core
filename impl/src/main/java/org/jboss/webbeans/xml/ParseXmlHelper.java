@@ -141,24 +141,29 @@ public class ParseXmlHelper
       {
          Namespace namespace = (Namespace) namespacesIterator.next();
          String prefix = namespace.getPrefix();
-         String uri = namespace.getURI();
-         if (uri.startsWith(XmlConstants.URN_PREFIX))
+         
+         for(String uri : namespace.getURI().split(" "))
          {
-            Set<String> packagesSet = new HashSet<String>();
-
-            URL namespaceFile = environment.loadFileByUrn(uri, XmlConstants.NAMESPACE_FILE_NAME);
-            if (namespaceFile != null)
+            if (uri.startsWith(XmlConstants.URN_PREFIX))
             {
-               packagesSet.addAll(parseNamespaceFile(namespaceFile));
-            }
-            else
-            {
-               String packageName = uri.replaceFirst(XmlConstants.URN_PREFIX, "");
-               packagesSet.add(packageName);
-            }
+               Set<String> packagesSet = new HashSet<String>();
 
-            addElementToPackagesMap(packagesMap, prefix, packagesSet);
-         }
+               environment.loadFileByUrn(uri, XmlConstants.SCHEMA_FILE_NAME);
+               
+               URL namespaceFile = environment.loadFileByUrn(uri, XmlConstants.NAMESPACE_FILE_NAME);
+               if (namespaceFile != null)
+               {
+                  packagesSet.addAll(parseNamespaceFile(namespaceFile));
+               }
+               else
+               {
+                  String packageName = uri.replaceFirst(XmlConstants.URN_PREFIX, "");
+                  packagesSet.add(packageName);
+               }
+
+               addElementToPackagesMap(packagesMap, prefix, packagesSet);
+            }
+         }                  
       }
    }
 
