@@ -40,7 +40,7 @@
       
       <dependency>
          <groupId>org.jboss.test-harness</groupId>
-         <artifactId>jboss-test-harness-jboss-as-5</artifactId>
+         <artifactId>jboss-test-harness-jboss-as-50</artifactId>
          <scope>test</scope>
       </dependency>
       
@@ -169,11 +169,11 @@
                            <value>false</value>
                         </property>
                         <property>
-                           <name>jboss-as.dir</name>
+                           <name>org.jboss.testharness.container.extraConfigurationDir</name>
                            <value>../jboss-as</value>
                         </property>
                         <property>
-                           <name>jboss.force.restart</name>
+                           <name>org.jboss.testharness.container.forceRestart</name>
                            <value>true</value>
                         </property>
                         <property>
