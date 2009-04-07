@@ -43,6 +43,7 @@ import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.util.Names;
 
 /**
  * <p>
@@ -94,8 +95,6 @@ public class ObserverImpl<T> implements Observer<T>
       checkObserverMethod();
    }
 
-
-
    /**
     * Performs validation of the observer method for compliance with the
     * specifications.
@@ -143,6 +142,12 @@ public class ObserverImpl<T> implements Observer<T>
       if (this.observerMethod.isAnnotationPresent(Initializer.class))
       {
          throw new DefinitionException(this + " cannot be annotated with @Initializer");
+      }
+      
+      // We cannot allow asynchronously invoked conditional observers either
+      if (this.asynchronous && this.conditional)
+      {
+         throw new DefinitionException(this + " cannot be annotated with both @Asynchronously and @IfExists");
       }
    }
 
@@ -222,7 +227,7 @@ public class ObserverImpl<T> implements Observer<T>
    {
       StringBuilder builder = new StringBuilder();
       builder.append("Observer Implementation: \n");
-      builder.append("  Observer (Declaring) bean: " + observerBean);
+      builder.append("  Observer (Declaring) class: " + Names.typesToString(observerBean.getTypes()));
       builder.append("  Observer method: " + observerMethod);
       return builder.toString();
    }

@@ -12,6 +12,10 @@
         	<param name="AcceptOnMatch" value="false" />
         	<param name="StringToMatch" value="Failure while notifying an observer of event [a]" />
         </filter>
+        <filter class="org.apache.log4j.varia.StringMatchFilter">
+        	<param name="AcceptOnMatch" value="false" />
+        	<param name="StringToMatch" value="Error destroying Request scoped unnamed simple bean org.jboss.jsr299.tck.tests.implementation.simple.lifecycle.Cod" />
+        </filter>
     </appender>
 
     <!-- ############### Embedded EJB3 #################  -->

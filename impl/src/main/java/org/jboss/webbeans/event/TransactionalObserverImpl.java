@@ -104,6 +104,10 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
       if (!observerMethod.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty())
       {
          observationPhases.add(TransactionObservationPhase.BEFORE_COMPLETION);
+         if (!observerMethod.getAnnotatedParameters(Asynchronously.class).isEmpty())
+         {
+            throw new DefinitionException("@BeforeTransactionCompletion cannot be used with @Asynchronously on " + observerMethod);
+         }
       }
       if (!observerMethod.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty())
       {
@@ -148,6 +152,7 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
       {
          deferredEvent = new AsynchronousTransactionalEventNotification<T>(event, this);
       }
+
       Synchronization synchronization = null;
       if (transactionObservationPhase.equals(TransactionObservationPhase.BEFORE_COMPLETION))
       {
