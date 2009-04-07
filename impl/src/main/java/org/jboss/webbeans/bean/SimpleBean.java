@@ -308,7 +308,13 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          if (getManager().getServices().contains(EjbServices.class))
          {
             initEjbInjectionPoints();
+         }
+         if (getManager().getServices().contains(JpaServices.class))
+         {
             initPersistenceUnitInjectionPoints();
+         }
+         if (getManager().getServices().contains(ResourceServices.class))
+         {
             initResourceInjectionPoints();
          }
       }

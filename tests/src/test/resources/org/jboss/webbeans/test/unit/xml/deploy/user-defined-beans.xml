@@ -12,8 +12,5 @@
 		</myapp:PaymentProcessor>
 		<myapp:User />
 	</myapp:Order>
-	<myapp:Login>
-		<ConversationScoped />
-		<BindingType />
-	</myapp:Login>
+
 </Beans>

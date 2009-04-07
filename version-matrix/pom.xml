@@ -338,6 +338,11 @@
             <type>pom</type>
          </dependency>
          
+         <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>catalina</artifactId>
+            <version>6.0.18</version>
+         </dependency>
          
       </dependencies>
    </dependencyManagement>
