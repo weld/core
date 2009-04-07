@@ -156,6 +156,15 @@ $ ant update</programlisting>
          <literal>java:comp/env</literal>, so the Manager will be available at
          <literal>java:comp/env/app/Manager</literal>
       </para>
+      
+      <para>
+         Web Beans also supports Servlet injection in Tomcat. To enable this,
+         place the <literal>webbeans-tomcat-support.jar</literal> in 
+         <literal>$TOMCAT_HOME/lib</literal>, and add the following to your
+         <literal>META-INF/context.xml</literal>:
+      </para>
+      
+      <programlisting><![CDATA[<Listener className="org.jboss.webbeans.environment.tomcat.WebBeansLifecycleListener" />]]></programlisting>
 
    </section>
    
