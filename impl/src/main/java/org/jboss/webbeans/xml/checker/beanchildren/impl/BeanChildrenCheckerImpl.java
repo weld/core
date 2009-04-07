@@ -96,6 +96,8 @@ public abstract class BeanChildrenCheckerImpl implements BeanChildrenChecker
    {
       try
       {
+         if(beanChildElement.getName().equalsIgnoreCase(XmlConstants.ARRAY))
+            return;
          AnnotatedClass<?> beanChildClass = ParseXmlHelper.loadElementClass(beanChildElement, Object.class, environment, packagesMap);
          Class<?> beanChildType = beanChildClass.getRawType();
          boolean isJavaClass = !beanChildType.isEnum() && !beanChildType.isPrimitive() && !beanChildType.isInterface();

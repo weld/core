@@ -61,10 +61,37 @@ public class XmlParser
          Document document = createDocument(url);
          if (document != null)
          {
+            parseForArrays(document);
             parseForAnnotationTypes(document);
             parseForBeans(document);
             parseForDeploy(document);
          }
+      }
+   }
+   
+   private void parseForArrays(Document document)
+   {
+      Element root = document.getRootElement();
+      checkChildrenForArray(root);
+   }
+   
+   private void checkChildrenForArray(Element element)
+   {
+      Iterator<?> childIterator = element.elementIterator();
+      while(childIterator.hasNext())
+      {
+         Element child = (Element)childIterator.next();
+         
+         if(child.getName().equalsIgnoreCase(XmlConstants.ARRAY))
+         {
+            if(child.elements().size() != 1)
+               throw new DefinitionException("<Array> element must have only one child");
+            
+            Element arrayChild = (Element)child.elements().get(0);
+            ParseXmlHelper.loadElementClass(arrayChild, Object.class, environment, packagesMap);
+         }
+         else
+            checkChildrenForArray(child);
       }
    }
    

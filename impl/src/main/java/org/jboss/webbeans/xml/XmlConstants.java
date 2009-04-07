@@ -57,4 +57,6 @@ public class XmlConstants
    public static final String PRODUCES = "Produces";
    
    public static final String VALUE = "value";
+   
+   public static final String ARRAY = "Array";
 }
