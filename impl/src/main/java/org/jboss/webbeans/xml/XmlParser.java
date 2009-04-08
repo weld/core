@@ -200,7 +200,8 @@ public class XmlParser
       {
          Element child = (Element)elIterator.next();
          Class<? extends Annotation> clazz = ParseXmlHelper.loadAnnotationClass(child, Annotation.class, environment, packagesMap);
-         if(!clazz.isAnnotationPresent(InterceptorBindingType.class))
+         if(!child.getName().equalsIgnoreCase(XmlConstants.INTERCEPTOR_BINDING_TYPE) && 
+               !clazz.isAnnotationPresent(InterceptorBindingType.class))
             throw new DefinitionException("Direct child <" + child.getName() + "> of interceptor binding type <" + element.getName() + 
                   "> declaration must be interceptor binding type");
          
@@ -214,11 +215,12 @@ public class XmlParser
       {
          Element stereotypeChild = (Element)elIterator.next();
          Class<? extends Annotation> stereotypeClass = ParseXmlHelper.loadAnnotationClass(stereotypeChild, Annotation.class, environment, packagesMap);
-         if(stereotypeClass.isAnnotationPresent(ScopeType.class) || 
+         if(stereotypeChild.getName().equalsIgnoreCase(XmlConstants.STEREOTYPE) || 
+               stereotypeClass.isAnnotationPresent(ScopeType.class) || 
                stereotypeClass.isAnnotationPresent(DeploymentType.class) || 
                stereotypeClass.isAnnotationPresent(InterceptorBindingType.class) || 
                stereotypeClass.isAnnotationPresent(Named.class))
-            return;
+            continue;
          throw new DefinitionException("Direct child <" + stereotypeChild.getName() + "> of stereotype <" + stereotypeElement.getName() + 
                "> declaration must be scope type, or deployment type, or interceptor binding type, or javax.annotation.Named");
          
