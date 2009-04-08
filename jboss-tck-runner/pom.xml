@@ -186,7 +186,7 @@
                            <value>../jboss-as</value>
                         </property>
                         <property>
-                           <name>jboss.force.restart</name>
+                           <name>org.jboss.testharness.container.forceRestart</name>
                            <value>true</value>
                         </property>
                         <property>
