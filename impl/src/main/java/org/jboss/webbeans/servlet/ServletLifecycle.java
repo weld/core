@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
@@ -35,19 +36,19 @@ import org.jboss.webbeans.log.Logging;
  * @author Pete Muir
  * @author Nicklas Karlsson
  */
-public class ServletLifecycle extends AbstractLifecycle
+public class ServletLifecycle extends ContextLifecycle
 {
 
    public static final String REQUEST_ATTRIBUTE_NAME = ServletLifecycle.class.getName() + ".requestBeanStore";
 
    static
    {
-      AbstractLifecycle.setInstance(new ServletLifecycle());
+      ContextLifecycle.setInstance(new ServletLifecycle());
    }
 
    public static ServletLifecycle instance()
    {
-      return (ServletLifecycle) AbstractLifecycle.instance();
+      return (ServletLifecycle) ContextLifecycle.instance();
    }
 
    private static LogProvider log = Logging.getLogProvider(ServletLifecycle.class);

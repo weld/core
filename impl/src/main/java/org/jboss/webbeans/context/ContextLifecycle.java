@@ -1,38 +1,35 @@
-package org.jboss.webbeans.servlet;
+package org.jboss.webbeans.context;
 
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.context.ConversationContext;
-import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.context.RequestContext;
-import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.conversation.ConversationManager;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.servlet.ConversationBeanStore;
 
 /**
- * A generic implementation of the Web Beans lifecycle that supports restoring
+ * An implementation of the Web Beans lifecycle that supports restoring
  * and destroying all the built in contexts
  * 
  * @author Pete Muir
  * 
  */
-public abstract class AbstractLifecycle
+public class ContextLifecycle
 {
 
-   private static AbstractLifecycle instance;
+   private static ContextLifecycle instance;
 
-   public static AbstractLifecycle instance()
+   public static ContextLifecycle instance()
    {
       return instance;
    }
 
-   protected static void setInstance(AbstractLifecycle instance)
+   protected static void setInstance(ContextLifecycle instance)
    {
-      AbstractLifecycle.instance = instance;
+      ContextLifecycle.instance = instance;
    }
 
-   private static LogProvider log = Logging.getLogProvider(AbstractLifecycle.class);
+   private static LogProvider log = Logging.getLogProvider(ContextLifecycle.class);
 
    protected void restoreSession(String id, BeanStore sessionBeanStore)
    {

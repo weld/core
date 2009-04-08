@@ -3,13 +3,13 @@ package org.jboss.webbeans.mock;
 import org.jboss.webbeans.bootstrap.WebBeansBootstrap;
 import org.jboss.webbeans.bootstrap.api.Environments;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
+import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
-import org.jboss.webbeans.servlet.AbstractLifecycle;
 
-public class MockServletLifecycle extends AbstractLifecycle
+public class MockServletLifecycle extends ContextLifecycle
 {
    private static final ResourceLoader MOCK_RESOURCE_LOADER = new MockResourceLoader();
    
