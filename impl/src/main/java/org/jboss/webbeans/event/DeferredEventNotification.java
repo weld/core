@@ -17,8 +17,9 @@
 
 package org.jboss.webbeans.event;
 
-import org.jboss.webbeans.context.DependentContext;
-import org.jboss.webbeans.context.RequestContext;
+import org.jboss.webbeans.context.ContextLifecycle;
+import org.jboss.webbeans.context.api.BeanStore;
+import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 
@@ -50,8 +51,8 @@ public class DeferredEventNotification<T> implements Runnable
 
    public void run()
    {
-      RequestContext.INSTANCE.setActive(true);
-      DependentContext.INSTANCE.setActive(true);
+      BeanStore requestBeanStore = new ConcurrentHashMapBeanStore();
+      ContextLifecycle.instance().beginRequest("async invocation", requestBeanStore);
       try
       {
          log.debug("Sending event [" + event + "] directly to observer " + observer);
@@ -63,8 +64,7 @@ public class DeferredEventNotification<T> implements Runnable
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
-         RequestContext.INSTANCE.setActive(false);
+         ContextLifecycle.instance().endRequest("async invocation", requestBeanStore);
       }
    }
 
