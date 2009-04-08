@@ -74,7 +74,7 @@ public abstract class AbstractMapContext extends AbstractContext
       }
       if (getBeanStore() == null)
       {
-         throw new IllegalStateException("No bean store available");
+         throw new IllegalStateException("No bean store available for " + toString());
       }
       T instance = getBeanStore().get(contextual);
       if (instance != null)
@@ -132,7 +132,7 @@ public abstract class AbstractMapContext extends AbstractContext
       log.trace("Destroying " + bean);
       if (getBeanStore() == null)
       {
-         throw new IllegalStateException("No bean store available");
+         throw new IllegalStateException("No bean store available for " + toString());
       }
       bean.destroy(getBeanStore().get(bean));
    }
@@ -145,7 +145,7 @@ public abstract class AbstractMapContext extends AbstractContext
       log.trace("Destroying context");
       if (getBeanStore() == null)
       {
-         throw new IllegalStateException("No bean store available");
+         throw new IllegalStateException("No bean store available for " + toString());
       }
       for (Contextual<? extends Object> bean : getBeanStore().getBeans())
       {
