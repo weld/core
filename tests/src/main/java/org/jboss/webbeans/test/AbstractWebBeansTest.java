@@ -68,7 +68,6 @@ public abstract class AbstractWebBeansTest extends AbstractTest
    {
       if (!isInContainer())
       {
-         getCurrentConfiguration().setStandaloneContainers(new StandaloneContainersImpl());
          getCurrentConfiguration().getExtraPackages().add(AbstractWebBeansTest.class.getPackage().getName());
       }
       super.beforeSuite(context);

@@ -12,16 +12,6 @@
    <dependencies>
 
       <dependency>
-         <groupId>org.jboss.webbeans</groupId>
-         <artifactId>webbeans-core</artifactId>
-      </dependency>
-      
-      <dependency>
-         <groupId>org.jboss.webbeans</groupId>
-         <artifactId>webbeans-spi</artifactId>
-      </dependency>
-
-      <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
          <classifier>jdk15</classifier>
@@ -31,6 +21,11 @@
          		<groupId>junit</groupId>
          	</exclusion>
          </exclusions>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.webbeans.tomcat</groupId>
+         <artifactId>webbeans-tomcat</artifactId>
       </dependency>
       
       <dependency>
@@ -148,6 +143,12 @@
                               <artifactItem>
                                  <groupId>javax.el</groupId>
                                  <artifactId>el-ri</artifactId>
+                                 <overWrite>true</overWrite>
+                                 <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
+                              </artifactItem>
+                              <artifactItem>
+                                 <groupId>org.jboss.webbeans.tomcat</groupId>
+                                 <artifactId>webbeans-tomcat</artifactId>
                                  <overWrite>true</overWrite>
                                  <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                               </artifactItem>
