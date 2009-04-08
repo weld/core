@@ -4,7 +4,6 @@ import java.net.URL;
 
 import org.jboss.testharness.api.DeploymentException;
 import org.jboss.testharness.spi.StandaloneContainers;
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.mock.MockEELifecycle;
 import org.jboss.webbeans.mock.MockServletLifecycle;
 import org.jboss.webbeans.mock.MockWebBeanDiscovery;
@@ -71,7 +70,6 @@ public class StandaloneContainersImpl implements StandaloneContainers
       lifecycle.endRequest();
       lifecycle.endSession();
       lifecycle.endApplication();
-      CurrentManager.setRootManager(null);
       lifecycle = null;
    }
    

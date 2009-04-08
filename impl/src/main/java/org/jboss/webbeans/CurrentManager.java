@@ -30,10 +30,16 @@ public class CurrentManager
 {
    
    // The root manager instance
-   private static Integer rootManagerId;
+   private static ManagerImpl rootManager;
    
    private final static Map<Integer, ManagerImpl> managers = new ConcurrentHashMap<Integer, ManagerImpl>();
 
+   public static void cleanup()
+   {
+      rootManager = null;
+      managers.clear();
+   }
+   
    /**
     * Gets the root manager
     * 
@@ -41,14 +47,7 @@ public class CurrentManager
     */
    public static ManagerImpl rootManager()
    {
-      if (rootManagerId == null)
-      {
-         return null;
-      }
-      else
-      {
-         return managers.get(rootManagerId);
-      }
+      return rootManager;
    }
    
    /**
@@ -58,14 +57,8 @@ public class CurrentManager
     */
    public static void setRootManager(ManagerImpl managerImpl) 
    {
-      if (managerImpl == null)
-      {
-         rootManagerId = null;
-      }
-      else
-      {
-         rootManagerId = add(managerImpl);
-      }
+      rootManager = managerImpl;
+      managers.put(managerImpl.getId(), managerImpl);
    }
    
    public static ManagerImpl get(Integer key)

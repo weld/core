@@ -43,7 +43,6 @@ public class ServletEnvironmentTest
       lifecycle.endRequest();
       lifecycle.endSession();
       lifecycle.endApplication();
-      CurrentManager.setRootManager(null);
       lifecycle = null;
    }
    

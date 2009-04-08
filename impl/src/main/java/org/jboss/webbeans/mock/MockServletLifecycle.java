@@ -56,7 +56,7 @@ public class MockServletLifecycle extends AbstractLifecycle
    
    public void endApplication()
    {
-      
+      bootstrap.shutdown();
    }
    
    public void resetContexts()
