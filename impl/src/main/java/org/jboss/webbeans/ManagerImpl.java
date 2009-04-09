@@ -20,6 +20,7 @@ package org.jboss.webbeans;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
@@ -379,7 +380,6 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * @see javax.inject.manager.Manager#resolveObservers(java.lang.Object,
     *      java.lang.annotation.Annotation[])
     */
-   @SuppressWarnings("unchecked")
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
    {
       Class<?> clazz = event.getClass();
@@ -395,19 +395,36 @@ public class ManagerImpl implements WebBeansManager, Serializable
       {
          throw new DuplicateBindingTypeException("Duplicate binding types: " + bindings);
       }
-      Type t = new Reflections.HierarchyDiscovery(clazz).getResolvedType();
-      for (Type type : Reflections.getActualTypeArguments(clazz))
+      checkEventType(clazz);
+      return eventManager.getObservers(event, bindings);
+   }
+   
+   private void checkEventType(Type eventType)
+   {
+      Type[] types;
+      if (eventType instanceof Class)
+      {
+         types = Reflections.getActualTypeArguments((Class<?>) eventType);
+      }
+      else if (eventType instanceof ParameterizedType)
+      {
+         types = ((ParameterizedType) eventType).getActualTypeArguments();
+      }
+      else
+      {
+         throw new IllegalArgumentException("Event type " + eventType + " isn't a concrete type");
+      }
+      for (Type type : types)
       {
          if (type instanceof WildcardType)
          {
-            throw new IllegalArgumentException("Cannot resolve an event type parameterized with a wildcard " + clazz);
+            throw new IllegalArgumentException("Cannot provide an event type parameterized with a wildcard " + eventType);
          }
          if (type instanceof TypeVariable)
          {
-            throw new IllegalArgumentException("Cannot resolve an event type parameterized with a type parameter " + clazz);
+            throw new IllegalArgumentException("Cannot provide an event type parameterized with a type parameter " + eventType);
          }
       }
-      return eventManager.getObservers(event, bindings);
    }
 
    /**
@@ -657,6 +674,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
     */
    public <T> Manager addObserverByType(Observer<T> observer, Type eventType, Annotation... bindings)
    {
+      checkEventType(eventType);
       this.eventManager.addObserver(observer, eventType, bindings);
       for (ManagerImpl childActivity : childActivities)
       {
@@ -772,7 +790,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       {
          if (creationalContext != null || (creationalContext == null && getContext(bean.getScopeType()).get(bean) != null))
          {
-            return (T) clientProxyProvider.getClientProxy(this, bean);
+            return clientProxyProvider.getClientProxy(this, bean);
          }
          else
          {
