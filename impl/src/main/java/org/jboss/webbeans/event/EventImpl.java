@@ -27,6 +27,7 @@ import javax.event.Observer;
 
 import org.jboss.webbeans.FacadeImpl;
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.literal.FiresLiteral;
 import org.jboss.webbeans.util.Strings;
 
 /**
@@ -58,6 +59,7 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>, Serializabl
    public EventImpl(Type eventType, ManagerImpl manager, Set<Annotation> bindings)
    {
       super(eventType, manager, bindings);
+      this.bindings.remove(new FiresLiteral());
    }
 
    /**

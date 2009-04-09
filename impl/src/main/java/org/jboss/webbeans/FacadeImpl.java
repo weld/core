@@ -84,8 +84,8 @@ public abstract class FacadeImpl<T>
          {
             throw new DuplicateBindingTypeException(newAnnotation + " is already present in the bindings list for " + this);
          }
-         result.add(newAnnotation)
-;      }
+         result.add(newAnnotation);
+      }
       return result.toArray(EMPTY_BINDINGS);
    }
 
