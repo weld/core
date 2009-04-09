@@ -24,11 +24,6 @@
       </dependency>
       
       <dependency>
-         <groupId>org.jboss.webbeans.tomcat</groupId>
-         <artifactId>webbeans-tomcat</artifactId>
-      </dependency>
-      
-      <dependency>
          <groupId>org.jboss.test-harness</groupId>
          <artifactId>jboss-test-harness</artifactId>
       </dependency>
@@ -50,6 +45,17 @@
          <artifactId>el-ri</artifactId>
          <scope>test</scope>
       </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.webbeans</groupId>
+         <artifactId>webbeans-core</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.webbeans</groupId>
+         <artifactId>webbeans-spi</artifactId>
+      </dependency>
+      
       
       <dependency>
          <groupId>org.jboss.ejb3</groupId>
@@ -143,12 +149,6 @@
                               <artifactItem>
                                  <groupId>javax.el</groupId>
                                  <artifactId>el-ri</artifactId>
-                                 <overWrite>true</overWrite>
-                                 <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
-                              </artifactItem>
-                              <artifactItem>
-                                 <groupId>org.jboss.webbeans.tomcat</groupId>
-                                 <artifactId>webbeans-tomcat</artifactId>
                                  <overWrite>true</overWrite>
                                  <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                               </artifactItem>
