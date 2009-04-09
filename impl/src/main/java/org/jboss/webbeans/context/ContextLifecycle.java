@@ -34,36 +34,36 @@ public class ContextLifecycle
    protected void restoreSession(String id, BeanStore sessionBeanStore)
    {
       log.trace("Restoring session " + id);
-      SessionContext.INSTANCE.setBeanStore(sessionBeanStore);
-      SessionContext.INSTANCE.setActive(true);
+      SessionContext.instance().setBeanStore(sessionBeanStore);
+      SessionContext.instance().setActive(true);
    }
 
    protected void endSession(String id, BeanStore sessionBeanStore)
    {
       log.trace("Ending session " + id);
-      SessionContext.INSTANCE.setActive(true);
+      SessionContext.instance().setActive(true);
       ConversationManager conversationManager = CurrentManager.rootManager().getInstanceByType(ConversationManager.class);
       conversationManager.destroyAllConversations();
-      SessionContext.INSTANCE.destroy();
-      SessionContext.INSTANCE.setBeanStore(null);
-      SessionContext.INSTANCE.setActive(false);
+      SessionContext.instance().destroy();
+      SessionContext.instance().setBeanStore(null);
+      SessionContext.instance().setActive(false);
    }
 
    public void beginRequest(String id, BeanStore requestBeanStore)
    {
       log.trace("Starting request " + id);
-      RequestContext.INSTANCE.setBeanStore(requestBeanStore);
-      RequestContext.INSTANCE.setActive(true);
-      DependentContext.INSTANCE.setActive(true);
+      RequestContext.instance().setBeanStore(requestBeanStore);
+      RequestContext.instance().setActive(true);
+      DependentContext.instance().setActive(true);
    }
 
    public void endRequest(String id, BeanStore requestBeanStore)
    {
       log.trace("Ending request " + id);
-      RequestContext.INSTANCE.setBeanStore(requestBeanStore);
-      DependentContext.INSTANCE.setActive(false);
-      RequestContext.INSTANCE.destroy();
-      RequestContext.INSTANCE.setActive(false);
+      RequestContext.instance().setBeanStore(requestBeanStore);
+      DependentContext.instance().setActive(false);
+      RequestContext.instance().destroy();
+      RequestContext.instance().setActive(false);
    }
 
    protected void restoreConversation(String id, BeanStore conversationBeanStore)

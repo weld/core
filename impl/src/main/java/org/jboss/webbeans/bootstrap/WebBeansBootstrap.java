@@ -248,21 +248,21 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    protected void beginApplication(BeanStore applicationBeanStore)
    {
       log.trace("Starting application");
-      ApplicationContext.INSTANCE.setBeanStore(applicationBeanStore);
-      ApplicationContext.INSTANCE.setActive(true);
+      ApplicationContext.instance().setBeanStore(applicationBeanStore);
+      ApplicationContext.instance().setActive(true);
 
    }
 
    protected void beginDeploy(BeanStore requestBeanStore)
    {
-      RequestContext.INSTANCE.setBeanStore(requestBeanStore);
-      RequestContext.INSTANCE.setActive(true);
+      RequestContext.instance().setBeanStore(requestBeanStore);
+      RequestContext.instance().setActive(true);
    }
 
    protected void endDeploy(BeanStore requestBeanStore)
    {
-      RequestContext.INSTANCE.setBeanStore(null);
-      RequestContext.INSTANCE.setActive(false);
+      RequestContext.instance().setBeanStore(null);
+      RequestContext.instance().setActive(false);
    }
    
    public void shutdown()

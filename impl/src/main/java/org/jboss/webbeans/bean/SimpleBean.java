@@ -113,7 +113,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         DependentContext.instance().setActive(true);
          T instance = null;
          DependentStorageRequest dependentStorageRequest = null;
          try
@@ -121,7 +121,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
             instance = constructor.newInstance(manager, creationalContext);
             creationalContext.push(instance);
             dependentStorageRequest = DependentStorageRequest.of(dependentInstancesStore, instance);
-            DependentContext.INSTANCE.startCollectingDependents(dependentStorageRequest);
+            DependentContext.instance().startCollectingDependents(dependentStorageRequest);
             injectEjbAndCommonFields(instance);
             injectBoundFields(instance, creationalContext);
             callInitializers(instance, creationalContext);
@@ -129,13 +129,13 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          }
          finally
          {
-            DependentContext.INSTANCE.stopCollectingDependents(dependentStorageRequest);
+            DependentContext.instance().stopCollectingDependents(dependentStorageRequest);
          }
          return instance;
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         DependentContext.instance().setActive(false);
       }
    }
 
@@ -148,7 +148,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         DependentContext.instance().setActive(true);
          callPreDestroy(instance);
          dependentInstancesStore.destroyDependentInstances(instance);
       }
@@ -158,7 +158,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         DependentContext.instance().setActive(false);
       }
    }
 

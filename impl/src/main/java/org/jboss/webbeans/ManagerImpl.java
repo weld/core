@@ -1130,9 +1130,9 @@ public class ManagerImpl implements WebBeansManager, Serializable
       log.trace("Ending application");
       shutdownExecutors();
       CurrentManager.cleanup();
-      ApplicationContext.INSTANCE.destroy();
-      ApplicationContext.INSTANCE.setActive(false);
-      ApplicationContext.INSTANCE.setBeanStore(null);
+      ApplicationContext.instance().destroy();
+      ApplicationContext.instance().setActive(false);
+      ApplicationContext.instance().setBeanStore(null);
       getServices().get(NamingContext.class).unbind(ManagerImpl.JNDI_KEY);
    }
 

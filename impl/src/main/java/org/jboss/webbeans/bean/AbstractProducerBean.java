@@ -331,9 +331,9 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       {
          if (getDeclaringBean().isDependent())
          {
-            DependentContext.INSTANCE.startCollectingDependents(dependentStorageRequest);
+            DependentContext.instance().startCollectingDependents(dependentStorageRequest);
          }
-         DependentContext.INSTANCE.setActive(true);
+         DependentContext.instance().setActive(true);
          T instance = produceInstance(creationalContext);
          checkReturnValue(instance);
          return instance;
@@ -342,10 +342,10 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       {
          if (getDeclaringBean().isDependent())
          {
-            DependentContext.INSTANCE.stopCollectingDependents(dependentStorageRequest);
+            DependentContext.instance().stopCollectingDependents(dependentStorageRequest);
             dependentInstancesStore.destroyDependentInstances(dependentStorageRequest.getKey());
          }
-         DependentContext.INSTANCE.setActive(false);
+         DependentContext.instance().setActive(false);
       }
    }
 

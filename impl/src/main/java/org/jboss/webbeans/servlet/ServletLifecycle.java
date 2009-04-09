@@ -124,7 +124,7 @@ public class ServletLifecycle extends ContextLifecycle
          }
          super.endRequest(request.getRequestURI(), beanStore);
          request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
-         SessionContext.INSTANCE.setBeanStore(null);
+         SessionContext.instance().setBeanStore(null);
       }
    }
 

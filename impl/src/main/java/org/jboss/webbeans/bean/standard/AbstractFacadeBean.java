@@ -28,7 +28,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
    {
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         DependentContext.instance().setActive(true);
          InjectionPoint injectionPoint = this.getManager().getInjectionPoint();
          if (injectionPoint != null)
          {
@@ -51,7 +51,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         DependentContext.instance().setActive(false);
       }
    }
    

@@ -19,16 +19,16 @@ abstract class RunInDependentContext
    
    private void setup()
    {
-      DependentContext.INSTANCE.setActive(true);
-      DependentContext.INSTANCE.startCollectingDependents(dependentStorageRequest);
+      DependentContext.instance().setActive(true);
+      DependentContext.instance().startCollectingDependents(dependentStorageRequest);
    }
    
    private void cleanup()
    {
-      DependentContext.INSTANCE.stopCollectingDependents(dependentStorageRequest);
+      DependentContext.instance().stopCollectingDependents(dependentStorageRequest);
       // TODO kinky
       dependentStorageRequest.getDependentInstancesStore().destroyDependentInstances(dependentStorageRequest.getKey());
-      DependentContext.INSTANCE.setActive(false);
+      DependentContext.instance().setActive(false);
    }
    
    protected abstract void execute() throws Exception;

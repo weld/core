@@ -33,18 +33,23 @@ import org.jboss.webbeans.context.api.BeanStore;
 public class ApplicationContext extends AbstractMapContext
 {
 
-   public static ApplicationContext INSTANCE;
-   
+   private static ApplicationContext INSTANCE;
+
+   public static ApplicationContext instance()
+   {
+      return INSTANCE;
+   }
+
    public static ApplicationContext create()
    {
       INSTANCE = new ApplicationContext();
-      return INSTANCE;
+      return instance();
    }
 
    // The beans
    private BeanStore beanStore;
    // Is the context active?
-   private AtomicBoolean active;
+   private final AtomicBoolean active;
 
    /**
     * Constructor

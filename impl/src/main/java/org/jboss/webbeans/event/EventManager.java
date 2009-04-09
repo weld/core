@@ -108,7 +108,7 @@ public class EventManager
    {
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         DependentContext.instance().setActive(true);
          for (Observer<T> observer : observers)
          {
             observer.notify(event);
@@ -116,7 +116,7 @@ public class EventManager
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         DependentContext.instance().setActive(false);
       }
    }
 

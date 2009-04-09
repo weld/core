@@ -31,12 +31,17 @@ public class SessionContext extends AbstractThreadLocalMapContext
 {
    private static LogProvider log = Logging.getLogProvider(SessionContext.class);
 
-   public static SessionContext INSTANCE;
-   
+   private static SessionContext INSTANCE;
+
+   public static SessionContext instance()
+   {
+      return INSTANCE;
+   }
+
    public static SessionContext create()
    {
       INSTANCE = new SessionContext();
-      return INSTANCE;
+      return instance();
    }
 
    /**

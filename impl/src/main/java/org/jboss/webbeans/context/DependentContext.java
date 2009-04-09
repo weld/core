@@ -31,17 +31,22 @@ import javax.context.Dependent;
  */
 public class DependentContext extends AbstractContext
 {
-   public static DependentContext INSTANCE;
+   private static DependentContext INSTANCE;
+
+   public static DependentContext instance()
+   {
+      return INSTANCE;
+   }
 
    public static DependentContext create()
    {
       INSTANCE = new DependentContext();
-      return INSTANCE;
+      return instance();
    }
 
-   private ThreadLocal<AtomicInteger> reentrantActiveCount;
+   private final ThreadLocal<AtomicInteger> reentrantActiveCount;
    // A (possible null) request to store dependents created
-   private ThreadLocal<DependentStorageRequest> dependentStorageRequest;
+   private final ThreadLocal<DependentStorageRequest> dependentStorageRequest;
 
    /**
     * Constructor

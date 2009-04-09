@@ -38,7 +38,7 @@ public class AsynchronousTransactionalEventNotification<T> extends DeferredEvent
    public void run()
    {
       // Let the event be deferred again as just an asynchronous event
-      DependentContext.INSTANCE.setActive(true);
+      DependentContext.instance().setActive(true);
       try
       {
          log.trace("Sending event [" + event + "] asynchronously to transaction observer " + observer);
@@ -50,7 +50,7 @@ public class AsynchronousTransactionalEventNotification<T> extends DeferredEvent
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         DependentContext.instance().setActive(false);
       }
    }
 

@@ -228,7 +228,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       try
       {
-         DependentContext.INSTANCE.setActive(true);
+         DependentContext.instance().setActive(true);
          T instance = proxyClass.newInstance();
          creationalContext.push(instance);
          ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler(this));
@@ -250,7 +250,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       finally
       {
-         DependentContext.INSTANCE.setActive(false);
+         DependentContext.instance().setActive(false);
       }
    }
 
@@ -321,15 +321,15 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
             public void push(T incompleteInstance) {};
             
          };
-         DependentContext.INSTANCE.startCollectingDependents(dependentStorageRequest);
-         DependentContext.INSTANCE.setActive(true);
+         DependentContext.instance().startCollectingDependents(dependentStorageRequest);
+         DependentContext.instance().setActive(true);
          injectBoundFields(instance, creationalContext);
          callInitializers(instance, creationalContext);
       }
       finally
       {
-         DependentContext.INSTANCE.stopCollectingDependents(dependentStorageRequest);
-         DependentContext.INSTANCE.setActive(false);
+         DependentContext.instance().stopCollectingDependents(dependentStorageRequest);
+         DependentContext.instance().setActive(false);
       }
 
    }

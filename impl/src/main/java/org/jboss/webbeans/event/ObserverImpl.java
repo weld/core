@@ -176,7 +176,7 @@ public class ObserverImpl<T> implements Observer<T>
       {
          if (Dependent.class.equals(observerBean.getScopeType()) && observerBean instanceof RIBean)
          {
-            DependentContext.INSTANCE.startCollectingDependents(dependentStorageRequest);
+            DependentContext.instance().startCollectingDependents(dependentStorageRequest);
          }
          // Get the most specialized instance of the component
          instance = getInstance(observerBean);
@@ -191,7 +191,7 @@ public class ObserverImpl<T> implements Observer<T>
       {
          if (Dependent.class.equals(observerBean.getScopeType()))
          {
-            DependentContext.INSTANCE.stopCollectingDependents(dependentStorageRequest);
+            DependentContext.instance().stopCollectingDependents(dependentStorageRequest);
             dependentStorageRequest.getDependentInstancesStore().destroyDependentInstances(dependentStorageRequest.getKey());
          }
       }

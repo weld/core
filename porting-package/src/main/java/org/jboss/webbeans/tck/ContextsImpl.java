@@ -11,7 +11,7 @@ public class ContextsImpl implements Contexts<AbstractContext>
 
    public RequestContext getRequestContext()
    {
-      return RequestContext.INSTANCE;
+      return RequestContext.instance();
    }
 
    public void setActive(AbstractContext context)
@@ -26,7 +26,7 @@ public class ContextsImpl implements Contexts<AbstractContext>
 
    public AbstractContext getDependentContext()
    {
-      return DependentContext.INSTANCE;
+      return DependentContext.instance();
    }
    
    public void destroyContext(AbstractContext context)

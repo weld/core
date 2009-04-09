@@ -31,12 +31,12 @@ public abstract class AbstractWebBeansTest extends AbstractTest
       
       protected void setup()
       {
-         DependentContext.INSTANCE.setActive(true);
+         DependentContext.instance().setActive(true);
       }
       
       protected void cleanup()
       {
-         DependentContext.INSTANCE.setActive(false);
+         DependentContext.instance().setActive(false);
       }
       
       public final void run() throws Exception

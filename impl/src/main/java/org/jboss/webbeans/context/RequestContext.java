@@ -27,12 +27,17 @@ import javax.context.RequestScoped;
 public class RequestContext extends AbstractThreadLocalMapContext
 {
 	
-   public static RequestContext INSTANCE;
-   
+   private static RequestContext INSTANCE;
+
+   public static RequestContext instance()
+   {
+      return INSTANCE;
+   }
+
    public static RequestContext create()
    {
       INSTANCE = new RequestContext();
-      return INSTANCE;
+      return instance();
    }
 
    /**
