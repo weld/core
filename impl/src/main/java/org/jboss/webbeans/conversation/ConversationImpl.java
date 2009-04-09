@@ -61,7 +61,7 @@ public class ConversationImpl implements Conversation
     *  
     * @param conversation The old conversation
     */
-   public ConversationImpl(ConversationImpl conversation)
+   public ConversationImpl(Conversation conversation)
    {
       this.cid = conversation.getId();
       this.longRunning = conversation.isLongRunning();

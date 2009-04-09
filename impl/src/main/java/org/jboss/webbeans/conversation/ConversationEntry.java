@@ -20,6 +20,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.context.Conversation;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.context.ConversationContext;
@@ -37,7 +38,7 @@ public class ConversationEntry
    private static LogProvider log = Logging.getLogProvider(ConversationEntry.class);
 
    // The conversation
-   private ConversationImpl conversation;
+   private Conversation conversation;
    // The handle to the asynchronous timeout task
    private Future<?> terminationHandle;
    // The lock for concurrent access prevention
@@ -49,7 +50,7 @@ public class ConversationEntry
     * @param cid The conversation ID
     * @param terminationHandle The timeout termination handle
     */
-   protected ConversationEntry(ConversationImpl conversation, Future<?> terminationHandle)
+   protected ConversationEntry(Conversation conversation, Future<?> terminationHandle)
    {
       // conversation is a proxy so we need to make a "real" instance
       this.conversation = new ConversationImpl(conversation);
@@ -65,7 +66,7 @@ public class ConversationEntry
     * @param terminationHandle The timeout termination handle
     * @return A new conversation entry
     */
-   public static ConversationEntry of(ConversationImpl conversation, Future<?> terminationHandle)
+   public static ConversationEntry of(Conversation conversation, Future<?> terminationHandle)
    {
       return new ConversationEntry(conversation, terminationHandle);
    }
@@ -166,7 +167,7 @@ public class ConversationEntry
       log.trace("Conversation " + conversation + " re-scheduled for termination");
    }
 
-   public ConversationImpl getConversation()
+   public Conversation getConversation()
    {
       return conversation;
    }
