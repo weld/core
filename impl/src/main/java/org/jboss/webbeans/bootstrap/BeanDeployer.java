@@ -33,13 +33,11 @@ import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.WrappedAnnotatedField;
 import org.jboss.webbeans.introspector.WrappedAnnotatedMethod;
-import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
-import org.jboss.webbeans.jpa.spi.JpaServices;
 import org.jboss.webbeans.jsf.JSFApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.persistence.spi.EntityDiscovery;
 import org.jboss.webbeans.resources.ClassTransformer;
-import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.util.Reflections;
 
@@ -294,8 +292,24 @@ public class BeanDeployer
              !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(rawType) && 
              !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(rawType) && 
              !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(rawType) && 
-             hasSimpleWebBeanConstructor(clazz)
-             && (manager.getServices().contains(JpaServices.class) ? !manager.getServices().get(JpaServices.class).discoverEntities().contains(clazz.getRawType()) : true);
+             hasSimpleWebBeanConstructor(clazz) &&
+             !isEntity(clazz);
+   }
+   
+   private boolean isEntity(AnnotatedClass<?> clazz)
+   {
+	   if (manager.getServices().contains(EntityDiscovery.class))
+	   {
+		   EntityDiscovery entityDiscovery = manager.getServices().get(EntityDiscovery.class);
+		   return 
+		   		entityDiscovery.discoverEntitiesFromAnnotations().contains(clazz.getRawType()) || 
+		   		entityDiscovery.discoverEntitiesFromPersistenceUnits().contains(clazz.getRawType()) || 
+		   		entityDiscovery.discoverEntitiesFromXml().contains(clazz.getRawType());
+	   }
+	   else
+	   {
+		   return false;
+	   }
    }
    
    private static boolean hasSimpleWebBeanConstructor(AnnotatedClass<?> type)

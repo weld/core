@@ -52,13 +52,16 @@ import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.jpa.spi.JpaServices;
 import org.jboss.webbeans.jsf.JSFApiAbstraction;
 import org.jboss.webbeans.literal.DeployedLiteral;
 import org.jboss.webbeans.literal.InitializedLiteral;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.MetaDataCache;
+import org.jboss.webbeans.persistence.DefaultEntityDiscovery;
+import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
+import org.jboss.webbeans.persistence.spi.EntityDiscovery;
+import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.resources.DefaultNamingContext;
 import org.jboss.webbeans.resources.DefaultResourceLoader;
@@ -91,6 +94,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       // initialize default services
       getServices().add(ResourceLoader.class, new DefaultResourceLoader());
       getServices().add(NamingContext.class, new DefaultNamingContext());
+      getServices().add(EntityDiscovery.class, new DefaultEntityDiscovery(getServices()));
    }
 
    public void initialize()
@@ -124,6 +128,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       ResourceLoader resourceLoader = getServices().get(ResourceLoader.class);
       getServices().add(EJBApiAbstraction.class, new EJBApiAbstraction(resourceLoader));
       getServices().add(JSFApiAbstraction.class, new JSFApiAbstraction(resourceLoader));
+      getServices().add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(resourceLoader));
       getServices().add(ServletApiAbstraction.class, new ServletApiAbstraction(resourceLoader));
       // Temporary workaround to provide context for building annotated class
       // TODO expose AnnotatedClass on SPI and allow container to provide impl of this via ResourceLoader

@@ -11,7 +11,7 @@ import javax.inject.manager.InjectionPoint;
 import javax.persistence.Entity;
 
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
-import org.jboss.webbeans.jpa.spi.JpaServices;
+import org.jboss.webbeans.persistence.spi.JpaServices;
 
 public class MockJpaServices implements JpaServices
 {

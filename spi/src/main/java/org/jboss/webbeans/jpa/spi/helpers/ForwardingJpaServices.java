@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import javax.inject.manager.InjectionPoint;
 
-import org.jboss.webbeans.jpa.spi.JpaServices;
+import org.jboss.webbeans.persistence.spi.JpaServices;
 
 /**
  * An implementation of {@link JpaServices} which forwards all its method calls
@@ -36,11 +36,6 @@ public abstract class ForwardingJpaServices implements JpaServices
 {
    
    protected abstract JpaServices delegate();
-   
-   public Collection<Class<?>> discoverEntities()
-   {
-      return delegate().discoverEntities();
-   }
    
    public Object resolvePersistenceContext(InjectionPoint injectionPoint)
    {

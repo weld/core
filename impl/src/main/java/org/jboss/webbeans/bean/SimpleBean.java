@@ -43,10 +43,11 @@ import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.jpa.spi.JpaServices;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.MetaDataCache;
+import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
+import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.spi.ResourceServices;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
@@ -222,8 +223,8 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected void initPersistenceUnitInjectionPoints()
    {
       this.persistenceUnitInjectionPoints = new HashSet<AnnotatedInjectionPoint<?, ?>>();
-      Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(EJBApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
-      Object extendedPersistenceContextEnum = manager.getServices().get(EJBApiAbstraction.class).EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE;
+      Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
+      Object extendedPersistenceContextEnum = manager.getServices().get(PersistenceApiAbstraction.class).EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE;
       
       for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(persistenceContextAnnotationType))
       {

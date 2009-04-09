@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import javax.inject.manager.InjectionPoint;
 
-import org.jboss.webbeans.jpa.spi.JpaServices;
+import org.jboss.webbeans.persistence.spi.JpaServices;
 
 public class MockJpaServices implements JpaServices
 {

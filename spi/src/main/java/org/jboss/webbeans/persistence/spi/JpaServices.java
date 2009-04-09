@@ -14,9 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.jpa.spi;
-
-import java.util.Collection;
+package org.jboss.webbeans.persistence.spi;
 
 import javax.inject.manager.InjectionPoint;
 
@@ -31,14 +29,7 @@ import org.jboss.webbeans.bootstrap.api.Service;
  */
 public interface JpaServices extends Service
 {
-   
-   /**
-    * Gets the class for each entity in the application
-    * 
-    * @return the entity classes 
-    */
-   public Collection<Class<?>> discoverEntities();
-   
+	
    /**
     * Resolve the value for the given @PersistenceContext injection point
     * 

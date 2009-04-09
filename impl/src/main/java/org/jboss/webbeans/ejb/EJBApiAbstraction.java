@@ -35,22 +35,13 @@ public class EJBApiAbstraction extends ApiAbstraction implements Service
    {
       super(resourceLoader);
       ENTERPRISE_BEAN_CLASS = classForName("javax.ejb.EnterpriseBean");
-      PERSISTENCE_CONTEXT_ANNOTATION_CLASS = annotationTypeForName("javax.persistence.PersistenceContext");
       EJB_ANNOTATION_CLASS = annotationTypeForName("javax.ejb.EJB");
       RESOURCE_ANNOTATION_CLASS = annotationTypeForName("javax.annotation.Resource");
-      PERSISTENCE_CONTEXT_TYPE_CLASS = classForName("javax.persistence.PersistenceContextType");
-      if (PERSISTENCE_CONTEXT_TYPE_CLASS.getClass().equals( Dummy.class)) {
-        EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE = enumValue(PERSISTENCE_CONTEXT_TYPE_CLASS, "EXTENDED");
-      } else {
-        EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE = DummyEnum.DUMMY_VALUE;
-      }
+
    }
 
-   public final Class<?> PERSISTENCE_CONTEXT_TYPE_CLASS;
    public final Class<?> ENTERPRISE_BEAN_CLASS;
-   public final Class<? extends Annotation> PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
    public final Class<? extends Annotation> EJB_ANNOTATION_CLASS;
    public final Class<? extends Annotation> RESOURCE_ANNOTATION_CLASS;
-   public final Object EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE;
    
 }
