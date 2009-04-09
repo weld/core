@@ -58,6 +58,7 @@
          <package name="org.jboss.webbeans.test.unit.implementation.annotatedItem" />
          <package name="org.jboss.webbeans.test.unit.implementation.enterpise" />
          <package name="org.jboss.webbeans.test.unit.implementation.enterprise.sbi" />
+         <package name="org.jboss.webbeans.test.unit.implementation.event" />
          <package name="org.jboss.webbeans.test.unit.implementation.newsimple" />
          <package name="org.jboss.webbeans.test.unit.implementation.producer.field" />
          <package name="org.jboss.webbeans.test.unit.implementation.producer.method" />
