@@ -358,7 +358,7 @@ ant tomcat.deploy</programlisting>
             <callout arearefs="faces.default.suffix">
                <para>
                   Tell JSF that we will be giving our source files (facelets) an
-                  extension of <literal>.jsf</literal>
+                  extension of <literal>.xhtml</literal>
                </para>
             </callout>
             <callout arearefs="session.timeout">
