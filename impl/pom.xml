@@ -115,4 +115,19 @@
    	<defaultGoal>install</defaultGoal>
    </build>
    
+   <profiles>
+   	<profile>
+      <id>javax.xml.ws</id>
+      <activation>
+      	<jdk>1.5</jdk>
+      </activation>
+      <dependencies>
+      	<dependency>
+      		<groupId>javax.xml.ws</groupId>
+      		<artifactId>jaxws-api</artifactId>
+    		</dependency>
+      </dependencies>
+    </profile>
+   </profiles>
+   
 </project>
