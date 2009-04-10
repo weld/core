@@ -1,0 +1,70 @@
+/**
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jboss.webbeans.environment.se.example.numberguess;
+
+import javax.inject.Current;
+
+/**
+ * This class generates on demand appropriate messages depending on the current
+ * state of the injected instance of Game.
+ * @author Peter Royle
+ */
+public class MessageGenerator
+{
+    @Current Game game;
+
+    public String getChallengeMessage()
+    {
+        StringBuilder chalengeMsg = new StringBuilder( "I'm thinking of a number between " );
+        chalengeMsg.append( game.getSmallest() );
+        chalengeMsg.append( " and " );
+        chalengeMsg.append( game.getBiggest() );
+        chalengeMsg.append( ". Can you guess what it is?" );
+
+        return chalengeMsg.toString();
+    }
+
+    public String getResultMessage()
+    {
+        if ( game.isGameWon() )
+        {
+            return "You guess it! The number was " + game.getNumber();
+        } else if ( game.isGameLost() )
+        {
+            return "You are fail! The number was " + game.getNumber();
+        } else if ( ! game.isValidNumberRange() )
+        {
+            return "Invalid number range!";
+        } else if ( game.getRemainingGuesses() == Game.MAX_NUM_GUESSES )
+        {
+            return "What is your first guess?";
+        } else
+        {
+            String direction = null;
+
+            if ( game.getGuess() < game.getNumber() )
+            {
+                direction = "Higher";
+            } else
+            {
+                direction = "Lower";
+            }
+
+            return direction + "! You have " + game.getRemainingGuesses() + " guesses left.";
+        }
+    }
+}
