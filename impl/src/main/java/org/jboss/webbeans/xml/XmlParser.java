@@ -7,7 +7,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -271,30 +270,33 @@ public class XmlParser
       return true;
    }
    
-   @SuppressWarnings("unchecked")
    // TODO Make this object orientated
    private List<Class<? extends Annotation>> obtainDeploymentTypes(Element element)
    {
       if (haveAnyDeployElement)
          throw new DefinitionException("<Deploy> element is specified more than once");
 
-      List<Element> deployElements = element.elements();
-      Set<Element> deployElementsSet = new HashSet<Element>(deployElements);
-      if(deployElements.size() - deployElementsSet.size() != 0)
-         throw new DefinitionException("The same deployment type is declared more than once");
-            
       List<Element> standardElements = ParseXmlHelper.findElementsInEeNamespace(element, XmlConstants.STANDARD);
       if (standardElements.size() == 0)
-         throw new DeploymentException("The @Standard deployment type must be declared");      
+         throw new DeploymentException("The @Standard deployment type must be declared"); 
       
       List<Class<? extends Annotation>> deploymentClasses = new ArrayList<Class<? extends Annotation>>();
-      List<Element> children = element.elements();
-      for (Element child : children)
-      {         
-         Class<? extends Annotation> deploymentClass = ParseXmlHelper.loadAnnotationClass(child, Annotation.class, environment, packagesMap);
+      Iterator<?> deployIterator = element.elementIterator();
+      while(deployIterator.hasNext())
+      {
+         Element deploymentElement = (Element)deployIterator.next();
+         
+         String elementName = deploymentElement.getName();
+         String elementPrefix = deploymentElement.getNamespacePrefix();
+         String elementUri = deploymentElement.getNamespaceURI();
+         List<Element> deploymentElements = ParseXmlHelper.findElements(element, elementName, elementPrefix, elementUri);
+         if(deploymentElements.size() != 1)
+            throw new DefinitionException("The same deployment type '" + deploymentElement.getName() + "' is declared more than once");
+         
+         Class<? extends Annotation> deploymentClass = ParseXmlHelper.loadAnnotationClass(deploymentElement, Annotation.class, environment, packagesMap);
          
          if(!deploymentClass.isAnnotationPresent(DeploymentType.class))
-            throw new DefinitionException("<Deploy> child <" + child.getName() + "> must be a deployment type");
+            throw new DefinitionException("<Deploy> child '" + deploymentElement.getName() + "' must be a deployment type");
                   
          deploymentClasses.add(deploymentClass);
       }
