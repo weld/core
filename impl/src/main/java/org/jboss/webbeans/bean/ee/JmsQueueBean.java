@@ -21,21 +21,46 @@ import java.util.Set;
 
 import javassist.util.proxy.MethodHandler;
 
+import javax.jms.Queue;
+import javax.jms.QueueConnection;
+import javax.jms.QueueSender;
+import javax.jms.QueueSession;
+
 import org.jboss.webbeans.ManagerImpl;
+
 
 /**
  * @author Pete Muir
  *
  */
-public class ResourceBean<T> extends AbstractResourceBean<T>
+public class JmsQueueBean extends AbstractResourceBean<Object>
 {
    
    private final String id;
 
-   public ResourceBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type, String jndiName, String mappedName)
+   /**
+    * @param manager
+    * @param deploymentType
+    * @param bindings
+    * @param type
+    */
+   public JmsQueueBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, String jndiName, String mappedName)
    {
-      super(manager, deploymentType, bindings, type, jndiName, mappedName, type);
-      this.id = createId("Resource-");
+      super(manager, 
+            deploymentType, 
+            bindings, 
+            null, 
+            jndiName, 
+            mappedName, 
+            Queue.class, QueueConnection.class, QueueSession.class, QueueSender.class);
+      this.id = createId("JmsQueue-");
+   }
+
+   @Override
+   protected MethodHandler newMethodHandler()
+   {
+      // TODO Auto-generated method stub
+      return null;
    }
 
    @Override
@@ -43,11 +68,5 @@ public class ResourceBean<T> extends AbstractResourceBean<T>
    {
       return id;
    }
-   
-   @Override
-   protected MethodHandler newMethodHandler()
-   {
-      return new ResourceMethodHandler(getJndiName(), getMappedName());
-   }
-   
+
 }

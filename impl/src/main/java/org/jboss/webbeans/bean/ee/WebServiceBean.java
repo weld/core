@@ -27,19 +27,15 @@ import org.jboss.webbeans.ManagerImpl;
  * @author Pete Muir
  *
  */
-public class WebServiceBean<T> extends AbstractJavaEEResourceBean<T>
+public class WebServiceBean<T> extends AbstractResourceBean<T>
 {
    
    private final String id;
-   private final String mappedName;
-   private final String jndiName;
    private final String wsdlLocation;
 
-   public WebServiceBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type, String mappedName, String jndiName, String wsdlLocation)
+   public WebServiceBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type, String jndiName, String mappedName, String wsdlLocation)
    {
-      super(manager, deploymentType, bindings, type);
-      this.mappedName = mappedName;
-      this.jndiName = jndiName;
+      super(manager, deploymentType, bindings, type, jndiName, mappedName, type);
       this.wsdlLocation = wsdlLocation;
       this.id = createId("WebService - " );
    }
@@ -50,16 +46,6 @@ public class WebServiceBean<T> extends AbstractJavaEEResourceBean<T>
       return id;
    }
    
-   public String getMappedName()
-   {
-      return mappedName;
-   }
-   
-   public String getJndiName()
-   {
-      return jndiName;
-   }
-   
    public String getWsdlLocation()
    {
       return wsdlLocation;
@@ -68,7 +54,7 @@ public class WebServiceBean<T> extends AbstractJavaEEResourceBean<T>
    @Override
    protected MethodHandler newMethodHandler()
    {
-      return new WebServiceMethodHandler(getMappedName(), getJndiName());
+      return new WebServiceMethodHandler(getJndiName(), getMappedName());
    }
    
 }

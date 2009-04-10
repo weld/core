@@ -1,4 +1,4 @@
-package org.jboss.webbeans.jpa.spi.helpers;
+package org.jboss.webbeans.persistence.spi.helpers;
 
 import java.util.Collection;
 

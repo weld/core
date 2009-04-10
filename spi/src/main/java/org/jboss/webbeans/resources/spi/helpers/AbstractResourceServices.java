@@ -10,10 +10,7 @@ import javax.inject.manager.InjectionPoint;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import org.jboss.webbeans.resources.spi.ResourceServices;
-import org.jboss.webbeans.ws.spi.WebServices;
-
-public abstract class AbstractResourceServices implements ResourceServices, WebServices
+public abstract class AbstractResourceServices
 {
    
    private static final String RESOURCE_LOOKUP_PREFIX = "java:/comp/env";

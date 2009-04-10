@@ -26,24 +26,21 @@ import org.jboss.webbeans.ejb.spi.EjbServices;
  * @author Pete Muir
  *
  */
-public class RemoteEjbMethodHandler extends AbstractJavaEEResourceMethodHandler
+public class RemoteEjbMethodHandler extends AbstractResourceMethodHandler
 {
    
-   private final String mappedName;
-   private final String jndiName;
    private final String ejbLink;
    
-   public RemoteEjbMethodHandler(String mappedName, String jndiName, String ejbLink)
+   public RemoteEjbMethodHandler(String jndiName, String mappedName, String ejbLink)
    {
-      this.mappedName = mappedName;
-      this.jndiName = jndiName;
+      super(jndiName, mappedName);
       this.ejbLink = ejbLink;
    }
 
    @Override
    protected Object getProxiedInstance()
    {
-      return CurrentManager.rootManager().getServices().get(EjbServices.class).resolveRemoteEjb(jndiName, mappedName, ejbLink);
+      return CurrentManager.rootManager().getServices().get(EjbServices.class).resolveRemoteEjb(getJndiName(), getMappedName(), ejbLink);
    }
 
 }

@@ -27,19 +27,15 @@ import org.jboss.webbeans.ManagerImpl;
  * @author Pete Muir
  *
  */
-public class RemoteEjbBean<T> extends AbstractJavaEEResourceBean<T>
+public class RemoteEjbBean<T> extends AbstractResourceBean<T>
 {
    
    private final String id;
-   private final String jndiName;
-   private final String mappedName;
    private final String ejbLink;
 
    public RemoteEjbBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type, String jndiName, String mappedName, String ejbLink)
    {
-      super(manager, deploymentType, bindings, type);
-      this.jndiName = jndiName;
-      this.mappedName = mappedName;
+      super(manager, deploymentType, bindings, type, jndiName, mappedName, type);
       this.ejbLink = ejbLink;
       this.id = createId("RemoteEjb - " );
    }
@@ -50,16 +46,6 @@ public class RemoteEjbBean<T> extends AbstractJavaEEResourceBean<T>
       return id;
    }
    
-   public String getJndiName()
-   {
-      return jndiName;
-   }
-   
-   public String getMappedName()
-   {
-      return mappedName;
-   }
-   
    public String getEjbLink()
    {
       return ejbLink;
@@ -68,7 +54,7 @@ public class RemoteEjbBean<T> extends AbstractJavaEEResourceBean<T>
    @Override
    protected MethodHandler newMethodHandler()
    {
-      return new RemoteEjbMethodHandler(getMappedName(), getJndiName(), getEjbLink());
+      return new RemoteEjbMethodHandler(getJndiName(), getMappedName(), getEjbLink());
    }
    
 }

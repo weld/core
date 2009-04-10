@@ -26,22 +26,18 @@ import org.jboss.webbeans.resources.spi.ResourceServices;
  * @author Pete Muir
  *
  */
-public class ResourceMethodHandler extends AbstractJavaEEResourceMethodHandler
+public class ResourceMethodHandler extends AbstractResourceMethodHandler
 {
    
-   private final String mappedName;
-   private final String jndiName;
-   
-   public ResourceMethodHandler(String mappedName, String jndiName)
+   public ResourceMethodHandler(String jndiName, String mappedName)
    {
-      this.mappedName = mappedName;
-      this.jndiName = jndiName;
+      super(jndiName, mappedName);
    }
 
    @Override
    protected Object getProxiedInstance()
    {
-      return CurrentManager.rootManager().getServices().get(ResourceServices.class).resolveResource(jndiName, mappedName);
+      return CurrentManager.rootManager().getServices().get(ResourceServices.class).resolveResource(getJndiName(), getMappedName());
    }
 
 }

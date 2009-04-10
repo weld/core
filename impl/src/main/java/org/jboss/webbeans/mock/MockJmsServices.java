@@ -14,30 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bean.ee;
+package org.jboss.webbeans.mock;
 
-
-import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.ws.spi.WebServices;
+import org.jboss.webbeans.messaging.spi.JmsServices;
 
 /**
- * Proxy for persistence unit Java EE web services
- * 
  * @author Pete Muir
  *
  */
-public class WebServiceMethodHandler extends AbstractResourceMethodHandler
+public class MockJmsServices implements JmsServices
 {
-   
-   public WebServiceMethodHandler(String jndiName, String mappedName)
-   {
-      super(jndiName, mappedName);
-   }
 
-   @Override
-   protected Object getProxiedInstance()
+   public Object resolveDestination(String jndiName, String mappedName)
    {
-      return CurrentManager.rootManager().getServices().get(WebServices.class).resolveResource(getJndiName(), getMappedName());
+      return null;
    }
 
 }

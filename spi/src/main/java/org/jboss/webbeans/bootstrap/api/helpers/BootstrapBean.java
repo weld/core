@@ -7,6 +7,7 @@ import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.manager.api.WebBeansManager;
+import org.jboss.webbeans.messaging.spi.JmsServices;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
@@ -113,6 +114,16 @@ public class BootstrapBean implements Bootstrap
    public void setWebServices(WebServices webServices)
    {
       bootstrap.getServices().add(WebServices.class, webServices);
+   }
+   
+   public JmsServices getJmsServices()
+   {
+      return bootstrap.getServices().get(JmsServices.class);
+   }
+   
+   public void setJmsServices(JmsServices jmsServices)
+   {
+      bootstrap.getServices().add(JmsServices.class, jmsServices);
    }
    
    public void boot()

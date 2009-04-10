@@ -18,6 +18,7 @@ package org.jboss.webbeans.bean.ee;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -56,16 +57,26 @@ public abstract class AbstractJavaEEResourceBean<T> extends RIBean<T>
     * @param bindings the bindings of bean
     * @param type the concrete type of the bean
     */
-   public AbstractJavaEEResourceBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type)
+   protected AbstractJavaEEResourceBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type)
+   {
+      this(manager, deploymentType, bindings, type, type);
+   }
+   
+   /**
+    * @param manager the manager used to create this bean
+    * @param deploymentType the deployment type of the bean
+    * @param bindings the bindings of bean
+    * @param type the concrete type of the bean
+    */
+   protected AbstractJavaEEResourceBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type, Type... types)
    {
       super(manager);
       this.deploymentType = deploymentType;
       this.bindings = bindings;
       this.type = type;
       this.types = new HashSet<Type>();
-      types.add(type);
- 
-      ProxyFactory proxyFactory = Proxies.getProxyFactory(types);
+      this.types.addAll(Arrays.asList(types));
+      ProxyFactory proxyFactory = Proxies.getProxyFactory(this.types);
 
       @SuppressWarnings("unchecked")
       Class<T> proxyClass = proxyFactory.createClass();
@@ -106,7 +117,7 @@ public abstract class AbstractJavaEEResourceBean<T> extends RIBean<T>
    @Override
    public Set<? extends Type> getTypes()
    {
-      return types;
+      return Collections.unmodifiableSet(types);
    }
    
    @Override

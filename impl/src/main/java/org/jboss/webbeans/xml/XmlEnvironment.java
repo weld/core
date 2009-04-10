@@ -90,7 +90,7 @@ public class XmlEnvironment
       return serviceRegistry.get(ResourceLoader.class).getResource(filePath);
    }
    
-   public ServiceRegistry getServiceRegistry()
+   public ServiceRegistry getServices()
    {
       return serviceRegistry;
    }

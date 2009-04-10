@@ -18,7 +18,7 @@ package org.jboss.webbeans.bean.ee;
 
 
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.ws.spi.WebServices;
+import org.jboss.webbeans.messaging.spi.JmsServices;
 
 /**
  * Proxy for persistence unit Java EE web services
@@ -26,10 +26,10 @@ import org.jboss.webbeans.ws.spi.WebServices;
  * @author Pete Muir
  *
  */
-public class WebServiceMethodHandler extends AbstractResourceMethodHandler
+public class JmsQueueMethodHandler extends AbstractResourceMethodHandler
 {
    
-   public WebServiceMethodHandler(String jndiName, String mappedName)
+   public JmsQueueMethodHandler(String jndiName, String mappedName)
    {
       super(jndiName, mappedName);
    }
@@ -37,7 +37,7 @@ public class WebServiceMethodHandler extends AbstractResourceMethodHandler
    @Override
    protected Object getProxiedInstance()
    {
-      return CurrentManager.rootManager().getServices().get(WebServices.class).resolveResource(getJndiName(), getMappedName());
+      return CurrentManager.rootManager().getServices().get(JmsServices.class).resolveDestination(getJndiName(), getMappedName());
    }
 
 }

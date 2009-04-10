@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.jpa.spi.helpers;
+package org.jboss.webbeans.persistence.spi.helpers;
 
 import javax.inject.manager.InjectionPoint;
 import javax.persistence.EntityManager;

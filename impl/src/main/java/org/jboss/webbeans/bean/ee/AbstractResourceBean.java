@@ -16,28 +16,36 @@
  */
 package org.jboss.webbeans.bean.ee;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Set;
 
-import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.ws.spi.WebServices;
+import org.jboss.webbeans.ManagerImpl;
 
 /**
- * Proxy for persistence unit Java EE web services
- * 
- * @author Pete Muir
- *
+ * @author  Pete Muir
  */
-public class WebServiceMethodHandler extends AbstractResourceMethodHandler
+public abstract class AbstractResourceBean<T> extends AbstractJavaEEResourceBean<T>
 {
    
-   public WebServiceMethodHandler(String jndiName, String mappedName)
+   private final String jndiName;
+   private final String mappedName;
+
+   protected AbstractResourceBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type, String jndiName, String mappedName, Type... types)
    {
-      super(jndiName, mappedName);
+      super(manager, deploymentType, bindings, type, types);
+      this.jndiName = jndiName;
+      this.mappedName = mappedName;
    }
 
-   @Override
-   protected Object getProxiedInstance()
+   public String getJndiName()
    {
-      return CurrentManager.rootManager().getServices().get(WebServices.class).resolveResource(getJndiName(), getMappedName());
+      return jndiName;
    }
 
+   public String getMappedName()
+   {
+      return mappedName;
+   }
+   
 }
