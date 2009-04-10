@@ -121,7 +121,7 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
    {
       try
       {
-         return invoke(declaringInstance, getParameterValues(getParameters(), annotatedParameter, parameter, manager, creationalContext), exceptionTypeToThrow);
+         return invoke(declaringInstance, getParameterValues(getParameters(), annotatedParameter, parameter, manager, creationalContext));
       }
       catch (IllegalArgumentException e)
       {

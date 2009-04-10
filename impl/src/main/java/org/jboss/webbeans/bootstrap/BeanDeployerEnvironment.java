@@ -59,6 +59,21 @@ public class BeanDeployerEnvironment
       }
    }
 
+   
+   public DisposalMethodBean<?> getDisposalMethod(AnnotatedMethod<?> method)
+   {
+      if (!producerMethodBeanMap.containsKey(method))
+      {
+         return null;
+      }
+      else
+      {
+         DisposalMethodBean<?> bean = disposalMethodBeanMap.get(method);
+         bean.initialize(this);
+         return bean;
+      }
+   }
+   
    public AbstractClassBean<?> getClassBean(AnnotatedClass<?> clazz)
    {
       if (!classBeanMap.containsKey(clazz))
@@ -83,11 +98,13 @@ public class BeanDeployerEnvironment
       }
       else if (value instanceof ProducerMethodBean)
       {
-          ProducerMethodBean<?> bean = (ProducerMethodBean<?>) value;
-          producerMethodBeanMap.put(bean.getAnnotatedItem(), bean);
-      } else if (value instanceof DisposalMethodBean) {
-    	  DisposalMethodBean<?> bean = (DisposalMethodBean<?>) value;
-    	  disposalMethodBeanMap.put(bean.getAnnotatedItem(), bean);
+         ProducerMethodBean<?> bean = (ProducerMethodBean<?>) value;
+         producerMethodBeanMap.put(bean.getAnnotatedItem(), bean);
+      }
+      else if (value instanceof DisposalMethodBean)
+      {
+         DisposalMethodBean<?> bean = (DisposalMethodBean<?>) value;
+         disposalMethodBeanMap.put(bean.getAnnotatedItem(), bean);
       }
       beans.add(value);
    }
@@ -121,10 +138,10 @@ public class BeanDeployerEnvironment
    {
       return resolvedDisposalBeans;
    }
-   
-   public EjbDescriptorCache getEjbDescriptors() 
+
+   public EjbDescriptorCache getEjbDescriptors()
    {
-	  return ejbDescriptors;
+      return ejbDescriptors;
    }
 
 }

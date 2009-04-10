@@ -9,8 +9,11 @@ import java.util.List;
 import java.util.Set;
 
 import javax.context.CreationalContext;
+import javax.context.Dependent;
+import javax.context.ScopeType;
 import javax.event.Observes;
 import javax.inject.DefinitionException;
+import javax.inject.DeploymentType;
 import javax.inject.Disposes;
 import javax.inject.Initializer;
 import javax.inject.Produces;
@@ -23,6 +26,8 @@ import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Logging;
 
 public class DisposalMethodBean<T> extends AbstractBean<T, Method>
 {
@@ -40,12 +45,15 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
 
    }
 
+   private static final LogProvider log = Logging.getLogProvider(AbstractProducerBean.class);
    protected AbstractClassBean<?> declaringBean;
-   private ProducerMethodBean<?> specializedBean;
+   private DisposalMethodBean<?> specializedBean;
    protected MethodInjectionPoint<T> disposalMethodInjectionPoint;
    protected Set<AnnotatedInjectionPoint<?, ?>> disposalInjectionPoints;
    private String id;
 
+   
+   @SuppressWarnings("unchecked")
    protected void initType()
    {
       this.type = (Class<T>) disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getRawType();
@@ -166,17 +174,12 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
          Object injectionObject = getManager().getInstanceToInject(injectionPoint);
          parameters.add(injectionObject);
       }
+      
 
       Object beanInstance = disposalMethodInjectionPoint.isStatic() ? declaringBean : getManager().getInstance(declaringBean);
 
-      try
-      {
-         disposalMethodInjectionPoint.invoke(beanInstance, parameters.toArray());
-      }
-      catch (Exception e)
-      {
-         // TODO:
-      }
+      disposalMethodInjectionPoint.invokeWithSpecialValue(beanInstance, Disposes.class, instance, manager, null, IllegalArgumentException.class);
+
 
    }
 
@@ -246,37 +249,13 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       {
          throw new IllegalStateException(toString() + " does not specialize a bean");
       }
-      this.specializedBean = environment.getProducerMethod(superClassMethod);
+      this.specializedBean = environment.getDisposalMethod(superClassMethod);
    }
-
+   
    @Override
    public Class<T> getType()
    {
       return type;
-   }
-
-   @Override
-   public void initialize(BeanDeployerEnvironment environment)
-   {
-
-   }
-
-   @Override
-   public boolean isPrimitive()
-   {
-      return false;
-   }
-
-   @Override
-   public boolean isProxyable()
-   {
-      return false;
-   }
-
-   @Override
-   public boolean isSpecializing()
-   {
-      return false;
    }
 
    @Override
@@ -294,22 +273,61 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    @Override
    protected void initDeploymentType()
    {
+      Set<Annotation> deploymentTypes = getAnnotatedItem().getMetaAnnotations(DeploymentType.class);
+      if (deploymentTypes.size() > 1)
+      {
+         throw new DefinitionException("At most one deployment type may be specified (" + deploymentTypes + " are specified) on " + getAnnotatedItem().toString());
+      }
+      else if (deploymentTypes.size() == 1)
+      {
+         this.deploymentType = deploymentTypes.iterator().next().annotationType();
+         log.trace("Deployment type " + deploymentType + " specified by annotation");
+         return;
+      }
+
+      initDeploymentTypeFromStereotype();
+
+      if (this.deploymentType == null)
+      {
+         this.deploymentType = getDefaultDeploymentType();
+         log.trace("Using default " + this.deploymentType + " deployment type");
+         return;
+      }
    }
 
    @Override
    protected void initScopeType()
    {
+      Set<Annotation> scopeAnnotations = getAnnotatedItem().getMetaAnnotations(ScopeType.class);
+      if (scopeAnnotations.size() > 1)
+      {
+         throw new DefinitionException("At most one scope may be specified");
+      }
+      if (scopeAnnotations.size() == 1)
+      {
+         this.scopeType = scopeAnnotations.iterator().next().annotationType();
+         log.trace("Scope " + scopeType + " specified by annotation");
+         return;
+      }
+
+      initScopeTypeFromStereotype();
+
+      if (this.scopeType == null)
+      {
+         this.scopeType = Dependent.class;
+         log.trace("Using default @Dependent scope");
+      }      
    }
 
    @Override
    public AbstractBean<?, ?> getSpecializedBean()
    {
-      return null;
+      return specializedBean;
    }
 
    public void destroy(T instance)
    {
-
+      // No-op. Producer method dependent objects are destroyed in producer method bean  
    }
 
    @Override
@@ -317,5 +335,5 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    {
       return id;
    }
-
+   
 }
