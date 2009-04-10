@@ -2,6 +2,7 @@ package org.jboss.webbeans.mock;
 
 import java.net.URL;
 
+import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
@@ -24,7 +25,7 @@ public class MockXmlEnvironment extends XmlEnvironment
    
    public MockXmlEnvironment(Iterable<URL> beansXmlUrls, EjbDescriptorCache ejbDescriptors)
    {
-      super(services, beansXmlUrls, ejbDescriptors);
+      super(services, beansXmlUrls, ejbDescriptors, CurrentManager.rootManager());
    }
    
 }

@@ -28,6 +28,7 @@ import javax.naming.Reference;
 import org.jboss.webbeans.BeanValidator;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bean.ee.AbstractJavaEEResourceBean;
 import org.jboss.webbeans.bean.standard.EventBean;
 import org.jboss.webbeans.bean.standard.InjectionPointBean;
 import org.jboss.webbeans.bean.standard.InstanceBean;
@@ -161,7 +162,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
     * 
     * @param classes The classes to register as Web Beans
     */
-   protected void registerBeans(Iterable<Class<?>> classes, Collection<AnnotatedClass<?>> xmlClasses, EjbDescriptorCache ejbDescriptors)
+   protected void registerBeans(Iterable<Class<?>> classes, Collection<AnnotatedClass<?>> xmlClasses, Iterable<AbstractJavaEEResourceBean<?>> resourceBeans, EjbDescriptorCache ejbDescriptors)
    {
       BeanDeployer beanDeployer = new BeanDeployer(manager, ejbDescriptors);
       beanDeployer.addClasses(classes);
@@ -178,6 +179,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          beanDeployer.addClass(NumericConversationIdGenerator.class);
          beanDeployer.addClass(HttpSessionManager.class);
       }
+      beanDeployer.addBeans(resourceBeans);
       beanDeployer.createBeans().deploy();
    }
    
@@ -205,7 +207,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
             ejbDescriptors.addAll(getServices().get(EjbServices.class).discoverEjbs());
          }
          
-         XmlEnvironment xmlEnvironmentImpl = new XmlEnvironment(getServices(), ejbDescriptors);
+         XmlEnvironment xmlEnvironmentImpl = new XmlEnvironment(getServices(), ejbDescriptors, manager);
          XmlParser parser = new XmlParser(xmlEnvironmentImpl);
          parser.parse();
           
@@ -215,7 +217,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
             manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
          }
          log.info("Deployment types: " + manager.getEnabledDeploymentTypes());
-         registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses(), xmlEnvironmentImpl.getClasses(), ejbDescriptors);
+         registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses(), xmlEnvironmentImpl.getClasses(), xmlEnvironmentImpl.getResourceBeans(), ejbDescriptors);
          manager.fireEvent(manager, new InitializedLiteral());
          log.info("Web Beans initialized. Validating beans.");
          manager.getResolver().resolveInjectionPoints();

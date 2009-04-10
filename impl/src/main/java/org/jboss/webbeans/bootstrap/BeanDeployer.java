@@ -66,6 +66,15 @@ public class BeanDeployer
       return this;
    }
    
+   public BeanDeployer addBeans(Iterable<? extends RIBean<?>> beans)
+   {
+      for (RIBean<?> bean : beans)
+      {
+         addBean(bean);
+      }
+      return this;
+   }
+   
    public BeanDeployer addClass(Class<?> clazz)
    {
       if (!clazz.isAnnotation() && !clazz.isEnum())
