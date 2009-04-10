@@ -14,27 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.mock;
+package org.jboss.webbeans.bean.ee;
 
-import javax.inject.manager.InjectionPoint;
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.persistence.spi.JpaServices;
 
-import org.jboss.webbeans.resources.spi.ResourceServices;
 
 /**
+ * Proxy for persistence unit Java EE resources
+ * 
  * @author Pete Muir
  *
  */
-public class MockResourceServices implements ResourceServices
+public class PersistenceUnitMethodHandler extends AbstractJavaEEResourceMethodHandler
 {
+   
+   private final String unitName;
+   
+   public PersistenceUnitMethodHandler(String unitName)
+   {
+      this.unitName = unitName;
+   }
+   
+   @Override
+   protected Object getProxiedInstance()
+   {
+      return CurrentManager.rootManager().getServices().get(JpaServices.class).resolvePersistenceUnit(unitName);
+   }
 
-   public Object resolveResource(InjectionPoint injectionPoint)
-   {
-      return null;
-   }
-   
-   public Object resolveResource(String jndiName, String mappedName)
-   {
-      return null;
-   }
-   
 }

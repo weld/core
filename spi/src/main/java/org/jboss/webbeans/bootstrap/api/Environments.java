@@ -28,6 +28,7 @@ import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceServices;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
+import org.jboss.webbeans.ws.spi.WebServices;
 
 /**
  * Various well known environments.
@@ -41,7 +42,7 @@ public enum Environments implements Environment
    /**
     * Java EE5 or Java EE6
     */
-   EE(WebBeanDiscovery.class, EjbServices.class, JpaServices.class, EntityDiscovery.class, ResourceServices.class, TransactionServices.class, NamingContext.class, ResourceLoader.class),
+   EE(WebBeanDiscovery.class, EjbServices.class, JpaServices.class, WebServices.class, EntityDiscovery.class, ResourceServices.class, TransactionServices.class, NamingContext.class, ResourceLoader.class),
    
    /**
     * Java EE6 Web Profile

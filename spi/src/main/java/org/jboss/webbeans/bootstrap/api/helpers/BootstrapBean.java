@@ -12,6 +12,7 @@ import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceServices;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
+import org.jboss.webbeans.ws.spi.WebServices;
 
 /**
  * A bean version of bootstrap that delegates to the underlying bootstrap impl
@@ -102,6 +103,16 @@ public class BootstrapBean implements Bootstrap
    public ResourceLoader getResourceLoader()
    {
       return bootstrap.getServices().get(ResourceLoader.class);
+   }
+   
+   public WebServices getWebServices()
+   {
+      return bootstrap.getServices().get(WebServices.class);
+   }
+   
+   public void setWebServices(WebServices webServices)
+   {
+      bootstrap.getServices().add(WebServices.class, webServices);
    }
    
    public void boot()

@@ -14,27 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.mock;
+package org.jboss.webbeans.bean.ee;
 
-import javax.inject.manager.InjectionPoint;
 
-import org.jboss.webbeans.resources.spi.ResourceServices;
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.ejb.spi.EjbServices;
 
 /**
+ * Proxy for persistence unit Java EE resources
+ * 
  * @author Pete Muir
  *
  */
-public class MockResourceServices implements ResourceServices
+public class RemoteEjbMethodHandler extends AbstractJavaEEResourceMethodHandler
 {
+   
+   private final String mappedName;
+   private final String jndiName;
+   private final String ejbLink;
+   
+   public RemoteEjbMethodHandler(String mappedName, String jndiName, String ejbLink)
+   {
+      this.mappedName = mappedName;
+      this.jndiName = jndiName;
+      this.ejbLink = ejbLink;
+   }
 
-   public Object resolveResource(InjectionPoint injectionPoint)
+   @Override
+   protected Object getProxiedInstance()
    {
-      return null;
+      return CurrentManager.rootManager().getServices().get(EjbServices.class).resolveRemoteEjb(jndiName, mappedName, ejbLink);
    }
-   
-   public Object resolveResource(String jndiName, String mappedName)
-   {
-      return null;
-   }
-   
+
 }

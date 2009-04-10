@@ -48,7 +48,7 @@ public class ClientProxyProvider
     * 
     * @author Nicklas Karlsson
     */
-   private ConcurrentCache<Bean<? extends Object>, Object> pool;
+   private final ConcurrentCache<Bean<? extends Object>, Object> pool;
 
    /**
     * Constructor
@@ -105,11 +105,8 @@ public class ClientProxyProvider
     * the pool if the create argument is true.
     * 
     * @param bean The bean to get a proxy to
-    * @param create Flag indicating if the proxy should be created if it does
-    *           not already exist
     * @return the client proxy for the bean
     */
-   // TODO: What is this create parameter? Something obsolete?
    public <T> T getClientProxy(final ManagerImpl manager, final Bean<T> bean)
    {
       return pool.putIfAbsent(bean, new Callable<T>()

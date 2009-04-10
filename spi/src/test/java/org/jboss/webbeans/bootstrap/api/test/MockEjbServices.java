@@ -24,4 +24,9 @@ public class MockEjbServices implements EjbServices
       return null;
    }
    
+   public Object resolveRemoteEjb(String jndiName, String mappedName, String ejbLink)
+   {
+      return null;
+   }
+   
 }

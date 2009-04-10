@@ -16,9 +16,9 @@
  */
 package org.jboss.webbeans.jpa.spi.helpers;
 
-import java.util.Collection;
-
 import javax.inject.manager.InjectionPoint;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.jboss.webbeans.persistence.spi.JpaServices;
 
@@ -37,9 +37,19 @@ public abstract class ForwardingJpaServices implements JpaServices
    
    protected abstract JpaServices delegate();
    
-   public Object resolvePersistenceContext(InjectionPoint injectionPoint)
+   public EntityManager resolvePersistenceContext(InjectionPoint injectionPoint)
    {
       return delegate().resolvePersistenceContext(injectionPoint);
+   }
+   
+   public EntityManager resolvePersistenceContext(String unitName)
+   {
+      return delegate().resolvePersistenceContext(unitName);
+   }
+   
+   public EntityManagerFactory resolvePersistenceUnit(String unitName)
+   {
+      return delegate().resolvePersistenceUnit(unitName);
    }
    
    @Override

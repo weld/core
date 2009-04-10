@@ -17,6 +17,8 @@
 package org.jboss.webbeans.persistence.spi;
 
 import javax.inject.manager.InjectionPoint;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.jboss.webbeans.bootstrap.api.Service;
 
@@ -35,14 +37,36 @@ public interface JpaServices extends Service
     * 
     * @param injectionPoint
     *           the injection point metadata
-    * @return an instance of the persistence unit
+    * @return an instance of the entity manager
     * @throws IllegalArgumentException
-    *            if the injection point is not annotated with
-    * @PersistenceContext, or, if the injection point is a method that doesn't
-    *                      follow JavaBean conventions
+    *            if the injection point is not annotated with 
+    *            @PersistenceContext, or, if the injection point is a method 
+    *            that doesn't follow JavaBean conventions
     * @throws IllegalStateException
     *            if no suitable persistence units can be resolved for injection
     */
-   public Object resolvePersistenceContext(InjectionPoint injectionPoint);
+   public EntityManager resolvePersistenceContext(InjectionPoint injectionPoint);
+   
+   /**
+    * Resolve a persistence context for a given persistence unit name
+    * 
+    * @param unitName the unit name
+    * @return an instance of the entity manager
+    * @throws IllegalStateException
+    *            if no suitable persistence units can be resolved for injection
+    */
+   public EntityManager resolvePersistenceContext(String unitName);
+
+   /**
+    * Resolve a persistence unit for a given persistence unit name
+    * 
+    * @param unitName the unit name
+    * @return an instance of the entity manager factory
+    * @throws IllegalStateException
+    *            if no suitable persistence units can be resolved for injection
+    * @throws IllegalArgumentException
+    *            if unitName is null
+    */
+   public EntityManagerFactory resolvePersistenceUnit(String unitName);
    
 }

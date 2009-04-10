@@ -92,7 +92,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    }
 
    // Logger
-   private LogProvider log = Logging.getLogProvider(AbstractBean.class);
+   private final LogProvider log = Logging.getLogProvider(AbstractBean.class);
    // The binding types
    protected Set<Annotation> bindings;
    // The name
@@ -139,6 +139,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    /**
     * Initializes the bean and its metadata
     */
+   @Override
    public void initialize(BeanDeployerEnvironment environment)
    {
       mergedStereotypes = new MergedStereotypes<T, E>(getAnnotatedItem().getMetaAnnotations(Stereotype.class), manager);
@@ -372,6 +373,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @see javax.inject.manager.Bean#getBindings()
     */
+   @Override
    public Set<Annotation> getBindings()
    {
       return bindings;
@@ -384,6 +386,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     */
    protected abstract String getDefaultName();
 
+   @Override
    public abstract AbstractBean<?, ?> getSpecializedBean();
 
    /**
@@ -393,11 +396,13 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @see javax.inject.manager.Bean#getDeploymentType()
     */
+   @Override
    public Class<? extends Annotation> getDeploymentType()
    {
       return deploymentType;
    }
 
+   @Override
    public Set<AnnotatedInjectionPoint<?, ?>> getInjectionPoints()
    {
       return injectionPoints;
@@ -420,6 +425,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @see javax.inject.manager.Bean#getName()
     */
+   @Override
    public String getName()
    {
       return name;
@@ -432,6 +438,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @see javax.inject.manager.Bean#getScopeType()
     */
+   @Override
    public Class<? extends Annotation> getScopeType()
    {
       return scopeType;
@@ -442,6 +449,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The type
     */
+   @Override
    public Class<T> getType()
    {
       return type;
@@ -490,6 +498,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return True if primitive, false otherwise
     */
+   @Override
    public boolean isPrimitive()
    {
       return primitive;
@@ -517,16 +526,19 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       return "AbstractBean " + getName();
    }
 
+   @Override
    public boolean isProxyable()
    {
       return proxyable;
    }
 
+   @Override
    public boolean isDependent()
    {
       return Dependent.class.equals(getScopeType());
    }
 
+   @Override
    public boolean isSpecializing()
    {
       return getAnnotatedItem().isAnnotationPresent(Specializes.class);

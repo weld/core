@@ -42,8 +42,7 @@ public interface EjbServices extends Service
     *            if the injection point is not annotated with @EJB, or, if the
     *            injection point is a method that doesn't follow JavaBean
     *            conventions
-    * @throws IllegalStateException
-    *            if no EJBs can be resolved for injection
+   
     */
    public Object resolveEjb(InjectionPoint injectionPoint);
    
@@ -56,6 +55,21 @@ public interface EjbServices extends Service
     * @return a reference to the session object
     */
    public SessionObjectReference resolveEjb(EjbDescriptor<?> ejbDescriptor);
+   
+   /**
+    * Resolve a remote EJB reference. At least one of the parameters will not be
+    * null.
+    * 
+    * @param jndiName the JNDI name
+    * @param mappedName the mapped name
+    * @param ejbLink the EJB link name
+    * @return the remote EJB reference
+    * @throws IllegalStateException
+    *            if no EJBs can be resolved for injection
+    * @throws IllegalArgumentException
+    *            if jndiName, mappedName and ejbLink are null
+    */
+   public Object resolveRemoteEjb(String jndiName, String mappedName, String ejbLink);
    
    /**
     * Gets a descriptor for each EJB in the application

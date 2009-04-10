@@ -17,7 +17,6 @@
 
 package org.jboss.webbeans.bean;
 
-import java.beans.BeanDescriptor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -42,14 +41,13 @@ import org.jboss.webbeans.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentStorageRequest;
-import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Proxies;
 
@@ -62,7 +60,7 @@ import org.jboss.webbeans.util.Proxies;
  */
 public class EnterpriseBean<T> extends AbstractClassBean<T>
 {
-   private LogProvider log = Logging.getLogProvider(EnterpriseBean.class);
+   private final Log log = Logging.getLog(EnterpriseBean.class);
 
    // The EJB descriptor
    private InternalEjbDescriptor<T> ejbDescriptor;
@@ -131,6 +129,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
    }
 
+   @Override
    protected void initTypes()
    {
       Set<Type> types = new HashSet<Type>();
@@ -232,8 +231,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
          T instance = proxyClass.newInstance();
          creationalContext.push(instance);
          ((ProxyObject) instance).setHandler(new EnterpriseBeanProxyMethodHandler(this));
-         if (log.isTraceEnabled())
-            log.trace("Enterprise bean instance created for bean " + this);
+         log.trace("Enterprise bean instance created for bean {0}", this);
          return instance;
       }
       catch (InstantiationException e)

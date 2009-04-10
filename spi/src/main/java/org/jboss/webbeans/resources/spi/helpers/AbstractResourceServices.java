@@ -11,8 +11,9 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 
 import org.jboss.webbeans.resources.spi.ResourceServices;
+import org.jboss.webbeans.ws.spi.WebServices;
 
-public abstract class AbstractResourceServices implements ResourceServices
+public abstract class AbstractResourceServices implements ResourceServices, WebServices
 {
    
    private static final String RESOURCE_LOOKUP_PREFIX = "java:/comp/env";
@@ -41,9 +42,38 @@ public abstract class AbstractResourceServices implements ResourceServices
       }
    }
    
+   public Object resolveResource(String jndiName, String mappedName)
+   {
+      String name = getResourceName(jndiName, mappedName);
+      try
+      {
+         return getContext().lookup(name);
+      }
+      catch (NamingException e)
+      {
+         throw new ExecutionException("Error looking up " + name + " in JNDI", e);
+      }
+   }
+   
+   protected String getResourceName(String jndiName, String mappedName)
+   {
+      if (mappedName != null)
+      {
+         return mappedName;
+      }
+      else if (jndiName != null)
+      {
+         return jndiName;
+      }
+      else
+      {
+         throw new IllegalArgumentException("Both jndiName and mappedName are null");
+      }
+   }
+   
    protected abstract Context getContext();
    
-   private static String getResourceName(InjectionPoint injectionPoint)
+   protected String getResourceName(InjectionPoint injectionPoint)
    {
       Resource resource = injectionPoint.getAnnotation(Resource.class);
       String mappedName = resource.mappedName();

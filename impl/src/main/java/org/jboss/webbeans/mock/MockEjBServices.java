@@ -33,6 +33,11 @@ public class MockEjBServices implements EjbServices
       // No-op
    }
    
+   public Object resolveRemoteEjb(String jndiName, String mappedName, String ejbLink)
+   {
+      return null;
+   }
+   
    public Iterable<EjbDescriptor<?>> discoverEjbs()
    {
       return ejbDiscovery.discoverEjbs();

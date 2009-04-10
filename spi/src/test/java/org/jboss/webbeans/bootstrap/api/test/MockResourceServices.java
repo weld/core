@@ -12,4 +12,9 @@ public class MockResourceServices implements ResourceServices
       return null;
    }
    
+   public Object resolveResource(String jndiName, String mappedName)
+   {
+      return null;
+   }
+   
 }

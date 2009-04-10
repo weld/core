@@ -17,13 +17,14 @@
 
 package org.jboss.webbeans.bean.proxy;
 
+
 import java.lang.reflect.Method;
 
 import javassist.util.proxy.MethodHandler;
 
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
-import org.jboss.webbeans.log.LogProvider;
+import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
 
@@ -37,7 +38,7 @@ import org.jboss.webbeans.util.Reflections;
 public class EnterpriseBeanProxyMethodHandler implements MethodHandler
 {
    // The log provider
-   private static final transient LogProvider log = Logging.getLogProvider(EnterpriseBeanProxyMethodHandler.class);
+   static final transient Log log = Logging.getLog(EnterpriseBeanProxyMethodHandler.class);
    
    private static final ThreadLocal<EnterpriseBean<?>> enterpriseBean;
    
@@ -57,9 +58,9 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
       enterpriseBean.set(bean);
    }
 
-   private final SessionObjectReference reference; 
-   private final Class<?> objectInterface;
-   private boolean destroyed;
+   final SessionObjectReference reference; 
+   final Class<?> objectInterface;
+   boolean destroyed;
 
    /**
     * Constructor
@@ -83,7 +84,7 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
       }
       log.trace("Created enterprise bean proxy method handler for " + bean);
    }
-
+   
    /**
     * Lookups the EJB in the container and executes the method on it
     * 
@@ -138,7 +139,5 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
       return returnValue;
       
    }
-   
-
    
 }
