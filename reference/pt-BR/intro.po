@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-04-04 21:55-0300\n"
+"PO-Revision-Date: 2009-04-06 13:01-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgstr "Seu primeiro Web Bean"
 #: intro.xml:15
 #, no-c-format
 msgid "With certain, very special exceptions, every Java class with a constructor that accepts no parameters is a Web Bean. That includes every JavaBean. Furthermore, every EJB 3-style session bean is a Web Bean. Sure, the JavaBeans and EJBs you've been writing every day have not been able to take advantage of the new services defined by the Web Beans specification, but you'll be able to use every one of them as Web Beans &#151; injecting them into other Web Beans, configuring them via the Web Beans XML configuration facility, even adding interceptors and decorators to them &#151; without touching your existing code."
-msgstr ""
+msgstr "Com certeza, com raras exceções especiais, toda classe Java com um construtor sem parâmetros é um Web Bean. Isso inclui todos os JavaBean. Além disso, todo session bean no estilo EJB 3 é um Web Bean. Claro, JavaBeans e EJBs que você tem escrito todos os dias, não tem sido capazes de aproveitar os novos serviços definidos pela especificação Web Beans, mas você será capaz de usar cada um deles como Web Beans - injetando-os em outros Web Beans, configurando-os através da Web Beans XML configuration facility, e até acrescentando interceptadores e decoradores &#151; sem tocar o seu código existente."
 
 #. Tag: para
 #: intro.xml:25
@@ -99,7 +99,7 @@ msgstr ""
 #: intro.xml:41
 #, no-c-format
 msgid "Unfortunately, we don't have a preexisting class that translates whole text documents. So let's write a Web Bean that does this job:"
-msgstr " Infelizmente, não temos uma classe preexistente que traduz todo texto de documentos. Então vamos escrever um Web Bean que faz este trabalho:"
+msgstr " Infelizmente, não temos uma classe pré-existente que traduz todo o texto de documentos. Então vamos escrever um Web Bean que faz este trabalho:"
 
 #. Tag: programlisting
 #: intro.xml:44
@@ -183,7 +183,7 @@ msgstr "<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator.cl
 #: intro.xml:56
 #, no-c-format
 msgid "But wait: <literal>TextTranslator</literal> does not have a constructor with no parameters! Is it still a Web Bean? Well, a class that does not have a constructor with no parameters can still be a Web Bean if it has a constructor annotated <literal>@Initializer</literal>."
-msgstr ""
+msgstr "Mas espere: <literal>TextTranslator</literal> não tem um construtor sem parâmetros! É ainda um Web Bean? Bem, uma classe que não tem um construtor sem parâmetros ainda pode ser um Web Bean, se tiver um construtor anotado com <literal>@Initializer</literal>."
 
 #. Tag: para
 #: intro.xml:61
@@ -249,7 +249,7 @@ msgstr ""
 #: intro.xml:119
 #, no-c-format
 msgid "Clients (for example, other Web Beans) executing in the same context will see the same instance of the Web Bean. But clients in a different context will see a different instance."
-msgstr ""
+msgstr "Os clientes (por exemplo, outros Web Beans) executam no mesmo contexto verão a mesma instância do Web Bean. Mas os clientes em um contexto diferente verão uma outra instância."
 
 #. Tag: para
 #: intro.xml:123

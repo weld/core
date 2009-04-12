@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-04-05 08:28-0300\n"
+"PO-Revision-Date: 2009-04-06 08:34-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -173,7 +173,7 @@ msgstr ""
 #: specialization.xml:79
 #, no-c-format
 msgid "We say that the higher-priority Web Bean <emphasis>specializes</emphasis> its superclass."
-msgstr ""
+msgstr "Nós dizemos que a alta prioridade na Web Bean <emphasis>specializa</emphasis> sua superclasse."
 
 #. Tag: title
 #: specialization.xml:85
@@ -203,7 +203,7 @@ msgstr ""
 #: specialization.xml:99
 #, no-c-format
 msgid "producer methods, disposal methods and observer methods declared by the superclass are called upon an instance of the Web Bean annotated <literal>@Specializes</literal>."
-msgstr ""
+msgstr "métodos produtores, métodos de eliminação e métodos observadores declarados pela superclasse são chamados sobre uma instância do Web Bean anotado com <literal>@Specializes</literal>."
 
 #. Tag: para
 #: specialization.xml:105
@@ -227,19 +227,19 @@ msgstr ""
 #: specialization.xml:119
 #, no-c-format
 msgid "the deployment type of the Web Bean annotated <literal>@Specializes</literal> has a higher precedence than the deployment type of the superclass, and"
-msgstr ""
+msgstr "o tipo de implantação do Web Bean anotado com <literal>@Specializes</literal> tem uma precedência maior do que o tipo de implantação da superclasse, e"
 
 #. Tag: para
 #: specialization.xml:124
 #, no-c-format
 msgid "there is no other enabled Web Bean that also specializes the superclass."
-msgstr ""
+msgstr "não há outro Web Bean ativado que também especializa a superclasse."
 
 #. Tag: para
 #: specialization.xml:129
 #, no-c-format
 msgid "If any of these conditions are violated, the Web Bean manager throws an exception at initialization time."
-msgstr ""
+msgstr "Se qualquer uma dessas condições são violadas, o gerenciador do Web Bean lança uma excepção em tempo de inicialização."
 
 #. Tag: para
 #: specialization.xml:132

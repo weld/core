@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-04-05 20:16-0300\n"
+"PO-Revision-Date: 2009-04-10 13:08-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 #: part1.xml:5
 #, no-c-format
 msgid "The Web Beans (JSR-299) specification defines a set of services for the Java EE environment that makes applications much easier to develop. Web Beans layers an enhanced lifecycle and interaction model over existing Java component types including JavaBeans and Enterprise Java Beans. As a complement to the traditional Java EE programming model, the Web Beans services provide:"
-msgstr "A especificação Web Beans (JSR-299) define um conjunto de serviços para o ambiente Java EE que torna muito simples o desenvolvimento de aplicações. Web Beans adiciona um avançado ciclo de vida e um modelo interativo sobre os tipos de componentes Java existentes, incluindo os JavaBeans e Enterprise Java Beans. Como complemento ao tradicional modelo de programação Java EE, a Web Beans provê:"
+msgstr "A especificação Web Beans (JSR-299) define um conjunto de serviços para o ambiente Java EE, o  que torna muito simples o desenvolvimento de aplicações. Web Beans adiciona um avançado ciclo de vida e um modelo interativo sobre os tipos de componentes Java existentes, incluindo os JavaBeans e Enterprise Java Beans. Como complemento ao tradicional modelo de programação Java EE, a Web Beans provê:"
 
 #. Tag: para
 #: part1.xml:14
@@ -41,13 +41,13 @@ msgstr "interação via <emphasis>notificação de eventos</emphasis>, e"
 #: part1.xml:25
 #, no-c-format
 msgid "a better approach to binding <emphasis>interceptors</emphasis> to components, along with a new kind of interceptor, called a <emphasis>decorator</emphasis>, that is more appropriate for use in solving business problems."
-msgstr "uma melhor abordagem para associar <emphasis>interceptadores</emphasis> para componentes, juntamente com um novo tipo de interceptador, chamado de <emphasis>decorador</emphasis>, que é mais adequado para utilização na resolução de problemas de negócio."
+msgstr "uma melhor abordagem para associar <emphasis>interceptadores</emphasis> a  componentes, juntamente com um novo tipo de interceptador, chamado de <emphasis>decorador</emphasis>, que é mais adequado para utilização na resolução de problemas de negócio."
 
 #. Tag: para
 #: part1.xml:32
 #, no-c-format
 msgid "Dependency injection, together with contextual lifecycle management, saves the user of an unfamiliar API from having to ask and answer the following questions:"
-msgstr "Injeção de dependência, junto com o gerenciamento contextual do ciclo de vida, livra o usuário de uma API desconhecida, de ter de perguntar e reponders as seguintes questões:"
+msgstr "Injeção de dependência, juntamente com o gerenciamento contextual do ciclo de vida, livra o usuário de uma API desconhecida  de ter de perguntar e reponders às seguintes questões:"
 
 #. Tag: para
 #: part1.xml:38
@@ -71,7 +71,7 @@ msgstr "é multithread?"
 #: part1.xml:47
 #, no-c-format
 msgid "where can I get one from?"
-msgstr "onde posso obter um?"
+msgstr "de onde posso obter um?"
 
 #. Tag: para
 #: part1.xml:50
@@ -101,7 +101,7 @@ msgstr "como compartilhar esse objeto entre outros objetos?"
 #: part1.xml:65
 #, no-c-format
 msgid "A Web Bean specifies only the type and semantics of other Web Beans it depends upon. It need not be aware of the actual lifecycle, concrete implementation, threading model or other clients of any Web Bean it depends upon. Even better, the concrete implementation, lifecycle and threading model of a Web Bean it depends upon may vary according to the deployment scenario, without affecting any client."
-msgstr "Um Web Bean especifica apenas o tipo e a semântica de outros Web Beans que ele dependa. Ele não precisa ser consciente do próprio ciclo de vida, implementação concreta, modelo de threading ou outro cliente de qualquer Web Bean que ele dependa. Ainda melhor, a implementação concreta, ciclo de vida e o modelo de threading do Web Bean que ele dependa, pode variar de acordo com o cenário de implantação, sem afetar qualquer cliente."
+msgstr "Um Web Bean especifica apenas o tipo e a semântica de outros Web Beans dos quais que ele dependa. Ele não precisa ser consciente do próprio ciclo de vida, implementação concreta, modelo de threading ou outro cliente de qualquer Web Bean de que ele dependa.Melhor ainda: a implementação concreta, ciclo de vida e o modelo de threading do Web Bean de que ele dependa  podem variar de acordo com o cenário de implantação, sem afetar qualquer cliente."
 
 #. Tag: para
 #: part1.xml:72
@@ -131,7 +131,7 @@ msgstr "<emphasis>decoradores</emphasis> permitem que questões de negócios sej
 #: part1.xml:90
 #, no-c-format
 msgid "Most importantly, Web Beans provides all these facilities in a <emphasis>typesafe</emphasis> way. Web Beans never uses string-based identifiers to determine how collaborating objects fit together. And XML, though it remains an option, is rarely used. Instead, Web Beans uses the typing information that is already available in the Java object model, together with a new pattern, called <emphasis>binding annotations</emphasis>, to wire together Web Beans, their dependencies, their interceptors and decorators and their event consumers."
-msgstr "Mais importante, Web Beans oferece todas essas facilidades de uma maneira <emphasis>typesafe</emphasis>. Web Beans nunca utiliza identificadores baseados em strings para determinar o modo como os objetos se relacionam. XML, continua a ser uma opção, mas raramente é utilizado. Em vez disso, Web Beans utiliza a informação de tipo que está disponível no modelo de objeto Java, juntamente com um novo padrão, chamado <emphasis>anotações de binding</emphasis>, para interconectar Web Beans, suas dependências, seus interceptadores e decoradores e seus consumidores de eventos."
+msgstr "Mais importante, Web Beans oferece todas essas facilidades de uma maneira <emphasis>typesafe</emphasis>. Web Beans nunca utiliza identificadores baseados em strings para determinar o modo como os objetos se relacionam. XML  continua a ser uma opção, mas raramente é utilizado. Em vez disso, Web Beans utiliza a informação de tipo que está disponível no modelo de objeto Java, juntamente com um novo padrão, chamado <emphasis>anotações de binding</emphasis>, para interconectar Web Beans, suas dependências, seus interceptadores e decoradores e seus consumidores de eventos."
 
 #. Tag: para
 #: part1.xml:100
@@ -161,17 +161,17 @@ msgstr "todos os Servlets."
 #: part1.xml:115
 #, no-c-format
 msgid "Web Beans even provides the necessary integration points so that other kinds of components defined by future Java EE specifications or by non-standard frameworks may be cleanly integrated with Web Beans, take advantage of the Web Beans services, and interact with any other kind of Web Bean."
-msgstr "Web Beans prevê ainda pontos de integração necessários para que outros tipos de componentes definidos pelas futuras especificações Java EE ou por frameworks não-padrão possam ser transparentemente integrados com a Web Beans, tirando proveito dos serviços da Web Beans, e interagindo com qualquer outro tipo de Web Bean."
+msgstr "Web Beans provê ainda pontos de integração necessários para que outros tipos de componentes definidos pelas futuras especificações Java EE ou por frameworks não-padrão possam ser transparentemente integrados com a Web Beans, tirando proveito dos serviços da Web Beans e interagindo com qualquer outro tipo de Web Bean."
 
 #. Tag: para
 #: part1.xml:120
 #, no-c-format
 msgid "Web Beans was influenced by a number of existing Java frameworks, including Seam, Guice and Spring. However, Web Beans has its own very distinct character: more typesafe than Seam, more stateful and less XML-centric than Spring, more web and enterprise-application capable than Guice."
-msgstr "A Web Beans foi influênciada por inúmeros frameworks Java existentes, incluindo Seam, Guice e Spring. Entretanto, Web Beans tem suas prórias características: mais typesafe que o Seam, mais stateful e menos centrada em XML que o Spring, mais web e capaz para aplicações corporativas que o Guice."
+msgstr "A Web Beans foi influenciada por inúmeros frameworks Java existentes, incluindo Seam, Guice e Spring. Entretanto, Web Beans tem suas prórias características: mais typesafe que o Seam, mais stateful e menos centrada em XML que o Spring, mais web e capaz para aplicações corporativas que o Guice."
 
 #. Tag: para
 #: part1.xml:125
 #, no-c-format
 msgid "Most importantly, Web Beans is a JCP standard that integrates cleanly with Java EE, and with any Java SE environment where embeddable EJB Lite is available."
-msgstr "O mais importante, Web Beans é um padrão do JCP, que integra-se transparentemente com o Java EE, e com qualquer outro ambiente Java SE onde o EJB Lite embutível está disponível."
+msgstr "O mais importante: Web Beans é um padrão do JCP, que se integra transparentemente com o Java EE e com qualquer outro ambiente Java SE em que o EJB Lite embutível esteja disponível."
 

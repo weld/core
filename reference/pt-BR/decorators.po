@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-04-05 20:03-0300\n"
+"PO-Revision-Date: 2009-04-10 09:16-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -23,19 +23,19 @@ msgstr "Decoradores"
 #: decorators.xml:6
 #, no-c-format
 msgid "Interceptors are a powerful way to capture and separate concerns which are <emphasis>orthogonal</emphasis> to the type system. Any interceptor is able to intercept invocations of any Java type. This makes them perfect for solving technical concerns such as transaction management and security. However, by nature, interceptors are unaware of the actual semantics of the events they intercept. Thus, interceptors aren't an appropriate tool for separating business-related concerns."
-msgstr "Interceptores são um meio poderoso para capturar e separar preocupações <emphasis>ortogonais</emphasis> para o tipo de sistema. Qualquer interceptador é capaz de interceptar invocações de qualquer tipo Java. Isto torna-os ideais para resolver questões técnicas, tais como gerenciamento de transação e segurança. No entanto, por natureza, interceptores desconhecem a real semântica dos eventos que interceptam. Assim, interceptores não são um instrumentos adequados para a separação de questões relacionadas à negócios."
+msgstr "Interceptadores são um meio poderoso para capturar e separar preocupações <emphasis>ortogonais</emphasis> para o tipo de sistema. Qualquer interceptador é capaz de interceptar invocações de qualquer tipo Java. Isso os torna ideais para resolver questões técnicas, tais como gerenciamento de transação e segurança. No entanto, por natureza, interceptadores desconhecem a real semântica dos eventos que interceptam. Assim, interceptadores não são um instrumento adequado para a separação de questões relacionadas a negócios."
 
 #. Tag: para
 #: decorators.xml:14
 #, no-c-format
 msgid "The reverse is true of <emphasis>decorators</emphasis>. A decorator intercepts invocations only for a certain Java interface, and is therefore aware of all the semantics attached to that interface. This makes decorators a perfect tool for modeling some kinds of business concerns. It also means that a decorator doesn't have the generality of an interceptor. Decorators aren't able to solve technical concerns that cut across many disparate types."
-msgstr "O contrário é verdadeiro <emphasis>decoradores</emphasis>. O decorator intercepta invocações apenas para uma determinada interface Java e, portanto, é ciente de toda a semântica que acompanha a interface. Isto torna os decoradores uma ferramenta perfeita para modelar alguns tipos de questões de negócios. Significa também que um decorador não tem a generalidade de um interceptador. Decoradores não são capazes de resolver questões técnicas que atravessam muitos tipos diferentes."
+msgstr "O contrário é verdadeiro <emphasis>decoradores</emphasis>. O decorador intercepta invocações apenas para uma determinada interface Java e, portanto, é ciente de toda a semântica que acompanha a interface. Isso torna os decoradores uma ferramenta perfeita para modelar alguns tipos de questões de negócios. Significa também que um decorador não tem a generalidade de um interceptador. Decoradores não são capazes de resolver questões técnicas que atravessam muitos tipos diferentes."
 
 #. Tag: para
 #: decorators.xml:22
 #, no-c-format
 msgid "Suppose we have an interface that represents accounts:"
-msgstr "Suponha que temos uma interface que representa contas:"
+msgstr "Suponha que temos uma interface que represente contas:"
 
 #. Tag: programlisting
 #: decorators.xml:24
@@ -59,7 +59,7 @@ msgstr ""
 #: decorators.xml:26
 #, no-c-format
 msgid "Several different Web Beans in our system implement the <literal>Account</literal> interface. However, we have a common legal requirement that, for any kind of account, large transactions must be recorded by the system in a special log. This is a perfect job for a decorator."
-msgstr "Vários Web Beans em nosso sistema implementam a interface <literal>Account</literal>. No entanto, temos uma obrigação legal que, para qualquer tipo de conta, as grandes transações devem ser registadas pelo sistema, em um registro especial (log). Este é um trabalho perfeito para um decorador. "
+msgstr "Vários Web Beans em nosso sistema implementam a interface <literal>Account</literal>. No entanto, temos uma obrigação legal que, para qualquer tipo de conta, as grandes transações devem ser registadas pelo sistema, em um registro especial (log). Esse é um trabalho perfeito para um decorador. "
 
 #. Tag: para
 #: decorators.xml:32
@@ -135,7 +135,7 @@ msgstr "Atributos delegados"
 #: decorators.xml:45
 #, no-c-format
 msgid "All decorators have a <emphasis>delegate attribute</emphasis>. The type and binding types of the delegate attribute determine which Web Beans the decorator is bound to. The delegate attribute type must implement or extend all interfaces implemented by the decorator."
-msgstr "Todos os decoradores têm um <emphasis>atributo delegado</emphasis>. O tipo e os tipos de binding do atributo delegado determinam qual o Web Beans que o decorador está vinculado. O tipo do atributo delegado deve implementar ou estender todas as interfaces implementadas pelo decorador."
+msgstr "Todos os decoradores têm um <emphasis>atributo delegado</emphasis>. O tipo e os tipos de binding do atributo delegado determinam a qual  Web Beans o decorador está vinculado. O tipo do atributo delegado deve implementar ou estender todas as interfaces implementadas pelo decorador."
 
 #. Tag: para
 #: decorators.xml:50
@@ -171,19 +171,19 @@ msgstr "Um decorador é vinculado a qualquer Web Bean que:"
 #: decorators.xml:64
 #, no-c-format
 msgid "has the type of the delegate attribute as an API type, and"
-msgstr "tem o tipo do atributo delegado como um tipo da API, e"
+msgstr "tenha como  tipo do atributo delegado uma API, e"
 
 #. Tag: para
 #: decorators.xml:67
 #, no-c-format
 msgid "has all binding types that are declared by the delegate attribute."
-msgstr "tem todos os tipos de vínculo que são declarados pelo atributo delegado."
+msgstr "tenha todos os tipos de vínculo que são declarados pelo atributo delegado."
 
 #. Tag: para
 #: decorators.xml:71
 #, no-c-format
 msgid "The decorator may invoke the delegate attribute, which has much the same effect as calling <literal>InvocationContext.proceed()</literal> from an interceptor."
-msgstr "O decorador  pode invocar o atributo delegado, que tem praticamente o mesmo efeito que chamar <literal>InvocationContext.proceed()</literal> a partir de um interceptador"
+msgstr "O decorador  pode invocar o atributo delegado,o que  praticamente equivale a chamar <literal>InvocationContext.proceed()</literal> a partir de um interceptador"
 
 #. Tag: title
 #: decorators.xml:78

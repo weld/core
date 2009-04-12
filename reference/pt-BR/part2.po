@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-01-06 11:30+0000\n"
-"PO-Revision-Date: 2009-04-05 19:50-0300\n"
+"PO-Revision-Date: 2009-04-10 13:11-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -47,7 +47,7 @@ msgstr "Essas técnicas servem para habilitar o fraco acoplamento entre o client
 #: part2.xml:28
 #, no-c-format
 msgid "Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system can respond to change in a well-defined manner. In the past, frameworks that attempted to provide the facilities listed above invariably did it by sacrificing type safety. Web Beans is the first technology that achieves this level of loose coupling in a typesafe way."
-msgstr "O fraco acoplamento torna o sistema mais <emphasis>dinâmico</emphasis>. O sistema pode responder à mudanças de uma maneira bem definida. No passado, frameworks que tentaram prover essas facilidades acima listadas, invariavelmente acabaram sacrificando a type safety. A Web Beans é a primeira tecnologia que alcança esse nível de fraco acoplamento de uma meneira typesafe."
+msgstr "O fraco acoplamento torna o sistema mais <emphasis>dinâmico</emphasis>. O sistema pode responder a mudanças de uma maneira bem definida. No passado, frameworks que tentaram prover essas facilidades acima listadas, invariavelmente acabaram sacrificando a type safety. A Web Beans é a primeira tecnologia que alcança esse nível de fraco acoplamento de uma meneira typesafe."
 
 #. Tag: para
 #: part2.xml:34
@@ -77,5 +77,5 @@ msgstr "<emphasis>notificadores de eventos</emphasis> desacoplam os produtores d
 #: part2.xml:52
 #, no-c-format
 msgid "Let's explore interceptors first."
-msgstr "Vamos primeiramente explorar os interceptadores"
+msgstr "Primeiramente, exploraremos os interceptadores"
 

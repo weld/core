@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-02-07 18:51+0000\n"
-"PO-Revision-Date: 2009-04-05 18:49-0300\n"
+"PO-Revision-Date: 2009-04-10 20:31-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -17,13 +17,13 @@ msgstr ""
 #: example.xml:4
 #, no-c-format
 msgid "JSF web application example"
-msgstr "Aplicação web JSF de exemplo"
+msgstr "Exemplo de aplicação web JSF "
 
 #. Tag: para
 #: example.xml:6
 #, no-c-format
 msgid "Let's illustrate these ideas with a full example. We're going to implement user login/logout for an application that uses JSF. First, we'll define a Web Bean to hold the username and password entered during login:"
-msgstr "Vamos ilustrar estas idéias com um exemplo completo. Nós iremos implementar um login/logout de usuário de uma aplicação que utiliza JSF. Primeiro, vamos definir um Web Bean que irá armazenar o nome do usuário (username) e a senha (password) fornecidos durante o login:"
+msgstr "Ilustraremos essas idéias com um exemplo completo. Nós  implementaremos um login/logout de usuário de uma aplicação que utiliza JSF. Primeiro, definiremos um Web Bean que irá armazenar o nome do usuário (username) e a senha (password) fornecidos durante o login:"
 
 #. Tag: programlisting
 #: example.xml:11
@@ -231,5 +231,5 @@ msgstr ""
 #: example.xml:31
 #, no-c-format
 msgid "Hopefully, this example gives a flavor of the Web Bean programming model. In the next chapter, we'll explore Web Beans dependency injection in greater depth."
-msgstr "Esperamos que esse exemplo pôde dar um gostinho do modelo de programação com Web Beans. No capítulo seguinte, iremos explorar a injeção de dependência da Web Beans em profundidade."
+msgstr "Esperamos que esse exemplo tenha dado um gostinho do modelo de programação com Web Beans. No capítulo seguinte, exploraremos a injeção de dependência da Web Beans em profundidade."
 

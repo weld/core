@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-03-28 17:09+0000\n"
-"PO-Revision-Date: 2009-04-04 21:50-0300\n"
+"PO-Revision-Date: 2009-04-06 08:33-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -449,7 +449,7 @@ msgstr ""
 #: ri-spi.xml:203
 #, no-c-format
 msgid "To boot the container you call <literal>Bootstrap.boot()</literal>."
-msgstr ""
+msgstr "Para iniciar o container é chamado <literal>Bootstrap.boot()</literal>."
 
 #. Tag: para
 #: ri-spi.xml:207

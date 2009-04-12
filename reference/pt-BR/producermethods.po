@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-03-28 17:09+0000\n"
-"PO-Revision-Date: 2009-04-05 19:28-0300\n"
+"PO-Revision-Date: 2009-04-10 16:06-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Métodos produtores"
 #: producermethods.xml:7
 #, no-c-format
 msgid "Producer methods let us overcome certain limitations that arise when the Web Bean manager, instead of the application, is responsible for instantiating objects. They're also the easiest way to integrate objects which are not Web Beans into the Web Beans environment. (We'll meet a second approach in <xref linkend=\"xml\"/>.)"
-msgstr "Métodos produtores permitem superarmos certas limitações que surgem quando o gerenciador do Web Bean, em vez da aplicação, é responsável por instanciar objetos. Eles são também a forma mais fácil de integrar os objetos que não são Web Beans ao ambiente Web Beans. (Vamos ver uma segunda abordagem em <xref linkend=\"xml\"/>.)"
+msgstr "Métodos produtores permitem superarmos certas limitações que surgem quando o gerenciador do Web Bean, em vez da aplicação, é responsável por instanciar objetos. Eles são também a forma mais fácil de integrar os objetos que não são Web Beans ao ambiente Web Beans. (Veremos uma segunda abordagem em <xref linkend=\"xml\"/>.)"
 
 #. Tag: para
 #: producermethods.xml:12
@@ -41,13 +41,13 @@ msgstr "Um método produtor Web Beans funciona como uma fonte de objetos a ser i
 #: producermethods.xml:20
 #, no-c-format
 msgid "the objects to be injected are not required to be instances of Web Beans,"
-msgstr "os objetos a ser injetados não são obrigados a ser instâncias de Web Beans,"
+msgstr "os objetos a serem injetados não forem obrigados a ser instâncias de Web Beans,"
 
 #. Tag: para
 #: producermethods.xml:23
 #, no-c-format
 msgid "the concrete type of the objects to be injected may vary at runtime or"
-msgstr "o tipo concreto dos objetos a ser injetados pode variar em tempo de execução ou"
+msgstr "o tipo concreto dos objetos a serem injetados pode variar em tempo de execução ou"
 
 #. Tag: para
 #: producermethods.xml:26
@@ -149,7 +149,7 @@ msgstr "<![CDATA[@Preferred PaymentStrategy paymentStrat;]]>"
 #: producermethods.xml:62
 #, no-c-format
 msgid "This injection point has the same type and binding annotations as the producer method, so it resolves to the producer method using the usual Web Beans injection rules. The producer method will be called by the Web Bean manager to obtain an instance to service this injection point."
-msgstr "Esse ponto de injeção tem o mesmo tipo e anotações de binding que o método produtor, assim, resolve para o método produtor utilizando as regras de injeção da Web Beans. O método produtor será invocado pelo gerenciador do Bean Web para obter uma instância para servir esse ponto de injeção."
+msgstr "Esse ponto de injeção tem o mesmo tipo e anotações de binding que o método produtor. Assim, resolve para o método produtor utilizando as regras de injeção da Web Beans. O método produtor será invocado pelo gerenciador do Bean Web para obter uma instância para servir esse ponto de injeção."
 
 #. Tag: chapter
 #: producermethods.xml:65
@@ -167,7 +167,7 @@ msgstr "Escopo de um método produtor"
 #: producermethods.xml:70
 #, no-c-format
 msgid "The scope of the producer method defaults to <literal>@Dependent</literal>, and so it will be called <emphasis>every time</emphasis> the Web Bean manager injects this field or any other field that resolves to the same producer method. Thus, there could be multiple instances of the <literal>PaymentStrategy</literal> object for each user session."
-msgstr "O escopo padrão dos métodos produtores é <literal>@Dependent</literal>, e, por isso, vão ser chamados <emphasis>toda vez</emphasis> que o gerenciador do Web Bean injetar esse atributo ou qualquer outro atributo que resolve para o mesmo método produtor. Assim, pode haver várias instâncias do objeto <literal>PaymentStrategy</literal> para cada sessão do usuário."
+msgstr "O escopo padrão dos métodos produtores é <literal>@Dependent</literal>, e, por isso ,serão chamados <emphasis>toda vez</emphasis> que o gerenciador do Web Bean injetar esse atributo ou qualquer outro atributo que resolve para o mesmo método produtor. Assim, pode haver várias instâncias do objeto <literal>PaymentStrategy</literal> para cada sessão do usuário."
 
 #. Tag: para
 #: producermethods.xml:75
@@ -211,7 +211,7 @@ msgstr "Existe um problema potencial com o código acima. As implementações de
 #: producermethods.xml:94
 #, no-c-format
 msgid "If this isn't what we want we can use dependency injection into the producer method to obtain Web Bean instances:"
-msgstr "Se isso não é o que queremos, podemos utilizar a injeção de dependência no método produtor para obter instâncias do Web Bean:"
+msgstr "Se  não é isso  o que queremos, podemos utilizar a injeção de dependência no método produtor para obter instâncias do Web Bean:"
 
 #. Tag: programlisting
 #: producermethods.xml:97
@@ -245,7 +245,7 @@ msgstr ""
 #: producermethods.xml:99
 #, no-c-format
 msgid "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request scoped Web Bean? Then the producer method has the effect of \"promoting\" the current request scoped instance into session scope. This is almost certainly a bug! The request scoped object will be destroyed by the Web Bean manager before the session ends, but the reference to the object will be left \"hanging\" in the session scope. This error will <emphasis>not</emphasis> be detected by the Web Bean manager, so please take extra care when returning Web Bean instances from producer methods!"
-msgstr "Espere, o que se <literal>CreditCardPaymentStrategy</literal> é um Web Bean de escopo de requisição? Então o método produtor tem o efeito de \"promover\" a instância atual no escopo de requisição para o escopo de sessão. Isso certamente é um erro! O objeto no escopo de requisição será destruído pelo gerenciador do Web Bean antes de terminar a sessão, mas a referência ao objeto será deixada \"presa\" no escopo sessão. Este erro <emphasis>não</emphasis> será detectado pelo gerenciador do Web Bean, por isso, tome cuidado quando retornar instâncias de Web Bean em métodos produtores!"
+msgstr "Espere, o que se <literal>CreditCardPaymentStrategy</literal> é um Web Bean de escopo de requisição? Então o método produtor tem o efeito de \"promover\" a instância atual no escopo de requisição para o escopo de sessão. Isso certamente é um erro! O objeto no escopo de requisição será destruído pelo gerenciador do Web Bean antes de terminar a sessão, mas a referência ao objeto será deixada \"presa\" no escopo sessão. Esse erro <emphasis>não</emphasis> será detectado pelo gerenciador do Web Bean. Por isso, tome cuidado quando retornar instâncias de Web Bean em métodos produtores!"
 
 #. Tag: para
 #: producermethods.xml:107
@@ -303,5 +303,5 @@ msgstr ""
 #: producermethods.xml:125
 #, no-c-format
 msgid "Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be created, passed to the producer method, returned by the producer method and finally bound to the session context. The dependent object won't be destroyed until the <literal>Preferences</literal> object is destroyed, at the end of the session."
-msgstr "Assim a nova instância <emphasis>dependente</emphasis> de <literal>CreditCardPaymentStrategy</literal> será criada, passada para o método produtor, retornada pelo método produtor e finalmente associada ao contexto de sessão. O objeto dependente não será destruído até que o objeto <literal>Preferences</literal> seja destruído, no término da sessão."
+msgstr "Assim a nova instância <emphasis>dependente</emphasis> de <literal>CreditCardPaymentStrategy</literal> será criada, passada para o método produtor, retornada pelo método produtor e, finalmente, associada ao contexto de sessão. O objeto dependente não será destruído até que o objeto <literal>Preferences</literal> seja destruído, no término da sessão."
 
