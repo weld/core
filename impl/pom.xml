@@ -86,6 +86,26 @@
       </dependency>
       
       <dependency>
+         <groupId>msv</groupId>
+         <artifactId>isorelax</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>msv</groupId>
+         <artifactId>msv</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>msv</groupId>
+         <artifactId>relaxngDatatype</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>msv</groupId>
+         <artifactId>xsdlib</artifactId>
+      </dependency>
+      
+      <dependency>
          <groupId>javax.jms</groupId>
          <artifactId>jms</artifactId>
          <optional>true</optional>

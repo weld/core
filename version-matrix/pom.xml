@@ -115,6 +115,30 @@
             <artifactId>log4j</artifactId>
             <version>1.2.14</version>
          </dependency>
+         
+         <dependency>
+            <groupId>msv</groupId>
+            <artifactId>msv</artifactId>
+            <version>20050913</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>msv</groupId>
+            <artifactId>isorelax</artifactId>
+            <version>20050913</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>msv</groupId>
+            <artifactId>relaxngDatatype</artifactId>
+            <version>20050913</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>msv</groupId>
+            <artifactId>xsdlib</artifactId>
+            <version>20050913</version>
+         </dependency>
 
          <dependency>
             <groupId>jaxen</groupId>

@@ -35,6 +35,7 @@ import org.jboss.webbeans.xml.checker.bean.ext.SessionBeanElementChecker;
 import org.jboss.webbeans.xml.checker.bean.ext.SimpleBeanElementChecker;
 import org.jboss.webbeans.xml.checker.beanchildren.ext.NotSimpleBeanChildrenChecker;
 import org.jboss.webbeans.xml.checker.beanchildren.ext.SimpleBeanChildrenChecker;
+import org.xml.sax.EntityResolver;
 
 public class XmlParser
 {
@@ -186,7 +187,7 @@ public class XmlParser
          }
          SAXReader reader = new SAXReader();
          Document document = reader.read(xmlStream);
-         fullFillPackagesMap(document);
+         fullFillPackagesMap(document, url);
          return document;
       }
       catch (IOException e)
@@ -441,10 +442,10 @@ public class XmlParser
       }                  
    }
    
-   private void fullFillPackagesMap(Document document)
+   private void fullFillPackagesMap(Document document, URL xmlUrl)
    {
       Element root = document.getRootElement();      
-      ParseXmlHelper.checkRootAttributes(root, packagesMap, environment);
-      ParseXmlHelper.checkRootDeclaredNamespaces(root, packagesMap, environment);
+      ParseXmlHelper.checkRootAttributes(root, packagesMap, environment, xmlUrl);
+      ParseXmlHelper.checkRootDeclaredNamespaces(root, packagesMap, environment, xmlUrl);
    }
 }

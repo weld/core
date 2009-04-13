@@ -17,8 +17,14 @@ import org.dom4j.Attribute;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
+import org.iso_relax.verifier.Verifier;
+import org.iso_relax.verifier.VerifierConfigurationException;
+import org.iso_relax.verifier.VerifierFactory;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.resources.spi.ResourceLoadingException;
+import org.xml.sax.SAXException;
+
+import com.sun.msv.verifier.jarv.TheFactoryImpl;
 
 public class ParseXmlHelper
 {
@@ -101,7 +107,7 @@ public class ParseXmlHelper
       throw new DefinitionException("There are multiple packages containing a Java type with the same name '" + className + "'");
    }
 
-   public static void checkRootAttributes(Element root, Map<String, Set<String>> packagesMap, XmlEnvironment environment)
+   public static void checkRootAttributes(Element root, Map<String, Set<String>> packagesMap, XmlEnvironment environment, URL xmlUrl)
    {
       Iterator<?> rootAttrIterator = root.attributeIterator();
       while (rootAttrIterator.hasNext())
@@ -124,9 +130,10 @@ public class ParseXmlHelper
             }
             if (attribute.getName().equalsIgnoreCase(XmlConstants.SCHEMA_LOCATION) && attrVal.startsWith(XmlConstants.HTTP_PREFIX) && urn.trim().length() > 0)
             {
-               URL schemaFile = environment.loadFileByUrn(urn, XmlConstants.SCHEMA_FILE_NAME);
-               if (schemaFile == null)
+               URL schemaUrl = environment.loadFileByUrn(urn, XmlConstants.SCHEMA_FILE_NAME);
+               if (schemaUrl == null)
                   throw new DefinitionException("Could not find '" + XmlConstants.SCHEMA_FILE_NAME + "' file according to specified URN '" + urn + "'");
+               validateXmlWithXsd(xmlUrl, schemaUrl);
             }
          }
 
@@ -134,7 +141,7 @@ public class ParseXmlHelper
       }
    }
 
-   public static void checkRootDeclaredNamespaces(Element root, Map<String, Set<String>> packagesMap, XmlEnvironment environment)
+   public static void checkRootDeclaredNamespaces(Element root, Map<String, Set<String>> packagesMap, XmlEnvironment environment, URL xmlUrl)
    {
       Iterator<?> namespacesIterator = root.declaredNamespaces().iterator();
       while (namespacesIterator.hasNext())
@@ -148,7 +155,9 @@ public class ParseXmlHelper
             {
                Set<String> packagesSet = new HashSet<String>();
 
-               environment.loadFileByUrn(uri, XmlConstants.SCHEMA_FILE_NAME);
+               URL schemaUrl = environment.loadFileByUrn(uri, XmlConstants.SCHEMA_FILE_NAME);
+               if(schemaUrl != null)
+                  validateXmlWithXsd(xmlUrl, schemaUrl);
                
                URL namespaceFile = environment.loadFileByUrn(uri, XmlConstants.NAMESPACE_FILE_NAME);
                if (namespaceFile != null)
@@ -164,6 +173,31 @@ public class ParseXmlHelper
                addElementToPackagesMap(packagesMap, prefix, packagesSet);
             }
          }                  
+      }
+   }
+   
+   private static void validateXmlWithXsd(URL xmlUrl, URL schemaUrl)
+   {      
+      try
+      {
+         VerifierFactory factory = new TheFactoryImpl();
+         Verifier verifier = factory.newVerifier(schemaUrl.openStream());
+         verifier.verify(xmlUrl.toExternalForm());
+      }
+      catch (VerifierConfigurationException e)
+      {
+         String message = "VerifierConfigurationException while create verifier for " + schemaUrl;
+         throw new DefinitionException(message, e);
+      }
+      catch (SAXException e)
+      {
+         String message = "IOException while validate " + xmlUrl + " with " + schemaUrl;
+         throw new DefinitionException(message, e);
+      }
+      catch (IOException e)
+      {
+         String message = "IOException while validate " + xmlUrl + " with " + schemaUrl;
+         throw new DefinitionException(message, e);
       }
    }
 
