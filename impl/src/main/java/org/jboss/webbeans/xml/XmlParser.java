@@ -35,7 +35,6 @@ import org.jboss.webbeans.xml.checker.bean.ext.SessionBeanElementChecker;
 import org.jboss.webbeans.xml.checker.bean.ext.SimpleBeanElementChecker;
 import org.jboss.webbeans.xml.checker.beanchildren.ext.NotSimpleBeanChildrenChecker;
 import org.jboss.webbeans.xml.checker.beanchildren.ext.SimpleBeanChildrenChecker;
-import org.xml.sax.EntityResolver;
 
 public class XmlParser
 {
