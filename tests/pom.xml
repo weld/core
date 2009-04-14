@@ -37,13 +37,11 @@
       <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-api</artifactId>
-         <scope>test</scope>
       </dependency>
       
        <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-ri</artifactId>
-         <scope>test</scope>
       </dependency>
       
       <dependency>
@@ -60,7 +58,6 @@
       <dependency>
          <groupId>org.jboss.ejb3</groupId>
          <artifactId>jboss-ejb3-api</artifactId>
-         <scope>test</scope>
          <optional>true</optional>
          <exclusions>
             <exclusion>
@@ -81,6 +78,16 @@
       	<groupId>log4j</groupId>
       	<artifactId>log4j</artifactId>
       	<scope>test</scope>
+      </dependency>
+      
+      <dependency>
+      	<groupId>javax.transaction</groupId>
+      	<artifactId>jta</artifactId>
+    	</dependency>
+    	
+      <dependency>
+         <groupId>javax.persistence</groupId>
+         <artifactId>persistence-api</artifactId>
       </dependency>
       
    </dependencies>
