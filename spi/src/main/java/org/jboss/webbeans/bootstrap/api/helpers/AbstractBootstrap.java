@@ -25,7 +25,6 @@ import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.ejb.spi.EjbServices;
-import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 
@@ -56,12 +55,6 @@ public abstract class AbstractBootstrap implements Bootstrap
    }
 
    @Deprecated
-   public void setNamingContext(NamingContext namingContext)
-   {
-      getServices().add(NamingContext.class, namingContext);
-   }
-
-   @Deprecated
    public void setResourceLoader(ResourceLoader resourceLoader)
    {
       getServices().add(ResourceLoader.class, resourceLoader);
@@ -89,12 +82,6 @@ public abstract class AbstractBootstrap implements Bootstrap
    public ResourceLoader getResourceLoader()
    {
       return getServices().get(ResourceLoader.class);
-   }
-
-   @Deprecated
-   public NamingContext getNamingContext()
-   {
-      return getServices().get(NamingContext.class);
    }
 
    @Deprecated

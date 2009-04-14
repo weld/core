@@ -81,7 +81,6 @@ import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.metadata.MetaDataCache;
-import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
@@ -1151,7 +1150,6 @@ public class ManagerImpl implements WebBeansManager, Serializable
       ApplicationContext.instance().destroy();
       ApplicationContext.instance().setActive(false);
       ApplicationContext.instance().setBeanStore(null);
-      getServices().get(NamingContext.class).unbind(ManagerImpl.JNDI_KEY);
    }
 
    /**

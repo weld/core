@@ -9,7 +9,6 @@ import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.messaging.spi.JmsServices;
 import org.jboss.webbeans.persistence.spi.JpaServices;
-import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceServices;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
@@ -84,16 +83,6 @@ public class BootstrapBean implements Bootstrap
    public void setApplicationContext(BeanStore applicationContext)
    {
       bootstrap.setApplicationContext(applicationContext);      
-   }
-   
-   public void setNamingContext(NamingContext namingContext)
-   {
-      bootstrap.getServices().add(NamingContext.class, namingContext);
-   }
-   
-   public NamingContext getNamingContext()
-   {
-      return bootstrap.getServices().get(NamingContext.class);
    }
    
    public void setResourceLoader(ResourceLoader resourceLoader)

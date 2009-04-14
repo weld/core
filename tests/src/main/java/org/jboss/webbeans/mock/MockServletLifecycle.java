@@ -6,7 +6,6 @@ import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
-import org.jboss.webbeans.resources.spi.NamingContext;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 
 public class MockServletLifecycle extends ContextLifecycle
@@ -28,7 +27,6 @@ public class MockServletLifecycle extends ContextLifecycle
       }
       bootstrap = new WebBeansBootstrap();
       bootstrap.setEnvironment(Environments.SERVLET);
-      bootstrap.getServices().add(NamingContext.class, new MockNamingContext(null));
       bootstrap.getServices().add(ResourceLoader.class, MOCK_RESOURCE_LOADER);
       bootstrap.getServices().add(WebBeanDiscovery.class, webBeanDiscovery);
       bootstrap.setApplicationContext(applicationBeanStore);
