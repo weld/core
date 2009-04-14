@@ -49,44 +49,27 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
       this.type = type;
       this.ejbName = type.getSimpleName();
       this.localInterfaces = new ArrayList<BusinessInterfaceDescriptor<?>>();
+      
+      Local localAnnotation = type.getAnnotation(Local.class);
+      if (localAnnotation != null)
+      {
+         for (final Class<?> clazz : localAnnotation.value())
+         {
+            localInterfaces.add(createBusinessInterfaceDescriptor(clazz));
+         }
+      }
+      
       for (final Class<?> clazz : type.getInterfaces())
       {
          if (clazz.isAnnotationPresent(Local.class))
          {
-            localInterfaces.add(new BusinessInterfaceDescriptor<Object>()
-            {
-   
-               @SuppressWarnings("unchecked")
-               public Class<Object> getInterface()
-               {
-                  return (Class<Object>) clazz;
-               }
-   
-               public String getJndiName()
-               {
-                  return clazz.getSimpleName() + "/local";
-               }
-         
-            });
+            localInterfaces.add(createBusinessInterfaceDescriptor(clazz));
          }
       }
       // cope with EJB 3.1 style no-interface views
       if (localInterfaces.size() == 0)
       {
-         localInterfaces.add(new BusinessInterfaceDescriptor<Object>()
-         {
-
-            public Class<Object> getInterface()
-            {
-               return (Class<Object>) type;
-            }
-
-            public String getJndiName()
-            {
-               return type.getSimpleName() +"/local";
-            }
-            
-         });
+         localInterfaces.add(createBusinessInterfaceDescriptor(type));
       }
       this.removeMethods = new HashSet<Method>();
       for (final Method method : type.getMethods())
@@ -96,6 +79,25 @@ public class MockEjbDescriptor<T> implements EjbDescriptor<T>
             removeMethods.add(method);
          }
       }
+   }
+
+   private BusinessInterfaceDescriptor<Object> createBusinessInterfaceDescriptor(final Class<?> clazz)
+   {
+      return new BusinessInterfaceDescriptor<Object>()
+      {
+  
+         @SuppressWarnings("unchecked")
+         public Class<Object> getInterface()
+         {
+            return (Class<Object>) clazz;
+         }
+  
+         public String getJndiName()
+         {
+            return clazz.getSimpleName() + "/local";
+         }
+      
+      };
    }
 
    public String getEjbName()
