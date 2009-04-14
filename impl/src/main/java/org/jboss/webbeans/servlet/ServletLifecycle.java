@@ -84,10 +84,17 @@ public class ServletLifecycle extends ContextLifecycle
     */
    protected BeanStore restoreSessionContext(HttpSession session)
    {
-      BeanStore sessionBeanStore = new HttpSessionBeanStore(session);
-      super.restoreSession(session.getId(), sessionBeanStore);
-      CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
-      return sessionBeanStore;
+	  if (session != null)
+	  {
+	     BeanStore sessionBeanStore = new HttpSessionBeanStore(session);
+	     super.restoreSession(session.getId(), sessionBeanStore);
+	     CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
+	     return sessionBeanStore;
+	  }
+	  else
+	  {
+		 return null;
+	  }
    }
 
    /**
@@ -104,7 +111,7 @@ public class ServletLifecycle extends ContextLifecycle
          BeanStore beanStore = new ConcurrentHashMapBeanStore();
          request.setAttribute(REQUEST_ATTRIBUTE_NAME, beanStore);
          super.beginRequest(request.getRequestURI(), beanStore);
-         restoreSessionContext(request.getSession());
+         restoreSessionContext(request.getSession(false));
       }
    }
 
