@@ -50,6 +50,7 @@
       <jsr299.tck.version>1.0.0-SNAPSHOT</jsr299.tck.version>
       <webbeans.version>1.0.0-SNAPSHOT</webbeans.version>
       <webbeans.tomcat.version>1.0.0-SNAPSHOT</webbeans.tomcat.version>
+      <webbeans.se.version>1.0.0-SNAPSHOT</webbeans.se.version>
    </properties>
    
    <dependencyManagement>
@@ -287,6 +288,12 @@
          </dependency>
          
          <dependency>
+            <groupId>org.jboss.webbeans</groupId>
+            <artifactId>se-module</artifactId>
+            <version>${webbeans.se.version}</version>
+         </dependency>
+         
+         <dependency>
             <groupId>org.jboss.webbeans.tomcat</groupId>
             <artifactId>webbeans-tomcat-int</artifactId>
             <version>${webbeans.tomcat.version}</version>
@@ -309,9 +316,7 @@
             <artifactId>jsr299-tck-impl</artifactId>
             <version>${jsr299.tck.version}</version>
          </dependency>
-         
-         
-         
+             
          <dependency>
             <groupId>org.jboss.test-harness</groupId>
             <artifactId>jboss-test-harness</artifactId>
