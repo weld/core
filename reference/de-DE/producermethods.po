@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: producermethods\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-28 17:09+0000\n"
+"POT-Creation-Date: 2009-04-15 18:48+0000\n"
 "PO-Revision-Date: 2009-02-23 08:08+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -43,83 +43,29 @@ msgstr ""
 msgid "According to the spec:"
 msgstr "Gemäß der Spezifikation:"
 
-#. Tag: para
-#: producermethods.xml:16
+#. Tag: chapter
+#: producermethods.xml:12
 #, no-c-format
 msgid ""
-"A Web Beans producer method acts as a source of objects to be injected, "
-"where:"
-msgstr ""
-
-#. Tag: para
-#: producermethods.xml:20
-#, no-c-format
-msgid ""
-"the objects to be injected are not required to be instances of Web Beans,"
-msgstr ""
-
-#. Tag: para
-#: producermethods.xml:23
-#, no-c-format
-msgid "the concrete type of the objects to be injected may vary at runtime or"
-msgstr ""
-
-#. Tag: para
-#: producermethods.xml:26
-#, no-c-format
-msgid ""
-"the objects require some custom initialization that is not performed by the "
-"Web Bean constructor"
-msgstr ""
-
-#. Tag: para
-#: producermethods.xml:33
-#, fuzzy, no-c-format
-msgid "For example, producer methods let us:"
-msgstr "Geltungsbereich einer Producer-Methode"
-
-#. Tag: para
-#: producermethods.xml:37
-#, no-c-format
-msgid "expose a JPA entity as a Web Bean,"
-msgstr ""
-
-#. Tag: para
-#: producermethods.xml:40
-#, no-c-format
-msgid "expose any JDK class as a Web Bean,"
-msgstr ""
-
-#. Tag: para
-#: producermethods.xml:43
-#, no-c-format
-msgid ""
-"define multiple Web Beans, with different scopes or initialization, for the "
-"same implementation class, or"
-msgstr ""
-
-#. Tag: para
-#: producermethods.xml:47
-#, no-c-format
-msgid "vary the implementation of an API type at runtime."
-msgstr ""
-
-#. Tag: para
-#: producermethods.xml:51
-#, no-c-format
-msgid ""
-"In particular, producer methods let us use runtime polymorphism with Web "
-"Beans. As we've seen, deployment types are a powerful solution to the "
-"problem of deployment-time polymorphism. But once the system is deployed, "
-"the Web Bean implementation is fixed. A producer method has no such "
-"limitation:"
-msgstr ""
-
-#. Tag: programlisting
-#: producermethods.xml:56
-#, fuzzy, no-c-format
-msgid ""
-"<![CDATA[@SessionScoped\n"
+"<blockquote> <para>A Web Beans producer method acts as a source of objects "
+"to be injected, where:</para> <itemizedlist> <listitem> <para>the objects to "
+"be injected are not required to be instances of Web Beans,</para> </"
+"listitem> <listitem> <para>the concrete type of the objects to be injected "
+"may vary at runtime or</para> </listitem> <listitem> <para>the objects "
+"require some custom initialization that is not performed by the Web Bean "
+"constructor</para> </listitem> </itemizedlist> </blockquote> <para>For "
+"example, producer methods let us:</para> <itemizedlist> <listitem> "
+"<para>expose a JPA entity as a Web Bean,</para> </listitem> <listitem> "
+"<para>expose any JDK class as a Web Bean,</para> </listitem> <listitem> "
+"<para>define multiple Web Beans, with different scopes or initialization, "
+"for the same implementation class, or</para> </listitem> <listitem> "
+"<para>vary the implementation of an API type at runtime.</para> </listitem> "
+"</itemizedlist> <para>In particular, producer methods let us use runtime "
+"polymorphism with Web Beans. As we've seen, deployment types are a powerful "
+"solution to the problem of deployment-time polymorphism. But once the system "
+"is deployed, the Web Bean implementation is fixed. A producer method has no "
+"such limitation:</para> <programlisting role=\"JAVA\"><![CDATA"
+"[@SessionScoped\n"
 "public class Preferences {\n"
 "    \n"
 "    private PaymentStrategyType paymentStrategy;\n"
@@ -136,51 +82,59 @@ msgid ""
 "        } \n"
 "    }\n"
 "    \n"
-"}]]>"
+"}]]></programlisting> <para>Consider an injection point:</para> "
+"<programlisting role=\"JAVA\"><![CDATA[@Preferred PaymentStrategy "
+"paymentStrat;]]></programlisting> <para>This injection point has the same "
+"type and binding annotations as the producer method, so it resolves to the "
+"producer method using the usual Web Beans injection rules. The producer "
+"method will be called by the Web Bean manager to obtain an instance to "
+"service this injection point.</para>."
 msgstr ""
-"<![CDATA[@Produces @Preferred @SessionScoped\n"
-"public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy ccps,\n"
-"                                          ChequePaymentStrategy cps,\n"
-"                                          PayPalPaymentStrategy ppps) {\n"
-"    switch (paymentStrategy) {\n"
-"        case CREDIT_CARD: return ccps;\n"
-"        case CHEQUE: return cps;\n"
-"        case PAYPAL: return ppps;\n"
-"        default: return null;\n"
-"    } \n"
-"}]]>"
-
-#. Tag: para
-#: producermethods.xml:58
-#, no-c-format
-msgid "Consider an injection point:"
-msgstr ""
-
-#. Tag: programlisting
-#: producermethods.xml:60
-#, fuzzy, no-c-format
-msgid "<![CDATA[@Preferred PaymentStrategy paymentStrat;]]>"
-msgstr ""
-"<![CDATA[@Produces @Preferred @SessionScoped\n"
-"public PaymentStrategy getPaymentStrategy() {\n"
+"<blockquote> <para>Eine Web Beans Producer-Methode fungiert als Quelle "
+"einzuspeisender Objekte wenn:</para> <itemizedlist> <listitem> <para>die "
+"einzuspeisenden Objekte keine Instanzen von Web Beans sein müssen,</para> </"
+"listitem> <listitem> <para>der konkrete Typ einzuspeisender Objekte zur "
+"Runtime variieren kann oder </para> </listitem> <listitem> <para>die Objekte "
+"eine bestimmte angepasste Initialisierung erfordern, die nicht vom Web Bean "
+"Konstruktor durchgeführt wird</para> </listitem> </itemizedlist> </"
+"blockquote> <para>Producer-Methoden lassen uns zum Beispiel:</para> "
+"<itemizedlist> <listitem> <para>eine JPA-Entity als ein Web Bean darlegen,</"
+"para> </listitem> <listitem> <para>eine beliebige JDK-Klasse als ein Web "
+"Bean darlegen,</para> </listitem> <listitem> <para>mehrere Web Beans mit "
+"unterschiedlichen Geltungsbereichen oder Initialisierung für diesselbe "
+"Implementierungsklasse definieren oder </para> </listitem> <listitem> "
+"<para>die Implementierung eines API-Typs zur Runtime variieren.</para> </"
+"listitem> </itemizedlist> <para>Insbesondere lassen uns Producer-Methoden "
+"Runtime-Polymorphie mit Web Beans verwenden. Wie wir bereits gesehen haben "
+"sind Deployment-Typen eine leistungsfähige Lösung zum Problem der "
+"Polymorphie zum Zeitpunkt des Deployment. Aber nachdem das System deployt "
+"ist, wird die Web Bean Implementierung behoben. Eine Producer-Methode "
+"besitzt keine solche Einschränkung:</para> <programlisting role=\"JAVA\"><!"
+"[CDATA[@SessionScoped\n"
+"public class Preferences {\n"
+"    \n"
+"    private PaymentStrategyType paymentStrategy;\n"
+"    \n"
 "    ...\n"
-"}]]>"
-
-#. Tag: para
-#: producermethods.xml:62
-#, no-c-format
-msgid ""
-"This injection point has the same type and binding annotations as the "
-"producer method, so it resolves to the producer method using the usual Web "
-"Beans injection rules. The producer method will be called by the Web Bean "
-"manager to obtain an instance to service this injection point."
-msgstr ""
-
-#. Tag: chapter
-#: producermethods.xml:65
-#, no-c-format
-msgid "<chapter>.</chapter>"
-msgstr ""
+"    \n"
+"    @Produces @Preferred \n"
+"    public PaymentStrategy getPaymentStrategy() {\n"
+"        switch (paymentStrategy) {\n"
+"            case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
+"            case CHEQUE: return new ChequePaymentStrategy();\n"
+"            case PAYPAL: return new PayPalPaymentStrategy();\n"
+"            default: return null;\n"
+"        } \n"
+"    }\n"
+"    \n"
+"}]]></programlisting> <para>Überlegen Sie einen Einspeisungspunkt:</para> "
+"<programlisting role=\"JAVA\"><![CDATA[@Preferred PaymentStrategy "
+"paymentStrat;]]></programlisting> <para>Dieser Einspeisungspunkt besitzt "
+"denselben Typ und diesselben Binding-Annotationen wie die Producer-Methode, "
+"so dass er unter Verwendung der üblichen Web Beans Einspeisungsregeln zur "
+"Producer-Methode auflöst. Die Producer-Methode wird vom Web Bean Manager "
+"aufgerufen um eine Instanz zu erhalten, um diesen Einspeisungspunkt zu "
+"bedienen.</para>."
 
 #. Tag: title
 #: producermethods.xml:68
@@ -414,26 +368,13 @@ msgstr ""
 "gelöscht bis das <literal>Preferences</literal>-Objekt gelöscht wird, meist "
 "am Ende der Session."
 
+#, fuzzy
+#~ msgid "For example, producer methods let us:"
+#~ msgstr "Geltungsbereich einer Producer-Methode"
+
+#, fuzzy
 #~ msgid ""
-#~ "<blockquote> <para>A Web Beans producer method acts as a source of "
-#~ "objects to be injected, where:</para> <itemizedlist> <listitem> <para>the "
-#~ "objects to be injected are not required to be instances of Web Beans,</"
-#~ "para> </listitem> <listitem> <para>the concrete type of the objects to be "
-#~ "injected may vary at runtime or</para> </listitem> <listitem> <para>the "
-#~ "objects require some custom initialization that is not performed by the "
-#~ "Web Bean constructor</para> </listitem> </itemizedlist> </blockquote> "
-#~ "<para>For example, producer methods let us:</para> <itemizedlist> "
-#~ "<listitem> <para>expose a JPA entity as a Web Bean,</para> </listitem> "
-#~ "<listitem> <para>expose any JDK class as a Web Bean,</para> </listitem> "
-#~ "<listitem> <para>define multiple Web Beans, with different scopes or "
-#~ "initialization, for the same implementation class, or</para> </listitem> "
-#~ "<listitem> <para>vary the implementation of an API type at runtime.</"
-#~ "para> </listitem> </itemizedlist> <para>In particular, producer methods "
-#~ "let us use runtime polymorphism with Web Beans. As we've seen, deployment "
-#~ "types are a powerful solution to the problem of deployment-time "
-#~ "polymorphism. But once the system is deployed, the Web Bean "
-#~ "implementation is fixed. A producer method has no such limitation:</para> "
-#~ "<programlisting role=\"JAVA\"><![CDATA[@SessionScoped\n"
+#~ "<![CDATA[@SessionScoped\n"
 #~ "public class Preferences {\n"
 #~ "    \n"
 #~ "    private PaymentStrategyType paymentStrategy;\n"
@@ -450,56 +391,25 @@ msgstr ""
 #~ "        } \n"
 #~ "    }\n"
 #~ "    \n"
-#~ "}]]></programlisting> <para>Consider an injection point:</para> "
-#~ "<programlisting role=\"JAVA\"><![CDATA[@Preferred PaymentStrategy "
-#~ "paymentStrat;]]></programlisting> <para>This injection point has the same "
-#~ "type and binding annotations as the producer method, so it resolves to "
-#~ "the producer method using the usual Web Beans injection rules. The "
-#~ "producer method will be called by the Web Bean manager to obtain an "
-#~ "instance to service this injection point.</para>."
+#~ "}]]>"
 #~ msgstr ""
-#~ "<blockquote> <para>Eine Web Beans Producer-Methode fungiert als Quelle "
-#~ "einzuspeisender Objekte wenn:</para> <itemizedlist> <listitem> <para>die "
-#~ "einzuspeisenden Objekte keine Instanzen von Web Beans sein müssen,</para> "
-#~ "</listitem> <listitem> <para>der konkrete Typ einzuspeisender Objekte zur "
-#~ "Runtime variieren kann oder </para> </listitem> <listitem> <para>die "
-#~ "Objekte eine bestimmte angepasste Initialisierung erfordern, die nicht "
-#~ "vom Web Bean Konstruktor durchgeführt wird</para> </listitem> </"
-#~ "itemizedlist> </blockquote> <para>Producer-Methoden lassen uns zum "
-#~ "Beispiel:</para> <itemizedlist> <listitem> <para>eine JPA-Entity als ein "
-#~ "Web Bean darlegen,</para> </listitem> <listitem> <para>eine beliebige JDK-"
-#~ "Klasse als ein Web Bean darlegen,</para> </listitem> <listitem> "
-#~ "<para>mehrere Web Beans mit unterschiedlichen Geltungsbereichen oder "
-#~ "Initialisierung für diesselbe Implementierungsklasse definieren oder </"
-#~ "para> </listitem> <listitem> <para>die Implementierung eines API-Typs zur "
-#~ "Runtime variieren.</para> </listitem> </itemizedlist> <para>Insbesondere "
-#~ "lassen uns Producer-Methoden Runtime-Polymorphie mit Web Beans verwenden. "
-#~ "Wie wir bereits gesehen haben sind Deployment-Typen eine leistungsfähige "
-#~ "Lösung zum Problem der Polymorphie zum Zeitpunkt des Deployment. Aber "
-#~ "nachdem das System deployt ist, wird die Web Bean Implementierung "
-#~ "behoben. Eine Producer-Methode besitzt keine solche Einschränkung:</para> "
-#~ "<programlisting role=\"JAVA\"><![CDATA[@SessionScoped\n"
-#~ "public class Preferences {\n"
-#~ "    \n"
-#~ "    private PaymentStrategyType paymentStrategy;\n"
-#~ "    \n"
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy "
+#~ "ccps,\n"
+#~ "                                          ChequePaymentStrategy cps,\n"
+#~ "                                          PayPalPaymentStrategy ppps) {\n"
+#~ "    switch (paymentStrategy) {\n"
+#~ "        case CREDIT_CARD: return ccps;\n"
+#~ "        case CHEQUE: return cps;\n"
+#~ "        case PAYPAL: return ppps;\n"
+#~ "        default: return null;\n"
+#~ "    } \n"
+#~ "}]]>"
+
+#, fuzzy
+#~ msgid "<![CDATA[@Preferred PaymentStrategy paymentStrat;]]>"
+#~ msgstr ""
+#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
+#~ "public PaymentStrategy getPaymentStrategy() {\n"
 #~ "    ...\n"
-#~ "    \n"
-#~ "    @Produces @Preferred \n"
-#~ "    public PaymentStrategy getPaymentStrategy() {\n"
-#~ "        switch (paymentStrategy) {\n"
-#~ "            case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
-#~ "            case CHEQUE: return new ChequePaymentStrategy();\n"
-#~ "            case PAYPAL: return new PayPalPaymentStrategy();\n"
-#~ "            default: return null;\n"
-#~ "        } \n"
-#~ "    }\n"
-#~ "    \n"
-#~ "}]]></programlisting> <para>Überlegen Sie einen Einspeisungspunkt:</para> "
-#~ "<programlisting role=\"JAVA\"><![CDATA[@Preferred PaymentStrategy "
-#~ "paymentStrat;]]></programlisting> <para>Dieser Einspeisungspunkt besitzt "
-#~ "denselben Typ und diesselben Binding-Annotationen wie die Producer-"
-#~ "Methode, so dass er unter Verwendung der üblichen Web Beans "
-#~ "Einspeisungsregeln zur Producer-Methode auflöst. Die Producer-Methode "
-#~ "wird vom Web Bean Manager aufgerufen um eine Instanz zu erhalten, um "
-#~ "diesen Einspeisungspunkt zu bedienen.</para>."
+#~ "}]]>"

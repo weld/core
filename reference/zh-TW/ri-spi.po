@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-28 17:09+0000\n"
+"POT-Creation-Date: 2009-04-15 18:48+0000\n"
 "PO-Revision-Date: 2009-01-20 11:43+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -58,11 +58,11 @@ msgstr "Web Beans RI SPI"
 
 #. Tag: para
 #: ri-spi.xml:26
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The Web Beans SPI is located in <literal>webbeans-ri-spi</literal> module, "
-"and packaged as <literal>webbeans-ri-spi.jar</literal>. Some SPIs are "
-"optional, if you need to override the default behavior, others are required."
+"The Web Beans SPI is located in <literal>webbeans-spi</literal> module, and "
+"packaged as <literal>webbeans-spi.jar</literal>. Some SPIs are optional, if "
+"you need to override the default behavior, others are required."
 msgstr ""
 "Web Bean SPI 位於 <literal>webbeans-ri-spi</literal> 模組中，並且被封裝為 "
 "<literal>webbeans-ri-spi.jar</literal>。有些 SPI 為可選的，若您需要置換預設的"

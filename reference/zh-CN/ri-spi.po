@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-28 17:09+0000\n"
+"POT-Creation-Date: 2009-04-15 18:48+0000\n"
 "PO-Revision-Date: 2009-03-27 13:50+0800\n"
 "Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
@@ -54,11 +54,11 @@ msgstr "Web Bean的参考实现SPI"
 
 #. Tag: para
 #: ri-spi.xml:26
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The Web Beans SPI is located in <literal>webbeans-ri-spi</literal> module, "
-"and packaged as <literal>webbeans-ri-spi.jar</literal>. Some SPIs are "
-"optional, if you need to override the default behavior, others are required."
+"The Web Beans SPI is located in <literal>webbeans-spi</literal> module, and "
+"packaged as <literal>webbeans-spi.jar</literal>. Some SPIs are optional, if "
+"you need to override the default behavior, others are required."
 msgstr ""
 "Web Bean的SPI位于<literal>webbeans-ri-spi</literal>模块中，打包为"
 "<literal>webbeans-ri-spi.jar</literal>。一些SPI是可选的，如果你需要覆盖默认行"

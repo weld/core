@@ -3,9 +3,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection VERSION\n"
+"Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection "
+"VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-28 17:09+0000\n"
+"POT-Creation-Date: 2009-04-15 18:48+0000\n"
 "PO-Revision-Date: 2009-04-10 09:57-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
@@ -28,14 +29,28 @@ msgstr "Utilizando a Web Beans com o JBoss AS"
 #. Tag: para
 #: environments.xml:9
 #, no-c-format
-msgid "No special configuration of your application, beyond adding either <literal>META-INF/beans.xml</literal> or <literal>WEB-INF/beans.xml</literal> is needed."
-msgstr "Além da adição de <literal>META-INF/beans.xml</literal> ou <literal>WEB-INF/beans.xml</literal>, nenhuma outra configuração especial na sua aplicação é necessária."
+msgid ""
+"No special configuration of your application, beyond adding either "
+"<literal>META-INF/beans.xml</literal> or <literal>WEB-INF/beans.xml</"
+"literal> is needed."
+msgstr ""
+"Além da adição de <literal>META-INF/beans.xml</literal> ou <literal>WEB-INF/"
+"beans.xml</literal>, nenhuma outra configuração especial na sua aplicação é "
+"necessária."
 
 #. Tag: para
 #: environments.xml:15
 #, no-c-format
-msgid "If you are using JBoss AS 5.0.1.GA then you'll need to install Web Beans as an extra. First we need to tell Web Beans where JBoss is located. Edit <literal>jboss-as/build.properties</literal> and set the <literal>jboss.home</literal> property. For example:"
-msgstr "Se você estiver usando o JBoss AS 5.0.1.GA, então  precisará instalar a Web Beans como um extra. Primeiro, precisamos  dizer à Web Beans onde o JBoss está localizado. Editar o  <literal>jboss-as/build.properties</literal> e definir a propriedade <literal>jboss.home</literal>. Por exemplo:"
+msgid ""
+"If you are using JBoss AS 5.0.1.GA then you'll need to install Web Beans as "
+"an extra. First we need to tell Web Beans where JBoss is located. Edit "
+"<literal>jboss-as/build.properties</literal> and set the <literal>jboss."
+"home</literal> property. For example:"
+msgstr ""
+"Se você estiver usando o JBoss AS 5.0.1.GA, então  precisará instalar a Web "
+"Beans como um extra. Primeiro, precisamos  dizer à Web Beans onde o JBoss "
+"está localizado. Editar o  <literal>jboss-as/build.properties</literal> e "
+"definir a propriedade <literal>jboss.home</literal>. Por exemplo:"
 
 #. Tag: programlisting
 #: environments.xml:22
@@ -62,14 +77,24 @@ msgstr ""
 #. Tag: para
 #: environments.xml:31
 #, no-c-format
-msgid "A new deployer, <literal>webbeans.deployer</literal> is added to JBoss AS. This adds supports for JSR-299 deployments to JBoss AS, and allows Web Beans to query the EJB3 container and discover which EJBs are installed in your application."
-msgstr "Um novo deployer <literal>webbeans.deployer</literal> é adicionado ao JBoss AS. Isso adiciona suporte a implantações JSR-299 no JBoss AS e permite à Web Beans consultar o EJB3 container e descobrir quais EJBs estão instalados na sua aplicação."
+msgid ""
+"A new deployer, <literal>webbeans.deployer</literal> is added to JBoss AS. "
+"This adds supports for JSR-299 deployments to JBoss AS, and allows Web Beans "
+"to query the EJB3 container and discover which EJBs are installed in your "
+"application."
+msgstr ""
+"Um novo deployer <literal>webbeans.deployer</literal> é adicionado ao JBoss "
+"AS. Isso adiciona suporte a implantações JSR-299 no JBoss AS e permite à Web "
+"Beans consultar o EJB3 container e descobrir quais EJBs estão instalados na "
+"sua aplicação."
 
 #. Tag: para
 #: environments.xml:40
 #, no-c-format
 msgid "Web Beans is built into all releases of JBoss AS from 5.1 onwards."
-msgstr "A Web Beans está embutida em todas as versões do JBoss AS a partir da versão 5.1."
+msgstr ""
+"A Web Beans está embutida em todas as versões do JBoss AS a partir da versão "
+"5.1."
 
 #. Tag: title
 #: environments.xml:47
@@ -79,7 +104,6 @@ msgstr "Glassfish"
 
 #. Tag: para
 #: environments.xml:49
-#: environments.xml:151
 #, no-c-format
 msgid "TODO"
 msgstr "TODO"
@@ -87,8 +111,8 @@ msgstr "TODO"
 #. Tag: title
 #: environments.xml:53
 #, no-c-format
-msgid "Tomcat"
-msgstr "Tomcat"
+msgid "Tomcat (or any plain Servlet container)"
+msgstr ""
 
 #. Tag: para
 #: environments.xml:55
@@ -98,15 +122,30 @@ msgstr "A Web Beans pode ser utilizada no Tomcat 6.0."
 
 #. Tag: para
 #: environments.xml:58
-#, no-c-format
-msgid "Web Beans doesn't support deploying session beans, injection using <literal>@EJB</literal>, <literal>@Resource</literal>, or <literal>@PersistenceContext</literal> or using transactional events on Tomcat."
-msgstr "A Web Beans não suporta a implantação de session beans, injeção utilizando <literal>@EJB</literal>, <literal>@Resource</literal>, ou <literal>@PersistenceContext</literal>, ou eventos transacionais no Tomcat."
+#, fuzzy, no-c-format
+msgid ""
+"Web Beans doesn't support deploying session beans, injection using "
+"<literal>@EJB</literal>, or <literal>@PersistenceContext</literal> or using "
+"transactional events on Tomcat."
+msgstr ""
+"A Web Beans não suporta a implantação de session beans, injeção utilizando "
+"<literal>@EJB</literal>, <literal>@Resource</literal>, ou "
+"<literal>@PersistenceContext</literal>, ou eventos transacionais no Tomcat."
 
 #. Tag: para
 #: environments.xml:66
-#, no-c-format
-msgid "Web Beans should be used as a web application library in Tomcat. You should place <literal>webbeans-tomcat.jar</literal> in <literal>WEB-INF/lib</literal>. <literal>webbeans-tomcat.jar</literal> is an \"uber-jar\" provided for your convenience. Instead, you could use it's component jars:"
-msgstr "A Web Beans deveria ser utilizada como uma bibilioteca de aplicação web no Tomcat. Você deve colocar o <literal>webbeans-tomcat.jar</literal> em <literal>WEB-INF/lib</literal>. <literal>webbeans-tomcat.jar</literal> é um \"hiper-jar\", disponível para a sua conveniência. Em vez disso, você pode utilizar os componentes do jars:"
+#, fuzzy, no-c-format
+msgid ""
+"Web Beans should be used as a web application library in Tomcat. You should "
+"place <literal>webbeans-tomcat.jar</literal> in <literal>WEB-INF/lib</"
+"literal>. <literal>webbeans-tomcat.jar</literal> is an \"uber-jar\" provided "
+"for your convenience. Instead, you could use its component jars:"
+msgstr ""
+"A Web Beans deveria ser utilizada como uma bibilioteca de aplicação web no "
+"Tomcat. Você deve colocar o <literal>webbeans-tomcat.jar</literal> em "
+"<literal>WEB-INF/lib</literal>. <literal>webbeans-tomcat.jar</literal> é um "
+"\"hiper-jar\", disponível para a sua conveniência. Em vez disso, você pode "
+"utilizar os componentes do jars:"
 
 #. Tag: literal
 #: environments.xml:77
@@ -158,27 +197,41 @@ msgstr "dom4j.jar"
 
 #. Tag: para
 #: environments.xml:117
-#, no-c-format
-msgid "You also need to explicitly specify the Tomcat servlet listener (used to boot Web Beans, and control it's interaction with requests) in <literal>web.xml</literal>:"
-msgstr "Você também precisa especificar explicitamente o Tomcat servlet listener (utilizado para \"bootar\" a Web Beans e controlar a interação com as requisições) no <literal>web.xml</literal>:"
+#, fuzzy, no-c-format
+msgid ""
+"You also need to explicitly specify the Tomcat servlet listener (used to "
+"boot Web Beans, and control its interaction with requests) in <literal>web."
+"xml</literal>:"
+msgstr ""
+"Você também precisa especificar explicitamente o Tomcat servlet listener "
+"(utilizado para \"bootar\" a Web Beans e controlar a interação com as "
+"requisições) no <literal>web.xml</literal>:"
 
 #. Tag: programlisting
 #: environments.xml:123
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
 "<![CDATA[<listener>\n"
-"   <listener-class>org.jboss.webbeans.environment.tomcat.Listener</listener-class>\n"
+"   <listener-class>org.jboss.webbeans.environment.servlet.Listener</listener-"
+"class>\n"
 "</listener>]]>"
 msgstr ""
 "<![CDATA[<listener>\n"
-"   <listener-class>org.jboss.webbeans.environment.tomcat.Listener</listener-class>\n"
+"   <listener-class>org.jboss.webbeans.environment.tomcat.Listener</listener-"
+"class>\n"
 "</listener>]]>"
 
 #. Tag: para
 #: environments.xml:125
 #, no-c-format
-msgid "Tomcat has a read-only JNDI, so Web Beans can't automatically bind the Manager. To bind the Manager into JNDI, you should add the following to your <literal>META-INF/context.xml</literal>:"
-msgstr "O Tomcat tem um JNDI apenas de leitura. Assim, a Web Beans não pode vincular automaticamente o Manager. Para vincular o Manager no JNDI, você deve adicionar o seguinte ao seu <literal>META-INF/context.xml</literal>:"
+msgid ""
+"Tomcat has a read-only JNDI, so Web Beans can't automatically bind the "
+"Manager. To bind the Manager into JNDI, you should add the following to your "
+"<literal>META-INF/context.xml</literal>:"
+msgstr ""
+"O Tomcat tem um JNDI apenas de leitura. Assim, a Web Beans não pode vincular "
+"automaticamente o Manager. Para vincular o Manager no JNDI, você deve "
+"adicionar o seguinte ao seu <literal>META-INF/context.xml</literal>:"
 
 #. Tag: programlisting
 #: environments.xml:131
@@ -199,8 +252,12 @@ msgstr ""
 #. Tag: para
 #: environments.xml:133
 #, no-c-format
-msgid "and make it available to your deployment by adding this to <literal>web.xml</literal>:"
-msgstr "e torná-lo disponível para a sua implantação, acrescentando-o ao <literal>web.xml</literal>:"
+msgid ""
+"and make it available to your deployment by adding this to <literal>web.xml</"
+"literal>:"
+msgstr ""
+"e torná-lo disponível para a sua implantação, acrescentando-o ao "
+"<literal>web.xml</literal>:"
 
 #. Tag: programlisting
 #: environments.xml:138
@@ -226,13 +283,209 @@ msgstr ""
 
 #. Tag: para
 #: environments.xml:140
+#, fuzzy, no-c-format
+msgid ""
+"Tomcat only allows you to bind entries to <literal>java:comp/env</literal>, "
+"so the Manager will be available at <literal>java:comp/env/app/Manager</"
+"literal>"
+msgstr ""
+"O Tomcat não só permite a você vincular as entradas para <literal>java:comp/"
+"env</literal>, assim que o Manager estará disponível em <literal>java:comp/"
+"env/app/Manager</literal>"
+
+#. Tag: para
+#: environments.xml:146
 #, no-c-format
-msgid "Tomcat doesn't only allows you to bind entries to <literal>java:comp/env</literal>, so the Manager will be available at <literal>java:comp/env/app/Manager</literal>"
-msgstr "O Tomcat não só permite a você vincular as entradas para <literal>java:comp/env</literal>, assim que o Manager estará disponível em <literal>java:comp/env/app/Manager</literal>"
+msgid ""
+"Web Beans also supports Servlet injection in Tomcat. To enable this, place "
+"the <literal>webbeans-tomcat-support.jar</literal> in <literal>$TOMCAT_HOME/"
+"lib</literal>, and add the following to your <literal>META-INF/context.xml</"
+"literal>:"
+msgstr ""
+
+#. Tag: programlisting
+#: environments.xml:153
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[<Listener className=\"org.jboss.webbeans.environment.tomcat."
+"WebBeansLifecycleListener\" />]]>"
+msgstr ""
+"<![CDATA[<listener>\n"
+"   <listener-class>org.jboss.webbeans.environment.tomcat.Listener</listener-"
+"class>\n"
+"</listener>]]>"
 
 #. Tag: title
-#: environments.xml:149
+#: environments.xml:158
 #, no-c-format
 msgid "Java SE"
 msgstr "Java SE"
 
+#. Tag: para
+#: environments.xml:160
+#, no-c-format
+msgid ""
+"Apart from improved integration of the Enterprise Java stack, Web Beans also "
+"provides a state of the art typesafe, stateful dependency injection "
+"framework. This is useful in a wide range of application types, enterprise "
+"or otherwise. To facilitate this, Web Beans provides a simple means for "
+"executing in the Java Standard Edition environment independently of any "
+"Enterprise Edition features."
+msgstr ""
+
+#. Tag: para
+#: environments.xml:168
+#, no-c-format
+msgid ""
+"When executing in the SE environment the following features of Web Beans are "
+"available:"
+msgstr ""
+
+#. Tag: literal
+#: environments.xml:174
+#, no-c-format
+msgid "Simple Web Beans (POJOs)"
+msgstr ""
+
+#. Tag: literal
+#: environments.xml:179
+#, no-c-format
+msgid "Typesafe Dependency Injection"
+msgstr ""
+
+#. Tag: literal
+#: environments.xml:184
+#, no-c-format
+msgid "Application and Dependent Contexts"
+msgstr ""
+
+#. Tag: literal
+#: environments.xml:189
+#, no-c-format
+msgid "Binding Types"
+msgstr ""
+
+#. Tag: literal
+#: environments.xml:194
+#, no-c-format
+msgid "Stereotypes"
+msgstr ""
+
+#. Tag: literal
+#: environments.xml:199
+#, no-c-format
+msgid "Decorators"
+msgstr ""
+
+#. Tag: literal
+#: environments.xml:204
+#, no-c-format
+msgid "(TODO: Interceptors ?)"
+msgstr ""
+
+#. Tag: literal
+#: environments.xml:209
+#, no-c-format
+msgid "Typesafe Event Model"
+msgstr ""
+
+#. Tag: title
+#: environments.xml:215
+#, no-c-format
+msgid "Web Beans SE Module"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:217
+#, no-c-format
+msgid ""
+"To make life easy for developers Web Beans provides a special module with a "
+"main method which will boot the Web Beans manager, automatically registering "
+"all simple Web Beans found on the classpath. This eliminates the need for "
+"application developers to write any bootstrapping code. The entry point for "
+"a Web Beans SE applications is a simple Web Bean which observes the standard "
+"<literal>@Deployed Manager</literal> event. The command line paramters can "
+"be injected using either of the following:"
+msgstr ""
+
+#. Tag: programlisting
+#: environments.xml:226
+#, no-c-format
+msgid ""
+"<![CDATA[@Parameters List<String> params;\n"
+"@Parameters String[] paramsArray; // useful for compatability with existing "
+"classes]]>"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:227
+#, no-c-format
+msgid "Here's an example of a simple Web Beans SE application:"
+msgstr ""
+
+#. Tag: programlisting
+#: environments.xml:231
+#, no-c-format
+msgid ""
+"<![CDATA[@ApplicationScoped\n"
+"public class HelloWorld\n"
+"{\n"
+"    @Parameters List<String> parameters;\n"
+"\n"
+"    public void printHello( @Observes @Deployed Manager manager )\n"
+"    {\n"
+"        System.out.println( \"Hello \" + parameters.get(0) );\n"
+"    }\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:233
+#, no-c-format
+msgid ""
+"Web Beans SE applications are started by running the following main method."
+msgstr ""
+
+#. Tag: programlisting
+#: environments.xml:235
+#, no-c-format
+msgid "<![CDATA[java org.jboss.webbeans.environments.se.StartMain <args>]]>"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:237
+#, no-c-format
+msgid ""
+"If you need to do any custom initialization of the Web Beans manager, for "
+"example registering custom contexts or initializing resources for your beans "
+"you can do so in response to the <literal>@Initialized Manager</literal> "
+"event. The following example registers a custom context:"
+msgstr ""
+
+#. Tag: programlisting
+#: environments.xml:242
+#, no-c-format
+msgid ""
+"<![CDATA[public class PerformSetup\n"
+"{\n"
+"\n"
+"    public void setup( @Observes @Initialized Manager manager )\n"
+"    {\n"
+"        manager.addContext( ThreadContext.INSTANCE );\n"
+"    }\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:246
+#, no-c-format
+msgid ""
+"The command line parameters do not become available for injection until the "
+"<literal>@Deployed Manager</literal> event is fired. If you need access to "
+"the parameters during initialization you can do so via the <literal>public "
+"static String getParameters()</literal> method in <literal>StartMain</"
+"literal>."
+msgstr ""
+
+#~ msgid "Tomcat"
+#~ msgstr "Tomcat"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ri-spi\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-03-28 17:09+0000\n"
+"POT-Creation-Date: 2009-04-15 18:48+0000\n"
 "PO-Revision-Date: 2009-01-19 13:32+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -68,11 +68,11 @@ msgstr "Web Beans RI SPI "
 
 #. Tag: para
 #: ri-spi.xml:26
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"The Web Beans SPI is located in <literal>webbeans-ri-spi</literal> module, "
-"and packaged as <literal>webbeans-ri-spi.jar</literal>. Some SPIs are "
-"optional, if you need to override the default behavior, others are required."
+"The Web Beans SPI is located in <literal>webbeans-spi</literal> module, and "
+"packaged as <literal>webbeans-spi.jar</literal>. Some SPIs are optional, if "
+"you need to override the default behavior, others are required."
 msgstr ""
 "Web Beans SPI는 <literal>webbeans-ri-spi</literal> 모듈에 위치하고 있으며 "
 "<literal>webbeans-ri-spi.jar</literal>로 패키징되어 있습니다. 일부 SPI는 옵"
