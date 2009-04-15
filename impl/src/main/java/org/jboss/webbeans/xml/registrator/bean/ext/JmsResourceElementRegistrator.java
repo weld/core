@@ -1,4 +1,4 @@
-package org.jboss.webbeans.xml.checker.bean.ext;
+package org.jboss.webbeans.xml.registrator.bean.ext;
 
 import org.dom4j.Element;
 import org.jboss.webbeans.introspector.AnnotatedClass;
@@ -6,9 +6,9 @@ import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
 import org.jboss.webbeans.xml.checker.beanchildren.BeanChildrenChecker;
 
-public class JmsResourceElementChecker extends NotSimpleBeanElementChecker
+public class JmsResourceElementRegistrator extends NotSimpleBeanElementRegistrator
 {
-   public JmsResourceElementChecker(BeanChildrenChecker childrenChecker)
+   public JmsResourceElementRegistrator(BeanChildrenChecker childrenChecker)
    {
       super(childrenChecker);
    }

@@ -1,1 +1,2 @@
-org.jboss.webbeans.test.unit.xml.parser.bean org.jboss.webbeans.test.unit.xml.parser.deploymenttype
+org.jboss.webbeans.test.unit.xml.beans
+org.jboss.webbeans.test.unit.xml.beans.annotationtype

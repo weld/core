@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test.unit.xml.beans;
+package org.jboss.webbeans.test.unit.xml.beans.annotationtype;
 
 import javax.inject.DeploymentType;
 

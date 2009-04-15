@@ -10,42 +10,41 @@ import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
 import org.jboss.webbeans.xml.XmlEnvironment;
-import org.jboss.webbeans.xml.checker.beanchildren.impl.BeanChildrenCheckerImpl;
 
-public class NotSimpleBeanChildrenChecker extends BeanChildrenCheckerImpl
+public class NotSimpleBeanChildrenChecker extends AbstractBeanChildrenChecker
 {
    public NotSimpleBeanChildrenChecker(XmlEnvironment environment, Map<String, Set<String>> packagesMap)
    {
       super(environment, packagesMap);
    }
 
-   public void checkForInterceptorChild(Element beanElement)
+   protected void checkForInterceptorChild(Element beanElement)
    {
       if(ParseXmlHelper.findElementsInEeNamespace(beanElement, XmlConstants.INTERCEPTOR).size() > 1)
          throw new DefinitionException("Not a simple bean '" + beanElement.getName() + "' contains direct child <" + 
                XmlConstants.INTERCEPTOR + ">");            
    }
    
-   public void checkForDecoratorChild(Element beanElement)
+   protected void checkForDecoratorChild(Element beanElement)
    {
       if(ParseXmlHelper.findElementsInEeNamespace(beanElement, XmlConstants.DECORATOR).size() > 1)
          throw new DefinitionException("Not a simple bean '" + beanElement.getName() + "' contains direct child <" + 
                XmlConstants.DECORATOR + ">");
    }
    
-   public void checkChildForInterceptorType(Element beanChildElement)
+   protected void checkChildForInterceptorType(Element beanChildElement)
    {
       throw new DefinitionException("Declaration of not a simple bean '" + beanChildElement.getParent().getName() + 
          "' contains a child <" + beanChildElement.getName() + "> which type is javax.interceptor.Interceptor");
    }
    
-   public void checkChildForDecoratorType(Element beanChildElement)
+   protected void checkChildForDecoratorType(Element beanChildElement)
    {
       throw new DefinitionException("Declaration of not a simple bean '" + beanChildElement.getParent().getName() + 
          "' contains a child <" + beanChildElement.getName() + "> which type is javax.decorator.Decorator");
    }
    
-   public void checkForConstructor(Element beanElement, AnnotatedClass<?> beanClass)
+   protected void checkForConstructor(Element beanElement, AnnotatedClass<?> beanClass)
    {
       //There is nothing to validate
    }

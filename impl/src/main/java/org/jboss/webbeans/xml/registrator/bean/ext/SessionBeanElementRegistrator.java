@@ -1,19 +1,16 @@
-package org.jboss.webbeans.xml.checker.bean.ext;
+package org.jboss.webbeans.xml.registrator.bean.ext;
 
 import org.dom4j.Element;
-import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.xml.XmlConstants;
 import org.jboss.webbeans.xml.checker.beanchildren.BeanChildrenChecker;
 
-public class SessionBeanElementChecker extends NotSimpleBeanElementChecker
+public class SessionBeanElementRegistrator extends NotSimpleBeanElementRegistrator
 {
-
    private final EjbDescriptorCache ejbDescriptors;
 	
-   public SessionBeanElementChecker(BeanChildrenChecker childrenChecker, EjbDescriptorCache ejbDescriptors)
+   public SessionBeanElementRegistrator(BeanChildrenChecker childrenChecker, EjbDescriptorCache ejbDescriptors)
    {
       super(childrenChecker);
       this.ejbDescriptors = ejbDescriptors;

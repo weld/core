@@ -1,25 +1,22 @@
-package org.jboss.webbeans.xml.checker.bean.ext;
+package org.jboss.webbeans.xml.registrator.bean.ext;
 
 import javax.decorator.Decorator;
 import javax.inject.DefinitionException;
 import javax.interceptor.Interceptor;
 
 import org.dom4j.Element;
-import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
-import org.jboss.webbeans.xml.checker.bean.impl.BeanElementCheckerImpl;
 import org.jboss.webbeans.xml.checker.beanchildren.BeanChildrenChecker;
+import org.jboss.webbeans.xml.registrator.bean.impl.BeanElementRegistratorImpl;
 
-public class SimpleBeanElementChecker extends BeanElementCheckerImpl
+public class SimpleBeanElementRegistrator extends BeanElementRegistratorImpl
 {
-
    private final EjbDescriptorCache ejbDescriptors;
 	
-   public SimpleBeanElementChecker(BeanChildrenChecker childrenChecker, EjbDescriptorCache ejbDescriptors)
+   public SimpleBeanElementRegistrator(BeanChildrenChecker childrenChecker, EjbDescriptorCache ejbDescriptors)
    {
       super(childrenChecker);
       this.ejbDescriptors = ejbDescriptors;
@@ -38,7 +35,7 @@ public class SimpleBeanElementChecker extends BeanElementCheckerImpl
       return false;
    }
 
-   public void checkElementDeclaration(Element beanElement, AnnotatedClass<?> beanClass)
+   protected void checkElementDeclaration(Element beanElement, AnnotatedClass<?> beanClass)
    {
       if(beanClass.isNonStaticMemberClass())
          throw new DefinitionException("Bean class '" + beanClass.getName() + "' of a simple bean <" + beanElement.getName() + 

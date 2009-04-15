@@ -1,22 +1,54 @@
-<Beans xmlns="urn:java:ee" xmlns:myapp="urn:java:org.jboss.webbeans.test.unit.xml.beans"
-	xmlns:test="urn:java:org.jboss.webbeans.test.unit.xml.parser"
+<Beans xmlns="urn:java:ee" 
+	xmlns:myapp="urn:java:org.jboss.webbeans.test.unit.xml.parser"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="urn:java:ee http://java.sun.com/jee/ee/schema-1.0.xsd
+	xsi:schemaLocation="urn:java:ee 
 						urn:java:org.jboss.webbeans.test.unit.xml.parser http://mydomain.com/myapp/schema-1.2.xsd">
 	<Deploy>
 		<Standard />
 		<Production />
-		<myapp:AnotherDeploymentType />
+		<myapp:TestDeploymentType />
 	</Deploy>
-	<xsi:Order>
-		<ConversationScoped />
-		<myapp:PaymentProcessor>
-			<test:Asynchronous />
-		</myapp:PaymentProcessor>
-		<myapp:User />
-	</xsi:Order>
-	<myapp:Login>
-		<ConversationScoped />
+	
+	<myapp:TestBindingType>
 		<BindingType />
-	</myapp:Login>
+	</myapp:TestBindingType>
+	<myapp:TestInterceptorBindingType>
+		<InterceptorBindingType />
+		<myapp:AnotherTestInterceptorBindingType />
+	</myapp:TestInterceptorBindingType>
+	<myapp:TestStereotype>
+		<Stereotype />
+		<myapp:TestScopeType />
+		<myapp:TestDeploymentType />
+		<myapp:AnotherTestInterceptorBindingType />
+		<myapp:TestNamed />
+	</myapp:TestStereotype>
+	
+	<myapp:Order>
+		<RequestScoped />
+		<myapp:TestBindingType />
+		<myapp:TestInterceptorBindingType />
+		<myapp:TestStereotype />
+		<myapp:TestDeploymentType />		
+		<myapp:val />
+		<Array>
+			<String />
+		</Array>
+		<Integer />
+		<myapp:getVal />
+	</myapp:Order>
+	<myapp:PaymentService>
+		<WebServiceRef>
+			<name>java:app/service/PaymentService</name>
+			<wsdlLocation>http://theirdomain.com/services/PaymentService.wsdl</wsdlLocation>
+		</WebServiceRef>
+	</myapp:PaymentService>
+	
+	<Decorators>
+		<myapp:TestDecorator />	
+	</Decorators>
+	
+	<Interceptors>
+		<myapp:TestInterceptor />
+	</Interceptors>
 </Beans>

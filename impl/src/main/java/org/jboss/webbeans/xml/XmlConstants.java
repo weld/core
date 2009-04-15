@@ -29,8 +29,12 @@ public class XmlConstants
    public static final String EJB = "EJB";
 
    public static final String EJB_NAME = "ejbName";
+   
+   public static final String EJB_LINK = "ejbLink";
 
    public static final String WEB_SERVICE_REF = "WebServiceRef";
+   
+   public static final String WSDL_LOCATION = "wsdlLocation";
 
    public static final String TOPIC = "Topic";
 
@@ -45,6 +49,8 @@ public class XmlConstants
    public static final String NAME = "name";
 
    public static final String MAPPED_NAME = "mappedName";
+   
+   public static final String UNIT_NAME = "unitName";
 
    public static final String STANDARD = "Standard";
 
@@ -59,4 +65,10 @@ public class XmlConstants
    public static final String VALUE = "value";
    
    public static final String ARRAY = "Array";
+   
+   public static final String JNDI_NAME = "jndiName";
+   
+   public static final String JAVA_GLOBAL = "java:global/";
+   
+   public static final String JAVA_APP = "java:app/";
 }

@@ -14,30 +14,29 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
 import org.jboss.webbeans.xml.XmlEnvironment;
-import org.jboss.webbeans.xml.checker.beanchildren.impl.BeanChildrenCheckerImpl;
 
-public class SimpleBeanChildrenChecker extends BeanChildrenCheckerImpl
+public class SimpleBeanChildrenChecker extends AbstractBeanChildrenChecker
 {
    public SimpleBeanChildrenChecker(XmlEnvironment environment, Map<String, Set<String>> packagesMap)
    {
       super(environment, packagesMap);
    }
 
-   public void checkForDecoratorChild(Element beanElement)
+   protected void checkForDecoratorChild(Element beanElement)
    {
       if(ParseXmlHelper.findElementsInEeNamespace(beanElement, XmlConstants.INTERCEPTOR).size() > 1)
          throw new DefinitionException("A simple bean element <" + beanElement.getName() + "> has more than one direct child <" + 
                XmlConstants.INTERCEPTOR + ">");            
    }
    
-   public void checkForInterceptorChild(Element beanElement)
+   protected void checkForInterceptorChild(Element beanElement)
    {
       if(ParseXmlHelper.findElementsInEeNamespace(beanElement, XmlConstants.DECORATOR).size() > 1)
          throw new DefinitionException("A simple bean element <" + beanElement.getName() + "> has more than one direct child <" + 
                XmlConstants.DECORATOR + ">");
    }
    
-   public void checkChildForInterceptorType(Element beanChildElement)
+   protected void checkChildForInterceptorType(Element beanChildElement)
    {
       if(haveBeanInterceptorDeclaration)
          throw new DefinitionException("There is second element of interceptor type <" + beanChildElement.getName() + 
@@ -45,7 +44,7 @@ public class SimpleBeanChildrenChecker extends BeanChildrenCheckerImpl
          haveBeanInterceptorDeclaration = true;
    }
    
-   public void checkChildForDecoratorType(Element beanChildElement)
+   protected void checkChildForDecoratorType(Element beanChildElement)
    {
       if(haveBeanDecoratorDeclaration)
          throw new DefinitionException("There is second element of decorator type <" + beanChildElement.getName() + 
@@ -53,7 +52,7 @@ public class SimpleBeanChildrenChecker extends BeanChildrenCheckerImpl
          haveBeanDecoratorDeclaration = true;
    }
    
-   public void checkForConstructor(Element beanElement, AnnotatedClass<?> beanClass)
+   protected void checkForConstructor(Element beanElement, AnnotatedClass<?> beanClass)
    {
       if(constructorParameters.size() == 0)
          return;
