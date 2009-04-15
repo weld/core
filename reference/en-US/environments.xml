@@ -210,16 +210,6 @@ $ ant update</programlisting>
          </listitem>
          <listitem>
             <para>
-               <literal>Decorators</literal>
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               <literal>(TODO: Interceptors ?)</literal>
-            </para>
-         </listitem>
-         <listitem>
-            <para>
                <literal>Typesafe Event Model</literal>
             </para>
          </listitem>
@@ -285,12 +275,6 @@ public class HelloWorld
 
       </section>
 
-<!--
-      <section>
-          <title>Under the Hood</title>
-          <para>WebBeansBootstrap is capable of booting into a number of ... </para>
-      </section>
--->
 
    </section>
 
