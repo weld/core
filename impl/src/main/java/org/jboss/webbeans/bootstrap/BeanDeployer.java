@@ -121,7 +121,7 @@ public class BeanDeployer
       for (RIBean<?> bean : beans)
       {
          bean.initialize(environment);
-         log.info("Bean: " + bean);
+         log.debug("Bean: " + bean);
       }
       manager.setBeans(beans);
       for (ObserverImpl<?> observer : environment.getObservers())
