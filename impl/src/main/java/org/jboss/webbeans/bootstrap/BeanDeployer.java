@@ -127,7 +127,7 @@ public class BeanDeployer
       for (ObserverImpl<?> observer : environment.getObservers())
       {
          observer.initialize();
-         log.info("Observer : " + observer);
+         log.debug("Observer : " + observer);
          manager.addObserver(observer);
       }
       

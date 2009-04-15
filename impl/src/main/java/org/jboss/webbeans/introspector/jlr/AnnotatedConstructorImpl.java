@@ -138,7 +138,8 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
     * 
     * @return The delegate
     */
-   public Constructor<T> getDelegate()
+   @Override
+public Constructor<T> getDelegate()
    {
       return constructor;
    }
@@ -243,7 +244,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
       {
          return toString;
       }
-      toString = "Annotated method " + Names.constructorToString(constructor);
+      toString = "Annotated constructor " + Names.constructorToString(constructor);
       return toString;
    }
    
