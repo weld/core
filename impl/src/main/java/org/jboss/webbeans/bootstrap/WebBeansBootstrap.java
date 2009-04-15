@@ -80,6 +80,11 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
   
    // The log provider
    private static Log log = Logging.getLog(WebBeansBootstrap.class);
+   
+   static
+   {
+	   log.info("Web Beans " + getVersion());
+   }
 
    // The Web Beans manager
    private ManagerImpl manager;
@@ -164,7 +169,6 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    {
       synchronized (this)
       {
-         log.info("Starting Web Beans RI " + getVersion());
          if (manager == null)
          {
             throw new IllegalStateException("Manager has not been initialized");
@@ -193,10 +197,10 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          {
             manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
          }
-         log.info("Deployment types: " + manager.getEnabledDeploymentTypes());
+         log.debug("Deployment types: " + manager.getEnabledDeploymentTypes());
          registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses(), xmlEnvironmentImpl.getClasses(), xmlEnvironmentImpl.getResourceBeans(), ejbDescriptors);
          manager.fireEvent(manager, new InitializedLiteral());
-         log.info("Web Beans initialized. Validating beans.");
+         log.debug("Web Beans initialized. Validating beans.");
          manager.getResolver().resolveInjectionPoints();
          new BeanValidator(manager).validate();
          manager.fireEvent(manager, new DeployedLiteral());
