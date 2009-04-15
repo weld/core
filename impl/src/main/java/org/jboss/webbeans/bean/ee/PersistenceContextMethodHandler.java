@@ -27,6 +27,8 @@ import org.jboss.webbeans.persistence.spi.JpaServices;
  */
 public class PersistenceContextMethodHandler extends AbstractJavaEEResourceMethodHandler
 {
+
+   private static final long serialVersionUID = 6111824732958101382L;
    
    private final String unitName;
    
@@ -36,7 +38,7 @@ public class PersistenceContextMethodHandler extends AbstractJavaEEResourceMetho
    }
    
    @Override
-   protected Object getProxiedInstance()
+   protected Object getProxiedInstance(Class<?> declaringClass)
    {
       return CurrentManager.rootManager().getServices().get(JpaServices.class).resolvePersistenceContext(unitName);
    }

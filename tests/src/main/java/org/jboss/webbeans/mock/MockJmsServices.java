@@ -16,6 +16,10 @@
  */
 package org.jboss.webbeans.mock;
 
+import javax.jms.Destination;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.TopicConnectionFactory;
+
 import org.jboss.webbeans.messaging.spi.JmsServices;
 
 /**
@@ -24,8 +28,18 @@ import org.jboss.webbeans.messaging.spi.JmsServices;
  */
 public class MockJmsServices implements JmsServices
 {
-
-   public Object resolveDestination(String jndiName, String mappedName)
+   
+   public QueueConnectionFactory getQueueConnectionFactory() 
+   {
+		return null;
+	}
+   
+   public TopicConnectionFactory getTopicConnectionFactory()
+   {
+      return null;
+   }
+   
+   public <T extends Destination> T resolveDestination(String jndiName, String mappedName)
    {
       return null;
    }

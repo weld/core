@@ -23,6 +23,8 @@ package org.jboss.webbeans.bean.ee;
 public abstract class AbstractResourceMethodHandler extends AbstractJavaEEResourceMethodHandler
 {
 
+   private static final long serialVersionUID = 8977780996027839558L;
+   
    private final String mappedName;
    private final String jndiName;
    

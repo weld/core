@@ -29,13 +29,15 @@ import org.jboss.webbeans.resources.spi.ResourceServices;
 public class ResourceMethodHandler extends AbstractResourceMethodHandler
 {
    
+   private static final long serialVersionUID = -8835529913294253208L;
+
    public ResourceMethodHandler(String jndiName, String mappedName)
    {
       super(jndiName, mappedName);
    }
 
    @Override
-   protected Object getProxiedInstance()
+   protected Object getProxiedInstance(Class<?> declaringClass)
    {
       return CurrentManager.rootManager().getServices().get(ResourceServices.class).resolveResource(getJndiName(), getMappedName());
    }

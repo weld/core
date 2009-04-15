@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.webbeans.bean.ee;
+package org.jboss.webbeans.bean.ee.jms;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
@@ -27,9 +27,12 @@ import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bean.ee.AbstractResourceBean;
 
 
 /**
+ * A bean which represents a JMS queue
+ * 
  * @author Pete Muir
  *
  */
@@ -59,8 +62,7 @@ public class JmsQueueBean extends AbstractResourceBean<Object>
    @Override
    protected MethodHandler newMethodHandler()
    {
-      // TODO Auto-generated method stub
-      return null;
+      return new JmsQueueMethodHandler(getJndiName(), getMappedName());
    }
 
    @Override

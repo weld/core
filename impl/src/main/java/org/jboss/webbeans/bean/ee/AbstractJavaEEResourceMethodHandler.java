@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans.bean.ee;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import javassist.util.proxy.MethodHandler;
@@ -30,8 +31,10 @@ import org.jboss.webbeans.util.Reflections;
  * @author Pete Muir
  *
  */
-public abstract class AbstractJavaEEResourceMethodHandler implements MethodHandler
+public abstract class AbstractJavaEEResourceMethodHandler implements MethodHandler, Serializable
 {
+   
+   private static final long serialVersionUID = -3171683636451762591L;
    
    private static final transient Log log = Logging.getLog(AbstractJavaEEResourceMethodHandler.class);
 
@@ -63,12 +66,12 @@ public abstract class AbstractJavaEEResourceMethodHandler implements MethodHandl
     */
    public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
-      Object proxiedInstance = getProxiedInstance();
+      Object proxiedInstance = getProxiedInstance(null);
       Object returnValue = Reflections.invokeAndWrap(method, proxiedInstance, args);
       log.trace("Executed {0} on {1} with parameters {2} and got return value {3}", method, proxiedInstance, args, returnValue);
       return returnValue;
    }
    
-   protected abstract Object getProxiedInstance();
+   protected abstract Object getProxiedInstance(Class<?> declaringClass);
 
 }

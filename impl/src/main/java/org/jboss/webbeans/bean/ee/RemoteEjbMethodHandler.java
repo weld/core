@@ -28,6 +28,8 @@ import org.jboss.webbeans.ejb.spi.EjbServices;
  */
 public class RemoteEjbMethodHandler extends AbstractResourceMethodHandler
 {
+
+   private static final long serialVersionUID = 8192691377739747596L;
    
    private final String ejbLink;
    
@@ -38,7 +40,7 @@ public class RemoteEjbMethodHandler extends AbstractResourceMethodHandler
    }
 
    @Override
-   protected Object getProxiedInstance()
+   protected Object getProxiedInstance(Class<?> declaringClass)
    {
       return CurrentManager.rootManager().getServices().get(EjbServices.class).resolveRemoteEjb(getJndiName(), getMappedName(), ejbLink);
    }

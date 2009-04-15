@@ -29,13 +29,15 @@ import org.jboss.webbeans.ws.spi.WebServices;
 public class WebServiceMethodHandler extends AbstractResourceMethodHandler
 {
    
+   private static final long serialVersionUID = 6719454070840346045L;
+
    public WebServiceMethodHandler(String jndiName, String mappedName)
    {
       super(jndiName, mappedName);
    }
 
    @Override
-   protected Object getProxiedInstance()
+   protected Object getProxiedInstance(Class<?> declaringClass)
    {
       return CurrentManager.rootManager().getServices().get(WebServices.class).resolveResource(getJndiName(), getMappedName());
    }

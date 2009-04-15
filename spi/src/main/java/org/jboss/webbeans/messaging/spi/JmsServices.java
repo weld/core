@@ -1,6 +1,10 @@
 package org.jboss.webbeans.messaging.spi;
 
 
+import javax.jms.Destination;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.TopicConnectionFactory;
+
 import org.jboss.webbeans.bootstrap.api.Service;
 
 /**
@@ -22,6 +26,10 @@ public interface JmsServices extends Service
     * @throws IllegalStateException
     *            if no resource can be resolved for injection
     */
-   public Object resolveDestination(String jndiName, String mappedName);
+   public <T extends Destination> T resolveDestination(String jndiName, String mappedName);
+   
+   public QueueConnectionFactory getQueueConnectionFactory();
+   
+   public TopicConnectionFactory getTopicConnectionFactory();
    
 }

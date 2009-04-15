@@ -52,6 +52,11 @@
       	<artifactId>jsr250-api</artifactId>
       	<optional>true</optional>
       </dependency>
+      
+      <dependency>
+      	<groupId>javax.jms</groupId>
+      	<artifactId>jms</artifactId>
+    	</dependency>
 
    </dependencies>
 
