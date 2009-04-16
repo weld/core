@@ -52,6 +52,8 @@
       <module>login</module>
       <module>conversations</module>
       <module>se/numberguess</module>
+      <module>wicket/numberguess</module>
+      <module>wicket/conversations</module>
    </modules>
 
    <build>
