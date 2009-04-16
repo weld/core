@@ -98,7 +98,11 @@ public class NonContextualInjector
       if (DependentContext.instance() != null && ApplicationContext.instance() != null)
       {
          DependentContext.instance().setActive(true);
-         ApplicationContext.instance().setActive(true);
+         boolean startApplication = !ApplicationContext.instance().isActive();
+         if (startApplication)
+         {
+            ApplicationContext.instance().setActive(true);
+         }
          Set<FieldInjectionPoint<?>> injectionPoints = instances.putIfAbsent(instance.getClass(), new Callable<Set<FieldInjectionPoint<?>>>()
          {
             
@@ -114,7 +118,10 @@ public class NonContextualInjector
             injectionPoint.inject(instance, manager, null);
          }
          DependentContext.instance().setActive(false);
-         ApplicationContext.instance().setActive(false);
+         if (startApplication)
+         {
+            ApplicationContext.instance().setActive(false);
+         }
       }
    }
    
