@@ -59,6 +59,7 @@ public class XmlParserImplTest extends AbstractWebBeansTest
       XmlEnvironment parserEnv = new MockXmlEnvironment(getResources("user-defined-beans.xml"), new EjbDescriptorCache());
       XmlParser parser = new XmlParser(parserEnv);
       
+      Set<Bean<Order>> beansSet1 = parserEnv.getManager().resolveByType(Order.class);
       List<Class<? extends Annotation>> dTypes1 = parserEnv.getManager().getEnabledDeploymentTypes();
       
       parser.parse();

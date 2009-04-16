@@ -210,10 +210,19 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
                "> matches the name of both a method and a field of the bean class '" + beanClass.getName() + "'");
       
       if(isField)
+      {
          checkFieldChild(beanChildElement, beanClass);
+         return;
+      }
       
       if(isMethod)
+      {
          checkMethodChild(beanChildElement, beanClass);
+         return;
+      }
+      
+      throw new DefinitionException("The name of the child element <" + beanChildElement.getName() + 
+            "> not matches the name of a method or a field of the bean class '" + beanClass.getName() + "'");
    }
    
    private void checkFieldChild(Element beanChildElement, AnnotatedClass<?> beanClass)

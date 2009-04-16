@@ -142,7 +142,7 @@ public abstract class BeanElementRegistratorImpl implements BeanElementRegistrat
          
          if(beanMethod != null)
          {
-            Iterator<?> beanChildIt = producesElement.elementIterator();
+            Iterator<?> beanChildIt = beanChild.elementIterator();
             while(beanChildIt.hasNext())
             {
                Element element = (Element)beanChildIt.next();
