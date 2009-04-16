@@ -1,9 +1,19 @@
 package org.jboss.webbeans.xml.registrator.bean.ext;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.ejb.EJB;
+import javax.inject.Current;
+import javax.inject.DeploymentType;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
+import javax.xml.ws.WebServiceRef;
 
 import org.dom4j.Element;
 import org.jboss.webbeans.bean.RIBean;
@@ -17,6 +27,7 @@ import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.spi.ResourceServices;
+import org.jboss.webbeans.util.reflection.AnnotationImpl;
 import org.jboss.webbeans.ws.spi.WebServices;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
@@ -169,12 +180,48 @@ public class ResourceElementRegistrator extends NotSimpleBeanElementRegistrator
    
    private Class<? extends Annotation> obtainDeploymentType(Element beanElement)
    {
+      Iterator<?> elIterator = beanElement.elementIterator();
+      while (elIterator.hasNext())
+      {
+         Element childElement = (Element) elIterator.next();
+         AnnotatedClass<?> childClass = ParseXmlHelper.loadElementClass(childElement, Object.class, environment, packagesMap);
+         if(childClass.getRawType().isAnnotation() && childClass.isAnnotationPresent(DeploymentType.class))
+            return ParseXmlHelper.loadAnnotationClass(childElement, Annotation.class, environment, packagesMap);
+      }
+      
       return null;
    }
    
    private Set<Annotation> obtainBindings(Element beanElement)
    {
-      return null;
+      Set<Annotation> result = new HashSet<Annotation>();
+      
+      Iterator<?> elIterator = beanElement.elementIterator();
+      while (elIterator.hasNext())
+      {
+         Element childElement = (Element) elIterator.next();
+         AnnotatedClass<?> childClass = ParseXmlHelper.loadElementClass(childElement, Object.class, environment, packagesMap);
+         if(childClass.getRawType().isAnnotation() && !childClass.isAnnotationPresent(DeploymentType.class) && 
+               !childClass.getRawType().equals(Resource.class) && !childClass.getRawType().equals(PersistenceContext.class) && 
+               !childClass.getRawType().equals(PersistenceUnit.class) && !childClass.getRawType().equals(EJB.class) && 
+               !childClass.getRawType().equals(WebServiceRef.class))
+         {
+            Class<?> annotationClass = childClass.getRawType();
+            Method[] annotationMethods = annotationClass.getDeclaredMethods();
+            AnnotationImpl annotation = new AnnotationImpl(annotationClass, annotationMethods);
+            result.add(annotation);
+         }
+      }
+      
+      if(result.size() == 0)
+      {         
+         Class<?> annotationClass = Current.class;
+         Method[] annotationMethods = annotationClass.getDeclaredMethods();
+         AnnotationImpl annotation = new AnnotationImpl(annotationClass, annotationMethods);
+         result.add(annotation);
+      }
+      
+      return result;
    }
    
    private String obtainElementValue(Element elementParent, String elementName)

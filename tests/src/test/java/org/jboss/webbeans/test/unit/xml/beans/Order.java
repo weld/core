@@ -1,25 +1,34 @@
 package org.jboss.webbeans.test.unit.xml.beans;
 
+import javax.context.Dependent;
+import javax.inject.Current;
+import javax.inject.Initializer;
+import javax.inject.manager.Manager;
+
 import org.jboss.webbeans.test.unit.xml.beans.annotationtype.TestBindingType;
+import org.jboss.webbeans.test.unit.xml.beans.annotationtype.TestDeploymentType;
 import org.jboss.webbeans.test.unit.xml.beans.annotationtype.TestInterceptorBindingType;
 import org.jboss.webbeans.test.unit.xml.beans.annotationtype.TestStereotype;
 
 @TestBindingType
 @TestInterceptorBindingType
 @TestStereotype
+@TestDeploymentType
 public class Order
 {
-   public int val;
+   private boolean active;
    
-   public String[] strArray;
-   
-   public Order(int val)
+   @Initializer
+   public Order(@Current Manager manager)
    {
-      this.val = val;
+      if (manager.getContext(Dependent.class).isActive())
+      {
+         active = true;
+      }
    }
    
-   public int getVal()
+   public boolean isActive()
    {
-      return val;
+      return active;
    }
 }

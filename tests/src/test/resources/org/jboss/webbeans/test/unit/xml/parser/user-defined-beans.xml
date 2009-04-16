@@ -1,5 +1,6 @@
 <Beans xmlns="urn:java:ee" 
 	xmlns:myapp="urn:java:org.jboss.webbeans.test.unit.xml.parser"
+	xmlns:manager="urn:java:javax.inject.manager"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="urn:java:ee 
 						urn:java:org.jboss.webbeans.test.unit.xml.parser http://mydomain.com/myapp/schema-1.2.xsd">
@@ -25,19 +26,19 @@
 	</myapp:TestStereotype>
 	
 	<myapp:Order>
+		<myapp:TestBindingType />
+		<myapp:TestInterceptorBindingType />
+		<myapp:TestStereotype />
+		<myapp:TestDeploymentType />
+		<myapp:isActive />
+		<manager:Manager />
+	</myapp:Order>
+	<myapp:PaymentService>
 		<RequestScoped />
 		<myapp:TestBindingType />
 		<myapp:TestInterceptorBindingType />
 		<myapp:TestStereotype />
-		<myapp:TestDeploymentType />		
-		<myapp:val />
-		<Array>
-			<String />
-		</Array>
-		<Integer />
-		<myapp:getVal />
-	</myapp:Order>
-	<myapp:PaymentService>
+		<myapp:TestDeploymentType />
 		<Resource>
 			<name>java:app/service/PaymentService</name>
 		</Resource>

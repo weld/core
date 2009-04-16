@@ -12,19 +12,18 @@ import java.util.Scanner;
 import java.util.Set;
 
 import javax.inject.DefinitionException;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
-import org.iso_relax.verifier.Verifier;
-import org.iso_relax.verifier.VerifierConfigurationException;
-import org.iso_relax.verifier.VerifierFactory;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.resources.spi.ResourceLoadingException;
 import org.xml.sax.SAXException;
-
-import com.sun.msv.verifier.jarv.TheFactoryImpl;
 
 public class ParseXmlHelper
 {
@@ -148,31 +147,29 @@ public class ParseXmlHelper
       {
          Namespace namespace = (Namespace) namespacesIterator.next();
          String prefix = namespace.getPrefix();
+         String uri = namespace.getURI();
          
-         for(String uri : namespace.getURI().split(" "))
+         if (uri.startsWith(XmlConstants.URN_PREFIX))
          {
-            if (uri.startsWith(XmlConstants.URN_PREFIX))
+            Set<String> packagesSet = new HashSet<String>();
+
+            URL schemaUrl = environment.loadFileByUrn(uri, XmlConstants.SCHEMA_FILE_NAME);
+            if(schemaUrl != null)
+               validateXmlWithXsd(xmlUrl, schemaUrl);
+            
+            URL namespaceFile = environment.loadFileByUrn(uri, XmlConstants.NAMESPACE_FILE_NAME);
+            if (namespaceFile != null)
             {
-               Set<String> packagesSet = new HashSet<String>();
-
-               URL schemaUrl = environment.loadFileByUrn(uri, XmlConstants.SCHEMA_FILE_NAME);
-               if(schemaUrl != null)
-                  validateXmlWithXsd(xmlUrl, schemaUrl);
-               
-               URL namespaceFile = environment.loadFileByUrn(uri, XmlConstants.NAMESPACE_FILE_NAME);
-               if (namespaceFile != null)
-               {
-                  packagesSet.addAll(parseNamespaceFile(namespaceFile));
-               }
-               else
-               {
-                  String packageName = uri.replaceFirst(XmlConstants.URN_PREFIX, "");
-                  packagesSet.add(packageName);
-               }
-
-               addElementToPackagesMap(packagesMap, prefix, packagesSet);
+               packagesSet.addAll(parseNamespaceFile(namespaceFile));
             }
-         }                  
+            else
+            {
+               String packageName = uri.replaceFirst(XmlConstants.URN_PREFIX, "");
+               packagesSet.add(packageName);
+            }
+
+            addElementToPackagesMap(packagesMap, prefix, packagesSet);
+         }
       }
    }
    
@@ -180,21 +177,18 @@ public class ParseXmlHelper
    {      
       try
       {
-         VerifierFactory factory = new TheFactoryImpl();
-         Verifier verifier = factory.newVerifier(schemaUrl.openStream());
-         verifier.verify(xmlUrl.toExternalForm());
+         final StreamSource stream = new StreamSource(xmlUrl.toExternalForm());
+         final SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+         final Schema schema = schemaFactory.newSchema(schemaUrl);
+         final Validator validator = schema.newValidator();
+         validator.validate(stream);
       }
-      catch (VerifierConfigurationException e)
+      catch(SAXException e)
       {
-         String message = "VerifierConfigurationException while create verifier for " + schemaUrl;
+         String message = "SAXException while validate " + xmlUrl + " with " + schemaUrl;
          throw new DefinitionException(message, e);
       }
-      catch (SAXException e)
-      {
-         String message = "IOException while validate " + xmlUrl + " with " + schemaUrl;
-         throw new DefinitionException(message, e);
-      }
-      catch (IOException e)
+      catch(IOException e)
       {
          String message = "IOException while validate " + xmlUrl + " with " + schemaUrl;
          throw new DefinitionException(message, e);

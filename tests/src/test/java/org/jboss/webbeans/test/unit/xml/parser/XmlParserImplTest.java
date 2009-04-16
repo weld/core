@@ -3,6 +3,7 @@ package org.jboss.webbeans.test.unit.xml.parser;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.manager.Bean;
@@ -52,20 +53,24 @@ public class XmlParserImplTest extends AbstractWebBeansTest
       assert parserEnv.getClasses().size() == 1;
    }
    
-//   @Test
+   @Test
    public void testDd()
    {      
       XmlEnvironment parserEnv = new MockXmlEnvironment(getResources("user-defined-beans.xml"), new EjbDescriptorCache());
       XmlParser parser = new XmlParser(parserEnv);
+      
+      List<Class<? extends Annotation>> dTypes1 = parserEnv.getManager().getEnabledDeploymentTypes();
+      
       parser.parse();
       
       ManagerImpl manager = parserEnv.getManager();
       
       Set<Bean<Order>> beansSet = manager.resolveByType(Order.class);
+      List<Class<? extends Annotation>> dTypes = manager.getEnabledDeploymentTypes();
       for(Bean<Order> bean : beansSet)
       {
          Class<? extends Annotation> deploymentType = bean.getDeploymentType();
-         System.out.println(bean.getClass());
+         System.out.println("after parsing: " + deploymentType);
       }
    }
 }

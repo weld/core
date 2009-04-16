@@ -60,8 +60,8 @@ public class XmlParser
          {
             parseForArrays(document);
             parseForAnnotationTypes(document);
-            parseForBeans(document);
             parseForDeploy(document);
+            parseForBeans(document);
          }
       }
    }
