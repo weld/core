@@ -51,23 +51,23 @@ $ ant update</programlisting>
    </section>
    
    <section>
-      <title>Tomcat (or any plain Servlet container)</title>
+      <title>Servlet Containers (such as Tomcat or Jetty)</title>
       
-      <para>Web Beans can be used in Tomcat 6.0.</para>
+      <para>Web Beans can be used in any Servlet container such as Tomcat 6.0 or Jetty 6.1.</para>
       
       <note>
          <para>
             Web Beans doesn't support deploying session beans, injection using
             <literal>@EJB</literal>, or 
             <literal>@PersistenceContext</literal> or using transactional events
-            on Tomcat.
+            in Servlet containers.
          </para>
       </note>
       
       <para>
-         Web Beans should be used as a web application library in Tomcat. You 
-         should place <literal>webbeans-tomcat.jar</literal> in
-         <literal>WEB-INF/lib</literal>. <literal>webbeans-tomcat.jar</literal>
+         Web Beans should be used as a web application library in a servlet 
+         container. You should place <literal>webbeans-servlet.jar</literal> in
+         <literal>WEB-INF/lib</literal>. <literal>webbeans-serv;et.jar</literal>
          is an "uber-jar" provided for your convenience. Instead, you could use
          its component jars: 
       </para>
@@ -100,7 +100,7 @@ $ ant update</programlisting>
          </listitem>
          <listitem>
             <para>
-               <literal>webbeans-tomcat-int.jar</literal>
+               <literal>webbeans-servlet-int.jar</literal>
             </para>
          </listitem>
          <listitem>
@@ -116,7 +116,7 @@ $ ant update</programlisting>
       </itemizedlist>
       
       <para>
-         You also need to explicitly specify the Tomcat servlet listener (used to
+         You also need to explicitly specify the servlet listener (used to
          boot Web Beans, and control its interaction with requests) in 
          <literal>web.xml</literal>:
       </para>
@@ -125,24 +125,27 @@ $ ant update</programlisting>
    <listener-class>org.jboss.webbeans.environment.servlet.Listener</listener-class>
 </listener>]]></programlisting>
 
-      <para>
-         Tomcat has a read-only JNDI, so Web Beans can't automatically bind the
-         Manager. To bind the Manager into JNDI, you should add the following to
-         your <literal>META-INF/context.xml</literal>:
-      </para>
+      <section>
+         <title>Tomcat</title>
+
+	      <para>
+	         Tomcat has a read-only JNDI, so Web Beans can't automatically bind 
+	         the Manager. To bind the Manager into JNDI, you should add the 
+	         following to your <literal>META-INF/context.xml</literal>:
+	      </para>
       
-      <programlisting><![CDATA[<Resource name="app/Manager" 
+         <programlisting><![CDATA[<Resource name="app/Manager" 
           auth="Container"
           type="javax.inject.manager.Manager"
           factory="org.jboss.webbeans.resources.ManagerObjectFactory"/>
 ]]></programlisting>
 
-      <para>
-         and make it available to your deployment by adding this to 
-         <literal>web.xml</literal>:
-      </para>
+         <para>
+           and make it available to your deployment by adding this to 
+            <literal>web.xml</literal>:
+         </para>
       
-      <programlisting><![CDATA[<resource-env-ref>
+         <programlisting><![CDATA[<resource-env-ref>
   <resource-env-ref-name>
     app/Manager
   </resource-env-ref-name>
@@ -151,20 +154,22 @@ $ ant update</programlisting>
   </resource-env-ref-type>
 </resource-env-ref>]]></programlisting>
 
-      <para>
-         Tomcat only allows you to bind entries to
-         <literal>java:comp/env</literal>, so the Manager will be available at
-         <literal>java:comp/env/app/Manager</literal>
-      </para>
+         <para>
+            Tomcat only allows you to bind entries to
+            <literal>java:comp/env</literal>, so the Manager will be available 
+            at <literal>java:comp/env/app/Manager</literal>
+         </para>
       
-      <para>
-         Web Beans also supports Servlet injection in Tomcat. To enable this,
-         place the <literal>webbeans-tomcat-support.jar</literal> in 
-         <literal>$TOMCAT_HOME/lib</literal>, and add the following to your
-         <literal>META-INF/context.xml</literal>:
-      </para>
+         <para>
+            Web Beans also supports Servlet injection in Tomcat. To enable this,
+            place the <literal>webbeans-tomcat-support.jar</literal> in 
+           <literal>$TOMCAT_HOME/lib</literal>, and add the following to your
+           <literal>META-INF/context.xml</literal>:
+         </para>
       
-      <programlisting><![CDATA[<Listener className="org.jboss.webbeans.environment.tomcat.WebBeansLifecycleListener" />]]></programlisting>
+         <programlisting><![CDATA[<Listener className="org.jboss.webbeans.environment.tomcat.WebBeansLifecycleListener" />]]></programlisting>
+         
+      </section>
 
    </section>
    
