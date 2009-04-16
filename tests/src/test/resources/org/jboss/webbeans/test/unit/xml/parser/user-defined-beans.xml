@@ -38,10 +38,9 @@
 		<myapp:getVal />
 	</myapp:Order>
 	<myapp:PaymentService>
-		<WebServiceRef>
+		<Resource>
 			<name>java:app/service/PaymentService</name>
-			<wsdlLocation>http://theirdomain.com/services/PaymentService.wsdl</wsdlLocation>
-		</WebServiceRef>
+		</Resource>
 	</myapp:PaymentService>
 	
 	<Decorators>

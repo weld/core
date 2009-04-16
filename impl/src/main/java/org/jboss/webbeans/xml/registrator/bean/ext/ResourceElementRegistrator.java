@@ -91,8 +91,8 @@ public class ResourceElementRegistrator extends NotSimpleBeanElementRegistrator
    
    private void registerResourceBean(Element resourceElement, AnnotatedClass<?> beanClass)
    {
-      Class<? extends Annotation> deploymentType = null;
-      Set<Annotation> bindings = null;
+      Class<? extends Annotation> deploymentType = obtainDeploymentType(resourceElement.getParent());
+      Set<Annotation> bindings = obtainBindings(resourceElement.getParent());
       Class<?> type = beanClass.getRawType();
       String jndiName = obtainElementValue(resourceElement, XmlConstants.JNDI_NAME);
       String mappedName = obtainElementValue(resourceElement, XmlConstants.MAPPED_NAME);
@@ -107,8 +107,8 @@ public class ResourceElementRegistrator extends NotSimpleBeanElementRegistrator
    
    private void registerPersContextBean(Element persContextElement, AnnotatedClass<?> beanClass)
    {
-      Class<? extends Annotation> deploymentType = null;
-      Set<Annotation> bindings = null;
+      Class<? extends Annotation> deploymentType = obtainDeploymentType(persContextElement.getParent());
+      Set<Annotation> bindings = obtainBindings(persContextElement.getParent());
       String unitName = obtainElementValue(persContextElement, XmlConstants.UNIT_NAME);
       
       RIBean<?> bean = new PersistenceContextBean(environment.getManager(), deploymentType, bindings, unitName);
@@ -121,8 +121,8 @@ public class ResourceElementRegistrator extends NotSimpleBeanElementRegistrator
    
    private void registerPersUnitBean(Element persUnitElement, AnnotatedClass<?> beanClass)
    {
-      Class<? extends Annotation> deploymentType = null;
-      Set<Annotation> bindings = null;
+      Class<? extends Annotation> deploymentType = obtainDeploymentType(persUnitElement.getParent());
+      Set<Annotation> bindings = obtainBindings(persUnitElement.getParent());
       String unitName = obtainElementValue(persUnitElement, XmlConstants.UNIT_NAME);
       
       RIBean<?> bean = new PersistenceUnitBean(environment.getManager(), deploymentType, bindings, unitName);
@@ -135,8 +135,8 @@ public class ResourceElementRegistrator extends NotSimpleBeanElementRegistrator
    
    private void registerEjbBean(Element ejbElement, AnnotatedClass<?> beanClass)
    {
-      Class<? extends Annotation> deploymentType = null;
-      Set<Annotation> bindings = null;
+      Class<? extends Annotation> deploymentType = obtainDeploymentType(ejbElement.getParent());
+      Set<Annotation> bindings = obtainBindings(ejbElement.getParent());
       Class<?> type = beanClass.getRawType();
       String jndiName = obtainElementValue(ejbElement, XmlConstants.JNDI_NAME);
       String mappedName = obtainElementValue(ejbElement, XmlConstants.MAPPED_NAME);
@@ -152,8 +152,8 @@ public class ResourceElementRegistrator extends NotSimpleBeanElementRegistrator
    
    private void registerWebServiceRefBean(Element webServiceRefElement, AnnotatedClass<?> beanClass)
    {
-      Class<? extends Annotation> deploymentType = null;
-      Set<Annotation> bindings = null;
+      Class<? extends Annotation> deploymentType = obtainDeploymentType(webServiceRefElement.getParent());
+      Set<Annotation> bindings = obtainBindings(webServiceRefElement.getParent());
       Class<?> type = beanClass.getRawType();
       String jndiName = obtainElementValue(webServiceRefElement, XmlConstants.JNDI_NAME);
       String mappedName = obtainElementValue(webServiceRefElement, XmlConstants.MAPPED_NAME);
@@ -167,6 +167,16 @@ public class ResourceElementRegistrator extends NotSimpleBeanElementRegistrator
       }
    }
    
+   private Class<? extends Annotation> obtainDeploymentType(Element beanElement)
+   {
+      return null;
+   }
+   
+   private Set<Annotation> obtainBindings(Element beanElement)
+   {
+      return null;
+   }
+   
    private String obtainElementValue(Element elementParent, String elementName)
    {
       List<Element> elements = ParseXmlHelper.findElementsInEeNamespace(elementParent, elementName);
@@ -174,17 +184,6 @@ public class ResourceElementRegistrator extends NotSimpleBeanElementRegistrator
       {
          Element element = elements.get(0);
          return element.getData().toString();
-      }
-      return null;
-   }
-   
-   private String obtainUnitName(Element persistenceElement)
-   {
-      List<Element> unitNameElements = ParseXmlHelper.findElementsInEeNamespace(persistenceElement, XmlConstants.UNIT_NAME);
-      if(unitNameElements.size() > 0)
-      {
-         Element unitNameElement = unitNameElements.get(0);
-         return unitNameElement.getData().toString();
       }
       return null;
    }

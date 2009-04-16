@@ -48,4 +48,8 @@ public class NotSimpleBeanChildrenChecker extends AbstractBeanChildrenChecker
    {
       //There is nothing to validate
    }
+   
+   protected void checkRIBean(Element beanElement, AnnotatedClass<?> beanClass){
+      throw new DefinitionException("It is impossible determine some kind of resource in not Resource Bean");
+   }
 }

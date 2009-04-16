@@ -89,4 +89,8 @@ public class SimpleBeanChildrenChecker extends AbstractBeanChildrenChecker
          throw new DefinitionException("There is more than one constructor of the simple bean '" + beanElement.getName() + 
                "' with the same number and types of parameters as declared");
    }
+   
+   protected void checkRIBean(Element beanElement, AnnotatedClass<?> beanClass){
+      throw new DefinitionException("It is impossible determine some kind of resource in not Resource Bean");
+   }
 }

@@ -46,8 +46,6 @@ public class XmlConstants
    
    public static final String SCHEMA_LOCATION = "schemaLocation";
 
-   public static final String NAME = "name";
-
    public static final String MAPPED_NAME = "mappedName";
    
    public static final String UNIT_NAME = "unitName";
@@ -66,7 +64,7 @@ public class XmlConstants
    
    public static final String ARRAY = "Array";
    
-   public static final String JNDI_NAME = "jndiName";
+   public static final String JNDI_NAME = "name";
    
    public static final String JAVA_GLOBAL = "java:global/";
    

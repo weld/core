@@ -11,16 +11,15 @@ import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
 import org.jboss.webbeans.xml.XmlEnvironment;
-import org.jboss.webbeans.xml.checker.beanchildren.impl.BeanChildrenCheckerImpl;
 
-public class ResourceBeanChildrenChecker extends BeanChildrenCheckerImpl
+public class ResourceBeanChildrenChecker extends NotSimpleBeanChildrenChecker
 {
    public ResourceBeanChildrenChecker(XmlEnvironment environment, Map<String, Set<String>> packagesMap)
    {
       super(environment, packagesMap);
    }
 
-   public void checkChildren(Element beanElement, AnnotatedClass<?> beanClass)
+   protected void checkRIBean(Element beanElement, AnnotatedClass<?> beanClass)
    {
       List<Element> resourceElements = ParseXmlHelper.findElementsInEeNamespace(beanElement, XmlConstants.RESOURCE);
       if(resourceElements.size() > 0)
@@ -65,7 +64,7 @@ public class ResourceBeanChildrenChecker extends BeanChildrenCheckerImpl
       if(resourceElements.size() > 1)
          throw new DefinitionException("There is more than one <Resource> elements in '" + resourceElement.getParent().getName() + "'");
                   
-      List<Element> nameElements = ParseXmlHelper.findElementsInEeNamespace(resourceElement, XmlConstants.NAME);
+      List<Element> nameElements = ParseXmlHelper.findElementsInEeNamespace(resourceElement, XmlConstants.JNDI_NAME);
       List<Element> mappedNameElements = ParseXmlHelper.findElementsInEeNamespace(resourceElement, XmlConstants.MAPPED_NAME);
       
       if(nameElements.size() + mappedNameElements.size() != 1)
@@ -73,7 +72,7 @@ public class ResourceBeanChildrenChecker extends BeanChildrenCheckerImpl
                "or mapped name must be specified using the <name> or <mappedName> child elements of the <Resource> element");
       
       if(nameElements.size() == 1)
-         checkNameElementValue(nameElements.get(0));
+         checkJndiNameElementValue(nameElements.get(0));
    }
    
    private void checkPersContextElements(List<Element> persContextElements)
@@ -111,7 +110,7 @@ public class ResourceBeanChildrenChecker extends BeanChildrenCheckerImpl
       if(ejbElements.size() > 1)
          throw new DefinitionException("There is more than one <EJB> elements in '" + ejbElement.getParent().getName() + "'");
       
-      List<Element> nameElements = ParseXmlHelper.findElementsInEeNamespace(ejbElement, XmlConstants.NAME);
+      List<Element> nameElements = ParseXmlHelper.findElementsInEeNamespace(ejbElement, XmlConstants.JNDI_NAME);
       List<Element> mappedNameElements = ParseXmlHelper.findElementsInEeNamespace(ejbElement, XmlConstants.MAPPED_NAME);
       List<Element> ejbLinkElements = ParseXmlHelper.findElementsInEeNamespace(ejbElement, XmlConstants.EJB_LINK);
       
@@ -120,7 +119,7 @@ public class ResourceBeanChildrenChecker extends BeanChildrenCheckerImpl
                "must be specified using the <name>, <mappedName> or <ejbLink> child elements of the <EJB> element");
       
       if(nameElements.size() == 1)
-         checkNameElementValue(nameElements.get(0));
+         checkJndiNameElementValue(nameElements.get(0));
    }
    
    private void checkWebServiceRefElements(List<Element> webServiceRefElements)
@@ -131,7 +130,7 @@ public class ResourceBeanChildrenChecker extends BeanChildrenCheckerImpl
          throw new DefinitionException("There is more than one <WebServiceRef> elements in '" + 
                webServiceRefElement.getParent().getName() + "'");
       
-      List<Element> nameElements = ParseXmlHelper.findElementsInEeNamespace(webServiceRefElement, XmlConstants.NAME);
+      List<Element> nameElements = ParseXmlHelper.findElementsInEeNamespace(webServiceRefElement, XmlConstants.JNDI_NAME);
       List<Element> mappedNameElements = ParseXmlHelper.findElementsInEeNamespace(webServiceRefElement, XmlConstants.MAPPED_NAME);
       
       if(nameElements.size() == 0 && mappedNameElements.size() == 0)
@@ -139,10 +138,10 @@ public class ResourceBeanChildrenChecker extends BeanChildrenCheckerImpl
                "or mapped name must be specified using the <name> or <mappedName> child elements of the <WebServiceRef> element");
       
       if(nameElements.size() == 1)
-         checkNameElementValue(nameElements.get(0));
+         checkJndiNameElementValue(nameElements.get(0));
    }
    
-   private void checkNameElementValue(Element nameElement)
+   private void checkJndiNameElementValue(Element nameElement)
    {
       String nameValue = nameElement.getData().toString();
       if(!nameValue.startsWith(XmlConstants.JAVA_GLOBAL) && !nameValue.startsWith(XmlConstants.JAVA_APP))

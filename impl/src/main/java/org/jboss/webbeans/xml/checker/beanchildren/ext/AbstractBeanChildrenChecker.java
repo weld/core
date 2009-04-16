@@ -62,6 +62,8 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
    
    protected abstract void checkForConstructor(Element beanElement, AnnotatedClass<?> beanClass);
    
+   protected abstract void checkRIBean(Element beanElement, AnnotatedClass<?> beanClass);
+   
    protected AbstractBeanChildrenChecker(XmlEnvironment environment, Map<String, Set<String>> packagesMap)
    {
       super(environment, packagesMap);
@@ -102,7 +104,7 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
          if(beanChildType.isAnnotation())
          {
             //bean child element declaring type-level metadata
-            checkAnnotationChild(beanChildElement, beanChildClass);
+            checkAnnotationChild(beanChildElement, beanChildClass, beanClass);
             return;
          }
          if(isJavaClass || isInterface)
@@ -134,7 +136,7 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
       }
    }
    
-   private void checkAnnotationChild(Element beanChildElement, AnnotatedClass<?> beanChildClass)
+   private void checkAnnotationChild(Element beanChildElement, AnnotatedClass<?> beanChildClass, AnnotatedClass<?> beanClass)
    {
       if(beanChildClass.isAnnotationPresent(DeploymentType.class))
       {
@@ -169,6 +171,13 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
             beanChildClass.isAnnotationPresent(WebServiceRef.class) || beanChildClass.isAnnotationPresent(PersistenceContext.class) || 
             beanChildClass.isAnnotationPresent(PersistenceUnit.class))
          return;
+      if(beanChildClass.getRawType().equals(Resource.class) || beanChildClass.getRawType().equals(EJB.class) || 
+            beanChildClass.getRawType().equals(WebServiceRef.class) || beanChildClass.getRawType().equals(PersistenceContext.class) || 
+            beanChildClass.getRawType().equals(PersistenceUnit.class))
+      {
+         checkRIBean(beanChildElement.getParent(), beanClass);
+         return;
+      }         
       
       throw new DefinitionException("Can't determine annotation type of <" + beanChildElement.getName() + "> element in bean '" + 
             beanChildElement.getParent().getName() + "'");
