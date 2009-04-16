@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.text.MessageFormat;
+import java.util.Arrays;
 
 /**
  * 
@@ -173,6 +174,13 @@ class LogImpl implements Log, Externalizable
       Object interpolatedMessage = message;
       if (params.length > 0)
       {
+         for (int i = 0; i < params.length; i++)
+         {
+            if (params[i].getClass().isArray())
+            {
+               params[i] = Arrays.asList((Object[]) params[i]);
+            }
+         }
          interpolatedMessage = MessageFormat.format(message.toString(), params);
       }
       return interpolatedMessage;
