@@ -23,7 +23,7 @@ import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 
 /**
- * A container should implement this interface to allow the Web Beans RI to
+ * A container should implement this interface to allow Web Beans to
  * resolve EJB and discover EJBs
  * 
  * @author Pete Muir

@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
  * 
  * @author Pete Muir
  *
- * @param <T>
+ * @param <T> the bean type
  */
 public interface EjbDescriptor<T>
 {

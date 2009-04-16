@@ -28,8 +28,18 @@ public interface JmsServices extends Service
     */
    public <T extends Destination> T resolveDestination(String jndiName, String mappedName);
    
+   /**
+    * Get a QueueConnectionFactory
+    * 
+    * @return the queue connection factory
+    */
    public QueueConnectionFactory getQueueConnectionFactory();
    
+   /**
+    * Get a TopicConnectionFactory
+    * 
+    * @return
+    */
    public TopicConnectionFactory getTopicConnectionFactory();
    
 }

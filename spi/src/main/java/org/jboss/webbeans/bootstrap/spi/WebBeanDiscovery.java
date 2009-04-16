@@ -22,27 +22,27 @@ import java.net.URL;
 import org.jboss.webbeans.bootstrap.api.Service;
 
 /**
- * A container should implement this interface to allow the Web Beans RI to
- * discover the Web Beans to deploy
+ * A container should implement this interface to allow Web Beans to
+ * discover the beans to deploy
  * 
  * @author Pete Muir
  *
  */
 public interface WebBeanDiscovery extends Service
 {
-   public static final String PROPERTY_NAME = WebBeanDiscovery.class.getName();
    
    /**
-    * Gets list of all classes in classpath archives with web-beans.xml files
+    * Gets list of all classes in classpath archives with META-INF/beans.xml (or
+    * for WARs WEB-INF/beans.xml) files
     * 
     * @return An iterable over the classes 
     */
    public Iterable<Class<?>> discoverWebBeanClasses();
    
    /**
-    * Gets a list of all web-beans.xml files in the app classpath
+    * Gets a list of all deployment descriptors in the app classpath
     * 
-    * @return An iterable over the web-beans.xml files 
+    * @return An iterable over the beans.xml files 
     */
    public Iterable<URL> discoverWebBeansXml();
    
