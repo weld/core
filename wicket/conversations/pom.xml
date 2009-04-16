@@ -34,8 +34,8 @@
       </dependency>
       
       <dependency>
-         <groupId>org.jboss.webbeans.tomcat</groupId>
-         <artifactId>webbeans-tomcat</artifactId>
+         <groupId>org.jboss.webbeans.servlet</groupId>
+         <artifactId>webbeans-servlet</artifactId>
       </dependency>
 
 	  <dependency>
