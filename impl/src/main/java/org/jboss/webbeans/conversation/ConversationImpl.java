@@ -163,4 +163,20 @@ public class ConversationImpl implements Conversation
    {
       return originalCid;
    }
+   
+   @Override
+   public boolean equals(Object obj)
+   {
+      
+      if (obj == null || !(obj instanceof Conversation))
+         return false;
+      String otherCid = ((Conversation)obj).getId();
+      return (cid == null || otherCid == null) ? false : cid.equals(otherCid);
+   }
+   
+   @Override
+   public int hashCode()
+   {
+      return cid == null ? super.hashCode() : cid.hashCode();
+   }
 }
