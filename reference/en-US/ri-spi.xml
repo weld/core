@@ -592,6 +592,21 @@
                </para>
             </listitem>
          </varlistentry>
+         <varlistentry>
+            <term>
+               Binding the manager in JNDI
+            </term>
+            <listitem>
+               <para>
+                  You should bind a <literal>Reference</literal> to the Manager 
+                  <literal>ObjectFactory</literal> into JNDI at 
+                  <literal>java:app/Manager</literal>. The type should be
+                  <literal>javax.inject.manager.Manager</literal> and the 
+                  factory class is 
+                  <literal>org.jboss.webbeans.resources.ManagerObjectFactory</literal>
+               </para>
+            </listitem>
+         </varlistentry>
       </variablelist>
     </section>
 
