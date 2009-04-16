@@ -11,7 +11,7 @@
    </parent>
    
    <groupId>org.jboss.webbeans.examples</groupId>
-   <artifactId>wicket-numberguess</artifactId>
+   <artifactId>webbeans-wicket-numberguess</artifactId>
    <packaging>war</packaging>
    <name>Web Beans Examples: Numberguess with wicket</name>
    

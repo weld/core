@@ -11,7 +11,7 @@
    </parent>
    
    <groupId>org.jboss.webbeans.examples</groupId>
-   <artifactId>wicket-conversations</artifactId>
+   <artifactId>webbeans-wicket-conversations</artifactId>
    <packaging>war</packaging>
    <name>Web Beans Examples: Conversations with Wicket</name>
    
