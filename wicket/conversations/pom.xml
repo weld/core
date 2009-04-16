@@ -74,6 +74,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>webbeans-conversations-wicket</finalName>
 		<resources>
 			<resource>
 				<filtering>false</filtering>

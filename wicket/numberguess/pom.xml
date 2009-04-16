@@ -75,6 +75,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>webbeans-numberguess-wicket</finalName>
 		<resources>
 			<resource>
 				<filtering>false</filtering>
