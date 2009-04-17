@@ -25,9 +25,14 @@ import org.testng.annotations.Test;
 
 @Artifact
 @Resources({
-   @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/user-defined-beans.xml", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/user-defined-beans.xml" )
+   @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/user-defined-beans.xml", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/user-defined-beans.xml" ),
+   @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/schema.xsd", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/schema.xsd" ),
+   @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/namespace", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/namespace" )
 })
-@Classes({Order.class})
+@Classes(
+      value={Order.class, MockXmlEnvironment.class},
+      packages={"org.jboss.webbeans.test.unit.xml.beans.annotationtype", "org.jboss.webbeans.test.unit.xml.parser.schema.foo"}
+)
 public class XmlParserImplTest extends AbstractWebBeansTest
 {
    //@Test

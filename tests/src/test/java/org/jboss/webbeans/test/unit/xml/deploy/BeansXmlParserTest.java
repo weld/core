@@ -24,7 +24,10 @@ import org.testng.annotations.Test;
    @Resource(destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/deploy/duplicate-deployments-beans.xml", source="/org/jboss/webbeans/test/unit/xml/deploy/duplicate-deployments-beans.xml"),
    @Resource(destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/deploy/user-defined-beans.xml", source="/org/jboss/webbeans/test/unit/xml/deploy/user-defined-beans.xml")
 })
-@Classes(packages="org.jboss.webbeans.test.unit.xml.beans")
+@Classes(
+      packages={"org.jboss.webbeans.test.unit.xml.beans", "org.jboss.webbeans.test.unit.xml.beans.annotationtype"},
+      value={MockXmlEnvironment.class}
+)
 public class BeansXmlParserTest extends AbstractWebBeansTest
 {
    

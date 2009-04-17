@@ -69,6 +69,7 @@
          <package name="org.jboss.webbeans.test.unit.lookup.circular" />
          <package name="org.jboss.webbeans.test.unit.xml.deploy" />
          <package name="org.jboss.webbeans.test.unit.xml.parser" />
+         <package name="org.jboss.webbeans.test.unit.xml.parser.schema" />
       </packages>
    </test>
    

@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test;
+package org.jboss.webbeans.test.harness;
 
 import org.jboss.webbeans.mock.MockServletLifecycle;
 

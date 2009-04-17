@@ -17,9 +17,16 @@ import org.testng.annotations.Test;
 @Artifact
 @Resources({
    @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/schema/beans.xml", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/schema/beans.xml" ),
-   @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/schema/not-valid-beans.xml", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/schema/not-valid-beans.xml" )
+   @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/schema/not-valid-beans.xml", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/schema/not-valid-beans.xml" ),
+   @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/schema/namespace", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/schema/namespace" ),
+   @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/schema/schema.xsd", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/schema/schema.xsd" ),
+   @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/schema/notvalid/schema.xsd", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/schema/notvalid/schema.xsd" ),
+   @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/schema/valid/schema.xsd", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/schema/valid/schema.xsd" )
 })
-@Classes({Order.class})
+@Classes(
+      value={Order.class, MockXmlEnvironment.class},
+      packages={"org.jboss.webbeans.test.unit.xml.beans.annotationtype", "org.jboss.webbeans.test.unit.xml.parser.schema.foo"}
+)
 public class SchemaValidationTest extends AbstractWebBeansTest
 {   
    @Test

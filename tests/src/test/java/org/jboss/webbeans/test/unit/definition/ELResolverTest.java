@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 public class ELResolverTest extends AbstractWebBeansTest
 {
    
-   @Test
+   @Test(groups="incontainer-broken")
    public void testNonBeanDoesntResolveToNamespace()
    {
       ELContext elContext = EL.createELContext();

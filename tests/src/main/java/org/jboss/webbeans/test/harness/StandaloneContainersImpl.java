@@ -1,4 +1,4 @@
-package org.jboss.webbeans.test;
+package org.jboss.webbeans.test.harness;
 
 import org.jboss.testharness.spi.StandaloneContainers;
 import org.jboss.webbeans.mock.MockEELifecycle;
