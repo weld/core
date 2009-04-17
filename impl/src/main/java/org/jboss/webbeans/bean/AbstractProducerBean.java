@@ -24,6 +24,8 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -77,6 +79,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       this.declaringBean = declaringBean;
    }
    
+   @Override
    protected abstract AnnotatedMember<T, S> getAnnotatedItem();
 
    /**
@@ -166,6 +169,14 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
     */
    protected void checkProducerReturnType()
    {
+      if (getAnnotatedItem().getType() instanceof TypeVariable<?>)
+      {
+         throw new DefinitionException("Return type must be concrete " + getAnnotatedItem().getType());
+      }
+      if (getAnnotatedItem().getType() instanceof WildcardType)
+      {
+         throw new DefinitionException("Return type must be concrete " + getAnnotatedItem().getType());
+      }
       for (Type type : getAnnotatedItem().getActualTypeArguments())
       {
          if (!(type instanceof Class))
