@@ -75,6 +75,12 @@
                            <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                         </artifactItem>
                         <artifactItem>
+                           <groupId>org.jboss.webbeans</groupId>
+                           <artifactId>webbeans-core-test</artifactId>
+                           <overWrite>true</overWrite>
+                           <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
+                        </artifactItem>
+                        <artifactItem>
                            <groupId>javax.el</groupId>
                            <artifactId>el-ri</artifactId>
                            <overWrite>true</overWrite>
