@@ -2,8 +2,7 @@
 	xmlns:myapp="urn:java:org.jboss.webbeans.test.unit.xml.parser"
 	xmlns:manager="urn:java:javax.inject.manager"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="urn:java:ee 
-						urn:java:org.jboss.webbeans.test.unit.xml.parser http://mydomain.com/myapp/schema-1.2.xsd">
+	xsi:schemaLocation="urn:java:org.jboss.webbeans.test.unit.xml.parser http://mydomain.com/myapp/schema-1.2.xsd">
 	<Deploy>
 		<Standard />
 		<Production />

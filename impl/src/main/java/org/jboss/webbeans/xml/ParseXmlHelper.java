@@ -123,9 +123,16 @@ public class ParseXmlHelper
             {
                urn = attrVal;
                URL namespaceFile = environment.loadFileByUrn(urn, XmlConstants.NAMESPACE_FILE_NAME);
-               if (namespaceFile == null)
-                  throw new DefinitionException("Could not find '" + XmlConstants.NAMESPACE_FILE_NAME + "' file according to specified URN '" + urn + "'");
-               packagesSet.addAll(parseNamespaceFile(namespaceFile));
+               
+               if (namespaceFile != null)
+               {
+                  packagesSet.addAll(parseNamespaceFile(namespaceFile));
+               }
+               else
+               {
+                  String packageName = urn.replaceFirst(XmlConstants.URN_PREFIX, "");
+                  packagesSet.add(packageName);
+               }
             }
             if (attribute.getName().equalsIgnoreCase(XmlConstants.SCHEMA_LOCATION) && attrVal.startsWith(XmlConstants.HTTP_PREFIX) && urn.trim().length() > 0)
             {
