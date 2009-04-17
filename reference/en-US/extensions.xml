@@ -15,8 +15,44 @@
       <title>Web Beans Logger</title>
       
       <para>
-         TODO
+         Adding logging to your application is now even easier with simple injection
+         of a logger object into any JSR-299 bean.  Simply annotate a
+         org.jboss.webbeans.log.Log type member with <emphasis>@Logger</emphasis>
+         and an appropriate logger object will be injected into any instance of
+         the bean.  
       </para>
+
+      <programlisting role="JAVA"><![CDATA[public class Checkout {
+    import org.jboss.webbeans.annotation.Logger;
+    import org.jboss.webbeans.log.Log;
+    
+    @Logger
+    private Log log;
+
+    void invoiceItems() {
+        ShoppingCart cart;
+        . . .
+        log.debug("Items invoiced for {0}", cart);
+    }
+    
+}]]></programlisting>
+
+      <para>
+         The example shows how objects can be interpolated into a message.  This
+         interpolation is done using <emphasis>java.text.MessageFormat</emphasis>, 
+         so see the JavaDoc for that class for more details.  In this case,
+         the ShoppingCart should have implemented the <emphasis>toString()</emphasis>
+         method to produce a human readable value that is meaningful in messages.
+         Normally, this call would have involved evaluating cart.toString()
+         with String concatenation to produce a single String argument.  Thus it was
+         necessary to surround the call with an if-statement using the condition
+         <emphasis>log.isDebugEnabled()</emphasis> to avoid the expensive String
+         concatenation if the message was not actually going to be used.  However,
+         when using @Logger injected logging, the conditional test can be left out
+         since the object arguments are not evaluated unless the message is going to
+         be logged.
+      </para>
+
 
    </section>
    
