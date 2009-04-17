@@ -47,10 +47,11 @@
    </pluginRepositories>
    
    <properties>
-      <jsr299.tck.version>1.0.0-SNAPSHOT</jsr299.tck.version>
-      <webbeans.version>1.0.0-SNAPSHOT</webbeans.version>
-      <webbeans.servlet.version>1.0.0-SNAPSHOT</webbeans.servlet.version>
-      <webbeans.se.version>1.0.0-SNAPSHOT</webbeans.se.version>
+      <jsr299.tck.version>1.0.0.BETA2</jsr299.tck.version>
+      <webbeans.version>1.0.0.PREVIEW1</webbeans.version>
+      <webbeans.servlet.version>1.0.0.CR1</webbeans.servlet.version>
+      <webbeans.se.version>1.0.0.BETA1</webbeans.se.version>
+      <jboss.test.harness.version>1.0.0.BETA2</jboss.test.harness.version>
    </properties>
    
    <dependencyManagement>
@@ -296,19 +297,19 @@
          <dependency>
             <groupId>org.jboss.test-harness</groupId>
             <artifactId>jboss-test-harness</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${jboss.test.harness.version}</version>
          </dependency>
          
          <dependency>
             <groupId>org.jboss.test-harness</groupId>
             <artifactId>jboss-test-harness-jboss-as-50</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${jboss.test.harness.version}</version>
          </dependency>
          
          <dependency>
             <groupId>org.jboss.test-harness</groupId>
             <artifactId>jboss-test-harness-tomcat</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${jboss.test.harness.version}</version>
          </dependency>
          
 <!--         <dependency>-->
