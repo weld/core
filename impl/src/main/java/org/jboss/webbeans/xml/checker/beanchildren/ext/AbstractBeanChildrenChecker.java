@@ -166,7 +166,10 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
       }
       if(beanChildClass.isAnnotationPresent(BindingType.class) || beanChildClass.isAnnotationPresent(InterceptorBindingType.class) || 
             beanChildClass.isAnnotationPresent(Stereotype.class) || beanChildClass.isAnnotationPresent(Named.class) || 
-            beanChildClass.isAnnotationPresent(Specializes.class) || beanChildClass.isAnnotationPresent(Realizes.class) || 
+            beanChildClass.isAnnotationPresent(Specializes.class) || beanChildClass.isAnnotationPresent(Realizes.class) ||
+            beanChildClass.getRawType().equals(BindingType.class) || beanChildClass.getRawType().equals(InterceptorBindingType.class) || 
+            beanChildClass.getRawType().equals(Stereotype.class) || beanChildClass.getRawType().equals(Named.class) || 
+            beanChildClass.getRawType().equals(Specializes.class) || beanChildClass.getRawType().equals(Realizes.class) ||
             beanChildClass.isAnnotationPresent(Resource.class) || beanChildClass.isAnnotationPresent(EJB.class) || 
             beanChildClass.isAnnotationPresent(WebServiceRef.class) || beanChildClass.isAnnotationPresent(PersistenceContext.class) || 
             beanChildClass.isAnnotationPresent(PersistenceUnit.class))
