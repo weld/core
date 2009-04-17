@@ -3,6 +3,7 @@ package org.jboss.webbeans.test.unit.xml.deploy;
 import java.net.URL;
 import java.util.Iterator;
 
+import javax.inject.DefinitionException;
 import javax.inject.Production;
 import javax.inject.Standard;
 
@@ -11,9 +12,7 @@ import org.jboss.testharness.impl.packaging.Classes;
 import org.jboss.testharness.impl.packaging.Resource;
 import org.jboss.testharness.impl.packaging.Resources;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
-import org.jboss.webbeans.mock.MockResourceLoader;
 import org.jboss.webbeans.mock.MockXmlEnvironment;
-import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.jboss.webbeans.xml.XmlEnvironment;
 import org.jboss.webbeans.xml.XmlParser;
@@ -67,7 +66,7 @@ public class BeansXmlParserTest extends AbstractWebBeansTest
    /**
     * Test case for WBRI-21.
     */
-   //@Test(expectedExceptions=DeploymentException.class, description="WBRI-21")
+   @Test(expectedExceptions=DefinitionException.class, description="WBRI-21")
    public void testDuplicateDeployElement()
    {
       Iterable<URL> urls = getResources("duplicate-deployments-beans.xml");
