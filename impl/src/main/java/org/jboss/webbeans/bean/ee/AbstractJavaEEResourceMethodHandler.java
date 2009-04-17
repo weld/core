@@ -36,7 +36,7 @@ public abstract class AbstractJavaEEResourceMethodHandler implements MethodHandl
    
    private static final long serialVersionUID = -3171683636451762591L;
    
-   private static final transient Log log = Logging.getLog(AbstractJavaEEResourceMethodHandler.class);
+   private static final Log log = Logging.getLog(AbstractJavaEEResourceMethodHandler.class);
 
    /**
     * 

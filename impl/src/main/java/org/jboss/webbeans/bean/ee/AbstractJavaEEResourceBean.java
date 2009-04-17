@@ -29,11 +29,13 @@ import javassist.util.proxy.ProxyObject;
 
 import javax.context.CreationalContext;
 import javax.context.Dependent;
+import javax.inject.Production;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
+import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.util.Proxies;
 
 /**
@@ -44,6 +46,13 @@ import org.jboss.webbeans.util.Proxies;
  */
 public abstract class AbstractJavaEEResourceBean<T> extends RIBean<T>
 {
+   
+   private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>();
+   
+   static
+   {
+      DEFAULT_BINDINGS.add(new CurrentLiteral());
+   }
    
    private final Class<? extends Annotation> deploymentType;
    private final Set<Annotation> bindings;
@@ -71,8 +80,30 @@ public abstract class AbstractJavaEEResourceBean<T> extends RIBean<T>
    protected AbstractJavaEEResourceBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type, Type... types)
    {
       super(manager);
-      this.deploymentType = deploymentType;
-      this.bindings = bindings;
+      if (deploymentType != null)
+      {
+         this.deploymentType = deploymentType;
+      }
+      else
+      {
+         this.deploymentType = Production.class;
+      }
+      if (bindings != null)
+      {
+         this.bindings = bindings;
+      }
+      else
+      {
+         this.bindings = DEFAULT_BINDINGS;
+      }
+      if (type == null)
+      {
+         throw new IllegalStateException("Type must be specified");
+      }
+      if (types == null || types.length == 0)
+      {
+         throw new IllegalStateException("Types must be specified");
+      }
       this.type = type;
       this.types = new HashSet<Type>();
       this.types.addAll(Arrays.asList(types));

@@ -55,7 +55,7 @@ public class Proxies
       {
          if (classes.isEmpty())
          {
-            throw new AssertionError("TypeInfo not properly initialized");
+            return null;
          }
          Iterator<Class<?>> it = classes.iterator();
          Class<?> superclass = it.next();
@@ -79,7 +79,7 @@ public class Proxies
       {
          ProxyFactory proxyFactory = new ProxyFactory();
          Class<?> superClass = getSuperClass();
-         if(superClass != Object.class)
+         if(superClass != null && superClass != Object.class)
          {
             proxyFactory.setSuperclass(superClass);
          }
