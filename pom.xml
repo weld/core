@@ -20,7 +20,7 @@
    <distributionManagement>
       <repository>
          <!--
-            Copy the dist to the local checkout of the JBoss maven2 repo
+            Copy the  dist to the local checkout of the JBoss maven2 repo
             ${maven.repository.root}
          -->
          <!--
@@ -73,6 +73,7 @@
             <module>tests</module>
             <module>porting-package</module>
             <module>jboss-tck-runner</module>
+            <module>osgi-bundle</module>
          </modules>
       </profile>
    </profiles>
