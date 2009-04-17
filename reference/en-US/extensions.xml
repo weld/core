@@ -52,14 +52,28 @@
          since the object arguments are not evaluated unless the message is going to
          be logged.
       </para>
-
+      
+      <note>
+	      <para>
+	         You can add the Web Beans Logger to your project by including
+	         webbeans-logger.jar and webbeans-logging.jar to your project.
+	         Alternatively, express a dependency on the
+	         <literal>org.jboss.webbeans:webbeans-logger</literal> Maven 
+	         artifact. 
+	      </para>
+	      <para>
+	         If you are using Web Beans as your JSR-299 implementation, there is
+	         no need to include <literal>webbeans-logging.jar</literal> as it's
+	         already included.
+	      </para>
+      </note>
 
    </section>
    
-   <section>
-      <title>XSD Generator for JSR-299 XML deployment descriptors</title>
-      
-      <para>TODO</para>
-   </section>
+<!--   <section>-->
+<!--      <title>XSD Generator for JSR-299 XML deployment descriptors</title>-->
+<!--      -->
+<!--      <para>TODO</para>-->
+<!--   </section>-->
 
 </chapter>
