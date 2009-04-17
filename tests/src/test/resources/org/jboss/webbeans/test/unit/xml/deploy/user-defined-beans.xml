@@ -5,12 +5,4 @@
 		<Production />
 		<test:AnotherDeploymentType />
 	</Deploy>
-	<myapp:Order>
-		<ConversationScoped />
-		<myapp:PaymentProcessor>
-			<myapp:Asynchronous />
-		</myapp:PaymentProcessor>
-		<myapp:User />
-	</myapp:Order>
-
 </Beans>

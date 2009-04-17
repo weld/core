@@ -9,7 +9,7 @@ import org.jboss.testharness.impl.packaging.Resources;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.mock.MockXmlEnvironment;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
-import org.jboss.webbeans.test.unit.xml.beans.Order;
+import org.jboss.webbeans.test.unit.xml.parser.schema.foo.Order;
 import org.jboss.webbeans.xml.XmlEnvironment;
 import org.jboss.webbeans.xml.XmlParser;
 import org.testng.annotations.Test;
