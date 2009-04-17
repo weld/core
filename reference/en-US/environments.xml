@@ -267,16 +267,17 @@ public class HelloWorld
     }
 }]]></programlisting>
 
-          <para>
-              <note>
-                 <para>
-                    The command line parameters do not become available for injection
-                    until the <literal>@Deployed Manager</literal> event is fired. If you
-                    need access to the parameters during initialization you can do so via the
-                    <literal>public static String getParameters()</literal> method in
-                    <literal>StartMain</literal>.</para>
-              </note>
-          </para>
+          <note>
+             <para>
+                The command line parameters do not become available for injection
+                until the <literal>@Deployed Manager</literal> event is fired. If you
+                need access to the parameters during initialization you can do so via the
+                <literal>public static String getParameters()</literal> method in
+                <literal>StartMain</literal>.
+             </para>
+          </note>
+          
+          
 
       </section>
 
