@@ -25,35 +25,26 @@ package org.jboss.webbeans.context;
 
 import javax.context.RequestScoped;
 
-import org.jboss.webbeans.bootstrap.api.Singleton;
-import org.jboss.webbeans.bootstrap.api.SingletonProvider;
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.bootstrap.api.Service;
 
 /**
  * The request context
  * 
  * @author Nicklas Karlsson
  */
-public class RequestContext extends AbstractThreadLocalMapContext
+public class RequestContext extends AbstractThreadLocalMapContext implements Service
 {
-	
-   private static Singleton<RequestContext> INSTANCE = SingletonProvider.instance().create(RequestContext.class);
    
    public static RequestContext instance()
    {
-      return INSTANCE.get();
-   }
-
-   public static RequestContext create()
-   {
-      RequestContext context = new RequestContext();
-      INSTANCE.set(context);
-      return context;
+      return CurrentManager.rootManager().getServices().get(RequestContext.class);
    }
 
    /**
     * Constructor
     */
-   protected RequestContext()
+   public RequestContext()
    {
       super(RequestScoped.class);
    }   

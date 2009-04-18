@@ -25,33 +25,23 @@ package org.jboss.webbeans.context;
 
 import javax.context.ConversationScoped;
 
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.bootstrap.api.Singleton;
-import org.jboss.webbeans.bootstrap.api.SingletonProvider;
 
 /**
  * The conversation context
  * 
  * @author Nicklas Karlsson
  */
-public class ConversationContext extends AbstractThreadLocalMapContext
+public class ConversationContext extends AbstractThreadLocalMapContext implements Service
 {
    private static LogProvider log = Logging.getLogProvider(ConversationContext.class);
 
-   private static Singleton<ConversationContext> INSTANCE =
-           SingletonProvider.instance().create(ConversationContext.class);
-   
    public static ConversationContext instance()
    {
-       return INSTANCE.get();
-   }
-
-   public static ConversationContext create()
-   {
-      ConversationContext context = new ConversationContext();
-      INSTANCE.set(context);
-      return context;
+       return CurrentManager.rootManager().getServices().get(ConversationContext.class);
    }
 
    /**

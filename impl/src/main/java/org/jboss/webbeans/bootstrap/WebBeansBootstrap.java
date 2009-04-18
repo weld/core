@@ -115,6 +115,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          log.info("@Resource injection not available.");
       }
       addImplementationServices();
+      createContexts();
       this.manager = ManagerImpl.newRootManager(ServiceRegistries.unmodifiableServiceRegistry(getServices()));
       CurrentManager.setRootManager(manager);
       initializeContexts();
@@ -221,11 +222,20 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    
    protected void initializeContexts()
    {
-      manager.addContext(DependentContext.create());
-      manager.addContext(RequestContext.create());
-      manager.addContext(SessionContext.create());
-      manager.addContext(ApplicationContext.create());
-      manager.addContext(ConversationContext.create());
+      manager.addContext(DependentContext.instance());
+      manager.addContext(RequestContext.instance());
+      manager.addContext(ConversationContext.instance());
+      manager.addContext(SessionContext.instance());
+      manager.addContext(ApplicationContext.instance());
+   }
+   
+   protected void createContexts()
+   {
+      getServices().add(DependentContext.class, new DependentContext());
+      getServices().add(RequestContext.class, new RequestContext());
+      getServices().add(ConversationContext.class, new ConversationContext());
+      getServices().add(SessionContext.class, new SessionContext());
+      getServices().add(ApplicationContext.class, new ApplicationContext());
    }
 
    protected void beginApplication(BeanStore applicationBeanStore)

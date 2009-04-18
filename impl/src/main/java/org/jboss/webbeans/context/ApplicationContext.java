@@ -27,8 +27,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.context.ApplicationScoped;
 
-import org.jboss.webbeans.bootstrap.api.Singleton;
-import org.jboss.webbeans.bootstrap.api.SingletonProvider;
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.context.api.BeanStore;
 
 /**
@@ -38,21 +38,12 @@ import org.jboss.webbeans.context.api.BeanStore;
  * 
  * @see org.jboss.webbeans.context.ApplicationContext
  */
-public class ApplicationContext extends AbstractMapContext
+public class ApplicationContext extends AbstractMapContext implements Service
 {
-
-   private static Singleton<ApplicationContext> INSTANCE = SingletonProvider.instance().create(ApplicationContext.class);
    
    public static ApplicationContext instance()
    {
-       return INSTANCE.get();
-   }
-
-   public static ApplicationContext create()
-   {
-      ApplicationContext context = new ApplicationContext();
-      INSTANCE.set(context);
-      return context;
+       return CurrentManager.rootManager().getServices().get(ApplicationContext.class);
    }
 
    // The beans
@@ -63,7 +54,7 @@ public class ApplicationContext extends AbstractMapContext
    /**
     * Constructor
     */
-   protected ApplicationContext()
+   public ApplicationContext()
    {
       super(ApplicationScoped.class);
       this.active = new AtomicBoolean(false);

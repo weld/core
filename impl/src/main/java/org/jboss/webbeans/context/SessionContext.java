@@ -25,8 +25,8 @@ package org.jboss.webbeans.context;
 
 import javax.context.SessionScoped;
 
-import org.jboss.webbeans.bootstrap.api.Singleton;
-import org.jboss.webbeans.bootstrap.api.SingletonProvider;
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -35,28 +35,19 @@ import org.jboss.webbeans.log.Logging;
  * 
  * @author Nicklas Karlsson
  */
-public class SessionContext extends AbstractThreadLocalMapContext
+public class SessionContext extends AbstractThreadLocalMapContext implements Service
 {
    private static LogProvider log = Logging.getLogProvider(SessionContext.class);
 
-   private static Singleton<SessionContext> INSTANCE = SingletonProvider.instance().create(SessionContext.class);
-
    public static SessionContext instance()
    {
-       return INSTANCE.get();
-   }
-
-   public static SessionContext create()
-   {
-      SessionContext context = new SessionContext();
-      INSTANCE.set(context);
-      return context;
+       return CurrentManager.rootManager().getServices().get(SessionContext.class);
    }
 
    /**
     * Constructor
     */
-   protected SessionContext()
+   public SessionContext()
    {
       super(SessionScoped.class);
       log.trace("Created session context");

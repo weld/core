@@ -30,28 +30,20 @@ import javax.context.Contextual;
 import javax.context.CreationalContext;
 import javax.context.Dependent;
 
-import org.jboss.webbeans.bootstrap.api.Singleton;
-import org.jboss.webbeans.bootstrap.api.SingletonProvider;
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.bootstrap.api.Service;
 
 /**
  * The dependent context
  * 
  * @author Nicklas Karlsson
  */
-public class DependentContext extends AbstractContext
+public class DependentContext extends AbstractContext implements Service
 {
-   private static Singleton<DependentContext> INSTANCE = SingletonProvider.instance().create(DependentContext.class);
 
    public static DependentContext instance()
    {
-      return INSTANCE.get();
-   }
-
-   public static DependentContext create()
-   {
-      DependentContext ctx = new DependentContext();
-      INSTANCE.set(ctx);
-      return ctx;
+      return CurrentManager.rootManager().getServices().get(DependentContext.class);
    }
 
    private final ThreadLocal<AtomicInteger> reentrantActiveCount;
