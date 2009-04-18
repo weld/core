@@ -41,6 +41,7 @@
          </run>
       </groups>
       <packages>
+<!--         <package name="org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle" />-->
          <package name="org.jboss.webbeans.test.examples" />
          <package name="org.jboss.webbeans.test.unit.bootstrap" />
          <package name="org.jboss.webbeans.test.unit.bootstrap.ordering" />
