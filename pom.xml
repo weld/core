@@ -76,6 +76,7 @@
             <module>osgi-bundle</module>
          </modules>
       </profile>
+      
    </profiles>
 
 
