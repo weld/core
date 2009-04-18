@@ -1,4 +1,10 @@
 /*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright 2009 Sun Microsystems, Inc. All rights reserved.
+ *
+ * Use is subject to license terms.
+ *
  * JBoss, Home of Professional Open Source
  * Copyright 2008, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -9,7 +15,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -24,6 +30,9 @@ import javax.context.Contextual;
 import javax.context.CreationalContext;
 import javax.context.Dependent;
 
+import org.jboss.webbeans.bootstrap.api.Singleton;
+import org.jboss.webbeans.bootstrap.api.SingletonProvider;
+
 /**
  * The dependent context
  * 
@@ -31,17 +40,18 @@ import javax.context.Dependent;
  */
 public class DependentContext extends AbstractContext
 {
-   private static DependentContext INSTANCE;
+   private static Singleton<DependentContext> INSTANCE = SingletonProvider.instance().create(DependentContext.class);
 
    public static DependentContext instance()
    {
-      return INSTANCE;
+      return INSTANCE.get();
    }
 
    public static DependentContext create()
    {
-      INSTANCE = new DependentContext();
-      return instance();
+      DependentContext ctx = new DependentContext();
+      INSTANCE.set(ctx);
+      return ctx;
    }
 
    private final ThreadLocal<AtomicInteger> reentrantActiveCount;

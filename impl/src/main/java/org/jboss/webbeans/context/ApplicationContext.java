@@ -1,4 +1,10 @@
 /*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright 2009 Sun Microsystems, Inc. All rights reserved.
+ *
+ * Use is subject to license terms.
+ * 
  * JBoss, Home of Professional Open Source
  * Copyright 2008, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -21,6 +27,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.context.ApplicationScoped;
 
+import org.jboss.webbeans.bootstrap.api.Singleton;
+import org.jboss.webbeans.bootstrap.api.SingletonProvider;
 import org.jboss.webbeans.context.api.BeanStore;
 
 /**
@@ -33,17 +41,18 @@ import org.jboss.webbeans.context.api.BeanStore;
 public class ApplicationContext extends AbstractMapContext
 {
 
-   private static ApplicationContext INSTANCE;
-
+   private static Singleton<ApplicationContext> INSTANCE = SingletonProvider.instance().create(ApplicationContext.class);
+   
    public static ApplicationContext instance()
    {
-      return INSTANCE;
+       return INSTANCE.get();
    }
 
    public static ApplicationContext create()
    {
-      INSTANCE = new ApplicationContext();
-      return instance();
+      ApplicationContext context = new ApplicationContext();
+      INSTANCE.set(context);
+      return context;
    }
 
    // The beans

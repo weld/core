@@ -1,4 +1,10 @@
 /*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright 2009 Sun Microsystems, Inc. All rights reserved.
+ *
+ * Use is subject to license terms.
+ *
  * JBoss, Home of Professional Open Source
  * Copyright 2008, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -9,7 +15,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -19,6 +25,8 @@ package org.jboss.webbeans.context;
 
 import javax.context.SessionScoped;
 
+import org.jboss.webbeans.bootstrap.api.Singleton;
+import org.jboss.webbeans.bootstrap.api.SingletonProvider;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -31,17 +39,18 @@ public class SessionContext extends AbstractThreadLocalMapContext
 {
    private static LogProvider log = Logging.getLogProvider(SessionContext.class);
 
-   private static SessionContext INSTANCE;
+   private static Singleton<SessionContext> INSTANCE = SingletonProvider.instance().create(SessionContext.class);
 
    public static SessionContext instance()
    {
-      return INSTANCE;
+       return INSTANCE.get();
    }
 
    public static SessionContext create()
    {
-      INSTANCE = new SessionContext();
-      return instance();
+      SessionContext context = new SessionContext();
+      INSTANCE.set(context);
+      return context;
    }
 
    /**

@@ -1,6 +1,31 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright 2009 Sun Microsystems, Inc. All rights reserved.
+ *
+ * Use is subject to license terms.
+ *
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jboss.webbeans.context;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.bootstrap.api.Singleton;
+import org.jboss.webbeans.bootstrap.api.SingletonProvider;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.conversation.ConversationManager;
 import org.jboss.webbeans.log.LogProvider;
@@ -17,16 +42,16 @@ import org.jboss.webbeans.servlet.ConversationBeanStore;
 public class ContextLifecycle
 {
 
-   private static ContextLifecycle instance;
+   private static Singleton<ContextLifecycle> instance = SingletonProvider.instance().create(ContextLifecycle.class);
 
    public static ContextLifecycle instance()
    {
-      return instance;
+      return instance.get();
    }
 
    protected static void setInstance(ContextLifecycle instance)
    {
-      ContextLifecycle.instance = instance;
+      ContextLifecycle.instance.set(instance);
    }
 
    private static LogProvider log = Logging.getLogProvider(ContextLifecycle.class);
@@ -69,8 +94,8 @@ public class ContextLifecycle
    protected void restoreConversation(String id, BeanStore conversationBeanStore)
    {
       log.trace("Starting conversation " + id);
-      ConversationContext.INSTANCE.setBeanStore(conversationBeanStore);
-      ConversationContext.INSTANCE.setActive(true);
+      ConversationContext.instance().setBeanStore(conversationBeanStore);
+      ConversationContext.instance().setActive(true);
    }
 
    protected void destroyConversation(String id, ConversationBeanStore conversationBeanStore)

@@ -1,4 +1,10 @@
 /*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright 2009 Sun Microsystems, Inc. All rights reserved.
+ *
+ * Use is subject to license terms.
+ *
  * JBoss, Home of Professional Open Source
  * Copyright 2008, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -9,7 +15,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -113,8 +119,8 @@ public class WebBeansPhaseListener implements PhaseListener
       CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
       CurrentManager.rootManager().getInstanceByType(ConversationManager.class).beginOrRestoreConversation(PhaseHelper.getConversationId());
       String cid = CurrentManager.rootManager().getInstanceByType(Conversation.class).getId();
-      ConversationContext.INSTANCE.setBeanStore(new ConversationBeanStore(session, cid));
-      ConversationContext.INSTANCE.setActive(true);
+      ConversationContext.instance().setBeanStore(new ConversationBeanStore(session, cid));
+      ConversationContext.instance().setActive(true);
    }
 
    /**
@@ -124,7 +130,7 @@ public class WebBeansPhaseListener implements PhaseListener
    {
       log.trace("In after render reponse phase");
       CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
-      ConversationContext.INSTANCE.setActive(false);
+      ConversationContext.instance().setActive(false);
    }
 
    public PhaseId getPhaseId()
