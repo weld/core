@@ -35,6 +35,7 @@ import org.jboss.webbeans.bootstrap.api.helpers.AbstractBootstrap;
 import org.jboss.webbeans.bootstrap.api.helpers.ServiceRegistries;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.context.ApplicationContext;
+import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.RequestContext;
@@ -231,6 +232,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    
    protected void createContexts()
    {
+      getServices().add(ContextLifecycle.class, new ContextLifecycle());
       getServices().add(DependentContext.class, new DependentContext());
       getServices().add(RequestContext.class, new RequestContext());
       getServices().add(ConversationContext.class, new ConversationContext());

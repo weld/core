@@ -59,7 +59,7 @@ public enum Environments implements Environment
     */
    SE(WebBeanDiscovery.class, ResourceLoader.class);
    
-   private Set<Class<? extends Service>> requiredServices;
+   private final Set<Class<? extends Service>> requiredServices;
    
    private Environments(Class<? extends Service>... requiredServices)
    {

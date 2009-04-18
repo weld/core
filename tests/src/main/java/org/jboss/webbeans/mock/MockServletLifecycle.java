@@ -30,7 +30,6 @@ public class MockServletLifecycle extends ContextLifecycle
       bootstrap.getServices().add(ResourceLoader.class, MOCK_RESOURCE_LOADER);
       bootstrap.getServices().add(WebBeanDiscovery.class, webBeanDiscovery);
       bootstrap.setApplicationContext(applicationBeanStore);
-      setInstance(this);
    }
    
    public void initialize()

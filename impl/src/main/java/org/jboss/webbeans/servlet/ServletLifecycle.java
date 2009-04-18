@@ -42,25 +42,22 @@ import org.jboss.webbeans.log.Logging;
  * @author Pete Muir
  * @author Nicklas Karlsson
  */
-public class ServletLifecycle extends ContextLifecycle
+public class ServletLifecycle
 {
 
+   private final ContextLifecycle lifecycle;
+   
    public static final String REQUEST_ATTRIBUTE_NAME = ServletLifecycle.class.getName() + ".requestBeanStore";
 
-   // This is a temporray solution. We should remove the static field from
-   // ContextLifecycle and just tie the lifecycle of ContextLifecycle
-   // with that of manager.
-   public ServletLifecycle()
-   {
-      ContextLifecycle.setInstance(this);
-   }
-
-   public static ServletLifecycle instance()
-   {
-      return (ServletLifecycle) ContextLifecycle.instance();
-   }
-
    private static LogProvider log = Logging.getLogProvider(ServletLifecycle.class);
+   
+   /**
+    * 
+    */
+   public ServletLifecycle(ContextLifecycle lifecycle)
+   {
+      this.lifecycle = lifecycle;
+   }
 
    /**
     * Begins a session
@@ -79,9 +76,9 @@ public class ServletLifecycle extends ContextLifecycle
    public void endSession(HttpSession session)
    {
       BeanStore mockRequest = new ConcurrentHashMapBeanStore();
-      super.beginRequest("endSession-" + session.getId(), mockRequest);
-      super.endSession(session.getId(), restoreSessionContext(session));
-      super.endRequest("endSession-" + session.getId(), mockRequest);
+      lifecycle.beginRequest("endSession-" + session.getId(), mockRequest);
+      lifecycle.endSession(session.getId(), restoreSessionContext(session));
+      lifecycle.endRequest("endSession-" + session.getId(), mockRequest);
    }
 
    /**
@@ -95,7 +92,7 @@ public class ServletLifecycle extends ContextLifecycle
    {
       BeanStore sessionBeanStore = new HttpRequestSessionBeanStore(request);
       HttpSession session = request.getSession(false);
-      super.restoreSession(session == null ? "Inactive session" : session.getId(), sessionBeanStore);
+      lifecycle.restoreSession(session == null ? "Inactive session" : session.getId(), sessionBeanStore);
       if (session != null)
       {
          CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
@@ -106,7 +103,7 @@ public class ServletLifecycle extends ContextLifecycle
    protected BeanStore restoreSessionContext(HttpSession session)
    {
       BeanStore beanStore = new HttpSessionBeanStore(session);
-      super.restoreSession(session.getId(), beanStore);
+      lifecycle.restoreSession(session.getId(), beanStore);
       CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
       return beanStore;
    }
@@ -124,7 +121,7 @@ public class ServletLifecycle extends ContextLifecycle
       {
          BeanStore beanStore = new ConcurrentHashMapBeanStore();
          request.setAttribute(REQUEST_ATTRIBUTE_NAME, beanStore);
-         super.beginRequest(request.getRequestURI(), beanStore);
+         lifecycle.beginRequest(request.getRequestURI(), beanStore);
          restoreSessionContext(request);
       }
    }
@@ -143,7 +140,7 @@ public class ServletLifecycle extends ContextLifecycle
          {
             throw new IllegalStateException("Cannot obtain request scoped beans from the request");
          }
-         super.endRequest(request.getRequestURI(), beanStore);
+         lifecycle.endRequest(request.getRequestURI(), beanStore);
          request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
          SessionContext.instance().setBeanStore(null);
       }

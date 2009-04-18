@@ -42,12 +42,12 @@ import org.jboss.webbeans.bootstrap.api.SingletonProvider;
 public class CurrentManager 
 {
 
-   private static class IntegerMaangerImplMap extends TypeLiteral<Map<Integer, ManagerImpl>> {}
+   private static class IntegerMangerImplMap extends TypeLiteral<Map<Integer, ManagerImpl>> {}
    
    // The root manager instance
    private static Singleton<ManagerImpl> rootManager = SingletonProvider.instance().create(ManagerImpl.class);
    
-   private final static Singleton<Map<Integer, ManagerImpl>> managers = SingletonProvider.instance().create(new IntegerMaangerImplMap().getRawType());
+   private final static Singleton<Map<Integer, ManagerImpl>> managers = SingletonProvider.instance().create(new IntegerMangerImplMap().getRawType());
 
    public static void cleanup()
    {

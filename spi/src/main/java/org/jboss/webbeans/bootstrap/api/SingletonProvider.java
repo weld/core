@@ -110,7 +110,7 @@ public abstract class SingletonProvider
          }
          else
          {
-            throw new RuntimeException("ScopeFactory is already initialized with " + INSTANCE);
+            throw new RuntimeException("SingletonProvider is already initialized with " + INSTANCE);
          }
       }
    }

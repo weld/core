@@ -18,7 +18,7 @@ public interface ServiceRegistry
     * @param serviceType the service type to add
     * @param service the service implementation
     */
-   public <S extends Service> void add(java.lang.Class<S> type, S service);
+   public <S extends Service> void add(Class<S> type, S service);
    
    /**
     * Retrieve a service implementation

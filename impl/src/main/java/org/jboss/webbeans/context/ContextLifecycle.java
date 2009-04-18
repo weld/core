@@ -24,8 +24,7 @@
 package org.jboss.webbeans.context;
 
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.bootstrap.api.Singleton;
-import org.jboss.webbeans.bootstrap.api.SingletonProvider;
+import org.jboss.webbeans.bootstrap.api.Lifecycle;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.conversation.ConversationManager;
 import org.jboss.webbeans.log.LogProvider;
@@ -39,31 +38,19 @@ import org.jboss.webbeans.servlet.ConversationBeanStore;
  * @author Pete Muir
  * 
  */
-public class ContextLifecycle
+public class ContextLifecycle implements Lifecycle
 {
-
-   private static Singleton<ContextLifecycle> instance = SingletonProvider.instance().create(ContextLifecycle.class);
-
-   public static ContextLifecycle instance()
-   {
-      return instance.get();
-   }
-
-   protected static void setInstance(ContextLifecycle instance)
-   {
-      ContextLifecycle.instance.set(instance);
-   }
 
    private static LogProvider log = Logging.getLogProvider(ContextLifecycle.class);
 
-   protected void restoreSession(String id, BeanStore sessionBeanStore)
+   public void restoreSession(String id, BeanStore sessionBeanStore)
    {
       log.trace("Restoring session " + id);
       SessionContext.instance().setBeanStore(sessionBeanStore);
       SessionContext.instance().setActive(true);
    }
 
-   protected void endSession(String id, BeanStore sessionBeanStore)
+   public void endSession(String id, BeanStore sessionBeanStore)
    {
       log.trace("Ending session " + id);
       SessionContext.instance().setActive(true);

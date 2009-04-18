@@ -27,6 +27,8 @@ import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
 
+import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.context.ContextLifecycle;
 import org.jboss.webbeans.servlet.api.helpers.AbstractServletListener;
 
 /**
@@ -42,11 +44,15 @@ import org.jboss.webbeans.servlet.api.helpers.AbstractServletListener;
 public class WebBeansListener extends AbstractServletListener
 {
    
-   private final ServletLifecycle lifecycle;
-
-   public WebBeansListener()
+   private ServletLifecycle lifecycle;
+   
+   private ServletLifecycle getLifecycle()
    {
-      lifecycle = new ServletLifecycle();
+      if (lifecycle == null)
+      {
+         this.lifecycle = new ServletLifecycle(CurrentManager.rootManager().getServices().get(ContextLifecycle.class));
+      }
+      return lifecycle;
    }
 
    /**
@@ -57,7 +63,7 @@ public class WebBeansListener extends AbstractServletListener
    @Override
    public void sessionCreated(HttpSessionEvent event) 
    {
-      lifecycle.beginSession(event.getSession());
+      getLifecycle().beginSession(event.getSession());
    }
 
    /**
@@ -68,7 +74,7 @@ public class WebBeansListener extends AbstractServletListener
    @Override
    public void sessionDestroyed(HttpSessionEvent event) 
    {
-      lifecycle.endSession(event.getSession());
+      getLifecycle().endSession(event.getSession());
    }
 
    /**
@@ -81,7 +87,7 @@ public class WebBeansListener extends AbstractServletListener
    {
       if (event.getServletRequest() instanceof HttpServletRequest)
       {
-         lifecycle.endRequest((HttpServletRequest) event.getServletRequest());
+         getLifecycle().endRequest((HttpServletRequest) event.getServletRequest());
       }
       else
       {
@@ -99,7 +105,7 @@ public class WebBeansListener extends AbstractServletListener
    {
       if (event.getServletRequest() instanceof HttpServletRequest)
       {
-         lifecycle.beginRequest((HttpServletRequest) event.getServletRequest());
+         getLifecycle().beginRequest((HttpServletRequest) event.getServletRequest());
       }
       else
       {

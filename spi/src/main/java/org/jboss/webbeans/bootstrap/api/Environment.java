@@ -26,12 +26,12 @@ import java.util.Set;
  */
 public interface Environment
 {
- 
+   
    /**
     * The services to require for this environment
     * 
     * @return the services to require
     */
    public Set<Class<? extends Service>> getRequiredServices();
-   
+ 
 }
