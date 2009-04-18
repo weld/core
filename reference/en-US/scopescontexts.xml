@@ -247,8 +247,147 @@ public class OrderBuilder {
     
   </section>
   
-</section>
+  <section id="wicketContexts">
+  <title>Conversations using Wicket</title>
+  <para>The conversation scope can also be used in WebBeans with the Apache Wicket web framework, through the 
+  <literal>webbeans-wicket</literal> module.  This module takes care of:
+  <itemizedlist>
+  <listitem><para>Setting up the conversation context at the beginning of a wicket request, and tearing it down afterwards</para></listitem> 
+  <listitem><para>Storing the id of any long-running conversation in Wicket's WebPage metadata when the page response is complete</para></listitem>
+  <listitem><para>Activating the correct long-running conversation based upon which page is being accessed</para></listitem>
+  <listitem><para>Propagating the conversation context for any long-running conversation to new pages</para></listitem>
+  </itemizedlist>  </para>
+  <section>
+  <title>Starting and stopping conversations in Wicket</title>
+  <para>As in WebBeans JSF applications, a conversation <emphasis>always</emphasis> exists for any request, but its lifetime is only that of the current request unless it is marked as 
+  <emphasis>long-running</emphasis>.  For Wicket applications this is accomplished exactly as in JSF applications, by injecting the <literal>@Current Conversation</literal> and then 
+  invoking <literal>conversation.begin()</literal>.  Likewise, conversations are ended with <literal>conversation.end()</literal>
+  </para>
+  </section>
+  
+  <section>
+  <title>Long running conversation propagation in Wicket</title>
+  <para>
+  When a conversation is marked as long-running, the id of that conversation will be stored in Wicket's WebPage metadata for the current page.
+  In addition, if a new page is created and set as the response target through <literal>setResponsePage</literal>, this new page will also participate
+  in this conversation.  This occurs for both directly instantiated pages, i.e. <literal>setResponsePage(new OtherPage())</literal> as well as for 
+  bookmarkable pages created with <literal>setResponsePage(OtherPage.class)</literal> where <literal>OtherPage.class</literal> is mounted as bookmarkable
+  from your <literal>WebApplication</literal> subclass (or through annotations.)  In the latter case, because the new page instance is not created until after
+  a redirect, the conversation id will be propagated through a request parameter, and then stored in page metadata after the redirect.
+  </para>
+  </section>
+  <section>
+  <title>The Wicket Conversations Example</title>
+  <para>In <literal>examples/wicket/conversations</literal> there is an example application for using conversations from Wicket.  To setup and run the 
+  application, follow the examples in <xref linkend="numberguessWicket"/>.  If running within eclipse, the application is available at <literal>http://localhost:8080</literal>,
+  and if running within an external container, the app is available at <literal>http://localhost:8080/webbeans-conversations-wicket</literal>.
+  </para>
+  <section>
+  <title>Using the application</title>
+  <para>The <emphasis>conversations</emphasis> application is simply an interface to begin and end conversations, switch between them, and store a single piece of data in each.
+  The interface looks like the following:
+     <mediaobject>
+    <imageobject>
+    <imagedata fileref="images/wicket-conversations-snap.png" format="PNG"/> 
+    </imageobject>
+   </mediaobject></para>
+   <para>
+  The menu at the top will show the list of long-running conversations, along with data about each,
+  as well as the active conversation (even if it is not long running.)  The currently selected item
+  of this menu is the current conversation for the last request that was processed.  Changing this menu
+  changes the current conversation.  The "Data in conversation" text box and the submit
+  button labeled "Change Value" allow you to change a piece of string data associated 
+  with the conversation.  The "begin" button marks the conversation as long running.
+  The "noop" button submits the form without changing the state of the conversation.
+  The "end" button ends the current conversation.  The "longop" button
+  executes a method that takes a few seconds, which can be used to play with conversation timeouts and
+  synchronization/locking.  The "Abandon" link redirects to the HomePage without propagating
+  the conversation, thus starting a new temporary conversation.  The conversation that has been abandoned
+  can be rejoined by selecting it in the popup.</para>
+  </section>
+  <section>
+  <title>Understanding the code</title>
+  <para>As in <xref linkend="numberguessWicket"/>, there is boilerplate code in the
+  SampleApplication, as well as in web.xml, to ensure correct integration of Wicket and Webbeans.
+  Other pieces of this application include:</para>
+  <itemizedlist>
+  <listitem><para>The <literal>Conversations</literal> class exists to allow configuration of the conversation
+  timeout for the current session<programlisting><![CDATA[@Produces
+@ConversationInactivityTimeout
+@Example
+public static long getConversationTimeoutInMilliseconds()
+{
+   return 600000;
+}]]></programlisting>The <literal>Example</literal> deployment type is used to illustrate
+custom deployment types.  It is defined in Example.java:<programlisting><![CDATA[@Target( { TYPE, METHOD, FIELD })
+@Retention(RUNTIME)
+@Documented
+@DeploymentType
+public @interface Example
+{
+}]]></programlisting> and is activated in <literal>WEB-INF/beans.xml</literal>:
+<programlisting><![CDATA[<Beans xmlns="urn:java:ee" xmlns:conversations="urn:java:org.jboss.webbeans.examples.conversations">
+    <Deploy>
+        <Standard />
+        <Production />
+        <conversations:Example />
+    </Deploy>
+</Beans>]]></programlisting></para></listitem>
+<listitem><para>The <literal>Data</literal> class is our conversational component that stores a
+single string:<programlisting><![CDATA[@ConversationScoped
+@Named
+public class Data implements Serializable
+{
+    private String data;
 
+    public String getData()
+    {
+        return data;
+    }
+    
+    public void setData(String data)
+    {
+        this.data = data;
+    }
+}]]></programlisting></para></listitem>
+<listitem><para>The <literal>HomePage</literal> class is where
+the brunt of the work takes place.  It injects the WebBeans-provided <literal>ConversationManager</literal>
+component in order to access the list of long-running conversations, injects the current <literal>Conversation</literal>
+in order to allow control over whether that conversation is long-running, and injects the <literal>Data</literal>
+component to allow its manipulation by the textfield:<programlisting><![CDATA[/**
+* These are injections for displaying information about existing conversations to the user
+*/
+@Current ConversationManager conversationManager;
+@Current Conversation currentConversation;
+ 
+/**
+* This is our conversational data component, to illustrate how data is used in conversations and
+* exists per-conversation.
+*/
+@Current Data data;
+]]></programlisting>The data component is referenced by the wicket TextField using a 
+<literal>PropertyModel</literal>:<programlisting><![CDATA[form.add(new TextField("dataField", new PropertyModel(this, "data.data")));]]></programlisting>
+This means that for each page, the text field is referring to the "data" property of the "Data" bean that is specific to 
+the conversation that is active for the request, whether that be a transient conversation that is created for the request 
+or a long-running conversation associated with the page.  If one types data into the text field 
+and clicks <literal>Change Value</literal>
+when a long-running conversation is not started, and then clicks <literal>noop</literal>, the
+value in the text field disappears, because it was associated with a transient conversation, and 
+upon redirect, the new conversation had a different Data object, which had the default (empty) value.</para>
+<para>As you can see by the other code in this example, conversations are started and ended programmatically, 
+and no WebBeans-specific code is necessary to propagate the conversation.  The only exception to this
+is in the code to <emphasis>switch</emphasis> conversations, which is not a typical operation in real scenarios.
+In this case, a conversation id (<literal>cid</literal>) request parameter is passed to the <literal>setResponsePage</literal>
+invocation, and this explicit conversation id will override the id that the wicket/webbeans integration
+code would normally generate in order to propagate the current conversation, and hence the specified
+conversation will be active upon redirect.</para>
+</listitem>
+</itemizedlist>
+  
+</section>
+</section>
+</section>
+</section>
 <section>
   <title>The dependent pseudo-scope</title>
 
