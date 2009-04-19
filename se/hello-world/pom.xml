@@ -77,7 +77,7 @@
     <dependencies>
         <dependency>
             <groupId>org.jboss.webbeans</groupId>
-            <artifactId>se-module</artifactId>
+            <artifactId>webbeans-se</artifactId>
         </dependency>
     </dependencies>
 
