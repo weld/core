@@ -1,7 +1,7 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"  [ ]>
 
 <chapter id="ri">
-   <title>Web Beans, the Reference Implementation of JSR-299</title>
+   <title>Getting started with Web Beans, the Reference Implementation of JSR-299</title>
 
    <para>
      The Web Beans is being developed at
