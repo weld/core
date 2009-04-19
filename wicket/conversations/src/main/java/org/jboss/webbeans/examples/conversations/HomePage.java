@@ -12,6 +12,7 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -135,6 +136,11 @@ public class HomePage extends WebPage
             }
          }
       });
+      
+      //Fake out conversation propagation by constructing a string url to ourselves, which
+      //won't have the propagated cid
+      form.add(new ExternalLink("abandon",
+            urlFor(HomePage.class,new PageParameters()).toString()));
 
    }
 }

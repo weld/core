@@ -17,6 +17,8 @@ public class Start {
 		bb.setServer(server);
 		bb.setContextPath("/");
 		bb.setWar("src/main/webapp");
+		bb.setOverrideDescriptor("src/main/webapp/WEB-INF/jetty-additions-to-web.xml");
+
 		server.addHandler(bb);
 
 		try {

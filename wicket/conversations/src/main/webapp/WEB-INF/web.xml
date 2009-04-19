@@ -20,9 +20,4 @@
 	<url-pattern>/*</url-pattern>
  </filter-mapping>
  
-   <listener>
-      <listener-class>org.jboss.webbeans.environment.servlet.Listener</listener-class>
-   </listener>
-
-
 </web-app>
