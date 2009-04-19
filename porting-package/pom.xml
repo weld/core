@@ -7,7 +7,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.webbeans</groupId>
    <artifactId>webbeans-porting-package</artifactId>
-   <version>1.0.0-SNAPSHOT</version>
+   <version>1.0.0.PREVIEW1</version>
    <name>Web Beans Porting Package for JSR-299 TCK</name>
    <dependencies>
 
@@ -41,4 +41,10 @@
       
    </dependencies>
 
+
+  <scm>
+    <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/tags/webbeans-porting-package-1.0.0.PREVIEW1</connection>
+    <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/tags/webbeans-porting-package-1.0.0.PREVIEW1</developerConnection>
+    <url>http://fisheye.jboss.org/browse/WebBeans/ri/tags/webbeans-porting-package-1.0.0.PREVIEW1</url>
+  </scm>
 </project>
