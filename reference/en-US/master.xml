@@ -32,7 +32,7 @@
       <xi:include href="part1.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="intro.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="example.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-      <xi:include href="ri.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+      <xi:include href="gettingstarted.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="injection.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="scopescontexts.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
       <xi:include href="producermethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
