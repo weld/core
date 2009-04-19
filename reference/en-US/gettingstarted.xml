@@ -715,13 +715,14 @@ public class Game
             </para>
          
             <programlisting><![CDATA[cd examples/wicket/numberguess
-mvn eclipse:eclipse]]></programlisting>
+mvn -Pjetty eclipse:eclipse]]></programlisting>
          
             <para>
                Then, from eclipse, choose <emphasis>File -> Import -> General -> Existing Projects into Workspace</emphasis>, 
                select the root directory of the numberguess example, and click 
-               finish.  This will create a project in your workspace called
-               <literal>webbeans-wicket-numberguess</literal>
+               finish.  Note that if you do not intend to run the example with jetty from 
+							 within eclipse, omit the "-Pjetty."  This will create a project in your 
+							 workspace called <literal>webbeans-wicket-numberguess</literal>
             </para>
    
             <mediaobject>
