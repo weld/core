@@ -266,6 +266,13 @@
          
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
+            <artifactId>webbeans-se</artifactId>
+            <version>${webbeans.se.version}</version>
+         </dependency>
+
+         <!-- Deprecated -->
+         <dependency>
+            <groupId>org.jboss.webbeans</groupId>
             <artifactId>se-module</artifactId>
             <version>${webbeans.se.version}</version>
          </dependency>

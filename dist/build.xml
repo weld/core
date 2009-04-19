@@ -18,7 +18,12 @@
 	
 	<target name="dist" description="Build the distribution">
 		
-		<fail unless="version" message="You must specify the version with -Dversion=1.2.3" />
+		<fail unless="webbeans.version" message="You must specify the webbeans.version as a property" />
+		<fail unless="jsr299.version" message="You must specify the jsr299.version as a property" />
+		<fail unless="webbeans.servlet.version" message="You must specify the webbeans.servlet.version as a property" />
+		<fail unless="webbeans.se.version" message="You must specify the webbeans.se.version as a property" />
+		<fail unless="webbeans.wicket.version" message="You must specify the webbeans.wicket.version as a property" />
+		<fail unless="webbeans.logger.version" message="You must specify the webbeans.logger.version as a property" />
 		<fail unless="refdoc.dir" message="You must specify the reference docs directory with -Drefdoc.dir=~/workspace/wb/reference" />
 		<fail unless="examples.dir" message="You must specify the examples directory with -Dexmaples.dir=~/workspace/wb/examples" />
 		
@@ -52,10 +57,13 @@
 		<mkdir dir="${dist.doc.dir}" />
 		<copy todir="${dist.doc.dir}">
 			<fileset dir="${refdoc.dir}/target/docbook/publish">
+				<include name="de-DE/**/*"/>
 				<include name="en-US/**/*"/>
-				<include name="ko-KR/**/*"/>
 			   <include name="es-ES/**/*"/>
+				<include name="ko-KR/**/*"/>
 				<include name="it-IT/**/*"/>
+				<include name="pt-BR/**/*"/>
+				<include name="zh-CN/**/*"/>
 				<include name="zh-TW/**/*"/>
 			</fileset>
 		</copy>
@@ -64,11 +72,15 @@
 		<maven target="javadoc:jar install" basedir="${wbri.dir}" />
 		
 		<artifact:dependencies filesetId="webbeans.fileset" versionsId="webbeans.versions" sourcesfilesetid="webbeans.sources.fileset" javadocfilesetid="webbeans.javadocs.fileset">
+			<dependency groupId="org.jboss.webbeans" artifactId="jsr299-api" version="${version}"/>
 		   <dependency groupId="org.jboss.webbeans" artifactId="webbeans-core" version="${version}"/>
 			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-spi" version="${version}"/>
-			<dependency groupId="org.jboss.webbeans.tomcat" artifactId="webbeans-tomcat" version="${webbeans.tomcat.version}"/>
-			<dependency groupId="org.jboss.webbeans.tomcat" artifactId="webbeans-tomcat-int" version="${webbeans.tomcat.version}"/>
-		   <dependency groupId="org.jboss.webbeans" artifactId="jsr299-api" version="${version}"/>
+			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-logger" version="${version}"/>
+			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-wicket" version="${webbeans.servlet.version}"/>
+			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-se" version="${webbeans.servlet.version}"/>
+			<dependency groupId="org.jboss.webbeans.servlet" artifactId="webbeans-servlet" version="${webbeans.servlet.version}"/>
+			<dependency groupId="org.jboss.webbeans.servlet" artifactId="webbeans-servlet-int" version="${webbeans.servlet.version}"/>
+			<dependency groupId="org.jboss.webbeans.servlet" artifactId="webbeans-tomcat-support" version="${webbeans.servlet.version}"/>
 		   <remoteRepository id="repository.jboss.org" url="http://repository.jboss.org/maven2" />
 		</artifact:dependencies>
 		
