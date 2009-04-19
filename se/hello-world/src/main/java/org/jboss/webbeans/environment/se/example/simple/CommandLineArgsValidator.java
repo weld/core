@@ -17,9 +17,9 @@
 package org.jboss.webbeans.environment.se.example.simple;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.context.ApplicationScoped;
-import javax.inject.Current;
 import javax.inject.Initializer;
 import org.jboss.webbeans.environment.se.bindings.Parameters;
 
@@ -40,7 +40,7 @@ public class CommandLineArgsValidator
         if (validParams.size() != 1)
         {
             errors.add( "Please supply just one parameter: your first name" );
-            validParams.clear();
+            validParams = Collections.EMPTY_LIST;
         }
     }
 
