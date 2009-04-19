@@ -7,7 +7,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.webbeans</groupId>
    <artifactId>webbeans-core-test</artifactId>
-   <version>1.0.0-SNAPSHOT</version>
+   <version>1.0.0.PREVIEW1</version>
    <name>Web Beans Core Tests</name>
    <dependencies>
 
@@ -246,4 +246,10 @@
          </build>
       </profile>
    </profiles>
+
+  <scm>
+    <connection>scm:svn:http://anonsvn.jboss.org/repos/webbeans/ri/tags/webbeans-core-test-1.0.0.PREVIEW1</connection>
+    <developerConnection>scm:svn:https://svn.jboss.org/repos/webbeans/ri/tags/webbeans-core-test-1.0.0.PREVIEW1</developerConnection>
+    <url>http://fisheye.jboss.org/browse/WebBeans/ri/tags/webbeans-core-test-1.0.0.PREVIEW1</url>
+  </scm>
 </project>
