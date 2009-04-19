@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-04-15 18:48+0000\n"
+"POT-Creation-Date: 2009-04-19 20:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -37,29 +37,83 @@ msgstr ""
 msgid "According to the spec:"
 msgstr ""
 
-#. Tag: chapter
-#: producermethods.xml:12
+#. Tag: para
+#: producermethods.xml:16
 #, no-c-format
 msgid ""
-"<blockquote> <para>A Web Beans producer method acts as a source of objects "
-"to be injected, where:</para> <itemizedlist> <listitem> <para>the objects to "
-"be injected are not required to be instances of Web Beans,</para> </"
-"listitem> <listitem> <para>the concrete type of the objects to be injected "
-"may vary at runtime or</para> </listitem> <listitem> <para>the objects "
-"require some custom initialization that is not performed by the Web Bean "
-"constructor</para> </listitem> </itemizedlist> </blockquote> <para>For "
-"example, producer methods let us:</para> <itemizedlist> <listitem> "
-"<para>expose a JPA entity as a Web Bean,</para> </listitem> <listitem> "
-"<para>expose any JDK class as a Web Bean,</para> </listitem> <listitem> "
-"<para>define multiple Web Beans, with different scopes or initialization, "
-"for the same implementation class, or</para> </listitem> <listitem> "
-"<para>vary the implementation of an API type at runtime.</para> </listitem> "
-"</itemizedlist> <para>In particular, producer methods let us use runtime "
-"polymorphism with Web Beans. As we've seen, deployment types are a powerful "
-"solution to the problem of deployment-time polymorphism. But once the system "
-"is deployed, the Web Bean implementation is fixed. A producer method has no "
-"such limitation:</para> <programlisting role=\"JAVA\"><![CDATA"
-"[@SessionScoped\n"
+"A Web Beans producer method acts as a source of objects to be injected, "
+"where:"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:20
+#, no-c-format
+msgid ""
+"the objects to be injected are not required to be instances of Web Beans,"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:23
+#, no-c-format
+msgid "the concrete type of the objects to be injected may vary at runtime or"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:26
+#, no-c-format
+msgid ""
+"the objects require some custom initialization that is not performed by the "
+"Web Bean constructor"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:33
+#, no-c-format
+msgid "For example, producer methods let us:"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:37
+#, no-c-format
+msgid "expose a JPA entity as a Web Bean,"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:40
+#, no-c-format
+msgid "expose any JDK class as a Web Bean,"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:43
+#, no-c-format
+msgid ""
+"define multiple Web Beans, with different scopes or initialization, for the "
+"same implementation class, or"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:47
+#, no-c-format
+msgid "vary the implementation of an API type at runtime."
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:51
+#, no-c-format
+msgid ""
+"In particular, producer methods let us use runtime polymorphism with Web "
+"Beans. As we've seen, deployment types are a powerful solution to the "
+"problem of deployment-time polymorphism. But once the system is deployed, "
+"the Web Bean implementation is fixed. A producer method has no such "
+"limitation:"
+msgstr ""
+
+#. Tag: programlisting
+#: producermethods.xml:56
+#, no-c-format
+msgid ""
+"<![CDATA[@SessionScoped\n"
 "public class Preferences {\n"
 "    \n"
 "    private PaymentStrategyType paymentStrategy;\n"
@@ -76,13 +130,35 @@ msgid ""
 "        } \n"
 "    }\n"
 "    \n"
-"}]]></programlisting> <para>Consider an injection point:</para> "
-"<programlisting role=\"JAVA\"><![CDATA[@Preferred PaymentStrategy "
-"paymentStrat;]]></programlisting> <para>This injection point has the same "
-"type and binding annotations as the producer method, so it resolves to the "
-"producer method using the usual Web Beans injection rules. The producer "
-"method will be called by the Web Bean manager to obtain an instance to "
-"service this injection point.</para>."
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:58
+#, no-c-format
+msgid "Consider an injection point:"
+msgstr ""
+
+#. Tag: programlisting
+#: producermethods.xml:60
+#, no-c-format
+msgid "<![CDATA[@Preferred PaymentStrategy paymentStrat;]]>"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:62
+#, no-c-format
+msgid ""
+"This injection point has the same type and binding annotations as the "
+"producer method, so it resolves to the producer method using the usual Web "
+"Beans injection rules. The producer method will be called by the Web Bean "
+"manager to obtain an instance to service this injection point."
+msgstr ""
+
+#. Tag: chapter
+#: producermethods.xml:65
+#, no-c-format
+msgid "<chapter>.</chapter>"
 msgstr ""
 
 #. Tag: title

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: producermethods\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-04-15 18:48+0000\n"
+"POT-Creation-Date: 2009-04-19 20:36+0000\n"
 "PO-Revision-Date: 2009-01-23 11:12+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -47,69 +47,83 @@ msgstr ""
 msgid "According to the spec:"
 msgstr "spec에 의하면: "
 
-#. Tag: chapter
-#: producermethods.xml:12
+#. Tag: para
+#: producermethods.xml:16
 #, no-c-format
 msgid ""
-"<blockquote> <para>A Web Beans producer method acts as a source of objects "
-"to be injected, where:</para> <itemizedlist> <listitem> <para>the objects to "
-"be injected are not required to be instances of Web Beans,</para> </"
-"listitem> <listitem> <para>the concrete type of the objects to be injected "
-"may vary at runtime or</para> </listitem> <listitem> <para>the objects "
-"require some custom initialization that is not performed by the Web Bean "
-"constructor</para> </listitem> </itemizedlist> </blockquote> <para>For "
-"example, producer methods let us:</para> <itemizedlist> <listitem> "
-"<para>expose a JPA entity as a Web Bean,</para> </listitem> <listitem> "
-"<para>expose any JDK class as a Web Bean,</para> </listitem> <listitem> "
-"<para>define multiple Web Beans, with different scopes or initialization, "
-"for the same implementation class, or</para> </listitem> <listitem> "
-"<para>vary the implementation of an API type at runtime.</para> </listitem> "
-"</itemizedlist> <para>In particular, producer methods let us use runtime "
-"polymorphism with Web Beans. As we've seen, deployment types are a powerful "
-"solution to the problem of deployment-time polymorphism. But once the system "
-"is deployed, the Web Bean implementation is fixed. A producer method has no "
-"such limitation:</para> <programlisting role=\"JAVA\"><![CDATA"
-"[@SessionScoped\n"
-"public class Preferences {\n"
-"    \n"
-"    private PaymentStrategyType paymentStrategy;\n"
-"    \n"
-"    ...\n"
-"    \n"
-"    @Produces @Preferred \n"
-"    public PaymentStrategy getPaymentStrategy() {\n"
-"        switch (paymentStrategy) {\n"
-"            case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
-"            case CHEQUE: return new ChequePaymentStrategy();\n"
-"            case PAYPAL: return new PayPalPaymentStrategy();\n"
-"            default: return null;\n"
-"        } \n"
-"    }\n"
-"    \n"
-"}]]></programlisting> <para>Consider an injection point:</para> "
-"<programlisting role=\"JAVA\"><![CDATA[@Preferred PaymentStrategy "
-"paymentStrat;]]></programlisting> <para>This injection point has the same "
-"type and binding annotations as the producer method, so it resolves to the "
-"producer method using the usual Web Beans injection rules. The producer "
-"method will be called by the Web Bean manager to obtain an instance to "
-"service this injection point.</para>."
+"A Web Beans producer method acts as a source of objects to be injected, "
+"where:"
 msgstr ""
-"<blockquote> <para> Web Beans 생산자 방식은 삽입될 객체 소스로 작동합니다, 여"
-"기서 </para> <itemizedlist> <listitem> <para> 삽입될 객체는 Web Beans의 인스"
-"턴스가 될 필요가 없습니다,</para> </listitem> <listitem> <para> 삽입되야 할 "
-"객체의 구체적 타입은 런타임 시 달라질 수 있습니다 </para> </listitem> "
-"<listitem> <para> 사용자 정의 초기화가 필요한 객체는 Web Bean 생성자에 의해 "
-"실행되지 않습니다</para> </listitem> </itemizedlist> </blockquote> <para> 예"
-"를 들어, 생산자 방식은 다음을 허용합니다: </para> <itemizedlist> <listitem> "
-"<para>Web Bean으로서 JPA 엔티티 노출,</para> </listitem> <listitem> "
-"<para>Web Bean으로서 JDK 클래스 노출,</para> </listitem> <listitem> <para>동"
-"일한 구현 클래스에 대해 다른 범위 또는 초기화를 사용하여 여러 Web Beans를 정"
-"의, </para> </listitem> <listitem> <para>런타임 시 다양한 API 유형 구현.</"
-"para> </listitem> </itemizedlist> <para> 특히, 생산자 방식은 Web Beans를 사용"
-"하여 런타임 다형성을 사용하게 합니다. 이미 알고 있듯이, 배치 유형은 배치 시"
-"간 다형성 문제의 강력한 해결책입니다. 하지만 일단 시스템이 운용되면 Web Bean "
-"구현은 고정됩니다. 생산자 방식은 이러한 한계를 갖지 않습니다:</para> "
-"<programlisting role=\"JAVA\"><![CDATA[@SessionScoped\n"
+
+#. Tag: para
+#: producermethods.xml:20
+#, no-c-format
+msgid ""
+"the objects to be injected are not required to be instances of Web Beans,"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:23
+#, no-c-format
+msgid "the concrete type of the objects to be injected may vary at runtime or"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:26
+#, no-c-format
+msgid ""
+"the objects require some custom initialization that is not performed by the "
+"Web Bean constructor"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:33
+#, fuzzy, no-c-format
+msgid "For example, producer methods let us:"
+msgstr "생산자 방식의 범위 "
+
+#. Tag: para
+#: producermethods.xml:37
+#, no-c-format
+msgid "expose a JPA entity as a Web Bean,"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:40
+#, no-c-format
+msgid "expose any JDK class as a Web Bean,"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:43
+#, no-c-format
+msgid ""
+"define multiple Web Beans, with different scopes or initialization, for the "
+"same implementation class, or"
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:47
+#, no-c-format
+msgid "vary the implementation of an API type at runtime."
+msgstr ""
+
+#. Tag: para
+#: producermethods.xml:51
+#, no-c-format
+msgid ""
+"In particular, producer methods let us use runtime polymorphism with Web "
+"Beans. As we've seen, deployment types are a powerful solution to the "
+"problem of deployment-time polymorphism. But once the system is deployed, "
+"the Web Bean implementation is fixed. A producer method has no such "
+"limitation:"
+msgstr ""
+
+#. Tag: programlisting
+#: producermethods.xml:56
+#, fuzzy, no-c-format
+msgid ""
+"<![CDATA[@SessionScoped\n"
 "public class Preferences {\n"
 "    \n"
 "    private PaymentStrategyType paymentStrategy;\n"
@@ -126,12 +140,51 @@ msgstr ""
 "        } \n"
 "    }\n"
 "    \n"
-"}]]></programlisting> <para>삽입 지점 고려:</para> <programlisting role="
-"\"JAVA\"><![CDATA[@Preferred PaymentStrategy paymentStrat;]]></"
-"programlisting> <para> 이러한 삽입 지점은 동일한 유형을 갖으며 생산자 방식으"
-"로 어노테이션을 바인딩하므로, 일반적인 Web Beans 삽입 규칙을 사용하여 생산자 "
-"방식을 해결합니다. 생산자 방식은 Web Bean 관리자에 의해 호출되어 이러한 삽입 "
-"지점을 서비스하기 위해 인스턴스를 획득합니다.</para>.  "
+"}]]>"
+msgstr ""
+"<![CDATA[@Produces @Preferred @SessionScoped\n"
+"public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy ccps,\n"
+"                                          ChequePaymentStrategy cps,\n"
+"                                          PayPalPaymentStrategy ppps) {\n"
+"    switch (paymentStrategy) {\n"
+"        case CREDIT_CARD: return ccps;\n"
+"        case CHEQUE: return cps;\n"
+"        case PAYPAL: return ppps;\n"
+"        default: return null;\n"
+"    } \n"
+"}]]>"
+
+#. Tag: para
+#: producermethods.xml:58
+#, no-c-format
+msgid "Consider an injection point:"
+msgstr ""
+
+#. Tag: programlisting
+#: producermethods.xml:60
+#, fuzzy, no-c-format
+msgid "<![CDATA[@Preferred PaymentStrategy paymentStrat;]]>"
+msgstr ""
+"<![CDATA[@Produces @Preferred @SessionScoped\n"
+"public PaymentStrategy getPaymentStrategy() {\n"
+"    ...\n"
+"}]]>"
+
+#. Tag: para
+#: producermethods.xml:62
+#, no-c-format
+msgid ""
+"This injection point has the same type and binding annotations as the "
+"producer method, so it resolves to the producer method using the usual Web "
+"Beans injection rules. The producer method will be called by the Web Bean "
+"manager to obtain an instance to service this injection point."
+msgstr ""
+
+#. Tag: chapter
+#: producermethods.xml:65
+#, no-c-format
+msgid "<chapter>.</chapter>"
+msgstr ""
 
 #. Tag: title
 #: producermethods.xml:68
@@ -358,13 +411,26 @@ msgstr ""
 "에 <literal>Preferences</literal> 객체가 삭제될 때 까지 삭제되지 않습니"
 "다.      "
 
-#, fuzzy
-#~ msgid "For example, producer methods let us:"
-#~ msgstr "생산자 방식의 범위 "
-
-#, fuzzy
 #~ msgid ""
-#~ "<![CDATA[@SessionScoped\n"
+#~ "<blockquote> <para>A Web Beans producer method acts as a source of "
+#~ "objects to be injected, where:</para> <itemizedlist> <listitem> <para>the "
+#~ "objects to be injected are not required to be instances of Web Beans,</"
+#~ "para> </listitem> <listitem> <para>the concrete type of the objects to be "
+#~ "injected may vary at runtime or</para> </listitem> <listitem> <para>the "
+#~ "objects require some custom initialization that is not performed by the "
+#~ "Web Bean constructor</para> </listitem> </itemizedlist> </blockquote> "
+#~ "<para>For example, producer methods let us:</para> <itemizedlist> "
+#~ "<listitem> <para>expose a JPA entity as a Web Bean,</para> </listitem> "
+#~ "<listitem> <para>expose any JDK class as a Web Bean,</para> </listitem> "
+#~ "<listitem> <para>define multiple Web Beans, with different scopes or "
+#~ "initialization, for the same implementation class, or</para> </listitem> "
+#~ "<listitem> <para>vary the implementation of an API type at runtime.</"
+#~ "para> </listitem> </itemizedlist> <para>In particular, producer methods "
+#~ "let us use runtime polymorphism with Web Beans. As we've seen, deployment "
+#~ "types are a powerful solution to the problem of deployment-time "
+#~ "polymorphism. But once the system is deployed, the Web Bean "
+#~ "implementation is fixed. A producer method has no such limitation:</para> "
+#~ "<programlisting role=\"JAVA\"><![CDATA[@SessionScoped\n"
 #~ "public class Preferences {\n"
 #~ "    \n"
 #~ "    private PaymentStrategyType paymentStrategy;\n"
@@ -381,25 +447,50 @@ msgstr ""
 #~ "        } \n"
 #~ "    }\n"
 #~ "    \n"
-#~ "}]]>"
+#~ "}]]></programlisting> <para>Consider an injection point:</para> "
+#~ "<programlisting role=\"JAVA\"><![CDATA[@Preferred PaymentStrategy "
+#~ "paymentStrat;]]></programlisting> <para>This injection point has the same "
+#~ "type and binding annotations as the producer method, so it resolves to "
+#~ "the producer method using the usual Web Beans injection rules. The "
+#~ "producer method will be called by the Web Bean manager to obtain an "
+#~ "instance to service this injection point.</para>."
 #~ msgstr ""
-#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
-#~ "public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy "
-#~ "ccps,\n"
-#~ "                                          ChequePaymentStrategy cps,\n"
-#~ "                                          PayPalPaymentStrategy ppps) {\n"
-#~ "    switch (paymentStrategy) {\n"
-#~ "        case CREDIT_CARD: return ccps;\n"
-#~ "        case CHEQUE: return cps;\n"
-#~ "        case PAYPAL: return ppps;\n"
-#~ "        default: return null;\n"
-#~ "    } \n"
-#~ "}]]>"
-
-#, fuzzy
-#~ msgid "<![CDATA[@Preferred PaymentStrategy paymentStrat;]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
-#~ "public PaymentStrategy getPaymentStrategy() {\n"
+#~ "<blockquote> <para> Web Beans 생산자 방식은 삽입될 객체 소스로 작동합니"
+#~ "다, 여기서 </para> <itemizedlist> <listitem> <para> 삽입될 객체는 Web "
+#~ "Beans의 인스턴스가 될 필요가 없습니다,</para> </listitem> <listitem> "
+#~ "<para> 삽입되야 할 객체의 구체적 타입은 런타임 시 달라질 수 있습니다 </"
+#~ "para> </listitem> <listitem> <para> 사용자 정의 초기화가 필요한 객체는 "
+#~ "Web Bean 생성자에 의해 실행되지 않습니다</para> </listitem> </"
+#~ "itemizedlist> </blockquote> <para> 예를 들어, 생산자 방식은 다음을 허용합"
+#~ "니다: </para> <itemizedlist> <listitem> <para>Web Bean으로서 JPA 엔티티 노"
+#~ "출,</para> </listitem> <listitem> <para>Web Bean으로서 JDK 클래스 노출,</"
+#~ "para> </listitem> <listitem> <para>동일한 구현 클래스에 대해 다른 범위 또"
+#~ "는 초기화를 사용하여 여러 Web Beans를 정의, </para> </listitem> "
+#~ "<listitem> <para>런타임 시 다양한 API 유형 구현.</para> </listitem> </"
+#~ "itemizedlist> <para> 특히, 생산자 방식은 Web Beans를 사용하여 런타임 다형"
+#~ "성을 사용하게 합니다. 이미 알고 있듯이, 배치 유형은 배치 시간 다형성 문제"
+#~ "의 강력한 해결책입니다. 하지만 일단 시스템이 운용되면 Web Bean 구현은 고정"
+#~ "됩니다. 생산자 방식은 이러한 한계를 갖지 않습니다:</para> <programlisting "
+#~ "role=\"JAVA\"><![CDATA[@SessionScoped\n"
+#~ "public class Preferences {\n"
+#~ "    \n"
+#~ "    private PaymentStrategyType paymentStrategy;\n"
+#~ "    \n"
 #~ "    ...\n"
-#~ "}]]>"
+#~ "    \n"
+#~ "    @Produces @Preferred \n"
+#~ "    public PaymentStrategy getPaymentStrategy() {\n"
+#~ "        switch (paymentStrategy) {\n"
+#~ "            case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
+#~ "            case CHEQUE: return new ChequePaymentStrategy();\n"
+#~ "            case PAYPAL: return new PayPalPaymentStrategy();\n"
+#~ "            default: return null;\n"
+#~ "        } \n"
+#~ "    }\n"
+#~ "    \n"
+#~ "}]]></programlisting> <para>삽입 지점 고려:</para> <programlisting role="
+#~ "\"JAVA\"><![CDATA[@Preferred PaymentStrategy paymentStrat;]]></"
+#~ "programlisting> <para> 이러한 삽입 지점은 동일한 유형을 갖으며 생산자 방식"
+#~ "으로 어노테이션을 바인딩하므로, 일반적인 Web Beans 삽입 규칙을 사용하여 생"
+#~ "산자 방식을 해결합니다. 생산자 방식은 Web Bean 관리자에 의해 호출되어 이러"
+#~ "한 삽입 지점을 서비스하기 위해 인스턴스를 획득합니다.</para>.  "

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scopescontexts\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-06 11:30+0000\n"
+"POT-Creation-Date: 2009-04-19 20:36+0000\n"
 "PO-Revision-Date: 2009-01-20 16:49+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -31,7 +31,11 @@ msgid ""
 "the Web Bean. The scope also determines which clients refer to which "
 "instances of the Web Bean. According to the Web Beans specification, a scope "
 "determines:"
-msgstr "到目前為止，我們已見過了一些 <emphasis>scope 類型標記（scope type annotations）</emphasis>的範例了。Web Bean 的 scope 可決定 Web Bean instance 的生命週期（lifecycle）。Scope 也能決定哪個客戶端參照哪個 Web Bean 的 instance。根據 Web Bean 規格，scope 可決定："
+msgstr ""
+"到目前為止，我們已見過了一些 <emphasis>scope 類型標記（scope type "
+"annotations）</emphasis>的範例了。Web Bean 的 scope 可決定 Web Bean instance "
+"的生命週期（lifecycle）。Scope 也能決定哪個客戶端參照哪個 Web Bean 的 "
+"instance。根據 Web Bean 規格，scope 可決定："
 
 #. Tag: para
 #: scopescontexts.xml:14
@@ -48,7 +52,8 @@ msgstr "任何含有該 scope 的 Web Bean 的現有 instance 應何時被刪除
 #. Tag: para
 #: scopescontexts.xml:20
 #, no-c-format
-msgid "Which injected references refer to any instance of a Web Bean with that scope"
+msgid ""
+"Which injected references refer to any instance of a Web Bean with that scope"
 msgstr "哪個被注入的參照代表含有該 scope 的 Web Bean 的任何 instance"
 
 #. Tag: para
@@ -61,7 +66,12 @@ msgid ""
 "<literal>CurrentUser</literal>. This instance will be automatically created "
 "the first time a <literal>CurrentUser</literal> is needed in that session, "
 "and automatically destroyed when the session ends."
-msgstr "比方說若我們有個 session scope 的 Web Bean <literal>CurrentUser</literal>，那麼所有在相同 <literal>HttpSession</literal> 的 context 中被調用的 Web Bean 都會看見相同的 <literal>CurrentUser</literal> 的 instance。當 <literal>CurrentUser</literal> 在該 session 中第一次被需要時，這個 instance 就會自動地被建立，並且在這個 session 結束時被自動地刪除掉。"
+msgstr ""
+"比方說若我們有個 session scope 的 Web Bean <literal>CurrentUser</literal>，那"
+"麼所有在相同 <literal>HttpSession</literal> 的 context 中被調用的 Web Bean 都"
+"會看見相同的 <literal>CurrentUser</literal> 的 instance。當 "
+"<literal>CurrentUser</literal> 在該 session 中第一次被需要時，這個 instance "
+"就會自動地被建立，並且在這個 session 結束時被自動地刪除掉。"
 
 #. Tag: title
 #: scopescontexts.xml:32
@@ -75,7 +85,9 @@ msgstr "Scope type"
 msgid ""
 "Web Beans features an <emphasis>extensible context model</emphasis>. It is "
 "possible to define new scopes by creating a new scope type annotation:"
-msgstr "Web Bean 含有著一個 <emphasis>extensible context model（可延伸的 context 模型）</emphasis>。您可藉由建立新的 scope 類型標記來定義新的 scope："
+msgstr ""
+"Web Bean 含有著一個 <emphasis>extensible context model（可延伸的 context 模"
+"型）</emphasis>。您可藉由建立新的 scope 類型標記來定義新的 scope："
 
 #. Tag: programlisting
 #: scopescontexts.xml:37
@@ -99,7 +111,11 @@ msgid ""
 "useful, we will also need to define a <literal>Context</literal> object that "
 "implements the scope! Implementing a <literal>Context</literal> is usually a "
 "very technical task, intended for framework development only."
-msgstr "當然，那是這項工作中最簡單的部份。若要此 scope 類型能被有效使用，我們還需要定義一個能夠實做該 scope 的 <literal>Context</literal> 物件！實做一個 <literal>Context</literal> 通常是一項非常技術性的工作，這只應使用於架構開發（framework development）上。"
+msgstr ""
+"當然，那是這項工作中最簡單的部份。若要此 scope 類型能被有效使用，我們還需要定"
+"義一個能夠實做該 scope 的 <literal>Context</literal> 物件！實做一個 "
+"<literal>Context</literal> 通常是一項非常技術性的工作，這只應使用於架構開發"
+"（framework development）上。"
 
 #. Tag: para
 #: scopescontexts.xml:44
@@ -107,7 +123,9 @@ msgstr "當然，那是這項工作中最簡單的部份。若要此 scope 類�
 msgid ""
 "We can apply a scope type annotation to a Web Bean implementation class to "
 "specify the scope of the Web Bean:"
-msgstr "我們可套用一個 scope 類型標記至一個 Web Bean 實做 class 來指定 Web Bean 的 scope："
+msgstr ""
+"我們可套用一個 scope 類型標記至一個 Web Bean 實做 class 來指定 Web Bean 的 "
+"scope："
 
 #. Tag: programlisting
 #: scopescontexts.xml:47
@@ -173,7 +191,8 @@ msgstr "使用 Web Bean 的網站應用程式："
 msgid ""
 "any servlet request has access to active request, session and application "
 "scopes, and, additionally"
-msgstr "任何 servlet 請求都可存取 active request、session 和應用程式 scope，另外"
+msgstr ""
+"任何 servlet 請求都可存取 active request、session 和應用程式 scope，另外"
 
 #. Tag: para
 #: scopescontexts.xml:90
@@ -218,7 +237,10 @@ msgid ""
 "If the application tries to invoke a Web Bean with a scope that does not "
 "have an active context, a <literal>ContextNotActiveException</literal> is "
 "thrown by the Web Bean manager at runtime."
-msgstr "若應用程式嘗試透過一個沒有有效 context 的 scope 來引動 Web Bean 的話，Web Bean 管理員便會在 runtime 時回傳一項 <literal>ContextNotActiveException</literal>。"
+msgstr ""
+"若應用程式嘗試透過一個沒有有效 context 的 scope 來引動 Web Bean 的話，Web "
+"Bean 管理員便會在 runtime 時回傳一項 <literal>ContextNotActiveException</"
+"literal>。"
 
 #. Tag: para
 #: scopescontexts.xml:115
@@ -227,7 +249,9 @@ msgid ""
 "Three of the four built-in scopes should be extremely familiar to every Java "
 "EE developer, so let's not waste time discussing them here. One of the "
 "scopes, however, is new."
-msgstr "四個內建 scope 中有其中的三個對於所有 Java EE 開發人員來說應該都不陌生，所以我們將不花時間在此討論它們。不過在這之中有個 scope 則是新的。"
+msgstr ""
+"四個內建 scope 中有其中的三個對於所有 Java EE 開發人員來說應該都不陌生，所以"
+"我們將不花時間在此討論它們。不過在這之中有個 scope 則是新的。"
 
 #. Tag: title
 #: scopescontexts.xml:122
@@ -243,7 +267,10 @@ msgid ""
 "in that it holds state associated with a user of the system, and spans "
 "multiple requests to the server. However, unlike the session scope, the "
 "conversation scope:"
-msgstr "Web Bean 的 conversation scope 和傳統的 session scope 類似，它們都持有著有關於系統用戶的狀態，並發出多重請求至伺服器。conversation scope 和 session scope 不同的地方在於："
+msgstr ""
+"Web Bean 的 conversation scope 和傳統的 session scope 類似，它們都持有著有關"
+"於系統用戶的狀態，並發出多重請求至伺服器。conversation scope 和 session "
+"scope 不同的地方在於："
 
 #. Tag: para
 #: scopescontexts.xml:130
@@ -267,7 +294,10 @@ msgid ""
 "the user. The conversation context holds state associated with what the user "
 "is currently working on. If the user is doing multiple things at the same "
 "time, there are multiple conversations."
-msgstr "Conversation（對話）代表一項工作，從用戶角度來看是項工作的單位。conversation 的 context 持有和用戶目前工作相關的狀態。若用戶同時間一次進行多項工作的話，那就會有多個 conversation。"
+msgstr ""
+"Conversation（對話）代表一項工作，從用戶角度來看是項工作的單位。conversation "
+"的 context 持有和用戶目前工作相關的狀態。若用戶同時間一次進行多項工作的話，那"
+"就會有多個 conversation。"
 
 #. Tag: para
 #: scopescontexts.xml:143
@@ -277,7 +307,10 @@ msgid ""
 "conversations are destroyed at the end of the request. If a conversation "
 "should hold state across multiple requests, it must be explicitly promoted "
 "to a <emphasis>long-running conversation</emphasis>."
-msgstr "conversation context 會在任何 JSF 請求進行中的時候啟用。不過，大部分的 conversation 都會在請求結束後被刪除掉。若有個 conversation 必須持有多重請求的狀態，它便需要被明確地轉為 <emphasis>long-running conversation</emphasis>。"
+msgstr ""
+"conversation context 會在任何 JSF 請求進行中的時候啟用。不過，大部分的 "
+"conversation 都會在請求結束後被刪除掉。若有個 conversation 必須持有多重請求的"
+"狀態，它便需要被明確地轉為 <emphasis>long-running conversation</emphasis>。"
 
 #. Tag: title
 #: scopescontexts.xml:149
@@ -292,7 +325,9 @@ msgid ""
 "Web Beans provides a built-in Web Bean for controlling the lifecyle of "
 "conversations in a JSF application. This Web Bean may be obtained by "
 "injection:"
-msgstr "Web Bean 提供了一個內建的 Web Bean，它可被用來在 JSF 應用程式中控制 conversation 的生命週期。這個 Web Bean 能透過注入下列來取得："
+msgstr ""
+"Web Bean 提供了一個內建的 Web Bean，它可被用來在 JSF 應用程式中控制 "
+"conversation 的生命週期。這個 Web Bean 能透過注入下列來取得："
 
 #. Tag: programlisting
 #: scopescontexts.xml:154
@@ -309,7 +344,11 @@ msgid ""
 "application code. To schedule the current long-running conversation context "
 "for destruction at the end of the current request, call <literal>end()</"
 "literal>."
-msgstr "若要將和目前的請求關聯的 conversation 轉為 long-running conversation 的話，請由應用程式的程式碼調用 <literal>begin()</literal> method。若要將目前的 long-running conversation context 排程在目前請求結束時被刪除，請調用 <literal>end()</literal>。"
+msgstr ""
+"若要將和目前的請求關聯的 conversation 轉為 long-running conversation 的話，請"
+"由應用程式的程式碼調用 <literal>begin()</literal> method。若要將目前的 long-"
+"running conversation context 排程在目前請求結束時被刪除，請調用 <literal>end"
+"()</literal>。"
 
 #. Tag: para
 #: scopescontexts.xml:161
@@ -317,7 +356,9 @@ msgstr "若要將和目前的請求關聯的 conversation 轉為 long-running co
 msgid ""
 "In the following example, a conversation-scoped Web Bean controls the "
 "conversation with which it is associated:"
-msgstr "在下列範例中，有個 conversation-scoped 的 Web Bean 會控制和它關聯的 conversation："
+msgstr ""
+"在下列範例中，有個 conversation-scoped 的 Web Bean 會控制和它關聯的 "
+"conversation："
 
 #. Tag: programlisting
 #: scopescontexts.xml:164
@@ -392,7 +433,9 @@ msgid ""
 "This Web Bean is able to control its own lifecycle through use of the "
 "<literal>Conversation</literal> API. But some other Web Beans have a "
 "lifecycle which depends completely upon another object."
-msgstr "這個 Web Bean 能夠透過使用 <literal>Conversation</literal> API 來控制它自己的生命週期。不過有些其它 Web Bean 的生命週期完全取決於另一個物件。"
+msgstr ""
+"這個 Web Bean 能夠透過使用 <literal>Conversation</literal> API 來控制它自己的"
+"生命週期。不過有些其它 Web Bean 的生命週期完全取決於另一個物件。"
 
 #. Tag: title
 #: scopescontexts.xml:173
@@ -407,7 +450,9 @@ msgid ""
 "The conversation context automatically propagates with any JSF faces request "
 "(JSF form submission). It does not automatically propagate with non-faces "
 "requests, for example, navigation via a link."
-msgstr "conversation context 會隨著任何 JSF face 的請求（JSF form submission）自動地傳播。它不會隨著 non-face 的請求（例如透過連結來瀏覽）自動地傳播。"
+msgstr ""
+"conversation context 會隨著任何 JSF face 的請求（JSF form submission）自動地"
+"傳播。它不會隨著 non-face 的請求（例如透過連結來瀏覽）自動地傳播。"
 
 #. Tag: para
 #: scopescontexts.xml:179
@@ -419,7 +464,12 @@ msgid ""
 "<literal>cid</literal> for this use. The unique identifier of the "
 "conversation may be obtained from the <literal>Conversation</literal> "
 "object, which has the Web Beans name <literal>conversation</literal>."
-msgstr "我們能夠透過包含 conversation 的唯一識別碼（unique identifier）來作為一個請求參數以強制 conversation 隨著 non-face 的請求進行傳播。Web Bean 規格保留了一個名為 <literal>cid</literal> 的請求參數以用於此情況下。conversation 的唯一識別碼可藉由 <literal>Conversation</literal> 這個物件取得，並且它的 Web Bean 名稱為 <literal>conversation</literal>。"
+msgstr ""
+"我們能夠透過包含 conversation 的唯一識別碼（unique identifier）來作為一個請求"
+"參數以強制 conversation 隨著 non-face 的請求進行傳播。Web Bean 規格保留了一個"
+"名為 <literal>cid</literal> 的請求參數以用於此情況下。conversation 的唯一識別"
+"碼可藉由 <literal>Conversation</literal> 這個物件取得，並且它的 Web Bean 名稱"
+"為 <literal>conversation</literal>。"
 
 #. Tag: para
 #: scopescontexts.xml:186
@@ -446,7 +496,11 @@ msgid ""
 "very easy to implement the common POST-then-redirect pattern, without resort "
 "to fragile constructs such as a \"flash\" object. In this case, the Web Bean "
 "manager automatically adds a request parameter to the redirect URL."
-msgstr "Web Bean 管理員也必須將 conversation 在任何重定向作業之間進行傳播，儘管該 conversation 沒有被標記為 long-running。這使得實做一般的 POST-then-redirect 模式變得非常簡單，這樣便無須使用一些像是「flash」物件的脆弱 construct。在此情況下，Web Bean 管理員會自動地新增一個請求參數至重定向 URL。"
+msgstr ""
+"Web Bean 管理員也必須將 conversation 在任何重定向作業之間進行傳播，儘管該 "
+"conversation 沒有被標記為 long-running。這使得實做一般的 POST-then-redirect "
+"模式變得非常簡單，這樣便無須使用一些像是「flash」物件的脆弱 construct。在此情"
+"況下，Web Bean 管理員會自動地新增一個請求參數至重定向 URL。"
 
 #. Tag: title
 #: scopescontexts.xml:200
@@ -461,9 +515,13 @@ msgid ""
 "The Web Bean manager is permitted to destroy a conversation and all state "
 "held in its context at any time in order to preserve resources. A Web Bean "
 "manager implementation will normally do this on the basis of some kind of "
-"timeout &#151; though this is not required by the Web Beans specification. The "
-"timeout is the period of inactivity before the conversation is destroyed."
-msgstr "Web Bean 管理員能夠隨時隨地刪除它 context 中的 conversation 以及所有狀態以保留資源。一個 Web Bean 管理員實做一般會利用某種形式的 timeout 來這麼作 &#151; 儘管這在 Web Bean 規格中是非必要的。Timeout 代表 conversation 在被刪除之前所經過的休止狀態時間。"
+"timeout &#151; though this is not required by the Web Beans specification. "
+"The timeout is the period of inactivity before the conversation is destroyed."
+msgstr ""
+"Web Bean 管理員能夠隨時隨地刪除它 context 中的 conversation 以及所有狀態以保"
+"留資源。一個 Web Bean 管理員實做一般會利用某種形式的 timeout 來這麼作 &#151; "
+"儘管這在 Web Bean 規格中是非必要的。Timeout 代表 conversation 在被刪除之前所"
+"經過的休止狀態時間。"
 
 #. Tag: para
 #: scopescontexts.xml:208
@@ -472,7 +530,9 @@ msgid ""
 "The <literal>Conversation</literal> object provides a method to set the "
 "timeout. This is a hint to the Web Bean manager, which is free to ignore the "
 "setting."
-msgstr "<literal>Conversation</literal> 這個物件提供了一個能設置 timeout 的 method。這是個給 Web Bean 管理員的提示，您可忽略該設定。"
+msgstr ""
+"<literal>Conversation</literal> 這個物件提供了一個能設置 timeout 的 method。"
+"這是個給 Web Bean 管理員的提示，您可忽略該設定。"
 
 #. Tag: programlisting
 #: scopescontexts.xml:212
@@ -481,34 +541,38 @@ msgid "conversation.setTimeout(timeoutInMillis);"
 msgstr "conversation.setTimeout(timeoutInMillis);"
 
 #. Tag: title
-#: scopescontexts.xml:219
+#: scopescontexts.xml:218
 #, no-c-format
 msgid "The dependent pseudo-scope"
 msgstr "dependent pseudo-scope"
 
 #. Tag: para
-#: scopescontexts.xml:221
+#: scopescontexts.xml:220
 #, no-c-format
 msgid ""
 "In addition to the four built-in scopes, Web Beans features the so-called "
 "<emphasis>dependent pseudo-scope</emphasis>. This is the default scope for a "
 "Web Bean which does not explicitly declare a scope type."
-msgstr "除了這四個內建的 scope，Web Bean 還提供了一項稱為 <emphasis>dependent pseudo-scope</emphasis> 的功能。這是個未明確宣告 scope 類型的 Web Bean 的預設 scope。"
+msgstr ""
+"除了這四個內建的 scope，Web Bean 還提供了一項稱為 <emphasis>dependent pseudo-"
+"scope</emphasis> 的功能。這是個未明確宣告 scope 類型的 Web Bean 的預設 "
+"scope。"
 
 #. Tag: para
-#: scopescontexts.xml:225
+#: scopescontexts.xml:224
 #, no-c-format
-msgid "For example, this Web Bean has the scope type <literal>@Dependent</literal>:"
+msgid ""
+"For example, this Web Bean has the scope type <literal>@Dependent</literal>:"
 msgstr "比方說，這個 Web Bean 的 scope 類型為 <literal>@Dependent</literal>："
 
 #. Tag: programlisting
-#: scopescontexts.xml:227
+#: scopescontexts.xml:226
 #, no-c-format
 msgid "<![CDATA[public class Calculator { ... }]]>"
 msgstr "<![CDATA[public class Calculator { ... }]]>"
 
 #. Tag: para
-#: scopescontexts.xml:229
+#: scopescontexts.xml:228
 #, no-c-format
 msgid ""
 "When an injection point of a Web Bean resolves to a dependent Web Bean, a "
@@ -516,66 +580,82 @@ msgid ""
 "Bean is instantiated. Instances of dependent Web Beans are never shared "
 "between different Web Beans or different injection points. They are "
 "<emphasis>dependent objects</emphasis> of some other Web Bean instance."
-msgstr "當 Web Bean 的一個注入點解析至一個相依 Web Bean 時，每當第一個 Web Bean 被例示（instantiate）時，相依 Web Bean 的一個新的 instance 就會被建立。相依 Web Bean 的 instance 絕不會被共享於不同的 Web Bean 或不同的注入點之間。它們是其它 Web Bean instance 的 <emphasis>dependent object（相依物件）</emphasis>。"
+msgstr ""
+"當 Web Bean 的一個注入點解析至一個相依 Web Bean 時，每當第一個 Web Bean 被例"
+"示（instantiate）時，相依 Web Bean 的一個新的 instance 就會被建立。相依 Web "
+"Bean 的 instance 絕不會被共享於不同的 Web Bean 或不同的注入點之間。它們是其"
+"它 Web Bean instance 的 <emphasis>dependent object（相依物件）</emphasis>。"
 
 #. Tag: para
-#: scopescontexts.xml:235
+#: scopescontexts.xml:234
 #, no-c-format
 msgid ""
 "Dependent Web Bean instances are destroyed when the instance they depend "
 "upon is destroyed."
-msgstr "相依 Web Bean 的 instance 會在它們所依賴的 instance 被刪除掉時跟著被一起刪除。"
+msgstr ""
+"相依 Web Bean 的 instance 會在它們所依賴的 instance 被刪除掉時跟著被一起刪"
+"除。"
 
 #. Tag: para
-#: scopescontexts.xml:243
+#: scopescontexts.xml:242
 #, no-c-format
 msgid ""
 "Web Beans makes it easy to obtain a dependent instance of a Java class or "
 "EJB bean, even if the class or EJB bean is already declared as a Web Bean "
 "with some other scope type."
-msgstr "Web Bean 使得取得 Java class 或是 EJB bean 的相依 instance 變得相當容易，儘管該 class 或是 EJB bean 已被宣告為一個含有其牠 scope 類型的 Web Bean。"
+msgstr ""
+"Web Bean 使得取得 Java class 或是 EJB bean 的相依 instance 變得相當容易，儘管"
+"該 class 或是 EJB bean 已被宣告為一個含有其牠 scope 類型的 Web Bean。"
 
 #. Tag: title
-#: scopescontexts.xml:248
+#: scopescontexts.xml:247
 #, no-c-format
 msgid "The <literal>@New</literal> annotation"
 msgstr "<literal>@New</literal> 標記"
 
 #. Tag: para
-#: scopescontexts.xml:250
+#: scopescontexts.xml:249
 #, no-c-format
 msgid ""
 "The built-in <literal>@New</literal> binding annotation allows "
 "<emphasis>implicit</emphasis> definition of a dependent Web Bean at an "
 "injection point. Suppose we declare the following injected field:"
-msgstr "內建的 <literal>@New</literal> 綁定標記允許在注入點能夠有<emphasis>暗示性</emphasis>的相依 Web Bean 定義。假設我們宣告下列被注入的欄位："
+msgstr ""
+"內建的 <literal>@New</literal> 綁定標記允許在注入點能夠有<emphasis>暗示性</"
+"emphasis>的相依 Web Bean 定義。假設我們宣告下列被注入的欄位："
 
 #. Tag: programlisting
-#: scopescontexts.xml:254
+#: scopescontexts.xml:253
 #, no-c-format
 msgid "<![CDATA[@New Calculator calculator;]]>"
 msgstr "<![CDATA[@New Calculator calculator;]]>"
 
 #. Tag: para
-#: scopescontexts.xml:256
+#: scopescontexts.xml:255
 #, no-c-format
 msgid ""
 "Then a Web Bean with scope <literal>@Dependent</literal>, binding type "
 "<literal>@New</literal>, API type <literal>Calculator</literal>, "
 "implementation class <literal>Calculator</literal> and deployment type "
 "<literal>@Standard</literal> is implicitly defined."
-msgstr "如此一來有個含有 scope <literal>@Dependent</literal>、綁定類型 <literal>@New</literal>、API 類型 <literal>Calculator</literal>、實做 class <literal>Calculator</literal> 以及建置類型 <literal>@Standard</literal> 的 Web Bean 就被暗示性地定義了。"
+msgstr ""
+"如此一來有個含有 scope <literal>@Dependent</literal>、綁定類型 "
+"<literal>@New</literal>、API 類型 <literal>Calculator</literal>、實做 class "
+"<literal>Calculator</literal> 以及建置類型 <literal>@Standard</literal> 的 "
+"Web Bean 就被暗示性地定義了。"
 
 #. Tag: para
-#: scopescontexts.xml:261
+#: scopescontexts.xml:260
 #, no-c-format
 msgid ""
 "This is true even if <literal>Calculator</literal> is <emphasis>already</"
 "emphasis> declared with a different scope type, for example:"
-msgstr "就算 <literal>Calculator</literal> <emphasis>已經</emphasis>被宣告為不同 scope type，這還是有效的，比方說："
+msgstr ""
+"就算 <literal>Calculator</literal> <emphasis>已經</emphasis>被宣告為不同 "
+"scope type，這還是有效的，比方說："
 
 #. Tag: programlisting
-#: scopescontexts.xml:264
+#: scopescontexts.xml:263
 #, no-c-format
 msgid ""
 "<![CDATA[@ConversationScoped\n"
@@ -585,15 +665,17 @@ msgstr ""
 "public class Calculator { ... }]]>"
 
 #. Tag: para
-#: scopescontexts.xml:266
+#: scopescontexts.xml:265
 #, no-c-format
 msgid ""
 "So the following injected attributes each get a different instance of "
 "<literal>Calculator</literal>:"
-msgstr "因此下列已注入的屬性都會各得到一個 <literal>Calculator</literal> 的不同 instance："
+msgstr ""
+"因此下列已注入的屬性都會各得到一個 <literal>Calculator</literal> 的不同 "
+"instance："
 
 #. Tag: programlisting
-#: scopescontexts.xml:269
+#: scopescontexts.xml:268
 #, no-c-format
 msgid ""
 "<![CDATA[public class PaymentCalc {\n"
@@ -611,20 +693,24 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: scopescontexts.xml:271
+#: scopescontexts.xml:270
 #, no-c-format
 msgid ""
 "The <literal>calculator</literal> field has a conversation-scoped instance "
 "of <literal>Calculator</literal> injected. The <literal>newCalculator</"
 "literal> field has a new instance of <literal>Calculator</literal> injected, "
 "with a lifecycle that is bound to the owning <literal>PaymentCalc</literal>."
-msgstr "<literal>calculator</literal> 這個欄位中注入了一個 <literal>Calculator</literal> 的 conversation-scoped instance。<literal>newCalculator</literal> 欄位中有個新的 <literal>Calculator</literal> 的 instance 被注入了，並且它的生命週期取決於擁有它的 <literal>PaymentCalc</literal>。"
+msgstr ""
+"<literal>calculator</literal> 這個欄位中注入了一個 <literal>Calculator</"
+"literal> 的 conversation-scoped instance。<literal>newCalculator</literal> 欄"
+"位中有個新的 <literal>Calculator</literal> 的 instance 被注入了，並且它的生命"
+"週期取決於擁有它的 <literal>PaymentCalc</literal>。"
 
 #. Tag: para
-#: scopescontexts.xml:276
+#: scopescontexts.xml:275
 #, no-c-format
 msgid ""
 "This feature is particularly useful with producer methods, as we'll see in "
 "the next chapter."
-msgstr "這項功能對於 producer method 來講特別有幫助，我們將在下個章節中討論到。"
-
+msgstr ""
+"這項功能對於 producer method 來講特別有幫助，我們將在下個章節中討論到。"

@@ -1,0 +1,160 @@
+# Language ko-KR translations for Web_Beans:_Java_Contexts_and_Dependency_Injection package.
+# Automatically generated, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2009-04-19 20:36+0000\n"
+"PO-Revision-Date: 2009-04-19 20:36+0000\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: viewlayers.xml:4
+#, no-c-format
+msgid "Alternative view layers"
+msgstr ""
+
+#. Tag: title
+#: viewlayers.xml:7
+#, no-c-format
+msgid "Using Web Beans with Wicket"
+msgstr ""
+
+#. Tag: title
+#: viewlayers.xml:10
+#, no-c-format
+msgid "The <literal>WebApplication</literal> class"
+msgstr ""
+
+#. Tag: para
+#: viewlayers.xml:12
+#, no-c-format
+msgid ""
+"Each wicket application must have a <literal>WebApplication</literal> "
+"subclass; Web Beans provides, for your utility, a subclass of this which "
+"sets up the Wicket/JSR-299 integration. You should subclass <literal>org."
+"jboss.webbeans.wicket.WebBeansApplication</literal>."
+msgstr ""
+
+#. Tag: para
+#: viewlayers.xml:21
+#, no-c-format
+msgid ""
+"If you would prefer not to subclass <literal>WebBeansApplication</literal>, "
+"you can manually add a (small!) number of overrides and listeners to your "
+"own <literal>WebApplication</literal> subclass. The javadocs of "
+"<literal>WebBeansApplication</literal>detail this."
+msgstr ""
+
+#. Tag: para
+#: viewlayers.xml:30
+#, no-c-format
+msgid "For example:"
+msgstr ""
+
+#. Tag: programlisting
+#: viewlayers.xml:33
+#, no-c-format
+msgid ""
+"<![CDATA[public class SampleApplication extends WebBeansApplication {\n"
+"   @Override\n"
+"   public Class getHomePage() {\n"
+"      return HomePage.class;\n"
+"   }\n"
+"}]]>"
+msgstr ""
+
+#. Tag: title
+#: viewlayers.xml:37
+#, no-c-format
+msgid "Conversations with Wicket"
+msgstr ""
+
+#. Tag: para
+#: viewlayers.xml:38
+#, no-c-format
+msgid ""
+"The conversation scope can be used in Web Beans with the Apache Wicket web "
+"framework, through the <literal>webbeans-wicket</literal> module. This "
+"module takes care of:"
+msgstr ""
+
+#. Tag: para
+#: viewlayers.xml:45
+#, no-c-format
+msgid ""
+"Setting up the conversation context at the beginning of a Wicket request, "
+"and tearing it down afterwards"
+msgstr ""
+
+#. Tag: para
+#: viewlayers.xml:51
+#, no-c-format
+msgid ""
+"Storing the id of any long-running conversation in Wicket's metadata when "
+"the page response is complete"
+msgstr ""
+
+#. Tag: para
+#: viewlayers.xml:57
+#, no-c-format
+msgid ""
+"Activating the correct long-running conversation based upon which page is "
+"being accessed"
+msgstr ""
+
+#. Tag: para
+#: viewlayers.xml:63
+#, no-c-format
+msgid ""
+"Propagating the conversation context for any long-running conversation to "
+"new pages"
+msgstr ""
+
+#. Tag: title
+#: viewlayers.xml:70
+#, no-c-format
+msgid "Starting and stopping conversations in Wicket"
+msgstr ""
+
+#. Tag: para
+#: viewlayers.xml:71
+#, no-c-format
+msgid ""
+"As JSF applications, a conversation <emphasis>always</emphasis> exists for "
+"any request, but its lifetime is only that of the current request unless it "
+"is marked as <emphasis>long-running</emphasis>. For Wicket applications this "
+"is accomplished as in JSF applications, by injecting the <literal>@Current "
+"Conversation</literal> and then invoking <literal>conversation.begin()</"
+"literal>. Likewise, conversations are ended with <literal>conversation.end()"
+"</literal>"
+msgstr ""
+
+#. Tag: title
+#: viewlayers.xml:85
+#, no-c-format
+msgid "Long running conversation propagation in Wicket"
+msgstr ""
+
+#. Tag: para
+#: viewlayers.xml:86
+#, no-c-format
+msgid ""
+"When a conversation is marked as long-running, the id of that conversation "
+"will be stored in Wicket's metadata for the current page. If a new page is "
+"created and set as the response target through <literal>setResponsePage</"
+"literal>, this new page will also participate in this conversation. This "
+"occurs for both directly instantiated pages (<literal>setResponsePage(new "
+"OtherPage())</literal>), as well as for bookmarkable pages created with "
+"<literal>setResponsePage(OtherPage.class)</literal> where <literal>OtherPage."
+"class</literal> is mounted as bookmarkable from your "
+"<literal>WebApplication</literal> subclass (or through annotations). In the "
+"latter case, because the new page instance is not created until after a "
+"redirect, the conversation id will be propagated through a request "
+"parameter, and then stored in page metadata after the redirect."
+msgstr ""

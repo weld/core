@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-04-15 18:48+0000\n"
+"POT-Creation-Date: 2009-04-19 20:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -442,13 +442,13 @@ msgid "conversation.setTimeout(timeoutInMillis);"
 msgstr ""
 
 #. Tag: title
-#: scopescontexts.xml:219
+#: scopescontexts.xml:218
 #, no-c-format
 msgid "The dependent pseudo-scope"
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:221
+#: scopescontexts.xml:220
 #, no-c-format
 msgid ""
 "In addition to the four built-in scopes, Web Beans features the so-called "
@@ -457,20 +457,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:225
+#: scopescontexts.xml:224
 #, no-c-format
 msgid ""
 "For example, this Web Bean has the scope type <literal>@Dependent</literal>:"
 msgstr ""
 
 #. Tag: programlisting
-#: scopescontexts.xml:227
+#: scopescontexts.xml:226
 #, no-c-format
 msgid "<![CDATA[public class Calculator { ... }]]>"
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:229
+#: scopescontexts.xml:228
 #, no-c-format
 msgid ""
 "When an injection point of a Web Bean resolves to a dependent Web Bean, a "
@@ -481,7 +481,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:235
+#: scopescontexts.xml:234
 #, no-c-format
 msgid ""
 "Dependent Web Bean instances are destroyed when the instance they depend "
@@ -489,7 +489,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:243
+#: scopescontexts.xml:242
 #, no-c-format
 msgid ""
 "Web Beans makes it easy to obtain a dependent instance of a Java class or "
@@ -498,13 +498,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: scopescontexts.xml:248
+#: scopescontexts.xml:247
 #, no-c-format
 msgid "The <literal>@New</literal> annotation"
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:250
+#: scopescontexts.xml:249
 #, no-c-format
 msgid ""
 "The built-in <literal>@New</literal> binding annotation allows "
@@ -513,13 +513,13 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: scopescontexts.xml:254
+#: scopescontexts.xml:253
 #, no-c-format
 msgid "<![CDATA[@New Calculator calculator;]]>"
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:256
+#: scopescontexts.xml:255
 #, no-c-format
 msgid ""
 "Then a Web Bean with scope <literal>@Dependent</literal>, binding type "
@@ -529,7 +529,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:261
+#: scopescontexts.xml:260
 #, no-c-format
 msgid ""
 "This is true even if <literal>Calculator</literal> is <emphasis>already</"
@@ -537,7 +537,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: scopescontexts.xml:264
+#: scopescontexts.xml:263
 #, no-c-format
 msgid ""
 "<![CDATA[@ConversationScoped\n"
@@ -545,7 +545,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:266
+#: scopescontexts.xml:265
 #, no-c-format
 msgid ""
 "So the following injected attributes each get a different instance of "
@@ -553,7 +553,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: scopescontexts.xml:269
+#: scopescontexts.xml:268
 #, no-c-format
 msgid ""
 "<![CDATA[public class PaymentCalc {\n"
@@ -565,7 +565,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:271
+#: scopescontexts.xml:270
 #, no-c-format
 msgid ""
 "The <literal>calculator</literal> field has a conversation-scoped instance "
@@ -575,7 +575,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: scopescontexts.xml:276
+#: scopescontexts.xml:275
 #, no-c-format
 msgid ""
 "This feature is particularly useful with producer methods, as we'll see in "

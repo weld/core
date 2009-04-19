@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ri\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-04-15 18:48+0000\n"
+"POT-Creation-Date: 2009-04-19 20:36+0000\n"
 "PO-Revision-Date: 2009-02-27 15:36+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -16,13 +16,13 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
-#: ri.xml:4
+#: gettingstarted.xml:4
 #, fuzzy, no-c-format
-msgid "Web Beans, the Reference Implementation of JSR-299"
+msgid "Getting started with Web Beans, the Reference Implementation of JSR-299"
 msgstr "Die Web Beans Referenzimplementierung"
 
 #. Tag: para
-#: ri.xml:6
+#: gettingstarted.xml:6
 #, fuzzy, no-c-format
 msgid ""
 "The Web Beans is being developed at <ulink url=\"http://seamframework.org/"
@@ -36,7 +36,7 @@ msgstr ""
 "seamframework.org/Download\">Downloads Seite</ulink> herunterladen."
 
 #. Tag: para
-#: ri.xml:13
+#: gettingstarted.xml:13
 #, fuzzy, no-c-format
 msgid ""
 "Web Beans comes with a two deployable example applications: "
@@ -54,37 +54,37 @@ msgstr ""
 "folgendes:"
 
 #. Tag: para
-#: ri.xml:25
+#: gettingstarted.xml:25
 #, fuzzy, no-c-format
 msgid "the latest release of Web Beans,"
 msgstr "die aktuellste Release der Web Beans RI,"
 
 #. Tag: para
-#: ri.xml:28
+#: gettingstarted.xml:28
 #, fuzzy, no-c-format
 msgid "JBoss AS 5.0.1.GA, or"
 msgstr "JBoss AS 5.0.0.GA und"
 
 #. Tag: para
-#: ri.xml:31
+#: gettingstarted.xml:31
 #, no-c-format
 msgid "Apache Tomcat 6.0.x, and"
 msgstr ""
 
 #. Tag: para
-#: ri.xml:34
+#: gettingstarted.xml:34
 #, no-c-format
 msgid "Ant 1.7.0."
 msgstr "Ant 1.7.0."
 
 #. Tag: title
-#: ri.xml:39
+#: gettingstarted.xml:39
 #, no-c-format
 msgid "Using JBoss AS 5"
 msgstr ""
 
 #. Tag: para
-#: ri.xml:41
+#: gettingstarted.xml:41
 #, fuzzy, no-c-format
 msgid ""
 "You'll need to download JBoss AS 5.0.1.GA from <ulink url=\"http://www.jboss."
@@ -96,7 +96,7 @@ msgstr ""
 "Beispiel:"
 
 #. Tag: programlisting
-#: ri.xml:47
+#: gettingstarted.xml:47
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[$ cd /Applications\n"
@@ -106,7 +106,7 @@ msgstr ""
 "$ unzip ~/jboss-5.0.0.GA.zip]]>"
 
 #. Tag: para
-#: ri.xml:49 ri.xml:170
+#: gettingstarted.xml:49 gettingstarted.xml:170
 #, fuzzy, no-c-format
 msgid ""
 "Next, download Web Beans from <ulink url=\"http://seamframework.org/Download"
@@ -117,7 +117,7 @@ msgstr ""
 "entzippen diese. Zum Beispiel "
 
 #. Tag: programlisting
-#: ri.xml:55 ri.xml:176
+#: gettingstarted.xml:55 gettingstarted.xml:176
 #, no-c-format
 msgid ""
 "<![CDATA[$ cd ~/\n"
@@ -127,7 +127,7 @@ msgstr ""
 "$ unzip ~/webbeans-$VERSION.zip]]>"
 
 #. Tag: para
-#: ri.xml:58
+#: gettingstarted.xml:58
 #, no-c-format
 msgid ""
 "Next, we need to tell Web Beans where JBoss is located. Edit <literal>jboss-"
@@ -139,13 +139,13 @@ msgstr ""
 "die <literal>jboss.home</literal>-Property. Zum Beispiel:"
 
 #. Tag: programlisting
-#: ri.xml:64
+#: gettingstarted.xml:64
 #, fuzzy, no-c-format
 msgid "jboss.home=/Applications/jboss-5.0.1.GA"
 msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
 
 #. Tag: para
-#: ri.xml:66
+#: gettingstarted.xml:66
 #, fuzzy, no-c-format
 msgid ""
 "To install Web Beans, you'll need Ant 1.7.0 installed, and the "
@@ -155,7 +155,7 @@ msgstr ""
 "<literal>ANT_HOME</literal> Umgebungsvariable gesetzt sein. Zum Beispiel:"
 
 #. Tag: programlisting
-#: ri.xml:71
+#: gettingstarted.xml:71
 #, no-c-format
 msgid ""
 "$ unzip apache-ant-1.7.0.zip\n"
@@ -165,7 +165,7 @@ msgstr ""
 "$ export ANT_HOME=~/apache-ant-1.7.0"
 
 #. Tag: para
-#: ri.xml:73
+#: gettingstarted.xml:73
 #, fuzzy, no-c-format
 msgid ""
 "Then, you can install the update. The update script will use Maven to "
@@ -175,7 +175,7 @@ msgstr ""
 "um die Web Beans und EJB3 automatisch herunterzuladen."
 
 #. Tag: programlisting
-#: ri.xml:78
+#: gettingstarted.xml:78
 #, no-c-format
 msgid ""
 "$ cd webbeans-$VERSION/jboss-as\n"
@@ -185,13 +185,13 @@ msgstr ""
 "$ ant update"
 
 #. Tag: para
-#: ri.xml:80
+#: gettingstarted.xml:80
 #, no-c-format
 msgid "Now, you're ready to deploy your first example!"
 msgstr "Jetzt können Sie Ihr erstes Beispiel deployen!"
 
 #. Tag: para
-#: ri.xml:85
+#: gettingstarted.xml:85
 #, fuzzy, no-c-format
 msgid ""
 "The build scripts for the examples offer a number of targets for JBoss AS, "
@@ -200,7 +200,7 @@ msgstr ""
 "Die Build-Skripte für die Beispiele bieten zahlreiche Ziele, diese sind:"
 
 #. Tag: para
-#: ri.xml:91
+#: gettingstarted.xml:91
 #, no-c-format
 msgid "<literal>ant restart</literal> - deploy the example in exploded format"
 msgstr ""
@@ -208,7 +208,7 @@ msgstr ""
 "Format"
 
 #. Tag: para
-#: ri.xml:97
+#: gettingstarted.xml:97
 #, no-c-format
 msgid ""
 "<literal>ant explode</literal> - update an exploded example, without "
@@ -218,7 +218,7 @@ msgstr ""
 "Beispiels ohne Neustart des Deployments"
 
 #. Tag: para
-#: ri.xml:103
+#: gettingstarted.xml:103
 #, no-c-format
 msgid ""
 "<literal>ant deploy</literal> - deploy the example in compressed jar format"
@@ -227,25 +227,25 @@ msgstr ""
 "jar-Format"
 
 #. Tag: para
-#: ri.xml:108
+#: gettingstarted.xml:108
 #, no-c-format
 msgid "<literal>ant undeploy</literal> - remove the example from the server"
 msgstr "<literal>ant undeploy</literal> - das Beispiel vom Server entfernen"
 
 #. Tag: para
-#: ri.xml:113
+#: gettingstarted.xml:113
 #, no-c-format
 msgid "<literal>ant clean</literal> - clean the example"
 msgstr "<literal>ant clean</literal> - Das Beispiel bereinigen"
 
 #. Tag: para
-#: ri.xml:120
+#: gettingstarted.xml:120
 #, no-c-format
 msgid "To deploy the numberguess example:"
 msgstr "Um das numberguess Beispiel zu deployen:"
 
 #. Tag: programlisting
-#: ri.xml:124
+#: gettingstarted.xml:124
 #, no-c-format
 msgid ""
 "$ cd examples/numberguess\n"
@@ -255,19 +255,19 @@ msgstr ""
 "ant deploy"
 
 #. Tag: para
-#: ri.xml:126
+#: gettingstarted.xml:126
 #, no-c-format
 msgid "Start JBoss AS:"
 msgstr "JBoss AS starten:"
 
 #. Tag: programlisting
-#: ri.xml:130
+#: gettingstarted.xml:130
 #, no-c-format
 msgid "$ /Application/jboss-5.0.0.GA/bin/run.sh"
 msgstr "$ /Application/jboss-5.0.0.GA/bin/run.sh"
 
 #. Tag: para
-#: ri.xml:133
+#: gettingstarted.xml:133
 #, no-c-format
 msgid "If you use Windows, use the <literal>run.bat</literal>script."
 msgstr ""
@@ -275,7 +275,7 @@ msgstr ""
 "Skript."
 
 #. Tag: para
-#: ri.xml:138 ri.xml:240
+#: gettingstarted.xml:138 gettingstarted.xml:240
 #, no-c-format
 msgid ""
 "Wait for the application to deploy, and enjoy hours of fun at <ulink url="
@@ -285,7 +285,7 @@ msgstr ""
 "url=\"http://localhost:8080/webbeans-numberguess\"></ulink>!"
 
 #. Tag: para
-#: ri.xml:143
+#: gettingstarted.xml:143
 #, fuzzy, no-c-format
 msgid ""
 "Web Beans includes a second simple example that will translate your text "
@@ -300,7 +300,7 @@ msgstr ""
 "enthält . Um dies auszuprobieren:"
 
 #. Tag: programlisting
-#: ri.xml:150
+#: gettingstarted.xml:150
 #, no-c-format
 msgid ""
 "$ cd examples/translator\n"
@@ -310,7 +310,7 @@ msgstr ""
 "ant deploy"
 
 #. Tag: para
-#: ri.xml:152
+#: gettingstarted.xml:152
 #, no-c-format
 msgid ""
 "Wait for the application to deploy, and visit <ulink url=\"http://"
@@ -320,13 +320,13 @@ msgstr ""
 "\"http://localhost:8080/webbeans-translator\"></ulink>!"
 
 #. Tag: title
-#: ri.xml:160
+#: gettingstarted.xml:160
 #, no-c-format
 msgid "Using Apache Tomcat 6.0"
 msgstr ""
 
 #. Tag: para
-#: ri.xml:162
+#: gettingstarted.xml:162
 #, fuzzy, no-c-format
 msgid ""
 "You'll need to download Tomcat 6.0.18 or later from <ulink url=\"http://"
@@ -338,7 +338,7 @@ msgstr ""
 "entzippen diese. Zum Beispiel "
 
 #. Tag: programlisting
-#: ri.xml:168
+#: gettingstarted.xml:168
 #, fuzzy, no-c-format
 msgid ""
 "<![CDATA[$ cd /Applications\n"
@@ -348,7 +348,7 @@ msgstr ""
 "$ unzip ~/jboss-5.0.0.GA.zip]]>"
 
 #. Tag: para
-#: ri.xml:178
+#: gettingstarted.xml:178
 #, fuzzy, no-c-format
 msgid ""
 "Next, we need to tell Web Beans where Tomcat is located. Edit <literal>jboss-"
@@ -360,13 +360,13 @@ msgstr ""
 "die <literal>jboss.home</literal>-Property. Zum Beispiel:"
 
 #. Tag: programlisting
-#: ri.xml:184
+#: gettingstarted.xml:184
 #, fuzzy, no-c-format
 msgid "tomcat.home=/Applications/apache-tomcat-6.0.18"
 msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
 
 #. Tag: para
-#: ri.xml:187
+#: gettingstarted.xml:187
 #, fuzzy, no-c-format
 msgid ""
 "The build scripts for the examples offer a number of targets for Tomcat, "
@@ -375,7 +375,7 @@ msgstr ""
 "Die Build-Skripte für die Beispiele bieten zahlreiche Ziele, diese sind:"
 
 #. Tag: para
-#: ri.xml:193
+#: gettingstarted.xml:193
 #, fuzzy, no-c-format
 msgid ""
 "<literal>ant tomcat.restart</literal> - deploy the example in exploded format"
@@ -384,7 +384,7 @@ msgstr ""
 "Format"
 
 #. Tag: para
-#: ri.xml:199
+#: gettingstarted.xml:199
 #, fuzzy, no-c-format
 msgid ""
 "<literal>ant tomcat.explode</literal> - update an exploded example, without "
@@ -394,7 +394,7 @@ msgstr ""
 "Beispiels ohne Neustart des Deployments"
 
 #. Tag: para
-#: ri.xml:205
+#: gettingstarted.xml:205
 #, fuzzy, no-c-format
 msgid ""
 "<literal>ant tomcat.deploy</literal> - deploy the example in compressed jar "
@@ -404,26 +404,26 @@ msgstr ""
 "jar-Format"
 
 #. Tag: para
-#: ri.xml:210
+#: gettingstarted.xml:210
 #, fuzzy, no-c-format
 msgid ""
 "<literal>ant tomcat.undeploy</literal> - remove the example from the server"
 msgstr "<literal>ant undeploy</literal> - das Beispiel vom Server entfernen"
 
 #. Tag: para
-#: ri.xml:215
+#: gettingstarted.xml:215
 #, fuzzy, no-c-format
 msgid "<literal>ant tomcat.clean</literal> - clean the example"
 msgstr "<literal>ant clean</literal> - Das Beispiel bereinigen"
 
 #. Tag: para
-#: ri.xml:222
+#: gettingstarted.xml:222
 #, fuzzy, no-c-format
 msgid "To deploy the numberguess example for tomcat:"
 msgstr "Um das numberguess Beispiel zu deployen:"
 
 #. Tag: programlisting
-#: ri.xml:226
+#: gettingstarted.xml:226
 #, fuzzy, no-c-format
 msgid ""
 "$ cd examples/tomcat\n"
@@ -433,19 +433,19 @@ msgstr ""
 "ant deploy"
 
 #. Tag: para
-#: ri.xml:228
+#: gettingstarted.xml:228
 #, no-c-format
 msgid "Start Tomcat:"
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:232
+#: gettingstarted.xml:232
 #, fuzzy, no-c-format
 msgid "$ /Applications/apache-tomcat-6.0.18/bin/startup.sh"
 msgstr "$ /Application/jboss-5.0.0.GA/bin/run.sh"
 
 #. Tag: para
-#: ri.xml:235
+#: gettingstarted.xml:235
 #, fuzzy, no-c-format
 msgid "If you use Windows, use the <literal>startup.bat</literal>script."
 msgstr ""
@@ -453,25 +453,25 @@ msgstr ""
 "Skript."
 
 #. Tag: title
-#: ri.xml:248
+#: gettingstarted.xml:248
 #, no-c-format
 msgid "Using GlassFish"
 msgstr ""
 
 #. Tag: para
-#: ri.xml:250
+#: gettingstarted.xml:250
 #, no-c-format
 msgid "TODO"
 msgstr ""
 
 #. Tag: title
-#: ri.xml:254
+#: gettingstarted.xml:254
 #, no-c-format
 msgid "The numberguess example"
 msgstr "Das numberguess-Beispiel"
 
 #. Tag: para
-#: ri.xml:256
+#: gettingstarted.xml:256
 #, no-c-format
 msgid ""
 "In the numberguess application you get given 10 attempts to guess a number "
@@ -483,7 +483,7 @@ msgstr ""
 "oder zu niedrig liegen."
 
 #. Tag: para
-#: ri.xml:262
+#: gettingstarted.xml:262
 #, no-c-format
 msgid ""
 "The numberguess example is comprised of a number of Web Beans, configuration "
@@ -495,7 +495,7 @@ msgstr ""
 "sind. Fangen wir mit den Konfigurationsdateien an."
 
 #. Tag: para
-#: ri.xml:268
+#: gettingstarted.xml:268
 #, no-c-format
 msgid ""
 "All the configuration files for this example are located in <literal>WEB-INF/"
@@ -509,7 +509,7 @@ msgstr ""
 "dem wir JSF anweisen, Facelets zu verwenden:"
 
 #. Tag: programlisting
-#: ri.xml:276
+#: gettingstarted.xml:276
 #, no-c-format
 msgid ""
 "<![CDATA[<?xml version='1.0' encoding='UTF-8'?>\n"
@@ -539,7 +539,7 @@ msgstr ""
 "</faces-config>]]>"
 
 #. Tag: para
-#: ri.xml:278
+#: gettingstarted.xml:278
 #, no-c-format
 msgid ""
 "There is an empty <literal>web-beans.xml</literal> file, which marks this "
@@ -549,13 +549,13 @@ msgstr ""
 "Anwendung als Web Beans Applikation kennzeichnet."
 
 #. Tag: para
-#: ri.xml:283
+#: gettingstarted.xml:283
 #, no-c-format
 msgid "Finally there is <literal>web.xml</literal>:"
 msgstr "Und schließlich gibt es noch <literal>web.xml</literal>:"
 
 #. Tag: section
-#: ri.xml:285
+#: gettingstarted.xml:285
 #, fuzzy, no-c-format
 msgid ""
 "<programlistingco> <areaspec> <area id=\"faces.servlet\" coords=\"12\"/> "
@@ -605,7 +605,7 @@ msgid ""
 "programlistingco> <note> <para> Whilst this demo is a JSF demo, you can use "
 "Web Beans with any Servlet based web framework. </para> </note> <para> Let's "
 "take a look at the Facelet view: </para> <programlistingco> <areaspec> <area "
-"id=\"template\" coords=\"8\"/> <area id=\"messages\" coords=\"12\"/> <area "
+"id=\"template\" coords=\"8\"/> <area id=\"messages2\" coords=\"12\"/> <area "
 "id=\"instructions\" coords=\"19\"/> <area id=\"guess\" coords=\"25\"/> <area "
 "id=\"validator\" coords=\"30\"/> <area id=\"submit\" coords=\"33\"/> </"
 "areaspec> <programlisting><![CDATA[<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML "
@@ -660,7 +660,7 @@ msgid ""
 "</html>]]></programlisting> <calloutlist> <callout arearefs=\"template\"> "
 "<para> Facelets is a templating language for JSF, here we are wrapping our "
 "page in a template which defines the header. </para> </callout> <callout "
-"arearefs=\"messages\"> <para> There are a number of messages which can be "
+"arearefs=\"messages2\"> <para> There are a number of messages which can be "
 "sent to the user, \"Higher!\", \"Lower!\" and \"Correct!\" </para> </"
 "callout> <callout arearefs=\"instructions\"> <para> As the user guesses, the "
 "range of numbers they can guess gets smaller - this sentance changes to make "
@@ -793,7 +793,7 @@ msgstr ""
 "programlistingco>"
 
 #. Tag: para
-#: ri.xml:387
+#: gettingstarted.xml:387
 #, no-c-format
 msgid ""
 "The example exists of 4 classes, the first two of which are binding types. "
@@ -805,7 +805,7 @@ msgstr ""
 "Einspeisung einer zufälligen Zahl dient:"
 
 #. Tag: programlisting
-#: ri.xml:393
+#: gettingstarted.xml:393
 #, no-c-format
 msgid ""
 "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
@@ -821,7 +821,7 @@ msgstr ""
 "public @interface Random {}]]>"
 
 #. Tag: para
-#: ri.xml:395
+#: gettingstarted.xml:395
 #, no-c-format
 msgid ""
 "There is also the <literal>@MaxNumber</literal> binding type, used for "
@@ -831,7 +831,7 @@ msgstr ""
 "Einspeisung der maximalen Zahl, die eingespeist werden kann, verwendet wird:"
 
 #. Tag: programlisting
-#: ri.xml:400
+#: gettingstarted.xml:400
 #, no-c-format
 msgid ""
 "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
@@ -849,7 +849,7 @@ msgstr ""
 "]]>"
 
 #. Tag: para
-#: ri.xml:402
+#: gettingstarted.xml:402
 #, no-c-format
 msgid ""
 "The <literal>Generator</literal> class is responsible for creating the "
@@ -861,7 +861,7 @@ msgstr ""
 "die mögliche Maximalzahl via einer maximum Producer-Methode offen:"
 
 #. Tag: programlisting
-#: ri.xml:408
+#: gettingstarted.xml:408
 #, no-c-format
 msgid ""
 "<![CDATA[@ApplicationScoped\n"
@@ -913,7 +913,7 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: ri.xml:410
+#: gettingstarted.xml:410
 #, no-c-format
 msgid ""
 "You'll notice that the <literal>Generator</literal> is application scoped; "
@@ -924,7 +924,7 @@ msgstr ""
 "Zufallsergebnis."
 
 #. Tag: para
-#: ri.xml:415
+#: gettingstarted.xml:415
 #, no-c-format
 msgid ""
 "The final Web Bean in the application is the session scoped <literal>Game</"
@@ -934,7 +934,7 @@ msgstr ""
 "literal>."
 
 #. Tag: para
-#: ri.xml:420
+#: gettingstarted.xml:420
 #, no-c-format
 msgid ""
 "You'll note that we've used the <literal>@Named</literal> annotation, so "
@@ -951,7 +951,7 @@ msgstr ""
 "<literal>FacesMessage</literal>."
 
 #. Tag: programlisting
-#: ri.xml:428
+#: gettingstarted.xml:428
 #, no-c-format
 msgid ""
 "<![CDATA[package org.jboss.webbeans.examples.numberguess;\n"
@@ -1149,23 +1149,23 @@ msgstr ""
 "}]]>"
 
 #. Tag: title
-#: ri.xml:431
+#: gettingstarted.xml:431
 #, fuzzy, no-c-format
-msgid "The numberguess example for Tomcat"
+msgid "The numberguess example in Tomcat"
 msgstr "Das numberguess-Beispiel"
 
 #. Tag: para
-#: ri.xml:433
+#: gettingstarted.xml:433
 #, no-c-format
 msgid ""
 "The numberguess for Tomcat differs in a couple of ways. Firstly, Web Beans "
 "should be deployed as a Web Application library in <literal>WEB-INF/lib</"
 "literal>. For your convenience we provide a single jar suitable for running "
-"Web Beans on Tomcat <literal>webbeans-tomcat.jar</literal>."
+"Web Beans in any servlet container <literal>webbeans-servlet.jar</literal>."
 msgstr ""
 
 #. Tag: para
-#: ri.xml:442
+#: gettingstarted.xml:442
 #, no-c-format
 msgid ""
 "Of course, you must also include JSF and EL, as well common annotations "
@@ -1173,32 +1173,651 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: ri.xml:449
+#: gettingstarted.xml:449
 #, no-c-format
 msgid ""
-"Secondly, we need to explicitly specify the Tomcat servlet listener (used to "
-"boot Web Beans, and control it's interaction with requests) in <literal>web."
-"xml</literal>:"
+"Secondly, we need to explicitly specify the servlet listener (used to boot "
+"Web Beans, and control it's interaction with requests) in <literal>web.xml</"
+"literal>:"
 msgstr ""
 
 #. Tag: programlisting
-#: ri.xml:455
+#: gettingstarted.xml:455
 #, no-c-format
 msgid ""
 "<![CDATA[<listener>\n"
-"   <listener-class>org.jboss.webbeans.environment.tomcat.Listener</listener-"
+"   <listener-class>org.jboss.webbeans.environment.servlet.Listener</listener-"
 "class>\n"
 "</listener>]]>"
 msgstr ""
 
 #. Tag: title
-#: ri.xml:461
+#: gettingstarted.xml:460
+#, fuzzy, no-c-format
+msgid "The numberguess example for Apache Wicket"
+msgstr "Das numberguess-Beispiel"
+
+#. Tag: para
+#: gettingstarted.xml:461
+#, no-c-format
+msgid ""
+"Whilst JSR-299 specifies integration with Java ServerFaces, Web Beans allows "
+"you to inject into Wicket components, and also allows you to use a "
+"conversation context with Wicket. In this section, we'll walk you through "
+"the Wicket version of the numberguess example."
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:470
+#, no-c-format
+msgid ""
+"You may want to review the Wicket documentation at <ulink url=\"http://"
+"wicket.apache.org/\">http://wicket.apache.org/</ulink>."
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:476
+#, no-c-format
+msgid ""
+"Like the previous example, the Wicket WebBeans examples make use of the "
+"<literal>webbeans-servlet</literal> module. The use of the <ulink url="
+"\"http://jetty.mortbay.org/\">Jetty servlet container</ulink> is common in "
+"the Wicket community, and is chosen here as the runtime container in order "
+"to facilitate comparison between the standard Wicket examples and these "
+"examples, and also to show how the webbeans-servlet integration is not "
+"dependent upon Tomcat as the servlet container."
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:487
+#, no-c-format
+msgid ""
+"These examples make use of the Eclipse IDE; instructions are also given to "
+"deploy the application from the command line."
+msgstr ""
+
+#. Tag: title
+#: gettingstarted.xml:493
+#, no-c-format
+msgid "Creating the Eclipse project"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:495
+#, no-c-format
+msgid "To generate an Eclipse project from the example:"
+msgstr ""
+
+#. Tag: programlisting
+#: gettingstarted.xml:499
+#, no-c-format
+msgid ""
+"<![CDATA[cd examples/wicket/numberguess\n"
+"mvn eclipse:eclipse]]>"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:501
+#, no-c-format
+msgid ""
+"Then, from eclipse, choose <emphasis>File -> Import -> General -> Existing "
+"Projects into Workspace</emphasis>, select the root directory of the "
+"numberguess example, and click finish. This will create a project in your "
+"workspace called <literal>webbeans-wicket-numberguess</literal>"
+msgstr ""
+
+#. Tag: title
+#: gettingstarted.xml:516
+#, no-c-format
+msgid "Running the example from Eclipse"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:518
+#, no-c-format
+msgid ""
+"This project follows the <literal>wicket-quickstart</literal> approach of "
+"creating an instance of Jetty in the <literal>Start</literal> class. So "
+"running the example is as simple as right-clicking on that Start class in "
+"<literal>src/test/java</literal> in the <emphasis>Package Explorer</"
+"emphasis> and choosing <emphasis>Run as Java Application</emphasis>. You "
+"should see console output related to Jetty starting up; then visit able "
+"<literal>http://localhost:8080</literal> to view the app. To debug choose "
+"<emphasis>Debug as Java Application</emphasis>."
+msgstr ""
+
+#. Tag: title
+#: gettingstarted.xml:533
+#, no-c-format
+msgid "Running the example from the command line in JBoss AS or Tomcat"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:535
+#, no-c-format
+msgid ""
+"This example can also be deployed from the command line in a (similar to the "
+"other examples). Assuming you have set up the <literal>build.properties</"
+"literal> file in the <literal>examples</literal> directory to specify the "
+"location of JBoss AS or Tomcat, as previously described, you can run "
+"<literal>ant deploy</literal> from the <literal>examples/wicket/numberguess</"
+"literal> directory, and access the application at <literal>http://"
+"localhost:8080/webbeans-numberguess-wicket</literal>."
+msgstr ""
+
+#. Tag: title
+#: gettingstarted.xml:549
+#, no-c-format
+msgid "Understanding the code"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:551
+#, no-c-format
+msgid ""
+"JSF uses Unified EL expressions to bind view layer components in JSP or "
+"Facelet views to beans, Wicket defines it's components in Java. The markup "
+"is plain html with a one-to-one mapping between html elements and the view "
+"components. All view logic, including binding of components to models and "
+"controlling the response of view actions, is handled in Java. The "
+"integration of Web Beans with Wicket takes advantage of the same binding "
+"annotations used in your business layer to provide injection into your "
+"WebPage subclass (or into other custom wicket component subclasses)."
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:563
+#, no-c-format
+msgid ""
+"The code in the wicket numberguess example is very similar to the JSF-based "
+"numberguess example. The business layer is identical!"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:568
+#, no-c-format
+msgid "Differences are:"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:573
+#, no-c-format
+msgid ""
+"Each wicket application must have a <literal>WebApplication</literal> "
+"subclass, In our case, our application class is <literal>SampleApplication</"
+"literal>:"
+msgstr ""
+
+#. Tag: programlisting
+#: gettingstarted.xml:579
+#, no-c-format
+msgid ""
+"<![CDATA[public class SampleApplication extends WebBeansApplication {\n"
+"   @Override\n"
+"   public Class getHomePage() {\n"
+"      return HomePage.class;\n"
+"   }\n"
+"}]]>"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:580
+#, no-c-format
+msgid ""
+"This class specifies which page wicket should treat as our home page, in our "
+"case, <literal>HomePage.class</literal>"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:586
+#, no-c-format
+msgid ""
+"In <literal>HomePage</literal> we see typical wicket code to set up page "
+"elements. The bit that is interesting is the injection of the <literal>Game</"
+"literal> bean:"
+msgstr ""
+
+#. Tag: programlisting
+#: gettingstarted.xml:592
+#, no-c-format
+msgid "<![CDATA[ @Current Game game;]]>"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:594
+#, no-c-format
+msgid ""
+"The <literal>Game</literal> bean is can then be used, for example, by the "
+"code for submitting a guess:"
+msgstr ""
+
+#. Tag: programlisting
+#: gettingstarted.xml:599
+#, no-c-format
+msgid ""
+"<![CDATA[final Component guessButton = new AjaxButton(\"GuessButton\") { \n"
+"   protected void onSubmit(AjaxRequestTarget target, Form form) {\n"
+"      if (game.check()) {]]>"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:602
+#, no-c-format
+msgid ""
+"All injections may be serialized; actual storage of the bean is managed by "
+"JSR-299. Note that Wicket components, like the HomePage and it "
+"subcomponents, are <emphasis>not</emphasis> JSR-299 beans."
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:608
+#, no-c-format
+msgid ""
+"Wicket components allow injection, but they <emphasis>cannot</emphasis> use "
+"interceptors, decorators and lifecycle callbacks such as "
+"<literal>@PostConstruct</literal> or <literal>@Initializer</literal> methods."
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:618
+#, no-c-format
+msgid ""
+"The example uses AJAX for processing of button events, and dynamically hides "
+"buttons that are no longer relevant, for example when the user has won the "
+"game."
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:626
+#, no-c-format
+msgid ""
+"In order to activate wicket for this webapp, the Wicket filter is added to "
+"web.xml, and our application class is specified:"
+msgstr ""
+
+#. Tag: programlisting
+#: gettingstarted.xml:631
+#, no-c-format
+msgid ""
+"<![CDATA[<filter>\n"
+"   <filter-name>wicket.numberguess-example</filter-name>\n"
+"   <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-"
+"class>\n"
+"   <init-param>\n"
+"      <param-name>applicationClassName</param-name>\n"
+"      <param-value>org.jboss.webbeans.examples.wicket.SampleApplication</"
+"param-value>\n"
+"   </init-param>\n"
+"</filter>\n"
+"\n"
+"<filter-mapping>\n"
+"   <filter-name>wicket.numberguess-example</filter-name>\n"
+"   <url-pattern>/*</url-pattern>\n"
+"</filter-mapping>\n"
+" \n"
+"<listener>\n"
+"   <listener-class>org.jboss.webbeans.environment.servlet.Listener</listener-"
+"class>\n"
+"</listener>]]>"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:632
+#, no-c-format
+msgid ""
+"Note that the servlet listener is also added, as in the Tomcat example, in "
+"order to boostrap Web Beans when Jetty starts, and to hook Web Beans into "
+"the Jetty servlet request and session lifecycles."
+msgstr ""
+
+#. Tag: title
+#: gettingstarted.xml:645
+#, fuzzy, no-c-format
+msgid "The numberguess example for Java SE with Swing"
+msgstr "Das numberguess-Beispiel"
+
+#. Tag: para
+#: gettingstarted.xml:647
+#, no-c-format
+msgid ""
+"This example can be found in the <literal>examples/se/numberguess</literal> "
+"folder of the Web Beans distribution."
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:654
+#, fuzzy, no-c-format
+msgid "To run this example:"
+msgstr "Das translator-Beispiel"
+
+#. Tag: para
+#: gettingstarted.xml:660
+#, no-c-format
+msgid ""
+"Open a command line/terminal window in the <literal>examples/se/numberguess</"
+"literal> directory"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:666
+#, no-c-format
+msgid "Ensure that Maven 2 is installed and in your PATH"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:671
+#, no-c-format
+msgid ""
+"Ensure that the <literal>JAVA_HOME</literal> environment variable is "
+"pointing to your JDK installation"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:677
+#, no-c-format
+msgid "execute the following command"
+msgstr ""
+
+#. Tag: programlisting
+#: gettingstarted.xml:680
+#, no-c-format
+msgid "mvn -Drun"
+msgstr ""
+
+#. Tag: para
+#: gettingstarted.xml:686
+#, fuzzy, no-c-format
+msgid ""
+"There is an empty <literal>beans.xml</literal> file in the root package "
+"(<literal>src/main/resources/beans.xml</literal>), which marks this "
+"application as a Web Beans application."
+msgstr ""
+"Es existiert eine leere <literal>web-beans.xml</literal>-Datei, die diese "
+"Anwendung als Web Beans Applikation kennzeichnet."
+
+#. Tag: para
+#: gettingstarted.xml:692
+#, no-c-format
+msgid ""
+"The game's main logic is located in <literal>Game.java</literal>. Here is "
+"the code for that class, highlighting the changes made from the web "
+"application version:"
+msgstr ""
+
+#. Tag: section
+#: gettingstarted.xml:696
+#, no-c-format
+msgid ""
+"<programlistingco> <areaspec> <area id=\"scope\" coords=\"1\"/> <area id="
+"\"name\" coords=\"1\"/> <area id=\"messages1\" coords=\"26\"/> <area id="
+"\"validation\" coords=\"39\"/> <area id=\"reset\" coords=\"68\"/> </"
+"areaspec> <programlisting role=\"JAVA\"><![CDATA[@ApplicationScoped\n"
+"public class Game implements Serializable\n"
+"{\n"
+"\n"
+"    private int number;\n"
+"    private int guess;\n"
+"    private int smallest;\n"
+"\n"
+"    @MaxNumber\n"
+"    private int maxNumber;\n"
+"\n"
+"    private int biggest;\n"
+"    private int remainingGuesses;\n"
+"    private boolean validNumberRange = true;\n"
+"\n"
+"    @Current Generator rndGenerator;\n"
+"\n"
+"    ...\n"
+"\n"
+"    public boolean isValidNumberRange()\n"
+"    {\n"
+"        return validNumberRange;\n"
+"    }\n"
+"\n"
+"    public boolean isGameWon()\n"
+"    {\n"
+"        return guess == number;\n"
+"    }\n"
+"\n"
+"    public boolean isGameLost()\n"
+"    {\n"
+"        return guess != number && remainingGuesses <= 0;\n"
+"    }\n"
+"\n"
+"    public boolean check()\n"
+"    {\n"
+"        boolean result = false;\n"
+"\n"
+"        if ( checkNewNumberRangeIsValid() )\n"
+"        {\n"
+"            if ( guess > number )\n"
+"            {\n"
+"                biggest = guess - 1;\n"
+"            }\n"
+"\n"
+"            if ( guess < number )\n"
+"            {\n"
+"                smallest = guess + 1;\n"
+"            }\n"
+"\n"
+"            if ( guess == number )\n"
+"            {\n"
+"                result = true;\n"
+"            }\n"
+"\n"
+"            remainingGuesses--;\n"
+"        }\n"
+"\n"
+"        return result;\n"
+"    }\n"
+"\n"
+"    private boolean checkNewNumberRangeIsValid()\n"
+"    {\n"
+"        return validNumberRange = ( ( guess >= smallest ) && ( guess <= "
+"biggest ) );\n"
+"    }\n"
+"\n"
+"    @PostConstruct\n"
+"    public void reset()\n"
+"    {\n"
+"        this.smallest = 0;\n"
+"        ...\n"
+"        this.number = rndGenerator.next();\n"
+"    }\n"
+"}]]></programlisting> <calloutlist> <callout arearefs=\"scope\"> <para> The "
+"bean is application scoped instead of session scoped, since an instance of "
+"the application represents a single 'session'. </para> </callout> <callout "
+"arearefs=\"name\"> <para> The bean is not named, since it doesn't need to be "
+"accessed via EL </para> </callout> <callout arearefs=\"messages1\"> <para> "
+"There is no JSF <literal>FacesContext</literal> to add messages to. Instead "
+"the <literal>Game</literal> class provides additional information about the "
+"state of the current game including: </para> <itemizedlist> <listitem> "
+"<para> If the game has been won or lost </para> </listitem> <listitem> "
+"<para> If the most recent guess was invalid </para> </listitem> </"
+"itemizedlist> <para> This allows the Swing UI to query the state of the "
+"game, which it does indirectly via a class called <literal>MessageGenerator,"
+"</literal> in order to determine the appropriate messages to display to the "
+"user during the game. </para> </callout> <callout arearefs=\"validation\"> "
+"<para> Validation of user input is performed during the <literal>check()</"
+"literal> method, since there is no dedicated validation phase </para> </"
+"callout> <callout arearefs=\"reset\"> <para> The <literal>reset()</literal> "
+"method makes a call to the injected <literal>rndGenerator</literal> in order "
+"to get the random number at the start of each game. It cannot use "
+"<literal>manager.getInstanceByType(Integer.class, new AnnotationLiteral&lt;"
+"Random&gt;(){})</literal> as the JSF example does because there will not be "
+"any active contexts like there is during a JSF request. </para> </callout> </"
+"calloutlist> </programlistingco> <para> The <literal>MessageGenerator</"
+"literal> class depends on the current instance of <literal>Game</literal>, "
+"and queries its state in order to determine the appropriate messages to "
+"provide as the prompt for the user's next guess and the response to the "
+"previous guess. The code for <literal>MessageGenerator</literal> is as "
+"follows: </para> <programlistingco> <areaspec> <area id=\"game\" coords=\"3"
+"\"/> <area id=\"challenge\" coords=\"5\"/> <area id=\"result\" coords=\"16\"/"
+"> </areaspec> <programlisting role=\"JAVA\"><![CDATA[public class "
+"MessageGenerator\n"
+"{\n"
+"    @Current Game game;\n"
+"\n"
+"    public String getChallengeMessage()\n"
+"    {\n"
+"        StringBuilder challengeMsg = new StringBuilder( \"I'm thinking of a "
+"number between \" );\n"
+"        challengeMsg.append( game.getSmallest() );\n"
+"        challengeMsg.append( \" and \" );\n"
+"        challengeMsg.append( game.getBiggest() );\n"
+"        challengeMsg.append( \". Can you guess what it is?\" );\n"
+"\n"
+"        return challengeMsg.toString();\n"
+"    }\n"
+"\n"
+"    public String getResultMessage()\n"
+"    {\n"
+"        if ( game.isGameWon() )\n"
+"        {\n"
+"            return \"You guess it! The number was \" + game.getNumber();\n"
+"        } else if ( game.isGameLost() )\n"
+"        {\n"
+"            return \"You are fail! The number was \" + game.getNumber();\n"
+"        } else if ( ! game.isValidNumberRange() )\n"
+"        {\n"
+"            return \"Invalid number range!\";\n"
+"        } else if ( game.getRemainingGuesses() == Game.MAX_NUM_GUESSES )\n"
+"        {\n"
+"            return \"What is your first guess?\";\n"
+"        } else\n"
+"        {\n"
+"            String direction = null;\n"
+"\n"
+"            if ( game.getGuess() < game.getNumber() )\n"
+"            {\n"
+"                direction = \"Higher\";\n"
+"            } else\n"
+"            {\n"
+"                direction = \"Lower\";\n"
+"            }\n"
+"\n"
+"            return direction + \"! You have \" + game.getRemainingGuesses() "
+"+ \" guesses left.\";\n"
+"        }\n"
+"    }\n"
+"}]]></programlisting> <calloutlist> <callout arearefs=\"game\"> <para> The "
+"instance of <literal>Game</literal> for the application is injected here. </"
+"para> </callout> <callout arearefs=\"challenge\"> <para> The <literal>Game</"
+"literal>'s state is interrogated to determine the appropriate challenge "
+"message. </para> </callout> <callout arearefs=\"result\"> <para> And again "
+"to determine whether to congratulate, console or encourage the user to "
+"continue. </para> </callout> </calloutlist> </programlistingco> <para> "
+"Finally we come to the <literal>NumberGuessFrame</literal> class which "
+"provides the Swing front end to our guessing game. </para> "
+"<programlistingco> <areaspec> <area id=\"gameIn\" coords=\"3\"/> <area id="
+"\"messagesIn\" coords=\"4\"/> <area id=\"start\" coords=\"6\"/> <area id="
+"\"init\" coords=\"18\"/> <area id=\"guess1\" coords=\"34\"/> <area id="
+"\"replay\" coords=\"44\"/> <area id=\"refresh\" coords=\"50\"/> </areaspec> "
+"<programlisting role=\"JAVA\"><![CDATA[public class NumberGuessFrame  "
+"extends javax.swing.JFrame\n"
+"{\n"
+"    private @Current Game game;\n"
+"    private @Current MessageGenerator msgGenerator;\n"
+"\n"
+"    public void start( @Observes @Deployed Manager manager )\n"
+"    {\n"
+"        java.awt.EventQueue.invokeLater( new Runnable()\n"
+"            {\n"
+"                public void run()\n"
+"                {\n"
+"                    initComponents();\n"
+"                    setVisible( true );\n"
+"                }\n"
+"            } );\n"
+"    }\n"
+"\n"
+"    private void initComponents() {\n"
+"\n"
+"        buttonPanel = new javax.swing.JPanel();\n"
+"        mainMsgPanel = new javax.swing.JPanel();\n"
+"        mainLabel = new javax.swing.JLabel();\n"
+"        messageLabel = new javax.swing.JLabel();\n"
+"        guessText = new javax.swing.JTextField();\n"
+"        ...\n"
+"        mainLabel.setText(msgGenerator.getChallengeMessage());\n"
+"        mainMsgPanel.add(mainLabel);\n"
+"\n"
+"        messageLabel.setText(msgGenerator.getResultMessage());\n"
+"        mainMsgPanel.add(messageLabel);\n"
+"        ...\n"
+"    }\n"
+"\n"
+"    private void guessButtonActionPerformed( java.awt.event.ActionEvent "
+"evt )\n"
+"    {\n"
+"        int guess =  Integer.parseInt(guessText.getText());\n"
+"\n"
+"        game.setGuess( guess );\n"
+"        game.check();\n"
+"        refreshUI();\n"
+"\n"
+"    }\n"
+"\n"
+"    private void replayBtnActionPerformed( java.awt.event.ActionEvent evt )\n"
+"    {\n"
+"       game.reset();\n"
+"       refreshUI();\n"
+"    }\n"
+"\n"
+"    private void refreshUI()\n"
+"    {\n"
+"        mainLabel.setText( msgGenerator.getChallengeMessage() );\n"
+"        messageLabel.setText( msgGenerator.getResultMessage() );\n"
+"        guessText.setText( \"\" );\n"
+"        guessesLeftBar.setValue( game.getRemainingGuesses() );\n"
+"        guessText.requestFocus();\n"
+"    }\n"
+"\n"
+"    // swing components\n"
+"    private javax.swing.JPanel borderPanel;\n"
+"    ...\n"
+"    private javax.swing.JButton replayBtn;\n"
+"\n"
+"}]]></programlisting> <calloutlist> <callout arearefs=\"gameIn\"> <para> The "
+"injected instance of the game (logic and state). </para> </callout> <callout "
+"arearefs=\"messagesIn\"> <para> The injected message generator for UI "
+"messages. </para> </callout> <callout arearefs=\"start\"> <para> This "
+"application is started in the usual Web Beans SE way, by observing the "
+"<literal>@Deployed Manager</literal> event. </para> </callout> <callout "
+"arearefs=\"init\"> <para> This method initialises all of the Swing "
+"components. Note the use of the <literal>msgGenerator</literal>. </para> </"
+"callout> <callout arearefs=\"guess1\"> <para> "
+"<literal>guessButtonActionPerformed</literal> is called when the 'Guess' "
+"button is clicked, and it does the following: </para> <itemizedlist> "
+"<listitem> <para> Gets the guess entered by the user and sets it as the "
+"current guess in the <literal>Game</literal> </para> </listitem> <listitem> "
+"<para> Calls <literal>game.check()</literal> to validate and perform one "
+"'turn' of the game </para> </listitem> <listitem> <para> Calls "
+"<literal>refreshUI</literal>. If there were validation errors with the "
+"input, this will have been captured during <literal>game.check()</literal> "
+"and as such will be reflected in the messeges returned by "
+"<literal>MessageGenerator</literal> and subsequently presented to the user. "
+"If there are no validation errors then the user will be told to guess again "
+"(higher or lower) or that the game has ended either in a win (correct guess) "
+"or a loss (ran out of guesses). </para> </listitem> </itemizedlist> </"
+"callout> <callout arearefs=\"replay\"> <para> "
+"<literal>replayBtnActionPerformed</literal> simply calls <literal>game.reset"
+"()</literal> to start a new game and refreshes the messages in the UI. </"
+"para> </callout> <callout arearefs=\"refresh\"> <para> <literal>refreshUI</"
+"literal> uses the <literal>MessageGenerator</literal> to update the messages "
+"to the user based on the current state of the Game. </para> </callout> </"
+"calloutlist> </programlistingco>"
+msgstr ""
+
+#. Tag: title
+#: gettingstarted.xml:904
 #, no-c-format
 msgid "The translator example"
 msgstr "Das translator-Beispiel"
 
 #. Tag: para
-#: ri.xml:463
+#: gettingstarted.xml:906
 #, no-c-format
 msgid ""
 "The translator example will take any sentences you enter, and translate them "
@@ -1208,7 +1827,7 @@ msgstr ""
 "Lateinische übersetzt."
 
 #. Tag: para
-#: ri.xml:468
+#: gettingstarted.xml:911
 #, no-c-format
 msgid ""
 "The translator example is built as an ear, and contains EJBs. As a result, "
@@ -1218,7 +1837,7 @@ msgstr ""
 "Struktur komplexer als die desnumberguess-Beispiels."
 
 #. Tag: para
-#: ri.xml:474
+#: gettingstarted.xml:917
 #, no-c-format
 msgid ""
 "EJB 3.1 and Jave EE 6 allow you to package EJBs in a war, which will make "
@@ -1228,7 +1847,7 @@ msgstr ""
 "wodurch diese Struktur wesentlich einfacher wird!"
 
 #. Tag: para
-#: ri.xml:480
+#: gettingstarted.xml:923
 #, no-c-format
 msgid ""
 "First, let's take a look at the ear aggregator, which is located in "
@@ -1240,7 +1859,7 @@ msgstr ""
 "automatisch die <literal>application.xml</literal> für uns:"
 
 #. Tag: programlisting
-#: ri.xml:486
+#: gettingstarted.xml:929
 #, no-c-format
 msgid ""
 "<![CDATA[<plugin>\n"
@@ -1272,7 +1891,7 @@ msgstr ""
 "</plugin>]]>"
 
 #. Tag: para
-#: ri.xml:488
+#: gettingstarted.xml:931
 #, no-c-format
 msgid ""
 "Here we set the context path, which gives us a nice url (<ulink url=\"http://"
@@ -1284,7 +1903,7 @@ msgstr ""
 "translator</ulink>)."
 
 #. Tag: para
-#: ri.xml:494
+#: gettingstarted.xml:937
 #, no-c-format
 msgid ""
 "If you aren't using Maven to generate these files, you would need "
@@ -1294,7 +1913,7 @@ msgstr ""
 "benötigen Sie <literal>META-INF/application.xml</literal>:"
 
 #. Tag: programlisting
-#: ri.xml:499
+#: gettingstarted.xml:942
 #, no-c-format
 msgid ""
 "<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1340,7 +1959,7 @@ msgstr ""
 "</application>]]>"
 
 #. Tag: para
-#: ri.xml:502
+#: gettingstarted.xml:945
 #, fuzzy, no-c-format
 msgid ""
 "Next, lets look at the war. Just as in the numberguess example, we have a "
@@ -1353,7 +1972,7 @@ msgstr ""
 "<literal>WebContent/WEB-INF</literal>."
 
 #. Tag: para
-#: ri.xml:509
+#: gettingstarted.xml:952
 #, no-c-format
 msgid ""
 "More intersting is the facelet used to translate text. Just as in the "
@@ -1365,7 +1984,7 @@ msgstr ""
 "(hier der Kürze wegen weggelassen):"
 
 #. Tag: programlisting
-#: ri.xml:515
+#: gettingstarted.xml:958
 #, no-c-format
 msgid ""
 "<![CDATA[<h:form id=\"NumberGuessMain\">\n"
@@ -1425,7 +2044,7 @@ msgstr ""
 "</h:form>]]>"
 
 #. Tag: para
-#: ri.xml:517
+#: gettingstarted.xml:960
 #, no-c-format
 msgid ""
 "The user can enter some text in the lefthand textarea, and hit the translate "
@@ -1436,7 +2055,7 @@ msgstr ""
 "Ergebnis zu sehen."
 
 #. Tag: para
-#: ri.xml:522
+#: gettingstarted.xml:965
 #, no-c-format
 msgid ""
 "Finally, let's look at the ejb module, <literal>webbeans-translator-ejb</"
@@ -1450,7 +2069,7 @@ msgstr ""
 "das Archiv als Web Beans enthaltend zu markieren."
 
 #. Tag: para
-#: ri.xml:530
+#: gettingstarted.xml:973
 #, no-c-format
 msgid ""
 "We've saved the most interesting bit to last, the code! The project has two "
@@ -1468,7 +2087,7 @@ msgstr ""
 "Bean aussehen, daher gehen wir hier nur auf die interessantesten Aspekte ein."
 
 #. Tag: para
-#: ri.xml:540
+#: gettingstarted.xml:983
 #, no-c-format
 msgid ""
 "Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal> "
@@ -1480,7 +2099,7 @@ msgstr ""
 "<literal>TextTranslator</literal> verwendet Konstruktor-Initialisierung :"
 
 #. Tag: programlisting
-#: ri.xml:546
+#: gettingstarted.xml:989
 #, no-c-format
 msgid ""
 "<![CDATA[public class TextTranslator { \n"
@@ -1506,7 +2125,7 @@ msgstr ""
 "      this.sentenceTranslator = sentenceTranslator;]]>"
 
 #. Tag: para
-#: ri.xml:548
+#: gettingstarted.xml:991
 #, no-c-format
 msgid ""
 "<literal>TextTranslator</literal> is a stateless bean (with a local business "
@@ -1518,7 +2137,7 @@ msgstr ""
 "kompletten Übersetzer entwickeln,, aber wir haben uns Mühe gegeben!"
 
 #. Tag: para
-#: ri.xml:554
+#: gettingstarted.xml:997
 #, no-c-format
 msgid ""
 "Finally, there is UI orientated controller, that collects the text from the "
@@ -1531,7 +2150,7 @@ msgstr ""
 "das den translator einspeist."
 
 #. Tag: programlisting
-#: ri.xml:560
+#: gettingstarted.xml:1003
 #, no-c-format
 msgid ""
 "<![CDATA[@Stateful\n"
@@ -1551,13 +2170,13 @@ msgstr ""
 "   @Current TextTranslator translator;]]>"
 
 #. Tag: para
-#: ri.xml:562
+#: gettingstarted.xml:1005
 #, no-c-format
 msgid "The bean also has getters and setters for all the fields on the page."
 msgstr "Das Bean besitzt auch Getter und Setter für alle Felder auf der Seite."
 
 #. Tag: para
-#: ri.xml:566
+#: gettingstarted.xml:1009
 #, no-c-format
 msgid "As this is a stateful session bean, we have to have a remove method:"
 msgstr ""
@@ -1565,7 +2184,7 @@ msgstr ""
 "Methode besitzen:"
 
 #. Tag: programlisting
-#: ri.xml:570
+#: gettingstarted.xml:1013
 #, no-c-format
 msgid ""
 "<![CDATA[   @Remove\n"
@@ -1581,7 +2200,7 @@ msgstr ""
 "   }]]>"
 
 #. Tag: para
-#: ri.xml:572
+#: gettingstarted.xml:1015
 #, no-c-format
 msgid ""
 "The Web Beans manager will call the remove method for you when the bean is "
@@ -1591,7 +2210,7 @@ msgstr ""
 "gelöscht wird, in diesem Fall am Ende der Anfrage."
 
 #. Tag: para
-#: ri.xml:578
+#: gettingstarted.xml:1021
 #, fuzzy, no-c-format
 msgid ""
 "That concludes our short tour of the Web Beans examples. For more on Web "
@@ -1605,7 +2224,7 @@ msgstr ""
 "Development\">http://www.seamframework.org/WebBeans/Development</ulink>."
 
 #. Tag: para
-#: ri.xml:584
+#: gettingstarted.xml:1027
 #, no-c-format
 msgid ""
 "We need help in all areas - bug fixing, writing new features, writing "

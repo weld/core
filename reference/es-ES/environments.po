@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection "
 "VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-04-15 18:48+0000\n"
+"POT-Creation-Date: 2009-04-19 20:36+0000\n"
 "PO-Revision-Date: 2009-03-28 17:09+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -96,13 +96,15 @@ msgstr ""
 #. Tag: title
 #: environments.xml:53
 #, no-c-format
-msgid "Tomcat (or any plain Servlet container)"
+msgid "Servlet Containers (such as Tomcat or Jetty)"
 msgstr ""
 
 #. Tag: para
 #: environments.xml:55
 #, no-c-format
-msgid "Web Beans can be used in Tomcat 6.0."
+msgid ""
+"Web Beans can be used in any Servlet container such as Tomcat 6.0 or Jetty "
+"6.1."
 msgstr ""
 
 #. Tag: para
@@ -111,17 +113,18 @@ msgstr ""
 msgid ""
 "Web Beans doesn't support deploying session beans, injection using "
 "<literal>@EJB</literal>, or <literal>@PersistenceContext</literal> or using "
-"transactional events on Tomcat."
+"transactional events in Servlet containers."
 msgstr ""
 
 #. Tag: para
 #: environments.xml:66
 #, no-c-format
 msgid ""
-"Web Beans should be used as a web application library in Tomcat. You should "
-"place <literal>webbeans-tomcat.jar</literal> in <literal>WEB-INF/lib</"
-"literal>. <literal>webbeans-tomcat.jar</literal> is an \"uber-jar\" provided "
-"for your convenience. Instead, you could use its component jars:"
+"Web Beans should be used as a web application library in a servlet "
+"container. You should place <literal>webbeans-servlet.jar</literal> in "
+"<literal>WEB-INF/lib</literal>. <literal>webbeans-serv;et.jar</literal> is "
+"an \"uber-jar\" provided for your convenience. Instead, you could use its "
+"component jars:"
 msgstr ""
 
 #. Tag: literal
@@ -157,7 +160,7 @@ msgstr ""
 #. Tag: literal
 #: environments.xml:102
 #, no-c-format
-msgid "webbeans-tomcat-int.jar"
+msgid "webbeans-servlet-int.jar"
 msgstr ""
 
 #. Tag: literal
@@ -176,9 +179,9 @@ msgstr ""
 #: environments.xml:117
 #, no-c-format
 msgid ""
-"You also need to explicitly specify the Tomcat servlet listener (used to "
-"boot Web Beans, and control its interaction with requests) in <literal>web."
-"xml</literal>:"
+"You also need to explicitly specify the servlet listener (used to boot Web "
+"Beans, and control its interaction with requests) in <literal>web.xml</"
+"literal>:"
 msgstr ""
 
 #. Tag: programlisting
@@ -191,8 +194,14 @@ msgid ""
 "</listener>]]>"
 msgstr ""
 
+#. Tag: title
+#: environments.xml:126
+#, no-c-format
+msgid "Tomcat"
+msgstr ""
+
 #. Tag: para
-#: environments.xml:125
+#: environments.xml:128
 #, no-c-format
 msgid ""
 "Tomcat has a read-only JNDI, so Web Beans can't automatically bind the "
@@ -201,7 +210,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:131
+#: environments.xml:134
 #, no-c-format
 msgid ""
 "<![CDATA[<Resource name=\"app/Manager\" \n"
@@ -212,7 +221,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: environments.xml:133
+#: environments.xml:136
 #, no-c-format
 msgid ""
 "and make it available to your deployment by adding this to <literal>web.xml</"
@@ -220,7 +229,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:138
+#: environments.xml:141
 #, no-c-format
 msgid ""
 "<![CDATA[<resource-env-ref>\n"
@@ -234,7 +243,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: environments.xml:140
+#: environments.xml:143
 #, no-c-format
 msgid ""
 "Tomcat only allows you to bind entries to <literal>java:comp/env</literal>, "
@@ -243,7 +252,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: environments.xml:146
+#: environments.xml:149
 #, no-c-format
 msgid ""
 "Web Beans also supports Servlet injection in Tomcat. To enable this, place "
@@ -253,7 +262,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:153
+#: environments.xml:156
 #, no-c-format
 msgid ""
 "<![CDATA[<Listener className=\"org.jboss.webbeans.environment.tomcat."
@@ -261,13 +270,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: environments.xml:158
+#: environments.xml:163
 #, no-c-format
 msgid "Java SE"
 msgstr ""
 
 #. Tag: para
-#: environments.xml:160
+#: environments.xml:165
 #, no-c-format
 msgid ""
 "Apart from improved integration of the Enterprise Java stack, Web Beans also "
@@ -279,7 +288,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: environments.xml:168
+#: environments.xml:173
 #, no-c-format
 msgid ""
 "When executing in the SE environment the following features of Web Beans are "
@@ -287,61 +296,49 @@ msgid ""
 msgstr ""
 
 #. Tag: literal
-#: environments.xml:174
+#: environments.xml:179
 #, no-c-format
 msgid "Simple Web Beans (POJOs)"
 msgstr ""
 
 #. Tag: literal
-#: environments.xml:179
+#: environments.xml:184
 #, no-c-format
 msgid "Typesafe Dependency Injection"
 msgstr ""
 
 #. Tag: literal
-#: environments.xml:184
+#: environments.xml:189
 #, no-c-format
 msgid "Application and Dependent Contexts"
 msgstr ""
 
 #. Tag: literal
-#: environments.xml:189
+#: environments.xml:194
 #, no-c-format
 msgid "Binding Types"
 msgstr ""
 
 #. Tag: literal
-#: environments.xml:194
+#: environments.xml:199
 #, no-c-format
 msgid "Stereotypes"
 msgstr ""
 
 #. Tag: literal
-#: environments.xml:199
-#, no-c-format
-msgid "Decorators"
-msgstr ""
-
-#. Tag: literal
 #: environments.xml:204
-#, no-c-format
-msgid "(TODO: Interceptors ?)"
-msgstr ""
-
-#. Tag: literal
-#: environments.xml:209
 #, no-c-format
 msgid "Typesafe Event Model"
 msgstr ""
 
 #. Tag: title
-#: environments.xml:215
+#: environments.xml:210
 #, no-c-format
 msgid "Web Beans SE Module"
 msgstr ""
 
 #. Tag: para
-#: environments.xml:217
+#: environments.xml:212
 #, no-c-format
 msgid ""
 "To make life easy for developers Web Beans provides a special module with a "
@@ -354,7 +351,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:226
+#: environments.xml:221
 #, no-c-format
 msgid ""
 "<![CDATA[@Parameters List<String> params;\n"
@@ -363,13 +360,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: environments.xml:227
+#: environments.xml:222
 #, no-c-format
 msgid "Here's an example of a simple Web Beans SE application:"
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:231
+#: environments.xml:226
 #, no-c-format
 msgid ""
 "<![CDATA[@ApplicationScoped\n"
@@ -385,20 +382,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: environments.xml:233
+#: environments.xml:228
 #, no-c-format
 msgid ""
 "Web Beans SE applications are started by running the following main method."
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:235
+#: environments.xml:230
 #, no-c-format
 msgid "<![CDATA[java org.jboss.webbeans.environments.se.StartMain <args>]]>"
 msgstr ""
 
 #. Tag: para
-#: environments.xml:237
+#: environments.xml:232
 #, no-c-format
 msgid ""
 "If you need to do any custom initialization of the Web Beans manager, for "
@@ -408,7 +405,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:242
+#: environments.xml:237
 #, no-c-format
 msgid ""
 "<![CDATA[public class PerformSetup\n"
@@ -422,7 +419,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: environments.xml:246
+#: environments.xml:240
 #, no-c-format
 msgid ""
 "The command line parameters do not become available for injection until the "

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scopescontexts\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-01-10 14:18+0000\n"
+"POT-Creation-Date: 2009-04-19 20:36+0000\n"
 "PO-Revision-Date: 2009-03-05 17:54+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -31,26 +31,36 @@ msgid ""
 "instances of the Web Bean. According to the Web Beans specification, a scope "
 "determines:"
 msgstr ""
-"Bis jetzt haben wir ein paar Beispiele von <emphasis>Geltungsbereichtyp-Annotationen</"
-"emphasis> gesehen. Der Geltungsbereich eines Web Beans bestimmt den Lebenszyklus der Instanzen des Web Beans. Der Geltungsbereich bestimmt auch, welche Clients sich auf welche Instanzen des Web Beans beziehen. Gemäß der Web Beans Spezifikation bestimmt ein Geltungsbereich:"
+"Bis jetzt haben wir ein paar Beispiele von <emphasis>Geltungsbereichtyp-"
+"Annotationen</emphasis> gesehen. Der Geltungsbereich eines Web Beans "
+"bestimmt den Lebenszyklus der Instanzen des Web Beans. Der Geltungsbereich "
+"bestimmt auch, welche Clients sich auf welche Instanzen des Web Beans "
+"beziehen. Gemäß der Web Beans Spezifikation bestimmt ein Geltungsbereich:"
 
 #. Tag: para
 #: scopescontexts.xml:14
 #, no-c-format
 msgid "When a new instance of any Web Bean with that scope is created"
-msgstr "Wann eine neue Instanz eines beliebigen Web Beans mit diesem Geltungsbereich erstellt wird"
+msgstr ""
+"Wann eine neue Instanz eines beliebigen Web Beans mit diesem Geltungsbereich "
+"erstellt wird"
 
 #. Tag: para
 #: scopescontexts.xml:17
 #, no-c-format
 msgid "When an existing instance of any Web Bean with that scope is destroyed"
-msgstr "Wenn eine bestehende Instanz eines beliebigen Web Beans mit diesem Geltungsbereich gelöscht wird"
+msgstr ""
+"Wenn eine bestehende Instanz eines beliebigen Web Beans mit diesem "
+"Geltungsbereich gelöscht wird"
 
 #. Tag: para
 #: scopescontexts.xml:20
 #, no-c-format
-msgid "Which injected references refer to any instance of a Web Bean with that scope"
-msgstr "Welche eingespeisten Referenzen auf eine beliebige Instanz eines Web Beans mit diesem Geltungsbereich verweisen"
+msgid ""
+"Which injected references refer to any instance of a Web Bean with that scope"
+msgstr ""
+"Welche eingespeisten Referenzen auf eine beliebige Instanz eines Web Beans "
+"mit diesem Geltungsbereich verweisen"
 
 #. Tag: para
 #: scopescontexts.xml:25
@@ -63,10 +73,12 @@ msgid ""
 "the first time a <literal>CurrentUser</literal> is needed in that session, "
 "and automatically destroyed when the session ends."
 msgstr ""
-"Wenn wir etwa ein session-begrenztes Web Bean <literal>CurrentUser</"
-"literal> haben, so sehen alle Web Beans, die im Kontext derselben "
+"Wenn wir etwa ein session-begrenztes Web Bean <literal>CurrentUser</literal> "
+"haben, so sehen alle Web Beans, die im Kontext derselben "
 "<literal>HttpSession</literal> aufgerufen werden, dieselbe Instanz von "
-"<literal>CurrentUser</literal>. Diese Instanz wird automatisch erstellt, wenn <literal>CurrentUser</literal> erstmals in dieser Session benötigt wird und automatisch gelöscht, wenn die Session endet."
+"<literal>CurrentUser</literal>. Diese Instanz wird automatisch erstellt, "
+"wenn <literal>CurrentUser</literal> erstmals in dieser Session benötigt wird "
+"und automatisch gelöscht, wenn die Session endet."
 
 #. Tag: title
 #: scopescontexts.xml:32
@@ -80,7 +92,10 @@ msgstr "Typen von Geltungsbereichen"
 msgid ""
 "Web Beans features an <emphasis>extensible context model</emphasis>. It is "
 "possible to define new scopes by creating a new scope type annotation:"
-msgstr "Web Beans besitzen ein <emphasis>erweiterbares Kontextmodell</emphasis>. Es ist möglich, neue Geltungsbereiche zu definieren, indem man eine neue Annotation für einen Geltungsbereich-Typ erstellt:"
+msgstr ""
+"Web Beans besitzen ein <emphasis>erweiterbares Kontextmodell</emphasis>. Es "
+"ist möglich, neue Geltungsbereiche zu definieren, indem man eine neue "
+"Annotation für einen Geltungsbereich-Typ erstellt:"
 
 #. Tag: programlisting
 #: scopescontexts.xml:37
@@ -104,7 +119,12 @@ msgid ""
 "useful, we will also need to define a <literal>Context</literal> object that "
 "implements the scope! Implementing a <literal>Context</literal> is usually a "
 "very technical task, intended for framework development only."
-msgstr "Natürlich ist dies der einfache Teil des Jobs. Damit dieser Typ von Geltungsbereich von Nutzen ist, müssen wir außerdem ein <literal>Context</literal>-Objekt definieren, das den Geltungsbereich implementiert! Die Implementierung eines <literal>Context</literal> ist in der Regel ein sehr technisches Unterfangen, das nur für Framework-Entwicklung vorgesehen ist."
+msgstr ""
+"Natürlich ist dies der einfache Teil des Jobs. Damit dieser Typ von "
+"Geltungsbereich von Nutzen ist, müssen wir außerdem ein <literal>Context</"
+"literal>-Objekt definieren, das den Geltungsbereich implementiert! Die "
+"Implementierung eines <literal>Context</literal> ist in der Regel ein sehr "
+"technisches Unterfangen, das nur für Framework-Entwicklung vorgesehen ist."
 
 #. Tag: para
 #: scopescontexts.xml:44
@@ -112,7 +132,10 @@ msgstr "Natürlich ist dies der einfache Teil des Jobs. Damit dieser Typ von Gel
 msgid ""
 "We can apply a scope type annotation to a Web Bean implementation class to "
 "specify the scope of the Web Bean:"
-msgstr "Wir können eine Annotation eines Geltungsbereich-Typs an einer Web Bean Implementierungsklasse anwenden, um den Geltungsbereich des Web Beans festzulegen:"
+msgstr ""
+"Wir können eine Annotation eines Geltungsbereich-Typs an einer Web Bean "
+"Implementierungsklasse anwenden, um den Geltungsbereich des Web Beans "
+"festzulegen:"
 
 #. Tag: programlisting
 #: scopescontexts.xml:47
@@ -128,7 +151,9 @@ msgstr ""
 #: scopescontexts.xml:58
 #, no-c-format
 msgid "Usually, you'll use one of Web Beans' built-in scopes."
-msgstr "In der Regel verwenden Sie einen der eingebauten Geltungsbereiche der Web Beans."
+msgstr ""
+"In der Regel verwenden Sie einen der eingebauten Geltungsbereiche der Web "
+"Beans."
 
 #. Tag: title
 #: scopescontexts.xml:63
@@ -178,13 +203,16 @@ msgstr "Für eine Web Beans verwendende Webanwendung:"
 msgid ""
 "any servlet request has access to active request, session and application "
 "scopes, and, additionally"
-msgstr "Jede Servlet-Anfrage hat Zugriff auf die aktuelle Anfrage, Session und Geltungsbereiche der Anwendung und zusätzlich "
+msgstr ""
+"Jede Servlet-Anfrage hat Zugriff auf die aktuelle Anfrage, Session und "
+"Geltungsbereiche der Anwendung und zusätzlich "
 
 #. Tag: para
 #: scopescontexts.xml:90
 #, no-c-format
 msgid "any JSF request has access to an active conversation scope."
-msgstr "hat jede JSF-Anfrage Zugriff auf einen aktiven Konversations-Geltungsbereich."
+msgstr ""
+"hat jede JSF-Anfrage Zugriff auf einen aktiven Konversations-Geltungsbereich."
 
 #. Tag: para
 #: scopescontexts.xml:94
@@ -223,7 +251,10 @@ msgid ""
 "If the application tries to invoke a Web Bean with a scope that does not "
 "have an active context, a <literal>ContextNotActiveException</literal> is "
 "thrown by the Web Bean manager at runtime."
-msgstr "Versucht die Applikation ein Web Bean aufzurufen, das keinen aktiven Kontext besitzt, so wird zur Runtime eine <literal>ContextNotActiveException</literal> vom Web Bean Manager gemeldet."
+msgstr ""
+"Versucht die Applikation ein Web Bean aufzurufen, das keinen aktiven Kontext "
+"besitzt, so wird zur Runtime eine <literal>ContextNotActiveException</"
+"literal> vom Web Bean Manager gemeldet."
 
 #. Tag: para
 #: scopescontexts.xml:115
@@ -233,8 +264,9 @@ msgid ""
 "EE developer, so let's not waste time discussing them here. One of the "
 "scopes, however, is new."
 msgstr ""
-"Drei der vier eingebauten Geltungsbereiche solltem jedem Java "
-"EE Entwickler sehr vertraut sein, daher wollen wir hier nicht weiter auf diese eingehen. Einer der Geltungsbereiche jedoch ist neu."
+"Drei der vier eingebauten Geltungsbereiche solltem jedem Java EE Entwickler "
+"sehr vertraut sein, daher wollen wir hier nicht weiter auf diese eingehen. "
+"Einer der Geltungsbereiche jedoch ist neu."
 
 #. Tag: title
 #: scopescontexts.xml:122
@@ -250,7 +282,12 @@ msgid ""
 "in that it holds state associated with a user of the system, and spans "
 "multiple requests to the server. However, unlike the session scope, the "
 "conversation scope:"
-msgstr "Der Web Beans Geltungsbereich der Konversation ähnelt dem herkömmlichen Geltungsbereich der Session dahingehend, dass er den mit einem Benutzer des Systems assoziierten Status verwahrt und mehrere Anfragen zum Server umfasst. Anders als für den Geltungsbereich der Session gilt für den Geltungsbereich der Konversation jedoch:"
+msgstr ""
+"Der Web Beans Geltungsbereich der Konversation ähnelt dem herkömmlichen "
+"Geltungsbereich der Session dahingehend, dass er den mit einem Benutzer des "
+"Systems assoziierten Status verwahrt und mehrere Anfragen zum Server "
+"umfasst. Anders als für den Geltungsbereich der Session gilt für den "
+"Geltungsbereich der Konversation jedoch:"
 
 #. Tag: para
 #: scopescontexts.xml:130
@@ -264,7 +301,9 @@ msgstr "ist explizit durch die Applikation demarkiert und "
 msgid ""
 "holds state associated with a particular web browser tab in a JSF "
 "application."
-msgstr "verwahrt den mit einem bestimmten Webbrowser assoziierten Status in einer JSF-Applikation."
+msgstr ""
+"verwahrt den mit einem bestimmten Webbrowser assoziierten Status in einer "
+"JSF-Applikation."
 
 #. Tag: para
 #: scopescontexts.xml:138
@@ -274,7 +313,11 @@ msgid ""
 "the user. The conversation context holds state associated with what the user "
 "is currently working on. If the user is doing multiple things at the same "
 "time, there are multiple conversations."
-msgstr "Eine Konversation repräsentiert aus Perspektive des Benutzers eine Aufgabe, eine Arbeitseinheit. Der Konversationskontext enthält den Status dessen, woran der Benutzer gerade arbeitet. Arbeitet der Benutzer gleichzeitig an mehreren Dingen, so existieren mehrere Konversationen."
+msgstr ""
+"Eine Konversation repräsentiert aus Perspektive des Benutzers eine Aufgabe, "
+"eine Arbeitseinheit. Der Konversationskontext enthält den Status dessen, "
+"woran der Benutzer gerade arbeitet. Arbeitet der Benutzer gleichzeitig an "
+"mehreren Dingen, so existieren mehrere Konversationen."
 
 #. Tag: para
 #: scopescontexts.xml:143
@@ -284,7 +327,12 @@ msgid ""
 "conversations are destroyed at the end of the request. If a conversation "
 "should hold state across multiple requests, it must be explicitly promoted "
 "to a <emphasis>long-running conversation</emphasis>."
-msgstr "Der Konversation skontext ist während jeder JSF-Anfrage aktiv. Jedoch werden die meisten Konversationen am Ende der Anfrage gelöscht. Soll eine Konversation den Status über mehrere Anfragen hinweg verwahren, so muss sie explizit zu einer <emphasis>lange laufenden Konversation</emphasis> fortgepflanzt werden."
+msgstr ""
+"Der Konversation skontext ist während jeder JSF-Anfrage aktiv. Jedoch werden "
+"die meisten Konversationen am Ende der Anfrage gelöscht. Soll eine "
+"Konversation den Status über mehrere Anfragen hinweg verwahren, so muss sie "
+"explizit zu einer <emphasis>lange laufenden Konversation</emphasis> "
+"fortgepflanzt werden."
 
 #. Tag: title
 #: scopescontexts.xml:149
@@ -299,7 +347,10 @@ msgid ""
 "Web Beans provides a built-in Web Bean for controlling the lifecyle of "
 "conversations in a JSF application. This Web Bean may be obtained by "
 "injection:"
-msgstr "Web Beans liefert ein eingebautes Web Bean für die Steuerung des Lebenszyklus von Konversationen in einer JSF-Applikation. Dieses Web Bean kann durch Einspeisung erhalten werden:"
+msgstr ""
+"Web Beans liefert ein eingebautes Web Bean für die Steuerung des "
+"Lebenszyklus von Konversationen in einer JSF-Applikation. Dieses Web Bean "
+"kann durch Einspeisung erhalten werden:"
 
 #. Tag: programlisting
 #: scopescontexts.xml:154
@@ -317,8 +368,11 @@ msgid ""
 "for destruction at the end of the current request, call <literal>end()</"
 "literal>."
 msgstr ""
-"Um die mit der aktuellen Anfrage assoziierte Konversation an eine lange laufende Konversation fortzupflanzen, rufen Sie die <literal>begin()</literal>-Methode vom Applikationscode auf. Um den aktuellen, lange laufenden Konversationskontext für die Löschung am Ende der aktuellen Anfrage zu terminieren, rufen Sie <literal>end()</"
-"literal> auf."
+"Um die mit der aktuellen Anfrage assoziierte Konversation an eine lange "
+"laufende Konversation fortzupflanzen, rufen Sie die <literal>begin()</"
+"literal>-Methode vom Applikationscode auf. Um den aktuellen, lange laufenden "
+"Konversationskontext für die Löschung am Ende der aktuellen Anfrage zu "
+"terminieren, rufen Sie <literal>end()</literal> auf."
 
 #. Tag: para
 #: scopescontexts.xml:161
@@ -326,7 +380,9 @@ msgstr ""
 msgid ""
 "In the following example, a conversation-scoped Web Bean controls the "
 "conversation with which it is associated:"
-msgstr "IIm folgenden Beispiel steuert ein konversationsbegrenztes Web Bean die Konversation, mit der es assoziiert ist:"
+msgstr ""
+"IIm folgenden Beispiel steuert ein konversationsbegrenztes Web Bean die "
+"Konversation, mit der es assoziiert ist:"
 
 #. Tag: programlisting
 #: scopescontexts.xml:164
@@ -402,8 +458,10 @@ msgid ""
 "<literal>Conversation</literal> API. But some other Web Beans have a "
 "lifecycle which depends completely upon another object."
 msgstr ""
-"Dieses Web Bean ist in der Lage, seinen eigenen Lebenszyklus durch Verwendung der "
-"<literal>Conversation</literal>-API zu steuern. Aber einige andere Web Beans besitzen einen Lebenszyklus, der komplett von einem anderen Objekt abhängt."
+"Dieses Web Bean ist in der Lage, seinen eigenen Lebenszyklus durch "
+"Verwendung der <literal>Conversation</literal>-API zu steuern. Aber einige "
+"andere Web Beans besitzen einen Lebenszyklus, der komplett von einem anderen "
+"Objekt abhängt."
 
 #. Tag: title
 #: scopescontexts.xml:173
@@ -419,8 +477,9 @@ msgid ""
 "(JSF form submission). It does not automatically propagate with non-faces "
 "requests, for example, navigation via a link."
 msgstr ""
-"Der Konversationskontext wird automatisch mit allen JSF Faces Anfragen fortgepflanzt"
-"(JSF-Formulareinreichung). Nicht-Faces Anfragen werden nicht automatisch fortgepflanzt, zum Beispiel Navigation via einem Link."
+"Der Konversationskontext wird automatisch mit allen JSF Faces Anfragen "
+"fortgepflanzt(JSF-Formulareinreichung). Nicht-Faces Anfragen werden nicht "
+"automatisch fortgepflanzt, zum Beispiel Navigation via einem Link."
 
 #. Tag: para
 #: scopescontexts.xml:179
@@ -433,10 +492,13 @@ msgid ""
 "conversation may be obtained from the <literal>Conversation</literal> "
 "object, which has the Web Beans name <literal>conversation</literal>."
 msgstr ""
-"Wir können die Konversation zwingen, mit einer nicht-Faces Anfrage fortzupflanzen, indem wir den eindeutigen Bezeichner der Konversation als einen Anfragenparameter mit einschließen. "
-"Die Web Beans Spezifikation reserviert den Anfragenparameter namens "
-"<literal>cid</literal> für diesen Gebrauch. Den eindeutigen Bezeichner der Konversation "
-"erhält man vom <literal>Conversation</literal>-Objekt, welches den Web Beans Namen <literal>conversation</literal> besitzt."
+"Wir können die Konversation zwingen, mit einer nicht-Faces Anfrage "
+"fortzupflanzen, indem wir den eindeutigen Bezeichner der Konversation als "
+"einen Anfragenparameter mit einschließen. Die Web Beans Spezifikation "
+"reserviert den Anfragenparameter namens <literal>cid</literal> für diesen "
+"Gebrauch. Den eindeutigen Bezeichner der Konversation erhält man vom "
+"<literal>Conversation</literal>-Objekt, welches den Web Beans Namen "
+"<literal>conversation</literal> besitzt."
 
 #. Tag: para
 #: scopescontexts.xml:186
@@ -463,7 +525,13 @@ msgid ""
 "very easy to implement the common POST-then-redirect pattern, without resort "
 "to fragile constructs such as a \"flash\" object. In this case, the Web Bean "
 "manager automatically adds a request parameter to the redirect URL."
-msgstr "Der Web Bean Manager muss auch Konversationen über ein Redirect fortpflanzen, selbst wenn die Konversation nicht als lange laufend gekennzeichnet ist. Dies macht die Implementierung des POST-then-redirect Musters sehr einfach, ohne dass man sich auf anfällige Konstrukte wie etwa ein \"Flash\"-Objekt stützen müsste. In tdiesem Fall fügt der Web Bean Manager automatisch einen Anfragenparameter hinzu, um die URL umzuleiten."
+msgstr ""
+"Der Web Bean Manager muss auch Konversationen über ein Redirect "
+"fortpflanzen, selbst wenn die Konversation nicht als lange laufend "
+"gekennzeichnet ist. Dies macht die Implementierung des POST-then-redirect "
+"Musters sehr einfach, ohne dass man sich auf anfällige Konstrukte wie etwa "
+"ein \"Flash\"-Objekt stützen müsste. In tdiesem Fall fügt der Web Bean "
+"Manager automatisch einen Anfragenparameter hinzu, um die URL umzuleiten."
 
 #. Tag: title
 #: scopescontexts.xml:200
@@ -478,11 +546,15 @@ msgid ""
 "The Web Bean manager is permitted to destroy a conversation and all state "
 "held in its context at any time in order to preserve resources. A Web Bean "
 "manager implementation will normally do this on the basis of some kind of "
-"timeout &#151; though this is not required by the Web Beans specification. The "
-"timeout is the period of inactivity before the conversation is destroyed."
+"timeout &#151; though this is not required by the Web Beans specification. "
+"The timeout is the period of inactivity before the conversation is destroyed."
 msgstr ""
-"Dem Web Bean Manager ist gestattet, eine Konversation und alle Stati innerhalb seines Kontexts zu jedem Zeitpunkt zu löschen, um Ressourcen zu schonen. Eine Implementierung des Web Bean "
-"Managers wird dies in der Regel auf der Basis einer Art von Timeout &#151; tun, obwohl dies nicht durch die Web Beans Spezifikation gefordert wird. Beim Timeout handelt es sich um den Zeitraum von Inaktivität, ehe die Konversation gelöscht wird."
+"Dem Web Bean Manager ist gestattet, eine Konversation und alle Stati "
+"innerhalb seines Kontexts zu jedem Zeitpunkt zu löschen, um Ressourcen zu "
+"schonen. Eine Implementierung des Web Bean Managers wird dies in der Regel "
+"auf der Basis einer Art von Timeout &#151; tun, obwohl dies nicht durch die "
+"Web Beans Spezifikation gefordert wird. Beim Timeout handelt es sich um den "
+"Zeitraum von Inaktivität, ehe die Konversation gelöscht wird."
 
 #. Tag: para
 #: scopescontexts.xml:208
@@ -491,7 +563,10 @@ msgid ""
 "The <literal>Conversation</literal> object provides a method to set the "
 "timeout. This is a hint to the Web Bean manager, which is free to ignore the "
 "setting."
-msgstr "Das <literal>Conversation</literal>-Objekt liefert eine Methode, mit der der Timeout eingestellt werden kann. Dies ist ein Tipp an den Web Bean Manager, der die Einstellung ignorieren kann."
+msgstr ""
+"Das <literal>Conversation</literal>-Objekt liefert eine Methode, mit der der "
+"Timeout eingestellt werden kann. Dies ist ein Tipp an den Web Bean Manager, "
+"der die Einstellung ignorieren kann."
 
 #. Tag: programlisting
 #: scopescontexts.xml:212
@@ -500,36 +575,41 @@ msgid "conversation.setTimeout(timeoutInMillis);"
 msgstr "conversation.setTimeout(timeoutInMillis);"
 
 #. Tag: title
-#: scopescontexts.xml:219
+#: scopescontexts.xml:218
 #, no-c-format
 msgid "The dependent pseudo-scope"
 msgstr "Der abhängige Pseudo-Geltungsbereich (\"Pseudo-Scope\")"
 
 #. Tag: para
-#: scopescontexts.xml:221
+#: scopescontexts.xml:220
 #, no-c-format
 msgid ""
 "In addition to the four built-in scopes, Web Beans features the so-called "
 "<emphasis>dependent pseudo-scope</emphasis>. This is the default scope for a "
 "Web Bean which does not explicitly declare a scope type."
 msgstr ""
-"Neben den vier eingebauten Geltungsbereichen bieten Web Beans den sogenannten"
-"<emphasis>abhängigen Pseudo-Geltungsbereich</emphasis>. Dies ist der standardmäßige Geltungsbereich für ein Web Bean, das nicht expliziet einen Typ von Geltungsbereich deklariert."
+"Neben den vier eingebauten Geltungsbereichen bieten Web Beans den "
+"sogenannten<emphasis>abhängigen Pseudo-Geltungsbereich</emphasis>. Dies ist "
+"der standardmäßige Geltungsbereich für ein Web Bean, das nicht expliziet "
+"einen Typ von Geltungsbereich deklariert."
 
 #. Tag: para
-#: scopescontexts.xml:225
+#: scopescontexts.xml:224
 #, no-c-format
-msgid "For example, this Web Bean has the scope type <literal>@Dependent</literal>:"
-msgstr "Zum Beispiel besitzt dieses Web Bean den Geltungsbereich-Typ <literal>@Dependent</literal>:"
+msgid ""
+"For example, this Web Bean has the scope type <literal>@Dependent</literal>:"
+msgstr ""
+"Zum Beispiel besitzt dieses Web Bean den Geltungsbereich-Typ "
+"<literal>@Dependent</literal>:"
 
 #. Tag: programlisting
-#: scopescontexts.xml:227
+#: scopescontexts.xml:226
 #, no-c-format
 msgid "<![CDATA[public class Calculator { ... }]]>"
 msgstr "<![CDATA[public class Calculator { ... }]]>"
 
 #. Tag: para
-#: scopescontexts.xml:229
+#: scopescontexts.xml:228
 #, no-c-format
 msgid ""
 "When an injection point of a Web Bean resolves to a dependent Web Bean, a "
@@ -537,36 +617,45 @@ msgid ""
 "Bean is instantiated. Instances of dependent Web Beans are never shared "
 "between different Web Beans or different injection points. They are "
 "<emphasis>dependent objects</emphasis> of some other Web Bean instance."
-msgstr "Wenn der Einspeisungspunkt eines Web Bean zu einem abhängigen Web Bean hin aufgelöst wird, so wird jedes Mal, wenn das erste Web Bean instantiiert wird, eine neue Instanz des abhängigen Web Beans erstellt. Instanzen abhängiger Web Beans werden nie von unterschiedlichen Web Beans oder unterschiedlichen Einspeisungspunkten geteilt. Sie sind <emphasis>abhängige Objekte</emphasis> einer anderen Web Bean Instanz."
+msgstr ""
+"Wenn der Einspeisungspunkt eines Web Bean zu einem abhängigen Web Bean hin "
+"aufgelöst wird, so wird jedes Mal, wenn das erste Web Bean instantiiert "
+"wird, eine neue Instanz des abhängigen Web Beans erstellt. Instanzen "
+"abhängiger Web Beans werden nie von unterschiedlichen Web Beans oder "
+"unterschiedlichen Einspeisungspunkten geteilt. Sie sind <emphasis>abhängige "
+"Objekte</emphasis> einer anderen Web Bean Instanz."
 
 #. Tag: para
-#: scopescontexts.xml:235
+#: scopescontexts.xml:234
 #, no-c-format
 msgid ""
 "Dependent Web Bean instances are destroyed when the instance they depend "
 "upon is destroyed."
-msgstr "Abhängige Web Bean Instanzen werden gelöscht, wenn die Instanz von der sie abhängen gelöscht wird."
+msgstr ""
+"Abhängige Web Bean Instanzen werden gelöscht, wenn die Instanz von der sie "
+"abhängen gelöscht wird."
 
 #. Tag: para
-#: scopescontexts.xml:243
+#: scopescontexts.xml:242
 #, no-c-format
 msgid ""
 "Web Beans makes it easy to obtain a dependent instance of a Java class or "
 "EJB bean, even if the class or EJB bean is already declared as a Web Bean "
 "with some other scope type."
 msgstr ""
-"Web Beans machen es einfach, eine unabhängige Instanz einer Java-Klasse oder eines "
-"EJB-Beans zu erhalten, selbst wenn die Klasse oder das EJB-Bean bereits als ein Web Bean "
-"mit einem anderen Typ von Geltungsbereich deklariert sind."
+"Web Beans machen es einfach, eine unabhängige Instanz einer Java-Klasse oder "
+"eines EJB-Beans zu erhalten, selbst wenn die Klasse oder das EJB-Bean "
+"bereits als ein Web Bean mit einem anderen Typ von Geltungsbereich "
+"deklariert sind."
 
 #. Tag: title
-#: scopescontexts.xml:248
+#: scopescontexts.xml:247
 #, no-c-format
 msgid "The <literal>@New</literal> annotation"
 msgstr "Die <literal>@New</literal>-Annotation"
 
 #. Tag: para
-#: scopescontexts.xml:250
+#: scopescontexts.xml:249
 #, no-c-format
 msgid ""
 "The built-in <literal>@New</literal> binding annotation allows "
@@ -574,16 +663,18 @@ msgid ""
 "injection point. Suppose we declare the following injected field:"
 msgstr ""
 "Die eingebaute <literal>@New</literal> Binding-Annotation gestattet die "
-"<emphasis>implizite</emphasis> Definition eines abhängigen Web Beans an einem Einspeisungspunkt. Nehmen wir an, wir deklarieren das folgende eingespeiste Feld:"
+"<emphasis>implizite</emphasis> Definition eines abhängigen Web Beans an "
+"einem Einspeisungspunkt. Nehmen wir an, wir deklarieren das folgende "
+"eingespeiste Feld:"
 
 #. Tag: programlisting
-#: scopescontexts.xml:254
+#: scopescontexts.xml:253
 #, no-c-format
 msgid "<![CDATA[@New Calculator calculator;]]>"
 msgstr "<![CDATA[@New Calculator calculator;]]>"
 
 #. Tag: para
-#: scopescontexts.xml:256
+#: scopescontexts.xml:255
 #, no-c-format
 msgid ""
 "Then a Web Bean with scope <literal>@Dependent</literal>, binding type "
@@ -591,23 +682,24 @@ msgid ""
 "implementation class <literal>Calculator</literal> and deployment type "
 "<literal>@Standard</literal> is implicitly defined."
 msgstr ""
-"Dann wird ein Web Bean mit Geltungsbereich <literal>@Dependent</literal>, Binding-Typ "
-"<literal>@New</literal>, API-Typ <literal>Calculator</literal>, "
+"Dann wird ein Web Bean mit Geltungsbereich <literal>@Dependent</literal>, "
+"Binding-Typ <literal>@New</literal>, API-Typ <literal>Calculator</literal>, "
 "Implementierungsklasse <literal>Calculator</literal> und Deployment-Typ "
 "<literal>@Standard</literal> impliziert definiert."
 
 #. Tag: para
-#: scopescontexts.xml:261
+#: scopescontexts.xml:260
 #, no-c-format
 msgid ""
 "This is true even if <literal>Calculator</literal> is <emphasis>already</"
 "emphasis> declared with a different scope type, for example:"
 msgstr ""
 "Dies ist wahr, selbst wenn <literal>Calculator</literal> <emphasis>bereits</"
-"emphasis> mit einem anderen Typ von Geltungsbereich definiert ist, zum Beispiel:"
+"emphasis> mit einem anderen Typ von Geltungsbereich definiert ist, zum "
+"Beispiel:"
 
 #. Tag: programlisting
-#: scopescontexts.xml:264
+#: scopescontexts.xml:263
 #, no-c-format
 msgid ""
 "<![CDATA[@ConversationScoped\n"
@@ -617,17 +709,17 @@ msgstr ""
 "public class Calculator { ... }]]>"
 
 #. Tag: para
-#: scopescontexts.xml:266
+#: scopescontexts.xml:265
 #, no-c-format
 msgid ""
 "So the following injected attributes each get a different instance of "
 "<literal>Calculator</literal>:"
 msgstr ""
-"Die folgenden eingespeisten Attribute erhalten also jeweils eine unterschiedliche Instanz von "
-"<literal>Calculator</literal>:"
+"Die folgenden eingespeisten Attribute erhalten also jeweils eine "
+"unterschiedliche Instanz von <literal>Calculator</literal>:"
 
 #. Tag: programlisting
-#: scopescontexts.xml:269
+#: scopescontexts.xml:268
 #, no-c-format
 msgid ""
 "<![CDATA[public class PaymentCalc {\n"
@@ -645,7 +737,7 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#: scopescontexts.xml:271
+#: scopescontexts.xml:270
 #, no-c-format
 msgid ""
 "The <literal>calculator</literal> field has a conversation-scoped instance "
@@ -653,14 +745,18 @@ msgid ""
 "literal> field has a new instance of <literal>Calculator</literal> injected, "
 "with a lifecycle that is bound to the owning <literal>PaymentCalc</literal>."
 msgstr ""
-"In das <literal>calculator</literal>-Feld wird eine konversationsbegrenzte Instanz von <literal>Calculator</literal> eingespeist. In das <literal>newCalculator</"
-"literal>-Feld wird eine neue Instanz von <literal>Calculator</literal> eingespeist, mit einem Lebenszyklus, der an den besitzenden <literal>PaymentCalc</literal> gebunden ist."
+"In das <literal>calculator</literal>-Feld wird eine konversationsbegrenzte "
+"Instanz von <literal>Calculator</literal> eingespeist. In das "
+"<literal>newCalculator</literal>-Feld wird eine neue Instanz von "
+"<literal>Calculator</literal> eingespeist, mit einem Lebenszyklus, der an "
+"den besitzenden <literal>PaymentCalc</literal> gebunden ist."
 
 #. Tag: para
-#: scopescontexts.xml:276
+#: scopescontexts.xml:275
 #, no-c-format
 msgid ""
 "This feature is particularly useful with producer methods, as we'll see in "
 "the next chapter."
-msgstr "Dieses Feature ist insbesondere im Zusammenhang mit Producer-Methoden von Nutzen, wie wir im folgenden Kapitel noch sehen werden."
-
+msgstr ""
+"Dieses Feature ist insbesondere im Zusammenhang mit Producer-Methoden von "
+"Nutzen, wie wir im folgenden Kapitel noch sehen werden."
