@@ -5,16 +5,15 @@
 	
    <path id="maven-ant-tasks.classpath" path="${wbri.dir}/lib/maven-ant-tasks.jar" />
    <typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpathref="maven-ant-tasks.classpath" />
+	
+	<property file="versions.properties" />
    
    <property name="maven.dir" location="${wbri.dir}/lib/maven" />
 	
-	
-	<property name="dist.dir" value="${wbri.dir}/dist/webbeans-${version}" />
+	<property name="dist.dir" value="${wbri.dir}/dist/webbeans-${webbeans.version}" />
 	<property name="dist.wb.lib.dir" value="${dist.dir}/lib/webbeans" />
 	<property name="dist.doc.dir" value="${dist.dir}/doc" />
 	<property name="dist.apidocs.dir" value="${dist.dir}/doc/apidocs" />
-	
-	<property file="versions.properties" />
 	
 	<target name="dist" description="Build the distribution">
 		
@@ -53,7 +52,6 @@
 		</copy>
 		
 		<maven target="jdocbook:translate compile" basedir="${refdoc.dir}" />
-		
 		<mkdir dir="${dist.doc.dir}" />
 		<copy todir="${dist.doc.dir}">
 			<fileset dir="${refdoc.dir}/target/docbook/publish">
@@ -69,13 +67,11 @@
 		</copy>
 		<maven target="clean" basedir="${refdoc.dir}" />
 		
-		<maven target="javadoc:jar install" basedir="${wbri.dir}" />
-		
 		<artifact:dependencies filesetId="webbeans.fileset" versionsId="webbeans.versions" sourcesfilesetid="webbeans.sources.fileset" javadocfilesetid="webbeans.javadocs.fileset">
-			<dependency groupId="org.jboss.webbeans" artifactId="jsr299-api" version="${version}"/>
-		   <dependency groupId="org.jboss.webbeans" artifactId="webbeans-core" version="${version}"/>
-			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-spi" version="${version}"/>
-			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-logger" version="${version}"/>
+			<dependency groupId="org.jboss.webbeans" artifactId="jsr299-api" version="${jsr299.version}"/>
+		   <dependency groupId="org.jboss.webbeans" artifactId="webbeans-core" version="${webbeans.version}"/>
+			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-spi" version="${webbeans.version}"/>
+			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-logger" version="${webbeans.version}"/>
 			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-wicket" version="${webbeans.servlet.version}"/>
 			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-se" version="${webbeans.servlet.version}"/>
 			<dependency groupId="org.jboss.webbeans.servlet" artifactId="webbeans-servlet" version="${webbeans.servlet.version}"/>
@@ -114,9 +110,9 @@
       </copy>
 		<delete dir="target" failonerror="false"/>
 		
-		<zip destfile="webbeans-${version}.zip">
+		<zip destfile="webbeans-${webbeans.version}.zip">
          <fileset dir="${wbri.dir}/dist">
-         	<include name="webbeans-${version}/**" />
+         	<include name="webbeans-${webbeans.version}/**" />
          </fileset>
       </zip>
 	</target>
@@ -125,8 +121,8 @@
 		<maven target="deploy:deploy-file" basedir="${wbri.dir}">
 			<arg line="-DpomFile=${basedir}/pom.xml" />
 			<arg line="-Dpackaging=zip" />
-			<arg line="-Dversion=${version}" />
-			<arg line="-Dfile=${basedir}/webbeans-${version}.zip" />
+			<arg line="-Dversion=${webbeans.version}" />
+			<arg line="-Dfile=${basedir}/webbeans-${webbeans.version}.zip" />
 			<arg line="-Durl=dav:https://snapshots.jboss.org/maven2" />
 			<arg line="-DrepositoryId=snapshots.jboss.org" />
 			<arg line="-DuniqueVersion=false" />
