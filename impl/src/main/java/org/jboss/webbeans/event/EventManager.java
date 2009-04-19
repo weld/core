@@ -116,7 +116,8 @@ public class EventManager
       }
       finally
       {
-         DependentContext.instance().setActive(false);
+         // TODO This breaks SE shutdown, also we need to tidy up how dependent context is activated....
+         //DependentContext.instance().setActive(false);
       }
    }
 
