@@ -676,134 +676,212 @@ public class Game
       
       <section id="numberguessWicket">
       <title>The numberguess example in Apache Wicket</title>
-        <para>Although the JSR299 specification includes detailed information on how WebBeans integrates 
-  with Java Server Faces, it is possible to use WebBeans injection, as well as the WebBeans conversational
-  context, with other web frameworks.  In this section, we'll look at the module which allows integration of
-  WebBeans with the Apache Wicket framework.  This documentation assumes that you have some familiarity
-  with Wicket; if not, please visit <ulink url="http://wicket.apache.org/">http://wicket.apache.org/</ulink>
-  to learn more.  In this section we'll look at the previous "numberguess" example as implemented with Wicket.  
-  We'll look at the conversational aspects of the Wicket/WebBeans integration in <xref linkend="wicketContexts"/></para>
+         <para>
+            Whilst JSR-299 specifies integration with Java ServerFaces, Web 
+            Beans allows you to inject into Wicket components, and also allows 
+            you to use a conversation context with Wicket. In this section, 
+            we'll walk you through the Wicket version of the numberguess 
+            example.  
+         </para>
+         
+         <note>
+            <para>   
+               You may want to review the Wicket documentation at 
+               <ulink url="http://wicket.apache.org/">http://wicket.apache.org/</ulink>.
+            </para>
+         </note>
 
-  <para>Like the previous example, the Wicket WebBeans examples make use of the <literal>webbeans-servlet</literal> module.  
-  The use of the <ulink url="http://jetty.mortbay.org/">Jetty servlet container</ulink> is common in the Wicket community, 
-  and is chosen here as the runtime container in order to facilitate comparison between the standard Wicket examples and these examples, 
-  and also to show how the webbeans-servlet integration is not dependent upon tomcat as the servlet container.  Since we 
-  are deploying to a servlet container, we are also building as a WAR.  In addition, these examples make use of the Eclipse IDE, 
-  although instructions are also given to deploy the application from the command line.</para>
+         <para>
+            Like the previous example, the Wicket WebBeans examples make use of 
+            the <literal>webbeans-servlet</literal> module.   The use of the 
+            <ulink url="http://jetty.mortbay.org/">Jetty servlet container</ulink>
+            is common in the Wicket community,  and is chosen here as the 
+            runtime container in order to facilitate comparison between the 
+            standard Wicket examples and these examples, and also to show how 
+            the webbeans-servlet integration is not dependent upon Tomcat as the
+            servlet container.
+         </para>
+         
+         <para>
+            These examples make use of the Eclipse IDE; instructions are also 
+            given to deploy the application from the command line.
+         </para>
             
-    <section>
-    <title>Creating the eclipse project</title>
-   <para>To generate an eclipse project from the example, use apache maven and the eclipse:eclipse
-   plugin:
-   <programlisting><![CDATA[cd examples/wicket/numberguess
-mvn eclipse:eclipse -DdownloadSources]]></programlisting>
-   Then, from eclipse, choose <literal>File -> Import -> General -> Existing Projects into Workspace</literal>, choose
-   the root directory of the numberguess example, and click finish.  This should result in a project in
-   your workspace named <literal>webbeans-wicket-numberguess</literal>:
-   <mediaobject>
-    <imageobject>
-    <imagedata fileref="images/wicket-numberguess-project.png" format="png"/> 
-    </imageobject>
-   </mediaobject>
-   </para>
-   </section>
+         <section>
+            <title>Creating the Eclipse project</title>
+         
+            <para>
+               To generate an Eclipse project from the example:
+            </para>
+         
+            <programlisting><![CDATA[cd examples/wicket/numberguess
+mvn eclipse:eclipse]]></programlisting>
+         
+            <para>
+               Then, from eclipse, choose <emphasis>File -> Import -> General -> Existing Projects into Workspace</emphasis>, 
+               select the root directory of the numberguess example, and click 
+               finish.  This will create a project in your workspace called
+               <literal>webbeans-wicket-numberguess</literal>
+            </para>
    
-   <section>
-   <title>Running the example from eclipse</title>
-   <para>This project follows the <literal>wicket-quickstart</literal>
-   approach of creating an instance of <literal>jetty</literal> through a <literal>Start</literal>
-   class.  So running the example is as simple as right-clicking on that Start class in src/test/java in the package
-   explorer and choosing "Run as Java Application."  You should then see console output related to jetty starting up,
-   and then be able to hit <literal>http://localhost:8080</literal> to view the app.  To stop the app, switch to the Console
-   View and click the red stop square.  One can also debug in the same fashion, by choosing "Debug as Java Application" when right-clicking.
-   </para>
-   </section>
-  <section>
-   <title>Running the example from the command line in Jboss or Tomcat</title>
-   <para>This example can also be deployed from the command line in a fashion similar to the other examples.  Assuming you have set up the
-   <literal>build.properties</literal> file in the <literal>examples</literal> directory to specify the location of Jboss or Tomcat, as previously
-   described, you can simply run <literal>ant deploy</literal> from the <literal>examples/wicket/numberguess</literal> directory, and access
-   the application at <literal>http://localhost:8080/webbeans-numberguess-wicket</literal>.
-   </para>
-   </section>
+            <mediaobject>
+               <imageobject>
+                  <imagedata fileref="images/wicket-numberguess-project.png" format="PNG"/> 
+               </imageobject>
+            </mediaobject>
+         </section>
    
-  <section>
-  <title>Understanding the code</title>
-  <para>While JSF uses unified EL expressions to bind view layer components in jsp or xhtml to 
-  WebBeans, Wicket keeps a stricter separation of concerns in place.  The markup is plain html with
-  a one-to-one mapping between html elements and the view components, which are constructed in java code.  All
-  view logic, including binding of components to models and controlling the response of view actions, 
-  is handled in java code.  Therefore, the integration of WebBeans with Wicket takes place through annotated 
-  injections of WebBeans into your WebPage subclass (or into other custom wicket component subclasses.)</para>
+         <section>
+            <title>Running the example from Eclipse</title>
+         
+            <para>
+               This project follows the <literal>wicket-quickstart</literal> 
+               approach of creating an instance of Jetty in the
+               <literal>Start</literal> class.  So running the example is as 
+               simple as right-clicking on that Start class in 
+               <literal>src/test/java</literal> in the 
+               <emphasis>Package Explorer</emphasis> and choosing 
+               <emphasis>Run as Java Application</emphasis>.  You should
+               see console output related to Jetty starting up; then visit able 
+               <literal>http://localhost:8080</literal> to view the app.  To 
+               debug choose <emphasis>Debug as Java Application</emphasis>.
+            </para>
+         </section>
+      
+         <section>
+            <title>Running the example from the command line in JBoss AS or Tomcat</title>
+         
+            <para>
+               This example can also be deployed from the command line in a 
+               (similar to the other examples).  Assuming you have set up the
+               <literal>build.properties</literal> file in the 
+               <literal>examples</literal> directory to specify the location of 
+               JBoss AS or Tomcat, as previously described, you can run 
+               <literal>ant deploy</literal> from the 
+               <literal>examples/wicket/numberguess</literal> directory, and 
+               access the application at 
+               <literal>http://localhost:8080/webbeans-numberguess-wicket</literal>.
+            </para>
+         </section>
+   
+         <section>
+            <title>Understanding the code</title>
+         
+            <para>
+               JSF uses Unified EL expressions to bind view layer components in 
+               JSP or Facelet views to beans, Wicket defines it's components in 
+               Java. The markup is plain html with a one-to-one mapping between 
+               html elements and the view components. All view logic, including 
+               binding of components to models and controlling the response of 
+               view actions, is handled in Java.  The integration of Web Beans 
+               with Wicket takes advantage of the same binding annotations used 
+               in your business layer to provide injection into your WebPage 
+               subclass (or into other custom wicket component subclasses).
+            </para>
 
-  <para>The code in the wicket numberguess example is very similar to the JSF-based numberguess example described previously.  The business logic
-  components (Game, Generator, MaxNumber, etc.) are the same.  Differences include the following:</para>
-  <itemizedlist>
-  <listitem><para>Each wicket application must have a <literal>WebApplication</literal> subclass,
-  and in the case of the Wicket/WebBeans integration, this class should subclass <literal>
-  org.jboss.webbeans.wicket.WebBeansApplication</literal>.  (If you would prefer not to subclass
-  WebBeansApplication, you can manually add the small number of overrides and listeners to your own WebApplication
-  subclass.  See the javadocs on WebBeansApplication for details.)  In our case, our application class is called<literal>
-  SampleApplication</literal>:
-  <programlisting><![CDATA[public class SampleApplication extends WebBeansApplication
-{
+            <para>
+               The code in the wicket numberguess example is very similar to the 
+               JSF-based numberguess example. The business layer is identical!
+            </para>
+         
+            <para>    
+               Differences are:
+            </para>
+            <itemizedlist>
+               <listitem>
+                  <para>
+                     Each wicket application must have a 
+                     <literal>WebApplication</literal> subclass,  In our case, 
+                     our application class is 
+                     <literal>SampleApplication</literal>:
+                  </para>
+                  <programlisting><![CDATA[public class SampleApplication extends WebBeansApplication {
    @Override
-   public Class getHomePage()
-   {
+   public Class getHomePage() {
       return HomePage.class;
    }
-}]]></programlisting>This class specifies which page wicket should treat as our HomePage, 
-in our case, <literal>HomePage.class</literal></para>
-  </listitem>
-  <listitem>
-  <para>In <literal>HomePage</literal> we see typical wicket code to set up page elements.  The
-  bits that are interesting with respect to WebBeans are the injection of the <literal>Game</literal>
-  WebBean the top of the class</para>
-  <programlisting><![CDATA[ @Current Game game;]]></programlisting> which is then used later in, 
-  for example, the code for submitting a guess:<programlisting><![CDATA[final Component guessButton = new AjaxButton("GuessButton") { 
+}]]></programlisting>
+                  <para>
+                     This class specifies which page wicket should treat as our 
+                     home page, in our case, <literal>HomePage.class</literal>
+                  </para>
+               </listitem>
+               <listitem>
+                  <para>
+                     In <literal>HomePage</literal> we see typical wicket code 
+                     to set up page elements.  The bit that is interesting is 
+                     the injection of the <literal>Game</literal> bean:
+                  </para>
+                  
+                  <programlisting><![CDATA[ @Current Game game;]]></programlisting>
+               
+                  <para>
+                     The <literal>Game</literal> bean is can then be used, for 
+                     example, by the code for submitting a guess:
+                  </para>
+               
+                  <programlisting><![CDATA[final Component guessButton = new AjaxButton("GuessButton") { 
    protected void onSubmit(AjaxRequestTarget target, Form form) {
-      if (game.check()) {]]></programlisting>This injection is a proxy which holds a transient reference to the actual
-      Game WebBean, and is therefore safe with respect to the serialization of the wicket page.  Actual
-      storage of the bean is in the session, and is managed by WebBeans.  Note that Wicket components, like the HomePage and its
-      subcomponents, are <emphasis>not</emphasis> WebBeans.  Their construction is handled directly by wicket (for 
-      the page itself) and by the example code (for the nested page elements), and not by the WebBeans
-      Manager.  However, the <literal>
-      webbeans-wicket</literal> integration takes care of injecting dependencies into the page for us.  This
-      injection occurs through an <literal>IComponentInstantiationListener</literal> which is 
-      registered by the <literal>WebbeansWebApplication</literal>.  This means that although wicket
-      components can have injections, they <emphasis>cannot</emphasis> use interceptors and the other features
-      of real WebBeans.  The delegate beans used by the wicket code can of course be full WebBeans, 
-      as the <literal>Game</literal> bean is in this example.</listitem>
-      <listitem><para>Note that this example also uses ajax for processing of button events, and
-      dynamically hides buttons that are no longer revelant, for example when the user has won the game.</para></listitem>
+      if (game.check()) {]]></programlisting>
+      
+                  <note>
+                     <para>
+                        All injections may be serialized; actual storage of the 
+                        bean is managed by JSR-299.  Note that Wicket 
+                        components, like the HomePage and it subcomponents, are 
+                        <emphasis>not</emphasis> JSR-299 beans.
+                     </para>
+                     <para>
+                        Wicket components allow injection, but they 
+                        <emphasis>cannot</emphasis> use interceptors, decorators
+                        and lifecycle callbacks such as 
+                        <literal>@PostConstruct</literal> or 
+                        <literal>@Initializer</literal> methods.
+                     </para>
+                  </note>
+               </listitem>
+               <listitem>
+                  <para>
+                     The example uses AJAX for processing of button events, and 
+                     dynamically hides buttons that are no longer relevant, for 
+                     example when the user has won the game.
+                  </para>
+               </listitem>
 
-  <listitem><para>In order to activate wicket for this webapp, the Wicket filter is added to web.xml, and our application class is specified:
-  <programlisting><![CDATA[ <filter>
-  <filter-name>wicket.numberguess-example</filter-name>
-  <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
-  <init-param>
-    <param-name>applicationClassName</param-name>
-    <param-value>org.jboss.webbeans.examples.wicket.SampleApplication</param-value>
-  </init-param>
+               <listitem>
+                  <para>
+                     In order to activate wicket for this webapp, the Wicket 
+                     filter is added to web.xml, and our application class is 
+                     specified:
+                  </para>
+                  <programlisting><![CDATA[<filter>
+   <filter-name>wicket.numberguess-example</filter-name>
+   <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
+   <init-param>
+      <param-name>applicationClassName</param-name>
+      <param-value>org.jboss.webbeans.examples.wicket.SampleApplication</param-value>
+   </init-param>
 </filter>
 
 <filter-mapping>
-  <filter-name>wicket.numberguess-example</filter-name>
-  <url-pattern>/*</url-pattern>
+   <filter-name>wicket.numberguess-example</filter-name>
+   <url-pattern>/*</url-pattern>
 </filter-mapping>
  
 <listener>
-  <listener-class>org.jboss.webbeans.environment.servlet.Listener</listener-class>
-</listener>]]></programlisting>Note that the servlet listener is also added, as in the tomcat example, in order to boostrap
-WebBeans when jetty starts, and to hook WebBeans into the jetty servlet request and session lifecycles.</para>
-</listitem>
+   <listener-class>org.jboss.webbeans.environment.servlet.Listener</listener-class>
+</listener>]]></programlisting>
+                  <para>
+                     Note that the servlet listener is also added, as in the 
+                     Tomcat example, in order to boostrap Web Beans when Jetty 
+                     starts, and to hook Web Beans into the Jetty servlet 
+                     request and session lifecycles.
+                  </para>
+               </listitem>
   
-  </itemizedlist>
-
- 
-  </section>
-  
-   </section>
+            </itemizedlist>
+         </section>
+      </section>
    </section>
    
    <section>
