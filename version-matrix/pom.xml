@@ -48,7 +48,7 @@
    
    <properties>
       <jsr299.tck.version>1.0.0.BETA2</jsr299.tck.version>
-      <webbeans.version>1.0.0-SNAPSHOT</webbeans.version>
+      <webbeans.version>1.0.0.PREVIEW1</webbeans.version>
       <webbeans.servlet.version>1.0.0.CR1</webbeans.servlet.version>
       <webbeans.se.version>1.0.0.BETA1</webbeans.se.version>
       <jboss.test.harness.version>1.0.0.BETA2</jboss.test.harness.version>
@@ -225,7 +225,7 @@
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>jsr299-api</artifactId>
-            <version>${webbeans.version}</version>
+            <version>{webbeans.version}</version>
          </dependency>
          
          <dependency>
