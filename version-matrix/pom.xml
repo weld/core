@@ -225,7 +225,7 @@
          <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>jsr299-api</artifactId>
-            <version>{webbeans.version}</version>
+            <version>${webbeans.version}</version>
          </dependency>
          
          <dependency>
