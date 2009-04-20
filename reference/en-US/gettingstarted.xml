@@ -70,6 +70,13 @@ $ unzip ~/webbeans-$VERSION.zip]]></programlisting>
          <literal>ANT_HOME</literal> environment variable set. For example:
       </para>
       
+      <note>
+         <para>
+            JBoss 5.1.0 comes with Web Beans built in, so there is no need to
+            update the server.
+         </para>
+      </note>
+      
          <programlisting>$ unzip apache-ant-1.7.0.zip
 $ export ANT_HOME=~/apache-ant-1.7.0</programlisting>
 
