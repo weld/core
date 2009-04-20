@@ -71,9 +71,9 @@
 			<dependency groupId="org.jboss.webbeans" artifactId="jsr299-api" version="${jsr299.version}"/>
 		   <dependency groupId="org.jboss.webbeans" artifactId="webbeans-core" version="${webbeans.version}"/>
 			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-spi" version="${webbeans.version}"/>
-			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-logger" version="${webbeans.version}"/>
-			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-wicket" version="${webbeans.servlet.version}"/>
-			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-se" version="${webbeans.servlet.version}"/>
+			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-logger" version="${webbeans.logger.version}"/>
+			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-wicket" version="${webbeans.wicket.version}"/>
+			<dependency groupId="org.jboss.webbeans" artifactId="webbeans-se" version="${webbeans.se.version}"/>
 			<dependency groupId="org.jboss.webbeans.servlet" artifactId="webbeans-servlet" version="${webbeans.servlet.version}"/>
 			<dependency groupId="org.jboss.webbeans.servlet" artifactId="webbeans-servlet-int" version="${webbeans.servlet.version}"/>
 			<dependency groupId="org.jboss.webbeans.servlet" artifactId="webbeans-tomcat-support" version="${webbeans.servlet.version}"/>
