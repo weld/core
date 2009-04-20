@@ -15,16 +15,6 @@
    <packaging>war</packaging>
    <name>Web Beans Examples: Numberguess with wicket</name>
    
-   <pluginRepositories>
-        <pluginRepository>
-            <id>codehaus snapshot repository</id>
-            <url>http://snapshots.repository.codehaus.org/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
-   
    <dependencies>
       
       <dependency>
@@ -34,25 +24,30 @@
       </dependency>
       
 	  <dependency>
-	  	<groupId>org.jboss.webbeans</groupId>
-	  	<artifactId>webbeans-wicket</artifactId>
-	    <version>1.0.0-SNAPSHOT</version>
+	  	  <groupId>org.jboss.webbeans</groupId>
+	  	  <artifactId>webbeans-wicket</artifactId>
+	  	  <!-- TODO Move to version matrix -->
+	     <version>1.0.0-SNAPSHOT</version>
 	  </dependency>
 	  	
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket</artifactId>
+			<!-- TODO Move to version matrix -->
 			<version>${wicket.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
+			<!-- TODO Move to version matrix -->
 			<version>1.4.2</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
+			<!-- TODO Move to version matrix -->
 			<version>1.2.14</version>
 		</dependency>
 
@@ -62,6 +57,7 @@
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>jetty</artifactId>
+			<!-- TODO Move to version matrix -->
 			<version>${jetty.version}</version>
 			<scope>provided</scope>
 		</dependency>
@@ -102,12 +98,9 @@
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>maven-jetty-plugin</artifactId>
+				<!-- TODO Move to version matrix -->
 				<version>${jetty.version}</version>
 			</plugin>
-	      <plugin> 
-            <artifactId>maven-eclipse-plugin</artifactId> 
-            <version>2.5.1</version> 
-          </plugin> 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
