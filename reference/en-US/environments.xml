@@ -210,6 +210,11 @@ $ ant update</programlisting>
          </listitem>
          <listitem>
             <para>
+               <literal>Deployment Types</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
                <literal>Stereotypes</literal>
             </para>
          </listitem>
