@@ -27,7 +27,7 @@
 	  	  <groupId>org.jboss.webbeans</groupId>
 	  	  <artifactId>webbeans-wicket</artifactId>
 	  	  <!-- TODO Move to version matrix -->
-	     <version>1.0.0-SNAPSHOT</version>
+	     <version>1.0.0.BETA1</version>
 	  </dependency>
 	  	
 		<dependency>

@@ -42,7 +42,7 @@
 	  <dependency>
 	  	<groupId>org.jboss.webbeans</groupId>
 	  	<artifactId>webbeans-wicket</artifactId>
-	    <version>1.0.0-SNAPSHOT</version>
+	    <version>1.0.0.BETA1</version>
 	  </dependency>
 	  	
 		<dependency>
