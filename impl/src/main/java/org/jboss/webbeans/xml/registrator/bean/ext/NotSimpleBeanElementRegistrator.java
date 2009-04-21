@@ -11,9 +11,9 @@ public abstract class NotSimpleBeanElementRegistrator extends BeanElementRegistr
    {
       super(childrenChecker);
    }
-   
+
    protected void checkElementDeclaration(Element beanElement, AnnotatedClass<?> beanClass)
    {
-      // There is nothing to validate      
+      // There is nothing to validate
    }
 }

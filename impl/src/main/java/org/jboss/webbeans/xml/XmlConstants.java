@@ -7,11 +7,11 @@ public class XmlConstants
    public static final String DEPLOY = "Deploy";
 
    public static final String INTERCEPTORS = "Interceptors";
-   
+
    public static final String INTERCEPTOR = "Interceptor";
 
    public static final String DECORATORS = "Decorators";
-   
+
    public static final String DECORATOR = "Decorator";
 
    public static final String BINDING_TYPE = "BindingType";
@@ -29,11 +29,11 @@ public class XmlConstants
    public static final String EJB = "EJB";
 
    public static final String EJB_NAME = "ejbName";
-   
+
    public static final String EJB_LINK = "ejbLink";
 
    public static final String WEB_SERVICE_REF = "WebServiceRef";
-   
+
    public static final String WSDL_LOCATION = "wsdlLocation";
 
    public static final String TOPIC = "Topic";
@@ -41,32 +41,32 @@ public class XmlConstants
    public static final String QUEUE = "Queue";
 
    public static final String URN_PREFIX = "urn:java:";
-   
+
    public static final String HTTP_PREFIX = "http://";
-   
+
    public static final String SCHEMA_LOCATION = "schemaLocation";
 
    public static final String MAPPED_NAME = "mappedName";
-   
+
    public static final String UNIT_NAME = "unitName";
 
    public static final String STANDARD = "Standard";
 
    public static final String NAMESPACE_FILE_NAME = "namespace";
-   
+
    public static final String SCHEMA_FILE_NAME = "schema.xsd";
-   
+
    public static final String NAMESPACE_FILE_DELIMETER = " ";
-   
+
    public static final String PRODUCES = "Produces";
-   
+
    public static final String VALUE = "value";
-   
+
    public static final String ARRAY = "Array";
-   
+
    public static final String JNDI_NAME = "name";
-   
+
    public static final String JAVA_GLOBAL = "java:global/";
-   
+
    public static final String JAVA_APP = "java:app/";
 }

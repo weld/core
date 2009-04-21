@@ -24,73 +24,74 @@ public class SimpleBeanChildrenChecker extends AbstractBeanChildrenChecker
 
    protected void checkForDecoratorChild(Element beanElement)
    {
-      if(ParseXmlHelper.findElementsInEeNamespace(beanElement, XmlConstants.INTERCEPTOR).size() > 1)
+      if (ParseXmlHelper.findElementsInEeNamespace(beanElement, XmlConstants.INTERCEPTOR).size() > 1)
          throw new DefinitionException("A simple bean element <" + beanElement.getName() + "> has more than one direct child <" + 
-               XmlConstants.INTERCEPTOR + ">");            
+               XmlConstants.INTERCEPTOR + ">");
    }
-   
+
    protected void checkForInterceptorChild(Element beanElement)
    {
-      if(ParseXmlHelper.findElementsInEeNamespace(beanElement, XmlConstants.DECORATOR).size() > 1)
+      if (ParseXmlHelper.findElementsInEeNamespace(beanElement, XmlConstants.DECORATOR).size() > 1)
          throw new DefinitionException("A simple bean element <" + beanElement.getName() + "> has more than one direct child <" + 
                XmlConstants.DECORATOR + ">");
    }
-   
+
    protected void checkChildForInterceptorType(Element beanChildElement)
    {
-      if(haveBeanInterceptorDeclaration)
+      if (haveBeanInterceptorDeclaration)
          throw new DefinitionException("There is second element of interceptor type <" + beanChildElement.getName() + 
                "> in bean '" + beanChildElement.getParent().getName() + "'");
-         haveBeanInterceptorDeclaration = true;
+      haveBeanInterceptorDeclaration = true;
    }
-   
+
    protected void checkChildForDecoratorType(Element beanChildElement)
    {
-      if(haveBeanDecoratorDeclaration)
+      if (haveBeanDecoratorDeclaration)
          throw new DefinitionException("There is second element of decorator type <" + beanChildElement.getName() + 
                "> in bean '" + beanChildElement.getParent().getName() + "'");
-         haveBeanDecoratorDeclaration = true;
+      haveBeanDecoratorDeclaration = true;
    }
-   
+
    protected void checkForConstructor(Element beanElement, AnnotatedClass<?> beanClass)
    {
-      if(constructorParameters.size() == 0)
+      if (constructorParameters.size() == 0)
          return;
-      
-      List<AnnotatedConstructor<?>> matchableConstructors = new ArrayList<AnnotatedConstructor<?>>(); 
-      
-      for(AnnotatedConstructor<?> constructor : beanClass.getConstructors())
+
+      List<AnnotatedConstructor<?>> matchableConstructors = new ArrayList<AnnotatedConstructor<?>>();
+
+      for (AnnotatedConstructor<?> constructor : beanClass.getConstructors())
       {
-         List<? extends AnnotatedParameter<?>>  parameters = constructor.getParameters();
-         
-         if(parameters.size() != constructorParameters.size())
+         List<? extends AnnotatedParameter<?>> parameters = constructor.getParameters();
+
+         if (parameters.size() != constructorParameters.size())
             continue;
-         
+
          boolean isMacthable = true;
-         
-         for(int i = 0; i < parameters.size(); i++)
+
+         for (int i = 0; i < parameters.size(); i++)
          {
-            if(!parameters.get(i).isAssignableFrom(constructorParameters.get(i)))
+            if (!parameters.get(i).isAssignableFrom(constructorParameters.get(i)))
             {
                isMacthable = false;
                break;
-            }            
+            }
          }
-         
-         if(isMacthable)
+
+         if (isMacthable)
             matchableConstructors.add(constructor);
       }
-      
-      if(matchableConstructors.size() == 0)
+
+      if (matchableConstructors.size() == 0)
          throw new DefinitionException("There is no constructor of the simple bean '" + beanElement.getName() + 
                "' with the same number and types of parameters as declared");
-      
-      if(matchableConstructors.size() > 1)
+
+      if (matchableConstructors.size() > 1)
          throw new DefinitionException("There is more than one constructor of the simple bean '" + beanElement.getName() + 
                "' with the same number and types of parameters as declared");
    }
-   
-   protected void checkRIBean(Element beanElement, AnnotatedClass<?> beanClass){
+
+   protected void checkRIBean(Element beanElement, AnnotatedClass<?> beanClass)
+   {
       throw new DefinitionException("It is impossible determine some kind of resource in not Resource Bean");
    }
 }

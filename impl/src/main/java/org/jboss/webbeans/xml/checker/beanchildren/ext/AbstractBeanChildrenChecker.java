@@ -37,75 +37,75 @@ import org.jboss.webbeans.xml.checker.beanchildren.impl.BeanChildrenCheckerImpl;
 
 public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImpl
 {
-   
+
    private Set<AnnotatedField<?>> beanFields;
-   
-   private List<Method> beanMethods; 
-   
+
+   private List<Method> beanMethods;
+
    private boolean haveBeanDeploymentTypeDeclaration = false;
-   
+
    private boolean haveBeanScopeTypeDeclaration = false;
-   
+
    protected boolean haveBeanInterceptorDeclaration = false;
-   
+
    protected boolean haveBeanDecoratorDeclaration = false;
-   
+
    protected List<AnnotatedClass<?>> constructorParameters = new ArrayList<AnnotatedClass<?>>();
-         
+
    protected abstract void checkForInterceptorChild(Element beanElement);
-   
+
    protected abstract void checkForDecoratorChild(Element beanElement);
-   
+
    protected abstract void checkChildForInterceptorType(Element beanElement);
-   
+
    protected abstract void checkChildForDecoratorType(Element beanElement);
-   
+
    protected abstract void checkForConstructor(Element beanElement, AnnotatedClass<?> beanClass);
-   
+
    protected abstract void checkRIBean(Element beanElement, AnnotatedClass<?> beanClass);
-   
+
    protected AbstractBeanChildrenChecker(XmlEnvironment environment, Map<String, Set<String>> packagesMap)
    {
       super(environment, packagesMap);
    }
-   
+
    public void checkChildren(Element beanElement, AnnotatedClass<?> beanClass)
    {
       beanFields = beanClass.getFields();
       beanMethods = Arrays.asList(beanClass.getRawType().getDeclaredMethods());
-      
+
       checkForInterceptorChild(beanElement);
       checkForDecoratorChild(beanElement);
-      
+
       haveBeanDeploymentTypeDeclaration = false;
       haveBeanScopeTypeDeclaration = false;
       haveBeanInterceptorDeclaration = ParseXmlHelper.findElementsInEeNamespace(beanElement, XmlConstants.INTERCEPTOR).size() > 0;
       haveBeanDecoratorDeclaration = ParseXmlHelper.findElementsInEeNamespace(beanElement, XmlConstants.DECORATOR).size() > 0;
-      
+
       Iterator<?> beanIterator = beanElement.elementIterator();
-      while(beanIterator.hasNext())
+      while (beanIterator.hasNext())
       {
-         Element beanChildElement = (Element)beanIterator.next();
+         Element beanChildElement = (Element) beanIterator.next();
          checkBeanChild(beanChildElement, beanClass);
       }
       checkForConstructor(beanElement, beanClass);
    }
-   
+
    private void checkBeanChild(Element beanChildElement, AnnotatedClass<?> beanClass)
    {
-      if(beanChildElement.getName().equalsIgnoreCase(XmlConstants.ARRAY))
+      if (XmlConstants.ARRAY.equalsIgnoreCase(beanChildElement.getName()))
          return;
-      
+
       List<AnnotatedClass<?>> beanChildClassList = ParseXmlHelper.tryLoadElementClass(beanChildElement, Object.class, environment, packagesMap);
-      
-      if(beanChildClassList.size() == 0)
-      {            
+
+      if (beanChildClassList.size() == 0)
+      {
          Element beanElement = beanChildElement.getParent();
          Namespace beanNamespace = beanElement.getNamespace();
          Namespace beanChildNamespace = beanChildElement.getNamespace();
-         if(beanChildNamespace.equals(beanNamespace))
+         if (beanChildNamespace.equals(beanNamespace))
          {
-            //bean child element declaring a method or field of the bean.
+            // bean child element declaring a method or field of the bean.
             checkFieldOrMethodChild(beanChildElement, beanClass);
             return;
          }
@@ -116,137 +116,131 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
          Class<?> beanChildType = beanChildClass.getRawType();
          boolean isJavaClass = !beanChildType.isEnum() && !beanChildType.isPrimitive() && !beanChildType.isInterface();
          boolean isInterface = beanChildType.isInterface() && !beanChildType.isAnnotation();
-         if(beanChildType.isAnnotation())
+         if (beanChildType.isAnnotation())
          {
-            //bean child element declaring type-level metadata
+            // bean child element declaring type-level metadata
             checkAnnotationChild(beanChildElement, beanChildClass, beanClass);
             return;
          }
-         if(isJavaClass || isInterface)
+         if (isJavaClass || isInterface)
          {
-            //bean child element declaring a parameter of the bean constructor
+            // bean child element declaring a parameter of the bean constructor
             constructorParameters.add(beanChildClass);
             return;
          }
       }
-      
-      throw new DefinitionException("Can't determine type of element <" + beanChildElement.getName() + "> in bean '" + 
-            beanChildElement.getParent().getName() + "'");
+
+      throw new DefinitionException("Can't determine type of element <" + beanChildElement.getName() + "> in bean '" + beanChildElement.getParent().getName() + "'");
    }
-   
+
    private void checkAnnotationChild(Element beanChildElement, AnnotatedClass<?> beanChildClass, AnnotatedClass<?> beanClass)
    {
-      if(beanChildClass.isAnnotationPresent(DeploymentType.class))
+      if (beanChildClass.isAnnotationPresent(DeploymentType.class))
       {
-         if(haveBeanDeploymentTypeDeclaration)
-            throw new DefinitionException("Only one deployment type declaration allowed for bean '" + 
-                  beanChildElement.getParent().getName() + "'");
+         if (haveBeanDeploymentTypeDeclaration)
+            throw new DefinitionException("Only one deployment type declaration allowed for bean '" + beanChildElement.getParent().getName() + "'");
          haveBeanDeploymentTypeDeclaration = true;
          return;
       }
-      if(beanChildClass.isAnnotationPresent(ScopeType.class))
+      if (beanChildClass.isAnnotationPresent(ScopeType.class))
       {
-         if(haveBeanScopeTypeDeclaration)
-            throw new DefinitionException("Only one scope type declaration allowed for bean '" + 
-                  beanChildElement.getParent().getName() + "'");
+         if (haveBeanScopeTypeDeclaration)
+            throw new DefinitionException("Only one scope type declaration allowed for bean '" + beanChildElement.getParent().getName() + "'");
          haveBeanScopeTypeDeclaration = true;
          return;
       }
-      if(beanChildClass.isAnnotationPresent(Interceptor.class))
+      if (beanChildClass.isAnnotationPresent(Interceptor.class))
       {
          checkChildForInterceptorType(beanChildElement);
          return;
       }
-      if(beanChildClass.isAnnotationPresent(Decorator.class))
+      if (beanChildClass.isAnnotationPresent(Decorator.class))
       {
          checkChildForDecoratorType(beanChildElement);
          return;
       }
-      if(beanChildClass.isAnnotationPresent(BindingType.class) || beanChildClass.isAnnotationPresent(InterceptorBindingType.class) || 
+      if (beanChildClass.isAnnotationPresent(BindingType.class) || beanChildClass.isAnnotationPresent(InterceptorBindingType.class) || 
             beanChildClass.isAnnotationPresent(Stereotype.class) || beanChildClass.isAnnotationPresent(Named.class) || 
-            beanChildClass.isAnnotationPresent(Specializes.class) || beanChildClass.isAnnotationPresent(Realizes.class) ||
+            beanChildClass.isAnnotationPresent(Specializes.class) || beanChildClass.isAnnotationPresent(Realizes.class) || 
             beanChildClass.getRawType().equals(BindingType.class) || beanChildClass.getRawType().equals(InterceptorBindingType.class) || 
             beanChildClass.getRawType().equals(Stereotype.class) || beanChildClass.getRawType().equals(Named.class) || 
-            beanChildClass.getRawType().equals(Specializes.class) || beanChildClass.getRawType().equals(Realizes.class) ||
-            beanChildClass.isAnnotationPresent(Resource.class) || beanChildClass.isAnnotationPresent(EJB.class) || 
+            beanChildClass.getRawType().equals(Specializes.class) || beanChildClass.getRawType().equals(Realizes.class) || 
+            beanChildClass.isAnnotationPresent(Resource.class) || beanChildClass.isAnnotationPresent(EJB.class)|| 
             beanChildClass.isAnnotationPresent(WebServiceRef.class) || beanChildClass.isAnnotationPresent(PersistenceContext.class) || 
             beanChildClass.isAnnotationPresent(PersistenceUnit.class))
          return;
-      if(beanChildClass.getRawType().equals(Resource.class) || beanChildClass.getRawType().equals(EJB.class) || 
+      if (beanChildClass.getRawType().equals(Resource.class) || beanChildClass.getRawType().equals(EJB.class) || 
             beanChildClass.getRawType().equals(WebServiceRef.class) || beanChildClass.getRawType().equals(PersistenceContext.class) || 
             beanChildClass.getRawType().equals(PersistenceUnit.class))
       {
          checkRIBean(beanChildElement.getParent(), beanClass);
          return;
-      }         
-      
-      throw new DefinitionException("Can't determine annotation type of <" + beanChildElement.getName() + "> element in bean '" + 
-            beanChildElement.getParent().getName() + "'");
+      }
+
+      throw new DefinitionException("Can't determine annotation type of <" + beanChildElement.getName() + "> element in bean '" + beanChildElement.getParent().getName() + "'");
    }
-   
+
    private void checkFieldOrMethodChild(Element beanChildElement, AnnotatedClass<?> beanClass)
-   {  //TODO: not finished    
+   { // TODO: not finished
       boolean isField = false;
       boolean isMethod = false;
-      
-      for(AnnotatedField<?> field : beanFields)
+
+      for (AnnotatedField<?> field : beanFields)
       {
-         if(beanChildElement.getName().equalsIgnoreCase(field.getName()))
+         if (field.getName().equalsIgnoreCase(beanChildElement.getName()))
          {
-            if(isField)
-               throw new DefinitionException("Bean class '" + beanClass.getName() + "' does not have exactly one field " +
-               		"with the specified name '" + beanChildElement.getName() + "'");
+            if (isField)
+               throw new DefinitionException("Bean class '" + beanClass.getName() + "' does not have exactly one field " + "with the specified name '" + beanChildElement.getName() + "'");
             isField = true;
          }
       }
-      
-      for(Method method : beanMethods)
+
+      for (Method method : beanMethods)
       {
-         if(beanChildElement.getName().equalsIgnoreCase(method.getName()))
+         if (method.getName().equalsIgnoreCase(beanChildElement.getName()))
             isMethod = true;
       }
-      
-      if(isField && isMethod)
+
+      if (isField && isMethod)
          throw new DefinitionException("The name of the child element <" + beanChildElement.getName() + 
                "> matches the name of both a method and a field of the bean class '" + beanClass.getName() + "'");
-      
-      if(isField)
+
+      if (isField)
       {
          checkFieldChild(beanChildElement, beanClass);
          return;
       }
-      
-      if(isMethod)
+
+      if (isMethod)
       {
          checkMethodChild(beanChildElement, beanClass);
          return;
       }
-      
+
       throw new DefinitionException("The name of the child element <" + beanChildElement.getName() + 
             "> not matches the name of a method or a field of the bean class '" + beanClass.getName() + "'");
    }
-   
+
    private void checkFieldChild(Element beanChildElement, AnnotatedClass<?> beanClass)
-   {//TODO: not finished
+   {// TODO: not finished
       Element elementParent = beanChildElement.getParent();
       String elementName = beanChildElement.getName();
       String elementPrefix = beanChildElement.getNamespacePrefix();
       String elementUri = beanChildElement.getNamespaceURI();
-      
-      if(ParseXmlHelper.findElements(elementParent, elementName, elementPrefix, elementUri).size() > 1)
+
+      if (ParseXmlHelper.findElements(elementParent, elementName, elementPrefix, elementUri).size() > 1)
          throw new DefinitionException("More than one child element of a bean '" + elementParent.getName() + 
                "' declaration represents the same field'" + elementName + "'");
-      
-      if(beanChildElement.elements().size() > 1 && 
+
+      if (beanChildElement.elements().size() > 1 && 
             beanChildElement.elements().size() != ParseXmlHelper.findElementsInEeNamespace(beanChildElement, XmlConstants.VALUE).size())
-         throw new DefinitionException("Declaration of a field '" + beanChildElement.getName() + "' has more than one direct child element, " +
-         		"and at least one of these elements is something other than a <value> element in the Java EE namespace");
-      
-      
+         throw new DefinitionException("Declaration of a field '" + beanChildElement.getName() + "' has more than one direct child element, " + 
+               "and at least one of these elements is something other than a <value> element in the Java EE namespace");
+
    }
-   
+
    private void checkMethodChild(Element beanChildElement, AnnotatedClass<?> beanClass)
    {
-      //TODO: not finished
+      // TODO: not finished
    }
 }

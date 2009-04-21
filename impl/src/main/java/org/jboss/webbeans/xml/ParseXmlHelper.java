@@ -29,28 +29,30 @@ public class ParseXmlHelper
 {
    public static boolean isJavaEeNamespace(Element element)
    {
-      return element.getNamespace().getURI().equalsIgnoreCase(XmlConstants.JAVA_EE_NAMESPACE);
+      return XmlConstants.JAVA_EE_NAMESPACE.equalsIgnoreCase(element.getNamespace().getURI());
    }
 
-   public static <T> AnnotatedClass<? extends T> loadElementClass(Element element, Class<T> expectedType, XmlEnvironment environment, Map<String, Set<String>> packagesMap)
+   public static <T> AnnotatedClass<? extends T> loadElementClass(Element element, Class<T> expectedType, XmlEnvironment environment, 
+                                                                     Map<String, Set<String>> packagesMap)
    {
       List<AnnotatedClass<? extends T>> classesList = tryLoadElementClass(element, expectedType, environment, packagesMap);
       String className = element.getName();
 
       if (classesList.size() == 0)
          throw new DefinitionException("Could not find '" + className + "'");
-      
+
       return classesList.get(0);
    }
-   
-   public static <T> List<AnnotatedClass<? extends T>> tryLoadElementClass(Element element, Class<T> expectedType, XmlEnvironment environment, Map<String, Set<String>> packagesMap)
+
+   public static <T> List<AnnotatedClass<? extends T>> tryLoadElementClass(Element element, Class<T> expectedType, XmlEnvironment environment, 
+                                                                              Map<String, Set<String>> packagesMap)
    {
       List<AnnotatedClass<? extends T>> classesList = new ArrayList<AnnotatedClass<? extends T>>();
       String prefix = element.getNamespacePrefix();
 
       for (Map.Entry<String, Set<String>> packagesEntry : packagesMap.entrySet())
       {
-         if (prefix.equalsIgnoreCase(packagesEntry.getKey()))
+         if (packagesEntry.getKey().equalsIgnoreCase(prefix))
          {
             Set<String> packages = packagesEntry.getValue();
             for (String packageName : packages)
@@ -67,14 +69,15 @@ public class ParseXmlHelper
             }
          }
       }
-      
-      if(classesList.size() > 1)
+
+      if (classesList.size() > 1)
          throw new DefinitionException("There are multiple packages containing a Java type with the same name '" + element.getName() + "'");
-      
+
       return classesList;
    }
-   
-   public static <T extends Annotation> Class<? extends T> loadAnnotationClass(Element element, Class<T> expectedType, XmlEnvironment environment, Map<String, Set<String>> packagesMap)
+
+   public static <T extends Annotation> Class<? extends T> loadAnnotationClass(Element element, Class<T> expectedType, XmlEnvironment environment, 
+                                                                                 Map<String, Set<String>> packagesMap)
    {
       List<Class<? extends T>> classesList = new ArrayList<Class<? extends T>>();
       String className = element.getName();
@@ -82,7 +85,7 @@ public class ParseXmlHelper
 
       for (Map.Entry<String, Set<String>> packagesEntry : packagesMap.entrySet())
       {
-         if (prefix.equalsIgnoreCase(packagesEntry.getKey()))
+         if (packagesEntry.getKey().equalsIgnoreCase(prefix))
          {
             Set<String> packages = packagesEntry.getValue();
             for (String packageName : packages)
@@ -94,7 +97,7 @@ public class ParseXmlHelper
                }
                catch (ResourceLoadingException e)
                {
-                  //work with this when 'classesList.size() == 0'
+                  // work with this when 'classesList.size() == 0'
                }
                catch (ClassCastException e)
                {
@@ -130,7 +133,7 @@ public class ParseXmlHelper
             {
                urn = attrVal;
                URL namespaceFile = environment.loadFileByUrn(urn, XmlConstants.NAMESPACE_FILE_NAME);
-               
+
                if (namespaceFile != null)
                {
                   packagesSet.addAll(parseNamespaceFile(namespaceFile));
@@ -141,11 +144,13 @@ public class ParseXmlHelper
                   packagesSet.add(packageName);
                }
             }
-            if (attribute.getName().equalsIgnoreCase(XmlConstants.SCHEMA_LOCATION) && attrVal.startsWith(XmlConstants.HTTP_PREFIX) && urn.trim().length() > 0)
+            if (XmlConstants.SCHEMA_LOCATION.equalsIgnoreCase(attribute.getName()) && 
+                  attrVal.startsWith(XmlConstants.HTTP_PREFIX) && urn.trim().length() > 0)
             {
                URL schemaUrl = environment.loadFileByUrn(urn, XmlConstants.SCHEMA_FILE_NAME);
                if (schemaUrl == null)
-                  throw new DefinitionException("Could not find '" + XmlConstants.SCHEMA_FILE_NAME + "' file according to specified URN '" + urn + "'");
+                  throw new DefinitionException("Could not find '" + XmlConstants.SCHEMA_FILE_NAME + 
+                        "' file according to specified URN '" + urn + "'");
                validateXmlWithXsd(xmlUrl, schemaUrl);
             }
          }
@@ -162,15 +167,15 @@ public class ParseXmlHelper
          Namespace namespace = (Namespace) namespacesIterator.next();
          String prefix = namespace.getPrefix();
          String uri = namespace.getURI();
-         
+
          if (uri.startsWith(XmlConstants.URN_PREFIX))
          {
             Set<String> packagesSet = new HashSet<String>();
 
             URL schemaUrl = environment.loadFileByUrn(uri, XmlConstants.SCHEMA_FILE_NAME);
-            if(schemaUrl != null)
+            if (schemaUrl != null)
                validateXmlWithXsd(xmlUrl, schemaUrl);
-            
+
             URL namespaceFile = environment.loadFileByUrn(uri, XmlConstants.NAMESPACE_FILE_NAME);
             if (namespaceFile != null)
             {
@@ -186,9 +191,9 @@ public class ParseXmlHelper
          }
       }
    }
-   
+
    private static void validateXmlWithXsd(URL xmlUrl, URL schemaUrl)
-   {      
+   {
       try
       {
          final StreamSource stream = new StreamSource(xmlUrl.toExternalForm());
@@ -197,12 +202,12 @@ public class ParseXmlHelper
          final Validator validator = schema.newValidator();
          validator.validate(stream);
       }
-      catch(SAXException e)
+      catch (SAXException e)
       {
          String message = "SAXException while validate " + xmlUrl + " with " + schemaUrl;
          throw new DefinitionException(message, e);
       }
-      catch(IOException e)
+      catch (IOException e)
       {
          String message = "IOException while validate " + xmlUrl + " with " + schemaUrl;
          throw new DefinitionException(message, e);
@@ -213,22 +218,22 @@ public class ParseXmlHelper
    {
       String elementPrefix = "";
       String elementUri = XmlConstants.JAVA_EE_NAMESPACE;
-      
+
       return findElements(elementParent, elementName, elementPrefix, elementUri);
    }
-   
+
    public static List<Element> findElements(Element elementParent, String elementName, String elementPrefix, String elementUri)
    {
       List<Element> elements = new ArrayList<Element>();
       Namespace elementNamespace = new Namespace(elementPrefix, elementUri);
       QName qName = new QName(elementName, elementNamespace);
       Iterator<?> elementIterator = elementParent.elementIterator(qName);
-      while(elementIterator.hasNext())
+      while (elementIterator.hasNext())
       {
-         Element element = (Element)elementIterator.next();
+         Element element = (Element) elementIterator.next();
          elements.add(element);
       }
-      
+
       return elements;
    }
 
@@ -271,11 +276,12 @@ public class ParseXmlHelper
          packagesMap.put(prefix, packagesSet);
       }
    }
-   
-   public static void checkForUniqueElements(List<Class<? extends Annotation>> list){
+
+   public static void checkForUniqueElements(List<Class<? extends Annotation>> list)
+   {
       Set<Class<? extends Annotation>> set = new HashSet<Class<? extends Annotation>>(list);
-      if(list.size() != set.size())
-         throw new DefinitionException("A certain annotation type is declared more than once as a binding type, " +
-         		"interceptor binding type or stereotype using XML");
+      if (list.size() != set.size())
+         throw new DefinitionException("A certain annotation type is declared more than once as a binding type, " + 
+               "interceptor binding type or stereotype using XML");
    }
 }

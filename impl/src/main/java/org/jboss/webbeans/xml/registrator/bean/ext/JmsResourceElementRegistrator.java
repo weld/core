@@ -16,8 +16,8 @@ public class JmsResourceElementRegistrator extends NotSimpleBeanElementRegistrat
    public boolean accept(Element beanElement, AnnotatedClass<?> beanClass)
    {
       if (ParseXmlHelper.isJavaEeNamespace(beanElement) && 
-            (beanElement.getName().equalsIgnoreCase(XmlConstants.TOPIC) || 
-                  beanElement.getName().equalsIgnoreCase(XmlConstants.QUEUE)))
+            (XmlConstants.TOPIC.equalsIgnoreCase(beanElement.getName()) || 
+                  XmlConstants.QUEUE.equalsIgnoreCase(beanElement.getName())))
          return true;
       return false;
    }

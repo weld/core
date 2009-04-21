@@ -9,7 +9,7 @@ import org.jboss.webbeans.xml.checker.beanchildren.BeanChildrenChecker;
 public class SessionBeanElementRegistrator extends NotSimpleBeanElementRegistrator
 {
    private final EjbDescriptorCache ejbDescriptors;
-	
+
    public SessionBeanElementRegistrator(BeanChildrenChecker childrenChecker, EjbDescriptorCache ejbDescriptors)
    {
       super(childrenChecker);
@@ -18,7 +18,7 @@ public class SessionBeanElementRegistrator extends NotSimpleBeanElementRegistrat
 
    public boolean accept(Element beanElement, AnnotatedClass<?> beanClass)
    {
-      if (ejbDescriptors.containsKey(beanElement.getName()) ||
+      if (ejbDescriptors.containsKey(beanElement.getName()) || 
             beanElement.attribute(XmlConstants.EJB_NAME) != null)
       {
          return true;
