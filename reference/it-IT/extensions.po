@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-04-19 20:36+0000\n"
-"PO-Revision-Date: 2009-04-20 22:07+0100\n"
+"PO-Revision-Date: 2009-04-21 20:36+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgstr "Web Beans Logger"
 #: extensions.xml:17
 #, no-c-format
 msgid "Adding logging to your application is now even easier with simple injection of a logger object into any JSR-299 bean. Simply annotate a org.jboss.webbeans.log.Log type member with <emphasis>@Logger</emphasis> and an appropriate logger object will be injected into any instance of the bean."
-msgstr ""
+msgstr "Aggiungere la parte di logging alla propria applicazione adesso è facilissimo con la semplice injection di un oggetto logger in un qualsiasi bean JSR-299. Semplicemente si annoti un membro di tipo org.jboss.webbeans.log.Log con <emphasis>@Logger</emphasis> ed un oggetto logger appropriato verrà iniettato in una qualsiasi istanza del bean."
 
 #. Tag: programlisting
 #: extensions.xml:25
@@ -75,19 +75,19 @@ msgstr ""
 #: extensions.xml:27
 #, no-c-format
 msgid "The example shows how objects can be interpolated into a message. This interpolation is done using <emphasis>java.text.MessageFormat</emphasis>, so see the JavaDoc for that class for more details. In this case, the ShoppingCart should have implemented the <emphasis>toString()</emphasis> method to produce a human readable value that is meaningful in messages. Normally, this call would have involved evaluating cart.toString() with String concatenation to produce a single String argument. Thus it was necessary to surround the call with an if-statement using the condition <emphasis>log.isDebugEnabled()</emphasis> to avoid the expensive String concatenation if the message was not actually going to be used. However, when using @Logger injected logging, the conditional test can be left out since the object arguments are not evaluated unless the message is going to be logged."
-msgstr ""
+msgstr "L'esempio mostra come un oggetto può essere interpolato in un messaggio. Quest'interpolazione è fatta usando <emphasis>java.text.MessageFormat</emphasis>, quindi si veda JavaDoc di questa class per ulteriori dettagli. In questo caso ShoppingCart dovrebbe aver implementato il metodo <emphasis>toString()</emphasis> per produrre un valore leggibile che sia significativo nei messaggi.Normalmente questa chiamata comporterebbe la valutazione di cart.toString() con una concatenazione di stringa per produrre un singolo argomento stringa. Questo è necessario per racchiudere la chiamata con uno statement if usando la condizione <emphasis>log.isDebugEnabled()</emphasis>per evitare la costosa concatenazione stringa se il messaggio in realtà non viene usato. Comunque quando si usa il logging iniettato con @Logger, il test condizionale può essere tralasciato poiché gli argomenti dell'oggetto non vengono valutati amenoché il messaggio non venga loggato."
 
 #. Tag: para
 #: extensions.xml:44
 #, no-c-format
 msgid "You can add the Web Beans Logger to your project by including webbeans-logger.jar and webbeans-logging.jar to your project. Alternatively, express a dependency on the <literal>org.jboss.webbeans:webbeans-logger</literal> Maven artifact."
-msgstr ""
+msgstr "Si può aggiungere il Logger Web Bean al proprio progetto includendo nel progetto webbeans-logger.jar e webbeans-logging.jar. In alternativa, si può esprimere un dipendenza nell'artifact Maven <literal>org.jboss.webbeans:webbeans-logger</literal>."
 
 #. Tag: para
 #: extensions.xml:51
 #, no-c-format
 msgid "If you are using Web Beans as your JSR-299 implementation, there is no need to include <literal>webbeans-logging.jar</literal> as it's already included."
-msgstr ""
+msgstr "Se si usa Web Beans come implementazione JSR-299, non c'è alcun bisogno di includere <literal>webbeans-logging.jar</literal> poiché lo è già."
 
 #~ msgid "TODO"
 #~ msgstr "DA FARE"

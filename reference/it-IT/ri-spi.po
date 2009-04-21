@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-04-19 20:36+0000\n"
-"PO-Revision-Date: 2009-04-20 22:14+0100\n"
+"PO-Revision-Date: 2009-04-21 20:54+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -299,9 +299,9 @@ msgstr "Servizi di transazione"
 
 #. Tag: para
 #: ri-spi.xml:131
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Web Beans must delegate JTA activities to the container. The SPI provides a couple hooks to easily achieve this with the <literal>TransactionServices</literal> interface."
-msgstr "Web Beans RI deve delegare le attività JTA al container. SPI fornisce un paio di modi per ottenere ciò tramite l'interfaccia <literal>TransactionServices</literal>."
+msgstr "Web Beans deve delegare le attività JTA al container. SPI fornisce un paio di modi per ottenere ciò tramite l'interfaccia <literal>TransactionServices</literal>."
 
 #. Tag: programlisting
 #: ri-spi.xml:137
@@ -403,9 +403,9 @@ msgstr "Servizi di risorse"
 
 #. Tag: para
 #: ri-spi.xml:180
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The resolution of <literal>@Resource</literal> (for injection into simple beans) and the resolution of resources (for injection as a Java EE resource) is delegated to the container. You must provide an implementation of <literal>ResourceServices</literal> which provides these operations. For resolving the <literal>@Resource</literal> injection, Web Beans will provide the <literal>InjectionPoint</literal>; and for Java EE resources, the <literal>jndiName</literal> or <literal>mappedName</literal> will be provided."
-msgstr "La risoluzione di <literal>@EJB</literal> e <literal>@Resource</literal> è delegata al container. Occorre fornire un'implementazione di <literal>org.jboss.webbeans.ejb.spi.EjbServices</literal> che rende disponibili queste operazioni. Web Beans passa nel <literal>javax.inject.manager.InjectionPoint</literal> la risoluzione,  anche come <literal>NamingContext</literal>, che è in uso per ogni richiesta di risoluzione."
+msgstr "La risoluzione di <literal>@Resource</literal> (per l'injection in bean semplici) e la risoluzione delle risorse (per l'injection come risorsa Java EE) è delegata al container. Occorre fornire un'implementazione di <literal>ResourceServices</literal> che rende disponibili queste operazioni. Per la risoluzione dell'injection <literal>@Resource</literal>, Web Beans fornirà l'<literal>InjectionPoint</literal>; e per le risorse Java EE, verrà fornito <literal>jndiName</literal> o <literal>mappedName</literal>"
 
 #. Tag: title
 #: ri-spi.xml:194
@@ -415,9 +415,9 @@ msgstr "Web Service"
 
 #. Tag: para
 #: ri-spi.xml:196
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The resolution of web service references (for injection as a Java EE resource) is delegated to the container. You must provide an implementation of <literal>WebServices</literal> whichprovides this operation. For resolving the Java EE resource, the <literal>jndiName</literal> or <literal>mappedName</literal> will be provided."
-msgstr "La risoluzione di <literal>@EJB</literal> e <literal>@Resource</literal> è delegata al container. Occorre fornire un'implementazione di <literal>org.jboss.webbeans.ejb.spi.EjbServices</literal> che rende disponibili queste operazioni. Web Beans passa nel <literal>javax.inject.manager.InjectionPoint</literal> la risoluzione,  anche come <literal>NamingContext</literal>, che è in uso per ogni richiesta di risoluzione."
+msgstr "La risoluzione di di riferimenti web service (per l'iniezione come risorse Java EE) è delegata al container. Occorre fornire un'implementazione di <literal>WebServices</literal> che rende disponibili queste operazioni. Per risolvere la risorsa Java EE verrà fornito <literal>jndiName</literal> o <literal>mappedName</literal>"
 
 #. Tag: title
 #: ri-spi.xml:207
@@ -427,9 +427,9 @@ msgstr ""
 
 #. Tag: para
 #: ri-spi.xml:209
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Web Beans uses a map like structure to store bean instances - <literal>org.jboss.webbeans.context.api.BeanStore</literal>. You may find <literal>org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore</literal> useful."
-msgstr "Web Beans si aspetta che l'Application Server od un altro container fornisca la memorizzazione per ogni contesto applicazione. <literal>org.jboss.webbeans.context.api.BeanStore</literal> dovrebbe essere implementato per fornire uno storage con scope applicazione. Si può trovare molto utile <literal>org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore</literal>."
+msgstr "Web Beans utilizza una mappa come struttura per memorizzare le istanze bean - <literal>org.jboss.webbeans.context.api.BeanStore</literal>. Si potrebbe trovare molto utile <literal>org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore</literal>."
 
 #. Tag: title
 #: ri-spi.xml:219
@@ -439,9 +439,9 @@ msgstr "Il contesto applicazione"
 
 #. Tag: para
 #: ri-spi.xml:221
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Web Beans expects the Application Server or other container to provide the storage for each application's context. The <literal>org.jboss.webbeans.context.api.BeanStore</literal> should be implemented to provide an application scoped storage."
-msgstr "Web Beans si aspetta che l'Application Server od un altro container fornisca la memorizzazione per ogni contesto applicazione. <literal>org.jboss.webbeans.context.api.BeanStore</literal> dovrebbe essere implementato per fornire uno storage con scope applicazione. Si può trovare molto utile <literal>org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore</literal>."
+msgstr "Web Beans si aspetta che l'Application Server od un altro container fornisca la memorizzazione per ogni contesto applicazione. <literal>org.jboss.webbeans.context.api.BeanStore</literal> dovrebbe essere implementato per fornire uno storage con scope applicazione."
 
 #. Tag: title
 #: ri-spi.xml:231
@@ -463,9 +463,9 @@ msgstr "Il bootstrap è suddiviso in più fasi, inizializzazione del bootstrap, 
 
 #. Tag: para
 #: ri-spi.xml:249
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The bootstrap supports multiple environments. An environment is defined by an implementation of the <literal>Environment</literal> interface. A number of standard envrionments are built in as the enumeration <literal>Environments</literal>. Different environments require different services to be present (for example servlet doesn't require transaction, EJB or JPA services). By default an EE environment is assumed, but you can adjust the environment by calling <literal>bootstrap.setEnvironment()</literal>."
-msgstr "Il bootstrap supporta più ambienti. Diversi ambienti richiedono diversi servizi presenti (per esempio servlet non richiede i servizi di transazione, EJB o JPA). Di default viene assunto un ambiente EE, ma si può impostare un ambiente chiamando <literal>bootstrap.setEnvironment()</literal>."
+msgstr "Il bootstrap supporta più ambienti. Un ambiente viene definito da un'implementazione dell'interfaccia <literal>Environment</literal>. Un numero di ambienti standard sono predefiniti nell'enumeration <literal>Environments</literal>. Diversi ambienti richiedono diversi servizi presenti (per esempio servlet non richiede i servizi di transazione, EJB o JPA). Di default viene assunto un ambiente EE, ma si può impostare un ambiente chiamando <literal>bootstrap.setEnvironment()</literal>."
 
 #. Tag: para
 #: ri-spi.xml:260
@@ -643,7 +643,7 @@ msgstr "Se si integra Web Beans in un ambiente che supporta il deploy di applica
 #: ri-spi.xml:379
 #, no-c-format
 msgid "Servlet"
-msgstr ""
+msgstr "Servlet"
 
 #. Tag: para
 #: ri-spi.xml:383
@@ -673,7 +673,7 @@ msgstr "Se si integra Web Beans in un ambiente Servlet occorre registrare <liter
 #: ri-spi.xml:421
 #, no-c-format
 msgid "Web Beans only supports JSF 1.2 and above."
-msgstr ""
+msgstr "Web Beans supporta solo JSF 1.2 e superiori."
 
 #. Tag: term
 #: ri-spi.xml:428
@@ -709,7 +709,7 @@ msgstr "Se si integra Web Beans in un ambiente che supporta il deploy di applica
 #: ri-spi.xml:464
 #, no-c-format
 msgid "Binding the manager in JNDI"
-msgstr ""
+msgstr "Associare il manager a JNDI"
 
 #. Tag: para
 #: ri-spi.xml:468

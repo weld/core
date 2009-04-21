@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-04-19 20:36+0000\n"
-"PO-Revision-Date: 2009-04-20 22:17+0100\n"
+"PO-Revision-Date: 2009-04-21 20:44+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -15,9 +15,9 @@ msgstr ""
 
 #. Tag: title
 #: gettingstarted.xml:4
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Getting started with Web Beans, the Reference Implementation of JSR-299"
-msgstr "Implementazione di riferimento di Web Beans JSR-299"
+msgstr "Iniziare con Web Beans, l'implementazione di riferimento di JSR-299"
 
 #. Tag: para
 #: gettingstarted.xml:6
@@ -896,15 +896,15 @@ msgstr ""
 
 #. Tag: title
 #: gettingstarted.xml:431
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The numberguess example in Tomcat"
-msgstr "Esempio Indovina Numero per Tomcat"
+msgstr "Esempio Indovina Numero in Tomcat"
 
 #. Tag: para
 #: gettingstarted.xml:433
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The numberguess for Tomcat differs in a couple of ways. Firstly, Web Beans should be deployed as a Web Application library in <literal>WEB-INF/lib</literal>. For your convenience we provide a single jar suitable for running Web Beans in any servlet container <literal>webbeans-servlet.jar</literal>."
-msgstr "L'Indovina Numero di Tomcat differisce in un paio di punti. Innanzitutto Web Beans dovrebbe essere deployato come libreria Web Application in <literal>WEB-INF/lib</literal>. Per comodità viene fornito un singolo jar <literal>webbeans-tomcat.jar</literal> adatto per Web Beans in Tomcat."
+msgstr "L'Indovina Numero per Tomcat differisce in un paio di punti. Innanzitutto Web Beans dovrebbe essere deployato come libreria Web Application in <literal>WEB-INF/lib</literal>. Per comodità viene fornito un singolo jar <literal>webbeans-servlet.jar</literal> per eseguire Web Beans in un qualsiasi servlet container."
 
 #. Tag: para
 #: gettingstarted.xml:442
@@ -914,7 +914,7 @@ msgstr "Certamente occorre anche includere JSF e EL, e le annotazioni comuni (<l
 
 #. Tag: para
 #: gettingstarted.xml:449
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Secondly, we need to explicitly specify the servlet listener (used to boot Web Beans, and control it's interaction with requests) in <literal>web.xml</literal>:"
 msgstr "In secondo luogo, occorre specificare esplicitamente il servlet listener di Tomcat (usato per avviare Web Beans, e controllare la sua interazione con le richieste) in <literal>web.xml</literal>:"
 
@@ -932,21 +932,21 @@ msgstr ""
 
 #. Tag: title
 #: gettingstarted.xml:460
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The numberguess example for Apache Wicket"
-msgstr "Esempio Indovina Numero per Tomcat"
+msgstr "Esempio Indovina Numero per Apache Wicket"
 
 #. Tag: para
 #: gettingstarted.xml:461
 #, no-c-format
 msgid "Whilst JSR-299 specifies integration with Java ServerFaces, Web Beans allows you to inject into Wicket components, and also allows you to use a conversation context with Wicket. In this section, we'll walk you through the Wicket version of the numberguess example."
-msgstr ""
+msgstr "Mentre JSR-299 specifica l'integrazione con Java ServerFaces, Web Beans consente di iniettare nei componenti Wicket e di usare un contesto conversazione con Wicket. In questa sezione si analizzerà la versione dell'esempio Indovina Numero per Wicket."
 
 #. Tag: para
 #: gettingstarted.xml:470
 #, no-c-format
 msgid "You may want to review the Wicket documentation at <ulink url=\"http://wicket.apache.org/\">http://wicket.apache.org/</ulink>."
-msgstr ""
+msgstr "Per vedere la documentazione Wicket si vada a <ulink url=\"http://wicket.apache.org/\">http://wicket.apache.org/</ulink>."
 
 #. Tag: para
 #: gettingstarted.xml:476
@@ -964,13 +964,13 @@ msgstr ""
 #: gettingstarted.xml:493
 #, no-c-format
 msgid "Creating the Eclipse project"
-msgstr ""
+msgstr "Creazione di un progetto Eclipse"
 
 #. Tag: para
 #: gettingstarted.xml:495
 #, no-c-format
 msgid "To generate an Eclipse project from the example:"
-msgstr ""
+msgstr "Per generare un progetto Eclipse dall'esempio:"
 
 #. Tag: programlisting
 #: gettingstarted.xml:499
@@ -992,7 +992,7 @@ msgstr ""
 #: gettingstarted.xml:516
 #, no-c-format
 msgid "Running the example from Eclipse"
-msgstr ""
+msgstr "Esecuzione dell'esempio da Eclipse"
 
 #. Tag: para
 #: gettingstarted.xml:518
@@ -1016,7 +1016,7 @@ msgstr ""
 #: gettingstarted.xml:549
 #, no-c-format
 msgid "Understanding the code"
-msgstr ""
+msgstr "Comprendere il codice"
 
 #. Tag: para
 #: gettingstarted.xml:551
@@ -1034,7 +1034,7 @@ msgstr ""
 #: gettingstarted.xml:568
 #, no-c-format
 msgid "Differences are:"
-msgstr ""
+msgstr "Le differenze sono:"
 
 #. Tag: para
 #: gettingstarted.xml:573
@@ -1168,9 +1168,9 @@ msgstr ""
 
 #. Tag: title
 #: gettingstarted.xml:645
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "The numberguess example for Java SE with Swing"
-msgstr "Esempio Indovina Numero per Tomcat"
+msgstr "Esempio Indovina Numero per Java SE con Swing"
 
 #. Tag: para
 #: gettingstarted.xml:647
@@ -1216,9 +1216,9 @@ msgstr "mvn -Drun"
 
 #. Tag: para
 #: gettingstarted.xml:686
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "There is an empty <literal>beans.xml</literal> file in the root package (<literal>src/main/resources/beans.xml</literal>), which marks this application as a Web Beans application."
-msgstr "Vi è un file vuoto <literal>web-beans.xml</literal>, che identifica l'applicazione come applicazione Web Beans."
+msgstr "Vi è un file vuoto <literal>beans.xml</literal> nel pacchetto radice (<literal>src/main/resources/beans.xml</literal>), che identifica l'applicazione come applicazione Web Beans."
 
 #. Tag: para
 #: gettingstarted.xml:692
@@ -1412,6 +1412,187 @@ msgid ""
 "\n"
 "}]]></programlisting> <calloutlist> <callout arearefs=\"gameIn\"> <para> The injected instance of the game (logic and state). </para> </callout> <callout arearefs=\"messagesIn\"> <para> The injected message generator for UI messages. </para> </callout> <callout arearefs=\"start\"> <para> This application is started in the usual Web Beans SE way, by observing the <literal>@Deployed Manager</literal> event. </para> </callout> <callout arearefs=\"init\"> <para> This method initialises all of the Swing components. Note the use of the <literal>msgGenerator</literal>. </para> </callout> <callout arearefs=\"guess1\"> <para> <literal>guessButtonActionPerformed</literal> is called when the 'Guess' button is clicked, and it does the following: </para> <itemizedlist> <listitem> <para> Gets the guess entered by the user and sets it as the current guess in the <literal>Game</literal> </para> </listitem> <listitem> <para> Calls <literal>game.check()</literal> to validate and perform one 'turn' of the game </para> </listitem> <listitem> <para> Calls <literal>refreshUI</literal>. If there were validation errors with the input, this will have been captured during <literal>game.check()</literal> and as such will be reflected in the messeges returned by <literal>MessageGenerator</literal> and subsequently presented to the user. If there are no validation errors then the user will be told to guess again (higher or lower) or that the game has ended either in a win (correct guess) or a loss (ran out of guesses). </para> </listitem> </itemizedlist> </callout> <callout arearefs=\"replay\"> <para> <literal>replayBtnActionPerformed</literal> simply calls <literal>game.reset()</literal> to start a new game and refreshes the messages in the UI. </para> </callout> <callout arearefs=\"refresh\"> <para> <literal>refreshUI</literal> uses the <literal>MessageGenerator</literal> to update the messages to the user based on the current state of the Game. </para> </callout> </calloutlist> </programlistingco>"
 msgstr ""
+"<programlistingco> <areaspec> <area id=\"scope\" coords=\"1\"/> <area id=\"name\" coords=\"1\"/> <area id=\"messages1\" coords=\"26\"/> <area id=\"validation\" coords=\"39\"/> <area id=\"reset\" coords=\"68\"/> </areaspec> <programlisting role=\"JAVA\"><![CDATA[@ApplicationScoped\n"
+"public class Game implements Serializable\n"
+"{\n"
+"\n"
+"    private int number;\n"
+"    private int guess;\n"
+"    private int smallest;\n"
+"\n"
+"    @MaxNumber\n"
+"    private int maxNumber;\n"
+"\n"
+"    private int biggest;\n"
+"    private int remainingGuesses;\n"
+"    private boolean validNumberRange = true;\n"
+"\n"
+"    @Current Generator rndGenerator;\n"
+"\n"
+"    ...\n"
+"\n"
+"    public boolean isValidNumberRange()\n"
+"    {\n"
+"        return validNumberRange;\n"
+"    }\n"
+"\n"
+"    public boolean isGameWon()\n"
+"    {\n"
+"        return guess == number;\n"
+"    }\n"
+"\n"
+"    public boolean isGameLost()\n"
+"    {\n"
+"        return guess != number && remainingGuesses <= 0;\n"
+"    }\n"
+"\n"
+"    public boolean check()\n"
+"    {\n"
+"        boolean result = false;\n"
+"\n"
+"        if ( checkNewNumberRangeIsValid() )\n"
+"        {\n"
+"            if ( guess > number )\n"
+"            {\n"
+"                biggest = guess - 1;\n"
+"            }\n"
+"\n"
+"            if ( guess < number )\n"
+"            {\n"
+"                smallest = guess + 1;\n"
+"            }\n"
+"\n"
+"            if ( guess == number )\n"
+"            {\n"
+"                result = true;\n"
+"            }\n"
+"\n"
+"            remainingGuesses--;\n"
+"        }\n"
+"\n"
+"        return result;\n"
+"    }\n"
+"\n"
+"    private boolean checkNewNumberRangeIsValid()\n"
+"    {\n"
+"        return validNumberRange = ( ( guess >= smallest ) && ( guess <= biggest ) );\n"
+"    }\n"
+"\n"
+"    @PostConstruct\n"
+"    public void reset()\n"
+"    {\n"
+"        this.smallest = 0;\n"
+"        ...\n"
+"        this.number = rndGenerator.next();\n"
+"    }\n"
+"}]]></programlisting> <calloutlist> <callout arearefs=\"scope\"> <para> The bean is application scoped instead of session scoped, since an instance of the application represents a single 'session'. </para> </callout> <callout arearefs=\"name\"> <para> The bean is not named, since it doesn't need to be accessed via EL </para> </callout> <callout arearefs=\"messages1\"> <para> There is no JSF <literal>FacesContext</literal> to add messages to. Instead the <literal>Game</literal> class provides additional information about the state of the current game including: </para> <itemizedlist> <listitem> <para> If the game has been won or lost </para> </listitem> <listitem> <para> If the most recent guess was invalid </para> </listitem> </itemizedlist> <para> This allows the Swing UI to query the state of the game, which it does indirectly via a class called <literal>MessageGenerator,</literal> in order to determine the appropriate messages to display to the user during the game. </para> </callout> <callout arearefs=\"validation\"> <para> Validation of user input is performed during the <literal>check()</literal> method, since there is no dedicated validation phase </para> </callout> <callout arearefs=\"reset\"> <para> The <literal>reset()</literal> method makes a call to the injected <literal>rndGenerator</literal> in order to get the random number at the start of each game. It cannot use <literal>manager.getInstanceByType(Integer.class, new AnnotationLiteral&lt;Random&gt;(){})</literal> as the JSF example does because there will not be any active contexts like there is during a JSF request. </para> </callout> </calloutlist> </programlistingco> <para> The <literal>MessageGenerator</literal> class depends on the current instance of <literal>Game</literal>, and queries its state in order to determine the appropriate messages to provide as the prompt for the user's next guess and the response to the previous guess. The code for <literal>MessageGenerator</literal> is as follows: </para> <programlistingco> <areaspec> <area id=\"game\" coords=\"3\"/> <area id=\"challenge\" coords=\"5\"/> <area id=\"result\" coords=\"16\"/> </areaspec> <programlisting role=\"JAVA\"><![CDATA[public class MessageGenerator\n"
+"{\n"
+"    @Current Game game;\n"
+"\n"
+"    public String getChallengeMessage()\n"
+"    {\n"
+"        StringBuilder challengeMsg = new StringBuilder( \"I'm thinking of a number between \" );\n"
+"        challengeMsg.append( game.getSmallest() );\n"
+"        challengeMsg.append( \" and \" );\n"
+"        challengeMsg.append( game.getBiggest() );\n"
+"        challengeMsg.append( \". Can you guess what it is?\" );\n"
+"\n"
+"        return challengeMsg.toString();\n"
+"    }\n"
+"\n"
+"    public String getResultMessage()\n"
+"    {\n"
+"        if ( game.isGameWon() )\n"
+"        {\n"
+"            return \"You guess it! The number was \" + game.getNumber();\n"
+"        } else if ( game.isGameLost() )\n"
+"        {\n"
+"            return \"You are fail! The number was \" + game.getNumber();\n"
+"        } else if ( ! game.isValidNumberRange() )\n"
+"        {\n"
+"            return \"Invalid number range!\";\n"
+"        } else if ( game.getRemainingGuesses() == Game.MAX_NUM_GUESSES )\n"
+"        {\n"
+"            return \"What is your first guess?\";\n"
+"        } else\n"
+"        {\n"
+"            String direction = null;\n"
+"\n"
+"            if ( game.getGuess() < game.getNumber() )\n"
+"            {\n"
+"                direction = \"Higher\";\n"
+"            } else\n"
+"            {\n"
+"                direction = \"Lower\";\n"
+"            }\n"
+"\n"
+"            return direction + \"! You have \" + game.getRemainingGuesses() + \" guesses left.\";\n"
+"        }\n"
+"    }\n"
+"}]]></programlisting> <calloutlist> <callout arearefs=\"game\"> <para> The instance of <literal>Game</literal> for the application is injected here. </para> </callout> <callout arearefs=\"challenge\"> <para> The <literal>Game</literal>'s state is interrogated to determine the appropriate challenge message. </para> </callout> <callout arearefs=\"result\"> <para> And again to determine whether to congratulate, console or encourage the user to continue. </para> </callout> </calloutlist> </programlistingco> <para> Finally we come to the <literal>NumberGuessFrame</literal> class which provides the Swing front end to our guessing game. </para> <programlistingco> <areaspec> <area id=\"gameIn\" coords=\"3\"/> <area id=\"messagesIn\" coords=\"4\"/> <area id=\"start\" coords=\"6\"/> <area id=\"init\" coords=\"18\"/> <area id=\"guess1\" coords=\"34\"/> <area id=\"replay\" coords=\"44\"/> <area id=\"refresh\" coords=\"50\"/> </areaspec> <programlisting role=\"JAVA\"><![CDATA[public class NumberGuessFrame  extends javax.swing.JFrame\n"
+"{\n"
+"    private @Current Game game;\n"
+"    private @Current MessageGenerator msgGenerator;\n"
+"\n"
+"    public void start( @Observes @Deployed Manager manager )\n"
+"    {\n"
+"        java.awt.EventQueue.invokeLater( new Runnable()\n"
+"            {\n"
+"                public void run()\n"
+"                {\n"
+"                    initComponents();\n"
+"                    setVisible( true );\n"
+"                }\n"
+"            } );\n"
+"    }\n"
+"\n"
+"    private void initComponents() {\n"
+"\n"
+"        buttonPanel = new javax.swing.JPanel();\n"
+"        mainMsgPanel = new javax.swing.JPanel();\n"
+"        mainLabel = new javax.swing.JLabel();\n"
+"        messageLabel = new javax.swing.JLabel();\n"
+"        guessText = new javax.swing.JTextField();\n"
+"        ...\n"
+"        mainLabel.setText(msgGenerator.getChallengeMessage());\n"
+"        mainMsgPanel.add(mainLabel);\n"
+"\n"
+"        messageLabel.setText(msgGenerator.getResultMessage());\n"
+"        mainMsgPanel.add(messageLabel);\n"
+"        ...\n"
+"    }\n"
+"\n"
+"    private void guessButtonActionPerformed( java.awt.event.ActionEvent evt )\n"
+"    {\n"
+"        int guess =  Integer.parseInt(guessText.getText());\n"
+"\n"
+"        game.setGuess( guess );\n"
+"        game.check();\n"
+"        refreshUI();\n"
+"\n"
+"    }\n"
+"\n"
+"    private void replayBtnActionPerformed( java.awt.event.ActionEvent evt )\n"
+"    {\n"
+"       game.reset();\n"
+"       refreshUI();\n"
+"    }\n"
+"\n"
+"    private void refreshUI()\n"
+"    {\n"
+"        mainLabel.setText( msgGenerator.getChallengeMessage() );\n"
+"        messageLabel.setText( msgGenerator.getResultMessage() );\n"
+"        guessText.setText( \"\" );\n"
+"        guessesLeftBar.setValue( game.getRemainingGuesses() );\n"
+"        guessText.requestFocus();\n"
+"    }\n"
+"\n"
+"    // swing components\n"
+"    private javax.swing.JPanel borderPanel;\n"
+"    ...\n"
+"    private javax.swing.JButton replayBtn;\n"
+"\n"
+"}]]></programlisting> <calloutlist> <callout arearefs=\"gameIn\"> <para> The injected instance of the game (logic and state). </para> </callout> <callout arearefs=\"messagesIn\"> <para> The injected message generator for UI messages. </para> </callout> <callout arearefs=\"start\"> <para> This application is started in the usual Web Beans SE way, by observing the <literal>@Deployed Manager</literal> event. </para> </callout> <callout arearefs=\"init\"> <para> This method initialises all of the Swing components. Note the use of the <literal>msgGenerator</literal>. </para> </callout> <callout arearefs=\"guess1\"> <para> <literal>guessButtonActionPerformed</literal> is called when the 'Guess' button is clicked, and it does the following: </para> <itemizedlist> <listitem> <para> Gets the guess entered by the user and sets it as the current guess in the <literal>Game</literal> </para> </listitem> <listitem> <para> Calls <literal>game.check()</literal> to validate and perform one 'turn' of the game </para> </listitem> <listitem> <para> Calls <literal>refreshUI</literal>. If there were validation errors with the input, this will have been captured during <literal>game.check()</literal> and as such will be reflected in the messeges returned by <literal>MessageGenerator</literal> and subsequently presented to the user. If there are no validation errors then the user will be told to guess again (higher or lower) or that the game has ended either in a win (correct guess) or a loss (ran out of guesses). </para> </listitem> </itemizedlist> </callout> <callout arearefs=\"replay\"> <para> <literal>replayBtnActionPerformed</literal> simply calls <literal>game.reset()</literal> to start a new game and refreshes the messages in the UI. </para> </callout> <callout arearefs=\"refresh\"> <para> <literal>refreshUI</literal> uses the <literal>MessageGenerator</literal> to update the messages to the user based on the current state of the Game. </para> </callout> </calloutlist> </programlistingco>"
 
 #. Tag: title
 #: gettingstarted.xml:904
