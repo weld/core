@@ -1,4 +1,4 @@
-<Beans xmlns="urn:java:ee" xmlns:myapp="urn:java:org.jboss.webbeans.test.unit.xml.beans"
+<Beans xmlns="urn:java:ee"
 	xmlns:test="urn:java:org.jboss.webbeans.test.unit.xml.deploy">
 	<Deploy>
 		<Standard />

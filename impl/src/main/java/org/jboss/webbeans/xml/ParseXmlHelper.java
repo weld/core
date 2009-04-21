@@ -34,8 +34,18 @@ public class ParseXmlHelper
 
    public static <T> AnnotatedClass<? extends T> loadElementClass(Element element, Class<T> expectedType, XmlEnvironment environment, Map<String, Set<String>> packagesMap)
    {
-      List<AnnotatedClass<? extends T>> classesList = new ArrayList<AnnotatedClass<? extends T>>();
+      List<AnnotatedClass<? extends T>> classesList = tryLoadElementClass(element, expectedType, environment, packagesMap);
       String className = element.getName();
+
+      if (classesList.size() == 0)
+         throw new DefinitionException("Could not find '" + className + "'");
+      
+      return classesList.get(0);
+   }
+   
+   public static <T> List<AnnotatedClass<? extends T>> tryLoadElementClass(Element element, Class<T> expectedType, XmlEnvironment environment, Map<String, Set<String>> packagesMap)
+   {
+      List<AnnotatedClass<? extends T>> classesList = new ArrayList<AnnotatedClass<? extends T>>();
       String prefix = element.getNamespacePrefix();
 
       for (Map.Entry<String, Set<String>> packagesEntry : packagesMap.entrySet())
@@ -57,14 +67,11 @@ public class ParseXmlHelper
             }
          }
       }
-
-      if (classesList.size() == 0)
-         throw new DefinitionException("Could not find '" + className + "'", new DefinitionException(className + " not a Java type"));
-
-      if (classesList.size() == 1)
-         return classesList.get(0);
-
-      throw new DefinitionException("There are multiple packages containing a Java type with the same name '" + className + "'");
+      
+      if(classesList.size() > 1)
+         throw new DefinitionException("There are multiple packages containing a Java type with the same name '" + element.getName() + "'");
+      
+      return classesList;
    }
    
    public static <T extends Annotation> Class<? extends T> loadAnnotationClass(Element element, Class<T> expectedType, XmlEnvironment environment, Map<String, Set<String>> packagesMap)
@@ -258,7 +265,6 @@ public class ParseXmlHelper
       {
          Set<String> packages = packagesMap.get(prefix);
          packages.addAll(packagesSet);
-         packagesMap.put(prefix, packages);
       }
       else
       {

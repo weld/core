@@ -93,11 +93,26 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
    
    private void checkBeanChild(Element beanChildElement, AnnotatedClass<?> beanClass)
    {
-      try
-      {
-         if(beanChildElement.getName().equalsIgnoreCase(XmlConstants.ARRAY))
+      if(beanChildElement.getName().equalsIgnoreCase(XmlConstants.ARRAY))
+         return;
+      
+      List<AnnotatedClass<?>> beanChildClassList = ParseXmlHelper.tryLoadElementClass(beanChildElement, Object.class, environment, packagesMap);
+      
+      if(beanChildClassList.size() == 0)
+      {            
+         Element beanElement = beanChildElement.getParent();
+         Namespace beanNamespace = beanElement.getNamespace();
+         Namespace beanChildNamespace = beanChildElement.getNamespace();
+         if(beanChildNamespace.equals(beanNamespace))
+         {
+            //bean child element declaring a method or field of the bean.
+            checkFieldOrMethodChild(beanChildElement, beanClass);
             return;
-         AnnotatedClass<?> beanChildClass = ParseXmlHelper.loadElementClass(beanChildElement, Object.class, environment, packagesMap);
+         }
+      }
+      else
+      {
+         AnnotatedClass<?> beanChildClass = beanChildClassList.get(0);
          Class<?> beanChildType = beanChildClass.getRawType();
          boolean isJavaClass = !beanChildType.isEnum() && !beanChildType.isPrimitive() && !beanChildType.isInterface();
          boolean isInterface = beanChildType.isInterface() && !beanChildType.isAnnotation();
@@ -113,27 +128,10 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
             constructorParameters.add(beanChildClass);
             return;
          }
-         throw new DefinitionException(new DefinitionException(beanChildElement.getName() + " can't be interpreted as a Java class or interface or Java Annotation type"));
       }
-      catch(DefinitionException e)
-      {
-         if(!(e.getCause() instanceof DefinitionException))
-         {
-            throw new DefinitionException(e);
-         }
-         
-         Element beanElement = beanChildElement.getParent();
-         Namespace beanNamespace = beanElement.getNamespace();
-         Namespace beanChildNamespace = beanChildElement.getNamespace();
-         if(beanChildNamespace.equals(beanNamespace))
-         {
-            //bean child element declaring a method or field of the bean.
-            checkFieldOrMethodChild(beanChildElement, beanClass);
-            return;
-         }
-         throw new DefinitionException("Can't determine type of element <" + beanChildElement.getName() + "> in bean '" + 
-               beanElement.getName() + "'");
-      }
+      
+      throw new DefinitionException("Can't determine type of element <" + beanChildElement.getName() + "> in bean '" + 
+            beanChildElement.getParent().getName() + "'");
    }
    
    private void checkAnnotationChild(Element beanChildElement, AnnotatedClass<?> beanChildClass, AnnotatedClass<?> beanClass)
