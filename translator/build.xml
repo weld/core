@@ -1,4 +1,4 @@
-<project basedir="." name="Numberguess Example Build" default="restart">
+<project basedir="." name="Translator Example Build" default="restart">
 	
 	<property name="example.name" value="webbeans-translator" />
 	<property name="type" value="ear" />
