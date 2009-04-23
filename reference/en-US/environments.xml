@@ -45,7 +45,7 @@ $ ant update</programlisting>
    </section>
    
    <section>
-      <title>Glassfish</title>
+      <title>GlassFish</title>
       
       <para>TODO</para>
    </section>
@@ -65,11 +65,11 @@ $ ant update</programlisting>
       </note>
       
       <para>
-         Web Beans should be used as a web application library in a servlet 
-         container. You should place <literal>webbeans-servlet.jar</literal> in
-         <literal>WEB-INF/lib</literal>. <literal>webbeans-serv;et.jar</literal>
-         is an "uber-jar" provided for your convenience. Instead, you could use
-         its component jars: 
+         Web Beans should be used as a web application library in a servlet
+         container. You should place <literal>webbeans-servlet.jar</literal>
+         in <literal>WEB-INF/lib</literal>.
+         <literal>webbeans-servlet.jar</literal> is an "uber-jar" provided for
+         your convenience. Alternatively, you could use its component jars: 
       </para>
       
       <itemizedlist>
@@ -117,41 +117,43 @@ $ ant update</programlisting>
       
       <para>
          You also need to explicitly specify the servlet listener (used to
-         boot Web Beans, and control its interaction with requests) in 
+         boot Web Beans, and control its interaction with requests) in
          <literal>web.xml</literal>:
       </para>
          
-      <programlisting><![CDATA[<listener>
+      <programlisting role="XML"><![CDATA[<listener>
    <listener-class>org.jboss.webbeans.environment.servlet.Listener</listener-class>
 </listener>]]></programlisting>
 
       <section>
          <title>Tomcat</title>
 
-	      <para>
-	         Tomcat has a read-only JNDI, so Web Beans can't automatically bind 
-	         the Manager. To bind the Manager into JNDI, you should add the 
-	         following to your <literal>META-INF/context.xml</literal>:
-	      </para>
-      
-         <programlisting><![CDATA[<Resource name="app/Manager" 
-          auth="Container"
-          type="javax.inject.manager.Manager"
-          factory="org.jboss.webbeans.resources.ManagerObjectFactory"/>
-]]></programlisting>
-
          <para>
-           and make it available to your deployment by adding this to 
-            <literal>web.xml</literal>:
+            Tomcat has a read-only JNDI, so Web Beans can't automatically bind 
+            the Manager. To bind the Manager into JNDI, you should populate 
+            <literal>META-INF/context.xml</literal> with the following
+			contents:
          </para>
       
-         <programlisting><![CDATA[<resource-env-ref>
-  <resource-env-ref-name>
-    app/Manager
-  </resource-env-ref-name>
-  <resource-env-ref-type>
-    javax.inject.manager.Manager
-  </resource-env-ref-type>
+         <programlisting role="XML"><![CDATA[<Context>
+   <Resource name="app/Manager" 
+      auth="Container"
+      type="javax.inject.manager.Manager"
+      factory="org.jboss.webbeans.resources.ManagerObjectFactory"/>
+</Context>]]></programlisting>
+
+         <para>
+            and make it available to your deployment by adding this to 
+            the bottom of <literal>web.xml</literal>:
+         </para>
+      
+         <programlisting role="XML"><![CDATA[<resource-env-ref>
+   <resource-env-ref-name>
+      app/Manager
+   </resource-env-ref-name>
+   <resource-env-ref-type>
+      javax.inject.manager.Manager
+   </resource-env-ref-type>
 </resource-env-ref>]]></programlisting>
 
          <para>
@@ -163,12 +165,57 @@ $ ant update</programlisting>
          <para>
             Web Beans also supports Servlet injection in Tomcat. To enable this,
             place the <literal>webbeans-tomcat-support.jar</literal> in 
-           <literal>$TOMCAT_HOME/lib</literal>, and add the following to your
-           <literal>META-INF/context.xml</literal>:
+            <literal>$TOMCAT_HOME/lib</literal>, and add the following to your
+            <literal>META-INF/context.xml</literal>:
          </para>
       
-         <programlisting><![CDATA[<Listener className="org.jboss.webbeans.environment.tomcat.WebBeansLifecycleListener" />]]></programlisting>
+         <programlisting role="XML"><![CDATA[<Listener className="org.jboss.webbeans.environment.tomcat.WebBeansLifecycleListener"/>]]></programlisting>
          
+      </section>
+
+      <section>
+         <title>Jetty</title>
+
+         <para>
+            Like Tomcat, Jetty has a read-only JNDI, so Web Beans can't
+            automatically bind the Manager. To bind the Manager to JNDI, you
+            should populate <literal>WEB-INF/jetty-env.xml</literal> with the
+            following contents:
+         </para>
+      
+         <programlisting role="XML"><![CDATA[<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN"
+   "http://jetty.mortbay.org/configure.dtd">
+<Configure id="webAppCtx" class="org.mortbay.jetty.webapp.WebAppContext">
+   <New id="jdciManager" class="org.mortbay.jetty.plus.naming.Resource">
+      <Arg><Ref id="webAppCtx"/></Arg> 
+      <Arg>app/Manager</Arg>
+      <Arg>
+         <New class="javax.naming.Reference">
+            <Arg>javax.inject.manager.Manager</Arg> 
+            <Arg>org.jboss.webbeans.resources.ManagerObjectFactory</Arg>
+            <Arg/>
+         </New>
+      </Arg>
+   </New>
+</Configure>]]></programlisting>
+
+         <para>
+            Notice that Jetty doesn't not have built-in support for an
+            <literal>javax.naming.spi.ObjectFactory</literal> like Tomcat, so
+            it's necessary to manually create the
+            <literal>javax.naming.Reference</literal> to wrap around it.
+         </para>
+
+         <para>
+            Jetty only allows you to bind entries to
+            <literal>java:comp/env</literal>, so the Manager will be available 
+            at <literal>java:comp/env/app/Manager</literal>
+         </para>
+
+         <para>
+            Web Beans does not currently support Servlet injection in Jetty.
+         </para>
+
       </section>
 
    </section>
