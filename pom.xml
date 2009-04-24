@@ -73,11 +73,11 @@
    <modules>
       <module>numberguess</module>
       <module>jsf2</module>
-      <module>tomcat</module>
       <module>translator</module>
       <module>login</module>
       <module>conversations</module>
       <module>se/numberguess</module>
+      <module>servlet-numberguess</module>
       <module>wicket/numberguess</module>
       <module>wicket/conversations</module>
    </modules>
