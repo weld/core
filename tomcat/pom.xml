@@ -8,20 +8,104 @@
       <version>1.0.0-SNAPSHOT</version>
    </parent>
    
-   <groupId>org.jboss.webbeans.examples</groupId>
-   <artifactId>webbeans-numberguess-tomcat</artifactId>
+   <artifactId>webbeans-servlet-numberguess</artifactId>
    <packaging>war</packaging>
-   <name>Web Beans Examples: Numberguess</name>
+   <name>Web Beans Numberguess Example (Servlet)</name>
+   <description>The Web Beans numberguess example for deployment to a servlet container</description>
    
    <pluginRepositories>
-        <pluginRepository>
-            <id>codehaus snapshot repository</id>
-            <url>http://snapshots.repository.codehaus.org/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
+      <pluginRepository>
+         <id>codehaus snapshot repository</id>
+         <url>http://snapshots.repository.codehaus.org/</url>
+         <releases>
+             <enabled>true</enabled>
+         </releases>
+      </pluginRepository>
+   </pluginRepositories>
+   
+   <build>
+      <finalName>${project.artifactId}</finalName>
+      <plugins>
+
+         <plugin>
+            <artifactId>maven-clean-plugin</artifactId>
+            <configuration>
+               <failOnError>false</failOnError>
+               <filesets>
+                  <fileset>
+                     <!-- clean up files from war:inplace -->
+                     <directory>WebContent</directory>
+                     <includes>
+                        <include>WEB-INF/classes/**</include>
+                        <include>WEB-INF/lib/**</include>
+                     </includes>
+                     <followSymlinks>false</followSymlinks>
+                  </fileset>
+               </filesets>
+            </configuration>
+         </plugin>
+
+         <plugin>
+            <artifactId>maven-war-plugin</artifactId>
+            <configuration>
+               <!-- don't stage or package files added to src/main/webapp by war:inplace -->
+               <warSourceExcludes>WEB-INF/classes/**,WEB-INF/lib/**</warSourceExcludes>
+            </configuration>
+         </plugin>
+
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>tomcat-maven-plugin</artifactId>
+            <configuration>
+               <path>/${project.build.finalName}</path>
+               <!-- uncomment to use server configuration override; see readme.txt for details -->
+               <!--<server>tomcat</server>-->
+               <url>http://localhost:${tomcat.http.port}/manager</url>
+               <port>${embedded-tomcat.http.port}</port> <!-- port for embedded Tomcat only (putting this configuration in the execution for the run goal doesn't work) -->
+               <warSourceDirectory>WebContent</warSourceDirectory>
+               <!-- if you don't want to use war:inplace, use this path instead -->
+               <!--
+               <warSourceDirectory>${project.build.directory}/${project.build.finalName}</warSourceDirectory>
+               -->
+            </configuration>
+            <dependencies>
+            </dependencies>
+         </plugin>
+
+         <plugin>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>maven-jetty-plugin</artifactId>
+            <configuration>
+               <connectors>
+                  <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                     <port>${jetty.http.port}</port>
+                     <maxIdleTime>3600000</maxIdleTime>
+                  </connector>
+               </connectors>
+               <scanIntervalSeconds>10</scanIntervalSeconds>
+               <webAppConfig>
+                  <contextPath>/${project.build.finalName}</contextPath>
+               </webAppConfig>
+               <webAppSourceDirectory>WebContent</webAppSourceDirectory>
+               <!-- if you don't want to use war:inplace, use this path instead -->
+               <!--
+               <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}</webAppSourceDirectory>
+               -->
+            </configuration>
+            <dependencies>
+            </dependencies>
+         </plugin>
+
+      </plugins>
+   </build>
+
+   <properties>
+      <jetty.http.port>9090</jetty.http.port>
+      <jetty.debug.port>9190</jetty.debug.port>
+      <tomcat.http.port>8080</tomcat.http.port>
+      <embedded-tomcat.http.port>9090</embedded-tomcat.http.port>
+      <embedded-tomcat.debug.port>9190</embedded-tomcat.debug.port>
+   </properties>
    
    <dependencies>
       <dependency>
@@ -60,17 +144,6 @@
          <scope>runtime</scope>
       </dependency>
       
-      <!-- <dependency>
-         <groupId>org.jboss.el</groupId>
-         <artifactId>jboss-el</artifactId>
-         <exclusions>
-            <exclusion>
-               <groupId>javax.el</groupId>
-               <artifactId>el-api</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>-->
-      
       <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-ri</artifactId>
@@ -89,10 +162,5 @@
       </dependency>
       
    </dependencies>
-   
-   <build>
-      <finalName>webbeans-numberguess</finalName>
-   </build>
-   
+    
 </project>
-
