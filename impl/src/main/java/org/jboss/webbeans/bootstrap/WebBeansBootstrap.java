@@ -50,7 +50,7 @@ import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.jsf.JSFApiAbstraction;
+import org.jboss.webbeans.jsf.JsfApiAbstraction;
 import org.jboss.webbeans.literal.DeployedLiteral;
 import org.jboss.webbeans.literal.InitializedLiteral;
 import org.jboss.webbeans.log.Log;
@@ -126,7 +126,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    {
       ResourceLoader resourceLoader = getServices().get(ResourceLoader.class);
       getServices().add(EJBApiAbstraction.class, new EJBApiAbstraction(resourceLoader));
-      getServices().add(JSFApiAbstraction.class, new JSFApiAbstraction(resourceLoader));
+      getServices().add(JsfApiAbstraction.class, new JsfApiAbstraction(resourceLoader));
       getServices().add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(resourceLoader));
       getServices().add(ServletApiAbstraction.class, new ServletApiAbstraction(resourceLoader));
       // Temporary workaround to provide context for building annotated class

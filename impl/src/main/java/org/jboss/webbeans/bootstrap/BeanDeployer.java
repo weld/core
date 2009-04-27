@@ -33,7 +33,7 @@ import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.introspector.WrappedAnnotatedField;
 import org.jboss.webbeans.introspector.WrappedAnnotatedMethod;
-import org.jboss.webbeans.jsf.JSFApiAbstraction;
+import org.jboss.webbeans.jsf.JsfApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.persistence.spi.EntityDiscovery;
@@ -289,7 +289,7 @@ public class BeanDeployer
    {
       Class<?> rawType = clazz.getRawType();
       EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);
-      JSFApiAbstraction jsfApiAbstraction = manager.getServices().get(JSFApiAbstraction.class);
+      JsfApiAbstraction jsfApiAbstraction = manager.getServices().get(JsfApiAbstraction.class);
       ServletApiAbstraction servletApiAbstraction = manager.getServices().get(ServletApiAbstraction.class);
       // TODO: check 3.2.1 for more rules!!!!!!
       return !Reflections.isAbstract(rawType) && 

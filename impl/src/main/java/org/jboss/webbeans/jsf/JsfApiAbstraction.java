@@ -27,13 +27,13 @@ import org.jboss.webbeans.util.ApiAbstraction;
  * @author Pete Muir
  * 
  */
-public class JSFApiAbstraction extends ApiAbstraction implements Service
+public class JsfApiAbstraction extends ApiAbstraction implements Service
 {
 
    // An UI component
    public final Class<?> UICOMPONENT_CLASS;
    
-   public JSFApiAbstraction(ResourceLoader resourceLoader)
+   public JsfApiAbstraction(ResourceLoader resourceLoader)
    {
       super(resourceLoader);
       this.UICOMPONENT_CLASS = classForName("javax.faces.component.UIComponent");
