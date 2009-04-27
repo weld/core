@@ -24,7 +24,7 @@
 		<fail unless="webbeans.wicket.version" message="You must specify the webbeans.wicket.version as a property" />
 		<fail unless="webbeans.logger.version" message="You must specify the webbeans.logger.version as a property" />
 		<fail unless="refdoc.dir" message="You must specify the reference docs directory with -Drefdoc.dir=~/workspace/wb/reference" />
-		<fail unless="examples.dir" message="You must specify the examples directory with -Dexmaples.dir=~/workspace/wb/examples" />
+		<fail unless="examples.dir" message="You must specify the examples directory with -Dexamples.dir=~/workspace/wb/examples" />
 		
 		<maven target="clean" basedir="${wbri.dir}" />
 		<maven target="clean" basedir="${refdoc.dir}" />
