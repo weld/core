@@ -16,8 +16,6 @@
  */
 package org.jboss.webbeans.bean.ee.jms;
 
-
-
 import java.lang.reflect.Method;
 
 import javax.context.CreationalContext;

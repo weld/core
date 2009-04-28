@@ -14,9 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.webbeans.util;
-
 
 /**
  * Utility class for Types
@@ -74,7 +72,7 @@ public class Types
          }
          else
          {
-            throw new IllegalStateException("Some weird type!!!");
+            throw new IllegalStateException("Could not get boxed type for unknown type " + type);
          }
       }
       else

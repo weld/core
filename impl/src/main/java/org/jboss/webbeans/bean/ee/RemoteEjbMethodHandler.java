@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans.bean.ee;
 
-
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 

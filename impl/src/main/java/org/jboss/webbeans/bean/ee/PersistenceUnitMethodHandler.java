@@ -19,7 +19,6 @@ package org.jboss.webbeans.bean.ee;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 
-
 /**
  * Proxy for persistence unit Java EE resources
  * 

@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.webbeans.bean;
 
 import java.lang.annotation.Annotation;
@@ -27,7 +26,6 @@ import javax.event.Observes;
 import javax.inject.CreationException;
 import javax.inject.DefinitionException;
 import javax.inject.Disposes;
-import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;

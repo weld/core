@@ -29,7 +29,6 @@ import javax.jms.TopicSession;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.ee.AbstractResourceBean;
 
-
 /**
  * A bean which represents a JMS topic
  * 

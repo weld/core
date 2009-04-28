@@ -20,7 +20,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.webbeans;
 
 import java.util.Map;
@@ -33,7 +32,7 @@ import org.jboss.webbeans.bootstrap.api.SingletonProvider;
 
 
 /**
- * Access point for getting/setting current Managager 
+ * Access point for getting/setting current Manager 
  * 
  * @author Gavin King
  * @author Sanjeeb.Sahoo@Sun.COM

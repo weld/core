@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans.bean.proxy;
 
-
 /**
  * Interface implemented by all enterprise bean proxies to query/control the proxy
  * 

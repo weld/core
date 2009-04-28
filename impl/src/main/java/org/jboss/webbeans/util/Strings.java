@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.webbeans.util;
 
 import java.beans.Introspector;
@@ -105,6 +104,13 @@ public class Strings
       return buffer.toString();
    }
 
+   /**
+    * Returns a textual representation of a collection for debug purposes
+    * 
+    * @param header The description of the collection
+    * @param collection The collection
+    * @return A textual representation
+    */
    public static String collectionToString(String header, Collection<?> collection)
    {
       StringBuilder buffer = new StringBuilder();

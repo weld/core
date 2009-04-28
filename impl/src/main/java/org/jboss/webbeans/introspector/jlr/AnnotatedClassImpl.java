@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.annotation.Annotation;
@@ -64,7 +63,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    // The map from annotation type to abstracted field with meta-annotation
    private final SetMultiMap<Class<? extends Annotation>, AnnotatedField<?>> metaAnnotatedFields;
    
-// The set of abstracted fields
+   // The set of abstracted fields
    private final Set<AnnotatedField<?>> declaredFields;
    private final Map<String, AnnotatedField<?>> declaredFieldsByName;
    // The map from annotation type to abstracted field with annotation
@@ -80,7 +79,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    // The map from annotation type to method with a parameter with annotation
    private final SetMultiMap<Class<? extends Annotation>, AnnotatedMethod<?>> methodsByAnnotatedParameters;
    
-// The set of abstracted methods
+   // The set of abstracted methods
    private final Set<AnnotatedMethod<?>> declaredMethods;
    // The map from annotation type to abstracted method with annotation
    private final SetMultiMap<Class<? extends Annotation>, AnnotatedMethod<?>> declaredAnnotatedMethods;

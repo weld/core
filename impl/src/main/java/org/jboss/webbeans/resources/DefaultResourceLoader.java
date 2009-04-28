@@ -19,8 +19,6 @@ package org.jboss.webbeans.resources;
 import java.io.IOException;
 import java.net.URL;
 
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceLoadingException;
 import org.jboss.webbeans.util.EnumerationIterable;

@@ -38,6 +38,8 @@ import org.jboss.webbeans.log.Logging;
 @WebBean
 public class JavaSEConversationTerminator implements ConversationTerminator, Serializable
 {
+   private static final long serialVersionUID = 7258623232951724618L;
+
    private static LogProvider log = Logging.getLogProvider(JavaSEConversationTerminator.class);
 
    private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);

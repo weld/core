@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.webbeans.util;
 
 import java.beans.Introspector;
@@ -37,7 +36,6 @@ import javax.inject.BindingType;
 import javax.inject.ExecutionException;
 
 import org.jboss.webbeans.util.reflection.ParameterizedTypeImpl;
-
 
 /**
  * Utility class for static reflection-type operations

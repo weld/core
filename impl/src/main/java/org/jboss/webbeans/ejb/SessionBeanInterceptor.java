@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.webbeans.ejb;
 
 import java.io.IOException;
@@ -39,7 +38,8 @@ import org.jboss.webbeans.log.Logging;
  */
 public class SessionBeanInterceptor implements Serializable
 {
-   
+   private static final long serialVersionUID = 7327757031821596782L;
+
    private transient Log log = Logging.getLog(SessionBeanInterceptor.class);
    
    private transient EnterpriseBean<Object> bean;

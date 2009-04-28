@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.webbeans.metadata;
 
 import java.lang.annotation.Annotation;
@@ -22,7 +21,6 @@ import java.lang.annotation.Annotation;
 import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.introspector.AnnotatedAnnotation;
-import org.jboss.webbeans.introspector.jlr.AnnotatedAnnotationImpl;
 import org.jboss.webbeans.resources.ClassTransformer;
 
 /**

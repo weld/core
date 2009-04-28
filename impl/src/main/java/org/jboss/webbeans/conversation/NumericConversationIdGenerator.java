@@ -35,6 +35,8 @@ import org.jboss.webbeans.log.Logging;
 @WebBean
 public class NumericConversationIdGenerator implements ConversationIdGenerator, Serializable
 {
+   private static final long serialVersionUID = -587408626962044442L;
+
    private static LogProvider log = Logging.getLogProvider(NumericConversationIdGenerator.class);
    // The next conversation ID
    private AtomicInteger id;
