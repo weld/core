@@ -125,9 +125,9 @@ public class XmlParser
       Element root = document.getRootElement();
 
       List<Class<? extends Annotation>> bindingTypes = new ArrayList<Class<? extends Annotation>>();
-      List<Class<? extends Annotation>> interceptorBindingTypes = new ArrayList<Class<? extends Annotation>>();
       List<Class<? extends Annotation>> stereotypes = new ArrayList<Class<? extends Annotation>>();
-
+      List<Class<? extends Annotation>> interceptorBindingTypes = new ArrayList<Class<? extends Annotation>>();
+      
       Iterator<?> elIterator = root.elementIterator();
       while (elIterator.hasNext())
       {
@@ -136,26 +136,28 @@ public class XmlParser
          boolean isInterceptorBindingType = ParseXmlHelper.findElementsInEeNamespace(element, XmlConstants.INTERCEPTOR_BINDING_TYPE).size() > 0;
          boolean isStereotype = ParseXmlHelper.findElementsInEeNamespace(element, XmlConstants.STEREOTYPE).size() > 0;
 
-         if (isBindingType || isInterceptorBindingType || isStereotype)
+         if (isBindingType || isStereotype || isInterceptorBindingType)
          {
             Class<? extends Annotation> annotationType = ParseXmlHelper.loadAnnotationClass(element, Annotation.class, environment, packagesMap);
             if (isBindingType)
-               bindingTypes.add(annotationType);
-            if (isInterceptorBindingType)
             {
-               interceptorBindingTypes.add(annotationType);
-               checkForInterceptorBindingTypeChildren(element);
+               bindingTypes.add(annotationType);
             }
             if (isStereotype)
             {
                stereotypes.add(annotationType);
                checkForStereotypeChildren(element);
             }
+            if (isInterceptorBindingType)
+            {
+               interceptorBindingTypes.add(annotationType);
+               checkForInterceptorBindingTypeChildren(element);
+            }
          }
       }
       ParseXmlHelper.checkForUniqueElements(bindingTypes);
-      ParseXmlHelper.checkForUniqueElements(interceptorBindingTypes);
       ParseXmlHelper.checkForUniqueElements(stereotypes);
+      ParseXmlHelper.checkForUniqueElements(interceptorBindingTypes);
    }
 
    private void parseForBeans(Document document)
@@ -237,7 +239,7 @@ public class XmlParser
                stereotypeClass.isAnnotationPresent(ScopeType.class) || 
                stereotypeClass.isAnnotationPresent(DeploymentType.class) || 
                stereotypeClass.isAnnotationPresent(InterceptorBindingType.class) ||
-               stereotypeClass.isAnnotationPresent(Named.class))
+               stereotypeClass.equals(Named.class))
             continue;
          throw new DefinitionException("Direct child <" + stereotypeChild.getName() + "> of stereotype <" + stereotypeElement.getName() + 
                "> declaration must be scope type, or deployment type, or interceptor binding type, or javax.annotation.Named");
