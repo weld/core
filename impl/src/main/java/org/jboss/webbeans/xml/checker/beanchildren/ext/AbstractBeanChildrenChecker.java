@@ -48,7 +48,6 @@ import org.jboss.webbeans.introspector.AnnotatedField;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
 import org.jboss.webbeans.xml.XmlEnvironment;
-import org.jboss.webbeans.xml.checker.beanchildren.BeanChildrenChecker;
 import org.jboss.webbeans.xml.checker.beanchildren.impl.BeanChildrenCheckerImpl;
 
 public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImpl

@@ -2,7 +2,7 @@
 	xmlns:myapp="urn:java:org.jboss.webbeans.test.unit.xml.parser"
 	xmlns:manager="urn:java:javax.inject.manager"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="urn:java:org.jboss.webbeans.test.unit.xml.parser http://mydomain.com/myapp/schema-1.2.xsd">
+	xsi:schemaLocation="urn:java:org.jboss.webbeans.test.unit.xml.parser">
 	<Deploy>
 		<Standard />
 		<Production />
@@ -21,7 +21,7 @@
 		<myapp:TestScopeType />
 		<myapp:TestDeploymentType />
 		<myapp:AnotherTestInterceptorBindingType />
-		<myapp:TestNamed />
+		<Named />
 	</myapp:TestStereotype>
 	
 	<myapp:Order>
@@ -36,7 +36,8 @@
 		<myapp:val />
 		<Integer />
 	</myapp:Order>
-	<myapp:PaymentResource>
+<!--	
+	<myapp:PaymentService>
 		<RequestScoped />
 		<myapp:TestBindingType />
 		<myapp:TestInterceptorBindingType />
@@ -45,8 +46,15 @@
 		<Resource>
 			<name>java:app/service/PaymentService</name>
 		</Resource>
-	</myapp:PaymentResource>
-	
+	</myapp:PaymentService>
+-->
+
+	<Topic>
+		<Resource>
+			<name>java:app/service/PaymentService</name>
+		</Resource>
+	</Topic>
+		
 	<Decorators>
 		<myapp:TestDecorator />	
 	</Decorators>

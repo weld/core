@@ -30,6 +30,8 @@ import org.jboss.webbeans.xml.XmlEnvironment;
 
 public class ResourceBeanChildrenChecker extends NotSimpleBeanChildrenChecker
 {
+   private static final String RESOURCE_TYPE = "Java EE";
+   
    public ResourceBeanChildrenChecker(XmlEnvironment environment, Map<String, Set<String>> packagesMap)
    {
       super(environment, packagesMap);
@@ -73,7 +75,7 @@ public class ResourceBeanChildrenChecker extends NotSimpleBeanChildrenChecker
       }
    }
 
-   private void checkResourceElements(List<Element> resourceElements)
+   protected void checkResourceElements(List<Element> resourceElements)
    {
       Element resourceElement = resourceElements.get(0);
 
@@ -84,13 +86,18 @@ public class ResourceBeanChildrenChecker extends NotSimpleBeanChildrenChecker
       List<Element> mappedNameElements = ParseXmlHelper.findElementsInEeNamespace(resourceElement, XmlConstants.MAPPED_NAME);
 
       if (nameElements.size() + mappedNameElements.size() != 1)
-         throw new DefinitionException("For a Java EE resource '" + resourceElement.getParent().getName() + "', JNDI name " + 
+         throw new DefinitionException("For a " + getResourceType() + " resource '" + resourceElement.getParent().getName() + "', JNDI name " + 
                "or mapped name must be specified using the <name> or <mappedName> child elements of the <Resource> element");
 
       if (nameElements.size() == 1)
          checkJndiNameElementValue(nameElements.get(0));
    }
 
+   protected String getResourceType()
+   {
+      return RESOURCE_TYPE;
+   }
+   
    private void checkPersContextElements(List<Element> persContextElements)
    {
       Element persContextElement = persContextElements.get(0);

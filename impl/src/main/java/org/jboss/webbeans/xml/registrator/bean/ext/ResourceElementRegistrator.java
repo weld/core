@@ -195,7 +195,7 @@ public class ResourceElementRegistrator extends NotSimpleBeanElementRegistrator
       }
    }
 
-   private Class<? extends Annotation> obtainDeploymentType(Element beanElement)
+   protected Class<? extends Annotation> obtainDeploymentType(Element beanElement)
    {
       Iterator<?> elIterator = beanElement.elementIterator();
       while (elIterator.hasNext())
@@ -209,7 +209,7 @@ public class ResourceElementRegistrator extends NotSimpleBeanElementRegistrator
       return null;
    }
 
-   private Set<Annotation> obtainBindings(Element beanElement)
+   protected Set<Annotation> obtainBindings(Element beanElement)
    {
       Set<Annotation> result = new HashSet<Annotation>();
 
@@ -238,7 +238,7 @@ public class ResourceElementRegistrator extends NotSimpleBeanElementRegistrator
       return result;
    }
 
-   private String obtainElementValue(Element elementParent, String elementName)
+   protected String obtainElementValue(Element elementParent, String elementName)
    {
       List<Element> elements = ParseXmlHelper.findElementsInEeNamespace(elementParent, elementName);
       if (elements.size() > 0)

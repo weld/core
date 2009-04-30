@@ -16,13 +16,24 @@
  */
 package org.jboss.webbeans.xml.registrator.bean.ext;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.Set;
+
+import javax.inject.DefinitionException;
+
 import org.dom4j.Element;
+import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.bean.ee.AbstractJavaEEResourceBean;
+import org.jboss.webbeans.bean.ee.jms.JmsQueueBean;
+import org.jboss.webbeans.bean.ee.jms.JmsTopicBean;
 import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.messaging.spi.JmsServices;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
 import org.jboss.webbeans.xml.checker.beanchildren.BeanChildrenChecker;
 
-public class JmsResourceElementRegistrator extends NotSimpleBeanElementRegistrator
+public class JmsResourceElementRegistrator extends ResourceElementRegistrator
 {
    public JmsResourceElementRegistrator(BeanChildrenChecker childrenChecker)
    {
@@ -36,5 +47,35 @@ public class JmsResourceElementRegistrator extends NotSimpleBeanElementRegistrat
                   XmlConstants.QUEUE.equalsIgnoreCase(beanElement.getName())))
          return true;
       return false;
+   }
+   
+   protected void checkElementDeclaration(Element beanElement, AnnotatedClass<?> beanClass)
+   {
+      List<Element> resourceElements = ParseXmlHelper.findElementsInEeNamespace(beanElement, XmlConstants.RESOURCE);
+      if (resourceElements.size() == 0)
+         throw new DefinitionException("Each JMS resource declaration must contain a child <Resource> element, " +
+               "but there is noone in <" + beanElement.getName() + ">");
+   }
+   
+   protected void register(Element beanElement, AnnotatedClass<?> beanClass)
+   {
+      Element resourceElement = ParseXmlHelper.findElementsInEeNamespace(beanElement, XmlConstants.RESOURCE).get(0);
+      
+      Class<? extends Annotation> deploymentType = obtainDeploymentType(beanElement);
+      Set<Annotation> bindings = obtainBindings(beanElement);
+      String jndiName = obtainElementValue(resourceElement, XmlConstants.JNDI_NAME);
+      String mappedName = obtainElementValue(resourceElement, XmlConstants.MAPPED_NAME);
+
+      RIBean<?> bean = null;
+      
+      if (XmlConstants.TOPIC.equalsIgnoreCase(beanElement.getName()))
+         bean = new JmsTopicBean(environment.getManager(), deploymentType, bindings, jndiName, mappedName);
+      else
+         bean = new JmsQueueBean(environment.getManager(), deploymentType, bindings, jndiName, mappedName);
+      
+      if (environment.getServices().contains(JmsServices.class))
+      {
+         environment.getResourceBeans().add((AbstractJavaEEResourceBean<?>) bean);
+      }
    }
 }

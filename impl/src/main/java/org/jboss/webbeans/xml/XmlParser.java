@@ -42,6 +42,7 @@ import org.dom4j.io.SAXReader;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.xml.checker.beanchildren.ext.JmsResourceBeanChildrenChecker;
 import org.jboss.webbeans.xml.checker.beanchildren.ext.NotSimpleBeanChildrenChecker;
 import org.jboss.webbeans.xml.checker.beanchildren.ext.ResourceBeanChildrenChecker;
 import org.jboss.webbeans.xml.checker.beanchildren.ext.SimpleBeanChildrenChecker;
@@ -332,7 +333,7 @@ public class XmlParser
 
    private void checkBeanElement(Element beanElement, AnnotatedClass<?> beanClass)
    {
-      beanElementRegistrators.add(new JmsResourceElementRegistrator(new NotSimpleBeanChildrenChecker(environment, packagesMap)));
+      beanElementRegistrators.add(new JmsResourceElementRegistrator(new JmsResourceBeanChildrenChecker(environment, packagesMap)));
       beanElementRegistrators.add(new ResourceElementRegistrator(new ResourceBeanChildrenChecker(environment, packagesMap)));
       beanElementRegistrators.add(new SessionBeanElementRegistrator(new NotSimpleBeanChildrenChecker(environment, packagesMap), environment.getEjbDescriptors()));
       beanElementRegistrators.add(new SimpleBeanElementRegistrator(new SimpleBeanChildrenChecker(environment, packagesMap), environment.getEjbDescriptors()));
