@@ -125,7 +125,7 @@ public class BeanValidator
             }
             if (Beans.isPassivatingBean(bean, manager) && !resolvedBean.isSerializable() && resolvedBean.getScopeType().equals(Dependent.class))
             {
-               throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scopes but has non-serializable dependency: " + resolvedBean);
+               throw new UnserializableDependencyException("The bean " + bean + " declares a passivating scope but has non-serializable dependency: " + resolvedBean);
             }
          }
          if (bean instanceof RIBean && !(bean instanceof NewSimpleBean) && !(bean instanceof NewEnterpriseBean))
