@@ -1,5 +1,5 @@
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:java:ee">
-	<xs:element name="Beans">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:java:org.jboss.webbeans.test.unit.xml.parser.schema">
+	<xs:element name="Order">
 		<xs:complexType>
 			<xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:any namespace="##any" processContents="skip"  />

@@ -1,20 +1,13 @@
 <Beans xmlns="urn:java:ee" 
 	xmlns:myapp="urn:java:org.jboss.webbeans.test.unit.xml.parser.schema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="urn:java:org.jboss.webbeans.test.unit.xml.parser.schema.notvalid http://mydomain.com/myapp/schema-1.2.xsd">
-	
-	<Deploy>
-		<Standard />
-		<Production />
-		<myapp:TestDeploymentType />
-	</Deploy>
-	
-	<myapp:Order>
+	xsi:schemaLocation="urn:java:org.jboss.webbeans.test.unit.xml.parser.schema.valid http://mydomain.com/myapp/schema-1.2.xsd">
+	<myapp:NotValidOrder>
 		<Array>
 			<String />
 		</Array>
 		<myapp:getVal />
 		<myapp:val />
 		<Integer />
-	</myapp:Order>
+	</myapp:NotValidOrder>
 </Beans>

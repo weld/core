@@ -17,6 +17,7 @@
 package org.jboss.webbeans.xml;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
@@ -28,15 +29,13 @@ import java.util.Scanner;
 import java.util.Set;
 
 import javax.inject.DefinitionException;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 
 import org.dom4j.Attribute;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
+import org.dom4j.io.SAXReader;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.resources.spi.ResourceLoadingException;
 import org.xml.sax.SAXException;
@@ -132,7 +131,7 @@ public class ParseXmlHelper
       throw new DefinitionException("There are multiple packages containing a Java type with the same name '" + className + "'");
    }
 
-   public static void checkRootAttributes(Element root, Map<String, Set<String>> packagesMap, XmlEnvironment environment, URL xmlUrl)
+   public static void checkRootAttributes(Element root, Map<String, Set<String>> packagesMap, XmlEnvironment environment, URL xmlUrl, Set<URL> schemas)
    {
       Iterator<?> rootAttrIterator = root.attributeIterator();
       while (rootAttrIterator.hasNext())
@@ -167,7 +166,7 @@ public class ParseXmlHelper
                if (schemaUrl == null)
                   throw new DefinitionException("Could not find '" + XmlConstants.SCHEMA_FILE_NAME + 
                         "' file according to specified URN '" + urn + "'");
-               validateXmlWithXsd(xmlUrl, schemaUrl);
+               schemas.add(schemaUrl);
             }
          }
 
@@ -175,7 +174,7 @@ public class ParseXmlHelper
       }
    }
 
-   public static void checkRootDeclaredNamespaces(Element root, Map<String, Set<String>> packagesMap, XmlEnvironment environment, URL xmlUrl)
+   public static void checkRootDeclaredNamespaces(Element root, Map<String, Set<String>> packagesMap, XmlEnvironment environment, URL xmlUrl, Set<URL> schemas)
    {
       Iterator<?> namespacesIterator = root.declaredNamespaces().iterator();
       while (namespacesIterator.hasNext())
@@ -190,7 +189,7 @@ public class ParseXmlHelper
 
             URL schemaUrl = environment.loadFileByUrn(uri, XmlConstants.SCHEMA_FILE_NAME);
             if (schemaUrl != null)
-               validateXmlWithXsd(xmlUrl, schemaUrl);
+               schemas.add(schemaUrl);
 
             URL namespaceFile = environment.loadFileByUrn(uri, XmlConstants.NAMESPACE_FILE_NAME);
             if (namespaceFile != null)
@@ -208,24 +207,34 @@ public class ParseXmlHelper
       }
    }
 
-   private static void validateXmlWithXsd(URL xmlUrl, URL schemaUrl)
+   public static void validateXmlWithXsd(URL xmlUrl, Set<URL> schemas)
    {
       try
-      {
-         final StreamSource stream = new StreamSource(xmlUrl.toExternalForm());
-         final SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
-         final Schema schema = schemaFactory.newSchema(schemaUrl);
-         final Validator validator = schema.newValidator();
-         validator.validate(stream);
+      {    
+         List<InputStream> schemaStreams = new ArrayList<InputStream>();
+         for (URL schema : schemas)
+         {
+            schemaStreams.add(schema.openStream());
+         }
+         
+         SAXReader reader = new SAXReader(true);         
+         reader.setProperty("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
+         reader.setProperty("http://java.sun.com/xml/jaxp/properties/schemaSource", schemaStreams.toArray());
+         reader.read(xmlUrl.openStream());
       }
       catch (SAXException e)
       {
-         String message = "SAXException while validate " + xmlUrl + " with " + schemaUrl;
+         String message = "SAXException while validate " + xmlUrl + " with " + schemas;
          throw new DefinitionException(message, e);
       }
       catch (IOException e)
       {
-         String message = "IOException while validate " + xmlUrl + " with " + schemaUrl;
+         String message = "IOException while validate " + xmlUrl + " with " + schemas;
+         throw new DefinitionException(message, e);
+      }
+      catch (DocumentException e)
+      {
+         String message = "DocumentException while validate " + xmlUrl + " with " + schemas;
          throw new DefinitionException(message, e);
       }
    }

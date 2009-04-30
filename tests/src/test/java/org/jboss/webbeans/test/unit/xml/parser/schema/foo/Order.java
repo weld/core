@@ -1,18 +1,7 @@
 package org.jboss.webbeans.test.unit.xml.parser.schema.foo;
 
-import javax.context.RequestScoped;
 import javax.inject.Initializer;
 
-import org.jboss.webbeans.test.unit.xml.beans.annotationtype.TestBindingType;
-import org.jboss.webbeans.test.unit.xml.beans.annotationtype.TestDeploymentType;
-import org.jboss.webbeans.test.unit.xml.beans.annotationtype.TestInterceptorBindingType;
-import org.jboss.webbeans.test.unit.xml.beans.annotationtype.TestStereotype;
-
-@RequestScoped
-@TestBindingType
-@TestInterceptorBindingType
-@TestStereotype
-@TestDeploymentType
 public class Order
 {
    private int val;

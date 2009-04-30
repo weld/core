@@ -20,7 +20,6 @@ import org.testng.annotations.Test;
    @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/schema/not-valid-beans.xml", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/schema/not-valid-beans.xml" ),
    @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/schema/namespace", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/schema/namespace" ),
    @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/schema/schema.xsd", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/schema/schema.xsd" ),
-   @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/schema/notvalid/schema.xsd", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/schema/notvalid/schema.xsd" ),
    @Resource(source="/org/jboss/webbeans/test/unit/xml/parser/schema/valid/schema.xsd", destination="WEB-INF/classes/org/jboss/webbeans/test/unit/xml/parser/schema/valid/schema.xsd" )
 })
 @Classes(
@@ -46,6 +45,6 @@ public class SchemaValidationTest extends AbstractWebBeansTest
       XmlParser parser = new XmlParser(parserEnv);
       parser.parse();
       
-      assert false;
+      assert false : "file '/org/jboss/webbeans/test/unit/xml/parser/schema/not-valid-beans.xml' matching '/org/jboss/webbeans/test/unit/xml/parser/schema/schema.xsd'";
    }
 }

@@ -22,6 +22,7 @@ import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -194,9 +195,16 @@ public class XmlParser
          {
             return null;
          }
+         
+         Set<URL> schemas = new HashSet<URL>();
+         
          SAXReader reader = new SAXReader();
          Document document = reader.read(xmlStream);
-         fullFillPackagesMap(document, url);
+         fullFillPackagesMap(document, url, schemas);
+         
+         if (schemas.size() > 0)
+            ParseXmlHelper.validateXmlWithXsd(url, schemas);
+         
          return document;
       }
       catch (IOException e)
@@ -344,10 +352,10 @@ public class XmlParser
          throw new DefinitionException("Can't determine type of bean element <" + beanElement.getName() + ">");
    }
 
-   private void fullFillPackagesMap(Document document, URL xmlUrl)
+   private void fullFillPackagesMap(Document document, URL xmlUrl, Set<URL> schemas)
    {
       Element root = document.getRootElement();
-      ParseXmlHelper.checkRootAttributes(root, packagesMap, environment, xmlUrl);
-      ParseXmlHelper.checkRootDeclaredNamespaces(root, packagesMap, environment, xmlUrl);
+      ParseXmlHelper.checkRootAttributes(root, packagesMap, environment, xmlUrl, schemas);
+      ParseXmlHelper.checkRootDeclaredNamespaces(root, packagesMap, environment, xmlUrl, schemas);
    }
 }
