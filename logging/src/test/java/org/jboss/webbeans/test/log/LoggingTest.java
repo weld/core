@@ -56,6 +56,18 @@ public class LoggingTest
       assert TestAppender.getLastEvent() != null : "There was no last event in Log4j";
       assert TestAppender.getLastEvent().getRenderedMessage().equals("Message with 3 parameters starting with param1 and including param2");
    }
+
+   @Test
+   public void testLogMessageFormattingWithNullValue()
+   {
+      Log log = Logging.getLog(LoggingTest.class);
+      assert log != null : "No Log object returned";
+
+      String value = null;
+      log.info("Verify we do not barf on a {0} value", value);
+      assert TestAppender.getLastEvent() != null : "There was no last event in Log4j";
+      assert TestAppender.getLastEvent().getRenderedMessage().equals("Verify we do not barf on a null value");
+   }
    
    @Test
    public void testArrayConversion()

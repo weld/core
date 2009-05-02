@@ -176,7 +176,7 @@ class LogImpl implements Log, Externalizable
       {
          for (int i = 0; i < params.length; i++)
          {
-            if (params[i].getClass().isArray())
+            if (params[i] != null && params[i].getClass().isArray())
             {
                params[i] = Arrays.asList((Object[]) params[i]);
             }
