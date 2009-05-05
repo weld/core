@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-04-19 20:36+0000\n"
+"POT-Creation-Date: 2009-05-05 20:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -84,7 +84,7 @@ msgstr ""
 #. Tag: title
 #: environments.xml:47
 #, no-c-format
-msgid "Glassfish"
+msgid "GlassFish"
 msgstr ""
 
 #. Tag: para
@@ -122,9 +122,9 @@ msgstr ""
 msgid ""
 "Web Beans should be used as a web application library in a servlet "
 "container. You should place <literal>webbeans-servlet.jar</literal> in "
-"<literal>WEB-INF/lib</literal>. <literal>webbeans-serv;et.jar</literal> is "
-"an \"uber-jar\" provided for your convenience. Instead, you could use its "
-"component jars:"
+"<literal>WEB-INF/lib</literal>. <literal>webbeans-servlet.jar</literal> is "
+"an \"uber-jar\" provided for your convenience. Alternatively, you could use "
+"its component jars:"
 msgstr ""
 
 #. Tag: literal
@@ -205,45 +205,46 @@ msgstr ""
 #, no-c-format
 msgid ""
 "Tomcat has a read-only JNDI, so Web Beans can't automatically bind the "
-"Manager. To bind the Manager into JNDI, you should add the following to your "
-"<literal>META-INF/context.xml</literal>:"
+"Manager. To bind the Manager into JNDI, you should populate <literal>META-"
+"INF/context.xml</literal> with the following contents:"
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:134
+#: environments.xml:135
 #, no-c-format
 msgid ""
-"<![CDATA[<Resource name=\"app/Manager\" \n"
-"          auth=\"Container\"\n"
-"          type=\"javax.inject.manager.Manager\"\n"
-"          factory=\"org.jboss.webbeans.resources.ManagerObjectFactory\"/>\n"
-"]]>"
+"<![CDATA[<Context>\n"
+"   <Resource name=\"app/Manager\" \n"
+"      auth=\"Container\"\n"
+"      type=\"javax.inject.manager.Manager\"\n"
+"      factory=\"org.jboss.webbeans.resources.ManagerObjectFactory\"/>\n"
+"</Context>]]>"
 msgstr ""
 
 #. Tag: para
-#: environments.xml:136
+#: environments.xml:137
 #, no-c-format
 msgid ""
-"and make it available to your deployment by adding this to <literal>web.xml</"
-"literal>:"
+"and make it available to your deployment by adding this to the bottom of "
+"<literal>web.xml</literal>:"
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:141
+#: environments.xml:142
 #, no-c-format
 msgid ""
 "<![CDATA[<resource-env-ref>\n"
-"  <resource-env-ref-name>\n"
-"    app/Manager\n"
-"  </resource-env-ref-name>\n"
-"  <resource-env-ref-type>\n"
-"    javax.inject.manager.Manager\n"
-"  </resource-env-ref-type>\n"
+"   <resource-env-ref-name>\n"
+"      app/Manager\n"
+"   </resource-env-ref-name>\n"
+"   <resource-env-ref-type>\n"
+"      javax.inject.manager.Manager\n"
+"   </resource-env-ref-type>\n"
 "</resource-env-ref>]]>"
 msgstr ""
 
 #. Tag: para
-#: environments.xml:143
+#: environments.xml:144
 #, no-c-format
 msgid ""
 "Tomcat only allows you to bind entries to <literal>java:comp/env</literal>, "
@@ -252,7 +253,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: environments.xml:149
+#: environments.xml:150
 #, no-c-format
 msgid ""
 "Web Beans also supports Servlet injection in Tomcat. To enable this, place "
@@ -262,21 +263,84 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:156
+#: environments.xml:157
 #, no-c-format
 msgid ""
 "<![CDATA[<Listener className=\"org.jboss.webbeans.environment.tomcat."
-"WebBeansLifecycleListener\" />]]>"
+"WebBeansLifecycleListener\"/>]]>"
 msgstr ""
 
 #. Tag: title
-#: environments.xml:163
+#: environments.xml:162
+#, no-c-format
+msgid "Jetty"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:164
+#, no-c-format
+msgid ""
+"Like Tomcat, Jetty has a read-only JNDI, so Web Beans can't automatically "
+"bind the Manager. To bind the Manager to JNDI, you should populate "
+"<literal>WEB-INF/jetty-env.xml</literal> with the following contents:"
+msgstr ""
+
+#. Tag: programlisting
+#: environments.xml:171
+#, no-c-format
+msgid ""
+"<![CDATA[<!DOCTYPE Configure PUBLIC \"-//Mort Bay Consulting//DTD Configure//"
+"EN\"\n"
+"   \"http://jetty.mortbay.org/configure.dtd\">\n"
+"<Configure id=\"webAppCtx\" class=\"org.mortbay.jetty.webapp.WebAppContext"
+"\">\n"
+"   <New id=\"appManager\" class=\"org.mortbay.jetty.plus.naming.Resource\">\n"
+"      <Arg><Ref id=\"webAppCtx\"/></Arg> \n"
+"      <Arg>app/Manager</Arg>\n"
+"      <Arg>\n"
+"         <New class=\"javax.naming.Reference\">\n"
+"            <Arg>javax.inject.manager.Manager</Arg> \n"
+"            <Arg>org.jboss.webbeans.resources.ManagerObjectFactory</Arg>\n"
+"            <Arg/>\n"
+"         </New>\n"
+"      </Arg>\n"
+"   </New>\n"
+"</Configure>]]>"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:173
+#, no-c-format
+msgid ""
+"Notice that Jetty doesn't not have built-in support for an <literal>javax."
+"naming.spi.ObjectFactory</literal> like Tomcat, so it's necessary to "
+"manually create the <literal>javax.naming.Reference</literal> to wrap around "
+"it."
+msgstr ""
+
+#. Tag: para
+#: environments.xml:180
+#, no-c-format
+msgid ""
+"Jetty only allows you to bind entries to <literal>java:comp/env</literal>, "
+"so the Manager will be available at <literal>java:comp/env/app/Manager</"
+"literal>"
+msgstr ""
+
+#. Tag: para
+#: environments.xml:186
+#, no-c-format
+msgid "Web Beans does not currently support Servlet injection in Jetty."
+msgstr ""
+
+#. Tag: title
+#: environments.xml:195
 #, no-c-format
 msgid "Java SE"
 msgstr ""
 
 #. Tag: para
-#: environments.xml:165
+#: environments.xml:197
 #, no-c-format
 msgid ""
 "Apart from improved integration of the Enterprise Java stack, Web Beans also "
@@ -288,7 +352,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: environments.xml:173
+#: environments.xml:205
 #, no-c-format
 msgid ""
 "When executing in the SE environment the following features of Web Beans are "
@@ -296,49 +360,55 @@ msgid ""
 msgstr ""
 
 #. Tag: literal
-#: environments.xml:179
+#: environments.xml:211
 #, no-c-format
 msgid "Simple Web Beans (POJOs)"
 msgstr ""
 
 #. Tag: literal
-#: environments.xml:184
+#: environments.xml:216
 #, no-c-format
 msgid "Typesafe Dependency Injection"
 msgstr ""
 
 #. Tag: literal
-#: environments.xml:189
+#: environments.xml:221
 #, no-c-format
 msgid "Application and Dependent Contexts"
 msgstr ""
 
 #. Tag: literal
-#: environments.xml:194
+#: environments.xml:226
 #, no-c-format
 msgid "Binding Types"
 msgstr ""
 
 #. Tag: literal
-#: environments.xml:199
+#: environments.xml:231
+#, no-c-format
+msgid "Deployment Types"
+msgstr ""
+
+#. Tag: literal
+#: environments.xml:236
 #, no-c-format
 msgid "Stereotypes"
 msgstr ""
 
 #. Tag: literal
-#: environments.xml:204
+#: environments.xml:241
 #, no-c-format
 msgid "Typesafe Event Model"
 msgstr ""
 
 #. Tag: title
-#: environments.xml:210
+#: environments.xml:247
 #, no-c-format
 msgid "Web Beans SE Module"
 msgstr ""
 
 #. Tag: para
-#: environments.xml:212
+#: environments.xml:249
 #, no-c-format
 msgid ""
 "To make life easy for developers Web Beans provides a special module with a "
@@ -351,7 +421,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:221
+#: environments.xml:258
 #, no-c-format
 msgid ""
 "<![CDATA[@Parameters List<String> params;\n"
@@ -360,13 +430,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: environments.xml:222
+#: environments.xml:259
 #, no-c-format
 msgid "Here's an example of a simple Web Beans SE application:"
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:226
+#: environments.xml:263
 #, no-c-format
 msgid ""
 "<![CDATA[@ApplicationScoped\n"
@@ -382,20 +452,20 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: environments.xml:228
+#: environments.xml:265
 #, no-c-format
 msgid ""
 "Web Beans SE applications are started by running the following main method."
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:230
+#: environments.xml:267
 #, no-c-format
 msgid "<![CDATA[java org.jboss.webbeans.environments.se.StartMain <args>]]>"
 msgstr ""
 
 #. Tag: para
-#: environments.xml:232
+#: environments.xml:269
 #, no-c-format
 msgid ""
 "If you need to do any custom initialization of the Web Beans manager, for "
@@ -405,7 +475,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: environments.xml:237
+#: environments.xml:274
 #, no-c-format
 msgid ""
 "<![CDATA[public class PerformSetup\n"
@@ -419,7 +489,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: environments.xml:240
+#: environments.xml:277
 #, no-c-format
 msgid ""
 "The command line parameters do not become available for injection until the "

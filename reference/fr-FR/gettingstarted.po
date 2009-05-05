@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-04-19 20:36+0000\n"
+"POT-Creation-Date: 2009-05-05 20:42+0000\n"
 "PO-Revision-Date: 2008-12-19 20:26+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -89,7 +89,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:49 gettingstarted.xml:170
+#: gettingstarted.xml:49 gettingstarted.xml:177
 #, no-c-format
 msgid ""
 "Next, download Web Beans from <ulink url=\"http://seamframework.org/Download"
@@ -97,7 +97,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:55 gettingstarted.xml:176
+#: gettingstarted.xml:55 gettingstarted.xml:183
 #, no-c-format
 msgid ""
 "<![CDATA[$ cd ~/\n"
@@ -127,8 +127,16 @@ msgid ""
 "<literal>ANT_HOME</literal> environment variable set. For example:"
 msgstr ""
 
+#. Tag: para
+#: gettingstarted.xml:72
+#, no-c-format
+msgid ""
+"JBoss 5.1.0 comes with Web Beans built in, so there is no need to update the "
+"server."
+msgstr ""
+
 #. Tag: programlisting
-#: gettingstarted.xml:71
+#: gettingstarted.xml:78
 #, no-c-format
 msgid ""
 "$ unzip apache-ant-1.7.0.zip\n"
@@ -136,7 +144,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:73
+#: gettingstarted.xml:80
 #, no-c-format
 msgid ""
 "Then, you can install the update. The update script will use Maven to "
@@ -144,7 +152,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:78
+#: gettingstarted.xml:85
 #, no-c-format
 msgid ""
 "$ cd webbeans-$VERSION/jboss-as\n"
@@ -152,13 +160,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:80
+#: gettingstarted.xml:87
 #, no-c-format
 msgid "Now, you're ready to deploy your first example!"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:85
+#: gettingstarted.xml:92
 #, no-c-format
 msgid ""
 "The build scripts for the examples offer a number of targets for JBoss AS, "
@@ -166,13 +174,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:91
+#: gettingstarted.xml:98
 #, no-c-format
 msgid "<literal>ant restart</literal> - deploy the example in exploded format"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:97
+#: gettingstarted.xml:104
 #, no-c-format
 msgid ""
 "<literal>ant explode</literal> - update an exploded example, without "
@@ -180,32 +188,32 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:103
+#: gettingstarted.xml:110
 #, no-c-format
 msgid ""
 "<literal>ant deploy</literal> - deploy the example in compressed jar format"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:108
+#: gettingstarted.xml:115
 #, no-c-format
 msgid "<literal>ant undeploy</literal> - remove the example from the server"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:113
+#: gettingstarted.xml:120
 #, no-c-format
 msgid "<literal>ant clean</literal> - clean the example"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:120
+#: gettingstarted.xml:127
 #, no-c-format
 msgid "To deploy the numberguess example:"
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:124
+#: gettingstarted.xml:131
 #, no-c-format
 msgid ""
 "$ cd examples/numberguess\n"
@@ -213,25 +221,25 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:126
+#: gettingstarted.xml:133
 #, no-c-format
 msgid "Start JBoss AS:"
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:130
+#: gettingstarted.xml:137
 #, no-c-format
 msgid "$ /Application/jboss-5.0.0.GA/bin/run.sh"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:133
+#: gettingstarted.xml:140
 #, no-c-format
 msgid "If you use Windows, use the <literal>run.bat</literal>script."
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:138 gettingstarted.xml:240
+#: gettingstarted.xml:145 gettingstarted.xml:247
 #, no-c-format
 msgid ""
 "Wait for the application to deploy, and enjoy hours of fun at <ulink url="
@@ -239,7 +247,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:143
+#: gettingstarted.xml:150
 #, no-c-format
 msgid ""
 "Web Beans includes a second simple example that will translate your text "
@@ -249,7 +257,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:150
+#: gettingstarted.xml:157
 #, no-c-format
 msgid ""
 "$ cd examples/translator\n"
@@ -257,7 +265,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:152
+#: gettingstarted.xml:159
 #, no-c-format
 msgid ""
 "Wait for the application to deploy, and visit <ulink url=\"http://"
@@ -265,13 +273,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: gettingstarted.xml:160
+#: gettingstarted.xml:167
 #, no-c-format
 msgid "Using Apache Tomcat 6.0"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:162
+#: gettingstarted.xml:169
 #, no-c-format
 msgid ""
 "You'll need to download Tomcat 6.0.18 or later from <ulink url=\"http://"
@@ -280,7 +288,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:168
+#: gettingstarted.xml:175
 #, no-c-format
 msgid ""
 "<![CDATA[$ cd /Applications\n"
@@ -288,7 +296,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:178
+#: gettingstarted.xml:185
 #, no-c-format
 msgid ""
 "Next, we need to tell Web Beans where Tomcat is located. Edit <literal>jboss-"
@@ -297,13 +305,13 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:184
+#: gettingstarted.xml:191
 #, no-c-format
 msgid "tomcat.home=/Applications/apache-tomcat-6.0.18"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:187
+#: gettingstarted.xml:194
 #, no-c-format
 msgid ""
 "The build scripts for the examples offer a number of targets for Tomcat, "
@@ -311,14 +319,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:193
+#: gettingstarted.xml:200
 #, no-c-format
 msgid ""
 "<literal>ant tomcat.restart</literal> - deploy the example in exploded format"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:199
+#: gettingstarted.xml:206
 #, no-c-format
 msgid ""
 "<literal>ant tomcat.explode</literal> - update an exploded example, without "
@@ -326,7 +334,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:205
+#: gettingstarted.xml:212
 #, no-c-format
 msgid ""
 "<literal>ant tomcat.deploy</literal> - deploy the example in compressed jar "
@@ -334,26 +342,26 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:210
+#: gettingstarted.xml:217
 #, no-c-format
 msgid ""
 "<literal>ant tomcat.undeploy</literal> - remove the example from the server"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:215
+#: gettingstarted.xml:222
 #, no-c-format
 msgid "<literal>ant tomcat.clean</literal> - clean the example"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:222
+#: gettingstarted.xml:229
 #, no-c-format
 msgid "To deploy the numberguess example for tomcat:"
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:226
+#: gettingstarted.xml:233
 #, no-c-format
 msgid ""
 "$ cd examples/tomcat\n"
@@ -361,43 +369,43 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:228
+#: gettingstarted.xml:235
 #, no-c-format
 msgid "Start Tomcat:"
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:232
+#: gettingstarted.xml:239
 #, no-c-format
 msgid "$ /Applications/apache-tomcat-6.0.18/bin/startup.sh"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:235
+#: gettingstarted.xml:242
 #, no-c-format
 msgid "If you use Windows, use the <literal>startup.bat</literal>script."
 msgstr ""
 
 #. Tag: title
-#: gettingstarted.xml:248
+#: gettingstarted.xml:255
 #, no-c-format
 msgid "Using GlassFish"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:250
+#: gettingstarted.xml:257
 #, no-c-format
 msgid "TODO"
 msgstr ""
 
 #. Tag: title
-#: gettingstarted.xml:254
+#: gettingstarted.xml:261
 #, no-c-format
 msgid "The numberguess example"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:256
+#: gettingstarted.xml:263
 #, no-c-format
 msgid ""
 "In the numberguess application you get given 10 attempts to guess a number "
@@ -406,7 +414,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:262
+#: gettingstarted.xml:269
 #, no-c-format
 msgid ""
 "The numberguess example is comprised of a number of Web Beans, configuration "
@@ -415,7 +423,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:268
+#: gettingstarted.xml:275
 #, no-c-format
 msgid ""
 "All the configuration files for this example are located in <literal>WEB-INF/"
@@ -425,7 +433,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:276
+#: gettingstarted.xml:283
 #, no-c-format
 msgid ""
 "<![CDATA[<?xml version='1.0' encoding='UTF-8'?>\n"
@@ -443,7 +451,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:278
+#: gettingstarted.xml:285
 #, no-c-format
 msgid ""
 "There is an empty <literal>web-beans.xml</literal> file, which marks this "
@@ -451,13 +459,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:283
+#: gettingstarted.xml:290
 #, no-c-format
 msgid "Finally there is <literal>web.xml</literal>:"
 msgstr ""
 
 #. Tag: section
-#: gettingstarted.xml:285
+#: gettingstarted.xml:292
 #, no-c-format
 msgid ""
 "<programlistingco> <areaspec> <area id=\"faces.servlet\" coords=\"12\"/> "
@@ -579,7 +587,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:387
+#: gettingstarted.xml:394
 #, no-c-format
 msgid ""
 "The example exists of 4 classes, the first two of which are binding types. "
@@ -588,7 +596,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:393
+#: gettingstarted.xml:400
 #, no-c-format
 msgid ""
 "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
@@ -599,7 +607,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:395
+#: gettingstarted.xml:402
 #, no-c-format
 msgid ""
 "There is also the <literal>@MaxNumber</literal> binding type, used for "
@@ -607,7 +615,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:400
+#: gettingstarted.xml:407
 #, no-c-format
 msgid ""
 "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
@@ -619,7 +627,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:402
+#: gettingstarted.xml:409
 #, no-c-format
 msgid ""
 "The <literal>Generator</literal> class is responsible for creating the "
@@ -628,7 +636,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:408
+#: gettingstarted.xml:415
 #, no-c-format
 msgid ""
 "<![CDATA[@ApplicationScoped\n"
@@ -657,7 +665,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:410
+#: gettingstarted.xml:417
 #, no-c-format
 msgid ""
 "You'll notice that the <literal>Generator</literal> is application scoped; "
@@ -665,7 +673,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:415
+#: gettingstarted.xml:422
 #, no-c-format
 msgid ""
 "The final Web Bean in the application is the session scoped <literal>Game</"
@@ -673,7 +681,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:420
+#: gettingstarted.xml:427
 #, no-c-format
 msgid ""
 "You'll note that we've used the <literal>@Named</literal> annotation, so "
@@ -684,7 +692,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:428
+#: gettingstarted.xml:435
 #, no-c-format
 msgid ""
 "<![CDATA[package org.jboss.webbeans.examples.numberguess;\n"
@@ -786,13 +794,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: gettingstarted.xml:431
+#: gettingstarted.xml:438
 #, no-c-format
 msgid "The numberguess example in Tomcat"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:433
+#: gettingstarted.xml:440
 #, no-c-format
 msgid ""
 "The numberguess for Tomcat differs in a couple of ways. Firstly, Web Beans "
@@ -802,7 +810,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:442
+#: gettingstarted.xml:449
 #, no-c-format
 msgid ""
 "Of course, you must also include JSF and EL, as well common annotations "
@@ -810,7 +818,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:449
+#: gettingstarted.xml:456
 #, no-c-format
 msgid ""
 "Secondly, we need to explicitly specify the servlet listener (used to boot "
@@ -819,7 +827,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:455
+#: gettingstarted.xml:462
 #, no-c-format
 msgid ""
 "<![CDATA[<listener>\n"
@@ -829,13 +837,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: gettingstarted.xml:460
+#: gettingstarted.xml:467
 #, no-c-format
 msgid "The numberguess example for Apache Wicket"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:461
+#: gettingstarted.xml:468
 #, no-c-format
 msgid ""
 "Whilst JSR-299 specifies integration with Java ServerFaces, Web Beans allows "
@@ -845,7 +853,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:470
+#: gettingstarted.xml:477
 #, no-c-format
 msgid ""
 "You may want to review the Wicket documentation at <ulink url=\"http://"
@@ -853,7 +861,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:476
+#: gettingstarted.xml:483
 #, no-c-format
 msgid ""
 "Like the previous example, the Wicket WebBeans examples make use of the "
@@ -866,7 +874,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:487
+#: gettingstarted.xml:494
 #, no-c-format
 msgid ""
 "These examples make use of the Eclipse IDE; instructions are also given to "
@@ -874,43 +882,45 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: gettingstarted.xml:493
+#: gettingstarted.xml:500
 #, no-c-format
 msgid "Creating the Eclipse project"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:495
+#: gettingstarted.xml:502
 #, no-c-format
 msgid "To generate an Eclipse project from the example:"
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:499
+#: gettingstarted.xml:506
 #, no-c-format
 msgid ""
 "<![CDATA[cd examples/wicket/numberguess\n"
-"mvn eclipse:eclipse]]>"
+"mvn -Pjetty eclipse:eclipse]]>"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:501
+#: gettingstarted.xml:508
 #, no-c-format
 msgid ""
 "Then, from eclipse, choose <emphasis>File -> Import -> General -> Existing "
 "Projects into Workspace</emphasis>, select the root directory of the "
-"numberguess example, and click finish. This will create a project in your "
-"workspace called <literal>webbeans-wicket-numberguess</literal>"
+"numberguess example, and click finish. Note that if you do not intend to run "
+"the example with jetty from within eclipse, omit the \"-Pjetty.\" This will "
+"create a project in your workspace called <literal>webbeans-wicket-"
+"numberguess</literal>"
 msgstr ""
 
 #. Tag: title
-#: gettingstarted.xml:516
+#: gettingstarted.xml:524
 #, no-c-format
 msgid "Running the example from Eclipse"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:518
+#: gettingstarted.xml:526
 #, no-c-format
 msgid ""
 "This project follows the <literal>wicket-quickstart</literal> approach of "
@@ -924,13 +934,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: gettingstarted.xml:533
+#: gettingstarted.xml:541
 #, no-c-format
 msgid "Running the example from the command line in JBoss AS or Tomcat"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:535
+#: gettingstarted.xml:543
 #, no-c-format
 msgid ""
 "This example can also be deployed from the command line in a (similar to the "
@@ -943,13 +953,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: gettingstarted.xml:549
+#: gettingstarted.xml:557
 #, no-c-format
 msgid "Understanding the code"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:551
+#: gettingstarted.xml:559
 #, no-c-format
 msgid ""
 "JSF uses Unified EL expressions to bind view layer components in JSP or "
@@ -963,7 +973,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:563
+#: gettingstarted.xml:571
 #, no-c-format
 msgid ""
 "The code in the wicket numberguess example is very similar to the JSF-based "
@@ -971,13 +981,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:568
+#: gettingstarted.xml:576
 #, no-c-format
 msgid "Differences are:"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:573
+#: gettingstarted.xml:581
 #, no-c-format
 msgid ""
 "Each wicket application must have a <literal>WebApplication</literal> "
@@ -986,7 +996,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:579
+#: gettingstarted.xml:587
 #, no-c-format
 msgid ""
 "<![CDATA[public class SampleApplication extends WebBeansApplication {\n"
@@ -998,7 +1008,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:580
+#: gettingstarted.xml:588
 #, no-c-format
 msgid ""
 "This class specifies which page wicket should treat as our home page, in our "
@@ -1006,7 +1016,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:586
+#: gettingstarted.xml:594
 #, no-c-format
 msgid ""
 "In <literal>HomePage</literal> we see typical wicket code to set up page "
@@ -1015,13 +1025,13 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:592
+#: gettingstarted.xml:600
 #, no-c-format
 msgid "<![CDATA[ @Current Game game;]]>"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:594
+#: gettingstarted.xml:602
 #, no-c-format
 msgid ""
 "The <literal>Game</literal> bean is can then be used, for example, by the "
@@ -1029,7 +1039,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:599
+#: gettingstarted.xml:607
 #, no-c-format
 msgid ""
 "<![CDATA[final Component guessButton = new AjaxButton(\"GuessButton\") { \n"
@@ -1038,7 +1048,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:602
+#: gettingstarted.xml:610
 #, no-c-format
 msgid ""
 "All injections may be serialized; actual storage of the bean is managed by "
@@ -1047,7 +1057,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:608
+#: gettingstarted.xml:616
 #, no-c-format
 msgid ""
 "Wicket components allow injection, but they <emphasis>cannot</emphasis> use "
@@ -1056,7 +1066,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:618
+#: gettingstarted.xml:626
 #, no-c-format
 msgid ""
 "The example uses AJAX for processing of button events, and dynamically hides "
@@ -1065,7 +1075,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:626
+#: gettingstarted.xml:634
 #, no-c-format
 msgid ""
 "In order to activate wicket for this webapp, the Wicket filter is added to "
@@ -1073,7 +1083,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:631
+#: gettingstarted.xml:639
 #, no-c-format
 msgid ""
 "<![CDATA[<filter>\n"
@@ -1099,7 +1109,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:632
+#: gettingstarted.xml:640
 #, no-c-format
 msgid ""
 "Note that the servlet listener is also added, as in the Tomcat example, in "
@@ -1108,13 +1118,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: gettingstarted.xml:645
+#: gettingstarted.xml:653
 #, no-c-format
 msgid "The numberguess example for Java SE with Swing"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:647
+#: gettingstarted.xml:655
 #, no-c-format
 msgid ""
 "This example can be found in the <literal>examples/se/numberguess</literal> "
@@ -1122,13 +1132,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:654
+#: gettingstarted.xml:662
 #, no-c-format
 msgid "To run this example:"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:660
+#: gettingstarted.xml:668
 #, no-c-format
 msgid ""
 "Open a command line/terminal window in the <literal>examples/se/numberguess</"
@@ -1136,13 +1146,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:666
+#: gettingstarted.xml:674
 #, no-c-format
 msgid "Ensure that Maven 2 is installed and in your PATH"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:671
+#: gettingstarted.xml:679
 #, no-c-format
 msgid ""
 "Ensure that the <literal>JAVA_HOME</literal> environment variable is "
@@ -1150,19 +1160,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:677
+#: gettingstarted.xml:685
 #, no-c-format
 msgid "execute the following command"
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:680
+#: gettingstarted.xml:688
 #, no-c-format
 msgid "mvn -Drun"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:686
+#: gettingstarted.xml:694
 #, no-c-format
 msgid ""
 "There is an empty <literal>beans.xml</literal> file in the root package "
@@ -1171,7 +1181,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:692
+#: gettingstarted.xml:700
 #, no-c-format
 msgid ""
 "The game's main logic is located in <literal>Game.java</literal>. Here is "
@@ -1180,7 +1190,7 @@ msgid ""
 msgstr ""
 
 #. Tag: section
-#: gettingstarted.xml:696
+#: gettingstarted.xml:704
 #, no-c-format
 msgid ""
 "<programlistingco> <areaspec> <area id=\"scope\" coords=\"1\"/> <area id="
@@ -1446,13 +1456,13 @@ msgid ""
 msgstr ""
 
 #. Tag: title
-#: gettingstarted.xml:904
+#: gettingstarted.xml:912
 #, no-c-format
 msgid "The translator example"
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:906
+#: gettingstarted.xml:914
 #, no-c-format
 msgid ""
 "The translator example will take any sentences you enter, and translate them "
@@ -1460,7 +1470,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:911
+#: gettingstarted.xml:919
 #, no-c-format
 msgid ""
 "The translator example is built as an ear, and contains EJBs. As a result, "
@@ -1468,7 +1478,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:917
+#: gettingstarted.xml:925
 #, no-c-format
 msgid ""
 "EJB 3.1 and Jave EE 6 allow you to package EJBs in a war, which will make "
@@ -1476,7 +1486,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:923
+#: gettingstarted.xml:931
 #, no-c-format
 msgid ""
 "First, let's take a look at the ear aggregator, which is located in "
@@ -1485,7 +1495,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:929
+#: gettingstarted.xml:937
 #, no-c-format
 msgid ""
 "<![CDATA[<plugin>\n"
@@ -1504,7 +1514,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:931
+#: gettingstarted.xml:939
 #, no-c-format
 msgid ""
 "Here we set the context path, which gives us a nice url (<ulink url=\"http://"
@@ -1513,7 +1523,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:937
+#: gettingstarted.xml:945
 #, no-c-format
 msgid ""
 "If you aren't using Maven to generate these files, you would need "
@@ -1521,7 +1531,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:942
+#: gettingstarted.xml:950
 #, no-c-format
 msgid ""
 "<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1547,7 +1557,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:945
+#: gettingstarted.xml:953
 #, no-c-format
 msgid ""
 "Next, lets look at the war. Just as in the numberguess example, we have a "
@@ -1556,7 +1566,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:952
+#: gettingstarted.xml:960
 #, no-c-format
 msgid ""
 "More intersting is the facelet used to translate text. Just as in the "
@@ -1565,7 +1575,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:958
+#: gettingstarted.xml:966
 #, no-c-format
 msgid ""
 "<![CDATA[<h:form id=\"NumberGuessMain\">\n"
@@ -1598,7 +1608,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:960
+#: gettingstarted.xml:968
 #, no-c-format
 msgid ""
 "The user can enter some text in the lefthand textarea, and hit the translate "
@@ -1606,7 +1616,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:965
+#: gettingstarted.xml:973
 #, no-c-format
 msgid ""
 "Finally, let's look at the ejb module, <literal>webbeans-translator-ejb</"
@@ -1616,7 +1626,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:973
+#: gettingstarted.xml:981
 #, no-c-format
 msgid ""
 "We've saved the most interesting bit to last, the code! The project has two "
@@ -1628,7 +1638,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:983
+#: gettingstarted.xml:991
 #, no-c-format
 msgid ""
 "Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal> "
@@ -1637,7 +1647,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:989
+#: gettingstarted.xml:997
 #, no-c-format
 msgid ""
 "<![CDATA[public class TextTranslator { \n"
@@ -1653,7 +1663,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:991
+#: gettingstarted.xml:999
 #, no-c-format
 msgid ""
 "<literal>TextTranslator</literal> is a stateless bean (with a local business "
@@ -1662,7 +1672,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:997
+#: gettingstarted.xml:1005
 #, no-c-format
 msgid ""
 "Finally, there is UI orientated controller, that collects the text from the "
@@ -1671,7 +1681,7 @@ msgid ""
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:1003
+#: gettingstarted.xml:1011
 #, no-c-format
 msgid ""
 "<![CDATA[@Stateful\n"
@@ -1684,19 +1694,19 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:1005
+#: gettingstarted.xml:1013
 #, no-c-format
 msgid "The bean also has getters and setters for all the fields on the page."
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:1009
+#: gettingstarted.xml:1017
 #, no-c-format
 msgid "As this is a stateful session bean, we have to have a remove method:"
 msgstr ""
 
 #. Tag: programlisting
-#: gettingstarted.xml:1013
+#: gettingstarted.xml:1021
 #, no-c-format
 msgid ""
 "<![CDATA[   @Remove\n"
@@ -1707,7 +1717,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:1015
+#: gettingstarted.xml:1023
 #, no-c-format
 msgid ""
 "The Web Beans manager will call the remove method for you when the bean is "
@@ -1715,7 +1725,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:1021
+#: gettingstarted.xml:1029
 #, no-c-format
 msgid ""
 "That concludes our short tour of the Web Beans examples. For more on Web "
@@ -1725,7 +1735,7 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#: gettingstarted.xml:1027
+#: gettingstarted.xml:1035
 #, no-c-format
 msgid ""
 "We need help in all areas - bug fixing, writing new features, writing "
