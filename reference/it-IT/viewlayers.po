@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-04-19 20:36+0000\n"
-"PO-Revision-Date: 2009-04-20 22:15+0100\n"
+"PO-Revision-Date: 2009-05-05 22:40+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -107,7 +107,7 @@ msgstr ""
 #: viewlayers.xml:70
 #, no-c-format
 msgid "Starting and stopping conversations in Wicket"
-msgstr ""
+msgstr "Avviare ed interrompere le conversazioni in Wicket"
 
 #. Tag: para
 #: viewlayers.xml:71
@@ -119,7 +119,7 @@ msgstr ""
 #: viewlayers.xml:85
 #, no-c-format
 msgid "Long running conversation propagation in Wicket"
-msgstr ""
+msgstr "Propagazione di conversazioni long running in Wicket"
 
 #. Tag: para
 #: viewlayers.xml:86
