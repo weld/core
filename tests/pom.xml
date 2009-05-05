@@ -39,9 +39,14 @@
          <artifactId>el-api</artifactId>
       </dependency>
       
-       <dependency>
+      <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-ri</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.servlet</groupId>
+         <artifactId>servlet-api</artifactId>
       </dependency>
       
       <dependency>
