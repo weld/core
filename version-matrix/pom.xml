@@ -504,6 +504,11 @@
                <version>6.1.16</version>
             </plugin>
             <plugin>
+               <groupId>org.twdata.maven</groupId>
+               <artifactId>maven-cli-plugin</artifactId>
+               <version>0.6.3.CR2</version>
+            </plugin>
+            <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-enforcer-plugin</artifactId>
                <version>1.0-alpha-4</version>
