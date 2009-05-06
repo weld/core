@@ -11,7 +11,7 @@ the build.
 
  mvn
 
-Now you are ready to deploy.
+Now you're ready to deploy.
 
 == Deploying with an embedded servlet container
 
