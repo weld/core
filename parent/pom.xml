@@ -9,7 +9,7 @@
       <groupId>org.jboss.webbeans</groupId>
       <artifactId>webbeans-version-matrix</artifactId>
       <version>1.0.0-SNAPSHOT</version>
-  </parent>
+   </parent>
 
    <name>Web Beans, the reference implmentation of JSR-299</name>
    <url>http://www.seamframework.org/WebBeans</url>
