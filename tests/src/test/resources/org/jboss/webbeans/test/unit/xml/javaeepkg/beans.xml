@@ -5,7 +5,7 @@
 		<RequestScoped />
 		<Integer />
 		<Date />
-		<CommonDataSource />
+		<DataSource />
 		<InvocationContext />
 		<Event />
 		<ScheduleExpression />
@@ -31,7 +31,7 @@
    javax.context.RequestScoped;
    java.lang.Integer;
    java.util.Date;
-   javax.sql.CommonDataSource;
+   javax.sql.DataSource;
    javax.interceptor.InvocationContext;
    javax.event.Event;
    javax.ejb.ScheduleExpression;
