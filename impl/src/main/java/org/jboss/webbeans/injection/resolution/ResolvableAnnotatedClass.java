@@ -111,6 +111,7 @@ public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<
       return rawType;
    }
 
+   @Override
    public Type[] getActualTypeArguments()
    {
       return actualTypeArguments;
@@ -121,6 +122,7 @@ public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public Class<T> getRawType()
    {
       return rawType;
@@ -147,7 +149,8 @@ public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<
       throw new UnsupportedOperationException();
    }
    
-   public Set<? extends Type> getFlattenedTypeHierarchy()
+   @Override
+   public Set<Type> getFlattenedTypeHierarchy()
    {
       throw new UnsupportedOperationException();
    }

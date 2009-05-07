@@ -60,7 +60,7 @@ public abstract class Bean<T> implements Contextual<T>
     * 
     * @return the bean types
     */
-   public abstract Set<? extends Type> getTypes();
+   public abstract Set<Type> getTypes();
 
    /**
     * The bindings of a bean
@@ -109,6 +109,6 @@ public abstract class Bean<T> implements Contextual<T>
     * 
     * @return the injection points of a bean
     */
-   public abstract Set<? extends InjectionPoint> getInjectionPoints();
+   public abstract Set<InjectionPoint> getInjectionPoints();
 
 }

@@ -63,7 +63,7 @@ public class NonContextualInjector
          }
 
          @Override
-         public Set<? extends InjectionPoint> getInjectionPoints()
+         public Set<InjectionPoint> getInjectionPoints()
          {
             return Collections.emptySet();
          }
@@ -81,7 +81,7 @@ public class NonContextualInjector
          }
 
          @Override
-         public Set<? extends Type> getTypes()
+         public Set<Type> getTypes()
          {
             return Collections.emptySet();
          }

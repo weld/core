@@ -36,7 +36,7 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
 {
 
    private static final Class<Event<?>> TYPE = new TypeLiteral<Event<?>>() {}.getRawType();
-   private static final Set<? extends Type> DEFAULT_TYPES = new HashSet<Type>(Arrays.asList(TYPE, Object.class));
+   private static final Set<Type> DEFAULT_TYPES = new HashSet<Type>(Arrays.asList(TYPE, Object.class));
    private static final Fires FIRES = new FiresLiteral();
    private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>(Arrays.asList(FIRES));
    public static final AnnotatedItemTransformer TRANSFORMER = new FacadeBeanAnnotatedItemTransformer(Event.class, FIRES);
@@ -60,7 +60,7 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
    }
 
    @Override
-   public Set<? extends Type> getTypes()
+   public Set<Type> getTypes()
    {
       return DEFAULT_TYPES;
    }

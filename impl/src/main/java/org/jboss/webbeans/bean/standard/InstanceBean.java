@@ -35,7 +35,7 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
 {
 
    private static final Class<Instance<?>> TYPE = new TypeLiteral<Instance<?>>() {}.getRawType();
-   private static final Set<? extends Type> DEFAULT_TYPES = new HashSet<Type>(Arrays.asList(TYPE, Object.class));
+   private static final Set<Type> DEFAULT_TYPES = new HashSet<Type>(Arrays.asList(TYPE, Object.class));
    private static final Obtains OBTAINS = new ObtainsLiteral();
    private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>(Arrays.asList(OBTAINS));
    private static final Set<Class<? extends Annotation>> FILTERED_ANNOTATION_TYPES = new HashSet<Class<? extends Annotation>>(Arrays.asList(Obtains.class));
@@ -59,7 +59,7 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    }
 
    @Override
-   public Set<? extends Type> getTypes()
+   public Set<Type> getTypes()
    {
       return DEFAULT_TYPES;
    }

@@ -58,7 +58,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    private final Class<T> rawType;
    private final Type[] actualTypeArguments; 
    private final Type type;
-   private final Set<? extends Type> flattenedTypes;
+   private final Set<Type> flattenedTypes;
    private final boolean proxyable;
    private final boolean _parameterizedType;
 
@@ -297,7 +297,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return actualTypeArguments;
    }
    
-   public Set<? extends Type> getFlattenedTypeHierarchy()
+   public Set<Type> getFlattenedTypeHierarchy()
    {
       return flattenedTypes;
    }

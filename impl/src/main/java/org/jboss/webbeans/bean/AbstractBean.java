@@ -105,7 +105,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    // The type
    protected Class<T> type;
    // The API types
-   protected Set<? extends Type> types;
+   protected Set<Type> types;
    // The injection points
    protected Set<AnnotatedInjectionPoint<?, ?>> injectionPoints;
    // If the type a primitive?
@@ -262,7 +262,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    private boolean checkInjectionPointsAreSerializable()
    {
       boolean passivating = manager.getServices().get(MetaDataCache.class).getScopeModel(this.getScopeType()).isPassivating();
-      for (AnnotatedInjectionPoint<?, ?> injectionPoint : getInjectionPoints())
+      for (AnnotatedInjectionPoint<?, ?> injectionPoint : getAnnotatedInjectionPoints())
       {
          Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
          Bean<?> resolvedBean = manager.resolveByType(injectionPoint.getRawType(), bindings).iterator().next();
@@ -402,7 +402,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    }
 
    @Override
-   public Set<AnnotatedInjectionPoint<?, ?>> getInjectionPoints()
+   public Set<AnnotatedInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
    {
       return injectionPoints;
    }
@@ -462,7 +462,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * @see javax.inject.manager.Bean#getTypes()
     */
    @Override
-   public Set<? extends Type> getTypes()
+   public Set<Type> getTypes()
    {
       return types;
    }

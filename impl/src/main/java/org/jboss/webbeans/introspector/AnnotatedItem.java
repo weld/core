@@ -86,6 +86,7 @@ public interface AnnotatedItem<T, S>
     *          if there are no matches.
     * @deprecated This reflection type should not know about JSR-299 binding types
     */
+   @Deprecated
    public Set<Annotation> getBindings();
 
    /**
@@ -95,6 +96,7 @@ public interface AnnotatedItem<T, S>
     *          array if there are no matches.
     * @deprecated This reflection type should not know about JSR-299 binding types
     */
+   @Deprecated
    public Annotation[] getBindingsAsArray();
 
    /**
@@ -105,7 +107,7 @@ public interface AnnotatedItem<T, S>
     */
    public <A extends Annotation> A getAnnotation(Class<A> annotationType);
    
-   public Set<? extends Type> getFlattenedTypeHierarchy();
+   public Set<Type> getFlattenedTypeHierarchy();
 
    /**
     * Indicates if an annotation type specified is present

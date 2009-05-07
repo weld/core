@@ -66,7 +66,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    private DisposalMethodBean<?> specializedBean;
    protected MethodInjectionPoint<T> disposalMethodInjectionPoint;
    protected Set<AnnotatedInjectionPoint<?, ?>> disposalInjectionPoints;
-   private String id;
+   private final String id;
 
    
    @SuppressWarnings("unchecked")
@@ -75,6 +75,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       this.type = (Class<T>) disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getRawType();
    }
 
+   @Override
    public AnnotatedMethod<T> getAnnotatedItem()
    {
       return disposalMethodInjectionPoint;
@@ -132,7 +133,8 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       super.types = types;
    }
 
-   public Set<AnnotatedInjectionPoint<?, ?>> getInjectionPoints()
+   @Override
+   public Set<AnnotatedInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
    {
       return injectionPoints;
    }
@@ -150,7 +152,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    }
 
    @Override
-   public Set<? extends Type> getTypes()
+   public Set<Type> getTypes()
    {
       return types;
    }

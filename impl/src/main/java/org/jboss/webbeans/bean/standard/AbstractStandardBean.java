@@ -84,7 +84,7 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
    }
    
    @Override
-   public Set<AnnotatedInjectionPoint<?, ?>> getInjectionPoints()
+   public Set<AnnotatedInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
    {
       return Collections.emptySet();
    }

@@ -146,7 +146,7 @@ public abstract class AbstractJavaEEResourceBean<T> extends RIBean<T>
    }
    
    @Override
-   public Set<? extends Type> getTypes()
+   public Set<Type> getTypes()
    {
       return Collections.unmodifiableSet(types);
    }
@@ -170,7 +170,7 @@ public abstract class AbstractJavaEEResourceBean<T> extends RIBean<T>
    }
    
    @Override
-   public Set<AnnotatedInjectionPoint<?, ?>> getInjectionPoints()
+   public Set<AnnotatedInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
    {
       return Collections.emptySet();
    }

@@ -40,7 +40,7 @@ public class FacadeBeanAnnotatedItemTransformer implements AnnotatedItemTransfor
    private final Class<?> clazz;
    private final Annotation annotation;
    private final Set<Annotation> annotations;
-   private final Set<? extends Type> flattenedTypes;
+   private final Set<Type> flattenedTypes;
    
    public FacadeBeanAnnotatedItemTransformer(Class<?> clazz, Annotation annotation)
    {
@@ -87,7 +87,7 @@ public class FacadeBeanAnnotatedItemTransformer implements AnnotatedItemTransfor
                }
                
                @Override
-               public Set<? extends Type> getFlattenedTypeHierarchy()
+               public Set<Type> getFlattenedTypeHierarchy()
                {
                   return flattenedTypes;
                }

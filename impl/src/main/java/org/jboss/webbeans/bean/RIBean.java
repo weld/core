@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.context.Dependent;
 import javax.inject.manager.Bean;
+import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
@@ -74,7 +75,13 @@ public abstract class RIBean<T> extends Bean<T>
 
    public abstract boolean isPrimitive();
 
-   public abstract Set<AnnotatedInjectionPoint<?, ?>> getInjectionPoints();
+   public abstract Set<AnnotatedInjectionPoint<?, ?>> getAnnotatedInjectionPoints();
+   
+   @Override
+   public Set<InjectionPoint> getInjectionPoints()
+   {
+      return (Set) getAnnotatedInjectionPoints();
+   }
 
    public abstract RIBean<?> getSpecializedBean();
    

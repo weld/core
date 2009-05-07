@@ -187,7 +187,7 @@ public class BeanDeployer
       
       addBean(bean);
       
-      manager.getResolver().addInjectionPoints(bean.getInjectionPoints());
+      manager.getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
       
       createProducerMethods(bean, annotatedClass);
       createProducerFields(bean, annotatedClass);
@@ -216,7 +216,7 @@ public class BeanDeployer
       {
          DisposalMethodBean<?> disposalBean = DisposalMethodBean.of(manager, method, declaringBean);
          environment.addAllDisposalBean(disposalBean);
-         manager.getResolver().addInjectionPoints(disposalBean.getInjectionPoints());
+         manager.getResolver().addInjectionPoints(disposalBean.getAnnotatedInjectionPoints());
          manager.addBean(disposalBean);
       }
    }
@@ -225,7 +225,7 @@ public class BeanDeployer
    {
       ProducerMethodBean<T> bean = ProducerMethodBean.of(annotatedMethod, declaringBean, manager);
       addBean(bean);
-      manager.getResolver().addInjectionPoints(bean.getInjectionPoints());
+      manager.getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
    }
    
    private void createRealizedProducerMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> realizingClass)

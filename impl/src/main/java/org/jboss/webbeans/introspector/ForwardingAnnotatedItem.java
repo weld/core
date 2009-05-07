@@ -218,7 +218,7 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
       return delegate().isDeclaredAnnotationPresent(annotationType);
    }
    
-   public Set<? extends Type> getFlattenedTypeHierarchy()
+   public Set<Type> getFlattenedTypeHierarchy()
    {
       return delegate().getFlattenedTypeHierarchy();
    }
