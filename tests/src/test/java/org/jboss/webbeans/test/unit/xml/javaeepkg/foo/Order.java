@@ -11,7 +11,7 @@ import javax.inject.Produces;
 import javax.interceptor.InvocationContext;
 import javax.jms.Connection;
 import javax.persistence.EntityManager;
-import javax.sql.CommonDataSource;
+import javax.sql.DataSource;
 import javax.xml.ws.Binding;
 
 @Named("orderBean")
@@ -28,7 +28,7 @@ public class Order
       this(0, new Date(), null, null, null, null, null, null, null);
    }
    
-   public Order(Integer integer, Date date, CommonDataSource source, InvocationContext invocation, Event e, ScheduleExpression schedule, 
+   public Order(Integer integer, Date date, DataSource source, InvocationContext invocation, Event e, ScheduleExpression schedule, 
          EntityManager entityManager, Binding binding, Connection conn)
    {
       this.integer = integer;

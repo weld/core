@@ -2,6 +2,7 @@ package org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.context.Context;
@@ -61,7 +62,10 @@ public class EnterpriseBeanLifecycleTest extends AbstractWebBeansTest
       assert anotherStadtInstance != stadtInstance : "create() should not return same bean as before";
       
       // Verify that the instance returned is a proxy by checking for all local interfaces
-      Set<Class<?>> interfaces = new HashSet<Class<?>>(Arrays.asList(stadtInstance.getClass().getInterfaces()));
+      Class<?>[] classes = stadtInstance.getClass().getInterfaces();
+      List<Class<?>> classesList = Arrays.asList(classes);
+      Set<Class<?>> interfaces = new HashSet<Class<?>>(classesList);
+      
       assert interfaces.contains(KleinStadt.class);
       assert interfaces.contains(SchoeneStadt.class);
       //frankfurt.dispose();
