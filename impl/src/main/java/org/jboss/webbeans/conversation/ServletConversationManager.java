@@ -23,37 +23,30 @@
 package org.jboss.webbeans.conversation;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
 
-import javax.context.Conversation;
 import javax.context.SessionScoped;
-import javax.inject.Current;
 import javax.inject.Produces;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.WebBean;
-import org.jboss.webbeans.context.ConversationContext;
+import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.servlet.ConversationBeanStore;
 import org.jboss.webbeans.servlet.HttpSessionManager;
 
 /**
- * The default conversation manager
+ * The HTTP session based conversation manager
  * 
  * @author Nicklas Karlsson
  * 
  */
 @SessionScoped
 @WebBean
-public class ServletConversationManager implements ConversationManager, Serializable
+public class ServletConversationManager extends AbstractConversationManager implements Serializable
 {
-   private static final long serialVersionUID = 889078932817674680L;
+   private static final long serialVersionUID = 1647848566880659085L;
 
    private static LogProvider log = Logging.getLogProvider(ServletConversationManager.class);
 
@@ -61,31 +54,13 @@ public class ServletConversationManager implements ConversationManager, Serializ
    private static final long CONVERSATION_CONCURRENT_ACCESS_TIMEOUT_IN_MS = 1 * 1000;
    private static final String CONVERSATION_ID_NAME = "cid";
 
-   // The conversation terminator
-   @Current
-   private ConversationTerminator conversationTerminator;
-
-   // The current conversation
-   @Current
-   private ConversationImpl currentConversation;
-
-   // The conversation timeout in milliseconds waiting for access to a blocked
-   // conversation
-   @ConversationConcurrentAccessTimeout
-   private long concurrentAccessTimeout;
-
-   // A map of current active long-running conversation entries
-   private Map<String, ConversationEntry> longRunningConversations;
-
-   /**
-    * Creates a new conversation manager
-    */
-   public ServletConversationManager()
+   @Override
+   public BeanStore getBeanStore(String cid)
    {
-      log.trace("Created " + getClass());
-      longRunningConversations = new ConcurrentHashMap<String, ConversationEntry>();
+      HttpSession session = CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).getSession();
+      return new ConversationBeanStore(session, cid);
    }
-
+   
    @Produces
    @ConversationInactivityTimeout
    @WebBean
@@ -112,178 +87,5 @@ public class ServletConversationManager implements ConversationManager, Serializ
       log.trace("Produced conversation id name " + CONVERSATION_ID_NAME);
       return CONVERSATION_ID_NAME;
    }
-
-   public void beginOrRestoreConversation(String cid)
-   {
-      if (cid == null)
-      {
-         // No incoming conversation ID, nothing to do here, continue with
-         // a transient conversation
-         log.trace("No conversation id to restore");
-         return;
-      }
-      if (!longRunningConversations.containsKey(cid))
-      {
-         // We got an incoming conversation ID but it was not in the map of
-         // known ones, nothing to do. Log and return to continue with a
-         // transient conversation
-         log.warn("Could not restore long-running conversation " + cid);
-         return;
-      }
-      ConversationEntry resumedConversationEntry = longRunningConversations.get(cid);
-      // Try to get a lock to the requested conversation, log and return to
-      // continue with a transient conversation if we fail
-      try
-      {
-         if (!resumedConversationEntry.lock(concurrentAccessTimeout))
-         {
-            return;
-         }
-      }
-      catch (InterruptedException e)
-      {
-         log.debug("Interrupted while trying to acquire lock");
-         return;
-      }
-      // If we can't cancel the termination, release the lock, return and
-      // continue
-      // with a transient conversation
-      if (!resumedConversationEntry.cancelTermination())
-      {
-         resumedConversationEntry.unlock();
-      }
-      else
-      {
-         // If all goes well, set the identity of the current conversation to
-         // match the fetched long-running one
-         String oldConversation = currentConversation.toString();
-         currentConversation.switchTo(resumedConversationEntry.getConversation());
-         log.trace("Conversation switched from " + oldConversation + " to " + currentConversation);
-      }
-   }
-
-   // TODO: check that stuff gets terminated when you flip between several
-   // long-running conversations
-   public void cleanupConversation()
-   {
-      log.trace("Cleaning up conversation for " + currentConversation);
-      String cid = currentConversation.getId();
-      if (currentConversation.isLongRunning())
-      {
-         Future<?> terminationHandle = scheduleForTermination(cid, currentConversation.getTimeout());
-         // When the conversation ends, a long-running conversation needs to
-         // start its self-destruct. We can have the case where the conversation
-         // is a previously known conversation (that had it's termination
-         // canceled in the
-         // beginConversation) or the case where we have a completely new
-         // long-running conversation.
-         ConversationEntry longRunningConversation = longRunningConversations.get(cid);
-         if (longRunningConversation != null)
-         {
-            longRunningConversation.unlock();
-            longRunningConversation.reScheduleTermination(terminationHandle);
-         }
-         else
-         {
-            ConversationEntry conversationEntry = ConversationEntry.of(currentConversation, terminationHandle);
-            longRunningConversations.put(cid, conversationEntry);
-         }
-         log.trace("Scheduled " + currentConversation + " for termination, there are now " + longRunningConversations.size() + " long-running conversations");
-      }
-      else
-      {
-         // If the conversation is not long-running it can be a transient
-         // conversation that has been so from the start or it can be a
-         // long-running conversation that has been demoted during the request
-         log.trace("Destroying transient conversation " + currentConversation);
-         ConversationEntry longRunningConversation = longRunningConversations.remove(cid);
-         if (longRunningConversation != null)
-         {
-            longRunningConversation.cancelTermination();
-            longRunningConversation.unlock();
-         }
-         ConversationContext.instance().destroy();
-      }
-      // If the conversation has been switched from one long
-      // running-conversation to another with
-      // Conversation.begin(String), we need to unlock the original conversation
-      // and re-schedule
-      // it for termination
-      String originalCid = currentConversation.getOriginalCid();
-      ConversationEntry longRunningConversation = originalCid == null ? null : longRunningConversations.get(originalCid);
-      if (longRunningConversation != null)
-      {
-         longRunningConversation.unlock();
-         longRunningConversation.reScheduleTermination(scheduleForTermination(originalCid, currentConversation.getTimeout()));
-      }
-   }
-
-   /**
-    * Creates a termination task for and schedules it
-    * 
-    * @param cid The id of the conversation to terminate
-    * @return The asynchronous job handle
-    */
-   private Future<?> scheduleForTermination(String cid, long timeout)
-   {
-      HttpSession session = CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).getSession();
-      Runnable terminationTask = new TerminationTask(cid, session);
-      return conversationTerminator.scheduleForTermination(terminationTask, timeout);
-   }
-
-   /**
-    * A termination task that destroys the conversation entry
-    * 
-    * @author Nicklas Karlsson
-    * 
-    */
-   private class TerminationTask implements Runnable
-   {
-      // The conversation ID to terminate
-      private String cid;
-      private HttpSession session;
-
-      /**
-       * Creates a new termination task
-       * 
-       * @param cid The conversation ID
-       */
-      public TerminationTask(String cid, HttpSession session)
-      {
-         this.cid = cid;
-         this.session = session;
-      }
-
-      /**
-       * Executes the termination
-       */
-      public void run()
-      {
-         log.debug("Conversation " + cid + " timed out. Destroying it");
-         longRunningConversations.remove(cid).destroy(session);
-         log.trace("There are now " + longRunningConversations.size() + " long-running conversations");
-      }
-   }
-
-   public void destroyAllConversations()
-   {
-      HttpSession session = CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).getSession();
-      log.debug("Destroying " + longRunningConversations.size() + " long-running conversations in session " + session.getId());
-      for (ConversationEntry conversationEntry : longRunningConversations.values())
-      {
-         conversationEntry.destroy(session);
-      }
-      longRunningConversations.clear();
-   }
-
-   public Set<Conversation> getLongRunningConversations()
-   {
-      Set<Conversation> conversations = new HashSet<Conversation>();
-      for (ConversationEntry conversationEntry : longRunningConversations.values())
-      {
-         conversations.add(conversationEntry.getConversation());
-      }
-      return Collections.unmodifiableSet(conversations);
-   }
-
+   
 }

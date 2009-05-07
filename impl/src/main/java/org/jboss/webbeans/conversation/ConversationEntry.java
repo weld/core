@@ -21,12 +21,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.context.Conversation;
-import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.context.ConversationContext;
+import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.servlet.ConversationBeanStore;
 
 /**
  * Represents a long-running conversation entry
@@ -43,6 +42,8 @@ public class ConversationEntry
    private Future<?> terminationHandle;
    // The lock for concurrent access prevention
    private ReentrantLock concurrencyLock;
+   // The Bean Store of the conversations
+   private BeanStore beanStore;
 
    /**
     * Creates a new conversation entry
@@ -50,8 +51,9 @@ public class ConversationEntry
     * @param cid The conversation ID
     * @param terminationHandle The timeout termination handle
     */
-   protected ConversationEntry(Conversation conversation, Future<?> terminationHandle)
+   protected ConversationEntry(BeanStore beanStore, Conversation conversation, Future<?> terminationHandle)
    {
+      this.beanStore = beanStore;
       // conversation is a proxy so we need to make a "real" instance
       this.conversation = new ConversationImpl(conversation);
       this.terminationHandle = terminationHandle;
@@ -66,9 +68,9 @@ public class ConversationEntry
     * @param terminationHandle The timeout termination handle
     * @return A new conversation entry
     */
-   public static ConversationEntry of(Conversation conversation, Future<?> terminationHandle)
+   public static ConversationEntry of(BeanStore beanStore, Conversation conversation, Future<?> terminationHandle)
    {
-      return new ConversationEntry(conversation, terminationHandle);
+      return new ConversationEntry(beanStore, conversation, terminationHandle);
    }
 
    /**
@@ -96,10 +98,8 @@ public class ConversationEntry
 
    /**
     * Destroys the conversation and it's associated conversational context
-    * 
-    * @param session The HTTP session for the backing context bean store
     */
-   public void destroy(HttpSession session)
+   public void destroy()
    {
       log.debug("Destroying conversation " + conversation);
       if (!terminationHandle.isCancelled())
@@ -107,7 +107,7 @@ public class ConversationEntry
          cancelTermination();
       }
       ConversationContext terminationContext = new ConversationContext();
-      terminationContext.setBeanStore(new ConversationBeanStore(session, conversation.getId()));
+      terminationContext.setBeanStore(beanStore);
       terminationContext.destroy();
       log.trace("Conversation " + conversation + " destroyed");
    }
