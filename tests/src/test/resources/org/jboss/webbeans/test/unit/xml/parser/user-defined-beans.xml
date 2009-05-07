@@ -29,12 +29,12 @@
 		<myapp:TestInterceptorBindingType />
 		<myapp:TestStereotype />
 		<myapp:TestDeploymentType />
-		<Array>
-			<String />
-		</Array>
 		<myapp:getVal />
 		<myapp:val />
 		<Integer />
+		<Array>
+			<String />
+		</Array>
 	</myapp:Order>
 <!--	
 	<myapp:PaymentService>
@@ -48,13 +48,13 @@
 		</Resource>
 	</myapp:PaymentService>
 -->
-
+<!--
 	<Topic>
 		<Resource>
 			<name>java:app/service/PaymentService</name>
 		</Resource>
 	</Topic>
-		
+-->		
 	<Decorators>
 		<myapp:TestDecorator />	
 	</Decorators>

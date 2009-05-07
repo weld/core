@@ -82,18 +82,18 @@ public class SimpleBeanChildrenChecker extends AbstractBeanChildrenChecker
          if (parameters.size() != constructorParameters.size())
             continue;
 
-         boolean isMacthable = true;
+         boolean isMatchable = true;
 
          for (int i = 0; i < parameters.size(); i++)
          {
             if (!parameters.get(i).isAssignableFrom(constructorParameters.get(i)))
             {
-               isMacthable = false;
+               isMatchable = false;
                break;
             }
          }
 
-         if (isMacthable)
+         if (isMatchable)
             matchableConstructors.add(constructor);
       }
 

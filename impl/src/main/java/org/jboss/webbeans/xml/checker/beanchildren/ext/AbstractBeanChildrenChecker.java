@@ -109,7 +109,12 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
    private void checkBeanChild(Element beanChildElement, AnnotatedClass<?> beanClass)
    {
       if (XmlConstants.ARRAY.equalsIgnoreCase(beanChildElement.getName()))
+      {
+         // bean child element declaring an array parameter of the bean constructor
+         AnnotatedClass<?> array = ParseXmlHelper.obtainArray(beanChildElement, environment, packagesMap);
+         constructorParameters.add(array);
          return;
+      }         
 
       List<AnnotatedClass<?>> beanChildClassList = ParseXmlHelper.tryLoadElementClass(beanChildElement, Object.class, environment, packagesMap);
 
@@ -120,7 +125,7 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
          Namespace beanChildNamespace = beanChildElement.getNamespace();
          if (beanChildNamespace.equals(beanNamespace))
          {
-            // bean child element declaring a method or field of the bean.
+            // bean child element declaring a method or field of the bean
             checkFieldOrMethodChild(beanChildElement, beanClass);
             return;
          }

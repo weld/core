@@ -3,11 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="urn:java:org.jboss.webbeans.test.unit.xml.parser.schema.valid http://mydomain.com/myapp/schema-1.2.xsd">	
 	<myapp:Order>
-		<Array>
-			<String />
-		</Array>
 		<myapp:getVal />
 		<myapp:val />
 		<Integer />
+		<Array>
+			<String />
+		</Array>
 	</myapp:Order>
 </Beans>

@@ -19,6 +19,7 @@ package org.jboss.webbeans.xml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,7 +37,12 @@ import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
 import org.dom4j.io.SAXReader;
+import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.jlr.AnnotatedClassImpl;
+import org.jboss.webbeans.resources.ClassTransformer;
+import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceLoadingException;
 import org.xml.sax.SAXException;
 
@@ -308,5 +314,39 @@ public class ParseXmlHelper
       if (list.size() != set.size())
          throw new DefinitionException("A certain annotation type is declared more than once as a binding type, " + 
                "interceptor binding type or stereotype using XML");
+   }
+   
+   public static AnnotatedClass<?> obtainArray(Element arrayElement, XmlEnvironment environment, Map<String, Set<String>> packagesMap)
+   {  
+      AnnotatedClass<?> arrayType = obtainArrayType(arrayElement, environment, packagesMap);
+      Object array = Array.newInstance(arrayType.getRawType(), 0);      
+      AnnotatedClass<?> result = AnnotatedClassImpl.of(array.getClass(), new ClassTransformer());      
+      return result;
+   }
+   
+   public static AnnotatedClass<?> obtainArrayType(Element arrayElement, XmlEnvironment environment, Map<String, Set<String>> packagesMap)
+   {
+      AnnotatedClass<?> arrayType = null;
+      
+      boolean haveNotAnnotation = false;
+      Iterator<?> arrayIterator = arrayElement.elementIterator();
+      while (arrayIterator.hasNext())
+      {
+         Element arrayChild = (Element) arrayIterator.next();
+         AnnotatedClass<?> arrayChildType = ParseXmlHelper.loadElementClass(arrayChild, Object.class, environment, packagesMap);
+         boolean isAnnotation = arrayChildType.getRawType().isAnnotation();
+         if (!isAnnotation)
+         {
+            if (haveNotAnnotation)
+               throw new DefinitionException("<Array> element have second child which is not annotation, it is '" + 
+                     arrayChild.getName() + "'");
+            haveNotAnnotation = true;
+            arrayType = arrayChildType;
+         }
+      }
+      if (!haveNotAnnotation)
+         throw new DefinitionException("<Array> element must have one child elemen which is not annotation");
+      
+      return arrayType;
    }
 }

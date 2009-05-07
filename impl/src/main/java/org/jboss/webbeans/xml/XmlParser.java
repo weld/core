@@ -98,25 +98,7 @@ public class XmlParser
          Element child = (Element) childIterator.next();
 
          if (XmlConstants.ARRAY.equalsIgnoreCase(child.getName()))
-         {
-            boolean haveNotAnnotation = false;
-            Iterator<?> arrayIterator = child.elementIterator();
-            while (arrayIterator.hasNext())
-            {
-               Element arrayChild = (Element) arrayIterator.next();
-               AnnotatedClass<?> arrayChildType = ParseXmlHelper.loadElementClass(arrayChild, Object.class, environment, packagesMap);
-               boolean isAnnotation = arrayChildType.getRawType().isAnnotation();
-               if (!isAnnotation)
-               {
-                  if (haveNotAnnotation)
-                     throw new DefinitionException("<Array> element have second child which is not annotation, it is '" + 
-                           arrayChild.getName() + "'");
-                  haveNotAnnotation = true;
-               }
-            }
-            if (!haveNotAnnotation)
-               throw new DefinitionException("<Array> element must have one child elemen which is not annotation");
-         }
+            ParseXmlHelper.obtainArrayType(child, environment, packagesMap);
          else
             checkChildrenForArray(child);
       }

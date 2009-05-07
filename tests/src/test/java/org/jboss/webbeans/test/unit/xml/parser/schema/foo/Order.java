@@ -14,9 +14,10 @@ public class Order
       this.val = 0;
    }
 
-   public Order(int val)
+   public Order(int val, String[] strArr)
    {
       this.val = val;
+      this.strArr = strArr;
    }
 
    public int getVal()
