@@ -324,7 +324,7 @@ public class ParseXmlHelper
       return result;
    }
    
-   public static AnnotatedClass<?> obtainArrayType(Element arrayElement, XmlEnvironment environment, Map<String, Set<String>> packagesMap)
+   private static AnnotatedClass<?> obtainArrayType(Element arrayElement, XmlEnvironment environment, Map<String, Set<String>> packagesMap)
    {
       AnnotatedClass<?> arrayType = null;
       

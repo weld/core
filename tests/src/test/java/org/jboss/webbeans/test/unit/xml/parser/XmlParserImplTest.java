@@ -35,7 +35,7 @@ import org.testng.annotations.Test;
 )
 public class XmlParserImplTest extends AbstractWebBeansTest
 {
-   //@Test
+//   @Test
    public void testParse()
    {
       XmlEnvironment parserEnv = new MockXmlEnvironment(getResources("beans.xml"), new EjbDescriptorCache());

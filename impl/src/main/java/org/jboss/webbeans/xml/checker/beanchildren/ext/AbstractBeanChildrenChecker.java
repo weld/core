@@ -18,7 +18,6 @@ package org.jboss.webbeans.xml.checker.beanchildren.ext;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +44,9 @@ import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.introspector.jlr.AnnotatedMethodImpl;
 import org.jboss.webbeans.xml.ParseXmlHelper;
 import org.jboss.webbeans.xml.XmlConstants;
 import org.jboss.webbeans.xml.XmlEnvironment;
@@ -55,7 +57,7 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
 
    private Set<AnnotatedField<?>> beanFields;
 
-   private List<Method> beanMethods;
+   private List<AnnotatedMethod<?>> beanMethods;
 
    private boolean haveBeanDeploymentTypeDeclaration = false;
 
@@ -87,7 +89,11 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
    public void checkChildren(Element beanElement, AnnotatedClass<?> beanClass)
    {
       beanFields = beanClass.getFields();
-      beanMethods = Arrays.asList(beanClass.getRawType().getDeclaredMethods());
+      beanMethods = new ArrayList<AnnotatedMethod<?>>();
+      for (Method method : beanClass.getRawType().getDeclaredMethods())
+      {
+         beanMethods.add(AnnotatedMethodImpl.of(method, beanClass));
+      }
 
       checkForInterceptorChild(beanElement);
       checkForDecoratorChild(beanElement);
@@ -108,7 +114,8 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
 
    private void checkBeanChild(Element beanChildElement, AnnotatedClass<?> beanClass)
    {
-      if (XmlConstants.ARRAY.equalsIgnoreCase(beanChildElement.getName()))
+      if (ParseXmlHelper.isJavaEeNamespace(beanChildElement) && 
+            XmlConstants.ARRAY.equalsIgnoreCase(beanChildElement.getName()))
       {
          // bean child element declaring an array parameter of the bean constructor
          AnnotatedClass<?> array = ParseXmlHelper.obtainArray(beanChildElement, environment, packagesMap);
@@ -215,10 +222,14 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
          }
       }
 
-      for (Method method : beanMethods)
+      AnnotatedMethod<?> beanMethod = null;
+      for (AnnotatedMethod<?> method : beanMethods)
       {
          if (method.getName().equalsIgnoreCase(beanChildElement.getName()))
+         {
             isMethod = true;
+            beanMethod = method;
+         }
       }
 
       if (isField && isMethod)
@@ -233,7 +244,7 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
 
       if (isMethod)
       {
-         checkMethodChild(beanChildElement, beanClass);
+         checkMethodChild(beanChildElement, beanMethod, beanClass);
          return;
       }
 
@@ -259,8 +270,52 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
 
    }
 
-   private void checkMethodChild(Element beanChildElement, AnnotatedClass<?> beanClass)
-   {
-      // TODO: not finished
+   private void checkMethodChild(Element methodElement, AnnotatedMethod<?> beanMethod, AnnotatedClass<?> beanClass)
+   {// TODO: not finished
+      List<AnnotatedClass<?>> methodParameters = new ArrayList<AnnotatedClass<?>>();
+      
+      Iterator<?> elIterator = methodElement.elementIterator();
+      while (elIterator.hasNext())
+      {
+         Element methodChildElement = (Element)elIterator.next();
+         
+         if (ParseXmlHelper.isJavaEeNamespace(methodChildElement) && 
+               XmlConstants.ARRAY.equalsIgnoreCase(methodChildElement.getName()))
+         {
+            // method child element declaring an array parameter of the method
+            AnnotatedClass<?> array = ParseXmlHelper.obtainArray(methodChildElement, environment, packagesMap);
+            methodParameters.add(array);
+         }
+         else{
+            AnnotatedClass<?> methodChildClass = ParseXmlHelper.loadElementClass(methodChildElement, Object.class, environment, packagesMap);
+            Class<?> methodChildType = methodChildClass.getRawType();
+            boolean isJavaClass = !methodChildType.isEnum() && !methodChildType.isPrimitive() && !methodChildType.isInterface();
+            boolean isInterface = methodChildType.isInterface() && !methodChildType.isAnnotation();
+            if(isJavaClass || isInterface)
+            {
+               // method child element declaring a parameter of the method
+               methodParameters.add(methodChildClass);
+            }
+         }                  
+      }
+      
+      List<? extends AnnotatedParameter<?>> parameters = beanMethod.getParameters();
+      if (methodParameters.size() != parameters.size())
+         throw new DefinitionException("Bean '" + beanClass.getName() + "' don't have metod with the same number of parameters as declared");
+      
+      for (int i = 0; i < parameters.size(); i++)
+      {
+         if (!parameters.get(i).isAssignableFrom(methodParameters.get(i)))
+            throw new DefinitionException("Bean '" + beanClass.getName() + "' don't have metod with same types of parameters as declared");
+      }
    }
+   
+   
+   
+   
+   
+   
+   
+   
+   
 }

@@ -76,31 +76,10 @@ public class XmlParser
          Document document = createDocument(url);
          if (document != null)
          {
-            parseForArrays(document);
             parseForAnnotationTypes(document);
             parseForDeploy(document);
             parseForBeans(document);
          }
-      }
-   }
-
-   private void parseForArrays(Document document)
-   {
-      Element root = document.getRootElement();
-      checkChildrenForArray(root);
-   }
-
-   private void checkChildrenForArray(Element element)
-   {
-      Iterator<?> childIterator = element.elementIterator();
-      while (childIterator.hasNext())
-      {
-         Element child = (Element) childIterator.next();
-
-         if (XmlConstants.ARRAY.equalsIgnoreCase(child.getName()))
-            ParseXmlHelper.obtainArrayType(child, environment, packagesMap);
-         else
-            checkChildrenForArray(child);
       }
    }
 

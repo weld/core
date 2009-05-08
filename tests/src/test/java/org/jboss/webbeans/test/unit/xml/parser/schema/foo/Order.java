@@ -29,4 +29,9 @@ public class Order
    {
       return this.strArr;
    }
+   
+   public void setStrArr(String[] strArr)
+   {
+      this.strArr = strArr;
+   }
 }

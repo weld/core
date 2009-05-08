@@ -35,6 +35,11 @@
 		<Array>
 			<String />
 		</Array>
+		<myapp:setStrArr>
+			<Array>
+				<String />
+			</Array>
+		</myapp:setStrArr>
 	</myapp:Order>
 <!--	
 	<myapp:PaymentService>
