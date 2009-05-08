@@ -37,84 +37,102 @@ import org.jboss.webbeans.servlet.ConversationBeanStore;
 import org.jboss.webbeans.servlet.HttpSessionManager;
 
 /**
- * A phase listener for propagating conversation id over postbacks through a
- * hidden component
+ * <p>
+ * A JSF phase listener that initializes aspects of Web Beans in a more
+ * fine-grained, integrated manner than what is possible with a servlet filter.
+ * This phase listener works in conjunction with other hooks and callbacks
+ * registered with the JSF runtime to help manage the Web Beans lifecycle.
+ * </p>
+ * 
+ * <p>
+ * It's expected that over time, this phase listener may take on more work, but
+ * for now the work is focused soley on conversation management. The phase
+ * listener restores the long-running conversation if the conversation id token
+ * is detected in the request, activates the conversation context in either case
+ * (long-running or transient), and finally passivates the conversation after
+ * the response has been committed.
+ * </p>
  * 
  * @author Nicklas Karlsson
- * 
+ * @author Dan Allen
  */
 public class WebBeansPhaseListener implements PhaseListener
 {
-   // The logging provider
    private static LogProvider log = Logging.getLogProvider(WebBeansPhaseListener.class);
 
    /**
-    * Run before a given phase
+    * Execute before every phase in the JSF life cycle. The order this
+    * phase listener executes in relation to other phase listeners is
+    * determined by the ordering of the faces-config.xml descriptors.
+    * This phase listener should take precedence over extensions.
     * 
     * @param phaseEvent The phase event
     */
    public void beforePhase(PhaseEvent phaseEvent)
    {
-      if (phaseEvent.getPhaseId().equals(PhaseId.RENDER_RESPONSE))
+      if (phaseEvent.getPhaseId().equals(PhaseId.RESTORE_VIEW))
       {
-         beforeRenderReponse();
+         beforeRestoreView();
       }
    }
 
    /**
-    * Run before the response is rendered
-    */
-   private void beforeRenderReponse()
-   {
-      log.trace("In before render response phase");
-      Conversation conversation = CurrentManager.rootManager().getInstanceByType(Conversation.class);
-      if (conversation.isLongRunning())
-      {
-         PhaseHelper.propagateConversation(conversation.getId());
-      }
-      else
-      {
-         PhaseHelper.stopConversationPropagation();
-      }
-   }
-
-   /**
-    * Run after a given phase
+    * Execute after every phase in the JSF life cycle. The order this
+    * phase listener executes in relation to other phase listeners is
+    * determined by the ordering of the faces-config.xml descriptors.
+    * This phase listener should take precedence over extensions.
     * 
     * @param phaseEvent The phase event
     */
    public void afterPhase(PhaseEvent phaseEvent)
    {
-      if (phaseEvent.getPhaseId().equals(PhaseId.RESTORE_VIEW))
-      {
-         afterRestoreView();
-      }
-      else if (phaseEvent.getPhaseId().equals(PhaseId.RENDER_RESPONSE))
+      if (phaseEvent.getPhaseId().equals(PhaseId.RENDER_RESPONSE))
       {
          afterRenderResponse();
       }
-      
-      if(phaseEvent.getFacesContext().getResponseComplete())
+      // be careful with this else as it assumes only one if condition right now
+      else if (phaseEvent.getFacesContext().getResponseComplete())
       {
-         afterResponseComplete();
-      }      
+         afterResponseComplete(phaseEvent.getPhaseId());
+      }
    }
 
    /**
-    * Run after the response is complete
+    * Execute before the Restore View phase.
     */
-   private void afterResponseComplete()
+   private void beforeRestoreView()
    {
-      log.trace("Post-response complete");
+      log.trace("Initiating the session and conversation before the Restore View phase");
+      initiateSessionAndConversation();
+   }
+   
+   /**
+    * Execute after the Render Response phase.
+    */
+   private void afterRenderResponse()
+   {
+      log.trace("Cleaning up the conversation after the Render Response phase");
+      CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
+      ConversationContext.instance().setActive(false);
+   }
+
+   /**
+    * Execute after any phase that marks the response as complete.
+    */
+   private void afterResponseComplete(PhaseId phaseId)
+   {
+      log.trace("Cleaning up the conversation after the " + phaseId + " phase as the response has been marked complete");
       CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
    }
 
    /**
-    * Run after the view is restored
+    * Retrieve the HTTP session from the FacesContext and assign it to the Web
+    * Beans HttpSessionManager. Restore the long-running conversation if the
+    * conversation id token is present in the request and, in either case,
+    * activate the conversation context (long-running or transient).
     */
-   private void afterRestoreView()
+   private void initiateSessionAndConversation()
    {
-      log.trace("In after restore view phase");
       HttpSession session = PhaseHelper.getHttpSession();
       CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).setSession(session);
       CurrentManager.rootManager().getInstanceByType(ConversationManager.class).beginOrRestoreConversation(PhaseHelper.getConversationId());
@@ -124,15 +142,9 @@ public class WebBeansPhaseListener implements PhaseListener
    }
 
    /**
-    * Run after the response is rendered
+    * The phase id for which this phase listener is active. This phase listener
+    * observes all JSF life-cycle phases.
     */
-   private void afterRenderResponse()
-   {
-      log.trace("In after render reponse phase");
-      CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
-      ConversationContext.instance().setActive(false);
-   }
-
    public PhaseId getPhaseId()
    {
       return PhaseId.ANY_PHASE;

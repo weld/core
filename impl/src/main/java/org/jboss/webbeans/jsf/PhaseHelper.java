@@ -24,18 +24,17 @@ import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.conversation.ConversationIdName;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.util.Reflections;
 
 /**
  * Helper class for JSF related operations
  * 
  * @author Nicklas Karlsson
- * 
+ * @author Dan Allen
  */
 public class PhaseHelper
 {
    private static LogProvider log = Logging.getLogProvider(PhaseHelper.class);
-
-   private static final String CONVERSATION_PROPAGATION_KEY = "webbeans_conversation_propagation";
 
    /**
     * Gets a FacesContext instance
@@ -48,25 +47,24 @@ public class PhaseHelper
    }
 
    /**
-    * Checks if current request is a JSF postback
+    * Checks if the current request is a JSF postback. The JsfApiAbstraction is
+    * consulted to determine if the JSF version is compatible with JSF 2.0. If
+    * so, the {@link FacesContext#isPostback()} convenience method is used
+    * (which is technically an optimized and safer implementation). Otherwise,
+    * the ResponseStateManager is consulted directly.
     * 
-    * @return True if postback, false otherwise
+    * @return true if this request is a JSF postback, false otherwise
     */
    public static boolean isPostback()
    {
-      return context().getRenderKit().getResponseStateManager().isPostback(context());
-   }
-
-   /**
-    * Creates and/or updates the conversation propagation component in the UI
-    * view root
-    * 
-    * @param cid The conversation id to propagate
-    */
-   public static void propagateConversation(String cid)
-   {
-      context().getViewRoot().getAttributes().put(CONVERSATION_PROPAGATION_KEY, cid);
-      log.debug("Updated propagation component with cid " + cid);
+      if (CurrentManager.rootManager().getServices().get(JsfApiAbstraction.class).isApiVersionCompatibleWith(2.0))
+      {
+         return (Boolean) Reflections.invokeAndWrap("isPostback", context());
+      }
+      else
+      {
+         return context().getRenderKit().getResponseStateManager().isPostback(context());
+      }
    }
 
    /**
@@ -78,42 +76,22 @@ public class PhaseHelper
    {
       String cidName = CurrentManager.rootManager().getInstanceByType(String.class, new AnnotationLiteral<ConversationIdName>(){});
       String cid = context().getExternalContext().getRequestParameterMap().get(cidName);
-      log.trace("Got cid " + cid + " from request");
+      log.trace("Found conversation id " + cid + " in request parameter");
       return cid;
    }
 
    /**
-    * Gets the propagated conversation id from the view root attribute map
-    * 
-    * @return The conversation id (or null if not found)
-    */
-   public static String getConversationIdFromViewRoot()
-   {
-      String cid = (String) context().getViewRoot().getAttributes().get(CONVERSATION_PROPAGATION_KEY);
-      log.trace("Got cid " + cid + " from propagation component");
-      return cid;
-   }
-
-   /**
-    * Gets the propagated conversation id
+    * Gets the propagated conversation id.
     * 
     * @return The conversation id (or null if not found)
     */
    public static String getConversationId()
    {
-      String cid = null;
-      if (isPostback())
-      {
-         cid = getConversationIdFromViewRoot();
-      }
-      else
-      {
-         cid = getConversationIdFromRequest();
-      }
-      log.debug("Resuming conversation " + cid);
+      String cid = getConversationIdFromRequest();
+      log.debug("Resuming conversation with id " + cid);
       return cid;
    }
-
+   
    /**
     * Gets the HTTP session
     * 
@@ -122,14 +100,6 @@ public class PhaseHelper
    public static HttpSession getHttpSession()
    {
       return (HttpSession) context().getExternalContext().getSession(true);
-   }
-
-   /**
-    * Stops conversation propagation through the view root
-    */
-   public static void stopConversationPropagation()
-   {
-      context().getViewRoot().getAttributes().remove(CONVERSATION_PROPAGATION_KEY);
    }
 
 }

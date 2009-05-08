@@ -21,21 +21,42 @@ import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.util.ApiAbstraction;
 
 /**
- * Utility class for JSF related components, concepts etc.
+ * Utility class for JSF related components, concepts etc. It can also
+ * report on the compatibility of the current JSF implementation being used.
  * 
  * @author Pete Muir
- * 
+ * @author Dan Allen
  */
 public class JsfApiAbstraction extends ApiAbstraction implements Service
 {
-
    // An UI component
    public final Class<?> UICOMPONENT_CLASS;
+   
+   // JSF FacesContext
+   public final Class<?> FACES_CONTEXT;
+   
+   public final double MINIMUM_API_VERSION;
    
    public JsfApiAbstraction(ResourceLoader resourceLoader)
    {
       super(resourceLoader);
       this.UICOMPONENT_CLASS = classForName("javax.faces.component.UIComponent");
+      this.FACES_CONTEXT = classForName("javax.faces.context.FacesContext");
+      double version = 2.0;
+      try
+      {
+         this.FACES_CONTEXT.getMethod("isPostback", new Class[] {});
+      }
+      catch (NoSuchMethodException e)
+      {
+         version = 1.2;
+      }
+      MINIMUM_API_VERSION = version;
+   }
+   
+   public boolean isApiVersionCompatibleWith(double version)
+   {
+      return MINIMUM_API_VERSION >= version;
    }
 
 }

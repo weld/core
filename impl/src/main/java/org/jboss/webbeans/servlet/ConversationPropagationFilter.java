@@ -19,8 +19,6 @@ package org.jboss.webbeans.servlet;
 import java.io.IOException;
 
 import javax.context.Conversation;
-import javax.faces.context.FacesContext;
-import javax.inject.AnnotationLiteral;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -31,86 +29,33 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.conversation.ConversationIdName;
 import org.jboss.webbeans.conversation.ConversationManager;
+import org.jboss.webbeans.jsf.FacesUrlTransformer;
 
 /**
- * Filter for handling conversation propagation over redirects
+ * <p>A Filter for handling conversation propagation over redirects.</p>
+ * 
+ * <p>This fiter intercepts the call to {@link HttpServletResponse#sendRedirect(String)} and
+ * appends the conversation id request parameter to the URL if the conversation is long-running,
+ * but only if the request parameter is not already present.</p>
+ * 
+ * FIXME This filter is specifically for JSF and should be repackaged or split up to support non-JSF environments.
  * 
  * @author Nicklas Karlsson
- * 
  */
 public class ConversationPropagationFilter implements Filter
 {
-
-   /**
-    * Helper class for handling URLs
-    * 
-    * @author Nicklas Karlsson
-    */
-   private class UrlTransformer
-   {
-      private String URL;
-      private FacesContext context;
-
-      private boolean isUrlAbsolute()
-      {
-         // TODO: any API call to do this?
-         return URL.startsWith("http://") || URL.startsWith("https://");
-      }
-
-      public UrlTransformer(String URL)
-      {
-         this.URL = URL;
-         context = FacesContext.getCurrentInstance();
-      }
-
-      public UrlTransformer appendConversation(String cid)
-      {
-         String cidName = CurrentManager.rootManager().getInstanceByType(String.class, new AnnotationLiteral<ConversationIdName>()
-         {
-         });
-         URL = URL + (URL.indexOf("?") > 0 ? "&" : "?") + cidName + "=" + cid;
-         return this;
-      }
-
-      public UrlTransformer getRedirectView()
-      {
-         if (isUrlAbsolute())
-         {
-            String requestPath = context.getExternalContext().getRequestContextPath();
-            URL = URL.substring(URL.indexOf(requestPath) + requestPath.length());
-         } 
-         else 
-         {
-            int lastSlash = URL.lastIndexOf("/");
-            if (lastSlash > 0) 
-            {
-               URL = URL.substring(lastSlash);
-            }
-         }
-         return this;
-      }
-
-      public UrlTransformer getActionUrl()
-      {
-         URL = context.getApplication().getViewHandler().getActionURL(context, URL);
-         return this;
-      }
-
-      public String encode()
-      {
-         return context.getExternalContext().encodeActionURL(URL);
-      }
-   }
-
-   public void destroy()
+   public void init(FilterConfig config) throws ServletException
    {
    }
 
    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
    {
       chain.doFilter(request, wrapResponse((HttpServletResponse) response));
+   }
+   
+   public void destroy()
+   {
    }
 
    private ServletResponse wrapResponse(HttpServletResponse response)
@@ -123,16 +68,12 @@ public class ConversationPropagationFilter implements Filter
             Conversation conversation = CurrentManager.rootManager().getInstanceByType(Conversation.class);
             if (conversation.isLongRunning())
             {
-               path = new UrlTransformer(path).getRedirectView().getActionUrl().appendConversation(conversation.getId()).encode();
+               path = new FacesUrlTransformer(path).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversation.getId()).encode();
                CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
             }
             super.sendRedirect(path);
          }
       };
-   }
-
-   public void init(FilterConfig config) throws ServletException
-   {
    }
 
 }
