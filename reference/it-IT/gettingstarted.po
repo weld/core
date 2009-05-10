@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-05-05 20:42+0000\n"
-"PO-Revision-Date: 2009-05-05 22:50+0100\n"
+"PO-Revision-Date: 2009-05-10 12:48+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -1010,7 +1010,7 @@ msgstr ""
 #: gettingstarted.xml:541
 #, no-c-format
 msgid "Running the example from the command line in JBoss AS or Tomcat"
-msgstr ""
+msgstr "Eseguire l'esempio da linea di comando in JBoss AS o Tomcat"
 
 #. Tag: para
 #: gettingstarted.xml:543
@@ -1088,7 +1088,7 @@ msgstr "<![CDATA[ @Current Game game;]]>"
 #: gettingstarted.xml:602
 #, no-c-format
 msgid "The <literal>Game</literal> bean is can then be used, for example, by the code for submitting a guess:"
-msgstr ""
+msgstr "Il bean <literal>Game</literal> può essere usato, per esempio, da codice per inviare un tentativo:"
 
 #. Tag: programlisting
 #: gettingstarted.xml:607
@@ -1124,7 +1124,7 @@ msgstr ""
 #: gettingstarted.xml:634
 #, no-c-format
 msgid "In order to activate wicket for this webapp, the Wicket filter is added to web.xml, and our application class is specified:"
-msgstr ""
+msgstr "Per attivare wicket per questa webapp, il filtro Wicket viene aggiunto a web.xml, e viene specificata la classe di applicazione:"
 
 #. Tag: programlisting
 #: gettingstarted.xml:639
@@ -1182,7 +1182,7 @@ msgstr "Esempio Indovina Numero per Java SE con Swing"
 #: gettingstarted.xml:655
 #, no-c-format
 msgid "This example can be found in the <literal>examples/se/numberguess</literal> folder of the Web Beans distribution."
-msgstr ""
+msgstr "Quest'esempio può essere trovato nella cartella <literal>examples/se/numberguess</literal> della distribuzione Web Beans."
 
 #. Tag: para
 #: gettingstarted.xml:662
@@ -1194,19 +1194,19 @@ msgstr "Per eseguire quest'esempio:"
 #: gettingstarted.xml:668
 #, no-c-format
 msgid "Open a command line/terminal window in the <literal>examples/se/numberguess</literal> directory"
-msgstr ""
+msgstr "Aprire una finestra di terminale/linea di comando nella directory <literal>examples/se/numberguess</literal>"
 
 #. Tag: para
 #: gettingstarted.xml:674
 #, no-c-format
 msgid "Ensure that Maven 2 is installed and in your PATH"
-msgstr ""
+msgstr "Assicurarsi che Maven 2 sia installato e presente nel PATH"
 
 #. Tag: para
 #: gettingstarted.xml:679
 #, no-c-format
 msgid "Ensure that the <literal>JAVA_HOME</literal> environment variable is pointing to your JDK installation"
-msgstr ""
+msgstr "Assicurarsi che la variabile d'ambiente <literal>JAVA_HOME</literal> punti alla propria installazione JDK"
 
 #. Tag: para
 #: gettingstarted.xml:685
