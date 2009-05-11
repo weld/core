@@ -30,6 +30,7 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.ConversationContext;
+import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.conversation.ConversationManager;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -111,9 +112,16 @@ public class WebBeansPhaseListener implements PhaseListener
     */
    private void afterRenderResponse()
    {
-      log.trace("Cleaning up the conversation after the Render Response phase");
-      CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
-      ConversationContext.instance().setActive(false);
+      if (SessionContext.instance().isActive())
+      {
+         log.trace("Cleaning up the conversation after the Render Response phase");
+         CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
+         ConversationContext.instance().setActive(false);
+      }
+      else
+      {
+         log.trace("Skipping conversation cleanup after the Render Response phase because session has been terminated.");
+      }
    }
 
    /**
@@ -121,8 +129,15 @@ public class WebBeansPhaseListener implements PhaseListener
     */
    private void afterResponseComplete(PhaseId phaseId)
    {
-      log.trace("Cleaning up the conversation after the " + phaseId + " phase as the response has been marked complete");
-      CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
+      if (SessionContext.instance().isActive())
+      {
+         log.trace("Cleaning up the conversation after the " + phaseId + " phase as the response has been marked complete");
+         CurrentManager.rootManager().getInstanceByType(ConversationManager.class).cleanupConversation();
+      }
+      else
+      {
+         log.trace("Skipping conversation cleanup after the response has been marked complete because the session has been terminated.");
+      }
    }
 
    /**

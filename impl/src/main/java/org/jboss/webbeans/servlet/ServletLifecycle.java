@@ -27,6 +27,7 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.ContextLifecycle;
+import org.jboss.webbeans.context.RequestContext;
 import org.jboss.webbeans.context.SessionContext;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.context.api.helpers.ConcurrentHashMapBeanStore;
@@ -68,16 +69,27 @@ public class ServletLifecycle
    }
 
    /**
-    * Ends a session
+    * Ends a session, setting up a mock request if necessary
     * 
     * @param session The HTTP session
     */
    public void endSession(HttpSession session)
    {
-      BeanStore mockRequest = new ConcurrentHashMapBeanStore();
-      lifecycle.beginRequest("endSession-" + session.getId(), mockRequest);
-      lifecycle.endSession(session.getId(), restoreSessionContext(session));
-      lifecycle.endRequest("endSession-" + session.getId(), mockRequest);
+      if (SessionContext.instance().isActive())
+      {
+         lifecycle.endSession(session.getId(), SessionContext.instance().getBeanStore());
+      }
+      else if (RequestContext.instance().isActive())
+      {
+         lifecycle.endSession(session.getId(), restoreSessionContext(session));
+      }
+      else
+      {
+         BeanStore mockRequest = new ConcurrentHashMapBeanStore();
+         lifecycle.beginRequest("endSession-" + session.getId(), mockRequest);
+         lifecycle.endSession(session.getId(), restoreSessionContext(session));
+         lifecycle.endRequest("endSession-" + session.getId(), mockRequest);
+      }
    }
 
    /**

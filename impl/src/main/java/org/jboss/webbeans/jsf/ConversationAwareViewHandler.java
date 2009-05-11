@@ -42,6 +42,8 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
     * long-running, append the conversation id request parameter to the query
     * string part of the URL, but only if the request parameter is not already
     * present.
+    *
+    * This covers all cases: form actions, link hrefs, Ajax calls, and redirect URLs. 
     * 
     * @see {@link ViewHandler#getActionURL(FacesContext, String)}
     */
