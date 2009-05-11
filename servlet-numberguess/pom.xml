@@ -103,8 +103,7 @@
                <userAliases>
                   <runjetty>compile org.apache.maven.plugins:maven-war-plugin:inplace org.mortbay.jetty:maven-jetty-plugin:run</runjetty>
                   <runtomcat>compile org.apache.maven.plugins:maven-war-plugin:inplace org.codehaus.mojo:tomcat-maven-plugin:run</runtomcat>
-                  <refresh-all>compile org.apache.maven.plugins:maven-war-plugin:inplace -o</refresh-all>
-                  <refresh-web>org.apache.maven.plugins:maven-war-plugin:inplace -o</refresh-web>
+                  <explode>compile org.apache.maven.plugins:maven-war-plugin:inplace -o</explode>
                </userAliases>
             </configuration>
          </plugin>
