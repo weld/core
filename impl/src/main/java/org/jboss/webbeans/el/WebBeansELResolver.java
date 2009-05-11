@@ -108,6 +108,11 @@ public class WebBeansELResolver extends ELResolver
                return namespace.get(propertyString);
             }
          }
+         else
+         {
+            // let the standard EL resolver chain handle the property
+            return null;
+         }
          final String name;
          if (namespace != null)
          {
