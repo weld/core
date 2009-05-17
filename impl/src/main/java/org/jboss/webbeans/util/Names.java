@@ -48,19 +48,22 @@ public class Names
     */
    public static String scopeTypeToString(Class<? extends Annotation> scopeType)
    {
-      String scopeName = scopeType.getSimpleName();
-      Matcher matcher = CAPITAL_LETTERS.matcher(scopeName);
       StringBuilder result = new StringBuilder();
-      int i = 0;
-      while (matcher.find())
+      if (scopeType != null)
       {
-         String name = matcher.group();
-         if (i > 0)
+         String scopeName = scopeType.getSimpleName();
+         Matcher matcher = CAPITAL_LETTERS.matcher(scopeName);
+         int i = 0;
+         while (matcher.find())
          {
-            name = name.toLowerCase();
+            String name = matcher.group();
+            if (i > 0)
+            {
+               name = name.toLowerCase();
+            }
+            result.append(name).append(" ");
+            i++;
          }
-         result.append(name).append(" ");
-         i++;
       }
       return result.toString();
    }
