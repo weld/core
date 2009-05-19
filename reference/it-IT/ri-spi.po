@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-04-19 20:36+0000\n"
-"PO-Revision-Date: 2009-05-05 22:38+0100\n"
+"PO-Revision-Date: 2009-05-19 21:52+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -41,7 +41,7 @@ msgstr "Web Beans SPI è collocato nel modulo <literal>webbeans-spi</literal>, e
 #: ri-spi.xml:24
 #, no-c-format
 msgid "All interfaces in the SPI support the decorator pattern and provide a <literal>Forwarding</literal> class located in the <literal>helpers</literal> sub package. Additional, commonly used, utility classes, and standard implementations are also located in the <literal>helpers</literal> sub package."
-msgstr ""
+msgstr "Tutte le interfacce in SPI supportano il pattern decorator e forniscono una classe <literal>Forwarding</literal> situata nel sottopacchetto <literal>helpers</literal>. Anche altre classi utility ed implementazioni standard sono collocate nel sottopacchetto <literal>helpers</literal>."
 
 #. Tag: title
 #: ri-spi.xml:33
@@ -99,7 +99,7 @@ msgstr "Servizi EJB"
 #: ri-spi.xml:49
 #, no-c-format
 msgid "Web Beans will run without an EJB container; in this case you don't need to implement the EJB SPI."
-msgstr ""
+msgstr "Web Beans girerà senza EJB container; in questo caso non serve implementare EJB SPI."
 
 #. Tag: para
 #: ri-spi.xml:55
@@ -259,7 +259,7 @@ msgstr "La risoluzione di <literal>@EJB</literal> (per l'injection in bean sempl
 #: ri-spi.xml:87
 #, no-c-format
 msgid "When resolving local EJBs (used to back session beans) a wrapper (<literal>SessionObjectReference</literal>) around the EJB reference is returned. This wrapper allows Web Beans to request a reference that implements the given business interface, and, in the case of SFSBs, request the removal of the EJB from the container."
-msgstr ""
+msgstr "Risolvendo gli EJB locali (usati per mappare i session bean) viene restituito un wrapper (<literal>SessionObjectReference</literal>) attorno al riferimento EJB. Questo wrapper consente a Web Beans di richiedere un riferimento che implementi l'interfaccia di business data e, nel caso di SFSB, la richiesta di rimozione dell'EJB dal container."
 
 #. Tag: title
 #: ri-spi.xml:98
@@ -507,7 +507,7 @@ msgstr "JNDI"
 #: ri-spi.xml:298
 #, no-c-format
 msgid "Web Beans delegates all JNDI operations to the container through the SPI."
-msgstr ""
+msgstr "Web Beans delega tutte le operazioni JNDI al container attraverso SPI."
 
 #. Tag: para
 #: ri-spi.xml:304
