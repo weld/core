@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>osgi</name>
-	<comment></comment>
+	<name>webbeans-osgi-bundle</name>
+	<comment>Web Beans implementation packaged as an OSGi bundle</comment>
 	<projects>
+		<project>jsr299-api</project>
+		<project>webbeans-api</project>
+		<project>webbeans-core</project>
+		<project>webbeans-logging</project>
+		<project>webbeans-spi</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -10,8 +15,14 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
 	</natures>
 </projectDescription>
