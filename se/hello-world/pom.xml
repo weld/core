@@ -83,7 +83,6 @@
         <dependency>
             <groupId>org.jboss.webbeans</groupId>
             <artifactId>webbeans-core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>
     </dependencies>
