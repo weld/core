@@ -18,7 +18,7 @@ package org.jboss.webbeans.conversation;
 
 import java.util.Set;
 
-import javax.context.Conversation;
+import javax.enterprise.context.Conversation;
 
 /**
  * A conversation manager responsible for starting, resuming and ending conversations

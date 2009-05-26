@@ -1,15 +1,15 @@
 package org.jboss.webbeans.test.unit.bootstrap;
 
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.event.Observes;
-import javax.inject.manager.Initialized;
-import javax.inject.manager.Manager;
 
 class InitializedObserver
 {
    
    public static boolean observered;
    
-   public void observeInitialized(@Observes @Initialized Manager manager)
+   public void observeInitialized(@Observes @BeforeBeanDiscovery BeanManager beanManager)
    {
       observered = true;
    }

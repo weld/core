@@ -6,16 +6,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.context.CreationalContext;
-import javax.context.Dependent;
-import javax.inject.Production;
-import javax.inject.manager.Bean;
-import javax.inject.manager.InjectionPoint;
-import javax.inject.manager.Manager;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.deployment.Production;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bean.BaseBean;
 import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
@@ -34,7 +34,7 @@ public class ManagerTest extends AbstractWebBeansTest
    
    private static interface Dummy {}
    
-   private static class DummyBean extends Bean<Dummy>
+   private static class DummyBean extends BaseBean<Dummy>
    {
       
       private static final Set<Type> TYPES = new HashSet<Type>();
@@ -45,9 +45,9 @@ public class ManagerTest extends AbstractWebBeansTest
          TYPES.add(Object.class);
       }
 
-      protected DummyBean(Manager manager)
+      protected DummyBean(BeanManager beanManager)
       {
-         super(manager);
+         super(beanManager);
       }
 
       @Override
@@ -116,23 +116,23 @@ public class ManagerTest extends AbstractWebBeansTest
       Integer rootManagerId = getCurrentManager().getId();
       ManagerImpl deserializedRootManager = (ManagerImpl) deserialize(serialize(getCurrentManager()));
       assert deserializedRootManager.getId().equals(rootManagerId);
-      assert getCurrentManager().resolveByType(Foo.class).size() == 1;
-      assert deserializedRootManager.resolveByType(Foo.class).size() == 1;
-      assert getCurrentManager().resolveByType(Foo.class).iterator().next().equals(deserializedRootManager.resolveByType(Foo.class).iterator().next());
+      assert getCurrentManager().getBeans(Foo.class).size() == 1;
+      assert deserializedRootManager.getBeans(Foo.class).size() == 1;
+      assert getCurrentManager().getBeans(Foo.class).iterator().next().equals(deserializedRootManager.getBeans(Foo.class).iterator().next());
    }
    
    @Test
    public void testChildManagerSerializability() throws Exception
    {
       ManagerImpl childManager = getCurrentManager().createActivity();
-      Bean<?> dummyBean = new DummyBean(childManager);
+      BaseBean<?> dummyBean = new DummyBean(childManager);
       childManager.addBean(dummyBean);
       Integer childManagerId = childManager.getId();
       ManagerImpl deserializedChildManager = (ManagerImpl) deserialize(serialize(childManager));
       assert deserializedChildManager.getId().equals(childManagerId);
-      assert childManager.resolveByType(Dummy.class).size() == 1;
-      assert deserializedChildManager.resolveByType(Dummy.class).size() == 1;
-      assert childManager.resolveByType(Dummy.class).iterator().next().equals(deserializedChildManager.resolveByType(Dummy.class).iterator().next());
+      assert childManager.getBeans(Dummy.class).size() == 1;
+      assert deserializedChildManager.getBeans(Dummy.class).size() == 1;
+      assert childManager.getBeans(Dummy.class).iterator().next().equals(deserializedChildManager.getBeans(Dummy.class).iterator().next());
    }
    
    

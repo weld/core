@@ -18,7 +18,7 @@ package org.jboss.webbeans.bean;
 
 import java.lang.reflect.Field;
 
-import javax.context.CreationalContext;
+import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;

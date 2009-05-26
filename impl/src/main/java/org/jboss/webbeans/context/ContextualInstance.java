@@ -16,7 +16,7 @@
  */
 package org.jboss.webbeans.context;
 
-import javax.context.Contextual;
+import javax.enterprise.context.spi.Contextual;
 
 /**
  * A representation of a contextual bean plus associated instance

@@ -5,8 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import javax.annotation.Resource;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.ExecutionException;
-import javax.inject.manager.InjectionPoint;
 import javax.naming.Context;
 import javax.naming.NamingException;
 

@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.inject.BindingType;
+import javax.enterprise.inject.BindingType;
 import javax.inject.ExecutionException;
 
 import org.jboss.webbeans.util.reflection.ParameterizedTypeImpl;

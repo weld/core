@@ -10,8 +10,8 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Production;
-import javax.inject.Standard;
+import javax.enterprise.inject.deployment.Production;
+import javax.enterprise.inject.deployment.Standard;
 
 import org.jboss.testharness.AbstractTest;
 import org.jboss.webbeans.CurrentManager;

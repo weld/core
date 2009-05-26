@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.manager.Manager;
+import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.jsr299.tck.spi.Managers;
 import org.jboss.webbeans.CurrentManager;
@@ -13,7 +13,7 @@ import org.jboss.webbeans.WebBean;
 public class ManagersImpl implements Managers
 {
    
-   public Manager getManager()
+   public BeanManager getManager()
    {
       return CurrentManager.rootManager();
    }

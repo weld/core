@@ -2,12 +2,12 @@ package org.jboss.webbeans.test.unit.xml.javaeepkg.foo;
 
 import java.util.Date;
 
-import javax.annotation.Named;
-import javax.context.RequestScoped;
 import javax.ejb.ScheduleExpression;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Initializer;
+import javax.enterprise.inject.Named;
+import javax.enterprise.inject.Produces;
 import javax.event.Event;
-import javax.inject.Initializer;
-import javax.inject.Produces;
 import javax.interceptor.InvocationContext;
 import javax.jms.Connection;
 import javax.persistence.EntityManager;

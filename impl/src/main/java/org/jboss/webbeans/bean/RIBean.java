@@ -21,9 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.context.Dependent;
-import javax.inject.manager.Bean;
-import javax.inject.manager.InjectionPoint;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
@@ -34,7 +33,7 @@ import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
  *  
  * @author Pete Muir
  */
-public abstract class RIBean<T> extends Bean<T>
+public abstract class RIBean<T> extends BaseBean<T>
 {
    
    private static final ConcurrentMap<String, AtomicInteger> ids = new ConcurrentHashMap<String, AtomicInteger>();

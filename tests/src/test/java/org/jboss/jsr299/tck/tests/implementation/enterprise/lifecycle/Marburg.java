@@ -2,7 +2,7 @@ package org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.inject.Current;
+import javax.enterprise.inject.Current;
 
 @Stateful
 public class Marburg implements UniStadt

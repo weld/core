@@ -22,7 +22,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javax.context.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 
 import org.jboss.webbeans.WebBean;
 import org.jboss.webbeans.log.LogProvider;

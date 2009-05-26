@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.manager.Bean;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Classes;
@@ -21,7 +21,6 @@ import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.jboss.webbeans.test.unit.xml.beans.Order;
 import org.jboss.webbeans.xml.XmlEnvironment;
 import org.jboss.webbeans.xml.XmlParser;
-import org.testng.annotations.Test;
 
 @Artifact
 @Resources({
@@ -67,7 +66,7 @@ public class XmlParserImplTest extends AbstractWebBeansTest
       
       ManagerImpl manager = parserEnv.getManager();
       
-      Set<Bean<Order>> beansSet = manager.resolveByType(Order.class);
+      Set<Bean<Order>> beansSet = manager.getBeans(Order.class);
       List<Class<? extends Annotation>> dTypes = manager.getEnabledDeploymentTypes();
       dTypes.size();
       for(Bean<Order> bean : beansSet)

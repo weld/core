@@ -20,7 +20,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.context.Conversation;
+import javax.enterprise.context.Conversation;
 
 import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.context.api.BeanStore;

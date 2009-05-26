@@ -24,7 +24,7 @@ package org.jboss.webbeans.context;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.context.ApplicationScoped;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.api.Service;

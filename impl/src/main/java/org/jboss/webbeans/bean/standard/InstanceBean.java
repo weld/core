@@ -22,9 +22,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.inject.Instance;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.TypeLiteral;
 import javax.inject.Obtains;
-import javax.inject.TypeLiteral;
 
 import org.jboss.webbeans.InstanceImpl;
 import org.jboss.webbeans.ManagerImpl;

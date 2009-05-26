@@ -22,9 +22,9 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.context.CreationalContext;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Initializer;
 import javax.inject.DefinitionException;
-import javax.inject.Initializer;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;

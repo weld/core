@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test.unit.xml.parser.schema.foo;
 
-import javax.inject.Initializer;
+import javax.enterprise.inject.Initializer;
 
 public class Order
 {

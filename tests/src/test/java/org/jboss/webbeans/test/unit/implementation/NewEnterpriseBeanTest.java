@@ -3,7 +3,7 @@ package org.jboss.webbeans.test.unit.implementation;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
-import javax.inject.New;
+import javax.enterprise.inject.New;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
@@ -28,13 +28,13 @@ public class NewEnterpriseBeanTest extends AbstractWebBeansTest
    
    public void initNewBean() {
       
-      assert getCurrentManager().resolveByType(WrappedEnterpriseBeanLocal.class).size() == 1;
-      assert getCurrentManager().resolveByType(WrappedEnterpriseBeanLocal.class).iterator().next() instanceof EnterpriseBean;
-      wrappedEnterpriseBean = (EnterpriseBean<WrappedEnterpriseBeanLocal>) getCurrentManager().resolveByType(WrappedEnterpriseBeanLocal.class).iterator().next();
+      assert getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class).size() == 1;
+      assert getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class).iterator().next() instanceof EnterpriseBean;
+      wrappedEnterpriseBean = (EnterpriseBean<WrappedEnterpriseBeanLocal>) getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class).iterator().next();
       
-      assert getCurrentManager().resolveByType(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).size() == 1;
-      assert getCurrentManager().resolveByType(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next() instanceof NewEnterpriseBean;
-      newEnterpriseBean = (NewEnterpriseBean<WrappedEnterpriseBeanLocal>) getCurrentManager().resolveByType(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next();
+      assert getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).size() == 1;
+      assert getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next() instanceof NewEnterpriseBean;
+      newEnterpriseBean = (NewEnterpriseBean<WrappedEnterpriseBeanLocal>) getCurrentManager().getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next();
       
    }
    

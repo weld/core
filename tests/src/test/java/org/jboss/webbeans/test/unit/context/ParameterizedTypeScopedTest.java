@@ -2,7 +2,7 @@ package org.jboss.webbeans.test.unit.context;
 
 import java.util.List;
 
-import javax.inject.TypeLiteral;
+import javax.enterprise.inject.TypeLiteral;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.test.AbstractWebBeansTest;

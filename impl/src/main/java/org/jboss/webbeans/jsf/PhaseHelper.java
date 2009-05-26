@@ -16,8 +16,8 @@
  */
 package org.jboss.webbeans.jsf;
 
+import javax.enterprise.inject.AnnotationLiteral;
 import javax.faces.context.FacesContext;
-import javax.inject.AnnotationLiteral;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.CurrentManager;

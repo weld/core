@@ -24,10 +24,10 @@ package org.jboss.webbeans.context;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.context.ContextNotActiveException;
-import javax.context.Contextual;
-import javax.context.CreationalContext;
-import javax.context.Dependent;
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.api.Service;

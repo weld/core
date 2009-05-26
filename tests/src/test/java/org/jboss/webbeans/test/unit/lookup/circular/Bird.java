@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.unit.lookup.circular;
 
-import javax.context.ApplicationScoped;
-import javax.inject.Initializer;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Initializer;
 
 @ApplicationScoped
 class Bird

@@ -18,7 +18,7 @@ package org.jboss.webbeans.metadata;
 
 import java.lang.annotation.Annotation;
 
-import javax.context.ScopeType;
+import javax.enterprise.context.ScopeType;
 
 import org.jboss.webbeans.resources.ClassTransformer;
 

@@ -1,10 +1,10 @@
 package org.jboss.webbeans.jsf;
 
-import javax.context.Conversation;
+import javax.enterprise.context.Conversation;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.context.FacesContext;
-import javax.inject.manager.Manager;
 
 import org.jboss.webbeans.CurrentManager;
 
@@ -51,8 +51,8 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
    public String getActionURL(FacesContext context, String viewId)
    {
       String actionUrl = super.getActionURL(context, viewId);
-      Manager manager = CurrentManager.rootManager();
-      Conversation conversation = manager.getInstanceByType(Conversation.class);
+      BeanManager beanManager = CurrentManager.rootManager();
+      Conversation conversation = beanManager.getInstanceByType(Conversation.class);
       if (conversation.isLongRunning())
       {
          return new FacesUrlTransformer(actionUrl).appendConversationIdIfNecessary(conversation.getId()).getUrl();

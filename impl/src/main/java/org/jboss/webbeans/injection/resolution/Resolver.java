@@ -26,8 +26,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 
-import javax.inject.TypeLiteral;
-import javax.inject.manager.Bean;
+import javax.enterprise.inject.TypeLiteral;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.standard.EventBean;

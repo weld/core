@@ -1,8 +1,8 @@
 package org.jboss.webbeans.test.unit.lookup.circular;
 
 import javax.annotation.PostConstruct;
-import javax.context.ApplicationScoped;
-import javax.inject.Current;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Current;
 
 @ApplicationScoped
 class Petrol

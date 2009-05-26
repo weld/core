@@ -19,7 +19,7 @@ package org.jboss.webbeans.manager.api;
 
 import java.io.Serializable;
 
-import javax.inject.manager.Manager;
+import javax.enterprise.inject.spi.BeanManager;
 
 /**
  * Functionality provided by the Web Beans Manager over and above the JSR-299
@@ -28,7 +28,7 @@ import javax.inject.manager.Manager;
  * @author Pete Muir
  *
  */
-public interface WebBeansManager extends Manager, Serializable
+public interface WebBeansManager extends BeanManager, Serializable
 {
    
    /**

@@ -2,8 +2,8 @@ package org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
-import javax.inject.Current;
-import javax.inject.Initializer;
+import javax.enterprise.inject.Current;
+import javax.enterprise.inject.Initializer;
 
 @Stateless
 public class Mainz implements AlteStadt

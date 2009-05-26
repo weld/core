@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.inject.TypeLiteral;
+import javax.enterprise.inject.TypeLiteral;
 
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem;

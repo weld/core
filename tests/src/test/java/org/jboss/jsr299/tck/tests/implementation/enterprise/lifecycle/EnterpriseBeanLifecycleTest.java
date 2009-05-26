@@ -5,10 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.context.Context;
-import javax.context.CreationalContext;
-import javax.context.RequestScoped;
-import javax.inject.manager.Bean;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.IntegrationTest;
@@ -47,7 +47,7 @@ public class EnterpriseBeanLifecycleTest extends AbstractWebBeansTest
    public void testCreateSFSB()
    {
       GrossStadt frankfurt = getCurrentManager().getInstanceByType(GrossStadt.class);
-      Bean<KleinStadt> stadtBean = getCurrentManager().resolveByType(KleinStadt.class).iterator().next();
+      Bean<KleinStadt> stadtBean = getCurrentManager().getBeans(KleinStadt.class).iterator().next();
       assert stadtBean != null : "Expected a bean for stateful session bean Kassel";
       CreationalContext<KleinStadt> creationalContext = new MockCreationalContext<KleinStadt>();
       KleinStadt stadtInstance = stadtBean.create(creationalContext);
@@ -75,7 +75,7 @@ public class EnterpriseBeanLifecycleTest extends AbstractWebBeansTest
    public void testDestroyRemovesSFSB() throws Exception
    {
       GrossStadt frankfurt = getCurrentManager().getInstanceByType(GrossStadt.class);
-      Bean<KleinStadt> stadtBean = getCurrentManager().resolveByType(KleinStadt.class).iterator().next();
+      Bean<KleinStadt> stadtBean = getCurrentManager().getBeans(KleinStadt.class).iterator().next();
       assert stadtBean != null : "Expected a bean for stateful session bean Kassel";
       Context requestContext = getCurrentManager().getContext(RequestScoped.class);
       CreationalContext<KleinStadt> creationalContext = new MockCreationalContext<KleinStadt>();

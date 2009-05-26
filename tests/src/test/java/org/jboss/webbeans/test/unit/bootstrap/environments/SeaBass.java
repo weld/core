@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.unit.bootstrap.environments;
 
-import javax.context.RequestScoped;
-import javax.inject.Production;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.deployment.Production;
 
 @Production
 @RequestScoped

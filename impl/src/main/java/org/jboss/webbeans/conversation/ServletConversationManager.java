@@ -24,8 +24,8 @@ package org.jboss.webbeans.conversation;
 
 import java.io.Serializable;
 
-import javax.context.SessionScoped;
-import javax.inject.Produces;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Produces;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.webbeans.CurrentManager;

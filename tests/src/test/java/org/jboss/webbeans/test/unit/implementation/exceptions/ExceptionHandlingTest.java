@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.unit.implementation.exceptions;
 
-import javax.inject.AnnotationLiteral;
-import javax.inject.CreationException;
+import javax.enterprise.inject.AnnotationLiteral;
+import javax.enterprise.inject.CreationException;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.test.AbstractWebBeansTest;

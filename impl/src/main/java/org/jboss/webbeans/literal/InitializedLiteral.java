@@ -16,15 +16,15 @@
  */
 package org.jboss.webbeans.literal;
 
-import javax.inject.AnnotationLiteral;
-import javax.inject.manager.Initialized;
+import javax.enterprise.inject.AnnotationLiteral;
+import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 
 /**
  * Annotation literal for @Initialized
  * 
  * @author Pete Muir
  */
-public class InitializedLiteral extends AnnotationLiteral<Initialized> implements Initialized
+public class InitializedLiteral extends AnnotationLiteral<BeforeBeanDiscovery> implements BeforeBeanDiscovery
 {
    
 }

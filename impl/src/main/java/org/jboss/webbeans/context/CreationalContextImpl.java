@@ -19,8 +19,8 @@ package org.jboss.webbeans.context;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.context.CreationalContext;
-import javax.inject.manager.Bean;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 
 public class CreationalContextImpl<T> implements CreationalContext<T>
 {

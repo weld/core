@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.inject.BindingType;
+import javax.enterprise.inject.BindingType;
 
 import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.util.collections.multi.SetHashMultiMap;

@@ -22,8 +22,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Set;
 
-import javax.context.CreationalContext;
-import javax.inject.manager.Bean;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedField;
@@ -73,7 +73,7 @@ public class FieldInjectionPoint<T> extends ForwardingAnnotatedField<T> implemen
    {
       try
       {
-         delegate().set(declaringInstance, manager.getInstanceToInject(this, creationalContext));
+         delegate().set(declaringInstance, manager.getInjectableReference(this, creationalContext));
       }
       catch (IllegalArgumentException e)
       {

@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test.unit.implementation.producer.method;
 
-import javax.inject.Initializer;
+import javax.enterprise.inject.Initializer;
 
 public class IntInjection
 {

@@ -19,7 +19,7 @@ package org.jboss.webbeans.conversation;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.context.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 
 import org.jboss.webbeans.WebBean;
 import org.jboss.webbeans.log.LogProvider;

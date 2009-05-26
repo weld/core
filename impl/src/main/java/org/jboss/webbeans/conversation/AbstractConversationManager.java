@@ -29,8 +29,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
-import javax.context.Conversation;
-import javax.inject.Current;
+import javax.enterprise.context.Conversation;
+import javax.enterprise.inject.Current;
 
 import org.jboss.webbeans.context.ConversationContext;
 import org.jboss.webbeans.context.api.BeanStore;

@@ -16,15 +16,15 @@
  */
 package org.jboss.webbeans.literal;
 
-import javax.inject.AnnotationLiteral;
-import javax.inject.manager.Deployed;
+import javax.enterprise.inject.AnnotationLiteral;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
 
 /**
  * Annotation literal for @Deployed
  * 
  * @author Nicklas Karlsson
  */
-public class DeployedLiteral extends AnnotationLiteral<Deployed> implements Deployed
+public class DeployedLiteral extends AnnotationLiteral<AfterBeanDiscovery> implements AfterBeanDiscovery
 {
    
 }

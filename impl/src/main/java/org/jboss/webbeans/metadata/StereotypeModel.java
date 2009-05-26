@@ -21,12 +21,12 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Named;
-import javax.annotation.Stereotype;
-import javax.context.ScopeType;
-import javax.inject.BindingType;
+import javax.enterprise.context.ScopeType;
+import javax.enterprise.inject.BindingType;
+import javax.enterprise.inject.Named;
+import javax.enterprise.inject.Stereotype;
+import javax.enterprise.inject.deployment.DeploymentType;
 import javax.inject.DefinitionException;
-import javax.inject.DeploymentType;
 import javax.interceptor.InterceptorBindingType;
 
 import org.jboss.webbeans.resources.ClassTransformer;

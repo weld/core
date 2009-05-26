@@ -16,7 +16,7 @@
  */
 package org.jboss.webbeans.ejb.spi.helpers;
 
-import javax.inject.manager.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;

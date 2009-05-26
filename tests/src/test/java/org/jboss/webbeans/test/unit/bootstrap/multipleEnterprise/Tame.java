@@ -10,7 +10,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.inject.BindingType;
+import javax.enterprise.inject.BindingType;
 
 @Target( { TYPE, METHOD, PARAMETER, FIELD })
 @Retention(RUNTIME)

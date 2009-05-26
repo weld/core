@@ -18,7 +18,7 @@ package org.jboss.webbeans.injection;
 
 import java.lang.reflect.InvocationTargetException;
 
-import javax.inject.CreationException;
+import javax.enterprise.inject.CreationException;
 import javax.inject.ExecutionException;
 
 class Exceptions

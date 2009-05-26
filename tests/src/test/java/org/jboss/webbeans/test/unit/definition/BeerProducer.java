@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.unit.definition;
 
-import javax.annotation.Named;
-import javax.inject.Produces;
+import javax.enterprise.inject.Named;
+import javax.enterprise.inject.Produces;
 
 public class BeerProducer
 {

@@ -4,9 +4,9 @@ import java.lang.annotation.Annotation;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.annotation.Stereotype;
-import javax.inject.DeploymentType;
-import javax.inject.Production;
+import javax.enterprise.inject.Stereotype;
+import javax.enterprise.inject.deployment.DeploymentType;
+import javax.enterprise.inject.deployment.Production;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.introspector.AnnotatedClass;

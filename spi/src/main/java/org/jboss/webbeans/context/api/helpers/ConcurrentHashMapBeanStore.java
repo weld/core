@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.context.Contextual;
+import javax.enterprise.context.spi.Contextual;
 
 /**
  * A BeanStore that uses a HashMap as backing storage

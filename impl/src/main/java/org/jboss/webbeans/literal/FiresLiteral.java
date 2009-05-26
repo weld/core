@@ -16,8 +16,8 @@
  */
 package org.jboss.webbeans.literal;
 
+import javax.enterprise.inject.AnnotationLiteral;
 import javax.event.Fires;
-import javax.inject.AnnotationLiteral;
 
 public class FiresLiteral extends AnnotationLiteral<Fires> implements Fires
 {

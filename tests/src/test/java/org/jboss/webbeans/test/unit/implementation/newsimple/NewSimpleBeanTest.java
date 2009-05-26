@@ -2,7 +2,7 @@ package org.jboss.webbeans.test.unit.implementation.newsimple;
 
 import java.util.Set;
 
-import javax.inject.New;
+import javax.enterprise.inject.New;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.bean.NewSimpleBean;
@@ -22,13 +22,13 @@ public class NewSimpleBeanTest extends AbstractWebBeansTest
    
    public void initNewBean() {
       
-      assert getCurrentManager().resolveByType(WrappedSimpleBean.class).size() == 1;
-      assert getCurrentManager().resolveByType(WrappedSimpleBean.class).iterator().next() instanceof SimpleBean;
-      wrappedSimpleBean = (SimpleBean<WrappedSimpleBean>) getCurrentManager().resolveByType(WrappedSimpleBean.class).iterator().next();
+      assert getCurrentManager().getBeans(WrappedSimpleBean.class).size() == 1;
+      assert getCurrentManager().getBeans(WrappedSimpleBean.class).iterator().next() instanceof SimpleBean;
+      wrappedSimpleBean = (SimpleBean<WrappedSimpleBean>) getCurrentManager().getBeans(WrappedSimpleBean.class).iterator().next();
       
-      assert getCurrentManager().resolveByType(WrappedSimpleBean.class, NEW_LITERAL).size() == 1;
-      assert getCurrentManager().resolveByType(WrappedSimpleBean.class, NEW_LITERAL).iterator().next() instanceof NewSimpleBean;
-      newSimpleBean = (NewSimpleBean<WrappedSimpleBean>) getCurrentManager().resolveByType(WrappedSimpleBean.class, NEW_LITERAL).iterator().next();
+      assert getCurrentManager().getBeans(WrappedSimpleBean.class, NEW_LITERAL).size() == 1;
+      assert getCurrentManager().getBeans(WrappedSimpleBean.class, NEW_LITERAL).iterator().next() instanceof NewSimpleBean;
+      newSimpleBean = (NewSimpleBean<WrappedSimpleBean>) getCurrentManager().getBeans(WrappedSimpleBean.class, NEW_LITERAL).iterator().next();
    }
 
    @Test(groups = { "new" })

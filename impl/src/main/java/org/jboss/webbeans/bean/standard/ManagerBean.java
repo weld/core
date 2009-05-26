@@ -21,15 +21,15 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.context.CreationalContext;
-import javax.inject.manager.Manager;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.webbeans.ManagerImpl;
 
 public class ManagerBean extends AbstractStandardBean<ManagerImpl>
 {
    
-   private static final Set<Type> TYPES = new HashSet<Type>(Arrays.asList(ManagerImpl.class, Manager.class));
+   private static final Set<Type> TYPES = new HashSet<Type>(Arrays.asList(ManagerImpl.class, BeanManager.class));
    
    public static final ManagerBean of(ManagerImpl manager)
    {

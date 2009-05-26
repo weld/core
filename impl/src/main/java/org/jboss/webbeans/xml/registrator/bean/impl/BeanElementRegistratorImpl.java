@@ -23,11 +23,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Named;
-import javax.annotation.Stereotype;
-import javax.context.ScopeType;
+import javax.enterprise.context.ScopeType;
+import javax.enterprise.inject.Named;
+import javax.enterprise.inject.Stereotype;
+import javax.enterprise.inject.deployment.DeploymentType;
 import javax.inject.DefinitionException;
-import javax.inject.DeploymentType;
 
 import org.dom4j.Element;
 import org.jboss.webbeans.introspector.AnnotatedClass;

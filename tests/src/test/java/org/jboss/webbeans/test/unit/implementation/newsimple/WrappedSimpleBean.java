@@ -2,8 +2,8 @@ package org.jboss.webbeans.test.unit.implementation.newsimple;
 
 import java.io.Serializable;
 
-import javax.annotation.Named;
-import javax.context.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Named;
 
 @SessionScoped
 @Named("Fred")

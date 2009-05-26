@@ -15,6 +15,6 @@ public class JavaEePkgTest extends AbstractWebBeansTest
    @Test
    public void testJavaEePkg()
    {      
-      assert getCurrentManager().resolveByType(Order.class).size() == 2;
+      assert getCurrentManager().getBeans(Order.class).size() == 2;
    }
 }

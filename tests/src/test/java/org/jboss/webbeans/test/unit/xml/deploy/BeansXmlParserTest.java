@@ -3,9 +3,9 @@ package org.jboss.webbeans.test.unit.xml.deploy;
 import java.net.URL;
 import java.util.Iterator;
 
+import javax.enterprise.inject.deployment.Production;
+import javax.enterprise.inject.deployment.Standard;
 import javax.inject.DefinitionException;
-import javax.inject.Production;
-import javax.inject.Standard;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Classes;

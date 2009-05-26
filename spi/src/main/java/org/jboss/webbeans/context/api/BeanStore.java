@@ -17,7 +17,7 @@
 
 package org.jboss.webbeans.context.api;
 
-import javax.context.Contextual;
+import javax.enterprise.context.spi.Contextual;
 
 
 /**

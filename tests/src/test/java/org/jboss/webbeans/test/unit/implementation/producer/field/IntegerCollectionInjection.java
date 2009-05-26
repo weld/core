@@ -2,8 +2,8 @@ package org.jboss.webbeans.test.unit.implementation.producer.field;
 
 import java.util.Collection;
 
-import javax.inject.Current;
-import javax.inject.Initializer;
+import javax.enterprise.inject.Current;
+import javax.enterprise.inject.Initializer;
 
 public class IntegerCollectionInjection
 {

@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.unit.lookup.circular;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Current;
+import javax.enterprise.inject.Current;
 
 class Foo
 {

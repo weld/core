@@ -3,8 +3,8 @@ package org.jboss.webbeans.test.unit.context;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.context.RequestScoped;
-import javax.inject.Produces;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Produces;
 
 public class ParameterizedTypeScoped
 {

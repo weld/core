@@ -2,8 +2,8 @@ package org.jboss.webbeans.test.unit.lookup;
 
 import java.util.List;
 
-import javax.inject.Instance;
-import javax.inject.TypeLiteral;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.TypeLiteral;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.literal.ObtainsLiteral;

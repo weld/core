@@ -3,7 +3,7 @@ package org.jboss.webbeans.test.unit.implementation.producer.field;
 import java.util.Collection;
 import java.util.List;
 
-import javax.inject.TypeLiteral;
+import javax.enterprise.inject.TypeLiteral;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.test.AbstractWebBeansTest;

@@ -19,11 +19,11 @@ package org.jboss.webbeans.context;
 import java.lang.annotation.Annotation;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.context.ContextNotActiveException;
-import javax.context.Contextual;
-import javax.context.CreationalContext;
-import javax.inject.manager.Bean;
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
 
+import org.jboss.webbeans.bean.BaseBean;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -63,7 +63,7 @@ public abstract class AbstractMapContext extends AbstractContext
     * @return An instance of the bean
     * @throws ContextNotActiveException if the context is not active
     * 
-    * @see javax.context.Context#get(Bean, boolean)
+    * @see javax.enterprise.context.spi.Context#get(BaseBean, boolean)
     */
    public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext)
    {

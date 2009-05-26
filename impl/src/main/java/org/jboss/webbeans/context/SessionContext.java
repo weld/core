@@ -22,7 +22,7 @@
  */
 package org.jboss.webbeans.context;
 
-import javax.context.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.api.Service;

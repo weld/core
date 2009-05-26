@@ -26,7 +26,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.inject.BindingType;
+import javax.enterprise.inject.BindingType;
 
 /**
  * The conversation context inactivity timeout

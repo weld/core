@@ -25,8 +25,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.inject.Current;
-import javax.inject.DeploymentType;
+import javax.enterprise.inject.Current;
+import javax.enterprise.inject.deployment.DeploymentType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 import javax.xml.ws.WebServiceRef;

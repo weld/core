@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import javax.context.Contextual;
+import javax.enterprise.context.spi.Contextual;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.api.BeanStore;

@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.unit.xml.beans;
 
-import javax.context.RequestScoped;
-import javax.inject.Initializer;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Initializer;
 
 import org.jboss.webbeans.test.unit.xml.beans.annotationtype.TestBindingType;
 import org.jboss.webbeans.test.unit.xml.beans.annotationtype.TestDeploymentType;

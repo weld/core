@@ -1,9 +1,9 @@
 package org.jboss.webbeans.test.unit.bootstrap;
 
+import javax.enterprise.inject.Current;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.event.Observes;
-import javax.inject.Current;
-import javax.inject.manager.Initialized;
-import javax.inject.manager.Manager;
 
 class InitializedObserverWhichUsesRequestContext
 {
@@ -12,7 +12,7 @@ class InitializedObserverWhichUsesRequestContext
    
    @Current Tuna tuna;
    
-   public void observeInitialized(@Observes @Initialized Manager manager)
+   public void observeInitialized(@Observes @BeforeBeanDiscovery BeanManager beanManager)
    {
       name = tuna.getName();
    }

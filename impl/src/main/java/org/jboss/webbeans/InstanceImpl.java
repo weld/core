@@ -18,9 +18,10 @@ package org.jboss.webbeans;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Iterator;
 import java.util.Set;
 
-import javax.inject.Instance;
+import javax.enterprise.inject.Instance;
 
 import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
 
@@ -59,8 +60,8 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
     * @param bindings The binding types
     * @return The instance
     * 
-    * @see javax.inject.Instance#get(Annotation...)
-    * @see javax.inject.manager.Manager#getInstanceByType(Class, Annotation...)
+    * @see javax.enterprise.inject.Instance#get(Annotation...)
+    * @see javax.enterprise.inject.spi.BeanManager#getInstanceByType(Class, Annotation...)
     */
    public T get(Annotation... bindings) 
    {
@@ -77,6 +78,12 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
    public String toString()
    {
       return "Obtainable instance for type " + type + " and binding types " + bindings;
+   }
+
+   public Iterator<T> iterator()
+   {
+      // TODO Auto-generated method stub
+      return null;
    }
 
 }

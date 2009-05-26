@@ -25,7 +25,7 @@ package org.jboss.webbeans;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.inject.TypeLiteral;
+import javax.enterprise.inject.TypeLiteral;
 
 import org.jboss.webbeans.bootstrap.api.Singleton;
 import org.jboss.webbeans.bootstrap.api.SingletonProvider;

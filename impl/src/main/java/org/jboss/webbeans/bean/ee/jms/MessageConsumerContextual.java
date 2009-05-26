@@ -18,8 +18,8 @@ package org.jboss.webbeans.bean.ee.jms;
 
 import java.io.Serializable;
 
-import javax.context.Contextual;
-import javax.context.CreationalContext;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
 import javax.inject.ExecutionException;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;

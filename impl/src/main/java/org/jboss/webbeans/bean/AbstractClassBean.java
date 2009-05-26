@@ -20,17 +20,17 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.context.CreationalContext;
-import javax.context.Dependent;
-import javax.context.ScopeType;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ScopeType;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.CreationException;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Initializer;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.deployment.DeploymentType;
+import javax.enterprise.inject.deployment.Production;
 import javax.event.Observes;
-import javax.inject.CreationException;
 import javax.inject.DefinitionException;
-import javax.inject.DeploymentType;
-import javax.inject.Disposes;
-import javax.inject.Initializer;
-import javax.inject.Produces;
-import javax.inject.Production;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;

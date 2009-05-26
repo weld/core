@@ -6,7 +6,7 @@ package org.jboss.webbeans.mock;
 import java.lang.reflect.Field;
 import java.util.Collection;
 
-import javax.inject.manager.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;

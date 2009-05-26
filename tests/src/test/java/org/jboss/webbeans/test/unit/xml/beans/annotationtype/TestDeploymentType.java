@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test.unit.xml.beans.annotationtype;
 
-import javax.inject.DeploymentType;
+import javax.enterprise.inject.deployment.DeploymentType;
 
 @DeploymentType
 public @interface TestDeploymentType

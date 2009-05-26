@@ -18,7 +18,7 @@ package org.jboss.webbeans.bean.ee.jms;
 
 import java.lang.reflect.Method;
 
-import javax.context.CreationalContext;
+import javax.enterprise.context.spi.CreationalContext;
 import javax.jms.Connection;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;

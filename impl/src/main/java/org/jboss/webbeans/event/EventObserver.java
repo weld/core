@@ -21,8 +21,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.inject.Current;
 import javax.event.Observer;
-import javax.inject.Current;
 import javax.inject.DuplicateBindingTypeException;
 
 import org.jboss.webbeans.ManagerImpl;

@@ -22,13 +22,14 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import javax.context.CreationalContext;
-import javax.context.Dependent;
-import javax.inject.Standard;
-import javax.inject.manager.Bean;
-import javax.inject.manager.InjectionPoint;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.deployment.Standard;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bean.BaseBean;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.resources.ClassTransformer;
@@ -47,7 +48,7 @@ public class NonContextualInjector
    {
       this.instances = new ConcurrentCache<Class<?>, Set<FieldInjectionPoint<?>>>();
       this.manager = manager;
-      nonContextualBean = new Bean<Object>(manager)
+      nonContextualBean = new BaseBean<Object>(manager)
       {
          
          @Override

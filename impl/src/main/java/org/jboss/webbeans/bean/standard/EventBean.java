@@ -22,10 +22,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.inject.TypeLiteral;
 import javax.event.Event;
 import javax.event.Fires;
 import javax.inject.Obtains;
-import javax.inject.TypeLiteral;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.event.EventImpl;

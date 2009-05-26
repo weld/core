@@ -21,11 +21,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.context.CreationalContext;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.CreationException;
+import javax.enterprise.inject.Disposes;
 import javax.event.Observes;
-import javax.inject.CreationException;
 import javax.inject.DefinitionException;
-import javax.inject.Disposes;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;

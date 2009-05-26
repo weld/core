@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.unit.bootstrap;
 
-import javax.inject.Production;
-import javax.inject.Standard;
+import javax.enterprise.inject.deployment.Production;
+import javax.enterprise.inject.deployment.Standard;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;

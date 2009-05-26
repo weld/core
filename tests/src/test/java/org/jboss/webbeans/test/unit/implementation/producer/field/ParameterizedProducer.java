@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Produces;
+import javax.enterprise.inject.Produces;
 
 public class ParameterizedProducer
 {

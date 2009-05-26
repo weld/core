@@ -20,8 +20,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
-import javax.annotation.NonBinding;
-import javax.inject.BindingType;
+import javax.enterprise.inject.BindingType;
+import javax.enterprise.inject.NonBinding;
 import javax.inject.DefinitionException;
 import javax.inject.ExecutionException;
 

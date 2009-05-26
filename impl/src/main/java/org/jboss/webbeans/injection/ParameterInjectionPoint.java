@@ -20,8 +20,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.Set;
 
-import javax.context.CreationalContext;
-import javax.inject.manager.Bean;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
@@ -77,9 +77,10 @@ public class ParameterInjectionPoint<T> extends ForwardingAnnotatedParameter<T> 
       throw new UnsupportedOperationException();
    }
    
+   @SuppressWarnings("unchecked")
    public T getValueToInject(ManagerImpl manager, CreationalContext<?> creationalContext)
    {
-      return manager.<T>getInstanceToInject(this, creationalContext);
+      return (T) manager.getInjectableReference(this, creationalContext);
    }
 
 }

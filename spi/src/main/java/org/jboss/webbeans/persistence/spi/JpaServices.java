@@ -16,7 +16,7 @@
  */
 package org.jboss.webbeans.persistence.spi;
 
-import javax.inject.manager.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 

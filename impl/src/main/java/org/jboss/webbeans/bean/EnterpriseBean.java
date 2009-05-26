@@ -26,11 +26,11 @@ import java.util.Set;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
-import javax.context.ApplicationScoped;
-import javax.context.CreationalContext;
 import javax.decorator.Decorator;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.CreationException;
 import javax.event.Observes;
-import javax.inject.CreationException;
 import javax.inject.DefinitionException;
 import javax.interceptor.Interceptor;
 

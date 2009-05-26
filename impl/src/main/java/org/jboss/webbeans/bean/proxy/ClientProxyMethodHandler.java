@@ -21,8 +21,8 @@ import java.lang.reflect.Method;
 
 import javassist.util.proxy.MethodHandler;
 
-import javax.context.Context;
-import javax.inject.manager.Bean;
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.CreationalContextImpl;

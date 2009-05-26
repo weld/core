@@ -1,7 +1,11 @@
 java.lang 
 java.util 
 javax.annotation 
-javax.inject 
+javax.enterprise.inject
+javax.enterprise.context
+javax.enterprise.context.spi
+javax.enterprise.inject.spi
+javax.enterprise.inject.deployment
 javax.context 
 javax.interceptor 
 javax.decorator 

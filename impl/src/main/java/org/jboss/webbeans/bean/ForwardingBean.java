@@ -20,10 +20,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.context.CreationalContext;
-import javax.inject.manager.Bean;
-import javax.inject.manager.InjectionPoint;
-import javax.inject.manager.Manager;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 /**
  * A delegating bean
@@ -32,17 +32,17 @@ import javax.inject.manager.Manager;
  * 
  * @param <T>
  */
-public abstract class ForwardingBean<T> extends Bean<T>
+public abstract class ForwardingBean<T> extends BaseBean<T>
 {
 
    /**
     * Constructor
     * 
-    * @param manager The Web Beans manager
+    * @param beanManager The Web Beans manager
     */
-   public ForwardingBean(Manager manager)
+   public ForwardingBean(BeanManager beanManager)
    {
-      super(manager);
+      super(beanManager);
    }
 
    /**

@@ -22,7 +22,7 @@
  */
 package org.jboss.webbeans.context;
 
-import javax.context.ConversationScoped;
+import javax.enterprise.context.ConversationScoped;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.api.Service;

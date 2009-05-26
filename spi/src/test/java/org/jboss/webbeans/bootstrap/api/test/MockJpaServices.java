@@ -2,7 +2,7 @@ package org.jboss.webbeans.bootstrap.api.test;
 
 import java.util.Collection;
 
-import javax.inject.manager.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 

@@ -28,15 +28,15 @@ import java.lang.reflect.WildcardType;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.context.CreationalContext;
-import javax.context.Dependent;
-import javax.context.ScopeType;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ScopeType;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.IllegalProductException;
+import javax.enterprise.inject.Initializer;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.deployment.DeploymentType;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.DefinitionException;
-import javax.inject.DeploymentType;
-import javax.inject.IllegalProductException;
-import javax.inject.Initializer;
-import javax.inject.Produces;
-import javax.inject.manager.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;

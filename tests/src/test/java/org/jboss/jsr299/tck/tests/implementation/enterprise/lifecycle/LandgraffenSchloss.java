@@ -1,10 +1,10 @@
 package org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle;
 
 import javax.annotation.PreDestroy;
-import javax.context.Dependent;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.inject.Current;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Current;
 
 @Stateful
 @Dependent

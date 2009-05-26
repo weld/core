@@ -27,9 +27,9 @@ import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
-import javax.context.CreationalContext;
-import javax.context.Dependent;
-import javax.inject.Production;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.deployment.Production;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.RIBean;

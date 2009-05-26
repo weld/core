@@ -1,6 +1,6 @@
 package org.jboss.webbeans.bootstrap.api.test;
 
-import javax.inject.manager.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.resources.spi.ResourceServices;
 

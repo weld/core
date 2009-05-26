@@ -35,7 +35,7 @@ public class SchemaValidationTest extends AbstractWebBeansTest
       XmlParser parser = new XmlParser(parserEnv);
       parser.parse();
       
-      assert parserEnv.getManager().resolveByType(Order.class).size() == 1;
+      assert parserEnv.getManager().getBeans(Order.class).size() == 1;
    }
    
    @Test(expectedExceptions = DefinitionException.class)

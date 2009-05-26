@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.inject.Disposes;
 import javax.event.AfterTransactionCompletion;
 import javax.event.AfterTransactionFailure;
 import javax.event.AfterTransactionSuccess;
@@ -32,7 +33,6 @@ import javax.event.BeforeTransactionCompletion;
 import javax.event.Fires;
 import javax.event.IfExists;
 import javax.event.Observes;
-import javax.inject.Disposes;
 
 /**
  * AnnotatedType provides a uniform access to the annotations on an annotated

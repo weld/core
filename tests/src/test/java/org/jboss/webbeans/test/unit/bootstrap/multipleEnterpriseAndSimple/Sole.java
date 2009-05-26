@@ -1,7 +1,7 @@
 package org.jboss.webbeans.test.unit.bootstrap.multipleEnterpriseAndSimple;
 
-import javax.annotation.Named;
-import javax.inject.Production;
+import javax.enterprise.inject.Named;
+import javax.enterprise.inject.deployment.Production;
 
 @Production
 @Whitefish

@@ -16,7 +16,7 @@
  */
 package org.jboss.webbeans.resources.spi;
 
-import javax.inject.manager.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.bootstrap.api.Service;
 

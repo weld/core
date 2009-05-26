@@ -2,7 +2,7 @@ package org.jboss.webbeans.test.unit.context;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.context.ApplicationScoped;
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ApplictionScopedObject

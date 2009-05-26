@@ -26,22 +26,23 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import javax.context.Dependent;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.AmbiguousResolutionException;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.New;
+import javax.enterprise.inject.UnproxyableResolutionException;
+import javax.enterprise.inject.UnsatisfiedResolutionException;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.event.Event;
 import javax.event.Fires;
-import javax.inject.AmbiguousDependencyException;
 import javax.inject.DefinitionException;
 import javax.inject.InconsistentSpecializationException;
-import javax.inject.Instance;
-import javax.inject.New;
 import javax.inject.NullableDependencyException;
 import javax.inject.Obtains;
-import javax.inject.UnproxyableDependencyException;
-import javax.inject.UnsatisfiedDependencyException;
 import javax.inject.UnserializableDependencyException;
-import javax.inject.manager.Bean;
-import javax.inject.manager.InjectionPoint;
 
+import org.jboss.webbeans.bean.BaseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.RIBean;
@@ -77,7 +78,7 @@ public class BeanValidator
     */
    public void validate()
    {
-      final List<Bean<?>> specializedBeans = new ArrayList<Bean<?>>();
+      final List<BaseBean<?>> specializedBeans = new ArrayList<BaseBean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {
          for (InjectionPoint injectionPoint : bean.getInjectionPoints())
@@ -108,16 +109,16 @@ public class BeanValidator
             Set<?> resolvedBeans = manager.resolveByType(annotatedItem, injectionPoint, bindings);
             if (resolvedBeans.isEmpty())
             {
-               throw new UnsatisfiedDependencyException("The injection point " + injectionPoint + " with binding types "  + Names.annotationsToString(injectionPoint.getBindings()) + " in " + bean + " has unsatisfied dependencies with binding types ");
+               throw new UnsatisfiedResolutionException("The injection point " + injectionPoint + " with binding types "  + Names.annotationsToString(injectionPoint.getBindings()) + " in " + bean + " has unsatisfied dependencies with binding types ");
             }
             if (resolvedBeans.size() > 1)
             {
-               throw new AmbiguousDependencyException("The injection point " + injectionPoint + " with binding types " + Names.annotationsToString(injectionPoint.getBindings()) + " in " + bean + " has ambiguous dependencies");
+               throw new AmbiguousResolutionException("The injection point " + injectionPoint + " with binding types " + Names.annotationsToString(injectionPoint.getBindings()) + " in " + bean + " has ambiguous dependencies");
             }
             Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
             if (manager.getServices().get(MetaDataCache.class).getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType()))
             {
-               throw new UnproxyableDependencyException("The injection point " + injectionPoint + " has non-proxyable dependencies");
+               throw new UnproxyableResolutionException("The injection point " + injectionPoint + " has non-proxyable dependencies");
             }
             if (Reflections.isPrimitive(annotatedItem.getRawType()) && resolvedBean.isNullable())
             {
@@ -147,7 +148,7 @@ public class BeanValidator
          boolean normalScoped = manager.getServices().get(MetaDataCache.class).getScopeModel(bean.getScopeType()).isNormal();
          if (normalScoped && !Beans.isBeanProxyable(bean))
          {
-            throw new UnproxyableDependencyException("Normal scoped bean " + bean + " is not proxyable");
+            throw new UnproxyableResolutionException("Normal scoped bean " + bean + " is not proxyable");
          }
       }
 

@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.AnnotationLiteral;
-import javax.inject.manager.Bean;
+import javax.enterprise.inject.AnnotationLiteral;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;

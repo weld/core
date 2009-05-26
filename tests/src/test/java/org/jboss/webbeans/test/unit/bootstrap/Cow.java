@@ -1,6 +1,6 @@
 package org.jboss.webbeans.test.unit.bootstrap;
 
-import javax.context.ApplicationScoped;
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 class Cow implements Animal

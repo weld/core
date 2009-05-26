@@ -16,11 +16,11 @@
  */
 package org.jboss.webbeans.conversation;
 
-import javax.annotation.Named;
-import javax.context.Conversation;
-import javax.context.RequestScoped;
-import javax.inject.Initializer;
-import javax.inject.Standard;
+import javax.enterprise.context.Conversation;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Initializer;
+import javax.enterprise.inject.Named;
+import javax.enterprise.inject.deployment.Standard;
 
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -29,7 +29,7 @@ import org.jboss.webbeans.log.Logging;
  * The current conversation implementation
  * 
  * @author Nicklas Karlsson
- * @see javax.context.Conversation
+ * @see javax.enterprise.context.Conversation
  */
 @RequestScoped
 @Named("javax.context.conversation")

@@ -24,15 +24,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Named;
-import javax.annotation.Stereotype;
-import javax.context.Dependent;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.BindingType;
+import javax.enterprise.inject.Named;
+import javax.enterprise.inject.Stereotype;
+import javax.enterprise.inject.deployment.Specializes;
+import javax.enterprise.inject.deployment.Standard;
+import javax.enterprise.inject.spi.Bean;
 import javax.event.Event;
-import javax.inject.BindingType;
 import javax.inject.DefinitionException;
-import javax.inject.Specializes;
-import javax.inject.Standard;
-import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
@@ -265,7 +265,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       for (AnnotatedInjectionPoint<?, ?> injectionPoint : getAnnotatedInjectionPoints())
       {
          Annotation[] bindings = injectionPoint.getMetaAnnotationsAsArray(BindingType.class);
-         Bean<?> resolvedBean = manager.resolveByType(injectionPoint.getRawType(), bindings).iterator().next();
+         Bean<?> resolvedBean = manager.getBeans(injectionPoint.getRawType(), bindings).iterator().next();
          if (passivating)
          {
             if (Dependent.class.equals(resolvedBean.getScopeType()) && !resolvedBean.isSerializable() && (((injectionPoint instanceof AnnotatedField) && !((AnnotatedField<?>) injectionPoint).isTransient()) || (injectionPoint instanceof AnnotatedParameter)) )
@@ -370,7 +370,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The set of binding types
     * 
-    * @see javax.inject.manager.Bean#getBindings()
+    * @see org.jboss.webbeans.bean.BaseBean#getBindings()
     */
    @Override
    public Set<Annotation> getBindings()
@@ -393,7 +393,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The deployment type
     * 
-    * @see javax.inject.manager.Bean#getDeploymentType()
+    * @see org.jboss.webbeans.bean.BaseBean#getDeploymentType()
     */
    @Override
    public Class<? extends Annotation> getDeploymentType()
@@ -422,7 +422,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The name
     * 
-    * @see javax.inject.manager.Bean#getName()
+    * @see org.jboss.webbeans.bean.BaseBean#getName()
     */
    @Override
    public String getName()
@@ -435,7 +435,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The scope type
     * 
-    * @see javax.inject.manager.Bean#getScopeType()
+    * @see org.jboss.webbeans.bean.BaseBean#getScopeType()
     */
    @Override
    public Class<? extends Annotation> getScopeType()
@@ -459,7 +459,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The set of API types
     * 
-    * @see javax.inject.manager.Bean#getTypes()
+    * @see org.jboss.webbeans.bean.BaseBean#getTypes()
     */
    @Override
    public Set<Type> getTypes()
@@ -484,7 +484,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return True if nullable, false otherwise
     * 
-    * @see javax.inject.manager.Bean#isNullable()
+    * @see org.jboss.webbeans.bean.BaseBean#isNullable()
     */
    @Override
    public boolean isNullable()

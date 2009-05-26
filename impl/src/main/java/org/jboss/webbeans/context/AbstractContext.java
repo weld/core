@@ -18,7 +18,7 @@ package org.jboss.webbeans.context;
 
 import java.lang.annotation.Annotation;
 
-import javax.context.Context;
+import javax.enterprise.context.spi.Context;
 
 /**
  * Common Context operation
@@ -57,7 +57,7 @@ public abstract class AbstractContext implements Context
     * 
     * @return The scope type
     * 
-    * @see javax.context.Context#getScopeType()
+    * @see javax.enterprise.context.spi.Context#getScopeType()
     */
    public Class<? extends Annotation> getScopeType()
    {
@@ -69,7 +69,7 @@ public abstract class AbstractContext implements Context
     * 
     * @return The active state
     * 
-    * @see javax.context.Context#isActive()
+    * @see javax.enterprise.context.spi.Context#isActive()
     */
    public boolean isActive()
    {

@@ -19,10 +19,10 @@ package org.jboss.webbeans.util;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.inject.BindingType;
+import javax.enterprise.inject.BindingType;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Bean;
 import javax.inject.DefinitionException;
-import javax.inject.Produces;
-import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.EnterpriseBean;

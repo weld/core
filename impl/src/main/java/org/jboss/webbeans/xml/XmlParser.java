@@ -28,11 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Named;
-import javax.context.ScopeType;
+import javax.enterprise.context.ScopeType;
+import javax.enterprise.inject.Named;
+import javax.enterprise.inject.deployment.DeploymentType;
 import javax.inject.DefinitionException;
 import javax.inject.DeploymentException;
-import javax.inject.DeploymentType;
 import javax.interceptor.InterceptorBindingType;
 
 import org.dom4j.Document;

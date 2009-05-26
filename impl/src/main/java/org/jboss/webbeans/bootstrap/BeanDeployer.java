@@ -21,14 +21,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.inject.BindingType;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Initializer;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.UnsatisfiedResolutionException;
+import javax.enterprise.inject.deployment.DeploymentType;
 import javax.event.Observes;
-import javax.inject.BindingType;
-import javax.inject.DeploymentType;
-import javax.inject.Disposes;
-import javax.inject.Initializer;
-import javax.inject.Produces;
 import javax.inject.Realizes;
-import javax.inject.UnsatisfiedDependencyException;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
@@ -164,7 +164,7 @@ public class BeanDeployer
 	         for(DisposalMethodBean<?> bean: all) {
 	            buff.append(bean.toString());
 	         }
-	         throw new UnsatisfiedDependencyException(buff.toString());
+	         throw new UnsatisfiedResolutionException(buff.toString());
 	      }
 	   }   
    

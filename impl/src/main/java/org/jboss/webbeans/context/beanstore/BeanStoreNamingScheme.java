@@ -16,7 +16,7 @@
  */
 package org.jboss.webbeans.context.beanstore;
 
-import javax.context.Contextual;
+import javax.enterprise.context.spi.Contextual;
 
 /**
  * Interface against a BeanStore to handle different naming schemes

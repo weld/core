@@ -22,7 +22,7 @@
  */
 package org.jboss.webbeans.jsf;
 
-import javax.context.Conversation;
+import javax.enterprise.context.Conversation;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;

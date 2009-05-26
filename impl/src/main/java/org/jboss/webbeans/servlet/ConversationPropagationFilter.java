@@ -18,7 +18,7 @@ package org.jboss.webbeans.servlet;
 
 import java.io.IOException;
 
-import javax.context.Conversation;
+import javax.enterprise.context.Conversation;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;

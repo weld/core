@@ -22,19 +22,19 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.List;
 
-import javax.context.Dependent;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Initializer;
+import javax.enterprise.inject.Produces;
 import javax.event.Asynchronously;
 import javax.event.IfExists;
 import javax.event.Observer;
 import javax.event.ObserverException;
 import javax.event.Observes;
 import javax.inject.DefinitionException;
-import javax.inject.Disposes;
-import javax.inject.Initializer;
-import javax.inject.Produces;
-import javax.inject.manager.Bean;
 
 import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.bean.BaseBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentInstancesStore;
@@ -57,7 +57,7 @@ import org.jboss.webbeans.util.Names;
  */
 public class ObserverImpl<T> implements Observer<T>
 {
-   protected final Bean<?> observerBean;
+   protected final BaseBean<?> observerBean;
    protected final MethodInjectionPoint<?> observerMethod;
    private final boolean conditional;
    private final boolean asynchronous;
@@ -73,7 +73,7 @@ public class ObserverImpl<T> implements Observer<T>
     * @param observerBean The observer bean
     * @param manager The Web Beans manager
     */
-   protected ObserverImpl(final AnnotatedMethod<?> observer, final Bean<?> observerBean, final ManagerImpl manager)
+   protected ObserverImpl(final AnnotatedMethod<?> observer, final BaseBean<?> observerBean, final ManagerImpl manager)
    {
       this.manager = manager;
       this.observerBean = observerBean;
@@ -206,7 +206,7 @@ public class ObserverImpl<T> implements Observer<T>
       manager.getTaskExecutor().execute(deferredEvent);
    }
    
-   private <B> B getInstance(Bean<B> observerBean)
+   private <B> B getInstance(BaseBean<B> observerBean)
    {
       return manager.getInstance(observerBean, !isConditional());
    }

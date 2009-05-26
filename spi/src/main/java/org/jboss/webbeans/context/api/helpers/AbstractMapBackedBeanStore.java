@@ -3,8 +3,7 @@ package org.jboss.webbeans.context.api.helpers;
 import java.util.Map;
 import java.util.Set;
 
-import javax.context.Contextual;
-import javax.inject.manager.Bean;
+import javax.enterprise.context.spi.Contextual;
 
 import org.jboss.webbeans.context.api.BeanStore;
 
@@ -24,7 +23,7 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore
     * @param The bean to look for
     * @return An instance, if found
     * 
-    * @see org.jboss.webbeans.context.api.BeanStore#get(Bean)
+    * @see org.jboss.webbeans.context.api.BeanStore#get(BaseBean)
     */
    public <T extends Object> T get(Contextual<? extends T> bean)
    {
@@ -39,7 +38,7 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore
     * @param bean the bean to remove
     * @return The instance removed
     *
-    * @see org.jboss.webbeans.context.api.BeanStore#remove(Bean)
+    * @see org.jboss.webbeans.context.api.BeanStore#remove(BaseBean)
     */
    public <T extends Object> T remove(Contextual<? extends T> bean)
    {
@@ -76,7 +75,7 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore
     * @param bean The bean
     * @param instance the instance
     * 
-    * @see org.jboss.webbeans.context.api.BeanStore#put(Bean, Object)
+    * @see org.jboss.webbeans.context.api.BeanStore#put(BaseBean, Object)
     */
    public <T> void put(Contextual<? extends T> bean, T instance)
    {

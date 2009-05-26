@@ -1,6 +1,6 @@
 package org.jboss.webbeans.context.api.helpers;
 
-import javax.context.Contextual;
+import javax.enterprise.context.spi.Contextual;
 
 import org.jboss.webbeans.context.api.BeanStore;
 
