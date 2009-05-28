@@ -109,10 +109,6 @@
 				<artifactId>maven-jetty-plugin</artifactId>
 				<version>${jetty.version}</version>
 			</plugin>
-      <plugin> 
-        <artifactId>maven-eclipse-plugin</artifactId> 
-        <version>2.5.1</version> 
-      </plugin> 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
