@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//Sun Microsystems, Inc.//DTD J2EE Application 1.3//EN" "http://java.sun.com/dtd/application_1_3.dtd">
+<application id="Application_ID">
+	<display-name>webbeans-translator-ear</display-name>
+	<module id="EjbModule_1243523823235">
+		<ejb>webbeans-translator-ejb-1.0.0-SNAPSHOT.jar</ejb>
+	</module>
+	<module id="WebModule_1243523823253">
+		<web>
+			<web-uri>webbeans-translator-war-1.0.0-SNAPSHOT.war</web-uri>
+			<context-root>webbeans-translator-war</context-root>
+		</web>
+	</module>
+</application>
