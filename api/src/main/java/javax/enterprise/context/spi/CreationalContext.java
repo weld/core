@@ -34,4 +34,6 @@ public interface CreationalContext<T>
     */
    public void push(T incompleteInstance);
    
+   public void release();
+   
 }

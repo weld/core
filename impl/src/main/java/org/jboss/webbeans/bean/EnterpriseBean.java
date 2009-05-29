@@ -317,6 +317,11 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
             
             public void push(T incompleteInstance) {};
             
+            public void release()
+            {
+               // TODO implement this
+            }
+            
          };
          DependentContext.instance().startCollectingDependents(dependentStorageRequest);
          DependentContext.instance().setActive(true);

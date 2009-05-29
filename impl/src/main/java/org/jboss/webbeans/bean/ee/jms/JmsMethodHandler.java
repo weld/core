@@ -41,6 +41,23 @@ import org.jboss.webbeans.context.DependentContext;
 abstract class JmsMethodHandler<C extends Connection, S extends Session, MP extends MessageProducer, MC extends MessageConsumer> extends AbstractResourceMethodHandler
 {
    
+   private static class DummyCreationalContext<T> implements CreationalContext<T>
+   {
+
+      public void push(T incompleteInstance)
+      {
+         // TODO Auto-generated method stub
+         
+      }
+
+      public void release()
+      {
+         // TODO Auto-generated method stub
+         
+      }
+      
+   }
+   
    private static final long serialVersionUID = -2598920314236475437L;
    
    public JmsMethodHandler(String jndiName, String mappedName)
@@ -95,43 +112,24 @@ abstract class JmsMethodHandler<C extends Connection, S extends Session, MP exte
    
    protected C getConnection(ConnectionContextual<C> connectionContexual)
    {
-      return ApplicationContext.instance().get(connectionContexual, new CreationalContext<C>() 
-      {
-
-         public void push(C incompleteInstance) {}
-         
-      });
+      return ApplicationContext.instance().get(connectionContexual, new DummyCreationalContext<C>());
    }
    
    private S getSession(SessionContextual<S> sessionContextual)
    {
-      return DependentContext.instance().get(sessionContextual, new CreationalContext<S>() 
-      {
-
-         public void push(S incompleteInstance) {}
-         
-      });
+      return DependentContext.instance().get(sessionContextual, new DummyCreationalContext<S>());
    }
    
    private MP getMessageProducer(MessageProducerContextual<MP> messageProducerContextual)
    {
-      return DependentContext.instance().get(messageProducerContextual, new CreationalContext<MP>() 
-      {
-
-         public void push(MP incompleteInstance) {}
-         
-      });
+      return DependentContext.instance().get(messageProducerContextual, new DummyCreationalContext<MP>());
    }
    
    private MC getQueueReceiver(MessageConsumerContextual<MC> messageConsumerContextual)
    {
-      return DependentContext.instance().get(messageConsumerContextual, new CreationalContext<MC>() 
-      {
-
-         public void push(MC incompleteInstance) {}
-         
-      });
+      return DependentContext.instance().get(messageConsumerContextual, new DummyCreationalContext<MC>());
    }
+
    
 
 

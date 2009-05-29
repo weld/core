@@ -9,5 +9,11 @@ public class MockCreationalContext<T> implements CreationalContext<T>
    {
 
    }
+   
+   public void release()
+   {
+      // TODO Auto-generated method stub
+      
+   }
 
 }
