@@ -18,10 +18,10 @@ package org.jboss.webbeans.environment.se.example.numberguess;
 
 import java.awt.CardLayout;
 
+import javax.enterprise.inject.Current;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.event.Observes;
-import javax.inject.Current;
-import javax.inject.manager.Deployed;
-import javax.inject.manager.Manager;
 
 /**
  * Swing-based number guess example, main application frame.
@@ -38,7 +38,7 @@ public class NumberGuessFrame
     {
     }
 
-    public void start( @Observes @Deployed Manager manager )
+    public void start( @Observes AfterDeploymentValidation event )
     {
         java.awt.EventQueue.invokeLater( new Runnable()
             {

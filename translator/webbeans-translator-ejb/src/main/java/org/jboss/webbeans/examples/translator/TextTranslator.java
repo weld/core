@@ -3,7 +3,7 @@ package org.jboss.webbeans.examples.translator;
 import java.io.Serializable;
 
 import javax.ejb.EJB;
-import javax.inject.Initializer;
+import javax.enterprise.inject.Initializer;
 
 public class TextTranslator implements Serializable
 { 

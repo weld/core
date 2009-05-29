@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Named;
-import javax.context.Conversation;
-import javax.context.SessionScoped;
+import javax.enterprise.context.Conversation;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Current;
+import javax.enterprise.inject.Named;
+import javax.enterprise.inject.Produces;
 import javax.faces.model.SelectItem;
-import javax.inject.Current;
-import javax.inject.Produces;
 
 import org.jboss.webbeans.conversation.ConversationIdGenerator;
 import org.jboss.webbeans.conversation.ConversationInactivityTimeout;

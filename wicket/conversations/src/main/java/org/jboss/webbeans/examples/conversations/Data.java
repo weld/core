@@ -2,8 +2,8 @@ package org.jboss.webbeans.examples.conversations;
 
 import java.io.Serializable;
 
-import javax.annotation.Named;
-import javax.context.ConversationScoped;
+import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Named;
 
 @ConversationScoped
 @Named

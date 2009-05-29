@@ -2,9 +2,9 @@ package org.jboss.webbeans.examples.conversations;
 
 import java.io.Serializable;
 
-import javax.annotation.Named;
-import javax.context.SessionScoped;
-import javax.inject.Produces;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Named;
+import javax.enterprise.inject.Produces;
 
 import org.jboss.webbeans.conversation.ConversationInactivityTimeout;
 

@@ -9,7 +9,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.inject.DeploymentType;
+import javax.enterprise.inject.deployment.DeploymentType;
 
 @Target( { TYPE, METHOD, FIELD })
 @Retention(RUNTIME)

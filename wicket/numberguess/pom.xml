@@ -49,6 +49,11 @@
 			<!-- TODO Move to version matrix -->
 			<version>1.2.14</version>
 		</dependency>
+		
+		<dependency>
+         <groupId>javax.annotation</groupId>
+         <artifactId>jsr250-api</artifactId>
+    </dependency>
 
 
 		<!--  JETTY DEPENDENCIES FOR TESTING  -->

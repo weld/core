@@ -19,8 +19,8 @@ package org.jboss.webbeans.environment.se.example.numberguess;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
-import javax.context.ApplicationScoped;
-import javax.inject.Current;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Current;
 
 /**
  * This class contains the pure logic of the Number Guess game.

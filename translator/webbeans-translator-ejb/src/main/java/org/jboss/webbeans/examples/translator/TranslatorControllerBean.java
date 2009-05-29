@@ -1,10 +1,10 @@
 package org.jboss.webbeans.examples.translator;
 
-import javax.annotation.Named;
-import javax.context.RequestScoped;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.inject.Current;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Current;
+import javax.enterprise.inject.Named;
 
 @Stateful
 @RequestScoped

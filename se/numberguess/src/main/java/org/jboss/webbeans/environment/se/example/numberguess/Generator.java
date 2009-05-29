@@ -18,8 +18,8 @@ package org.jboss.webbeans.environment.se.example.numberguess;
 
 import java.io.Serializable;
 
-import javax.context.ApplicationScoped;
-import javax.inject.Produces;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 
 @ApplicationScoped
 public class Generator

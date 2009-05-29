@@ -1,13 +1,13 @@
 package org.jboss.webbeans.examples.conversations;
 
-import javax.context.ConversationScoped;
-import javax.annotation.Named;
+import java.io.Serializable;
+
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Named;
 
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-
-import java.io.Serializable;
 
 @ConversationScoped
 @Named

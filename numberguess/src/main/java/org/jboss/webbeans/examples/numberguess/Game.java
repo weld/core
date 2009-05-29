@@ -3,16 +3,16 @@ package org.jboss.webbeans.examples.numberguess;
 
 import java.io.Serializable;
 
-import javax.annotation.Named;
 import javax.annotation.PostConstruct;
-import javax.context.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.AnnotationLiteral;
+import javax.enterprise.inject.Current;
+import javax.enterprise.inject.Named;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import javax.inject.AnnotationLiteral;
-import javax.inject.Current;
-import javax.inject.manager.Manager;
 
 @Named
 @SessionScoped
@@ -29,7 +29,7 @@ public class Game implements Serializable
    private int biggest;
    private int remainingGuesses;
    
-   @Current Manager manager;
+   @Current BeanManager manager;
    
    public Game()
    {

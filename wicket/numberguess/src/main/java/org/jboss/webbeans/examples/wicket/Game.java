@@ -3,12 +3,12 @@ package org.jboss.webbeans.examples.wicket;
 
 import java.io.Serializable;
 
-import javax.annotation.Named;
 import javax.annotation.PostConstruct;
-import javax.context.SessionScoped;
-import javax.inject.AnnotationLiteral;
-import javax.inject.Current;
-import javax.inject.manager.Manager;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.AnnotationLiteral;
+import javax.enterprise.inject.Current;
+import javax.enterprise.inject.Named;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.naming.NamingException;
 
 @Named
@@ -26,7 +26,7 @@ public class Game implements Serializable
    private int biggest;
    private int remainingGuesses;
    
-   @Current Manager manager;
+   @Current BeanManager manager;
    
    public Game() throws NamingException {}
 

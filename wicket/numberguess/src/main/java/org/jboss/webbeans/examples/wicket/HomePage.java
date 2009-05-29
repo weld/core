@@ -1,21 +1,16 @@
 package org.jboss.webbeans.examples.wicket;
 
-import javax.inject.Current;
+import javax.enterprise.inject.Current;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.behavior.AbstractBehavior;
-import org.apache.wicket.behavior.IBehavior;
+import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.request.target.component.listener.BehaviorRequestTarget;
 
 public class HomePage extends WebPage {
 

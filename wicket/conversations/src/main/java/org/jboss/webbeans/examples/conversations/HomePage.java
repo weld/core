@@ -3,8 +3,8 @@ package org.jboss.webbeans.examples.conversations;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.context.Conversation;
-import javax.inject.Current;
+import javax.enterprise.context.Conversation;
+import javax.enterprise.inject.Current;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
