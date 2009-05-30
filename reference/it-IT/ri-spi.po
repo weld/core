@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-04-19 20:36+0000\n"
-"PO-Revision-Date: 2009-05-19 21:52+0100\n"
+"PO-Revision-Date: 2009-05-30 15:34+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -277,7 +277,7 @@ msgstr ""
 #: ri-spi.xml:109
 #, no-c-format
 msgid "To allow JPA integration, the <literal>JpaServices</literal> interface should be implemented."
-msgstr ""
+msgstr "Per consentire l'integrazione con JPA, deve essere implementata l'interfaccia <literal>JpaServices</literal>."
 
 #. Tag: para
 #: ri-spi.xml:114
@@ -423,7 +423,7 @@ msgstr "La risoluzione di di riferimenti web service (per l'iniezione come risor
 #: ri-spi.xml:207
 #, no-c-format
 msgid "The bean store"
-msgstr ""
+msgstr "Il bean store"
 
 #. Tag: para
 #: ri-spi.xml:209
@@ -471,7 +471,7 @@ msgstr "Il bootstrap supporta più ambienti. Un ambiente viene definito da un'im
 #: ri-spi.xml:260
 #, no-c-format
 msgid "Web Beans uses a generic-typed service registry to allow services to be registered. All services implement the <literal>Service</literal> interface. The service registry allows services to be added and retrieved."
-msgstr ""
+msgstr "Web Beans usa un registro di servizio con tipo generico per consentire ai servizi di essere registrati. Tutti i servizi implementano l'interfaccia <literal>Service</literal>. Il registro di servizio consente ai servizio di essere aggiunti e recuperati."
 
 #. Tag: para
 #: ri-spi.xml:267
@@ -715,7 +715,7 @@ msgstr "Associare il manager a JNDI"
 #: ri-spi.xml:468
 #, no-c-format
 msgid "You should bind a <literal>Reference</literal> to the Manager <literal>ObjectFactory</literal> into JNDI at <literal>java:app/Manager</literal>. The type should be <literal>javax.inject.manager.Manager</literal> and the factory class is <literal>org.jboss.webbeans.resources.ManagerObjectFactory</literal>"
-msgstr ""
+msgstr "Occorre associare <literal>Reference</literal> al Manager <literal>ObjectFactory</literal> in JNDI all'indirizzo <literal>java:app/Manager</literal>. Il tipo dovrebbe essere <literal>javax.inject.manager.Manager</literal> e la classe di factory è <literal>org.jboss.webbeans.resources.ManagerObjectFactory</literal>"
 
 #~ msgid ""
 #~ "It should be possible to run Web Beans in an SE environment, but you'll "
