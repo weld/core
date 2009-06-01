@@ -60,8 +60,6 @@ import javax.event.Observer;
 import javax.inject.DeploymentException;
 import javax.inject.DuplicateBindingTypeException;
 
-import org.jboss.webbeans.bean.AbstractDecorator;
-import org.jboss.webbeans.bean.AbstractInterceptor;
 import org.jboss.webbeans.bean.DisposalMethodBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;

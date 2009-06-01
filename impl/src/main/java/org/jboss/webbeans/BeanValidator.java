@@ -35,7 +35,7 @@ import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.event.Event;
-import javax.event.Fires;
+import javax.enterprise.inject.Any;
 import javax.inject.DefinitionException;
 import javax.inject.InconsistentSpecializationException;
 import javax.inject.NullableDependencyException;
@@ -103,7 +103,7 @@ public class BeanValidator
                }
             }
             checkFacadeInjectionPoint(injectionPoint, Obtains.class, Instance.class);
-            checkFacadeInjectionPoint(injectionPoint, Fires.class, Event.class);
+            checkFacadeInjectionPoint(injectionPoint, Any.class, Event.class);
             Annotation[] bindings = injectionPoint.getBindings().toArray(new Annotation[0]);
             AnnotatedItem<?, ?> annotatedItem = ResolvableAnnotatedClass.of(injectionPoint.getType(), bindings);
             Set<?> resolvedBeans = manager.resolveByType(annotatedItem, injectionPoint, bindings);

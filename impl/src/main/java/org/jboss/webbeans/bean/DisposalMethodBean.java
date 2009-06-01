@@ -48,19 +48,6 @@ import org.jboss.webbeans.log.Logging;
 public class DisposalMethodBean<T> extends AbstractBean<T, Method>
 {
 
-   protected DisposalMethodBean(ManagerImpl manager, AnnotatedMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
-   {
-      super(manager);
-      this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
-      this.declaringBean = declaringBean;
-      checkDisposalMethod();
-      initInjectionPoints();
-      initType();
-      initTypes();
-      this.id = createId("DisposalMethod-" + declaringBean.getName() + "-" + disposalMethod.getSignature().toString());
-
-   }
-
    private static final LogProvider log = Logging.getLogProvider(AbstractProducerBean.class);
    protected AbstractClassBean<?> declaringBean;
    private DisposalMethodBean<?> specializedBean;
@@ -68,6 +55,19 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    protected Set<AnnotatedInjectionPoint<?, ?>> disposalInjectionPoints;
    private final String id;
 
+   protected DisposalMethodBean(ManagerImpl manager, AnnotatedMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
+   {
+      super(manager);
+      this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
+      this.declaringBean = declaringBean;
+      checkDisposalMethod();
+      initInjectionPoints();
+      initBindings();
+      initType();
+      initTypes();
+      this.id = createId("DisposalMethod-" + declaringBean.getName() + "-" + disposalMethod.getSignature().toString());
+
+   }
    
    @SuppressWarnings("unchecked")
    protected void initType()
@@ -107,10 +107,12 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    }
 
    @Override
-   public Set<Annotation> getBindings()
+   protected void initBindings()
    {
       // At least 1 parameter exists, already checked in constructor
-      return disposalMethodInjectionPoint.getParameters().get(0).getBindings();
+      this.bindings = new HashSet<Annotation>();
+      this.bindings.addAll(disposalMethodInjectionPoint.getParameters().get(0).getBindings());
+      initDefaultBindings();
    }
 
    @Override

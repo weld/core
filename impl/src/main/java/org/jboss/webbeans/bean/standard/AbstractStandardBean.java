@@ -29,12 +29,13 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
+import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.literal.CurrentLiteral;
 
 public abstract class AbstractStandardBean<T> extends RIBean<T>
 {
    
-   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentLiteral() };
+   private static final Annotation[] DEFAULT_BINDING_ARRAY = { new CurrentLiteral(), new AnyLiteral() };
    private static final Set<Annotation> DEFAULT_BINDING = new HashSet<Annotation>(Arrays.asList(DEFAULT_BINDING_ARRAY));
    
    private final String id;

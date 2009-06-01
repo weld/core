@@ -24,22 +24,22 @@ import java.util.Set;
 
 import javax.enterprise.inject.TypeLiteral;
 import javax.event.Event;
-import javax.event.Fires;
+import javax.enterprise.inject.Any;
 import javax.inject.Obtains;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.event.EventImpl;
 import org.jboss.webbeans.injection.resolution.AnnotatedItemTransformer;
-import org.jboss.webbeans.literal.FiresLiteral;
+import org.jboss.webbeans.literal.AnyLiteral;
 
 public class EventBean extends AbstractFacadeBean<Event<?>>
 {
 
-   private static final Class<Event<?>> TYPE = new TypeLiteral<Event<?>>() {}.getRawType();
-   private static final Set<Type> DEFAULT_TYPES = new HashSet<Type>(Arrays.asList(TYPE, Object.class));
-   private static final Fires FIRES = new FiresLiteral();
-   private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>(Arrays.asList(FIRES));
-   public static final AnnotatedItemTransformer TRANSFORMER = new FacadeBeanAnnotatedItemTransformer(Event.class, FIRES);
+   private static final Class<Event<?>>                  TYPE                      = new TypeLiteral<Event<?>>(){}.getRawType();
+   private static final Set<Type>                        DEFAULT_TYPES             = new HashSet<Type>(Arrays.asList(TYPE, Object.class));
+   private static final Annotation                       ANY                       = new AnyLiteral();
+   private static final Set<Annotation>                  DEFAULT_BINDINGS          = new HashSet<Annotation>(Arrays.asList(ANY));
+   public static final AnnotatedItemTransformer          TRANSFORMER               = new FacadeBeanAnnotatedItemTransformer(Event.class, ANY);
    private static final Set<Class<? extends Annotation>> FILTERED_ANNOTATION_TYPES = new HashSet<Class<? extends Annotation>>(Arrays.asList(Obtains.class));
    
    
