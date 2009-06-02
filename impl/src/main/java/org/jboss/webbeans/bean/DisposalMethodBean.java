@@ -345,7 +345,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       return specializedBean;
    }
 
-   public void destroy(T instance)
+   public void destroy(T instance, CreationalContext<T> creationalContext)
    {
       // No-op. Producer method dependent objects are destroyed in producer method bean  
    }

@@ -45,6 +45,8 @@ public interface Contextual<T>
     * 
     * @param instance
     *           the insance to destroy
+    * @param creationalContext
+    *           the creational context used to create the instance
     */
-   public void destroy(T instance);
+   public void destroy(T instance, CreationalContext<T> creationalContext);
 }

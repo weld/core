@@ -43,7 +43,7 @@ abstract class SessionContextual<T extends Session> implements Contextual<T>, Se
    
    protected abstract  T createSession() throws JMSException;
 
-   public void destroy(T instance)
+   public void destroy(T instance, CreationalContext<T> creationalContext)
    {
       try
       {

@@ -29,7 +29,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bean.BaseBean;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.resources.ClassTransformer;
@@ -48,52 +47,44 @@ public class NonContextualInjector
    {
       this.instances = new ConcurrentCache<Class<?>, Set<FieldInjectionPoint<?>>>();
       this.manager = manager;
-      nonContextualBean = new BaseBean<Object>(manager)
+      nonContextualBean = new Bean<Object>()
       {
          
-         @Override
          public Set<Annotation> getBindings()
          {
             return Collections.emptySet();
          }
 
-         @Override
          public Class<? extends Annotation> getDeploymentType()
          {
             return Standard.class;
          }
 
-         @Override
          public Set<InjectionPoint> getInjectionPoints()
          {
             return Collections.emptySet();
          }
 
-         @Override
          public String getName()
          {
             return null;
          }
 
-         @Override
          public Class<? extends Annotation> getScopeType()
          {
             return Dependent.class;
          }
 
-         @Override
          public Set<Type> getTypes()
          {
             return Collections.emptySet();
          }
 
-         @Override
          public boolean isNullable()
          {
             return false;
          }
 
-         @Override
          public boolean isSerializable()
          {
             return true;
@@ -104,9 +95,10 @@ public class NonContextualInjector
             return null;
          }
 
-         public void destroy(Object instance)
+         public void destroy(Object instance, CreationalContext<Object> context)
          {
          }
+         
       };
    }   
    

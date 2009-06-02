@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans.bean.ee.jms;
 
+import javax.enterprise.context.spi.CreationalContext;
 import javax.inject.ExecutionException;
 import javax.jms.JMSException;
 import javax.jms.Session;
@@ -61,6 +62,11 @@ class JmsTopicMethodHandler extends JmsMethodHandler<TopicConnection, TopicSessi
             return jmsServices.getTopicConnectionFactory().createTopicConnection();
          }
 
+         public void destroy(TopicConnection instance, CreationalContext<TopicConnection> creationalContext)
+         {
+            
+         }
+
       };
       this.sessionContextual = new SessionContextual<TopicSession>()
       {
@@ -93,6 +99,11 @@ class JmsTopicMethodHandler extends JmsMethodHandler<TopicConnection, TopicSessi
             }
          }
 
+         public void destroy(TopicPublisher instance, CreationalContext<TopicPublisher> creationalContext)
+         {
+            
+         }
+
       };
       this.messageConsumerContextual = new MessageConsumerContextual<TopicSubscriber>()
       {
@@ -111,6 +122,11 @@ class JmsTopicMethodHandler extends JmsMethodHandler<TopicConnection, TopicSessi
             {
                throw new ExecutionException("Error creating TopicSubscriber", e);
             }
+         }
+
+         public void destroy(TopicSubscriber instance, CreationalContext<TopicSubscriber> creationalContext)
+         {
+            
          }
 
       };

@@ -62,7 +62,7 @@ public class InjectionPointBean extends AbstractStandardBean<InjectionPoint>
       return getManager().getInjectionPoint();
    }
    
-   public void destroy(InjectionPoint instance) 
+   public void destroy(InjectionPoint instance, CreationalContext<InjectionPoint> creationalContext) 
    {
       
    }
@@ -73,7 +73,6 @@ public class InjectionPointBean extends AbstractStandardBean<InjectionPoint>
       return InjectionPoint.class;
    }
 
-   @Override
    public Set<Type> getTypes()
    {
       return TYPES;

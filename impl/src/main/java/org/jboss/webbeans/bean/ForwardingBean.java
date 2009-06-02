@@ -32,18 +32,8 @@ import javax.enterprise.inject.spi.InjectionPoint;
  * 
  * @param <T>
  */
-public abstract class ForwardingBean<T> extends BaseBean<T>
+public abstract class ForwardingBean<T> implements Bean<T>
 {
-
-   /**
-    * Constructor
-    * 
-    * @param beanManager The Web Beans manager
-    */
-   public ForwardingBean(BeanManager beanManager)
-   {
-      super(beanManager);
-   }
 
    /**
     * Creates an instance of the delegate
@@ -60,9 +50,9 @@ public abstract class ForwardingBean<T> extends BaseBean<T>
     * 
     * @param instance The instance to destroy
     */
-   public void destroy(T instance)
+   public void destroy(T instance, CreationalContext<T> creationalContext)
    {
-      delegate().destroy(instance);
+      delegate().destroy(instance, creationalContext);
    }
 
    /**
@@ -70,7 +60,6 @@ public abstract class ForwardingBean<T> extends BaseBean<T>
     * 
     * @return The binding types
     */
-   @Override
    public Set<Annotation> getBindings()
    {
       return delegate().getBindings();
@@ -81,7 +70,6 @@ public abstract class ForwardingBean<T> extends BaseBean<T>
     * 
     * @return The deployment types
     */
-   @Override
    public Class<? extends Annotation> getDeploymentType()
    {
       return delegate().getDeploymentType();
@@ -92,7 +80,6 @@ public abstract class ForwardingBean<T> extends BaseBean<T>
     * 
     * @return The name
     */
-   @Override
    public String getName()
    {
       return delegate().getName();
@@ -103,7 +90,6 @@ public abstract class ForwardingBean<T> extends BaseBean<T>
     * 
     * @return The scope type
     */
-   @Override
    public Class<? extends Annotation> getScopeType()
    {
       return delegate().getScopeType();
@@ -114,7 +100,6 @@ public abstract class ForwardingBean<T> extends BaseBean<T>
     * 
     * @return The API types
     */
-   @Override
    public Set<Type> getTypes()
    {
       return delegate().getTypes();
@@ -125,7 +110,6 @@ public abstract class ForwardingBean<T> extends BaseBean<T>
     * 
     * @return True if nullable, false otherwise
     */
-   @Override
    public boolean isNullable()
    {
       return delegate().isNullable();
@@ -136,13 +120,11 @@ public abstract class ForwardingBean<T> extends BaseBean<T>
     * 
     * @return True if serializable, false otherwise
     */
-   @Override
    public boolean isSerializable()
    {
       return delegate().isSerializable();
    }
    
-   @Override
    public Set<InjectionPoint> getInjectionPoints()
    {
       return delegate().getInjectionPoints();

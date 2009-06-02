@@ -359,14 +359,6 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       }
    }
 
-   public void destroy(T instance)
-   {
-      /*
-       * try { DependentContext.INSTANCE.setActive(true); } finally {
-       * DependentContext.INSTANCE.setActive(false); }
-       */
-   }
-
    protected abstract T produceInstance(CreationalContext<T> creationalContext);
 
    /**

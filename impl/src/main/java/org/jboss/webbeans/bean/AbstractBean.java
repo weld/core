@@ -381,7 +381,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @see org.jboss.webbeans.bean.BaseBean#getBindings()
     */
-   @Override
    public Set<Annotation> getBindings()
    {
       return bindings;
@@ -404,7 +403,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @see org.jboss.webbeans.bean.BaseBean#getDeploymentType()
     */
-   @Override
    public Class<? extends Annotation> getDeploymentType()
    {
       return deploymentType;
@@ -433,7 +431,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @see org.jboss.webbeans.bean.BaseBean#getName()
     */
-   @Override
    public String getName()
    {
       return name;
@@ -446,7 +443,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @see org.jboss.webbeans.bean.BaseBean#getScopeType()
     */
-   @Override
    public Class<? extends Annotation> getScopeType()
    {
       return scopeType;
@@ -470,7 +466,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @see org.jboss.webbeans.bean.BaseBean#getTypes()
     */
-   @Override
    public Set<Type> getTypes()
    {
       return types;
@@ -495,7 +490,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @see org.jboss.webbeans.bean.BaseBean#isNullable()
     */
-   @Override
    public boolean isNullable()
    {
       return !isPrimitive();
@@ -512,7 +506,6 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       return primitive;
    }
 
-   @Override
    public boolean isSerializable()
    {
       return _serializable && checkInjectionPointsAreSerializable();

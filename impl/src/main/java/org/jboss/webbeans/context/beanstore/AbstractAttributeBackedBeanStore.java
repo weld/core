@@ -23,6 +23,7 @@ import java.util.List;
 import javax.enterprise.context.spi.Contextual;
 
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.context.api.BeanInstance;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -47,10 +48,10 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
     * @return The instance
     */
    @SuppressWarnings("unchecked")
-   public <T> T get(Contextual<? extends T> contextual)
+   public <T> BeanInstance<T> get(Contextual<? extends T> contextual)
    {
       String key = getNamingScheme().getContextualKey(contextual);
-      T instance = (T) getAttribute(key);
+      BeanInstance<T> instance = (BeanInstance<T>) getAttribute(key);
       log.trace("Looked for " + key + " and got " + instance);
       return instance;
    }
@@ -63,7 +64,7 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
     */
    public <T> T remove(Contextual<? extends T> contextual)
    {
-      T instance = get(contextual);
+      T instance = get(contextual).getInstance();
       String key = getNamingScheme().getContextualKey(contextual);
       removeAttribute(key);
       log.trace("Removed bean under key " + key);
@@ -126,11 +127,11 @@ public abstract class AbstractAttributeBackedBeanStore implements BeanStore
     * @param instance The instance
     * @return The instance added
     */
-   public <T> void put(Contextual<? extends T> bean, T instance)
+   public <T> void put(BeanInstance<T> beanInstance)
    {
-      String key = getNamingScheme().getContextualKey(bean);
-      setAttribute(key, instance);
-      log.trace("Added bean " + bean + " under key " + key);
+      String key = getNamingScheme().getContextualKey(beanInstance.getContextual());
+      setAttribute(key, beanInstance);
+      log.trace("Added Contextual type " + beanInstance.getContextual() + " under key " + key);
    }
 
    /**

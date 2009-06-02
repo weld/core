@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.webbeans.bean.BaseBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;

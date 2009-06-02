@@ -143,7 +143,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * 
     * @param instance The instance
     */
-   public void destroy(T instance)
+   public void destroy(T instance, CreationalContext<T> creationalContext)
    {
       try
       {

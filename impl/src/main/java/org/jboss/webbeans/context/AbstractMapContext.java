@@ -23,7 +23,7 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.webbeans.bean.BaseBean;
+import org.jboss.webbeans.context.api.BeanInstance;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -75,10 +75,10 @@ public abstract class AbstractMapContext extends AbstractContext
       {
          throw new IllegalStateException("No bean store available for " + toString());
       }
-      T instance = getBeanStore().get(contextual);
-      if (instance != null)
+      BeanInstance<T> beanInstance = getBeanStore().get(contextual);
+      if (beanInstance != null)
       {
-         return instance;
+         return beanInstance.getInstance();
       }
       else if (creationalContext != null)
       {
@@ -88,16 +88,17 @@ public abstract class AbstractMapContext extends AbstractContext
             if(needCreationLock)
             {
                creationLock.lock();
-               instance = getBeanStore().get(contextual);
-               if (instance != null)
+               beanInstance = getBeanStore().get(contextual);
+               if (beanInstance != null)
                {
-                  return instance;
+                  return beanInstance.getInstance();
                }
             }
-            instance = contextual.create(creationalContext);
+            T instance = contextual.create(creationalContext);
             if (instance != null)
             {
-               getBeanStore().put(contextual, instance);
+               beanInstance = new BeanInstanceImpl<T>(contextual, instance, creationalContext);
+               getBeanStore().put(beanInstance);
             }
             return instance;
          }
@@ -124,17 +125,25 @@ public abstract class AbstractMapContext extends AbstractContext
     * Destroys a bean
     * 
     * @param <T> The type of the bean
-    * @param bean The bean to destroy
+    * @param contextual The contextual type to destroy
     */
-   private <T> void destroy(Contextual<T> bean)
+   public <T> void destroy(Contextual<T> contextual, T instance)
    {
-      log.trace("Destroying " + bean);
+      log.trace("Destroying " + contextual);
       if (getBeanStore() == null)
       {
          throw new IllegalStateException("No bean store available for " + toString());
       }
-      bean.destroy(getBeanStore().get(bean));
+      BeanInstance<T> beanInstance = getBeanStore().get(contextual);
+      contextual.destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
    }
+   
+   private <T> void destroy(Contextual<T> contextual)
+   {
+      BeanInstance<T> beanInstance = getBeanStore().get(contextual);
+      destroy(contextual, beanInstance.getInstance());
+   }
+   
 
    /**
     * Destroys the context

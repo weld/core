@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans.bean.ee.jms;
 
+import javax.enterprise.context.spi.CreationalContext;
 import javax.inject.ExecutionException;
 import javax.jms.JMSException;
 import javax.jms.Queue;
@@ -57,6 +58,11 @@ class JmsQueueMethodHandler extends JmsMethodHandler<QueueConnection, QueueSessi
             return jmsServices.getQueueConnectionFactory().createQueueConnection();
          }
 
+         public void destroy(QueueConnection instance, CreationalContext<QueueConnection> creationalContext)
+         {
+            
+         }
+
       };
       this.sessionContextual = new SessionContextual<QueueSession>()
       {
@@ -89,6 +95,11 @@ class JmsQueueMethodHandler extends JmsMethodHandler<QueueConnection, QueueSessi
             }
          }
 
+         public void destroy(QueueSender instance, CreationalContext<QueueSender> creationalContext)
+         {
+            
+         }
+
       };
       this.messageConsumerContextual = new MessageConsumerContextual<QueueReceiver>()
       {
@@ -107,6 +118,11 @@ class JmsQueueMethodHandler extends JmsMethodHandler<QueueConnection, QueueSessi
             {
                throw new ExecutionException("Error creating QueueReceiver", e);
             }
+         }
+
+         public void destroy(QueueReceiver instance, CreationalContext<QueueReceiver> creationalContext)
+         {
+            
          }
 
       };

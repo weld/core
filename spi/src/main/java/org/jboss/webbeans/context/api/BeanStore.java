@@ -35,7 +35,7 @@ public interface BeanStore
     * @param bean The bean whose instance to return
     * @return The instance. Null if not found
     */
-   public abstract <T extends Object> T get(Contextual<? extends T> bean);
+   public abstract <T> BeanInstance<T> get(Contextual<? extends T> bean);
 
    /**
     * Removes an instance of a bean from the storage
@@ -64,5 +64,5 @@ public interface BeanStore
     * @param instance The instance to add
     * @return The instance added
     */
-   public abstract <T> void put(Contextual<? extends T> bean, T instance);
+   public abstract <T> void put(BeanInstance<T> beanInstance);
 }

@@ -58,7 +58,6 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
       return TYPE;
    }
 
-   @Override
    public Set<Type> getTypes()
    {
       return DEFAULT_TYPES;

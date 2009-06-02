@@ -24,7 +24,6 @@ import java.util.Set;
 
 import javax.enterprise.inject.TypeLiteral;
 import javax.event.Event;
-import javax.enterprise.inject.Any;
 import javax.inject.Obtains;
 
 import org.jboss.webbeans.ManagerImpl;
@@ -59,7 +58,6 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
       return TYPE;
    }
 
-   @Override
    public Set<Type> getTypes()
    {
       return DEFAULT_TYPES;

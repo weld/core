@@ -28,9 +28,11 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.api.Service;
+import org.jboss.webbeans.context.api.BeanInstance;
 
 /**
  * The dependent context
@@ -84,7 +86,8 @@ public class DependentContext extends AbstractContext implements Service
          T instance = contextual.create(creationalContext);
          if (dependentStorageRequest.get() != null)
          {
-            dependentStorageRequest.get().getDependentInstancesStore().addDependentInstance(dependentStorageRequest.get().getKey(), ContextualInstance.of(contextual, instance));
+            BeanInstance<T> beanInstance = new BeanInstanceImpl<T>(contextual, instance, creationalContext);
+            dependentStorageRequest.get().getDependentInstancesStore().addDependentInstance(dependentStorageRequest.get().getKey(), beanInstance);
          }
          return instance;
       }
@@ -154,6 +157,15 @@ public class DependentContext extends AbstractContext implements Service
       if (this.dependentStorageRequest.get() != null && this.dependentStorageRequest.get().equals(dependentStorageRequest))
       {
          this.dependentStorageRequest.set(null);
+      }
+   }
+   
+   public <T> void destroy(Contextual<T> contextual, T instance)
+   {
+      if (contextual instanceof Bean)
+      {
+         CreationalContext<T> creationalContext = new CreationalContextImpl<T>((Bean<T>) contextual);
+         contextual.destroy(instance, creationalContext);
       }
    }
 

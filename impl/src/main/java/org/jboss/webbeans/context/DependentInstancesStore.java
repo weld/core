@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.jboss.webbeans.context.api.BeanInstance;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -34,14 +35,14 @@ public class DependentInstancesStore
    private static LogProvider log = Logging.getLogProvider(DependentInstancesStore.class);
    
    // A object -> List of contextual instances mapping
-   private Map<Object, List<ContextualInstance<?>>> dependentInstances;
+   private Map<Object, List<BeanInstance<?>>> dependentInstances;
 
    /**
     * Creates a new DependentInstancesStore
     */
    public DependentInstancesStore()
    {
-      dependentInstances = new ConcurrentHashMap<Object, List<ContextualInstance<?>>>();
+      dependentInstances = new ConcurrentHashMap<Object, List<BeanInstance<?>>>();
    }
 
    /**
@@ -50,12 +51,12 @@ public class DependentInstancesStore
     * @param key The key to store the instance under
     * @param contextualInstance The instance to store
     */
-   public <T> void addDependentInstance(Object key, ContextualInstance<T> contextualInstance)
+   public <T> void addDependentInstance(Object key, BeanInstance<T> contextualInstance)
    {
-      List<ContextualInstance<?>> instances = dependentInstances.get(key);
+      List<BeanInstance<?>> instances = dependentInstances.get(key);
       if (instances == null)
       {
-         instances = new CopyOnWriteArrayList<ContextualInstance<?>>();
+         instances = new CopyOnWriteArrayList<BeanInstance<?>>();
          dependentInstances.put(key, instances);
       }
       log.trace("Registered dependent instance " + contextualInstance + " under key " + key);
@@ -75,11 +76,16 @@ public class DependentInstancesStore
       {
          return;
       }
-      for (ContextualInstance<?> injectedInstance : dependentInstances.get(key))
+      for (BeanInstance<?> injectedInstance : dependentInstances.get(key))
       {
-         injectedInstance.destroy();
+         destroy(injectedInstance);
       }
       dependentInstances.remove(key);
+   }
+   
+   private static <T> void destroy(BeanInstance<T> beanInstance)
+   {
+      beanInstance.getContextual().destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
    }
 
 }

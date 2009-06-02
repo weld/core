@@ -9,13 +9,12 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.deployment.Production;
-import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Packaging;
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bean.BaseBean;
 import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
@@ -34,7 +33,7 @@ public class ManagerTest extends AbstractWebBeansTest
    
    private static interface Dummy {}
    
-   private static class DummyBean extends BaseBean<Dummy>
+   private static class DummyBean implements Bean<Dummy>
    {
       
       private static final Set<Type> TYPES = new HashSet<Type>();
@@ -45,54 +44,41 @@ public class ManagerTest extends AbstractWebBeansTest
          TYPES.add(Object.class);
       }
 
-      protected DummyBean(BeanManager beanManager)
-      {
-         super(beanManager);
-      }
-
-      @Override
       public Set<Annotation> getBindings()
       {
          return DEFAULT_BINDINGS;
       }
 
-      @Override
       public Class<? extends Annotation> getDeploymentType()
       {
          return Production.class;
       }
 
-      @Override
       public Set<InjectionPoint> getInjectionPoints()
       {
          return Collections.emptySet();
       }
 
-      @Override
       public String getName()
       {
          return null;
       }
 
-      @Override
       public Class<? extends Annotation> getScopeType()
       {
          return Dependent.class;
       }
 
-      @Override
       public Set<Type> getTypes()
       {
          return TYPES;
       }
 
-      @Override
       public boolean isNullable()
       {
          return true;
       }
 
-      @Override
       public boolean isSerializable()
       {
          return false;
@@ -103,7 +89,7 @@ public class ManagerTest extends AbstractWebBeansTest
          return null;
       }
 
-      public void destroy(Dummy instance)
+      public void destroy(Dummy instance, CreationalContext<Dummy> creationalContext)
       {
          
       }
@@ -125,7 +111,7 @@ public class ManagerTest extends AbstractWebBeansTest
    public void testChildManagerSerializability() throws Exception
    {
       ManagerImpl childManager = getCurrentManager().createActivity();
-      BaseBean<?> dummyBean = new DummyBean(childManager);
+      Bean<?> dummyBean = new DummyBean();
       childManager.addBean(dummyBean);
       Integer childManagerId = childManager.getId();
       ManagerImpl deserializedChildManager = (ManagerImpl) deserialize(serialize(childManager));

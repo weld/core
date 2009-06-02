@@ -42,7 +42,6 @@ import javax.inject.NullableDependencyException;
 import javax.inject.Obtains;
 import javax.inject.UnserializableDependencyException;
 
-import org.jboss.webbeans.bean.BaseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.RIBean;
@@ -78,7 +77,7 @@ public class BeanValidator
     */
    public void validate()
    {
-      final List<BaseBean<?>> specializedBeans = new ArrayList<BaseBean<?>>();
+      final List<RIBean<?>> specializedBeans = new ArrayList<RIBean<?>>();
       for (Bean<?> bean : manager.getBeans())
       {
          for (InjectionPoint injectionPoint : bean.getInjectionPoints())

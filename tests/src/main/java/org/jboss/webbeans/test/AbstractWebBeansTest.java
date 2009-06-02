@@ -17,6 +17,7 @@ import org.jboss.testharness.AbstractTest;
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
+import org.jboss.webbeans.mock.el.EL;
 import org.jboss.webbeans.util.EnumerationIterable;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterMethod;
@@ -69,6 +70,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
       if (!isInContainer())
       {
          getCurrentConfiguration().getExtraPackages().add(AbstractWebBeansTest.class.getPackage().getName());
+         getCurrentConfiguration().getExtraPackages().add(EL.class.getPackage().getName());
       }
       super.beforeSuite(context);
    }

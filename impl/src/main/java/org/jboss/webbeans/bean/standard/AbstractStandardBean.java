@@ -53,20 +53,16 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
    }
 
    
-   
-   @Override
    public Set<Annotation> getBindings()
    {
       return DEFAULT_BINDING;
    }
    
-   @Override
    public Class<? extends Annotation> getDeploymentType()
    {
       return Standard.class;
    }
    
-   @Override
    public Class<? extends Annotation> getScopeType()
    {
       return Dependent.class;
@@ -78,7 +74,6 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
       return null;
    }
    
-   @Override
    public String getName()
    {
       return null;
@@ -90,7 +85,6 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
       return Collections.emptySet();
    }
    
-   @Override
    public boolean isNullable()
    {
       return true;
@@ -102,7 +96,6 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
       return false;
    }
    
-   @Override
    public boolean isSerializable()
    {
       return false;

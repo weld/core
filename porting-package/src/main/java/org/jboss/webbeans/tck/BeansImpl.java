@@ -1,7 +1,11 @@
 package org.jboss.webbeans.tck;
 
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.jsr299.tck.spi.Beans;
 import org.jboss.webbeans.CurrentManager;
+import org.jboss.webbeans.context.AbstractContext;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.util.Reflections;
@@ -76,5 +80,25 @@ public class BeansImpl implements Beans
       }   
       throw new NullPointerException("No EJB found for " + localInterface.getName() + " on bean " + beanType.getName());
    }
+
+   public <T> T createBeanInstance(Bean<T> bean)
+   {
+      return CurrentManager.rootManager().getCurrent().getInstance(bean, true);
+   }
+
+   public <T> void destroyBeanInstance(Bean<T> bean, T instance)
+   {
+      Context context = CurrentManager.rootManager().getCurrent().getContext(bean.getScopeType());
+      if (context instanceof AbstractContext)
+      {
+         ((AbstractContext) context).destroy(bean, instance);
+      }
+      else
+      {
+         throw new IllegalStateException("Don't know how to destroy a bean from " + context);
+      }
+   }
+
+
 
 }

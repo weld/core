@@ -93,7 +93,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
       return result;
    }
    
-   public void destroy(T instance)
+   public void destroy(T instance, CreationalContext<T> creationalContext)
    {
       // TODO Auto-generated method stub
    }

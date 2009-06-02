@@ -34,7 +34,6 @@ import javax.event.Observes;
 import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.ManagerImpl;
-import org.jboss.webbeans.bean.BaseBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentInstancesStore;
@@ -57,7 +56,7 @@ import org.jboss.webbeans.util.Names;
  */
 public class ObserverImpl<T> implements Observer<T>
 {
-   protected final BaseBean<?> observerBean;
+   protected final RIBean<?> observerBean;
    protected final MethodInjectionPoint<?> observerMethod;
    private final boolean conditional;
    private final boolean asynchronous;
@@ -73,7 +72,7 @@ public class ObserverImpl<T> implements Observer<T>
     * @param observerBean The observer bean
     * @param manager The Web Beans manager
     */
-   protected ObserverImpl(final AnnotatedMethod<?> observer, final BaseBean<?> observerBean, final ManagerImpl manager)
+   protected ObserverImpl(final AnnotatedMethod<?> observer, final RIBean<?> observerBean, final ManagerImpl manager)
    {
       this.manager = manager;
       this.observerBean = observerBean;
@@ -206,7 +205,7 @@ public class ObserverImpl<T> implements Observer<T>
       manager.getTaskExecutor().execute(deferredEvent);
    }
    
-   private <B> B getInstance(BaseBean<B> observerBean)
+   private <B> B getInstance(RIBean<B> observerBean)
    {
       return manager.getInstance(observerBean, !isConditional());
    }

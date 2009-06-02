@@ -121,7 +121,9 @@
       <profile>
          <id>run</id>
          <activation>
-            <activeByDefault /> 
+            <property>
+               <name>!osgi.bundles.defaultStartLevel</name>
+            </property>
          </activation>
          <dependencies>
                   

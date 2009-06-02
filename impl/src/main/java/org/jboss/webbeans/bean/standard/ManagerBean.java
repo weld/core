@@ -52,13 +52,12 @@ public class ManagerBean extends AbstractStandardBean<ManagerImpl>
       return ManagerImpl.class;
    }
 
-   @Override
    public Set<Type> getTypes()
    {
       return TYPES;
    }
 
-   public void destroy(ManagerImpl instance)
+   public void destroy(ManagerImpl instance, CreationalContext<ManagerImpl> creationalContext)
    {
       // No-op
    }

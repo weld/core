@@ -115,25 +115,21 @@ public abstract class AbstractJavaEEResourceBean<T> extends RIBean<T>
       this.proxyClass = proxyClass;
    }
 
-   @Override
    public Set<Annotation> getBindings()
    {
       return bindings;
    }
    
-   @Override
    public Class<? extends Annotation> getScopeType()
    {
       return Dependent.class;
    }
    
-   @Override
    public String getName()
    {
       return null;
    }
    
-   @Override
    public Class<? extends Annotation> getDeploymentType()
    {
       return deploymentType;
@@ -145,7 +141,6 @@ public abstract class AbstractJavaEEResourceBean<T> extends RIBean<T>
       return type;
    }
    
-   @Override
    public Set<Type> getTypes()
    {
       return Collections.unmodifiableSet(types);
@@ -175,7 +170,6 @@ public abstract class AbstractJavaEEResourceBean<T> extends RIBean<T>
       return Collections.emptySet();
    }
    
-   @Override
    public boolean isNullable()
    {
       return true;
@@ -187,7 +181,6 @@ public abstract class AbstractJavaEEResourceBean<T> extends RIBean<T>
       return false;
    }
    
-   @Override
    public boolean isSerializable()
    {
       return true;
@@ -232,7 +225,7 @@ public abstract class AbstractJavaEEResourceBean<T> extends RIBean<T>
       
    }
    
-   public void destroy(T instance) 
+   public void destroy(T instance, CreationalContext<T> creationalContext) 
    {
       
    }

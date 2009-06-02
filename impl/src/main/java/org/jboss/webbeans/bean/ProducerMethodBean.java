@@ -176,8 +176,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
       }
    }
 
-   @Override
-   public void destroy(T instance)
+   public void destroy(T instance, CreationalContext<T> creationalContext)
    {
       DependentStorageRequest dependentStorageRequest = DependentStorageRequest.of(dependentInstancesStore, new Object());
       try

@@ -251,7 +251,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
    }
 
-   public void destroy(T instance)
+   public void destroy(T instance, CreationalContext<T> creationalContext)
    {
       if (instance == null)
       {

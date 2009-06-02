@@ -83,6 +83,12 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
    {
       return field.get(getReceiver(creationalContext));
    }
+   
+
+   public void destroy(T instance, CreationalContext<T> creationalContext)
+   {
+      
+   }
 
 
    /**

@@ -80,7 +80,7 @@ public class EnterpriseBeanLifecycleTest extends AbstractWebBeansTest
       Context requestContext = getCurrentManager().getContext(RequestScoped.class);
       CreationalContext<KleinStadt> creationalContext = new MockCreationalContext<KleinStadt>();
       KleinStadt kassel = requestContext.get(stadtBean, creationalContext);
-      stadtBean.destroy(kassel);
+      stadtBean.destroy(kassel, creationalContext);
       
       assert frankfurt.isKleinStadtDestroyed() : "Expected SFSB bean to be destroyed";
       kassel = requestContext.get(stadtBean);
