@@ -34,11 +34,6 @@
       </dependency>
       
       <dependency>
-         <groupId>org.jboss.jsr299.tck</groupId>
-         <artifactId>jsr299-tck-impl</artifactId>
-      </dependency>
-      
-      <dependency>
          <groupId>org.jboss.test-harness</groupId>
          <artifactId>jboss-test-harness-jboss-as-50</artifactId>
       </dependency>
@@ -123,6 +118,20 @@
    </build>
    
    <profiles>
+      <profile>
+         <id>run</id>
+         <activation>
+            <activeByDefault /> 
+         </activation>
+         <dependencies>
+                  
+		      <dependency>
+		         <groupId>org.jboss.jsr299.tck</groupId>
+		         <artifactId>jsr299-tck-impl</artifactId>
+		      </dependency>
+		      
+         </dependencies>
+      </profile>
       <profile>
          <id>incontainer-debug</id>
          <activation>
