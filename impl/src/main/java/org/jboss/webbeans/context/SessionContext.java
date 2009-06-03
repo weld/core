@@ -26,6 +26,7 @@ import javax.enterprise.context.SessionScoped;
 
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.api.Service;
+import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -58,6 +59,18 @@ public class SessionContext extends AbstractThreadLocalMapContext implements Ser
       String active = isActive() ? "Active " : "Inactive ";
       String beanStoreInfo = getBeanStore() == null ? "" : getBeanStore().toString();
       return active + "session context " + beanStoreInfo;
+   }
+   
+   @Override
+   public void setActive(boolean active)
+   {
+      super.setActive(active);
+   }
+   
+   @Override
+   public void setBeanStore(BeanStore beanStore)
+   {
+      super.setBeanStore(beanStore);
    }
 
 }

@@ -153,6 +153,7 @@ public class ServletLifecycle
          }
          lifecycle.endRequest(request.getRequestURI(), beanStore);
          request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
+         SessionContext.instance().setActive(false);
          SessionContext.instance().setBeanStore(null);
       }
    }
