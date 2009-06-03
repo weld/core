@@ -145,7 +145,7 @@
                   <executions>
                      <execution>
                         <id>copy</id>
-                        <phase>generate-test-sources</phase>
+                        <phase>process-resources</phase>
                         <goals>
                            <goal>copy</goal>
                         </goals>
