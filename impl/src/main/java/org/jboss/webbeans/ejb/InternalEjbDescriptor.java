@@ -33,7 +33,6 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> impleme
 {
    
    private final Class<?> objectInterface;
-   private final boolean local; 
    private final EjbDescriptor<T> delegate;
    
    public InternalEjbDescriptor(EjbDescriptor<T> ejbDescriptor)
@@ -43,24 +42,17 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> impleme
       if (it.hasNext())
       {
          this.objectInterface = it.next().getInterface();
-         this.local = true;
       }
       else
       {
          this.objectInterface = null;
-         this.local = false;
       }
    }
    
    @Override
-   protected EjbDescriptor<T> delegate()
+   public EjbDescriptor<T> delegate()
    {
       return delegate;
-   }
-   
-   public boolean isLocal()
-   {
-      return local;
    }
    
    public Class<?> getObjectInterface()

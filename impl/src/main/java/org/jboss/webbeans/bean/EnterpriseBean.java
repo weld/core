@@ -268,7 +268,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       }
       else
       {
-         // TODO getManager().getEjbResolver().removeEjb(enterpiseBeanInstance.getUnproxiedInstances());
+         enterpiseBeanInstance.destroy();
       }
    }
 
@@ -402,7 +402,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    
    public SessionObjectReference createReference()
    {
-      return manager.getServices().get(EjbServices.class).resolveEjb(getEjbDescriptor());
+      return manager.getServices().get(EjbServices.class).resolveEjb(getEjbDescriptor().delegate());
    }
    
 }

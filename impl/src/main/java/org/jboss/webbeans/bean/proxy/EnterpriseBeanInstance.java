@@ -25,6 +25,7 @@ package org.jboss.webbeans.bean.proxy;
 public interface EnterpriseBeanInstance
 {
    
+   // TODO These methods may conflict :-(
    /**
     * Indicated if a remove method has been invoked by the application
     * 
@@ -33,5 +34,7 @@ public interface EnterpriseBeanInstance
    public boolean isDestroyed();
    
    public void setDestroyed(boolean destroyed);
+   
+   public void destroy();
    
 }

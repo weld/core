@@ -78,7 +78,11 @@ public class SessionBeanInterceptor implements Serializable
       bean.preDestroy(target);
       if (contextual)
       {
-         getEnterpriseBeanInstance(bean).setDestroyed(true);
+         EnterpriseBeanInstance instance = getEnterpriseBeanInstance(bean);
+         if (instance != null)
+         {
+            instance.setDestroyed(true);
+         }
       }
       invocationContext.proceed();
    }
@@ -111,6 +115,10 @@ public class SessionBeanInterceptor implements Serializable
       if (instance instanceof EnterpriseBeanInstance)
       {
          return (EnterpriseBeanInstance) instance;
+      }
+      else if (instance == null)
+      {
+         return null;
       }
       else
       {

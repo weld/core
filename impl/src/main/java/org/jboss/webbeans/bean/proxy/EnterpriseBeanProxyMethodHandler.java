@@ -113,7 +113,7 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
          {
             throw new IllegalArgumentException("enterpriseBeanInstance.setDestroyed() called with >1 argument");
          }
-         if (!args[0].getClass().equals(boolean.class))
+         if (!(args[0].getClass().equals(boolean.class) || args[0].getClass().equals(Boolean.class)))
          {
             throw new IllegalArgumentException("enterpriseBeanInstance.setDestroyed() called with non-boolean argument");
          }
@@ -122,6 +122,12 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
       
       if (destroyed)
       {
+         return null;
+      }
+      
+      if ("destroy".equals(method.getName()))
+      {
+         reference.remove();
          return null;
       }
       

@@ -160,7 +160,7 @@ public class DependentContext extends AbstractContext implements Service
       }
    }
    
-   public <T> void destroy(Contextual<T> contextual, T instance)
+   public <T> void destroyAndRemove(Contextual<T> contextual, T instance)
    {
       if (contextual instanceof Bean)
       {

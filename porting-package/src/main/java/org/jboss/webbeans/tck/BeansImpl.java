@@ -75,7 +75,7 @@ public class BeansImpl implements Beans
       // Get the EJB Descriptor and resolve it
       if (CurrentManager.rootManager().getNewEnterpriseBeanMap().containsKey(beanType))
       {  
-         EjbDescriptor<?> ejbDescriptor = CurrentManager.rootManager().getNewEnterpriseBeanMap().get(beanType).getEjbDescriptor();
+         EjbDescriptor<?> ejbDescriptor = CurrentManager.rootManager().getNewEnterpriseBeanMap().get(beanType).getEjbDescriptor().delegate();
          return CurrentManager.rootManager().getServices().get(EjbServices.class).resolveEjb(ejbDescriptor).getBusinessObject(localInterface);
       }   
       throw new NullPointerException("No EJB found for " + localInterface.getName() + " on bean " + beanType.getName());
@@ -86,12 +86,12 @@ public class BeansImpl implements Beans
       return CurrentManager.rootManager().getCurrent().getInstance(bean, true);
    }
 
-   public <T> void destroyBeanInstance(Bean<T> bean, T instance)
+   public <T> void destroyAndRemoveBeanInstance(Bean<T> bean, T instance)
    {
       Context context = CurrentManager.rootManager().getCurrent().getContext(bean.getScopeType());
       if (context instanceof AbstractContext)
       {
-         ((AbstractContext) context).destroy(bean, instance);
+         ((AbstractContext) context).destroyAndRemove(bean, instance);
       }
       else
       {

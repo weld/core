@@ -122,12 +122,18 @@ public abstract class AbstractMapContext extends AbstractContext
    }
 
    /**
-    * Destroys a bean
+    * Destroys and removes bean
     * 
     * @param <T> The type of the bean
     * @param contextual The contextual type to destroy
     */
-   public <T> void destroy(Contextual<T> contextual, T instance)
+   public <T> void destroyAndRemove(Contextual<T> contextual, T instance)
+   {
+      destroy(contextual);
+      getBeanStore().remove(contextual);
+   }
+   
+   private <T> void destroy(Contextual<T> contextual)
    {
       log.trace("Destroying " + contextual);
       if (getBeanStore() == null)
@@ -136,12 +142,6 @@ public abstract class AbstractMapContext extends AbstractContext
       }
       BeanInstance<T> beanInstance = getBeanStore().get(contextual);
       contextual.destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
-   }
-   
-   private <T> void destroy(Contextual<T> contextual)
-   {
-      BeanInstance<T> beanInstance = getBeanStore().get(contextual);
-      destroy(contextual, beanInstance.getInstance());
    }
    
 

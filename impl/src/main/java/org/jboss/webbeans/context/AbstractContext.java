@@ -95,6 +95,6 @@ public abstract class AbstractContext implements Context
       return active.get();
    }
    
-   public abstract <T> void destroy(Contextual<T> contextual, T instance);
+   public abstract <T> void destroyAndRemove(Contextual<T> contextual, T instance);
 
 }
