@@ -16,7 +16,9 @@
  */
 package org.jboss.webbeans.introspector;
 
-public interface ConstructorSignature
+import java.io.Serializable;
+
+public interface ConstructorSignature extends Serializable
 {
    
    public String[] getParameterTypes();

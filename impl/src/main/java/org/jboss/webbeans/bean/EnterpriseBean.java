@@ -352,7 +352,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       return ejbDescriptor;
    }
 
-   public boolean canCallRemoveMethods()
+   public boolean isClientCanCallRemoveMethods()
    {
       return getEjbDescriptor().isStateful() && isDependent();
    }

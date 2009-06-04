@@ -17,11 +17,14 @@
 package org.jboss.webbeans.bean.proxy;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 import javassist.util.proxy.MethodHandler;
 
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
+import org.jboss.webbeans.introspector.MethodSignature;
+import org.jboss.webbeans.introspector.jlr.MethodSignatureImpl;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Reflections;
@@ -56,9 +59,12 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
       enterpriseBean.set(bean);
    }
 
-   final SessionObjectReference reference; 
-   final Class<?> objectInterface;
-   boolean destroyed;
+   private final SessionObjectReference reference; 
+   private final Class<?> objectInterface;
+   private final Collection<MethodSignature> removeMethodSignatures;
+   private final boolean clientCanCallRemoveMethods;
+   
+   private boolean destroyed;
 
    /**
     * Constructor
@@ -71,6 +77,8 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
    {
       this.destroyed = false;
       this.objectInterface = bean.getEjbDescriptor().getObjectInterface();
+      this.removeMethodSignatures = bean.getEjbDescriptor().getRemoveMethodSignatures();
+      this.clientCanCallRemoveMethods = bean.isClientCanCallRemoveMethods();
       try
       {
          setEnterpriseBean(bean);
@@ -129,6 +137,16 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
       {
          reference.remove();
          return null;
+      }
+      
+      if (!clientCanCallRemoveMethods)
+      {
+         // TODO we can certainly optimize this search algorithm!
+         MethodSignature methodSignature = new MethodSignatureImpl(method);
+         if (removeMethodSignatures.contains(methodSignature))
+         {
+            throw new UnsupportedOperationException("Cannot call EJB remove method directly on non-dependent scoped bean " + method );
+         }
       }
       
       Class<?> businessInterface = method.getDeclaringClass();

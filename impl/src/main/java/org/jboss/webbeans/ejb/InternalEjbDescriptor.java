@@ -16,10 +16,15 @@
  */
 package org.jboss.webbeans.ejb;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
+import org.jboss.webbeans.introspector.MethodSignature;
+import org.jboss.webbeans.introspector.jlr.MethodSignatureImpl;
 
 /**
  * More powerful version of {@link EjbDescriptor} that exposes Maps for some
@@ -34,6 +39,7 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> impleme
    
    private final Class<?> objectInterface;
    private final EjbDescriptor<T> delegate;
+   private final Collection<MethodSignature> removeMethodSignatures;
    
    public InternalEjbDescriptor(EjbDescriptor<T> ejbDescriptor)
    {
@@ -47,6 +53,11 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> impleme
       {
          this.objectInterface = null;
       }
+      removeMethodSignatures = new ArrayList<MethodSignature>();
+      for (Method method : delegate.getRemoveMethods())
+      {
+         removeMethodSignatures.add(new MethodSignatureImpl(method));
+      }
    }
    
    @Override
@@ -58,6 +69,11 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> impleme
    public Class<?> getObjectInterface()
    {
       return objectInterface;
+   }
+   
+   public Collection<MethodSignature> getRemoveMethodSignatures()
+   {
+      return removeMethodSignatures;
    }
    
 }

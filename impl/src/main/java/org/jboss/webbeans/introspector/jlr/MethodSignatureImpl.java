@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans.introspector.jlr;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -23,6 +24,8 @@ import org.jboss.webbeans.introspector.MethodSignature;
 
 public class MethodSignatureImpl implements MethodSignature
 {
+   
+   private static final long serialVersionUID = 870948075030895317L;
    
    private final String methodName;
    private final String[] parameterTypes;
@@ -34,6 +37,16 @@ public class MethodSignatureImpl implements MethodSignature
       for (int i = 0; i < method.getParameters().size(); i++)
       {
          parameterTypes[i] = method.getParameters().get(i).getRawType().getName();
+      }
+   }
+   
+   public MethodSignatureImpl(Method method)
+   {
+      this.methodName = method.getName();
+      this.parameterTypes = new String[method.getParameterTypes().length];
+      for (int i = 0; i < method.getParameterTypes().length; i++)
+      {
+         parameterTypes[i] = method.getParameterTypes()[i].getName();
       }
       
    }

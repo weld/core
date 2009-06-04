@@ -16,7 +16,9 @@
  */
 package org.jboss.webbeans.introspector;
 
-public interface MethodSignature
+import java.io.Serializable;
+
+public interface MethodSignature extends Serializable
 {
    
    public String getMethodName();
