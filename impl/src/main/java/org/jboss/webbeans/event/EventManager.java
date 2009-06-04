@@ -17,6 +17,7 @@
 package org.jboss.webbeans.event;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashSet;
@@ -127,11 +128,12 @@ public class EventManager
     * @param eventType The event type of the observer to remove
     * @param bindings The bindings of the observer to remove
     */
-   public <T> void removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
+   public void removeObserver(Observer<?> observer) 
    {
-      Collection<EventObserver<?>> observers = manager.getRegisteredObservers().get(eventType);
-      EventObserver<T> eventObserver = new EventObserver<T>(observer, eventType, manager, bindings);
-      observers.remove(eventObserver);
+      Collection<EventObserver<?>> observers = manager.getRegisteredObservers().get(getTypeOfObserver(observer));
+      for (EventObserver<?> eventObserver : observers)
+         if (eventObserver.getObserver() == observer)
+            observers.remove(eventObserver);
    }
 
    @Override
@@ -142,5 +144,22 @@ public class EventManager
       buffer.append(manager.getRegisteredObservers().toString());
       return buffer.toString();
    }
+   
 
+   public Type getTypeOfObserver(Observer<?> observer) 
+   { 
+      for (Type type : observer.getClass().getGenericInterfaces()) 
+      { 
+         if (type instanceof ParameterizedType) 
+         { 
+            ParameterizedType ptype = (ParameterizedType) type;
+            if (Observer.class.isAssignableFrom((Class)ptype.getRawType()))
+            {
+               return ptype.getActualTypeArguments()[0];
+            }
+         }
+      }
+      throw new RuntimeException("Cannot find observer's event type: " + observer);
+   }
+ 
 }

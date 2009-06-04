@@ -20,9 +20,6 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
-import javax.enterprise.inject.BindingType;
-import javax.enterprise.inject.spi.BeanManager;
-
 import org.jboss.webbeans.introspector.AnnotatedMember;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedMember;
@@ -105,11 +102,11 @@ public abstract class AbstractAnnotatedMember<T, S extends Member> extends Abstr
     * 
     * @param beanManager The Web Beans manager
     * @return The current value
-    */
+    *
    public T getValue(BeanManager beanManager)
    {
-      return beanManager.getInstanceByType(getRawType(), getMetaAnnotationsAsArray(BindingType.class));
-   }
+      return beanManager.getInstance(getRawType(), getMetaAnnotationsAsArray(BindingType.class));
+   }*/
 
    /**
     * Gets the name of the member

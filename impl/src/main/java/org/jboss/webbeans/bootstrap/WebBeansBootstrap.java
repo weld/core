@@ -50,8 +50,6 @@ import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.jsf.JsfApiAbstraction;
-import org.jboss.webbeans.literal.DeployedLiteral;
-import org.jboss.webbeans.literal.InitializedLiteral;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.messaging.spi.JmsServices;
@@ -209,12 +207,15 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
             manager.setEnabledDeploymentTypes(enabledDeploymentTypes);
          }
          log.debug("Deployment types: " + manager.getEnabledDeploymentTypes());
+         manager.fireEvent(new BeforeBeanDiscoveryImpl());
          registerBeans(getServices().get(WebBeanDiscovery.class).discoverWebBeanClasses(), xmlEnvironmentImpl.getClasses(), xmlEnvironmentImpl.getResourceBeans(), ejbDescriptors);
-         manager.fireEvent(manager, new InitializedLiteral());
+         manager.fireEvent(new AfterBeanDiscoveryImpl());
          log.debug("Web Beans initialized. Validating beans.");
          manager.getResolver().resolveInjectionPoints();
          new BeanValidator(manager).validate();
-         manager.fireEvent(manager, new DeployedLiteral());
+         manager.fireEvent(new AfterDeploymentValidationImpl());
+         manager.getResolver().resolveInjectionPoints();
+         
          endDeploy(requestBeanStore);
       }
    }

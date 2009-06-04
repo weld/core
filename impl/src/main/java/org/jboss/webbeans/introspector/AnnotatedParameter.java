@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans.introspector;
 
-import javax.enterprise.inject.spi.BeanManager;
 
 
 /**
@@ -28,13 +27,6 @@ import javax.enterprise.inject.spi.BeanManager;
  */
 public interface AnnotatedParameter<T> extends AnnotatedItem<T, Object>
 {
-   /**
-    * Gets the actual value of the parameter from the manager
-    * 
-    * @param beanManager The Web Beans manager
-    * @return The value
-    */
-   public T getValue(BeanManager beanManager);
    
    public AnnotatedMember<?, ?> getDeclaringMember();
    

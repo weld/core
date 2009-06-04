@@ -52,7 +52,8 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
    {
       String actionUrl = super.getActionURL(context, viewId);
       BeanManager beanManager = CurrentManager.rootManager();
-      Conversation conversation = beanManager.getInstanceByType(Conversation.class);
+      Conversation conversation = (Conversation) beanManager.getReference(
+            (beanManager.getBeans(Conversation.class).iterator().next()),Conversation.class);  
       if (conversation.isLongRunning())
       {
          return new FacesUrlTransformer(actionUrl).appendConversationIdIfNecessary(conversation.getId()).getUrl();

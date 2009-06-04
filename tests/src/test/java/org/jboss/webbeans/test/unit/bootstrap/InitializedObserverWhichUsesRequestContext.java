@@ -1,8 +1,7 @@
 package org.jboss.webbeans.test.unit.bootstrap;
 
 import javax.enterprise.inject.Current;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.event.Observes;
 
 class InitializedObserverWhichUsesRequestContext
@@ -12,7 +11,7 @@ class InitializedObserverWhichUsesRequestContext
    
    @Current Tuna tuna;
    
-   public void observeInitialized(@Observes @BeforeBeanDiscovery BeanManager beanManager)
+   public void observeInitialized(@Observes AfterBeanDiscovery event)
    {
       name = tuna.getName();
    }

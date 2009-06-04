@@ -25,13 +25,21 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.NavigableSet;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.Stack;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -40,25 +48,33 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.el.ELResolver;
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.ScopeType;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.BindingType;
+import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.TypeLiteral;
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.deployment.Production;
 import javax.enterprise.inject.deployment.Standard;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.ManagedBean;
+import javax.enterprise.inject.spi.ObserverMethod;
 import javax.event.Observer;
 import javax.inject.DeploymentException;
 import javax.inject.DuplicateBindingTypeException;
+import javax.interceptor.InterceptorBindingType;
 
 import org.jboss.webbeans.bean.DisposalMethodBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
@@ -69,6 +85,7 @@ import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.el.Namespace;
+import org.jboss.webbeans.el.WebBeansELResolver;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.EventObserver;
 import org.jboss.webbeans.event.ObserverImpl;
@@ -80,7 +97,9 @@ import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.metadata.MetaDataCache;
+import org.jboss.webbeans.metadata.StereotypeModel;
 import org.jboss.webbeans.util.Beans;
+import org.jboss.webbeans.util.ListComparator;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.collections.multi.ConcurrentListHashMultiMap;
@@ -333,11 +352,11 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * 
     * @see javax.enterprise.inject.spi.BeanManager#addBean(javax.inject.manager.Bean)
     */
-   public BeanManager addBean(Bean<?> bean)
+   public void addBean(Bean<?> bean)
    {
       if (beanWithManagers.contains(bean))
       {
-         return this;
+         return;
       }
       resolver.clear();
       beanWithManagers.add(bean);
@@ -346,7 +365,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       {
          childActivity.addBean(bean);
       }
-      return this;
+      return;
    }
 
    /**
@@ -447,35 +466,17 @@ public class ManagerImpl implements WebBeansManager, Serializable
       addWebBeansDeploymentTypes();
    }
 
-   /**
-    * Resolves beans by API type and binding types
-    * 
-    * @param type The API type to match
-    * @param bindings The binding types to match
-    * @return The set of matching beans
-    * 
-    * @see javax.enterprise.inject.spi.BeanManager#getBeans(java.lang.Class,
-    *      java.lang.annotation.Annotation[])
-    */
-   public <T> Set<Bean<T>> getBeans(Class<T> type, Annotation... bindings)
+   
+   public Set<Bean<?>> getBeans(Type beanType, Annotation... bindings)
    {
-      return resolveByType(ResolvableAnnotatedClass.of(type, bindings), bindings);
+      return (Set<Bean<?>>)(Set)resolveByType(ResolvableAnnotatedClass.of(beanType, bindings), bindings);
    }
 
-   /**
-    * Resolves beans by API type literal and binding types
-    * 
-    * @param type The API type literal to match
-    * @param bindings The binding types to match
-    * @return The set of matching beans
-    * 
-    * @see javax.enterprise.inject.spi.BeanManager#getBeans(javax.enterprise.inject.TypeLiteral,
-    *      java.lang.annotation.Annotation[])
-    */
-   public <T> Set<Bean<T>> getBeans(TypeLiteral<T> type, Annotation... bindings)
+   public <T> Set<Bean<T>> getBeans(Class<T> beanType, Annotation... bindings)
    {
-      return resolveByType(ResolvableAnnotatedClass.of(type, bindings), bindings);
+      return resolveByType(ResolvableAnnotatedClass.of(beanType, bindings), bindings);
    }
+
 
    public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, InjectionPoint injectionPoint, Annotation... bindings)
    {
@@ -607,41 +608,15 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * 
     * @see javax.enterprise.inject.spi.BeanManager#addContext(javax.enterprise.context.spi.Context)
     */
-   public BeanManager addContext(Context context)
+   public void addContext(Context context)
    {
       contexts.put(context.getScopeType(), context);
-      return this;
    }
 
-   /**
-    * Registers a decorator with the manager
-    * 
-    * @param abstractDecorator The decorator to register
-    * @return A reference to the manager
-    * 
-    * @see javax.enterprise.inject.spi.BeanManager#addDecorator(org.jboss.webbeans.bean.AbstractDecorator)
-    */
-   public BeanManager addDecorator(Decorator abstractDecorator)
+  
+   public void addObserver(Observer<?> observer, Annotation... bindings)
    {
-      throw new UnsupportedOperationException("Not yet implemented");
-   }
-
-   /**
-    * Registers an interceptor with the manager
-    * 
-    * @param abstractInterceptor The interceptor to register
-    * @return A reference to the manager
-    * 
-    * @see javax.enterprise.inject.spi.BeanManager#addInterceptor(org.jboss.webbeans.bean.AbstractInterceptor)
-    */
-   public BeanManager addInterceptor(Interceptor abstractInterceptor)
-   {
-      throw new UnsupportedOperationException("Not yet implemented");
-   }
-
-   public <T> BeanManager addObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
-   {
-      return addObserverByType(observer, eventType, bindings);
+      addObserver(observer,eventManager.getTypeOfObserver(observer),bindings);
    }
 
    /**
@@ -649,37 +624,43 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * 
     * @param <T>
     * @param observer
-    * @return
     */
-   public <T> BeanManager addObserver(ObserverImpl<T> observer)
+   public <T> void addObserver(ObserverImpl<T> observer)
    {
-      return addObserverByType(observer, observer.getEventType(), observer.getBindingsAsArray());
+      addObserver(observer, observer.getEventType(), observer.getBindingsAsArray());
    }
 
-   public <T> BeanManager addObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
+   public void addObserver(ObserverMethod<?, ?> observerMethod)
    {
-      return addObserverByType(observer, eventType.getType(), bindings);
+      addObserver((Observer<?>)observerMethod, observerMethod.getObservedEventType(), 
+            new ArrayList<Annotation>(observerMethod.getObservedEventBindings()).toArray(new Annotation[0]));
+      
    }
-   
+
+
    /**
     * Does the actual observer registration
     *  
-    * @param <T>
     * @param observer
     * @param eventType
     * @param bindings
     * @return
     */
-   public <T> BeanManager addObserverByType(Observer<T> observer, Type eventType, Annotation... bindings)
+   public void addObserver(Observer<?> observer, Type eventType, Annotation... bindings)
    {
       checkEventType(eventType);
       this.eventManager.addObserver(observer, eventType, bindings);
       for (ManagerImpl childActivity : childActivities)
       {
-         childActivity.addObserverByType(observer, eventType, bindings);
+         childActivity.addObserver(observer, eventType, bindings);
       }
-      return this;
    }
+   
+   public void removeObserver(Observer<?> observer)
+   {
+      eventManager.removeObserver(observer);
+   }
+
 
    /**
     * Fires an event object with given event object for given bindings
@@ -800,6 +781,18 @@ public class ManagerImpl implements WebBeansManager, Serializable
          return getContext(bean.getScopeType()).get((Bean<T>)bean, (CreationalContext<T>)creationalContext);
       }
    }
+   
+
+   /** 
+    * XXX this is not correct, as the current implementation of getInstance does not 
+    * pay attention to what type the resulting instance needs to implement (non-Javadoc)
+    * @see javax.enterprise.inject.spi.BeanManager#getReference(javax.enterprise.inject.spi.Bean, java.lang.reflect.Type)
+    */
+   public Object getReference(Bean<?> bean, Type beanType)
+   {
+      return getInstance(bean,true);  
+   }
+
 
    public Object getInstanceToInject(InjectionPoint injectionPoint)
    {
@@ -942,39 +935,6 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return bean;
    }
 
-   /**
-    * Removes an observer
-    * 
-    * @param observer The observer to remove
-    * @param eventType The event type to match
-    * @param bindings the binding types to match
-    * @return A reference to the manager
-    * 
-    * @see javax.enterprise.inject.spi.BeanManager#removeObserver(javax.event.Observer,
-    *      java.lang.Class, java.lang.annotation.Annotation[])
-    */
-   public <T> BeanManager removeObserver(Observer<T> observer, Class<T> eventType, Annotation... bindings)
-   {
-      this.eventManager.removeObserver(observer, eventType, bindings);
-      return this;
-   }
-
-   /**
-    * Removes an observer
-    * 
-    * @param observer The observer to remove
-    * @param eventType The event type to match
-    * @param bindings the binding types to match
-    * @return A reference to the manager
-    * 
-    * @see javax.enterprise.inject.spi.BeanManager#removeObserver(javax.event.Observer,
-    *      javax.enterprise.inject.TypeLiteral, java.lang.annotation.Annotation[])
-    */
-   public <T> BeanManager removeObserver(Observer<T> observer, TypeLiteral<T> eventType, Annotation... bindings)
-   {
-      this.eventManager.removeObserver(observer, eventType.getRawType(), bindings);
-      return this;
-   }
 
    /**
     * Resolves a set of beans based on their name
@@ -1212,6 +1172,131 @@ public class ManagerImpl implements WebBeansManager, Serializable
    public Namespace getRootNamespace()
    {
       return rootNamespace;
+   }
+
+
+   public <T> InjectionTarget<T> createInjectionTarget(Class<T> type)
+   {
+      throw new RuntimeException("Not yet implemented");
+   }
+
+   public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type)
+   {
+      throw new RuntimeException("Not yet implemented");
+   }
+
+   public <T> ManagedBean<T> createManagedBean(Class<T> type)
+   {
+      throw new RuntimeException("Not yet implemented");
+   }
+
+   public <T> ManagedBean<T> createManagedBean(AnnotatedType<T> type)
+   {
+      throw new RuntimeException("Not yet implemented");
+   }
+
+
+
+   public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean)
+   {
+      throw new RuntimeException("Not yet implemented");
+   }
+
+
+   public void validate(InjectionPoint injectionPoint)
+   {
+      throw new RuntimeException("Not yet implemented");
+   }
+
+
+   public Set<Annotation> getInterceptorBindingTypeDefinition(
+         Class<? extends Annotation> bindingType)
+   {
+      throw new RuntimeException("Not yet implemented");
+   }
+
+   public Bean<?> getPassivationCapableBean(String id)
+   {
+      throw new RuntimeException("Not yet implemented");
+   }
+
+   public ScopeType getScopeDefinition(Class<? extends Annotation> scopeType)
+   {
+      return scopeType.getAnnotation(ScopeType.class);
+   }
+
+   public Set<Annotation> getStereotypeDefinition(
+         Class<? extends Annotation> stereotype)
+   {
+      StereotypeModel<? extends Annotation> model = 
+    	  getServices().get(MetaDataCache.class).getStereotype(stereotype);
+      Set<Annotation> results = new HashSet<Annotation>();
+      if (model.getDefaultDeploymentType() != null)
+    	  results.add(model.getDefaultDeploymentType());
+      if (model.getDefaultScopeType() != null)
+    	  results.add(model.getDefaultScopeType());
+      if (model.getInterceptorBindings() != null)
+    	  results.addAll(model.getInterceptorBindings());
+      
+      return results;
+   }
+
+   public boolean isBindingType(Class<? extends Annotation> annotationType)
+   {
+      return annotationType.isAnnotationPresent(BindingType.class);
+   }
+
+   public boolean isInterceptorBindingType(
+         Class<? extends Annotation> annotationType)
+   {
+	   return annotationType.isAnnotationPresent(InterceptorBindingType.class);
+   }
+
+   public boolean isScopeType(Class<? extends Annotation> annotationType)
+   {
+	   return annotationType.isAnnotationPresent(ScopeType.class);
+   }
+
+   public boolean isStereotype(Class<? extends Annotation> annotationType)
+   {
+      return annotationType.isAnnotationPresent(Stereotype.class);
+   }
+
+   public <X> Bean<? extends X> getHighestPrecedenceBean(Set<Bean<? extends X>> beans)
+   {
+	   if (beans.size() == 1)
+	   {
+		   return beans.iterator().next();
+	   }
+	   else if (beans.isEmpty()) 
+	   {
+		   return null;
+	   }
+	   
+	  //make a copy so that the sort is stable with respect to new deployment types addded through the SPI
+      final List<Class<? extends Annotation>> enabledDeploymentTypes = getEnabledDeploymentTypes();
+      
+      NavigableSet<Bean<? extends X>> sortedBeans = new TreeSet<Bean<? extends X>>(new Comparator<Bean<? extends X>>() 
+	  { 
+		   public int compare(Bean<? extends X> o1, Bean<? extends X> o2) 
+		   {
+			   int diff = enabledDeploymentTypes.indexOf(o1) - enabledDeploymentTypes.indexOf(o2);
+			   if (diff == 0)
+				   throw new AmbiguousResolutionException();
+			   return diff;
+		   }
+      });
+      sortedBeans.addAll(beans);
+      return sortedBeans.last();
+   }
+
+   /**
+    * Return the webbeans el resolver, as part of the BeanManager contract
+    * @see javax.enterprise.inject.spi.BeanManager#getELResolver()
+    */
+   public ELResolver getELResolver()
+   {
+      return new WebBeansELResolver();
    }
 
 }

@@ -13,4 +13,11 @@
 	<packaging>jar</packaging>
 	<name>JSR-299 API</name>
 	<url>http://www.seamframework.org/WebBeans</url>
+
+	<dependencies>
+	 <dependency>
+		<groupId>javax.el</groupId>
+		<artifactId>el-api</artifactId>
+	 </dependency>
+    </dependencies>
 </project>

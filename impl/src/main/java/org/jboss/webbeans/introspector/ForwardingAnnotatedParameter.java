@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans.introspector;
 
-import javax.enterprise.inject.spi.BeanManager;
 
 public abstract class ForwardingAnnotatedParameter<T> extends ForwardingAnnotatedItem<T, Object> implements AnnotatedParameter<T>
 {
@@ -29,9 +28,5 @@ public abstract class ForwardingAnnotatedParameter<T> extends ForwardingAnnotate
       return delegate().getDeclaringMember();
    }
 
-   public T getValue(BeanManager beanManager)
-   {
-      return delegate().getValue(beanManager);
-   } 
    
 }
