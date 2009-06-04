@@ -87,4 +87,10 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
       return "Built-in implicit javax.event.Event bean";
    }
    
+   @Override
+   public boolean isSerializable()
+   {
+      return true;
+   }
+   
 }
