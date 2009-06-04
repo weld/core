@@ -384,12 +384,12 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       if (environment.getClassBean(getAnnotatedItem().getSuperclass()) == null)
       {
-         throw new IllegalStateException(toString() + " does not specialize a bean");
+         throw new DefinitionException(toString() + " does not specialize a bean");
       }
       AbstractClassBean<?> specializedBean = environment.getClassBean(getAnnotatedItem().getSuperclass());
       if (!(specializedBean instanceof SimpleBean))
       {
-         throw new IllegalStateException(toString() + " doesn't have a simple bean as a superclass " + specializedBean);
+         throw new DefinitionException(toString() + " doesn't have a simple bean as a superclass " + specializedBean);
       }
       else
       {
