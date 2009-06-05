@@ -189,7 +189,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
          if (type instanceof Class)
          {
             Class<?> clazz = (Class<?>) type;
-            if (isAssignableFrom(clazz, Reflections.getActualTypeArguments(clazz)))
+            if (isAssignableFrom(clazz, new Type[0]))
             {
                return true;
             }
