@@ -155,6 +155,10 @@ public class EnterpriseBeanProxyMethodHandler implements MethodHandler
          businessInterface = objectInterface;
       }
       Object proxiedInstance = reference.getBusinessObject(businessInterface);
+      if (proxiedInstance == null)
+      {
+         throw new IllegalStateException("No EJB can be found in the EJB container for " + reference + ". Make sure you are running an EJB container.");
+      }
       Method proxiedMethod = Reflections.lookupMethod(method, proxiedInstance);
       Object returnValue = Reflections.invokeAndWrap(proxiedMethod, proxiedInstance, args);
       log.trace("Executed " + method + " on " + proxiedInstance + " with parameters " + args + " and got return value " + returnValue);
