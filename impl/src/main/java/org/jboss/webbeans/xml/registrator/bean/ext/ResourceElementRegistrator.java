@@ -29,7 +29,6 @@ import javax.enterprise.inject.Current;
 import javax.enterprise.inject.deployment.DeploymentType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
-import javax.xml.ws.WebServiceRef;
 
 import org.dom4j.Element;
 import org.jboss.webbeans.bean.RIBean;
@@ -218,7 +217,9 @@ public class ResourceElementRegistrator extends NotSimpleBeanElementRegistrator
       {
          Element childElement = (Element) elIterator.next();
          AnnotatedClass<?> childClass = ParseXmlHelper.loadElementClass(childElement, Object.class, environment, packagesMap);
-         if (childClass.getRawType().isAnnotation() && !childClass.isAnnotationPresent(DeploymentType.class) && !childClass.getRawType().equals(Resource.class) && !childClass.getRawType().equals(PersistenceContext.class) && !childClass.getRawType().equals(PersistenceUnit.class) && !childClass.getRawType().equals(EJB.class) && !childClass.getRawType().equals(WebServiceRef.class))
+         if (childClass.getRawType().isAnnotation() && !childClass.isAnnotationPresent(DeploymentType.class) && !childClass.getRawType().equals(Resource.class) && !childClass.getRawType().equals(PersistenceContext.class) && !childClass.getRawType().equals(PersistenceUnit.class) && !childClass.getRawType().equals(EJB.class) 
+               // && !childClass.getRawType().equals(WebServiceRef.class)
+            )
          {
             Class<?> annotationClass = childClass.getRawType();
             Method[] annotationMethods = annotationClass.getDeclaredMethods();

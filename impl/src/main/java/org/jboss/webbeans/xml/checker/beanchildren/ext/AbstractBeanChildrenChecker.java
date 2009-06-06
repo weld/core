@@ -38,7 +38,6 @@ import javax.interceptor.Interceptor;
 import javax.interceptor.InterceptorBindingType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
-import javax.xml.ws.WebServiceRef;
 
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -193,11 +192,13 @@ public abstract class AbstractBeanChildrenChecker extends BeanChildrenCheckerImp
             beanChildClass.getRawType().equals(Stereotype.class) || beanChildClass.getRawType().equals(Named.class) || 
             beanChildClass.getRawType().equals(Specializes.class) || beanChildClass.getRawType().equals(Realizes.class) || 
             beanChildClass.isAnnotationPresent(Resource.class) || beanChildClass.isAnnotationPresent(EJB.class)|| 
-            beanChildClass.isAnnotationPresent(WebServiceRef.class) || beanChildClass.isAnnotationPresent(PersistenceContext.class) || 
+            //beanChildClass.isAnnotationPresent(WebServiceRef.class) ||
+            beanChildClass.isAnnotationPresent(PersistenceContext.class) || 
             beanChildClass.isAnnotationPresent(PersistenceUnit.class))
          return;
       if (beanChildClass.getRawType().equals(Resource.class) || beanChildClass.getRawType().equals(EJB.class) || 
-            beanChildClass.getRawType().equals(WebServiceRef.class) || beanChildClass.getRawType().equals(PersistenceContext.class) || 
+            //beanChildClass.getRawType().equals(WebServiceRef.class) ||
+            beanChildClass.getRawType().equals(PersistenceContext.class) || 
             beanChildClass.getRawType().equals(PersistenceUnit.class))
       {
          checkRIBean(beanChildElement.getParent(), beanClass);

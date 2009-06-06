@@ -25,20 +25,15 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableMap;
-import java.util.NavigableSet;
 import java.util.Set;
-import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.Stack;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -99,7 +94,6 @@ import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.metadata.StereotypeModel;
 import org.jboss.webbeans.util.Beans;
-import org.jboss.webbeans.util.ListComparator;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.collections.multi.ConcurrentListHashMultiMap;
@@ -1273,16 +1267,20 @@ public class ManagerImpl implements WebBeansManager, Serializable
 		   return null;
 	   }
 	   
-	  //make a copy so that the sort is stable with respect to new deployment types addded through the SPI
+	   // make a copy so that the sort is stable with respect to new deployment types added through the SPI
+	   // TODO This code needs to be in Resolver
+	   // TODO This needs caching
       final List<Class<? extends Annotation>> enabledDeploymentTypes = getEnabledDeploymentTypes();
       
-      NavigableSet<Bean<? extends X>> sortedBeans = new TreeSet<Bean<? extends X>>(new Comparator<Bean<? extends X>>() 
-	  { 
+      SortedSet<Bean<? extends X>> sortedBeans = new TreeSet<Bean<? extends X>>(new Comparator<Bean<? extends X>>() 
+      { 
 		   public int compare(Bean<? extends X> o1, Bean<? extends X> o2) 
 		   {
 			   int diff = enabledDeploymentTypes.indexOf(o1) - enabledDeploymentTypes.indexOf(o2);
 			   if (diff == 0)
+			   {
 				   throw new AmbiguousResolutionException();
+			   }
 			   return diff;
 		   }
       });
