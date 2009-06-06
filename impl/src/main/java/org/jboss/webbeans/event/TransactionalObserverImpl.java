@@ -85,7 +85,7 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
    }
 
    @Override
-   public void notify(T event)
+   public boolean notify(T event)
    {
       if ((manager.getServices().get(TransactionServices.class) != null)  && (manager.getServices().get(TransactionServices.class).isTransactionActive()))
       {
@@ -95,6 +95,7 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
       {
          sendEvent(event);
       }
+      return false;
    }
 
    private void initTransactionObservationPhase()

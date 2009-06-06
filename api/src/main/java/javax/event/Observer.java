@@ -9,5 +9,5 @@ package javax.event;
  */
 public interface Observer<T>
 {
-   public void notify(T event);
+   public boolean notify(T event);
 }

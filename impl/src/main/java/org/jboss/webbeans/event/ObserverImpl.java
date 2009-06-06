@@ -149,7 +149,7 @@ public class ObserverImpl<T> implements Observer<T>
       }
    }
 
-   public void notify(final T event)
+   public boolean notify(final T event)
    {
       if (this.asynchronous)
       {
@@ -159,6 +159,7 @@ public class ObserverImpl<T> implements Observer<T>
       {
          sendEvent(event);
       }
+      return false;
    }
 
    /**

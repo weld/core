@@ -19,6 +19,8 @@ package org.jboss.webbeans.event;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +31,7 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
+import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Reflections.HierarchyDiscovery;
 
 /**
@@ -77,6 +80,7 @@ public class EventManager
     */
    public <T> Set<Observer<T>> getObservers(T event, Annotation... bindings)
    {
+//      checkEventType(event.getClass());
       Set<Observer<T>> interestedObservers = new HashSet<Observer<T>>();
       Set<Type> types = new HierarchyDiscovery(event.getClass()).getFlattenedTypes();
       for (Type type : types)
@@ -111,7 +115,11 @@ public class EventManager
          DependentContext.instance().setActive(true);
          for (Observer<T> observer : observers)
          {
-            observer.notify(event);
+            if (observer.notify(event))
+            {
+               // We can remove the once-only observer
+               removeObserver(observer);
+            }
          }
       }
       finally
@@ -126,7 +134,6 @@ public class EventManager
     * 
     * @param observer The observer to remove
     * @param eventType The event type of the observer to remove
-    * @param bindings The bindings of the observer to remove
     */
    public void removeObserver(Observer<?> observer) 
    {
@@ -144,16 +151,15 @@ public class EventManager
       buffer.append(manager.getRegisteredObservers().toString());
       return buffer.toString();
    }
-   
 
-   public Type getTypeOfObserver(Observer<?> observer) 
-   { 
-      for (Type type : observer.getClass().getGenericInterfaces()) 
-      { 
-         if (type instanceof ParameterizedType) 
-         { 
+   public Type getTypeOfObserver(Observer<?> observer)
+   {
+      for (Type type : observer.getClass().getGenericInterfaces())
+      {
+         if (type instanceof ParameterizedType)
+         {
             ParameterizedType ptype = (ParameterizedType) type;
-            if (Observer.class.isAssignableFrom((Class)ptype.getRawType()))
+            if (Observer.class.isAssignableFrom((Class<?>) ptype.getRawType()))
             {
                return ptype.getActualTypeArguments()[0];
             }
@@ -161,5 +167,4 @@ public class EventManager
       }
       throw new RuntimeException("Cannot find observer's event type: " + observer);
    }
- 
 }

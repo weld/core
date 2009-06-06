@@ -80,7 +80,7 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>, Serializabl
     */
    public void observe(Observer<T> observer, Annotation... bindings)
    {
-      getManager().addObserver(observer, type, mergeInBindings(bindings));
+      getManager().addObserver(observer, mergeInBindings(bindings));
    }
 
    @Override
