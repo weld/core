@@ -6,13 +6,12 @@ import java.io.Serializable;
 import javax.annotation.Named;
 import javax.annotation.PostConstruct;
 import javax.context.SessionScoped;
+import javax.enterprise.inject.Instance;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import javax.inject.AnnotationLiteral;
-import javax.inject.Current;
-import javax.inject.manager.Manager;
+import javax.inject.Obtains;
 import javax.naming.NamingException;
 
 @Named
@@ -30,7 +29,7 @@ public class Game implements Serializable
    private int biggest;
    private int remainingGuesses;
    
-   @Current Manager manager;
+   @Obtains @Random Instance<Integer> randomNumber;
    
    public Game() throws NamingException {}
 
@@ -89,7 +88,7 @@ public class Game implements Serializable
       this.guess = 0;
       this.remainingGuesses = 10;
       this.biggest = maxNumber;
-      this.number = manager.getInstanceByType(Integer.class, new AnnotationLiteral<Random>(){});
+      this.number = randomNumber.get();;
    }
    
    public void validateNumberRange(FacesContext context,  UIComponent toValidate, Object value)

@@ -5,14 +5,13 @@ import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.AnnotationLiteral;
-import javax.enterprise.inject.Current;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Named;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
+import javax.inject.Obtains;
 
 @Named
 @SessionScoped
@@ -29,7 +28,7 @@ public class Game implements Serializable
    private int biggest;
    private int remainingGuesses;
    
-   @Current BeanManager manager;
+   @Obtains @Random Instance<Integer> randomNumber;
    
    public Game()
    {
@@ -90,7 +89,7 @@ public class Game implements Serializable
       this.guess = 0;
       this.remainingGuesses = 10;
       this.biggest = maxNumber;
-      this.number = manager.getInstanceByType(Integer.class, new AnnotationLiteral<Random>(){});
+      this.number = randomNumber.get();
    }
    
    public void validateNumberRange(FacesContext context,  UIComponent toValidate, Object value)

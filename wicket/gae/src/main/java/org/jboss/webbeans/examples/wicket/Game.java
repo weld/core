@@ -6,9 +6,8 @@ import java.io.Serializable;
 import javax.annotation.Named;
 import javax.annotation.PostConstruct;
 import javax.context.SessionScoped;
-import javax.inject.AnnotationLiteral;
-import javax.inject.Current;
-import javax.inject.manager.Manager;
+import javax.inject.Instance;
+import javax.inject.Obtains;
 
 @Named
 @SessionScoped
@@ -25,7 +24,7 @@ public class Game implements Serializable
    private int biggest;
    private int remainingGuesses;
    
-   @Current Manager manager;
+   @Obtains @Random Instance<Integer> randomNumber;
 
    public int getNumber()
    {
@@ -79,7 +78,7 @@ public class Game implements Serializable
       this.guess = 0;
       this.remainingGuesses = 10;
       this.biggest = maxNumber;
-      this.number = manager.getInstanceByType(Integer.class, new AnnotationLiteral<Random>(){});
+      this.number = randomNumber.get();
    }
    
 
