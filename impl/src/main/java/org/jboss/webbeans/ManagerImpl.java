@@ -80,7 +80,7 @@ import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.el.Namespace;
-import org.jboss.webbeans.el.WebBeansELResolver;
+import org.jboss.webbeans.el.WebBeansELResolverImpl;
 import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.EventObserver;
 import org.jboss.webbeans.event.ObserverImpl;
@@ -194,7 +194,8 @@ public class ManagerImpl implements WebBeansManager, Serializable
     */  
    private transient final EventManager eventManager;
    private transient final Resolver resolver;
-   private final transient NonContextualInjector nonContextualInjector;   
+   private final transient NonContextualInjector nonContextualInjector;
+   private final transient ELResolver webbeansELResolver;
    
    /*
     * Activity scoped data structures
@@ -304,6 +305,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       this.resolver = new Resolver(this);
       this.eventManager = new EventManager(this);
       this.nonContextualInjector = new NonContextualInjector(this);
+      this.webbeansELResolver = new WebBeansELResolverImpl(this);
       this.childActivities = new CopyOnWriteArraySet<ManagerImpl>();
       this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>()
       {
@@ -740,14 +742,13 @@ public class ManagerImpl implements WebBeansManager, Serializable
    }
    
 
-   /** 
-    * XXX this is not correct, as the current implementation of getInstance does not 
-    * pay attention to what type the resulting instance needs to implement (non-Javadoc)
-    * @see javax.enterprise.inject.spi.BeanManager#getReference(javax.enterprise.inject.spi.Bean, java.lang.reflect.Type)
+   /*
+    * TODO this is not correct, as the current implementation of getInstance does not 
+    * pay attention to what type the resulting instance needs to implement
     */
    public Object getReference(Bean<?> bean, Type beanType)
    {
-      return getInstance(bean,true);  
+      return getInjectableReference(bean, CreationalContextImpl.of(bean));  
    }
 
    @SuppressWarnings("unchecked")
@@ -789,33 +790,6 @@ public class ManagerImpl implements WebBeansManager, Serializable
          {
             currentInjectionPoint.get().pop();
          }
-      }
-   }
-
-   /**
-    * Gets an instance by name, returning null if none is found and throwing an
-    * exception if too many beans match
-    * 
-    * @param name The name to match
-    * @return An instance of the bean
-    * 
-    * @see javax.enterprise.inject.spi.BeanManager#getInstanceByName(java.lang.String)
-    */
-   @Deprecated
-   public Object getInstanceByName(String name)
-   {
-      Set<Bean<?>> beans = getBeans(name);
-      if (beans.size() == 0)
-      {
-         return null;
-      }
-      else if (beans.size() > 1)
-      {
-         throw new AmbiguousResolutionException("Resolved multiple Web Beans with " + name);
-      }
-      else
-      {
-         return getInstance(beans.iterator().next());
       }
    }
 
@@ -1246,7 +1220,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
    
    public ELResolver getELResolver()
    {
-      return new WebBeansELResolver();
+      return webbeansELResolver;
    }
 
 }
