@@ -223,7 +223,12 @@ $ unzip ~/webbeans-$VERSION.zip]]></programlisting>
             </listitem>
             <listitem>
                <para>
-                  <literal>ant tomcat.undeploy</literal> - remove the example from the server
+                  <literal>ant tomcat.undeploy</literal> - remove the example (in compressed jar format) from the server
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  <literal>ant tomcat.unexplode</literal> - remove the example (in exploded format) from the server
                </para>
             </listitem>
             <listitem>
