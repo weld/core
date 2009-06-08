@@ -83,7 +83,7 @@ public class BeansImpl implements Beans
 
    public <T> T createBeanInstance(Bean<T> bean)
    {
-      return CurrentManager.rootManager().getCurrent().getInstance(bean, true);
+      return (T) CurrentManager.rootManager().getCurrent().getReference(bean, Object.class);
    }
 
    public <T> void destroyAndRemoveBeanInstance(Bean<T> bean, T instance)

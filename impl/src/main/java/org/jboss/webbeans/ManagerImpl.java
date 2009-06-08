@@ -700,25 +700,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
          throw new IllegalStateException("More than one context active for scope type " + scopeType.getName());
       }
       return activeContexts.iterator().next();
-   }
 
-   @Deprecated
-   public <T> T getInstance(Bean<T> bean)
-   {
-      return getInstance(bean, true);
-   }
-
-   @Deprecated
-   public <T> T getInstance(Bean<T> bean, boolean create)
-   {
-      if (create)
-      {
-         return (T) getInjectableReference(bean, CreationalContextImpl.of(bean));
-      }
-      else
-      {
-         return (T) getInjectableReference(bean, null);
-      }
    }
    
    public Object getInjectableReference(Bean<?> bean, CreationalContext<?> creationalContext)
@@ -836,7 +818,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
    @Deprecated
    public <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
-      return getInstance(getBean(element, bindings));
+      return (T) getReference(getBean(element, bindings), element.getType());
    }
 
    public <T> Bean<T> getBean(AnnotatedItem<T, ?> element, Annotation... bindings)
@@ -1112,7 +1094,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
 
 
 
-   public <X> Bean<X> getMostSpecializedBean(Bean<X> bean)
+   public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean)
    {
       Bean<?> key = bean;
       while (specializedBeans.containsKey(key))

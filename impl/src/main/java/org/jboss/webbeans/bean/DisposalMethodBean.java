@@ -182,7 +182,8 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
 
    public void invokeDisposeMethod(Object instance, CreationalContext<?> creationalContext)
    {
-      Object beanInstance = disposalMethodInjectionPoint.isStatic() ? declaringBean : getManager().getInstance(declaringBean);
+      // TODO WTF - why isn't this using getReceiver!? Why is it assigning the beanInstance as the beanObject!?!
+      Object beanInstance = disposalMethodInjectionPoint.isStatic() ? declaringBean : getManager().getReference(declaringBean, declaringBean.getType());
       disposalMethodInjectionPoint.invokeWithSpecialValue(beanInstance, Disposes.class, instance, manager, creationalContext, IllegalArgumentException.class);
    }
 

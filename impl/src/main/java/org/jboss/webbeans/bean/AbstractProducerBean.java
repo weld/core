@@ -325,7 +325,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
                return creationalContextImpl.getIncompleteInstance(getDeclaringBean());
             }
          }
-         return manager.getInstance(getDeclaringBean());
+         return manager.getReference(getDeclaringBean(), getDeclaringBean().getType());
       }
    }
 
