@@ -19,6 +19,22 @@ public class EnterpriseBeanTest extends AbstractWebBeansTest
       
    }
    
+   @Test(description="WBRI-275")
+   public void testSLSBBusinessMethodThrowsRuntimeException()
+   {
+      try
+      {
+         getCurrentManager().getInstanceByType(Fedora.class).causeRuntimeException();
+      }
+      catch (Throwable t) 
+      {
+         if (isExceptionInHierarchy(t, BowlerHatException.class))
+         {
+            return;
+         }
+      }
+      assert false : "Expected a BowlerHatException to be in the cause stack";
+   }
    
    
 }

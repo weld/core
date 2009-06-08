@@ -138,4 +138,17 @@ public abstract class AbstractWebBeansTest extends AbstractTest
       return manager;
    }
    
+   public boolean isExceptionInHierarchy(Throwable exception, Class<? extends Throwable> expectedException )
+   {
+      while (exception != null)
+      {
+         if (exception.getClass().equals(expectedException))
+         {
+            return true;
+         }
+         exception = exception.getCause();
+      }
+      return false;
+   }
+   
 }
