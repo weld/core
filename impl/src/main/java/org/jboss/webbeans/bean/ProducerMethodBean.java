@@ -187,7 +187,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
          }
          DependentContext.instance().setActive(true);
          if (disposalMethodBean != null)
-            disposalMethodBean.invokeDisposeMethod(instance);
+            disposalMethodBean.invokeDisposeMethod(instance, creationalContext);
       }
       finally
       {

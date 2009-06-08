@@ -111,7 +111,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
       CreationalContextImpl<T> creationalContext;
       if (currentCreationalContext.get() == null)
       {
-         creationalContext = new CreationalContextImpl<T>(bean);
+         creationalContext = CreationalContextImpl.of(bean);
          currentCreationalContext.set(creationalContext);
       }
       else

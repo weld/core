@@ -25,11 +25,16 @@ import javax.enterprise.inject.spi.Bean;
 public class CreationalContextImpl<T> implements CreationalContext<T>
 {
    
+   public static <T> CreationalContextImpl<T> of(Bean<T> bean)
+   {
+      return new CreationalContextImpl<T>(bean);
+   }
+
    private final Map<Bean<?>, Object> incompleteInstances;
    private final Bean<T> bean;
    private final boolean outer;
    
-   public CreationalContextImpl(Bean<T> bean)
+   private CreationalContextImpl(Bean<T> bean)
    {
       this.incompleteInstances = new HashMap<Bean<?>, Object>();
       this.bean = bean;

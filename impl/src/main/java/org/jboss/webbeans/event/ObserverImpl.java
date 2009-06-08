@@ -23,6 +23,7 @@ import java.lang.reflect.WildcardType;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
@@ -35,6 +36,7 @@ import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
+import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.context.DependentStorageRequest;
@@ -178,13 +180,18 @@ public class ObserverImpl<T> implements Observer<T>
             DependentContext.instance().startCollectingDependents(dependentStorageRequest);
          }
          // Get the most specialized instance of the component
-         instance = getInstance(observerBean);
+         CreationalContext<?> creationalContext = null;
+         if (!conditional)
+         {
+            creationalContext = CreationalContextImpl.of(observerBean);
+         }
+         instance = manager.getInjectableReference(observerBean, creationalContext);
          if (instance == null)
          {
             return;
          }
          // As we are working with the contextual instance, we may not have the actual object, but a container proxy (e.g. EJB)
-         observerMethod.invokeOnInstanceWithSpecialValue(instance, Observes.class, event, manager, null, ObserverException.class);
+         observerMethod.invokeOnInstanceWithSpecialValue(instance, Observes.class, event, manager, creationalContext, ObserverException.class);
       }
       finally
       {
@@ -204,11 +211,6 @@ public class ObserverImpl<T> implements Observer<T>
    {
       DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, this);
       manager.getTaskExecutor().execute(deferredEvent);
-   }
-   
-   private <B> B getInstance(RIBean<B> observerBean)
-   {
-      return manager.getInstance(observerBean, !isConditional());
    }
 
    /**

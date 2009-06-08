@@ -25,16 +25,16 @@ package org.jboss.webbeans.conversation;
 import java.io.Serializable;
 
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
+import javax.inject.Obtains;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.WebBean;
 import org.jboss.webbeans.context.api.BeanStore;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.servlet.ConversationBeanStore;
-import org.jboss.webbeans.servlet.HttpSessionManager;
 
 /**
  * The HTTP session based conversation manager
@@ -53,12 +53,13 @@ public class ServletConversationManager extends AbstractConversationManager impl
    private static final long CONVERSATION_TIMEOUT_IN_MS = 10 * 60 * 1000;
    private static final long CONVERSATION_CONCURRENT_ACCESS_TIMEOUT_IN_MS = 1 * 1000;
    private static final String CONVERSATION_ID_NAME = "cid";
+   
+   @Obtains Instance<HttpSession> httpSession;
 
    @Override
    public BeanStore getBeanStore(String cid)
    {
-      HttpSession session = CurrentManager.rootManager().getInstanceByType(HttpSessionManager.class).getSession();
-      return new ConversationBeanStore(session, cid);
+      return new ConversationBeanStore(httpSession.get(), cid);
    }
    
    @Produces

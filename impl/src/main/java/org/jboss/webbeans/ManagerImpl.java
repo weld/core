@@ -711,27 +711,22 @@ public class ManagerImpl implements WebBeansManager, Serializable
    {
       if (create)
       {
-         return getInstance(bean, new CreationalContextImpl<T>(bean));
+         return (T) getInjectableReference(bean, CreationalContextImpl.of(bean));
       }
       else
       {
-         return getInstance(bean, null);
+         return (T) getInjectableReference(bean, null);
       }
    }
-
-   @SuppressWarnings("unchecked")
-   @Deprecated
-   private <T> T getInstance(Bean<T> bean, CreationalContextImpl<?> creationalContext)
+   
+   public Object getInjectableReference(Bean<?> bean, CreationalContext<?> creationalContext)
    {
-      if (specializedBeans.containsKey(bean))
-      {
-         return getInstance((Bean<T>) specializedBeans.get(bean), creationalContext);
-      }
-      else if (getServices().get(MetaDataCache.class).getScopeModel(bean.getScopeType()).isNormal())
+      bean = getMostSpecializedBean(bean);
+      if (getServices().get(MetaDataCache.class).getScopeModel(bean.getScopeType()).isNormal())
       {
          if (creationalContext != null || (creationalContext == null && getContext(bean.getScopeType()).get(bean) != null))
          {
-            return (T) clientProxyProvider.getClientProxy(this, bean);
+            return clientProxyProvider.getClientProxy(this, bean);
          }
          else
          {
@@ -740,7 +735,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       }
       else
       {
-         return getContext(bean.getScopeType()).get((Bean<T>)bean, (CreationalContext<T>)creationalContext);
+         return getContext(bean.getScopeType()).get((Bean) bean, creationalContext);
       }
    }
    
@@ -780,12 +775,12 @@ public class ManagerImpl implements WebBeansManager, Serializable
             }
             else
             {
-               return getInstance(resolvedBean, ctx.getCreationalContext(resolvedBean));
+               return getInjectableReference(resolvedBean, ctx.getCreationalContext(resolvedBean));
             }
          }
          else
          {
-            return getInstance(resolvedBean);
+            return getInjectableReference(resolvedBean, creationalContext);
          }
       }
       finally
@@ -870,7 +865,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return getInstance(getBean(element, bindings));
    }
 
-   private <T> Bean<T> getBean(AnnotatedItem<T, ?> element, Annotation... bindings)
+   public <T> Bean<T> getBean(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
       Set<Bean<?>> beans = getBeans(element, bindings);
       if (beans.size() == 0)
@@ -1143,9 +1138,18 @@ public class ManagerImpl implements WebBeansManager, Serializable
 
 
 
-   public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean)
+   public <X> Bean<X> getMostSpecializedBean(Bean<X> bean)
    {
-      throw new RuntimeException("Not yet implemented");
+      Bean<?> key = bean;
+      while (specializedBeans.containsKey(key))
+      {
+         if (key == null)
+         {
+            System.out.println("null key " + bean);
+         }
+         key = specializedBeans.get(key);
+      }
+      return (Bean<X>) key;
    }
 
 

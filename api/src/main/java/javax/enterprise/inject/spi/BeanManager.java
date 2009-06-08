@@ -117,7 +117,7 @@ public interface BeanManager
     * 			The Bean representation of the bean.
     * @return the mest specialized enabled bean
     */
-   public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean); 
+   public <X> Bean<X> getMostSpecializedBean(Bean<X> bean); 
 
    /**
     * Returns the PassivationCapableBean with the given identifier.

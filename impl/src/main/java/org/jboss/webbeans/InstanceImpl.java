@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
 
@@ -31,7 +32,6 @@ import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
  * @author Gavin King
  * 
  * @param <T>
- * @see javax.webbeans.Instace
  */
 public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
 {
@@ -43,31 +43,19 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
       return new InstanceImpl<I>(type, manager, annotations);
    }
    
-   /**
-    * Constructor
-    * 
-    * @param type The obtainable type
-    * @param manager The Web Beans manager
-    * @param bindings The binding types
-    */
    private InstanceImpl(Type type, ManagerImpl manager, Set<Annotation> bindings)
    {
       super(type, manager, bindings);
    }
 
-   /**
-    * Gets an instance with the matching binding types
-    * 
-    * @param bindings The binding types
-    * @return The instance
-    * 
-    * @see javax.enterprise.inject.Instance#get(Annotation...)
-    * @see javax.enterprise.inject.spi.BeanManager#getInstanceByType(Class, Annotation...)
-    */
    public T get(Annotation... bindings) 
    {
       Annotation[] annotations = mergeInBindings(bindings);
-      return getManager().getInstanceByType(ResolvableAnnotatedClass.<T>of(getType(), annotations), annotations);
+      Bean<T> bean = getManager().getBean(ResolvableAnnotatedClass.<T>of(getType(), annotations), annotations);
+      
+      @SuppressWarnings("unchecked")
+      T instance = (T) getManager().getReference(bean, getType());
+      return instance;
    }
 
    /**

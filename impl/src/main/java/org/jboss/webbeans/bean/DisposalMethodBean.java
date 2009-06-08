@@ -20,7 +20,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +30,6 @@ import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.deployment.DeploymentType;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.event.Observes;
 import javax.inject.DefinitionException;
 
@@ -182,26 +180,10 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       return null;
    }
 
-   public void invokeDisposeMethod(Object instance)
+   public void invokeDisposeMethod(Object instance, CreationalContext<?> creationalContext)
    {
-
-      List<Object> parameters = new LinkedList<Object>();
-
-      parameters.add(instance);
-
-      for (InjectionPoint injectionPoint : disposalInjectionPoints)
-      {
-         // TODO this seems very wrong, we should be passing a creational context here
-         Object injectionObject = getManager().getInjectableReference(injectionPoint, null);
-         parameters.add(injectionObject);
-      }
-      
-
       Object beanInstance = disposalMethodInjectionPoint.isStatic() ? declaringBean : getManager().getInstance(declaringBean);
-
-      disposalMethodInjectionPoint.invokeWithSpecialValue(beanInstance, Disposes.class, instance, manager, null, IllegalArgumentException.class);
-
-
+      disposalMethodInjectionPoint.invokeWithSpecialValue(beanInstance, Disposes.class, instance, manager, creationalContext, IllegalArgumentException.class);
    }
 
    private void checkDisposalMethod()
