@@ -381,16 +381,6 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return disposalBeans;
    }
 
-   /**
-    * Resolves observers for given event and bindings
-    * 
-    * @param event The event to match
-    * @param bindings The binding types to match
-    * @return The set of matching observers
-    * 
-    * @see javax.enterprise.inject.spi.BeanManager#resolveObservers(java.lang.Object,
-    *      java.lang.annotation.Annotation[])
-    */
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
    {
       Class<?> clazz = event.getClass();
@@ -463,15 +453,17 @@ public class ManagerImpl implements WebBeansManager, Serializable
    
    public Set<Bean<?>> getBeans(Type beanType, Annotation... bindings)
    {
-      return (Set<Bean<?>>)(Set)resolveByType(ResolvableAnnotatedClass.of(beanType, bindings), bindings);
+      return (Set) resolveByType(ResolvableAnnotatedClass.of(beanType, bindings), bindings);
    }
 
+   @Deprecated
    public <T> Set<Bean<T>> getBeans(Class<T> beanType, Annotation... bindings)
    {
       return resolveByType(ResolvableAnnotatedClass.of(beanType, bindings), bindings);
    }
 
 
+   @Deprecated
    public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, InjectionPoint injectionPoint, Annotation... bindings)
    {
       boolean registerInjectionPoint = !injectionPoint.getType().equals(InjectionPoint.class);
@@ -500,6 +492,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * @param bindings The binding types to match
     * @return The set of matching beans
     */
+   @Deprecated
    public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
       for (Annotation annotation : element.getAnnotationsAsSet())
@@ -719,19 +712,13 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return activeContexts.iterator().next();
    }
 
-   /**
-    * Returns an instance of a bean
-    * 
-    * @param bean The bean to instantiate
-    * @return An instance of the bean
-    * 
-    * @see javax.enterprise.inject.spi.BeanManager#getInstance(javax.inject.manager.Bean)
-    */
+   @Deprecated
    public <T> T getInstance(Bean<T> bean)
    {
       return getInstance(bean, true);
    }
 
+   @Deprecated
    public <T> T getInstance(Bean<T> bean, boolean create)
    {
       if (create)
@@ -744,15 +731,8 @@ public class ManagerImpl implements WebBeansManager, Serializable
       }
    }
 
-   /**
-    * Returns an instance of a bean
-    * 
-    * @param bean The bean to instantiate
-    * @return An instance of the bean
-    * 
-    * @see javax.enterprise.inject.spi.BeanManager#getInstance(javax.inject.manager.Bean)
-    */
    @SuppressWarnings("unchecked")
+   @Deprecated
    private <T> T getInstance(Bean<T> bean, CreationalContextImpl<?> creationalContext)
    {
       if (specializedBeans.containsKey(bean))
@@ -788,11 +768,13 @@ public class ManagerImpl implements WebBeansManager, Serializable
    }
 
 
+   @Deprecated
    public Object getInstanceToInject(InjectionPoint injectionPoint)
    {
       return this.getInjectableReference(injectionPoint, null);
    }
 
+   @Deprecated
    public void injectNonContextualInstance(Object instance)
    {
       nonContextualInjector.inject(instance);
@@ -849,6 +831,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * 
     * @see javax.enterprise.inject.spi.BeanManager#getInstanceByName(java.lang.String)
     */
+   @Deprecated
    public Object getInstanceByName(String name)
    {
       Set<Bean<?>> beans = getBeans(name);
@@ -876,6 +859,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * @see javax.enterprise.inject.spi.BeanManager#getInstanceByType(java.lang.Class,
     *      java.lang.annotation.Annotation[])
     */
+   @Deprecated
    public <T> T getInstanceByType(Class<T> type, Annotation... bindings)
    {
       return getInstanceByType(ResolvableAnnotatedClass.of(type, bindings), bindings);
@@ -891,6 +875,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * @see javax.enterprise.inject.spi.BeanManager#getInstanceByType(javax.enterprise.inject.TypeLiteral,
     *      java.lang.annotation.Annotation[])
     */
+   @Deprecated
    public <T> T getInstanceByType(TypeLiteral<T> type, Annotation... bindings)
    {
       return getInstanceByType(ResolvableAnnotatedClass.of(type, bindings), bindings);
@@ -904,11 +889,13 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * @param bindings The binding types to match
     * @return An instance of the bean
     */
+   @Deprecated
    public <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
       return getInstance(getBeanByType(element, bindings));
    }
 
+   @Deprecated
    public <T> Bean<T> getBeanByType(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
       Set<Bean<T>> beans = resolveByType(element, bindings);
@@ -1171,22 +1158,22 @@ public class ManagerImpl implements WebBeansManager, Serializable
 
    public <T> InjectionTarget<T> createInjectionTarget(Class<T> type)
    {
-      throw new RuntimeException("Not yet implemented");
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
    public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type)
    {
-      throw new RuntimeException("Not yet implemented");
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
    public <T> ManagedBean<T> createManagedBean(Class<T> type)
    {
-      throw new RuntimeException("Not yet implemented");
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
    public <T> ManagedBean<T> createManagedBean(AnnotatedType<T> type)
    {
-      throw new RuntimeException("Not yet implemented");
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
 
@@ -1287,11 +1274,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       sortedBeans.addAll(beans);
       return sortedBeans.last();
    }
-
-   /**
-    * Return the webbeans el resolver, as part of the BeanManager contract
-    * @see javax.enterprise.inject.spi.BeanManager#getELResolver()
-    */
+   
    public ELResolver getELResolver()
    {
       return new WebBeansELResolver();
