@@ -31,14 +31,6 @@ import javax.enterprise.inject.spi.BeanManager;
 public interface WebBeansManager extends BeanManager, Serializable
 {
    
-   /**
-    * Perform JSR-299 dependency injection into a non-contextual instance
-    * 
-    * @param instance
-    *           the instance to inject
-    */
-   public void injectNonContextualInstance(Object instance);
-   
    public void shutdown();
    
 }

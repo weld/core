@@ -47,7 +47,7 @@ public class EnterpriseBeanLifecycleTest extends AbstractWebBeansTest
    public void testCreateSFSB()
    {
       GrossStadt frankfurt = getCurrentManager().getInstanceByType(GrossStadt.class);
-      Bean<KleinStadt> stadtBean = getCurrentManager().getBeans(KleinStadt.class).iterator().next();
+      Bean<KleinStadt> stadtBean = getBean(KleinStadt.class);
       assert stadtBean != null : "Expected a bean for stateful session bean Kassel";
       CreationalContext<KleinStadt> creationalContext = new MockCreationalContext<KleinStadt>();
       KleinStadt stadtInstance = stadtBean.create(creationalContext);
@@ -75,7 +75,7 @@ public class EnterpriseBeanLifecycleTest extends AbstractWebBeansTest
    public void testDestroyRemovesSFSB() throws Exception
    {
       GrossStadt frankfurt = getCurrentManager().getInstanceByType(GrossStadt.class);
-      Bean<KleinStadt> stadtBean = getCurrentManager().getBeans(KleinStadt.class).iterator().next();
+      Bean<KleinStadt> stadtBean = getBean(KleinStadt.class);
       assert stadtBean != null : "Expected a bean for stateful session bean Kassel";
       Context requestContext = getCurrentManager().getContext(RequestScoped.class);
       CreationalContext<KleinStadt> creationalContext = new MockCreationalContext<KleinStadt>();

@@ -191,7 +191,8 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
 
       for (InjectionPoint injectionPoint : disposalInjectionPoints)
       {
-         Object injectionObject = getManager().getInstanceToInject(injectionPoint);
+         // TODO this seems very wrong, we should be passing a creational context here
+         Object injectionObject = getManager().getInjectableReference(injectionPoint, null);
          parameters.add(injectionObject);
       }
       

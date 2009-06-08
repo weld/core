@@ -6,12 +6,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.inject.deployment.Production;
 import javax.enterprise.inject.deployment.Standard;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.testharness.AbstractTest;
 import org.jboss.webbeans.CurrentManager;
@@ -149,6 +152,22 @@ public abstract class AbstractWebBeansTest extends AbstractTest
          exception = exception.getCause();
       }
       return false;
+   }
+   
+   public <T> Bean<T> getBean(Type beanType, Annotation... bindings)
+   {
+      Set<Bean<?>> beans = getCurrentManager().getBeans(beanType, bindings);
+      if (beans.size() > 1)
+      {
+         throw new RuntimeException("More than one bean resolved to " + beanType + " with bindings " + Arrays.asList(bindings));
+      }
+      if (beans.size() == 0)
+      {
+         throw new RuntimeException("No beans resolved to " + beanType + " with bindings " + Arrays.asList(bindings));
+      }
+      @SuppressWarnings("deprecated")
+      Bean<T> bean = (Bean<T>) beans.iterator().next();
+      return bean;
    }
    
 }

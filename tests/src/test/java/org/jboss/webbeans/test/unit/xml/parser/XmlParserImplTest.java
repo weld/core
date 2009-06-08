@@ -66,10 +66,10 @@ public class XmlParserImplTest extends AbstractWebBeansTest
       
       ManagerImpl manager = parserEnv.getManager();
       
-      Set<Bean<Order>> beansSet = manager.getBeans(Order.class);
+      Set<Bean<?>> beansSet = manager.getBeans(Order.class);
       List<Class<? extends Annotation>> dTypes = manager.getEnabledDeploymentTypes();
       dTypes.size();
-      for(Bean<Order> bean : beansSet)
+      for(Bean<?> bean : beansSet)
       {
          Class<? extends Annotation> deploymentType = bean.getDeploymentType();
          System.out.println("after parsing: " + deploymentType);

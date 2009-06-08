@@ -27,7 +27,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.TypeLiteral;
+import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
+import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem;
 import org.jboss.webbeans.util.Names;
@@ -41,17 +44,17 @@ public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<
    
    private final String _string;
    
-   public static <T> ResolvableAnnotatedClass<T> of(TypeLiteral<T> typeLiteral, Annotation[] annotations)
+   public static <T> AnnotatedItem<T, Class<T>> of(TypeLiteral<T> typeLiteral, Annotation[] annotations)
    {
       return new ResolvableAnnotatedClass<T>(typeLiteral.getRawType(), typeLiteral.getType(), annotations);
    }
    
-   public static <T> ResolvableAnnotatedClass<T> of(Class<T> clazz, Annotation[] annotations)
+   public static <T> AnnotatedItem<T, Class<T>> of(Class<T> clazz, Annotation[] annotations)
    {
       return new ResolvableAnnotatedClass<T>(clazz, clazz, annotations);
    }
    
-   public static <T> ResolvableAnnotatedClass<T> of(Type type, Annotation[] annotations)
+   public static <T> AnnotatedItem<T, Class<T>> of(Type type, Annotation[] annotations)
    {
       if (type instanceof Class)
       {
@@ -67,7 +70,22 @@ public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<
       }
    }
    
-   public static <T> ResolvableAnnotatedClass<T> of(Member member, Annotation[] annotations)
+   
+   public static <T> AnnotatedItem<T, Class<T>> of(InjectionPoint injectionPoint)
+   {
+      if (injectionPoint instanceof AnnotatedInjectionPoint)
+      {
+         @SuppressWarnings("unchecked")
+         AnnotatedItem<T, Class<T>> ip = (AnnotatedItem<T, Class<T>>) injectionPoint;
+         return ip;
+      }
+      else
+      {
+         return of(injectionPoint.getType(), injectionPoint.getAnnotations());
+      }
+   }
+   
+   public static <T> AnnotatedItem<T, Class<T>> of(Member member, Annotation[] annotations)
    {
       if (member instanceof Field)
       {

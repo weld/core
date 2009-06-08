@@ -373,11 +373,15 @@ public class ManagerImpl implements WebBeansManager, Serializable
    public <T> Set<DisposalMethodBean<T>> resolveDisposalBeans(Class<T> apiType, Annotation... bindings)
    {
       // Correct?
-      Set<Bean<T>> beans = getBeans(apiType, bindings);
+      Set<Bean<?>> beans = getBeans(apiType, bindings);
       Set<DisposalMethodBean<T>> disposalBeans = new HashSet<DisposalMethodBean<T>>();
-      for (Bean<T> bean : beans)
+      for (Bean<?> bean : beans)
+      {
          if (bean instanceof DisposalMethodBean)
+         {
             disposalBeans.add((DisposalMethodBean<T>) bean);
+         }
+      }
       return disposalBeans;
    }
 
@@ -455,16 +459,13 @@ public class ManagerImpl implements WebBeansManager, Serializable
    {
       return (Set) resolveByType(ResolvableAnnotatedClass.of(beanType, bindings), bindings);
    }
-
-   @Deprecated
-   public <T> Set<Bean<T>> getBeans(Class<T> beanType, Annotation... bindings)
+   
+   public Set<Bean<?>> getBeans(AnnotatedItem<?, ?> element, Annotation... bindings)
    {
-      return resolveByType(ResolvableAnnotatedClass.of(beanType, bindings), bindings);
+      return (Set) resolveByType(element, bindings);
    }
 
-
-   @Deprecated
-   public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, InjectionPoint injectionPoint, Annotation... bindings)
+   public Set<Bean<?>> getBeans(InjectionPoint injectionPoint)
    {
       boolean registerInjectionPoint = !injectionPoint.getType().equals(InjectionPoint.class);
       try
@@ -473,7 +474,8 @@ public class ManagerImpl implements WebBeansManager, Serializable
          {
             currentInjectionPoint.get().push(injectionPoint);
          }
-         return resolveByType(element, bindings);
+         // TODO Do this properly
+         return getBeans(ResolvableAnnotatedClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0])));
       }
       finally
       {
@@ -513,7 +515,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
             throw new IllegalArgumentException("Cannot resolve a type parameterized with a type parameter " + element);
          }
       }
-      if (bindings.length > element.getMetaAnnotations(BindingType.class).size())
+      if (bindings != null && bindings.length > element.getMetaAnnotations(BindingType.class).size())
       {
          throw new DuplicateBindingTypeException("Duplicate bindings (" + Arrays.asList(bindings) + ") type passed " + element.toString());
       }
@@ -767,19 +769,6 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return getInstance(bean,true);  
    }
 
-
-   @Deprecated
-   public Object getInstanceToInject(InjectionPoint injectionPoint)
-   {
-      return this.getInjectableReference(injectionPoint, null);
-   }
-
-   @Deprecated
-   public void injectNonContextualInstance(Object instance)
-   {
-      nonContextualInjector.inject(instance);
-   }
-
    @SuppressWarnings("unchecked")
    public Object getInjectableReference(InjectionPoint injectionPoint, CreationalContext<?> creationalContext)
    {
@@ -916,15 +905,6 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return bean;
    }
 
-
-   /**
-    * Resolves a set of beans based on their name
-    * 
-    * @param The name to match
-    * @return The set of matching beans
-    * 
-    * @see javax.enterprise.inject.spi.BeanManager#getBeans(java.lang.String)
-    */
    public Set<Bean<?>> getBeans(String name)
    {
       return resolver.get(name);
