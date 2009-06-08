@@ -26,6 +26,18 @@ import org.jboss.webbeans.introspector.ForwardingAnnotatedItem;
 abstract class ResolvableAnnotatedItem<T, S> extends ForwardingAnnotatedItem<T, S>
 {
    
+   public static <T1, S1> ResolvableAnnotatedItem<T1, S1> of(final AnnotatedItem<T1, S1> delegate)
+   {
+      return new ResolvableAnnotatedItem<T1, S1>()
+      {
+         @Override
+         protected AnnotatedItem<T1, S1> delegate()
+         {
+            return delegate;
+         }
+      };
+   }
+   
    private static final long serialVersionUID = 1L;
 
    @Override

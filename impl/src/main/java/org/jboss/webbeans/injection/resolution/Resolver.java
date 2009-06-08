@@ -48,8 +48,6 @@ public class Resolver
    private static final long serialVersionUID = 1L;
 
    private static final Class<AnnotatedItem<Object, Object>> ANNOTATED_ITEM_GENERIFIED_WITH_OBJECT_OBJECT = new TypeLiteral<AnnotatedItem<Object, Object>>(){}.getRawType();
-   private static final Class<Set<Bean<Object>>> BEAN_SET_GENERIFIED_WITH_OBJECT = new TypeLiteral<Set<Bean<Object>>>(){}.getRawType();
-   private static final Class<Set<Bean<?>>> BEAN_SET_GENERIFIED_WITH_WILDCARD = new TypeLiteral<Set<Bean<?>>>(){}.getRawType();
    
    // The resolved injection points
    private ConcurrentCache<ResolvableAnnotatedItem<?, ?>, Set<Bean<?>>> resolvedInjectionPoints;
@@ -94,12 +92,12 @@ public class Resolver
     * @param element The injection point to add
     * @return A set of matching beans for the injection point
     */
-   private <T, S> Set<Bean<T>> registerInjectionPoint(final ResolvableAnnotatedItem<T, S> element)
+   private Set<Bean<?>> registerInjectionPoint(final ResolvableAnnotatedItem<?, ?> element)
    {
-      Callable<Set<Bean<T>>> callable = new Callable<Set<Bean<T>>>()
+      Callable<Set<Bean<?>>> callable = new Callable<Set<Bean<?>>>()
       {
 
-         public Set<Bean<T>> call() throws Exception
+         public Set<Bean<?>> call() throws Exception
          {
             return retainHighestPrecedenceBeans(getMatchingBeans(element, manager.getBeans()), manager.getEnabledDeploymentTypes());
          }
@@ -146,20 +144,9 @@ public class Resolver
     * @param key The resolving criteria
     * @return An unmodifiable set of matching beans
     */
-   public <T, S> Set<Bean<T>> get(final AnnotatedItem<T, S> key)
+   public Set<Bean<?>> get(final AnnotatedItem<?, ?> key)
    {
-      final AnnotatedItem<T, S> transformedElement = transformElement(key);
-      
-      Set<Bean<T>> beans = registerInjectionPoint(new ResolvableAnnotatedItem<T, S>()
-      {
-
-         @Override
-         public AnnotatedItem<T, S> delegate()
-         {
-            return transformedElement;
-         }
-
-      });
+      Set<Bean<?>> beans = registerInjectionPoint(ResolvableAnnotatedItem.of(transformElement(key)));
       return Collections.unmodifiableSet(beans);
    }
    
@@ -178,7 +165,7 @@ public class Resolver
     * @param name The name to match
     * @return The set of matching beans
     */
-   public Set<Bean<? extends Object>> get(final String name)
+   public Set<Bean<?>> get(final String name)
    {
       return resolvedNames.putIfAbsent(name, new Callable<Set<Bean<?>>>()
       {
@@ -196,12 +183,6 @@ public class Resolver
             }
             return retainHighestPrecedenceBeans(beans, manager.getEnabledDeploymentTypes());
          }
-         
-         // Helper method to deal with dynamic casts being needed
-         private Set<Bean<?>> retainHighestPrecedenceBeans(Set<Bean<?>> beans, List<Class<? extends Annotation>> enabledDeploymentTypes)
-         {
-            return BEAN_SET_GENERIFIED_WITH_WILDCARD.cast(Resolver.retainHighestPrecedenceBeans(BEAN_SET_GENERIFIED_WITH_OBJECT.cast(beans), enabledDeploymentTypes));
-         }
 
       });
    }
@@ -216,7 +197,7 @@ public class Resolver
     * @param enabledDeploymentTypes The enabled deployment types
     * @return The filtered beans
     */
-   private static <T> Set<Bean<T>> retainHighestPrecedenceBeans(Set<Bean<T>> beans, List<Class<? extends Annotation>> enabledDeploymentTypes)
+   private static Set<Bean<?>> retainHighestPrecedenceBeans(Set<Bean<?>> beans, List<Class<? extends Annotation>> enabledDeploymentTypes)
    {
       if (beans.size() > 0)
       {
@@ -226,12 +207,12 @@ public class Resolver
             possibleDeploymentTypes.add(bean.getDeploymentType());
          }
          possibleDeploymentTypes.retainAll(enabledDeploymentTypes);
-         Set<Bean<T>> trimmed = new HashSet<Bean<T>>();
+         Set<Bean<?>> trimmed = new HashSet<Bean<?>>();
          if (possibleDeploymentTypes.size() > 0)
          {
             Class<? extends Annotation> highestPrecedencePossibleDeploymentType = possibleDeploymentTypes.last();
 
-            for (Bean<T> bean : beans)
+            for (Bean<?> bean : beans)
             {
                if (bean.getDeploymentType().equals(highestPrecedencePossibleDeploymentType))
                {
@@ -255,16 +236,14 @@ public class Resolver
     * @param beans The beans to filter
     * @return A set of filtered beans
     */
-   private <T> Set<Bean<T>> getMatchingBeans(AnnotatedItem<T, ?> element, List<Bean<?>> beans)
+   private Set<Bean<?>> getMatchingBeans(AnnotatedItem<?, ?> element, List<Bean<?>> beans)
    {
-      Set<Bean<T>> resolvedBeans = new HashSet<Bean<T>>();
+      Set<Bean<?>> resolvedBeans = new HashSet<Bean<?>>();
       for (Bean<?> bean : beans)
       {
          if (element.isAssignableFrom(bean.getTypes()) && containsAllBindings(element, bean.getBindings()))
          {
-            @SuppressWarnings("unchecked")
-            Bean<T> b = (Bean<T>) bean;
-            resolvedBeans.add(b);
+            resolvedBeans.add(bean);
          }
       }
       return resolvedBeans;

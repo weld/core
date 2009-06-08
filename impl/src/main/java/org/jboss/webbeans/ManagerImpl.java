@@ -457,45 +457,10 @@ public class ManagerImpl implements WebBeansManager, Serializable
    
    public Set<Bean<?>> getBeans(Type beanType, Annotation... bindings)
    {
-      return (Set) resolveByType(ResolvableAnnotatedClass.of(beanType, bindings), bindings);
+      return getBeans(ResolvableAnnotatedClass.of(beanType, bindings), bindings);
    }
    
    public Set<Bean<?>> getBeans(AnnotatedItem<?, ?> element, Annotation... bindings)
-   {
-      return (Set) resolveByType(element, bindings);
-   }
-
-   public Set<Bean<?>> getBeans(InjectionPoint injectionPoint)
-   {
-      boolean registerInjectionPoint = !injectionPoint.getType().equals(InjectionPoint.class);
-      try
-      {
-         if (registerInjectionPoint)
-         {
-            currentInjectionPoint.get().push(injectionPoint);
-         }
-         // TODO Do this properly
-         return getBeans(ResolvableAnnotatedClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0])));
-      }
-      finally
-      {
-         if (registerInjectionPoint)
-         {
-            currentInjectionPoint.get().pop();
-         }
-      }
-   }
-
-   /**
-    * Check the resolution request is valid, and then ask the resolver to
-    * perform the resolution. For internal use.
-    * 
-    * @param element The item to resolve
-    * @param bindings The binding types to match
-    * @return The set of matching beans
-    */
-   @Deprecated
-   public <T> Set<Bean<T>> resolveByType(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
       for (Annotation annotation : element.getAnnotationsAsSet())
       {
@@ -520,6 +485,27 @@ public class ManagerImpl implements WebBeansManager, Serializable
          throw new DuplicateBindingTypeException("Duplicate bindings (" + Arrays.asList(bindings) + ") type passed " + element.toString());
       }
       return resolver.get(element);
+   }
+
+   public Set<Bean<?>> getBeans(InjectionPoint injectionPoint)
+   {
+      boolean registerInjectionPoint = !injectionPoint.getType().equals(InjectionPoint.class);
+      try
+      {
+         if (registerInjectionPoint)
+         {
+            currentInjectionPoint.get().push(injectionPoint);
+         }
+         // TODO Do this properly
+         return getBeans(ResolvableAnnotatedClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0])));
+      }
+      finally
+      {
+         if (registerInjectionPoint)
+         {
+            currentInjectionPoint.get().pop();
+         }
+      }
    }
 
    /**
@@ -780,7 +766,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
             currentInjectionPoint.get().push(injectionPoint);
          }
          AnnotatedItem<?, ?> element = ResolvableAnnotatedClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]));
-         Bean<?> resolvedBean = getBeanByType(element, element.getBindingsAsArray());
+         Bean<?> resolvedBean = getBean(element, element.getBindingsAsArray());
          if (getServices().get(MetaDataCache.class).getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType()))
          {
             throw new UnproxyableResolutionException("Attempting to inject an unproxyable normal scoped bean " + resolvedBean + " into " + injectionPoint);
@@ -881,13 +867,12 @@ public class ManagerImpl implements WebBeansManager, Serializable
    @Deprecated
    public <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
-      return getInstance(getBeanByType(element, bindings));
+      return getInstance(getBean(element, bindings));
    }
 
-   @Deprecated
-   public <T> Bean<T> getBeanByType(AnnotatedItem<T, ?> element, Annotation... bindings)
+   private <T> Bean<T> getBean(AnnotatedItem<T, ?> element, Annotation... bindings)
    {
-      Set<Bean<T>> beans = resolveByType(element, bindings);
+      Set<Bean<?>> beans = getBeans(element, bindings);
       if (beans.size() == 0)
       {
          throw new UnsatisfiedResolutionException(element + "Unable to resolve any Web Beans");
@@ -896,7 +881,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       {
          throw new AmbiguousResolutionException(element + "Resolved multiple Web Beans");
       }
-      Bean<T> bean = beans.iterator().next();
+      Bean<T> bean = (Bean<T>) beans.iterator().next();
       boolean normalScoped = getServices().get(MetaDataCache.class).getScopeModel(bean.getScopeType()).isNormal();
       if (normalScoped && !Beans.isBeanProxyable(bean))
       {
