@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-05-05 20:42+0000\n"
-"PO-Revision-Date: 2009-05-10 12:48+0100\n"
+"PO-Revision-Date: 2009-06-08 21:11+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -958,13 +958,13 @@ msgstr "Per vedere la documentazione Wicket si vada a <ulink url=\"http://wicket
 #: gettingstarted.xml:483
 #, no-c-format
 msgid "Like the previous example, the Wicket WebBeans examples make use of the <literal>webbeans-servlet</literal> module. The use of the <ulink url=\"http://jetty.mortbay.org/\">Jetty servlet container</ulink> is common in the Wicket community, and is chosen here as the runtime container in order to facilitate comparison between the standard Wicket examples and these examples, and also to show how the webbeans-servlet integration is not dependent upon Tomcat as the servlet container."
-msgstr ""
+msgstr "Come nel precedente esempio, gli esempi WebBeans Wicket usano il modulo <literal>webbeans-servlet</literal>. L'uso del <ulink url=\"http://jetty.mortbay.org/\">Jetty servlet container</ulink> è comune nella comunità Wicket, e qua viene scelto come container runtime per facilitare il paragone tra gli esempi Wicket standard e questi esempi, ed anche per mostrare come l'integrazione webbeans-servlet non è dipenendete da Tomcat come servlet container."
 
 #. Tag: para
 #: gettingstarted.xml:494
 #, no-c-format
 msgid "These examples make use of the Eclipse IDE; instructions are also given to deploy the application from the command line."
-msgstr ""
+msgstr "Questi esempi usano Eclipse IDE; vengono date anche le istruzioni per il deploy dell'applicazione da linea di comando."
 
 #. Tag: title
 #: gettingstarted.xml:500
@@ -992,7 +992,7 @@ msgstr ""
 #: gettingstarted.xml:508
 #, no-c-format
 msgid "Then, from eclipse, choose <emphasis>File -> Import -> General -> Existing Projects into Workspace</emphasis>, select the root directory of the numberguess example, and click finish. Note that if you do not intend to run the example with jetty from within eclipse, omit the \"-Pjetty.\" This will create a project in your workspace called <literal>webbeans-wicket-numberguess</literal>"
-msgstr ""
+msgstr "Poi scegliere da Eclipse <emphasis>File -> Import -> General -> Existing Projects into Workspace</emphasis>, selezionare la cartella radice dell'esempio Indovina Numero e cliccare su Finish. Notare che se non si intende eseguire l'esempio con Jetty da dentro Eclipse, si ometta \"-Pjetty.\". Questo creerà un progetto nel workspace chiamato <literal>webbeans-wicket-numberguess</literal>."
 
 #. Tag: title
 #: gettingstarted.xml:524
@@ -1004,7 +1004,7 @@ msgstr "Esecuzione dell'esempio da Eclipse"
 #: gettingstarted.xml:526
 #, no-c-format
 msgid "This project follows the <literal>wicket-quickstart</literal> approach of creating an instance of Jetty in the <literal>Start</literal> class. So running the example is as simple as right-clicking on that Start class in <literal>src/test/java</literal> in the <emphasis>Package Explorer</emphasis> and choosing <emphasis>Run as Java Application</emphasis>. You should see console output related to Jetty starting up; then visit able <literal>http://localhost:8080</literal> to view the app. To debug choose <emphasis>Debug as Java Application</emphasis>."
-msgstr ""
+msgstr "Questo progetto segue l'approccio di <literal>wicket-quickstart</literal> nella creazione di un'istanza di Jetty nella classe <literal>Start</literal>. Quindi l'esecuzione dell'esempio è tanto semplice come cliccare col tasto destro sulla classe Start in <literal>src/test/java</literal> in <emphasis>Package Explorer</emphasis> e scegliere <emphasis>Run as Java Application</emphasis>. Si dovrebbe vedere l'output di console di Jetty avviato; poi visitare <literal>http://localhost:8080</literal>. Per il debug scegliere <emphasis>Debug as Java Application</emphasis>."
 
 #. Tag: title
 #: gettingstarted.xml:541
@@ -1016,7 +1016,7 @@ msgstr "Eseguire l'esempio da linea di comando in JBoss AS o Tomcat"
 #: gettingstarted.xml:543
 #, no-c-format
 msgid "This example can also be deployed from the command line in a (similar to the other examples). Assuming you have set up the <literal>build.properties</literal> file in the <literal>examples</literal> directory to specify the location of JBoss AS or Tomcat, as previously described, you can run <literal>ant deploy</literal> from the <literal>examples/wicket/numberguess</literal> directory, and access the application at <literal>http://localhost:8080/webbeans-numberguess-wicket</literal>."
-msgstr ""
+msgstr "Quest'esempio può anche essere deployato da linea di comando (come gli altri esempi). Assumendo che sia stato configurato il file <literal>build.properties</literal> nella derectory <literal>examples</literal>, per specificare la locazione di JBoss AS o Tomcat, come descritto prima, si può eseguire <literal>ant deploy</literal> dalla directory <literal>examples/wicket/numberguess</literal> ed accedere all'applicazione tramite indirizzo <literal>http://localhost:8080/webbeans-numberguess-wicket</literal>."
 
 #. Tag: title
 #: gettingstarted.xml:557
@@ -1028,13 +1028,13 @@ msgstr "Comprendere il codice"
 #: gettingstarted.xml:559
 #, no-c-format
 msgid "JSF uses Unified EL expressions to bind view layer components in JSP or Facelet views to beans, Wicket defines it's components in Java. The markup is plain html with a one-to-one mapping between html elements and the view components. All view logic, including binding of components to models and controlling the response of view actions, is handled in Java. The integration of Web Beans with Wicket takes advantage of the same binding annotations used in your business layer to provide injection into your WebPage subclass (or into other custom wicket component subclasses)."
-msgstr ""
+msgstr "JSF usa le espressioni Unified EL per associare i componenti del layer vista nelle viste JSP o Facelets ai bean, Wicket definisce i propri componenti in Java. Il markup è puro html con una mappatura one-to-one tra gli elementi html ed i componenti vista. Tutta la logica di vista viene gestita in Java, incluso il binding dei componenti ai modelli ed il controllo della risposta delle azioni di vista. L'integrazione di Web Beans con Wicket sfrutta le stesse annotazioni di binding usata nel layer business per fornire l'iniezione alla sottoclasse WebPage (o in altre sottoclassi personalizzate componenti di Wicket)."
 
 #. Tag: para
 #: gettingstarted.xml:571
 #, no-c-format
 msgid "The code in the wicket numberguess example is very similar to the JSF-based numberguess example. The business layer is identical!"
-msgstr ""
+msgstr "Il codice nell'esempio Indovina Numero in Wicket è molto simile all'esempio Indovina Numero basato su JSF. Il layer business è identico!"
 
 #. Tag: para
 #: gettingstarted.xml:576
@@ -1046,7 +1046,7 @@ msgstr "Le differenze sono:"
 #: gettingstarted.xml:581
 #, no-c-format
 msgid "Each wicket application must have a <literal>WebApplication</literal> subclass, In our case, our application class is <literal>SampleApplication</literal>:"
-msgstr ""
+msgstr "Ciascuna applicazione wicket deve avere una sottoclasse <literal>WebApplication</literal>. Nel nostro caso la classe applicazione è <literal>SampleApplication</literal>:"
 
 #. Tag: programlisting
 #: gettingstarted.xml:587
@@ -1070,13 +1070,13 @@ msgstr ""
 #: gettingstarted.xml:588
 #, no-c-format
 msgid "This class specifies which page wicket should treat as our home page, in our case, <literal>HomePage.class</literal>"
-msgstr ""
+msgstr "Questa classe specifica quale pagina wicket debba essere considerata come home page, nel nostro caso  <literal>HomePage.class</literal>."
 
 #. Tag: para
 #: gettingstarted.xml:594
 #, no-c-format
 msgid "In <literal>HomePage</literal> we see typical wicket code to set up page elements. The bit that is interesting is the injection of the <literal>Game</literal> bean:"
-msgstr ""
+msgstr "In <literal>HomePage</literal> si vede un tipico codice wicket per impostare gli elementi di pagina. Il punto interessante è l'iniezione del bean <literal>Game</literal>:"
 
 #. Tag: programlisting
 #: gettingstarted.xml:600
@@ -1106,19 +1106,19 @@ msgstr ""
 #: gettingstarted.xml:610
 #, no-c-format
 msgid "All injections may be serialized; actual storage of the bean is managed by JSR-299. Note that Wicket components, like the HomePage and it subcomponents, are <emphasis>not</emphasis> JSR-299 beans."
-msgstr ""
+msgstr "Tutte le iniezioni possono essere serializzate; il salvataggio su disco del bean è gestito daJSR-299. Si noti che i componenti Wicket come HomePage ed i suoi sottocomponenti <emphasis>non</emphasis> sono bean JSR-299."
 
 #. Tag: para
 #: gettingstarted.xml:616
 #, no-c-format
 msgid "Wicket components allow injection, but they <emphasis>cannot</emphasis> use interceptors, decorators and lifecycle callbacks such as <literal>@PostConstruct</literal> or <literal>@Initializer</literal> methods."
-msgstr ""
+msgstr "I componenti Wicket consentono l'iniezione, ma <emphasis>non possono</emphasis> usare gli interceptor, i decoratori e le chiamate del ciclo di vita quali i metodi <literal>@PostConstruct</literal> o <literal>@Initializer</literal>."
 
 #. Tag: para
 #: gettingstarted.xml:626
 #, no-c-format
 msgid "The example uses AJAX for processing of button events, and dynamically hides buttons that are no longer relevant, for example when the user has won the game."
-msgstr ""
+msgstr "L'esempio usa AJAX per processare gli eventi dei pulsanti, e nasconde dinamicamente i pulsanti che non sono più rilevanti, per esempio quando l'utente ha vinto il gioco."
 
 #. Tag: para
 #: gettingstarted.xml:634
@@ -1170,7 +1170,7 @@ msgstr ""
 #: gettingstarted.xml:640
 #, no-c-format
 msgid "Note that the servlet listener is also added, as in the Tomcat example, in order to boostrap Web Beans when Jetty starts, and to hook Web Beans into the Jetty servlet request and session lifecycles."
-msgstr ""
+msgstr "Si noti che il servlet listener viene aggiunto, come nell'esempio Tomcat, per poter avviare Web Beans quando viene avviato Jetty, e per agganciare Web Beans alla richiesta servlet di Jetty ed al ciclo di vita della sessione."
 
 #. Tag: title
 #: gettingstarted.xml:653
@@ -1230,7 +1230,7 @@ msgstr "Vi è un file vuoto <literal>beans.xml</literal> nel pacchetto radice (<
 #: gettingstarted.xml:700
 #, no-c-format
 msgid "The game's main logic is located in <literal>Game.java</literal>. Here is the code for that class, highlighting the changes made from the web application version:"
-msgstr ""
+msgstr "La logica principale del gioco è collocata in <literal>Game.java</literal>. Ecco il codice per questa classe, evidenziando i cambiamenti fatti nella versione web:"
 
 #. Tag: section
 #: gettingstarted.xml:704

@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-04-19 20:36+0000\n"
-"PO-Revision-Date: 2009-05-30 15:34+0100\n"
+"PO-Revision-Date: 2009-06-08 21:35+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -271,7 +271,7 @@ msgstr "Servizi JPA"
 #: ri-spi.xml:100
 #, no-c-format
 msgid "Just as EJB resolution is delegated to the container, resolution of <literal>@PersistenceContext</literal> for injection into simple beans (with the <literal>InjectionPoint</literal> provided), and resolution of persistence contexts and persistence units (with the <literal>unitName</literal> provided) for injection as a Java EE resource is delegated to the container."
-msgstr ""
+msgstr "Così come la risoluzione EJB è delegataal container, vengono delegate al container anche la risoluzione del <literal>@PersistenceContext</literal> per l'iniezione in semplici bean (con <literal>InjectionPoint</literal> fornito), e la risoluzione dei contesti di persistenza e delle unità di persistenza (con <literal>InjectionPoint</literal> fornito) per l'iniezione come risorse Java EE."
 
 #. Tag: para
 #: ri-spi.xml:109
@@ -283,7 +283,7 @@ msgstr "Per consentire l'integrazione con JPA, deve essere implementata l'interf
 #: ri-spi.xml:114
 #, no-c-format
 msgid "Web Beans also needs to know what entities are in a deployment (so that they aren't managed by Web Beans). An implementation that detects entities through <literal>@Entity</literal> and <literal>orm.xml</literal> is provided by default. If you want to provide support for a entities defined by a JPA provider (such as Hibernate's <literal>.hbm.xml</literal> you can wrap or replace the default implementation."
-msgstr ""
+msgstr "Web Beans necessitaanche di sapere quali entità sono in deploy (quindi non sono gestite da Web Beans). Un'implementazione che rileva le entità attraverso <literal>@Entity</literal> e <literal>orm.xml</literal> viene fornita di default. Se si vuole fornire support alle entity definite da un provider JPA (quali gli <literal>.hbm.xml</literal> di Hibernate) si può fare il wrap o sostituire l'implementazione di default."
 
 #. Tag: programlisting
 #: ri-spi.xml:124
@@ -393,7 +393,7 @@ msgstr "Servizi JMS"
 #: ri-spi.xml:167
 #, no-c-format
 msgid "A number of JMS operations are not container specific, and so should be provided via the SPI <literal>JmsServices</literal>. JMS does not specify how to obtain a <literal>ConnectionFactory</literal> so the SPI provides a method which should be used to look up a factory. Web Beans also delegates <literal>Destination</literal> lookup to the container via the SPI."
-msgstr ""
+msgstr "Un numero di operazioni JMS non sono specifiche del container e dovrebbero essere fornite via <literal>JmsServices</literal> SPI. JMS non specifica come ottenere una <literal>ConnectionFactory</literal> quindi SPI fornisce un metodo che dovrebbe essere usato per cercare una factory. Web Beans delega anche la ricerca di <literal>Destination</literal> al container tramite SPI."
 
 #. Tag: title
 #: ri-spi.xml:178
@@ -513,7 +513,7 @@ msgstr "Web Beans delega tutte le operazioni JNDI al container attraverso SPI."
 #: ri-spi.xml:304
 #, no-c-format
 msgid "A number of the SPI interface require JNDI lookup, and the class <literal>AbstractResourceServices</literal> provides JNDI/Java EE spec compliant lookup methods."
-msgstr ""
+msgstr "Un numero di interfacce SPI richiede il lookup JNDI e la classe <literal>AbstractResourceServices</literal> fornisce metodi di lookup secondo la specifica JNDI/Java EE."
 
 #. Tag: title
 #: ri-spi.xml:315
