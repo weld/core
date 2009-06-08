@@ -12,4 +12,4 @@ Before running the examples, you'll need to ensure your
 server supports Web Beans.
 
 The examples and RI are explained in detail in the reference guide, including
-how to add Web Beans support to JBoss 5.
+how to add Web Beans support to JBoss 5, and how to deploy the examples to Tomcat
