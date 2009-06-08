@@ -97,6 +97,12 @@ public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
    {
       // TODO Auto-generated method stub
    }
+   
+   @Override
+   public boolean isSerializable()
+   {
+      return true;
+   }
 
    /**
     * Gets a set of annotation classes to ignore

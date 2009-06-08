@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans.event;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
@@ -37,11 +36,11 @@ import org.jboss.webbeans.util.Strings;
  * @param <T> The type of event being wrapped
  * @see javax.event.Event
  */
-public class EventImpl<T> extends FacadeImpl<T> implements Event<T>, Serializable
+public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
 {
    
-   private static final long serialVersionUID = 8130060821283091287L;
-   
+   private static final long serialVersionUID = 656782657242515455L;
+
    public static <E> Event<E> of(Type eventType, ManagerImpl manager, Set<Annotation> bindings)
    {
       return new EventImpl<E>(eventType, manager, bindings);
@@ -57,8 +56,7 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>, Serializabl
     */
    public EventImpl(Type eventType, ManagerImpl manager, Set<Annotation> bindings)
    {
-      super(eventType, manager, bindings);
-      this.bindings.remove(new AnyLiteral());
+      super(eventType, manager, removeBindings(bindings, new AnyLiteral()));
    }
 
    /**
@@ -88,8 +86,8 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>, Serializabl
    {
       StringBuilder buffer = new StringBuilder();
       buffer.append("Observable Event:\n");
-      buffer.append("  Event Type: " + type.toString() + "\n");
-      buffer.append(Strings.collectionToString("  Event Bindings: ", bindings));
+      buffer.append("  Event Type: " + getType().toString() + "\n");
+      buffer.append(Strings.collectionToString("  Event Bindings: ", getBindings()));
       return buffer.toString();
    }
 

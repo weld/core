@@ -35,7 +35,8 @@ import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
  */
 public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
 {
-   
+
+   private static final long serialVersionUID = -376721889693284887L;
 
    public static <I> Instance<I> of(Type type, ManagerImpl manager, Set<Annotation> annotations)
    {
@@ -66,7 +67,7 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
    public T get(Annotation... bindings) 
    {
       Annotation[] annotations = mergeInBindings(bindings);
-      return getManager().getInstanceByType(ResolvableAnnotatedClass.<T>of(type, annotations), annotations);
+      return getManager().getInstanceByType(ResolvableAnnotatedClass.<T>of(getType(), annotations), annotations);
    }
 
    /**
@@ -77,13 +78,12 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
    @Override
    public String toString()
    {
-      return "Obtainable instance for type " + type + " and binding types " + bindings;
+      return "Obtainable instance for type " + getType() + " and binding types " + getBindings();
    }
 
    public Iterator<T> iterator()
    {
-      // TODO Auto-generated method stub
-      return null;
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
 }

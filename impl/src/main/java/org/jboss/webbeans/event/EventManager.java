@@ -19,8 +19,6 @@ package org.jboss.webbeans.event;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +29,6 @@ import org.jboss.webbeans.ManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Reflections.HierarchyDiscovery;
 
 /**

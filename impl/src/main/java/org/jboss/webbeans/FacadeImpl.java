@@ -16,8 +16,11 @@
  */
 package org.jboss.webbeans;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,20 +35,21 @@ import org.jboss.webbeans.metadata.MetaDataCache;
  * 
  * @param <T>
  */
-public abstract class FacadeImpl<T>
+public abstract class FacadeImpl<T> implements Serializable
 {
    
+   private static final long serialVersionUID = 8710258788495459128L;
+
    private static final Annotation[] EMPTY_BINDINGS = new Annotation[0];
    
    // The binding types the helper operates on
-   protected final Set<? extends Annotation> bindings;
+   private final Set<? extends Annotation> bindings;
    // The Web Beans manager
    private final ManagerImpl manager;
    // The type of the operation
-   protected final Type type;
+   private final Type type;
 
    /**
-    * Constructor
     * 
     * @param type The event type
     * @param manager The Web Beans manager
@@ -91,6 +95,23 @@ public abstract class FacadeImpl<T>
    protected ManagerImpl getManager()
    {
       return manager.getCurrent();
+   }
+   
+   protected static Set<Annotation> removeBindings(Set<Annotation> bindings, Annotation...remove)
+   {
+      Set<Annotation> a = new HashSet<Annotation>(bindings);
+      a.removeAll(Arrays.asList(remove));
+      return a;
+   }
+   
+   protected Set<? extends Annotation> getBindings()
+   {
+      return Collections.unmodifiableSet(bindings);
+   }
+   
+   protected Type getType()
+   {
+      return type;
    }
 
 }
