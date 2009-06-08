@@ -39,6 +39,7 @@ import javax.event.Observer;
  * 
  * @author Gavin King
  * @author Pete Muir
+ * @author Clint Popetz
  * 
  */
 public interface BeanManager
