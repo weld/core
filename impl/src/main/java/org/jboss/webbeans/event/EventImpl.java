@@ -24,7 +24,7 @@ import javax.event.Event;
 import javax.event.Observer;
 
 import org.jboss.webbeans.FacadeImpl;
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.util.Strings;
 
@@ -41,7 +41,7 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
    
    private static final long serialVersionUID = 656782657242515455L;
 
-   public static <E> Event<E> of(Type eventType, ManagerImpl manager, Set<Annotation> bindings)
+   public static <E> Event<E> of(Type eventType, BeanManagerImpl manager, Set<Annotation> bindings)
    {
       return new EventImpl<E>(eventType, manager, bindings);
    }
@@ -54,7 +54,7 @@ public class EventImpl<T> extends FacadeImpl<T> implements Event<T>
     * @param manager The Web Beans manager
     * @param bindings The binding types
     */
-   public EventImpl(Type eventType, ManagerImpl manager, Set<Annotation> bindings)
+   public EventImpl(Type eventType, BeanManagerImpl manager, Set<Annotation> bindings)
    {
       super(eventType, manager, removeBindings(bindings, new AnyLiteral()));
    }

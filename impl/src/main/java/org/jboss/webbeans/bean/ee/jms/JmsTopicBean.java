@@ -26,7 +26,7 @@ import javax.jms.TopicConnection;
 import javax.jms.TopicPublisher;
 import javax.jms.TopicSession;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.ee.AbstractResourceBean;
 
 /**
@@ -46,7 +46,7 @@ public class JmsTopicBean extends AbstractResourceBean<Object>
     * @param bindings
     * @param type
     */
-   public JmsTopicBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, String jndiName, String mappedName)
+   public JmsTopicBean(BeanManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, String jndiName, String mappedName)
    {
       super(manager, 
             deploymentType, 

@@ -33,7 +33,7 @@ import javax.enterprise.inject.deployment.DeploymentType;
 import javax.event.Observes;
 import javax.inject.DefinitionException;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
@@ -53,7 +53,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    protected Set<AnnotatedInjectionPoint<?, ?>> disposalInjectionPoints;
    private final String id;
 
-   protected DisposalMethodBean(ManagerImpl manager, AnnotatedMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
+   protected DisposalMethodBean(BeanManagerImpl manager, AnnotatedMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
    {
       super(manager);
       this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
@@ -79,7 +79,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       return disposalMethodInjectionPoint;
    }
 
-   public static <T> DisposalMethodBean<T> of(ManagerImpl manager, AnnotatedMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
+   public static <T> DisposalMethodBean<T> of(BeanManagerImpl manager, AnnotatedMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
    {
       return new DisposalMethodBean<T>(manager, disposalMethod, declaringBean);
    }

@@ -18,7 +18,7 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.testharness.AbstractTest;
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.mock.el.EL;
 import org.jboss.webbeans.util.EnumerationIterable;
@@ -62,7 +62,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
    
    protected static final int BUILT_IN_BEANS = 3;
    
-   private ManagerImpl manager;
+   private BeanManagerImpl manager;
 
    public static boolean visited = false;
    
@@ -136,7 +136,7 @@ public abstract class AbstractWebBeansTest extends AbstractTest
       return in.readObject();
    }
 
-   protected ManagerImpl getCurrentManager()
+   protected BeanManagerImpl getCurrentManager()
    {
       return manager;
    }

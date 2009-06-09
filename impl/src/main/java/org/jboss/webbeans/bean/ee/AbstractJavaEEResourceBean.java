@@ -31,7 +31,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.deployment.Production;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
@@ -66,7 +66,7 @@ public abstract class AbstractJavaEEResourceBean<T> extends RIBean<T>
     * @param bindings the bindings of bean
     * @param type the concrete type of the bean
     */
-   protected AbstractJavaEEResourceBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type)
+   protected AbstractJavaEEResourceBean(BeanManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type)
    {
       this(manager, deploymentType, bindings, type, type);
    }
@@ -77,7 +77,7 @@ public abstract class AbstractJavaEEResourceBean<T> extends RIBean<T>
     * @param bindings the bindings of bean
     * @param type the concrete type of the bean
     */
-   protected AbstractJavaEEResourceBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type, Type... types)
+   protected AbstractJavaEEResourceBean(BeanManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type, Type... types)
    {
       super(manager);
       if (deploymentType != null)

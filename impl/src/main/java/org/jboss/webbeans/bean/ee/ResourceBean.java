@@ -21,7 +21,7 @@ import java.util.Set;
 
 import javassist.util.proxy.MethodHandler;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 
 /**
  * @author Pete Muir
@@ -32,7 +32,7 @@ public class ResourceBean<T> extends AbstractResourceBean<T>
    
    private final String id;
 
-   public ResourceBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type, String jndiName, String mappedName)
+   public ResourceBean(BeanManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type, String jndiName, String mappedName)
    {
       super(manager, deploymentType, bindings, type, jndiName, mappedName, type);
       this.id = createId("Resource-");

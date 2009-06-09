@@ -6,7 +6,7 @@ import javax.event.Event;
 import javax.event.Observes;
 
 import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -42,7 +42,7 @@ public class SimpleEventTest extends AbstractWebBeansTest
    @Test
    public void testEventUsingManager()
    {
-      ManagerImpl manager = getCurrentManager();
+      BeanManagerImpl manager = getCurrentManager();
 
       manager.fireEvent("Fired using Manager Interface with AnnotationLiteral.",
             new AnnotationLiteral<Updated>(){});
@@ -61,7 +61,7 @@ public class SimpleEventTest extends AbstractWebBeansTest
    @Test
    public void testEventUsingEvent()
    {
-      ManagerImpl manager = getCurrentManager();
+      BeanManagerImpl manager = getCurrentManager();
 
       App app = manager.getInstanceByType(App.class);
       

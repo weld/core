@@ -23,7 +23,7 @@ import javassist.util.proxy.MethodHandler;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 
 /**
  * @author Pete Muir
@@ -35,7 +35,7 @@ public class PersistenceUnitBean extends AbstractJavaEEResourceBean<EntityManage
    private final String id;
    private final String unitName;
 
-   public PersistenceUnitBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, String unitName)
+   public PersistenceUnitBean(BeanManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, String unitName)
    {
       super(manager, deploymentType, bindings, EntityManagerFactory.class);
       this.unitName = unitName;

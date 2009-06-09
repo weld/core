@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 import javax.enterprise.inject.TypeLiteral;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.standard.EventBean;
 import org.jboss.webbeans.bean.standard.InstanceBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -56,14 +56,14 @@ public class Resolver
    // The resolved names
    private ConcurrentCache<String, Set<Bean<?>>> resolvedNames;
    // The Web Beans manager
-   private final ManagerImpl manager;
+   private final BeanManagerImpl manager;
    private final Set<AnnotatedItemTransformer> transformers;
 
    /**
     * Constructor
     * 
     */
-   public Resolver(ManagerImpl manager)
+   public Resolver(BeanManagerImpl manager)
    {
       this.manager = manager;
       this.injectionPoints = new HashSet<AnnotatedItem<?, ?>>();

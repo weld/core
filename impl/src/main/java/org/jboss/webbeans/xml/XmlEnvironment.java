@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.ee.AbstractJavaEEResourceBean;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
@@ -43,14 +43,14 @@ public class XmlEnvironment
    private final Iterable<URL> beansXmlUrls;
    private final EjbDescriptorCache ejbDescriptors;
    private final Set<AbstractJavaEEResourceBean<?>> resourceBeans;
-   private final ManagerImpl manager;
+   private final BeanManagerImpl manager;
    
-   public XmlEnvironment(ServiceRegistry serviceRegistry, EjbDescriptorCache ejbDescriptors, ManagerImpl manager)
+   public XmlEnvironment(ServiceRegistry serviceRegistry, EjbDescriptorCache ejbDescriptors, BeanManagerImpl manager)
    {
       this(serviceRegistry, serviceRegistry.get(WebBeanDiscovery.class).discoverWebBeansXml(), ejbDescriptors, manager);
    }
    
-   protected XmlEnvironment(ServiceRegistry serviceRegistry, Iterable<URL> beanXmlUrls, EjbDescriptorCache ejbDescriptors, ManagerImpl manager)
+   protected XmlEnvironment(ServiceRegistry serviceRegistry, Iterable<URL> beanXmlUrls, EjbDescriptorCache ejbDescriptors, BeanManagerImpl manager)
    {
       this.classes = new ArrayList<AnnotatedClass<?>>();
       this.annotations = new ArrayList<AnnotatedAnnotation<?>>();
@@ -116,7 +116,7 @@ public class XmlEnvironment
       return resourceBeans;
    }
    
-   public ManagerImpl getManager()
+   public BeanManagerImpl getManager()
    {
       return manager;
    }

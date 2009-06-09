@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.AnnotatedType;
@@ -183,7 +183,7 @@ public Constructor<T> getDelegate()
     * @throws InstantiationException 
     * @throws IllegalArgumentException 
     * 
-    * @see org.jboss.webbeans.introspector.AnnotatedConstructor#newInstance(ManagerImpl)
+    * @see org.jboss.webbeans.introspector.AnnotatedConstructor#newInstance(BeanManagerImpl)
     */
    public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
    {

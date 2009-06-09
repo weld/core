@@ -24,32 +24,32 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 
-public class ManagerBean extends AbstractStandardBean<ManagerImpl>
+public class ManagerBean extends AbstractStandardBean<BeanManagerImpl>
 {
    
-   private static final Set<Type> TYPES = new HashSet<Type>(Arrays.asList(ManagerImpl.class, BeanManager.class));
+   private static final Set<Type> TYPES = new HashSet<Type>(Arrays.asList(BeanManagerImpl.class, BeanManager.class));
    
-   public static final ManagerBean of(ManagerImpl manager)
+   public static final ManagerBean of(BeanManagerImpl manager)
    {
       return new ManagerBean(manager);
    }
    
-   protected ManagerBean(ManagerImpl manager)
+   protected ManagerBean(BeanManagerImpl manager)
    {
       super(manager);
    }
 
-   public ManagerImpl create(CreationalContext<ManagerImpl> creationalContext)
+   public BeanManagerImpl create(CreationalContext<BeanManagerImpl> creationalContext)
    {
       return getManager().getCurrent();
    }
 
    @Override
-   public Class<ManagerImpl> getType()
+   public Class<BeanManagerImpl> getType()
    {
-      return ManagerImpl.class;
+      return BeanManagerImpl.class;
    }
 
    public Set<Type> getTypes()
@@ -57,7 +57,7 @@ public class ManagerBean extends AbstractStandardBean<ManagerImpl>
       return TYPES;
    }
 
-   public void destroy(ManagerImpl instance, CreationalContext<ManagerImpl> creationalContext)
+   public void destroy(BeanManagerImpl instance, CreationalContext<BeanManagerImpl> creationalContext)
    {
       // No-op
    }

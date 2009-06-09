@@ -30,7 +30,7 @@ import javax.enterprise.inject.deployment.DeploymentType;
 import javax.event.Observes;
 import javax.inject.Realizes;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.DisposalMethodBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
@@ -64,11 +64,11 @@ public class BeanDeployer
    
    private final BeanDeployerEnvironment environment;
    private final Set<AnnotatedClass<?>> classes;
-   private final ManagerImpl manager;
+   private final BeanManagerImpl manager;
    private final ClassTransformer classTransformer;
    
    
-   public BeanDeployer(ManagerImpl manager, EjbDescriptorCache ejbDescriptors)
+   public BeanDeployer(BeanManagerImpl manager, EjbDescriptorCache ejbDescriptors)
    {
       this.manager = manager;
       this.environment = new BeanDeployerEnvironment(ejbDescriptors);

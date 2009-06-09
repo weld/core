@@ -24,7 +24,7 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
 import javax.inject.DefinitionException;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
@@ -47,7 +47,7 @@ public class Beans
     * @param bean The bean to inspect
     * @return True if passivating, false otherwise
     */
-   public static boolean isPassivatingBean(Bean<?> bean, ManagerImpl manager)
+   public static boolean isPassivatingBean(Bean<?> bean, BeanManagerImpl manager)
    {
       if (bean instanceof EnterpriseBean)
       {

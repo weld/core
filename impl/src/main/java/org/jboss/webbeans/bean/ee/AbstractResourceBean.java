@@ -20,7 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 
 /**
  * @author  Pete Muir
@@ -31,7 +31,7 @@ public abstract class AbstractResourceBean<T> extends AbstractJavaEEResourceBean
    private final String jndiName;
    private final String mappedName;
 
-   protected AbstractResourceBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type, String jndiName, String mappedName, Type... types)
+   protected AbstractResourceBean(BeanManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type, String jndiName, String mappedName, Type... types)
    {
       super(manager, deploymentType, bindings, type, types);
       this.jndiName = jndiName;

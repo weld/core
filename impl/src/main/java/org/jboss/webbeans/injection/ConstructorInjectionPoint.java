@@ -30,7 +30,7 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.introspector.AnnotatedConstructor;
 import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.introspector.ForwardingAnnotatedConstructor;
@@ -96,7 +96,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingAnnotatedConstructor
       return delegate().getBindings();
    }
    
-   public T newInstance(ManagerImpl manager, CreationalContext<?> creationalContext)
+   public T newInstance(BeanManagerImpl manager, CreationalContext<?> creationalContext)
    {
       try
       {
@@ -156,7 +156,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingAnnotatedConstructor
     * @param manager The Web Beans manager
     * @return The object array of looked up values
     */
-   protected Object[] getParameterValues(List<ParameterInjectionPoint<?>> parameters, Object specialVal, Class<? extends Annotation> specialParam, ManagerImpl manager, CreationalContext<?> creationalContext)
+   protected Object[] getParameterValues(List<ParameterInjectionPoint<?>> parameters, Object specialVal, Class<? extends Annotation> specialParam, BeanManagerImpl manager, CreationalContext<?> creationalContext)
    {
       Object[] parameterValues = new Object[parameters.size()];
       Iterator<ParameterInjectionPoint<?>> iterator = parameters.iterator();

@@ -23,7 +23,7 @@ import javassist.util.proxy.MethodHandler;
 
 import javax.persistence.EntityManager;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 
 /**
  * @author Pete Muir
@@ -35,7 +35,7 @@ public class PersistenceContextBean extends AbstractJavaEEResourceBean<EntityMan
    private final String id;
    private final String unitName;
 
-   public PersistenceContextBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, String unitName)
+   public PersistenceContextBean(BeanManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, String unitName)
    {
       super(manager, deploymentType, bindings, EntityManager.class);
       this.unitName = unitName;

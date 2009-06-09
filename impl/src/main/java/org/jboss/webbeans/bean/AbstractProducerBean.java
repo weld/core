@@ -38,7 +38,7 @@ import javax.enterprise.inject.deployment.DeploymentType;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.DefinitionException;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.DependentContext;
@@ -72,7 +72,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
     * @param declaringBean The declaring bean
     * @param manager The Web Beans manager
     */
-   public AbstractProducerBean(AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   public AbstractProducerBean(AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
       super(manager);
       this.declaringBean = declaringBean;

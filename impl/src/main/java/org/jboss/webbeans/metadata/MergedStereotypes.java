@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 
 /**
  * Meta model for the merged stereotype for a bean
@@ -42,14 +42,14 @@ public class MergedStereotypes<T, E>
    // The supported scopes
    private final Set<Class<? extends Annotation>> supportedScopes;
    
-   private final ManagerImpl manager;
+   private final BeanManagerImpl manager;
    
    /**
     * Constructor
     * 
     * @param stereotypeAnnotations The stereotypes to merge
     */
-   public MergedStereotypes(Set<Annotation> stereotypeAnnotations, ManagerImpl manager)
+   public MergedStereotypes(Set<Annotation> stereotypeAnnotations, BeanManagerImpl manager)
    {
       this.possibleDeploymentTypes = new HashMap<Class<? extends Annotation>, Annotation>();
       this.possibleScopeTypes = new HashSet<Annotation>();

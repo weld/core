@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.jboss.webbeans.BeanValidator;
 import org.jboss.webbeans.CurrentManager;
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.ee.AbstractJavaEEResourceBean;
 import org.jboss.webbeans.bean.standard.EventBean;
 import org.jboss.webbeans.bean.standard.InjectionPointBean;
@@ -87,7 +87,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    }
 
    // The Web Beans manager
-   private ManagerImpl manager;
+   private BeanManagerImpl manager;
    public WebBeansBootstrap()
    {
       // initialize default services
@@ -124,7 +124,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       }
       addImplementationServices();
       createContexts();
-      this.manager = ManagerImpl.newRootManager(ServiceRegistries.unmodifiableServiceRegistry(getServices()));
+      this.manager = BeanManagerImpl.newRootManager(ServiceRegistries.unmodifiableServiceRegistry(getServices()));
       CurrentManager.setRootManager(manager);
       initializeContexts();
    }
@@ -142,7 +142,7 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
       getServices().add(MetaDataCache.class, new MetaDataCache(getServices().get(ClassTransformer.class)));
    }
    
-   public ManagerImpl getManager()
+   public BeanManagerImpl getManager()
    {
       return manager;
    }

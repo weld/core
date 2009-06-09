@@ -32,7 +32,7 @@ import javax.enterprise.inject.deployment.Production;
 import javax.event.Observes;
 import javax.inject.DefinitionException;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
@@ -74,7 +74,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * @param type The type
     * @param manager The Web Beans manager
     */
-   protected AbstractClassBean(AnnotatedClass<T> type, ManagerImpl manager)
+   protected AbstractClassBean(AnnotatedClass<T> type, BeanManagerImpl manager)
    {
       super(manager);
       this.annotatedItem = type;

@@ -104,16 +104,16 @@ import org.jboss.webbeans.util.collections.multi.ConcurrentSetMultiMap;
  * @author Pete Muir
  * 
  */
-public class ManagerImpl implements WebBeansManager, Serializable
+public class BeanManagerImpl implements WebBeansManager, Serializable
 {
    
    private static class CurrentActivity
    {
       
       private final Context context;
-      private final ManagerImpl manager;      
+      private final BeanManagerImpl manager;      
       
-      public CurrentActivity(Context context, ManagerImpl manager)
+      public CurrentActivity(Context context, BeanManagerImpl manager)
       {
          this.context = context;
          this.manager = manager;
@@ -124,7 +124,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
          return context;
       }
       
-      public ManagerImpl getManager()
+      public BeanManagerImpl getManager()
       {
          return manager;
       }
@@ -155,7 +155,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       }
    }
    
-   private static final Log log = Logging.getLog(ManagerImpl.class);
+   private static final Log log = Logging.getLog(BeanManagerImpl.class);
 
    private static final long serialVersionUID = 3021562879133838561L;
 
@@ -199,7 +199,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
    private transient List<Bean<?>> beanWithManagers;
    private final transient Namespace rootNamespace;
    private final transient ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers;
-   private final transient Set<ManagerImpl> childActivities;
+   private final transient Set<BeanManagerImpl> childActivities;
    private final Integer id;
    
    
@@ -209,13 +209,13 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * @param serviceRegistry
     * @return
     */
-   public static ManagerImpl newRootManager(ServiceRegistry serviceRegistry)
+   public static BeanManagerImpl newRootManager(ServiceRegistry serviceRegistry)
    {
       List<Class<? extends Annotation>> defaultEnabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>();
       defaultEnabledDeploymentTypes.add(0, Standard.class);
       defaultEnabledDeploymentTypes.add(1, Production.class);
       
-      return new ManagerImpl(
+      return new BeanManagerImpl(
             serviceRegistry, 
             new CopyOnWriteArrayList<Bean<?>>(), 
             new ConcurrentSetHashMultiMap<Type, EventObserver<?>>(),
@@ -237,7 +237,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * @param parentManager
     * @return
     */
-   public static ManagerImpl newChildManager(ManagerImpl parentManager)
+   public static BeanManagerImpl newChildManager(BeanManagerImpl parentManager)
    {
       List<Bean<?>> beans = new CopyOnWriteArrayList<Bean<?>>();
       beans.addAll(parentManager.getBeans());
@@ -246,7 +246,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       registeredObservers.deepPutAll(parentManager.getRegisteredObservers());
       Namespace rootNamespace = new Namespace(parentManager.getRootNamespace());
       
-      return new ManagerImpl(
+      return new BeanManagerImpl(
             parentManager.getServices(),
             beans,
             registeredObservers,
@@ -267,7 +267,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * 
     * @param ejbServices the ejbResolver to use
     */
-   private ManagerImpl(
+   private BeanManagerImpl(
          ServiceRegistry serviceRegistry, 
          List<Bean<?>> beans,
          ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers,
@@ -300,7 +300,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       this.eventManager = new EventManager(this);
       this.nonContextualInjector = new NonContextualInjector(this);
       this.webbeansELResolver = new WebBeansELResolverImpl(this);
-      this.childActivities = new CopyOnWriteArraySet<ManagerImpl>();
+      this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
       this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>()
       {
          @Override
@@ -351,7 +351,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       resolver.clear();
       beanWithManagers.add(bean);
       registerBeanNamespace(bean);
-      for (ManagerImpl childActivity : childActivities)
+      for (BeanManagerImpl childActivity : childActivities)
       {
          childActivity.addBean(bean);
       }
@@ -621,7 +621,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
    {
       checkEventType(eventType);
       this.eventManager.addObserver(observer, eventType, bindings);
-      for (ManagerImpl childActivity : childActivities)
+      for (BeanManagerImpl childActivity : childActivities)
       {
          childActivity.addObserver(observer, eventType, bindings);
       }
@@ -869,15 +869,15 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return buffer.toString();
    }
 
-   public ManagerImpl createActivity()
+   public BeanManagerImpl createActivity()
    {
-      ManagerImpl childActivity = newChildManager(this);
+      BeanManagerImpl childActivity = newChildManager(this);
       childActivities.add(childActivity);
       CurrentManager.add(childActivity);
       return childActivity;
    }
 
-   public ManagerImpl setCurrent(Class<? extends Annotation> scopeType)
+   public BeanManagerImpl setCurrent(Class<? extends Annotation> scopeType)
    {
       if (!getServices().get(MetaDataCache.class).getScopeModel(scopeType).isNormal())
       {
@@ -887,7 +887,7 @@ public class ManagerImpl implements WebBeansManager, Serializable
       return this;
    }
    
-   public ManagerImpl getCurrent()
+   public BeanManagerImpl getCurrent()
    {
       List<CurrentActivity> activeCurrentActivities = new ArrayList<CurrentActivity>();
       for (CurrentActivity currentActivity : currentActivities)

@@ -25,7 +25,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 
@@ -39,9 +39,9 @@ public abstract class RIBean<T> implements Bean<T>
    
    private static final ConcurrentMap<String, AtomicInteger> ids = new ConcurrentHashMap<String, AtomicInteger>();
    
-   private final ManagerImpl manager;
+   private final BeanManagerImpl manager;
 
-   protected RIBean(ManagerImpl manager)
+   protected RIBean(BeanManagerImpl manager)
    {
       this.manager = manager;
       // TODO better ID strategy (human readable)
@@ -53,7 +53,7 @@ public abstract class RIBean<T> implements Bean<T>
       return prefix + "-" + i;
    }
 
-   protected ManagerImpl getManager()
+   protected BeanManagerImpl getManager()
    {
       return manager;
    }

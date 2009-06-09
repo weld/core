@@ -25,7 +25,7 @@ import java.util.Set;
 
 import javax.event.Observer;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
@@ -41,13 +41,13 @@ public class EventManager
 {
    private static Log log = Logging.getLog(EventManager.class);
    
-   private final ManagerImpl manager;
+   private final BeanManagerImpl manager;
 
 
    /**
     * Initializes a new instance of the EventManager.
     */
-   public EventManager(ManagerImpl manager)
+   public EventManager(BeanManagerImpl manager)
    {
       this.manager = manager;
    }

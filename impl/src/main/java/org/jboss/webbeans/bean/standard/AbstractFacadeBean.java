@@ -25,7 +25,7 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
@@ -35,7 +35,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractStandardBean<T>
    
    private static final Log log = Logging.getLog(AbstractFacadeBean.class);
 
-   protected AbstractFacadeBean(ManagerImpl manager)
+   protected AbstractFacadeBean(BeanManagerImpl manager)
    {
       super(manager);
    }

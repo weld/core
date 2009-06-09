@@ -25,7 +25,7 @@ import javassist.util.proxy.MethodHandler;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -50,7 +50,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
    // The bean index in the manager
    private final int beanIndex;
    
-   private final ManagerImpl manager; 
+   private final BeanManagerImpl manager; 
    
    private static final ThreadLocal<CreationalContextImpl<?>> currentCreationalContext  = new ThreadLocal<CreationalContextImpl<?>>();
 
@@ -60,7 +60,7 @@ public class ClientProxyMethodHandler implements MethodHandler, Serializable
     * @param bean The bean to proxy
     * @param beanIndex The index to the bean in the manager bean list
     */
-   public ClientProxyMethodHandler(Bean<?> bean, ManagerImpl manager, int beanIndex)
+   public ClientProxyMethodHandler(Bean<?> bean, BeanManagerImpl manager, int beanIndex)
    {
       this.bean = bean;
       this.beanIndex = beanIndex;

@@ -24,7 +24,7 @@ import javax.el.ELResolver;
 import javax.enterprise.inject.spi.Bean;
 import javax.inject.ExecutionException;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 
 /**
  * An EL-resolver against the named beans
@@ -51,9 +51,9 @@ public class WebBeansELResolverImpl extends ELResolver
       
    }
    
-   private final ManagerImpl manager;
+   private final BeanManagerImpl manager;
       
-   public WebBeansELResolverImpl(ManagerImpl manager)
+   public WebBeansELResolverImpl(BeanManagerImpl manager)
    {
       this.manager = manager;
    }

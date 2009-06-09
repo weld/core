@@ -21,7 +21,7 @@ import java.util.Set;
 
 import javassist.util.proxy.MethodHandler;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 
 /**
  * @author Pete Muir
@@ -33,7 +33,7 @@ public class RemoteEjbBean<T> extends AbstractResourceBean<T>
    private final String id;
    private final String ejbLink;
 
-   public RemoteEjbBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type, String jndiName, String mappedName, String ejbLink)
+   public RemoteEjbBean(BeanManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, Class<T> type, String jndiName, String mappedName, String ejbLink)
    {
       super(manager, deploymentType, bindings, type, jndiName, mappedName, type);
       this.ejbLink = ejbLink;

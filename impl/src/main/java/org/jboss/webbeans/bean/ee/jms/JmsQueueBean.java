@@ -26,7 +26,7 @@ import javax.jms.QueueConnection;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.ee.AbstractResourceBean;
 
 
@@ -47,7 +47,7 @@ public class JmsQueueBean extends AbstractResourceBean<Object>
     * @param bindings
     * @param type
     */
-   public JmsQueueBean(ManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, String jndiName, String mappedName)
+   public JmsQueueBean(BeanManagerImpl manager, Class<? extends Annotation> deploymentType, Set<Annotation> bindings, String jndiName, String mappedName)
    {
       super(manager, 
             deploymentType, 

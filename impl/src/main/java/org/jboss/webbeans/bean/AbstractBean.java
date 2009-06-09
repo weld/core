@@ -34,7 +34,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.event.Event;
 import javax.inject.DefinitionException;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.conversation.ConversationImpl;
@@ -64,7 +64,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    private static final Annotation ANY_BINDING = new AnyLiteral();
 
    @SuppressWarnings("unchecked")
-   private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(Event.class, ManagerImpl.class, ConversationImpl.class));
+   private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(Event.class, BeanManagerImpl.class, ConversationImpl.class));
 
    private boolean proxyable;
    
@@ -114,7 +114,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    // If the type a primitive?
    private boolean primitive;
    // The Web Beans manager
-   protected ManagerImpl manager;
+   protected BeanManagerImpl manager;
 
    protected boolean _serializable;
    
@@ -130,7 +130,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @param manager The Web Beans manager
     */
-   public AbstractBean(ManagerImpl manager)
+   public AbstractBean(BeanManagerImpl manager)
    {
       super(manager);
       this.manager = manager;

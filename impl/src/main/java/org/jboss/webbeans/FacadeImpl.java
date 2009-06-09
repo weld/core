@@ -45,7 +45,7 @@ public abstract class FacadeImpl<T> implements Serializable
    // The binding types the helper operates on
    private final Set<? extends Annotation> bindings;
    // The Web Beans manager
-   private final ManagerImpl manager;
+   private final BeanManagerImpl manager;
    // The type of the operation
    private final Type type;
 
@@ -55,7 +55,7 @@ public abstract class FacadeImpl<T> implements Serializable
     * @param manager The Web Beans manager
     * @param bindings The binding types
     */
-   protected FacadeImpl(Type type, ManagerImpl manager, Set<? extends Annotation> bindings)
+   protected FacadeImpl(Type type, BeanManagerImpl manager, Set<? extends Annotation> bindings)
    {
       this.manager = manager;
       this.type = type;
@@ -92,7 +92,7 @@ public abstract class FacadeImpl<T> implements Serializable
       return result.toArray(EMPTY_BINDINGS);
    }
 
-   protected ManagerImpl getManager()
+   protected BeanManagerImpl getManager()
    {
       return manager.getCurrent();
    }

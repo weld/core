@@ -38,12 +38,12 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
 
    private static final long serialVersionUID = -376721889693284887L;
 
-   public static <I> Instance<I> of(Type type, ManagerImpl manager, Set<Annotation> annotations)
+   public static <I> Instance<I> of(Type type, BeanManagerImpl manager, Set<Annotation> annotations)
    {
       return new InstanceImpl<I>(type, manager, annotations);
    }
    
-   private InstanceImpl(Type type, ManagerImpl manager, Set<Annotation> bindings)
+   private InstanceImpl(Type type, BeanManagerImpl manager, Set<Annotation> bindings)
    {
       super(type, manager, bindings);
    }

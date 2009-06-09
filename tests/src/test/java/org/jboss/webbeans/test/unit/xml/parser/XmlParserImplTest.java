@@ -12,7 +12,7 @@ import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.Classes;
 import org.jboss.testharness.impl.packaging.Resource;
 import org.jboss.testharness.impl.packaging.Resources;
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -64,7 +64,7 @@ public class XmlParserImplTest extends AbstractWebBeansTest
       XmlParser parser = new XmlParser(parserEnv);
       parser.parse();
       
-      ManagerImpl manager = parserEnv.getManager();
+      BeanManagerImpl manager = parserEnv.getManager();
       
       Set<Bean<?>> beansSet = manager.getBeans(Order.class);
       List<Class<? extends Annotation>> dTypes = manager.getEnabledDeploymentTypes();

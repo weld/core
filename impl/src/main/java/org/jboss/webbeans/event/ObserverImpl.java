@@ -34,7 +34,7 @@ import javax.event.ObserverException;
 import javax.event.Observes;
 import javax.inject.DefinitionException;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.DependentContext;
@@ -62,7 +62,7 @@ public class ObserverImpl<T> implements Observer<T>
    protected final MethodInjectionPoint<?> observerMethod;
    private final boolean conditional;
    private final boolean asynchronous;
-   protected ManagerImpl manager;
+   protected BeanManagerImpl manager;
    private final Type eventType;
    private final Annotation[] bindings;
 
@@ -74,7 +74,7 @@ public class ObserverImpl<T> implements Observer<T>
     * @param observerBean The observer bean
     * @param manager The Web Beans manager
     */
-   protected ObserverImpl(final AnnotatedMethod<?> observer, final RIBean<?> observerBean, final ManagerImpl manager)
+   protected ObserverImpl(final AnnotatedMethod<?> observer, final RIBean<?> observerBean, final BeanManagerImpl manager)
    {
       this.manager = manager;
       this.observerBean = observerBean;

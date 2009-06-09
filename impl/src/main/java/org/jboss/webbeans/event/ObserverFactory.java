@@ -16,7 +16,7 @@
  */
 package org.jboss.webbeans.event;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
@@ -37,7 +37,7 @@ public class ObserverFactory
     * @param manager The Web Beans manager
     * @return An observer implementation built from the method abstraction
     */
-   public static <T> ObserverImpl<T> create(AnnotatedMethod<?> method, AbstractClassBean<?> declaringBean, ManagerImpl manager)
+   public static <T> ObserverImpl<T> create(AnnotatedMethod<?> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
       ObserverImpl<T> result = null;
       if (manager.getServices().contains(TransactionServices.class) && TransactionalObserverImpl.isObserverMethodTransactional(method))

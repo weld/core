@@ -27,7 +27,7 @@ import javassist.util.proxy.ProxyFactory;
 import javax.enterprise.inject.spi.Bean;
 import javax.inject.DefinitionException;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.collections.ConcurrentCache;
 
@@ -70,7 +70,7 @@ public class ClientProxyProvider
     * @throws InstantiationException When the proxy couldn't be created
     * @throws IllegalAccessException When the proxy couldn't be created
     */
-   private static <T> T createClientProxy(Bean<T> bean, ManagerImpl manager, int beanIndex) throws RuntimeException
+   private static <T> T createClientProxy(Bean<T> bean, BeanManagerImpl manager, int beanIndex) throws RuntimeException
    {
       
       try
@@ -106,7 +106,7 @@ public class ClientProxyProvider
     * @param bean The bean to get a proxy to
     * @return the client proxy for the bean
     */
-   public <T> T getClientProxy(final ManagerImpl manager, final Bean<T> bean)
+   public <T> T getClientProxy(final BeanManagerImpl manager, final Bean<T> bean)
    {
       return pool.putIfAbsent(bean, new Callable<T>()
       {

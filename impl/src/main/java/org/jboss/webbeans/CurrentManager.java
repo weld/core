@@ -41,12 +41,12 @@ import org.jboss.webbeans.bootstrap.api.SingletonProvider;
 public class CurrentManager 
 {
 
-   private static class IntegerMangerImplMap extends TypeLiteral<Map<Integer, ManagerImpl>> {}
+   private static class IntegerMangerImplMap extends TypeLiteral<Map<Integer, BeanManagerImpl>> {}
    
    // The root manager instance
-   private static Singleton<ManagerImpl> rootManager = SingletonProvider.instance().create(ManagerImpl.class);
+   private static Singleton<BeanManagerImpl> rootManager = SingletonProvider.instance().create(BeanManagerImpl.class);
    
-   private final static Singleton<Map<Integer, ManagerImpl>> managers = SingletonProvider.instance().create(new IntegerMangerImplMap().getRawType());
+   private final static Singleton<Map<Integer, BeanManagerImpl>> managers = SingletonProvider.instance().create(new IntegerMangerImplMap().getRawType());
 
    public static void cleanup()
    {
@@ -59,7 +59,7 @@ public class CurrentManager
     * 
     * @return The root manager
     */
-   public static ManagerImpl rootManager()
+   public static BeanManagerImpl rootManager()
    {
       return rootManager.get();
    }
@@ -69,22 +69,22 @@ public class CurrentManager
     * 
     * @param managerImpl The root manager
     */
-   public static void setRootManager(ManagerImpl managerImpl) 
+   public static void setRootManager(BeanManagerImpl managerImpl) 
    {
       rootManager.set(managerImpl);
       if (managers.get() == null) 
       {
-          managers.set(new ConcurrentHashMap<Integer, ManagerImpl>());
+          managers.set(new ConcurrentHashMap<Integer, BeanManagerImpl>());
       }
       managers.get().put(managerImpl.getId(), managerImpl);
    }
    
-   public static ManagerImpl get(Integer key)
+   public static BeanManagerImpl get(Integer key)
    {
       return managers.get().get(key);
    }
    
-   public static Integer add(ManagerImpl manager)
+   public static Integer add(BeanManagerImpl manager)
    {
       Integer id = manager.getId();
       managers.get().put(id, manager);

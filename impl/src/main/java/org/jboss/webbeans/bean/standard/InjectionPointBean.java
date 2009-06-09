@@ -24,7 +24,7 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 
 /**
  * Bean for InjectionPoint metadata
@@ -47,12 +47,12 @@ public class InjectionPointBean extends AbstractStandardBean<InjectionPoint>
     * @param manager The RI manager implementation
     * @return a new bean for this injection point
     */
-   public static InjectionPointBean of(ManagerImpl manager)
+   public static InjectionPointBean of(BeanManagerImpl manager)
    {
       return new InjectionPointBean(manager);
    }
 
-   protected InjectionPointBean(ManagerImpl manager)
+   protected InjectionPointBean(BeanManagerImpl manager)
    {
       super(manager);
    }

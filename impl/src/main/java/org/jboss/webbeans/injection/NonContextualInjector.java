@@ -28,7 +28,7 @@ import javax.enterprise.inject.deployment.Standard;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.webbeans.ManagerImpl;
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.context.ApplicationContext;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.resources.ClassTransformer;
@@ -41,9 +41,9 @@ public class NonContextualInjector
    private final Bean<?> nonContextualBean;
    
    private final ConcurrentCache<Class<?>, Set<FieldInjectionPoint<?>>> instances;
-   private final ManagerImpl manager;
+   private final BeanManagerImpl manager;
 
-   public NonContextualInjector(ManagerImpl manager)
+   public NonContextualInjector(BeanManagerImpl manager)
    {
       this.instances = new ConcurrentCache<Class<?>, Set<FieldInjectionPoint<?>>>();
       this.manager = manager;
