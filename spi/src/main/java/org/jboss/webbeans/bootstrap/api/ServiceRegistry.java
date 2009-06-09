@@ -6,7 +6,7 @@ package org.jboss.webbeans.bootstrap.api;
  * @author Pete Muir
  *
  */
-public interface ServiceRegistry
+public interface ServiceRegistry extends Iterable<Service>
 {
    
    /**

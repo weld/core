@@ -2,8 +2,6 @@ package org.jboss.webbeans.test.unit.context;
 
 import java.util.List;
 
-import javax.enterprise.inject.TypeLiteral;
-
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
@@ -15,10 +13,7 @@ public class ParameterizedTypeScopedTest extends AbstractWebBeansTest
    @Test
    public void testStringList()
    {
-      List<String> str = getCurrentManager().getInstanceByType(new TypeLiteral<List<String>>()
-      {
-      });
-
+      List<String> str = createContextualInstance(StringHolder.class).getStrings();
       assert str.size() == 2;
    }
 }

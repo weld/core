@@ -51,7 +51,6 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.Stereotype;
-import javax.enterprise.inject.TypeLiteral;
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.deployment.Production;
@@ -782,43 +781,12 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * @param bindings The binding types to match
     * @return An instance of the bean
     * 
-    * @see javax.enterprise.inject.spi.BeanManager#getInstanceByType(java.lang.Class,
-    *      java.lang.annotation.Annotation[])
     */
    @Deprecated
    public <T> T getInstanceByType(Class<T> type, Annotation... bindings)
    {
-      return getInstanceByType(ResolvableAnnotatedClass.of(type, bindings), bindings);
-   }
-
-   /**
-    * Returns an instance by type literal and binding types
-    * 
-    * @param type The type to match
-    * @param bindings The binding types to match
-    * @return An instance of the bean
-    * 
-    * @see javax.enterprise.inject.spi.BeanManager#getInstanceByType(javax.enterprise.inject.TypeLiteral,
-    *      java.lang.annotation.Annotation[])
-    */
-   @Deprecated
-   public <T> T getInstanceByType(TypeLiteral<T> type, Annotation... bindings)
-   {
-      return getInstanceByType(ResolvableAnnotatedClass.of(type, bindings), bindings);
-   }
-
-   /**
-    * Resolve an instance, verify that the resolved bean can be instantiated,
-    * and return
-    * 
-    * @param element The annotated item to match
-    * @param bindings The binding types to match
-    * @return An instance of the bean
-    */
-   @Deprecated
-   public <T> T getInstanceByType(AnnotatedItem<T, ?> element, Annotation... bindings)
-   {
-      return (T) getReference(getBean(element, bindings), element.getType());
+      AnnotatedItem<T, ?> element = ResolvableAnnotatedClass.of(type, bindings);
+      return (T) getReference(getBean(element, bindings), type);
    }
 
    public <T> Bean<T> getBean(AnnotatedItem<T, ?> element, Annotation... bindings)

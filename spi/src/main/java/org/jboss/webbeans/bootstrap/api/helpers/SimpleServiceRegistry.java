@@ -17,7 +17,9 @@
 package org.jboss.webbeans.bootstrap.api.helpers;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.jboss.webbeans.bootstrap.api.Service;
 import org.jboss.webbeans.bootstrap.api.ServiceRegistry;
@@ -77,6 +79,42 @@ public class SimpleServiceRegistry implements ServiceRegistry
    public boolean equals(Object obj)
    {
       return services.equals(obj);
+   }
+   
+   public Iterator<Service> iterator()
+   {
+      return new ValueIterator<Class<? extends Service>, Service>()
+      {
+
+         @Override
+         protected Iterator<Entry<Class<? extends Service>, Service>> delegate()
+         {
+            return services.entrySet().iterator();
+         }
+         
+      };
+   }
+   
+   private static abstract class ValueIterator<K, V> implements Iterator<V>
+   {
+      
+      protected abstract Iterator<Entry<K, V>> delegate();
+
+      public boolean hasNext()
+      {
+         return delegate().hasNext();
+      }
+
+      public V next()
+      {
+         return delegate().next().getValue();
+      }
+
+      public void remove()
+      {
+         delegate().remove();
+      }
+      
    }
    
 }

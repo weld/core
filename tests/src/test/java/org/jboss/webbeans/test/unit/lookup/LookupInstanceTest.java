@@ -18,7 +18,7 @@ public class LookupInstanceTest extends AbstractWebBeansTest
    @Test
    public void testLookupInstance() throws Exception
    {
-      assert getCurrentManager().getInstanceByType(new TypeLiteral<Instance<List<?>>>(){}, new ObtainsLiteral()) == null; 
+      assert createContextualInstance(new TypeLiteral<Instance<List<?>>>(){}.getRawType(), new ObtainsLiteral()) == null; 
    }
    
 }

@@ -165,9 +165,20 @@ public abstract class AbstractWebBeansTest extends AbstractTest
       {
          throw new RuntimeException("No beans resolved to " + beanType + " with bindings " + Arrays.asList(bindings));
       }
-      @SuppressWarnings("deprecated")
+      @SuppressWarnings("unchecked")
       Bean<T> bean = (Bean<T>) beans.iterator().next();
       return bean;
+   }
+   
+   @SuppressWarnings("unchecked")
+   public <T> T createContextualInstance(Class<T> beanType, Annotation... bindings)
+   {
+      return (T) createContextualInstance((Type) beanType, bindings);
+   }
+   
+   public Object createContextualInstance(Type beanType, Annotation... bindings)
+   {
+      return getCurrentManager().getReference(getBean(beanType, bindings), beanType);
    }
    
 }

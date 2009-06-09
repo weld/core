@@ -22,6 +22,9 @@
  */
 package org.jboss.webbeans.context;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+
 import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.bootstrap.api.Lifecycle;
 import org.jboss.webbeans.context.api.BeanStore;
@@ -41,6 +44,8 @@ public class ContextLifecycle implements Lifecycle
 {
 
    private static LogProvider log = Logging.getLogProvider(ContextLifecycle.class);
+   
+   @Any private Instance<ConversationManager> conversationManager;
 
    public void restoreSession(String id, BeanStore sessionBeanStore)
    {

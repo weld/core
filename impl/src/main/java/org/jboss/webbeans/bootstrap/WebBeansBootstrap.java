@@ -213,9 +213,8 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
          log.debug("Web Beans initialized. Validating beans.");
          manager.getResolver().resolveInjectionPoints();
          new BeanValidator(manager).validate();
-         manager.fireEvent(new AfterDeploymentValidationImpl());
          manager.getResolver().resolveInjectionPoints();
-         
+         manager.fireEvent(new AfterDeploymentValidationImpl());
          endDeploy(requestBeanStore);
       }
    }

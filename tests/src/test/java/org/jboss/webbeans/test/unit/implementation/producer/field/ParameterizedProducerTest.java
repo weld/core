@@ -3,8 +3,6 @@ package org.jboss.webbeans.test.unit.implementation.producer.field;
 import java.util.Collection;
 import java.util.List;
 
-import javax.enterprise.inject.TypeLiteral;
-
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
@@ -16,9 +14,8 @@ public class ParameterizedProducerTest extends AbstractWebBeansTest
    @Test
    public void testParameterizedListInjection()
    {
-      assert getCurrentManager().getInstanceByType(new TypeLiteral<List<String>>()
-      {
-      }).size() == 2;
+      List<String> strings = createContextualInstance(Target.class).getStringList();
+      assert strings.size() == 2;
 
       ParameterizedListInjection item = getCurrentManager().getInstanceByType(ParameterizedListInjection.class);
       assert item.getFieldInjection().size() == 2;
@@ -30,9 +27,8 @@ public class ParameterizedProducerTest extends AbstractWebBeansTest
    @Test
    public void testParameterizedCollectionInjection()
    {
-      assert getCurrentManager().getInstanceByType(new TypeLiteral<Collection<String>>()
-      {
-      }).size() == 2;
+      Collection<String> strings = createContextualInstance(Target.class).getStrings();
+      assert strings.size() == 2;
 
       ParameterizedCollectionInjection item = getCurrentManager().getInstanceByType(ParameterizedCollectionInjection.class);
       assert item.getFieldInjection().size() == 2;
@@ -56,7 +52,8 @@ public class ParameterizedProducerTest extends AbstractWebBeansTest
    @Test
    public void testIntegerCollectionInjection()
    {
-      assert getCurrentManager().getInstanceByType(new TypeLiteral<Collection<Integer>>(){}).size() == 4;
+      Collection<Integer> integers = createContextualInstance(Target.class).getIntegers();
+      assert integers.size() == 4;
 
       IntegerCollectionInjection item = getCurrentManager().getInstanceByType(IntegerCollectionInjection.class);
       assert item.getFieldInjection().size() == 4;
