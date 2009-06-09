@@ -16,6 +16,7 @@
  */
 package org.jboss.webbeans.bean;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -145,6 +146,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    {
       Set<Type> types = new LinkedHashSet<Type>(getTypes());
       types.add(EnterpriseBeanInstance.class);
+      types.add(Serializable.class);
       ProxyFactory proxyFactory = Proxies.getProxyFactory(types);
 
       @SuppressWarnings("unchecked")
