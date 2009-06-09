@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -50,14 +49,12 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.BindingType;
-import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.deployment.Production;
 import javax.enterprise.inject.deployment.Standard;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
@@ -68,7 +65,6 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import javax.event.Observer;
 import javax.inject.DeploymentException;
 import javax.inject.DuplicateBindingTypeException;
-import javax.interceptor.InterceptorBindingType;
 
 import org.jboss.webbeans.bean.DisposalMethodBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
@@ -91,7 +87,6 @@ import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.manager.api.WebBeansManager;
 import org.jboss.webbeans.metadata.MetaDataCache;
-import org.jboss.webbeans.metadata.StereotypeModel;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
@@ -781,6 +776,8 @@ public class ManagerImpl implements WebBeansManager, Serializable
     * @param bindings The binding types to match
     * @return An instance of the bean
     * 
+    * @deprecated replace with non-contextual injection
+    * 
     */
    @Deprecated
    public <T> T getInstanceByType(Class<T> type, Annotation... bindings)
@@ -870,11 +867,6 @@ public class ManagerImpl implements WebBeansManager, Serializable
       buffer.append("Registered beans: " + getBeans().size() + "\n");
       buffer.append("Specialized beans: " + specializedBeans.size() + "\n");
       return buffer.toString();
-   }
-
-   public BeanManager parse(InputStream xmlStream)
-   {
-      throw new UnsupportedOperationException();
    }
 
    public ManagerImpl createActivity()
@@ -1079,61 +1071,51 @@ public class ManagerImpl implements WebBeansManager, Serializable
 
    public void validate(InjectionPoint injectionPoint)
    {
-      throw new RuntimeException("Not yet implemented");
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
 
    public Set<Annotation> getInterceptorBindingTypeDefinition(
          Class<? extends Annotation> bindingType)
    {
-      throw new RuntimeException("Not yet implemented");
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
    public Bean<?> getPassivationCapableBean(String id)
    {
-      throw new RuntimeException("Not yet implemented");
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
    public ScopeType getScopeDefinition(Class<? extends Annotation> scopeType)
    {
-      return scopeType.getAnnotation(ScopeType.class);
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
    public Set<Annotation> getStereotypeDefinition(
          Class<? extends Annotation> stereotype)
    {
-      StereotypeModel<? extends Annotation> model = 
-    	  getServices().get(MetaDataCache.class).getStereotype(stereotype);
-      Set<Annotation> results = new HashSet<Annotation>();
-      if (model.getDefaultDeploymentType() != null)
-    	  results.add(model.getDefaultDeploymentType());
-      if (model.getDefaultScopeType() != null)
-    	  results.add(model.getDefaultScopeType());
-      if (model.getInterceptorBindings() != null)
-    	  results.addAll(model.getInterceptorBindings());
-      
-      return results;
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
    public boolean isBindingType(Class<? extends Annotation> annotationType)
    {
-      return annotationType.isAnnotationPresent(BindingType.class);
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
    public boolean isInterceptorBindingType(
          Class<? extends Annotation> annotationType)
    {
-	   return annotationType.isAnnotationPresent(InterceptorBindingType.class);
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
    public boolean isScopeType(Class<? extends Annotation> annotationType)
    {
-	   return annotationType.isAnnotationPresent(ScopeType.class);
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
    public boolean isStereotype(Class<? extends Annotation> annotationType)
    {
-      return annotationType.isAnnotationPresent(Stereotype.class);
+      throw new UnsupportedOperationException("Not yet implemented");
    }
 
    public <X> Bean<? extends X> getHighestPrecedenceBean(Set<Bean<? extends X>> beans)
