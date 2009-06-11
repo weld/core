@@ -159,6 +159,15 @@ public interface AnnotatedClass<T> extends AnnotatedType<T>
    public Set<AnnotatedMethod<?>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
    
    /**
+    * Gets all with constructors annotated with annotationType
+    * 
+    * @param annotationType The annotation to match
+    * @return A set of abstracted constructors with the given annotation. Returns an
+    *         empty set if there are no matches
+    */
+   public Set<AnnotatedConstructor<?>> getConstructorsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
+   
+   /**
     * Gets all with parameters annotated with annotationType
     * 
     * @param annotationType The annotation to match

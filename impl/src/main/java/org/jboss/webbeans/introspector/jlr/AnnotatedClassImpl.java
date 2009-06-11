@@ -94,6 +94,8 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    // The map from class list to abstracted constructor
    private final Map<List<Class<?>>, AnnotatedConstructor<T>> constructorsByArgumentMap;
    
+   private final SetMultiMap<Class<? extends Annotation>, AnnotatedConstructor<?>> constructorsByAnnotatedParameters;
+   
    // Cached string representation
    private String toString;
    
@@ -118,7 +120,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.declaredFieldsByName = new HashMap<String, AnnotatedField<?>>();
       this.declaredAnnotatedFields = new SetHashMultiMap<Class<? extends Annotation>, AnnotatedField<?>>();
       this.declaredMetaAnnotatedFields = new SetHashMultiMap<Class<? extends Annotation>, AnnotatedField<?>>();
-      this._nonStaticMemberClass = Reflections.isNonMemberInnerClass(rawType);
+      this._nonStaticMemberClass = Reflections.isNonStaticInnerClass(rawType);
       this._abstract = Reflections.isAbstract(rawType);
       this._enum = rawType.isEnum();
       for (Class<?> c = rawType; c != Object.class && c != null; c = c.getSuperclass())
@@ -159,6 +161,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
       this.constructors = new HashSet<AnnotatedConstructor<T>>();
       this.constructorsByArgumentMap = new HashMap<List<Class<?>>, AnnotatedConstructor<T>>();
       this.annotatedConstructors = new SetHashMultiMap<Class<? extends Annotation>, AnnotatedConstructor<T>>();
+      this.constructorsByAnnotatedParameters = new SetHashMultiMap<Class<? extends Annotation>, AnnotatedConstructor<?>>();
       this.declaredConstructorsBySignature = new HashMap<ConstructorSignature, AnnotatedConstructor<?>>();
       for (Constructor<?> constructor : rawType.getDeclaredConstructors())
       {
@@ -181,6 +184,14 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
                annotatedConstructors.put(annotation.annotationType(), new HashSet<AnnotatedConstructor<T>>());
             }
             annotatedConstructors.get(annotation.annotationType()).add(annotatedConstructor);
+         }
+         
+         for (Class<? extends Annotation> annotationType : AnnotatedConstructor.MAPPED_PARAMETER_ANNOTATIONS)
+         {
+            if (annotatedConstructor.getAnnotatedParameters(annotationType).size() > 0)
+            {
+               constructorsByAnnotatedParameters.put(annotationType, annotatedConstructor);
+            }
          }
       }
       
@@ -388,6 +399,11 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
    public Set<AnnotatedMethod<?>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
    {
       return Collections.unmodifiableSet(methodsByAnnotatedParameters.get(annotationType));
+   }
+   
+   public Set<AnnotatedConstructor<?>> getConstructorsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
+   {
+      return Collections.unmodifiableSet(constructorsByAnnotatedParameters.get(annotationType));
    }
    
    public Set<AnnotatedMethod<?>> getDeclaredMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)

@@ -321,9 +321,9 @@ public class Reflections
     * @param clazz Class to Check
     * @return True if static, false otherwise
     */
-   public static boolean isNonMemberInnerClass(Class<?> clazz)
+   public static boolean isNonStaticInnerClass(Class<?> clazz)
    {
-      return clazz.isMemberClass() && !isStatic(clazz);
+      return (clazz.isMemberClass() || clazz.isAnonymousClass()) && !isStatic(clazz);
    }
 
    /**

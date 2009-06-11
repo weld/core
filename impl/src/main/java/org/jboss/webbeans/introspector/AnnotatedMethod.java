@@ -30,7 +30,6 @@ import javax.event.AfterTransactionFailure;
 import javax.event.AfterTransactionSuccess;
 import javax.event.Asynchronously;
 import javax.event.BeforeTransactionCompletion;
-import javax.enterprise.inject.Any;
 import javax.event.IfExists;
 import javax.event.Observes;
 
@@ -44,7 +43,7 @@ import javax.event.Observes;
 public interface AnnotatedMethod<T> extends AnnotatedMember<T, Method>
 {
    @SuppressWarnings("unchecked")
-   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Disposes.class, Observes.class, IfExists.class, BeforeTransactionCompletion.class, AfterTransactionCompletion.class, AfterTransactionFailure.class, AfterTransactionSuccess.class, Asynchronously.class));
+   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Disposes.class, Observes.class, IfExists.class, BeforeTransactionCompletion.class, AfterTransactionCompletion.class, AfterTransactionFailure.class, AfterTransactionSuccess.class, Asynchronously.class, Disposes.class));
 
    /**
     * Gets the abstracted parameters of the method

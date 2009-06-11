@@ -174,6 +174,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * ***********************************
     */
    private transient List<Class<? extends Annotation>> enabledDeploymentTypes;
+   private transient List<Class<?>> enabledDecoratorClasses;
+   private transient List<Class<?>> enabledInterceptorClasses;
    private transient final ConcurrentListMultiMap<Class<? extends Annotation>, Context> contexts;
    private final transient Set<CurrentActivity> currentActivities;
    private transient final ClientProxyProvider clientProxyProvider;
@@ -448,6 +450,16 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.enabledDeploymentTypes = new ArrayList<Class<? extends Annotation>>(enabledDeploymentTypes);
       checkEnabledDeploymentTypes();
       addWebBeansDeploymentTypes();
+   }
+   
+   public void setEnabledDecoratorClasses(List<Class<?>> enabledDecoratorClasses)
+   {
+      this.enabledDecoratorClasses = enabledDecoratorClasses;
+   }
+   
+   public void setEnabledInterceptorClasses(List<Class<?>> enabledInterceptorClasses)
+   {
+      this.enabledInterceptorClasses = enabledInterceptorClasses;
    }
 
    
@@ -1154,5 +1166,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       return webbeansELResolver;
    }
+
+
 
 }

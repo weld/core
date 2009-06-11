@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.decorator.Decorates;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.Named;
@@ -120,6 +121,8 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    
    private boolean initialized;
    
+   private Set<AnnotatedInjectionPoint<?, ?>> decoratesInjectionPoint;
+   
    protected boolean isInitialized()
    {
       return initialized;
@@ -162,6 +165,34 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       initSerializable();
       initProxyable();
       checkRequiredTypesImplemented();
+      initInjectionPoints();
+      initDecorates();
+      checkDecorates();
+   }
+
+   protected void checkDecorates()
+   {
+      if (this.decoratesInjectionPoint.size() > 0)
+      {
+         throw new DefinitionException("Cannot place @Decorates at an injection point which is not on a Decorator " + this);
+      }
+   }
+
+   protected void initDecorates()
+   {
+      this.decoratesInjectionPoint = new HashSet<AnnotatedInjectionPoint<?,?>>();
+      for (AnnotatedInjectionPoint<?, ?> injectionPoint : getAnnotatedInjectionPoints())
+      {
+         if (injectionPoint.isAnnotationPresent(Decorates.class))
+         {
+            this.decoratesInjectionPoint.add(injectionPoint);
+         }
+      }
+   }
+   
+   protected Set<AnnotatedInjectionPoint<?, ?>> getDecoratesInjectionPoint()
+   {
+      return decoratesInjectionPoint;
    }
 
    /**
@@ -181,6 +212,8 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       this.bindings.addAll(getAnnotatedItem().getMetaAnnotations(BindingType.class));
       initDefaultBindings();
    }
+   
+   protected abstract void initInjectionPoints();
 
    protected void initDefaultBindings()
    {

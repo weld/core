@@ -18,31 +18,38 @@
 package javax.enterprise.inject.spi;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Set;
 
+/**
+ * The bean object for a decorator
+ * 
+ * @author Pete Muir
+ *
+ * @param <T> the decorator type
+ */
 public interface Decorator<T> extends Bean<T>
 {
 
    /**
-    * Obtains the type of the decorated bean
+    * Obtains the delegate type
     * 
     * @return
     */
-   public Class<?> getDelegateType();
+   public Type getDelegateType();
 
    /**
-    * Obtains the bindings of the decorated bean
+    * Obtains the delegate bindings
     * 
     * @return
     */
    public Set<Annotation> getDelegateBindings();
-
+   
    /**
-    * Injects the delegate
+    * Obtains the decorated types
     * 
-    * @param instance the instance to inject the delegate into
-    * @param delegate the delegate to inject
+    * @return
     */
-   public void setDelegate(Object instance, Object delegate);
+   public Set<Type> getDecoratedTypes();
 
 }

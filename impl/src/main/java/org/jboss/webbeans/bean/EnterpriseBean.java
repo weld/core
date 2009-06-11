@@ -122,7 +122,6 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
       {
          super.initialize(environment);
          initProxyClass();
-         initInjectionPoints();
          checkEJBTypeAllowed();
          checkConflictingRoles();
          checkObserverMethods();

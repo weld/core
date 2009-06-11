@@ -20,6 +20,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.webbeans.introspector.AnnotatedItem;
@@ -59,6 +61,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    private final Type[] actualTypeArguments; 
    private final Type type;
    private final Set<Type> flattenedTypes;
+   private final Set<Type> interfaceOnlyFlattenedTypes;
    private final boolean proxyable;
    private final boolean _parameterizedType;
 
@@ -86,6 +89,11 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       }
       this._parameterizedType = Reflections.isParameterizedType(rawType);
       this.flattenedTypes = new Reflections.HierarchyDiscovery(type).getFlattenedTypes();
+      this.interfaceOnlyFlattenedTypes = new HashSet<Type>();
+      for (Type t : rawType.getGenericInterfaces())
+      {
+         interfaceOnlyFlattenedTypes.addAll(new Reflections.HierarchyDiscovery(t).getFlattenedTypes());
+      }
       this.proxyable = Proxies.isTypesProxyable(flattenedTypes);
    }
    
@@ -97,6 +105,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       this.actualTypeArguments = new Type[0];
       this._parameterizedType = false;
       this.flattenedTypes = null;
+      this.interfaceOnlyFlattenedTypes = null;
       this.proxyable = false;
    }
    
@@ -299,7 +308,12 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
    
    public Set<Type> getFlattenedTypeHierarchy()
    {
-      return flattenedTypes;
+      return Collections.unmodifiableSet(flattenedTypes);
+   }
+   
+   public Set<Type> getInterfaceOnlyFlattenedTypeHierarchy()
+   {
+      return Collections.unmodifiableSet(interfaceOnlyFlattenedTypes);
    }
 
    public abstract S getDelegate();

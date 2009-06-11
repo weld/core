@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.decorator.Decorator;
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Initializer;
@@ -32,6 +33,7 @@ import javax.inject.Realizes;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
+import org.jboss.webbeans.bean.DecoratorBean;
 import org.jboss.webbeans.bean.DisposalMethodBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
@@ -123,14 +125,22 @@ public class BeanDeployer
          {
             createEnterpriseBean(clazz);
          }
-         else if (isTypeSimpleWebBean(clazz))
+         else
          {
-            createSimpleBean(clazz);
+            boolean managedBeanOrDecorator = isTypeManagedBeanOrDecorator(clazz);
+            if (managedBeanOrDecorator && clazz.isAnnotationPresent(Decorator.class))
+            {
+               createDecorator(clazz);
+            }
+            else if (managedBeanOrDecorator && !clazz.isAbstract())
+            {
+               createSimpleBean(clazz);
+            }
          }
       }
       return this;
    }
-   
+
    public BeanDeployer deploy()
    {
       Set<RIBean<?>> beans = environment.getBeans();
@@ -286,6 +296,12 @@ public class BeanDeployer
       addBean(NewSimpleBean.of(annotatedClass, manager));
    }
    
+   private <T> void createDecorator(AnnotatedClass<T> annotatedClass)
+   {
+      DecoratorBean<T> bean = DecoratorBean.of(annotatedClass, manager);
+      addBean(bean);
+   }
+   
    private <T> void createEnterpriseBean(AnnotatedClass<T> annotatedClass)
    {
       // TODO Don't create enterprise bean if it has no local interfaces!
@@ -301,14 +317,13 @@ public class BeanDeployer
     *           The type to inspect
     * @return True if simple Web Bean, false otherwise
     */
-   private boolean isTypeSimpleWebBean(AnnotatedClass<?> clazz)
+   private boolean isTypeManagedBeanOrDecorator(AnnotatedClass<?> clazz)
    {
       Class<?> rawType = clazz.getRawType();
       EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);
       JsfApiAbstraction jsfApiAbstraction = manager.getServices().get(JsfApiAbstraction.class);
       ServletApiAbstraction servletApiAbstraction = manager.getServices().get(ServletApiAbstraction.class);
-      // TODO: check 3.2.1 for more rules!!!!!!
-      return !Reflections.isAbstract(rawType) && 
+      return !clazz.isNonStaticMemberClass() &&
              !Reflections.isParameterizedType(rawType) && 
              !servletApiAbstraction.SERVLET_CLASS.isAssignableFrom(rawType) && 
              !servletApiAbstraction.FILTER_CLASS.isAssignableFrom(rawType) && 

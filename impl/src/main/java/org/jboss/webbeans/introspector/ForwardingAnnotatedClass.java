@@ -85,6 +85,11 @@ public abstract class ForwardingAnnotatedClass<T> extends ForwardingAnnotatedTyp
    {
       return delegate().getMethodsWithAnnotatedParameters(annotationType);
    }
+   
+   public Set<AnnotatedConstructor<?>> getConstructorsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
+   {
+      return delegate().getConstructorsWithAnnotatedParameters(annotationType);
+   }
 
    public AnnotatedClass<?> getSuperclass()
    {

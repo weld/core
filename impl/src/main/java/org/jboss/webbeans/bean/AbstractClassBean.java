@@ -87,10 +87,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    @Override
    public void initialize(BeanDeployerEnvironment environment)
    {
+      initInitializerMethods();
       super.initialize(environment);
       checkScopeAllowed();
       checkBeanImplementation();
-      initInitializerMethods();
    }
 
    /**

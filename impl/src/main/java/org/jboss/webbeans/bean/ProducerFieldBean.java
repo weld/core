@@ -154,4 +154,10 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
       return id;
    }
 
+   @Override
+   protected void initInjectionPoints()
+   {
+      
+   }
+
 }

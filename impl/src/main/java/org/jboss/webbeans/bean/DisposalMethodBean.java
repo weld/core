@@ -59,7 +59,6 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
       this.declaringBean = declaringBean;
       checkDisposalMethod();
-      initInjectionPoints();
       initBindings();
       initType();
       initTypes();
@@ -84,7 +83,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       return new DisposalMethodBean<T>(manager, disposalMethod, declaringBean);
    }
 
-   private void initInjectionPoints()
+   protected void initInjectionPoints()
    {
       disposalInjectionPoints = new HashSet<AnnotatedInjectionPoint<?, ?>>();
 

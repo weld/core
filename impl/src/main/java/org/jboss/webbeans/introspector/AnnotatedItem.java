@@ -107,7 +107,27 @@ public interface AnnotatedItem<T, S>
     */
    public <A extends Annotation> A getAnnotation(Class<A> annotationType);
    
+   /**
+    * Get the whole type hierarchy as a set of flattened types.
+    * 
+    * The returned types should have any type parameters resolved to their
+    * actual types.
+    * 
+    * @return the type hierarchy
+    */
    public Set<Type> getFlattenedTypeHierarchy();
+   
+   /**
+    * Get the type hierarchy of any interfaces implemented by this class.
+    * 
+    * Interface hierarchies from super classes are not included.
+    * 
+    * The returned types should have any type parameters resolved to their
+    * actual types.
+    * 
+    * @return the type hierarchy
+    */
+   public Set<Type> getInterfaceOnlyFlattenedTypeHierarchy();
 
    /**
     * Indicates if an annotation type specified is present

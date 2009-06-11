@@ -19,7 +19,12 @@ package org.jboss.webbeans.introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import javax.decorator.Decorates;
 
 /**
  * Represents a Class Constructor
@@ -29,6 +34,9 @@ import java.util.List;
  */
 public interface AnnotatedConstructor<T> extends AnnotatedMember<T, Constructor<T>>
 {
+   
+   @SuppressWarnings("unchecked")
+   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Decorates.class));
 
    /**
     * Gets all parameters to the constructor

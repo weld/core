@@ -223,6 +223,11 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
       return delegate().getFlattenedTypeHierarchy();
    }
    
+   public Set<Type> getInterfaceOnlyFlattenedTypeHierarchy()
+   {
+      return delegate().getInterfaceOnlyFlattenedTypeHierarchy();
+   }
+   
    public boolean isParameterizedType()
    {
       return delegate().isParameterizedType();

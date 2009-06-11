@@ -1,8 +1,7 @@
-<Beans xmlns="urn:java:ee"
-       xmlns:test="urn:java:org.jboss.webbeans.test.examples"> 
-   <Deploy>
-      <Standard />
-      <Production />
-      <test:Mock />
-   </Deploy>
-</Beans>
+<beans> 
+   <deploy>
+      <type>javax.enterprise.inject.deployment.Standard</type>
+      <type>javax.enterprise.inject.deployment.Production</type>
+      <type>org.jboss.webbeans.test.examples.Mock</type>
+   </deploy>
+</beans>

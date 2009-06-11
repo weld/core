@@ -299,10 +299,9 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    {
       if (!isInitialized())
       {
-         super.initialize(environment);
          initConstructor();
+         super.initialize(environment);
          checkType();
-         initInjectionPoints();
          initPostConstruct();
          initPreDestroy();
          if (getManager().getServices().contains(EjbServices.class))
