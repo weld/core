@@ -23,7 +23,6 @@ import java.util.Set;
 import org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery;
 import org.jboss.webbeans.ejb.spi.EjbServices;
 import org.jboss.webbeans.messaging.spi.JmsServices;
-import org.jboss.webbeans.persistence.spi.EntityDiscovery;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.spi.ResourceLoader;
 import org.jboss.webbeans.resources.spi.ResourceServices;
@@ -42,12 +41,12 @@ public enum Environments implements Environment
    /**
     * Java EE5 or Java EE6
     */
-   EE(WebBeanDiscovery.class, EjbServices.class, JpaServices.class, WebServices.class, JmsServices.class, EntityDiscovery.class, ResourceServices.class, TransactionServices.class, ResourceLoader.class),
+   EE(WebBeanDiscovery.class, EjbServices.class, JpaServices.class, WebServices.class, JmsServices.class, ResourceServices.class, TransactionServices.class, ResourceLoader.class),
    
    /**
     * Java EE6 Web Profile
     */
-   EE_WEB_PROFILE(WebBeanDiscovery.class, EjbServices.class, EntityDiscovery.class, JpaServices.class, ResourceServices.class, TransactionServices.class, ResourceLoader.class),
+   EE_WEB_PROFILE(WebBeanDiscovery.class, EjbServices.class, JpaServices.class, ResourceServices.class, TransactionServices.class, ResourceLoader.class),
    
    /**
     * Servlet container such as Tomcat

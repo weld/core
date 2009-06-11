@@ -54,7 +54,6 @@ import org.jboss.webbeans.introspector.WrappedAnnotatedMethod;
 import org.jboss.webbeans.jsf.JsfApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
-import org.jboss.webbeans.persistence.spi.EntityDiscovery;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.servlet.ServletApiAbstraction;
 import org.jboss.webbeans.util.Reflections;
@@ -332,24 +331,7 @@ public class BeanDeployer
              !servletApiAbstraction.SERVLET_REQUEST_LISTENER_CLASS.isAssignableFrom(rawType) && 
              !ejbApiAbstraction.ENTERPRISE_BEAN_CLASS.isAssignableFrom(rawType) && 
              !jsfApiAbstraction.UICOMPONENT_CLASS.isAssignableFrom(rawType) && 
-             hasSimpleWebBeanConstructor(clazz) &&
-             !isEntity(clazz);
-   }
-   
-   private boolean isEntity(AnnotatedClass<?> clazz)
-   {
-	   if (manager.getServices().contains(EntityDiscovery.class))
-	   {
-		   EntityDiscovery entityDiscovery = manager.getServices().get(EntityDiscovery.class);
-		   return 
-		   		entityDiscovery.discoverEntitiesFromAnnotations().contains(clazz.getRawType()) || 
-		   		entityDiscovery.discoverEntitiesFromPersistenceUnits().contains(clazz.getRawType()) || 
-		   		entityDiscovery.discoverEntitiesFromXml().contains(clazz.getRawType());
-	   }
-	   else
-	   {
-		   return false;
-	   }
+             hasSimpleWebBeanConstructor(clazz);
    }
    
    private static boolean hasSimpleWebBeanConstructor(AnnotatedClass<?> type)

@@ -79,11 +79,6 @@
          <groupId>javassist</groupId>
          <artifactId>javassist</artifactId>
       </dependency>
-
-      <dependency>
-         <groupId>dom4j</groupId>
-         <artifactId>dom4j</artifactId>
-      </dependency>
       
       <dependency>
          <groupId>javax.jms</groupId>

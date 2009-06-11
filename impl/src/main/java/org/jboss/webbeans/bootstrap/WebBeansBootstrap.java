@@ -48,9 +48,7 @@ import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.messaging.spi.JmsServices;
 import org.jboss.webbeans.metadata.MetaDataCache;
-import org.jboss.webbeans.persistence.DefaultEntityDiscovery;
 import org.jboss.webbeans.persistence.PersistenceApiAbstraction;
-import org.jboss.webbeans.persistence.spi.EntityDiscovery;
 import org.jboss.webbeans.persistence.spi.JpaServices;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.resources.DefaultResourceLoader;
@@ -85,7 +83,6 @@ public class WebBeansBootstrap extends AbstractBootstrap implements Bootstrap
    {
       // initialize default services
       getServices().add(ResourceLoader.class, new DefaultResourceLoader());
-      getServices().add(EntityDiscovery.class, new DefaultEntityDiscovery(getServices()));
    }
 
    public void initialize()
