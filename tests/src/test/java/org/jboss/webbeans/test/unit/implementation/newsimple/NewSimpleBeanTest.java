@@ -7,7 +7,7 @@ import javax.enterprise.inject.New;
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.SimpleBean;
-import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.literal.NewLiteral;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
 import org.testng.annotations.Test;
@@ -63,8 +63,8 @@ public class NewSimpleBeanTest extends AbstractWebBeansTest
    public void testNewBeanHasSameInjectedFieldsAsWrappedBean()
    {
       initNewBean();
-      Set<? extends AnnotatedItem<?, ?>> wrappedBeanInjectionPoints = wrappedSimpleBean.getAnnotatedInjectionPoints();
-      Set<? extends AnnotatedItem<?, ?>> newBeanInjectionPoints = newSimpleBean.getAnnotatedInjectionPoints();
+      Set<? extends WBAnnotated<?, ?>> wrappedBeanInjectionPoints = wrappedSimpleBean.getAnnotatedInjectionPoints();
+      Set<? extends WBAnnotated<?, ?>> newBeanInjectionPoints = newSimpleBean.getAnnotatedInjectionPoints();
       assert wrappedBeanInjectionPoints.equals(newBeanInjectionPoints);
    }
    

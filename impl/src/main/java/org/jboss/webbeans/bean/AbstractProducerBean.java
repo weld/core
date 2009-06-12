@@ -43,7 +43,7 @@ import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.CreationalContextImpl;
 import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentStorageRequest;
-import org.jboss.webbeans.introspector.AnnotatedMember;
+import org.jboss.webbeans.introspector.WBMember;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.MetaDataCache;
@@ -79,7 +79,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
    }
    
    @Override
-   protected abstract AnnotatedMember<T, S> getAnnotatedItem();
+   protected abstract WBMember<T, S> getAnnotatedItem();
 
    /**
     * Gets the deployment types

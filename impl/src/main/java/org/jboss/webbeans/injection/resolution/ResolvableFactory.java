@@ -5,13 +5,13 @@ import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.util.Reflections;
 
 public class ResolvableFactory
 {
    
-   public static Resolvable of(AnnotatedItem<?, ?> element)
+   public static Resolvable of(WBAnnotated<?, ?> element)
    {
       if (element instanceof Resolvable)
       {

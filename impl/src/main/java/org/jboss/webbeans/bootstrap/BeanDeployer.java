@@ -46,11 +46,11 @@ import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.event.ObserverFactory;
 import org.jboss.webbeans.event.ObserverImpl;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.AnnotatedField;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.WrappedAnnotatedField;
-import org.jboss.webbeans.introspector.WrappedAnnotatedMethod;
+import org.jboss.webbeans.introspector.WBClass;
+import org.jboss.webbeans.introspector.WBField;
+import org.jboss.webbeans.introspector.WBMethod;
+import org.jboss.webbeans.introspector.WrappedWBField;
+import org.jboss.webbeans.introspector.WrappedWBMethod;
 import org.jboss.webbeans.jsf.JsfApiAbstraction;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
@@ -64,7 +64,7 @@ public class BeanDeployer
    private static final LogProvider log = Logging.getLogProvider(BeanDeployer.class);
    
    private final BeanDeployerEnvironment environment;
-   private final Set<AnnotatedClass<?>> classes;
+   private final Set<WBClass<?>> classes;
    private final BeanManagerImpl manager;
    private final ClassTransformer classTransformer;
    
@@ -73,7 +73,7 @@ public class BeanDeployer
    {
       this.manager = manager;
       this.environment = new BeanDeployerEnvironment(ejbDescriptors, manager);
-      this.classes = new HashSet<AnnotatedClass<?>>();
+      this.classes = new HashSet<WBClass<?>>();
       this.classTransformer = new ClassTransformer();
    }
    
@@ -110,7 +110,7 @@ public class BeanDeployer
       return this;
    }
    
-   public BeanDeployer addClasses(Collection<AnnotatedClass<?>> classes)
+   public BeanDeployer addClasses(Collection<WBClass<?>> classes)
    {
       classes.addAll(classes);
       return this;
@@ -118,7 +118,7 @@ public class BeanDeployer
    
    public BeanDeployer createBeans()
    {
-      for (AnnotatedClass<?> clazz : classes)
+      for (WBClass<?> clazz : classes)
       {
          if (environment.getEjbDescriptors().containsKey(clazz.getRawType()))
          {
@@ -191,7 +191,7 @@ public class BeanDeployer
     * @param bean
     *           The bean representation
     */
-   protected <T> void createBean(AbstractClassBean<T> bean, final AnnotatedClass<T> annotatedClass)
+   protected <T> void createBean(AbstractClassBean<T> bean, final WBClass<T> annotatedClass)
    {
       
       addBean(bean);
@@ -211,95 +211,95 @@ public class BeanDeployer
       }
    }
    
-   private void createProducerMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
+   private void createProducerMethods(AbstractClassBean<?> declaringBean, WBClass<?> annotatedClass)
    {
-      for (AnnotatedMethod<?> method : annotatedClass.getDeclaredAnnotatedMethods(Produces.class))
+      for (WBMethod<?> method : annotatedClass.getDeclaredAnnotatedMethods(Produces.class))
       {
          createProducerMethod(declaringBean, method);         
       }
    }
    
-   private void createDisposalMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
+   private void createDisposalMethods(AbstractClassBean<?> declaringBean, WBClass<?> annotatedClass)
    {
-      for (AnnotatedMethod<?> method : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Disposes.class))
+      for (WBMethod<?> method : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Disposes.class))
       {
          DisposalMethodBean<?> disposalBean = DisposalMethodBean.of(manager, method, declaringBean);
          environment.addDisposalBean(disposalBean);
       }
    }
    
-   private <T> void createProducerMethod(AbstractClassBean<?> declaringBean, AnnotatedMethod<T> annotatedMethod)
+   private <T> void createProducerMethod(AbstractClassBean<?> declaringBean, WBMethod<T> annotatedMethod)
    {
       ProducerMethodBean<T> bean = ProducerMethodBean.of(annotatedMethod, declaringBean, manager);
       addBean(bean);
       manager.getResolver().addInjectionPoints(bean.getAnnotatedInjectionPoints());
    }
    
-   private void createRealizedProducerMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> realizingClass)
+   private void createRealizedProducerMethods(AbstractClassBean<?> declaringBean, WBClass<?> realizingClass)
    {
-      AnnotatedClass<?> realizedClass = realizingClass.getSuperclass();
-      for (AnnotatedMethod<?> realizedMethod : realizedClass.getDeclaredAnnotatedMethods(Produces.class))
+      WBClass<?> realizedClass = realizingClass.getSuperclass();
+      for (WBMethod<?> realizedMethod : realizedClass.getDeclaredAnnotatedMethods(Produces.class))
       {
          createProducerMethod(declaringBean, realizeProducerMethod(realizedMethod, realizingClass));
       }
    }
    
-   private void createRealizedProducerFields(AbstractClassBean<?> declaringBean, AnnotatedClass<?> realizingClass)
+   private void createRealizedProducerFields(AbstractClassBean<?> declaringBean, WBClass<?> realizingClass)
    {
-      AnnotatedClass<?> realizedClass = realizingClass.getSuperclass();
-      for (final AnnotatedField<?> realizedField : realizedClass.getDeclaredAnnotatedFields(Produces.class))
+      WBClass<?> realizedClass = realizingClass.getSuperclass();
+      for (final WBField<?> realizedField : realizedClass.getDeclaredAnnotatedFields(Produces.class))
       {
          createProducerField(declaringBean, realizeProducerField(realizedField, realizingClass));
       }
    }
    
-   private <T> void createProducerField(AbstractClassBean<?> declaringBean, AnnotatedField<T> field)
+   private <T> void createProducerField(AbstractClassBean<?> declaringBean, WBField<T> field)
    {
       ProducerFieldBean<T> bean = ProducerFieldBean.of(field, declaringBean, manager);
       addBean(bean);
    }
    
-   private void createProducerFields(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
+   private void createProducerFields(AbstractClassBean<?> declaringBean, WBClass<?> annotatedClass)
    {
-      for (AnnotatedField<?> field : annotatedClass.getDeclaredAnnotatedFields(Produces.class))
+      for (WBField<?> field : annotatedClass.getDeclaredAnnotatedFields(Produces.class))
       {
          createProducerField(declaringBean, field);
       }
    }
    
-   private void createObserverMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> annotatedClass)
+   private void createObserverMethods(AbstractClassBean<?> declaringBean, WBClass<?> annotatedClass)
    {
-      for (AnnotatedMethod<?> method : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Observes.class))
+      for (WBMethod<?> method : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Observes.class))
       {
          createObserverMethod(declaringBean, method);
       }
    }
    
-   private void createRealizedObserverMethods(AbstractClassBean<?> declaringBean, AnnotatedClass<?> realizingClass)
+   private void createRealizedObserverMethods(AbstractClassBean<?> declaringBean, WBClass<?> realizingClass)
    {
       createObserverMethods(declaringBean, realizingClass.getSuperclass());
    }
    
-   private void createObserverMethod(AbstractClassBean<?> declaringBean, AnnotatedMethod<?> method)
+   private void createObserverMethod(AbstractClassBean<?> declaringBean, WBMethod<?> method)
    {
       ObserverImpl<?> observer = ObserverFactory.create(method, declaringBean, manager);
       environment.getObservers().add(observer);
    }
    
-   private <T> void createSimpleBean(AnnotatedClass<T> annotatedClass)
+   private <T> void createSimpleBean(WBClass<T> annotatedClass)
    {
       SimpleBean<T> bean = SimpleBean.of(annotatedClass, manager);
       createBean(bean, annotatedClass);
       addBean(NewSimpleBean.of(annotatedClass, manager));
    }
    
-   private <T> void createDecorator(AnnotatedClass<T> annotatedClass)
+   private <T> void createDecorator(WBClass<T> annotatedClass)
    {
       DecoratorBean<T> bean = DecoratorBean.of(annotatedClass, manager);
       addBean(bean);
    }
    
-   private <T> void createEnterpriseBean(AnnotatedClass<T> annotatedClass)
+   private <T> void createEnterpriseBean(WBClass<T> annotatedClass)
    {
       // TODO Don't create enterprise bean if it has no local interfaces!
       EnterpriseBean<T> bean = EnterpriseBean.of(annotatedClass, manager, environment);
@@ -314,7 +314,7 @@ public class BeanDeployer
     *           The type to inspect
     * @return True if simple Web Bean, false otherwise
     */
-   private boolean isTypeManagedBeanOrDecorator(AnnotatedClass<?> clazz)
+   private boolean isTypeManagedBeanOrDecorator(WBClass<?> clazz)
    {
       Class<?> rawType = clazz.getRawType();
       EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);
@@ -332,14 +332,14 @@ public class BeanDeployer
              hasSimpleWebBeanConstructor(clazz);
    }
    
-   private static boolean hasSimpleWebBeanConstructor(AnnotatedClass<?> type)
+   private static boolean hasSimpleWebBeanConstructor(WBClass<?> type)
    {
       return type.getNoArgsConstructor() != null || type.getAnnotatedConstructors(Initializer.class).size() > 0;
    }
    
-   private static <T> AnnotatedMethod<T> realizeProducerMethod(final AnnotatedMethod<T> method, final AnnotatedClass<?> realizingClass)
+   private static <T> WBMethod<T> realizeProducerMethod(final WBMethod<T> method, final WBClass<?> realizingClass)
    {
-      return new WrappedAnnotatedMethod<T>(method, realizingClass.getMetaAnnotations(BindingType.class))
+      return new WrappedWBMethod<T>(method, realizingClass.getMetaAnnotations(BindingType.class))
       {
          
          @Override
@@ -371,9 +371,9 @@ public class BeanDeployer
       };
    }
    
-   private static <T> AnnotatedField<T> realizeProducerField(final AnnotatedField<T> field, final AnnotatedClass<?> realizingClass)
+   private static <T> WBField<T> realizeProducerField(final WBField<T> field, final WBClass<?> realizingClass)
    {
-      return new WrappedAnnotatedField<T>(field, realizingClass.getMetaAnnotations(BindingType.class))
+      return new WrappedWBField<T>(field, realizingClass.getMetaAnnotations(BindingType.class))
       {
          
          @Override

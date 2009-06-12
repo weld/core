@@ -16,7 +16,7 @@
  */
 package org.jboss.webbeans.introspector;
 
-import static org.jboss.webbeans.introspector.AnnotatedItem.MAPPED_METAANNOTATIONS;
+import static org.jboss.webbeans.introspector.WBAnnotated.MAPPED_METAANNOTATIONS;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;

@@ -26,7 +26,7 @@ import javax.enterprise.inject.deployment.Standard;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.introspector.AnnotatedClass;
+import org.jboss.webbeans.introspector.WBClass;
 import org.jboss.webbeans.literal.NewLiteral;
 
 /**
@@ -45,7 +45,7 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T> implements NewBean
     * @param manager The Web Beans manager
     * @return a new NewEnterpriseBean instance
     */
-   public static <T> NewEnterpriseBean<T> of(AnnotatedClass<T> clazz, BeanManagerImpl manager, BeanDeployerEnvironment environment)
+   public static <T> NewEnterpriseBean<T> of(WBClass<T> clazz, BeanManagerImpl manager, BeanDeployerEnvironment environment)
    {
       return new NewEnterpriseBean<T>(clazz, manager, environment);
    }
@@ -56,7 +56,7 @@ public class NewEnterpriseBean<T> extends EnterpriseBean<T> implements NewBean
     * @param type An annotated class
     * @param manager The Web Beans manager
     */
-   protected NewEnterpriseBean(AnnotatedClass<T> type, BeanManagerImpl manager, BeanDeployerEnvironment environment)
+   protected NewEnterpriseBean(WBClass<T> type, BeanManagerImpl manager, BeanDeployerEnvironment environment)
    {
       super(type, manager, environment);
    }

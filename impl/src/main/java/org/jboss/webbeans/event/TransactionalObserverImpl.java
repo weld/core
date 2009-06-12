@@ -29,7 +29,7 @@ import javax.transaction.Synchronization;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.transaction.spi.TransactionServices;
 
 /**
@@ -55,7 +55,7 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
     * @param observer The observer method
     * @return true if the observer method is annotated as transactional
     */
-   public static boolean isObserverMethodTransactional(AnnotatedMethod<?> observer)
+   public static boolean isObserverMethodTransactional(WBMethod<?> observer)
    {
       boolean transactional = true;
       if ((observer.getAnnotatedParameters(BeforeTransactionCompletion.class).isEmpty()) && (observer.getAnnotatedParameters(AfterTransactionCompletion.class).isEmpty()) && (observer.getAnnotatedParameters(AfterTransactionSuccess.class).isEmpty()) && (observer.getAnnotatedParameters(AfterTransactionFailure.class).isEmpty()))
@@ -72,7 +72,7 @@ class TransactionalObserverImpl<T> extends ObserverImpl<T>
     * @param observerBean The bean declaring the observer method
     * @param manager The JCDI manager in use
     */
-   protected TransactionalObserverImpl(AnnotatedMethod<?> observer, RIBean<?> observerBean, BeanManagerImpl manager)
+   protected TransactionalObserverImpl(WBMethod<?> observer, RIBean<?> observerBean, BeanManagerImpl manager)
    {
       super(observer, observerBean, manager);
    }

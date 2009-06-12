@@ -20,7 +20,7 @@ import java.lang.annotation.Annotation;
 
 import javax.inject.DefinitionException;
 
-import org.jboss.webbeans.introspector.AnnotatedAnnotation;
+import org.jboss.webbeans.introspector.WBAnnotation;
 import org.jboss.webbeans.resources.ClassTransformer;
 
 /**
@@ -31,7 +31,7 @@ import org.jboss.webbeans.resources.ClassTransformer;
 public abstract class AnnotationModel<T extends Annotation>
 {
    // The underlying annotation
-   private AnnotatedAnnotation<T> annotatedAnnotation;
+   private WBAnnotation<T> annotatedAnnotation;
    // Is the data valid?
    private boolean valid;
 
@@ -106,7 +106,7 @@ public abstract class AnnotationModel<T extends Annotation>
     * 
     * @return The annotation
     */
-   protected AnnotatedAnnotation<T> getAnnotatedAnnotation()
+   protected WBAnnotation<T> getAnnotatedAnnotation()
    {
       return annotatedAnnotation;
    }

@@ -34,7 +34,7 @@ import javax.enterprise.inject.deployment.Production;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
+import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.literal.CurrentLiteral;
 import org.jboss.webbeans.util.Proxies;
 
@@ -165,7 +165,7 @@ public abstract class AbstractJavaEEResourceBean<T> extends RIBean<T>
    }
    
    @Override
-   public Set<AnnotatedInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
+   public Set<WBInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
    {
       return Collections.emptySet();
    }

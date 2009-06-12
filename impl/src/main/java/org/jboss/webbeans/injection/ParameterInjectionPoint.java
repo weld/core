@@ -25,30 +25,30 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.introspector.ForwardingAnnotatedParameter;
+import org.jboss.webbeans.introspector.WBParameter;
+import org.jboss.webbeans.introspector.ForwardingWBParameter;
 
-public class ParameterInjectionPoint<T> extends ForwardingAnnotatedParameter<T> implements AnnotatedInjectionPoint<T, Object>
+public class ParameterInjectionPoint<T> extends ForwardingWBParameter<T> implements WBInjectionPoint<T, Object>
 {
    
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
    
-   public static <T> ParameterInjectionPoint<T> of(Bean<?> declaringBean, AnnotatedParameter<T> parameter)
+   public static <T> ParameterInjectionPoint<T> of(Bean<?> declaringBean, WBParameter<T> parameter)
    {
       return new ParameterInjectionPoint<T>(declaringBean, parameter);
    }
    
    private final Bean<?> declaringBean;
-   private final AnnotatedParameter<T> parameter;
+   private final WBParameter<T> parameter;
 
-   private ParameterInjectionPoint(Bean<?> declaringBean, AnnotatedParameter<T> parameter)
+   private ParameterInjectionPoint(Bean<?> declaringBean, WBParameter<T> parameter)
    {
       this.declaringBean = declaringBean;
       this.parameter = parameter;
    }
 
    @Override
-   protected AnnotatedParameter<T> delegate()
+   protected WBParameter<T> delegate()
    {
       return parameter;
    }

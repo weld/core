@@ -27,7 +27,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
+import org.jboss.webbeans.injection.WBInjectionPoint;
 
 /**
  * Abstract base class with functions specific to RI built-in beans
@@ -73,7 +73,7 @@ public abstract class RIBean<T> implements Bean<T>
 
    public abstract boolean isPrimitive();
 
-   public abstract Set<AnnotatedInjectionPoint<?, ?>> getAnnotatedInjectionPoints();
+   public abstract Set<WBInjectionPoint<?, ?>> getAnnotatedInjectionPoints();
    
    public Set<InjectionPoint> getInjectionPoints()
    {

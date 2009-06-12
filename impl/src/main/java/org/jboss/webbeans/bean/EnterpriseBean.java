@@ -45,8 +45,8 @@ import org.jboss.webbeans.ejb.InternalEjbDescriptor;
 import org.jboss.webbeans.ejb.api.SessionObjectReference;
 import org.jboss.webbeans.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.WBClass;
+import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Proxies;
@@ -77,7 +77,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * @param manager the current manager
     * @return An Enterprise Web Bean
     */
-   public static <T> EnterpriseBean<T> of(AnnotatedClass<T> clazz, BeanManagerImpl manager, BeanDeployerEnvironment environment)
+   public static <T> EnterpriseBean<T> of(WBClass<T> clazz, BeanManagerImpl manager, BeanDeployerEnvironment environment)
    {
       return new EnterpriseBean<T>(clazz, manager, environment);
    }
@@ -88,7 +88,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   protected EnterpriseBean(AnnotatedClass<T> type, BeanManagerImpl manager, BeanDeployerEnvironment environment)
+   protected EnterpriseBean(WBClass<T> type, BeanManagerImpl manager, BeanDeployerEnvironment environment)
    {
       super(type, manager);
       initType();
@@ -370,7 +370,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
     */
    protected void checkObserverMethods()
    {
-      for (AnnotatedMethod<?> method : this.annotatedItem.getDeclaredMethodsWithAnnotatedParameters(Observes.class))
+      for (WBMethod<?> method : this.annotatedItem.getDeclaredMethodsWithAnnotatedParameters(Observes.class))
       {
          if (!method.isStatic())
          {
@@ -383,7 +383,7 @@ public class EnterpriseBean<T> extends AbstractClassBean<T>
    }
    
    // TODO must be a nicer way to do this!
-   public boolean isMethodExistsOnTypes(AnnotatedMethod<?> method)
+   public boolean isMethodExistsOnTypes(WBMethod<?> method)
    {
       for (Type type : getTypes())
       {

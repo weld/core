@@ -80,10 +80,10 @@ import org.jboss.webbeans.event.EventManager;
 import org.jboss.webbeans.event.EventObserver;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.NonContextualInjector;
-import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
+import org.jboss.webbeans.injection.resolution.ResolvableWBClass;
 import org.jboss.webbeans.injection.resolution.ResolvableFactory;
 import org.jboss.webbeans.injection.resolution.Resolver;
-import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.log.Log;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.manager.api.WebBeansManager;
@@ -450,10 +450,10 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    
    public Set<Bean<?>> getBeans(Type beanType, Annotation... bindings)
    {
-      return getBeans(ResolvableAnnotatedClass.of(beanType, bindings, this), bindings);
+      return getBeans(ResolvableWBClass.of(beanType, bindings, this), bindings);
    }
    
-   public Set<Bean<?>> getBeans(AnnotatedItem<?, ?> element, Annotation... bindings)
+   public Set<Bean<?>> getBeans(WBAnnotated<?, ?> element, Annotation... bindings)
    {
       for (Annotation annotation : element.getAnnotations())
       {
@@ -490,7 +490,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             currentInjectionPoint.get().push(injectionPoint);
          }
          // TODO Do this properly
-         return getBeans(ResolvableAnnotatedClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]), this));
+         return getBeans(ResolvableWBClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]), this));
       }
       finally
       {
@@ -743,7 +743,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          {
             currentInjectionPoint.get().push(injectionPoint);
          }
-         AnnotatedItem<?, ?> element = ResolvableAnnotatedClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]), this);
+         WBAnnotated<?, ?> element = ResolvableWBClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]), this);
          Bean<?> resolvedBean = getBean(element, element.getBindingsAsArray());
          if (getServices().get(MetaDataCache.class).getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType()))
          {
@@ -788,11 +788,11 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    @Deprecated
    public <T> T getInstanceByType(Class<T> type, Annotation... bindings)
    {
-      AnnotatedItem<T, ?> element = ResolvableAnnotatedClass.of(type, bindings, this);
+      WBAnnotated<T, ?> element = ResolvableWBClass.of(type, bindings, this);
       return (T) getReference(getBean(element, bindings), type);
    }
 
-   public <T> Bean<T> getBean(AnnotatedItem<T, ?> element, Annotation... bindings)
+   public <T> Bean<T> getBean(WBAnnotated<T, ?> element, Annotation... bindings)
    {
       Set<Bean<?>> beans = getBeans(element, bindings);
       if (beans.size() == 0)

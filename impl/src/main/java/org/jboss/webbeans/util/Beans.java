@@ -30,8 +30,8 @@ import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.introspector.WBClass;
+import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.metadata.BindingTypeModel;
 import org.jboss.webbeans.metadata.MetaDataCache;
 
@@ -80,21 +80,21 @@ public class Beans
       }
    }
 
-   public static Set<FieldInjectionPoint<?>> getFieldInjectionPoints(AnnotatedClass<?> annotatedItem, Bean<?> declaringBean)
+   public static Set<FieldInjectionPoint<?>> getFieldInjectionPoints(WBClass<?> annotatedItem, Bean<?> declaringBean)
    {
       Set<FieldInjectionPoint<?>> injectableFields = new HashSet<FieldInjectionPoint<?>>();
-      for (AnnotatedField<?> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
+      for (WBField<?> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
       {
          addFieldInjectionPoint(annotatedField, injectableFields, declaringBean);
       }
-      for (AnnotatedField<?> annotatedField : annotatedItem.getAnnotatedFields(Decorates.class))
+      for (WBField<?> annotatedField : annotatedItem.getAnnotatedFields(Decorates.class))
       {
          addFieldInjectionPoint(annotatedField, injectableFields, declaringBean);
       }
       return injectableFields;
    }
    
-   private static void addFieldInjectionPoint(AnnotatedField<?> annotatedField, Set<FieldInjectionPoint<?>> injectableFields, Bean<?> declaringBean)
+   private static void addFieldInjectionPoint(WBField<?> annotatedField, Set<FieldInjectionPoint<?>> injectableFields, Bean<?> declaringBean)
    {
       if (!annotatedField.isAnnotationPresent(Produces.class))
       {

@@ -36,16 +36,16 @@ import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.resolution.ResolvableFactory;
 import org.jboss.webbeans.injection.resolution.Resolver;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.WBClass;
+import org.jboss.webbeans.introspector.WBAnnotated;
+import org.jboss.webbeans.introspector.WBMethod;
 
 public class BeanDeployerEnvironment
 {
 
-   private final Map<AnnotatedClass<?>, AbstractClassBean<?>> classBeanMap;
-   private final Map<AnnotatedMethod<?>, ProducerMethodBean<?>> producerMethodBeanMap;
-   private final Map<AnnotatedMethod<?>, DisposalMethodBean<?>> disposalMethodBeanMap;
+   private final Map<WBClass<?>, AbstractClassBean<?>> classBeanMap;
+   private final Map<WBMethod<?>, ProducerMethodBean<?>> producerMethodBeanMap;
+   private final Map<WBMethod<?>, DisposalMethodBean<?>> disposalMethodBeanMap;
    private final Set<RIBean<?>> beans;
    private final Set<ObserverImpl<?>> observers;
    private final List<DisposalMethodBean<?>> allDisposalBeans;
@@ -56,9 +56,9 @@ public class BeanDeployerEnvironment
 
    public BeanDeployerEnvironment(EjbDescriptorCache ejbDescriptors, BeanManagerImpl manager)
    {
-      this.classBeanMap = new HashMap<AnnotatedClass<?>, AbstractClassBean<?>>();
-      this.producerMethodBeanMap = new HashMap<AnnotatedMethod<?>, ProducerMethodBean<?>>();
-      this.disposalMethodBeanMap = new HashMap<AnnotatedMethod<?>, DisposalMethodBean<?>>();
+      this.classBeanMap = new HashMap<WBClass<?>, AbstractClassBean<?>>();
+      this.producerMethodBeanMap = new HashMap<WBMethod<?>, ProducerMethodBean<?>>();
+      this.disposalMethodBeanMap = new HashMap<WBMethod<?>, DisposalMethodBean<?>>();
       this.allDisposalBeans = new ArrayList<DisposalMethodBean<?>>();
       this.resolvedDisposalBeans = new HashSet<DisposalMethodBean<?>>();
       this.beans = new HashSet<RIBean<?>>();
@@ -68,7 +68,7 @@ public class BeanDeployerEnvironment
       this.manager = manager;
    }
 
-   public ProducerMethodBean<?> getProducerMethod(AnnotatedMethod<?> method)
+   public ProducerMethodBean<?> getProducerMethod(WBMethod<?> method)
    {
       if (!producerMethodBeanMap.containsKey(method))
       {
@@ -83,7 +83,7 @@ public class BeanDeployerEnvironment
    }
 
    
-   public DisposalMethodBean<?> getDisposalMethod(AnnotatedMethod<?> method)
+   public DisposalMethodBean<?> getDisposalMethod(WBMethod<?> method)
    {
       if (!producerMethodBeanMap.containsKey(method))
       {
@@ -97,7 +97,7 @@ public class BeanDeployerEnvironment
       }
    }
    
-   public AbstractClassBean<?> getClassBean(AnnotatedClass<?> clazz)
+   public AbstractClassBean<?> getClassBean(WBClass<?> clazz)
    {
       if (!classBeanMap.containsKey(clazz))
       {
@@ -175,7 +175,7 @@ public class BeanDeployerEnvironment
     * @param bindings The binding types to match
     * @return The set of matching disposal methods
     */
-   public <T> Set<DisposalMethodBean<T>> resolveDisposalBeans(AnnotatedItem<T, ?> annotatedItem)
+   public <T> Set<DisposalMethodBean<T>> resolveDisposalBeans(WBAnnotated<T, ?> annotatedItem)
    {
       // Correct?
       Set<Bean<?>> beans = disposalMethodResolver.get(ResolvableFactory.of(annotatedItem));

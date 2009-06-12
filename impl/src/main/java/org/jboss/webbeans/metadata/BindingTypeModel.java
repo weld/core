@@ -25,7 +25,7 @@ import javax.enterprise.inject.NonBinding;
 import javax.inject.DefinitionException;
 import javax.inject.ExecutionException;
 
-import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.resources.ClassTransformer;
 import org.jboss.webbeans.util.Reflections;
 
@@ -39,7 +39,7 @@ import org.jboss.webbeans.util.Reflections;
 public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
 {
    // The non-binding types
-   private Set<AnnotatedMethod<?>> nonBindingTypes;
+   private Set<WBMethod<?>> nonBindingTypes;
 
    /**
     * Constructor
@@ -67,7 +67,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
     */
    private void checkArrayAndAnnotationValuedMembers()
    {
-      for (AnnotatedMethod<?> annotatedMethod : getAnnotatedAnnotation().getMembers())
+      for (WBMethod<?> annotatedMethod : getAnnotatedAnnotation().getMembers())
       {
          if ((Reflections.isArrayType(annotatedMethod.getRawType()) || Annotation.class.isAssignableFrom(annotatedMethod.getRawType())) && !nonBindingTypes.contains(annotatedMethod))
          {
@@ -104,7 +104,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
     * @return A set of non-binding types, or an empty set if there are none
     *         present
     */
-   public Set<AnnotatedMethod<?>> getNonBindingTypes()
+   public Set<WBMethod<?>> getNonBindingTypes()
    {
       return nonBindingTypes;
    }
@@ -128,7 +128,7 @@ public class BindingTypeModel<T extends Annotation> extends AnnotationModel<T>
    {
       if (instance.annotationType().equals(getRawType()) && other.annotationType().equals(getRawType()))
       {
-         for (AnnotatedMethod<?> annotatedMethod : getAnnotatedAnnotation().getMembers())
+         for (WBMethod<?> annotatedMethod : getAnnotatedAnnotation().getMembers())
          {
             if (!nonBindingTypes.contains(annotatedMethod))
             {

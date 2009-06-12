@@ -27,30 +27,30 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.introspector.AnnotatedField;
-import org.jboss.webbeans.introspector.ForwardingAnnotatedField;
+import org.jboss.webbeans.introspector.WBField;
+import org.jboss.webbeans.introspector.ForwardingWBField;
 
-public class FieldInjectionPoint<T> extends ForwardingAnnotatedField<T> implements AnnotatedInjectionPoint<T, Field>
+public class FieldInjectionPoint<T> extends ForwardingWBField<T> implements WBInjectionPoint<T, Field>
 {
 
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 
    private final Bean<?> declaringBean;
-   private final AnnotatedField<T> field;
+   private final WBField<T> field;
 
-   public static <T> FieldInjectionPoint<T> of(Bean<?> declaringBean, AnnotatedField<T> field)
+   public static <T> FieldInjectionPoint<T> of(Bean<?> declaringBean, WBField<T> field)
    {
       return new FieldInjectionPoint<T>(declaringBean, field);
    }
 
-   protected FieldInjectionPoint(Bean<?> declaringBean, AnnotatedField<T> field)
+   protected FieldInjectionPoint(Bean<?> declaringBean, WBField<T> field)
    {
       this.declaringBean = declaringBean;
       this.field = field;
    }
 
    @Override
-   protected AnnotatedField<T> delegate()
+   protected WBField<T> delegate()
    {
       return field;
    }

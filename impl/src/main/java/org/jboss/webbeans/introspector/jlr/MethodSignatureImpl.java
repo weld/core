@@ -19,7 +19,7 @@ package org.jboss.webbeans.introspector.jlr;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import org.jboss.webbeans.introspector.AnnotatedMethod;
+import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.introspector.MethodSignature;
 
 public class MethodSignatureImpl implements MethodSignature
@@ -30,7 +30,7 @@ public class MethodSignatureImpl implements MethodSignature
    private final String methodName;
    private final String[] parameterTypes;
    
-   public MethodSignatureImpl(AnnotatedMethod<?> method)
+   public MethodSignatureImpl(WBMethod<?> method)
    {
       this.methodName = method.getName();
       this.parameterTypes = new String[method.getParameters().size()];

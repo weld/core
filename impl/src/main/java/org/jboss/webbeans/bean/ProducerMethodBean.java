@@ -32,8 +32,8 @@ import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.introspector.WBMethod;
+import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.util.Names;
 
 /**
@@ -62,12 +62,12 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     * @param manager the current manager
     * @return A producer Web Bean
     */
-   public static <T> ProducerMethodBean<T> of(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   public static <T> ProducerMethodBean<T> of(WBMethod<T> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
       return new ProducerMethodBean<T>(method, declaringBean, manager);
    }
 
-   protected ProducerMethodBean(AnnotatedMethod<T> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   protected ProducerMethodBean(WBMethod<T> method, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
       super(declaringBean, manager);
       this.method = MethodInjectionPoint.of(this, method);
@@ -109,7 +109,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     */
    protected void initInjectionPoints()
    {
-      for (AnnotatedParameter<?> parameter : method.getParameters())
+      for (WBParameter<?> parameter : method.getParameters())
       {
          injectionPoints.add(ParameterInjectionPoint.of(this, parameter));
       }
@@ -205,7 +205,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     * @return The annotated item
     */
    @Override
-   public AnnotatedMethod<T> getAnnotatedItem()
+   public WBMethod<T> getAnnotatedItem()
    {
       return method;
    }
@@ -272,7 +272,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
    @Override
    protected void specialize(BeanDeployerEnvironment environment)
    {
-      AnnotatedMethod<?> superClassMethod = declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod());
+      WBMethod<?> superClassMethod = declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod());
       if (environment.getProducerMethod(superClassMethod) == null)
       {
          throw new IllegalStateException(toString() + " does not specialize a bean");

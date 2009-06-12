@@ -28,7 +28,7 @@ import javax.enterprise.inject.deployment.Standard;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
+import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.literal.CurrentLiteral;
 
@@ -80,7 +80,7 @@ public abstract class AbstractStandardBean<T> extends RIBean<T>
    }
    
    @Override
-   public Set<AnnotatedInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
+   public Set<WBInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
    {
       return Collections.emptySet();
    }

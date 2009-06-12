@@ -41,8 +41,8 @@ import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.introspector.WBMethod;
+import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.util.Names;
 
 /**
@@ -74,7 +74,7 @@ public class ObserverImpl<T> implements Observer<T>
     * @param observerBean The observer bean
     * @param manager The Web Beans manager
     */
-   protected ObserverImpl(final AnnotatedMethod<?> observer, final RIBean<?> observerBean, final BeanManagerImpl manager)
+   protected ObserverImpl(final WBMethod<?> observer, final RIBean<?> observerBean, final BeanManagerImpl manager)
    {
       this.manager = manager;
       this.observerBean = observerBean;
@@ -102,7 +102,7 @@ public class ObserverImpl<T> implements Observer<T>
    private void checkObserverMethod()
    {
       // Make sure exactly one and only one parameter is annotated with Observes
-      List<AnnotatedParameter<?>> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
+      List<WBParameter<?>> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
       if (eventObjects.size() > 1)
       {
          throw new DefinitionException(this + " is invalid because it contains more than event parameter annotated @Observes");
@@ -111,7 +111,7 @@ public class ObserverImpl<T> implements Observer<T>
       // variable or wildcard
       if (eventObjects.size() > 0)
       {
-         AnnotatedParameter<?> eventParam = eventObjects.iterator().next();
+         WBParameter<?> eventParam = eventObjects.iterator().next();
          if (eventParam.isParameterizedType())
          {
             for (Type type : eventParam.getActualTypeArguments())
@@ -128,7 +128,7 @@ public class ObserverImpl<T> implements Observer<T>
          }
       }
       // Check for parameters annotated with @Disposes
-      List<AnnotatedParameter<?>> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
+      List<WBParameter<?>> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
       if (disposeParams.size() > 0)
       {
          throw new DefinitionException(this + " cannot have any parameters annotated with @Disposes");

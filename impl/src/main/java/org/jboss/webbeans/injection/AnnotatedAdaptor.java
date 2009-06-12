@@ -6,14 +6,14 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.Annotated;
 
-import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.WBAnnotated;
 
 public class AnnotatedAdaptor implements Annotated
 {
 
-   private final AnnotatedItem<?, ?> annotatedItem;
+   private final WBAnnotated<?, ?> annotatedItem;
    
-   public AnnotatedAdaptor(AnnotatedItem<?, ?> annotatedItem)
+   public AnnotatedAdaptor(WBAnnotated<?, ?> annotatedItem)
    {
       this.annotatedItem = annotatedItem;
    }

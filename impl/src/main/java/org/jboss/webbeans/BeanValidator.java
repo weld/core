@@ -45,8 +45,8 @@ import javax.inject.UnserializableDependencyException;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.NewSimpleBean;
 import org.jboss.webbeans.bean.RIBean;
-import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
-import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.injection.resolution.ResolvableWBClass;
+import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.metadata.MetaDataCache;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.ListComparator;
@@ -104,7 +104,7 @@ public class BeanValidator
             checkFacadeInjectionPoint(injectionPoint, Obtains.class, Instance.class);
             checkFacadeInjectionPoint(injectionPoint, Any.class, Event.class);
             Annotation[] bindings = injectionPoint.getBindings().toArray(new Annotation[0]);
-            AnnotatedItem<?, ?> annotatedItem = ResolvableAnnotatedClass.of(injectionPoint.getType(), bindings, manager);
+            WBAnnotated<?, ?> annotatedItem = ResolvableWBClass.of(injectionPoint.getType(), bindings, manager);
             Set<?> resolvedBeans = manager.getBeans(injectionPoint);
             if (resolvedBeans.isEmpty())
             {

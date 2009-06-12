@@ -24,7 +24,7 @@ import java.util.Set;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
+import org.jboss.webbeans.injection.resolution.ResolvableWBClass;
 
 /**
  * Helper implementation for Instance for getting instances
@@ -51,7 +51,7 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
    public T get(Annotation... bindings) 
    {
       Annotation[] annotations = mergeInBindings(bindings);
-      Bean<T> bean = getManager().getBean(ResolvableAnnotatedClass.<T>of(getType(), annotations, getManager()), annotations);
+      Bean<T> bean = getManager().getBean(ResolvableWBClass.<T>of(getType(), annotations, getManager()), annotations);
       
       @SuppressWarnings("unchecked")
       T instance = (T) getManager().getReference(bean, getType());

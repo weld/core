@@ -32,17 +32,17 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.introspector.AnnotatedConstructor;
-import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.introspector.ForwardingAnnotatedConstructor;
+import org.jboss.webbeans.introspector.WBConstructor;
+import org.jboss.webbeans.introspector.WBParameter;
+import org.jboss.webbeans.introspector.ForwardingWBConstructor;
 
-public class ConstructorInjectionPoint<T> extends ForwardingAnnotatedConstructor<T> implements AnnotatedInjectionPoint<T, Constructor<T>>
+public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> implements WBInjectionPoint<T, Constructor<T>>
 {
    
    private abstract class ForwardingParameterInjectionPointList extends AbstractList<ParameterInjectionPoint<?>>
    {
       
-      protected abstract List<? extends AnnotatedParameter<?>> delegate();
+      protected abstract List<? extends WBParameter<?>> delegate();
       
       protected abstract Bean<?> declaringBean();;
 
@@ -63,21 +63,21 @@ public class ConstructorInjectionPoint<T> extends ForwardingAnnotatedConstructor
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
    
    private final Bean<?> declaringBean;
-   private final AnnotatedConstructor<T> constructor;
+   private final WBConstructor<T> constructor;
 
-   public static <T> ConstructorInjectionPoint<T> of(Bean<?> declaringBean, AnnotatedConstructor<T> constructor)
+   public static <T> ConstructorInjectionPoint<T> of(Bean<?> declaringBean, WBConstructor<T> constructor)
    {
       return new ConstructorInjectionPoint<T>(declaringBean, constructor);
    }
    
-   protected ConstructorInjectionPoint(Bean<?> declaringBean, AnnotatedConstructor<T> constructor)
+   protected ConstructorInjectionPoint(Bean<?> declaringBean, WBConstructor<T> constructor)
    {
       this.declaringBean = declaringBean;
       this.constructor = constructor;
    }
    
    @Override
-   protected AnnotatedConstructor<T> delegate()
+   protected WBConstructor<T> delegate()
    {
       return constructor;
    }
@@ -120,7 +120,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingAnnotatedConstructor
    @Override
    public List<ParameterInjectionPoint<?>> getParameters()
    {
-      final List<? extends AnnotatedParameter<?>> delegate = super.getParameters();
+      final List<? extends WBParameter<?>> delegate = super.getParameters();
       return new ForwardingParameterInjectionPointList()
       {
 
@@ -131,7 +131,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingAnnotatedConstructor
          }
 
          @Override
-         protected List<? extends AnnotatedParameter<?>> delegate()
+         protected List<? extends WBParameter<?>> delegate()
          {
             return delegate;
          }

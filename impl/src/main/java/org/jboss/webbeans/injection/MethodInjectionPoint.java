@@ -31,17 +31,17 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.AnnotatedParameter;
-import org.jboss.webbeans.introspector.ForwardingAnnotatedMethod;
+import org.jboss.webbeans.introspector.WBMethod;
+import org.jboss.webbeans.introspector.WBParameter;
+import org.jboss.webbeans.introspector.ForwardingWBMethod;
 
-public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implements AnnotatedInjectionPoint<T, Method>
+public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WBInjectionPoint<T, Method>
 {
    
    private abstract class ForwardingParameterInjectionPointList extends AbstractList<ParameterInjectionPoint<?>>
    {
       
-      protected abstract List<? extends AnnotatedParameter<?>> delegate();
+      protected abstract List<? extends WBParameter<?>> delegate();
       
       protected abstract Bean<?> declaringBean();;
 
@@ -62,21 +62,21 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
    
    private final Bean<?> declaringBean;
-   private final AnnotatedMethod<T> method;
+   private final WBMethod<T> method;
 
-   public static <T> MethodInjectionPoint<T> of(Bean<?> declaringBean, AnnotatedMethod<T> method)
+   public static <T> MethodInjectionPoint<T> of(Bean<?> declaringBean, WBMethod<T> method)
    {
       return new MethodInjectionPoint<T>(declaringBean, method);
    }
    
-   protected MethodInjectionPoint(Bean<?> declaringBean, AnnotatedMethod<T> method)
+   protected MethodInjectionPoint(Bean<?> declaringBean, WBMethod<T> method)
    {
       this.declaringBean = declaringBean;
       this.method = method;
    }
    
    @Override
-   protected AnnotatedMethod<T> delegate()
+   protected WBMethod<T> delegate()
    {
       return method;
    }
@@ -196,7 +196,7 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
    @Override
    public List<ParameterInjectionPoint<?>> getParameters()
    {
-      final List<? extends AnnotatedParameter<?>> delegate = super.getParameters();
+      final List<? extends WBParameter<?>> delegate = super.getParameters();
       return new ForwardingParameterInjectionPointList()
       {
 
@@ -207,7 +207,7 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
          }
 
          @Override
-         protected List<? extends AnnotatedParameter<?>> delegate()
+         protected List<? extends WBParameter<?>> delegate()
          {
             return delegate;
          }

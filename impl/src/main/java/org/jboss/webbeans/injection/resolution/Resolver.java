@@ -32,7 +32,7 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.standard.EventBean;
 import org.jboss.webbeans.bean.standard.InstanceBean;
-import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.ListComparator;
 import org.jboss.webbeans.util.Reflections;
@@ -81,7 +81,7 @@ public class Resolver
    // The resolved injection points
    private ConcurrentCache<Resolvable, Set<Bean<?>>> resolvedInjectionPoints;
    // The registerd injection points
-   private Set<AnnotatedItem<?, ?>> injectionPoints;
+   private Set<WBAnnotated<?, ?>> injectionPoints;
    // The resolved names
    private ConcurrentCache<String, Set<Bean<?>>> resolvedNames;
    
@@ -102,7 +102,7 @@ public class Resolver
    {
       this.manager = manager;
       this.beans = beans;
-      this.injectionPoints = new HashSet<AnnotatedItem<?, ?>>();
+      this.injectionPoints = new HashSet<WBAnnotated<?, ?>>();
       this.resolvedInjectionPoints = new ConcurrentCache<Resolvable, Set<Bean<?>>>();
       this.resolvedNames = new ConcurrentCache<String, Set<Bean<?>>>();
       this.transformers = new HashSet<ResolovableTransformer>();
@@ -111,11 +111,11 @@ public class Resolver
    }
    /**
     * Add multiple injection points for later resolving using
-    * {@link #registerInjectionPoint(AnnotatedItem)}. Useful during bootstrap.
+    * {@link #registerInjectionPoint(WBAnnotated)}. Useful during bootstrap.
     * 
     * @param elements The injection points to add
     */
-   public void addInjectionPoints(Collection<? extends AnnotatedItem<?, ?>> elements)
+   public void addInjectionPoints(Collection<? extends WBAnnotated<?, ?>> elements)
    {
       injectionPoints.addAll(elements);
    }
@@ -167,7 +167,7 @@ public class Resolver
     */
    public void resolveInjectionPoints()
    {
-      for (final AnnotatedItem<? extends Object, ? extends Object> injectable : injectionPoints)
+      for (final WBAnnotated<? extends Object, ? extends Object> injectable : injectionPoints)
       {
          registerInjectionPoint(ResolvableFactory.of(injectable));
       }

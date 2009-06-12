@@ -35,11 +35,11 @@ import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
+import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.introspector.WBMethod;
+import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 
@@ -50,10 +50,10 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    protected AbstractClassBean<?> declaringBean;
    private DisposalMethodBean<?> specializedBean;
    protected MethodInjectionPoint<T> disposalMethodInjectionPoint;
-   protected Set<AnnotatedInjectionPoint<?, ?>> disposalInjectionPoints;
+   protected Set<WBInjectionPoint<?, ?>> disposalInjectionPoints;
    private final String id;
 
-   protected DisposalMethodBean(BeanManagerImpl manager, AnnotatedMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
+   protected DisposalMethodBean(BeanManagerImpl manager, WBMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
    {
       super(manager);
       this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
@@ -73,28 +73,28 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    }
 
    @Override
-   public AnnotatedMethod<T> getAnnotatedItem()
+   public WBMethod<T> getAnnotatedItem()
    {
       return disposalMethodInjectionPoint;
    }
 
-   public static <T> DisposalMethodBean<T> of(BeanManagerImpl manager, AnnotatedMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
+   public static <T> DisposalMethodBean<T> of(BeanManagerImpl manager, WBMethod<T> disposalMethod, AbstractClassBean<?> declaringBean)
    {
       return new DisposalMethodBean<T>(manager, disposalMethod, declaringBean);
    }
 
    protected void initInjectionPoints()
    {
-      disposalInjectionPoints = new HashSet<AnnotatedInjectionPoint<?, ?>>();
+      disposalInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
 
-      List<? extends AnnotatedParameter<?>> disposalMethodParameters = disposalMethodInjectionPoint.getParameters();
+      List<? extends WBParameter<?>> disposalMethodParameters = disposalMethodInjectionPoint.getParameters();
 
       // First one must be @Disposes, if more, register injectionpoints
       if (disposalMethodParameters.size() > 1)
       {
          for (int i = 1; i < disposalMethodParameters.size(); i++)
          {
-            AnnotatedParameter<?> parameter = disposalMethodParameters.get(i);
+            WBParameter<?> parameter = disposalMethodParameters.get(i);
             disposalInjectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
          }
       }
@@ -133,7 +133,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    }
 
    @Override
-   public Set<AnnotatedInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
+   public Set<WBInjectionPoint<?, ?>> getAnnotatedInjectionPoints()
    {
       return injectionPoints;
    }
@@ -253,7 +253,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    @Override
    protected void specialize(BeanDeployerEnvironment environment)
    {
-      AnnotatedMethod<?> superClassMethod = declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod());
+      WBMethod<?> superClassMethod = declaringBean.getAnnotatedItem().getSuperclass().getMethod(getAnnotatedItem().getAnnotatedMethod());
       if (environment.getProducerMethod(superClassMethod) == null)
       {
          throw new IllegalStateException(toString() + " does not specialize a bean");

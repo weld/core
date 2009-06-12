@@ -18,7 +18,7 @@ package org.jboss.webbeans.introspector.jlr;
 
 import java.util.Arrays;
 
-import org.jboss.webbeans.introspector.AnnotatedConstructor;
+import org.jboss.webbeans.introspector.WBConstructor;
 import org.jboss.webbeans.introspector.ConstructorSignature;
 import org.jboss.webbeans.introspector.MethodSignature;
 
@@ -27,7 +27,7 @@ public class ConstructorSignatureImpl implements ConstructorSignature
    
    private final String[] parameterTypes;
    
-   public ConstructorSignatureImpl(AnnotatedConstructor<?> method)
+   public ConstructorSignatureImpl(WBConstructor<?> method)
    {
       this.parameterTypes = new String[method.getParameters().size()];
       for (int i = 0; i < method.getParameters().size(); i++)

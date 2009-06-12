@@ -14,10 +14,10 @@ import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
+import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.AnnotatedItem;
+import org.jboss.webbeans.introspector.WBClass;
+import org.jboss.webbeans.introspector.WBAnnotated;
 
 public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
 {
@@ -56,17 +56,17 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
     * @param manager the current manager
     * @return a Bean
     */
-   public static <T> DecoratorBean<T> of(AnnotatedClass<T> clazz, BeanManagerImpl manager)
+   public static <T> DecoratorBean<T> of(WBClass<T> clazz, BeanManagerImpl manager)
    {
       return new DecoratorBean<T>(clazz, manager);
    }
 
-   private AnnotatedItem<?, ?> decorates;
+   private WBAnnotated<?, ?> decorates;
    private Set<Annotation> delegateBindings;
    private Type delegateType;
    private Set<Type> decoratedTypes;
 
-   protected DecoratorBean(AnnotatedClass<T> type, BeanManagerImpl manager)
+   protected DecoratorBean(WBClass<T> type, BeanManagerImpl manager)
    {
       super(type, manager);
    }
@@ -99,7 +99,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
    @Override
    protected void checkDecorates()
    {
-      for (AnnotatedInjectionPoint<?, ?> injectionPoint : getDecoratesInjectionPoint())
+      for (WBInjectionPoint<?, ?> injectionPoint : getDecoratesInjectionPoint())
       {
          if (injectionPoint instanceof MethodInjectionPoint && !injectionPoint.isAnnotationPresent(Initializer.class))
          {

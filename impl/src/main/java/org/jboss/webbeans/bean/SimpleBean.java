@@ -32,16 +32,16 @@ import org.jboss.webbeans.context.DependentContext;
 import org.jboss.webbeans.context.DependentStorageRequest;
 import org.jboss.webbeans.ejb.EJBApiAbstraction;
 import org.jboss.webbeans.ejb.spi.EjbServices;
-import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
+import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.injection.ConstructorInjectionPoint;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.AnnotatedConstructor;
-import org.jboss.webbeans.introspector.AnnotatedField;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.introspector.WBClass;
+import org.jboss.webbeans.introspector.WBConstructor;
+import org.jboss.webbeans.introspector.WBField;
+import org.jboss.webbeans.introspector.WBMethod;
+import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.metadata.MetaDataCache;
@@ -66,13 +66,13 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    // The constructor
    private ConstructorInjectionPoint<T> constructor;
    // The post-construct method
-   private AnnotatedMethod<?> postConstruct;
+   private WBMethod<?> postConstruct;
    // The pre-destroy method
-   private AnnotatedMethod<?> preDestroy;
+   private WBMethod<?> preDestroy;
 
-   private Set<AnnotatedInjectionPoint<?, ?>> ejbInjectionPoints;
-   private Set<AnnotatedInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
-   private Set<AnnotatedInjectionPoint<?, ?>> resourceInjectionPoints;
+   private Set<WBInjectionPoint<?, ?>> ejbInjectionPoints;
+   private Set<WBInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
+   private Set<WBInjectionPoint<?, ?>> resourceInjectionPoints;
 
    private SimpleBean<?> specializedBean;
 
@@ -84,7 +84,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * @param manager the current manager
     * @return A Web Bean
     */
-   public static <T> SimpleBean<T> of(AnnotatedClass<T> clazz, BeanManagerImpl manager)
+   public static <T> SimpleBean<T> of(WBClass<T> clazz, BeanManagerImpl manager)
    {
       return new SimpleBean<T>(clazz, manager);
    }
@@ -95,7 +95,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Web Beans manager
     */
-   protected SimpleBean(AnnotatedClass<T> type, BeanManagerImpl manager)
+   protected SimpleBean(WBClass<T> type, BeanManagerImpl manager)
    {
       super(type, manager);
       initType();
@@ -168,7 +168,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void callPreDestroy(T instance)
    {
-      AnnotatedMethod<?> preDestroy = getPreDestroy();
+      WBMethod<?> preDestroy = getPreDestroy();
       if (preDestroy != null)
       {
          try
@@ -190,7 +190,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void callPostConstruct(T instance)
    {
-      AnnotatedMethod<?> postConstruct = getPostConstruct();
+      WBMethod<?> postConstruct = getPostConstruct();
       if (postConstruct != null)
       {
          try
@@ -207,13 +207,13 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected void initEjbInjectionPoints()
    {
       Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
-      this.ejbInjectionPoints = new HashSet<AnnotatedInjectionPoint<?, ?>>();
-      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(ejbAnnotationType))
+      this.ejbInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
+      for (WBField<?> field : annotatedItem.getAnnotatedFields(ejbAnnotationType))
       {
          this.ejbInjectionPoints.add(FieldInjectionPoint.of(this, field));
       }
 
-      for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(ejbAnnotationType))
+      for (WBMethod<?> method : annotatedItem.getAnnotatedMethods(ejbAnnotationType))
       {
          this.ejbInjectionPoints.add(MethodInjectionPoint.of(this, method));
       }
@@ -221,11 +221,11 @@ public class SimpleBean<T> extends AbstractClassBean<T>
 
    protected void initPersistenceUnitInjectionPoints()
    {
-      this.persistenceUnitInjectionPoints = new HashSet<AnnotatedInjectionPoint<?, ?>>();
+      this.persistenceUnitInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
       Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
       Object extendedPersistenceContextEnum = manager.getServices().get(PersistenceApiAbstraction.class).EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE;
       
-      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(persistenceContextAnnotationType))
+      for (WBField<?> field : annotatedItem.getAnnotatedFields(persistenceContextAnnotationType))
       {
          if (extendedPersistenceContextEnum.equals(Reflections.invokeAndWrap("type", field.getAnnotation(persistenceContextAnnotationType))))
          {
@@ -234,7 +234,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
          this.persistenceUnitInjectionPoints.add(FieldInjectionPoint.of(this, field));
       }
 
-      for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(persistenceContextAnnotationType))
+      for (WBMethod<?> method : annotatedItem.getAnnotatedMethods(persistenceContextAnnotationType))
       {
          if (extendedPersistenceContextEnum.equals(Reflections.invokeAndWrap("type", method.getAnnotation(persistenceContextAnnotationType))))
          {
@@ -247,8 +247,8 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected void initResourceInjectionPoints()
    {
       Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
-      this.resourceInjectionPoints = new HashSet<AnnotatedInjectionPoint<?, ?>>();
-      for (AnnotatedField<?> field : annotatedItem.getAnnotatedFields(resourceAnnotationType))
+      this.resourceInjectionPoints = new HashSet<WBInjectionPoint<?, ?>>();
+      for (WBField<?> field : annotatedItem.getAnnotatedFields(resourceAnnotationType))
       {
          this.resourceInjectionPoints.add(FieldInjectionPoint.of(this, field));
       }
@@ -265,7 +265,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       
       if (ejbServices != null)
       {
-         for (AnnotatedInjectionPoint<?, ?> injectionPoint : ejbInjectionPoints)
+         for (WBInjectionPoint<?, ?> injectionPoint : ejbInjectionPoints)
          {
             Object ejbInstance = ejbServices.resolveEjb(injectionPoint);
             injectionPoint.inject(beanInstance, ejbInstance);
@@ -274,7 +274,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
 
       if (jpaServices != null)
       {
-         for (AnnotatedInjectionPoint<?, ?> injectionPoint : persistenceUnitInjectionPoints)
+         for (WBInjectionPoint<?, ?> injectionPoint : persistenceUnitInjectionPoints)
          {
             Object puInstance = jpaServices.resolvePersistenceContext(injectionPoint);
             injectionPoint.inject(beanInstance, puInstance);
@@ -283,7 +283,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
 
       if (resourceServices != null)
       {
-         for (AnnotatedInjectionPoint<?, ?> injectionPoint : resourceInjectionPoints)
+         for (WBInjectionPoint<?, ?> injectionPoint : resourceInjectionPoints)
          {
             Object resourceInstance = resourceServices.resolveResource(injectionPoint);
             injectionPoint.inject(beanInstance, resourceInstance);
@@ -326,7 +326,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
    protected void initInjectionPoints()
    {
       super.initInjectionPoints();
-      for (AnnotatedParameter<?> parameter : constructor.getParameters())
+      for (WBParameter<?> parameter : constructor.getParameters())
       {
          injectionPoints.add(ParameterInjectionPoint.of(this, parameter));
       }
@@ -358,7 +358,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
       super.checkBeanImplementation();
       if (!isDependent())
       {
-         for (AnnotatedField<?> field : getAnnotatedItem().getFields())
+         for (WBField<?> field : getAnnotatedItem().getFields())
          {
             if (field.isPublic() && !field.isStatic())
             {
@@ -402,7 +402,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void initConstructor()
    {
-      Set<AnnotatedConstructor<T>> initializerAnnotatedConstructors = getAnnotatedItem().getAnnotatedConstructors(Initializer.class);
+      Set<WBConstructor<T>> initializerAnnotatedConstructors = getAnnotatedItem().getAnnotatedConstructors(Initializer.class);
       log.trace("Found " + initializerAnnotatedConstructors + " constructors annotated with @Initializer for " + getType());
       if (initializerAnnotatedConstructors.size() > 1)
       {
@@ -434,7 +434,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void initPostConstruct()
    {
-      Set<AnnotatedMethod<?>> postConstructMethods = getAnnotatedItem().getAnnotatedMethods(PostConstruct.class);
+      Set<WBMethod<?>> postConstructMethods = getAnnotatedItem().getAnnotatedMethods(PostConstruct.class);
       log.trace("Found " + postConstructMethods + " constructors annotated with @Initializer for " + getType());
       if (postConstructMethods.size() > 1)
       {
@@ -456,7 +456,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     */
    protected void initPreDestroy()
    {
-      Set<AnnotatedMethod<?>> preDestroyMethods = getAnnotatedItem().getAnnotatedMethods(PreDestroy.class);
+      Set<WBMethod<?>> preDestroyMethods = getAnnotatedItem().getAnnotatedMethods(PreDestroy.class);
       log.trace("Found " + preDestroyMethods + " constructors annotated with @Initializer for " + getType());
       if (preDestroyMethods.size() > 1)
       {
@@ -477,7 +477,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * 
     * @return The constructor
     */
-   public AnnotatedConstructor<T> getConstructor()
+   public WBConstructor<T> getConstructor()
    {
       return constructor;
    }
@@ -487,7 +487,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * 
     * @return The post-construct method
     */
-   public AnnotatedMethod<?> getPostConstruct()
+   public WBMethod<?> getPostConstruct()
    {
       return postConstruct;
    }
@@ -497,7 +497,7 @@ public class SimpleBean<T> extends AbstractClassBean<T>
     * 
     * @return The pre-destroy method
     */
-   public AnnotatedMethod<?> getPreDestroy()
+   public WBMethod<?> getPreDestroy()
    {
       return preDestroy;
    }

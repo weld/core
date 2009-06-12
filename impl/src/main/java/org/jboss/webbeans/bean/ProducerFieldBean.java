@@ -22,7 +22,7 @@ import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.util.Names;
 
 /**
@@ -35,7 +35,7 @@ import org.jboss.webbeans.util.Names;
 public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
 {
    // The underlying field
-   private AnnotatedField<T> field;
+   private WBField<T> field;
    private final String id;
    
    /**
@@ -46,7 +46,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
     * @param manager the current manager
     * @return A producer Web Bean
     */
-   public static <T> ProducerFieldBean<T> of(AnnotatedField<T> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   public static <T> ProducerFieldBean<T> of(WBField<T> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
       return new ProducerFieldBean<T>(field, declaringBean, manager);
    }
@@ -58,7 +58,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
     * @param declaringBean The declaring bean
     * @param manager The Web Beans manager
     */
-   protected ProducerFieldBean(AnnotatedField<T> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
+   protected ProducerFieldBean(WBField<T> field, AbstractClassBean<?> declaringBean, BeanManagerImpl manager)
    {
       super(declaringBean, manager);
       this.field = field;
@@ -97,7 +97,7 @@ public class ProducerFieldBean<T> extends AbstractProducerBean<T, Field>
     * @return The annotated item
     */
    @Override
-   protected AnnotatedField<T> getAnnotatedItem()
+   protected WBField<T> getAnnotatedItem()
    {
       return field;
    }

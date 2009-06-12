@@ -37,9 +37,9 @@ import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
-import org.jboss.webbeans.introspector.AnnotatedClass;
-import org.jboss.webbeans.introspector.AnnotatedMethod;
-import org.jboss.webbeans.introspector.AnnotatedParameter;
+import org.jboss.webbeans.introspector.WBClass;
+import org.jboss.webbeans.introspector.WBMethod;
+import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Beans;
@@ -58,7 +58,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    // Logger
    private static final LogProvider log = Logging.getLogProvider(AbstractClassBean.class);
    // The item representation
-   protected AnnotatedClass<T> annotatedItem;
+   protected WBClass<T> annotatedItem;
    // The injectable fields
    private Set<FieldInjectionPoint<?>> injectableFields;
    // The initializer methods
@@ -73,7 +73,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * @param type The type
     * @param manager The Web Beans manager
     */
-   protected AbstractClassBean(AnnotatedClass<T> type, BeanManagerImpl manager)
+   protected AbstractClassBean(WBClass<T> type, BeanManagerImpl manager)
    {
       super(manager);
       this.annotatedItem = type;
@@ -139,9 +139,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       injectableFields = new HashSet<FieldInjectionPoint<?>>(Beans.getFieldInjectionPoints(annotatedItem, this));
       super.injectionPoints.addAll(injectableFields);
-      for (AnnotatedMethod<?> initializer : getInitializerMethods())
+      for (WBMethod<?> initializer : getInitializerMethods())
       {
-         for (AnnotatedParameter<?> parameter : initializer.getParameters())
+         for (WBParameter<?> parameter : initializer.getParameters())
          {
             injectionPoints.add(ParameterInjectionPoint.of(this, parameter));
          }
@@ -154,7 +154,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    protected void initInitializerMethods()
    {
       initializerMethods = new HashSet<MethodInjectionPoint<?>>();
-      for (AnnotatedMethod<?> method : annotatedItem.getAnnotatedMethods(Initializer.class))
+      for (WBMethod<?> method : annotatedItem.getAnnotatedMethods(Initializer.class))
       {
          if (method.isStatic())
          {
@@ -182,7 +182,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    @Override
    protected void initScopeType()
    {
-      for (AnnotatedClass<?> clazz = getAnnotatedItem(); clazz != null; clazz = clazz.getSuperclass())
+      for (WBClass<?> clazz = getAnnotatedItem(); clazz != null; clazz = clazz.getSuperclass())
       {
          Set<Annotation> scopeTypes = clazz.getDeclaredMetaAnnotations(ScopeType.class);
          scopeTypes = clazz.getDeclaredMetaAnnotations(ScopeType.class);
@@ -216,7 +216,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    @Override
    protected void initDeploymentType()
    {
-      for (AnnotatedClass<?> clazz = getAnnotatedItem(); clazz != null; clazz = clazz.getSuperclass())
+      for (WBClass<?> clazz = getAnnotatedItem(); clazz != null; clazz = clazz.getSuperclass())
       {
          Set<Annotation> deploymentTypes = clazz.getDeclaredMetaAnnotations(DeploymentType.class);
          if (deploymentTypes.size() == 1)
@@ -284,7 +284,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * @return The annotated item
     */
    @Override
-   public AnnotatedClass<T> getAnnotatedItem()
+   public WBClass<T> getAnnotatedItem()
    {
       return annotatedItem;
    }
