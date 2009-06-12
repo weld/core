@@ -19,7 +19,6 @@ package org.jboss.webbeans.introspector.jlr;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +27,6 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
-import org.jboss.webbeans.util.Types;
 
 /**
  * Represents functionality common for all annotated items, mainly different
@@ -134,7 +132,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return getMetaAnnotations(metaAnnotationType).toArray(new Annotation[0]);
    }
 
-   public Set<Annotation> getAnnotationsAsSet()
+   public Set<Annotation> getAnnotations()
    {
       return getAnnotationStore().getAnnotations();
    }
@@ -164,7 +162,7 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       if (other instanceof AnnotatedItem)
       {
          AnnotatedItem<?, ?> that = (AnnotatedItem<?, ?>) other;
-         return this.getAnnotationsAsSet().equals(that.getAnnotationsAsSet()) && this.getRawType().equals(that.getRawType());
+         return this.getAnnotations().equals(that.getAnnotations()) && this.getRawType().equals(that.getRawType());
       }
       return false;
    }
@@ -183,51 +181,14 @@ public abstract class AbstractAnnotatedItem<T, S> implements AnnotatedItem<T, S>
       return isAssignableFrom(that.getRawType(), that.getActualTypeArguments());
    }
 
-   /**
-    * Checks if this item is assignable from any one a set of types
-    * 
-    * @param types The set of types to check against
-    * @return True if assignable, false otherwise
-    * 
-    * @see org.jboss.webbeans.introspector.AnnotatedItem#isAssignableFrom(Set)
-    */
-   public boolean isAssignableFrom(Set<? extends Type> types)
+   public boolean isAssignableFrom(Class<?> type, Type[] actualTypeArguments)
    {
-      for (Type type : types)
-      {
-         if (type instanceof Class)
-         {
-            Class<?> clazz = (Class<?>) type;
-            if (isAssignableFrom(clazz, new Type[0]))
-            {
-               return true;
-            }
-         }
-         else if (type instanceof ParameterizedType)
-         {
-            ParameterizedType parameterizedType = (ParameterizedType) type;
-            if (parameterizedType.getRawType() instanceof Class)
-            {
-               if (isAssignableFrom((Class<?>) parameterizedType.getRawType(), parameterizedType.getActualTypeArguments()))
-               {
-                  return true;
-               }
-            }
-         }
-      }
-      return false;
+      return Reflections.isAssignableFrom(getRawType(), getActualTypeArguments(), type, actualTypeArguments);
    }
-
-   /**
-    * Helper method for doing actual assignability check
-    * 
-    * @param type The type to compare against
-    * @param actualTypeArguments The type arguments
-    * @return True is assignable, false otherwise
-    */
-   private boolean isAssignableFrom(Class<?> type, Type[] actualTypeArguments)
+   
+   public boolean isAssignableFrom(Type type)
    {
-      return Types.boxedType(getRawType()).isAssignableFrom(Types.boxedType(type)) && Arrays.equals(getActualTypeArguments(), actualTypeArguments);
+      return Reflections.isAssignableFrom(getType(), type);
    }
 
    /**

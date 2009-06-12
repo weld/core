@@ -21,6 +21,7 @@ import java.lang.reflect.Member;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -52,11 +53,6 @@ public class ParameterInjectionPoint<T> extends ForwardingAnnotatedParameter<T> 
       return parameter;
    }
 
-   public Annotation[] getAnnotations()
-   {
-      return delegate().getAnnotationStore().getAnnotations().toArray(EMPTY_ANNOTATION_ARRAY);
-   }
-
    public Bean<?> getBean()
    {
       return declaringBean;
@@ -81,6 +77,23 @@ public class ParameterInjectionPoint<T> extends ForwardingAnnotatedParameter<T> 
    public T getValueToInject(BeanManagerImpl manager, CreationalContext<?> creationalContext)
    {
       return (T) manager.getInjectableReference(this, creationalContext);
+   }
+
+   public Annotated getAnnotated()
+   {
+      return new AnnotatedAdaptor(delegate());
+   }
+
+   public boolean isDelegate()
+   {
+      // TODO Auto-generated method stub
+      return false;
+   }
+
+   public boolean isTransient()
+   {
+      // TODO Auto-generated method stub
+      return false;
    }
 
 }

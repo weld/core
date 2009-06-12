@@ -62,7 +62,8 @@ import org.jboss.webbeans.util.Reflections;
 public abstract class AbstractBean<T, E> extends RIBean<T>
 {
 
-   private static final Annotation ANY_BINDING = new AnyLiteral();
+   private static final Annotation ANY_LITERAL = new AnyLiteral();
+   private static final Annotation CURRENT_LITERAL = new CurrentLiteral();
 
    @SuppressWarnings("unchecked")
    private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(Event.class, BeanManagerImpl.class, ConversationImpl.class));
@@ -211,6 +212,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       this.bindings = new HashSet<Annotation>();
       this.bindings.addAll(getAnnotatedItem().getMetaAnnotations(BindingType.class));
       initDefaultBindings();
+      log.trace("Using binding types " + bindings + " specified by annotations");
    }
    
    protected abstract void initInjectionPoints();
@@ -220,18 +222,9 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       if (bindings.size() == 0)
       {
          log.trace("Adding default @Current binding type");
-         this.bindings.add(new CurrentLiteral());
-         this.bindings.add(ANY_BINDING);
+         this.bindings.add(CURRENT_LITERAL);
       }
-      else
-      {
-         if (!bindings.contains(ANY_BINDING))
-         {
-            bindings.add(ANY_BINDING);
-         }
-         if (log.isTraceEnabled())
-            log.trace("Using binding types " + bindings + " specified by annotations");
-      }
+      this.bindings.add(ANY_LITERAL);
    }
 
    /**

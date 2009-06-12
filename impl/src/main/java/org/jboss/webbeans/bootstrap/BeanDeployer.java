@@ -72,7 +72,7 @@ public class BeanDeployer
    public BeanDeployer(BeanManagerImpl manager, EjbDescriptorCache ejbDescriptors)
    {
       this.manager = manager;
-      this.environment = new BeanDeployerEnvironment(ejbDescriptors);
+      this.environment = new BeanDeployerEnvironment(ejbDescriptors, manager);
       this.classes = new HashSet<AnnotatedClass<?>>();
       this.classTransformer = new ClassTransformer();
    }
@@ -224,9 +224,7 @@ public class BeanDeployer
       for (AnnotatedMethod<?> method : annotatedClass.getDeclaredMethodsWithAnnotatedParameters(Disposes.class))
       {
          DisposalMethodBean<?> disposalBean = DisposalMethodBean.of(manager, method, declaringBean);
-         environment.addAllDisposalBean(disposalBean);
-         manager.getResolver().addInjectionPoints(disposalBean.getAnnotatedInjectionPoints());
-         manager.addBean(disposalBean);
+         environment.addDisposalBean(disposalBean);
       }
    }
    

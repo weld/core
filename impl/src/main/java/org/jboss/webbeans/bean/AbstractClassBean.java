@@ -43,7 +43,6 @@ import org.jboss.webbeans.introspector.AnnotatedParameter;
 import org.jboss.webbeans.log.LogProvider;
 import org.jboss.webbeans.log.Logging;
 import org.jboss.webbeans.util.Beans;
-import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.Strings;
 
 /**
@@ -267,13 +266,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    /**
     * Validates the bean implementation
     */
-   protected void checkBeanImplementation()
-   {
-      if (Reflections.isAbstract(getType()))
-      {
-         throw new DefinitionException("Web Bean implementation class " + type + " cannot be declared abstract");
-      }
-   }
+   protected void checkBeanImplementation() {}
 
    @Override
    protected void preSpecialize(BeanDeployerEnvironment environment)

@@ -93,7 +93,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
             AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(constructor.getParameterAnnotations()[i], clazz, type, this);
             parameters.add(parameter);
 
-            for (Annotation annotation : parameter.getAnnotationsAsSet())
+            for (Annotation annotation : parameter.getAnnotations())
             {
                annotatedParameters.put(annotation.annotationType(), parameter);
             }
@@ -113,7 +113,7 @@ public class AnnotatedConstructorImpl<T> extends AbstractAnnotatedMember<T, Cons
             AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(new Annotation[0], clazz, type, this);
             parameters.add(parameter);
 
-            for (Annotation annotation : parameter.getAnnotationsAsSet())
+            for (Annotation annotation : parameter.getAnnotations())
             {
                annotatedParameters.put(annotation.annotationType(), parameter);
             }

@@ -8,7 +8,7 @@ import org.jboss.webbeans.CurrentManager;
 import org.jboss.webbeans.context.AbstractContext;
 import org.jboss.webbeans.ejb.spi.EjbDescriptor;
 import org.jboss.webbeans.ejb.spi.EjbServices;
-import org.jboss.webbeans.util.Reflections;
+import org.jboss.webbeans.util.Proxies;
 
 /**
  * Implements the Beans SPI for the TCK specifically for the JBoss RI.
@@ -67,7 +67,7 @@ public class BeansImpl implements Beans
    
    public boolean isProxy(Object instance)
    {
-      return Reflections.isProxy(instance);
+      return Proxies.isProxy(instance);
    }
 
    public <T> T getEnterpriseBean(Class<? extends T> beanType, Class<T> localInterface)

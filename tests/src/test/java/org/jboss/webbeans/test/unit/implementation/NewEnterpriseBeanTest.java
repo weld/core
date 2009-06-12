@@ -1,6 +1,5 @@
 package org.jboss.webbeans.test.unit.implementation;
 
-import java.lang.annotation.Annotation;
 import java.util.Set;
 
 import javax.enterprise.inject.New;
@@ -13,7 +12,6 @@ import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.literal.NewLiteral;
 import org.jboss.webbeans.test.AbstractWebBeansTest;
-import org.jboss.webbeans.util.Proxies.TypeInfo;
 import org.testng.annotations.Test;
 
 @Artifact
@@ -60,13 +58,5 @@ public class NewEnterpriseBeanTest extends AbstractWebBeansTest
       Set<? extends AnnotatedItem<?, ?>> newBeanInjectionPoints = newEnterpriseBean.getAnnotatedInjectionPoints();
       assert wrappedBeanInjectionPoints.equals(newBeanInjectionPoints);
    }
-   
-   @Test(groups = { "new" })
-   public void testNewBeanHasNoDisposalMethods()
-   {
-      initNewBean();
-      Class<?> type = TypeInfo.ofTypes(newEnterpriseBean.getTypes()).getSuperClass();
-      assert getCurrentManager().resolveDisposalBeans(type, newEnterpriseBean.getBindings().toArray(new Annotation[0])).isEmpty();
-   }   
    
 }

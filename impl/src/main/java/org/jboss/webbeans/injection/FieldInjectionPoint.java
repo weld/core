@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -52,11 +53,6 @@ public class FieldInjectionPoint<T> extends ForwardingAnnotatedField<T> implemen
    protected AnnotatedField<T> delegate()
    {
       return field;
-   }
-
-   public Annotation[] getAnnotations()
-   {
-      return delegate().getAnnotationStore().getAnnotations().toArray(EMPTY_ANNOTATION_ARRAY);
    }
 
    public Bean<?> getBean()
@@ -99,6 +95,17 @@ public class FieldInjectionPoint<T> extends ForwardingAnnotatedField<T> implemen
       {
          rethrowException(e);
       }
+   }
+
+   public Annotated getAnnotated()
+   {
+      return new AnnotatedAdaptor(delegate());
+   }
+
+   public boolean isDelegate()
+   {
+      // TODO Auto-generated method stub
+      return false;
    }
 
 }

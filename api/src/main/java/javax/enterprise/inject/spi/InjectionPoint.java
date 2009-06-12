@@ -75,35 +75,9 @@ public interface InjectionPoint
     */
    public Member getMember();
    
-   /**
-    * Get the annotation instance for the given annotation type of the field in
-    * the case of field injection, or annotations of the parameter in the case
-    * of method parameter or constructor parameter injection.
-    * 
-    * @param <T>
-    *           the type of the annotation
-    * @param annotationType
-    *           the type of the annotation
-    * @return the annotation of the specified annotationType, or null if no such
-    *         annotation exists
-    */
-   public <T extends Annotation> T getAnnotation(Class<T> annotationType);
+   public Annotated getAnnotated();
    
-   /**
-    * Get the annotations of the field in the case of field injection, or
-    * annotations of the parameter in the case of method parameter or
-    * constructor parameter injection.
-    * 
-    * @return the annotations of the field
-    */
-   public Annotation[] getAnnotations();
+   public boolean isDelegate();
    
-   /**
-    * Determine if the specified annotation is present on the injection point
-    * 
-    * @param annotationType
-    *           the type of the annotation
-    * @return true if an annotation of the specified type is present, else false
-    */
-   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType);
+   public boolean isTransient();
 }

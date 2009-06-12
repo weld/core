@@ -99,7 +99,7 @@ public class AnnotatedMethodImpl<T> extends AbstractAnnotatedMember<T, Method> i
             Type type = method.getGenericParameterTypes()[i];
             AnnotatedParameter<?> parameter = AnnotatedParameterImpl.of(method.getParameterAnnotations()[i], (Class<Object>) clazz, type, this);
             this.parameters.add(parameter);
-            for (Annotation annotation : parameter.getAnnotationsAsSet())
+            for (Annotation annotation : parameter.getAnnotations())
             {
                if (MAPPED_PARAMETER_ANNOTATIONS.contains(annotation.annotationType()))
                {

@@ -16,9 +16,11 @@
  */
 package org.jboss.webbeans.util;
 
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.decorator.Decorates;
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
@@ -30,6 +32,7 @@ import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.injection.FieldInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedField;
+import org.jboss.webbeans.metadata.BindingTypeModel;
 import org.jboss.webbeans.metadata.MetaDataCache;
 
 /**
@@ -82,21 +85,65 @@ public class Beans
       Set<FieldInjectionPoint<?>> injectableFields = new HashSet<FieldInjectionPoint<?>>();
       for (AnnotatedField<?> annotatedField : annotatedItem.getMetaAnnotatedFields(BindingType.class))
       {
-         if (!annotatedField.isAnnotationPresent(Produces.class))
-         {
-            if (annotatedField.isStatic())
-            {
-               throw new DefinitionException("Don't place binding annotations on static fields " + annotatedField);
-            }
-            if (annotatedField.isFinal())
-            {
-               throw new DefinitionException("Don't place binding annotations on final fields " + annotatedField);
-            }
-            FieldInjectionPoint<?> fieldInjectionPoint = FieldInjectionPoint.of(declaringBean, annotatedField);
-            injectableFields.add(fieldInjectionPoint);
-         }
+         addFieldInjectionPoint(annotatedField, injectableFields, declaringBean);
+      }
+      for (AnnotatedField<?> annotatedField : annotatedItem.getAnnotatedFields(Decorates.class))
+      {
+         addFieldInjectionPoint(annotatedField, injectableFields, declaringBean);
       }
       return injectableFields;
+   }
+   
+   private static void addFieldInjectionPoint(AnnotatedField<?> annotatedField, Set<FieldInjectionPoint<?>> injectableFields, Bean<?> declaringBean)
+   {
+      if (!annotatedField.isAnnotationPresent(Produces.class))
+      {
+         if (annotatedField.isStatic())
+         {
+            throw new DefinitionException("Don't place binding annotations on static fields " + annotatedField);
+         }
+         if (annotatedField.isFinal())
+         {
+            throw new DefinitionException("Don't place binding annotations on final fields " + annotatedField);
+         }
+         FieldInjectionPoint<?> fieldInjectionPoint = FieldInjectionPoint.of(declaringBean, annotatedField);
+         injectableFields.add(fieldInjectionPoint);
+      }
+   }
+   
+   /**
+    * Checks if binding criteria fulfill all binding types
+    * 
+    * @param element The binding criteria to check
+    * @param bindings2 The binding types to check
+    * @return True if all matches, false otherwise
+    */
+   public static boolean containsAllBindings(Set<Annotation> bindings1, Set<Annotation> bindings2, BeanManagerImpl manager)
+   {
+      for (Annotation binding : bindings1)
+      {
+         BindingTypeModel<?> bindingType = manager.getServices().get(MetaDataCache.class).getBindingTypeModel(binding.annotationType());
+         if (bindingType.getNonBindingTypes().size() > 0)
+         {
+            boolean matchFound = false;
+            for (Annotation otherBinding : bindings2)
+            {
+               if (bindingType.isEqual(binding, otherBinding))
+               {
+                  matchFound = true;
+               }
+            }
+            if (!matchFound)
+            {
+               return false;
+            }
+         }
+         else if (!bindings2.contains(binding))
+         {
+            return false;
+         }
+      }
+      return true;
    }
    
 }

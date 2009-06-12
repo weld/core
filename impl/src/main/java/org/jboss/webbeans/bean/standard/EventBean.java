@@ -28,7 +28,7 @@ import javax.inject.Obtains;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.event.EventImpl;
-import org.jboss.webbeans.injection.resolution.AnnotatedItemTransformer;
+import org.jboss.webbeans.injection.resolution.ResolovableTransformer;
 import org.jboss.webbeans.literal.AnyLiteral;
 
 public class EventBean extends AbstractFacadeBean<Event<?>>
@@ -38,7 +38,7 @@ public class EventBean extends AbstractFacadeBean<Event<?>>
    private static final Set<Type>                        DEFAULT_TYPES             = new HashSet<Type>(Arrays.asList(TYPE, Object.class));
    private static final Annotation                       ANY                       = new AnyLiteral();
    private static final Set<Annotation>                  DEFAULT_BINDINGS          = new HashSet<Annotation>(Arrays.asList(ANY));
-   public static final AnnotatedItemTransformer          TRANSFORMER               = new FacadeBeanAnnotatedItemTransformer(Event.class, ANY);
+   public static final ResolovableTransformer          TRANSFORMER               = new FacadeBeanResolvableTransformer(Event.class, ANY);
    private static final Set<Class<? extends Annotation>> FILTERED_ANNOTATION_TYPES = new HashSet<Class<? extends Annotation>>(Arrays.asList(Obtains.class));
    
    

@@ -5,6 +5,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.Initializer;
@@ -20,6 +21,32 @@ import org.jboss.webbeans.introspector.AnnotatedItem;
 
 public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
 {
+   
+   public static <T> Decorator<T> wrapForResolver(final Decorator<T> decorator)
+   {
+      return new ForwardingDecorator<T>()
+      {
+         
+         @Override
+         public Set<Annotation> getBindings()
+         {
+            return delegate().getDelegateBindings();
+         }
+         
+         @Override
+         public Set<Type> getTypes()
+         {
+            return delegate().getTypes();
+         }
+
+         @Override
+         protected Decorator<T> delegate()
+         {
+            return decorator;
+         }
+         
+      };
+   }
    
    /**
     * Creates a decorator bean
@@ -50,8 +77,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
       if (!isInitialized())
       {
          super.initialize(environment);
-         checkDecorates();
-         initDecorates();
+         initDelegate();
          initDecoratedTypes();
          initDelegateBindings();
          initDelegateType();
@@ -60,11 +86,12 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
    
    protected void initDecoratedTypes()
    {
-      this.decoratedTypes = getAnnotatedItem().getInterfaceOnlyFlattenedTypeHierarchy();
+      this.decoratedTypes = new HashSet<Type>();
+      this.decoratedTypes.addAll(getAnnotatedItem().getInterfaceOnlyFlattenedTypeHierarchy());
       this.decoratedTypes.remove(Serializable.class);
    }
    
-   protected void initDecorates()
+   protected void initDelegate()
    {
       this.decorates = getDecoratesInjectionPoint().iterator().next();
    }

@@ -28,6 +28,7 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.AmbiguousResolutionException;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.UnproxyableResolutionException;
@@ -35,7 +36,6 @@ import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.event.Event;
-import javax.enterprise.inject.Any;
 import javax.inject.DefinitionException;
 import javax.inject.InconsistentSpecializationException;
 import javax.inject.NullableDependencyException;
@@ -82,7 +82,7 @@ public class BeanValidator
       {
          for (InjectionPoint injectionPoint : bean.getInjectionPoints())
          {
-            if (injectionPoint.getAnnotation(New.class) != null && injectionPoint.getBindings().size() > 1)
+            if (injectionPoint.getAnnotated().getAnnotation(New.class) != null && injectionPoint.getBindings().size() > 1)
             {
                throw new DefinitionException("The injection point " + injectionPoint + " is annotated with @New which cannot be combined with other binding types");
             }
@@ -104,7 +104,7 @@ public class BeanValidator
             checkFacadeInjectionPoint(injectionPoint, Obtains.class, Instance.class);
             checkFacadeInjectionPoint(injectionPoint, Any.class, Event.class);
             Annotation[] bindings = injectionPoint.getBindings().toArray(new Annotation[0]);
-            AnnotatedItem<?, ?> annotatedItem = ResolvableAnnotatedClass.of(injectionPoint.getType(), bindings);
+            AnnotatedItem<?, ?> annotatedItem = ResolvableAnnotatedClass.of(injectionPoint.getType(), bindings, manager);
             Set<?> resolvedBeans = manager.getBeans(injectionPoint);
             if (resolvedBeans.isEmpty())
             {
@@ -161,7 +161,7 @@ public class BeanValidator
    
    private void checkFacadeInjectionPoint(InjectionPoint injectionPoint, Class<? extends Annotation> annotationType, Class<?> type)
    {
-      if (injectionPoint.isAnnotationPresent(annotationType))
+      if (injectionPoint.getAnnotated().isAnnotationPresent(annotationType))
       {
          if (injectionPoint.getType() instanceof ParameterizedType)
          {

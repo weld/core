@@ -48,7 +48,7 @@ public class WrappedAnnotatedClass<T> extends ForwardingAnnotatedClass<T>
       return getAnnotationStore().getAnnotation(annotationType);
    }
 
-   public Set<Annotation> getAnnotationsAsSet()
+   public Set<Annotation> getAnnotations()
    {
       return getAnnotationStore().getAnnotations();
    }

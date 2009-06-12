@@ -149,7 +149,7 @@ public class CircularDependencyTest extends AbstractWebBeansTest
          @Override
          protected void execute() throws Exception
          {
-            getCurrentManager().getInstanceByType(Violation.class).ping();
+            createContextualInstance(Violation.class).ping();
          }
          
       }.run();

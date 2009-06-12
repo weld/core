@@ -23,55 +23,46 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.TypeLiteral;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.injection.AnnotatedInjectionPoint;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.jlr.AbstractAnnotatedItem;
 import org.jboss.webbeans.util.Names;
+import org.jboss.webbeans.util.Reflections;
 
-public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<T>>
+public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<T>> implements Resolvable
 {
    
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
+   private static final Set<Annotation> EMPTY_ANNOTATION_SET = Collections.emptySet();
+   
    private final Class<T> rawType;
+   private final Set<Type> types;
    private final Type[] actualTypeArguments;
    
    private final String _string;
    
-   public static <T> AnnotatedItem<T, Class<T>> of(TypeLiteral<T> typeLiteral, Annotation[] annotations)
+   private final BeanManagerImpl manager;
+   
+   public static <T> AnnotatedItem<T, Class<T>> of(TypeLiteral<T> typeLiteral, Annotation[] annotations, BeanManagerImpl manager)
    {
-      return new ResolvableAnnotatedClass<T>(typeLiteral.getRawType(), typeLiteral.getType(), annotations);
+      return new ResolvableAnnotatedClass<T>(typeLiteral.getType(), annotations, manager);
    }
    
-   public static <T> AnnotatedItem<T, Class<T>> of(Class<T> clazz, Annotation[] annotations)
+   public static <T> AnnotatedItem<T, Class<T>> of(Type type, Annotation[] annotations, BeanManagerImpl manager)
    {
-      return new ResolvableAnnotatedClass<T>(clazz, clazz, annotations);
+      return new ResolvableAnnotatedClass<T>(type, annotations, manager);
    }
-   
-   public static <T> AnnotatedItem<T, Class<T>> of(Type type, Annotation[] annotations)
-   {
-      if (type instanceof Class)
-      {
-         return new ResolvableAnnotatedClass<T>((Class<T>) type, type, annotations);
-      }
-      else if (type instanceof ParameterizedType)
-      {
-         return new ResolvableAnnotatedClass<T>((Class<T>) ((ParameterizedType) type).getRawType(), type, annotations);
-      }
-      else 
-      {
-         throw new UnsupportedOperationException("Cannot create annotated item of " + type);
-      }
-   }
-   
-   
-   public static <T> AnnotatedItem<T, Class<T>> of(InjectionPoint injectionPoint)
+
+   public static <T> AnnotatedItem<T, Class<T>> of(InjectionPoint injectionPoint, BeanManagerImpl manager)
    {
       if (injectionPoint instanceof AnnotatedInjectionPoint)
       {
@@ -81,19 +72,19 @@ public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<
       }
       else
       {
-         return of(injectionPoint.getType(), injectionPoint.getAnnotations());
+         return new ResolvableAnnotatedClass<T>(injectionPoint.getType(), injectionPoint.getAnnotated().getAnnotations(), manager);
       }
    }
    
-   public static <T> AnnotatedItem<T, Class<T>> of(Member member, Annotation[] annotations)
+   public static <T> AnnotatedItem<T, Class<T>> of(Member member, Annotation[] annotations, BeanManagerImpl manager)
    {
       if (member instanceof Field)
       {
-         return new ResolvableAnnotatedClass<T>((Class<T>) ((Field) member).getType(), ((Field) member).getGenericType(), annotations);
+         return new ResolvableAnnotatedClass<T>(((Field) member).getGenericType(), annotations, manager);
       }
       else if (member instanceof Method)
       {
-         return new ResolvableAnnotatedClass<T>((Class<T>) ((Method) member).getReturnType(), ((Method) member).getGenericReturnType(), annotations);
+         return new ResolvableAnnotatedClass<T>(((Method) member).getGenericReturnType(), annotations, manager);
       }
       else
       {
@@ -101,20 +92,48 @@ public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<
       }
    }
    
-   private ResolvableAnnotatedClass(Class<T> rawType, Type type, Annotation[] annotations)
+   private ResolvableAnnotatedClass(Type type, AnnotationStore annotationStore, BeanManagerImpl manager)
    {
-      super(AnnotationStore.of(annotations, EMPTY_ANNOTATION_ARRAY));
-      this.rawType = rawType;
+      super(annotationStore);
+      
+      this.manager = manager;
+      
       if (type instanceof ParameterizedType)
       {
+         ParameterizedType parameterizedType = (ParameterizedType) type;
+         if (parameterizedType.getRawType() instanceof Class)
+         {
+            this.rawType = (Class<T>) parameterizedType.getRawType();
+         }
+         else
+         {
+            throw new IllegalArgumentException("Cannot extract rawType from " + type);
+         }
          this.actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
-         this._string = rawType.toString() + "<" + Arrays.asList(actualTypeArguments).toString() + ">; binding types = " + Names.annotationsToString(new HashSet<Annotation>(Arrays.asList(annotations)));
+         this._string = rawType.toString() + "<" + Arrays.asList(actualTypeArguments).toString() + ">; binding types = " + Names.annotationsToString(annotationStore.getBindings());
+      }
+      else if (type instanceof Class)
+      {
+         this.rawType = (Class<T>) type;
+         this.actualTypeArguments = new Type[0];
+         this._string = rawType.toString() +"; binding types = " + Names.annotationsToString(annotationStore.getBindings());
       }
       else
       {
-         this.actualTypeArguments = new Type[0];
-         this._string = rawType.toString() +"; binding types = " + Names.annotationsToString(new HashSet<Annotation>(Arrays.asList(annotations)));
+         throw new IllegalArgumentException("Unable to extract type information from " + type);
       }
+      this.types = new HashSet<Type>();
+      types.add(type);
+   }
+   
+   private ResolvableAnnotatedClass(Type type, Annotation[] annotations, BeanManagerImpl manager)
+   {
+      this(type, AnnotationStore.of(annotations, EMPTY_ANNOTATION_ARRAY), manager);
+   }
+   
+   private ResolvableAnnotatedClass(Type type, Set<Annotation>annotations, BeanManagerImpl manager)
+   {
+      this(type, AnnotationStore.of(annotations, EMPTY_ANNOTATION_SET), manager);
    }
 
    @Override
@@ -177,6 +196,16 @@ public class ResolvableAnnotatedClass<T> extends AbstractAnnotatedItem<T, Class<
    public boolean isProxyable()
    {
       throw new UnsupportedOperationException();
+   }
+
+   public Set<Type> getTypes()
+   {
+      return types;
+   }
+
+   public boolean isAssignableTo(Class<?> clazz)
+   {
+      return Reflections.isAssignableFrom(clazz, getType());
    }
 
 }

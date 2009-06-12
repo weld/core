@@ -25,7 +25,7 @@ public class ClassAnnotatedItemTest extends AbstractWebBeansTest
    public void testDeclaredAnnotations()
    {
       AnnotatedClass<Order> annotatedElement = AnnotatedClassImpl.of(Order.class, transformer);
-      assert annotatedElement.getAnnotationsAsSet().size() == 1;
+      assert annotatedElement.getAnnotations().size() == 1;
       assert annotatedElement.getAnnotation(Production.class) != null;
       assert annotatedElement.getRawType().equals(Order.class);
    }
@@ -48,7 +48,7 @@ public class ClassAnnotatedItemTest extends AbstractWebBeansTest
       assert annotatedElement.getAnnotation(Stereotype.class) == null;
       assert annotatedElement.getMetaAnnotations(Stereotype.class).size() == 0;
       AnnotatedClass<Antelope> classWithNoAnnotations = AnnotatedClassImpl.of(Antelope.class, transformer);
-      assert classWithNoAnnotations.getAnnotationsAsSet().size() == 0;
+      assert classWithNoAnnotations.getAnnotations().size() == 0;
    }
    
 }

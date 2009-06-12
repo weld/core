@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import java.util.Set;
 
 public interface Annotated {
-    Type getType();
+    public Type getType();
     public <T extends Annotation> T getAnnotation(Class<T> annotationType);
     public Set<Annotation> getAnnotations();
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType);

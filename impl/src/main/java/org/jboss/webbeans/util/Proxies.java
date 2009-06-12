@@ -227,5 +227,16 @@ public class Proxies
       }
    }
 
+   /**
+    * Indicates if an instance is a Javassist proxy
+    * 
+    * @param instance The instance to examine
+    * @return True if proxy, false otherwise
+    */
+   public static boolean isProxy(Object instance)
+   {
+      return instance.getClass().getName().indexOf("_$$_javassist_") > 0;
+   }
+
 
 }

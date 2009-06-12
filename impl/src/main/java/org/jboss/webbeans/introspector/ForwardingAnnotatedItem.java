@@ -50,9 +50,9 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
    /**
     * @see org.jboss.webbeans.introspector.AnnotatedItem
     */
-   public Set<Annotation> getAnnotationsAsSet()
+   public Set<Annotation> getAnnotations()
    {
-      return delegate().getAnnotationsAsSet();
+      return delegate().getAnnotations();
    }
 
    /**
@@ -131,12 +131,9 @@ public abstract class ForwardingAnnotatedItem<T, S> implements AnnotatedItem<T, 
       return delegate().isAssignableFrom(that);
    }
 
-   /**
-    * @see org.jboss.webbeans.introspector.AnnotatedItem
-    */
-   public boolean isAssignableFrom(Set<? extends Type> types)
+   public boolean isAssignableFrom(Class<?> type, Type[] actualTypeArguments)
    {
-      return delegate().isAssignableFrom(types);
+      return delegate().isAssignableFrom(type, actualTypeArguments);
    }
 
    /**

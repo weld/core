@@ -19,14 +19,13 @@ package org.jboss.webbeans.bean.standard;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.event.Event;
-
-import org.jboss.webbeans.injection.resolution.AnnotatedItemTransformer;
-import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.introspector.ForwardingAnnotatedItem;
+import org.jboss.webbeans.injection.resolution.ForwardingResolvable;
+import org.jboss.webbeans.injection.resolution.ResolovableTransformer;
+import org.jboss.webbeans.injection.resolution.Resolvable;
 
 /**
  * AnnotatedItem transformer which can be used for FacadeBeans
@@ -34,80 +33,67 @@ import org.jboss.webbeans.introspector.ForwardingAnnotatedItem;
  * @author Pete Muir
  *
  */
-public class FacadeBeanAnnotatedItemTransformer implements AnnotatedItemTransformer
+public class FacadeBeanResolvableTransformer implements ResolovableTransformer
 {
    
    private final Class<?> clazz;
    private final Annotation annotation;
-   private final Set<Annotation> annotations;
-   private final Set<Type> flattenedTypes;
+   private final Set<Annotation> bindings;
+   private final HashSet<Type> types;
    
-   public FacadeBeanAnnotatedItemTransformer(Class<?> clazz, Annotation annotation)
+   public FacadeBeanResolvableTransformer(Class<?> clazz, Annotation annotation)
    {
       this.clazz = clazz;
       this.annotation = annotation;
-      this.annotations = new HashSet<Annotation>(Arrays.asList(annotation));
-      Type[] types = {Object.class, Event.class};
-      this.flattenedTypes = new HashSet<Type>(Arrays.asList(types));
+      this.bindings = new HashSet<Annotation>(Arrays.asList(annotation));
+      this.types = new HashSet<Type>();
+      types.add(clazz);
    }
 
-   public <T, S> AnnotatedItem<T, S> transform(final AnnotatedItem<T, S> element)
+   public Resolvable transform(final Resolvable resolvable)
    {
-      if (clazz.isAssignableFrom(element.getRawType()))
+      if (resolvable.isAssignableTo(clazz))
       {
-         if (element.isAnnotationPresent(annotation.annotationType()))
+         if (resolvable.isAnnotationPresent(annotation.annotationType()))
          {
             
-            return new ForwardingAnnotatedItem<T, S>()
+            return new ForwardingResolvable()
             {
-               
+
                @Override
-               public Type[] getActualTypeArguments()
+               protected Resolvable delegate()
                {
-                  return new Type[0];
+                  return resolvable;
                }
                
                @Override
                public Set<Annotation> getBindings()
                {
-                  return annotations;
-               }
-               
-               @SuppressWarnings("unchecked")
-               @Override
-               public Class<T> getRawType()
-               {
-                  return (Class<T>) clazz;
+                  return Collections.unmodifiableSet(bindings);
                }
                
                @Override
-               public Type getType()
+               public Set<Type> getTypes()
                {
-                  return clazz;
+                  return Collections.unmodifiableSet(types);
                }
                
                @Override
-               public Set<Type> getFlattenedTypeHierarchy()
+               public boolean isAssignableTo(Class<?> clazz)
                {
-                  return flattenedTypes;
-               }
-
-               @Override
-               public AnnotatedItem<T, S> delegate()
-               {
-                  return element;
+                  return clazz.isAssignableFrom(clazz);
                }
                
                @Override
-               public boolean isAssignableFrom(Set<? extends Type> types)
+               public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
                {
-                  return types.contains(clazz);
+                  return annotation.annotationType().equals(annotationType);
                }
-
+               
             };
          }
       }
-      return element;
+      return resolvable;
    }
    
 }

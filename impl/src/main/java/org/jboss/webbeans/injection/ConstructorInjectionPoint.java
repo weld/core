@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -79,11 +80,6 @@ public class ConstructorInjectionPoint<T> extends ForwardingAnnotatedConstructor
    protected AnnotatedConstructor<T> delegate()
    {
       return constructor;
-   }
-
-   public Annotation[] getAnnotations()
-   {
-      return delegate().getAnnotationStore().getAnnotations().toArray(EMPTY_ANNOTATION_ARRAY);
    }
 
    public Bean<?> getBean()
@@ -178,6 +174,23 @@ public class ConstructorInjectionPoint<T> extends ForwardingAnnotatedConstructor
    public Type getType()
    {
       return getRawType();
+   }
+
+   public Annotated getAnnotated()
+   {
+      return new AnnotatedAdaptor(delegate());
+   }
+
+   public boolean isDelegate()
+   {
+      // TODO Auto-generated method stub
+      return false;
+   }
+
+   public boolean isTransient()
+   {
+      // TODO Auto-generated method stub
+      return false;
    }
 
 }

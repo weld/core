@@ -17,6 +17,7 @@
 package org.jboss.webbeans.injection.resolution;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,16 +27,15 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 
-import javax.enterprise.inject.TypeLiteral;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.standard.EventBean;
 import org.jboss.webbeans.bean.standard.InstanceBean;
 import org.jboss.webbeans.introspector.AnnotatedItem;
-import org.jboss.webbeans.metadata.BindingTypeModel;
-import org.jboss.webbeans.metadata.MetaDataCache;
+import org.jboss.webbeans.util.Beans;
 import org.jboss.webbeans.util.ListComparator;
+import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.collections.ConcurrentCache;
 
 /**
@@ -46,30 +46,66 @@ import org.jboss.webbeans.util.collections.ConcurrentCache;
 public class Resolver
 {
    private static final long serialVersionUID = 1L;
-
-   private static final Class<AnnotatedItem<Object, Object>> ANNOTATED_ITEM_GENERIFIED_WITH_OBJECT_OBJECT = new TypeLiteral<AnnotatedItem<Object, Object>>(){}.getRawType();
+   
+   private static abstract class MatchingResolvable extends ForwardingResolvable
+   {
+      
+      private final BeanManagerImpl manager;
+      
+      public MatchingResolvable(BeanManagerImpl manager)
+      {
+         this.manager = manager;
+      }
+      
+      public boolean matches(Set<Type> types, Set<Annotation> bindings)
+      {
+         return Reflections.isAssignableFrom(this.getTypes(), types) && Beans.containsAllBindings(this.getBindings(), bindings, manager);
+      }
+      
+      @Override
+      public boolean equals(Object obj)
+      {
+         if (obj instanceof Resolvable)
+         {
+            Resolvable that = (Resolvable) obj;
+            return this.matches(that.getTypes(), that.getBindings());
+         }
+         else
+         {
+            return false;
+         }
+      }
+      
+   }
    
    // The resolved injection points
-   private ConcurrentCache<ResolvableAnnotatedItem<?, ?>, Set<Bean<?>>> resolvedInjectionPoints;
+   private ConcurrentCache<Resolvable, Set<Bean<?>>> resolvedInjectionPoints;
    // The registerd injection points
    private Set<AnnotatedItem<?, ?>> injectionPoints;
    // The resolved names
    private ConcurrentCache<String, Set<Bean<?>>> resolvedNames;
+   
+   // The beans to search
+   private final List<? extends Bean<?>> beans;
+   
    // The Web Beans manager
    private final BeanManagerImpl manager;
-   private final Set<AnnotatedItemTransformer> transformers;
+   
+   // Annotation transformers used to mutate annotations during resolution
+   private final Set<ResolovableTransformer> transformers;
 
    /**
     * Constructor
     * 
     */
-   public Resolver(BeanManagerImpl manager)
+   public Resolver(BeanManagerImpl manager, List<? extends Bean<?>> beans)
    {
       this.manager = manager;
+      this.beans = beans;
       this.injectionPoints = new HashSet<AnnotatedItem<?, ?>>();
-      this.resolvedInjectionPoints = new ConcurrentCache<ResolvableAnnotatedItem<?, ?>, Set<Bean<?>>>();
+      this.resolvedInjectionPoints = new ConcurrentCache<Resolvable, Set<Bean<?>>>();
       this.resolvedNames = new ConcurrentCache<String, Set<Bean<?>>>();
-      this.transformers = new HashSet<AnnotatedItemTransformer>();
+      this.transformers = new HashSet<ResolovableTransformer>();
       transformers.add(EventBean.TRANSFORMER);
       transformers.add(InstanceBean.TRANSFORMER);
    }
@@ -92,18 +128,27 @@ public class Resolver
     * @param element The injection point to add
     * @return A set of matching beans for the injection point
     */
-   private Set<Bean<?>> registerInjectionPoint(final ResolvableAnnotatedItem<?, ?> element)
+   private Set<Bean<?>> registerInjectionPoint(final Resolvable element)
    {
-      Callable<Set<Bean<?>>> callable = new Callable<Set<Bean<?>>>()
+      final MatchingResolvable wrapped = new MatchingResolvable(manager)
       {
 
-         public Set<Bean<?>> call() throws Exception
+         @Override
+         protected Resolvable delegate()
          {
-            return retainHighestPrecedenceBeans(getMatchingBeans(element, manager.getBeans()), manager.getEnabledDeploymentTypes());
+            return element;
          }
 
       };
-      return resolvedInjectionPoints.putIfAbsent(element, callable);
+      Callable<Set<Bean<?>>> callable = new Callable<Set<Bean<?>>>()
+      {
+         public Set<Bean<?>> call() throws Exception
+         {
+            return retainHighestPrecedenceBeans(getMatchingBeans(wrapped, beans), manager.getEnabledDeploymentTypes());
+         }
+
+      };
+      return resolvedInjectionPoints.putIfAbsent(wrapped, callable);
    }
 
    /**
@@ -112,7 +157,7 @@ public class Resolver
     */
    public void clear()
    {
-      this.resolvedInjectionPoints = new ConcurrentCache<ResolvableAnnotatedItem<?, ?>, Set<Bean<?>>>();
+      this.resolvedInjectionPoints = new ConcurrentCache<Resolvable, Set<Bean<?>>>();
       resolvedNames = new ConcurrentCache<String, Set<Bean<?>>>();
    }
 
@@ -124,17 +169,7 @@ public class Resolver
    {
       for (final AnnotatedItem<? extends Object, ? extends Object> injectable : injectionPoints)
       {
-         
-         registerInjectionPoint(new ResolvableAnnotatedItem<Object, Object>()
-         {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public AnnotatedItem<Object, Object> delegate()
-            {
-               return ANNOTATED_ITEM_GENERIFIED_WITH_OBJECT_OBJECT.cast(injectable); 
-            }
-         });
+         registerInjectionPoint(ResolvableFactory.of(injectable));
       }
    }
 
@@ -144,15 +179,15 @@ public class Resolver
     * @param key The resolving criteria
     * @return An unmodifiable set of matching beans
     */
-   public Set<Bean<?>> get(final AnnotatedItem<?, ?> key)
+   public Set<Bean<?>> get(final Resolvable key)
    {
-      Set<Bean<?>> beans = registerInjectionPoint(ResolvableAnnotatedItem.of(transformElement(key)));
+      Set<Bean<?>> beans = registerInjectionPoint(transformElement(key));
       return Collections.unmodifiableSet(beans);
    }
    
-   private <T, S> AnnotatedItem<T, S> transformElement(AnnotatedItem<T, S> element)
+   private Resolvable transformElement(Resolvable element)
    {
-      for (AnnotatedItemTransformer transformer : transformers)
+      for (ResolovableTransformer transformer : transformers)
       {
          element = transformer.transform(element);
       }
@@ -173,15 +208,15 @@ public class Resolver
          public Set<Bean<? extends Object>> call() throws Exception
          {
             
-            Set<Bean<?>> beans = new HashSet<Bean<?>>();
-            for (Bean<?> bean : manager.getBeans())
+            Set<Bean<?>> matchedBeans = new HashSet<Bean<?>>();
+            for (Bean<?> bean : beans)
             {
                if ((bean.getName() == null && name == null) || (bean.getName() != null && bean.getName().equals(name)))
                {
-                  beans.add(bean);
+                  matchedBeans.add(bean);
                }
             }
-            return retainHighestPrecedenceBeans(beans, manager.getEnabledDeploymentTypes());
+            return retainHighestPrecedenceBeans(matchedBeans, manager.getEnabledDeploymentTypes());
          }
 
       });
@@ -236,52 +271,17 @@ public class Resolver
     * @param beans The beans to filter
     * @return A set of filtered beans
     */
-   private Set<Bean<?>> getMatchingBeans(AnnotatedItem<?, ?> element, List<Bean<?>> beans)
+   private static Set<Bean<?>> getMatchingBeans(MatchingResolvable resolvable, List<? extends Bean<?>> beans)
    {
       Set<Bean<?>> resolvedBeans = new HashSet<Bean<?>>();
       for (Bean<?> bean : beans)
       {
-         if (element.isAssignableFrom(bean.getTypes()) && containsAllBindings(element, bean.getBindings()))
+         if (resolvable.matches(bean.getTypes(), bean.getBindings()))
          {
             resolvedBeans.add(bean);
          }
       }
       return resolvedBeans;
-   }
-
-   /**
-    * Checks if binding criteria fulfill all binding types
-    * 
-    * @param element The binding criteria to check
-    * @param bindings The binding types to check
-    * @return True if all matches, false otherwise
-    */
-   private boolean containsAllBindings(AnnotatedItem<?, ?> element, Set<Annotation> bindings)
-   {
-      for (Annotation binding : element.getBindings())
-      {
-         BindingTypeModel<?> bindingType = manager.getServices().get(MetaDataCache.class).getBindingTypeModel(binding.annotationType());
-         if (bindingType.getNonBindingTypes().size() > 0)
-         {
-            boolean matchFound = false;
-            for (Annotation otherBinding : bindings)
-            {
-               if (bindingType.isEqual(binding, otherBinding))
-               {
-                  matchFound = true;
-               }
-            }
-            if (!matchFound)
-            {
-               return false;
-            }
-         }
-         else if (!bindings.contains(binding))
-         {
-            return false;
-         }
-      }
-      return true;
    }
 
    /**

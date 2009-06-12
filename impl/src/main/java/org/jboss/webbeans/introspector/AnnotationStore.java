@@ -91,6 +91,11 @@ public class AnnotationStore
       return new AnnotationStore(buildAnnotationMap(annotations), buildAnnotationMap(declaredAnnotations));
    }
    
+   public static AnnotationStore of(Set<Annotation> annotations, Set<Annotation> declaredAnnotations)
+   {
+      return new AnnotationStore(buildAnnotationMap(annotations), buildAnnotationMap(declaredAnnotations));
+   }
+   
    public static AnnotationStore wrap(AnnotationStore annotationStore, Set<Annotation> annotations, Set<Annotation> declaredAnnotations)
    {
       Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<Class<? extends Annotation>, Annotation>();

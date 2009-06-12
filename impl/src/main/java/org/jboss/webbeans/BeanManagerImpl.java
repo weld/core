@@ -66,7 +66,7 @@ import javax.event.Observer;
 import javax.inject.DeploymentException;
 import javax.inject.DuplicateBindingTypeException;
 
-import org.jboss.webbeans.bean.DisposalMethodBean;
+import org.jboss.webbeans.bean.DecoratorBean;
 import org.jboss.webbeans.bean.EnterpriseBean;
 import org.jboss.webbeans.bean.NewEnterpriseBean;
 import org.jboss.webbeans.bean.RIBean;
@@ -81,6 +81,7 @@ import org.jboss.webbeans.event.EventObserver;
 import org.jboss.webbeans.event.ObserverImpl;
 import org.jboss.webbeans.injection.NonContextualInjector;
 import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
+import org.jboss.webbeans.injection.resolution.ResolvableFactory;
 import org.jboss.webbeans.injection.resolution.Resolver;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.log.Log;
@@ -190,6 +191,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */  
    private transient final EventManager eventManager;
    private transient final Resolver resolver;
+   private transient final Resolver decoratorResolver;
    private final transient NonContextualInjector nonContextualInjector;
    private final transient ELResolver webbeansELResolver;
    
@@ -198,7 +200,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     * ********************************
     */
    private transient final ThreadLocal<Stack<InjectionPoint>> currentInjectionPoint;
-   private transient List<Bean<?>> beanWithManagers;
+   private transient final List<Bean<?>> beans;
+   private transient final List<Decorator<?>> decorators;
    private final transient Namespace rootNamespace;
    private final transient ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers;
    private final transient Set<BeanManagerImpl> childActivities;
@@ -220,6 +223,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return new BeanManagerImpl(
             serviceRegistry, 
             new CopyOnWriteArrayList<Bean<?>>(), 
+            new CopyOnWriteArrayList<Decorator<?>>(),
             new ConcurrentSetHashMultiMap<Type, EventObserver<?>>(),
             new Namespace(),
             new ConcurrentHashMap<Class<?>, EnterpriseBean<?>>(),
@@ -251,6 +255,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       return new BeanManagerImpl(
             parentManager.getServices(),
             beans,
+            parentManager.getDecorators(),
             registeredObservers,
             rootNamespace,
             parentManager.getNewEnterpriseBeanMap(), 
@@ -272,6 +277,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    private BeanManagerImpl(
          ServiceRegistry serviceRegistry, 
          List<Bean<?>> beans,
+         List<Decorator<?>> decorators,
          ConcurrentSetMultiMap<Type, EventObserver<?>> registeredObservers,
          Namespace rootNamespace,
          Map<Class<?>, EnterpriseBean<?>> newEnterpriseBeans, 
@@ -285,7 +291,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          )
    {
       this.services = serviceRegistry;
-      this.beanWithManagers = beans;
+      this.beans = beans;
+      this.decorators = decorators;
       this.newEnterpriseBeans = newEnterpriseBeans;
       this.riBeans = riBeans;
       this.clientProxyProvider = clientProxyProvider;
@@ -298,7 +305,8 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       this.ids = ids;
       this.id = ids.incrementAndGet();
       
-      this.resolver = new Resolver(this);
+      this.resolver = new Resolver(this, beans);
+      this.decoratorResolver = new Resolver(this, decorators);
       this.eventManager = new EventManager(this);
       this.nonContextualInjector = new NonContextualInjector(this);
       this.webbeansELResolver = new WebBeansELResolverImpl(this);
@@ -346,41 +354,18 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */
    public void addBean(Bean<?> bean)
    {
-      if (beanWithManagers.contains(bean))
+      if (beans.contains(bean))
       {
          return;
       }
       resolver.clear();
-      beanWithManagers.add(bean);
+      beans.add(bean);
       registerBeanNamespace(bean);
       for (BeanManagerImpl childActivity : childActivities)
       {
          childActivity.addBean(bean);
       }
       return;
-   }
-
-   /**
-    * Resolve the disposal method for the given producer method. For internal
-    * use.
-    * 
-    * @param apiType The API type to match
-    * @param bindings The binding types to match
-    * @return The set of matching disposal methods
-    */
-   public <T> Set<DisposalMethodBean<T>> resolveDisposalBeans(Class<T> apiType, Annotation... bindings)
-   {
-      // Correct?
-      Set<Bean<?>> beans = getBeans(apiType, bindings);
-      Set<DisposalMethodBean<T>> disposalBeans = new HashSet<DisposalMethodBean<T>>();
-      for (Bean<?> bean : beans)
-      {
-         if (bean instanceof DisposalMethodBean)
-         {
-            disposalBeans.add((DisposalMethodBean<T>) bean);
-         }
-      }
-      return disposalBeans;
    }
 
    public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings)
@@ -465,12 +450,12 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    
    public Set<Bean<?>> getBeans(Type beanType, Annotation... bindings)
    {
-      return getBeans(ResolvableAnnotatedClass.of(beanType, bindings), bindings);
+      return getBeans(ResolvableAnnotatedClass.of(beanType, bindings, this), bindings);
    }
    
    public Set<Bean<?>> getBeans(AnnotatedItem<?, ?> element, Annotation... bindings)
    {
-      for (Annotation annotation : element.getAnnotationsAsSet())
+      for (Annotation annotation : element.getAnnotations())
       {
          if (!getServices().get(MetaDataCache.class).getBindingTypeModel(annotation.annotationType()).isValid())
          {
@@ -492,7 +477,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
       {
          throw new DuplicateBindingTypeException("Duplicate bindings (" + Arrays.asList(bindings) + ") type passed " + element.toString());
       }
-      return resolver.get(element);
+      return resolver.get(ResolvableFactory.of(element));
    }
 
    public Set<Bean<?>> getBeans(InjectionPoint injectionPoint)
@@ -505,7 +490,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
             currentInjectionPoint.get().push(injectionPoint);
          }
          // TODO Do this properly
-         return getBeans(ResolvableAnnotatedClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0])));
+         return getBeans(ResolvableAnnotatedClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]), this));
       }
       finally
       {
@@ -530,15 +515,19 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    {
       synchronized (beans)
       {
-         this.beanWithManagers = new CopyOnWriteArrayList<Bean<?>>(beans);
          for (RIBean<?> bean : beans)
          {
             if (bean instanceof NewEnterpriseBean)
             {
                newEnterpriseBeans.put(bean.getType(), (EnterpriseBean<?>) bean);
             }
+            if (bean instanceof DecoratorBean)
+            {
+               decorators.add(DecoratorBean.wrapForResolver((Decorator<?>) bean));
+            }
             riBeans.put(bean.getId(), bean);
             registerBeanNamespace(bean);
+            this.beans.add(bean);
          }
          resolver.clear();
       }
@@ -575,7 +564,12 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
     */
    public List<Bean<?>> getBeans()
    {
-      return Collections.unmodifiableList(beanWithManagers);
+      return Collections.unmodifiableList(beans);
+   }
+   
+   public List<Decorator<?>> getDecorators()
+   {
+      return Collections.unmodifiableList(decorators);
    }
 
    public Map<String, RIBean<?>> getRiBeans()
@@ -749,7 +743,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
          {
             currentInjectionPoint.get().push(injectionPoint);
          }
-         AnnotatedItem<?, ?> element = ResolvableAnnotatedClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]));
+         AnnotatedItem<?, ?> element = ResolvableAnnotatedClass.of(injectionPoint.getType(), injectionPoint.getBindings().toArray(new Annotation[0]), this);
          Bean<?> resolvedBean = getBean(element, element.getBindingsAsArray());
          if (getServices().get(MetaDataCache.class).getScopeModel(resolvedBean.getScopeType()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType()))
          {
@@ -794,7 +788,7 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    @Deprecated
    public <T> T getInstanceByType(Class<T> type, Annotation... bindings)
    {
-      AnnotatedItem<T, ?> element = ResolvableAnnotatedClass.of(type, bindings);
+      AnnotatedItem<T, ?> element = ResolvableAnnotatedClass.of(type, bindings, this);
       return (T) getReference(getBean(element, bindings), type);
    }
 
@@ -824,16 +818,20 @@ public class BeanManagerImpl implements WebBeansManager, Serializable
    }
 
    /**
-    * Resolves a list of decorators based on API types and binding types Os
+    * Resolves a list of decorators based on API types and binding types
     * 
     * @param types The set of API types to match
     * @param bindings The binding types to match
     * @return A list of matching decorators
     * 
-    * @see javax.enterprise.inject.spi.BeanManager#resolveDecorators(java.util.Set,
-    *      java.lang.annotation.Annotation[])
+    * @see javax.enterprise.inject.spi.BeanManager#resolveDecorators(java.util.Set, java.lang.annotation.Annotation[])
     */
    public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... bindings)
+   {
+      throw new UnsupportedOperationException();
+   }
+   
+   public List<Decorator<?>> resolveDecorators(Bean<?> bean)
    {
       throw new UnsupportedOperationException();
    }

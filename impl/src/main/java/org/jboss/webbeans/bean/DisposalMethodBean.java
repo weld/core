@@ -173,6 +173,12 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    {
       return declaringBean.isSerializable();
    }
+   
+   @Override
+   public boolean isProxyable()
+   {
+      return true;
+   }
 
    public T create(CreationalContext<T> creationalContext)
    {

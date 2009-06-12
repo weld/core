@@ -51,7 +51,7 @@ public class InstanceImpl<T> extends FacadeImpl<T> implements Instance<T>
    public T get(Annotation... bindings) 
    {
       Annotation[] annotations = mergeInBindings(bindings);
-      Bean<T> bean = getManager().getBean(ResolvableAnnotatedClass.<T>of(getType(), annotations), annotations);
+      Bean<T> bean = getManager().getBean(ResolvableAnnotatedClass.<T>of(getType(), annotations, getManager()), annotations);
       
       @SuppressWarnings("unchecked")
       T instance = (T) getManager().getReference(bean, getType());

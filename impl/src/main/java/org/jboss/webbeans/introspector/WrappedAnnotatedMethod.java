@@ -54,7 +54,7 @@ public class WrappedAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T>
    /**
     * @see org.jboss.webbeans.introspector.AnnotatedItem
     */
-   public Set<Annotation> getAnnotationsAsSet()
+   public Set<Annotation> getAnnotations()
    {
       return getAnnotationStore().getAnnotations();
    }

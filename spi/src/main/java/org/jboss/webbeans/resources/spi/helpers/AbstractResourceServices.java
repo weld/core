@@ -20,7 +20,7 @@ public abstract class AbstractResourceServices
     */
    public Object resolveResource(InjectionPoint injectionPoint)
    {
-      if (!injectionPoint.isAnnotationPresent(Resource.class))
+      if (!injectionPoint.getAnnotated().isAnnotationPresent(Resource.class))
       {
          throw new IllegalArgumentException("No @Resource annotation found on injection point " + injectionPoint);
       }
@@ -72,7 +72,7 @@ public abstract class AbstractResourceServices
    
    protected String getResourceName(InjectionPoint injectionPoint)
    {
-      Resource resource = injectionPoint.getAnnotation(Resource.class);
+      Resource resource = injectionPoint.getAnnotated().getAnnotation(Resource.class);
       String mappedName = resource.mappedName();
       if (!mappedName.equals(""))
       {

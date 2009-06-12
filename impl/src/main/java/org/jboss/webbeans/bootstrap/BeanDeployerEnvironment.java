@@ -16,13 +16,17 @@
  */
 package org.jboss.webbeans.bootstrap;
 
-import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.Bean;
+
+import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bean.AbstractClassBean;
 import org.jboss.webbeans.bean.DisposalMethodBean;
 import org.jboss.webbeans.bean.NewBean;
@@ -30,7 +34,8 @@ import org.jboss.webbeans.bean.ProducerMethodBean;
 import org.jboss.webbeans.bean.RIBean;
 import org.jboss.webbeans.ejb.EjbDescriptorCache;
 import org.jboss.webbeans.event.ObserverImpl;
-import org.jboss.webbeans.injection.resolution.ResolvableAnnotatedClass;
+import org.jboss.webbeans.injection.resolution.ResolvableFactory;
+import org.jboss.webbeans.injection.resolution.Resolver;
 import org.jboss.webbeans.introspector.AnnotatedClass;
 import org.jboss.webbeans.introspector.AnnotatedItem;
 import org.jboss.webbeans.introspector.AnnotatedMethod;
@@ -38,27 +43,29 @@ import org.jboss.webbeans.introspector.AnnotatedMethod;
 public class BeanDeployerEnvironment
 {
 
-   private static final AnnotatedItem<?, ?> OTHER_BEANS_ANNOTATED_ITEM = ResolvableAnnotatedClass.of(BeanDeployerEnvironment.class, new Annotation[0]);
-
    private final Map<AnnotatedClass<?>, AbstractClassBean<?>> classBeanMap;
    private final Map<AnnotatedMethod<?>, ProducerMethodBean<?>> producerMethodBeanMap;
    private final Map<AnnotatedMethod<?>, DisposalMethodBean<?>> disposalMethodBeanMap;
    private final Set<RIBean<?>> beans;
    private final Set<ObserverImpl<?>> observers;
-   private final Set<DisposalMethodBean<?>> allDisposalBeans;
+   private final List<DisposalMethodBean<?>> allDisposalBeans;
    private final Set<DisposalMethodBean<?>> resolvedDisposalBeans;
    private final EjbDescriptorCache ejbDescriptors;
+   private final Resolver disposalMethodResolver;
+   private final BeanManagerImpl manager;
 
-   public BeanDeployerEnvironment(EjbDescriptorCache ejbDescriptors)
+   public BeanDeployerEnvironment(EjbDescriptorCache ejbDescriptors, BeanManagerImpl manager)
    {
       this.classBeanMap = new HashMap<AnnotatedClass<?>, AbstractClassBean<?>>();
       this.producerMethodBeanMap = new HashMap<AnnotatedMethod<?>, ProducerMethodBean<?>>();
       this.disposalMethodBeanMap = new HashMap<AnnotatedMethod<?>, DisposalMethodBean<?>>();
-      this.allDisposalBeans = new HashSet<DisposalMethodBean<?>>();
+      this.allDisposalBeans = new ArrayList<DisposalMethodBean<?>>();
       this.resolvedDisposalBeans = new HashSet<DisposalMethodBean<?>>();
       this.beans = new HashSet<RIBean<?>>();
       this.observers = new HashSet<ObserverImpl<?>>();
       this.ejbDescriptors = ejbDescriptors;
+      this.disposalMethodResolver = new Resolver(manager, allDisposalBeans);
+      this.manager = manager;
    }
 
    public ProducerMethodBean<?> getProducerMethod(AnnotatedMethod<?> method)
@@ -135,12 +142,12 @@ public class BeanDeployerEnvironment
       return observers;
    }
 
-   public Set<DisposalMethodBean<?>> getAllDisposalBeans()
+   public List<DisposalMethodBean<?>> getAllDisposalBeans()
    {
       return allDisposalBeans;
    }
 
-   public void addAllDisposalBean(DisposalMethodBean<?> disposalBean)
+   public void addDisposalBean(DisposalMethodBean<?> disposalBean)
    {
       allDisposalBeans.add(disposalBean);
    }
@@ -158,6 +165,29 @@ public class BeanDeployerEnvironment
    public EjbDescriptorCache getEjbDescriptors()
    {
       return ejbDescriptors;
+   }
+   
+   /**
+    * Resolve the disposal method for the given producer method. For internal
+    * use.
+    * 
+    * @param apiType The API type to match
+    * @param bindings The binding types to match
+    * @return The set of matching disposal methods
+    */
+   public <T> Set<DisposalMethodBean<T>> resolveDisposalBeans(AnnotatedItem<T, ?> annotatedItem)
+   {
+      // Correct?
+      Set<Bean<?>> beans = disposalMethodResolver.get(ResolvableFactory.of(annotatedItem));
+      Set<DisposalMethodBean<T>> disposalBeans = new HashSet<DisposalMethodBean<T>>();
+      for (Bean<?> bean : beans)
+      {
+         if (bean instanceof DisposalMethodBean)
+         {
+            disposalBeans.add((DisposalMethodBean<T>) bean);
+         }
+      }
+      return disposalBeans;
    }
 
 }

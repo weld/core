@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
@@ -78,11 +79,6 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
    protected AnnotatedMethod<T> delegate()
    {
       return method;
-   }
-
-   public Annotation[] getAnnotations()
-   {
-      return delegate().getAnnotationStore().getAnnotations().toArray(EMPTY_ANNOTATION_ARRAY);
    }
 
    public Bean<?> getBean()
@@ -264,6 +260,23 @@ public class MethodInjectionPoint<T> extends ForwardingAnnotatedMethod<T> implem
          }
       }
       return parameterValues;
+   }
+
+   public Annotated getAnnotated()
+   {
+      return new AnnotatedAdaptor(delegate());
+   }
+
+   public boolean isDelegate()
+   {
+      // TODO Auto-generated method stub
+      return false;
+   }
+
+   public boolean isTransient()
+   {
+      // TODO Auto-generated method stub
+      return false;
    }
    
 }

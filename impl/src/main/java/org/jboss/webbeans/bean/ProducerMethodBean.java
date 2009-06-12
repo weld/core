@@ -16,7 +16,6 @@
  */
 package org.jboss.webbeans.bean;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
@@ -161,7 +160,7 @@ public class ProducerMethodBean<T> extends AbstractProducerBean<T, Method>
     */
    protected void initDisposalMethod(BeanDeployerEnvironment environment)
    {
-      Set<DisposalMethodBean<T>> disposalBeans = manager.resolveDisposalBeans(getType(), bindings.toArray(new Annotation[0]));
+      Set<DisposalMethodBean<T>> disposalBeans = environment.resolveDisposalBeans(getAnnotatedItem());
 
       if (disposalBeans.size() == 1)
       {

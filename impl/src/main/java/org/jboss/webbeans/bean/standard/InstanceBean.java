@@ -28,7 +28,7 @@ import javax.inject.Obtains;
 
 import org.jboss.webbeans.InstanceImpl;
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.injection.resolution.AnnotatedItemTransformer;
+import org.jboss.webbeans.injection.resolution.ResolovableTransformer;
 import org.jboss.webbeans.literal.ObtainsLiteral;
 
 public class InstanceBean extends AbstractFacadeBean<Instance<?>>
@@ -39,7 +39,7 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>>
    private static final Obtains OBTAINS = new ObtainsLiteral();
    private static final Set<Annotation> DEFAULT_BINDINGS = new HashSet<Annotation>(Arrays.asList(OBTAINS));
    private static final Set<Class<? extends Annotation>> FILTERED_ANNOTATION_TYPES = new HashSet<Class<? extends Annotation>>(Arrays.asList(Obtains.class));
-   public static final AnnotatedItemTransformer TRANSFORMER = new FacadeBeanAnnotatedItemTransformer(TYPE, OBTAINS);
+   public static final ResolovableTransformer TRANSFORMER = new FacadeBeanResolvableTransformer(TYPE, OBTAINS);
    
    
    public static AbstractFacadeBean<Instance<?>> of(BeanManagerImpl manager)

@@ -138,7 +138,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
                this.declaredFields.add(annotatedField);
                this.declaredFieldsByName.put(annotatedField.getName(), annotatedField);
             }
-            for (Annotation annotation : annotatedField.getAnnotationsAsSet())
+            for (Annotation annotation : annotatedField.getAnnotations())
             {
                this.annotatedFields.put(annotation.annotationType(), annotatedField);
                if (c == rawType)
@@ -177,7 +177,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
          
          this.declaredConstructorsBySignature.put(annotatedConstructor.getSignature(), annotatedConstructor);
          
-         for (Annotation annotation : annotatedConstructor.getAnnotationsAsSet())
+         for (Annotation annotation : annotatedConstructor.getAnnotations())
          {
             if (!annotatedConstructors.containsKey(annotation.annotationType()))
             {
@@ -218,7 +218,7 @@ public class AnnotatedClassImpl<T> extends AbstractAnnotatedType<T> implements A
                this.declaredMethods.add(annotatedMethod);
                this.declaredMethodsBySignature.put(annotatedMethod.getSignature(), annotatedMethod);
             }
-            for (Annotation annotation : annotatedMethod.getAnnotationsAsSet())
+            for (Annotation annotation : annotatedMethod.getAnnotations())
             {
                annotatedMethods.put(annotation.annotationType(), annotatedMethod);
                if (c == rawType)

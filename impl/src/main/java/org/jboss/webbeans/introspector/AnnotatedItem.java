@@ -47,7 +47,7 @@ public interface AnnotatedItem<T, S>
     * @return A set of annotations. Returns an empty set if there are no
     *         matches.
     */
-   public <A extends Annotation> Set<A> getAnnotationsAsSet();
+   public <A extends Annotation> Set<A> getAnnotations();
 
    /**
     * Gets all annotations which are annotated with the given meta annotation
@@ -162,17 +162,16 @@ public interface AnnotatedItem<T, S>
     * @return True if assignable, false otherwise.
     */
    public boolean isAssignableFrom(AnnotatedItem<?, ?> that);
-
+   
    /**
-    * Checks if any of the types provided are assignable to this, using
-    * the extended assignability algorithm provided by AnnotatedItem.
+    * Extends Java Class assignability such that actual type parameters are also
+    * considered
     * 
-    * The types are assumed to contain their own actual type parameterization.
-    * 
-    * @param types The set of types to match
-    * @return True if assignable, false otherwise.
+    * @param type The type to compare against
+    * @param actualTypeArguments The type arguments
+    * @return True is assignable, false otherwise
     */
-   public boolean isAssignableFrom(Set<? extends Type> types);
+   public boolean isAssignableFrom(Class<?> type, Type[] actualTypeArguments);
 
    /**
     * Gets the actual type arguments for any parameterized types that this

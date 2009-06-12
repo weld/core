@@ -544,19 +544,6 @@ public class Reflections
       throw new NoSuchMethodException("Method " + methodName + Arrays.asList(parameterTypes).toString().replace("[", "(").replace("]", ")") + " not implemented by instance " + c.getName());
    }
    
-   
-
-   /**
-    * Indicates if an instance is a Javassist proxy
-    * 
-    * @param instance The instance to examine
-    * @return True if proxy, false otherwise
-    */
-   public static boolean isProxy(Object instance)
-   {
-      return instance.getClass().getName().indexOf("_$$_javassist_") > 0;
-   }
-
    /**
     * Checks the bindingType to make sure the annotation was declared properly
     * as a binding type (annotated with @BindingType).
@@ -574,6 +561,101 @@ public class Reflections
          isBindingAnnotation = true;
       }
       return isBindingAnnotation;
+   }
+   
+   /**
+    * Check the assignability of one type to another, taking into account the
+    * actual type arguements
+    * 
+    * @param rawType1 the raw type of the class to check
+    * @param actualTypeArguments1 the actual type arguements to check, or an empty array if not a parameterized type
+    * @param rawType2 the raw type of the class to check
+    * @param actualTypeArguments2 the actual type arguements to check, or an empty array if not a parameterized type
+    * @return
+    */
+   public static boolean isAssignableFrom(Class<?> rawType1, Type[] actualTypeArguments1, Class<?> rawType2, Type[] actualTypeArguments2)
+   {
+      return Types.boxedType(rawType1).isAssignableFrom(Types.boxedType(rawType2)) && Arrays.equals(actualTypeArguments1, actualTypeArguments2);
+   }
+   
+   public static boolean isAssignableFrom(Type type1, Set<? extends Type> types2)
+   {
+      for (Type type2 : types2)
+      {
+         if (isAssignableFrom(type1, type2))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
+   
+   public static boolean isAssignableFrom(Type type1, Type type2)
+   {
+      if (type1 instanceof Class)
+      {
+         Class<?> clazz = (Class<?>) type1;
+         if (isAssignableFrom(clazz, new Type[0], type2))
+         {
+            return true;
+         }
+      }
+      else if (type1 instanceof ParameterizedType)
+      {
+         ParameterizedType parameterizedType = (ParameterizedType) type1;
+         if (parameterizedType.getRawType() instanceof Class)
+         {
+            if (isAssignableFrom((Class<?>) parameterizedType.getRawType(), parameterizedType.getActualTypeArguments(), type2))
+            {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+   
+   public static boolean isAssignableFrom(Class<?> rawType1, Type[] actualTypeArguments1, Type type2)
+   {
+      if (type2 instanceof Class)
+      {
+         Class<?> clazz = (Class<?>) type2;
+         if (isAssignableFrom(rawType1, actualTypeArguments1, clazz, new Type[0]))
+         {
+            return true;
+         }
+      }
+      else if (type2 instanceof ParameterizedType)
+      {
+         ParameterizedType parameterizedType = (ParameterizedType) type2;
+         if (parameterizedType.getRawType() instanceof Class)
+         {
+            if (isAssignableFrom(rawType1, actualTypeArguments1, (Class<?>) parameterizedType.getRawType(), parameterizedType.getActualTypeArguments()))
+            {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+   
+   /**
+    * Check the assiginability of a set of <b>flattened</b> types. This algorithm
+    * will check whether any of the types1 matches a type in types2
+    * 
+    * @param types1
+    * @param types2
+    * @return
+    */
+   public static boolean isAssignableFrom(Set<Type> types1, Set<Type> types2)
+   {
+      for (Type type : types1)
+      {
+         if (isAssignableFrom(type, types2))
+         {
+            return true;
+         }
+      }
+      return false;
    }
 
    public static boolean isSerializable(Class<?> clazz)
