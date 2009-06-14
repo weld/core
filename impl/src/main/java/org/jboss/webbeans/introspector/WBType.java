@@ -17,6 +17,7 @@
 package org.jboss.webbeans.introspector;
 
 
+
 /**
  * AnnotatedType provides a uniform access to a type defined either in Java or
  * XML
@@ -33,14 +34,14 @@ public interface WBType<T> extends WBAnnotated<T, Class<T>>
     * @return The abstracted superclass
     */
    public WBType<?> getSuperclass();
-   
+
    /**
     * Check if this is equivalent to a java class
     * @param clazz The Java class
     * @return true if equivalent
     */
    public boolean isEquivalent(Class<?> clazz);
-   
+
    public String getSimpleName();
 
 }

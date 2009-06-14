@@ -34,9 +34,9 @@ public abstract class ForwardingWBField<T> extends ForwardingWBMember<T, Field> 
       return delegate().getAnnotatedField();
    }
 
-   public WBType<?> getDeclaringClass()
+   public WBType<?> getDeclaringType()
    {
-      return delegate().getDeclaringClass();
+      return delegate().getDeclaringType();
    }
 
    public String getPropertyName()
@@ -53,5 +53,5 @@ public abstract class ForwardingWBField<T> extends ForwardingWBMember<T, Field> 
    {
       return delegate().isTransient();
    }  
-      
+
 }

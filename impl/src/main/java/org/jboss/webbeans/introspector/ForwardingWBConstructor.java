@@ -32,9 +32,9 @@ public abstract class ForwardingWBConstructor<T> extends ForwardingWBMember<T, C
       return delegate().getAnnotatedParameters(annotationType);
    }
 
-   public WBType<T> getDeclaringClass()
+   public WBType<T> getDeclaringType()
    {
-      return delegate().getDeclaringClass();
+      return delegate().getDeclaringType();
    }
 
    public List<? extends WBParameter<?>> getParameters()

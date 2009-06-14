@@ -19,6 +19,6 @@ public interface Resolvable
    
    public boolean isAssignableTo(Class<?> clazz);
    
-   public Set<Type> getTypes();
+   public Set<Type> getTypeClosure();
 
 }

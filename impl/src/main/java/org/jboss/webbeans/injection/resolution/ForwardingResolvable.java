@@ -19,9 +19,9 @@ public abstract class ForwardingResolvable implements Resolvable
       return delegate().isAnnotationPresent(annotationType);
    }
    
-   public Set<Type> getTypes()
+   public Set<Type> getTypeClosure()
    {
-      return delegate().getTypes();
+      return delegate().getTypeClosure();
    }
    
    public boolean isAssignableTo(Class<?> clazz)

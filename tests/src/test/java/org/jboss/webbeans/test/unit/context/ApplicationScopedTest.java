@@ -33,7 +33,6 @@ public class ApplicationScopedTest extends AbstractWebBeansTest
       }
       latch.await();
       int value = getCurrentManager().getInstanceByType(ApplictionScopedObject.class).getValue();
-      System.out.println(value);
       assert value == 10;
    }
 

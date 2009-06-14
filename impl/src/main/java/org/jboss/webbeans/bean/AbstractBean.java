@@ -40,8 +40,8 @@ import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
 import org.jboss.webbeans.context.DependentInstancesStore;
 import org.jboss.webbeans.conversation.ConversationImpl;
 import org.jboss.webbeans.injection.WBInjectionPoint;
-import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.introspector.WBAnnotated;
+import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.literal.AnyLiteral;
 import org.jboss.webbeans.literal.CurrentLiteral;
@@ -69,9 +69,9 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    private static Set<Class<?>> STANDARD_WEB_BEAN_CLASSES = new HashSet<Class<?>>(Arrays.asList(Event.class, BeanManagerImpl.class, ConversationImpl.class));
 
    private boolean proxyable;
-   
+
    protected final DependentInstancesStore dependentInstancesStore;   
-   
+
    /**
     * Helper class for getting deployment type
     * 
@@ -119,11 +119,11 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
    protected BeanManagerImpl manager;
 
    protected boolean _serializable;
-   
+
    private boolean initialized;
-   
+
    private Set<WBInjectionPoint<?, ?>> decoratesInjectionPoint;
-   
+
    protected boolean isInitialized()
    {
       return initialized;
@@ -190,7 +190,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
          }
       }
    }
-   
+
    protected Set<WBInjectionPoint<?, ?>> getDecoratesInjectionPoint()
    {
       return decoratesInjectionPoint;
@@ -201,7 +201,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     */
    protected void initTypes()
    {
-      types = getAnnotatedItem().getFlattenedTypeHierarchy();
+      types = getAnnotatedItem().getTypeClosure();
    }
 
    /**
@@ -214,7 +214,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
       initDefaultBindings();
       log.trace("Using binding types " + bindings + " specified by annotations");
    }
-   
+
    protected abstract void initInjectionPoints();
 
    protected void initDefaultBindings()
@@ -336,7 +336,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
          return false;
       }
    }
-   
+
    /**
     * Validates the deployment type
     */
@@ -490,7 +490,7 @@ public abstract class AbstractBean<T, E> extends RIBean<T>
     * 
     * @return The set of API types
     * 
-    * @see org.jboss.webbeans.bean.BaseBean#getTypes()
+    * @see org.jboss.webbeans.bean.BaseBean#getTypeClosure()
     */
    public Set<Type> getTypes()
    {

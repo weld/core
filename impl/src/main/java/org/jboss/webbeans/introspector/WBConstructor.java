@@ -34,7 +34,7 @@ import javax.decorator.Decorates;
  */
 public interface WBConstructor<T> extends WBMember<T, Constructor<T>>
 {
-   
+
    @SuppressWarnings("unchecked")
    public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(Decorates.class));
 
@@ -68,8 +68,8 @@ public interface WBConstructor<T> extends WBMember<T, Constructor<T>>
     * 
     * @return An abstraction of the declaring class
     */
-   public WBType<T> getDeclaringClass();
-   
+   public WBType<T> getDeclaringType();
+
    public ConstructorSignature getSignature();
 
 }

@@ -203,7 +203,7 @@ public Constructor<T> getDelegate()
       if (super.equals(other) && other instanceof WBConstructor)
       {
          WBConstructor<?> that = (WBConstructor<?>) other;
-         return this.getDeclaringClass().equals(that.getDeclaringClass()) && this.getParameters().equals(that.getParameters());
+         return this.getDeclaringType().equals(that.getDeclaringType()) && this.getParameters().equals(that.getParameters());
       }
       return false;
    }
@@ -226,7 +226,7 @@ public Constructor<T> getDelegate()
     * 
     * @return The declaring class
     */
-   public WBType<T> getDeclaringClass()
+   public WBType<T> getDeclaringType()
    {
       return declaringClass;
    }

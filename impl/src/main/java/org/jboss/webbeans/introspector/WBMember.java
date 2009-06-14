@@ -25,14 +25,14 @@ import java.lang.reflect.Member;
  */
 public interface WBMember<T, S extends Member> extends WBAnnotated<T, S>
 {
-   
+
    public S getMember();
-   
+
    /**
     * Gets an abstraction of the declaring class
     * 
     * @return The declaring class
     */
-   public WBType<?> getDeclaringClass();
-   
+   public WBType<?> getDeclaringType();
+
 }

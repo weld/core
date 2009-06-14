@@ -18,9 +18,9 @@ package org.jboss.webbeans.introspector.jlr;
 
 import java.lang.reflect.Field;
 
+import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.introspector.WBType;
-import org.jboss.webbeans.introspector.AnnotationStore;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
@@ -35,7 +35,7 @@ import org.jboss.webbeans.util.Reflections;
  */
 public class WBFieldImpl<T> extends AbstractWBMember<T, Field> implements WBField<T>
 {
-   
+
    // The underlying field
    private final Field field;
    // The abstraction of the declaring class
@@ -75,12 +75,12 @@ public class WBFieldImpl<T> extends AbstractWBMember<T, Field> implements WBFiel
    {
       return field;
    }
-   
+
    public void set(Object instance, Object value) throws IllegalArgumentException, IllegalAccessException
    {
       field.set(instance, value);
    }
-   
+
    public void setOnInstance(Object instance, Object value) throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException
    {
       instance.getClass().getField(getName()).set(instance, value);
@@ -109,9 +109,9 @@ public class WBFieldImpl<T> extends AbstractWBMember<T, Field> implements WBFiel
     * 
     * @return The declaring class
     * 
-    * @see org.jboss.webbeans.introspector.WBField#getDeclaringClass()
+    * @see org.jboss.webbeans.introspector.WBField#getDeclaringType()
     */
-   public WBType<?> getDeclaringClass()
+   public WBType<?> getDeclaringType()
    {
       return declaringClass;
    }
@@ -128,7 +128,7 @@ public class WBFieldImpl<T> extends AbstractWBMember<T, Field> implements WBFiel
       {
          return toString;
       }
-      toString = Names.fieldToString(field) + " on " + getDeclaringClass();
+      toString = Names.fieldToString(field) + " on " + getDeclaringType();
       return toString;
    }
 
@@ -138,7 +138,7 @@ public class WBFieldImpl<T> extends AbstractWBMember<T, Field> implements WBFiel
       if (other instanceof WBField)
       {
          WBField<?> that = (WBField<?>) other;
-         return this.getDeclaringClass().equals(that.getDeclaringClass()) && this.getName().equals(that.getName());
+         return this.getDeclaringType().equals(that.getDeclaringType()) && this.getName().equals(that.getName());
       }
       else
       {
@@ -152,5 +152,5 @@ public class WBFieldImpl<T> extends AbstractWBMember<T, Field> implements WBFiel
    {
       return getDelegate().hashCode();
    }
-   
+
 }

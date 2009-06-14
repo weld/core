@@ -26,6 +26,7 @@ import javax.enterprise.context.ScopeType;
 import javax.enterprise.inject.BindingType;
 import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.deployment.DeploymentType;
+import javax.enterprise.inject.spi.Annotated;
 
 /**
  * AnnotatedItem provides a uniform access to the annotations on an annotated
@@ -34,20 +35,12 @@ import javax.enterprise.inject.deployment.DeploymentType;
  * @author Pete Muir
  * 
  */
-public interface WBAnnotated<T, S>
+public interface WBAnnotated<T, S> extends Annotated
 {
-   
-// The set of meta-annotations to map
+
+   // The set of meta-annotations to map
    @SuppressWarnings("unchecked")
    public static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = new HashSet<Class<? extends Annotation>>(Arrays.asList(BindingType.class, DeploymentType.class, Stereotype.class, ScopeType.class));
-   
-   /**
-    * Gets all annotations on the item
-    * 
-    * @return A set of annotations. Returns an empty set if there are no
-    *         matches.
-    */
-   public <A extends Annotation> Set<A> getAnnotations();
 
    /**
     * Gets all annotations which are annotated with the given meta annotation
@@ -58,7 +51,7 @@ public interface WBAnnotated<T, S>
     *         are no matches.
     */
    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
-   
+
    /**
     * Gets all annotations which are declared on this annotated item 
     * with the given meta annotation type
@@ -100,24 +93,6 @@ public interface WBAnnotated<T, S>
    public Annotation[] getBindingsAsArray();
 
    /**
-    * Gets an annotation for the annotation type specified.
-    * 
-    * @param annotationType The annotation to match
-    * @return An annotation if found, null if the annotation wasn't present.
-    */
-   public <A extends Annotation> A getAnnotation(Class<A> annotationType);
-   
-   /**
-    * Get the whole type hierarchy as a set of flattened types.
-    * 
-    * The returned types should have any type parameters resolved to their
-    * actual types.
-    * 
-    * @return the type hierarchy
-    */
-   public Set<Type> getFlattenedTypeHierarchy();
-   
-   /**
     * Get the type hierarchy of any interfaces implemented by this class.
     * 
     * Interface hierarchies from super classes are not included.
@@ -135,14 +110,6 @@ public interface WBAnnotated<T, S>
     * @param annotationType The annotation to match
     * @return True if present, false if not
     */
-   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType);
-   
-   /**
-    * Indicates if an annotation type specified is present
-    * 
-    * @param annotationType The annotation to match
-    * @return True if present, false if not
-    */
    public boolean isDeclaredAnnotationPresent(Class<? extends Annotation> annotationType);
 
    /**
@@ -151,8 +118,6 @@ public interface WBAnnotated<T, S>
     * @return The type of the element
     */
    public Class<T> getRawType();
-   
-   public Type getType();
 
    /**
     * Extends Java Class assignability such that actual type parameters are also
@@ -162,7 +127,7 @@ public interface WBAnnotated<T, S>
     * @return True if assignable, false otherwise.
     */
    public boolean isAssignableFrom(WBAnnotated<?, ?> that);
-   
+
    /**
     * Extends Java Class assignability such that actual type parameters are also
     * considered
@@ -200,7 +165,7 @@ public interface WBAnnotated<T, S>
     * @return True if proxyable, false otherwise
     */
    public boolean isProxyable();
-   
+
    /**
     * Indicates if this annotated item is public
     * 
@@ -217,9 +182,9 @@ public interface WBAnnotated<T, S>
     * @return The name
     */
    public String getName();
-   
+
    public AnnotationStore getAnnotationStore();
-   
+
    public boolean isParameterizedType();
 
 }

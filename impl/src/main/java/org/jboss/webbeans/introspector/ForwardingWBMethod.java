@@ -23,23 +23,23 @@ import java.util.List;
 
 public abstract class ForwardingWBMethod<T> extends ForwardingWBMember<T, Method> implements WBMethod<T>
 {
-   
+
    @Override
    protected abstract WBMethod<T> delegate();
-   
+
    public Method getAnnotatedMethod()
    {
       return delegate().getAnnotatedMethod();
    }
-   
+
    public List<WBParameter<?>> getAnnotatedParameters(Class<? extends Annotation> metaAnnotationType)
    {
       return delegate().getAnnotatedParameters(metaAnnotationType);
    }
 
-   public WBType<?> getDeclaringClass()
+   public WBType<?> getDeclaringType()
    {
-      return delegate().getDeclaringClass();
+      return delegate().getDeclaringType();
    }
 
    public Class<?>[] getParameterTypesAsArray()
@@ -48,9 +48,9 @@ public abstract class ForwardingWBMethod<T> extends ForwardingWBMember<T, Method
    }
 
    public List<? extends WBParameter<?>> getParameters()
-   {
+         {
       return delegate().getParameters();
-   }
+         }
 
    public String getPropertyName()
    {
@@ -71,10 +71,10 @@ public abstract class ForwardingWBMethod<T> extends ForwardingWBMember<T, Method
    {
       return delegate().isEquivalent(method);
    }
-   
+
    public MethodSignature getSignature()
    {
       return delegate().getSignature();
    }
-   
+
 }

@@ -20,6 +20,7 @@ import static org.jboss.webbeans.injection.Exceptions.rethrowException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -27,8 +28,8 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.introspector.WBField;
 import org.jboss.webbeans.introspector.ForwardingWBField;
+import org.jboss.webbeans.introspector.WBField;
 
 public class FieldInjectionPoint<T> extends ForwardingWBField<T> implements WBInjectionPoint<T, Field>
 {
@@ -99,13 +100,18 @@ public class FieldInjectionPoint<T> extends ForwardingWBField<T> implements WBIn
 
    public Annotated getAnnotated()
    {
-      return new AnnotatedAdaptor(delegate());
+      return delegate();
    }
 
    public boolean isDelegate()
    {
       // TODO Auto-generated method stub
       return false;
+   }
+
+   public Type getType()
+   {
+      return getBaseType();
    }
 
 }

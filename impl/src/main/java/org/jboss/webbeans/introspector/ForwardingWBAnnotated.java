@@ -28,104 +28,51 @@ import java.util.Set;
  * @param <T>
  * @param <S>
  */
-public abstract class ForwardingWBAnnotated<T, S> implements WBAnnotated<T, S>
+public abstract class ForwardingWBAnnotated<T, S> extends ForwardingAnnotated<T, S> implements WBAnnotated<T, S>
 {
 
-   /**
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
    public Type[] getActualTypeArguments()
    {
       return delegate().getActualTypeArguments();
    }
 
-   /**
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
-   public <A extends Annotation> A getAnnotation(Class<A> annotationType)
-   {
-      return delegate().getAnnotation(annotationType);
-   }
-
-   /**
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
-   public Set<Annotation> getAnnotations()
-   {
-      return delegate().getAnnotations();
-   }
-
-   /**
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
       return delegate().getMetaAnnotations(metaAnnotationType);
    }
 
-   /**
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
    public Annotation[] getMetaAnnotationsAsArray(Class<? extends Annotation> metaAnnotationType)
    {
       return delegate().getMetaAnnotationsAsArray(metaAnnotationType);
    }
 
-   /**
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
    @Deprecated
    public Set<Annotation> getBindings()
    {
       return delegate().getBindings();
    }
 
-   /**
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
    @Deprecated
    public Annotation[] getBindingsAsArray()
    {
       return delegate().getBindingsAsArray();
    }
-   
-   /**
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
-   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
-   {
-      return delegate().isAnnotationPresent(annotationType);
-   }
-   
+
    public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
       return delegate().getDeclaredMetaAnnotations(metaAnnotationType);
    }
 
-   /**
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
    public String getName()
    {
       return delegate().getName();
    }
 
-   /**
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
    public Class<T> getRawType()
    {
       return delegate().getRawType();
    }
-   
-   public Type getType()
-   {
-      return delegate().getType();
-   }
 
-   /**
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
    public boolean isAssignableFrom(WBAnnotated<?, ?> that)
    {
       return delegate().isAssignableFrom(that);
@@ -136,95 +83,43 @@ public abstract class ForwardingWBAnnotated<T, S> implements WBAnnotated<T, S>
       return delegate().isAssignableFrom(type, actualTypeArguments);
    }
 
-   /**
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
    public boolean isFinal()
    {
       return delegate().isFinal();
    }
 
-   /**
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
    public boolean isStatic()
    {
       return delegate().isStatic();
    }
 
-   /**
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
    public boolean isProxyable()
    {
       return delegate().isProxyable();
    }
-   
+
    public boolean isPublic()
    {
       return delegate().isPublic();
    }
 
-   /**
-    * Overridden method into delegate
-    * 
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
-   @Override
-   public boolean equals(Object obj)
-   {
-      return delegate().equals(obj);
-   }
-
-   /**
-    * Overridden method into delegate
-    * 
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
-   @Override
-   public int hashCode()
-   {
-      return delegate().hashCode();
-   }
-
-   /**
-    * Overridden method into delegate
-    * 
-    * @see org.jboss.webbeans.introspector.WBAnnotated
-    */
-   @Override
-   public String toString()
-   {
-      return delegate().toString();
-   }
-
-   /**
-    * Gets the annotated item
-    * 
-    * @return The annotated item
-    */
    protected abstract WBAnnotated<T, S> delegate();
-   
+
    public AnnotationStore getAnnotationStore()
    {
       return delegate().getAnnotationStore();
    }
-   
+
    public boolean isDeclaredAnnotationPresent(Class<? extends Annotation> annotationType)
    {
       return delegate().isDeclaredAnnotationPresent(annotationType);
    }
-   
-   public Set<Type> getFlattenedTypeHierarchy()
-   {
-      return delegate().getFlattenedTypeHierarchy();
-   }
-   
+
    public Set<Type> getInterfaceOnlyFlattenedTypeHierarchy()
    {
       return delegate().getInterfaceOnlyFlattenedTypeHierarchy();
    }
-   
+
    public boolean isParameterizedType()
    {
       return delegate().isParameterizedType();

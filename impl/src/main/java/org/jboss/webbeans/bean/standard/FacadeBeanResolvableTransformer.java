@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.webbeans.injection.resolution.ForwardingResolvable;
-import org.jboss.webbeans.injection.resolution.ResolovableTransformer;
+import org.jboss.webbeans.injection.resolution.ResolvableTransformer;
 import org.jboss.webbeans.injection.resolution.Resolvable;
 
 /**
@@ -33,14 +33,14 @@ import org.jboss.webbeans.injection.resolution.Resolvable;
  * @author Pete Muir
  *
  */
-public class FacadeBeanResolvableTransformer implements ResolovableTransformer
+public class FacadeBeanResolvableTransformer implements ResolvableTransformer
 {
-   
+
    private final Class<?> clazz;
    private final Annotation annotation;
    private final Set<Annotation> bindings;
    private final HashSet<Type> types;
-   
+
    public FacadeBeanResolvableTransformer(Class<?> clazz, Annotation annotation)
    {
       this.clazz = clazz;
@@ -56,7 +56,7 @@ public class FacadeBeanResolvableTransformer implements ResolovableTransformer
       {
          if (resolvable.isAnnotationPresent(annotation.annotationType()))
          {
-            
+
             return new ForwardingResolvable()
             {
 
@@ -65,35 +65,35 @@ public class FacadeBeanResolvableTransformer implements ResolovableTransformer
                {
                   return resolvable;
                }
-               
+
                @Override
                public Set<Annotation> getBindings()
                {
                   return Collections.unmodifiableSet(bindings);
                }
-               
+
                @Override
-               public Set<Type> getTypes()
+               public Set<Type> getTypeClosure()
                {
                   return Collections.unmodifiableSet(types);
                }
-               
+
                @Override
                public boolean isAssignableTo(Class<?> clazz)
                {
                   return clazz.isAssignableFrom(clazz);
                }
-               
+
                @Override
                public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
                {
                   return annotation.annotationType().equals(annotationType);
                }
-               
+
             };
          }
       }
       return resolvable;
    }
-   
+
 }

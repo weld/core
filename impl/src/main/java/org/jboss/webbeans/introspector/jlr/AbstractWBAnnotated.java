@@ -23,8 +23,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.introspector.AnnotationStore;
+import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.util.Proxies;
 import org.jboss.webbeans.util.Reflections;
 
@@ -44,14 +44,14 @@ import org.jboss.webbeans.util.Reflections;
  */
 public abstract class AbstractWBAnnotated<T, S> implements WBAnnotated<T, S>
 {
-   
+
    interface WrappableAnnotatedItem<T, S> extends WBAnnotated<T, S>
    {
-      
+
       AnnotationStore getAnnotationStore();
-      
+
    }
-   
+
    // Cached string representation
    private String toString;
    private final AnnotationStore annotationStore;
@@ -94,7 +94,7 @@ public abstract class AbstractWBAnnotated<T, S> implements WBAnnotated<T, S>
       }
       this.proxyable = Proxies.isTypesProxyable(flattenedTypes);
    }
-   
+
    public AbstractWBAnnotated(AnnotationStore annotatedItemHelper)
    {
       this.annotationStore = annotatedItemHelper;
@@ -106,7 +106,7 @@ public abstract class AbstractWBAnnotated<T, S> implements WBAnnotated<T, S>
       this.interfaceOnlyFlattenedTypes = null;
       this.proxyable = false;
    }
-   
+
    public AnnotationStore getAnnotationStore()
    {
       return annotationStore;
@@ -121,7 +121,7 @@ public abstract class AbstractWBAnnotated<T, S> implements WBAnnotated<T, S>
    {
       return getAnnotationStore().getMetaAnnotations(metaAnnotationType);
    }
-   
+
    public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
    {
       return getAnnotationStore().getDeclaredMetaAnnotations(metaAnnotationType);
@@ -185,10 +185,10 @@ public abstract class AbstractWBAnnotated<T, S> implements WBAnnotated<T, S>
    {
       return Reflections.isAssignableFrom(getRawType(), getActualTypeArguments(), type, actualTypeArguments);
    }
-   
+
    public boolean isAssignableFrom(Type type)
    {
-      return Reflections.isAssignableFrom(getType(), type);
+      return Reflections.isAssignableFrom(getBaseType(), type);
    }
 
    /**
@@ -217,7 +217,7 @@ public abstract class AbstractWBAnnotated<T, S> implements WBAnnotated<T, S>
       toString = "Abstract annotated item " + getName();
       return toString;
    }
-   
+
    @Deprecated
    public Set<Annotation> getBindings()
    {
@@ -251,42 +251,42 @@ public abstract class AbstractWBAnnotated<T, S> implements WBAnnotated<T, S>
    {
       return proxyable;
    }
-   
+
    public Class<T> getRawType()
    {
       return rawType;
    }
-   
-   public Type getType()
-   {
-      return type;
-   }
-   
+
    public Type[] getActualTypeArguments()
    {
       return actualTypeArguments;
    }
-   
-   public Set<Type> getFlattenedTypeHierarchy()
-   {
-      return Collections.unmodifiableSet(flattenedTypes);
-   }
-   
+
    public Set<Type> getInterfaceOnlyFlattenedTypeHierarchy()
    {
       return Collections.unmodifiableSet(interfaceOnlyFlattenedTypes);
    }
 
    public abstract S getDelegate();
-   
+
    public boolean isDeclaredAnnotationPresent(Class<? extends Annotation> annotationType)
    {
       return getAnnotationStore().isDeclaredAnnotationPresent(annotationType);
    }
-   
+
    public boolean isParameterizedType()
    {
       return _parameterizedType;
+   }
+
+   public Type getBaseType()
+   {
+      return type;
+   }
+
+   public Set<Type> getTypeClosure()
+   {
+      return Collections.unmodifiableSet(flattenedTypes);
    }
 
 }

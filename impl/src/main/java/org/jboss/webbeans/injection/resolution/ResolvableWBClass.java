@@ -32,31 +32,31 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.injection.WBInjectionPoint;
-import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.introspector.AnnotationStore;
+import org.jboss.webbeans.introspector.WBAnnotated;
 import org.jboss.webbeans.introspector.jlr.AbstractWBAnnotated;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 
 public class ResolvableWBClass<T> extends AbstractWBAnnotated<T, Class<T>> implements Resolvable
 {
-   
+
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
    private static final Set<Annotation> EMPTY_ANNOTATION_SET = Collections.emptySet();
-   
+
    private final Class<T> rawType;
-   private final Set<Type> types;
+   private final Set<Type> typeClosure;
    private final Type[] actualTypeArguments;
-   
+
    private final String _string;
-   
+
    private final BeanManagerImpl manager;
-   
+
    public static <T> WBAnnotated<T, Class<T>> of(TypeLiteral<T> typeLiteral, Annotation[] annotations, BeanManagerImpl manager)
    {
       return new ResolvableWBClass<T>(typeLiteral.getType(), annotations, manager);
    }
-   
+
    public static <T> WBAnnotated<T, Class<T>> of(Type type, Annotation[] annotations, BeanManagerImpl manager)
    {
       return new ResolvableWBClass<T>(type, annotations, manager);
@@ -75,7 +75,7 @@ public class ResolvableWBClass<T> extends AbstractWBAnnotated<T, Class<T>> imple
          return new ResolvableWBClass<T>(injectionPoint.getType(), injectionPoint.getAnnotated().getAnnotations(), manager);
       }
    }
-   
+
    public static <T> WBAnnotated<T, Class<T>> of(Member member, Annotation[] annotations, BeanManagerImpl manager)
    {
       if (member instanceof Field)
@@ -91,13 +91,13 @@ public class ResolvableWBClass<T> extends AbstractWBAnnotated<T, Class<T>> imple
          throw new IllegalStateException();
       }
    }
-   
+
    private ResolvableWBClass(Type type, AnnotationStore annotationStore, BeanManagerImpl manager)
    {
       super(annotationStore);
-      
+
       this.manager = manager;
-      
+
       if (type instanceof ParameterizedType)
       {
          ParameterizedType parameterizedType = (ParameterizedType) type;
@@ -122,15 +122,15 @@ public class ResolvableWBClass<T> extends AbstractWBAnnotated<T, Class<T>> imple
       {
          throw new IllegalArgumentException("Unable to extract type information from " + type);
       }
-      this.types = new HashSet<Type>();
-      types.add(type);
+      this.typeClosure = new HashSet<Type>();
+      typeClosure.add(type);
    }
-   
+
    private ResolvableWBClass(Type type, Annotation[] annotations, BeanManagerImpl manager)
    {
       this(type, AnnotationStore.of(annotations, EMPTY_ANNOTATION_ARRAY), manager);
    }
-   
+
    private ResolvableWBClass(Type type, Set<Annotation>annotations, BeanManagerImpl manager)
    {
       this(type, AnnotationStore.of(annotations, EMPTY_ANNOTATION_SET), manager);
@@ -164,12 +164,6 @@ public class ResolvableWBClass<T> extends AbstractWBAnnotated<T, Class<T>> imple
    {
       return rawType;
    }
-   
-   @Override
-   public Type getType()
-   {
-      return getRawType();
-   }
 
    public boolean isFinal()
    {
@@ -185,27 +179,27 @@ public class ResolvableWBClass<T> extends AbstractWBAnnotated<T, Class<T>> imple
    {
       throw new UnsupportedOperationException();
    }
-   
-   @Override
-   public Set<Type> getFlattenedTypeHierarchy()
-   {
-      throw new UnsupportedOperationException();
-   }
-   
+
    @Override
    public boolean isProxyable()
    {
       throw new UnsupportedOperationException();
    }
 
-   public Set<Type> getTypes()
+   public Set<Type> getTypeClosure()
    {
-      return types;
+      return typeClosure;
+   }
+
+   @Override
+   public Type getBaseType()
+   {
+      return getRawType();
    }
 
    public boolean isAssignableTo(Class<?> clazz)
    {
-      return Reflections.isAssignableFrom(clazz, getType());
+      return Reflections.isAssignableFrom(clazz, getBaseType());
    }
 
 }

@@ -77,7 +77,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       super(manager);
       this.declaringBean = declaringBean;
    }
-   
+
    @Override
    protected abstract WBMember<T, S> getAnnotatedItem();
 
@@ -110,7 +110,7 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
       {
          Set<Type> types = new HashSet<Type>();
          types.add(Object.class);
-         types.addAll(getAnnotatedItem().getFlattenedTypeHierarchy());
+         types.addAll(getAnnotatedItem().getTypeClosure());
          super.types = types;
       }
       else
@@ -168,13 +168,13 @@ public abstract class AbstractProducerBean<T, S extends Member> extends Abstract
     */
    protected void checkProducerReturnType()
    {
-      if (getAnnotatedItem().getType() instanceof TypeVariable<?>)
+      if (getAnnotatedItem().getBaseType() instanceof TypeVariable<?>)
       {
-         throw new DefinitionException("Return type must be concrete " + getAnnotatedItem().getType());
+         throw new DefinitionException("Return type must be concrete " + getAnnotatedItem().getBaseType());
       }
-      if (getAnnotatedItem().getType() instanceof WildcardType)
+      if (getAnnotatedItem().getBaseType() instanceof WildcardType)
       {
-         throw new DefinitionException("Return type must be concrete " + getAnnotatedItem().getType());
+         throw new DefinitionException("Return type must be concrete " + getAnnotatedItem().getBaseType());
       }
       for (Type type : getAnnotatedItem().getActualTypeArguments())
       {

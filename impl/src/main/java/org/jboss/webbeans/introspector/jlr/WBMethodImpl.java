@@ -25,11 +25,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.jboss.webbeans.introspector.AnnotationStore;
+import org.jboss.webbeans.introspector.MethodSignature;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.introspector.WBType;
-import org.jboss.webbeans.introspector.AnnotationStore;
-import org.jboss.webbeans.introspector.MethodSignature;
 import org.jboss.webbeans.util.Names;
 import org.jboss.webbeans.util.Reflections;
 import org.jboss.webbeans.util.collections.multi.ListHashMultiMap;
@@ -64,9 +64,9 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
 
    // Cached string representation
    private String toString;
-   
+
    private final MethodSignature signature;
-   
+
    public static <T> WBMethodImpl<T> of(Method method, WBType<?> declaringClass)
    {
       return new WBMethodImpl<T>(method, declaringClass);
@@ -90,7 +90,7 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
       this.declaringClass = declaringClass;
       this.parameters = new ArrayList<WBParameter<?>>();
       this.annotatedParameters = new ListHashMultiMap<Class<? extends Annotation>, WBParameter<?>>();
-      
+
       for (int i = 0; i < method.getParameterTypes().length; i++)
       {
          if (method.getParameterAnnotations()[i].length > 0)
@@ -142,7 +142,7 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
    {
       return Collections.unmodifiableList(parameters);
    }
-   
+
    public Class<?>[] getParameterTypesAsArray()
    {
       return method.getParameterTypes();
@@ -159,17 +159,17 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
       if (other instanceof WBMethod)
       {
          WBMethod<?> that = (WBMethod<?>) other;
-         return this.getDeclaringClass().equals(that.getDeclaringClass()) && this.getName().equals(that.getName()) && this.getParameters().equals(that.getParameters());
+         return this.getDeclaringType().equals(that.getDeclaringType()) && this.getName().equals(that.getName()) && this.getParameters().equals(that.getParameters());
       }
       else
       {
          return false;
       }
    }
-   
+
    public boolean isEquivalent(Method method)
    {
-      return this.getDeclaringClass().isEquivalent(method.getDeclaringClass()) && this.getName().equals(method.getName()) && Arrays.equals(this.getParameterTypesAsArray(), method.getParameterTypes());
+      return this.getDeclaringType().isEquivalent(method.getDeclaringClass()) && this.getName().equals(method.getName()) && Arrays.equals(this.getParameterTypesAsArray(), method.getParameterTypes());
    }
 
    @Override
@@ -177,7 +177,7 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
    {
       return getDelegate().hashCode();
    }
-   
+
    public T invokeOnInstance(Object instance, Object...parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
    {
       Method method = Reflections.lookupMethod(getName(), getParameterTypesAsArray(), instance);
@@ -198,7 +198,7 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
       return propertyName;
    }
 
-   public WBType<?> getDeclaringClass()
+   public WBType<?> getDeclaringType()
    {
       return declaringClass;
    }
@@ -210,13 +210,13 @@ public class WBMethodImpl<T> extends AbstractWBMember<T, Method> implements WBMe
       {
          return toString;
       }
-      toString = "Annotated method on class " + getDeclaringClass().getName() + Names.methodToString(method);
+      toString = "Annotated method on class " + getDeclaringType().getName() + Names.methodToString(method);
       return toString;
    }
-   
+
    public MethodSignature getSignature()
    {
       return signature;
    }
-   
+
 }

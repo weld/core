@@ -18,6 +18,7 @@ package org.jboss.webbeans.injection;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
+import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -25,19 +26,19 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
-import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.introspector.ForwardingWBParameter;
+import org.jboss.webbeans.introspector.WBParameter;
 
 public class ParameterInjectionPoint<T> extends ForwardingWBParameter<T> implements WBInjectionPoint<T, Object>
 {
-   
+
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
-   
+
    public static <T> ParameterInjectionPoint<T> of(Bean<?> declaringBean, WBParameter<T> parameter)
    {
       return new ParameterInjectionPoint<T>(declaringBean, parameter);
    }
-   
+
    private final Bean<?> declaringBean;
    private final WBParameter<T> parameter;
 
@@ -67,12 +68,12 @@ public class ParameterInjectionPoint<T> extends ForwardingWBParameter<T> impleme
    {
       return delegate().getDeclaringMember().getMember();
    }
-   
+
    public void inject(Object declaringInstance, Object value)
    {
       throw new UnsupportedOperationException();
    }
-   
+
    @SuppressWarnings("unchecked")
    public T getValueToInject(BeanManagerImpl manager, CreationalContext<?> creationalContext)
    {
@@ -81,7 +82,7 @@ public class ParameterInjectionPoint<T> extends ForwardingWBParameter<T> impleme
 
    public Annotated getAnnotated()
    {
-      return new AnnotatedAdaptor(delegate());
+      return delegate();
    }
 
    public boolean isDelegate()
@@ -94,6 +95,11 @@ public class ParameterInjectionPoint<T> extends ForwardingWBParameter<T> impleme
    {
       // TODO Auto-generated method stub
       return false;
+   }
+
+   public Type getType()
+   {
+      return getBaseType();
    }
 
 }

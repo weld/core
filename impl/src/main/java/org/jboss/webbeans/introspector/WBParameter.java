@@ -18,6 +18,7 @@ package org.jboss.webbeans.introspector;
 
 
 
+
 /**
  * AnnotatedParameter provides a uniform access to a method parameter defined
  * either in Java or XML
@@ -27,7 +28,7 @@ package org.jboss.webbeans.introspector;
  */
 public interface WBParameter<T> extends WBAnnotated<T, Object>
 {
-   
+
    public WBMember<?, ?> getDeclaringMember();
-   
+
 }

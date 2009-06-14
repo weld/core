@@ -401,7 +401,7 @@ public interface BeanManager
     * @param <T> 
     * 			The type of the underlying bean
     * @param type 
-    * 			The metadat for construction of the ManagedBean
+    * 			The metadata for construction of the ManagedBean
     */
    public <T> ManagedBean<T> createManagedBean(AnnotatedType<T> type);
 

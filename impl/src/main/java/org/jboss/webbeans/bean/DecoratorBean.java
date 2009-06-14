@@ -14,25 +14,25 @@ import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
-import org.jboss.webbeans.introspector.WBClass;
+import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.introspector.WBAnnotated;
+import org.jboss.webbeans.introspector.WBClass;
 
 public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
 {
-   
+
    public static <T> Decorator<T> wrapForResolver(final Decorator<T> decorator)
    {
       return new ForwardingDecorator<T>()
       {
-         
+
          @Override
          public Set<Annotation> getBindings()
          {
             return delegate().getDelegateBindings();
          }
-         
+
          @Override
          public Set<Type> getTypes()
          {
@@ -44,10 +44,10 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
          {
             return decorator;
          }
-         
+
       };
    }
-   
+
    /**
     * Creates a decorator bean
     * 
@@ -70,7 +70,7 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
    {
       super(type, manager);
    }
-   
+
    @Override
    public void initialize(BeanDeployerEnvironment environment)
    {
@@ -83,19 +83,19 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
          initDelegateType();
       }
    }
-   
+
    protected void initDecoratedTypes()
    {
       this.decoratedTypes = new HashSet<Type>();
       this.decoratedTypes.addAll(getAnnotatedItem().getInterfaceOnlyFlattenedTypeHierarchy());
       this.decoratedTypes.remove(Serializable.class);
    }
-   
+
    protected void initDelegate()
    {
       this.decorates = getDecoratesInjectionPoint().iterator().next();
    }
-   
+
    @Override
    protected void checkDecorates()
    {
@@ -115,17 +115,17 @@ public class DecoratorBean<T> extends SimpleBean<T> implements Decorator<T>
          throw new DefinitionException("Too many @Decorates injection point defined " + this);
       }
    }
-   
+
    protected void initDelegateBindings()
    {
       this.delegateBindings = this.decorates.getBindings();
    }
-   
+
    protected void initDelegateType()
    {
-      this.delegateType = this.decorates.getType();
+      this.delegateType = this.decorates.getBaseType();
    }
-   
+
    protected void checkDelegateType()
    {
       for (Type decoratedType : getDecoratedTypes())

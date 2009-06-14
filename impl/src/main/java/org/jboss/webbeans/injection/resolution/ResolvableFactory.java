@@ -10,7 +10,7 @@ import org.jboss.webbeans.util.Reflections;
 
 public class ResolvableFactory
 {
-   
+
    public static Resolvable of(WBAnnotated<?, ?> element)
    {
       if (element instanceof Resolvable)
@@ -20,25 +20,25 @@ public class ResolvableFactory
       else
       {
          Set<Type> types = new HashSet<Type>();
-         types.add(element.getType());
+         types.add(element.getBaseType());
          return new ResolvableImpl(element.getBindings(), types);
       }
    }
-   
+
    private ResolvableFactory() {}
-   
+
    private static class ResolvableImpl implements Resolvable
    {
-      
+
       private final Set<Annotation> bindings;
       private final Set<Class<? extends Annotation>> annotationTypes;
-      private final Set<Type> types;
-      
-      public ResolvableImpl(Set<Annotation> bindings, Set<Type> types)
+      private final Set<Type> typeClosure;
+
+      public ResolvableImpl(Set<Annotation> bindings, Set<Type> typeClosure)
       {
          this.bindings = bindings;
          this.annotationTypes = new HashSet<Class<? extends Annotation>>();
-         this.types = types;
+         this.typeClosure = typeClosure;
          for (Annotation annotation : bindings)
          {
             annotationTypes.add(annotation.annotationType());
@@ -54,17 +54,23 @@ public class ResolvableFactory
       {
          return annotationTypes.contains(annotationType);
       }
-      
-      public Set<Type> getTypes()
+
+      public Set<Type> getTypeClosure()
       {
-         return types;
+         return typeClosure;
       }
-      
+
       public boolean isAssignableTo(Class<?> clazz)
       {
-         return Reflections.isAssignableFrom(clazz, types);
+         return Reflections.isAssignableFrom(clazz, typeClosure);
       }
-      
+
+      @Override
+      public String toString()
+      {
+         return "Types: " + getTypeClosure() + "; Bindings: " + getBindings();
+      }
+
    }
 
 }

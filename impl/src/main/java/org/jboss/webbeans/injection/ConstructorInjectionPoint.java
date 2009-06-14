@@ -32,18 +32,18 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.introspector.ForwardingWBConstructor;
 import org.jboss.webbeans.introspector.WBConstructor;
 import org.jboss.webbeans.introspector.WBParameter;
-import org.jboss.webbeans.introspector.ForwardingWBConstructor;
 
 public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> implements WBInjectionPoint<T, Constructor<T>>
 {
-   
+
    private abstract class ForwardingParameterInjectionPointList extends AbstractList<ParameterInjectionPoint<?>>
    {
-      
+
       protected abstract List<? extends WBParameter<?>> delegate();
-      
+
       protected abstract Bean<?> declaringBean();;
 
       @Override
@@ -51,17 +51,17 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
       {
          return ParameterInjectionPoint.of(declaringBean, delegate().get(index));
       }
-      
+
       @Override
       public int size()
       {
          return delegate().size();
       }
-      
+
    }
-   
+
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
-   
+
    private final Bean<?> declaringBean;
    private final WBConstructor<T> constructor;
 
@@ -69,13 +69,13 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
    {
       return new ConstructorInjectionPoint<T>(declaringBean, constructor);
    }
-   
+
    protected ConstructorInjectionPoint(Bean<?> declaringBean, WBConstructor<T> constructor)
    {
       this.declaringBean = declaringBean;
       this.constructor = constructor;
    }
-   
+
    @Override
    protected WBConstructor<T> delegate()
    {
@@ -91,7 +91,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
    {
       return delegate().getBindings();
    }
-   
+
    public T newInstance(BeanManagerImpl manager, CreationalContext<?> creationalContext)
    {
       try
@@ -116,7 +116,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
       }
       return null;
    }
-   
+
    @Override
    public List<ParameterInjectionPoint<?>> getParameters()
    {
@@ -132,13 +132,13 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
 
          @Override
          protected List<? extends WBParameter<?>> delegate()
-         {
+               {
             return delegate;
-         }
-         
+               }
+
       };
    }
-   
+
    public void inject(Object declaringInstance, Object value)
    {
       throw new UnsupportedOperationException();
@@ -170,7 +170,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
       }
       return parameterValues;
    }
-   
+
    public Type getType()
    {
       return getRawType();
@@ -178,7 +178,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWBConstructor<T> imp
 
    public Annotated getAnnotated()
    {
-      return new AnnotatedAdaptor(delegate());
+      return delegate();
    }
 
    public boolean isDelegate()

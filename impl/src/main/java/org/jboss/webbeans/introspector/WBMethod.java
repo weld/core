@@ -61,7 +61,7 @@ public interface WBMethod<T> extends WBMember<T, Method>
     *         there are no matches.
     */
    public List<WBParameter<?>> getAnnotatedParameters(Class<? extends Annotation> metaAnnotationType);
-   
+
    /**
     * Get the parameter types as an array
     */
@@ -75,7 +75,7 @@ public interface WBMethod<T> extends WBMember<T, Method>
     * @return A reference to the instance
     */
    public T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
-   
+
    /**
     * Invokes the method on the class of the passed instance, not the declaring 
     * class. Useful with proxies
@@ -91,7 +91,7 @@ public interface WBMethod<T> extends WBMember<T, Method>
     * 
     * @return An abstraction of the declaring class
     */
-   public WBType<?> getDeclaringClass();
+   public WBType<?> getDeclaringType();
 
    /**
     * Gets the property name
@@ -99,7 +99,7 @@ public interface WBMethod<T> extends WBMember<T, Method>
     * @return The name
     */
    public String getPropertyName();
-   
+
    /**
     * Checks if a this is equivalent to a JLR method
     * 
@@ -109,7 +109,7 @@ public interface WBMethod<T> extends WBMember<T, Method>
    public boolean isEquivalent(Method method);
 
    public Method getAnnotatedMethod();
-   
+
    public MethodSignature getSignature();
 
 }

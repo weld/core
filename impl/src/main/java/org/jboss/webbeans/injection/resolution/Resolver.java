@@ -59,7 +59,7 @@ public class Resolver
       
       public boolean matches(Set<Type> types, Set<Annotation> bindings)
       {
-         return Reflections.isAssignableFrom(this.getTypes(), types) && Beans.containsAllBindings(this.getBindings(), bindings, manager);
+         return Reflections.isAssignableFrom(this.getTypeClosure(), types) && Beans.containsAllBindings(this.getBindings(), bindings, manager);
       }
       
       @Override
@@ -68,7 +68,7 @@ public class Resolver
          if (obj instanceof Resolvable)
          {
             Resolvable that = (Resolvable) obj;
-            return this.matches(that.getTypes(), that.getBindings());
+            return this.matches(that.getTypeClosure(), that.getBindings());
          }
          else
          {
@@ -92,7 +92,7 @@ public class Resolver
    private final BeanManagerImpl manager;
    
    // Annotation transformers used to mutate annotations during resolution
-   private final Set<ResolovableTransformer> transformers;
+   private final Set<ResolvableTransformer> transformers;
 
    /**
     * Constructor
@@ -105,7 +105,7 @@ public class Resolver
       this.injectionPoints = new HashSet<WBAnnotated<?, ?>>();
       this.resolvedInjectionPoints = new ConcurrentCache<Resolvable, Set<Bean<?>>>();
       this.resolvedNames = new ConcurrentCache<String, Set<Bean<?>>>();
-      this.transformers = new HashSet<ResolovableTransformer>();
+      this.transformers = new HashSet<ResolvableTransformer>();
       transformers.add(EventBean.TRANSFORMER);
       transformers.add(InstanceBean.TRANSFORMER);
    }
@@ -187,7 +187,7 @@ public class Resolver
    
    private Resolvable transformElement(Resolvable element)
    {
-      for (ResolovableTransformer transformer : transformers)
+      for (ResolvableTransformer transformer : transformers)
       {
          element = transformer.transform(element);
       }

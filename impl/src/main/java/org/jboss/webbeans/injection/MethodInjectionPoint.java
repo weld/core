@@ -21,6 +21,7 @@ import static org.jboss.webbeans.injection.Exceptions.rethrowException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.AbstractList;
 import java.util.Iterator;
 import java.util.List;
@@ -31,18 +32,18 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.webbeans.BeanManagerImpl;
+import org.jboss.webbeans.introspector.ForwardingWBMethod;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.introspector.WBParameter;
-import org.jboss.webbeans.introspector.ForwardingWBMethod;
 
 public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WBInjectionPoint<T, Method>
 {
-   
+
    private abstract class ForwardingParameterInjectionPointList extends AbstractList<ParameterInjectionPoint<?>>
    {
-      
+
       protected abstract List<? extends WBParameter<?>> delegate();
-      
+
       protected abstract Bean<?> declaringBean();;
 
       @Override
@@ -50,17 +51,17 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
       {
          return ParameterInjectionPoint.of(declaringBean, delegate().get(index));
       }
-      
+
       @Override
       public int size()
       {
          return delegate().size();
       }
-      
+
    }
-   
+
    private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
-   
+
    private final Bean<?> declaringBean;
    private final WBMethod<T> method;
 
@@ -68,13 +69,13 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
    {
       return new MethodInjectionPoint<T>(declaringBean, method);
    }
-   
+
    protected MethodInjectionPoint(Bean<?> declaringBean, WBMethod<T> method)
    {
       this.declaringBean = declaringBean;
       this.method = method;
    }
-   
+
    @Override
    protected WBMethod<T> delegate()
    {
@@ -90,7 +91,7 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
    {
       return delegate().getBindings();
    }
-   
+
    public T invoke(Object declaringInstance, BeanManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow)
    {
       try
@@ -111,7 +112,7 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
       }
       return null;
    }
-   
+
    @SuppressWarnings("unchecked")
    public T invokeWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, BeanManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow)
    {
@@ -133,7 +134,7 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
       }
       return null;
    }
-   
+
    public T invokeOnInstance(Object declaringInstance, BeanManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow)
    {
       try
@@ -162,7 +163,7 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
       }
       return null;
    }
-   
+
    @SuppressWarnings("unchecked")
    public T invokeOnInstanceWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, BeanManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow)
    {
@@ -192,7 +193,7 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
       }
       return null;
    }
-   
+
    @Override
    public List<ParameterInjectionPoint<?>> getParameters()
    {
@@ -208,13 +209,13 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
 
          @Override
          protected List<? extends WBParameter<?>> delegate()
-         {
+               {
             return delegate;
-         }
-         
+               }
+
       };
    }
-   
+
    public void inject(Object declaringInstance, Object value)
    {
       try
@@ -264,7 +265,7 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
 
    public Annotated getAnnotated()
    {
-      return new AnnotatedAdaptor(delegate());
+      return delegate();
    }
 
    public boolean isDelegate()
@@ -278,5 +279,10 @@ public class MethodInjectionPoint<T> extends ForwardingWBMethod<T> implements WB
       // TODO Auto-generated method stub
       return false;
    }
-   
+
+   public Type getType()
+   {
+      return getBaseType();
+   }
+
 }

@@ -35,7 +35,7 @@ public interface WBClass<T> extends WBType<T>
     * @return A set of abstracted fields
     */
    public Set<WBField<?>> getFields();
-   
+
    /**
     * Get a field by name
     * 
@@ -55,7 +55,7 @@ public interface WBClass<T> extends WBType<T>
     *         empty set if there are no matches
     */
    public Set<WBField<?>> getAnnotatedFields(Class<? extends Annotation> annotationType);
-   
+
    /**
     * Gets all fields which are annotated with the given annotation type on this
     * class only.
@@ -97,7 +97,7 @@ public interface WBClass<T> extends WBType<T>
     * @return The no-args constructor, or null if not defined
     */
    public WBConstructor<T> getNoArgsConstructor();
-   
+
    /**
     * Get the constructor which matches the argument list provided
     * 
@@ -114,7 +114,7 @@ public interface WBClass<T> extends WBType<T>
     *         empty set if there are no matches
     */
    public Set<WBMethod<?>> getAnnotatedMethods(Class<? extends Annotation> annotationType);
-   
+
    /**
     * Gets all methods annotated with annotationType
     * 
@@ -123,7 +123,7 @@ public interface WBClass<T> extends WBType<T>
     *         empty set if there are no matches
     */
    public Set<WBMethod<?>> getDeclaredAnnotatedMethods(Class<? extends Annotation> annotationType);
-   
+
    /**
     * Find the annotated method for a given methodDescriptor
     * 
@@ -134,7 +134,7 @@ public interface WBClass<T> extends WBType<T>
     */
    @Deprecated
    public WBMethod<?> getMethod(Method method);
-   
+
    /**
     * Get a method by name
     * 
@@ -144,11 +144,11 @@ public interface WBClass<T> extends WBType<T>
     * @return the method, or null if it doesn't exist
     */
    public <M> WBMethod<M> getDeclaredMethod(MethodSignature signature, WBClass<M> expectedReturnType);
-   
+
    // TODO Replace with AnnotatedMethod variant
    @Deprecated
    public WBMethod<?> getDeclaredMethod(Method method);
-   
+
    /**
     * Gets all with parameters annotated with annotationType
     * 
@@ -157,7 +157,7 @@ public interface WBClass<T> extends WBType<T>
     *         empty set if there are no matches
     */
    public Set<WBMethod<?>> getMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
-   
+
    /**
     * Gets all with constructors annotated with annotationType
     * 
@@ -166,7 +166,7 @@ public interface WBClass<T> extends WBType<T>
     *         empty set if there are no matches
     */
    public Set<WBConstructor<?>> getConstructorsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
-   
+
    /**
     * Gets all with parameters annotated with annotationType
     * 
@@ -182,22 +182,22 @@ public interface WBClass<T> extends WBType<T>
     * @return The abstracted superclass, null if there is no superclass
     */
    public WBClass<?> getSuperclass();
-   
+
    /**
     * Determine if this is a non-static member class
     *
     * @return true if this is a non-static member  
     */
    public boolean isNonStaticMemberClass();
-   
+
    public boolean isParameterizedType();
-   
+
    public boolean isAbstract();
-   
+
    public boolean isEnum();
-   
+
    public <S> S cast(Object object);
-   
+
    public <U> WBClass<? extends U> asSubclass(WBClass<U> clazz);
 
 }

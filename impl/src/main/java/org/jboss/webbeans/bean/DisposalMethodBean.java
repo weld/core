@@ -35,9 +35,9 @@ import javax.inject.DefinitionException;
 
 import org.jboss.webbeans.BeanManagerImpl;
 import org.jboss.webbeans.bootstrap.BeanDeployerEnvironment;
-import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.injection.MethodInjectionPoint;
 import org.jboss.webbeans.injection.ParameterInjectionPoint;
+import org.jboss.webbeans.injection.WBInjectionPoint;
 import org.jboss.webbeans.introspector.WBMethod;
 import org.jboss.webbeans.introspector.WBParameter;
 import org.jboss.webbeans.log.LogProvider;
@@ -65,7 +65,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       this.id = createId("DisposalMethod-" + declaringBean.getName() + "-" + disposalMethod.getSignature().toString());
 
    }
-   
+
    @SuppressWarnings("unchecked")
    protected void initType()
    {
@@ -126,7 +126,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    {
       Set<Type> types = new HashSet<Type>();
       types = new HashSet<Type>();
-      types.addAll(disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getFlattenedTypeHierarchy());
+      types.addAll(disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getTypeClosure());
       types.add(getType());
       types.add(Object.class);
       super.types = types;
@@ -173,7 +173,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    {
       return declaringBean.isSerializable();
    }
-   
+
    @Override
    public boolean isProxyable()
    {
@@ -260,7 +260,7 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
       }
       this.specializedBean = environment.getDisposalMethod(superClassMethod);
    }
-   
+
    @Override
    public Class<T> getType()
    {
@@ -344,5 +344,5 @@ public class DisposalMethodBean<T> extends AbstractBean<T, Method>
    {
       return id;
    }
-   
+
 }

@@ -79,13 +79,13 @@ public class ObserverImpl<T> implements Observer<T>
       this.manager = manager;
       this.observerBean = observerBean;
       this.observerMethod = MethodInjectionPoint.of(observerBean, observer);
-      this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getType();
+      this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
 
       this.bindings = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBindingsAsArray();
       this.conditional = !observerMethod.getAnnotatedParameters(IfExists.class).isEmpty();
       this.asynchronous = !observerMethod.getAnnotatedParameters(Asynchronously.class).isEmpty();
    }
-   
+
    /**
     * Completes initialization of the observer and allows derived types to
     * override behavior.
@@ -143,7 +143,7 @@ public class ObserverImpl<T> implements Observer<T>
       {
          throw new DefinitionException(this + " cannot be annotated with @Initializer");
       }
-      
+
       // We cannot allow asynchronously invoked conditional observers either
       if (this.asynchronous && this.conditional)
       {
